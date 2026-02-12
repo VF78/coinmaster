@@ -8,6 +8,35 @@ def _apply_round_trip_cost(price: float, cfg: BacktestConfig) -> float:
     return price * 2.0 * (cfg.fee_per_side + cfg.slippage_per_side)
 
 
+def _record_trade(
+    trades: list[dict],
+    entry_ts,
+    exit_ts,
+    side,
+    entry_price,
+    exit_price,
+    entry_qty,
+    realized_trade_pnl,
+    risk_amount,
+    tp_hits,
+    stopped,
+):
+    trades.append(
+        {
+            "entry_ts": entry_ts.isoformat(),
+            "exit_ts": exit_ts.isoformat(),
+            "side": side,
+            "entry": entry_price,
+            "exit": exit_price,
+            "qty": entry_qty,
+            "pnl_net": realized_trade_pnl,
+            "r_multiple": realized_trade_pnl / max(risk_amount, 1e-9),
+            "tp_hits": tp_hits,
+            "stopped": stopped,
+        }
+    )
+
+
 def run_backtest(candles: list[dict], signal: list[int], cfg: BacktestConfig):
     equity = cfg.initial_equity
     day_start_equity = equity
@@ -18,6 +47,7 @@ def run_backtest(candles: list[dict], signal: list[int], cfg: BacktestConfig):
     pos_side = 0
     pos_qty = 0.0
     entry_qty = 0.0
+    entry_idx = -1
     entry_ts = None
     entry_price = 0.0
     risk_amount = 0.0
@@ -46,19 +76,18 @@ def run_backtest(candles: list[dict], signal: list[int], cfg: BacktestConfig):
                 pnl_net = pnl_gross - _apply_round_trip_cost(entry_price, cfg) * pos_qty
                 realized_trade_pnl += pnl_net
                 equity += pnl_net
-                trades.append(
-                    {
-                        "entry_ts": entry_ts.isoformat(),
-                        "exit_ts": ts.isoformat(),
-                        "side": pos_side,
-                        "entry": entry_price,
-                        "exit": exit_price,
-                        "qty": entry_qty,
-                        "pnl_net": realized_trade_pnl,
-                        "r_multiple": realized_trade_pnl / max(risk_amount, 1e-9),
-                        "tp_hits": tp_hits,
-                        "stopped": 1,
-                    }
+                _record_trade(
+                    trades,
+                    entry_ts,
+                    ts,
+                    pos_side,
+                    entry_price,
+                    exit_price,
+                    entry_qty,
+                    realized_trade_pnl,
+                    risk_amount,
+                    tp_hits,
+                    stopped=1,
                 )
                 in_pos = False
 
@@ -73,22 +102,22 @@ def run_backtest(candles: list[dict], signal: list[int], cfg: BacktestConfig):
                 pnl_net = pnl_gross - _apply_round_trip_cost(entry_price, cfg) * pos_qty
                 realized_trade_pnl += pnl_net
                 equity += pnl_net
-                trades.append(
-                    {
-                        "entry_ts": entry_ts.isoformat(),
-                        "exit_ts": ts.isoformat(),
-                        "side": pos_side,
-                        "entry": entry_price,
-                        "exit": exit_price,
-                        "qty": entry_qty,
-                        "pnl_net": realized_trade_pnl,
-                        "r_multiple": realized_trade_pnl / max(risk_amount, 1e-9),
-                        "tp_hits": tp_hits,
-                        "stopped": 1,
-                    }
+                _record_trade(
+                    trades,
+                    entry_ts,
+                    ts,
+                    pos_side,
+                    entry_price,
+                    exit_price,
+                    entry_qty,
+                    realized_trade_pnl,
+                    risk_amount,
+                    tp_hits,
+                    stopped=1,
                 )
                 in_pos = False
             else:
+                # partial take-profits
                 for j, tp in enumerate(tp_prices):
                     frac_left = tp_fractions_left[j]
                     if frac_left <= 0:
@@ -104,20 +133,48 @@ def run_backtest(candles: list[dict], signal: list[int], cfg: BacktestConfig):
                         tp_fractions_left[j] = 0.0
                         tp_hits += 1
 
+                        # management updates after TP1/TP2
+                        if j == 0:
+                            # move to breakeven + costs
+                            be = entry_price + pos_side * _apply_round_trip_cost(entry_price, cfg)
+                            if pos_side == 1:
+                                stop_price = max(stop_price, be)
+                            else:
+                                stop_price = min(stop_price, be)
+                        elif j == 1:
+                            # simple ATR trailing from current close
+                            trail = row["close"] - pos_side * 1.2 * row["atr"]
+                            if pos_side == 1:
+                                stop_price = max(stop_price, trail)
+                            else:
+                                stop_price = min(stop_price, trail)
+
+                # full-exit rules for remaining position
+                bars_in_trade = i - entry_idx
+                reverse_signal = signal[i] == -pos_side
+                timeout = bars_in_trade >= cfg.max_bars_in_trade
+
+                if pos_qty > 1e-12 and (reverse_signal or timeout):
+                    exit_price = row["close"]
+                    pnl_gross = pos_side * (exit_price - entry_price) * pos_qty
+                    pnl_net = pnl_gross - _apply_round_trip_cost(entry_price, cfg) * pos_qty
+                    realized_trade_pnl += pnl_net
+                    equity += pnl_net
+                    pos_qty = 0.0
+
                 if pos_qty <= 1e-12:
-                    trades.append(
-                        {
-                            "entry_ts": entry_ts.isoformat(),
-                            "exit_ts": ts.isoformat(),
-                            "side": pos_side,
-                            "entry": entry_price,
-                            "exit": row["close"],
-                            "qty": entry_qty,
-                            "pnl_net": realized_trade_pnl,
-                            "r_multiple": realized_trade_pnl / max(risk_amount, 1e-9),
-                            "tp_hits": tp_hits,
-                            "stopped": 0,
-                        }
+                    _record_trade(
+                        trades,
+                        entry_ts,
+                        ts,
+                        pos_side,
+                        entry_price,
+                        row["close"],
+                        entry_qty,
+                        realized_trade_pnl,
+                        risk_amount,
+                        tp_hits,
+                        stopped=0,
                     )
                     in_pos = False
 
@@ -125,7 +182,12 @@ def run_backtest(candles: list[dict], signal: list[int], cfg: BacktestConfig):
             s = signal[i]
             if s != 0:
                 entry = row["close"]
-                structure_stop = row["low"] if s == 1 else row["high"]
+                lookback = candles[max(0, i - 12) : i + 1]
+                if s == 1:
+                    structure_stop = min(x["low"] for x in lookback)
+                else:
+                    structure_stop = max(x["high"] for x in lookback)
+
                 stop_dist = compute_stop_distance(entry, structure_stop, row["atr"], cfg.atr_buffer_mult, cfg.stop_cap_pct)
                 sizing = size_position(equity, cfg.risk_per_trade, entry, stop_dist)
                 if sizing.qty > 0:
@@ -133,6 +195,7 @@ def run_backtest(candles: list[dict], signal: list[int], cfg: BacktestConfig):
                     pos_side = s
                     pos_qty = sizing.qty
                     entry_qty = sizing.qty
+                    entry_idx = i
                     entry_ts = ts
                     entry_price = entry
                     risk_amount = sizing.risk_amount

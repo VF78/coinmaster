@@ -22,11 +22,17 @@ def _write_csv(path: Path, rows: list[dict]):
 
 def main():
     cfg = BacktestConfig()
-    candles = load_candles(cfg.csv_path).candles
-    candles = attach_features(candles, atr_period=cfg.atr_period)
+    loaded = load_candles(cfg)
+    candles = attach_features(loaded.candles, atr_period=cfg.atr_period)
 
-    # TODO: drive bias by explicit user regime input.
-    signal = generate_entry_signal(candles, bias="both")
+    # TODO: bias should be driven by explicit user regime command in live mode.
+    signal = generate_entry_signal(
+        candles,
+        bias="both",
+        sweep_lookback=cfg.local_sweep_lookback,
+        fvg_min_gap_pct=cfg.fvg_min_gap_pct,
+        fvg_retest_window_bars=cfg.fvg_retest_window_bars,
+    )
     trades, equity_curve = run_backtest(candles, signal, cfg)
 
     out_dir = Path("backtest_v1/out")
@@ -45,6 +51,12 @@ def main():
     _write_csv(summary_path, [summary_row])
 
     print("Backtest run complete")
+    print(f"Data source: {loaded.meta.get('source')}")
+    if loaded.meta.get("actual_start"):
+        print(
+            f"Range used: {loaded.meta.get('actual_start')} -> {loaded.meta.get('actual_end')} "
+            f"({loaded.meta.get('count')} candles, {loaded.meta.get('calls')} API calls)"
+        )
     print(f"Trades: {len(trades)}")
     print(summary_row)
     print(f"Saved: {trades_path}, {equity_path}, {summary_path}")
