@@ -11,11 +11,11 @@ async function main() {
   db.data.marketTicks = [];
 
   submitBias(db.data, 'BTC', 'long');
-  const prices = [42000, 42120, 42210, 42340, 42600, 42500, 42820, 43000, 42700, 42400, 42050];
+  const prices = [65800, 65920, 66080, 66220, 66410, 66330, 66500, 66620, 66470, 66290, 66180];
   for (const price of prices) runSimulationStep(db.data, 'BTC', price);
 
   submitBias(db.data, 'BTC', 'short');
-  const prices2 = [41900, 41720, 41400, 41220, 40900, 40650, 40300, 40500, 40700, 41050];
+  const prices2 = [66120, 65980, 65840, 65690, 65520, 65410, 65280, 65420, 65580, 65720];
   for (const price of prices2) runSimulationStep(db.data, 'BTC', price);
 
   submitBias(db.data, 'BTC', 'off');
