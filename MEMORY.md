@@ -36,3 +36,4 @@
 
 - Ежедневная задача `context:daily-project-truth-save` в 23:00 (Europe/Madrid) фиксирует состояние в `memory/YYYY-MM-DD.md`, `MEMORY.md`, `PROJECT_TRUTH.md`.
 - Секреты (API keys, токены, пароли) в память/документы в явном виде **не сохранять**.
+- Визуальный ориентир для торгового web-интерфейса: стиль/UX `app.hyperliquid.xyz` (современный тёмный trading-terminal подход).
