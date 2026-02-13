@@ -23,6 +23,17 @@ npm run seed
 npm run dev
 ```
 
+## Deploy web on Vercel (frontend)
+This repo includes `vercel.json` that proxies `/api/*` to the Hetzner backend.
+
+Vercel settings:
+- Root Directory: `coinmaster`
+- Install Command: `npm ci`
+- Build Command: `npm run build:web`
+- Output Directory: `dist`
+
+Note: `vercel.json` currently points to the MVP backend IP (update it when moving to a real domain + HTTPS).
+
 - Web: http://localhost:5173
 - API: http://localhost:8787
 
