@@ -16,7 +16,7 @@ Lightweight paper-trading control panel with a TypeScript backend/API and a mode
 
 ## Run locally
 ```bash
-cd /Users/vf/.openclaw/workspace/paper-trading-control-panel
+cd /Users/vf/.openclaw/workspace/coinmaster
 npm install
 npm run seed
 npm run dev

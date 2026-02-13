@@ -82,7 +82,7 @@
   - история и статистика.
 - Требование: архитектура сразу с заделом на SaaS и простое портирование в нативные приложения.
 - Визуальный ориентир интерфейса: `https://app.hyperliquid.xyz` (современный trading-terminal UX).
-- Статус: MVP реализован в `paper-trading-control-panel`; выполнен modern responsive redesign и вынесены shared DTO для native path.
+- Статус: MVP реализован в `coinmaster`; выполнен modern responsive redesign и вынесены shared DTO для native path.
 
 ## Связанные инициативы (вне торгового трека)
 - myshopai: SaaS для малого ритейла (ведёт ИИ-агент Иван).
