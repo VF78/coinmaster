@@ -2,6 +2,9 @@ import { JSONFilePreset } from 'lowdb/node';
 import { DBShape } from './types.js';
 
 const defaultData: DBShape = {
+  settings: {
+    depositUsd: 1000
+  },
   positions: [],
   tradeLogs: [],
   biasCommands: [],

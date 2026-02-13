@@ -4,6 +4,7 @@ import { runSimulationStep } from '../src/core/simulation.js';
 
 async function main() {
   const db = await getDb();
+  db.data.settings = { depositUsd: 1000 };
   db.data.positions = [];
   db.data.tradeLogs = [];
   db.data.biasCommands = [];

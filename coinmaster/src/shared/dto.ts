@@ -1,8 +1,11 @@
 export type Bias = 'long' | 'short' | 'off';
-
 export type TradeSide = 'long' | 'short';
-
 export type PositionStatus = 'open' | 'closed';
+export type StatsPeriod = 'week' | 'month';
+
+export interface AppSettings {
+  depositUsd: number;
+}
 
 export interface Position {
   id: string;
@@ -46,11 +49,17 @@ export interface MarketTick {
 }
 
 export interface Stats {
+  period: StatsPeriod;
+  periodDays: number;
+  depositUsd: number;
   totalTrades: number;
   winRate: number;
   realizedPnl: number;
+  realizedPnlPct: number;
   openPnl: number;
+  openPnlPct: number;
   avgPnl: number;
+  equityUsd: number;
 }
 
 export interface DashboardResponse {

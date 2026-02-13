@@ -1,5 +1,13 @@
 import { nanoid } from 'nanoid';
-import { DBShape, Bias, Stats } from './types.js';
+import { DBShape, Bias, Stats, StatsPeriod } from './types.js';
+
+interface StatsOptions {
+  period: StatsPeriod;
+}
+
+function periodDays(period: StatsPeriod): number {
+  return period === 'week' ? 7 : 30;
+}
 
 export function submitBias(db: DBShape, symbol: string, bias: Bias) {
   const cmd = { id: nanoid(), symbol, bias, createdAt: new Date().toISOString() };
@@ -14,19 +22,36 @@ export function submitBias(db: DBShape, symbol: string, bias: Bias) {
   return cmd;
 }
 
-export function getStats(db: DBShape): Stats {
-  const closed = db.positions.filter((p) => p.status === 'closed');
-  const open = db.positions.filter((p) => p.status === 'open');
+export function getStats(db: DBShape, options: StatsOptions): Stats {
+  const days = periodDays(options.period);
+  const cutoffTs = Date.now() - days * 24 * 60 * 60 * 1000;
+  const deposit = db.settings?.depositUsd ?? 1000;
+
+  const closed = db.positions.filter(
+    (p) => p.status === 'closed' && Date.parse(p.closedAt ?? p.openedAt) >= cutoffTs
+  );
+  const open = db.positions.filter(
+    (p) => p.status === 'open' && Date.parse(p.openedAt) >= cutoffTs
+  );
 
   const realizedPnl = closed.reduce((a, p) => a + p.pnl, 0);
   const openPnl = open.reduce((a, p) => a + p.pnl, 0);
   const wins = closed.filter((p) => p.pnl > 0).length;
 
+  const realizedPnlPct = deposit > 0 ? (realizedPnl / deposit) * 100 : 0;
+  const openPnlPct = deposit > 0 ? (openPnl / deposit) * 100 : 0;
+
   return {
+    period: options.period,
+    periodDays: days,
+    depositUsd: Number(deposit.toFixed(2)),
     totalTrades: closed.length,
     winRate: closed.length ? Number(((wins / closed.length) * 100).toFixed(2)) : 0,
     realizedPnl: Number(realizedPnl.toFixed(2)),
+    realizedPnlPct: Number(realizedPnlPct.toFixed(2)),
     openPnl: Number(openPnl.toFixed(2)),
-    avgPnl: closed.length ? Number((realizedPnl / closed.length).toFixed(2)) : 0
+    openPnlPct: Number(openPnlPct.toFixed(2)),
+    avgPnl: closed.length ? Number((realizedPnl / closed.length).toFixed(2)) : 0,
+    equityUsd: Number((deposit + realizedPnl + openPnl).toFixed(2))
   };
 }

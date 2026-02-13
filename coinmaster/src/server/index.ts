@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { getDb } from '../core/db.js';
 import { getStats, submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
-import { Bias } from '../core/types.js';
+import { Bias, StatsPeriod } from '../core/types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,25 +17,38 @@ const app = express();
 const port = Number(process.env.PORT || 8787);
 const host = process.env.HOST || '0.0.0.0';
 
+function parsePeriod(raw: unknown): StatsPeriod {
+  return raw === 'week' ? 'week' : 'month';
+}
+
 app.use(cors());
 app.use(express.json());
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
-app.get('/api/dashboard', async (_req, res) => {
+app.get('/api/dashboard', async (req, res) => {
+  const period = parsePeriod(req.query.period);
   const db = await getDb();
   const activePositions = db.data.positions.filter((p) => p.status === 'open');
   const latestBias = [...db.data.biasCommands].reverse().find((b) => b.symbol === 'BTC')?.bias ?? 'off';
 
-  res.json({ activePositions, latestBias, stats: getStats(db.data) });
+  res.json({ activePositions, latestBias, stats: getStats(db.data, { period }) });
 });
 
-app.get('/api/history', async (_req, res) => {
+app.get('/api/history', async (req, res) => {
+  const period = parsePeriod(req.query.period);
   const db = await getDb();
+  const cutoffTs = Date.now() - (period === 'week' ? 7 : 30) * 24 * 60 * 60 * 1000;
+
   const closedPositions = db.data.positions
-    .filter((p) => p.status === 'closed')
+    .filter((p) => p.status === 'closed' && Date.parse(p.closedAt ?? p.openedAt) >= cutoffTs)
     .sort((a, b) => b.openedAt.localeCompare(a.openedAt));
-  res.json({ closedPositions, logs: db.data.tradeLogs.slice(-100).reverse(), stats: getStats(db.data) });
+
+  res.json({
+    closedPositions,
+    logs: db.data.tradeLogs.slice(-100).reverse(),
+    stats: getStats(db.data, { period })
+  });
 });
 
 app.post('/api/bias', async (req, res) => {

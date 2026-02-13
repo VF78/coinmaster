@@ -15,3 +15,12 @@ export function formatNumber(value: number): string {
 export function formatDate(value: string): string {
   return new Date(value).toLocaleString();
 }
+
+export function formatPercent(value: number): string {
+  const sign = value > 0 ? '+' : '';
+  return `${sign}${formatNumber(value)}%`;
+}
+
+export function formatMoneyWithPercent(value: number, pct: number): string {
+  return `${formatMoney(value)} (${formatPercent(pct)})`;
+}

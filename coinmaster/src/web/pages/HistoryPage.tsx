@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import type { HistoryResponse, Position, TradeLog } from '../../shared/dto.js';
+import type { HistoryResponse, Position, StatsPeriod, TradeLog } from '../../shared/dto.js';
 import { getHistory } from '../lib/api';
-import { formatDate, formatMoney, formatNumber } from '../lib/format';
+import { formatDate, formatMoney, formatMoneyWithPercent, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -10,15 +10,16 @@ import { Stat } from '../components/Stat';
 
 export function HistoryPage() {
   const [data, setData] = useState<HistoryResponse | null>(null);
+  const [period, setPeriod] = useState<StatsPeriod>('week');
 
-  async function refresh() {
-    const next = await getHistory();
+  async function refresh(selectedPeriod: StatsPeriod = period) {
+    const next = await getHistory(selectedPeriod);
     setData(next);
   }
 
   useEffect(() => {
-    refresh();
-  }, []);
+    refresh(period);
+  }, [period]);
 
   if (!data) {
     return <p className="muted">Loading history…</p>;
@@ -28,13 +29,37 @@ export function HistoryPage() {
     <main className="layout-grid">
       <Card
         title="Trade statistics"
-        actions={<Button onClick={refresh} variant="secondary">Refresh</Button>}
+        actions={
+          <div className="actions-row">
+            <div className="period-switch" role="tablist" aria-label="History period">
+              <button
+                type="button"
+                className={period === 'week' ? 'period-switch__btn period-switch__btn--active' : 'period-switch__btn'}
+                onClick={() => setPeriod('week')}
+              >
+                Week
+              </button>
+              <button
+                type="button"
+                className={period === 'month' ? 'period-switch__btn period-switch__btn--active' : 'period-switch__btn'}
+                onClick={() => setPeriod('month')}
+              >
+                Month
+              </button>
+            </div>
+            <Button onClick={() => refresh()} variant="secondary">Refresh</Button>
+          </div>
+        }
       >
         <div className="stats-grid">
           <Stat label="Total trades" value={String(data.stats.totalTrades)} />
           <Stat label="Win rate" value={`${formatNumber(data.stats.winRate)}%`} />
           <Stat label="Avg PnL / trade" value={formatMoney(data.stats.avgPnl)} tone={data.stats.avgPnl >= 0 ? 'success' : 'danger'} />
-          <Stat label="Realized PnL" value={formatMoney(data.stats.realizedPnl)} tone={data.stats.realizedPnl >= 0 ? 'success' : 'danger'} />
+          <Stat
+            label="Realized PnL"
+            value={formatMoneyWithPercent(data.stats.realizedPnl, data.stats.realizedPnlPct)}
+            tone={data.stats.realizedPnl >= 0 ? 'success' : 'danger'}
+          />
         </div>
       </Card>
 
@@ -42,12 +67,14 @@ export function HistoryPage() {
         <DataTable<Position>
           rows={data.closedPositions}
           mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
-          mobileSubtitle={(row) => formatDate(row.openedAt)}
+          mobileSubtitle={(row) => `${formatDate(row.openedAt)} • Coins: ${formatNumber(row.size)}`}
           columns={[
             { key: 'openedAt', header: 'Opened', render: (row) => formatDate(row.openedAt) },
             { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
             { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'long' ? 'success' : 'danger'}>{row.side}</Badge> },
             { key: 'entry', header: 'Entry', render: (row) => formatNumber(row.entryPrice) },
+            { key: 'coins', header: 'Coins', render: (row) => formatNumber(row.size) },
+            { key: 'deal', header: 'Deal value', render: (row) => formatMoney(row.entryPrice * row.size) },
             { key: 'pnl', header: 'Close PnL', render: (row) => <span className={row.pnl >= 0 ? 'up' : 'down'}>{formatMoney(row.pnl)}</span> },
             { key: 'source', header: 'Source', render: (row) => row.source }
           ]}

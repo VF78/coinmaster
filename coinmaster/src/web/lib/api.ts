@@ -1,4 +1,10 @@
-import type { BiasPayload, DashboardResponse, HistoryResponse, SimulateTickPayload } from '../../shared/dto.js';
+import type {
+  BiasPayload,
+  DashboardResponse,
+  HistoryResponse,
+  SimulateTickPayload,
+  StatsPeriod
+} from '../../shared/dto.js';
 
 async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
@@ -9,12 +15,12 @@ async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export function getDashboard() {
-  return jsonFetch<DashboardResponse>('/api/dashboard');
+export function getDashboard(period: StatsPeriod) {
+  return jsonFetch<DashboardResponse>(`/api/dashboard?period=${period}`);
 }
 
-export function getHistory() {
-  return jsonFetch<HistoryResponse>('/api/history');
+export function getHistory(period: StatsPeriod) {
+  return jsonFetch<HistoryResponse>(`/api/history?period=${period}`);
 }
 
 export function postBias(payload: BiasPayload) {
