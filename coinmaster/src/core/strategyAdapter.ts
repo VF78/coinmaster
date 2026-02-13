@@ -30,11 +30,12 @@ export class BacktestV1SignalAdapter {
     }
 
     const move = (ctx.price - ctx.lastPrice) / ctx.lastPrice;
-    if (ctx.bias === 'long' && move > 0.0015) {
-      return { shouldOpen: true, side: 'long', confidence: Math.min(1, move * 1000), reason: 'momentum_up_hook' };
+    const trigger = 0.0004; // 0.04% move between ticks for paper-trigger sensitivity
+    if (ctx.bias === 'long' && move > trigger) {
+      return { shouldOpen: true, side: 'long', confidence: Math.min(1, move * 1800), reason: 'momentum_up_hook' };
     }
-    if (ctx.bias === 'short' && move < -0.0015) {
-      return { shouldOpen: true, side: 'short', confidence: Math.min(1, Math.abs(move) * 1000), reason: 'momentum_down_hook' };
+    if (ctx.bias === 'short' && move < -trigger) {
+      return { shouldOpen: true, side: 'short', confidence: Math.min(1, Math.abs(move) * 1800), reason: 'momentum_down_hook' };
     }
 
     return { shouldOpen: false, confidence: 0.35, reason: 'no_trigger' };

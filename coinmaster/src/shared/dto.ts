@@ -15,6 +15,14 @@ export interface Position {
   stopLoss: number;
   takeProfit: number;
   size: number;
+  remainingSize?: number;
+  realizedPnl?: number;
+  tp1Price?: number;
+  tp2Price?: number;
+  tp3Price?: number;
+  tp1Done?: boolean;
+  tp2Done?: boolean;
+  tp3Done?: boolean;
   openedAt: string;
   closedAt?: string;
   status: PositionStatus;
@@ -26,7 +34,7 @@ export interface TradeLog {
   id: string;
   positionId?: string;
   symbol: string;
-  action: 'open' | 'close' | 'bias';
+  action: 'open' | 'partial' | 'close' | 'bias';
   side?: TradeSide;
   price?: number;
   quantity?: number;
