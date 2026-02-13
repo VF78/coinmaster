@@ -18,11 +18,31 @@ const port = Number(process.env.PORT || 8787);
 const host = process.env.HOST || '0.0.0.0';
 
 const LIVE_SYMBOL = 'BTC';
-const LIVE_POLL_MS = 5 * 60 * 1000;
-let liveBusy = false;
+const REST_FALLBACK_MS = 60 * 1000; // at least 1m updates if WS unavailable
+
+let ingestBusy = false;
+let ws: WebSocket | null = null;
+let wsReconnectTimer: NodeJS.Timeout | null = null;
+let restFallbackTimer: NodeJS.Timeout | null = null;
 
 function parsePeriod(raw: unknown): StatsPeriod {
   return raw === 'week' ? 'week' : 'month';
+}
+
+async function ingestPrice(symbol: string, price: number, source: 'ws' | 'rest') {
+  if (!Number.isFinite(price)) return;
+  if (ingestBusy) return;
+  ingestBusy = true;
+  try {
+    const db = await getDb();
+    runSimulationStep(db.data, symbol, price);
+    await db.write();
+    if (source === 'ws') {
+      // keep logs light: only websocket reconnect/status logs, no per-tick spam
+    }
+  } finally {
+    ingestBusy = false;
+  }
 }
 
 async function fetchHyperliquidBtcMid(): Promise<number | null> {
@@ -44,18 +64,77 @@ async function fetchHyperliquidBtcMid(): Promise<number | null> {
   }
 }
 
-async function ingestLiveTick() {
-  if (liveBusy) return;
-  liveBusy = true;
-  try {
-    const price = await fetchHyperliquidBtcMid();
-    if (!price) return;
+async function ingestRestFallback() {
+  const price = await fetchHyperliquidBtcMid();
+  if (!price) return;
+  await ingestPrice(LIVE_SYMBOL, price, 'rest');
+}
 
-    const db = await getDb();
-    runSimulationStep(db.data, LIVE_SYMBOL, price);
-    await db.write();
-  } finally {
-    liveBusy = false;
+function startRestFallback() {
+  if (restFallbackTimer) return;
+  restFallbackTimer = setInterval(() => {
+    ingestRestFallback().catch(() => undefined);
+  }, REST_FALLBACK_MS);
+  restFallbackTimer.unref?.();
+}
+
+function scheduleWsReconnect(delayMs = 3000) {
+  if (wsReconnectTimer) return;
+  wsReconnectTimer = setTimeout(() => {
+    wsReconnectTimer = null;
+    startHyperliquidWs();
+  }, delayMs);
+  wsReconnectTimer.unref?.();
+}
+
+function startHyperliquidWs() {
+  if (typeof WebSocket === 'undefined') {
+    console.log('[live] WebSocket unavailable in runtime, using REST fallback each minute');
+    startRestFallback();
+    return;
+  }
+
+  if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+    return;
+  }
+
+  try {
+    ws = new WebSocket('wss://api.hyperliquid.xyz/ws');
+
+    ws.addEventListener('open', () => {
+      console.log('[live] Hyperliquid WS connected');
+      ws?.send(JSON.stringify({ method: 'subscribe', subscription: { type: 'allMids' } }));
+      // keep REST fallback enabled as safety net
+      startRestFallback();
+    });
+
+    ws.addEventListener('message', (event) => {
+      try {
+        const payload = JSON.parse(String(event.data)) as any;
+        const mids = payload?.data?.mids;
+        const raw = mids?.[LIVE_SYMBOL];
+        if (!raw) return;
+        const price = Number(raw);
+        if (!Number.isFinite(price)) return;
+        ingestPrice(LIVE_SYMBOL, price, 'ws').catch(() => undefined);
+      } catch {
+        // ignore malformed frames
+      }
+    });
+
+    ws.addEventListener('close', () => {
+      console.log('[live] Hyperliquid WS disconnected, reconnecting...');
+      ws = null;
+      scheduleWsReconnect();
+    });
+
+    ws.addEventListener('error', () => {
+      // rely on close->reconnect
+    });
+  } catch {
+    console.log('[live] Hyperliquid WS start failed, using REST fallback each minute');
+    startRestFallback();
+    scheduleWsReconnect(5000);
   }
 }
 
@@ -102,7 +181,6 @@ app.post('/api/bias', async (req, res) => {
   return res.json({ ok: true, command: cmd });
 });
 
-// Keep endpoint for debugging/manual override, but UI no longer depends on it.
 app.post('/api/simulate/tick', async (req, res) => {
   const { symbol = LIVE_SYMBOL, price } = req.body as { symbol?: string; price: number };
   if (price === undefined || Number.isNaN(price)) {
@@ -115,7 +193,6 @@ app.post('/api/simulate/tick', async (req, res) => {
   return res.json({ ok: true, signal });
 });
 
-// Serve web app build from same origin (single-link deployment)
 app.use(express.static(distDir));
 app.get('*', (_req, res) => {
   res.sendFile(path.join(distDir, 'index.html'));
@@ -123,7 +200,6 @@ app.get('*', (_req, res) => {
 
 app.listen(port, host, () => {
   console.log(`Server listening on http://${host}:${port}`);
-  ingestLiveTick();
-  const timer = setInterval(ingestLiveTick, LIVE_POLL_MS);
-  timer.unref?.();
+  ingestRestFallback().catch(() => undefined);
+  startHyperliquidWs();
 });
