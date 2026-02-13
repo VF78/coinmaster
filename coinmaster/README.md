@@ -48,6 +48,8 @@ npm run start    # run API only
 - `src/server/index.ts` → API routes.
 - `src/web/*` → web UI and reusable presentational components.
 - `docs/UX_NOTES.md` → responsive breakpoints and component behavior.
+- `docs/ARCHITECTURE.md` → deployment/evolution architecture.
+- `docs/SECURITY_REQUIREMENTS.md` → security baseline for exchange-API trading system.
 
 ## Native port path (Expo)
 A concrete path to add iOS/Android without rewriting domain contracts:
