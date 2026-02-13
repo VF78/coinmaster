@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DashboardPage } from './pages/DashboardPage';
 import { HistoryPage } from './pages/HistoryPage';
+import { Button } from './components/Button';
 
 export function App() {
   const [page, setPage] = useState<'dashboard' | 'history'>('dashboard');
@@ -10,12 +11,19 @@ export function App() {
   }, [page]);
 
   return (
-    <div className="container">
-      <header>
-        <h1>Paper Trading Control Panel</h1>
-        <nav>
-          <button onClick={() => setPage('dashboard')} className={page === 'dashboard' ? 'active' : ''}>Dashboard</button>
-          <button onClick={() => setPage('history')} className={page === 'history' ? 'active' : ''}>History / Stats</button>
+    <div className="app-shell">
+      <header className="topbar">
+        <div>
+          <p className="eyebrow">Paper trading</p>
+          <h1>Control Panel</h1>
+        </div>
+        <nav aria-label="Main navigation" className="nav-tabs">
+          <Button variant={page === 'dashboard' ? 'primary' : 'secondary'} onClick={() => setPage('dashboard')}>
+            Dashboard
+          </Button>
+          <Button variant={page === 'history' ? 'primary' : 'secondary'} onClick={() => setPage('history')}>
+            History / Stats
+          </Button>
         </nav>
       </header>
       {page === 'dashboard' ? <DashboardPage /> : <HistoryPage />}
