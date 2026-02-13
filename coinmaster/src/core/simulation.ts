@@ -36,7 +36,7 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
 
   db.marketTicks.push({ symbol, price, timestamp: now });
 
-  const signal = adapter.evaluate({ symbol, price, lastPrice: lastTick?.price, bias: lastBias });
+  const signal = adapter.evaluate({ symbol, price, lastPrice: lastTick?.price, bias: lastBias, ticks: db.marketTicks });
   const openPositionExists = db.positions.some((p) => p.symbol === symbol && p.status === 'open');
 
   if (signal.shouldOpen && signal.side && !openPositionExists) {
