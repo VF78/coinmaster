@@ -7,6 +7,7 @@ import { getDb } from '../core/db.js';
 import { getStats, submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { Bias, StatsPeriod } from '../core/types.js';
+import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,16 +21,18 @@ const host = process.env.HOST || '0.0.0.0';
 const LIVE_SYMBOL = 'BTC';
 const REST_FALLBACK_MS = 60 * 1000; // at least 1m updates if WS unavailable
 
+const exchange = new HyperliquidAdapter();
+
 let ingestBusy = false;
-let ws: WebSocket | null = null;
 let wsReconnectTimer: NodeJS.Timeout | null = null;
 let restFallbackTimer: NodeJS.Timeout | null = null;
+let midStreamHandle: MidStreamHandle | null = null;
 
 function parsePeriod(raw: unknown): StatsPeriod {
   return raw === 'week' ? 'week' : 'month';
 }
 
-async function ingestPrice(symbol: string, price: number, source: 'ws' | 'rest') {
+async function ingestPrice(symbol: string, price: number, _source: 'ws' | 'rest') {
   if (!Number.isFinite(price)) return;
   if (ingestBusy) return;
   ingestBusy = true;
@@ -37,27 +40,15 @@ async function ingestPrice(symbol: string, price: number, source: 'ws' | 'rest')
     const db = await getDb();
     runSimulationStep(db.data, symbol, price);
     await db.write();
-    if (source === 'ws') {
-      // keep logs light: only websocket reconnect/status logs, no per-tick spam
-    }
   } finally {
     ingestBusy = false;
   }
 }
 
-async function fetchHyperliquidBtcMid(): Promise<number | null> {
+async function fetchLiveBtcMid(): Promise<number | null> {
   try {
-    const response = await fetch('https://api.hyperliquid.xyz/info', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ type: 'allMids' })
-    });
-    if (!response.ok) return null;
-
-    const data = (await response.json()) as Record<string, string>;
-    const raw = data[LIVE_SYMBOL];
-    if (!raw) return null;
-    const price = Number(raw);
+    const mids = await exchange.getMids();
+    const price = mids[LIVE_SYMBOL];
     return Number.isFinite(price) ? price : null;
   } catch {
     return null;
@@ -65,7 +56,7 @@ async function fetchHyperliquidBtcMid(): Promise<number | null> {
 }
 
 async function ingestRestFallback() {
-  const price = await fetchHyperliquidBtcMid();
+  const price = await fetchLiveBtcMid();
   if (!price) return;
   await ingestPrice(LIVE_SYMBOL, price, 'rest');
 }
@@ -82,57 +73,42 @@ function scheduleWsReconnect(delayMs = 3000) {
   if (wsReconnectTimer) return;
   wsReconnectTimer = setTimeout(() => {
     wsReconnectTimer = null;
-    startHyperliquidWs();
+    startLiveMidStream();
   }, delayMs);
   wsReconnectTimer.unref?.();
 }
 
-function startHyperliquidWs() {
-  if (typeof WebSocket === 'undefined') {
-    console.log('[live] WebSocket unavailable in runtime, using REST fallback each minute');
+function startLiveMidStream() {
+  if (!exchange.subscribeMids) {
+    console.log('[live] Exchange adapter has no mid stream, using REST fallback each minute');
     startRestFallback();
     return;
   }
 
-  if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
-    return;
-  }
+  if (midStreamHandle) return;
 
   try {
-    ws = new WebSocket('wss://api.hyperliquid.xyz/ws');
-
-    ws.addEventListener('open', () => {
-      console.log('[live] Hyperliquid WS connected');
-      ws?.send(JSON.stringify({ method: 'subscribe', subscription: { type: 'allMids' } }));
-      // keep REST fallback enabled as safety net
-      startRestFallback();
-    });
-
-    ws.addEventListener('message', (event) => {
-      try {
-        const payload = JSON.parse(String(event.data)) as any;
-        const mids = payload?.data?.mids;
-        const raw = mids?.[LIVE_SYMBOL];
-        if (!raw) return;
-        const price = Number(raw);
-        if (!Number.isFinite(price)) return;
-        ingestPrice(LIVE_SYMBOL, price, 'ws').catch(() => undefined);
-      } catch {
-        // ignore malformed frames
+    midStreamHandle = exchange.subscribeMids({
+      symbols: [LIVE_SYMBOL],
+      onOpen: () => {
+        console.log('[live] Hyperliquid WS connected');
+        startRestFallback(); // keep fallback as safety net
+      },
+      onMid: (symbol, price) => {
+        ingestPrice(symbol, price, 'ws').catch(() => undefined);
+      },
+      onClose: () => {
+        console.log('[live] Hyperliquid WS disconnected, reconnecting...');
+        midStreamHandle = null;
+        scheduleWsReconnect();
+      },
+      onError: () => {
+        // close event handles reconnect flow
       }
-    });
-
-    ws.addEventListener('close', () => {
-      console.log('[live] Hyperliquid WS disconnected, reconnecting...');
-      ws = null;
-      scheduleWsReconnect();
-    });
-
-    ws.addEventListener('error', () => {
-      // rely on close->reconnect
     });
   } catch {
     console.log('[live] Hyperliquid WS start failed, using REST fallback each minute');
+    midStreamHandle = null;
     startRestFallback();
     scheduleWsReconnect(5000);
   }
@@ -201,5 +177,5 @@ app.get('*', (_req, res) => {
 app.listen(port, host, () => {
   console.log(`Server listening on http://${host}:${port}`);
   ingestRestFallback().catch(() => undefined);
-  startHyperliquidWs();
+  startLiveMidStream();
 });
