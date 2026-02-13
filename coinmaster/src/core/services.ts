@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { appendTradeEvent } from './tradeEvents.js';
 import { DBShape, Bias, Stats, StatsPeriod } from './types.js';
 
 interface StatsOptions {
@@ -10,15 +11,28 @@ function periodDays(period: StatsPeriod): number {
 }
 
 export function submitBias(db: DBShape, symbol: string, bias: Bias) {
-  const cmd = { id: nanoid(), symbol, bias, createdAt: new Date().toISOString() };
+  const normalizedSymbol = symbol.toUpperCase();
+  const cmd = { id: nanoid(), symbol: normalizedSymbol, bias, createdAt: new Date().toISOString() };
   db.biasCommands.push(cmd);
   db.tradeLogs.push({
     id: nanoid(),
-    symbol,
+    symbol: normalizedSymbol,
     action: 'bias',
-    note: `${symbol} ${bias}`,
+    note: `${normalizedSymbol} ${bias}`,
     timestamp: cmd.createdAt
   });
+
+  appendTradeEvent(db, {
+    symbol: normalizedSymbol,
+    type: 'bias_changed',
+    timestamp: cmd.createdAt,
+    correlationId: cmd.id,
+    reason: 'operator_bias_command',
+    payload: {
+      bias
+    }
+  });
+
   return cmd;
 }
 

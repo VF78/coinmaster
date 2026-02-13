@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { HistoryResponse, Position, StatsPeriod, TradeLog } from '../../shared/dto.js';
+import type { HistoryResponse, Position, StatsPeriod, TradeEvent, TradeLog } from '../../shared/dto.js';
 import { getHistory } from '../lib/api';
 import { formatDate, formatMoney, formatMoneyWithPercent, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
@@ -81,7 +81,28 @@ export function HistoryPage() {
         />
       </Card>
 
-      <Card title="Audit log" className="full-width">
+      <Card title="Trade event journal (append-only)" className="full-width">
+        <DataTable<TradeEvent>
+          rows={data.events}
+          mobileTitle={(row) => `${row.type.toUpperCase()} • ${row.symbol}`}
+          mobileSubtitle={(row) => `${formatDate(row.timestamp)} • seq ${row.seq}`}
+          columns={[
+            { key: 'seq', header: 'Seq', render: (row) => String(row.seq) },
+            { key: 'timestamp', header: 'Timestamp', render: (row) => formatDate(row.timestamp) },
+            { key: 'type', header: 'Event', render: (row) => row.type.toUpperCase() },
+            { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
+            { key: 'reason', header: 'Reason', render: (row) => row.reason ?? '—' },
+            { key: 'corr', header: 'Correlation', render: (row) => row.correlationId.slice(0, 10) },
+            {
+              key: 'pnl',
+              header: 'PnL',
+              render: (row) => (typeof row.pnl === 'number' ? <span className={row.pnl >= 0 ? 'up' : 'down'}>{formatMoney(row.pnl)}</span> : '—')
+            }
+          ]}
+        />
+      </Card>
+
+      <Card title="Legacy trade log" className="full-width">
         <DataTable<TradeLog>
           rows={data.logs}
           mobileTitle={(row) => `${row.action.toUpperCase()} • ${row.symbol}`}

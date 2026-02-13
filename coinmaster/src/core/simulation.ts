@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import { BacktestV1SignalAdapter } from './strategyAdapter.js';
+import { appendTradeEvent } from './tradeEvents.js';
 import { DBShape, Position, TradeLog } from './types.js';
 
 const adapter = new BacktestV1SignalAdapter();
@@ -29,8 +30,13 @@ function closeChunk(position: Position, price: number, qty: number) {
   return round2(realized);
 }
 
-export function runSimulationStep(db: DBShape, symbol: string, price: number) {
+export function runSimulationStep(db: DBShape, rawSymbol: string, price: number) {
+  const symbol = rawSymbol.toUpperCase();
   const now = new Date().toISOString();
+  const stepCorrelationId = nanoid();
+  const riskPct = Number((RISK_PER_TRADE * 100).toFixed(2));
+  const stopCapPct = Number((STOP_CAP_PCT * 100).toFixed(2));
+
   const lastTick = [...db.marketTicks].reverse().find((t) => t.symbol === symbol);
   const lastBias = [...db.biasCommands].reverse().find((b) => b.symbol === symbol)?.bias ?? 'off';
 
@@ -38,6 +44,37 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
 
   const signal = adapter.evaluate({ symbol, price, lastPrice: lastTick?.price, bias: lastBias, ticks: db.marketTicks });
   const openPositionExists = db.positions.some((p) => p.symbol === symbol && p.status === 'open');
+
+  if (signal.shouldOpen && signal.side) {
+    appendTradeEvent(db, {
+      symbol,
+      type: 'signal_detected',
+      timestamp: now,
+      correlationId: stepCorrelationId,
+      side: signal.side,
+      price,
+      reason: signal.reason,
+      payload: {
+        confidence: Number(signal.confidence.toFixed(3)),
+        bias: lastBias
+      }
+    });
+  }
+
+  if (signal.shouldOpen && signal.side && openPositionExists) {
+    appendTradeEvent(db, {
+      symbol,
+      type: 'order_rejected',
+      timestamp: now,
+      correlationId: stepCorrelationId,
+      side: signal.side,
+      price,
+      reason: 'open_position_exists',
+      payload: {
+        triggerReason: signal.reason
+      }
+    });
+  }
 
   if (signal.shouldOpen && signal.side && !openPositionExists) {
     const stopDistance = price * STOP_CAP_PCT;
@@ -47,6 +84,23 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
     const tp1 = signal.side === 'long' ? price + 1.0 * r : price - 1.0 * r;
     const tp2 = signal.side === 'long' ? price + 2.2 * r : price - 2.2 * r;
     const tp3 = signal.side === 'long' ? price + 3.8 * r : price - 3.8 * r;
+
+    const correlationId = nanoid();
+    appendTradeEvent(db, {
+      symbol,
+      type: 'order_submitted',
+      timestamp: now,
+      correlationId,
+      side: signal.side,
+      price,
+      quantity: size,
+      reason: signal.reason,
+      payload: {
+        riskPct,
+        stopCapPct,
+        mode: 'paper'
+      }
+    });
 
     const position: Position = {
       id: nanoid(),
@@ -67,9 +121,11 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
       openedAt: now,
       status: 'open',
       pnl: 0,
-      source: 'sim'
+      source: 'sim',
+      correlationId
     };
     db.positions.push(position);
+
     const log: TradeLog = {
       id: nanoid(),
       positionId: position.id,
@@ -78,22 +134,43 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
       side: position.side,
       price,
       quantity: position.size,
-      note: `${signal.reason}; risk=1.25%; sl_cap=0.70%`,
+      note: `${signal.reason}; risk=${riskPct}%; sl_cap=${stopCapPct}%`,
       timestamp: now
     };
     db.tradeLogs.push(log);
+
+    appendTradeEvent(db, {
+      symbol,
+      type: 'order_acknowledged',
+      timestamp: now,
+      correlationId,
+      positionId: position.id,
+      side: position.side,
+      price,
+      quantity: position.size,
+      reason: 'paper_position_opened',
+      payload: {
+        entryPrice: position.entryPrice,
+        stopLoss: position.stopLoss,
+        tp1: position.tp1Price ?? null,
+        tp2: position.tp2Price ?? null,
+        tp3: position.tp3Price ?? null
+      }
+    });
   }
 
   for (const position of db.positions.filter((p) => p.symbol === symbol && p.status === 'open')) {
     const remainingBefore = positionRemainingSize(position);
     if (remainingBefore <= 0) continue;
 
+    const correlationId = position.correlationId ?? stepCorrelationId;
+
     const hitSl = position.side === 'long' ? price <= position.stopLoss : price >= position.stopLoss;
     if (hitSl) {
       const pnlChunk = closeChunk(position, price, remainingBefore);
       position.status = 'closed';
       position.closedAt = now;
-      position.pnl = round2((position.realizedPnl ?? 0));
+      position.pnl = round2(position.realizedPnl ?? 0);
       db.tradeLogs.push({
         id: nanoid(),
         positionId: position.id,
@@ -105,6 +182,22 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
         pnl: pnlChunk,
         note: 'sl_hit',
         timestamp: now
+      });
+
+      appendTradeEvent(db, {
+        symbol,
+        type: 'position_closed',
+        timestamp: now,
+        correlationId,
+        positionId: position.id,
+        side: position.side,
+        price,
+        quantity: remainingBefore,
+        pnl: pnlChunk,
+        reason: 'sl_hit',
+        payload: {
+          exitType: 'sl'
+        }
       });
       continue;
     }
@@ -130,11 +223,29 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
         note: 'tp1_40pct_be',
         timestamp: now
       });
+
+      appendTradeEvent(db, {
+        symbol,
+        type: 'partial_fill',
+        timestamp: now,
+        correlationId,
+        positionId: position.id,
+        side: position.side,
+        price,
+        quantity: qty,
+        pnl: pnlChunk,
+        reason: 'tp1_40pct_be',
+        payload: {
+          level: 'tp1',
+          stopMovedToBe: true
+        }
+      });
     }
 
     if (!position.tp2Done && tp2Hit) {
       const qty = Number((position.size * 0.35).toFixed(6));
-      const pnlChunk = closeChunk(position, price, Math.min(qty, positionRemainingSize(position)));
+      const closeQty = Math.min(qty, positionRemainingSize(position));
+      const pnlChunk = closeChunk(position, price, closeQty);
       position.tp2Done = true;
       db.tradeLogs.push({
         id: nanoid(),
@@ -143,10 +254,27 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
         action: 'partial',
         side: position.side,
         price,
-        quantity: qty,
+        quantity: closeQty,
         pnl: pnlChunk,
         note: 'tp2_35pct',
         timestamp: now
+      });
+
+      appendTradeEvent(db, {
+        symbol,
+        type: 'partial_fill',
+        timestamp: now,
+        correlationId,
+        positionId: position.id,
+        side: position.side,
+        price,
+        quantity: closeQty,
+        pnl: pnlChunk,
+        reason: 'tp2_35pct',
+        payload: {
+          level: 'tp2',
+          stopMovedToBe: false
+        }
       });
     }
 
@@ -169,6 +297,22 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
         note: 'tp3_final_exit',
         timestamp: now
       });
+
+      appendTradeEvent(db, {
+        symbol,
+        type: 'position_closed',
+        timestamp: now,
+        correlationId,
+        positionId: position.id,
+        side: position.side,
+        price,
+        quantity: qty,
+        pnl: pnlChunk,
+        reason: 'tp3_final_exit',
+        payload: {
+          exitType: 'tp3'
+        }
+      });
       continue;
     }
 
@@ -179,6 +323,22 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
       position.status = 'closed';
       position.closedAt = now;
       position.pnl = round2(position.realizedPnl ?? 0);
+
+      appendTradeEvent(db, {
+        symbol,
+        type: 'position_closed',
+        timestamp: now,
+        correlationId,
+        positionId: position.id,
+        side: position.side,
+        price,
+        quantity: 0,
+        pnl: position.pnl,
+        reason: 'remaining_size_zero',
+        payload: {
+          exitType: 'size_zero'
+        }
+      });
     }
   }
 

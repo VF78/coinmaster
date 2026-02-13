@@ -1,4 +1,4 @@
-import type { AppSettings, BiasCommand, MarketTick, Position, Stats, TradeLog } from '../shared/dto.js';
+import type { AppSettings, BiasCommand, MarketTick, Position, Stats, TradeEvent, TradeEventPayload, TradeEventSource, TradeEventType, TradeLog } from '../shared/dto.js';
 
 export type {
   AppSettings,
@@ -6,6 +6,10 @@ export type {
   PositionStatus,
   Position,
   TradeLog,
+  TradeEvent,
+  TradeEventType,
+  TradeEventSource,
+  TradeEventPayload,
   BiasCommand,
   MarketTick,
   Stats,
@@ -16,6 +20,7 @@ export interface DBShape {
   settings: AppSettings;
   positions: Position[];
   tradeLogs: TradeLog[];
+  tradeEvents: TradeEvent[];
   biasCommands: BiasCommand[];
   marketTicks: MarketTick[];
 }

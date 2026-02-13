@@ -7,6 +7,7 @@ async function main() {
   db.data.settings = { depositUsd: 1000 };
   db.data.positions = [];
   db.data.tradeLogs = [];
+  db.data.tradeEvents = [];
   db.data.biasCommands = [];
   db.data.marketTicks = [];
 

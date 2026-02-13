@@ -4,6 +4,7 @@ Lightweight paper-trading control panel with a TypeScript backend/API and a mode
 
 ## What is included
 - Backend API (Express + lowdb) for dashboard/history/bias/simulation endpoints.
+- Append-only trade event journal (`tradeEvents`) with hash-chain (`prevHash`/`hash`) for auditable lifecycle tracking.
 - Mobile-first responsive UI (phone/tablet/desktop).
 - Reusable UI component set: `Card`, `Stat`, `Badge`, `Button`, `DataTable` (table on desktop, cards on mobile).
 - Shared DTO/types module (`src/shared/dto.ts`) used by both backend/core and web client.
@@ -38,13 +39,14 @@ npm run start    # run API only
 
 ## API quick map (unchanged)
 - `GET /api/dashboard`
-- `GET /api/history`
+- `GET /api/history` (includes legacy `logs` + append-only `events`)
 - `POST /api/bias` body `{ "symbol": "BTC", "bias": "long|short|off" }`
 - `POST /api/simulate/tick` body `{ "symbol": "BTC", "price": 43000 }`
 
 ## Project structure highlights
 - `src/shared/dto.ts` → transport/domain DTOs shared across clients.
 - `src/core/*` → backend domain logic and simulation.
+- `src/core/tradeEvents.ts` → append-only event writer + hash-chain.
 - `src/server/index.ts` → API routes.
 - `src/web/*` → web UI and reusable presentational components.
 - `docs/UX_NOTES.md` → responsive breakpoints and component behavior.

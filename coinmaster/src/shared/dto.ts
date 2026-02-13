@@ -28,6 +28,7 @@ export interface Position {
   status: PositionStatus;
   pnl: number;
   source: 'manual' | 'sim';
+  correlationId?: string;
 }
 
 export interface TradeLog {
@@ -41,6 +42,39 @@ export interface TradeLog {
   pnl?: number;
   note?: string;
   timestamp: string;
+}
+
+export type TradeEventType =
+  | 'bias_changed'
+  | 'signal_detected'
+  | 'signal_rejected'
+  | 'order_submitted'
+  | 'order_acknowledged'
+  | 'order_rejected'
+  | 'partial_fill'
+  | 'position_closed';
+
+export type TradeEventSource = 'paper' | 'live' | 'replay';
+
+export type TradeEventPayload = Record<string, string | number | boolean | null>;
+
+export interface TradeEvent {
+  id: string;
+  seq: number;
+  symbol: string;
+  type: TradeEventType;
+  source: TradeEventSource;
+  timestamp: string;
+  correlationId: string;
+  positionId?: string;
+  side?: TradeSide;
+  price?: number;
+  quantity?: number;
+  pnl?: number;
+  reason?: string;
+  prevHash: string | null;
+  hash: string;
+  payload?: TradeEventPayload;
 }
 
 export interface BiasCommand {
@@ -81,6 +115,7 @@ export interface DashboardResponse {
 export interface HistoryResponse {
   closedPositions: Position[];
   logs: TradeLog[];
+  events: TradeEvent[];
   stats: Stats;
 }
 

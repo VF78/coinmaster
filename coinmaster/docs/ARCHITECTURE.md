@@ -4,7 +4,7 @@
 - `src/core/*`: domain logic (strategy adapter, simulation, stats, risk handling).
 - `src/server/*`: API + orchestration + market ingest.
 - `src/web/*`: React UI only.
-- `data/db.json`: temporary local persistence (to be replaced by Postgres).
+- `data/db.json`: temporary local persistence (to be replaced by Postgres), now includes append-only `tradeEvents` journal.
 
 ## 2) Confirmed target topology
 - **Web (UI): Vercel**

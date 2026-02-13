@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-13 18:52 Europe/Madrid
+Последнее обновление: 2026-02-13 21:51 Europe/Madrid
 
 ## Текущая цель проекта
 Построить и запустить системную полуавтоматическую торговлю на Hyperliquid:
@@ -117,6 +117,7 @@
 - Настроена daily задача 23:00 на сохранение «истины проекта».
 - Зафиксированы ключевые risk-параметры v1.
 - Зафиксированы ответы Владимира по full-exit/bias/режиму подтверждения.
+- Реализован foundation append-only trade-event журнала (`tradeEvents`) с hash-chain (`seq`, `prevHash`, `hash`) и вшит в lifecycle: bias/signal/order/partial/close.
 
 ### In progress
 - Paper-мониторинг BTC по новой логике engulfing/sweep (5m/15m) с bias-командами.
@@ -126,7 +127,7 @@
 ### Next (1–2 дня)
 - Реализовать historical replay-режим для ускоренной проверки сетапов без ожидания реального времени.
 - Начать миграцию persistence: lowdb -> PostgreSQL (schema + migration + repository layer).
-- Добавить гарантированный журнал сделок (append-only trade events) для точного P&L и пост-анализа.
+- Верифицировать полноту trade-event журнала на replay/live сценариях и зафиксировать политику ретенции/архивации.
 - Подготовить deployment baseline: Docker Compose + systemd + healthcheck + restart policy на Hetzner.
 - Описать runbook старта/остановки и ручного подтверждения сделок для controlled production launch.
 - Добавить отдельный контур **Hyperliquid API command layer** и реализовать набор v1-команд для работы движка:

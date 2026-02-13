@@ -141,6 +141,7 @@ app.get('/api/history', async (req, res) => {
   res.json({
     closedPositions,
     logs: db.data.tradeLogs.slice(-100).reverse(),
+    events: db.data.tradeEvents.slice(-200).reverse(),
     stats: getStats(db.data, { period })
   });
 });
