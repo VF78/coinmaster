@@ -1,12 +1,21 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { getDb } from '../core/db.js';
 import { getStats, submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { Bias } from '../core/types.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '../../');
+const distDir = path.join(rootDir, 'dist');
+
 const app = express();
-const port = 8787;
+const port = Number(process.env.PORT || 8787);
+const host = process.env.HOST || '0.0.0.0';
 
 app.use(cors());
 app.use(express.json());
@@ -23,7 +32,9 @@ app.get('/api/dashboard', async (_req, res) => {
 
 app.get('/api/history', async (_req, res) => {
   const db = await getDb();
-  const closedPositions = db.data.positions.filter((p) => p.status === 'closed').sort((a, b) => b.openedAt.localeCompare(a.openedAt));
+  const closedPositions = db.data.positions
+    .filter((p) => p.status === 'closed')
+    .sort((a, b) => b.openedAt.localeCompare(a.openedAt));
   res.json({ closedPositions, logs: db.data.tradeLogs.slice(-100).reverse(), stats: getStats(db.data) });
 });
 
@@ -41,7 +52,7 @@ app.post('/api/bias', async (req, res) => {
 
 app.post('/api/simulate/tick', async (req, res) => {
   const { symbol = 'BTC', price } = req.body as { symbol?: string; price: number };
-  if (!price || Number.isNaN(price)) {
+  if (price === undefined || Number.isNaN(price)) {
     return res.status(400).json({ error: 'price_required' });
   }
 
@@ -51,6 +62,12 @@ app.post('/api/simulate/tick', async (req, res) => {
   return res.json({ ok: true, signal });
 });
 
-app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}`);
+// Serve web app build from same origin (single-link deployment)
+app.use(express.static(distDir));
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(distDir, 'index.html'));
+});
+
+app.listen(port, host, () => {
+  console.log(`Server listening on http://${host}:${port}`);
 });
