@@ -50,6 +50,7 @@ npm run start    # run API only
 - `docs/UX_NOTES.md` → responsive breakpoints and component behavior.
 - `docs/ARCHITECTURE.md` → deployment/evolution architecture.
 - `docs/SECURITY_REQUIREMENTS.md` → security baseline for exchange-API trading system.
+- `docs/HYPERLIQUID_API_COMMANDS.md` → v1 command scope for Hyperliquid integration.
 
 ## Native port path (Expo)
 A concrete path to add iOS/Android without rewriting domain contracts:

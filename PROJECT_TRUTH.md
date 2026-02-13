@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-13 18:44 Europe/Madrid
+Последнее обновление: 2026-02-13 18:50 Europe/Madrid
 
 ## Текущая цель проекта
 Построить и запустить системную полуавтоматическую торговлю на Hyperliquid:
@@ -129,6 +129,11 @@
 - Добавить гарантированный журнал сделок (append-only trade events) для точного P&L и пост-анализа.
 - Подготовить deployment baseline: Docker Compose + systemd + healthcheck + restart policy на Hetzner.
 - Описать runbook старта/остановки и ручного подтверждения сделок для controlled production launch.
+- Добавить отдельный контур **Hyperliquid API command layer** и реализовать набор v1-команд для работы движка:
+  - market/info: mids, candles (1m/5m/15m/1h/4h), instrument metadata;
+  - account: account state, open orders, positions/fills;
+  - trading: place limit, cancel (single/all), reduce-only exit, leverage setup;
+  - safety: idempotency (cloid), retry-policy, dry-run/live switch, audit-event на каждую API-команду.
 
 ## Открытые вопросы
 - Финальная формула риск-бюджета для мульти-режима при общем плече до 10x.
