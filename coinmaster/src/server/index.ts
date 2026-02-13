@@ -17,8 +17,46 @@ const app = express();
 const port = Number(process.env.PORT || 8787);
 const host = process.env.HOST || '0.0.0.0';
 
+const LIVE_SYMBOL = 'BTC';
+const LIVE_POLL_MS = 5 * 60 * 1000;
+let liveBusy = false;
+
 function parsePeriod(raw: unknown): StatsPeriod {
   return raw === 'week' ? 'week' : 'month';
+}
+
+async function fetchHyperliquidBtcMid(): Promise<number | null> {
+  try {
+    const response = await fetch('https://api.hyperliquid.xyz/info', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ type: 'allMids' })
+    });
+    if (!response.ok) return null;
+
+    const data = (await response.json()) as Record<string, string>;
+    const raw = data[LIVE_SYMBOL];
+    if (!raw) return null;
+    const price = Number(raw);
+    return Number.isFinite(price) ? price : null;
+  } catch {
+    return null;
+  }
+}
+
+async function ingestLiveTick() {
+  if (liveBusy) return;
+  liveBusy = true;
+  try {
+    const price = await fetchHyperliquidBtcMid();
+    if (!price) return;
+
+    const db = await getDb();
+    runSimulationStep(db.data, LIVE_SYMBOL, price);
+    await db.write();
+  } finally {
+    liveBusy = false;
+  }
 }
 
 app.use(cors());
@@ -30,9 +68,10 @@ app.get('/api/dashboard', async (req, res) => {
   const period = parsePeriod(req.query.period);
   const db = await getDb();
   const activePositions = db.data.positions.filter((p) => p.status === 'open');
-  const latestBias = [...db.data.biasCommands].reverse().find((b) => b.symbol === 'BTC')?.bias ?? 'off';
+  const latestBias = [...db.data.biasCommands].reverse().find((b) => b.symbol === LIVE_SYMBOL)?.bias ?? 'off';
+  const latestTick = [...db.data.marketTicks].reverse().find((t) => t.symbol === LIVE_SYMBOL) ?? null;
 
-  res.json({ activePositions, latestBias, stats: getStats(db.data, { period }) });
+  res.json({ activePositions, latestBias, stats: getStats(db.data, { period }), latestTick });
 });
 
 app.get('/api/history', async (req, res) => {
@@ -63,8 +102,9 @@ app.post('/api/bias', async (req, res) => {
   return res.json({ ok: true, command: cmd });
 });
 
+// Keep endpoint for debugging/manual override, but UI no longer depends on it.
 app.post('/api/simulate/tick', async (req, res) => {
-  const { symbol = 'BTC', price } = req.body as { symbol?: string; price: number };
+  const { symbol = LIVE_SYMBOL, price } = req.body as { symbol?: string; price: number };
   if (price === undefined || Number.isNaN(price)) {
     return res.status(400).json({ error: 'price_required' });
   }
@@ -83,4 +123,7 @@ app.get('*', (_req, res) => {
 
 app.listen(port, host, () => {
   console.log(`Server listening on http://${host}:${port}`);
+  ingestLiveTick();
+  const timer = setInterval(ingestLiveTick, LIVE_POLL_MS);
+  timer.unref?.();
 });

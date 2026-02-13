@@ -40,6 +40,8 @@ export function getStats(db: DBShape, options: StatsOptions): Stats {
 
   const realizedPnlPct = deposit > 0 ? (realizedPnl / deposit) * 100 : 0;
   const openPnlPct = deposit > 0 ? (openPnl / deposit) * 100 : 0;
+  const equityUsd = deposit + realizedPnl + openPnl;
+  const equityPct = deposit > 0 ? ((equityUsd - deposit) / deposit) * 100 : 0;
 
   return {
     period: options.period,
@@ -52,6 +54,7 @@ export function getStats(db: DBShape, options: StatsOptions): Stats {
     openPnl: Number(openPnl.toFixed(2)),
     openPnlPct: Number(openPnlPct.toFixed(2)),
     avgPnl: closed.length ? Number((realizedPnl / closed.length).toFixed(2)) : 0,
-    equityUsd: Number((deposit + realizedPnl + openPnl).toFixed(2))
+    equityUsd: Number(equityUsd.toFixed(2)),
+    equityPct: Number(equityPct.toFixed(2))
   };
 }

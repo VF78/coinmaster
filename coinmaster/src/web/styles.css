@@ -176,6 +176,7 @@ input {
 }
 
 .stack-row { display: inline-flex; gap: var(--space-2); align-items: center; }
+.stat-note { margin-top: var(--space-3); }
 .muted { color: var(--text-muted); }
 .up { color: var(--success); font-weight: 600; }
 .down { color: var(--danger); font-weight: 600; }

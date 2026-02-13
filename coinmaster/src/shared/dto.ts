@@ -60,12 +60,14 @@ export interface Stats {
   openPnlPct: number;
   avgPnl: number;
   equityUsd: number;
+  equityPct: number;
 }
 
 export interface DashboardResponse {
   activePositions: Position[];
   latestBias: Bias;
   stats: Stats;
+  latestTick: MarketTick | null;
 }
 
 export interface HistoryResponse {

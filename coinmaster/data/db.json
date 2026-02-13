@@ -4,56 +4,56 @@
   },
   "positions": [
     {
-      "id": "ufWen7_v-HxYVW1GBsl2I",
+      "id": "2MhSTcP-awEN4jIJ9wMfg",
       "symbol": "BTC",
       "side": "long",
       "entryPrice": 42120,
       "stopLoss": 41825.16,
       "takeProfit": 42768.65,
       "size": 0.01,
-      "openedAt": "2026-02-13T00:42:50.763Z",
+      "openedAt": "2026-02-13T01:01:45.372Z",
       "status": "closed",
       "pnl": 7,
       "source": "sim",
-      "closedAt": "2026-02-13T00:42:50.763Z"
+      "closedAt": "2026-02-13T01:01:45.373Z"
     },
     {
-      "id": "fmUOWreY1LTB_tNF-nV5M",
+      "id": "BGJPS4gb35QPc4_61E1_W",
       "symbol": "BTC",
       "side": "long",
       "entryPrice": 43000,
       "stopLoss": 42699,
       "takeProfit": 43662.2,
       "size": 0.01,
-      "openedAt": "2026-02-13T00:42:50.764Z",
+      "openedAt": "2026-02-13T01:01:45.373Z",
       "status": "closed",
       "pnl": -6,
       "source": "sim",
-      "closedAt": "2026-02-13T00:42:50.764Z"
+      "closedAt": "2026-02-13T01:01:45.373Z"
     },
     {
-      "id": "ghafDNlRthc0f-8NFTn1P",
+      "id": "yvXv9R0i-1FusFJ5Zo9Ki",
       "symbol": "BTC",
       "side": "short",
       "entryPrice": 41900,
       "stopLoss": 42193.3,
       "takeProfit": 41254.74,
       "size": 0.01,
-      "openedAt": "2026-02-13T00:42:50.764Z",
+      "openedAt": "2026-02-13T01:01:45.373Z",
       "status": "closed",
       "pnl": 6.8,
       "source": "sim",
-      "closedAt": "2026-02-13T00:42:50.764Z"
+      "closedAt": "2026-02-13T01:01:45.374Z"
     },
     {
-      "id": "Fp7BeS66EZW3Cq3GIN8fc",
+      "id": "bN93FtNWfg9W9VmA7UvMI",
       "symbol": "BTC",
       "side": "short",
       "entryPrice": 40900,
       "stopLoss": 41186.3,
       "takeProfit": 40270.14,
       "size": 0.01,
-      "openedAt": "2026-02-13T00:42:50.764Z",
+      "openedAt": "2026-02-13T01:01:45.374Z",
       "status": "open",
       "pnl": -1.5,
       "source": "sim"
@@ -61,26 +61,26 @@
   ],
   "tradeLogs": [
     {
-      "id": "4IPURLqwZa2sg5D-XYYuY",
+      "id": "dAEAd8_lERDc2F7_mD8t9",
       "symbol": "BTC",
       "action": "bias",
       "note": "BTC long",
-      "timestamp": "2026-02-13T00:42:50.761Z"
+      "timestamp": "2026-02-13T01:01:45.370Z"
     },
     {
-      "id": "alq6QF5U_aBldGij2SbiE",
-      "positionId": "ufWen7_v-HxYVW1GBsl2I",
+      "id": "c6WUba9pDBmWtGFRveuSX",
+      "positionId": "2MhSTcP-awEN4jIJ9wMfg",
       "symbol": "BTC",
       "action": "open",
       "side": "long",
       "price": 42120,
       "quantity": 0.01,
       "note": "momentum_up_hook",
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.372Z"
     },
     {
-      "id": "8yuihkGTtMs2WtiX_VaxS",
-      "positionId": "ufWen7_v-HxYVW1GBsl2I",
+      "id": "erYK1p4EXqibOugp_FIHR",
+      "positionId": "2MhSTcP-awEN4jIJ9wMfg",
       "symbol": "BTC",
       "action": "close",
       "side": "long",
@@ -88,22 +88,22 @@
       "quantity": 0.01,
       "pnl": 7,
       "note": "tp_hit",
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
-      "id": "6syk6mxE8KPugPZzDGLQE",
-      "positionId": "fmUOWreY1LTB_tNF-nV5M",
+      "id": "tWS_wioAoA0qsz0MIMyg9",
+      "positionId": "BGJPS4gb35QPc4_61E1_W",
       "symbol": "BTC",
       "action": "open",
       "side": "long",
       "price": 43000,
       "quantity": 0.01,
       "note": "momentum_up_hook",
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
-      "id": "RR2fVBPMSovCSONrB7fa3",
-      "positionId": "fmUOWreY1LTB_tNF-nV5M",
+      "id": "jbj0G_WdOYyAK2niyzW1t",
+      "positionId": "BGJPS4gb35QPc4_61E1_W",
       "symbol": "BTC",
       "action": "close",
       "side": "long",
@@ -111,29 +111,29 @@
       "quantity": 0.01,
       "pnl": -6,
       "note": "sl_hit",
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
-      "id": "GIZlcWZr234Ggoen9TOYl",
+      "id": "rALBJjhsx84mg8Z6-bpYj",
       "symbol": "BTC",
       "action": "bias",
       "note": "BTC short",
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
-      "id": "u-NiMlufmPA0xASHA56wW",
-      "positionId": "ghafDNlRthc0f-8NFTn1P",
+      "id": "g9YapAZUGWE2edHbaTiGh",
+      "positionId": "yvXv9R0i-1FusFJ5Zo9Ki",
       "symbol": "BTC",
       "action": "open",
       "side": "short",
       "price": 41900,
       "quantity": 0.01,
       "note": "momentum_down_hook",
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
-      "id": "2eTMCsYp3EOclkc8tqSIY",
-      "positionId": "ghafDNlRthc0f-8NFTn1P",
+      "id": "F6qJGYB1yPQowTW7PCerh",
+      "positionId": "yvXv9R0i-1FusFJ5Zo9Ki",
       "symbol": "BTC",
       "action": "close",
       "side": "short",
@@ -141,152 +141,152 @@
       "quantity": 0.01,
       "pnl": 6.8,
       "note": "tp_hit",
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     },
     {
-      "id": "Ja2VVP-l4BK0XaLARvqNr",
-      "positionId": "Fp7BeS66EZW3Cq3GIN8fc",
+      "id": "up6pVYf6zoi7C-C1HS5ZL",
+      "positionId": "bN93FtNWfg9W9VmA7UvMI",
       "symbol": "BTC",
       "action": "open",
       "side": "short",
       "price": 40900,
       "quantity": 0.01,
       "note": "momentum_down_hook",
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     },
     {
-      "id": "dtzCLPRBKrU0aCiwnqHcH",
+      "id": "0gFbBHJhwudQMMoO5aghc",
       "symbol": "BTC",
       "action": "bias",
       "note": "BTC off",
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     }
   ],
   "biasCommands": [
     {
-      "id": "xJVqrLTIVkWnKkScyEMmf",
+      "id": "zsiGpW5D_GL2Fks6cU9PS",
       "symbol": "BTC",
       "bias": "long",
-      "createdAt": "2026-02-13T00:42:50.761Z"
+      "createdAt": "2026-02-13T01:01:45.370Z"
     },
     {
-      "id": "hRgzHFJIS8xrAjRng4yOK",
+      "id": "yvX3pTPMJ1YkDV6mtUOb7",
       "symbol": "BTC",
       "bias": "short",
-      "createdAt": "2026-02-13T00:42:50.764Z"
+      "createdAt": "2026-02-13T01:01:45.373Z"
     },
     {
-      "id": "7i2vDlsndqGaiXdRtIlfn",
+      "id": "XqLnckcslxMo7AGWhL7ps",
       "symbol": "BTC",
       "bias": "off",
-      "createdAt": "2026-02-13T00:42:50.764Z"
+      "createdAt": "2026-02-13T01:01:45.374Z"
     }
   ],
   "marketTicks": [
     {
       "symbol": "BTC",
       "price": 42000,
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.372Z"
     },
     {
       "symbol": "BTC",
       "price": 42120,
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.372Z"
     },
     {
       "symbol": "BTC",
       "price": 42210,
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.372Z"
     },
     {
       "symbol": "BTC",
       "price": 42340,
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.372Z"
     },
     {
       "symbol": "BTC",
       "price": 42600,
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 42500,
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 42820,
-      "timestamp": "2026-02-13T00:42:50.763Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 43000,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 42700,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 42400,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 42050,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 41900,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 41720,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 41400,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.373Z"
     },
     {
       "symbol": "BTC",
       "price": 41220,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     },
     {
       "symbol": "BTC",
       "price": 40900,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     },
     {
       "symbol": "BTC",
       "price": 40650,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     },
     {
       "symbol": "BTC",
       "price": 40300,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     },
     {
       "symbol": "BTC",
       "price": 40500,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     },
     {
       "symbol": "BTC",
       "price": 40700,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     },
     {
       "symbol": "BTC",
       "price": 41050,
-      "timestamp": "2026-02-13T00:42:50.764Z"
+      "timestamp": "2026-02-13T01:01:45.374Z"
     }
   ]
 }

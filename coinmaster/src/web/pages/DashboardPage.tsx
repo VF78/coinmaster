@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Bias, DashboardResponse, Position, StatsPeriod } from '../../shared/dto.js';
-import { postBias, postTick, getDashboard } from '../lib/api';
-import { formatMoney, formatMoneyWithPercent, formatNumber } from '../lib/format';
+import { postBias, getDashboard } from '../lib/api';
+import { formatDate, formatMoney, formatMoneyWithPercent, formatNumber, formatPercent } from '../lib/format';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -10,7 +10,6 @@ import { Stat } from '../components/Stat';
 
 export function DashboardPage() {
   const [data, setData] = useState<DashboardResponse | null>(null);
-  const [price, setPrice] = useState('43000');
   const [isLoading, setIsLoading] = useState(false);
   const [period, setPeriod] = useState<StatsPeriod>('week');
 
@@ -27,16 +26,6 @@ export function DashboardPage() {
     setIsLoading(true);
     try {
       await postBias({ symbol: 'BTC', bias });
-      await refresh();
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function simulateTick() {
-    setIsLoading(true);
-    try {
-      await postTick({ symbol: 'BTC', price: Number(price) });
       await refresh();
     } finally {
       setIsLoading(false);
@@ -73,8 +62,11 @@ export function DashboardPage() {
         }
       >
         <div className="stats-grid">
-          <Stat label="Deposit size" value={formatMoney(data.stats.depositUsd)} />
-          <Stat label="Equity" value={formatMoney(data.stats.equityUsd)} tone={data.stats.equityUsd >= data.stats.depositUsd ? 'success' : 'danger'} />
+          <Stat
+            label="Equity"
+            value={`${formatMoney(data.stats.equityUsd)} (${formatPercent(data.stats.equityPct)})`}
+            tone={data.stats.equityPct >= 0 ? 'success' : 'danger'}
+          />
           <Stat label="Closed trades" value={String(data.stats.totalTrades)} />
           <Stat label="Win rate" value={`${formatNumber(data.stats.winRate)}%`} />
           <Stat
@@ -87,10 +79,22 @@ export function DashboardPage() {
             value={formatMoneyWithPercent(data.stats.openPnl, data.stats.openPnlPct)}
             tone={pnlTone}
           />
+          <Stat
+            label="BTC price (live, 5m)"
+            value={data.latestTick ? formatMoney(data.latestTick.price) : '—'}
+          />
         </div>
+        <p className="muted stat-note">
+          {data.latestTick
+            ? `Last update: ${formatDate(data.latestTick.timestamp)} • Auto refresh every 5 minutes`
+            : 'Price feed pending…'}
+        </p>
       </Card>
 
-      <Card title="Manual bias control (BTC)">
+      <Card
+        title="Manual bias control (BTC)"
+        actions={<Button onClick={() => refresh()} variant="secondary" disabled={isLoading}>Refresh</Button>}
+      >
         <p className="stack-row">
           Current signal:{' '}
           <Badge tone={data.latestBias === 'off' ? 'neutral' : data.latestBias === 'long' ? 'success' : 'danger'}>
@@ -104,29 +108,12 @@ export function DashboardPage() {
         </div>
       </Card>
 
-      <Card title="Simulation tick">
-        <div className="field-row">
-          <label htmlFor="price-input">BTC mark price</label>
-          <input
-            id="price-input"
-            inputMode="decimal"
-            value={price}
-            onChange={(event) => setPrice(event.target.value)}
-            placeholder="43000"
-          />
-        </div>
-        <div className="actions-row">
-          <Button onClick={simulateTick} disabled={isLoading}>Run tick</Button>
-          <Button onClick={() => refresh()} variant="secondary" disabled={isLoading}>Refresh</Button>
-        </div>
-      </Card>
-
       <Card title="Active positions" className="full-width">
         <DataTable<Position>
           rows={data.activePositions}
           mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
           mobileSubtitle={(row) => `Coins: ${formatNumber(row.size)} • Deal: ${formatMoney(row.entryPrice * row.size)}`}
-          emptyText="No open positions. Use controls above to submit a bias and run ticks."
+          emptyText="No open positions. Set bias and wait for live price ticks."
           columns={[
             { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
             { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'long' ? 'success' : 'danger'}>{row.side}</Badge> },
