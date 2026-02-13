@@ -40,10 +40,8 @@ export function runSimulationStep(db: DBShape, symbol: string, price: number) {
   const openPositionExists = db.positions.some((p) => p.symbol === symbol && p.status === 'open');
 
   if (signal.shouldOpen && signal.side && !openPositionExists) {
-    const deposit = db.settings?.depositUsd ?? 1000;
     const stopDistance = price * STOP_CAP_PCT;
-    const riskUsd = deposit * RISK_PER_TRADE;
-    const size = Math.max(0.001, riskUsd / Math.max(1e-8, stopDistance));
+    const size = 0.15; // user-directed paper size for first live trial
 
     const r = stopDistance;
     const tp1 = signal.side === 'long' ? price + 1.0 * r : price - 1.0 * r;
