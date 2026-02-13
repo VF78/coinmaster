@@ -2,92 +2,8 @@
   "settings": {
     "depositUsd": 1000
   },
-  "positions": [
-    {
-      "id": "-v1nEsr24LIalEduUXagf",
-      "symbol": "BTC",
-      "side": "long",
-      "entryPrice": 65920,
-      "stopLoss": 65458.56,
-      "takeProfit": 66935.17,
-      "size": 0.01,
-      "openedAt": "2026-02-13T01:03:41.300Z",
-      "status": "closed",
-      "pnl": -5.1,
-      "source": "sim",
-      "closedAt": "2026-02-13T01:03:41.301Z"
-    },
-    {
-      "id": "fiBgVqu5qGWprLxfvRxqo",
-      "symbol": "BTC",
-      "side": "short",
-      "entryPrice": 65280,
-      "stopLoss": 65736.96,
-      "takeProfit": 64274.69,
-      "size": 0.01,
-      "openedAt": "2026-02-13T01:03:41.301Z",
-      "status": "open",
-      "pnl": -4.4,
-      "source": "sim"
-    }
-  ],
-  "tradeLogs": [
-    {
-      "id": "gKhU7OQ-eTPXtpi-Hx5fB",
-      "symbol": "BTC",
-      "action": "bias",
-      "note": "BTC long",
-      "timestamp": "2026-02-13T01:03:41.298Z"
-    },
-    {
-      "id": "BbOak_JLE7bNM0-HpPck3",
-      "positionId": "-v1nEsr24LIalEduUXagf",
-      "symbol": "BTC",
-      "action": "open",
-      "side": "long",
-      "price": 65920,
-      "quantity": 0.01,
-      "note": "momentum_up_hook",
-      "timestamp": "2026-02-13T01:03:41.300Z"
-    },
-    {
-      "id": "aHLEwTaXtlf76UJdH8NsD",
-      "symbol": "BTC",
-      "action": "bias",
-      "note": "BTC short",
-      "timestamp": "2026-02-13T01:03:41.301Z"
-    },
-    {
-      "id": "8-G4S8taCtYc-iKJy6zBu",
-      "positionId": "-v1nEsr24LIalEduUXagf",
-      "symbol": "BTC",
-      "action": "close",
-      "side": "long",
-      "price": 65410,
-      "quantity": 0.01,
-      "pnl": -5.1,
-      "note": "sl_hit",
-      "timestamp": "2026-02-13T01:03:41.301Z"
-    },
-    {
-      "id": "dGFfTy34RhSpjOPnjslt8",
-      "positionId": "fiBgVqu5qGWprLxfvRxqo",
-      "symbol": "BTC",
-      "action": "open",
-      "side": "short",
-      "price": 65280,
-      "quantity": 0.01,
-      "note": "momentum_down_hook",
-      "timestamp": "2026-02-13T01:03:41.301Z"
-    },
-    {
-      "id": "aqv91tcChE9FucwMu6Cp4",
-      "symbol": "BTC",
-      "action": "bias",
-      "note": "BTC off",
-      "timestamp": "2026-02-13T01:03:41.301Z"
-    }
-  ],
+  "positions": [],
+  "tradeLogs": [],
   "biasCommands": [
     {
       "id": "tfICSWmkYUoxZOokK3ydq",
@@ -106,6 +22,36 @@
       "symbol": "BTC",
       "bias": "off",
       "createdAt": "2026-02-13T01:03:41.301Z"
+    },
+    {
+      "id": "-v6BHYTEfx8jp6iZ9PMxW",
+      "symbol": "BTC",
+      "bias": "short",
+      "createdAt": "2026-02-13T16:43:16.320Z"
+    },
+    {
+      "id": "9bu3ThzEs6AnT5OQ95mkL",
+      "symbol": "BTC",
+      "bias": "long",
+      "createdAt": "2026-02-13T16:47:17.493Z"
+    },
+    {
+      "id": "JL8tCpk83vQ57ldYbxXEB",
+      "symbol": "BTC",
+      "bias": "short",
+      "createdAt": "2026-02-13T16:47:20.898Z"
+    },
+    {
+      "id": "T3oX-h0XbBKdSEo_6CeXs",
+      "symbol": "BTC",
+      "bias": "off",
+      "createdAt": "2026-02-13T16:47:23.254Z"
+    },
+    {
+      "id": "gHB943wz8roFFzup8uDkk",
+      "symbol": "BTC",
+      "bias": "short",
+      "createdAt": "2026-02-13T16:47:24.760Z"
     }
   ],
   "marketTicks": [
@@ -213,6 +159,2246 @@
       "symbol": "BTC",
       "price": 65720,
       "timestamp": "2026-02-13T01:03:41.301Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69185.5,
+      "timestamp": "2026-02-13T16:43:12.568Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69188.5,
+      "timestamp": "2026-02-13T16:43:13.593Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69192.5,
+      "timestamp": "2026-02-13T16:43:14.567Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69192.5,
+      "timestamp": "2026-02-13T16:43:15.624Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69193.5,
+      "timestamp": "2026-02-13T16:43:16.526Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69193.5,
+      "timestamp": "2026-02-13T16:43:17.521Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69216.5,
+      "timestamp": "2026-02-13T16:43:18.720Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69212.5,
+      "timestamp": "2026-02-13T16:43:20.005Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69204.5,
+      "timestamp": "2026-02-13T16:43:20.819Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69203.5,
+      "timestamp": "2026-02-13T16:43:21.788Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69203.5,
+      "timestamp": "2026-02-13T16:43:22.784Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69203.5,
+      "timestamp": "2026-02-13T16:43:23.839Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:43:25.338Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:43:25.895Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:43:26.921Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69213.5,
+      "timestamp": "2026-02-13T16:43:28.003Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69213.5,
+      "timestamp": "2026-02-13T16:43:29.040Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69214.5,
+      "timestamp": "2026-02-13T16:43:30.646Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69214.5,
+      "timestamp": "2026-02-13T16:43:31.109Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69217.5,
+      "timestamp": "2026-02-13T16:43:32.078Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69222.5,
+      "timestamp": "2026-02-13T16:43:33.286Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69228.5,
+      "timestamp": "2026-02-13T16:43:34.467Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69232.5,
+      "timestamp": "2026-02-13T16:43:35.735Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69242.5,
+      "timestamp": "2026-02-13T16:43:36.388Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69242.5,
+      "timestamp": "2026-02-13T16:43:37.319Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69242.5,
+      "timestamp": "2026-02-13T16:43:38.285Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69238.5,
+      "timestamp": "2026-02-13T16:43:39.240Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69238.5,
+      "timestamp": "2026-02-13T16:43:40.926Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69238.5,
+      "timestamp": "2026-02-13T16:43:41.301Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69244.5,
+      "timestamp": "2026-02-13T16:43:42.460Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69246.5,
+      "timestamp": "2026-02-13T16:43:43.515Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69253.5,
+      "timestamp": "2026-02-13T16:43:44.588Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69266.5,
+      "timestamp": "2026-02-13T16:43:46.008Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69264.5,
+      "timestamp": "2026-02-13T16:43:46.118Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69282.5,
+      "timestamp": "2026-02-13T16:43:46.851Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69282.5,
+      "timestamp": "2026-02-13T16:43:47.722Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69282,
+      "timestamp": "2026-02-13T16:43:48.697Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69281.5,
+      "timestamp": "2026-02-13T16:43:49.898Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69274.5,
+      "timestamp": "2026-02-13T16:43:50.962Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69274.5,
+      "timestamp": "2026-02-13T16:43:51.897Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69274.5,
+      "timestamp": "2026-02-13T16:43:52.882Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69273.5,
+      "timestamp": "2026-02-13T16:43:54.036Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69255.5,
+      "timestamp": "2026-02-13T16:43:54.957Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69254.5,
+      "timestamp": "2026-02-13T16:43:55.993Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69248,
+      "timestamp": "2026-02-13T16:43:56.939Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69234.5,
+      "timestamp": "2026-02-13T16:43:57.964Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69244.5,
+      "timestamp": "2026-02-13T16:43:59.041Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69245,
+      "timestamp": "2026-02-13T16:44:00.334Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69245.5,
+      "timestamp": "2026-02-13T16:44:01.165Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69245.5,
+      "timestamp": "2026-02-13T16:44:02.013Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69245.5,
+      "timestamp": "2026-02-13T16:44:02.995Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69245.5,
+      "timestamp": "2026-02-13T16:44:04.096Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69246,
+      "timestamp": "2026-02-13T16:44:05.698Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69250.5,
+      "timestamp": "2026-02-13T16:44:06.403Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69236.5,
+      "timestamp": "2026-02-13T16:44:07.524Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69230.5,
+      "timestamp": "2026-02-13T16:44:08.406Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69227.5,
+      "timestamp": "2026-02-13T16:44:09.595Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69217.5,
+      "timestamp": "2026-02-13T16:44:10.812Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69216.5,
+      "timestamp": "2026-02-13T16:44:11.366Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69216.5,
+      "timestamp": "2026-02-13T16:44:12.371Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69216.5,
+      "timestamp": "2026-02-13T16:44:13.422Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69212.5,
+      "timestamp": "2026-02-13T16:44:14.529Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69212.5,
+      "timestamp": "2026-02-13T16:44:16.080Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69212.5,
+      "timestamp": "2026-02-13T16:44:16.733Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69212.5,
+      "timestamp": "2026-02-13T16:44:17.668Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69212.5,
+      "timestamp": "2026-02-13T16:44:18.720Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69213.5,
+      "timestamp": "2026-02-13T16:44:19.661Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69217.5,
+      "timestamp": "2026-02-13T16:44:21.225Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69217.5,
+      "timestamp": "2026-02-13T16:44:21.787Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69228.5,
+      "timestamp": "2026-02-13T16:44:22.840Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69241.5,
+      "timestamp": "2026-02-13T16:44:23.892Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69222.5,
+      "timestamp": "2026-02-13T16:44:25.056Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69222.5,
+      "timestamp": "2026-02-13T16:44:26.303Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69217.5,
+      "timestamp": "2026-02-13T16:44:27.289Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69211.5,
+      "timestamp": "2026-02-13T16:44:27.979Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69211.5,
+      "timestamp": "2026-02-13T16:44:28.977Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:44:29.988Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:44:31.194Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:32.036Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:33.249Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:34.316Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:35.285Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:36.265Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:37.380Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:38.473Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:39.314Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:40.740Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:41.431Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69200.5,
+      "timestamp": "2026-02-13T16:44:42.608Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69200.5,
+      "timestamp": "2026-02-13T16:44:43.607Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69187.5,
+      "timestamp": "2026-02-13T16:44:44.466Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69189.5,
+      "timestamp": "2026-02-13T16:44:45.966Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69189.5,
+      "timestamp": "2026-02-13T16:44:46.162Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69189.5,
+      "timestamp": "2026-02-13T16:44:46.500Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69189.5,
+      "timestamp": "2026-02-13T16:44:47.598Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69189.5,
+      "timestamp": "2026-02-13T16:44:48.576Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69190.5,
+      "timestamp": "2026-02-13T16:44:49.646Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69200.5,
+      "timestamp": "2026-02-13T16:44:51.323Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:51.807Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69201.5,
+      "timestamp": "2026-02-13T16:44:52.787Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:53.950Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69202.5,
+      "timestamp": "2026-02-13T16:44:54.817Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:44:56.196Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69208.5,
+      "timestamp": "2026-02-13T16:44:56.966Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69208.5,
+      "timestamp": "2026-02-13T16:44:58.153Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69208.5,
+      "timestamp": "2026-02-13T16:44:59.092Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69208.5,
+      "timestamp": "2026-02-13T16:45:00.048Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69208.5,
+      "timestamp": "2026-02-13T16:45:01.431Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69208.5,
+      "timestamp": "2026-02-13T16:45:02.200Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69207.5,
+      "timestamp": "2026-02-13T16:45:03.161Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69192.5,
+      "timestamp": "2026-02-13T16:45:04.257Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69192.5,
+      "timestamp": "2026-02-13T16:45:05.346Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69192.5,
+      "timestamp": "2026-02-13T16:45:06.521Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69194,
+      "timestamp": "2026-02-13T16:45:07.648Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69213.5,
+      "timestamp": "2026-02-13T16:45:08.530Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69215,
+      "timestamp": "2026-02-13T16:45:09.549Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69215.5,
+      "timestamp": "2026-02-13T16:45:10.618Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:45:11.679Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69203.5,
+      "timestamp": "2026-02-13T16:45:12.424Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69211.5,
+      "timestamp": "2026-02-13T16:45:13.474Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69211.5,
+      "timestamp": "2026-02-13T16:45:14.433Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69211.5,
+      "timestamp": "2026-02-13T16:45:15.467Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69211.5,
+      "timestamp": "2026-02-13T16:45:16.528Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69211.5,
+      "timestamp": "2026-02-13T16:45:17.610Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:45:18.671Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69198.5,
+      "timestamp": "2026-02-13T16:45:19.719Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69193.5,
+      "timestamp": "2026-02-13T16:45:21.243Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69192.5,
+      "timestamp": "2026-02-13T16:45:21.926Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69176.5,
+      "timestamp": "2026-02-13T16:45:22.877Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69176.5,
+      "timestamp": "2026-02-13T16:45:23.687Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69170.5,
+      "timestamp": "2026-02-13T16:45:24.671Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69171.5,
+      "timestamp": "2026-02-13T16:45:26.546Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69181.5,
+      "timestamp": "2026-02-13T16:45:26.986Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69182.5,
+      "timestamp": "2026-02-13T16:45:27.993Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69184.5,
+      "timestamp": "2026-02-13T16:45:29.006Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69174,
+      "timestamp": "2026-02-13T16:45:30.102Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69168.5,
+      "timestamp": "2026-02-13T16:45:31.492Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69168.5,
+      "timestamp": "2026-02-13T16:45:32.171Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69169.5,
+      "timestamp": "2026-02-13T16:45:33.389Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69170.5,
+      "timestamp": "2026-02-13T16:45:34.370Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69170.5,
+      "timestamp": "2026-02-13T16:45:35.388Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69173.5,
+      "timestamp": "2026-02-13T16:45:36.612Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69181.5,
+      "timestamp": "2026-02-13T16:45:37.376Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:38.369Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:39.476Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:40.532Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:41.631Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:42.554Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:43.706Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:44.616Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:45.645Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:45:46.272Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69191.5,
+      "timestamp": "2026-02-13T16:45:46.726Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69191.5,
+      "timestamp": "2026-02-13T16:45:47.697Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69203,
+      "timestamp": "2026-02-13T16:45:48.855Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:45:49.811Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:45:51.139Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69206,
+      "timestamp": "2026-02-13T16:45:52.218Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69207.5,
+      "timestamp": "2026-02-13T16:45:52.881Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69207.5,
+      "timestamp": "2026-02-13T16:45:53.914Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69206.5,
+      "timestamp": "2026-02-13T16:45:54.956Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:45:56.606Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:45:57.091Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:45:57.955Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:45:58.998Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69200.5,
+      "timestamp": "2026-02-13T16:46:00.056Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69197.5,
+      "timestamp": "2026-02-13T16:46:01.700Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69198.5,
+      "timestamp": "2026-02-13T16:46:02.341Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69188.5,
+      "timestamp": "2026-02-13T16:46:03.474Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69188.5,
+      "timestamp": "2026-02-13T16:46:04.447Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69188.5,
+      "timestamp": "2026-02-13T16:46:05.490Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:46:06.788Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:46:07.524Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:46:08.579Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:46:09.628Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69221.5,
+      "timestamp": "2026-02-13T16:46:10.711Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69221,
+      "timestamp": "2026-02-13T16:46:12.134Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69218.5,
+      "timestamp": "2026-02-13T16:46:12.552Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69218.5,
+      "timestamp": "2026-02-13T16:46:13.653Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69218,
+      "timestamp": "2026-02-13T16:46:14.603Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:46:15.910Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:46:16.925Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69200.5,
+      "timestamp": "2026-02-13T16:46:17.670Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69201.5,
+      "timestamp": "2026-02-13T16:46:18.788Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69206.5,
+      "timestamp": "2026-02-13T16:46:19.854Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:46:20.759Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:46:21.854Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:46:22.856Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69205.5,
+      "timestamp": "2026-02-13T16:46:23.921Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:24.941Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:26.020Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:27.073Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:28.004Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:29.096Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:30.106Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:31.370Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:32.255Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69221.5,
+      "timestamp": "2026-02-13T16:46:33.347Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69221.5,
+      "timestamp": "2026-02-13T16:46:34.222Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69220.5,
+      "timestamp": "2026-02-13T16:46:35.329Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:46:36.886Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69210.5,
+      "timestamp": "2026-02-13T16:46:37.540Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69218.5,
+      "timestamp": "2026-02-13T16:46:38.304Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69218.5,
+      "timestamp": "2026-02-13T16:46:39.271Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69213.5,
+      "timestamp": "2026-02-13T16:46:40.315Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69213.5,
+      "timestamp": "2026-02-13T16:46:42.122Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69212.5,
+      "timestamp": "2026-02-13T16:46:42.577Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69208.5,
+      "timestamp": "2026-02-13T16:46:43.593Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69198,
+      "timestamp": "2026-02-13T16:46:44.844Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69191.5,
+      "timestamp": "2026-02-13T16:46:45.753Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69191.5,
+      "timestamp": "2026-02-13T16:46:45.988Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69191.5,
+      "timestamp": "2026-02-13T16:46:47.101Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69190.5,
+      "timestamp": "2026-02-13T16:46:47.499Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69190.5,
+      "timestamp": "2026-02-13T16:46:48.504Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69182.5,
+      "timestamp": "2026-02-13T16:46:49.678Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69173.5,
+      "timestamp": "2026-02-13T16:46:50.669Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69173.5,
+      "timestamp": "2026-02-13T16:46:52.254Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69167.5,
+      "timestamp": "2026-02-13T16:46:52.855Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69167.5,
+      "timestamp": "2026-02-13T16:46:53.925Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69157.5,
+      "timestamp": "2026-02-13T16:46:55.168Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69156.5,
+      "timestamp": "2026-02-13T16:46:55.973Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69150.5,
+      "timestamp": "2026-02-13T16:46:57.224Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69150.5,
+      "timestamp": "2026-02-13T16:46:57.935Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69149.5,
+      "timestamp": "2026-02-13T16:46:59.013Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69145.5,
+      "timestamp": "2026-02-13T16:47:00.036Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69146.5,
+      "timestamp": "2026-02-13T16:47:01.130Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69152.5,
+      "timestamp": "2026-02-13T16:47:02.373Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69167.5,
+      "timestamp": "2026-02-13T16:47:03.574Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69170.5,
+      "timestamp": "2026-02-13T16:47:04.566Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69171.5,
+      "timestamp": "2026-02-13T16:47:05.404Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:47:06.810Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69186.5,
+      "timestamp": "2026-02-13T16:47:07.525Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69185.5,
+      "timestamp": "2026-02-13T16:47:08.527Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69176.5,
+      "timestamp": "2026-02-13T16:47:09.596Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69176.5,
+      "timestamp": "2026-02-13T16:47:10.578Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69168.5,
+      "timestamp": "2026-02-13T16:47:12.231Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69155.5,
+      "timestamp": "2026-02-13T16:47:12.695Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69164.5,
+      "timestamp": "2026-02-13T16:47:13.751Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69164.5,
+      "timestamp": "2026-02-13T16:47:14.663Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69159.5,
+      "timestamp": "2026-02-13T16:47:15.631Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69159.5,
+      "timestamp": "2026-02-13T16:47:17.059Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69166.5,
+      "timestamp": "2026-02-13T16:47:17.732Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69157.5,
+      "timestamp": "2026-02-13T16:47:18.785Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69157,
+      "timestamp": "2026-02-13T16:47:19.897Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69145,
+      "timestamp": "2026-02-13T16:47:20.912Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69141.5,
+      "timestamp": "2026-02-13T16:47:22.337Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69147.5,
+      "timestamp": "2026-02-13T16:47:23.032Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69147.5,
+      "timestamp": "2026-02-13T16:47:23.997Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69136.5,
+      "timestamp": "2026-02-13T16:47:25.040Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69136.5,
+      "timestamp": "2026-02-13T16:47:26.063Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69136.5,
+      "timestamp": "2026-02-13T16:47:27.412Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69136.5,
+      "timestamp": "2026-02-13T16:47:28.229Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69136.5,
+      "timestamp": "2026-02-13T16:47:29.309Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69114.5,
+      "timestamp": "2026-02-13T16:47:30.447Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69114.5,
+      "timestamp": "2026-02-13T16:47:31.290Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69100.5,
+      "timestamp": "2026-02-13T16:47:32.528Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69100.5,
+      "timestamp": "2026-02-13T16:47:33.397Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69100.5,
+      "timestamp": "2026-02-13T16:47:34.377Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69100.5,
+      "timestamp": "2026-02-13T16:47:35.376Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69097.5,
+      "timestamp": "2026-02-13T16:47:36.322Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69097.5,
+      "timestamp": "2026-02-13T16:47:37.603Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69094.5,
+      "timestamp": "2026-02-13T16:47:38.502Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69095.5,
+      "timestamp": "2026-02-13T16:47:39.395Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69093.5,
+      "timestamp": "2026-02-13T16:47:40.474Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69092.5,
+      "timestamp": "2026-02-13T16:47:41.546Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69095.5,
+      "timestamp": "2026-02-13T16:47:42.892Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69094.5,
+      "timestamp": "2026-02-13T16:47:43.642Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69090.5,
+      "timestamp": "2026-02-13T16:47:44.633Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69068,
+      "timestamp": "2026-02-13T16:47:45.714Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69068,
+      "timestamp": "2026-02-13T16:47:45.979Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69064.5,
+      "timestamp": "2026-02-13T16:47:46.698Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69081.5,
+      "timestamp": "2026-02-13T16:47:47.947Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69085.5,
+      "timestamp": "2026-02-13T16:47:48.856Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69091.5,
+      "timestamp": "2026-02-13T16:47:49.938Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69093.5,
+      "timestamp": "2026-02-13T16:47:50.838Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69109.5,
+      "timestamp": "2026-02-13T16:47:51.979Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69105.5,
+      "timestamp": "2026-02-13T16:47:52.857Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69111.5,
+      "timestamp": "2026-02-13T16:47:53.791Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69118,
+      "timestamp": "2026-02-13T16:47:55.103Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69162,
+      "timestamp": "2026-02-13T16:47:56.180Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69170,
+      "timestamp": "2026-02-13T16:47:57.755Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69170.5,
+      "timestamp": "2026-02-13T16:47:58.054Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69183.5,
+      "timestamp": "2026-02-13T16:47:58.979Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69179.5,
+      "timestamp": "2026-02-13T16:48:00.031Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69179.5,
+      "timestamp": "2026-02-13T16:48:01.034Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69179.5,
+      "timestamp": "2026-02-13T16:48:02.702Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69179.5,
+      "timestamp": "2026-02-13T16:48:03.179Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69179.5,
+      "timestamp": "2026-02-13T16:48:04.244Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69179.5,
+      "timestamp": "2026-02-13T16:48:05.252Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69179.5,
+      "timestamp": "2026-02-13T16:48:06.387Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69179.5,
+      "timestamp": "2026-02-13T16:48:07.568Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69178.5,
+      "timestamp": "2026-02-13T16:48:08.268Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69174.5,
+      "timestamp": "2026-02-13T16:48:09.377Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69154.5,
+      "timestamp": "2026-02-13T16:48:10.318Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69154.5,
+      "timestamp": "2026-02-13T16:48:11.303Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69145.5,
+      "timestamp": "2026-02-13T16:48:12.942Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69134.5,
+      "timestamp": "2026-02-13T16:48:13.476Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69121.5,
+      "timestamp": "2026-02-13T16:48:14.536Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69118.5,
+      "timestamp": "2026-02-13T16:48:15.557Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69118.5,
+      "timestamp": "2026-02-13T16:48:16.610Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69105.5,
+      "timestamp": "2026-02-13T16:48:17.877Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69095,
+      "timestamp": "2026-02-13T16:48:18.719Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69091,
+      "timestamp": "2026-02-13T16:48:19.754Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69086.5,
+      "timestamp": "2026-02-13T16:48:20.725Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69074.5,
+      "timestamp": "2026-02-13T16:48:21.689Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69074.5,
+      "timestamp": "2026-02-13T16:48:22.918Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69076.5,
+      "timestamp": "2026-02-13T16:48:23.707Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69076.5,
+      "timestamp": "2026-02-13T16:48:24.782Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69076.5,
+      "timestamp": "2026-02-13T16:48:25.692Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69077.5,
+      "timestamp": "2026-02-13T16:48:26.794Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69074.5,
+      "timestamp": "2026-02-13T16:48:28.030Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69064.5,
+      "timestamp": "2026-02-13T16:48:28.935Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69060.5,
+      "timestamp": "2026-02-13T16:48:29.908Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69060.5,
+      "timestamp": "2026-02-13T16:48:30.947Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69060.5,
+      "timestamp": "2026-02-13T16:48:31.982Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69048.5,
+      "timestamp": "2026-02-13T16:48:33.064Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69034.5,
+      "timestamp": "2026-02-13T16:48:33.884Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69037.5,
+      "timestamp": "2026-02-13T16:48:34.873Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69039.5,
+      "timestamp": "2026-02-13T16:48:36.062Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69016.5,
+      "timestamp": "2026-02-13T16:48:36.902Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69016.5,
+      "timestamp": "2026-02-13T16:48:38.290Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69016.5,
+      "timestamp": "2026-02-13T16:48:38.950Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69016.5,
+      "timestamp": "2026-02-13T16:48:40.047Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69014.5,
+      "timestamp": "2026-02-13T16:48:41.104Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69012.5,
+      "timestamp": "2026-02-13T16:48:42.121Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69012.5,
+      "timestamp": "2026-02-13T16:48:43.307Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69012.5,
+      "timestamp": "2026-02-13T16:48:44.079Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69012.5,
+      "timestamp": "2026-02-13T16:48:45.147Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69012.5,
+      "timestamp": "2026-02-13T16:48:45.979Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69005,
+      "timestamp": "2026-02-13T16:48:46.279Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69000.5,
+      "timestamp": "2026-02-13T16:48:47.585Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69000.5,
+      "timestamp": "2026-02-13T16:48:48.421Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:48:49.460Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69011.5,
+      "timestamp": "2026-02-13T16:48:50.434Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69011.5,
+      "timestamp": "2026-02-13T16:48:51.486Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69031.5,
+      "timestamp": "2026-02-13T16:48:53.148Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69035.5,
+      "timestamp": "2026-02-13T16:48:53.517Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69027,
+      "timestamp": "2026-02-13T16:48:54.640Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69023,
+      "timestamp": "2026-02-13T16:48:55.592Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69026.5,
+      "timestamp": "2026-02-13T16:48:56.732Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69026.5,
+      "timestamp": "2026-02-13T16:48:58.178Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69024.5,
+      "timestamp": "2026-02-13T16:48:58.666Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69024.5,
+      "timestamp": "2026-02-13T16:48:59.667Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69021.5,
+      "timestamp": "2026-02-13T16:49:00.678Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69020.5,
+      "timestamp": "2026-02-13T16:49:01.770Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69017.5,
+      "timestamp": "2026-02-13T16:49:03.407Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69017.5,
+      "timestamp": "2026-02-13T16:49:04.043Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69011.5,
+      "timestamp": "2026-02-13T16:49:04.874Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69011.5,
+      "timestamp": "2026-02-13T16:49:05.876Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69002.5,
+      "timestamp": "2026-02-13T16:49:06.943Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69002.5,
+      "timestamp": "2026-02-13T16:49:08.616Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69003.5,
+      "timestamp": "2026-02-13T16:49:09.088Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69004.5,
+      "timestamp": "2026-02-13T16:49:10.110Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69004.5,
+      "timestamp": "2026-02-13T16:49:11.031Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69005.5,
+      "timestamp": "2026-02-13T16:49:12.178Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69005.5,
+      "timestamp": "2026-02-13T16:49:13.459Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69021.5,
+      "timestamp": "2026-02-13T16:49:14.290Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69021.5,
+      "timestamp": "2026-02-13T16:49:15.192Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69021.5,
+      "timestamp": "2026-02-13T16:49:16.207Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69021.5,
+      "timestamp": "2026-02-13T16:49:17.248Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69021.5,
+      "timestamp": "2026-02-13T16:49:18.513Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69021.5,
+      "timestamp": "2026-02-13T16:49:19.248Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010,
+      "timestamp": "2026-02-13T16:49:20.272Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:49:21.224Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:49:22.405Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:49:23.565Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69008.5,
+      "timestamp": "2026-02-13T16:49:24.448Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:49:25.509Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69004.5,
+      "timestamp": "2026-02-13T16:49:26.746Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69005.5,
+      "timestamp": "2026-02-13T16:49:27.657Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69005.5,
+      "timestamp": "2026-02-13T16:49:28.660Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69007.5,
+      "timestamp": "2026-02-13T16:49:29.721Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69007.5,
+      "timestamp": "2026-02-13T16:49:30.605Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69008.5,
+      "timestamp": "2026-02-13T16:49:31.751Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69008.5,
+      "timestamp": "2026-02-13T16:49:32.682Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69008.5,
+      "timestamp": "2026-02-13T16:49:33.696Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69008.5,
+      "timestamp": "2026-02-13T16:49:34.652Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69013.5,
+      "timestamp": "2026-02-13T16:49:35.916Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69015.5,
+      "timestamp": "2026-02-13T16:49:36.855Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69016.5,
+      "timestamp": "2026-02-13T16:49:38.099Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69018.5,
+      "timestamp": "2026-02-13T16:49:39.101Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69018.5,
+      "timestamp": "2026-02-13T16:49:40.114Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69015.5,
+      "timestamp": "2026-02-13T16:49:41.145Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:49:42.032Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:49:43.762Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:49:44.155Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:49:45.347Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:49:45.988Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69009.5,
+      "timestamp": "2026-02-13T16:49:46.325Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69005.5,
+      "timestamp": "2026-02-13T16:49:47.385Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69005.5,
+      "timestamp": "2026-02-13T16:49:48.839Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:49:49.368Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:49:50.362Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:49:51.311Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69009.5,
+      "timestamp": "2026-02-13T16:49:52.481Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69018.5,
+      "timestamp": "2026-02-13T16:49:54.013Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69018,
+      "timestamp": "2026-02-13T16:49:54.550Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69011.5,
+      "timestamp": "2026-02-13T16:49:55.541Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69004.5,
+      "timestamp": "2026-02-13T16:49:56.487Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:49:57.611Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:49:58.928Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:49:59.632Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69010.5,
+      "timestamp": "2026-02-13T16:50:00.553Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:01.665Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:02.750Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:04.174Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:05.002Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:05.898Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:06.959Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:08.032Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:09.144Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:10.133Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:11.284Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:12.352Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68990.5,
+      "timestamp": "2026-02-13T16:50:13.736Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68982.5,
+      "timestamp": "2026-02-13T16:50:14.363Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68960,
+      "timestamp": "2026-02-13T16:50:15.328Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68958.5,
+      "timestamp": "2026-02-13T16:50:16.337Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68960.5,
+      "timestamp": "2026-02-13T16:50:17.534Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68969.5,
+      "timestamp": "2026-02-13T16:50:19.167Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68974,
+      "timestamp": "2026-02-13T16:50:19.611Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68980.5,
+      "timestamp": "2026-02-13T16:50:20.495Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68983.5,
+      "timestamp": "2026-02-13T16:50:21.526Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68983.5,
+      "timestamp": "2026-02-13T16:50:22.557Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68985.5,
+      "timestamp": "2026-02-13T16:50:24.267Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 68988.5,
+      "timestamp": "2026-02-13T16:50:24.583Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69003.5,
+      "timestamp": "2026-02-13T16:50:25.717Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69003.5,
+      "timestamp": "2026-02-13T16:50:26.583Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69004.5,
+      "timestamp": "2026-02-13T16:50:27.682Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69006.5,
+      "timestamp": "2026-02-13T16:50:28.986Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69008.5,
+      "timestamp": "2026-02-13T16:50:29.617Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69026.5,
+      "timestamp": "2026-02-13T16:50:30.881Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69039.5,
+      "timestamp": "2026-02-13T16:50:31.830Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69039.5,
+      "timestamp": "2026-02-13T16:50:32.821Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69041.5,
+      "timestamp": "2026-02-13T16:50:34.103Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69097,
+      "timestamp": "2026-02-13T16:50:35.187Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69081.5,
+      "timestamp": "2026-02-13T16:50:36.072Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69055.5,
+      "timestamp": "2026-02-13T16:50:37.152Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69046.5,
+      "timestamp": "2026-02-13T16:50:38.138Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69045.5,
+      "timestamp": "2026-02-13T16:50:39.399Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69044.5,
+      "timestamp": "2026-02-13T16:50:40.032Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69043.5,
+      "timestamp": "2026-02-13T16:50:41.088Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69020.5,
+      "timestamp": "2026-02-13T16:50:42.390Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69020.5,
+      "timestamp": "2026-02-13T16:50:43.182Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69020.5,
+      "timestamp": "2026-02-13T16:50:44.331Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69025.5,
+      "timestamp": "2026-02-13T16:50:45.469Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69025.5,
+      "timestamp": "2026-02-13T16:50:46.012Z"
+    },
+    {
+      "symbol": "BTC",
+      "price": 69025.5,
+      "timestamp": "2026-02-13T16:50:46.449Z"
     }
   ]
 }
