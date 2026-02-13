@@ -3,6 +3,8 @@
 ## Цель
 Реализовать полный минимально-необходимый набор команд для production-ready запуска BTC-контура (paper + live-ready с ручным подтверждением).
 
+> Важно: Hyperliquid реализуется как первый adapter по контракту `EXCHANGE_ADAPTER_CONTRACT.md`, без exchange-specific логики в core domain.
+
 ## 1) Public / market data commands (info)
 1. `allMids` — текущие mid цены (уже используется).
 2. Исторические свечи для TF: `1m / 5m / 15m / 1h / 4h`.

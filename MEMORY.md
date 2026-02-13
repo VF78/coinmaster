@@ -45,6 +45,7 @@
 - Стартовый live execution: **limit по уровню close свечи-поглощения**.
 - На этапе single-operator хранение ключей допустимо в `.env` на VPS; позже переход на secret manager.
 - В ближайшем плане обязателен отдельный **Hyperliquid API command layer** (market/account/trading + safety wrappers + audit events).
+- Архитектурное требование: интеграции бирж делать через exchange-agnostic adapter layer с возможностью подключения Bybit/Binance и др.
 
 ## Важные process-договорённости
 

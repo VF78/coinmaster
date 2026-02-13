@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-13 18:50 Europe/Madrid
+Последнее обновление: 2026-02-13 18:52 Europe/Madrid
 
 ## Текущая цель проекта
 Построить и запустить системную полуавтоматическую торговлю на Hyperliquid:
@@ -134,6 +134,7 @@
   - account: account state, open orders, positions/fills;
   - trading: place limit, cancel (single/all), reduce-only exit, leverage setup;
   - safety: idempotency (cloid), retry-policy, dry-run/live switch, audit-event на каждую API-команду.
+- Вынести exchange-интеграцию в adapter-контракт (exchange-agnostic execution layer), чтобы подключать **Bybit/Binance** без переписывания стратегии и risk/MM.
 
 ## Открытые вопросы
 - Финальная формула риск-бюджета для мульти-режима при общем плече до 10x.

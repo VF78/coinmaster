@@ -51,6 +51,7 @@ npm run start    # run API only
 - `docs/ARCHITECTURE.md` → deployment/evolution architecture.
 - `docs/SECURITY_REQUIREMENTS.md` → security baseline for exchange-API trading system.
 - `docs/HYPERLIQUID_API_COMMANDS.md` → v1 command scope for Hyperliquid integration.
+- `docs/EXCHANGE_ADAPTER_CONTRACT.md` → exchange-agnostic adapter contract (Hyperliquid/Bybit/Binance path).
 
 ## Native port path (Expo)
 A concrete path to add iOS/Android without rewriting domain contracts:

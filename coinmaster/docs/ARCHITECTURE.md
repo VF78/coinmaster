@@ -11,11 +11,16 @@
 - **API + workers + DB: Hetzner VPS**
 - Initial mode: single-operator, no public user registration yet.
 
+## 2.1) Exchange-agnostic integration requirement (locked)
+- Интеграция строится **через абстракцию биржи**, чтобы подключать Bybit/Binance и др. без переписывания стратегии/риск-логики.
+- Hyperliquid — первый adapter, но не special-case в доменной логике.
+
 ## 3) Near-term production-ready scope (7-10 days)
 - Paper/live-capable backend with manual confirmation control.
 - Realtime ingest (WS + fallback) with health checks and restart policies.
 - Persistent DB (PostgreSQL) instead of local JSON.
 - Append-only trade event log for exact audit/P&L reconstruction.
+- Exchange adapter contract + Hyperliquid implementation (с возможностью добавить Bybit/Binance).
 - Clear runbook for start/stop/recovery.
 
 ## 4) Strategy execution semantics (locked)
