@@ -13,7 +13,7 @@ export function DashboardPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   async function refresh() {
-    const next = await getDashboard('week');
+    const next = await getDashboard();
     setData(next);
   }
 

@@ -139,9 +139,7 @@ export interface LiveDashboardState {
 }
 
 export interface DashboardResponse {
-  activePositions: Position[];
   latestBias: Bias;
-  stats: Stats;
   latestTick: MarketTick | null;
   live: LiveDashboardState;
 }
@@ -156,9 +154,4 @@ export interface HistoryResponse {
 export interface BiasPayload {
   symbol: string;
   bias: Bias;
-}
-
-export interface SimulateTickPayload {
-  symbol?: string;
-  price: number;
 }

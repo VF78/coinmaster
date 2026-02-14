@@ -1,4 +1,4 @@
-import type { AppSettings, BiasCommand, MarketTick, Position, Stats, TradeEvent, TradeEventPayload, TradeEventSource, TradeEventType, TradeLog } from '../shared/dto.js';
+import type { AppSettings, BiasCommand, MarketTick, Position, TradeEvent, TradeLog } from '../shared/dto.js';
 
 export type {
   AppSettings,

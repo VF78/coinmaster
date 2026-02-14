@@ -11,7 +11,8 @@ import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, StatsPeriod } from '../core/types.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot } from '../exchange/types.js';
+import type { CandleTimeframe, OrderIntent } from '../exchange/types.js';
+import { buildLiveDashboardState } from './liveSnapshot.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +29,9 @@ const REST_FALLBACK_MS = 60 * 1000; // at least 1m updates if WS unavailable
 const LIVE_MAX_NOTIONAL_USDC = Number(process.env.LIVE_MAX_NOTIONAL_USDC || 30);
 const LIVE_MAX_LEVERAGE = Number(process.env.LIVE_MAX_LEVERAGE || 10);
 const LIVE_MANUAL_CONFIRMATION = String(process.env.LIVE_MANUAL_CONFIRMATION ?? 'true').toLowerCase() !== 'false';
+const ENABLE_PAPER_ENGINE = String(process.env.ENABLE_PAPER_ENGINE ?? 'false').toLowerCase() === 'true';
+const ENABLE_SIMULATION_API = String(process.env.ENABLE_SIMULATION_API ?? 'false').toLowerCase() === 'true';
+const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLowerCase() === 'true';
 
 const exchange = new HyperliquidAdapter();
 
@@ -35,6 +39,7 @@ let ingestBusy = false;
 let wsReconnectTimer: NodeJS.Timeout | null = null;
 let restFallbackTimer: NodeJS.Timeout | null = null;
 let midStreamHandle: MidStreamHandle | null = null;
+let latestLiveTick: { symbol: string; price: number; timestamp: string } | null = null;
 
 function parsePeriod(raw: unknown): StatsPeriod {
   return raw === 'week' ? 'week' : 'month';
@@ -59,81 +64,18 @@ function isConfirmed(raw: unknown): boolean {
   return raw === true;
 }
 
-function toFiniteNumber(value: unknown): number | undefined {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : undefined;
-}
-
-function isReduceOnlyOrder(order: OrderSnapshot): boolean {
-  const raw = (order.raw ?? {}) as Record<string, unknown>;
-  const reduceOnly = raw.reduceOnly;
-  if (reduceOnly === true || reduceOnly === 'true' || reduceOnly === 1 || reduceOnly === '1') return true;
-  if (reduceOnly === false || reduceOnly === 'false' || reduceOnly === 0 || reduceOnly === '0') return false;
-  return true; // fallback when adapter/raw does not expose reduceOnly flag
-}
-
-function pickStopLossAndTakeProfit(position: PositionSnapshot, openOrders: OrderSnapshot[]) {
-  const entry = position.entryPrice;
-  if (!entry || entry <= 0) {
-    return { stopLoss: undefined as number | undefined, takeProfit: undefined as number | undefined };
-  }
-
-  const closingSide: 'buy' | 'sell' = position.side === 'long' ? 'sell' : 'buy';
-  const candidates = openOrders
-    .filter((o) => o.symbol === position.symbol && o.side === closingSide)
-    .filter(isReduceOnlyOrder);
-
-  if (!candidates.length) {
-    return { stopLoss: undefined as number | undefined, takeProfit: undefined as number | undefined };
-  }
-
-  const aboveEntry = candidates
-    .filter((o) => o.price > entry)
-    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
-
-  const belowEntry = candidates
-    .filter((o) => o.price < entry)
-    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
-
-  if (position.side === 'long') {
-    return {
-      stopLoss: belowEntry[0]?.price,
-      takeProfit: aboveEntry[0]?.price
-    };
-  }
-
-  return {
-    stopLoss: aboveEntry[0]?.price,
-    takeProfit: belowEntry[0]?.price
-  };
-}
-
-function pickOpenedAt(position: PositionSnapshot, fills: FillEvent[]): string | undefined {
-  const openingSide: 'buy' | 'sell' = position.side === 'long' ? 'buy' : 'sell';
-  const bySymbolAndSide = fills.filter((f) => f.symbol === position.symbol && f.side === openingSide);
-  if (!bySymbolAndSide.length) return undefined;
-
-  const entry = position.entryPrice;
-  const withScore = bySymbolAndSide
-    .map((f) => ({
-      fill: f,
-      timestampMs: Date.parse(f.timestamp),
-      relDiff: entry && entry > 0 ? Math.abs(f.price - entry) / entry : 0
-    }))
-    .filter((x) => Number.isFinite(x.timestampMs));
-
-  if (!withScore.length) return undefined;
-
-  const nearEntry = entry && entry > 0 ? withScore.filter((x) => x.relDiff <= 0.03) : withScore;
-  const pool = nearEntry.length ? nearEntry : withScore;
-
-  pool.sort((a, b) => b.timestampMs - a.timestampMs);
-  return pool[0]?.fill.timestamp;
-}
-
 async function ingestPrice(symbol: string, price: number, _source: 'ws' | 'rest') {
   if (!Number.isFinite(price)) return;
+
+  latestLiveTick = {
+    symbol,
+    price,
+    timestamp: new Date().toISOString()
+  };
+
+  if (!ENABLE_PAPER_ENGINE) return;
   if (ingestBusy) return;
+
   ingestBusy = true;
   try {
     const db = await getDb();
@@ -218,84 +160,29 @@ app.use(express.json());
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
-app.get('/api/dashboard', async (req, res) => {
-  const period = parsePeriod(req.query.period);
+app.get('/api/dashboard', async (_req, res) => {
   const db = await getDb();
-  const activePositions = db.data.positions.filter((p) => p.status === 'open');
   const latestBias = [...db.data.biasCommands].reverse().find((b) => b.symbol === LIVE_SYMBOL)?.bias ?? 'off';
-  const latestTick = [...db.data.marketTicks].reverse().find((t) => t.symbol === LIVE_SYMBOL) ?? null;
 
-  let live = {
-    connected: false,
-    mode: {
-      manualConfirmation: LIVE_MANUAL_CONFIRMATION,
-      maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
-      maxLeverage: LIVE_MAX_LEVERAGE
-    },
-    account: null as { equityUsd?: number; availableUsd?: number } | null,
-    openOrders: 0,
-    openPositions: [] as Array<{
-      id: string;
-      symbol: string;
-      side: 'long' | 'short';
-      size: number;
-      entryPrice?: number;
-      dealValue?: number;
-      stopLoss?: number;
-      takeProfit?: number;
-      openedAt?: string;
-      leverage?: number;
-      unrealizedPnl?: number;
-    }>,
-    error: undefined as string | undefined
-  };
-
-  try {
-    const [account, openOrders, openPositions, fills] = await Promise.all([
-      exchange.getAccountState(),
-      exchange.getOpenOrders(LIVE_SYMBOL),
-      exchange.getOpenPositions(LIVE_SYMBOL),
-      exchange.getFills(LIVE_SYMBOL)
-    ]);
-
-    live = {
-      ...live,
-      connected: true,
-      account: account ? { equityUsd: account.equityUsd, availableUsd: account.availableUsd } : null,
-      openOrders: openOrders.length,
-      openPositions: openPositions.map((p) => {
-        const { stopLoss, takeProfit } = pickStopLossAndTakeProfit(p, openOrders);
-        const openedAt = pickOpenedAt(p, fills);
-        const rawPositionValue = toFiniteNumber(
-          (p.raw as { position?: { positionValue?: unknown } } | undefined)?.position?.positionValue
-        );
-        const dealValue = rawPositionValue ?? (p.entryPrice ? p.entryPrice * p.size : undefined);
-
-        return {
-          id: `${p.symbol}-${p.side}-${p.entryPrice ?? 0}-${p.size}`,
-          symbol: p.symbol,
-          side: p.side,
-          size: p.size,
-          entryPrice: p.entryPrice,
-          dealValue,
-          stopLoss,
-          takeProfit,
-          openedAt,
-          leverage: p.leverage,
-          unrealizedPnl: p.unrealizedPnl
-        };
-      }),
-      error: undefined
-    };
-  } catch (error) {
-    live = {
-      ...live,
-      connected: false,
-      error: error instanceof Error ? error.message : 'live_dashboard_fetch_failed'
-    };
+  let latestTick = latestLiveTick;
+  if (!latestTick) {
+    const freshMid = await fetchLiveBtcMid();
+    if (freshMid) {
+      latestTick = {
+        symbol: LIVE_SYMBOL,
+        price: freshMid,
+        timestamp: new Date().toISOString()
+      };
+    }
   }
 
-  res.json({ activePositions, latestBias, stats: getStats(db.data, { period }), latestTick, live });
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, {
+    manualConfirmation: LIVE_MANUAL_CONFIRMATION,
+    maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
+    maxLeverage: LIVE_MAX_LEVERAGE
+  });
+
+  res.json({ latestBias, latestTick: latestTick ?? null, live });
 });
 
 app.get('/api/history', async (req, res) => {
@@ -327,70 +214,74 @@ app.post('/api/bias', async (req, res) => {
   return res.json({ ok: true, command: cmd });
 });
 
-app.post('/api/simulate/tick', async (req, res) => {
-  const { symbol = LIVE_SYMBOL, price } = req.body as { symbol?: string; price: number };
-  if (price === undefined || Number.isNaN(price)) {
-    return res.status(400).json({ error: 'price_required' });
-  }
+if (ENABLE_SIMULATION_API) {
+  app.post('/api/simulate/tick', async (req, res) => {
+    const { symbol = LIVE_SYMBOL, price } = req.body as { symbol?: string; price: number };
+    if (price === undefined || Number.isNaN(price)) {
+      return res.status(400).json({ error: 'price_required' });
+    }
 
-  const db = await getDb();
-  const signal = runSimulationStep(db.data, symbol.toUpperCase(), Number(price));
-  await db.write();
-  return res.json({ ok: true, signal });
-});
+    const db = await getDb();
+    const signal = runSimulationStep(db.data, symbol.toUpperCase(), Number(price));
+    await db.write();
+    return res.json({ ok: true, signal });
+  });
+}
 
-app.post('/api/replay/run', async (req, res) => {
-  const {
-    symbol = LIVE_SYMBOL,
-    bias,
-    timeframe,
-    startTimeMs,
-    endTimeMs,
-    depositUsd
-  } = req.body as {
-    symbol?: string;
-    bias?: Bias;
-    timeframe?: CandleTimeframe;
-    startTimeMs?: number;
-    endTimeMs?: number;
-    depositUsd?: number;
-  };
-
-  if (bias !== 'long' && bias !== 'short') {
-    return res.status(400).json({ error: 'bias_required_long_or_short' });
-  }
-
-  const fromMs = Number(startTimeMs);
-  const toMs = Number(endTimeMs);
-  if (!Number.isFinite(fromMs) || !Number.isFinite(toMs) || toMs <= fromMs) {
-    return res.status(400).json({ error: 'invalid_time_range' });
-  }
-
-  const tf = parseTimeframe(timeframe);
-
-  try {
-    const candles = await exchange.getCandles({
-      symbol: symbol.toUpperCase(),
-      timeframe: tf,
-      startTimeMs: fromMs,
-      endTimeMs: toMs
-    });
-
-    const summary = runDeterministicReplay({
-      symbol: symbol.toUpperCase(),
+if (ENABLE_REPLAY_API) {
+  app.post('/api/replay/run', async (req, res) => {
+    const {
+      symbol = LIVE_SYMBOL,
       bias,
-      timeframe: tf,
-      candles,
+      timeframe,
+      startTimeMs,
+      endTimeMs,
       depositUsd
-    });
+    } = req.body as {
+      symbol?: string;
+      bias?: Bias;
+      timeframe?: CandleTimeframe;
+      startTimeMs?: number;
+      endTimeMs?: number;
+      depositUsd?: number;
+    };
 
-    return res.json({ ok: true, summary });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'replay_failed';
-    const status = message === 'not_enough_candles_for_replay' ? 400 : 500;
-    return res.status(status).json({ error: message });
-  }
-});
+    if (bias !== 'long' && bias !== 'short') {
+      return res.status(400).json({ error: 'bias_required_long_or_short' });
+    }
+
+    const fromMs = Number(startTimeMs);
+    const toMs = Number(endTimeMs);
+    if (!Number.isFinite(fromMs) || !Number.isFinite(toMs) || toMs <= fromMs) {
+      return res.status(400).json({ error: 'invalid_time_range' });
+    }
+
+    const tf = parseTimeframe(timeframe);
+
+    try {
+      const candles = await exchange.getCandles({
+        symbol: symbol.toUpperCase(),
+        timeframe: tf,
+        startTimeMs: fromMs,
+        endTimeMs: toMs
+      });
+
+      const summary = runDeterministicReplay({
+        symbol: symbol.toUpperCase(),
+        bias,
+        timeframe: tf,
+        candles,
+        depositUsd
+      });
+
+      return res.json({ ok: true, summary });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'replay_failed';
+      const status = message === 'not_enough_candles_for_replay' ? 400 : 500;
+      return res.status(status).json({ error: message });
+    }
+  });
+}
 
 app.get('/api/live/status', async (_req, res) => {
   try {
