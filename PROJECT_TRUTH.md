@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-14 19:21 Europe/Madrid
+Последнее обновление: 2026-02-14 23:00 Europe/Madrid
 
 ## Текущая цель проекта
 Максимально быстро запустить **BTC production** на Hyperliquid в режиме controlled live:
@@ -148,18 +148,27 @@
 - Поднят HTTPS (Let's Encrypt) для `coinmaster24.com`/`www.coinmaster24.com`; включён редирект HTTP->HTTPS.
 - Публичный доступ к домену закрыт owner-only auth (Basic Auth на nginx).
 - Дашборд переведён в live-only режим: удалены тестовые/paper секции и дубли, включён HL-like terminal redesign.
+- Навигация приведена к рабочему виду: левый sidebar (`Dashboard`/`History`/`Settings`), заголовок `Trading copilot`, без лишних верхних разделов.
+- Исправлено отображение account margin: `Available to trade` считается от `accountValue - totalMarginUsed`, `Used margin` берётся из `totalMarginUsed` (вместо `withdrawable`).
+- Развёрнут новый Hetzner VPS (US) для 24/7-операций; SSH-доступ по ключу подтверждён.
+- На новом VPS подняты два изолированных OpenClaw daemon-профиля (`main` + `rescue`) с автозапуском.
+- Выполнен fast QA live-контуров: guardrails стартовых лимитов (30 USDC, max 10x, manual confirmation) подтверждены на smoke-эндпойнтах.
 
 ### In progress (P0 critical path)
 - Issue #6 (In Progress): production baseline на Hetzner (docker compose + service/runbook + healthchecks + hardening).
-- Доведение **Hyperliquid private command layer** до боевого контура (order lifecycle + отмены + контрольные проверки).
-- Закрытие safety wrappers для live: idempotency, retry/dedupe, dry-run/live, kill-switch, pre-trade risk gates.
-- Подготовка controlled live запуска на небольшой сумме с ручным подтверждением ордеров.
+- Доведение **Hyperliquid private command layer** до боевого контура (manual place/cancel/reduce-only + audit events).
+- Закрытие launch-critical safety-gaps перед масштабированием live:
+  - owner-auth для live endpoints,
+  - idempotency/retry/dedupe для submit-order,
+  - enforcement hard-stop дня 20%,
+  - enforcement агрегатного лимита портфельного плеча 10x.
+- Подготовка controlled live запуска small-size с ручным подтверждением ордеров.
 
 ### Next (execution order, fastest path)
-1. Закрыть infra/deploy P0 на VPS (compose + стабильный restart path + runbook).
-2. Финализировать end-to-end order path (manual place/cancel/leverage flow + audit events) и smoke-test без реального риска.
-3. Зафиксировать и проверить enforcement стартовых live-лимитов (30 USDC max notional, до 10x, manual confirmation ON).
-4. Провести первый controlled live запуск small-size и отправить отчёт/демо на приёмку.
+1. Закрыть security/risk blockers (owner-auth + idempotency/dedupe + hard-stop 20% + portfolio leverage cap 10x).
+2. Финализировать infra/deploy P0 на VPS (compose + стабильный restart path + runbook + healthchecks).
+3. Провести end-to-end smoke цепочки manual place/cancel/leverage/reduce-only с полным audit trail.
+4. После зелёного risk-check запустить первый controlled live small-size и отправить отчёт/демо на приёмку.
 
 ### Post-launch backlog (делаем после старта прода)
 - Расширенная статистика/аналитика UI и нефронтовые улучшения UX.
@@ -169,5 +178,6 @@
 - Политика ретенции/архивации и расширенные отчёты по журналу событий.
 
 ## Открытые вопросы (на запуск)
-- Окно первого controlled live запуска (дата/время) после проверки account connectivity.
-- Подтверждение действий по уже открытой live-позиции на аккаунте (текущее фактическое плечо выше целевого стартового лимита).
+- Окно первого controlled live запуска (дата/время) после закрытия текущих risk-blockers.
+- Подтверждение действий по уже открытой live-позиции на аккаунте (фактическое плечо может быть выше целевого стартового лимита).
+- Финальный формат owner-auth для live endpoints (какой механизм фиксируем как обязательный для production).
