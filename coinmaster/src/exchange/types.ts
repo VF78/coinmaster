@@ -42,6 +42,7 @@ export interface PositionSnapshot {
   size: number;
   entryPrice?: number;
   markPrice?: number;
+  leverage?: number;
   unrealizedPnl?: number;
   raw?: unknown;
 }

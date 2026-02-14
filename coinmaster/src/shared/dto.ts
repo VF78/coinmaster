@@ -23,11 +23,12 @@ export interface Position {
   tp1Done?: boolean;
   tp2Done?: boolean;
   tp3Done?: boolean;
+  leverage?: number;
   openedAt: string;
   closedAt?: string;
   status: PositionStatus;
   pnl: number;
-  source: 'manual' | 'sim';
+  source: 'manual' | 'sim' | 'live';
   correlationId?: string;
 }
 
@@ -105,11 +106,40 @@ export interface Stats {
   equityPct: number;
 }
 
+export interface LiveAccountSummary {
+  equityUsd?: number;
+  availableUsd?: number;
+}
+
+export interface LivePosition {
+  id: string;
+  symbol: string;
+  side: TradeSide;
+  size: number;
+  entryPrice?: number;
+  leverage?: number;
+  unrealizedPnl?: number;
+}
+
+export interface LiveDashboardState {
+  connected: boolean;
+  mode: {
+    manualConfirmation: boolean;
+    maxNotionalUsdc: number;
+    maxLeverage: number;
+  };
+  account: LiveAccountSummary | null;
+  openOrders: number;
+  openPositions: LivePosition[];
+  error?: string;
+}
+
 export interface DashboardResponse {
   activePositions: Position[];
   latestBias: Bias;
   stats: Stats;
   latestTick: MarketTick | null;
+  live: LiveDashboardState;
 }
 
 export interface HistoryResponse {

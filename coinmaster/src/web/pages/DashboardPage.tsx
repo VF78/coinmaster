@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Bias, DashboardResponse, Position, StatsPeriod } from '../../shared/dto.js';
+import type { Bias, DashboardResponse, LivePosition, Position, StatsPeriod } from '../../shared/dto.js';
 import { postBias, getDashboard } from '../lib/api';
 import { formatDate, formatMoney, formatMoneyWithPercent, formatNumber, formatPercent } from '../lib/format';
 import { Badge } from '../components/Badge';
@@ -7,6 +7,12 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
+
+function sourceLabel(source: Position['source']): string {
+  if (source === 'sim') return 'paper(sim)';
+  if (source === 'live') return 'live';
+  return 'manual';
+}
 
 export function DashboardPage() {
   const [data, setData] = useState<DashboardResponse | null>(null);
@@ -92,6 +98,32 @@ export function DashboardPage() {
       </Card>
 
       <Card
+        title="Live account (Hyperliquid)"
+        actions={<Badge tone={data.live.connected ? 'success' : 'danger'}>{data.live.connected ? 'CONNECTED' : 'DISCONNECTED'}</Badge>}
+      >
+        <div className="stats-grid">
+          <Stat
+            label="Account equity"
+            value={data.live.account?.equityUsd !== undefined ? formatMoney(data.live.account.equityUsd) : '—'}
+            tone="default"
+          />
+          <Stat
+            label="Available"
+            value={data.live.account?.availableUsd !== undefined ? formatMoney(data.live.account.availableUsd) : '—'}
+            tone="default"
+          />
+          <Stat label="Open orders" value={String(data.live.openOrders)} />
+          <Stat label="Open positions" value={String(data.live.openPositions.length)} />
+          <Stat label="Max notional" value={`${formatNumber(data.live.mode.maxNotionalUsdc)} USDC`} />
+          <Stat label="Max leverage" value={`${formatNumber(data.live.mode.maxLeverage)}x`} />
+        </div>
+        <p className="muted stat-note">
+          Manual confirmation: {data.live.mode.manualConfirmation ? 'ON' : 'OFF'}
+          {data.live.error ? ` • Live error: ${data.live.error}` : ''}
+        </p>
+      </Card>
+
+      <Card
         title="Manual bias control (BTC)"
         actions={<Button onClick={() => refresh()} variant="secondary" disabled={isLoading}>Refresh</Button>}
       >
@@ -108,18 +140,42 @@ export function DashboardPage() {
         </div>
       </Card>
 
-      <Card title="Active positions" className="full-width">
+      <Card title="Live open positions (exchange)" className="full-width">
+        <DataTable<LivePosition>
+          rows={data.live.openPositions}
+          mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
+          mobileSubtitle={(row) => `Coins: ${formatNumber(row.size)} • Lev: ${row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—'}`}
+          emptyText={data.live.connected ? 'No open live positions on exchange.' : 'Live account is not connected yet.'}
+          columns={[
+            { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
+            { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'long' ? 'success' : 'danger'}>{row.side}</Badge> },
+            { key: 'entry', header: 'Entry', render: (row) => (row.entryPrice !== undefined ? formatNumber(row.entryPrice) : '—') },
+            { key: 'coins', header: 'Coins', render: (row) => formatNumber(row.size) },
+            { key: 'lev', header: 'Leverage', render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
+            {
+              key: 'upnl',
+              header: 'uPnL',
+              render: (row) => (typeof row.unrealizedPnl === 'number'
+                ? <span className={row.unrealizedPnl >= 0 ? 'up' : 'down'}>{formatMoney(row.unrealizedPnl)}</span>
+                : '—')
+            }
+          ]}
+        />
+      </Card>
+
+      <Card title="Strategy positions (internal state)" className="full-width">
         <DataTable<Position>
           rows={data.activePositions}
           mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
           mobileSubtitle={(row) => `Coins: ${formatNumber(row.size)} • Deal: ${formatMoney(row.entryPrice * row.size)}`}
-          emptyText="No open positions. Set bias and wait for live price ticks."
+          emptyText="No open internal positions. Set bias and wait for live price ticks."
           columns={[
             { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
             { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'long' ? 'success' : 'danger'}>{row.side}</Badge> },
             { key: 'entry', header: 'Entry', render: (row) => formatNumber(row.entryPrice) },
             { key: 'coins', header: 'Coins', render: (row) => formatNumber(row.size) },
             { key: 'deal', header: 'Deal value', render: (row) => formatMoney(row.entryPrice * row.size) },
+            { key: 'lev', header: 'Leverage', render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
             { key: 'sl', header: 'Stop loss', render: (row) => formatNumber(row.stopLoss) },
             { key: 'tp', header: 'Take profit', render: (row) => formatNumber(row.takeProfit) },
             {
@@ -127,7 +183,7 @@ export function DashboardPage() {
               header: 'PnL',
               render: (row) => <span className={row.pnl >= 0 ? 'up' : 'down'}>{formatMoney(row.pnl)}</span>
             },
-            { key: 'source', header: 'Source', render: (row) => row.source }
+            { key: 'source', header: 'Source', render: (row) => sourceLabel(row.source) }
           ]}
         />
       </Card>
