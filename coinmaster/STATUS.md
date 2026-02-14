@@ -1,6 +1,6 @@
 # CoinMaster Status
 
-Updated: 2026-02-14 17:12 Europe/Madrid
+Updated: 2026-02-14 17:14 Europe/Madrid
 
 ## Current focus (Sprint 1-2 days)
 1) Production baseline on Hetzner VPS (no replay detour)
@@ -9,6 +9,7 @@ Updated: 2026-02-14 17:12 Europe/Madrid
 
 ## This hour
 - По решению Владимира сменён приоритет: historical replay поставлен на паузу, активная задача в проекте переведена на production baseline.
+- Пересобран project plan в логике "launch-critical first": всё вторичное (статистика/доработки) уходит в post-launch backlog.
 - GitHub Project синхронизирован: issue #1 (append-only trade event log) закрыт как выполненный; issue #6 выставлен `In Progress`.
 - На VPS установлен Docker Compose v2 (`docker compose` доступен), проверен текущий runtime (coinmaster service active).
 - Усилен операционный процесс: hourly Telegram-апдейт с обязательными блоками «что сделано / что протестировано / следующий шаг», после завершения — отдельный апдейт + demo/приёмка + перевод следующей задачи в In Progress.

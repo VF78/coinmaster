@@ -1,13 +1,13 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-14 17:12 Europe/Madrid
+Последнее обновление: 2026-02-14 17:14 Europe/Madrid
 
 ## Текущая цель проекта
-Построить и запустить системную полуавтоматическую торговлю на Hyperliquid:
-1) рабочая модель входа/сопровождения,
-2) paper-trading с ручным bias от Владимира,
-3) запуск BTC в production после валидации,
-4) масштабирование на ETH и SOL после успешного BTC-этапа.
+Максимально быстро запустить **BTC production** на Hyperliquid в режиме controlled live:
+1) довести обязательный production baseline (infra + execution safety),
+2) подключить live-аккаунт Владимира,
+3) запустить проверку в бою на небольшой сумме с ручным подтверждением,
+4) всё вторичное (расширенная статистика, replay-улучшения, нефронтовые улучшения) перенести на пост-стартовый этап.
 
 ## Ключевые договорённости
 - Пользователь: Владимир.
@@ -16,6 +16,11 @@
 - Сначала BTC, затем ETH/SOL только после успешного BTC.
 - Владимир задаёт ожидаемое направление; CoinMaster оценивает, ищет вход, ведёт сделку, контролирует риск.
 - Реальные входы на старте — только после явного подтверждения Владимира.
+
+## Приоритизация (owner update 2026-02-14)
+- Правило №1: **Go-live speed > всё остальное**.
+- До первого live-запуска делаем только P0-задачи, напрямую влияющие на запуск и безопасность исполнения.
+- Любые P1/P2 задачи (косметика UI, расширенная аналитика, replay-доработки, глубинные рефакторы) — только после старта прода.
 
 ## Роли и операционный контур
 - Владимир:
@@ -74,12 +79,14 @@
 - Правило исполнения для live старта сохраняется: limit-ордер по уровню close свечи-поглощения.
 
 ## Критерий успешности BTC-этапа
-- Стабильный положительный ROI в paper/guarded режиме на протяжении 4–8 недель.
+- Стабильный положительный ROI в controlled режиме (paper/guarded live) на протяжении 4–8 недель.
 
-## Параметры в работе (TODO)
-- Формально зафиксировать точный риск-бюджет портфеля для multi-asset режима (как мапить риск на сделку при общем плече до 10x).
-- Уточнить/дозагрузить более длинную историю BTC (текущий фактический диапазон API ограничен).
-- Зафиксировать итоговую v1.1-спецификацию фильтров после сравнительного отчёта.
+## P0 blockers до запуска (must-have)
+- Подключить private Hyperliquid account/trading layer для реального исполнения (account state, open orders/positions, place/cancel/reduce-only).
+- Закрыть safety wrappers перед live: idempotency, retry/dedupe, dry-run/live switch, kill-switch, pre-trade risk gates.
+- Финализировать production deployment baseline на VPS: docker compose + service restart policy + healthchecks + runbook.
+- Поднять HTTPS на домене (443 + сертификат) для стабильного внешнего доступа.
+- Зафиксировать финальные стартовые лимиты live-режима (макс риск/объём/плечо) для small-size проверки.
 
 ## Продуктовый контур (SaaS-ready)
 - Нужен web-дашборд с визуализацией:
@@ -90,6 +97,7 @@
 - Требование: архитектура сразу с заделом на SaaS и простое портирование в нативные приложения.
 - Визуальный ориентир интерфейса: `https://app.hyperliquid.xyz` (современный trading-terminal UX).
 - Статус: MVP реализован в `coinmaster`; выполнен modern responsive redesign и вынесены shared DTO для native path.
+- Политика приоритета: перед go-live оставляем только критичный минимум UI/статистики; расширенную аналитику развиваем после запуска прода.
 
 ## Технический стек и deployment (подтверждено)
 - Схема хостинга: **Web на Vercel**, **API + DB + workers на Hetzner VPS**.
@@ -120,23 +128,26 @@
 - SSH-контур на Hetzner подтверждён: root-login по SSH отключён (ожидаемо), вход работает через `coinmaster` + ключ; sudo без пароля для `coinmaster` активен.
 - Прогнаны self-checks: OpenClaw status/security, cron health, `npm run check/build` для `coinmaster` — без критических ошибок.
 
-### In progress
-- Подготовка production-контура под схему Vercel + Hetzner (issue #6 в Project: In Progress).
-- Стабилизация realtime-контура и уведомлений (доступность сервиса + Telegram alerts).
-- Доведение controlled live launch path: Hyperliquid account connectivity + manual confirmation + small-size validation.
+### In progress (P0 critical path)
+- Issue #6 (In Progress): production baseline на Hetzner (docker compose + service/runbook + healthchecks + HTTPS).
+- Реализация **Hyperliquid private command layer** (account + trading) для controlled live execution.
+- Закрытие safety wrappers для live: idempotency, retry/dedupe, dry-run/live, kill-switch, pre-trade risk gates.
+- Подготовка controlled live запуска на небольшой сумме с ручным подтверждением ордеров.
 
-### Next (1–2 дня)
-- Финализировать deployment baseline: Docker Compose + systemd + healthcheck + restart policy на Hetzner.
-- Финализировать HTTPS reverse-proxy для домена (порт 443 + сертификат) и runbook старта/остановки.
-- Реализовать **Hyperliquid private command layer** (account + trading) и подключить его к execution path.
-- Добавить/закрыть safety wrappers перед live: idempotency, retry-policy, dry-run/live switch, kill-switch, risk gates.
-- Начать controlled live проверку на небольшой сумме (с ручным подтверждением ордеров) и зафиксировать первые результаты.
-- Начать миграцию persistence: lowdb -> PostgreSQL (schema + migration + repository layer).
-- Верифицировать полноту trade-event журнала на live-сценариях и зафиксировать политику ретенции/архивации.
-- Historical replay: оставить на паузе до отдельного решения Владимира.
+### Next (execution order, fastest path)
+1. Закрыть infra/deploy P0 на VPS (compose + HTTPS + стабильный restart path).
+2. Подключить live Hyperliquid account layer и проверить end-to-end order path.
+3. Зафиксировать стартовые live-лимиты и включить manual confirmation.
+4. Провести первый controlled live запуск small-size и отправить отчёт/демо на приёмку.
 
-## Открытые вопросы
-- Финальная формула риск-бюджета для мульти-режима при общем плече до 10x.
-- Конкретный HA-план для достижения 99.99% при выходе к клиентской нагрузке (single VPS -> multi-node).
-- Политика ретенции/архивации неизменяемого trade-event лога.
-- Подтверждение целевого deployment-path: Docker-first (Compose) vs текущий systemd runtime как временный этап.
+### Post-launch backlog (делаем после старта прода)
+- Расширенная статистика/аналитика UI и нефронтовые улучшения UX.
+- Возврат к historical replay (если снова подтвердит Владимир).
+- Миграция persistence: lowdb -> PostgreSQL.
+- Расширенные тестовые/контрактные контуры для следующих бирж.
+- Политика ретенции/архивации и расширенные отчёты по журналу событий.
+
+## Открытые вопросы (на запуск)
+- Подтверждение финальных live-лимитов на старт (risk/notional/leverage для small-size режима).
+- Окно первого controlled live запуска (дата/время) после проверки account connectivity.
+- Формат безопасной передачи/подключения Hyperliquid trading credentials.
