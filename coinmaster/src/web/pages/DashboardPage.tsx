@@ -7,10 +7,12 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
+import { PositionLevelsPanel } from '../components/PositionLevelsPanel';
 
 export function DashboardPage() {
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<LivePosition | null>(null);
 
   async function refresh() {
     const next = await getDashboard();
@@ -36,7 +38,7 @@ export function DashboardPage() {
 
     const liveEquity = data.live.account?.equityUsd;
     const liveAvailable = data.live.account?.availableUsd;
-    const liveUsed = liveEquity !== undefined && liveAvailable !== undefined ? liveEquity - liveAvailable : undefined;
+    const liveUsed = data.live.account?.usedMarginUsd;
     const liveOpenPnl = data.live.openPositions.reduce((sum, p) => sum + (p.unrealizedPnl ?? 0), 0);
     const totalExposure = data.live.openPositions.reduce((sum, p) => sum + (p.dealValue ?? 0), 0);
 
@@ -53,70 +55,50 @@ export function DashboardPage() {
     return <p className="muted">Loading live terminal…</p>;
   }
 
-  const leadPosition = data.live.openPositions[0] ?? null;
-
   return (
     <main className="terminal-layout">
-      <section className="market-strip" aria-label="Live BTC market strip">
-        <div className="market-strip__pair">
-          <p className="market-strip__label">Instrument</p>
-          <h2>BTC-USD</h2>
-          <Badge tone={data.live.connected ? 'success' : 'danger'}>
-            {data.live.connected ? 'LIVE' : 'OFFLINE'}
-          </Badge>
-        </div>
-
-        <div className="market-strip__stats">
-          <article className="market-stat">
-            <span>Mark</span>
-            <strong>{data.latestTick ? formatMoney(data.latestTick.price) : '—'}</strong>
-          </article>
-          <article className="market-stat">
-            <span>Bias</span>
-            <strong>{data.latestBias.toUpperCase()}</strong>
-          </article>
-          <article className="market-stat">
-            <span>Position</span>
-            <strong>{leadPosition ? `${leadPosition.side.toUpperCase()} ${formatNumber(leadPosition.size)} BTC` : 'NONE'}</strong>
-          </article>
-          <article className="market-stat">
-            <span>Leverage</span>
-            <strong>{leadPosition?.leverage ? `${formatNumber(leadPosition.leverage)}x` : '—'}</strong>
-          </article>
-          <article className="market-stat">
-            <span>uPnL</span>
-            <strong className={(metrics.liveOpenPnl ?? 0) >= 0 ? 'up' : 'down'}>
-              {data.live.openPositions.length ? formatMoney(metrics.liveOpenPnl) : '—'}
-            </strong>
-          </article>
-        </div>
-      </section>
-
       <section className="layout-grid layout-grid--terminal">
-        <Card title="Account overview (real, Hyperliquid)" className="terminal-card">
+        <Card
+          title="Account overview (real, Hyperliquid)"
+          className="terminal-card"
+          actions={<Button onClick={() => refresh()} variant="secondary" disabled={isLoading}>Refresh data</Button>}
+        >
           <div className="stats-grid">
             <Stat label="Account equity" value={metrics.liveEquity !== undefined ? formatMoney(metrics.liveEquity) : '—'} tone="default" />
-            <Stat label="Available" value={metrics.liveAvailable !== undefined ? formatMoney(metrics.liveAvailable) : '—'} tone="default" />
+            <Stat label="Available to trade" value={metrics.liveAvailable !== undefined ? formatMoney(metrics.liveAvailable) : '—'} tone="default" />
             <Stat label="Used margin" value={metrics.liveUsed !== undefined ? formatMoney(metrics.liveUsed) : '—'} tone="default" />
             <Stat label="Open exposure" value={metrics.totalExposure > 0 ? formatMoney(metrics.totalExposure) : '—'} tone="default" />
+            <Stat
+              label="Weekly P&L"
+              value={formatMoney(data.live.pnl.weeklyNetUsd)}
+              tone={data.live.pnl.weeklyNetUsd >= 0 ? 'success' : 'danger'}
+            />
+            <Stat
+              label="Monthly P&L"
+              value={formatMoney(data.live.pnl.monthlyNetUsd)}
+              tone={data.live.pnl.monthlyNetUsd >= 0 ? 'success' : 'danger'}
+            />
             <Stat label="Open orders" value={String(data.live.openOrders)} />
             <Stat label="Open positions" value={String(data.live.openPositions.length)} />
+            <Stat
+              label="Open uPnL"
+              value={data.live.openPositions.length ? formatMoney(metrics.liveOpenPnl) : '—'}
+              tone={metrics.liveOpenPnl >= 0 ? 'success' : 'danger'}
+            />
+            <Stat label="BTC mark" value={data.latestTick ? formatMoney(data.latestTick.price) : '—'} />
           </div>
           <p className="muted stat-note">
-            Manual confirmation: <strong>{data.live.mode.manualConfirmation ? 'ON' : 'OFF'}</strong>
-            {' • '}Limits: <strong>{formatNumber(data.live.mode.maxNotionalUsdc)} USDC</strong> notional / <strong>{formatNumber(data.live.mode.maxLeverage)}x</strong> leverage
-            {data.live.error ? ` • Live error: ${data.live.error}` : ''}
+            Status: <Badge tone={data.live.connected ? 'success' : 'danger'}>{data.live.connected ? 'CONNECTED' : 'DISCONNECTED'}</Badge>
+            {' • '}Manual confirmation: <strong>{data.live.mode.manualConfirmation ? 'ON' : 'OFF'}</strong>
+            {' • '}Limits: <strong>{formatNumber(data.live.mode.maxNotionalUsdc)} USDC</strong> / <strong>{formatNumber(data.live.mode.maxLeverage)}x</strong>
           </p>
           <p className="muted stat-note">
             Last market update: {data.latestTick ? formatDate(data.latestTick.timestamp) : '—'}
+            {data.live.error ? ` • Live error: ${data.live.error}` : ''}
           </p>
         </Card>
 
-        <Card
-          title="Execution controls"
-          className="terminal-card terminal-card--narrow"
-          actions={<Button onClick={() => refresh()} variant="secondary" disabled={isLoading}>Refresh</Button>}
-        >
+        <Card title="Execution controls" className="terminal-card terminal-card--narrow">
           <p className="stack-row">
             Current signal:
             <Badge tone={data.latestBias === 'off' ? 'neutral' : data.latestBias === 'long' ? 'success' : 'danger'}>
@@ -158,10 +140,32 @@ export function DashboardPage() {
               render: (row) => (typeof row.unrealizedPnl === 'number'
                 ? <span className={row.unrealizedPnl >= 0 ? 'up' : 'down'}>{formatMoney(row.unrealizedPnl)}</span>
                 : '—')
+            },
+            {
+              key: 'manage',
+              header: 'Manage',
+              render: (row) => (
+                <Button variant="secondary" onClick={() => setSelectedPosition(row)}>
+                  Chart + SL/TP
+                </Button>
+              )
             }
           ]}
         />
       </Card>
+
+      {selectedPosition ? (
+        <Card title="Position chart / risk levels" className="full-width terminal-card">
+          <PositionLevelsPanel
+            position={selectedPosition}
+            onClose={() => setSelectedPosition(null)}
+            onApplied={async () => {
+              await refresh();
+              setSelectedPosition(null);
+            }}
+          />
+        </Card>
+      ) : null}
     </main>
   );
 }

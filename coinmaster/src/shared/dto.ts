@@ -109,6 +109,14 @@ export interface Stats {
 export interface LiveAccountSummary {
   equityUsd?: number;
   availableUsd?: number;
+  usedMarginUsd?: number;
+}
+
+export interface LivePnlSummary {
+  weeklyNetUsd: number;
+  monthlyNetUsd: number;
+  weeklyRealizedUsd: number;
+  monthlyRealizedUsd: number;
 }
 
 export interface LivePosition {
@@ -133,6 +141,7 @@ export interface LiveDashboardState {
     maxLeverage: number;
   };
   account: LiveAccountSummary | null;
+  pnl: LivePnlSummary;
   openOrders: number;
   openPositions: LivePosition[];
   error?: string;
@@ -149,6 +158,89 @@ export interface HistoryResponse {
   logs: TradeLog[];
   events: TradeEvent[];
   stats: Stats;
+}
+
+export interface LiveFill {
+  id: string;
+  symbol: string;
+  side: 'buy' | 'sell';
+  direction?: string;
+  price: number;
+  size: number;
+  feeUsd?: number;
+  closedPnlUsd?: number;
+  timestamp: string;
+}
+
+export interface LiveHistoryResponse {
+  fills: LiveFill[];
+}
+
+export interface LiveCandle {
+  timestamp: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+export interface LiveCandlesResponse {
+  symbol: string;
+  timeframe: '1m' | '5m' | '15m' | '1h' | '4h';
+  candles: LiveCandle[];
+}
+
+export interface LivePositionLevelsPayload {
+  symbol: string;
+  side: TradeSide;
+  size: number;
+  stopLoss: number;
+  takeProfit: number;
+  confirm?: boolean;
+}
+
+export interface LivePositionLevelsResponse {
+  ok: boolean;
+  symbol: string;
+  side: TradeSide;
+  size: number;
+  stopLoss: number;
+  takeProfit: number;
+  cancelAllResult?: {
+    ok: boolean;
+    error?: string;
+  };
+  stopLossOrder?: {
+    ok: boolean;
+    orderId?: string;
+    error?: string;
+  };
+  takeProfitOrder?: {
+    ok: boolean;
+    orderId?: string;
+    error?: string;
+  };
+  error?: string;
+}
+
+export interface ExchangeSettingsResponse {
+  exchange: string;
+  connected: boolean;
+  accountAddress?: string;
+  walletAddress?: string;
+  mode: {
+    manualConfirmation: boolean;
+    maxNotionalUsdc: number;
+    maxLeverage: number;
+  };
+  account: LiveAccountSummary | null;
+  capabilities: {
+    privateAccount: boolean;
+    privateTrading: boolean;
+    realtimeMids: boolean;
+  };
+  error?: string;
 }
 
 export interface BiasPayload {

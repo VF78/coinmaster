@@ -6,13 +6,13 @@ import { fileURLToPath } from 'node:url';
 import { nanoid } from 'nanoid';
 import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
-import { getStats, submitBias } from '../core/services.js';
+import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
-import { Bias, StatsPeriod } from '../core/types.js';
+import { Bias } from '../core/types.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { CandleTimeframe, OrderIntent } from '../exchange/types.js';
-import { buildLiveDashboardState } from './liveSnapshot.js';
+import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,6 +33,12 @@ const ENABLE_PAPER_ENGINE = String(process.env.ENABLE_PAPER_ENGINE ?? 'false').t
 const ENABLE_SIMULATION_API = String(process.env.ENABLE_SIMULATION_API ?? 'false').toLowerCase() === 'true';
 const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLowerCase() === 'true';
 
+const LIVE_MODE = {
+  manualConfirmation: LIVE_MANUAL_CONFIRMATION,
+  maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
+  maxLeverage: LIVE_MAX_LEVERAGE
+};
+
 const exchange = new HyperliquidAdapter();
 
 let ingestBusy = false;
@@ -41,15 +47,19 @@ let restFallbackTimer: NodeJS.Timeout | null = null;
 let midStreamHandle: MidStreamHandle | null = null;
 let latestLiveTick: { symbol: string; price: number; timestamp: string } | null = null;
 
-function parsePeriod(raw: unknown): StatsPeriod {
-  return raw === 'week' ? 'week' : 'month';
-}
-
 function parseTimeframe(raw: unknown): CandleTimeframe {
   if (raw === '1m' || raw === '5m' || raw === '15m' || raw === '1h' || raw === '4h') {
     return raw;
   }
   return '5m';
+}
+
+function timeframeToMs(timeframe: CandleTimeframe): number {
+  if (timeframe === '1m') return 60_000;
+  if (timeframe === '5m') return 5 * 60_000;
+  if (timeframe === '15m') return 15 * 60_000;
+  if (timeframe === '1h') return 60 * 60_000;
+  return 4 * 60 * 60_000;
 }
 
 function normalizeSymbol(raw: unknown): string {
@@ -62,6 +72,13 @@ function toTradeSide(side: 'buy' | 'sell'): 'long' | 'short' {
 
 function isConfirmed(raw: unknown): boolean {
   return raw === true;
+}
+
+function maskAddress(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const v = value.trim();
+  if (v.length <= 10) return v;
+  return `${v.slice(0, 6)}…${v.slice(-4)}`;
 }
 
 async function ingestPrice(symbol: string, price: number, _source: 'ws' | 'rest') {
@@ -176,29 +193,64 @@ app.get('/api/dashboard', async (_req, res) => {
     }
   }
 
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, {
-    manualConfirmation: LIVE_MANUAL_CONFIRMATION,
-    maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
-    maxLeverage: LIVE_MAX_LEVERAGE
-  });
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, LIVE_MODE);
 
   res.json({ latestBias, latestTick: latestTick ?? null, live });
 });
 
-app.get('/api/history', async (req, res) => {
-  const period = parsePeriod(req.query.period);
-  const db = await getDb();
-  const cutoffTs = Date.now() - (period === 'week' ? 7 : 30) * 24 * 60 * 60 * 1000;
+app.get('/api/live/history', async (_req, res) => {
+  try {
+    const fills = await exchange.getFills(LIVE_SYMBOL);
+    const rows = fills
+      .map(toLiveFill)
+      .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 
-  const closedPositions = db.data.positions
-    .filter((p) => p.status === 'closed' && Date.parse(p.closedAt ?? p.openedAt) >= cutoffTs)
-    .sort((a, b) => b.openedAt.localeCompare(a.openedAt));
+    return res.json({ fills: rows });
+  } catch (error) {
+    return res.status(500).json({
+      fills: [],
+      error: error instanceof Error ? error.message : 'live_history_failed'
+    });
+  }
+});
 
-  res.json({
-    closedPositions,
-    logs: db.data.tradeLogs.slice(-100).reverse(),
-    events: db.data.tradeEvents.slice(-200).reverse(),
-    stats: getStats(db.data, { period })
+app.get('/api/live/candles', async (req, res) => {
+  const symbol = normalizeSymbol(req.query.symbol);
+  const timeframe = parseTimeframe(req.query.timeframe);
+  const limit = Math.max(50, Math.min(500, Number(req.query.limit) || 200));
+  const endTimeMs = Date.now();
+  const startTimeMs = endTimeMs - timeframeToMs(timeframe) * (limit + 5);
+
+  try {
+    const candles = await exchange.getCandles({ symbol, timeframe, startTimeMs, endTimeMs });
+    const rows = candles.slice(-limit);
+    return res.json({ symbol, timeframe, candles: rows });
+  } catch (error) {
+    return res.status(500).json({
+      symbol,
+      timeframe,
+      candles: [],
+      error: error instanceof Error ? error.message : 'live_candles_failed'
+    });
+  }
+});
+
+app.get('/api/settings/exchange', async (_req, res) => {
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, LIVE_MODE);
+
+  return res.json({
+    exchange: exchange.name,
+    connected: live.connected,
+    accountAddress: maskAddress(process.env.HYPERLIQUID_ACCOUNT_ADDRESS),
+    walletAddress: maskAddress(process.env.HYPERLIQUID_API_WALLET_ADDRESS),
+    mode: LIVE_MODE,
+    account: live.account,
+    capabilities: {
+      privateAccount: exchange.capabilities.privateAccount,
+      privateTrading: exchange.capabilities.privateTrading,
+      realtimeMids: exchange.capabilities.realtimeMids
+    },
+    error: live.error
   });
 });
 
@@ -284,30 +336,11 @@ if (ENABLE_REPLAY_API) {
 }
 
 app.get('/api/live/status', async (_req, res) => {
-  try {
-    const [account, openOrders, openPositions] = await Promise.all([
-      exchange.getAccountState(),
-      exchange.getOpenOrders(LIVE_SYMBOL),
-      exchange.getOpenPositions(LIVE_SYMBOL)
-    ]);
-
-    return res.json({
-      ok: true,
-      mode: {
-        manualConfirmation: LIVE_MANUAL_CONFIRMATION,
-        maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
-        maxLeverage: LIVE_MAX_LEVERAGE
-      },
-      account,
-      openOrders,
-      openPositions
-    });
-  } catch (error) {
-    return res.status(500).json({
-      ok: false,
-      error: error instanceof Error ? error.message : 'live_status_failed'
-    });
-  }
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, LIVE_MODE);
+  return res.json({
+    ok: live.connected,
+    ...live
+  });
 });
 
 app.post('/api/live/leverage', async (req, res) => {
@@ -332,6 +365,114 @@ app.post('/api/live/leverage', async (req, res) => {
 
   const result = await exchange.setLeverage(normalizeSymbol(symbol), lev);
   return res.status(result.ok ? 200 : 400).json({ ok: result.ok, result });
+});
+
+app.post('/api/live/position/levels', async (req, res) => {
+  const {
+    symbol = LIVE_SYMBOL,
+    side,
+    size,
+    stopLoss,
+    takeProfit,
+    confirm
+  } = req.body as {
+    symbol?: string;
+    side?: 'long' | 'short';
+    size?: number;
+    stopLoss?: number;
+    takeProfit?: number;
+    confirm?: boolean;
+  };
+
+  if (side !== 'long' && side !== 'short') {
+    return res.status(400).json({ ok: false, error: 'invalid_side' });
+  }
+
+  const normalizedSymbol = normalizeSymbol(symbol);
+  const qty = Number(size);
+  const sl = Number(stopLoss);
+  const tp = Number(takeProfit);
+
+  if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(sl) || sl <= 0 || !Number.isFinite(tp) || tp <= 0) {
+    return res.status(400).json({ ok: false, error: 'invalid_size_or_levels' });
+  }
+
+  const sideMismatch = side === 'long' ? !(sl < tp) : !(sl > tp);
+  if (sideMismatch) {
+    return res.status(400).json({ ok: false, error: 'invalid_level_order' });
+  }
+
+  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+    return res.status(409).json({
+      ok: false,
+      error: 'manual_confirmation_required',
+      hint: 'resend with {"confirm": true}'
+    });
+  }
+
+  const closingSide: 'buy' | 'sell' = side === 'long' ? 'sell' : 'buy';
+  const cancelAllResult = await exchange.cancelAll(normalizedSymbol);
+
+  if (!cancelAllResult.ok) {
+    return res.status(400).json({
+      ok: false,
+      symbol: normalizedSymbol,
+      side,
+      size: qty,
+      stopLoss: sl,
+      takeProfit: tp,
+      cancelAllResult: {
+        ok: false,
+        error: cancelAllResult.error
+      },
+      error: 'cancel_existing_orders_failed'
+    });
+  }
+
+  const slOrder = await exchange.placeTriggerOrder({
+    symbol: normalizedSymbol,
+    side: closingSide,
+    size: qty,
+    triggerPrice: sl,
+    kind: 'sl',
+    reduceOnly: true,
+    clientOrderId: `sl-${nanoid()}`
+  });
+
+  const tpOrder = await exchange.placeTriggerOrder({
+    symbol: normalizedSymbol,
+    side: closingSide,
+    size: qty,
+    triggerPrice: tp,
+    kind: 'tp',
+    reduceOnly: true,
+    clientOrderId: `tp-${nanoid()}`
+  });
+
+  const ok = slOrder.ok && tpOrder.ok;
+  return res.status(ok ? 200 : 400).json({
+    ok,
+    symbol: normalizedSymbol,
+    side,
+    size: qty,
+    stopLoss: sl,
+    takeProfit: tp,
+    cancelAllResult: {
+      ok: cancelAllResult.ok,
+      error: cancelAllResult.error
+    },
+    stopLossOrder: {
+      ok: slOrder.ok,
+      orderId: slOrder.orderId,
+      error: slOrder.error
+    },
+    takeProfitOrder: {
+      ok: tpOrder.ok,
+      orderId: tpOrder.orderId,
+      error: tpOrder.error
+    },
+    error: ok ? undefined : 'set_levels_failed'
+  });
 });
 
 app.post('/api/live/order/limit', async (req, res) => {

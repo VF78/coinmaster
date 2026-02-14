@@ -12,7 +12,8 @@ import {
   OrderAck,
   OrderIntent,
   OrderSnapshot,
-  PositionSnapshot
+  PositionSnapshot,
+  TriggerOrderIntent
 } from './types.js';
 
 export interface ExchangeAdapter {
@@ -32,6 +33,7 @@ export interface ExchangeAdapter {
 
   // Trading
   placeLimitOrder(intent: OrderIntent): Promise<OrderAck>;
+  placeTriggerOrder(intent: TriggerOrderIntent): Promise<OrderAck>;
   cancelOrder(orderIdOrClientId: string): Promise<CommandResult>;
   cancelAll(symbol?: string): Promise<CommandResult>;
   placeReduceOnlyExit(intent: OrderIntent): Promise<OrderAck>;

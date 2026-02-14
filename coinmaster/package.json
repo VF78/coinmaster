@@ -19,6 +19,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "hyperliquid": "^1.7.7",
+    "lightweight-charts": "^4.2.3",
     "lowdb": "^7.0.1",
     "nanoid": "^5.0.7",
     "react": "^18.3.1",

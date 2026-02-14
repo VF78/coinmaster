@@ -23,6 +23,7 @@ export interface InstrumentMeta {
 export interface AccountSnapshot {
   equityUsd?: number;
   availableUsd?: number;
+  usedMarginUsd?: number;
   raw?: unknown;
 }
 
@@ -62,6 +63,16 @@ export interface OrderIntent {
   side: 'buy' | 'sell';
   price: number;
   size: number;
+  reduceOnly?: boolean;
+  clientOrderId?: string;
+}
+
+export interface TriggerOrderIntent {
+  symbol: string;
+  side: 'buy' | 'sell';
+  size: number;
+  triggerPrice: number;
+  kind: 'tp' | 'sl';
   reduceOnly?: boolean;
   clientOrderId?: string;
 }

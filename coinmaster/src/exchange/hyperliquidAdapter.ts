@@ -13,7 +13,8 @@ import {
   OrderAck,
   OrderIntent,
   OrderSnapshot,
-  PositionSnapshot
+  PositionSnapshot,
+  TriggerOrderIntent
 } from './types.js';
 
 interface HyperliquidAdapterOptions {
@@ -138,12 +139,19 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     const user = this.requireAccountAddress();
     const state = await this.requestInfo<any>({ type: 'clearinghouseState', user });
 
-    const accountValue = this.toNumber(state?.marginSummary?.accountValue ?? state?.crossMarginSummary?.accountValue);
+    const accountValue = this.toNumber(state?.crossMarginSummary?.accountValue ?? state?.marginSummary?.accountValue);
+    const marginUsed = this.toNumber(state?.crossMarginSummary?.totalMarginUsed ?? state?.marginSummary?.totalMarginUsed);
     const withdrawable = this.toNumber(state?.withdrawable);
+
+    const availableToTrade =
+      accountValue !== undefined
+        ? Math.max(0, Number((accountValue - (marginUsed ?? 0)).toFixed(6)))
+        : undefined;
 
     return {
       equityUsd: accountValue,
-      availableUsd: withdrawable,
+      availableUsd: availableToTrade ?? withdrawable,
+      usedMarginUsd: marginUsed,
       raw: state
     };
   }
@@ -268,6 +276,46 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         ok: false,
         clientOrderId: intent.clientOrderId,
         error: error instanceof Error ? error.message : 'order_failed'
+      };
+    }
+  }
+
+  async placeTriggerOrder(intent: TriggerOrderIntent): Promise<OrderAck> {
+    try {
+      const client = await this.getTradingClient();
+      const response = await client.exchange.placeOrder({
+        coin: this.toSdkCoin(intent.symbol),
+        is_buy: intent.side === 'buy',
+        sz: intent.size,
+        limit_px: intent.triggerPrice,
+        order_type: {
+          trigger: {
+            triggerPx: intent.triggerPrice,
+            isMarket: true,
+            tpsl: intent.kind
+          }
+        },
+        reduce_only: Boolean(intent.reduceOnly ?? true),
+        cloid: intent.clientOrderId
+      } as any);
+
+      const first = response?.response?.data?.statuses?.[0];
+      const oid = first?.resting?.oid ?? first?.filled?.oid;
+      const ok = String(response?.status ?? '').toLowerCase() === 'ok' || Boolean(oid);
+
+      return {
+        ok,
+        orderId: oid !== undefined ? String(oid) : undefined,
+        clientOrderId: intent.clientOrderId,
+        status: first?.resting ? 'resting' : first?.filled ? 'filled' : response?.status,
+        raw: response,
+        error: ok ? undefined : 'trigger_order_failed'
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        clientOrderId: intent.clientOrderId,
+        error: error instanceof Error ? error.message : 'trigger_order_failed'
       };
     }
   }

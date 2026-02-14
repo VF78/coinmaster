@@ -65,5 +65,5 @@
 - После завершения задачи: отдельное Telegram-сообщение о завершении + предложение demo/приёмки + перевод следующей задачи в `In Progress`.
 - Перед увеличением live-риска/объёма обязателен полный quality/risk-check execution-контуров (реальные деньги => приоритет безопасности выше скорости расширения).
 - Перед масштабированием live обязательно закрыть launch-critical risk-gaps: owner-auth на live endpoints, idempotency/dedupe submit path, enforcement hard-stop дня 20% и агрегатного лимита плеча портфеля 10x.
-- Для устойчивости инфраструктуры OpenClaw на VPS используется схема с двумя изолированными профилями/daemon (`main` + `rescue`).
+- На VPS действительно подняты два изолированных OpenClaw-профиля/daemon (`main` + `rescue`), но по уточнению Владимира rescue-контур не относится к CoinMaster и обслуживает другую задачу; к проектному контуру CoinMaster не привязывать по умолчанию.
 - Для cron-уведомлений в Telegram использовать `delivery.mode=none` и отправку через `message` tool внутри job payload, чтобы избежать спама системными ошибками при model cooldown/rate-limit.
