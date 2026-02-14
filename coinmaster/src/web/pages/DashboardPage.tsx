@@ -43,82 +43,42 @@ export function DashboardPage() {
   }
 
   const pnlTone = data.stats.openPnl >= 0 ? 'success' : 'danger';
+  const liveEquity = data.live.account?.equityUsd;
+  const liveAvailable = data.live.account?.availableUsd;
+  const liveUsed = liveEquity !== undefined && liveAvailable !== undefined ? liveEquity - liveAvailable : undefined;
 
   return (
     <main className="layout-grid">
       <Card
-        title="Performance overview"
-        actions={
-          <div className="period-switch" role="tablist" aria-label="Performance period">
-            <button
-              type="button"
-              className={period === 'week' ? 'period-switch__btn period-switch__btn--active' : 'period-switch__btn'}
-              onClick={() => setPeriod('week')}
-            >
-              Week
-            </button>
-            <button
-              type="button"
-              className={period === 'month' ? 'period-switch__btn period-switch__btn--active' : 'period-switch__btn'}
-              onClick={() => setPeriod('month')}
-            >
-              Month
-            </button>
-          </div>
-        }
+        title="Live account overview (Hyperliquid)"
+        actions={<Badge tone={data.live.connected ? 'success' : 'danger'}>{data.live.connected ? 'CONNECTED' : 'DISCONNECTED'}</Badge>}
       >
         <div className="stats-grid">
           <Stat
-            label="Equity"
-            value={`${formatMoney(data.stats.equityUsd)} (${formatPercent(data.stats.equityPct)})`}
-            tone={data.stats.equityPct >= 0 ? 'success' : 'danger'}
-          />
-          <Stat label="Closed trades" value={String(data.stats.totalTrades)} />
-          <Stat label="Win rate" value={`${formatNumber(data.stats.winRate)}%`} />
-          <Stat
-            label="Realized PnL"
-            value={formatMoneyWithPercent(data.stats.realizedPnl, data.stats.realizedPnlPct)}
-            tone={data.stats.realizedPnl >= 0 ? 'success' : 'danger'}
+            label="Account equity (real)"
+            value={liveEquity !== undefined ? formatMoney(liveEquity) : '—'}
+            tone="default"
           />
           <Stat
-            label="Open PnL"
-            value={formatMoneyWithPercent(data.stats.openPnl, data.stats.openPnlPct)}
-            tone={pnlTone}
+            label="Available (real)"
+            value={liveAvailable !== undefined ? formatMoney(liveAvailable) : '—'}
+            tone="default"
           />
+          <Stat
+            label="Used margin (real)"
+            value={liveUsed !== undefined ? formatMoney(liveUsed) : '—'}
+            tone="default"
+          />
+          <Stat label="Open orders" value={String(data.live.openOrders)} />
+          <Stat label="Open positions" value={String(data.live.openPositions.length)} />
           <Stat
             label="BTC price (live, 5m)"
             value={data.latestTick ? formatMoney(data.latestTick.price) : '—'}
           />
         </div>
         <p className="muted stat-note">
-          {data.latestTick
-            ? `Last update: ${formatDate(data.latestTick.timestamp)} • Auto refresh every 5 minutes`
-            : 'Price feed pending…'}
-        </p>
-      </Card>
-
-      <Card
-        title="Live account (Hyperliquid)"
-        actions={<Badge tone={data.live.connected ? 'success' : 'danger'}>{data.live.connected ? 'CONNECTED' : 'DISCONNECTED'}</Badge>}
-      >
-        <div className="stats-grid">
-          <Stat
-            label="Account equity"
-            value={data.live.account?.equityUsd !== undefined ? formatMoney(data.live.account.equityUsd) : '—'}
-            tone="default"
-          />
-          <Stat
-            label="Available"
-            value={data.live.account?.availableUsd !== undefined ? formatMoney(data.live.account.availableUsd) : '—'}
-            tone="default"
-          />
-          <Stat label="Open orders" value={String(data.live.openOrders)} />
-          <Stat label="Open positions" value={String(data.live.openPositions.length)} />
-          <Stat label="Max notional" value={`${formatNumber(data.live.mode.maxNotionalUsdc)} USDC`} />
-          <Stat label="Max leverage" value={`${formatNumber(data.live.mode.maxLeverage)}x`} />
-        </div>
-        <p className="muted stat-note">
           Manual confirmation: {data.live.mode.manualConfirmation ? 'ON' : 'OFF'}
+          {' • '}Limits: {formatNumber(data.live.mode.maxNotionalUsdc)} USDC max notional / {formatNumber(data.live.mode.maxLeverage)}x max leverage
           {data.live.error ? ` • Live error: ${data.live.error}` : ''}
         </p>
       </Card>
@@ -163,12 +123,60 @@ export function DashboardPage() {
         />
       </Card>
 
-      <Card title="Strategy positions (internal state)" className="full-width">
+      <Card
+        title="Strategy performance (paper/sim only)"
+        actions={
+          <div className="period-switch" role="tablist" aria-label="Performance period">
+            <button
+              type="button"
+              className={period === 'week' ? 'period-switch__btn period-switch__btn--active' : 'period-switch__btn'}
+              onClick={() => setPeriod('week')}
+            >
+              Week
+            </button>
+            <button
+              type="button"
+              className={period === 'month' ? 'period-switch__btn period-switch__btn--active' : 'period-switch__btn'}
+              onClick={() => setPeriod('month')}
+            >
+              Month
+            </button>
+          </div>
+        }
+      >
+        <div className="stats-grid">
+          <Stat
+            label="Equity"
+            value={`${formatMoney(data.stats.equityUsd)} (${formatPercent(data.stats.equityPct)})`}
+            tone={data.stats.equityPct >= 0 ? 'success' : 'danger'}
+          />
+          <Stat label="Closed trades" value={String(data.stats.totalTrades)} />
+          <Stat label="Win rate" value={`${formatNumber(data.stats.winRate)}%`} />
+          <Stat
+            label="Realized PnL"
+            value={formatMoneyWithPercent(data.stats.realizedPnl, data.stats.realizedPnlPct)}
+            tone={data.stats.realizedPnl >= 0 ? 'success' : 'danger'}
+          />
+          <Stat
+            label="Open PnL"
+            value={formatMoneyWithPercent(data.stats.openPnl, data.stats.openPnlPct)}
+            tone={pnlTone}
+          />
+          <Stat label="Latest bias" value={data.latestBias.toUpperCase()} />
+        </div>
+        <p className="muted stat-note">
+          {data.latestTick
+            ? `Last update: ${formatDate(data.latestTick.timestamp)} • Auto refresh every 5 minutes`
+            : 'Price feed pending…'}
+        </p>
+      </Card>
+
+      <Card title="Strategy positions (internal/paper state)" className="full-width">
         <DataTable<Position>
           rows={data.activePositions}
           mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
           mobileSubtitle={(row) => `Coins: ${formatNumber(row.size)} • Deal: ${formatMoney(row.entryPrice * row.size)}`}
-          emptyText="No open internal positions. Set bias and wait for live price ticks."
+          emptyText="No open internal positions."
           columns={[
             { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
             { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'long' ? 'success' : 'danger'}>{row.side}</Badge> },
