@@ -117,6 +117,10 @@ export interface LivePosition {
   side: TradeSide;
   size: number;
   entryPrice?: number;
+  dealValue?: number;
+  stopLoss?: number;
+  takeProfit?: number;
+  openedAt?: string;
   leverage?: number;
   unrealizedPnl?: number;
 }

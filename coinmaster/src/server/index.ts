@@ -11,7 +11,7 @@ import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, StatsPeriod } from '../core/types.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { CandleTimeframe, OrderIntent } from '../exchange/types.js';
+import type { CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot } from '../exchange/types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,6 +57,78 @@ function toTradeSide(side: 'buy' | 'sell'): 'long' | 'short' {
 
 function isConfirmed(raw: unknown): boolean {
   return raw === true;
+}
+
+function toFiniteNumber(value: unknown): number | undefined {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+function isReduceOnlyOrder(order: OrderSnapshot): boolean {
+  const raw = (order.raw ?? {}) as Record<string, unknown>;
+  const reduceOnly = raw.reduceOnly;
+  if (reduceOnly === true || reduceOnly === 'true' || reduceOnly === 1 || reduceOnly === '1') return true;
+  if (reduceOnly === false || reduceOnly === 'false' || reduceOnly === 0 || reduceOnly === '0') return false;
+  return true; // fallback when adapter/raw does not expose reduceOnly flag
+}
+
+function pickStopLossAndTakeProfit(position: PositionSnapshot, openOrders: OrderSnapshot[]) {
+  const entry = position.entryPrice;
+  if (!entry || entry <= 0) {
+    return { stopLoss: undefined as number | undefined, takeProfit: undefined as number | undefined };
+  }
+
+  const closingSide: 'buy' | 'sell' = position.side === 'long' ? 'sell' : 'buy';
+  const candidates = openOrders
+    .filter((o) => o.symbol === position.symbol && o.side === closingSide)
+    .filter(isReduceOnlyOrder);
+
+  if (!candidates.length) {
+    return { stopLoss: undefined as number | undefined, takeProfit: undefined as number | undefined };
+  }
+
+  const aboveEntry = candidates
+    .filter((o) => o.price > entry)
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
+
+  const belowEntry = candidates
+    .filter((o) => o.price < entry)
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
+
+  if (position.side === 'long') {
+    return {
+      stopLoss: belowEntry[0]?.price,
+      takeProfit: aboveEntry[0]?.price
+    };
+  }
+
+  return {
+    stopLoss: aboveEntry[0]?.price,
+    takeProfit: belowEntry[0]?.price
+  };
+}
+
+function pickOpenedAt(position: PositionSnapshot, fills: FillEvent[]): string | undefined {
+  const openingSide: 'buy' | 'sell' = position.side === 'long' ? 'buy' : 'sell';
+  const bySymbolAndSide = fills.filter((f) => f.symbol === position.symbol && f.side === openingSide);
+  if (!bySymbolAndSide.length) return undefined;
+
+  const entry = position.entryPrice;
+  const withScore = bySymbolAndSide
+    .map((f) => ({
+      fill: f,
+      timestampMs: Date.parse(f.timestamp),
+      relDiff: entry && entry > 0 ? Math.abs(f.price - entry) / entry : 0
+    }))
+    .filter((x) => Number.isFinite(x.timestampMs));
+
+  if (!withScore.length) return undefined;
+
+  const nearEntry = entry && entry > 0 ? withScore.filter((x) => x.relDiff <= 0.03) : withScore;
+  const pool = nearEntry.length ? nearEntry : withScore;
+
+  pool.sort((a, b) => b.timestampMs - a.timestampMs);
+  return pool[0]?.fill.timestamp;
 }
 
 async function ingestPrice(symbol: string, price: number, _source: 'ws' | 'rest') {
@@ -168,6 +240,10 @@ app.get('/api/dashboard', async (req, res) => {
       side: 'long' | 'short';
       size: number;
       entryPrice?: number;
+      dealValue?: number;
+      stopLoss?: number;
+      takeProfit?: number;
+      openedAt?: string;
       leverage?: number;
       unrealizedPnl?: number;
     }>,
@@ -175,10 +251,11 @@ app.get('/api/dashboard', async (req, res) => {
   };
 
   try {
-    const [account, openOrders, openPositions] = await Promise.all([
+    const [account, openOrders, openPositions, fills] = await Promise.all([
       exchange.getAccountState(),
       exchange.getOpenOrders(LIVE_SYMBOL),
-      exchange.getOpenPositions(LIVE_SYMBOL)
+      exchange.getOpenPositions(LIVE_SYMBOL),
+      exchange.getFills(LIVE_SYMBOL)
     ]);
 
     live = {
@@ -186,15 +263,28 @@ app.get('/api/dashboard', async (req, res) => {
       connected: true,
       account: account ? { equityUsd: account.equityUsd, availableUsd: account.availableUsd } : null,
       openOrders: openOrders.length,
-      openPositions: openPositions.map((p) => ({
-        id: `${p.symbol}-${p.side}-${p.entryPrice ?? 0}-${p.size}`,
-        symbol: p.symbol,
-        side: p.side,
-        size: p.size,
-        entryPrice: p.entryPrice,
-        leverage: p.leverage,
-        unrealizedPnl: p.unrealizedPnl
-      })),
+      openPositions: openPositions.map((p) => {
+        const { stopLoss, takeProfit } = pickStopLossAndTakeProfit(p, openOrders);
+        const openedAt = pickOpenedAt(p, fills);
+        const rawPositionValue = toFiniteNumber(
+          (p.raw as { position?: { positionValue?: unknown } } | undefined)?.position?.positionValue
+        );
+        const dealValue = rawPositionValue ?? (p.entryPrice ? p.entryPrice * p.size : undefined);
+
+        return {
+          id: `${p.symbol}-${p.side}-${p.entryPrice ?? 0}-${p.size}`,
+          symbol: p.symbol,
+          side: p.side,
+          size: p.size,
+          entryPrice: p.entryPrice,
+          dealValue,
+          stopLoss,
+          takeProfit,
+          openedAt,
+          leverage: p.leverage,
+          unrealizedPnl: p.unrealizedPnl
+        };
+      }),
       error: undefined
     };
   } catch (error) {

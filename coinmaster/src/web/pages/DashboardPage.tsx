@@ -1,18 +1,12 @@
 import { useEffect, useState } from 'react';
-import type { Bias, DashboardResponse, LivePosition, Position } from '../../shared/dto.js';
+import type { Bias, DashboardResponse, LivePosition } from '../../shared/dto.js';
 import { postBias, getDashboard } from '../lib/api';
-import { formatMoney, formatNumber } from '../lib/format';
+import { formatDate, formatMoney, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
-
-function sourceLabel(source: Position['source']): string {
-  if (source === 'sim') return 'paper(sim)';
-  if (source === 'live') return 'live';
-  return 'manual';
-}
 
 export function DashboardPage() {
   const [data, setData] = useState<DashboardResponse | null>(null);
@@ -77,9 +71,7 @@ export function DashboardPage() {
         </p>
       </Card>
 
-      <Card
-        title="Manual bias control (BTC)"
-      >
+      <Card title="Manual bias control (BTC)">
         <p className="stack-row">
           Current signal:{' '}
           <Badge tone={data.latestBias === 'off' ? 'neutral' : data.latestBias === 'long' ? 'success' : 'danger'}>
@@ -97,14 +89,22 @@ export function DashboardPage() {
         <DataTable<LivePosition>
           rows={data.live.openPositions}
           mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
-          mobileSubtitle={(row) => `Coins: ${formatNumber(row.size)} • Lev: ${row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—'}`}
+          mobileSubtitle={(row) => {
+            const dealValue = row.dealValue !== undefined ? formatMoney(row.dealValue) : '—';
+            const lev = row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—';
+            return `Deal: ${dealValue} • Lev: ${lev}`;
+          }}
           emptyText={data.live.connected ? 'No open live positions on exchange.' : 'Live account is not connected yet.'}
           columns={[
             { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
             { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'long' ? 'success' : 'danger'}>{row.side}</Badge> },
             { key: 'entry', header: 'Entry', render: (row) => (row.entryPrice !== undefined ? formatNumber(row.entryPrice) : '—') },
             { key: 'coins', header: 'Coins', render: (row) => formatNumber(row.size) },
+            { key: 'deal', header: 'Deal value', render: (row) => (row.dealValue !== undefined ? formatMoney(row.dealValue) : '—') },
             { key: 'lev', header: 'Leverage', render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
+            { key: 'sl', header: 'Stop loss', render: (row) => (row.stopLoss !== undefined ? formatNumber(row.stopLoss) : '—') },
+            { key: 'tp', header: 'Take profit', render: (row) => (row.takeProfit !== undefined ? formatNumber(row.takeProfit) : '—') },
+            { key: 'openedAt', header: 'Opened at', render: (row) => (row.openedAt ? formatDate(row.openedAt) : '—') },
             {
               key: 'upnl',
               header: 'uPnL',
@@ -112,31 +112,6 @@ export function DashboardPage() {
                 ? <span className={row.unrealizedPnl >= 0 ? 'up' : 'down'}>{formatMoney(row.unrealizedPnl)}</span>
                 : '—')
             }
-          ]}
-        />
-      </Card>
-
-      <Card title="Strategy positions (internal/paper state)" className="full-width">
-        <DataTable<Position>
-          rows={data.activePositions}
-          mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
-          mobileSubtitle={(row) => `Coins: ${formatNumber(row.size)} • Deal: ${formatMoney(row.entryPrice * row.size)}`}
-          emptyText="No open internal positions."
-          columns={[
-            { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
-            { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'long' ? 'success' : 'danger'}>{row.side}</Badge> },
-            { key: 'entry', header: 'Entry', render: (row) => formatNumber(row.entryPrice) },
-            { key: 'coins', header: 'Coins', render: (row) => formatNumber(row.size) },
-            { key: 'deal', header: 'Deal value', render: (row) => formatMoney(row.entryPrice * row.size) },
-            { key: 'lev', header: 'Leverage', render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
-            { key: 'sl', header: 'Stop loss', render: (row) => formatNumber(row.stopLoss) },
-            { key: 'tp', header: 'Take profit', render: (row) => formatNumber(row.takeProfit) },
-            {
-              key: 'pnl',
-              header: 'PnL',
-              render: (row) => <span className={row.pnl >= 0 ? 'up' : 'down'}>{formatMoney(row.pnl)}</span>
-            },
-            { key: 'source', header: 'Source', render: (row) => sourceLabel(row.source) }
           ]}
         />
       </Card>
