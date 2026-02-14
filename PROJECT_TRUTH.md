@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-14 17:19 Europe/Madrid
+Последнее обновление: 2026-02-14 18:22 Europe/Madrid
 
 ## Текущая цель проекта
 Максимально быстро запустить **BTC production** на Hyperliquid в режиме controlled live:
@@ -128,17 +128,19 @@
 - Реализован foundation append-only trade-event журнала (`tradeEvents`) с hash-chain (`seq`, `prevHash`, `hash`) и вшит в lifecycle: bias/signal/order/partial/close.
 - SSH-контур на Hetzner подтверждён: root-login по SSH отключён (ожидаемо), вход работает через `coinmaster` + ключ; sudo без пароля для `coinmaster` активен.
 - Прогнаны self-checks: OpenClaw status/security, cron health, `npm run check/build` для `coinmaster` — без критических ошибок.
+- Подключены Hyperliquid credentials на VPS (`/opt/coinmaster/.env`, owner-only perms), account connectivity подтверждена.
+- В дашборд добавлены live-данные аккаунта Hyperliquid: equity/available/open positions + открытая сделка с плечом.
 
 ### In progress (P0 critical path)
 - Issue #6 (In Progress): production baseline на Hetzner (docker compose + service/runbook + healthchecks + HTTPS).
-- Реализация **Hyperliquid private command layer** (account + trading) для controlled live execution.
+- Доведение **Hyperliquid private command layer** до боевого контура (order lifecycle + отмены + контрольные проверки).
 - Закрытие safety wrappers для live: idempotency, retry/dedupe, dry-run/live, kill-switch, pre-trade risk gates.
 - Подготовка controlled live запуска на небольшой сумме с ручным подтверждением ордеров.
 
 ### Next (execution order, fastest path)
 1. Закрыть infra/deploy P0 на VPS (compose + HTTPS + стабильный restart path).
-2. Подключить live Hyperliquid account layer и проверить end-to-end order path.
-3. Применить подтверждённые стартовые live-лимиты (30 USDC max notional, до 10x, manual confirmation ON) в execution config.
+2. Финализировать end-to-end order path (manual place/cancel/leverage flow + audit events) и smoke-test без реального риска.
+3. Зафиксировать и проверить enforcement стартовых live-лимитов (30 USDC max notional, до 10x, manual confirmation ON).
 4. Провести первый controlled live запуск small-size и отправить отчёт/демо на приёмку.
 
 ### Post-launch backlog (делаем после старта прода)
@@ -150,4 +152,4 @@
 
 ## Открытые вопросы (на запуск)
 - Окно первого controlled live запуска (дата/время) после проверки account connectivity.
-- Формат безопасной передачи/подключения Hyperliquid trading credentials (выбрать и выполнить прямо сейчас).
+- Подтверждение действий по уже открытой live-позиции на аккаунте (текущее фактическое плечо выше целевого стартового лимита).
