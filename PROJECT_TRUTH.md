@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-14 17:14 Europe/Madrid
+Последнее обновление: 2026-02-14 17:19 Europe/Madrid
 
 ## Текущая цель проекта
 Максимально быстро запустить **BTC production** на Hyperliquid в режиме controlled live:
@@ -66,6 +66,7 @@
 - Тайм-стоп: не используется.
 - В production на старте: ручное подтверждение; в тестировании — информирование.
 - Ограничение по суммарному плечу (портфель): до 10x.
+- Стартовый live-лимит для первого боевого режима: **max notional 30 USDC**, **плечо до 10x**, **manual confirmation = ON**.
 
 ## Контур тестирования (обновлено)
 - Классический массовый бэктест признан вторичным, т.к. реальные сделки фильтруются ручным bias Владимира.
@@ -137,7 +138,7 @@
 ### Next (execution order, fastest path)
 1. Закрыть infra/deploy P0 на VPS (compose + HTTPS + стабильный restart path).
 2. Подключить live Hyperliquid account layer и проверить end-to-end order path.
-3. Зафиксировать стартовые live-лимиты и включить manual confirmation.
+3. Применить подтверждённые стартовые live-лимиты (30 USDC max notional, до 10x, manual confirmation ON) в execution config.
 4. Провести первый controlled live запуск small-size и отправить отчёт/демо на приёмку.
 
 ### Post-launch backlog (делаем после старта прода)
@@ -148,6 +149,5 @@
 - Политика ретенции/архивации и расширенные отчёты по журналу событий.
 
 ## Открытые вопросы (на запуск)
-- Подтверждение финальных live-лимитов на старт (risk/notional/leverage для small-size режима).
 - Окно первого controlled live запуска (дата/время) после проверки account connectivity.
-- Формат безопасной передачи/подключения Hyperliquid trading credentials.
+- Формат безопасной передачи/подключения Hyperliquid trading credentials (выбрать и выполнить прямо сейчас).
