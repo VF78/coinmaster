@@ -1,23 +1,24 @@
 # CoinMaster Status
 
-Updated: 2026-02-13 21:51 Europe/Madrid
+Updated: 2026-02-14 16:13 Europe/Madrid
 
 ## Current focus (Sprint 1-2 days)
-1) Exchange-agnostic adapter layer (baseline done, expanding commands)
-2) Append-only trade event log (foundation done, wired)
-3) Historical replay engine (next in coding)
-4) Postgres migration baseline (pending)
-5) Hetzner deploy baseline + runbook (pending)
+1) Deterministic historical replay engine (started)
+2) Exchange-agnostic adapter layer (expand commands)
+3) Postgres migration baseline
+4) Hetzner deploy baseline + HTTPS runbook
 
 ## This hour
-- Implemented append-only `tradeEvents` journal with tamper-evident hash chain (`seq`, `prevHash`, `hash`).
-- Wired event writes into lifecycle: bias, signal_detected, order_submitted/ack/rejected, partial_fill, position_closed.
-- Extended API `GET /api/history` to return `events` and updated History UI with new “Trade event journal (append-only)” table.
-- Added DB-shape migration guard for old JSON files and updated seed flow.
-- Passed checks: `npm run check`, `npm run build`; smoke-tested API event chain + lifecycle trigger locally.
+- Провёл self-diagnosis: OpenClaw status/security audit/update status, cron health, локальные `npm run check/build`.
+- Подтверждён доступ к Hetzner: SSH работает через `coinmaster`, root SSH отключён по hardening (ожидаемо), sudo для `coinmaster` без пароля активен.
+- Запустил replay-задачу в коде:
+  - добавлен `src/core/replay.ts` (deterministic replay по close свечи),
+  - расширен `runSimulationStep` (timestamp/mode для replay),
+  - добавлен API `POST /api/replay/run`.
+- Smoke-test replay через Hyperliquid candles выполнен успешно.
 
 ## Blockers / help needed
-- None right now.
+- Нужен confirm приоритета: сначала UI/отчёт replay, либо сразу Docker/Compose + HTTPS на VPS.
 
 ## Next hour target
-- Start historical replay engine (deterministic candle-close execution path + reportable run summary).
+- Сделать первый user-facing replay report (короткая сводка + метрики ROI/DD/winrate) и подготовить интеграцию в UI/операционный поток.

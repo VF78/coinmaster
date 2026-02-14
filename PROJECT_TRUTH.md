@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-13 23:00 Europe/Madrid
+Последнее обновление: 2026-02-14 16:13 Europe/Madrid
 
 ## Текущая цель проекта
 Построить и запустить системную полуавтоматическую торговлю на Hyperliquid:
@@ -118,19 +118,21 @@
 - Зафиксированы ключевые risk-параметры v1.
 - Зафиксированы ответы Владимира по full-exit/bias/режиму подтверждения.
 - Реализован foundation append-only trade-event журнала (`tradeEvents`) с hash-chain (`seq`, `prevHash`, `hash`) и вшит в lifecycle: bias/signal/order/partial/close.
+- SSH-контур на Hetzner подтверждён: root-login по SSH отключён (ожидаемо), вход работает через `coinmaster` + ключ; sudo без пароля для `coinmaster` активен.
+- Прогнаны self-checks: OpenClaw status/security, cron health, `npm run check/build` для `coinmaster` — без критических ошибок.
 
 ### In progress
-- Paper-мониторинг BTC по новой логике engulfing/sweep (5m/15m) с bias-командами.
+- Paper-мониторинг BTC по логике engulfing/sweep (5m/15m) с bias-командами.
 - Стабилизация realtime-контура и уведомлений (доступность сервиса + Telegram alerts).
 - Подготовка production-контура под схему Vercel + Hetzner.
-- Блокер деплоя: ожидание разового добавления SSH-ключа на Hetzner VPS для старта hardening/deploy (TODO до следующего шага).
+- Старт deterministic historical replay: добавлен core-движок + API endpoint `POST /api/replay/run` (исполнение по close свечи), начат прогон/калибровка отчётных метрик.
 
 ### Next (1–2 дня)
-- Реализовать historical replay-режим для ускоренной проверки сетапов без ожидания реального времени.
+- Довести replay-контур до рабочего UX: preset диапазонов, краткий отчёт в UI/Telegram, сохранение результатов прогона.
 - Начать миграцию persistence: lowdb -> PostgreSQL (schema + migration + repository layer).
 - Верифицировать полноту trade-event журнала на replay/live сценариях и зафиксировать политику ретенции/архивации.
-- Подготовить deployment baseline: Docker Compose + systemd + healthcheck + restart policy на Hetzner.
-- Описать runbook старта/остановки и ручного подтверждения сделок для controlled production launch.
+- Закрыть deployment baseline: Docker Compose + systemd + healthcheck + restart policy на Hetzner.
+- Финализировать HTTPS reverse-proxy для домена (порт 443 + сертификат) и runbook старта/остановки.
 - Добавить отдельный контур **Hyperliquid API command layer** и реализовать набор v1-команд для работы движка:
   - market/info: mids, candles (1m/5m/15m/1h/4h), instrument metadata;
   - account: account state, open orders, positions/fills;
@@ -142,4 +144,4 @@
 - Финальная формула риск-бюджета для мульти-режима при общем плече до 10x.
 - Конкретный HA-план для достижения 99.99% при выходе к клиентской нагрузке (single VPS -> multi-node).
 - Политика ретенции/архивации неизменяемого trade-event лога.
-- TODO: подтверждён ли на стороне сервера импорт SSH-ключа для `coinmaster-prod-01` (без этого не стартует фактический hardening/deploy).
+- Подтверждение целевого deployment-path: Docker-first (Compose) vs текущий systemd runtime как временный этап.

@@ -4,10 +4,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { getDb } from '../core/db.js';
+import { runDeterministicReplay } from '../core/replay.js';
 import { getStats, submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { Bias, StatsPeriod } from '../core/types.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
+import type { CandleTimeframe } from '../exchange/types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +32,13 @@ let midStreamHandle: MidStreamHandle | null = null;
 
 function parsePeriod(raw: unknown): StatsPeriod {
   return raw === 'week' ? 'week' : 'month';
+}
+
+function parseTimeframe(raw: unknown): CandleTimeframe {
+  if (raw === '1m' || raw === '5m' || raw === '15m' || raw === '1h' || raw === '4h') {
+    return raw;
+  }
+  return '5m';
 }
 
 async function ingestPrice(symbol: string, price: number, _source: 'ws' | 'rest') {
@@ -168,6 +177,59 @@ app.post('/api/simulate/tick', async (req, res) => {
   const signal = runSimulationStep(db.data, symbol.toUpperCase(), Number(price));
   await db.write();
   return res.json({ ok: true, signal });
+});
+
+app.post('/api/replay/run', async (req, res) => {
+  const {
+    symbol = LIVE_SYMBOL,
+    bias,
+    timeframe,
+    startTimeMs,
+    endTimeMs,
+    depositUsd
+  } = req.body as {
+    symbol?: string;
+    bias?: Bias;
+    timeframe?: CandleTimeframe;
+    startTimeMs?: number;
+    endTimeMs?: number;
+    depositUsd?: number;
+  };
+
+  if (bias !== 'long' && bias !== 'short') {
+    return res.status(400).json({ error: 'bias_required_long_or_short' });
+  }
+
+  const fromMs = Number(startTimeMs);
+  const toMs = Number(endTimeMs);
+  if (!Number.isFinite(fromMs) || !Number.isFinite(toMs) || toMs <= fromMs) {
+    return res.status(400).json({ error: 'invalid_time_range' });
+  }
+
+  const tf = parseTimeframe(timeframe);
+
+  try {
+    const candles = await exchange.getCandles({
+      symbol: symbol.toUpperCase(),
+      timeframe: tf,
+      startTimeMs: fromMs,
+      endTimeMs: toMs
+    });
+
+    const summary = runDeterministicReplay({
+      symbol: symbol.toUpperCase(),
+      bias,
+      timeframe: tf,
+      candles,
+      depositUsd
+    });
+
+    return res.json({ ok: true, summary });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'replay_failed';
+    const status = message === 'not_enough_candles_for_replay' ? 400 : 500;
+    return res.status(status).json({ error: message });
+  }
 });
 
 app.use(express.static(distDir));

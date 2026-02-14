@@ -30,9 +30,15 @@ function closeChunk(position: Position, price: number, qty: number) {
   return round2(realized);
 }
 
-export function runSimulationStep(db: DBShape, rawSymbol: string, price: number) {
+interface SimulationStepOptions {
+  timestamp?: string;
+  mode?: 'paper' | 'replay';
+}
+
+export function runSimulationStep(db: DBShape, rawSymbol: string, price: number, options: SimulationStepOptions = {}) {
   const symbol = rawSymbol.toUpperCase();
-  const now = new Date().toISOString();
+  const now = options.timestamp ?? new Date().toISOString();
+  const mode = options.mode ?? 'paper';
   const stepCorrelationId = nanoid();
   const riskPct = Number((RISK_PER_TRADE * 100).toFixed(2));
   const stopCapPct = Number((STOP_CAP_PCT * 100).toFixed(2));
@@ -98,7 +104,7 @@ export function runSimulationStep(db: DBShape, rawSymbol: string, price: number)
       payload: {
         riskPct,
         stopCapPct,
-        mode: 'paper'
+        mode
       }
     });
 

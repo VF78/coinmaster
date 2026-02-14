@@ -44,6 +44,7 @@
 - Replay-исполнение: вход считаем **по close свечи-поглощения** (не по внутрисвечному касанию).
 - Стартовый live execution: **limit по уровню close свечи-поглощения**.
 - На этапе single-operator хранение ключей допустимо в `.env` на VPS; позже переход на secret manager.
+- Доступ к VPS по SSH: рабочий пользователь `coinmaster`; root-login по SSH отключён в рамках hardening (ожидаемое состояние).
 - В ближайшем плане обязателен отдельный **Hyperliquid API command layer** (market/account/trading + safety wrappers + audit events).
 - Архитектурное требование: интеграции бирж делать через exchange-agnostic adapter layer с возможностью подключения Bybit/Binance и др.
 

@@ -53,6 +53,7 @@ npm run start    # run API only
 - `GET /api/history` (includes legacy `logs` + append-only `events`)
 - `POST /api/bias` body `{ "symbol": "BTC", "bias": "long|short|off" }`
 - `POST /api/simulate/tick` body `{ "symbol": "BTC", "price": 43000 }`
+- `POST /api/replay/run` body `{ "symbol": "BTC", "bias": "short|long", "timeframe": "5m", "startTimeMs": 1739700000000, "endTimeMs": 1739786400000 }`
 
 ## Project structure highlights
 - `src/shared/dto.ts` → transport/domain DTOs shared across clients.
