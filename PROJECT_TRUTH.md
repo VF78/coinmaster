@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-14 16:13 Europe/Madrid
+Последнее обновление: 2026-02-14 17:12 Europe/Madrid
 
 ## Текущая цель проекта
 Построить и запустить системную полуавтоматическую торговлю на Hyperliquid:
@@ -64,15 +64,14 @@
 
 ## Контур тестирования (обновлено)
 - Классический массовый бэктест признан вторичным, т.к. реальные сделки фильтруются ручным bias Владимира.
-- Основной режим валидации: **виртуальная торговля (paper forward test)**
-  - Владимир даёт bias-команду,
-  - CoinMaster ищет точку входа,
-  - система открывает виртуальную позицию,
-  - далее фиксирует stop/partial/exit,
-  - следующий bias-сигнал и цикл повторяется.
-- Горизонт первичной проверки: 1 неделя, затем 4–8 недель стабильности.
-- Ускоренная проверка гипотез: **historical replay по ручной отмашке** (Владимир «закрывает правую часть графика», отмечает потенциальный сетап, система прокручивает исторические данные от точки сигнала и показывает результат сделки по тем же risk/MM-правилам).
-- Правило исполнения для replay/analysis: вход фиксируется **только по close свечи-поглощения** (не по внутрисвечному касанию).
+- По решению Владимира (2026-02-14): **historical replay временно на паузе**; приоритет смещён на доведение production-контура и проверку в бою на небольшой сумме.
+- Основной ближайший режим: **controlled live launch (small-size)**
+  - сначала доводим VPS/деплой до production baseline,
+  - подключаем Hyperliquid account layer,
+  - включаем ручное подтверждение ордеров,
+  - запускаем проверку на небольшой сумме с жёстким risk-контролем,
+  - фиксируем полный audit trail и результаты.
+- Правило исполнения для live старта сохраняется: limit-ордер по уровню close свечи-поглощения.
 
 ## Критерий успешности BTC-этапа
 - Стабильный положительный ROI в paper/guarded режиме на протяжении 4–8 недель.
@@ -122,23 +121,19 @@
 - Прогнаны self-checks: OpenClaw status/security, cron health, `npm run check/build` для `coinmaster` — без критических ошибок.
 
 ### In progress
-- Paper-мониторинг BTC по логике engulfing/sweep (5m/15m) с bias-командами.
+- Подготовка production-контура под схему Vercel + Hetzner (issue #6 в Project: In Progress).
 - Стабилизация realtime-контура и уведомлений (доступность сервиса + Telegram alerts).
-- Подготовка production-контура под схему Vercel + Hetzner.
-- Старт deterministic historical replay: добавлен core-движок + API endpoint `POST /api/replay/run` (исполнение по close свечи), начат прогон/калибровка отчётных метрик.
+- Доведение controlled live launch path: Hyperliquid account connectivity + manual confirmation + small-size validation.
 
 ### Next (1–2 дня)
-- Довести replay-контур до рабочего UX: preset диапазонов, краткий отчёт в UI/Telegram, сохранение результатов прогона.
-- Начать миграцию persistence: lowdb -> PostgreSQL (schema + migration + repository layer).
-- Верифицировать полноту trade-event журнала на replay/live сценариях и зафиксировать политику ретенции/архивации.
-- Закрыть deployment baseline: Docker Compose + systemd + healthcheck + restart policy на Hetzner.
+- Финализировать deployment baseline: Docker Compose + systemd + healthcheck + restart policy на Hetzner.
 - Финализировать HTTPS reverse-proxy для домена (порт 443 + сертификат) и runbook старта/остановки.
-- Добавить отдельный контур **Hyperliquid API command layer** и реализовать набор v1-команд для работы движка:
-  - market/info: mids, candles (1m/5m/15m/1h/4h), instrument metadata;
-  - account: account state, open orders, positions/fills;
-  - trading: place limit, cancel (single/all), reduce-only exit, leverage setup;
-  - safety: idempotency (cloid), retry-policy, dry-run/live switch, audit-event на каждую API-команду.
-- Вынести exchange-интеграцию в adapter-контракт (exchange-agnostic execution layer), чтобы подключать **Bybit/Binance** без переписывания стратегии и risk/MM.
+- Реализовать **Hyperliquid private command layer** (account + trading) и подключить его к execution path.
+- Добавить/закрыть safety wrappers перед live: idempotency, retry-policy, dry-run/live switch, kill-switch, risk gates.
+- Начать controlled live проверку на небольшой сумме (с ручным подтверждением ордеров) и зафиксировать первые результаты.
+- Начать миграцию persistence: lowdb -> PostgreSQL (schema + migration + repository layer).
+- Верифицировать полноту trade-event журнала на live-сценариях и зафиксировать политику ретенции/архивации.
+- Historical replay: оставить на паузе до отдельного решения Владимира.
 
 ## Открытые вопросы
 - Финальная формула риск-бюджета для мульти-режима при общем плече до 10x.

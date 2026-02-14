@@ -1,24 +1,20 @@
 # CoinMaster Status
 
-Updated: 2026-02-14 16:13 Europe/Madrid
+Updated: 2026-02-14 17:12 Europe/Madrid
 
 ## Current focus (Sprint 1-2 days)
-1) Deterministic historical replay engine (started)
-2) Exchange-agnostic adapter layer (expand commands)
-3) Postgres migration baseline
-4) Hetzner deploy baseline + HTTPS runbook
+1) Production baseline on Hetzner VPS (no replay detour)
+2) Hyperliquid account connectivity for controlled live test (small size)
+3) Safety wrappers + manual confirmation in live flow
 
 ## This hour
-- Провёл self-diagnosis: OpenClaw status/security audit/update status, cron health, локальные `npm run check/build`.
-- Подтверждён доступ к Hetzner: SSH работает через `coinmaster`, root SSH отключён по hardening (ожидаемо), sudo для `coinmaster` без пароля активен.
-- Запустил replay-задачу в коде:
-  - добавлен `src/core/replay.ts` (deterministic replay по close свечи),
-  - расширен `runSimulationStep` (timestamp/mode для replay),
-  - добавлен API `POST /api/replay/run`.
-- Smoke-test replay через Hyperliquid candles выполнен успешно.
+- По решению Владимира сменён приоритет: historical replay поставлен на паузу, активная задача в проекте переведена на production baseline.
+- GitHub Project синхронизирован: issue #1 (append-only trade event log) закрыт как выполненный; issue #6 выставлен `In Progress`.
+- На VPS установлен Docker Compose v2 (`docker compose` доступен), проверен текущий runtime (coinmaster service active).
+- Усилен операционный процесс: hourly Telegram-апдейт с обязательными блоками «что сделано / что протестировано / следующий шаг», после завершения — отдельный апдейт + demo/приёмка + перевод следующей задачи в In Progress.
 
 ## Blockers / help needed
-- Нужен confirm приоритета: сначала UI/отчёт replay, либо сразу Docker/Compose + HTTPS на VPS.
+- Для подключения live-аккаунта Hyperliquid нужен доступ к trading credentials (в формате, который согласует Владимир) и лимит первого боевого риска.
 
 ## Next hour target
-- Сделать первый user-facing replay report (короткая сводка + метрики ROI/DD/winrate) и подготовить интеграцию в UI/операционный поток.
+- Подготовить production runbook на VPS (Docker/Compose + health/restart + HTTPS baseline) и начать интеграцию private Hyperliquid command layer под controlled live launch.
