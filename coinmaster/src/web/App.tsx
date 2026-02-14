@@ -7,15 +7,15 @@ export function App() {
   const [page, setPage] = useState<'dashboard' | 'history'>('dashboard');
 
   useEffect(() => {
-    document.title = page === 'dashboard' ? 'Paper Trading Dashboard' : 'Trade History & Stats';
+    document.title = page === 'dashboard' ? 'CoinMaster Dashboard' : 'Trade History & Stats';
   }, [page]);
 
   return (
     <div className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Paper trading</p>
-          <h1>Control Panel</h1>
+          <p className="eyebrow">CoinMaster</p>
+          <h1>Trading Control Panel</h1>
         </div>
         <nav aria-label="Main navigation" className="nav-tabs">
           <Button variant={page === 'dashboard' ? 'primary' : 'secondary'} onClick={() => setPage('dashboard')}>
