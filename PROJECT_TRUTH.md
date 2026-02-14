@@ -1,6 +1,6 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-02-14 18:22 Europe/Madrid
+Последнее обновление: 2026-02-14 19:21 Europe/Madrid
 
 ## Текущая цель проекта
 Максимально быстро запустить **BTC production** на Hyperliquid в режиме controlled live:
@@ -86,7 +86,6 @@
 - Подключить private Hyperliquid account/trading layer для реального исполнения (account state, open orders/positions, place/cancel/reduce-only).
 - Закрыть safety wrappers перед live: idempotency, retry/dedupe, dry-run/live switch, kill-switch, pre-trade risk gates.
 - Финализировать production deployment baseline на VPS: docker compose + service restart policy + healthchecks + runbook.
-- Поднять HTTPS на домене (443 + сертификат) для стабильного внешнего доступа.
 - Зафиксировать финальные стартовые лимиты live-режима (макс риск/объём/плечо) для small-size проверки.
 
 ## Продуктовый контур (SaaS-ready)
@@ -99,6 +98,22 @@
 - Визуальный ориентир интерфейса: `https://app.hyperliquid.xyz` (современный trading-terminal UX).
 - Статус: MVP реализован в `coinmaster`; выполнен modern responsive redesign и вынесены shared DTO для native path.
 - Политика приоритета: перед go-live оставляем только критичный минимум UI/статистики; расширенную аналитику развиваем после запуска прода.
+
+### UI/UX baseline (обязательно для всех следующих страниц)
+1. **Стиль:** тёмный trading terminal, HL-like визуальная подача (плотные панели, чёткая иерархия, data-first layout, минимальный «маркетинговый» шум).
+2. **Данные в проде:** только актуальные live-данные аккаунта/позиций/ордеров. Тестовые/paper/replay блоки в production UI не показывать.
+3. **Типографика:** основной шрифт Inter/system sans; числовые значения отображать в tabular-режиме (`tnum`) для стабильного выравнивания.
+4. **Цветовая семантика:**
+   - нейтральный текст/фон — холодные синие/графитовые оттенки,
+   - long/profit/ok — mint/green,
+   - short/loss/error — rose/red,
+   - без случайных цветов вне семантики.
+5. **Компоненты:** единый стиль карточек, таблиц, бейджей и кнопок; радиусы/бордеры/отступы консистентны между страницами.
+6. **Адаптив:** mobile-first; критичные торговые действия доступны с телефона без горизонтального скролла форм; таблицы имеют mobile-card fallback.
+7. **Приоритет контента:** сверху market/account strip, далее execution controls, далее live positions/orders/journal. Важные метрики всегда «над фолдом».
+8. **Точность и читаемость:** денежные/ценовые значения форматировать единообразно; показывать время последнего live-update и состояние подключения.
+9. **Доступность и UX-гигиена:** заметный focus state, кликабельные элементы достаточного размера, читаемый контраст, явные состояния disabled/loading/error.
+10. **Архитектурный принцип UI:** новые страницы строить на общем дизайн-слое (tokens + shared components), без локальных «одноразовых» стилей.
 
 ## Технический стек и deployment (подтверждено)
 - Схема хостинга: **Web на Vercel**, **API + DB + workers на Hetzner VPS**.
@@ -130,15 +145,18 @@
 - Прогнаны self-checks: OpenClaw status/security, cron health, `npm run check/build` для `coinmaster` — без критических ошибок.
 - Подключены Hyperliquid credentials на VPS (`/opt/coinmaster/.env`, owner-only perms), account connectivity подтверждена.
 - В дашборд добавлены live-данные аккаунта Hyperliquid: equity/available/open positions + открытая сделка с плечом.
+- Поднят HTTPS (Let's Encrypt) для `coinmaster24.com`/`www.coinmaster24.com`; включён редирект HTTP->HTTPS.
+- Публичный доступ к домену закрыт owner-only auth (Basic Auth на nginx).
+- Дашборд переведён в live-only режим: удалены тестовые/paper секции и дубли, включён HL-like terminal redesign.
 
 ### In progress (P0 critical path)
-- Issue #6 (In Progress): production baseline на Hetzner (docker compose + service/runbook + healthchecks + HTTPS).
+- Issue #6 (In Progress): production baseline на Hetzner (docker compose + service/runbook + healthchecks + hardening).
 - Доведение **Hyperliquid private command layer** до боевого контура (order lifecycle + отмены + контрольные проверки).
 - Закрытие safety wrappers для live: idempotency, retry/dedupe, dry-run/live, kill-switch, pre-trade risk gates.
 - Подготовка controlled live запуска на небольшой сумме с ручным подтверждением ордеров.
 
 ### Next (execution order, fastest path)
-1. Закрыть infra/deploy P0 на VPS (compose + HTTPS + стабильный restart path).
+1. Закрыть infra/deploy P0 на VPS (compose + стабильный restart path + runbook).
 2. Финализировать end-to-end order path (manual place/cancel/leverage flow + audit events) и smoke-test без реального риска.
 3. Зафиксировать и проверить enforcement стартовых live-лимитов (30 USDC max notional, до 10x, manual confirmation ON).
 4. Провести первый controlled live запуск small-size и отправить отчёт/демо на приёмку.
