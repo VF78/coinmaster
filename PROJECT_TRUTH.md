@@ -24,13 +24,30 @@
 - Проектный трекинг обязателен в двух местах: `PROJECT_TRUTH.md` + GitHub Project (новые задачи, обновление статусов, актуальный `In Progress`).
 
 ### Model & token-efficiency policy (owner update 2026-02-15)
-- До отдельного подтверждения подключения других провайдеров: **работаем только на `openai-codex/gpt-5.3-codex`**.
-- Для снижения расхода токенов/лимитов:
-  - кодовые изменения делаем малыми инкрементами (small diffs), без удержания всего проекта в активном контексте;
-  - по умолчанию `/think low|minimal` для простых/операционных задач;
-  - `/think high|xhigh` только для сложных архитектурных/критичных участков.
+- Базовая модель по умолчанию: **`openai-codex/gpt-5.3-codex`**.
+- Claude Opus 4.6 подключён как резерв/инструмент для сложных задач.
+
+#### Rules: switching models to stay available 24/7
+- Switch to **Claude (`anthropic/claude-opus-4-6`)** when:
+  1) Codex возвращает `rate_limit` / `cooldown` / `usage limit`.
+  2) Codex лимиты близко к исчерпанию:
+     - `warning` если **Day < 30%** или **5h < 30%**.
+     - `critical` если **Day < 15%** или **5h < 15%**.
+  3) Задача архитектурно сложная (рефактор/аудит/сложная интеграция) — Claude разрешён даже без cooldown.
+- Return back to **Codex** после завершения тяжёлого блока или когда Codex снова доступен.
+- Каждый switch должен иметь явную причину в статусе (cooldown|limit|complexity).
+
+#### Rules: think level
+- `off|minimal`: операционка, статусы, мелкие проверки.
+- `low`: маленькие правки кода (1–3 файла), простой багфикс.
+- `medium`: неочевидный баг/интеграция нескольких модулей.
+- `high|xhigh`: архитектура, сложный рефактор, критичные risk/execution участки.
+
+#### Rules: truthful progress notifications (cron)
 - Hourly cron-статус должен быть «правдивым»: сообщение только при подтверждённом артефакте (commit/push/deploy/изменение статуса задачи), иначе явный статус «нет подтверждённого прогресса».
 - Перед сообщением о завершении задачи обязательно обновлять статус в GitHub Project (Done + следующий In Progress).
+- В hourly status добавлять строку:
+  - `Model/Usage: Codex <day%>/<5h%> | Claude <tokens or no-%> | policy=<normal|warning|critical>`.
 
 ## Роли и операционный контур
 - Владимир:
