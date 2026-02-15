@@ -177,8 +177,8 @@
 - Дашборд переведён в live-only режим: удалены тестовые/paper секции и дубли, включён HL-like terminal redesign.
 - Навигация приведена к рабочему виду: левый sidebar (`Dashboard`/`History`/`Settings`), заголовок `Trading copilot`, без лишних верхних разделов.
 - Исправлено отображение account margin: `Available to trade` считается от `accountValue - totalMarginUsed`, `Used margin` берётся из `totalMarginUsed` (вместо `withdrawable`).
-- Развёрнут новый Hetzner VPS (US) для 24/7-операций; SSH-доступ по ключу подтверждён.
-- На новом VPS подняты два изолированных OpenClaw daemon-профиля (`main` + `rescue`) с автозапуском.
+- План 24/7 доступности пересобран: **единственный рабочий контур CoinMaster (OpenClaw) переносим на production VPS `46.225.133.161` (`coinmaster24.com`)**, чтобы не было расслоения контекста; локальный Mac остаётся как cold-резерв.
+- Важно: сервер `5.78.138.147` — **чужой (сервер друга)** и не относится к CoinMaster; OpenClaw/Telegram/рабочие данные там не использовать.
 - Выполнен fast QA live-контуров: guardrails стартовых лимитов (30 USDC, max 10x, manual confirmation) подтверждены на smoke-эндпойнтах.
 
 ### In progress (P0 critical path)
@@ -197,7 +197,7 @@
 2. Финализировать infra/deploy P0 на VPS (compose + стабильный restart path + runbook + healthchecks).
 3. Провести end-to-end smoke цепочки manual place/cancel/leverage/reduce-only с полным audit trail.
 4. После зелёного risk-check запустить первый controlled live small-size и отправить отчёт/демо на приёмку.
-5. Отдельной задачей после текущего релизного цикла: перенос рабочего контура CoinMaster на VPS `46.225.133.161` (план миграции + проверка каналов/моделей/доступов + cutover без потери управления).
+5. **CUTOVER (P0):** перенести CoinMaster OpenClaw на VPS `46.225.133.161` и сделать его единственным источником Telegram/cron (план миграции + проверка моделей/каналов/доступов + отключение Telegram/cron на Mac после оживления VPS).
 
 ### Очередь после завершения текущей задачи (owner-approved)
 - UI rename/label polishing (без изменения цветовой схемы и общего визуального стиля):
@@ -233,7 +233,7 @@
 - Миграция persistence: lowdb -> PostgreSQL.
 - Расширенные тестовые/контрактные контуры для следующих бирж.
 - Политика ретенции/архивации и расширенные отчёты по журналу событий.
-- Перенос рабочего контура CoinMaster на VPS `46.225.133.161` (после текущего релизного цикла).
+- Перенос рабочего контура CoinMaster на VPS `46.225.133.161` (**P0 cutover**, чтобы избежать расслоения контекста).
 
 ## Открытые вопросы (на запуск)
 - Окно первого controlled live запуска (дата/время) после закрытия текущих risk-blockers.
