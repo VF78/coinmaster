@@ -1,6 +1,6 @@
 import type { ExchangeAdapter } from '../exchange/adapter.js';
 import type { FillEvent, OrderSnapshot, PositionSnapshot } from '../exchange/types.js';
-import type { LiveDashboardState, LivePosition } from '../shared/dto.js';
+import type { LiveDashboardState, LiveFill, LivePnlSummary, LivePosition } from '../shared/dto.js';
 
 export interface LiveModeConfig {
   manualConfirmation: boolean;
@@ -11,6 +11,25 @@ export interface LiveModeConfig {
 function toFiniteNumber(value: unknown): number | undefined {
   const n = Number(value);
   return Number.isFinite(n) ? n : undefined;
+}
+
+function toClosedPnl(fill: FillEvent): number {
+  const value = toFiniteNumber((fill.raw as { closedPnl?: unknown } | undefined)?.closedPnl);
+  return value ?? 0;
+}
+
+function toFee(fill: FillEvent): number {
+  const value = toFiniteNumber((fill.raw as { fee?: unknown } | undefined)?.fee);
+  return value !== undefined ? Math.abs(value) : 0;
+}
+
+function emptyPnl(): LivePnlSummary {
+  return {
+    weeklyNetUsd: 0,
+    monthlyNetUsd: 0,
+    weeklyRealizedUsd: 0,
+    monthlyRealizedUsd: 0
+  };
 }
 
 function isReduceOnlyOrder(order: OrderSnapshot): boolean {
@@ -103,6 +122,63 @@ function toLivePosition(position: PositionSnapshot, openOrders: OrderSnapshot[],
   };
 }
 
+export function toLiveFill(fill: FillEvent): LiveFill {
+  const direction = String((fill.raw as { dir?: unknown } | undefined)?.dir ?? '').trim();
+
+  return {
+    id: fill.id,
+    symbol: fill.symbol,
+    side: fill.side,
+    direction: direction || undefined,
+    price: fill.price,
+    size: fill.size,
+    feeUsd: toFee(fill),
+    closedPnlUsd: toClosedPnl(fill),
+    timestamp: fill.timestamp
+  };
+}
+
+export function computeLivePnl(fills: FillEvent[]): LivePnlSummary {
+  if (!fills.length) return emptyPnl();
+
+  const now = Date.now();
+  const weekCutoff = now - 7 * 24 * 60 * 60 * 1000;
+  const monthCutoff = now - 30 * 24 * 60 * 60 * 1000;
+
+  let weeklyRealized = 0;
+  let weeklyFees = 0;
+  let monthlyRealized = 0;
+  let monthlyFees = 0;
+
+  for (const fill of fills) {
+    const ts = Date.parse(fill.timestamp);
+    if (!Number.isFinite(ts)) continue;
+
+    const closedPnl = toClosedPnl(fill);
+    const fee = toFee(fill);
+
+    if (ts >= monthCutoff) {
+      monthlyRealized += closedPnl;
+      monthlyFees += fee;
+    }
+
+    if (ts >= weekCutoff) {
+      weeklyRealized += closedPnl;
+      weeklyFees += fee;
+    }
+  }
+
+  const weeklyNetUsd = Number((weeklyRealized - weeklyFees).toFixed(2));
+  const monthlyNetUsd = Number((monthlyRealized - monthlyFees).toFixed(2));
+
+  return {
+    weeklyNetUsd,
+    monthlyNetUsd,
+    weeklyRealizedUsd: Number(weeklyRealized.toFixed(2)),
+    monthlyRealizedUsd: Number(monthlyRealized.toFixed(2))
+  };
+}
+
 export async function buildLiveDashboardState(
   exchange: ExchangeAdapter,
   symbol: string,
@@ -112,6 +188,7 @@ export async function buildLiveDashboardState(
     connected: false,
     mode,
     account: null,
+    pnl: emptyPnl(),
     openOrders: 0,
     openPositions: []
   };
@@ -127,7 +204,14 @@ export async function buildLiveDashboardState(
     return {
       ...base,
       connected: true,
-      account: account ? { equityUsd: account.equityUsd, availableUsd: account.availableUsd } : null,
+      account: account
+        ? {
+            equityUsd: account.equityUsd,
+            availableUsd: account.availableUsd,
+            usedMarginUsd: account.usedMarginUsd
+          }
+        : null,
+      pnl: computeLivePnl(fills),
       openOrders: openOrders.length,
       openPositions: openPositions.map((p) => toLivePosition(p, openOrders, fills))
     };
