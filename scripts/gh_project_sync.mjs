@@ -216,7 +216,7 @@ async function main() {
           itemId:$itemId,
           fieldId:$fieldId,
           value:{ singleSelectOptionId:$optionId }
-        }) { item { id } }
+        }) { projectV2Item { id } }
       }
     `, { projectId: project.id, itemId, fieldId: statusField.id, optionId });
   };
