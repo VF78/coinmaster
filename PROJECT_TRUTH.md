@@ -169,6 +169,7 @@
 2. Финализировать infra/deploy P0 на VPS (compose + стабильный restart path + runbook + healthchecks).
 3. Провести end-to-end smoke цепочки manual place/cancel/leverage/reduce-only с полным audit trail.
 4. После зелёного risk-check запустить первый controlled live small-size и отправить отчёт/демо на приёмку.
+5. Отдельной задачей после текущего релизного цикла: перенос рабочего контура CoinMaster на VPS `46.225.133.161` (план миграции + проверка каналов/моделей/доступов + cutover без потери управления).
 
 ### Post-launch backlog (делаем после старта прода)
 - Расширенная статистика/аналитика UI и нефронтовые улучшения UX.
