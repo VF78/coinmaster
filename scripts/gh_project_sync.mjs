@@ -49,10 +49,10 @@ Enforce launch-critical risk gates before increasing live size.
 };
 
 const CUTOVER_BODY = `## Goal (P0)
-Move CoinMaster OpenClaw to VPS \\`46.225.133.161\\` (\\`coinmaster24.com\\`) as the **only** active bot to avoid context split.
+Move CoinMaster OpenClaw to VPS \`46.225.133.161\` (\`coinmaster24.com\`) as the **only** active bot to avoid context split.
 
 ## Plan
-See: \\`RUNBOOK_VPS_OPENCLAW_CUTOVER.md\\` in repo root.
+See: \`RUNBOOK_VPS_OPENCLAW_CUTOVER.md\` in repo root.
 
 ## Checklist
 - [ ] VPS: OpenClaw gateway running (user-systemd), workspace ready
@@ -66,7 +66,7 @@ See: \\`RUNBOOK_VPS_OPENCLAW_CUTOVER.md\\` in repo root.
 - [ ] Controlled fallback test (primary forced-fail → verify Opus)
 
 ## Notes
-- Do not use server \\`5.78.138.147\\` for CoinMaster. It is a friend’s server.
+- Do not use server \`5.78.138.147\` for CoinMaster. It is a friend’s server.
 - All progress reports must be artifact-backed (commit/push/deploy/project status).
 `;
 
