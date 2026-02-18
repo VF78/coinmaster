@@ -49,3 +49,50 @@ export function postBias(payload: BiasPayload) {
     body: JSON.stringify(payload)
   });
 }
+
+// ─── Order Confirmation Flow ──────────────────────────────────────────
+
+export interface PlaceOrderPayload {
+  symbol: string;
+  side: 'buy' | 'sell';
+  price: number;
+  size: number;
+  leverage?: number;
+  reduceOnly?: boolean;
+  clientOrderId?: string;
+  confirm?: boolean;
+}
+
+export interface PlaceOrderResponse {
+  ok: boolean;
+  orderId?: string;
+  clientOrderId?: string;
+  status?: string;
+  errorCode?: string;
+  error?: string;
+  idempotent?: boolean;
+}
+
+export interface RiskCheckResponse {
+  canTrade: boolean;
+  dailyDDPct: number;
+  portfolioLeverage: number;
+  blocks: string[];
+  equityUsd: number;
+  baselineEquityUsd: number;
+}
+
+export function getRiskCheck() {
+  return jsonFetch<RiskCheckResponse>('/api/live/risk-check');
+}
+
+export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrderResponse> {
+  const response = await fetch('/api/live/order', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json() as PlaceOrderResponse;
+  // Return the response even on non-2xx so caller can read errorCode
+  return data;
+}

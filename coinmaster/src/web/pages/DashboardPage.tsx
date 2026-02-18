@@ -8,11 +8,13 @@ import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
 import { PositionLevelsPanel } from '../components/PositionLevelsPanel';
+import { OrderConfirmModal, type OrderDraft } from '../components/OrderConfirmModal';
 
 export function DashboardPage() {
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<LivePosition | null>(null);
+  const [orderDraft, setOrderDraft] = useState<OrderDraft | null>(null);
 
   async function refresh() {
     const next = await getDashboard();
@@ -111,6 +113,27 @@ export function DashboardPage() {
             <Button onClick={() => sendBias('short')} variant="danger" disabled={isLoading} fullWidth>Sell / Short</Button>
             <Button onClick={() => sendBias('off')} variant="secondary" disabled={isLoading} fullWidth>Pause (OFF)</Button>
           </div>
+
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '1rem 0' }} />
+          <p className="muted" style={{ marginBottom: '0.5rem' }}>Manual order (live exchange):</p>
+          <div className="bias-buttons">
+            <Button
+              onClick={() => {
+                const price = data?.latestTick?.price ?? 0;
+                setOrderDraft({
+                  symbol: 'BTC',
+                  side: 'buy',
+                  price,
+                  size: 0.001,
+                  leverage: 3,
+                });
+              }}
+              disabled={!data?.live.connected}
+              fullWidth
+            >
+              Place Order
+            </Button>
+          </div>
         </Card>
       </section>
 
@@ -166,6 +189,14 @@ export function DashboardPage() {
           />
         </Card>
       ) : null}
+
+      {orderDraft && (
+        <OrderConfirmModal
+          draft={orderDraft}
+          onClose={() => setOrderDraft(null)}
+          onSuccess={() => { refresh(); }}
+        />
+      )}
     </main>
   );
 }
