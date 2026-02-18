@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { Hyperliquid } from 'hyperliquid';
 import { ExchangeAdapter } from './adapter.js';
 import {
@@ -246,9 +247,20 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       .filter((x): x is FillEvent => Boolean(x));
   }
 
+  /** Convert a clientOrderId to Hyperliquid-compatible cloid (0x + 32 hex chars) or undefined */
+  private toCloid(clientOrderId?: string): string | undefined {
+    if (!clientOrderId) return undefined;
+    // If already valid hex cloid, pass through
+    if (/^0x[0-9a-f]{32}$/i.test(clientOrderId)) return clientOrderId;
+    // Generate deterministic hex from the string
+    const hash = crypto.createHash('md5').update(clientOrderId).digest('hex'); // 32 hex chars
+    return `0x${hash}`;
+  }
+
   async placeLimitOrder(intent: OrderIntent): Promise<OrderAck> {
     try {
       const client = await this.getTradingClient();
+      const cloid = this.toCloid(intent.clientOrderId);
       const response = await client.exchange.placeOrder({
         coin: this.toSdkCoin(intent.symbol),
         is_buy: intent.side === 'buy',
@@ -256,7 +268,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         limit_px: intent.price,
         order_type: { limit: { tif: 'Gtc' } },
         reduce_only: Boolean(intent.reduceOnly),
-        cloid: intent.clientOrderId
+        ...(cloid ? { cloid } : {})
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
@@ -296,7 +308,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
           }
         },
         reduce_only: Boolean(intent.reduceOnly ?? true),
-        cloid: intent.clientOrderId
+        ...(intent.clientOrderId ? { cloid: this.toCloid(intent.clientOrderId) } : {})
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
@@ -514,7 +526,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         const client = new Hyperliquid({
           enableWs: false,
           privateKey: this.privateKey,
-          walletAddress: this.apiWalletAddress || this.accountAddress,
+          walletAddress: this.accountAddress,
           testnet: this.testnet,
           disableAssetMapRefresh: true
         });
