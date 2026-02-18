@@ -151,7 +151,6 @@ export interface LiveDashboardState {
   connected: boolean;
   mode: {
     manualConfirmation: boolean;
-    maxNotionalUsdc: number;
     maxLeverage: number;
   };
   account: LiveAccountSummary | null;
@@ -245,7 +244,6 @@ export interface ExchangeSettingsResponse {
   walletAddress?: string;
   mode: {
     manualConfirmation: boolean;
-    maxNotionalUsdc: number;
     maxLeverage: number;
   };
   account: LiveAccountSummary | null;

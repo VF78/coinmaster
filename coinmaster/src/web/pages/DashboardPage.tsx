@@ -92,7 +92,7 @@ export function DashboardPage() {
           <p className="muted stat-note">
             Status: <Badge tone={data.live.connected ? 'success' : 'danger'}>{data.live.connected ? 'CONNECTED' : 'DISCONNECTED'}</Badge>
             {' • '}Manual confirmation: <strong>{data.live.mode.manualConfirmation ? 'ON' : 'OFF'}</strong>
-            {' • '}Limits: <strong>{formatNumber(data.live.mode.maxNotionalUsdc)} USDC</strong> / <strong>{formatNumber(data.live.mode.maxLeverage)}x</strong>
+            {' • '}Max leverage: <strong>{formatNumber(data.live.mode.maxLeverage)}x</strong>
           </p>
           <p className="muted stat-note">
             Last market update: {data.latestTick ? formatDate(data.latestTick.timestamp) : '—'}

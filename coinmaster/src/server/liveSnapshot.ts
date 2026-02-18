@@ -4,7 +4,6 @@ import type { LiveDashboardState, LiveFill, LivePnlSummary, LivePosition } from 
 
 export interface LiveModeConfig {
   manualConfirmation: boolean;
-  maxNotionalUsdc: number;
   maxLeverage: number;
 }
 

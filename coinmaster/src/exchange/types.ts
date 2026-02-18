@@ -99,7 +99,6 @@ export type TradingErrorCode =
   | 'invalid_params'
   | 'order_not_found'
   | 'already_canceled'
-  | 'max_notional_exceeded'
   | 'manual_confirmation_required'
   | 'exchange_error'
   | 'idempotent_duplicate'

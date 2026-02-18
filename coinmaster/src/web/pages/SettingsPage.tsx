@@ -41,7 +41,7 @@ export function SettingsPage() {
           <Stat label="Account" value={data.accountAddress ?? '—'} />
           <Stat label="API wallet" value={data.walletAddress ?? '—'} />
           <Stat label="Manual confirmation" value={data.mode.manualConfirmation ? 'ON' : 'OFF'} />
-          <Stat label="Max notional" value={`${formatNumber(data.mode.maxNotionalUsdc)} USDC`} />
+          {/* notional limit removed — risk controlled by leverage cap */}
           <Stat label="Max leverage" value={`${formatNumber(data.mode.maxLeverage)}x`} />
           <Stat label="Private trading" value={data.capabilities.privateTrading ? 'Enabled' : 'Disabled'} tone={data.capabilities.privateTrading ? 'success' : 'danger'} />
           <Stat label="Private account" value={data.capabilities.privateAccount ? 'Enabled' : 'Disabled'} tone={data.capabilities.privateAccount ? 'success' : 'danger'} />

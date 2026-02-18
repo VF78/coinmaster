@@ -27,7 +27,6 @@ const host = process.env.HOST || '0.0.0.0';
 const LIVE_SYMBOL = 'BTC';
 const REST_FALLBACK_MS = 60 * 1000; // at least 1m updates if WS unavailable
 
-const LIVE_MAX_NOTIONAL_USDC = Number(process.env.LIVE_MAX_NOTIONAL_USDC || 30);
 const LIVE_MAX_LEVERAGE = Number(process.env.LIVE_MAX_LEVERAGE || 10);
 const LIVE_MANUAL_CONFIRMATION = String(process.env.LIVE_MANUAL_CONFIRMATION ?? 'true').toLowerCase() !== 'false';
 const ENABLE_PAPER_ENGINE = String(process.env.ENABLE_PAPER_ENGINE ?? 'false').toLowerCase() === 'true';
@@ -41,7 +40,6 @@ const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 
 const LIVE_MODE = {
   manualConfirmation: LIVE_MANUAL_CONFIRMATION,
-  maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
   maxLeverage: LIVE_MAX_LEVERAGE
 };
 
@@ -736,14 +734,6 @@ app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, async (req, res
   }
 
   const notional = px * qty;
-  if (!reduceOnly && notional > LIVE_MAX_NOTIONAL_USDC) {
-    return res.status(400).json({
-      ok: false,
-      error: 'max_notional_exceeded',
-      maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
-      requestedNotionalUsdc: Number(notional.toFixed(4))
-    });
-  }
 
   if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
     return res.status(409).json({
@@ -771,7 +761,6 @@ app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, async (req, res
     payload: {
       reduceOnly: Boolean(reduceOnly),
       notionalUsdc: Number(notional.toFixed(4)),
-      maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
       manualConfirmation: LIVE_MANUAL_CONFIRMATION
     }
   });
@@ -943,9 +932,6 @@ app.post('/api/live/order', ownerAuth, riskGateMiddleware, async (req, res) => {
   }
 
   const notional = px * qty;
-  if (!reduceOnly && notional > LIVE_MAX_NOTIONAL_USDC) {
-    return res.status(400).json({ ok: false, errorCode: 'max_notional_exceeded' as TradingErrorCode, maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC, requestedNotionalUsdc: Number(notional.toFixed(4)) });
-  }
 
   // Manual confirmation gate
   if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
