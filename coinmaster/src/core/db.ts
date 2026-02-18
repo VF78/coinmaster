@@ -9,7 +9,9 @@ const defaultData: DBShape = {
   tradeLogs: [],
   tradeEvents: [],
   biasCommands: [],
-  marketTicks: []
+  marketTicks: [],
+  dailyDDBaselines: [],
+  riskGateAudit: []
 };
 
 function ensureDbShape(data: DBShape) {
@@ -23,6 +25,8 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.tradeEvents)) data.tradeEvents = [];
   if (!Array.isArray(data.biasCommands)) data.biasCommands = [];
   if (!Array.isArray(data.marketTicks)) data.marketTicks = [];
+  if (!Array.isArray(data.dailyDDBaselines)) data.dailyDDBaselines = [];
+  if (!Array.isArray(data.riskGateAudit)) data.riskGateAudit = [];
 }
 
 export async function getDb(file = 'data/db.json') {

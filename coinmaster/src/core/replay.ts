@@ -44,7 +44,9 @@ function buildReplayDb(depositUsd: number): DBShape {
     tradeLogs: [],
     tradeEvents: [],
     biasCommands: [],
-    marketTicks: []
+    marketTicks: [],
+    dailyDDBaselines: [],
+    riskGateAudit: []
   };
 }
 

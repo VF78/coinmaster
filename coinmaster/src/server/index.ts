@@ -1,5 +1,6 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -9,7 +10,7 @@ import { runDeterministicReplay } from '../core/replay.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
-import { Bias } from '../core/types.js';
+import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
@@ -33,11 +34,225 @@ const ENABLE_PAPER_ENGINE = String(process.env.ENABLE_PAPER_ENGINE ?? 'false').t
 const ENABLE_SIMULATION_API = String(process.env.ENABLE_SIMULATION_API ?? 'false').toLowerCase() === 'true';
 const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLowerCase() === 'true';
 
+const LIVE_DAILY_DD_LIMIT_PCT = Number(process.env.LIVE_DAILY_DD_LIMIT_PCT || 20);
+const LIVE_PORTFOLIO_LEVERAGE_CAP = Number(process.env.LIVE_PORTFOLIO_LEVERAGE_CAP || 10);
+const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
+const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
+
 const LIVE_MODE = {
   manualConfirmation: LIVE_MANUAL_CONFIRMATION,
   maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC,
   maxLeverage: LIVE_MAX_LEVERAGE
 };
+
+// ─── Owner Auth Middleware ────────────────────────────────────────────
+
+function ownerAuth(req: Request, res: Response, next: NextFunction) {
+  // If no auth token configured, skip auth (dev mode)
+  if (!OWNER_AUTH_TOKEN && !OWNER_HMAC_SECRET) {
+    return next();
+  }
+
+  // Bearer token check
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    if (OWNER_AUTH_TOKEN && token === OWNER_AUTH_TOKEN) {
+      return next();
+    }
+  }
+
+  // Query param token check
+  const queryToken = req.query.token as string | undefined;
+  if (OWNER_AUTH_TOKEN && queryToken === OWNER_AUTH_TOKEN) {
+    return next();
+  }
+
+  // HMAC verification: ?ts=<unix_s>&sig=<hex>
+  if (OWNER_HMAC_SECRET) {
+    const ts = req.query.ts as string | undefined;
+    const sig = req.query.sig as string | undefined;
+    if (ts && sig) {
+      const age = Math.abs(Date.now() / 1000 - Number(ts));
+      if (age < 300) { // 5 min window
+        const expected = crypto.createHmac('sha256', OWNER_HMAC_SECRET).update(ts).digest('hex');
+        if (crypto.timingSafeEqual(Buffer.from(sig, 'hex'), Buffer.from(expected, 'hex'))) {
+          return next();
+        }
+      }
+    }
+  }
+
+  logRiskGateAudit({ gate: 'auth', passed: false, reason: 'auth_required' });
+  return res.status(401).json({ ok: false, errorCode: 'auth_required' as TradingErrorCode, error: 'Authentication required for live trading endpoints' });
+}
+
+// ─── Risk Gate Helpers ────────────────────────────────────────────────
+
+/** In-memory risk gate audit buffer, flushed to DB periodically */
+const riskAuditBuffer: RiskGateAuditEntry[] = [];
+
+function logRiskGateAudit(entry: Omit<RiskGateAuditEntry, 'timestamp'>) {
+  const full: RiskGateAuditEntry = { ...entry, timestamp: new Date().toISOString() };
+  riskAuditBuffer.push(full);
+  console.log(`[risk-gate] ${full.gate} passed=${full.passed} ${full.reason ?? ''}`);
+}
+
+async function flushRiskAudit() {
+  if (!riskAuditBuffer.length) return;
+  const db = await getDb();
+  const batch = riskAuditBuffer.splice(0, riskAuditBuffer.length);
+  db.data.riskGateAudit.push(...batch);
+  // Keep last 10000 entries
+  if (db.data.riskGateAudit.length > 10000) {
+    db.data.riskGateAudit = db.data.riskGateAudit.slice(-10000);
+  }
+  await db.write();
+}
+
+// Flush audit every 30s
+setInterval(() => { flushRiskAudit().catch(() => undefined); }, 30_000);
+
+function todayDateStr(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+async function getOrCreateDDBaseline(equityUsd: number): Promise<DailyDDBaseline> {
+  const today = todayDateStr();
+  const db = await getDb();
+  let baseline = db.data.dailyDDBaselines.find(b => b.date === today);
+  if (!baseline) {
+    baseline = { date: today, startEquityUsd: equityUsd, updatedAt: new Date().toISOString() };
+    db.data.dailyDDBaselines.push(baseline);
+    // Prune old baselines (keep 90 days)
+    if (db.data.dailyDDBaselines.length > 90) {
+      db.data.dailyDDBaselines = db.data.dailyDDBaselines.slice(-90);
+    }
+    await db.write();
+  }
+  return baseline;
+}
+
+interface RiskCheckResult {
+  canTrade: boolean;
+  dailyDDPct: number;
+  portfolioLeverage: number;
+  blocks: string[];
+  equityUsd: number;
+  baselineEquityUsd: number;
+}
+
+async function evaluateRiskGates(): Promise<RiskCheckResult> {
+  const blocks: string[] = [];
+
+  // Fetch account state
+  const [account, positions] = await Promise.all([
+    exchange.getAccountState(),
+    exchange.getOpenPositions()
+  ]);
+
+  const equityUsd = account?.equityUsd ?? 0;
+
+  // Daily DD check
+  const baseline = await getOrCreateDDBaseline(equityUsd);
+  const ddPct = baseline.startEquityUsd > 0
+    ? ((baseline.startEquityUsd - equityUsd) / baseline.startEquityUsd) * 100
+    : 0;
+
+  if (ddPct >= LIVE_DAILY_DD_LIMIT_PCT) {
+    blocks.push('daily_loss_limit_exceeded');
+    logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'daily_loss_limit_exceeded', details: { ddPct: Number(ddPct.toFixed(2)), limit: LIVE_DAILY_DD_LIMIT_PCT, equityUsd, baselineEquityUsd: baseline.startEquityUsd } });
+  } else {
+    logRiskGateAudit({ gate: 'daily_dd', passed: true, details: { ddPct: Number(ddPct.toFixed(2)) } });
+  }
+
+  // Portfolio leverage check
+  let totalNotional = 0;
+  for (const pos of positions) {
+    const notional = (pos.entryPrice ?? pos.markPrice ?? 0) * pos.size;
+    totalNotional += notional;
+  }
+  const portfolioLeverage = equityUsd > 0 ? totalNotional / equityUsd : 0;
+
+  if (portfolioLeverage > LIVE_PORTFOLIO_LEVERAGE_CAP) {
+    blocks.push('leverage_limit_exceeded');
+    logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)), cap: LIVE_PORTFOLIO_LEVERAGE_CAP } });
+  } else {
+    logRiskGateAudit({ gate: 'leverage_cap', passed: true, details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)) } });
+  }
+
+  return {
+    canTrade: blocks.length === 0,
+    dailyDDPct: Number(ddPct.toFixed(2)),
+    portfolioLeverage: Number(portfolioLeverage.toFixed(2)),
+    blocks,
+    equityUsd,
+    baselineEquityUsd: baseline.startEquityUsd
+  };
+}
+
+/** Close all positions emergency (daily DD hard stop) */
+async function emergencyCloseAll() {
+  console.log('[risk-gate] EMERGENCY: Daily DD limit hit — closing ALL positions');
+  const positions = await exchange.getOpenPositions();
+  for (const pos of positions) {
+    const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
+    // Market-close via limit at extreme price
+    const extremePrice = closeSide === 'sell' ? 1 : 999_999;
+    try {
+      await exchange.placeLimitOrder({
+        symbol: pos.symbol,
+        side: closeSide,
+        price: extremePrice,
+        size: pos.size,
+        reduceOnly: true,
+        clientOrderId: `emergency-${nanoid()}`
+      });
+    } catch (e) {
+      console.error(`[risk-gate] Failed to close ${pos.symbol}:`, e);
+    }
+  }
+  // Also cancel all open orders
+  try { await exchange.cancelAll(); } catch {}
+}
+
+/** Risk gate middleware for trading endpoints — checks DD + leverage before allowing order */
+async function riskGateMiddleware(req: Request, res: Response, next: NextFunction) {
+  try {
+    const risk = await evaluateRiskGates();
+
+    if (risk.blocks.includes('daily_loss_limit_exceeded')) {
+      // Hard stop: close everything
+      await emergencyCloseAll();
+      return res.status(403).json({
+        ok: false,
+        errorCode: 'daily_loss_limit_exceeded' as TradingErrorCode,
+        error: `Daily drawdown ${risk.dailyDDPct}% exceeds ${LIVE_DAILY_DD_LIMIT_PCT}% limit. All positions closed. Trading blocked.`,
+        riskCheck: risk
+      });
+    }
+
+    if (risk.blocks.includes('leverage_limit_exceeded')) {
+      // Only block new non-reduceOnly orders
+      const reduceOnly = req.body?.reduceOnly === true;
+      if (!reduceOnly) {
+        return res.status(403).json({
+          ok: false,
+          errorCode: 'leverage_limit_exceeded' as TradingErrorCode,
+          error: `Portfolio leverage ${risk.portfolioLeverage}x exceeds ${LIVE_PORTFOLIO_LEVERAGE_CAP}x cap. Reduce positions first.`,
+          riskCheck: risk
+        });
+      }
+    }
+
+    // Attach risk check to request for downstream use
+    (req as any)._riskCheck = risk;
+    next();
+  } catch (error) {
+    console.error('[risk-gate] Risk evaluation failed, allowing trade (fail-open):', error);
+    next();
+  }
+}
 
 const exchange = new HyperliquidAdapter();
 
@@ -335,6 +550,22 @@ if (ENABLE_REPLAY_API) {
   });
 }
 
+// ─── Risk Check Endpoint ──────────────────────────────────────────────
+app.get('/api/live/risk-check', ownerAuth, async (_req, res) => {
+  try {
+    const risk = await evaluateRiskGates();
+    return res.json(risk);
+  } catch (error) {
+    return res.status(500).json({
+      canTrade: false,
+      dailyDDPct: 0,
+      portfolioLeverage: 0,
+      blocks: ['risk_check_failed'],
+      error: error instanceof Error ? error.message : 'risk_check_failed'
+    });
+  }
+});
+
 app.get('/api/live/status', async (_req, res) => {
   const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, LIVE_MODE);
   return res.json({
@@ -343,7 +574,7 @@ app.get('/api/live/status', async (_req, res) => {
   });
 });
 
-app.post('/api/live/leverage', async (req, res) => {
+app.post('/api/live/leverage', ownerAuth, async (req, res) => {
   const { symbol = LIVE_SYMBOL, leverage, confirm } = req.body as {
     symbol?: string;
     leverage?: number;
@@ -367,7 +598,7 @@ app.post('/api/live/leverage', async (req, res) => {
   return res.status(result.ok ? 200 : 400).json({ ok: result.ok, result });
 });
 
-app.post('/api/live/position/levels', async (req, res) => {
+app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -475,7 +706,7 @@ app.post('/api/live/position/levels', async (req, res) => {
   });
 });
 
-app.post('/api/live/order/limit', async (req, res) => {
+app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -582,7 +813,7 @@ app.post('/api/live/order/limit', async (req, res) => {
   });
 });
 
-app.post('/api/live/order/cancel', async (req, res) => {
+app.post('/api/live/order/cancel', ownerAuth, async (req, res) => {
   const { orderId, symbol = LIVE_SYMBOL, confirm } = req.body as {
     orderId?: string;
     symbol?: string;
@@ -621,7 +852,7 @@ app.post('/api/live/order/cancel', async (req, res) => {
   return res.status(result.ok ? 200 : 400).json({ ok: result.ok, result });
 });
 
-app.post('/api/live/order/cancel-all', async (req, res) => {
+app.post('/api/live/order/cancel-all', ownerAuth, async (req, res) => {
   const { symbol = LIVE_SYMBOL, confirm } = req.body as {
     symbol?: string;
     confirm?: boolean;
@@ -680,7 +911,7 @@ function pruneIdempotencyCache() {
 }
 
 // POST /api/live/order — idempotent place order
-app.post('/api/live/order', async (req, res) => {
+app.post('/api/live/order', ownerAuth, riskGateMiddleware, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -732,12 +963,14 @@ app.post('/api/live/order', async (req, res) => {
 
   const normalizedSymbol = normalizeSymbol(symbol);
 
-  // Set leverage if provided
+  // Set leverage if provided — enforce LIVE_MAX_LEVERAGE cap
   if (leverage !== undefined) {
     const lev = Number(leverage);
-    if (Number.isFinite(lev) && lev > 0 && lev <= LIVE_MAX_LEVERAGE) {
-      await exchange.setLeverage(normalizedSymbol, lev);
+    if (!Number.isFinite(lev) || lev <= 0 || lev > LIVE_MAX_LEVERAGE) {
+      logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { requested: lev, max: LIVE_MAX_LEVERAGE } });
+      return res.status(400).json({ ok: false, errorCode: 'leverage_limit_exceeded' as TradingErrorCode, error: `Leverage ${lev}x exceeds max ${LIVE_MAX_LEVERAGE}x` });
     }
+    await exchange.setLeverage(normalizedSymbol, lev);
   }
 
   const db = await getDb();
@@ -786,7 +1019,7 @@ app.post('/api/live/order', async (req, res) => {
 });
 
 // DELETE /api/live/order/:id — safe re-cancel
-app.delete('/api/live/order/:id', async (req, res) => {
+app.delete('/api/live/order/:id', ownerAuth, async (req, res) => {
   const orderId = req.params.id;
   const { confirm } = req.query as { confirm?: string };
   const confirmed = confirm === 'true' || confirm === '1';
@@ -822,7 +1055,7 @@ app.delete('/api/live/order/:id', async (req, res) => {
 });
 
 // PUT /api/live/order/:id/reduce — reduce-only modify with audit
-app.put('/api/live/order/:id/reduce', async (req, res) => {
+app.put('/api/live/order/:id/reduce', ownerAuth, async (req, res) => {
   const orderId = req.params.id;
   const { newSize, confirm } = req.body as { newSize?: number; confirm?: boolean };
 

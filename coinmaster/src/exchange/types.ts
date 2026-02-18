@@ -105,7 +105,10 @@ export type TradingErrorCode =
   | 'idempotent_duplicate'
   | 'order_failed'
   | 'cancel_failed'
-  | 'modify_failed';
+  | 'modify_failed'
+  | 'daily_loss_limit_exceeded'
+  | 'leverage_limit_exceeded'
+  | 'auth_required';
 
 export interface ExchangeCapabilities {
   realtimeMids: boolean;

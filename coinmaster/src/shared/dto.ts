@@ -78,6 +78,20 @@ export interface TradeEvent {
   payload?: TradeEventPayload;
 }
 
+export interface DailyDDBaseline {
+  date: string; // YYYY-MM-DD
+  startEquityUsd: number;
+  updatedAt: string;
+}
+
+export interface RiskGateAuditEntry {
+  timestamp: string;
+  gate: 'daily_dd' | 'leverage_cap' | 'auth';
+  passed: boolean;
+  reason?: string;
+  details?: Record<string, unknown>;
+}
+
 export interface BiasCommand {
   id: string;
   symbol: string;
