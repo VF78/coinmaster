@@ -113,7 +113,17 @@ ls -la ~/.secrets/telegram_bot_token.txt
 ls -la ~/.secrets/github_pat.txt
 ```
 
-## 8) Mac (reserve) — how to stop
+## 8) Cron jobs (VPS)
+```bash
+# View current cron
+crontab -l
+
+# Daily truth save: 23:55 Madrid time
+# Weekly report trigger: Sundays 20:00 Madrid time
+# Log: /tmp/openclaw-cron.log
+```
+
+## 9) Mac (reserve) — how to stop
 Recommended (cold reserve):
 ```bash
 openclaw gateway stop
