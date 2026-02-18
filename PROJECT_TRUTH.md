@@ -23,25 +23,21 @@
 - Любые P1/P2 задачи (косметика UI, расширенная аналитика, replay-доработки, глубинные рефакторы) — только после старта прода.
 - Проектный трекинг обязателен в двух местах: `PROJECT_TRUTH.md` + GitHub Project (новые задачи, обновление статусов, актуальный `In Progress`).
 
-### Model & token-efficiency policy (owner update 2026-02-15)
-- Базовая модель по умолчанию: **`openai-codex/gpt-5.3-codex`**.
-- Claude Opus 4.6 подключён как резерв/инструмент для сложных задач.
+### Model & token-efficiency policy (owner update 2026-02-18)
+- **Primary:** `openai/gpt-5.1-codex-mini` (Codex 5.1 mini) — conversation, planning, testing, cron, current tasks.
+- **Fallback:** `anthropic/claude-haiku-4-5` (Claude Haiku) — automatic if Codex unavailable.
+- **Main development:** `anthropic/claude-opus-4-6` (Claude Opus) — via sessions_spawn for complex/large tasks.
+- **Complex bugs/architecture:** `openai/gpt-5.3-codex` (Codex 5.3) — for non-trivial technical challenges.
 
-#### Rules: switching models to stay available 24/7
-- Switch to **Claude (`anthropic/claude-opus-4-6`)** when:
-  1) Codex возвращает `rate_limit` / `cooldown` / `usage limit`.
-  2) Codex лимиты близко к исчерпанию:
-     - `warning` если **Day < 30%** или **5h < 30%**.
-     - `critical` если **Day < 15%** или **5h < 15%**.
-  3) Задача архитектурно сложная (рефактор/аудит/сложная интеграция) — Claude разрешён даже без cooldown.
-- Return back to **Codex** после завершения тяжёлого блока или когда Codex снова доступен.
-- Каждый switch должен иметь явную причину в статусе (cooldown|limit|complexity).
+**Work scheme:**
+1. Codex 5.1 mini for all current conversation/planning/testing.
+2. Spawn Claude Opus (`sessions_spawn(task=..., model="opus")`) for main dev.
+3. Codex 5.3 only for hard architectural/bug issues.
 
-#### Rules: think level
-- `off|minimal`: операционка, статусы, мелкие проверки.
-- `low`: маленькие правки кода (1–3 файла), простой багфикс.
-- `medium`: неочевидный баг/интеграция нескольких модулей.
-- `high|xhigh`: архитектура, сложный рефактор, критичные risk/execution участки.
+#### Think level
+- `off|low`: conversation, planning, testing, small fixes.
+- `medium`: moderate dev tasks.
+- `high|xhigh`: architecture, complex refactor, risk/execution critical.
 
 #### Rules: truthful progress notifications (cron)
 - Hourly cron-статус должен быть «правдивым»: сообщение только при подтверждённом артефакте (commit/push/deploy/изменение статуса задачи), иначе явный статус «нет подтверждённого прогресса».

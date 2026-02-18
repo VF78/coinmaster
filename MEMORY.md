@@ -1,78 +1,47 @@
-# MEMORY.md
+# MEMORY.md — Core Invariants
 
-## Устойчивый контекст (долгоживущие договорённости)
+## Identity
+- **User:** Владимир (Europe/Madrid)
+- **Agent:** CoinMaster 🪙
+- **Style:** practical, expert, no filler
+- **Scope:** crypto trading automation (Hyperliquid API, backtests, SL/TP, risk management)
 
-- Пользователь: **Владимир** (Europe/Madrid).
-- Ассистент в этом проекте: **CoinMaster**.
-- Рабочий стиль: **практично, экспертно, без воды**.
-- Основной фокус: системная торговля и автоматизация (Hyperliquid API, бэктесты, SL/TP, partial, MM, риск-лимиты).
+## Model Policy (CRITICAL)
+- **Primary:** `openai/gpt-5.1-codex-mini` (Codex 5.1 mini)
+- **Fallback:** `anthropic/claude-haiku-4-5` (Claude Haiku)
+- **DevTask (main work):** `anthropic/claude-opus-4-6` via sessions_spawn (Claude Opus)
+- **ComplexBug/Arch:** `openai/gpt-5.3-codex` (Codex 5.3)
 
-## Стратегический контур проекта
+**Work scheme:**
+- Codex 5.1 mini: conversation, planning, testing, cron, current tasks
+- Claude Opus: main dev (spawn → task → test → fix)
+- Codex 5.3: complex bugs/architecture only
 
-- Порядок запуска: **сначала BTC**, затем расширение на **ETH/SOL** только после подтверждённо успешного BTC-этапа.
-- Операционный формат: Владимир задаёт ожидаемое направление рынка (bias), CoinMaster анализирует сетап, предлагает/ведёт вход, сопровождает позицию и контролирует риск-дисциплину.
-- Реальные входы на раннем этапе — только после явного подтверждения Владимира.
+## Project State
+- **BTC first**, then ETH/SOL after success
+- **Bias format:** `BTC long`/`BTC short`/`BTC off`
+- **Startup:** Hyperliquid perp with manual confirmation (30 USDC max, 10x leverage max)
+- **Exit trigger:** 4H reverse signal only
+- **P0 status:** enforce risk gates → live smoke test → VPS cutover
 
-## Зафиксированные risk/MM параметры (v1 baseline)
+## Risk Parameters (v1 baseline)
+- Hard-stop daily: 20% DD → close all
+- SL: structure + ATR-buffer + 0.70% cap
+- Partial: 1.0R/2.2R/3.8R (40%/35%/25%)
+- Portfolio leverage cap: 10x
+- Manual confirmation: ON (startup phase)
 
-- Hard-stop дня: при дневной просадке **20%** — закрытие всех сделок.
-- Stop-loss: модель **структура + ATR-буфер + cap 0.70%**.
-- Частичная фиксация: **1.0R / 2.2R / 3.8R** с долями **40% / 35% / 25%**.
-- Риск на сделку (BTC-этап): **1.25%**.
-- Полный выход остатка: **только reverse-сигнал на 4H**.
-- Тайм-стоп: **не используется**.
-- Формат bias-команд: **`BTC long` / `BTC short` / `BTC off`**.
-- Режим подтверждения: **production — ручное подтверждение (на старте), тестирование — информирование**.
-- Ограничение по суммарному плечу портфеля: **до 10x**.
-- Для первого live-прогона (боевой small-size): **max notional 30 USDC**, **до 10x**, **manual confirmation ON**.
+## Infrastructure
+- **Web:** Vercel
+- **API/DB:** Hetzner VPS (46.225.133.161, coinmaster24.com)
+- **Auth:** single-operator phase (keys in `.env`)
+- **Telegram/Cron:** on VPS only (silent exec, final answer only)
 
-## Состояние исследований/разработки
+## Decisions Log
+- 2026-02-15: Context audit + token optimization (AGENTS.md/MEMORY.md sжаты)
+- 2026-02-15: Model lock on Codex 5.3-codex → now Codex 5.1 mini primary + Opus spawn for dev
+- 2026-02-14: Live-only UI, HTTPS enabled, historical replay paused
+- 2026-02-13: VPS OAuth issue resolved (IPv6 polling fix)
 
-- Базовый контур бэктеста и интеграция исторических данных Hyperliquid реализованы.
-- Baseline-прогон v1 на текущем этапе отрицательный (ROI/DD/expectancy неблагоприятные), принято решение перехода к **v1.1** с ужесточением фильтров и bias-gating.
-- Подход к валидации обновлён: приоритет — **paper forward test** по ручному bias-сигналу Владимира (а не торговля по всем авто-сигналам).
-- По решению Владимира (2026-02-14) historical replay временно поставлен на паузу; текущий приоритет — довести production-контур и перейти к controlled live проверке на небольшой сумме.
-- Целевой критерий успеха BTC-этапа: **стабильный положительный ROI 4–8 недель**.
-
-## Технологические договорённости (подтверждено)
-
-- Целевая схема: **Web на Vercel**, **API + DB + workers на Hetzner VPS**.
-- Ближайшая цель: за 7–10 дней довести контур до **production-ready** запуска (с ручным подтверждением сделок на старте).
-- Язык интерфейса по умолчанию: **EN**; архитектурно готовить быстрые локализации (первые кандидаты: RU/ES).
-- В ближайшие ~10 дней регистрация пользователей не обязательна (single-operator режим).
-- Для этапа MVP допустим минимальный серверный бюджет (~5 EUR/мес), затем масштабирование по факту.
-- Нужен **точный полный лог всех сделок** (audit/P&L), managed-компоненты для HA позже допустимы.
-- Для ускоренной валидации стратегии подход **historical replay по ручной отмашке** принят как опция, но на текущем этапе временно на паузе по решению Владимира.
-- Replay-исполнение (когда вернёмся к режиму): вход считаем **по close свечи-поглощения** (не по внутрисвечному касанию).
-- Стартовый live execution: **limit по уровню close свечи-поглощения**.
-- На этапе single-operator хранение ключей допустимо в `.env` на VPS; позже переход на secret manager.
-- Доступ к VPS по SSH: рабочий пользователь `coinmaster`; root-login по SSH отключён в рамках hardening (ожидаемое состояние).
-- В ближайшем плане обязателен отдельный **Hyperliquid API command layer** (market/account/trading + safety wrappers + audit events).
-- Архитектурное требование: интеграции бирж делать через exchange-agnostic adapter layer с возможностью подключения Bybit/Binance и др.
-
-## Важные process-договорённости
-
-- Ежедневная задача `context:daily-project-truth-save` в 23:00 (Europe/Madrid) фиксирует состояние в `memory/YYYY-MM-DD.md`, `MEMORY.md`, `PROJECT_TRUTH.md`.
-- Секреты (API keys, токены, пароли) в память/документы в явном виде **не сохранять**.
-- Визуальный ориентир для торгового web-интерфейса: стиль/UX `app.hyperliquid.xyz` (современный тёмный trading-terminal подход).
-- Операционный принцип: задачи, которые можно выполнить автоматически (API/infra/GitHub и т.п.), CoinMaster делает самостоятельно после согласования с Владимиром, без лишних ручных шагов со стороны пользователя.
-- Проектный процесс: GitHub Project держать актуальным; активная задача должна быть в статусе `In Progress`.
-- Перед стартом прода — только launch-critical задачи (P0); статистика/улучшения и прочее вторичное переносится на post-launch.
-- В production UI/дашборде показывать только актуальные live-данные аккаунта/позиций; тестовые/paper блоки и дубли не выводить.
-- Simulation/replay API и paper ingestion в прод-контуре держать выключенными по умолчанию; включать только по явной команде Владимира.
-- Публичный доступ к `coinmaster24.com` держать ограниченным (owner-only auth), не оставлять дашборд открытым для всех.
-- Для длинных задач: раз в час отправлять в Telegram прогресс (что сделано + что протестировано + следующий шаг).
-- После завершения задачи: отдельное Telegram-сообщение о завершении + предложение demo/приёмки + перевод следующей задачи в `In Progress`.
-- Перед увеличением live-риска/объёма обязателен полный quality/risk-check execution-контуров (реальные деньги => приоритет безопасности выше скорости расширения).
-- Перед масштабированием live обязательно закрыть launch-critical risk-gaps: owner-auth на live endpoints, idempotency/dedupe submit path, enforcement hard-stop дня 20% и агрегатного лимита плеча портфеля 10x.
-- Уточнение по контурам: сервер `5.78.138.147` — **чужой (сервер друга)** и не относится к CoinMaster. Любые `rescue`/доп.контуры оттуда считать вне проекта. Целевой план 24/7: **один рабочий OpenClaw на production VPS `46.225.133.161` (`coinmaster24.com`) + Mac как резерв**, чтобы исключить расслоение контекста.
-- Для cron-уведомлений в Telegram использовать `delivery.mode=none` и отправку через `message` tool внутри job payload, чтобы избежать спама системными ошибками при model cooldown/rate-limit.
-- **ВАЖНО: Telegram UX** — НИКОГДА не отправлять промежуточные результаты exec (ошибки, коды команд, логи) в Telegram. Все exec запросы выполняются молча локально, результаты агрегируются, только финальный ответ отправляется в чат. Это исключает шум и технические детали в пользовательском интерфейсе.
-- После инцидента с «переключением моделей»: до отдельного подтверждения новых подключений проектный контур CoinMaster работает только на `openai-codex/gpt-5.3-codex`.
-- Оптимизация расхода ИИ в проекте: small-diff кодинг (работа малыми кусками), минимальный think-level для рутинных задач и high/xhigh только для сложных архитектурных/критичных решений.
-- Hourly прогресс-уведомления должны опираться только на подтверждённые артефакты (commit/push/deploy/изменение статуса в GitHub Project); при отсутствии артефактов отправляется явный статус «нет подтверждённого прогресса».
-- Completion-уведомление по задаче отправлять только после фактического обновления статуса задачи в GitHub Project (Done) и назначения следующей In Progress.
-- Правила переключения для доступности 24/7:
-  - Default: `openai-codex/gpt-5.3-codex`.
-  - Switch to `anthropic/claude-opus-4-6` при `rate_limit/cooldown/usage limit` Codex или при низких лимитах (warning Day/5h<30%, critical Day/5h<15%) и/или при сложных задачах (архитектура/рефактор).
-  - Return to Codex после тяжёлого блока или восстановления лимитов/доступности.
+---
+**For detailed specs:** see PROJECT_TRUTH.md (on-demand) or memory/YYYY-MM-DD.md (daily logs)
