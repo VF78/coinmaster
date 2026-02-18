@@ -11,7 +11,7 @@ import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias } from '../core/types.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { CandleTimeframe, OrderIntent } from '../exchange/types.js';
+import type { CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -652,6 +652,295 @@ app.post('/api/live/order/cancel-all', async (req, res) => {
   await db.write();
 
   return res.status(result.ok ? 200 : 400).json({ ok: result.ok, result });
+});
+
+// ─── RESTful Trading Command Layer (ISSUE #12) ───────────────────────
+
+/** Classify exchange errors into standard codes */
+function classifyError(error: string | undefined): TradingErrorCode {
+  if (!error) return 'exchange_error';
+  const lower = error.toLowerCase();
+  if (lower.includes('rate limit') || lower.includes('429') || lower.includes('too many')) return 'rate_limited';
+  if (lower.includes('insufficient') || lower.includes('not enough') || lower.includes('balance')) return 'insufficient_balance';
+  if (lower.includes('invalid') || lower.includes('bad') || lower.includes('param')) return 'invalid_params';
+  if (lower.includes('not found') || lower.includes('not_found') || lower.includes('no order')) return 'order_not_found';
+  if (lower.includes('already') && (lower.includes('cancel') || lower.includes('filled'))) return 'already_canceled';
+  return 'exchange_error';
+}
+
+/** Idempotency store: clientOrderId → response (in-memory, survives within process) */
+const idempotencyCache = new Map<string, { timestamp: number; response: any }>();
+const IDEMPOTENCY_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+function pruneIdempotencyCache() {
+  const cutoff = Date.now() - IDEMPOTENCY_TTL_MS;
+  for (const [key, entry] of idempotencyCache) {
+    if (entry.timestamp < cutoff) idempotencyCache.delete(key);
+  }
+}
+
+// POST /api/live/order — idempotent place order
+app.post('/api/live/order', async (req, res) => {
+  const {
+    symbol = LIVE_SYMBOL,
+    side,
+    price,
+    size,
+    leverage,
+    clientOrderId,
+    reduceOnly = false,
+    confirm
+  } = req.body as {
+    symbol?: string;
+    side?: 'buy' | 'sell';
+    price?: number;
+    size?: number;
+    leverage?: number;
+    clientOrderId?: string;
+    reduceOnly?: boolean;
+    confirm?: boolean;
+  };
+
+  // Validation
+  if (side !== 'buy' && side !== 'sell') {
+    return res.status(400).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'side must be buy or sell' });
+  }
+  const px = Number(price);
+  const qty = Number(size);
+  if (!Number.isFinite(px) || px <= 0 || !Number.isFinite(qty) || qty <= 0) {
+    return res.status(400).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'invalid price or size' });
+  }
+
+  const notional = px * qty;
+  if (!reduceOnly && notional > LIVE_MAX_NOTIONAL_USDC) {
+    return res.status(400).json({ ok: false, errorCode: 'max_notional_exceeded' as TradingErrorCode, maxNotionalUsdc: LIVE_MAX_NOTIONAL_USDC, requestedNotionalUsdc: Number(notional.toFixed(4)) });
+  }
+
+  // Manual confirmation gate
+  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+    return res.status(409).json({ ok: false, errorCode: 'manual_confirmation_required' as TradingErrorCode, hint: 'resend with {"confirm": true}' });
+  }
+
+  const correlationId = clientOrderId || nanoid();
+
+  // Idempotency check
+  pruneIdempotencyCache();
+  if (clientOrderId && idempotencyCache.has(clientOrderId)) {
+    const cached = idempotencyCache.get(clientOrderId)!;
+    return res.status(200).json({ ...cached.response, idempotent: true });
+  }
+
+  const normalizedSymbol = normalizeSymbol(symbol);
+
+  // Set leverage if provided
+  if (leverage !== undefined) {
+    const lev = Number(leverage);
+    if (Number.isFinite(lev) && lev > 0 && lev <= LIVE_MAX_LEVERAGE) {
+      await exchange.setLeverage(normalizedSymbol, lev);
+    }
+  }
+
+  const db = await getDb();
+  const now = new Date().toISOString();
+
+  appendTradeEvent(db.data, {
+    symbol: normalizedSymbol,
+    source: 'live',
+    type: 'order_submitted',
+    timestamp: now,
+    correlationId,
+    side: toTradeSide(side),
+    price: px,
+    quantity: qty,
+    reason: 'live_place_order',
+    payload: { reduceOnly: Boolean(reduceOnly), notionalUsdc: Number(notional.toFixed(4)), clientOrderId: correlationId }
+  });
+
+  const intent: OrderIntent = { symbol: normalizedSymbol, side, price: px, size: qty, reduceOnly: Boolean(reduceOnly), clientOrderId: correlationId };
+  const ack = await exchange.placeLimitOrder(intent);
+
+  const errorCode = ack.ok ? undefined : classifyError(ack.error);
+
+  appendTradeEvent(db.data, {
+    symbol: normalizedSymbol,
+    source: 'live',
+    type: ack.ok ? 'order_acknowledged' : 'order_rejected',
+    timestamp: new Date().toISOString(),
+    correlationId,
+    side: toTradeSide(side),
+    price: px,
+    quantity: qty,
+    reason: ack.ok ? 'live_order_ack' : 'live_order_rejected',
+    payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, errorCode: errorCode ?? null }
+  });
+  await db.write();
+
+  const response = { ok: ack.ok, orderId: ack.orderId, clientOrderId: correlationId, status: ack.status, errorCode, error: ack.error };
+
+  // Cache for idempotency
+  if (clientOrderId) {
+    idempotencyCache.set(clientOrderId, { timestamp: Date.now(), response });
+  }
+
+  return res.status(ack.ok ? 200 : 400).json(response);
+});
+
+// DELETE /api/live/order/:id — safe re-cancel
+app.delete('/api/live/order/:id', async (req, res) => {
+  const orderId = req.params.id;
+  const { confirm } = req.query as { confirm?: string };
+  const confirmed = confirm === 'true' || confirm === '1';
+
+  if (LIVE_MANUAL_CONFIRMATION && !confirmed) {
+    return res.status(409).json({ ok: false, errorCode: 'manual_confirmation_required' as TradingErrorCode, hint: 'add ?confirm=true' });
+  }
+
+  const result = await exchange.cancelOrder(orderId);
+
+  // Safe re-cancel: if order not found, treat as success (already canceled/filled)
+  const safeOk = result.ok || classifyError(result.error) === 'order_not_found' || classifyError(result.error) === 'already_canceled';
+
+  const db = await getDb();
+  appendTradeEvent(db.data, {
+    symbol: LIVE_SYMBOL,
+    source: 'live',
+    type: safeOk ? 'order_acknowledged' : 'order_rejected',
+    timestamp: new Date().toISOString(),
+    correlationId: nanoid(),
+    reason: safeOk ? 'live_cancel_order' : 'live_cancel_failed',
+    payload: { orderId, originalOk: result.ok, safeOk, error: result.error ?? null, errorCode: safeOk ? null : classifyError(result.error) }
+  });
+  await db.write();
+
+  return res.status(safeOk ? 200 : 400).json({
+    ok: safeOk,
+    orderId,
+    alreadyCanceled: !result.ok && safeOk,
+    errorCode: safeOk ? undefined : classifyError(result.error),
+    error: safeOk ? undefined : result.error
+  });
+});
+
+// PUT /api/live/order/:id/reduce — reduce-only modify with audit
+app.put('/api/live/order/:id/reduce', async (req, res) => {
+  const orderId = req.params.id;
+  const { newSize, confirm } = req.body as { newSize?: number; confirm?: boolean };
+
+  const qty = Number(newSize);
+  if (!Number.isFinite(qty) || qty <= 0) {
+    return res.status(400).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'newSize must be a positive number' });
+  }
+
+  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+    return res.status(409).json({ ok: false, errorCode: 'manual_confirmation_required' as TradingErrorCode, hint: 'resend with {"confirm": true}' });
+  }
+
+  const db = await getDb();
+  const correlationId = nanoid();
+  const user = process.env.HYPERLIQUID_ACCOUNT_ADDRESS?.trim();
+
+  // Find the existing order
+  let existingOrder: any = null;
+  try {
+    const openOrders = await exchange.getOpenOrders();
+    existingOrder = openOrders.find((o) => o.id === orderId);
+  } catch {
+    // continue
+  }
+
+  if (!existingOrder) {
+    appendTradeEvent(db.data, {
+      symbol: LIVE_SYMBOL,
+      source: 'live',
+      type: 'order_rejected',
+      timestamp: new Date().toISOString(),
+      correlationId,
+      reason: 'live_reduce_order_not_found',
+      payload: { orderId, newSize: qty }
+    });
+    await db.write();
+    return res.status(404).json({ ok: false, errorCode: 'order_not_found' as TradingErrorCode, error: 'order not found in open orders' });
+  }
+
+  if (qty >= existingOrder.size) {
+    return res.status(400).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: `newSize (${qty}) must be less than current size (${existingOrder.size})` });
+  }
+
+  // Log the reduce intent
+  appendTradeEvent(db.data, {
+    symbol: existingOrder.symbol,
+    source: 'live',
+    type: 'order_submitted',
+    timestamp: new Date().toISOString(),
+    correlationId,
+    side: toTradeSide(existingOrder.side),
+    price: existingOrder.price,
+    quantity: qty,
+    reason: 'live_reduce_order',
+    payload: { orderId, originalSize: existingOrder.size, newSize: qty, action: 'reduce' }
+  });
+
+  // Cancel existing order
+  const cancelResult = await exchange.cancelOrder(orderId);
+  if (!cancelResult.ok) {
+    const errorCode = classifyError(cancelResult.error);
+    appendTradeEvent(db.data, {
+      symbol: existingOrder.symbol,
+      source: 'live',
+      type: 'order_rejected',
+      timestamp: new Date().toISOString(),
+      correlationId,
+      reason: 'live_reduce_cancel_failed',
+      payload: { orderId, error: cancelResult.error ?? null, errorCode }
+    });
+    await db.write();
+    return res.status(400).json({ ok: false, errorCode, error: cancelResult.error });
+  }
+
+  // Place new order with reduced size (reduce-only)
+  const newClientOrderId = `reduce-${correlationId}`;
+  const intent: OrderIntent = {
+    symbol: existingOrder.symbol,
+    side: existingOrder.side,
+    price: existingOrder.price,
+    size: qty,
+    reduceOnly: true,
+    clientOrderId: newClientOrderId
+  };
+
+  const ack = await exchange.placeLimitOrder(intent);
+  const errorCode = ack.ok ? undefined : classifyError(ack.error);
+
+  appendTradeEvent(db.data, {
+    symbol: existingOrder.symbol,
+    source: 'live',
+    type: ack.ok ? 'order_acknowledged' : 'order_rejected',
+    timestamp: new Date().toISOString(),
+    correlationId,
+    side: toTradeSide(existingOrder.side),
+    price: existingOrder.price,
+    quantity: qty,
+    reason: ack.ok ? 'live_reduce_order_ack' : 'live_reduce_order_failed',
+    payload: {
+      originalOrderId: orderId,
+      newOrderId: ack.orderId ?? null,
+      originalSize: existingOrder.size,
+      newSize: qty,
+      error: ack.error ?? null,
+      errorCode: errorCode ?? null
+    }
+  });
+  await db.write();
+
+  return res.status(ack.ok ? 200 : 400).json({
+    ok: ack.ok,
+    originalOrderId: orderId,
+    newOrderId: ack.orderId,
+    originalSize: existingOrder.size,
+    newSize: qty,
+    errorCode,
+    error: ack.error
+  });
 });
 
 app.use(express.static(distDir));

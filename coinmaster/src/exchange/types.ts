@@ -92,6 +92,21 @@ export interface CommandResult {
   error?: string;
 }
 
+/** Standardized error codes for trading operations */
+export type TradingErrorCode =
+  | 'rate_limited'
+  | 'insufficient_balance'
+  | 'invalid_params'
+  | 'order_not_found'
+  | 'already_canceled'
+  | 'max_notional_exceeded'
+  | 'manual_confirmation_required'
+  | 'exchange_error'
+  | 'idempotent_duplicate'
+  | 'order_failed'
+  | 'cancel_failed'
+  | 'modify_failed';
+
 export interface ExchangeCapabilities {
   realtimeMids: boolean;
   historicalCandles: boolean;
