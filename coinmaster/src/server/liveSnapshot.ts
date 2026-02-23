@@ -209,8 +209,8 @@ export async function buildLiveDashboardState(
   try {
     const [account, openOrders, openPositions, fills] = await Promise.all([
       exchange.getAccountState(),
-      exchange.getOpenOrders(symbol),
-      exchange.getOpenPositions(symbol),
+      exchange.getOpenOrders(),
+      exchange.getOpenPositions(),
       exchange.getFills()
     ]);
 

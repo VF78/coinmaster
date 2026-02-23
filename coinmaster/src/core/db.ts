@@ -29,7 +29,9 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.riskGateAudit)) data.riskGateAudit = [];
 }
 
-export async function getDb(file = 'data/db.json') {
+const DEFAULT_DB_FILE = process.env.COINMASTER_DB_FILE ?? 'data/db.json';
+
+export async function getDb(file = DEFAULT_DB_FILE) {
   const db = await JSONFilePreset<DBShape>(file, defaultData);
   ensureDbShape(db.data);
   return db;
