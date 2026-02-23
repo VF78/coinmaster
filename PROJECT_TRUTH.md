@@ -131,3 +131,8 @@
 - OpenClaw: audited, `gateway.trustedProxies` добавлены, restart done, host health good.
 - Модельная политика: первично Codex 5.1 mini, Claude Code (opus 4.6) — если подписка недоступна, fallback на Codex 5.3; сохранён шаблон task packet; ограничения Claude Code (limit до 19:00) уже встречаются.
 - Следующий квант: завершить preflight task через Claude/Codex (написан Task Packet), проверить лимит и готовность запуска.
+
+## Heartbeat protocol
+- Каждые 15 минут, пока работаю над задачей, отправляю короткий heartbeat формата `Heartbeat: <Status> | <Summary> | Next: <next action>`; отсутствие изменений за 10–15 минут переводит задачу в `blocked` и требует нового Claude Code кванта.
+- Подтверждённый прогресс = изменение файлов, выполнение проверок или обновление статуса в GitHub Project.
+
