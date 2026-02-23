@@ -624,3 +624,139 @@ tbody tr:hover {
   font-family: 'SF Mono', 'Fira Code', monospace;
   font-size: 0.8rem;
 }
+
+/* ─── Trading Rules ──────────────────────────────────────────────── */
+
+.rules-grid {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.rules-coin-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--surface-2) 0%, #0f1c2e 100%);
+  cursor: pointer;
+}
+
+.rules-coin-symbol {
+  font-weight: 700;
+  min-width: 3rem;
+}
+
+.rules-checkbox {
+  accent-color: var(--accent);
+  width: 1rem;
+  height: 1rem;
+}
+
+.rules-input {
+  min-height: 2.3rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: #0d1b2d;
+  color: var(--text);
+  padding: 0.45rem 0.6rem;
+  font-size: var(--text-sm);
+}
+
+.rules-input--sm {
+  width: 5rem;
+}
+
+.rules-section {
+  margin-bottom: var(--space-3);
+}
+
+.rules-section:last-child {
+  margin-bottom: 0;
+}
+
+.rules-label {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  margin-bottom: var(--space-1);
+}
+
+.rules-btn-group {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.rules-range {
+  width: 100%;
+  accent-color: var(--accent);
+  margin-top: var(--space-1);
+}
+
+.rules-range-value {
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.rules-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.rules-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rules-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.rules-toggle {
+  position: relative;
+  width: 2.75rem;
+  height: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-3);
+  cursor: pointer;
+  transition: background 150ms ease;
+  padding: 0;
+}
+
+.rules-toggle--on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.rules-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: var(--text);
+  transition: transform 150ms ease;
+}
+
+.rules-toggle--on .rules-toggle__thumb {
+  transform: translateX(1.2rem);
+  background: #032019;
+}
+
+.rules-apply-row {
+  max-width: 320px;
+}
+
+@media (max-width: 899px) {
+  .rules-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
