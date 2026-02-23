@@ -48,6 +48,13 @@ npm run build    # build web bundle
 npm run start    # run API only
 ```
 
+### Diagnostics
+```bash
+# Preflight smoke-check — verifies API is up and endpoints return valid responses.
+# Start the server first, then run in a separate terminal:
+API_BASE_URL=http://127.0.0.1:8787 npm run ops:smoke
+```
+
 ## API quick map (unchanged)
 - `GET /api/dashboard`
 - `GET /api/history` (includes legacy `logs` + append-only `events`)
