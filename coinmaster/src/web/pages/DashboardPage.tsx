@@ -222,6 +222,25 @@ export function DashboardPage() {
             : undefined
         }
       >
+        {data.live.pendingConfirmations.length > 0 && (
+          <div style={{ background: 'var(--danger-bg, rgba(239,68,68,0.1))', border: '1px solid var(--danger, #ef4444)', borderRadius: '6px', padding: '0.75rem 1rem', marginBottom: '0.75rem' }}>
+            <p style={{ margin: 0, fontWeight: 600 }}>
+              <Badge tone="danger">ACTION REQUIRED</Badge>{' '}
+              Подтвердите открытие — TP/SL установятся после подтверждения.
+            </p>
+            <p className="muted" style={{ margin: '0.5rem 0 0', fontSize: '0.85rem' }}>
+              Telegram-бот отправит уведомление. После подтверждения позиция перейдёт в Live open positions.
+            </p>
+            <a
+              href="https://t.me/your-bot"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'inline-block', marginTop: '0.5rem', color: 'var(--accent, #3b82f6)', fontWeight: 500 }}
+            >
+              Перейти к Telegram &rarr;
+            </a>
+          </div>
+        )}
         <p className="muted stat-note" style={{ marginBottom: '0.75rem' }}>
           Positions listed below are waiting for manual approval before being executed on the exchange.
           You will also receive a Telegram notification when a new position requires confirmation.
@@ -245,11 +264,20 @@ export function DashboardPage() {
                 { key: 'coins', header: 'Size (BTC)', render: (row) => formatNumber(row.size) },
                 { key: 'deal', header: 'Deal value', render: (row) => (row.dealValue !== undefined ? formatMoney(row.dealValue) : '—') },
                 { key: 'lev', header: 'Leverage', render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
+                {
+                  key: 'status',
+                  header: 'Status',
+                  render: () => <span className="muted">awaiting confirmation</span>
+                },
               ]}
             />
             <div style={{ marginTop: '0.75rem' }}>
-              <Button variant="primary" onClick={() => { /* TODO: open confirmation dialog */ }} fullWidth>
-                Open confirmation dialog
+              <Button
+                variant="primary"
+                onClick={() => { console.log('[confirm] Opening confirmation dialog for pending positions'); alert('Confirmation dialog — placeholder'); }}
+                fullWidth
+              >
+                Подтвердить сделку
               </Button>
             </div>
           </>
