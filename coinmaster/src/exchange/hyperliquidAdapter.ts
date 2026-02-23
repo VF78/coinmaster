@@ -44,6 +44,10 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   private tradingClient: Hyperliquid | null = null;
   private tradingClientInit: Promise<Hyperliquid> | null = null;
 
+  /** Cached effective user address (master account resolved from agent wallet) */
+  private effectiveUser: string | null = null;
+  private effectiveUserInit: Promise<string> | null = null;
+
   constructor(options: HyperliquidAdapterOptions = {}) {
     this.infoUrl = options.infoUrl ?? DEFAULT_INFO_URL;
     this.wsUrl = options.wsUrl ?? DEFAULT_WS_URL;
@@ -54,8 +58,9 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     this.privateKey = process.env.HYPERLIQUID_API_PRIVATE_KEY?.trim();
     this.apiWalletAddress = process.env.HYPERLIQUID_API_WALLET_ADDRESS?.trim();
 
-    const hasAccount = Boolean(this.accountAddress);
-    const hasTrading = Boolean(this.accountAddress && this.privateKey);
+    const seedAddress = this.accountAddress || this.apiWalletAddress;
+    const hasAccount = Boolean(seedAddress);
+    const hasTrading = Boolean(seedAddress && this.privateKey);
 
     this.capabilities = {
       realtimeMids: true,
@@ -137,7 +142,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   async getAccountState(): Promise<AccountSnapshot | null> {
-    const user = this.requireAccountAddress();
+    const user = await this.resolveEffectiveUser();
     const state = await this.requestInfo<any>({ type: 'clearinghouseState', user });
 
     const accountValue = this.toNumber(state?.crossMarginSummary?.accountValue ?? state?.marginSummary?.accountValue);
@@ -158,7 +163,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   async getOpenOrders(symbol?: string): Promise<OrderSnapshot[]> {
-    const user = this.requireAccountAddress();
+    const user = await this.resolveEffectiveUser();
     const raw = await this.requestInfo<any[]>({ type: 'openOrders', user });
     const target = symbol ? this.normalizeSymbol(symbol) : null;
 
@@ -185,7 +190,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   async getOpenPositions(symbol?: string): Promise<PositionSnapshot[]> {
-    const user = this.requireAccountAddress();
+    const user = await this.resolveEffectiveUser();
     const state = await this.requestInfo<any>({ type: 'clearinghouseState', user });
     const target = symbol ? this.normalizeSymbol(symbol) : null;
 
@@ -217,7 +222,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   async getFills(symbol?: string): Promise<FillEvent[]> {
-    const user = this.requireAccountAddress();
+    const user = await this.resolveEffectiveUser();
     const raw = await this.requestInfo<any[]>({ type: 'userFills', user, aggregateByTime: true });
     const target = symbol ? this.normalizeSymbol(symbol) : null;
 
@@ -335,7 +340,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async cancelOrder(orderIdOrClientId: string): Promise<CommandResult> {
     try {
       const client = await this.getTradingClient();
-      const user = this.requireAccountAddress();
+      const user = await this.resolveEffectiveUser();
       const openOrders = await this.requestInfo<any[]>({ type: 'openOrders', user });
 
       const target = (Array.isArray(openOrders) ? openOrders : []).find((o) => String(o?.oid ?? '') === String(orderIdOrClientId));
@@ -365,7 +370,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async cancelAll(symbol?: string): Promise<CommandResult> {
     try {
       const client = await this.getTradingClient();
-      const user = this.requireAccountAddress();
+      const user = await this.resolveEffectiveUser();
       const openOrders = await this.requestInfo<any[]>({ type: 'openOrders', user });
       const target = symbol ? this.normalizeSymbol(symbol) : null;
 
@@ -489,11 +494,49 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     };
   }
 
-  private requireAccountAddress(): string {
-    if (!this.accountAddress) {
-      throw new Error('HYPERLIQUID_ACCOUNT_ADDRESS is missing');
+  /**
+   * Resolve the effective user address for read APIs.
+   * If the seed address is an API agent wallet, look up the master account via userRole.
+   * Result is cached after first successful resolution.
+   */
+  private async resolveEffectiveUser(): Promise<string> {
+    const seed = this.accountAddress || this.apiWalletAddress;
+    if (!seed) {
+      throw new Error('HYPERLIQUID_ACCOUNT_ADDRESS or HYPERLIQUID_API_WALLET_ADDRESS is required');
     }
-    return this.accountAddress;
+
+    if (this.effectiveUser) return this.effectiveUser;
+
+    if (!this.effectiveUserInit) {
+      this.effectiveUserInit = (async (): Promise<string> => {
+        try {
+          const roleResult = await this.requestInfo<any>({ type: 'userRole', user: seed });
+          if (roleResult?.role === 'agent' && typeof roleResult?.data?.user === 'string') {
+            const master = roleResult.data.user.trim();
+            if (master) {
+              console.log(`[hyperliquid] Agent wallet detected, effective user: ${master.slice(0, 6)}…${master.slice(-4)}`);
+              this.effectiveUser = master;
+              return master;
+            }
+          }
+        } catch (error) {
+          console.warn('[hyperliquid] userRole lookup failed, falling back to seed address:', error instanceof Error ? error.message : error);
+        }
+        // Fallback: use seed address as-is
+        this.effectiveUser = seed;
+        return seed;
+      })();
+    }
+
+    return this.effectiveUserInit;
+  }
+
+  private requireAccountAddress(): string {
+    const seed = this.accountAddress || this.apiWalletAddress;
+    if (!seed) {
+      throw new Error('HYPERLIQUID_ACCOUNT_ADDRESS or HYPERLIQUID_API_WALLET_ADDRESS is required');
+    }
+    return seed;
   }
 
   private normalizeSymbol(symbol: string): string {
@@ -511,7 +554,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   private async getTradingClient(): Promise<Hyperliquid> {
-    this.requireAccountAddress();
+    const walletAddress = await this.resolveEffectiveUser();
 
     if (!this.privateKey) {
       throw new Error('HYPERLIQUID_API_PRIVATE_KEY is missing');
@@ -526,7 +569,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         const client = new Hyperliquid({
           enableWs: false,
           privateKey: this.privateKey,
-          walletAddress: this.accountAddress,
+          walletAddress,
           testnet: this.testnet,
           disableAssetMapRefresh: true
         });
