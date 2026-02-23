@@ -413,7 +413,7 @@ app.get('/api/dashboard', async (_req, res) => {
 
 app.get('/api/live/history', async (_req, res) => {
   try {
-    const fills = await exchange.getFills(LIVE_SYMBOL);
+    const fills = await exchange.getFills();
     const rows = fills
       .map(toLiveFill)
       .sort((a, b) => b.timestamp.localeCompare(a.timestamp));

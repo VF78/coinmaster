@@ -211,7 +211,7 @@ export async function buildLiveDashboardState(
       exchange.getAccountState(),
       exchange.getOpenOrders(symbol),
       exchange.getOpenPositions(symbol),
-      exchange.getFills(symbol)
+      exchange.getFills()
     ]);
 
     return {
