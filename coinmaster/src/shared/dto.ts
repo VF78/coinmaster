@@ -127,8 +127,10 @@ export interface LiveAccountSummary {
 }
 
 export interface LivePnlSummary {
+  dailyNetUsd: number;
   weeklyNetUsd: number;
   monthlyNetUsd: number;
+  dailyRealizedUsd: number;
   weeklyRealizedUsd: number;
   monthlyRealizedUsd: number;
 }
@@ -157,6 +159,7 @@ export interface LiveDashboardState {
   pnl: LivePnlSummary;
   openOrders: number;
   openPositions: LivePosition[];
+  pendingConfirmations: LivePosition[];
   error?: string;
 }
 

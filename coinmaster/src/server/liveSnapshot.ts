@@ -24,8 +24,10 @@ function toFee(fill: FillEvent): number {
 
 function emptyPnl(): LivePnlSummary {
   return {
+    dailyNetUsd: 0,
     weeklyNetUsd: 0,
     monthlyNetUsd: 0,
+    dailyRealizedUsd: 0,
     weeklyRealizedUsd: 0,
     monthlyRealizedUsd: 0
   };
@@ -141,9 +143,12 @@ export function computeLivePnl(fills: FillEvent[]): LivePnlSummary {
   if (!fills.length) return emptyPnl();
 
   const now = Date.now();
+  const dayCutoff = now - 1 * 24 * 60 * 60 * 1000;
   const weekCutoff = now - 7 * 24 * 60 * 60 * 1000;
   const monthCutoff = now - 30 * 24 * 60 * 60 * 1000;
 
+  let dailyRealized = 0;
+  let dailyFees = 0;
   let weeklyRealized = 0;
   let weeklyFees = 0;
   let monthlyRealized = 0;
@@ -165,14 +170,22 @@ export function computeLivePnl(fills: FillEvent[]): LivePnlSummary {
       weeklyRealized += closedPnl;
       weeklyFees += fee;
     }
+
+    if (ts >= dayCutoff) {
+      dailyRealized += closedPnl;
+      dailyFees += fee;
+    }
   }
 
+  const dailyNetUsd = Number((dailyRealized - dailyFees).toFixed(2));
   const weeklyNetUsd = Number((weeklyRealized - weeklyFees).toFixed(2));
   const monthlyNetUsd = Number((monthlyRealized - monthlyFees).toFixed(2));
 
   return {
+    dailyNetUsd,
     weeklyNetUsd,
     monthlyNetUsd,
+    dailyRealizedUsd: Number(dailyRealized.toFixed(2)),
     weeklyRealizedUsd: Number(weeklyRealized.toFixed(2)),
     monthlyRealizedUsd: Number(monthlyRealized.toFixed(2))
   };
@@ -189,7 +202,8 @@ export async function buildLiveDashboardState(
     account: null,
     pnl: emptyPnl(),
     openOrders: 0,
-    openPositions: []
+    openPositions: [],
+    pendingConfirmations: []
   };
 
   try {
@@ -212,7 +226,8 @@ export async function buildLiveDashboardState(
         : null,
       pnl: computeLivePnl(fills),
       openOrders: openOrders.length,
-      openPositions: openPositions.map((p) => toLivePosition(p, openOrders, fills))
+      openPositions: openPositions.map((p) => toLivePosition(p, openOrders, fills)),
+      pendingConfirmations: []
     };
   } catch (error) {
     return {

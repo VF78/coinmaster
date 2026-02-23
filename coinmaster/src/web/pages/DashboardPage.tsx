@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Bias, DashboardResponse, LivePosition } from '../../shared/dto.js';
 import { postBias, getDashboard } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
@@ -10,11 +10,15 @@ import { Stat } from '../components/Stat';
 import { PositionLevelsPanel } from '../components/PositionLevelsPanel';
 import { OrderConfirmModal, type OrderDraft } from '../components/OrderConfirmModal';
 
+type PnlPeriod = 'daily' | 'weekly' | 'monthly';
+
 export function DashboardPage() {
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<LivePosition | null>(null);
   const [orderDraft, setOrderDraft] = useState<OrderDraft | null>(null);
+  const [pnlPeriod, setPnlPeriod] = useState<PnlPeriod>('daily');
+  const refreshTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function refresh() {
     const next = await getDashboard();
@@ -23,6 +27,10 @@ export function DashboardPage() {
 
   useEffect(() => {
     refresh();
+    refreshTimer.current = setInterval(refresh, 5000);
+    return () => {
+      if (refreshTimer.current) clearInterval(refreshTimer.current);
+    };
   }, []);
 
   async function sendBias(bias: Bias) {
@@ -42,65 +50,93 @@ export function DashboardPage() {
     const liveAvailable = data.live.account?.availableUsd;
     const liveUsed = data.live.account?.usedMarginUsd;
     const liveOpenPnl = data.live.openPositions.reduce((sum, p) => sum + (p.unrealizedPnl ?? 0), 0);
-    const totalExposure = data.live.openPositions.reduce((sum, p) => sum + (p.dealValue ?? 0), 0);
 
     return {
       liveEquity,
       liveAvailable,
       liveUsed,
-      liveOpenPnl,
-      totalExposure
+      liveOpenPnl
     };
   }, [data]);
+
+  function getPnlValue(): number {
+    if (!data) return 0;
+    switch (pnlPeriod) {
+      case 'daily': return data.live.pnl.dailyNetUsd;
+      case 'weekly': return data.live.pnl.weeklyNetUsd;
+      case 'monthly': return data.live.pnl.monthlyNetUsd;
+    }
+  }
+
+  function getPnlLabel(): string {
+    switch (pnlPeriod) {
+      case 'daily': return 'Daily P&L';
+      case 'weekly': return 'Weekly P&L';
+      case 'monthly': return 'Monthly P&L';
+    }
+  }
 
   if (!data || !metrics) {
     return <p className="muted">Loading live terminal…</p>;
   }
 
+  const pnlValue = getPnlValue();
+
   return (
     <main className="terminal-layout">
       <section className="layout-grid layout-grid--terminal">
         <Card
-          title="Account overview (real, Hyperliquid)"
+          title="Account overview (Hyperliquid)"
           className="terminal-card"
-          actions={<Button onClick={() => refresh()} variant="secondary" disabled={isLoading}>Refresh data</Button>}
+          actions={
+            <Badge tone={data.live.connected ? 'success' : 'danger'}>
+              {data.live.connected ? 'CONNECTED' : 'DISCONNECTED'}
+            </Badge>
+          }
         >
           <div className="stats-grid">
-            <Stat label="Account equity" value={metrics.liveEquity !== undefined ? formatMoney(metrics.liveEquity) : '—'} tone="default" />
-            <Stat label="Available to trade" value={metrics.liveAvailable !== undefined ? formatMoney(metrics.liveAvailable) : '—'} tone="default" />
+            <Stat label="Equity" value={metrics.liveEquity !== undefined ? formatMoney(metrics.liveEquity) : '—'} tone="default" />
+            <Stat label="Available" value={metrics.liveAvailable !== undefined ? formatMoney(metrics.liveAvailable) : '—'} tone="default" />
             <Stat label="Used margin" value={metrics.liveUsed !== undefined ? formatMoney(metrics.liveUsed) : '—'} tone="default" />
-            <Stat label="Open exposure" value={metrics.totalExposure > 0 ? formatMoney(metrics.totalExposure) : '—'} tone="default" />
             <Stat
-              label="Weekly P&L"
-              value={formatMoney(data.live.pnl.weeklyNetUsd)}
-              tone={data.live.pnl.weeklyNetUsd >= 0 ? 'success' : 'danger'}
-            />
-            <Stat
-              label="Monthly P&L"
-              value={formatMoney(data.live.pnl.monthlyNetUsd)}
-              tone={data.live.pnl.monthlyNetUsd >= 0 ? 'success' : 'danger'}
+              label={getPnlLabel()}
+              value={formatMoney(pnlValue)}
+              tone={pnlValue >= 0 ? 'success' : 'danger'}
             />
             <Stat label="Open orders" value={String(data.live.openOrders)} />
             <Stat label="Open positions" value={String(data.live.openPositions.length)} />
             <Stat
-              label="Open uPnL"
+              label="Unrealized P&L"
               value={data.live.openPositions.length ? formatMoney(metrics.liveOpenPnl) : '—'}
               tone={metrics.liveOpenPnl >= 0 ? 'success' : 'danger'}
             />
-            <Stat label="BTC mark" value={data.latestTick ? formatMoney(data.latestTick.price) : '—'} />
           </div>
-          <p className="muted stat-note">
-            Status: <Badge tone={data.live.connected ? 'success' : 'danger'}>{data.live.connected ? 'CONNECTED' : 'DISCONNECTED'}</Badge>
-            {' • '}Manual confirmation: <strong>{data.live.mode.manualConfirmation ? 'ON' : 'OFF'}</strong>
-            {' • '}Max leverage: <strong>{formatNumber(data.live.mode.maxLeverage)}x</strong>
+          <p className="muted stat-note" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            P&amp;L period:{' '}
+            {(['daily', 'weekly', 'monthly'] as PnlPeriod[]).map((p) => (
+              <Button
+                key={p}
+                variant={pnlPeriod === p ? 'primary' : 'secondary'}
+                onClick={() => setPnlPeriod(p)}
+                style={{ padding: '0.15rem 0.5rem', fontSize: '0.8rem' }}
+              >
+                {p.charAt(0).toUpperCase() + p.slice(1)}
+              </Button>
+            ))}
           </p>
           <p className="muted stat-note">
-            Last market update: {data.latestTick ? formatDate(data.latestTick.timestamp) : '—'}
-            {data.live.error ? ` • Live error: ${data.live.error}` : ''}
+            Last update: {data.latestTick ? formatDate(data.latestTick.timestamp) : '—'}
+            {data.live.error ? ` • Error: ${data.live.error}` : ''}
+            {data.live.mode.manualConfirmation ? ' • Manual confirmation is active — new positions require approval before execution.' : ''}
           </p>
         </Card>
 
         <Card title="Execution controls" className="terminal-card terminal-card--narrow">
+          <p className="muted stat-note" style={{ marginBottom: '0.75rem' }}>
+            Manual confirmation: <strong>{data.live.mode.manualConfirmation ? 'ON' : 'OFF'}</strong>
+            {' • '}Limits: <strong>30 USDC / {formatNumber(data.live.mode.maxLeverage)}x</strong>
+          </p>
+
           <p className="stack-row">
             Current signal:
             <Badge tone={data.latestBias === 'off' ? 'neutral' : data.latestBias === 'long' ? 'success' : 'danger'}>
@@ -137,7 +173,7 @@ export function DashboardPage() {
         </Card>
       </section>
 
-      <Card title="Live open positions (exchange)" className="full-width terminal-card">
+      <Card title="Live open positions" className="full-width terminal-card">
         <DataTable<LivePosition>
           rows={data.live.openPositions}
           mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
@@ -175,6 +211,49 @@ export function DashboardPage() {
             }
           ]}
         />
+      </Card>
+
+      <Card
+        title="Positions to confirm"
+        className="full-width terminal-card"
+        actions={
+          data.live.pendingConfirmations.length > 0
+            ? <Badge tone="danger">{data.live.pendingConfirmations.length} PENDING</Badge>
+            : undefined
+        }
+      >
+        <p className="muted stat-note" style={{ marginBottom: '0.75rem' }}>
+          Positions listed below are waiting for manual approval before being executed on the exchange.
+          You will also receive a Telegram notification when a new position requires confirmation.
+        </p>
+        {data.live.pendingConfirmations.length === 0 ? (
+          <p className="muted">No positions awaiting confirmation.</p>
+        ) : (
+          <>
+            <DataTable<LivePosition>
+              rows={data.live.pendingConfirmations}
+              mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
+              mobileSubtitle={(row) => {
+                const dealValue = row.dealValue !== undefined ? formatMoney(row.dealValue) : '—';
+                return `Deal: ${dealValue}`;
+              }}
+              emptyText="No positions awaiting confirmation."
+              columns={[
+                { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
+                { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'long' ? 'success' : 'danger'}>{row.side}</Badge> },
+                { key: 'entry', header: 'Entry', render: (row) => (row.entryPrice !== undefined ? formatNumber(row.entryPrice) : '—') },
+                { key: 'coins', header: 'Size (BTC)', render: (row) => formatNumber(row.size) },
+                { key: 'deal', header: 'Deal value', render: (row) => (row.dealValue !== undefined ? formatMoney(row.dealValue) : '—') },
+                { key: 'lev', header: 'Leverage', render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
+              ]}
+            />
+            <div style={{ marginTop: '0.75rem' }}>
+              <Button variant="primary" onClick={() => { /* TODO: open confirmation dialog */ }} fullWidth>
+                Open confirmation dialog
+              </Button>
+            </div>
+          </>
+        )}
       </Card>
 
       {selectedPosition ? (
