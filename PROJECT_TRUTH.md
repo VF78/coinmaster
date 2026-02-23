@@ -126,7 +126,7 @@
 ## Критический контекст 2026-02-23
 - Доступы/источники: repo `VF78/coinmaster`, project #2, PAT `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`. Клонировано в `/root/.openclaw/workspace/coinmaster`.
 - Новые артефакты: `docs/OPS_MINIMUM.md` (run/diag/check template), `PROJECT_TRUTH.md` шаблон Claude Code + модельная политика, `memory/2026-02-23.md` и workspace IDENTITY/USER.
-- Проверено: `npm ci`, `npm run check`, `npm run build`, API health/smoke on spare ports (8787 занят, использован 8878/8879). Предложен скрипт `scripts/preflight-smoke.sh` + npm `ops:smoke` (Claude task pending).
+- Проверено: `npm ci`, `npm run check`, `npm run build`, API health/smoke на spare-портах (8787 занята, использованы 8878/8879). Реализован `scripts/preflight-smoke.sh`, добавлена команда `npm run ops:smoke`, выполнена проверка smoke через Claude task (перезапуск сервера + `API_BASE_URL=http://127.0.0.1:8878 npm run ops:smoke`).
 - OpenClaw: audited, `gateway.trustedProxies` добавлены, restart done, host health good.
 - Модельная политика: первично Codex 5.1 mini, Claude Code (opus 4.6) — если подписка недоступна, fallback на Codex 5.3; сохранён шаблон task packet; ограничения Claude Code (limit до 19:00) уже встречаются.
 - Следующий квант: завершить preflight task через Claude/Codex (написан Task Packet), проверить лимит и готовность запуска.
