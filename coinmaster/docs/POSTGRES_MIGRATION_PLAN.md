@@ -35,23 +35,31 @@ LowdbStore  PostgresStore
 - [x] `PERSISTENCE_BACKEND=lowdb|postgres` env switch (default: `lowdb`)
 - [x] Zero changes to trading logic, risk gates, or API contracts
 
-### Phase 1 — Dual-Write (next PR)
-- Wire `PostgresStore` full CRUD implementation using `pg` driver
+### Phase 1 — Snapshot Bridge (this PR)
+- [x] `migrations/002_state_snapshot.sql` — `state_snapshot` table (`key TEXT PK`, `data JSONB`, `updated_at`)
+- [x] `PostgresStore.init()` — creates snapshot table (idempotent), loads existing snapshot into `this.data`
+- [x] `PostgresStore.flush()` — upserts full `DBShape` as a single JSONB row in a transaction
+- [x] `pg` added as runtime dependency
+- [x] Zero changes to trading logic, risk gates, or API contracts
+- Strategy: snapshot-table acts as a safe bridge — the entire `DBShape` is stored as one JSONB document, so all existing in-memory mutation patterns work unchanged. Phase 2 will migrate reads/writes to the normalised tables from `001_initial_schema.sql`.
+
+### Phase 2 — Dual-Write
 - Enable dual-write mode: lowdb primary + postgres shadow writes
 - Add reconciliation script comparing JSON ↔ PG row counts
+- Begin writing to normalised tables (001 schema) alongside snapshot
 - Validate in staging for 48–72h
 
-### Phase 2 — Read Migration
-- Switch reads to PostgreSQL while keeping lowdb writes as backup
+### Phase 3 — Read Migration
+- Switch reads to PostgreSQL (normalised tables) while keeping lowdb writes as backup
 - Compare response payloads (lowdb vs PG) in shadow mode
 - Monitor latency / error rates
 
-### Phase 3 — Cutover
+### Phase 4 — Cutover
 - Set `PERSISTENCE_BACKEND=postgres` as default
 - Keep lowdb adapter available but unused
 - Run for 1 week with rollback ready
 
-### Phase 4 — Cleanup
+### Phase 5 — Cleanup
 - Remove lowdb dependency and `data/db.json` path
 - Archive migration code
 - Drop `PERSISTENCE_BACKEND` env switch

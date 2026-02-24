@@ -22,6 +22,7 @@
     "hyperliquid": "^1.7.7",
     "lightweight-charts": "^4.2.3",
     "lowdb": "^7.0.1",
+    "pg": "^8.13.1",
     "nanoid": "^5.0.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -30,6 +31,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",

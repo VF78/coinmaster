@@ -1,15 +1,44 @@
 import type { DBShape } from '../types.js';
 import type { PersistenceStore } from './types.js';
 
+const SNAPSHOT_KEY = 'dbshape_v1';
+
+const defaultData: DBShape = {
+  settings: { depositUsd: 1000 },
+  positions: [],
+  tradeLogs: [],
+  tradeEvents: [],
+  biasCommands: [],
+  marketTicks: [],
+  dailyDDBaselines: [],
+  riskGateAudit: []
+};
+
+function ensureDbShape(data: DBShape) {
+  data.settings = data.settings ?? { depositUsd: 1000 };
+  if (!Number.isFinite(data.settings.depositUsd)) {
+    data.settings.depositUsd = 1000;
+  }
+  if (!Array.isArray(data.positions)) data.positions = [];
+  if (!Array.isArray(data.tradeLogs)) data.tradeLogs = [];
+  if (!Array.isArray(data.tradeEvents)) data.tradeEvents = [];
+  if (!Array.isArray(data.biasCommands)) data.biasCommands = [];
+  if (!Array.isArray(data.marketTicks)) data.marketTicks = [];
+  if (!Array.isArray(data.dailyDDBaselines)) data.dailyDDBaselines = [];
+  if (!Array.isArray(data.riskGateAudit)) data.riskGateAudit = [];
+}
+
 /**
- * PostgreSQL persistence backend — Phase 0 skeleton.
+ * PostgreSQL persistence backend — Phase 1 snapshot bridge.
  *
- * Provides `init()` (with pool creation + connectivity check) and
- * `healthCheck()`. Full CRUD will be implemented in Phase 1.
+ * Stores the full DBShape as a single JSONB document in the
+ * `state_snapshot` table. This lets all existing core logic
+ * (which mutates `db.data` in-memory then calls `db.write()`)
+ * work unchanged against Postgres.
  *
- * Requires `DATABASE_URL` env var.
- * The `pg` package is dynamically imported so the dependency is
- * optional — lowdb-only deployments don't need it installed.
+ * Phase 2+ will migrate to the normalised tables from 001_initial_schema.sql.
+ *
+ * Requires `DATABASE_URL` env var and `pg` package.
  */
 export class PostgresStore implements PersistenceStore {
   private pool: any = null; // pg.Pool — dynamically imported
@@ -21,21 +50,11 @@ export class PostgresStore implements PersistenceStore {
     if (!this.connectionString) {
       throw new Error('PostgresStore requires DATABASE_URL or a connection string');
     }
-    // In-memory snapshot — same shape as lowdb so core logic works unchanged.
-    this.data = {
-      settings: { depositUsd: 1000 },
-      positions: [],
-      tradeLogs: [],
-      tradeEvents: [],
-      biasCommands: [],
-      marketTicks: [],
-      dailyDDBaselines: [],
-      riskGateAudit: []
-    };
+    this.data = { ...defaultData };
   }
 
   async init(): Promise<void> {
-    // Dynamic import: pg is an optional peer dependency for Phase 0.
+    // Dynamic import: pg is a runtime dependency when backend=postgres.
     let pg: any;
     try {
       const mod = 'pg';
@@ -59,7 +78,30 @@ export class PostgresStore implements PersistenceStore {
 
     console.log('[postgres] Connected to PostgreSQL');
 
-    // TODO Phase 1: load current state into this.data from PG tables
+    // Ensure snapshot table exists (idempotent)
+    await this.pool.query(`
+      CREATE TABLE IF NOT EXISTS state_snapshot (
+        key        TEXT        PRIMARY KEY,
+        data       JSONB       NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )
+    `);
+
+    // Load existing snapshot (if any)
+    const res = await this.pool.query(
+      'SELECT data FROM state_snapshot WHERE key = $1',
+      [SNAPSHOT_KEY]
+    );
+
+    if (res.rows.length > 0 && res.rows[0].data) {
+      this.data = res.rows[0].data as DBShape;
+    } else {
+      this.data = JSON.parse(JSON.stringify(defaultData));
+    }
+
+    ensureDbShape(this.data);
+    console.log('[postgres] Snapshot loaded (%d positions, %d tradeLogs)',
+      this.data.positions.length, this.data.tradeLogs.length);
   }
 
   getData(): DBShape {
@@ -68,8 +110,24 @@ export class PostgresStore implements PersistenceStore {
 
   async flush(): Promise<void> {
     if (!this.pool) throw new Error('PostgresStore not initialised — call init() first');
-    // TODO Phase 1: persist this.data snapshot to PG tables
-    console.log('[postgres] flush() called — not yet implemented (Phase 1)');
+
+    const client = await this.pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query(
+        `INSERT INTO state_snapshot (key, data, updated_at)
+         VALUES ($1, $2, now())
+         ON CONFLICT (key)
+         DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at`,
+        [SNAPSHOT_KEY, JSON.stringify(this.data)]
+      );
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
   }
 
   async healthCheck(): Promise<{ ok: boolean; backend: string; error?: string }> {
