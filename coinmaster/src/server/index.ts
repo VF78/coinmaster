@@ -109,7 +109,8 @@ async function flushRiskAudit() {
 }
 
 // Flush audit every 30s
-setInterval(() => { flushRiskAudit().catch(() => undefined); }, 30_000);
+const auditFlushTimer = setInterval(() => { flushRiskAudit().catch(() => undefined); }, 30_000);
+auditFlushTimer.unref();
 
 function todayDateStr(): string {
   return new Date().toISOString().slice(0, 10);
@@ -912,11 +913,18 @@ function classifyError(error: string | undefined): TradingErrorCode {
 /** Idempotency store: clientOrderId → response (in-memory, survives within process) */
 const idempotencyCache = new Map<string, { timestamp: number; response: any }>();
 const IDEMPOTENCY_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const IDEMPOTENCY_MAX_SIZE = 1000;
 
 function pruneIdempotencyCache() {
   const cutoff = Date.now() - IDEMPOTENCY_TTL_MS;
   for (const [key, entry] of idempotencyCache) {
     if (entry.timestamp < cutoff) idempotencyCache.delete(key);
+  }
+  // FIFO eviction if still over max size
+  while (idempotencyCache.size > IDEMPOTENCY_MAX_SIZE) {
+    const oldest = idempotencyCache.keys().next().value;
+    if (oldest !== undefined) idempotencyCache.delete(oldest);
+    else break;
   }
 }
 
@@ -1188,8 +1196,56 @@ app.get('*', (_req, res) => {
   res.sendFile(path.join(distDir, 'index.html'));
 });
 
-app.listen(port, host, () => {
+// ─── Process-level error handlers ─────────────────────────────────────
+process.on('unhandledRejection', (reason) => {
+  console.error('[process] Unhandled rejection:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('[process] Uncaught exception:', error);
+  // Let the process crash after logging — do not swallow fatal errors
+  process.exit(1);
+});
+
+// ─── Graceful shutdown ────────────────────────────────────────────────
+let shuttingDown = false;
+
+const server = app.listen(port, host, () => {
   console.log(`Server listening on http://${host}:${port}`);
   ingestRestFallback().catch(() => undefined);
   startLiveMidStream();
 });
+
+async function gracefulShutdown(signal: string) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`[shutdown] Received ${signal}, shutting down gracefully…`);
+
+  // 1. Stop accepting new connections
+  server.close(() => {
+    console.log('[shutdown] HTTP server closed');
+  });
+
+  // 2. Clear timers
+  clearInterval(auditFlushTimer);
+  if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
+  if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
+
+  // 3. Close WS stream
+  if (midStreamHandle) { midStreamHandle.close(); midStreamHandle = null; }
+
+  // 4. Best-effort: flush risk audit + close persistence
+  try { await flushRiskAudit(); } catch { /* best effort */ }
+  try {
+    const { getStore } = await import('../core/persistence/index.js');
+    const store = await getStore();
+    await store.close();
+    console.log('[shutdown] Persistence store closed');
+  } catch { /* store may not have been initialised */ }
+
+  console.log('[shutdown] Cleanup complete, exiting');
+  process.exit(0);
+}
+
+process.on('SIGTERM', () => { gracefulShutdown('SIGTERM'); });
+process.on('SIGINT', () => { gracefulShutdown('SIGINT'); });
