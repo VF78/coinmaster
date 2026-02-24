@@ -390,6 +390,27 @@ app.use(express.json());
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
+// ─── Performance / observability (non-invasive) ──────────────────────
+app.get('/api/health/perf', (_req, res) => {
+  const mem = process.memoryUsage();
+  const start = performance.now();
+  setImmediate(() => {
+    const lagMs = Math.round((performance.now() - start) * 100) / 100;
+    res.json({
+      ok: true,
+      uptimeSeconds: Math.round(process.uptime()),
+      memory: {
+        rss: Math.round(mem.rss / 1024 / 1024 * 100) / 100,
+        heapTotal: Math.round(mem.heapTotal / 1024 / 1024 * 100) / 100,
+        heapUsed: Math.round(mem.heapUsed / 1024 / 1024 * 100) / 100,
+        external: Math.round(mem.external / 1024 / 1024 * 100) / 100,
+      },
+      eventLoopLagMs: lagMs,
+      timestamp: new Date().toISOString(),
+    });
+  });
+});
+
 app.get('/api/dashboard', async (_req, res) => {
   const db = await getDb();
   const latestBias = [...db.data.biasCommands].reverse().find((b) => b.symbol === LIVE_SYMBOL)?.bias ?? 'off';
