@@ -35,6 +35,8 @@ const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLow
 
 const LIVE_DAILY_DD_LIMIT_PCT = Number(process.env.LIVE_DAILY_DD_LIMIT_PCT || 20);
 const LIVE_PORTFOLIO_LEVERAGE_CAP = Number(process.env.LIVE_PORTFOLIO_LEVERAGE_CAP || 10);
+const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
+const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(2000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 5000));
 const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
 const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 
@@ -141,7 +143,8 @@ interface RiskCheckResult {
   baselineEquityUsd: number;
 }
 
-async function evaluateRiskGates(): Promise<RiskCheckResult> {
+async function evaluateRiskGates(options?: { emitAudit?: boolean }): Promise<RiskCheckResult> {
+  const emitAudit = options?.emitAudit ?? true;
   const blocks: string[] = [];
 
   // Fetch account state
@@ -160,8 +163,10 @@ async function evaluateRiskGates(): Promise<RiskCheckResult> {
 
   if (ddPct >= LIVE_DAILY_DD_LIMIT_PCT) {
     blocks.push('daily_loss_limit_exceeded');
-    logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'daily_loss_limit_exceeded', details: { ddPct: Number(ddPct.toFixed(2)), limit: LIVE_DAILY_DD_LIMIT_PCT, equityUsd, baselineEquityUsd: baseline.startEquityUsd } });
-  } else {
+    if (emitAudit) {
+      logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'daily_loss_limit_exceeded', details: { ddPct: Number(ddPct.toFixed(2)), limit: LIVE_DAILY_DD_LIMIT_PCT, equityUsd, baselineEquityUsd: baseline.startEquityUsd } });
+    }
+  } else if (emitAudit) {
     logRiskGateAudit({ gate: 'daily_dd', passed: true, details: { ddPct: Number(ddPct.toFixed(2)) } });
   }
 
@@ -175,8 +180,10 @@ async function evaluateRiskGates(): Promise<RiskCheckResult> {
 
   if (portfolioLeverage > LIVE_PORTFOLIO_LEVERAGE_CAP) {
     blocks.push('leverage_limit_exceeded');
-    logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)), cap: LIVE_PORTFOLIO_LEVERAGE_CAP } });
-  } else {
+    if (emitAudit) {
+      logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)), cap: LIVE_PORTFOLIO_LEVERAGE_CAP } });
+    }
+  } else if (emitAudit) {
     logRiskGateAudit({ gate: 'leverage_cap', passed: true, details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)) } });
   }
 
@@ -190,29 +197,154 @@ async function evaluateRiskGates(): Promise<RiskCheckResult> {
   };
 }
 
-/** Close all positions emergency (daily DD hard stop) */
-async function emergencyCloseAll() {
-  console.log('[risk-gate] EMERGENCY: Daily DD limit hit — closing ALL positions');
-  const positions = await exchange.getOpenPositions();
-  for (const pos of positions) {
-    const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
-    // Market-close via limit at extreme price
-    const extremePrice = closeSide === 'sell' ? 1 : 999_999;
-    try {
-      await exchange.placeLimitOrder({
-        symbol: pos.symbol,
-        side: closeSide,
-        price: extremePrice,
-        size: pos.size,
-        reduceOnly: true,
-        clientOrderId: `emergency-${nanoid()}`
-      });
-    } catch (e) {
-      console.error(`[risk-gate] Failed to close ${pos.symbol}:`, e);
-    }
+const emergencyCloseLock = {
+  running: false,
+  hardStopActive: false
+};
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function emergencyClosePrice(pos: { side: 'long' | 'short'; markPrice?: number; entryPrice?: number }, closeSide: 'buy' | 'sell'): number {
+  const mark = pos.markPrice ?? pos.entryPrice ?? 0;
+  if (!Number.isFinite(mark) || mark <= 0) {
+    return closeSide === 'sell' ? 1 : 999_999;
   }
-  // Also cancel all open orders
-  try { await exchange.cancelAll(); } catch {}
+  const price = closeSide === 'sell' ? mark * 0.985 : mark * 1.015;
+  return Math.max(0.00000001, Number(price.toFixed(8)));
+}
+
+/** Close all positions emergency (daily DD hard stop). Best effort but retried by watchdog every few seconds until flat. */
+async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
+  if (emergencyCloseLock.running) return;
+  emergencyCloseLock.running = true;
+  try {
+    console.error(`[risk-gate] EMERGENCY ${reason}: closing all positions`);
+
+    // Cancel resting orders first to reduce conflicts with reduce-only exits.
+    try {
+      await exchange.cancelAll();
+    } catch (error) {
+      console.error('[risk-gate] cancelAll during emergency failed:', error);
+    }
+
+    const positions = await exchange.getOpenPositions();
+    if (positions.length === 0) {
+      return;
+    }
+
+    for (const pos of positions) {
+      const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
+      const price = emergencyClosePrice(pos, closeSide);
+      try {
+        const ack = await exchange.placeLimitOrder({
+          symbol: pos.symbol,
+          side: closeSide,
+          price,
+          size: pos.size,
+          reduceOnly: true,
+          clientOrderId: `emergency-${Date.now()}-${nanoid(6)}`
+        });
+
+        if (!ack.ok) {
+          // Retry once with more aggressive price.
+          const retryPrice = closeSide === 'sell' ? Math.max(0.00000001, price * 0.95) : price * 1.05;
+          await exchange.placeLimitOrder({
+            symbol: pos.symbol,
+            side: closeSide,
+            price: Number(retryPrice.toFixed(8)),
+            size: pos.size,
+            reduceOnly: true,
+            clientOrderId: `emergency-retry-${Date.now()}-${nanoid(6)}`
+          });
+        }
+      } catch (error) {
+        console.error(`[risk-gate] Failed to emergency-close ${pos.symbol}:`, error);
+      }
+    }
+
+    // Brief settle and re-check position count.
+    await sleep(400);
+
+    const remaining = await exchange.getOpenPositions();
+    if (remaining.length > 0) {
+      console.error(`[risk-gate] emergency close incomplete, ${remaining.length} position(s) remain; watchdog will retry`);
+    }
+  } finally {
+    emergencyCloseLock.running = false;
+  }
+}
+
+let drawdownWatchdogTimer: NodeJS.Timeout | null = null;
+let drawdownWatchdogBusy = false;
+
+async function runDrawdownWatchdogTick() {
+  if (drawdownWatchdogBusy) return;
+  drawdownWatchdogBusy = true;
+  try {
+    const risk = await evaluateRiskGates({ emitAudit: false });
+
+    if (risk.blocks.includes('daily_loss_limit_exceeded')) {
+      if (!emergencyCloseLock.hardStopActive) {
+        emergencyCloseLock.hardStopActive = true;
+        logRiskGateAudit({
+          gate: 'daily_dd',
+          passed: false,
+          reason: 'daily_loss_limit_exceeded_watchdog',
+          details: {
+            ddPct: risk.dailyDDPct,
+            limit: LIVE_DAILY_DD_LIMIT_PCT,
+            equityUsd: risk.equityUsd,
+            baselineEquityUsd: risk.baselineEquityUsd
+          }
+        });
+      }
+      await emergencyCloseAll('daily_loss_limit_exceeded_watchdog');
+      return;
+    }
+
+    if (emergencyCloseLock.hardStopActive) {
+      emergencyCloseLock.hardStopActive = false;
+      logRiskGateAudit({
+        gate: 'daily_dd',
+        passed: true,
+        reason: 'daily_loss_recovered_watchdog',
+        details: {
+          ddPct: risk.dailyDDPct,
+          limit: LIVE_DAILY_DD_LIMIT_PCT,
+          equityUsd: risk.equityUsd,
+          baselineEquityUsd: risk.baselineEquityUsd
+        }
+      });
+    }
+  } catch (error) {
+    console.error('[risk-gate] Drawdown watchdog tick failed:', error);
+  } finally {
+    drawdownWatchdogBusy = false;
+  }
+}
+
+function startDrawdownWatchdog() {
+  if (!ENABLE_DRAWDOWN_WATCHDOG) {
+    console.log('[risk-gate] Drawdown watchdog disabled via ENABLE_DRAWDOWN_WATCHDOG=false');
+    return;
+  }
+  if (!exchange.capabilities.privateAccount || !exchange.capabilities.privateTrading) {
+    console.log('[risk-gate] Drawdown watchdog not started (private account/trading unavailable)');
+    return;
+  }
+  if (drawdownWatchdogTimer) return;
+
+  // Warm-up tick immediately so baseline is created early in the day.
+  runDrawdownWatchdogTick().catch(() => undefined);
+
+  drawdownWatchdogTimer = setInterval(() => {
+    runDrawdownWatchdogTick().catch(() => undefined);
+  }, DRAWDOWN_WATCHDOG_INTERVAL_MS);
+  drawdownWatchdogTimer.unref?.();
+
+  console.log(`[risk-gate] Drawdown watchdog started (${DRAWDOWN_WATCHDOG_INTERVAL_MS}ms)`);
 }
 
 /** Risk gate middleware for trading endpoints — checks DD + leverage before allowing order */
@@ -1214,6 +1346,7 @@ const server = app.listen(port, host, () => {
   console.log(`Server listening on http://${host}:${port}`);
   ingestRestFallback().catch(() => undefined);
   startLiveMidStream();
+  startDrawdownWatchdog();
 });
 
 async function gracefulShutdown(signal: string) {
@@ -1228,6 +1361,7 @@ async function gracefulShutdown(signal: string) {
 
   // 2. Clear timers
   clearInterval(auditFlushTimer);
+  if (drawdownWatchdogTimer) { clearInterval(drawdownWatchdogTimer); drawdownWatchdogTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
   if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
 
