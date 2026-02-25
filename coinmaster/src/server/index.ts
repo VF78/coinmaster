@@ -207,6 +207,17 @@ const emergencyCloseLock = {
   hardStopActive: false
 };
 
+const WATCHDOG_IDLE_LOG_INTERVAL_MS = 5 * 60 * 1000;
+const watchdogLogState: Record<string, number> = {};
+
+function shouldLogWatchdog(key: string, intervalMs = WATCHDOG_IDLE_LOG_INTERVAL_MS): boolean {
+  const now = Date.now();
+  const last = watchdogLogState[key] ?? 0;
+  if (now - last < intervalMs) return false;
+  watchdogLogState[key] = now;
+  return true;
+}
+
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -225,16 +236,31 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
   if (emergencyCloseLock.running) return;
   emergencyCloseLock.running = true;
   try {
-    console.error(`[risk-gate] EMERGENCY ${reason}: closing all positions`);
+    const [positions, openOrders] = await Promise.all([
+      exchange.getOpenPositions(),
+      exchange.getOpenOrders()
+    ]);
 
-    // Cancel resting orders first to reduce conflicts with reduce-only exits.
-    try {
-      await exchange.cancelAll();
-    } catch (error) {
-      console.error('[risk-gate] cancelAll during emergency failed:', error);
+    if (positions.length === 0 && openOrders.length === 0) {
+      if (shouldLogWatchdog('already-flat')) {
+        console.warn('[risk-gate] Emergency close skipped: account already flat (no positions/orders)');
+      }
+      return;
     }
 
-    const positions = await exchange.getOpenPositions();
+    console.error(
+      `[risk-gate] EMERGENCY ${reason}: closing ${positions.length} position(s), cancelling ${openOrders.length} order(s)`
+    );
+
+    // Cancel resting orders first to reduce conflicts with reduce-only exits.
+    if (openOrders.length > 0) {
+      try {
+        await exchange.cancelAll();
+      } catch (error) {
+        console.error('[risk-gate] cancelAll during emergency failed:', error);
+      }
+    }
+
     if (positions.length === 0) {
       return;
     }
@@ -305,6 +331,19 @@ async function runDrawdownWatchdogTick() {
           }
         });
       }
+
+      const [positions, openOrders] = await Promise.all([
+        exchange.getOpenPositions(),
+        exchange.getOpenOrders()
+      ]);
+
+      if (positions.length === 0 && openOrders.length === 0) {
+        if (shouldLogWatchdog('dd-hardstop-flat')) {
+          console.warn('[risk-gate] Hard-stop active but account already flat; skipping emergency close tick');
+        }
+        return;
+      }
+
       await emergencyCloseAll('daily_loss_limit_exceeded_watchdog');
       return;
     }
