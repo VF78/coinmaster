@@ -13,6 +13,8 @@
     "tunnel": "./scripts/tunnel-localhost-run.sh",
     "tunnel:fixed": "./scripts/tunnel-localhost-run.sh coinmaster-vf",
     "seed": "tsx scripts/seed.ts",
+    "persistence:seed-pg": "tsx scripts/persistence-seed-postgres.ts",
+    "persistence:reconcile": "tsx scripts/persistence-reconcile.ts",
     "check": "tsc --noEmit",
     "ops:smoke": "bash ./scripts/preflight-smoke.sh"
   },
