@@ -11,6 +11,8 @@ import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
+import type { TradingRulesSettings } from '../shared/dto.js';
+import { normalizeTradingRules } from '../shared/tradingRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
@@ -412,6 +414,13 @@ function normalizeSymbol(raw: unknown): string {
   return String(raw ?? LIVE_SYMBOL).toUpperCase();
 }
 
+function enabledAllocationTotalPct(rules: TradingRulesSettings): number {
+  const total = rules.coins
+    .filter((coin) => coin.enabled)
+    .reduce((sum, coin) => sum + Number(coin.pct || 0), 0);
+  return Math.round(total * 100) / 100;
+}
+
 function toTradeSide(side: 'buy' | 'sell'): 'long' | 'short' {
   return side === 'buy' ? 'long' : 'short';
 }
@@ -600,6 +609,42 @@ app.get('/api/live/candles', async (req, res) => {
       error: error instanceof Error ? error.message : 'live_candles_failed'
     });
   }
+});
+
+app.get('/api/settings/trading-rules', async (_req, res) => {
+  const db = await getDb();
+  const rules = normalizeTradingRules(db.data.settings.tradingRules);
+
+  if (JSON.stringify(rules) !== JSON.stringify(db.data.settings.tradingRules)) {
+    db.data.settings.tradingRules = rules;
+    await db.write();
+  }
+
+  return res.json({ ok: true, rules });
+});
+
+app.put('/api/settings/trading-rules', async (req, res) => {
+  const rules = normalizeTradingRules(req.body);
+  const enabled = rules.coins.filter((coin) => coin.enabled);
+  const totalPct = enabledAllocationTotalPct(rules);
+
+  if (enabled.length === 0) {
+    return res.status(400).json({ ok: false, error: 'at_least_one_coin_required' });
+  }
+
+  if (Math.abs(totalPct - 100) > 0.01) {
+    return res.status(400).json({
+      ok: false,
+      error: 'allocation_total_must_be_100',
+      totalPct
+    });
+  }
+
+  const db = await getDb();
+  db.data.settings.tradingRules = rules;
+  await db.write();
+
+  return res.json({ ok: true, rules });
 });
 
 app.get('/api/settings/exchange', async (_req, res) => {

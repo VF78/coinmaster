@@ -5,7 +5,9 @@ import type {
   LiveCandlesResponse,
   LiveHistoryResponse,
   LivePositionLevelsPayload,
-  LivePositionLevelsResponse
+  LivePositionLevelsResponse,
+  TradingRulesSettings,
+  TradingRulesSettingsResponse
 } from '../../shared/dto.js';
 
 async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
@@ -27,6 +29,18 @@ export function getLiveHistory() {
 
 export function getExchangeSettings() {
   return jsonFetch<ExchangeSettingsResponse>('/api/settings/exchange');
+}
+
+export function getTradingRules() {
+  return jsonFetch<TradingRulesSettingsResponse>('/api/settings/trading-rules');
+}
+
+export function saveTradingRules(rules: TradingRulesSettings) {
+  return jsonFetch<TradingRulesSettingsResponse>('/api/settings/trading-rules', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(rules)
+  });
 }
 
 export function getLiveCandles(symbol = 'BTC', timeframe: '1m' | '5m' | '15m' | '1h' | '4h' = '15m', limit = 200) {

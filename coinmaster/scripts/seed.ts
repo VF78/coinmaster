@@ -1,10 +1,11 @@
 import { getDb } from '../src/core/db.js';
 import { submitBias } from '../src/core/services.js';
 import { runSimulationStep } from '../src/core/simulation.js';
+import { cloneTradingRulesDefaults } from '../src/shared/tradingRules.js';
 
 async function main() {
   const db = await getDb();
-  db.data.settings = { depositUsd: 1000 };
+  db.data.settings = { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults() };
   db.data.positions = [];
   db.data.tradeLogs = [];
   db.data.tradeEvents = [];

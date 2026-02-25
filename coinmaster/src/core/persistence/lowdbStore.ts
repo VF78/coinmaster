@@ -1,10 +1,11 @@
 import { JSONFilePreset } from 'lowdb/node';
 import type { Low } from 'lowdb';
 import type { DBShape } from '../types.js';
+import { cloneTradingRulesDefaults, normalizeTradingRules } from '../../shared/tradingRules.js';
 import type { PersistenceStore } from './types.js';
 
 const defaultData: DBShape = {
-  settings: { depositUsd: 1000 },
+  settings: { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults() },
   positions: [],
   tradeLogs: [],
   tradeEvents: [],
@@ -15,10 +16,11 @@ const defaultData: DBShape = {
 };
 
 function ensureDbShape(data: DBShape) {
-  data.settings = data.settings ?? { depositUsd: 1000 };
+  data.settings = data.settings ?? { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults() };
   if (!Number.isFinite(data.settings.depositUsd)) {
     data.settings.depositUsd = 1000;
   }
+  data.settings.tradingRules = normalizeTradingRules(data.settings.tradingRules);
   if (!Array.isArray(data.positions)) data.positions = [];
   if (!Array.isArray(data.tradeLogs)) data.tradeLogs = [];
   if (!Array.isArray(data.tradeEvents)) data.tradeEvents = [];

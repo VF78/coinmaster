@@ -2,6 +2,7 @@ import { Candle, CandleTimeframe } from '../exchange/types.js';
 import { runSimulationStep } from './simulation.js';
 import { submitBias } from './services.js';
 import { Bias, DBShape } from './types.js';
+import { cloneTradingRulesDefaults } from '../shared/tradingRules.js';
 
 export interface ReplayRequest {
   symbol: string;
@@ -39,7 +40,7 @@ function round2(v: number): number {
 
 function buildReplayDb(depositUsd: number): DBShape {
   return {
-    settings: { depositUsd },
+    settings: { depositUsd, tradingRules: cloneTradingRulesDefaults() },
     positions: [],
     tradeLogs: [],
     tradeEvents: [],

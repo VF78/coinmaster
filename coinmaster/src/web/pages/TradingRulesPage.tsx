@@ -1,79 +1,138 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card } from '../components/Card';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
+import type { TradingCoinAllocation, TradingRulesSettings, TradingRulesTimeframe } from '../../shared/dto.js';
+import { cloneTradingRulesDefaults, normalizeTradingRules } from '../../shared/tradingRules.js';
+import { getTradingRules, saveTradingRules } from '../lib/api';
 
-/* ── Coin allocation ─────────────────────────────────────────────── */
+const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
 
-interface CoinAlloc {
-  symbol: string;
-  enabled: boolean;
-  pct: number;
+function clampNumber(value: number, min: number, max: number) {
+  if (!Number.isFinite(value)) return min;
+  return Math.max(min, Math.min(max, value));
 }
 
-const DEFAULT_COINS: CoinAlloc[] = [
-  { symbol: 'BTC', enabled: true, pct: 50 },
-  { symbol: 'ETH', enabled: true, pct: 30 },
-  { symbol: 'SOL', enabled: true, pct: 20 },
-];
-
-const TIMEFRAMES = ['5m', '15m', '1h', '4h'] as const;
-
-/* ── Page ─────────────────────────────────────────────────────────── */
-
 export function TradingRulesPage() {
-  /* coin distribution */
-  const [coins, setCoins] = useState<CoinAlloc[]>(DEFAULT_COINS);
+  const defaults = cloneTradingRulesDefaults();
 
-  /* entry / exit timeframes */
-  const [entryTf, setEntryTf] = useState<string>('15m');
-  const [exitTf, setExitTf] = useState<string>('1h');
-  const [fvgRetrace, setFvgRetrace] = useState(50);
+  const [coins, setCoins] = useState<TradingCoinAllocation[]>(defaults.coins);
+  const [entryTf, setEntryTf] = useState<TradingRulesTimeframe>(defaults.entryTf);
+  const [exitTf, setExitTf] = useState<TradingRulesTimeframe>(defaults.exitTf);
+  const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
+  const [maxLeverage, setMaxLeverage] = useState(defaults.maxLeverage);
+  const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
+  const [tpPct, setTpPct] = useState(defaults.tpPct);
+  const [slPct, setSlPct] = useState(defaults.slPct);
+  const [autoConfirm, setAutoConfirm] = useState(defaults.autoConfirm);
 
-  /* risk management */
-  const [maxLeverage, setMaxLeverage] = useState(5);
-  const [dailyDrawdown, setDailyDrawdown] = useState(3);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveInfo, setSaveInfo] = useState<string>('');
 
-  /* default TP / SL */
-  const [tpPct, setTpPct] = useState(6);
-  const [slPct, setSlPct] = useState(2);
+  const totalPct = useMemo(
+    () => Math.round(coins.filter(c => c.enabled).reduce((s, c) => s + c.pct, 0) * 100) / 100,
+    [coins],
+  );
 
-  /* confirmation mode */
-  const [autoConfirm, setAutoConfirm] = useState(false);
+  function applyRules(rules: TradingRulesSettings) {
+    const normalized = normalizeTradingRules(rules);
+    setCoins(normalized.coins);
+    setEntryTf(normalized.entryTf);
+    setExitTf(normalized.exitTf);
+    setFvgRetrace(normalized.fvgRetrace);
+    setMaxLeverage(normalized.maxLeverage);
+    setDailyDrawdown(normalized.dailyDrawdown);
+    setTpPct(normalized.tpPct);
+    setSlPct(normalized.slPct);
+    setAutoConfirm(normalized.autoConfirm);
+  }
 
-  /* ── handlers ───────────────────────────────────────────────── */
+  useEffect(() => {
+    let active = true;
+
+    (async () => {
+      try {
+        const response = await getTradingRules();
+        if (!active) return;
+        applyRules(response.rules);
+        setSaveInfo('Настройки загружены с сервера');
+      } catch (error) {
+        console.error('[TradingRules] failed to load rules:', error);
+        if (!active) return;
+        applyRules(defaults);
+        setSaveInfo('Не удалось загрузить настройки — использованы значения по умолчанию');
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  function currentRules(): TradingRulesSettings {
+    return normalizeTradingRules({
+      coins,
+      entryTf,
+      exitTf,
+      fvgRetrace,
+      maxLeverage,
+      dailyDrawdown,
+      tpPct,
+      slPct,
+      autoConfirm,
+    });
+  }
 
   function toggleCoin(idx: number) {
     setCoins(prev => prev.map((c, i) => (i === idx ? { ...c, enabled: !c.enabled } : c)));
   }
 
   function setCoinPct(idx: number, pct: number) {
-    setCoins(prev => prev.map((c, i) => (i === idx ? { ...c, pct } : c)));
+    setCoins(prev => prev.map((c, i) => (i === idx ? { ...c, pct: clampNumber(pct, 0, 100) } : c)));
   }
 
-  function handleApply() {
-    const totalPct = coins.filter(c => c.enabled).reduce((s, c) => s + c.pct, 0);
+  async function handleApply() {
+    const rules = currentRules();
+    const enabled = rules.coins.filter(c => c.enabled);
+    const enabledTotal = Math.round(enabled.reduce((s, c) => s + c.pct, 0) * 100) / 100;
 
-    if (totalPct !== 100) {
-      alert(`Сумма allocation активных монет = ${totalPct}%. Должно быть 100%.`);
+    if (enabled.length === 0) {
+      alert('Нужно включить хотя бы одну монету.');
       return;
     }
 
-    console.warn(
-      '[TradingRules] Placeholder save. ' +
-        'Торговля криптовалютами сопряжена с высоким риском. ' +
-        'Убедитесь, что вы понимаете риски перед использованием автоматических стратегий.',
-    );
-    console.warn('[TradingRules] Telegram-уведомление об изменении правил — placeholder.');
+    if (Math.abs(enabledTotal - 100) > 0.01) {
+      alert(`Сумма allocation активных монет = ${enabledTotal}%. Должно быть 100%.`);
+      return;
+    }
 
-    alert('Настройки сохранены (placeholder)');
+    setSaving(true);
+    setSaveInfo('Сохраняю на сервере...');
+
+    try {
+      const response = await saveTradingRules(rules);
+      applyRules(response.rules);
+      setSaveInfo(`Сохранено на сервере (${new Date().toLocaleTimeString()})`);
+    } catch (error) {
+      console.error('[TradingRules] failed to save rules:', error);
+      setSaveInfo('Ошибка сохранения. Значения не были подтверждены сервером.');
+      alert('Не удалось сохранить настройки на сервере. Проверь лог сервера.');
+    } finally {
+      setSaving(false);
+    }
   }
-
-  /* ── render ──────────────────────────────────────────────────── */
 
   return (
     <main className="terminal-layout">
-      {/* ── Coin Distribution ──────────────────────────────────── */}
+      {loading ? (
+        <Card title="Trading Rules" actions={<Badge tone="neutral">Loading</Badge>}>
+          <p className="muted">Загрузка настроек с сервера...</p>
+        </Card>
+      ) : null}
+
       <Card title="Coin Distribution" actions={<Badge tone="neutral">Allocation</Badge>}>
         <div className="rules-grid">
           {coins.map((c, i) => (
@@ -98,12 +157,9 @@ export function TradingRulesPage() {
             </label>
           ))}
         </div>
-        <p className="stat-note muted">
-          Сумма активных: {coins.filter(c => c.enabled).reduce((s, c) => s + c.pct, 0)}%
-        </p>
+        <p className="stat-note muted">Сумма активных: {totalPct}%</p>
       </Card>
 
-      {/* ── Timeframe Selection ────────────────────────────────── */}
       <Card title="Timeframe Selection" actions={<Badge tone="neutral">Entry / Exit</Badge>}>
         <div className="rules-section">
           <p className="rules-label">Entry timeframe</p>
@@ -144,13 +200,12 @@ export function TradingRulesPage() {
             min={10}
             max={90}
             value={fvgRetrace}
-            onChange={e => setFvgRetrace(Number(e.target.value))}
+            onChange={e => setFvgRetrace(clampNumber(Number(e.target.value), 10, 90))}
             className="rules-range"
           />
         </div>
       </Card>
 
-      {/* ── Risk Management ────────────────────────────────────── */}
       <Card title="Risk Management" actions={<Badge tone="danger">Risk</Badge>}>
         <div className="rules-form-grid">
           <label className="rules-field">
@@ -160,7 +215,7 @@ export function TradingRulesPage() {
               min={1}
               max={20}
               value={maxLeverage}
-              onChange={e => setMaxLeverage(Number(e.target.value))}
+              onChange={e => setMaxLeverage(clampNumber(Number(e.target.value), 1, 20))}
               className="rules-range"
             />
             <span className="rules-range-value">{maxLeverage}x</span>
@@ -174,7 +229,7 @@ export function TradingRulesPage() {
                 min={0}
                 max={100}
                 value={dailyDrawdown}
-                onChange={e => setDailyDrawdown(Number(e.target.value))}
+                onChange={e => setDailyDrawdown(clampNumber(Number(e.target.value), 0, 100))}
                 className="rules-input rules-input--sm"
               />
               <span className="muted">%</span>
@@ -187,7 +242,6 @@ export function TradingRulesPage() {
         </p>
       </Card>
 
-      {/* ── TP / SL Defaults ───────────────────────────────────── */}
       <Card title="Default TP / SL" actions={<Badge tone="success">Targets</Badge>}>
         <div className="rules-form-grid">
           <label className="rules-field">
@@ -199,7 +253,7 @@ export function TradingRulesPage() {
                 max={100}
                 step={0.5}
                 value={tpPct}
-                onChange={e => setTpPct(Number(e.target.value))}
+                onChange={e => setTpPct(clampNumber(Number(e.target.value), 0, 100))}
                 className="rules-input rules-input--sm"
               />
               <span className="muted">%</span>
@@ -215,7 +269,7 @@ export function TradingRulesPage() {
                 max={100}
                 step={0.5}
                 value={slPct}
-                onChange={e => setSlPct(Number(e.target.value))}
+                onChange={e => setSlPct(clampNumber(Number(e.target.value), 0, 100))}
                 className="rules-input rules-input--sm"
               />
               <span className="muted">%</span>
@@ -229,7 +283,6 @@ export function TradingRulesPage() {
         </p>
       </Card>
 
-      {/* ── Confirmation Mode ──────────────────────────────────── */}
       <Card title="Confirmation Mode">
         <label className="rules-toggle-row">
           <span>Auto-confirm orders</span>
@@ -250,7 +303,6 @@ export function TradingRulesPage() {
         </p>
       </Card>
 
-      {/* ── Monitoring ─────────────────────────────────────────── */}
       <Card title="Monitoring" actions={<Badge tone="neutral">Info</Badge>}>
         <p className="muted" style={{ lineHeight: 1.6 }}>
           Система отслеживает изменения структуры рынка (BOS / CHoCH), формирование FVG и
@@ -263,12 +315,13 @@ export function TradingRulesPage() {
         </p>
       </Card>
 
-      {/* ── Apply ──────────────────────────────────────────────── */}
       <div className="rules-apply-row">
-        <Button variant="primary" fullWidth onClick={handleApply}>
-          Применить
+        <Button variant="primary" fullWidth onClick={handleApply} disabled={saving || loading}>
+          {saving ? 'Сохранение...' : 'Применить'}
         </Button>
       </div>
+
+      {saveInfo ? <p className="stat-note muted">{saveInfo}</p> : null}
     </main>
   );
 }

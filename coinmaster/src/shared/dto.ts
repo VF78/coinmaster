@@ -3,8 +3,29 @@ export type TradeSide = 'long' | 'short';
 export type PositionStatus = 'open' | 'closed';
 export type StatsPeriod = 'week' | 'month';
 
+export type TradingRulesTimeframe = '5m' | '15m' | '1h' | '4h';
+
+export interface TradingCoinAllocation {
+  symbol: 'BTC' | 'ETH' | 'SOL' | string;
+  enabled: boolean;
+  pct: number;
+}
+
+export interface TradingRulesSettings {
+  coins: TradingCoinAllocation[];
+  entryTf: TradingRulesTimeframe;
+  exitTf: TradingRulesTimeframe;
+  fvgRetrace: number;
+  maxLeverage: number;
+  dailyDrawdown: number;
+  tpPct: number;
+  slPct: number;
+  autoConfirm: boolean;
+}
+
 export interface AppSettings {
   depositUsd: number;
+  tradingRules: TradingRulesSettings;
 }
 
 export interface Position {
@@ -257,6 +278,12 @@ export interface ExchangeSettingsResponse {
   };
   error?: string;
 }
+
+export interface TradingRulesSettingsResponse {
+  ok: boolean;
+  rules: TradingRulesSettings;
+}
+
 
 export interface BiasPayload {
   symbol: string;
