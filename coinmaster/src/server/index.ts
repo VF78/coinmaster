@@ -31,6 +31,8 @@ const host = process.env.HOST || '0.0.0.0';
 const LIVE_SYMBOL = 'BTC';
 const REST_FALLBACK_MS = 60 * 1000; // at least 1m updates if WS unavailable
 
+const LIVE_TICK_STALE_MS = Math.max(5000, Number(process.env.LIVE_TICK_STALE_MS || 120000));
+
 const ENABLE_PAPER_ENGINE = String(process.env.ENABLE_PAPER_ENGINE ?? 'false').toLowerCase() === 'true';
 const ENABLE_SIMULATION_API = String(process.env.ENABLE_SIMULATION_API ?? 'false').toLowerCase() === 'true';
 const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLowerCase() === 'true';
@@ -538,6 +540,53 @@ async function symbolAllocationGate(req: Request, res: Response, next: NextFunct
   }
 }
 
+async function staleMarketDataGate(req: Request, res: Response, next: NextFunction) {
+  try {
+    const body = (req.body ?? {}) as { symbol?: string; reduceOnly?: boolean };
+    const symbol = normalizeSymbol(body.symbol ?? LIVE_SYMBOL);
+
+    // Reduce-only operations lower risk; allow them even when feed is stale.
+    if (body.reduceOnly) {
+      return next();
+    }
+
+    const fresh = await ensureFreshTick(symbol);
+    if (fresh.ok) {
+      return next();
+    }
+
+    logRiskGateAudit({
+      gate: 'market_data',
+      passed: false,
+      reason: 'stale_market_data',
+      details: {
+        symbol,
+        staleMs: fresh.staleMs,
+        staleThresholdMs: LIVE_TICK_STALE_MS,
+        source: fresh.source
+      }
+    });
+
+    return res.status(503).json({
+      ok: false,
+      errorCode: 'stale_market_data' as TradingErrorCode,
+      error: 'Market data is stale. New entry orders are temporarily blocked.',
+      details: {
+        symbol,
+        staleMs: fresh.staleMs,
+        staleThresholdMs: LIVE_TICK_STALE_MS
+      }
+    });
+  } catch (error) {
+    logger.error({ component: 'market-data', err: error }, 'stale market data gate failed, blocking trade');
+    return res.status(503).json({
+      ok: false,
+      errorCode: 'stale_market_data' as TradingErrorCode,
+      error: 'Market data validation unavailable. Trading is temporarily blocked.'
+    });
+  }
+}
+
 const exchange = new HyperliquidAdapter();
 
 let ingestBusy = false;
@@ -545,6 +594,7 @@ let wsReconnectTimer: NodeJS.Timeout | null = null;
 let restFallbackTimer: NodeJS.Timeout | null = null;
 let midStreamHandle: MidStreamHandle | null = null;
 let latestLiveTick: { symbol: string; price: number; timestamp: string } | null = null;
+const latestTickBySymbol = new Map<string, { price: number; timestamp: string; source: 'ws' | 'rest' }>();
 
 // ─── WS reconnect backoff state ──────────────────────────────────────
 const WS_BACKOFF_INITIAL_MS = 1000;
@@ -593,14 +643,26 @@ function maskAddress(value: string | undefined): string | undefined {
   return `${v.slice(0, 6)}…${v.slice(-4)}`;
 }
 
-async function ingestPrice(symbol: string, price: number, _source: 'ws' | 'rest') {
+async function ingestPrice(symbol: string, price: number, source: 'ws' | 'rest') {
   if (!Number.isFinite(price)) return;
 
-  latestLiveTick = {
-    symbol,
+  const normalizedSymbol = normalizeSymbol(symbol);
+  const timestamp = new Date().toISOString();
+
+  latestTickBySymbol.set(normalizedSymbol, {
     price,
-    timestamp: new Date().toISOString()
-  };
+    timestamp,
+    source
+  });
+
+  // Keep dashboard latest tick anchored to LIVE_SYMBOL.
+  if (normalizedSymbol === LIVE_SYMBOL) {
+    latestLiveTick = {
+      symbol: normalizedSymbol,
+      price,
+      timestamp
+    };
+  }
 
   if (!ENABLE_PAPER_ENGINE) return;
   if (ingestBusy) return;
@@ -608,25 +670,49 @@ async function ingestPrice(symbol: string, price: number, _source: 'ws' | 'rest'
   ingestBusy = true;
   try {
     const db = await getDb();
-    runSimulationStep(db.data, symbol, price);
+    runSimulationStep(db.data, normalizedSymbol, price);
     await db.write();
   } finally {
     ingestBusy = false;
   }
 }
 
-async function fetchLiveBtcMid(): Promise<number | null> {
+function tickAgeMs(symbol: string): number | null {
+  const tick = latestTickBySymbol.get(normalizeSymbol(symbol));
+  if (!tick) return null;
+  const age = Date.now() - new Date(tick.timestamp).getTime();
+  return Number.isFinite(age) ? Math.max(0, age) : null;
+}
+
+async function fetchLiveMid(symbol = LIVE_SYMBOL): Promise<number | null> {
   try {
+    const normalizedSymbol = normalizeSymbol(symbol);
     const mids = await exchange.getMids();
-    const price = mids[LIVE_SYMBOL];
+    const price = mids[normalizedSymbol];
     return Number.isFinite(price) ? price : null;
   } catch {
     return null;
   }
 }
 
+async function ensureFreshTick(symbol: string): Promise<{ ok: boolean; staleMs: number | null; source: 'cache' | 'rest' | 'none' }> {
+  const normalizedSymbol = normalizeSymbol(symbol);
+  const age = tickAgeMs(normalizedSymbol);
+  if (age !== null && age <= LIVE_TICK_STALE_MS) {
+    return { ok: true, staleMs: age, source: 'cache' };
+  }
+
+  const price = await fetchLiveMid(normalizedSymbol);
+  if (price) {
+    await ingestPrice(normalizedSymbol, price, 'rest');
+    return { ok: true, staleMs: 0, source: 'rest' };
+  }
+
+  return { ok: false, staleMs: age, source: 'none' };
+}
+
 async function ingestRestFallback() {
-  const price = await fetchLiveBtcMid();
+  const price = await fetchLiveMid(LIVE_SYMBOL);
   if (!price) return;
   await ingestPrice(LIVE_SYMBOL, price, 'rest');
 }
@@ -767,6 +853,15 @@ app.get('/api/health/perf', (_req, res) => {
         disconnectCount: wsDiag.disconnectCount,
         connected: midStreamHandle !== null,
       },
+      marketData: {
+        liveSymbol: LIVE_SYMBOL,
+        staleThresholdMs: LIVE_TICK_STALE_MS,
+        lastTickAgeMs: tickAgeMs(LIVE_SYMBOL),
+        stale: (() => {
+          const age = tickAgeMs(LIVE_SYMBOL);
+          return age === null ? true : age > LIVE_TICK_STALE_MS;
+        })()
+      },
       timestamp: new Date().toISOString(),
     });
   });
@@ -778,7 +873,7 @@ app.get('/api/dashboard', async (_req, res) => {
 
   let latestTick = latestLiveTick;
   if (!latestTick) {
-    const freshMid = await fetchLiveBtcMid();
+    const freshMid = await fetchLiveMid(LIVE_SYMBOL);
     if (freshMid) {
       latestTick = {
         symbol: LIVE_SYMBOL,
@@ -1128,7 +1223,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   });
 });
 
-app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
+app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -1468,7 +1563,7 @@ function pruneIdempotencyCache() {
 }
 
 // POST /api/live/order — idempotent place order
-app.post('/api/live/order', ownerAuth, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
+app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,

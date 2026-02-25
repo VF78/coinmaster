@@ -111,6 +111,7 @@ export type TradingErrorCode =
   | 'allocation_limit_exceeded'
   | 'risk_check_unavailable'
   | 'allocation_check_unavailable'
+  | 'stale_market_data'
   | 'auth_required';
 
 export interface ExchangeCapabilities {

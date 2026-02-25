@@ -107,7 +107,7 @@ export interface DailyDDBaseline {
 
 export interface RiskGateAuditEntry {
   timestamp: string;
-  gate: 'daily_dd' | 'leverage_cap' | 'auth' | 'symbol_allowlist' | 'allocation_cap' | 'tp_sl_defaults';
+  gate: 'daily_dd' | 'leverage_cap' | 'auth' | 'symbol_allowlist' | 'allocation_cap' | 'tp_sl_defaults' | 'market_data';
   passed: boolean;
   reason?: string;
   details?: Record<string, unknown>;
