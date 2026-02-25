@@ -13,6 +13,7 @@ import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
 import type { TradingRulesSettings } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
+import { RuntimeRulesCache } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
@@ -29,23 +30,23 @@ const host = process.env.HOST || '0.0.0.0';
 const LIVE_SYMBOL = 'BTC';
 const REST_FALLBACK_MS = 60 * 1000; // at least 1m updates if WS unavailable
 
-const LIVE_MAX_LEVERAGE = Number(process.env.LIVE_MAX_LEVERAGE || 10);
-const LIVE_MANUAL_CONFIRMATION = String(process.env.LIVE_MANUAL_CONFIRMATION ?? 'true').toLowerCase() !== 'false';
 const ENABLE_PAPER_ENGINE = String(process.env.ENABLE_PAPER_ENGINE ?? 'false').toLowerCase() === 'true';
 const ENABLE_SIMULATION_API = String(process.env.ENABLE_SIMULATION_API ?? 'false').toLowerCase() === 'true';
 const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLowerCase() === 'true';
 
-const LIVE_DAILY_DD_LIMIT_PCT = Number(process.env.LIVE_DAILY_DD_LIMIT_PCT || 20);
-const LIVE_PORTFOLIO_LEVERAGE_CAP = Number(process.env.LIVE_PORTFOLIO_LEVERAGE_CAP || 10);
 const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
 const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(2000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 5000));
 const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
 const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 
-const LIVE_MODE = {
-  manualConfirmation: LIVE_MANUAL_CONFIRMATION,
-  maxLeverage: LIVE_MAX_LEVERAGE
-};
+// ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
+const rulesCache = new RuntimeRulesCache(5_000);
+
+/** Build a fresh LIVE_MODE snapshot from current effective rules. */
+function getLiveMode() {
+  const r = rulesCache.getEffectiveRules();
+  return { manualConfirmation: r.manualConfirmation, maxLeverage: r.maxLeverage };
+}
 
 // ─── Owner Auth Middleware ────────────────────────────────────────────
 
@@ -157,16 +158,18 @@ async function evaluateRiskGates(options?: { emitAudit?: boolean }): Promise<Ris
 
   const equityUsd = account?.equityUsd ?? 0;
 
+  const effectiveRules = rulesCache.getEffectiveRules();
+
   // Daily DD check
   const baseline = await getOrCreateDDBaseline(equityUsd);
   const ddPct = baseline.startEquityUsd > 0
     ? ((baseline.startEquityUsd - equityUsd) / baseline.startEquityUsd) * 100
     : 0;
 
-  if (ddPct >= LIVE_DAILY_DD_LIMIT_PCT) {
+  if (ddPct >= effectiveRules.dailyDDLimitPct) {
     blocks.push('daily_loss_limit_exceeded');
     if (emitAudit) {
-      logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'daily_loss_limit_exceeded', details: { ddPct: Number(ddPct.toFixed(2)), limit: LIVE_DAILY_DD_LIMIT_PCT, equityUsd, baselineEquityUsd: baseline.startEquityUsd } });
+      logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'daily_loss_limit_exceeded', details: { ddPct: Number(ddPct.toFixed(2)), limit: effectiveRules.dailyDDLimitPct, equityUsd, baselineEquityUsd: baseline.startEquityUsd } });
     }
   } else if (emitAudit) {
     logRiskGateAudit({ gate: 'daily_dd', passed: true, details: { ddPct: Number(ddPct.toFixed(2)) } });
@@ -180,10 +183,10 @@ async function evaluateRiskGates(options?: { emitAudit?: boolean }): Promise<Ris
   }
   const portfolioLeverage = equityUsd > 0 ? totalNotional / equityUsd : 0;
 
-  if (portfolioLeverage > LIVE_PORTFOLIO_LEVERAGE_CAP) {
+  if (portfolioLeverage > effectiveRules.portfolioLeverageCap) {
     blocks.push('leverage_limit_exceeded');
     if (emitAudit) {
-      logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)), cap: LIVE_PORTFOLIO_LEVERAGE_CAP } });
+      logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)), cap: effectiveRules.portfolioLeverageCap } });
     }
   } else if (emitAudit) {
     logRiskGateAudit({ gate: 'leverage_cap', passed: true, details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)) } });
@@ -296,7 +299,7 @@ async function runDrawdownWatchdogTick() {
           reason: 'daily_loss_limit_exceeded_watchdog',
           details: {
             ddPct: risk.dailyDDPct,
-            limit: LIVE_DAILY_DD_LIMIT_PCT,
+            limit: rulesCache.getEffectiveRules().dailyDDLimitPct,
             equityUsd: risk.equityUsd,
             baselineEquityUsd: risk.baselineEquityUsd
           }
@@ -314,7 +317,7 @@ async function runDrawdownWatchdogTick() {
         reason: 'daily_loss_recovered_watchdog',
         details: {
           ddPct: risk.dailyDDPct,
-          limit: LIVE_DAILY_DD_LIMIT_PCT,
+          limit: rulesCache.getEffectiveRules().dailyDDLimitPct,
           equityUsd: risk.equityUsd,
           baselineEquityUsd: risk.baselineEquityUsd
         }
@@ -354,13 +357,15 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
   try {
     const risk = await evaluateRiskGates();
 
+    const effectiveRules = rulesCache.getEffectiveRules();
+
     if (risk.blocks.includes('daily_loss_limit_exceeded')) {
       // Hard stop: close everything
       await emergencyCloseAll();
       return res.status(403).json({
         ok: false,
         errorCode: 'daily_loss_limit_exceeded' as TradingErrorCode,
-        error: `Daily drawdown ${risk.dailyDDPct}% exceeds ${LIVE_DAILY_DD_LIMIT_PCT}% limit. All positions closed. Trading blocked.`,
+        error: `Daily drawdown ${risk.dailyDDPct}% exceeds ${effectiveRules.dailyDDLimitPct}% limit. All positions closed. Trading blocked.`,
         riskCheck: risk
       });
     }
@@ -372,7 +377,7 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
         return res.status(403).json({
           ok: false,
           errorCode: 'leverage_limit_exceeded' as TradingErrorCode,
-          error: `Portfolio leverage ${risk.portfolioLeverage}x exceeds ${LIVE_PORTFOLIO_LEVERAGE_CAP}x cap. Reduce positions first.`,
+          error: `Portfolio leverage ${risk.portfolioLeverage}x exceeds ${effectiveRules.portfolioLeverageCap}x cap. Reduce positions first.`,
           riskCheck: risk
         });
       }
@@ -569,7 +574,7 @@ app.get('/api/dashboard', async (_req, res) => {
     }
   }
 
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, LIVE_MODE);
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode());
 
   res.json({ latestBias, latestTick: latestTick ?? null, live });
 });
@@ -647,15 +652,21 @@ app.put('/api/settings/trading-rules', async (req, res) => {
   return res.json({ ok: true, rules });
 });
 
+// ─── Effective Trading Rules (diagnostic) ─────────────────────────────
+app.get('/api/settings/trading-rules/effective', ownerAuth, (_req, res) => {
+  return res.json({ ok: true, ...rulesCache.getEffectiveRules() });
+});
+
 app.get('/api/settings/exchange', async (_req, res) => {
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, LIVE_MODE);
+  const liveMode = getLiveMode();
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, liveMode);
 
   return res.json({
     exchange: exchange.name,
     connected: live.connected,
     accountAddress: maskAddress(process.env.HYPERLIQUID_ACCOUNT_ADDRESS),
     walletAddress: maskAddress(process.env.HYPERLIQUID_API_WALLET_ADDRESS),
-    mode: LIVE_MODE,
+    mode: liveMode,
     account: live.account,
     capabilities: {
       privateAccount: exchange.capabilities.privateAccount,
@@ -764,7 +775,7 @@ app.get('/api/live/risk-check', ownerAuth, async (_req, res) => {
 });
 
 app.get('/api/live/status', async (_req, res) => {
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, LIVE_MODE);
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode());
   return res.json({
     ok: live.connected,
     ...live
@@ -779,11 +790,11 @@ app.post('/api/live/leverage', ownerAuth, async (req, res) => {
   };
 
   const lev = Number(leverage);
-  if (!Number.isFinite(lev) || lev <= 0 || lev > LIVE_MAX_LEVERAGE) {
+  if (!Number.isFinite(lev) || lev <= 0 || lev > rulesCache.getEffectiveRules().maxLeverage) {
     return res.status(400).json({ error: 'invalid_leverage' });
   }
 
-  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+  if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({
       ok: false,
       error: 'manual_confirmation_required',
@@ -830,7 +841,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, async (req,
     return res.status(400).json({ ok: false, error: 'invalid_level_order' });
   }
 
-  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+  if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({
       ok: false,
       error: 'manual_confirmation_required',
@@ -934,7 +945,7 @@ app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, async (req, res
 
   const notional = px * qty;
 
-  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+  if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({
       ok: false,
       error: 'manual_confirmation_required',
@@ -960,7 +971,7 @@ app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, async (req, res
     payload: {
       reduceOnly: Boolean(reduceOnly),
       notionalUsdc: Number(notional.toFixed(4)),
-      manualConfirmation: LIVE_MANUAL_CONFIRMATION
+      manualConfirmation: rulesCache.getEffectiveRules().manualConfirmation
     }
   });
 
@@ -1012,7 +1023,7 @@ app.post('/api/live/order/cancel', ownerAuth, async (req, res) => {
     return res.status(400).json({ error: 'order_id_required' });
   }
 
-  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+  if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({
       ok: false,
       error: 'manual_confirmation_required',
@@ -1046,7 +1057,7 @@ app.post('/api/live/order/cancel-all', ownerAuth, async (req, res) => {
     confirm?: boolean;
   };
 
-  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+  if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({
       ok: false,
       error: 'manual_confirmation_required',
@@ -1140,7 +1151,7 @@ app.post('/api/live/order', ownerAuth, riskGateMiddleware, async (req, res) => {
   const notional = px * qty;
 
   // Manual confirmation gate
-  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+  if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({ ok: false, errorCode: 'manual_confirmation_required' as TradingErrorCode, hint: 'resend with {"confirm": true}' });
   }
 
@@ -1155,12 +1166,12 @@ app.post('/api/live/order', ownerAuth, riskGateMiddleware, async (req, res) => {
 
   const normalizedSymbol = normalizeSymbol(symbol);
 
-  // Set leverage if provided — enforce LIVE_MAX_LEVERAGE cap
+  // Set leverage if provided — enforce runtime maxLeverage cap
   if (leverage !== undefined) {
     const lev = Number(leverage);
-    if (!Number.isFinite(lev) || lev <= 0 || lev > LIVE_MAX_LEVERAGE) {
-      logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { requested: lev, max: LIVE_MAX_LEVERAGE } });
-      return res.status(400).json({ ok: false, errorCode: 'leverage_limit_exceeded' as TradingErrorCode, error: `Leverage ${lev}x exceeds max ${LIVE_MAX_LEVERAGE}x` });
+    if (!Number.isFinite(lev) || lev <= 0 || lev > rulesCache.getEffectiveRules().maxLeverage) {
+      logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { requested: lev, max: rulesCache.getEffectiveRules().maxLeverage } });
+      return res.status(400).json({ ok: false, errorCode: 'leverage_limit_exceeded' as TradingErrorCode, error: `Leverage ${lev}x exceeds max ${rulesCache.getEffectiveRules().maxLeverage}x` });
     }
     await exchange.setLeverage(normalizedSymbol, lev);
   }
@@ -1216,7 +1227,7 @@ app.delete('/api/live/order/:id', ownerAuth, async (req, res) => {
   const { confirm } = req.query as { confirm?: string };
   const confirmed = confirm === 'true' || confirm === '1';
 
-  if (LIVE_MANUAL_CONFIRMATION && !confirmed) {
+  if (rulesCache.getEffectiveRules().manualConfirmation && !confirmed) {
     return res.status(409).json({ ok: false, errorCode: 'manual_confirmation_required' as TradingErrorCode, hint: 'add ?confirm=true' });
   }
 
@@ -1256,7 +1267,7 @@ app.put('/api/live/order/:id/reduce', ownerAuth, async (req, res) => {
     return res.status(400).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'newSize must be a positive number' });
   }
 
-  if (LIVE_MANUAL_CONFIRMATION && !isConfirmed(confirm)) {
+  if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({ ok: false, errorCode: 'manual_confirmation_required' as TradingErrorCode, hint: 'resend with {"confirm": true}' });
   }
 
@@ -1389,6 +1400,7 @@ let shuttingDown = false;
 
 const server = app.listen(port, host, () => {
   console.log(`Server listening on http://${host}:${port}`);
+  rulesCache.start();
   ingestRestFallback().catch(() => undefined);
   startLiveMidStream();
   startDrawdownWatchdog();
@@ -1405,6 +1417,7 @@ async function gracefulShutdown(signal: string) {
   });
 
   // 2. Clear timers
+  rulesCache.stop();
   clearInterval(auditFlushTimer);
   if (drawdownWatchdogTimer) { clearInterval(drawdownWatchdogTimer); drawdownWatchdogTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
