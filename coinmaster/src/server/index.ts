@@ -14,7 +14,8 @@ import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
 import type { TradingRulesSettings } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
-import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol } from './runtimeRules.js';
+import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
+import type { AllocationSizingResult } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
@@ -1251,9 +1252,67 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
   }
 
   const px = Number(price);
-  const qty = Number(size);
-  if (!Number.isFinite(px) || px <= 0 || !Number.isFinite(qty) || qty <= 0) {
-    return res.status(400).json({ error: 'invalid_price_or_size' });
+  if (!Number.isFinite(px) || px <= 0) {
+    return res.status(400).json({ error: 'invalid_price' });
+  }
+
+  // ── Allocation sizing: compute size when not provided ──────────────
+  let qty = Number(size);
+  let sizingSource: 'explicit' | 'runtime_allocation' = 'explicit';
+  let sizingMeta: { marginUsd: number; notionalUsd: number; effectiveLeverage: number } | undefined;
+
+  if (!Number.isFinite(qty) || qty <= 0) {
+    const normalizedSym = normalizeSymbol(symbol);
+    const effectiveRules = rulesCache.getEffectiveRules();
+    const riskCheck: RiskCheckResult | undefined = (req as any)._riskCheck;
+
+    let equityUsd = riskCheck?.equityUsd ?? 0;
+    let availableUsd = 0;
+    try {
+      const account = await exchange.getAccountState();
+      if (account) {
+        if (!equityUsd) equityUsd = account.equityUsd ?? 0;
+        availableUsd = account.availableUsd ?? 0;
+      }
+    } catch {
+      // best-effort
+    }
+
+    let sizeDecimals = 6;
+    try {
+      const meta = await exchange.getInstrumentMeta(normalizedSym);
+      if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals;
+    } catch {
+      // best-effort: use default
+    }
+
+    const sizing = computeAllocationSize({
+      symbol: normalizedSym,
+      price: px,
+      equityUsd,
+      availableUsd,
+      rules: effectiveRules,
+      sizeDecimals,
+    });
+
+    if (!sizing.ok) {
+      logRiskGateAudit({ gate: 'allocation_sizing', passed: false, reason: sizing.reason, details: { symbol: normalizedSym, price: px, equityUsd, availableUsd } });
+      return res.status(400).json({
+        ok: false,
+        errorCode: 'allocation_sizing_failed' as TradingErrorCode,
+        error: `Allocation sizing failed: ${sizing.reason}`,
+      });
+    }
+
+    qty = sizing.size;
+    sizingSource = 'runtime_allocation';
+    sizingMeta = { marginUsd: sizing.marginUsd, notionalUsd: sizing.notionalUsd, effectiveLeverage: sizing.effectiveLeverage };
+
+    logRiskGateAudit({
+      gate: 'allocation_sizing',
+      passed: true,
+      details: { symbol: normalizedSym, size: qty, marginUsd: sizing.marginUsd, notionalUsd: sizing.notionalUsd, effectiveLeverage: sizing.effectiveLeverage, allocationPct: sizing.allocationPct },
+    });
   }
 
   const notional = px * qty;
@@ -1354,8 +1413,15 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
   const responseBody: Record<string, unknown> = {
     ok: ack.ok,
     notionalUsdc: Number(notional.toFixed(4)),
+    sizingSource,
     ack
   };
+
+  if (sizingMeta) {
+    responseBody.marginUsd = sizingMeta.marginUsd;
+    responseBody.notionalUsd = sizingMeta.notionalUsd;
+    responseBody.effectiveLeverage = sizingMeta.effectiveLeverage;
+  }
 
   if (tpSlApplied && tpSlResult) {
     responseBody.stopLoss = tpSlApplied.stopLoss;
@@ -1593,9 +1659,68 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     return res.status(400).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'side must be buy or sell' });
   }
   const px = Number(price);
-  const qty = Number(size);
-  if (!Number.isFinite(px) || px <= 0 || !Number.isFinite(qty) || qty <= 0) {
-    return res.status(400).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'invalid price or size' });
+  if (!Number.isFinite(px) || px <= 0) {
+    return res.status(400).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'invalid price' });
+  }
+
+  // ── Allocation sizing: compute size when not provided ──────────────
+  let qty = Number(size);
+  let sizingSource: 'explicit' | 'runtime_allocation' = 'explicit';
+  let sizingMeta: { marginUsd: number; notionalUsd: number; effectiveLeverage: number } | undefined;
+
+  if (!Number.isFinite(qty) || qty <= 0) {
+    // Auto-size from runtime allocation rules
+    const normalizedSym = normalizeSymbol(symbol);
+    const effectiveRules = rulesCache.getEffectiveRules();
+    const riskCheck: RiskCheckResult | undefined = (req as any)._riskCheck;
+
+    let equityUsd = riskCheck?.equityUsd ?? 0;
+    let availableUsd = 0;
+    try {
+      const account = await exchange.getAccountState();
+      if (account) {
+        if (!equityUsd) equityUsd = account.equityUsd ?? 0;
+        availableUsd = account.availableUsd ?? 0;
+      }
+    } catch {
+      // best-effort
+    }
+
+    let sizeDecimals = 6;
+    try {
+      const meta = await exchange.getInstrumentMeta(normalizedSym);
+      if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals;
+    } catch {
+      // best-effort: use default
+    }
+
+    const sizing = computeAllocationSize({
+      symbol: normalizedSym,
+      price: px,
+      equityUsd,
+      availableUsd,
+      rules: effectiveRules,
+      sizeDecimals,
+    });
+
+    if (!sizing.ok) {
+      logRiskGateAudit({ gate: 'allocation_sizing', passed: false, reason: sizing.reason, details: { symbol: normalizedSym, price: px, equityUsd, availableUsd } });
+      return res.status(400).json({
+        ok: false,
+        errorCode: 'allocation_sizing_failed' as TradingErrorCode,
+        error: `Allocation sizing failed: ${sizing.reason}`,
+      });
+    }
+
+    qty = sizing.size;
+    sizingSource = 'runtime_allocation';
+    sizingMeta = { marginUsd: sizing.marginUsd, notionalUsd: sizing.notionalUsd, effectiveLeverage: sizing.effectiveLeverage };
+
+    logRiskGateAudit({
+      gate: 'allocation_sizing',
+      passed: true,
+      details: { symbol: normalizedSym, size: qty, marginUsd: sizing.marginUsd, notionalUsd: sizing.notionalUsd, effectiveLeverage: sizing.effectiveLeverage, allocationPct: sizing.allocationPct },
+    });
   }
 
   const notional = px * qty;
@@ -1695,7 +1820,13 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
 
   await db.write();
 
-  const response: Record<string, unknown> = { ok: ack.ok, orderId: ack.orderId, clientOrderId: correlationId, status: ack.status, errorCode, error: ack.error };
+  const response: Record<string, unknown> = { ok: ack.ok, orderId: ack.orderId, clientOrderId: correlationId, status: ack.status, errorCode, error: ack.error, sizingSource };
+
+  if (sizingMeta) {
+    response.marginUsd = sizingMeta.marginUsd;
+    response.notionalUsd = sizingMeta.notionalUsd;
+    response.effectiveLeverage = sizingMeta.effectiveLeverage;
+  }
 
   if (tpSlApplied && tpSlResult) {
     response.stopLoss = tpSlApplied.stopLoss;

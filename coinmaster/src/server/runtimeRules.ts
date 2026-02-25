@@ -55,6 +55,100 @@ export function maxNotionalForSymbol(equityUsd: number, rules: EffectiveRules, s
   return equityUsd * (coin.pct / 100);
 }
 
+// ─── Allocation-Based Order Sizing ─────────────────────────────────────
+
+export interface AllocationSizingResult {
+  ok: true;
+  size: number;
+  marginUsd: number;
+  notionalUsd: number;
+  effectiveLeverage: number;
+  allocationPct: number;
+}
+
+export interface AllocationSizingError {
+  ok: false;
+  reason: string;
+}
+
+export type AllocationSizingOutcome = AllocationSizingResult | AllocationSizingError;
+
+/**
+ * Compute position size from Coin Distribution allocation rules.
+ *
+ * marginUsd     = min(availableUsd, equityUsd * allocationPct)
+ * notionalUsd   = marginUsd * effectiveLeverage
+ * size           = notionalUsd / price
+ *
+ * Returns a deterministic size rounded to `sizeDecimals` (default 6).
+ */
+export function computeAllocationSize(params: {
+  symbol: string;
+  price: number;
+  equityUsd: number;
+  availableUsd: number;
+  rules: EffectiveRules;
+  sizeDecimals?: number;
+}): AllocationSizingOutcome {
+  const { symbol, price, equityUsd, availableUsd, rules, sizeDecimals = 6 } = params;
+
+  if (!Number.isFinite(price) || price <= 0) {
+    return { ok: false, reason: 'invalid_price' };
+  }
+  if (!Number.isFinite(equityUsd) || equityUsd <= 0) {
+    return { ok: false, reason: 'zero_equity' };
+  }
+  if (!Number.isFinite(availableUsd) || availableUsd <= 0) {
+    return { ok: false, reason: 'zero_available' };
+  }
+
+  const coin = getCoinAllocation(rules, symbol);
+  if (!coin?.enabled) {
+    return { ok: false, reason: 'symbol_not_enabled' };
+  }
+
+  const allocationPct = coin.pct;
+  if (!Number.isFinite(allocationPct) || allocationPct <= 0) {
+    return { ok: false, reason: 'zero_allocation_pct' };
+  }
+
+  const effectiveLeverage = rules.maxLeverage;
+  if (!Number.isFinite(effectiveLeverage) || effectiveLeverage <= 0) {
+    return { ok: false, reason: 'zero_leverage' };
+  }
+
+  const targetMarginUsd = equityUsd * (allocationPct / 100);
+  if (!Number.isFinite(targetMarginUsd) || targetMarginUsd <= 0) {
+    return { ok: false, reason: 'zero_margin' };
+  }
+
+  if (availableUsd < targetMarginUsd) {
+    return { ok: false, reason: 'insufficient_available_margin' };
+  }
+
+  const marginUsd = targetMarginUsd;
+
+  const notionalUsd = marginUsd * effectiveLeverage;
+  const rawSize = notionalUsd / price;
+
+  // Round to sizeDecimals, guard against zero / NaN
+  const factor = 10 ** sizeDecimals;
+  const size = Math.floor(rawSize * factor) / factor;
+
+  if (!Number.isFinite(size) || size <= 0) {
+    return { ok: false, reason: 'computed_size_zero' };
+  }
+
+  return {
+    ok: true,
+    size,
+    marginUsd: Math.round(marginUsd * 100) / 100,
+    notionalUsd: Math.round(notionalUsd * 100) / 100,
+    effectiveLeverage,
+    allocationPct,
+  };
+}
+
 /**
  * RuntimeRulesCache — reads TradingRulesSettings from the DB every `intervalMs`
  * and exposes a synchronous `getEffectiveRules()` for the hot request path.

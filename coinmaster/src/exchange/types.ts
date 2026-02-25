@@ -112,7 +112,8 @@ export type TradingErrorCode =
   | 'risk_check_unavailable'
   | 'allocation_check_unavailable'
   | 'stale_market_data'
-  | 'auth_required';
+  | 'auth_required'
+  | 'allocation_sizing_failed';
 
 export interface ExchangeCapabilities {
   realtimeMids: boolean;
