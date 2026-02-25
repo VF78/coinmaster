@@ -74,37 +74,113 @@ DATABASE_URL=postgresql://user:pass@localhost:5432/coinmaster \
 - `persistence:reconcile` returns exit code 0 (no differences)
 - No `[dual-write] Shadow flush failed` errors in logs
 
-### Phase 3 — Cutover / Rollback
+### Phase 3 — Cutover / Rollback Automation
+
+**Automated verification scripts** (added in Phase 3):
+
+| npm script | What it does |
+|---|---|
+| `npm run persistence:cutover-check` | Full cutover dry-run: docker PG → migrations → seed → reconcile → app health |
+| `npm run persistence:rollback-check` | Cutover + rollback: verifies return to lowdb works after postgres run |
+
+**Cutover check (`scripts/persistence-cutover-check.sh`):**
+```bash
+npm run persistence:cutover-check
+```
+Steps performed automatically:
+1. Starts temporary PostgreSQL container (port 55432, configurable via `CUTOVER_PG_PORT`)
+2. Applies `migrations/001_initial_schema.sql` + `002_state_snapshot.sql`
+3. Runs `npm run persistence:seed-pg` (copies lowdb → postgres)
+4. Runs `npm run persistence:reconcile` (compares lowdb ↔ postgres, must exit 0)
+5. Starts app with `PERSISTENCE_BACKEND=postgres`, verifies `/api/health` and `/api/health/perf`
+6. Stops app and removes docker container
+
+Expected output (success):
+```
+[1] Pre-flight checks
+  ✓ Required tools available (docker, psql, curl)
+  ✓ Migration files present
+[2] Starting temporary PostgreSQL (port 55432)
+  ✓ PostgreSQL is running
+[3] Running migrations
+  ✓ Migration 001 applied
+  ✓ Migration 002 applied
+  ✓ Tables created: N public tables
+[4] Seeding PostgreSQL from lowdb snapshot
+  ✓ Seed completed
+[5] Running reconciliation (lowdb ↔ postgres)
+  ✓ Reconciliation passed (exit 0)
+[6] Starting app with PERSISTENCE_BACKEND=postgres (port 18787)
+  ✓ App healthy on postgres backend
+[7] Verifying /api/health
+  ✓ /api/health → ok: true
+[8] Verifying /api/health/perf
+  ✓ /api/health/perf → ok: true
+[9] Stopping app
+  ✓ App stopped
+
+  Cutover check: 11 passed, 0 failed
+  CUTOVER CHECK PASSED — safe to proceed with cutover.
+```
+
+**Rollback check (`scripts/persistence-rollback-check.sh`):**
+```bash
+npm run persistence:rollback-check
+```
+Steps performed automatically:
+1. Backs up current lowdb file
+2. Starts temporary PostgreSQL, applies migrations, seeds data
+3. Starts app with `PERSISTENCE_BACKEND=postgres`, verifies health
+4. Stops app, restarts with `PERSISTENCE_BACKEND=lowdb` (rollback)
+5. Verifies health on lowdb backend
+6. Restores lowdb backup
+7. Prints production rollback instructions for reference
+
+Expected output (success):
+```
+  Rollback check: N passed, 0 failed
+  ROLLBACK CHECK PASSED — rollback procedure verified.
+```
+
+---
 
 **Pre-cutover checklist:**
+- [ ] `npm run persistence:cutover-check` passes (exit 0)
+- [ ] `npm run persistence:rollback-check` passes (exit 0)
 - [ ] Dual-write has been running for ≥48h with zero shadow errors
-- [ ] `npm run persistence:reconcile` returns exit 0
+- [ ] `npm run persistence:reconcile` returns exit 0 against production PG
 - [ ] PostgreSQL backup taken: `pg_dump -Fc coinmaster > pre_cutover.dump`
 - [ ] lowdb backup taken: `cp data/db.json data/db.json.pre_cutover`
 
-**Cutover steps:**
+**Production cutover steps:**
 ```bash
-# 1. Final reconcile
+# 1. Run automated cutover check (uses temporary docker PG)
+npm run persistence:cutover-check
+# Must exit 0
+
+# 2. Final reconcile against production PG
 DATABASE_URL=postgresql://... npm run persistence:reconcile
 # Must exit 0
 
-# 2. Stop the application
+# 3. Stop the application
 kill $APP_PID  # or systemctl stop coinmaster
 
-# 3. Switch backend
+# 4. Switch backend
 export PERSISTENCE_BACKEND=postgres
 export PERSISTENCE_DUAL_WRITE=   # disable dual-write
 export DATABASE_URL=postgresql://...
 
-# 4. Start with postgres as primary
+# 5. Start with postgres as primary
 npm run start
 
-# 5. Verify health
-curl http://localhost:3000/api/health/perf
-# Should show backend: "postgres", ok: true
+# 6. Verify health
+curl http://localhost:8787/api/health
+# Expected: {"ok":true}
+curl http://localhost:8787/api/health/perf
+# Expected: {"ok":true,"uptimeSeconds":...,"memory":{...},...}
 ```
 
-**Rollback (if issues found):**
+**Production rollback (if issues found):**
 ```bash
 # 1. Stop the application
 kill $APP_PID
@@ -114,12 +190,20 @@ export PERSISTENCE_BACKEND=lowdb
 unset PERSISTENCE_DUAL_WRITE
 # (DATABASE_URL can stay — it is ignored when backend=lowdb)
 
-# 3. Restart
+# 3. If lowdb data is stale, restore backup
+cp data/db.json.pre_cutover data/db.json
+
+# 4. Restart
 npm run start
 
-# 4. If lowdb data is stale, restore backup
-cp data/db.json.pre_cutover data/db.json
-# Restart again
+# 5. Verify
+curl http://localhost:8787/api/health
+# Expected: {"ok":true}
+
+# 6. (Optional) Re-enable dual-write for re-cutover attempt
+export PERSISTENCE_DUAL_WRITE=true
+export DATABASE_URL=postgresql://...
+npm run start
 ```
 
 **Post-cutover monitoring (1 week):**
