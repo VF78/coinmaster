@@ -44,10 +44,12 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
   private tradingClient: Hyperliquid | null = null;
   private tradingClientInit: Promise<Hyperliquid> | null = null;
+  private tradingClientInitFailures = 0;
 
   /** Cached effective user address (master account resolved from agent wallet) */
   private effectiveUser: string | null = null;
   private effectiveUserInit: Promise<string> | null = null;
+  private effectiveUserInitFailures = 0;
 
   constructor(options: HyperliquidAdapterOptions = {}) {
     this.infoUrl = options.infoUrl ?? DEFAULT_INFO_URL;
@@ -575,8 +577,19 @@ export class HyperliquidAdapter implements ExchangeAdapter {
           disableAssetMapRefresh: true
         });
         await client.connect();
+        this.tradingClientInitFailures = 0;
         return client;
       })();
+
+      // Reset the cached promise on failure so subsequent calls can retry
+      this.tradingClientInit.catch(() => {
+        this.tradingClientInitFailures++;
+        logger.warn(
+          { component: 'hyperliquid', failures: this.tradingClientInitFailures },
+          'trading client init failed, will retry on next call'
+        );
+        this.tradingClientInit = null;
+      });
     }
 
     this.tradingClient = await this.tradingClientInit;

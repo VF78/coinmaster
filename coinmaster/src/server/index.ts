@@ -546,6 +546,12 @@ let restFallbackTimer: NodeJS.Timeout | null = null;
 let midStreamHandle: MidStreamHandle | null = null;
 let latestLiveTick: { symbol: string; price: number; timestamp: string } | null = null;
 
+// ─── WS reconnect backoff state ──────────────────────────────────────
+const WS_BACKOFF_INITIAL_MS = 1000;
+const WS_BACKOFF_MAX_MS = 60_000;
+let wsBackoffMs = WS_BACKOFF_INITIAL_MS;
+const wsDiag = { reconnectAttempts: 0, disconnectCount: 0, lastReconnectDelayMs: 0 };
+
 function parseTimeframe(raw: unknown): CandleTimeframe {
   if (raw === '1m' || raw === '5m' || raw === '15m' || raw === '1h' || raw === '4h') {
     return raw;
@@ -633,13 +639,23 @@ function startRestFallback() {
   restFallbackTimer.unref?.();
 }
 
-function scheduleWsReconnect(delayMs = 3000) {
+function scheduleWsReconnect() {
   if (wsReconnectTimer) return;
+  const delay = wsBackoffMs;
+  wsDiag.reconnectAttempts++;
+  wsDiag.lastReconnectDelayMs = delay;
+  logger.info({ component: 'live', delayMs: delay, attempt: wsDiag.reconnectAttempts }, 'scheduling WS reconnect');
   wsReconnectTimer = setTimeout(() => {
     wsReconnectTimer = null;
     startLiveMidStream();
-  }, delayMs);
+  }, delay);
   wsReconnectTimer.unref?.();
+  // Exponential backoff: double up to cap
+  wsBackoffMs = Math.min(wsBackoffMs * 2, WS_BACKOFF_MAX_MS);
+}
+
+function resetWsBackoff() {
+  wsBackoffMs = WS_BACKOFF_INITIAL_MS;
 }
 
 function startLiveMidStream() {
@@ -656,13 +672,15 @@ function startLiveMidStream() {
       symbols: [LIVE_SYMBOL],
       onOpen: () => {
         logger.info({ component: 'live' }, 'Hyperliquid WS connected');
+        resetWsBackoff();
         startRestFallback(); // keep fallback as safety net
       },
       onMid: (symbol, price) => {
         ingestPrice(symbol, price, 'ws').catch((err) => logger.warn({ component: 'live', symbol, err }, 'WS price ingest failed'));
       },
       onClose: () => {
-        logger.info({ component: 'live' }, 'Hyperliquid WS disconnected, reconnecting...');
+        wsDiag.disconnectCount++;
+        logger.info({ component: 'live', disconnects: wsDiag.disconnectCount }, 'Hyperliquid WS disconnected, reconnecting...');
         midStreamHandle = null;
         scheduleWsReconnect();
       },
@@ -674,7 +692,7 @@ function startLiveMidStream() {
     logger.warn({ component: 'live' }, 'Hyperliquid WS start failed, using REST fallback each minute');
     midStreamHandle = null;
     startRestFallback();
-    scheduleWsReconnect(5000);
+    scheduleWsReconnect();
   }
 }
 
@@ -699,6 +717,12 @@ app.get('/api/health/perf', (_req, res) => {
         external: Math.round(mem.external / 1024 / 1024 * 100) / 100,
       },
       eventLoopLagMs: lagMs,
+      ws: {
+        reconnectAttempts: wsDiag.reconnectAttempts,
+        lastReconnectDelayMs: wsDiag.lastReconnectDelayMs,
+        disconnectCount: wsDiag.disconnectCount,
+        connected: midStreamHandle !== null,
+      },
       timestamp: new Date().toISOString(),
     });
   });
