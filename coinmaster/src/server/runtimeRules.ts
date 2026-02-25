@@ -1,5 +1,5 @@
 import { getDb } from '../core/db.js';
-import type { TradingRulesSettings } from '../shared/dto.js';
+import type { TradingCoinAllocation, TradingRulesSettings } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
 
 // ─── Env-based hard defaults (fallback when DB is unavailable) ────────
@@ -28,6 +28,30 @@ function envFallback(): EffectiveRules {
     lastRefreshedAt: null,
     raw: null,
   };
+}
+
+// ─── Symbol Allowlist + Allocation Helpers ─────────────────────────────
+
+/** Check whether a symbol is enabled in current trading rules. */
+export function isSymbolEnabled(rules: EffectiveRules, symbol: string): boolean {
+  if (!rules.raw) return false; // env fallback has no coin config → deny all
+  const coin = rules.raw.coins.find((c) => c.symbol.toUpperCase() === symbol.toUpperCase());
+  return coin?.enabled === true;
+}
+
+/** Get the coin allocation entry for a symbol (or undefined). */
+export function getCoinAllocation(rules: EffectiveRules, symbol: string): TradingCoinAllocation | undefined {
+  return rules.raw?.coins.find((c) => c.symbol.toUpperCase() === symbol.toUpperCase());
+}
+
+/**
+ * Maximum notional (in USD) allowed for a symbol based on equity and allocation %.
+ * Returns 0 if the symbol is not enabled or rules are unavailable.
+ */
+export function maxNotionalForSymbol(equityUsd: number, rules: EffectiveRules, symbol: string): number {
+  const coin = getCoinAllocation(rules, symbol);
+  if (!coin?.enabled || !Number.isFinite(equityUsd) || equityUsd <= 0) return 0;
+  return equityUsd * (coin.pct / 100);
 }
 
 /**

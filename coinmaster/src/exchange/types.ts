@@ -107,6 +107,10 @@ export type TradingErrorCode =
   | 'modify_failed'
   | 'daily_loss_limit_exceeded'
   | 'leverage_limit_exceeded'
+  | 'symbol_not_enabled'
+  | 'allocation_limit_exceeded'
+  | 'risk_check_unavailable'
+  | 'allocation_check_unavailable'
   | 'auth_required';
 
 export interface ExchangeCapabilities {

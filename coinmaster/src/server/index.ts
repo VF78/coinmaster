@@ -13,7 +13,7 @@ import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
 import type { TradingRulesSettings } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
-import { RuntimeRulesCache } from './runtimeRules.js';
+import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
@@ -387,8 +387,116 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
     (req as any)._riskCheck = risk;
     next();
   } catch (error) {
-    console.error('[risk-gate] Risk evaluation failed, allowing trade (fail-open):', error);
+    console.error('[risk-gate] Risk evaluation failed, blocking trade (fail-closed):', error);
+    logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'risk_check_unavailable' });
+    return res.status(503).json({
+      ok: false,
+      errorCode: 'risk_check_unavailable' as TradingErrorCode,
+      error: 'Risk engine unavailable. Trading is temporarily blocked.'
+    });
+  }
+}
+
+/** Symbol allowlist + allocation cap middleware — runs after riskGateMiddleware */
+async function symbolAllocationGate(req: Request, res: Response, next: NextFunction) {
+  try {
+    // Skip for reduce-only orders (closing positions should never be blocked by allocation)
+    if (req.body?.reduceOnly === true) return next();
+
+    const symbol = normalizeSymbol(req.body?.symbol);
+    const effectiveRules = rulesCache.getEffectiveRules();
+
+    // 1. Symbol allowlist check
+    if (!isSymbolEnabled(effectiveRules, symbol)) {
+      logRiskGateAudit({
+        gate: 'symbol_allowlist',
+        passed: false,
+        reason: 'symbol_not_enabled',
+        details: { symbol }
+      });
+      return res.status(403).json({
+        ok: false,
+        errorCode: 'symbol_not_enabled' as TradingErrorCode,
+        error: `Symbol ${symbol} is not enabled in trading rules.`,
+        symbol
+      });
+    }
+
+    // 2. Allocation cap check (best-effort: uses mark/entry price from open positions)
+    const price = Number(req.body?.price);
+    const size = Number(req.body?.size);
+    if (Number.isFinite(price) && price > 0 && Number.isFinite(size) && size > 0) {
+      const riskCheck: RiskCheckResult | undefined = (req as any)._riskCheck;
+      const equityUsd = riskCheck?.equityUsd ?? 0;
+      const cap = maxNotionalForSymbol(equityUsd, effectiveRules, symbol);
+
+      if (cap > 0 && equityUsd > 0) {
+        // Current exposure for this symbol from open positions
+        let currentExposure = 0;
+        try {
+          const positions = await exchange.getOpenPositions();
+          for (const pos of positions) {
+            if (pos.symbol.toUpperCase() === symbol) {
+              currentExposure += (pos.entryPrice ?? pos.markPrice ?? 0) * pos.size;
+            }
+          }
+        } catch {
+          // best-effort: if we can't fetch positions, skip exposure calc
+        }
+
+        const newNotional = price * size;
+        const totalExposure = currentExposure + newNotional;
+
+        if (totalExposure > cap) {
+          logRiskGateAudit({
+            gate: 'allocation_cap',
+            passed: false,
+            reason: 'allocation_limit_exceeded',
+            details: {
+              symbol,
+              newNotional: Number(newNotional.toFixed(2)),
+              currentExposure: Number(currentExposure.toFixed(2)),
+              totalExposure: Number(totalExposure.toFixed(2)),
+              cap: Number(cap.toFixed(2)),
+              equityUsd: Number(equityUsd.toFixed(2))
+            }
+          });
+          return res.status(403).json({
+            ok: false,
+            errorCode: 'allocation_limit_exceeded' as TradingErrorCode,
+            error: `Order would bring ${symbol} exposure to $${totalExposure.toFixed(2)}, exceeding allocation cap of $${cap.toFixed(2)}.`,
+            symbol,
+            currentExposure: Number(currentExposure.toFixed(2)),
+            newNotional: Number(newNotional.toFixed(2)),
+            totalExposure: Number(totalExposure.toFixed(2)),
+            cap: Number(cap.toFixed(2))
+          });
+        }
+      }
+
+      logRiskGateAudit({
+        gate: 'allocation_cap',
+        passed: true,
+        details: { symbol }
+      });
+    }
+
+    // Symbol is enabled and within cap
+    logRiskGateAudit({
+      gate: 'symbol_allowlist',
+      passed: true,
+      details: { symbol }
+    });
+
     next();
+  } catch (error) {
+    console.error('[risk-gate] Symbol/allocation check failed, blocking trade (fail-closed):', error);
+    logRiskGateAudit({ gate: 'allocation_cap', passed: false, reason: 'allocation_check_unavailable' });
+    return res.status(503).json({
+      ok: false,
+      errorCode: 'allocation_check_unavailable' as TradingErrorCode,
+      error: 'Allocation guard unavailable. Trading is temporarily blocked.'
+    });
   }
 }
 
@@ -806,7 +914,7 @@ app.post('/api/live/leverage', ownerAuth, async (req, res) => {
   return res.status(result.ok ? 200 : 400).json({ ok: result.ok, result });
 });
 
-app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, async (req, res) => {
+app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -914,7 +1022,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, async (req,
   });
 });
 
-app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, async (req, res) => {
+app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -1117,7 +1225,7 @@ function pruneIdempotencyCache() {
 }
 
 // POST /api/live/order — idempotent place order
-app.post('/api/live/order', ownerAuth, riskGateMiddleware, async (req, res) => {
+app.post('/api/live/order', ownerAuth, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
