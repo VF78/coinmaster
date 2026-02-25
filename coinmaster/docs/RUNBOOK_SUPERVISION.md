@@ -103,3 +103,27 @@ journalctl -u coinmaster.service --since "1 min ago" --no-pager | grep -E 'serve
 ```
 
 All four components should appear in the logs shortly after startup.
+
+
+## 7. WS Backoff Verification
+
+Verify exponential reconnect schedule (1s → 2s → 4s ... cap 60s) from logs.
+
+```bash
+# 1) Tail reconnect logs
+journalctl -u coinmaster.service -f --no-pager | grep -E 'WS disconnected|scheduling WS reconnect'
+
+# 2) Temporarily block outbound WS connectivity (example), wait ~30s, then unblock
+# NOTE: adapt to your firewall tooling/environment.
+# sudo iptables -I OUTPUT -p tcp --dport 443 -j REJECT
+# sleep 30
+# sudo iptables -D OUTPUT -p tcp --dport 443 -j REJECT
+
+# 3) Confirm delay values increase and then reset to 1s after reconnect
+curl -sS -u 'vladimir:***' https://coinmaster24.com/api/health/perf | jq '.ws'
+```
+
+Expected:
+- `reconnectAttempts` increases during disconnect period.
+- `lastReconnectDelayMs` grows exponentially up to 60000.
+- After successful reconnect, backoff resets and `connected=true`.
