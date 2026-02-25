@@ -115,7 +115,7 @@ async function flushRiskAudit() {
 }
 
 // Flush audit every 30s
-const auditFlushTimer = setInterval(() => { flushRiskAudit().catch(() => undefined); }, 30_000);
+const auditFlushTimer = setInterval(() => { flushRiskAudit().catch((err) => logger.warn({ component: 'audit', err }, 'audit flush failed')); }, 30_000);
 auditFlushTimer.unref();
 
 function todayDateStr(): string {
@@ -380,10 +380,10 @@ function startDrawdownWatchdog() {
   if (drawdownWatchdogTimer) return;
 
   // Warm-up tick immediately so baseline is created early in the day.
-  runDrawdownWatchdogTick().catch(() => undefined);
+  runDrawdownWatchdogTick().catch((err) => logger.warn({ component: 'risk-gate', err }, 'drawdown watchdog tick failed'));
 
   drawdownWatchdogTimer = setInterval(() => {
-    runDrawdownWatchdogTick().catch(() => undefined);
+    runDrawdownWatchdogTick().catch((err) => logger.warn({ component: 'risk-gate', err }, 'drawdown watchdog tick failed'));
   }, DRAWDOWN_WATCHDOG_INTERVAL_MS);
   drawdownWatchdogTimer.unref?.();
 
@@ -628,7 +628,7 @@ async function ingestRestFallback() {
 function startRestFallback() {
   if (restFallbackTimer) return;
   restFallbackTimer = setInterval(() => {
-    ingestRestFallback().catch(() => undefined);
+    ingestRestFallback().catch((err) => logger.warn({ component: 'live', err }, 'REST fallback ingest failed'));
   }, REST_FALLBACK_MS);
   restFallbackTimer.unref?.();
 }
@@ -659,7 +659,7 @@ function startLiveMidStream() {
         startRestFallback(); // keep fallback as safety net
       },
       onMid: (symbol, price) => {
-        ingestPrice(symbol, price, 'ws').catch(() => undefined);
+        ingestPrice(symbol, price, 'ws').catch((err) => logger.warn({ component: 'live', symbol, err }, 'WS price ingest failed'));
       },
       onClose: () => {
         logger.info({ component: 'live' }, 'Hyperliquid WS disconnected, reconnecting...');
@@ -1730,7 +1730,7 @@ let shuttingDown = false;
 const server = app.listen(port, host, () => {
   logger.info({ component: 'server', host, port }, `server listening on http://${host}:${port}`);
   rulesCache.start();
-  ingestRestFallback().catch(() => undefined);
+  ingestRestFallback().catch((err) => logger.warn({ component: 'live', err }, 'initial REST fallback ingest failed'));
   startLiveMidStream();
   startDrawdownWatchdog();
 });

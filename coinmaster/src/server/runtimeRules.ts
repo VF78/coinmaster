@@ -71,9 +71,9 @@ export class RuntimeRulesCache {
   start(): void {
     if (this.timer) return;
     // Immediate first load
-    this.refresh().catch(() => undefined);
+    this.refresh().catch((err) => logger.warn({ component: 'runtime-rules', err }, 'rules refresh failed'));
     this.timer = setInterval(() => {
-      this.refresh().catch(() => undefined);
+      this.refresh().catch((err) => logger.warn({ component: 'runtime-rules', err }, 'rules refresh failed'));
     }, this.intervalMs);
     this.timer.unref();
   }
