@@ -1030,6 +1030,8 @@ app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, symbolAllocatio
     size,
     reduceOnly = false,
     clientOrderId,
+    stopLoss: requestStopLoss,
+    takeProfit: requestTakeProfit,
     confirm
   } = req.body as {
     symbol?: string;
@@ -1038,6 +1040,8 @@ app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, symbolAllocatio
     size?: number;
     reduceOnly?: boolean;
     clientOrderId?: string;
+    stopLoss?: number;
+    takeProfit?: number;
     confirm?: boolean;
   };
 
@@ -1111,13 +1115,56 @@ app.post('/api/live/order/limit', ownerAuth, riskGateMiddleware, symbolAllocatio
     }
   });
 
+  // TP/SL defaults: auto-apply after successful non-reduceOnly order
+  let tpSlResult: { stopLossOrder: { ok: boolean; orderId?: string; error?: string }; takeProfitOrder: { ok: boolean; orderId?: string; error?: string } } | undefined;
+  let tpSlApplied: TpSlDefaults | null = null;
+
+  if (ack.ok && !reduceOnly) {
+    tpSlApplied = resolveTpSlDefaults(px, side, requestStopLoss, requestTakeProfit);
+    if (tpSlApplied) {
+      try {
+        tpSlResult = await placeTpSlTriggerOrders(normalizedSymbol, side, qty, tpSlApplied, correlationId);
+      } catch {
+        tpSlResult = {
+          stopLossOrder: { ok: false, error: 'tp_sl_placement_failed' },
+          takeProfitOrder: { ok: false, error: 'tp_sl_placement_failed' }
+        };
+      }
+
+      logRiskGateAudit({
+        gate: 'tp_sl_defaults',
+        passed: true,
+        reason: tpSlApplied.applied ? 'runtime_defaults_applied' : 'explicit_values_used',
+        details: {
+          source: tpSlApplied.source,
+          stopLoss: tpSlApplied.stopLoss,
+          takeProfit: tpSlApplied.takeProfit,
+          entryPrice: px,
+          side,
+          slOrderOk: tpSlResult.stopLossOrder.ok,
+          tpOrderOk: tpSlResult.takeProfitOrder.ok
+        }
+      });
+    }
+  }
+
   await db.write();
 
-  return res.status(ack.ok ? 200 : 400).json({
+  const responseBody: Record<string, unknown> = {
     ok: ack.ok,
     notionalUsdc: Number(notional.toFixed(4)),
     ack
-  });
+  };
+
+  if (tpSlApplied && tpSlResult) {
+    responseBody.stopLoss = tpSlApplied.stopLoss;
+    responseBody.takeProfit = tpSlApplied.takeProfit;
+    responseBody.tpSlSource = tpSlApplied.source;
+    responseBody.stopLossOrder = tpSlResult.stopLossOrder;
+    responseBody.takeProfitOrder = tpSlResult.takeProfitOrder;
+  }
+
+  return res.status(ack.ok ? 200 : 400).json(responseBody);
 });
 
 app.post('/api/live/order/cancel', ownerAuth, async (req, res) => {
@@ -1192,6 +1239,96 @@ app.post('/api/live/order/cancel-all', ownerAuth, async (req, res) => {
   return res.status(result.ok ? 200 : 400).json({ ok: result.ok, result });
 });
 
+// ─── TP/SL Defaults Helper ────────────────────────────────────────────
+
+interface TpSlDefaults {
+  stopLoss: number;
+  takeProfit: number;
+  applied: boolean;
+  source: 'explicit' | 'runtime_defaults';
+}
+
+/**
+ * Compute TP/SL levels from runtime rules when the client omits them.
+ * Priority: explicit request > runtime defaults.
+ * Returns the levels and whether defaults were auto-applied.
+ */
+function resolveTpSlDefaults(
+  entryPrice: number,
+  side: 'buy' | 'sell',
+  requestSl: number | undefined,
+  requestTp: number | undefined
+): TpSlDefaults | null {
+  const hasSl = requestSl !== undefined && Number.isFinite(Number(requestSl)) && Number(requestSl) > 0;
+  const hasTp = requestTp !== undefined && Number.isFinite(Number(requestTp)) && Number(requestTp) > 0;
+
+  if (hasSl && hasTp) {
+    return { stopLoss: Number(requestSl), takeProfit: Number(requestTp), applied: false, source: 'explicit' };
+  }
+
+  const rules = rulesCache.getEffectiveRules();
+  if (!rules.raw) return null; // env fallback — no TP/SL config
+
+  const tpPct = rules.raw.tpPct;
+  const slPct = rules.raw.slPct;
+  if (!tpPct || !slPct) return null;
+
+  const isLong = side === 'buy';
+  const defaultTp = isLong
+    ? entryPrice * (1 + tpPct / 100)
+    : entryPrice * (1 - tpPct / 100);
+  const defaultSl = isLong
+    ? entryPrice * (1 - slPct / 100)
+    : entryPrice * (1 + slPct / 100);
+
+  return {
+    stopLoss: hasSl ? Number(requestSl) : Number(defaultSl.toFixed(8)),
+    takeProfit: hasTp ? Number(requestTp) : Number(defaultTp.toFixed(8)),
+    applied: true,
+    source: 'runtime_defaults'
+  };
+}
+
+/**
+ * Best-effort: place TP and SL trigger orders after a successful entry.
+ * Returns placement results for inclusion in the response.
+ */
+async function placeTpSlTriggerOrders(
+  symbol: string,
+  side: 'buy' | 'sell',
+  size: number,
+  tpSl: TpSlDefaults,
+  correlationId: string
+): Promise<{ stopLossOrder: { ok: boolean; orderId?: string; error?: string }; takeProfitOrder: { ok: boolean; orderId?: string; error?: string } }> {
+  const closingSide: 'buy' | 'sell' = side === 'buy' ? 'sell' : 'buy';
+
+  const [slOrder, tpOrder] = await Promise.all([
+    exchange.placeTriggerOrder({
+      symbol,
+      side: closingSide,
+      size,
+      triggerPrice: tpSl.stopLoss,
+      kind: 'sl',
+      reduceOnly: true,
+      clientOrderId: `sl-auto-${correlationId}`
+    }),
+    exchange.placeTriggerOrder({
+      symbol,
+      side: closingSide,
+      size,
+      triggerPrice: tpSl.takeProfit,
+      kind: 'tp',
+      reduceOnly: true,
+      clientOrderId: `tp-auto-${correlationId}`
+    })
+  ]);
+
+  return {
+    stopLossOrder: { ok: slOrder.ok, orderId: slOrder.orderId, error: slOrder.error },
+    takeProfitOrder: { ok: tpOrder.ok, orderId: tpOrder.orderId, error: tpOrder.error }
+  };
+}
+
 // ─── RESTful Trading Command Layer (ISSUE #12) ───────────────────────
 
 /** Classify exchange errors into standard codes */
@@ -1234,6 +1371,8 @@ app.post('/api/live/order', ownerAuth, riskGateMiddleware, symbolAllocationGate,
     leverage,
     clientOrderId,
     reduceOnly = false,
+    stopLoss: requestStopLoss,
+    takeProfit: requestTakeProfit,
     confirm
   } = req.body as {
     symbol?: string;
@@ -1243,6 +1382,8 @@ app.post('/api/live/order', ownerAuth, riskGateMiddleware, symbolAllocationGate,
     leverage?: number;
     clientOrderId?: string;
     reduceOnly?: boolean;
+    stopLoss?: number;
+    takeProfit?: number;
     confirm?: boolean;
   };
 
@@ -1317,9 +1458,51 @@ app.post('/api/live/order', ownerAuth, riskGateMiddleware, symbolAllocationGate,
     reason: ack.ok ? 'live_order_ack' : 'live_order_rejected',
     payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, errorCode: errorCode ?? null }
   });
+
+  // TP/SL defaults: auto-apply after successful non-reduceOnly order
+  let tpSlResult: { stopLossOrder: { ok: boolean; orderId?: string; error?: string }; takeProfitOrder: { ok: boolean; orderId?: string; error?: string } } | undefined;
+  let tpSlApplied: TpSlDefaults | null = null;
+
+  if (ack.ok && !reduceOnly) {
+    tpSlApplied = resolveTpSlDefaults(px, side, requestStopLoss, requestTakeProfit);
+    if (tpSlApplied) {
+      try {
+        tpSlResult = await placeTpSlTriggerOrders(normalizedSymbol, side, qty, tpSlApplied, correlationId);
+      } catch (err) {
+        tpSlResult = {
+          stopLossOrder: { ok: false, error: 'tp_sl_placement_failed' },
+          takeProfitOrder: { ok: false, error: 'tp_sl_placement_failed' }
+        };
+      }
+
+      logRiskGateAudit({
+        gate: 'tp_sl_defaults',
+        passed: true,
+        reason: tpSlApplied.applied ? 'runtime_defaults_applied' : 'explicit_values_used',
+        details: {
+          source: tpSlApplied.source,
+          stopLoss: tpSlApplied.stopLoss,
+          takeProfit: tpSlApplied.takeProfit,
+          entryPrice: px,
+          side,
+          slOrderOk: tpSlResult.stopLossOrder.ok,
+          tpOrderOk: tpSlResult.takeProfitOrder.ok
+        }
+      });
+    }
+  }
+
   await db.write();
 
-  const response = { ok: ack.ok, orderId: ack.orderId, clientOrderId: correlationId, status: ack.status, errorCode, error: ack.error };
+  const response: Record<string, unknown> = { ok: ack.ok, orderId: ack.orderId, clientOrderId: correlationId, status: ack.status, errorCode, error: ack.error };
+
+  if (tpSlApplied && tpSlResult) {
+    response.stopLoss = tpSlApplied.stopLoss;
+    response.takeProfit = tpSlApplied.takeProfit;
+    response.tpSlSource = tpSlApplied.source;
+    response.stopLossOrder = tpSlResult.stopLossOrder;
+    response.takeProfitOrder = tpSlResult.takeProfitOrder;
+  }
 
   // Cache for idempotency
   if (clientOrderId) {
