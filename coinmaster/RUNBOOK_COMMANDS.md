@@ -125,6 +125,45 @@ Include in pre-deploy or CI verification:
 npm run check && npm run invariants:trading-rules && npm run build
 ```
 
+## Rate Limit & Request Protection (Issue #18 S3)
+
+The API has in-memory rate limiting on all `/api/*` endpoints except `/api/health` and `/api/health/perf`.
+
+- **Default**: 120 req/min per IP (env `API_RATE_LIMIT_RPM`)
+- **JSON body limit**: 256kb (env `API_JSON_LIMIT`)
+- **Exceeded**: HTTP 429 `{ "ok": false, "error": "rate_limited" }`
+
+### Verify rate limiting works
+
+```bash
+# Flood test: send 130 rapid requests to /api/dashboard (limit is 120/min)
+for i in $(seq 1 130); do
+  HTTP=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8787/api/dashboard)
+  echo "req $i → HTTP $HTTP"
+done
+# Expected: requests 1-120 return 200, requests 121+ return 429
+
+# Verify health endpoints are NOT rate-limited
+for i in $(seq 1 130); do
+  HTTP=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8787/api/health)
+  echo "req $i → HTTP $HTTP"
+done
+# Expected: all 130 return 200
+
+# Verify oversized body is rejected (413)
+python3 -c "print('{\"x\":\"' + 'A'*300000 + '\"}')" | \
+  curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' \
+  --data-binary @- http://127.0.0.1:8787/api/bias
+# Expected: HTTP 413
+```
+
+### Tuning
+
+```bash
+# Raise limit to 200 req/min and 1MB body
+API_RATE_LIMIT_RPM=200 API_JSON_LIMIT=1mb npm run start
+```
+
 ## VPS Migration (46.225.133.161)
 
 ```bash

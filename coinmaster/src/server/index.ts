@@ -697,7 +697,51 @@ function startLiveMidStream() {
 }
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: process.env.API_JSON_LIMIT || '256kb' }));
+
+// ─── In-memory rate limiter (/api/* except health) ────────────────────
+const RATE_LIMIT_RPM = Math.max(1, Number(process.env.API_RATE_LIMIT_RPM || 120));
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const rateLimitMap = new Map<string, number[]>();
+
+// Prune stale entries every 2 minutes to prevent unbounded growth
+const rateLimitPruneTimer = setInterval(() => {
+  const cutoff = Date.now() - RATE_LIMIT_WINDOW_MS;
+  for (const [ip, timestamps] of rateLimitMap) {
+    const fresh = timestamps.filter(t => t > cutoff);
+    if (fresh.length === 0) rateLimitMap.delete(ip);
+    else rateLimitMap.set(ip, fresh);
+  }
+}, 2 * 60_000);
+rateLimitPruneTimer.unref();
+
+app.use('/api', (req: Request, res: Response, next: NextFunction) => {
+  // Exclude health endpoints from rate limiting
+  if (req.path === '/health' || req.path === '/health/perf') return next();
+
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const cutoff = now - RATE_LIMIT_WINDOW_MS;
+
+  let timestamps = rateLimitMap.get(ip);
+  if (!timestamps) {
+    timestamps = [];
+    rateLimitMap.set(ip, timestamps);
+  }
+
+  // Remove expired entries for this IP
+  while (timestamps.length > 0 && timestamps[0] <= cutoff) {
+    timestamps.shift();
+  }
+
+  if (timestamps.length >= RATE_LIMIT_RPM) {
+    logger.warn({ component: 'rate-limit', ip, count: timestamps.length, limit: RATE_LIMIT_RPM }, 'rate limit exceeded');
+    return res.status(429).json({ ok: false, error: 'rate_limited' });
+  }
+
+  timestamps.push(now);
+  next();
+});
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
@@ -1772,6 +1816,7 @@ async function gracefulShutdown(signal: string) {
   // 2. Clear timers
   rulesCache.stop();
   clearInterval(auditFlushTimer);
+  clearInterval(rateLimitPruneTimer);
   if (drawdownWatchdogTimer) { clearInterval(drawdownWatchdogTimer); drawdownWatchdogTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
   if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
