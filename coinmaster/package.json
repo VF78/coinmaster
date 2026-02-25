@@ -18,7 +18,8 @@
     "persistence:cutover-check": "bash scripts/persistence-cutover-check.sh",
     "persistence:rollback-check": "bash scripts/persistence-rollback-check.sh",
     "check": "tsc --noEmit",
-    "ops:smoke": "bash ./scripts/preflight-smoke.sh"
+    "ops:smoke": "bash ./scripts/preflight-smoke.sh",
+    "invariants:trading-rules": "tsx scripts/invariants-trading-rules.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

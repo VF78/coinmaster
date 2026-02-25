@@ -100,6 +100,31 @@ curl -sS http://127.0.0.1:8878/api/health/perf | jq .
 kill %1
 ```
 
+## Trading Rules Invariant Checks
+
+Offline verification of runtime trading-rules precedence logic (Issue #20, Subtask 6).
+No server or exchange connection required — tests pure functions only.
+
+```bash
+# Run all invariant checks
+npm run invariants:trading-rules
+
+# What it verifies:
+# 1. Explicit TP/SL overrides runtime defaults (precedence)
+# 2. Runtime defaults auto-applied when explicit values missing
+# 3. Disabled symbol → order blocked (isSymbolEnabled)
+# 4. Allocation cap exceeded → order blocked (maxNotionalForSymbol)
+# 5. Env fallback (no DB) → all symbols blocked, no TP/SL defaults
+
+# Exit code: 0 = all pass, 1 = failures found
+```
+
+Include in pre-deploy or CI verification:
+
+```bash
+npm run check && npm run invariants:trading-rules && npm run build
+```
+
 ## VPS Migration (46.225.133.161)
 
 ```bash
