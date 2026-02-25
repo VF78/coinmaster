@@ -125,6 +125,35 @@ Include in pre-deploy or CI verification:
 npm run check && npm run invariants:trading-rules && npm run build
 ```
 
+## Allocation Sizing Invariant Checks
+
+Deterministic verification of `computeAllocationSize()` — the pure function that
+derives position size from equity, available margin, per-symbol allocation % and
+leverage (Issue #24, Subtask B). No server or exchange connection required.
+
+```bash
+# Run allocation sizing invariants
+npm run invariants:allocation-sizing
+
+# What it verifies:
+# Case 1: BTC happy-path — equity=100, available=100, BTC 50%, lev=10
+#          → margin=50, notional=500, size=0.01
+# Case 2: Sequential allocation — after BTC consumed $50 margin,
+#          SOL 20%, lev=10 → margin=20, notional=200, size=2.0
+# Case 3: Insufficient available margin (available < targetMargin)
+#          → reason='insufficient_available_margin'
+# Case 4: Disabled symbol / unknown symbol / env_fallback
+#          → reason='symbol_not_enabled'
+
+# Exit code: 0 = all pass, 1 = failures found
+```
+
+Include in pre-deploy verification:
+
+```bash
+npm run check && npm run invariants:trading-rules && npm run invariants:allocation-sizing && npm run build
+```
+
 ## Rate Limit & Request Protection (Issue #18 S3)
 
 The API has in-memory rate limiting on all `/api/*` endpoints except `/api/health` and `/api/health/perf`.
