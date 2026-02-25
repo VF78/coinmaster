@@ -1,5 +1,6 @@
 import type { DBShape } from '../types.js';
 import { cloneTradingRulesDefaults, normalizeTradingRules } from '../../shared/tradingRules.js';
+import logger from '../../lib/logger.js';
 import type { PersistenceStore } from './types.js';
 
 const SNAPSHOT_KEY = 'dbshape_v1';
@@ -78,7 +79,7 @@ export class PostgresStore implements PersistenceStore {
       client.release();
     }
 
-    console.log('[postgres] Connected to PostgreSQL');
+    logger.info({ component: 'postgres' }, 'connected to PostgreSQL');
 
     // Ensure snapshot table exists (idempotent)
     await this.pool.query(`
@@ -102,8 +103,7 @@ export class PostgresStore implements PersistenceStore {
     }
 
     ensureDbShape(this.data);
-    console.log('[postgres] Snapshot loaded (%d positions, %d tradeLogs)',
-      this.data.positions.length, this.data.tradeLogs.length);
+    logger.info({ component: 'postgres', positions: this.data.positions.length, tradeLogs: this.data.tradeLogs.length }, 'snapshot loaded');
   }
 
   getData(): DBShape {

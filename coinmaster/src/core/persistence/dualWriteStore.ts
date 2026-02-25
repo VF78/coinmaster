@@ -1,4 +1,5 @@
 import type { DBShape } from '../types.js';
+import logger from '../../lib/logger.js';
 import type { PersistenceStore } from './types.js';
 
 /**
@@ -22,9 +23,9 @@ export class DualWriteStore implements PersistenceStore {
     await this.primary.init();
     try {
       await this.shadow.init();
-      console.log('[dual-write] Shadow store initialised');
+      logger.info({ component: 'dual-write' }, 'shadow store initialised');
     } catch (err: any) {
-      console.error('[dual-write] Shadow init failed (non-fatal):', err.message ?? err);
+      logger.error({ component: 'dual-write', err: err.message ?? err }, 'shadow init failed (non-fatal)');
     }
   }
 
@@ -43,7 +44,7 @@ export class DualWriteStore implements PersistenceStore {
       Object.assign(shadowData, JSON.parse(JSON.stringify(snapshot)));
       await this.shadow.flush();
     } catch (err: any) {
-      console.error('[dual-write] Shadow flush failed (non-fatal):', err.message ?? err);
+      logger.error({ component: 'dual-write', err: err.message ?? err }, 'shadow flush failed (non-fatal)');
     }
   }
 

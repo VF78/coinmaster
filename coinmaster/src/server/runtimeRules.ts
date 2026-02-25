@@ -1,4 +1,5 @@
 import { getDb } from '../core/db.js';
+import logger from '../lib/logger.js';
 import type { TradingCoinAllocation, TradingRulesSettings } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
 
@@ -107,7 +108,7 @@ export class RuntimeRulesCache {
         raw: rules,
       };
     } catch (err) {
-      console.error('[runtime-rules] Failed to refresh from DB, keeping previous/env fallback:', err);
+      logger.error({ component: 'runtime-rules', err }, 'failed to refresh from DB, keeping previous/env fallback');
       // Keep whatever was last cached (env fallback on first failure)
     } finally {
       this.refreshing = false;

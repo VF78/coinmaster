@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { nanoid } from 'nanoid';
+import logger from '../lib/logger.js';
 import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
 import { submitBias } from '../core/services.js';
@@ -98,7 +99,7 @@ const riskAuditBuffer: RiskGateAuditEntry[] = [];
 function logRiskGateAudit(entry: Omit<RiskGateAuditEntry, 'timestamp'>) {
   const full: RiskGateAuditEntry = { ...entry, timestamp: new Date().toISOString() };
   riskAuditBuffer.push(full);
-  console.log(`[risk-gate] ${full.gate} passed=${full.passed} ${full.reason ?? ''}`);
+  logger.info({ component: 'risk-gate', gate: full.gate, passed: full.passed, reason: full.reason ?? undefined }, 'risk gate check');
 }
 
 async function flushRiskAudit() {
@@ -243,21 +244,19 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
 
     if (positions.length === 0 && openOrders.length === 0) {
       if (shouldLogWatchdog('already-flat')) {
-        console.warn('[risk-gate] Emergency close skipped: account already flat (no positions/orders)');
+        logger.warn({ component: 'risk-gate' }, 'emergency close skipped: account already flat (no positions/orders)');
       }
       return;
     }
 
-    console.error(
-      `[risk-gate] EMERGENCY ${reason}: closing ${positions.length} position(s), cancelling ${openOrders.length} order(s)`
-    );
+    logger.error({ component: 'risk-gate', reason, positions: positions.length, openOrders: openOrders.length }, 'EMERGENCY: closing positions and cancelling orders');
 
     // Cancel resting orders first to reduce conflicts with reduce-only exits.
     if (openOrders.length > 0) {
       try {
         await exchange.cancelAll();
       } catch (error) {
-        console.error('[risk-gate] cancelAll during emergency failed:', error);
+        logger.error({ component: 'risk-gate', err: error }, 'cancelAll during emergency failed');
       }
     }
 
@@ -291,7 +290,7 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
           });
         }
       } catch (error) {
-        console.error(`[risk-gate] Failed to emergency-close ${pos.symbol}:`, error);
+        logger.error({ component: 'risk-gate', symbol: pos.symbol, err: error }, 'failed to emergency-close position');
       }
     }
 
@@ -300,7 +299,7 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
 
     const remaining = await exchange.getOpenPositions();
     if (remaining.length > 0) {
-      console.error(`[risk-gate] emergency close incomplete, ${remaining.length} position(s) remain; watchdog will retry`);
+      logger.error({ component: 'risk-gate', remaining: remaining.length }, 'emergency close incomplete, watchdog will retry');
     }
   } finally {
     emergencyCloseLock.running = false;
@@ -339,7 +338,7 @@ async function runDrawdownWatchdogTick() {
 
       if (positions.length === 0 && openOrders.length === 0) {
         if (shouldLogWatchdog('dd-hardstop-flat')) {
-          console.warn('[risk-gate] Hard-stop active but account already flat; skipping emergency close tick');
+          logger.warn({ component: 'risk-gate' }, 'hard-stop active but account already flat; skipping emergency close tick');
         }
         return;
       }
@@ -363,7 +362,7 @@ async function runDrawdownWatchdogTick() {
       });
     }
   } catch (error) {
-    console.error('[risk-gate] Drawdown watchdog tick failed:', error);
+    logger.error({ component: 'risk-gate', err: error }, 'drawdown watchdog tick failed');
   } finally {
     drawdownWatchdogBusy = false;
   }
@@ -371,11 +370,11 @@ async function runDrawdownWatchdogTick() {
 
 function startDrawdownWatchdog() {
   if (!ENABLE_DRAWDOWN_WATCHDOG) {
-    console.log('[risk-gate] Drawdown watchdog disabled via ENABLE_DRAWDOWN_WATCHDOG=false');
+    logger.info({ component: 'risk-gate' }, 'drawdown watchdog disabled via ENABLE_DRAWDOWN_WATCHDOG=false');
     return;
   }
   if (!exchange.capabilities.privateAccount || !exchange.capabilities.privateTrading) {
-    console.log('[risk-gate] Drawdown watchdog not started (private account/trading unavailable)');
+    logger.info({ component: 'risk-gate' }, 'drawdown watchdog not started (private account/trading unavailable)');
     return;
   }
   if (drawdownWatchdogTimer) return;
@@ -388,7 +387,7 @@ function startDrawdownWatchdog() {
   }, DRAWDOWN_WATCHDOG_INTERVAL_MS);
   drawdownWatchdogTimer.unref?.();
 
-  console.log(`[risk-gate] Drawdown watchdog started (${DRAWDOWN_WATCHDOG_INTERVAL_MS}ms)`);
+  logger.info({ component: 'risk-gate', intervalMs: DRAWDOWN_WATCHDOG_INTERVAL_MS }, 'drawdown watchdog started');
 }
 
 /** Risk gate middleware for trading endpoints — checks DD + leverage before allowing order */
@@ -426,7 +425,7 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
     (req as any)._riskCheck = risk;
     next();
   } catch (error) {
-    console.error('[risk-gate] Risk evaluation failed, blocking trade (fail-closed):', error);
+    logger.error({ component: 'risk-gate', err: error }, 'risk evaluation failed, blocking trade (fail-closed)');
     logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'risk_check_unavailable' });
     return res.status(503).json({
       ok: false,
@@ -529,7 +528,7 @@ async function symbolAllocationGate(req: Request, res: Response, next: NextFunct
 
     next();
   } catch (error) {
-    console.error('[risk-gate] Symbol/allocation check failed, blocking trade (fail-closed):', error);
+    logger.error({ component: 'risk-gate', err: error }, 'symbol/allocation check failed, blocking trade (fail-closed)');
     logRiskGateAudit({ gate: 'allocation_cap', passed: false, reason: 'allocation_check_unavailable' });
     return res.status(503).json({
       ok: false,
@@ -645,7 +644,7 @@ function scheduleWsReconnect(delayMs = 3000) {
 
 function startLiveMidStream() {
   if (!exchange.subscribeMids) {
-    console.log('[live] Exchange adapter has no mid stream, using REST fallback each minute');
+    logger.info({ component: 'live' }, 'exchange adapter has no mid stream, using REST fallback each minute');
     startRestFallback();
     return;
   }
@@ -656,14 +655,14 @@ function startLiveMidStream() {
     midStreamHandle = exchange.subscribeMids({
       symbols: [LIVE_SYMBOL],
       onOpen: () => {
-        console.log('[live] Hyperliquid WS connected');
+        logger.info({ component: 'live' }, 'Hyperliquid WS connected');
         startRestFallback(); // keep fallback as safety net
       },
       onMid: (symbol, price) => {
         ingestPrice(symbol, price, 'ws').catch(() => undefined);
       },
       onClose: () => {
-        console.log('[live] Hyperliquid WS disconnected, reconnecting...');
+        logger.info({ component: 'live' }, 'Hyperliquid WS disconnected, reconnecting...');
         midStreamHandle = null;
         scheduleWsReconnect();
       },
@@ -672,7 +671,7 @@ function startLiveMidStream() {
       }
     });
   } catch {
-    console.log('[live] Hyperliquid WS start failed, using REST fallback each minute');
+    logger.warn({ component: 'live' }, 'Hyperliquid WS start failed, using REST fallback each minute');
     midStreamHandle = null;
     startRestFallback();
     scheduleWsReconnect(5000);
@@ -1716,11 +1715,11 @@ app.get('*', (_req, res) => {
 
 // ─── Process-level error handlers ─────────────────────────────────────
 process.on('unhandledRejection', (reason) => {
-  console.error('[process] Unhandled rejection:', reason);
+  logger.error({ component: 'process', err: reason }, 'unhandled rejection');
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('[process] Uncaught exception:', error);
+  logger.fatal({ component: 'process', err: error }, 'uncaught exception');
   // Let the process crash after logging — do not swallow fatal errors
   process.exit(1);
 });
@@ -1729,7 +1728,7 @@ process.on('uncaughtException', (error) => {
 let shuttingDown = false;
 
 const server = app.listen(port, host, () => {
-  console.log(`Server listening on http://${host}:${port}`);
+  logger.info({ component: 'server', host, port }, `server listening on http://${host}:${port}`);
   rulesCache.start();
   ingestRestFallback().catch(() => undefined);
   startLiveMidStream();
@@ -1739,11 +1738,11 @@ const server = app.listen(port, host, () => {
 async function gracefulShutdown(signal: string) {
   if (shuttingDown) return;
   shuttingDown = true;
-  console.log(`[shutdown] Received ${signal}, shutting down gracefully…`);
+  logger.info({ component: 'shutdown', signal }, 'received signal, shutting down gracefully');
 
   // 1. Stop accepting new connections
   server.close(() => {
-    console.log('[shutdown] HTTP server closed');
+    logger.info({ component: 'shutdown' }, 'HTTP server closed');
   });
 
   // 2. Clear timers
@@ -1762,10 +1761,10 @@ async function gracefulShutdown(signal: string) {
     const { getStore } = await import('../core/persistence/index.js');
     const store = await getStore();
     await store.close();
-    console.log('[shutdown] Persistence store closed');
+    logger.info({ component: 'shutdown' }, 'persistence store closed');
   } catch { /* store may not have been initialised */ }
 
-  console.log('[shutdown] Cleanup complete, exiting');
+  logger.info({ component: 'shutdown' }, 'cleanup complete, exiting');
   process.exit(0);
 }
 

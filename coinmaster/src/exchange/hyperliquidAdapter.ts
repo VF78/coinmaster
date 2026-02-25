@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { Hyperliquid } from 'hyperliquid';
+import logger from '../lib/logger.js';
 import { ExchangeAdapter } from './adapter.js';
 import {
   AccountSnapshot,
@@ -514,13 +515,13 @@ export class HyperliquidAdapter implements ExchangeAdapter {
           if (roleResult?.role === 'agent' && typeof roleResult?.data?.user === 'string') {
             const master = roleResult.data.user.trim();
             if (master) {
-              console.log(`[hyperliquid] Agent wallet detected, effective user: ${master.slice(0, 6)}…${master.slice(-4)}`);
+              logger.info({ component: 'hyperliquid', effectiveUser: `${master.slice(0, 6)}…${master.slice(-4)}` }, 'agent wallet detected');
               this.effectiveUser = master;
               return master;
             }
           }
         } catch (error) {
-          console.warn('[hyperliquid] userRole lookup failed, falling back to seed address:', error instanceof Error ? error.message : error);
+          logger.warn({ component: 'hyperliquid', err: error instanceof Error ? error.message : error }, 'userRole lookup failed, falling back to seed address');
         }
         // Fallback: use seed address as-is
         this.effectiveUser = seed;
