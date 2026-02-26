@@ -20,7 +20,8 @@
     "check": "tsc --noEmit",
     "ops:smoke": "bash ./scripts/preflight-smoke.sh",
     "invariants:trading-rules": "tsx scripts/invariants-trading-rules.ts",
-    "invariants:allocation-sizing": "tsx scripts/invariants-allocation-sizing.ts"
+    "invariants:allocation-sizing": "tsx scripts/invariants-allocation-sizing.ts",
+    "invariants:engulfing": "tsx scripts/invariants-engulfing.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

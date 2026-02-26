@@ -12,13 +12,14 @@ import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
-import type { TradingRulesSettings } from '../shared/dto.js';
+import type { TradingRulesSettings, TradingRulesTimeframe } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
+import type { Candle, CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
+import { evaluateMultiTf } from '../core/engulfingEvaluator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,6 +39,7 @@ const ENABLE_PAPER_ENGINE = String(process.env.ENABLE_PAPER_ENGINE ?? 'false').t
 const ENABLE_SIMULATION_API = String(process.env.ENABLE_SIMULATION_API ?? 'false').toLowerCase() === 'true';
 const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLowerCase() === 'true';
 
+const ENABLE_MULTI_TF_ENGULFING = String(process.env.ENABLE_MULTI_TF_ENGULFING ?? 'false').toLowerCase() === 'true';
 const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
 const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(2000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 5000));
 const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
@@ -589,6 +591,74 @@ async function staleMarketDataGate(req: Request, res: Response, next: NextFuncti
 }
 
 const exchange = new HyperliquidAdapter();
+
+// ─── Multi-TF Engulfing Gate (feature-flagged) ─────────────────────────
+const TF_LABEL_TO_CANDLE_TF: Record<TradingRulesTimeframe, CandleTimeframe> = {
+  '5m': '5m', '15m': '15m', '1h': '1h', '4h': '4h',
+};
+
+async function engulfingGate(req: Request, res: Response, next: NextFunction) {
+  if (!ENABLE_MULTI_TF_ENGULFING) return next();
+
+  const body = (req.body ?? {}) as { symbol?: string; reduceOnly?: boolean };
+  if (body.reduceOnly) return next();
+
+  try {
+    const effectiveRules = rulesCache.getEffectiveRules();
+    const raw = effectiveRules.raw;
+    if (!raw) return next(); // env fallback — skip gate
+
+    const symbol = normalizeSymbol(body.symbol ?? LIVE_SYMBOL);
+    const lookback = raw.engulfingLookbackCandles ?? 30;
+    const entryTfs = raw.entryTimeframes;
+    const exitTfs = raw.emergencyExitTimeframes;
+
+    const allTfs = new Set([...entryTfs, ...exitTfs]);
+    const candlesByTf = new Map<TradingRulesTimeframe, Candle[]>();
+
+    const now = Date.now();
+    const minCandles = lookback + 5; // small buffer
+
+    await Promise.all([...allTfs].map(async (tf) => {
+      try {
+        const tfMs = ({ '5m': 300_000, '15m': 900_000, '1h': 3_600_000, '4h': 14_400_000 })[tf] ?? 900_000;
+        const startTimeMs = now - tfMs * (minCandles + 2);
+        const candles = await exchange.getCandles({
+          symbol,
+          timeframe: TF_LABEL_TO_CANDLE_TF[tf],
+          startTimeMs,
+          endTimeMs: now,
+        });
+        candlesByTf.set(tf, candles);
+      } catch (err) {
+        logger.warn({ component: 'engulfing-gate', tf, err }, 'candle fetch failed for tf');
+      }
+    }));
+
+    const result = evaluateMultiTf(candlesByTf, {
+      lookbackCandles: lookback,
+      entryTimeframes: entryTfs,
+      emergencyExitTimeframes: exitTfs,
+    });
+
+    // Attach result for downstream handlers to inspect
+    (req as any)._engulfingResult = result;
+
+    // Gate: if entry signals required but none detected, log but allow through
+    // (soft gate — logged for observability; hard blocking is a future phase)
+    if (!result.anyEntry) {
+      logger.info(
+        { component: 'engulfing-gate', symbol, signals: result.entry.map((s) => ({ tf: s.timeframe, detected: s.detected, reason: s.reason })) },
+        'no engulfing entry signal detected (soft gate — order allowed)',
+      );
+    }
+
+    return next();
+  } catch (error) {
+    logger.error({ component: 'engulfing-gate', err: error }, 'engulfing gate error, allowing trade through');
+    return next();
+  }
+}
 
 let ingestBusy = false;
 let wsReconnectTimer: NodeJS.Timeout | null = null;
@@ -1224,7 +1294,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   });
 });
 
-app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
+app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, engulfingGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -1629,7 +1699,7 @@ function pruneIdempotencyCache() {
 }
 
 // POST /api/live/order — idempotent place order
-app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, async (req, res) => {
+app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, engulfingGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
