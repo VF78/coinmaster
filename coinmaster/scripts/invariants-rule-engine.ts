@@ -240,6 +240,17 @@ console.log('\nCase 7: dual-run compare helpers');
   assert(mismatchPayload.mismatches[0]?.field === 'blocked', 'mismatch field is "blocked"');
 }
 
+// Case 8: RISK preempts ENTRY in mixed decision set
+console.log('\nCase 8: RISK preempts ENTRY in mixed decision set');
+{
+  // TODO: construct a mixed evaluated-rule set containing at least one RISK-tier rule
+  //       and at least one ENTRY-tier rule, both with allMet=true.
+  // TODO: call decideRules() with the mixed set.
+  // TODO: assert that every ENTRY-tier rule decision has action === 'SUPPRESSED'.
+  // TODO: assert that every RISK-tier rule decision has action === 'FIRE'.
+  // TODO: assert suppression reason for ENTRY rules is 'preempted_by_higher_tier'.
+}
+
 console.log(`\nResult: ${passed} passed, ${failed} failed`);
 
 if (failed > 0) {
