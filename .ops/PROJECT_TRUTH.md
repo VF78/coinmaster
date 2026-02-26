@@ -29,6 +29,16 @@ Complete **Issue #25C Phase 1 (RISK rules dual-run foundations)** safely, with r
 Interactive consent prompts can cause `code 143` and stall runs.
 Mitigation: ultra-small subtasks + watchdog + partial-diff salvage + immediate commit after local validation.
 
+## Restart recovery playbook (no waiting)
+Read in this order after restart:
+1. `SOUL.md`
+2. `USER.md`
+3. `memory/YYYY-MM-DD.md` (today + yesterday)
+4. `.ops/PROJECT_TRUTH.md`
+5. `.ops/issue-25C-checklist.md`
+
+After reading, start work immediately from the first unfinished item below unless user gives a new priority.
+
 ## Next actions
 1. Finish P1d4 invariant (negative control exact match).
 2. Run `npm run check` and `npm run invariants:rule-engine`.
