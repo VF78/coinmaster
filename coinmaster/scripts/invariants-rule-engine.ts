@@ -9,6 +9,7 @@
 
 import { decideRules, type RuleDecision } from '../src/engine/decide.js';
 import type { EvaluatedRule } from '../src/engine/evaluate.js';
+import { computePortfolioLeverage } from '../src/engine/snapshot.js';
 import { ActionType, RuleTier, type Rule, type RuleEngineSnapshot, type TriggerSource } from '../src/engine/types.js';
 
 let passed = 0;
@@ -106,6 +107,26 @@ console.log('\nCase 3: cooldown suppression');
   const decision = findDecision(decisions, cooldownRule.id);
   assert(decision?.action === 'SUPPRESSED', 'rule on cooldown is suppressed');
   assert(decision?.reason === 'cooldown', 'cooldown suppression reason is set');
+}
+
+// Case 4: computePortfolioLeverage
+console.log('\nCase 4: computePortfolioLeverage');
+{
+  // empty positions → 0
+  assert(computePortfolioLeverage([], 10_000) === 0, 'empty positions → 0');
+
+  // equity zero → 0
+  assert(
+    computePortfolioLeverage([{ symbol: 'BTC', side: 'long', size: 1, markPrice: 50_000 }], 0) === 0,
+    'equity zero → 0',
+  );
+
+  // normal: 1 BTC at markPrice 50000, equity 10000 → leverage 5
+  const lev = computePortfolioLeverage(
+    [{ symbol: 'BTC', side: 'long', size: 1, markPrice: 50_000 }],
+    10_000,
+  );
+  assert(lev === 5, `normal leverage (1 BTC @ 50k / 10k equity) → 5 (got ${lev})`);
 }
 
 console.log(`\nResult: ${passed} passed, ${failed} failed`);

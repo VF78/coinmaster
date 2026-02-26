@@ -28,7 +28,7 @@
 - [ ] 25C.1e Прогон тестов и фиксация артефакта
 
 ### 25C.P1 Phase 1 (RISK rules in dual-run)
-- [ ] 25C.P1a Добавить engine snapshot builder (минимальный) без изменения runtime-поведения
+- [x] 25C.P1a Добавить engine snapshot builder (минимальный) без изменения runtime-поведения
 - [ ] 25C.P1b Добавить risk rule definitions: daily drawdown / leverage / allocation / stale data / symbol allowlist
 - [ ] 25C.P1c Подключить dual-run compare (engine decision vs legacy gate result) только в audit/log
 - [ ] 25C.P1d Добавить invariants для preemption и mismatch detection
@@ -52,6 +52,7 @@
 - 14:04: Phase 0 выполнен: добавлен `src/engine/*` foundation + `scripts/invariants-rule-engine.ts`, commit `28eabee`.
 - 14:52: диагностирован Claude CLI: авторизация OK, `-p` режим с `--permission-mode acceptEdits` подтверждён как рабочий для non-interactive edits (без consent-loop/code143).
 - 13:38: watchdog reminder зафиксировал >15m без нового артефакта; выполнен forced split в Phase 1 (P1a..P1e), стартован следующий микро-шаг.
+- 13:57: Claude run `gentle-sable` завершил P1a-изменения (`src/engine/snapshot.ts` + exports + invariants update); локальные проверки `npm run check` и `npm run invariants:rule-engine` зелёные.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
