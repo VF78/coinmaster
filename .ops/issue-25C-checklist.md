@@ -35,7 +35,7 @@
 - [ ] 25C.P1e Smoke-проверка и фиксация артефакта Phase 1 PR
 
 ## Blockers
-- Operational blocker: Claude interactive allow-edits prompt периодически роняет run (code 143); mitigated by SELF-first implementation.
+- Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by enforced non-interactive mode `claude -p --permission-mode acceptEdits`.
 - External blockers: none.
 
 ## Event log
@@ -50,6 +50,7 @@
 - 12:38: повторно подтверждён `kind-sum` code 143; выполнение продолжено в FALLBACK SELF, закрыт шаг A2 (rule model).
 - 13:57: Владимир подтвердил архитектурные рекомендации и дал GO на реализацию.
 - 14:04: Phase 0 выполнен: добавлен `src/engine/*` foundation + `scripts/invariants-rule-engine.ts`, commit `28eabee`.
+- 14:52: диагностирован Claude CLI: авторизация OK, `-p` режим с `--permission-mode acceptEdits` подтверждён как рабочий для non-interactive edits (без consent-loop/code143).
 - 13:38: watchdog reminder зафиксировал >15m без нового артефакта; выполнен forced split в Phase 1 (P1a..P1e), стартован следующий микро-шаг.
 
 ## Heartbeat policy for this issue
