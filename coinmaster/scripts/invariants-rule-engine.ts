@@ -9,8 +9,10 @@
 
 import { decideRules, type RuleDecision } from '../src/engine/decide.js';
 import type { EvaluatedRule } from '../src/engine/evaluate.js';
-import { computePortfolioLeverage } from '../src/engine/snapshot.js';
+import { computePortfolioLeverage, type EngineSnapshot } from '../src/engine/snapshot.js';
 import { ActionType, RuleTier, type Rule, type RuleEngineSnapshot, type TriggerSource } from '../src/engine/types.js';
+import { dailyDrawdownCondition } from '../src/engine/rules/risk/dailyDrawdown.js';
+import { leverageCapCondition } from '../src/engine/rules/risk/leverageCap.js';
 
 let passed = 0;
 let failed = 0;
@@ -127,6 +129,83 @@ console.log('\nCase 4: computePortfolioLeverage');
     10_000,
   );
   assert(lev === 5, `normal leverage (1 BTC @ 50k / 10k equity) → 5 (got ${lev})`);
+}
+
+// Case 5: dailyDrawdown condition
+console.log('\nCase 5: dailyDrawdown condition');
+{
+  function mkSnap(equity: number, startEquity: number, threshold: number): EngineSnapshot {
+    return {
+      timestamp: Date.now(),
+      source: 'TICK',
+      equity,
+      dailyStartEquity: startEquity,
+      tradingRules: {
+        coins: [],
+        entryTf: '15m',
+        exitTf: '1h',
+        entryTimeframes: ['15m'],
+        emergencyExitTimeframes: ['1h'],
+        engulfingLookbackCandles: 5,
+        fvgRetrace: 0.5,
+        maxLeverage: 5,
+        dailyDrawdown: threshold,
+        tpPct: 2,
+        slPct: 1,
+        autoConfirm: false,
+      },
+    };
+  }
+
+  // Below threshold: 2% drawdown on a 5% limit → not met
+  const below = dailyDrawdownCondition.evaluate(mkSnap(9_800, 10_000, 5));
+  assert(!below.met, 'dailyDrawdown not met when drawdown (2%) < threshold (5%)');
+
+  // At/above threshold: 6% drawdown on a 5% limit → met
+  const above = dailyDrawdownCondition.evaluate(mkSnap(9_400, 10_000, 5));
+  assert(above.met, 'dailyDrawdown met when drawdown (6%) >= threshold (5%)');
+
+  // Missing data → not met
+  const missing = dailyDrawdownCondition.evaluate({ timestamp: Date.now(), source: 'TICK' });
+  assert(!missing.met, 'dailyDrawdown not met when snapshot data missing');
+}
+
+// Case 6: leverageCap condition
+console.log('\nCase 6: leverageCap condition');
+{
+  function mkLevSnap(leverage: number, maxLeverage: number): EngineSnapshot {
+    return {
+      timestamp: Date.now(),
+      source: 'TICK',
+      portfolioLeverage: leverage,
+      tradingRules: {
+        coins: [],
+        entryTf: '15m',
+        exitTf: '1h',
+        entryTimeframes: ['15m'],
+        emergencyExitTimeframes: ['1h'],
+        engulfingLookbackCandles: 5,
+        fvgRetrace: 0.5,
+        maxLeverage,
+        dailyDrawdown: 5,
+        tpPct: 2,
+        slPct: 1,
+        autoConfirm: false,
+      },
+    };
+  }
+
+  // Under cap: 3× leverage, cap 5× → not met
+  const under = leverageCapCondition.evaluate(mkLevSnap(3, 5));
+  assert(!under.met, 'leverageCap not met when leverage (3) <= max (5)');
+
+  // Over cap: 7× leverage, cap 5× → met
+  const over = leverageCapCondition.evaluate(mkLevSnap(7, 5));
+  assert(over.met, 'leverageCap met when leverage (7) > max (5)');
+
+  // Missing data → not met
+  const missing = leverageCapCondition.evaluate({ timestamp: Date.now(), source: 'TICK' });
+  assert(!missing.met, 'leverageCap not met when snapshot data missing');
 }
 
 console.log(`\nResult: ${passed} passed, ${failed} failed`);
