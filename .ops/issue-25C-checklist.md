@@ -3,10 +3,10 @@
 Статус-машина: ACTIVE / BLOCKED / FALLBACK / SPLIT
 
 ## Current state
-- State: ACTIVE → BLOCKED
-- Reason: >15 минут без нового подтверждённого артефакта после P1c; дальнейший прогресс зависит от внешнего патча/коммита из локального Claude Code Владимира для сверки.
-- Executor: SELF (implementation-first), Claude review optional.
-- Last transition: 2026-02-26 15:23 Europe/Madrid — watchdog pause awaiting external input.
+- State: BLOCKED → ACTIVE
+- Reason: по решению Владимира возвращаемся к стандартному flow без внешнего обмена патчами; продолжаем задачу локально с interactive Claude Code.
+- Executor: Claude Code (Sonnet 4.6) primary + SELF orchestration.
+- Last transition: 2026-02-26 15:39 Europe/Madrid — resume from local Phase 1 backlog.
 
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
@@ -35,8 +35,8 @@
 - [ ] 25C.P1e Smoke-проверка и фиксация артефакта Phase 1 PR
 
 ## Blockers
-- Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by enforced non-interactive mode `claude -p --model sonnet --permission-mode acceptEdits`.
-- External blocker: требуется доступный артефакт для импорта (patch/bundle/PR diff). Сейчас fetch внешней ветки недоступен из этого runtime из-за отсутствия GitHub credentials.
+- Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by короткие шаги + watchdog SPLIT.
+- External blockers: none.
 
 ## Event log
 - 10:53: watchdog сработал (>15m без подтверждённого прогресса), run остановлен, задача декомпозирована.
@@ -57,6 +57,7 @@
 - 14:47: Claude run `tidy-fjord` завершил P1c-изменения (`src/engine/dualRunCompare.ts` + export + invariants case); локальные проверки `npm run check` и `npm run invariants:rule-engine` зелёные.
 - 15:23: watchdog policy сработала (>15m без нового артефакта): активный run отсутствует, состояние переведено в BLOCKED (awaiting external patch/commit from Vladimir local Claude run), 15m reminder должен быть отключён до старта новой активной подзадачи.
 - 15:31: Владимир сообщил о ветке `claude/phase-1-risk-rules-eCrqj` и коммите `e6da750`; попытка fetch из текущего runtime неуспешна (нет GitHub credentials), ожидается patch/bundle/PR diff для локальной верификации.
+- 15:39: принято решение вернуться к локальному исполнению без внешнего обмена патчами; resumed backlog Phase 1 (P1d/P1e).
 
 ## Heartbeat policy for this issue
 Отправлять только при:
