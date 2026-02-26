@@ -3,10 +3,10 @@
 Статус-машина: ACTIVE / BLOCKED / FALLBACK / SPLIT
 
 ## Current state
-- State: BLOCKED → ACTIVE
-- Reason: по решению Владимира возвращаемся к стандартному flow без внешнего обмена патчами; продолжаем задачу локально с interactive Claude Code.
+- State: ACTIVE → SPLIT → ACTIVE
+- Reason: run `sharp-forest` остановлен по watchdog (>15 минут без подтверждённого артефакта); P1d декомпозирован на микро-шаги.
 - Executor: Claude Code (Sonnet 4.6) primary + SELF orchestration.
-- Last transition: 2026-02-26 15:39 Europe/Madrid — resume from local Phase 1 backlog.
+- Last transition: 2026-02-26 20:23 Europe/Madrid — forced split + restart.
 
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
@@ -31,7 +31,10 @@
 - [x] 25C.P1a Добавить engine snapshot builder (минимальный) без изменения runtime-поведения
 - [x] 25C.P1b Добавить risk rule definitions: daily drawdown / leverage / allocation / stale data / symbol allowlist
 - [x] 25C.P1c Подключить dual-run compare (engine decision vs legacy gate result) только в audit/log
-- [ ] 25C.P1d Добавить invariants для preemption и mismatch detection
+- [ ] 25C.P1d1 Добавить invariant: RISK preempts ENTRY в mixed decision set
+- [ ] 25C.P1d2 Добавить invariant: EXIT preempts ENTRY
+- [ ] 25C.P1d3 Добавить invariant: mismatch detection с reason/context
+- [ ] 25C.P1d4 Добавить invariant: negative control exact match
 - [ ] 25C.P1e Smoke-проверка и фиксация артефакта Phase 1 PR
 
 ## Blockers
@@ -58,6 +61,7 @@
 - 15:23: watchdog policy сработала (>15m без нового артефакта): активный run отсутствует, состояние переведено в BLOCKED (awaiting external patch/commit from Vladimir local Claude run), 15m reminder должен быть отключён до старта новой активной подзадачи.
 - 15:31: Владимир сообщил о ветке `claude/phase-1-risk-rules-eCrqj` и коммите `e6da750`; попытка fetch из текущего runtime неуспешна (нет GitHub credentials), ожидается patch/bundle/PR diff для локальной верификации.
 - 15:39: принято решение вернуться к локальному исполнению без внешнего обмена патчами; resumed backlog Phase 1 (P1d/P1e).
+- 20:23: watchdog сработал для `sharp-forest` (>15m без артефакта), run остановлен; P1d декомпозирован до P1d1..P1d4; стартуем новый микро-шаг.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
