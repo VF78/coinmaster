@@ -3,10 +3,10 @@
 Статус-машина: ACTIVE / BLOCKED / FALLBACK / SPLIT
 
 ## Current state
-- State: SPLIT → ACTIVE
-- Reason: после Phase 0 не было нового подтверждённого артефакта >15 минут; выполнен watchdog-split в Phase 1 микро-шаги.
+- State: ACTIVE → BLOCKED
+- Reason: >15 минут без нового подтверждённого артефакта после P1c; дальнейший прогресс зависит от внешнего патча/коммита из локального Claude Code Владимира для сверки.
 - Executor: SELF (implementation-first), Claude review optional.
-- Last transition: 2026-02-26 13:38 Europe/Madrid — forced split + next micro-step start.
+- Last transition: 2026-02-26 15:23 Europe/Madrid — watchdog pause awaiting external input.
 
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
@@ -35,8 +35,8 @@
 - [ ] 25C.P1e Smoke-проверка и фиксация артефакта Phase 1 PR
 
 ## Blockers
-- Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by enforced non-interactive mode `claude -p --permission-mode acceptEdits`.
-- External blockers: none.
+- Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by enforced non-interactive mode `claude -p --model sonnet --permission-mode acceptEdits`.
+- External blocker: ожидается внешний артефакт (patch/commit/branch от локального Claude Code Владимира) для проверки и merge/compare.
 
 ## Event log
 - 10:53: watchdog сработал (>15m без подтверждённого прогресса), run остановлен, задача декомпозирована.
@@ -55,6 +55,7 @@
 - 13:57: Claude run `gentle-sable` завершил P1a-изменения (`src/engine/snapshot.ts` + exports + invariants update); локальные проверки `npm run check` и `npm run invariants:rule-engine` зелёные.
 - 14:28: Claude run `cool-valley` завершил P1b-изменения (risk rule definitions в `src/engine/rules/risk/*` + расширенные invariants); локальные проверки `npm run check` и `npm run invariants:rule-engine` зелёные.
 - 14:47: Claude run `tidy-fjord` завершил P1c-изменения (`src/engine/dualRunCompare.ts` + export + invariants case); локальные проверки `npm run check` и `npm run invariants:rule-engine` зелёные.
+- 15:23: watchdog policy сработала (>15m без нового артефакта): активный run отсутствует, состояние переведено в BLOCKED (awaiting external patch/commit from Vladimir local Claude run), 15m reminder должен быть отключён до старта новой активной подзадачи.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
