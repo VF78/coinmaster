@@ -66,5 +66,14 @@
 Рекомендации исполнения:
 
 1. Декомпозировать работу на микро-шаги с обязательным артефактом (file/diff/commit/test output).
-2. Если шаг не дал артефакт за 10-15 минут — считать stalled, делать SPLIT.
-3. При проблемах interactive-сессии допускается временный one-shot recovery, затем возвращаться в interactive режим.
+2. Watchdog по активности:
+   - **Progress watchdog:** 8 минут без concrete activity (edit/write/bash).
+   - Если есть только inference/thinking поток, даётся 1 extension +4 минуты (итого 12 минут).
+   - После 12 минут без concrete activity: stalled → SPLIT/restart.
+3. **Silent stall:** если нет вообще stdout >90 секунд — считать deadlock, restart немедленно.
+4. **Hard timeout:** 25 минут на один run, затем остановка и декомпозиция.
+5. **Consent-loop detector:** повтор allow-edits prompt / exit code 143 без файловых изменений → немедленный restart; после 2 повторов для того же шага перейти в one-shot recovery.
+6. Restart backoff:
+   - Attempt 1: обычный restart того же шага.
+   - Attempt 2: restart с явным "summarize done + continue from last file".
+   - Attempt 3: one-shot (`claude -p --model sonnet --permission-mode acceptEdits`) на узкий подшаг, затем обратно в interactive flow.

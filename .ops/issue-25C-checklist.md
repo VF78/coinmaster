@@ -40,7 +40,7 @@
 - [ ] 25C.P1e Smoke-проверка и фиксация артефакта Phase 1 PR
 
 ## Blockers
-- Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by короткие шаги + watchdog SPLIT.
+- Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by updated watchdog policy (8/12m progress, 90s silent-stall, 25m hard timeout, consent-loop restarts).
 - External blockers: none.
 
 ## Event log
@@ -66,6 +66,7 @@
 - 20:23: watchdog сработал для `sharp-forest` (>15m без артефакта), run остановлен; P1d декомпозирован до P1d1..P1d4; стартуем новый микро-шаг.
 - 20:38: повторно сработал watchdog для `brisk-falcon` (>15m без артефакта), run остановлен; P1d1 дополнительно декомпозирован до P1d1a/P1d1b; стартуем следующий микро-шаг.
 - 20:53: watchdog сработал для `warm-zephyr` (>15m без артефакта), run остановлен; P1d1b дополнительно декомпозирован до P1d1b.i/P1d1b.ii; стартуем следующий атомарный шаг.
+- 21:00: согласована новая run-policy для Claude Code; дополнительно проведена консультация с Claude по устойчивому режиму (consent-loop/silent-stall/progress watchdog) и правила применены в протоколе.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
