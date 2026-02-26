@@ -288,6 +288,42 @@ console.log('\nCase 9: EXIT preempts ENTRY');
   assert(entryDecision?.reason === 'preempted_by_higher_tier', 'ENTRY suppression reason is preempted_by_higher_tier');
 }
 
+// Case 10: Both-blocked context mismatch — same outcome, different primary reason/context
+console.log('\nCase 10: both-blocked, different primary reason/context');
+{
+  // Legacy reports it blocked due to daily-drawdown; engine fires a leverage-cap rule instead.
+  // Both paths agree the action is blocked, so compareLegacyVsEngine returns no structural mismatch.
+  // The payload details expose the reason discrepancy for audit/logging purposes.
+  const legacyBlockedDrawdown: LegacyGateResult = { allowed: false, reason: 'daily-drawdown' };
+  const leverageCapRule = mkRule('risk.leverage-cap', RuleTier.RISK);
+
+  const ctxDecisions = decideRules(
+    [mkEval(leverageCapRule, 'TICK')],
+    { nowMs: 6_000_000, lastFiredAt: new Map() },
+  );
+  const ctxSummary = summarizeEngineRiskDecisions(ctxDecisions);
+  const ctxMismatches = compareLegacyVsEngine(legacyBlockedDrawdown, ctxSummary);
+  const ctxPayload = formatDualRunMismatchLog(legacyBlockedDrawdown, ctxSummary, ctxMismatches);
+
+  // Both sides agree on the blocked outcome — no structural blocked-boolean mismatch.
+  assert(!ctxPayload.hasMismatch, 'both-blocked: no hasMismatch when blocked boolean agrees');
+  assert(ctxPayload.mismatchCount === 0, 'both-blocked: mismatch count is 0 for same-outcome paths');
+
+  // Engine primary cause differs from legacy reason — context discrepancy visible in payload.
+  assert(ctxSummary.blocked, 'engine summary: blocked true when leverage-cap risk rule fired');
+  assert(
+    ctxPayload.engineFiredRiskRuleIds.length > 0 &&
+      !ctxPayload.engineFiredRiskRuleIds.includes(legacyBlockedDrawdown.reason!),
+    'both-blocked context mismatch: engine fired different primary rule than legacy reason',
+  );
+
+  // Assertion on formatted mismatch payload details: engine primary rule ID differs from legacy reason.
+  assert(
+    ctxPayload.engineFiredRiskRuleIds[0] !== legacyBlockedDrawdown.reason,
+    'payload detail: engineFiredRiskRuleIds[0] exposes different cause from legacy.reason',
+  );
+}
+
 console.log(`\nResult: ${passed} passed, ${failed} failed`);
 
 if (failed > 0) {

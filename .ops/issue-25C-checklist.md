@@ -4,9 +4,9 @@
 
 ## Current state
 - State: ACTIVE → SPLIT → ACTIVE
-- Reason: run `plaid-sable` остановлен по hard-timeout (25m) без коммита; изменения валидированы локально и зафиксированы, переходим к следующему подшагу.
+- Reason: run `calm-willow` остановлен по hard-timeout (25m) без коммита; изменения валидированы локально и зафиксированы, переходим к следующему подшагу.
 - Executor: Claude Code (Sonnet 4.6) primary + SELF orchestration.
-- Last transition: 2026-02-26 22:23 Europe/Madrid — hard-timeout split + restart.
+- Last transition: 2026-02-26 22:53 Europe/Madrid — hard-timeout split + restart.
 
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
@@ -35,7 +35,7 @@
 - [x] 25C.P1d1b.i Добавить skeleton case-блок для RISK preempts ENTRY (без логики)
 - [x] 25C.P1d1b.ii Дописать assertions + run checks + commit
 - [x] 25C.P1d2 Добавить invariant: EXIT preempts ENTRY
-- [ ] 25C.P1d3 Добавить invariant: mismatch detection с reason/context
+- [x] 25C.P1d3 Добавить invariant: mismatch detection с reason/context
 - [ ] 25C.P1d4 Добавить invariant: negative control exact match
 - [ ] 25C.P1e Smoke-проверка и фиксация артефакта Phase 1 PR
 
@@ -70,6 +70,7 @@
 - 21:23: run `gentle-crustacean` остановлен по hard-timeout 25m без коммита; обнаружен partial diff (skeleton Case 8 в invariants), подшаг P1d1b.i засчитан и зафиксирован, продолжаем P1d1b.ii.
 - 21:53: run `salty-prairie` остановлен по hard-timeout 25m; дописанные assertions Case 8 валидированы локально (`npm run check` + `npm run invariants:rule-engine` зелёные), подшаг P1d1b.ii закрыт.
 - 22:23: run `plaid-sable` остановлен по hard-timeout 25m; добавленный Case 9 (EXIT preempts ENTRY) валидирован локально (`npm run check` + `npm run invariants:rule-engine` зелёные), шаг P1d2 закрыт.
+- 22:53: run `calm-willow` остановлен по hard-timeout 25m; добавленный Case 10 (mismatch reason/context coverage) валидирован локально (`npm run check` + `npm run invariants:rule-engine` зелёные), шаг P1d3 закрыт.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
