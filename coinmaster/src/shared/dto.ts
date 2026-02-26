@@ -13,8 +13,16 @@ export interface TradingCoinAllocation {
 
 export interface TradingRulesSettings {
   coins: TradingCoinAllocation[];
+  /** @deprecated use entryTimeframes[] — kept for back-compat serialisation */
   entryTf: TradingRulesTimeframe;
+  /** @deprecated use emergencyExitTimeframes[] — kept for back-compat serialisation */
   exitTf: TradingRulesTimeframe;
+  /** Multi-timeframe entry signals (≥1 required). */
+  entryTimeframes: TradingRulesTimeframe[];
+  /** Multi-timeframe emergency-exit signals (≥1 required). */
+  emergencyExitTimeframes: TradingRulesTimeframe[];
+  /** Lookback window for engulfing / breakout detection (candles). */
+  engulfingLookbackCandles: number;
   fvgRetrace: number;
   maxLeverage: number;
   dailyDrawdown: number;

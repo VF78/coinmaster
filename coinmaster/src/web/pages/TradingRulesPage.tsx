@@ -17,8 +17,9 @@ export function TradingRulesPage() {
   const defaults = cloneTradingRulesDefaults();
 
   const [coins, setCoins] = useState<TradingCoinAllocation[]>(defaults.coins);
-  const [entryTf, setEntryTf] = useState<TradingRulesTimeframe>(defaults.entryTf);
-  const [exitTf, setExitTf] = useState<TradingRulesTimeframe>(defaults.exitTf);
+  const [entryTimeframes, setEntryTimeframes] = useState<TradingRulesTimeframe[]>(defaults.entryTimeframes);
+  const [emergencyExitTimeframes, setEmergencyExitTimeframes] = useState<TradingRulesTimeframe[]>(defaults.emergencyExitTimeframes);
+  const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
   const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
   const [maxLeverage, setMaxLeverage] = useState(defaults.maxLeverage);
   const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
@@ -38,8 +39,9 @@ export function TradingRulesPage() {
   function applyRules(rules: TradingRulesSettings) {
     const normalized = normalizeTradingRules(rules);
     setCoins(normalized.coins);
-    setEntryTf(normalized.entryTf);
-    setExitTf(normalized.exitTf);
+    setEntryTimeframes(normalized.entryTimeframes);
+    setEmergencyExitTimeframes(normalized.emergencyExitTimeframes);
+    setEngulfingLookbackCandles(normalized.engulfingLookbackCandles);
     setFvgRetrace(normalized.fvgRetrace);
     setMaxLeverage(normalized.maxLeverage);
     setDailyDrawdown(normalized.dailyDrawdown);
@@ -75,8 +77,9 @@ export function TradingRulesPage() {
   function currentRules(): TradingRulesSettings {
     return normalizeTradingRules({
       coins,
-      entryTf,
-      exitTf,
+      entryTimeframes,
+      emergencyExitTimeframes,
+      engulfingLookbackCandles,
       fvgRetrace,
       maxLeverage,
       dailyDrawdown,
@@ -162,13 +165,19 @@ export function TradingRulesPage() {
 
       <Card title="Timeframe Selection" actions={<Badge tone="neutral">Entry / Exit</Badge>}>
         <div className="rules-section">
-          <p className="rules-label">Entry timeframe</p>
+          <p className="rules-label">Entry timeframes (multi-select)</p>
           <div className="rules-btn-group">
             {TIMEFRAMES.map(tf => (
               <Button
                 key={tf}
-                variant={entryTf === tf ? 'primary' : 'secondary'}
-                onClick={() => setEntryTf(tf)}
+                variant={entryTimeframes.includes(tf) ? 'primary' : 'secondary'}
+                onClick={() => setEntryTimeframes(prev => {
+                  if (prev.includes(tf)) {
+                    const next = prev.filter(t => t !== tf);
+                    return next.length > 0 ? next : prev;
+                  }
+                  return [...prev, tf];
+                })}
               >
                 {tf}
               </Button>
@@ -177,18 +186,38 @@ export function TradingRulesPage() {
         </div>
 
         <div className="rules-section">
-          <p className="rules-label">Exit timeframe</p>
+          <p className="rules-label">Emergency-exit timeframes (multi-select)</p>
           <div className="rules-btn-group">
             {TIMEFRAMES.map(tf => (
               <Button
                 key={tf}
-                variant={exitTf === tf ? 'primary' : 'secondary'}
-                onClick={() => setExitTf(tf)}
+                variant={emergencyExitTimeframes.includes(tf) ? 'primary' : 'secondary'}
+                onClick={() => setEmergencyExitTimeframes(prev => {
+                  if (prev.includes(tf)) {
+                    const next = prev.filter(t => t !== tf);
+                    return next.length > 0 ? next : prev;
+                  }
+                  return [...prev, tf];
+                })}
               >
                 {tf}
               </Button>
             ))}
           </div>
+        </div>
+
+        <div className="rules-section">
+          <label className="rules-label">
+            Engulfing Lookback: <strong>{engulfingLookbackCandles}</strong> candles
+          </label>
+          <input
+            type="number"
+            min={1}
+            max={500}
+            value={engulfingLookbackCandles}
+            onChange={e => setEngulfingLookbackCandles(clampNumber(Number(e.target.value), 1, 500))}
+            className="rules-input rules-input--sm"
+          />
         </div>
 
         <div className="rules-section">

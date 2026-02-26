@@ -11,6 +11,9 @@ export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   ],
   entryTf: '15m',
   exitTf: '1h',
+  entryTimeframes: ['15m'],
+  emergencyExitTimeframes: ['1h'],
+  engulfingLookbackCandles: 30,
   fvgRetrace: 50,
   maxLeverage: 5,
   dailyDrawdown: 3,
@@ -29,6 +32,17 @@ function normalizeTimeframe(value: unknown, fallback: TradingRulesTimeframe): Tr
   const tf = String(value ?? '').toLowerCase();
   const matched = TIMEFRAMES.find((x) => x.toLowerCase() === tf);
   return matched ?? fallback;
+}
+
+function normalizeTimeframeArray(value: unknown, fallback: TradingRulesTimeframe[]): TradingRulesTimeframe[] {
+  if (!Array.isArray(value) || value.length === 0) return [...fallback];
+  const result: TradingRulesTimeframe[] = [];
+  for (const item of value) {
+    const tf = String(item ?? '').toLowerCase();
+    const matched = TIMEFRAMES.find((x) => x.toLowerCase() === tf);
+    if (matched && !result.includes(matched)) result.push(matched);
+  }
+  return result.length > 0 ? result : [...fallback];
 }
 
 export function cloneTradingRulesDefaults(): TradingRulesSettings {
@@ -68,6 +82,16 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
 
   base.entryTf = normalizeTimeframe(raw.entryTf, base.entryTf);
   base.exitTf = normalizeTimeframe(raw.exitTf, base.exitTf);
+
+  // ── Multi-timeframe arrays (back-compat: migrate from scalar if arrays absent) ──
+  base.entryTimeframes = normalizeTimeframeArray(raw.entryTimeframes, [base.entryTf]);
+  base.emergencyExitTimeframes = normalizeTimeframeArray(raw.emergencyExitTimeframes, [base.exitTf]);
+  base.engulfingLookbackCandles = clampNumber(raw.engulfingLookbackCandles, 1, 500, base.engulfingLookbackCandles);
+
+  // Keep scalar fields in sync with first element of array
+  base.entryTf = base.entryTimeframes[0];
+  base.exitTf = base.emergencyExitTimeframes[0];
+
   base.fvgRetrace = clampNumber(raw.fvgRetrace, 10, 90, base.fvgRetrace);
   base.maxLeverage = clampNumber(raw.maxLeverage, 1, 50, base.maxLeverage);
   base.dailyDrawdown = clampNumber(raw.dailyDrawdown, 0, 100, base.dailyDrawdown);
