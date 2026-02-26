@@ -21,7 +21,9 @@
     "ops:smoke": "bash ./scripts/preflight-smoke.sh",
     "invariants:trading-rules": "tsx scripts/invariants-trading-rules.ts",
     "invariants:allocation-sizing": "tsx scripts/invariants-allocation-sizing.ts",
-    "invariants:engulfing": "tsx scripts/invariants-engulfing.ts"
+    "invariants:engulfing": "tsx scripts/invariants-engulfing.ts",
+    "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts",
+    "invariants:phase1-dualrun": "tsx scripts/phase1-dualrun-smoke.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
