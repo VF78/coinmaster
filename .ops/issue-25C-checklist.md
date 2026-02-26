@@ -4,9 +4,9 @@
 
 ## Current state
 - State: ACTIVE → SPLIT → ACTIVE
-- Reason: run `sharp-forest` остановлен по watchdog (>15 минут без подтверждённого артефакта); P1d декомпозирован на микро-шаги.
+- Reason: run `brisk-falcon` остановлен по watchdog (>15 минут без подтверждённого артефакта); P1d1 декомпозирован на ещё более мелкие шаги.
 - Executor: Claude Code (Sonnet 4.6) primary + SELF orchestration.
-- Last transition: 2026-02-26 20:23 Europe/Madrid — forced split + restart.
+- Last transition: 2026-02-26 20:38 Europe/Madrid — forced split + restart.
 
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
@@ -31,7 +31,8 @@
 - [x] 25C.P1a Добавить engine snapshot builder (минимальный) без изменения runtime-поведения
 - [x] 25C.P1b Добавить risk rule definitions: daily drawdown / leverage / allocation / stale data / symbol allowlist
 - [x] 25C.P1c Подключить dual-run compare (engine decision vs legacy gate result) только в audit/log
-- [ ] 25C.P1d1 Добавить invariant: RISK preempts ENTRY в mixed decision set
+- [ ] 25C.P1d1a Stabilize Claude interactive session (consent/edits), без код-изменений
+- [ ] 25C.P1d1b Добавить invariant: RISK preempts ENTRY в mixed decision set
 - [ ] 25C.P1d2 Добавить invariant: EXIT preempts ENTRY
 - [ ] 25C.P1d3 Добавить invariant: mismatch detection с reason/context
 - [ ] 25C.P1d4 Добавить invariant: negative control exact match
@@ -62,6 +63,7 @@
 - 15:31: Владимир сообщил о ветке `claude/phase-1-risk-rules-eCrqj` и коммите `e6da750`; попытка fetch из текущего runtime неуспешна (нет GitHub credentials), ожидается patch/bundle/PR diff для локальной верификации.
 - 15:39: принято решение вернуться к локальному исполнению без внешнего обмена патчами; resumed backlog Phase 1 (P1d/P1e).
 - 20:23: watchdog сработал для `sharp-forest` (>15m без артефакта), run остановлен; P1d декомпозирован до P1d1..P1d4; стартуем новый микро-шаг.
+- 20:38: повторно сработал watchdog для `brisk-falcon` (>15m без артефакта), run остановлен; P1d1 дополнительно декомпозирован до P1d1a/P1d1b; стартуем следующий микро-шаг.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
