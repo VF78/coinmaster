@@ -3,10 +3,10 @@
 Статус-машина: ACTIVE / BLOCKED / FALLBACK / SPLIT
 
 ## Current state
-- State: SPLIT → FALLBACK(ACTIVE)
-- Reason: Claude run `kind-summit` остановлен по watchdog (>15 минут без подтверждённого артефакта) + повторяющийся code 143 на interactive allow-edits prompt.
-- Executor: SELF fallback (manual docs delivery) with later Claude review when CLI stabilizes.
-- Last transition: 2026-02-26 12:23 Europe/Madrid — forced split + fallback activation.
+- State: ACTIVE
+- Reason: архитектурный подход согласован с Владимиром; стартовала реализация Phase 0 (engine foundation).
+- Executor: SELF (implementation-first), Claude review optional.
+- Last transition: 2026-02-26 13:57 Europe/Madrid — implementation GO approved.
 
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
@@ -18,9 +18,9 @@
 - [x] 25C.A2 Заполнить rule model (conditions / triggers / actions / priorities)
 - [ ] 25C.A3 Заполнить lifecycle (evaluate → decide → act → audit), idempotency и observability guarantees
 - [ ] 25C.A4 Зафиксировать conflict-resolution policy и migration plan (3–4 шага)
-- [ ] 25C.A5 Обновить checklist: implementation BLOCKED до архитектурного апрува
+- [x] 25C.A5 Обновить checklist: implementation BLOCKED до архитектурного апрува
 
-### 25C.1 implementation track (blocked until architecture approved)
+### 25C.1 implementation track (active after architecture approval)
 - [ ] 25C.1a Найти точку server-path, где безопасно подключить trigger под feature flag
 - [ ] 25C.1b Протянуть данные из evaluateMultiTf до точки входа
 - [ ] 25C.1c Добавить guard/feature-flag condition + fail-safe ветку
@@ -28,8 +28,8 @@
 - [ ] 25C.1e Прогон тестов и фиксация артефакта
 
 ## Blockers
-- Operational blocker: Claude interactive allow-edits prompt периодически роняет run (code 143); mitigated by SELF fallback for architecture docs.
-- Governance blocker: implementation intentionally blocked until architecture doc approved.
+- Operational blocker: Claude interactive allow-edits prompt периодически роняет run (code 143); mitigated by SELF-first implementation.
+- External blockers: none.
 
 ## Event log
 - 10:53: watchdog сработал (>15m без подтверждённого прогресса), run остановлен, задача декомпозирована.
@@ -41,6 +41,8 @@
 - 12:23: в FALLBACK SELF создан `.ops/issue-25C-architecture.md` (skeleton: title/scope/section headers/TODO markers); A1a+A1b закрыты.
 - 12:24: docs-only commit `3e8383e` зафиксировал skeleton architecture doc; A1c закрыт.
 - 12:38: повторно подтверждён `kind-sum` code 143; выполнение продолжено в FALLBACK SELF, закрыт шаг A2 (rule model).
+- 13:57: Владимир подтвердил архитектурные рекомендации и дал GO на реализацию.
+- 14:04: Phase 0 выполнен: добавлен `src/engine/*` foundation + `scripts/invariants-rule-engine.ts`, commit `28eabee`.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
