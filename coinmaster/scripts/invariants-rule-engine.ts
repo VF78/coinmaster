@@ -324,6 +324,37 @@ console.log('\nCase 10: both-blocked, different primary reason/context');
   );
 }
 
+// Case 11: Negative control — full dual-run parity (blocked + primary risk ID exact match)
+console.log('\nCase 11: negative control — full dual-run parity');
+{
+  // Both legacy and engine agree on the same outcome AND the same primary cause.
+  // This is the strictest agreement scenario: allowed/blocked boolean aligns AND
+  // legacy.reason matches the engine's primary firedRiskRuleId exactly.
+  const ruleId = 'risk.daily-drawdown';
+  const legacyExact: LegacyGateResult = { allowed: false, reason: ruleId };
+  const exactRule = mkRule(ruleId, RuleTier.RISK);
+
+  const exactDecisions = decideRules(
+    [mkEval(exactRule, 'TICK')],
+    { nowMs: 7_000_000, lastFiredAt: new Map() },
+  );
+  const exactSummary = summarizeEngineRiskDecisions(exactDecisions);
+  const exactMismatches = compareLegacyVsEngine(legacyExact, exactSummary);
+  const exactPayload = formatDualRunMismatchLog(legacyExact, exactSummary, exactMismatches);
+
+  assert(exactMismatches.length === 0, 'negative control: zero raw mismatches when fully aligned');
+  assert(!exactPayload.hasMismatch, 'negative control: hasMismatch is false when fully aligned');
+  assert(exactPayload.mismatchCount === 0, 'negative control: mismatchCount is 0');
+  assert(
+    !exactPayload.legacyAllowed && exactPayload.engineBlocked,
+    'negative control: both sides agree on blocked outcome',
+  );
+  assert(
+    exactPayload.engineFiredRiskRuleIds[0] === legacyExact.reason,
+    'negative control: primary engine risk rule ID matches legacy reason exactly',
+  );
+}
+
 console.log(`\nResult: ${passed} passed, ${failed} failed`);
 
 if (failed > 0) {
