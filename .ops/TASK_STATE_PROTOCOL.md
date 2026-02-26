@@ -61,7 +61,9 @@
 
 Чтобы избежать interactive consent-зависаний и `code 143`, использовать по умолчанию:
 
-- `claude -p --permission-mode acceptEdits "..."`
+- `claude -p --model sonnet --permission-mode acceptEdits "..."`
+
+Модель по умолчанию для всех задач Coinmaster: **Sonnet 4.6** (не Opus).
 
 Правила исполнения:
 
