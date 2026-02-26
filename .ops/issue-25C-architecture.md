@@ -13,10 +13,40 @@
 - TODO: list non-deterministic or timing-sensitive branches.
 
 ## Unified Rule Model
-- TODO: define canonical `Condition` schema.
-- TODO: define canonical `Trigger` schema.
-- TODO: define canonical `Action` schema.
-- TODO: define priority levels and preemption rules.
+
+Canonical contracts (engine-internal):
+
+- `Condition`
+  - `id: string` — stable identifier.
+  - `kind: "signal" | "risk" | "safety" | "state"`.
+  - `source: "market" | "account" | "rules" | "system"`.
+  - `expr: object` — normalized predicate payload (pure, side-effect free).
+  - `window?: { lookbackBars?: number; lookbackMs?: number }`.
+  - `enabled: boolean`.
+
+- `Trigger`
+  - `id: string`.
+  - `when: string[]` — list of `Condition.id` that must be true (AND semantics by default).
+  - `mode: "edge" | "level"` (`edge` = on state transition; `level` = while true).
+  - `cooldownMs?: number`.
+  - `debounceMs?: number`.
+  - `priority: number` (higher wins).
+  - `scope: "entry" | "exit" | "risk" | "ops"`.
+  - `enabled: boolean`.
+
+- `Action`
+  - `id: string`.
+  - `kind: "place_order" | "cancel_order" | "close_position" | "set_levels" | "block_trading" | "notify" | "audit_only"`.
+  - `params: object` — action payload.
+  - `idempotencyKeyTemplate: string`.
+  - `sideEffects: "none" | "exchange" | "state" | "notification"`.
+
+Priority / preemption policy:
+1. `safety` actions preempt all.
+2. `risk` actions preempt `entry` and non-safety `ops`.
+3. `exit` actions preempt `entry` for same symbol.
+4. Equal-priority ties resolve by deterministic order: `(scope, priority desc, trigger.id asc)`.
+5. One symbol cannot execute conflicting exchange actions in the same decision tick; loser actions are audited as `suppressed`.
 
 ## Execution Lifecycle (Evaluate → Decide → Act → Audit)
 - TODO: evaluate stage contract and inputs.
