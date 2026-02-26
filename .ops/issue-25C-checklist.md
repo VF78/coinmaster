@@ -8,6 +8,12 @@
 - Executor: Claude Code (Sonnet 4.6) primary + SELF orchestration.
 - Last transition: 2026-02-26 22:53 Europe/Madrid — hard-timeout split + restart.
 
+## Current priorities (strict order)
+1. **P1d4** — invariant: negative-control exact match
+2. **P1e** — phase-1 smoke validation + final Phase 1 artifact commit
+3. **P1d1a** — optional cleanup of interactive consent stabilization notes
+4. **A3/A4 docs** — only after Phase 1 close
+
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
 - [ ] 25C.A0 Пройти Claude interactive consent (allow-edits) и зафиксировать readiness
