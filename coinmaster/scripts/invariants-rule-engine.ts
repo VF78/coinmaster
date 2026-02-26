@@ -269,6 +269,25 @@ console.log('\nCase 8: RISK preempts ENTRY in mixed decision set');
   );
 }
 
+// Case 9: EXIT preempts ENTRY
+console.log('\nCase 9: EXIT preempts ENTRY');
+{
+  const exit = mkRule('exit.tp-hit', RuleTier.EXIT);
+  const entry = mkRule('entry.engulfing', RuleTier.ENTRY);
+
+  const decisions = decideRules(
+    [mkEval(exit, 'TICK'), mkEval(entry, 'TICK')],
+    { nowMs: 4_000_000, lastFiredAt: new Map() },
+  );
+
+  const exitDecision = findDecision(decisions, exit.id);
+  const entryDecision = findDecision(decisions, entry.id);
+
+  assert(exitDecision?.action === 'FIRE', 'EXIT rule fires');
+  assert(entryDecision?.action === 'SUPPRESSED', 'ENTRY rule suppressed by EXIT');
+  assert(entryDecision?.reason === 'preempted_by_higher_tier', 'ENTRY suppression reason is preempted_by_higher_tier');
+}
+
 console.log(`\nResult: ${passed} passed, ${failed} failed`);
 
 if (failed > 0) {
