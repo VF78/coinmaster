@@ -3,10 +3,10 @@
 Статус-машина: ACTIVE / BLOCKED / FALLBACK / SPLIT
 
 ## Current state
-- State: ACTIVE
-- Reason: архитектурный подход согласован с Владимиром; стартовала реализация Phase 0 (engine foundation).
+- State: SPLIT → ACTIVE
+- Reason: после Phase 0 не было нового подтверждённого артефакта >15 минут; выполнен watchdog-split в Phase 1 микро-шаги.
 - Executor: SELF (implementation-first), Claude review optional.
-- Last transition: 2026-02-26 13:57 Europe/Madrid — implementation GO approved.
+- Last transition: 2026-02-26 13:38 Europe/Madrid — forced split + next micro-step start.
 
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
@@ -27,6 +27,13 @@
 - [ ] 25C.1d Добавить targeted test на wiring
 - [ ] 25C.1e Прогон тестов и фиксация артефакта
 
+### 25C.P1 Phase 1 (RISK rules in dual-run)
+- [ ] 25C.P1a Добавить engine snapshot builder (минимальный) без изменения runtime-поведения
+- [ ] 25C.P1b Добавить risk rule definitions: daily drawdown / leverage / allocation / stale data / symbol allowlist
+- [ ] 25C.P1c Подключить dual-run compare (engine decision vs legacy gate result) только в audit/log
+- [ ] 25C.P1d Добавить invariants для preemption и mismatch detection
+- [ ] 25C.P1e Smoke-проверка и фиксация артефакта Phase 1 PR
+
 ## Blockers
 - Operational blocker: Claude interactive allow-edits prompt периодически роняет run (code 143); mitigated by SELF-first implementation.
 - External blockers: none.
@@ -43,6 +50,7 @@
 - 12:38: повторно подтверждён `kind-sum` code 143; выполнение продолжено в FALLBACK SELF, закрыт шаг A2 (rule model).
 - 13:57: Владимир подтвердил архитектурные рекомендации и дал GO на реализацию.
 - 14:04: Phase 0 выполнен: добавлен `src/engine/*` foundation + `scripts/invariants-rule-engine.ts`, commit `28eabee`.
+- 13:38: watchdog reminder зафиксировал >15m без нового артефакта; выполнен forced split в Phase 1 (P1a..P1e), стартован следующий микро-шаг.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
