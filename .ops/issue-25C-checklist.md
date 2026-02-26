@@ -4,9 +4,9 @@
 
 ## Current state
 - State: ACTIVE → SPLIT → ACTIVE
-- Reason: run `gentle-crustacean` остановлен по hard-timeout (25m) без коммита; зафиксирован частичный артефакт и продолжаем следующим подшагом.
+- Reason: run `salty-prairie` остановлен по hard-timeout (25m) без коммита; изменения валидированы локально и зафиксированы, переходим к следующему подшагу.
 - Executor: Claude Code (Sonnet 4.6) primary + SELF orchestration.
-- Last transition: 2026-02-26 21:23 Europe/Madrid — hard-timeout split + restart.
+- Last transition: 2026-02-26 21:53 Europe/Madrid — hard-timeout split + restart.
 
 ## Architecture-first track (approved direction)
 ### 25C.A Unified trading-rules engine architecture
@@ -33,7 +33,7 @@
 - [x] 25C.P1c Подключить dual-run compare (engine decision vs legacy gate result) только в audit/log
 - [ ] 25C.P1d1a Stabilize Claude interactive session (consent/edits), без код-изменений
 - [x] 25C.P1d1b.i Добавить skeleton case-блок для RISK preempts ENTRY (без логики)
-- [ ] 25C.P1d1b.ii Дописать assertions + run checks + commit
+- [x] 25C.P1d1b.ii Дописать assertions + run checks + commit
 - [ ] 25C.P1d2 Добавить invariant: EXIT preempts ENTRY
 - [ ] 25C.P1d3 Добавить invariant: mismatch detection с reason/context
 - [ ] 25C.P1d4 Добавить invariant: negative control exact match
@@ -68,6 +68,7 @@
 - 20:53: watchdog сработал для `warm-zephyr` (>15m без артефакта), run остановлен; P1d1b дополнительно декомпозирован до P1d1b.i/P1d1b.ii; стартуем следующий атомарный шаг.
 - 21:00: согласована новая run-policy для Claude Code; дополнительно проведена консультация с Claude по устойчивому режиму (consent-loop/silent-stall/progress watchdog) и правила применены в протоколе.
 - 21:23: run `gentle-crustacean` остановлен по hard-timeout 25m без коммита; обнаружен partial diff (skeleton Case 8 в invariants), подшаг P1d1b.i засчитан и зафиксирован, продолжаем P1d1b.ii.
+- 21:53: run `salty-prairie` остановлен по hard-timeout 25m; дописанные assertions Case 8 валидированы локально (`npm run check` + `npm run invariants:rule-engine` зелёные), подшаг P1d1b.ii закрыт.
 
 ## Heartbeat policy for this issue
 Отправлять только при:

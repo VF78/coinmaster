@@ -243,12 +243,30 @@ console.log('\nCase 7: dual-run compare helpers');
 // Case 8: RISK preempts ENTRY in mixed decision set
 console.log('\nCase 8: RISK preempts ENTRY in mixed decision set');
 {
-  // TODO: construct a mixed evaluated-rule set containing at least one RISK-tier rule
-  //       and at least one ENTRY-tier rule, both with allMet=true.
-  // TODO: call decideRules() with the mixed set.
-  // TODO: assert that every ENTRY-tier rule decision has action === 'SUPPRESSED'.
-  // TODO: assert that every RISK-tier rule decision has action === 'FIRE'.
-  // TODO: assert suppression reason for ENTRY rules is 'preempted_by_higher_tier'.
+  const riskA = mkRule('risk.drawdown', RuleTier.RISK);
+  const riskB = mkRule('risk.leverage', RuleTier.RISK);
+  const entryA = mkRule('entry.engulfing', RuleTier.ENTRY);
+  const entryB = mkRule('entry.fvg', RuleTier.ENTRY);
+
+  const decisions = decideRules(
+    [
+      mkEval(riskA, 'TICK'),
+      mkEval(riskB, 'TICK'),
+      mkEval(entryA, 'TICK'),
+      mkEval(entryB, 'TICK'),
+    ],
+    { nowMs: 3_000_000, lastFiredAt: new Map() },
+  );
+
+  const riskDecisions = decisions.filter((d) => d.ruleId === riskA.id || d.ruleId === riskB.id);
+  const entryDecisions = decisions.filter((d) => d.ruleId === entryA.id || d.ruleId === entryB.id);
+
+  assert(riskDecisions.every((d) => d.action === 'FIRE'), 'all RISK-tier rules fire');
+  assert(entryDecisions.every((d) => d.action === 'SUPPRESSED'), 'all ENTRY-tier rules are suppressed');
+  assert(
+    entryDecisions.every((d) => d.reason === 'preempted_by_higher_tier'),
+    'all ENTRY suppression reasons are preempted_by_higher_tier',
+  );
 }
 
 console.log(`\nResult: ${passed} passed, ${failed} failed`);
