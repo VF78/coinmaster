@@ -6,3 +6,4 @@ export * from './act.js';
 export * from './audit.js';
 export * from './ruleEngine.js';
 export * from './snapshot.js';
+export * from './dualRunCompare.js';

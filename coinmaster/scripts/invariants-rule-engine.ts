@@ -13,6 +13,12 @@ import { computePortfolioLeverage, type EngineSnapshot } from '../src/engine/sna
 import { ActionType, RuleTier, type Rule, type RuleEngineSnapshot, type TriggerSource } from '../src/engine/types.js';
 import { dailyDrawdownCondition } from '../src/engine/rules/risk/dailyDrawdown.js';
 import { leverageCapCondition } from '../src/engine/rules/risk/leverageCap.js';
+import {
+  compareLegacyVsEngine,
+  formatDualRunMismatchLog,
+  summarizeEngineRiskDecisions,
+  type LegacyGateResult,
+} from '../src/engine/dualRunCompare.js';
 
 let passed = 0;
 let failed = 0;
@@ -206,6 +212,32 @@ console.log('\nCase 6: leverageCap condition');
   // Missing data → not met
   const missing = leverageCapCondition.evaluate({ timestamp: Date.now(), source: 'TICK' });
   assert(!missing.met, 'leverageCap not met when snapshot data missing');
+}
+
+// Case 7: dual-run compare helpers
+console.log('\nCase 7: dual-run compare helpers');
+{
+  // equal paths → no mismatch
+  const legacyBlocked: LegacyGateResult = { allowed: false, reason: 'daily-drawdown' };
+  const riskRule = mkRule('risk.daily-drawdown', RuleTier.RISK);
+  const decisions = decideRules([mkEval(riskRule, 'TICK')], { nowMs: 5_000_000, lastFiredAt: new Map() });
+  const summary = summarizeEngineRiskDecisions(decisions);
+  const mismatches = compareLegacyVsEngine(legacyBlocked, summary);
+  const payload = formatDualRunMismatchLog(legacyBlocked, summary, mismatches);
+
+  assert(!payload.hasMismatch, 'no mismatch when legacy blocked and engine risk fired');
+  assert(payload.mismatchCount === 0, 'mismatch count is 0 for equal paths');
+  assert(summary.blocked, 'summarize: blocked true when risk rule fired');
+  assert(summary.firedRiskRuleIds.includes('risk.daily-drawdown'), 'summarize: firedRiskRuleIds contains fired rule');
+
+  // different paths → mismatch detected
+  const legacyAllowed: LegacyGateResult = { allowed: true };
+  const mismatchResult = compareLegacyVsEngine(legacyAllowed, summary);
+  const mismatchPayload = formatDualRunMismatchLog(legacyAllowed, summary, mismatchResult);
+
+  assert(mismatchPayload.hasMismatch, 'mismatch detected when legacy allowed but engine risk fired');
+  assert(mismatchPayload.mismatchCount === 1, 'exactly one mismatch field reported');
+  assert(mismatchPayload.mismatches[0]?.field === 'blocked', 'mismatch field is "blocked"');
 }
 
 console.log(`\nResult: ${passed} passed, ${failed} failed`);
