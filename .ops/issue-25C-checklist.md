@@ -36,7 +36,7 @@
 
 ## Blockers
 - Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by enforced non-interactive mode `claude -p --model sonnet --permission-mode acceptEdits`.
-- External blocker: ожидается внешний артефакт (patch/commit/branch от локального Claude Code Владимира) для проверки и merge/compare.
+- External blocker: требуется доступный артефакт для импорта (patch/bundle/PR diff). Сейчас fetch внешней ветки недоступен из этого runtime из-за отсутствия GitHub credentials.
 
 ## Event log
 - 10:53: watchdog сработал (>15m без подтверждённого прогресса), run остановлен, задача декомпозирована.
@@ -56,6 +56,7 @@
 - 14:28: Claude run `cool-valley` завершил P1b-изменения (risk rule definitions в `src/engine/rules/risk/*` + расширенные invariants); локальные проверки `npm run check` и `npm run invariants:rule-engine` зелёные.
 - 14:47: Claude run `tidy-fjord` завершил P1c-изменения (`src/engine/dualRunCompare.ts` + export + invariants case); локальные проверки `npm run check` и `npm run invariants:rule-engine` зелёные.
 - 15:23: watchdog policy сработала (>15m без нового артефакта): активный run отсутствует, состояние переведено в BLOCKED (awaiting external patch/commit from Vladimir local Claude run), 15m reminder должен быть отключён до старта новой активной подзадачи.
+- 15:31: Владимир сообщил о ветке `claude/phase-1-risk-rules-eCrqj` и коммите `e6da750`; попытка fetch из текущего runtime неуспешна (нет GitHub credentials), ожидается patch/bundle/PR diff для локальной верификации.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
