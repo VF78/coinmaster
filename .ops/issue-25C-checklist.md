@@ -14,7 +14,7 @@
 - [x] 25C.A0b Активировать fallback SELF для docs, если Claude CLI unstable (code 143)
 - [x] 25C.A1a Создать файл `.ops/issue-25C-architecture.md` с title + scope
 - [x] 25C.A1b Добавить только section headers + TODO markers (без deep analysis)
-- [ ] 25C.A1c Сделать docs-only commit для skeleton
+- [x] 25C.A1c Сделать docs-only commit для skeleton
 - [ ] 25C.A2 Заполнить rule model (conditions / triggers / actions / priorities)
 - [ ] 25C.A3 Заполнить lifecycle (evaluate → decide → act → audit), idempotency и observability guarantees
 - [ ] 25C.A4 Зафиксировать conflict-resolution policy и migration plan (3–4 шага)
@@ -39,6 +39,7 @@
 - 12:08: зафиксирован `brisk-co` code 143 (interactive allow-edits prompt), `amber-nudibranch` остановлен по watchdog; добавлен отдельный A0 handshake-step.
 - 12:23: `kind-summit` остановлен по watchdog без артефакта; активирован FALLBACK SELF для A1 (docs-first), чтобы снять зависание.
 - 12:23: в FALLBACK SELF создан `.ops/issue-25C-architecture.md` (skeleton: title/scope/section headers/TODO markers); A1a+A1b закрыты.
+- 12:24: docs-only commit `3e8383e` зафиксировал skeleton architecture doc; A1c закрыт.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
