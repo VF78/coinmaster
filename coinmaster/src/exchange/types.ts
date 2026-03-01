@@ -113,7 +113,8 @@ export type TradingErrorCode =
   | 'allocation_check_unavailable'
   | 'stale_market_data'
   | 'auth_required'
-  | 'allocation_sizing_failed';
+  | 'allocation_sizing_failed'
+  | 'no_engulfing_entry_signal';
 
 export interface ExchangeCapabilities {
   realtimeMids: boolean;

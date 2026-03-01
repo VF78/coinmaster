@@ -20,7 +20,6 @@ import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { Candle, CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 import { evaluateMultiTf } from '../core/engulfingEvaluator.js';
-import type { MultiTfEngulfingResult } from '../core/engulfingEvaluator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -607,7 +606,16 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
   try {
     const effectiveRules = rulesCache.getEffectiveRules();
     const raw = effectiveRules.raw;
-    if (!raw) return next(); // env fallback — skip gate
+
+    // Fail-safe: rules unavailable => allow through, but audit explicit reason.
+    if (!raw) {
+      logRiskGateAudit({
+        gate: 'multi_tf_engulfing',
+        passed: true,
+        reason: 'rules_unavailable_failsafe',
+      });
+      return next();
+    }
 
     const symbol = normalizeSymbol(body.symbol ?? LIVE_SYMBOL);
     const lookback = raw.engulfingLookbackCandles ?? 30;
@@ -616,9 +624,10 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
 
     const allTfs = new Set([...entryTfs, ...exitTfs]);
     const candlesByTf = new Map<TradingRulesTimeframe, Candle[]>();
+    const fetchFailedTfs: TradingRulesTimeframe[] = [];
 
     const now = Date.now();
-    const minCandles = lookback + 5; // small buffer
+    const minCandles = lookback + 5;
 
     await Promise.all([...allTfs].map(async (tf) => {
       try {
@@ -632,9 +641,21 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
         });
         candlesByTf.set(tf, candles);
       } catch (err) {
+        fetchFailedTfs.push(tf);
         logger.warn({ component: 'engulfing-gate', tf, err }, 'candle fetch failed for tf');
       }
     }));
+
+    // Fail-safe: data fetch failed => allow through, but audit explicit reason.
+    if (fetchFailedTfs.length > 0) {
+      logRiskGateAudit({
+        gate: 'multi_tf_engulfing',
+        passed: true,
+        reason: 'candle_fetch_error_failsafe',
+        details: { symbol, failedTimeframes: fetchFailedTfs },
+      });
+      return next();
+    }
 
     const result = evaluateMultiTf(candlesByTf, {
       lookbackCandles: lookback,
@@ -645,17 +666,43 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
     // Attach result for downstream handlers to inspect
     (req as any)._engulfingResult = result;
 
-    // Gate: if entry signals required but none detected, log but allow through
-    // (soft gate — logged for observability; hard blocking is a future phase)
+    // Hard gate under feature-flag: no entry signal => block order.
     if (!result.anyEntry) {
-      logger.info(
-        { component: 'engulfing-gate', symbol, signals: result.entry.map((s) => ({ tf: s.timeframe, detected: s.detected, reason: s.reason })) },
-        'no engulfing entry signal detected (soft gate — order allowed)',
-      );
+      logRiskGateAudit({
+        gate: 'multi_tf_engulfing',
+        passed: false,
+        reason: 'no_engulfing_entry_signal',
+        details: {
+          symbol,
+          signals: result.entry.map((s) => ({ tf: s.timeframe, detected: s.detected, reason: s.reason })),
+        },
+      });
+
+      return res.status(403).json({
+        ok: false,
+        errorCode: 'no_engulfing_entry_signal' as TradingErrorCode,
+        error: 'No engulfing entry signal detected for configured Trading Rules timeframes.',
+      });
     }
+
+    logRiskGateAudit({
+      gate: 'multi_tf_engulfing',
+      passed: true,
+      details: {
+        symbol,
+        anyEntry: result.anyEntry,
+        signals: result.entry.map((s) => ({ tf: s.timeframe, detected: s.detected })),
+      },
+    });
 
     return next();
   } catch (error) {
+    logRiskGateAudit({
+      gate: 'multi_tf_engulfing',
+      passed: true,
+      reason: 'gate_exception_failsafe',
+      details: { error: error instanceof Error ? error.message : String(error) },
+    });
     logger.error({ component: 'engulfing-gate', err: error }, 'engulfing gate error, allowing trade through');
     return next();
   }
@@ -1396,19 +1443,6 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     });
   }
 
-  // ── Multi-TF engulfing gate result (consumed from engulfingGate middleware) ──
-  const engulfingResult = (req as any)._engulfingResult as MultiTfEngulfingResult | undefined;
-  if (engulfingResult) {
-    logRiskGateAudit({
-      gate: 'multi_tf_engulfing',
-      passed: Boolean(reduceOnly) || engulfingResult.anyEntry,
-      details: {
-        anyEntry: engulfingResult.anyEntry,
-        signals: engulfingResult.entry.map((s) => ({ tf: s.timeframe, detected: s.detected })),
-      },
-    });
-  }
-
   const normalizedSymbol = normalizeSymbol(symbol);
   const correlationId = clientOrderId || nanoid();
   const now = new Date().toISOString();
@@ -1812,19 +1846,6 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
   // Manual confirmation gate
   if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({ ok: false, errorCode: 'manual_confirmation_required' as TradingErrorCode, hint: 'resend with {"confirm": true}' });
-  }
-
-  // ── Multi-TF engulfing gate result (consumed from engulfingGate middleware) ──
-  const engulfingResult = (req as any)._engulfingResult as MultiTfEngulfingResult | undefined;
-  if (engulfingResult) {
-    logRiskGateAudit({
-      gate: 'multi_tf_engulfing',
-      passed: Boolean(reduceOnly) || engulfingResult.anyEntry,
-      details: {
-        anyEntry: engulfingResult.anyEntry,
-        signals: engulfingResult.entry.map((s) => ({ tf: s.timeframe, detected: s.detected })),
-      },
-    });
   }
 
   const correlationId = clientOrderId || nanoid();
