@@ -114,7 +114,8 @@ export type TradingErrorCode =
   | 'stale_market_data'
   | 'auth_required'
   | 'allocation_sizing_failed'
-  | 'no_engulfing_entry_signal';
+  | 'no_engulfing_entry_signal'
+  | 'dd_lock_active';
 
 export interface ExchangeCapabilities {
   realtimeMids: boolean;

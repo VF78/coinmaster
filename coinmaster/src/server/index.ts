@@ -213,6 +213,11 @@ const emergencyCloseLock = {
   hardStopActive: false
 };
 
+const ddLock = {
+  active: false,
+  activatedAt: '',
+};
+
 const WATCHDOG_IDLE_LOG_INTERVAL_MS = 5 * 60 * 1000;
 const watchdogLogState: Record<string, number> = {};
 
@@ -336,6 +341,21 @@ async function runDrawdownWatchdogTick() {
         });
       }
 
+      if (!ddLock.active) {
+        ddLock.active = true;
+        ddLock.activatedAt = new Date().toISOString();
+        logRiskGateAudit({
+          gate: 'daily_dd',
+          passed: false,
+          reason: 'dd_lock_activated_watchdog',
+          details: {
+            activatedAt: ddLock.activatedAt,
+            ddPct: risk.dailyDDPct,
+            limit: rulesCache.getEffectiveRules().dailyDDLimitPct,
+          },
+        });
+      }
+
       const [positions, openOrders] = await Promise.all([
         exchange.getOpenPositions(),
         exchange.getOpenOrders()
@@ -362,7 +382,9 @@ async function runDrawdownWatchdogTick() {
           ddPct: risk.dailyDDPct,
           limit: rulesCache.getEffectiveRules().dailyDDLimitPct,
           equityUsd: risk.equityUsd,
-          baselineEquityUsd: risk.baselineEquityUsd
+          baselineEquityUsd: risk.baselineEquityUsd,
+          ddLockActive: ddLock.active,
+          ddLockActivatedAt: ddLock.activatedAt || undefined,
         }
       });
     }
@@ -398,24 +420,46 @@ function startDrawdownWatchdog() {
 /** Risk gate middleware for trading endpoints — checks DD + leverage before allowing order */
 async function riskGateMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
-    const risk = await evaluateRiskGates();
+    const reduceOnly = req.body?.reduceOnly === true;
 
+    // If DD lock is active, block new entry orders but always allow reduce-only exits.
+    if (ddLock.active && !reduceOnly) {
+      return res.status(403).json({
+        ok: false,
+        errorCode: 'dd_lock_active' as TradingErrorCode,
+        error: 'DD lock is active. New entry orders are blocked until owner resets the lock.',
+        ddLock: {
+          active: true,
+          activatedAt: ddLock.activatedAt,
+        },
+      });
+    }
+
+    const risk = await evaluateRiskGates();
     const effectiveRules = rulesCache.getEffectiveRules();
 
     if (risk.blocks.includes('daily_loss_limit_exceeded')) {
+      if (!ddLock.active) {
+        ddLock.active = true;
+        ddLock.activatedAt = new Date().toISOString();
+      }
+
       // Hard stop: close everything
       await emergencyCloseAll();
       return res.status(403).json({
         ok: false,
-        errorCode: 'daily_loss_limit_exceeded' as TradingErrorCode,
-        error: `Daily drawdown ${risk.dailyDDPct}% exceeds ${effectiveRules.dailyDDLimitPct}% limit. All positions closed. Trading blocked.`,
-        riskCheck: risk
+        errorCode: 'dd_lock_active' as TradingErrorCode,
+        error: `Daily drawdown ${risk.dailyDDPct}% exceeds ${effectiveRules.dailyDDLimitPct}% limit. DD lock activated; new entries blocked until reset.`,
+        riskCheck: risk,
+        ddLock: {
+          active: true,
+          activatedAt: ddLock.activatedAt,
+        },
       });
     }
 
     if (risk.blocks.includes('leverage_limit_exceeded')) {
       // Only block new non-reduceOnly orders
-      const reduceOnly = req.body?.reduceOnly === true;
       if (!reduceOnly) {
         return res.status(403).json({
           ok: false,
@@ -1190,16 +1234,33 @@ if (ENABLE_REPLAY_API) {
 app.get('/api/live/risk-check', ownerAuth, async (_req, res) => {
   try {
     const risk = await evaluateRiskGates();
-    return res.json(risk);
+    return res.json({
+      ...risk,
+      ddLock: {
+        active: ddLock.active,
+        activatedAt: ddLock.activatedAt || undefined,
+      },
+    });
   } catch (error) {
     return res.status(500).json({
       canTrade: false,
       dailyDDPct: 0,
       portfolioLeverage: 0,
       blocks: ['risk_check_failed'],
+      ddLock: {
+        active: ddLock.active,
+        activatedAt: ddLock.activatedAt || undefined,
+      },
       error: error instanceof Error ? error.message : 'risk_check_failed'
     });
   }
+});
+
+app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
+  ddLock.active = false;
+  ddLock.activatedAt = '';
+  logger.info({ component: 'risk-gate' }, 'DD lock manually reset by owner');
+  return res.json({ ok: true, ddLockActive: false });
 });
 
 app.get('/api/live/status', async (_req, res) => {
