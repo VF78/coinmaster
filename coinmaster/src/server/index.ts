@@ -444,7 +444,13 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
         ddLock.activatedAt = new Date().toISOString();
       }
 
-      // Hard stop: close everything
+      // Keep exits possible even while DD lock is active.
+      if (reduceOnly) {
+        (req as any)._riskCheck = risk;
+        return next();
+      }
+
+      // Hard stop for new entries: close everything and block.
       await emergencyCloseAll();
       return res.status(403).json({
         ok: false,
