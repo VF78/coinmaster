@@ -20,6 +20,7 @@
 ### Что оставляем в работе (блокеры запуска)
 1. [ ] **L1: Включить реальное применение Trading Rules в live order path**
    - Ордеры `/api/live/order` и `/api/live/order/limit` должны учитывать multi-TF сигнал и текущие rules из DB, а не только логировать.
+   - [ ] **L1.1 (единственная подзадача уровня 2):** сделать wiring и интеграцию без дробления идентификаторов ниже.
 2. [ ] **L2: Feature-flag + fail-safe**
    - Поведение при `ENABLE_MULTI_TF_ENGULFING=true/false` детерминировано.
    - При ошибке сигнала/данных — безопасный fallback (без зависаний и без silent-fail).
@@ -32,14 +33,19 @@
    - `npm run check`, `npm run invariants:rule-engine`, `npm run ops:smoke`, live-status checks.
    - Финальный артефакт “ready-to-trade”.
 
+### Жёсткое правило декомпозиции (с 2026-03-01)
+- Допустимые уровни только: **L1..L5** и **L1.1**.
+- Идентификаторы вида `L1.1a`, `L1.1a.i`, `L1.1.x` и любые уровни ниже **запрещены**.
+- Нужное дробление делается только текстом внутри L1.1 (список микро-шагов), без создания новых уровней.
 ## Blockers
 - Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by updated watchdog policy (8/12m progress, 90s silent-stall, 25m hard timeout, consent-loop restarts).
 - External blockers: none.
 
 ## Event log
-- 17:13: 10m watchdog: прогресс-артефакт по коду снова отсутствует; run остановлен, шаг декомпозирован до **L1.1a.i** (минимальный hook: только проверка и чтение multi-TF результата внутри `/api/live/order`, без изменения response-contract), перезапуск Claude Opus.
-- 17:03: 10m watchdog: за последние 10 минут новый кодовый артефакт не появился; run признан stalled, выполнен forced split до **L1.1a** (только `/api/live/order` wiring под флагом, без `/limit`, без тестов), запускаем новый Claude Opus run.
-- 16:33: 10m watchdog: свежий артефакт не обнаружен; текущий run признан stalled, L1/L2 декомпозирован до атомарного шага **L1.1** (только wiring `/api/live/order` + `/api/live/order/limit` к результату `engulfingGate` без тестов), выполнен restart через Claude Opus.
+- 17:30: структура задач схлопнута по решению Владимира: только уровни `25C -> L1..L5 -> L1.1`; дальнейшая декомпозиция только текстом внутри L1.1 без новых ID.
+- 17:13: watchdog зафиксировал отсутствие кодового артефакта; run остановлен и перезапущен в рамках L1.1 (микро-шаг: `/api/live/order` hook без изменения response-contract).
+- 17:03: watchdog зафиксировал stalled run; перезапуск в рамках L1.1 (микро-шаг: wiring под флагом, без `/limit`, без тестов).
+- 16:33: watchdog зафиксировал stalled run; L1/L2 временно сведены к атомарному L1.1 (wiring `/api/live/order` + `/api/live/order/limit`, без тестов), Claude Opus restart.
 - 16:24: 10m watchdog: не найден новый кодовый артефакт по L1/L2; run декомпозирован на micro-step 1/3 и перезапущен через Claude Opus (runId 86341d94-ee87-46ed-a3bc-fc8610cbd3c3).
 - 15:16: backlog очищен от дублей/абстрактных задач; оставлен только launch-critical track L1..L5 для старта торговли.
 - 10:53: watchdog сработал (>15m без подтверждённого прогресса), run остановлен, задача декомпозирована.
