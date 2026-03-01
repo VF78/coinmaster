@@ -8,48 +8,40 @@
 - Executor: Claude Code (Sonnet 4.6) primary + SELF orchestration.
 - Last transition: 2026-02-26 22:53 Europe/Madrid — hard-timeout split + restart.
 
-## Current priorities (strict order)
-1. **P1d4** — invariant: negative-control exact match
-2. **P1e** — phase-1 smoke validation + final Phase 1 artifact commit
-3. **P1d1a** — optional cleanup of interactive consent stabilization notes
-4. **A3/A4 docs** — only after Phase 1 close
+## Launch-only priorities (strict order)
 
-## Architecture-first track (approved direction)
-### 25C.A Unified trading-rules engine architecture
-- [ ] 25C.A0 Пройти Claude interactive consent (allow-edits) и зафиксировать readiness
-- [x] 25C.A0b Активировать fallback SELF для docs, если Claude CLI unstable (code 143)
-- [x] 25C.A1a Создать файл `.ops/issue-25C-architecture.md` с title + scope
-- [x] 25C.A1b Добавить только section headers + TODO markers (без deep analysis)
-- [x] 25C.A1c Сделать docs-only commit для skeleton
-- [x] 25C.A2 Заполнить rule model (conditions / triggers / actions / priorities)
-- [ ] 25C.A3 Заполнить lifecycle (evaluate → decide → act → audit), idempotency и observability guarantees
-- [ ] 25C.A4 Зафиксировать conflict-resolution policy и migration plan (3–4 шага)
-- [x] 25C.A5 Обновить checklist: implementation BLOCKED до архитектурного апрува
+Цель: **завтра открыть первые сделки по параметрам страницы Trading Rules**.
 
-### 25C.1 implementation track (active after architecture approval)
-- [ ] 25C.1a Найти точку server-path, где безопасно подключить trigger под feature flag
-- [ ] 25C.1b Протянуть данные из evaluateMultiTf до точки входа
-- [ ] 25C.1c Добавить guard/feature-flag condition + fail-safe ветку
-- [ ] 25C.1d Добавить targeted test на wiring
-- [ ] 25C.1e Прогон тестов и фиксация артефакта
+### Что уходит в future backlog (не блокирует старт торговли)
+- Все архитектурные docs-задачи (A0, A3, A4).
+- Все optional cleanup / consent notes.
+- Любые улучшения observability/рефакторинг, не влияющие на путь `Trading Rules → Order`.
 
-### 25C.P1 Phase 1 (RISK rules in dual-run)
-- [x] 25C.P1a Добавить engine snapshot builder (минимальный) без изменения runtime-поведения
-- [x] 25C.P1b Добавить risk rule definitions: daily drawdown / leverage / allocation / stale data / symbol allowlist
-- [x] 25C.P1c Подключить dual-run compare (engine decision vs legacy gate result) только в audit/log
-- [ ] 25C.P1d1a Stabilize Claude interactive session (consent/edits), без код-изменений
-- [x] 25C.P1d1b.i Добавить skeleton case-блок для RISK preempts ENTRY (без логики)
-- [x] 25C.P1d1b.ii Дописать assertions + run checks + commit
-- [x] 25C.P1d2 Добавить invariant: EXIT preempts ENTRY
-- [x] 25C.P1d3 Добавить invariant: mismatch detection с reason/context
-- [x] 25C.P1d4 Добавить invariant: negative control exact match
-- [ ] 25C.P1e Smoke-проверка и фиксация артефакта Phase 1 PR
+### Что оставляем в работе (блокеры запуска)
+1. [ ] **L1: Включить реальное применение Trading Rules в live order path**
+   - Ордеры `/api/live/order` и `/api/live/order/limit` должны учитывать multi-TF сигнал и текущие rules из DB, а не только логировать.
+2. [ ] **L2: Feature-flag + fail-safe**
+   - Поведение при `ENABLE_MULTI_TF_ENGULFING=true/false` детерминировано.
+   - При ошибке сигнала/данных — безопасный fallback (без зависаний и без silent-fail).
+3. [ ] **L3: End-to-end валидация “UI rules → effective rules → order decision”**
+   - Значения из страницы Trading Rules должны подтверждаться через `/api/settings/trading-rules/effective`.
+   - Решение по ордеру должно соответствовать этим значениям.
+4. [ ] **L4: Targeted tests на wiring**
+   - Тесты/инварианты на связку multi-TF + order path + guards.
+5. [ ] **L5: Smoke + launch artifact**
+   - `npm run check`, `npm run invariants:rule-engine`, `npm run ops:smoke`, live-status checks.
+   - Финальный артефакт “ready-to-trade”.
 
 ## Blockers
 - Operational risk: Claude interactive allow-edits prompt может ронять run (code 143); mitigated by updated watchdog policy (8/12m progress, 90s silent-stall, 25m hard timeout, consent-loop restarts).
 - External blockers: none.
 
 ## Event log
+- 17:13: 10m watchdog: прогресс-артефакт по коду снова отсутствует; run остановлен, шаг декомпозирован до **L1.1a.i** (минимальный hook: только проверка и чтение multi-TF результата внутри `/api/live/order`, без изменения response-contract), перезапуск Claude Opus.
+- 17:03: 10m watchdog: за последние 10 минут новый кодовый артефакт не появился; run признан stalled, выполнен forced split до **L1.1a** (только `/api/live/order` wiring под флагом, без `/limit`, без тестов), запускаем новый Claude Opus run.
+- 16:33: 10m watchdog: свежий артефакт не обнаружен; текущий run признан stalled, L1/L2 декомпозирован до атомарного шага **L1.1** (только wiring `/api/live/order` + `/api/live/order/limit` к результату `engulfingGate` без тестов), выполнен restart через Claude Opus.
+- 16:24: 10m watchdog: не найден новый кодовый артефакт по L1/L2; run декомпозирован на micro-step 1/3 и перезапущен через Claude Opus (runId 86341d94-ee87-46ed-a3bc-fc8610cbd3c3).
+- 15:16: backlog очищен от дублей/абстрактных задач; оставлен только launch-critical track L1..L5 для старта торговли.
 - 10:53: watchdog сработал (>15m без подтверждённого прогресса), run остановлен, задача декомпозирована.
 - 11:08: зафиксирован предыдущий сбой `young-bl` (code 143, interactive allow-edits prompt).
 - 11:23: watchdog снова сработал для `fresh-crustacean`; run остановлен; выполнен forced split в архитектурные микро-шаги.
@@ -78,6 +70,7 @@
 - 22:23: run `plaid-sable` остановлен по hard-timeout 25m; добавленный Case 9 (EXIT preempts ENTRY) валидирован локально (`npm run check` + `npm run invariants:rule-engine` зелёные), шаг P1d2 закрыт.
 - 22:53: run `calm-willow` остановлен по hard-timeout 25m; добавленный Case 10 (mismatch reason/context coverage) валидирован локально (`npm run check` + `npm run invariants:rule-engine` зелёные), шаг P1d3 закрыт.
 - 23:23: run `plaid-sable` снова c code 143; получен diff Case 11 (negative control parity), P1d4 закрыт; сейчас можно переходить к P1e.
+- 08:08: P1e smoke (typecheck + `invariants:rule-engine` + `ops:smoke`) прогнано локально; артефакт Phase 1 готов, остальные шаги по roadmap ожидают PR.
 
 ## Heartbeat policy for this issue
 Отправлять только при:
