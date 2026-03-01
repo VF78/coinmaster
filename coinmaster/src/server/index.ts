@@ -20,6 +20,7 @@ import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { Candle, CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 import { evaluateMultiTf } from '../core/engulfingEvaluator.js';
+import type { MultiTfEngulfingResult } from '../core/engulfingEvaluator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1395,6 +1396,19 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     });
   }
 
+  // ── Multi-TF engulfing gate result (consumed from engulfingGate middleware) ──
+  const engulfingResult = (req as any)._engulfingResult as MultiTfEngulfingResult | undefined;
+  if (engulfingResult) {
+    logRiskGateAudit({
+      gate: 'multi_tf_engulfing',
+      passed: Boolean(reduceOnly) || engulfingResult.anyEntry,
+      details: {
+        anyEntry: engulfingResult.anyEntry,
+        signals: engulfingResult.entry.map((s) => ({ tf: s.timeframe, detected: s.detected })),
+      },
+    });
+  }
+
   const normalizedSymbol = normalizeSymbol(symbol);
   const correlationId = clientOrderId || nanoid();
   const now = new Date().toISOString();
@@ -1798,6 +1812,19 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
   // Manual confirmation gate
   if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({ ok: false, errorCode: 'manual_confirmation_required' as TradingErrorCode, hint: 'resend with {"confirm": true}' });
+  }
+
+  // ── Multi-TF engulfing gate result (consumed from engulfingGate middleware) ──
+  const engulfingResult = (req as any)._engulfingResult as MultiTfEngulfingResult | undefined;
+  if (engulfingResult) {
+    logRiskGateAudit({
+      gate: 'multi_tf_engulfing',
+      passed: Boolean(reduceOnly) || engulfingResult.anyEntry,
+      details: {
+        anyEntry: engulfingResult.anyEntry,
+        signals: engulfingResult.entry.map((s) => ({ tf: s.timeframe, detected: s.detected })),
+      },
+    });
   }
 
   const correlationId = clientOrderId || nanoid();
