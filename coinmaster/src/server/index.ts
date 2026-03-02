@@ -841,8 +841,12 @@ async function runEngulfingMonitorTick(): Promise<void> {
 
 /** Compute poll interval from current rules: min entry TF / 10, clamped to [30s, 2m]. */
 function engulfingMonitorIntervalMs(): number {
-  const raw = rulesCache.getEffectiveRules().raw;
-  const entryTfs = raw?.entryTimeframes?.length ? raw.entryTimeframes : ['15m' as const];
+  const effective = rulesCache.getEffectiveRules();
+  if (effective.source !== 'runtime' || !effective.raw) {
+    // On startup before DB rules hydrate, poll fast to avoid a blind window.
+    return 30_000;
+  }
+  const entryTfs = effective.raw.entryTimeframes?.length ? effective.raw.entryTimeframes : ['15m' as const];
   const minTfMs = Math.min(...entryTfs.map(tf => TF_MS[tf] ?? 900_000));
   return Math.max(30_000, Math.min(120_000, Math.floor(minTfMs / 10)));
 }
