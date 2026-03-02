@@ -36,6 +36,12 @@ function priceFromPct(side: 'long' | 'short', entry: number, pct: number): numbe
   return entry * (1 - pct / 100);
 }
 
+function parseDecimalInput(raw: string): number {
+  const normalized = raw.replace(',', '.').trim();
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : 0;
+}
+
 export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLevelsPanelProps) {
   const chartHostRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -329,27 +335,28 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
               <label>
                 <span>TP{idx + 1} Price</span>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   value={tp || ''}
-                  onChange={(e) => updateTp(idx, Number(e.target.value || 0))}
+                  onChange={(e) => updateTp(idx, parseDecimalInput(e.target.value))}
                 />
               </label>
               <label>
                 <span>Gain %</span>
                 <input
-                  type="number"
-                  step="0.1"
+                  type="text"
+                  inputMode="decimal"
                   value={Number.isFinite(gainPct) ? gainPct.toFixed(2) : ''}
-                  onChange={(e) => updateTpPct(idx, Number(e.target.value || 0))}
+                  onChange={(e) => updateTpPct(idx, parseDecimalInput(e.target.value))}
                 />
               </label>
               <div className="hl-level-row__actions">
                 {idx === 0 && takeProfits.length < 3 ? (
-                  <Button variant="secondary" onClick={addTp}>+ TP</Button>
-                ) : null}
+                  <Button className="hl-action-btn" variant="secondary" onClick={addTp}>+ TP</Button>
+                ) : <span className="hl-action-spacer" />}
                 {takeProfits.length > 1 ? (
-                  <Button variant="danger" onClick={() => removeTp(idx)}>Remove</Button>
-                ) : null}
+                  <Button className="hl-action-btn" variant="danger" onClick={() => removeTp(idx)}>Remove</Button>
+                ) : <span className="hl-action-spacer" />}
               </div>
             </div>
           );
@@ -359,18 +366,19 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
           <label>
             <span>SL Price</span>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={stopLoss || ''}
-              onChange={(e) => setStopLoss(Number(e.target.value || 0))}
+              onChange={(e) => setStopLoss(parseDecimalInput(e.target.value))}
             />
           </label>
           <label>
             <span>Loss %</span>
             <input
-              type="number"
-              step="0.1"
+              type="text"
+              inputMode="decimal"
               value={Math.abs(pctFromPrice(side, entry, stopLoss)).toFixed(2)}
-              onChange={(e) => updateSlPct(Number(e.target.value || 0))}
+              onChange={(e) => updateSlPct(parseDecimalInput(e.target.value))}
             />
           </label>
           <div />
