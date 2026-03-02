@@ -121,9 +121,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       if (stopLoss >= currentPrice) {
         return 'For LONG, stop-loss must be below current market price.';
       }
-      if (stopLoss >= entry) {
-        return 'For LONG, stop-loss must be below entry price.';
-      }
       if (takeProfits.some((tp) => tp <= entry)) {
         return 'For LONG, all TP levels must be above entry price.';
       }
@@ -133,9 +130,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     } else {
       if (stopLoss <= currentPrice) {
         return 'For SHORT, stop-loss must be above current market price.';
-      }
-      if (stopLoss <= entry) {
-        return 'For SHORT, stop-loss must be above entry price.';
       }
       if (takeProfits.some((tp) => tp >= entry)) {
         return 'For SHORT, all TP levels must be below entry price.';
@@ -308,9 +302,27 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     const wheelOnPriceScale = (event: WheelEvent) => {
       const rect = host.getBoundingClientRect();
       const inRightScale = event.clientX >= rect.right - 92;
-      if (inRightScale) {
-        event.stopPropagation();
-      }
+      if (!inRightScale) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const chartAny = chart as unknown as { priceScale?: (id: string) => unknown };
+      const ps = chartAny.priceScale?.('right') as { getVisibleRange?: () => { from: number; to: number }; setVisibleRange?: (r: { from: number; to: number }) => void } | undefined;
+      const range = ps?.getVisibleRange?.();
+      if (!range || !Number.isFinite(range.from) || !Number.isFinite(range.to)) return;
+
+      const series = candleSeriesRef.current as unknown as { coordinateToPrice?: (y: number) => number | null } | null;
+      const y = event.clientY - rect.top;
+      const center = series?.coordinateToPrice?.(y) ?? (range.from + range.to) / 2;
+      if (!Number.isFinite(center)) return;
+
+      const zoom = event.deltaY < 0 ? 0.92 : 1.08;
+      const nextFrom = center + (range.from - center) * zoom;
+      const nextTo = center + (range.to - center) * zoom;
+      if (!Number.isFinite(nextFrom) || !Number.isFinite(nextTo) || Math.abs(nextTo - nextFrom) < 1e-7) return;
+
+      ps?.setVisibleRange?.({ from: nextFrom, to: nextTo });
     };
 
     host.addEventListener('pointerdown', pointerDown);
@@ -479,33 +491,35 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
           ))}
         </div>
         {isLoading ? <p className="muted">Loading chart…</p> : null}
-        {!isLoading && !error ? <div className="position-panel__chart" ref={chartHostRef} /> : null}
         {!isLoading && !error ? (
-          <div className="hl-line-overlay" aria-hidden>
-            {takeProfits.map((tp, idx) => {
-              const y = chipCoords.tps[idx];
-              if (y === null || y === undefined) return null;
-              return (
-                <div key={`tp-chip-${idx}`} className="hl-line-chip hl-line-chip--tp" style={{ top: y }}>
-                  <span>TP{idx + 1} Price &gt; {formatNumber(tp)}</span>
+          <div className="hl-chart-stage">
+            <div className="position-panel__chart" ref={chartHostRef} />
+            <div className="hl-line-overlay" aria-hidden>
+              {takeProfits.map((tp, idx) => {
+                const y = chipCoords.tps[idx];
+                if (y === null || y === undefined) return null;
+                return (
+                  <div key={`tp-chip-${idx}`} className="hl-line-chip hl-line-chip--tp" style={{ top: y }}>
+                    <span>TP Price {formatNumber(tp)}</span>
+                    <strong>{formatNumber(position.size)}</strong>
+                  </div>
+                );
+              })}
+
+              {chipCoords.pnl !== null ? (
+                <div className="hl-line-chip hl-line-chip--pnl" style={{ top: chipCoords.pnl }}>
+                  <span>PNL {formatMoney(unrealizedPnl)}</span>
                   <strong>{formatNumber(position.size)}</strong>
                 </div>
-              );
-            })}
+              ) : null}
 
-            {chipCoords.pnl !== null ? (
-              <div className="hl-line-chip hl-line-chip--pnl" style={{ top: chipCoords.pnl }}>
-                <span>PNL {formatMoney(unrealizedPnl)}</span>
-                <strong>{formatNumber(position.size)}</strong>
-              </div>
-            ) : null}
-
-            {chipCoords.sl !== null ? (
-              <div className="hl-line-chip hl-line-chip--sl" style={{ top: chipCoords.sl }}>
-                <span>SL Price {side === 'long' ? '<' : '>'} {formatNumber(stopLoss)}</span>
-                <strong>{formatNumber(position.size)}</strong>
-              </div>
-            ) : null}
+              {chipCoords.sl !== null ? (
+                <div className="hl-line-chip hl-line-chip--sl" style={{ top: chipCoords.sl }}>
+                  <span>SL Price {formatNumber(stopLoss)}</span>
+                  <strong>{formatNumber(position.size)}</strong>
+                </div>
+              ) : null}
+            </div>
           </div>
         ) : null}
         {!isLoading && error ? <p className="muted">Chart error: {error}</p> : null}
