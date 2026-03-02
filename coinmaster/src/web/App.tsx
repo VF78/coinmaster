@@ -8,8 +8,8 @@ type PageKey = 'dashboard' | 'history' | 'settings' | 'trading-rules';
 
 const SECTIONS: Array<{ key: PageKey; label: string }> = [
   { key: 'dashboard', label: 'Dashboard' },
-  { key: 'history', label: 'History' },
   { key: 'trading-rules', label: 'Trading Rules' },
+  { key: 'history', label: 'History' },
   { key: 'settings', label: 'Settings' }
 ];
 
