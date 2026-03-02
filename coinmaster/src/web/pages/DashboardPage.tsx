@@ -8,6 +8,7 @@ import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
 import { PositionLevelsPanel } from '../components/PositionLevelsPanel';
+import { useDialog } from '../components/DialogProvider';
 
 type PnlPeriod = 'daily' | 'weekly' | 'monthly';
 
@@ -21,6 +22,7 @@ const PNL_LABEL: Record<PnlPeriod, string> = {
 
 export function DashboardPage() {
   const [data, setData] = useState<DashboardResponse | null>(null);
+  const dialog = useDialog();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<LivePosition | null>(null);
   const [pnlPeriod, setPnlPeriod] = useState<PnlPeriod>('daily');
@@ -67,7 +69,11 @@ export function DashboardPage() {
       }
       await refresh();
     } catch (error) {
-      alert(`Confirm failed: ${error instanceof Error ? error.message : 'unknown_error'}`);
+      await dialog.alert({
+        title: 'Confirm failed',
+        message: error instanceof Error ? error.message : 'unknown_error',
+        confirmText: 'OK',
+      });
     } finally {
       setPendingActionId(null);
     }
@@ -82,7 +88,11 @@ export function DashboardPage() {
       }
       await refresh();
     } catch (error) {
-      alert(`Reject failed: ${error instanceof Error ? error.message : 'unknown_error'}`);
+      await dialog.alert({
+        title: 'Reject failed',
+        message: error instanceof Error ? error.message : 'unknown_error',
+        confirmText: 'OK',
+      });
     } finally {
       setPendingActionId(null);
     }

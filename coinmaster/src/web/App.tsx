@@ -3,6 +3,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { TradingRulesPage } from './pages/TradingRulesPage';
+import { useDialog } from './components/DialogProvider';
 
 type PageKey = 'dashboard' | 'history' | 'settings' | 'trading-rules';
 
@@ -16,6 +17,7 @@ const SECTIONS: Array<{ key: PageKey; label: string }> = [
 export function App() {
   const [page, setPage] = useState<PageKey>('dashboard');
   const [tradingRulesDirty, setTradingRulesDirty] = useState(false);
+  const dialog = useDialog();
 
   const pageTitle = useMemo(() => {
     const section = SECTIONS.find((s) => s.key === page);
@@ -26,11 +28,16 @@ export function App() {
     document.title = pageTitle;
   }, [pageTitle]);
 
-  function handleNavigate(nextPage: PageKey) {
+  async function handleNavigate(nextPage: PageKey) {
     if (nextPage === page) return;
 
     if (page === 'trading-rules' && tradingRulesDirty) {
-      const confirmed = window.confirm('You have unsaved Trading Rules changes. Click Cancel to stay and apply them, or OK to leave without applying.');
+      const confirmed = await dialog.confirm({
+        title: 'Unsaved changes',
+        message: 'You have unsaved Trading Rules changes. Leave this page without applying?',
+        confirmText: 'Leave',
+        cancelText: 'Stay',
+      });
       if (!confirmed) return;
       setTradingRulesDirty(false);
     }
@@ -53,7 +60,7 @@ export function App() {
                   <button
                     type="button"
                     className={page === section.key ? 'sidebar-nav__item sidebar-nav__item--active' : 'sidebar-nav__item'}
-                    onClick={() => handleNavigate(section.key)}
+                    onClick={() => { void handleNavigate(section.key); }}
                   >
                     {section.label}
                   </button>

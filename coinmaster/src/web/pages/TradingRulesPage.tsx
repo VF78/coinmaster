@@ -5,6 +5,7 @@ import { Button } from '../components/Button';
 import type { TradingCoinAllocation, TradingRulesSettings, TradingRulesTimeframe } from '../../shared/dto.js';
 import { cloneTradingRulesDefaults, normalizeTradingRules } from '../../shared/tradingRules.js';
 import { getTradingRules, saveTradingRules } from '../lib/api';
+import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
 const EXIT_CLOSE_PRESETS = [25, 50, 75, 100];
@@ -90,6 +91,7 @@ function Segmented<T extends string | number>({ options, value, format, onChange
 
 export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
   const defaults = cloneTradingRulesDefaults();
+  const dialog = useDialog();
 
   const [coins, setCoins] = useState<TradingCoinAllocation[]>(defaults.coins);
   const [entryTimeframes, setEntryTimeframes] = useState<TradingRulesTimeframe[]>(defaults.entryTimeframes);
@@ -240,12 +242,20 @@ export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
     const enabledTotal = Math.round(enabled.reduce((s, c) => s + c.pct, 0) * 100) / 100;
 
     if (enabled.length === 0) {
-      alert('Enable at least one coin.');
+      await dialog.alert({
+        title: 'Validation',
+        message: 'Enable at least one coin.',
+        confirmText: 'OK',
+      });
       return;
     }
 
     if (Math.abs(enabledTotal - 100) > 0.01) {
-      alert(`Active coin allocation sum is ${enabledTotal}%. It must be exactly 100%.`);
+      await dialog.alert({
+        title: 'Validation',
+        message: `Active coin allocation sum is ${enabledTotal}%. It must be exactly 100%.`,
+        confirmText: 'OK',
+      });
       return;
     }
 
@@ -258,7 +268,11 @@ export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
     } catch (error) {
       console.error('[TradingRules] failed to save rules:', error);
       setSaveInfo('Save failed. Rules were not confirmed by server.');
-      alert('Could not save rules. Check server logs.');
+      await dialog.alert({
+        title: 'Save failed',
+        message: 'Could not save rules. Check server logs.',
+        confirmText: 'OK',
+      });
     } finally {
       setSaving(false);
     }

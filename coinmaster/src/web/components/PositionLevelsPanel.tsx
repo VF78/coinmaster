@@ -4,6 +4,7 @@ import type { LiveCandle, LivePosition } from '../../shared/dto.js';
 import { applyLivePositionLevels, getLiveCandles } from '../lib/api';
 import { formatMoney, formatNumber } from '../lib/format';
 import { Button } from './Button';
+import { useDialog } from './DialogProvider';
 
 type CandleTf = '5m' | '15m' | '1h' | '4h';
 
@@ -42,6 +43,7 @@ function parseDecimalInput(raw: string): number {
 }
 
 export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLevelsPanelProps) {
+  const dialog = useDialog();
   const chartHostRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
@@ -431,7 +433,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   async function applyLevels() {
     if (validation) return;
 
-    const confirmed = window.confirm('Apply these TP/SL levels to live position?');
+    const confirmed = await dialog.confirm({
+      title: 'Apply TP/SL',
+      message: 'Apply these TP/SL levels to live position?',
+      confirmText: 'Apply',
+      cancelText: 'Cancel',
+    });
     if (!confirmed) return;
 
     setIsApplying(true);
