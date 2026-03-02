@@ -2736,7 +2736,26 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     i < tpCount - 1 ? baseSize : Math.max(0, Math.round((qty - baseSize * (tpCount - 1)) * factor) / factor)
   );
 
-  const slOrder = await exchange.placeTriggerOrder({
+  async function placeTriggerWithRetry(args: Parameters<typeof exchange.placeTriggerOrder>[0], retries = 2) {
+    let last: Awaited<ReturnType<typeof exchange.placeTriggerOrder>> | null = null;
+    let lastErr = '';
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const ack = await exchange.placeTriggerOrder(args);
+        last = ack;
+        if (ack.ok) return ack;
+        lastErr = ack.error || 'trigger_order_failed';
+      } catch (error) {
+        lastErr = error instanceof Error ? error.message : 'trigger_order_exception';
+      }
+      if (attempt < retries) {
+        await sleep(300 * (attempt + 1));
+      }
+    }
+    return { ok: false, error: last?.error || lastErr } as Awaited<ReturnType<typeof exchange.placeTriggerOrder>>;
+  }
+
+  const slOrder = await placeTriggerWithRetry({
     symbol: normalizedSymbol,
     side: closingSide,
     size: qty,
@@ -2748,23 +2767,25 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
 
   const tpOrders: Array<{ ok: boolean; orderId?: string; error?: string }> = [];
   for (let i = 0; i < sortedTps.length; i++) {
-    try {
-      const ack = await exchange.placeTriggerOrder({
-        symbol: normalizedSymbol,
-        side: closingSide,
-        size: tpSizes[i],
-        triggerPrice: sortedTps[i],
-        kind: 'tp',
-        reduceOnly: true,
-        clientOrderId: `tp${i + 1}-${nanoid(8)}`
-      });
-      tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
-    } catch (error) {
-      tpOrders.push({ ok: false, error: error instanceof Error ? error.message : 'tp_place_failed' });
-    }
+    const ack = await placeTriggerWithRetry({
+      symbol: normalizedSymbol,
+      side: closingSide,
+      size: tpSizes[i],
+      triggerPrice: sortedTps[i],
+      kind: 'tp',
+      reduceOnly: true,
+      clientOrderId: `tp${i + 1}-${nanoid(8)}`
+    });
+    tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
   }
 
   const ok = slOrder.ok && tpOrders.every((o) => o.ok);
+
+  // Prevent inconsistent partial state if one of levels failed.
+  if (!ok) {
+    await exchange.cancelAll(normalizedSymbol).catch(() => undefined);
+  }
+
   return res.status(ok ? 200 : 400).json({
     ok,
     symbol: normalizedSymbol,

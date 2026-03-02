@@ -49,6 +49,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isApplying, setIsApplying] = useState(false);
+  const [info, setInfo] = useState<string | null>(null);
 
   const entry = position.entryPrice ?? 0;
   const side = position.side;
@@ -56,6 +57,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
   const [stopLoss, setStopLoss] = useState(position.stopLoss ?? entry);
   const [takeProfits, setTakeProfits] = useState<number[]>(() => {
+    const fromPosition = Array.isArray(position.takeProfits)
+      ? position.takeProfits.filter((v) => Number.isFinite(v) && v > 0).slice(0, 3)
+      : [];
+    if (fromPosition.length > 0) {
+      return fromPosition.map((v) => Number(v.toFixed(2)));
+    }
     const base = position.takeProfit ?? (entry > 0 ? priceFromPct(side, entry, 2) : 0);
     return base > 0 ? [Number(base.toFixed(2))] : [];
   });
@@ -238,6 +245,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
     setIsApplying(true);
     setError(null);
+    setInfo(null);
 
     try {
       const sorted = side === 'long'
@@ -258,7 +266,15 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         throw new Error(response.error || 'set_levels_failed');
       }
 
-      onApplied();
+      const confirmedTps = (response.takeProfits && response.takeProfits.length > 0)
+        ? response.takeProfits
+        : [response.takeProfit].filter((v) => Number.isFinite(v) && v > 0);
+
+      setStopLoss(Number(response.stopLoss.toFixed(2)));
+      setTakeProfits(confirmedTps.map((v) => Number(v.toFixed(2))).slice(0, 3));
+      setInfo('TP/SL levels applied successfully and confirmed by exchange API.');
+
+      await onApplied();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'set_levels_failed');
     } finally {
@@ -365,6 +381,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
       {validation ? <p className="down">{validation}</p> : null}
       {error ? <p className="down">{error}</p> : null}
+      {info ? <p className="up">{info}</p> : null}
 
       <div className="actions-row">
         <Button onClick={applyLevels} disabled={Boolean(validation) || isApplying} fullWidth>

@@ -434,11 +434,15 @@ tbody tr:hover {
 .hl-chart-wrap {
   border-color: #1c304d;
   background: #090f1d;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .position-panel__chart {
   width: 100%;
-  height: 320px;
+  height: clamp(170px, 34vh, 300px);
+  min-height: 0;
 }
 
 .hl-timeframes {
@@ -543,12 +547,29 @@ tbody tr:hover {
   padding: 0.65rem;
   padding-top: calc(0.65rem + env(safe-area-inset-top));
   padding-bottom: calc(0.65rem + env(safe-area-inset-bottom));
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
 }
 
 .position-modal-sheet {
   margin: 0 auto;
   width: min(100%, 960px);
+  height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 1.3rem);
+  max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 1.3rem);
+}
+
+.position-modal-sheet .card {
+  height: 100%;
+  overflow: hidden;
+}
+
+.position-modal-sheet .position-panel {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto auto;
+  overflow: hidden;
 }
 
 .history-paging {
@@ -609,24 +630,47 @@ tbody tr:hover {
   }
 
   .position-panel__chart-wrap {
-    min-height: 290px;
-    padding: 0.35rem;
+    min-height: 0;
+    padding: 0.3rem;
   }
 
   .position-panel__chart {
-    height: 275px;
+    height: clamp(150px, 28vh, 220px);
   }
 
   .position-panel__form {
     grid-template-columns: 1fr;
   }
 
+  .hl-summary-grid {
+    display: none;
+  }
+
+  .position-panel__hint {
+    display: none;
+  }
+
+  .hl-levels-form {
+    gap: 0.45rem;
+  }
+
   .hl-level-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.35rem;
+  }
+
+  .hl-level-row input {
+    min-height: 2.2rem;
+    padding: 0.35rem 0.5rem;
   }
 
   .hl-level-row__actions {
-    justify-content: flex-start;
+    justify-content: flex-end;
+    align-self: end;
+  }
+
+  .position-modal-sheet .position-panel {
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
   }
 }
 

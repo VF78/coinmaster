@@ -30,6 +30,7 @@ export function DashboardPage() {
   async function refresh() {
     const next = await getDashboard();
     setData(next);
+    return next;
   }
 
   useEffect(() => {
@@ -322,8 +323,12 @@ export function DashboardPage() {
                 position={selectedPosition}
                 onClose={() => setSelectedPosition(null)}
                 onApplied={async () => {
-                  await refresh();
-                  setSelectedPosition(null);
+                  const next = await refresh();
+                  setSelectedPosition((current) => {
+                    if (!current) return current;
+                    const updated = next.live.openPositions.find((p) => p.symbol === current.symbol && p.side === current.side);
+                    return updated ?? current;
+                  });
                 }}
               />
             </Card>

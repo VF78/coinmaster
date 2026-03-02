@@ -44,7 +44,11 @@ function isReduceOnlyOrder(order: OrderSnapshot): boolean {
 function pickStopLossAndTakeProfit(position: PositionSnapshot, openOrders: OrderSnapshot[]) {
   const entry = position.entryPrice;
   if (!entry || entry <= 0) {
-    return { stopLoss: undefined as number | undefined, takeProfit: undefined as number | undefined };
+    return {
+      stopLoss: undefined as number | undefined,
+      takeProfit: undefined as number | undefined,
+      takeProfits: [] as number[],
+    };
   }
 
   const closingSide: 'buy' | 'sell' = position.side === 'long' ? 'sell' : 'buy';
@@ -53,7 +57,11 @@ function pickStopLossAndTakeProfit(position: PositionSnapshot, openOrders: Order
     .filter(isReduceOnlyOrder);
 
   if (!candidates.length) {
-    return { stopLoss: undefined as number | undefined, takeProfit: undefined as number | undefined };
+    return {
+      stopLoss: undefined as number | undefined,
+      takeProfit: undefined as number | undefined,
+      takeProfits: [] as number[],
+    };
   }
 
   const aboveEntry = candidates
@@ -65,15 +73,19 @@ function pickStopLossAndTakeProfit(position: PositionSnapshot, openOrders: Order
     .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
 
   if (position.side === 'long') {
+    const takeProfits = aboveEntry.map((o) => o.price).slice(0, 3);
     return {
       stopLoss: belowEntry[0]?.price,
-      takeProfit: aboveEntry[0]?.price
+      takeProfit: takeProfits[0],
+      takeProfits,
     };
   }
 
+  const takeProfits = belowEntry.map((o) => o.price).slice(0, 3);
   return {
     stopLoss: aboveEntry[0]?.price,
-    takeProfit: belowEntry[0]?.price
+    takeProfit: takeProfits[0],
+    takeProfits,
   };
 }
 
@@ -101,7 +113,7 @@ function pickOpenedAt(position: PositionSnapshot, fills: FillEvent[]): string | 
 }
 
 function toLivePosition(position: PositionSnapshot, openOrders: OrderSnapshot[], fills: FillEvent[]): LivePosition {
-  const { stopLoss, takeProfit } = pickStopLossAndTakeProfit(position, openOrders);
+  const { stopLoss, takeProfit, takeProfits } = pickStopLossAndTakeProfit(position, openOrders);
   const openedAt = pickOpenedAt(position, fills);
   const rawPositionValue = toFiniteNumber(
     (position.raw as { position?: { positionValue?: unknown } } | undefined)?.position?.positionValue
@@ -117,6 +129,7 @@ function toLivePosition(position: PositionSnapshot, openOrders: OrderSnapshot[],
     dealValue,
     stopLoss,
     takeProfit,
+    takeProfits,
     openedAt,
     leverage: position.leverage,
     unrealizedPnl: position.unrealizedPnl

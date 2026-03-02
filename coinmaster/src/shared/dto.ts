@@ -204,6 +204,7 @@ export interface LivePosition {
   dealValue?: number;
   stopLoss?: number;
   takeProfit?: number;
+  takeProfits?: number[];
   openedAt?: string;
   leverage?: number;
   unrealizedPnl?: number;
