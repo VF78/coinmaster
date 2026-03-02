@@ -12,7 +12,7 @@ import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
-import type { LivePosition, PendingConfirmation, TradingRulesSettings, TradingRulesTimeframe } from '../shared/dto.js';
+import type { LivePosition, PendingConfirmation, TelegramOutboxItem, TradingRulesSettings, TradingRulesTimeframe } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult } from './runtimeRules.js';
@@ -51,6 +51,9 @@ const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 const PENDING_CONFIRMATION_TTL_MS = Math.max(5 * 60_000, Number(process.env.PENDING_CONFIRMATION_TTL_MS || 6 * 60 * 60_000)); // default 6h
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || '').trim();
 const TELEGRAM_CHAT_ID = (process.env.TELEGRAM_CHAT_ID || '').trim();
+const TELEGRAM_OUTBOX_RETRY_BASE_MS = Math.max(2000, Number(process.env.TELEGRAM_OUTBOX_RETRY_BASE_MS || 10_000));
+const TELEGRAM_OUTBOX_RETRY_MAX_MS = Math.max(30_000, Number(process.env.TELEGRAM_OUTBOX_RETRY_MAX_MS || 15 * 60_000));
+const TELEGRAM_OUTBOX_MAX_ATTEMPTS = Math.max(3, Number(process.env.TELEGRAM_OUTBOX_MAX_ATTEMPTS || 12));
 
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
 const rulesCache = new RuntimeRulesCache(5_000);
@@ -97,28 +100,195 @@ async function loadPendingConfirmationRows(): Promise<LivePosition[]> {
     .map(pendingToLivePosition);
 }
 
-async function notifyPendingConfirmationTelegram(pending: PendingConfirmation): Promise<void> {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+async function getTelegramConfig(): Promise<{
+  token: string;
+  chatId: string;
+  notifyOpen: boolean;
+  notifyTp: boolean;
+  notifySl: boolean;
+  notifyManualConfirm: boolean;
+} | null> {
+  const db = await getDb();
+  const s = db.data.settings.telegramNotify;
+  const token = String(s?.botToken || TELEGRAM_BOT_TOKEN || '').trim();
+  const chatId = String(s?.chatId || TELEGRAM_CHAT_ID || '').trim();
+  if (!token || !chatId) return null;
+  return {
+    token,
+    chatId,
+    notifyOpen: s?.notifyOpen !== false,
+    notifyTp: s?.notifyTp !== false,
+    notifySl: s?.notifySl !== false,
+    notifyManualConfirm: s?.notifyManualConfirm !== false,
+  };
+}
 
-  const text = [
-    '⚠️ Coinmaster signal requires confirmation',
-    `${pending.strategy.toUpperCase()} ${pending.timeframe} • ${pending.symbol} ${pending.side.toUpperCase()}`,
-    `Price: ${pending.price}`,
-    `Size: ${pending.size}`,
-    `Leverage: ${pending.leverage}x`,
-    `Reason: ${pending.reason}`,
-  ].join('\n');
+function maskBotToken(token: string): string {
+  if (!token) return '';
+  if (token.length <= 8) return '••••';
+  return `${token.slice(0, 4)}••••${token.slice(-4)}`;
+}
 
-  const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+async function sendTelegramText(text: string, opts?: { replyMarkup?: unknown }): Promise<void> {
+  const cfg = await getTelegramConfig();
+  if (!cfg) return;
+  const response = await fetch(`https://api.telegram.org/bot${cfg.token}/sendMessage`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text }),
+    body: JSON.stringify({
+      chat_id: cfg.chatId,
+      text,
+      ...(opts?.replyMarkup ? { reply_markup: opts.replyMarkup } : {}),
+    }),
   });
 
   if (!response.ok) {
     const body = await response.text().catch(() => '');
     throw new Error(`telegram_send_failed_${response.status}${body ? `_${body.slice(0, 80)}` : ''}`);
   }
+}
+
+async function enqueueTelegramOutbox(params: {
+  category: TelegramOutboxItem['category'];
+  text: string;
+  replyMarkup?: unknown;
+  dedupeKey?: string;
+}): Promise<{ queued: boolean; id?: string }> {
+  const cfg = await getTelegramConfig();
+  if (!cfg) return { queued: false };
+
+  const db = await getDb();
+  db.data.telegramOutbox = Array.isArray(db.data.telegramOutbox) ? db.data.telegramOutbox : [];
+
+  if (params.dedupeKey) {
+    const exists = db.data.telegramOutbox.find((m) => m.dedupeKey === params.dedupeKey && m.status !== 'failed');
+    if (exists) return { queued: false, id: exists.id };
+  }
+
+  const now = new Date().toISOString();
+  const msg: TelegramOutboxItem = {
+    id: `tg-${nanoid(10)}`,
+    category: params.category,
+    text: params.text,
+    replyMarkup: params.replyMarkup,
+    dedupeKey: params.dedupeKey,
+    status: 'queued',
+    attempts: 0,
+    nextAttemptAt: now,
+    createdAt: now,
+  };
+
+  db.data.telegramOutbox.push(msg);
+  if (db.data.telegramOutbox.length > 5000) {
+    db.data.telegramOutbox = db.data.telegramOutbox.slice(-5000);
+  }
+  await db.write();
+  return { queued: true, id: msg.id };
+}
+
+let telegramOutboxTimer: NodeJS.Timeout | null = null;
+let telegramOutboxBusy = false;
+
+async function runTelegramOutboxTick(): Promise<void> {
+  if (telegramOutboxBusy) return;
+  telegramOutboxBusy = true;
+  try {
+    const cfg = await getTelegramConfig();
+    if (!cfg) return;
+
+    const db = await getDb();
+    db.data.telegramOutbox = Array.isArray(db.data.telegramOutbox) ? db.data.telegramOutbox : [];
+
+    const now = Date.now();
+    const due = db.data.telegramOutbox
+      .filter((m) => m.status === 'queued' && Date.parse(m.nextAttemptAt) <= now)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+      .slice(0, 20);
+
+    if (due.length === 0) return;
+
+    let changed = false;
+
+    for (const msg of due) {
+      try {
+        const response = await fetch(`https://api.telegram.org/bot${cfg.token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: cfg.chatId,
+            text: msg.text,
+            ...(msg.replyMarkup ? { reply_markup: msg.replyMarkup } : {}),
+          }),
+        });
+
+        if (!response.ok) {
+          const body = await response.text().catch(() => '');
+          throw new Error(`telegram_send_failed_${response.status}${body ? `_${body.slice(0, 120)}` : ''}`);
+        }
+
+        msg.status = 'sent';
+        msg.sentAt = new Date().toISOString();
+        msg.lastError = undefined;
+        changed = true;
+      } catch (error) {
+        msg.attempts += 1;
+        msg.lastError = error instanceof Error ? error.message : String(error);
+        if (msg.attempts >= TELEGRAM_OUTBOX_MAX_ATTEMPTS) {
+          msg.status = 'failed';
+          logger.error({ component: 'telegram', outboxId: msg.id, attempts: msg.attempts, err: msg.lastError }, 'telegram outbox message permanently failed');
+        } else {
+          const backoff = Math.min(TELEGRAM_OUTBOX_RETRY_MAX_MS, TELEGRAM_OUTBOX_RETRY_BASE_MS * (2 ** Math.max(0, msg.attempts - 1)));
+          msg.nextAttemptAt = new Date(Date.now() + backoff).toISOString();
+          logger.warn({ component: 'telegram', outboxId: msg.id, attempts: msg.attempts, retryInMs: backoff, err: msg.lastError }, 'telegram outbox retry scheduled');
+        }
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      db.data.telegramOutbox = db.data.telegramOutbox.filter((m) => m.status !== 'sent' || (m.sentAt && Date.now() - Date.parse(m.sentAt) < 24 * 60 * 60_000));
+      await db.write();
+    }
+  } finally {
+    telegramOutboxBusy = false;
+  }
+}
+
+function startTelegramOutboxLoop(): void {
+  if (telegramOutboxTimer) return;
+  runTelegramOutboxTick().catch((err) => logger.warn({ component: 'telegram', err }, 'initial telegram outbox tick failed'));
+  telegramOutboxTimer = setInterval(() => {
+    runTelegramOutboxTick().catch((err) => logger.warn({ component: 'telegram', err }, 'telegram outbox tick failed'));
+  }, 3000);
+  telegramOutboxTimer.unref?.();
+}
+
+async function notifyPendingConfirmationTelegram(pending: PendingConfirmation): Promise<void> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifyManualConfirm) return;
+
+  const text = [
+    '⚠️ Coinmaster signal requires confirmation',
+    `ID: ${pending.id}`,
+    `${pending.strategy.toUpperCase()} ${pending.timeframe} • ${pending.symbol} ${pending.side.toUpperCase()}`,
+    `Price: ${pending.price}`,
+    `Size: ${pending.size}`,
+    `Leverage: ${pending.leverage}x`,
+    `Reason: ${pending.reason}`,
+    'Reply command: /confirm <ID> or /reject <ID>',
+  ].join('\n');
+
+  await enqueueTelegramOutbox({
+    category: 'manual_confirm',
+    text,
+    dedupeKey: `pending:${pending.id}`,
+    replyMarkup: {
+      inline_keyboard: [[
+        { text: '✅ Confirm', callback_data: `confirm:${pending.id}` },
+        { text: '❌ Reject', callback_data: `reject:${pending.id}` },
+      ]],
+    },
+  });
 }
 
 async function clearPendingConfirmationForSymbol(symbol: string): Promise<void> {
@@ -205,6 +375,290 @@ async function queuePendingConfirmation(params: {
   }
 
   return { queued: true, id: next.id };
+}
+
+async function notifyTradeOpen(params: {
+  symbol: string;
+  side: 'buy' | 'sell';
+  price: number;
+  size: number;
+  source: string;
+}): Promise<void> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifyOpen) return;
+  await enqueueTelegramOutbox({
+    category: 'trade_open',
+    dedupeKey: `open:${params.symbol}:${params.side}:${params.price}:${params.size}:${params.source}`,
+    text: [
+      '🟢 Trade opened',
+      `${params.symbol} ${params.side.toUpperCase()}`,
+      `Price: ${params.price}`,
+      `Size: ${params.size}`,
+      `Source: ${params.source}`,
+    ].join('\n'),
+  });
+}
+
+async function notifyTpHit(params: { symbol: string; entryPrice: number; remainingSize: number; tpIds: string[] }): Promise<void> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifyTp) return;
+  await enqueueTelegramOutbox({
+    category: 'tp',
+    dedupeKey: `tp:${params.symbol}:${params.tpIds.join(',')}`,
+    text: [
+      '🎯 Take-profit filled',
+      `${params.symbol}`,
+      `Filled TP orders: ${params.tpIds.join(', ')}`,
+      `SL moved to break-even: ${params.entryPrice}`,
+      `Remaining size: ${params.remainingSize}`,
+    ].join('\n'),
+  });
+}
+
+async function notifySlEvent(params: { symbol: string; reason: string }): Promise<void> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifySl) return;
+  await enqueueTelegramOutbox({
+    category: 'sl',
+    dedupeKey: `sl:${params.symbol}:${params.reason}:${Math.floor(Date.now() / 60000)}`,
+    text: [
+      '🛑 Stop-loss / emergency exit event',
+      `${params.symbol}`,
+      `Reason: ${params.reason}`,
+    ].join('\n'),
+  });
+}
+
+async function executePendingConfirmation(pendingId: string, actor: 'dashboard' | 'telegram'): Promise<{ ok: boolean; error?: string }> {
+  const db = await getDb();
+  const pending = db.data.pendingConfirmations.find((p) => p.id === pendingId);
+  if (!pending) return { ok: false, error: 'pending_not_found' };
+
+  const rules = rulesCache.getEffectiveRules();
+  const normalizedSymbol = normalizeSymbol(pending.symbol);
+  const side: 'buy' | 'sell' = pending.side === 'long' ? 'buy' : 'sell';
+  const now = new Date().toISOString();
+
+  // Risk check before submit
+  const risk = await evaluateRiskGates({ emitAudit: false });
+  if (!risk.canTrade) {
+    appendTradeEvent(db.data, {
+      symbol: normalizedSymbol,
+      source: 'live',
+      type: 'signal_rejected',
+      timestamp: now,
+      correlationId: `pending-${pending.id}`,
+      side: pending.side,
+      price: pending.price,
+      quantity: pending.size,
+      reason: 'pending_rejected_risk_gate',
+      payload: { blocks: risk.blocks.join(','), actor },
+    });
+    await db.write();
+    return { ok: false, error: `risk_gate_blocked:${risk.blocks.join(',')}` };
+  }
+
+  // leverage
+  if (Number.isFinite(pending.leverage) && pending.leverage > 0) {
+    const lev = Math.min(pending.leverage, rules.maxLeverage);
+    await exchange.setLeverage(normalizedSymbol, lev);
+  }
+
+  const correlationId = `pending-confirm-${pending.id}`;
+  appendTradeEvent(db.data, {
+    symbol: normalizedSymbol,
+    source: 'live',
+    type: 'order_submitted',
+    timestamp: now,
+    correlationId,
+    side: pending.side,
+    price: pending.price,
+    quantity: pending.size,
+    reason: 'pending_confirm_submit',
+    payload: { actor, strategy: pending.strategy, timeframe: pending.timeframe },
+  });
+
+  const ack = await exchange.placeLimitOrder({
+    symbol: normalizedSymbol,
+    side,
+    price: pending.price,
+    size: pending.size,
+    reduceOnly: false,
+    clientOrderId: correlationId,
+  });
+
+  appendTradeEvent(db.data, {
+    symbol: normalizedSymbol,
+    source: 'live',
+    type: ack.ok ? 'order_acknowledged' : 'order_rejected',
+    timestamp: new Date().toISOString(),
+    correlationId,
+    side: pending.side,
+    price: pending.price,
+    quantity: pending.size,
+    reason: ack.ok ? 'pending_confirm_ack' : 'pending_confirm_rejected',
+    payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, actor },
+  });
+
+  if (!ack.ok) {
+    await db.write();
+    return { ok: false, error: ack.error ?? 'exchange_rejected' };
+  }
+
+  db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
+
+  const tpSl = resolveTpSlDefaults(pending.price, side, undefined, undefined);
+  if (tpSl) {
+    try {
+      await placeTpSlTriggerOrders(normalizedSymbol, side, pending.size, tpSl, correlationId, pending.price);
+    } catch {
+      // best effort
+    }
+  }
+
+  await db.write();
+
+  try {
+    await notifyTradeOpen({ symbol: normalizedSymbol, side, price: pending.price, size: pending.size, source: `pending:${actor}` });
+  } catch (error) {
+    logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
+  }
+
+  return { ok: true };
+}
+
+async function rejectPendingConfirmation(pendingId: string, actor: 'dashboard' | 'telegram'): Promise<{ ok: boolean; error?: string }> {
+  const db = await getDb();
+  const before = db.data.pendingConfirmations.length;
+  db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
+  if (db.data.pendingConfirmations.length === before) {
+    return { ok: false, error: 'pending_not_found' };
+  }
+  appendTradeEvent(db.data, {
+    symbol: LIVE_SYMBOL,
+    source: 'live',
+    type: 'signal_rejected',
+    timestamp: new Date().toISOString(),
+    correlationId: `pending-reject-${pendingId}`,
+    reason: 'pending_confirmation_rejected',
+    payload: { pendingId, actor },
+  });
+  await db.write();
+  return { ok: true };
+}
+
+let telegramUpdateTimer: NodeJS.Timeout | null = null;
+let telegramUpdateBusy = false;
+
+async function answerTelegramCallback(token: string, callbackQueryId: string, text?: string): Promise<void> {
+  await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ callback_query_id: callbackQueryId, ...(text ? { text } : {}) }),
+  }).catch(() => undefined);
+}
+
+async function runTelegramUpdateTick(): Promise<void> {
+  if (telegramUpdateBusy) return;
+  telegramUpdateBusy = true;
+  try {
+    const cfg = await getTelegramConfig();
+    if (!cfg) return;
+
+    const db = await getDb();
+    const updateOffset = Math.max(0, Number(db.data.settings.telegramNotify?.updateOffset ?? 0));
+
+    const response = await fetch(`https://api.telegram.org/bot${cfg.token}/getUpdates`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ timeout: 20, offset: updateOffset, allowed_updates: ['message', 'callback_query'] }),
+    });
+    if (!response.ok) return;
+
+    const payload = await response.json() as { ok?: boolean; result?: any[] };
+    if (!payload.ok || !Array.isArray(payload.result) || payload.result.length === 0) return;
+
+    let nextOffset = updateOffset;
+
+    for (const update of payload.result) {
+      nextOffset = Math.max(nextOffset, Number(update.update_id || 0) + 1);
+
+      const msg = update.message;
+      const cb = update.callback_query;
+      const chatIdRaw = cb?.message?.chat?.id ?? msg?.chat?.id;
+      if (String(chatIdRaw ?? '') !== String(cfg.chatId)) continue;
+
+      if (msg?.text) {
+        const text = String(msg.text).trim();
+        if (text.startsWith('/confirm')) {
+          const id = text.split(/\s+/)[1];
+          if (!id) {
+            await sendTelegramText('Usage: /confirm <pending-id>');
+            continue;
+          }
+          const result = await executePendingConfirmation(id, 'telegram');
+          await sendTelegramText(result.ok ? `✅ Confirmed: ${id}` : `❌ Confirm failed: ${id} (${result.error})`);
+        } else if (text.startsWith('/reject')) {
+          const id = text.split(/\s+/)[1];
+          if (!id) {
+            await sendTelegramText('Usage: /reject <pending-id>');
+            continue;
+          }
+          const result = await rejectPendingConfirmation(id, 'telegram');
+          await sendTelegramText(result.ok ? `🗑 Rejected: ${id}` : `❌ Reject failed: ${id} (${result.error})`);
+        } else if (text === '/pending') {
+          const pending = await loadPendingConfirmations();
+          if (!pending.length) {
+            await sendTelegramText('No pending confirmations.');
+          } else {
+            const lines = pending.slice(0, 10).map((p) => `${p.id} • ${p.symbol} ${p.side.toUpperCase()} • ${p.strategy}/${p.timeframe} • px ${p.price}`);
+            await sendTelegramText(`Pending confirmations:\n${lines.join('\n')}`);
+          }
+        }
+      }
+
+      if (cb?.id && cb?.data) {
+        const data = String(cb.data);
+        if (data.startsWith('confirm:')) {
+          const id = data.slice('confirm:'.length);
+          const result = await executePendingConfirmation(id, 'telegram');
+          await answerTelegramCallback(cfg.token, cb.id, result.ok ? 'Confirmed' : `Failed: ${result.error ?? 'error'}`);
+          await sendTelegramText(result.ok ? `✅ Confirmed: ${id}` : `❌ Confirm failed: ${id} (${result.error})`);
+        } else if (data.startsWith('reject:')) {
+          const id = data.slice('reject:'.length);
+          const result = await rejectPendingConfirmation(id, 'telegram');
+          await answerTelegramCallback(cfg.token, cb.id, result.ok ? 'Rejected' : `Failed: ${result.error ?? 'error'}`);
+          await sendTelegramText(result.ok ? `🗑 Rejected: ${id}` : `❌ Reject failed: ${id} (${result.error})`);
+        }
+      }
+    }
+
+    if (nextOffset !== updateOffset) {
+      db.data.settings.telegramNotify = db.data.settings.telegramNotify ?? {
+        botToken: '',
+        chatId: '',
+        notifyOpen: true,
+        notifyTp: true,
+        notifySl: true,
+        notifyManualConfirm: true,
+      };
+      db.data.settings.telegramNotify.updateOffset = nextOffset;
+      await db.write();
+    }
+  } catch (err) {
+    logger.warn({ component: 'telegram', err }, 'telegram update tick failed');
+  } finally {
+    telegramUpdateBusy = false;
+  }
+}
+
+function startTelegramUpdateLoop(): void {
+  if (telegramUpdateTimer) return;
+  runTelegramUpdateTick().catch((err) => logger.warn({ component: 'telegram', err }, 'initial telegram tick failed'));
+  telegramUpdateTimer = setInterval(() => {
+    runTelegramUpdateTick().catch((err) => logger.warn({ component: 'telegram', err }, 'telegram tick failed'));
+  }, 5000);
+  telegramUpdateTimer.unref?.();
 }
 
 // ─── Owner Auth Middleware ────────────────────────────────────────────
@@ -451,6 +905,12 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
             reduceOnly: true,
             clientOrderId: `emergency-retry-${Date.now()}-${nanoid(6)}`
           });
+        }
+
+        try {
+          await notifySlEvent({ symbol: pos.symbol, reason });
+        } catch (notifyErr) {
+          logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'SL telegram notify failed');
         }
       } catch (error) {
         logger.error({ component: 'risk-gate', symbol: pos.symbol, err: error }, 'failed to emergency-close position');
@@ -735,9 +1195,14 @@ async function runEngulfingMonitorTick(): Promise<void> {
 
             // Auto-apply TP/SL if available
             if (ack.ok) {
+              try {
+                await notifyTradeOpen({ symbol, side, price: mid, size: sizing.size, source: 'engulfing:auto' });
+              } catch (error) {
+                logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
+              }
               const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
               if (tpSl) {
-                try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId); } catch { /* best-effort */ }
+                try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, mid); } catch { /* best-effort */ }
               }
             }
           } catch (err) {
@@ -1005,8 +1470,13 @@ async function runFvgMonitorTick(): Promise<void> {
           logger.info({ component: 'fvg-monitor', symbol, side, size: sizing.size, ok: ack.ok, orderId: ack.orderId }, 'FVG auto-entry result');
 
           if (ack.ok) {
+            try {
+              await notifyTradeOpen({ symbol, side, price: mid, size: sizing.size, source: 'fvg:auto' });
+            } catch (error) {
+              logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
+            }
             const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
-            if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId); } catch { /* best-effort */ } }
+            if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, mid); } catch { /* best-effort */ } }
           }
         } catch (err) {
           logger.error({ component: 'fvg-monitor', err }, 'FVG auto-entry order failed');
@@ -1789,6 +2259,9 @@ app.get('/api/settings/exchange', async (_req, res) => {
   const liveMode = getLiveMode();
   const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, liveMode);
 
+  const db = await getDb();
+  const tg = db.data.settings.telegramNotify;
+
   return res.json({
     exchange: exchange.name,
     connected: live.connected,
@@ -1801,7 +2274,111 @@ app.get('/api/settings/exchange', async (_req, res) => {
       privateTrading: exchange.capabilities.privateTrading,
       realtimeMids: exchange.capabilities.realtimeMids
     },
+    telegramNotify: {
+      hasToken: Boolean(tg?.botToken?.trim() || TELEGRAM_BOT_TOKEN),
+      chatId: tg?.chatId || TELEGRAM_CHAT_ID,
+      botTokenMasked: maskBotToken(String(tg?.botToken || TELEGRAM_BOT_TOKEN || '')),
+      notifyOpen: tg?.notifyOpen !== false,
+      notifyTp: tg?.notifyTp !== false,
+      notifySl: tg?.notifySl !== false,
+      notifyManualConfirm: tg?.notifyManualConfirm !== false,
+    },
     error: live.error
+  });
+});
+
+app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
+  const {
+    botToken,
+    chatId,
+    notifyOpen,
+    notifyTp,
+    notifySl,
+    notifyManualConfirm,
+  } = req.body as {
+    botToken?: string;
+    chatId?: string;
+    notifyOpen?: boolean;
+    notifyTp?: boolean;
+    notifySl?: boolean;
+    notifyManualConfirm?: boolean;
+  };
+
+  const db = await getDb();
+  const current = db.data.settings.telegramNotify ?? {
+    botToken: '',
+    chatId: '',
+    notifyOpen: true,
+    notifyTp: true,
+    notifySl: true,
+    notifyManualConfirm: true,
+  };
+
+  db.data.settings.telegramNotify = {
+    botToken: botToken !== undefined ? String(botToken).trim() : current.botToken,
+    chatId: chatId !== undefined ? String(chatId).trim() : current.chatId,
+    notifyOpen: notifyOpen !== undefined ? Boolean(notifyOpen) : current.notifyOpen,
+    notifyTp: notifyTp !== undefined ? Boolean(notifyTp) : current.notifyTp,
+    notifySl: notifySl !== undefined ? Boolean(notifySl) : current.notifySl,
+    notifyManualConfirm: notifyManualConfirm !== undefined ? Boolean(notifyManualConfirm) : current.notifyManualConfirm,
+  };
+
+  await db.write();
+
+  if (!telegramUpdateTimer) startTelegramUpdateLoop();
+  if (!telegramOutboxTimer) startTelegramOutboxLoop();
+
+  return res.json({
+    ok: true,
+    telegramNotify: {
+      hasToken: Boolean(db.data.settings.telegramNotify.botToken),
+      chatId: db.data.settings.telegramNotify.chatId,
+      botTokenMasked: maskBotToken(db.data.settings.telegramNotify.botToken),
+      notifyOpen: db.data.settings.telegramNotify.notifyOpen,
+      notifyTp: db.data.settings.telegramNotify.notifyTp,
+      notifySl: db.data.settings.telegramNotify.notifySl,
+      notifyManualConfirm: db.data.settings.telegramNotify.notifyManualConfirm,
+    },
+  });
+});
+
+app.post('/api/settings/telegram-notify/test', ownerAuth, async (_req, res) => {
+  const cfg = await getTelegramConfig();
+  if (!cfg) {
+    return res.status(400).json({ ok: false, error: 'telegram_not_configured' });
+  }
+  await enqueueTelegramOutbox({
+    category: 'system',
+    dedupeKey: `test:${Math.floor(Date.now() / 10000)}`,
+    text: `✅ Coinmaster Telegram test ping\nTime: ${new Date().toISOString()}`,
+  });
+  return res.json({ ok: true });
+});
+
+app.get('/api/settings/telegram-notify/health', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  const outbox = Array.isArray(db.data.telegramOutbox) ? db.data.telegramOutbox : [];
+  const queued = outbox.filter((m) => m.status === 'queued');
+  const failed = outbox.filter((m) => m.status === 'failed');
+  const oldestQueued = queued
+    .map((m) => Date.parse(m.createdAt))
+    .filter((ts) => Number.isFinite(ts))
+    .sort((a, b) => a - b)[0];
+
+  return res.json({
+    ok: true,
+    totals: {
+      queued: queued.length,
+      failed: failed.length,
+      all: outbox.length,
+    },
+    oldestQueuedAgeSec: oldestQueued ? Math.max(0, Math.floor((Date.now() - oldestQueued) / 1000)) : 0,
+    failedSample: failed.slice(-5).map((m) => ({ id: m.id, attempts: m.attempts, error: m.lastError })),
+    loop: {
+      outboxRunning: Boolean(telegramOutboxTimer),
+      updateRunning: Boolean(telegramUpdateTimer),
+    },
+    configPresent: Boolean((db.data.settings.telegramNotify?.botToken || TELEGRAM_BOT_TOKEN) && (db.data.settings.telegramNotify?.chatId || TELEGRAM_CHAT_ID)),
   });
 });
 
@@ -1926,6 +2503,21 @@ app.get('/api/live/status', async (_req, res) => {
     ok: live.connected,
     ...live
   });
+});
+
+app.get('/api/live/pending-confirmations', ownerAuth, async (_req, res) => {
+  const pending = await loadPendingConfirmations();
+  return res.json({ ok: true, pending });
+});
+
+app.post('/api/live/pending-confirmations/:id/confirm', ownerAuth, async (req, res) => {
+  const result = await executePendingConfirmation(req.params.id, 'dashboard');
+  return res.status(result.ok ? 200 : 400).json(result);
+});
+
+app.post('/api/live/pending-confirmations/:id/reject', ownerAuth, async (req, res) => {
+  const result = await rejectPendingConfirmation(req.params.id, 'dashboard');
+  return res.status(result.ok ? 200 : 400).json(result);
 });
 
 app.post('/api/live/leverage', ownerAuth, async (req, res) => {
@@ -2217,10 +2809,15 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
 
   if (ack.ok && !reduceOnly) {
     await clearPendingConfirmationForSymbol(normalizedSymbol);
+    try {
+      await notifyTradeOpen({ symbol: normalizedSymbol, side, price: px, size: qty, source: 'api:order_limit' });
+    } catch (error) {
+      logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
+    }
     tpSlApplied = resolveTpSlDefaults(px, side, requestStopLoss, requestTakeProfit);
     if (tpSlApplied) {
       try {
-        tpSlResult = await placeTpSlTriggerOrders(normalizedSymbol, side, qty, tpSlApplied, correlationId);
+        tpSlResult = await placeTpSlTriggerOrders(normalizedSymbol, side, qty, tpSlApplied, correlationId, px);
       } catch {
         tpSlResult = {
           stopLossOrder: { ok: false, error: 'tp_sl_placement_failed' },
@@ -2488,6 +3085,17 @@ async function runTpFillMonitorTick(): Promise<void> {
       const stillPending = trade.tpOrderIds.filter(id => openOrderIds.has(id));
       const justFilled = trade.tpOrderIds.filter(id => !openOrderIds.has(id));
 
+      // If SL order disappeared before any TP fill, assume SL fired.
+      if (!trade.firstTpFired && trade.slOrderId && !openOrderIds.has(trade.slOrderId)) {
+        try {
+          await notifySlEvent({ symbol: trade.symbol, reason: 'stop_loss_trigger_filled' });
+        } catch (error) {
+          logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'SL telegram notify failed');
+        }
+        activeTrades.delete(correlationId);
+        continue;
+      }
+
       if (justFilled.length === 0) continue;
 
       trade.tpOrderIds = stillPending;
@@ -2523,6 +3131,13 @@ async function runTpFillMonitorTick(): Promise<void> {
               reason: beSlAck.ok ? 'break_even_sl_placed' : 'break_even_sl_failed',
               details: { symbol: trade.symbol, entryPrice: trade.entryPrice, remainingSize, orderId: beSlAck.orderId },
             });
+            if (beSlAck.ok) {
+              try {
+                await notifyTpHit({ symbol: trade.symbol, entryPrice: trade.entryPrice, remainingSize, tpIds: justFilled });
+              } catch (error) {
+                logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'TP telegram notify failed');
+              }
+            }
           } catch (err) {
             logger.error({ component: 'tp-monitor', err }, 'failed to place break-even SL');
           }
@@ -2744,10 +3359,15 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
 
   if (ack.ok && !reduceOnly) {
     await clearPendingConfirmationForSymbol(normalizedSymbol);
+    try {
+      await notifyTradeOpen({ symbol: normalizedSymbol, side, price: px, size: qty, source: 'api:order' });
+    } catch (error) {
+      logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
+    }
     tpSlApplied = resolveTpSlDefaults(px, side, requestStopLoss, requestTakeProfit);
     if (tpSlApplied) {
       try {
-        tpSlResult = await placeTpSlTriggerOrders(normalizedSymbol, side, qty, tpSlApplied, correlationId);
+        tpSlResult = await placeTpSlTriggerOrders(normalizedSymbol, side, qty, tpSlApplied, correlationId, px);
       } catch (err) {
         tpSlResult = {
           stopLossOrder: { ok: false, error: 'tp_sl_placement_failed' },
@@ -2984,9 +3604,17 @@ const server = app.listen(port, host, () => {
   startEngulfingMonitor();
   startFvgMonitor();
   startTpFillMonitor();
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-    logger.warn({ component: 'pending-confirmation' }, 'Telegram alerts disabled (set TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID)');
-  }
+  startTelegramOutboxLoop();
+  startTelegramUpdateLoop();
+  getTelegramConfig()
+    .then((cfg) => {
+      if (!cfg) {
+        logger.warn({ component: 'pending-confirmation' }, 'Telegram alerts disabled (configure bot token + chat id in Settings)');
+      } else {
+        logger.info({ component: 'telegram', chatId: cfg.chatId }, 'Telegram notifications enabled');
+      }
+    })
+    .catch(() => undefined);
 });
 
 async function gracefulShutdown(signal: string) {
@@ -3007,6 +3635,8 @@ async function gracefulShutdown(signal: string) {
   if (engulfingMonitorTimer) { clearInterval(engulfingMonitorTimer); engulfingMonitorTimer = null; }
   if (fvgMonitorTimer) { clearInterval(fvgMonitorTimer); fvgMonitorTimer = null; }
   if (tpFillMonitorTimer) { clearInterval(tpFillMonitorTimer); tpFillMonitorTimer = null; }
+  if (telegramOutboxTimer) { clearInterval(telegramOutboxTimer); telegramOutboxTimer = null; }
+  if (telegramUpdateTimer) { clearInterval(telegramUpdateTimer); telegramUpdateTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
   if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
 

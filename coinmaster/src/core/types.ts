@@ -1,4 +1,4 @@
-import type { AppSettings, BiasCommand, DailyDDBaseline, MarketTick, PendingConfirmation, Position, RiskGateAuditEntry, TradeEvent, TradeLog } from '../shared/dto.js';
+import type { AppSettings, BiasCommand, DailyDDBaseline, MarketTick, PendingConfirmation, Position, RiskGateAuditEntry, TelegramOutboxItem, TradeEvent, TradeLog } from '../shared/dto.js';
 
 export type {
   AppSettings,
@@ -28,4 +28,5 @@ export interface DBShape {
   dailyDDBaselines: DailyDDBaseline[];
   riskGateAudit: RiskGateAuditEntry[];
   pendingConfirmations: PendingConfirmation[];
+  telegramOutbox: TelegramOutboxItem[];
 }

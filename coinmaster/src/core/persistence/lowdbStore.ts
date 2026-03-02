@@ -5,7 +5,18 @@ import { cloneTradingRulesDefaults, normalizeTradingRules } from '../../shared/t
 import type { PersistenceStore } from './types.js';
 
 const defaultData: DBShape = {
-  settings: { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults() },
+  settings: {
+    depositUsd: 1000,
+    tradingRules: cloneTradingRulesDefaults(),
+    telegramNotify: {
+      botToken: '',
+      chatId: '',
+      notifyOpen: true,
+      notifyTp: true,
+      notifySl: true,
+      notifyManualConfirm: true,
+    },
+  },
   positions: [],
   tradeLogs: [],
   tradeEvents: [],
@@ -13,7 +24,8 @@ const defaultData: DBShape = {
   marketTicks: [],
   dailyDDBaselines: [],
   riskGateAudit: [],
-  pendingConfirmations: []
+  pendingConfirmations: [],
+  telegramOutbox: []
 };
 
 function ensureDbShape(data: DBShape) {
@@ -22,6 +34,20 @@ function ensureDbShape(data: DBShape) {
     data.settings.depositUsd = 1000;
   }
   data.settings.tradingRules = normalizeTradingRules(data.settings.tradingRules);
+  data.settings.telegramNotify = data.settings.telegramNotify ?? {
+    botToken: '',
+    chatId: '',
+    notifyOpen: true,
+    notifyTp: true,
+    notifySl: true,
+    notifyManualConfirm: true,
+  };
+  data.settings.telegramNotify.botToken = String(data.settings.telegramNotify.botToken ?? '');
+  data.settings.telegramNotify.chatId = String(data.settings.telegramNotify.chatId ?? '');
+  data.settings.telegramNotify.notifyOpen = data.settings.telegramNotify.notifyOpen !== false;
+  data.settings.telegramNotify.notifyTp = data.settings.telegramNotify.notifyTp !== false;
+  data.settings.telegramNotify.notifySl = data.settings.telegramNotify.notifySl !== false;
+  data.settings.telegramNotify.notifyManualConfirm = data.settings.telegramNotify.notifyManualConfirm !== false;
   if (!Array.isArray(data.positions)) data.positions = [];
   if (!Array.isArray(data.tradeLogs)) data.tradeLogs = [];
   if (!Array.isArray(data.tradeEvents)) data.tradeEvents = [];
@@ -30,6 +56,7 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.dailyDDBaselines)) data.dailyDDBaselines = [];
   if (!Array.isArray(data.riskGateAudit)) data.riskGateAudit = [];
   if (!Array.isArray(data.pendingConfirmations)) data.pendingConfirmations = [];
+  if (!Array.isArray(data.telegramOutbox)) data.telegramOutbox = [];
 }
 
 export class LowdbStore implements PersistenceStore {

@@ -31,6 +31,40 @@ export function getExchangeSettings() {
   return jsonFetch<ExchangeSettingsResponse>('/api/settings/exchange');
 }
 
+export interface TelegramNotifyPayload {
+  botToken?: string;
+  chatId?: string;
+  notifyOpen?: boolean;
+  notifyTp?: boolean;
+  notifySl?: boolean;
+  notifyManualConfirm?: boolean;
+}
+
+export function saveTelegramNotify(payload: TelegramNotifyPayload) {
+  return jsonFetch<{ ok: boolean; telegramNotify: ExchangeSettingsResponse['telegramNotify'] }>('/api/settings/telegram-notify', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+}
+
+export function sendTelegramNotifyTest() {
+  return jsonFetch<{ ok: boolean; error?: string }>('/api/settings/telegram-notify/test', {
+    method: 'POST'
+  });
+}
+
+export function getTelegramNotifyHealth() {
+  return jsonFetch<{
+    ok: boolean;
+    totals: { queued: number; failed: number; all: number };
+    oldestQueuedAgeSec: number;
+    failedSample: Array<{ id: string; attempts: number; error?: string }>;
+    loop: { outboxRunning: boolean; updateRunning: boolean };
+    configPresent: boolean;
+  }>('/api/settings/telegram-notify/health');
+}
+
 export function getTradingRules() {
   return jsonFetch<TradingRulesSettingsResponse>('/api/settings/trading-rules');
 }
@@ -61,6 +95,18 @@ export function postBias(payload: BiasPayload) {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload)
+  });
+}
+
+export function confirmPendingConfirmation(id: string) {
+  return jsonFetch<{ ok: boolean; error?: string }>(`/api/live/pending-confirmations/${encodeURIComponent(id)}/confirm`, {
+    method: 'POST'
+  });
+}
+
+export function rejectPendingConfirmation(id: string) {
+  return jsonFetch<{ ok: boolean; error?: string }>(`/api/live/pending-confirmations/${encodeURIComponent(id)}/reject`, {
+    method: 'POST'
   });
 }
 

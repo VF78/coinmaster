@@ -37,9 +37,34 @@ export interface TradingRulesSettings {
   autoConfirm: boolean;
 }
 
+export interface TelegramNotifySettings {
+  botToken: string;
+  chatId: string;
+  notifyOpen: boolean;
+  notifyTp: boolean;
+  notifySl: boolean;
+  notifyManualConfirm: boolean;
+  updateOffset?: number;
+}
+
+export interface TelegramOutboxItem {
+  id: string;
+  category: 'manual_confirm' | 'trade_open' | 'tp' | 'sl' | 'system';
+  text: string;
+  replyMarkup?: unknown;
+  dedupeKey?: string;
+  status: 'queued' | 'sent' | 'failed';
+  attempts: number;
+  nextAttemptAt: string;
+  createdAt: string;
+  sentAt?: string;
+  lastError?: string;
+}
+
 export interface AppSettings {
   depositUsd: number;
   tradingRules: TradingRulesSettings;
+  telegramNotify?: TelegramNotifySettings;
 }
 
 export interface Position {
@@ -302,6 +327,15 @@ export interface ExchangeSettingsResponse {
     privateAccount: boolean;
     privateTrading: boolean;
     realtimeMids: boolean;
+  };
+  telegramNotify?: {
+    hasToken: boolean;
+    chatId: string;
+    botTokenMasked: string;
+    notifyOpen: boolean;
+    notifyTp: boolean;
+    notifySl: boolean;
+    notifyManualConfirm: boolean;
   };
   error?: string;
 }

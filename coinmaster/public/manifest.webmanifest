@@ -1,0 +1,9 @@
+{
+  "name": "Coinmaster24",
+  "short_name": "Coinmaster",
+  "display": "standalone",
+  "background_color": "#0a1220",
+  "theme_color": "#0a1220",
+  "start_url": "/",
+  "scope": "/"
+}

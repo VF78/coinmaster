@@ -40,7 +40,18 @@ function round2(v: number): number {
 
 function buildReplayDb(depositUsd: number): DBShape {
   return {
-    settings: { depositUsd, tradingRules: cloneTradingRulesDefaults() },
+    settings: {
+      depositUsd,
+      tradingRules: cloneTradingRulesDefaults(),
+      telegramNotify: {
+        botToken: '',
+        chatId: '',
+        notifyOpen: true,
+        notifyTp: true,
+        notifySl: true,
+        notifyManualConfirm: true,
+      },
+    },
     positions: [],
     tradeLogs: [],
     tradeEvents: [],
@@ -48,7 +59,8 @@ function buildReplayDb(depositUsd: number): DBShape {
     marketTicks: [],
     dailyDDBaselines: [],
     riskGateAudit: [],
-    pendingConfirmations: []
+    pendingConfirmations: [],
+    telegramOutbox: []
   };
 }
 

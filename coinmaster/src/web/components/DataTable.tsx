@@ -11,6 +11,7 @@ interface DataTableProps<T extends { id: string }> {
   rows: T[];
   mobileTitle: (row: T) => string;
   mobileSubtitle?: (row: T) => string;
+  mobileActions?: (row: T) => ReactNode;
   emptyText?: string;
 }
 
@@ -19,6 +20,7 @@ export function DataTable<T extends { id: string }>({
   rows,
   mobileTitle,
   mobileSubtitle,
+  mobileActions,
   emptyText = 'No data yet'
 }: DataTableProps<T>) {
   if (!rows.length) {
@@ -52,8 +54,11 @@ export function DataTable<T extends { id: string }>({
         {rows.map((row) => (
           <article key={row.id} className="mobile-card">
             <header className="mobile-card__header">
-              <h3>{mobileTitle(row)}</h3>
-              {mobileSubtitle ? <p>{mobileSubtitle(row)}</p> : null}
+              <div>
+                <h3>{mobileTitle(row)}</h3>
+                {mobileSubtitle ? <p>{mobileSubtitle(row)}</p> : null}
+              </div>
+              {mobileActions ? <div className="mobile-card__actions">{mobileActions(row)}</div> : null}
             </header>
             <dl>
               {columns.map((column) => (

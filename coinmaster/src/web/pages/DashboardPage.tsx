@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Bias, DashboardResponse, LivePosition } from '../../shared/dto.js';
-import { postBias, getDashboard } from '../lib/api';
+import { postBias, getDashboard, confirmPendingConfirmation, rejectPendingConfirmation } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
@@ -24,6 +24,7 @@ export function DashboardPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<LivePosition | null>(null);
   const [pnlPeriod, setPnlPeriod] = useState<PnlPeriod>('daily');
+  const [pendingActionId, setPendingActionId] = useState<string | null>(null);
   const refreshTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function refresh() {
@@ -54,6 +55,36 @@ export function DashboardPage() {
       const idx = PNL_CYCLE.indexOf(prev);
       return PNL_CYCLE[(idx + 1) % PNL_CYCLE.length];
     });
+  }
+
+  async function handleConfirmPending(row: LivePosition) {
+    setPendingActionId(row.id);
+    try {
+      const result = await confirmPendingConfirmation(row.id);
+      if (!result.ok) {
+        throw new Error(result.error || 'confirm_failed');
+      }
+      await refresh();
+    } catch (error) {
+      alert(`Confirm failed: ${error instanceof Error ? error.message : 'unknown_error'}`);
+    } finally {
+      setPendingActionId(null);
+    }
+  }
+
+  async function handleRejectPending(row: LivePosition) {
+    setPendingActionId(row.id);
+    try {
+      const result = await rejectPendingConfirmation(row.id);
+      if (!result.ok) {
+        throw new Error(result.error || 'reject_failed');
+      }
+      await refresh();
+    } catch (error) {
+      alert(`Reject failed: ${error instanceof Error ? error.message : 'unknown_error'}`);
+    } finally {
+      setPendingActionId(null);
+    }
   }
 
   const metrics = useMemo(() => {
@@ -172,6 +203,11 @@ export function DashboardPage() {
             const lev = row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—';
             return `Deal: ${dealValue} • Lev: ${lev}`;
           }}
+          mobileActions={(row) => (
+            <Button variant="secondary" onClick={() => setSelectedPosition(row)}>
+              Chart
+            </Button>
+          )}
           emptyText={data.live.connected ? 'No open live positions on exchange.' : 'Live account is not connected yet.'}
           columns={[
             { key: 'symbol',  header: 'Symbol',     render: (row) => row.symbol },
@@ -246,6 +282,12 @@ export function DashboardPage() {
                 const dealValue = row.dealValue !== undefined ? formatMoney(row.dealValue) : '—';
                 return `Deal: ${dealValue}`;
               }}
+              mobileActions={(row) => (
+                <div className="actions-row">
+                  <Button variant="primary" onClick={() => handleConfirmPending(row)} disabled={pendingActionId === row.id}>Confirm</Button>
+                  <Button variant="danger" onClick={() => handleRejectPending(row)} disabled={pendingActionId === row.id}>Reject</Button>
+                </div>
+              )}
               emptyText="No positions awaiting confirmation."
               columns={[
                 { key: 'symbol', header: 'Symbol',     render: (row) => row.symbol },
@@ -255,33 +297,38 @@ export function DashboardPage() {
                 { key: 'deal',   header: 'Deal value',  render: (row) => (row.dealValue !== undefined ? formatMoney(row.dealValue) : '—') },
                 { key: 'lev',    header: 'Leverage',    render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
                 { key: 'status', header: 'Status',      render: () => <span className="muted">awaiting confirmation</span> },
+                {
+                  key: 'actions',
+                  header: 'Actions',
+                  render: (row) => (
+                    <div className="actions-row">
+                      <Button variant="primary" onClick={() => handleConfirmPending(row)} disabled={pendingActionId === row.id}>Confirm</Button>
+                      <Button variant="danger" onClick={() => handleRejectPending(row)} disabled={pendingActionId === row.id}>Reject</Button>
+                    </div>
+                  )
+                },
               ]}
             />
-            <div style={{ marginTop: '0.75rem' }}>
-              <Button
-                variant="primary"
-                onClick={() => { alert('Confirmation dialog — placeholder'); }}
-                fullWidth
-              >
-                Confirm trade
-              </Button>
-            </div>
           </>
         )}
       </Card>
 
       {/* ── Position chart / SL/TP panel ─────────────────────────── */}
       {selectedPosition ? (
-        <Card title="Position chart / risk levels" className="full-width terminal-card">
-          <PositionLevelsPanel
-            position={selectedPosition}
-            onClose={() => setSelectedPosition(null)}
-            onApplied={async () => {
-              await refresh();
-              setSelectedPosition(null);
-            }}
-          />
-        </Card>
+        <div className="position-modal-overlay" role="dialog" aria-modal="true" aria-label="Position chart">
+          <div className="position-modal-sheet">
+            <Card title="Position chart / risk levels" className="full-width terminal-card">
+              <PositionLevelsPanel
+                position={selectedPosition}
+                onClose={() => setSelectedPosition(null)}
+                onApplied={async () => {
+                  await refresh();
+                  setSelectedPosition(null);
+                }}
+              />
+            </Card>
+          </div>
+        </div>
       ) : null}
     </main>
   );

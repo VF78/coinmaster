@@ -7,10 +7,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
 }
 
-export function Button({ children, className = '', variant = 'secondary', fullWidth = false, ...props }: PropsWithChildren<ButtonProps>) {
+export function Button({ children, className = '', variant = 'secondary', fullWidth = false, type = 'button', ...props }: PropsWithChildren<ButtonProps>) {
   const classes = ['btn', `btn--${variant}`, fullWidth ? 'btn--full' : '', className].filter(Boolean).join(' ');
   return (
-    <button className={classes} {...props}>
+    <button type={type} className={classes} {...props}>
       {children}
     </button>
   );
