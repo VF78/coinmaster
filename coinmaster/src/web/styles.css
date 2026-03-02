@@ -449,12 +449,54 @@ tbody tr:hover {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  position: relative;
 }
 
 .position-panel__chart {
   width: 100%;
   height: clamp(170px, 34vh, 300px);
   min-height: 0;
+}
+
+.hl-line-overlay {
+  position: absolute;
+  inset: 2.2rem 0.4rem 0.4rem 0.4rem;
+  pointer-events: none;
+}
+
+.hl-line-chip {
+  position: absolute;
+  left: 0.7rem;
+  transform: translateY(-50%);
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 0.35rem;
+  border: 1px solid #2a3f60;
+  background: rgba(9, 16, 30, 0.92);
+  padding: 0.12rem 0.35rem;
+  font-size: 0.72rem;
+  color: #d6e2f7;
+}
+
+.hl-line-chip strong {
+  background: #0e1a31;
+  border-left: 1px solid #2a3f60;
+  padding-left: 0.35rem;
+  font-size: 0.72rem;
+}
+
+.hl-line-chip--tp {
+  border-color: rgba(22, 199, 132, 0.55);
+}
+
+.hl-line-chip--sl {
+  border-color: rgba(234, 91, 114, 0.55);
+}
+
+.hl-line-chip--pnl {
+  border-color: rgba(159, 176, 207, 0.55);
 }
 
 .hl-timeframes {
@@ -547,14 +589,14 @@ tbody tr:hover {
 .hl-confirm-row {
   position: sticky;
   bottom: 0;
-  z-index: 3;
-  background: linear-gradient(180deg, rgba(10, 18, 32, 0.75) 0%, rgba(10, 18, 32, 0.98) 45%);
+  z-index: 8;
+  background: linear-gradient(180deg, rgba(10, 18, 32, 0.75) 0%, rgba(10, 18, 32, 0.99) 45%);
   backdrop-filter: blur(6px);
   padding-top: 0.45rem;
+  padding-bottom: calc(0.45rem + env(safe-area-inset-bottom));
   border-top: 1px solid #1c304d;
   margin-top: 0.25rem;
 }
-
 .position-panel__hint {
   font-size: var(--text-xs);
 }
@@ -727,6 +769,22 @@ tbody tr:hover {
   .hl-action-spacer {
     width: 58px;
     height: 2.05rem;
+  }
+
+  .hl-line-chip {
+    left: 0.35rem;
+    font-size: 0.64rem;
+    gap: 0.25rem;
+    padding: 0.09rem 0.22rem;
+  }
+
+  .hl-line-chip strong {
+    font-size: 0.64rem;
+    padding-left: 0.25rem;
+  }
+
+  .hl-confirm-row {
+    padding-bottom: calc(0.35rem + env(safe-area-inset-bottom));
   }
 
   .position-modal-sheet .position-panel {

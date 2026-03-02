@@ -47,6 +47,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const entrySeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+  const pnlSeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const slSeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const tpSeriesRefs = useRef<Array<ISeriesApi<'Line'>>>([]);
 
@@ -56,6 +57,8 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const [error, setError] = useState<string | null>(null);
   const [isApplying, setIsApplying] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
+  const [dragging, setDragging] = useState<{ kind: 'sl' | 'tp'; index: number } | null>(null);
+  const [chipCoords, setChipCoords] = useState<{ pnl: number | null; sl: number | null; tps: Array<number | null> }>({ pnl: null, sl: null, tps: [] });
 
   const entry = position.entryPrice ?? 0;
   const side = position.side;
@@ -73,10 +76,35 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     return base > 0 ? [Number(base.toFixed(2))] : [];
   });
 
+  const stopLossRef = useRef(stopLoss);
+  const takeProfitsRef = useRef(takeProfits);
+  const draggingRef = useRef<typeof dragging>(dragging);
+
   const markPrice = useMemo(() => {
     const last = candles[candles.length - 1];
     return last?.close ?? position.entryPrice ?? 0;
   }, [candles, position.entryPrice]);
+
+  const unrealizedPnl = useMemo(() => {
+    if (typeof position.unrealizedPnl === 'number' && Number.isFinite(position.unrealizedPnl)) {
+      return position.unrealizedPnl;
+    }
+    if (!entry || !markPrice) return 0;
+    const delta = side === 'long' ? (markPrice - entry) : (entry - markPrice);
+    return Number((delta * position.size).toFixed(6));
+  }, [entry, markPrice, position.size, position.unrealizedPnl, side]);
+
+  useEffect(() => {
+    stopLossRef.current = stopLoss;
+  }, [stopLoss]);
+
+  useEffect(() => {
+    takeProfitsRef.current = takeProfits;
+  }, [takeProfits]);
+
+  useEffect(() => {
+    draggingRef.current = dragging;
+  }, [dragging]);
 
   const validation = useMemo(() => {
     if (!entry || !stopLoss || takeProfits.length === 0) {
@@ -155,7 +183,10 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         vertLines: { color: '#16243b' },
         horzLines: { color: '#16243b' },
       },
-      rightPriceScale: { borderColor: '#243a5a' },
+      rightPriceScale: {
+        borderColor: '#243a5a',
+        scaleMargins: { top: 0.12, bottom: 0.12 },
+      },
       leftPriceScale: { visible: false },
       timeScale: {
         borderColor: '#243a5a',
@@ -164,6 +195,20 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       crosshair: {
         vertLine: { color: '#2f4d7a' },
         horzLine: { color: '#2f4d7a' },
+      },
+      handleScroll: {
+        mouseWheel: false,
+        pressedMouseMove: true,
+        horzTouchDrag: true,
+        vertTouchDrag: false,
+      },
+      handleScale: {
+        mouseWheel: true,
+        pinch: true,
+        axisPressedMouseMove: {
+          time: true,
+          price: true,
+        },
       },
     });
 
@@ -175,11 +220,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       wickDownColor: '#ea5b72',
     });
 
-    const entrySeries = chart.addLineSeries({ color: '#9fb0cf', lineWidth: 2, lineStyle: 2, priceLineVisible: true });
-    const slSeries = chart.addLineSeries({ color: '#ea5b72', lineWidth: 2, priceLineVisible: true });
-    const tpSeries1 = chart.addLineSeries({ color: '#16c784', lineWidth: 2, priceLineVisible: true });
-    const tpSeries2 = chart.addLineSeries({ color: '#32d39a', lineWidth: 2, priceLineVisible: true });
-    const tpSeries3 = chart.addLineSeries({ color: '#58e0b0', lineWidth: 2, priceLineVisible: true });
+    const entrySeries = chart.addLineSeries({ color: '#bccbe6', lineWidth: 1, lineStyle: 2, priceLineVisible: true, lastValueVisible: false });
+    const pnlSeries = chart.addLineSeries({ color: '#9fb0cf', lineWidth: 1, lineStyle: 2, priceLineVisible: true, lastValueVisible: false });
+    const slSeries = chart.addLineSeries({ color: '#ea5b72', lineWidth: 1, lineStyle: 2, priceLineVisible: true, lastValueVisible: false });
+    const tpSeries1 = chart.addLineSeries({ color: '#16c784', lineWidth: 1, lineStyle: 2, priceLineVisible: true, lastValueVisible: false });
+    const tpSeries2 = chart.addLineSeries({ color: '#32d39a', lineWidth: 1, lineStyle: 2, priceLineVisible: true, lastValueVisible: false });
+    const tpSeries3 = chart.addLineSeries({ color: '#58e0b0', lineWidth: 1, lineStyle: 2, priceLineVisible: true, lastValueVisible: false });
 
     candleSeries.setData(toCandleData(candles));
     chart.timeScale().fitContent();
@@ -187,6 +233,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     chartRef.current = chart;
     candleSeriesRef.current = candleSeries;
     entrySeriesRef.current = entrySeries;
+    pnlSeriesRef.current = pnlSeries;
     slSeriesRef.current = slSeries;
     tpSeriesRefs.current = [tpSeries1, tpSeries2, tpSeries3];
 
@@ -202,12 +249,88 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     resizeObserver.observe(host);
     onResize();
 
+    const findNearestDraggable = (clientY: number): { kind: 'sl' | 'tp'; index: number } | null => {
+      const rect = host.getBoundingClientRect();
+      const y = clientY - rect.top;
+      const priceToY = (price: number) => {
+        const series = candleSeriesRef.current as unknown as { priceToCoordinate?: (p: number) => number | null } | null;
+        return series?.priceToCoordinate?.(price) ?? null;
+      };
+
+      const candidates: Array<{ kind: 'sl' | 'tp'; index: number; dist: number }> = [];
+      const slY = priceToY(stopLossRef.current);
+      if (slY !== null) {
+        candidates.push({ kind: 'sl', index: 0, dist: Math.abs(slY - y) });
+      }
+      takeProfitsRef.current.forEach((tp, idx) => {
+        const tpY = priceToY(tp);
+        if (tpY !== null) {
+          candidates.push({ kind: 'tp', index: idx, dist: Math.abs(tpY - y) });
+        }
+      });
+
+      candidates.sort((a, b) => a.dist - b.dist);
+      if (!candidates.length || candidates[0].dist > 12) return null;
+      return { kind: candidates[0].kind, index: candidates[0].index };
+    };
+
+    const pointerDown = (event: PointerEvent) => {
+      const nearest = findNearestDraggable(event.clientY);
+      if (!nearest) return;
+      draggingRef.current = nearest;
+      setDragging(nearest);
+      host.style.cursor = 'ns-resize';
+      host.setPointerCapture?.(event.pointerId);
+    };
+
+    const pointerMove = (event: PointerEvent) => {
+      const drag = draggingRef.current;
+      if (!drag) return;
+      const rect = host.getBoundingClientRect();
+      const y = event.clientY - rect.top;
+      const series = candleSeriesRef.current as unknown as { coordinateToPrice?: (y: number) => number | null } | null;
+      const price = series?.coordinateToPrice?.(y);
+      if (!price || !Number.isFinite(price)) return;
+      const normalized = Number(price.toFixed(2));
+      if (drag.kind === 'sl') {
+        setStopLoss(normalized);
+      } else {
+        setTakeProfits((prev) => prev.map((tp, idx) => (idx === drag.index ? normalized : tp)));
+      }
+    };
+
+    const pointerUp = () => {
+      draggingRef.current = null;
+      setDragging(null);
+      host.style.cursor = 'default';
+    };
+
+    const wheelOnPriceScale = (event: WheelEvent) => {
+      const rect = host.getBoundingClientRect();
+      const inRightScale = event.clientX >= rect.right - 92;
+      if (inRightScale) {
+        event.stopPropagation();
+      }
+    };
+
+    host.addEventListener('pointerdown', pointerDown);
+    host.addEventListener('pointermove', pointerMove);
+    host.addEventListener('pointerup', pointerUp);
+    host.addEventListener('pointercancel', pointerUp);
+    host.addEventListener('wheel', wheelOnPriceScale, { passive: false });
+
     return () => {
       resizeObserver.disconnect();
+      host.removeEventListener('pointerdown', pointerDown);
+      host.removeEventListener('pointermove', pointerMove);
+      host.removeEventListener('pointerup', pointerUp);
+      host.removeEventListener('pointercancel', pointerUp);
+      host.removeEventListener('wheel', wheelOnPriceScale);
       chart.remove();
       chartRef.current = null;
       candleSeriesRef.current = null;
       entrySeriesRef.current = null;
+      pnlSeriesRef.current = null;
       slSeriesRef.current = null;
       tpSeriesRefs.current = [];
     };
@@ -222,6 +345,10 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       entrySeriesRef.current.setData([{ time: first, value: entry }, { time: last, value: entry }]);
     }
 
+    if (pnlSeriesRef.current && markPrice > 0) {
+      pnlSeriesRef.current.setData([{ time: first, value: markPrice }, { time: last, value: markPrice }]);
+    }
+
     if (slSeriesRef.current && stopLoss > 0) {
       slSeriesRef.current.setData([{ time: first, value: stopLoss }, { time: last, value: stopLoss }]);
     }
@@ -234,7 +361,24 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         series.setData([]);
       }
     });
-  }, [candles, entry, stopLoss, takeProfits]);
+
+    const updateChipCoords = () => {
+      const mapPrice = (value: number | undefined) => {
+        if (!value || value <= 0) return null;
+        const series = candleSeriesRef.current as unknown as { priceToCoordinate?: (p: number) => number | null } | null;
+        return series?.priceToCoordinate?.(value) ?? null;
+      };
+      setChipCoords({
+        pnl: mapPrice(markPrice),
+        sl: mapPrice(stopLoss),
+        tps: takeProfits.map((tp) => mapPrice(tp)),
+      });
+    };
+
+    updateChipCoords();
+    const id = setInterval(updateChipCoords, 240);
+    return () => clearInterval(id);
+  }, [candles, entry, markPrice, stopLoss, takeProfits]);
 
   function addTp() {
     if (takeProfits.length >= 3) return;
@@ -344,6 +488,34 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         </div>
         {isLoading ? <p className="muted">Loading chart…</p> : null}
         {!isLoading && !error ? <div className="position-panel__chart" ref={chartHostRef} /> : null}
+        {!isLoading && !error ? (
+          <div className="hl-line-overlay" aria-hidden>
+            {takeProfits.map((tp, idx) => {
+              const y = chipCoords.tps[idx];
+              if (y === null || y === undefined) return null;
+              return (
+                <div key={`tp-chip-${idx}`} className="hl-line-chip hl-line-chip--tp" style={{ top: y }}>
+                  <span>TP{idx + 1} Price &gt; {formatNumber(tp)}</span>
+                  <strong>{formatNumber(position.size)}</strong>
+                </div>
+              );
+            })}
+
+            {chipCoords.pnl !== null ? (
+              <div className="hl-line-chip hl-line-chip--pnl" style={{ top: chipCoords.pnl }}>
+                <span>PNL {formatMoney(unrealizedPnl)}</span>
+                <strong>{formatNumber(position.size)}</strong>
+              </div>
+            ) : null}
+
+            {chipCoords.sl !== null ? (
+              <div className="hl-line-chip hl-line-chip--sl" style={{ top: chipCoords.sl }}>
+                <span>SL Price {side === 'long' ? '<' : '>'} {formatNumber(stopLoss)}</span>
+                <strong>{formatNumber(position.size)}</strong>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         {!isLoading && error ? <p className="muted">Chart error: {error}</p> : null}
       </div>
 
