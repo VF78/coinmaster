@@ -47,7 +47,8 @@ function buildReplayDb(depositUsd: number): DBShape {
     biasCommands: [],
     marketTicks: [],
     dailyDDBaselines: [],
-    riskGateAudit: []
+    riskGateAudit: [],
+    pendingConfirmations: []
   };
 }
 

@@ -220,7 +220,7 @@ export function DashboardPage() {
               Confirm execution to place the position. TP/SL orders will be attached right after confirmation.
             </p>
             <p className="muted" style={{ margin: '0.5rem 0 0', fontSize: '0.85rem' }}>
-              A Telegram notification is sent for each pending confirmation. After approval, the position appears in Live open positions.
+              If Telegram alerts are configured, a notification is sent for each pending confirmation. After approval, the position appears in Live open positions.
             </p>
             <a
               href="https://t.me/your-bot"

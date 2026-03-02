@@ -194,7 +194,8 @@ export function computeLivePnl(fills: FillEvent[]): LivePnlSummary {
 export async function buildLiveDashboardState(
   exchange: ExchangeAdapter,
   symbol: string,
-  mode: LiveModeConfig
+  mode: LiveModeConfig,
+  pendingConfirmations: LivePosition[] = []
 ): Promise<LiveDashboardState> {
   const base: LiveDashboardState = {
     connected: false,
@@ -203,7 +204,7 @@ export async function buildLiveDashboardState(
     pnl: emptyPnl(),
     openOrders: 0,
     openPositions: [],
-    pendingConfirmations: []
+    pendingConfirmations
   };
 
   try {
@@ -227,7 +228,7 @@ export async function buildLiveDashboardState(
       pnl: computeLivePnl(fills),
       openOrders: openOrders.length,
       openPositions: openPositions.map((p) => toLivePosition(p, openOrders, fills)),
-      pendingConfirmations: []
+      pendingConfirmations
     };
   } catch (error) {
     return {

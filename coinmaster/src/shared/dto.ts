@@ -184,6 +184,19 @@ export interface LivePosition {
   unrealizedPnl?: number;
 }
 
+export interface PendingConfirmation {
+  id: string;
+  symbol: string;
+  side: TradeSide;
+  strategy: 'engulfing' | 'fvg';
+  timeframe: TradingRulesTimeframe;
+  reason: string;
+  price: number;
+  size: number;
+  leverage: number;
+  createdAt: string;
+}
+
 export interface LiveDashboardState {
   connected: boolean;
   mode: {

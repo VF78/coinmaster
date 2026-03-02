@@ -12,7 +12,7 @@ import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
-import type { TradingRulesSettings, TradingRulesTimeframe } from '../shared/dto.js';
+import type { LivePosition, PendingConfirmation, TradingRulesSettings, TradingRulesTimeframe } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult } from './runtimeRules.js';
@@ -48,6 +48,10 @@ const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(2000, Number(process.env.DRAWDOWN
 const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
 const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 
+const PENDING_CONFIRMATION_TTL_MS = Math.max(5 * 60_000, Number(process.env.PENDING_CONFIRMATION_TTL_MS || 6 * 60 * 60_000)); // default 6h
+const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || '').trim();
+const TELEGRAM_CHAT_ID = (process.env.TELEGRAM_CHAT_ID || '').trim();
+
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
 const rulesCache = new RuntimeRulesCache(5_000);
 
@@ -55,6 +59,152 @@ const rulesCache = new RuntimeRulesCache(5_000);
 function getLiveMode() {
   const r = rulesCache.getEffectiveRules();
   return { manualConfirmation: r.manualConfirmation, maxLeverage: r.maxLeverage };
+}
+
+function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
+  const cutoff = Date.now() - PENDING_CONFIRMATION_TTL_MS;
+  return list.filter((p) => Date.parse(p.createdAt) >= cutoff);
+}
+
+function pendingToLivePosition(pending: PendingConfirmation): LivePosition {
+  return {
+    id: pending.id,
+    symbol: pending.symbol,
+    side: pending.side,
+    size: pending.size,
+    entryPrice: pending.price,
+    dealValue: Number((pending.price * pending.size).toFixed(2)),
+    leverage: pending.leverage,
+    openedAt: pending.createdAt,
+  };
+}
+
+async function loadPendingConfirmations(): Promise<PendingConfirmation[]> {
+  const db = await getDb();
+  const next = prunePendingConfirmations(db.data.pendingConfirmations);
+  if (next.length !== db.data.pendingConfirmations.length) {
+    db.data.pendingConfirmations = next;
+    await db.write();
+  }
+  return next;
+}
+
+async function loadPendingConfirmationRows(): Promise<LivePosition[]> {
+  const pending = await loadPendingConfirmations();
+  return pending
+    .slice()
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map(pendingToLivePosition);
+}
+
+async function notifyPendingConfirmationTelegram(pending: PendingConfirmation): Promise<void> {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+
+  const text = [
+    '⚠️ Coinmaster signal requires confirmation',
+    `${pending.strategy.toUpperCase()} ${pending.timeframe} • ${pending.symbol} ${pending.side.toUpperCase()}`,
+    `Price: ${pending.price}`,
+    `Size: ${pending.size}`,
+    `Leverage: ${pending.leverage}x`,
+    `Reason: ${pending.reason}`,
+  ].join('\n');
+
+  const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    throw new Error(`telegram_send_failed_${response.status}${body ? `_${body.slice(0, 80)}` : ''}`);
+  }
+}
+
+async function clearPendingConfirmationForSymbol(symbol: string): Promise<void> {
+  const db = await getDb();
+  const before = db.data.pendingConfirmations.length;
+  db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.symbol.toUpperCase() !== symbol.toUpperCase());
+  if (db.data.pendingConfirmations.length !== before) {
+    await db.write();
+  }
+}
+
+async function queuePendingConfirmation(params: {
+  symbol: string;
+  side: 'long' | 'short';
+  strategy: 'engulfing' | 'fvg';
+  timeframe: TradingRulesTimeframe;
+  reason: string;
+  price: number;
+  size: number;
+  leverage: number;
+  correlationId: string;
+}): Promise<{ queued: boolean; id: string }> {
+  const db = await getDb();
+  const now = new Date().toISOString();
+
+  const cleaned = prunePendingConfirmations(db.data.pendingConfirmations);
+  db.data.pendingConfirmations = cleaned;
+
+  const next: PendingConfirmation = {
+    id: `pc-${nanoid(10)}`,
+    symbol: params.symbol,
+    side: params.side,
+    strategy: params.strategy,
+    timeframe: params.timeframe,
+    reason: params.reason,
+    price: Number(params.price.toFixed(8)),
+    size: Math.max(0, Number(params.size.toFixed(6))),
+    leverage: params.leverage,
+    createdAt: now,
+  };
+
+  const existingIdx = db.data.pendingConfirmations.findIndex((p) => p.symbol.toUpperCase() === params.symbol.toUpperCase());
+  if (existingIdx >= 0) {
+    const existing = db.data.pendingConfirmations[existingIdx];
+    const duplicate =
+      existing.side === next.side &&
+      existing.strategy === next.strategy &&
+      existing.timeframe === next.timeframe &&
+      Math.abs(Date.parse(now) - Date.parse(existing.createdAt)) < 60_000;
+
+    if (duplicate) {
+      return { queued: false, id: existing.id };
+    }
+
+    db.data.pendingConfirmations.splice(existingIdx, 1, next);
+  } else {
+    db.data.pendingConfirmations.push(next);
+  }
+
+  appendTradeEvent(db.data, {
+    symbol: params.symbol,
+    source: 'live',
+    type: 'signal_detected',
+    timestamp: now,
+    correlationId: params.correlationId,
+    side: params.side,
+    price: params.price,
+    quantity: params.size,
+    reason: `${params.strategy}_signal_pending_confirmation`,
+    payload: {
+      pendingConfirmationId: next.id,
+      timeframe: params.timeframe,
+      strategy: params.strategy,
+      leverage: params.leverage,
+    },
+  });
+
+  await db.write();
+
+  try {
+    await notifyPendingConfirmationTelegram(next);
+  } catch (error) {
+    logger.warn({ component: 'pending-confirmation', err: error instanceof Error ? error.message : error }, 'telegram notification failed');
+  }
+
+  return { queued: true, id: next.id };
 }
 
 // ─── Owner Auth Middleware ────────────────────────────────────────────
@@ -423,9 +573,38 @@ function startDrawdownWatchdog() {
 // ─── Engulfing Monitor Loop ───────────────────────────────────────────
 let engulfingMonitorTimer: NodeJS.Timeout | null = null;
 let engulfingMonitorBusy = false;
+let engulfingMonitorIntervalAppliedMs = 0;
 
 /** Per-signal debounce: key = `${symbol}:${tf}:${direction}`, value = last fired ms */
 const lastEntrySignalAt = new Map<string, number>();
+
+async function estimateSignalSize(params: {
+  symbol: string;
+  side: 'buy' | 'sell';
+  price: number;
+  effectiveRules: ReturnType<typeof rulesCache.getEffectiveRules>;
+}): Promise<{ size: number; leverage: number }> {
+  const { symbol, price, effectiveRules } = params;
+  const leverage = effectiveRules.maxLeverage;
+
+  const account = await exchange.getAccountState();
+  const equityUsd = account?.equityUsd ?? 0;
+  const availableUsd = account?.availableUsd ?? 0;
+
+  let sizeDecimals = 6;
+  try {
+    const meta = await exchange.getInstrumentMeta(symbol);
+    if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals;
+  } catch {
+    // best effort
+  }
+
+  const sizing = computeAllocationSize({ symbol, price, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
+  if (!sizing.ok) {
+    return { size: 0, leverage };
+  }
+  return { size: sizing.size, leverage };
+}
 
 /**
  * One tick of the engulfing background monitor.
@@ -457,6 +636,9 @@ async function runEngulfingMonitorTick(): Promise<void> {
     }
 
     const symbolPosition = positions.find(p => p.symbol.toUpperCase() === symbol.toUpperCase());
+    if (symbolPosition) {
+      await clearPendingConfirmationForSymbol(symbol);
+    }
 
     // ── ENTRY signals (only when no open position for symbol) ────────
     if (!symbolPosition) {
@@ -470,7 +652,8 @@ async function runEngulfingMonitorTick(): Promise<void> {
             endTimeMs: now,
           });
 
-          const signal = evaluateTimeframe(candles, tf, lookback);
+          const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
+          const signal = evaluateTimeframe(closedCandles, tf, lookback);
           if (!signal.detected || !signal.direction) continue;
 
           // Debounce: skip if same signal fired within this candle period
@@ -489,57 +672,76 @@ async function runEngulfingMonitorTick(): Promise<void> {
             'engulfing entry signal detected',
           );
 
-          // Auto-order when autoConfirm is enabled
-          if (raw.autoConfirm) {
-            try {
-              const mid = await fetchLiveMid(symbol);
-              if (!mid) { logger.warn({ component: 'engulfing-monitor' }, 'auto-entry: no mid price'); continue; }
+          const mid = await fetchLiveMid(symbol);
+          if (!mid) { logger.warn({ component: 'engulfing-monitor' }, 'entry signal: no mid price'); continue; }
 
-              const account = await exchange.getAccountState();
-              const equityUsd = account?.equityUsd ?? 0;
-              const availableUsd = account?.availableUsd ?? 0;
-              if (equityUsd <= 0) { logger.warn({ component: 'engulfing-monitor' }, 'auto-entry: zero equity'); continue; }
+          const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
 
-              let sizeDecimals = 6;
-              try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
+          // Manual mode: queue confirmation + notify, do not place order directly
+          if (!raw.autoConfirm) {
+            const estimate = await estimateSignalSize({ symbol, side, price: mid, effectiveRules });
+            const correlationId = `engulf-pending-${nanoid(8)}`;
+            const queued = await queuePendingConfirmation({
+              symbol,
+              side: side === 'buy' ? 'long' : 'short',
+              strategy: 'engulfing',
+              timeframe: tf,
+              reason: signal.reason,
+              price: mid,
+              size: estimate.size,
+              leverage: estimate.leverage,
+              correlationId,
+            });
 
-              const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
-              const sizing = computeAllocationSize({ symbol, price: mid, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
+            logger.info({ component: 'engulfing-monitor', symbol, tf, side, pendingId: queued.id, queued: queued.queued }, 'entry signal queued for manual confirmation');
+            break;
+          }
 
-              if (!sizing.ok) {
-                logRiskGateAudit({ gate: 'engulfing_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
-                logger.warn({ component: 'engulfing-monitor', reason: sizing.reason }, 'auto-entry sizing failed');
-                continue;
-              }
+          // Auto-confirm mode: place order immediately
+          try {
+            const account = await exchange.getAccountState();
+            const equityUsd = account?.equityUsd ?? 0;
+            const availableUsd = account?.availableUsd ?? 0;
+            if (equityUsd <= 0) { logger.warn({ component: 'engulfing-monitor' }, 'auto-entry: zero equity'); continue; }
 
-              // Run risk gates before placing
-              const risk = await evaluateRiskGates({ emitAudit: false });
-              if (!risk.canTrade) {
-                logger.warn({ component: 'engulfing-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates');
-                continue;
-              }
+            let sizeDecimals = 6;
+            try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
 
-              const correlationId = `engulf-auto-${nanoid(8)}`;
-              const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+            const sizing = computeAllocationSize({ symbol, price: mid, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
 
-              logRiskGateAudit({
-                gate: 'engulfing_entry_signal',
-                passed: ack.ok,
-                reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
-                details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: mid, orderId: ack.orderId, error: ack.error },
-              });
-              logger.info({ component: 'engulfing-monitor', symbol, side, size: sizing.size, orderId: ack.orderId, ok: ack.ok }, 'auto-entry order result');
-
-              // Auto-apply TP/SL if available
-              if (ack.ok) {
-                const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
-                if (tpSl) {
-                  try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId); } catch { /* best-effort */ }
-                }
-              }
-            } catch (err) {
-              logger.error({ component: 'engulfing-monitor', err }, 'auto-entry order failed');
+            if (!sizing.ok) {
+              logRiskGateAudit({ gate: 'engulfing_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
+              logger.warn({ component: 'engulfing-monitor', reason: sizing.reason }, 'auto-entry sizing failed');
+              continue;
             }
+
+            // Run risk gates before placing
+            const risk = await evaluateRiskGates({ emitAudit: false });
+            if (!risk.canTrade) {
+              logger.warn({ component: 'engulfing-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates');
+              continue;
+            }
+
+            const correlationId = `engulf-auto-${nanoid(8)}`;
+            const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+
+            logRiskGateAudit({
+              gate: 'engulfing_entry_signal',
+              passed: ack.ok,
+              reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
+              details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: mid, orderId: ack.orderId, error: ack.error },
+            });
+            logger.info({ component: 'engulfing-monitor', symbol, side, size: sizing.size, orderId: ack.orderId, ok: ack.ok }, 'auto-entry order result');
+
+            // Auto-apply TP/SL if available
+            if (ack.ok) {
+              const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
+              if (tpSl) {
+                try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId); } catch { /* best-effort */ }
+              }
+            }
+          } catch (err) {
+            logger.error({ component: 'engulfing-monitor', err }, 'auto-entry order failed');
           }
         } catch (err) {
           logger.warn({ component: 'engulfing-monitor', tf, err }, 'entry signal evaluation failed for tf');
@@ -559,7 +761,8 @@ async function runEngulfingMonitorTick(): Promise<void> {
             endTimeMs: now,
           });
 
-          const signal = evaluateTimeframe(candles, tf, lookback);
+          const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
+          const signal = evaluateTimeframe(closedCandles, tf, lookback);
           if (!signal.detected || !signal.direction) continue;
 
           // Reverse signal check: bullish position + bearish signal → exit
@@ -636,12 +839,31 @@ async function runEngulfingMonitorTick(): Promise<void> {
   }
 }
 
-/** Compute poll interval: min entry TF / 5, clamped to [30s, 5m] */
+/** Compute poll interval from current rules: min entry TF / 10, clamped to [30s, 2m]. */
 function engulfingMonitorIntervalMs(): number {
   const raw = rulesCache.getEffectiveRules().raw;
   const entryTfs = raw?.entryTimeframes?.length ? raw.entryTimeframes : ['15m' as const];
   const minTfMs = Math.min(...entryTfs.map(tf => TF_MS[tf] ?? 900_000));
-  return Math.max(30_000, Math.min(300_000, Math.floor(minTfMs / 5)));
+  return Math.max(30_000, Math.min(120_000, Math.floor(minTfMs / 10)));
+}
+
+function scheduleNextEngulfingTick(delayMs: number): void {
+  if (engulfingMonitorTimer) clearTimeout(engulfingMonitorTimer);
+  engulfingMonitorTimer = setTimeout(async () => {
+    try {
+      await runEngulfingMonitorTick();
+    } catch (err) {
+      logger.warn({ component: 'engulfing-monitor', err }, 'tick failed');
+    } finally {
+      const nextInterval = engulfingMonitorIntervalMs();
+      if (nextInterval !== engulfingMonitorIntervalAppliedMs) {
+        engulfingMonitorIntervalAppliedMs = nextInterval;
+        logger.info({ component: 'engulfing-monitor', intervalMs: nextInterval }, 'engulfing monitor interval updated');
+      }
+      scheduleNextEngulfingTick(nextInterval);
+    }
+  }, delayMs);
+  engulfingMonitorTimer.unref?.();
 }
 
 // ─── FVG Monitor Loop ─────────────────────────────────────────────────
@@ -682,7 +904,10 @@ async function runFvgMonitorTick(): Promise<void> {
     const symbolPosition = positions.find(p => p.symbol.toUpperCase() === symbol.toUpperCase());
 
     // Only check entry signals when no open position
-    if (symbolPosition) return;
+    if (symbolPosition) {
+      await clearPendingConfirmationForSymbol(symbol);
+      return;
+    }
 
     for (const tf of FVG_TIMEFRAMES) {
       try {
@@ -695,7 +920,8 @@ async function runFvgMonitorTick(): Promise<void> {
           endTimeMs: now,
         });
 
-        const signal = evaluateFvg(candles, tf, mid, fvgRetracePct, lookback);
+        const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
+        const signal = evaluateFvg(closedCandles, tf, mid, fvgRetracePct, lookback);
         if (!signal.detected || !signal.direction) continue;
 
         // Debounce: once per TF interval
@@ -722,46 +948,64 @@ async function runFvgMonitorTick(): Promise<void> {
           'FVG retrace entry signal detected',
         );
 
-        // Auto-order if autoConfirm
-        if (raw.autoConfirm) {
-          try {
-            const account = await exchange.getAccountState();
-            const equityUsd = account?.equityUsd ?? 0;
-            const availableUsd = account?.availableUsd ?? 0;
-            if (equityUsd <= 0) { logger.warn({ component: 'fvg-monitor' }, 'auto-entry: zero equity'); continue; }
+        const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
 
-            let sizeDecimals = 6;
-            try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
+        // Manual mode: queue signal for explicit confirmation
+        if (!raw.autoConfirm) {
+          const estimate = await estimateSignalSize({ symbol, side, price: mid, effectiveRules });
+          const correlationId = `fvg-pending-${nanoid(8)}`;
+          const queued = await queuePendingConfirmation({
+            symbol,
+            side: side === 'buy' ? 'long' : 'short',
+            strategy: 'fvg',
+            timeframe: tf,
+            reason: signal.reason,
+            price: mid,
+            size: estimate.size,
+            leverage: estimate.leverage,
+            correlationId,
+          });
+          logger.info({ component: 'fvg-monitor', symbol, tf, side, pendingId: queued.id, queued: queued.queued }, 'FVG signal queued for manual confirmation');
+          break;
+        }
 
-            const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
-            const sizing = computeAllocationSize({ symbol, price: mid, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
+        // Auto-confirm mode: place order immediately
+        try {
+          const account = await exchange.getAccountState();
+          const equityUsd = account?.equityUsd ?? 0;
+          const availableUsd = account?.availableUsd ?? 0;
+          if (equityUsd <= 0) { logger.warn({ component: 'fvg-monitor' }, 'auto-entry: zero equity'); continue; }
 
-            if (!sizing.ok) {
-              logRiskGateAudit({ gate: 'fvg_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
-              continue;
-            }
+          let sizeDecimals = 6;
+          try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
 
-            const risk = await evaluateRiskGates({ emitAudit: false });
-            if (!risk.canTrade) { logger.warn({ component: 'fvg-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates'); continue; }
+          const sizing = computeAllocationSize({ symbol, price: mid, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
 
-            const correlationId = `fvg-auto-${nanoid(8)}`;
-            const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
-
-            logRiskGateAudit({
-              gate: 'fvg_entry_signal',
-              passed: ack.ok,
-              reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
-              details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: mid, orderId: ack.orderId, error: ack.error },
-            });
-            logger.info({ component: 'fvg-monitor', symbol, side, size: sizing.size, ok: ack.ok, orderId: ack.orderId }, 'FVG auto-entry result');
-
-            if (ack.ok) {
-              const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
-              if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId); } catch { /* best-effort */ } }
-            }
-          } catch (err) {
-            logger.error({ component: 'fvg-monitor', err }, 'FVG auto-entry order failed');
+          if (!sizing.ok) {
+            logRiskGateAudit({ gate: 'fvg_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
+            continue;
           }
+
+          const risk = await evaluateRiskGates({ emitAudit: false });
+          if (!risk.canTrade) { logger.warn({ component: 'fvg-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates'); continue; }
+
+          const correlationId = `fvg-auto-${nanoid(8)}`;
+          const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+
+          logRiskGateAudit({
+            gate: 'fvg_entry_signal',
+            passed: ack.ok,
+            reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
+            details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: mid, orderId: ack.orderId, error: ack.error },
+          });
+          logger.info({ component: 'fvg-monitor', symbol, side, size: sizing.size, ok: ack.ok, orderId: ack.orderId }, 'FVG auto-entry result');
+
+          if (ack.ok) {
+            const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
+            if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId); } catch { /* best-effort */ } }
+          }
+        } catch (err) {
+          logger.error({ component: 'fvg-monitor', err }, 'FVG auto-entry order failed');
         }
       } catch (err) {
         logger.warn({ component: 'fvg-monitor', tf, err }, 'FVG signal evaluation failed for tf');
@@ -805,13 +1049,11 @@ function startEngulfingMonitor(): void {
   if (engulfingMonitorTimer) return;
 
   const intervalMs = engulfingMonitorIntervalMs();
-  // First tick immediately
-  runEngulfingMonitorTick().catch(err => logger.warn({ component: 'engulfing-monitor', err }, 'initial tick failed'));
-  engulfingMonitorTimer = setInterval(() => {
-    runEngulfingMonitorTick().catch(err => logger.warn({ component: 'engulfing-monitor', err }, 'tick failed'));
-  }, intervalMs);
-  engulfingMonitorTimer.unref?.();
+  engulfingMonitorIntervalAppliedMs = intervalMs;
   logger.info({ component: 'engulfing-monitor', intervalMs }, 'engulfing monitor started');
+
+  // First tick immediately, then self-schedule with dynamic interval from latest rules.
+  scheduleNextEngulfingTick(0);
 }
 
 /** Risk gate middleware for trading endpoints — checks DD + leverage before allowing order */
@@ -1455,7 +1697,8 @@ app.get('/api/dashboard', async (_req, res) => {
     }
   }
 
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode());
+  const pendingRows = await loadPendingConfirmationRows();
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode(), pendingRows);
 
   res.json({ latestBias, latestTick: latestTick ?? null, live });
 });
@@ -1673,7 +1916,8 @@ app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
 });
 
 app.get('/api/live/status', async (_req, res) => {
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode());
+  const pendingRows = await loadPendingConfirmationRows();
+  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode(), pendingRows);
   return res.json({
     ok: live.connected,
     ...live
@@ -1968,6 +2212,7 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
   let tpSlApplied: TpSlDefaults | null = null;
 
   if (ack.ok && !reduceOnly) {
+    await clearPendingConfirmationForSymbol(normalizedSymbol);
     tpSlApplied = resolveTpSlDefaults(px, side, requestStopLoss, requestTakeProfit);
     if (tpSlApplied) {
       try {
@@ -2494,6 +2739,7 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
   let tpSlApplied: TpSlDefaults | null = null;
 
   if (ack.ok && !reduceOnly) {
+    await clearPendingConfirmationForSymbol(normalizedSymbol);
     tpSlApplied = resolveTpSlDefaults(px, side, requestStopLoss, requestTakeProfit);
     if (tpSlApplied) {
       try {
@@ -2734,6 +2980,9 @@ const server = app.listen(port, host, () => {
   startEngulfingMonitor();
   startFvgMonitor();
   startTpFillMonitor();
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    logger.warn({ component: 'pending-confirmation' }, 'Telegram alerts disabled (set TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID)');
+  }
 });
 
 async function gracefulShutdown(signal: string) {

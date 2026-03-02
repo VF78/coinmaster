@@ -12,7 +12,8 @@ const defaultData: DBShape = {
   biasCommands: [],
   marketTicks: [],
   dailyDDBaselines: [],
-  riskGateAudit: []
+  riskGateAudit: [],
+  pendingConfirmations: []
 };
 
 function ensureDbShape(data: DBShape) {
@@ -28,6 +29,7 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.marketTicks)) data.marketTicks = [];
   if (!Array.isArray(data.dailyDDBaselines)) data.dailyDDBaselines = [];
   if (!Array.isArray(data.riskGateAudit)) data.riskGateAudit = [];
+  if (!Array.isArray(data.pendingConfirmations)) data.pendingConfirmations = [];
 }
 
 export class LowdbStore implements PersistenceStore {
