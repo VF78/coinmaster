@@ -20,6 +20,7 @@ import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { Candle, CandleTimeframe, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
+import { evaluateFvg, type FvgTimeframe } from '../core/fvgEvaluator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +41,8 @@ const ENABLE_SIMULATION_API = String(process.env.ENABLE_SIMULATION_API ?? 'false
 const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLowerCase() === 'true';
 
 const ENABLE_MULTI_TF_ENGULFING = String(process.env.ENABLE_MULTI_TF_ENGULFING ?? 'false').toLowerCase() === 'true';
+const ENABLE_FVG_MONITOR = String(process.env.ENABLE_FVG_MONITOR ?? 'false').toLowerCase() === 'true';
+const FVG_MONITOR_INTERVAL_MS = Math.max(60_000, Number(process.env.FVG_MONITOR_INTERVAL_MS || 300_000)); // default 5m
 const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
 const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(2000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 5000));
 const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
@@ -595,6 +598,155 @@ function engulfingMonitorIntervalMs(): number {
   const entryTfs = raw?.entryTimeframes?.length ? raw.entryTimeframes : ['15m' as const];
   const minTfMs = Math.min(...entryTfs.map(tf => TF_MS[tf] ?? 900_000));
   return Math.max(30_000, Math.min(300_000, Math.floor(minTfMs / 5)));
+}
+
+// ─── FVG Monitor Loop ─────────────────────────────────────────────────
+/** Timeframes for FVG scanning (spec: 1H/4H only) */
+const FVG_TIMEFRAMES: FvgTimeframe[] = ['1h', '4h'];
+const FVG_TF_TO_CANDLE_TF: Record<FvgTimeframe, CandleTimeframe> = { '1h': '1h', '4h': '4h' };
+
+let fvgMonitorTimer: NodeJS.Timeout | null = null;
+let fvgMonitorBusy = false;
+
+/** Debounce: key = `${symbol}:${tf}:${direction}`, value = last fired ms */
+const lastFvgSignalAt = new Map<string, number>();
+
+async function runFvgMonitorTick(): Promise<void> {
+  if (fvgMonitorBusy) return;
+  fvgMonitorBusy = true;
+  try {
+    const effectiveRules = rulesCache.getEffectiveRules();
+    const raw = effectiveRules.raw;
+    if (!raw) return; // env fallback
+
+    const fvgRetracePct = raw.fvgRetrace ?? 50;
+    if (!Number.isFinite(fvgRetracePct) || fvgRetracePct <= 0) return;
+
+    const symbol = LIVE_SYMBOL;
+    const now = Date.now();
+
+    // Current mid price (required for retrace check)
+    const mid = await fetchLiveMid(symbol);
+    if (!mid) { logger.warn({ component: 'fvg-monitor' }, 'no mid price, skipping tick'); return; }
+
+    // Open positions (entry only when flat)
+    let positions: PositionSnapshot[] = [];
+    try { positions = await exchange.getOpenPositions(); } catch (err) {
+      logger.warn({ component: 'fvg-monitor', err }, 'failed to get positions');
+      return;
+    }
+    const symbolPosition = positions.find(p => p.symbol.toUpperCase() === symbol.toUpperCase());
+
+    // Only check entry signals when no open position
+    if (symbolPosition) return;
+
+    for (const tf of FVG_TIMEFRAMES) {
+      try {
+        const tfMs = TF_MS[tf];
+        const lookback = 10; // fixed lookback for FVG zone detection
+        const candles = await exchange.getCandles({
+          symbol,
+          timeframe: FVG_TF_TO_CANDLE_TF[tf],
+          startTimeMs: now - tfMs * (lookback + 25), // extra room for structure break (20 candles)
+          endTimeMs: now,
+        });
+
+        const signal = evaluateFvg(candles, tf, mid, fvgRetracePct, lookback);
+        if (!signal.detected || !signal.direction) continue;
+
+        // Debounce: once per TF interval
+        const debounceKey = `${symbol}:${tf}:${signal.direction}`;
+        const lastFired = lastFvgSignalAt.get(debounceKey) ?? 0;
+        if (now - lastFired < tfMs) continue;
+        lastFvgSignalAt.set(debounceKey, now);
+
+        logRiskGateAudit({
+          gate: 'fvg_entry_signal',
+          passed: true,
+          details: {
+            symbol, tf, direction: signal.direction,
+            currentPrice: mid,
+            triggerPrice: signal.triggerPrice,
+            zoneTop: signal.zone?.top,
+            zoneBottom: signal.zone?.bottom,
+            fvgRetracePct,
+            reason: signal.reason,
+          },
+        });
+        logger.info(
+          { component: 'fvg-monitor', symbol, tf, direction: signal.direction, mid, triggerPrice: signal.triggerPrice },
+          'FVG retrace entry signal detected',
+        );
+
+        // Auto-order if autoConfirm
+        if (raw.autoConfirm) {
+          try {
+            const account = await exchange.getAccountState();
+            const equityUsd = account?.equityUsd ?? 0;
+            const availableUsd = account?.availableUsd ?? 0;
+            if (equityUsd <= 0) { logger.warn({ component: 'fvg-monitor' }, 'auto-entry: zero equity'); continue; }
+
+            let sizeDecimals = 6;
+            try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
+
+            const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
+            const sizing = computeAllocationSize({ symbol, price: mid, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
+
+            if (!sizing.ok) {
+              logRiskGateAudit({ gate: 'fvg_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
+              continue;
+            }
+
+            const risk = await evaluateRiskGates({ emitAudit: false });
+            if (!risk.canTrade) { logger.warn({ component: 'fvg-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates'); continue; }
+
+            const correlationId = `fvg-auto-${nanoid(8)}`;
+            const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+
+            logRiskGateAudit({
+              gate: 'fvg_entry_signal',
+              passed: ack.ok,
+              reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
+              details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: mid, orderId: ack.orderId, error: ack.error },
+            });
+            logger.info({ component: 'fvg-monitor', symbol, side, size: sizing.size, ok: ack.ok, orderId: ack.orderId }, 'FVG auto-entry result');
+
+            if (ack.ok) {
+              const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
+              if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId); } catch { /* best-effort */ } }
+            }
+          } catch (err) {
+            logger.error({ component: 'fvg-monitor', err }, 'FVG auto-entry order failed');
+          }
+        }
+      } catch (err) {
+        logger.warn({ component: 'fvg-monitor', tf, err }, 'FVG signal evaluation failed for tf');
+      }
+    }
+  } catch (err) {
+    logger.error({ component: 'fvg-monitor', err }, 'FVG monitor tick failed');
+  } finally {
+    fvgMonitorBusy = false;
+  }
+}
+
+function startFvgMonitor(): void {
+  if (!ENABLE_FVG_MONITOR) {
+    logger.info({ component: 'fvg-monitor' }, 'FVG monitor disabled via ENABLE_FVG_MONITOR=false');
+    return;
+  }
+  if (!exchange.capabilities.privateAccount || !exchange.capabilities.privateTrading) {
+    logger.info({ component: 'fvg-monitor' }, 'FVG monitor not started (private account/trading unavailable)');
+    return;
+  }
+  if (fvgMonitorTimer) return;
+
+  runFvgMonitorTick().catch(err => logger.warn({ component: 'fvg-monitor', err }, 'initial tick failed'));
+  fvgMonitorTimer = setInterval(() => {
+    runFvgMonitorTick().catch(err => logger.warn({ component: 'fvg-monitor', err }, 'tick failed'));
+  }, FVG_MONITOR_INTERVAL_MS);
+  fvgMonitorTimer.unref?.();
+  logger.info({ component: 'fvg-monitor', intervalMs: FVG_MONITOR_INTERVAL_MS }, 'FVG monitor started');
 }
 
 function startEngulfingMonitor(): void {
@@ -2420,6 +2572,7 @@ const server = app.listen(port, host, () => {
   startLiveMidStream();
   startDrawdownWatchdog();
   startEngulfingMonitor();
+  startFvgMonitor();
 });
 
 async function gracefulShutdown(signal: string) {
@@ -2438,6 +2591,7 @@ async function gracefulShutdown(signal: string) {
   clearInterval(rateLimitPruneTimer);
   if (drawdownWatchdogTimer) { clearInterval(drawdownWatchdogTimer); drawdownWatchdogTimer = null; }
   if (engulfingMonitorTimer) { clearInterval(engulfingMonitorTimer); engulfingMonitorTimer = null; }
+  if (fvgMonitorTimer) { clearInterval(fvgMonitorTimer); fvgMonitorTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
   if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
 

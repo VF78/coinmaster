@@ -22,6 +22,7 @@
     "invariants:trading-rules": "tsx scripts/invariants-trading-rules.ts",
     "invariants:allocation-sizing": "tsx scripts/invariants-allocation-sizing.ts",
     "invariants:engulfing": "tsx scripts/invariants-engulfing.ts",
+    "invariants:fvg": "tsx scripts/invariants-fvg.ts",
     "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts"
   },
   "dependencies": {
