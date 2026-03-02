@@ -544,6 +544,17 @@ tbody tr:hover {
   height: 2.3rem;
 }
 
+.hl-confirm-row {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  background: linear-gradient(180deg, rgba(10, 18, 32, 0.75) 0%, rgba(10, 18, 32, 0.98) 45%);
+  backdrop-filter: blur(6px);
+  padding-top: 0.45rem;
+  border-top: 1px solid #1c304d;
+  margin-top: 0.25rem;
+}
+
 .position-panel__hint {
   font-size: var(--text-xs);
 }
@@ -601,9 +612,10 @@ tbody tr:hover {
   height: 100%;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto auto auto;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: calc(0.55rem + env(safe-area-inset-bottom));
 }
-
 .history-paging {
   margin-top: 0.75rem;
   display: flex;

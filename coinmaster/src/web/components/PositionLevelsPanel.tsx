@@ -83,18 +83,30 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       return 'Set stop-loss and at least one TP level.';
     }
 
-    const levelsValid = side === 'long'
-      ? stopLoss < Math.min(...takeProfits)
-      : stopLoss > Math.max(...takeProfits);
-
-    if (!levelsValid) {
-      return side === 'long'
-        ? 'For LONG, stop-loss must be below all TP levels.'
-        : 'For SHORT, stop-loss must be above all TP levels.';
-    }
-
     if (takeProfits.length > 3) {
       return 'Maximum 3 TP levels.';
+    }
+
+    if (side === 'long') {
+      if (stopLoss >= entry) {
+        return 'For LONG, stop-loss must be below entry price.';
+      }
+      if (takeProfits.some((tp) => tp <= entry)) {
+        return 'For LONG, all TP levels must be above entry price.';
+      }
+      if (stopLoss >= Math.min(...takeProfits)) {
+        return 'For LONG, stop-loss must be below all TP levels.';
+      }
+    } else {
+      if (stopLoss <= entry) {
+        return 'For SHORT, stop-loss must be above entry price.';
+      }
+      if (takeProfits.some((tp) => tp >= entry)) {
+        return 'For SHORT, all TP levels must be below entry price.';
+      }
+      if (stopLoss <= Math.max(...takeProfits)) {
+        return 'For SHORT, stop-loss must be above all TP levels.';
+      }
     }
 
     return null;
@@ -394,7 +406,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       {error ? <p className="down">{error}</p> : null}
       {info ? <p className="up">{info}</p> : null}
 
-      <div className="actions-row">
+      <div className="actions-row hl-confirm-row">
         <Button onClick={applyLevels} disabled={Boolean(validation) || isApplying} fullWidth>
           {isApplying ? 'Applying…' : 'Confirm'}
         </Button>

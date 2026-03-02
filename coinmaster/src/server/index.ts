@@ -2701,6 +2701,36 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     return res.status(400).json({ ok: false, error: 'invalid_level_order' });
   }
 
+  // Validate levels against actual entry price to prevent dangerous SL/TP placement.
+  let entryPrice: number | undefined;
+  try {
+    const expectedSide = side === 'long' ? 'long' : 'short';
+    const openPositions = await exchange.getOpenPositions(normalizedSymbol);
+    const pos = openPositions.find((p) => p.symbol === normalizedSymbol && p.side === expectedSide);
+    if (pos?.entryPrice && Number.isFinite(pos.entryPrice) && pos.entryPrice > 0) {
+      entryPrice = pos.entryPrice;
+    }
+  } catch {
+    // best-effort validation
+  }
+
+  if (entryPrice) {
+    const validVsEntry = side === 'long'
+      ? sl < entryPrice && sortedTps.every((tp) => tp > entryPrice)
+      : sl > entryPrice && sortedTps.every((tp) => tp < entryPrice);
+
+    if (!validVsEntry) {
+      return res.status(400).json({
+        ok: false,
+        error: 'invalid_levels_vs_entry',
+        entryPrice,
+        hint: side === 'long'
+          ? 'LONG requires SL < entry and all TPs > entry'
+          : 'SHORT requires SL > entry and all TPs < entry',
+      });
+    }
+  }
+
   if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({
       ok: false,
