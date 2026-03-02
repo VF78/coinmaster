@@ -26,8 +26,14 @@ export interface TradingRulesSettings {
   fvgRetrace: number;
   maxLeverage: number;
   dailyDrawdown: number;
+  /** @deprecated use tpLevels[] — kept for back-compat serialisation */
   tpPct: number;
+  /** Up to 3 take-profit levels in % (sorted ascending). After TP1 hits → SL moves to entry (break-even). */
+  tpLevels: number[];
   slPct: number;
+  /** Percentage of position to close on opposite engulfing exit signal (1–100, default 50).
+   *  Partial close → SL immediately moves to entry price. */
+  exitClosePct: number;
   autoConfirm: boolean;
 }
 
@@ -115,7 +121,7 @@ export interface DailyDDBaseline {
 
 export interface RiskGateAuditEntry {
   timestamp: string;
-  gate: 'daily_dd' | 'leverage_cap' | 'auth' | 'symbol_allowlist' | 'allocation_cap' | 'allocation_sizing' | 'tp_sl_defaults' | 'market_data' | 'multi_tf_engulfing' | 'engulfing_entry_signal' | 'engulfing_emergency_exit' | 'fvg_entry_signal';
+  gate: 'daily_dd' | 'leverage_cap' | 'auth' | 'symbol_allowlist' | 'allocation_cap' | 'allocation_sizing' | 'tp_sl_defaults' | 'market_data' | 'multi_tf_engulfing' | 'engulfing_entry_signal' | 'engulfing_emergency_exit' | 'fvg_entry_signal' | 'tp_fill_monitor' | 'partial_close';
   passed: boolean;
   reason?: string;
   details?: Record<string, unknown>;

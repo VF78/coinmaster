@@ -18,7 +18,9 @@ export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   maxLeverage: 5,
   dailyDrawdown: 3,
   tpPct: 6,
+  tpLevels: [6],
   slPct: 2,
+  exitClosePct: 50,
   autoConfirm: false
 };
 
@@ -95,8 +97,25 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
   base.fvgRetrace = clampNumber(raw.fvgRetrace, 10, 90, base.fvgRetrace);
   base.maxLeverage = clampNumber(raw.maxLeverage, 1, 50, base.maxLeverage);
   base.dailyDrawdown = clampNumber(raw.dailyDrawdown, 0, 100, base.dailyDrawdown);
-  base.tpPct = clampNumber(raw.tpPct, 0, 1000, base.tpPct);
   base.slPct = clampNumber(raw.slPct, 0, 1000, base.slPct);
+  base.exitClosePct = clampNumber(raw.exitClosePct, 1, 100, base.exitClosePct);
+
+  // tpLevels: 1–3 values, each 0–1000, sorted ascending.
+  // Back-compat: if tpLevels absent but tpPct present, migrate.
+  if (Array.isArray(raw.tpLevels) && raw.tpLevels.length > 0) {
+    const levels = (raw.tpLevels as unknown[])
+      .slice(0, 3)
+      .map((v) => clampNumber(v, 0, 1000, base.tpLevels[0]))
+      .filter((v) => v > 0)
+      .sort((a, b) => a - b);
+    base.tpLevels = levels.length > 0 ? levels : [base.tpPct];
+  } else {
+    const legacy = clampNumber(raw.tpPct, 0, 1000, base.tpPct);
+    base.tpLevels = [legacy > 0 ? legacy : base.tpPct];
+  }
+  // Keep scalar tpPct in sync with first TP level for back-compat
+  base.tpPct = base.tpLevels[0];
+
   base.autoConfirm = Boolean(raw.autoConfirm);
 
   return base;

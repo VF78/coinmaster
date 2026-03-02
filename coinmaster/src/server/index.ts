@@ -568,18 +568,62 @@ async function runEngulfingMonitorTick(): Promise<void> {
           if (!isReverseSignal) continue;
 
           const reason = `engulfing_exit_signal_${signal.direction}`;
+          const exitClosePct = raw.exitClosePct ?? 50;
+          const closeFraction = Math.min(100, Math.max(1, exitClosePct)) / 100;
+
           logRiskGateAudit({
             gate: 'engulfing_emergency_exit',
             passed: true,
-            details: { symbol, tf, direction: signal.direction, positionSide: symbolPosition.side, reason: signal.reason },
+            details: { symbol, tf, direction: signal.direction, positionSide: symbolPosition.side, exitClosePct, reason: signal.reason },
           });
           logger.warn(
-            { component: 'engulfing-monitor', symbol, tf, direction: signal.direction, position: symbolPosition.side },
-            'reverse engulfing detected — emergency exit triggered',
+            { component: 'engulfing-monitor', symbol, tf, direction: signal.direction, position: symbolPosition.side, exitClosePct },
+            'reverse engulfing detected — exit triggered',
           );
 
-          await emergencyCloseAll(reason);
-          break; // one emergency close per tick is enough
+          if (closeFraction >= 0.9999) {
+            // Full close
+            await emergencyCloseAll(reason);
+          } else {
+            // Partial close → then set SL at entry price (break-even)
+            const posSize = symbolPosition.size;
+            const closeSize = Math.max(0, Math.floor(posSize * closeFraction * 1e6) / 1e6);
+            const closingSide: 'buy' | 'sell' = symbolPosition.side === 'long' ? 'sell' : 'buy';
+            const markPrice = symbolPosition.markPrice ?? symbolPosition.entryPrice ?? 0;
+            const exitPrice = markPrice > 0
+              ? (closingSide === 'sell' ? markPrice * 0.985 : markPrice * 1.015)
+              : (closingSide === 'sell' ? 1 : 999_999);
+
+            try {
+              const closeAck = await exchange.placeLimitOrder({
+                symbol, side: closingSide, price: Number(exitPrice.toFixed(8)),
+                size: closeSize, reduceOnly: true,
+                clientOrderId: `partial-exit-${nanoid(8)}`,
+              });
+              logRiskGateAudit({
+                gate: 'partial_close', passed: closeAck.ok,
+                details: { symbol, closeSize, exitPrice, posSize, exitClosePct, orderId: closeAck.orderId },
+              });
+
+              // Move SL to entry price (break-even) for remaining position
+              const entryPrice = symbolPosition.entryPrice ?? markPrice;
+              if (closeAck.ok && entryPrice > 0) {
+                const remainingSize = Math.max(0, Math.round((posSize - closeSize) * 1e6) / 1e6);
+                if (remainingSize > 0) {
+                  await exchange.placeTriggerOrder({
+                    symbol, side: closingSide, size: remainingSize,
+                    triggerPrice: entryPrice, kind: 'sl', reduceOnly: true,
+                    clientOrderId: `be-sl-partial-${nanoid(8)}`,
+                  });
+                  logger.info({ component: 'engulfing-monitor', symbol, entryPrice, remainingSize }, 'break-even SL placed after partial close');
+                }
+              }
+            } catch (err) {
+              logger.error({ component: 'engulfing-monitor', err }, 'partial close failed, falling back to full emergency close');
+              await emergencyCloseAll(reason);
+            }
+          }
+          break; // one exit action per tick is enough
         } catch (err) {
           logger.warn({ component: 'engulfing-monitor', tf, err }, 'exit signal evaluation failed for tf');
         }
@@ -1920,7 +1964,7 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
   });
 
   // TP/SL defaults: auto-apply after successful non-reduceOnly order
-  let tpSlResult: { stopLossOrder: { ok: boolean; orderId?: string; error?: string }; takeProfitOrder: { ok: boolean; orderId?: string; error?: string } } | undefined;
+  let tpSlResult: Awaited<ReturnType<typeof placeTpSlTriggerOrders>> | undefined;
   let tpSlApplied: TpSlDefaults | null = null;
 
   if (ack.ok && !reduceOnly) {
@@ -1931,7 +1975,7 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
       } catch {
         tpSlResult = {
           stopLossOrder: { ok: false, error: 'tp_sl_placement_failed' },
-          takeProfitOrder: { ok: false, error: 'tp_sl_placement_failed' }
+          takeProfitOrder: { ok: false, error: 'tp_sl_placement_failed' }, takeProfitOrders: [{ ok: false, error: 'tp_sl_placement_failed' }]
         };
       }
 
@@ -1945,8 +1989,8 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
           takeProfit: tpSlApplied.takeProfit,
           entryPrice: px,
           side,
-          slOrderOk: tpSlResult.stopLossOrder.ok,
-          tpOrderOk: tpSlResult.takeProfitOrder.ok
+          slOrderOk: tpSlResult?.stopLossOrder.ok ?? false,
+          tpOrderOk: tpSlResult?.takeProfitOrder.ok ?? false
         }
       });
     }
@@ -2054,15 +2098,31 @@ app.post('/api/live/order/cancel-all', ownerAuth, async (req, res) => {
 
 interface TpSlDefaults {
   stopLoss: number;
+  /** All computed TP trigger prices (1–3), sorted ascending for longs / descending for shorts */
+  takeProfits: number[];
+  /** First TP price (back-compat) */
   takeProfit: number;
   applied: boolean;
   source: 'explicit' | 'runtime_defaults';
 }
 
+// ─── Active Trade TP Tracking ─────────────────────────────────────────
+interface ActiveTradeState {
+  symbol: string;
+  side: 'buy' | 'sell';
+  entryPrice: number;
+  slOrderId: string | null;
+  tpOrderIds: string[];        // pending TP order IDs (removed as they fill)
+  firstTpFired: boolean;
+  positionSize: number;
+}
+/** correlationId → ActiveTradeState */
+const activeTrades = new Map<string, ActiveTradeState>();
+
 /**
  * Compute TP/SL levels from runtime rules when the client omits them.
  * Priority: explicit request > runtime defaults.
- * Returns the levels and whether defaults were auto-applied.
+ * Returns up to 3 TP prices and a SL price.
  */
 function resolveTpSlDefaults(
   entryPrice: number,
@@ -2074,70 +2134,170 @@ function resolveTpSlDefaults(
   const hasTp = requestTp !== undefined && Number.isFinite(Number(requestTp)) && Number(requestTp) > 0;
 
   if (hasSl && hasTp) {
-    return { stopLoss: Number(requestSl), takeProfit: Number(requestTp), applied: false, source: 'explicit' };
+    const tp = Number(requestTp);
+    return { stopLoss: Number(requestSl), takeProfits: [tp], takeProfit: tp, applied: false, source: 'explicit' };
   }
 
   const rules = rulesCache.getEffectiveRules();
-  if (!rules.raw) return null; // env fallback — no TP/SL config
+  if (!rules.raw) return null;
 
-  const tpPct = rules.raw.tpPct;
+  const tpLevels = rules.raw.tpLevels?.length ? rules.raw.tpLevels : (rules.raw.tpPct ? [rules.raw.tpPct] : null);
   const slPct = rules.raw.slPct;
-  if (!tpPct || !slPct) return null;
+  if (!tpLevels || !slPct) return null;
 
   const isLong = side === 'buy';
-  const defaultTp = isLong
-    ? entryPrice * (1 + tpPct / 100)
-    : entryPrice * (1 - tpPct / 100);
-  const defaultSl = isLong
-    ? entryPrice * (1 - slPct / 100)
-    : entryPrice * (1 + slPct / 100);
+  const takeProfits = tpLevels.map(pct => {
+    const price = isLong ? entryPrice * (1 + pct / 100) : entryPrice * (1 - pct / 100);
+    return Number(price.toFixed(8));
+  });
+  const defaultSl = isLong ? entryPrice * (1 - slPct / 100) : entryPrice * (1 + slPct / 100);
 
   return {
     stopLoss: hasSl ? Number(requestSl) : Number(defaultSl.toFixed(8)),
-    takeProfit: hasTp ? Number(requestTp) : Number(defaultTp.toFixed(8)),
+    takeProfits,
+    takeProfit: takeProfits[0],
     applied: true,
-    source: 'runtime_defaults'
+    source: 'runtime_defaults',
   };
 }
 
 /**
- * Best-effort: place TP and SL trigger orders after a successful entry.
- * Returns placement results for inclusion in the response.
+ * Place SL + up to 3 TP trigger orders after a successful entry.
+ * Registers trade state for the TP fill monitor (SL→entry on first TP hit).
  */
 async function placeTpSlTriggerOrders(
   symbol: string,
   side: 'buy' | 'sell',
   size: number,
   tpSl: TpSlDefaults,
-  correlationId: string
-): Promise<{ stopLossOrder: { ok: boolean; orderId?: string; error?: string }; takeProfitOrder: { ok: boolean; orderId?: string; error?: string } }> {
+  correlationId: string,
+  entryPrice?: number,
+): Promise<{
+  stopLossOrder: { ok: boolean; orderId?: string; error?: string };
+  takeProfitOrder: { ok: boolean; orderId?: string; error?: string };
+  takeProfitOrders: { ok: boolean; orderId?: string; error?: string }[];
+}> {
   const closingSide: 'buy' | 'sell' = side === 'buy' ? 'sell' : 'buy';
+  const tpCount = tpSl.takeProfits.length;
 
-  const [slOrder, tpOrder] = await Promise.all([
-    exchange.placeTriggerOrder({
-      symbol,
-      side: closingSide,
-      size,
-      triggerPrice: tpSl.stopLoss,
-      kind: 'sl',
-      reduceOnly: true,
-      clientOrderId: `sl-auto-${correlationId}`
-    }),
-    exchange.placeTriggerOrder({
-      symbol,
-      side: closingSide,
-      size,
-      triggerPrice: tpSl.takeProfit,
-      kind: 'tp',
-      reduceOnly: true,
-      clientOrderId: `tp-auto-${correlationId}`
-    })
-  ]);
+  // Split position equally across TP levels (floor to avoid over-sizing)
+  const factor = 1e6;
+  const baseSize = Math.floor((size / tpCount) * factor) / factor;
+  const tpSizes: number[] = Array.from({ length: tpCount }, (_, i) =>
+    i < tpCount - 1 ? baseSize : Math.max(0, Math.round((size - baseSize * (tpCount - 1)) * factor) / factor)
+  );
+
+  // Place SL (full position)
+  const slOrder = await exchange.placeTriggerOrder({
+    symbol, side: closingSide, size, triggerPrice: tpSl.stopLoss,
+    kind: 'sl', reduceOnly: true, clientOrderId: `sl-auto-${correlationId}`,
+  });
+
+  // Place TP orders sequentially (avoid parallel trigger order conflicts)
+  const tpOrders: { ok: boolean; orderId?: string; error?: string }[] = [];
+  for (let i = 0; i < tpSl.takeProfits.length; i++) {
+    try {
+      const ack = await exchange.placeTriggerOrder({
+        symbol, side: closingSide, size: tpSizes[i], triggerPrice: tpSl.takeProfits[i],
+        kind: 'tp', reduceOnly: true, clientOrderId: `tp${i + 1}-auto-${correlationId}`,
+      });
+      tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
+    } catch (err) {
+      tpOrders.push({ ok: false, error: err instanceof Error ? err.message : 'tp_placement_failed' });
+    }
+  }
+
+  // Register in active trade tracking (for TP fill monitor)
+  const tpOrderIds = tpOrders.map(o => o.orderId).filter((id): id is string => Boolean(id));
+  if (tpOrderIds.length > 0 && tpCount > 1) {
+    activeTrades.set(correlationId, {
+      symbol, side, entryPrice: entryPrice ?? tpSl.stopLoss,
+      slOrderId: slOrder.orderId ?? null,
+      tpOrderIds, firstTpFired: false, positionSize: size,
+    });
+  }
 
   return {
     stopLossOrder: { ok: slOrder.ok, orderId: slOrder.orderId, error: slOrder.error },
-    takeProfitOrder: { ok: tpOrder.ok, orderId: tpOrder.orderId, error: tpOrder.error }
+    takeProfitOrder: tpOrders[0] ?? { ok: false, error: 'no_tp' },
+    takeProfitOrders: tpOrders,
   };
+}
+
+// ─── TP Fill Monitor (SL → entry price after first TP) ────────────────
+let tpFillMonitorTimer: NodeJS.Timeout | null = null;
+let tpFillMonitorBusy = false;
+
+async function runTpFillMonitorTick(): Promise<void> {
+  if (tpFillMonitorBusy || activeTrades.size === 0) return;
+  tpFillMonitorBusy = true;
+  try {
+    const openOrders = await exchange.getOpenOrders();
+    const openOrderIds = new Set(openOrders.map(o => o.id));
+
+    for (const [correlationId, trade] of activeTrades) {
+      const stillPending = trade.tpOrderIds.filter(id => openOrderIds.has(id));
+      const justFilled = trade.tpOrderIds.filter(id => !openOrderIds.has(id));
+
+      if (justFilled.length === 0) continue;
+
+      trade.tpOrderIds = stillPending;
+
+      if (!trade.firstTpFired && justFilled.length > 0) {
+        trade.firstTpFired = true;
+        logger.info({ component: 'tp-monitor', symbol: trade.symbol, correlationId, filledTp: justFilled }, 'first TP filled → moving SL to entry (break-even)');
+
+        // Cancel current SL
+        if (trade.slOrderId) {
+          try { await exchange.cancelOrder(trade.slOrderId); } catch { /* best-effort */ }
+        }
+
+        // Determine remaining position size
+        let remainingSize = 0;
+        try {
+          const positions = await exchange.getOpenPositions();
+          const pos = positions.find(p => p.symbol.toUpperCase() === trade.symbol.toUpperCase());
+          remainingSize = pos?.size ?? 0;
+        } catch { remainingSize = 0; }
+
+        if (remainingSize > 0 && trade.entryPrice > 0) {
+          const closingSide: 'buy' | 'sell' = trade.side === 'buy' ? 'sell' : 'buy';
+          try {
+            const beSlAck = await exchange.placeTriggerOrder({
+              symbol: trade.symbol, side: closingSide, size: remainingSize,
+              triggerPrice: trade.entryPrice, kind: 'sl', reduceOnly: true,
+              clientOrderId: `be-sl-${correlationId}`,
+            });
+            trade.slOrderId = beSlAck.orderId ?? null;
+            logRiskGateAudit({
+              gate: 'tp_fill_monitor', passed: beSlAck.ok,
+              reason: beSlAck.ok ? 'break_even_sl_placed' : 'break_even_sl_failed',
+              details: { symbol: trade.symbol, entryPrice: trade.entryPrice, remainingSize, orderId: beSlAck.orderId },
+            });
+          } catch (err) {
+            logger.error({ component: 'tp-monitor', err }, 'failed to place break-even SL');
+          }
+        }
+      }
+
+      if (stillPending.length === 0) {
+        activeTrades.delete(correlationId);
+      }
+    }
+  } catch (err) {
+    logger.warn({ component: 'tp-monitor', err }, 'TP fill monitor tick failed');
+  } finally {
+    tpFillMonitorBusy = false;
+  }
+}
+
+function startTpFillMonitor(): void {
+  if (tpFillMonitorTimer) return;
+  tpFillMonitorTimer = setInterval(() => {
+    runTpFillMonitorTick().catch(err => logger.warn({ component: 'tp-monitor', err }, 'tick error'));
+  }, 30_000);
+  tpFillMonitorTimer.unref?.();
+  logger.info({ component: 'tp-monitor' }, 'TP fill monitor started');
 }
 
 // ─── RESTful Trading Command Layer (ISSUE #12) ───────────────────────
@@ -2330,7 +2490,7 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
   });
 
   // TP/SL defaults: auto-apply after successful non-reduceOnly order
-  let tpSlResult: { stopLossOrder: { ok: boolean; orderId?: string; error?: string }; takeProfitOrder: { ok: boolean; orderId?: string; error?: string } } | undefined;
+  let tpSlResult: Awaited<ReturnType<typeof placeTpSlTriggerOrders>> | undefined;
   let tpSlApplied: TpSlDefaults | null = null;
 
   if (ack.ok && !reduceOnly) {
@@ -2341,7 +2501,7 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
       } catch (err) {
         tpSlResult = {
           stopLossOrder: { ok: false, error: 'tp_sl_placement_failed' },
-          takeProfitOrder: { ok: false, error: 'tp_sl_placement_failed' }
+          takeProfitOrder: { ok: false, error: 'tp_sl_placement_failed' }, takeProfitOrders: [{ ok: false, error: 'tp_sl_placement_failed' }]
         };
       }
 
@@ -2355,8 +2515,8 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
           takeProfit: tpSlApplied.takeProfit,
           entryPrice: px,
           side,
-          slOrderOk: tpSlResult.stopLossOrder.ok,
-          tpOrderOk: tpSlResult.takeProfitOrder.ok
+          slOrderOk: tpSlResult?.stopLossOrder.ok ?? false,
+          tpOrderOk: tpSlResult?.takeProfitOrder.ok ?? false
         }
       });
     }
@@ -2573,6 +2733,7 @@ const server = app.listen(port, host, () => {
   startDrawdownWatchdog();
   startEngulfingMonitor();
   startFvgMonitor();
+  startTpFillMonitor();
 });
 
 async function gracefulShutdown(signal: string) {
@@ -2592,6 +2753,7 @@ async function gracefulShutdown(signal: string) {
   if (drawdownWatchdogTimer) { clearInterval(drawdownWatchdogTimer); drawdownWatchdogTimer = null; }
   if (engulfingMonitorTimer) { clearInterval(engulfingMonitorTimer); engulfingMonitorTimer = null; }
   if (fvgMonitorTimer) { clearInterval(fvgMonitorTimer); fvgMonitorTimer = null; }
+  if (tpFillMonitorTimer) { clearInterval(tpFillMonitorTimer); tpFillMonitorTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
   if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
 

@@ -157,7 +157,7 @@ console.log('\nCase 5: dailyDrawdown condition');
         maxLeverage: 5,
         dailyDrawdown: threshold,
         tpPct: 2,
-        slPct: 1,
+        slPct: 1, tpLevels: [3], exitClosePct: 50,
         autoConfirm: false,
       },
     };
@@ -195,7 +195,7 @@ console.log('\nCase 6: leverageCap condition');
         maxLeverage,
         dailyDrawdown: 5,
         tpPct: 2,
-        slPct: 1,
+        slPct: 1, tpLevels: [3], exitClosePct: 50,
         autoConfirm: false,
       },
     };
