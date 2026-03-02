@@ -87,7 +87,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       return 'Maximum 3 TP levels.';
     }
 
+    const currentPrice = markPrice > 0 ? markPrice : entry;
+
     if (side === 'long') {
+      if (stopLoss >= currentPrice) {
+        return 'For LONG, stop-loss must be below current market price.';
+      }
       if (stopLoss >= entry) {
         return 'For LONG, stop-loss must be below entry price.';
       }
@@ -98,6 +103,9 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         return 'For LONG, stop-loss must be below all TP levels.';
       }
     } else {
+      if (stopLoss <= currentPrice) {
+        return 'For SHORT, stop-loss must be above current market price.';
+      }
       if (stopLoss <= entry) {
         return 'For SHORT, stop-loss must be above entry price.';
       }
@@ -110,7 +118,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     }
 
     return null;
-  }, [entry, stopLoss, takeProfits, side]);
+  }, [entry, markPrice, stopLoss, takeProfits, side]);
 
   useEffect(() => {
     let active = true;

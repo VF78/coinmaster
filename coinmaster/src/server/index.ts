@@ -2731,6 +2731,22 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     }
   }
 
+  // Validate SL vs current market to prevent instant/invalid trigger side.
+  const liveMid = await fetchLiveMid(normalizedSymbol);
+  if (liveMid && Number.isFinite(liveMid) && liveMid > 0) {
+    const validVsMarket = side === 'long' ? sl < liveMid : sl > liveMid;
+    if (!validVsMarket) {
+      return res.status(400).json({
+        ok: false,
+        error: 'invalid_stop_loss_vs_market',
+        marketPrice: liveMid,
+        hint: side === 'long'
+          ? 'LONG requires SL below current market price'
+          : 'SHORT requires SL above current market price',
+      });
+    }
+  }
+
   if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({
       ok: false,
