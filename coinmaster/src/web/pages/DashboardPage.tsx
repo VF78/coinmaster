@@ -217,10 +217,10 @@ export function DashboardPage() {
           <div style={{ background: 'var(--danger-bg, rgba(239,68,68,0.1))', border: '1px solid var(--danger, #ef4444)', borderRadius: '6px', padding: '0.75rem 1rem', marginBottom: '0.75rem' }}>
             <p style={{ margin: 0, fontWeight: 600 }}>
               <Badge tone="danger">ACTION REQUIRED</Badge>{' '}
-              Подтвердите открытие — TP/SL установятся после подтверждения.
+              Confirm execution to place the position. TP/SL orders will be attached right after confirmation.
             </p>
             <p className="muted" style={{ margin: '0.5rem 0 0', fontSize: '0.85rem' }}>
-              Telegram-бот отправит уведомление. После подтверждения позиция перейдёт в Live open positions.
+              A Telegram notification is sent for each pending confirmation. After approval, the position appears in Live open positions.
             </p>
             <a
               href="https://t.me/your-bot"
@@ -228,7 +228,7 @@ export function DashboardPage() {
               rel="noopener noreferrer"
               style={{ display: 'inline-block', marginTop: '0.5rem', color: 'var(--accent, #3b82f6)', fontWeight: 500 }}
             >
-              Перейти к Telegram &rarr;
+              Open Telegram &rarr;
             </a>
           </div>
         )}
@@ -263,7 +263,7 @@ export function DashboardPage() {
                 onClick={() => { alert('Confirmation dialog — placeholder'); }}
                 fullWidth
               >
-                Подтвердить сделку
+                Confirm trade
               </Button>
             </div>
           </>

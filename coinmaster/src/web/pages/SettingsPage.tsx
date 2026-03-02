@@ -49,9 +49,9 @@ export function SettingsPage() {
           <Stat label="Available to trade" value={data.account?.availableUsd !== undefined ? formatMoney(data.account.availableUsd) : '—'} />
           <Stat label="Used margin" value={data.account?.usedMarginUsd !== undefined ? formatMoney(data.account.usedMarginUsd) : '—'} />
         </div>
-        <p className="muted stat-note">
-          {data.error ? `Connection error: ${data.error}` : 'Connection settings are read-only in this MVP build.'}
-        </p>
+        {data.error ? (
+          <p className="muted stat-note">Connection error: {data.error}</p>
+        ) : null}
       </Card>
     </main>
   );

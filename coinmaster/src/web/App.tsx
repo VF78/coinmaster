@@ -15,6 +15,7 @@ const SECTIONS: Array<{ key: PageKey; label: string }> = [
 
 export function App() {
   const [page, setPage] = useState<PageKey>('dashboard');
+  const [tradingRulesDirty, setTradingRulesDirty] = useState(false);
 
   const pageTitle = useMemo(() => {
     const section = SECTIONS.find((s) => s.key === page);
@@ -24,6 +25,18 @@ export function App() {
   useEffect(() => {
     document.title = pageTitle;
   }, [pageTitle]);
+
+  function handleNavigate(nextPage: PageKey) {
+    if (nextPage === page) return;
+
+    if (page === 'trading-rules' && tradingRulesDirty) {
+      const confirmed = window.confirm('You have unsaved Trading Rules changes. Click Cancel to stay and apply them, or OK to leave without applying.');
+      if (!confirmed) return;
+      setTradingRulesDirty(false);
+    }
+
+    setPage(nextPage);
+  }
 
   return (
     <div className="app-shell">
@@ -40,7 +53,7 @@ export function App() {
                   <button
                     type="button"
                     className={page === section.key ? 'sidebar-nav__item sidebar-nav__item--active' : 'sidebar-nav__item'}
-                    onClick={() => setPage(section.key)}
+                    onClick={() => handleNavigate(section.key)}
                   >
                     {section.label}
                   </button>
@@ -53,7 +66,7 @@ export function App() {
         <section className="app-content">
           {page === 'dashboard' ? <DashboardPage /> : null}
           {page === 'history' ? <HistoryPage /> : null}
-          {page === 'trading-rules' ? <TradingRulesPage /> : null}
+          {page === 'trading-rules' ? <TradingRulesPage onDirtyChange={setTradingRulesDirty} /> : null}
           {page === 'settings' ? <SettingsPage /> : null}
         </section>
       </div>

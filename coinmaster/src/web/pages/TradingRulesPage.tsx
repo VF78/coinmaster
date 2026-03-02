@@ -14,7 +14,10 @@ function clampNumber(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-// ─── Number Stepper ─────────────────────────────────────────────────
+interface TradingRulesPageProps {
+  onDirtyChange?: (dirty: boolean) => void;
+}
+
 interface StepperProps {
   value: number;
   min: number;
@@ -27,30 +30,28 @@ interface StepperProps {
 }
 
 function Stepper({ value, min, max, step = 1, unit = '', decimals = 0, onChange, disabled = false }: StepperProps) {
-  const dec = decimals;
-  const display = dec > 0 ? value.toFixed(dec) : String(value);
+  const display = decimals > 0 ? value.toFixed(decimals) : String(value);
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 0, border: '1px solid var(--border, #333)', borderRadius: 6, overflow: 'hidden', userSelect: 'none' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--border, #333)', borderRadius: 6, overflow: 'hidden', userSelect: 'none' }}>
       <button
         type="button"
         disabled={disabled || value <= min}
-        onClick={() => onChange(+(Math.max(min, value - step).toFixed(dec + 2)))}
-        style={{ width: 32, height: 34, border: 'none', background: 'var(--surface2, #1a1a1a)', color: 'var(--text, #ccc)', fontSize: 18, cursor: disabled || value <= min ? 'not-allowed' : 'pointer', opacity: disabled || value <= min ? 0.4 : 1, fontWeight: 400 }}
+        onClick={() => onChange(+(Math.max(min, value - step).toFixed(decimals + 2)))}
+        style={{ width: 32, height: 34, border: 'none', background: 'var(--surface2, #1a1a1a)', color: 'var(--text, #ccc)', fontSize: 18, cursor: disabled || value <= min ? 'not-allowed' : 'pointer', opacity: disabled || value <= min ? 0.4 : 1 }}
       >−</button>
-      <span style={{ minWidth: 52, textAlign: 'center', padding: '0 6px', fontSize: 13, color: 'var(--text, #eee)', background: 'var(--surface, #111)', height: 34, lineHeight: '34px', display: 'inline-block' }}>
+      <span style={{ minWidth: 58, textAlign: 'center', padding: '0 8px', fontSize: 13, color: 'var(--text, #eee)', background: 'var(--surface, #111)', height: 34, lineHeight: '34px' }}>
         {display}{unit}
       </span>
       <button
         type="button"
         disabled={disabled || value >= max}
-        onClick={() => onChange(+(Math.min(max, value + step).toFixed(dec + 2)))}
-        style={{ width: 32, height: 34, border: 'none', background: 'var(--surface2, #1a1a1a)', color: 'var(--text, #ccc)', fontSize: 18, cursor: disabled || value >= max ? 'not-allowed' : 'pointer', opacity: disabled || value >= max ? 0.4 : 1, fontWeight: 400 }}
+        onClick={() => onChange(+(Math.min(max, value + step).toFixed(decimals + 2)))}
+        style={{ width: 32, height: 34, border: 'none', background: 'var(--surface2, #1a1a1a)', color: 'var(--text, #ccc)', fontSize: 18, cursor: disabled || value >= max ? 'not-allowed' : 'pointer', opacity: disabled || value >= max ? 0.4 : 1 }}
       >+</button>
     </div>
   );
 }
 
-// ─── Segmented (pill) buttons ────────────────────────────────────────
 interface SegmentedProps<T extends string | number> {
   options: T[];
   value: T;
@@ -69,10 +70,14 @@ function Segmented<T extends string | number>({ options, value, format, onChange
             type="button"
             onClick={() => onChange(opt)}
             style={{
-              padding: '6px 14px', border: 'none', borderLeft: i > 0 ? '1px solid var(--border, #333)' : 'none',
+              padding: '6px 14px',
+              border: 'none',
+              borderLeft: i > 0 ? '1px solid var(--border, #333)' : 'none',
               background: active ? 'var(--accent, #4f8ef7)' : 'var(--surface2, #1a1a1a)',
-              color: active ? '#fff' : 'var(--text-muted, #888)', fontSize: 13,
-              cursor: 'pointer', fontWeight: active ? 600 : 400,
+              color: active ? '#fff' : 'var(--text-muted, #888)',
+              fontSize: 13,
+              cursor: 'pointer',
+              fontWeight: active ? 600 : 400,
             }}
           >
             {format ? format(opt) : String(opt)}
@@ -83,7 +88,7 @@ function Segmented<T extends string | number>({ options, value, format, onChange
   );
 }
 
-export function TradingRulesPage() {
+export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
   const defaults = cloneTradingRulesDefaults();
 
   const [coins, setCoins] = useState<TradingCoinAllocation[]>(defaults.coins);
@@ -98,28 +103,78 @@ export function TradingRulesPage() {
   const [exitClosePct, setExitClosePct] = useState(defaults.exitClosePct ?? 50);
   const [autoConfirm, setAutoConfirm] = useState(defaults.autoConfirm);
 
+  const [savedRules, setSavedRules] = useState<TradingRulesSettings>(() => normalizeTradingRules(defaults));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveInfo, setSaveInfo] = useState<string>('');
 
   const totalPct = useMemo(
-    () => Math.round(coins.filter(c => c.enabled).reduce((s, c) => s + c.pct, 0) * 100) / 100,
+    () => Math.round(coins.filter((c) => c.enabled).reduce((s, c) => s + c.pct, 0) * 100) / 100,
     [coins],
   );
 
+  const currentRules = useMemo<TradingRulesSettings>(() => normalizeTradingRules({
+    coins,
+    entryTimeframes,
+    emergencyExitTimeframes,
+    engulfingLookbackCandles,
+    fvgRetrace,
+    maxLeverage,
+    dailyDrawdown,
+    tpPct: tpLevels[0] ?? 6,
+    tpLevels,
+    slPct,
+    exitClosePct,
+    autoConfirm,
+  }), [
+    coins,
+    entryTimeframes,
+    emergencyExitTimeframes,
+    engulfingLookbackCandles,
+    fvgRetrace,
+    maxLeverage,
+    dailyDrawdown,
+    tpLevels,
+    slPct,
+    exitClosePct,
+    autoConfirm,
+  ]);
+
+  const isDirty = useMemo(
+    () => JSON.stringify(currentRules) !== JSON.stringify(savedRules),
+    [currentRules, savedRules],
+  );
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
+
   function applyRules(rules: TradingRulesSettings) {
-    const n = normalizeTradingRules(rules);
-    setCoins(n.coins);
-    setEntryTimeframes(n.entryTimeframes);
-    setEmergencyExitTimeframes(n.emergencyExitTimeframes);
-    setEngulfingLookbackCandles(n.engulfingLookbackCandles);
-    setFvgRetrace(n.fvgRetrace);
-    setMaxLeverage(n.maxLeverage);
-    setDailyDrawdown(n.dailyDrawdown);
-    setTpLevels(n.tpLevels ?? [n.tpPct]);
-    setSlPct(n.slPct);
-    setExitClosePct(n.exitClosePct ?? 50);
-    setAutoConfirm(n.autoConfirm);
+    const normalized = normalizeTradingRules(rules);
+    setCoins(normalized.coins);
+    setEntryTimeframes(normalized.entryTimeframes);
+    setEmergencyExitTimeframes(normalized.emergencyExitTimeframes);
+    setEngulfingLookbackCandles(normalized.engulfingLookbackCandles);
+    setFvgRetrace(normalized.fvgRetrace);
+    setMaxLeverage(normalized.maxLeverage);
+    setDailyDrawdown(normalized.dailyDrawdown);
+    setTpLevels(normalized.tpLevels ?? [normalized.tpPct]);
+    setSlPct(normalized.slPct);
+    setExitClosePct(normalized.exitClosePct ?? 50);
+    setAutoConfirm(normalized.autoConfirm);
+    setSavedRules(normalized);
   }
 
   useEffect(() => {
@@ -129,82 +184,81 @@ export function TradingRulesPage() {
         const response = await getTradingRules();
         if (!active) return;
         applyRules(response.rules);
-        setSaveInfo('Настройки загружены с сервера');
+        setSaveInfo('Rules loaded from server.');
       } catch (error) {
         console.error('[TradingRules] failed to load rules:', error);
         if (!active) return;
         applyRules(defaults);
-        setSaveInfo('Не удалось загрузить настройки — использованы значения по умолчанию');
+        setSaveInfo('Could not load rules. Defaults were applied.');
       } finally {
         if (active) setLoading(false);
       }
     })();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
-  function currentRules(): TradingRulesSettings {
-    return normalizeTradingRules({
-      coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles,
-      fvgRetrace, maxLeverage, dailyDrawdown,
-      tpPct: tpLevels[0] ?? 6, tpLevels, slPct, exitClosePct, autoConfirm,
-    });
-  }
-
   function toggleCoin(idx: number) {
-    setCoins(prev => prev.map((c, i) => (i === idx ? { ...c, enabled: !c.enabled } : c)));
-  }
-  function setCoinPct(idx: number, pct: number) {
-    setCoins(prev => prev.map((c, i) => (i === idx ? { ...c, pct: clampNumber(pct, 0, 100) } : c)));
+    setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, enabled: !c.enabled } : c)));
   }
 
-  // ─── TP level helpers ──────────────────────────────────────────────
+  function setCoinPct(idx: number, pct: number) {
+    setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, pct: clampNumber(pct, 0, 100) } : c)));
+  }
+
   function addTpLevel() {
     if (tpLevels.length >= 3) return;
     const last = tpLevels[tpLevels.length - 1] ?? 6;
-    setTpLevels(prev => [...prev, clampNumber(Math.round(last * 1.5 * 2) / 2, 0, 100)]);
-  }
-  function removeTpLevel(idx: number) {
-    if (tpLevels.length <= 1) return;
-    setTpLevels(prev => prev.filter((_, i) => i !== idx));
-  }
-  function updateTpLevel(idx: number, value: number) {
-    setTpLevels(prev => prev.map((v, i) => (i === idx ? value : v)));
+    setTpLevels((prev) => [...prev, clampNumber(Math.round(last * 1.5 * 2) / 2, 0.5, 100)]);
   }
 
-  // ─── TF toggle ────────────────────────────────────────────────────
-  function toggleTf(tf: TradingRulesTimeframe, current: TradingRulesTimeframe[], set: (v: TradingRulesTimeframe[]) => void) {
-    if (current.includes(tf)) {
-      const next = current.filter(t => t !== tf);
+  function removeTpLevel(idx: number) {
+    if (tpLevels.length <= 1) return;
+    setTpLevels((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function updateTpLevel(idx: number, value: number) {
+    setTpLevels((prev) => prev.map((v, i) => (i === idx ? value : v)));
+  }
+
+  function toggleTf(
+    timeframe: TradingRulesTimeframe,
+    current: TradingRulesTimeframe[],
+    set: (v: TradingRulesTimeframe[]) => void,
+  ) {
+    if (current.includes(timeframe)) {
+      const next = current.filter((tf) => tf !== timeframe);
       if (next.length > 0) set(next);
     } else {
-      set([...current, tf]);
+      set([...current, timeframe]);
     }
   }
 
   async function handleApply() {
-    const rules = currentRules();
-    const enabled = rules.coins.filter(c => c.enabled);
+    const enabled = currentRules.coins.filter((c) => c.enabled);
     const enabledTotal = Math.round(enabled.reduce((s, c) => s + c.pct, 0) * 100) / 100;
 
     if (enabled.length === 0) {
-      alert('Нужно включить хотя бы одну монету.');
+      alert('Enable at least one coin.');
       return;
     }
+
     if (Math.abs(enabledTotal - 100) > 0.01) {
-      alert(`Сумма allocation активных монет = ${enabledTotal}%. Должно быть 100%.`);
+      alert(`Active coin allocation sum is ${enabledTotal}%. It must be exactly 100%.`);
       return;
     }
 
     setSaving(true);
-    setSaveInfo('Сохраняю на сервере...');
+    setSaveInfo('Saving rules...');
     try {
-      const response = await saveTradingRules(rules);
+      const response = await saveTradingRules(currentRules);
       applyRules(response.rules);
-      setSaveInfo(`Сохранено (${new Date().toLocaleTimeString()})`);
+      setSaveInfo(`Saved at ${new Date().toLocaleTimeString()}`);
     } catch (error) {
       console.error('[TradingRules] failed to save rules:', error);
-      setSaveInfo('Ошибка сохранения. Значения не подтверждены сервером.');
-      alert('Не удалось сохранить настройки. Проверь лог сервера.');
+      setSaveInfo('Save failed. Rules were not confirmed by server.');
+      alert('Could not save rules. Check server logs.');
     } finally {
       setSaving(false);
     }
@@ -214,61 +268,44 @@ export function TradingRulesPage() {
     <main className="terminal-layout">
       {loading && (
         <Card title="Trading Rules" actions={<Badge tone="neutral">Loading</Badge>}>
-          <p className="muted">Загрузка настроек с сервера...</p>
+          <p className="muted">Loading rules from server...</p>
         </Card>
       )}
 
-      {/* ── Coin Distribution ─────────────────────────────────────── */}
       <Card title="Coin Distribution" actions={<Badge tone="neutral">Allocation</Badge>}>
         <div className="rules-grid">
-          {coins.map((c, i) => (
-            <label key={c.symbol} className="rules-coin-row">
+          {coins.map((coin, idx) => (
+            <label key={coin.symbol} className="rules-coin-row">
               <input
                 type="checkbox"
-                checked={c.enabled}
-                onChange={() => toggleCoin(i)}
+                checked={coin.enabled}
+                onChange={() => toggleCoin(idx)}
                 className="rules-checkbox"
               />
-              <span className="rules-coin-symbol">{c.symbol}</span>
+              <span className="rules-coin-symbol">{coin.symbol}</span>
               <Stepper
-                value={c.pct}
+                value={coin.pct}
                 min={0}
                 max={100}
                 step={1}
                 unit="%"
                 decimals={0}
-                disabled={!c.enabled}
-                onChange={v => setCoinPct(i, v)}
+                disabled={!coin.enabled}
+                onChange={(v) => setCoinPct(idx, v)}
               />
             </label>
           ))}
         </div>
-        <p className="stat-note muted">Сумма активных: <strong>{totalPct}%</strong></p>
+        <p className="stat-note muted">Active total: <strong>{totalPct}%</strong></p>
       </Card>
 
-      {/* ── Entry / Exit rules ────────────────────────────────────── */}
-      <Card title="Entry / Exit rules" actions={<Badge tone="neutral">Signals</Badge>}>
-
-        {/* Entry timeframe */}
+      <Card title="Entry / Exit Rules" actions={<Badge tone="neutral">Signals</Badge>}>
         <div className="rules-section">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
-            <p className="rules-label" style={{ margin: 0 }}>
-              Entry timeframe <span className="muted" style={{ fontWeight: 400 }}>(Bullish / Bearish Engulfing)</span>
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span className="muted" style={{ fontSize: 12 }}>Lookback candles</span>
-              <Stepper
-                value={engulfingLookbackCandles}
-                min={5}
-                max={200}
-                step={5}
-                decimals={0}
-                onChange={setEngulfingLookbackCandles}
-              />
-            </div>
-          </div>
-          <div className="rules-btn-group">
-            {TIMEFRAMES.map(tf => (
+          <p className="rules-label" style={{ marginBottom: 8 }}>
+            Entry timeframe <span className="muted" style={{ fontWeight: 400 }}>(Bullish / Bearish Engulfing)</span>
+          </p>
+          <div className="rules-btn-group" style={{ justifyContent: 'space-between' }}>
+            {TIMEFRAMES.map((tf) => (
               <Button
                 key={tf}
                 variant={entryTimeframes.includes(tf) ? 'primary' : 'secondary'}
@@ -280,35 +317,64 @@ export function TradingRulesPage() {
           </div>
         </div>
 
-        {/* FVG Retrace */}
-        <div className="rules-section">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-            <label className="rules-label" style={{ margin: 0 }}>
-              FVG Retrace Level <span className="muted" style={{ fontWeight: 400 }}>(1H/4H)</span>
-            </label>
-            <strong style={{ fontSize: 14 }}>{fvgRetrace}%</strong>
-          </div>
-          <input
-            type="range"
-            min={10}
-            max={90}
-            value={fvgRetrace}
-            onChange={e => setFvgRetrace(clampNumber(Number(e.target.value), 10, 90))}
-            className="rules-range"
-            style={{ width: '100%' }}
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted, #666)', marginTop: 2 }}>
-            <span>10%</span><span>50%</span><span>90%</span>
+        <div
+          className="rules-section"
+          style={{
+            border: '1px solid var(--border)',
+            borderRadius: 8,
+            padding: '0.8rem',
+            background: 'linear-gradient(180deg, var(--surface-2) 0%, #0f1c2e 100%)',
+          }}
+        >
+          <p className="rules-label" style={{ marginBottom: 10 }}>
+            Signal Sensitivity (Engulfing + FVG)
+          </p>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gap: 14,
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+              <span className="rules-label" style={{ margin: 0 }}>Lookback candles</span>
+              <Stepper
+                value={engulfingLookbackCandles}
+                min={5}
+                max={200}
+                step={5}
+                decimals={0}
+                onChange={setEngulfingLookbackCandles}
+              />
+            </div>
+            <div style={{ display: 'grid', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="rules-label" style={{ margin: 0 }}>FVG Retrace Level (1H/4H)</span>
+                <strong style={{ fontSize: 14 }}>{fvgRetrace}%</strong>
+              </div>
+              <input
+                type="range"
+                min={10}
+                max={90}
+                value={fvgRetrace}
+                onChange={(e) => setFvgRetrace(clampNumber(Number(e.target.value), 10, 90))}
+                className="rules-range"
+                style={{ width: '100%', marginTop: 0 }}
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted, #666)' }}>
+                <span>10%</span><span>50%</span><span>90%</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Exit timeframe */}
         <div className="rules-section">
           <p className="rules-label" style={{ marginBottom: 8 }}>
             Exit timeframe <span className="muted" style={{ fontWeight: 400 }}>(Opposite Engulfing)</span>
           </p>
-          <div className="rules-btn-group" style={{ marginBottom: 12 }}>
-            {TIMEFRAMES.map(tf => (
+          <div className="rules-btn-group" style={{ marginBottom: 10, justifyContent: 'space-between' }}>
+            {TIMEFRAMES.map((tf) => (
               <Button
                 key={tf}
                 variant={emergencyExitTimeframes.includes(tf) ? 'primary' : 'secondary'}
@@ -318,133 +384,135 @@ export function TradingRulesPage() {
               </Button>
             ))}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <span className="muted" style={{ fontSize: 12 }}>Close on exit signal</span>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Close size on exit signal</span>
             <Segmented
               options={EXIT_CLOSE_PRESETS}
               value={EXIT_CLOSE_PRESETS.includes(exitClosePct) ? exitClosePct : 50}
-              format={v => `${v}%`}
+              format={(v) => `${v}%`}
               onChange={setExitClosePct}
             />
-            {!EXIT_CLOSE_PRESETS.includes(exitClosePct) && (
-              <span style={{ fontSize: 12, color: 'var(--accent, #4f8ef7)' }}>{exitClosePct}%</span>
-            )}
           </div>
-          <p className="stat-note muted" style={{ marginTop: 6, fontSize: 11 }}>
+
+          <p className="stat-note muted" style={{ marginTop: 8, fontSize: 11 }}>
             {exitClosePct < 100
-              ? `При частичном закрытии (${exitClosePct}%) — SL переносится на цену входа (безубыток)`
-              : 'Полное закрытие позиции'}
+              ? `Partial close (${exitClosePct}%) moves SL to entry (break-even).`
+              : '100% closes the full position.'}
           </p>
         </div>
       </Card>
 
-      {/* ── Risk Management ───────────────────────────────────────── */}
       <Card title="Risk Management" actions={<Badge tone="danger">Risk</Badge>}>
-        <div className="rules-form-grid">
-          <div className="rules-field">
-            <span className="rules-label">Max Leverage</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
-              <input
-                type="range"
-                min={1}
-                max={20}
-                value={maxLeverage}
-                onChange={e => setMaxLeverage(clampNumber(Number(e.target.value), 1, 20))}
-                className="rules-range"
-                style={{ flex: 1 }}
-              />
-              <Stepper value={maxLeverage} min={1} max={20} step={1} unit="x" decimals={0} onChange={setMaxLeverage} />
-            </div>
-          </div>
-
+        <div style={{ display: 'grid', gap: 14 }}>
           <div className="rules-field">
             <span className="rules-label">Daily Drawdown Limit</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
-              <Stepper value={dailyDrawdown} min={0} max={100} step={0.5} unit="%" decimals={1} onChange={setDailyDrawdown} />
+            <Stepper
+              value={dailyDrawdown}
+              min={0}
+              max={100}
+              step={0.5}
+              unit="%"
+              decimals={1}
+              onChange={setDailyDrawdown}
+            />
+          </div>
+
+          <div className="rules-field">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span className="rules-label" style={{ margin: 0 }}>Max Leverage</span>
+              <strong style={{ fontSize: 14 }}>{maxLeverage}x</strong>
             </div>
+            <input
+              type="range"
+              min={1}
+              max={20}
+              value={maxLeverage}
+              onChange={(e) => setMaxLeverage(clampNumber(Number(e.target.value), 1, 20))}
+              className="rules-range"
+              style={{ marginTop: 0 }}
+            />
           </div>
         </div>
-        <p className="stat-note muted">
-          Рекомендация: leverage ≤ 5x, drawdown ≤ 3% для консервативной стратегии.
-        </p>
+        <p className="stat-note muted">Suggested: leverage ≤ 5x and drawdown ≤ 3% for conservative operation.</p>
       </Card>
 
-      {/* ── Default TP / SL ───────────────────────────────────────── */}
       <Card title="Default TP / SL" actions={<Badge tone="success">Targets</Badge>}>
-        {/* TP levels */}
-        <div className="rules-section">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-            <p className="rules-label" style={{ margin: 0 }}>Take Profits</p>
-            {tpLevels.length < 3 && (
-              <button
-                type="button"
-                onClick={addTpLevel}
-                style={{ fontSize: 12, color: 'var(--accent, #4f8ef7)', background: 'none', border: '1px solid var(--accent, #4f8ef7)', borderRadius: 4, padding: '3px 10px', cursor: 'pointer' }}
-              >
-                + Add TP level
-              </button>
-            )}
-          </div>
+        <div className="rules-section" style={{ display: 'grid', gap: 8 }}>
+          {tpLevels.map((tp, idx) => (
+            <div
+              key={idx}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '52px auto auto auto',
+                gap: 8,
+                alignItems: 'center',
+              }}
+            >
+              <span className="rules-label" style={{ margin: 0, fontWeight: 700 }}>TP{idx + 1}</span>
+              <Stepper
+                value={tp}
+                min={0.5}
+                max={100}
+                step={0.5}
+                unit="%"
+                decimals={1}
+                onChange={(v) => updateTpLevel(idx, v)}
+              />
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {tpLevels.map((tp, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ minWidth: 30, fontSize: 12, color: 'var(--text-muted, #888)', fontWeight: 600 }}>
-                  TP{i + 1}
-                </span>
-                <Stepper
-                  value={tp}
-                  min={0.5}
-                  max={100}
-                  step={0.5}
-                  unit="%"
-                  decimals={1}
-                  onChange={v => updateTpLevel(i, v)}
-                />
-                {tpLevels.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeTpLevel(i)}
-                    style={{ fontSize: 16, color: 'var(--danger, #e05c5c)', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1, padding: '0 4px' }}
-                    title="Удалить уровень"
-                  >
-                    ×
-                  </button>
-                )}
-                {i === 0 && tpLevels.length > 1 && (
-                  <span className="muted" style={{ fontSize: 11 }}>→ SL на вход</span>
-                )}
-              </div>
-            ))}
-          </div>
+              {idx === 0 && tpLevels.length < 3 ? (
+                <button
+                  type="button"
+                  onClick={addTpLevel}
+                  style={{
+                    fontSize: 12,
+                    color: 'var(--accent, #4f8ef7)',
+                    background: 'none',
+                    border: '1px solid var(--accent, #4f8ef7)',
+                    borderRadius: 4,
+                    padding: '5px 10px',
+                    cursor: 'pointer',
+                    justifySelf: 'start',
+                  }}
+                >
+                  + Add TP level
+                </button>
+              ) : (
+                <span />
+              )}
 
-          {tpLevels.length > 1 && (
-            <p className="stat-note muted" style={{ marginTop: 8, fontSize: 11, display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style={{ color: 'var(--accent, #4f8ef7)' }}>ℹ</span>
-              После срабатывания TP1 — SL автоматически переносится на цену входа (безубыток)
-            </p>
-          )}
+              {idx > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => removeTpLevel(idx)}
+                  style={{ fontSize: 12, color: 'var(--danger, #e05c5c)', background: 'none', border: '1px solid var(--danger, #e05c5c)', borderRadius: 4, padding: '5px 8px', cursor: 'pointer' }}
+                  title="Remove level"
+                >
+                  Remove
+                </button>
+              ) : (
+                <span className="muted" style={{ fontSize: 11 }}>TP1 → move SL to entry</span>
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* SL */}
-        <div className="rules-section">
-          <p className="rules-label" style={{ marginBottom: 8 }}>Stop Loss</p>
+        <div className="rules-section" style={{ display: 'grid', gridTemplateColumns: '52px auto', gap: 8, alignItems: 'center' }}>
+          <span className="rules-label" style={{ margin: 0, fontWeight: 700 }}>SL</span>
           <Stepper value={slPct} min={0.5} max={100} step={0.5} unit="%" decimals={1} onChange={setSlPct} />
         </div>
 
-        {/* R:R ratio */}
         <p className="stat-note muted">
-          R:R (TP1 : SL) ={' '}
-          <strong>
-            {slPct > 0 ? ((tpLevels[0] ?? 0) / slPct).toFixed(1) : '—'}:1
-          </strong>
-          {tpLevels.length > 1 && (
-            <span> &nbsp;·&nbsp; TP2 R:R = <strong>{slPct > 0 ? ((tpLevels[1] ?? 0) / slPct).toFixed(1) : '—'}:1</strong></span>
-          )}
+          R:R → TP1: <strong>{slPct > 0 ? ((tpLevels[0] ?? 0) / slPct).toFixed(1) : '—'}:1</strong>
+          {tpLevels.length > 1 ? (
+            <span> · TP2: <strong>{slPct > 0 ? ((tpLevels[1] ?? 0) / slPct).toFixed(1) : '—'}:1</strong></span>
+          ) : null}
+          {tpLevels.length > 2 ? (
+            <span> · TP3: <strong>{slPct > 0 ? ((tpLevels[2] ?? 0) / slPct).toFixed(1) : '—'}:1</strong></span>
+          ) : null}
         </p>
       </Card>
 
-      {/* ── Confirmation Mode ─────────────────────────────────────── */}
       <Card title="Confirmation Mode">
         <label className="rules-toggle-row">
           <span>Auto-confirm orders</span>
@@ -453,25 +521,25 @@ export function TradingRulesPage() {
             role="switch"
             aria-checked={autoConfirm}
             className={`rules-toggle ${autoConfirm ? 'rules-toggle--on' : ''}`}
-            onClick={() => setAutoConfirm(v => !v)}
+            onClick={() => setAutoConfirm((v) => !v)}
           >
             <span className="rules-toggle__thumb" />
           </button>
         </label>
         <p className="stat-note muted">
           {autoConfirm
-            ? 'Ордера будут отправляться автоматически без подтверждения.'
-            : 'Каждый ордер потребует ручного подтверждения перед отправкой.'}
+            ? 'Orders are submitted automatically without manual confirmation.'
+            : 'Each order requires manual confirmation before submission.'}
         </p>
       </Card>
 
-      {/* ── Apply ─────────────────────────────────────────────────── */}
       <div className="rules-apply-row">
         <Button variant="primary" fullWidth onClick={handleApply} disabled={saving || loading}>
-          {saving ? 'Сохранение...' : 'Применить'}
+          {saving ? 'Saving...' : 'Apply changes'}
         </Button>
       </div>
 
+      {isDirty ? <p className="stat-note" style={{ color: 'var(--warning, #f59e0b)' }}>You have unsaved changes.</p> : null}
       {saveInfo ? <p className="stat-note muted">{saveInfo}</p> : null}
     </main>
   );
