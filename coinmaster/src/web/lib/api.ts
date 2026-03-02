@@ -31,6 +31,20 @@ export function getExchangeSettings() {
   return jsonFetch<ExchangeSettingsResponse>('/api/settings/exchange');
 }
 
+export interface HyperliquidSettingsPayload {
+  accountAddress?: string;
+  apiWalletAddress?: string;
+  apiPrivateKey?: string;
+}
+
+export function saveHyperliquidSettings(payload: HyperliquidSettingsPayload) {
+  return jsonFetch<{ ok: boolean; restartScheduled?: boolean; exchange?: ExchangeSettingsResponse['hyperliquid'] }>('/api/settings/exchange/hyperliquid', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+}
+
 export interface TelegramNotifyPayload {
   botToken?: string;
   chatId?: string;

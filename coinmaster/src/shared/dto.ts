@@ -328,6 +328,12 @@ export interface ExchangeSettingsResponse {
     privateTrading: boolean;
     realtimeMids: boolean;
   };
+  hyperliquid?: {
+    accountAddress: string;
+    apiWalletAddress: string;
+    hasPrivateKey: boolean;
+    privateKeyMasked: string;
+  };
   telegramNotify?: {
     hasToken: boolean;
     chatId: string;

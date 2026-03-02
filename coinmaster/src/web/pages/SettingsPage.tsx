@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ExchangeSettingsResponse } from '../../shared/dto.js';
-import { getExchangeSettings, getTelegramNotifyHealth, saveTelegramNotify, sendTelegramNotifyTest } from '../lib/api';
+import { getExchangeSettings, getTelegramNotifyHealth, saveHyperliquidSettings, saveTelegramNotify, sendTelegramNotifyTest } from '../lib/api';
 import { formatMoney, formatNumber } from '../lib/format';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -26,6 +26,12 @@ export function SettingsPage() {
   const [notifySl, setNotifySl] = useState(true);
   const [notifyManualConfirm, setNotifyManualConfirm] = useState(true);
 
+  const [hlAccountAddress, setHlAccountAddress] = useState('');
+  const [hlApiWalletAddress, setHlApiWalletAddress] = useState('');
+  const [hlApiPrivateKey, setHlApiPrivateKey] = useState('');
+  const [isSavingHyperliquid, setIsSavingHyperliquid] = useState(false);
+  const [hyperliquidInfo, setHyperliquidInfo] = useState('');
+
   async function refresh() {
     setIsLoading(true);
     try {
@@ -40,6 +46,10 @@ export function SettingsPage() {
       setNotifyManualConfirm(next.telegramNotify?.notifyManualConfirm !== false);
       setChatId(next.telegramNotify?.chatId ?? '');
       setBotToken(''); // never prefill secrets
+
+      setHlAccountAddress(next.hyperliquid?.accountAddress ?? '');
+      setHlApiWalletAddress(next.hyperliquid?.apiWalletAddress ?? '');
+      setHlApiPrivateKey(''); // never prefill private key
       if (health?.ok) {
         setTelegramHealth({
           queued: health.totals.queued,
@@ -106,6 +116,26 @@ export function SettingsPage() {
     }
   }
 
+  async function saveHyperliquid() {
+    setIsSavingHyperliquid(true);
+    setHyperliquidInfo('Saving Hyperliquid API settings...');
+    try {
+      const result = await saveHyperliquidSettings({
+        accountAddress: hlAccountAddress.trim(),
+        apiWalletAddress: hlApiWalletAddress.trim(),
+        apiPrivateKey: hlApiPrivateKey.trim() || undefined,
+      });
+      if (!result.ok) {
+        throw new Error('hyperliquid_save_failed');
+      }
+      setHyperliquidInfo('Saved. Service restart scheduled to apply new credentials.');
+    } catch (error) {
+      setHyperliquidInfo(`Save failed: ${error instanceof Error ? error.message : 'unknown_error'}`);
+    } finally {
+      setIsSavingHyperliquid(false);
+    }
+  }
+
   if (!data) {
     return <p className="muted">Loading exchange settings…</p>;
   }
@@ -133,6 +163,62 @@ export function SettingsPage() {
         {data.error ? (
           <p className="muted stat-note">Connection error: {data.error}</p>
         ) : null}
+      </Card>
+
+      <Card title="Hyperliquid API credentials" className="terminal-card full-width">
+        <div className="rules-form-grid">
+          <label className="rules-field">
+            <span className="rules-label">Account address</span>
+            <input
+              className="rules-input"
+              type="text"
+              placeholder="0x..."
+              value={hlAccountAddress}
+              onChange={(e) => setHlAccountAddress(e.target.value)}
+            />
+          </label>
+
+          <label className="rules-field">
+            <span className="rules-label">API wallet address</span>
+            <input
+              className="rules-input"
+              type="text"
+              placeholder="0x..."
+              value={hlApiWalletAddress}
+              onChange={(e) => setHlApiWalletAddress(e.target.value)}
+            />
+          </label>
+        </div>
+
+        <div className="rules-form-grid" style={{ marginTop: '0.75rem' }}>
+          <label className="rules-field">
+            <span className="rules-label">API private key</span>
+            <input
+              className="rules-input"
+              type="password"
+              placeholder={data.hyperliquid?.hasPrivateKey ? `${data.hyperliquid.privateKeyMasked} (leave empty to keep)` : '0x...'}
+              value={hlApiPrivateKey}
+              onChange={(e) => setHlApiPrivateKey(e.target.value)}
+            />
+          </label>
+          <div className="rules-field">
+            <span className="rules-label">Status</span>
+            <p className="muted">
+              {data.hyperliquid?.hasPrivateKey ? 'Private key configured' : 'Private key not configured'}
+            </p>
+          </div>
+        </div>
+
+        <div className="actions-row" style={{ marginTop: '0.9rem' }}>
+          <Button type="button" variant="primary" onClick={saveHyperliquid} disabled={isSavingHyperliquid}>
+            {isSavingHyperliquid ? 'Saving...' : 'Save Hyperliquid settings'}
+          </Button>
+        </div>
+
+        <p className="muted stat-note">
+          After saving credentials, Coinmaster restarts automatically to apply the new Hyperliquid API settings.
+        </p>
+        {hyperliquidInfo ? <p className="muted stat-note">{hyperliquidInfo}</p> : null}
       </Card>
 
       <Card title="Telegram notifications" className="terminal-card full-width">

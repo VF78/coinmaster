@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -54,6 +55,7 @@ const TELEGRAM_CHAT_ID = (process.env.TELEGRAM_CHAT_ID || '').trim();
 const TELEGRAM_OUTBOX_RETRY_BASE_MS = Math.max(2000, Number(process.env.TELEGRAM_OUTBOX_RETRY_BASE_MS || 10_000));
 const TELEGRAM_OUTBOX_RETRY_MAX_MS = Math.max(30_000, Number(process.env.TELEGRAM_OUTBOX_RETRY_MAX_MS || 15 * 60_000));
 const TELEGRAM_OUTBOX_MAX_ATTEMPTS = Math.max(3, Number(process.env.TELEGRAM_OUTBOX_MAX_ATTEMPTS || 12));
+const COINMASTER_ENV_PATH = process.env.COINMASTER_ENV_PATH || '/etc/coinmaster/coinmaster.env';
 
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
 const rulesCache = new RuntimeRulesCache(5_000);
@@ -1931,6 +1933,40 @@ function maskAddress(value: string | undefined): string | undefined {
   return `${v.slice(0, 6)}…${v.slice(-4)}`;
 }
 
+function maskPrivateKey(value: string | undefined): string {
+  if (!value) return '';
+  const v = value.trim();
+  if (v.length <= 12) return '••••••';
+  return `${v.slice(0, 6)}••••${v.slice(-4)}`;
+}
+
+async function patchEnvFile(patch: Record<string, string>): Promise<void> {
+  let raw = '';
+  try {
+    raw = await fs.readFile(COINMASTER_ENV_PATH, 'utf-8');
+  } catch {
+    raw = '';
+  }
+
+  const lines = raw.split(/\r?\n/);
+  const nextLines = [...lines];
+
+  for (const [key, value] of Object.entries(patch)) {
+    const prefix = `${key}=`;
+    const idx = nextLines.findIndex((line) => line.startsWith(prefix));
+    const serialized = `${key}=${value}`;
+    if (idx >= 0) {
+      nextLines[idx] = serialized;
+    } else {
+      nextLines.push(serialized);
+    }
+    process.env[key] = value;
+  }
+
+  const output = `${nextLines.filter((line, i, arr) => !(i === arr.length - 1 && line === '')).join('\n')}\n`;
+  await fs.writeFile(COINMASTER_ENV_PATH, output, 'utf-8');
+}
+
 async function ingestPrice(symbol: string, price: number, source: 'ws' | 'rest') {
   if (!Number.isFinite(price)) return;
 
@@ -2274,6 +2310,12 @@ app.get('/api/settings/exchange', async (_req, res) => {
       privateTrading: exchange.capabilities.privateTrading,
       realtimeMids: exchange.capabilities.realtimeMids
     },
+    hyperliquid: {
+      accountAddress: process.env.HYPERLIQUID_ACCOUNT_ADDRESS || '',
+      apiWalletAddress: process.env.HYPERLIQUID_API_WALLET_ADDRESS || '',
+      hasPrivateKey: Boolean(process.env.HYPERLIQUID_API_PRIVATE_KEY),
+      privateKeyMasked: maskPrivateKey(process.env.HYPERLIQUID_API_PRIVATE_KEY),
+    },
     telegramNotify: {
       hasToken: Boolean(tg?.botToken?.trim() || TELEGRAM_BOT_TOKEN),
       chatId: tg?.chatId || TELEGRAM_CHAT_ID,
@@ -2285,6 +2327,68 @@ app.get('/api/settings/exchange', async (_req, res) => {
     },
     error: live.error
   });
+});
+
+app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
+  const {
+    accountAddress,
+    apiWalletAddress,
+    apiPrivateKey,
+  } = req.body as {
+    accountAddress?: string;
+    apiWalletAddress?: string;
+    apiPrivateKey?: string;
+  };
+
+  const patch: Record<string, string> = {};
+
+  if (accountAddress !== undefined) {
+    const value = String(accountAddress).trim();
+    if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
+      return res.status(400).json({ ok: false, error: 'invalid_account_address' });
+    }
+    patch.HYPERLIQUID_ACCOUNT_ADDRESS = value;
+  }
+
+  if (apiWalletAddress !== undefined) {
+    const value = String(apiWalletAddress).trim();
+    if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
+      return res.status(400).json({ ok: false, error: 'invalid_api_wallet_address' });
+    }
+    patch.HYPERLIQUID_API_WALLET_ADDRESS = value;
+  }
+
+  if (apiPrivateKey !== undefined) {
+    const value = String(apiPrivateKey).trim();
+    if (value && !/^0x[a-fA-F0-9]{64}$/.test(value)) {
+      return res.status(400).json({ ok: false, error: 'invalid_api_private_key_format' });
+    }
+    patch.HYPERLIQUID_API_PRIVATE_KEY = value;
+  }
+
+  if (Object.keys(patch).length === 0) {
+    return res.status(400).json({ ok: false, error: 'no_fields_provided' });
+  }
+
+  await patchEnvFile(patch);
+
+  const responsePayload = {
+    ok: true,
+    restartScheduled: true,
+    exchange: {
+      accountAddress: process.env.HYPERLIQUID_ACCOUNT_ADDRESS || '',
+      apiWalletAddress: process.env.HYPERLIQUID_API_WALLET_ADDRESS || '',
+      hasPrivateKey: Boolean(process.env.HYPERLIQUID_API_PRIVATE_KEY),
+      privateKeyMasked: maskPrivateKey(process.env.HYPERLIQUID_API_PRIVATE_KEY),
+    },
+  };
+
+  res.json(responsePayload);
+
+  setTimeout(() => {
+    logger.warn({ component: 'server' }, 'restarting process to apply Hyperliquid credential changes');
+    process.exit(0);
+  }, 350);
 });
 
 app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
