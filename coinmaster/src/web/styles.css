@@ -630,6 +630,12 @@ tbody tr:hover {
   border-top: 1px solid #1c304d;
   margin-top: 0.25rem;
 }
+
+.hl-confirm-msg {
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+}
 .position-panel__hint {
   font-size: var(--text-xs);
 }

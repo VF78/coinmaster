@@ -612,12 +612,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
       {validation ? <p className="down">{validation}</p> : null}
       {error ? <p className="down">{error}</p> : null}
-      {info ? <p className="up">{info}</p> : null}
 
       <div className="actions-row hl-confirm-row">
         <Button onClick={applyLevels} disabled={Boolean(validation) || isApplying} fullWidth>
           {isApplying ? 'Applying…' : 'Confirm'}
         </Button>
+        {info ? <p className="up hl-confirm-msg">{info}</p> : null}
       </div>
     </section>
   );
