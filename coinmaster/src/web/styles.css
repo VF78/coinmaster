@@ -421,7 +421,7 @@ tbody tr:hover {
 
 .position-panel {
   display: grid;
-  gap: var(--space-3);
+  gap: 0.55rem;
 }
 
 .hl-panel {
@@ -433,6 +433,18 @@ tbody tr:hover {
   justify-content: space-between;
   align-items: center;
   gap: var(--space-2);
+}
+
+.hl-close-btn {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  border: 1px solid #2a3f60;
+  background: #0f1b31;
+  color: #dce9ff;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .position-panel__chart-wrap {
@@ -529,18 +541,35 @@ tbody tr:hover {
 .hl-summary-grid {
   display: grid;
   grid-template-columns: minmax(80px, 1fr) minmax(120px, 1fr);
-  gap: 0.4rem 0.8rem;
-  padding: 0.65rem 0.75rem;
+  gap: 0.2rem 0.65rem;
+  padding: 0.4rem 0.6rem;
   border: 1px solid #1f344f;
   border-radius: 0.75rem;
   background: #0e192d;
+  font-size: 0.88rem;
+}
+
+.hl-levels-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 0.55rem;
+  align-items: start;
 }
 
 .hl-levels-form {
   display: grid;
   gap: 0.5rem;
   max-width: 980px;
-  margin: 0 auto;
+  margin: 0;
+}
+
+.hl-side-hint {
+  border: 1px solid #1f344f;
+  border-radius: 0.7rem;
+  background: #0f1b30;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.76rem;
+  line-height: 1.28;
 }
 
 .hl-level-row {
@@ -738,6 +767,10 @@ tbody tr:hover {
 
   .position-panel__hint {
     display: none;
+  }
+
+  .hl-levels-layout {
+    grid-template-columns: 1fr;
   }
 
   .hl-levels-form {
