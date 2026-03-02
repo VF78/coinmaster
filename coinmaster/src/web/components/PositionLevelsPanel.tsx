@@ -6,7 +6,7 @@ import { formatMoney, formatNumber } from '../lib/format';
 import { Button } from './Button';
 import { Badge } from './Badge';
 
-type EditableLevel = 'entry' | 'stopLoss' | 'takeProfit';
+type CandleTf = '5m' | '15m' | '1h' | '4h';
 
 interface PositionLevelsPanelProps {
   position: LivePosition;
@@ -20,8 +20,20 @@ function toCandleData(candles: LiveCandle[]) {
     open: c.open,
     high: c.high,
     low: c.low,
-    close: c.close
+    close: c.close,
   }));
+}
+
+function pctFromPrice(side: 'long' | 'short', entry: number, price: number): number {
+  if (!entry || entry <= 0 || !price || price <= 0) return 0;
+  if (side === 'long') return ((price - entry) / entry) * 100;
+  return ((entry - price) / entry) * 100;
+}
+
+function priceFromPct(side: 'long' | 'short', entry: number, pct: number): number {
+  if (!entry || entry <= 0) return entry;
+  if (side === 'long') return entry * (1 + pct / 100);
+  return entry * (1 - pct / 100);
 }
 
 export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLevelsPanelProps) {
@@ -30,43 +42,58 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const entrySeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const slSeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
-  const tpSeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+  const tpSeriesRefs = useRef<Array<ISeriesApi<'Line'>>>([]);
 
+  const [timeframe, setTimeframe] = useState<CandleTf>('15m');
   const [candles, setCandles] = useState<LiveCandle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isApplying, setIsApplying] = useState(false);
-  const [dragging, setDragging] = useState<EditableLevel | null>(null);
 
-  const [entry, setEntry] = useState(position.entryPrice ?? 0);
-  const [stopLoss, setStopLoss] = useState(position.stopLoss ?? position.entryPrice ?? 0);
-  const [takeProfit, setTakeProfit] = useState(position.takeProfit ?? position.entryPrice ?? 0);
+  const entry = position.entryPrice ?? 0;
+  const side = position.side;
+  const sideLabel = side.toUpperCase();
 
-  const sideLabel = position.side.toUpperCase();
+  const [stopLoss, setStopLoss] = useState(position.stopLoss ?? entry);
+  const [takeProfits, setTakeProfits] = useState<number[]>(() => {
+    const base = position.takeProfit ?? (entry > 0 ? priceFromPct(side, entry, 2) : 0);
+    return base > 0 ? [Number(base.toFixed(2))] : [];
+  });
+
+  const markPrice = useMemo(() => {
+    const last = candles[candles.length - 1];
+    return last?.close ?? position.entryPrice ?? 0;
+  }, [candles, position.entryPrice]);
 
   const validation = useMemo(() => {
-    if (!entry || !stopLoss || !takeProfit) {
-      return 'Set entry / stop-loss / take-profit first.';
+    if (!entry || !stopLoss || takeProfits.length === 0) {
+      return 'Set stop-loss and at least one TP level.';
     }
 
-    if (position.side === 'long' && !(stopLoss < entry && takeProfit > entry)) {
-      return 'For LONG: stop-loss must be below entry, take-profit above entry.';
+    const levelsValid = side === 'long'
+      ? stopLoss < Math.min(...takeProfits)
+      : stopLoss > Math.max(...takeProfits);
+
+    if (!levelsValid) {
+      return side === 'long'
+        ? 'For LONG, stop-loss must be below all TP levels.'
+        : 'For SHORT, stop-loss must be above all TP levels.';
     }
 
-    if (position.side === 'short' && !(stopLoss > entry && takeProfit < entry)) {
-      return 'For SHORT: stop-loss must be above entry, take-profit below entry.';
+    if (takeProfits.length > 3) {
+      return 'Maximum 3 TP levels.';
     }
 
     return null;
-  }, [entry, stopLoss, takeProfit, position.side]);
+  }, [entry, stopLoss, takeProfits, side]);
 
   useEffect(() => {
     let active = true;
-
     (async () => {
       setIsLoading(true);
+      setError(null);
       try {
-        const response = await getLiveCandles(position.symbol, '15m', 240);
+        const response = await getLiveCandles(position.symbol, timeframe, 240);
         if (!active) return;
         setCandles(response.candles);
       } catch (e) {
@@ -80,7 +107,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     return () => {
       active = false;
     };
-  }, [position.symbol]);
+  }, [position.symbol, timeframe]);
 
   useEffect(() => {
     if (!chartHostRef.current || !candles.length) return;
@@ -88,53 +115,53 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     const host = chartHostRef.current;
     const chart = createChart(host, {
       layout: {
-        background: { type: ColorType.Solid, color: '#08131f' },
-        textColor: '#c7d8f0'
+        background: { type: ColorType.Solid, color: '#0a1220' },
+        textColor: '#a8b9d8',
       },
       grid: {
-        vertLines: { color: '#12253a' },
-        horzLines: { color: '#12253a' }
+        vertLines: { color: '#16243b' },
+        horzLines: { color: '#16243b' },
       },
-      rightPriceScale: {
-        borderColor: '#1f3a5a'
-      },
+      rightPriceScale: { borderColor: '#243a5a' },
+      leftPriceScale: { visible: false },
       timeScale: {
-        borderColor: '#1f3a5a',
-        timeVisible: true
+        borderColor: '#243a5a',
+        timeVisible: true,
       },
       crosshair: {
-        vertLine: { color: '#2bcab0' },
-        horzLine: { color: '#2bcab0' }
-      }
+        vertLine: { color: '#2f4d7a' },
+        horzLine: { color: '#2f4d7a' },
+      },
     });
 
     const candleSeries = chart.addCandlestickSeries({
-      upColor: '#2bcab0',
-      downColor: '#d85d7c',
+      upColor: '#16c784',
+      downColor: '#ea5b72',
       borderVisible: false,
-      wickUpColor: '#2bcab0',
-      wickDownColor: '#d85d7c'
+      wickUpColor: '#16c784',
+      wickDownColor: '#ea5b72',
     });
 
-    const entrySeries = chart.addLineSeries({ color: '#94a9c6', lineWidth: 2, lineStyle: 2, priceLineVisible: true });
-    const slSeries = chart.addLineSeries({ color: '#f36b8a', lineWidth: 2, priceLineVisible: true });
-    const tpSeries = chart.addLineSeries({ color: '#29d69a', lineWidth: 2, priceLineVisible: true });
+    const entrySeries = chart.addLineSeries({ color: '#9fb0cf', lineWidth: 2, lineStyle: 2, priceLineVisible: true });
+    const slSeries = chart.addLineSeries({ color: '#ea5b72', lineWidth: 2, priceLineVisible: true });
+    const tpSeries1 = chart.addLineSeries({ color: '#16c784', lineWidth: 2, priceLineVisible: true });
+    const tpSeries2 = chart.addLineSeries({ color: '#32d39a', lineWidth: 2, priceLineVisible: true });
+    const tpSeries3 = chart.addLineSeries({ color: '#58e0b0', lineWidth: 2, priceLineVisible: true });
 
     candleSeries.setData(toCandleData(candles));
-
     chart.timeScale().fitContent();
 
     chartRef.current = chart;
     candleSeriesRef.current = candleSeries;
     entrySeriesRef.current = entrySeries;
     slSeriesRef.current = slSeries;
-    tpSeriesRef.current = tpSeries;
+    tpSeriesRefs.current = [tpSeries1, tpSeries2, tpSeries3];
 
     const onResize = () => {
       if (!chartHostRef.current || !chartRef.current) return;
       chartRef.current.applyOptions({
         width: chartHostRef.current.clientWidth,
-        height: chartHostRef.current.clientHeight
+        height: chartHostRef.current.clientHeight,
       });
     };
 
@@ -149,7 +176,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       candleSeriesRef.current = null;
       entrySeriesRef.current = null;
       slSeriesRef.current = null;
-      tpSeriesRef.current = null;
+      tpSeriesRefs.current = [];
     };
   }, [candles]);
 
@@ -166,92 +193,65 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       slSeriesRef.current.setData([{ time: first, value: stopLoss }, { time: last, value: stopLoss }]);
     }
 
-    if (tpSeriesRef.current && takeProfit > 0) {
-      tpSeriesRef.current.setData([{ time: first, value: takeProfit }, { time: last, value: takeProfit }]);
-    }
-  }, [candles, entry, stopLoss, takeProfit]);
+    tpSeriesRefs.current.forEach((series, idx) => {
+      const tp = takeProfits[idx];
+      if (tp && tp > 0) {
+        series.setData([{ time: first, value: tp }, { time: last, value: tp }]);
+      } else {
+        series.setData([]);
+      }
+    });
+  }, [candles, entry, stopLoss, takeProfits]);
 
-  useEffect(() => {
-    const host = chartHostRef.current;
-    const candleSeries = candleSeriesRef.current;
-    if (!host || !candleSeries || !candles.length) return;
+  function addTp() {
+    if (takeProfits.length >= 3) return;
+    const fallback = entry > 0 ? priceFromPct(side, entry, 2 + takeProfits.length * 1.5) : 0;
+    setTakeProfits((prev) => [...prev, Number((prev[prev.length - 1] ?? fallback).toFixed(2))]);
+  }
 
-    const pickLevelByY = (y: number): EditableLevel | null => {
-      const price = candleSeries.coordinateToPrice(y);
-      if (price === null || price === undefined) return null;
+  function removeTp(index: number) {
+    if (takeProfits.length <= 1) return;
+    setTakeProfits((prev) => prev.filter((_, i) => i !== index));
+  }
 
-      const points: Array<{ key: EditableLevel; value: number }> = [
-        { key: 'entry', value: entry },
-        { key: 'stopLoss', value: stopLoss },
-        { key: 'takeProfit', value: takeProfit }
-      ];
+  function updateTp(index: number, price: number) {
+    setTakeProfits((prev) => prev.map((tp, i) => (i === index ? Number(price.toFixed(2)) : tp)));
+  }
 
-      const nearest = points
-        .map((p) => ({ key: p.key, diff: Math.abs(p.value - price) }))
-        .sort((a, b) => a.diff - b.diff)[0];
+  function updateTpPct(index: number, pct: number) {
+    const price = priceFromPct(side, entry, pct);
+    updateTp(index, price);
+  }
 
-      const maxDiff = Math.max(entry, stopLoss, takeProfit) * 0.004;
-      return nearest && nearest.diff <= maxDiff ? nearest.key : null;
-    };
-
-    const updateByY = (target: EditableLevel, y: number) => {
-      const price = candleSeries.coordinateToPrice(y);
-      if (price === null || price === undefined || !Number.isFinite(price)) return;
-      const normalized = Number(price.toFixed(2));
-
-      if (target === 'entry') setEntry(normalized);
-      if (target === 'stopLoss') setStopLoss(normalized);
-      if (target === 'takeProfit') setTakeProfit(normalized);
-    };
-
-    const onMouseDown = (event: MouseEvent) => {
-      const rect = host.getBoundingClientRect();
-      const y = event.clientY - rect.top;
-      const level = pickLevelByY(y);
-      if (!level) return;
-      setDragging(level);
-      event.preventDefault();
-    };
-
-    const onMouseMove = (event: MouseEvent) => {
-      if (!dragging) return;
-      const rect = host.getBoundingClientRect();
-      const y = event.clientY - rect.top;
-      updateByY(dragging, y);
-    };
-
-    const onMouseUp = () => {
-      if (dragging) setDragging(null);
-    };
-
-    host.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-
-    return () => {
-      host.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
-    };
-  }, [candles, entry, stopLoss, takeProfit, dragging]);
+  function updateSlPct(pct: number) {
+    const target = side === 'long'
+      ? entry * (1 - pct / 100)
+      : entry * (1 + pct / 100);
+    setStopLoss(Number(target.toFixed(2)));
+  }
 
   async function applyLevels() {
     if (validation) return;
 
-    const confirmed = window.confirm('Apply these SL/TP levels to live position?');
+    const confirmed = window.confirm('Apply these TP/SL levels to live position?');
     if (!confirmed) return;
 
     setIsApplying(true);
     setError(null);
 
     try {
+      const sorted = side === 'long'
+        ? [...takeProfits].sort((a, b) => a - b)
+        : [...takeProfits].sort((a, b) => b - a);
+
       const response = await applyLivePositionLevels({
         symbol: position.symbol,
         side: position.side,
         size: position.size,
         stopLoss,
-        takeProfit,
-        confirm: true
+        takeProfit: sorted[0],
+        takeProfits: sorted,
+        confirm: true,
       });
 
       if (!response.ok) {
@@ -267,50 +267,108 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   }
 
   return (
-    <section className="position-panel" aria-label="Position levels panel">
+    <section className="position-panel hl-panel" aria-label="Position levels panel">
       <header className="position-panel__header">
         <div>
-          <h3>{position.symbol} position</h3>
+          <h3>TP/SL for Position</h3>
           <p className="muted">
             <Badge tone={position.side === 'long' ? 'success' : 'danger'}>{sideLabel}</Badge>
             {' • '}Size {formatNumber(position.size)}
-            {' • '}Deal {position.dealValue !== undefined ? formatMoney(position.dealValue) : '—'}
+            {' • '}Value {position.dealValue !== undefined ? formatMoney(position.dealValue) : '—'}
           </p>
         </div>
         <Button variant="secondary" onClick={onClose}>Close</Button>
       </header>
 
-      <div className="position-panel__chart-wrap">
+      <div className="hl-summary-grid">
+        <span className="muted">Coin</span><strong>{position.symbol}</strong>
+        <span className="muted">Position</span><strong>{formatNumber(position.size)} {position.symbol}</strong>
+        <span className="muted">Entry Price</span><strong>{entry ? formatNumber(entry) : '—'}</strong>
+        <span className="muted">Mark Price</span><strong>{markPrice ? formatNumber(markPrice) : '—'}</strong>
+      </div>
+
+      <div className="position-panel__chart-wrap hl-chart-wrap">
+        <div className="hl-timeframes">
+          {(['5m', '15m', '1h', '4h'] as CandleTf[]).map((tf) => (
+            <button
+              key={tf}
+              type="button"
+              className={`hl-timeframe-btn ${timeframe === tf ? 'hl-timeframe-btn--active' : ''}`}
+              onClick={() => setTimeframe(tf)}
+            >
+              {tf}
+            </button>
+          ))}
+        </div>
         {isLoading ? <p className="muted">Loading chart…</p> : null}
         {!isLoading && !error ? <div className="position-panel__chart" ref={chartHostRef} /> : null}
         {!isLoading && error ? <p className="muted">Chart error: {error}</p> : null}
       </div>
 
-      <p className="muted position-panel__hint">
-        Drag SL/TP/Entry lines directly on chart or edit values below.
-      </p>
+      <div className="hl-levels-form">
+        {takeProfits.map((tp, idx) => {
+          const gainPct = pctFromPrice(side, entry, tp);
+          return (
+            <div key={idx} className="hl-level-row">
+              <label>
+                <span>TP{idx + 1} Price</span>
+                <input
+                  type="number"
+                  value={tp || ''}
+                  onChange={(e) => updateTp(idx, Number(e.target.value || 0))}
+                />
+              </label>
+              <label>
+                <span>Gain %</span>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={Number.isFinite(gainPct) ? gainPct.toFixed(2) : ''}
+                  onChange={(e) => updateTpPct(idx, Number(e.target.value || 0))}
+                />
+              </label>
+              <div className="hl-level-row__actions">
+                {idx === 0 && takeProfits.length < 3 ? (
+                  <Button variant="secondary" onClick={addTp}>+ TP</Button>
+                ) : null}
+                {takeProfits.length > 1 ? (
+                  <Button variant="danger" onClick={() => removeTp(idx)}>Remove</Button>
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
 
-      <div className="position-panel__form">
-        <label>
-          Entry
-          <input type="number" value={entry || ''} onChange={(e) => setEntry(Number(e.target.value))} />
-        </label>
-        <label>
-          Stop-loss
-          <input type="number" value={stopLoss || ''} onChange={(e) => setStopLoss(Number(e.target.value))} />
-        </label>
-        <label>
-          Take-profit
-          <input type="number" value={takeProfit || ''} onChange={(e) => setTakeProfit(Number(e.target.value))} />
-        </label>
+        <div className="hl-level-row">
+          <label>
+            <span>SL Price</span>
+            <input
+              type="number"
+              value={stopLoss || ''}
+              onChange={(e) => setStopLoss(Number(e.target.value || 0))}
+            />
+          </label>
+          <label>
+            <span>Loss %</span>
+            <input
+              type="number"
+              step="0.1"
+              value={Math.abs(pctFromPrice(side, entry, stopLoss)).toFixed(2)}
+              onChange={(e) => updateSlPct(Number(e.target.value || 0))}
+            />
+          </label>
+          <div />
+        </div>
       </div>
+
+      <p className="muted position-panel__hint">TP amount is split equally across active TP levels. After TP1 fill, SL moves to break-even.</p>
 
       {validation ? <p className="down">{validation}</p> : null}
       {error ? <p className="down">{error}</p> : null}
 
       <div className="actions-row">
-        <Button onClick={applyLevels} disabled={Boolean(validation) || isApplying}>
-          {isApplying ? 'Applying…' : 'Apply levels (confirm)'}
+        <Button onClick={applyLevels} disabled={Boolean(validation) || isApplying} fullWidth>
+          {isApplying ? 'Applying…' : 'Confirm'}
         </Button>
       </div>
     </section>

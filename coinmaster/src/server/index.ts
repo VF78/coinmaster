@@ -2655,6 +2655,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     size,
     stopLoss,
     takeProfit,
+    takeProfits,
     confirm
   } = req.body as {
     symbol?: string;
@@ -2662,6 +2663,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     size?: number;
     stopLoss?: number;
     takeProfit?: number;
+    takeProfits?: number[];
     confirm?: boolean;
   };
 
@@ -2672,14 +2674,30 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   const normalizedSymbol = normalizeSymbol(symbol);
   const qty = Number(size);
   const sl = Number(stopLoss);
-  const tp = Number(takeProfit);
 
-  if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(sl) || sl <= 0 || !Number.isFinite(tp) || tp <= 0) {
+  const rawTps = Array.isArray(takeProfits) && takeProfits.length > 0
+    ? takeProfits
+    : (takeProfit !== undefined ? [takeProfit] : []);
+
+  const normalizedTps = rawTps
+    .map((x) => Number(x))
+    .filter((x) => Number.isFinite(x) && x > 0)
+    .slice(0, 3)
+    .map((x) => Number(x.toFixed(8)));
+
+  if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(sl) || sl <= 0 || normalizedTps.length === 0) {
     return res.status(400).json({ ok: false, error: 'invalid_size_or_levels' });
   }
 
-  const sideMismatch = side === 'long' ? !(sl < tp) : !(sl > tp);
-  if (sideMismatch) {
+  const sortedTps = side === 'long'
+    ? [...normalizedTps].sort((a, b) => a - b)
+    : [...normalizedTps].sort((a, b) => b - a);
+
+  const levelOrderValid = side === 'long'
+    ? sortedTps.every((tp) => tp > sl)
+    : sortedTps.every((tp) => tp < sl);
+
+  if (!levelOrderValid) {
     return res.status(400).json({ ok: false, error: 'invalid_level_order' });
   }
 
@@ -2701,7 +2719,8 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       side,
       size: qty,
       stopLoss: sl,
-      takeProfit: tp,
+      takeProfit: sortedTps[0],
+      takeProfits: sortedTps,
       cancelAllResult: {
         ok: false,
         error: cancelAllResult.error
@@ -2709,6 +2728,13 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       error: 'cancel_existing_orders_failed'
     });
   }
+
+  const factor = 1e6;
+  const tpCount = sortedTps.length;
+  const baseSize = Math.floor((qty / tpCount) * factor) / factor;
+  const tpSizes: number[] = Array.from({ length: tpCount }, (_, i) =>
+    i < tpCount - 1 ? baseSize : Math.max(0, Math.round((qty - baseSize * (tpCount - 1)) * factor) / factor)
+  );
 
   const slOrder = await exchange.placeTriggerOrder({
     symbol: normalizedSymbol,
@@ -2720,24 +2746,33 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     clientOrderId: `sl-${nanoid()}`
   });
 
-  const tpOrder = await exchange.placeTriggerOrder({
-    symbol: normalizedSymbol,
-    side: closingSide,
-    size: qty,
-    triggerPrice: tp,
-    kind: 'tp',
-    reduceOnly: true,
-    clientOrderId: `tp-${nanoid()}`
-  });
+  const tpOrders: Array<{ ok: boolean; orderId?: string; error?: string }> = [];
+  for (let i = 0; i < sortedTps.length; i++) {
+    try {
+      const ack = await exchange.placeTriggerOrder({
+        symbol: normalizedSymbol,
+        side: closingSide,
+        size: tpSizes[i],
+        triggerPrice: sortedTps[i],
+        kind: 'tp',
+        reduceOnly: true,
+        clientOrderId: `tp${i + 1}-${nanoid(8)}`
+      });
+      tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
+    } catch (error) {
+      tpOrders.push({ ok: false, error: error instanceof Error ? error.message : 'tp_place_failed' });
+    }
+  }
 
-  const ok = slOrder.ok && tpOrder.ok;
+  const ok = slOrder.ok && tpOrders.every((o) => o.ok);
   return res.status(ok ? 200 : 400).json({
     ok,
     symbol: normalizedSymbol,
     side,
     size: qty,
     stopLoss: sl,
-    takeProfit: tp,
+    takeProfit: sortedTps[0],
+    takeProfits: sortedTps,
     cancelAllResult: {
       ok: cancelAllResult.ok,
       error: cancelAllResult.error
@@ -2747,11 +2782,8 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       orderId: slOrder.orderId,
       error: slOrder.error
     },
-    takeProfitOrder: {
-      ok: tpOrder.ok,
-      orderId: tpOrder.orderId,
-      error: tpOrder.error
-    },
+    takeProfitOrder: tpOrders[0],
+    takeProfitOrders: tpOrders,
     error: ok ? undefined : 'set_levels_failed'
   });
 });

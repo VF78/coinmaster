@@ -285,7 +285,8 @@ export interface LivePositionLevelsPayload {
   side: TradeSide;
   size: number;
   stopLoss: number;
-  takeProfit: number;
+  takeProfit?: number;
+  takeProfits?: number[];
   confirm?: boolean;
 }
 
@@ -296,6 +297,7 @@ export interface LivePositionLevelsResponse {
   size: number;
   stopLoss: number;
   takeProfit: number;
+  takeProfits: number[];
   cancelAllResult?: {
     ok: boolean;
     error?: string;
@@ -310,6 +312,11 @@ export interface LivePositionLevelsResponse {
     orderId?: string;
     error?: string;
   };
+  takeProfitOrders?: Array<{
+    ok: boolean;
+    orderId?: string;
+    error?: string;
+  }>;
   error?: string;
 }
 
