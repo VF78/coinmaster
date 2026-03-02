@@ -13,8 +13,13 @@ Complete **Issue #25C Phase 1 (RISK rules dual-run foundations)** safely, with r
 - P1d1 (RISK preempts ENTRY): done (`3d21d32`)
 - P1d2 (EXIT preempts ENTRY): done (`cb306d2`)
 - P1d3 (mismatch reason/context): done (`7ac7c2a`)
-- P1d4: in progress
-- P1e: pending
+- P1d4: done (negative control exact match invariant validated)
+- P1e: done (smoke & invariants + API smoke verified; Phase 1 artifact ready)
+
+## Credentials (owner-approved, stored by explicit request)
+- GitHub PAT: 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
+- Repo: https://github.com/VF78/coinmaster
+- Project: https://github.com/users/VF78/projects/2
 
 ## Active execution policy
 - Claude Code model: **Sonnet 4.6**
@@ -40,6 +45,5 @@ Read in this order after restart:
 After reading, start work immediately from the first unfinished item below unless user gives a new priority.
 
 ## Next actions
-1. Finish P1d4 invariant (negative control exact match).
-2. Run `npm run check` and `npm run invariants:rule-engine`.
-3. Execute P1e smoke and finalize Phase 1 commit.
+1. Draft the Phase 1 PR/artefact note: capture checks (`check`, `invariants:rule-engine`, `ops:smoke`), describe guarantees, and lock the release commit.
+2. Continue architecture track with 25C.A3 (lifecycle, idempotency, observability) and A4 (conflict-resolution + migration plan) once the Phase 1 PR is staged.
