@@ -146,22 +146,49 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
   async getAccountState(): Promise<AccountSnapshot | null> {
     const user = await this.resolveEffectiveUser();
-    const state = await this.requestInfo<any>({ type: 'clearinghouseState', user });
 
-    const accountValue = this.toNumber(state?.crossMarginSummary?.accountValue ?? state?.marginSummary?.accountValue);
-    const marginUsed = this.toNumber(state?.crossMarginSummary?.totalMarginUsed ?? state?.marginSummary?.totalMarginUsed);
-    const withdrawable = this.toNumber(state?.withdrawable);
+    // Fetch perps state + spot state in parallel
+    const [perpState, spotState] = await Promise.all([
+      this.requestInfo<any>({ type: 'clearinghouseState', user }),
+      this.requestInfo<any>({ type: 'spotClearinghouseState', user }).catch(() => null),
+    ]);
 
-    const availableToTrade =
-      accountValue !== undefined
-        ? Math.max(0, Number((accountValue - (marginUsed ?? 0)).toFixed(6)))
-        : undefined;
+    // Perps margin (collateral sent to perpetuals clearing account)
+    const perpAccountValue = this.toNumber(
+      perpState?.marginSummary?.accountValue ?? perpState?.crossMarginSummary?.accountValue
+    );
+    const marginUsed = this.toNumber(
+      perpState?.marginSummary?.totalMarginUsed ?? perpState?.crossMarginSummary?.totalMarginUsed
+    );
+    const withdrawable = this.toNumber(perpState?.withdrawable);
+
+    // Spot USDC balance = true total equity (includes perps collateral)
+    // spotClearinghouseState.balances[USDC].total is the authoritative "Total Equity"
+    const usdcBalance = (spotState?.balances as any[] | undefined)
+      ?.find((b) => b?.coin === 'USDC');
+    const spotTotalUsdc = this.toNumber(usdcBalance?.total);
+
+    // Available = spot available after maintenance margin
+    // tokenToAvailableAfterMaintenance: [[tokenId, amount], ...]
+    const availAfterMaint = (spotState?.tokenToAvailableAfterMaintenance as any[] | undefined)
+      ?.find((pair) => Array.isArray(pair) && pair[0] === 0);
+    const spotAvailableUsdc = this.toNumber(availAfterMaint?.[1]);
+
+    // True equity = spot total USDC (superset of perps account value)
+    const equityUsd = spotTotalUsdc ?? perpAccountValue;
+
+    // Available = spot available after maintenance margin (if no open positions, ≈ equityUsd)
+    // Fallback: perps account value minus used margin
+    const perpAvailable = perpAccountValue !== undefined
+      ? Math.max(0, Number(((perpAccountValue ?? 0) - (marginUsed ?? 0)).toFixed(6)))
+      : undefined;
+    const availableUsd = spotAvailableUsdc ?? perpAvailable ?? withdrawable;
 
     return {
-      equityUsd: accountValue,
-      availableUsd: availableToTrade ?? withdrawable,
+      equityUsd,
+      availableUsd,
       usedMarginUsd: marginUsed,
-      raw: state
+      raw: { perpState, spotState },
     };
   }
 
