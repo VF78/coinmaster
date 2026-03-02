@@ -454,21 +454,13 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
   return (
     <section className="position-panel hl-panel" aria-label="Position levels panel">
-      <header className="position-panel__header">
-        <div>
-          <h3>TP/SL for Position</h3>
-          <p className="muted">
-            <Badge tone={position.side === 'long' ? 'success' : 'danger'}>{sideLabel}</Badge>
-            {' • '}Size {formatNumber(position.size)}
-            {' • '}Value {position.dealValue !== undefined ? formatMoney(position.dealValue) : '—'}
-          </p>
-        </div>
+      <header className="position-panel__header" style={{ justifyContent: 'flex-end' }}>
         <Button variant="secondary" onClick={onClose}>Close</Button>
       </header>
 
       <div className="hl-summary-grid">
         <span className="muted">Coin</span><strong>{position.symbol}</strong>
-        <span className="muted">Position</span><strong>{formatNumber(position.size)} {position.symbol}</strong>
+        <span className="muted">Position</span><strong>{formatNumber(position.size)} {position.symbol} (Value {position.dealValue !== undefined ? formatMoney(position.dealValue) : '—'})</strong>
         <span className="muted">Entry Price</span><strong>{entry ? formatNumber(entry) : '—'}</strong>
         <span className="muted">Mark Price</span><strong>{markPrice ? formatNumber(markPrice) : '—'}</strong>
       </div>

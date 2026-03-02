@@ -318,7 +318,7 @@ export function DashboardPage() {
       {selectedPosition ? (
         <div className="position-modal-overlay" role="dialog" aria-modal="true" aria-label="Position chart">
           <div className="position-modal-sheet">
-            <Card title="Position chart / risk levels" className="full-width terminal-card">
+            <Card className="full-width terminal-card">
               <PositionLevelsPanel
                 position={selectedPosition}
                 onClose={() => setSelectedPosition(null)}
