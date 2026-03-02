@@ -381,7 +381,10 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
               onChange={(e) => updateSlPct(parseDecimalInput(e.target.value))}
             />
           </label>
-          <div />
+          <div className="hl-level-row__actions">
+            <span className="hl-action-spacer" />
+            <span className="hl-action-spacer" />
+          </div>
         </div>
       </div>
 

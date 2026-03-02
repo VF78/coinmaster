@@ -35,6 +35,18 @@
   box-sizing: border-box;
 }
 
+/* Remove native number steppers for consistent exchange-like inputs */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 html,
 body,
 #root {
@@ -510,16 +522,19 @@ tbody tr:hover {
 }
 
 .hl-level-row__actions {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: repeat(2, 84px);
   align-items: center;
-  justify-content: flex-end;
+  justify-content: end;
   gap: 0.35rem;
-  min-width: 180px;
+  min-width: 172px;
 }
 
 .hl-action-btn {
   min-height: 2.3rem;
-  padding: 0.35rem 0.65rem;
+  height: 2.3rem;
+  width: 84px;
+  padding: 0.35rem 0.5rem;
   border-radius: 0.65rem;
 }
 
@@ -683,14 +698,17 @@ tbody tr:hover {
   }
 
   .hl-level-row__actions {
+    grid-template-columns: repeat(2, 58px);
     justify-content: flex-end;
-    min-width: 128px;
+    min-width: 118px;
     align-self: end;
   }
 
   .hl-action-btn {
     min-height: 2.05rem;
-    padding: 0.28rem 0.5rem;
+    height: 2.05rem;
+    width: 58px;
+    padding: 0.25rem 0.25rem;
     font-size: 0.8rem;
   }
 
