@@ -17,9 +17,9 @@ import { normalizeTradingRules } from '../shared/tradingRules.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { Candle, CandleTimeframe, OrderIntent, TradingErrorCode } from '../exchange/types.js';
+import type { Candle, CandleTimeframe, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
-import { evaluateMultiTf } from '../core/engulfingEvaluator.js';
+import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -417,6 +417,207 @@ function startDrawdownWatchdog() {
   logger.info({ component: 'risk-gate', intervalMs: DRAWDOWN_WATCHDOG_INTERVAL_MS }, 'drawdown watchdog started');
 }
 
+// ─── Engulfing Monitor Loop ───────────────────────────────────────────
+let engulfingMonitorTimer: NodeJS.Timeout | null = null;
+let engulfingMonitorBusy = false;
+
+/** Per-signal debounce: key = `${symbol}:${tf}:${direction}`, value = last fired ms */
+const lastEntrySignalAt = new Map<string, number>();
+
+/**
+ * One tick of the engulfing background monitor.
+ * - Entry signals: detected on entryTimeframes[] when no open position → log + auto-order if autoConfirm
+ * - Emergency exit signals: reverse engulfing on emergencyExitTimeframes[] when position is open → emergencyCloseAll
+ */
+async function runEngulfingMonitorTick(): Promise<void> {
+  if (engulfingMonitorBusy) return;
+  engulfingMonitorBusy = true;
+  try {
+    const effectiveRules = rulesCache.getEffectiveRules();
+    const raw = effectiveRules.raw;
+    if (!raw) return; // env fallback, no rules configured
+
+    const symbol = LIVE_SYMBOL;
+    const lookback = raw.engulfingLookbackCandles ?? 30;
+    const entryTfs = raw.entryTimeframes?.length ? raw.entryTimeframes : ['15m' as const];
+    const exitTfs = raw.emergencyExitTimeframes?.length ? raw.emergencyExitTimeframes : ['1h' as const];
+    const minCandles = lookback + 5;
+    const now = Date.now();
+
+    // Fetch open positions once
+    let positions: PositionSnapshot[] = [];
+    try {
+      positions = await exchange.getOpenPositions();
+    } catch (err) {
+      logger.warn({ component: 'engulfing-monitor', err }, 'failed to get open positions');
+      return;
+    }
+
+    const symbolPosition = positions.find(p => p.symbol.toUpperCase() === symbol.toUpperCase());
+
+    // ── ENTRY signals (only when no open position for symbol) ────────
+    if (!symbolPosition) {
+      for (const tf of entryTfs) {
+        try {
+          const tfMs = TF_MS[tf] ?? 900_000;
+          const candles = await exchange.getCandles({
+            symbol,
+            timeframe: TF_LABEL_TO_CANDLE_TF[tf],
+            startTimeMs: now - tfMs * (minCandles + 2),
+            endTimeMs: now,
+          });
+
+          const signal = evaluateTimeframe(candles, tf, lookback);
+          if (!signal.detected || !signal.direction) continue;
+
+          // Debounce: skip if same signal fired within this candle period
+          const debounceKey = `${symbol}:${tf}:${signal.direction}`;
+          const lastFired = lastEntrySignalAt.get(debounceKey) ?? 0;
+          if (now - lastFired < tfMs) continue;
+          lastEntrySignalAt.set(debounceKey, now);
+
+          logRiskGateAudit({
+            gate: 'engulfing_entry_signal',
+            passed: true,
+            details: { symbol, tf, direction: signal.direction, confidence: signal.confidence, reason: signal.reason },
+          });
+          logger.info(
+            { component: 'engulfing-monitor', symbol, tf, direction: signal.direction, confidence: signal.confidence },
+            'engulfing entry signal detected',
+          );
+
+          // Auto-order when autoConfirm is enabled
+          if (raw.autoConfirm) {
+            try {
+              const mid = await fetchLiveMid(symbol);
+              if (!mid) { logger.warn({ component: 'engulfing-monitor' }, 'auto-entry: no mid price'); continue; }
+
+              const account = await exchange.getAccountState();
+              const equityUsd = account?.equityUsd ?? 0;
+              const availableUsd = account?.availableUsd ?? 0;
+              if (equityUsd <= 0) { logger.warn({ component: 'engulfing-monitor' }, 'auto-entry: zero equity'); continue; }
+
+              let sizeDecimals = 6;
+              try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
+
+              const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
+              const sizing = computeAllocationSize({ symbol, price: mid, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
+
+              if (!sizing.ok) {
+                logRiskGateAudit({ gate: 'engulfing_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
+                logger.warn({ component: 'engulfing-monitor', reason: sizing.reason }, 'auto-entry sizing failed');
+                continue;
+              }
+
+              // Run risk gates before placing
+              const risk = await evaluateRiskGates({ emitAudit: false });
+              if (!risk.canTrade) {
+                logger.warn({ component: 'engulfing-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates');
+                continue;
+              }
+
+              const correlationId = `engulf-auto-${nanoid(8)}`;
+              const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+
+              logRiskGateAudit({
+                gate: 'engulfing_entry_signal',
+                passed: ack.ok,
+                reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
+                details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: mid, orderId: ack.orderId, error: ack.error },
+              });
+              logger.info({ component: 'engulfing-monitor', symbol, side, size: sizing.size, orderId: ack.orderId, ok: ack.ok }, 'auto-entry order result');
+
+              // Auto-apply TP/SL if available
+              if (ack.ok) {
+                const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
+                if (tpSl) {
+                  try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId); } catch { /* best-effort */ }
+                }
+              }
+            } catch (err) {
+              logger.error({ component: 'engulfing-monitor', err }, 'auto-entry order failed');
+            }
+          }
+        } catch (err) {
+          logger.warn({ component: 'engulfing-monitor', tf, err }, 'entry signal evaluation failed for tf');
+        }
+      }
+    }
+
+    // ── EMERGENCY EXIT signals (only when position is open) ──────────
+    if (symbolPosition) {
+      for (const tf of exitTfs) {
+        try {
+          const tfMs = TF_MS[tf] ?? 3_600_000;
+          const candles = await exchange.getCandles({
+            symbol,
+            timeframe: TF_LABEL_TO_CANDLE_TF[tf],
+            startTimeMs: now - tfMs * (minCandles + 2),
+            endTimeMs: now,
+          });
+
+          const signal = evaluateTimeframe(candles, tf, lookback);
+          if (!signal.detected || !signal.direction) continue;
+
+          // Reverse signal check: bullish position + bearish signal → exit
+          const isLong = symbolPosition.side === 'long';
+          const isReverseSignal = (isLong && signal.direction === 'bearish') || (!isLong && signal.direction === 'bullish');
+          if (!isReverseSignal) continue;
+
+          const reason = `engulfing_exit_signal_${signal.direction}`;
+          logRiskGateAudit({
+            gate: 'engulfing_emergency_exit',
+            passed: true,
+            details: { symbol, tf, direction: signal.direction, positionSide: symbolPosition.side, reason: signal.reason },
+          });
+          logger.warn(
+            { component: 'engulfing-monitor', symbol, tf, direction: signal.direction, position: symbolPosition.side },
+            'reverse engulfing detected — emergency exit triggered',
+          );
+
+          await emergencyCloseAll(reason);
+          break; // one emergency close per tick is enough
+        } catch (err) {
+          logger.warn({ component: 'engulfing-monitor', tf, err }, 'exit signal evaluation failed for tf');
+        }
+      }
+    }
+  } catch (err) {
+    logger.error({ component: 'engulfing-monitor', err }, 'engulfing monitor tick failed');
+  } finally {
+    engulfingMonitorBusy = false;
+  }
+}
+
+/** Compute poll interval: min entry TF / 5, clamped to [30s, 5m] */
+function engulfingMonitorIntervalMs(): number {
+  const raw = rulesCache.getEffectiveRules().raw;
+  const entryTfs = raw?.entryTimeframes?.length ? raw.entryTimeframes : ['15m' as const];
+  const minTfMs = Math.min(...entryTfs.map(tf => TF_MS[tf] ?? 900_000));
+  return Math.max(30_000, Math.min(300_000, Math.floor(minTfMs / 5)));
+}
+
+function startEngulfingMonitor(): void {
+  if (!ENABLE_MULTI_TF_ENGULFING) {
+    logger.info({ component: 'engulfing-monitor' }, 'engulfing monitor disabled via ENABLE_MULTI_TF_ENGULFING=false');
+    return;
+  }
+  if (!exchange.capabilities.privateAccount || !exchange.capabilities.privateTrading) {
+    logger.info({ component: 'engulfing-monitor' }, 'engulfing monitor not started (private account/trading unavailable)');
+    return;
+  }
+  if (engulfingMonitorTimer) return;
+
+  const intervalMs = engulfingMonitorIntervalMs();
+  // First tick immediately
+  runEngulfingMonitorTick().catch(err => logger.warn({ component: 'engulfing-monitor', err }, 'initial tick failed'));
+  engulfingMonitorTimer = setInterval(() => {
+    runEngulfingMonitorTick().catch(err => logger.warn({ component: 'engulfing-monitor', err }, 'tick failed'));
+  }, intervalMs);
+  engulfingMonitorTimer.unref?.();
+  logger.info({ component: 'engulfing-monitor', intervalMs }, 'engulfing monitor started');
+}
+
 /** Risk gate middleware for trading endpoints — checks DD + leverage before allowing order */
 async function riskGateMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
@@ -647,8 +848,14 @@ const TF_LABEL_TO_CANDLE_TF: Record<TradingRulesTimeframe, CandleTimeframe> = {
   '5m': '5m', '15m': '15m', '1h': '1h', '4h': '4h',
 };
 
+const TF_MS: Record<TradingRulesTimeframe, number> = {
+  '5m': 5 * 60_000,
+  '15m': 15 * 60_000,
+  '1h': 60 * 60_000,
+  '4h': 4 * 60 * 60_000,
+};
+
 async function engulfingGate(req: Request, res: Response, next: NextFunction) {
-  if (!ENABLE_MULTI_TF_ENGULFING) return next();
 
   const body = (req.body ?? {}) as { symbol?: string; reduceOnly?: boolean };
   if (body.reduceOnly) return next();
@@ -2212,6 +2419,7 @@ const server = app.listen(port, host, () => {
   ingestRestFallback().catch((err) => logger.warn({ component: 'live', err }, 'initial REST fallback ingest failed'));
   startLiveMidStream();
   startDrawdownWatchdog();
+  startEngulfingMonitor();
 });
 
 async function gracefulShutdown(signal: string) {
@@ -2229,6 +2437,7 @@ async function gracefulShutdown(signal: string) {
   clearInterval(auditFlushTimer);
   clearInterval(rateLimitPruneTimer);
   if (drawdownWatchdogTimer) { clearInterval(drawdownWatchdogTimer); drawdownWatchdogTimer = null; }
+  if (engulfingMonitorTimer) { clearInterval(engulfingMonitorTimer); engulfingMonitorTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
   if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
 
