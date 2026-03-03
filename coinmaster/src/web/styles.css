@@ -662,10 +662,7 @@ tbody tr:hover {
 }
 
 .hl-side-hint {
-  border: 1px solid #1f344f;
-  border-radius: 0.7rem;
-  background: #0f1b30;
-  padding: 0.45rem 0.55rem;
+  padding: 0.05rem 0.2rem;
   font-size: 0.76rem;
   line-height: 1.28;
   width: min(290px, 100%);
@@ -673,6 +670,7 @@ tbody tr:hover {
   align-self: start;
   margin-top: 0;
   text-align: center;
+  color: #93a8c7;
 }
 
 .hl-side-summary {
@@ -726,7 +724,10 @@ tbody tr:hover {
 }
 
 .hl-action-btn--remove {
-  border-radius: 999px;
+  border-radius: 0.65rem;
+  color: #fff;
+  background: linear-gradient(180deg, #f08ab2 0%, #df6b98 100%);
+  border-color: #ffa5c5;
 }
 
 .hl-action-spacer {
@@ -1331,6 +1332,83 @@ tbody tr:hover {
 
 .rules-apply-row {
   max-width: 320px;
+}
+
+.rules-mini-btn {
+  min-height: 2.05rem;
+  height: 2.05rem;
+  border-radius: 0.65rem;
+  padding: 0.24rem 0.62rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  justify-self: start;
+}
+
+.rules-stepper {
+  display: inline-grid;
+  grid-template-columns: 32px minmax(62px, auto) 32px;
+  align-items: center;
+  border: 1px solid #2a4261;
+  border-radius: 0.65rem;
+  overflow: hidden;
+  user-select: none;
+  background: #0c182a;
+}
+
+.rules-stepper__btn {
+  width: 32px;
+  height: 34px;
+  border: none;
+  background: #13243b;
+  color: #cfe3ff;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.rules-stepper__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.rules-stepper__value {
+  min-width: 62px;
+  text-align: center;
+  padding: 0 8px;
+  font-size: 0.82rem;
+  color: #e1ecff;
+  background: #0b1526;
+  height: 34px;
+  line-height: 34px;
+  font-weight: 600;
+}
+
+.rules-segmented {
+  display: inline-flex;
+  border: 1px solid #2a4261;
+  border-radius: 0.65rem;
+  overflow: hidden;
+  background: #0c182a;
+}
+
+.rules-segmented__btn {
+  min-height: 34px;
+  padding: 0.36rem 0.86rem;
+  border: none;
+  border-left: 1px solid #2a4261;
+  background: #13243b;
+  color: #9db4d6;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.rules-segmented__btn:first-child {
+  border-left: none;
+}
+
+.rules-segmented__btn--active {
+  background: linear-gradient(180deg, #4ce8cf 0%, #32cbb4 100%);
+  color: #07251f;
 }
 
 @media (max-width: 899px) {

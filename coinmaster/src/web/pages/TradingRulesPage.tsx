@@ -34,21 +34,21 @@ interface StepperProps {
 function Stepper({ value, min, max, step = 1, unit = '', decimals = 0, onChange, disabled = false }: StepperProps) {
   const display = decimals > 0 ? value.toFixed(decimals) : String(value);
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--border, #333)', borderRadius: 6, overflow: 'hidden', userSelect: 'none' }}>
+    <div className="rules-stepper" role="group" aria-label="Number stepper">
       <button
         type="button"
+        className="rules-stepper__btn"
         disabled={disabled || value <= min}
         onClick={() => onChange(+(Math.max(min, value - step).toFixed(decimals + 2)))}
-        style={{ width: 32, height: 34, border: 'none', background: 'var(--surface2, #1a1a1a)', color: 'var(--text, #ccc)', fontSize: 18, cursor: disabled || value <= min ? 'not-allowed' : 'pointer', opacity: disabled || value <= min ? 0.4 : 1 }}
       >−</button>
-      <span style={{ minWidth: 58, textAlign: 'center', padding: '0 8px', fontSize: 13, color: 'var(--text, #eee)', background: 'var(--surface, #111)', height: 34, lineHeight: '34px' }}>
+      <span className="rules-stepper__value">
         {display}{unit}
       </span>
       <button
         type="button"
+        className="rules-stepper__btn"
         disabled={disabled || value >= max}
         onClick={() => onChange(+(Math.min(max, value + step).toFixed(decimals + 2)))}
-        style={{ width: 32, height: 34, border: 'none', background: 'var(--surface2, #1a1a1a)', color: 'var(--text, #ccc)', fontSize: 18, cursor: disabled || value >= max ? 'not-allowed' : 'pointer', opacity: disabled || value >= max ? 0.4 : 1 }}
       >+</button>
     </div>
   );
@@ -63,24 +63,15 @@ interface SegmentedProps<T extends string | number> {
 
 function Segmented<T extends string | number>({ options, value, format, onChange }: SegmentedProps<T>) {
   return (
-    <div style={{ display: 'inline-flex', border: '1px solid var(--border, #333)', borderRadius: 6, overflow: 'hidden' }}>
+    <div className="rules-segmented" role="tablist" aria-label="Segmented control">
       {options.map((opt, i) => {
         const active = opt === value;
         return (
           <button
             key={i}
             type="button"
+            className={`rules-segmented__btn ${active ? 'rules-segmented__btn--active' : ''}`}
             onClick={() => onChange(opt)}
-            style={{
-              padding: '6px 14px',
-              border: 'none',
-              borderLeft: i > 0 ? '1px solid var(--border, #333)' : 'none',
-              background: active ? 'var(--accent, #4f8ef7)' : 'var(--surface2, #1a1a1a)',
-              color: active ? '#fff' : 'var(--text-muted, #888)',
-              fontSize: 13,
-              cursor: 'pointer',
-              fontWeight: active ? 600 : 400,
-            }}
           >
             {format ? format(opt) : String(opt)}
           </button>
@@ -484,35 +475,21 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
               />
 
               {idx === 0 && tpLevels.length < 3 ? (
-                <button
-                  type="button"
-                  onClick={addTpLevel}
-                  style={{
-                    fontSize: 12,
-                    color: 'var(--accent, #4f8ef7)',
-                    background: 'none',
-                    border: '1px solid var(--accent, #4f8ef7)',
-                    borderRadius: 4,
-                    padding: '5px 10px',
-                    cursor: 'pointer',
-                    justifySelf: 'start',
-                  }}
-                >
-                  + Add TP level
-                </button>
+                <Button type="button" variant="secondary" className="rules-mini-btn" onClick={addTpLevel}>+ TP</Button>
               ) : (
                 <span />
               )}
 
               {idx > 0 ? (
-                <button
+                <Button
                   type="button"
+                  variant="danger"
+                  className="rules-mini-btn"
                   onClick={() => removeTpLevel(idx)}
-                  style={{ fontSize: 12, color: 'var(--danger, #e05c5c)', background: 'none', border: '1px solid var(--danger, #e05c5c)', borderRadius: 4, padding: '5px 8px', cursor: 'pointer' }}
                   title="Remove level"
                 >
                   Remove
-                </button>
+                </Button>
               ) : (
                 <span className="muted" style={{ fontSize: 11 }}>TP1 → move SL to entry</span>
               )}
