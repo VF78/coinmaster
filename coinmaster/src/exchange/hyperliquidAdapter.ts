@@ -351,14 +351,43 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async placeTriggerOrder(intent: TriggerOrderIntent): Promise<OrderAck> {
     try {
       const client = await this.getTradingClient();
+      const triggerPxRaw = Number(intent.triggerPrice);
+      const meta = await this.getInstrumentMeta(intent.symbol).catch(() => undefined);
+      const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 5)));
+      const maxPriceDecimals = Math.max(0, 6 - sizeDecimals);
+      const normalizeHlPrice = (value: number) => {
+        if (!Number.isFinite(value) || value <= 0) return value;
+        const abs = Math.abs(value);
+        const digitsBefore = abs >= 1 ? Math.floor(Math.log10(abs)) + 1 : 0;
+        const decimalsBySig = Math.max(0, 5 - digitsBefore);
+        const decimals = Math.max(0, Math.min(maxPriceDecimals, decimalsBySig));
+        return Number(value.toFixed(decimals));
+      };
+
+      const triggerPx = normalizeHlPrice(triggerPxRaw);
+      const marketLimitPx = normalizeHlPrice(intent.side === 'buy'
+        ? triggerPx * 1.03
+        : triggerPx * 0.97);
+
+      console.log('[hl-adapter] placeTriggerOrder req', {
+        symbol: intent.symbol,
+        side: intent.side,
+        size: intent.size,
+        triggerPrice: triggerPx,
+        limitPx: marketLimitPx,
+        sizeDecimals,
+        kind: intent.kind,
+      });
+
       const response = await client.exchange.placeOrder({
         coin: this.toSdkCoin(intent.symbol),
         is_buy: intent.side === 'buy',
         sz: intent.size,
-        // Trigger orders don't use limit_px, only triggerPx in order_type
+        // SDK requires limit_px for order wire formatting; for trigger-market use aggressive IOC-style bound.
+        limit_px: marketLimitPx,
         order_type: {
           trigger: {
-            triggerPx: intent.triggerPrice,
+            triggerPx: triggerPx,
             isMarket: true,
             tpsl: intent.kind
           }

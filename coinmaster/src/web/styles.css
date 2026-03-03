@@ -899,15 +899,14 @@ tbody tr:hover {
   }
 
   .hl-line-chip {
-    right: 0.15rem;
+    right: 0.2rem;
     font-size: 0.64rem;
-    gap: 0.25rem;
-    padding: 0.09rem 0.22rem;
   }
 
+  .hl-line-chip span,
   .hl-line-chip strong {
     font-size: 0.64rem;
-    padding-left: 0.25rem;
+    padding: 0.1rem 0.28rem;
   }
 
   .hl-confirm-row {
