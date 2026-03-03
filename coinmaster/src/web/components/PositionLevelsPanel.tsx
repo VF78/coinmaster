@@ -248,8 +248,8 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         vertTouchDrag: true,
       },
       handleScale: {
-        // Keep native wheel scaling on; body-wheel is intercepted below and remapped to custom horizontal zoom.
-        mouseWheel: true,
+        // We handle wheel behavior manually (right scale vertical + body horizontal).
+        mouseWheel: false,
         pinch: true,
         axisPressedMouseMove: {
           time: true,
@@ -420,28 +420,51 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     };
 
     const wheelOnPriceScale = (event: WheelEvent) => {
-      if (draggingRef.current) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
+      // Always block background/page scroll while cursor is over chart host.
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (draggingRef.current) return;
 
       const rect = host.getBoundingClientRect();
       const ps = candleSeriesRef.current?.priceScale();
       const ts = chart.timeScale();
       const scaleWidth = ps?.width?.() ?? 56;
-      const inRightScale = event.clientX >= rect.right - Math.max(48, scaleWidth + 8);
+      // Wider right-zone hitbox so user can reliably trigger vertical zoom.
+      const inRightScale = event.clientX >= rect.right - Math.max(120, scaleWidth + 20);
 
-      if (inRightScale) {
-        // Let native lightweight-charts right-scale vertical zoom handle this wheel event.
+      if (inRightScale && ps) {
         manualScaleRef.current = true;
+        const opts = ps.options?.();
+        const currentTop = opts?.scaleMargins?.top ?? 0.12;
+        const currentBottom = opts?.scaleMargins?.bottom ?? 0.12;
+        const currentSpan = Math.max(0.0008, 1 - currentTop - currentBottom);
+        const center = currentTop + currentSpan / 2;
+
+        // Stronger vertical zoom depth/range.
+        const factor = event.deltaY < 0 ? 0.92 : 1.08;
+        const nextSpan = Math.max(0.0002, Math.min(0.9999, currentSpan * factor));
+
+        let nextTop = center - nextSpan / 2;
+        let nextBottom = 1 - (nextTop + nextSpan);
+
+        nextTop = Math.max(0.00001, Math.min(0.49999, nextTop));
+        nextBottom = Math.max(0.00001, Math.min(0.49999, nextBottom));
+
+        if (nextTop + nextBottom > 0.99998) {
+          const overflow = nextTop + nextBottom - 0.99998;
+          nextTop = Math.max(0.00001, nextTop - overflow / 2);
+          nextBottom = Math.max(0.00001, nextBottom - overflow / 2);
+        }
+
+        ps.applyOptions({
+          autoScale: false,
+          scaleMargins: { top: nextTop, bottom: nextBottom },
+        });
         return;
       }
 
-      // Body area: custom horizontal zoom; block page-behind scroll.
-      event.preventDefault();
-      event.stopPropagation();
-
+      // Body area: gentle horizontal zoom only.
       const logical = ts.getVisibleLogicalRange();
       if (!logical || !Number.isFinite(logical.from) || !Number.isFinite(logical.to)) return;
 
@@ -449,7 +472,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       const anchor = ts.coordinateToLogical(x) ?? (logical.from + logical.to) / 2;
       if (!Number.isFinite(anchor)) return;
 
-      // Less sensitive horizontal zoom (~2x gentler).
       const zoom = event.deltaY < 0 ? 0.975 : 1.025;
       const nextFrom = anchor + (logical.from - anchor) * zoom;
       const nextTo = anchor + (logical.to - anchor) * zoom;
