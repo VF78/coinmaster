@@ -370,7 +370,19 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       // Trigger orders return waiting.oid, not resting.oid
       let oid = first?.resting?.oid ?? first?.filled?.oid ?? first?.waiting?.oid;
       const status = first?.resting ? 'resting' : first?.filled ? 'filled' : first?.waiting ? 'waiting' : response?.status;
-      const exchangeError = String(first?.error ?? first?.err ?? '').trim() || undefined;
+      
+      // Safely extract error message
+      let exchangeError: string | undefined;
+      try {
+        const rawError = first?.error ?? first?.err ?? response?.response?.data?.statuses?.[0]?.status ?? response?.status ?? response?.response?.status;
+        if (rawError && typeof rawError === 'string') {
+          exchangeError = rawError.trim() || undefined;
+        } else if (rawError && typeof rawError === 'object') {
+          exchangeError = JSON.stringify(rawError);
+        }
+      } catch {
+        // ignore error extraction errors
+      }
 
       if (exchangeError) {
         console.log(`[hl-adapter] placeTriggerOrder ${intent.symbol} ${intent.kind}: error=${exchangeError}`);
