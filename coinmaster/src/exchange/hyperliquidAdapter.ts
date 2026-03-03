@@ -398,15 +398,6 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         intent.side === 'buy' ? triggerPx * 1.03 : triggerPx * 0.97,
       );
 
-      console.log('[hl-adapter] placeTriggerOrder req', {
-        symbol: intent.symbol,
-        side: intent.side,
-        size: intent.size,
-        triggerPrice: triggerPx,
-        limitPx: marketLimitPx,
-        kind: intent.kind,
-      });
-
       const response = await client.exchange.placeOrder({
         coin: this.toSdkCoin(intent.symbol),
         is_buy: intent.side === 'buy',
@@ -429,21 +420,18 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       let oid = first?.resting?.oid ?? first?.filled?.oid ?? first?.waiting?.oid;
       const status = first?.resting ? 'resting' : first?.filled ? 'filled' : first?.waiting ? 'waiting' : response?.status;
       
-      // Safely extract error message
+      // Extract exchange error (do not treat generic "ok" statuses as errors).
       let exchangeError: string | undefined;
       try {
-        const rawError = first?.error ?? first?.err ?? response?.response?.data?.statuses?.[0]?.status ?? response?.status ?? response?.response?.status;
-        if (rawError && typeof rawError === 'string') {
-          exchangeError = rawError.trim() || undefined;
+        const rawError = first?.error ?? first?.err;
+        if (typeof rawError === 'string') {
+          const trimmed = rawError.trim();
+          if (trimmed && trimmed.toLowerCase() !== 'ok') exchangeError = trimmed;
         } else if (rawError && typeof rawError === 'object') {
           exchangeError = JSON.stringify(rawError);
         }
       } catch {
         // ignore error extraction errors
-      }
-
-      if (exchangeError) {
-        console.log(`[hl-adapter] placeTriggerOrder ${intent.symbol} ${intent.kind}: error=${exchangeError}`);
       }
 
       // Fallback lookup by clientOrderId if SDK response omits oid.
@@ -459,7 +447,6 @@ export class HyperliquidAdapter implements ExchangeAdapter {
             const row = (Array.isArray(allOrders) ? allOrders : []).find((o) => String(o?.cloid ?? '').toLowerCase() === cloidLower);
             if (row?.oid !== undefined) {
               oid = row.oid;
-              console.log(`[hl-adapter] found oid via frontendOpenOrders: ${oid}`);
             }
           }
         } catch (e) {
