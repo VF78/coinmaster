@@ -100,7 +100,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const draggingRef = useRef<typeof dragging>(dragging);
   const panningRef = useRef<{ startY: number; top: number; bottom: number } | null>(null);
   const manualScaleRef = useRef(false);
-  const wheelPriceScaleModeRef = useRef(false);
 
   const initialStopLossRef = useRef(normalizeLevel(stopLoss));
   const initialTakeProfitsRef = useRef(takeProfits.map(normalizeLevel));
@@ -249,8 +248,8 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         vertTouchDrag: true,
       },
       handleScale: {
-        // mouseWheel is toggled dynamically: enabled on right price scale, disabled on chart body.
-        mouseWheel: false,
+        // Keep native wheel scaling on; body-wheel is intercepted below and remapped to custom horizontal zoom.
+        mouseWheel: true,
         pinch: true,
         axisPressedMouseMove: {
           time: true,
@@ -328,17 +327,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       ps.applyOptions({ autoScale: enabled });
     };
 
-    const setWheelPriceScaleMode = (enabled: boolean) => {
-      if (wheelPriceScaleModeRef.current === enabled) return;
-      wheelPriceScaleModeRef.current = enabled;
-      chart.applyOptions({
-        handleScale: {
-          mouseWheel: enabled,
-          pinch: true,
-          axisPressedMouseMove: { time: true, price: false },
-        },
-      });
-    };
+
 
     const pointerDown = (event: PointerEvent) => {
       const nearest = findNearestDraggable(event.clientY);
@@ -371,8 +360,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     const pointerMove = (event: PointerEvent) => {
       const rect = host.getBoundingClientRect();
       const ps = candleSeriesRef.current?.priceScale();
-      const scaleWidth = ps?.width?.() ?? 56;
-      const inRightScale = event.clientX >= rect.right - Math.max(48, scaleWidth + 8);
 
       const drag = draggingRef.current;
       if (drag) {
@@ -394,8 +381,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
       const pan = panningRef.current;
       if (!pan) {
-        // Toggle wheel mode ahead of wheel event: built-in vertical zoom on right scale only.
-        setWheelPriceScaleMode(inRightScale);
         return;
       }
 
@@ -434,16 +419,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       setPriceScaleAutoScale(true);
     };
 
-    const pointerLeave = () => {
-      setWheelPriceScaleMode(false);
-    };
-
     const wheelOnPriceScale = (event: WheelEvent) => {
-      // Always stop wheel from scrolling the page behind the modal when cursor is over chart host.
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (draggingRef.current) return;
+      if (draggingRef.current) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
 
       const rect = host.getBoundingClientRect();
       const ps = candleSeriesRef.current?.priceScale();
@@ -452,14 +433,14 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       const inRightScale = event.clientX >= rect.right - Math.max(48, scaleWidth + 8);
 
       if (inRightScale) {
-        // Vertical zoom is delegated to native lightweight-charts wheel-on-price-scale.
+        // Let native lightweight-charts right-scale vertical zoom handle this wheel event.
         manualScaleRef.current = true;
-        setWheelPriceScaleMode(true);
         return;
       }
 
-      // Body area: force custom horizontal zoom with reduced sensitivity.
-      setWheelPriceScaleMode(false);
+      // Body area: custom horizontal zoom; block page-behind scroll.
+      event.preventDefault();
+      event.stopPropagation();
 
       const logical = ts.getVisibleLogicalRange();
       if (!logical || !Number.isFinite(logical.from) || !Number.isFinite(logical.to)) return;
@@ -482,8 +463,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     host.addEventListener('pointermove', pointerMove, { capture: true });
     host.addEventListener('pointerup', pointerUp, { capture: true });
     host.addEventListener('pointercancel', pointerUp, { capture: true });
-    host.addEventListener('pointerleave', pointerLeave, { capture: true });
-    host.addEventListener('wheel', wheelOnPriceScale, { passive: false });
+    host.addEventListener('wheel', wheelOnPriceScale, { passive: false, capture: true });
 
     return () => {
       resizeObserver.disconnect();
@@ -491,9 +471,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       host.removeEventListener('pointermove', pointerMove, true);
       host.removeEventListener('pointerup', pointerUp, true);
       host.removeEventListener('pointercancel', pointerUp, true);
-      host.removeEventListener('pointerleave', pointerLeave, true);
-      host.removeEventListener('wheel', wheelOnPriceScale);
-      setWheelPriceScaleMode(false);
+      host.removeEventListener('wheel', wheelOnPriceScale, true);
       chart.remove();
       chartRef.current = null;
       candleSeriesRef.current = null;
@@ -689,12 +667,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         </button>
       </header>
 
-      <div className="hl-summary-grid">
-        <span className="muted">Coin</span><strong>{position.symbol}</strong>
-        <span className="muted">Position</span><strong>{formatNumber(position.size)} {position.symbol} (Value {position.dealValue !== undefined ? formatMoney(position.dealValue) : '—'})</strong>
-        <span className="muted">Entry Price</span><strong>{entry ? formatNumber(entry) : '—'}</strong>
-        <span className="muted">Mark Price</span><strong>{markPrice ? formatNumber(markPrice) : '—'}</strong>
-      </div>
 
       <div className="position-panel__chart-wrap hl-chart-wrap">
         <div className="hl-timeframes">
@@ -813,7 +785,13 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         </div>
 
         <aside className="muted position-panel__hint hl-side-hint">
-          TP amount is split equally across active TP levels. After TP1 fill, SL moves to break-even.
+          <div>TP amount is split equally across active TP levels. After TP1 fill, SL moves to break-even.</div>
+          <div className="hl-summary-grid hl-summary-grid--compact">
+            <span className="muted">Coin</span><strong>{position.symbol}</strong>
+            <span className="muted">Position</span><strong>{formatNumber(position.size)} {position.symbol} (Value {position.dealValue !== undefined ? formatMoney(position.dealValue) : '—'})</strong>
+            <span className="muted">Entry Price</span><strong>{entry ? formatNumber(entry) : '—'}</strong>
+            <span className="muted">Mark Price</span><strong>{markPrice ? formatNumber(markPrice) : '—'}</strong>
+          </div>
         </aside>
       </div>
 

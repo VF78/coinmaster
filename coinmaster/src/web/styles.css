@@ -595,6 +595,22 @@ tbody tr:hover {
   font-size: 0.86rem;
 }
 
+.hl-summary-grid--compact {
+  grid-template-columns: minmax(72px, auto) minmax(0, 1fr);
+  gap: 0.14rem 0.45rem;
+  padding: 0.36rem 0.45rem;
+  border-color: #294363;
+  background: #0b1729;
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+.hl-summary-grid--compact strong {
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
 .hl-levels-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 290px;
@@ -643,11 +659,13 @@ tbody tr:hover {
   padding: 0.45rem 0.55rem;
   font-size: 0.76rem;
   line-height: 1.28;
-  width: min(260px, 100%);
+  width: min(290px, 100%);
   justify-self: center;
   align-self: start;
   margin-top: 0.85rem;
   text-align: center;
+  display: grid;
+  gap: 0.5rem;
 }
 
 .hl-level-row {
@@ -816,7 +834,7 @@ tbody tr:hover {
 .position-modal-sheet .position-panel {
   height: 100%;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto auto auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
   overflow: hidden;
   padding-bottom: calc(0.1rem + env(safe-area-inset-bottom));
 }
@@ -859,7 +877,7 @@ tbody tr:hover {
 
   .position-modal-sheet .position-panel {
     height: auto;
-    grid-template-rows: auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto;
     overflow: visible;
     padding-bottom: env(safe-area-inset-bottom);
   }
