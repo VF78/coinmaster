@@ -355,37 +355,58 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
       const rect = host.getBoundingClientRect();
       const ps = candleSeriesRef.current?.priceScale();
+      const ts = chart.timeScale();
       const scaleWidth = ps?.width?.() ?? 56;
       const inRightScale = event.clientX >= rect.right - Math.max(48, scaleWidth + 8);
-      if (!inRightScale) return;
 
-      const opts = ps?.options?.();
-      if (!ps || !opts) return;
+      // Right scale: vertical zoom
+      if (inRightScale) {
+        const opts = ps?.options?.();
+        if (!ps || !opts) return;
 
-      const currentTop = opts.scaleMargins?.top ?? 0.12;
-      const currentBottom = opts.scaleMargins?.bottom ?? 0.12;
-      const currentSpan = Math.max(0.05, 1 - currentTop - currentBottom);
-      const center = currentTop + currentSpan / 2;
+        const currentTop = opts.scaleMargins?.top ?? 0.12;
+        const currentBottom = opts.scaleMargins?.bottom ?? 0.12;
+        const currentSpan = Math.max(0.01, 1 - currentTop - currentBottom);
+        const center = currentTop + currentSpan / 2;
 
-      const factor = event.deltaY < 0 ? 0.92 : 1.08;
-      const nextSpan = Math.max(0.08, Math.min(0.92, currentSpan * factor));
+        // Wider zoom range vs previous version (more zoom-in/out freedom)
+        const factor = event.deltaY < 0 ? 0.84 : 1.16;
+        const nextSpan = Math.max(0.02, Math.min(0.98, currentSpan * factor));
 
-      let nextTop = center - nextSpan / 2;
-      let nextBottom = 1 - (nextTop + nextSpan);
+        let nextTop = center - nextSpan / 2;
+        let nextBottom = 1 - (nextTop + nextSpan);
 
-      nextTop = Math.max(0.01, Math.min(0.49, nextTop));
-      nextBottom = Math.max(0.01, Math.min(0.49, nextBottom));
+        nextTop = Math.max(0.001, Math.min(0.499, nextTop));
+        nextBottom = Math.max(0.001, Math.min(0.499, nextBottom));
 
-      if (nextTop + nextBottom > 0.98) {
-        const overflow = nextTop + nextBottom - 0.98;
-        nextTop = Math.max(0.01, nextTop - overflow / 2);
-        nextBottom = Math.max(0.01, nextBottom - overflow / 2);
+        if (nextTop + nextBottom > 0.998) {
+          const overflow = nextTop + nextBottom - 0.998;
+          nextTop = Math.max(0.001, nextTop - overflow / 2);
+          nextBottom = Math.max(0.001, nextBottom - overflow / 2);
+        }
+
+        ps.applyOptions({
+          autoScale: false,
+          scaleMargins: { top: nextTop, bottom: nextBottom },
+        });
+        return;
       }
 
-      ps.applyOptions({
-        autoScale: false,
-        scaleMargins: { top: nextTop, bottom: nextBottom },
-      });
+      // Rest of chart: horizontal zoom (time scale), TradingView-like behavior.
+      const logical = ts.getVisibleLogicalRange();
+      if (!logical || !Number.isFinite(logical.from) || !Number.isFinite(logical.to)) return;
+
+      const x = event.clientX - rect.left;
+      const anchor = ts.coordinateToLogical(x) ?? (logical.from + logical.to) / 2;
+      if (!Number.isFinite(anchor)) return;
+
+      const zoom = event.deltaY < 0 ? 0.9 : 1.1;
+      const nextFrom = anchor + (logical.from - anchor) * zoom;
+      const nextTo = anchor + (logical.to - anchor) * zoom;
+      if (!Number.isFinite(nextFrom) || !Number.isFinite(nextTo)) return;
+      if (Math.abs(nextTo - nextFrom) < 2) return;
+
+      ts.setVisibleLogicalRange({ from: nextFrom, to: nextTo });
     };
 
     host.addEventListener('pointerdown', pointerDown, { capture: true });
