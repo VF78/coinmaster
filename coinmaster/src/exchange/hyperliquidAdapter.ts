@@ -194,7 +194,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
   async getOpenOrders(symbol?: string): Promise<OrderSnapshot[]> {
     const user = await this.resolveEffectiveUser();
-    const raw = await this.requestInfo<any[]>({ type: 'openOrders', user });
+    // frontendOpenOrders includes trigger orders (TP/SL) + regular limits
+    const raw = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
     const target = symbol ? this.normalizeSymbol(symbol) : null;
 
     return (Array.isArray(raw) ? raw : [])
@@ -202,7 +203,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         const normalized = this.normalizeSymbol(String(item?.coin ?? ''));
         if (target && normalized !== target) return null;
 
-        const px = this.toNumber(item?.limitPx);
+        const px = this.toNumber(item?.triggerPx ?? item?.limitPx);
         const sz = this.toNumber(item?.sz);
         if (!px || !sz) return null;
 
@@ -433,7 +434,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     try {
       const client = await this.getTradingClient();
       const user = await this.resolveEffectiveUser();
-      const openOrders = await this.requestInfo<any[]>({ type: 'openOrders', user });
+      const openOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
 
       const target = (Array.isArray(openOrders) ? openOrders : []).find((o) => String(o?.oid ?? '') === String(orderIdOrClientId));
       if (!target) {
@@ -463,7 +464,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     try {
       const client = await this.getTradingClient();
       const user = await this.resolveEffectiveUser();
-      const openOrders = await this.requestInfo<any[]>({ type: 'openOrders', user });
+      const openOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
       const target = symbol ? this.normalizeSymbol(symbol) : null;
 
       const rows = (Array.isArray(openOrders) ? openOrders : []).filter((o) => {

@@ -2672,13 +2672,27 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   }
 
   const normalizedSymbol = normalizeSymbol(symbol);
-  const qty = Number(size);
+  const qtyRaw = Number(size);
   const slRaw = Number(stopLoss);
 
   const meta = await exchange.getInstrumentMeta(normalizedSymbol).catch(() => null);
-  const quoteDecimals = Math.max(0, Math.min(8, Number(meta?.quoteDecimals ?? 2)));
-  const roundPrice = (value: number) => Number(value.toFixed(quoteDecimals));
-  const sl = roundPrice(slRaw);
+  const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 5)));
+  const qty = Number.isFinite(qtyRaw) ? Number(qtyRaw.toFixed(sizeDecimals)) : qtyRaw;
+
+  // Hyperliquid price normalization:
+  // - max 5 significant digits
+  // - max (6 - szDecimals) decimal places
+  const maxPriceDecimals = Math.max(0, 6 - sizeDecimals);
+  const normalizeHlPrice = (value: number) => {
+    if (!Number.isFinite(value) || value <= 0) return value;
+    const abs = Math.abs(value);
+    const digitsBefore = abs >= 1 ? Math.floor(Math.log10(abs)) + 1 : 0;
+    const decimalsBySig = Math.max(0, 5 - digitsBefore);
+    const decimals = Math.max(0, Math.min(maxPriceDecimals, decimalsBySig));
+    return Number(value.toFixed(decimals));
+  };
+
+  const sl = normalizeHlPrice(slRaw);
 
   const rawTps = Array.isArray(takeProfits) && takeProfits.length > 0
     ? takeProfits
@@ -2688,7 +2702,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     .map((x) => Number(x))
     .filter((x) => Number.isFinite(x) && x > 0)
     .slice(0, 3)
-    .map((x) => roundPrice(x));
+    .map((x) => normalizeHlPrice(x));
 
   if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(sl) || sl <= 0 || normalizedTps.length === 0) {
     return res.status(400).json({ ok: false, error: 'invalid_size_or_levels' });
@@ -2780,7 +2794,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     });
   }
 
-  const factor = 1e6;
+  const factor = 10 ** sizeDecimals;
   const tpCount = sortedTps.length;
   const baseSize = Math.floor((qty / tpCount) * factor) / factor;
   const tpSizes: number[] = Array.from({ length: tpCount }, (_, i) =>

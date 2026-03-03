@@ -386,15 +386,26 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     });
 
     const updateChipCoords = () => {
-      const mapPrice = (value: number | undefined) => {
-        if (!value || value <= 0) return null;
-        const series = candleSeriesRef.current as unknown as { priceToCoordinate?: (p: number) => number | null } | null;
-        return series?.priceToCoordinate?.(value) ?? null;
+      const mapOnSeries = (
+        seriesRef: ISeriesApi<'Line'> | ISeriesApi<'Candlestick'> | null,
+        value: number | undefined
+      ) => {
+        if (!value || value <= 0 || !seriesRef) return null;
+        const api = seriesRef as unknown as { priceToCoordinate?: (p: number) => number | null };
+        return api.priceToCoordinate?.(value) ?? null;
       };
+
+      const h = chartHostRef.current?.clientHeight ?? 0;
+      const clampY = (y: number | null) => {
+        if (y === null || !Number.isFinite(y)) return null;
+        if (h <= 0) return y;
+        return Math.max(10, Math.min(h - 10, y));
+      };
+
       setChipCoords({
-        pnl: mapPrice(markPrice),
-        sl: mapPrice(stopLoss),
-        tps: takeProfits.map((tp) => mapPrice(tp)),
+        pnl: clampY(mapOnSeries(pnlSeriesRef.current, markPrice) ?? mapOnSeries(candleSeriesRef.current, markPrice)),
+        sl: clampY(mapOnSeries(slSeriesRef.current, stopLoss) ?? mapOnSeries(candleSeriesRef.current, stopLoss)),
+        tps: takeProfits.map((tp, idx) => clampY(mapOnSeries(tpSeriesRefs.current[idx] ?? null, tp) ?? mapOnSeries(candleSeriesRef.current, tp))),
       });
     };
 
@@ -611,13 +622,13 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       </div>
 
       {validation ? <p className="down">{validation}</p> : null}
-      {error ? <p className="down">{error}</p> : null}
 
       <div className="actions-row hl-confirm-row">
         <Button onClick={applyLevels} disabled={Boolean(validation) || isApplying} fullWidth>
           {isApplying ? 'Applying…' : 'Confirm'}
         </Button>
       </div>
+      {error ? <p className="down hl-confirm-msg">{error}</p> : null}
       {info ? <p className="up hl-confirm-msg">{info}</p> : null}
     </section>
   );
