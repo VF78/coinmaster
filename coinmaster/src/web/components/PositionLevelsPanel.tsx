@@ -94,6 +94,15 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     return Number((delta * position.size).toFixed(6));
   }, [entry, markPrice, position.size, position.unrealizedPnl, side]);
 
+  const tpDisplaySizes = useMemo(() => {
+    const count = Math.max(1, takeProfits.length);
+    const factor = 1e6;
+    const base = Math.floor((position.size / count) * factor) / factor;
+    return Array.from({ length: count }, (_, i) =>
+      i < count - 1 ? base : Math.max(0, Math.round((position.size - base * (count - 1)) * factor) / factor)
+    );
+  }, [position.size, takeProfits.length]);
+
   useEffect(() => {
     stopLossRef.current = stopLoss;
   }, [stopLoss]);
@@ -536,7 +545,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
                 return (
                   <div key={`tp-chip-${idx}`} className="hl-line-chip hl-line-chip--tp" style={{ top: y }}>
                     <span>TP Price {formatNumber(tp)}</span>
-                    <strong>{formatNumber(position.size)}</strong>
+                    <strong>{formatNumber(tpDisplaySizes[idx] ?? position.size)}</strong>
                   </div>
                 );
               })}
