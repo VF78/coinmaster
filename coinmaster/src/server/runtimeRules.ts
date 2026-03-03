@@ -184,6 +184,11 @@ export class RuntimeRulesCache {
     return this.cached;
   }
 
+  /** Force immediate refresh from DB (used after settings updates). */
+  async refreshNow(): Promise<void> {
+    await this.refresh();
+  }
+
   private async refresh(): Promise<void> {
     if (this.refreshing) return;
     this.refreshing = true;

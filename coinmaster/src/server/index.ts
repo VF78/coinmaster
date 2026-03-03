@@ -308,6 +308,18 @@ async function getOperatorBias(symbol: string): Promise<Bias> {
   return [...db.data.biasCommands].reverse().find((b) => b.symbol === normalized)?.bias ?? 'off';
 }
 
+async function getFreshExitClosePct(fallback = 50): Promise<number> {
+  try {
+    const db = await getDb();
+    const rules = normalizeTradingRules(db.data.settings.tradingRules);
+    const pct = Number(rules.exitClosePct);
+    if (!Number.isFinite(pct)) return fallback;
+    return Math.max(1, Math.min(100, pct));
+  } catch {
+    return fallback;
+  }
+}
+
 async function queuePendingConfirmation(params: {
   symbol: string;
   side: 'long' | 'short';
@@ -1303,16 +1315,33 @@ async function runEngulfingMonitorTick(): Promise<void> {
           if (!isReverseSignal) continue;
 
           const reason = `engulfing_exit_signal_${signal.direction}`;
-          const exitClosePct = raw.exitClosePct ?? 50;
-          const closeFraction = Math.min(100, Math.max(1, exitClosePct)) / 100;
+          const cachedExitClosePct = Number(raw.exitClosePct ?? 50);
+          const exitClosePct = await getFreshExitClosePct(cachedExitClosePct);
+          const closeFraction = exitClosePct / 100;
 
           logRiskGateAudit({
             gate: 'engulfing_emergency_exit',
             passed: true,
-            details: { symbol, tf, direction: signal.direction, positionSide: symbolPosition.side, exitClosePct, reason: signal.reason },
+            details: {
+              symbol,
+              tf,
+              direction: signal.direction,
+              positionSide: symbolPosition.side,
+              exitClosePct,
+              cachedExitClosePct,
+              reason: signal.reason,
+            },
           });
           logger.warn(
-            { component: 'engulfing-monitor', symbol, tf, direction: signal.direction, position: symbolPosition.side, exitClosePct },
+            {
+              component: 'engulfing-monitor',
+              symbol,
+              tf,
+              direction: signal.direction,
+              position: symbolPosition.side,
+              exitClosePct,
+              cachedExitClosePct,
+            },
             'reverse engulfing detected — exit triggered',
           );
 
@@ -1339,6 +1368,31 @@ async function runEngulfingMonitorTick(): Promise<void> {
                 gate: 'partial_close', passed: closeAck.ok,
                 details: { symbol, closeSize, exitPrice, posSize, exitClosePct, orderId: closeAck.orderId },
               });
+
+              try {
+                const db = await getDb();
+                appendTradeEvent(db.data, {
+                  symbol,
+                  source: 'live',
+                  type: closeAck.ok ? 'order_submitted' : 'order_rejected',
+                  timestamp: new Date().toISOString(),
+                  correlationId: closeAck.orderId ? `partial-close-${closeAck.orderId}` : `partial-close-${nanoid(8)}`,
+                  side: symbolPosition.side,
+                  price: Number(exitPrice.toFixed(8)),
+                  quantity: closeSize,
+                  reason: closeAck.ok ? 'engulfing_partial_close' : 'engulfing_partial_close_failed',
+                  payload: {
+                    exitClosePct,
+                    posSize,
+                    closeFraction,
+                    orderId: closeAck.orderId ?? null,
+                    error: closeAck.error ?? null,
+                  },
+                });
+                await db.write();
+              } catch {
+                // best effort forensic log
+              }
 
               // Move SL to entry price (break-even) for remaining position
               const entryPrice = symbolPosition.entryPrice ?? markPrice;
@@ -2367,6 +2421,9 @@ app.put('/api/settings/trading-rules', async (req, res) => {
   const db = await getDb();
   db.data.settings.tradingRules = rules;
   await db.write();
+
+  // Ensure monitors pick up new rules immediately (no cache-delay window).
+  await rulesCache.refreshNow().catch((err) => logger.warn({ component: 'runtime-rules', err }, 'forced rules refresh failed'));
 
   return res.json({ ok: true, rules });
 });
