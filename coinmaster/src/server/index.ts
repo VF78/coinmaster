@@ -1606,9 +1606,15 @@ function startEngulfingMonitor(): void {
 }
 
 /** Risk gate middleware for trading endpoints — checks DD + leverage before allowing order */
+function isProtectionOnlyRequest(req: Request): boolean {
+  const p = (req.path || req.originalUrl || '').toLowerCase();
+  return p.startsWith('/api/live/position/levels');
+}
+
 async function riskGateMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
-    const reduceOnly = req.body?.reduceOnly === true;
+    const protectionOnly = isProtectionOnlyRequest(req);
+    const reduceOnly = req.body?.reduceOnly === true || protectionOnly;
 
     // If DD lock is active, block new entry orders but always allow reduce-only exits.
     if (ddLock.active && !reduceOnly) {
@@ -1681,8 +1687,8 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
 /** Symbol allowlist + allocation cap middleware — runs after riskGateMiddleware */
 async function symbolAllocationGate(req: Request, res: Response, next: NextFunction) {
   try {
-    // Skip for reduce-only orders (closing positions should never be blocked by allocation)
-    if (req.body?.reduceOnly === true) return next();
+    // Skip for reduce-only orders and protection-only management endpoints.
+    if (req.body?.reduceOnly === true || isProtectionOnlyRequest(req)) return next();
 
     const symbol = normalizeSymbol(req.body?.symbol);
     const effectiveRules = rulesCache.getEffectiveRules();
