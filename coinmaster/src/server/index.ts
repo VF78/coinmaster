@@ -302,6 +302,12 @@ async function clearPendingConfirmationForSymbol(symbol: string): Promise<void> 
   }
 }
 
+async function getOperatorBias(symbol: string): Promise<Bias> {
+  const db = await getDb();
+  const normalized = symbol.toUpperCase();
+  return [...db.data.biasCommands].reverse().find((b) => b.symbol === normalized)?.bias ?? 'off';
+}
+
 async function queuePendingConfirmation(params: {
   symbol: string;
   side: 'long' | 'short';
@@ -1087,6 +1093,8 @@ async function runEngulfingMonitorTick(): Promise<void> {
     const exitTfs = raw.emergencyExitTimeframes?.length ? raw.emergencyExitTimeframes : ['1h' as const];
     const minCandles = lookback + 5;
     const now = Date.now();
+    const operatorBias = await getOperatorBias(symbol);
+
 
     // Fetch open positions once
     let positions: PositionSnapshot[] = [];
@@ -1118,6 +1126,20 @@ async function runEngulfingMonitorTick(): Promise<void> {
           const signal = evaluateTimeframe(closedCandles, tf, lookback);
           if (!signal.detected || !signal.direction) continue;
 
+          const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
+          const blockedByBias = operatorBias === 'off'
+            || (operatorBias === 'short' && side !== 'sell')
+            || (operatorBias === 'long' && side !== 'buy');
+          if (blockedByBias) {
+            logRiskGateAudit({
+              gate: 'engulfing_entry_signal',
+              passed: false,
+              reason: 'operator_bias_block',
+              details: { symbol, tf, direction: signal.direction, operatorBias, side },
+            });
+            continue;
+          }
+
           // Debounce: skip if same signal fired within this candle period
           const debounceKey = `${symbol}:${tf}:${signal.direction}`;
           const lastFired = lastEntrySignalAt.get(debounceKey) ?? 0;
@@ -1127,17 +1149,15 @@ async function runEngulfingMonitorTick(): Promise<void> {
           logRiskGateAudit({
             gate: 'engulfing_entry_signal',
             passed: true,
-            details: { symbol, tf, direction: signal.direction, confidence: signal.confidence, reason: signal.reason },
+            details: { symbol, tf, direction: signal.direction, confidence: signal.confidence, reason: signal.reason, operatorBias },
           });
           logger.info(
-            { component: 'engulfing-monitor', symbol, tf, direction: signal.direction, confidence: signal.confidence },
+            { component: 'engulfing-monitor', symbol, tf, direction: signal.direction, confidence: signal.confidence, operatorBias },
             'engulfing entry signal detected',
           );
 
           const mid = await fetchLiveMid(symbol);
           if (!mid) { logger.warn({ component: 'engulfing-monitor' }, 'entry signal: no mid price'); continue; }
-
-          const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
 
           // Manual mode: queue confirmation + notify, do not place order directly
           if (!raw.autoConfirm) {
@@ -1361,6 +1381,7 @@ async function runFvgMonitorTick(): Promise<void> {
 
     const symbol = LIVE_SYMBOL;
     const now = Date.now();
+    const operatorBias = await getOperatorBias(symbol);
 
     // Current mid price (required for retrace check)
     const mid = await fetchLiveMid(symbol);
@@ -1395,6 +1416,20 @@ async function runFvgMonitorTick(): Promise<void> {
         const signal = evaluateFvg(closedCandles, tf, mid, fvgRetracePct, lookback);
         if (!signal.detected || !signal.direction) continue;
 
+        const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
+        const blockedByBias = operatorBias === 'off'
+          || (operatorBias === 'short' && side !== 'sell')
+          || (operatorBias === 'long' && side !== 'buy');
+        if (blockedByBias) {
+          logRiskGateAudit({
+            gate: 'fvg_entry_signal',
+            passed: false,
+            reason: 'operator_bias_block',
+            details: { symbol, tf, direction: signal.direction, operatorBias, side, currentPrice: mid, triggerPrice: signal.triggerPrice },
+          });
+          continue;
+        }
+
         // Debounce: once per TF interval
         const debounceKey = `${symbol}:${tf}:${signal.direction}`;
         const lastFired = lastFvgSignalAt.get(debounceKey) ?? 0;
@@ -1411,15 +1446,14 @@ async function runFvgMonitorTick(): Promise<void> {
             zoneTop: signal.zone?.top,
             zoneBottom: signal.zone?.bottom,
             fvgRetracePct,
+            operatorBias,
             reason: signal.reason,
           },
         });
         logger.info(
-          { component: 'fvg-monitor', symbol, tf, direction: signal.direction, mid, triggerPrice: signal.triggerPrice },
+          { component: 'fvg-monitor', symbol, tf, direction: signal.direction, mid, triggerPrice: signal.triggerPrice, operatorBias },
           'FVG retrace entry signal detected',
         );
-
-        const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
 
         // Manual mode: queue signal for explicit confirmation
         if (!raw.autoConfirm) {
