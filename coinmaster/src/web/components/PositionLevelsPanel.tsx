@@ -100,6 +100,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const draggingRef = useRef<typeof dragging>(dragging);
   const panningRef = useRef<{ startY: number; top: number; bottom: number } | null>(null);
   const manualScaleRef = useRef(false);
+  const wheelPriceScaleModeRef = useRef(false);
 
   const initialStopLossRef = useRef(normalizeLevel(stopLoss));
   const initialTakeProfitsRef = useRef(takeProfits.map(normalizeLevel));
@@ -248,7 +249,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         vertTouchDrag: true,
       },
       handleScale: {
-        // We handle wheel manually (right price scale only) to mimic TradingView behavior.
+        // mouseWheel is toggled dynamically: enabled on right price scale, disabled on chart body.
         mouseWheel: false,
         pinch: true,
         axisPressedMouseMove: {
@@ -327,6 +328,18 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       ps.applyOptions({ autoScale: enabled });
     };
 
+    const setWheelPriceScaleMode = (enabled: boolean) => {
+      if (wheelPriceScaleModeRef.current === enabled) return;
+      wheelPriceScaleModeRef.current = enabled;
+      chart.applyOptions({
+        handleScale: {
+          mouseWheel: enabled,
+          pinch: true,
+          axisPressedMouseMove: { time: true, price: false },
+        },
+      });
+    };
+
     const pointerDown = (event: PointerEvent) => {
       const nearest = findNearestDraggable(event.clientY);
       const ps = candleSeriesRef.current?.priceScale();
@@ -356,12 +369,16 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     };
 
     const pointerMove = (event: PointerEvent) => {
+      const rect = host.getBoundingClientRect();
+      const ps = candleSeriesRef.current?.priceScale();
+      const scaleWidth = ps?.width?.() ?? 56;
+      const inRightScale = event.clientX >= rect.right - Math.max(48, scaleWidth + 8);
+
       const drag = draggingRef.current;
       if (drag) {
         event.preventDefault();
         event.stopPropagation();
 
-        const rect = host.getBoundingClientRect();
         const y = event.clientY - rect.top;
         const series = candleSeriesRef.current as unknown as { coordinateToPrice?: (y: number) => number | null } | null;
         const price = series?.coordinateToPrice?.(y);
@@ -376,12 +393,14 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       }
 
       const pan = panningRef.current;
-      if (!pan) return;
+      if (!pan) {
+        // Toggle wheel mode ahead of wheel event: built-in vertical zoom on right scale only.
+        setWheelPriceScaleMode(inRightScale);
+        return;
+      }
 
-      const ps = candleSeriesRef.current?.priceScale();
       if (!ps) return;
 
-      const rect = host.getBoundingClientRect();
       const dy = event.clientY - pan.startY;
       const shift = dy / Math.max(120, rect.height);
 
@@ -415,6 +434,10 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       setPriceScaleAutoScale(true);
     };
 
+    const pointerLeave = () => {
+      setWheelPriceScaleMode(false);
+    };
+
     const wheelOnPriceScale = (event: WheelEvent) => {
       // Always stop wheel from scrolling the page behind the modal when cursor is over chart host.
       event.preventDefault();
@@ -428,41 +451,16 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       const scaleWidth = ps?.width?.() ?? 56;
       const inRightScale = event.clientX >= rect.right - Math.max(48, scaleWidth + 8);
 
-      // Right scale: vertical zoom
       if (inRightScale) {
+        // Vertical zoom is delegated to native lightweight-charts wheel-on-price-scale.
         manualScaleRef.current = true;
-        const opts = ps?.options?.();
-        if (!ps || !opts) return;
-
-        const currentTop = opts.scaleMargins?.top ?? 0.12;
-        const currentBottom = opts.scaleMargins?.bottom ?? 0.12;
-        const currentSpan = Math.max(0.01, 1 - currentTop - currentBottom);
-        const center = currentTop + currentSpan / 2;
-
-        // Much wider vertical zoom range (both deeper zoom-out and zoom-in).
-        const factor = event.deltaY < 0 ? 0.9 : 1.1;
-        const nextSpan = Math.max(0.002, Math.min(0.999, currentSpan * factor));
-
-        let nextTop = center - nextSpan / 2;
-        let nextBottom = 1 - (nextTop + nextSpan);
-
-        nextTop = Math.max(0.0001, Math.min(0.4999, nextTop));
-        nextBottom = Math.max(0.0001, Math.min(0.4999, nextBottom));
-
-        if (nextTop + nextBottom > 0.9998) {
-          const overflow = nextTop + nextBottom - 0.9998;
-          nextTop = Math.max(0.0001, nextTop - overflow / 2);
-          nextBottom = Math.max(0.0001, nextBottom - overflow / 2);
-        }
-
-        ps.applyOptions({
-          autoScale: false,
-          scaleMargins: { top: nextTop, bottom: nextBottom },
-        });
+        setWheelPriceScaleMode(true);
         return;
       }
 
-      // Rest of chart: horizontal zoom (time scale), TradingView-like behavior.
+      // Body area: force custom horizontal zoom with reduced sensitivity.
+      setWheelPriceScaleMode(false);
+
       const logical = ts.getVisibleLogicalRange();
       if (!logical || !Number.isFinite(logical.from) || !Number.isFinite(logical.to)) return;
 
@@ -471,7 +469,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       if (!Number.isFinite(anchor)) return;
 
       // Less sensitive horizontal zoom (~2x gentler).
-      const zoom = event.deltaY < 0 ? 0.95 : 1.05;
+      const zoom = event.deltaY < 0 ? 0.975 : 1.025;
       const nextFrom = anchor + (logical.from - anchor) * zoom;
       const nextTo = anchor + (logical.to - anchor) * zoom;
       if (!Number.isFinite(nextFrom) || !Number.isFinite(nextTo)) return;
@@ -484,6 +482,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     host.addEventListener('pointermove', pointerMove, { capture: true });
     host.addEventListener('pointerup', pointerUp, { capture: true });
     host.addEventListener('pointercancel', pointerUp, { capture: true });
+    host.addEventListener('pointerleave', pointerLeave, { capture: true });
     host.addEventListener('wheel', wheelOnPriceScale, { passive: false });
 
     return () => {
@@ -492,7 +491,9 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       host.removeEventListener('pointermove', pointerMove, true);
       host.removeEventListener('pointerup', pointerUp, true);
       host.removeEventListener('pointercancel', pointerUp, true);
+      host.removeEventListener('pointerleave', pointerLeave, true);
       host.removeEventListener('wheel', wheelOnPriceScale);
+      setWheelPriceScaleMode(false);
       chart.remove();
       chartRef.current = null;
       candleSeriesRef.current = null;
