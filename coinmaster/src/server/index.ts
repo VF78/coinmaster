@@ -2877,15 +2877,23 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     takeProfits: sortedTps,
     cancelAllResult: {
       ok: cancelAllResult.ok,
-      error: cancelAllResult.error
+      error: String(cancelAllResult.error ?? '').trim() || undefined
     },
     stopLossOrder: {
       ok: slOrder.ok,
       orderId: slOrder.orderId,
-      error: slOrder.error
+      error: String(slOrder.error ?? '').trim() || undefined
     },
-    takeProfitOrder: tpOrders[0],
-    takeProfitOrders: tpOrders,
+    takeProfitOrder: {
+      ok: tpOrders[0]?.ok,
+      orderId: tpOrders[0]?.orderId,
+      error: String(tpOrders[0]?.error ?? '').trim() || undefined
+    },
+    takeProfitOrders: tpOrders.map((o) => ({
+      ok: o.ok,
+      orderId: o.orderId,
+      error: String(o.error ?? '').trim() || undefined
+    })),
     error: ok ? undefined : (verificationError ?? 'set_levels_failed')
   });
 });
