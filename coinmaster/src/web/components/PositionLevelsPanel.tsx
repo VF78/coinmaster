@@ -224,11 +224,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         vertTouchDrag: false,
       },
       handleScale: {
-        mouseWheel: true,
+        // We handle wheel manually (right price scale only) to mimic TradingView behavior.
+        mouseWheel: false,
         pinch: true,
         axisPressedMouseMove: {
           time: true,
-          price: true,
+          price: false,
         },
       },
     });
@@ -295,18 +296,32 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       return { kind: candidates[0].kind, index: candidates[0].index };
     };
 
+    const setPriceScaleAutoScale = (enabled: boolean) => {
+      const chartAny = chart as unknown as { priceScale?: (id: string) => { applyOptions?: (opts: { autoScale?: boolean }) => void } };
+      chartAny.priceScale?.('right')?.applyOptions?.({ autoScale: enabled });
+    };
+
     const pointerDown = (event: PointerEvent) => {
       const nearest = findNearestDraggable(event.clientY);
       if (!nearest) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
       draggingRef.current = nearest;
       setDragging(nearest);
       host.style.cursor = 'ns-resize';
+      setPriceScaleAutoScale(false);
       host.setPointerCapture?.(event.pointerId);
     };
 
     const pointerMove = (event: PointerEvent) => {
       const drag = draggingRef.current;
       if (!drag) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
       const rect = host.getBoundingClientRect();
       const y = event.clientY - rect.top;
       const series = candleSeriesRef.current as unknown as { coordinateToPrice?: (y: number) => number | null } | null;
@@ -320,10 +335,15 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       }
     };
 
-    const pointerUp = () => {
+    const pointerUp = (event?: PointerEvent) => {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       draggingRef.current = null;
       setDragging(null);
       host.style.cursor = 'default';
+      setPriceScaleAutoScale(true);
     };
 
     const wheelOnPriceScale = (event: WheelEvent) => {
@@ -352,18 +372,18 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       ps?.setVisibleRange?.({ from: nextFrom, to: nextTo });
     };
 
-    host.addEventListener('pointerdown', pointerDown);
-    host.addEventListener('pointermove', pointerMove);
-    host.addEventListener('pointerup', pointerUp);
-    host.addEventListener('pointercancel', pointerUp);
+    host.addEventListener('pointerdown', pointerDown, { capture: true });
+    host.addEventListener('pointermove', pointerMove, { capture: true });
+    host.addEventListener('pointerup', pointerUp, { capture: true });
+    host.addEventListener('pointercancel', pointerUp, { capture: true });
     host.addEventListener('wheel', wheelOnPriceScale, { passive: false });
 
     return () => {
       resizeObserver.disconnect();
-      host.removeEventListener('pointerdown', pointerDown);
-      host.removeEventListener('pointermove', pointerMove);
-      host.removeEventListener('pointerup', pointerUp);
-      host.removeEventListener('pointercancel', pointerUp);
+      host.removeEventListener('pointerdown', pointerDown, true);
+      host.removeEventListener('pointermove', pointerMove, true);
+      host.removeEventListener('pointerup', pointerUp, true);
+      host.removeEventListener('pointercancel', pointerUp, true);
       host.removeEventListener('wheel', wheelOnPriceScale);
       chart.remove();
       chartRef.current = null;
