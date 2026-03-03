@@ -758,7 +758,13 @@ const riskAuditBuffer: RiskGateAuditEntry[] = [];
 function logRiskGateAudit(entry: Omit<RiskGateAuditEntry, 'timestamp'>) {
   const full: RiskGateAuditEntry = { ...entry, timestamp: new Date().toISOString() };
   riskAuditBuffer.push(full);
-  logger.info({ component: 'risk-gate', gate: full.gate, passed: full.passed, reason: full.reason ?? undefined }, 'risk gate check');
+
+  // Keep persistent DB audit for all checks, but avoid noisy success logs by default.
+  if (!full.passed) {
+    logger.warn({ component: 'risk-gate', gate: full.gate, passed: full.passed, reason: full.reason ?? undefined }, 'risk gate check failed');
+  } else if (process.env.RISK_GATE_VERBOSE === '1') {
+    logger.info({ component: 'risk-gate', gate: full.gate, passed: full.passed, reason: full.reason ?? undefined }, 'risk gate check');
+  }
 }
 
 async function flushRiskAudit() {
