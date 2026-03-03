@@ -307,8 +307,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
-      let oid = first?.resting?.oid ?? first?.filled?.oid;
-      const status = first?.resting ? 'resting' : first?.filled ? 'filled' : response?.status;
+      let oid = first?.resting?.oid ?? first?.filled?.oid ?? first?.waiting?.oid;
+      const status = first?.resting ? 'resting' : first?.filled ? 'filled' : first?.waiting ? 'waiting' : response?.status;
       const exchangeError = first?.error ?? first?.err;
 
       // Fallback lookup by clientOrderId if SDK response omits oid.
@@ -316,7 +316,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         try {
           const clientOrderId = intent.clientOrderId!;
           const user = await this.resolveEffectiveUser();
-          const openOrders = await this.requestInfo<any[]>({ type: 'openOrders', user });
+          const openOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
           const cloid = this.toCloid(clientOrderId);
           if (cloid) {
             const cloidLower = cloid.toLowerCase();
@@ -367,29 +367,36 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
-      let oid = first?.resting?.oid ?? first?.filled?.oid;
-      const status = first?.resting ? 'resting' : first?.filled ? 'filled' : response?.status;
+      // Trigger orders return waiting.oid, not resting.oid
+      let oid = first?.resting?.oid ?? first?.filled?.oid ?? first?.waiting?.oid;
+      const status = first?.resting ? 'resting' : first?.filled ? 'filled' : first?.waiting ? 'waiting' : response?.status;
       const exchangeError = first?.error ?? first?.err;
+
+      console.log(`[hl-adapter] placeTriggerOrder ${intent.symbol} ${intent.kind}: status=${status}, oid=${oid}, error=${exchangeError}`);
 
       // Fallback lookup by clientOrderId if SDK response omits oid.
       if (oid === undefined && intent.clientOrderId) {
         try {
           const clientOrderId = intent.clientOrderId!;
           const user = await this.resolveEffectiveUser();
-          const openOrders = await this.requestInfo<any[]>({ type: 'openOrders', user });
+          // Use frontendOpenOrders which includes trigger orders, not just openOrders
+          const allOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
           const cloid = this.toCloid(clientOrderId);
           if (cloid) {
             const cloidLower = cloid.toLowerCase();
-            const row = (Array.isArray(openOrders) ? openOrders : []).find((o) => String(o?.cloid ?? '').toLowerCase() === cloidLower);
-            if (row?.oid !== undefined) oid = row.oid;
+            const row = (Array.isArray(allOrders) ? allOrders : []).find((o) => String(o?.cloid ?? '').toLowerCase() === cloidLower);
+            if (row?.oid !== undefined) {
+              oid = row.oid;
+              console.log(`[hl-adapter] found oid via frontendOpenOrders: ${oid}`);
+            }
           }
-        } catch {
-          // ignore fallback errors
+        } catch (e) {
+          console.log(`[hl-adapter] fallback oid lookup failed:`, e instanceof Error ? e.message : String(e));
         }
       }
 
-      // Trigger levels are considered successful only when resting on exchange with oid.
-      const ok = Boolean(oid) && String(status ?? '').toLowerCase() !== 'filled';
+      // Trigger levels are considered successful when waiting on exchange with oid.
+      const ok = Boolean(oid) && (String(status ?? '').toLowerCase() === 'waiting' || String(status ?? '').toLowerCase() === 'resting');
 
       return {
         ok,

@@ -2673,7 +2673,12 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
 
   const normalizedSymbol = normalizeSymbol(symbol);
   const qty = Number(size);
-  const sl = Number(stopLoss);
+  const slRaw = Number(stopLoss);
+
+  const meta = await exchange.getInstrumentMeta(normalizedSymbol).catch(() => null);
+  const quoteDecimals = Math.max(0, Math.min(8, Number(meta?.quoteDecimals ?? 2)));
+  const roundPrice = (value: number) => Number(value.toFixed(quoteDecimals));
+  const sl = roundPrice(slRaw);
 
   const rawTps = Array.isArray(takeProfits) && takeProfits.length > 0
     ? takeProfits
@@ -2683,7 +2688,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     .map((x) => Number(x))
     .filter((x) => Number.isFinite(x) && x > 0)
     .slice(0, 3)
-    .map((x) => Number(x.toFixed(8)));
+    .map((x) => roundPrice(x));
 
   if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(sl) || sl <= 0 || normalizedTps.length === 0) {
     return res.status(400).json({ ok: false, error: 'invalid_size_or_levels' });
@@ -2829,25 +2834,31 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
 
   // Extra confirmation: verify SL+TP trigger orders are actually present on exchange.
   let verificationError: string | undefined;
-  if (ok) {
+  if (ok && (slOrder.orderId || tpOrders.some((o) => o.orderId))) {
     const expectedIds = [slOrder.orderId, ...tpOrders.map((o) => o.orderId)].filter((x): x is string => Boolean(x));
-    if (expectedIds.length > 0) {
-      let verified = false;
-      for (let attempt = 0; attempt < 4; attempt++) {
-        try {
-          const open = await exchange.getOpenOrders(normalizedSymbol);
-          const openIds = new Set((open || []).map((o) => String(o.id)));
-          verified = expectedIds.every((id) => openIds.has(String(id)));
-          if (verified) break;
-        } catch {
-          // retry
+    let verified = false;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        // Query open orders to verify placement
+        const allOrders = await exchange.getOpenOrders().catch(() => []);
+        const openIds = new Set((allOrders || []).map((o) => String(o?.id ?? '')));
+        verified = expectedIds.every((id) => openIds.has(String(id)));
+        if (verified) {
+          console.log(`[levels] trigger orders verified: ${expectedIds.join(',')}`);
+          break;
         }
-        await sleep(250 + attempt * 250);
+        if (attempt === 0) {
+          console.log(`[levels] verification attempt ${attempt + 1}/5: expected ${expectedIds.length} orders, found ${openIds.size} total orders`);
+        }
+      } catch (e) {
+        console.log(`[levels] verification query failed:`, e instanceof Error ? e.message : String(e));
       }
-      if (!verified) {
-        ok = false;
-        verificationError = 'orders_not_visible_after_ack';
-      }
+      await sleep(250 + attempt * 250);
+    }
+    if (!verified) {
+      ok = false;
+      verificationError = 'orders_not_visible_after_ack';
+      console.log(`[levels] verification failed after 5 attempts, cancelling all orders`);
     }
   }
 
