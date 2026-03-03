@@ -806,15 +806,19 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
           </div>
         </div>
 
-        <aside className="muted position-panel__hint hl-side-hint">
-          <div>TP amount is split equally across active TP levels. After TP1 fill, SL moves to break-even.</div>
-          <div className="hl-summary-grid hl-summary-grid--compact">
-            <span className="muted">Coin</span><strong>{position.symbol}</strong>
-            <span className="muted">Position</span><strong>{formatNumber(position.size)} {position.symbol} (Value {position.dealValue !== undefined ? formatMoney(position.dealValue) : '—'})</strong>
-            <span className="muted">Entry Price</span><strong>{entry ? formatNumber(entry) : '—'}</strong>
-            <span className="muted">Mark Price</span><strong>{markPrice ? formatNumber(markPrice) : '—'}</strong>
-          </div>
-        </aside>
+        <div className="hl-side-stack">
+          <aside className="muted position-panel__hint hl-side-hint">
+            TP amount is split equally across active TP levels. After TP1 fill, SL moves to break-even.
+          </aside>
+          <aside className="hl-side-summary">
+            <div className="hl-summary-grid hl-summary-grid--compact">
+              <span className="muted">Coin</span><strong>{position.symbol}</strong>
+              <span className="muted">Position</span><strong>{formatNumber(position.size)} {position.symbol} (Value {position.dealValue !== undefined ? formatMoney(position.dealValue) : '—'})</strong>
+              <span className="muted">Entry Price</span><strong>{entry ? formatNumber(entry) : '—'}</strong>
+              <span className="muted">Mark Price</span><strong>{markPrice ? formatNumber(markPrice) : '—'}</strong>
+            </div>
+          </aside>
+        </div>
       </div>
 
       {validation ? <p className="down">{validation}</p> : null}
