@@ -322,6 +322,19 @@ async function queuePendingConfirmation(params: {
   const db = await getDb();
   const now = new Date().toISOString();
 
+  const operatorBias = await getOperatorBias(params.symbol);
+  const directionBias: Bias = params.side === 'long' ? 'long' : 'short';
+  const biasBlocked = operatorBias === 'off' || operatorBias !== directionBias;
+  if (biasBlocked) {
+    logRiskGateAudit({
+      gate: params.strategy === 'fvg' ? 'fvg_entry_signal' : 'engulfing_entry_signal',
+      passed: false,
+      reason: 'operator_bias_block',
+      details: { symbol: params.symbol, strategy: params.strategy, side: params.side, operatorBias },
+    });
+    return { queued: false, id: 'operator_bias_block' };
+  }
+
   const cleaned = prunePendingConfirmations(db.data.pendingConfirmations);
   db.data.pendingConfirmations = cleaned;
 
