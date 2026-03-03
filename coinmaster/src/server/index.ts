@@ -1366,7 +1366,7 @@ async function runEngulfingMonitorTick(): Promise<void> {
               });
               logRiskGateAudit({
                 gate: 'partial_close', passed: closeAck.ok,
-                details: { symbol, closeSize, exitPrice, posSize, exitClosePct, orderId: closeAck.orderId },
+                details: { symbol, closeSize, exitPrice, posSize, exitClosePct, orderId: closeAck.orderId, error: closeAck.error ?? null },
               });
 
               try {
@@ -1394,17 +1394,63 @@ async function runEngulfingMonitorTick(): Promise<void> {
                 // best effort forensic log
               }
 
-              // Move SL to entry price (break-even) for remaining position
+              if (!closeAck.ok) {
+                throw new Error(closeAck.error || 'partial_close_order_rejected');
+              }
+
+              // Move SL to entry price (break-even) for remaining position.
+              // Guarantee exactly one SL after partial close: cancel old SL(s), then place BE SL.
               const entryPrice = symbolPosition.entryPrice ?? markPrice;
-              if (closeAck.ok && entryPrice > 0) {
+              if (entryPrice > 0) {
                 const remainingSize = Math.max(0, Math.round((posSize - closeSize) * 1e6) / 1e6);
                 if (remainingSize > 0) {
-                  await exchange.placeTriggerOrder({
+                  const openOrders = await exchange.getOpenOrders(symbol).catch(() => []);
+                  const isLikelyStopLoss = (order: Awaited<ReturnType<typeof exchange.getOpenOrders>>[number]) => {
+                    const raw = order.raw as Record<string, unknown> | undefined;
+                    const tpsl = String(
+                      (raw as { tpsl?: unknown } | undefined)?.tpsl
+                      ?? (raw as { trigger?: { tpsl?: unknown } } | undefined)?.trigger?.tpsl
+                      ?? (raw as { orderType?: { trigger?: { tpsl?: unknown } } } | undefined)?.orderType?.trigger?.tpsl
+                      ?? ''
+                    ).toLowerCase();
+                    if (tpsl === 'sl') return true;
+                    if (tpsl === 'tp') return false;
+
+                    const orderTypeText = JSON.stringify((raw as { orderType?: unknown } | undefined)?.orderType ?? '').toLowerCase();
+                    const looksTp = orderTypeText.includes('take') || orderTypeText.includes('tp');
+                    const looksSl = orderTypeText.includes('stop') || orderTypeText.includes('sl');
+                    return looksSl && !looksTp;
+                  };
+
+                  const oldStops = openOrders.filter((o) => o.side === closingSide && isLikelyStopLoss(o));
+                  for (const old of oldStops) {
+                    await exchange.cancelOrder(old.id).catch(() => undefined);
+                  }
+
+                  const beAck = await exchange.placeTriggerOrder({
                     symbol, side: closingSide, size: remainingSize,
                     triggerPrice: entryPrice, kind: 'sl', reduceOnly: true,
                     clientOrderId: `be-sl-partial-${nanoid(8)}`,
                   });
-                  logger.info({ component: 'engulfing-monitor', symbol, entryPrice, remainingSize }, 'break-even SL placed after partial close');
+
+                  logRiskGateAudit({
+                    gate: 'break_even_sl_after_partial',
+                    passed: beAck.ok,
+                    details: {
+                      symbol,
+                      entryPrice,
+                      remainingSize,
+                      cancelledStops: oldStops.length,
+                      orderId: beAck.orderId ?? null,
+                      error: beAck.error ?? null,
+                    },
+                  });
+
+                  if (!beAck.ok) {
+                    throw new Error(beAck.error || 'break_even_sl_failed');
+                  }
+
+                  logger.info({ component: 'engulfing-monitor', symbol, entryPrice, remainingSize, cancelledStops: oldStops.length }, 'break-even SL placed after partial close');
                 }
               }
             } catch (err) {
