@@ -124,6 +124,23 @@ export function DashboardPage() {
   const pnlValue = getPnlValue();
   const pnlLabel = PNL_LABEL[pnlPeriod];
 
+  const renderTakeProfits = (row: LivePosition) => {
+    const levels = (Array.isArray(row.takeProfits) && row.takeProfits.length > 0
+      ? row.takeProfits
+      : (row.takeProfit !== undefined ? [row.takeProfit] : [])
+    ).slice(0, 3);
+
+    if (!levels.length) return '—';
+
+    return (
+      <div style={{ display: 'grid', gap: '0.12rem' }}>
+        {levels.map((tp, idx) => (
+          <div key={`tp-${row.id}-${idx}`}>TP{idx + 1}: {formatNumber(tp)}</div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <main className="terminal-layout">
       <section className="layout-grid layout-grid--terminal">
@@ -228,7 +245,7 @@ export function DashboardPage() {
             { key: 'deal',    header: 'Deal value',  render: (row) => (row.dealValue !== undefined ? formatMoney(row.dealValue) : '—') },
             { key: 'lev',     header: 'Leverage',    render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
             { key: 'sl',      header: 'Stop loss',   render: (row) => (row.stopLoss !== undefined ? formatNumber(row.stopLoss) : '—') },
-            { key: 'tp',      header: 'Take profit', render: (row) => (row.takeProfit !== undefined ? formatNumber(row.takeProfit) : '—') },
+            { key: 'tp',      header: 'Take profit', render: (row) => renderTakeProfits(row) },
             { key: 'openedAt',header: 'Opened at',   render: (row) => (row.openedAt ? formatDate(row.openedAt) : '—') },
             {
               key: 'upnl',
