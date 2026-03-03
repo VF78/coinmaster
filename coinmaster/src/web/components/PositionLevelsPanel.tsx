@@ -682,7 +682,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
   return (
     <section className="position-panel hl-panel" aria-label="Position levels panel">
-      <header className="position-panel__header" style={{ justifyContent: 'flex-end' }}>
+      <header className="position-panel__header">
         <button type="button" className="hl-close-btn" onClick={() => { void handleCloseAttempt(); }} aria-label="Close panel">
           ×
         </button>
