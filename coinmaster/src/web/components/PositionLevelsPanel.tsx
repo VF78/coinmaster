@@ -42,6 +42,13 @@ function parseDecimalInput(raw: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+function formatOrderSize(value: number): string {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 6,
+  }).format(value);
+}
+
 export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLevelsPanelProps) {
   const dialog = useDialog();
   const chartHostRef = useRef<HTMLDivElement | null>(null);
@@ -545,7 +552,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
                 return (
                   <div key={`tp-chip-${idx}`} className="hl-line-chip hl-line-chip--tp" style={{ top: y }}>
                     <span>TP Price {formatNumber(tp)}</span>
-                    <strong>{formatNumber(tpDisplaySizes[idx] ?? position.size)}</strong>
+                    <strong>{formatOrderSize(tpDisplaySizes[idx] ?? position.size)}</strong>
                   </div>
                 );
               })}
@@ -553,14 +560,14 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
               {chipCoords.pnl !== null ? (
                 <div className="hl-line-chip hl-line-chip--pnl" style={{ top: chipCoords.pnl }}>
                   <span>PNL {formatMoney(unrealizedPnl)}</span>
-                  <strong>{formatNumber(position.size)}</strong>
+                  <strong>{formatOrderSize(position.size)}</strong>
                 </div>
               ) : null}
 
               {chipCoords.sl !== null ? (
                 <div className="hl-line-chip hl-line-chip--sl" style={{ top: chipCoords.sl }}>
                   <span>SL Price {formatNumber(stopLoss)}</span>
-                  <strong>{formatNumber(position.size)}</strong>
+                  <strong>{formatOrderSize(position.size)}</strong>
                 </div>
               ) : null}
             </div>
