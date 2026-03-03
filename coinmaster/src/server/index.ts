@@ -499,14 +499,40 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     payload: { actor, strategy: pending.strategy, timeframe: pending.timeframe },
   });
 
-  const ack = await exchange.placeLimitOrder({
-    symbol: normalizedSymbol,
-    side,
-    price: pending.price,
-    size: pending.size,
-    reduceOnly: false,
-    clientOrderId: correlationId,
-  });
+  const placeWithRetry = async () => {
+    const attemptPrices: number[] = [pending.price];
+    let lastAck: Awaited<ReturnType<typeof exchange.placeLimitOrder>> | null = null;
+
+    for (let attempt = 0; attempt < attemptPrices.length; attempt++) {
+      const price = attemptPrices[attempt];
+      const ack = await exchange.placeLimitOrder({
+        symbol: normalizedSymbol,
+        side,
+        price,
+        size: pending.size,
+        reduceOnly: false,
+        clientOrderId: `${correlationId}-${attempt + 1}`,
+      });
+
+      if (ack.ok) return { ack, usedPrice: price };
+      lastAck = ack;
+
+      const err = String(ack.error ?? '').toLowerCase();
+      const retryablePriceError = err.includes('tick size') || err.includes('divisible') || err.includes('invalid price') || err.includes('tofixed');
+      if (attempt === 0 && retryablePriceError) {
+        const mid = await fetchLiveMid(normalizedSymbol);
+        if (mid && Number.isFinite(mid) && mid > 0) {
+          attemptPrices.push(mid);
+          logger.warn({ component: 'pending-confirmation', pendingId, attempt: attempt + 1, originalPrice: price, fallbackMid: mid, err: ack.error }, 'retrying pending confirmation with fresh mid price');
+          continue;
+        }
+      }
+    }
+
+    return { ack: lastAck ?? { ok: false, error: 'exchange_rejected' }, usedPrice: pending.price };
+  };
+
+  const { ack, usedPrice } = await placeWithRetry();
 
   appendTradeEvent(db.data, {
     symbol: normalizedSymbol,
@@ -515,10 +541,10 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     timestamp: new Date().toISOString(),
     correlationId,
     side: pending.side,
-    price: pending.price,
+    price: usedPrice,
     quantity: pending.size,
     reason: ack.ok ? 'pending_confirm_ack' : 'pending_confirm_rejected',
-    payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, actor },
+    payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, actor, usedPrice },
   });
 
   if (!ack.ok) {
@@ -528,10 +554,10 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
 
   db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
 
-  const tpSl = resolveTpSlDefaults(pending.price, side, undefined, undefined);
+  const tpSl = resolveTpSlDefaults(usedPrice, side, undefined, undefined);
   if (tpSl) {
     try {
-      await placeTpSlTriggerOrders(normalizedSymbol, side, pending.size, tpSl, correlationId, pending.price);
+      await placeTpSlTriggerOrders(normalizedSymbol, side, pending.size, tpSl, correlationId, usedPrice);
     } catch {
       // best effort
     }
@@ -540,7 +566,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   await db.write();
 
   try {
-    await notifyTradeOpen({ symbol: normalizedSymbol, side, price: pending.price, size: pending.size, source: `pending:${actor}` });
+    await notifyTradeOpen({ symbol: normalizedSymbol, side, price: usedPrice, size: pending.size, source: `pending:${actor}` });
   } catch (error) {
     logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
   }
