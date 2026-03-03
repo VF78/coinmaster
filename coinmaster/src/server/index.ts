@@ -305,7 +305,21 @@ async function clearPendingConfirmationForSymbol(symbol: string): Promise<void> 
 async function getOperatorBias(symbol: string): Promise<Bias> {
   const db = await getDb();
   const normalized = symbol.toUpperCase();
-  return [...db.data.biasCommands].reverse().find((b) => b.symbol === normalized)?.bias ?? 'off';
+  const latest = [...db.data.biasCommands].reverse();
+  const symbolBias = latest.find((b) => b.symbol === normalized)?.bias;
+  if (symbolBias) return symbolBias;
+  const globalBias = latest.find((b) => b.symbol === LIVE_SYMBOL)?.bias;
+  return globalBias ?? 'off';
+}
+
+function getMonitoredSymbols(raw: TradingRulesSettings): string[] {
+  const enabled = (raw.coins ?? [])
+    .filter((coin) => coin.enabled)
+    .map((coin) => normalizeSymbol(coin.symbol))
+    .filter((s) => s.length > 0);
+
+  const base = enabled.length > 0 ? enabled : [LIVE_SYMBOL];
+  return [...new Set(base)];
 }
 
 async function getFreshExitClosePct(fallback = 50): Promise<number> {
@@ -994,6 +1008,52 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
   }
 }
 
+/** Close emergency only for one symbol (used by per-symbol strategy exits). */
+async function emergencyCloseSymbol(symbol: string, reason = 'strategy_emergency_exit') {
+  const normalized = normalizeSymbol(symbol);
+  try {
+    const [positions, openOrders] = await Promise.all([
+      exchange.getOpenPositions(normalized),
+      exchange.getOpenOrders(normalized),
+    ]);
+
+    if (positions.length === 0 && openOrders.length === 0) return;
+
+    if (openOrders.length > 0) {
+      await exchange.cancelAll(normalized).catch(() => undefined);
+    }
+
+    for (const pos of positions) {
+      const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
+      const price = emergencyClosePrice(pos, closeSide);
+      const ack = await exchange.placeLimitOrder({
+        symbol: normalized,
+        side: closeSide,
+        price,
+        size: pos.size,
+        reduceOnly: true,
+        clientOrderId: `emergency-${normalized}-${Date.now()}-${nanoid(6)}`,
+      });
+
+      if (!ack.ok) {
+        const retryPrice = closeSide === 'sell' ? Math.max(0.00000001, price * 0.95) : price * 1.05;
+        await exchange.placeLimitOrder({
+          symbol: normalized,
+          side: closeSide,
+          price: Number(retryPrice.toFixed(8)),
+          size: pos.size,
+          reduceOnly: true,
+          clientOrderId: `emergency-retry-${normalized}-${Date.now()}-${nanoid(6)}`,
+        }).catch(() => undefined);
+      }
+
+      await notifySlEvent({ symbol: normalized, reason }).catch(() => undefined);
+    }
+  } catch (error) {
+    logger.error({ component: 'risk-gate', symbol: normalized, err: error }, 'failed to emergency-close symbol');
+  }
+}
+
 let drawdownWatchdogTimer: NodeJS.Timeout | null = null;
 let drawdownWatchdogBusy = false;
 
@@ -1144,14 +1204,12 @@ async function runEngulfingMonitorTick(): Promise<void> {
     const raw = effectiveRules.raw;
     if (!raw) return; // env fallback, no rules configured
 
-    const symbol = LIVE_SYMBOL;
+    const symbols = getMonitoredSymbols(raw);
     const lookback = raw.engulfingLookbackCandles ?? 30;
     const entryTfs = raw.entryTimeframes?.length ? raw.entryTimeframes : ['15m' as const];
     const exitTfs = raw.emergencyExitTimeframes?.length ? raw.emergencyExitTimeframes : ['1h' as const];
     const minCandles = lookback + 5;
     const now = Date.now();
-    const operatorBias = await getOperatorBias(symbol);
-
 
     // Fetch open positions once
     let positions: PositionSnapshot[] = [];
@@ -1162,13 +1220,15 @@ async function runEngulfingMonitorTick(): Promise<void> {
       return;
     }
 
-    const symbolPosition = positions.find(p => p.symbol.toUpperCase() === symbol.toUpperCase());
-    if (symbolPosition) {
-      await clearPendingConfirmationForSymbol(symbol);
-    }
+    for (const symbol of symbols) {
+      const operatorBias = await getOperatorBias(symbol);
+      const symbolPosition = positions.find((p) => p.symbol.toUpperCase() === symbol.toUpperCase());
+      if (symbolPosition) {
+        await clearPendingConfirmationForSymbol(symbol);
+      }
 
-    // ── ENTRY signals (only when no open position for symbol) ────────
-    if (!symbolPosition) {
+      // ── ENTRY signals (only when no open position for symbol) ────────
+      if (!symbolPosition) {
       for (const tf of entryTfs) {
         try {
           const tfMs = TF_MS[tf] ?? 900_000;
@@ -1346,8 +1406,8 @@ async function runEngulfingMonitorTick(): Promise<void> {
           );
 
           if (closeFraction >= 0.9999) {
-            // Full close
-            await emergencyCloseAll(reason);
+            // Full close for this symbol only.
+            await emergencyCloseSymbol(symbol, reason);
           } else {
             // Partial close → then set SL at entry price (break-even)
             const posSize = symbolPosition.size;
@@ -1454,8 +1514,8 @@ async function runEngulfingMonitorTick(): Promise<void> {
                 }
               }
             } catch (err) {
-              logger.error({ component: 'engulfing-monitor', err }, 'partial close failed, falling back to full emergency close');
-              await emergencyCloseAll(reason);
+              logger.error({ component: 'engulfing-monitor', symbol, err }, 'partial close failed, falling back to symbol emergency close');
+              await emergencyCloseSymbol(symbol, reason);
             }
           }
           break; // one exit action per tick is enough
@@ -1464,6 +1524,7 @@ async function runEngulfingMonitorTick(): Promise<void> {
         }
       }
     }
+  }
   } catch (err) {
     logger.error({ component: 'engulfing-monitor', err }, 'engulfing monitor tick failed');
   } finally {
@@ -1524,56 +1585,62 @@ async function runFvgMonitorTick(): Promise<void> {
     const fvgRetracePct = raw.fvgRetrace ?? 50;
     if (!Number.isFinite(fvgRetracePct) || fvgRetracePct <= 0) return;
 
-    const symbol = LIVE_SYMBOL;
+    const symbols = getMonitoredSymbols(raw);
     const now = Date.now();
-    const operatorBias = await getOperatorBias(symbol);
 
-    // Current mid price (required for retrace check)
-    const mid = await fetchLiveMid(symbol);
-    if (!mid) { logger.warn({ component: 'fvg-monitor' }, 'no mid price, skipping tick'); return; }
-
-    // Open positions (entry only when flat)
+    // Open positions (entry only when flat for each monitored symbol)
     let positions: PositionSnapshot[] = [];
     try { positions = await exchange.getOpenPositions(); } catch (err) {
       logger.warn({ component: 'fvg-monitor', err }, 'failed to get positions');
       return;
     }
-    const symbolPosition = positions.find(p => p.symbol.toUpperCase() === symbol.toUpperCase());
 
-    // Only check entry signals when no open position
-    if (symbolPosition) {
-      await clearPendingConfirmationForSymbol(symbol);
-      return;
-    }
+    for (const symbol of symbols) {
+      const operatorBias = await getOperatorBias(symbol);
 
-    for (const tf of FVG_TIMEFRAMES) {
-      try {
-        const tfMs = TF_MS[tf];
-        const lookback = 10; // fixed lookback for FVG zone detection
-        const candles = await exchange.getCandles({
-          symbol,
-          timeframe: FVG_TF_TO_CANDLE_TF[tf],
-          startTimeMs: now - tfMs * (lookback + 25), // extra room for structure break (20 candles)
-          endTimeMs: now,
-        });
+      // Current mid price (required for retrace check)
+      const mid = await fetchLiveMid(symbol);
+      if (!mid) {
+        logger.warn({ component: 'fvg-monitor', symbol }, 'no mid price, skipping symbol this tick');
+        continue;
+      }
 
-        const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
-        const signal = evaluateFvg(closedCandles, tf, mid, fvgRetracePct, lookback);
-        if (!signal.detected || !signal.direction) continue;
+      const symbolPosition = positions.find((p) => p.symbol.toUpperCase() === symbol.toUpperCase());
 
-        const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
-        const blockedByBias = operatorBias === 'off'
-          || (operatorBias === 'short' && side !== 'sell')
-          || (operatorBias === 'long' && side !== 'buy');
-        if (blockedByBias) {
-          logRiskGateAudit({
-            gate: 'fvg_entry_signal',
-            passed: false,
-            reason: 'operator_bias_block',
-            details: { symbol, tf, direction: signal.direction, operatorBias, side, currentPrice: mid, triggerPrice: signal.triggerPrice },
+      // Only check entry signals when no open position for this symbol
+      if (symbolPosition) {
+        await clearPendingConfirmationForSymbol(symbol);
+        continue;
+      }
+
+      for (const tf of FVG_TIMEFRAMES) {
+        try {
+          const tfMs = TF_MS[tf];
+          const lookback = 10; // fixed lookback for FVG zone detection
+          const candles = await exchange.getCandles({
+            symbol,
+            timeframe: FVG_TF_TO_CANDLE_TF[tf],
+            startTimeMs: now - tfMs * (lookback + 25), // extra room for structure break (20 candles)
+            endTimeMs: now,
           });
-          continue;
-        }
+
+          const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
+          const signal = evaluateFvg(closedCandles, tf, mid, fvgRetracePct, lookback);
+          if (!signal.detected || !signal.direction) continue;
+
+          const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
+          const blockedByBias = operatorBias === 'off'
+            || (operatorBias === 'short' && side !== 'sell')
+            || (operatorBias === 'long' && side !== 'buy');
+          if (blockedByBias) {
+            logRiskGateAudit({
+              gate: 'fvg_entry_signal',
+              passed: false,
+              reason: 'operator_bias_block',
+              details: { symbol, tf, direction: signal.direction, operatorBias, side, currentPrice: mid, triggerPrice: signal.triggerPrice },
+            });
+            continue;
+          }
 
         // Debounce: once per TF interval
         const debounceKey = `${symbol}:${tf}:${signal.direction}`;
@@ -1666,6 +1733,7 @@ async function runFvgMonitorTick(): Promise<void> {
         logger.warn({ component: 'fvg-monitor', tf, err }, 'FVG signal evaluation failed for tf');
       }
     }
+  }
   } catch (err) {
     logger.error({ component: 'fvg-monitor', err }, 'FVG monitor tick failed');
   } finally {
