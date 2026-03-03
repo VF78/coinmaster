@@ -395,6 +395,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         return api.priceToCoordinate?.(value) ?? null;
       };
 
+      const mapOnScale = (value: number | undefined) => {
+        if (!value || value <= 0 || !chartRef.current) return null;
+        const scale = (chartRef.current as unknown as { priceScale?: (id: string) => { priceToCoordinate?: (p: number) => number | null } }).priceScale?.('right');
+        return scale?.priceToCoordinate?.(value) ?? null;
+      };
+
       const h = chartHostRef.current?.clientHeight ?? 0;
       const clampY = (y: number | null) => {
         if (y === null || !Number.isFinite(y)) return null;
@@ -403,9 +409,9 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       };
 
       setChipCoords({
-        pnl: clampY(mapOnSeries(pnlSeriesRef.current, markPrice) ?? mapOnSeries(candleSeriesRef.current, markPrice)),
-        sl: clampY(mapOnSeries(slSeriesRef.current, stopLoss) ?? mapOnSeries(candleSeriesRef.current, stopLoss)),
-        tps: takeProfits.map((tp, idx) => clampY(mapOnSeries(tpSeriesRefs.current[idx] ?? null, tp) ?? mapOnSeries(candleSeriesRef.current, tp))),
+        pnl: clampY(mapOnSeries(pnlSeriesRef.current, markPrice) ?? mapOnScale(markPrice) ?? mapOnSeries(candleSeriesRef.current, markPrice)),
+        sl: clampY(mapOnSeries(slSeriesRef.current, stopLoss) ?? mapOnScale(stopLoss) ?? mapOnSeries(candleSeriesRef.current, stopLoss)),
+        tps: takeProfits.map((tp, idx) => clampY(mapOnSeries(tpSeriesRefs.current[idx] ?? null, tp) ?? mapOnScale(tp) ?? mapOnSeries(candleSeriesRef.current, tp))),
       });
     };
 

@@ -13,7 +13,24 @@ import type {
 async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
   if (!response.ok) {
-    throw new Error(`API error ${response.status}`);
+    let detail = '';
+    try {
+      const payload = await response.clone().json() as Record<string, unknown>;
+      const base = typeof payload.error === 'string' ? payload.error : '';
+      const hint = typeof payload.hint === 'string' ? payload.hint : '';
+      const slErr = typeof (payload.stopLossOrder as { error?: unknown } | undefined)?.error === 'string'
+        ? String((payload.stopLossOrder as { error?: string }).error)
+        : '';
+      const tpErr = typeof (payload.takeProfitOrder as { error?: unknown } | undefined)?.error === 'string'
+        ? String((payload.takeProfitOrder as { error?: string }).error)
+        : '';
+
+      detail = [base, hint, slErr, tpErr].filter(Boolean).join(' | ');
+    } catch {
+      // ignore body parse errors
+    }
+
+    throw new Error(detail ? `API error ${response.status}: ${detail}` : `API error ${response.status}`);
   }
 
   return response.json() as Promise<T>;

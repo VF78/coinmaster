@@ -500,36 +500,57 @@ tbody tr:hover {
   position: absolute;
   right: 0.5rem;
   transform: translateY(-50%);
-  display: inline-grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  gap: 0.35rem;
-  border-radius: 0.35rem;
-  border: 1px solid #2a3f60;
-  background: rgba(9, 16, 30, 0.95);
-  padding: 0.15rem 0.4rem;
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  --chip-border: #5f83b8;
+  --chip-left-bg: #d7dfec;
+  --chip-left-text: #2a3a54;
+  --chip-right-bg: #0b1321;
+  --chip-right-text: #e5eeff;
   font-size: 0.73rem;
   color: #d6e2f7;
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border-radius: 0.22rem;
+  overflow: hidden;
 }
+
+.hl-line-chip span {
+  display: inline-flex;
+  align-items: center;
+  background: var(--chip-left-bg);
+  color: var(--chip-left-text);
+  border: 1px solid var(--chip-border);
+  border-right: none;
+  padding: 0.12rem 0.42rem;
+  font-weight: 700;
+}
+
 .hl-line-chip strong {
-  background: #0e1a31;
-  border-left: 1px solid #2a3f60;
-  padding-left: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  background: var(--chip-right-bg);
+  color: var(--chip-right-text);
+  border: 1px solid var(--chip-border);
+  padding: 0.12rem 0.42rem;
   font-size: 0.72rem;
 }
 
 .hl-line-chip--tp {
-  border-color: rgba(22, 199, 132, 0.55);
+  --chip-border: rgba(22, 199, 132, 0.8);
+  --chip-left-bg: #d7f3e8;
+  --chip-left-text: #1d5a45;
 }
 
 .hl-line-chip--sl {
-  border-color: rgba(234, 91, 114, 0.55);
+  --chip-border: rgba(234, 91, 114, 0.84);
+  --chip-left-bg: #f7dce2;
+  --chip-left-text: #6f2a39;
 }
 
 .hl-line-chip--pnl {
-  border-color: rgba(159, 176, 207, 0.55);
+  --chip-border: rgba(159, 176, 207, 0.84);
 }
 
 .hl-timeframes {

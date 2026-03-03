@@ -2878,6 +2878,16 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
 
   // Prevent inconsistent partial state if one of levels failed.
   if (!ok) {
+    console.warn('[levels] set failed', {
+      symbol: normalizedSymbol,
+      side,
+      size: qty,
+      sl,
+      tps: sortedTps,
+      slOrder,
+      tpOrders,
+      verificationError,
+    });
     await exchange.cancelAll(normalizedSymbol).catch(() => undefined);
   }
 
