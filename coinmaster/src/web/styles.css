@@ -716,6 +716,7 @@ tbody tr:hover {
   padding-top: calc(0.65rem + env(safe-area-inset-top));
   padding-bottom: calc(0.65rem + env(safe-area-inset-bottom));
   overflow: hidden;
+  overscroll-behavior: contain;
   display: flex;
   justify-content: center;
   align-items: stretch;

@@ -297,8 +297,8 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     };
 
     const setPriceScaleAutoScale = (enabled: boolean) => {
-      const chartAny = chart as unknown as { priceScale?: (id: string) => { applyOptions?: (opts: { autoScale?: boolean }) => void } };
-      chartAny.priceScale?.('right')?.applyOptions?.({ autoScale: enabled });
+      const ps = candleSeriesRef.current?.priceScale();
+      ps?.applyOptions({ autoScale: enabled });
     };
 
     const pointerDown = (event: PointerEvent) => {
@@ -347,29 +347,45 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     };
 
     const wheelOnPriceScale = (event: WheelEvent) => {
-      const rect = host.getBoundingClientRect();
-      const inRightScale = event.clientX >= rect.right - 92;
-      if (!inRightScale) return;
-
+      // Always stop wheel from scrolling the page behind the modal when cursor is over chart host.
       event.preventDefault();
       event.stopPropagation();
 
-      const chartAny = chart as unknown as { priceScale?: (id: string) => unknown };
-      const ps = chartAny.priceScale?.('right') as { getVisibleRange?: () => { from: number; to: number }; setVisibleRange?: (r: { from: number; to: number }) => void } | undefined;
-      const range = ps?.getVisibleRange?.();
-      if (!range || !Number.isFinite(range.from) || !Number.isFinite(range.to)) return;
+      if (draggingRef.current) return;
 
-      const series = candleSeriesRef.current as unknown as { coordinateToPrice?: (y: number) => number | null } | null;
-      const y = event.clientY - rect.top;
-      const center = series?.coordinateToPrice?.(y) ?? (range.from + range.to) / 2;
-      if (!Number.isFinite(center)) return;
+      const rect = host.getBoundingClientRect();
+      const ps = candleSeriesRef.current?.priceScale();
+      const scaleWidth = ps?.width?.() ?? 56;
+      const inRightScale = event.clientX >= rect.right - Math.max(48, scaleWidth + 8);
+      if (!inRightScale) return;
 
-      const zoom = event.deltaY < 0 ? 0.92 : 1.08;
-      const nextFrom = center + (range.from - center) * zoom;
-      const nextTo = center + (range.to - center) * zoom;
-      if (!Number.isFinite(nextFrom) || !Number.isFinite(nextTo) || Math.abs(nextTo - nextFrom) < 1e-7) return;
+      const opts = ps?.options?.();
+      if (!ps || !opts) return;
 
-      ps?.setVisibleRange?.({ from: nextFrom, to: nextTo });
+      const currentTop = opts.scaleMargins?.top ?? 0.12;
+      const currentBottom = opts.scaleMargins?.bottom ?? 0.12;
+      const currentSpan = Math.max(0.05, 1 - currentTop - currentBottom);
+      const center = currentTop + currentSpan / 2;
+
+      const factor = event.deltaY < 0 ? 0.92 : 1.08;
+      const nextSpan = Math.max(0.08, Math.min(0.92, currentSpan * factor));
+
+      let nextTop = center - nextSpan / 2;
+      let nextBottom = 1 - (nextTop + nextSpan);
+
+      nextTop = Math.max(0.01, Math.min(0.49, nextTop));
+      nextBottom = Math.max(0.01, Math.min(0.49, nextBottom));
+
+      if (nextTop + nextBottom > 0.98) {
+        const overflow = nextTop + nextBottom - 0.98;
+        nextTop = Math.max(0.01, nextTop - overflow / 2);
+        nextBottom = Math.max(0.01, nextBottom - overflow / 2);
+      }
+
+      ps.applyOptions({
+        autoScale: false,
+        scaleMargins: { top: nextTop, bottom: nextBottom },
+      });
     };
 
     host.addEventListener('pointerdown', pointerDown, { capture: true });
