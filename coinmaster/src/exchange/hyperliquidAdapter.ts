@@ -300,15 +300,48 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     return `0x${hash}`;
   }
 
+  /**
+   * Normalize price to Hyperliquid constraints:
+   * - <= 5 significant digits
+   * - <= (6 - szDecimals) decimal places
+   * - additionally capped by pxDecimals when available
+   */
+  private async normalizeHlPriceForSymbol(symbol: string, value: number): Promise<number> {
+    if (!Number.isFinite(value) || value <= 0) return value;
+
+    const meta = await this.getInstrumentMeta(symbol).catch(() => undefined);
+    const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 5)));
+    const maxPriceDecimalsBySize = Math.max(0, 6 - sizeDecimals);
+    const pxDecimalsRaw = Number(meta?.quoteDecimals);
+    const pxDecimals = Number.isFinite(pxDecimalsRaw) ? Math.max(0, Math.min(8, pxDecimalsRaw)) : undefined;
+
+    const abs = Math.abs(value);
+    const digitsBefore = abs >= 1 ? Math.floor(Math.log10(abs)) + 1 : 0;
+    const decimalsBySig = Math.max(0, 5 - digitsBefore);
+
+    const decimalsByRules = Math.max(0, Math.min(maxPriceDecimalsBySize, decimalsBySig));
+    const decimals = pxDecimals !== undefined ? Math.min(decimalsByRules, pxDecimals) : decimalsByRules;
+
+    return Number(value.toFixed(decimals));
+  }
+
   async placeLimitOrder(intent: OrderIntent): Promise<OrderAck> {
     try {
       const client = await this.getTradingClient();
       const cloid = this.toCloid(intent.clientOrderId);
+
+      const normalizedPrice = await this.normalizeHlPriceForSymbol(intent.symbol, Number(intent.price));
+      const meta = await this.getInstrumentMeta(intent.symbol).catch(() => undefined);
+      const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 5)));
+      const normalizedSize = Number.isFinite(Number(intent.size))
+        ? Number(Number(intent.size).toFixed(sizeDecimals))
+        : Number(intent.size);
+
       const response = await client.exchange.placeOrder({
         coin: this.toSdkCoin(intent.symbol),
         is_buy: intent.side === 'buy',
-        sz: intent.size,
-        limit_px: intent.price,
+        sz: normalizedSize,
+        limit_px: normalizedPrice,
         order_type: { limit: { tif: 'Gtc' } },
         reduce_only: Boolean(intent.reduceOnly),
         ...(cloid ? { cloid } : {})
@@ -359,22 +392,11 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     try {
       const client = await this.getTradingClient();
       const triggerPxRaw = Number(intent.triggerPrice);
-      const meta = await this.getInstrumentMeta(intent.symbol).catch(() => undefined);
-      const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 5)));
-      const maxPriceDecimals = Math.max(0, 6 - sizeDecimals);
-      const normalizeHlPrice = (value: number) => {
-        if (!Number.isFinite(value) || value <= 0) return value;
-        const abs = Math.abs(value);
-        const digitsBefore = abs >= 1 ? Math.floor(Math.log10(abs)) + 1 : 0;
-        const decimalsBySig = Math.max(0, 5 - digitsBefore);
-        const decimals = Math.max(0, Math.min(maxPriceDecimals, decimalsBySig));
-        return Number(value.toFixed(decimals));
-      };
-
-      const triggerPx = normalizeHlPrice(triggerPxRaw);
-      const marketLimitPx = normalizeHlPrice(intent.side === 'buy'
-        ? triggerPx * 1.03
-        : triggerPx * 0.97);
+      const triggerPx = await this.normalizeHlPriceForSymbol(intent.symbol, triggerPxRaw);
+      const marketLimitPx = await this.normalizeHlPriceForSymbol(
+        intent.symbol,
+        intent.side === 'buy' ? triggerPx * 1.03 : triggerPx * 0.97,
+      );
 
       console.log('[hl-adapter] placeTriggerOrder req', {
         symbol: intent.symbol,
@@ -382,7 +404,6 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         size: intent.size,
         triggerPrice: triggerPx,
         limitPx: marketLimitPx,
-        sizeDecimals,
         kind: intent.kind,
       });
 
