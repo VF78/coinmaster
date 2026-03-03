@@ -587,6 +587,11 @@ tbody tr:hover {
   padding: 0.45rem 0.55rem;
   font-size: 0.76rem;
   line-height: 1.28;
+  width: min(260px, 100%);
+  justify-self: center;
+  align-self: start;
+  margin-top: 0.85rem;
+  text-align: center;
 }
 
 .hl-level-row {
