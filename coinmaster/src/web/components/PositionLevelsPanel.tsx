@@ -439,20 +439,20 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         const currentSpan = Math.max(0.01, 1 - currentTop - currentBottom);
         const center = currentTop + currentSpan / 2;
 
-        // Wider zoom range vs previous version (more zoom-in/out freedom)
-        const factor = event.deltaY < 0 ? 0.84 : 1.16;
-        const nextSpan = Math.max(0.02, Math.min(0.98, currentSpan * factor));
+        // Much wider vertical zoom range (both deeper zoom-out and zoom-in).
+        const factor = event.deltaY < 0 ? 0.9 : 1.1;
+        const nextSpan = Math.max(0.002, Math.min(0.999, currentSpan * factor));
 
         let nextTop = center - nextSpan / 2;
         let nextBottom = 1 - (nextTop + nextSpan);
 
-        nextTop = Math.max(0.001, Math.min(0.499, nextTop));
-        nextBottom = Math.max(0.001, Math.min(0.499, nextBottom));
+        nextTop = Math.max(0.0001, Math.min(0.4999, nextTop));
+        nextBottom = Math.max(0.0001, Math.min(0.4999, nextBottom));
 
-        if (nextTop + nextBottom > 0.998) {
-          const overflow = nextTop + nextBottom - 0.998;
-          nextTop = Math.max(0.001, nextTop - overflow / 2);
-          nextBottom = Math.max(0.001, nextBottom - overflow / 2);
+        if (nextTop + nextBottom > 0.9998) {
+          const overflow = nextTop + nextBottom - 0.9998;
+          nextTop = Math.max(0.0001, nextTop - overflow / 2);
+          nextBottom = Math.max(0.0001, nextBottom - overflow / 2);
         }
 
         ps.applyOptions({
@@ -470,7 +470,8 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       const anchor = ts.coordinateToLogical(x) ?? (logical.from + logical.to) / 2;
       if (!Number.isFinite(anchor)) return;
 
-      const zoom = event.deltaY < 0 ? 0.9 : 1.1;
+      // Less sensitive horizontal zoom (~2x gentler).
+      const zoom = event.deltaY < 0 ? 0.95 : 1.05;
       const nextFrom = anchor + (logical.from - anchor) * zoom;
       const nextTo = anchor + (logical.to - anchor) * zoom;
       if (!Number.isFinite(nextFrom) || !Number.isFinite(nextTo)) return;
