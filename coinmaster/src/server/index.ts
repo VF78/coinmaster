@@ -2825,7 +2825,31 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
   }
 
-  const ok = slOrder.ok && tpOrders.every((o) => o.ok);
+  let ok = slOrder.ok && tpOrders.every((o) => o.ok);
+
+  // Extra confirmation: verify SL+TP trigger orders are actually present on exchange.
+  let verificationError: string | undefined;
+  if (ok) {
+    const expectedIds = [slOrder.orderId, ...tpOrders.map((o) => o.orderId)].filter((x): x is string => Boolean(x));
+    if (expectedIds.length > 0) {
+      let verified = false;
+      for (let attempt = 0; attempt < 4; attempt++) {
+        try {
+          const open = await exchange.getOpenOrders(normalizedSymbol);
+          const openIds = new Set((open || []).map((o) => String(o.id)));
+          verified = expectedIds.every((id) => openIds.has(String(id)));
+          if (verified) break;
+        } catch {
+          // retry
+        }
+        await sleep(250 + attempt * 250);
+      }
+      if (!verified) {
+        ok = false;
+        verificationError = 'orders_not_visible_after_ack';
+      }
+    }
+  }
 
   // Prevent inconsistent partial state if one of levels failed.
   if (!ok) {
@@ -2851,7 +2875,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     },
     takeProfitOrder: tpOrders[0],
     takeProfitOrders: tpOrders,
-    error: ok ? undefined : 'set_levels_failed'
+    error: ok ? undefined : (verificationError ?? 'set_levels_failed')
   });
 });
 

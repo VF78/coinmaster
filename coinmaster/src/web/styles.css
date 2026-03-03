@@ -458,27 +458,31 @@ tbody tr:hover {
 .hl-chart-wrap {
   border-color: #1c304d;
   background: #090f1d;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
   position: relative;
 }
 
 .position-panel__chart {
   width: 100%;
-  height: clamp(170px, 34vh, 300px);
-  min-height: 0;
+  height: 100%;
+  min-height: 260px;
+  position: relative;
+  z-index: 1;
 }
 
 .hl-chart-stage {
   position: relative;
   min-height: 0;
+  height: 100%;
 }
 
 .hl-line-overlay {
   position: absolute;
   inset: 0.25rem 0.25rem 0.25rem 0.25rem;
   pointer-events: none;
+  z-index: 7;
 }
 
 .hl-line-chip {
@@ -801,7 +805,8 @@ tbody tr:hover {
   }
 
   .position-panel__chart {
-    height: clamp(150px, 28vh, 220px);
+    height: clamp(230px, 42vh, 360px);
+    min-height: 230px;
   }
 
   .position-panel__form {

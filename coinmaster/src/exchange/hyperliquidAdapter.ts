@@ -307,16 +307,36 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
-      const oid = first?.resting?.oid ?? first?.filled?.oid;
-      const ok = String(response?.status ?? '').toLowerCase() === 'ok' || Boolean(oid);
+      let oid = first?.resting?.oid ?? first?.filled?.oid;
+      const status = first?.resting ? 'resting' : first?.filled ? 'filled' : response?.status;
+      const exchangeError = first?.error ?? first?.err;
+
+      // Fallback lookup by clientOrderId if SDK response omits oid.
+      if (oid === undefined && intent.clientOrderId) {
+        try {
+          const clientOrderId = intent.clientOrderId!;
+          const user = await this.resolveEffectiveUser();
+          const openOrders = await this.requestInfo<any[]>({ type: 'openOrders', user });
+          const cloid = this.toCloid(clientOrderId);
+          if (cloid) {
+            const cloidLower = cloid.toLowerCase();
+            const row = (Array.isArray(openOrders) ? openOrders : []).find((o) => String(o?.cloid ?? '').toLowerCase() === cloidLower);
+            if (row?.oid !== undefined) oid = row.oid;
+          }
+        } catch {
+          // ignore fallback errors
+        }
+      }
+
+      const ok = Boolean(oid) || (String(status ?? '').toLowerCase() === 'filled');
 
       return {
         ok,
         orderId: oid !== undefined ? String(oid) : undefined,
         clientOrderId: intent.clientOrderId,
-        status: first?.resting ? 'resting' : first?.filled ? 'filled' : response?.status,
+        status,
         raw: response,
-        error: ok ? undefined : 'order_failed'
+        error: ok ? undefined : (exchangeError ? String(exchangeError) : 'order_failed')
       };
     } catch (error) {
       return {
@@ -347,16 +367,37 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
-      const oid = first?.resting?.oid ?? first?.filled?.oid;
-      const ok = String(response?.status ?? '').toLowerCase() === 'ok' || Boolean(oid);
+      let oid = first?.resting?.oid ?? first?.filled?.oid;
+      const status = first?.resting ? 'resting' : first?.filled ? 'filled' : response?.status;
+      const exchangeError = first?.error ?? first?.err;
+
+      // Fallback lookup by clientOrderId if SDK response omits oid.
+      if (oid === undefined && intent.clientOrderId) {
+        try {
+          const clientOrderId = intent.clientOrderId!;
+          const user = await this.resolveEffectiveUser();
+          const openOrders = await this.requestInfo<any[]>({ type: 'openOrders', user });
+          const cloid = this.toCloid(clientOrderId);
+          if (cloid) {
+            const cloidLower = cloid.toLowerCase();
+            const row = (Array.isArray(openOrders) ? openOrders : []).find((o) => String(o?.cloid ?? '').toLowerCase() === cloidLower);
+            if (row?.oid !== undefined) oid = row.oid;
+          }
+        } catch {
+          // ignore fallback errors
+        }
+      }
+
+      // Trigger levels are considered successful only when resting on exchange with oid.
+      const ok = Boolean(oid) && String(status ?? '').toLowerCase() !== 'filled';
 
       return {
         ok,
         orderId: oid !== undefined ? String(oid) : undefined,
         clientOrderId: intent.clientOrderId,
-        status: first?.resting ? 'resting' : first?.filled ? 'filled' : response?.status,
+        status,
         raw: response,
-        error: ok ? undefined : 'trigger_order_failed'
+        error: ok ? undefined : (exchangeError ? String(exchangeError) : 'trigger_order_failed')
       };
     } catch (error) {
       return {
