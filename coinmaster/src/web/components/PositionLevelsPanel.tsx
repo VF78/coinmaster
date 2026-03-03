@@ -746,62 +746,68 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
       <div className="hl-levels-layout">
         <div className="hl-levels-form">
-          {takeProfits.map((tp, idx) => {
-            const gainPct = pctFromPrice(side, entry, tp);
-            return (
-              <div key={idx} className="hl-level-row">
-                <label>
-                  <span>TP{idx + 1} Price</span>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={tp || ''}
-                    onChange={(e) => updateTp(idx, parseDecimalInput(e.target.value))}
-                  />
-                </label>
-                <label>
-                  <span>Gain %</span>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={Number.isFinite(gainPct) ? gainPct.toFixed(2) : ''}
-                    onChange={(e) => updateTpPct(idx, parseDecimalInput(e.target.value))}
-                  />
-                </label>
-                <div className="hl-level-row__actions">
-                  {idx === 0 && takeProfits.length < 3 ? (
-                    <Button className="hl-action-btn" variant="secondary" onClick={addTp}>+ TP</Button>
-                  ) : <span className="hl-action-spacer" />}
-                  {takeProfits.length > 1 ? (
-                    <Button className="hl-action-btn" variant="danger" onClick={() => removeTp(idx)}>Remove</Button>
-                  ) : <span className="hl-action-spacer" />}
+          <div className="hl-level-group hl-level-group--tp">
+            <div className="hl-level-group__title">Take Profit Levels</div>
+            {takeProfits.map((tp, idx) => {
+              const gainPct = pctFromPrice(side, entry, tp);
+              return (
+                <div key={idx} className="hl-level-row">
+                  <label>
+                    <span>TP{idx + 1} Price</span>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={tp || ''}
+                      onChange={(e) => updateTp(idx, parseDecimalInput(e.target.value))}
+                    />
+                  </label>
+                  <label>
+                    <span>Gain %</span>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={Number.isFinite(gainPct) ? gainPct.toFixed(2) : ''}
+                      onChange={(e) => updateTpPct(idx, parseDecimalInput(e.target.value))}
+                    />
+                  </label>
+                  <div className="hl-level-row__actions">
+                    {takeProfits.length > 1 ? (
+                      <Button className="hl-action-btn hl-action-btn--remove" variant="danger" onClick={() => removeTp(idx)}>Remove</Button>
+                    ) : <span className="hl-action-spacer" />}
+                    {idx === 0 && takeProfits.length < 3 ? (
+                      <Button className="hl-action-btn" variant="secondary" onClick={addTp}>+ TP</Button>
+                    ) : <span className="hl-action-spacer" />}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
 
-          <div className="hl-level-row">
-            <label>
-              <span>SL Price</span>
-              <input
-                type="text"
-                inputMode="decimal"
-                value={stopLoss || ''}
-                onChange={(e) => setStopLoss(parseDecimalInput(e.target.value))}
-              />
-            </label>
-            <label>
-              <span>Loss %</span>
-              <input
-                type="text"
-                inputMode="decimal"
-                value={Math.abs(pctFromPrice(side, entry, stopLoss)).toFixed(2)}
-                onChange={(e) => updateSlPct(parseDecimalInput(e.target.value))}
-              />
-            </label>
-            <div className="hl-level-row__actions">
-              <span className="hl-action-spacer" />
-              <span className="hl-action-spacer" />
+          <div className="hl-level-group hl-level-group--sl">
+            <div className="hl-level-group__title">Stop Loss</div>
+            <div className="hl-level-row">
+              <label>
+                <span>SL Price</span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={stopLoss || ''}
+                  onChange={(e) => setStopLoss(parseDecimalInput(e.target.value))}
+                />
+              </label>
+              <label>
+                <span>Loss %</span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={Math.abs(pctFromPrice(side, entry, stopLoss)).toFixed(2)}
+                  onChange={(e) => updateSlPct(parseDecimalInput(e.target.value))}
+                />
+              </label>
+              <div className="hl-level-row__actions">
+                <span className="hl-action-spacer" />
+                <span className="hl-action-spacer" />
+              </div>
             </div>
           </div>
         </div>

@@ -604,9 +604,36 @@ tbody tr:hover {
 
 .hl-levels-form {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.46rem;
   max-width: 980px;
   margin: 0;
+}
+
+.hl-level-group {
+  border: 1px solid #1f3551;
+  border-radius: 0.7rem;
+  padding: 0.42rem;
+  background: #0a1628;
+  display: grid;
+  gap: 0.42rem;
+}
+
+.hl-level-group__title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9fb4d6;
+}
+
+.hl-level-group--tp {
+  border-color: rgba(22, 199, 132, 0.45);
+  background: linear-gradient(180deg, rgba(9, 32, 24, 0.26) 0%, rgba(8, 20, 34, 0.94) 100%);
+}
+
+.hl-level-group--sl {
+  border-color: rgba(234, 91, 114, 0.45);
+  background: linear-gradient(180deg, rgba(48, 16, 25, 0.2) 0%, rgba(8, 20, 34, 0.94) 100%);
 }
 
 .hl-side-hint {
@@ -649,10 +676,10 @@ tbody tr:hover {
 
 .hl-level-row__actions {
   display: grid;
-  grid-template-columns: repeat(2, 84px);
+  grid-template-columns: 84px 84px;
   align-items: center;
   justify-content: end;
-  gap: 0.35rem;
+  gap: 0.32rem;
   min-width: 172px;
 }
 
@@ -662,6 +689,10 @@ tbody tr:hover {
   width: 84px;
   padding: 0.35rem 0.5rem;
   border-radius: 0.65rem;
+}
+
+.hl-action-btn--remove {
+  border-radius: 999px;
 }
 
 .hl-action-spacer {
