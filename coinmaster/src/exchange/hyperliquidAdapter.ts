@@ -207,10 +207,17 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         const sz = this.toNumber(item?.sz);
         if (!px || !sz) return null;
 
+        const sideRaw = String(item?.side ?? '').toLowerCase();
+        const side = sideRaw === 'b' || sideRaw.includes('buy')
+          ? 'buy'
+          : sideRaw === 'a' || sideRaw.includes('sell')
+            ? 'sell'
+            : 'sell';
+
         return {
           id: String(item?.oid ?? ''),
           symbol: normalized,
-          side: String(item?.side ?? '').toLowerCase().includes('buy') ? 'buy' : 'sell',
+          side,
           price: px,
           size: sz,
           status: 'open',
