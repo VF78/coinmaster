@@ -170,7 +170,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
     if (side === 'long') {
       if (stopLoss >= currentPrice) {
-        return 'For LONG, stop-loss must be below current market price.';
+        return `Stop-loss is above current market price (${formatNumber(currentPrice)}). Please set SL below current market price.`;
       }
       if (takeProfits.some((tp) => tp <= entry)) {
         return 'For LONG, all TP levels must be above entry price.';
@@ -180,7 +180,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       }
     } else {
       if (stopLoss <= currentPrice) {
-        return 'For SHORT, stop-loss must be above current market price.';
+        return `Stop-loss is below current market price (${formatNumber(currentPrice)}). Please set SL above current market price.`;
       }
       if (takeProfits.some((tp) => tp >= entry)) {
         return 'For SHORT, all TP levels must be below entry price.';

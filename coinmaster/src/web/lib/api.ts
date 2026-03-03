@@ -18,6 +18,8 @@ async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
       const payload = await response.clone().json() as Record<string, unknown>;
       const base = typeof payload.error === 'string' ? payload.error : '';
       const hint = typeof payload.hint === 'string' ? payload.hint : '';
+      const marketPrice = typeof payload.marketPrice === 'number' ? payload.marketPrice : undefined;
+      const entryPrice = typeof payload.entryPrice === 'number' ? payload.entryPrice : undefined;
       const slErr = typeof (payload.stopLossOrder as { error?: unknown } | undefined)?.error === 'string'
         ? String((payload.stopLossOrder as { error?: string }).error)
         : '';
@@ -25,7 +27,13 @@ async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
         ? String((payload.takeProfitOrder as { error?: string }).error)
         : '';
 
-      detail = [base, hint, slErr, tpErr].filter(Boolean).join(' | ');
+      if (base === 'invalid_stop_loss_vs_market') {
+        detail = `${hint || 'Stop-loss is on the wrong side of current market price.'}${marketPrice !== undefined ? ` (current market: ${marketPrice})` : ''}`;
+      } else if (base === 'invalid_take_profits_vs_entry') {
+        detail = `${hint || 'Take-profit levels are on the wrong side of entry price.'}${entryPrice !== undefined ? ` (entry: ${entryPrice})` : ''}`;
+      } else {
+        detail = [base, hint, slErr, tpErr].filter(Boolean).join(' | ');
+      }
     } catch {
       // ignore body parse errors
     }

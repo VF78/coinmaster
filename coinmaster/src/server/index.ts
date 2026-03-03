@@ -2922,18 +2922,18 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   }
 
   if (entryPrice) {
-    const validVsEntry = side === 'long'
-      ? sl < entryPrice && sortedTps.every((tp) => tp > entryPrice)
-      : sl > entryPrice && sortedTps.every((tp) => tp < entryPrice);
+    const tpsValidVsEntry = side === 'long'
+      ? sortedTps.every((tp) => tp > entryPrice)
+      : sortedTps.every((tp) => tp < entryPrice);
 
-    if (!validVsEntry) {
+    if (!tpsValidVsEntry) {
       return res.status(400).json({
         ok: false,
-        error: 'invalid_levels_vs_entry',
+        error: 'invalid_take_profits_vs_entry',
         entryPrice,
         hint: side === 'long'
-          ? 'LONG requires SL < entry and all TPs > entry'
-          : 'SHORT requires SL > entry and all TPs < entry',
+          ? 'LONG requires all TP levels above entry price'
+          : 'SHORT requires all TP levels below entry price',
       });
     }
   }
