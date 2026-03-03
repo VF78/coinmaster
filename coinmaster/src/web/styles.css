@@ -498,7 +498,7 @@ tbody tr:hover {
 
 .hl-line-chip {
   position: absolute;
-  right: 0.5rem;
+  right: 0.06rem;
   transform: translateY(-50%);
   display: inline-flex;
   align-items: stretch;
@@ -899,7 +899,7 @@ tbody tr:hover {
   }
 
   .hl-line-chip {
-    right: 0.2rem;
+    right: 0.02rem;
     font-size: 0.64rem;
   }
 
