@@ -14,6 +14,7 @@ const DUAL_WRITE = ['true', '1'].includes(
 );
 
 let _store: PersistenceStore | null = null;
+let _storeInitPromise: Promise<PersistenceStore> | null = null;
 
 /**
  * Returns the singleton PersistenceStore based on PERSISTENCE_BACKEND env var.
@@ -25,19 +26,31 @@ let _store: PersistenceStore | null = null;
  */
 export async function getStore(): Promise<PersistenceStore> {
   if (_store) return _store;
+  if (_storeInitPromise) return _storeInitPromise;
 
-  if (BACKEND === 'postgres') {
-    // Dynamic import avoids pulling pg into lowdb-only bundles
-    const { PostgresStore } = await import('./postgresStore.js');
-    _store = new PostgresStore();
-  } else if (DUAL_WRITE) {
-    const { PostgresStore } = await import('./postgresStore.js');
-    const { DualWriteStore } = await import('./dualWriteStore.js');
-    _store = new DualWriteStore(new LowdbStore(), new PostgresStore());
-  } else {
-    _store = new LowdbStore();
+  _storeInitPromise = (async () => {
+    let nextStore: PersistenceStore;
+
+    if (BACKEND === 'postgres') {
+      // Dynamic import avoids pulling pg into lowdb-only bundles
+      const { PostgresStore } = await import('./postgresStore.js');
+      nextStore = new PostgresStore();
+    } else if (DUAL_WRITE) {
+      const { PostgresStore } = await import('./postgresStore.js');
+      const { DualWriteStore } = await import('./dualWriteStore.js');
+      nextStore = new DualWriteStore(new LowdbStore(), new PostgresStore());
+    } else {
+      nextStore = new LowdbStore();
+    }
+
+    await nextStore.init();
+    _store = nextStore;
+    return nextStore;
+  })();
+
+  try {
+    return await _storeInitPromise;
+  } finally {
+    _storeInitPromise = null;
   }
-
-  await _store.init();
-  return _store;
 }
