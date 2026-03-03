@@ -142,28 +142,6 @@ export function SettingsPage() {
 
   return (
     <main className="terminal-layout">
-      <Card
-        title="Exchange connection settings"
-        className="terminal-card"
-        actions={<Button onClick={() => refresh()} variant="secondary" disabled={isLoading} type="button">Refresh</Button>}
-      >
-        <div className="stats-grid">
-          <Stat label="Exchange" value={data.exchange.toUpperCase()} />
-          <Stat label="Connection" value={data.connected ? 'Connected' : 'Disconnected'} tone={data.connected ? 'success' : 'danger'} />
-          <Stat label="Account" value={data.accountAddress ?? '—'} />
-          <Stat label="API wallet" value={data.walletAddress ?? '—'} />
-          <Stat label="Manual confirmation" value={data.mode.manualConfirmation ? 'ON' : 'OFF'} />
-          <Stat label="Max leverage" value={`${formatNumber(data.mode.maxLeverage)}x`} />
-          <Stat label="Private trading" value={data.capabilities.privateTrading ? 'Enabled' : 'Disabled'} tone={data.capabilities.privateTrading ? 'success' : 'danger'} />
-          <Stat label="Private account" value={data.capabilities.privateAccount ? 'Enabled' : 'Disabled'} tone={data.capabilities.privateAccount ? 'success' : 'danger'} />
-          <Stat label="Realtime mids" value={data.capabilities.realtimeMids ? 'Enabled' : 'Disabled'} tone={data.capabilities.realtimeMids ? 'success' : 'danger'} />
-          <Stat label="Available to trade" value={data.account?.availableUsd !== undefined ? formatMoney(data.account.availableUsd) : '—'} />
-          <Stat label="Used margin" value={data.account?.usedMarginUsd !== undefined ? formatMoney(data.account.usedMarginUsd) : '—'} />
-        </div>
-        {data.error ? (
-          <p className="muted stat-note">Connection error: {data.error}</p>
-        ) : null}
-      </Card>
 
       <Card title="Hyperliquid API credentials" className="terminal-card full-width">
         <div className="rules-form-grid">
