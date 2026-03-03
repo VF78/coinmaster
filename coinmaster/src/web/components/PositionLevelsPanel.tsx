@@ -98,6 +98,8 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const stopLossRef = useRef(stopLoss);
   const takeProfitsRef = useRef(takeProfits);
   const draggingRef = useRef<typeof dragging>(dragging);
+  const panningRef = useRef<{ startY: number; top: number; bottom: number } | null>(null);
+  const manualScaleRef = useRef(false);
 
   const initialStopLossRef = useRef(normalizeLevel(stopLoss));
   const initialTakeProfitsRef = useRef(takeProfits.map(normalizeLevel));
@@ -243,7 +245,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         mouseWheel: false,
         pressedMouseMove: true,
         horzTouchDrag: true,
-        vertTouchDrag: false,
+        vertTouchDrag: true,
       },
       handleScale: {
         // We handle wheel manually (right price scale only) to mimic TradingView behavior.
@@ -320,49 +322,94 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
     const setPriceScaleAutoScale = (enabled: boolean) => {
       const ps = candleSeriesRef.current?.priceScale();
-      ps?.applyOptions({ autoScale: enabled });
+      if (!ps) return;
+      if (enabled && manualScaleRef.current) return;
+      ps.applyOptions({ autoScale: enabled });
     };
 
     const pointerDown = (event: PointerEvent) => {
       const nearest = findNearestDraggable(event.clientY);
-      if (!nearest) return;
+      const ps = candleSeriesRef.current?.priceScale();
 
-      event.preventDefault();
-      event.stopPropagation();
+      if (nearest) {
+        event.preventDefault();
+        event.stopPropagation();
 
-      draggingRef.current = nearest;
-      setDragging(nearest);
-      host.style.cursor = 'ns-resize';
+        draggingRef.current = nearest;
+        setDragging(nearest);
+        host.style.cursor = 'ns-resize';
+        setPriceScaleAutoScale(false);
+        host.setPointerCapture?.(event.pointerId);
+        return;
+      }
+
+      // Start chart panning mode (vertical by dragging up/down; horizontal is native via chart scroll).
+      const opts = ps?.options?.();
+      if (!ps || !opts) return;
+      const top = opts.scaleMargins?.top ?? 0.12;
+      const bottom = opts.scaleMargins?.bottom ?? 0.12;
+      panningRef.current = { startY: event.clientY, top, bottom };
+      manualScaleRef.current = true;
       setPriceScaleAutoScale(false);
+      host.style.cursor = 'grabbing';
       host.setPointerCapture?.(event.pointerId);
     };
 
     const pointerMove = (event: PointerEvent) => {
       const drag = draggingRef.current;
-      if (!drag) return;
+      if (drag) {
+        event.preventDefault();
+        event.stopPropagation();
 
-      event.preventDefault();
-      event.stopPropagation();
+        const rect = host.getBoundingClientRect();
+        const y = event.clientY - rect.top;
+        const series = candleSeriesRef.current as unknown as { coordinateToPrice?: (y: number) => number | null } | null;
+        const price = series?.coordinateToPrice?.(y);
+        if (!price || !Number.isFinite(price)) return;
+        const normalized = Number(price.toFixed(2));
+        if (drag.kind === 'sl') {
+          setStopLoss(normalized);
+        } else {
+          setTakeProfits((prev) => prev.map((tp, idx) => (idx === drag.index ? normalized : tp)));
+        }
+        return;
+      }
+
+      const pan = panningRef.current;
+      if (!pan) return;
+
+      const ps = candleSeriesRef.current?.priceScale();
+      if (!ps) return;
 
       const rect = host.getBoundingClientRect();
-      const y = event.clientY - rect.top;
-      const series = candleSeriesRef.current as unknown as { coordinateToPrice?: (y: number) => number | null } | null;
-      const price = series?.coordinateToPrice?.(y);
-      if (!price || !Number.isFinite(price)) return;
-      const normalized = Number(price.toFixed(2));
-      if (drag.kind === 'sl') {
-        setStopLoss(normalized);
-      } else {
-        setTakeProfits((prev) => prev.map((tp, idx) => (idx === drag.index ? normalized : tp)));
+      const dy = event.clientY - pan.startY;
+      const shift = dy / Math.max(120, rect.height);
+
+      let nextTop = pan.top - shift;
+      let nextBottom = pan.bottom + shift;
+
+      nextTop = Math.max(0.001, Math.min(0.499, nextTop));
+      nextBottom = Math.max(0.001, Math.min(0.499, nextBottom));
+
+      if (nextTop + nextBottom > 0.998) {
+        const overflow = nextTop + nextBottom - 0.998;
+        nextTop = Math.max(0.001, nextTop - overflow / 2);
+        nextBottom = Math.max(0.001, nextBottom - overflow / 2);
       }
+
+      ps.applyOptions({
+        autoScale: false,
+        scaleMargins: { top: nextTop, bottom: nextBottom },
+      });
     };
 
     const pointerUp = (event?: PointerEvent) => {
-      if (event) {
+      if (event && draggingRef.current) {
         event.preventDefault();
         event.stopPropagation();
       }
       draggingRef.current = null;
+      panningRef.current = null;
       setDragging(null);
       host.style.cursor = 'default';
       setPriceScaleAutoScale(true);
@@ -383,6 +430,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
       // Right scale: vertical zoom
       if (inRightScale) {
+        manualScaleRef.current = true;
         const opts = ps?.options?.();
         if (!ps || !opts) return;
 
