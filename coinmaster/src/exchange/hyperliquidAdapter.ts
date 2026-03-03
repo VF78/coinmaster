@@ -354,7 +354,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         coin: this.toSdkCoin(intent.symbol),
         is_buy: intent.side === 'buy',
         sz: intent.size,
-        limit_px: intent.triggerPrice,
+        // Trigger orders don't use limit_px, only triggerPx in order_type
         order_type: {
           trigger: {
             triggerPx: intent.triggerPrice,
