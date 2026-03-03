@@ -17,6 +17,7 @@ function clampNumber(value: number, min: number, max: number) {
 
 interface TradingRulesPageProps {
   onDirtyChange?: (dirty: boolean) => void;
+  onRegisterSaveHandler?: (handler: (() => Promise<boolean>) | null) => void;
 }
 
 interface StepperProps {
@@ -89,7 +90,7 @@ function Segmented<T extends string | number>({ options, value, format, onChange
   );
 }
 
-export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
+export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: TradingRulesPageProps) {
   const defaults = cloneTradingRulesDefaults();
   const dialog = useDialog();
 
@@ -237,7 +238,7 @@ export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
     }
   }
 
-  async function handleApply() {
+  async function handleApply(): Promise<boolean> {
     const enabled = currentRules.coins.filter((c) => c.enabled);
     const enabledTotal = Math.round(enabled.reduce((s, c) => s + c.pct, 0) * 100) / 100;
 
@@ -247,7 +248,7 @@ export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
         message: 'Enable at least one coin.',
         confirmText: 'OK',
       });
-      return;
+      return false;
     }
 
     if (Math.abs(enabledTotal - 100) > 0.01) {
@@ -256,7 +257,7 @@ export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
         message: `Active coin allocation sum is ${enabledTotal}%. It must be exactly 100%.`,
         confirmText: 'OK',
       });
-      return;
+      return false;
     }
 
     setSaving(true);
@@ -265,6 +266,7 @@ export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
       const response = await saveTradingRules(currentRules);
       applyRules(response.rules);
       setSaveInfo(`Saved at ${new Date().toLocaleTimeString()}`);
+      return true;
     } catch (error) {
       console.error('[TradingRules] failed to save rules:', error);
       setSaveInfo('Save failed. Rules were not confirmed by server.');
@@ -273,10 +275,17 @@ export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
         message: 'Could not save rules. Check server logs.',
         confirmText: 'OK',
       });
+      return false;
     } finally {
       setSaving(false);
     }
   }
+
+  useEffect(() => {
+    if (!onRegisterSaveHandler) return;
+    onRegisterSaveHandler(() => handleApply());
+    return () => onRegisterSaveHandler(null);
+  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm]);
 
   return (
     <main className="terminal-layout">
@@ -548,7 +557,7 @@ export function TradingRulesPage({ onDirtyChange }: TradingRulesPageProps) {
       </Card>
 
       <div className="rules-apply-row">
-        <Button variant="primary" fullWidth onClick={handleApply} disabled={saving || loading}>
+        <Button variant="primary" fullWidth onClick={() => { void handleApply(); }} disabled={saving || loading}>
           {saving ? 'Saving...' : 'Apply changes'}
         </Button>
       </div>

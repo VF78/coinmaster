@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DashboardPage } from './pages/DashboardPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -17,6 +17,7 @@ const SECTIONS: Array<{ key: PageKey; label: string }> = [
 export function App() {
   const [page, setPage] = useState<PageKey>('dashboard');
   const [tradingRulesDirty, setTradingRulesDirty] = useState(false);
+  const tradingRulesSaveRef = useRef<(() => Promise<boolean>) | null>(null);
   const dialog = useDialog();
 
   const pageTitle = useMemo(() => {
@@ -32,13 +33,18 @@ export function App() {
     if (nextPage === page) return;
 
     if (page === 'trading-rules' && tradingRulesDirty) {
-      const confirmed = await dialog.confirm({
-        title: 'Unsaved changes',
-        message: 'You have unsaved Trading Rules changes. Leave this page without applying?',
-        confirmText: 'Leave',
-        cancelText: 'Stay',
+      const shouldSave = await dialog.confirm({
+        title: 'Unsaved Trading Rules',
+        message: 'Save Trading Rules changes before leaving this page?',
+        confirmText: 'Save',
+        cancelText: "Don't save",
       });
-      if (!confirmed) return;
+
+      if (shouldSave) {
+        const ok = await tradingRulesSaveRef.current?.();
+        if (!ok) return;
+      }
+
       setTradingRulesDirty(false);
     }
 
@@ -73,7 +79,14 @@ export function App() {
         <section className="app-content">
           {page === 'dashboard' ? <DashboardPage /> : null}
           {page === 'history' ? <HistoryPage /> : null}
-          {page === 'trading-rules' ? <TradingRulesPage onDirtyChange={setTradingRulesDirty} /> : null}
+          {page === 'trading-rules' ? (
+            <TradingRulesPage
+              onDirtyChange={setTradingRulesDirty}
+              onRegisterSaveHandler={(handler) => {
+                tradingRulesSaveRef.current = handler;
+              }}
+            />
+          ) : null}
           {page === 'settings' ? <SettingsPage /> : null}
         </section>
       </div>

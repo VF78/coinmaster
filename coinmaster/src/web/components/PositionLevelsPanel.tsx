@@ -49,6 +49,18 @@ function formatOrderSize(value: number): string {
   }).format(value);
 }
 
+function normalizeLevel(value: number): number {
+  return Number(value.toFixed(2));
+}
+
+function sameLevels(a: number[], b: number[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (normalizeLevel(a[i]) !== normalizeLevel(b[i])) return false;
+  }
+  return true;
+}
+
 export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLevelsPanelProps) {
   const dialog = useDialog();
   const chartHostRef = useRef<HTMLDivElement | null>(null);
@@ -87,6 +99,9 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const takeProfitsRef = useRef(takeProfits);
   const draggingRef = useRef<typeof dragging>(dragging);
 
+  const initialStopLossRef = useRef(normalizeLevel(stopLoss));
+  const initialTakeProfitsRef = useRef(takeProfits.map(normalizeLevel));
+
   const markPrice = useMemo(() => {
     const last = candles[candles.length - 1];
     return last?.close ?? position.entryPrice ?? 0;
@@ -110,6 +125,13 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     );
   }, [position.size, takeProfits.length]);
 
+  const isDirty = useMemo(() => {
+    const currentSl = normalizeLevel(stopLoss);
+    const currentTps = takeProfits.map(normalizeLevel);
+    if (currentSl !== initialStopLossRef.current) return true;
+    return !sameLevels(currentTps, initialTakeProfitsRef.current);
+  }, [stopLoss, takeProfits]);
+
   useEffect(() => {
     stopLossRef.current = stopLoss;
   }, [stopLoss]);
@@ -126,12 +148,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
-        onClose();
+        void handleCloseAttempt();
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onClose]);
+  }, [isDirty, stopLoss, takeProfits, isApplying]);
 
   const validation = useMemo(() => {
     if (!entry || !stopLoss || takeProfits.length === 0) {
@@ -520,16 +542,25 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     setStopLoss(Number(target.toFixed(2)));
   }
 
-  async function applyLevels() {
-    if (validation) return;
+  async function applyLevels(options?: { skipConfirmPrompt?: boolean }): Promise<boolean> {
+    if (validation) {
+      await dialog.alert({
+        title: 'Validation',
+        message: validation,
+        confirmText: 'OK',
+      });
+      return false;
+    }
 
-    const confirmed = await dialog.confirm({
-      title: 'Apply TP/SL',
-      message: 'Apply these TP/SL levels to live position?',
-      confirmText: 'Apply',
-      cancelText: 'Cancel',
-    });
-    if (!confirmed) return;
+    if (!options?.skipConfirmPrompt) {
+      const confirmed = await dialog.confirm({
+        title: 'Apply TP/SL',
+        message: 'Apply these TP/SL levels to live position?',
+        confirmText: 'Apply',
+        cancelText: 'Cancel',
+      });
+      if (!confirmed) return false;
+    }
 
     setIsApplying(true);
     setError(null);
@@ -558,22 +589,52 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         ? response.takeProfits
         : [response.takeProfit].filter((v) => Number.isFinite(v) && v > 0);
 
-      setStopLoss(Number(response.stopLoss.toFixed(2)));
-      setTakeProfits(confirmedTps.map((v) => Number(v.toFixed(2))).slice(0, 3));
+      const nextSl = normalizeLevel(response.stopLoss);
+      const nextTps = confirmedTps.map((v) => normalizeLevel(v)).slice(0, 3);
+
+      setStopLoss(nextSl);
+      setTakeProfits(nextTps);
+      initialStopLossRef.current = nextSl;
+      initialTakeProfitsRef.current = nextTps;
       setInfo('TP/SL levels applied successfully and confirmed by exchange API.');
 
       await onApplied();
+      return true;
     } catch (e) {
       setError(e instanceof Error ? e.message : 'set_levels_failed');
+      return false;
     } finally {
       setIsApplying(false);
     }
   }
 
+  async function handleCloseAttempt() {
+    if (isApplying) return;
+
+    if (!isDirty) {
+      onClose();
+      return;
+    }
+
+    const applyBeforeClose = await dialog.confirm({
+      title: 'Unsaved chart changes',
+      message: 'Apply TP/SL changes before closing the chart?',
+      confirmText: 'Apply',
+      cancelText: "Don’t apply",
+    });
+
+    if (applyBeforeClose) {
+      const ok = await applyLevels({ skipConfirmPrompt: true });
+      if (!ok) return;
+    }
+
+    onClose();
+  }
+
   return (
     <section className="position-panel hl-panel" aria-label="Position levels panel">
       <header className="position-panel__header" style={{ justifyContent: 'flex-end' }}>
-        <button type="button" className="hl-close-btn" onClick={onClose} aria-label="Close panel">
+        <button type="button" className="hl-close-btn" onClick={() => { void handleCloseAttempt(); }} aria-label="Close panel">
           ×
         </button>
       </header>
@@ -703,7 +764,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       {validation ? <p className="down">{validation}</p> : null}
 
       <div className="actions-row hl-confirm-row">
-        <Button onClick={applyLevels} disabled={Boolean(validation) || isApplying} fullWidth>
+        <Button onClick={() => { void applyLevels(); }} disabled={Boolean(validation) || isApplying} fullWidth>
           {isApplying ? 'Applying…' : 'Confirm'}
         </Button>
       </div>
