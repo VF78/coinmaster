@@ -35,9 +35,9 @@ export function App() {
     if (page === 'trading-rules' && tradingRulesDirty) {
       const shouldSave = await dialog.confirm({
         title: 'Unsaved Trading Rules',
-        message: 'Save Trading Rules changes before leaving this page?',
-        confirmText: 'Save',
-        cancelText: "Don't save",
+        message: 'Apply Trading Rules changes before leaving this page?',
+        confirmText: 'Apply Trading Rules',
+        cancelText: "Don\'t apply",
       });
 
       if (shouldSave) {
