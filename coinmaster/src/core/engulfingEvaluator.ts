@@ -36,6 +36,13 @@ export interface EngulfingEvaluatorOptions {
   lookbackCandles: number;
   entryTimeframes: TradingRulesTimeframe[];
   emergencyExitTimeframes: TradingRulesTimeframe[];
+  /** true => require sweep breakout + engulfing body (legacy strict mode) */
+  requireSweep?: boolean;
+}
+
+export interface EvaluateTimeframeOptions {
+  /** true => require breakout sweep + engulfing body */
+  requireSweep?: boolean;
 }
 
 // ─── Candle body helpers ──────────────────────────────────────────────
@@ -111,6 +118,7 @@ export function evaluateTimeframe(
   candles: Candle[],
   tf: TradingRulesTimeframe,
   lookback: number,
+  opts?: EvaluateTimeframeOptions,
 ): EngulfingSignal {
   const minRequired = lookback + 2;
 
@@ -124,40 +132,51 @@ export function evaluateTimeframe(
     };
   }
 
+  const requireSweep = opts?.requireSweep === true;
   const engulf = candles[candles.length - 1];
   const swept = candles[candles.length - 2];
   const history = candles.slice(candles.length - 2 - lookback, candles.length - 2);
 
   const confidence = TF_CONFIDENCE[tf] ?? 0.7;
+  const bullishBody = isBullishEngulfingBody(swept, engulf);
+  const bearishBody = isBearishEngulfingBody(swept, engulf);
+  const lowBreakout = isLowBreakout(history, swept);
+  const highBreakout = isHighBreakout(history, swept);
 
-  // Bullish: low breakout on swept + bullish engulfing body
-  if (isLowBreakout(history, swept) && isBullishEngulfingBody(swept, engulf)) {
+  if (bullishBody && (!requireSweep || lowBreakout)) {
     return {
       detected: true,
       direction: 'bullish',
       timeframe: tf,
       confidence,
-      reason: `sweep${lookback}_low_then_bullish_body_engulf_${tf}`,
+      reason: requireSweep
+        ? `sweep${lookback}_low_then_bullish_body_engulf_${tf}`
+        : `bullish_body_engulf_${tf}`,
     };
   }
 
-  // Bearish: high breakout on swept + bearish engulfing body
-  if (isHighBreakout(history, swept) && isBearishEngulfingBody(swept, engulf)) {
+  if (bearishBody && (!requireSweep || highBreakout)) {
     return {
       detected: true,
       direction: 'bearish',
       timeframe: tf,
       confidence,
-      reason: `sweep${lookback}_high_then_bearish_body_engulf_${tf}`,
+      reason: requireSweep
+        ? `sweep${lookback}_high_then_bearish_body_engulf_${tf}`
+        : `bearish_body_engulf_${tf}`,
     };
   }
+
+  const reason = requireSweep
+    ? `no_engulf_trigger_requires_sweep_${tf}`
+    : `no_engulf_trigger_${tf}`;
 
   return {
     detected: false,
     direction: null,
     timeframe: tf,
     confidence: 0.3,
-    reason: `no_engulf_trigger_${tf}`,
+    reason,
   };
 }
 
@@ -178,12 +197,12 @@ export function evaluateMultiTf(
 
   for (const tf of opts.entryTimeframes) {
     const candles = candlesByTf.get(tf) ?? [];
-    entry.push(evaluateTimeframe(candles, tf, opts.lookbackCandles));
+    entry.push(evaluateTimeframe(candles, tf, opts.lookbackCandles, { requireSweep: opts.requireSweep }));
   }
 
   for (const tf of opts.emergencyExitTimeframes) {
     const candles = candlesByTf.get(tf) ?? [];
-    exit.push(evaluateTimeframe(candles, tf, opts.lookbackCandles));
+    exit.push(evaluateTimeframe(candles, tf, opts.lookbackCandles, { requireSweep: opts.requireSweep }));
   }
 
   return {

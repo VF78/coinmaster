@@ -1240,7 +1240,9 @@ async function runEngulfingMonitorTick(): Promise<void> {
           });
 
           const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
-          const signal = evaluateTimeframe(closedCandles, tf, lookback);
+          const signal = evaluateTimeframe(closedCandles, tf, lookback, {
+            requireSweep: raw.engulfingRequireSweep,
+          });
           if (!signal.detected || !signal.direction) continue;
 
           const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
@@ -1366,7 +1368,9 @@ async function runEngulfingMonitorTick(): Promise<void> {
           });
 
           const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
-          const signal = evaluateTimeframe(closedCandles, tf, lookback);
+          const signal = evaluateTimeframe(closedCandles, tf, lookback, {
+            requireSweep: raw.engulfingRequireSweep,
+          });
           if (!signal.detected || !signal.direction) continue;
 
           // Reverse signal check: bullish position + bearish signal → exit
@@ -2085,6 +2089,7 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
       lookbackCandles: lookback,
       entryTimeframes: entryTfs,
       emergencyExitTimeframes: exitTfs,
+      requireSweep: raw.engulfingRequireSweep,
     });
 
     // Attach result for downstream handlers to inspect
