@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ColorType, createChart, type IChartApi, type ISeriesApi, type UTCTimestamp } from 'lightweight-charts';
 import type { LiveCandle, LivePosition } from '../../shared/dto.js';
-import { applyLivePositionLevels, getLiveCandles } from '../lib/api';
+import { applyLivePositionLevels, getLiveCandles, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
 import { formatMoney, formatNumber } from '../lib/format';
 import { Button } from './Button';
 import { useDialog } from './DialogProvider';
@@ -204,7 +204,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         setCandles(response.candles);
       } catch (e) {
         if (!active) return;
-        setError(e instanceof Error ? e.message : 'failed_to_load_candles');
+        setError(friendlyErrorMessage(e, 'Could not load chart candles. Please retry.'));
       } finally {
         if (active) setIsLoading(false);
       }
@@ -632,7 +632,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       });
 
       if (!response.ok) {
-        throw new Error(response.error || 'set_levels_failed');
+        throw new Error(friendlyCodeMessage(response.error || 'set_levels_failed', 'Could not apply TP/SL levels.'));
       }
 
       const confirmedTps = (response.takeProfits && response.takeProfits.length > 0)
@@ -651,7 +651,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       await onApplied();
       return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'set_levels_failed');
+      setError(friendlyErrorMessage(e, 'Could not apply TP/SL levels.'));
       return false;
     } finally {
       setIsApplying(false);

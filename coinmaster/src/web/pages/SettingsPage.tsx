@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ExchangeSettingsResponse } from '../../shared/dto.js';
-import { getExchangeSettings, getTelegramNotifyHealth, saveHyperliquidSettings, saveTelegramNotify, sendTelegramNotifyTest } from '../lib/api';
+import { getExchangeSettings, getTelegramNotifyHealth, saveHyperliquidSettings, saveTelegramNotify, sendTelegramNotifyTest, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
 import { formatMoney, formatNumber } from '../lib/format';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -91,12 +91,12 @@ export function SettingsPage() {
 
       const result = await saveTelegramNotify(payload);
       if (!result.ok) {
-        throw new Error('telegram_save_failed');
+        throw new Error(friendlyCodeMessage('telegram_save_failed', 'Could not save Telegram settings.'));
       }
       setTelegramInfo('Telegram settings saved.');
       await refresh();
     } catch (error) {
-      setTelegramInfo(`Save failed: ${error instanceof Error ? error.message : 'unknown_error'}`);
+      setTelegramInfo(`Save failed: ${friendlyErrorMessage(error, 'Could not save Telegram settings.')}`);
     } finally {
       setIsSavingTelegram(false);
     }
@@ -107,12 +107,12 @@ export function SettingsPage() {
     try {
       const result = await sendTelegramNotifyTest();
       if (!result.ok) {
-        throw new Error(result.error || 'test_failed');
+        throw new Error(friendlyCodeMessage(result.error || 'test_failed', 'Could not send test message.'));
       }
       setTelegramInfo('Test message queued.');
       await refresh();
     } catch (error) {
-      setTelegramInfo(`Test failed: ${error instanceof Error ? error.message : 'unknown_error'}`);
+      setTelegramInfo(`Test failed: ${friendlyErrorMessage(error, 'Could not send test message.')}`);
     }
   }
 
@@ -126,11 +126,11 @@ export function SettingsPage() {
         apiPrivateKey: hlApiPrivateKey.trim() || undefined,
       });
       if (!result.ok) {
-        throw new Error('hyperliquid_save_failed');
+        throw new Error(friendlyCodeMessage('hyperliquid_save_failed', 'Could not save Hyperliquid settings.'));
       }
       setHyperliquidInfo('Saved. Service restart scheduled to apply new credentials.');
     } catch (error) {
-      setHyperliquidInfo(`Save failed: ${error instanceof Error ? error.message : 'unknown_error'}`);
+      setHyperliquidInfo(`Save failed: ${friendlyErrorMessage(error, 'Could not save Hyperliquid settings.')}`);
     } finally {
       setIsSavingHyperliquid(false);
     }

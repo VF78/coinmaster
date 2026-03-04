@@ -16,7 +16,7 @@ const RISK_BLOCK_MESSAGES: Record<string, string> = {
   dd_lock_active: 'daily drawdown lock is active',
 };
 
-function formatFriendlyApiError(payload: Record<string, unknown>, status: number): string | null {
+function formatFriendlyApiError(payload: Record<string, unknown>, _status: number): string | null {
   const base = typeof payload.error === 'string' ? payload.error : '';
   const hint = typeof payload.hint === 'string' ? payload.hint : '';
 
@@ -53,6 +53,37 @@ function formatFriendlyApiError(payload: Record<string, unknown>, status: number
   return null;
 }
 
+export function friendlyErrorMessage(error: unknown, fallback = 'Request failed. Please try again.'): string {
+  if (error instanceof Error && error.message.trim().length > 0) {
+    return error.message;
+  }
+  return fallback;
+}
+
+export function friendlyCodeMessage(code: string, fallback = 'Operation failed. Please try again.'): string {
+  const trimmed = String(code || '').trim();
+  if (!trimmed) return fallback;
+
+  if (trimmed.startsWith('risk_gate_blocked:')) {
+    const rawBlocks = trimmed.slice('risk_gate_blocked:'.length).split(',').map((x) => x.trim()).filter(Boolean);
+    const blocks = rawBlocks.length > 0 ? rawBlocks : ['unknown_risk_block'];
+    const readable = blocks.map((b) => RISK_BLOCK_MESSAGES[b] ?? b.replaceAll('_', ' '));
+    return `Blocked by risk checks: ${readable.join(', ')}.`;
+  }
+
+  const known: Record<string, string> = {
+    pending_not_found: 'This pending signal no longer exists.',
+    confirm_failed: 'Could not confirm this signal.',
+    reject_failed: 'Could not reject this signal.',
+    set_levels_failed: 'Could not apply TP/SL levels.',
+    test_failed: 'Could not send test message.',
+    telegram_save_failed: 'Could not save Telegram settings.',
+    hyperliquid_save_failed: 'Could not save Hyperliquid settings.',
+  };
+
+  return known[trimmed] ?? fallback;
+}
+
 async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
   if (!response.ok) {
@@ -73,7 +104,7 @@ async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
       // ignore body parse errors
     }
 
-    throw new Error(detail || `API error ${response.status}`);
+    throw new Error(detail || 'Request failed. Please try again.');
   }
 
   return response.json() as Promise<T>;

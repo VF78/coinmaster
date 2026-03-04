@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Bias, DashboardResponse, LivePosition } from '../../shared/dto.js';
-import { postBias, getDashboard, confirmPendingConfirmation, rejectPendingConfirmation } from '../lib/api';
+import { postBias, getDashboard, confirmPendingConfirmation, rejectPendingConfirmation, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
@@ -65,13 +65,13 @@ export function DashboardPage() {
     try {
       const result = await confirmPendingConfirmation(row.id);
       if (!result.ok) {
-        throw new Error(result.error || 'confirm_failed');
+        throw new Error(friendlyCodeMessage(result.error || 'confirm_failed', 'Could not confirm this signal.'));
       }
       await refresh();
     } catch (error) {
       await dialog.alert({
         title: 'Confirm failed',
-        message: error instanceof Error ? error.message : 'unknown_error',
+        message: friendlyErrorMessage(error, 'Could not confirm this signal. Please try again.'),
         confirmText: 'OK',
       });
     } finally {
@@ -84,13 +84,13 @@ export function DashboardPage() {
     try {
       const result = await rejectPendingConfirmation(row.id);
       if (!result.ok) {
-        throw new Error(result.error || 'reject_failed');
+        throw new Error(friendlyCodeMessage(result.error || 'reject_failed', 'Could not reject this signal.'));
       }
       await refresh();
     } catch (error) {
       await dialog.alert({
         title: 'Reject failed',
-        message: error instanceof Error ? error.message : 'unknown_error',
+        message: friendlyErrorMessage(error, 'Could not reject this signal. Please try again.'),
         confirmText: 'OK',
       });
     } finally {
