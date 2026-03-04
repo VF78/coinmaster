@@ -10,6 +10,49 @@ import type {
   TradingRulesSettingsResponse
 } from '../../shared/dto.js';
 
+const RISK_BLOCK_MESSAGES: Record<string, string> = {
+  leverage_limit_exceeded: 'leverage limit exceeded',
+  daily_loss_limit_exceeded: 'daily drawdown limit reached',
+  dd_lock_active: 'daily drawdown lock is active',
+};
+
+function formatFriendlyApiError(payload: Record<string, unknown>, status: number): string | null {
+  const base = typeof payload.error === 'string' ? payload.error : '';
+  const hint = typeof payload.hint === 'string' ? payload.hint : '';
+
+  if (base.startsWith('risk_gate_blocked:')) {
+    const rawBlocks = base.slice('risk_gate_blocked:'.length).split(',').map((x) => x.trim()).filter(Boolean);
+    const blocks = rawBlocks.length > 0 ? rawBlocks : ['unknown_risk_block'];
+    const readable = blocks.map((b) => RISK_BLOCK_MESSAGES[b] ?? b.replaceAll('_', ' '));
+    const summary = readable.join(', ');
+    return `Confirmation blocked by risk checks: ${summary}.`;
+  }
+
+  if (base === 'pending_not_found') {
+    return 'This pending signal no longer exists (already processed or expired).';
+  }
+
+  if (base === 'manual_confirmation_required') {
+    return 'Manual confirmation is required for this operation.';
+  }
+
+  if (base === 'auth_required') {
+    return 'Authentication required. Please sign in again.';
+  }
+
+  if (base === 'invalid_stop_loss_vs_market') {
+    const marketPrice = typeof payload.marketPrice === 'number' ? payload.marketPrice : undefined;
+    return `${hint || 'Stop-loss is on the wrong side of current market price.'}${marketPrice !== undefined ? ` (current market: ${marketPrice})` : ''}`;
+  }
+
+  if (base === 'invalid_take_profits_vs_entry') {
+    const entryPrice = typeof payload.entryPrice === 'number' ? payload.entryPrice : undefined;
+    return `${hint || 'Take-profit levels are on the wrong side of entry price.'}${entryPrice !== undefined ? ` (entry: ${entryPrice})` : ''}`;
+  }
+
+  return null;
+}
+
 async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
   if (!response.ok) {
@@ -18,8 +61,6 @@ async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
       const payload = await response.clone().json() as Record<string, unknown>;
       const base = typeof payload.error === 'string' ? payload.error : '';
       const hint = typeof payload.hint === 'string' ? payload.hint : '';
-      const marketPrice = typeof payload.marketPrice === 'number' ? payload.marketPrice : undefined;
-      const entryPrice = typeof payload.entryPrice === 'number' ? payload.entryPrice : undefined;
       const slErr = typeof (payload.stopLossOrder as { error?: unknown } | undefined)?.error === 'string'
         ? String((payload.stopLossOrder as { error?: string }).error)
         : '';
@@ -27,18 +68,12 @@ async function jsonFetch<T>(input: string, init?: RequestInit): Promise<T> {
         ? String((payload.takeProfitOrder as { error?: string }).error)
         : '';
 
-      if (base === 'invalid_stop_loss_vs_market') {
-        detail = `${hint || 'Stop-loss is on the wrong side of current market price.'}${marketPrice !== undefined ? ` (current market: ${marketPrice})` : ''}`;
-      } else if (base === 'invalid_take_profits_vs_entry') {
-        detail = `${hint || 'Take-profit levels are on the wrong side of entry price.'}${entryPrice !== undefined ? ` (entry: ${entryPrice})` : ''}`;
-      } else {
-        detail = [base, hint, slErr, tpErr].filter(Boolean).join(' | ');
-      }
+      detail = formatFriendlyApiError(payload, response.status) ?? [base, hint, slErr, tpErr].filter(Boolean).join(' | ');
     } catch {
       // ignore body parse errors
     }
 
-    throw new Error(detail ? `API error ${response.status}: ${detail}` : `API error ${response.status}`);
+    throw new Error(detail || `API error ${response.status}`);
   }
 
   return response.json() as Promise<T>;
