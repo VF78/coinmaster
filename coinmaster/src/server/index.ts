@@ -3611,15 +3611,48 @@ async function runTpFillMonitorTick(): Promise<void> {
       const stillPending = trade.tpOrderIds.filter(id => openOrderIds.has(id));
       const justFilled = trade.tpOrderIds.filter(id => !openOrderIds.has(id));
 
-      // If SL order disappeared before any TP fill, assume SL fired.
+      // If SL order disappeared before any TP fill, DO NOT assume immediate SL fill.
+      // Confirm with live position state first to avoid false alerts from order id churn.
       if (!trade.firstTpFired && trade.slOrderId && !openOrderIds.has(trade.slOrderId)) {
+        let remainingSize = 0;
         try {
-          await notifySlEvent({ symbol: trade.symbol, reason: 'stop_loss_trigger_filled' });
-        } catch (error) {
-          logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'SL telegram notify failed');
+          const positions = await exchange.getOpenPositions(trade.symbol);
+          const pos = positions.find((p) => p.symbol.toUpperCase() === trade.symbol.toUpperCase());
+          remainingSize = pos?.size ?? 0;
+        } catch {
+          remainingSize = 0;
         }
-        activeTrades.delete(correlationId);
-        continue;
+
+        if (remainingSize <= 0) {
+          try {
+            await notifySlEvent({ symbol: trade.symbol, reason: 'stop_loss_trigger_filled' });
+          } catch (error) {
+            logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'SL telegram notify failed');
+          }
+          activeTrades.delete(correlationId);
+          continue;
+        }
+
+        const closingSide: 'buy' | 'sell' = trade.side === 'buy' ? 'sell' : 'buy';
+        const slCandidate = openOrders.find((o) => {
+          if (o.symbol.toUpperCase() !== trade.symbol.toUpperCase()) return false;
+          if (o.side !== closingSide) return false;
+          const raw = o.raw as Record<string, unknown> | undefined;
+          const tpsl = String(
+            (raw as { tpsl?: unknown } | undefined)?.tpsl
+            ?? (raw as { trigger?: { tpsl?: unknown } } | undefined)?.trigger?.tpsl
+            ?? (raw as { orderType?: { trigger?: { tpsl?: unknown } } } | undefined)?.orderType?.trigger?.tpsl
+            ?? ''
+          ).toLowerCase();
+          return tpsl === 'sl';
+        });
+
+        const oldSlOrderId = trade.slOrderId;
+        trade.slOrderId = slCandidate?.id ?? null;
+        logger.warn(
+          { component: 'tp-monitor', symbol: trade.symbol, correlationId, oldSlOrderId, reboundSlOrderId: slCandidate?.id ?? null, remainingSize },
+          'SL order disappeared but position remains open; skip SL alert and continue tracking',
+        );
       }
 
       if (justFilled.length === 0) continue;
