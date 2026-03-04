@@ -89,7 +89,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [entryTimeframes, setEntryTimeframes] = useState<TradingRulesTimeframe[]>(defaults.entryTimeframes);
   const [emergencyExitTimeframes, setEmergencyExitTimeframes] = useState<TradingRulesTimeframe[]>(defaults.emergencyExitTimeframes);
   const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
-  const [engulfingRequireSweep, setEngulfingRequireSweep] = useState(defaults.engulfingRequireSweep);
   const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
   const [maxLeverage, setMaxLeverage] = useState(defaults.maxLeverage);
   const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
@@ -113,7 +112,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     entryTimeframes,
     emergencyExitTimeframes,
     engulfingLookbackCandles,
-    engulfingRequireSweep,
     fvgRetrace,
     maxLeverage,
     dailyDrawdown,
@@ -127,7 +125,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     entryTimeframes,
     emergencyExitTimeframes,
     engulfingLookbackCandles,
-    engulfingRequireSweep,
     fvgRetrace,
     maxLeverage,
     dailyDrawdown,
@@ -164,7 +161,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setEntryTimeframes(normalized.entryTimeframes);
     setEmergencyExitTimeframes(normalized.emergencyExitTimeframes);
     setEngulfingLookbackCandles(normalized.engulfingLookbackCandles);
-    setEngulfingRequireSweep(normalized.engulfingRequireSweep);
     setFvgRetrace(normalized.fvgRetrace);
     setMaxLeverage(normalized.maxLeverage);
     setDailyDrawdown(normalized.dailyDrawdown);
@@ -280,7 +276,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     if (!onRegisterSaveHandler) return;
     onRegisterSaveHandler(() => handleApply());
     return () => onRegisterSaveHandler(null);
-  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, engulfingRequireSweep, fvgRetrace, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm]);
+  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm]);
 
   return (
     <main className="terminal-layout">
@@ -365,22 +361,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                 decimals={0}
                 onChange={setEngulfingLookbackCandles}
               />
-            </div>
-            <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-              <span className="rules-label" style={{ margin: 0 }}>Require Sweep</span>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={engulfingRequireSweep}
-                  onChange={(e) => setEngulfingRequireSweep(e.target.checked)}
-                  className="rules-checkbox"
-                />
-                <span className="muted" style={{ fontSize: 12 }}>
-                  {engulfingRequireSweep
-                    ? 'Strict: sweep breakout + body engulfing'
-                    : 'Body engulfing only (wider detection)'}
-                </span>
-              </label>
             </div>
             <div style={{ display: 'grid', gap: 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

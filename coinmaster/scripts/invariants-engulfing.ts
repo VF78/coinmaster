@@ -177,6 +177,27 @@ console.log('\n── Case 6: No breakout when within historical range ──');
 }
 
 // ═════════════════════════════════════════════════════════════════════
+// CASE 6.1: Pair-extreme breakout (OR across prev+curr extremes)
+// ═════════════════════════════════════════════════════════════════════
+
+console.log('\n── Case 6.1: Pair-extreme breakout across engulfing pair ──');
+{
+  const history = [
+    candle(100, 120, 90, 110),
+    candle(100, 118, 91, 109),
+    candle(100, 119, 92, 108),
+  ];
+
+  // prev itself does not break low/high, but curr does.
+  const prev = candle(105, 117, 93, 106);
+  const currLowBreak = candle(104, 116, 89, 110);
+  const currHighBreak = candle(104, 121, 93, 100);
+
+  assert(isLowBreakout(history, prev, currLowBreak) === true, 'pair low uses min(prev.low, curr.low)');
+  assert(isHighBreakout(history, prev, currHighBreak) === true, 'pair high uses max(prev.high, curr.high)');
+}
+
+// ═════════════════════════════════════════════════════════════════════
 // CASE 7: Combined bullish engulfing + low breakout → signal
 // ═════════════════════════════════════════════════════════════════════
 

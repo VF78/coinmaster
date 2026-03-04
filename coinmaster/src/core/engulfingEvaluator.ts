@@ -3,10 +3,11 @@
  *
  * Server-side multi-timeframe engulfing signal engine (body-only).
  *
- * Two pattern detectors:
+ * Two mandatory pattern detectors (both required):
  *   1. Body-only engulfing — current candle body fully engulfs previous candle body
- *   2. Low/High breakout — the "swept" candle's low or high exceeds the extremes
- *      of the previous N candles (configurable, default 30)
+ *   2. Pair-extreme sweep breakout — low/high extreme of the engulfing pair
+ *      (previous + current candle) breaks the extremes of previous N candles
+ *      (configurable, default 30)
  *
  * Supports arrays of timeframes (entryTimeframes[], emergencyExitTimeframes[])
  * from TradingRulesSettings.
@@ -36,13 +37,6 @@ export interface EngulfingEvaluatorOptions {
   lookbackCandles: number;
   entryTimeframes: TradingRulesTimeframe[];
   emergencyExitTimeframes: TradingRulesTimeframe[];
-  /** true => require sweep breakout + engulfing body (legacy strict mode) */
-  requireSweep?: boolean;
-}
-
-export interface EvaluateTimeframeOptions {
-  /** true => require breakout sweep + engulfing body */
-  requireSweep?: boolean;
 }
 
 // ─── Candle body helpers ──────────────────────────────────────────────
@@ -76,23 +70,25 @@ export function isBearishEngulfingBody(prev: Candle, curr: Candle): boolean {
 }
 
 /**
- * Low breakout: the swept candle's low is below the lowest low
- * of the previous N candles.
+ * Pair low-breakout: the minimum low of the engulfing pair (prev + curr)
+ * is below the lowest low of the previous N candles.
  */
-export function isLowBreakout(history: Candle[], swept: Candle): boolean {
+export function isLowBreakout(history: Candle[], swept: Candle, curr?: Candle): boolean {
   if (history.length === 0) return false;
   const minLow = Math.min(...history.map((c) => c.low));
-  return swept.low < minLow;
+  const pairLow = curr ? Math.min(swept.low, curr.low) : swept.low;
+  return pairLow < minLow;
 }
 
 /**
- * High breakout: the swept candle's high is above the highest high
- * of the previous N candles.
+ * Pair high-breakout: the maximum high of the engulfing pair (prev + curr)
+ * is above the highest high of the previous N candles.
  */
-export function isHighBreakout(history: Candle[], swept: Candle): boolean {
+export function isHighBreakout(history: Candle[], swept: Candle, curr?: Candle): boolean {
   if (history.length === 0) return false;
   const maxHigh = Math.max(...history.map((c) => c.high));
-  return swept.high > maxHigh;
+  const pairHigh = curr ? Math.max(swept.high, curr.high) : swept.high;
+  return pairHigh > maxHigh;
 }
 
 // ─── Confidence by timeframe ──────────────────────────────────────────
@@ -118,7 +114,6 @@ export function evaluateTimeframe(
   candles: Candle[],
   tf: TradingRulesTimeframe,
   lookback: number,
-  opts?: EvaluateTimeframeOptions,
 ): EngulfingSignal {
   const minRequired = lookback + 2;
 
@@ -132,51 +127,42 @@ export function evaluateTimeframe(
     };
   }
 
-  const requireSweep = opts?.requireSweep === true;
-  const engulf = candles[candles.length - 1];
-  const swept = candles[candles.length - 2];
+  const curr = candles[candles.length - 1];
+  const prev = candles[candles.length - 2];
   const history = candles.slice(candles.length - 2 - lookback, candles.length - 2);
 
   const confidence = TF_CONFIDENCE[tf] ?? 0.7;
-  const bullishBody = isBullishEngulfingBody(swept, engulf);
-  const bearishBody = isBearishEngulfingBody(swept, engulf);
-  const lowBreakout = isLowBreakout(history, swept);
-  const highBreakout = isHighBreakout(history, swept);
+  const bullishBody = isBullishEngulfingBody(prev, curr);
+  const bearishBody = isBearishEngulfingBody(prev, curr);
+  const lowBreakout = isLowBreakout(history, prev, curr);
+  const highBreakout = isHighBreakout(history, prev, curr);
 
-  if (bullishBody && (!requireSweep || lowBreakout)) {
+  if (bullishBody && lowBreakout) {
     return {
       detected: true,
       direction: 'bullish',
       timeframe: tf,
       confidence,
-      reason: requireSweep
-        ? `sweep${lookback}_low_then_bullish_body_engulf_${tf}`
-        : `bullish_body_engulf_${tf}`,
+      reason: `sweep${lookback}_low_then_bullish_body_engulf_${tf}`,
     };
   }
 
-  if (bearishBody && (!requireSweep || highBreakout)) {
+  if (bearishBody && highBreakout) {
     return {
       detected: true,
       direction: 'bearish',
       timeframe: tf,
       confidence,
-      reason: requireSweep
-        ? `sweep${lookback}_high_then_bearish_body_engulf_${tf}`
-        : `bearish_body_engulf_${tf}`,
+      reason: `sweep${lookback}_high_then_bearish_body_engulf_${tf}`,
     };
   }
-
-  const reason = requireSweep
-    ? `no_engulf_trigger_requires_sweep_${tf}`
-    : `no_engulf_trigger_${tf}`;
 
   return {
     detected: false,
     direction: null,
     timeframe: tf,
     confidence: 0.3,
-    reason,
+    reason: `no_engulf_or_sweep_trigger_${tf}`,
   };
 }
 
@@ -197,12 +183,12 @@ export function evaluateMultiTf(
 
   for (const tf of opts.entryTimeframes) {
     const candles = candlesByTf.get(tf) ?? [];
-    entry.push(evaluateTimeframe(candles, tf, opts.lookbackCandles, { requireSweep: opts.requireSweep }));
+    entry.push(evaluateTimeframe(candles, tf, opts.lookbackCandles));
   }
 
   for (const tf of opts.emergencyExitTimeframes) {
     const candles = candlesByTf.get(tf) ?? [];
-    exit.push(evaluateTimeframe(candles, tf, opts.lookbackCandles, { requireSweep: opts.requireSweep }));
+    exit.push(evaluateTimeframe(candles, tf, opts.lookbackCandles));
   }
 
   return {

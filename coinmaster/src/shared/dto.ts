@@ -23,12 +23,6 @@ export interface TradingRulesSettings {
   emergencyExitTimeframes: TradingRulesTimeframe[];
   /** Lookback window for engulfing / breakout detection (candles). */
   engulfingLookbackCandles: number;
-  /**
-   * Entry/exit engulfing strictness:
-   * - true  => require breakout sweep + engulfing body (legacy strict mode)
-   * - false => engulfing body alone is enough (sweep acts only as context)
-   */
-  engulfingRequireSweep: boolean;
   fvgRetrace: number;
   maxLeverage: number;
   dailyDrawdown: number;

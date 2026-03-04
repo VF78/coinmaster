@@ -14,7 +14,6 @@ export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   entryTimeframes: ['15m'],
   emergencyExitTimeframes: ['1h'],
   engulfingLookbackCandles: 30,
-  engulfingRequireSweep: false,
   fvgRetrace: 50,
   maxLeverage: 5,
   dailyDrawdown: 3,
@@ -90,9 +89,6 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
   base.entryTimeframes = normalizeTimeframeArray(raw.entryTimeframes, [base.entryTf]);
   base.emergencyExitTimeframes = normalizeTimeframeArray(raw.emergencyExitTimeframes, [base.exitTf]);
   base.engulfingLookbackCandles = clampNumber(raw.engulfingLookbackCandles, 1, 500, base.engulfingLookbackCandles);
-  base.engulfingRequireSweep = raw.engulfingRequireSweep === undefined
-    ? base.engulfingRequireSweep
-    : Boolean(raw.engulfingRequireSweep);
 
   // Keep scalar fields in sync with first element of array
   base.entryTf = base.entryTimeframes[0];
