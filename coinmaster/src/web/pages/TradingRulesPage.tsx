@@ -318,7 +318,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
           <p className="rules-label" style={{ marginBottom: 8 }}>
             Entry timeframe <span className="muted" style={{ fontWeight: 400 }}>(Bullish / Bearish Engulfing)</span>
           </p>
-          <div className="rules-btn-group" style={{ justifyContent: 'space-between' }}>
+          <div className="rules-btn-group rules-btn-group--left">
             {TIMEFRAMES.map((tf) => (
               <Button
                 key={tf}
@@ -387,7 +387,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
           <p className="rules-label" style={{ marginBottom: 8 }}>
             Exit timeframe <span className="muted" style={{ fontWeight: 400 }}>(Opposite Engulfing)</span>
           </p>
-          <div className="rules-btn-group" style={{ marginBottom: 10, justifyContent: 'space-between' }}>
+          <div className="rules-btn-group rules-btn-group--left rules-btn-group--mb">
             {TIMEFRAMES.map((tf) => (
               <Button
                 key={tf}
@@ -452,18 +452,10 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
       </Card>
 
       <Card title="Default TP / SL" actions={<Badge tone="success">Targets</Badge>}>
-        <div className="rules-section" style={{ display: 'grid', gap: 8 }}>
+        <div className="rules-section rules-levels-grid">
           {tpLevels.map((tp, idx) => (
-            <div
-              key={idx}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '52px auto auto auto',
-                gap: 8,
-                alignItems: 'center',
-              }}
-            >
-              <span className="rules-label" style={{ margin: 0, fontWeight: 700 }}>TP{idx + 1}</span>
+            <div key={idx} className="rules-level-row">
+              <span className="rules-level-tag">TP{idx + 1}</span>
               <Stepper
                 value={tp}
                 min={0.5}
@@ -477,7 +469,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
               {idx === 0 && tpLevels.length < 3 ? (
                 <Button type="button" variant="secondary" className="rules-mini-btn" onClick={addTpLevel}>+ TP</Button>
               ) : (
-                <span />
+                <span className="rules-mini-btn rules-mini-btn--ghost" />
               )}
 
               {idx > 0 ? (
@@ -491,15 +483,17 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                   Remove
                 </Button>
               ) : (
-                <span className="muted" style={{ fontSize: 11 }}>TP1 → move SL to entry</span>
+                <span className="muted rules-level-hint">TP1 → move SL to entry</span>
               )}
             </div>
           ))}
-        </div>
 
-        <div className="rules-section" style={{ display: 'grid', gridTemplateColumns: '52px auto', gap: 8, alignItems: 'center' }}>
-          <span className="rules-label" style={{ margin: 0, fontWeight: 700 }}>SL</span>
-          <Stepper value={slPct} min={0.5} max={100} step={0.5} unit="%" decimals={1} onChange={setSlPct} />
+          <div className="rules-level-row">
+            <span className="rules-level-tag">SL</span>
+            <Stepper value={slPct} min={0.5} max={100} step={0.5} unit="%" decimals={1} onChange={setSlPct} />
+            <span className="rules-mini-btn rules-mini-btn--ghost" />
+            <span className="rules-mini-btn rules-mini-btn--ghost" />
+          </div>
         </div>
 
         <p className="stat-note muted">

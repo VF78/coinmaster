@@ -225,8 +225,8 @@ button:focus-visible {
 
 .btn--danger {
   color: #fff;
-  background: linear-gradient(180deg, #f28ab0 0%, #e16b95 100%);
-  border-color: #ff9dc0;
+  background: linear-gradient(180deg, #ef6b82 0%, #dd4f69 100%);
+  border-color: #f48fa0;
 }
 
 .badge {
@@ -726,8 +726,8 @@ tbody tr:hover {
 .hl-action-btn--remove {
   border-radius: 0.65rem;
   color: #fff;
-  background: linear-gradient(180deg, #f08ab2 0%, #df6b98 100%);
-  border-color: #ffa5c5;
+  background: linear-gradient(180deg, #ef6b82 0%, #dd4f69 100%);
+  border-color: #f48fa0;
 }
 
 .hl-action-spacer {
@@ -1267,6 +1267,14 @@ tbody tr:hover {
   flex-wrap: wrap;
 }
 
+.rules-btn-group--left {
+  justify-content: flex-start;
+}
+
+.rules-btn-group--mb {
+  margin-bottom: 0.5rem;
+}
+
 .rules-range {
   width: 100%;
   accent-color: var(--accent);
@@ -1335,13 +1343,42 @@ tbody tr:hover {
 }
 
 .rules-mini-btn {
-  min-height: 2.05rem;
-  height: 2.05rem;
+  min-height: 2.15rem;
+  height: 2.15rem;
   border-radius: 0.65rem;
-  padding: 0.24rem 0.62rem;
-  font-size: 0.78rem;
+  padding: 0.26rem 0.7rem;
+  font-size: 0.79rem;
   font-weight: 700;
   justify-self: start;
+  min-width: 82px;
+}
+
+.rules-mini-btn--ghost {
+  visibility: hidden;
+}
+
+.rules-levels-grid {
+  display: grid;
+  gap: 0.52rem;
+}
+
+.rules-level-row {
+  display: grid;
+  grid-template-columns: 52px auto 96px 96px;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rules-level-tag {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #a7bbd8;
+}
+
+.rules-level-hint {
+  font-size: 0.72rem;
+  line-height: 1.25;
 }
 
 .rules-stepper {
@@ -1414,5 +1451,10 @@ tbody tr:hover {
 @media (max-width: 899px) {
   .rules-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .rules-level-row {
+    grid-template-columns: 42px minmax(0, 1fr) 86px 86px;
+    gap: 0.4rem;
   }
 }
