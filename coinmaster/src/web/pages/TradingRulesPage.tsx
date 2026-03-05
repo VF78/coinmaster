@@ -4,7 +4,7 @@ import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import type { TradingCoinAllocation, TradingRulesSettings, TradingRulesTimeframe } from '../../shared/dto.js';
 import { cloneTradingRulesDefaults, normalizeTradingRules } from '../../shared/tradingRules.js';
-import { getTradingRuleSymbols, getTradingRules, saveTradingRules } from '../lib/api';
+import { friendlyErrorMessage, getTradingRuleSymbols, getTradingRules, saveTradingRules } from '../lib/api';
 import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
@@ -363,10 +363,11 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
       return true;
     } catch (error) {
       console.error('[TradingRules] failed to save rules:', error);
-      setSaveInfo('Save failed. Rules were not confirmed by server.');
+      const msg = friendlyErrorMessage(error, 'Could not save rules. Check server logs.');
+      setSaveInfo(`Save failed: ${msg}`);
       await dialog.alert({
         title: 'Save failed',
-        message: 'Could not save rules. Check server logs.',
+        message: msg,
         confirmText: 'OK',
       });
       return false;
