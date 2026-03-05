@@ -31,8 +31,8 @@ export interface TradingRulesSettings {
   /** Up to 3 take-profit levels in % (sorted ascending). After TP1 hits → SL moves to entry (break-even). */
   tpLevels: number[];
   slPct: number;
-  /** Percentage of position to close on opposite engulfing exit signal (1–100, default 50).
-   *  Partial close → SL immediately moves to entry price. */
+  /** Percentage of position to close on opposite engulfing exit signal (0–100, default 50).
+   *  0% disables emergency exit execution; partial close (>0 and <100) moves SL to entry. */
   exitClosePct: number;
   autoConfirm: boolean;
 }
@@ -44,12 +44,13 @@ export interface TelegramNotifySettings {
   notifyTp: boolean;
   notifySl: boolean;
   notifyManualConfirm: boolean;
+  notifyDailyAnalytics: boolean;
   updateOffset?: number;
 }
 
 export interface TelegramOutboxItem {
   id: string;
-  category: 'manual_confirm' | 'trade_open' | 'tp' | 'sl' | 'system';
+  category: 'manual_confirm' | 'trade_open' | 'tp' | 'sl' | 'analytics_daily' | 'system';
   text: string;
   replyMarkup?: unknown;
   dedupeKey?: string;
@@ -350,6 +351,7 @@ export interface ExchangeSettingsResponse {
     notifyTp: boolean;
     notifySl: boolean;
     notifyManualConfirm: boolean;
+    notifyDailyAnalytics: boolean;
   };
   error?: string;
 }

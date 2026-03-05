@@ -50,6 +50,7 @@ function buildReplayDb(depositUsd: number): DBShape {
         notifyTp: true,
         notifySl: true,
         notifyManualConfirm: true,
+        notifyDailyAnalytics: true,
       },
     },
     positions: [],

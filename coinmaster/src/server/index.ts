@@ -13,12 +13,12 @@ import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
-import type { LivePosition, PendingConfirmation, TelegramOutboxItem, TradingRulesSettings, TradingRulesTimeframe } from '../shared/dto.js';
+import type { LivePosition, PendingConfirmation, TelegramOutboxItem, TradeEvent, TradingRulesSettings, TradingRulesTimeframe } from '../shared/dto.js';
 import { normalizeTradingRules } from '../shared/tradingRules.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { Candle, CandleTimeframe, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
+import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
 import { evaluateFvg, type FvgTimeframe } from '../core/fvgEvaluator.js';
@@ -46,6 +46,10 @@ const ENABLE_FVG_MONITOR = String(process.env.ENABLE_FVG_MONITOR ?? 'false').toL
 const FVG_MONITOR_INTERVAL_MS = Math.max(60_000, Number(process.env.FVG_MONITOR_INTERVAL_MS || 300_000)); // default 5m
 const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
 const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(2000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 5000));
+const DAILY_ANALYTICS_TZ = process.env.DAILY_ANALYTICS_TZ || 'Europe/Madrid';
+const DAILY_ANALYTICS_HOUR = Math.min(23, Math.max(0, Number(process.env.DAILY_ANALYTICS_HOUR || 23)));
+const DAILY_ANALYTICS_MINUTE = Math.min(59, Math.max(0, Number(process.env.DAILY_ANALYTICS_MINUTE || 5)));
+const DAILY_ANALYTICS_TICK_MS = Math.max(60_000, Number(process.env.DAILY_ANALYTICS_TICK_MS || 10 * 60_000));
 const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
 const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 
@@ -109,6 +113,7 @@ async function getTelegramConfig(): Promise<{
   notifyTp: boolean;
   notifySl: boolean;
   notifyManualConfirm: boolean;
+  notifyDailyAnalytics: boolean;
 } | null> {
   const db = await getDb();
   const s = db.data.settings.telegramNotify;
@@ -122,6 +127,7 @@ async function getTelegramConfig(): Promise<{
     notifyTp: s?.notifyTp !== false,
     notifySl: s?.notifySl !== false,
     notifyManualConfirm: s?.notifyManualConfirm !== false,
+    notifyDailyAnalytics: s?.notifyDailyAnalytics !== false,
   };
 }
 
@@ -476,6 +482,241 @@ async function notifySlEvent(params: { symbol: string; reason: string }): Promis
   });
 }
 
+function getTzParts(date: Date, timeZone: string): { dayKey: string; hour: number; minute: number } {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(date);
+
+  const map: Record<string, string> = {};
+  for (const p of parts) {
+    if (p.type !== 'literal') map[p.type] = p.value;
+  }
+
+  const dayKey = `${map.year ?? '0000'}-${map.month ?? '00'}-${map.day ?? '00'}`;
+  const hour = Number(map.hour ?? '0');
+  const minute = Number(map.minute ?? '0');
+  return {
+    dayKey,
+    hour: Number.isFinite(hour) ? hour : 0,
+    minute: Number.isFinite(minute) ? minute : 0,
+  };
+}
+
+function toFinite(value: unknown, fallback = 0): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function fillClosedPnl(fill: FillEvent): number {
+  const raw = fill.raw as { closedPnl?: unknown } | undefined;
+  return toFinite(raw?.closedPnl, 0);
+}
+
+function fillFee(fill: FillEvent): number {
+  const raw = fill.raw as { fee?: unknown } | undefined;
+  return Math.abs(toFinite(raw?.fee, 0));
+}
+
+function fillDirection(fill: FillEvent): string {
+  const raw = fill.raw as { dir?: unknown } | undefined;
+  return String(raw?.dir ?? '').trim();
+}
+
+function asUsd(value: number): string {
+  const sign = value > 0 ? '+' : '';
+  return `${sign}${value.toFixed(2)}$`;
+}
+
+function asPct(value: number): string {
+  return `${value.toFixed(1)}%`;
+}
+
+function formatSymbolBreakdown(title: string, rows: Array<{ symbol: string; value: number }>, top = 3): string[] {
+  const filtered = rows
+    .filter((x) => Number.isFinite(x.value) && x.value !== 0)
+    .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+    .slice(0, top);
+  if (filtered.length === 0) return [];
+  return [title, ...filtered.map((x) => `- ${x.symbol}: ${asUsd(x.value)}`)];
+}
+
+function isManualOpenFill(fill: FillEvent, tradeEvents: TradeEvent[]): boolean {
+  const direction = fillDirection(fill);
+  if (!direction.toLowerCase().startsWith('open ')) return false;
+
+  const fillTs = Date.parse(fill.timestamp);
+  if (!Number.isFinite(fillTs)) return false;
+
+  const expectedSide = fill.side === 'buy' ? 'long' : 'short';
+  return !tradeEvents.some((e) => {
+    if (e.type !== 'order_submitted') return false;
+    if (String(e.symbol).toUpperCase() !== fill.symbol.toUpperCase()) return false;
+    if (e.side !== expectedSide) return false;
+    const eventTs = Date.parse(String(e.timestamp));
+    if (!Number.isFinite(eventTs)) return false;
+    return Math.abs(eventTs - fillTs) <= 3 * 60_000;
+  });
+}
+
+async function buildDailyAnalyticsText(): Promise<string | null> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifyDailyAnalytics) return null;
+
+  const now = Date.now();
+  const cutoff = now - 24 * 60 * 60_000;
+
+  const [fills, db] = await Promise.all([
+    exchange.getFills().catch(() => [] as FillEvent[]),
+    getDb(),
+  ]);
+
+  const recentFills = fills
+    .filter((f) => Date.parse(f.timestamp) >= cutoff)
+    .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+
+  const recentEvents = (db.data.tradeEvents ?? []).filter((e) => Date.parse(e.timestamp) >= cutoff);
+  const recentAudits = (db.data.riskGateAudit ?? []).filter((a) => Date.parse(a.timestamp) >= cutoff);
+
+  const closeFills = recentFills.filter((f) => fillDirection(f).toLowerCase().startsWith('close '));
+  const openFills = recentFills.filter((f) => fillDirection(f).toLowerCase().startsWith('open '));
+  const manualOpenFills = openFills.filter((f) => isManualOpenFill(f, recentEvents));
+
+  const realized = closeFills.reduce((sum, f) => sum + fillClosedPnl(f), 0);
+  const fees = recentFills.reduce((sum, f) => sum + fillFee(f), 0);
+  const net = realized - fees;
+
+  const winners = closeFills.filter((f) => fillClosedPnl(f) > 0).length;
+  const losers = closeFills.filter((f) => fillClosedPnl(f) < 0).length;
+  const winRate = closeFills.length > 0 ? (winners / closeFills.length) * 100 : 0;
+
+  const pnlBySymbol = new Map<string, number>();
+  for (const f of closeFills) {
+    const key = f.symbol.toUpperCase();
+    const value = fillClosedPnl(f);
+    pnlBySymbol.set(key, (pnlBySymbol.get(key) ?? 0) + value);
+  }
+
+  const topRows = [...pnlBySymbol.entries()].map(([symbol, value]) => ({ symbol, value }));
+
+  const signalDetected = recentEvents.filter((e) => e.type === 'signal_detected').length;
+  const signalRejected = recentEvents.filter((e) => e.type === 'signal_rejected').length;
+  const ordersSubmitted = recentEvents.filter((e) => e.type === 'order_submitted').length;
+  const ordersAcked = recentEvents.filter((e) => e.type === 'order_acknowledged').length;
+  const ordersRejected = recentEvents.filter((e) => e.type === 'order_rejected').length;
+
+  const biasBlocks = recentAudits.filter((a) => a.reason === 'operator_bias_block').length;
+  const leverageBlocks = recentEvents.filter((e) => e.reason === 'pending_rejected_risk_gate' && String(e.payload?.blocks ?? '').includes('leverage_limit_exceeded')).length;
+  const ddBlocks = recentEvents.filter((e) => e.reason === 'pending_rejected_risk_gate' && String(e.payload?.blocks ?? '').includes('daily_loss_limit_exceeded')).length;
+
+  const biggestLoss = closeFills
+    .map((f) => ({ symbol: f.symbol, value: fillClosedPnl(f), timestamp: f.timestamp }))
+    .filter((x) => x.value < 0)
+    .sort((a, b) => a.value - b.value)[0];
+
+  const wins: string[] = [];
+  const risks: string[] = [];
+  const suggestions: string[] = [];
+
+  if (net > 0) wins.push(`День закрыт в плюс: ${asUsd(net)} (realized ${asUsd(realized)}, fee ${asUsd(-fees)}).`);
+  if (closeFills.length > 0 && winRate >= 50) wins.push(`Стабильность закрытий: win-rate ${asPct(winRate)} (${winners}/${closeFills.length}).`);
+  if (ordersRejected === 0 && ordersSubmitted > 0) wins.push('Без отказов биржи по submit/ack в ключевых ордерах.');
+
+  if (net < 0) risks.push(`Итог за 24ч отрицательный: ${asUsd(net)}.`);
+  if (biggestLoss) risks.push(`Крупнейший минус: ${biggestLoss.symbol} ${asUsd(biggestLoss.value)} (${biggestLoss.timestamp}).`);
+  if (biasBlocks > 0) risks.push(`Блоки по bias: ${biasBlocks} (проверь актуальность bias-команд).`);
+  if (leverageBlocks > 0 || ddBlocks > 0) {
+    risks.push(`Risk-gate блоки: leverage=${leverageBlocks}, dailyDD=${ddBlocks}.`);
+  }
+  if (manualOpenFills.length > 0) {
+    risks.push(`Обнаружены ручные открытия без системного submit: ${manualOpenFills.length}.`);
+  }
+
+  if (net < 0) suggestions.push('Снизить агрессию: уменьшить leverage/размер до стабилизации equity-кривой.');
+  if (winRate < 45 && closeFills.length >= 4) suggestions.push('Ужесточить фильтрацию входов: сократить TF/сигналы с худшей доходностью.');
+  if (biasBlocks >= 10) suggestions.push('Пересмотреть частоту смены bias: много сигналов режется операторским bias.');
+  if (manualOpenFills.length > 0) suggestions.push('Для ручных входов: дисциплина по направлению текущего bias + фиксированный риск на сделку.');
+  if (suggestions.length === 0) suggestions.push('Сохранить текущую логику, но продолжать мониторинг drawdown и quality сигналов ежедневно.');
+
+  const nowDate = new Date(now);
+  const fromDate = new Date(cutoff);
+  const localNow = getTzParts(nowDate, DAILY_ANALYTICS_TZ);
+
+  const lines: string[] = [
+    '🧠 Daily AI trade analytics (24h)',
+    `Window: ${fromDate.toISOString()} → ${nowDate.toISOString()}`,
+    `Local day: ${localNow.dayKey} (${DAILY_ANALYTICS_TZ})`,
+    '',
+    '📌 Сделки и P&L',
+    `- Fills: ${recentFills.length} (open ${openFills.length}, close ${closeFills.length})`,
+    `- Realized: ${asUsd(realized)} | Fees: ${asUsd(-fees)} | Net: ${asUsd(net)}`,
+    `- Win-rate: ${asPct(winRate)} (${winners}/${closeFills.length || 0})`,
+    ...formatSymbolBreakdown('- По символам (realized):', topRows),
+    '',
+    '📡 Сигналы и исполнение',
+    `- Signal detected: ${signalDetected}, rejected: ${signalRejected}`,
+    `- Orders submitted/acked/rejected: ${ordersSubmitted}/${ordersAcked}/${ordersRejected}`,
+    `- Risk blocks: bias=${biasBlocks}, leverage=${leverageBlocks}, dailyDD=${ddBlocks}`,
+    '',
+    '👤 Ручные операции',
+    `- Manual opens detected: ${manualOpenFills.length}`,
+  ];
+
+  if (wins.length > 0) {
+    lines.push('', '✅ Что было правильно', ...wins.map((w) => `- ${w}`));
+  }
+  if (risks.length > 0) {
+    lines.push('', '⚠️ Ошибки / причины потерь', ...risks.map((r) => `- ${r}`));
+  }
+  lines.push('', '🎯 Предложения по оптимизации', ...suggestions.map((s, idx) => `${idx + 1}. ${s}`));
+
+  return lines.join('\n').slice(0, 3900);
+}
+
+let dailyAnalyticsTimer: NodeJS.Timeout | null = null;
+let dailyAnalyticsBusy = false;
+
+async function runDailyAnalyticsTick(): Promise<void> {
+  if (dailyAnalyticsBusy) return;
+  dailyAnalyticsBusy = true;
+  try {
+    const cfg = await getTelegramConfig();
+    if (!cfg || !cfg.notifyDailyAnalytics) return;
+
+    const local = getTzParts(new Date(), DAILY_ANALYTICS_TZ);
+    const afterSchedule = local.hour > DAILY_ANALYTICS_HOUR || (local.hour === DAILY_ANALYTICS_HOUR && local.minute >= DAILY_ANALYTICS_MINUTE);
+    if (!afterSchedule) return;
+
+    const text = await buildDailyAnalyticsText();
+    if (!text) return;
+
+    await enqueueTelegramOutbox({
+      category: 'analytics_daily',
+      dedupeKey: `analytics-daily:${local.dayKey}`,
+      text,
+    });
+  } catch (err) {
+    logger.warn({ component: 'analytics-daily', err }, 'daily analytics tick failed');
+  } finally {
+    dailyAnalyticsBusy = false;
+  }
+}
+
+function startDailyAnalyticsLoop(): void {
+  if (dailyAnalyticsTimer) return;
+  runDailyAnalyticsTick().catch((err) => logger.warn({ component: 'analytics-daily', err }, 'initial daily analytics tick failed'));
+  dailyAnalyticsTimer = setInterval(() => {
+    runDailyAnalyticsTick().catch((err) => logger.warn({ component: 'analytics-daily', err }, 'daily analytics tick failed'));
+  }, DAILY_ANALYTICS_TICK_MS);
+  dailyAnalyticsTimer.unref?.();
+  logger.info({ component: 'analytics-daily', tz: DAILY_ANALYTICS_TZ, hour: DAILY_ANALYTICS_HOUR, minute: DAILY_ANALYTICS_MINUTE, intervalMs: DAILY_ANALYTICS_TICK_MS }, 'daily analytics loop started');
+}
+
 async function executePendingConfirmation(pendingId: string, actor: 'dashboard' | 'telegram'): Promise<{ ok: boolean; error?: string }> {
   const db = await getDb();
   const pending = db.data.pendingConfirmations.find((p) => p.id === pendingId);
@@ -714,6 +955,7 @@ async function runTelegramUpdateTick(): Promise<void> {
         notifyTp: true,
         notifySl: true,
         notifyManualConfirm: true,
+        notifyDailyAnalytics: true,
       };
       db.data.settings.telegramNotify.updateOffset = nextOffset;
       await db.write();
@@ -2621,6 +2863,7 @@ app.get('/api/settings/exchange', async (_req, res) => {
       notifyTp: tg?.notifyTp !== false,
       notifySl: tg?.notifySl !== false,
       notifyManualConfirm: tg?.notifyManualConfirm !== false,
+      notifyDailyAnalytics: tg?.notifyDailyAnalytics !== false,
     },
     error: live.error
   });
@@ -2696,6 +2939,7 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
     notifyTp,
     notifySl,
     notifyManualConfirm,
+    notifyDailyAnalytics,
   } = req.body as {
     botToken?: string;
     chatId?: string;
@@ -2703,6 +2947,7 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
     notifyTp?: boolean;
     notifySl?: boolean;
     notifyManualConfirm?: boolean;
+    notifyDailyAnalytics?: boolean;
   };
 
   const db = await getDb();
@@ -2713,6 +2958,7 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
     notifyTp: true,
     notifySl: true,
     notifyManualConfirm: true,
+    notifyDailyAnalytics: true,
   };
 
   db.data.settings.telegramNotify = {
@@ -2722,6 +2968,7 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
     notifyTp: notifyTp !== undefined ? Boolean(notifyTp) : current.notifyTp,
     notifySl: notifySl !== undefined ? Boolean(notifySl) : current.notifySl,
     notifyManualConfirm: notifyManualConfirm !== undefined ? Boolean(notifyManualConfirm) : current.notifyManualConfirm,
+    notifyDailyAnalytics: notifyDailyAnalytics !== undefined ? Boolean(notifyDailyAnalytics) : current.notifyDailyAnalytics !== false,
   };
 
   await db.write();
@@ -2739,6 +2986,7 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
       notifyTp: db.data.settings.telegramNotify.notifyTp,
       notifySl: db.data.settings.telegramNotify.notifySl,
       notifyManualConfirm: db.data.settings.telegramNotify.notifyManualConfirm,
+      notifyDailyAnalytics: db.data.settings.telegramNotify.notifyDailyAnalytics,
     },
   });
 });
@@ -4206,6 +4454,7 @@ const server = app.listen(port, host, () => {
   startTpFillMonitor();
   startTelegramOutboxLoop();
   startTelegramUpdateLoop();
+  startDailyAnalyticsLoop();
   getTelegramConfig()
     .then((cfg) => {
       if (!cfg) {
@@ -4237,6 +4486,7 @@ async function gracefulShutdown(signal: string) {
   if (tpFillMonitorTimer) { clearInterval(tpFillMonitorTimer); tpFillMonitorTimer = null; }
   if (telegramOutboxTimer) { clearInterval(telegramOutboxTimer); telegramOutboxTimer = null; }
   if (telegramUpdateTimer) { clearInterval(telegramUpdateTimer); telegramUpdateTimer = null; }
+  if (dailyAnalyticsTimer) { clearInterval(dailyAnalyticsTimer); dailyAnalyticsTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
   if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
 

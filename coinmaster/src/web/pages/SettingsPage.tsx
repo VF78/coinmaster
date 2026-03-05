@@ -25,6 +25,7 @@ export function SettingsPage() {
   const [notifyTp, setNotifyTp] = useState(true);
   const [notifySl, setNotifySl] = useState(true);
   const [notifyManualConfirm, setNotifyManualConfirm] = useState(true);
+  const [notifyDailyAnalytics, setNotifyDailyAnalytics] = useState(true);
 
   const [hlAccountAddress, setHlAccountAddress] = useState('');
   const [hlApiWalletAddress, setHlApiWalletAddress] = useState('');
@@ -44,6 +45,7 @@ export function SettingsPage() {
       setNotifyTp(next.telegramNotify?.notifyTp !== false);
       setNotifySl(next.telegramNotify?.notifySl !== false);
       setNotifyManualConfirm(next.telegramNotify?.notifyManualConfirm !== false);
+      setNotifyDailyAnalytics(next.telegramNotify?.notifyDailyAnalytics !== false);
       setChatId(next.telegramNotify?.chatId ?? '');
       setBotToken(''); // never prefill secrets
 
@@ -79,11 +81,13 @@ export function SettingsPage() {
         notifyTp: boolean;
         notifySl: boolean;
         notifyManualConfirm: boolean;
+        notifyDailyAnalytics: boolean;
       } = {
         notifyOpen,
         notifyTp,
         notifySl,
         notifyManualConfirm,
+        notifyDailyAnalytics,
       };
 
       if (botToken.trim().length > 0) payload.botToken = botToken.trim();
@@ -249,6 +253,13 @@ export function SettingsPage() {
           <label className="rules-toggle-row">
             <span>Notify manual confirmation required</span>
             <button type="button" role="switch" aria-checked={notifyManualConfirm} className={`rules-toggle ${notifyManualConfirm ? 'rules-toggle--on' : ''}`} onClick={() => setNotifyManualConfirm((v) => !v)}>
+              <span className="rules-toggle__thumb" />
+            </button>
+          </label>
+
+          <label className="rules-toggle-row">
+            <span>Daily AI analytics summary</span>
+            <button type="button" role="switch" aria-checked={notifyDailyAnalytics} className={`rules-toggle ${notifyDailyAnalytics ? 'rules-toggle--on' : ''}`} onClick={() => setNotifyDailyAnalytics((v) => !v)}>
               <span className="rules-toggle__thumb" />
             </button>
           </label>

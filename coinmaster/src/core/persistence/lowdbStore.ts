@@ -15,6 +15,7 @@ const defaultData: DBShape = {
       notifyTp: true,
       notifySl: true,
       notifyManualConfirm: true,
+      notifyDailyAnalytics: true,
     },
   },
   positions: [],
@@ -41,6 +42,7 @@ function ensureDbShape(data: DBShape) {
     notifyTp: true,
     notifySl: true,
     notifyManualConfirm: true,
+    notifyDailyAnalytics: true,
   };
   data.settings.telegramNotify.botToken = String(data.settings.telegramNotify.botToken ?? '');
   data.settings.telegramNotify.chatId = String(data.settings.telegramNotify.chatId ?? '');
@@ -48,6 +50,7 @@ function ensureDbShape(data: DBShape) {
   data.settings.telegramNotify.notifyTp = data.settings.telegramNotify.notifyTp !== false;
   data.settings.telegramNotify.notifySl = data.settings.telegramNotify.notifySl !== false;
   data.settings.telegramNotify.notifyManualConfirm = data.settings.telegramNotify.notifyManualConfirm !== false;
+  data.settings.telegramNotify.notifyDailyAnalytics = data.settings.telegramNotify.notifyDailyAnalytics !== false;
   if (!Array.isArray(data.positions)) data.positions = [];
   if (!Array.isArray(data.tradeLogs)) data.tradeLogs = [];
   if (!Array.isArray(data.tradeEvents)) data.tradeEvents = [];
