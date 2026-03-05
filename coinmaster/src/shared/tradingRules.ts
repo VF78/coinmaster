@@ -98,7 +98,7 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
   base.maxLeverage = clampNumber(raw.maxLeverage, 1, 50, base.maxLeverage);
   base.dailyDrawdown = clampNumber(raw.dailyDrawdown, 0, 100, base.dailyDrawdown);
   base.slPct = clampNumber(raw.slPct, 0, 1000, base.slPct);
-  base.exitClosePct = clampNumber(raw.exitClosePct, 1, 100, base.exitClosePct);
+  base.exitClosePct = clampNumber(raw.exitClosePct, 0, 100, base.exitClosePct);
 
   // tpLevels: 1–3 values, each 0–1000, sorted ascending.
   // Back-compat: if tpLevels absent but tpPct present, migrate.

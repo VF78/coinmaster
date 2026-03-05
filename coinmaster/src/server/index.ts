@@ -328,7 +328,7 @@ async function getFreshExitClosePct(fallback = 50): Promise<number> {
     const rules = normalizeTradingRules(db.data.settings.tradingRules);
     const pct = Number(rules.exitClosePct);
     if (!Number.isFinite(pct)) return fallback;
-    return Math.max(1, Math.min(100, pct));
+    return Math.max(0, Math.min(100, pct));
   } catch {
     return fallback;
   }
@@ -1162,6 +1162,8 @@ let engulfingMonitorIntervalAppliedMs = 0;
 
 /** Per-signal debounce: key = `${symbol}:${tf}:${direction}`, value = last fired ms */
 const lastEntrySignalAt = new Map<string, number>();
+/** Per-candle emergency-exit debounce: key = `${symbol}:${tf}:${direction}`, value = engulfing candle open timestamp ms. */
+const lastEmergencyExitSignalAt = new Map<string, number>();
 
 async function estimateSignalSize(params: {
   symbol: string;
@@ -1374,10 +1376,49 @@ async function runEngulfingMonitorTick(): Promise<void> {
           const isReverseSignal = (isLong && signal.direction === 'bearish') || (!isLong && signal.direction === 'bullish');
           if (!isReverseSignal) continue;
 
+          // One-shot per closed engulfing candle: prevent repeated emergency exits
+          // on every monitor tick for the same TF signal.
+          const signalCandleOpenMs = Date.parse(closedCandles[closedCandles.length - 1]?.timestamp ?? '');
+          if (!Number.isFinite(signalCandleOpenMs)) continue;
+          const exitDebounceKey = `${symbol}:${tf}:${signal.direction}`;
+          const lastProcessedCandleMs = lastEmergencyExitSignalAt.get(exitDebounceKey) ?? -1;
+          if (signalCandleOpenMs <= lastProcessedCandleMs) continue;
+          lastEmergencyExitSignalAt.set(exitDebounceKey, signalCandleOpenMs);
+
           const reason = `engulfing_exit_signal_${signal.direction}`;
           const cachedExitClosePct = Number(raw.exitClosePct ?? 50);
           const exitClosePct = await getFreshExitClosePct(cachedExitClosePct);
           const closeFraction = exitClosePct / 100;
+
+          if (exitClosePct <= 0) {
+            logRiskGateAudit({
+              gate: 'engulfing_emergency_exit',
+              passed: true,
+              reason: 'exit_close_pct_zero_skip',
+              details: {
+                symbol,
+                tf,
+                direction: signal.direction,
+                positionSide: symbolPosition.side,
+                exitClosePct,
+                cachedExitClosePct,
+                reason: signal.reason,
+              },
+            });
+            logger.info(
+              {
+                component: 'engulfing-monitor',
+                symbol,
+                tf,
+                direction: signal.direction,
+                position: symbolPosition.side,
+                exitClosePct,
+                cachedExitClosePct,
+              },
+              'reverse engulfing detected — emergency exit disabled (0%)',
+            );
+            break;
+          }
 
           logRiskGateAudit({
             gate: 'engulfing_emergency_exit',

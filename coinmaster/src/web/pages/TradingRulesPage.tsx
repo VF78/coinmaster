@@ -8,7 +8,7 @@ import { getTradingRules, saveTradingRules } from '../lib/api';
 import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
-const EXIT_CLOSE_PRESETS = [25, 50, 75, 100];
+const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
 
 function clampNumber(value: number, min: number, max: number) {
   if (!Number.isFinite(value)) return min;
@@ -410,9 +410,11 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
           </div>
 
           <p className="stat-note muted" style={{ marginTop: 8, fontSize: 11 }}>
-            {exitClosePct < 100
-              ? `Partial close (${exitClosePct}%) moves SL to entry (break-even).`
-              : '100% closes the full position.'}
+            {exitClosePct === 0
+              ? '0% disables emergency engulfing exit actions.'
+              : exitClosePct < 100
+                ? `Partial close (${exitClosePct}%) moves SL to entry (break-even).`
+                : '100% closes the full position.'}
           </p>
         </div>
       </Card>
