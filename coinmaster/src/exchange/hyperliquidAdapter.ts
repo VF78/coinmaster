@@ -410,6 +410,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         intent.side === 'buy' ? triggerPx * 1.03 : triggerPx * 0.97,
       );
 
+      const isReduceOnly = Boolean(intent.reduceOnly ?? true);
       const response = await client.exchange.placeOrder({
         coin: this.toSdkCoin(intent.symbol),
         is_buy: intent.side === 'buy',
@@ -423,7 +424,9 @@ export class HyperliquidAdapter implements ExchangeAdapter {
             tpsl: intent.kind
           }
         },
-        reduce_only: Boolean(intent.reduceOnly ?? true),
+        reduce_only: isReduceOnly,
+        // Align with Hyperliquid manual Position TP/SL style.
+        ...(isReduceOnly ? { grouping: 'positionTpsl' } : {}),
         ...(intent.clientOrderId ? { cloid: this.toCloid(intent.clientOrderId) } : {})
       } as any);
 
