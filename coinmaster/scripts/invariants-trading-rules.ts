@@ -221,6 +221,13 @@ console.log('\n── Invariant 3: symbol disabled → blocked ──');
   assert(isSymbolEnabled(custom, 'GOLDUSDC'), 'dynamic symbol GOLDUSDC enabled when present in rules');
   assert(getCoinAllocation(custom, 'GOLDUSDC')?.pct === 100, 'custom symbol allocation preserved (100%)');
 
+  // Namespaced symbols should be supported too (e.g. xyz:GOLD)
+  const namespaced = makeRules({
+    coins: [{ symbol: 'XYZ:gold', enabled: true, pct: 100 }],
+  });
+  assert(isSymbolEnabled(namespaced, 'xyz:GOLD'), 'namespaced symbol xyz:GOLD enabled');
+  assert(getCoinAllocation(namespaced, 'xyz:GOLD')?.symbol === 'xyz:GOLD', 'namespaced symbol normalized to xyz:GOLD');
+
   // Env fallback (raw=null) → all symbols blocked
   const fb = envFallbackRules();
   assert(!isSymbolEnabled(fb, 'BTC'), 'env_fallback → BTC blocked (no coin config)');

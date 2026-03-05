@@ -311,11 +311,11 @@ async function clearPendingConfirmationForSymbol(symbol: string): Promise<void> 
 
 async function getOperatorBias(symbol: string): Promise<Bias> {
   const db = await getDb();
-  const normalized = symbol.toUpperCase();
+  const normalized = normalizeSymbol(symbol);
   const latest = [...db.data.biasCommands].reverse();
-  const symbolBias = latest.find((b) => b.symbol === normalized)?.bias;
+  const symbolBias = latest.find((b) => normalizeSymbol(b.symbol) === normalized)?.bias;
   if (symbolBias) return symbolBias;
-  const globalBias = latest.find((b) => b.symbol === LIVE_SYMBOL)?.bias;
+  const globalBias = latest.find((b) => normalizeSymbol(b.symbol) === normalizeSymbol(LIVE_SYMBOL))?.bias;
   return globalBias ?? 'off';
 }
 
@@ -371,6 +371,33 @@ function getInvalidRuleSymbols(rules: TradingRulesSettings, allowedSymbols: Set<
     .map((coin) => normalizeSymbol(coin.symbol))
     .filter((symbol) => symbol.length > 0 && !allowedSymbols.has(symbol));
   return [...new Set(invalid)];
+}
+
+async function isSymbolResolvableOnExchange(symbol: string): Promise<boolean> {
+  const normalized = normalizeSymbol(symbol);
+  if (!normalized) return false;
+
+  try {
+    const meta = await exchange.getInstrumentMeta(normalized).catch(() => null);
+    if (meta) return true;
+  } catch {
+    // continue to candle probe
+  }
+
+  const endTimeMs = Date.now();
+  const startTimeMs = endTimeMs - (15 * 60_000) * 5;
+
+  try {
+    const candles = await exchange.getCandles({
+      symbol: normalized,
+      timeframe: '15m',
+      startTimeMs,
+      endTimeMs,
+    });
+    return Array.isArray(candles) && candles.length > 0;
+  } catch {
+    return false;
+  }
 }
 
 function getMonitoredSymbols(raw: TradingRulesSettings): string[] {
@@ -2499,7 +2526,17 @@ function timeframeToMs(timeframe: CandleTimeframe): number {
 }
 
 function normalizeSymbol(raw: unknown): string {
-  return String(raw ?? LIVE_SYMBOL).toUpperCase();
+  const value = String(raw ?? LIVE_SYMBOL).trim();
+  if (!value) return LIVE_SYMBOL;
+
+  if (value.includes(':')) {
+    const [namespaceRaw, symbolRaw] = value.split(':', 2);
+    const namespace = String(namespaceRaw ?? '').trim().toLowerCase();
+    const symbol = String(symbolRaw ?? '').trim().toUpperCase();
+    if (namespace && symbol) return `${namespace}:${symbol}`;
+  }
+
+  return value.toUpperCase();
 }
 
 function enabledAllocationTotalPct(rules: TradingRulesSettings): number {
@@ -2882,13 +2919,22 @@ app.put('/api/settings/trading-rules', async (req, res) => {
     return res.status(503).json({ ok: false, error: 'symbol_catalog_unavailable' });
   }
 
-  const invalidSymbols = getInvalidRuleSymbols(rules, new Set(tradableSymbols.map((s) => s.toUpperCase())));
+  const allowedSet = new Set(tradableSymbols.map((s) => normalizeSymbol(s)));
+  const invalidSymbols = getInvalidRuleSymbols(rules, allowedSet);
   if (invalidSymbols.length > 0) {
-    return res.status(400).json({
-      ok: false,
-      error: 'symbols_not_on_exchange',
-      invalidSymbols,
-    });
+    const unresolved: string[] = [];
+    for (const symbol of invalidSymbols) {
+      const ok = await isSymbolResolvableOnExchange(symbol);
+      if (!ok) unresolved.push(symbol);
+    }
+
+    if (unresolved.length > 0) {
+      return res.status(400).json({
+        ok: false,
+        error: 'symbols_not_on_exchange',
+        invalidSymbols: unresolved,
+      });
+    }
   }
 
   if (enabled.length === 0) {

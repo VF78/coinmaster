@@ -16,10 +16,18 @@ function clampNumber(value: number, min: number, max: number) {
 }
 
 function normalizeAssetSymbol(value: string): string {
-  return String(value || '')
-    .trim()
-    .toUpperCase()
-    .replace(/[^A-Z0-9_-]/g, '');
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+
+  if (raw.includes(':')) {
+    const [namespaceRaw, symbolRaw] = raw.split(':', 2);
+    const namespace = String(namespaceRaw || '').trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    const symbol = String(symbolRaw || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+    if (!namespace || !symbol) return '';
+    return `${namespace}:${symbol}`;
+  }
+
+  return raw.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
 }
 
 interface TradingRulesPageProps {

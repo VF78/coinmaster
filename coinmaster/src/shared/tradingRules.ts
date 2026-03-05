@@ -6,7 +6,7 @@ const DEFAULT_COINS = [
   { symbol: 'ETH', enabled: true, pct: 30 },
   { symbol: 'SOL', enabled: true, pct: 20 },
 ] as const;
-const SYMBOL_RE = /^[A-Z0-9][A-Z0-9_-]{1,24}$/;
+const SYMBOL_RE = /^(?:[A-Z0-9][A-Z0-9_-]{1,24}|[a-z0-9][a-z0-9_-]{0,15}:[A-Z0-9][A-Z0-9_-]{1,24})$/;
 
 export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   coins: DEFAULT_COINS.map((coin) => ({ ...coin })),
@@ -49,8 +49,19 @@ function normalizeTimeframeArray(value: unknown, fallback: TradingRulesTimeframe
 }
 
 function normalizeRuleSymbol(value: unknown): string | null {
-  const symbol = String(value ?? '').trim().toUpperCase();
-  if (!symbol) return null;
+  const raw = String(value ?? '').trim();
+  if (!raw) return null;
+
+  if (raw.includes(':')) {
+    const [namespaceRaw, symbolRaw] = raw.split(':', 2);
+    const namespace = String(namespaceRaw ?? '').trim().toLowerCase();
+    const symbol = String(symbolRaw ?? '').trim().toUpperCase();
+    if (!namespace || !symbol) return null;
+    const normalized = `${namespace}:${symbol}`;
+    return SYMBOL_RE.test(normalized) ? normalized : null;
+  }
+
+  const symbol = raw.toUpperCase();
   if (!SYMBOL_RE.test(symbol)) return null;
   return symbol;
 }

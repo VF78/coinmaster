@@ -719,11 +719,22 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   private normalizeSymbol(symbol: string): string {
-    return symbol.toUpperCase().replace('-PERP', '');
+    const value = String(symbol ?? '').trim();
+    if (!value) return '';
+
+    if (value.includes(':')) {
+      const [namespaceRaw, symbolRaw] = value.split(':', 2);
+      const namespace = String(namespaceRaw ?? '').trim().toLowerCase();
+      const core = String(symbolRaw ?? '').trim().toUpperCase().replace('-PERP', '');
+      return namespace && core ? `${namespace}:${core}` : '';
+    }
+
+    return value.toUpperCase().replace('-PERP', '');
   }
 
   private toSdkCoin(symbol: string): string {
     const normalized = this.normalizeSymbol(symbol);
+    if (normalized.includes(':')) return normalized;
     return `${normalized}-PERP`;
   }
 
