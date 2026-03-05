@@ -28,6 +28,7 @@ interface HyperliquidAdapterOptions {
 
 const DEFAULT_INFO_URL = 'https://api.hyperliquid.xyz/info';
 const DEFAULT_WS_URL = 'wss://api.hyperliquid.xyz/ws';
+const UNIVERSE_CACHE_TTL_MS = Math.max(30_000, Number(process.env.HYPERLIQUID_UNIVERSE_CACHE_MS || 5 * 60_000));
 
 export class HyperliquidAdapter implements ExchangeAdapter {
   readonly name = 'hyperliquid';
@@ -50,6 +51,12 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   private effectiveUser: string | null = null;
   private effectiveUserInit: Promise<string> | null = null;
   private effectiveUserInitFailures = 0;
+
+  private universeCache: {
+    fetchedAtMs: number;
+    bySymbol: Map<string, any>;
+    symbols: string[];
+  } | null = null;
 
   constructor(options: HyperliquidAdapterOptions = {}) {
     this.infoUrl = options.infoUrl ?? DEFAULT_INFO_URL;
@@ -131,17 +138,22 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   async getInstrumentMeta(symbol: string): Promise<InstrumentMeta | null> {
-    const meta = await this.requestInfo<any>({ type: 'meta' });
-    const universe = Array.isArray(meta?.universe) ? meta.universe : [];
-    const item = universe.find((u: any) => String(u?.name ?? '').toUpperCase() === symbol.toUpperCase());
+    const normalized = this.normalizeSymbol(symbol);
+    const universe = await this.getUniverse();
+    const item = universe.bySymbol.get(normalized);
     if (!item) return null;
 
     return {
-      symbol: symbol.toUpperCase(),
+      symbol: normalized,
       sizeDecimals: Number.isFinite(Number(item.szDecimals)) ? Number(item.szDecimals) : undefined,
       quoteDecimals: Number.isFinite(Number(item.pxDecimals)) ? Number(item.pxDecimals) : undefined,
       raw: item
     };
+  }
+
+  async getTradableSymbols(): Promise<string[]> {
+    const universe = await this.getUniverse();
+    return [...universe.symbols];
   }
 
   async getAccountState(): Promise<AccountSnapshot | null> {
@@ -666,6 +678,36 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     }
 
     return this.effectiveUserInit;
+  }
+
+  private async getUniverse(force = false): Promise<{ bySymbol: Map<string, any>; symbols: string[] }> {
+    const now = Date.now();
+    if (!force && this.universeCache && (now - this.universeCache.fetchedAtMs) < UNIVERSE_CACHE_TTL_MS) {
+      return { bySymbol: this.universeCache.bySymbol, symbols: this.universeCache.symbols };
+    }
+
+    const meta = await this.requestInfo<any>({ type: 'meta' });
+    const universe = Array.isArray(meta?.universe) ? meta.universe : [];
+
+    const bySymbol = new Map<string, any>();
+    const symbols: string[] = [];
+
+    for (const row of universe) {
+      const normalized = this.normalizeSymbol(String(row?.name ?? ''));
+      if (!normalized || bySymbol.has(normalized)) continue;
+      bySymbol.set(normalized, row);
+      symbols.push(normalized);
+    }
+
+    symbols.sort((a, b) => a.localeCompare(b));
+
+    this.universeCache = {
+      fetchedAtMs: now,
+      bySymbol,
+      symbols,
+    };
+
+    return { bySymbol, symbols };
   }
 
   private requireAccountAddress(): string {

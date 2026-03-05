@@ -24,6 +24,7 @@ export interface ExchangeAdapter {
   getMids(): Promise<Record<string, number>>;
   getCandles(query: CandleQuery): Promise<Candle[]>;
   getInstrumentMeta(symbol: string): Promise<InstrumentMeta | null>;
+  getTradableSymbols?(): Promise<string[]>;
 
   // Account
   getAccountState(): Promise<AccountSnapshot | null>;

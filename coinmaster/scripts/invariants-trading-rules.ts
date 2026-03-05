@@ -214,6 +214,13 @@ console.log('\n── Invariant 3: symbol disabled → blocked ──');
   // Unknown symbol → not in rules → blocked
   assert(!isSymbolEnabled(allEnabled, 'DOGE'), 'unknown symbol DOGE → blocked');
 
+  // Dynamic custom symbol from exchange catalog should be supported
+  const custom = makeRules({
+    coins: [{ symbol: 'goldusdc', enabled: true, pct: 100 }],
+  });
+  assert(isSymbolEnabled(custom, 'GOLDUSDC'), 'dynamic symbol GOLDUSDC enabled when present in rules');
+  assert(getCoinAllocation(custom, 'GOLDUSDC')?.pct === 100, 'custom symbol allocation preserved (100%)');
+
   // Env fallback (raw=null) → all symbols blocked
   const fb = envFallbackRules();
   assert(!isSymbolEnabled(fb, 'BTC'), 'env_fallback → BTC blocked (no coin config)');

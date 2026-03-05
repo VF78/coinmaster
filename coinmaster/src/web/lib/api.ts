@@ -7,7 +7,8 @@ import type {
   LivePositionLevelsPayload,
   LivePositionLevelsResponse,
   TradingRulesSettings,
-  TradingRulesSettingsResponse
+  TradingRulesSettingsResponse,
+  TradingRulesSymbolsResponse
 } from '../../shared/dto.js';
 
 const RISK_BLOCK_MESSAGES: Record<string, string> = {
@@ -50,6 +51,20 @@ function formatFriendlyApiError(payload: Record<string, unknown>, _status: numbe
     return `${hint || 'Take-profit levels are on the wrong side of entry price.'}${entryPrice !== undefined ? ` (entry: ${entryPrice})` : ''}`;
   }
 
+  if (base === 'symbol_catalog_unavailable') {
+    return 'Exchange symbol catalog is temporarily unavailable. Try again in a minute.';
+  }
+
+  if (base === 'symbols_not_on_exchange') {
+    const invalid = Array.isArray(payload.invalidSymbols)
+      ? payload.invalidSymbols.map((x) => String(x).toUpperCase()).filter(Boolean)
+      : [];
+    if (invalid.length > 0) {
+      return `These symbols are not tradable on the connected exchange: ${invalid.join(', ')}.`;
+    }
+    return 'One or more symbols are not tradable on the connected exchange.';
+  }
+
   return null;
 }
 
@@ -79,6 +94,8 @@ export function friendlyCodeMessage(code: string, fallback = 'Operation failed. 
     test_failed: 'Could not send test message.',
     telegram_save_failed: 'Could not save Telegram settings.',
     hyperliquid_save_failed: 'Could not save Hyperliquid settings.',
+    symbol_catalog_unavailable: 'Exchange symbol catalog is temporarily unavailable.',
+    symbols_not_on_exchange: 'Some symbols are not tradable on the connected exchange.',
   };
 
   return known[trimmed] ?? fallback;
@@ -173,6 +190,10 @@ export function getTelegramNotifyHealth() {
 
 export function getTradingRules() {
   return jsonFetch<TradingRulesSettingsResponse>('/api/settings/trading-rules');
+}
+
+export function getTradingRuleSymbols() {
+  return jsonFetch<TradingRulesSymbolsResponse>('/api/settings/trading-rules/symbols');
 }
 
 export function saveTradingRules(rules: TradingRulesSettings) {

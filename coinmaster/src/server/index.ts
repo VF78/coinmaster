@@ -50,6 +50,7 @@ const DAILY_ANALYTICS_TZ = process.env.DAILY_ANALYTICS_TZ || 'Europe/Madrid';
 const DAILY_ANALYTICS_HOUR = Math.min(23, Math.max(0, Number(process.env.DAILY_ANALYTICS_HOUR || 23)));
 const DAILY_ANALYTICS_MINUTE = Math.min(59, Math.max(0, Number(process.env.DAILY_ANALYTICS_MINUTE || 5)));
 const DAILY_ANALYTICS_TICK_MS = Math.max(60_000, Number(process.env.DAILY_ANALYTICS_TICK_MS || 10 * 60_000));
+const TRADABLE_SYMBOLS_CACHE_MS = Math.max(30_000, Number(process.env.TRADABLE_SYMBOLS_CACHE_MS || 5 * 60_000));
 const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
 const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 
@@ -316,6 +317,60 @@ async function getOperatorBias(symbol: string): Promise<Bias> {
   if (symbolBias) return symbolBias;
   const globalBias = latest.find((b) => b.symbol === LIVE_SYMBOL)?.bias;
   return globalBias ?? 'off';
+}
+
+let tradableSymbolsCache: { fetchedAtMs: number; symbols: string[] } | null = null;
+
+async function fetchTradableSymbolsFromExchange(): Promise<string[]> {
+  const adapterSymbols = typeof exchange.getTradableSymbols === 'function'
+    ? await exchange.getTradableSymbols().catch(() => [] as string[])
+    : [];
+
+  const fallbackSymbols = adapterSymbols.length > 0
+    ? adapterSymbols
+    : Object.keys(await exchange.getMids().catch(() => ({} as Record<string, number>)));
+
+  const normalized = [...new Set(fallbackSymbols.map((s) => normalizeSymbol(s)).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
+
+  if (normalized.length === 0) {
+    throw new Error('symbol_catalog_empty');
+  }
+
+  tradableSymbolsCache = {
+    fetchedAtMs: Date.now(),
+    symbols: normalized,
+  };
+
+  return normalized;
+}
+
+async function getTradableSymbolsCached(options?: { force?: boolean; allowStale?: boolean }): Promise<string[] | null> {
+  const force = options?.force === true;
+  const allowStale = options?.allowStale !== false;
+  const now = Date.now();
+
+  if (!force && tradableSymbolsCache && (now - tradableSymbolsCache.fetchedAtMs) < TRADABLE_SYMBOLS_CACHE_MS) {
+    return tradableSymbolsCache.symbols;
+  }
+
+  try {
+    return await fetchTradableSymbolsFromExchange();
+  } catch (err) {
+    if (allowStale && tradableSymbolsCache?.symbols?.length) {
+      logger.warn({ component: 'symbols-catalog', err }, 'using stale tradable symbols cache after refresh failure');
+      return tradableSymbolsCache.symbols;
+    }
+    logger.warn({ component: 'symbols-catalog', err }, 'failed to load tradable symbols from exchange');
+    return null;
+  }
+}
+
+function getInvalidRuleSymbols(rules: TradingRulesSettings, allowedSymbols: Set<string>): string[] {
+  const invalid = rules.coins
+    .map((coin) => normalizeSymbol(coin.symbol))
+    .filter((symbol) => symbol.length > 0 && !allowedSymbols.has(symbol));
+  return [...new Set(invalid)];
 }
 
 function getMonitoredSymbols(raw: TradingRulesSettings): string[] {
@@ -2798,10 +2853,43 @@ app.get('/api/settings/trading-rules', async (_req, res) => {
   return res.json({ ok: true, rules });
 });
 
+app.get('/api/settings/trading-rules/symbols', async (_req, res) => {
+  const symbols = await getTradableSymbolsCached({ allowStale: true });
+  if (!symbols) {
+    return res.status(503).json({ ok: false, error: 'symbol_catalog_unavailable', symbols: [] });
+  }
+
+  const db = await getDb();
+  const rules = normalizeTradingRules(db.data.settings.tradingRules);
+  const configuredSymbols = [...new Set((rules.coins ?? []).map((coin) => normalizeSymbol(coin.symbol)).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
+
+  return res.json({
+    ok: true,
+    symbols,
+    configuredSymbols,
+    cacheAgeMs: tradableSymbolsCache ? Date.now() - tradableSymbolsCache.fetchedAtMs : null,
+  });
+});
+
 app.put('/api/settings/trading-rules', async (req, res) => {
   const rules = normalizeTradingRules(req.body);
   const enabled = rules.coins.filter((coin) => coin.enabled);
   const totalPct = enabledAllocationTotalPct(rules);
+
+  const tradableSymbols = await getTradableSymbolsCached({ allowStale: true });
+  if (!tradableSymbols) {
+    return res.status(503).json({ ok: false, error: 'symbol_catalog_unavailable' });
+  }
+
+  const invalidSymbols = getInvalidRuleSymbols(rules, new Set(tradableSymbols.map((s) => s.toUpperCase())));
+  if (invalidSymbols.length > 0) {
+    return res.status(400).json({
+      ok: false,
+      error: 'symbols_not_on_exchange',
+      invalidSymbols,
+    });
+  }
 
   if (enabled.length === 0) {
     return res.status(400).json({ ok: false, error: 'at_least_one_coin_required' });

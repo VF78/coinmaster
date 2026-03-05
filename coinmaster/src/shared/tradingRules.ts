@@ -1,14 +1,15 @@
 import type { TradingRulesSettings, TradingRulesTimeframe } from './dto.js';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
-const DEFAULT_SYMBOLS = ['BTC', 'ETH', 'SOL'] as const;
+const DEFAULT_COINS = [
+  { symbol: 'BTC', enabled: true, pct: 50 },
+  { symbol: 'ETH', enabled: true, pct: 30 },
+  { symbol: 'SOL', enabled: true, pct: 20 },
+] as const;
+const SYMBOL_RE = /^[A-Z0-9][A-Z0-9_-]{1,24}$/;
 
 export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
-  coins: [
-    { symbol: 'BTC', enabled: true, pct: 50 },
-    { symbol: 'ETH', enabled: true, pct: 30 },
-    { symbol: 'SOL', enabled: true, pct: 20 }
-  ],
+  coins: DEFAULT_COINS.map((coin) => ({ ...coin })),
   entryTf: '15m',
   exitTf: '1h',
   entryTimeframes: ['15m'],
@@ -47,6 +48,13 @@ function normalizeTimeframeArray(value: unknown, fallback: TradingRulesTimeframe
   return result.length > 0 ? result : [...fallback];
 }
 
+function normalizeRuleSymbol(value: unknown): string | null {
+  const symbol = String(value ?? '').trim().toUpperCase();
+  if (!symbol) return null;
+  if (!SYMBOL_RE.test(symbol)) return null;
+  return symbol;
+}
+
 export function cloneTradingRulesDefaults(): TradingRulesSettings {
   return JSON.parse(JSON.stringify(DEFAULT_TRADING_RULES)) as TradingRulesSettings;
 }
@@ -56,31 +64,26 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
   const raw = (input && typeof input === 'object') ? (input as Record<string, unknown>) : {};
 
   const coinsRaw = Array.isArray(raw.coins) ? raw.coins : [];
-  const bySymbol = new Map<string, { enabled: boolean; pct: number }>();
+  const normalizedCoins: TradingRulesSettings['coins'] = [];
+  const seenSymbols = new Set<string>();
 
   for (const row of coinsRaw) {
     if (!row || typeof row !== 'object') continue;
     const item = row as Record<string, unknown>;
-    const symbol = String(item.symbol ?? '').toUpperCase();
-    if (!DEFAULT_SYMBOLS.includes(symbol as (typeof DEFAULT_SYMBOLS)[number])) continue;
-    bySymbol.set(symbol, {
+    const symbol = normalizeRuleSymbol(item.symbol);
+    if (!symbol || seenSymbols.has(symbol)) continue;
+    seenSymbols.add(symbol);
+
+    normalizedCoins.push({
+      symbol,
       enabled: Boolean(item.enabled),
-      pct: clampNumber(item.pct, 0, 100, 0)
+      pct: clampNumber(item.pct, 0, 100, 0),
     });
   }
 
-  base.coins = DEFAULT_SYMBOLS.map((symbol) => {
-    const value = bySymbol.get(symbol);
-    if (!value) {
-      const fallback = DEFAULT_TRADING_RULES.coins.find((c) => c.symbol === symbol)!;
-      return { ...fallback };
-    }
-    return {
-      symbol,
-      enabled: value.enabled,
-      pct: value.pct
-    };
-  });
+  base.coins = normalizedCoins.length > 0
+    ? normalizedCoins
+    : DEFAULT_COINS.map((coin) => ({ ...coin }));
 
   base.entryTf = normalizeTimeframe(raw.entryTf, base.entryTf);
   base.exitTf = normalizeTimeframe(raw.exitTf, base.exitTf);

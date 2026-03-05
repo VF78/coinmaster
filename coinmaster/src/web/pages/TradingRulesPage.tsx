@@ -4,7 +4,7 @@ import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import type { TradingCoinAllocation, TradingRulesSettings, TradingRulesTimeframe } from '../../shared/dto.js';
 import { cloneTradingRulesDefaults, normalizeTradingRules } from '../../shared/tradingRules.js';
-import { getTradingRules, saveTradingRules } from '../lib/api';
+import { getTradingRuleSymbols, getTradingRules, saveTradingRules } from '../lib/api';
 import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
@@ -13,6 +13,13 @@ const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
 function clampNumber(value: number, min: number, max: number) {
   if (!Number.isFinite(value)) return min;
   return Math.max(min, Math.min(max, value));
+}
+
+function normalizeAssetSymbol(value: string): string {
+  return String(value || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9_-]/g, '');
 }
 
 interface TradingRulesPageProps {
@@ -86,6 +93,8 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const dialog = useDialog();
 
   const [coins, setCoins] = useState<TradingCoinAllocation[]>(defaults.coins);
+  const [availableSymbols, setAvailableSymbols] = useState<string[]>([]);
+  const [newSymbol, setNewSymbol] = useState('');
   const [entryTimeframes, setEntryTimeframes] = useState<TradingRulesTimeframe[]>(defaults.entryTimeframes);
   const [emergencyExitTimeframes, setEmergencyExitTimeframes] = useState<TradingRulesTimeframe[]>(defaults.emergencyExitTimeframes);
   const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
@@ -175,14 +184,26 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     let active = true;
     (async () => {
       try {
-        const response = await getTradingRules();
+        const [rulesResponse, symbolsResponse] = await Promise.all([
+          getTradingRules(),
+          getTradingRuleSymbols().catch(() => null),
+        ]);
         if (!active) return;
-        applyRules(response.rules);
+
+        const configuredSymbols = (rulesResponse.rules.coins ?? [])
+          .map((coin) => normalizeAssetSymbol(coin.symbol))
+          .filter(Boolean);
+        const exchangeSymbols = symbolsResponse?.symbols ?? [];
+        const mergedSymbols = [...new Set([...exchangeSymbols, ...configuredSymbols])].sort((a, b) => a.localeCompare(b));
+
+        setAvailableSymbols(mergedSymbols);
+        applyRules(rulesResponse.rules);
         setSaveInfo('Rules loaded from server.');
       } catch (error) {
         console.error('[TradingRules] failed to load rules:', error);
         if (!active) return;
         applyRules(defaults);
+        setAvailableSymbols(defaults.coins.map((c) => normalizeAssetSymbol(c.symbol)).filter(Boolean));
         setSaveInfo('Could not load rules. Defaults were applied.');
       } finally {
         if (active) setLoading(false);
@@ -197,8 +218,53 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, enabled: !c.enabled } : c)));
   }
 
+  function setCoinSymbol(idx: number, symbol: string) {
+    const normalized = normalizeAssetSymbol(symbol);
+    setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, symbol: normalized } : c)));
+  }
+
   function setCoinPct(idx: number, pct: number) {
     setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, pct: clampNumber(pct, 0, 100) } : c)));
+  }
+
+  function removeCoin(idx: number) {
+    setCoins((prev) => {
+      if (prev.length <= 1) return prev;
+      return prev.filter((_, i) => i !== idx);
+    });
+  }
+
+  async function addCoinFromInput(): Promise<void> {
+    const symbol = normalizeAssetSymbol(newSymbol);
+    if (!symbol) {
+      await dialog.alert({
+        title: 'Validation',
+        message: 'Enter a symbol first (example: GOLDUSDC).',
+        confirmText: 'OK',
+      });
+      return;
+    }
+
+    if (coins.some((coin) => normalizeAssetSymbol(coin.symbol) === symbol)) {
+      await dialog.alert({
+        title: 'Validation',
+        message: `${symbol} is already in the list.`,
+        confirmText: 'OK',
+      });
+      return;
+    }
+
+    if (availableSymbols.length > 0 && !availableSymbols.includes(symbol)) {
+      await dialog.alert({
+        title: 'Validation',
+        message: `${symbol} is not present in the exchange symbol catalog.`,
+        confirmText: 'OK',
+      });
+      return;
+    }
+
+    setCoins((prev) => [...prev, { symbol, enabled: true, pct: 0 }]);
+    setNewSymbol('');
   }
 
   function addTpLevel() {
@@ -230,7 +296,36 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   }
 
   async function handleApply(): Promise<boolean> {
-    const enabled = currentRules.coins.filter((c) => c.enabled);
+    const normalizedSymbols = coins.map((coin) => normalizeAssetSymbol(coin.symbol));
+    const hasEmptySymbol = normalizedSymbols.some((symbol) => symbol.length === 0);
+    if (hasEmptySymbol) {
+      await dialog.alert({
+        title: 'Validation',
+        message: 'Each asset row must have a valid symbol.',
+        confirmText: 'OK',
+      });
+      return false;
+    }
+
+    const duplicateSymbols = normalizedSymbols.filter((symbol, idx) => normalizedSymbols.indexOf(symbol) !== idx);
+    if (duplicateSymbols.length > 0) {
+      await dialog.alert({
+        title: 'Validation',
+        message: `Duplicate symbols are not allowed: ${[...new Set(duplicateSymbols)].join(', ')}`,
+        confirmText: 'OK',
+      });
+      return false;
+    }
+
+    const payload = normalizeTradingRules({
+      ...currentRules,
+      coins: coins.map((coin, idx) => ({
+        ...coin,
+        symbol: normalizedSymbols[idx],
+      })),
+    });
+
+    const enabled = payload.coins.filter((c) => c.enabled);
     const enabledTotal = Math.round(enabled.reduce((s, c) => s + c.pct, 0) * 100) / 100;
 
     if (enabled.length === 0) {
@@ -254,7 +349,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setSaving(true);
     setSaveInfo('Saving rules...');
     try {
-      const response = await saveTradingRules(currentRules);
+      const response = await saveTradingRules(payload);
       applyRules(response.rules);
       setSaveInfo(`Saved at ${new Date().toLocaleTimeString()}`);
       return true;
@@ -289,14 +384,24 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
       <Card title="Coin Distribution" actions={<Badge tone="neutral">Allocation</Badge>}>
         <div className="rules-grid">
           {coins.map((coin, idx) => (
-            <label key={coin.symbol} className="rules-coin-row">
+            <div key={`${coin.symbol || 'asset'}-${idx}`} className="rules-coin-row">
               <input
                 type="checkbox"
                 checked={coin.enabled}
                 onChange={() => toggleCoin(idx)}
                 className="rules-checkbox"
               />
-              <span className="rules-coin-symbol">{coin.symbol}</span>
+
+              <input
+                type="text"
+                value={coin.symbol}
+                onChange={(e) => setCoinSymbol(idx, e.target.value)}
+                className="rules-input"
+                style={{ width: 130, textTransform: 'uppercase' }}
+                list="coinmaster-tradable-symbols"
+                placeholder="SYMBOL"
+              />
+
               <Stepper
                 value={coin.pct}
                 min={0}
@@ -307,9 +412,39 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                 disabled={!coin.enabled}
                 onChange={(v) => setCoinPct(idx, v)}
               />
-            </label>
+
+              <Button
+                type="button"
+                variant="danger"
+                className="rules-mini-btn"
+                onClick={() => removeCoin(idx)}
+                disabled={coins.length <= 1}
+                title={coins.length <= 1 ? 'At least one asset row is required' : 'Remove asset'}
+              >
+                Remove
+              </Button>
+            </div>
           ))}
         </div>
+
+        <datalist id="coinmaster-tradable-symbols">
+          {availableSymbols.map((symbol) => (
+            <option key={symbol} value={symbol} />
+          ))}
+        </datalist>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, marginTop: 10 }}>
+          <input
+            type="text"
+            value={newSymbol}
+            onChange={(e) => setNewSymbol(normalizeAssetSymbol(e.target.value))}
+            className="rules-input"
+            list="coinmaster-tradable-symbols"
+            placeholder="Add asset (e.g. GOLDUSDC)"
+          />
+          <Button type="button" variant="secondary" onClick={() => { void addCoinFromInput(); }}>+ Add asset</Button>
+        </div>
+
         <p className="stat-note muted">Active total: <strong>{totalPct}%</strong></p>
       </Card>
 

@@ -361,6 +361,12 @@ export interface TradingRulesSettingsResponse {
   rules: TradingRulesSettings;
 }
 
+export interface TradingRulesSymbolsResponse {
+  ok: boolean;
+  symbols: string[];
+  configuredSymbols?: string[];
+  cacheAgeMs?: number | null;
+}
 
 export interface BiasPayload {
   symbol: string;
