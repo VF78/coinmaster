@@ -761,12 +761,64 @@ function isManualOpenFill(fill: FillEvent, tradeEvents: TradeEvent[]): boolean {
   });
 }
 
-async function buildDailyAnalyticsText(): Promise<string | null> {
-  const cfg = await getTelegramConfig();
-  if (!cfg || !cfg.notifyDailyAnalytics) return null;
+interface DailyAnalyticsSourceRow {
+  source: string;
+  fills: number;
+  openFills: number;
+  closeFills: number;
+  realized: number;
+  fees: number;
+  net: number;
+}
 
+interface DailyAnalyticsContext {
+  generatedAt: string;
+  windowStart: string;
+  windowEnd: string;
+  localDayKey: string;
+  timezone: string;
+  fills: {
+    total: number;
+    open: number;
+    close: number;
+    executionOnlyOpen: number;
+    manualOpenDetected: number;
+  };
+  pnl: {
+    realized: number;
+    fees: number;
+    net: number;
+    winRatePct: number;
+    winners: number;
+    losers: number;
+  };
+  bySymbol: Array<{ symbol: string; realized: number }>;
+  bySource: DailyAnalyticsSourceRow[];
+  execution: {
+    signalDetected: number;
+    signalRejected: number;
+    ordersSubmitted: number;
+    ordersAcked: number;
+    ordersRejected: number;
+  };
+  riskBlocks: {
+    bias: number;
+    leverage: number;
+    dailyDD: number;
+  };
+  biggestLoss?: { symbol: string; value: number; timestamp: string };
+  wins: string[];
+  risks: string[];
+  suggestions: string[];
+}
+
+function fillSource(fill: FillEvent): string {
+  return String((fill.raw as { sourceExchange?: unknown } | undefined)?.sourceExchange ?? exchange.name).toLowerCase();
+}
+
+async function buildDailyAnalyticsContext(windowMs = 24 * 60 * 60_000): Promise<DailyAnalyticsContext> {
   const now = Date.now();
-  const cutoff = now - 24 * 60 * 60_000;
+  const cutoff = now - windowMs;
 
   const [executionFills, db] = await Promise.all([
     exchange.getFills().catch(() => [] as FillEvent[]),
@@ -806,15 +858,18 @@ async function buildDailyAnalyticsText(): Promise<string | null> {
     pnlBySymbol.set(key, (pnlBySymbol.get(key) ?? 0) + value);
   }
 
-  const topRows = [...pnlBySymbol.entries()].map(([symbol, value]) => ({ symbol, value }));
+  const topRows = [...pnlBySymbol.entries()].map(([symbol, value]) => ({ symbol, realized: value }));
 
-  const bySource = new Map<string, { fills: number; realized: number; fees: number }>();
+  const bySource = new Map<string, DailyAnalyticsSourceRow>();
   for (const fill of recentFills) {
-    const source = String((fill.raw as { sourceExchange?: unknown } | undefined)?.sourceExchange ?? exchange.name).toLowerCase();
-    const row = bySource.get(source) ?? { fills: 0, realized: 0, fees: 0 };
+    const source = fillSource(fill);
+    const row = bySource.get(source) ?? { source, fills: 0, openFills: 0, closeFills: 0, realized: 0, fees: 0, net: 0 };
     row.fills += 1;
+    if (fillDirection(fill).toLowerCase().startsWith('close ')) row.closeFills += 1;
+    if (fillDirection(fill).toLowerCase().startsWith('open ')) row.openFills += 1;
     row.realized += fillClosedPnl(fill);
     row.fees += fillFee(fill);
+    row.net = row.realized - row.fees;
     bySource.set(source, row);
   }
 
@@ -841,7 +896,7 @@ async function buildDailyAnalyticsText(): Promise<string | null> {
   if (closeFills.length > 0 && winRate >= 50) wins.push(`Стабильность закрытий: win-rate ${asPct(winRate)} (${winners}/${closeFills.length}).`);
   if (ordersRejected === 0 && ordersSubmitted > 0) wins.push('Без отказов биржи по submit/ack в ключевых ордерах.');
 
-  if (net < 0) risks.push(`Итог за 24ч отрицательный: ${asUsd(net)}.`);
+  if (net < 0) risks.push(`Итог за окно отрицательный: ${asUsd(net)}.`);
   if (biggestLoss) risks.push(`Крупнейший минус: ${biggestLoss.symbol} ${asUsd(biggestLoss.value)} (${biggestLoss.timestamp}).`);
   if (biasBlocks > 0) risks.push(`Блоки по bias: ${biasBlocks} (проверь актуальность bias-команд).`);
   if (leverageBlocks > 0 || ddBlocks > 0) {
@@ -861,45 +916,94 @@ async function buildDailyAnalyticsText(): Promise<string | null> {
   const fromDate = new Date(cutoff);
   const localNow = getTzParts(nowDate, DAILY_ANALYTICS_TZ);
 
+  return {
+    generatedAt: nowDate.toISOString(),
+    windowStart: fromDate.toISOString(),
+    windowEnd: nowDate.toISOString(),
+    localDayKey: localNow.dayKey,
+    timezone: DAILY_ANALYTICS_TZ,
+    fills: {
+      total: recentFills.length,
+      open: openFills.length,
+      close: closeFills.length,
+      executionOnlyOpen: executionOpenFills.length,
+      manualOpenDetected: manualOpenFills.length,
+    },
+    pnl: {
+      realized,
+      fees,
+      net,
+      winRatePct: Number(winRate.toFixed(2)),
+      winners,
+      losers,
+    },
+    bySymbol: topRows.sort((a, b) => Math.abs(b.realized) - Math.abs(a.realized)),
+    bySource: [...bySource.values()].sort((a, b) => a.source.localeCompare(b.source)),
+    execution: {
+      signalDetected,
+      signalRejected,
+      ordersSubmitted,
+      ordersAcked,
+      ordersRejected,
+    },
+    riskBlocks: {
+      bias: biasBlocks,
+      leverage: leverageBlocks,
+      dailyDD: ddBlocks,
+    },
+    biggestLoss,
+    wins,
+    risks,
+    suggestions,
+  };
+}
+
+function renderDailyAnalyticsText(context: DailyAnalyticsContext): string {
   const lines: string[] = [
     '🧠 Daily AI trade analytics (24h)',
-    `Window: ${fromDate.toISOString()} → ${nowDate.toISOString()}`,
-    `Local day: ${localNow.dayKey} (${DAILY_ANALYTICS_TZ})`,
+    `Window: ${context.windowStart} → ${context.windowEnd}`,
+    `Local day: ${context.localDayKey} (${context.timezone})`,
     '',
     '📌 Сделки и P&L',
-    `- Fills: ${recentFills.length} (open ${openFills.length}, close ${closeFills.length})`,
-    `- Realized: ${asUsd(realized)} | Fees: ${asUsd(-fees)} | Net: ${asUsd(net)}`,
-    `- Win-rate: ${asPct(winRate)} (${winners}/${closeFills.length || 0})`,
-    ...formatSymbolBreakdown('- По символам (realized):', topRows),
+    `- Fills: ${context.fills.total} (open ${context.fills.open}, close ${context.fills.close})`,
+    `- Realized: ${asUsd(context.pnl.realized)} | Fees: ${asUsd(-context.pnl.fees)} | Net: ${asUsd(context.pnl.net)}`,
+    `- Win-rate: ${asPct(context.pnl.winRatePct)} (${context.pnl.winners}/${context.fills.close || 0})`,
+    ...formatSymbolBreakdown('- По символам (realized):', context.bySymbol.map((x) => ({ symbol: x.symbol, value: x.realized }))),
     ...(
-      bySource.size > 1
+      context.bySource.length > 1
         ? [
             '- По источникам:',
-            ...[...bySource.entries()]
-              .sort((a, b) => a[0].localeCompare(b[0]))
-              .map(([source, agg]) => `- ${source}: fills ${agg.fills}, realized ${asUsd(agg.realized)}, fees ${asUsd(-agg.fees)}`),
+            ...context.bySource.map((row) => `- ${row.source}: fills ${row.fills}, realized ${asUsd(row.realized)}, fees ${asUsd(-row.fees)}`),
           ]
         : []
     ),
     '',
     '📡 Сигналы и исполнение',
-    `- Signal detected: ${signalDetected}, rejected: ${signalRejected}`,
-    `- Orders submitted/acked/rejected: ${ordersSubmitted}/${ordersAcked}/${ordersRejected}`,
-    `- Risk blocks: bias=${biasBlocks}, leverage=${leverageBlocks}, dailyDD=${ddBlocks}`,
+    `- Signal detected: ${context.execution.signalDetected}, rejected: ${context.execution.signalRejected}`,
+    `- Orders submitted/acked/rejected: ${context.execution.ordersSubmitted}/${context.execution.ordersAcked}/${context.execution.ordersRejected}`,
+    `- Risk blocks: bias=${context.riskBlocks.bias}, leverage=${context.riskBlocks.leverage}, dailyDD=${context.riskBlocks.dailyDD}`,
     '',
     '👤 Ручные операции',
-    `- Manual opens detected: ${manualOpenFills.length}`,
+    `- Manual opens detected: ${context.fills.manualOpenDetected}`,
   ];
 
-  if (wins.length > 0) {
-    lines.push('', '✅ Что было правильно', ...wins.map((w) => `- ${w}`));
+  if (context.wins.length > 0) {
+    lines.push('', '✅ Что было правильно', ...context.wins.map((w) => `- ${w}`));
   }
-  if (risks.length > 0) {
-    lines.push('', '⚠️ Ошибки / причины потерь', ...risks.map((r) => `- ${r}`));
+  if (context.risks.length > 0) {
+    lines.push('', '⚠️ Ошибки / причины потерь', ...context.risks.map((r) => `- ${r}`));
   }
-  lines.push('', '🎯 Предложения по оптимизации', ...suggestions.map((s, idx) => `${idx + 1}. ${s}`));
+  lines.push('', '🎯 Предложения по оптимизации', ...context.suggestions.map((s, idx) => `${idx + 1}. ${s}`));
 
   return lines.join('\n').slice(0, 3900);
+}
+
+async function buildDailyAnalyticsText(): Promise<string | null> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifyDailyAnalytics) return null;
+
+  const context = await buildDailyAnalyticsContext();
+  return renderDailyAnalyticsText(context);
 }
 
 let dailyAnalyticsTimer: NodeJS.Timeout | null = null;
@@ -3005,6 +3109,33 @@ app.get('/api/live/history', async (_req, res) => {
       fills: [],
       error: error instanceof Error ? error.message : 'live_history_failed'
     });
+  }
+});
+
+app.get('/api/analytics/daily/context', ownerAuth, async (req, res) => {
+  const hoursRaw = Number(req.query.hours);
+  const hours = Number.isFinite(hoursRaw) ? Math.max(1, Math.min(24 * 30, hoursRaw)) : 24;
+  const windowMs = Math.round(hours * 60 * 60_000);
+
+  try {
+    const context = await buildDailyAnalyticsContext(windowMs);
+    return res.json({ ok: true, context });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'daily_analytics_context_failed' });
+  }
+});
+
+app.get('/api/analytics/daily/text', ownerAuth, async (req, res) => {
+  const hoursRaw = Number(req.query.hours);
+  const hours = Number.isFinite(hoursRaw) ? Math.max(1, Math.min(24 * 30, hoursRaw)) : 24;
+  const windowMs = Math.round(hours * 60 * 60_000);
+
+  try {
+    const context = await buildDailyAnalyticsContext(windowMs);
+    const text = renderDailyAnalyticsText(context);
+    return res.json({ ok: true, context, text });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'daily_analytics_text_failed' });
   }
 });
 
