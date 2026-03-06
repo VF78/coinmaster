@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Bias, DashboardBiasControl, DashboardResponse, LivePosition } from '../../shared/dto.js';
+import type { Bias, DashboardClassBiasControl, DashboardCustomBiasControl, DashboardResponse, LivePosition } from '../../shared/dto.js';
 import { postBias, getDashboard, confirmPendingConfirmation, rejectPendingConfirmation, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
@@ -44,12 +44,12 @@ export function DashboardPage() {
     };
   }, []);
 
-  async function sendGlobalBias(bias: Bias) {
-    const globalSymbol = data?.latestTick?.symbol || 'BTC';
+  async function sendClassBias(control: DashboardClassBiasControl, bias: Bias) {
+    const key = `class:${control.assetClass}:${bias}`;
     setIsLoading(true);
-    setBiasActionKey(`global:${bias}`);
+    setBiasActionKey(key);
     try {
-      await postBias({ symbol: globalSymbol, bias });
+      await postBias({ targetType: 'class', assetClass: control.assetClass, bias });
       await refresh();
     } finally {
       setIsLoading(false);
@@ -57,14 +57,12 @@ export function DashboardPage() {
     }
   }
 
-  async function sendAssetBias(control: DashboardBiasControl, bias: Bias) {
-    const key = `${control.symbol}:${bias}`;
-    const globalSymbol = data?.latestTick?.symbol || 'BTC';
+  async function sendCustomSymbolBias(control: DashboardCustomBiasControl, bias: Bias) {
+    const key = `symbol:${control.symbol}:${bias}`;
     setIsLoading(true);
     setBiasActionKey(key);
     try {
-      const target = control.mode === 'global' ? globalSymbol : control.symbol;
-      await postBias({ symbol: target, bias });
+      await postBias({ targetType: 'symbol', symbol: control.symbol, bias });
       await refresh();
     } finally {
       setIsLoading(false);
@@ -225,35 +223,62 @@ export function DashboardPage() {
 
         {/* ── Execution controls ───────────────────────────────── */}
         <Card title="Execution controls" className="terminal-card terminal-card--narrow">
-          <p className="stack-row" style={{ marginBottom: '0.5rem' }}>
-            Global bias:
-            <Badge tone={data.globalBias === 'off' ? 'neutral' : data.globalBias === 'long' ? 'success' : 'danger'}>
-              {data.globalBias.toUpperCase()}
+          <p className="stack-row" style={{ marginBottom: '0.6rem' }}>
+            Live symbol bias:
+            <Badge tone={data.latestBias === 'off' ? 'neutral' : data.latestBias === 'long' ? 'success' : 'danger'}>
+              {data.latestBias.toUpperCase()}
             </Badge>
           </p>
 
-          <div className="bias-buttons" style={{ marginBottom: '0.6rem' }}>
-            <Button onClick={() => sendGlobalBias('long')} disabled={isLoading} fullWidth>
-              {biasActionKey === 'global:long' ? 'Applying…' : 'Global Long'}
-            </Button>
-            <Button onClick={() => sendGlobalBias('short')} variant="danger" disabled={isLoading} fullWidth>
-              {biasActionKey === 'global:short' ? 'Applying…' : 'Global Short'}
-            </Button>
-            <Button onClick={() => sendGlobalBias('off')} variant="secondary" disabled={isLoading} fullWidth>
-              {biasActionKey === 'global:off' ? 'Applying…' : 'Global OFF'}
-            </Button>
-          </div>
-
-          <p className="muted stat-note" style={{ marginBottom: '0.7rem' }}>
-            Assets with <strong>mode=global</strong> follow this shared bias. Assets with <strong>mode=custom</strong> use their own bias below.
+          <p className="muted stat-note" style={{ marginBottom: '0.6rem' }}>
+            Shared class controls apply to the whole asset class. Assets marked as <strong>custom</strong> in Trading Rules get separate controls below.
           </p>
 
-          <div style={{ display: 'grid', gap: 10 }}>
-            {data.biasControls.length === 0 ? (
-              <p className="muted">No enabled trading assets configured yet.</p>
-            ) : data.biasControls.map((control) => (
+          <div style={{ display: 'grid', gap: 10, marginBottom: 10 }}>
+            {data.classBiasControls.length === 0 ? (
+              <p className="muted">No asset classes available (no enabled assets).</p>
+            ) : data.classBiasControls.map((control) => (
               <div
-                key={`bias-control-${control.symbol}`}
+                key={`class-bias-${control.assetClass}`}
+                style={{
+                  border: '1px solid var(--border)',
+                  borderRadius: 8,
+                  padding: '0.55rem',
+                  background: 'var(--surface-2, rgba(148,163,184,0.08))',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                  <strong>{control.assetClass}</strong>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <Badge tone="neutral">class</Badge>
+                    <Badge tone={control.bias === 'off' ? 'neutral' : control.bias === 'long' ? 'success' : 'danger'}>{control.bias}</Badge>
+                  </div>
+                </div>
+                <p className="muted" style={{ marginTop: 0, marginBottom: 8, fontSize: 12 }}>
+                  {control.symbols.join(', ')}
+                </p>
+                <div className="bias-buttons">
+                  <Button onClick={() => sendClassBias(control, 'long')} disabled={isLoading} fullWidth>
+                    {biasActionKey === `class:${control.assetClass}:long` ? 'Applying…' : 'Long'}
+                  </Button>
+                  <Button onClick={() => sendClassBias(control, 'short')} variant="danger" disabled={isLoading} fullWidth>
+                    {biasActionKey === `class:${control.assetClass}:short` ? 'Applying…' : 'Short'}
+                  </Button>
+                  <Button onClick={() => sendClassBias(control, 'off')} variant="secondary" disabled={isLoading} fullWidth>
+                    {biasActionKey === `class:${control.assetClass}:off` ? 'Applying…' : 'OFF'}
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gap: 10 }}>
+            <p className="rules-label" style={{ margin: 0 }}>Custom asset controls</p>
+            {data.customBiasControls.length === 0 ? (
+              <p className="muted">No custom assets configured.</p>
+            ) : data.customBiasControls.map((control) => (
+              <div
+                key={`custom-bias-${control.symbol}`}
                 style={{
                   border: '1px solid var(--border)',
                   borderRadius: 8,
@@ -265,34 +290,18 @@ export function DashboardPage() {
                   <strong>{control.symbol}</strong>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                     <Badge tone="neutral">{control.assetClass}</Badge>
-                    <Badge tone="neutral">{control.mode}</Badge>
                     <Badge tone={control.bias === 'off' ? 'neutral' : control.bias === 'long' ? 'success' : 'danger'}>{control.bias}</Badge>
                   </div>
                 </div>
-
                 <div className="bias-buttons">
-                  <Button
-                    onClick={() => sendAssetBias(control, 'long')}
-                    disabled={isLoading}
-                    fullWidth
-                  >
-                    {biasActionKey === `${control.symbol}:long` ? 'Applying…' : 'Long'}
+                  <Button onClick={() => sendCustomSymbolBias(control, 'long')} disabled={isLoading} fullWidth>
+                    {biasActionKey === `symbol:${control.symbol}:long` ? 'Applying…' : 'Long'}
                   </Button>
-                  <Button
-                    onClick={() => sendAssetBias(control, 'short')}
-                    variant="danger"
-                    disabled={isLoading}
-                    fullWidth
-                  >
-                    {biasActionKey === `${control.symbol}:short` ? 'Applying…' : 'Short'}
+                  <Button onClick={() => sendCustomSymbolBias(control, 'short')} variant="danger" disabled={isLoading} fullWidth>
+                    {biasActionKey === `symbol:${control.symbol}:short` ? 'Applying…' : 'Short'}
                   </Button>
-                  <Button
-                    onClick={() => sendAssetBias(control, 'off')}
-                    variant="secondary"
-                    disabled={isLoading}
-                    fullWidth
-                  >
-                    {biasActionKey === `${control.symbol}:off` ? 'Applying…' : 'OFF'}
+                  <Button onClick={() => sendCustomSymbolBias(control, 'off')} variant="secondary" disabled={isLoading} fullWidth>
+                    {biasActionKey === `symbol:${control.symbol}:off` ? 'Applying…' : 'OFF'}
                   </Button>
                 </div>
               </div>

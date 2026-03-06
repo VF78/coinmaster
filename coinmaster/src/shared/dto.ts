@@ -8,13 +8,12 @@ export type AssetClass = 'crypto' | 'commodity' | 'forex' | 'index' | 'other';
 export type BiasMode = 'global' | 'symbol';
 
 export interface BiasPolicySymbolOverride {
+  /** global => uses shared class bias, symbol => custom per-symbol bias */
   mode: BiasMode;
-  /** Optional pinned bias for this symbol. If omitted and mode=symbol, runtime reads symbol bias command; missing command => off. */
-  bias?: Bias;
 }
 
 export interface BiasPolicySettings {
-  classDefaults: Record<AssetClass, BiasMode>;
+  /** Per-symbol mode override; absent => uses shared class bias. */
   symbolOverrides: Record<string, BiasPolicySymbolOverride>;
 }
 
@@ -256,20 +255,24 @@ export interface LiveDashboardState {
   error?: string;
 }
 
-export interface DashboardBiasControl {
+export interface DashboardClassBiasControl {
+  assetClass: AssetClass;
+  bias: Bias;
+  symbols: string[];
+}
+
+export interface DashboardCustomBiasControl {
   symbol: string;
   assetClass: AssetClass;
-  mode: 'global' | 'custom';
   bias: Bias;
 }
 
 export interface DashboardResponse {
   latestBias: Bias;
-  /** Current shared/global bias used by assets configured with mode=global. */
-  globalBias: Bias;
   latestTick: MarketTick | null;
   live: LiveDashboardState;
-  biasControls: DashboardBiasControl[];
+  classBiasControls: DashboardClassBiasControl[];
+  customBiasControls: DashboardCustomBiasControl[];
 }
 
 export interface HistoryResponse {
@@ -397,6 +400,8 @@ export interface TradingRulesSymbolsResponse {
 }
 
 export interface BiasPayload {
-  symbol: string;
   bias: Bias;
+  symbol?: string;
+  assetClass?: AssetClass;
+  targetType?: 'symbol' | 'class';
 }

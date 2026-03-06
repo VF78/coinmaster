@@ -318,6 +318,13 @@ async function clearPendingConfirmationForSymbol(symbol: string): Promise<void> 
   }
 }
 
+const CLASS_BIAS_PREFIX = '__CLASS_BIAS__';
+const ASSET_CLASS_ORDER: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
+
+function classBiasCommandSymbol(assetClass: AssetClass): string {
+  return `${CLASS_BIAS_PREFIX}${assetClass.toUpperCase()}`;
+}
+
 function getLatestBias(biasCommands: Array<{ symbol: string; bias: Bias }>, symbol: string): Bias | undefined {
   const normalized = normalizeSymbol(symbol);
   return [...biasCommands]
@@ -326,42 +333,40 @@ function getLatestBias(biasCommands: Array<{ symbol: string; bias: Bias }>, symb
     ?.bias;
 }
 
+function getLatestClassBias(biasCommands: Array<{ symbol: string; bias: Bias }>, assetClass: AssetClass): Bias | undefined {
+  return getLatestBias(biasCommands, classBiasCommandSymbol(assetClass));
+}
+
+function getAssetClassForSymbol(rules: TradingRulesSettings, symbol: string): AssetClass {
+  const normalized = normalizeSymbol(symbol);
+  const fromRules = rules.coins.find((coin) => normalizeSymbol(coin.symbol) === normalized);
+  return fromRules?.assetClass ?? inferAssetClassFromSymbol(normalized);
+}
+
 function getBiasModeForSymbol(rules: TradingRulesSettings, symbol: string): { mode: BiasMode } {
   const normalized = normalizeSymbol(symbol);
   const override = rules.biasPolicy?.symbolOverrides?.[normalized];
-
-  if (override) {
-    return { mode: override.mode };
-  }
-
-  const fromRules = rules.coins.find((coin) => normalizeSymbol(coin.symbol) === normalized);
-  const assetClass: AssetClass = fromRules?.assetClass ?? inferAssetClassFromSymbol(normalized);
-  const mode = rules.biasPolicy?.classDefaults?.[assetClass] ?? (assetClass === 'crypto' ? 'global' : 'symbol');
-
-  return { mode };
+  return { mode: override?.mode ?? 'global' };
 }
 
 function resolveBiasForSymbol(symbol: string, rules: TradingRulesSettings, biasCommands: Array<{ symbol: string; bias: Bias }>): Bias {
   const normalized = normalizeSymbol(symbol);
   const mode = getBiasModeForSymbol(rules, normalized);
 
-  if (mode.mode === 'global') {
-    const globalBias = getLatestBias(biasCommands, LIVE_SYMBOL);
-    return globalBias ?? 'off';
+  if (mode.mode === 'symbol') {
+    const symbolBias = getLatestBias(biasCommands, normalized);
+    return symbolBias ?? 'off';
   }
 
-  const symbolBias = getLatestBias(biasCommands, normalized);
-  return symbolBias ?? 'off';
+  const assetClass = getAssetClassForSymbol(rules, normalized);
+  const classBias = getLatestClassBias(biasCommands, assetClass);
+  return classBias ?? 'off';
 }
 
 async function getOperatorBias(symbol: string): Promise<Bias> {
   const db = await getDb();
   const rules = normalizeTradingRules(db.data.settings.tradingRules);
   return resolveBiasForSymbol(symbol, rules, db.data.biasCommands);
-}
-
-function toDashboardBiasMode(mode: BiasMode): 'global' | 'custom' {
-  return mode === 'global' ? 'global' : 'custom';
 }
 
 function buildDashboardBiasControls(rules: TradingRulesSettings, biasCommands: Array<{ symbol: string; bias: Bias }>) {
@@ -374,21 +379,39 @@ function buildDashboardBiasControls(rules: TradingRulesSettings, biasCommands: A
     deduped.set(normalized, coin);
   }
 
-  return [...deduped.values()]
-    .map((coin) => {
-      const symbol = normalizeSymbol(coin.symbol);
-      const assetClass = coin.assetClass ?? inferAssetClassFromSymbol(symbol);
-      const mode = getBiasModeForSymbol(rules, symbol).mode;
-      const bias = resolveBiasForSymbol(symbol, rules, biasCommands);
+  const byClass = new Map<AssetClass, string[]>();
+  const customSymbolControls: Array<{ symbol: string; assetClass: AssetClass; bias: Bias }> = [];
 
-      return {
+  for (const coin of deduped.values()) {
+    const symbol = normalizeSymbol(coin.symbol);
+    const assetClass = getAssetClassForSymbol(rules, symbol);
+    const currentMode = getBiasModeForSymbol(rules, symbol).mode;
+
+    const bucket = byClass.get(assetClass) ?? [];
+    bucket.push(symbol);
+    byClass.set(assetClass, bucket);
+
+    if (currentMode === 'symbol') {
+      customSymbolControls.push({
         symbol,
         assetClass,
-        mode: toDashboardBiasMode(mode),
-        bias,
-      };
-    })
+        bias: resolveBiasForSymbol(symbol, rules, biasCommands),
+      });
+    }
+  }
+
+  const classBiasControls = [...byClass.entries()]
+    .map(([assetClass, symbols]) => ({
+      assetClass,
+      symbols: [...symbols].sort((a, b) => a.localeCompare(b)),
+      bias: getLatestClassBias(biasCommands, assetClass) ?? 'off',
+    }))
+    .sort((a, b) => ASSET_CLASS_ORDER.indexOf(a.assetClass) - ASSET_CLASS_ORDER.indexOf(b.assetClass));
+
+  const customBiasControls = customSymbolControls
     .sort((a, b) => a.symbol.localeCompare(b.symbol));
+
+  return { classBiasControls, customBiasControls };
 }
 
 let tradableSymbolsCache: { fetchedAtMs: number; symbols: string[] } | null = null;
@@ -2894,9 +2917,8 @@ app.get('/api/health/perf', (_req, res) => {
 app.get('/api/dashboard', async (_req, res) => {
   const db = await getDb();
   const rules = normalizeTradingRules(db.data.settings.tradingRules);
-  const globalBias = getLatestBias(db.data.biasCommands, LIVE_SYMBOL) ?? 'off';
-  const latestBias = globalBias;
-  const biasControls = buildDashboardBiasControls(rules, db.data.biasCommands);
+  const latestBias = resolveBiasForSymbol(LIVE_SYMBOL, rules, db.data.biasCommands);
+  const { classBiasControls, customBiasControls } = buildDashboardBiasControls(rules, db.data.biasCommands);
 
   let latestTick = latestLiveTick;
   if (!latestTick) {
@@ -2913,7 +2935,7 @@ app.get('/api/dashboard', async (_req, res) => {
   const pendingRows = await loadPendingConfirmationRows();
   const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode(), pendingRows);
 
-  res.json({ latestBias, globalBias, latestTick: latestTick ?? null, live, biasControls });
+  res.json({ latestBias, latestTick: latestTick ?? null, live, classBiasControls, customBiasControls });
 });
 
 app.get('/api/live/history', async (_req, res) => {
@@ -3241,14 +3263,37 @@ app.get('/api/settings/telegram-notify/health', ownerAuth, async (_req, res) => 
 });
 
 app.post('/api/bias', async (req, res) => {
-  const { symbol, bias } = req.body as { symbol: string; bias: Bias };
-  const normalizedSymbol = normalizeSymbol(symbol);
-  if (!normalizedSymbol || !['long', 'short', 'off'].includes(bias)) {
+  const payload = req.body as {
+    targetType?: 'symbol' | 'class';
+    symbol?: string;
+    assetClass?: AssetClass;
+    bias?: Bias;
+  };
+
+  const bias = payload?.bias;
+  if (bias !== 'long' && bias !== 'short' && bias !== 'off') {
     return res.status(400).json({ error: 'invalid_payload' });
   }
 
+  let targetSymbol = '';
+
+  if (payload?.targetType === 'class') {
+    const klass = String(payload.assetClass ?? '').trim().toLowerCase();
+    if (!ASSET_CLASS_ORDER.includes(klass as AssetClass)) {
+      return res.status(400).json({ error: 'invalid_asset_class' });
+    }
+    targetSymbol = classBiasCommandSymbol(klass as AssetClass);
+  } else {
+    const rawSymbol = String(payload?.symbol ?? '').trim();
+    const normalizedSymbol = normalizeSymbol(rawSymbol);
+    if (!normalizedSymbol) {
+      return res.status(400).json({ error: 'invalid_payload' });
+    }
+    targetSymbol = normalizedSymbol;
+  }
+
   const db = await getDb();
-  const cmd = submitBias(db.data, normalizedSymbol, bias);
+  const cmd = submitBias(db.data, targetSymbol, bias);
   await db.write();
   return res.json({ ok: true, command: cmd });
 });

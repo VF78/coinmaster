@@ -17,7 +17,7 @@ import { useDialog } from '../components/DialogProvider';
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
 const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
 const BIAS_MODE_OPTIONS: Array<{ value: BiasMode; label: string }> = [
-  { value: 'global', label: 'global' },
+  { value: 'global', label: 'shared' },
   { value: 'symbol', label: 'custom' },
 ];
 const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
@@ -40,16 +40,6 @@ function normalizeAssetSymbol(value: string): string {
   }
 
   return raw.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
-}
-
-function cloneClassDefaults(input?: Record<AssetClass, BiasMode>): Record<AssetClass, BiasMode> {
-  return {
-    crypto: input?.crypto ?? 'global',
-    commodity: input?.commodity ?? 'symbol',
-    forex: input?.forex ?? 'symbol',
-    index: input?.index ?? 'symbol',
-    other: input?.other ?? 'symbol',
-  };
 }
 
 function cloneSymbolOverrides(input?: Record<string, BiasPolicySymbolOverride>): Record<string, BiasPolicySymbolOverride> {
@@ -148,9 +138,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [slPct, setSlPct] = useState(defaults.slPct);
   const [exitClosePct, setExitClosePct] = useState(defaults.exitClosePct ?? 50);
   const [autoConfirm, setAutoConfirm] = useState(defaults.autoConfirm);
-  const [biasClassDefaults, setBiasClassDefaults] = useState<Record<AssetClass, BiasMode>>(
-    cloneClassDefaults(defaults.biasPolicy?.classDefaults)
-  );
   const [symbolBiasOverrides, setSymbolBiasOverrides] = useState<Record<string, BiasPolicySymbolOverride>>(
     cloneSymbolOverrides(defaults.biasPolicy?.symbolOverrides)
   );
@@ -179,7 +166,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     exitClosePct,
     autoConfirm,
     biasPolicy: {
-      classDefaults: cloneClassDefaults(biasClassDefaults),
       symbolOverrides: cloneSymbolOverrides(symbolBiasOverrides),
     },
   }), [
@@ -194,7 +180,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     slPct,
     exitClosePct,
     autoConfirm,
-    biasClassDefaults,
     symbolBiasOverrides,
   ]);
 
@@ -232,7 +217,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setSlPct(normalized.slPct);
     setExitClosePct(normalized.exitClosePct ?? 50);
     setAutoConfirm(normalized.autoConfirm);
-    setBiasClassDefaults(cloneClassDefaults(normalized.biasPolicy?.classDefaults));
     setSymbolBiasOverrides(cloneSymbolOverrides(normalized.biasPolicy?.symbolOverrides));
     setSavedRules(normalized);
   }
@@ -389,27 +373,21 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   function getRowBiasMode(coin: TradingCoinAllocation): BiasMode {
     const symbol = normalizeAssetSymbol(coin.symbol);
     const override = symbol ? symbolBiasOverrides[symbol] : undefined;
-    if (override) return override.mode;
-
-    const assetClass = coin.assetClass ?? inferAssetClassFromSymbol(symbol);
-    return biasClassDefaults[assetClass] ?? 'symbol';
+    return override?.mode ?? 'global';
   }
 
   function setRowBiasMode(coin: TradingCoinAllocation, mode: BiasMode) {
     const symbol = normalizeAssetSymbol(coin.symbol);
     if (!symbol) return;
 
-    const assetClass = coin.assetClass ?? inferAssetClassFromSymbol(symbol);
-    const classDefaultMode = biasClassDefaults[assetClass] ?? 'symbol';
-
     setSymbolBiasOverrides((prev) => {
       const next = { ...prev };
-      if (mode === classDefaultMode) {
+      if (mode === 'global') {
         delete next[symbol];
         return next;
       }
 
-      next[symbol] = { mode };
+      next[symbol] = { mode: 'symbol' };
       return next;
     });
   }
@@ -491,7 +469,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     if (!onRegisterSaveHandler) return;
     onRegisterSaveHandler(() => handleApply());
     return () => onRegisterSaveHandler(null);
-  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, biasClassDefaults, symbolBiasOverrides]);
+  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, symbolBiasOverrides]);
 
   return (
     <main className="terminal-layout">
@@ -563,7 +541,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                 </select>
 
                 <span className="muted" style={{ minWidth: 130, textAlign: 'center', fontSize: 12 }}>
-                  {rowBiasMode === 'global' ? 'uses execution global' : 'custom bias in dashboard'}
+                  {rowBiasMode === 'global' ? 'uses class bias' : 'custom bias in dashboard'}
                 </span>
 
                 <Button
@@ -602,7 +580,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         <p className="stat-note muted">Active total: <strong>{totalPct}%</strong></p>
 
         <p className="stat-note muted" style={{ marginTop: 8 }}>
-          Bias direction controls moved to Dashboard → Execution controls. Here you only choose mode per asset: global or custom.
+          Bias direction controls moved to Dashboard → Execution controls. Here you only choose mode per asset: shared class bias or custom.
         </p>
       </Card>
 

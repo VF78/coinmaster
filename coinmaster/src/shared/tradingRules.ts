@@ -16,13 +16,6 @@ const DEFAULT_COINS = [
 ] as const;
 
 const DEFAULT_BIAS_POLICY: BiasPolicySettings = {
-  classDefaults: {
-    crypto: 'global',
-    commodity: 'symbol',
-    forex: 'symbol',
-    index: 'symbol',
-    other: 'symbol',
-  },
   symbolOverrides: {},
 };
 
@@ -131,14 +124,6 @@ function normalizeBiasPolicy(value: unknown, fallback: BiasPolicySettings): Bias
   const base = JSON.parse(JSON.stringify(fallback)) as BiasPolicySettings;
   const raw = value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
 
-  const classDefaultsRaw = raw.classDefaults && typeof raw.classDefaults === 'object'
-    ? (raw.classDefaults as Record<string, unknown>)
-    : {};
-
-  for (const klass of ASSET_CLASSES) {
-    base.classDefaults[klass] = normalizeBiasMode(classDefaultsRaw[klass], base.classDefaults[klass]);
-  }
-
   const symbolOverridesRaw = raw.symbolOverrides && typeof raw.symbolOverrides === 'object'
     ? (raw.symbolOverrides as Record<string, unknown>)
     : {};
@@ -149,7 +134,7 @@ function normalizeBiasPolicy(value: unknown, fallback: BiasPolicySettings): Bias
     if (!symbol || !overrideRaw || typeof overrideRaw !== 'object') continue;
 
     const override = overrideRaw as Record<string, unknown>;
-    const mode = normalizeBiasMode(override.mode, 'symbol');
+    const mode = normalizeBiasMode(override.mode, 'global');
 
     normalizedOverrides[symbol] = { mode };
   }
