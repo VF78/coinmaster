@@ -304,6 +304,56 @@ button:focus-visible {
   margin-top: var(--space-3);
 }
 
+.exec-bias-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.exec-bias-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--surface-2) 0%, #0f1c2e 100%);
+}
+
+.exec-bias-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: #d9e8fb;
+  line-height: 1.1;
+}
+
+.exec-bias-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.exec-bias-btn {
+  min-height: 1.8rem;
+  padding: 0.25rem 0.52rem;
+  border-radius: 0.6rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  opacity: 0.58;
+  box-shadow: none;
+}
+
+.exec-bias-btn--active {
+  opacity: 1;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28) inset;
+}
+
+.exec-bias-btn--off.exec-bias-btn--active {
+  border-color: #7395bd;
+  background: linear-gradient(180deg, #20344d 0%, #1a2b40 100%);
+  color: #e2edf8;
+}
+
 .stack-row {
   display: inline-flex;
   align-items: center;

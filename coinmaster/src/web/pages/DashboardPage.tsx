@@ -142,18 +142,17 @@ export function DashboardPage() {
     onSelect: (bias: Bias) => void;
   }) {
     return (
-      <div style={{ display: 'inline-flex', gap: 4 }}>
+      <div className="exec-bias-toggle">
         {BIAS_OPTIONS.map((option) => {
           const active = params.current === option;
           const key = `${params.loadingKeyPrefix}:${option}`;
           return (
             <Button
               key={key}
-              variant={active
-                ? (option === 'short' ? 'danger' : option === 'long' ? 'primary' : 'secondary')
-                : 'secondary'}
+              variant={option === 'short' ? 'danger' : option === 'long' ? 'primary' : 'secondary'}
               onClick={() => params.onSelect(option)}
               disabled={isLoading}
+              className={`exec-bias-btn ${active ? 'exec-bias-btn--active' : ''} ${option === 'off' ? 'exec-bias-btn--off' : ''}`}
             >
               {biasActionKey === key ? '…' : option.toUpperCase()}
             </Button>
@@ -252,29 +251,18 @@ export function DashboardPage() {
 
         {/* ── Execution controls ───────────────────────────────── */}
         <Card title="Execution controls" className="terminal-card terminal-card--narrow">
-          <p className="stack-row" style={{ marginBottom: '0.45rem' }}>
-            Live symbol bias:
-            <Badge tone={data.latestBias === 'off' ? 'neutral' : data.latestBias === 'long' ? 'success' : 'danger'}>
-              {data.latestBias.toUpperCase()}
-            </Badge>
-          </p>
-
-          <div style={{ display: 'grid', gap: 8 }}>
+          <div className="exec-bias-list">
             {data.classBiasControls.length === 0 && (
               <p className="muted">No asset classes available (no enabled assets).</p>
             )}
 
             {data.classBiasControls.map((control) => (
-              <div key={`class-bias-${control.assetClass}`} style={{ display: 'grid', gap: 4 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                  <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <strong style={{ textTransform: 'capitalize' }}>{control.assetClass}</strong>
-                    <Badge tone="neutral">class</Badge>
-                  </div>
-                  <Badge tone={control.bias === 'off' ? 'neutral' : control.bias === 'long' ? 'success' : 'danger'}>
-                    {control.bias}
-                  </Badge>
-                </div>
+              <div
+                key={`class-bias-${control.assetClass}`}
+                className="exec-bias-row"
+                title={control.symbols.join(', ')}
+              >
+                <span className="exec-bias-label" style={{ textTransform: 'capitalize' }}>{control.assetClass}</span>
                 {renderCompactBiasToggle({
                   current: control.bias,
                   loadingKeyPrefix: `class:${control.assetClass}`,
@@ -285,19 +273,10 @@ export function DashboardPage() {
 
             {data.customBiasControls.length > 0 && (
               <>
-                <p className="muted" style={{ margin: '0.2rem 0 0', fontSize: 12 }}>Custom assets</p>
+                <p className="muted" style={{ margin: '0.1rem 0 0', fontSize: 12 }}>Custom assets</p>
                 {data.customBiasControls.map((control) => (
-                  <div key={`custom-bias-${control.symbol}`} style={{ display: 'grid', gap: 4 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                      <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-                        <strong>{control.symbol}</strong>
-                        <Badge tone="neutral">{control.assetClass}</Badge>
-                        <Badge tone="neutral">custom</Badge>
-                      </div>
-                      <Badge tone={control.bias === 'off' ? 'neutral' : control.bias === 'long' ? 'success' : 'danger'}>
-                        {control.bias}
-                      </Badge>
-                    </div>
+                  <div key={`custom-bias-${control.symbol}`} className="exec-bias-row">
+                    <span className="exec-bias-label">{control.symbol}</span>
                     {renderCompactBiasToggle({
                       current: control.bias,
                       loadingKeyPrefix: `symbol:${control.symbol}`,
