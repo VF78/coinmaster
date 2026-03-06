@@ -61,7 +61,9 @@ function buildReplayDb(depositUsd: number): DBShape {
     dailyDDBaselines: [],
     riskGateAudit: [],
     pendingConfirmations: [],
-    telegramOutbox: []
+    telegramOutbox: [],
+    aiMasterInsights: [],
+    aiMasterQa: []
   };
 }
 

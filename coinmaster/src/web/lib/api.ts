@@ -1,4 +1,6 @@
 import type {
+  AiMasterQaItem,
+  AiMasterSnapshotResponse,
   BiasPayload,
   DashboardResponse,
   ExchangeSettingsResponse,
@@ -136,6 +138,19 @@ export function getDashboard() {
 
 export function getLiveHistory() {
   return jsonFetch<LiveHistoryResponse>('/api/live/history');
+}
+
+export function getAiMasterSnapshot(limit = 50) {
+  const params = new URLSearchParams({ limit: String(limit) });
+  return jsonFetch<AiMasterSnapshotResponse>(`/api/ai-master/snapshot?${params.toString()}`);
+}
+
+export function submitAiMasterQuestion(question: string) {
+  return jsonFetch<{ ok: boolean; item: AiMasterQaItem }>('/api/ai-master/qa', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ question })
+  });
 }
 
 export function getExchangeSettings() {

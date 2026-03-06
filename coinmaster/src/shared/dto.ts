@@ -486,3 +486,33 @@ export interface BiasPayload {
   assetClass?: AssetClass;
   targetType?: 'symbol' | 'class';
 }
+
+export interface AiMasterInsight {
+  id: string;
+  dayKey: string;
+  source: 'telegram_daily' | 'manual' | string;
+  text: string;
+  model?: string;
+  promptVersion?: string;
+  runId?: string;
+  createdAt: string;
+}
+
+export type AiMasterQaStatus = 'pending' | 'answered' | 'failed';
+
+export interface AiMasterQaItem {
+  id: string;
+  question: string;
+  answer?: string;
+  status: AiMasterQaStatus;
+  askedAt: string;
+  answeredAt?: string;
+  model?: string;
+  error?: string;
+}
+
+export interface AiMasterSnapshotResponse {
+  ok: boolean;
+  insights: AiMasterInsight[];
+  qa: AiMasterQaItem[];
+}

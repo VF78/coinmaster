@@ -3,14 +3,16 @@ import { DashboardPage } from './pages/DashboardPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { TradingRulesPage } from './pages/TradingRulesPage';
+import { AiMasterPage } from './pages/AiMasterPage';
 import { useDialog } from './components/DialogProvider';
 
-type PageKey = 'dashboard' | 'history' | 'settings' | 'trading-rules';
+type PageKey = 'dashboard' | 'history' | 'settings' | 'trading-rules' | 'ai-master';
 
 const SECTIONS: Array<{ key: PageKey; label: string }> = [
   { key: 'dashboard', label: 'Dashboard' },
   { key: 'trading-rules', label: 'Trading Rules' },
   { key: 'history', label: 'History' },
+  { key: 'ai-master', label: 'AI Master' },
   { key: 'settings', label: 'Settings' }
 ];
 
@@ -79,6 +81,7 @@ export function App() {
         <section className="app-content">
           {page === 'dashboard' ? <DashboardPage /> : null}
           {page === 'history' ? <HistoryPage /> : null}
+          {page === 'ai-master' ? <AiMasterPage /> : null}
           {page === 'trading-rules' ? (
             <TradingRulesPage
               onDirtyChange={setTradingRulesDirty}

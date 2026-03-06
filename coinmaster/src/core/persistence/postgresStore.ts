@@ -36,7 +36,9 @@ const defaultData: DBShape = {
   dailyDDBaselines: [],
   riskGateAudit: [],
   pendingConfirmations: [],
-  telegramOutbox: []
+  telegramOutbox: [],
+  aiMasterInsights: [],
+  aiMasterQa: []
 };
 
 function ensureDbShape(data: DBShape) {
@@ -106,6 +108,8 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.riskGateAudit)) data.riskGateAudit = [];
   if (!Array.isArray(data.pendingConfirmations)) data.pendingConfirmations = [];
   if (!Array.isArray(data.telegramOutbox)) data.telegramOutbox = [];
+  if (!Array.isArray(data.aiMasterInsights)) data.aiMasterInsights = [];
+  if (!Array.isArray(data.aiMasterQa)) data.aiMasterQa = [];
 }
 
 /**

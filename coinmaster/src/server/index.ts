@@ -15,6 +15,9 @@ import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
 import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
 import type {
+  AiMasterInsight,
+  AiMasterQaItem,
+  AiMasterSnapshotResponse,
   AssetClass,
   BiasMode,
   ExchangeConnectionSettingsPayload,
@@ -1004,6 +1007,27 @@ async function buildDailyAnalyticsText(): Promise<string | null> {
 
   const context = await buildDailyAnalyticsContext();
   return renderDailyAnalyticsText(context);
+}
+
+function ensureAiMasterState(): Promise<{ insights: AiMasterInsight[]; qa: AiMasterQaItem[]; write: () => Promise<void> }> {
+  return getDb().then((db) => {
+    db.data.aiMasterInsights = Array.isArray(db.data.aiMasterInsights) ? db.data.aiMasterInsights : [];
+    db.data.aiMasterQa = Array.isArray(db.data.aiMasterQa) ? db.data.aiMasterQa : [];
+    return {
+      insights: db.data.aiMasterInsights,
+      qa: db.data.aiMasterQa,
+      write: db.write,
+    };
+  });
+}
+
+function pruneAiMasterCollections(insights: AiMasterInsight[], qa: AiMasterQaItem[]): void {
+  if (insights.length > 500) {
+    insights.splice(0, insights.length - 500);
+  }
+  if (qa.length > 2000) {
+    qa.splice(0, qa.length - 2000);
+  }
 }
 
 let dailyAnalyticsTimer: NodeJS.Timeout | null = null;
@@ -3137,6 +3161,122 @@ app.get('/api/analytics/daily/text', ownerAuth, async (req, res) => {
   } catch (error) {
     return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'daily_analytics_text_failed' });
   }
+});
+
+app.get('/api/ai-master/snapshot', ownerAuth, async (req, res) => {
+  const limitRaw = Number(req.query.limit);
+  const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(200, Math.floor(limitRaw))) : 50;
+
+  const { insights, qa } = await ensureAiMasterState();
+
+  const payload: AiMasterSnapshotResponse = {
+    ok: true,
+    insights: insights.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, limit),
+    qa: qa.slice().sort((a, b) => b.askedAt.localeCompare(a.askedAt)).slice(0, limit),
+  };
+
+  return res.json(payload);
+});
+
+app.post('/api/ai-master/insights', ownerAuth, async (req, res) => {
+  const text = String(req.body?.text ?? '').trim();
+  if (!text) return res.status(400).json({ ok: false, error: 'text_required' });
+
+  const model = String(req.body?.model ?? '').trim() || undefined;
+  const source = String(req.body?.source ?? '').trim() || 'manual';
+  const promptVersion = String(req.body?.promptVersion ?? '').trim() || undefined;
+  const runId = String(req.body?.runId ?? '').trim() || undefined;
+  const dayKeyRaw = String(req.body?.dayKey ?? '').trim();
+
+  const localNow = getTzParts(new Date(), DAILY_ANALYTICS_TZ);
+  const dayKey = dayKeyRaw || localNow.dayKey;
+
+  const state = await ensureAiMasterState();
+
+  if (runId) {
+    const existing = state.insights.find((item) => item.runId === runId);
+    if (existing) return res.json({ ok: true, insight: existing, deduped: true });
+  }
+
+  const insight: AiMasterInsight = {
+    id: `aii-${nanoid(10)}`,
+    dayKey,
+    source,
+    text: text.slice(0, 12_000),
+    model,
+    promptVersion,
+    runId,
+    createdAt: new Date().toISOString(),
+  };
+
+  state.insights.push(insight);
+  pruneAiMasterCollections(state.insights, state.qa);
+  await state.write();
+
+  return res.json({ ok: true, insight });
+});
+
+app.post('/api/ai-master/qa', ownerAuth, async (req, res) => {
+  const question = String(req.body?.question ?? '').trim();
+  if (!question) return res.status(400).json({ ok: false, error: 'question_required' });
+
+  const state = await ensureAiMasterState();
+  const item: AiMasterQaItem = {
+    id: `aiq-${nanoid(10)}`,
+    question: question.slice(0, 4000),
+    status: 'pending',
+    askedAt: new Date().toISOString(),
+  };
+
+  state.qa.push(item);
+  pruneAiMasterCollections(state.insights, state.qa);
+  await state.write();
+
+  return res.json({ ok: true, item });
+});
+
+app.get('/api/ai-master/qa/pending', ownerAuth, async (req, res) => {
+  const limitRaw = Number(req.query.limit);
+  const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(20, Math.floor(limitRaw))) : 1;
+  const { qa } = await ensureAiMasterState();
+  const pending = qa
+    .filter((x) => x.status === 'pending')
+    .sort((a, b) => a.askedAt.localeCompare(b.askedAt))
+    .slice(0, limit);
+
+  return res.json({ ok: true, pending });
+});
+
+app.post('/api/ai-master/qa/:id/answer', ownerAuth, async (req, res) => {
+  const id = String(req.params.id || '').trim();
+  if (!id) return res.status(400).json({ ok: false, error: 'id_required' });
+
+  const answer = String(req.body?.answer ?? '').trim();
+  const error = String(req.body?.error ?? '').trim();
+  const model = String(req.body?.model ?? '').trim() || undefined;
+
+  if (!answer && !error) return res.status(400).json({ ok: false, error: 'answer_or_error_required' });
+
+  const state = await ensureAiMasterState();
+  const item = state.qa.find((x) => x.id === id);
+  if (!item) return res.status(404).json({ ok: false, error: 'qa_item_not_found' });
+
+  item.model = model;
+  item.answeredAt = new Date().toISOString();
+
+  if (answer) {
+    item.status = 'answered';
+    item.answer = answer.slice(0, 12_000);
+    item.error = undefined;
+  } else {
+    item.status = 'failed';
+    item.error = error.slice(0, 2000) || 'qa_answer_failed';
+  }
+
+  pruneAiMasterCollections(state.insights, state.qa);
+  await state.write();
+
+  return res.json({ ok: true, item });
 });
 
 app.get('/api/live/candles', async (req, res) => {
