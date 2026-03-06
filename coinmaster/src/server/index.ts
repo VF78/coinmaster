@@ -3126,7 +3126,7 @@ app.get('/api/settings/exchange', async (_req, res) => {
       hasPrivateKey: Boolean(process.env.HYPERLIQUID_API_PRIVATE_KEY),
       privateKeyMasked: maskPrivateKey(process.env.HYPERLIQUID_API_PRIVATE_KEY),
     },
-    readOnlyExchanges: {
+    externalExchanges: {
       bybit: getMaskedBybitConnectionSettings(db.data.settings),
     },
     telegramNotify: {
