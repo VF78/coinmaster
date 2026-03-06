@@ -76,10 +76,38 @@ export interface TelegramOutboxItem {
   lastError?: string;
 }
 
+/** off = disabled, read_only = fetch data only (no trading), live = full trading enabled */
+export type ExchangeConnectionMode = 'off' | 'read_only' | 'live';
+
+/** @deprecated use ExchangeConnectionMode */
+export type ReadOnlyExchangeMode = ExchangeConnectionMode;
+
+export interface BybitConnectionSettings {
+  mode: ExchangeConnectionMode;
+  apiKey: string;
+  apiSecret: string;
+  accountType: 'UNIFIED' | 'CONTRACT' | 'SPOT';
+  categories: Array<'linear' | 'inverse' | 'spot' | 'option'>;
+}
+
+/** @deprecated use BybitConnectionSettings */
+export type BybitReadOnlySettings = BybitConnectionSettings;
+
+export interface ExternalExchangesSettings {
+  bybit: BybitConnectionSettings;
+}
+
+/** @deprecated use ExternalExchangesSettings */
+export type ReadOnlyExchangesSettings = ExternalExchangesSettings;
+
 export interface AppSettings {
   depositUsd: number;
   tradingRules: TradingRulesSettings;
   telegramNotify?: TelegramNotifySettings;
+  /** External exchange connections (Bybit, Binance, etc.) */
+  externalExchanges?: ExternalExchangesSettings;
+  /** @deprecated use externalExchanges */
+  readOnlyExchanges?: ExternalExchangesSettings;
 }
 
 export interface Position {
@@ -353,6 +381,33 @@ export interface LivePositionLevelsResponse {
   error?: string;
 }
 
+export interface MaskedBybitConnectionSettings {
+  mode: ExchangeConnectionMode;
+  hasApiKey: boolean;
+  apiKeyMasked: string;
+  hasApiSecret: boolean;
+  apiSecretMasked: string;
+  accountType: 'UNIFIED' | 'CONTRACT' | 'SPOT';
+  categories: Array<'linear' | 'inverse' | 'spot' | 'option'>;
+}
+
+/** @deprecated use MaskedBybitConnectionSettings */
+export type MaskedBybitReadOnlySettings = MaskedBybitConnectionSettings;
+
+export interface ExchangeConnectionStatus {
+  exchange: 'bybit' | string;
+  mode: ExchangeConnectionMode;
+  configured: boolean;
+  connected: boolean;
+  /** true = currently only reading data, not executing orders */
+  readOnly: boolean;
+  message?: string;
+  account?: LiveAccountSummary | null;
+}
+
+/** @deprecated use ExchangeConnectionStatus */
+export type ReadOnlyExchangeStatus = ExchangeConnectionStatus;
+
 export interface ExchangeSettingsResponse {
   exchange: string;
   connected: boolean;
@@ -374,6 +429,9 @@ export interface ExchangeSettingsResponse {
     hasPrivateKey: boolean;
     privateKeyMasked: string;
   };
+  externalExchanges?: {
+    bybit: MaskedBybitConnectionSettings;
+  };
   telegramNotify?: {
     hasToken: boolean;
     chatId: string;
@@ -387,6 +445,17 @@ export interface ExchangeSettingsResponse {
   error?: string;
 }
 
+export interface ExternalExchangesSettingsResponse {
+  ok: boolean;
+  exchanges: {
+    bybit: MaskedBybitConnectionSettings;
+  };
+  status: ExchangeConnectionStatus[];
+}
+
+/** @deprecated use ExternalExchangesSettingsResponse */
+export type ReadOnlyExchangesSettingsResponse = ExternalExchangesSettingsResponse;
+
 export interface TradingRulesSettingsResponse {
   ok: boolean;
   rules: TradingRulesSettings;
@@ -398,6 +467,17 @@ export interface TradingRulesSymbolsResponse {
   configuredSymbols?: string[];
   cacheAgeMs?: number | null;
 }
+
+export interface ExchangeConnectionSettingsPayload {
+  mode?: ExchangeConnectionMode;
+  apiKey?: string;
+  apiSecret?: string;
+  accountType?: 'UNIFIED' | 'CONTRACT' | 'SPOT';
+  categories?: Array<'linear' | 'inverse' | 'spot' | 'option'>;
+}
+
+/** @deprecated use ExchangeConnectionSettingsPayload */
+export type ReadOnlyExchangeSettingsPayload = ExchangeConnectionSettingsPayload;
 
 export interface BiasPayload {
   bias: Bias;

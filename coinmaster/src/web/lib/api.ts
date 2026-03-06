@@ -6,6 +6,9 @@ import type {
   LiveHistoryResponse,
   LivePositionLevelsPayload,
   LivePositionLevelsResponse,
+  ExchangeConnectionSettingsPayload,
+  ExternalExchangesSettingsResponse,
+  ExchangeConnectionStatus,
   TradingRulesSettings,
   TradingRulesSettingsResponse,
   TradingRulesSymbolsResponse
@@ -282,4 +285,24 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
   const data = await response.json() as PlaceOrderResponse;
   // Return the response even on non-2xx so caller can read errorCode
   return data;
+}
+
+// ─── Read-Only Exchanges ─────────────────────────────────────────────
+
+export function getReadOnlyExchangesSettings() {
+  return jsonFetch<ExternalExchangesSettingsResponse>('/api/settings/read-only-exchanges');
+}
+
+export function saveBybitSettings(payload: ExchangeConnectionSettingsPayload) {
+  return jsonFetch<{ ok: boolean; bybit: any }>('/api/settings/read-only-exchanges/bybit', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function testBybitConnection() {
+  return jsonFetch<{ ok: boolean; status: ExchangeConnectionStatus }>('/api/settings/read-only-exchanges/bybit/test', {
+    method: 'POST',
+  });
 }

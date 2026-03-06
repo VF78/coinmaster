@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react';
-import type { ExchangeSettingsResponse } from '../../shared/dto.js';
-import { getExchangeSettings, getTelegramNotifyHealth, saveHyperliquidSettings, saveTelegramNotify, sendTelegramNotifyTest, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
+import type { ExchangeSettingsResponse, ExchangeConnectionStatus } from '../../shared/dto.js';
+import {
+  getExchangeSettings,
+  getReadOnlyExchangesSettings,
+  getTelegramNotifyHealth,
+  saveBybitSettings,
+  saveHyperliquidSettings,
+  saveTelegramNotify,
+  sendTelegramNotifyTest,
+  testBybitConnection,
+  friendlyCodeMessage,
+  friendlyErrorMessage
+} from '../lib/api';
 import { formatMoney, formatNumber } from '../lib/format';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -33,12 +44,22 @@ export function SettingsPage() {
   const [isSavingHyperliquid, setIsSavingHyperliquid] = useState(false);
   const [hyperliquidInfo, setHyperliquidInfo] = useState('');
 
+  const [bybitMode, setBybitMode] = useState<'off' | 'read_only' | 'live'>('off');
+  const [bybitApiKey, setBybitApiKey] = useState('');
+  const [bybitApiSecret, setBybitApiSecret] = useState('');
+  const [bybitAccountType, setBybitAccountType] = useState<'UNIFIED' | 'CONTRACT' | 'SPOT'>('UNIFIED');
+  const [bybitCategories, setBybitCategories] = useState<Array<'linear' | 'inverse' | 'spot' | 'option'>>(['linear']);
+  const [isSavingBybit, setIsSavingBybit] = useState(false);
+  const [bybitInfo, setBybitInfo] = useState('');
+  const [bybitStatus, setBybitStatus] = useState<ExchangeConnectionStatus | null>(null);
+
   async function refresh() {
     setIsLoading(true);
     try {
-      const [next, health] = await Promise.all([
+      const [next, health, roEx] = await Promise.all([
         getExchangeSettings(),
         getTelegramNotifyHealth().catch(() => null),
+        getReadOnlyExchangesSettings().catch(() => null),
       ]);
       setData(next);
       setNotifyOpen(next.telegramNotify?.notifyOpen !== false);
@@ -52,6 +73,17 @@ export function SettingsPage() {
       setHlAccountAddress(next.hyperliquid?.accountAddress ?? '');
       setHlApiWalletAddress(next.hyperliquid?.apiWalletAddress ?? '');
       setHlApiPrivateKey(''); // never prefill private key
+
+      if (roEx?.ok && roEx.exchanges.bybit) {
+        setBybitMode(roEx.exchanges.bybit.mode);
+        setBybitAccountType(roEx.exchanges.bybit.accountType);
+        setBybitCategories(roEx.exchanges.bybit.categories);
+        setBybitApiKey(''); // never prefill secrets
+        setBybitApiSecret(''); // never prefill secrets
+        const bybitStatusItem = roEx.status.find((s) => s.exchange === 'bybit');
+        if (bybitStatusItem) setBybitStatus(bybitStatusItem);
+      }
+
       if (health?.ok) {
         setTelegramHealth({
           queued: health.totals.queued,
@@ -137,6 +169,52 @@ export function SettingsPage() {
       setHyperliquidInfo(`Save failed: ${friendlyErrorMessage(error, 'Could not save Hyperliquid settings.')}`);
     } finally {
       setIsSavingHyperliquid(false);
+    }
+  }
+
+  async function saveBybit() {
+    setIsSavingBybit(true);
+    setBybitInfo('Saving Bybit read-only settings...');
+    try {
+      const payload: {
+        mode: 'off' | 'read_only' | 'live';
+        apiKey?: string;
+        apiSecret?: string;
+        accountType: 'UNIFIED' | 'CONTRACT' | 'SPOT';
+        categories: Array<'linear' | 'inverse' | 'spot' | 'option'>;
+      } = {
+        mode: bybitMode,
+        accountType: bybitAccountType,
+        categories: bybitCategories,
+      };
+
+      if (bybitApiKey.trim().length > 0) payload.apiKey = bybitApiKey.trim();
+      if (bybitApiSecret.trim().length > 0) payload.apiSecret = bybitApiSecret.trim();
+
+      const result = await saveBybitSettings(payload);
+      if (!result.ok) {
+        throw new Error(friendlyCodeMessage('bybit_save_failed', 'Could not save Bybit settings.'));
+      }
+      setBybitInfo('Bybit settings saved.');
+      await refresh();
+    } catch (error) {
+      setBybitInfo(`Save failed: ${friendlyErrorMessage(error, 'Could not save Bybit settings.')}`);
+    } finally {
+      setIsSavingBybit(false);
+    }
+  }
+
+  async function testBybit() {
+    setBybitInfo('Testing Bybit connection...');
+    try {
+      const result = await testBybitConnection();
+      if (!result.ok) {
+        throw new Error(friendlyCodeMessage('test_failed', result.status.message || 'Connection test failed.'));
+      }
+      setBybitStatus(result.status);
+      setBybitInfo(`Connected: ${result.status.message || 'OK'}`);
+    } catch (error) {
+      setBybitInfo(`Test failed: ${friendlyErrorMessage(error, 'Could not test Bybit connection.')}`);
     }
   }
 
@@ -282,6 +360,107 @@ export function SettingsPage() {
         ) : null}
 
         {telegramInfo ? <p className="muted stat-note">{telegramInfo}</p> : null}
+      </Card>
+
+      <Card title="Bybit (Read-only telemetry)" className="terminal-card full-width">
+        <div className="rules-form-grid">
+          <label className="rules-field">
+            <span className="rules-label">Mode</span>
+            <select
+              className="rules-input"
+              value={bybitMode}
+              onChange={(e) => setBybitMode(e.target.value as 'off' | 'read_only' | 'live')}
+            >
+              <option value="off">Off — disabled</option>
+              <option value="read_only">Read-only — fetch trades for AI analytics, no order execution</option>
+              <option value="live">Live — full trading (order execution enabled)</option>
+            </select>
+          </label>
+
+          <label className="rules-field">
+            <span className="rules-label">Account type</span>
+            <select
+              className="rules-input"
+              value={bybitAccountType}
+              onChange={(e) => setBybitAccountType(e.target.value as 'UNIFIED' | 'CONTRACT' | 'SPOT')}
+            >
+              <option value="UNIFIED">Unified</option>
+              <option value="CONTRACT">Contract</option>
+              <option value="SPOT">Spot</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="rules-form-grid" style={{ marginTop: '0.75rem' }}>
+          <label className="rules-field">
+            <span className="rules-label">API key</span>
+            <input
+              className="rules-input"
+              type="text"
+              placeholder={data?.externalExchanges?.bybit.hasApiKey ? `${data.externalExchanges.bybit.apiKeyMasked} (leave empty to keep)` : 'API key'}
+              value={bybitApiKey}
+              onChange={(e) => setBybitApiKey(e.target.value)}
+            />
+          </label>
+
+          <label className="rules-field">
+            <span className="rules-label">API secret</span>
+            <input
+              className="rules-input"
+              type="password"
+              placeholder={data?.externalExchanges?.bybit.hasApiSecret ? `${data.externalExchanges.bybit.apiSecretMasked} (leave empty to keep)` : 'API secret'}
+              value={bybitApiSecret}
+              onChange={(e) => setBybitApiSecret(e.target.value)}
+            />
+          </label>
+        </div>
+
+        <div className="rules-form-grid" style={{ marginTop: '0.75rem' }}>
+          <label className="rules-field">
+            <span className="rules-label">Categories (read fills from)</span>
+            <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
+              {(['linear', 'inverse', 'spot', 'option'] as const).map((cat) => (
+                <label key={cat} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={bybitCategories.includes(cat)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setBybitCategories((prev) => [...prev, cat]);
+                      } else {
+                        setBybitCategories((prev) => prev.filter((x) => x !== cat));
+                      }
+                    }}
+                  />
+                  <span className="muted">{cat}</span>
+                </label>
+              ))}
+            </div>
+          </label>
+
+          <div className="rules-field">
+            <span className="rules-label">Status</span>
+            <p className="muted">
+              {bybitStatus
+                ? `${bybitStatus.connected ? '✅ Connected' : '❌ Not connected'} • ${bybitStatus.message || 'No details'}`
+                : 'Not tested yet'}
+            </p>
+          </div>
+        </div>
+
+        <div className="actions-row" style={{ marginTop: '0.9rem' }}>
+          <Button type="button" variant="primary" onClick={saveBybit} disabled={isSavingBybit}>
+            {isSavingBybit ? 'Saving...' : 'Save Bybit settings'}
+          </Button>
+          <Button type="button" variant="secondary" onClick={testBybit} disabled={isSavingBybit}>
+            Test connection
+          </Button>
+        </div>
+
+        <p className="muted stat-note">
+          Read-only mode: Bybit trade data will be included in daily AI analytics. No order execution.
+        </p>
+        {bybitInfo ? <p className="muted stat-note">{bybitInfo}</p> : null}
       </Card>
     </main>
   );

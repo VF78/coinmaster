@@ -16,6 +16,7 @@ import { Bias, DailyDDBaseline, RiskGateAuditEntry } from '../core/types.js';
 import type {
   AssetClass,
   BiasMode,
+  ExchangeConnectionSettingsPayload,
   LivePosition,
   PendingConfirmation,
   TelegramOutboxItem,
@@ -31,6 +32,14 @@ import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot,
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
 import { evaluateFvg, type FvgTimeframe } from '../core/fvgEvaluator.js';
+import {
+  applyBybitConnectionPatch,
+  collectExternalFills,
+  getBybitConnectionSettings,
+  getMaskedBybitConnectionSettings,
+  getExchangeConnectionStatuses,
+  testReadOnlyExchangeConnection,
+} from '../integrations/readOnlyExchanges/service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -691,18 +700,22 @@ function toFinite(value: unknown, fallback = 0): number {
 }
 
 function fillClosedPnl(fill: FillEvent): number {
-  const raw = fill.raw as { closedPnl?: unknown } | undefined;
-  return toFinite(raw?.closedPnl, 0);
+  const raw = fill.raw as { closedPnl?: unknown; execPnl?: unknown } | undefined;
+  return toFinite(raw?.closedPnl ?? raw?.execPnl, 0);
 }
 
 function fillFee(fill: FillEvent): number {
-  const raw = fill.raw as { fee?: unknown } | undefined;
-  return Math.abs(toFinite(raw?.fee, 0));
+  const raw = fill.raw as { fee?: unknown; execFee?: unknown } | undefined;
+  return Math.abs(toFinite(raw?.fee ?? raw?.execFee, 0));
 }
 
 function fillDirection(fill: FillEvent): string {
-  const raw = fill.raw as { dir?: unknown } | undefined;
-  return String(raw?.dir ?? '').trim();
+  const raw = fill.raw as { dir?: unknown; closedSize?: unknown } | undefined;
+  const dir = String(raw?.dir ?? '').trim();
+  if (dir) return dir;
+
+  const closedSize = toFinite(raw?.closedSize, 0);
+  return closedSize > 0 ? 'close trade' : 'open trade';
 }
 
 function asUsd(value: number): string {
@@ -748,12 +761,14 @@ async function buildDailyAnalyticsText(): Promise<string | null> {
   const now = Date.now();
   const cutoff = now - 24 * 60 * 60_000;
 
-  const [fills, db] = await Promise.all([
+  const [executionFills, db] = await Promise.all([
     exchange.getFills().catch(() => [] as FillEvent[]),
     getDb(),
   ]);
 
-  const recentFills = fills
+  const externalFills = await collectExternalFills(db.data.settings, cutoff);
+
+  const recentFills = [...executionFills, ...externalFills]
     .filter((f) => Date.parse(f.timestamp) >= cutoff)
     .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
 
@@ -762,7 +777,12 @@ async function buildDailyAnalyticsText(): Promise<string | null> {
 
   const closeFills = recentFills.filter((f) => fillDirection(f).toLowerCase().startsWith('close '));
   const openFills = recentFills.filter((f) => fillDirection(f).toLowerCase().startsWith('open '));
-  const manualOpenFills = openFills.filter((f) => isManualOpenFill(f, recentEvents));
+
+  const executionRecentFills = executionFills
+    .filter((f) => Date.parse(f.timestamp) >= cutoff)
+    .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+  const executionOpenFills = executionRecentFills.filter((f) => fillDirection(f).toLowerCase().startsWith('open '));
+  const manualOpenFills = executionOpenFills.filter((f) => isManualOpenFill(f, recentEvents));
 
   const realized = closeFills.reduce((sum, f) => sum + fillClosedPnl(f), 0);
   const fees = recentFills.reduce((sum, f) => sum + fillFee(f), 0);
@@ -780,6 +800,16 @@ async function buildDailyAnalyticsText(): Promise<string | null> {
   }
 
   const topRows = [...pnlBySymbol.entries()].map(([symbol, value]) => ({ symbol, value }));
+
+  const bySource = new Map<string, { fills: number; realized: number; fees: number }>();
+  for (const fill of recentFills) {
+    const source = String((fill.raw as { sourceExchange?: unknown } | undefined)?.sourceExchange ?? exchange.name).toLowerCase();
+    const row = bySource.get(source) ?? { fills: 0, realized: 0, fees: 0 };
+    row.fills += 1;
+    row.realized += fillClosedPnl(fill);
+    row.fees += fillFee(fill);
+    bySource.set(source, row);
+  }
 
   const signalDetected = recentEvents.filter((e) => e.type === 'signal_detected').length;
   const signalRejected = recentEvents.filter((e) => e.type === 'signal_rejected').length;
@@ -834,6 +864,16 @@ async function buildDailyAnalyticsText(): Promise<string | null> {
     `- Realized: ${asUsd(realized)} | Fees: ${asUsd(-fees)} | Net: ${asUsd(net)}`,
     `- Win-rate: ${asPct(winRate)} (${winners}/${closeFills.length || 0})`,
     ...formatSymbolBreakdown('- По символам (realized):', topRows),
+    ...(
+      bySource.size > 1
+        ? [
+            '- По источникам:',
+            ...[...bySource.entries()]
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([source, agg]) => `- ${source}: fills ${agg.fills}, realized ${asUsd(agg.realized)}, fees ${asUsd(-agg.fees)}`),
+          ]
+        : []
+    ),
     '',
     '📡 Сигналы и исполнение',
     `- Signal detected: ${signalDetected}, rejected: ${signalRejected}`,
@@ -3086,6 +3126,9 @@ app.get('/api/settings/exchange', async (_req, res) => {
       hasPrivateKey: Boolean(process.env.HYPERLIQUID_API_PRIVATE_KEY),
       privateKeyMasked: maskPrivateKey(process.env.HYPERLIQUID_API_PRIVATE_KEY),
     },
+    readOnlyExchanges: {
+      bybit: getMaskedBybitConnectionSettings(db.data.settings),
+    },
     telegramNotify: {
       hasToken: Boolean(tg?.botToken?.trim() || TELEGRAM_BOT_TOKEN),
       chatId: tg?.chatId || TELEGRAM_CHAT_ID,
@@ -3233,6 +3276,53 @@ app.post('/api/settings/telegram-notify/test', ownerAuth, async (_req, res) => {
     text: `✅ Coinmaster Telegram test ping\nTime: ${new Date().toISOString()}`,
   });
   return res.json({ ok: true });
+});
+
+// ─── Read-Only Exchanges Settings ───────────────────────────────────────
+app.get('/api/settings/read-only-exchanges', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  const statuses = await getExchangeConnectionStatuses(db.data.settings);
+
+  return res.json({
+    ok: true,
+    exchanges: {
+      bybit: getMaskedBybitConnectionSettings(db.data.settings),
+    },
+    status: statuses,
+  });
+});
+
+app.put('/api/settings/read-only-exchanges/:exchangeId', ownerAuth, async (req, res) => {
+  const { exchangeId } = req.params;
+  if (exchangeId !== 'bybit') {
+    return res.status(400).json({ ok: false, error: 'exchange_not_supported' });
+  }
+
+  const payload = req.body as ExchangeConnectionSettingsPayload;
+  const db = await getDb();
+
+  applyBybitConnectionPatch(db.data.settings, payload);
+  await db.write();
+
+  return res.json({
+    ok: true,
+    bybit: getMaskedBybitConnectionSettings(db.data.settings),
+  });
+});
+
+app.post('/api/settings/read-only-exchanges/:exchangeId/test', ownerAuth, async (req, res) => {
+  const { exchangeId } = req.params;
+  if (exchangeId !== 'bybit') {
+    return res.status(400).json({ ok: false, error: 'exchange_not_supported' });
+  }
+
+  const db = await getDb();
+  const status = await testReadOnlyExchangeConnection(db.data.settings, exchangeId);
+
+  return res.json({
+    ok: status.connected,
+    status,
+  });
 });
 
 app.get('/api/settings/telegram-notify/health', ownerAuth, async (_req, res) => {

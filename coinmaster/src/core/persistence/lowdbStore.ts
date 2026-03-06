@@ -17,6 +17,15 @@ const defaultData: DBShape = {
       notifyManualConfirm: true,
       notifyDailyAnalytics: true,
     },
+    externalExchanges: {
+      bybit: {
+        mode: 'off',
+        apiKey: '',
+        apiSecret: '',
+        accountType: 'UNIFIED',
+        categories: ['linear'],
+      },
+    },
   },
   positions: [],
   tradeLogs: [],
@@ -51,6 +60,42 @@ function ensureDbShape(data: DBShape) {
   data.settings.telegramNotify.notifySl = data.settings.telegramNotify.notifySl !== false;
   data.settings.telegramNotify.notifyManualConfirm = data.settings.telegramNotify.notifyManualConfirm !== false;
   data.settings.telegramNotify.notifyDailyAnalytics = data.settings.telegramNotify.notifyDailyAnalytics !== false;
+
+  // Migrate legacy key from earlier implementation
+  if (!data.settings.externalExchanges && (data.settings as any).readOnlyExchanges) {
+    data.settings.externalExchanges = (data.settings as any).readOnlyExchanges;
+    delete (data.settings as any).readOnlyExchanges;
+  }
+
+  data.settings.externalExchanges = data.settings.externalExchanges ?? {
+    bybit: {
+      mode: 'off',
+      apiKey: '',
+      apiSecret: '',
+      accountType: 'UNIFIED',
+      categories: ['linear'],
+    },
+  };
+
+  const bybit = data.settings.externalExchanges.bybit ?? {
+    mode: 'off',
+    apiKey: '',
+    apiSecret: '',
+    accountType: 'UNIFIED',
+    categories: ['linear'],
+  };
+
+  bybit.mode = bybit.mode === 'read_only' ? 'read_only' : bybit.mode === 'live' ? 'live' : 'off';
+  bybit.apiKey = String(bybit.apiKey ?? '').trim();
+  bybit.apiSecret = String(bybit.apiSecret ?? '').trim();
+  bybit.accountType = bybit.accountType === 'CONTRACT' || bybit.accountType === 'SPOT' ? bybit.accountType : 'UNIFIED';
+  bybit.categories = Array.isArray(bybit.categories) && bybit.categories.length > 0
+    ? [...new Set(bybit.categories.filter((c): c is 'linear' | 'inverse' | 'spot' | 'option' => c === 'linear' || c === 'inverse' || c === 'spot' || c === 'option'))]
+    : ['linear'];
+  if (bybit.categories.length === 0) bybit.categories = ['linear'];
+
+  data.settings.externalExchanges.bybit = bybit;
+
   if (!Array.isArray(data.positions)) data.positions = [];
   if (!Array.isArray(data.tradeLogs)) data.tradeLogs = [];
   if (!Array.isArray(data.tradeEvents)) data.tradeEvents = [];
