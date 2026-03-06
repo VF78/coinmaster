@@ -48,6 +48,20 @@ export interface PositionSnapshot {
   raw?: unknown;
 }
 
+export interface ExposureSnapshot {
+  symbol: string;
+  side: 'long' | 'short';
+  size: number;
+  entryPrice?: number;
+  markPrice?: number;
+  leverage?: number;
+  unrealizedPnl?: number;
+  productType: 'perp' | 'spot' | 'other';
+  accountScope: 'master' | 'agent' | 'subaccount' | string;
+  source?: string;
+  raw?: unknown;
+}
+
 export interface FillEvent {
   id: string;
   symbol: string;

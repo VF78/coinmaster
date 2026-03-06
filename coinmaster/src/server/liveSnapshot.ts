@@ -1,5 +1,5 @@
 import type { ExchangeAdapter } from '../exchange/adapter.js';
-import type { FillEvent, OrderSnapshot, PositionSnapshot } from '../exchange/types.js';
+import type { ExposureSnapshot, FillEvent, OrderSnapshot, PositionSnapshot } from '../exchange/types.js';
 import type { LiveDashboardState, LiveFill, LivePnlSummary, LivePosition } from '../shared/dto.js';
 
 export interface LiveModeConfig {
@@ -41,7 +41,7 @@ function isReduceOnlyOrder(order: OrderSnapshot): boolean {
   return true; // fallback when adapter/raw does not expose reduceOnly flag
 }
 
-function pickStopLossAndTakeProfit(position: PositionSnapshot, openOrders: OrderSnapshot[]) {
+function pickStopLossAndTakeProfit(position: Pick<ExposureSnapshot, 'symbol' | 'side' | 'entryPrice'>, openOrders: OrderSnapshot[]) {
   const entry = position.entryPrice;
   if (!entry || entry <= 0) {
     return {
@@ -89,7 +89,7 @@ function pickStopLossAndTakeProfit(position: PositionSnapshot, openOrders: Order
   };
 }
 
-function pickOpenedAt(position: PositionSnapshot, fills: FillEvent[]): string | undefined {
+function pickOpenedAt(position: Pick<ExposureSnapshot, 'symbol' | 'side' | 'entryPrice'>, fills: FillEvent[]): string | undefined {
   const openingSide: 'buy' | 'sell' = position.side === 'long' ? 'buy' : 'sell';
   const bySymbolAndSide = fills.filter((f) => f.symbol === position.symbol && f.side === openingSide);
   if (!bySymbolAndSide.length) return undefined;
@@ -112,16 +112,21 @@ function pickOpenedAt(position: PositionSnapshot, fills: FillEvent[]): string | 
   return pool[0]?.fill.timestamp;
 }
 
-function toLivePosition(position: PositionSnapshot, openOrders: OrderSnapshot[], fills: FillEvent[]): LivePosition {
+function toLivePosition(position: ExposureSnapshot, openOrders: OrderSnapshot[], fills: FillEvent[]): LivePosition {
   const { stopLoss, takeProfit, takeProfits } = pickStopLossAndTakeProfit(position, openOrders);
   const openedAt = pickOpenedAt(position, fills);
   const rawPositionValue = toFiniteNumber(
     (position.raw as { position?: { positionValue?: unknown } } | undefined)?.position?.positionValue
   );
-  const dealValue = rawPositionValue ?? (position.entryPrice ? position.entryPrice * position.size : undefined);
+  const fallbackValue = position.entryPrice
+    ? position.entryPrice * position.size
+    : position.markPrice
+      ? position.markPrice * position.size
+      : undefined;
+  const dealValue = rawPositionValue ?? fallbackValue;
 
   return {
-    id: `${position.symbol}-${position.side}-${position.entryPrice ?? 0}-${position.size}`,
+    id: `${position.productType}:${position.symbol}-${position.side}-${position.entryPrice ?? 0}-${position.size}`,
     symbol: position.symbol,
     side: position.side,
     size: position.size,
@@ -132,7 +137,10 @@ function toLivePosition(position: PositionSnapshot, openOrders: OrderSnapshot[],
     takeProfits,
     openedAt,
     leverage: position.leverage,
-    unrealizedPnl: position.unrealizedPnl
+    unrealizedPnl: position.unrealizedPnl,
+    productType: position.productType,
+    accountScope: position.accountScope,
+    source: position.source,
   };
 }
 
@@ -221,10 +229,26 @@ export async function buildLiveDashboardState(
   };
 
   try {
-    const [account, openOrders, openPositions, fills] = await Promise.all([
+    const exposuresPromise: Promise<ExposureSnapshot[]> = typeof exchange.getOpenExposures === 'function'
+      ? exchange.getOpenExposures()
+      : exchange.getOpenPositions().then((rows: PositionSnapshot[]) => rows.map((row): ExposureSnapshot => ({
+          symbol: row.symbol,
+          side: row.side,
+          size: row.size,
+          entryPrice: row.entryPrice,
+          markPrice: row.markPrice,
+          leverage: row.leverage,
+          unrealizedPnl: row.unrealizedPnl,
+          productType: 'perp',
+          accountScope: 'master',
+          source: 'getOpenPositions',
+          raw: row.raw,
+        })));
+
+    const [account, openOrders, openExposures, fills] = await Promise.all([
       exchange.getAccountState(),
       exchange.getOpenOrders(),
-      exchange.getOpenPositions(),
+      exposuresPromise,
       exchange.getFills()
     ]);
 
@@ -240,7 +264,7 @@ export async function buildLiveDashboardState(
         : null,
       pnl: computeLivePnl(fills),
       openOrders: openOrders.length,
-      openPositions: openPositions.map((p) => toLivePosition(p, openOrders, fills)),
+      openPositions: openExposures.map((p) => toLivePosition(p, openOrders, fills)),
       pendingConfirmations
     };
   } catch (error) {

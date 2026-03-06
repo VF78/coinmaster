@@ -4,11 +4,25 @@ export type PositionStatus = 'open' | 'closed';
 export type StatsPeriod = 'week' | 'month';
 
 export type TradingRulesTimeframe = '5m' | '15m' | '1h' | '4h';
+export type AssetClass = 'crypto' | 'commodity' | 'forex' | 'index' | 'other';
+export type BiasMode = 'global' | 'symbol';
+
+export interface BiasPolicySymbolOverride {
+  mode: BiasMode;
+  /** Optional pinned bias for this symbol. If omitted and mode=symbol, runtime reads symbol bias command; missing command => off. */
+  bias?: Bias;
+}
+
+export interface BiasPolicySettings {
+  classDefaults: Record<AssetClass, BiasMode>;
+  symbolOverrides: Record<string, BiasPolicySymbolOverride>;
+}
 
 export interface TradingCoinAllocation {
   symbol: 'BTC' | 'ETH' | 'SOL' | string;
   enabled: boolean;
   pct: number;
+  assetClass?: AssetClass;
 }
 
 export interface TradingRulesSettings {
@@ -35,6 +49,7 @@ export interface TradingRulesSettings {
    *  0% disables emergency exit execution; partial close (>0 and <100) moves SL to entry. */
   exitClosePct: number;
   autoConfirm: boolean;
+  biasPolicy?: BiasPolicySettings;
 }
 
 export interface TelegramNotifySettings {
@@ -209,6 +224,9 @@ export interface LivePosition {
   openedAt?: string;
   leverage?: number;
   unrealizedPnl?: number;
+  productType?: 'perp' | 'spot' | 'other';
+  accountScope?: string;
+  source?: string;
 }
 
 export interface PendingConfirmation {

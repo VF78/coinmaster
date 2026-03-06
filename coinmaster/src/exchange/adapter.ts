@@ -5,6 +5,7 @@ import {
   CommandResult,
   ExchangeCapabilities,
   ExchangeName,
+  ExposureSnapshot,
   FillEvent,
   InstrumentMeta,
   MidStreamHandle,
@@ -30,6 +31,8 @@ export interface ExchangeAdapter {
   getAccountState(): Promise<AccountSnapshot | null>;
   getOpenOrders(symbol?: string): Promise<OrderSnapshot[]>;
   getOpenPositions(symbol?: string): Promise<PositionSnapshot[]>;
+  /** Unified exposure view (perp/spot/other). Optional during migration; callers should fallback to getOpenPositions. */
+  getOpenExposures?(symbol?: string): Promise<ExposureSnapshot[]>;
   getFills(symbol?: string): Promise<FillEvent[]>;
 
   // Trading

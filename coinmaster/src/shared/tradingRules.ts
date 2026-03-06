@@ -1,12 +1,34 @@
-import type { TradingRulesSettings, TradingRulesTimeframe } from './dto.js';
+import type {
+  AssetClass,
+  Bias,
+  BiasMode,
+  BiasPolicySettings,
+  TradingRulesSettings,
+  TradingRulesTimeframe
+} from './dto.js';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
+const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
+
 const DEFAULT_COINS = [
-  { symbol: 'BTC', enabled: true, pct: 50 },
-  { symbol: 'ETH', enabled: true, pct: 30 },
-  { symbol: 'SOL', enabled: true, pct: 20 },
+  { symbol: 'BTC', enabled: true, pct: 50, assetClass: 'crypto' as AssetClass },
+  { symbol: 'ETH', enabled: true, pct: 30, assetClass: 'crypto' as AssetClass },
+  { symbol: 'SOL', enabled: true, pct: 20, assetClass: 'crypto' as AssetClass },
 ] as const;
+
+const DEFAULT_BIAS_POLICY: BiasPolicySettings = {
+  classDefaults: {
+    crypto: 'global',
+    commodity: 'symbol',
+    forex: 'symbol',
+    index: 'symbol',
+    other: 'symbol',
+  },
+  symbolOverrides: {},
+};
+
 const SYMBOL_RE = /^(?:[A-Z0-9][A-Z0-9_-]{1,24}|[a-z0-9][a-z0-9_-]{0,15}:[A-Z0-9][A-Z0-9_-]{1,24})$/;
+const FX_CODES = new Set(['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'NZD', 'CAD', 'SEK', 'NOK', 'CNH']);
 
 export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   coins: DEFAULT_COINS.map((coin) => ({ ...coin })),
@@ -22,7 +44,8 @@ export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   tpLevels: [6],
   slPct: 2,
   exitClosePct: 50,
-  autoConfirm: false
+  autoConfirm: false,
+  biasPolicy: JSON.parse(JSON.stringify(DEFAULT_BIAS_POLICY)) as BiasPolicySettings,
 };
 
 function clampNumber(value: unknown, min: number, max: number, fallback: number): number {
@@ -66,6 +89,86 @@ function normalizeRuleSymbol(value: unknown): string | null {
   return symbol;
 }
 
+function normalizeBias(value: unknown): Bias | undefined {
+  const raw = String(value ?? '').trim().toLowerCase();
+  if (raw === 'long' || raw === 'short' || raw === 'off') return raw;
+  return undefined;
+}
+
+function normalizeBiasMode(value: unknown, fallback: BiasMode): BiasMode {
+  const raw = String(value ?? '').trim().toLowerCase();
+  return raw === 'global' || raw === 'symbol' ? raw : fallback;
+}
+
+export function inferAssetClassFromSymbol(symbol: string): AssetClass {
+  const normalized = normalizeRuleSymbol(symbol) ?? String(symbol ?? '').trim().toUpperCase();
+  const core = normalized.includes(':') ? normalized.split(':', 2)[1] : normalized;
+  const token = String(core ?? '').toUpperCase();
+
+  if (!token) return 'other';
+
+  if (/(?:^|[^A-Z])(XAU|XAG|GOLD|SILVER|WTI|BRENT|OIL)(?:[^A-Z]|$)/.test(token)) {
+    return 'commodity';
+  }
+
+  if (token.length === 6) {
+    const base = token.slice(0, 3);
+    const quote = token.slice(3);
+    if (FX_CODES.has(base) && FX_CODES.has(quote)) return 'forex';
+  }
+
+  if (/(SPX|SP500|NASDAQ|NQ|NDX|DJI|DOW|DAX|FTSE|HSI|NIKKEI)/.test(token)) {
+    return 'index';
+  }
+
+  if (/(BTC|ETH|SOL|BNB|XRP|ADA|DOGE|AVAX|LTC|DOT|LINK|MATIC|TON|TRX|ATOM|SUI|ARB|OP)/.test(token)) {
+    return 'crypto';
+  }
+
+  // Default for unknown perps remains crypto to preserve historical behavior.
+  return 'crypto';
+}
+
+export function normalizeAssetClass(value: unknown, fallback: AssetClass = 'crypto'): AssetClass {
+  const raw = String(value ?? '').trim().toLowerCase();
+  return ASSET_CLASSES.includes(raw as AssetClass) ? (raw as AssetClass) : fallback;
+}
+
+function normalizeBiasPolicy(value: unknown, fallback: BiasPolicySettings): BiasPolicySettings {
+  const base = JSON.parse(JSON.stringify(fallback)) as BiasPolicySettings;
+  const raw = value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
+
+  const classDefaultsRaw = raw.classDefaults && typeof raw.classDefaults === 'object'
+    ? (raw.classDefaults as Record<string, unknown>)
+    : {};
+
+  for (const klass of ASSET_CLASSES) {
+    base.classDefaults[klass] = normalizeBiasMode(classDefaultsRaw[klass], base.classDefaults[klass]);
+  }
+
+  const symbolOverridesRaw = raw.symbolOverrides && typeof raw.symbolOverrides === 'object'
+    ? (raw.symbolOverrides as Record<string, unknown>)
+    : {};
+
+  const normalizedOverrides: BiasPolicySettings['symbolOverrides'] = {};
+  for (const [symbolRaw, overrideRaw] of Object.entries(symbolOverridesRaw)) {
+    const symbol = normalizeRuleSymbol(symbolRaw);
+    if (!symbol || !overrideRaw || typeof overrideRaw !== 'object') continue;
+
+    const override = overrideRaw as Record<string, unknown>;
+    const mode = normalizeBiasMode(override.mode, 'symbol');
+    const bias = normalizeBias(override.bias);
+
+    normalizedOverrides[symbol] = {
+      mode,
+      ...(mode === 'symbol' && bias ? { bias } : {}),
+    };
+  }
+
+  base.symbolOverrides = normalizedOverrides;
+  return base;
+}
+
 export function cloneTradingRulesDefaults(): TradingRulesSettings {
   return JSON.parse(JSON.stringify(DEFAULT_TRADING_RULES)) as TradingRulesSettings;
 }
@@ -85,10 +188,12 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
     if (!symbol || seenSymbols.has(symbol)) continue;
     seenSymbols.add(symbol);
 
+    const inferredClass = inferAssetClassFromSymbol(symbol);
     normalizedCoins.push({
       symbol,
       enabled: Boolean(item.enabled),
       pct: clampNumber(item.pct, 0, 100, 0),
+      assetClass: normalizeAssetClass(item.assetClass, inferredClass),
     });
   }
 
@@ -131,6 +236,7 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
   base.tpPct = base.tpLevels[0];
 
   base.autoConfirm = Boolean(raw.autoConfirm);
+  base.biasPolicy = normalizeBiasPolicy(raw.biasPolicy, DEFAULT_BIAS_POLICY);
 
   return base;
 }

@@ -8,6 +8,7 @@ import {
   CandleQuery,
   CommandResult,
   ExchangeCapabilities,
+  ExposureSnapshot,
   FillEvent,
   InstrumentMeta,
   MidStreamHandle,
@@ -271,20 +272,24 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     return [...deduped.values()];
   }
 
-  async getOpenPositions(symbol?: string): Promise<PositionSnapshot[]> {
+  async getOpenExposures(symbol?: string): Promise<ExposureSnapshot[]> {
     const user = await this.resolveEffectiveUser();
     const target = symbol ? this.normalizeSymbol(symbol) : null;
     const requestedDex = target ? this.getDexFromSymbol(target) : null;
     const dexScopes = requestedDex ? [requestedDex] : ['', ...(await this.getKnownDexes(user))];
 
-    const states = await Promise.all(
+    const perpStates = await Promise.all(
       dexScopes.map((dex) => this.requestInfo<any>({ type: 'clearinghouseState', user, ...(dex ? { dex } : {}) }))
     );
 
-    const rows = states.flatMap((state) => (Array.isArray(state?.assetPositions) ? state.assetPositions : []));
+    const perpRows = perpStates.flatMap((state, index) => {
+      const dex = dexScopes[index];
+      const rows = Array.isArray(state?.assetPositions) ? state.assetPositions : [];
+      return rows.map((row: any) => ({ row, dex }));
+    });
 
-    const mapped = rows
-      .map((row: any): PositionSnapshot | null => {
+    const perpExposures = perpRows
+      .map(({ row, dex }): ExposureSnapshot | null => {
         const p = row?.position;
         if (!p) return null;
 
@@ -300,20 +305,69 @@ export class HyperliquidAdapter implements ExchangeAdapter {
           side: szi >= 0 ? 'long' : 'short',
           size,
           entryPrice: this.toNumber(p.entryPx),
+          markPrice: this.toNumber(p.markPx),
           leverage: this.toNumber(p?.leverage?.value),
           unrealizedPnl: this.toNumber(p.unrealizedPnl),
-          raw: row
-        } as PositionSnapshot;
+          productType: 'perp',
+          accountScope: 'master',
+          source: dex ? `clearinghouseState:dex:${dex}` : 'clearinghouseState',
+          raw: row,
+        } as ExposureSnapshot;
       })
-      .filter((x: PositionSnapshot | null): x is PositionSnapshot => Boolean(x));
+      .filter((x: ExposureSnapshot | null): x is ExposureSnapshot => Boolean(x));
 
-    const deduped = new Map<string, PositionSnapshot>();
-    for (const row of mapped) {
-      const key = `${row.symbol}:${row.side}`;
+    let spotExposures: ExposureSnapshot[] = [];
+    if (!requestedDex) {
+      try {
+        const spot = await this.requestInfo<any>({ type: 'spotClearinghouseState', user });
+        const stable = new Set(['USDC', 'USDE', 'USDT', 'USDT0', 'USDH']);
+        const balances = Array.isArray(spot?.balances) ? spot.balances : [];
+        spotExposures = balances
+          .map((row: any): ExposureSnapshot | null => {
+            const coin = this.normalizeSymbol(String(row?.coin ?? ''));
+            const total = this.toNumber(row?.total) ?? 0;
+            if (!coin || total <= 0 || stable.has(coin)) return null;
+            if (target && coin !== target) return null;
+
+            return {
+              symbol: coin,
+              side: 'long',
+              size: total,
+              productType: 'spot',
+              accountScope: 'master',
+              source: 'spotClearinghouseState',
+              raw: row,
+            };
+          })
+          .filter((x: ExposureSnapshot | null): x is ExposureSnapshot => Boolean(x));
+      } catch (error) {
+        logger.debug({ component: 'hyperliquid', err: error instanceof Error ? error.message : error }, 'spot exposure fetch skipped');
+      }
+    }
+
+    const deduped = new Map<string, ExposureSnapshot>();
+    for (const row of [...perpExposures, ...spotExposures]) {
+      const key = `${row.productType}:${row.symbol}:${row.side}`;
       if (!deduped.has(key)) deduped.set(key, row);
     }
 
     return [...deduped.values()];
+  }
+
+  async getOpenPositions(symbol?: string): Promise<PositionSnapshot[]> {
+    const exposures = await this.getOpenExposures(symbol);
+    return exposures
+      .filter((x) => x.productType === 'perp')
+      .map((x) => ({
+        symbol: x.symbol,
+        side: x.side,
+        size: x.size,
+        entryPrice: x.entryPrice,
+        markPrice: x.markPrice,
+        leverage: x.leverage,
+        unrealizedPnl: x.unrealizedPnl,
+        raw: x.raw,
+      } satisfies PositionSnapshot));
   }
 
   async getFills(symbol?: string): Promise<FillEvent[]> {
