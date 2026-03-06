@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -44,7 +45,13 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../../');
-const distDir = path.join(rootDir, 'dist');
+const preferredDistDir = path.join(rootDir, 'dist');
+const distDirCandidates = [preferredDistDir, rootDir];
+const distDir = distDirCandidates.find((candidate) => existsSync(path.join(candidate, 'index.html'))) ?? preferredDistDir;
+
+if (distDir !== preferredDistDir) {
+  logger.warn({ component: 'server', preferredDistDir, fallbackDistDir: distDir }, 'dist/index.html missing, using fallback static root');
+}
 
 const app = express();
 const port = Number(process.env.PORT || 8787);
