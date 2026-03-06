@@ -1,6 +1,5 @@
 import type {
   AssetClass,
-  Bias,
   BiasMode,
   BiasPolicySettings,
   TradingRulesSettings,
@@ -89,12 +88,6 @@ function normalizeRuleSymbol(value: unknown): string | null {
   return symbol;
 }
 
-function normalizeBias(value: unknown): Bias | undefined {
-  const raw = String(value ?? '').trim().toLowerCase();
-  if (raw === 'long' || raw === 'short' || raw === 'off') return raw;
-  return undefined;
-}
-
 function normalizeBiasMode(value: unknown, fallback: BiasMode): BiasMode {
   const raw = String(value ?? '').trim().toLowerCase();
   return raw === 'global' || raw === 'symbol' ? raw : fallback;
@@ -157,12 +150,8 @@ function normalizeBiasPolicy(value: unknown, fallback: BiasPolicySettings): Bias
 
     const override = overrideRaw as Record<string, unknown>;
     const mode = normalizeBiasMode(override.mode, 'symbol');
-    const bias = normalizeBias(override.bias);
 
-    normalizedOverrides[symbol] = {
-      mode,
-      ...(mode === 'symbol' && bias ? { bias } : {}),
-    };
+    normalizedOverrides[symbol] = { mode };
   }
 
   base.symbolOverrides = normalizedOverrides;

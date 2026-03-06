@@ -10,8 +10,22 @@ function periodDays(period: StatsPeriod): number {
   return period === 'week' ? 7 : 30;
 }
 
+function normalizeBiasSymbol(symbol: string): string {
+  const raw = String(symbol ?? '').trim();
+  if (!raw) return '';
+
+  if (raw.includes(':')) {
+    const [namespaceRaw, symbolRaw] = raw.split(':', 2);
+    const namespace = String(namespaceRaw ?? '').trim().toLowerCase();
+    const baseSymbol = String(symbolRaw ?? '').trim().toUpperCase();
+    if (namespace && baseSymbol) return `${namespace}:${baseSymbol}`;
+  }
+
+  return raw.toUpperCase();
+}
+
 export function submitBias(db: DBShape, symbol: string, bias: Bias) {
-  const normalizedSymbol = symbol.toUpperCase();
+  const normalizedSymbol = normalizeBiasSymbol(symbol);
   const cmd = { id: nanoid(), symbol: normalizedSymbol, bias, createdAt: new Date().toISOString() };
   db.biasCommands.push(cmd);
   db.tradeLogs.push({

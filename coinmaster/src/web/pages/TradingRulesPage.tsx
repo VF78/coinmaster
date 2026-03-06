@@ -4,7 +4,6 @@ import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import type {
   AssetClass,
-  Bias,
   BiasMode,
   BiasPolicySymbolOverride,
   TradingCoinAllocation,
@@ -17,7 +16,10 @@ import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
 const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
-const BIAS_MODES: BiasMode[] = ['global', 'symbol'];
+const BIAS_MODE_OPTIONS: Array<{ value: BiasMode; label: string }> = [
+  { value: 'global', label: 'global' },
+  { value: 'symbol', label: 'custom' },
+];
 const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
 
 function clampNumber(value: number, min: number, max: number) {
@@ -57,8 +59,7 @@ function cloneSymbolOverrides(input?: Record<string, BiasPolicySymbolOverride>):
         const symbol = normalizeAssetSymbol(key);
         if (!symbol || !value) return null;
         const mode: BiasMode = value.mode === 'global' ? 'global' : 'symbol';
-        const bias = value.bias === 'long' || value.bias === 'short' || value.bias === 'off' ? value.bias : undefined;
-        return [symbol, { mode, ...(bias ? { bias } : {}) } satisfies BiasPolicySymbolOverride] as const;
+        return [symbol, { mode } satisfies BiasPolicySymbolOverride] as const;
       })
       .filter((x): x is readonly [string, BiasPolicySymbolOverride] => Boolean(x))
   );
@@ -403,37 +404,14 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
     setSymbolBiasOverrides((prev) => {
       const next = { ...prev };
-      const existing = next[symbol];
-      const existingBias = existing?.bias;
-
-      if (mode === classDefaultMode && !existingBias) {
+      if (mode === classDefaultMode) {
         delete next[symbol];
         return next;
       }
 
-      next[symbol] = {
-        mode,
-        ...(mode === 'symbol' ? { bias: existingBias ?? 'off' } : {}),
-      };
+      next[symbol] = { mode };
       return next;
     });
-  }
-
-  function setRowSymbolBias(coin: TradingCoinAllocation, bias: Bias) {
-    const symbol = normalizeAssetSymbol(coin.symbol);
-    if (!symbol) return;
-
-    setSymbolBiasOverrides((prev) => ({
-      ...prev,
-      [symbol]: {
-        mode: 'symbol',
-        bias,
-      },
-    }));
-  }
-
-  function setClassDefaultMode(assetClass: AssetClass, mode: BiasMode) {
-    setBiasClassDefaults((prev) => ({ ...prev, [assetClass]: mode }));
   }
 
   async function handleApply(): Promise<boolean> {
@@ -529,8 +507,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
             const normalizedSymbol = normalizeAssetSymbol(coin.symbol);
             const rowAssetClass = coin.assetClass ?? inferAssetClassFromSymbol(normalizedSymbol);
             const rowBiasMode = getRowBiasMode(coin);
-            const rowOverride = normalizedSymbol ? symbolBiasOverrides[normalizedSymbol] : undefined;
-            const rowBias: Bias = rowOverride?.bias ?? 'off';
 
             return (
               <div key={`${coin.symbol || 'asset'}-${idx}`} className="rules-coin-row">
@@ -581,26 +557,14 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                   style={{ width: 110 }}
                   title="Bias mode"
                 >
-                  {BIAS_MODES.map((mode) => (
-                    <option key={mode} value={mode}>{mode}</option>
+                  {BIAS_MODE_OPTIONS.map((mode) => (
+                    <option key={mode.value} value={mode.value}>{mode.label}</option>
                   ))}
                 </select>
 
-                {rowBiasMode === 'symbol' ? (
-                  <select
-                    className="rules-input"
-                    value={rowBias}
-                    onChange={(e) => setRowSymbolBias(coin, e.target.value as Bias)}
-                    style={{ width: 100 }}
-                    title="Symbol bias"
-                  >
-                    <option value="long">long</option>
-                    <option value="short">short</option>
-                    <option value="off">off</option>
-                  </select>
-                ) : (
-                  <span className="muted" style={{ minWidth: 100, textAlign: 'center', fontSize: 12 }}>uses global</span>
-                )}
+                <span className="muted" style={{ minWidth: 130, textAlign: 'center', fontSize: 12 }}>
+                  {rowBiasMode === 'global' ? 'uses execution global' : 'custom bias in dashboard'}
+                </span>
 
                 <Button
                   type="button"
@@ -637,38 +601,9 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
         <p className="stat-note muted">Active total: <strong>{totalPct}%</strong></p>
 
-        <div
-          className="rules-section"
-          style={{
-            marginTop: 12,
-            border: '1px solid var(--border)',
-            borderRadius: 8,
-            padding: '0.75rem',
-            background: 'var(--surface-2, rgba(148,163,184,0.08))',
-          }}
-        >
-          <p className="rules-label" style={{ marginBottom: 8 }}>Bias policy by asset class</p>
-          <p className="muted" style={{ marginTop: 0, marginBottom: 10, fontSize: 12 }}>
-            Global mode reads the shared global bias (execution panel). Symbol mode resolves per symbol and fails closed to OFF when missing.
-          </p>
-
-          <div style={{ display: 'grid', gap: 8 }}>
-            {ASSET_CLASSES.map((assetClass) => (
-              <div
-                key={`class-default-${assetClass}`}
-                style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center', gap: 10 }}
-              >
-                <span className="rules-label" style={{ margin: 0, textTransform: 'capitalize' }}>{assetClass}</span>
-                <Segmented
-                  options={BIAS_MODES}
-                  value={biasClassDefaults[assetClass] ?? (assetClass === 'crypto' ? 'global' : 'symbol')}
-                  format={(v) => String(v)}
-                  onChange={(mode) => setClassDefaultMode(assetClass, mode)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        <p className="stat-note muted" style={{ marginTop: 8 }}>
+          Bias direction controls moved to Dashboard → Execution controls. Here you only choose mode per asset: global or custom.
+        </p>
       </Card>
 
       <Card title="Entry / Exit Rules" actions={<Badge tone="neutral">Signals</Badge>}>

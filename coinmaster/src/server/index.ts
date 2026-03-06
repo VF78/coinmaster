@@ -326,15 +326,12 @@ function getLatestBias(biasCommands: Array<{ symbol: string; bias: Bias }>, symb
     ?.bias;
 }
 
-function getBiasModeForSymbol(rules: TradingRulesSettings, symbol: string): { mode: BiasMode; pinnedBias?: Bias } {
+function getBiasModeForSymbol(rules: TradingRulesSettings, symbol: string): { mode: BiasMode } {
   const normalized = normalizeSymbol(symbol);
   const override = rules.biasPolicy?.symbolOverrides?.[normalized];
 
   if (override) {
-    return {
-      mode: override.mode,
-      ...(override.bias ? { pinnedBias: override.bias } : {}),
-    };
+    return { mode: override.mode };
   }
 
   const fromRules = rules.coins.find((coin) => normalizeSymbol(coin.symbol) === normalized);
@@ -353,8 +350,6 @@ function resolveBiasForSymbol(symbol: string, rules: TradingRulesSettings, biasC
     return globalBias ?? 'off';
   }
 
-  if (mode.pinnedBias) return mode.pinnedBias;
-
   const symbolBias = getLatestBias(biasCommands, normalized);
   return symbolBias ?? 'off';
 }
@@ -363,6 +358,37 @@ async function getOperatorBias(symbol: string): Promise<Bias> {
   const db = await getDb();
   const rules = normalizeTradingRules(db.data.settings.tradingRules);
   return resolveBiasForSymbol(symbol, rules, db.data.biasCommands);
+}
+
+function toDashboardBiasMode(mode: BiasMode): 'global' | 'custom' {
+  return mode === 'global' ? 'global' : 'custom';
+}
+
+function buildDashboardBiasControls(rules: TradingRulesSettings, biasCommands: Array<{ symbol: string; bias: Bias }>) {
+  const enabledCoins = (rules.coins ?? []).filter((coin) => coin.enabled);
+  const deduped = new Map<string, typeof enabledCoins[number]>();
+
+  for (const coin of enabledCoins) {
+    const normalized = normalizeSymbol(coin.symbol);
+    if (!normalized || deduped.has(normalized)) continue;
+    deduped.set(normalized, coin);
+  }
+
+  return [...deduped.values()]
+    .map((coin) => {
+      const symbol = normalizeSymbol(coin.symbol);
+      const assetClass = coin.assetClass ?? inferAssetClassFromSymbol(symbol);
+      const mode = getBiasModeForSymbol(rules, symbol).mode;
+      const bias = resolveBiasForSymbol(symbol, rules, biasCommands);
+
+      return {
+        symbol,
+        assetClass,
+        mode: toDashboardBiasMode(mode),
+        bias,
+      };
+    })
+    .sort((a, b) => a.symbol.localeCompare(b.symbol));
 }
 
 let tradableSymbolsCache: { fetchedAtMs: number; symbols: string[] } | null = null;
@@ -2868,7 +2894,9 @@ app.get('/api/health/perf', (_req, res) => {
 app.get('/api/dashboard', async (_req, res) => {
   const db = await getDb();
   const rules = normalizeTradingRules(db.data.settings.tradingRules);
-  const latestBias = resolveBiasForSymbol(LIVE_SYMBOL, rules, db.data.biasCommands);
+  const globalBias = getLatestBias(db.data.biasCommands, LIVE_SYMBOL) ?? 'off';
+  const latestBias = globalBias;
+  const biasControls = buildDashboardBiasControls(rules, db.data.biasCommands);
 
   let latestTick = latestLiveTick;
   if (!latestTick) {
@@ -2885,7 +2913,7 @@ app.get('/api/dashboard', async (_req, res) => {
   const pendingRows = await loadPendingConfirmationRows();
   const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode(), pendingRows);
 
-  res.json({ latestBias, latestTick: latestTick ?? null, live });
+  res.json({ latestBias, globalBias, latestTick: latestTick ?? null, live, biasControls });
 });
 
 app.get('/api/live/history', async (_req, res) => {
@@ -3214,12 +3242,13 @@ app.get('/api/settings/telegram-notify/health', ownerAuth, async (_req, res) => 
 
 app.post('/api/bias', async (req, res) => {
   const { symbol, bias } = req.body as { symbol: string; bias: Bias };
-  if (!symbol || !['long', 'short', 'off'].includes(bias)) {
+  const normalizedSymbol = normalizeSymbol(symbol);
+  if (!normalizedSymbol || !['long', 'short', 'off'].includes(bias)) {
     return res.status(400).json({ error: 'invalid_payload' });
   }
 
   const db = await getDb();
-  const cmd = submitBias(db.data, symbol.toUpperCase(), bias);
+  const cmd = submitBias(db.data, normalizedSymbol, bias);
   await db.write();
   return res.json({ ok: true, command: cmd });
 });

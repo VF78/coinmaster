@@ -256,10 +256,20 @@ export interface LiveDashboardState {
   error?: string;
 }
 
+export interface DashboardBiasControl {
+  symbol: string;
+  assetClass: AssetClass;
+  mode: 'global' | 'custom';
+  bias: Bias;
+}
+
 export interface DashboardResponse {
   latestBias: Bias;
+  /** Current shared/global bias used by assets configured with mode=global. */
+  globalBias: Bias;
   latestTick: MarketTick | null;
   live: LiveDashboardState;
+  biasControls: DashboardBiasControl[];
 }
 
 export interface HistoryResponse {
