@@ -9,9 +9,17 @@ import { DataTable } from '../components/DataTable';
 
 const PAGE_SIZE = 15;
 
+type ExchangeFilter = 'all' | 'hyperliquid' | 'bybit';
+
+function normalizeSource(fill: LiveFill): 'hyperliquid' | 'bybit' {
+  const source = String(fill.sourceExchange ?? '').trim().toLowerCase();
+  return source === 'bybit' ? 'bybit' : 'hyperliquid';
+}
+
 export function HistoryPage() {
   const [data, setData] = useState<LiveHistoryResponse | null>(null);
   const [page, setPage] = useState(1);
+  const [exchangeFilter, setExchangeFilter] = useState<ExchangeFilter>('all');
 
   async function refresh() {
     const next = await getLiveHistory();
@@ -23,8 +31,14 @@ export function HistoryPage() {
     refresh();
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+  }, [exchangeFilter]);
+
   const paging = useMemo(() => {
-    const fills = data?.fills ?? [];
+    const fills = (data?.fills ?? []).filter((fill) => (
+      exchangeFilter === 'all' ? true : normalizeSource(fill) === exchangeFilter
+    ));
     const total = fills.length;
     const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
     const safePage = Math.min(page, pages);
@@ -38,7 +52,7 @@ export function HistoryPage() {
       from: total === 0 ? 0 : start + 1,
       to: Math.min(end, total),
     };
-  }, [data, page]);
+  }, [data, page, exchangeFilter]);
 
   if (!data) {
     return <p className="muted">Loading trade history…</p>;
@@ -49,15 +63,30 @@ export function HistoryPage() {
       <Card
         title="Trade history (live exchange fills)"
         className="full-width terminal-card"
-        actions={<Button variant="secondary" onClick={() => refresh()}>Refresh</Button>}
+        actions={(
+          <div className="actions-row" style={{ gap: '0.6rem' }}>
+            <select
+              className="rules-input"
+              value={exchangeFilter}
+              onChange={(e) => setExchangeFilter(e.target.value as ExchangeFilter)}
+              style={{ minWidth: '12rem' }}
+            >
+              <option value="all">All exchanges</option>
+              <option value="hyperliquid">Hyperliquid only</option>
+              <option value="bybit">Bybit only</option>
+            </select>
+            <Button variant="secondary" onClick={() => refresh()}>Refresh</Button>
+          </div>
+        )}
       >
         <DataTable<LiveFill>
           rows={paging.rows}
           mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()} ${formatNumber(row.size)}`}
-          mobileSubtitle={(row) => `${formatDate(row.timestamp)} • ${row.direction ?? 'fill'}`}
+          mobileSubtitle={(row) => `${formatDate(row.timestamp)} • ${normalizeSource(row)} • ${row.direction ?? 'fill'}`}
           emptyText="No live fills yet."
           columns={[
             { key: 'ts', header: 'Time', render: (row) => formatDate(row.timestamp) },
+            { key: 'source', header: 'Exchange', render: (row) => normalizeSource(row) },
             { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
             { key: 'side', header: 'Side', render: (row) => <Badge tone={row.side === 'buy' ? 'success' : 'danger'}>{row.side}</Badge> },
             { key: 'dir', header: 'Direction', render: (row) => row.direction ?? '—' },
@@ -75,7 +104,7 @@ export function HistoryPage() {
         />
 
         <div className="history-paging">
-          <span className="muted">Showing {paging.from}–{paging.to} of {paging.total}</span>
+          <span className="muted">Showing {paging.from}–{paging.to} of {paging.total} ({exchangeFilter === 'all' ? 'all exchanges' : exchangeFilter})</span>
           <div className="actions-row">
             <Button variant="secondary" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={paging.page <= 1}>
               Prev
