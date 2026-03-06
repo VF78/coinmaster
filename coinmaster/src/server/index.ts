@@ -667,13 +667,25 @@ async function notifyTpHit(params: { symbol: string; entryPrice: number; remaini
 async function notifySlEvent(params: { symbol: string; reason: string }): Promise<void> {
   const cfg = await getTelegramConfig();
   if (!cfg || !cfg.notifySl) return;
+
+  const reason = String(params.reason || '').trim() || 'unknown';
+  const symbol = String(params.symbol || '').trim().toUpperCase() || 'UNKNOWN';
+  const isWatchdogReason = reason.endsWith('_watchdog');
+  const local = getTzParts(new Date(), DAILY_ANALYTICS_TZ);
+
+  // Watchdog events can retry every few seconds; notify once per symbol/reason/day.
+  // Non-watchdog SL events keep minute-level dedupe for normal trade flows.
+  const dedupeKey = isWatchdogReason
+    ? `sl:${symbol}:${reason}:${local.dayKey}`
+    : `sl:${symbol}:${reason}:${Math.floor(Date.now() / 60000)}`;
+
   await enqueueTelegramOutbox({
     category: 'sl',
-    dedupeKey: `sl:${params.symbol}:${params.reason}:${Math.floor(Date.now() / 60000)}`,
+    dedupeKey,
     text: [
       '🛑 Stop-loss / emergency exit event',
-      `${params.symbol}`,
-      `Reason: ${params.reason}`,
+      `${symbol}`,
+      `Reason: ${reason}`,
     ].join('\n'),
   });
 }
