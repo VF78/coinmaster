@@ -152,9 +152,9 @@ export function DashboardPage() {
               variant={option === 'short' ? 'danger' : option === 'long' ? 'primary' : 'secondary'}
               onClick={() => params.onSelect(option)}
               disabled={isLoading}
-              className={`exec-bias-btn ${active ? 'exec-bias-btn--active' : ''} ${option === 'off' ? 'exec-bias-btn--off' : ''}`}
+              className={`exec-bias-btn ${active ? 'exec-bias-btn--active' : ''} ${option === 'off' ? 'exec-bias-btn--off' : ''} ${biasActionKey === key ? 'exec-bias-btn--loading' : ''}`}
             >
-              {biasActionKey === key ? '…' : option.toUpperCase()}
+              {option.toUpperCase()}
             </Button>
           );
         })}
