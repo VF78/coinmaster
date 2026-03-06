@@ -29,6 +29,11 @@ interface HyperliquidAdapterOptions {
 const DEFAULT_INFO_URL = 'https://api.hyperliquid.xyz/info';
 const DEFAULT_WS_URL = 'wss://api.hyperliquid.xyz/ws';
 const UNIVERSE_CACHE_TTL_MS = Math.max(30_000, Number(process.env.HYPERLIQUID_UNIVERSE_CACHE_MS || 5 * 60_000));
+const DEX_DISCOVERY_CACHE_TTL_MS = Math.max(60_000, Number(process.env.HYPERLIQUID_DEX_DISCOVERY_CACHE_MS || 10 * 60_000));
+const EXTRA_DEXES_ENV = String(process.env.HYPERLIQUID_EXTRA_DEXES || '')
+  .split(',')
+  .map((x) => x.trim().toLowerCase())
+  .filter(Boolean);
 
 export class HyperliquidAdapter implements ExchangeAdapter {
   readonly name = 'hyperliquid';
@@ -52,10 +57,15 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   private effectiveUserInit: Promise<string> | null = null;
   private effectiveUserInitFailures = 0;
 
-  private universeCache: {
+  private universeCacheByDex = new Map<string, {
     fetchedAtMs: number;
     bySymbol: Map<string, any>;
     symbols: string[];
+  }>();
+
+  private knownDexesCache: {
+    fetchedAtMs: number;
+    dexes: string[];
   } | null = null;
 
   constructor(options: HyperliquidAdapterOptions = {}) {
@@ -139,7 +149,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
   async getInstrumentMeta(symbol: string): Promise<InstrumentMeta | null> {
     const normalized = this.normalizeSymbol(symbol);
-    const universe = await this.getUniverse();
+    const dex = this.getDexFromSymbol(normalized);
+    const universe = await this.getUniverse(dex);
     const item = universe.bySymbol.get(normalized);
     if (!item) return null;
 
@@ -152,8 +163,16 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   async getTradableSymbols(): Promise<string[]> {
-    const universe = await this.getUniverse();
-    return [...universe.symbols];
+    const user = await this.resolveEffectiveUser();
+    const dexes = ['', ...(await this.getKnownDexes(user))];
+
+    const universes = await Promise.all(dexes.map((dex) => this.getUniverse(dex)));
+    const merged = new Set<string>();
+    for (const universe of universes) {
+      for (const symbol of universe.symbols) merged.add(symbol);
+    }
+
+    return [...merged].sort((a, b) => a.localeCompare(b));
   }
 
   async getAccountState(): Promise<AccountSnapshot | null> {
@@ -206,18 +225,24 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
   async getOpenOrders(symbol?: string): Promise<OrderSnapshot[]> {
     const user = await this.resolveEffectiveUser();
-    // frontendOpenOrders includes trigger orders (TP/SL) + regular limits
-    const raw = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
     const target = symbol ? this.normalizeSymbol(symbol) : null;
+    const requestedDex = target ? this.getDexFromSymbol(target) : null;
+    const dexScopes = requestedDex ? [requestedDex] : ['', ...(await this.getKnownDexes(user))];
 
-    return (Array.isArray(raw) ? raw : [])
+    const rawGroups = await Promise.all(
+      dexScopes.map((dex) => this.requestInfo<any[]>({ type: 'frontendOpenOrders', user, ...(dex ? { dex } : {}) }))
+    );
+
+    const mergedRaw = rawGroups.flatMap((rows) => (Array.isArray(rows) ? rows : []));
+
+    const mapped = mergedRaw
       .map((item) => {
         const normalized = this.normalizeSymbol(String(item?.coin ?? ''));
         if (target && normalized !== target) return null;
 
         const px = this.toNumber(item?.triggerPx ?? item?.limitPx);
         const sz = this.toNumber(item?.sz);
-        if (!px || !sz) return null;
+        if (!Number.isFinite(px) || Number(px) <= 0 || !Number.isFinite(sz) || Number(sz) < 0) return null;
 
         const sideRaw = String(item?.side ?? '').toLowerCase();
         const side = sideRaw === 'b' || sideRaw.includes('buy')
@@ -237,16 +262,28 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         } as OrderSnapshot;
       })
       .filter((x): x is OrderSnapshot => Boolean(x));
+
+    const deduped = new Map<string, OrderSnapshot>();
+    for (const row of mapped) {
+      if (!deduped.has(row.id)) deduped.set(row.id, row);
+    }
+
+    return [...deduped.values()];
   }
 
   async getOpenPositions(symbol?: string): Promise<PositionSnapshot[]> {
     const user = await this.resolveEffectiveUser();
-    const state = await this.requestInfo<any>({ type: 'clearinghouseState', user });
     const target = symbol ? this.normalizeSymbol(symbol) : null;
+    const requestedDex = target ? this.getDexFromSymbol(target) : null;
+    const dexScopes = requestedDex ? [requestedDex] : ['', ...(await this.getKnownDexes(user))];
 
-    const rows = Array.isArray(state?.assetPositions) ? state.assetPositions : [];
+    const states = await Promise.all(
+      dexScopes.map((dex) => this.requestInfo<any>({ type: 'clearinghouseState', user, ...(dex ? { dex } : {}) }))
+    );
 
-    return rows
+    const rows = states.flatMap((state) => (Array.isArray(state?.assetPositions) ? state.assetPositions : []));
+
+    const mapped = rows
       .map((row: any): PositionSnapshot | null => {
         const p = row?.position;
         if (!p) return null;
@@ -269,6 +306,14 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         } as PositionSnapshot;
       })
       .filter((x: PositionSnapshot | null): x is PositionSnapshot => Boolean(x));
+
+    const deduped = new Map<string, PositionSnapshot>();
+    for (const row of mapped) {
+      const key = `${row.symbol}:${row.side}`;
+      if (!deduped.has(key)) deduped.set(key, row);
+    }
+
+    return [...deduped.values()];
   }
 
   async getFills(symbol?: string): Promise<FillEvent[]> {
@@ -411,10 +456,15 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       );
 
       const isReduceOnly = Boolean(intent.reduceOnly ?? true);
+      // Position TP/SL style on Hyperliquid requires sz=0 + grouping=positionTpsl.
+      const triggerSize = isReduceOnly ? 0 : intent.size;
+      const normalizedSymbol = this.normalizeSymbol(intent.symbol);
+      const dex = this.getDexFromSymbol(normalizedSymbol);
+
       const response = await client.exchange.placeOrder({
         coin: this.toSdkCoin(intent.symbol),
         is_buy: intent.side === 'buy',
-        sz: intent.size,
+        sz: triggerSize,
         // SDK requires limit_px for order wire formatting; for trigger-market use aggressive IOC-style bound.
         limit_px: marketLimitPx,
         order_type: {
@@ -425,52 +475,55 @@ export class HyperliquidAdapter implements ExchangeAdapter {
           }
         },
         reduce_only: isReduceOnly,
-        // Align with Hyperliquid manual Position TP/SL style.
         ...(isReduceOnly ? { grouping: 'positionTpsl' } : {}),
         ...(intent.clientOrderId ? { cloid: this.toCloid(intent.clientOrderId) } : {})
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
-      // Trigger orders return waiting.oid, not resting.oid
-      let oid = first?.resting?.oid ?? first?.filled?.oid ?? first?.waiting?.oid;
-      const status = first?.resting ? 'resting' : first?.filled ? 'filled' : first?.waiting ? 'waiting' : response?.status;
-      
-      // Extract exchange error (do not treat generic "ok" statuses as errors).
+      let oid: string | number | undefined;
+      let status = String(response?.status ?? '').toLowerCase();
       let exchangeError: string | undefined;
-      try {
-        const rawError = first?.error ?? first?.err;
+
+      if (typeof first === 'string') {
+        const wire = first.trim().toLowerCase();
+        if (wire.includes('waiting')) status = 'waiting';
+        else if (wire.includes('resting')) status = 'resting';
+        else if (wire.includes('filled')) status = 'filled';
+        else if (wire.includes('error') || wire.includes('reject') || wire.includes('invalid')) {
+          exchangeError = first;
+        }
+      } else if (first && typeof first === 'object') {
+        // Trigger orders can return waiting.oid, not only resting.oid
+        oid = (first as any)?.resting?.oid ?? (first as any)?.filled?.oid ?? (first as any)?.waiting?.oid;
+        status = (first as any)?.resting ? 'resting' : (first as any)?.filled ? 'filled' : (first as any)?.waiting ? 'waiting' : status;
+        const rawError = (first as any)?.error ?? (first as any)?.err;
         if (typeof rawError === 'string') {
           const trimmed = rawError.trim();
           if (trimmed && trimmed.toLowerCase() !== 'ok') exchangeError = trimmed;
         } else if (rawError && typeof rawError === 'object') {
           exchangeError = JSON.stringify(rawError);
         }
-      } catch {
-        // ignore error extraction errors
       }
 
       // Fallback lookup by clientOrderId if SDK response omits oid.
       if (oid === undefined && intent.clientOrderId) {
         try {
-          const clientOrderId = intent.clientOrderId!;
           const user = await this.resolveEffectiveUser();
-          // Use frontendOpenOrders which includes trigger orders, not just openOrders
-          const allOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
-          const cloid = this.toCloid(clientOrderId);
+          const allOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user, ...(dex ? { dex } : {}) });
+          const cloid = this.toCloid(intent.clientOrderId);
           if (cloid) {
             const cloidLower = cloid.toLowerCase();
             const row = (Array.isArray(allOrders) ? allOrders : []).find((o) => String(o?.cloid ?? '').toLowerCase() === cloidLower);
-            if (row?.oid !== undefined) {
-              oid = row.oid;
-            }
+            if (row?.oid !== undefined) oid = row.oid;
           }
         } catch (e) {
           console.log(`[hl-adapter] fallback oid lookup failed:`, e instanceof Error ? e.message : String(e));
         }
       }
 
-      // Trigger levels are considered successful when waiting on exchange with oid.
-      const ok = Boolean(oid) && (String(status ?? '').toLowerCase() === 'waiting' || String(status ?? '').toLowerCase() === 'resting');
+      // Hyperliquid can acknowledge trigger placements with string statuses like "waitingForTrigger" (without oid in payload).
+      const waitingLike = status === 'waiting' || status === 'resting' || String(first ?? '').toLowerCase().includes('waitingfortrigger');
+      const ok = Boolean(waitingLike || oid);
 
       return {
         ok,
@@ -683,13 +736,16 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     return this.effectiveUserInit;
   }
 
-  private async getUniverse(force = false): Promise<{ bySymbol: Map<string, any>; symbols: string[] }> {
+  private async getUniverse(dex?: string | null, force = false): Promise<{ bySymbol: Map<string, any>; symbols: string[] }> {
+    const dexKey = String(dex ?? '').trim().toLowerCase();
     const now = Date.now();
-    if (!force && this.universeCache && (now - this.universeCache.fetchedAtMs) < UNIVERSE_CACHE_TTL_MS) {
-      return { bySymbol: this.universeCache.bySymbol, symbols: this.universeCache.symbols };
+
+    const cached = this.universeCacheByDex.get(dexKey);
+    if (!force && cached && (now - cached.fetchedAtMs) < UNIVERSE_CACHE_TTL_MS) {
+      return { bySymbol: cached.bySymbol, symbols: cached.symbols };
     }
 
-    const meta = await this.requestInfo<any>({ type: 'meta' });
+    const meta = await this.requestInfo<any>({ type: 'meta', ...(dexKey ? { dex: dexKey } : {}) });
     const universe = Array.isArray(meta?.universe) ? meta.universe : [];
 
     const bySymbol = new Map<string, any>();
@@ -704,13 +760,49 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
     symbols.sort((a, b) => a.localeCompare(b));
 
-    this.universeCache = {
+    this.universeCacheByDex.set(dexKey, {
       fetchedAtMs: now,
       bySymbol,
       symbols,
-    };
+    });
 
     return { bySymbol, symbols };
+  }
+
+  private getDexFromSymbol(symbol: string): string | null {
+    const normalized = this.normalizeSymbol(symbol);
+    if (!normalized.includes(':')) return null;
+    const [dex] = normalized.split(':', 2);
+    const clean = String(dex ?? '').trim().toLowerCase();
+    return clean || null;
+  }
+
+  private async getKnownDexes(user: string): Promise<string[]> {
+    const now = Date.now();
+    if (this.knownDexesCache && (now - this.knownDexesCache.fetchedAtMs) < DEX_DISCOVERY_CACHE_TTL_MS) {
+      return this.knownDexesCache.dexes;
+    }
+
+    const dexes = new Set<string>(EXTRA_DEXES_ENV);
+
+    try {
+      const fills = await this.requestInfo<any[]>({ type: 'userFills', user, aggregateByTime: true });
+      for (const row of Array.isArray(fills) ? fills : []) {
+        const normalized = this.normalizeSymbol(String(row?.coin ?? ''));
+        const dex = this.getDexFromSymbol(normalized);
+        if (dex) dexes.add(dex);
+      }
+    } catch (error) {
+      logger.warn({ component: 'hyperliquid', err: error instanceof Error ? error.message : error }, 'dex discovery from fills failed');
+    }
+
+    const discovered = [...dexes].sort((a, b) => a.localeCompare(b));
+    this.knownDexesCache = {
+      fetchedAtMs: now,
+      dexes: discovered,
+    };
+
+    return discovered;
   }
 
   private requireAccountAddress(): string {
