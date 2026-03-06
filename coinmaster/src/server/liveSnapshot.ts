@@ -144,13 +144,16 @@ function toLivePosition(position: ExposureSnapshot, openOrders: OrderSnapshot[],
   };
 }
 
-export function toLiveFill(fill: FillEvent): LiveFill {
-  const direction = String((fill.raw as { dir?: unknown } | undefined)?.dir ?? '').trim();
+export function toLiveFill(fill: FillEvent, fallbackSource?: string): LiveFill {
+  const raw = fill.raw as { dir?: unknown; sourceExchange?: unknown } | undefined;
+  const direction = String(raw?.dir ?? '').trim();
+  const sourceExchange = String(raw?.sourceExchange ?? fallbackSource ?? '').trim().toLowerCase();
 
   return {
     id: fill.id,
     symbol: fill.symbol,
     side: fill.side,
+    sourceExchange: sourceExchange || undefined,
     direction: direction || undefined,
     price: fill.price,
     size: fill.size,

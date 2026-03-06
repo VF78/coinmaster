@@ -314,6 +314,7 @@ export interface LiveFill {
   id: string;
   symbol: string;
   side: 'buy' | 'sell';
+  sourceExchange?: string;
   direction?: string;
   price: number;
   size: number;

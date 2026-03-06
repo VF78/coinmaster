@@ -2987,9 +2987,16 @@ app.get('/api/dashboard', async (_req, res) => {
 
 app.get('/api/live/history', async (_req, res) => {
   try {
-    const fills = await exchange.getFills();
-    const rows = fills
-      .map(toLiveFill)
+    const [executionFills, db] = await Promise.all([
+      exchange.getFills(),
+      getDb(),
+    ]);
+
+    const historySinceMs = Date.now() - 180 * 24 * 60 * 60_000;
+    const externalFills = await collectExternalFills(db.data.settings, historySinceMs);
+
+    const rows = [...executionFills, ...externalFills]
+      .map((fill) => toLiveFill(fill, exchange.name))
       .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 
     return res.json({ fills: rows });
