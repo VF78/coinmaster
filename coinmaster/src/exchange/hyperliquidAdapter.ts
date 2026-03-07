@@ -108,51 +108,81 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   async getCandles(query: CandleQuery): Promise<Candle[]> {
-    const raw = await this.requestInfo<Array<Record<string, string | number>>>(
-      {
-        type: 'candleSnapshot',
-        req: {
-          coin: query.symbol,
-          interval: query.timeframe,
-          startTime: query.startTimeMs,
-          endTime: query.endTimeMs
+    const candidates = this.symbolCandidates(query.symbol);
+    let lastError: unknown;
+
+    for (let i = 0; i < candidates.length; i++) {
+      const candidate = candidates[i];
+      const dex = this.getDexFromSymbol(candidate);
+      const rawCoin = this.coreSymbol(candidate);
+
+      try {
+        const raw = await this.requestInfo<Array<Record<string, string | number>>>(
+          {
+            type: 'candleSnapshot',
+            req: {
+              coin: rawCoin,
+              interval: query.timeframe,
+              startTime: query.startTimeMs,
+              endTime: query.endTimeMs,
+              ...(dex ? { dex } : {})
+            }
+          }
+        );
+
+        const rows = (raw ?? [])
+          .map((x) => {
+            const t = Number(x.t);
+            const o = Number(x.o);
+            const h = Number(x.h);
+            const l = Number(x.l);
+            const c = Number(x.c);
+            const v = Number(x.v ?? 0);
+
+            if (![t, o, h, l, c, v].every((n) => Number.isFinite(n))) {
+              return null;
+            }
+
+            return {
+              timestamp: new Date(t).toISOString(),
+              open: o,
+              high: h,
+              low: l,
+              close: c,
+              volume: v
+            } as Candle;
+          })
+          .filter((x): x is Candle => Boolean(x))
+          .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+
+        if (rows.length > 0 || i === candidates.length - 1) {
+          return rows;
+        }
+      } catch (error) {
+        lastError = error;
+        if (i === candidates.length - 1) {
+          throw error;
         }
       }
-    );
+    }
 
-    const rows = (raw ?? [])
-      .map((x) => {
-        const t = Number(x.t);
-        const o = Number(x.o);
-        const h = Number(x.h);
-        const l = Number(x.l);
-        const c = Number(x.c);
-        const v = Number(x.v ?? 0);
-
-        if (![t, o, h, l, c, v].every((n) => Number.isFinite(n))) {
-          return null;
-        }
-
-        return {
-          timestamp: new Date(t).toISOString(),
-          open: o,
-          high: h,
-          low: l,
-          close: c,
-          volume: v
-        } as Candle;
-      })
-      .filter((x): x is Candle => Boolean(x))
-      .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
-
-    return rows;
+    if (lastError) throw lastError;
+    return [];
   }
 
   async getInstrumentMeta(symbol: string): Promise<InstrumentMeta | null> {
     const normalized = this.normalizeSymbol(symbol);
+    const core = this.coreSymbol(normalized);
     const dex = this.getDexFromSymbol(normalized);
-    const universe = await this.getUniverse(dex);
-    const item = universe.bySymbol.get(normalized);
+
+    const universe = await this.getUniverse(dex).catch(() => null);
+    let item = universe?.bySymbol.get(normalized) ?? universe?.bySymbol.get(core);
+
+    if (!item) {
+      const fallback = await this.getUniverse(null).catch(() => null);
+      item = fallback?.bySymbol.get(core);
+    }
+
     if (!item) return null;
 
     return {
@@ -239,7 +269,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     const mapped = mergedRaw
       .map((item) => {
         const normalized = this.normalizeSymbol(String(item?.coin ?? ''));
-        if (target && normalized !== target) return null;
+        if (target && !this.symbolsMatch(normalized, target)) return null;
 
         const px = this.toNumber(item?.triggerPx ?? item?.limitPx);
         const sz = this.toNumber(item?.sz);
@@ -294,7 +324,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         if (!p) return null;
 
         const normalized = this.normalizeSymbol(String(p.coin ?? ''));
-        if (target && normalized !== target) return null;
+        if (target && !this.symbolsMatch(normalized, target)) return null;
 
         const szi = this.toNumber(p.szi) ?? 0;
         const size = Math.abs(szi);
@@ -326,8 +356,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
           .map((row: any): ExposureSnapshot | null => {
             const coin = this.normalizeSymbol(String(row?.coin ?? ''));
             const total = this.toNumber(row?.total) ?? 0;
-            if (!coin || total <= 0 || stable.has(coin)) return null;
-            if (target && coin !== target) return null;
+            if (!coin || total <= 0 || stable.has(this.coreSymbol(coin))) return null;
+            if (target && !this.symbolsMatch(coin, target)) return null;
 
             return {
               symbol: coin,
@@ -378,7 +408,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     return (Array.isArray(raw) ? raw : [])
       .map((item) => {
         const normalized = this.normalizeSymbol(String(item?.coin ?? ''));
-        if (target && normalized !== target) return null;
+        if (target && !this.symbolsMatch(normalized, target)) return null;
 
         const px = this.toNumber(item?.px);
         const sz = this.toNumber(item?.sz);
@@ -441,6 +471,9 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       const client = await this.getTradingClient();
       const cloid = this.toCloid(intent.clientOrderId);
 
+      const normalizedSymbol = this.normalizeSymbol(intent.symbol);
+      const dex = this.getDexFromSymbol(normalizedSymbol);
+
       const normalizedPrice = await this.normalizeHlPriceForSymbol(intent.symbol, Number(intent.price));
       const meta = await this.getInstrumentMeta(intent.symbol).catch(() => undefined);
       const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 5)));
@@ -455,7 +488,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         limit_px: normalizedPrice,
         order_type: { limit: { tif: 'Gtc' } },
         reduce_only: Boolean(intent.reduceOnly),
-        ...(cloid ? { cloid } : {})
+        ...(cloid ? { cloid } : {}),
+        ...(dex ? { dex } : {})
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
@@ -530,7 +564,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         },
         reduce_only: isReduceOnly,
         ...(isReduceOnly ? { grouping: 'positionTpsl' } : {}),
-        ...(intent.clientOrderId ? { cloid: this.toCloid(intent.clientOrderId) } : {})
+        ...(intent.clientOrderId ? { cloid: this.toCloid(intent.clientOrderId) } : {}),
+        ...(dex ? { dex } : {})
       } as any);
 
       const first = response?.response?.data?.statuses?.[0];
@@ -607,9 +642,13 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         return { ok: false, error: 'order_not_found' };
       }
 
+      const coinSymbol = this.normalizeSymbol(String(target.coin ?? ''));
+      const dex = this.getDexFromSymbol(coinSymbol);
+
       const response = await client.exchange.cancelOrder({
         coin: this.toSdkCoin(String(target.coin ?? '')),
-        o: Number(target.oid)
+        o: Number(target.oid),
+        ...(dex ? { dex } : {})
       } as any);
 
       const ok = String(response?.status ?? '').toLowerCase() === 'ok';
@@ -635,7 +674,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
       const rows = (Array.isArray(openOrders) ? openOrders : []).filter((o) => {
         if (!target) return true;
-        return this.normalizeSymbol(String(o?.coin ?? '')) === target;
+        return this.symbolsMatch(this.normalizeSymbol(String(o?.coin ?? '')), target);
       });
 
       if (rows.length === 0) {
@@ -643,10 +682,15 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       }
 
       const cancels = rows
-        .map((o) => ({
-          coin: this.toSdkCoin(String(o?.coin ?? '')),
-          o: Number(o?.oid)
-        }))
+        .map((o) => {
+          const coinSymbol = this.normalizeSymbol(String(o?.coin ?? ''));
+          const dex = this.getDexFromSymbol(coinSymbol);
+          return {
+            coin: this.toSdkCoin(String(o?.coin ?? '')),
+            o: Number(o?.oid),
+            ...(dex ? { dex } : {})
+          };
+        })
         .filter((x) => Number.isFinite(x.o));
 
       if (cancels.length === 0) {
@@ -679,7 +723,14 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async setLeverage(symbol: string, leverage: number): Promise<CommandResult> {
     try {
       const client = await this.getTradingClient();
-      const response = await client.exchange.updateLeverage(this.toSdkCoin(symbol), 'cross', leverage);
+      const normalized = this.normalizeSymbol(symbol);
+      const dex = this.getDexFromSymbol(normalized);
+      
+      // updateLeverage signature: (coin, isCross, leverage, dex?)
+      const response = dex
+        ? await (client.exchange.updateLeverage as any)(this.toSdkCoin(symbol), 'cross', leverage, dex)
+        : await client.exchange.updateLeverage(this.toSdkCoin(symbol), 'cross', leverage);
+      
       const ok = response !== null && response !== undefined;
 
       return {
@@ -881,9 +932,41 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     return value.toUpperCase().replace('-PERP', '');
   }
 
+  private coreSymbol(symbol: string): string {
+    const normalized = this.normalizeSymbol(symbol);
+    if (!normalized) return '';
+    if (!normalized.includes(':')) return normalized;
+    const [, coreRaw] = normalized.split(':', 2);
+    return String(coreRaw ?? '').trim().toUpperCase().replace('-PERP', '');
+  }
+
+  private symbolCandidates(symbol: string): string[] {
+    const normalized = this.normalizeSymbol(symbol);
+    const core = this.coreSymbol(symbol);
+    return [...new Set([normalized, core].filter(Boolean))];
+  }
+
+  private symbolsMatch(left: string, right: string): boolean {
+    const a = this.symbolCandidates(left);
+    const b = this.symbolCandidates(right);
+    return a.some((value) => b.includes(value));
+  }
+
+  private isUnknownAssetError(error: unknown): boolean {
+    const message = String(error instanceof Error ? error.message : error ?? '').toLowerCase();
+    return message.includes('unknown asset') || message.includes('asset index not found') || message.includes('asset_not_found');
+  }
+
   private toSdkCoin(symbol: string): string {
     const normalized = this.normalizeSymbol(symbol);
-    if (normalized.includes(':')) return normalized;
+    if (!normalized) return '';
+    
+    // DEX symbols (xyz:GOLD) are passed as-is to SDK
+    if (normalized.includes(':')) {
+      return normalized;
+    }
+    
+    // Regular symbols get -PERP suffix
     return `${normalized}-PERP`;
   }
 
