@@ -1444,7 +1444,7 @@ tbody tr:hover {
 
 .rules-stepper {
   display: inline-grid;
-  grid-template-columns: 32px minmax(62px, auto) 32px;
+  grid-template-columns: 32px minmax(84px, auto) 32px;
   align-items: center;
   border: 1px solid #2a4261;
   border-radius: 0.65rem;
@@ -1468,15 +1468,36 @@ tbody tr:hover {
   cursor: not-allowed;
 }
 
-.rules-stepper__value {
-  min-width: 62px;
-  text-align: center;
-  padding: 0 8px;
-  font-size: 0.82rem;
-  color: #e1ecff;
-  background: #0b1526;
+.rules-stepper__center {
+  min-width: 84px;
   height: 34px;
-  line-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 6px;
+  background: #0b1526;
+}
+
+.rules-stepper__input {
+  width: 100%;
+  min-width: 46px;
+  text-align: right;
+  border: none;
+  background: transparent;
+  color: #e1ecff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.rules-stepper__input:disabled {
+  opacity: 0.7;
+}
+
+.rules-stepper__unit {
+  color: #a7bbd8;
+  font-size: 0.78rem;
   font-weight: 600;
 }
 

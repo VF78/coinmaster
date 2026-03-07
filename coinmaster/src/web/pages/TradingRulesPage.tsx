@@ -72,23 +72,56 @@ interface StepperProps {
 }
 
 function Stepper({ value, min, max, step = 1, unit = '', decimals = 0, onChange, disabled = false }: StepperProps) {
-  const display = decimals > 0 ? value.toFixed(decimals) : String(value);
+  const display = decimals > 0 ? value.toFixed(decimals) : String(Math.round(value));
+
+  function apply(nextRaw: number) {
+    const clamped = clampNumber(nextRaw, min, max);
+    onChange(+(clamped.toFixed(decimals + 2)));
+  }
+
   return (
     <div className="rules-stepper" role="group" aria-label="Number stepper">
       <button
         type="button"
         className="rules-stepper__btn"
         disabled={disabled || value <= min}
-        onClick={() => onChange(+(Math.max(min, value - step).toFixed(decimals + 2)))}
+        onClick={() => apply(value - step)}
       >−</button>
-      <span className="rules-stepper__value">
-        {display}{unit}
-      </span>
+
+      <div className="rules-stepper__center">
+        <input
+          type="number"
+          className="rules-stepper__input"
+          value={display}
+          min={min}
+          max={max}
+          step={step}
+          inputMode="decimal"
+          disabled={disabled}
+          onChange={(e) => {
+            const raw = e.target.value;
+            if (raw === '') return;
+            const parsed = Number(raw);
+            if (!Number.isFinite(parsed)) return;
+            apply(parsed);
+          }}
+          onBlur={(e) => {
+            const parsed = Number(e.target.value);
+            if (!Number.isFinite(parsed)) {
+              apply(value);
+              return;
+            }
+            apply(parsed);
+          }}
+        />
+        {unit ? <span className="rules-stepper__unit">{unit}</span> : null}
+      </div>
+
       <button
         type="button"
         className="rules-stepper__btn"
         disabled={disabled || value >= max}
-        onClick={() => onChange(+(Math.min(max, value + step).toFixed(decimals + 2)))}
+        onClick={() => apply(value + step)}
       >+</button>
     </div>
   );
@@ -634,9 +667,20 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
               />
             </div>
             <div style={{ display: 'grid', gap: 6 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                 <span className="rules-label" style={{ margin: 0 }}>FVG Retrace Level (1H/4H)</span>
-                <strong style={{ fontSize: 14 }}>{fvgRetrace}%</strong>
+                <div className="actions-row">
+                  <input
+                    type="number"
+                    min={10}
+                    max={90}
+                    step={1}
+                    value={fvgRetrace}
+                    className="rules-input rules-input--sm"
+                    onChange={(e) => setFvgRetrace(clampNumber(Number(e.target.value), 10, 90))}
+                  />
+                  <strong style={{ fontSize: 14 }}>{fvgRetrace}%</strong>
+                </div>
               </div>
               <input
                 type="range"
@@ -672,12 +716,24 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}>
             <span className="rules-label" style={{ margin: 0 }}>Close size on exit signal</span>
-            <Segmented
-              options={EXIT_CLOSE_PRESETS}
-              value={EXIT_CLOSE_PRESETS.includes(exitClosePct) ? exitClosePct : 50}
-              format={(v) => `${v}%`}
-              onChange={setExitClosePct}
-            />
+            <div className="actions-row" style={{ justifyContent: 'flex-end' }}>
+              <Segmented
+                options={EXIT_CLOSE_PRESETS}
+                value={EXIT_CLOSE_PRESETS.includes(exitClosePct) ? exitClosePct : 50}
+                format={(v) => `${v}%`}
+                onChange={setExitClosePct}
+              />
+              <input
+                type="number"
+                min={0}
+                max={100}
+                step={1}
+                value={exitClosePct}
+                className="rules-input rules-input--sm"
+                onChange={(e) => setExitClosePct(clampNumber(Number(e.target.value), 0, 100))}
+                aria-label="Custom close size on exit signal"
+              />
+            </div>
           </div>
 
           <p className="stat-note muted" style={{ marginTop: 8, fontSize: 11 }}>
@@ -706,9 +762,20 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
           </div>
 
           <div className="rules-field">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
               <span className="rules-label" style={{ margin: 0 }}>Max Leverage</span>
-              <strong style={{ fontSize: 14 }}>{maxLeverage}x</strong>
+              <div className="actions-row">
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  step={1}
+                  value={maxLeverage}
+                  className="rules-input rules-input--sm"
+                  onChange={(e) => setMaxLeverage(clampNumber(Number(e.target.value), 1, 20))}
+                />
+                <strong style={{ fontSize: 14 }}>{maxLeverage}x</strong>
+              </div>
             </div>
             <input
               type="range"
