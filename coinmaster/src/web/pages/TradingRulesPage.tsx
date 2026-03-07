@@ -747,9 +747,16 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
       </Card>
 
       <Card title="Risk Management" actions={<Badge tone="danger">Risk</Badge>}>
-        <div style={{ display: 'grid', gap: 14 }}>
-          <div className="rules-field">
-            <span className="rules-label">Daily Drawdown Limit</span>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: 14,
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Daily Drawdown Limit</span>
             <Stepper
               value={dailyDrawdown}
               min={0}
@@ -761,7 +768,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
             />
           </div>
 
-          <div className="rules-field">
+          <div style={{ display: 'grid', gap: 6 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
               <span className="rules-label" style={{ margin: 0 }}>Max Leverage</span>
               <div className="actions-row">
@@ -806,13 +813,13 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                 onChange={(v) => updateTpLevel(idx, v)}
               />
 
-              {idx === 0 && tpLevels.length < 3 ? (
-                <Button type="button" variant="secondary" className="rules-mini-btn" onClick={addTpLevel}>+ TP</Button>
+              {idx === 0 ? (
+                tpLevels.length < 3 ? (
+                  <Button type="button" variant="secondary" className="rules-mini-btn" onClick={addTpLevel}>+ TP</Button>
+                ) : (
+                  <span className="rules-mini-btn rules-mini-btn--ghost" />
+                )
               ) : (
-                <span className="rules-mini-btn rules-mini-btn--ghost" />
-              )}
-
-              {idx > 0 ? (
                 <Button
                   type="button"
                   variant="danger"
@@ -822,8 +829,12 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                 >
                   Remove
                 </Button>
-              ) : (
+              )}
+
+              {idx === 0 ? (
                 <span className="muted rules-level-hint">TP1 → move SL to entry</span>
+              ) : (
+                <span className="rules-mini-btn rules-mini-btn--ghost" />
               )}
             </div>
           ))}

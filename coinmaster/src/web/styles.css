@@ -1425,7 +1425,7 @@ tbody tr:hover {
 
 .rules-level-row {
   display: grid;
-  grid-template-columns: 52px auto 96px 96px;
+  grid-template-columns: 52px max-content 96px 1fr;
   gap: 0.5rem;
   align-items: center;
 }
@@ -1630,7 +1630,7 @@ tbody tr:hover {
   }
 
   .rules-level-row {
-    grid-template-columns: 42px minmax(0, 1fr) 86px 86px;
+    grid-template-columns: 42px max-content 86px minmax(0, 1fr);
     gap: 0.4rem;
   }
 }
