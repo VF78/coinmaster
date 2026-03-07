@@ -4126,17 +4126,19 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   let ok = slOrder.ok && tpOrders.every((o) => o.ok);
   const expectedIds = [slOrder.orderId, ...tpOrders.map((o) => o.orderId)].filter((x): x is string => Boolean(x));
 
-  // Extra confirmation: verify SL+TP trigger orders are actually present on exchange.
+  // Extra confirmation: verify SL+TP are visible on exchange.
+  // 1) Try strict ID match (fast path)
+  // 2) Fallback to semantic level match from live snapshot (some venues may re-emit/rewrite trigger IDs)
   let verificationError: string | undefined;
   if (ok && expectedIds.length > 0) {
-    let verified = false;
+    let verifiedById = false;
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
         const allOrders = await exchange.getOpenOrders().catch(() => []);
         const openIds = new Set((allOrders || []).map((o) => String(o?.id ?? '')));
-        verified = expectedIds.every((id) => openIds.has(String(id)));
-        if (verified) {
-          console.log(`[levels] trigger orders verified: ${expectedIds.join(',')}`);
+        verifiedById = expectedIds.every((id) => openIds.has(String(id)));
+        if (verifiedById) {
+          console.log(`[levels] trigger orders verified by id: ${expectedIds.join(',')}`);
           break;
         }
       } catch (e) {
@@ -4144,9 +4146,40 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       }
       await sleep(250 + attempt * 250);
     }
-    if (!verified) {
-      ok = false;
-      verificationError = 'orders_not_visible_after_ack';
+
+    if (!verifiedById) {
+      try {
+        const live = await buildLiveDashboardState(exchange, normalizedSymbol, getLiveMode(), []);
+        const current = live.openPositions.find((p) => p.symbol === normalizedSymbol && p.side === side);
+
+        const closeEnough = (a: number, b: number) => Math.abs(a - b) <= 1e-6;
+        const currentSl = Number(current?.stopLoss ?? NaN);
+        const currentTps = (Array.isArray(current?.takeProfits) && current?.takeProfits.length > 0
+          ? current!.takeProfits
+          : (current?.takeProfit !== undefined ? [current.takeProfit] : [])
+        ).map((x) => Number(x)).filter((x) => Number.isFinite(x));
+
+        const sortedCurrent = side === 'long'
+          ? [...currentTps].sort((a, b) => a - b)
+          : [...currentTps].sort((a, b) => b - a);
+        const sortedRequested = side === 'long'
+          ? [...sortedTps].sort((a, b) => a - b)
+          : [...sortedTps].sort((a, b) => b - a);
+
+        const sameSl = Number.isFinite(currentSl) && closeEnough(currentSl, sl);
+        const sameTp = sortedCurrent.length === sortedRequested.length
+          && sortedCurrent.every((v, i) => closeEnough(v, sortedRequested[i]));
+
+        if (sameSl && sameTp) {
+          console.log('[levels] verified by semantic level match (id mismatch tolerated)');
+        } else {
+          ok = false;
+          verificationError = 'orders_not_visible_after_ack';
+        }
+      } catch {
+        ok = false;
+        verificationError = 'orders_not_visible_after_ack';
+      }
     }
   }
 
