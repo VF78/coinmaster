@@ -1151,6 +1151,42 @@ tbody tr:hover {
   .hl-timeframes {
     flex-wrap: wrap;
     gap: 0.25rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .position-modal-sheet .card {
+    padding: 0.52rem;
+    border-radius: 0.82rem;
+  }
+
+  .position-modal-sheet .position-panel {
+    gap: 0.45rem;
+    grid-template-rows: auto auto auto auto;
+  }
+
+  .position-panel__chart-wrap,
+  .hl-level-group,
+  .hl-confirm-row {
+    border-radius: 0.7rem;
+  }
+
+  .position-panel__chart-wrap {
+    padding: 0.34rem;
+    border-color: #1f3552;
+  }
+
+  .hl-level-group {
+    padding: 0.34rem;
+    gap: 0.3rem;
+  }
+
+  .hl-levels-layout {
+    gap: 0.42rem;
+  }
+
+  .hl-side-stack,
+  .hl-side-summary {
+    display: none;
   }
 
   .hl-timeframe-btn {
@@ -1206,9 +1242,12 @@ tbody tr:hover {
   }
 
   .hl-confirm-row {
-    margin-top: 0.15rem;
-    padding-top: 0.25rem;
-    padding-bottom: calc(0.4rem + env(safe-area-inset-bottom));
+    margin-top: 0.08rem;
+    padding-top: 0.22rem;
+    padding-inline: 0.12rem;
+    padding-bottom: calc(0.38rem + env(safe-area-inset-bottom));
+    border-top: 1px solid #233a57;
+    background: linear-gradient(180deg, rgba(10, 18, 32, 0.42) 0%, rgba(10, 18, 32, 0.76) 60%);
   }
 
   .hl-confirm-row .btn {
