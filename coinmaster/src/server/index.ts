@@ -3961,6 +3961,70 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     });
   }
 
+  // No-op guard: if requested levels are already active on exchange, exit early without touching orders.
+  try {
+    const live = await buildLiveDashboardState(exchange, normalizedSymbol, getLiveMode(), []);
+    const current = live.openPositions.find((p) => p.symbol === normalizedSymbol && p.side === side);
+    if (current) {
+      const currentSl = Number(current.stopLoss ?? NaN);
+      const currentTps = (Array.isArray(current.takeProfits) && current.takeProfits.length > 0
+        ? current.takeProfits
+        : (current.takeProfit !== undefined ? [current.takeProfit] : [])
+      ).map((x) => Number(x)).filter((x) => Number.isFinite(x));
+
+      const requestedTps = [...sortedTps];
+      const sortedCurrent = side === 'long'
+        ? [...currentTps].sort((a, b) => a - b)
+        : [...currentTps].sort((a, b) => b - a);
+      const sortedRequested = side === 'long'
+        ? [...requestedTps].sort((a, b) => a - b)
+        : [...requestedTps].sort((a, b) => b - a);
+
+      const closeEnough = (a: number, b: number) => Math.abs(a - b) <= 1e-6;
+      const sameSl = Number.isFinite(currentSl) && closeEnough(currentSl, sl);
+      const sameTp = sortedCurrent.length === sortedRequested.length
+        && sortedCurrent.every((v, i) => closeEnough(v, sortedRequested[i]));
+
+      if (sameSl && sameTp) {
+        return res.status(200).json({
+          ok: true,
+          noop: true,
+          symbol: normalizedSymbol,
+          side,
+          size: qty,
+          stopLoss: sl,
+          takeProfit: sortedTps[0],
+          takeProfits: sortedTps,
+          existingOrdersPreserved: true,
+          message: 'levels_already_set_on_exchange',
+        });
+      }
+    }
+  } catch {
+    // best-effort no-op detection
+  }
+
+  const haltState = getSymbolHaltState(normalizedSymbol);
+  if (haltState) {
+    const retryAfterMs = Math.max(0, haltState.untilMs - Date.now());
+    return res.status(409).json({
+      ok: false,
+      symbol: normalizedSymbol,
+      side,
+      size: qty,
+      stopLoss: sl,
+      takeProfit: sortedTps[0],
+      takeProfits: sortedTps,
+      existingOrdersPreserved: true,
+      error: 'exchange_trading_halted_cached',
+      hint: 'Exchange is currently halted for this symbol. Existing TP/SL are preserved; retry after backoff.',
+      retryAfterMs,
+      retryAfterSec: Math.ceil(retryAfterMs / 1000),
+      lastHaltAt: haltState.updatedAt,
+      reason: haltState.reason,
+    });
+  }
+
   const closingSide: 'buy' | 'sell' = side === 'long' ? 'sell' : 'buy';
 
   const isReduceOnlyOrder = (order: { raw?: unknown }) => {
@@ -4089,6 +4153,9 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   if (!ok) {
     const placementErrors = [slOrder.error, ...tpOrders.map((o) => o.error)].filter(Boolean).map(String);
     const halted = placementErrors.some((e) => isHaltedError(e));
+    if (halted) {
+      setSymbolHaltState(normalizedSymbol, placementErrors.find((e) => isHaltedError(e)) ?? 'Trading is halted.');
+    }
 
     // Rollback only newly created orders; keep previous protection orders untouched.
     const rollbackIds = expectedIds;
@@ -4134,6 +4201,8 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       hint: halted ? 'Exchange reports trading is halted for this symbol. Existing TP/SL orders were kept.' : undefined
     });
   }
+
+  clearSymbolHaltState(normalizedSymbol);
 
   // Cleanup old TP/SL orders only after new levels are safely in place.
   const expectedSet = new Set(expectedIds.map(String));
@@ -4492,6 +4561,33 @@ interface ActiveTradeState {
 }
 /** correlationId → ActiveTradeState */
 const activeTrades = new Map<string, ActiveTradeState>();
+
+const symbolHaltBackoff = new Map<string, { untilMs: number; reason: string; updatedAt: string }>();
+const HALT_BACKOFF_MS = 10 * 60_000;
+
+function getSymbolHaltState(symbol: string): { untilMs: number; reason: string; updatedAt: string } | null {
+  const key = normalizeSymbol(symbol);
+  const row = symbolHaltBackoff.get(key);
+  if (!row) return null;
+  if (Date.now() > row.untilMs) {
+    symbolHaltBackoff.delete(key);
+    return null;
+  }
+  return row;
+}
+
+function setSymbolHaltState(symbol: string, reason: string): void {
+  const key = normalizeSymbol(symbol);
+  symbolHaltBackoff.set(key, {
+    untilMs: Date.now() + HALT_BACKOFF_MS,
+    reason,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+function clearSymbolHaltState(symbol: string): void {
+  symbolHaltBackoff.delete(normalizeSymbol(symbol));
+}
 
 /**
  * Compute TP/SL levels from runtime rules when the client omits them.
