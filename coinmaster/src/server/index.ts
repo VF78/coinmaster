@@ -3314,11 +3314,11 @@ app.get('/api/live/candles', async (req, res) => {
 
 app.get('/api/settings/trading-rules', async (_req, res) => {
   const db = await getDb();
-  const rules = normalizeTradingRules(db.data.settings.tradingRules);
+  const persisted = db.data.settings.tradingRules;
+  const rules = normalizeTradingRules(persisted);
 
-  if (JSON.stringify(rules) !== JSON.stringify(db.data.settings.tradingRules)) {
-    db.data.settings.tradingRules = rules;
-    await db.write();
+  if (JSON.stringify(rules) !== JSON.stringify(persisted)) {
+    logger.warn({ component: 'trading-rules', persistedType: typeof persisted }, 'trading rules normalization differs from persisted payload; returning normalized view without mutating stored settings');
   }
 
   return res.json({ ok: true, rules });

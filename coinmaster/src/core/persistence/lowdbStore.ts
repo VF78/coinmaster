@@ -1,7 +1,7 @@
 import { JSONFilePreset } from 'lowdb/node';
 import type { Low } from 'lowdb';
 import type { DBShape } from '../types.js';
-import { cloneTradingRulesDefaults, normalizeTradingRules } from '../../shared/tradingRules.js';
+import { cloneTradingRulesDefaults } from '../../shared/tradingRules.js';
 import type { PersistenceStore } from './types.js';
 
 const defaultData: DBShape = {
@@ -45,7 +45,9 @@ function ensureDbShape(data: DBShape) {
   if (!Number.isFinite(data.settings.depositUsd)) {
     data.settings.depositUsd = 1000;
   }
-  data.settings.tradingRules = normalizeTradingRules(data.settings.tradingRules);
+  if (!data.settings.tradingRules || typeof data.settings.tradingRules !== 'object') {
+    data.settings.tradingRules = cloneTradingRulesDefaults();
+  }
   data.settings.telegramNotify = data.settings.telegramNotify ?? {
     botToken: '',
     chatId: '',
