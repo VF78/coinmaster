@@ -827,6 +827,39 @@ interface DailyAnalyticsContext {
   suggestions: string[];
 }
 
+interface AnalyticsHistorySourceSummary {
+  source: string;
+  fills: number;
+  openFills: number;
+  closeFills: number;
+  winners: number;
+  losers: number;
+  winRatePct: number;
+  realized: number;
+  fees: number;
+  net: number;
+}
+
+interface AnalyticsHistorySummary {
+  generatedAt: string;
+  windowStart: string;
+  windowEnd: string;
+  days: number;
+  totals: {
+    fills: number;
+    openFills: number;
+    closeFills: number;
+    winners: number;
+    losers: number;
+    winRatePct: number;
+    realized: number;
+    fees: number;
+    net: number;
+  };
+  bySource: AnalyticsHistorySourceSummary[];
+  bySymbol: Array<{ symbol: string; realized: number; fills: number }>;
+}
+
 function fillSource(fill: FillEvent): string {
   return String((fill.raw as { sourceExchange?: unknown } | undefined)?.sourceExchange ?? exchange.name).toLowerCase();
 }
@@ -970,6 +1003,95 @@ async function buildDailyAnalyticsContext(windowMs = 24 * 60 * 60_000): Promise<
     wins,
     risks,
     suggestions,
+  };
+}
+
+async function buildAnalyticsHistorySummary(days = 3650): Promise<AnalyticsHistorySummary> {
+  const now = Date.now();
+  const safeDays = Math.max(1, Math.min(3650, Math.floor(days)));
+  const cutoff = now - safeDays * 24 * 60 * 60_000;
+
+  const [executionFills, db] = await Promise.all([
+    exchange.getFills().catch(() => [] as FillEvent[]),
+    getDb(),
+  ]);
+
+  const externalFills = await collectExternalFills(db.data.settings, cutoff);
+
+  const fills = [...executionFills, ...externalFills]
+    .filter((f) => Date.parse(f.timestamp) >= cutoff)
+    .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+
+  const closeFills = fills.filter((f) => fillDirection(f).toLowerCase().startsWith('close '));
+  const openFills = fills.filter((f) => fillDirection(f).toLowerCase().startsWith('open '));
+
+  const realized = closeFills.reduce((sum, f) => sum + fillClosedPnl(f), 0);
+  const fees = fills.reduce((sum, f) => sum + fillFee(f), 0);
+  const net = realized - fees;
+
+  const winners = closeFills.filter((f) => fillClosedPnl(f) > 0).length;
+  const losers = closeFills.filter((f) => fillClosedPnl(f) < 0).length;
+  const winRate = closeFills.length > 0 ? (winners / closeFills.length) * 100 : 0;
+
+  const bySourceMap = new Map<string, AnalyticsHistorySourceSummary>();
+  for (const fill of fills) {
+    const source = fillSource(fill);
+    const row = bySourceMap.get(source) ?? {
+      source,
+      fills: 0,
+      openFills: 0,
+      closeFills: 0,
+      winners: 0,
+      losers: 0,
+      winRatePct: 0,
+      realized: 0,
+      fees: 0,
+      net: 0,
+    };
+
+    const pnl = fillClosedPnl(fill);
+    row.fills += 1;
+    if (fillDirection(fill).toLowerCase().startsWith('open ')) row.openFills += 1;
+    if (fillDirection(fill).toLowerCase().startsWith('close ')) {
+      row.closeFills += 1;
+      if (pnl > 0) row.winners += 1;
+      if (pnl < 0) row.losers += 1;
+    }
+    row.realized += pnl;
+    row.fees += fillFee(fill);
+    row.net = row.realized - row.fees;
+    row.winRatePct = row.closeFills > 0 ? Number(((row.winners / row.closeFills) * 100).toFixed(2)) : 0;
+
+    bySourceMap.set(source, row);
+  }
+
+  const bySymbolMap = new Map<string, { symbol: string; realized: number; fills: number }>();
+  for (const fill of fills) {
+    const key = String(fill.symbol ?? '').toUpperCase();
+    const row = bySymbolMap.get(key) ?? { symbol: key, realized: 0, fills: 0 };
+    row.realized += fillClosedPnl(fill);
+    row.fills += 1;
+    bySymbolMap.set(key, row);
+  }
+
+  return {
+    generatedAt: new Date(now).toISOString(),
+    windowStart: new Date(cutoff).toISOString(),
+    windowEnd: new Date(now).toISOString(),
+    days: safeDays,
+    totals: {
+      fills: fills.length,
+      openFills: openFills.length,
+      closeFills: closeFills.length,
+      winners,
+      losers,
+      winRatePct: Number(winRate.toFixed(2)),
+      realized,
+      fees,
+      net,
+    },
+    bySource: [...bySourceMap.values()].sort((a, b) => a.source.localeCompare(b.source)),
+    bySymbol: [...bySymbolMap.values()].sort((a, b) => Math.abs(b.realized) - Math.abs(a.realized)).slice(0, 40),
   };
 }
 
@@ -3172,6 +3294,18 @@ app.get('/api/analytics/daily/text', ownerAuth, async (req, res) => {
     return res.json({ ok: true, context, text });
   } catch (error) {
     return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'daily_analytics_text_failed' });
+  }
+});
+
+app.get('/api/analytics/history/summary', ownerAuth, async (req, res) => {
+  const daysRaw = Number(req.query.days);
+  const days = Number.isFinite(daysRaw) ? Math.max(1, Math.min(3650, Math.floor(daysRaw))) : 3650;
+
+  try {
+    const summary = await buildAnalyticsHistorySummary(days);
+    return res.json({ ok: true, summary });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'analytics_history_summary_failed' });
   }
 });
 
