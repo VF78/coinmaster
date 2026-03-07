@@ -1016,7 +1016,10 @@ async function buildAnalyticsHistorySummary(days = 3650): Promise<AnalyticsHisto
     getDb(),
   ]);
 
-  const externalFills = await collectExternalFills(db.data.settings, cutoff);
+  // External connectors (e.g. Bybit read-only) are bounded by recent API windows.
+  // Keep an external cutoff so "full history" still includes all externally available fills.
+  const externalCutoff = Math.max(cutoff, now - 180 * 24 * 60 * 60_000);
+  const externalFills = await collectExternalFills(db.data.settings, externalCutoff);
 
   const fills = [...executionFills, ...externalFills]
     .filter((f) => Date.parse(f.timestamp) >= cutoff)
