@@ -3962,24 +3962,37 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   }
 
   const closingSide: 'buy' | 'sell' = side === 'long' ? 'sell' : 'buy';
-  const cancelAllResult = await exchange.cancelAll(normalizedSymbol);
 
-  if (!cancelAllResult.ok) {
-    return res.status(400).json({
-      ok: false,
-      symbol: normalizedSymbol,
-      side,
-      size: qty,
-      stopLoss: sl,
-      takeProfit: sortedTps[0],
-      takeProfits: sortedTps,
-      cancelAllResult: {
-        ok: false,
-        error: cancelAllResult.error
-      },
-      error: 'cancel_existing_orders_failed'
-    });
-  }
+  const isReduceOnlyOrder = (order: { raw?: unknown }) => {
+    const raw = (order.raw ?? {}) as Record<string, unknown>;
+    const reduceOnly = raw.reduceOnly;
+    if (reduceOnly === true || reduceOnly === 'true' || reduceOnly === 1 || reduceOnly === '1') return true;
+    if (reduceOnly === false || reduceOnly === 'false' || reduceOnly === 0 || reduceOnly === '0') return false;
+    return true;
+  };
+
+  const isTriggerOrder = (order: { raw?: unknown }) => {
+    const raw = (order.raw ?? {}) as Record<string, unknown>;
+    if (raw.isTrigger === true) return true;
+    if (raw.triggerPx !== undefined || raw.triggerPrice !== undefined) return true;
+    const orderTypeText = String(raw.orderType ?? '').toLowerCase();
+    if (orderTypeText.includes('stop') || orderTypeText.includes('take profit')) return true;
+    const tpsl = String(
+      (raw as { tpsl?: unknown } | undefined)?.tpsl
+      ?? (raw as { trigger?: { tpsl?: unknown } } | undefined)?.trigger?.tpsl
+      ?? (raw as { orderType?: { trigger?: { tpsl?: unknown } } } | undefined)?.orderType?.trigger?.tpsl
+      ?? ''
+    ).toLowerCase();
+    return tpsl === 'tp' || tpsl === 'sl';
+  };
+
+  const isHaltedError = (value: unknown) => String(value ?? '').toLowerCase().includes('trading is halted');
+
+  const existingOrdersBefore = await exchange.getOpenOrders(normalizedSymbol).catch(() => []);
+  const existingManagedOrderIds = existingOrdersBefore
+    .filter((o) => o.side === closingSide)
+    .filter((o) => isReduceOnlyOrder(o) && isTriggerOrder(o))
+    .map((o) => String(o.id));
 
   const factor = 10 ** sizeDecimals;
   const tpCount = sortedTps.length;
@@ -3987,6 +4000,11 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   const tpSizes: number[] = Array.from({ length: tpCount }, (_, i) =>
     i < tpCount - 1 ? baseSize : Math.max(0, Math.round((qty - baseSize * (tpCount - 1)) * factor) / factor)
   );
+
+  const isNonRetriableTriggerError = (errorText: string) => {
+    const e = String(errorText ?? '').toLowerCase();
+    return e.includes('trading is halted') || e.includes('unknown asset') || e.includes('invalid level') || e.includes('trigger');
+  };
 
   async function placeTriggerWithRetry(args: Parameters<typeof exchange.placeTriggerOrder>[0], retries = 2) {
     let last: Awaited<ReturnType<typeof exchange.placeTriggerOrder>> | null = null;
@@ -3997,8 +4015,14 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
         last = ack;
         if (ack.ok) return ack;
         lastErr = ack.error || 'trigger_order_failed';
+        if (isNonRetriableTriggerError(lastErr)) {
+          return ack;
+        }
       } catch (error) {
         lastErr = error instanceof Error ? error.message : 'trigger_order_exception';
+        if (isNonRetriableTriggerError(lastErr)) {
+          return { ok: false, error: lastErr } as Awaited<ReturnType<typeof exchange.placeTriggerOrder>>;
+        }
       }
       if (attempt < retries) {
         await sleep(300 * (attempt + 1));
@@ -4007,6 +4031,10 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     return { ok: false, error: last?.error || lastErr } as Awaited<ReturnType<typeof exchange.placeTriggerOrder>>;
   }
 
+  // Safe strategy:
+  // 1) Place new TP/SL first
+  // 2) Verify they are visible
+  // 3) Then cleanup old TP/SL orders
   const slOrder = await placeTriggerWithRetry({
     symbol: normalizedSymbol,
     side: closingSide,
@@ -4032,24 +4060,20 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   }
 
   let ok = slOrder.ok && tpOrders.every((o) => o.ok);
+  const expectedIds = [slOrder.orderId, ...tpOrders.map((o) => o.orderId)].filter((x): x is string => Boolean(x));
 
   // Extra confirmation: verify SL+TP trigger orders are actually present on exchange.
   let verificationError: string | undefined;
-  if (ok && (slOrder.orderId || tpOrders.some((o) => o.orderId))) {
-    const expectedIds = [slOrder.orderId, ...tpOrders.map((o) => o.orderId)].filter((x): x is string => Boolean(x));
+  if (ok && expectedIds.length > 0) {
     let verified = false;
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
-        // Query open orders to verify placement
         const allOrders = await exchange.getOpenOrders().catch(() => []);
         const openIds = new Set((allOrders || []).map((o) => String(o?.id ?? '')));
         verified = expectedIds.every((id) => openIds.has(String(id)));
         if (verified) {
           console.log(`[levels] trigger orders verified: ${expectedIds.join(',')}`);
           break;
-        }
-        if (attempt === 0) {
-          console.log(`[levels] verification attempt ${attempt + 1}/5: expected ${expectedIds.length} orders, found ${openIds.size} total orders`);
         }
       } catch (e) {
         console.log(`[levels] verification query failed:`, e instanceof Error ? e.message : String(e));
@@ -4059,36 +4083,84 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     if (!verified) {
       ok = false;
       verificationError = 'orders_not_visible_after_ack';
-      console.log(`[levels] verification failed after 5 attempts, cancelling all orders`);
     }
   }
 
-  // Prevent inconsistent partial state if one of levels failed.
   if (!ok) {
-    console.warn('[levels] set failed', {
+    const placementErrors = [slOrder.error, ...tpOrders.map((o) => o.error)].filter(Boolean).map(String);
+    const halted = placementErrors.some((e) => isHaltedError(e));
+
+    // Rollback only newly created orders; keep previous protection orders untouched.
+    const rollbackIds = expectedIds;
+    const rollbackResults: Array<{ id: string; ok: boolean; error?: string }> = [];
+    for (const id of rollbackIds) {
+      try {
+        const result = await exchange.cancelOrder(id);
+        rollbackResults.push({ id, ok: result.ok, error: result.error });
+      } catch (error) {
+        rollbackResults.push({ id, ok: false, error: error instanceof Error ? error.message : 'rollback_cancel_failed' });
+      }
+    }
+
+    return res.status(400).json({
+      ok: false,
       symbol: normalizedSymbol,
       side,
       size: qty,
-      sl,
-      tps: sortedTps,
-      slOrder,
-      tpOrders,
-      verificationError,
+      stopLoss: sl,
+      takeProfit: sortedTps[0],
+      takeProfits: sortedTps,
+      existingOrdersPreserved: true,
+      rollback: {
+        attempted: rollbackIds.length,
+        failed: rollbackResults.filter((x) => !x.ok).length,
+      },
+      stopLossOrder: {
+        ok: slOrder.ok,
+        orderId: slOrder.orderId,
+        error: String(slOrder.error ?? '').trim() || undefined
+      },
+      takeProfitOrder: {
+        ok: tpOrders[0]?.ok,
+        orderId: tpOrders[0]?.orderId,
+        error: String(tpOrders[0]?.error ?? '').trim() || undefined
+      },
+      takeProfitOrders: tpOrders.map((o) => ({
+        ok: o.ok,
+        orderId: o.orderId,
+        error: String(o.error ?? '').trim() || undefined
+      })),
+      error: halted ? 'exchange_trading_halted' : (verificationError ?? 'set_levels_failed'),
+      hint: halted ? 'Exchange reports trading is halted for this symbol. Existing TP/SL orders were kept.' : undefined
     });
-    await exchange.cancelAll(normalizedSymbol).catch(() => undefined);
   }
 
-  return res.status(ok ? 200 : 400).json({
-    ok,
+  // Cleanup old TP/SL orders only after new levels are safely in place.
+  const expectedSet = new Set(expectedIds.map(String));
+  const oldToCancel = existingManagedOrderIds.filter((id) => !expectedSet.has(String(id)));
+  const oldCleanup: Array<{ id: string; ok: boolean; error?: string }> = [];
+
+  for (const id of oldToCancel) {
+    try {
+      const result = await exchange.cancelOrder(id);
+      oldCleanup.push({ id, ok: result.ok, error: result.error });
+    } catch (error) {
+      oldCleanup.push({ id, ok: false, error: error instanceof Error ? error.message : 'cancel_failed' });
+    }
+  }
+
+  return res.status(200).json({
+    ok: true,
     symbol: normalizedSymbol,
     side,
     size: qty,
     stopLoss: sl,
     takeProfit: sortedTps[0],
     takeProfits: sortedTps,
-    cancelAllResult: {
-      ok: cancelAllResult.ok,
-      error: String(cancelAllResult.error ?? '').trim() || undefined
+    existingOrdersPreserved: true,
+    cleanup: {
+      canceledOld: oldCleanup.filter((x) => x.ok).length,
+      failedOld: oldCleanup.filter((x) => !x.ok).length,
     },
     stopLossOrder: {
       ok: slOrder.ok,
@@ -4105,7 +4177,6 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       orderId: o.orderId,
       error: String(o.error ?? '').trim() || undefined
     })),
-    error: ok ? undefined : (verificationError ?? 'set_levels_failed')
   });
 });
 

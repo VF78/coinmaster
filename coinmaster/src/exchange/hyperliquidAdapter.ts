@@ -61,6 +61,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   private universeCacheByDex = new Map<string, {
     fetchedAtMs: number;
     bySymbol: Map<string, any>;
+    indexBySymbol: Map<string, number>;
     symbols: string[];
   }>();
 
@@ -469,6 +470,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async placeLimitOrder(intent: OrderIntent): Promise<OrderAck> {
     try {
       const client = await this.getTradingClient();
+      await this.ensureSdkAssetIndex(intent.symbol, client);
       const cloid = this.toCloid(intent.clientOrderId);
 
       const normalizedSymbol = this.normalizeSymbol(intent.symbol);
@@ -536,6 +538,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async placeTriggerOrder(intent: TriggerOrderIntent): Promise<OrderAck> {
     try {
       const client = await this.getTradingClient();
+      await this.ensureSdkAssetIndex(intent.symbol, client);
       const triggerPxRaw = Number(intent.triggerPrice);
       const triggerPx = await this.normalizeHlPriceForSymbol(intent.symbol, triggerPxRaw);
       const marketLimitPx = await this.normalizeHlPriceForSymbol(
@@ -634,20 +637,20 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async cancelOrder(orderIdOrClientId: string): Promise<CommandResult> {
     try {
       const client = await this.getTradingClient();
-      const user = await this.resolveEffectiveUser();
-      const openOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
+      const openOrders = await this.getOpenOrders();
 
-      const target = (Array.isArray(openOrders) ? openOrders : []).find((o) => String(o?.oid ?? '') === String(orderIdOrClientId));
+      const target = openOrders.find((o) => String(o.id) === String(orderIdOrClientId));
       if (!target) {
         return { ok: false, error: 'order_not_found' };
       }
 
-      const coinSymbol = this.normalizeSymbol(String(target.coin ?? ''));
+      const coinSymbol = this.normalizeSymbol(target.symbol);
+      await this.ensureSdkAssetIndex(coinSymbol, client);
       const dex = this.getDexFromSymbol(coinSymbol);
 
       const response = await client.exchange.cancelOrder({
-        coin: this.toSdkCoin(String(target.coin ?? '')),
-        o: Number(target.oid),
+        coin: this.toSdkCoin(target.symbol),
+        o: Number(target.id),
         ...(dex ? { dex } : {})
       } as any);
 
@@ -668,26 +671,25 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async cancelAll(symbol?: string): Promise<CommandResult> {
     try {
       const client = await this.getTradingClient();
-      const user = await this.resolveEffectiveUser();
-      const openOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user });
       const target = symbol ? this.normalizeSymbol(symbol) : null;
-
-      const rows = (Array.isArray(openOrders) ? openOrders : []).filter((o) => {
-        if (!target) return true;
-        return this.symbolsMatch(this.normalizeSymbol(String(o?.coin ?? '')), target);
-      });
+      const rows = await this.getOpenOrders(target ?? undefined);
 
       if (rows.length === 0) {
         return { ok: true, raw: { canceled: 0 } };
       }
 
+      const uniqueSymbols = [...new Set(rows.map((o) => this.normalizeSymbol(o.symbol)).filter(Boolean))];
+      for (const coinSymbol of uniqueSymbols) {
+        await this.ensureSdkAssetIndex(coinSymbol, client);
+      }
+
       const cancels = rows
         .map((o) => {
-          const coinSymbol = this.normalizeSymbol(String(o?.coin ?? ''));
+          const coinSymbol = this.normalizeSymbol(o.symbol);
           const dex = this.getDexFromSymbol(coinSymbol);
           return {
-            coin: this.toSdkCoin(String(o?.coin ?? '')),
-            o: Number(o?.oid),
+            coin: this.toSdkCoin(o.symbol),
+            o: Number(o.id),
             ...(dex ? { dex } : {})
           };
         })
@@ -724,6 +726,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     try {
       const client = await this.getTradingClient();
       const normalized = this.normalizeSymbol(symbol);
+      await this.ensureSdkAssetIndex(normalized, client);
       const dex = this.getDexFromSymbol(normalized);
       
       // updateLeverage signature: (coin, isCross, leverage, dex?)
@@ -841,25 +844,28 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     return this.effectiveUserInit;
   }
 
-  private async getUniverse(dex?: string | null, force = false): Promise<{ bySymbol: Map<string, any>; symbols: string[] }> {
+  private async getUniverse(dex?: string | null, force = false): Promise<{ bySymbol: Map<string, any>; indexBySymbol: Map<string, number>; symbols: string[] }> {
     const dexKey = String(dex ?? '').trim().toLowerCase();
     const now = Date.now();
 
     const cached = this.universeCacheByDex.get(dexKey);
     if (!force && cached && (now - cached.fetchedAtMs) < UNIVERSE_CACHE_TTL_MS) {
-      return { bySymbol: cached.bySymbol, symbols: cached.symbols };
+      return { bySymbol: cached.bySymbol, indexBySymbol: cached.indexBySymbol, symbols: cached.symbols };
     }
 
     const meta = await this.requestInfo<any>({ type: 'meta', ...(dexKey ? { dex: dexKey } : {}) });
     const universe = Array.isArray(meta?.universe) ? meta.universe : [];
 
     const bySymbol = new Map<string, any>();
+    const indexBySymbol = new Map<string, number>();
     const symbols: string[] = [];
 
-    for (const row of universe) {
+    for (let i = 0; i < universe.length; i++) {
+      const row = universe[i];
       const normalized = this.normalizeSymbol(String(row?.name ?? ''));
       if (!normalized || bySymbol.has(normalized)) continue;
       bySymbol.set(normalized, row);
+      indexBySymbol.set(normalized, i);
       symbols.push(normalized);
     }
 
@@ -868,10 +874,11 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     this.universeCacheByDex.set(dexKey, {
       fetchedAtMs: now,
       bySymbol,
+      indexBySymbol,
       symbols,
     });
 
-    return { bySymbol, symbols };
+    return { bySymbol, indexBySymbol, symbols };
   }
 
   private getDexFromSymbol(symbol: string): string | null {
@@ -955,6 +962,36 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   private isUnknownAssetError(error: unknown): boolean {
     const message = String(error instanceof Error ? error.message : error ?? '').toLowerCase();
     return message.includes('unknown asset') || message.includes('asset index not found') || message.includes('asset_not_found');
+  }
+
+  private async ensureSdkAssetIndex(symbol: string, client: Hyperliquid): Promise<void> {
+    const normalized = this.normalizeSymbol(symbol);
+    if (!normalized.includes(':')) return;
+
+    const dex = this.getDexFromSymbol(normalized);
+    if (!dex) return;
+
+    // Force SDK symbol conversion init once; after init we can safely patch static maps.
+    await (client.info as any)?.getAllAssets?.().catch(() => undefined);
+
+    const universe = await this.getUniverse(dex);
+    const idx = universe.indexBySymbol.get(normalized);
+    if (!Number.isFinite(idx)) {
+      throw new Error(`asset_index_not_found_for_symbol:${normalized}`);
+    }
+
+    const symbolConversion = (client as any)?.symbolConversion;
+    const assetMap = symbolConversion?.assetToIndexMap;
+
+    if (!(assetMap instanceof Map)) {
+      throw new Error('sdk_asset_map_unavailable');
+    }
+
+    // SDK expects internal PERP names; patch both raw and -PERP aliases for robustness.
+    const aliases = [...new Set([normalized, `${normalized}-PERP`])];
+    for (const alias of aliases) {
+      assetMap.set(alias, idx);
+    }
   }
 
   private toSdkCoin(symbol: string): string {
