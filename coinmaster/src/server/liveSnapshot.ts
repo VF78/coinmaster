@@ -100,6 +100,16 @@ function orderTpslKind(order: OrderSnapshot): 'tp' | 'sl' | undefined {
   if (orderTypeText.includes('take profit') || orderTypeText === 'tp') return 'tp';
   if (orderTypeText.includes('stop') || orderTypeText === 'sl') return 'sl';
 
+  // Manual partial TP/SL ladders can be reduce-only LIMIT orders with cloid prefixes.
+  const cloid = String(
+    (raw as { cloid?: unknown } | undefined)?.cloid
+    ?? (raw as { clientOrderId?: unknown } | undefined)?.clientOrderId
+    ?? ''
+  ).trim().toLowerCase();
+
+  if (cloid.startsWith('tp')) return 'tp';
+  if (cloid.startsWith('sl')) return 'sl';
+
   return undefined;
 }
 

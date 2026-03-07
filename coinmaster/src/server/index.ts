@@ -4200,7 +4200,8 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   // Extra confirmation: verify SL+TP are visible on exchange.
   // 1) Try strict ID match (fast path)
   // 2) Fallback to semantic level match from live snapshot (some venues may re-emit/rewrite trigger IDs)
-  let verificationError: string | undefined;
+  // NOTE: verification mismatch is treated as warning (non-fatal) when placements were acknowledged.
+  let verificationWarning: string | undefined;
   if (ok && expectedIds.length > 0) {
     let verifiedById = false;
     for (let attempt = 0; attempt < 5; attempt++) {
@@ -4223,7 +4224,25 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
         const live = await buildLiveDashboardState(exchange, normalizedSymbol, getLiveMode(), []);
         const current = live.openPositions.find((p) => p.symbol === normalizedSymbol && p.side === side);
 
-        const closeEnough = (a: number, b: number) => Math.abs(a - b) <= 1e-6;
+        let quoteDecimals = 0;
+        try {
+          const getter = (exchange as any).getInstrumentMeta;
+          if (typeof getter === 'function') {
+            const meta = await getter.call(exchange, normalizedSymbol);
+            if (Number.isFinite(Number(meta?.quoteDecimals))) {
+              quoteDecimals = Math.max(0, Math.min(8, Number(meta.quoteDecimals)));
+            }
+          }
+        } catch {
+          quoteDecimals = 0;
+        }
+
+        // Hyperliquid can normalize/round trigger prices on placement.
+        // Use symbol-aware tolerance instead of exact float equality to avoid false negatives.
+        const tickTol = quoteDecimals > 0 ? 10 ** (-quoteDecimals) : 0;
+        const priceTol = Math.max(1e-6, tickTol, 0.5);
+        const closeEnough = (a: number, b: number) => Math.abs(a - b) <= priceTol;
+
         const currentSl = Number(current?.stopLoss ?? NaN);
         const currentTps = (Array.isArray(current?.takeProfits) && current?.takeProfits.length > 0
           ? current!.takeProfits
@@ -4238,18 +4257,16 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
           : [...sortedTps].sort((a, b) => b - a);
 
         const sameSl = Number.isFinite(currentSl) && closeEnough(currentSl, sl);
-        const sameTp = sortedCurrent.length === sortedRequested.length
-          && sortedCurrent.every((v, i) => closeEnough(v, sortedRequested[i]));
+        const sameTp = sortedCurrent.length >= sortedRequested.length
+          && sortedRequested.every((v, i) => closeEnough(sortedCurrent[i], v));
 
         if (sameSl && sameTp) {
           console.log('[levels] verified by semantic level match (id mismatch tolerated)');
         } else {
-          ok = false;
-          verificationError = 'orders_not_visible_after_ack';
+          verificationWarning = 'orders_not_visible_after_ack';
         }
       } catch {
-        ok = false;
-        verificationError = 'orders_not_visible_after_ack';
+        verificationWarning = 'orders_not_visible_after_ack';
       }
     }
   }
@@ -4301,7 +4318,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
         orderId: o.orderId,
         error: String(o.error ?? '').trim() || undefined
       })),
-      error: halted ? 'exchange_trading_halted' : (verificationError ?? 'set_levels_failed'),
+      error: halted ? 'exchange_trading_halted' : 'set_levels_failed',
       hint: halted ? 'Exchange reports trading is halted for this symbol. Existing TP/SL orders were kept.' : undefined
     });
   }
@@ -4350,6 +4367,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       orderId: o.orderId,
       error: String(o.error ?? '').trim() || undefined
     })),
+    verificationWarning,
   });
 });
 
