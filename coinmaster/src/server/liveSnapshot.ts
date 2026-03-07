@@ -41,6 +41,68 @@ function isReduceOnlyOrder(order: OrderSnapshot): boolean {
   return true; // fallback when adapter/raw does not expose reduceOnly flag
 }
 
+function normalizeLiveSymbol(symbol: string): string {
+  const value = String(symbol ?? '').trim();
+  if (!value) return '';
+
+  const stripCore = (coreRaw: string) => {
+    const upper = String(coreRaw ?? '').trim().toUpperCase().replace('-PERP', '');
+    // Hyperliquid UI can show synthetic USD suffix (e.g. GOLDUSD) while API uses GOLD.
+    if (upper.endsWith('USD') && upper.length > 3) return upper.slice(0, -3);
+    return upper;
+  };
+
+  if (value.includes(':')) {
+    const [nsRaw, coreRaw] = value.split(':', 2);
+    const ns = String(nsRaw ?? '').trim().toLowerCase();
+    const core = stripCore(coreRaw);
+    return ns && core ? `${ns}:${core}` : '';
+  }
+
+  return stripCore(value);
+}
+
+function coreLiveSymbol(symbol: string): string {
+  const normalized = normalizeLiveSymbol(symbol);
+  if (!normalized) return '';
+  if (!normalized.includes(':')) return normalized;
+  const [, coreRaw] = normalized.split(':', 2);
+  return String(coreRaw ?? '').trim().toUpperCase();
+}
+
+function symbolsMatch(left: string, right: string): boolean {
+  const a = normalizeLiveSymbol(left);
+  const b = normalizeLiveSymbol(right);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  return coreLiveSymbol(a) === coreLiveSymbol(b);
+}
+
+function orderTpslKind(order: OrderSnapshot): 'tp' | 'sl' | undefined {
+  const raw = (order.raw ?? {}) as Record<string, unknown>;
+  const kind = String(
+    (raw as { tpsl?: unknown } | undefined)?.tpsl
+    ?? (raw as { trigger?: { tpsl?: unknown } } | undefined)?.trigger?.tpsl
+    ?? (raw as { orderType?: { trigger?: { tpsl?: unknown } } } | undefined)?.orderType?.trigger?.tpsl
+    ?? ''
+  ).trim().toLowerCase();
+
+  if (kind === 'tp') return 'tp';
+  if (kind === 'sl') return 'sl';
+
+  // Hyperliquid frontendOpenOrders often exposes plain-text orderType:
+  // "Take Profit Market" | "Stop Market" without explicit tpsl field.
+  const orderTypeText = String(
+    (raw as { orderType?: unknown } | undefined)?.orderType
+    ?? ''
+  ).trim().toLowerCase();
+
+  if (orderTypeText.includes('take profit') || orderTypeText === 'tp') return 'tp';
+  if (orderTypeText.includes('stop') || orderTypeText === 'sl') return 'sl';
+
+  return undefined;
+}
+
 function pickStopLossAndTakeProfit(position: Pick<ExposureSnapshot, 'symbol' | 'side' | 'entryPrice'>, openOrders: OrderSnapshot[]) {
   const entry = position.entryPrice;
   if (!entry || entry <= 0) {
@@ -53,7 +115,7 @@ function pickStopLossAndTakeProfit(position: Pick<ExposureSnapshot, 'symbol' | '
 
   const closingSide: 'buy' | 'sell' = position.side === 'long' ? 'sell' : 'buy';
   const candidates = openOrders
-    .filter((o) => o.symbol === position.symbol && o.side === closingSide)
+    .filter((o) => symbolsMatch(o.symbol, position.symbol) && o.side === closingSide)
     .filter(isReduceOnlyOrder);
 
   if (!candidates.length) {
@@ -64,26 +126,56 @@ function pickStopLossAndTakeProfit(position: Pick<ExposureSnapshot, 'symbol' | '
     };
   }
 
-  const aboveEntry = candidates
-    .filter((o) => o.price > entry)
+  // Prefer explicit trigger kind from exchange raw payload when available.
+  const explicitTp = candidates
+    .filter((o) => orderTpslKind(o) === 'tp')
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
+  const explicitSl = candidates
+    .filter((o) => orderTpslKind(o) === 'sl')
     .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
 
-  const belowEntry = candidates
-    .filter((o) => o.price < entry)
-    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
-
-  if (position.side === 'long') {
-    const takeProfits = aboveEntry.map((o) => o.price).slice(0, 3);
+  if (explicitTp.length > 0 || explicitSl.length > 0) {
+    const takeProfits = explicitTp.map((o) => o.price).slice(0, 3);
     return {
-      stopLoss: belowEntry[0]?.price,
+      stopLoss: explicitSl[0]?.price,
       takeProfit: takeProfits[0],
       takeProfits,
     };
   }
 
-  const takeProfits = belowEntry.map((o) => o.price).slice(0, 3);
+  // Heuristic fallback when trigger kind isn't present in raw payload.
+  const byDistance = candidates
+    .slice()
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
+
+  const aboveEntry = candidates
+    .filter((o) => o.price >= entry)
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
+
+  const belowEntry = candidates
+    .filter((o) => o.price <= entry)
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
+
+  if (position.side === 'long') {
+    const tpOrders = (aboveEntry.length > 0 ? aboveEntry : byDistance).slice(0, 3);
+    const tpIds = new Set(tpOrders.map((o) => o.id));
+    const slCandidate = belowEntry[0] ?? byDistance.find((o) => !tpIds.has(o.id));
+    const takeProfits = tpOrders.map((o) => o.price);
+
+    return {
+      stopLoss: slCandidate?.price,
+      takeProfit: takeProfits[0],
+      takeProfits,
+    };
+  }
+
+  const tpOrders = (belowEntry.length > 0 ? belowEntry : byDistance).slice(0, 3);
+  const tpIds = new Set(tpOrders.map((o) => o.id));
+  const slCandidate = aboveEntry[0] ?? byDistance.find((o) => !tpIds.has(o.id));
+  const takeProfits = tpOrders.map((o) => o.price);
+
   return {
-    stopLoss: aboveEntry[0]?.price,
+    stopLoss: slCandidate?.price,
     takeProfit: takeProfits[0],
     takeProfits,
   };
@@ -91,7 +183,7 @@ function pickStopLossAndTakeProfit(position: Pick<ExposureSnapshot, 'symbol' | '
 
 function pickOpenedAt(position: Pick<ExposureSnapshot, 'symbol' | 'side' | 'entryPrice'>, fills: FillEvent[]): string | undefined {
   const openingSide: 'buy' | 'sell' = position.side === 'long' ? 'buy' : 'sell';
-  const bySymbolAndSide = fills.filter((f) => f.symbol === position.symbol && f.side === openingSide);
+  const bySymbolAndSide = fills.filter((f) => symbolsMatch(f.symbol, position.symbol) && f.side === openingSide);
   if (!bySymbolAndSide.length) return undefined;
 
   const entry = position.entryPrice;
