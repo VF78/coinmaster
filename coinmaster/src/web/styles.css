@@ -1157,11 +1157,24 @@ tbody tr:hover {
   .position-modal-sheet .card {
     padding: 0.52rem;
     border-radius: 0.82rem;
+    border: 1px solid #1f3552;
+    background: linear-gradient(180deg, #0b1527 0%, #091220 100%);
   }
 
   .position-modal-sheet .position-panel {
     gap: 0.45rem;
     grid-template-rows: auto auto auto auto;
+  }
+
+  .position-panel__header {
+    top: 0.32rem;
+    right: 0.32rem;
+  }
+
+  .hl-close-btn {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
   }
 
   .position-panel__chart-wrap,
@@ -1181,7 +1194,12 @@ tbody tr:hover {
   }
 
   .hl-levels-layout {
+    display: block;
     gap: 0.42rem;
+  }
+
+  .hl-levels-form {
+    gap: 0.5rem;
   }
 
   .hl-side-stack,
@@ -1227,6 +1245,23 @@ tbody tr:hover {
     align-items: end;
   }
 
+  .hl-level-row label {
+    gap: 0.2rem;
+  }
+
+  .hl-level-row label span {
+    font-size: 0.72rem;
+    color: #9fb4d6;
+  }
+
+  .hl-level-row input {
+    min-height: 2.05rem;
+    border-radius: 0.62rem;
+    border-color: #274363;
+    padding: 0.26rem 0.45rem;
+    font-size: 0.88rem;
+  }
+
   .hl-level-row__actions {
     grid-column: 1 / -1;
     grid-template-columns: 1fr 1fr;
@@ -1252,6 +1287,14 @@ tbody tr:hover {
 
   .hl-confirm-row .btn {
     width: 100%;
+    min-height: 2.45rem;
+    border-radius: 0.72rem;
+  }
+
+  .hl-confirm-msg {
+    margin-top: 0.25rem;
+    font-size: 0.76rem;
+    line-height: 1.25;
   }
 
   .history-paging {
