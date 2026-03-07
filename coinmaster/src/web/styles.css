@@ -1224,14 +1224,75 @@ tbody tr:hover {
     width: 100%;
   }
 
-  .rules-level-row {
-    grid-template-columns: 40px minmax(0, 1fr);
-    gap: 0.35rem;
+  .rules-grid {
+    gap: 0.5rem;
   }
 
-  .rules-level-row > :nth-child(3),
-  .rules-level-row > :nth-child(4) {
+  .rules-coin-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding: 0.42rem 0.45rem;
+  }
+
+  .rules-coin-row .rules-input {
+    width: 100% !important;
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .rules-coin-row .rules-stepper {
+    flex: 0 0 auto;
+  }
+
+  .rules-coin-row .rules-mini-btn {
+    margin-left: auto;
+  }
+
+  .rules-coin-row .muted {
+    flex: 1 1 100%;
+    min-width: 0 !important;
+    text-align: left !important;
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  .rules-levels-grid {
+    gap: 0.42rem;
+  }
+
+  .rules-level-row {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 0.32rem;
+    align-items: start;
+  }
+
+  .rules-level-row .rules-stepper {
+    grid-column: 2;
+  }
+
+  .rules-level-row .rules-mini-btn,
+  .rules-level-row .rules-mini-btn--ghost,
+  .rules-level-row .rules-level-hint {
     grid-column: 1 / -1;
+  }
+
+  .rules-level-hint {
+    white-space: normal;
+    font-size: 0.7rem;
+    margin-top: -0.05rem;
+  }
+
+  .rules-mini-btn {
+    min-height: 1.95rem;
+    height: 1.95rem;
+    min-width: 76px;
+    padding: 0.2rem 0.55rem;
+  }
+
+  .rules-apply-row {
+    max-width: none;
   }
 }
 
