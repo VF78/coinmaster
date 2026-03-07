@@ -547,10 +547,26 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       );
 
       const isReduceOnly = Boolean(intent.reduceOnly ?? true);
-      // Position TP/SL style on Hyperliquid requires sz=0 + grouping=positionTpsl.
-      const triggerSize = isReduceOnly ? 0 : intent.size;
       const normalizedSymbol = this.normalizeSymbol(intent.symbol);
       const dex = this.getDexFromSymbol(normalizedSymbol);
+
+      const meta = await this.getInstrumentMeta(intent.symbol).catch(() => undefined);
+      const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 5)));
+      const sizeRaw = Number(intent.size);
+      const sizeRounded = Number.isFinite(sizeRaw) && sizeRaw > 0
+        ? Number(sizeRaw.toFixed(sizeDecimals))
+        : 0;
+
+      const usePositionTpsl = isReduceOnly && intent.kind === 'sl';
+      const triggerSize = usePositionTpsl ? 0 : sizeRounded;
+
+      if (!usePositionTpsl && (!Number.isFinite(triggerSize) || triggerSize <= 0)) {
+        return {
+          ok: false,
+          clientOrderId: intent.clientOrderId,
+          error: 'invalid_trigger_size'
+        };
+      }
 
       const response = await client.exchange.placeOrder({
         coin: this.toSdkCoin(intent.symbol),
@@ -566,7 +582,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
           }
         },
         reduce_only: isReduceOnly,
-        ...(isReduceOnly ? { grouping: 'positionTpsl' } : {}),
+        ...(usePositionTpsl ? { grouping: 'positionTpsl' } : {}),
         ...(intent.clientOrderId ? { cloid: this.toCloid(intent.clientOrderId) } : {}),
         ...(dex ? { dex } : {})
       } as any);

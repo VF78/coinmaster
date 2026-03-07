@@ -4053,17 +4053,19 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   const isHaltedError = (value: unknown) => String(value ?? '').toLowerCase().includes('trading is halted');
 
   const existingOrdersBefore = await exchange.getOpenOrders(normalizedSymbol).catch(() => []);
+  const isManagedByCloid = (order: { raw?: unknown }) => {
+    const raw = (order.raw ?? {}) as Record<string, unknown>;
+    const cloid = String(raw.cloid ?? raw.clientOrderId ?? '').trim().toLowerCase();
+    return cloid.startsWith('tp') || cloid.startsWith('sl');
+  };
+
   const existingManagedOrderIds = existingOrdersBefore
     .filter((o) => o.side === closingSide)
-    .filter((o) => isReduceOnlyOrder(o) && isTriggerOrder(o))
+    .filter((o) => isReduceOnlyOrder(o) && (isTriggerOrder(o) || isManagedByCloid(o)))
     .map((o) => String(o.id));
 
-  const factor = 10 ** sizeDecimals;
   const tpCount = sortedTps.length;
-  const baseSize = Math.floor((qty / tpCount) * factor) / factor;
-  const tpSizes: number[] = Array.from({ length: tpCount }, (_, i) =>
-    i < tpCount - 1 ? baseSize : Math.max(0, Math.round((qty - baseSize * (tpCount - 1)) * factor) / factor)
-  );
+  const tpSizes = splitTakeProfitSizes(qty, tpCount, sizeDecimals);
 
   const isNonRetriableTriggerError = (errorText: string) => {
     const e = String(errorText ?? '').toLowerCase();
@@ -4095,6 +4097,45 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     return { ok: false, error: last?.error || lastErr } as Awaited<ReturnType<typeof exchange.placeTriggerOrder>>;
   }
 
+  async function placeReduceOnlyLimitTpWithRetry(args: {
+    symbol: string;
+    side: 'buy' | 'sell';
+    size: number;
+    price: number;
+    clientOrderId: string;
+  }, retries = 2) {
+    let last: Awaited<ReturnType<typeof exchange.placeReduceOnlyExit>> | null = null;
+    let lastErr = '';
+
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const ack = await exchange.placeReduceOnlyExit({
+          symbol: args.symbol,
+          side: args.side,
+          size: args.size,
+          price: args.price,
+          reduceOnly: true,
+          clientOrderId: args.clientOrderId,
+        });
+        last = ack;
+        if (ack.ok) return ack;
+        lastErr = ack.error || 'tp_limit_order_failed';
+        if (isNonRetriableTriggerError(lastErr)) {
+          return ack;
+        }
+      } catch (error) {
+        lastErr = error instanceof Error ? error.message : 'tp_limit_order_exception';
+        if (isNonRetriableTriggerError(lastErr)) {
+          return { ok: false, error: lastErr } as Awaited<ReturnType<typeof exchange.placeReduceOnlyExit>>;
+        }
+      }
+      if (attempt < retries) {
+        await sleep(300 * (attempt + 1));
+      }
+    }
+    return { ok: false, error: last?.error || lastErr } as Awaited<ReturnType<typeof exchange.placeReduceOnlyExit>>;
+  }
+
   // Safe strategy:
   // 1) Place new TP/SL first
   // 2) Verify they are visible
@@ -4109,15 +4150,45 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     clientOrderId: `sl-${nanoid()}`
   });
 
+  if (!slOrder.ok && isHaltedError(slOrder.error)) {
+    setSymbolHaltState(normalizedSymbol, String(slOrder.error ?? 'Trading is halted.'));
+    return res.status(400).json({
+      ok: false,
+      symbol: normalizedSymbol,
+      side,
+      size: qty,
+      stopLoss: sl,
+      takeProfit: sortedTps[0],
+      takeProfits: sortedTps,
+      existingOrdersPreserved: true,
+      stopLossOrder: {
+        ok: false,
+        orderId: slOrder.orderId,
+        error: String(slOrder.error ?? '').trim() || 'Trading is halted.'
+      },
+      takeProfitOrder: {
+        ok: false,
+        error: 'skipped_due_to_sl_halt'
+      },
+      takeProfitOrders: [],
+      error: 'exchange_trading_halted',
+      hint: 'Exchange reports trading is halted for this symbol. Existing TP/SL orders were kept.',
+    });
+  }
+
   const tpOrders: Array<{ ok: boolean; orderId?: string; error?: string }> = [];
   for (let i = 0; i < sortedTps.length; i++) {
-    const ack = await placeTriggerWithRetry({
+    const levelSize = Number(tpSizes[i] ?? 0);
+    if (!Number.isFinite(levelSize) || levelSize <= 0) {
+      tpOrders.push({ ok: false, error: 'invalid_tp_split_size' });
+      continue;
+    }
+
+    const ack = await placeReduceOnlyLimitTpWithRetry({
       symbol: normalizedSymbol,
       side: closingSide,
-      size: tpSizes[i],
-      triggerPrice: sortedTps[i],
-      kind: 'tp',
-      reduceOnly: true,
+      size: levelSize,
+      price: sortedTps[i],
       clientOrderId: `tp${i + 1}-${nanoid(8)}`
     });
     tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
@@ -4592,6 +4663,33 @@ interface ActiveTradeState {
   firstTpFired: boolean;
   positionSize: number;
 }
+
+function splitTakeProfitSizes(totalSize: number, tpCount: number, sizeDecimals: number): number[] {
+  if (!Number.isFinite(totalSize) || totalSize <= 0 || tpCount <= 0) return [];
+
+  // Explicit policy requested by owner:
+  // - 2 TP -> 50/50
+  // - 3 TP -> 33/33/34
+  // - fallback: equal split with remainder on last level
+  const weights = tpCount === 2
+    ? [0.5, 0.5]
+    : tpCount === 3
+      ? [0.33, 0.33, 0.34]
+      : Array.from({ length: tpCount }, () => 1 / tpCount);
+
+  const factor = 10 ** Math.max(0, sizeDecimals);
+  const rawSizes = weights.map((w) => totalSize * w);
+
+  const floored = rawSizes.map((x, i) => i < tpCount - 1
+    ? Math.floor(x * factor) / factor
+    : 0
+  );
+
+  const used = floored.reduce((sum, x) => sum + x, 0);
+  const remainder = Math.max(0, Math.round((totalSize - used) * factor) / factor);
+
+  return floored.map((x, i) => i === tpCount - 1 ? remainder : x);
+}
 /** correlationId → ActiveTradeState */
 const activeTrades = new Map<string, ActiveTradeState>();
 
@@ -4665,7 +4763,8 @@ function resolveTpSlDefaults(
 }
 
 /**
- * Place SL + up to 3 TP trigger orders after a successful entry.
+ * Place SL + up to 3 TP orders after a successful entry.
+ * SL = trigger stop, TP = reduce-only limit exits with deterministic split sizing.
  * Registers trade state for the TP fill monitor (SL→entry on first TP hit).
  */
 async function placeTpSlTriggerOrders(
@@ -4683,12 +4782,18 @@ async function placeTpSlTriggerOrders(
   const closingSide: 'buy' | 'sell' = side === 'buy' ? 'sell' : 'buy';
   const tpCount = tpSl.takeProfits.length;
 
-  // Split position equally across TP levels (floor to avoid over-sizing)
-  const factor = 1e6;
-  const baseSize = Math.floor((size / tpCount) * factor) / factor;
-  const tpSizes: number[] = Array.from({ length: tpCount }, (_, i) =>
-    i < tpCount - 1 ? baseSize : Math.max(0, Math.round((size - baseSize * (tpCount - 1)) * factor) / factor)
-  );
+  let meta: { sizeDecimals?: number } | undefined;
+  try {
+    const getter = (exchange as any).getInstrumentMeta;
+    if (typeof getter === 'function') {
+      meta = await getter.call(exchange, symbol);
+    }
+  } catch {
+    meta = undefined;
+  }
+
+  const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 6)));
+  const tpSizes = splitTakeProfitSizes(size, tpCount, sizeDecimals);
 
   // Place SL (full position)
   const slOrder = await exchange.placeTriggerOrder({
@@ -4696,13 +4801,23 @@ async function placeTpSlTriggerOrders(
     kind: 'sl', reduceOnly: true, clientOrderId: `sl-auto-${correlationId}`,
   });
 
-  // Place TP orders sequentially (avoid parallel trigger order conflicts)
+  // Place TP orders sequentially as reduce-only LIMIT exits (deterministic partial TP sizing)
   const tpOrders: { ok: boolean; orderId?: string; error?: string }[] = [];
   for (let i = 0; i < tpSl.takeProfits.length; i++) {
     try {
-      const ack = await exchange.placeTriggerOrder({
-        symbol, side: closingSide, size: tpSizes[i], triggerPrice: tpSl.takeProfits[i],
-        kind: 'tp', reduceOnly: true, clientOrderId: `tp${i + 1}-auto-${correlationId}`,
+      const levelSize = Number(tpSizes[i] ?? 0);
+      if (!Number.isFinite(levelSize) || levelSize <= 0) {
+        tpOrders.push({ ok: false, error: 'invalid_tp_split_size' });
+        continue;
+      }
+
+      const ack = await exchange.placeReduceOnlyExit({
+        symbol,
+        side: closingSide,
+        size: levelSize,
+        price: tpSl.takeProfits[i],
+        reduceOnly: true,
+        clientOrderId: `tp${i + 1}-auto-${correlationId}`,
       });
       tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
     } catch (err) {
