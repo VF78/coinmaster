@@ -1305,7 +1305,7 @@ tbody tr:hover {
 }
 
 .rules-input--sm {
-  width: 5rem;
+  width: 4.2rem;
 }
 
 .rules-section {
@@ -1444,8 +1444,10 @@ tbody tr:hover {
 
 .rules-stepper {
   display: inline-grid;
-  grid-template-columns: 32px minmax(84px, auto) 32px;
+  grid-template-columns: 30px 74px 30px;
   align-items: center;
+  justify-self: start;
+  width: fit-content;
   border: 1px solid #2a4261;
   border-radius: 0.65rem;
   overflow: hidden;
@@ -1454,12 +1456,12 @@ tbody tr:hover {
 }
 
 .rules-stepper__btn {
-  width: 32px;
+  width: 30px;
   height: 34px;
   border: none;
   background: #13243b;
   color: #cfe3ff;
-  font-size: 1.05rem;
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -1469,24 +1471,25 @@ tbody tr:hover {
 }
 
 .rules-stepper__center {
-  min-width: 84px;
+  width: 74px;
+  min-width: 74px;
   height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 0 6px;
+  gap: 3px;
+  padding: 0 4px;
   background: #0b1526;
 }
 
 .rules-stepper__input {
   width: 100%;
-  min-width: 46px;
+  min-width: 0;
   text-align: right;
   border: none;
   background: transparent;
   color: #e1ecff;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   outline: none;
 }
