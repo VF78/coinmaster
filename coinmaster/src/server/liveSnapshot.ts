@@ -136,7 +136,6 @@ function pickStopLossAndTakeProfit(position: Pick<ExposureSnapshot, 'symbol' | '
     };
   }
 
-  // Prefer explicit trigger kind from exchange raw payload when available.
   const explicitTp = candidates
     .filter((o) => orderTpslKind(o) === 'tp')
     .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
@@ -144,16 +143,37 @@ function pickStopLossAndTakeProfit(position: Pick<ExposureSnapshot, 'symbol' | '
     .filter((o) => orderTpslKind(o) === 'sl')
     .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
 
-  if (explicitTp.length > 0 || explicitSl.length > 0) {
-    const takeProfits = explicitTp.map((o) => o.price).slice(0, 3);
+  // Mixed mode support: explicit trigger TP/SL + reduce-only LIMIT TP ladders.
+  const priceSideTp = (o: OrderSnapshot) => position.side === 'long' ? o.price >= entry : o.price <= entry;
+  const priceSideSl = (o: OrderSnapshot) => position.side === 'long' ? o.price <= entry : o.price >= entry;
+
+  const fallbackTp = candidates
+    .filter((o) => orderTpslKind(o) === undefined)
+    .filter((o) => priceSideTp(o))
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
+
+  const fallbackSl = candidates
+    .filter((o) => orderTpslKind(o) === undefined)
+    .filter((o) => priceSideSl(o))
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));
+
+  const mergedTp = [...explicitTp, ...fallbackTp]
+    .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry))
+    .filter((o, idx, arr) => arr.findIndex((x) => x.id === o.id) === idx)
+    .slice(0, 3);
+
+  const slCandidateResolved = (explicitSl[0] ?? fallbackSl[0]);
+
+  if (mergedTp.length > 0 || slCandidateResolved) {
+    const takeProfits = mergedTp.map((o) => o.price);
     return {
-      stopLoss: explicitSl[0]?.price,
+      stopLoss: slCandidateResolved?.price,
       takeProfit: takeProfits[0],
       takeProfits,
     };
   }
 
-  // Heuristic fallback when trigger kind isn't present in raw payload.
+  // Heuristic fallback when no explicit or inferred classification exists.
   const byDistance = candidates
     .slice()
     .sort((a, b) => Math.abs(a.price - entry) - Math.abs(b.price - entry));

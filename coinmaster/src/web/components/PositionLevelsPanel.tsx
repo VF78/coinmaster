@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ColorType, createChart, type IChartApi, type ISeriesApi, type UTCTimestamp } from 'lightweight-charts';
 import type { LiveCandle, LivePosition } from '../../shared/dto.js';
-import { applyLivePositionLevels, getLiveCandles, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
+import { applyLivePositionLevels, getDashboard, getLiveCandles, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
 import { formatMoney, formatNumber } from '../lib/format';
 import { Button } from './Button';
 import { useDialog } from './DialogProvider';
@@ -133,6 +133,49 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     if (currentSl !== initialStopLossRef.current) return true;
     return !sameLevels(currentTps, initialTakeProfitsRef.current);
   }, [stopLoss, takeProfits]);
+
+  // On modal open, always pull fresh TP/SL from exchange snapshot,
+  // then use those values as the editing baseline.
+  useEffect(() => {
+    let active = true;
+
+    (async () => {
+      try {
+        const dashboard = await getDashboard();
+        if (!active) return;
+
+        const latest = dashboard.live.openPositions.find((p) => p.symbol === position.symbol && p.side === position.side);
+        if (!latest) return;
+
+        const nextSl = Number(latest.stopLoss ?? entry);
+        const nextTps = (Array.isArray(latest.takeProfits) && latest.takeProfits.length > 0
+          ? latest.takeProfits
+          : (latest.takeProfit !== undefined ? [latest.takeProfit] : [])
+        )
+          .filter((v) => Number.isFinite(v) && v > 0)
+          .slice(0, 3)
+          .map((v) => Number(v.toFixed(2)));
+
+        if (Number.isFinite(nextSl) && nextSl > 0) {
+          setStopLoss(nextSl);
+          stopLossRef.current = nextSl;
+          initialStopLossRef.current = normalizeLevel(nextSl);
+        }
+
+        if (nextTps.length > 0) {
+          setTakeProfits(nextTps);
+          takeProfitsRef.current = nextTps;
+          initialTakeProfitsRef.current = nextTps.map(normalizeLevel);
+        }
+      } catch {
+        // best-effort sync
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [position.symbol, position.side]);
 
   useEffect(() => {
     stopLossRef.current = stopLoss;

@@ -272,7 +272,9 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         const normalized = this.normalizeSymbol(String(item?.coin ?? ''));
         if (target && !this.symbolsMatch(normalized, target)) return null;
 
-        const px = this.toNumber(item?.triggerPx ?? item?.limitPx);
+        const triggerPx = this.toNumber(item?.triggerPx);
+        const limitPx = this.toNumber(item?.limitPx);
+        const px = Number.isFinite(triggerPx) && Number(triggerPx) > 0 ? Number(triggerPx) : Number(limitPx);
         const sz = this.toNumber(item?.sz);
         if (!Number.isFinite(px) || Number(px) <= 0 || !Number.isFinite(sz) || Number(sz) < 0) return null;
 
