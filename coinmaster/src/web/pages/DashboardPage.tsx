@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Bias, DashboardClassBiasControl, DashboardCustomBiasControl, DashboardResponse, LivePosition } from '../../shared/dto.js';
-import { postBias, getDashboard, confirmPendingConfirmation, rejectPendingConfirmation, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
+import type { Bias, DashboardClassBiasControl, DashboardCustomBiasControl, DashboardResponse, LiveCandle, LivePosition } from '../../shared/dto.js';
+import { postBias, getDashboard, getLiveCandles, getTradingRules, confirmPendingConfirmation, rejectPendingConfirmation, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
@@ -22,6 +22,72 @@ const PNL_LABEL: Record<PnlPeriod, string> = {
 
 const BIAS_OPTIONS: Bias[] = ['long', 'short', 'off'];
 
+type FvgTf = '1h' | '4h';
+
+type FvgStateRow = {
+  id: string;
+  timeframe: FvgTf;
+  direction: 'bullish' | 'bearish';
+  zoneBottom: number;
+  zoneTop: number;
+  triggerPrice: number;
+  currentPrice: number;
+  inRetraceZone: boolean;
+  distanceToTriggerPct: number;
+  candleTimestamp: string;
+};
+
+function detectFvgState(candles: LiveCandle[], timeframe: FvgTf, currentPrice: number, fvgRetracePct: number): FvgStateRow | null {
+  if (!Array.isArray(candles) || candles.length < 4 || !Number.isFinite(currentPrice)) return null;
+
+  const closed = candles.slice(0, -1);
+  const lookback = 10;
+  const start = Math.max(2, closed.length - lookback);
+
+  type Zone = { direction: 'bullish' | 'bearish'; top: number; bottom: number; candleTimestamp: string };
+  const zones: Zone[] = [];
+
+  for (let i = start; i < closed.length; i++) {
+    const c0 = closed[i - 2];
+    const c2 = closed[i];
+
+    if (c0.high < c2.low) {
+      zones.push({ direction: 'bullish', top: c2.low, bottom: c0.high, candleTimestamp: c2.timestamp });
+    }
+    if (c0.low > c2.high) {
+      zones.push({ direction: 'bearish', top: c0.low, bottom: c2.high, candleTimestamp: c2.timestamp });
+    }
+  }
+
+  if (!zones.length) return null;
+  const zone = zones[zones.length - 1];
+  const range = zone.top - zone.bottom;
+  const triggerPrice = zone.direction === 'bullish'
+    ? zone.top - range * (fvgRetracePct / 100)
+    : zone.bottom + range * (fvgRetracePct / 100);
+
+  const inRetraceZone = zone.direction === 'bullish'
+    ? currentPrice <= triggerPrice && currentPrice >= zone.bottom
+    : currentPrice >= triggerPrice && currentPrice <= zone.top;
+
+  const distanceToTriggerPct = Number.isFinite(triggerPrice) && triggerPrice > 0
+    ? Number((((currentPrice - triggerPrice) / triggerPrice) * 100).toFixed(2))
+    : 0;
+
+  return {
+    id: `fvg-${timeframe}`,
+    timeframe,
+    direction: zone.direction,
+    zoneBottom: zone.bottom,
+    zoneTop: zone.top,
+    triggerPrice: Number(triggerPrice.toFixed(2)),
+    currentPrice: Number(currentPrice.toFixed(2)),
+    inRetraceZone,
+    distanceToTriggerPct,
+    candleTimestamp: zone.candleTimestamp,
+  };
+}
+
 export function DashboardPage() {
   const [data, setData] = useState<DashboardResponse | null>(null);
   const dialog = useDialog();
@@ -30,11 +96,36 @@ export function DashboardPage() {
   const [pnlPeriod, setPnlPeriod] = useState<PnlPeriod>('daily');
   const [pendingActionId, setPendingActionId] = useState<string | null>(null);
   const [biasActionKey, setBiasActionKey] = useState<string | null>(null);
+  const [fvgRows, setFvgRows] = useState<FvgStateRow[]>([]);
+  const [fvgRetrace, setFvgRetrace] = useState<number>(50);
   const refreshTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function refresh() {
-    const next = await getDashboard();
+    const [next, rulesResp, c1h, c4h] = await Promise.all([
+      getDashboard(),
+      getTradingRules().catch(() => null),
+      getLiveCandles('BTC', '1h', 140).catch(() => null),
+      getLiveCandles('BTC', '4h', 140).catch(() => null),
+    ]);
+
     setData(next);
+
+    const retrace = Number(rulesResp?.rules?.fvgRetrace ?? 50);
+    const normalizedRetrace = Number.isFinite(retrace) ? Math.max(10, Math.min(90, retrace)) : 50;
+    setFvgRetrace(normalizedRetrace);
+
+    const currentPrice = Number(next.latestTick?.price ?? c1h?.candles?.[c1h.candles.length - 1]?.close ?? NaN);
+    const rows: FvgStateRow[] = [];
+    if (c1h?.candles?.length) {
+      const s = detectFvgState(c1h.candles, '1h', currentPrice, normalizedRetrace);
+      if (s) rows.push(s);
+    }
+    if (c4h?.candles?.length) {
+      const s = detectFvgState(c4h.candles, '4h', currentPrice, normalizedRetrace);
+      if (s) rows.push(s);
+    }
+    setFvgRows(rows);
+
     return next;
   }
 
@@ -288,6 +379,28 @@ export function DashboardPage() {
             )}
           </div>
         </Card>
+
+        <Card title="BTC FVG monitor" className="terminal-card full-width">
+          <p className="muted stat-note" style={{ marginBottom: '0.45rem' }}>
+            Retrace level: {fvgRetrace}% • Source: exchange candles (1h/4h)
+          </p>
+          <DataTable<FvgStateRow>
+            rows={fvgRows}
+            emptyText="No FVG zones detected in current lookback window."
+            mobileTitle={(row) => `${row.timeframe.toUpperCase()} ${row.direction.toUpperCase()}`}
+            mobileSubtitle={(row) => `Trigger ${formatNumber(row.triggerPrice)} • Dist ${row.distanceToTriggerPct}%`}
+            columns={[
+              { key: 'tf', header: 'TF', render: (row) => row.timeframe.toUpperCase() },
+              { key: 'dir', header: 'Direction', render: (row) => <Badge tone={row.direction === 'bullish' ? 'success' : 'danger'}>{row.direction}</Badge> },
+              { key: 'zone', header: 'Zone', render: (row) => `${formatNumber(row.zoneBottom)} - ${formatNumber(row.zoneTop)}` },
+              { key: 'trigger', header: 'Trigger', render: (row) => formatNumber(row.triggerPrice) },
+              { key: 'current', header: 'Current', render: (row) => formatNumber(row.currentPrice) },
+              { key: 'dist', header: 'Dist to trigger', render: (row) => `${row.distanceToTriggerPct}%` },
+              { key: 'state', header: 'State', render: (row) => <Badge tone={row.inRetraceZone ? 'success' : 'neutral'}>{row.inRetraceZone ? 'IN RETRACE ZONE' : 'WAITING'}</Badge> },
+              { key: 'ts', header: 'Zone candle', render: (row) => formatDate(row.candleTimestamp) },
+            ]}
+          />
+        </Card>
       </section>
 
       {/* ── Live open positions ──────────────────────────────────── */}
@@ -422,7 +535,7 @@ export function DashboardPage() {
                   const next = await refresh();
                   setSelectedPosition((current) => {
                     if (!current) return current;
-                    const updated = next.live.openPositions.find((p) => p.symbol === current.symbol && p.side === current.side);
+                    const updated = next.live.openPositions.find((p: LivePosition) => p.symbol === current.symbol && p.side === current.side);
                     return updated ?? current;
                   });
                 }}
