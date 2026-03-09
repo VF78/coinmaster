@@ -490,7 +490,8 @@ export function DashboardPage() {
               mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
               mobileSubtitle={(row) => {
                 const dealValue = row.dealValue !== undefined ? formatMoney(row.dealValue) : '—';
-                return `Deal: ${dealValue}`;
+                const trigger = row.source ?? '—';
+                return `Deal: ${dealValue} • Trigger: ${trigger}`;
               }}
               mobileActions={(row) => (
                 <div className="actions-row">
@@ -506,7 +507,7 @@ export function DashboardPage() {
                 { key: 'coins',  header: 'Size',  render: (row) => formatNumber(row.size) },
                 { key: 'deal',   header: 'Deal value',  render: (row) => (row.dealValue !== undefined ? formatMoney(row.dealValue) : '—') },
                 { key: 'lev',    header: 'Leverage',    render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
-                { key: 'status', header: 'Status',      render: () => <span className="muted">awaiting confirmation</span> },
+                { key: 'trigger', header: 'Trigger',      render: (row) => <span className="muted">{row.source ?? '—'}</span> },
                 {
                   key: 'actions',
                   header: 'Actions',

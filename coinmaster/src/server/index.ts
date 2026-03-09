@@ -105,6 +105,10 @@ function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirma
 }
 
 function pendingToLivePosition(pending: PendingConfirmation): LivePosition {
+  const triggerLabel = pending.strategy === 'engulfing'
+    ? `${pending.timeframe.toUpperCase()} Engulfing`
+    : `${pending.timeframe.toUpperCase()} FVG`;
+
   return {
     id: pending.id,
     symbol: pending.symbol,
@@ -114,6 +118,7 @@ function pendingToLivePosition(pending: PendingConfirmation): LivePosition {
     dealValue: Number((pending.price * pending.size).toFixed(2)),
     leverage: pending.leverage,
     openedAt: pending.createdAt,
+    source: triggerLabel,
   };
 }
 
@@ -304,12 +309,20 @@ async function notifyPendingConfirmationTelegram(pending: PendingConfirmation): 
   const cfg = await getTelegramConfig();
   if (!cfg || !cfg.notifyManualConfirm) return;
 
+  const triggerLabel = pending.strategy === 'engulfing'
+    ? `${pending.timeframe.toUpperCase()} Engulfing`
+    : `${pending.timeframe.toUpperCase()} FVG`;
+  const dealValue = Number.isFinite(pending.price * pending.size)
+    ? Number((pending.price * pending.size).toFixed(2))
+    : 0;
+
   const text = [
     '⚠️ Coinmaster signal requires confirmation',
     `ID: ${pending.id}`,
-    `${pending.strategy.toUpperCase()} ${pending.timeframe} • ${pending.symbol} ${pending.side.toUpperCase()}`,
+    `${triggerLabel} • ${pending.symbol} ${pending.side.toUpperCase()}`,
     `Price: ${pending.price}`,
-    `Size: ${pending.size}`,
+    `Proposed size: ${pending.size}`,
+    `Proposed deal value: ${dealValue} USDC`,
     `Leverage: ${pending.leverage}x`,
     `Reason: ${pending.reason}`,
     'Reply command: /confirm <ID> or /reject <ID>',
