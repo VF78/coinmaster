@@ -30,7 +30,7 @@ import type {
 } from '../shared/dto.js';
 import { inferAssetClassFromSymbol, normalizeTradingRules } from '../shared/tradingRules.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
-import type { AllocationSizingResult } from './runtimeRules.js';
+import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
@@ -1255,22 +1255,57 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     payload: { actor, strategy: pending.strategy, timeframe: pending.timeframe },
   });
 
+  const computeSizeAtOpen = async (price: number): Promise<AllocationSizingOutcome> => {
+    const account = await exchange.getAccountState();
+    const equityUsd = account?.equityUsd ?? 0;
+    const availableUsd = account?.availableUsd ?? 0;
+
+    let sizeDecimals = 6;
+    try {
+      const meta = await exchange.getInstrumentMeta(normalizedSymbol);
+      if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals;
+    } catch {
+      // best effort
+    }
+
+    return computeAllocationSize({
+      symbol: normalizedSymbol,
+      price,
+      equityUsd,
+      availableUsd,
+      rules,
+      sizeDecimals,
+    });
+  };
+
   const placeWithRetry = async () => {
     const attemptPrices: number[] = [pending.price];
     let lastAck: Awaited<ReturnType<typeof exchange.placeLimitOrder>> | null = null;
+    let lastSize = pending.size;
 
     for (let attempt = 0; attempt < attemptPrices.length; attempt++) {
       const price = attemptPrices[attempt];
+
+      const sizing = await computeSizeAtOpen(price);
+      if (!sizing.ok) {
+        return {
+          ack: { ok: false, error: `allocation_sizing_failed:${sizing.reason}` },
+          usedPrice: price,
+          usedSize: 0,
+        };
+      }
+
+      lastSize = sizing.size;
       const ack = await exchange.placeLimitOrder({
         symbol: normalizedSymbol,
         side,
         price,
-        size: pending.size,
+        size: sizing.size,
         reduceOnly: false,
         clientOrderId: `${correlationId}-${attempt + 1}`,
       });
 
-      if (ack.ok) return { ack, usedPrice: price };
+      if (ack.ok) return { ack, usedPrice: price, usedSize: sizing.size };
       lastAck = ack;
 
       const err = String(ack.error ?? '').toLowerCase();
@@ -1285,10 +1320,10 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
       }
     }
 
-    return { ack: lastAck ?? { ok: false, error: 'exchange_rejected' }, usedPrice: pending.price };
+    return { ack: lastAck ?? { ok: false, error: 'exchange_rejected' }, usedPrice: pending.price, usedSize: lastSize };
   };
 
-  const { ack, usedPrice } = await placeWithRetry();
+  const { ack, usedPrice, usedSize } = await placeWithRetry();
 
   appendTradeEvent(db.data, {
     symbol: normalizedSymbol,
@@ -1298,9 +1333,9 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     correlationId,
     side: pending.side,
     price: usedPrice,
-    quantity: pending.size,
+    quantity: usedSize,
     reason: ack.ok ? 'pending_confirm_ack' : 'pending_confirm_rejected',
-    payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, actor, usedPrice },
+    payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, actor, usedPrice, usedSize },
   });
 
   if (!ack.ok) {
@@ -1313,7 +1348,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   const tpSl = resolveTpSlDefaults(usedPrice, side, undefined, undefined);
   if (tpSl) {
     try {
-      await placeTpSlTriggerOrders(normalizedSymbol, side, pending.size, tpSl, correlationId, usedPrice);
+      await placeTpSlTriggerOrders(normalizedSymbol, side, usedSize, tpSl, correlationId, usedPrice);
     } catch {
       // best effort
     }
@@ -1322,7 +1357,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   await db.write();
 
   try {
-    await notifyTradeOpen({ symbol: normalizedSymbol, side, price: usedPrice, size: pending.size, source: `pending:${actor}` });
+    await notifyTradeOpen({ symbol: normalizedSymbol, side, price: usedPrice, size: usedSize, source: `pending:${actor}` });
   } catch (error) {
     logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
   }
