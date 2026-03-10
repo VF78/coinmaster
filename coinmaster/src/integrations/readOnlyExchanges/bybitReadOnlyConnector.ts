@@ -17,7 +17,7 @@ interface BybitEnvelope<T> {
   time?: number;
 }
 
-interface BybitExecutionRow {
+export interface BybitExecutionRow {
   symbol?: string;
   side?: string;
   execPrice?: string;
@@ -115,7 +115,7 @@ function getDirection(row: BybitExecutionRow): string {
   return 'open trade';
 }
 
-function toFill(category: BybitCategory, row: BybitExecutionRow): FillEvent | null {
+export function normalizeBybitExecutionToFill(category: BybitCategory, row: BybitExecutionRow): FillEvent | null {
   const symbol = String(row.symbol ?? '').trim().toUpperCase();
   const sideRaw = String(row.side ?? '').trim().toLowerCase();
   const side = sideRaw === 'buy' ? 'buy' : sideRaw === 'sell' ? 'sell' : null;
@@ -245,7 +245,7 @@ export class BybitReadOnlyConnector implements ReadOnlyExchangeConnector<BybitCo
         });
 
         const rows = (result.list ?? [])
-          .map((row) => toFill(category, row))
+          .map((row) => normalizeBybitExecutionToFill(category, row))
           .filter((x): x is FillEvent => Boolean(x));
 
         allRows.push(...rows);

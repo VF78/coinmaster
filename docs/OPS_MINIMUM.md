@@ -79,7 +79,22 @@ curl -sS http://127.0.0.1:8878/api/live/status | jq .
 - Что дальше: <следующий квант>
 ```
 
-## 5) Быстрые правила надёжности
+### 5) Специальные проверки по MEX-RO / AI Master
+
+```bash
+# unit/invariant checks
+npm run invariants:read-only-exchanges
+npm run invariants:ai-master
+
+# secured smoke (если включён OWNER_AUTH_TOKEN)
+API_BASE_URL=http://127.0.0.1:8787 OWNER_AUTH_TOKEN=<token> npm run ops:smoke
+```
+
+Runbooks:
+- `docs/RUNBOOK_MEX_RO_BYBIT.md`
+- `docs/RUNBOOK_AI_MASTER.md`
+
+# 6) Быстрые правила надёжности
 - Короткие итерации 20–45 минут.
 - Если 30 минут без подтверждённого прогресса → `blocked`.
 - После 2 неудачных попыток → stop + гипотезы + запрос данных у человека.

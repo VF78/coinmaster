@@ -495,6 +495,14 @@ export interface AiMasterInsight {
   model?: string;
   promptVersion?: string;
   runId?: string;
+  worker?: string;
+  status?: 'success' | 'fallback';
+  latencyMs?: number;
+  timeoutMs?: number;
+  promptChars?: number;
+  responseChars?: number;
+  fallbackUsed?: boolean;
+  truncated?: boolean;
   createdAt: string;
 }
 
@@ -508,6 +516,14 @@ export interface AiMasterQaItem {
   askedAt: string;
   answeredAt?: string;
   model?: string;
+  runId?: string;
+  worker?: string;
+  latencyMs?: number;
+  timeoutMs?: number;
+  promptChars?: number;
+  responseChars?: number;
+  fallbackUsed?: boolean;
+  truncated?: boolean;
   error?: string;
 }
 

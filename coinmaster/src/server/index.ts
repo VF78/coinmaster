@@ -34,6 +34,7 @@ import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeR
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
+import { applyAiMasterQaAnswer, buildAiMasterInsight, buildAiMasterQaQuestion, pruneAiMasterCollections } from './aiMaster.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
 import { evaluateFvg, type FvgTimeframe } from '../core/fvgEvaluator.js';
 import {
@@ -1169,15 +1170,6 @@ function ensureAiMasterState(): Promise<{ insights: AiMasterInsight[]; qa: AiMas
       write: db.write,
     };
   });
-}
-
-function pruneAiMasterCollections(insights: AiMasterInsight[], qa: AiMasterQaItem[]): void {
-  if (insights.length > 500) {
-    insights.splice(0, insights.length - 500);
-  }
-  if (qa.length > 2000) {
-    qa.splice(0, qa.length - 2000);
-  }
 }
 
 let dailyAnalyticsTimer: NodeJS.Timeout | null = null;
@@ -3376,60 +3368,81 @@ app.get('/api/ai-master/snapshot', ownerAuth, async (req, res) => {
 });
 
 app.post('/api/ai-master/insights', ownerAuth, async (req, res) => {
-  const text = String(req.body?.text ?? '').trim();
-  if (!text) return res.status(400).json({ ok: false, error: 'text_required' });
-
-  const model = String(req.body?.model ?? '').trim() || undefined;
-  const source = String(req.body?.source ?? '').trim() || 'manual';
-  const promptVersion = String(req.body?.promptVersion ?? '').trim() || undefined;
-  const runId = String(req.body?.runId ?? '').trim() || undefined;
-  const dayKeyRaw = String(req.body?.dayKey ?? '').trim();
-
   const localNow = getTzParts(new Date(), DAILY_ANALYTICS_TZ);
-  const dayKey = dayKeyRaw || localNow.dayKey;
-
   const state = await ensureAiMasterState();
+  const runId = String(req.body?.runId ?? '').trim() || undefined;
 
   if (runId) {
     const existing = state.insights.find((item) => item.runId === runId);
     if (existing) return res.json({ ok: true, insight: existing, deduped: true });
   }
 
-  const insight: AiMasterInsight = {
+  const created = buildAiMasterInsight({
     id: `aii-${nanoid(10)}`,
-    dayKey,
-    source,
-    text: text.slice(0, 12_000),
-    model,
-    promptVersion,
+    text: req.body?.text,
+    model: req.body?.model,
+    source: req.body?.source,
+    promptVersion: req.body?.promptVersion,
     runId,
+    worker: req.body?.worker,
+    dayKey: req.body?.dayKey,
+    fallbackDayKey: localNow.dayKey,
     createdAt: new Date().toISOString(),
-  };
+    latencyMs: req.body?.latencyMs,
+    timeoutMs: req.body?.timeoutMs,
+    promptChars: req.body?.promptChars,
+    responseChars: req.body?.responseChars,
+    fallbackUsed: req.body?.fallbackUsed,
+  });
 
-  state.insights.push(insight);
+  if (!created.ok) return res.status(400).json({ ok: false, error: created.error });
+
+  state.insights.push(created.insight);
   pruneAiMasterCollections(state.insights, state.qa);
   await state.write();
 
-  return res.json({ ok: true, insight });
+  logger.info({
+    component: 'ai-master',
+    event: 'insight_saved',
+    id: created.insight.id,
+    runId: created.insight.runId,
+    dayKey: created.insight.dayKey,
+    model: created.insight.model,
+    worker: created.insight.worker,
+    status: created.insight.status,
+    latencyMs: created.insight.latencyMs,
+    timeoutMs: created.insight.timeoutMs,
+    promptChars: created.insight.promptChars,
+    responseChars: created.insight.responseChars,
+    truncated: created.insight.truncated,
+  }, 'ai master insight saved');
+
+  return res.json({ ok: true, insight: created.insight });
 });
 
 app.post('/api/ai-master/qa', ownerAuth, async (req, res) => {
-  const question = String(req.body?.question ?? '').trim();
-  if (!question) return res.status(400).json({ ok: false, error: 'question_required' });
-
   const state = await ensureAiMasterState();
-  const item: AiMasterQaItem = {
+  const created = buildAiMasterQaQuestion({
     id: `aiq-${nanoid(10)}`,
-    question: question.slice(0, 4000),
-    status: 'pending',
+    question: req.body?.question,
     askedAt: new Date().toISOString(),
-  };
+  });
 
-  state.qa.push(item);
+  if (!created.ok) return res.status(400).json({ ok: false, error: created.error });
+
+  state.qa.push(created.item);
   pruneAiMasterCollections(state.insights, state.qa);
   await state.write();
 
-  return res.json({ ok: true, item });
+  logger.info({
+    component: 'ai-master',
+    event: 'qa_queued',
+    id: created.item.id,
+    promptChars: created.item.promptChars,
+    truncated: created.item.truncated,
+  }, 'ai master question queued');
+
+  return res.json({ ok: true, item: created.item });
 });
 
 app.get('/api/ai-master/qa/pending', ownerAuth, async (req, res) => {
@@ -3448,32 +3461,47 @@ app.post('/api/ai-master/qa/:id/answer', ownerAuth, async (req, res) => {
   const id = String(req.params.id || '').trim();
   if (!id) return res.status(400).json({ ok: false, error: 'id_required' });
 
-  const answer = String(req.body?.answer ?? '').trim();
-  const error = String(req.body?.error ?? '').trim();
-  const model = String(req.body?.model ?? '').trim() || undefined;
-
-  if (!answer && !error) return res.status(400).json({ ok: false, error: 'answer_or_error_required' });
-
   const state = await ensureAiMasterState();
   const item = state.qa.find((x) => x.id === id);
   if (!item) return res.status(404).json({ ok: false, error: 'qa_item_not_found' });
 
-  item.model = model;
-  item.answeredAt = new Date().toISOString();
+  const updated = applyAiMasterQaAnswer(item, {
+    answer: req.body?.answer,
+    error: req.body?.error,
+    model: req.body?.model,
+    runId: req.body?.runId,
+    worker: req.body?.worker,
+    latencyMs: req.body?.latencyMs,
+    timeoutMs: req.body?.timeoutMs,
+    promptChars: req.body?.promptChars,
+    responseChars: req.body?.responseChars,
+    fallbackUsed: req.body?.fallbackUsed,
+    fallbackMessage: req.body?.fallbackMessage,
+    answeredAt: new Date().toISOString(),
+  });
 
-  if (answer) {
-    item.status = 'answered';
-    item.answer = answer.slice(0, 12_000);
-    item.error = undefined;
-  } else {
-    item.status = 'failed';
-    item.error = error.slice(0, 2000) || 'qa_answer_failed';
-  }
+  if (!updated.ok) return res.status(400).json({ ok: false, error: updated.error });
 
   pruneAiMasterCollections(state.insights, state.qa);
   await state.write();
 
-  return res.json({ ok: true, item });
+  logger.info({
+    component: 'ai-master',
+    event: 'qa_answer_recorded',
+    id: updated.item.id,
+    runId: updated.item.runId,
+    model: updated.item.model,
+    worker: updated.item.worker,
+    status: updated.item.status,
+    latencyMs: updated.item.latencyMs,
+    timeoutMs: updated.item.timeoutMs,
+    promptChars: updated.item.promptChars,
+    responseChars: updated.item.responseChars,
+    fallbackUsed: updated.item.fallbackUsed,
+    truncated: updated.item.truncated,
+  }, 'ai master qa answer recorded');
+
+  return res.json({ ok: true, item: updated.item });
 });
 
 app.get('/api/live/candles', async (req, res) => {

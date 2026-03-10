@@ -44,6 +44,37 @@ else
   fail "$EP" "HTTP ${HTTP:-no_response} or invalid JSON"
 fi
 
+# ── 4. Secured owner endpoints (optional) ───────────────────────────
+if [[ -n "${OWNER_AUTH_TOKEN:-}" ]]; then
+  AUTH=(-H "Authorization: Bearer ${OWNER_AUTH_TOKEN}")
+
+  EP="/api/settings/read-only-exchanges"
+  HTTP=$(curl -s "${AUTH[@]}" -o /tmp/cm_smoke_ro_settings.json -w '%{http_code}' "${BASE}${EP}" 2>/dev/null || true)
+  if [[ "$HTTP" == "200" ]] && python3 -c "import json,sys; d=json.load(sys.stdin); assert d.get('ok') is True and 'exchanges' in d" < /tmp/cm_smoke_ro_settings.json 2>/dev/null; then
+    pass "$EP  (HTTP ${HTTP}, ok=true, exchanges present)"
+  else
+    fail "$EP" "HTTP ${HTTP:-no_response} or invalid JSON"
+  fi
+
+  EP="/api/settings/read-only-exchanges/bybit/test"
+  HTTP=$(curl -s "${AUTH[@]}" -X POST -o /tmp/cm_smoke_bybit_test.json -w '%{http_code}' "${BASE}${EP}" 2>/dev/null || true)
+  if [[ "$HTTP" == "200" ]] && python3 -c "import json,sys; d=json.load(sys.stdin); assert d.get('ok') is True and 'status' in d" < /tmp/cm_smoke_bybit_test.json 2>/dev/null; then
+    pass "$EP  (HTTP ${HTTP}, ok=true, status present)"
+  else
+    fail "$EP" "HTTP ${HTTP:-no_response} or invalid JSON"
+  fi
+
+  EP="/api/ai-master/snapshot?limit=5"
+  HTTP=$(curl -s "${AUTH[@]}" -o /tmp/cm_smoke_ai_master.json -w '%{http_code}' "${BASE}${EP}" 2>/dev/null || true)
+  if [[ "$HTTP" == "200" ]] && python3 -c "import json,sys; d=json.load(sys.stdin); assert d.get('ok') is True and 'insights' in d and 'qa' in d" < /tmp/cm_smoke_ai_master.json 2>/dev/null; then
+    pass "$EP  (HTTP ${HTTP}, ok=true, insights+qa present)"
+  else
+    fail "$EP" "HTTP ${HTTP:-no_response} or invalid JSON"
+  fi
+else
+  echo "  SKIP  secured owner endpoints (OWNER_AUTH_TOKEN not set)"
+fi
+
 # ── Summary ─────────────────────────────────────────────────────────
 echo ""
 echo "=== Results: ${PASS} passed, ${FAIL} failed ==="
