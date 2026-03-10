@@ -4578,7 +4578,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       kind: 'tp',
       reduceOnly: true,
       clientOrderId: `tptr${i + 1}-${nanoid(8)}`,
-    });
+    }, 0);
     tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
   }
 
@@ -4600,16 +4600,33 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   let ok = slOrder.ok && tpOrders.length > 0 && tpOrders.every((o) => o.ok);
   const expectedIds = [slOrder.orderId, ...tpOrders.map((o) => o.orderId)].filter((x): x is string => Boolean(x));
 
-  // Extra confirmation: verify SL+TP are visible on exchange.
-  // 1) Try strict ID match (fast path)
-  // 2) Fallback to semantic level match from live snapshot (some venues may re-emit/rewrite trigger IDs)
-  // NOTE: verification mismatch is treated as warning (non-fatal) when placements were acknowledged.
+  // Extra confirmation with strict time budget (non-blocking for UX).
+  // If the exchange/info API is slow, we do not hold the HTTP response indefinitely.
   let verificationWarning: string | undefined;
+  const verifyBudgetMs = 2500;
+  const verifyDeadline = Date.now() + verifyBudgetMs;
+
+  const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number, tag: string): Promise<T> => {
+    let timer: NodeJS.Timeout | null = null;
+    try {
+      return await Promise.race([
+        promise,
+        new Promise<T>((_, reject) => {
+          timer = setTimeout(() => reject(new Error(`${tag}_timeout`)), timeoutMs);
+        }),
+      ]);
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  };
+
   if (ok && expectedIds.length > 0) {
     let verifiedById = false;
-    for (let attempt = 0; attempt < 5; attempt++) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (Date.now() >= verifyDeadline) break;
       try {
-        const allOrders = await exchange.getOpenOrders().catch(() => []);
+        const remainingMs = Math.max(150, verifyDeadline - Date.now());
+        const allOrders = await withTimeout(exchange.getOpenOrders().catch(() => []), Math.min(remainingMs, 1200), 'verify_open_orders');
         const openIds = new Set((allOrders || []).map((o) => String(o?.id ?? '')));
         verifiedById = expectedIds.every((id) => openIds.has(String(id)));
         if (verifiedById) {
@@ -4618,30 +4635,30 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
         }
       } catch (e) {
         console.log(`[levels] verification query failed:`, e instanceof Error ? e.message : String(e));
+        break;
       }
-      await sleep(250 + attempt * 250);
+      await sleep(120);
     }
 
-    if (!verifiedById) {
+    if (!verifiedById && Date.now() < verifyDeadline) {
       try {
-        const live = await buildLiveDashboardState(exchange, normalizedSymbol, getLiveMode(), []);
+        const remainingMs = Math.max(150, verifyDeadline - Date.now());
+        const live = await withTimeout(buildLiveDashboardState(exchange, normalizedSymbol, getLiveMode(), []), Math.min(remainingMs, 1200), 'verify_live_state');
         const current = live.openPositions.find((p) => p.symbol === normalizedSymbol && p.side === side);
 
         let quoteDecimals = 0;
         try {
           const getter = (exchange as any).getInstrumentMeta;
           if (typeof getter === 'function') {
-            const meta = await getter.call(exchange, normalizedSymbol);
-            if (Number.isFinite(Number(meta?.quoteDecimals))) {
-              quoteDecimals = Math.max(0, Math.min(8, Number(meta.quoteDecimals)));
+            const metaAny = await withTimeout(getter.call(exchange, normalizedSymbol), 500, 'verify_meta') as any;
+            if (Number.isFinite(Number(metaAny?.quoteDecimals))) {
+              quoteDecimals = Math.max(0, Math.min(8, Number(metaAny.quoteDecimals)));
             }
           }
         } catch {
           quoteDecimals = 0;
         }
 
-        // Hyperliquid can normalize/round trigger prices on placement.
-        // Use symbol-aware tolerance instead of exact float equality to avoid false negatives.
         const tickTol = quoteDecimals > 0 ? 10 ** (-quoteDecimals) : 0;
         const priceTol = Math.max(1e-6, tickTol, 0.5);
         const closeEnough = (a: number, b: number) => Math.abs(a - b) <= priceTol;
