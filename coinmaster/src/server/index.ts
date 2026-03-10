@@ -690,11 +690,12 @@ async function notifyTpHit(params: { symbol: string; entryPrice: number; remaini
   });
 }
 
-async function notifySlEvent(params: { symbol: string; reason: string }): Promise<void> {
+async function notifySlEvent(params: { symbol: string; reason: string; closedBy?: string }): Promise<void> {
   const cfg = await getTelegramConfig();
   if (!cfg || !cfg.notifySl) return;
 
   const reason = String(params.reason || '').trim() || 'unknown';
+  const closedBy = String(params.closedBy || reason).trim() || 'unknown';
   const symbol = String(params.symbol || '').trim().toUpperCase() || 'UNKNOWN';
   const isWatchdogReason = reason.endsWith('_watchdog');
   const local = getTzParts(new Date(), DAILY_ANALYTICS_TZ);
@@ -712,6 +713,7 @@ async function notifySlEvent(params: { symbol: string; reason: string }): Promis
       '🛑 Stop-loss / emergency exit event',
       `${symbol}`,
       `Reason: ${reason}`,
+      `closed_by: ${closedBy}`,
     ].join('\n'),
   });
 }
@@ -758,6 +760,7 @@ async function notifyPositionClosedEvent(params: {
   symbol: string;
   correlationId: string;
   tpsFilled: number;
+  reason?: string;
 }): Promise<void> {
   const cfg = await getTelegramConfig();
   if (!cfg || !cfg.notifyPositionClosed) return;
@@ -768,6 +771,7 @@ async function notifyPositionClosedEvent(params: {
       '✅ Position fully closed',
       `${params.symbol}`,
       `All TPs filled (${params.tpsFilled}). Position flat.`,
+      `closed_by: ${String(params.reason || 'tp_all_filled')}`, 
     ].join('\n'),
   });
 }
@@ -1863,8 +1867,9 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
           });
         }
 
+        logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, size: pos.size, closeReason: reason }, 'position close submitted (emergency)');
         try {
-          await notifySlEvent({ symbol: pos.symbol, reason });
+          await notifySlEvent({ symbol: pos.symbol, reason, closedBy: reason });
         } catch (notifyErr) {
           logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'SL telegram notify failed');
         }
@@ -1924,7 +1929,8 @@ async function emergencyCloseSymbol(symbol: string, reason = 'strategy_emergency
         }).catch(() => undefined);
       }
 
-      await notifySlEvent({ symbol: normalized, reason }).catch(() => undefined);
+      logger.warn({ component: 'risk-gate', symbol: normalized, side: pos.side, size: pos.size, closeReason: reason }, 'position close submitted (symbol emergency)');
+      await notifySlEvent({ symbol: normalized, reason, closedBy: reason }).catch(() => undefined);
     }
   } catch (error) {
     logger.error({ component: 'risk-gate', symbol: normalized, err: error }, 'failed to emergency-close symbol');
@@ -5285,7 +5291,7 @@ async function runTpFillMonitorTick(): Promise<void> {
 
         if (remainingSize <= 0) {
           try {
-            await notifySlEvent({ symbol: trade.symbol, reason: 'stop_loss_trigger_filled' });
+            await notifySlEvent({ symbol: trade.symbol, reason: 'stop_loss_trigger_filled', closedBy: 'stop_loss_trigger_filled' });
           } catch (error) {
             logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'SL telegram notify failed');
           }
@@ -5369,6 +5375,7 @@ async function runTpFillMonitorTick(): Promise<void> {
             symbol: trade.symbol,
             correlationId,
             tpsFilled: justFilled.length,
+            reason: 'tp_all_filled',
           });
         } catch (error) {
           logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'position-closed telegram notify failed');
