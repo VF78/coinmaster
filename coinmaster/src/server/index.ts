@@ -4556,7 +4556,8 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   for (let i = 0; i < sortedTps.length; i++) {
     const levelSize = Number(tpSizes[i] ?? 0);
     if (!Number.isFinite(levelSize) || levelSize <= 0) {
-      tpOrders.push({ ok: false, error: 'invalid_tp_split_size' });
+      // For coarse lot-size symbols (e.g. integer contracts), some TP levels can collapse to 0.
+      // Skip zero-size level instead of failing whole set-levels operation.
       continue;
     }
 
@@ -5072,25 +5073,35 @@ function splitTakeProfitSizes(totalSize: number, tpCount: number, sizeDecimals: 
   // Explicit policy requested by owner:
   // - 2 TP -> 50/50
   // - 3 TP -> 33/33/34
-  // - fallback: equal split with remainder on last level
+  // - fallback: equal split
   const weights = tpCount === 2
     ? [0.5, 0.5]
     : tpCount === 3
       ? [0.33, 0.33, 0.34]
       : Array.from({ length: tpCount }, () => 1 / tpCount);
 
+  // Convert to instrument lot units first (works for integer-lot symbols too).
   const factor = 10 ** Math.max(0, sizeDecimals);
-  const rawSizes = weights.map((w) => totalSize * w);
+  const totalUnits = Math.max(0, Math.round(totalSize * factor));
+  if (totalUnits <= 0) return [];
 
-  const floored = rawSizes.map((x, i) => i < tpCount - 1
-    ? Math.floor(x * factor) / factor
-    : 0
-  );
+  const targetUnits = weights.map((w) => totalUnits * w);
+  const units = targetUnits.map((v) => Math.floor(v));
 
-  const used = floored.reduce((sum, x) => sum + x, 0);
-  const remainder = Math.max(0, Math.round((totalSize - used) * factor) / factor);
+  let remainderUnits = totalUnits - units.reduce((sum, v) => sum + v, 0);
+  if (remainderUnits > 0) {
+    const ranked = targetUnits
+      .map((target, i) => ({ i, frac: target - Math.floor(target), target }))
+      .sort((a, b) => (b.frac - a.frac) || (b.target - a.target) || (a.i - b.i));
 
-  return floored.map((x, i) => i === tpCount - 1 ? remainder : x);
+    for (let r = 0; r < ranked.length && remainderUnits > 0; r++) {
+      units[ranked[r].i] += 1;
+      remainderUnits -= 1;
+      if (r === ranked.length - 1 && remainderUnits > 0) r = -1;
+    }
+  }
+
+  return units.map((u) => u / factor);
 }
 /** correlationId → ActiveTradeState */
 const activeTrades = new Map<string, ActiveTradeState>();
@@ -5209,7 +5220,8 @@ async function placeTpSlTriggerOrders(
     try {
       const levelSize = Number(tpSizes[i] ?? 0);
       if (!Number.isFinite(levelSize) || levelSize <= 0) {
-        tpOrders.push({ ok: false, error: 'invalid_tp_split_size' });
+        // For coarse lot-size symbols (e.g. integer contracts), some TP levels can collapse to 0.
+        // Skip zero-size TP leg and continue with valid levels.
         continue;
       }
 
