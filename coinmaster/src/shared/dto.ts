@@ -59,12 +59,18 @@ export interface TelegramNotifySettings {
   notifySl: boolean;
   notifyManualConfirm: boolean;
   notifyDailyAnalytics: boolean;
+  /** Notify when a trade signal is blocked by risk gate or bias */
+  notifySignalRejected: boolean;
+  /** Notify when an exchange order is rejected (auth, balance, validation) */
+  notifyOrderRejected: boolean;
+  /** Notify when a trade position is fully closed via all TPs */
+  notifyPositionClosed: boolean;
   updateOffset?: number;
 }
 
 export interface TelegramOutboxItem {
   id: string;
-  category: 'manual_confirm' | 'trade_open' | 'tp' | 'sl' | 'analytics_daily' | 'system';
+  category: 'manual_confirm' | 'trade_open' | 'tp' | 'sl' | 'analytics_daily' | 'signal_rejected' | 'order_rejected' | 'position_closed' | 'system';
   text: string;
   replyMarkup?: unknown;
   dedupeKey?: string;
@@ -442,6 +448,9 @@ export interface ExchangeSettingsResponse {
     notifySl: boolean;
     notifyManualConfirm: boolean;
     notifyDailyAnalytics: boolean;
+    notifySignalRejected: boolean;
+    notifyOrderRejected: boolean;
+    notifyPositionClosed: boolean;
   };
   error?: string;
 }

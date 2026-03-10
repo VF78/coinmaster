@@ -16,6 +16,9 @@ const defaultData: DBShape = {
       notifySl: true,
       notifyManualConfirm: true,
       notifyDailyAnalytics: true,
+      notifySignalRejected: false,
+      notifyOrderRejected: false,
+      notifyPositionClosed: false,
     },
     externalExchanges: {
       bybit: {
@@ -56,6 +59,9 @@ function ensureDbShape(data: DBShape) {
     notifySl: true,
     notifyManualConfirm: true,
     notifyDailyAnalytics: true,
+    notifySignalRejected: false,
+    notifyOrderRejected: false,
+    notifyPositionClosed: false,
   };
   data.settings.telegramNotify.botToken = String(data.settings.telegramNotify.botToken ?? '');
   data.settings.telegramNotify.chatId = String(data.settings.telegramNotify.chatId ?? '');
@@ -64,6 +70,9 @@ function ensureDbShape(data: DBShape) {
   data.settings.telegramNotify.notifySl = data.settings.telegramNotify.notifySl !== false;
   data.settings.telegramNotify.notifyManualConfirm = data.settings.telegramNotify.notifyManualConfirm !== false;
   data.settings.telegramNotify.notifyDailyAnalytics = data.settings.telegramNotify.notifyDailyAnalytics !== false;
+  data.settings.telegramNotify.notifySignalRejected = data.settings.telegramNotify.notifySignalRejected === true;
+  data.settings.telegramNotify.notifyOrderRejected = data.settings.telegramNotify.notifyOrderRejected === true;
+  data.settings.telegramNotify.notifyPositionClosed = data.settings.telegramNotify.notifyPositionClosed === true;
 
   // Migrate legacy key from earlier implementation
   if (!data.settings.externalExchanges && (data.settings as any).readOnlyExchanges) {

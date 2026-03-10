@@ -26,6 +26,9 @@ function makeSettings(): AppSettings {
       notifySl: false,
       notifyManualConfirm: false,
       notifyDailyAnalytics: false,
+      notifySignalRejected: false,
+      notifyOrderRejected: false,
+      notifyPositionClosed: false,
     },
     tradingRules: {
       coins: [],

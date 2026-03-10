@@ -37,6 +37,9 @@ export function SettingsPage() {
   const [notifySl, setNotifySl] = useState(true);
   const [notifyManualConfirm, setNotifyManualConfirm] = useState(true);
   const [notifyDailyAnalytics, setNotifyDailyAnalytics] = useState(true);
+  const [notifySignalRejected, setNotifySignalRejected] = useState(false);
+  const [notifyOrderRejected, setNotifyOrderRejected] = useState(false);
+  const [notifyPositionClosed, setNotifyPositionClosed] = useState(false);
 
   const [hlAccountAddress, setHlAccountAddress] = useState('');
   const [hlApiWalletAddress, setHlApiWalletAddress] = useState('');
@@ -67,6 +70,9 @@ export function SettingsPage() {
       setNotifySl(next.telegramNotify?.notifySl !== false);
       setNotifyManualConfirm(next.telegramNotify?.notifyManualConfirm !== false);
       setNotifyDailyAnalytics(next.telegramNotify?.notifyDailyAnalytics !== false);
+      setNotifySignalRejected(next.telegramNotify?.notifySignalRejected === true);
+      setNotifyOrderRejected(next.telegramNotify?.notifyOrderRejected === true);
+      setNotifyPositionClosed(next.telegramNotify?.notifyPositionClosed === true);
       setChatId(next.telegramNotify?.chatId ?? '');
       setBotToken(''); // never prefill secrets
 
@@ -114,12 +120,18 @@ export function SettingsPage() {
         notifySl: boolean;
         notifyManualConfirm: boolean;
         notifyDailyAnalytics: boolean;
+        notifySignalRejected: boolean;
+        notifyOrderRejected: boolean;
+        notifyPositionClosed: boolean;
       } = {
         notifyOpen,
         notifyTp,
         notifySl,
         notifyManualConfirm,
         notifyDailyAnalytics,
+        notifySignalRejected,
+        notifyOrderRejected,
+        notifyPositionClosed,
       };
 
       if (botToken.trim().length > 0) payload.botToken = botToken.trim();
@@ -338,6 +350,27 @@ export function SettingsPage() {
           <label className="rules-toggle-row">
             <span>Daily AI analytics summary</span>
             <button type="button" role="switch" aria-checked={notifyDailyAnalytics} className={`rules-toggle ${notifyDailyAnalytics ? 'rules-toggle--on' : ''}`} onClick={() => setNotifyDailyAnalytics((v) => !v)}>
+              <span className="rules-toggle__thumb" />
+            </button>
+          </label>
+
+          <label className="rules-toggle-row">
+            <span>Notify signal rejected</span>
+            <button type="button" role="switch" aria-checked={notifySignalRejected} className={`rules-toggle ${notifySignalRejected ? 'rules-toggle--on' : ''}`} onClick={() => setNotifySignalRejected((v) => !v)}>
+              <span className="rules-toggle__thumb" />
+            </button>
+          </label>
+
+          <label className="rules-toggle-row">
+            <span>Notify order rejected</span>
+            <button type="button" role="switch" aria-checked={notifyOrderRejected} className={`rules-toggle ${notifyOrderRejected ? 'rules-toggle--on' : ''}`} onClick={() => setNotifyOrderRejected((v) => !v)}>
+              <span className="rules-toggle__thumb" />
+            </button>
+          </label>
+
+          <label className="rules-toggle-row">
+            <span>Notify position closed</span>
+            <button type="button" role="switch" aria-checked={notifyPositionClosed} className={`rules-toggle ${notifyPositionClosed ? 'rules-toggle--on' : ''}`} onClick={() => setNotifyPositionClosed((v) => !v)}>
               <span className="rules-toggle__thumb" />
             </button>
           </label>

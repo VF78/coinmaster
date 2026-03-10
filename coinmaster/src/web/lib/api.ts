@@ -179,6 +179,9 @@ export interface TelegramNotifyPayload {
   notifySl?: boolean;
   notifyManualConfirm?: boolean;
   notifyDailyAnalytics?: boolean;
+  notifySignalRejected?: boolean;
+  notifyOrderRejected?: boolean;
+  notifyPositionClosed?: boolean;
 }
 
 export function saveTelegramNotify(payload: TelegramNotifyPayload) {

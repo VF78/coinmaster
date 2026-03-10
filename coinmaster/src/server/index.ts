@@ -149,6 +149,9 @@ async function getTelegramConfig(): Promise<{
   notifySl: boolean;
   notifyManualConfirm: boolean;
   notifyDailyAnalytics: boolean;
+  notifySignalRejected: boolean;
+  notifyOrderRejected: boolean;
+  notifyPositionClosed: boolean;
 } | null> {
   const db = await getDb();
   const s = db.data.settings.telegramNotify;
@@ -163,6 +166,9 @@ async function getTelegramConfig(): Promise<{
     notifySl: s?.notifySl !== false,
     notifyManualConfirm: s?.notifyManualConfirm !== false,
     notifyDailyAnalytics: s?.notifyDailyAnalytics !== false,
+    notifySignalRejected: s?.notifySignalRejected === true,
+    notifyOrderRejected: s?.notifyOrderRejected === true,
+    notifyPositionClosed: s?.notifyPositionClosed === true,
   };
 }
 
@@ -574,6 +580,12 @@ async function queuePendingConfirmation(params: {
       reason: 'operator_bias_block',
       details: { symbol: params.symbol, strategy: params.strategy, side: params.side, operatorBias },
     });
+    await notifySignalRejectedEvent({
+      symbol: params.symbol,
+      source: `${params.strategy}:pending:${params.timeframe}`,
+      reason: 'operator_bias_block',
+      blocks: `operatorBias=${operatorBias}`,
+    }).catch(() => undefined);
     return { queued: false, id: 'operator_bias_block' };
   }
 
@@ -704,6 +716,62 @@ async function notifySlEvent(params: { symbol: string; reason: string }): Promis
   });
 }
 
+async function notifySignalRejectedEvent(params: {
+  symbol: string;
+  source: string;
+  reason: string;
+  blocks?: string;
+}): Promise<void> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifySignalRejected) return;
+  await enqueueTelegramOutbox({
+    category: 'signal_rejected',
+    dedupeKey: `signal_rejected:${params.symbol}:${params.source}:${params.reason}:${Math.floor(Date.now() / 60_000)}`,
+    text: [
+      '⛔ Signal rejected',
+      `${params.symbol} — ${params.source}`,
+      `Reason: ${params.reason}`,
+      ...(params.blocks ? [`Blocks: ${params.blocks}`] : []),
+    ].join('\n'),
+  });
+}
+
+async function notifyOrderRejectedEvent(params: {
+  symbol: string;
+  source: string;
+  error: string;
+}): Promise<void> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifyOrderRejected) return;
+  await enqueueTelegramOutbox({
+    category: 'order_rejected',
+    dedupeKey: `order_rejected:${params.symbol}:${params.source}:${params.error.slice(0, 40)}:${Math.floor(Date.now() / 60_000)}`,
+    text: [
+      '❌ Order rejected by exchange',
+      `${params.symbol} — ${params.source}`,
+      `Error: ${params.error}`,
+    ].join('\n'),
+  });
+}
+
+async function notifyPositionClosedEvent(params: {
+  symbol: string;
+  correlationId: string;
+  tpsFilled: number;
+}): Promise<void> {
+  const cfg = await getTelegramConfig();
+  if (!cfg || !cfg.notifyPositionClosed) return;
+  await enqueueTelegramOutbox({
+    category: 'position_closed',
+    dedupeKey: `position_closed:${params.correlationId}`,
+    text: [
+      '✅ Position fully closed',
+      `${params.symbol}`,
+      `All TPs filled (${params.tpsFilled}). Position flat.`,
+    ].join('\n'),
+  });
+}
+
 function getTzParts(date: Date, timeZone: string): { dayKey: string; hour: number; minute: number } {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone,
@@ -790,6 +858,22 @@ function isManualOpenFill(fill: FillEvent, tradeEvents: TradeEvent[]): boolean {
   });
 }
 
+function isManualCloseFill(fill: FillEvent, tradeEvents: TradeEvent[]): boolean {
+  const direction = fillDirection(fill);
+  if (!direction.toLowerCase().startsWith('close ')) return false;
+
+  const fillTs = Date.parse(fill.timestamp);
+  if (!Number.isFinite(fillTs)) return false;
+
+  return !tradeEvents.some((e) => {
+    if (e.type !== 'order_submitted') return false;
+    if (String(e.symbol).toUpperCase() !== fill.symbol.toUpperCase()) return false;
+    const eventTs = Date.parse(String(e.timestamp));
+    if (!Number.isFinite(eventTs)) return false;
+    return Math.abs(eventTs - fillTs) <= 3 * 60_000;
+  });
+}
+
 interface DailyAnalyticsSourceRow {
   source: string;
   fills: number;
@@ -812,6 +896,7 @@ interface DailyAnalyticsContext {
     close: number;
     executionOnlyOpen: number;
     manualOpenDetected: number;
+    manualCloseDetected: number;
   };
   pnl: {
     realized: number;
@@ -903,7 +988,9 @@ async function buildDailyAnalyticsContext(windowMs = 24 * 60 * 60_000): Promise<
     .filter((f) => Date.parse(f.timestamp) >= cutoff)
     .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
   const executionOpenFills = executionRecentFills.filter((f) => fillDirection(f).toLowerCase().startsWith('open '));
+  const executionCloseFills = executionRecentFills.filter((f) => fillDirection(f).toLowerCase().startsWith('close '));
   const manualOpenFills = executionOpenFills.filter((f) => isManualOpenFill(f, recentEvents));
+  const manualCloseFills = executionCloseFills.filter((f) => isManualCloseFill(f, recentEvents));
 
   const realized = closeFills.reduce((sum, f) => sum + fillClosedPnl(f), 0);
   const fees = recentFills.reduce((sum, f) => sum + fillFee(f), 0);
@@ -967,11 +1054,14 @@ async function buildDailyAnalyticsContext(windowMs = 24 * 60 * 60_000): Promise<
   if (manualOpenFills.length > 0) {
     risks.push(`Обнаружены ручные открытия без системного submit: ${manualOpenFills.length}.`);
   }
+  if (manualCloseFills.length > 0) {
+    risks.push(`Обнаружены ручные закрытия без системного submit: ${manualCloseFills.length}.`);
+  }
 
   if (net < 0) suggestions.push('Снизить агрессию: уменьшить leverage/размер до стабилизации equity-кривой.');
   if (winRate < 45 && closeFills.length >= 4) suggestions.push('Ужесточить фильтрацию входов: сократить TF/сигналы с худшей доходностью.');
   if (biasBlocks >= 10) suggestions.push('Пересмотреть частоту смены bias: много сигналов режется операторским bias.');
-  if (manualOpenFills.length > 0) suggestions.push('Для ручных входов: дисциплина по направлению текущего bias + фиксированный риск на сделку.');
+  if (manualOpenFills.length > 0 || manualCloseFills.length > 0) suggestions.push('Для ручных сделок: соблюдать bias/риск-профиль и по возможности логировать операции через API для полной аналитики.');
   if (suggestions.length === 0) suggestions.push('Сохранить текущую логику, но продолжать мониторинг drawdown и quality сигналов ежедневно.');
 
   const nowDate = new Date(now);
@@ -990,6 +1080,7 @@ async function buildDailyAnalyticsContext(windowMs = 24 * 60 * 60_000): Promise<
       close: closeFills.length,
       executionOnlyOpen: executionOpenFills.length,
       manualOpenDetected: manualOpenFills.length,
+      manualCloseDetected: manualCloseFills.length,
     },
     pnl: {
       realized,
@@ -1139,6 +1230,7 @@ function renderDailyAnalyticsText(context: DailyAnalyticsContext): string {
     '',
     '👤 Ручные операции',
     `- Manual opens detected: ${context.fills.manualOpenDetected}`,
+    `- Manual closes detected: ${context.fills.manualCloseDetected}`,
   ];
 
   if (context.wins.length > 0) {
@@ -1237,6 +1329,12 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
       payload: { blocks: risk.blocks.join(','), actor },
     });
     await db.write();
+    await notifySignalRejectedEvent({
+      symbol: normalizedSymbol,
+      source: `pending:${actor}`,
+      reason: 'pending_rejected_risk_gate',
+      blocks: risk.blocks.join(','),
+    }).catch(() => undefined);
     return { ok: false, error: `risk_gate_blocked:${risk.blocks.join(',')}` };
   }
 
@@ -1345,6 +1443,11 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
 
   if (!ack.ok) {
     await db.write();
+    await notifyOrderRejectedEvent({
+      symbol: normalizedSymbol,
+      source: `pending:${actor}`,
+      error: ack.error ?? 'exchange_rejected',
+    }).catch(() => undefined);
     return { ok: false, error: ack.error ?? 'exchange_rejected' };
   }
 
@@ -1485,6 +1588,9 @@ async function runTelegramUpdateTick(): Promise<void> {
         notifySl: true,
         notifyManualConfirm: true,
         notifyDailyAnalytics: true,
+        notifySignalRejected: false,
+        notifyOrderRejected: false,
+        notifyPositionClosed: false,
       };
       db.data.settings.telegramNotify.updateOffset = nextOffset;
       await db.write();
@@ -2027,6 +2133,12 @@ async function runEngulfingMonitorTick(): Promise<void> {
               reason: 'operator_bias_block',
               details: { symbol, tf, direction: signal.direction, operatorBias, side },
             });
+            await notifySignalRejectedEvent({
+              symbol,
+              source: `engulfing:auto:${tf}`,
+              reason: 'operator_bias_block',
+              blocks: `operatorBias=${operatorBias}`,
+            }).catch(() => undefined);
             continue;
           }
 
@@ -2091,6 +2203,12 @@ async function runEngulfingMonitorTick(): Promise<void> {
             const risk = await evaluateRiskGates({ emitAudit: false });
             if (!risk.canTrade) {
               logger.warn({ component: 'engulfing-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates');
+              await notifySignalRejectedEvent({
+                symbol,
+                source: `engulfing:auto:${tf}`,
+                reason: 'auto_entry_blocked_risk_gate',
+                blocks: risk.blocks.join(','),
+              }).catch(() => undefined);
               continue;
             }
 
@@ -2116,6 +2234,12 @@ async function runEngulfingMonitorTick(): Promise<void> {
               if (tpSl) {
                 try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, mid); } catch { /* best-effort */ }
               }
+            } else {
+              await notifyOrderRejectedEvent({
+                symbol,
+                source: `engulfing:auto:${tf}`,
+                error: ack.error ?? 'exchange_rejected',
+              }).catch(() => undefined);
             }
           } catch (err) {
             logger.error({ component: 'engulfing-monitor', err }, 'auto-entry order failed');
@@ -2451,6 +2575,12 @@ async function runFvgMonitorTick(): Promise<void> {
               reason: 'operator_bias_block',
               details: { symbol, tf, direction: signal.direction, operatorBias, side, currentPrice: mid, triggerPrice: signal.triggerPrice },
             });
+            await notifySignalRejectedEvent({
+              symbol,
+              source: `fvg:auto:${tf}`,
+              reason: 'operator_bias_block',
+              blocks: `operatorBias=${operatorBias}`,
+            }).catch(() => undefined);
             continue;
           }
 
@@ -2516,7 +2646,16 @@ async function runFvgMonitorTick(): Promise<void> {
           }
 
           const risk = await evaluateRiskGates({ emitAudit: false });
-          if (!risk.canTrade) { logger.warn({ component: 'fvg-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates'); continue; }
+          if (!risk.canTrade) {
+            logger.warn({ component: 'fvg-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates');
+            await notifySignalRejectedEvent({
+              symbol,
+              source: `fvg:auto:${tf}`,
+              reason: 'auto_entry_blocked_risk_gate',
+              blocks: risk.blocks.join(','),
+            }).catch(() => undefined);
+            continue;
+          }
 
           const correlationId = `fvg-auto-${nanoid(8)}`;
           const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
@@ -2537,6 +2676,12 @@ async function runFvgMonitorTick(): Promise<void> {
             }
             const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
             if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, mid); } catch { /* best-effort */ } }
+          } else {
+            await notifyOrderRejectedEvent({
+              symbol,
+              source: `fvg:auto:${tf}`,
+              error: ack.error ?? 'exchange_rejected',
+            }).catch(() => undefined);
           }
         } catch (err) {
           logger.error({ component: 'fvg-monitor', err }, 'FVG auto-entry order failed');
@@ -3648,6 +3793,9 @@ app.get('/api/settings/exchange', async (_req, res) => {
       notifySl: tg?.notifySl !== false,
       notifyManualConfirm: tg?.notifyManualConfirm !== false,
       notifyDailyAnalytics: tg?.notifyDailyAnalytics !== false,
+      notifySignalRejected: tg?.notifySignalRejected === true,
+      notifyOrderRejected: tg?.notifyOrderRejected === true,
+      notifyPositionClosed: tg?.notifyPositionClosed === true,
     },
     error: live.error
   });
@@ -3724,6 +3872,9 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
     notifySl,
     notifyManualConfirm,
     notifyDailyAnalytics,
+    notifySignalRejected,
+    notifyOrderRejected,
+    notifyPositionClosed,
   } = req.body as {
     botToken?: string;
     chatId?: string;
@@ -3732,6 +3883,9 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
     notifySl?: boolean;
     notifyManualConfirm?: boolean;
     notifyDailyAnalytics?: boolean;
+    notifySignalRejected?: boolean;
+    notifyOrderRejected?: boolean;
+    notifyPositionClosed?: boolean;
   };
 
   const db = await getDb();
@@ -3743,6 +3897,9 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
     notifySl: true,
     notifyManualConfirm: true,
     notifyDailyAnalytics: true,
+    notifySignalRejected: false,
+    notifyOrderRejected: false,
+    notifyPositionClosed: false,
   };
 
   db.data.settings.telegramNotify = {
@@ -3753,6 +3910,9 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
     notifySl: notifySl !== undefined ? Boolean(notifySl) : current.notifySl,
     notifyManualConfirm: notifyManualConfirm !== undefined ? Boolean(notifyManualConfirm) : current.notifyManualConfirm,
     notifyDailyAnalytics: notifyDailyAnalytics !== undefined ? Boolean(notifyDailyAnalytics) : current.notifyDailyAnalytics !== false,
+    notifySignalRejected: notifySignalRejected !== undefined ? Boolean(notifySignalRejected) : current.notifySignalRejected === true,
+    notifyOrderRejected: notifyOrderRejected !== undefined ? Boolean(notifyOrderRejected) : current.notifyOrderRejected === true,
+    notifyPositionClosed: notifyPositionClosed !== undefined ? Boolean(notifyPositionClosed) : current.notifyPositionClosed === true,
   };
 
   await db.write();
@@ -3771,6 +3931,9 @@ app.put('/api/settings/telegram-notify', ownerAuth, async (req, res) => {
       notifySl: db.data.settings.telegramNotify.notifySl,
       notifyManualConfirm: db.data.settings.telegramNotify.notifyManualConfirm,
       notifyDailyAnalytics: db.data.settings.telegramNotify.notifyDailyAnalytics,
+      notifySignalRejected: db.data.settings.telegramNotify.notifySignalRejected === true,
+      notifyOrderRejected: db.data.settings.telegramNotify.notifyOrderRejected === true,
+      notifyPositionClosed: db.data.settings.telegramNotify.notifyPositionClosed === true,
     },
   });
 });
@@ -4735,6 +4898,14 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     }
   });
 
+  if (!ack.ok) {
+    await notifyOrderRejectedEvent({
+      symbol: normalizedSymbol,
+      source: 'api:order_limit',
+      error: ack.error ?? 'exchange_rejected',
+    }).catch(() => undefined);
+  }
+
   // TP/SL defaults: auto-apply after successful non-reduceOnly order
   let tpSlResult: Awaited<ReturnType<typeof placeTpSlTriggerOrders>> | undefined;
   let tpSlApplied: TpSlDefaults | null = null;
@@ -5181,6 +5352,15 @@ async function runTpFillMonitorTick(): Promise<void> {
       }
 
       if (stillPending.length === 0) {
+        try {
+          await notifyPositionClosedEvent({
+            symbol: trade.symbol,
+            correlationId,
+            tpsFilled: justFilled.length,
+          });
+        } catch (error) {
+          logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'position-closed telegram notify failed');
+        }
         activeTrades.delete(correlationId);
       }
     }
@@ -5389,6 +5569,14 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, errorCode: errorCode ?? null }
   });
 
+  if (!ack.ok) {
+    await notifyOrderRejectedEvent({
+      symbol: normalizedSymbol,
+      source: 'api:order',
+      error: ack.error ?? 'exchange_rejected',
+    }).catch(() => undefined);
+  }
+
   // TP/SL defaults: auto-apply after successful non-reduceOnly order
   let tpSlResult: Awaited<ReturnType<typeof placeTpSlTriggerOrders>> | undefined;
   let tpSlApplied: TpSlDefaults | null = null;
@@ -5563,6 +5751,11 @@ app.put('/api/live/order/:id/reduce', ownerAuth, async (req, res) => {
       payload: { orderId, error: cancelResult.error ?? null, errorCode }
     });
     await db.write();
+    await notifyOrderRejectedEvent({
+      symbol: existingOrder.symbol,
+      source: 'api:order/reduce:cancel',
+      error: cancelResult.error ?? 'cancel_failed',
+    }).catch(() => undefined);
     return res.status(400).json({ ok: false, errorCode, error: cancelResult.error });
   }
 
@@ -5600,6 +5793,14 @@ app.put('/api/live/order/:id/reduce', ownerAuth, async (req, res) => {
     }
   });
   await db.write();
+
+  if (!ack.ok) {
+    await notifyOrderRejectedEvent({
+      symbol: existingOrder.symbol,
+      source: 'api:order/reduce:submit',
+      error: ack.error ?? 'exchange_rejected',
+    }).catch(() => undefined);
+  }
 
   return res.status(ack.ok ? 200 : 400).json({
     ok: ack.ok,
