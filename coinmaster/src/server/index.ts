@@ -1362,14 +1362,28 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     payload: { actor, strategy: pending.strategy, timeframe: pending.timeframe },
   });
 
+  const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number, tag: string): Promise<T> => {
+    let timer: NodeJS.Timeout | null = null;
+    try {
+      return await Promise.race([
+        promise,
+        new Promise<T>((_, reject) => {
+          timer = setTimeout(() => reject(new Error(`${tag}_timeout`)), timeoutMs);
+        }),
+      ]);
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  };
+
   const computeSizeAtOpen = async (price: number): Promise<AllocationSizingOutcome> => {
-    const account = await exchange.getAccountState();
+    const account = await withTimeout(exchange.getAccountState(), 5000, 'confirm_account_state');
     const equityUsd = account?.equityUsd ?? 0;
     const availableUsd = account?.availableUsd ?? 0;
 
     let sizeDecimals = 6;
     try {
-      const meta = await exchange.getInstrumentMeta(normalizedSymbol);
+      const meta = await withTimeout(exchange.getInstrumentMeta(normalizedSymbol), 3000, 'confirm_instrument_meta');
       if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals;
     } catch {
       // best effort
@@ -1393,37 +1407,43 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     for (let attempt = 0; attempt < attemptPrices.length; attempt++) {
       const price = attemptPrices[attempt];
 
-      const sizing = await computeSizeAtOpen(price);
-      if (!sizing.ok) {
-        return {
-          ack: { ok: false, error: `allocation_sizing_failed:${sizing.reason}` },
-          usedPrice: price,
-          usedSize: 0,
-        };
-      }
-
-      lastSize = sizing.size;
-      const ack = await exchange.placeLimitOrder({
-        symbol: normalizedSymbol,
-        side,
-        price,
-        size: sizing.size,
-        reduceOnly: false,
-        clientOrderId: `${correlationId}-${attempt + 1}`,
-      });
-
-      if (ack.ok) return { ack, usedPrice: price, usedSize: sizing.size };
-      lastAck = ack;
-
-      const err = String(ack.error ?? '').toLowerCase();
-      const retryablePriceError = err.includes('tick size') || err.includes('divisible') || err.includes('invalid price') || err.includes('tofixed');
-      if (attempt === 0 && retryablePriceError) {
-        const mid = await fetchLiveMid(normalizedSymbol);
-        if (mid && Number.isFinite(mid) && mid > 0) {
-          attemptPrices.push(mid);
-          logger.warn({ component: 'pending-confirmation', pendingId, attempt: attempt + 1, originalPrice: price, fallbackMid: mid, err: ack.error }, 'retrying pending confirmation with fresh mid price');
-          continue;
+      try {
+        const sizing = await computeSizeAtOpen(price);
+        if (!sizing.ok) {
+          return {
+            ack: { ok: false, error: `allocation_sizing_failed:${sizing.reason}` },
+            usedPrice: price,
+            usedSize: 0,
+          };
         }
+
+        lastSize = sizing.size;
+        const ack = await withTimeout(exchange.placeLimitOrder({
+          symbol: normalizedSymbol,
+          side,
+          price,
+          size: sizing.size,
+          reduceOnly: false,
+          clientOrderId: `${correlationId}-${attempt + 1}`,
+        }), 10_000, 'confirm_place_limit_order');
+
+        if (ack.ok) return { ack, usedPrice: price, usedSize: sizing.size };
+        lastAck = ack;
+
+        const err = String(ack.error ?? '').toLowerCase();
+        const retryablePriceError = err.includes('tick size') || err.includes('divisible') || err.includes('invalid price') || err.includes('tofixed');
+        if (attempt === 0 && retryablePriceError) {
+          const mid = await fetchLiveMid(normalizedSymbol);
+          if (mid && Number.isFinite(mid) && mid > 0) {
+            attemptPrices.push(mid);
+            logger.warn({ component: 'pending-confirmation', pendingId, attempt: attempt + 1, originalPrice: price, fallbackMid: mid, err: ack.error }, 'retrying pending confirmation with fresh mid price');
+            continue;
+          }
+        }
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : 'confirm_place_order_failed';
+        logger.warn({ component: 'pending-confirmation', pendingId, attempt: attempt + 1, symbol: normalizedSymbol, err: msg }, 'pending confirmation attempt failed');
+        lastAck = { ok: false, error: msg } as Awaited<ReturnType<typeof exchange.placeLimitOrder>>;
       }
     }
 
