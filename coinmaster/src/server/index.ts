@@ -4558,7 +4558,10 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
     });
   }
 
-  const tpOrders: Array<{ ok: boolean; orderId?: string; error?: string }> = [];
+  let tpOrders: Array<{ ok: boolean; orderId?: string; error?: string }> = [];
+
+  // Systemic approach: TP levels are placed as reduce-only trigger orders for all symbols.
+  // This avoids venue-specific reduce-only LIMIT rejections and keeps SL/TP model consistent.
   for (let i = 0; i < sortedTps.length; i++) {
     const levelSize = Number(tpSizes[i] ?? 0);
     if (!Number.isFinite(levelSize) || levelSize <= 0) {
@@ -4567,17 +4570,34 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
       continue;
     }
 
-    const ack = await placeReduceOnlyLimitTpWithRetry({
+    const ack = await placeTriggerWithRetry({
       symbol: normalizedSymbol,
       side: closingSide,
       size: levelSize,
-      price: sortedTps[i],
-      clientOrderId: `tp${i + 1}-${nanoid(8)}`
+      triggerPrice: sortedTps[i],
+      kind: 'tp',
+      reduceOnly: true,
+      clientOrderId: `tptr${i + 1}-${nanoid(8)}`,
     });
     tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
   }
 
-  let ok = slOrder.ok && tpOrders.every((o) => o.ok);
+  // Fallback: if split TP sizes fail due to invalid size, place one TP trigger on full size.
+  if (tpOrders.length > 1 && tpOrders.every((o) => !o.ok && String(o.error ?? '').toLowerCase().includes('invalid size'))) {
+    const singleTp = await placeTriggerWithRetry({
+      symbol: normalizedSymbol,
+      side: closingSide,
+      size: qty,
+      triggerPrice: sortedTps[0],
+      kind: 'tp',
+      reduceOnly: true,
+      clientOrderId: `tptr-single-${nanoid(8)}`,
+    });
+    tpOrders = [{ ok: singleTp.ok, orderId: singleTp.orderId, error: singleTp.error }];
+    logger.warn({ component: 'levels', symbol: normalizedSymbol, side, qty, reason: 'tp_split_invalid_size_fallback_single_trigger_tp' }, 'fallback to single TP trigger after split TP invalid-size errors');
+  }
+
+  let ok = slOrder.ok && tpOrders.length > 0 && tpOrders.every((o) => o.ok);
   const expectedIds = [slOrder.orderId, ...tpOrders.map((o) => o.orderId)].filter((x): x is string => Boolean(x));
 
   // Extra confirmation: verify SL+TP are visible on exchange.
@@ -5220,7 +5240,7 @@ async function placeTpSlTriggerOrders(
     kind: 'sl', reduceOnly: true, clientOrderId: `sl-auto-${correlationId}`,
   });
 
-  // Place TP orders sequentially as reduce-only LIMIT exits (deterministic partial TP sizing)
+  // Place TP orders as reduce-only triggers (systemic, venue-agnostic behavior)
   const tpOrders: { ok: boolean; orderId?: string; error?: string }[] = [];
   for (let i = 0; i < tpSl.takeProfits.length; i++) {
     try {
@@ -5231,13 +5251,14 @@ async function placeTpSlTriggerOrders(
         continue;
       }
 
-      const ack = await exchange.placeReduceOnlyExit({
+      const ack = await exchange.placeTriggerOrder({
         symbol,
         side: closingSide,
         size: levelSize,
-        price: tpSl.takeProfits[i],
+        triggerPrice: tpSl.takeProfits[i],
+        kind: 'tp',
         reduceOnly: true,
-        clientOrderId: `tp${i + 1}-auto-${correlationId}`,
+        clientOrderId: `tptr${i + 1}-auto-${correlationId}`,
       });
       tpOrders.push({ ok: ack.ok, orderId: ack.orderId, error: ack.error });
     } catch (err) {
