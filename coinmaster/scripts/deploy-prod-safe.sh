@@ -22,27 +22,42 @@ require_cmd() {
   command -v "$1" >/dev/null 2>&1 || { echo "Missing required command: $1" >&2; exit 1; }
 }
 
-for cmd in npm rsync curl systemctl; do
+for cmd in npm rsync curl systemctl cmp; do
   require_cmd "$cmd"
 done
 
-log "Building web assets"
+log "Running typecheck gate"
 cd "$APP_DIR"
+npm run check >/tmp/coinmaster-deploy-check.log 2>&1 || {
+  cat /tmp/coinmaster-deploy-check.log >&2
+  exit 1
+}
+
+log "Building web assets"
 npm run build >/tmp/coinmaster-deploy-build.log 2>&1 || {
   cat /tmp/coinmaster-deploy-build.log >&2
   exit 1
 }
 
+if [[ -f "$TARGET_DIR/package-lock.json" ]] && ! cmp -s "$APP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"; then
+  echo "package-lock.json drift detected between workspace and production target; safe deploy refuses dependency changes without an explicit dependency rollout" >&2
+  exit 1
+fi
+
 log "Preparing backup at $BACKUP_DIR"
 mkdir -p "$BACKUP_DIR"
 if [[ -d "$TARGET_DIR/src" ]]; then rsync -a "$TARGET_DIR/src/" "$BACKUP_DIR/src/"; fi
 if [[ -d "$TARGET_DIR/dist" ]]; then rsync -a "$TARGET_DIR/dist/" "$BACKUP_DIR/dist/"; fi
+if [[ -f "$TARGET_DIR/package.json" ]]; then cp "$TARGET_DIR/package.json" "$BACKUP_DIR/package.json"; fi
+if [[ -f "$TARGET_DIR/package-lock.json" ]]; then cp "$TARGET_DIR/package-lock.json" "$BACKUP_DIR/package-lock.json"; fi
 
 log "Syncing staged trees"
 rm -rf "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new"
 mkdir -p "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new"
 rsync -a --delete "$APP_DIR/src/" "$TARGET_DIR/src.new/"
 rsync -a --delete "$APP_DIR/dist/" "$TARGET_DIR/dist.new/"
+install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package.json" "$TARGET_DIR/package.json"
+install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"
 chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new"
 
 if [[ ! -f "$TARGET_DIR/dist.new/index.html" ]]; then
@@ -72,6 +87,8 @@ if [[ "$(systemctl is-active "$SERVICE" || true)" != "active" ]]; then
   rm -rf "$TARGET_DIR/src" "$TARGET_DIR/dist"
   if [[ -d "$BACKUP_DIR/src" ]]; then rsync -a "$BACKUP_DIR/src/" "$TARGET_DIR/src/"; fi
   if [[ -d "$BACKUP_DIR/dist" ]]; then rsync -a "$BACKUP_DIR/dist/" "$TARGET_DIR/dist/"; fi
+  if [[ -f "$BACKUP_DIR/package.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package.json" "$TARGET_DIR/package.json"; fi
+  if [[ -f "$BACKUP_DIR/package-lock.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"; fi
   chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src" "$TARGET_DIR/dist" || true
   systemctl restart "$SERVICE" || true
   exit 1
@@ -94,6 +111,8 @@ if [[ "$SMOKE_OK" -ne 1 ]]; then
   rm -rf "$TARGET_DIR/src" "$TARGET_DIR/dist"
   if [[ -d "$BACKUP_DIR/src" ]]; then rsync -a "$BACKUP_DIR/src/" "$TARGET_DIR/src/"; fi
   if [[ -d "$BACKUP_DIR/dist" ]]; then rsync -a "$BACKUP_DIR/dist/" "$TARGET_DIR/dist/"; fi
+  if [[ -f "$BACKUP_DIR/package.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package.json" "$TARGET_DIR/package.json"; fi
+  if [[ -f "$BACKUP_DIR/package-lock.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"; fi
   chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src" "$TARGET_DIR/dist" || true
   systemctl restart "$SERVICE" || true
   exit 1

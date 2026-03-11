@@ -98,9 +98,6 @@ export interface BybitConnectionSettings {
   categories: Array<'linear' | 'inverse' | 'spot' | 'option'>;
 }
 
-/** @deprecated use BybitConnectionSettings */
-export type BybitReadOnlySettings = BybitConnectionSettings;
-
 export interface ExternalExchangesSettings {
   bybit: BybitConnectionSettings;
 }
@@ -472,9 +469,6 @@ export interface MaskedBybitConnectionSettings {
   accountType: 'UNIFIED' | 'CONTRACT' | 'SPOT';
   categories: Array<'linear' | 'inverse' | 'spot' | 'option'>;
 }
-
-/** @deprecated use MaskedBybitConnectionSettings */
-export type MaskedBybitReadOnlySettings = MaskedBybitConnectionSettings;
 
 export interface ExchangeConnectionStatus {
   exchange: 'bybit' | string;

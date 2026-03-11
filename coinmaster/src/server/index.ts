@@ -21,6 +21,7 @@ import type {
   AssetClass,
   BiasMode,
   ExchangeConnectionSettingsPayload,
+  LiveDashboardState,
   LivePosition,
   PendingConfirmation,
   TelegramOutboxItem,
@@ -87,15 +88,35 @@ const TELEGRAM_CHAT_ID = (process.env.TELEGRAM_CHAT_ID || '').trim();
 const TELEGRAM_OUTBOX_RETRY_BASE_MS = Math.max(2000, Number(process.env.TELEGRAM_OUTBOX_RETRY_BASE_MS || 10_000));
 const TELEGRAM_OUTBOX_RETRY_MAX_MS = Math.max(30_000, Number(process.env.TELEGRAM_OUTBOX_RETRY_MAX_MS || 15 * 60_000));
 const TELEGRAM_OUTBOX_MAX_ATTEMPTS = Math.max(3, Number(process.env.TELEGRAM_OUTBOX_MAX_ATTEMPTS || 12));
+const TELEGRAM_OUTBOX_SENT_RETENTION_MS = 24 * 60 * 60_000;
+const TELEGRAM_OUTBOX_FAILED_RETENTION_MS = 7 * 24 * 60 * 60_000;
 const COINMASTER_ENV_PATH = process.env.COINMASTER_ENV_PATH || '/etc/coinmaster/coinmaster.env';
 
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
 const rulesCache = new RuntimeRulesCache(5_000);
+const LIVE_SNAPSHOT_CACHE_MS = Math.max(500, Number(process.env.LIVE_SNAPSHOT_CACHE_MS || 2_000));
+let liveSnapshotCache: { key: string; expiresAt: number; value: LiveDashboardState } | null = null;
 
 /** Build a fresh LIVE_MODE snapshot from current effective rules. */
 function getLiveMode() {
   const r = rulesCache.getEffectiveRules();
   return { manualConfirmation: r.manualConfirmation, maxLeverage: r.maxLeverage };
+}
+
+async function getCachedExchangeLiveState(symbol: string, mode = getLiveMode()): Promise<LiveDashboardState> {
+  const key = `${symbol}|${mode.manualConfirmation ? 1 : 0}|${mode.maxLeverage}`;
+  const now = Date.now();
+  if (liveSnapshotCache && liveSnapshotCache.key === key && liveSnapshotCache.expiresAt > now) {
+    return liveSnapshotCache.value;
+  }
+
+  const value = await buildLiveDashboardState(exchange, symbol, mode, []);
+  liveSnapshotCache = {
+    key,
+    expiresAt: now + LIVE_SNAPSHOT_CACHE_MS,
+    value: { ...value, pendingConfirmations: [] },
+  };
+  return liveSnapshotCache.value;
 }
 
 function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
@@ -176,6 +197,49 @@ function maskBotToken(token: string): string {
   return `${token.slice(0, 4)}••••${token.slice(-4)}`;
 }
 
+function parseTelegramRetryAfterMs(body: string): number | undefined {
+  if (!body) return undefined;
+  try {
+    const parsed = JSON.parse(body) as { parameters?: { retry_after?: unknown } };
+    const retryAfterSec = Number(parsed?.parameters?.retry_after);
+    if (Number.isFinite(retryAfterSec) && retryAfterSec > 0) {
+      return retryAfterSec * 1000;
+    }
+  } catch {
+    // ignore non-JSON body
+  }
+
+  const match = body.match(/retry after\s+(\d+)/i);
+  if (!match) return undefined;
+  const retryAfterSec = Number(match[1]);
+  return Number.isFinite(retryAfterSec) && retryAfterSec > 0 ? retryAfterSec * 1000 : undefined;
+}
+
+function buildTelegramSendError(status: number, body: string): Error {
+  const err = new Error(`telegram_send_failed_${status}${body ? `_${body.slice(0, 120)}` : ''}`) as Error & { retryAfterMs?: number; permanent?: boolean };
+  if (status === 429) {
+    err.retryAfterMs = parseTelegramRetryAfterMs(body);
+  }
+  err.permanent = status === 400 || status === 401 || status === 403;
+  return err;
+}
+
+function compactTelegramOutbox(items: TelegramOutboxItem[]): TelegramOutboxItem[] {
+  const now = Date.now();
+  return items
+    .filter((m) => {
+      if (m.status === 'sent') {
+        return !m.sentAt || now - Date.parse(m.sentAt) < TELEGRAM_OUTBOX_SENT_RETENTION_MS;
+      }
+      if (m.status === 'failed') {
+        const failedAt = m.nextAttemptAt || m.createdAt;
+        return !failedAt || now - Date.parse(failedAt) < TELEGRAM_OUTBOX_FAILED_RETENTION_MS;
+      }
+      return true;
+    })
+    .slice(-5000);
+}
+
 async function sendTelegramText(text: string, opts?: { replyMarkup?: unknown }): Promise<void> {
   const cfg = await getTelegramConfig();
   if (!cfg) return;
@@ -191,7 +255,7 @@ async function sendTelegramText(text: string, opts?: { replyMarkup?: unknown }):
 
   if (!response.ok) {
     const body = await response.text().catch(() => '');
-    throw new Error(`telegram_send_failed_${response.status}${body ? `_${body.slice(0, 80)}` : ''}`);
+    throw buildTelegramSendError(response.status, body);
   }
 }
 
@@ -226,9 +290,7 @@ async function enqueueTelegramOutbox(params: {
   };
 
   db.data.telegramOutbox.push(msg);
-  if (db.data.telegramOutbox.length > 5000) {
-    db.data.telegramOutbox = db.data.telegramOutbox.slice(-5000);
-  }
+  db.data.telegramOutbox = compactTelegramOutbox(db.data.telegramOutbox);
   await db.write();
   return { queued: true, id: msg.id };
 }
@@ -270,7 +332,7 @@ async function runTelegramOutboxTick(): Promise<void> {
 
         if (!response.ok) {
           const body = await response.text().catch(() => '');
-          throw new Error(`telegram_send_failed_${response.status}${body ? `_${body.slice(0, 120)}` : ''}`);
+          throw buildTelegramSendError(response.status, body);
         }
 
         msg.status = 'sent';
@@ -280,11 +342,15 @@ async function runTelegramOutboxTick(): Promise<void> {
       } catch (error) {
         msg.attempts += 1;
         msg.lastError = error instanceof Error ? error.message : String(error);
-        if (msg.attempts >= TELEGRAM_OUTBOX_MAX_ATTEMPTS) {
+        const permanent = Boolean((error as { permanent?: unknown } | null | undefined)?.permanent);
+        const retryAfterMsRaw = Number((error as { retryAfterMs?: unknown } | null | undefined)?.retryAfterMs);
+        const retryAfterMs = Number.isFinite(retryAfterMsRaw) && retryAfterMsRaw > 0 ? retryAfterMsRaw : undefined;
+
+        if (permanent || msg.attempts >= TELEGRAM_OUTBOX_MAX_ATTEMPTS) {
           msg.status = 'failed';
-          logger.error({ component: 'telegram', outboxId: msg.id, attempts: msg.attempts, err: msg.lastError }, 'telegram outbox message permanently failed');
+          logger.error({ component: 'telegram', outboxId: msg.id, attempts: msg.attempts, permanent, err: msg.lastError }, 'telegram outbox message permanently failed');
         } else {
-          const backoff = Math.min(TELEGRAM_OUTBOX_RETRY_MAX_MS, TELEGRAM_OUTBOX_RETRY_BASE_MS * (2 ** Math.max(0, msg.attempts - 1)));
+          const backoff = retryAfterMs ?? Math.min(TELEGRAM_OUTBOX_RETRY_MAX_MS, TELEGRAM_OUTBOX_RETRY_BASE_MS * (2 ** Math.max(0, msg.attempts - 1)));
           msg.nextAttemptAt = new Date(Date.now() + backoff).toISOString();
           logger.warn({ component: 'telegram', outboxId: msg.id, attempts: msg.attempts, retryInMs: backoff, err: msg.lastError }, 'telegram outbox retry scheduled');
         }
@@ -293,7 +359,7 @@ async function runTelegramOutboxTick(): Promise<void> {
     }
 
     if (changed) {
-      db.data.telegramOutbox = db.data.telegramOutbox.filter((m) => m.status !== 'sent' || (m.sentAt && Date.now() - Date.parse(m.sentAt) < 24 * 60 * 60_000));
+      db.data.telegramOutbox = compactTelegramOutbox(db.data.telegramOutbox);
       await db.write();
     }
   } finally {
@@ -3706,7 +3772,7 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 // ─── Performance / observability (non-invasive) ──────────────────────
-app.get('/api/health/perf', (_req, res) => {
+app.get('/api/health/perf', ownerAuth, (_req, res) => {
   const mem = process.memoryUsage();
   const start = performance.now();
   setImmediate(() => {
@@ -3760,7 +3826,8 @@ app.get('/api/dashboard', async (_req, res) => {
   }
 
   const pendingRows = await loadPendingConfirmationRows();
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode(), pendingRows);
+  const liveBase = await getCachedExchangeLiveState(LIVE_SYMBOL, getLiveMode());
+  const live = { ...liveBase, pendingConfirmations: pendingRows };
 
   res.json({ latestBias, latestTick: latestTick ?? null, live, classBiasControls, customBiasControls });
 });
@@ -4124,7 +4191,7 @@ app.get('/api/settings/trading-rules/effective', ownerAuth, (_req, res) => {
 
 app.get('/api/settings/exchange', async (_req, res) => {
   const liveMode = getLiveMode();
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, liveMode);
+  const live = await getCachedExchangeLiveState(LIVE_SYMBOL, liveMode);
 
   const db = await getDb();
   const tg = db.data.settings.telegramNotify;
@@ -4529,9 +4596,10 @@ app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
   return res.json({ ok: true, ddLockActive: false });
 });
 
-app.get('/api/live/status', async (_req, res) => {
+app.get('/api/live/status', ownerAuth, async (_req, res) => {
   const pendingRows = await loadPendingConfirmationRows();
-  const live = await buildLiveDashboardState(exchange, LIVE_SYMBOL, getLiveMode(), pendingRows);
+  const liveBase = await getCachedExchangeLiveState(LIVE_SYMBOL, getLiveMode());
+  const live = { ...liveBase, pendingConfirmations: pendingRows };
   return res.json({
     ok: live.connected,
     ...live
