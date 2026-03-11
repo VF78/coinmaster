@@ -2821,6 +2821,8 @@ let fvgMonitorBusy = false;
 
 /** Debounce: key = `${symbol}:${tf}:${direction}`, value = last fired ms */
 const lastFvgSignalAt = new Map<string, number>();
+const lastFvgNoMidWarnAt = new Map<string, number>();
+const FVG_NO_MID_WARN_THROTTLE_MS = 60 * 60_000;
 
 async function runFvgMonitorTick(): Promise<void> {
   if (fvgMonitorBusy) return;
@@ -2844,15 +2846,29 @@ async function runFvgMonitorTick(): Promise<void> {
       return;
     }
 
+    let mids: Record<string, number> = {};
+    try {
+      mids = await exchange.getMids();
+    } catch (err) {
+      logger.warn({ component: 'fvg-monitor', err }, 'failed to get mids');
+      return;
+    }
+
     for (const symbol of symbols) {
       const operatorBias = await getOperatorBias(symbol);
 
       // Current mid price (required for retrace check)
-      const mid = await fetchLiveMid(symbol);
-      if (!mid) {
-        logger.warn({ component: 'fvg-monitor', symbol }, 'no mid price, skipping symbol this tick');
+      const normalizedSymbol = normalizeSymbol(symbol);
+      const mid = Number(mids[normalizedSymbol]);
+      if (!Number.isFinite(mid) || mid <= 0) {
+        const lastWarnAt = lastFvgNoMidWarnAt.get(normalizedSymbol) ?? 0;
+        if (now - lastWarnAt >= FVG_NO_MID_WARN_THROTTLE_MS) {
+          logger.warn({ component: 'fvg-monitor', symbol: normalizedSymbol }, 'no mid price, skipping symbol this tick');
+          lastFvgNoMidWarnAt.set(normalizedSymbol, now);
+        }
         continue;
       }
+      lastFvgNoMidWarnAt.delete(normalizedSymbol);
 
       const symbolPosition = positions.find((p) => p.symbol.toUpperCase() === symbol.toUpperCase());
 
@@ -4023,7 +4039,10 @@ app.get('/api/settings/trading-rules', async (_req, res) => {
   const rules = normalizeTradingRules(persisted);
 
   if (JSON.stringify(rules) !== JSON.stringify(persisted)) {
-    logger.warn({ component: 'trading-rules', persistedType: typeof persisted }, 'trading rules normalization differs from persisted payload; returning normalized view without mutating stored settings');
+    db.data.settings.tradingRules = rules;
+    await db.write();
+    await rulesCache.refreshNow().catch((err) => logger.warn({ component: 'runtime-rules', err }, 'forced rules refresh after normalization failed'));
+    logger.info({ component: 'trading-rules', persistedType: typeof persisted }, 'trading rules payload normalized and persisted');
   }
 
   return res.json({ ok: true, rules });

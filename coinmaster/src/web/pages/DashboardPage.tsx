@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Bias, DashboardClassBiasControl, DashboardCustomBiasControl, DashboardResponse, LiveCandle, LivePosition } from '../../shared/dto.js';
+import type { Bias, DashboardClassBiasControl, DashboardCustomBiasControl, DashboardResponse, LiveCandle, LivePosition, TradingRulesSettings } from '../../shared/dto.js';
 import { postBias, getDashboard, getLiveCandles, getTradingRules, confirmPendingConfirmation, rejectPendingConfirmation, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
@@ -22,6 +22,7 @@ const PNL_LABEL: Record<PnlPeriod, string> = {
 
 const BIAS_OPTIONS: Bias[] = ['long', 'short', 'off'];
 const FVG_REFRESH_MS = 60 * 60_000;
+const FVG_RULES_REFRESH_MS = 60_000;
 
 type FvgTf = '1h' | '4h';
 
@@ -39,7 +40,7 @@ type FvgStateRow = {
   candleTimestamp: string;
 };
 
-function detectFvgState(symbol: string, candles: LiveCandle[], timeframe: FvgTf, currentPrice: number, fvgRetracePct: number): FvgStateRow | null {
+function detectFvgState(symbol: string, candles: LiveCandle[], timeframe: FvgTf, currentPrice: number, fvgRetracePct: number, fvgMinWidthPct: number): FvgStateRow | null {
   if (!Array.isArray(candles) || candles.length < 4 || !Number.isFinite(currentPrice)) return null;
 
   const closed = candles.slice(0, -1);
@@ -54,10 +55,24 @@ function detectFvgState(symbol: string, candles: LiveCandle[], timeframe: FvgTf,
     const c2 = closed[i];
 
     if (c0.high < c2.low) {
-      zones.push({ direction: 'bullish', top: c2.low, bottom: c0.high, candleTimestamp: c2.timestamp });
+      const bottom = c0.high;
+      const top = c2.low;
+      const width = top - bottom;
+      const referencePrice = Math.max(Math.abs((top + bottom) / 2), Number.EPSILON);
+      const widthPct = (width / referencePrice) * 100;
+      if (widthPct >= fvgMinWidthPct) {
+        zones.push({ direction: 'bullish', top, bottom, candleTimestamp: c2.timestamp });
+      }
     }
     if (c0.low > c2.high) {
-      zones.push({ direction: 'bearish', top: c0.low, bottom: c2.high, candleTimestamp: c2.timestamp });
+      const bottom = c2.high;
+      const top = c0.low;
+      const width = top - bottom;
+      const referencePrice = Math.max(Math.abs((top + bottom) / 2), Number.EPSILON);
+      const widthPct = (width / referencePrice) * 100;
+      if (widthPct >= fvgMinWidthPct) {
+        zones.push({ direction: 'bearish', top, bottom, candleTimestamp: c2.timestamp });
+      }
     }
   }
 
@@ -101,33 +116,47 @@ export function DashboardPage() {
   const [biasActionKey, setBiasActionKey] = useState<string | null>(null);
   const [fvgRows, setFvgRows] = useState<FvgStateRow[]>([]);
   const [fvgRetrace, setFvgRetrace] = useState<number>(50);
+  const [fvgMinWidthPct, setFvgMinWidthPct] = useState<number>(0.3);
+  const cachedFvgRulesRef = useRef<TradingRulesSettings | null>(null);
   const refreshTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const fvgRowsCacheRef = useRef<Record<string, FvgStateRow>>({});
   const lastFvgRefreshAtRef = useRef<number>(0);
-  const lastFvgSymbolsKeyRef = useRef<string>('');
+  const lastFvgConfigKeyRef = useRef<string>('');
+  const lastFvgRulesRefreshAtRef = useRef<number>(0);
 
   async function refresh() {
-    const [next, rulesResp] = await Promise.all([
-      getDashboard(),
-      getTradingRules().catch(() => null),
-    ]);
-
+    const next = await getDashboard();
     setData(next);
 
-    const retrace = Number(rulesResp?.rules?.fvgRetrace ?? 50);
+    const now = Date.now();
+    let activeRules = cachedFvgRulesRef.current;
+    const shouldRefreshRules = !activeRules || now - lastFvgRulesRefreshAtRef.current >= FVG_RULES_REFRESH_MS;
+    if (shouldRefreshRules) {
+      const rulesResp = await getTradingRules().catch(() => null);
+      if (rulesResp?.rules) {
+        activeRules = rulesResp.rules;
+        cachedFvgRulesRef.current = rulesResp.rules;
+        lastFvgRulesRefreshAtRef.current = now;
+      }
+    }
+
+    const retrace = Number(activeRules?.fvgRetrace ?? 50);
     const normalizedRetrace = Number.isFinite(retrace) ? Math.max(10, Math.min(90, retrace)) : 50;
     setFvgRetrace(normalizedRetrace);
 
-    const monitoredSymbols = (rulesResp?.rules?.coins ?? [])
+    const minWidth = Number(activeRules?.fvgMinWidthPct ?? 0.3);
+    const normalizedMinWidth = Number.isFinite(minWidth) ? Math.max(0, Math.min(10, minWidth)) : 0.3;
+    setFvgMinWidthPct(normalizedMinWidth);
+
+    const monitoredSymbols = (activeRules?.coins ?? [])
       .filter((coin) => coin.enabled)
       .map((coin) => String(coin.symbol ?? '').trim().toUpperCase())
       .filter((symbol, index, arr) => symbol.length > 0 && arr.indexOf(symbol) === index);
 
     const symbols = monitoredSymbols.length > 0 ? monitoredSymbols : ['BTC'];
-    const symbolsKey = symbols.join(',');
-    const now = Date.now();
+    const fvgConfigKey = `${symbols.join(',')}|${normalizedRetrace}|${normalizedMinWidth}`;
     const shouldRefreshFvg =
-      symbolsKey !== lastFvgSymbolsKeyRef.current
+      fvgConfigKey !== lastFvgConfigKeyRef.current
       || now - lastFvgRefreshAtRef.current >= FVG_REFRESH_MS
       || Object.keys(fvgRowsCacheRef.current).length === 0;
 
@@ -151,10 +180,10 @@ export function DashboardPage() {
         );
 
         const row1h = c1h?.candles?.length
-          ? detectFvgState(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace)
+          ? detectFvgState(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace, normalizedMinWidth)
           : null;
         const row4h = c4h?.candles?.length
-          ? detectFvgState(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace)
+          ? detectFvgState(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace, normalizedMinWidth)
           : null;
 
         if (row1h) nextCache[row1h.id] = row1h;
@@ -166,7 +195,7 @@ export function DashboardPage() {
 
       fvgRowsCacheRef.current = nextCache;
       lastFvgRefreshAtRef.current = now;
-      lastFvgSymbolsKeyRef.current = symbolsKey;
+      lastFvgConfigKeyRef.current = fvgConfigKey;
     }
 
     setFvgRows(
@@ -431,7 +460,7 @@ export function DashboardPage() {
 
         <Card title="FVG monitor" className="terminal-card full-width">
           <p className="muted stat-note" style={{ marginBottom: '0.45rem' }}>
-            Retrace level: {fvgRetrace}% • Source: exchange candles (1h/4h)
+            Retrace level: {fvgRetrace}% • Min width: {fvgMinWidthPct}% • Source: exchange candles (1h/4h)
           </p>
           <DataTable<FvgStateRow>
             rows={fvgRows}
