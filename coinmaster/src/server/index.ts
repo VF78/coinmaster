@@ -10,7 +10,7 @@ import { nanoid } from 'nanoid';
 import logger from '../lib/logger.js';
 import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
-import { createQueuedBacktestRun } from '../core/backtest.js';
+import { applyBacktestAiAnalysisResult, createQueuedBacktestRun, markBacktestAiAnalysisRequested } from '../core/backtest.js';
 import { executeBacktestRun, isBacktestRunning, getActiveBacktestRunId } from '../core/backtestWorker.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
@@ -4587,6 +4587,54 @@ app.get('/api/backtest/runs/:id', ownerAuth, async (req, res) => {
   if (!run) {
     return res.status(404).json({ ok: false, error: 'backtest_run_not_found' });
   }
+  return res.json({ ok: true, run });
+});
+
+app.get('/api/backtest/ai-analysis/pending', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const runs = db.data.backtestRuns.filter((run) => run.status === 'completed' && run.aiAnalysis?.status === 'pending');
+  return res.json({ ok: true, runs });
+});
+
+app.post('/api/backtest/runs/:id/ai-analysis/request', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const run = db.data.backtestRuns.find((item) => item.id === req.params.id);
+  if (!run) {
+    return res.status(404).json({ ok: false, error: 'backtest_run_not_found' });
+  }
+  if (run.status !== 'completed') {
+    return res.status(409).json({ ok: false, error: 'backtest_run_not_completed' });
+  }
+  if (run.aiAnalysis?.status === 'completed' && run.aiAnalysis?.report) {
+    return res.json({ ok: true, run });
+  }
+
+  markBacktestAiAnalysisRequested(run);
+  await db.write();
+  return res.json({ ok: true, run });
+});
+
+app.post('/api/backtest/runs/:id/ai-analysis/complete', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const run = db.data.backtestRuns.find((item) => item.id === req.params.id);
+  if (!run) {
+    return res.status(404).json({ ok: false, error: 'backtest_run_not_found' });
+  }
+  if (run.status !== 'completed') {
+    return res.status(409).json({ ok: false, error: 'backtest_run_not_completed' });
+  }
+
+  applyBacktestAiAnalysisResult(run, {
+    model: (req.body as { model?: unknown } | undefined)?.model,
+    summary: (req.body as { summary?: unknown } | undefined)?.summary,
+    report: (req.body as { report?: unknown } | undefined)?.report,
+    recommendations: (req.body as { recommendations?: unknown } | undefined)?.recommendations,
+    error: (req.body as { error?: unknown } | undefined)?.error,
+  });
+  await db.write();
   return res.json({ ok: true, run });
 });
 

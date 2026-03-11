@@ -2170,3 +2170,110 @@ tbody tr:hover {
   color: var(--text-secondary, #8b95a8);
   flex: 1;
 }
+
+.bt-ai-btn {
+  margin-left: auto;
+  min-width: 2.4rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #1e2d44);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-primary, #e4e8f0);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bt-ai-btn--completed {
+  border-color: rgba(34, 197, 94, 0.45);
+  color: var(--success, #22c55e);
+}
+
+.bt-ai-btn--pending {
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #f59e0b;
+}
+
+.bt-ai-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.bt-report-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 10, 18, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.bt-report-modal {
+  width: min(900px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  background: #0b1627;
+  border: 1px solid var(--border-color, #1e2d44);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.bt-report-modal__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.bt-report-modal__header h3 {
+  margin: 0;
+  color: var(--text-primary, #e4e8f0);
+}
+
+.bt-report-modal__meta {
+  margin-top: 0.2rem;
+  color: var(--text-secondary, #8b95a8);
+  font-size: 0.8rem;
+}
+
+.bt-report-close {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary, #8b95a8);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bt-report-section {
+  margin-top: 0.85rem;
+}
+
+.bt-report-section h4 {
+  margin: 0 0 0.35rem;
+  color: var(--text-primary, #e4e8f0);
+  font-size: 0.9rem;
+}
+
+.bt-report-section p,
+.bt-report-section li {
+  color: var(--text-primary, #e4e8f0);
+  line-height: 1.45;
+}
+
+.bt-report-pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-primary, #e4e8f0);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-color, #1e2d44);
+  border-radius: 8px;
+  padding: 0.8rem;
+}

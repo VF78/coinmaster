@@ -646,6 +646,7 @@ export interface BacktestRunAiAnalysis {
   completedAt?: string;
   error?: string;
   summary?: string;
+  report?: string;
   recommendations?: string[];
 }
 
@@ -692,6 +693,16 @@ export interface BacktestRunResponse {
 }
 
 export interface BacktestRunListResponse {
+  ok: boolean;
+  runs: BacktestRun[];
+}
+
+export interface BacktestAiAnalysisRequestResponse {
+  ok: boolean;
+  run: BacktestRun;
+}
+
+export interface BacktestAiPendingResponse {
   ok: boolean;
   runs: BacktestRun[];
 }

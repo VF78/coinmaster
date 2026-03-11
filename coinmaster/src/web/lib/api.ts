@@ -3,6 +3,11 @@ import type {
   AiMasterSnapshotResponse,
   AnalyticsQualityMetrics,
   AnalyticsWeeklyReportResponse,
+  BacktestAiAnalysisRequestResponse,
+  BacktestAiPendingResponse,
+  BacktestCreateRunRequest,
+  BacktestRunListResponse,
+  BacktestRunResponse,
   BiasPayload,
   DashboardResponse,
   ExchangeSettingsResponse,
@@ -344,8 +349,6 @@ export function testBybitConnection() {
 
 // ─── Backtest ─────────────────────────────────────────────────────────
 
-import type { BacktestRun, BacktestRunListResponse, BacktestRunResponse, BacktestCreateRunRequest } from '../../shared/dto.js';
-
 export function getBacktestRuns() {
   return jsonFetch<BacktestRunListResponse>('/api/backtest/runs');
 }
@@ -360,4 +363,14 @@ export function createBacktestRun(params: BacktestCreateRunRequest) {
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(params),
   });
+}
+
+export function requestBacktestAiAnalysis(id: string) {
+  return jsonFetch<BacktestAiAnalysisRequestResponse>(`/api/backtest/runs/${encodeURIComponent(id)}/ai-analysis/request`, {
+    method: 'POST',
+  });
+}
+
+export function getPendingBacktestAiAnalyses() {
+  return jsonFetch<BacktestAiPendingResponse>('/api/backtest/ai-analysis/pending');
 }

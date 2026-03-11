@@ -15,6 +15,7 @@ import {
   getBacktestRuns,
   getTradingRuleSymbols,
   getTradingRules,
+  requestBacktestAiAnalysis,
 } from '../lib/api';
 import { formatMoney, formatNumber } from '../lib/format';
 
@@ -70,6 +71,8 @@ export function BacktestPage() {
   const [submitting, setSubmitting] = useState(false);
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [selectedRun, setSelectedRun] = useState<BacktestRun | null>(null);
+  const [analysisBusyRunId, setAnalysisBusyRunId] = useState<string | null>(null);
+  const [reportRun, setReportRun] = useState<BacktestRun | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ─── Load initial data ──────────────────────────────────────────────
@@ -113,29 +116,43 @@ export function BacktestPage() {
     return () => { cancelled = true; };
   }, []);
 
-  // ─── Poll active run ───────────────────────────────────────────────
+  // ─── Poll active run / pending AI analysis ─────────────────────────
   useEffect(() => {
-    if (!activeRunId) {
+    const hasPendingAi = runs.some((run) => run.aiAnalysis?.status === 'pending');
+    const shouldPoll = Boolean(activeRunId) || hasPendingAi;
+
+    if (!shouldPoll) {
       if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
       return;
     }
+
     async function poll() {
       try {
-        const res = await getBacktestRun(activeRunId!);
-        if (res.run.status === 'completed' || res.run.status === 'failed') {
-          setActiveRunId(null);
-          setSelectedRun(res.run);
-          // Refresh run list
-          const listRes = await getBacktestRuns();
-          setRuns(listRes.runs ?? []);
+        const listRes = await getBacktestRuns();
+        const nextRuns = listRes.runs ?? [];
+        setRuns(nextRuns);
+
+        if (activeRunId) {
+          const active = nextRuns.find((run) => run.id === activeRunId);
+          if (active && (active.status === 'completed' || active.status === 'failed')) {
+            setActiveRunId(null);
+            setSelectedRun(active);
+          }
+        }
+
+        if (selectedRun) {
+          const refreshedSelected = nextRuns.find((run) => run.id === selectedRun.id);
+          if (refreshedSelected) setSelectedRun(refreshedSelected);
         }
       } catch {
         // ignore poll errors
       }
     }
+
+    void poll();
     pollRef.current = setInterval(poll, POLL_INTERVAL_MS);
     return () => { if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; } };
-  }, [activeRunId]);
+  }, [activeRunId, runs, selectedRun]);
 
   // ─── Submit ─────────────────────────────────────────────────────────
   const handleRun = useCallback(async () => {
@@ -176,6 +193,26 @@ export function BacktestPage() {
       setSubmitting(false);
     }
   }, [submitting, activeRunId, startDate, endDate, rules, symbol, entryTfs, exitTfs, lookback, fvgRetrace, fvgMinWidth, maxLeverage, tpLevels, slPct, exitClosePct]);
+
+  const handleAiClick = useCallback(async (run: BacktestRun) => {
+    if (run.aiAnalysis?.status === 'completed' && run.aiAnalysis?.report) {
+      setReportRun(run);
+      return;
+    }
+    if (run.aiAnalysis?.status === 'pending' || analysisBusyRunId) return;
+
+    setAnalysisBusyRunId(run.id);
+    setError(null);
+    try {
+      const res = await requestBacktestAiAnalysis(run.id);
+      setRuns((prev) => prev.map((item) => item.id === res.run.id ? res.run : item));
+      if (selectedRun?.id === res.run.id) setSelectedRun(res.run);
+    } catch (err) {
+      setError(friendlyErrorMessage(err, 'Could not request AI analysis.'));
+    } finally {
+      setAnalysisBusyRunId(null);
+    }
+  }, [analysisBusyRunId, selectedRun]);
 
   // ─── TF toggle helpers ─────────────────────────────────────────────
   function toggleTf(current: TradingRulesTimeframe[], tf: TradingRulesTimeframe, setter: (v: TradingRulesTimeframe[]) => void) {
@@ -430,11 +467,61 @@ export function BacktestPage() {
                     {formatMoney(r.summary.netPnlUsd)} ({formatNumber(r.summary.roiPct)}%)
                   </span>
                 )}
+                <button
+                  type="button"
+                  className={`bt-ai-btn bt-ai-btn--${r.aiAnalysis?.status ?? 'idle'}`}
+                  title={r.aiAnalysis?.status === 'completed' ? 'Open saved AI report' : r.aiAnalysis?.status === 'pending' ? 'AI analysis is running' : 'Generate AI analysis'}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    void handleAiClick(r);
+                  }}
+                  disabled={analysisBusyRunId === r.id || r.aiAnalysis?.status === 'pending' || r.status !== 'completed'}
+                >
+                  {analysisBusyRunId === r.id ? '…' : r.aiAnalysis?.status === 'completed' ? '🤖' : r.aiAnalysis?.status === 'pending' ? '⏳' : 'AI'}
+                </button>
               </button>
             ))}
           </div>
         </Card>
       )}
+
+      {reportRun?.aiAnalysis?.report ? (
+        <div className="bt-report-overlay" onClick={() => setReportRun(null)}>
+          <div className="bt-report-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="bt-report-modal__header">
+              <div>
+                <h3>AI Analysis — {reportRun.symbol}</h3>
+                <div className="bt-report-modal__meta">
+                  {reportRun.aiAnalysis.model ? `${reportRun.aiAnalysis.model} • ` : ''}
+                  {reportRun.aiAnalysis.completedAt ?? reportRun.aiAnalysis.requestedAt}
+                </div>
+              </div>
+              <button type="button" className="bt-report-close" onClick={() => setReportRun(null)}>×</button>
+            </div>
+
+            {reportRun.aiAnalysis.summary ? (
+              <div className="bt-report-section">
+                <h4>Summary</h4>
+                <p>{reportRun.aiAnalysis.summary}</p>
+              </div>
+            ) : null}
+
+            {reportRun.aiAnalysis.recommendations?.length ? (
+              <div className="bt-report-section">
+                <h4>Recommendations</h4>
+                <ul>
+                  {reportRun.aiAnalysis.recommendations.map((item, index) => <li key={index}>{item}</li>)}
+                </ul>
+              </div>
+            ) : null}
+
+            <div className="bt-report-section">
+              <h4>Saved Report</h4>
+              <pre className="bt-report-pre">{reportRun.aiAnalysis.report}</pre>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
