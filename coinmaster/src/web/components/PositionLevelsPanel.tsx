@@ -42,6 +42,17 @@ function parseDecimalInput(raw: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+function parseOptionalDecimalInput(raw: string): number | null {
+  const normalized = raw.replace(',', '.').trim();
+  if (!normalized) return null;
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : null;
+}
+
+function formatPctInput(value: number): string {
+  return Number.isFinite(value) ? value.toFixed(2) : '';
+}
+
 function formatOrderSize(value: number): string {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 0,
@@ -93,6 +104,9 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       : [position.takeProfit].filter((v): v is number => Number.isFinite(v) && (v ?? 0) > 0);
     return buildLevelsSignature(Number(position.stopLoss ?? NaN), existingTps);
   });
+  const [tpPctInputs, setTpPctInputs] = useState<string[]>(() => takeProfits.map((tp) => formatPctInput(pctFromPrice(side, entry, tp))));
+  const [slPctInput, setSlPctInput] = useState<string>(() => formatPctInput(Math.abs(pctFromPrice(side, entry, stopLoss))));
+  const [activePctField, setActivePctField] = useState<{ kind: 'sl' } | { kind: 'tp'; index: number } | null>(null);
   const [dragging, setDragging] = useState<{ kind: 'sl' | 'tp'; index: number } | null>(null);
   const [chipCoords, setChipCoords] = useState<{ pnl: number | null; sl: number | null; tps: Array<number | null> }>({ pnl: null, sl: null, tps: [] });
 
@@ -157,6 +171,20 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     setError(null);
     setInfo(null);
   }, [isDirty]);
+
+  useEffect(() => {
+    setTpPctInputs((prev) => takeProfits.map((tp, idx) => {
+      if (activePctField?.kind === 'tp' && activePctField.index === idx) {
+        return prev[idx] ?? formatPctInput(pctFromPrice(side, entry, tp));
+      }
+      return formatPctInput(pctFromPrice(side, entry, tp));
+    }));
+  }, [takeProfits, side, entry, activePctField]);
+
+  useEffect(() => {
+    if (activePctField?.kind === 'sl') return;
+    setSlPctInput(formatPctInput(Math.abs(pctFromPrice(side, entry, stopLoss))));
+  }, [stopLoss, side, entry, activePctField]);
 
   // On modal open, always pull fresh TP/SL from exchange snapshot,
   // then use those values as the editing baseline.
@@ -654,11 +682,25 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     updateTp(index, price);
   }
 
+  function handleTpPctInput(index: number, raw: string) {
+    setTpPctInputs((prev) => prev.map((value, i) => (i === index ? raw : value)));
+    const parsed = parseOptionalDecimalInput(raw);
+    if (parsed === null) return;
+    updateTpPct(index, parsed);
+  }
+
   function updateSlPct(pct: number) {
     const target = side === 'long'
       ? entry * (1 - pct / 100)
       : entry * (1 + pct / 100);
     setStopLoss(Number(target.toFixed(2)));
+  }
+
+  function handleSlPctInput(raw: string) {
+    setSlPctInput(raw);
+    const parsed = parseOptionalDecimalInput(raw);
+    if (parsed === null) return;
+    updateSlPct(parsed);
   }
 
   async function applyLevels(options?: { skipConfirmPrompt?: boolean }): Promise<boolean> {
@@ -813,7 +855,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
           <div className="hl-level-group hl-level-group--tp">
             <div className="hl-level-group__title">Take Profit Levels</div>
             {takeProfits.map((tp, idx) => {
-              const gainPct = pctFromPrice(side, entry, tp);
               return (
                 <div key={idx} className="hl-level-row">
                   <label>
@@ -830,8 +871,13 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
                     <input
                       type="text"
                       inputMode="decimal"
-                      value={Number.isFinite(gainPct) ? gainPct.toFixed(2) : ''}
-                      onChange={(e) => updateTpPct(idx, parseDecimalInput(e.target.value))}
+                      value={tpPctInputs[idx] ?? ''}
+                      onFocus={() => setActivePctField({ kind: 'tp', index: idx })}
+                      onBlur={() => {
+                        setActivePctField((current) => current?.kind === 'tp' && current.index === idx ? null : current);
+                        setTpPctInputs((prev) => prev.map((value, i) => (i === idx ? formatPctInput(Math.abs(pctFromPrice(side, entry, takeProfits[i] ?? tp))) : value)));
+                      }}
+                      onChange={(e) => handleTpPctInput(idx, e.target.value)}
                     />
                   </label>
                   <div className="hl-level-row__actions">
@@ -864,8 +910,13 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
                 <input
                   type="text"
                   inputMode="decimal"
-                  value={Math.abs(pctFromPrice(side, entry, stopLoss)).toFixed(2)}
-                  onChange={(e) => updateSlPct(parseDecimalInput(e.target.value))}
+                  value={slPctInput}
+                  onFocus={() => setActivePctField({ kind: 'sl' })}
+                  onBlur={() => {
+                    setActivePctField((current) => current?.kind === 'sl' ? null : current);
+                    setSlPctInput(formatPctInput(Math.abs(pctFromPrice(side, entry, stopLoss))));
+                  }}
+                  onChange={(e) => handleSlPctInput(e.target.value)}
                 />
               </label>
               <div className="hl-level-row__actions">
