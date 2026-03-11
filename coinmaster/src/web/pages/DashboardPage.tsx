@@ -21,7 +21,7 @@ const PNL_LABEL: Record<PnlPeriod, string> = {
 };
 
 const BIAS_OPTIONS: Bias[] = ['long', 'short', 'off'];
-const FVG_REFRESH_MS = 60_000;
+const FVG_REFRESH_MS = 60 * 60_000;
 
 type FvgTf = '1h' | '4h';
 
