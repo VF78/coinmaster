@@ -713,6 +713,7 @@ tbody tr:hover {
 .hl-level-group--sl {
   border-color: rgba(234, 91, 114, 0.45);
   background: linear-gradient(180deg, rgba(48, 16, 25, 0.2) 0%, rgba(8, 20, 34, 0.94) 100%);
+  margin-bottom: 0.18rem;
 }
 
 .hl-side-stack {
@@ -806,13 +807,29 @@ tbody tr:hover {
   padding-top: 0.18rem;
   padding-bottom: calc(0.12rem + env(safe-area-inset-bottom));
   border-top: 1px solid #1c304d;
-  margin-top: 0.08rem;
+  margin-top: 0.24rem;
 }
 
-.hl-confirm-msg {
-  margin: 0.35rem 0 0;
+.hl-confirm-feedback {
+  margin-top: 0.18rem;
+  padding: 0.52rem 0.7rem;
+  border-radius: 0.7rem;
+  font-size: 0.83rem;
+  line-height: 1.35;
   text-align: center;
-  font-size: 0.82rem;
+  border: 1px solid transparent;
+}
+
+.hl-confirm-feedback--error {
+  color: #ffc7cf;
+  background: rgba(234, 91, 114, 0.14);
+  border-color: rgba(234, 91, 114, 0.34);
+}
+
+.hl-confirm-feedback--success {
+  color: #c5f5df;
+  background: rgba(22, 199, 132, 0.14);
+  border-color: rgba(22, 199, 132, 0.34);
 }
 .position-panel__hint {
   font-size: var(--text-xs);
@@ -1087,7 +1104,7 @@ tbody tr:hover {
     border-top: none;
     background: transparent;
     backdrop-filter: none;
-    margin-top: 0;
+    margin-top: 0.18rem;
     padding-top: 0.2rem;
   }
 }
@@ -1277,7 +1294,7 @@ tbody tr:hover {
   }
 
   .hl-confirm-row {
-    margin-top: 0.08rem;
+    margin-top: 0.18rem;
     padding-top: 0.22rem;
     padding-inline: 0.12rem;
     padding-bottom: calc(0.38rem + env(safe-area-inset-bottom));
@@ -1291,10 +1308,11 @@ tbody tr:hover {
     border-radius: 0.72rem;
   }
 
-  .hl-confirm-msg {
-    margin-top: 0.25rem;
+  .hl-confirm-feedback {
+    margin-top: 0.22rem;
     font-size: 0.76rem;
     line-height: 1.25;
+    padding: 0.46rem 0.58rem;
   }
 
   .history-paging {

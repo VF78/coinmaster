@@ -61,6 +61,16 @@ function sameLevels(a: number[], b: number[]): boolean {
   return true;
 }
 
+function buildLevelsSignature(stopLoss: number, takeProfits: number[]): string | null {
+  const normalizedSl = Number.isFinite(stopLoss) && stopLoss > 0 ? normalizeLevel(stopLoss) : null;
+  const normalizedTps = takeProfits
+    .filter((v) => Number.isFinite(v) && v > 0)
+    .map(normalizeLevel)
+    .slice(0, 3);
+  if (normalizedSl === null || normalizedTps.length === 0) return null;
+  return `${normalizedSl}|${normalizedTps.join(',')}`;
+}
+
 export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLevelsPanelProps) {
   const dialog = useDialog();
   const chartHostRef = useRef<HTMLDivElement | null>(null);
@@ -77,6 +87,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const [error, setError] = useState<string | null>(null);
   const [isApplying, setIsApplying] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
+  const [lastAppliedSignature, setLastAppliedSignature] = useState<string | null>(() => {
+    const existingTps = Array.isArray(position.takeProfits) && position.takeProfits.length > 0
+      ? position.takeProfits
+      : [position.takeProfit].filter((v): v is number => Number.isFinite(v) && (v ?? 0) > 0);
+    return buildLevelsSignature(Number(position.stopLoss ?? NaN), existingTps);
+  });
   const [dragging, setDragging] = useState<{ kind: 'sl' | 'tp'; index: number } | null>(null);
   const [chipCoords, setChipCoords] = useState<{ pnl: number | null; sl: number | null; tps: Array<number | null> }>({ pnl: null, sl: null, tps: [] });
 
@@ -134,6 +150,14 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     return !sameLevels(currentTps, initialTakeProfitsRef.current);
   }, [stopLoss, takeProfits]);
 
+  const currentLevelsSignature = useMemo(() => buildLevelsSignature(stopLoss, takeProfits), [stopLoss, takeProfits]);
+
+  useEffect(() => {
+    if (!isDirty) return;
+    setError(null);
+    setInfo(null);
+  }, [isDirty]);
+
   // On modal open, always pull fresh TP/SL from exchange snapshot,
   // then use those values as the editing baseline.
   useEffect(() => {
@@ -167,6 +191,8 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
           takeProfitsRef.current = nextTps;
           initialTakeProfitsRef.current = nextTps.map(normalizeLevel);
         }
+
+        setLastAppliedSignature(buildLevelsSignature(nextSl, nextTps));
       } catch {
         // best-effort sync
       }
@@ -689,12 +715,13 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       setTakeProfits(nextTps);
       initialStopLossRef.current = nextSl;
       initialTakeProfitsRef.current = nextTps;
-      setInfo('TP/SL levels applied successfully and confirmed by exchange API.');
+      setLastAppliedSignature(buildLevelsSignature(nextSl, nextTps));
+      setInfo(`Changes applied on exchange: SL + ${nextTps.length} TP level${nextTps.length === 1 ? '' : 's'} confirmed.`);
 
       await onApplied();
       return true;
     } catch (e) {
-      setError(friendlyErrorMessage(e, 'Could not apply TP/SL levels.'));
+      setError(friendlyErrorMessage(e, 'Could not apply TP/SL levels on exchange.'));
       return false;
     } finally {
       setIsApplying(false);
@@ -866,13 +893,18 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
       {validation ? <p className="down">{validation}</p> : null}
 
+      {error ? <div className="hl-confirm-feedback hl-confirm-feedback--error" role="alert">❌ {error}</div> : null}
+      {info ? <div className="hl-confirm-feedback hl-confirm-feedback--success" role="status" aria-live="polite">✅ {info}</div> : null}
+
       <div className="actions-row hl-confirm-row">
-        <Button onClick={() => { void applyLevels(); }} disabled={Boolean(validation) || isApplying} fullWidth>
-          {isApplying ? 'Applying…' : 'Confirm'}
+        <Button
+          onClick={() => { void applyLevels(); }}
+          disabled={Boolean(validation) || isApplying || (currentLevelsSignature !== null && currentLevelsSignature === lastAppliedSignature)}
+          fullWidth
+        >
+          {isApplying ? 'Applying…' : (currentLevelsSignature !== null && currentLevelsSignature === lastAppliedSignature ? 'Applied' : 'Confirm')}
         </Button>
       </div>
-      {error ? <p className="down hl-confirm-msg">{error}</p> : null}
-      {info ? <p className="up hl-confirm-msg">{info}</p> : null}
     </section>
   );
 }
