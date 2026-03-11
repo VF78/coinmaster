@@ -40,22 +40,22 @@ npm run build >/tmp/coinmaster-deploy-build.log 2>&1 || {
 }
 
 if [[ -f "$TARGET_DIR/package-lock.json" ]]; then
-  if ! python3 - <<'PY'
-import json, sys
+  if ! LOCK_SRC="$APP_DIR/package-lock.json" LOCK_TGT="$TARGET_DIR/package-lock.json" python3 - <<'PY'
+import json, sys, os
 try:
-    with open("'"$APP_DIR"'/package-lock.json") as f: src = json.load(f)
-    with open("'"$TARGET_DIR"'/package-lock.json") as f: tgt = json.load(f)
-    src_root = src.get("packages",{}).get("",{})
-    tgt_root = tgt.get("packages",{}).get("",{})
+    with open(os.environ["LOCK_SRC"]) as f: src = json.load(f)
+    with open(os.environ["LOCK_TGT"]) as f: tgt = json.load(f)
+    src_root = src.get("packages", {}).get("", {})
+    tgt_root = tgt.get("packages", {}).get("", {})
     if src_root.get("dependencies") != tgt_root.get("dependencies") or src_root.get("devDependencies") != tgt_root.get("devDependencies"):
-        print("DEPENDENCY_DRIFT",file=sys.stderr)
+        print("DEPENDENCY_DRIFT", file=sys.stderr)
         sys.exit(1)
 except Exception as e:
-    print(f"lockfile_parse_error: {e}",file=sys.stderr)
+    print(f"lockfile_parse_error: {e}", file=sys.stderr)
     sys.exit(1)
 PY
   then
-    echo "Dependency drift detected between workspace and production target; run npm install / npm ci in the workspace first, then redeploy." >&2
+    echo "Dependency drift detected between workspace and production target; run npm install / npm ci in workspace, then redeploy." >&2
     exit 1
   fi
 fi
