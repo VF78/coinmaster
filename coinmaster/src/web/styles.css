@@ -488,6 +488,7 @@ tbody tr:hover {
   grid-template-rows: minmax(380px, 1.35fr) auto auto auto auto;
   gap: 0.32rem;
   min-height: 0;
+  padding-bottom: 0.18rem;
 }
 
 .hl-panel {
@@ -686,6 +687,7 @@ tbody tr:hover {
   gap: 0.46rem;
   max-width: 980px;
   margin: 0;
+  padding-bottom: 0.12rem;
 }
 
 .hl-level-group {
@@ -713,7 +715,7 @@ tbody tr:hover {
 .hl-level-group--sl {
   border-color: rgba(234, 91, 114, 0.45);
   background: linear-gradient(180deg, rgba(48, 16, 25, 0.2) 0%, rgba(8, 20, 34, 0.94) 100%);
-  margin-bottom: 0.18rem;
+  margin-bottom: 0.38rem;
 }
 
 .hl-side-stack {
@@ -746,8 +748,8 @@ tbody tr:hover {
 
 .hl-level-row {
   display: grid;
-  grid-template-columns: minmax(180px, 1.25fr) minmax(120px, 0.95fr) 180px;
-  gap: 0.55rem;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.92fr) auto;
+  gap: 0.45rem;
   align-items: end;
 }
 
@@ -756,9 +758,12 @@ tbody tr:hover {
   gap: 0.28rem;
   font-size: 0.8rem;
   color: var(--text-muted);
+  min-width: 0;
 }
 
 .hl-level-row input {
+  width: 100%;
+  min-width: 0;
   min-height: 2.3rem;
   border: 1px solid #203451;
   border-radius: 0.7rem;
@@ -770,18 +775,19 @@ tbody tr:hover {
 
 .hl-level-row__actions {
   display: grid;
-  grid-template-columns: 84px 84px;
+  grid-template-columns: repeat(2, minmax(72px, auto));
   align-items: center;
   justify-content: end;
-  gap: 0.32rem;
-  min-width: 172px;
+  gap: 0.28rem;
+  min-width: 0;
+  width: max-content;
 }
 
 .hl-action-btn {
   min-height: 2.3rem;
   height: 2.3rem;
-  width: 84px;
-  padding: 0.35rem 0.5rem;
+  width: 78px;
+  padding: 0.35rem 0.42rem;
   border-radius: 0.65rem;
 }
 
@@ -794,7 +800,7 @@ tbody tr:hover {
 
 .hl-action-spacer {
   display: inline-block;
-  width: 84px;
+  width: 78px;
   height: 2.3rem;
 }
 
@@ -1046,11 +1052,12 @@ tbody tr:hover {
 
   .hl-levels-form {
     gap: 0.45rem;
+    padding-bottom: 0.16rem;
   }
 
   .hl-level-row {
-    grid-template-columns: 1fr 0.7fr 128px;
-    gap: 0.32rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr) auto;
+    gap: 0.28rem;
   }
 
   .hl-level-row input {
@@ -1060,22 +1067,23 @@ tbody tr:hover {
   }
 
   .hl-level-row__actions {
-    grid-template-columns: repeat(2, 58px);
+    grid-template-columns: repeat(2, minmax(56px, auto));
     justify-content: flex-end;
-    min-width: 118px;
+    min-width: 0;
+    width: max-content;
     align-self: end;
   }
 
   .hl-action-btn {
     min-height: 2.05rem;
     height: 2.05rem;
-    width: 58px;
-    padding: 0.25rem 0.25rem;
-    font-size: 0.8rem;
+    width: 56px;
+    padding: 0.25rem 0.2rem;
+    font-size: 0.76rem;
   }
 
   .hl-action-spacer {
-    width: 58px;
+    width: 56px;
     height: 2.05rem;
   }
 
@@ -1104,7 +1112,7 @@ tbody tr:hover {
     border-top: none;
     background: transparent;
     backdrop-filter: none;
-    margin-top: 0.18rem;
+    margin-top: 0.3rem;
     padding-top: 0.2rem;
   }
 }
@@ -1294,7 +1302,7 @@ tbody tr:hover {
   }
 
   .hl-confirm-row {
-    margin-top: 0.18rem;
+    margin-top: 0.28rem;
     padding-top: 0.22rem;
     padding-inline: 0.12rem;
     padding-bottom: calc(0.38rem + env(safe-area-inset-bottom));
