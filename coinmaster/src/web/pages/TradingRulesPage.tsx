@@ -165,6 +165,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [emergencyExitTimeframes, setEmergencyExitTimeframes] = useState<TradingRulesTimeframe[]>(defaults.emergencyExitTimeframes);
   const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
   const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
+  const [fvgMinWidthPct, setFvgMinWidthPct] = useState(defaults.fvgMinWidthPct);
   const [maxLeverage, setMaxLeverage] = useState(defaults.maxLeverage);
   const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
   const [tpLevels, setTpLevels] = useState<number[]>(defaults.tpLevels ?? [defaults.tpPct]);
@@ -191,6 +192,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     emergencyExitTimeframes,
     engulfingLookbackCandles,
     fvgRetrace,
+    fvgMinWidthPct,
     maxLeverage,
     dailyDrawdown,
     tpPct: tpLevels[0] ?? 6,
@@ -207,6 +209,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     emergencyExitTimeframes,
     engulfingLookbackCandles,
     fvgRetrace,
+    fvgMinWidthPct,
     maxLeverage,
     dailyDrawdown,
     tpLevels,
@@ -244,6 +247,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setEmergencyExitTimeframes(normalized.emergencyExitTimeframes);
     setEngulfingLookbackCandles(normalized.engulfingLookbackCandles);
     setFvgRetrace(normalized.fvgRetrace);
+    setFvgMinWidthPct(normalized.fvgMinWidthPct);
     setMaxLeverage(normalized.maxLeverage);
     setDailyDrawdown(normalized.dailyDrawdown);
     setTpLevels(normalized.tpLevels ?? [normalized.tpPct]);
@@ -502,7 +506,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     if (!onRegisterSaveHandler) return;
     onRegisterSaveHandler(() => handleApply());
     return () => onRegisterSaveHandler(null);
-  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, symbolBiasOverrides]);
+  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, symbolBiasOverrides]);
 
   return (
     <main className="terminal-layout">
@@ -693,6 +697,36 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
               />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted, #666)' }}>
                 <span>10%</span><span>50%</span><span>90%</span>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                <span className="rules-label" style={{ margin: 0 }}>FVG Min Width Filter</span>
+                <div className="actions-row">
+                  <input
+                    type="number"
+                    min={0}
+                    max={10}
+                    step={0.1}
+                    value={fvgMinWidthPct}
+                    className="rules-input rules-input--sm"
+                    onChange={(e) => setFvgMinWidthPct(clampNumber(Number(e.target.value), 0, 10))}
+                  />
+                  <strong style={{ fontSize: 14 }}>{fvgMinWidthPct}%</strong>
+                </div>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={2}
+                step={0.1}
+                value={fvgMinWidthPct}
+                onChange={(e) => setFvgMinWidthPct(clampNumber(Number(e.target.value), 0, 10))}
+                className="rules-range"
+                style={{ width: '100%', marginTop: 0 }}
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted, #666)' }}>
+                <span>0%</span><span>0.3%</span><span>2%</span>
               </div>
             </div>
           </div>

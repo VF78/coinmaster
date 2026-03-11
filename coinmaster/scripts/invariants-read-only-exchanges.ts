@@ -38,6 +38,7 @@ function makeSettings(): AppSettings {
       emergencyExitTimeframes: ['1h'],
       engulfingLookbackCandles: 5,
       fvgRetrace: 0.5,
+      fvgMinWidthPct: 0.3,
       maxLeverage: 5,
       dailyDrawdown: 5,
       tpPct: 2,

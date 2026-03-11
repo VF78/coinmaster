@@ -37,6 +37,8 @@ export interface TradingRulesSettings {
   /** Lookback window for engulfing / breakout detection (candles). */
   engulfingLookbackCandles: number;
   fvgRetrace: number;
+  /** Minimum FVG zone width as % of current price (filters out micro-gaps/noise). */
+  fvgMinWidthPct: number;
   maxLeverage: number;
   dailyDrawdown: number;
   /** @deprecated use tpLevels[] — kept for back-compat serialisation */

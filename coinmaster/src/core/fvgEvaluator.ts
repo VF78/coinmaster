@@ -33,6 +33,10 @@ export interface FvgZone {
   bottom: number;
   /** Midpoint of the gap */
   midpoint: number;
+  /** Absolute zone width */
+  width: number;
+  /** Zone width as % of reference price */
+  widthPct: number;
   /** ISO timestamp of the 3rd candle that completed the FVG */
   candleTimestamp: string;
   timeframe: FvgTimeframe;
@@ -90,6 +94,7 @@ export function detectFvgZones(
   candles: Candle[],
   timeframe: FvgTimeframe,
   lookback: number = 10,
+  minWidthPct: number = 0,
 ): FvgZone[] {
   const zones: FvgZone[] = [];
   if (candles.length < 3) return zones;
@@ -106,28 +111,42 @@ export function detectFvgZones(
     if (c0.high < c2.low) {
       const bottom = c0.high;
       const top = c2.low;
-      zones.push({
-        direction: 'bullish',
-        top,
-        bottom,
-        midpoint: (top + bottom) / 2,
-        candleTimestamp: c2.timestamp,
-        timeframe,
-      });
+      const width = top - bottom;
+      const referencePrice = Math.max(Math.abs((top + bottom) / 2), Number.EPSILON);
+      const widthPct = (width / referencePrice) * 100;
+      if (widthPct >= minWidthPct) {
+        zones.push({
+          direction: 'bullish',
+          top,
+          bottom,
+          midpoint: (top + bottom) / 2,
+          width,
+          widthPct,
+          candleTimestamp: c2.timestamp,
+          timeframe,
+        });
+      }
     }
 
     // Bearish FVG: gap between low of c0 and high of c2
     if (c0.low > c2.high) {
       const bottom = c2.high;
       const top = c0.low;
-      zones.push({
-        direction: 'bearish',
-        top,
-        bottom,
-        midpoint: (top + bottom) / 2,
-        candleTimestamp: c2.timestamp,
-        timeframe,
-      });
+      const width = top - bottom;
+      const referencePrice = Math.max(Math.abs((top + bottom) / 2), Number.EPSILON);
+      const widthPct = (width / referencePrice) * 100;
+      if (widthPct >= minWidthPct) {
+        zones.push({
+          direction: 'bearish',
+          top,
+          bottom,
+          midpoint: (top + bottom) / 2,
+          width,
+          widthPct,
+          candleTimestamp: c2.timestamp,
+          timeframe,
+        });
+      }
     }
   }
 
@@ -191,6 +210,7 @@ export function evaluateFvg(
   currentPrice: number,
   fvgRetracePct: number,
   lookback: number = 10,
+  fvgMinWidthPct: number = 0,
 ): FvgSignal {
   const noSignal = (reason: string): FvgSignal => ({
     detected: false,
@@ -210,9 +230,9 @@ export function evaluateFvg(
   const structureBreak = detectStructureBreak(candles, 20);
 
   // 2. Detect FVG zones
-  const allZones = detectFvgZones(candles, timeframe, lookback);
+  const allZones = detectFvgZones(candles, timeframe, lookback, fvgMinWidthPct);
   if (allZones.length === 0) {
-    return noSignal('no_fvg_zones_in_lookback');
+    return noSignal(`no_fvg_zones_in_lookback_min_width_${fvgMinWidthPct}pct`);
   }
 
   // 3. Filter by structure break (if available)
@@ -235,7 +255,7 @@ export function evaluateFvg(
         triggerPrice: +triggerPrice.toFixed(8),
         currentPrice,
         timeframe,
-        reason: `fvg_retrace_${fvgRetracePct}pct_${zone.direction}_${timeframe}${structureBreak ? `_bos_${structureBreak}` : ''}`,
+        reason: `fvg_retrace_${fvgRetracePct}pct_minwidth_${fvgMinWidthPct}pct_${zone.direction}_${timeframe}${structureBreak ? `_bos_${structureBreak}` : ''}`,
       };
     }
   }

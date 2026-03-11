@@ -30,6 +30,7 @@ export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   emergencyExitTimeframes: ['1h'],
   engulfingLookbackCandles: 30,
   fvgRetrace: 50,
+  fvgMinWidthPct: 0.3,
   maxLeverage: 5,
   dailyDrawdown: 3,
   tpPct: 6,
@@ -188,6 +189,7 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
   base.exitTf = base.emergencyExitTimeframes[0];
 
   base.fvgRetrace = clampNumber(raw.fvgRetrace, 10, 90, base.fvgRetrace);
+  base.fvgMinWidthPct = clampNumber(raw.fvgMinWidthPct, 0, 10, base.fvgMinWidthPct);
   base.maxLeverage = clampNumber(raw.maxLeverage, 1, 50, base.maxLeverage);
   base.dailyDrawdown = clampNumber(raw.dailyDrawdown, 0, 100, base.dailyDrawdown);
   base.slPct = clampNumber(raw.slPct, 0, 1000, base.slPct);

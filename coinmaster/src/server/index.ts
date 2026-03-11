@@ -2831,6 +2831,7 @@ async function runFvgMonitorTick(): Promise<void> {
     if (!raw) return; // env fallback
 
     const fvgRetracePct = raw.fvgRetrace ?? 50;
+    const fvgMinWidthPct = raw.fvgMinWidthPct ?? 0.3;
     if (!Number.isFinite(fvgRetracePct) || fvgRetracePct <= 0) return;
 
     const symbols = getMonitoredSymbols(raw);
@@ -2873,7 +2874,7 @@ async function runFvgMonitorTick(): Promise<void> {
           });
 
           const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
-          const signal = evaluateFvg(closedCandles, tf, mid, fvgRetracePct, lookback);
+          const signal = evaluateFvg(closedCandles, tf, mid, fvgRetracePct, lookback, fvgMinWidthPct);
           if (!signal.detected || !signal.direction) continue;
 
           const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
@@ -2912,6 +2913,7 @@ async function runFvgMonitorTick(): Promise<void> {
             zoneTop: signal.zone?.top,
             zoneBottom: signal.zone?.bottom,
             fvgRetracePct,
+            fvgMinWidthPct,
             operatorBias,
             reason: signal.reason,
           },

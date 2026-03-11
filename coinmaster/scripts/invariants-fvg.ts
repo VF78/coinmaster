@@ -78,6 +78,8 @@ console.log('\n── Case 2: Bullish FVG detection ──');
     assert(Math.abs(bz.bottom - 102) < 0.01, `bullish bottom = c0.high = 102 (got ${bz.bottom})`);
     assert(Math.abs(bz.top - 105) < 0.01, `bullish top = c2.low = 105 (got ${bz.top})`);
     assert(Math.abs(bz.midpoint - 103.5) < 0.01, `bullish midpoint = 103.5 (got ${bz.midpoint})`);
+    assert(bz.width > 0, `bullish width > 0 (got ${bz.width})`);
+    assert(bz.widthPct > 0, `bullish widthPct > 0 (got ${bz.widthPct})`);
   }
 }
 
@@ -110,11 +112,25 @@ console.log('\n── Case 4: No FVG when candles overlap ──');
   assert(bearishZones.length === 0, 'no bearish FVG in overlapping market');
 }
 
+console.log('\n── Case 4b: Min-width filter removes micro FVGs ──');
+{
+  const candles: Candle[] = [
+    makeCandle(100, 100.05, 99.9, 100, '2026-01-01T00:00:00Z'),
+    makeCandle(100, 100.08, 99.95, 100.02, '2026-01-01T01:00:00Z'),
+    makeCandle(100.02, 100.2, 100.15, 100.18, '2026-01-01T02:00:00Z'),
+    makeCandle(100.18, 100.2, 100.1, 100.12, '2026-01-01T03:00:00Z'),
+  ];
+  const noFilter = detectFvgZones(candles, '1h', 10, 0);
+  const filtered = detectFvgZones(candles, '1h', 10, 0.3);
+  assert(noFilter.length >= 1, 'micro FVG appears without min-width filter');
+  assert(filtered.length === 0, 'micro FVG filtered out by min-width threshold');
+}
+
 // ─── Retrace Trigger ──────────────────────────────────────────────────
 console.log('\n── Case 5: Retrace trigger computation ──');
 {
-  const bullishZone: FvgZone = { direction: 'bullish', top: 110, bottom: 100, midpoint: 105, candleTimestamp: '', timeframe: '1h' };
-  const bearishZone: FvgZone = { direction: 'bearish', top: 110, bottom: 100, midpoint: 105, candleTimestamp: '', timeframe: '4h' };
+  const bullishZone: FvgZone = { direction: 'bullish', top: 110, bottom: 100, midpoint: 105, width: 10, widthPct: 9.52, candleTimestamp: '', timeframe: '1h' };
+  const bearishZone: FvgZone = { direction: 'bearish', top: 110, bottom: 100, midpoint: 105, width: 10, widthPct: 9.52, candleTimestamp: '', timeframe: '4h' };
 
   // 50% retrace
   assert(Math.abs(computeRetraceTrigger(bullishZone, 50) - 105) < 0.01, 'bullish 50% trigger = midpoint = 105');
@@ -132,8 +148,8 @@ console.log('\n── Case 5: Retrace trigger computation ──');
 // ─── isFvgRetracedToLevel ─────────────────────────────────────────────
 console.log('\n── Case 6: isFvgRetracedToLevel ──');
 {
-  const bullishZone: FvgZone = { direction: 'bullish', top: 110, bottom: 100, midpoint: 105, candleTimestamp: '', timeframe: '1h' };
-  const bearishZone: FvgZone = { direction: 'bearish', top: 110, bottom: 100, midpoint: 105, candleTimestamp: '', timeframe: '4h' };
+  const bullishZone: FvgZone = { direction: 'bullish', top: 110, bottom: 100, midpoint: 105, width: 10, widthPct: 9.52, candleTimestamp: '', timeframe: '1h' };
+  const bearishZone: FvgZone = { direction: 'bearish', top: 110, bottom: 100, midpoint: 105, width: 10, widthPct: 9.52, candleTimestamp: '', timeframe: '4h' };
 
   // Bullish zone, 50% retrace (trigger=105): price=104 → triggered (below trigger, above bottom)
   assert(isFvgRetracedToLevel(bullishZone, 104, 50) === true, 'bullish: price 104 below trigger 105 → triggered');
@@ -204,6 +220,21 @@ console.log('\n── Case 10: evaluateFvg — bearish signal detected ──');
   const signal = evaluateFvg(candles, '4h', 196.5, 50, 10);
   // Note: depends on exact numbers, just check structure
   assert(typeof signal.detected === 'boolean', 'evaluateFvg returns valid signal object for bearish scenario');
+}
+
+console.log('\n── Case 10b: evaluateFvg respects min-width filter ──');
+{
+  const candles: Candle[] = makeCandles(22, 100);
+  candles.push(makeCandle(100, 100.05, 99.95, 100));
+  candles.push(makeCandle(100, 100.08, 99.98, 100.02));
+  candles.push(makeCandle(100.02, 100.2, 100.15, 100.18));
+  candles.push(makeCandle(100.18, 100.2, 100.1, 100.12));
+
+  const loose = evaluateFvg(candles, '1h', 100.16, 50, 10, 0);
+  const strict = evaluateFvg(candles, '1h', 100.16, 50, 10, 0.3);
+  assert(typeof loose.detected === 'boolean', 'evaluateFvg returns result without min-width filter');
+  assert(strict.detected === false, 'strict min-width filter suppresses micro FVG signal');
+  assert(strict.reason.includes('min_width'), `strict reason mentions min width: ${strict.reason}`);
 }
 
 console.log('\n── Case 11: lookback limits zone search ──');
