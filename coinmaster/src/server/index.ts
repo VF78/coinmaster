@@ -11,6 +11,7 @@ import logger from '../lib/logger.js';
 import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
 import { createQueuedBacktestRun } from '../core/backtest.js';
+import { executeBacktestRun, isBacktestRunning, getActiveBacktestRunId } from '../core/backtestWorker.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
@@ -4619,8 +4620,18 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
     requestedBy: 'owner',
   });
 
+  if (isBacktestRunning()) {
+    return res.status(409).json({ ok: false, error: 'backtest_already_running', activeRunId: getActiveBacktestRunId() });
+  }
+
   db.data.backtestRuns = compactBacktestRuns([run, ...(Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [])]);
   await db.write();
+
+  // Fire-and-forget: run in background, never blocks the response
+  const depositUsd = Number(db.data.settings?.depositUsd) || 1000;
+  executeBacktestRun(run.id, exchange, depositUsd).catch((err) => {
+    logger.error({ component: 'backtest', runId: run.id, err: err instanceof Error ? err.message : err }, 'backtest background run failed');
+  });
 
   return res.status(201).json({ ok: true, run });
 });
