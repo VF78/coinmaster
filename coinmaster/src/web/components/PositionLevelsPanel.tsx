@@ -104,9 +104,6 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
       : [position.takeProfit].filter((v): v is number => Number.isFinite(v) && (v ?? 0) > 0);
     return buildLevelsSignature(Number(position.stopLoss ?? NaN), existingTps);
   });
-  const [tpPctInputs, setTpPctInputs] = useState<string[]>(() => takeProfits.map((tp) => formatPctInput(pctFromPrice(side, entry, tp))));
-  const [slPctInput, setSlPctInput] = useState<string>(() => formatPctInput(Math.abs(pctFromPrice(side, entry, stopLoss))));
-  const [activePctField, setActivePctField] = useState<{ kind: 'sl' } | { kind: 'tp'; index: number } | null>(null);
   const [dragging, setDragging] = useState<{ kind: 'sl' | 'tp'; index: number } | null>(null);
   const [chipCoords, setChipCoords] = useState<{ pnl: number | null; sl: number | null; tps: Array<number | null> }>({ pnl: null, sl: null, tps: [] });
 
@@ -124,6 +121,10 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     const base = position.takeProfit ?? (entry > 0 ? priceFromPct(side, entry, 2) : 0);
     return base > 0 ? [Number(base.toFixed(2))] : [];
   });
+
+  const [tpPctInputs, setTpPctInputs] = useState<string[]>(() => takeProfits.map((tp) => formatPctInput(pctFromPrice(side, entry, tp))));
+  const [slPctInput, setSlPctInput] = useState<string>(() => formatPctInput(Math.abs(pctFromPrice(side, entry, stopLoss))));
+  const [activePctField, setActivePctField] = useState<{ kind: 'sl' } | { kind: 'tp'; index: number } | null>(null);
 
   const stopLossRef = useRef(stopLoss);
   const takeProfitsRef = useRef(takeProfits);
