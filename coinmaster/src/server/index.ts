@@ -10,6 +10,7 @@ import { nanoid } from 'nanoid';
 import logger from '../lib/logger.js';
 import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
+import { createQueuedBacktestRun } from '../core/backtest.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
@@ -19,6 +20,8 @@ import type {
   AiMasterQaItem,
   AiMasterSnapshotResponse,
   AssetClass,
+  BacktestCreateRunRequest,
+  BacktestRun,
   BiasMode,
   ExchangeConnectionSettingsPayload,
   LiveDashboardState,
@@ -90,6 +93,7 @@ const TELEGRAM_OUTBOX_RETRY_MAX_MS = Math.max(30_000, Number(process.env.TELEGRA
 const TELEGRAM_OUTBOX_MAX_ATTEMPTS = Math.max(3, Number(process.env.TELEGRAM_OUTBOX_MAX_ATTEMPTS || 12));
 const TELEGRAM_OUTBOX_SENT_RETENTION_MS = 24 * 60 * 60_000;
 const TELEGRAM_OUTBOX_FAILED_RETENTION_MS = 7 * 24 * 60 * 60_000;
+const BACKTEST_RUN_HISTORY_LIMIT = Math.max(20, Number(process.env.BACKTEST_RUN_HISTORY_LIMIT || 200));
 const COINMASTER_ENV_PATH = process.env.COINMASTER_ENV_PATH || '/etc/coinmaster/coinmaster.env';
 
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
@@ -117,6 +121,12 @@ async function getCachedExchangeLiveState(symbol: string, mode = getLiveMode()):
     value: { ...value, pendingConfirmations: [] },
   };
   return liveSnapshotCache.value;
+}
+
+function compactBacktestRuns(items: BacktestRun[]): BacktestRun[] {
+  return [...items]
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .slice(0, BACKTEST_RUN_HISTORY_LIMIT);
 }
 
 function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
@@ -4562,6 +4572,58 @@ if (ENABLE_REPLAY_API) {
     }
   });
 }
+
+app.get('/api/backtest/runs', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  db.data.backtestRuns = compactBacktestRuns(Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : []);
+  return res.json({ ok: true, runs: db.data.backtestRuns });
+});
+
+app.get('/api/backtest/runs/:id', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const run = db.data.backtestRuns.find((item) => item.id === req.params.id);
+  if (!run) {
+    return res.status(404).json({ ok: false, error: 'backtest_run_not_found' });
+  }
+  return res.json({ ok: true, run });
+});
+
+app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
+  const body = (req.body ?? {}) as Partial<BacktestCreateRunRequest>;
+  const symbol = normalizeSymbol(body.symbol);
+  const startTimeMs = Number(body.startTimeMs);
+  const endTimeMs = Number(body.endTimeMs);
+
+  if (!symbol) {
+    return res.status(400).json({ ok: false, error: 'symbol_required' });
+  }
+  if (!Number.isFinite(startTimeMs) || !Number.isFinite(endTimeMs) || endTimeMs <= startTimeMs) {
+    return res.status(400).json({ ok: false, error: 'invalid_time_range' });
+  }
+
+  const db = await getDb();
+  const baseRules = body.rules && typeof body.rules === 'object'
+    ? normalizeTradingRules(body.rules as TradingRulesSettings)
+    : normalizeTradingRules(db.data.settings?.tradingRules);
+
+  const run = createQueuedBacktestRun({
+    request: {
+      symbol,
+      startTimeMs,
+      endTimeMs,
+      rules: baseRules,
+    },
+    rules: baseRules,
+    symbol,
+    requestedBy: 'owner',
+  });
+
+  db.data.backtestRuns = compactBacktestRuns([run, ...(Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [])]);
+  await db.write();
+
+  return res.status(201).json({ ok: true, run });
+});
 
 // ─── Risk Check Endpoint ──────────────────────────────────────────────
 app.get('/api/live/risk-check', ownerAuth, async (_req, res) => {

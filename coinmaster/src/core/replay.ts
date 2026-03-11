@@ -66,7 +66,8 @@ function buildReplayDb(depositUsd: number): DBShape {
     pendingConfirmations: [],
     telegramOutbox: [],
     aiMasterInsights: [],
-    aiMasterQa: []
+    aiMasterQa: [],
+    backtestRuns: []
   };
 }
 

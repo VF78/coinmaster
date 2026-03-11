@@ -1,4 +1,4 @@
-import type { AiMasterInsight, AiMasterQaItem, AppSettings, BiasCommand, DailyDDBaseline, MarketTick, PendingConfirmation, Position, RiskGateAuditEntry, TelegramOutboxItem, TradeEvent, TradeLog } from '../shared/dto.js';
+import type { AiMasterInsight, AiMasterQaItem, AppSettings, BacktestRun, BiasCommand, DailyDDBaseline, MarketTick, PendingConfirmation, Position, RiskGateAuditEntry, TelegramOutboxItem, TradeEvent, TradeLog } from '../shared/dto.js';
 
 export type {
   AppSettings,
@@ -31,4 +31,5 @@ export interface DBShape {
   telegramOutbox: TelegramOutboxItem[];
   aiMasterInsights: AiMasterInsight[];
   aiMasterQa: AiMasterQaItem[];
+  backtestRuns: BacktestRun[];
 }

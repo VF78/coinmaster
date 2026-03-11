@@ -40,7 +40,8 @@ const defaultData: DBShape = {
   pendingConfirmations: [],
   telegramOutbox: [],
   aiMasterInsights: [],
-  aiMasterQa: []
+  aiMasterQa: [],
+  backtestRuns: []
 };
 
 function ensureDbShape(data: DBShape) {
@@ -120,6 +121,7 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.telegramOutbox)) data.telegramOutbox = [];
   if (!Array.isArray(data.aiMasterInsights)) data.aiMasterInsights = [];
   if (!Array.isArray(data.aiMasterQa)) data.aiMasterQa = [];
+  if (!Array.isArray(data.backtestRuns)) data.backtestRuns = [];
 }
 
 export class LowdbStore implements PersistenceStore {

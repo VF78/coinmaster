@@ -610,3 +610,88 @@ export interface AiMasterSnapshotResponse {
   insights: AiMasterInsight[];
   qa: AiMasterQaItem[];
 }
+
+export type BacktestRunStatus = 'queued' | 'running' | 'completed' | 'failed';
+export type BacktestAiAnalysisStatus = 'idle' | 'pending' | 'completed' | 'failed';
+
+export interface BacktestRunSummary {
+  totalTrades: number;
+  winRatePct: number;
+  realizedPnlUsd: number;
+  openPnlUsd: number;
+  netPnlUsd: number;
+  roiPct: number;
+  maxDrawdownPct: number;
+}
+
+export interface BacktestRunSymbolStats {
+  symbol: string;
+  totalTrades: number;
+  wins: number;
+  losses: number;
+  realizedPnlUsd: number;
+  netPnlUsd: number;
+  slCount: number;
+  tp1Count: number;
+  tp2Count: number;
+  tp3Count: number;
+  emergencyExitCount: number;
+  rejectedSignals: number;
+}
+
+export interface BacktestRunAiAnalysis {
+  status: BacktestAiAnalysisStatus;
+  model?: string;
+  requestedAt?: string;
+  completedAt?: string;
+  error?: string;
+  summary?: string;
+  recommendations?: string[];
+}
+
+export interface BacktestRun {
+  id: string;
+  status: BacktestRunStatus;
+  symbol: string;
+  startedAt?: string;
+  finishedAt?: string;
+  createdAt: string;
+  requestedBy?: string;
+  startTimeMs: number;
+  endTimeMs: number;
+  engineVersion: string;
+  engineCommit: string;
+  marketDataCoverage?: {
+    requestedFromMs: number;
+    requestedToMs: number;
+    loadedFromMs?: number;
+    loadedToMs?: number;
+  };
+  rulesSnapshot: TradingRulesSettings;
+  summary?: BacktestRunSummary;
+  bySymbol: BacktestRunSymbolStats[];
+  aiAnalysis: BacktestRunAiAnalysis;
+  artifacts?: {
+    eventCount?: number;
+    tradeCount?: number;
+    equityCurvePoints?: number;
+  };
+  error?: string;
+}
+
+export interface BacktestCreateRunRequest {
+  symbol: string;
+  startTimeMs: number;
+  endTimeMs: number;
+  rules?: TradingRulesSettings;
+}
+
+export interface BacktestRunResponse {
+  ok: boolean;
+  run: BacktestRun;
+}
+
+export interface BacktestRunListResponse {
+  ok: boolean;
+  runs: BacktestRun[];
+}
