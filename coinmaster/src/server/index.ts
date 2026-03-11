@@ -963,6 +963,62 @@ interface AnalyticsHistorySummary {
   bySymbol: Array<{ symbol: string; realized: number; fills: number }>;
 }
 
+interface AnalyticsQualityMetrics {
+  generatedAt: string;
+  windowStart: string;
+  windowEnd: string;
+  hours: number;
+  counts: {
+    signalDetected: number;
+    signalRejected: number;
+    ordersSubmitted: number;
+    ordersAcked: number;
+    ordersRejected: number;
+    openFills: number;
+    closeFills: number;
+    manualOpenDetected: number;
+    manualCloseDetected: number;
+  };
+  rates: {
+    signalToOrderPct: number;
+    signalRejectPct: number;
+    submitToAckPct: number;
+    submitRejectPct: number;
+    ackToOpenFillPct: number;
+    signalToOpenFillPct: number;
+    closeWinRatePct: number;
+    manualOpenSharePct: number;
+    manualCloseSharePct: number;
+  };
+}
+
+interface PostTradeAnalyticsItem {
+  id: string;
+  symbol: string;
+  source: string;
+  side: 'long' | 'short';
+  openTimestamp?: string;
+  closeTimestamp: string;
+  holdMinutes?: number;
+  entryPrice?: number;
+  exitPrice?: number;
+  size?: number;
+  realizedPnlUsd: number;
+  feesUsd: number;
+  netPnlUsd: number;
+  outcome: 'win' | 'loss' | 'flat';
+  manualOpenDetected: boolean;
+  manualCloseDetected: boolean;
+  eventCounts: {
+    signalDetected: number;
+    signalRejected: number;
+    ordersSubmitted: number;
+    ordersAcked: number;
+    ordersRejected: number;
+  };
+  notes: string[];
+}
+
 function fillSource(fill: FillEvent): string {
   return String((fill.raw as { sourceExchange?: unknown } | undefined)?.sourceExchange ?? exchange.name).toLowerCase();
 }
@@ -1204,6 +1260,180 @@ async function buildAnalyticsHistorySummary(days = 3650): Promise<AnalyticsHisto
     },
     bySource: [...bySourceMap.values()].sort((a, b) => a.source.localeCompare(b.source)),
     bySymbol: [...bySymbolMap.values()].sort((a, b) => Math.abs(b.realized) - Math.abs(a.realized)).slice(0, 40),
+  };
+}
+
+function pct(part: number, whole: number): number {
+  if (!Number.isFinite(part) || !Number.isFinite(whole) || whole <= 0) return 0;
+  return Number(((part / whole) * 100).toFixed(2));
+}
+
+async function buildAnalyticsQualityMetrics(hours = 24 * 7): Promise<AnalyticsQualityMetrics> {
+  const windowHours = Math.max(1, Math.min(24 * 365, Math.floor(hours)));
+  const windowMs = windowHours * 60 * 60_000;
+  const context = await buildDailyAnalyticsContext(windowMs);
+
+  const signalBase = context.execution.signalDetected + context.execution.signalRejected;
+
+  return {
+    generatedAt: context.generatedAt,
+    windowStart: context.windowStart,
+    windowEnd: context.windowEnd,
+    hours: windowHours,
+    counts: {
+      signalDetected: context.execution.signalDetected,
+      signalRejected: context.execution.signalRejected,
+      ordersSubmitted: context.execution.ordersSubmitted,
+      ordersAcked: context.execution.ordersAcked,
+      ordersRejected: context.execution.ordersRejected,
+      openFills: context.fills.open,
+      closeFills: context.fills.close,
+      manualOpenDetected: context.fills.manualOpenDetected,
+      manualCloseDetected: context.fills.manualCloseDetected,
+    },
+    rates: {
+      signalToOrderPct: pct(context.execution.ordersSubmitted, signalBase),
+      signalRejectPct: pct(context.execution.signalRejected, signalBase),
+      submitToAckPct: pct(context.execution.ordersAcked, context.execution.ordersSubmitted),
+      submitRejectPct: pct(context.execution.ordersRejected, context.execution.ordersSubmitted),
+      ackToOpenFillPct: pct(context.fills.executionOnlyOpen, context.execution.ordersAcked),
+      signalToOpenFillPct: pct(context.fills.open, signalBase),
+      closeWinRatePct: context.pnl.winRatePct,
+      manualOpenSharePct: pct(context.fills.manualOpenDetected, context.fills.open),
+      manualCloseSharePct: pct(context.fills.manualCloseDetected, context.fills.close),
+    },
+  };
+}
+
+async function buildPostTradeAnalytics(hours = 24 * 7): Promise<PostTradeAnalyticsItem[]> {
+  const windowHours = Math.max(1, Math.min(24 * 365, Math.floor(hours)));
+  const cutoff = Date.now() - windowHours * 60 * 60_000;
+  const [executionFills, db] = await Promise.all([
+    exchange.getFills().catch(() => [] as FillEvent[]),
+    getDb(),
+  ]);
+  const externalFills = await collectExternalFills(db.data.settings, cutoff);
+  const fills = [...executionFills, ...externalFills]
+    .filter((f) => Date.parse(f.timestamp) >= cutoff)
+    .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+  const events = (db.data.tradeEvents ?? []).filter((e) => Date.parse(e.timestamp) >= cutoff);
+
+  const openQueues = new Map<string, FillEvent[]>();
+  const items: PostTradeAnalyticsItem[] = [];
+
+  for (const fill of fills) {
+    const dir = fillDirection(fill).toLowerCase();
+    const key = `${String(fill.symbol).toUpperCase()}::${String(fill.side).toLowerCase()}`;
+    if (dir.startsWith('open ')) {
+      const queue = openQueues.get(key) ?? [];
+      queue.push(fill);
+      openQueues.set(key, queue);
+      continue;
+    }
+    if (!dir.startsWith('close ')) continue;
+
+    const queue = openQueues.get(key) ?? [];
+    const matchedOpen = queue.length > 0 ? queue.shift() : undefined;
+    if (queue.length > 0) openQueues.set(key, queue); else openQueues.delete(key);
+
+    const closeTs = Date.parse(fill.timestamp);
+    const openTs = matchedOpen ? Date.parse(matchedOpen.timestamp) : NaN;
+    const symbol = String(fill.symbol).toUpperCase();
+    const side = fill.side === 'buy' ? 'long' : 'short';
+    const nearbyEvents = events.filter((e) => {
+      if (String(e.symbol).toUpperCase() !== symbol) return false;
+      const eventTs = Date.parse(String(e.timestamp));
+      if (!Number.isFinite(eventTs) || !Number.isFinite(closeTs)) return false;
+      const left = Number.isFinite(openTs) ? openTs - 5 * 60_000 : closeTs - 24 * 60 * 60_000;
+      return eventTs >= left && eventTs <= closeTs + 5 * 60_000;
+    });
+
+    const eventCounts = {
+      signalDetected: nearbyEvents.filter((e) => e.type === 'signal_detected').length,
+      signalRejected: nearbyEvents.filter((e) => e.type === 'signal_rejected').length,
+      ordersSubmitted: nearbyEvents.filter((e) => e.type === 'order_submitted').length,
+      ordersAcked: nearbyEvents.filter((e) => e.type === 'order_acknowledged').length,
+      ordersRejected: nearbyEvents.filter((e) => e.type === 'order_rejected').length,
+    };
+
+    const manualOpenDetected = matchedOpen ? isManualOpenFill(matchedOpen, events) : false;
+    const manualCloseDetected = isManualCloseFill(fill, events);
+    const realized = fillClosedPnl(fill);
+    const fees = fillFee(fill) + (matchedOpen ? fillFee(matchedOpen) : 0);
+    const net = realized - fees;
+    const notes: string[] = [];
+
+    if (manualOpenDetected) notes.push('manual_open_detected');
+    if (manualCloseDetected) notes.push('manual_close_detected');
+    if (eventCounts.signalDetected === 0 && eventCounts.ordersSubmitted === 0) notes.push('no_system_signal_or_order_context');
+    if (eventCounts.ordersRejected > 0) notes.push('order_rejection_seen_in_trade_window');
+    if (!matchedOpen) notes.push('open_fill_not_matched_in_window');
+
+    items.push({
+      id: `${symbol}:${fill.timestamp}:${items.length + 1}`,
+      symbol,
+      source: fillSource(fill),
+      side,
+      openTimestamp: matchedOpen?.timestamp,
+      closeTimestamp: fill.timestamp,
+      holdMinutes: Number.isFinite(openTs) && Number.isFinite(closeTs) ? Number(((closeTs - openTs) / 60_000).toFixed(2)) : undefined,
+      entryPrice: matchedOpen?.price,
+      exitPrice: fill.price,
+      size: fill.size,
+      realizedPnlUsd: Number(realized.toFixed(6)),
+      feesUsd: Number(fees.toFixed(6)),
+      netPnlUsd: Number(net.toFixed(6)),
+      outcome: net > 0 ? 'win' : net < 0 ? 'loss' : 'flat',
+      manualOpenDetected,
+      manualCloseDetected,
+      eventCounts,
+      notes,
+    });
+  }
+
+  return items.sort((a, b) => b.closeTimestamp.localeCompare(a.closeTimestamp));
+}
+
+async function buildWeeklyAnalyticsReport(): Promise<{ text: string; summary: AnalyticsQualityMetrics & { bySource: Array<{ source: string; fills: number; realized: number; fees: number; net: number }>; bySymbol: Array<{ symbol: string; realized: number; fills: number }> } }> {
+  const [quality, history, trades] = await Promise.all([
+    buildAnalyticsQualityMetrics(24 * 7),
+    buildAnalyticsHistorySummary(7),
+    buildPostTradeAnalytics(24 * 7),
+  ]);
+
+  const winners = trades.filter((t) => t.outcome === 'win').length;
+  const losers = trades.filter((t) => t.outcome === 'loss').length;
+  const manualTrades = trades.filter((t) => t.manualOpenDetected || t.manualCloseDetected).length;
+
+  const lines = [
+    '🗓 Weekly trade / signal report (7d)',
+    `Window: ${quality.windowStart} → ${quality.windowEnd}`,
+    '',
+    '📊 Outcome',
+    `- Net: ${asUsd(history.totals.net)} | Realized: ${asUsd(history.totals.realized)} | Fees: ${asUsd(-history.totals.fees)}`,
+    `- Fills: ${history.totals.fills} (open ${history.totals.openFills}, close ${history.totals.closeFills})`,
+    `- Closed-trade win rate: ${asPct(quality.rates.closeWinRatePct)} (${winners}/${winners + losers || 0})`,
+    `- Manual trade share: open ${asPct(quality.rates.manualOpenSharePct)}, close ${asPct(quality.rates.manualCloseSharePct)} (${manualTrades} trade windows touched manually)`,
+    '',
+    '🎯 Funnel / quality metrics',
+    `- signal→order: ${asPct(quality.rates.signalToOrderPct)} | rejected at signal stage: ${asPct(quality.rates.signalRejectPct)}`,
+    `- submit→ack: ${asPct(quality.rates.submitToAckPct)} | submit rejects: ${asPct(quality.rates.submitRejectPct)}`,
+    `- ack→open fill: ${asPct(quality.rates.ackToOpenFillPct)} | signal→open fill: ${asPct(quality.rates.signalToOpenFillPct)}`,
+    ...formatSymbolBreakdown('- Top symbols by realized:', history.bySymbol.map((x) => ({ symbol: x.symbol, value: x.realized })), 5),
+    ...(
+      history.bySource.length > 1
+        ? ['- By source:', ...history.bySource.map((row) => `- ${row.source}: fills ${row.fills}, net ${asUsd(row.net)}`)]
+        : []
+    ),
+  ];
+
+  return {
+    text: lines.join('\n').slice(0, 3900),
+    summary: {
+      ...quality,
+      bySource: history.bySource.map((row) => ({ source: row.source, fills: row.fills, realized: row.realized, fees: row.fees, net: row.net })),
+      bySymbol: history.bySymbol,
+    },
   };
 }
 
@@ -3520,6 +3750,39 @@ app.get('/api/analytics/history/summary', ownerAuth, async (req, res) => {
     return res.json({ ok: true, summary });
   } catch (error) {
     return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'analytics_history_summary_failed' });
+  }
+});
+
+app.get('/api/analytics/quality', ownerAuth, async (req, res) => {
+  const hoursRaw = Number(req.query.hours);
+  const hours = Number.isFinite(hoursRaw) ? Math.max(1, Math.min(24 * 365, Math.floor(hoursRaw))) : 24 * 7;
+
+  try {
+    const metrics = await buildAnalyticsQualityMetrics(hours);
+    return res.json({ ok: true, metrics });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'analytics_quality_failed' });
+  }
+});
+
+app.get('/api/analytics/trades/post-trade', ownerAuth, async (req, res) => {
+  const hoursRaw = Number(req.query.hours);
+  const hours = Number.isFinite(hoursRaw) ? Math.max(1, Math.min(24 * 365, Math.floor(hoursRaw))) : 24 * 7;
+
+  try {
+    const items = await buildPostTradeAnalytics(hours);
+    return res.json({ ok: true, hours, items });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'post_trade_analytics_failed' });
+  }
+});
+
+app.get('/api/analytics/weekly/report', ownerAuth, async (_req, res) => {
+  try {
+    const report = await buildWeeklyAnalyticsReport();
+    return res.json({ ok: true, text: report.text, summary: report.summary });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'weekly_report_failed' });
   }
 });
 

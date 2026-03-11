@@ -333,6 +333,77 @@ export interface LiveHistoryResponse {
   fills: LiveFill[];
 }
 
+export interface AnalyticsQualityMetrics {
+  generatedAt: string;
+  windowStart: string;
+  windowEnd: string;
+  hours: number;
+  counts: {
+    signalDetected: number;
+    signalRejected: number;
+    ordersSubmitted: number;
+    ordersAcked: number;
+    ordersRejected: number;
+    openFills: number;
+    closeFills: number;
+    manualOpenDetected: number;
+    manualCloseDetected: number;
+  };
+  rates: {
+    signalToOrderPct: number;
+    signalRejectPct: number;
+    submitToAckPct: number;
+    submitRejectPct: number;
+    ackToOpenFillPct: number;
+    signalToOpenFillPct: number;
+    closeWinRatePct: number;
+    manualOpenSharePct: number;
+    manualCloseSharePct: number;
+  };
+}
+
+export interface PostTradeAnalyticsItem {
+  id: string;
+  symbol: string;
+  source: string;
+  side: TradeSide;
+  openTimestamp?: string;
+  closeTimestamp: string;
+  holdMinutes?: number;
+  entryPrice?: number;
+  exitPrice?: number;
+  size?: number;
+  realizedPnlUsd: number;
+  feesUsd: number;
+  netPnlUsd: number;
+  outcome: 'win' | 'loss' | 'flat';
+  manualOpenDetected: boolean;
+  manualCloseDetected: boolean;
+  eventCounts: {
+    signalDetected: number;
+    signalRejected: number;
+    ordersSubmitted: number;
+    ordersAcked: number;
+    ordersRejected: number;
+  };
+  notes: string[];
+}
+
+export interface PostTradeAnalyticsResponse {
+  ok: boolean;
+  hours: number;
+  items: PostTradeAnalyticsItem[];
+}
+
+export interface AnalyticsWeeklyReportResponse {
+  ok: boolean;
+  text: string;
+  summary: AnalyticsQualityMetrics & {
+    bySource: Array<{ source: string; fills: number; realized: number; fees: number; net: number }>;
+    bySymbol: Array<{ symbol: string; realized: number; fills: number }>;
+  };
+}
+
 export interface LiveCandle {
   timestamp: string;
   open: number;
