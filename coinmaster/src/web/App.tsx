@@ -4,13 +4,15 @@ import { HistoryPage } from './pages/HistoryPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { TradingRulesPage } from './pages/TradingRulesPage';
 import { AiMasterPage } from './pages/AiMasterPage';
+import { BacktestPage } from './pages/BacktestPage';
 import { useDialog } from './components/DialogProvider';
 
-type PageKey = 'dashboard' | 'history' | 'settings' | 'trading-rules' | 'ai-master';
+type PageKey = 'dashboard' | 'history' | 'settings' | 'trading-rules' | 'ai-master' | 'backtest';
 
 const SECTIONS: Array<{ key: PageKey; label: string }> = [
   { key: 'dashboard', label: 'Dashboard' },
   { key: 'trading-rules', label: 'Trading Rules' },
+  { key: 'backtest', label: 'Backtest' },
   { key: 'history', label: 'History' },
   { key: 'ai-master', label: 'AI Master' },
   { key: 'settings', label: 'Settings' }
@@ -90,6 +92,7 @@ export function App() {
               }}
             />
           ) : null}
+          {page === 'backtest' ? <BacktestPage /> : null}
           {page === 'settings' ? <SettingsPage /> : null}
         </section>
       </div>

@@ -341,3 +341,23 @@ export function testBybitConnection() {
     method: 'POST',
   });
 }
+
+// ─── Backtest ─────────────────────────────────────────────────────────
+
+import type { BacktestRun, BacktestRunListResponse, BacktestRunResponse, BacktestCreateRunRequest } from '../../shared/dto.js';
+
+export function getBacktestRuns() {
+  return jsonFetch<BacktestRunListResponse>('/api/backtest/runs');
+}
+
+export function getBacktestRun(id: string) {
+  return jsonFetch<BacktestRunResponse>(`/api/backtest/runs/${encodeURIComponent(id)}`);
+}
+
+export function createBacktestRun(params: BacktestCreateRunRequest) {
+  return jsonFetch<BacktestRunResponse>('/api/backtest/runs', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(params),
+  });
+}
