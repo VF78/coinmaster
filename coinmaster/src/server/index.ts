@@ -49,12 +49,10 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../../');
-const preferredDistDir = path.join(rootDir, 'dist');
-const distDirCandidates = [preferredDistDir, rootDir];
-const distDir = distDirCandidates.find((candidate) => existsSync(path.join(candidate, 'index.html'))) ?? preferredDistDir;
+const distDir = path.join(rootDir, 'dist');
 
-if (distDir !== preferredDistDir) {
-  logger.warn({ component: 'server', preferredDistDir, fallbackDistDir: distDir }, 'dist/index.html missing, using fallback static root');
+if (!existsSync(path.join(distDir, 'index.html'))) {
+  throw new Error(`dist/index.html missing at ${distDir}; run build/deploy before starting production server`);
 }
 
 const app = express();
