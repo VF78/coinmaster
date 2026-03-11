@@ -1023,6 +1023,63 @@ function fillSource(fill: FillEvent): string {
   return String((fill.raw as { sourceExchange?: unknown } | undefined)?.sourceExchange ?? exchange.name).toLowerCase();
 }
 
+function buildUnifiedTradeEventStream(params: { fills: FillEvent[]; tradeEvents: TradeEvent[] }): TradeEvent[] {
+  const { fills, tradeEvents } = params;
+  const synthetic: TradeEvent[] = [];
+  let seq = tradeEvents.length;
+  let prevHash = tradeEvents.length > 0 ? tradeEvents[tradeEvents.length - 1]?.hash ?? null : null;
+
+  const pushSynthetic = (input: {
+    type: 'manual_open_detected' | 'manual_close_detected';
+    fill: FillEvent;
+    side: 'long' | 'short';
+    reason: string;
+  }) => {
+    seq += 1;
+    const base: Omit<TradeEvent, 'hash'> = {
+      id: `synthetic:${input.type}:${input.fill.id ?? `${input.fill.symbol}:${input.fill.timestamp}:${seq}`}`,
+      seq,
+      symbol: String(input.fill.symbol).toUpperCase(),
+      type: input.type,
+      source: 'live',
+      timestamp: input.fill.timestamp,
+      correlationId: `manual:${String(input.fill.symbol).toUpperCase()}:${input.fill.timestamp}`,
+      side: input.side,
+      price: input.fill.price,
+      quantity: input.fill.size,
+      pnl: input.type === 'manual_close_detected' ? fillClosedPnl(input.fill) : undefined,
+      reason: input.reason,
+      prevHash,
+      payload: {
+        fillId: input.fill.id,
+        sourceExchange: fillSource(input.fill),
+        direction: fillDirection(input.fill),
+      },
+    };
+    const hash = crypto.createHash('sha256').update(JSON.stringify(base)).digest('hex');
+    const event: TradeEvent = { ...base, hash };
+    prevHash = hash;
+    synthetic.push(event);
+  };
+
+  const sortedFills = fills.slice().sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+  for (const fill of sortedFills) {
+    if (fillSource(fill) !== exchange.name.toLowerCase()) continue;
+    const side = fill.side === 'buy' ? 'long' : 'short';
+    if (isManualOpenFill(fill, tradeEvents)) {
+      pushSynthetic({ type: 'manual_open_detected', fill, side, reason: 'manual_open_without_system_submit' });
+    }
+    if (isManualCloseFill(fill, tradeEvents)) {
+      pushSynthetic({ type: 'manual_close_detected', fill, side, reason: 'manual_close_without_system_submit' });
+    }
+  }
+
+  return [...tradeEvents, ...synthetic].sort((a, b) => {
+    const diff = Date.parse(a.timestamp) - Date.parse(b.timestamp);
+    return diff !== 0 ? diff : a.seq - b.seq;
+  });
+}
+
 async function buildDailyAnalyticsContext(windowMs = 24 * 60 * 60_000): Promise<DailyAnalyticsContext> {
   const now = Date.now();
   const cutoff = now - windowMs;
@@ -1038,7 +1095,8 @@ async function buildDailyAnalyticsContext(windowMs = 24 * 60 * 60_000): Promise<
     .filter((f) => Date.parse(f.timestamp) >= cutoff)
     .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
 
-  const recentEvents = (db.data.tradeEvents ?? []).filter((e) => Date.parse(e.timestamp) >= cutoff);
+  const persistedEvents = (db.data.tradeEvents ?? []).filter((e) => Date.parse(e.timestamp) >= cutoff);
+  const recentEvents = buildUnifiedTradeEventStream({ fills: recentFills, tradeEvents: persistedEvents }).filter((e) => Date.parse(e.timestamp) >= cutoff);
   const recentAudits = (db.data.riskGateAudit ?? []).filter((a) => Date.parse(a.timestamp) >= cutoff);
 
   const closeFills = recentFills.filter((f) => fillDirection(f).toLowerCase().startsWith('close '));

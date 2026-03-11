@@ -162,7 +162,9 @@ export type TradeEventType =
   | 'order_acknowledged'
   | 'order_rejected'
   | 'partial_fill'
-  | 'position_closed';
+  | 'position_closed'
+  | 'manual_open_detected'
+  | 'manual_close_detected';
 
 export type TradeEventSource = 'paper' | 'live' | 'replay';
 

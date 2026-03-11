@@ -1,6 +1,8 @@
 import type {
   AiMasterQaItem,
   AiMasterSnapshotResponse,
+  AnalyticsQualityMetrics,
+  AnalyticsWeeklyReportResponse,
   BiasPayload,
   DashboardResponse,
   ExchangeSettingsResponse,
@@ -11,6 +13,7 @@ import type {
   ExchangeConnectionSettingsPayload,
   ExternalExchangesSettingsResponse,
   ExchangeConnectionStatus,
+  PostTradeAnalyticsResponse,
   TradingRulesSettings,
   TradingRulesSettingsResponse,
   TradingRulesSymbolsResponse
@@ -138,6 +141,20 @@ export function getDashboard() {
 
 export function getLiveHistory() {
   return jsonFetch<LiveHistoryResponse>('/api/live/history');
+}
+
+export function getAnalyticsQuality(hours = 24 * 7) {
+  const params = new URLSearchParams({ hours: String(hours) });
+  return jsonFetch<{ ok: boolean; metrics: AnalyticsQualityMetrics }>(`/api/analytics/quality?${params.toString()}`);
+}
+
+export function getPostTradeAnalytics(hours = 24 * 7) {
+  const params = new URLSearchParams({ hours: String(hours) });
+  return jsonFetch<PostTradeAnalyticsResponse>(`/api/analytics/trades/post-trade?${params.toString()}`);
+}
+
+export function getWeeklyAnalyticsReport() {
+  return jsonFetch<AnalyticsWeeklyReportResponse>('/api/analytics/weekly/report');
 }
 
 export function getAiMasterSnapshot(limit = 50) {
