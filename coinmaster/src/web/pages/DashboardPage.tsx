@@ -26,6 +26,7 @@ type FvgTf = '1h' | '4h';
 
 type FvgStateRow = {
   id: string;
+  symbol: string;
   timeframe: FvgTf;
   direction: 'bullish' | 'bearish';
   zoneBottom: number;
@@ -37,7 +38,7 @@ type FvgStateRow = {
   candleTimestamp: string;
 };
 
-function detectFvgState(candles: LiveCandle[], timeframe: FvgTf, currentPrice: number, fvgRetracePct: number): FvgStateRow | null {
+function detectFvgState(symbol: string, candles: LiveCandle[], timeframe: FvgTf, currentPrice: number, fvgRetracePct: number): FvgStateRow | null {
   if (!Array.isArray(candles) || candles.length < 4 || !Number.isFinite(currentPrice)) return null;
 
   const closed = candles.slice(0, -1);
@@ -75,7 +76,8 @@ function detectFvgState(candles: LiveCandle[], timeframe: FvgTf, currentPrice: n
     : 0;
 
   return {
-    id: `fvg-${timeframe}`,
+    id: `fvg-${symbol}-${timeframe}`,
+    symbol,
     timeframe,
     direction: zone.direction,
     zoneBottom: zone.bottom,
@@ -101,11 +103,9 @@ export function DashboardPage() {
   const refreshTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function refresh() {
-    const [next, rulesResp, c1h, c4h] = await Promise.all([
+    const [next, rulesResp] = await Promise.all([
       getDashboard(),
       getTradingRules().catch(() => null),
-      getLiveCandles('BTC', '1h', 140).catch(() => null),
-      getLiveCandles('BTC', '4h', 140).catch(() => null),
     ]);
 
     setData(next);
@@ -114,17 +114,41 @@ export function DashboardPage() {
     const normalizedRetrace = Number.isFinite(retrace) ? Math.max(10, Math.min(90, retrace)) : 50;
     setFvgRetrace(normalizedRetrace);
 
-    const currentPrice = Number(next.latestTick?.price ?? c1h?.candles?.[c1h.candles.length - 1]?.close ?? NaN);
+    const monitoredSymbols = (rulesResp?.rules?.coins ?? [])
+      .filter((coin) => coin.enabled)
+      .map((coin) => String(coin.symbol ?? '').trim().toUpperCase())
+      .filter((symbol, index, arr) => symbol.length > 0 && arr.indexOf(symbol) === index);
+
+    const symbols = monitoredSymbols.length > 0 ? monitoredSymbols : ['BTC'];
+    const candleResponses = await Promise.all(
+      symbols.flatMap((symbol) => [
+        getLiveCandles(symbol, '1h', 140).catch(() => null),
+        getLiveCandles(symbol, '4h', 140).catch(() => null),
+      ])
+    );
+
     const rows: FvgStateRow[] = [];
-    if (c1h?.candles?.length) {
-      const s = detectFvgState(c1h.candles, '1h', currentPrice, normalizedRetrace);
-      if (s) rows.push(s);
+    for (let idx = 0; idx < symbols.length; idx++) {
+      const symbol = symbols[idx];
+      const c1h = candleResponses[idx * 2];
+      const c4h = candleResponses[idx * 2 + 1];
+      const currentPrice = Number(
+        c1h?.candles?.[c1h.candles.length - 1]?.close
+          ?? c4h?.candles?.[c4h.candles.length - 1]?.close
+          ?? NaN
+      );
+
+      if (c1h?.candles?.length) {
+        const s = detectFvgState(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace);
+        if (s) rows.push(s);
+      }
+      if (c4h?.candles?.length) {
+        const s = detectFvgState(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace);
+        if (s) rows.push(s);
+      }
     }
-    if (c4h?.candles?.length) {
-      const s = detectFvgState(c4h.candles, '4h', currentPrice, normalizedRetrace);
-      if (s) rows.push(s);
-    }
-    setFvgRows(rows);
+
+    setFvgRows(rows.sort((a, b) => a.symbol.localeCompare(b.symbol) || a.timeframe.localeCompare(b.timeframe)));
 
     return next;
   }
@@ -380,16 +404,17 @@ export function DashboardPage() {
           </div>
         </Card>
 
-        <Card title="BTC FVG monitor" className="terminal-card full-width">
+        <Card title="FVG monitor" className="terminal-card full-width">
           <p className="muted stat-note" style={{ marginBottom: '0.45rem' }}>
             Retrace level: {fvgRetrace}% • Source: exchange candles (1h/4h)
           </p>
           <DataTable<FvgStateRow>
             rows={fvgRows}
             emptyText="No FVG zones detected in current lookback window."
-            mobileTitle={(row) => `${row.timeframe.toUpperCase()} ${row.direction.toUpperCase()}`}
+            mobileTitle={(row) => `${row.symbol} ${row.timeframe.toUpperCase()} ${row.direction.toUpperCase()}`}
             mobileSubtitle={(row) => `Trigger ${formatNumber(row.triggerPrice)} • Dist ${row.distanceToTriggerPct}%`}
             columns={[
+              { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
               { key: 'tf', header: 'TF', render: (row) => row.timeframe.toUpperCase() },
               { key: 'dir', header: 'Direction', render: (row) => <Badge tone={row.direction === 'bullish' ? 'success' : 'danger'}>{row.direction}</Badge> },
               { key: 'zone', header: 'Zone', render: (row) => `${formatNumber(row.zoneBottom)} - ${formatNumber(row.zoneTop)}` },
