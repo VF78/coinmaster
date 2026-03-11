@@ -21,6 +21,7 @@ const PNL_LABEL: Record<PnlPeriod, string> = {
 };
 
 const BIAS_OPTIONS: Bias[] = ['long', 'short', 'off'];
+const FVG_REFRESH_MS = 60_000;
 
 type FvgTf = '1h' | '4h';
 
@@ -101,6 +102,9 @@ export function DashboardPage() {
   const [fvgRows, setFvgRows] = useState<FvgStateRow[]>([]);
   const [fvgRetrace, setFvgRetrace] = useState<number>(50);
   const refreshTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fvgRowsCacheRef = useRef<Record<string, FvgStateRow>>({});
+  const lastFvgRefreshAtRef = useRef<number>(0);
+  const lastFvgSymbolsKeyRef = useRef<string>('');
 
   async function refresh() {
     const [next, rulesResp] = await Promise.all([
@@ -120,35 +124,56 @@ export function DashboardPage() {
       .filter((symbol, index, arr) => symbol.length > 0 && arr.indexOf(symbol) === index);
 
     const symbols = monitoredSymbols.length > 0 ? monitoredSymbols : ['BTC'];
-    const candleResponses = await Promise.all(
-      symbols.flatMap((symbol) => [
-        getLiveCandles(symbol, '1h', 140).catch(() => null),
-        getLiveCandles(symbol, '4h', 140).catch(() => null),
-      ])
-    );
+    const symbolsKey = symbols.join(',');
+    const now = Date.now();
+    const shouldRefreshFvg =
+      symbolsKey !== lastFvgSymbolsKeyRef.current
+      || now - lastFvgRefreshAtRef.current >= FVG_REFRESH_MS
+      || Object.keys(fvgRowsCacheRef.current).length === 0;
 
-    const rows: FvgStateRow[] = [];
-    for (let idx = 0; idx < symbols.length; idx++) {
-      const symbol = symbols[idx];
-      const c1h = candleResponses[idx * 2];
-      const c4h = candleResponses[idx * 2 + 1];
-      const currentPrice = Number(
-        c1h?.candles?.[c1h.candles.length - 1]?.close
-          ?? c4h?.candles?.[c4h.candles.length - 1]?.close
-          ?? NaN
+    if (shouldRefreshFvg) {
+      const candleResponses = await Promise.all(
+        symbols.flatMap((symbol) => [
+          getLiveCandles(symbol, '1h', 140).catch(() => null),
+          getLiveCandles(symbol, '4h', 140).catch(() => null),
+        ])
       );
 
-      if (c1h?.candles?.length) {
-        const s = detectFvgState(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace);
-        if (s) rows.push(s);
+      const nextCache: Record<string, FvgStateRow> = {};
+      for (let idx = 0; idx < symbols.length; idx++) {
+        const symbol = symbols[idx];
+        const c1h = candleResponses[idx * 2];
+        const c4h = candleResponses[idx * 2 + 1];
+        const currentPrice = Number(
+          c1h?.candles?.[c1h.candles.length - 1]?.close
+            ?? c4h?.candles?.[c4h.candles.length - 1]?.close
+            ?? NaN
+        );
+
+        const row1h = c1h?.candles?.length
+          ? detectFvgState(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace)
+          : null;
+        const row4h = c4h?.candles?.length
+          ? detectFvgState(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace)
+          : null;
+
+        if (row1h) nextCache[row1h.id] = row1h;
+        else if (fvgRowsCacheRef.current[`fvg-${symbol}-1h`]) nextCache[`fvg-${symbol}-1h`] = fvgRowsCacheRef.current[`fvg-${symbol}-1h`];
+
+        if (row4h) nextCache[row4h.id] = row4h;
+        else if (fvgRowsCacheRef.current[`fvg-${symbol}-4h`]) nextCache[`fvg-${symbol}-4h`] = fvgRowsCacheRef.current[`fvg-${symbol}-4h`];
       }
-      if (c4h?.candles?.length) {
-        const s = detectFvgState(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace);
-        if (s) rows.push(s);
-      }
+
+      fvgRowsCacheRef.current = nextCache;
+      lastFvgRefreshAtRef.current = now;
+      lastFvgSymbolsKeyRef.current = symbolsKey;
     }
 
-    setFvgRows(rows.sort((a, b) => a.symbol.localeCompare(b.symbol) || a.timeframe.localeCompare(b.timeframe)));
+    setFvgRows(
+      Object.values(fvgRowsCacheRef.current)
+        .filter((row) => symbols.includes(row.symbol))
+        .sort((a, b) => a.symbol.localeCompare(b.symbol) || a.timeframe.localeCompare(b.timeframe))
+    );
 
     return next;
   }
