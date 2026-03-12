@@ -458,28 +458,6 @@ export function DashboardPage() {
           </div>
         </Card>
 
-        <Card title="FVG monitor" className="terminal-card full-width">
-          <p className="muted stat-note" style={{ marginBottom: '0.45rem' }}>
-            Retrace level: {fvgRetrace}% • Min width: {fvgMinWidthPct}% • Source: exchange candles (1h/4h)
-          </p>
-          <DataTable<FvgStateRow>
-            rows={fvgRows}
-            emptyText="No FVG zones detected in current lookback window."
-            mobileTitle={(row) => `${row.symbol} ${row.timeframe.toUpperCase()} ${row.direction.toUpperCase()}`}
-            mobileSubtitle={(row) => `Trigger ${formatNumber(row.triggerPrice)} • Dist ${row.distanceToTriggerPct}%`}
-            columns={[
-              { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
-              { key: 'tf', header: 'TF', render: (row) => row.timeframe.toUpperCase() },
-              { key: 'dir', header: 'Direction', render: (row) => <Badge tone={row.direction === 'bullish' ? 'success' : 'danger'}>{row.direction}</Badge> },
-              { key: 'zone', header: 'Zone', render: (row) => `${formatNumber(row.zoneBottom)} - ${formatNumber(row.zoneTop)}` },
-              { key: 'trigger', header: 'Trigger', render: (row) => formatNumber(row.triggerPrice) },
-              { key: 'current', header: 'Current', render: (row) => formatNumber(row.currentPrice) },
-              { key: 'dist', header: 'Dist to trigger', render: (row) => `${row.distanceToTriggerPct}%` },
-              { key: 'state', header: 'State', render: (row) => <Badge tone={row.inRetraceZone ? 'success' : 'neutral'}>{row.inRetraceZone ? 'IN RETRACE ZONE' : 'WAITING'}</Badge> },
-              { key: 'ts', header: 'Zone candle', render: (row) => formatDate(row.candleTimestamp) },
-            ]}
-          />
-        </Card>
       </section>
 
       {/* ── Live open positions ──────────────────────────────────── */}
@@ -601,6 +579,29 @@ export function DashboardPage() {
             />
           </>
         )}
+      </Card>
+
+      <Card title="FVG monitor" className="terminal-card full-width">
+        <p className="muted stat-note" style={{ marginBottom: '0.45rem' }}>
+          Retrace level: {fvgRetrace}% • Min width: {fvgMinWidthPct}% • Source: exchange candles (1h/4h)
+        </p>
+        <DataTable<FvgStateRow>
+          rows={fvgRows}
+          emptyText="No FVG zones detected in current lookback window."
+          mobileTitle={(row) => `${row.symbol} ${row.timeframe.toUpperCase()} ${row.direction.toUpperCase()}`}
+          mobileSubtitle={(row) => `Trigger ${formatNumber(row.triggerPrice)} • Dist ${row.distanceToTriggerPct}%`}
+          columns={[
+            { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
+            { key: 'tf', header: 'TF', render: (row) => row.timeframe.toUpperCase() },
+            { key: 'dir', header: 'Direction', render: (row) => <Badge tone={row.direction === 'bullish' ? 'success' : 'danger'}>{row.direction}</Badge> },
+            { key: 'zone', header: 'Zone', render: (row) => `${formatNumber(row.zoneBottom)} - ${formatNumber(row.zoneTop)}` },
+            { key: 'trigger', header: 'Trigger', render: (row) => formatNumber(row.triggerPrice) },
+            { key: 'current', header: 'Current', render: (row) => formatNumber(row.currentPrice) },
+            { key: 'dist', header: 'Dist to trigger', render: (row) => `${row.distanceToTriggerPct}%` },
+            { key: 'state', header: 'State', render: (row) => <Badge tone={row.inRetraceZone ? 'success' : 'neutral'}>{row.inRetraceZone ? 'IN RETRACE ZONE' : 'WAITING'}</Badge> },
+            { key: 'ts', header: 'Zone candle', render: (row) => formatDate(row.candleTimestamp) },
+          ]}
+        />
       </Card>
 
       {/* ── Position chart / SL/TP panel ─────────────────────────── */}
