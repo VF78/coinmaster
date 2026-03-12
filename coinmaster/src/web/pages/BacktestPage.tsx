@@ -4,7 +4,6 @@ import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { useDialog } from '../components/DialogProvider';
 import type {
-  AssetClass,
   BacktestBiasMode,
   BacktestRun,
   TradingRulesSettings,
@@ -22,7 +21,6 @@ import {
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
-const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
 const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
 const HISTORY_PAGE_SIZE = 15;
 const POLL_INTERVAL_MS = 3_000;
@@ -184,7 +182,7 @@ export function BacktestPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [symbol, setSymbol] = useState(defaults.coins[0]?.symbol ?? 'BTC');
-  const [assetClass, setAssetClass] = useState<AssetClass>(inferAssetClassFromSymbol(defaults.coins[0]?.symbol ?? 'BTC'));
+  const [symbolDraft, setSymbolDraft] = useState(defaults.coins[0]?.symbol ?? 'BTC');
   const [startDate, setStartDate] = useState(() => toLocalDateStr(Date.now() - 30 * 86400_000));
   const [endDate, setEndDate] = useState(() => toLocalDateStr(Date.now()));
   const [longEnabled, setLongEnabled] = useState(true);
@@ -209,15 +207,32 @@ export function BacktestPage() {
   const [historySort, setHistorySort] = useState<HistorySortMode>('created-desc');
   const [historyPage, setHistoryPage] = useState(1);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const selectedRunIdRef = useRef<string | null>(null);
+  const reportRunIdRef = useRef<string | null>(null);
 
   const biasMode = useMemo(() => biasModeFromSelection(longEnabled, shortEnabled), [longEnabled, shortEnabled]);
+
+  async function applySymbolDraft(): Promise<string | null> {
+    const normalized = normalizeAssetSymbol(symbolDraft);
+    if (!normalized) {
+      await dialog.alert({ title: 'Validation', message: 'Enter a valid symbol first (example: BTC).', confirmText: 'OK' });
+      return null;
+    }
+    if (availableSymbols.length > 0 && !availableSymbols.includes(normalized)) {
+      await dialog.alert({ title: 'Validation', message: `${normalized} is not present in the exchange symbol catalog.`, confirmText: 'OK' });
+      return null;
+    }
+    setSymbol(normalized);
+    setSymbolDraft(normalized);
+    return normalized;
+  }
 
   const applyRunToForm = useCallback((run: BacktestRun) => {
     const rules = normalizeTradingRules(run.rulesSnapshot);
     const coin = rules.coins[0];
     const selection = selectionFromBiasMode(run.biasMode);
     setSymbol(coin?.symbol ?? run.symbol);
-    setAssetClass(coin?.assetClass ?? inferAssetClassFromSymbol(coin?.symbol ?? run.symbol));
+    setSymbolDraft(coin?.symbol ?? run.symbol);
     setStartDate(toLocalDateStr(run.startTimeMs));
     setEndDate(toLocalDateStr(run.endTimeMs));
     setLongEnabled(selection.longEnabled);
@@ -249,11 +264,12 @@ export function BacktestPage() {
         setRulesBase(normalized);
         setAvailableSymbols(symbolsRes.symbols ?? []);
         setRuns(runsRes.runs ?? []);
+        setError(null);
 
         const firstEnabled = normalized.coins.find((coin) => coin.enabled) ?? normalized.coins[0];
         const seedSymbol = firstEnabled?.symbol ?? defaults.coins[0]?.symbol ?? 'BTC';
         setSymbol(seedSymbol);
-        setAssetClass(firstEnabled?.assetClass ?? inferAssetClassFromSymbol(seedSymbol));
+        setSymbolDraft(seedSymbol);
         setEntryTimeframes(normalized.entryTimeframes?.length ? normalized.entryTimeframes : defaults.entryTimeframes);
         setEmergencyExitTimeframes(normalized.emergencyExitTimeframes?.length ? normalized.emergencyExitTimeframes : defaults.emergencyExitTimeframes);
         setEngulfingLookbackCandles(normalized.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
@@ -277,6 +293,14 @@ export function BacktestPage() {
   const hasPendingAi = useMemo(() => runs.some((run) => run.aiAnalysis?.status === 'pending'), [runs]);
 
   useEffect(() => {
+    selectedRunIdRef.current = selectedRun?.id ?? null;
+  }, [selectedRun]);
+
+  useEffect(() => {
+    reportRunIdRef.current = reportRun?.id ?? null;
+  }, [reportRun]);
+
+  useEffect(() => {
     const shouldPoll = Boolean(activeRunId) || hasPendingAi;
     if (!shouldPoll) {
       if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
@@ -288,6 +312,7 @@ export function BacktestPage() {
         const listRes = await getBacktestRuns();
         const nextRuns = listRes.runs ?? [];
         setRuns(nextRuns);
+        setError(null);
         if (activeRunId) {
           const active = nextRuns.find((item) => item.id === activeRunId);
           if (active && (active.status === 'completed' || active.status === 'failed')) {
@@ -295,12 +320,14 @@ export function BacktestPage() {
             setSelectedRun(active);
           }
         }
-        if (selectedRun) {
-          const nextSelected = nextRuns.find((item) => item.id === selectedRun.id);
+        const selectedRunId = selectedRunIdRef.current;
+        if (selectedRunId) {
+          const nextSelected = nextRuns.find((item) => item.id === selectedRunId);
           if (nextSelected) setSelectedRun(nextSelected);
         }
-        if (reportRun) {
-          const nextReport = nextRuns.find((item) => item.id === reportRun.id);
+        const reportRunId = reportRunIdRef.current;
+        if (reportRunId) {
+          const nextReport = nextRuns.find((item) => item.id === reportRunId);
           if (nextReport?.aiAnalysis?.report) setReportRun(nextReport);
         }
       } catch {
@@ -311,7 +338,7 @@ export function BacktestPage() {
     void poll();
     pollRef.current = setInterval(poll, POLL_INTERVAL_MS);
     return () => { if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; } };
-  }, [activeRunId, hasPendingAi, reportRun, selectedRun]);
+  }, [activeRunId, hasPendingAi]);
 
   useEffect(() => {
     setHistoryPage(1);
@@ -348,11 +375,8 @@ export function BacktestPage() {
   async function handleRun(): Promise<void> {
     if (saving || activeRunId) return;
 
-    const normalizedSymbol = normalizeAssetSymbol(symbol);
-    if (!normalizedSymbol) {
-      await dialog.alert({ title: 'Validation', message: 'Enter a valid symbol first (example: BTC).', confirmText: 'OK' });
-      return;
-    }
+    const normalizedSymbol = await applySymbolDraft();
+    if (!normalizedSymbol) return;
     if (!longEnabled && !shortEnabled) {
       await dialog.alert({ title: 'Validation', message: 'Enable at least one bias direction: LONG and/or SHORT.', confirmText: 'OK' });
       return;
@@ -369,7 +393,7 @@ export function BacktestPage() {
 
       const rulesSnapshot = normalizeTradingRules({
         ...rulesBase,
-        coins: [{ symbol: normalizedSymbol, enabled: true, pct: 100, assetClass }],
+        coins: [{ symbol: normalizedSymbol, enabled: true, pct: 100, assetClass: inferAssetClassFromSymbol(normalizedSymbol) }],
         entryTimeframes,
         emergencyExitTimeframes,
         engulfingLookbackCandles,
@@ -505,31 +529,24 @@ export function BacktestPage() {
       <Card title="Coin Distribution" actions={<Badge tone="neutral">Single asset</Badge>}>
         <div className="rules-grid">
           <div className="rules-coin-row">
-            <input type="checkbox" checked readOnly className="rules-checkbox" />
             <input
               type="text"
-              value={symbol}
-              onChange={(e) => {
-                const next = normalizeAssetSymbol(e.target.value);
-                setSymbol(next);
-                if (next) setAssetClass(inferAssetClassFromSymbol(next));
+              value={symbolDraft}
+              onChange={(e) => setSymbolDraft(normalizeAssetSymbol(e.target.value))}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  void applySymbolDraft();
+                }
               }}
               className="rules-input"
               style={{ width: 130, textTransform: 'uppercase' }}
               list="coinmaster-backtest-symbols"
               placeholder="SYMBOL"
             />
-            <select
-              className="rules-input"
-              value={assetClass}
-              onChange={(e) => setAssetClass(e.target.value as AssetClass)}
-              style={{ width: 120 }}
-              title="Asset class"
-            >
-              {ASSET_CLASSES.map((item) => <option key={item} value={item}>{item}</option>)}
-            </select>
-            <span className="muted" style={{ minWidth: 180, textAlign: 'center', fontSize: 12 }}>
-              single backtest asset
+            <Button type="button" variant="secondary" className="rules-mini-btn" onClick={() => { void applySymbolDraft(); }}>Add</Button>
+            <span className="muted" style={{ minWidth: 220, textAlign: 'center', fontSize: 12 }}>
+              active backtest asset: <strong>{symbol}</strong> · {inferAssetClassFromSymbol(symbol)}
             </span>
           </div>
         </div>

@@ -54,6 +54,10 @@ function formatFriendlyApiError(payload: Record<string, unknown>, _status: numbe
     return 'Authentication required. Please sign in again.';
   }
 
+  if (base === 'rate_limited') {
+    return 'Too many requests in a short time. Please wait a moment and retry.';
+  }
+
   if (base === 'invalid_stop_loss_vs_market') {
     const marketPrice = typeof payload.marketPrice === 'number' ? payload.marketPrice : undefined;
     return `${hint || 'Stop-loss is on the wrong side of current market price.'}${marketPrice !== undefined ? ` (current market: ${marketPrice})` : ''}`;
