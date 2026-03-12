@@ -4659,6 +4659,7 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
   const run = createQueuedBacktestRun({
     request: {
       symbol,
+      biasMode: body.biasMode,
       startTimeMs,
       endTimeMs,
       rules: baseRules,

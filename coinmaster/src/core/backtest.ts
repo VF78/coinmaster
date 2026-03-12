@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { BacktestCreateRunRequest, BacktestRun, TradingRulesSettings } from '../shared/dto.js';
+import type { BacktestBiasMode, BacktestCreateRunRequest, BacktestRun, TradingRulesSettings } from '../shared/dto.js';
 import { inferAssetClassFromSymbol, normalizeTradingRules } from '../shared/tradingRules.js';
 
 const BACKTEST_AI_SUMMARY_MAX_CHARS = 2_000;
@@ -84,6 +84,10 @@ export function applyBacktestAiAnalysisResult(
   return run;
 }
 
+function normalizeBacktestBiasMode(value: unknown): BacktestBiasMode {
+  return value === 'long' || value === 'short' || value === 'both' ? value : 'both';
+}
+
 export function createQueuedBacktestRun(input: {
   request: BacktestCreateRunRequest;
   rules: TradingRulesSettings;
@@ -97,6 +101,7 @@ export function createQueuedBacktestRun(input: {
     id: nanoid(),
     status: 'queued',
     symbol: input.symbol,
+    biasMode: normalizeBacktestBiasMode(input.request.biasMode),
     createdAt: now,
     requestedBy: input.requestedBy,
     startTimeMs: input.request.startTimeMs,

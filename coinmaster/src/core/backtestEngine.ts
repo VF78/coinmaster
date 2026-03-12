@@ -156,6 +156,12 @@ function computeMaxDrawdownPct(equityCurve: number[]): number {
   return round(maxDd);
 }
 
+function isSideAllowed(side: TradeSide, biasMode: BacktestRun['biasMode'] | undefined): boolean {
+  const effective = biasMode ?? 'both';
+  if (effective === 'both') return true;
+  return side === effective;
+}
+
 // ─── Main Engine ──────────────────────────────────────────────────────
 
 export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOutput {
@@ -403,6 +409,11 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
       const signal = evaluateTimeframe(closedCandles, tf as TradingRulesTimeframe, lookback);
       if (signal.detected && signal.direction) {
         const side: TradeSide = signal.direction === 'bullish' ? 'long' : 'short';
+        if (!isSideAllowed(side, run.biasMode)) {
+          rejectedSignals++;
+          equityCurve.push(currentEquity);
+          continue;
+        }
         const debounceKey = `entry:${symbol}:${tf}:${signal.direction}`;
         const tfMs = TF_MS[tf] ?? 900_000;
         const lastFired = entryDebounce.get(debounceKey) ?? 0;
@@ -449,6 +460,11 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
       const fvgSignal = evaluateFvg(closedCandles, tf as FvgTimeframe, currentPrice, fvgRetracePct, 10, fvgMinWidthPct);
       if (fvgSignal.detected && fvgSignal.direction) {
         const side: TradeSide = fvgSignal.direction === 'bullish' ? 'long' : 'short';
+        if (!isSideAllowed(side, run.biasMode)) {
+          rejectedSignals++;
+          equityCurve.push(currentEquity);
+          continue;
+        }
         const debounceKey = `fvg:${symbol}:${tf}:${fvgSignal.direction}`;
         const tfMs = TF_MS[tf] ?? 3_600_000;
         const lastFired = entryDebounce.get(debounceKey) ?? 0;

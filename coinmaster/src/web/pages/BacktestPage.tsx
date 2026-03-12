@@ -2,27 +2,52 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Card } from '../components/Card';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
+import { useDialog } from '../components/DialogProvider';
 import type {
+  AssetClass,
+  BacktestBiasMode,
   BacktestRun,
   TradingRulesSettings,
   TradingRulesTimeframe,
 } from '../../shared/dto.js';
-import { normalizeTradingRules } from '../../shared/tradingRules.js';
+import { cloneTradingRulesDefaults, inferAssetClassFromSymbol, normalizeTradingRules } from '../../shared/tradingRules.js';
 import {
   createBacktestRun,
   friendlyErrorMessage,
-  getBacktestRun,
   getBacktestRuns,
   getTradingRuleSymbols,
   getTradingRules,
   requestBacktestAiAnalysis,
 } from '../lib/api';
-import { formatMoney, formatNumber } from '../lib/format';
-
-// ─── Constants ────────────────────────────────────────────────────────
+import { formatDate, formatMoney, formatNumber } from '../lib/format';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
+const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
+const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
+const HISTORY_PAGE_SIZE = 15;
 const POLL_INTERVAL_MS = 3_000;
+
+type HistorySortMode = 'created-desc' | 'roi-desc';
+
+function clampNumber(value: number, min: number, max: number) {
+  if (!Number.isFinite(value)) return min;
+  return Math.max(min, Math.min(max, value));
+}
+
+function normalizeAssetSymbol(value: string): string {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+
+  if (raw.includes(':')) {
+    const [namespaceRaw, symbolRaw] = raw.split(':', 2);
+    const namespace = String(namespaceRaw || '').trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    const symbol = String(symbolRaw || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+    if (!namespace || !symbol) return '';
+    return `${namespace}:${symbol}`;
+  }
+
+  return raw.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+}
 
 function toLocalDateStr(ms: number): string {
   const d = new Date(ms);
@@ -33,49 +58,182 @@ function toLocalDateStr(ms: number): string {
 }
 
 function fromLocalDateStr(s: string): number {
-  const parts = s.split('-').map(Number);
-  return new Date(parts[0], parts[1] - 1, parts[2]).getTime();
+  const [yyyy, mm, dd] = s.split('-').map(Number);
+  return new Date(yyyy, (mm ?? 1) - 1, dd ?? 1).getTime();
 }
 
-function clamp(v: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, v));
+function biasModeFromSelection(longEnabled: boolean, shortEnabled: boolean): BacktestBiasMode {
+  if (longEnabled && shortEnabled) return 'both';
+  return longEnabled ? 'long' : 'short';
 }
 
-// ─── Component ────────────────────────────────────────────────────────
+function selectionFromBiasMode(biasMode: BacktestBiasMode | undefined): { longEnabled: boolean; shortEnabled: boolean } {
+  switch (biasMode) {
+    case 'long': return { longEnabled: true, shortEnabled: false };
+    case 'short': return { longEnabled: false, shortEnabled: true };
+    default: return { longEnabled: true, shortEnabled: true };
+  }
+}
+
+function formatRulesSnapshot(run: BacktestRun): Array<{ label: string; value: string }> {
+  const rules = run.rulesSnapshot;
+  const coin = rules.coins[0];
+  return [
+    { label: 'Period', value: `${toLocalDateStr(run.startTimeMs)} → ${toLocalDateStr(run.endTimeMs)}` },
+    { label: 'Bias', value: (run.biasMode ?? 'both').toUpperCase() },
+    { label: 'Asset', value: coin?.symbol ?? run.symbol },
+    { label: 'Asset class', value: coin?.assetClass ?? inferAssetClassFromSymbol(coin?.symbol ?? run.symbol) },
+    { label: 'Entry timeframe', value: (rules.entryTimeframes ?? []).join(', ') || '—' },
+    { label: 'Exit timeframe', value: (rules.emergencyExitTimeframes ?? []).join(', ') || '—' },
+    { label: 'Lookback candles', value: String(rules.engulfingLookbackCandles ?? 30) },
+    { label: 'FVG Retrace Level', value: `${rules.fvgRetrace ?? 50}%` },
+    { label: 'FVG Min Width Filter', value: `${rules.fvgMinWidthPct ?? 0.3}%` },
+    { label: 'Close size on exit signal', value: `${rules.exitClosePct ?? 50}%` },
+    { label: 'Daily Drawdown Limit', value: `${rules.dailyDrawdown ?? 0}%` },
+    { label: 'Max Leverage', value: `${rules.maxLeverage ?? 1}x` },
+    { label: 'TP Levels', value: (rules.tpLevels ?? []).map((x) => `${x}%`).join(' / ') || `${rules.tpPct ?? 0}%` },
+    { label: 'SL', value: `${rules.slPct ?? 0}%` },
+  ];
+}
+
+interface StepperProps {
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  unit?: string;
+  decimals?: number;
+  onChange: (v: number) => void;
+  disabled?: boolean;
+}
+
+function Stepper({ value, min, max, step = 1, unit = '', decimals = 0, onChange, disabled = false }: StepperProps) {
+  const display = decimals > 0 ? value.toFixed(decimals) : String(Math.round(value));
+
+  function apply(nextRaw: number) {
+    const clamped = clampNumber(nextRaw, min, max);
+    onChange(+(clamped.toFixed(decimals + 2)));
+  }
+
+  return (
+    <div className="rules-stepper" role="group" aria-label="Number stepper">
+      <button type="button" className="rules-stepper__btn" disabled={disabled || value <= min} onClick={() => apply(value - step)}>−</button>
+      <div className="rules-stepper__center">
+        <input
+          type="number"
+          className="rules-stepper__input"
+          value={display}
+          min={min}
+          max={max}
+          step={step}
+          inputMode="decimal"
+          disabled={disabled}
+          onChange={(e) => {
+            const raw = e.target.value;
+            if (raw === '') return;
+            const parsed = Number(raw);
+            if (!Number.isFinite(parsed)) return;
+            apply(parsed);
+          }}
+          onBlur={(e) => {
+            const parsed = Number(e.target.value);
+            if (!Number.isFinite(parsed)) {
+              apply(value);
+              return;
+            }
+            apply(parsed);
+          }}
+        />
+        {unit ? <span className="rules-stepper__unit">{unit}</span> : null}
+      </div>
+      <button type="button" className="rules-stepper__btn" disabled={disabled || value >= max} onClick={() => apply(value + step)}>+</button>
+    </div>
+  );
+}
+
+interface SegmentedProps<T extends string | number> {
+  options: T[];
+  value: T;
+  format?: (v: T) => string;
+  onChange: (v: T) => void;
+}
+
+function Segmented<T extends string | number>({ options, value, format, onChange }: SegmentedProps<T>) {
+  return (
+    <div className="rules-segmented" role="tablist" aria-label="Segmented control">
+      {options.map((opt, i) => {
+        const active = opt === value;
+        return (
+          <button key={i} type="button" className={`rules-segmented__btn ${active ? 'rules-segmented__btn--active' : ''}`} onClick={() => onChange(opt)}>
+            {format ? format(opt) : String(opt)}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export function BacktestPage() {
-  // Load state
-  const [symbols, setSymbols] = useState<string[]>([]);
-  const [rules, setRules] = useState<TradingRulesSettings | null>(null);
-  const [runs, setRuns] = useState<BacktestRun[]>([]);
+  const defaults = cloneTradingRulesDefaults();
+  const dialog = useDialog();
+
+  const [availableSymbols, setAvailableSymbols] = useState<string[]>([]);
+  const [rulesBase, setRulesBase] = useState<TradingRulesSettings>(defaults);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Form state
-  const [symbol, setSymbol] = useState('BTC');
+  const [symbol, setSymbol] = useState(defaults.coins[0]?.symbol ?? 'BTC');
+  const [assetClass, setAssetClass] = useState<AssetClass>(inferAssetClassFromSymbol(defaults.coins[0]?.symbol ?? 'BTC'));
   const [startDate, setStartDate] = useState(() => toLocalDateStr(Date.now() - 30 * 86400_000));
   const [endDate, setEndDate] = useState(() => toLocalDateStr(Date.now()));
+  const [longEnabled, setLongEnabled] = useState(true);
+  const [shortEnabled, setShortEnabled] = useState(true);
 
-  // Rules overrides (subset)
-  const [entryTfs, setEntryTfs] = useState<TradingRulesTimeframe[]>(['15m', '1h', '4h']);
-  const [exitTfs, setExitTfs] = useState<TradingRulesTimeframe[]>(['1h', '4h']);
-  const [lookback, setLookback] = useState(30);
-  const [fvgRetrace, setFvgRetrace] = useState(50);
-  const [fvgMinWidth, setFvgMinWidth] = useState(0.3);
-  const [maxLeverage, setMaxLeverage] = useState(10);
-  const [tpLevels, setTpLevels] = useState<number[]>([1, 2, 3]);
-  const [slPct, setSlPct] = useState(1);
-  const [exitClosePct, setExitClosePct] = useState(50);
+  const [entryTimeframes, setEntryTimeframes] = useState<TradingRulesTimeframe[]>(defaults.entryTimeframes);
+  const [emergencyExitTimeframes, setEmergencyExitTimeframes] = useState<TradingRulesTimeframe[]>(defaults.emergencyExitTimeframes);
+  const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
+  const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
+  const [fvgMinWidthPct, setFvgMinWidthPct] = useState(defaults.fvgMinWidthPct);
+  const [maxLeverage, setMaxLeverage] = useState(defaults.maxLeverage);
+  const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
+  const [tpLevels, setTpLevels] = useState<number[]>(defaults.tpLevels);
+  const [slPct, setSlPct] = useState(defaults.slPct);
+  const [exitClosePct, setExitClosePct] = useState(defaults.exitClosePct);
 
-  // Run state
-  const [submitting, setSubmitting] = useState(false);
-  const [activeRunId, setActiveRunId] = useState<string | null>(null);
+  const [runs, setRuns] = useState<BacktestRun[]>([]);
   const [selectedRun, setSelectedRun] = useState<BacktestRun | null>(null);
+  const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [analysisBusyRunId, setAnalysisBusyRunId] = useState<string | null>(null);
   const [reportRun, setReportRun] = useState<BacktestRun | null>(null);
+  const [historySort, setHistorySort] = useState<HistorySortMode>('created-desc');
+  const [historyPage, setHistoryPage] = useState(1);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ─── Load initial data ──────────────────────────────────────────────
+  const biasMode = useMemo(() => biasModeFromSelection(longEnabled, shortEnabled), [longEnabled, shortEnabled]);
+
+  const applyRunToForm = useCallback((run: BacktestRun) => {
+    const rules = normalizeTradingRules(run.rulesSnapshot);
+    const coin = rules.coins[0];
+    const selection = selectionFromBiasMode(run.biasMode);
+    setSymbol(coin?.symbol ?? run.symbol);
+    setAssetClass(coin?.assetClass ?? inferAssetClassFromSymbol(coin?.symbol ?? run.symbol));
+    setStartDate(toLocalDateStr(run.startTimeMs));
+    setEndDate(toLocalDateStr(run.endTimeMs));
+    setLongEnabled(selection.longEnabled);
+    setShortEnabled(selection.shortEnabled);
+    setEntryTimeframes(rules.entryTimeframes?.length ? rules.entryTimeframes : defaults.entryTimeframes);
+    setEmergencyExitTimeframes(rules.emergencyExitTimeframes?.length ? rules.emergencyExitTimeframes : defaults.emergencyExitTimeframes);
+    setEngulfingLookbackCandles(rules.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
+    setFvgRetrace(rules.fvgRetrace ?? defaults.fvgRetrace);
+    setFvgMinWidthPct(rules.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
+    setMaxLeverage(rules.maxLeverage ?? defaults.maxLeverage);
+    setDailyDrawdown(rules.dailyDrawdown ?? defaults.dailyDrawdown);
+    setTpLevels(rules.tpLevels?.length ? [...rules.tpLevels] : defaults.tpLevels);
+    setSlPct(rules.slPct ?? defaults.slPct);
+    setExitClosePct(rules.exitClosePct ?? defaults.exitClosePct);
+  }, [defaults]);
+
   useEffect(() => {
     let cancelled = false;
     async function load() {
@@ -87,25 +245,25 @@ export function BacktestPage() {
         ]);
         if (cancelled) return;
 
-        const r = normalizeTradingRules(rulesRes.rules);
-        setRules(r);
-        setSymbols(symbolsRes.symbols ?? []);
+        const normalized = normalizeTradingRules(rulesRes.rules);
+        setRulesBase(normalized);
+        setAvailableSymbols(symbolsRes.symbols ?? []);
         setRuns(runsRes.runs ?? []);
 
-        // Pre-fill from current rules
-        setEntryTfs(r.entryTimeframes?.length ? r.entryTimeframes : ['15m']);
-        setExitTfs(r.emergencyExitTimeframes?.length ? r.emergencyExitTimeframes : ['1h']);
-        setLookback(r.engulfingLookbackCandles ?? 30);
-        setFvgRetrace(r.fvgRetrace ?? 50);
-        setFvgMinWidth(r.fvgMinWidthPct ?? 0.3);
-        setMaxLeverage(r.maxLeverage ?? 10);
-        setTpLevels(r.tpLevels?.length ? [...r.tpLevels] : [6]);
-        setSlPct(r.slPct ?? 2);
-        setExitClosePct(r.exitClosePct ?? 50);
-
-        // Default symbol from first enabled coin
-        const firstEnabled = r.coins.find((c) => c.enabled);
-        if (firstEnabled) setSymbol(firstEnabled.symbol);
+        const firstEnabled = normalized.coins.find((coin) => coin.enabled) ?? normalized.coins[0];
+        const seedSymbol = firstEnabled?.symbol ?? defaults.coins[0]?.symbol ?? 'BTC';
+        setSymbol(seedSymbol);
+        setAssetClass(firstEnabled?.assetClass ?? inferAssetClassFromSymbol(seedSymbol));
+        setEntryTimeframes(normalized.entryTimeframes?.length ? normalized.entryTimeframes : defaults.entryTimeframes);
+        setEmergencyExitTimeframes(normalized.emergencyExitTimeframes?.length ? normalized.emergencyExitTimeframes : defaults.emergencyExitTimeframes);
+        setEngulfingLookbackCandles(normalized.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
+        setFvgRetrace(normalized.fvgRetrace ?? defaults.fvgRetrace);
+        setFvgMinWidthPct(normalized.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
+        setMaxLeverage(normalized.maxLeverage ?? defaults.maxLeverage);
+        setDailyDrawdown(normalized.dailyDrawdown ?? defaults.dailyDrawdown);
+        setTpLevels(normalized.tpLevels?.length ? [...normalized.tpLevels] : defaults.tpLevels);
+        setSlPct(normalized.slPct ?? defaults.slPct);
+        setExitClosePct(normalized.exitClosePct ?? defaults.exitClosePct);
       } catch (err) {
         if (!cancelled) setError(friendlyErrorMessage(err));
       } finally {
@@ -114,13 +272,12 @@ export function BacktestPage() {
     }
     void load();
     return () => { cancelled = true; };
-  }, []);
+  }, [defaults]);
 
-  // ─── Poll active run / pending AI analysis ─────────────────────────
+  const hasPendingAi = useMemo(() => runs.some((run) => run.aiAnalysis?.status === 'pending'), [runs]);
+
   useEffect(() => {
-    const hasPendingAi = runs.some((run) => run.aiAnalysis?.status === 'pending');
     const shouldPoll = Boolean(activeRunId) || hasPendingAi;
-
     if (!shouldPoll) {
       if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
       return;
@@ -131,47 +288,95 @@ export function BacktestPage() {
         const listRes = await getBacktestRuns();
         const nextRuns = listRes.runs ?? [];
         setRuns(nextRuns);
-
         if (activeRunId) {
-          const active = nextRuns.find((run) => run.id === activeRunId);
+          const active = nextRuns.find((item) => item.id === activeRunId);
           if (active && (active.status === 'completed' || active.status === 'failed')) {
             setActiveRunId(null);
             setSelectedRun(active);
           }
         }
-
         if (selectedRun) {
-          const refreshedSelected = nextRuns.find((run) => run.id === selectedRun.id);
-          if (refreshedSelected) setSelectedRun(refreshedSelected);
+          const nextSelected = nextRuns.find((item) => item.id === selectedRun.id);
+          if (nextSelected) setSelectedRun(nextSelected);
+        }
+        if (reportRun) {
+          const nextReport = nextRuns.find((item) => item.id === reportRun.id);
+          if (nextReport?.aiAnalysis?.report) setReportRun(nextReport);
         }
       } catch {
-        // ignore poll errors
+        // ignore transient poll errors
       }
     }
 
     void poll();
     pollRef.current = setInterval(poll, POLL_INTERVAL_MS);
     return () => { if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; } };
-  }, [activeRunId, runs, selectedRun]);
+  }, [activeRunId, hasPendingAi, reportRun, selectedRun]);
 
-  // ─── Submit ─────────────────────────────────────────────────────────
-  const handleRun = useCallback(async () => {
-    if (submitting || activeRunId) return;
-    setSubmitting(true);
+  useEffect(() => {
+    setHistoryPage(1);
+  }, [historySort]);
+
+  function toggleTf(
+    timeframe: TradingRulesTimeframe,
+    current: TradingRulesTimeframe[],
+    set: (v: TradingRulesTimeframe[]) => void,
+  ) {
+    if (current.includes(timeframe)) {
+      const next = current.filter((tf) => tf !== timeframe);
+      if (next.length > 0) set(next);
+    } else {
+      set([...current, timeframe]);
+    }
+  }
+
+  function addTpLevel() {
+    if (tpLevels.length >= 3) return;
+    const last = tpLevels[tpLevels.length - 1] ?? 6;
+    setTpLevels((prev) => [...prev, clampNumber(Math.round(last * 1.5 * 2) / 2, 0.5, 100)]);
+  }
+
+  function removeTpLevel(idx: number) {
+    if (tpLevels.length <= 1) return;
+    setTpLevels((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function updateTpLevel(idx: number, value: number) {
+    setTpLevels((prev) => prev.map((v, i) => (i === idx ? value : v)));
+  }
+
+  async function handleRun(): Promise<void> {
+    if (saving || activeRunId) return;
+
+    const normalizedSymbol = normalizeAssetSymbol(symbol);
+    if (!normalizedSymbol) {
+      await dialog.alert({ title: 'Validation', message: 'Enter a valid symbol first (example: BTC).', confirmText: 'OK' });
+      return;
+    }
+    if (!longEnabled && !shortEnabled) {
+      await dialog.alert({ title: 'Validation', message: 'Enable at least one bias direction: LONG and/or SHORT.', confirmText: 'OK' });
+      return;
+    }
+
+    setSaving(true);
     setError(null);
     try {
-      const startMs = fromLocalDateStr(startDate);
-      const endMs = fromLocalDateStr(endDate) + 86400_000 - 1; // end of day
+      const startTimeMs = fromLocalDateStr(startDate);
+      const endTimeMs = fromLocalDateStr(endDate) + 86400_000 - 1;
+      if (!Number.isFinite(startTimeMs) || !Number.isFinite(endTimeMs) || endTimeMs <= startTimeMs) {
+        throw new Error('invalid_time_range');
+      }
 
-      const rulesSnapshot: TradingRulesSettings = normalizeTradingRules({
-        ...(rules ?? {}),
-        coins: [{ symbol, enabled: true, pct: 100 }],
-        entryTimeframes: entryTfs,
-        emergencyExitTimeframes: exitTfs,
-        engulfingLookbackCandles: lookback,
+      const rulesSnapshot = normalizeTradingRules({
+        ...rulesBase,
+        coins: [{ symbol: normalizedSymbol, enabled: true, pct: 100, assetClass }],
+        entryTimeframes,
+        emergencyExitTimeframes,
+        engulfingLookbackCandles,
         fvgRetrace,
-        fvgMinWidthPct: fvgMinWidth,
+        fvgMinWidthPct,
         maxLeverage,
+        dailyDrawdown,
         tpLevels,
         slPct,
         exitClosePct,
@@ -179,20 +384,22 @@ export function BacktestPage() {
       });
 
       const res = await createBacktestRun({
-        symbol,
-        startTimeMs: startMs,
-        endTimeMs: endMs,
+        symbol: normalizedSymbol,
+        biasMode,
+        startTimeMs,
+        endTimeMs,
         rules: rulesSnapshot,
       });
 
       setActiveRunId(res.run.id);
       setSelectedRun(res.run);
+      setRuns((prev) => [res.run, ...prev]);
     } catch (err) {
       setError(friendlyErrorMessage(err));
     } finally {
-      setSubmitting(false);
+      setSaving(false);
     }
-  }, [submitting, activeRunId, startDate, endDate, rules, symbol, entryTfs, exitTfs, lookback, fvgRetrace, fvgMinWidth, maxLeverage, tpLevels, slPct, exitClosePct]);
+  }
 
   const handleAiClick = useCallback(async (run: BacktestRun) => {
     if (run.aiAnalysis?.status === 'completed' && run.aiAnalysis?.report) {
@@ -214,168 +421,258 @@ export function BacktestPage() {
     }
   }, [analysisBusyRunId, selectedRun]);
 
-  // ─── TF toggle helpers ─────────────────────────────────────────────
-  function toggleTf(current: TradingRulesTimeframe[], tf: TradingRulesTimeframe, setter: (v: TradingRulesTimeframe[]) => void) {
-    if (current.includes(tf)) {
-      if (current.length <= 1) return; // keep at least one
-      setter(current.filter((t) => t !== tf));
-    } else {
-      setter([...current, tf]);
+  const sortedRuns = useMemo(() => {
+    const next = [...runs];
+    if (historySort === 'roi-desc') {
+      next.sort((a, b) => (b.summary?.roiPct ?? Number.NEGATIVE_INFINITY) - (a.summary?.roiPct ?? Number.NEGATIVE_INFINITY));
+      return next;
     }
-  }
+    next.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+    return next;
+  }, [historySort, runs]);
 
-  // ─── TP level helpers ──────────────────────────────────────────────
-  function setTpLevel(index: number, value: number) {
-    const next = [...tpLevels];
-    next[index] = clamp(value, 0.1, 100);
-    setTpLevels(next);
-  }
-  function addTpLevel() {
-    if (tpLevels.length >= 3) return;
-    const last = tpLevels[tpLevels.length - 1] ?? 3;
-    setTpLevels([...tpLevels, clamp(last + 2, 0.1, 100)]);
-  }
-  function removeTpLevel(index: number) {
-    if (tpLevels.length <= 1) return;
-    setTpLevels(tpLevels.filter((_, i) => i !== index));
-  }
+  const historyPageCount = Math.max(1, Math.ceil(sortedRuns.length / HISTORY_PAGE_SIZE));
+  const pagedRuns = useMemo(() => {
+    const offset = (historyPage - 1) * HISTORY_PAGE_SIZE;
+    return sortedRuns.slice(offset, offset + HISTORY_PAGE_SIZE);
+  }, [historyPage, sortedRuns]);
 
-  if (loading) return <div className="page-loading">Loading...</div>;
+  useEffect(() => {
+    if (historyPage > historyPageCount) setHistoryPage(historyPageCount);
+  }, [historyPage, historyPageCount]);
 
-  const isRunning = !!activeRunId;
+  if (loading) {
+    return (
+      <main className="terminal-layout">
+        <Card title="Backtest" actions={<Badge tone="neutral">Loading</Badge>}>
+          <p className="muted">Loading backtest settings and history...</p>
+        </Card>
+      </main>
+    );
+  }
 
   return (
-    <div className="backtest-page">
-      <h2>Backtest</h2>
+    <main className="terminal-layout">
+      {error ? <p className="stat-note" style={{ color: 'var(--danger, #ef4444)' }}>{error}</p> : null}
 
-      {error && <div className="alert alert--error">{error}</div>}
-
-      {/* ─── Configuration form ────────────────────────────────── */}
-      <Card title="Backtest Configuration">
-        <div className="bt-form">
-          <div className="bt-form__row">
-            <label>Symbol</label>
-            <select value={symbol} onChange={(e) => setSymbol(e.target.value)} disabled={isRunning}>
-              {symbols.length > 0
-                ? symbols.map((s) => <option key={s} value={s}>{s}</option>)
-                : <option value={symbol}>{symbol}</option>
-              }
-            </select>
-          </div>
-
-          <div className="bt-form__row bt-form__row--dates">
-            <div>
-              <label>Start Date</label>
-              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} disabled={isRunning} />
-            </div>
-            <div>
-              <label>End Date</label>
-              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} disabled={isRunning} />
-            </div>
-          </div>
-
-          <div className="bt-form__row">
-            <label>Entry Timeframes</label>
-            <div className="bt-tf-group">
-              {TIMEFRAMES.map((tf) => (
-                <button
-                  key={tf}
-                  type="button"
-                  className={entryTfs.includes(tf) ? 'bt-tf-btn bt-tf-btn--active' : 'bt-tf-btn'}
-                  onClick={() => toggleTf(entryTfs, tf, setEntryTfs)}
-                  disabled={isRunning}
-                >
-                  {tf}
-                </button>
-              ))}
+      <Card title="Execution controls" className="terminal-card terminal-card--narrow">
+        <div className="exec-bias-list">
+          <div className="exec-bias-row">
+            <span className="exec-bias-label">Backtest bias</span>
+            <div className="exec-bias-toggle">
+              <Button
+                variant="danger"
+                className={`exec-bias-btn ${shortEnabled ? 'exec-bias-btn--active' : ''}`}
+                onClick={() => {
+                  if (shortEnabled && !longEnabled) return;
+                  setShortEnabled((v) => !v);
+                }}
+              >
+                SHORT
+              </Button>
+              <Button
+                variant="primary"
+                className={`exec-bias-btn ${longEnabled ? 'exec-bias-btn--active' : ''}`}
+                onClick={() => {
+                  if (longEnabled && !shortEnabled) return;
+                  setLongEnabled((v) => !v);
+                }}
+              >
+                LONG
+              </Button>
             </div>
           </div>
+        </div>
+        <p className="stat-note muted" style={{ marginTop: 8 }}>
+          Current mode: <strong>{biasMode.toUpperCase()}</strong>
+          {biasMode === 'both' ? ' — backtest may open trades in both directions.' : biasMode === 'long' ? ' — long-only.' : ' — short-only.'}
+        </p>
+      </Card>
 
-          <div className="bt-form__row">
-            <label>Emergency Exit TFs</label>
-            <div className="bt-tf-group">
-              {TIMEFRAMES.map((tf) => (
-                <button
-                  key={tf}
-                  type="button"
-                  className={exitTfs.includes(tf) ? 'bt-tf-btn bt-tf-btn--active' : 'bt-tf-btn'}
-                  onClick={() => toggleTf(exitTfs, tf, setExitTfs)}
-                  disabled={isRunning}
-                >
-                  {tf}
-                </button>
-              ))}
-            </div>
+      <Card title="Backtest period" actions={<Badge tone="neutral">Range</Badge>}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, alignItems: 'center' }}>
+          <div style={{ display: 'grid', gap: 6 }}>
+            <span className="rules-label" style={{ margin: 0 }}>Start date</span>
+            <input type="date" className="rules-input" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
           </div>
-
-          <div className="bt-form__row">
-            <label>Lookback (candles)</label>
-            <input type="number" value={lookback} min={5} max={100} onChange={(e) => setLookback(clamp(Number(e.target.value), 5, 100))} disabled={isRunning} />
-          </div>
-
-          <div className="bt-form__row">
-            <label>FVG Retrace %</label>
-            <input type="number" value={fvgRetrace} min={10} max={90} onChange={(e) => setFvgRetrace(clamp(Number(e.target.value), 10, 90))} disabled={isRunning} />
-          </div>
-
-          <div className="bt-form__row">
-            <label>FVG Min Width %</label>
-            <input type="number" value={fvgMinWidth} min={0} max={10} step={0.1} onChange={(e) => setFvgMinWidth(clamp(Number(e.target.value), 0, 10))} disabled={isRunning} />
-          </div>
-
-          <div className="bt-form__row">
-            <label>Max Leverage</label>
-            <input type="number" value={maxLeverage} min={1} max={100} onChange={(e) => setMaxLeverage(clamp(Number(e.target.value), 1, 100))} disabled={isRunning} />
-          </div>
-
-          <div className="bt-form__row">
-            <label>Take Profit Levels (%)</label>
-            <div className="bt-tp-group">
-              {tpLevels.map((tp, i) => (
-                <div key={i} className="bt-tp-row">
-                  <span className="bt-tp-label">TP{i + 1}</span>
-                  <input
-                    type="number"
-                    value={tp}
-                    min={0.1}
-                    max={100}
-                    step={0.5}
-                    onChange={(e) => setTpLevel(i, Number(e.target.value))}
-                    disabled={isRunning}
-                  />
-                  {tpLevels.length > 1 && (
-                    <button type="button" className="bt-tp-remove" onClick={() => removeTpLevel(i)} disabled={isRunning}>×</button>
-                  )}
-                </div>
-              ))}
-              {tpLevels.length < 3 && (
-                <button type="button" className="bt-tp-add" onClick={addTpLevel} disabled={isRunning}>+ Add TP level</button>
-              )}
-            </div>
-          </div>
-
-          <div className="bt-form__row">
-            <label>Stop Loss %</label>
-            <input type="number" value={slPct} min={0.1} max={50} step={0.5} onChange={(e) => setSlPct(clamp(Number(e.target.value), 0.1, 50))} disabled={isRunning} />
-          </div>
-
-          <div className="bt-form__row">
-            <label>Emergency Exit Close %</label>
-            <input type="number" value={exitClosePct} min={0} max={100} onChange={(e) => setExitClosePct(clamp(Number(e.target.value), 0, 100))} disabled={isRunning} />
-          </div>
-
-          <div className="bt-form__actions">
-            <Button onClick={handleRun} disabled={isRunning || submitting}>
-              {isRunning ? 'Running…' : submitting ? 'Submitting…' : 'Run Backtest'}
-            </Button>
+          <div style={{ display: 'grid', gap: 6 }}>
+            <span className="rules-label" style={{ margin: 0 }}>End date</span>
+            <input type="date" className="rules-input" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
           </div>
         </div>
       </Card>
 
-      {/* ─── Active / Selected run result ─────────────────────── */}
-      {selectedRun && (
-        <Card title={`Result: ${selectedRun.symbol} — ${selectedRun.status}`}>
-          {selectedRun.status === 'running' || selectedRun.status === 'queued' ? (
+      <Card title="Coin Distribution" actions={<Badge tone="neutral">Single asset</Badge>}>
+        <div className="rules-grid">
+          <div className="rules-coin-row">
+            <input type="checkbox" checked readOnly className="rules-checkbox" />
+            <input
+              type="text"
+              value={symbol}
+              onChange={(e) => {
+                const next = normalizeAssetSymbol(e.target.value);
+                setSymbol(next);
+                if (next) setAssetClass(inferAssetClassFromSymbol(next));
+              }}
+              className="rules-input"
+              style={{ width: 130, textTransform: 'uppercase' }}
+              list="coinmaster-backtest-symbols"
+              placeholder="SYMBOL"
+            />
+            <select
+              className="rules-input"
+              value={assetClass}
+              onChange={(e) => setAssetClass(e.target.value as AssetClass)}
+              style={{ width: 120 }}
+              title="Asset class"
+            >
+              {ASSET_CLASSES.map((item) => <option key={item} value={item}>{item}</option>)}
+            </select>
+            <span className="muted" style={{ minWidth: 180, textAlign: 'center', fontSize: 12 }}>
+              single backtest asset
+            </span>
+          </div>
+        </div>
+        <datalist id="coinmaster-backtest-symbols">
+          {availableSymbols.map((item) => <option key={item} value={item} />)}
+        </datalist>
+      </Card>
+
+      <Card title="Entry / Exit Rules" actions={<Badge tone="neutral">Signals</Badge>}>
+        <div className="rules-section">
+          <p className="rules-label" style={{ marginBottom: 8 }}>
+            Entry timeframe <span className="muted" style={{ fontWeight: 400 }}>(Bullish / Bearish Engulfing)</span>
+          </p>
+          <div className="rules-btn-group rules-btn-group--left">
+            {TIMEFRAMES.map((tf) => (
+              <Button key={tf} variant={entryTimeframes.includes(tf) ? 'primary' : 'secondary'} onClick={() => toggleTf(tf, entryTimeframes, setEntryTimeframes)}>
+                {tf}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div className="rules-section" style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '0.8rem', background: 'linear-gradient(180deg, var(--surface-2) 0%, #0f1c2e 100%)' }}>
+          <p className="rules-label" style={{ marginBottom: 10 }}>Signal Sensitivity (Engulfing + FVG)</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14, alignItems: 'center' }}>
+            <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+              <span className="rules-label" style={{ margin: 0 }}>Lookback candles</span>
+              <Stepper value={engulfingLookbackCandles} min={5} max={200} step={5} decimals={0} onChange={setEngulfingLookbackCandles} />
+            </div>
+            <div style={{ display: 'grid', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                <span className="rules-label" style={{ margin: 0 }}>FVG Retrace Level (1H/4H)</span>
+                <div className="actions-row">
+                  <input type="number" min={10} max={90} step={1} value={fvgRetrace} className="rules-input rules-input--sm" onChange={(e) => setFvgRetrace(clampNumber(Number(e.target.value), 10, 90))} />
+                  <strong style={{ fontSize: 14 }}>{fvgRetrace}%</strong>
+                </div>
+              </div>
+              <input type="range" min={10} max={90} value={fvgRetrace} onChange={(e) => setFvgRetrace(clampNumber(Number(e.target.value), 10, 90))} className="rules-range" style={{ width: '100%', marginTop: 0 }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted, #666)' }}><span>10%</span><span>50%</span><span>90%</span></div>
+            </div>
+            <div style={{ display: 'grid', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                <span className="rules-label" style={{ margin: 0 }}>FVG Min Width Filter</span>
+                <div className="actions-row">
+                  <input type="number" min={0} max={10} step={0.1} value={fvgMinWidthPct} className="rules-input rules-input--sm" onChange={(e) => setFvgMinWidthPct(clampNumber(Number(e.target.value), 0, 10))} />
+                  <strong style={{ fontSize: 14 }}>{fvgMinWidthPct}%</strong>
+                </div>
+              </div>
+              <input type="range" min={0} max={2} step={0.1} value={fvgMinWidthPct} onChange={(e) => setFvgMinWidthPct(clampNumber(Number(e.target.value), 0, 10))} className="rules-range" style={{ width: '100%', marginTop: 0 }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted, #666)' }}><span>0%</span><span>0.3%</span><span>2%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rules-section">
+          <p className="rules-label" style={{ marginBottom: 8 }}>
+            Exit timeframe <span className="muted" style={{ fontWeight: 400 }}>(Opposite Engulfing)</span>
+          </p>
+          <div className="rules-btn-group rules-btn-group--left rules-btn-group--mb">
+            {TIMEFRAMES.map((tf) => (
+              <Button key={tf} variant={emergencyExitTimeframes.includes(tf) ? 'primary' : 'secondary'} onClick={() => toggleTf(tf, emergencyExitTimeframes, setEmergencyExitTimeframes)}>
+                {tf}
+              </Button>
+            ))}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Close size on exit signal</span>
+            <div className="actions-row" style={{ justifyContent: 'flex-end' }}>
+              <Segmented options={EXIT_CLOSE_PRESETS} value={EXIT_CLOSE_PRESETS.includes(exitClosePct) ? exitClosePct : 50} format={(v) => `${v}%`} onChange={setExitClosePct} />
+              <input type="number" min={0} max={100} step={1} value={exitClosePct} className="rules-input rules-input--sm" onChange={(e) => setExitClosePct(clampNumber(Number(e.target.value), 0, 100))} aria-label="Custom close size on exit signal" />
+            </div>
+          </div>
+          <p className="stat-note muted" style={{ marginTop: 8, fontSize: 11 }}>
+            {exitClosePct === 0 ? '0% disables emergency engulfing exit actions.' : exitClosePct < 100 ? `Partial close (${exitClosePct}%) moves SL to entry (break-even).` : '100% closes the full position.'}
+          </p>
+        </div>
+      </Card>
+
+      <Card title="Risk Management" actions={<Badge tone="danger">Risk</Badge>}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14, alignItems: 'center' }}>
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Daily Drawdown Limit</span>
+            <Stepper value={dailyDrawdown} min={0} max={100} step={0.5} unit="%" decimals={1} onChange={setDailyDrawdown} />
+          </div>
+          <div style={{ display: 'grid', gap: 6 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+              <span className="rules-label" style={{ margin: 0 }}>Max Leverage</span>
+              <div className="actions-row">
+                <input type="number" min={1} max={20} step={1} value={maxLeverage} className="rules-input rules-input--sm" onChange={(e) => setMaxLeverage(clampNumber(Number(e.target.value), 1, 20))} />
+                <strong style={{ fontSize: 14 }}>{maxLeverage}x</strong>
+              </div>
+            </div>
+            <input type="range" min={1} max={20} value={maxLeverage} onChange={(e) => setMaxLeverage(clampNumber(Number(e.target.value), 1, 20))} className="rules-range" style={{ marginTop: 0 }} />
+          </div>
+        </div>
+        <p className="stat-note muted">Suggested: leverage ≤ 5x and drawdown ≤ 3% for conservative operation.</p>
+      </Card>
+
+      <Card title="Default TP / SL" actions={<Badge tone="success">Targets</Badge>}>
+        <div className="rules-section rules-levels-grid">
+          {tpLevels.map((tp, idx) => (
+            <div key={idx} className="rules-level-row">
+              <span className="rules-level-tag">TP{idx + 1}</span>
+              <Stepper value={tp} min={0.5} max={100} step={0.5} unit="%" decimals={1} onChange={(v) => updateTpLevel(idx, v)} />
+              {idx === 0 ? (tpLevels.length < 3 ? <Button type="button" variant="secondary" className="rules-mini-btn" onClick={addTpLevel}>+ TP</Button> : <span className="rules-mini-btn rules-mini-btn--ghost" />) : (
+                <Button type="button" variant="danger" className="rules-mini-btn" onClick={() => removeTpLevel(idx)} title="Remove level">Remove</Button>
+              )}
+              {idx === 0 ? <span className="muted rules-level-hint">TP1 → move SL to entry</span> : <span className="rules-mini-btn rules-mini-btn--ghost" />}
+            </div>
+          ))}
+          <div className="rules-level-row">
+            <span className="rules-level-tag">SL</span>
+            <Stepper value={slPct} min={0.5} max={100} step={0.5} unit="%" decimals={1} onChange={setSlPct} />
+            <span className="rules-mini-btn rules-mini-btn--ghost" />
+            <span className="rules-mini-btn rules-mini-btn--ghost" />
+          </div>
+        </div>
+        <p className="stat-note muted">
+          R:R → TP1: <strong>{slPct > 0 ? ((tpLevels[0] ?? 0) / slPct).toFixed(1) : '—'}:1</strong>
+          {tpLevels.length > 1 ? <span> · TP2: <strong>{slPct > 0 ? ((tpLevels[1] ?? 0) / slPct).toFixed(1) : '—'}:1</strong></span> : null}
+          {tpLevels.length > 2 ? <span> · TP3: <strong>{slPct > 0 ? ((tpLevels[2] ?? 0) / slPct).toFixed(1) : '—'}:1</strong></span> : null}
+        </p>
+      </Card>
+
+      <div className="rules-apply-row">
+        <Button variant="primary" fullWidth onClick={() => { void handleRun(); }} disabled={saving || Boolean(activeRunId)}>
+          {saving ? 'Starting...' : activeRunId ? 'Backtest running...' : 'Run backtest'}
+        </Button>
+      </div>
+
+      {selectedRun ? (
+        <Card
+          title={`Result: ${selectedRun.symbol} — ${selectedRun.status}`}
+          actions={(
+            <div className="actions-row">
+              {selectedRun.aiAnalysis?.status === 'completed' && selectedRun.aiAnalysis?.report ? (
+                <Button variant="secondary" onClick={() => setReportRun(selectedRun)}>Open AI report</Button>
+              ) : null}
+              <Button variant="secondary" onClick={() => applyRunToForm(selectedRun)}>Copy</Button>
+            </div>
+          )}
+        >
+          {selectedRun.status === 'queued' || selectedRun.status === 'running' ? (
             <div className="bt-running">
               <Badge tone="neutral">{selectedRun.status}</Badge>
               <p>Backtest is running, please wait…</p>
@@ -386,104 +683,105 @@ export function BacktestPage() {
               <p>{selectedRun.error || 'Unknown error'}</p>
             </div>
           ) : selectedRun.summary ? (
-            <div className="bt-result">
+            <>
               <div className="bt-result__grid">
-                <div className="bt-stat">
-                  <span className="bt-stat__label">Net P&L</span>
-                  <span className={`bt-stat__value ${selectedRun.summary.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}`}>
-                    {formatMoney(selectedRun.summary.netPnlUsd)}
-                  </span>
-                </div>
-                <div className="bt-stat">
-                  <span className="bt-stat__label">ROI</span>
-                  <span className={`bt-stat__value ${selectedRun.summary.roiPct >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}`}>
-                    {formatNumber(selectedRun.summary.roiPct)}%
-                  </span>
-                </div>
-                <div className="bt-stat">
-                  <span className="bt-stat__label">Win Rate</span>
-                  <span className="bt-stat__value">{formatNumber(selectedRun.summary.winRatePct)}%</span>
-                </div>
-                <div className="bt-stat">
-                  <span className="bt-stat__label">Total Trades</span>
-                  <span className="bt-stat__value">{selectedRun.summary.totalTrades}</span>
-                </div>
-                <div className="bt-stat">
-                  <span className="bt-stat__label">Max Drawdown</span>
-                  <span className="bt-stat__value bt-stat__value--negative">{formatNumber(selectedRun.summary.maxDrawdownPct)}%</span>
-                </div>
+                <div className="bt-stat"><span className="bt-stat__label">Net P&L</span><span className={`bt-stat__value ${selectedRun.summary.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}`}>{formatMoney(selectedRun.summary.netPnlUsd)}</span></div>
+                <div className="bt-stat"><span className="bt-stat__label">ROI</span><span className={`bt-stat__value ${selectedRun.summary.roiPct >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}`}>{formatNumber(selectedRun.summary.roiPct)}%</span></div>
+                <div className="bt-stat"><span className="bt-stat__label">Win Rate</span><span className="bt-stat__value">{formatNumber(selectedRun.summary.winRatePct)}%</span></div>
+                <div className="bt-stat"><span className="bt-stat__label">Total Trades</span><span className="bt-stat__value">{selectedRun.summary.totalTrades}</span></div>
+                <div className="bt-stat"><span className="bt-stat__label">Max Drawdown</span><span className="bt-stat__value bt-stat__value--negative">{formatNumber(selectedRun.summary.maxDrawdownPct)}%</span></div>
               </div>
 
-              {selectedRun.bySymbol?.length > 0 && (
+              {selectedRun.bySymbol?.length > 0 ? (
                 <div className="bt-symbol-stats">
                   <h4>Per-Symbol Breakdown</h4>
-                  {selectedRun.bySymbol.map((ss) => (
-                    <div key={ss.symbol} className="bt-symbol-row">
-                      <strong>{ss.symbol}</strong>
-                      <span>W:{ss.wins} L:{ss.losses}</span>
-                      <span>SL:{ss.slCount}</span>
-                      <span>TP1:{ss.tp1Count} TP2:{ss.tp2Count} TP3:{ss.tp3Count}</span>
-                      <span>Exit:{ss.emergencyExitCount}</span>
-                      <span className={ss.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}>
-                        {formatMoney(ss.netPnlUsd)}
-                      </span>
+                  {selectedRun.bySymbol.map((row) => (
+                    <div key={row.symbol} className="bt-symbol-row">
+                      <strong>{row.symbol}</strong>
+                      <span>W:{row.wins} L:{row.losses}</span>
+                      <span>SL:{row.slCount}</span>
+                      <span>TP1:{row.tp1Count} TP2:{row.tp2Count} TP3:{row.tp3Count}</span>
+                      <span>Exit:{row.emergencyExitCount}</span>
+                      <span className={row.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}>{formatMoney(row.netPnlUsd)}</span>
                     </div>
                   ))}
                 </div>
-              )}
+              ) : null}
 
-              {selectedRun.artifacts && (
-                <div className="bt-artifacts">
-                  <small>
-                    {selectedRun.artifacts.tradeCount} trade events · {selectedRun.artifacts.equityCurvePoints} equity points · Engine: {selectedRun.engineVersion}/{selectedRun.engineCommit?.slice(0, 8)}
-                  </small>
+              <div className="bt-applied-settings">
+                <h4>Applied settings</h4>
+                <div className="bt-applied-settings__grid">
+                  {formatRulesSnapshot(selectedRun).map((item) => (
+                    <div key={item.label} className="bt-applied-settings__item">
+                      <span className="bt-applied-settings__label">{item.label}</span>
+                      <span className="bt-applied-settings__value">{item.value}</span>
+                    </div>
+                  ))}
                 </div>
-              )}
-            </div>
+              </div>
+
+              {selectedRun.artifacts ? (
+                <div className="bt-artifacts">
+                  <small>{selectedRun.artifacts.tradeCount} trade events · {selectedRun.artifacts.equityCurvePoints} equity points · Engine: {selectedRun.engineVersion}/{selectedRun.engineCommit?.slice(0, 8)}</small>
+                </div>
+              ) : null}
+            </>
           ) : null}
         </Card>
-      )}
+      ) : null}
 
-      {/* ─── Run history ──────────────────────────────────────── */}
-      {runs.length > 0 && (
-        <Card title="Run History">
-          <div className="bt-history">
-            {runs.map((r) => (
-              <button
-                key={r.id}
-                type="button"
-                className={`bt-history__item ${selectedRun?.id === r.id ? 'bt-history__item--selected' : ''}`}
-                onClick={() => setSelectedRun(r)}
-              >
-                <span className="bt-history__symbol">{r.symbol}</span>
-                <span className="bt-history__dates">
-                  {toLocalDateStr(r.startTimeMs)} → {toLocalDateStr(r.endTimeMs)}
-                </span>
-                <Badge tone={r.status === 'completed' ? 'success' : r.status === 'failed' ? 'danger' : 'neutral'}>
-                  {r.status}
-                </Badge>
-                {r.summary && (
-                  <span className={r.summary.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}>
-                    {formatMoney(r.summary.netPnlUsd)} ({formatNumber(r.summary.roiPct)}%)
-                  </span>
-                )}
-                <button
-                  type="button"
-                  className={`bt-ai-btn bt-ai-btn--${r.aiAnalysis?.status ?? 'idle'}`}
-                  title={r.aiAnalysis?.status === 'completed' ? 'Open saved AI report' : r.aiAnalysis?.status === 'pending' ? 'AI analysis is running' : 'Generate AI analysis'}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    void handleAiClick(r);
-                  }}
-                  disabled={analysisBusyRunId === r.id || r.aiAnalysis?.status === 'pending' || r.status !== 'completed'}
-                >
-                  {analysisBusyRunId === r.id ? '…' : r.aiAnalysis?.status === 'completed' ? '🤖' : r.aiAnalysis?.status === 'pending' ? '⏳' : 'AI'}
-                </button>
-              </button>
-            ))}
+      <Card
+        title="Run History"
+        actions={(
+          <div className="actions-row">
+            <select className="rules-input rules-input--sm" value={historySort} onChange={(e) => setHistorySort(e.target.value as HistorySortMode)}>
+              <option value="created-desc">Newest first</option>
+              <option value="roi-desc">ROI % max → min</option>
+            </select>
+            <Badge tone="neutral">{runs.length} total</Badge>
           </div>
-        </Card>
-      )}
+        )}
+      >
+        <div className="bt-history">
+          {pagedRuns.length === 0 ? <p className="muted">No backtest runs yet.</p> : pagedRuns.map((run) => (
+            <div
+              key={run.id}
+              role="button"
+              tabIndex={0}
+              className={`bt-history__item ${selectedRun?.id === run.id ? 'bt-history__item--selected' : ''}`}
+              onClick={() => setSelectedRun(run)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  setSelectedRun(run);
+                }
+              }}
+            >
+              <span className="bt-history__symbol">{run.symbol}</span>
+              <span className="bt-history__dates">{toLocalDateStr(run.startTimeMs)} → {toLocalDateStr(run.endTimeMs)}</span>
+              <Badge tone={run.status === 'completed' ? 'success' : run.status === 'failed' ? 'danger' : 'neutral'}>{run.status}</Badge>
+              {run.summary ? <span className={run.summary.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}>{formatMoney(run.summary.netPnlUsd)} ({formatNumber(run.summary.roiPct)}%)</span> : null}
+              <button
+                type="button"
+                className={`bt-ai-btn bt-ai-btn--${run.aiAnalysis?.status ?? 'idle'}`}
+                title={run.aiAnalysis?.status === 'completed' ? 'Open saved AI report' : run.aiAnalysis?.status === 'pending' ? 'AI analysis is running' : 'Generate AI analysis'}
+                onClick={(event) => { event.stopPropagation(); void handleAiClick(run); }}
+                disabled={analysisBusyRunId === run.id || run.aiAnalysis?.status === 'pending' || run.status !== 'completed'}
+              >
+                {analysisBusyRunId === run.id ? '…' : run.aiAnalysis?.status === 'completed' ? '🤖' : run.aiAnalysis?.status === 'pending' ? '⏳' : 'AI'}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {historyPageCount > 1 ? (
+          <div className="bt-pagination">
+            <Button variant="secondary" onClick={() => setHistoryPage((p) => Math.max(1, p - 1))} disabled={historyPage <= 1}>Prev</Button>
+            <span className="muted">Page {historyPage} / {historyPageCount}</span>
+            <Button variant="secondary" onClick={() => setHistoryPage((p) => Math.min(historyPageCount, p + 1))} disabled={historyPage >= historyPageCount}>Next</Button>
+          </div>
+        ) : null}
+      </Card>
 
       {reportRun?.aiAnalysis?.report ? (
         <div className="bt-report-overlay" onClick={() => setReportRun(null)}>
@@ -492,36 +790,17 @@ export function BacktestPage() {
               <div>
                 <h3>AI Analysis — {reportRun.symbol}</h3>
                 <div className="bt-report-modal__meta">
-                  {reportRun.aiAnalysis.model ? `${reportRun.aiAnalysis.model} • ` : ''}
-                  {reportRun.aiAnalysis.completedAt ?? reportRun.aiAnalysis.requestedAt}
+                  {reportRun.aiAnalysis.model ? `${reportRun.aiAnalysis.model} • ` : ''}{reportRun.aiAnalysis.completedAt ? formatDate(reportRun.aiAnalysis.completedAt) : 'saved report'}
                 </div>
               </div>
               <button type="button" className="bt-report-close" onClick={() => setReportRun(null)}>×</button>
             </div>
-
-            {reportRun.aiAnalysis.summary ? (
-              <div className="bt-report-section">
-                <h4>Summary</h4>
-                <p>{reportRun.aiAnalysis.summary}</p>
-              </div>
-            ) : null}
-
-            {reportRun.aiAnalysis.recommendations?.length ? (
-              <div className="bt-report-section">
-                <h4>Recommendations</h4>
-                <ul>
-                  {reportRun.aiAnalysis.recommendations.map((item, index) => <li key={index}>{item}</li>)}
-                </ul>
-              </div>
-            ) : null}
-
-            <div className="bt-report-section">
-              <h4>Saved Report</h4>
-              <pre className="bt-report-pre">{reportRun.aiAnalysis.report}</pre>
-            </div>
+            {reportRun.aiAnalysis.summary ? <div className="bt-report-section"><h4>Summary</h4><p>{reportRun.aiAnalysis.summary}</p></div> : null}
+            {reportRun.aiAnalysis.recommendations?.length ? <div className="bt-report-section"><h4>Recommendations</h4><ul>{reportRun.aiAnalysis.recommendations.map((item, index) => <li key={index}>{item}</li>)}</ul></div> : null}
+            <div className="bt-report-section"><h4>Saved Report</h4><pre className="bt-report-pre">{reportRun.aiAnalysis.report}</pre></div>
           </div>
         </div>
       ) : null}
-    </div>
+    </main>
   );
 }

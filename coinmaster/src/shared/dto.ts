@@ -613,6 +613,7 @@ export interface AiMasterSnapshotResponse {
 
 export type BacktestRunStatus = 'queued' | 'running' | 'completed' | 'failed';
 export type BacktestAiAnalysisStatus = 'idle' | 'pending' | 'completed' | 'failed';
+export type BacktestBiasMode = 'long' | 'short' | 'both';
 
 export interface BacktestRunSummary {
   totalTrades: number;
@@ -654,6 +655,7 @@ export interface BacktestRun {
   id: string;
   status: BacktestRunStatus;
   symbol: string;
+  biasMode: BacktestBiasMode;
   startedAt?: string;
   finishedAt?: string;
   createdAt: string;
@@ -682,6 +684,7 @@ export interface BacktestRun {
 
 export interface BacktestCreateRunRequest {
   symbol: string;
+  biasMode?: BacktestBiasMode;
   startTimeMs: number;
   endTimeMs: number;
   rules?: TradingRulesSettings;
