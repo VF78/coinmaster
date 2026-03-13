@@ -31,6 +31,8 @@ const DEFAULT_INFO_URL = 'https://api.hyperliquid.xyz/info';
 const DEFAULT_WS_URL = 'wss://api.hyperliquid.xyz/ws';
 const UNIVERSE_CACHE_TTL_MS = Math.max(30_000, Number(process.env.HYPERLIQUID_UNIVERSE_CACHE_MS || 5 * 60_000));
 const DEX_DISCOVERY_CACHE_TTL_MS = Math.max(60_000, Number(process.env.HYPERLIQUID_DEX_DISCOVERY_CACHE_MS || 10 * 60_000));
+const DEFAULT_TRIGGER_MARKET_SLIPPAGE_PCT = 0.03;
+const DEX_TRIGGER_MARKET_SLIPPAGE_PCT = 0.08;
 const EXTRA_DEXES_ENV = String(process.env.HYPERLIQUID_EXTRA_DEXES || '')
   .split(',')
   .map((x) => x.trim().toLowerCase())
@@ -259,7 +261,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     const user = await this.resolveEffectiveUser();
     const target = symbol ? this.normalizeSymbol(symbol) : null;
     const requestedDex = target ? this.getDexFromSymbol(target) : null;
-    const dexScopes = requestedDex ? [requestedDex] : ['', ...(await this.getKnownDexes(user))];
+    const knownDexes = await this.getKnownDexes(user).catch(() => [] as string[]);
+    const dexScopes = [...new Set([requestedDex ?? '', '', ...knownDexes].filter((dex) => dex !== null && dex !== undefined))];
 
     const rawGroups = await Promise.all(
       dexScopes.map((dex) => this.requestInfo<any[]>({ type: 'frontendOpenOrders', user, ...(dex ? { dex } : {}) }))
@@ -543,14 +546,17 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       await this.ensureSdkAssetIndex(intent.symbol, client);
       const triggerPxRaw = Number(intent.triggerPrice);
       const triggerPx = await this.normalizeHlPriceForSymbol(intent.symbol, triggerPxRaw);
-      const marketLimitPx = await this.normalizeHlPriceForSymbol(
-        intent.symbol,
-        intent.side === 'buy' ? triggerPx * 1.03 : triggerPx * 0.97,
-      );
 
       const isReduceOnly = Boolean(intent.reduceOnly ?? true);
       const normalizedSymbol = this.normalizeSymbol(intent.symbol);
       const dex = this.getDexFromSymbol(normalizedSymbol);
+      const triggerMarketSlippagePct = dex ? DEX_TRIGGER_MARKET_SLIPPAGE_PCT : DEFAULT_TRIGGER_MARKET_SLIPPAGE_PCT;
+      const marketLimitPx = await this.normalizeHlPriceForSymbol(
+        intent.symbol,
+        intent.side === 'buy'
+          ? triggerPx * (1 + triggerMarketSlippagePct)
+          : triggerPx * (1 - triggerMarketSlippagePct),
+      );
 
       const meta = await this.getInstrumentMeta(intent.symbol).catch(() => undefined);
       const sizeDecimals = Math.max(0, Math.min(8, Number(meta?.sizeDecimals ?? 5)));
@@ -618,13 +624,14 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       // Fallback lookup by clientOrderId if SDK response omits oid.
       if (oid === undefined && intent.clientOrderId) {
         try {
-          const user = await this.resolveEffectiveUser();
-          const allOrders = await this.requestInfo<any[]>({ type: 'frontendOpenOrders', user, ...(dex ? { dex } : {}) });
           const cloid = this.toCloid(intent.clientOrderId);
           if (cloid) {
             const cloidLower = cloid.toLowerCase();
-            const row = (Array.isArray(allOrders) ? allOrders : []).find((o) => String(o?.cloid ?? '').toLowerCase() === cloidLower);
-            if (row?.oid !== undefined) oid = row.oid;
+            const allOrders = await this.getOpenOrders(normalizedSymbol);
+            const row = allOrders.find((o) => String((o.raw as Record<string, unknown> | undefined)?.cloid ?? '').toLowerCase() === cloidLower);
+            if ((row?.raw as Record<string, unknown> | undefined)?.oid !== undefined) {
+              oid = (row?.raw as Record<string, unknown>).oid as string | number;
+            }
           }
         } catch (e) {
           console.log(`[hl-adapter] fallback oid lookup failed:`, e instanceof Error ? e.message : String(e));
