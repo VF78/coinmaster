@@ -127,6 +127,12 @@ export function DashboardPage() {
   async function refresh() {
     const next = await getDashboard();
     setData(next);
+    setSelectedPosition((current) => {
+      if (!current) return current;
+      const updated = next.live.openPositions.find((p) => p.id === current.id)
+        ?? next.live.openPositions.find((p) => p.symbol === current.symbol && p.side === current.side);
+      return updated ?? current;
+    });
 
     const now = Date.now();
     let activeRules = cachedFvgRulesRef.current;
@@ -338,6 +344,11 @@ export function DashboardPage() {
   const pnlValue = getPnlValue();
   const pnlLabel = PNL_LABEL[pnlPeriod];
 
+  const renderStopLoss = (row: LivePosition) => {
+    const level = Number(row.stopLoss ?? NaN);
+    return Number.isFinite(level) && level > 0 ? formatNumber(level) : '—';
+  };
+
   const renderTakeProfits = (row: LivePosition) => {
     const levels = (Array.isArray(row.takeProfits) && row.takeProfits.length > 0
       ? row.takeProfits
@@ -468,7 +479,7 @@ export function DashboardPage() {
           mobileSubtitle={(row) => {
             const dealValue = row.dealValue !== undefined ? formatMoney(row.dealValue) : '—';
             const lev = row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—';
-            return `Deal: ${dealValue} • Lev: ${lev}`;
+            return `Deal: ${dealValue} • Lev: ${lev} • SL: ${renderStopLoss(row)}`;
           }}
           mobileActions={(row) => (
             <Button variant="secondary" onClick={() => setSelectedPosition(row)}>
@@ -483,7 +494,7 @@ export function DashboardPage() {
             { key: 'coins',   header: 'Size',  render: (row) => formatNumber(row.size) },
             { key: 'deal',    header: 'Deal value',  render: (row) => (row.dealValue !== undefined ? formatMoney(row.dealValue) : '—') },
             { key: 'lev',     header: 'Leverage',    render: (row) => (row.leverage !== undefined ? `${formatNumber(row.leverage)}x` : '—') },
-            { key: 'sl',      header: 'Stop loss',   render: (row) => (row.stopLoss !== undefined ? formatNumber(row.stopLoss) : '—') },
+            { key: 'sl',      header: 'Stop loss',   render: (row) => renderStopLoss(row) },
             { key: 'tp',      header: 'Take profit', render: (row) => renderTakeProfits(row) },
             { key: 'openedAt',header: 'Opened at',   render: (row) => (row.openedAt ? formatDate(row.openedAt) : '—') },
             {

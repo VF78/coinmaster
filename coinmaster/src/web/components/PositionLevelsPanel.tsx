@@ -82,6 +82,23 @@ function buildLevelsSignature(stopLoss: number, takeProfits: number[]): string |
   return `${normalizedSl}|${normalizedTps.join(',')}`;
 }
 
+function extractPositionTakeProfits(position: LivePosition): number[] {
+  const levels = Array.isArray(position.takeProfits) && position.takeProfits.length > 0
+    ? position.takeProfits
+    : [position.takeProfit].filter((v): v is number => Number.isFinite(v) && (v ?? 0) > 0);
+
+  return levels
+    .filter((v) => Number.isFinite(v) && v > 0)
+    .slice(0, 3)
+    .map((v) => Number(v.toFixed(2)));
+}
+
+function extractPositionStopLoss(position: LivePosition, fallback: number): number {
+  const value = Number(position.stopLoss ?? fallback);
+  if (!Number.isFinite(value) || value <= 0) return fallback;
+  return Number(value.toFixed(2));
+}
+
 export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLevelsPanelProps) {
   const dialog = useDialog();
   const chartHostRef = useRef<HTMLDivElement | null>(null);
@@ -99,10 +116,8 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const [isApplying, setIsApplying] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
   const [lastAppliedSignature, setLastAppliedSignature] = useState<string | null>(() => {
-    const existingTps = Array.isArray(position.takeProfits) && position.takeProfits.length > 0
-      ? position.takeProfits
-      : [position.takeProfit].filter((v): v is number => Number.isFinite(v) && (v ?? 0) > 0);
-    return buildLevelsSignature(Number(position.stopLoss ?? NaN), existingTps);
+    const existingTps = extractPositionTakeProfits(position);
+    return buildLevelsSignature(extractPositionStopLoss(position, Number.NaN), existingTps);
   });
   const [dragging, setDragging] = useState<{ kind: 'sl' | 'tp'; index: number } | null>(null);
   const [chipCoords, setChipCoords] = useState<{ pnl: number | null; sl: number | null; tps: Array<number | null> }>({ pnl: null, sl: null, tps: [] });
@@ -110,13 +125,11 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   const entry = position.entryPrice ?? 0;
   const side = position.side;
 
-  const [stopLoss, setStopLoss] = useState(position.stopLoss ?? entry);
+  const [stopLoss, setStopLoss] = useState(extractPositionStopLoss(position, entry));
   const [takeProfits, setTakeProfits] = useState<number[]>(() => {
-    const fromPosition = Array.isArray(position.takeProfits)
-      ? position.takeProfits.filter((v) => Number.isFinite(v) && v > 0).slice(0, 3)
-      : [];
+    const fromPosition = extractPositionTakeProfits(position);
     if (fromPosition.length > 0) {
-      return fromPosition.map((v) => Number(v.toFixed(2)));
+      return fromPosition;
     }
     const base = position.takeProfit ?? (entry > 0 ? priceFromPct(side, entry, 2) : 0);
     return base > 0 ? [Number(base.toFixed(2))] : [];
@@ -174,6 +187,25 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
   }, [isDirty]);
 
   useEffect(() => {
+    if (isApplying || isDirty) return;
+
+    const nextSl = extractPositionStopLoss(position, entry);
+    const nextTps = extractPositionTakeProfits(position);
+
+    setStopLoss(nextSl);
+    stopLossRef.current = nextSl;
+    initialStopLossRef.current = normalizeLevel(nextSl);
+
+    if (nextTps.length > 0) {
+      setTakeProfits(nextTps);
+      takeProfitsRef.current = nextTps;
+      initialTakeProfitsRef.current = nextTps.map(normalizeLevel);
+    }
+
+    setLastAppliedSignature(buildLevelsSignature(nextSl, nextTps));
+  }, [position.id, position.stopLoss, position.takeProfit, position.takeProfits, entry, isApplying, isDirty]);
+
+  useEffect(() => {
     setTpPctInputs((prev) => takeProfits.map((tp, idx) => {
       if (activePctField?.kind === 'tp' && activePctField.index === idx) {
         return prev[idx] ?? formatPctInput(pctFromPrice(side, entry, tp));
@@ -197,17 +229,12 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
         const dashboard = await getDashboard();
         if (!active) return;
 
-        const latest = dashboard.live.openPositions.find((p) => p.symbol === position.symbol && p.side === position.side);
+        const latest = dashboard.live.openPositions.find((p) => p.id === position.id)
+          ?? dashboard.live.openPositions.find((p) => p.symbol === position.symbol && p.side === position.side);
         if (!latest) return;
 
-        const nextSl = Number(latest.stopLoss ?? entry);
-        const nextTps = (Array.isArray(latest.takeProfits) && latest.takeProfits.length > 0
-          ? latest.takeProfits
-          : (latest.takeProfit !== undefined ? [latest.takeProfit] : [])
-        )
-          .filter((v) => Number.isFinite(v) && v > 0)
-          .slice(0, 3)
-          .map((v) => Number(v.toFixed(2)));
+        const nextSl = extractPositionStopLoss(latest, entry);
+        const nextTps = extractPositionTakeProfits(latest);
 
         if (Number.isFinite(nextSl) && nextSl > 0) {
           setStopLoss(nextSl);
@@ -230,7 +257,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
     return () => {
       active = false;
     };
-  }, [position.symbol, position.side]);
+  }, [position.id, position.symbol, position.side, entry]);
 
   useEffect(() => {
     stopLossRef.current = stopLoss;
