@@ -20,6 +20,11 @@ const defaultData: DBShape = {
       notifyOrderRejected: false,
       notifyPositionClosed: false,
     },
+    hyperliquid: {
+      accountAddress: '',
+      apiWalletAddress: '',
+      apiPrivateKey: '',
+    },
     externalExchanges: {
       bybit: {
         mode: 'off',
@@ -74,6 +79,15 @@ function ensureDbShape(data: DBShape) {
   data.settings.telegramNotify.notifySignalRejected = data.settings.telegramNotify.notifySignalRejected === true;
   data.settings.telegramNotify.notifyOrderRejected = data.settings.telegramNotify.notifyOrderRejected === true;
   data.settings.telegramNotify.notifyPositionClosed = data.settings.telegramNotify.notifyPositionClosed === true;
+
+  data.settings.hyperliquid = data.settings.hyperliquid ?? {
+    accountAddress: '',
+    apiWalletAddress: '',
+    apiPrivateKey: '',
+  };
+  data.settings.hyperliquid.accountAddress = String(data.settings.hyperliquid.accountAddress ?? '').trim();
+  data.settings.hyperliquid.apiWalletAddress = String(data.settings.hyperliquid.apiWalletAddress ?? '').trim();
+  data.settings.hyperliquid.apiPrivateKey = String(data.settings.hyperliquid.apiPrivateKey ?? '').trim();
 
   // Migrate legacy key from earlier implementation
   if (!data.settings.externalExchanges && (data.settings as any).readOnlyExchanges) {

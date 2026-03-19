@@ -3372,6 +3372,8 @@ async function staleMarketDataGate(req: Request, res: Response, next: NextFuncti
   }
 }
 
+await hydrateHyperliquidEnvFromDb();
+
 const exchange = new HyperliquidAdapter();
 
 // ─── Multi-TF Engulfing Gate (feature-flagged) ─────────────────────────
@@ -3587,11 +3589,91 @@ async function patchEnvFile(patch: Record<string, string>): Promise<void> {
     } else {
       nextLines.push(serialized);
     }
-    process.env[key] = value;
   }
 
   const output = `${nextLines.filter((line, i, arr) => !(i === arr.length - 1 && line === '')).join('\n')}\n`;
   await fs.writeFile(COINMASTER_ENV_PATH, output, 'utf-8');
+}
+
+function applyHyperliquidEnv(settings: {
+  accountAddress?: string;
+  apiWalletAddress?: string;
+  apiPrivateKey?: string;
+}): void {
+  const entries: Array<[string, string | undefined]> = [
+    ['HYPERLIQUID_ACCOUNT_ADDRESS', settings.accountAddress],
+    ['HYPERLIQUID_API_WALLET_ADDRESS', settings.apiWalletAddress],
+    ['HYPERLIQUID_API_PRIVATE_KEY', settings.apiPrivateKey],
+  ];
+
+  for (const [key, raw] of entries) {
+    const value = String(raw ?? '').trim();
+    if (value) process.env[key] = value;
+    else delete process.env[key];
+  }
+}
+
+function getRuntimeHyperliquidSettings() {
+  const accountAddress = String(process.env.HYPERLIQUID_ACCOUNT_ADDRESS ?? '').trim();
+  const apiWalletAddress = String(process.env.HYPERLIQUID_API_WALLET_ADDRESS ?? '').trim();
+  const apiPrivateKey = String(process.env.HYPERLIQUID_API_PRIVATE_KEY ?? '').trim();
+  return {
+    accountAddress,
+    apiWalletAddress,
+    apiPrivateKey,
+    hasPrivateKey: Boolean(apiPrivateKey),
+    tradingConfigured: Boolean(accountAddress && apiWalletAddress && apiPrivateKey),
+  };
+}
+
+async function hydrateHyperliquidEnvFromDb(): Promise<void> {
+  const db = await getDb();
+  const stored = db.data.settings.hyperliquid;
+  const runtime = getRuntimeHyperliquidSettings();
+  const storedEmpty = !stored?.accountAddress && !stored?.apiWalletAddress && !stored?.apiPrivateKey;
+
+  if (storedEmpty && (runtime.accountAddress || runtime.apiWalletAddress || runtime.apiPrivateKey)) {
+    db.data.settings.hyperliquid = {
+      accountAddress: runtime.accountAddress,
+      apiWalletAddress: runtime.apiWalletAddress,
+      apiPrivateKey: runtime.apiPrivateKey,
+    };
+    await db.write();
+    return;
+  }
+
+  if (!storedEmpty) {
+    applyHyperliquidEnv(stored);
+  }
+}
+
+async function persistHyperliquidSettings(settings: {
+  accountAddress: string;
+  apiWalletAddress: string;
+  apiPrivateKey: string;
+}): Promise<{ envFileUpdated: boolean; envFileError?: string }> {
+  const db = await getDb();
+  db.data.settings.hyperliquid = {
+    accountAddress: settings.accountAddress,
+    apiWalletAddress: settings.apiWalletAddress,
+    apiPrivateKey: settings.apiPrivateKey,
+  };
+  await db.write();
+
+  applyHyperliquidEnv(settings);
+
+  try {
+    await patchEnvFile({
+      HYPERLIQUID_ACCOUNT_ADDRESS: settings.accountAddress,
+      HYPERLIQUID_API_WALLET_ADDRESS: settings.apiWalletAddress,
+      HYPERLIQUID_API_PRIVATE_KEY: settings.apiPrivateKey,
+    });
+    return { envFileUpdated: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'env_file_update_failed';
+    logger.warn({ component: 'settings', err: message, envPath: COINMASTER_ENV_PATH }, 'failed to persist Hyperliquid credentials to env file; DB-backed settings will be used after restart');
+    return { envFileUpdated: false, envFileError: message };
+  }
 }
 
 async function ingestPrice(symbol: string, price: number, source: 'ws' | 'rest') {
@@ -3839,8 +3921,19 @@ app.get('/api/dashboard', async (_req, res) => {
   const pendingRows = await loadPendingConfirmationRows();
   const liveBase = await getCachedExchangeLiveState(LIVE_SYMBOL, getLiveMode());
   const live = { ...liveBase, pendingConfirmations: pendingRows };
+  const hyperliquid = getRuntimeHyperliquidSettings();
 
-  res.json({ latestBias, latestTick: latestTick ?? null, live, classBiasControls, customBiasControls });
+  res.json({
+    latestBias,
+    latestTick: latestTick ?? null,
+    live,
+    hyperliquid: {
+      tradingConfigured: hyperliquid.tradingConfigured,
+      connected: live.connected && hyperliquid.tradingConfigured,
+    },
+    classBiasControls,
+    customBiasControls,
+  });
 });
 
 app.get('/api/live/history', async (_req, res) => {
@@ -4206,12 +4299,14 @@ app.get('/api/settings/exchange', async (_req, res) => {
 
   const db = await getDb();
   const tg = db.data.settings.telegramNotify;
+  const hyperliquid = getRuntimeHyperliquidSettings();
+  const connected = live.connected && hyperliquid.tradingConfigured;
 
   return res.json({
     exchange: exchange.name,
-    connected: live.connected,
-    accountAddress: maskAddress(process.env.HYPERLIQUID_ACCOUNT_ADDRESS),
-    walletAddress: maskAddress(process.env.HYPERLIQUID_API_WALLET_ADDRESS),
+    connected,
+    accountAddress: maskAddress(hyperliquid.accountAddress),
+    walletAddress: maskAddress(hyperliquid.apiWalletAddress),
     mode: liveMode,
     account: live.account,
     capabilities: {
@@ -4220,10 +4315,12 @@ app.get('/api/settings/exchange', async (_req, res) => {
       realtimeMids: exchange.capabilities.realtimeMids
     },
     hyperliquid: {
-      accountAddress: process.env.HYPERLIQUID_ACCOUNT_ADDRESS || '',
-      apiWalletAddress: process.env.HYPERLIQUID_API_WALLET_ADDRESS || '',
-      hasPrivateKey: Boolean(process.env.HYPERLIQUID_API_PRIVATE_KEY),
-      privateKeyMasked: maskPrivateKey(process.env.HYPERLIQUID_API_PRIVATE_KEY),
+      accountAddress: hyperliquid.accountAddress,
+      apiWalletAddress: hyperliquid.apiWalletAddress,
+      hasPrivateKey: hyperliquid.hasPrivateKey,
+      privateKeyMasked: maskPrivateKey(hyperliquid.apiPrivateKey),
+      tradingConfigured: hyperliquid.tradingConfigured,
+      connected,
     },
     externalExchanges: {
       bybit: getMaskedBybitConnectionSettings(db.data.settings),
@@ -4256,53 +4353,77 @@ app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
     apiPrivateKey?: string;
   };
 
-  const patch: Record<string, string> = {};
-
-  if (accountAddress !== undefined) {
-    const value = String(accountAddress).trim();
-    if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
-      return res.status(400).json({ ok: false, error: 'invalid_account_address' });
-    }
-    patch.HYPERLIQUID_ACCOUNT_ADDRESS = value;
-  }
-
-  if (apiWalletAddress !== undefined) {
-    const value = String(apiWalletAddress).trim();
-    if (value && !/^0x[a-fA-F0-9]{40}$/.test(value)) {
-      return res.status(400).json({ ok: false, error: 'invalid_api_wallet_address' });
-    }
-    patch.HYPERLIQUID_API_WALLET_ADDRESS = value;
-  }
-
-  if (apiPrivateKey !== undefined) {
-    const value = String(apiPrivateKey).trim();
-    if (value && !/^0x[a-fA-F0-9]{64}$/.test(value)) {
-      return res.status(400).json({ ok: false, error: 'invalid_api_private_key_format' });
-    }
-    patch.HYPERLIQUID_API_PRIVATE_KEY = value;
-  }
-
-  if (Object.keys(patch).length === 0) {
+  if (accountAddress === undefined && apiWalletAddress === undefined && apiPrivateKey === undefined) {
     return res.status(400).json({ ok: false, error: 'no_fields_provided' });
   }
 
-  await patchEnvFile(patch);
-
-  const responsePayload = {
-    ok: true,
-    restartScheduled: true,
-    exchange: {
-      accountAddress: process.env.HYPERLIQUID_ACCOUNT_ADDRESS || '',
-      apiWalletAddress: process.env.HYPERLIQUID_API_WALLET_ADDRESS || '',
-      hasPrivateKey: Boolean(process.env.HYPERLIQUID_API_PRIVATE_KEY),
-      privateKeyMasked: maskPrivateKey(process.env.HYPERLIQUID_API_PRIVATE_KEY),
-    },
+  const current = getRuntimeHyperliquidSettings();
+  const next = {
+    accountAddress: accountAddress !== undefined ? String(accountAddress).trim() : current.accountAddress,
+    apiWalletAddress: apiWalletAddress !== undefined ? String(apiWalletAddress).trim() : current.apiWalletAddress,
+    apiPrivateKey: apiPrivateKey !== undefined ? String(apiPrivateKey).trim() : current.apiPrivateKey,
   };
 
-  res.json(responsePayload);
+  if (next.accountAddress && !/^0x[a-fA-F0-9]{40}$/.test(next.accountAddress)) {
+    return res.status(400).json({ ok: false, error: 'invalid_account_address' });
+  }
+
+  if (next.apiWalletAddress && !/^0x[a-fA-F0-9]{40}$/.test(next.apiWalletAddress)) {
+    return res.status(400).json({ ok: false, error: 'invalid_api_wallet_address' });
+  }
+
+  if (next.apiPrivateKey && !/^0x[a-fA-F0-9]{64}$/.test(next.apiPrivateKey)) {
+    return res.status(400).json({ ok: false, error: 'invalid_api_private_key_format' });
+  }
+
+  const persistResult = await persistHyperliquidSettings(next);
+  const runtime = getRuntimeHyperliquidSettings();
+
+  res.json({
+    ok: true,
+    restartScheduled: true,
+    envFileUpdated: persistResult.envFileUpdated,
+    envFileError: persistResult.envFileError,
+    exchange: {
+      accountAddress: runtime.accountAddress,
+      apiWalletAddress: runtime.apiWalletAddress,
+      hasPrivateKey: runtime.hasPrivateKey,
+      privateKeyMasked: maskPrivateKey(runtime.apiPrivateKey),
+      tradingConfigured: runtime.tradingConfigured,
+      connected: false,
+    },
+  });
 
   setTimeout(() => {
     logger.warn({ component: 'server' }, 'restarting process to apply Hyperliquid credential changes');
+    process.exit(0);
+  }, 350);
+});
+
+app.delete('/api/settings/exchange/hyperliquid', ownerAuth, async (_req, res) => {
+  const persistResult = await persistHyperliquidSettings({
+    accountAddress: '',
+    apiWalletAddress: '',
+    apiPrivateKey: '',
+  });
+
+  res.json({
+    ok: true,
+    restartScheduled: true,
+    envFileUpdated: persistResult.envFileUpdated,
+    envFileError: persistResult.envFileError,
+    exchange: {
+      accountAddress: '',
+      apiWalletAddress: '',
+      hasPrivateKey: false,
+      privateKeyMasked: '',
+      tradingConfigured: false,
+      connected: false,
+    },
+  });
+
+  setTimeout(() => {
+    logger.warn({ component: 'server' }, 'restarting process to apply Hyperliquid logout');
     process.exit(0);
   }, 350);
 });
@@ -4985,15 +5106,16 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   const isHaltedError = (value: unknown) => String(value ?? '').toLowerCase().includes('trading is halted');
 
   const existingOrdersBefore = await exchange.getOpenOrders(normalizedSymbol).catch(() => []);
-  const isManagedByCloid = (order: { raw?: unknown }) => {
+  const isManagedByCoinmaster = (order: { raw?: unknown }) => {
     const raw = (order.raw ?? {}) as Record<string, unknown>;
     const cloid = String(raw.cloid ?? raw.clientOrderId ?? '').trim().toLowerCase();
-    return cloid.startsWith('tp') || cloid.startsWith('sl');
+    if (!cloid) return false;
+    return cloid.startsWith('tp') || cloid.startsWith('sl') || cloid.startsWith('be-sl');
   };
 
   const existingManagedOrderIds = existingOrdersBefore
     .filter((o) => o.side === closingSide)
-    .filter((o) => isReduceOnlyOrder(o) && (isTriggerOrder(o) || isManagedByCloid(o)))
+    .filter((o) => isManagedByCoinmaster(o))
     .map((o) => String(o.id));
 
   const tpCount = sortedTps.length;

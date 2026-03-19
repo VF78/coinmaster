@@ -193,10 +193,16 @@ export interface HyperliquidSettingsPayload {
 }
 
 export function saveHyperliquidSettings(payload: HyperliquidSettingsPayload) {
-  return jsonFetch<{ ok: boolean; restartScheduled?: boolean; exchange?: ExchangeSettingsResponse['hyperliquid'] }>('/api/settings/exchange/hyperliquid', {
+  return jsonFetch<{ ok: boolean; restartScheduled?: boolean; exchange?: ExchangeSettingsResponse['hyperliquid']; envFileUpdated?: boolean; envFileError?: string }>('/api/settings/exchange/hyperliquid', {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload)
+  });
+}
+
+export function logoutHyperliquidSettings() {
+  return jsonFetch<{ ok: boolean; restartScheduled?: boolean; exchange?: ExchangeSettingsResponse['hyperliquid']; envFileUpdated?: boolean; envFileError?: string }>('/api/settings/exchange/hyperliquid', {
+    method: 'DELETE'
   });
 }
 

@@ -4,6 +4,7 @@ import {
   getExchangeSettings,
   getReadOnlyExchangesSettings,
   getTelegramNotifyHealth,
+  logoutHyperliquidSettings,
   saveBybitSettings,
   saveHyperliquidSettings,
   saveTelegramNotify,
@@ -176,9 +177,30 @@ export function SettingsPage() {
       if (!result.ok) {
         throw new Error(friendlyCodeMessage('hyperliquid_save_failed', 'Could not save Hyperliquid settings.'));
       }
-      setHyperliquidInfo('Saved. Service restart scheduled to apply new credentials.');
+      setHyperliquidInfo(result.envFileUpdated === false
+        ? 'Saved to Coinmaster settings store. Service restart scheduled to apply new credentials.'
+        : 'Saved. Service restart scheduled to apply new credentials.');
     } catch (error) {
       setHyperliquidInfo(`Save failed: ${friendlyErrorMessage(error, 'Could not save Hyperliquid settings.')}`);
+    } finally {
+      setIsSavingHyperliquid(false);
+    }
+  }
+
+  async function logoutHyperliquid() {
+    setIsSavingHyperliquid(true);
+    setHyperliquidInfo('Removing Hyperliquid API settings...');
+    try {
+      const result = await logoutHyperliquidSettings();
+      if (!result.ok) {
+        throw new Error(friendlyCodeMessage('hyperliquid_save_failed', 'Could not remove Hyperliquid settings.'));
+      }
+      setHlAccountAddress('');
+      setHlApiWalletAddress('');
+      setHlApiPrivateKey('');
+      setHyperliquidInfo('Hyperliquid credentials removed. Service restart scheduled.');
+    } catch (error) {
+      setHyperliquidInfo(`Logout failed: ${friendlyErrorMessage(error, 'Could not remove Hyperliquid settings.')}`);
     } finally {
       setIsSavingHyperliquid(false);
     }
@@ -284,6 +306,14 @@ export function SettingsPage() {
         <div className="actions-row" style={{ marginTop: '0.9rem' }}>
           <Button type="button" variant="primary" onClick={saveHyperliquid} disabled={isSavingHyperliquid}>
             {isSavingHyperliquid ? 'Saving...' : 'Save Hyperliquid settings'}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={logoutHyperliquid}
+            disabled={isSavingHyperliquid || (!data.hyperliquid?.accountAddress && !data.hyperliquid?.apiWalletAddress && !data.hyperliquid?.hasPrivateKey)}
+          >
+            Logout
           </Button>
         </div>
 

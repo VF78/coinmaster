@@ -374,8 +374,8 @@ export function DashboardPage() {
           title="Account overview (Hyperliquid)"
           className="terminal-card"
           actions={
-            <Badge tone={data.live.connected ? 'success' : 'danger'}>
-              {data.live.connected ? 'CONNECTED' : 'DISCONNECTED'}
+            <Badge tone={data.hyperliquid?.connected ? 'success' : 'danger'}>
+              {data.hyperliquid?.connected ? 'CONNECTED' : 'DISCONNECTED'}
             </Badge>
           }
         >

@@ -102,6 +102,12 @@ export interface ExternalExchangesSettings {
   bybit: BybitConnectionSettings;
 }
 
+export interface HyperliquidCredentialsSettings {
+  accountAddress: string;
+  apiWalletAddress: string;
+  apiPrivateKey: string;
+}
+
 /** @deprecated use ExternalExchangesSettings */
 export type ReadOnlyExchangesSettings = ExternalExchangesSettings;
 
@@ -109,6 +115,7 @@ export interface AppSettings {
   depositUsd: number;
   tradingRules: TradingRulesSettings;
   telegramNotify?: TelegramNotifySettings;
+  hyperliquid?: HyperliquidCredentialsSettings;
   /** External exchange connections (Bybit, Binance, etc.) */
   externalExchanges?: ExternalExchangesSettings;
   /** @deprecated use externalExchanges */
@@ -306,6 +313,10 @@ export interface DashboardResponse {
   latestBias: Bias;
   latestTick: MarketTick | null;
   live: LiveDashboardState;
+  hyperliquid?: {
+    tradingConfigured: boolean;
+    connected: boolean;
+  };
   classBiasControls: DashboardClassBiasControl[];
   customBiasControls: DashboardCustomBiasControl[];
 }
@@ -504,6 +515,8 @@ export interface ExchangeSettingsResponse {
     apiWalletAddress: string;
     hasPrivateKey: boolean;
     privateKeyMasked: string;
+    tradingConfigured: boolean;
+    connected: boolean;
   };
   externalExchanges?: {
     bybit: MaskedBybitConnectionSettings;
