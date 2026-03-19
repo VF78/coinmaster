@@ -177,9 +177,7 @@ export function SettingsPage() {
       if (!result.ok) {
         throw new Error(friendlyCodeMessage('hyperliquid_save_failed', 'Could not save Hyperliquid settings.'));
       }
-      setHyperliquidInfo(result.envFileUpdated === false
-        ? 'Saved to Coinmaster settings store. Service restart scheduled to apply new credentials.'
-        : 'Saved. Service restart scheduled to apply new credentials.');
+      setHyperliquidInfo('Saved. Service restart scheduled to apply new credentials.');
     } catch (error) {
       setHyperliquidInfo(`Save failed: ${friendlyErrorMessage(error, 'Could not save Hyperliquid settings.')}`);
     } finally {

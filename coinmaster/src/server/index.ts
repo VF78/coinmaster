@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import crypto from 'node:crypto';
-import fs from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -95,7 +94,6 @@ const TELEGRAM_OUTBOX_MAX_ATTEMPTS = Math.max(3, Number(process.env.TELEGRAM_OUT
 const TELEGRAM_OUTBOX_SENT_RETENTION_MS = 24 * 60 * 60_000;
 const TELEGRAM_OUTBOX_FAILED_RETENTION_MS = 7 * 24 * 60 * 60_000;
 const BACKTEST_RUN_HISTORY_LIMIT = Math.max(20, Number(process.env.BACKTEST_RUN_HISTORY_LIMIT || 200));
-const COINMASTER_ENV_PATH = process.env.COINMASTER_ENV_PATH || '/etc/coinmaster/coinmaster.env';
 
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
 const rulesCache = new RuntimeRulesCache(5_000);
@@ -3569,32 +3567,6 @@ function maskPrivateKey(value: string | undefined): string {
   return `${v.slice(0, 6)}••••${v.slice(-4)}`;
 }
 
-async function patchEnvFile(patch: Record<string, string>): Promise<void> {
-  let raw = '';
-  try {
-    raw = await fs.readFile(COINMASTER_ENV_PATH, 'utf-8');
-  } catch {
-    raw = '';
-  }
-
-  const lines = raw.split(/\r?\n/);
-  const nextLines = [...lines];
-
-  for (const [key, value] of Object.entries(patch)) {
-    const prefix = `${key}=`;
-    const idx = nextLines.findIndex((line) => line.startsWith(prefix));
-    const serialized = `${key}=${value}`;
-    if (idx >= 0) {
-      nextLines[idx] = serialized;
-    } else {
-      nextLines.push(serialized);
-    }
-  }
-
-  const output = `${nextLines.filter((line, i, arr) => !(i === arr.length - 1 && line === '')).join('\n')}\n`;
-  await fs.writeFile(COINMASTER_ENV_PATH, output, 'utf-8');
-}
-
 function applyHyperliquidEnv(settings: {
   accountAddress?: string;
   apiWalletAddress?: string;
@@ -3651,7 +3623,7 @@ async function persistHyperliquidSettings(settings: {
   accountAddress: string;
   apiWalletAddress: string;
   apiPrivateKey: string;
-}): Promise<{ envFileUpdated: boolean; envFileError?: string }> {
+}): Promise<void> {
   const db = await getDb();
   db.data.settings.hyperliquid = {
     accountAddress: settings.accountAddress,
@@ -3661,19 +3633,6 @@ async function persistHyperliquidSettings(settings: {
   await db.write();
 
   applyHyperliquidEnv(settings);
-
-  try {
-    await patchEnvFile({
-      HYPERLIQUID_ACCOUNT_ADDRESS: settings.accountAddress,
-      HYPERLIQUID_API_WALLET_ADDRESS: settings.apiWalletAddress,
-      HYPERLIQUID_API_PRIVATE_KEY: settings.apiPrivateKey,
-    });
-    return { envFileUpdated: true };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'env_file_update_failed';
-    logger.warn({ component: 'settings', err: message, envPath: COINMASTER_ENV_PATH }, 'failed to persist Hyperliquid credentials to env file; DB-backed settings will be used after restart');
-    return { envFileUpdated: false, envFileError: message };
-  }
 }
 
 async function ingestPrice(symbol: string, price: number, source: 'ws' | 'rest') {
@@ -4376,14 +4335,12 @@ app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
     return res.status(400).json({ ok: false, error: 'invalid_api_private_key_format' });
   }
 
-  const persistResult = await persistHyperliquidSettings(next);
+  await persistHyperliquidSettings(next);
   const runtime = getRuntimeHyperliquidSettings();
 
   res.json({
     ok: true,
     restartScheduled: true,
-    envFileUpdated: persistResult.envFileUpdated,
-    envFileError: persistResult.envFileError,
     exchange: {
       accountAddress: runtime.accountAddress,
       apiWalletAddress: runtime.apiWalletAddress,
@@ -4401,7 +4358,7 @@ app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
 });
 
 app.delete('/api/settings/exchange/hyperliquid', ownerAuth, async (_req, res) => {
-  const persistResult = await persistHyperliquidSettings({
+  await persistHyperliquidSettings({
     accountAddress: '',
     apiWalletAddress: '',
     apiPrivateKey: '',
@@ -4410,8 +4367,6 @@ app.delete('/api/settings/exchange/hyperliquid', ownerAuth, async (_req, res) =>
   res.json({
     ok: true,
     restartScheduled: true,
-    envFileUpdated: persistResult.envFileUpdated,
-    envFileError: persistResult.envFileError,
     exchange: {
       accountAddress: '',
       apiWalletAddress: '',
