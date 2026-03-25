@@ -57,6 +57,24 @@ export function SettingsPage() {
   const [bybitInfo, setBybitInfo] = useState('');
   const [bybitStatus, setBybitStatus] = useState<ExchangeConnectionStatus | null>(null);
 
+  function applyHyperliquidExchangeState(exchange: ExchangeSettingsResponse['hyperliquid'] | undefined) {
+    if (!exchange) return;
+    setData((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        connected: exchange.connected,
+        hyperliquid: exchange,
+      };
+    });
+  }
+
+  function scheduleExchangeRefresh(delayMs = 1500) {
+    setTimeout(() => {
+      refresh().catch(() => undefined);
+    }, delayMs);
+  }
+
   async function refresh() {
     setIsLoading(true);
     try {
@@ -177,7 +195,9 @@ export function SettingsPage() {
       if (!result.ok) {
         throw new Error(friendlyCodeMessage('hyperliquid_save_failed', 'Could not save Hyperliquid settings.'));
       }
+      applyHyperliquidExchangeState(result.exchange);
       setHyperliquidInfo('Saved. Service restart scheduled to apply new credentials.');
+      scheduleExchangeRefresh();
     } catch (error) {
       setHyperliquidInfo(`Save failed: ${friendlyErrorMessage(error, 'Could not save Hyperliquid settings.')}`);
     } finally {
@@ -193,10 +213,8 @@ export function SettingsPage() {
       if (!result.ok) {
         throw new Error(friendlyCodeMessage('hyperliquid_save_failed', 'Could not remove Hyperliquid settings.'));
       }
-      setHlAccountAddress('');
-      setHlApiWalletAddress('');
-      setHlApiPrivateKey('');
-      setHyperliquidInfo('Hyperliquid credentials removed. Service restart scheduled.');
+      applyHyperliquidExchangeState(result.exchange);
+      setHyperliquidInfo('Hyperliquid credentials removed. Service restart scheduled. Form values were kept locally so Login can restore the connection.');
     } catch (error) {
       setHyperliquidInfo(`Logout failed: ${friendlyErrorMessage(error, 'Could not remove Hyperliquid settings.')}`);
     } finally {
@@ -249,6 +267,16 @@ export function SettingsPage() {
       setBybitInfo(`Test failed: ${friendlyErrorMessage(error, 'Could not test Bybit connection.')}`);
     }
   }
+
+  const hasStoredHyperliquidCredentials = Boolean(
+    data?.hyperliquid?.accountAddress || data?.hyperliquid?.apiWalletAddress || data?.hyperliquid?.hasPrivateKey
+  );
+  const canLoginHyperliquid = Boolean(
+    hlAccountAddress.trim() && hlApiWalletAddress.trim() && (hlApiPrivateKey.trim() || data?.hyperliquid?.hasPrivateKey)
+  );
+  const hyperliquidActionLabel = hasStoredHyperliquidCredentials ? 'Logout' : 'Login';
+  const hyperliquidActionHandler = hasStoredHyperliquidCredentials ? logoutHyperliquid : saveHyperliquid;
+  const hyperliquidActionDisabled = isSavingHyperliquid || (hasStoredHyperliquidCredentials ? false : !canLoginHyperliquid);
 
   if (!data) {
     return <p className="muted">Loading exchange settings…</p>;
@@ -308,10 +336,10 @@ export function SettingsPage() {
           <Button
             type="button"
             variant="secondary"
-            onClick={logoutHyperliquid}
-            disabled={isSavingHyperliquid || (!data.hyperliquid?.accountAddress && !data.hyperliquid?.apiWalletAddress && !data.hyperliquid?.hasPrivateKey)}
+            onClick={hyperliquidActionHandler}
+            disabled={hyperliquidActionDisabled}
           >
-            Logout
+            {hyperliquidActionLabel}
           </Button>
         </div>
 
