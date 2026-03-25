@@ -2196,6 +2196,7 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
   emergencyCloseLock.running = true;
   try {
     const positions = await exchange.getOpenPositions();
+    const isWatchdogReason = reason.endsWith('_watchdog');
 
     if (positions.length === 0) {
       if (shouldLogWatchdog('already-flat')) {
@@ -2204,7 +2205,9 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
       return;
     }
 
-    logger.error({ component: 'risk-gate', reason, positions: positions.length }, 'EMERGENCY: closing positions only (orders untouched)');
+    if (!isWatchdogReason || shouldLogWatchdog(`emergency-start:${reason}`)) {
+      logger.error({ component: 'risk-gate', reason, positions: positions.length }, 'EMERGENCY: closing positions only (orders untouched)');
+    }
 
     for (const pos of positions) {
       const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
@@ -2232,14 +2235,18 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
           });
         }
 
-        logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, size: pos.size, closeReason: reason }, 'position close submitted (emergency)');
-        try {
-          await notifySlEvent({ symbol: pos.symbol, reason, closedBy: reason });
-        } catch (notifyErr) {
-          logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'SL telegram notify failed');
+        if (!isWatchdogReason || shouldLogWatchdog(`emergency-submit:${reason}:${pos.symbol}`)) {
+          logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, size: pos.size, closeReason: reason }, 'position close submitted (emergency)');
+          try {
+            await notifySlEvent({ symbol: pos.symbol, reason, closedBy: reason });
+          } catch (notifyErr) {
+            logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'SL telegram notify failed');
+          }
         }
       } catch (error) {
-        logger.error({ component: 'risk-gate', symbol: pos.symbol, err: error }, 'failed to emergency-close position');
+        if (!isWatchdogReason || shouldLogWatchdog(`emergency-failed:${reason}:${pos.symbol}`)) {
+          logger.error({ component: 'risk-gate', symbol: pos.symbol, err: error }, 'failed to emergency-close position');
+        }
       }
     }
 
@@ -2247,7 +2254,7 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
     await sleep(400);
 
     const remainingPositions = await exchange.getOpenPositions();
-    if (remainingPositions.length > 0) {
+    if (remainingPositions.length > 0 && (!isWatchdogReason || shouldLogWatchdog(`emergency-incomplete:${reason}`))) {
       logger.error({ component: 'risk-gate', remainingPositions: remainingPositions.length }, 'emergency close incomplete, watchdog will retry while positions remain open');
     }
   } finally {
