@@ -27,7 +27,7 @@ import type {
 const RISK_BLOCK_MESSAGES: Record<string, string> = {
   leverage_limit_exceeded: 'leverage limit exceeded',
   daily_loss_limit_exceeded: 'daily drawdown limit reached',
-  dd_lock_active: 'daily drawdown lock is active',
+  dd_lock_active: 'daily drawdown lock is active until reset',
 };
 
 function formatFriendlyApiError(payload: Record<string, unknown>, _status: number): string | null {
@@ -113,6 +113,7 @@ export function friendlyCodeMessage(code: string, fallback = 'Operation failed. 
     hyperliquid_save_failed: 'Could not save Hyperliquid settings.',
     symbol_catalog_unavailable: 'Exchange symbol catalog is temporarily unavailable.',
     symbols_not_on_exchange: 'Some symbols are not tradable on the connected exchange.',
+    dd_lock_active: 'Daily drawdown lock is active. New entry orders stay blocked until reset.',
   };
 
   return known[trimmed] ?? fallback;
@@ -306,6 +307,11 @@ export interface PlaceOrderPayload {
   confirm?: boolean;
 }
 
+export interface DdLockState {
+  active: boolean;
+  activatedAt?: string;
+}
+
 export interface PlaceOrderResponse {
   ok: boolean;
   orderId?: string;
@@ -314,6 +320,7 @@ export interface PlaceOrderResponse {
   errorCode?: string;
   error?: string;
   idempotent?: boolean;
+  ddLock?: DdLockState;
 }
 
 export interface RiskCheckResponse {
@@ -323,6 +330,7 @@ export interface RiskCheckResponse {
   blocks: string[];
   equityUsd: number;
   baselineEquityUsd: number;
+  ddLock?: DdLockState;
 }
 
 export function getRiskCheck() {

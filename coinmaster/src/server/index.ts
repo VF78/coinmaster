@@ -2166,6 +2166,13 @@ const ddLock = {
   activatedAt: '',
 };
 
+function getDdLockState() {
+  return {
+    active: ddLock.active,
+    activatedAt: ddLock.activatedAt || undefined,
+  };
+}
+
 const WATCHDOG_IDLE_LOG_INTERVAL_MS = 5 * 60 * 1000;
 const watchdogLogState: Record<string, number> = {};
 
@@ -3138,10 +3145,7 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
         ok: false,
         errorCode: 'dd_lock_active' as TradingErrorCode,
         error: 'DD lock is active. New entry orders are blocked until owner resets the lock.',
-        ddLock: {
-          active: true,
-          activatedAt: ddLock.activatedAt,
-        },
+        ddLock: getDdLockState(),
       });
     }
 
@@ -3167,10 +3171,7 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
         errorCode: 'dd_lock_active' as TradingErrorCode,
         error: `Daily drawdown ${risk.dailyDDPct}% exceeds ${effectiveRules.dailyDDLimitPct}% limit. DD lock activated; new entries blocked until reset.`,
         riskCheck: risk,
-        ddLock: {
-          active: true,
-          activatedAt: ddLock.activatedAt,
-        },
+        ddLock: getDdLockState(),
       });
     }
 
@@ -4747,10 +4748,7 @@ app.get('/api/live/risk-check', ownerAuth, async (_req, res) => {
     const risk = await evaluateRiskGates();
     return res.json({
       ...risk,
-      ddLock: {
-        active: ddLock.active,
-        activatedAt: ddLock.activatedAt || undefined,
-      },
+      ddLock: getDdLockState(),
     });
   } catch (error) {
     return res.status(500).json({
@@ -4758,10 +4756,7 @@ app.get('/api/live/risk-check', ownerAuth, async (_req, res) => {
       dailyDDPct: 0,
       portfolioLeverage: 0,
       blocks: ['risk_check_failed'],
-      ddLock: {
-        active: ddLock.active,
-        activatedAt: ddLock.activatedAt || undefined,
-      },
+      ddLock: getDdLockState(),
       error: error instanceof Error ? error.message : 'risk_check_failed'
     });
   }
@@ -4771,7 +4766,7 @@ app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
   ddLock.active = false;
   ddLock.activatedAt = '';
   logger.info({ component: 'risk-gate' }, 'DD lock manually reset by owner');
-  return res.json({ ok: true, ddLockActive: false });
+  return res.json({ ok: true, ddLockActive: false, ddLock: getDdLockState() });
 });
 
 app.get('/api/live/status', ownerAuth, async (_req, res) => {
@@ -4780,7 +4775,8 @@ app.get('/api/live/status', ownerAuth, async (_req, res) => {
   const live = { ...liveBase, pendingConfirmations: pendingRows };
   return res.json({
     ok: live.connected,
-    ...live
+    ...live,
+    ddLock: getDdLockState(),
   });
 });
 

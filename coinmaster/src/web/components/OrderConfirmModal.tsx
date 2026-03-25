@@ -30,6 +30,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   max_notional_exceeded: 'Order exceeds maximum notional USDC limit.',
   leverage_limit_exceeded: 'Leverage exceeds the configured maximum.',
   daily_loss_limit_exceeded: 'Daily loss limit reached. Trading is blocked for today.',
+  dd_lock_active: 'Daily drawdown lock is active. New entry orders are blocked until you reset the lock.',
   manual_confirmation_required: 'Manual confirmation is required (internal error).',
   rate_limited: 'Rate limited by exchange. Wait a moment and retry.',
   invalid_params: 'Invalid order parameters. Check price and size.',
