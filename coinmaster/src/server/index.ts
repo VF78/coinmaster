@@ -36,7 +36,7 @@ import { inferAssetClassFromSymbol, normalizeTradingRules } from '../shared/trad
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { Candle, CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
+import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 import { applyAiMasterQaAnswer, buildAiMasterInsight, buildAiMasterQaQuestion, pruneAiMasterCollections } from './aiMaster.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
@@ -2181,77 +2181,6 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const SYSTEM_MANAGED_ORDER_PREFIXES = ['ui-', 'sl-', 'sl-auto-', 'tptr', 'be-sl', 'partial-exit-', 'emergency-'] as const;
-
-function toHyperliquidCloid(clientOrderId?: string): string | null {
-  const normalized = String(clientOrderId ?? '').trim();
-  if (!normalized) return null;
-  if (/^0x[0-9a-f]{32}$/i.test(normalized)) return normalized.toLowerCase();
-  return `0x${crypto.createHash('md5').update(normalized).digest('hex')}`;
-}
-
-function orderIdentifierCandidates(order: OrderSnapshot): string[] {
-  const raw = (order.raw ?? {}) as Record<string, unknown>;
-  return [order.id, raw.cloid, raw.clientOrderId, raw.client_order_id]
-    .map((value) => String(value ?? '').trim().toLowerCase())
-    .filter(Boolean);
-}
-
-function hasSystemManagedOrderPrefix(value: string): boolean {
-  const normalized = String(value ?? '').trim().toLowerCase();
-  if (!normalized) return false;
-  return SYSTEM_MANAGED_ORDER_PREFIXES.some((prefix) => normalized.startsWith(prefix));
-}
-
-function buildManagedOrderIdentifierSet(tradeEvents: TradeEvent[]): Set<string> {
-  const identifiers = new Set<string>();
-
-  for (const event of tradeEvents) {
-    if (event.type !== 'order_submitted' && event.type !== 'order_acknowledged') continue;
-    if (event.source !== 'live') continue;
-
-    const candidates = [
-      event.correlationId,
-      event.payload && typeof event.payload.clientOrderId === 'string' ? event.payload.clientOrderId : undefined,
-      event.payload && typeof event.payload.orderId === 'string' ? event.payload.orderId : undefined,
-    ];
-
-    for (const candidate of candidates) {
-      const normalized = String(candidate ?? '').trim().toLowerCase();
-      if (!normalized) continue;
-      identifiers.add(normalized);
-      const cloid = toHyperliquidCloid(normalized);
-      if (cloid) identifiers.add(cloid);
-    }
-  }
-
-  return identifiers;
-}
-
-function filterSystemManagedOpenOrders(openOrders: OrderSnapshot[], tradeEvents: TradeEvent[]): OrderSnapshot[] {
-  if (!openOrders.length) return [];
-  const managedIdentifiers = buildManagedOrderIdentifierSet(tradeEvents);
-
-  return openOrders.filter((order) => {
-    const identifiers = orderIdentifierCandidates(order);
-    if (identifiers.some((value) => hasSystemManagedOrderPrefix(value))) return true;
-    return identifiers.some((value) => managedIdentifiers.has(value));
-  });
-}
-
-async function cancelSystemManagedOrders(openOrders: OrderSnapshot[], reason: string): Promise<void> {
-  for (const order of openOrders) {
-    try {
-      const result = await exchange.cancelOrder(order.id);
-      if (!result.ok && classifyError(result.error) !== 'order_not_found' && classifyError(result.error) !== 'already_canceled') {
-        logger.warn({ component: 'risk-gate', orderId: order.id, symbol: order.symbol, reason, err: result.error }, 'managed order cancel failed during emergency close');
-      }
-    } catch (error) {
-      logger.error({ component: 'risk-gate', orderId: order.id, symbol: order.symbol, reason, err: error }, 'exception while canceling managed order during emergency close');
-    }
-  }
-}
-
 function emergencyClosePrice(pos: { side: 'long' | 'short'; markPrice?: number; entryPrice?: number }, closeSide: 'buy' | 'sell'): number {
   const mark = pos.markPrice ?? pos.entryPrice ?? 0;
   if (!Number.isFinite(mark) || mark <= 0) {
@@ -2266,36 +2195,16 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
   if (emergencyCloseLock.running) return;
   emergencyCloseLock.running = true;
   try {
-    const db = await getDb();
-    const tradeEvents = db.data.tradeEvents ?? [];
-    const [positions, openOrders] = await Promise.all([
-      exchange.getOpenPositions(),
-      exchange.getOpenOrders()
-    ]);
-    const managedOpenOrders = filterSystemManagedOpenOrders(openOrders, tradeEvents);
-    const manualOpenOrders = Math.max(0, openOrders.length - managedOpenOrders.length);
+    const positions = await exchange.getOpenPositions();
 
-    if (positions.length === 0 && managedOpenOrders.length === 0) {
+    if (positions.length === 0) {
       if (shouldLogWatchdog('already-flat')) {
-        logger.warn({ component: 'risk-gate', manualOpenOrders }, 'emergency close skipped: no managed positions/orders to flatten');
+        logger.warn({ component: 'risk-gate', reason }, 'emergency close skipped: no open positions');
       }
       return;
     }
 
-    logger.error({ component: 'risk-gate', reason, positions: positions.length, managedOpenOrders: managedOpenOrders.length, manualOpenOrders }, 'EMERGENCY: closing positions and cancelling managed orders');
-
-    if (manualOpenOrders > 0 && shouldLogWatchdog('manual-orders-left-intact')) {
-      logger.warn({ component: 'risk-gate', reason, manualOpenOrders }, 'manual exchange orders left untouched during drawdown emergency close');
-    }
-
-    // Cancel only Coinmaster-managed resting orders first to reduce conflicts with reduce-only exits.
-    if (managedOpenOrders.length > 0) {
-      await cancelSystemManagedOrders(managedOpenOrders, reason);
-    }
-
-    if (positions.length === 0) {
-      return;
-    }
+    logger.error({ component: 'risk-gate', reason, positions: positions.length }, 'EMERGENCY: closing positions only (orders untouched)');
 
     for (const pos of positions) {
       const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
@@ -2334,16 +2243,12 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
       }
     }
 
-    // Brief settle and re-check position count / managed orders.
+    // Brief settle and re-check only positions. Open orders are intentionally ignored.
     await sleep(400);
 
-    const [remainingPositions, remainingOrders] = await Promise.all([
-      exchange.getOpenPositions(),
-      exchange.getOpenOrders()
-    ]);
-    const remainingManagedOrders = filterSystemManagedOpenOrders(remainingOrders, tradeEvents);
-    if (remainingPositions.length > 0 || remainingManagedOrders.length > 0) {
-      logger.error({ component: 'risk-gate', remainingPositions: remainingPositions.length, remainingManagedOrders: remainingManagedOrders.length }, 'emergency close incomplete, watchdog will retry');
+    const remainingPositions = await exchange.getOpenPositions();
+    if (remainingPositions.length > 0) {
+      logger.error({ component: 'risk-gate', remainingPositions: remainingPositions.length }, 'emergency close incomplete, watchdog will retry while positions remain open');
     }
   } finally {
     emergencyCloseLock.running = false;
@@ -2354,19 +2259,8 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
 async function emergencyCloseSymbol(symbol: string, reason = 'strategy_emergency_exit') {
   const normalized = normalizeSymbol(symbol);
   try {
-    const db = await getDb();
-    const tradeEvents = db.data.tradeEvents ?? [];
-    const [positions, openOrders] = await Promise.all([
-      exchange.getOpenPositions(normalized),
-      exchange.getOpenOrders(normalized),
-    ]);
-    const managedOpenOrders = filterSystemManagedOpenOrders(openOrders, tradeEvents);
-
-    if (positions.length === 0 && managedOpenOrders.length === 0) return;
-
-    if (managedOpenOrders.length > 0) {
-      await cancelSystemManagedOrders(managedOpenOrders, reason);
-    }
+    const positions = await exchange.getOpenPositions(normalized);
+    if (positions.length === 0) return;
 
     for (const pos of positions) {
       const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
@@ -2440,14 +2334,11 @@ async function runDrawdownWatchdogTick() {
         });
       }
 
-      const [positions, openOrders] = await Promise.all([
-        exchange.getOpenPositions(),
-        exchange.getOpenOrders()
-      ]);
+      const positions = await exchange.getOpenPositions();
 
-      if (positions.length === 0 && openOrders.length === 0) {
+      if (positions.length === 0) {
         if (shouldLogWatchdog('dd-hardstop-flat')) {
-          logger.warn({ component: 'risk-gate' }, 'hard-stop active but account already flat; skipping emergency close tick');
+          logger.warn({ component: 'risk-gate' }, 'hard-stop active but no open positions remain; open orders are intentionally ignored');
         }
         return;
       }
