@@ -106,6 +106,7 @@ export interface HyperliquidCredentialsSettings {
   accountAddress: string;
   apiWalletAddress: string;
   apiPrivateKey: string;
+  enabled?: boolean;
 }
 
 /** @deprecated use ExternalExchangesSettings */
@@ -515,6 +516,7 @@ export interface ExchangeSettingsResponse {
     apiWalletAddress: string;
     hasPrivateKey: boolean;
     privateKeyMasked: string;
+    enabled: boolean;
     tradingConfigured: boolean;
     connected: boolean;
   };

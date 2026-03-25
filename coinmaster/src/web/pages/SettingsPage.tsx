@@ -192,11 +192,13 @@ export function SettingsPage() {
         apiWalletAddress: hlApiWalletAddress.trim(),
         apiPrivateKey: hlApiPrivateKey.trim() || undefined,
       });
-      if (!result.ok) {
+      if (!result.ok || !result.exchange) {
         throw new Error(friendlyCodeMessage('hyperliquid_save_failed', 'Could not save Hyperliquid settings.'));
       }
       applyHyperliquidExchangeState(result.exchange);
-      setHyperliquidInfo('Saved. Service restart scheduled to apply new credentials.');
+      setHyperliquidInfo(result.exchange.enabled === false
+        ? 'Hyperliquid credentials are stored but currently disconnected. Service restart scheduled.'
+        : 'Saved. Service restart scheduled to apply Hyperliquid credentials.');
       scheduleExchangeRefresh();
     } catch (error) {
       setHyperliquidInfo(`Save failed: ${friendlyErrorMessage(error, 'Could not save Hyperliquid settings.')}`);
@@ -207,14 +209,15 @@ export function SettingsPage() {
 
   async function logoutHyperliquid() {
     setIsSavingHyperliquid(true);
-    setHyperliquidInfo('Removing Hyperliquid API settings...');
+    setHyperliquidInfo('Logging out Hyperliquid connection...');
     try {
       const result = await logoutHyperliquidSettings();
-      if (!result.ok) {
+      if (!result.ok || !result.exchange) {
         throw new Error(friendlyCodeMessage('hyperliquid_save_failed', 'Could not remove Hyperliquid settings.'));
       }
       applyHyperliquidExchangeState(result.exchange);
-      setHyperliquidInfo('Hyperliquid credentials removed. Service restart scheduled. Form values were kept locally so Login can restore the connection.');
+      setHyperliquidInfo('Hyperliquid connection logged out. Credentials were kept, and Login will re-enable them after restart.');
+      scheduleExchangeRefresh();
     } catch (error) {
       setHyperliquidInfo(`Logout failed: ${friendlyErrorMessage(error, 'Could not remove Hyperliquid settings.')}`);
     } finally {
@@ -271,12 +274,15 @@ export function SettingsPage() {
   const hasStoredHyperliquidCredentials = Boolean(
     data?.hyperliquid?.accountAddress || data?.hyperliquid?.apiWalletAddress || data?.hyperliquid?.hasPrivateKey
   );
+  const isHyperliquidEnabled = Boolean(hasStoredHyperliquidCredentials && data?.hyperliquid?.enabled !== false);
   const canLoginHyperliquid = Boolean(
-    hlAccountAddress.trim() && hlApiWalletAddress.trim() && (hlApiPrivateKey.trim() || data?.hyperliquid?.hasPrivateKey)
+    (hlAccountAddress.trim() || data?.hyperliquid?.accountAddress)
+    && (hlApiWalletAddress.trim() || data?.hyperliquid?.apiWalletAddress)
+    && (hlApiPrivateKey.trim() || data?.hyperliquid?.hasPrivateKey)
   );
-  const hyperliquidActionLabel = hasStoredHyperliquidCredentials ? 'Logout' : 'Login';
-  const hyperliquidActionHandler = hasStoredHyperliquidCredentials ? logoutHyperliquid : saveHyperliquid;
-  const hyperliquidActionDisabled = isSavingHyperliquid || (hasStoredHyperliquidCredentials ? false : !canLoginHyperliquid);
+  const hyperliquidActionLabel = isHyperliquidEnabled ? 'Logout' : 'Login';
+  const hyperliquidActionHandler = isHyperliquidEnabled ? logoutHyperliquid : saveHyperliquid;
+  const hyperliquidActionDisabled = isSavingHyperliquid || (!isHyperliquidEnabled && !canLoginHyperliquid);
 
   if (!data) {
     return <p className="muted">Loading exchange settings…</p>;
@@ -324,7 +330,11 @@ export function SettingsPage() {
           <div className="rules-field">
             <span className="rules-label">Status</span>
             <p className="muted">
-              {data.hyperliquid?.hasPrivateKey ? 'Private key configured' : 'Private key not configured'}
+              {!data.hyperliquid?.hasPrivateKey
+                ? 'Private key not configured'
+                : data.hyperliquid?.enabled === false
+                  ? 'Credentials stored, connection logged out'
+                  : 'Private key configured and connection enabled'}
             </p>
           </div>
         </div>
@@ -344,7 +354,7 @@ export function SettingsPage() {
         </div>
 
         <p className="muted stat-note">
-          After saving credentials, Coinmaster restarts automatically to apply the new Hyperliquid API settings.
+          Save/Login enables the stored Hyperliquid credentials. Logout disconnects Hyperliquid without erasing the saved credentials. Coinmaster restarts automatically after either action.
         </p>
         {hyperliquidInfo ? <p className="muted stat-note">{hyperliquidInfo}</p> : null}
       </Card>

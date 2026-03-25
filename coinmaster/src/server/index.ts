@@ -2043,13 +2043,21 @@ function ownerAuth(req: Request, res: Response, next: NextFunction) {
 /** In-memory risk gate audit buffer, flushed to DB periodically */
 const riskAuditBuffer: RiskGateAuditEntry[] = [];
 
+const QUIET_RISK_GATE_REASONS = new Set(['operator_bias_block']);
+
 function logRiskGateAudit(entry: Omit<RiskGateAuditEntry, 'timestamp'>) {
   const full: RiskGateAuditEntry = { ...entry, timestamp: new Date().toISOString() };
   riskAuditBuffer.push(full);
 
   // Keep persistent DB audit for all checks, but avoid noisy success logs by default.
   if (!full.passed) {
-    logger.warn({ component: 'risk-gate', gate: full.gate, passed: full.passed, reason: full.reason ?? undefined }, 'risk gate check failed');
+    if (full.reason && QUIET_RISK_GATE_REASONS.has(full.reason)) {
+      if (process.env.RISK_GATE_VERBOSE === '1') {
+        logger.info({ component: 'risk-gate', gate: full.gate, passed: full.passed, reason: full.reason }, 'risk gate check blocked (expected)');
+      }
+    } else {
+      logger.warn({ component: 'risk-gate', gate: full.gate, passed: full.passed, reason: full.reason ?? undefined }, 'risk gate check failed');
+    }
   } else if (process.env.RISK_GATE_VERBOSE === '1') {
     logger.info({ component: 'risk-gate', gate: full.gate, passed: full.passed, reason: full.reason ?? undefined }, 'risk gate check');
   }
@@ -3548,15 +3556,65 @@ function maskPrivateKey(value: string | undefined): string {
   return `${v.slice(0, 6)}••••${v.slice(-4)}`;
 }
 
+function normalizeHyperliquidEnabled(value: unknown): boolean {
+  const normalized = String(value ?? '').trim().toLowerCase();
+  return !(normalized === '0' || normalized === 'false' || normalized === 'off' || normalized === 'no');
+}
+
+function normalizeStoredHyperliquidSettings(input?: {
+  accountAddress?: string;
+  apiWalletAddress?: string;
+  apiPrivateKey?: string;
+  enabled?: boolean;
+}) {
+  return {
+    accountAddress: String(input?.accountAddress ?? '').trim(),
+    apiWalletAddress: String(input?.apiWalletAddress ?? '').trim(),
+    apiPrivateKey: String(input?.apiPrivateKey ?? '').trim(),
+    enabled: input?.enabled !== false,
+  };
+}
+
+function getConfiguredHyperliquidSettings(settings?: { hyperliquid?: { accountAddress?: string; apiWalletAddress?: string; apiPrivateKey?: string; enabled?: boolean } }) {
+  const stored = normalizeStoredHyperliquidSettings(settings?.hyperliquid);
+  const storedEmpty = !stored.accountAddress && !stored.apiWalletAddress && !stored.apiPrivateKey;
+  if (!storedEmpty) return stored;
+
+  const runtime = getRuntimeHyperliquidSettings();
+  return {
+    accountAddress: runtime.accountAddress,
+    apiWalletAddress: runtime.apiWalletAddress,
+    apiPrivateKey: runtime.apiPrivateKey,
+    enabled: runtime.enabled,
+  };
+}
+
+function buildHyperliquidExchangeView(settings: { accountAddress: string; apiWalletAddress: string; apiPrivateKey: string; enabled: boolean }, connected = false) {
+  const tradingConfigured = Boolean(settings.enabled && settings.accountAddress && settings.apiWalletAddress && settings.apiPrivateKey);
+  return {
+    accountAddress: settings.accountAddress,
+    apiWalletAddress: settings.apiWalletAddress,
+    hasPrivateKey: Boolean(settings.apiPrivateKey),
+    privateKeyMasked: maskPrivateKey(settings.apiPrivateKey),
+    enabled: settings.enabled,
+    tradingConfigured,
+    connected: connected && tradingConfigured,
+  };
+}
+
 function applyHyperliquidEnv(settings: {
   accountAddress?: string;
   apiWalletAddress?: string;
   apiPrivateKey?: string;
+  enabled?: boolean;
 }): void {
+  const enabled = settings.enabled !== false;
+  process.env.HYPERLIQUID_ENABLED = enabled ? '1' : '0';
+
   const entries: Array<[string, string | undefined]> = [
-    ['HYPERLIQUID_ACCOUNT_ADDRESS', settings.accountAddress],
-    ['HYPERLIQUID_API_WALLET_ADDRESS', settings.apiWalletAddress],
-    ['HYPERLIQUID_API_PRIVATE_KEY', settings.apiPrivateKey],
+    ['HYPERLIQUID_ACCOUNT_ADDRESS', enabled ? settings.accountAddress : ''],
+    ['HYPERLIQUID_API_WALLET_ADDRESS', enabled ? settings.apiWalletAddress : ''],
+    ['HYPERLIQUID_API_PRIVATE_KEY', enabled ? settings.apiPrivateKey : ''],
   ];
 
   for (const [key, raw] of entries) {
@@ -3570,26 +3628,29 @@ function getRuntimeHyperliquidSettings() {
   const accountAddress = String(process.env.HYPERLIQUID_ACCOUNT_ADDRESS ?? '').trim();
   const apiWalletAddress = String(process.env.HYPERLIQUID_API_WALLET_ADDRESS ?? '').trim();
   const apiPrivateKey = String(process.env.HYPERLIQUID_API_PRIVATE_KEY ?? '').trim();
+  const enabled = normalizeHyperliquidEnabled(process.env.HYPERLIQUID_ENABLED ?? '1');
   return {
     accountAddress,
     apiWalletAddress,
     apiPrivateKey,
+    enabled,
     hasPrivateKey: Boolean(apiPrivateKey),
-    tradingConfigured: Boolean(accountAddress && apiWalletAddress && apiPrivateKey),
+    tradingConfigured: Boolean(enabled && accountAddress && apiWalletAddress && apiPrivateKey),
   };
 }
 
 async function hydrateHyperliquidEnvFromDb(): Promise<void> {
   const db = await getDb();
-  const stored = db.data.settings.hyperliquid;
+  const stored = normalizeStoredHyperliquidSettings(db.data.settings.hyperliquid);
   const runtime = getRuntimeHyperliquidSettings();
-  const storedEmpty = !stored?.accountAddress && !stored?.apiWalletAddress && !stored?.apiPrivateKey;
+  const storedEmpty = !stored.accountAddress && !stored.apiWalletAddress && !stored.apiPrivateKey;
 
   if (storedEmpty && (runtime.accountAddress || runtime.apiWalletAddress || runtime.apiPrivateKey)) {
     db.data.settings.hyperliquid = {
       accountAddress: runtime.accountAddress,
       apiWalletAddress: runtime.apiWalletAddress,
       apiPrivateKey: runtime.apiPrivateKey,
+      enabled: runtime.enabled,
     };
     await db.write();
     return;
@@ -3604,16 +3665,19 @@ async function persistHyperliquidSettings(settings: {
   accountAddress: string;
   apiWalletAddress: string;
   apiPrivateKey: string;
+  enabled: boolean;
 }): Promise<void> {
+  const normalized = normalizeStoredHyperliquidSettings(settings);
   const db = await getDb();
   db.data.settings.hyperliquid = {
-    accountAddress: settings.accountAddress,
-    apiWalletAddress: settings.apiWalletAddress,
-    apiPrivateKey: settings.apiPrivateKey,
+    accountAddress: normalized.accountAddress,
+    apiWalletAddress: normalized.apiWalletAddress,
+    apiPrivateKey: normalized.apiPrivateKey,
+    enabled: normalized.enabled,
   };
   await db.write();
 
-  applyHyperliquidEnv(settings);
+  applyHyperliquidEnv(normalized);
 }
 
 async function ingestPrice(symbol: string, price: number, source: 'ws' | 'rest') {
@@ -4239,8 +4303,9 @@ app.get('/api/settings/exchange', async (_req, res) => {
 
   const db = await getDb();
   const tg = db.data.settings.telegramNotify;
-  const hyperliquid = getRuntimeHyperliquidSettings();
-  const connected = live.connected && hyperliquid.tradingConfigured;
+  const hyperliquid = getConfiguredHyperliquidSettings(db.data.settings);
+  const hyperliquidView = buildHyperliquidExchangeView(hyperliquid, live.connected);
+  const connected = hyperliquidView.connected;
 
   return res.json({
     exchange: exchange.name,
@@ -4254,14 +4319,7 @@ app.get('/api/settings/exchange', async (_req, res) => {
       privateTrading: exchange.capabilities.privateTrading,
       realtimeMids: exchange.capabilities.realtimeMids
     },
-    hyperliquid: {
-      accountAddress: hyperliquid.accountAddress,
-      apiWalletAddress: hyperliquid.apiWalletAddress,
-      hasPrivateKey: hyperliquid.hasPrivateKey,
-      privateKeyMasked: maskPrivateKey(hyperliquid.apiPrivateKey),
-      tradingConfigured: hyperliquid.tradingConfigured,
-      connected,
-    },
+    hyperliquid: hyperliquidView,
     externalExchanges: {
       bybit: getMaskedBybitConnectionSettings(db.data.settings),
     },
@@ -4297,11 +4355,13 @@ app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
     return res.status(400).json({ ok: false, error: 'no_fields_provided' });
   }
 
-  const current = getRuntimeHyperliquidSettings();
+  const db = await getDb();
+  const current = getConfiguredHyperliquidSettings(db.data.settings);
   const next = {
     accountAddress: accountAddress !== undefined ? String(accountAddress).trim() : current.accountAddress,
     apiWalletAddress: apiWalletAddress !== undefined ? String(apiWalletAddress).trim() : current.apiWalletAddress,
     apiPrivateKey: apiPrivateKey !== undefined ? String(apiPrivateKey).trim() : current.apiPrivateKey,
+    enabled: true,
   };
 
   if (next.accountAddress && !/^0x[a-fA-F0-9]{40}$/.test(next.accountAddress)) {
@@ -4317,19 +4377,11 @@ app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
   }
 
   await persistHyperliquidSettings(next);
-  const runtime = getRuntimeHyperliquidSettings();
 
   res.json({
     ok: true,
     restartScheduled: true,
-    exchange: {
-      accountAddress: runtime.accountAddress,
-      apiWalletAddress: runtime.apiWalletAddress,
-      hasPrivateKey: runtime.hasPrivateKey,
-      privateKeyMasked: maskPrivateKey(runtime.apiPrivateKey),
-      tradingConfigured: runtime.tradingConfigured,
-      connected: false,
-    },
+    exchange: buildHyperliquidExchangeView(next, false),
   });
 
   setTimeout(() => {
@@ -4339,23 +4391,19 @@ app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
 });
 
 app.delete('/api/settings/exchange/hyperliquid', ownerAuth, async (_req, res) => {
-  await persistHyperliquidSettings({
-    accountAddress: '',
-    apiWalletAddress: '',
-    apiPrivateKey: '',
-  });
+  const db = await getDb();
+  const current = getConfiguredHyperliquidSettings(db.data.settings);
+  const next = {
+    ...current,
+    enabled: false,
+  };
+
+  await persistHyperliquidSettings(next);
 
   res.json({
     ok: true,
     restartScheduled: true,
-    exchange: {
-      accountAddress: '',
-      apiWalletAddress: '',
-      hasPrivateKey: false,
-      privateKeyMasked: '',
-      tradingConfigured: false,
-      connected: false,
-    },
+    exchange: buildHyperliquidExchangeView(next, false),
   });
 
   setTimeout(() => {
