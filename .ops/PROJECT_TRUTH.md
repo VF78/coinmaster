@@ -9,7 +9,7 @@ Updated: 2026-03-26 Europe/Madrid
 
 ## Model policy
 - **Primary model for my main work:** `openai-codex/gpt-5.4-mini`
-- **Reserve model:** `anthropic/claude-sonnet-4-6`
+- **Reserve model only:** `anthropic/claude-sonnet-4-6`
 - After each completed GitHub Project task: reset any temporary model override to default.
 
 ## Coding policy
