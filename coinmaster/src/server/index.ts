@@ -9,7 +9,7 @@ import { nanoid } from 'nanoid';
 import logger from '../lib/logger.js';
 import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
-import { applyBacktestAiAnalysisResult, createQueuedBacktestRun } from '../core/backtest.js';
+import { applyBacktestAiAnalysisResult, createQueuedBacktestRun, markBacktestAiAnalysisRequested } from '../core/backtest.js';
 import { executeBacktestRun, isBacktestRunning, getActiveBacktestRunId } from '../core/backtestWorker.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
@@ -130,15 +130,7 @@ function compactBacktestRuns(items: BacktestRun[]): BacktestRun[] {
 
 function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
   const cutoff = Date.now() - PENDING_CONFIRMATION_TTL_MS;
-  return list.filter((p) => {
-    if (Date.parse(p.createdAt) < cutoff) return false;
-    if (!Number.isFinite(p.size) || !Number.isFinite(p.price) || !Number.isFinite(p.leverage)) return false;
-    if (p.size <= 0 || p.price <= 0 || p.leverage <= 0) return false;
-
-    const displaySize = Number(p.size.toFixed(2));
-    const displayNotional = Number((p.price * p.size).toFixed(2));
-    return displaySize > 0 && displayNotional > 0;
-  });
+  return list.filter((p) => Date.parse(p.createdAt) >= cutoff && Number.isFinite(p.size) && p.size > 0 && Number.isFinite(p.price) && p.price > 0 && Number.isFinite(p.leverage) && p.leverage > 0);
 }
 
 function pendingToLivePosition(pending: PendingConfirmation): LivePosition {
@@ -677,10 +669,7 @@ async function queuePendingConfirmation(params: {
   const size = Number(params.size.toFixed(6));
   const leverage = Number(params.leverage);
 
-  const displaySize = Number(size.toFixed(2));
-  const displayNotional = Number((price * size).toFixed(2));
-
-  if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(size) || size <= 0 || !Number.isFinite(leverage) || leverage <= 0 || displaySize <= 0 || displayNotional <= 0) {
+  if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(size) || size <= 0 || !Number.isFinite(leverage) || leverage <= 0) {
     return { queued: false, id: 'invalid_size' };
   }
 
@@ -1691,13 +1680,6 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   const db = await getDb();
   const pending = db.data.pendingConfirmations.find((p) => p.id === pendingId);
   if (!pending) return { ok: false, error: 'pending_not_found' };
-  const displaySize = Number(pending.size.toFixed(2));
-  const displayNotional = Number((pending.price * pending.size).toFixed(2));
-  if (!Number.isFinite(pending.size) || pending.size <= 0 || !Number.isFinite(pending.price) || pending.price <= 0 || !Number.isFinite(pending.leverage) || pending.leverage <= 0 || displaySize <= 0 || displayNotional <= 0) {
-    db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
-    await db.write();
-    return { ok: false, error: 'pending_not_found' };
-  }
 
   const rules = rulesCache.getEffectiveRules();
   const normalizedSymbol = normalizeSymbol(pending.symbol);
@@ -2569,9 +2551,14 @@ async function runEngulfingMonitorTick(): Promise<void> {
           const mid = await fetchLiveMid(symbol);
           if (!mid) { logger.warn({ component: 'engulfing-monitor' }, 'entry signal: no mid price'); continue; }
 
-          // Manual mode: queue confirmation + notify, do not place order directly
+          // Manual mode: queue confirmation only if sizing is valid; otherwise skip.
           if (!raw.autoConfirm) {
             const estimate = await estimateSignalSize({ symbol, side, price: mid, effectiveRules });
+            if (!estimate.size || estimate.size <= 0) {
+              logger.warn({ component: 'engulfing-monitor', symbol, tf, side, reason: 'invalid_sizing' }, 'entry signal skipped: invalid sizing');
+              continue;
+            }
+
             const correlationId = `engulf-pending-${nanoid(8)}`;
             const queued = await queuePendingConfirmation({
               symbol,
@@ -3035,9 +3022,14 @@ async function runFvgMonitorTick(): Promise<void> {
           'FVG retrace entry signal detected',
         );
 
-        // Manual mode: queue signal for explicit confirmation
+        // Manual mode: queue signal only if sizing is valid; otherwise skip.
         if (!raw.autoConfirm) {
           const estimate = await estimateSignalSize({ symbol, side, price: mid, effectiveRules });
+          if (!estimate.size || estimate.size <= 0) {
+            logger.warn({ component: 'fvg-monitor', symbol, tf, side, reason: 'invalid_sizing' }, 'FVG signal skipped: invalid sizing');
+            continue;
+          }
+
           const correlationId = `fvg-pending-${nanoid(8)}`;
           const queued = await queuePendingConfirmation({
             symbol,
@@ -4129,12 +4121,29 @@ app.post('/api/ai-master/insights', ownerAuth, async (req, res) => {
   return res.json({ ok: true, insight: created.insight });
 });
 
-app.post('/api/ai-master/qa', ownerAuth, async (_req, res) => {
-  return res.status(410).json({
-    ok: false,
-    error: 'ai_master_qa_disabled',
-    hint: 'AI Master Q&A is disabled. Only daily insight at 00:00 UTC is allowed.',
+app.post('/api/ai-master/qa', ownerAuth, async (req, res) => {
+  const state = await ensureAiMasterState();
+  const created = buildAiMasterQaQuestion({
+    id: `aiq-${nanoid(10)}`,
+    question: req.body?.question,
+    askedAt: new Date().toISOString(),
   });
+
+  if (!created.ok) return res.status(400).json({ ok: false, error: created.error });
+
+  state.qa.push(created.item);
+  pruneAiMasterCollections(state.insights, state.qa);
+  await state.write();
+
+  logger.info({
+    component: 'ai-master',
+    event: 'qa_queued',
+    id: created.item.id,
+    promptChars: created.item.promptChars,
+    truncated: created.item.truncated,
+  }, 'ai master question queued');
+
+  return res.json({ ok: true, item: created.item });
 });
 
 app.get('/api/ai-master/qa/pending', ownerAuth, async (req, res) => {
@@ -4383,20 +4392,6 @@ app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
 
   if (next.apiPrivateKey && !/^0x[a-fA-F0-9]{64}$/.test(next.apiPrivateKey)) {
     return res.status(400).json({ ok: false, error: 'invalid_api_private_key_format' });
-  }
-
-  try {
-    const validator = new HyperliquidAdapter({
-      accountAddress: next.accountAddress,
-      apiWalletAddress: next.apiWalletAddress,
-      apiPrivateKey: next.apiPrivateKey,
-    });
-    await validator.validateConnectionIdentity();
-  } catch (error) {
-    const hint = error instanceof Error && error.message.trim().length > 0
-      ? error.message
-      : 'Please provide the correct Hyperliquid account address, API wallet address, and private key.';
-    return res.status(400).json({ ok: false, error: 'hyperliquid_invalid_credentials', hint });
   }
 
   await persistHyperliquidSettings(next);
@@ -4719,15 +4714,29 @@ app.get('/api/backtest/runs/:id', ownerAuth, async (req, res) => {
 });
 
 app.get('/api/backtest/ai-analysis/pending', ownerAuth, async (_req, res) => {
-  return res.json({ ok: true, runs: [] });
+  const db = await getDb();
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const runs = db.data.backtestRuns.filter((run) => run.status === 'completed' && run.aiAnalysis?.status === 'pending');
+  return res.json({ ok: true, runs });
 });
 
-app.post('/api/backtest/runs/:id/ai-analysis/request', ownerAuth, async (_req, res) => {
-  return res.status(410).json({
-    ok: false,
-    error: 'backtest_ai_analysis_disabled',
-    hint: 'Backtest AI analysis is disabled. Only daily insight at 00:00 UTC is allowed.',
-  });
+app.post('/api/backtest/runs/:id/ai-analysis/request', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const run = db.data.backtestRuns.find((item) => item.id === req.params.id);
+  if (!run) {
+    return res.status(404).json({ ok: false, error: 'backtest_run_not_found' });
+  }
+  if (run.status !== 'completed') {
+    return res.status(409).json({ ok: false, error: 'backtest_run_not_completed' });
+  }
+  if (run.aiAnalysis?.status === 'completed' && run.aiAnalysis?.report) {
+    return res.json({ ok: true, run });
+  }
+
+  markBacktestAiAnalysisRequested(run);
+  await db.write();
+  return res.json({ ok: true, run });
 });
 
 app.post('/api/backtest/runs/:id/ai-analysis/complete', ownerAuth, async (req, res) => {
