@@ -2105,6 +2105,52 @@ async function getOrCreateDDBaseline(equityUsd: number): Promise<DailyDDBaseline
   return baseline;
 }
 
+function msUntilNextUtcMidnight(now = new Date()): number {
+  const nextMidnightUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0);
+  return Math.max(1000, nextMidnightUtc - now.getTime());
+}
+
+let drawdownMidnightBaselineTimer: NodeJS.Timeout | null = null;
+let drawdownMidnightBaselineBusy = false;
+
+async function seedNextUtcDailyDrawdownBaseline(reason = 'utc_midnight_seed') {
+  if (drawdownMidnightBaselineBusy) return;
+  drawdownMidnightBaselineBusy = true;
+  try {
+    const account = await exchange.getAccountState();
+    const equityUsd = account?.equityUsd ?? 0;
+    if (equityUsd > 0) {
+      const baseline = await getOrCreateDDBaseline(equityUsd);
+      logger.info({ component: 'risk-gate', reason, date: baseline.date, startEquityUsd: baseline.startEquityUsd }, 'daily drawdown baseline seeded');
+    }
+  } catch (error) {
+    logger.warn({ component: 'risk-gate', err: error }, 'daily drawdown midnight baseline seed failed');
+  } finally {
+    drawdownMidnightBaselineBusy = false;
+  }
+}
+
+function startDailyDrawdownMidnightReset() {
+  if (drawdownMidnightBaselineTimer) return;
+
+  const arm = () => {
+    const delayMs = msUntilNextUtcMidnight();
+    drawdownMidnightBaselineTimer = setTimeout(() => {
+      seedNextUtcDailyDrawdownBaseline().finally(() => {
+        if (drawdownMidnightBaselineTimer) {
+          clearTimeout(drawdownMidnightBaselineTimer);
+          drawdownMidnightBaselineTimer = null;
+        }
+        arm();
+      });
+    }, delayMs);
+    drawdownMidnightBaselineTimer.unref?.();
+  };
+
+  arm();
+  logger.info({ component: 'risk-gate', nextResetInMs: msUntilNextUtcMidnight() }, 'daily drawdown midnight reset scheduled');
+}
+
 interface RiskCheckResult {
   canTrade: boolean;
   dailyDDPct: number;
@@ -6560,6 +6606,7 @@ const server = app.listen(port, host, () => {
   ingestRestFallback().catch((err) => logger.warn({ component: 'live', err }, 'initial REST fallback ingest failed'));
   startLiveMidStream();
   startDrawdownWatchdog();
+  startDailyDrawdownMidnightReset();
   startEngulfingMonitor();
   startFvgMonitor();
   startTpFillMonitor();
@@ -6592,6 +6639,7 @@ async function gracefulShutdown(signal: string) {
   clearInterval(auditFlushTimer);
   clearInterval(rateLimitPruneTimer);
   if (drawdownWatchdogTimer) { clearInterval(drawdownWatchdogTimer); drawdownWatchdogTimer = null; }
+  if (drawdownMidnightBaselineTimer) { clearTimeout(drawdownMidnightBaselineTimer); drawdownMidnightBaselineTimer = null; }
   if (engulfingMonitorTimer) { clearInterval(engulfingMonitorTimer); engulfingMonitorTimer = null; }
   if (fvgMonitorTimer) { clearInterval(fvgMonitorTimer); fvgMonitorTimer = null; }
   if (tpFillMonitorTimer) { clearInterval(tpFillMonitorTimer); tpFillMonitorTimer = null; }
