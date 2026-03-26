@@ -120,7 +120,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     for (let i = 0; i < candidates.length; i++) {
       const candidate = candidates[i];
       const dex = this.getDexFromSymbol(candidate);
-      const candleCoin = candidate.includes(':') ? candidate : this.coreSymbol(candidate);
+      const candleCoin = this.coreSymbol(candidate);
 
       try {
         const raw = await this.requestInfo<Array<Record<string, string | number>>>(
@@ -271,11 +271,14 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       dexScopes.map((dex) => this.requestInfo<any[]>({ type: 'frontendOpenOrders', user, ...(dex ? { dex } : {}) }))
     );
 
-    const mergedRaw = rawGroups.flatMap((rows) => (Array.isArray(rows) ? rows : []));
+    const mergedRaw = rawGroups.flatMap((rows, index) => {
+      const dex = dexScopes[index] ?? '';
+      return (Array.isArray(rows) ? rows : []).map((item) => ({ item, dex }));
+    });
 
     const mapped = mergedRaw
-      .map((item) => {
-        const normalized = this.normalizeSymbol(String(item?.coin ?? ''));
+      .map(({ item, dex }) => {
+        const normalized = this.normalizeScopedSymbol(String(item?.coin ?? ''), dex);
         if (target && !this.symbolsMatch(normalized, target)) return null;
 
         const triggerPx = this.toNumber(item?.triggerPx);
@@ -332,7 +335,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         const p = row?.position;
         if (!p) return null;
 
-        const normalized = this.normalizeSymbol(String(p.coin ?? ''));
+        const normalized = this.normalizeScopedSymbol(String(p.coin ?? ''), dex);
         if (target && !this.symbolsMatch(normalized, target)) return null;
 
         const szi = this.toNumber(p.szi) ?? 0;
@@ -913,7 +916,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
     for (let i = 0; i < universe.length; i++) {
       const row = universe[i];
-      const normalized = this.normalizeSymbol(String(row?.name ?? ''));
+      const normalized = this.normalizeScopedSymbol(String(row?.name ?? ''), dexKey);
       if (!normalized || bySymbol.has(normalized)) continue;
       bySymbol.set(normalized, row);
       indexBySymbol.set(normalized, i);
@@ -988,6 +991,15 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     }
 
     return value.toUpperCase().replace('-PERP', '');
+  }
+
+  private normalizeScopedSymbol(symbol: string, dex?: string | null): string {
+    const normalized = this.normalizeSymbol(symbol);
+    if (!normalized) return '';
+    if (normalized.includes(':')) return normalized;
+
+    const cleanDex = String(dex ?? '').trim().toLowerCase();
+    return cleanDex ? `${cleanDex}:${normalized}` : normalized;
   }
 
   private coreSymbol(symbol: string): string {
