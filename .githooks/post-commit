@@ -2,6 +2,7 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
+app_root="$repo_root/coinmaster"
 branch="$(git -C "$repo_root" rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)"
 
 # Auto-deploy only from main to avoid accidental pushes from scratch branches.
@@ -9,11 +10,11 @@ if [[ "$branch" != "main" ]]; then
   exit 0
 fi
 
-log_file="${repo_root}/.ops/auto-deploy.log"
+log_file="${app_root}/.ops/auto-deploy.log"
 mkdir -p "$(dirname "$log_file")"
 
 {
   printf '\n[%s] post-commit auto-deploy start\n' "$(date -Is)"
-  "$repo_root/scripts/deploy-prod-safe.sh"
+  "$app_root/scripts/deploy-prod-safe.sh"
   printf '[%s] post-commit auto-deploy success\n' "$(date -Is)"
 } >>"$log_file" 2>&1
