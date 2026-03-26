@@ -427,6 +427,11 @@ export function DashboardPage() {
             Last update: {data.latestTick ? formatDate(data.latestTick.timestamp) : '—'}
             {data.live.error ? ` • Error: ${data.live.error}` : ''}
           </p>
+          {!data.hyperliquid?.connected ? (
+            <p className="muted stat-note" style={{ marginTop: '0.35rem', fontSize: '0.8rem' }}>
+              Hyperliquid is disconnected. Go to Settings and provide the correct account address, API wallet address, and private key.
+            </p>
+          ) : null}
         </Card>
 
         {/* ── Execution controls ───────────────────────────────── */}

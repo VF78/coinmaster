@@ -4359,6 +4359,20 @@ app.put('/api/settings/exchange/hyperliquid', ownerAuth, async (req, res) => {
     return res.status(400).json({ ok: false, error: 'invalid_api_private_key_format' });
   }
 
+  try {
+    const validator = new HyperliquidAdapter({
+      accountAddress: next.accountAddress,
+      apiWalletAddress: next.apiWalletAddress,
+      apiPrivateKey: next.apiPrivateKey,
+    });
+    await validator.validateConnectionIdentity();
+  } catch (error) {
+    const hint = error instanceof Error && error.message.trim().length > 0
+      ? error.message
+      : 'Please provide the correct Hyperliquid account address, API wallet address, and private key.';
+    return res.status(400).json({ ok: false, error: 'hyperliquid_invalid_credentials', hint });
+  }
+
   await persistHyperliquidSettings(next);
 
   res.json({

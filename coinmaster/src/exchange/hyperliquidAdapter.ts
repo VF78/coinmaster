@@ -25,6 +25,9 @@ interface HyperliquidAdapterOptions {
   wsUrl?: string;
   fetchImpl?: typeof fetch;
   testnet?: boolean;
+  accountAddress?: string;
+  apiWalletAddress?: string;
+  apiPrivateKey?: string;
 }
 
 const DEFAULT_INFO_URL = 'https://api.hyperliquid.xyz/info';
@@ -78,9 +81,9 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     this.fetchImpl = options.fetchImpl ?? fetch;
     this.testnet = options.testnet ?? false;
 
-    this.accountAddress = process.env.HYPERLIQUID_ACCOUNT_ADDRESS?.trim();
-    this.privateKey = process.env.HYPERLIQUID_API_PRIVATE_KEY?.trim();
-    this.apiWalletAddress = process.env.HYPERLIQUID_API_WALLET_ADDRESS?.trim();
+    this.accountAddress = (options.accountAddress ?? process.env.HYPERLIQUID_ACCOUNT_ADDRESS ?? '').trim() || undefined;
+    this.privateKey = (options.apiPrivateKey ?? process.env.HYPERLIQUID_API_PRIVATE_KEY ?? '').trim() || undefined;
+    this.apiWalletAddress = (options.apiWalletAddress ?? process.env.HYPERLIQUID_API_WALLET_ADDRESS ?? '').trim() || undefined;
 
     const seedAddress = this.accountAddress || this.apiWalletAddress;
     const hasAccount = Boolean(seedAddress);
@@ -833,9 +836,39 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   /**
+   * Validate that the configured Hyperliquid wallet pair points at a real master account.
+   * This fails closed: if the mapping cannot be verified, the connection is treated as invalid.
+   */
+  async validateConnectionIdentity(): Promise<string> {
+    const accountAddress = this.accountAddress?.trim() ?? '';
+    const apiWalletAddress = this.apiWalletAddress?.trim() ?? '';
+    const privateKey = this.privateKey?.trim() ?? '';
+
+    if (!accountAddress || !apiWalletAddress || !privateKey) {
+      throw new Error('Hyperliquid account address, API wallet address, and private key are required');
+    }
+
+    const roleResult = await this.requestInfo<any>({ type: 'userRole', user: apiWalletAddress });
+    const master = typeof roleResult?.data?.user === 'string' ? roleResult.data.user.trim() : '';
+
+    if (!master) {
+      throw new Error('Hyperliquid connection could not be verified. Please provide the correct Hyperliquid keys.');
+    }
+
+    if (roleResult?.role !== 'agent') {
+      throw new Error('Hyperliquid API wallet is not an agent wallet. Please provide the correct Hyperliquid keys.');
+    }
+
+    if (master.toLowerCase() !== accountAddress.toLowerCase()) {
+      throw new Error('Hyperliquid account address does not match the API wallet master account. Please provide the correct Hyperliquid keys.');
+    }
+
+    return master;
+  }
+
+  /**
    * Resolve the effective user address for read APIs.
-   * If the seed address is an API agent wallet, look up the master account via userRole.
-   * Result is cached after first successful resolution.
+   * If the configured pair is valid, return the master account resolved from the API wallet.
    */
   private async resolveEffectiveUser(): Promise<string> {
     const seed = this.accountAddress || this.apiWalletAddress;
@@ -847,20 +880,13 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
     if (!this.effectiveUserInit) {
       this.effectiveUserInit = (async (): Promise<string> => {
-        try {
-          const roleResult = await this.requestInfo<any>({ type: 'userRole', user: seed });
-          if (roleResult?.role === 'agent' && typeof roleResult?.data?.user === 'string') {
-            const master = roleResult.data.user.trim();
-            if (master) {
-              logger.info({ component: 'hyperliquid', effectiveUser: `${master.slice(0, 6)}…${master.slice(-4)}` }, 'agent wallet detected');
-              this.effectiveUser = master;
-              return master;
-            }
-          }
-        } catch (error) {
-          logger.warn({ component: 'hyperliquid', err: error instanceof Error ? error.message : error }, 'userRole lookup failed, falling back to seed address');
+        if (this.accountAddress && this.apiWalletAddress) {
+          const master = await this.validateConnectionIdentity();
+          logger.info({ component: 'hyperliquid', effectiveUser: `${master.slice(0, 6)}…${master.slice(-4)}` }, 'agent wallet verified');
+          this.effectiveUser = master;
+          return master;
         }
-        // Fallback: use seed address as-is
+
         this.effectiveUser = seed;
         return seed;
       })();

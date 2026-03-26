@@ -50,6 +50,10 @@ function formatFriendlyApiError(payload: Record<string, unknown>, _status: numbe
     return 'Manual confirmation is required for this operation.';
   }
 
+  if (base === 'hyperliquid_invalid_credentials') {
+    return hint || 'Hyperliquid is not connected. Please provide the correct account address, API wallet address, and private key.';
+  }
+
   if (base === 'auth_required') {
     return 'Authentication required. Please sign in again.';
   }
@@ -111,6 +115,7 @@ export function friendlyCodeMessage(code: string, fallback = 'Operation failed. 
     test_failed: 'Could not send test message.',
     telegram_save_failed: 'Could not save Telegram settings.',
     hyperliquid_save_failed: 'Could not save Hyperliquid settings.',
+    hyperliquid_invalid_credentials: 'Hyperliquid is not connected. Please provide the correct account address, API wallet address, and private key.',
     symbol_catalog_unavailable: 'Exchange symbol catalog is temporarily unavailable.',
     symbols_not_on_exchange: 'Some symbols are not tradable on the connected exchange.',
     dd_lock_active: 'Daily drawdown lock is active. New entry orders stay blocked until reset.',
