@@ -86,8 +86,6 @@ const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
 const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 
 const PENDING_CONFIRMATION_TTL_MS = Math.max(5 * 60_000, Number(process.env.PENDING_CONFIRMATION_TTL_MS || 6 * 60 * 60_000)); // default 6h
-const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || '').trim();
-const TELEGRAM_CHAT_ID = (process.env.TELEGRAM_CHAT_ID || '').trim();
 const TELEGRAM_OUTBOX_RETRY_BASE_MS = Math.max(2000, Number(process.env.TELEGRAM_OUTBOX_RETRY_BASE_MS || 10_000));
 const TELEGRAM_OUTBOX_RETRY_MAX_MS = Math.max(30_000, Number(process.env.TELEGRAM_OUTBOX_RETRY_MAX_MS || 15 * 60_000));
 const TELEGRAM_OUTBOX_MAX_ATTEMPTS = Math.max(3, Number(process.env.TELEGRAM_OUTBOX_MAX_ATTEMPTS || 12));
@@ -183,8 +181,8 @@ async function getTelegramConfig(): Promise<{
 } | null> {
   const db = await getDb();
   const s = db.data.settings.telegramNotify;
-  const token = String(s?.botToken || TELEGRAM_BOT_TOKEN || '').trim();
-  const chatId = String(s?.chatId || TELEGRAM_CHAT_ID || '').trim();
+  const token = String(s?.botToken ?? '').trim();
+  const chatId = String(s?.chatId ?? '').trim();
   if (!token || !chatId) return null;
   return {
     token,
@@ -4316,9 +4314,9 @@ app.get('/api/settings/exchange', async (_req, res) => {
       bybit: getMaskedBybitConnectionSettings(db.data.settings),
     },
     telegramNotify: {
-      hasToken: Boolean(tg?.botToken?.trim() || TELEGRAM_BOT_TOKEN),
-      chatId: tg?.chatId || TELEGRAM_CHAT_ID,
-      botTokenMasked: maskBotToken(String(tg?.botToken || TELEGRAM_BOT_TOKEN || '')),
+      hasToken: Boolean(tg?.botToken?.trim()),
+      chatId: tg?.chatId || '',
+      botTokenMasked: maskBotToken(String(tg?.botToken || '')),
       notifyOpen: tg?.notifyOpen !== false,
       notifyTp: tg?.notifyTp !== false,
       notifySl: tg?.notifySl !== false,
@@ -4562,7 +4560,7 @@ app.get('/api/settings/telegram-notify/health', ownerAuth, async (_req, res) => 
       outboxRunning: Boolean(telegramOutboxTimer),
       updateRunning: Boolean(telegramUpdateTimer),
     },
-    configPresent: Boolean((db.data.settings.telegramNotify?.botToken || TELEGRAM_BOT_TOKEN) && (db.data.settings.telegramNotify?.chatId || TELEGRAM_CHAT_ID)),
+    configPresent: Boolean(db.data.settings.telegramNotify?.botToken && db.data.settings.telegramNotify?.chatId),
   });
 });
 

@@ -23,6 +23,7 @@ Updated: 2026-03-26 Europe/Madrid
 ## Deployment invariant
 - All code edits happen in the canonical workspace repo only.
 - `/opt/coinmaster` is a deploy mirror, never a manual edit target.
+- Connection settings for Hyperliquid, Bybit, and Telegram live in the persisted DB snapshot and must be treated as runtime source of truth; env vars are not authoritative at runtime.
 - On every commit to `main`, the active post-commit hook runs `scripts/deploy-prod-safe.sh`:
   - typecheck + build
   - sync `src/` and `dist/` to `/opt/coinmaster`
