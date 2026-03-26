@@ -130,7 +130,15 @@ function compactBacktestRuns(items: BacktestRun[]): BacktestRun[] {
 
 function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
   const cutoff = Date.now() - PENDING_CONFIRMATION_TTL_MS;
-  return list.filter((p) => Date.parse(p.createdAt) >= cutoff && p.size > 0 && p.price > 0 && p.leverage > 0);
+  return list.filter((p) => {
+    if (Date.parse(p.createdAt) < cutoff) return false;
+    if (!Number.isFinite(p.size) || !Number.isFinite(p.price) || !Number.isFinite(p.leverage)) return false;
+    if (p.size <= 0 || p.price <= 0 || p.leverage <= 0) return false;
+
+    const displaySize = Number(p.size.toFixed(2));
+    const displayNotional = Number((p.price * p.size).toFixed(2));
+    return displaySize > 0 && displayNotional > 0;
+  });
 }
 
 function pendingToLivePosition(pending: PendingConfirmation): LivePosition {
@@ -669,7 +677,10 @@ async function queuePendingConfirmation(params: {
   const size = Number(params.size.toFixed(6));
   const leverage = Number(params.leverage);
 
-  if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(size) || size <= 0 || !Number.isFinite(leverage) || leverage <= 0) {
+  const displaySize = Number(size.toFixed(2));
+  const displayNotional = Number((price * size).toFixed(2));
+
+  if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(size) || size <= 0 || !Number.isFinite(leverage) || leverage <= 0 || displaySize <= 0 || displayNotional <= 0) {
     return { queued: false, id: 'invalid_size' };
   }
 
@@ -1680,7 +1691,9 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   const db = await getDb();
   const pending = db.data.pendingConfirmations.find((p) => p.id === pendingId);
   if (!pending) return { ok: false, error: 'pending_not_found' };
-  if (!Number.isFinite(pending.size) || pending.size <= 0 || !Number.isFinite(pending.price) || pending.price <= 0 || !Number.isFinite(pending.leverage) || pending.leverage <= 0) {
+  const displaySize = Number(pending.size.toFixed(2));
+  const displayNotional = Number((pending.price * pending.size).toFixed(2));
+  if (!Number.isFinite(pending.size) || pending.size <= 0 || !Number.isFinite(pending.price) || pending.price <= 0 || !Number.isFinite(pending.leverage) || pending.leverage <= 0 || displaySize <= 0 || displayNotional <= 0) {
     db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
     await db.write();
     return { ok: false, error: 'pending_not_found' };
