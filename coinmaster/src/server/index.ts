@@ -9,7 +9,7 @@ import { nanoid } from 'nanoid';
 import logger from '../lib/logger.js';
 import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
-import { applyBacktestAiAnalysisResult, createQueuedBacktestRun, markBacktestAiAnalysisRequested } from '../core/backtest.js';
+import { applyBacktestAiAnalysisResult, createQueuedBacktestRun } from '../core/backtest.js';
 import { executeBacktestRun, isBacktestRunning, getActiveBacktestRunId } from '../core/backtestWorker.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
@@ -4103,29 +4103,12 @@ app.post('/api/ai-master/insights', ownerAuth, async (req, res) => {
   return res.json({ ok: true, insight: created.insight });
 });
 
-app.post('/api/ai-master/qa', ownerAuth, async (req, res) => {
-  const state = await ensureAiMasterState();
-  const created = buildAiMasterQaQuestion({
-    id: `aiq-${nanoid(10)}`,
-    question: req.body?.question,
-    askedAt: new Date().toISOString(),
+app.post('/api/ai-master/qa', ownerAuth, async (_req, res) => {
+  return res.status(410).json({
+    ok: false,
+    error: 'ai_master_qa_disabled',
+    hint: 'AI Master Q&A is disabled. Only daily insight at 00:00 UTC is allowed.',
   });
-
-  if (!created.ok) return res.status(400).json({ ok: false, error: created.error });
-
-  state.qa.push(created.item);
-  pruneAiMasterCollections(state.insights, state.qa);
-  await state.write();
-
-  logger.info({
-    component: 'ai-master',
-    event: 'qa_queued',
-    id: created.item.id,
-    promptChars: created.item.promptChars,
-    truncated: created.item.truncated,
-  }, 'ai master question queued');
-
-  return res.json({ ok: true, item: created.item });
 });
 
 app.get('/api/ai-master/qa/pending', ownerAuth, async (req, res) => {
@@ -4696,29 +4679,15 @@ app.get('/api/backtest/runs/:id', ownerAuth, async (req, res) => {
 });
 
 app.get('/api/backtest/ai-analysis/pending', ownerAuth, async (_req, res) => {
-  const db = await getDb();
-  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
-  const runs = db.data.backtestRuns.filter((run) => run.status === 'completed' && run.aiAnalysis?.status === 'pending');
-  return res.json({ ok: true, runs });
+  return res.json({ ok: true, runs: [] });
 });
 
-app.post('/api/backtest/runs/:id/ai-analysis/request', ownerAuth, async (req, res) => {
-  const db = await getDb();
-  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
-  const run = db.data.backtestRuns.find((item) => item.id === req.params.id);
-  if (!run) {
-    return res.status(404).json({ ok: false, error: 'backtest_run_not_found' });
-  }
-  if (run.status !== 'completed') {
-    return res.status(409).json({ ok: false, error: 'backtest_run_not_completed' });
-  }
-  if (run.aiAnalysis?.status === 'completed' && run.aiAnalysis?.report) {
-    return res.json({ ok: true, run });
-  }
-
-  markBacktestAiAnalysisRequested(run);
-  await db.write();
-  return res.json({ ok: true, run });
+app.post('/api/backtest/runs/:id/ai-analysis/request', ownerAuth, async (_req, res) => {
+  return res.status(410).json({
+    ok: false,
+    error: 'backtest_ai_analysis_disabled',
+    hint: 'Backtest AI analysis is disabled. Only daily insight at 00:00 UTC is allowed.',
+  });
 });
 
 app.post('/api/backtest/runs/:id/ai-analysis/complete', ownerAuth, async (req, res) => {

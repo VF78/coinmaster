@@ -16,7 +16,6 @@ import {
   getBacktestRuns,
   getTradingRuleSymbols,
   getTradingRules,
-  requestBacktestAiAnalysis,
 } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 
@@ -202,7 +201,6 @@ export function BacktestPage() {
   const [runs, setRuns] = useState<BacktestRun[]>([]);
   const [selectedRun, setSelectedRun] = useState<BacktestRun | null>(null);
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
-  const [analysisBusyRunId, setAnalysisBusyRunId] = useState<string | null>(null);
   const [reportRun, setReportRun] = useState<BacktestRun | null>(null);
   const [historySort, setHistorySort] = useState<HistorySortMode>('created-desc');
   const [historyPage, setHistoryPage] = useState(1);
@@ -290,8 +288,6 @@ export function BacktestPage() {
     return () => { cancelled = true; };
   }, [defaults]);
 
-  const hasPendingAi = useMemo(() => runs.some((run) => run.aiAnalysis?.status === 'pending'), [runs]);
-
   useEffect(() => {
     selectedRunIdRef.current = selectedRun?.id ?? null;
   }, [selectedRun]);
@@ -301,7 +297,7 @@ export function BacktestPage() {
   }, [reportRun]);
 
   useEffect(() => {
-    const shouldPoll = Boolean(activeRunId) || hasPendingAi;
+    const shouldPoll = Boolean(activeRunId);
     if (!shouldPoll) {
       if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
       return;
@@ -338,7 +334,7 @@ export function BacktestPage() {
     void poll();
     pollRef.current = setInterval(poll, POLL_INTERVAL_MS);
     return () => { if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; } };
-  }, [activeRunId, hasPendingAi]);
+  }, [activeRunId]);
 
   useEffect(() => {
     setHistoryPage(1);
@@ -425,25 +421,6 @@ export function BacktestPage() {
     }
   }
 
-  const handleAiClick = useCallback(async (run: BacktestRun) => {
-    if (run.aiAnalysis?.status === 'completed' && run.aiAnalysis?.report) {
-      setReportRun(run);
-      return;
-    }
-    if (run.aiAnalysis?.status === 'pending' || analysisBusyRunId) return;
-
-    setAnalysisBusyRunId(run.id);
-    setError(null);
-    try {
-      const res = await requestBacktestAiAnalysis(run.id);
-      setRuns((prev) => prev.map((item) => item.id === res.run.id ? res.run : item));
-      if (selectedRun?.id === res.run.id) setSelectedRun(res.run);
-    } catch (err) {
-      setError(friendlyErrorMessage(err, 'Could not request AI analysis.'));
-    } finally {
-      setAnalysisBusyRunId(null);
-    }
-  }, [analysisBusyRunId, selectedRun]);
 
   const sortedRuns = useMemo(() => {
     const next = [...runs];
@@ -778,15 +755,16 @@ export function BacktestPage() {
               <span className="bt-history__dates">{toLocalDateStr(run.startTimeMs)} → {toLocalDateStr(run.endTimeMs)}</span>
               <Badge tone={run.status === 'completed' ? 'success' : run.status === 'failed' ? 'danger' : 'neutral'}>{run.status}</Badge>
               {run.summary ? <span className={run.summary.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}>{formatMoney(run.summary.netPnlUsd)} ({formatNumber(run.summary.roiPct)}%)</span> : null}
-              <button
-                type="button"
-                className={`bt-ai-btn bt-ai-btn--${run.aiAnalysis?.status ?? 'idle'}`}
-                title={run.aiAnalysis?.status === 'completed' ? 'Open saved AI report' : run.aiAnalysis?.status === 'pending' ? 'AI analysis is running' : 'Generate AI analysis'}
-                onClick={(event) => { event.stopPropagation(); void handleAiClick(run); }}
-                disabled={analysisBusyRunId === run.id || run.aiAnalysis?.status === 'pending' || run.status !== 'completed'}
-              >
-                {analysisBusyRunId === run.id ? '…' : run.aiAnalysis?.status === 'completed' ? '🤖' : run.aiAnalysis?.status === 'pending' ? '⏳' : 'AI'}
-              </button>
+              {run.aiAnalysis?.status === 'completed' && run.aiAnalysis?.report ? (
+                <button
+                  type="button"
+                  className="bt-ai-btn bt-ai-btn--completed"
+                  title="Open saved AI report"
+                  onClick={(event) => { event.stopPropagation(); setReportRun(run); }}
+                >
+                  🤖
+                </button>
+              ) : null}
             </div>
           ))}
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AiMasterInsight, AiMasterQaItem } from '../../shared/dto.js';
-import { getAiMasterSnapshot, submitAiMasterQuestion, friendlyErrorMessage } from '../lib/api';
+import { getAiMasterSnapshot } from '../lib/api';
 import { formatDate } from '../lib/format';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
@@ -71,8 +71,6 @@ function toChatMessages(insights: AiMasterInsight[], qa: AiMasterQaItem[]): Chat
 export function AiMasterPage() {
   const [insights, setInsights] = useState<AiMasterInsight[]>([]);
   const [qa, setQa] = useState<AiMasterQaItem[]>([]);
-  const [question, setQuestion] = useState('');
-  const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState('');
   const [stickToBottom, setStickToBottom] = useState(true);
   const chatWindowRef = useRef<HTMLDivElement | null>(null);
@@ -110,23 +108,6 @@ export function AiMasterPage() {
     setStickToBottom(gap < 80);
   }
 
-  async function handleAsk() {
-    const text = question.trim();
-    if (!text) return;
-    setBusy(true);
-    setInfo('Отправляю вопрос...');
-    try {
-      await submitAiMasterQuestion(text);
-      setQuestion('');
-      setInfo('Вопрос отправлен. Ответ придёт в чат и Telegram.');
-      setStickToBottom(true);
-      await refresh();
-    } catch (error) {
-      setInfo(friendlyErrorMessage(error, 'Не удалось отправить вопрос.'));
-    } finally {
-      setBusy(false);
-    }
-  }
 
   const answeredCount = useMemo(() => qa.filter((x) => x.status === 'answered').length, [qa]);
   const pendingCount = useMemo(() => qa.filter((x) => x.status === 'pending').length, [qa]);
@@ -141,12 +122,12 @@ export function AiMasterPage() {
             <Badge tone="neutral">reports: {insights.length}</Badge>
             <Badge tone={pendingCount > 0 ? 'danger' : 'success'}>pending: {pendingCount}</Badge>
             <Badge tone="success">answered: {answeredCount}</Badge>
-            <Button variant="secondary" onClick={() => refresh()} disabled={busy}>Refresh</Button>
+            <Button variant="secondary" onClick={() => refresh()}>Refresh</Button>
           </div>
         )}
       >
         <div className="muted" style={{ marginBottom: '0.6rem' }}>
-          Чат AI ассистента: сюда приходят daily-отчёты, здесь же можно задать вопрос и просмотреть историю переписки.
+          Read-only лента daily insight. Интерактивные AI-запросы отключены; новый отчёт приходит только раз в сутки в 00:00 UTC.
         </div>
 
         <div className="ai-chat-shell">
@@ -166,23 +147,8 @@ export function AiMasterPage() {
           </div>
 
           <div className="ai-chat-composer">
-            <textarea
-              id="ai-master-question"
-              className="rules-input ai-chat-input"
-              value={question}
-              rows={3}
-              placeholder="Например: Как оптимизировать текущие открытые позиции и снизить fee burn?"
-              onChange={(e) => setQuestion(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  void handleAsk();
-                }
-              }}
-            />
             <div className="actions-row" style={{ justifyContent: 'space-between' }}>
-              <span className="muted">{info}</span>
-              <Button onClick={() => { void handleAsk(); }} disabled={busy || question.trim().length === 0}>Send</Button>
+              <span className="muted">{info || 'Interactive AI Q&A is disabled.'}</span>
             </div>
           </div>
         </div>
