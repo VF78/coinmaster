@@ -3594,17 +3594,7 @@ function normalizeStoredHyperliquidSettings(input?: {
 }
 
 function getConfiguredHyperliquidSettings(settings?: { hyperliquid?: { accountAddress?: string; apiWalletAddress?: string; apiPrivateKey?: string; enabled?: boolean } }) {
-  const stored = normalizeStoredHyperliquidSettings(settings?.hyperliquid);
-  const storedEmpty = !stored.accountAddress && !stored.apiWalletAddress && !stored.apiPrivateKey;
-  if (!storedEmpty) return stored;
-
-  const runtime = getRuntimeHyperliquidSettings();
-  return {
-    accountAddress: runtime.accountAddress,
-    apiWalletAddress: runtime.apiWalletAddress,
-    apiPrivateKey: runtime.apiPrivateKey,
-    enabled: runtime.enabled,
-  };
+  return normalizeStoredHyperliquidSettings(settings?.hyperliquid);
 }
 
 function buildHyperliquidExchangeView(settings: { accountAddress: string; apiWalletAddress: string; apiPrivateKey: string; enabled: boolean }, connected = false) {
@@ -3660,23 +3650,7 @@ function getRuntimeHyperliquidSettings() {
 async function hydrateHyperliquidEnvFromDb(): Promise<void> {
   const db = await getDb();
   const stored = normalizeStoredHyperliquidSettings(db.data.settings.hyperliquid);
-  const runtime = getRuntimeHyperliquidSettings();
-  const storedEmpty = !stored.accountAddress && !stored.apiWalletAddress && !stored.apiPrivateKey;
-
-  if (storedEmpty && (runtime.accountAddress || runtime.apiWalletAddress || runtime.apiPrivateKey)) {
-    db.data.settings.hyperliquid = {
-      accountAddress: runtime.accountAddress,
-      apiWalletAddress: runtime.apiWalletAddress,
-      apiPrivateKey: runtime.apiPrivateKey,
-      enabled: runtime.enabled,
-    };
-    await db.write();
-    return;
-  }
-
-  if (!storedEmpty) {
-    applyHyperliquidEnv(stored);
-  }
+  applyHyperliquidEnv(stored);
 }
 
 async function persistHyperliquidSettings(settings: {
