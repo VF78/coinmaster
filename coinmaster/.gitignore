@@ -2,3 +2,4 @@ node_modules
 dist
 exports
 .DS_Store
+.ops/daily-llm-budget-guard-state.json
