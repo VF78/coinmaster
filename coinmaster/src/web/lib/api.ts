@@ -51,7 +51,7 @@ function formatFriendlyApiError(payload: Record<string, unknown>, _status: numbe
   }
 
   if (base === 'hyperliquid_invalid_credentials') {
-    return hint || 'Hyperliquid is not connected. Please provide the correct account address, API wallet address, and private key.';
+    return hint || 'Disconnected — enter correct keys';
   }
 
   if (base === 'auth_required') {

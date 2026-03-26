@@ -336,7 +336,7 @@ export function SettingsPage() {
                   ? 'Credentials stored, connection logged out'
                   : isHyperliquidConnected
                     ? 'Hyperliquid connected'
-                    : 'Hyperliquid not connected. Please provide the correct keys.'}
+                    : 'Disconnected — enter correct keys'}
             </p>
           </div>
         </div>
