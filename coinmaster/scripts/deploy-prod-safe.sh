@@ -28,6 +28,7 @@ done
 
 log "Running typecheck gate"
 cd "$APP_DIR"
+SOURCE_COMMIT="$(git rev-parse HEAD)"
 npm run check >/tmp/coinmaster-deploy-check.log 2>&1 || {
   cat /tmp/coinmaster-deploy-check.log >&2
   exit 1
@@ -133,5 +134,9 @@ if [[ "$SMOKE_OK" -ne 1 ]]; then
   systemctl restart "$SERVICE" || true
   exit 1
 fi
+
+printf '%s\n' "$SOURCE_COMMIT" > "$TARGET_DIR/.deploy-source-commit.new"
+chown "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/.deploy-source-commit.new"
+mv "$TARGET_DIR/.deploy-source-commit.new" "$TARGET_DIR/.deploy-source-commit"
 
 log "Deploy successful"

@@ -10,4 +10,10 @@ Quick rules:
 - Coding work goes through a subagent / coding agent.
 - Coding policy: Sonnet 4.6 default; Opus 4.6 for hard/architectural/stuck reruns; Codex 5.4 fallback only when Claude limit is reached.
 - After each completed GitHub Project task, reset temporary model override to default.
+- Deployment invariant:
+  - canonical workspace = `/root/.openclaw/workspace/coinmaster/coinmaster`
+  - deploy mirror = `/opt/coinmaster`
+  - no manual edits in `/opt/coinmaster`
+  - commit on `main` triggers post-commit deploy sync + restart
+  - if workspace HEAD != `/opt/coinmaster/.deploy-source-commit`, redeploy first
 - No secrets in repo or truth files.

@@ -1,2 +1,5 @@
 # Local scratch
 /tmp/
+
+# Deploy logs
+/coinmaster/.ops/auto-deploy.log

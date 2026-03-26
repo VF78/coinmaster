@@ -4,7 +4,8 @@ Updated: 2026-03-26 Europe/Madrid
 
 ## Source of truth
 - Tasks and statuses: GitHub Project `https://github.com/users/VF78/projects/2`
-- Repo: `https://github.com/VF78/coinmaster`
+- Canonical code workspace: `/root/.openclaw/workspace/coinmaster/coinmaster`
+- Deploy mirror: `/opt/coinmaster`
 - This file stores only stable operating rules, not a backlog.
 
 ## Model policy
@@ -18,6 +19,16 @@ Updated: 2026-03-26 Europe/Madrid
   - **Default:** Sonnet 4.6
   - **Hard / architectural / stuck reruns:** Opus 4.6
   - **Fallback only:** Codex 5.4 (when Claude limit is reached)
+
+## Deployment invariant
+- All code edits happen in the canonical workspace repo only.
+- `/opt/coinmaster` is a deploy mirror, never a manual edit target.
+- On every commit to `main`, the active post-commit hook runs `scripts/deploy-prod-safe.sh`:
+  - typecheck + build
+  - sync `src/` and `dist/` to `/opt/coinmaster`
+  - restart `coinmaster.service`
+  - write `/opt/coinmaster/.deploy-source-commit`
+- Before debugging or restarting, compare workspace HEAD with `/opt/coinmaster/.deploy-source-commit`; if they differ, redeploy first.
 
 ## Execution rules
 - One active implementation task at a time.
