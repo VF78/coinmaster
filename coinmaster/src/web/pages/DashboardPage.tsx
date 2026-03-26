@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Bias, DashboardClassBiasControl, DashboardCustomBiasControl, DashboardResponse, LiveCandle, LivePosition, TradingRulesSettings } from '../../shared/dto.js';
+import { detectFvgZones, computeRetraceTrigger, isFvgRetracedToLevel } from '../../core/fvgEvaluator.js';
 import { postBias, getDashboard, getLiveCandles, getTradingRules, confirmPendingConfirmation, rejectPendingConfirmation, friendlyCodeMessage, friendlyErrorMessage } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 import { Badge } from '../components/Badge';
@@ -31,6 +32,7 @@ type FvgStateRow = {
   symbol: string;
   timeframe: FvgTf;
   direction: 'bullish' | 'bearish';
+  bias: Bias;
   zoneBottom: number;
   zoneTop: number;
   triggerPrice: number;
@@ -40,70 +42,58 @@ type FvgStateRow = {
   candleTimestamp: string;
 };
 
-function detectFvgState(symbol: string, candles: LiveCandle[], timeframe: FvgTf, currentPrice: number, fvgRetracePct: number, fvgMinWidthPct: number): FvgStateRow | null {
-  if (!Array.isArray(candles) || candles.length < 4 || !Number.isFinite(currentPrice)) return null;
+function biasMatchesDirection(bias: Bias, direction: 'bullish' | 'bearish'): boolean {
+  if (bias === 'off') return false;
+  return (bias === 'long' && direction === 'bullish') || (bias === 'short' && direction === 'bearish');
+}
 
-  const closed = candles.slice(0, -1);
-  const lookback = 10;
-  const start = Math.max(2, closed.length - lookback);
+function resolveSymbolBias(symbol: string, rules: TradingRulesSettings | null, dashboard: DashboardResponse): Bias {
+  const normalizedSymbol = String(symbol ?? '').trim().toUpperCase();
+  const custom = dashboard.customBiasControls.find((control) => control.symbol === normalizedSymbol);
+  if (custom) return custom.bias;
 
-  type Zone = { direction: 'bullish' | 'bearish'; top: number; bottom: number; candleTimestamp: string };
-  const zones: Zone[] = [];
+  const assetClass = rules?.coins?.find((coin) => String(coin.symbol ?? '').trim().toUpperCase() === normalizedSymbol)?.assetClass;
+  if (!assetClass) return 'off';
 
-  for (let i = start; i < closed.length; i++) {
-    const c0 = closed[i - 2];
-    const c2 = closed[i];
+  return dashboard.classBiasControls.find((control) => control.assetClass === assetClass)?.bias ?? 'off';
+}
 
-    if (c0.high < c2.low) {
-      const bottom = c0.high;
-      const top = c2.low;
-      const width = top - bottom;
-      const referencePrice = Math.max(Math.abs((top + bottom) / 2), Number.EPSILON);
-      const widthPct = (width / referencePrice) * 100;
-      if (widthPct >= fvgMinWidthPct) {
-        zones.push({ direction: 'bullish', top, bottom, candleTimestamp: c2.timestamp });
-      }
-    }
-    if (c0.low > c2.high) {
-      const bottom = c2.high;
-      const top = c0.low;
-      const width = top - bottom;
-      const referencePrice = Math.max(Math.abs((top + bottom) / 2), Number.EPSILON);
-      const widthPct = (width / referencePrice) * 100;
-      if (widthPct >= fvgMinWidthPct) {
-        zones.push({ direction: 'bearish', top, bottom, candleTimestamp: c2.timestamp });
-      }
-    }
-  }
+function detectFvgStates(
+  symbol: string,
+  candles: LiveCandle[],
+  timeframe: FvgTf,
+  currentPrice: number,
+  fvgRetracePct: number,
+  fvgMinWidthPct: number,
+  bias: Bias,
+): FvgStateRow[] {
+  if (!Array.isArray(candles) || candles.length < 4 || !Number.isFinite(currentPrice) || bias === 'off') return [];
 
-  if (!zones.length) return null;
-  const zone = zones[zones.length - 1];
-  const range = zone.top - zone.bottom;
-  const triggerPrice = zone.direction === 'bullish'
-    ? zone.top - range * (fvgRetracePct / 100)
-    : zone.bottom + range * (fvgRetracePct / 100);
+  const zones = detectFvgZones(candles, timeframe, 10, fvgMinWidthPct)
+    .filter((zone) => biasMatchesDirection(bias, zone.direction));
 
-  const inRetraceZone = zone.direction === 'bullish'
-    ? currentPrice <= triggerPrice && currentPrice >= zone.bottom
-    : currentPrice >= triggerPrice && currentPrice <= zone.top;
+  return zones.map((zone) => {
+    const triggerPrice = computeRetraceTrigger(zone, fvgRetracePct);
+    const inRetraceZone = isFvgRetracedToLevel(zone, currentPrice, fvgRetracePct);
+    const distanceToTriggerPct = Number.isFinite(triggerPrice) && triggerPrice > 0
+      ? Number((((currentPrice - triggerPrice) / triggerPrice) * 100).toFixed(2))
+      : 0;
 
-  const distanceToTriggerPct = Number.isFinite(triggerPrice) && triggerPrice > 0
-    ? Number((((currentPrice - triggerPrice) / triggerPrice) * 100).toFixed(2))
-    : 0;
-
-  return {
-    id: `fvg-${symbol}-${timeframe}`,
-    symbol,
-    timeframe,
-    direction: zone.direction,
-    zoneBottom: zone.bottom,
-    zoneTop: zone.top,
-    triggerPrice: Number(triggerPrice.toFixed(2)),
-    currentPrice: Number(currentPrice.toFixed(2)),
-    inRetraceZone,
-    distanceToTriggerPct,
-    candleTimestamp: zone.candleTimestamp,
-  };
+    return {
+      id: `fvg-${symbol}-${timeframe}-${zone.direction}-${zone.candleTimestamp}`,
+      symbol,
+      timeframe,
+      direction: zone.direction,
+      bias,
+      zoneBottom: zone.bottom,
+      zoneTop: zone.top,
+      triggerPrice: Number(triggerPrice.toFixed(2)),
+      currentPrice: Number(currentPrice.toFixed(2)),
+      inRetraceZone,
+      distanceToTriggerPct,
+      candleTimestamp: zone.candleTimestamp,
+    };
+  });
 }
 
 export function DashboardPage() {
@@ -160,7 +150,10 @@ export function DashboardPage() {
       .filter((symbol, index, arr) => symbol.length > 0 && arr.indexOf(symbol) === index);
 
     const symbols = monitoredSymbols.length > 0 ? monitoredSymbols : ['BTC'];
-    const fvgConfigKey = `${symbols.join(',')}|${normalizedRetrace}|${normalizedMinWidth}`;
+    const biasKey = symbols
+      .map((symbol) => `${symbol}:${resolveSymbolBias(symbol, activeRules ?? null, next)}`)
+      .join(',');
+    const fvgConfigKey = `${symbols.join(',')}|${normalizedRetrace}|${normalizedMinWidth}|${biasKey}`;
     const shouldRefreshFvg =
       fvgConfigKey !== lastFvgConfigKeyRef.current
       || now - lastFvgRefreshAtRef.current >= FVG_REFRESH_MS
@@ -177,6 +170,7 @@ export function DashboardPage() {
       const nextCache: Record<string, FvgStateRow> = {};
       for (let idx = 0; idx < symbols.length; idx++) {
         const symbol = symbols[idx];
+        const symbolBias = resolveSymbolBias(symbol, activeRules ?? null, next);
         const c1h = candleResponses[idx * 2];
         const c4h = candleResponses[idx * 2 + 1];
         const currentPrice = Number(
@@ -185,18 +179,14 @@ export function DashboardPage() {
             ?? NaN
         );
 
-        const row1h = c1h?.candles?.length
-          ? detectFvgState(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace, normalizedMinWidth)
-          : null;
-        const row4h = c4h?.candles?.length
-          ? detectFvgState(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace, normalizedMinWidth)
-          : null;
+        const rows1h = c1h?.candles?.length
+          ? detectFvgStates(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace, normalizedMinWidth, symbolBias)
+          : [];
+        const rows4h = c4h?.candles?.length
+          ? detectFvgStates(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace, normalizedMinWidth, symbolBias)
+          : [];
 
-        if (row1h) nextCache[row1h.id] = row1h;
-        else if (fvgRowsCacheRef.current[`fvg-${symbol}-1h`]) nextCache[`fvg-${symbol}-1h`] = fvgRowsCacheRef.current[`fvg-${symbol}-1h`];
-
-        if (row4h) nextCache[row4h.id] = row4h;
-        else if (fvgRowsCacheRef.current[`fvg-${symbol}-4h`]) nextCache[`fvg-${symbol}-4h`] = fvgRowsCacheRef.current[`fvg-${symbol}-4h`];
+        for (const row of [...rows1h, ...rows4h]) nextCache[row.id] = row;
       }
 
       fvgRowsCacheRef.current = nextCache;
@@ -206,8 +196,8 @@ export function DashboardPage() {
 
     setFvgRows(
       Object.values(fvgRowsCacheRef.current)
-        .filter((row) => symbols.includes(row.symbol))
-        .sort((a, b) => a.symbol.localeCompare(b.symbol) || a.timeframe.localeCompare(b.timeframe))
+        .filter((row) => symbols.includes(row.symbol) && biasMatchesDirection(row.bias, row.direction))
+        .sort((a, b) => a.symbol.localeCompare(b.symbol) || a.timeframe.localeCompare(b.timeframe) || a.candleTimestamp.localeCompare(b.candleTimestamp))
     );
 
     return next;
@@ -604,12 +594,12 @@ export function DashboardPage() {
         <DataTable<FvgStateRow>
           rows={fvgRows}
           emptyText="No FVG zones detected in current lookback window."
-          mobileTitle={(row) => `${row.symbol} ${row.timeframe.toUpperCase()} ${row.direction.toUpperCase()}`}
+          mobileTitle={(row) => `${row.symbol} ${row.timeframe.toUpperCase()} ${row.bias.toUpperCase()} / ${row.direction.toUpperCase()}`}
           mobileSubtitle={(row) => `Trigger ${formatNumber(row.triggerPrice)} • Dist ${row.distanceToTriggerPct}%`}
           columns={[
             { key: 'symbol', header: 'Symbol', render: (row) => row.symbol },
             { key: 'tf', header: 'TF', render: (row) => row.timeframe.toUpperCase() },
-            { key: 'dir', header: 'Direction', render: (row) => <Badge tone={row.direction === 'bullish' ? 'success' : 'danger'}>{row.direction}</Badge> },
+            { key: 'dir', header: 'Bias / Direction', render: (row) => <Badge tone={row.direction === 'bullish' ? 'success' : 'danger'}>{`${row.bias} / ${row.direction}`}</Badge> },
             { key: 'zone', header: 'Zone', render: (row) => `${formatNumber(row.zoneBottom)} - ${formatNumber(row.zoneTop)}` },
             { key: 'trigger', header: 'Trigger', render: (row) => formatNumber(row.triggerPrice) },
             { key: 'current', header: 'Current', render: (row) => formatNumber(row.currentPrice) },
