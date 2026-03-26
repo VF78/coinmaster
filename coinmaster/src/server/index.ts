@@ -130,7 +130,7 @@ function compactBacktestRuns(items: BacktestRun[]): BacktestRun[] {
 
 function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
   const cutoff = Date.now() - PENDING_CONFIRMATION_TTL_MS;
-  return list.filter((p) => Date.parse(p.createdAt) >= cutoff);
+  return list.filter((p) => Date.parse(p.createdAt) >= cutoff && p.size > 0 && p.price > 0 && p.leverage > 0);
 }
 
 function pendingToLivePosition(pending: PendingConfirmation): LivePosition {
@@ -665,6 +665,14 @@ async function queuePendingConfirmation(params: {
   const cleaned = prunePendingConfirmations(db.data.pendingConfirmations);
   db.data.pendingConfirmations = cleaned;
 
+  const price = Number(params.price.toFixed(8));
+  const size = Number(params.size.toFixed(6));
+  const leverage = Number(params.leverage);
+
+  if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(size) || size <= 0 || !Number.isFinite(leverage) || leverage <= 0) {
+    return { queued: false, id: 'invalid_size' };
+  }
+
   const next: PendingConfirmation = {
     id: `pc-${nanoid(10)}`,
     symbol: params.symbol,
@@ -672,9 +680,9 @@ async function queuePendingConfirmation(params: {
     strategy: params.strategy,
     timeframe: params.timeframe,
     reason: params.reason,
-    price: Number(params.price.toFixed(8)),
-    size: Math.max(0, Number(params.size.toFixed(6))),
-    leverage: params.leverage,
+    price,
+    size,
+    leverage,
     createdAt: now,
   };
 
@@ -1672,6 +1680,11 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   const db = await getDb();
   const pending = db.data.pendingConfirmations.find((p) => p.id === pendingId);
   if (!pending) return { ok: false, error: 'pending_not_found' };
+  if (!Number.isFinite(pending.size) || pending.size <= 0 || !Number.isFinite(pending.price) || pending.price <= 0 || !Number.isFinite(pending.leverage) || pending.leverage <= 0) {
+    db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
+    await db.write();
+    return { ok: false, error: 'pending_not_found' };
+  }
 
   const rules = rulesCache.getEffectiveRules();
   const normalizedSymbol = normalizeSymbol(pending.symbol);
