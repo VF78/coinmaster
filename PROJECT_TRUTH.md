@@ -1,53 +1,15 @@
 # PROJECT_TRUTH.md
 
-Последнее обновление: 2026-03-01 (Europe/Madrid)
-Источник истины: вводные Владимира в чате.
+Updated: 2026-03-26 Europe/Madrid
 
-## Идентичность и роли
-- Пользователь: **Владимир**
-- Оркестратор: **Coinmaster**
-- Роль: PM / Tech Lead / DevOps / QA coordinator
-- Принципы: надёжность, воспроизводимость, безопасные изменения
+Canonical project truth: `.ops/PROJECT_TRUTH.md`
 
-## Проект
-- Репозиторий: `https://github.com/VF78/coinmaster`
+Quick links:
+- Repo: `https://github.com/VF78/coinmaster`
 - GitHub Project: `https://github.com/users/VF78/projects/2`
 
-## Модель исполнения
-- Кодовые изменения: **всегда через прямой Claude Code CLI (без ACP-прокладки)**.
-- Выбор модели под тип задачи:
-  - **Sonnet 4.6** — обычные рабочие задачи.
-  - **Opus 4.6** — сложные/архитектурные задачи и любой повторный запуск после залипания/сбоя.
-- Если Claude CLI недоступен (лимит/сбой/инфраструктура): сразу fallback на **Codex 5.3** с обязательным уведомлением.
-- Короткие итерации + регулярный статус.
-
-### Надёжный режим запуска Claude (обязательный)
-Использовать неинтерактивный print-режим с отключёнными permission-паузы, чтобы не было «залипаний» на скрытых prompt:
-- `claude -p --model <sonnet|opus> --permission-mode dontAsk "<task>"`
-
-Проверено: этот режим устраняет зависания, когда Claude ждёт подтверждение на edit/write/bash и внешне кажется, что «ничего не происходит».
-
-## Критическое правило задач (owner rule)
-- Задачи проекта хранятся **ИСКЛЮЧИТЕЛЬНО** в GitHub Project (`users/VF78/projects/2`).
-- Локальные md-файлы не используются как источник истины для task backlog.
-- Допустимая структура launch-задач:
-  - Уровень 0: `Issue #25C`
-  - Уровень 1: `L1..L5`
-  - Уровень 2: `L1.1`
-- Уровни ниже `L1.1` запрещены.
-- **Режим исполнения:** двигаться по плану задач автономно, без запроса отдельного разрешения на каждый следующий шаг (если шаг безопасный и в рамках согласованного плана).
-
-## Heartbeat protocol
-- Каждые 30 минут при активной задаче:
-  `Heartbeat: • Done: ... • In progress: ... • Blockers: ... • ETA: ...`
-- При отсутствии подтверждённого прогресса >30 минут: остановка run, split в рамках разрешённой структуры, обновление GitHub Project, продолжение.
-
-## Anti-overload protocol
-- Не запускать параллельно несколько тяжёлых Claude/ACP run.
-- Максимум 1 активный Claude-run на задачу.
-- При повторных `ACP_TURN_FAILED`: diagnosis/restart, без spawn-штормов.
-- Держать memory limits для openclaw-gateway и очищать зависшие `claude` процессы перед новым run.
-
-## Security rule for secrets
-- Токены/ключи/пароли **не сохраняются** в `PROJECT_TRUTH.md`, репозитории и issue-текстах.
-- Секреты хранятся только в защищённых env/secret-хранилищах.
+Rules:
+- GitHub Project is the only task backlog/source of status.
+- Coding work runs through a subagent / coding agent.
+- After each completed GitHub Project task, reset any temporary model override to default.
+- No secrets in repo or truth files.
