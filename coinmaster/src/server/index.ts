@@ -2940,8 +2940,8 @@ async function runFvgMonitorTick(): Promise<void> {
 
       // Current mid price (required for retrace check)
       const normalizedSymbol = normalizeSymbol(symbol);
-      const mid = Number(mids[normalizedSymbol]);
-      if (!Number.isFinite(mid) || mid <= 0) {
+      const mid = resolveMidForSymbol(mids, normalizedSymbol);
+      if (mid === null || !Number.isFinite(mid) || mid <= 0) {
         const lastWarnAt = lastFvgNoMidWarnAt.get(normalizedSymbol) ?? 0;
         if (now - lastWarnAt >= FVG_NO_MID_WARN_THROTTLE_MS) {
           logger.warn({ component: 'fvg-monitor', symbol: normalizedSymbol }, 'no mid price, skipping symbol this tick');
@@ -3543,6 +3543,21 @@ function normalizeSymbol(raw: unknown): string {
   return value.toUpperCase();
 }
 
+function resolveMidForSymbol(mids: Record<string, number>, symbol: string): number | null {
+  const normalized = normalizeSymbol(symbol);
+  const direct = Number(mids[normalized]);
+  if (Number.isFinite(direct)) return direct;
+
+  if (normalized.includes(':')) {
+    const [, coreRaw] = normalized.split(':', 2);
+    const core = String(coreRaw ?? '').trim().toUpperCase();
+    const fallback = Number(mids[core]);
+    if (Number.isFinite(fallback)) return fallback;
+  }
+
+  return null;
+}
+
 function enabledAllocationTotalPct(rules: TradingRulesSettings): number {
   const total = rules.coins
     .filter((coin) => coin.enabled)
@@ -3713,9 +3728,8 @@ function tickAgeMs(symbol: string): number | null {
 
 async function fetchLiveMid(symbol = LIVE_SYMBOL): Promise<number | null> {
   try {
-    const normalizedSymbol = normalizeSymbol(symbol);
     const mids = await exchange.getMids();
-    const price = mids[normalizedSymbol];
+    const price = resolveMidForSymbol(mids, symbol);
     return Number.isFinite(price) ? price : null;
   } catch {
     return null;
