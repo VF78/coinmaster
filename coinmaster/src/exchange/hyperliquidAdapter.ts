@@ -119,19 +119,16 @@ export class HyperliquidAdapter implements ExchangeAdapter {
 
     for (let i = 0; i < candidates.length; i++) {
       const candidate = candidates[i];
-      const dex = this.getDexFromSymbol(candidate);
-      const candleCoin = this.coreSymbol(candidate);
 
       try {
         const raw = await this.requestInfo<Array<Record<string, string | number>>>(
           {
             type: 'candleSnapshot',
             req: {
-              coin: candleCoin,
+              coin: candidate,
               interval: query.timeframe,
               startTime: query.startTimeMs,
               endTime: query.endTimeMs,
-              ...(dex ? { dex } : {})
             }
           }
         );
