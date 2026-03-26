@@ -2487,6 +2487,14 @@ async function runEngulfingMonitorTick(): Promise<void> {
       return;
     }
 
+    let mids: Record<string, number> = {};
+    try {
+      mids = await exchange.getMids();
+    } catch (err) {
+      logger.warn({ component: 'engulfing-monitor', err }, 'failed to get mids');
+      return;
+    }
+
     for (const symbol of symbols) {
       const operatorBias = await getOperatorBias(symbol);
       const symbolPosition = positions.find((p) => p.symbol.toUpperCase() === symbol.toUpperCase());
@@ -2546,12 +2554,12 @@ async function runEngulfingMonitorTick(): Promise<void> {
             'engulfing entry signal detected',
           );
 
-          const mid = await fetchLiveMid(symbol);
-          if (!mid) { logger.warn({ component: 'engulfing-monitor' }, 'entry signal: no mid price'); continue; }
+          const currentPrice = resolveMonitorPrice(mids, symbol, closedCandles);
+          if (!currentPrice) { logger.warn({ component: 'engulfing-monitor' }, 'entry signal: no price'); continue; }
 
           // Manual mode: queue confirmation only if sizing is valid; otherwise skip.
           if (!raw.autoConfirm) {
-            const estimate = await estimateSignalSize({ symbol, side, price: mid, effectiveRules });
+            const estimate = await estimateSignalSize({ symbol, side, price: currentPrice, effectiveRules });
             if (!estimate.size || estimate.size <= 0) {
               logger.warn({ component: 'engulfing-monitor', symbol, tf, side, reason: 'invalid_sizing' }, 'entry signal skipped: invalid sizing');
               continue;
@@ -2564,7 +2572,7 @@ async function runEngulfingMonitorTick(): Promise<void> {
               strategy: 'engulfing',
               timeframe: tf,
               reason: signal.reason,
-              price: mid,
+              price: currentPrice,
               size: estimate.size,
               leverage: estimate.leverage,
               correlationId,
@@ -2584,7 +2592,7 @@ async function runEngulfingMonitorTick(): Promise<void> {
             let sizeDecimals = 6;
             try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
 
-            const sizing = computeAllocationSize({ symbol, price: mid, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
+            const sizing = computeAllocationSize({ symbol, price: currentPrice, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
 
             if (!sizing.ok) {
               logRiskGateAudit({ gate: 'engulfing_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
@@ -2606,26 +2614,26 @@ async function runEngulfingMonitorTick(): Promise<void> {
             }
 
             const correlationId = `engulf-auto-${nanoid(8)}`;
-            const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+            const ack = await exchange.placeLimitOrder({ symbol, side, price: currentPrice, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
 
             logRiskGateAudit({
               gate: 'engulfing_entry_signal',
               passed: ack.ok,
               reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
-              details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: mid, orderId: ack.orderId, error: ack.error },
+              details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: currentPrice, orderId: ack.orderId, error: ack.error },
             });
             logger.info({ component: 'engulfing-monitor', symbol, side, size: sizing.size, orderId: ack.orderId, ok: ack.ok }, 'auto-entry order result');
 
             // Auto-apply TP/SL if available
             if (ack.ok) {
               try {
-                await notifyTradeOpen({ symbol, side, price: mid, size: sizing.size, source: 'engulfing:auto' });
+                await notifyTradeOpen({ symbol, side, price: currentPrice, size: sizing.size, source: 'engulfing:auto' });
               } catch (error) {
                 logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
               }
-              const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
+              const tpSl = resolveTpSlDefaults(currentPrice, side, undefined, undefined);
               if (tpSl) {
-                try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, mid); } catch { /* best-effort */ }
+                try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, currentPrice); } catch { /* best-effort */ }
               }
             } else {
               await notifyOrderRejectedEvent({
@@ -2937,20 +2945,6 @@ async function runFvgMonitorTick(): Promise<void> {
 
     for (const symbol of symbols) {
       const operatorBias = await getOperatorBias(symbol);
-
-      // Current mid price (required for retrace check)
-      const normalizedSymbol = normalizeSymbol(symbol);
-      const mid = resolveMidForSymbol(mids, normalizedSymbol);
-      if (mid === null || !Number.isFinite(mid) || mid <= 0) {
-        const lastWarnAt = lastFvgNoMidWarnAt.get(normalizedSymbol) ?? 0;
-        if (now - lastWarnAt >= FVG_NO_MID_WARN_THROTTLE_MS) {
-          logger.warn({ component: 'fvg-monitor', symbol: normalizedSymbol }, 'no mid price, skipping symbol this tick');
-          lastFvgNoMidWarnAt.set(normalizedSymbol, now);
-        }
-        continue;
-      }
-      lastFvgNoMidWarnAt.delete(normalizedSymbol);
-
       const symbolPosition = positions.find((p) => p.symbol.toUpperCase() === symbol.toUpperCase());
 
       // Only check entry signals when no open position for this symbol
@@ -2971,7 +2965,9 @@ async function runFvgMonitorTick(): Promise<void> {
           });
 
           const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
-          const signal = evaluateFvg(closedCandles, tf, mid, fvgRetracePct, lookback, fvgMinWidthPct);
+          const currentPrice = resolveMonitorPrice(mids, symbol, closedCandles);
+          if (!currentPrice) continue;
+          const signal = evaluateFvg(closedCandles, tf, currentPrice, fvgRetracePct, lookback, fvgMinWidthPct);
           if (!signal.detected || !signal.direction) continue;
 
           const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
@@ -2983,7 +2979,7 @@ async function runFvgMonitorTick(): Promise<void> {
               gate: 'fvg_entry_signal',
               passed: false,
               reason: 'operator_bias_block',
-              details: { symbol, tf, direction: signal.direction, operatorBias, side, currentPrice: mid, triggerPrice: signal.triggerPrice },
+              details: { symbol, tf, direction: signal.direction, operatorBias, side, currentPrice: currentPrice, triggerPrice: signal.triggerPrice },
             });
             await notifySignalRejectedEvent({
               symbol,
@@ -3005,7 +3001,7 @@ async function runFvgMonitorTick(): Promise<void> {
           passed: true,
           details: {
             symbol, tf, direction: signal.direction,
-            currentPrice: mid,
+            currentPrice: currentPrice,
             triggerPrice: signal.triggerPrice,
             zoneTop: signal.zone?.top,
             zoneBottom: signal.zone?.bottom,
@@ -3016,13 +3012,13 @@ async function runFvgMonitorTick(): Promise<void> {
           },
         });
         logger.info(
-          { component: 'fvg-monitor', symbol, tf, direction: signal.direction, mid, triggerPrice: signal.triggerPrice, operatorBias },
+          { component: 'fvg-monitor', symbol, tf, direction: signal.direction, currentPrice, triggerPrice: signal.triggerPrice, operatorBias },
           'FVG retrace entry signal detected',
         );
 
         // Manual mode: queue signal only if sizing is valid; otherwise skip.
         if (!raw.autoConfirm) {
-          const estimate = await estimateSignalSize({ symbol, side, price: mid, effectiveRules });
+          const estimate = await estimateSignalSize({ symbol, side, price: currentPrice, effectiveRules });
           if (!estimate.size || estimate.size <= 0) {
             logger.warn({ component: 'fvg-monitor', symbol, tf, side, reason: 'invalid_sizing' }, 'FVG signal skipped: invalid sizing');
             continue;
@@ -3035,7 +3031,7 @@ async function runFvgMonitorTick(): Promise<void> {
             strategy: 'fvg',
             timeframe: tf,
             reason: signal.reason,
-            price: mid,
+            price: currentPrice,
             size: estimate.size,
             leverage: estimate.leverage,
             correlationId,
@@ -3054,7 +3050,7 @@ async function runFvgMonitorTick(): Promise<void> {
           let sizeDecimals = 6;
           try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
 
-          const sizing = computeAllocationSize({ symbol, price: mid, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
+          const sizing = computeAllocationSize({ symbol, price: currentPrice, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
 
           if (!sizing.ok) {
             logRiskGateAudit({ gate: 'fvg_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
@@ -3074,24 +3070,24 @@ async function runFvgMonitorTick(): Promise<void> {
           }
 
           const correlationId = `fvg-auto-${nanoid(8)}`;
-          const ack = await exchange.placeLimitOrder({ symbol, side, price: mid, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+          const ack = await exchange.placeLimitOrder({ symbol, side, price: currentPrice, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
 
           logRiskGateAudit({
             gate: 'fvg_entry_signal',
             passed: ack.ok,
             reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
-            details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: mid, orderId: ack.orderId, error: ack.error },
+            details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: currentPrice, orderId: ack.orderId, error: ack.error },
           });
           logger.info({ component: 'fvg-monitor', symbol, side, size: sizing.size, ok: ack.ok, orderId: ack.orderId }, 'FVG auto-entry result');
 
           if (ack.ok) {
             try {
-              await notifyTradeOpen({ symbol, side, price: mid, size: sizing.size, source: 'fvg:auto' });
+              await notifyTradeOpen({ symbol, side, price: currentPrice, size: sizing.size, source: 'fvg:auto' });
             } catch (error) {
               logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
             }
-            const tpSl = resolveTpSlDefaults(mid, side, undefined, undefined);
-            if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, mid); } catch { /* best-effort */ } }
+            const tpSl = resolveTpSlDefaults(currentPrice, side, undefined, undefined);
+            if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, currentPrice); } catch { /* best-effort */ } }
           } else {
             await notifyOrderRejectedEvent({
               symbol,
@@ -3554,6 +3550,20 @@ function resolveMidForSymbol(mids: Record<string, number>, symbol: string): numb
     const fallback = Number(mids[core]);
     if (Number.isFinite(fallback)) return fallback;
   }
+
+  return null;
+}
+
+function resolveMonitorPrice(
+  mids: Record<string, number>,
+  symbol: string,
+  candles?: Candle[] | null,
+): number | null {
+  const mid = resolveMidForSymbol(mids, symbol);
+  if (mid !== null && Number.isFinite(mid) && mid > 0) return mid;
+
+  const lastClosedClose = Number(candles?.[candles.length - 1]?.close ?? NaN);
+  if (Number.isFinite(lastClosedClose) && lastClosedClose > 0) return lastClosedClose;
 
   return null;
 }
