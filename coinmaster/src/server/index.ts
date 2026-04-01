@@ -97,6 +97,7 @@ const BACKTEST_RUN_HISTORY_LIMIT = Math.max(20, Number(process.env.BACKTEST_RUN_
 const rulesCache = new RuntimeRulesCache(5_000);
 const LIVE_SNAPSHOT_CACHE_MS = Math.max(500, Number(process.env.LIVE_SNAPSHOT_CACHE_MS || 2_000));
 let liveSnapshotCache: { key: string; expiresAt: number; value: LiveDashboardState } | null = null;
+let liveSnapshotRefreshInFlight: Promise<LiveDashboardState> | null = null;
 
 /** Build a fresh LIVE_MODE snapshot from current effective rules. */
 function getLiveMode() {
@@ -111,13 +112,37 @@ async function getCachedExchangeLiveState(symbol: string, mode = getLiveMode()):
     return liveSnapshotCache.value;
   }
 
-  const value = await buildLiveDashboardState(exchange, symbol, mode, []);
-  liveSnapshotCache = {
-    key,
-    expiresAt: now + LIVE_SNAPSHOT_CACHE_MS,
-    value: { ...value, pendingConfirmations: [] },
-  };
-  return liveSnapshotCache.value;
+  if (liveSnapshotCache && liveSnapshotCache.key === key) {
+    void refreshLiveSnapshotState(symbol, mode).catch((err) =>
+      logger.warn({ component: 'live', err }, 'background live snapshot refresh failed')
+    );
+    return liveSnapshotCache.value;
+  }
+
+  return refreshLiveSnapshotState(symbol, mode);
+}
+
+async function refreshLiveSnapshotState(symbol: string, mode = getLiveMode()): Promise<LiveDashboardState> {
+  const key = `${symbol}|${mode.manualConfirmation ? 1 : 0}|${mode.maxLeverage}`;
+  if (liveSnapshotRefreshInFlight) {
+    return liveSnapshotRefreshInFlight;
+  }
+
+  const run = (async () => {
+    const value = await buildLiveDashboardState(exchange, symbol, mode, []);
+    liveSnapshotCache = {
+      key,
+      expiresAt: Date.now() + LIVE_SNAPSHOT_CACHE_MS,
+      value: { ...value, pendingConfirmations: [] },
+    };
+    return liveSnapshotCache.value;
+  })();
+
+  liveSnapshotRefreshInFlight = run.finally(() => {
+    liveSnapshotRefreshInFlight = null;
+  });
+
+  return liveSnapshotRefreshInFlight;
 }
 
 function compactBacktestRuns(items: BacktestRun[]): BacktestRun[] {
@@ -6620,6 +6645,7 @@ const server = app.listen(port, host, () => {
   startTelegramOutboxLoop();
   startTelegramUpdateLoop();
   startDailyAnalyticsLoop();
+  void refreshLiveSnapshotState(LIVE_SYMBOL, getLiveMode()).catch((err) => logger.warn({ component: 'live', err }, 'initial live snapshot warmup failed'));
   getTelegramConfig()
     .then((cfg) => {
       if (!cfg) {
