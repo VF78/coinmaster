@@ -3883,7 +3883,8 @@ app.use(cors());
 app.use(express.json({ limit: process.env.API_JSON_LIMIT || '256kb' }));
 
 // ─── In-memory rate limiter (/api/* except health) ────────────────────
-const RATE_LIMIT_RPM = Math.max(1, Number(process.env.API_RATE_LIMIT_RPM || 120));
+const RATE_LIMIT_READ_RPM = Math.max(1, Number(process.env.API_RATE_LIMIT_READ_RPM || 600));
+const RATE_LIMIT_WRITE_RPM = Math.max(1, Number(process.env.API_RATE_LIMIT_WRITE_RPM || 120));
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const rateLimitMap = new Map<string, number[]>();
 
@@ -3905,6 +3906,7 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
   const now = Date.now();
   const cutoff = now - RATE_LIMIT_WINDOW_MS;
+  const rpm = req.method === 'GET' || req.method === 'HEAD' ? RATE_LIMIT_READ_RPM : RATE_LIMIT_WRITE_RPM;
 
   let timestamps = rateLimitMap.get(ip);
   if (!timestamps) {
@@ -3917,8 +3919,8 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
     timestamps.shift();
   }
 
-  if (timestamps.length >= RATE_LIMIT_RPM) {
-    logger.warn({ component: 'rate-limit', ip, count: timestamps.length, limit: RATE_LIMIT_RPM }, 'rate limit exceeded');
+  if (timestamps.length >= rpm) {
+    logger.warn({ component: 'rate-limit', ip, count: timestamps.length, limit: rpm, method: req.method, path: req.path }, 'rate limit exceeded');
     return res.status(429).json({ ok: false, error: 'rate_limited' });
   }
 

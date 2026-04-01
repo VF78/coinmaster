@@ -109,103 +109,118 @@ export function DashboardPage() {
   const [fvgMinWidthPct, setFvgMinWidthPct] = useState<number>(0.3);
   const cachedFvgRulesRef = useRef<TradingRulesSettings | null>(null);
   const refreshTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const refreshInFlightRef = useRef<Promise<DashboardResponse> | null>(null);
   const fvgRowsCacheRef = useRef<Record<string, FvgStateRow>>({});
   const lastFvgRefreshAtRef = useRef<number>(0);
   const lastFvgConfigKeyRef = useRef<string>('');
   const lastFvgRulesRefreshAtRef = useRef<number>(0);
 
   async function refresh() {
-    const next = await getDashboard();
-    setData(next);
-    setSelectedPosition((current) => {
-      if (!current) return current;
-      const updated = next.live.openPositions.find((p) => p.id === current.id)
-        ?? next.live.openPositions.find((p) => p.symbol === current.symbol && p.side === current.side);
-      return updated ?? current;
-    });
-
-    const now = Date.now();
-    let activeRules = cachedFvgRulesRef.current;
-    const shouldRefreshRules = !activeRules || now - lastFvgRulesRefreshAtRef.current >= FVG_RULES_REFRESH_MS;
-    if (shouldRefreshRules) {
-      const rulesResp = await getTradingRules().catch(() => null);
-      if (rulesResp?.rules) {
-        activeRules = rulesResp.rules;
-        cachedFvgRulesRef.current = rulesResp.rules;
-        lastFvgRulesRefreshAtRef.current = now;
-      }
+    if (refreshInFlightRef.current) {
+      return refreshInFlightRef.current;
     }
 
-    const retrace = Number(activeRules?.fvgRetrace ?? 50);
-    const normalizedRetrace = Number.isFinite(retrace) ? Math.max(10, Math.min(90, retrace)) : 50;
-    setFvgRetrace(normalizedRetrace);
+    const run = (async () => {
+      const next = await getDashboard();
+      setData(next);
+      setSelectedPosition((current) => {
+        if (!current) return current;
+        const updated = next.live.openPositions.find((p) => p.id === current.id)
+          ?? next.live.openPositions.find((p) => p.symbol === current.symbol && p.side === current.side);
+        return updated ?? current;
+      });
 
-    const minWidth = Number(activeRules?.fvgMinWidthPct ?? 0.3);
-    const normalizedMinWidth = Number.isFinite(minWidth) ? Math.max(0, Math.min(10, minWidth)) : 0.3;
-    setFvgMinWidthPct(normalizedMinWidth);
+      const now = Date.now();
+      let activeRules = cachedFvgRulesRef.current;
+      const shouldRefreshRules = !activeRules || now - lastFvgRulesRefreshAtRef.current >= FVG_RULES_REFRESH_MS;
+      if (shouldRefreshRules) {
+        const rulesResp = await getTradingRules().catch(() => null);
+        if (rulesResp?.rules) {
+          activeRules = rulesResp.rules;
+          cachedFvgRulesRef.current = rulesResp.rules;
+          lastFvgRulesRefreshAtRef.current = now;
+        }
+      }
 
-    const monitoredSymbols = (activeRules?.coins ?? [])
-      .filter((coin) => coin.enabled)
-      .map((coin) => String(coin.symbol ?? '').trim().toUpperCase())
-      .filter((symbol, index, arr) => symbol.length > 0 && arr.indexOf(symbol) === index);
+      const retrace = Number(activeRules?.fvgRetrace ?? 50);
+      const normalizedRetrace = Number.isFinite(retrace) ? Math.max(10, Math.min(90, retrace)) : 50;
+      setFvgRetrace(normalizedRetrace);
 
-    const symbols = monitoredSymbols.length > 0 ? monitoredSymbols : ['BTC'];
-    const biasKey = symbols
-      .map((symbol) => `${symbol}:${resolveSymbolBias(symbol, activeRules ?? null, next)}`)
-      .join(',');
-    const fvgConfigKey = `${symbols.join(',')}|${normalizedRetrace}|${normalizedMinWidth}|${biasKey}`;
-    const shouldRefreshFvg =
-      fvgConfigKey !== lastFvgConfigKeyRef.current
-      || now - lastFvgRefreshAtRef.current >= FVG_REFRESH_MS
-      || Object.keys(fvgRowsCacheRef.current).length === 0;
+      const minWidth = Number(activeRules?.fvgMinWidthPct ?? 0.3);
+      const normalizedMinWidth = Number.isFinite(minWidth) ? Math.max(0, Math.min(10, minWidth)) : 0.3;
+      setFvgMinWidthPct(normalizedMinWidth);
 
-    if (shouldRefreshFvg) {
-      const candleResponses = await Promise.all(
-        symbols.flatMap((symbol) => [
-          getLiveCandles(symbol, '1h', 140).catch(() => null),
-          getLiveCandles(symbol, '4h', 140).catch(() => null),
-        ])
-      );
+      const monitoredSymbols = (activeRules?.coins ?? [])
+        .filter((coin) => coin.enabled)
+        .map((coin) => String(coin.symbol ?? '').trim().toUpperCase())
+        .filter((symbol, index, arr) => symbol.length > 0 && arr.indexOf(symbol) === index);
 
-      const nextCache: Record<string, FvgStateRow> = {};
-      for (let idx = 0; idx < symbols.length; idx++) {
-        const symbol = symbols[idx];
-        const symbolBias = resolveSymbolBias(symbol, activeRules ?? null, next);
-        const c1h = candleResponses[idx * 2];
-        const c4h = candleResponses[idx * 2 + 1];
-        const currentPrice = Number(
-          c1h?.candles?.[c1h.candles.length - 1]?.close
-            ?? c4h?.candles?.[c4h.candles.length - 1]?.close
-            ?? NaN
+      const symbols = monitoredSymbols.length > 0 ? monitoredSymbols : ['BTC'];
+      const biasKey = symbols
+        .map((symbol) => `${symbol}:${resolveSymbolBias(symbol, activeRules ?? null, next)}`)
+        .join(',');
+      const fvgConfigKey = `${symbols.join(',')}|${normalizedRetrace}|${normalizedMinWidth}|${biasKey}`;
+      const shouldRefreshFvg =
+        fvgConfigKey !== lastFvgConfigKeyRef.current
+        || now - lastFvgRefreshAtRef.current >= FVG_REFRESH_MS
+        || Object.keys(fvgRowsCacheRef.current).length === 0;
+
+      if (shouldRefreshFvg) {
+        const candleResponses = await Promise.all(
+          symbols.flatMap((symbol) => [
+            getLiveCandles(symbol, '1h', 140).catch(() => null),
+            getLiveCandles(symbol, '4h', 140).catch(() => null),
+          ])
         );
 
-        const rows1h = c1h?.candles?.length
-          ? detectFvgStates(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace, normalizedMinWidth, symbolBias)
-          : [];
-        const rows4h = c4h?.candles?.length
-          ? detectFvgStates(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace, normalizedMinWidth, symbolBias)
-          : [];
+        const nextCache: Record<string, FvgStateRow> = {};
+        for (let idx = 0; idx < symbols.length; idx++) {
+          const symbol = symbols[idx];
+          const symbolBias = resolveSymbolBias(symbol, activeRules ?? null, next);
+          const c1h = candleResponses[idx * 2];
+          const c4h = candleResponses[idx * 2 + 1];
+          const currentPrice = Number(
+            c1h?.candles?.[c1h.candles.length - 1]?.close
+              ?? c4h?.candles?.[c4h.candles.length - 1]?.close
+              ?? NaN
+          );
 
-        for (const row of [...rows1h, ...rows4h]) nextCache[row.id] = row;
+          const rows1h = c1h?.candles?.length
+            ? detectFvgStates(symbol, c1h.candles, '1h', currentPrice, normalizedRetrace, normalizedMinWidth, symbolBias)
+            : [];
+          const rows4h = c4h?.candles?.length
+            ? detectFvgStates(symbol, c4h.candles, '4h', currentPrice, normalizedRetrace, normalizedMinWidth, symbolBias)
+            : [];
+
+          for (const row of [...rows1h, ...rows4h]) nextCache[row.id] = row;
+        }
+
+        fvgRowsCacheRef.current = nextCache;
+        lastFvgRefreshAtRef.current = now;
+        lastFvgConfigKeyRef.current = fvgConfigKey;
       }
 
-      fvgRowsCacheRef.current = nextCache;
-      lastFvgRefreshAtRef.current = now;
-      lastFvgConfigKeyRef.current = fvgConfigKey;
-    }
+      setFvgRows(
+        Object.values(fvgRowsCacheRef.current)
+          .filter((row) => symbols.includes(row.symbol) && biasMatchesDirection(row.bias, row.direction))
+          .sort((a, b) => a.symbol.localeCompare(b.symbol) || a.timeframe.localeCompare(b.timeframe) || a.candleTimestamp.localeCompare(b.candleTimestamp))
+      );
 
-    setFvgRows(
-      Object.values(fvgRowsCacheRef.current)
-        .filter((row) => symbols.includes(row.symbol) && biasMatchesDirection(row.bias, row.direction))
-        .sort((a, b) => a.symbol.localeCompare(b.symbol) || a.timeframe.localeCompare(b.timeframe) || a.candleTimestamp.localeCompare(b.candleTimestamp))
-    );
+      return next;
+    })();
 
-    return next;
+    refreshInFlightRef.current = run.finally(() => {
+      refreshInFlightRef.current = null;
+    });
+
+    return refreshInFlightRef.current;
   }
 
   useEffect(() => {
-    refresh();
-    refreshTimer.current = setInterval(refresh, 5000);
+    void refresh();
+    refreshTimer.current = setInterval(() => {
+      void refresh();
+    }, 5000);
     return () => {
       if (refreshTimer.current) clearInterval(refreshTimer.current);
     };
