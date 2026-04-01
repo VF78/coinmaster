@@ -3967,25 +3967,30 @@ app.get('/api/health/perf', ownerAuth, (_req, res) => {
 });
 
 app.get('/api/dashboard', async (_req, res) => {
-  const db = await getDb();
+  const dbPromise = getDb();
+  const pendingRowsPromise = loadPendingConfirmationRows();
+  const liveBasePromise = getCachedExchangeLiveState(LIVE_SYMBOL, getLiveMode());
+
+  const db = await dbPromise;
   const rules = normalizeTradingRules(db.data.settings.tradingRules);
   const latestBias = resolveBiasForSymbol(LIVE_SYMBOL, rules, db.data.biasCommands);
   const { classBiasControls, customBiasControls } = buildDashboardBiasControls(rules, db.data.biasCommands);
 
-  let latestTick = latestLiveTick;
-  if (!latestTick) {
-    const freshMid = await fetchLiveMid(LIVE_SYMBOL);
-    if (freshMid) {
-      latestTick = {
-        symbol: LIVE_SYMBOL,
-        price: freshMid,
-        timestamp: new Date().toISOString()
-      };
-    }
-  }
+  const latestTickPromise = latestLiveTick
+    ? Promise.resolve(latestLiveTick)
+    : fetchLiveMid(LIVE_SYMBOL).then((freshMid) => freshMid
+      ? {
+          symbol: LIVE_SYMBOL,
+          price: freshMid,
+          timestamp: new Date().toISOString()
+        }
+      : null);
 
-  const pendingRows = await loadPendingConfirmationRows();
-  const liveBase = await getCachedExchangeLiveState(LIVE_SYMBOL, getLiveMode());
+  const [pendingRows, liveBase, latestTick] = await Promise.all([
+    pendingRowsPromise,
+    liveBasePromise,
+    latestTickPromise,
+  ]);
   const live = { ...liveBase, pendingConfirmations: pendingRows };
   const hyperliquid = getRuntimeHyperliquidSettings();
 
