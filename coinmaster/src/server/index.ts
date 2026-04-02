@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import crypto from 'node:crypto';
 import { existsSync } from 'node:fs';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -54,6 +55,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../../');
 const distDir = path.join(rootDir, 'dist');
+const dbFilePath = process.env.COINMASTER_DB_FILE ?? 'data/db.json';
+const alertStateFilePath = path.join(path.dirname(dbFilePath), 'alert_state.json');
 
 if (!existsSync(path.join(distDir, 'index.html'))) {
   throw new Error(`dist/index.html missing at ${distDir}; run build/deploy before starting production server`);
@@ -270,6 +273,59 @@ function compactTelegramOutbox(items: TelegramOutboxItem[]): TelegramOutboxItem[
       return true;
     })
     .slice(-5000);
+}
+
+interface AlertState {
+  lastNotifiedOpenPositionId?: string | null;
+  updatedAt?: string | null;
+  emergencyCloseNotificationKey?: string | null;
+}
+
+const DEFAULT_ALERT_STATE: AlertState = {
+  lastNotifiedOpenPositionId: null,
+  updatedAt: null,
+  emergencyCloseNotificationKey: null,
+};
+
+async function readAlertState(): Promise<AlertState> {
+  try {
+    const raw = await readFile(alertStateFilePath, 'utf8');
+    const parsed = JSON.parse(raw) as AlertState;
+    return {
+      ...DEFAULT_ALERT_STATE,
+      ...parsed,
+    };
+  } catch {
+    return { ...DEFAULT_ALERT_STATE };
+  }
+}
+
+async function writeAlertState(patch: Partial<AlertState>): Promise<AlertState> {
+  const next = {
+    ...(await readAlertState()),
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  };
+  await mkdir(path.dirname(alertStateFilePath), { recursive: true });
+  await writeFile(alertStateFilePath, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
+  return next;
+}
+
+async function getEmergencyCloseNotificationKey(): Promise<string> {
+  const state = await readAlertState();
+  if (state.emergencyCloseNotificationKey && state.emergencyCloseNotificationKey.trim().length > 0) {
+    return state.emergencyCloseNotificationKey;
+  }
+
+  const key = `emergency-close:${nanoid(12)}`;
+  await writeAlertState({ emergencyCloseNotificationKey: key });
+  return key;
+}
+
+async function clearEmergencyCloseNotificationKey(): Promise<void> {
+  const state = await readAlertState();
+  if (!state.emergencyCloseNotificationKey) return;
+  await writeAlertState({ emergencyCloseNotificationKey: null });
 }
 
 async function sendTelegramText(text: string, opts?: { replyMarkup?: unknown }): Promise<void> {
@@ -2329,7 +2385,7 @@ async function notifyEmergencyCloseResult({
   rounds: number;
   remainingPositions: Array<{ symbol?: string; size?: number; side?: string }>;
   issues: string[];
-}) {
+  }) {
   if (ddLock.emergencyCloseNotificationSent) return;
 
   const limitPct = ddLock.dailyDDLimitPct ?? rulesCache.getEffectiveRules().dailyDDLimitPct;
@@ -2337,26 +2393,21 @@ async function notifyEmergencyCloseResult({
   const limitText = `limit=${limitPct.toFixed(2)}%`;
   const triggeredText = `triggered=${triggeredPct.toFixed(2)}%`;
 
-  if (ddLock.emergencyCloseNotificationSent) return;
-
   if (flat && verified) {
-    ddLock.emergencyCloseNotificationSent = true;
     const text = `Emergency close completed: ${limitText}, ${triggeredText}, rounds=${rounds}. Positions are flat.`;
-    ddLock.emergencyCloseNotificationSent = true;
-    await sendTelegramText(text);
+    const cfg = await getTelegramConfig();
+    if (!cfg) return;
+    const key = await getEmergencyCloseNotificationKey();
+    const queued = await enqueueTelegramOutbox({
+      category: 'system',
+      text,
+      dedupeKey: key,
+    });
+    if (queued.queued || queued.id) {
+      ddLock.emergencyCloseNotificationSent = true;
+    }
     return;
   }
-
-  const remainingText = remainingPositions.length > 0
-    ? ` Remaining positions: ${remainingPositions.map((p) => `${p.symbol ?? 'unknown'}:${p.side ?? 'na'}:${p.size ?? 'na'}`).join(', ')}`
-    : '';
-  const issuesText = issues.length > 0 ? ` Issues: ${issues.join('; ')}` : '';
-  const text = [`Emergency close FAILED:`, limitText, triggeredText, `rounds=${rounds}`, remainingText.trim(), issuesText.trim()]
-    .filter(Boolean)
-    .join(' ');
-  ddLock.emergencyCloseNotificationSent = true;
-  ddLock.emergencyCloseNotificationSent = true;
-  await sendTelegramText(text);
 }
 
 async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
@@ -5085,6 +5136,7 @@ app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
   ddLock.triggeredEquityUsd = undefined;
   ddLock.baselineEquityUsd = undefined;
   ddLock.emergencyCloseNotificationSent = false;
+  await clearEmergencyCloseNotificationKey();
   logger.info({ component: 'risk-gate' }, 'DD lock manually reset by owner');
   return res.json({ ok: true, ddLockActive: false, ddLock: getDdLockState() });
 });
