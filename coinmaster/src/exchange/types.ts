@@ -78,6 +78,7 @@ export interface OrderIntent {
   price: number;
   size: number;
   reduceOnly?: boolean;
+  timeInForce?: 'Gtc' | 'Ioc' | 'Alo';
   clientOrderId?: string;
 }
 

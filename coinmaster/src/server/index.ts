@@ -2273,12 +2273,20 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function emergencyClosePrice(pos: { side: 'long' | 'short'; markPrice?: number; entryPrice?: number }, closeSide: 'buy' | 'sell'): number {
+function emergencyClosePrice(
+  pos: { side: 'long' | 'short'; markPrice?: number; entryPrice?: number },
+  closeSide: 'buy' | 'sell',
+  topOfBook?: { bid: number; ask: number } | null,
+): number {
   const mark = pos.markPrice ?? pos.entryPrice ?? 0;
-  if (!Number.isFinite(mark) || mark <= 0) {
+  const bookPrice = closeSide === 'sell' ? topOfBook?.bid : topOfBook?.ask;
+  const base = Number.isFinite(bookPrice ?? NaN) && (bookPrice ?? 0) > 0 ? Number(bookPrice) : mark;
+
+  if (!Number.isFinite(base) || base <= 0) {
     return closeSide === 'sell' ? 1 : 999_999;
   }
-  const price = closeSide === 'sell' ? mark * 0.985 : mark * 1.015;
+
+  const price = closeSide === 'sell' ? base * 0.985 : base * 1.015;
   return Math.max(0.00000001, Number(price.toFixed(8)));
 }
 
@@ -2287,8 +2295,8 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
   if (emergencyCloseLock.running) return;
   emergencyCloseLock.running = true;
   try {
-    const positions = await exchange.getOpenPositions();
     const isWatchdogReason = reason.endsWith('_watchdog');
+    let positions = await exchange.getOpenPositions();
 
     if (positions.length === 0) {
       if (shouldLogWatchdog('already-flat')) {
@@ -2298,52 +2306,59 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
     }
 
     if (!isWatchdogReason || shouldLogWatchdog(`emergency-start:${reason}`)) {
-      logger.error({ component: 'risk-gate', reason, positions: positions.length }, 'EMERGENCY: closing positions only (orders untouched)');
+      logger.error({ component: 'risk-gate', reason, positions: positions.length }, 'EMERGENCY: canceling open orders and closing positions with IOC reduce-only orders');
     }
 
-    for (const pos of positions) {
-      const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
-      const price = emergencyClosePrice(pos, closeSide);
-      try {
-        const ack = await exchange.placeLimitOrder({
-          symbol: pos.symbol,
-          side: closeSide,
-          price,
-          size: pos.size,
-          reduceOnly: true,
-          clientOrderId: `emergency-${Date.now()}-${nanoid(6)}`
-        });
+    try {
+      await exchange.cancelAll();
+    } catch (cancelErr) {
+      logger.warn({ component: 'risk-gate', reason, err: cancelErr }, 'failed to cancel open orders during emergency close');
+    }
 
-        if (!ack.ok) {
-          // Retry once with more aggressive price.
-          const retryPrice = closeSide === 'sell' ? Math.max(0.00000001, price * 0.95) : price * 1.05;
-          await exchange.placeLimitOrder({
+    const maxRounds = 5;
+    for (let round = 0; round < maxRounds; round++) {
+      positions = await exchange.getOpenPositions();
+      if (positions.length === 0) break;
+
+      for (const pos of positions) {
+        const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
+        const topOfBook = typeof exchange.getTopOfBook === 'function'
+          ? await exchange.getTopOfBook(pos.symbol).catch(() => null)
+          : null;
+        const price = emergencyClosePrice(pos, closeSide, topOfBook);
+
+        try {
+          const ack = await exchange.placeLimitOrder({
             symbol: pos.symbol,
             side: closeSide,
-            price: Number(retryPrice.toFixed(8)),
+            price,
             size: pos.size,
             reduceOnly: true,
-            clientOrderId: `emergency-retry-${Date.now()}-${nanoid(6)}`
+            timeInForce: 'Ioc',
+            clientOrderId: `emergency-${Date.now()}-${nanoid(6)}`
           });
-        }
 
-        if (!isWatchdogReason || shouldLogWatchdog(`emergency-submit:${reason}:${pos.symbol}`)) {
-          logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, size: pos.size, closeReason: reason }, 'position close submitted (emergency)');
-          try {
-            await notifySlEvent({ symbol: pos.symbol, reason, closedBy: reason });
-          } catch (notifyErr) {
-            logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'SL telegram notify failed');
+          if (!ack.ok) {
+            logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, price, ack }, 'emergency IOC close not fully acknowledged');
+          }
+
+          if (!isWatchdogReason || shouldLogWatchdog(`emergency-submit:${reason}:${pos.symbol}`)) {
+            logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, size: pos.size, closeReason: reason, timeInForce: 'IOC' }, 'position close submitted (emergency)');
+            try {
+              await notifySlEvent({ symbol: pos.symbol, reason, closedBy: reason });
+            } catch (notifyErr) {
+              logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'SL telegram notify failed');
+            }
+          }
+        } catch (error) {
+          if (!isWatchdogReason || shouldLogWatchdog(`emergency-failed:${reason}:${pos.symbol}`)) {
+            logger.error({ component: 'risk-gate', symbol: pos.symbol, err: error }, 'failed to emergency-close position');
           }
         }
-      } catch (error) {
-        if (!isWatchdogReason || shouldLogWatchdog(`emergency-failed:${reason}:${pos.symbol}`)) {
-          logger.error({ component: 'risk-gate', symbol: pos.symbol, err: error }, 'failed to emergency-close position');
-        }
       }
-    }
 
-    // Brief settle and re-check only positions. Open orders are intentionally ignored.
-    await sleep(400);
+      await sleep(700);
+    }
 
     const remainingPositions = await exchange.getOpenPositions();
     if (remainingPositions.length > 0 && (!isWatchdogReason || shouldLogWatchdog(`emergency-incomplete:${reason}`))) {
@@ -2358,35 +2373,43 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
 async function emergencyCloseSymbol(symbol: string, reason = 'strategy_emergency_exit') {
   const normalized = normalizeSymbol(symbol);
   try {
-    const positions = await exchange.getOpenPositions(normalized);
+    let positions = await exchange.getOpenPositions(normalized);
     if (positions.length === 0) return;
 
-    for (const pos of positions) {
-      const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
-      const price = emergencyClosePrice(pos, closeSide);
-      const ack = await exchange.placeLimitOrder({
-        symbol: normalized,
-        side: closeSide,
-        price,
-        size: pos.size,
-        reduceOnly: true,
-        clientOrderId: `emergency-${normalized}-${Date.now()}-${nanoid(6)}`,
-      });
+    try {
+      await exchange.cancelAll(normalized);
+    } catch (cancelErr) {
+      logger.warn({ component: 'risk-gate', symbol: normalized, err: cancelErr }, 'failed to cancel open orders before symbol emergency close');
+    }
 
-      if (!ack.ok) {
-        const retryPrice = closeSide === 'sell' ? Math.max(0.00000001, price * 0.95) : price * 1.05;
+    for (let round = 0; round < 4; round++) {
+      positions = await exchange.getOpenPositions(normalized);
+      if (positions.length === 0) break;
+
+      for (const pos of positions) {
+        const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
+        const topOfBook = typeof exchange.getTopOfBook === 'function'
+          ? await exchange.getTopOfBook(normalized).catch(() => null)
+          : null;
+        const price = emergencyClosePrice(pos, closeSide, topOfBook);
+
         await exchange.placeLimitOrder({
           symbol: normalized,
           side: closeSide,
-          price: Number(retryPrice.toFixed(8)),
+          price,
           size: pos.size,
           reduceOnly: true,
-          clientOrderId: `emergency-retry-${normalized}-${Date.now()}-${nanoid(6)}`,
-        }).catch(() => undefined);
+          timeInForce: 'Ioc',
+          clientOrderId: `emergency-${normalized}-${Date.now()}-${nanoid(6)}`,
+        }).catch((error) => {
+          logger.warn({ component: 'risk-gate', symbol: normalized, err: error }, 'symbol emergency IOC close failed');
+        });
+
+        logger.warn({ component: 'risk-gate', symbol: normalized, side: pos.side, size: pos.size, closeReason: reason, timeInForce: 'IOC' }, 'position close submitted (symbol emergency)');
+        await notifySlEvent({ symbol: normalized, reason, closedBy: reason }).catch(() => undefined);
       }
 
-      logger.warn({ component: 'risk-gate', symbol: normalized, side: pos.side, size: pos.size, closeReason: reason }, 'position close submitted (symbol emergency)');
-      await notifySlEvent({ symbol: normalized, reason, closedBy: reason }).catch(() => undefined);
+      await sleep(700);
     }
   } catch (error) {
     logger.error({ component: 'risk-gate', symbol: normalized, err: error }, 'failed to emergency-close symbol');

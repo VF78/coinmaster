@@ -42,6 +42,7 @@ export interface ExchangeAdapter {
   cancelAll(symbol?: string): Promise<CommandResult>;
   placeReduceOnlyExit(intent: OrderIntent): Promise<OrderAck>;
   setLeverage(symbol: string, leverage: number): Promise<CommandResult>;
+  getTopOfBook?(symbol: string): Promise<{ bid: number; ask: number } | null>;
 
   // Realtime
   subscribeMids?(options: MidStreamOptions): MidStreamHandle;

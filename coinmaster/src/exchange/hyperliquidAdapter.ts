@@ -496,7 +496,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         is_buy: intent.side === 'buy',
         sz: normalizedSize,
         limit_px: normalizedPrice,
-        order_type: { limit: { tif: 'Gtc' } },
+        order_type: { limit: { tif: intent.timeInForce ?? 'Gtc' } },
         reduce_only: Boolean(intent.reduceOnly),
         ...(cloid ? { cloid } : {}),
         ...(dex ? { dex } : {})
@@ -740,6 +740,21 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         ok: false,
         error: error instanceof Error ? error.message : 'cancel_all_failed'
       };
+    }
+  }
+
+  async getTopOfBook(symbol: string): Promise<{ bid: number; ask: number } | null> {
+    try {
+      const raw = await this.requestInfo<any>({ type: 'l2Book', coin: this.toSdkCoin(symbol) });
+      const bids = Array.isArray(raw?.[0]) ? raw[0] : Array.isArray(raw?.bids) ? raw.bids : [];
+      const asks = Array.isArray(raw?.[1]) ? raw[1] : Array.isArray(raw?.asks) ? raw.asks : [];
+
+      const bid = Number(bids?.[0]?.px ?? bids?.[0]?.price ?? bids?.[0]?.[0]);
+      const ask = Number(asks?.[0]?.px ?? asks?.[0]?.price ?? asks?.[0]?.[0]);
+      if (!Number.isFinite(bid) || !Number.isFinite(ask) || bid <= 0 || ask <= 0) return null;
+      return { bid, ask };
+    } catch {
+      return null;
     }
   }
 
