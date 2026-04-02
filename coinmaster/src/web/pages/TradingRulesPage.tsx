@@ -554,33 +554,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         </Card>
       )}
 
-      <Card
-        title="Emergency stop"
-        actions={<Badge tone={ddLock?.active ? 'danger' : 'success'}>{ddLock?.active ? 'ACTIVE' : 'READY'}</Badge>}
-      >
-        <p className="muted stat-note" style={{ marginBottom: '0.6rem' }}>
-          {ddLock?.active
-            ? 'Daily drawdown lock is active. New entry orders are blocked until you reset it.'
-            : 'No emergency stop is active right now.'}
-        </p>
-
-        {ddLock?.active ? (
-          <div className="stat-note muted" style={{ display: 'grid', gap: 4, marginBottom: '0.9rem' }}>
-            {ddLock.activatedAt ? <span>Activated: {ddLock.activatedAt}</span> : null}
-            {typeof ddLock.triggeredDailyDDPct === 'number' ? <span>Triggered DD: {ddLock.triggeredDailyDDPct}%</span> : null}
-            {typeof ddLock.dailyDDLimitPct === 'number' ? <span>Limit: {ddLock.dailyDDLimitPct}%</span> : null}
-          </div>
-        ) : null}
-
-        <div className="actions-row">
-          <Button variant="danger" onClick={() => { void handleResetDdLock(); }} disabled={!ddLock?.active || resettingDdLock}>
-            {resettingDdLock ? 'Resetting...' : 'Reset emergency stop'}
-          </Button>
-        </div>
-
-        {ddLockInfo ? <p className="muted stat-note">{ddLockInfo}</p> : null}
-      </Card>
-
       <Card title="Coin Distribution" actions={<Badge tone="neutral">Allocation</Badge>}>
         <div className="rules-grid">
           {coins.map((coin, idx) => {
@@ -855,16 +828,37 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
           }}
         >
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-            <span className="rules-label" style={{ margin: 0 }}>Daily Drawdown Limit</span>
-            <Stepper
-              value={dailyDrawdown}
-              min={0}
-              max={100}
-              step={0.5}
-              unit="%"
-              decimals={1}
-              onChange={setDailyDrawdown}
-            />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, width: '100%', flexWrap: 'wrap' }}>
+              <span className="rules-label" style={{ margin: 0 }}>Daily Drawdown Limit</span>
+              <div className="actions-row" style={{ justifyContent: 'flex-end' }}>
+                <Stepper
+                  value={dailyDrawdown}
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  unit="%"
+                  decimals={1}
+                  onChange={setDailyDrawdown}
+                />
+                <Button variant="danger" onClick={() => { void handleResetDdLock(); }} disabled={!ddLock?.active || resettingDdLock}>
+                  {resettingDdLock ? 'Resetting...' : 'Reset emergency stop'}
+                </Button>
+              </div>
+            </div>
+
+            <p className="stat-note muted" style={{ margin: 0 }}>
+              {ddLock?.active
+                ? 'Emergency stop is active. Reset it only after all positions are flat.'
+                : 'No emergency stop is active right now.'}
+            </p>
+            {ddLockInfo ? <p className="stat-note muted" style={{ margin: 0 }}>{ddLockInfo}</p> : null}
+            {ddLock?.active && (ddLock.activatedAt || typeof ddLock.triggeredDailyDDPct === 'number' || typeof ddLock.dailyDDLimitPct === 'number') ? (
+              <div className="stat-note muted" style={{ display: 'grid', gap: 4, marginTop: 2 }}>
+                {ddLock.activatedAt ? <span>Activated: {ddLock.activatedAt}</span> : null}
+                {typeof ddLock.triggeredDailyDDPct === 'number' ? <span>Triggered DD: {ddLock.triggeredDailyDDPct}%</span> : null}
+                {typeof ddLock.dailyDDLimitPct === 'number' ? <span>Limit: {ddLock.dailyDDLimitPct}%</span> : null}
+              </div>
+            ) : null}
           </div>
 
           <div style={{ display: 'grid', gap: 6 }}>
