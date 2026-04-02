@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import crypto from 'node:crypto';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -279,12 +279,34 @@ interface AlertState {
   lastNotifiedOpenPositionId?: string | null;
   updatedAt?: string | null;
   emergencyCloseNotificationKey?: string | null;
+  ddLock?: {
+    active: boolean;
+    activatedAt?: string;
+    triggeredDailyDDPct?: number;
+    dailyDDLimitPct?: number;
+    triggeredEquityUsd?: number;
+    baselineEquityUsd?: number;
+    emergencyCloseNotificationSent?: boolean;
+    emergencyCloseSettledAt?: string;
+  };
+}
+
+interface DdLockState {
+  active: boolean;
+  activatedAt: string;
+  triggeredDailyDDPct?: number;
+  dailyDDLimitPct?: number;
+  triggeredEquityUsd?: number;
+  baselineEquityUsd?: number;
+  emergencyCloseNotificationSent: boolean;
+  emergencyCloseSettledAt?: string;
 }
 
 const DEFAULT_ALERT_STATE: AlertState = {
   lastNotifiedOpenPositionId: null,
   updatedAt: null,
   emergencyCloseNotificationKey: null,
+  ddLock: undefined,
 };
 
 async function readAlertState(): Promise<AlertState> {
@@ -309,6 +331,43 @@ async function writeAlertState(patch: Partial<AlertState>): Promise<AlertState> 
   await mkdir(path.dirname(alertStateFilePath), { recursive: true });
   await writeFile(alertStateFilePath, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
   return next;
+}
+
+function loadPersistedDdLockState(): Partial<DdLockState> {
+  try {
+    const raw = readFileSync(alertStateFilePath, 'utf8');
+    const parsed = JSON.parse(raw) as AlertState;
+    const lock = parsed.ddLock;
+    if (!lock || typeof lock !== 'object') return {};
+
+    return {
+      active: lock.active === true,
+      activatedAt: typeof lock.activatedAt === 'string' ? lock.activatedAt : '',
+      triggeredDailyDDPct: typeof lock.triggeredDailyDDPct === 'number' ? lock.triggeredDailyDDPct : undefined,
+      dailyDDLimitPct: typeof lock.dailyDDLimitPct === 'number' ? lock.dailyDDLimitPct : undefined,
+      triggeredEquityUsd: typeof lock.triggeredEquityUsd === 'number' ? lock.triggeredEquityUsd : undefined,
+      baselineEquityUsd: typeof lock.baselineEquityUsd === 'number' ? lock.baselineEquityUsd : undefined,
+      emergencyCloseNotificationSent: lock.emergencyCloseNotificationSent === true,
+      emergencyCloseSettledAt: typeof lock.emergencyCloseSettledAt === 'string' ? lock.emergencyCloseSettledAt : undefined,
+    };
+  } catch {
+    return {};
+  }
+}
+
+async function persistDdLockState(): Promise<void> {
+  await writeAlertState({
+    ddLock: {
+      active: ddLock.active,
+      activatedAt: ddLock.activatedAt || undefined,
+      triggeredDailyDDPct: ddLock.triggeredDailyDDPct,
+      dailyDDLimitPct: ddLock.dailyDDLimitPct,
+      triggeredEquityUsd: ddLock.triggeredEquityUsd,
+      baselineEquityUsd: ddLock.baselineEquityUsd,
+      emergencyCloseNotificationSent: ddLock.emergencyCloseNotificationSent,
+      emergencyCloseSettledAt: ddLock.emergencyCloseSettledAt,
+    },
+  });
 }
 
 async function getEmergencyCloseNotificationKey(): Promise<string> {
@@ -2312,7 +2371,7 @@ const emergencyCloseLock = {
   hardStopActive: false
 };
 
-const ddLock = {
+const ddLock: DdLockState = {
   active: false,
   activatedAt: '',
   triggeredDailyDDPct: undefined as number | undefined,
@@ -2321,6 +2380,7 @@ const ddLock = {
   baselineEquityUsd: undefined as number | undefined,
   emergencyCloseNotificationSent: false as boolean,
   emergencyCloseSettledAt: undefined as string | undefined,
+  ...loadPersistedDdLockState(),
 };
 
 function getDdLockState() {
@@ -2678,6 +2738,7 @@ async function runDrawdownWatchdogTick() {
         ddLock.baselineEquityUsd = Number(risk.baselineEquityUsd.toFixed(2));
         ddLock.emergencyCloseNotificationSent = false;
         ddLock.emergencyCloseSettledAt = undefined;
+        await persistDdLockState();
         logRiskGateAudit({
           gate: 'daily_dd',
           passed: false,
@@ -2697,6 +2758,7 @@ async function runDrawdownWatchdogTick() {
       const closeResult = await emergencyCloseAll('daily_loss_limit_exceeded_watchdog');
       if (closeResult.flat && closeResult.verified) {
         ddLock.emergencyCloseSettledAt = ddLock.emergencyCloseSettledAt || new Date().toISOString();
+        await persistDdLockState();
       }
       return;
     }
@@ -3507,6 +3569,8 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
         ddLock.triggeredEquityUsd = Number(risk.equityUsd.toFixed(2));
         ddLock.baselineEquityUsd = Number(risk.baselineEquityUsd.toFixed(2));
         ddLock.emergencyCloseNotificationSent = false;
+        ddLock.emergencyCloseSettledAt = undefined;
+        await persistDdLockState();
       }
 
       // Keep exits possible even while DD lock is active.
@@ -5189,6 +5253,7 @@ app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
   ddLock.emergencyCloseNotificationSent = false;
   ddLock.emergencyCloseSettledAt = undefined;
   await clearEmergencyCloseNotificationKey();
+  await persistDdLockState();
   logger.info({ component: 'risk-gate' }, 'DD lock manually reset by owner');
   return res.json({ ok: true, ddLockActive: false, ddLock: getDdLockState() });
 });
