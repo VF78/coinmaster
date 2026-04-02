@@ -79,7 +79,7 @@ const ENABLE_MULTI_TF_ENGULFING = String(process.env.ENABLE_MULTI_TF_ENGULFING ?
 const ENABLE_FVG_MONITOR = String(process.env.ENABLE_FVG_MONITOR ?? 'false').toLowerCase() === 'true';
 const FVG_MONITOR_INTERVAL_MS = Math.max(60_000, Number(process.env.FVG_MONITOR_INTERVAL_MS || 300_000)); // default 5m
 const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
-const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(1000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 1000));
+const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(5000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 5000));
 const DAILY_ANALYTICS_TZ = process.env.DAILY_ANALYTICS_TZ || 'Europe/Madrid';
 const DAILY_ANALYTICS_HOUR = Math.min(23, Math.max(0, Number(process.env.DAILY_ANALYTICS_HOUR || 23)));
 const DAILY_ANALYTICS_MINUTE = Math.min(59, Math.max(0, Number(process.env.DAILY_ANALYTICS_MINUTE || 5)));
@@ -2242,6 +2242,14 @@ interface RiskCheckResult {
   baselineEquityUsd: number;
 }
 
+interface EmergencyCloseResult {
+  flat: boolean;
+  verified: boolean;
+  rounds: number;
+  remainingPositions: PositionSnapshot[];
+  issues: string[];
+}
+
 async function evaluateRiskGates(options?: { emitAudit?: boolean }): Promise<RiskCheckResult> {
   const emitAudit = options?.emitAudit ?? true;
   const blocks: string[] = [];
@@ -2312,6 +2320,7 @@ const ddLock = {
   triggeredEquityUsd: undefined as number | undefined,
   baselineEquityUsd: undefined as number | undefined,
   emergencyCloseNotificationSent: false as boolean,
+  emergencyCloseSettledAt: undefined as string | undefined,
 };
 
 function getDdLockState() {
@@ -2323,6 +2332,7 @@ function getDdLockState() {
     triggeredEquityUsd: ddLock.triggeredEquityUsd,
     baselineEquityUsd: ddLock.baselineEquityUsd,
     emergencyCloseNotificationSent: ddLock.emergencyCloseNotificationSent,
+    emergencyCloseSettledAt: ddLock.emergencyCloseSettledAt || undefined,
   };
 }
 
@@ -2408,10 +2418,34 @@ async function notifyEmergencyCloseResult({
     }
     return;
   }
+
+  const remainingText = remainingPositions.length > 0
+    ? ` Remaining positions: ${remainingPositions.map((p) => `${p.symbol ?? 'unknown'}:${p.side ?? 'na'}:${p.size ?? 'na'}`).join(', ')}`
+    : '';
+  const issuesText = issues.length > 0 ? ` Issues: ${issues.join('; ')}` : '';
+  const text = [`Emergency close FAILED:`, limitText, triggeredText, `rounds=${rounds}`, remainingText.trim(), issuesText.trim()]
+    .filter(Boolean)
+    .join(' ');
+  const cfg = await getTelegramConfig();
+  if (!cfg) return;
+  const key = await getEmergencyCloseNotificationKey();
+  await enqueueTelegramOutbox({
+    category: 'system',
+    text,
+    dedupeKey: `${key}:failed`,
+  });
 }
 
-async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
-  if (emergencyCloseLock.running) return;
+async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded'): Promise<EmergencyCloseResult> {
+  if (emergencyCloseLock.running) {
+    return {
+      flat: false,
+      verified: false,
+      rounds: 0,
+      remainingPositions: [],
+      issues: ['emergency_close_already_running'],
+    };
+  }
   emergencyCloseLock.running = true;
   const issues: string[] = [];
   let rounds = 0;
@@ -2449,7 +2483,6 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
       if (shouldLogWatchdog('already-flat')) {
         logger.warn({ component: 'risk-gate', reason }, 'emergency close: no open positions remain after canceling open orders');
       }
-      return;
     }
 
     if (initialPositions && initialPositions.length > 0) {
@@ -2547,6 +2580,13 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
     });
 
     emergencyCloseLock.running = false;
+    return {
+      flat,
+      verified,
+      rounds,
+      remainingPositions,
+      issues,
+    };
   }
 }
 
@@ -2604,6 +2644,13 @@ async function runDrawdownWatchdogTick() {
   if (drawdownWatchdogBusy) return;
   drawdownWatchdogBusy = true;
   try {
+    if (ddLock.active && ddLock.emergencyCloseSettledAt) {
+      if (emergencyCloseLock.hardStopActive) {
+        emergencyCloseLock.hardStopActive = false;
+      }
+      return;
+    }
+
     const risk = await evaluateRiskGates({ emitAudit: false });
 
     if (risk.blocks.includes('daily_loss_limit_exceeded')) {
@@ -2630,6 +2677,7 @@ async function runDrawdownWatchdogTick() {
         ddLock.triggeredEquityUsd = Number(risk.equityUsd.toFixed(2));
         ddLock.baselineEquityUsd = Number(risk.baselineEquityUsd.toFixed(2));
         ddLock.emergencyCloseNotificationSent = false;
+        ddLock.emergencyCloseSettledAt = undefined;
         logRiskGateAudit({
           gate: 'daily_dd',
           passed: false,
@@ -2646,7 +2694,10 @@ async function runDrawdownWatchdogTick() {
         });
       }
 
-      await emergencyCloseAll('daily_loss_limit_exceeded_watchdog');
+      const closeResult = await emergencyCloseAll('daily_loss_limit_exceeded_watchdog');
+      if (closeResult.flat && closeResult.verified) {
+        ddLock.emergencyCloseSettledAt = ddLock.emergencyCloseSettledAt || new Date().toISOString();
+      }
       return;
     }
 
@@ -5136,6 +5187,7 @@ app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
   ddLock.triggeredEquityUsd = undefined;
   ddLock.baselineEquityUsd = undefined;
   ddLock.emergencyCloseNotificationSent = false;
+  ddLock.emergencyCloseSettledAt = undefined;
   await clearEmergencyCloseNotificationKey();
   logger.info({ component: 'risk-gate' }, 'DD lock manually reset by owner');
   return res.json({ ok: true, ddLockActive: false, ddLock: getDdLockState() });
