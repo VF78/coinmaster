@@ -112,6 +112,9 @@ export function friendlyCodeMessage(code: string, fallback = 'Operation failed. 
     confirm_failed: 'Could not confirm this signal.',
     reject_failed: 'Could not reject this signal.',
     set_levels_failed: 'Could not apply TP/SL levels.',
+    dd_lock_reset_failed: 'Could not reset the emergency stop.',
+    positions_check_failed: 'Could not verify whether positions are flat. Try again in a moment.',
+    positions_not_flat: 'Emergency stop can only be reset after all positions are flat.',
     test_failed: 'Could not send test message.',
     telegram_save_failed: 'Could not save Telegram settings.',
     hyperliquid_save_failed: 'Could not save Hyperliquid settings.',
@@ -345,6 +348,30 @@ export interface RiskCheckResponse {
 
 export function getRiskCheck() {
   return jsonFetch<RiskCheckResponse>('/api/live/risk-check');
+}
+
+export interface ResetDdLockResponse {
+  ok: boolean;
+  ddLockActive?: boolean;
+  ddLock?: DdLockState;
+  error?: string;
+  openPositions?: number;
+}
+
+export async function resetDdLock(): Promise<ResetDdLockResponse> {
+  const response = await fetch('/api/live/dd-lock/reset', {
+    method: 'POST',
+    cache: 'no-store',
+  });
+
+  try {
+    return await response.json() as ResetDdLockResponse;
+  } catch {
+    return {
+      ok: false,
+      error: 'dd_lock_reset_failed',
+    };
+  }
 }
 
 export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrderResponse> {

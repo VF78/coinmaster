@@ -11,7 +11,8 @@ import type {
   TradingRulesTimeframe
 } from '../../shared/dto.js';
 import { cloneTradingRulesDefaults, inferAssetClassFromSymbol, normalizeTradingRules } from '../../shared/tradingRules.js';
-import { friendlyErrorMessage, getTradingRuleSymbols, getTradingRules, saveTradingRules } from '../lib/api';
+import { friendlyCodeMessage, friendlyErrorMessage, getRiskCheck, getTradingRuleSymbols, getTradingRules, resetDdLock, saveTradingRules } from '../lib/api';
+import type { RiskCheckResponse } from '../lib/api';
 import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
@@ -180,6 +181,9 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveInfo, setSaveInfo] = useState<string>('');
+  const [ddLock, setDdLock] = useState<RiskCheckResponse['ddLock'] | null>(null);
+  const [resettingDdLock, setResettingDdLock] = useState(false);
+  const [ddLockInfo, setDdLockInfo] = useState('');
 
   const totalPct = useMemo(
     () => Math.round(coins.filter((c) => c.enabled).reduce((s, c) => s + c.pct, 0) * 100) / 100,
@@ -230,6 +234,11 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
   useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
 
+  async function refreshDdLockState() {
+    const risk = await getRiskCheck().catch(() => null);
+    setDdLock(risk?.ddLock ?? null);
+  }
+
   useEffect(() => {
     if (!isDirty) return;
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -277,12 +286,14 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         setAvailableSymbols(mergedSymbols);
         applyRules(rulesResponse.rules);
         setSaveInfo('Rules loaded from server.');
+        await refreshDdLockState();
       } catch (error) {
         console.error('[TradingRules] failed to load rules:', error);
         if (!active) return;
         applyRules(defaults);
         setAvailableSymbols(defaults.coins.map((c) => normalizeAssetSymbol(c.symbol)).filter(Boolean));
         setSaveInfo('Could not load rules. Defaults were applied.');
+        await refreshDdLockState();
       } finally {
         if (active) setLoading(false);
       }
@@ -294,6 +305,33 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
   function toggleCoin(idx: number) {
     setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, enabled: !c.enabled } : c)));
+  }
+
+  async function handleResetDdLock() {
+    const confirmed = await dialog.confirm({
+      title: 'Reset emergency stop?',
+      message: 'This clears the daily drawdown lock only if all positions are flat. If positions are still open, the server will reject the reset.',
+      confirmText: 'Reset lock',
+      cancelText: 'Keep locked',
+    });
+    if (!confirmed) return;
+
+    setResettingDdLock(true);
+    setDdLockInfo('Resetting emergency stop…');
+    try {
+      const result = await resetDdLock();
+      if (!result.ok) {
+        throw new Error(friendlyCodeMessage(result.error || 'dd_lock_reset_failed', 'Could not reset the emergency stop.'));
+      }
+
+      setDdLock(result.ddLock ?? null);
+      setDdLockInfo('Emergency stop reset. New entry orders are allowed again.');
+      await refreshDdLockState();
+    } catch (error) {
+      setDdLockInfo(`Reset failed: ${friendlyErrorMessage(error, 'Could not reset the emergency stop.')}`);
+    } finally {
+      setResettingDdLock(false);
+    }
   }
 
   function setCoinSymbol(idx: number, symbol: string) {
@@ -509,12 +547,39 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, symbolBiasOverrides]);
 
   return (
-    <main className="terminal-layout">
+    <main className="terminal-layout trading-rules-page">
       {loading && (
         <Card title="Trading Rules" actions={<Badge tone="neutral">Loading</Badge>}>
           <p className="muted">Loading rules from server...</p>
         </Card>
       )}
+
+      <Card
+        title="Emergency stop"
+        actions={<Badge tone={ddLock?.active ? 'danger' : 'success'}>{ddLock?.active ? 'ACTIVE' : 'READY'}</Badge>}
+      >
+        <p className="muted stat-note" style={{ marginBottom: '0.6rem' }}>
+          {ddLock?.active
+            ? 'Daily drawdown lock is active. New entry orders are blocked until you reset it.'
+            : 'No emergency stop is active right now.'}
+        </p>
+
+        {ddLock?.active ? (
+          <div className="stat-note muted" style={{ display: 'grid', gap: 4, marginBottom: '0.9rem' }}>
+            {ddLock.activatedAt ? <span>Activated: {ddLock.activatedAt}</span> : null}
+            {typeof ddLock.triggeredDailyDDPct === 'number' ? <span>Triggered DD: {ddLock.triggeredDailyDDPct}%</span> : null}
+            {typeof ddLock.dailyDDLimitPct === 'number' ? <span>Limit: {ddLock.dailyDDLimitPct}%</span> : null}
+          </div>
+        ) : null}
+
+        <div className="actions-row">
+          <Button variant="danger" onClick={() => { void handleResetDdLock(); }} disabled={!ddLock?.active || resettingDdLock}>
+            {resettingDdLock ? 'Resetting...' : 'Reset emergency stop'}
+          </Button>
+        </div>
+
+        {ddLockInfo ? <p className="muted stat-note">{ddLockInfo}</p> : null}
+      </Card>
 
       <Card title="Coin Distribution" actions={<Badge tone="neutral">Allocation</Badge>}>
         <div className="rules-grid">
@@ -912,7 +977,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         </p>
       </Card>
 
-      <div className="rules-apply-row">
+      <div className="rules-apply-row rules-apply-row--sticky-mobile">
         <Button variant="primary" fullWidth onClick={() => { void handleApply(); }} disabled={saving || loading}>
           {saving ? 'Saving...' : 'Apply changes'}
         </Button>

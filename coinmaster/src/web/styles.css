@@ -1402,6 +1402,26 @@ tbody tr:hover {
   .rules-apply-row {
     max-width: none;
   }
+
+  .trading-rules-page {
+    padding-bottom: calc(9.25rem + env(safe-area-inset-bottom));
+  }
+
+  .rules-apply-row--sticky-mobile {
+    position: fixed;
+    left: 0.65rem;
+    right: 0.65rem;
+    bottom: calc(4.35rem + env(safe-area-inset-bottom));
+    z-index: 61;
+    margin: 0;
+    max-width: none;
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.95rem;
+    background: rgba(11, 17, 30, 0.94);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
 }
 
 @media (min-width: 900px) {
