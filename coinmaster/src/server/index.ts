@@ -2330,6 +2330,8 @@ async function notifyEmergencyCloseResult({
   remainingPositions: Array<{ symbol?: string; size?: number; side?: string }>;
   issues: string[];
 }) {
+  if (ddLock.emergencyCloseNotificationSent) return;
+
   const limitPct = ddLock.dailyDDLimitPct ?? rulesCache.getEffectiveRules().dailyDDLimitPct;
   const triggeredPct = ddLock.triggeredDailyDDPct ?? limitPct;
   const limitText = `limit=${limitPct.toFixed(2)}%`;
@@ -2340,6 +2342,7 @@ async function notifyEmergencyCloseResult({
   if (flat && verified) {
     ddLock.emergencyCloseNotificationSent = true;
     const text = `Emergency close completed: ${limitText}, ${triggeredText}, rounds=${rounds}. Positions are flat.`;
+    ddLock.emergencyCloseNotificationSent = true;
     await sendTelegramText(text);
     return;
   }
@@ -2351,6 +2354,7 @@ async function notifyEmergencyCloseResult({
   const text = [`Emergency close FAILED:`, limitText, triggeredText, `rounds=${rounds}`, remainingText.trim(), issuesText.trim()]
     .filter(Boolean)
     .join(' ');
+  ddLock.emergencyCloseNotificationSent = true;
   ddLock.emergencyCloseNotificationSent = true;
   await sendTelegramText(text);
 }
