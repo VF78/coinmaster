@@ -315,6 +315,10 @@ export interface PlaceOrderPayload {
 export interface DdLockState {
   active: boolean;
   activatedAt?: string;
+  triggeredDailyDDPct?: number;
+  dailyDDLimitPct?: number;
+  triggeredEquityUsd?: number;
+  baselineEquityUsd?: number;
 }
 
 export interface PlaceOrderResponse {
@@ -331,6 +335,7 @@ export interface PlaceOrderResponse {
 export interface RiskCheckResponse {
   canTrade: boolean;
   dailyDDPct: number;
+  dailyDDLimitPct: number;
   portfolioLeverage: number;
   blocks: string[];
   equityUsd: number;

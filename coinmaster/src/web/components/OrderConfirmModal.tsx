@@ -199,8 +199,8 @@ export function OrderConfirmModal({ draft, onClose, onSuccess }: Props) {
                   <div className="order-summary__row">
                     <span className="order-summary__label">Daily drawdown</span>
                     <span className="order-summary__value">
-                      <Badge tone={risk.dailyDDPct > 10 ? 'danger' : risk.dailyDDPct > 5 ? 'neutral' : 'success'}>
-                        {formatNumber(risk.dailyDDPct)}%
+                      <Badge tone={risk.dailyDDPct >= risk.dailyDDLimitPct ? 'danger' : risk.dailyDDPct > risk.dailyDDLimitPct * 0.7 ? 'neutral' : 'success'}>
+                        {formatNumber(risk.dailyDDPct)}% / {formatNumber(risk.dailyDDLimitPct)}% limit
                       </Badge>
                     </span>
                   </div>

@@ -2179,6 +2179,7 @@ function startDailyDrawdownMidnightReset() {
 interface RiskCheckResult {
   canTrade: boolean;
   dailyDDPct: number;
+  dailyDDLimitPct: number;
   portfolioLeverage: number;
   blocks: string[];
   equityUsd: number;
@@ -2234,6 +2235,7 @@ async function evaluateRiskGates(options?: { emitAudit?: boolean }): Promise<Ris
   return {
     canTrade: blocks.length === 0,
     dailyDDPct: Number(ddPct.toFixed(2)),
+    dailyDDLimitPct: effectiveRules.dailyDDLimitPct,
     portfolioLeverage: Number(portfolioLeverage.toFixed(2)),
     blocks,
     equityUsd,
@@ -2249,12 +2251,20 @@ const emergencyCloseLock = {
 const ddLock = {
   active: false,
   activatedAt: '',
+  triggeredDailyDDPct: undefined as number | undefined,
+  dailyDDLimitPct: undefined as number | undefined,
+  triggeredEquityUsd: undefined as number | undefined,
+  baselineEquityUsd: undefined as number | undefined,
 };
 
 function getDdLockState() {
   return {
     active: ddLock.active,
     activatedAt: ddLock.activatedAt || undefined,
+    triggeredDailyDDPct: ddLock.triggeredDailyDDPct,
+    dailyDDLimitPct: ddLock.dailyDDLimitPct,
+    triggeredEquityUsd: ddLock.triggeredEquityUsd,
+    baselineEquityUsd: ddLock.baselineEquityUsd,
   };
 }
 
@@ -2291,80 +2301,213 @@ function emergencyClosePrice(
 }
 
 /** Close all positions emergency (daily DD hard stop). Best effort but retried by watchdog every few seconds until flat. */
+function formatEmergencyClosePosition(pos: PositionSnapshot): string {
+  const side = pos.side.toUpperCase();
+  const size = Number.isFinite(pos.size) ? pos.size : 0;
+  const entry = Number.isFinite(pos.entryPrice ?? NaN) ? ` @ ${Number(pos.entryPrice).toFixed(2)}` : '';
+  const mark = Number.isFinite(pos.markPrice ?? NaN) ? ` mark ${Number(pos.markPrice).toFixed(2)}` : '';
+  return `- ${pos.symbol} ${side} ${size}${entry}${mark}`;
+}
+
+function formatEmergencyCloseIssue(issue: string): string {
+  return `- ${issue}`;
+}
+
+async function notifyEmergencyCloseResult(params: {
+  reason: string;
+  flat: boolean;
+  verified: boolean;
+  rounds: number;
+  remainingPositions: PositionSnapshot[];
+  issues: string[];
+}): Promise<void> {
+  const local = getTzParts(new Date(), DAILY_ANALYTICS_TZ);
+  const status = params.flat ? 'closed' : 'not_closed';
+  const headline = params.flat
+    ? '✅ Emergency stop complete — positions are closed'
+    : '❌ Emergency stop failed — positions are NOT closed';
+
+  const lines: string[] = [
+    headline,
+    `Reason: ${params.reason}`,
+    `Rounds: ${params.rounds}`,
+    `Final state: ${params.flat ? 'flat' : 'NOT flat'}`,
+    `Verification: ${params.verified ? 'successful' : 'failed'}`,
+  ];
+
+  if (params.flat) {
+    if (params.issues.length > 0) {
+      lines.push('Warnings:');
+      lines.push(...params.issues.slice(0, 4).map(formatEmergencyCloseIssue));
+      if (params.issues.length > 4) {
+        lines.push(`- ... +${params.issues.length - 4} more`);
+      }
+    }
+  } else {
+    if (params.verified) {
+      lines.push(`Remaining positions: ${params.remainingPositions.length}`);
+    } else {
+      lines.push('Remaining positions: unknown (final position check failed)');
+    }
+    if (params.remainingPositions.length > 0) {
+      lines.push('Open positions:');
+      lines.push(...params.remainingPositions.slice(0, 5).map(formatEmergencyClosePosition));
+      if (params.remainingPositions.length > 5) {
+        lines.push(`- ... +${params.remainingPositions.length - 5} more`);
+      }
+    }
+    if (params.issues.length > 0) {
+      lines.push('Errors:');
+      lines.push(...params.issues.slice(0, 5).map(formatEmergencyCloseIssue));
+      if (params.issues.length > 5) {
+        lines.push(`- ... +${params.issues.length - 5} more`);
+      }
+    }
+  }
+
+  await enqueueTelegramOutbox({
+    category: 'system',
+    dedupeKey: `emergency_close:${status}:${params.reason}:${local.dayKey}`,
+    text: lines.join('\n'),
+  });
+}
+
 async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
   if (emergencyCloseLock.running) return;
   emergencyCloseLock.running = true;
+  const issues: string[] = [];
+  let rounds = 0;
+  let remainingPositions: PositionSnapshot[] = [];
+  let flat = false;
+  let verified = false;
+  const isWatchdogReason = reason.endsWith('_watchdog');
+  const maxRounds = 5;
   try {
-    const isWatchdogReason = reason.endsWith('_watchdog');
-    let positions = await exchange.getOpenPositions();
-
-    if (positions.length === 0) {
-      if (shouldLogWatchdog('already-flat')) {
-        logger.warn({ component: 'risk-gate', reason }, 'emergency close skipped: no open positions');
-      }
-      return;
-    }
-
     if (!isWatchdogReason || shouldLogWatchdog(`emergency-start:${reason}`)) {
-      logger.error({ component: 'risk-gate', reason, positions: positions.length }, 'EMERGENCY: canceling open orders and closing positions with IOC reduce-only orders');
+      logger.error({ component: 'risk-gate', reason }, 'EMERGENCY: canceling open orders and closing positions with IOC reduce-only orders');
     }
 
     try {
       await exchange.cancelAll();
     } catch (cancelErr) {
+      issues.push(`cancelAll failed: ${cancelErr instanceof Error ? cancelErr.message : String(cancelErr)}`);
       logger.warn({ component: 'risk-gate', reason, err: cancelErr }, 'failed to cancel open orders during emergency close');
     }
 
-    const maxRounds = 5;
-    for (let round = 0; round < maxRounds; round++) {
-      positions = await exchange.getOpenPositions();
-      if (positions.length === 0) break;
+    let initialPositions: PositionSnapshot[] | null = null;
+    try {
+      initialPositions = await exchange.getOpenPositions();
+      if (initialPositions) {
+        remainingPositions = initialPositions;
+      }
+    } catch (readErr) {
+      issues.push(`read positions failed: ${readErr instanceof Error ? readErr.message : String(readErr)}`);
+      logger.warn({ component: 'risk-gate', reason, err: readErr }, 'failed to read positions during emergency close');
+    }
 
-      for (const pos of positions) {
-        const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
-        const topOfBook = typeof exchange.getTopOfBook === 'function'
-          ? await exchange.getTopOfBook(pos.symbol).catch(() => null)
-          : null;
-        const price = emergencyClosePrice(pos, closeSide, topOfBook);
+    if (initialPositions && initialPositions.length === 0) {
+      flat = true;
+      verified = true;
+      if (shouldLogWatchdog('already-flat')) {
+        logger.warn({ component: 'risk-gate', reason }, 'emergency close: no open positions remain after canceling open orders');
+      }
+      return;
+    }
 
+    if (initialPositions && initialPositions.length > 0) {
+      for (let round = 0; round < maxRounds; round++) {
+        rounds = round + 1;
+        let positions: PositionSnapshot[] = [];
         try {
-          const ack = await exchange.placeLimitOrder({
-            symbol: pos.symbol,
-            side: closeSide,
-            price,
-            size: pos.size,
-            reduceOnly: true,
-            timeInForce: 'Ioc',
-            clientOrderId: `emergency-${Date.now()}-${nanoid(6)}`
-          });
+          positions = await exchange.getOpenPositions();
+        } catch (readErr) {
+          issues.push(`position read failed on round ${rounds}: ${readErr instanceof Error ? readErr.message : String(readErr)}`);
+          logger.warn({ component: 'risk-gate', reason, round: rounds, err: readErr }, 'failed to read positions during emergency close round');
+          await sleep(700);
+          continue;
+        }
+        if (positions.length === 0) break;
 
-          if (!ack.ok) {
-            logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, price, ack }, 'emergency IOC close not fully acknowledged');
-          }
+        remainingPositions = positions;
 
-          if (!isWatchdogReason || shouldLogWatchdog(`emergency-submit:${reason}:${pos.symbol}`)) {
-            logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, size: pos.size, closeReason: reason, timeInForce: 'IOC' }, 'position close submitted (emergency)');
-            try {
-              await notifySlEvent({ symbol: pos.symbol, reason, closedBy: reason });
-            } catch (notifyErr) {
-              logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'SL telegram notify failed');
+        for (const pos of positions) {
+          const closeSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
+          const topOfBook = typeof exchange.getTopOfBook === 'function'
+            ? await exchange.getTopOfBook(pos.symbol).catch(() => null)
+            : null;
+          const price = emergencyClosePrice(pos, closeSide, topOfBook);
+
+          try {
+            const ack = await exchange.placeLimitOrder({
+              symbol: pos.symbol,
+              side: closeSide,
+              price,
+              size: pos.size,
+              reduceOnly: true,
+              timeInForce: 'Ioc',
+              clientOrderId: `emergency-${Date.now()}-${nanoid(6)}`
+            });
+
+            if (!ack.ok) {
+              issues.push(`close submit ack not ok for ${pos.symbol}: ${ack.error ?? ack.status ?? 'unknown'}`);
+              logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, price, ack }, 'emergency IOC close not fully acknowledged');
+            }
+
+            if (!isWatchdogReason || shouldLogWatchdog(`emergency-submit:${reason}:${pos.symbol}`)) {
+              logger.warn({ component: 'risk-gate', symbol: pos.symbol, side: pos.side, size: pos.size, closeReason: reason, timeInForce: 'IOC' }, 'position close submitted (emergency)');
+            }
+          } catch (error) {
+            issues.push(`close failed for ${pos.symbol}: ${error instanceof Error ? error.message : String(error)}`);
+            if (!isWatchdogReason || shouldLogWatchdog(`emergency-failed:${reason}:${pos.symbol}`)) {
+              logger.error({ component: 'risk-gate', symbol: pos.symbol, err: error }, 'failed to emergency-close position');
             }
           }
-        } catch (error) {
-          if (!isWatchdogReason || shouldLogWatchdog(`emergency-failed:${reason}:${pos.symbol}`)) {
-            logger.error({ component: 'risk-gate', symbol: pos.symbol, err: error }, 'failed to emergency-close position');
-          }
         }
-      }
 
-      await sleep(700);
+        await sleep(700);
+      }
     }
 
-    const remainingPositions = await exchange.getOpenPositions();
-    if (remainingPositions.length > 0 && (!isWatchdogReason || shouldLogWatchdog(`emergency-incomplete:${reason}`))) {
-      logger.error({ component: 'risk-gate', remainingPositions: remainingPositions.length }, 'emergency close incomplete, watchdog will retry while positions remain open');
+    try {
+      remainingPositions = await exchange.getOpenPositions();
+      verified = true;
+    } catch (finalReadErr) {
+      issues.push(`final position check failed: ${finalReadErr instanceof Error ? finalReadErr.message : String(finalReadErr)}`);
+      logger.warn({ component: 'risk-gate', reason, err: finalReadErr }, 'failed to verify positions after emergency close rounds');
+    }
+    flat = remainingPositions.length === 0;
+
+    if (!flat) {
+      if (verified && rounds > 0) {
+        issues.push(`positions remain open after ${rounds} rounds`);
+      }
+      if (!isWatchdogReason || shouldLogWatchdog(`emergency-incomplete:${reason}`)) {
+        logger.error(
+          { component: 'risk-gate', reason, remainingPositions: remainingPositions.length, verified },
+          verified
+            ? 'emergency close incomplete, watchdog will retry while positions remain open'
+            : 'emergency close could not verify flat state, watchdog will retry'
+        );
+      }
     }
   } finally {
+    if (flat) {
+      if (!isWatchdogReason || shouldLogWatchdog(`emergency-complete:${reason}`)) {
+        logger.info({ component: 'risk-gate', reason, rounds, issues: issues.length }, 'emergency close completed and positions are flat');
+      }
+    }
+
+    await notifyEmergencyCloseResult({
+      reason,
+      flat,
+      verified,
+      rounds,
+      remainingPositions,
+      issues,
+    }).catch((notifyErr) => {
+      logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'emergency close telegram notify failed');
+    });
+
     emergencyCloseLock.running = false;
   }
 }
@@ -2373,14 +2516,14 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
 async function emergencyCloseSymbol(symbol: string, reason = 'strategy_emergency_exit') {
   const normalized = normalizeSymbol(symbol);
   try {
-    let positions = await exchange.getOpenPositions(normalized);
-    if (positions.length === 0) return;
-
     try {
       await exchange.cancelAll(normalized);
     } catch (cancelErr) {
       logger.warn({ component: 'risk-gate', symbol: normalized, err: cancelErr }, 'failed to cancel open orders before symbol emergency close');
     }
+
+    let positions = await exchange.getOpenPositions(normalized);
+    if (positions.length === 0) return;
 
     for (let round = 0; round < 4; round++) {
       positions = await exchange.getOpenPositions(normalized);
@@ -2444,6 +2587,10 @@ async function runDrawdownWatchdogTick() {
       if (!ddLock.active) {
         ddLock.active = true;
         ddLock.activatedAt = new Date().toISOString();
+        ddLock.triggeredDailyDDPct = Number(risk.dailyDDPct.toFixed(2));
+        ddLock.dailyDDLimitPct = rulesCache.getEffectiveRules().dailyDDLimitPct;
+        ddLock.triggeredEquityUsd = Number(risk.equityUsd.toFixed(2));
+        ddLock.baselineEquityUsd = Number(risk.baselineEquityUsd.toFixed(2));
         logRiskGateAudit({
           gate: 'daily_dd',
           passed: false,
@@ -2452,17 +2599,12 @@ async function runDrawdownWatchdogTick() {
             activatedAt: ddLock.activatedAt,
             ddPct: risk.dailyDDPct,
             limit: rulesCache.getEffectiveRules().dailyDDLimitPct,
+            triggeredDailyDDPct: Number(risk.dailyDDPct.toFixed(2)),
+            dailyDDLimitPct: rulesCache.getEffectiveRules().dailyDDLimitPct,
+            triggeredEquityUsd: Number(risk.equityUsd.toFixed(2)),
+            baselineEquityUsd: Number(risk.baselineEquityUsd.toFixed(2)),
           },
         });
-      }
-
-      const positions = await exchange.getOpenPositions();
-
-      if (positions.length === 0) {
-        if (shouldLogWatchdog('dd-hardstop-flat')) {
-          logger.warn({ component: 'risk-gate' }, 'hard-stop active but no open positions remain; open orders are intentionally ignored');
-        }
-        return;
       }
 
       await emergencyCloseAll('daily_loss_limit_exceeded_watchdog');
@@ -3270,6 +3412,10 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
       if (!ddLock.active) {
         ddLock.active = true;
         ddLock.activatedAt = new Date().toISOString();
+        ddLock.triggeredDailyDDPct = Number(risk.dailyDDPct.toFixed(2));
+        ddLock.dailyDDLimitPct = effectiveRules.dailyDDLimitPct;
+        ddLock.triggeredEquityUsd = Number(risk.equityUsd.toFixed(2));
+        ddLock.baselineEquityUsd = Number(risk.baselineEquityUsd.toFixed(2));
       }
 
       // Keep exits possible even while DD lock is active.
@@ -4917,6 +5063,7 @@ app.get('/api/live/risk-check', ownerAuth, async (_req, res) => {
     return res.status(500).json({
       canTrade: false,
       dailyDDPct: 0,
+      dailyDDLimitPct: rulesCache.getEffectiveRules().dailyDDLimitPct,
       portfolioLeverage: 0,
       blocks: ['risk_check_failed'],
       ddLock: getDdLockState(),
@@ -4926,8 +5073,28 @@ app.get('/api/live/risk-check', ownerAuth, async (_req, res) => {
 });
 
 app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
+  let openPositions: PositionSnapshot[] = [];
+  try {
+    openPositions = await exchange.getOpenPositions();
+  } catch (error) {
+    logger.warn({ component: 'risk-gate', err: error }, 'DD lock reset rejected because open-position check failed');
+    return res.status(503).json({ ok: false, error: 'positions_check_failed' });
+  }
+
+  if (openPositions.length > 0) {
+    return res.status(409).json({
+      ok: false,
+      error: 'positions_not_flat',
+      openPositions: openPositions.length,
+    });
+  }
+
   ddLock.active = false;
   ddLock.activatedAt = '';
+  ddLock.triggeredDailyDDPct = undefined;
+  ddLock.dailyDDLimitPct = undefined;
+  ddLock.triggeredEquityUsd = undefined;
+  ddLock.baselineEquityUsd = undefined;
   logger.info({ component: 'risk-gate' }, 'DD lock manually reset by owner');
   return res.json({ ok: true, ddLockActive: false, ddLock: getDdLockState() });
 });
