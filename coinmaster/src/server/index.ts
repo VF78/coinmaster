@@ -2255,6 +2255,7 @@ const ddLock = {
   dailyDDLimitPct: undefined as number | undefined,
   triggeredEquityUsd: undefined as number | undefined,
   baselineEquityUsd: undefined as number | undefined,
+  emergencyCloseNotificationSent: false as boolean,
 };
 
 function getDdLockState() {
@@ -2265,6 +2266,7 @@ function getDdLockState() {
     dailyDDLimitPct: ddLock.dailyDDLimitPct,
     triggeredEquityUsd: ddLock.triggeredEquityUsd,
     baselineEquityUsd: ddLock.baselineEquityUsd,
+    emergencyCloseNotificationSent: ddLock.emergencyCloseNotificationSent,
   };
 }
 
@@ -2333,7 +2335,10 @@ async function notifyEmergencyCloseResult({
   const limitText = `limit=${limitPct.toFixed(2)}%`;
   const triggeredText = `triggered=${triggeredPct.toFixed(2)}%`;
 
+  if (ddLock.emergencyCloseNotificationSent) return;
+
   if (flat && verified) {
+    ddLock.emergencyCloseNotificationSent = true;
     const text = `Emergency close completed: ${limitText}, ${triggeredText}, rounds=${rounds}. Positions are flat.`;
     await sendTelegramText(text);
     return;
@@ -2346,6 +2351,7 @@ async function notifyEmergencyCloseResult({
   const text = [`Emergency close FAILED:`, limitText, triggeredText, `rounds=${rounds}`, remainingText.trim(), issuesText.trim()]
     .filter(Boolean)
     .join(' ');
+  ddLock.emergencyCloseNotificationSent = true;
   await sendTelegramText(text);
 }
 
@@ -2568,6 +2574,7 @@ async function runDrawdownWatchdogTick() {
         ddLock.dailyDDLimitPct = rulesCache.getEffectiveRules().dailyDDLimitPct;
         ddLock.triggeredEquityUsd = Number(risk.equityUsd.toFixed(2));
         ddLock.baselineEquityUsd = Number(risk.baselineEquityUsd.toFixed(2));
+        ddLock.emergencyCloseNotificationSent = false;
         logRiskGateAudit({
           gate: 'daily_dd',
           passed: false,
@@ -3393,6 +3400,7 @@ async function riskGateMiddleware(req: Request, res: Response, next: NextFunctio
         ddLock.dailyDDLimitPct = effectiveRules.dailyDDLimitPct;
         ddLock.triggeredEquityUsd = Number(risk.equityUsd.toFixed(2));
         ddLock.baselineEquityUsd = Number(risk.baselineEquityUsd.toFixed(2));
+        ddLock.emergencyCloseNotificationSent = false;
       }
 
       // Keep exits possible even while DD lock is active.
@@ -5072,6 +5080,7 @@ app.post('/api/live/dd-lock/reset', ownerAuth, async (_req, res) => {
   ddLock.dailyDDLimitPct = undefined;
   ddLock.triggeredEquityUsd = undefined;
   ddLock.baselineEquityUsd = undefined;
+  ddLock.emergencyCloseNotificationSent = false;
   logger.info({ component: 'risk-gate' }, 'DD lock manually reset by owner');
   return res.json({ ok: true, ddLockActive: false, ddLock: getDdLockState() });
 });
