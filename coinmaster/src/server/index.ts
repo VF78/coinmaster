@@ -2313,63 +2313,40 @@ function formatEmergencyCloseIssue(issue: string): string {
   return `- ${issue}`;
 }
 
-async function notifyEmergencyCloseResult(params: {
+async function notifyEmergencyCloseResult({
+  reason,
+  flat,
+  verified,
+  rounds,
+  remainingPositions,
+  issues,
+}: {
   reason: string;
   flat: boolean;
   verified: boolean;
   rounds: number;
-  remainingPositions: PositionSnapshot[];
+  remainingPositions: Array<{ symbol?: string; size?: number; side?: string }>;
   issues: string[];
-}): Promise<void> {
-  const local = getTzParts(new Date(), DAILY_ANALYTICS_TZ);
-  const status = params.flat ? 'closed' : 'not_closed';
-  const headline = params.flat
-    ? '✅ Emergency stop complete — positions are closed'
-    : '❌ Emergency stop failed — positions are NOT closed';
+}) {
+  const limitPct = ddLock.dailyDDLimitPct ?? rulesCache.getEffectiveRules().dailyDDLimitPct;
+  const triggeredPct = ddLock.triggeredDailyDDPct ?? limitPct;
+  const limitText = `limit=${limitPct.toFixed(2)}%`;
+  const triggeredText = `triggered=${triggeredPct.toFixed(2)}%`;
 
-  const lines: string[] = [
-    headline,
-    `Reason: ${params.reason}`,
-    `Rounds: ${params.rounds}`,
-    `Final state: ${params.flat ? 'flat' : 'NOT flat'}`,
-    `Verification: ${params.verified ? 'successful' : 'failed'}`,
-  ];
-
-  if (params.flat) {
-    if (params.issues.length > 0) {
-      lines.push('Warnings:');
-      lines.push(...params.issues.slice(0, 4).map(formatEmergencyCloseIssue));
-      if (params.issues.length > 4) {
-        lines.push(`- ... +${params.issues.length - 4} more`);
-      }
-    }
-  } else {
-    if (params.verified) {
-      lines.push(`Remaining positions: ${params.remainingPositions.length}`);
-    } else {
-      lines.push('Remaining positions: unknown (final position check failed)');
-    }
-    if (params.remainingPositions.length > 0) {
-      lines.push('Open positions:');
-      lines.push(...params.remainingPositions.slice(0, 5).map(formatEmergencyClosePosition));
-      if (params.remainingPositions.length > 5) {
-        lines.push(`- ... +${params.remainingPositions.length - 5} more`);
-      }
-    }
-    if (params.issues.length > 0) {
-      lines.push('Errors:');
-      lines.push(...params.issues.slice(0, 5).map(formatEmergencyCloseIssue));
-      if (params.issues.length > 5) {
-        lines.push(`- ... +${params.issues.length - 5} more`);
-      }
-    }
+  if (flat && verified) {
+    const text = `Emergency close completed: ${limitText}, ${triggeredText}, rounds=${rounds}. Positions are flat.`;
+    await sendTelegramText(text);
+    return;
   }
 
-  await enqueueTelegramOutbox({
-    category: 'system',
-    dedupeKey: `emergency_close:${status}:${params.reason}:${local.dayKey}`,
-    text: lines.join('\n'),
-  });
+  const remainingText = remainingPositions.length > 0
+    ? ` Remaining positions: ${remainingPositions.map((p) => `${p.symbol ?? 'unknown'}:${p.side ?? 'na'}:${p.size ?? 'na'}`).join(', ')}`
+    : '';
+  const issuesText = issues.length > 0 ? ` Issues: ${issues.join('; ')}` : '';
+  const text = [`Emergency close FAILED:`, limitText, triggeredText, `rounds=${rounds}`, remainingText.trim(), issuesText.trim()]
+    .filter(Boolean)
+    .join(' ');
+  await sendTelegramText(text);
 }
 
 async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded') {
