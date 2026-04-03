@@ -5275,11 +5275,16 @@ app.get('/api/optimization/status', ownerAuth, async (_req, res) => {
   await db.reload();
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   const activeOpt = db.data.optimizationResults.find((o) => o.status === 'queued' || o.status === 'running') ?? null;
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const runningBacktest = db.data.backtestRuns.find((run) => run.status === 'running') ?? null;
   return res.json({
     ok: true,
     running: Boolean(activeOpt),
     activeId: activeOpt?.id ?? null,
     activeOptimization: activeOpt,
+    blockedByBacktestId: runningBacktest?.id ?? null,
+    blockedByBacktestSymbol: runningBacktest?.symbol ?? null,
+    blockedByBacktestStatus: runningBacktest?.status ?? null,
   });
 });
 

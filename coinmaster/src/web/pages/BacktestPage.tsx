@@ -175,6 +175,13 @@ function estimateOptimizationCandidates(ranges: OptimizationParamRange[]) {
   }, 1);
 }
 
+function formatOptimizationProgress(evaluated: number | null | undefined, total: number | null | undefined) {
+  const safeEvaluated = Number.isFinite(evaluated as number) ? Math.max(0, Math.floor(Number(evaluated))) : 0;
+  const safeTotal = Number.isFinite(total as number) ? Math.max(0, Math.floor(Number(total))) : 0;
+  const pct = safeTotal > 0 ? Math.min(100, Math.round((safeEvaluated / safeTotal) * 100)) : 0;
+  return { safeEvaluated, safeTotal, pct };
+}
+
 function formatRulesSnapshot(
   symbol: string,
   rules: TradingRulesSettings,
@@ -314,6 +321,7 @@ export function BacktestPage() {
   const [selectedOptimization, setSelectedOptimization] = useState<OptimizationResult | null>(null);
   const [optimizationModalRun, setOptimizationModalRun] = useState<BacktestRun | null>(null);
   const [optimizationDepth, setOptimizationDepth] = useState<OptimizationSearchDepth>('balanced');
+  const [optimizationBlockedByBacktest, setOptimizationBlockedByBacktest] = useState<{ id: string; symbol: string; status: string } | null>(null);
   const [optimizationDrafts, setOptimizationDrafts] = useState<Array<ReturnType<typeof buildOptimizationDrafts>[number]>>([]);
   const [optimizationSubmitting, setOptimizationSubmitting] = useState(false);
   const [optimizationRunningId, setOptimizationRunningId] = useState<string | null>(null);
@@ -565,6 +573,11 @@ export function BacktestPage() {
 
         const nextOptimization = optStatusRes.activeOptimization ?? optListRes.optimizations?.find((item) => item.status === 'completed') ?? null;
         setOptimizationRunningId(optStatusRes.running ? optStatusRes.activeId : null);
+        setOptimizationBlockedByBacktest(optStatusRes.blockedByBacktestId ? {
+          id: optStatusRes.blockedByBacktestId,
+          symbol: optStatusRes.blockedByBacktestSymbol ?? 'unknown',
+          status: optStatusRes.blockedByBacktestStatus ?? 'running',
+        } : null);
         if (nextOptimization) setSelectedOptimization(nextOptimization);
 
         const selectedOptimizationId = selectedOptimizationIdRef.current;
@@ -988,10 +1001,32 @@ export function BacktestPage() {
             <div className="bt-running">
               <span className="bt-spin" aria-hidden="true" />
               <Badge tone="neutral">optimizing</Badge>
-              <p>
-                Optimization is running…
-                {optimizationRunningId ? ` ${selectedOptimization.evaluatedCandidates} / ${selectedOptimization.totalCandidates || '—'} candidates checked.` : ''}
-              </p>
+              {(() => {
+                const progress = formatOptimizationProgress(selectedOptimization.evaluatedCandidates, selectedOptimization.totalCandidates);
+                const isQueued = selectedOptimization.status === 'queued' && progress.safeTotal === 0 && progress.safeEvaluated === 0;
+                return (
+                  <>
+                    <p>
+                      {isQueued
+                        ? (optimizationBlockedByBacktest
+                          ? `Optimization queued… waiting for ${optimizationBlockedByBacktest.symbol} backtest ${optimizationBlockedByBacktest.id.slice(0, 6)} to finish.`
+                          : 'Optimization queued… preparing candidate grid.')
+                        : 'Optimization is running…'}
+                    </p>
+                    <div className="bt-progress">
+                      <div className="bt-progress__meta">
+                        <span>
+                          {progress.safeEvaluated} / {progress.safeTotal > 0 ? progress.safeTotal : '—'} candidates
+                        </span>
+                        <strong>{progress.safeTotal > 0 ? `${progress.pct}%` : 'pending'}</strong>
+                      </div>
+                      <div className="bt-progress__bar" aria-hidden="true">
+                        <div className="bt-progress__bar-fill" style={{ width: `${progress.safeTotal > 0 ? progress.pct : 0}%` }} />
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           ) : selectedOptimization.status === 'failed' ? (
             <div className="bt-failed">

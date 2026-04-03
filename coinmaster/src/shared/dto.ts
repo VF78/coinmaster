@@ -778,4 +778,7 @@ export interface OptimizationListResponse {
 export interface OptimizationStatusResponse {
   ok: boolean;
   optimization: OptimizationResult;
+  blockedByBacktestId?: string | null;
+  blockedByBacktestSymbol?: string | null;
+  blockedByBacktestStatus?: string | null;
 }
