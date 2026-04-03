@@ -1016,7 +1016,7 @@ export function BacktestPage() {
                     <div className="bt-progress">
                       <div className="bt-progress__meta">
                         <span>
-                          {progress.safeEvaluated} / {progress.safeTotal > 0 ? progress.safeTotal : '—'} candidates
+                          {progress.safeEvaluated} / {progress.safeTotal > 0 ? progress.safeTotal : '—'} parameter variants
                         </span>
                         <strong>{progress.safeTotal > 0 ? `${progress.pct}%` : 'pending'}</strong>
                       </div>
@@ -1081,7 +1081,7 @@ export function BacktestPage() {
                 {(() => {
                   const gridCandidates = selectedOptimization.searchSpaceCandidates ?? estimateOptimizationCandidates(selectedOptimization.paramRanges);
                   return (
-                    <small>{selectedOptimization.evaluatedCandidates} / {selectedOptimization.totalCandidates} candidates · Grid: {gridCandidates.toLocaleString()} variants</small>
+                    <small>{selectedOptimization.evaluatedCandidates} / {selectedOptimization.totalCandidates} parameter variants tested · Grid: {gridCandidates.toLocaleString()} total variants</small>
                   );
                 })()}
                 <small>Analyzed period: {toLocalDateStr(selectedOptimization.startTimeMs)} → {toLocalDateStr(selectedOptimization.endTimeMs)} · Engine: {selectedOptimization.engineVersion}/{selectedOptimization.engineCommit?.slice(0, 8)}</small>
@@ -1263,8 +1263,8 @@ export function BacktestPage() {
                 const ranges = buildOptimizationRequestRanges();
                 const candidateCount = estimateOptimizationCandidates(ranges);
                   const capNote = candidateCount > 5000 ? ' (capped at 5,000 by the worker)' : '';
-                  return <span>Estimated search size: <strong>{Math.min(candidateCount, 5000).toLocaleString()}</strong> candidates{capNote}</span>;
-              })()}
+                  return <span>Estimated search size: <strong>{Math.min(candidateCount, 5000).toLocaleString()}</strong> parameter variants{capNote}</span>;
+                })()}
               <span>Search is bounded and runs in a separate process so the main app stays responsive.</span>
             </div>
               <div className="actions-row">
