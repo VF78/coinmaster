@@ -5183,6 +5183,7 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
   }
 
   const db = await getDb();
+  await db.reload();
   const baseRules = body.rules && typeof body.rules === 'object'
     ? normalizeTradingRules(body.rules as TradingRulesSettings)
     : normalizeTradingRules(db.data.settings?.tradingRules);
@@ -5300,6 +5301,7 @@ app.post('/api/optimization/start', ownerAuth, async (req, res) => {
   }
 
   const db = await getDb();
+  await db.reload();
   db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
 
