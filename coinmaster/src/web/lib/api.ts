@@ -8,6 +8,11 @@ import type {
   BacktestCreateRunRequest,
   BacktestRunListResponse,
   BacktestRunResponse,
+  OptimizationCreateRequest,
+  OptimizationListResponse,
+  OptimizationResult,
+  OptimizationResponse,
+  OptimizationStatusResponse,
   BiasPayload,
   DashboardResponse,
   ExchangeSettingsResponse,
@@ -431,4 +436,26 @@ export function requestBacktestAiAnalysis(id: string) {
 
 export function getPendingBacktestAiAnalyses() {
   return jsonFetch<BacktestAiPendingResponse>('/api/backtest/ai-analysis/pending');
+}
+
+// ─── Optimization ─────────────────────────────────────────────────────
+
+export function getOptimizationResults() {
+  return jsonFetch<OptimizationListResponse>('/api/optimization/results');
+}
+
+export function getOptimizationResult(id: string) {
+  return jsonFetch<OptimizationResponse>(`/api/optimization/results/${encodeURIComponent(id)}`);
+}
+
+export function getOptimizationStatus() {
+  return jsonFetch<OptimizationStatusResponse & { running: boolean; activeId: string | null; activeOptimization: OptimizationResult | null }>('/api/optimization/status');
+}
+
+export function startOptimization(params: OptimizationCreateRequest) {
+  return jsonFetch<OptimizationResponse>('/api/optimization/start', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(params),
+  });
 }

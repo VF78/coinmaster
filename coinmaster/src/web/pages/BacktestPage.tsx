@@ -6,6 +6,8 @@ import { useDialog } from '../components/DialogProvider';
 import type {
   BacktestBiasMode,
   BacktestRun,
+  OptimizationParamRange,
+  OptimizationResult,
   TradingRulesSettings,
   TradingRulesTimeframe,
 } from '../../shared/dto.js';
@@ -14,8 +16,11 @@ import {
   createBacktestRun,
   friendlyErrorMessage,
   getBacktestRuns,
+  getOptimizationResults,
+  getOptimizationStatus,
   getTradingRuleSymbols,
   getTradingRules,
+  startOptimization,
 } from '../lib/api';
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 
@@ -72,14 +77,100 @@ function selectionFromBiasMode(biasMode: BacktestBiasMode | undefined): { longEn
   }
 }
 
-function formatRulesSnapshot(run: BacktestRun): Array<{ label: string; value: string }> {
-  const rules = run.rulesSnapshot;
+interface OptimizationParamSpec {
+  param: string;
+  label: string;
+  kind: 'int' | 'pct' | 'decimal';
+  min: number;
+  max: number;
+}
+
+const OPTIMIZATION_PARAM_SPECS: OptimizationParamSpec[] = [
+  { param: 'slPct', label: 'SL %', kind: 'pct', min: 0.5, max: 25 },
+  { param: 'tpLevels[0]', label: 'TP1 %', kind: 'pct', min: 0.5, max: 25 },
+  { param: 'tpLevels[1]', label: 'TP2 %', kind: 'pct', min: 0.5, max: 35 },
+  { param: 'tpLevels[2]', label: 'TP3 %', kind: 'pct', min: 0.5, max: 50 },
+  { param: 'maxLeverage', label: 'Max leverage', kind: 'int', min: 1, max: 20 },
+  { param: 'engulfingLookbackCandles', label: 'Lookback candles', kind: 'int', min: 5, max: 200 },
+  { param: 'fvgRetrace', label: 'FVG retrace %', kind: 'pct', min: 10, max: 90 },
+  { param: 'fvgMinWidthPct', label: 'FVG min width %', kind: 'decimal', min: 0, max: 2 },
+  { param: 'exitClosePct', label: 'Exit close %', kind: 'pct', min: 0, max: 100 },
+  { param: 'dailyDrawdown', label: 'Daily drawdown %', kind: 'pct', min: 0.5, max: 15 },
+];
+
+function getRulesValue(rules: TradingRulesSettings, param: string): number {
+  switch (param) {
+    case 'slPct': return rules.slPct;
+    case 'tpLevels[0]': return rules.tpLevels?.[0] ?? 6;
+    case 'tpLevels[1]': return rules.tpLevels?.[1] ?? rules.tpLevels?.[0] ?? 9;
+    case 'tpLevels[2]': return rules.tpLevels?.[2] ?? rules.tpLevels?.[1] ?? 12;
+    case 'maxLeverage': return rules.maxLeverage;
+    case 'engulfingLookbackCandles': return rules.engulfingLookbackCandles;
+    case 'fvgRetrace': return rules.fvgRetrace;
+    case 'fvgMinWidthPct': return rules.fvgMinWidthPct;
+    case 'exitClosePct': return rules.exitClosePct;
+    case 'dailyDrawdown': return rules.dailyDrawdown;
+    default: return 0;
+  }
+}
+
+function setRulesValue(rules: TradingRulesSettings, param: string, value: number) {
+  switch (param) {
+    case 'slPct': rules.slPct = value; break;
+    case 'tpLevels[0]': rules.tpLevels = [value, rules.tpLevels?.[1] ?? value * 1.5, rules.tpLevels?.[2] ?? value * 2]; break;
+    case 'tpLevels[1]': rules.tpLevels = [rules.tpLevels?.[0] ?? value / 1.5, value, rules.tpLevels?.[2] ?? value * 1.5]; break;
+    case 'tpLevels[2]': rules.tpLevels = [rules.tpLevels?.[0] ?? value / 2, rules.tpLevels?.[1] ?? value / 1.5, value]; break;
+    case 'maxLeverage': rules.maxLeverage = value; break;
+    case 'engulfingLookbackCandles': rules.engulfingLookbackCandles = value; break;
+    case 'fvgRetrace': rules.fvgRetrace = value; break;
+    case 'fvgMinWidthPct': rules.fvgMinWidthPct = value; break;
+    case 'exitClosePct': rules.exitClosePct = value; break;
+    case 'dailyDrawdown': rules.dailyDrawdown = value; break;
+  }
+}
+
+function autoOptimizationStep(kind: OptimizationParamSpec['kind'], min: number, max: number): number {
+  const span = Math.max(0, max - min);
+  const raw = span / 4 || (kind === 'decimal' ? 0.1 : 1);
+  if (kind === 'decimal') return Number(Math.max(0.1, raw).toFixed(2));
+  return Math.max(1, Math.round(raw));
+}
+
+function buildOptimizationDrafts(rules: TradingRulesSettings) {
+  return OPTIMIZATION_PARAM_SPECS.map((spec) => {
+    const current = getRulesValue(rules, spec.param);
+    const span = Math.max(0.0001, Math.abs(current) * 0.5 || (spec.max - spec.min) * 0.3);
+    let min = clampNumber(current - span, spec.min, spec.max);
+    let max = clampNumber(current + span, spec.min, spec.max);
+    if (min === max) {
+      min = spec.min;
+      max = spec.max;
+    }
+    const step = autoOptimizationStep(spec.kind, min, max);
+    return { ...spec, enabled: ['slPct', 'tpLevels[0]', 'maxLeverage', 'engulfingLookbackCandles', 'fvgRetrace'].includes(spec.param), min, max, step: spec.kind === 'decimal' ? Number(step.toFixed(2)) : Math.max(1, Math.round(step)) };
+  });
+}
+
+function estimateOptimizationCandidates(ranges: OptimizationParamRange[]) {
+  return ranges.reduce((total, range) => {
+    const count = Math.max(1, Math.floor((range.max - range.min) / range.step) + 1);
+    return total * count;
+  }, 1);
+}
+
+function formatRulesSnapshot(
+  symbol: string,
+  rules: TradingRulesSettings,
+  startTimeMs: number,
+  endTimeMs: number,
+  biasMode?: BacktestBiasMode,
+): Array<{ label: string; value: string }> {
   const coin = rules.coins[0];
   return [
-    { label: 'Period', value: `${toLocalDateStr(run.startTimeMs)} → ${toLocalDateStr(run.endTimeMs)}` },
-    { label: 'Bias', value: (run.biasMode ?? 'both').toUpperCase() },
-    { label: 'Asset', value: coin?.symbol ?? run.symbol },
-    { label: 'Asset class', value: coin?.assetClass ?? inferAssetClassFromSymbol(coin?.symbol ?? run.symbol) },
+    { label: 'Period', value: `${toLocalDateStr(startTimeMs)} → ${toLocalDateStr(endTimeMs)}` },
+    { label: 'Bias', value: (biasMode ?? 'both').toUpperCase() },
+    { label: 'Asset', value: coin?.symbol ?? symbol },
+    { label: 'Asset class', value: coin?.assetClass ?? inferAssetClassFromSymbol(coin?.symbol ?? symbol) },
     { label: 'Entry timeframe', value: (rules.entryTimeframes ?? []).join(', ') || '—' },
     { label: 'Exit timeframe', value: (rules.emergencyExitTimeframes ?? []).join(', ') || '—' },
     { label: 'Lookback candles', value: String(rules.engulfingLookbackCandles ?? 30) },
@@ -202,10 +293,18 @@ export function BacktestPage() {
   const [selectedRun, setSelectedRun] = useState<BacktestRun | null>(null);
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [reportRun, setReportRun] = useState<BacktestRun | null>(null);
+  const [optimizationResults, setOptimizationResults] = useState<OptimizationResult[]>([]);
+  const [selectedOptimization, setSelectedOptimization] = useState<OptimizationResult | null>(null);
+  const [optimizationModalRun, setOptimizationModalRun] = useState<BacktestRun | null>(null);
+  const [optimizationDrafts, setOptimizationDrafts] = useState<Array<ReturnType<typeof buildOptimizationDrafts>[number]>>([]);
+  const [optimizationSubmitting, setOptimizationSubmitting] = useState(false);
+  const [optimizationRunningId, setOptimizationRunningId] = useState<string | null>(null);
+  const [optimizationInfo, setOptimizationInfo] = useState<string>('');
   const [historySort, setHistorySort] = useState<HistorySortMode>('created-desc');
   const [historyPage, setHistoryPage] = useState(1);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const selectedRunIdRef = useRef<string | null>(null);
+  const selectedOptimizationIdRef = useRef<string | null>(null);
   const reportRunIdRef = useRef<string | null>(null);
 
   const biasMode = useMemo(() => biasModeFromSelection(longEnabled, shortEnabled), [longEnabled, shortEnabled]);
@@ -247,14 +346,101 @@ export function BacktestPage() {
     setExitClosePct(rules.exitClosePct ?? defaults.exitClosePct);
   }, [defaults]);
 
+  const applyRulesSnapshotToForm = useCallback((rulesSnapshot: TradingRulesSettings, meta: { symbol: string; biasMode?: BacktestBiasMode; startTimeMs: number; endTimeMs: number }) => {
+    const rules = normalizeTradingRules(rulesSnapshot);
+    const coin = rules.coins[0];
+    const selection = selectionFromBiasMode(meta.biasMode);
+    setSymbol(coin?.symbol ?? meta.symbol);
+    setSymbolDraft(coin?.symbol ?? meta.symbol);
+    setStartDate(toLocalDateStr(meta.startTimeMs));
+    setEndDate(toLocalDateStr(meta.endTimeMs));
+    setLongEnabled(selection.longEnabled);
+    setShortEnabled(selection.shortEnabled);
+    setEntryTimeframes(rules.entryTimeframes?.length ? rules.entryTimeframes : defaults.entryTimeframes);
+    setEmergencyExitTimeframes(rules.emergencyExitTimeframes?.length ? rules.emergencyExitTimeframes : defaults.emergencyExitTimeframes);
+    setEngulfingLookbackCandles(rules.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
+    setFvgRetrace(rules.fvgRetrace ?? defaults.fvgRetrace);
+    setFvgMinWidthPct(rules.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
+    setMaxLeverage(rules.maxLeverage ?? defaults.maxLeverage);
+    setDailyDrawdown(rules.dailyDrawdown ?? defaults.dailyDrawdown);
+    setTpLevels(rules.tpLevels?.length ? [...rules.tpLevels] : defaults.tpLevels);
+    setSlPct(rules.slPct ?? defaults.slPct);
+    setExitClosePct(rules.exitClosePct ?? defaults.exitClosePct);
+  }, [defaults]);
+
+  const applyOptimizationToForm = useCallback((opt: OptimizationResult) => {
+    const rules = normalizeTradingRules(opt.bestParams ?? opt.baseRulesSnapshot);
+    applyRulesSnapshotToForm(rules, {
+      symbol: opt.symbol,
+      biasMode: opt.biasMode,
+      startTimeMs: opt.startTimeMs,
+      endTimeMs: opt.endTimeMs,
+    });
+  }, [applyRulesSnapshotToForm]);
+
+  function openOptimizationModal(run: BacktestRun) {
+    const drafts = buildOptimizationDrafts(run.rulesSnapshot);
+    setOptimizationModalRun(run);
+    setOptimizationDrafts(drafts);
+    setOptimizationInfo('');
+  }
+
+  function updateOptimizationDraft(index: number, patch: Partial<(typeof optimizationDrafts)[number]>) {
+    setOptimizationDrafts((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+  }
+
+  function toggleOptimizationDraft(index: number, enabled: boolean) {
+    setOptimizationDrafts((prev) => prev.map((item, i) => (i === index ? { ...item, enabled } : item)));
+  }
+
+  function buildOptimizationRequestRanges() {
+    return optimizationDrafts
+      .filter((item) => item.enabled)
+      .map((item) => {
+        const min = Math.min(item.min, item.max);
+        const max = Math.max(item.min, item.max);
+        const step = autoOptimizationStep(item.kind, min, max);
+        return { param: item.param, min, max, step } satisfies OptimizationParamRange;
+      });
+  }
+
+  async function handleStartOptimization() {
+    if (!optimizationModalRun || optimizationSubmitting || optimizationRunningId) return;
+    const ranges = buildOptimizationRequestRanges();
+    if (ranges.length === 0) {
+      await dialog.alert({ title: 'Validation', message: 'Select at least one parameter to optimize.', confirmText: 'OK' });
+      return;
+    }
+
+    setOptimizationSubmitting(true);
+    setOptimizationInfo('Starting optimization…');
+    try {
+      const res = await startOptimization({
+        sourceRunId: optimizationModalRun.id,
+        paramRanges: ranges,
+      });
+      setOptimizationRunningId(res.optimization.id);
+      setSelectedOptimization(res.optimization);
+      setOptimizationResults((prev) => [res.optimization, ...prev.filter((item) => item.id !== res.optimization.id)]);
+      setOptimizationInfo(`Optimization started: ${ranges.length} params, ${estimateOptimizationCandidates(ranges)} candidate grid.`);
+      setOptimizationModalRun(null);
+    } catch (err) {
+      setOptimizationInfo(friendlyErrorMessage(err));
+    } finally {
+      setOptimizationSubmitting(false);
+    }
+  }
+
   useEffect(() => {
     let cancelled = false;
     async function load() {
       try {
-        const [rulesRes, symbolsRes, runsRes] = await Promise.all([
+        const [rulesRes, symbolsRes, runsRes, optimizationsRes, optimizationStatusRes] = await Promise.all([
           getTradingRules(),
           getTradingRuleSymbols(),
           getBacktestRuns(),
+          getOptimizationResults(),
+          getOptimizationStatus(),
         ]);
         if (cancelled) return;
 
@@ -262,6 +448,11 @@ export function BacktestPage() {
         setRulesBase(normalized);
         setAvailableSymbols(symbolsRes.symbols ?? []);
         setRuns(runsRes.runs ?? []);
+        setOptimizationResults(optimizationsRes.optimizations ?? []);
+        setOptimizationRunningId(optimizationStatusRes.running ? optimizationStatusRes.activeId : null);
+        const activeOpt = optimizationStatusRes.activeOptimization ?? null;
+        const fallbackOpt = optimizationsRes.optimizations?.find((item) => item.status === 'completed') ?? null;
+        setSelectedOptimization(activeOpt ?? fallbackOpt);
         setError(null);
 
         const firstEnabled = normalized.coins.find((coin) => coin.enabled) ?? normalized.coins[0];
@@ -293,11 +484,15 @@ export function BacktestPage() {
   }, [selectedRun]);
 
   useEffect(() => {
+    selectedOptimizationIdRef.current = selectedOptimization?.id ?? null;
+  }, [selectedOptimization]);
+
+  useEffect(() => {
     reportRunIdRef.current = reportRun?.id ?? null;
   }, [reportRun]);
 
   useEffect(() => {
-    const shouldPoll = Boolean(activeRunId);
+    const shouldPoll = Boolean(activeRunId || optimizationRunningId);
     if (!shouldPoll) {
       if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
       return;
@@ -305,10 +500,17 @@ export function BacktestPage() {
 
     async function poll() {
       try {
-        const listRes = await getBacktestRuns();
+        const [listRes, optStatusRes, optListRes] = await Promise.all([
+          getBacktestRuns(),
+          getOptimizationStatus(),
+          getOptimizationResults(),
+        ]);
+
         const nextRuns = listRes.runs ?? [];
         setRuns(nextRuns);
+        setOptimizationResults(optListRes.optimizations ?? []);
         setError(null);
+
         if (activeRunId) {
           const active = nextRuns.find((item) => item.id === activeRunId);
           if (active && (active.status === 'completed' || active.status === 'failed')) {
@@ -316,15 +518,27 @@ export function BacktestPage() {
             setSelectedRun(active);
           }
         }
+
         const selectedRunId = selectedRunIdRef.current;
         if (selectedRunId) {
           const nextSelected = nextRuns.find((item) => item.id === selectedRunId);
           if (nextSelected) setSelectedRun(nextSelected);
         }
+
         const reportRunId = reportRunIdRef.current;
         if (reportRunId) {
           const nextReport = nextRuns.find((item) => item.id === reportRunId);
           if (nextReport?.aiAnalysis?.report) setReportRun(nextReport);
+        }
+
+        const nextOptimization = optStatusRes.activeOptimization ?? optListRes.optimizations?.find((item) => item.status === 'completed') ?? null;
+        setOptimizationRunningId(optStatusRes.running ? optStatusRes.activeId : null);
+        if (nextOptimization) setSelectedOptimization(nextOptimization);
+
+        const selectedOptimizationId = selectedOptimizationIdRef.current;
+        if (selectedOptimizationId) {
+          const nextSelectedOptimization = optListRes.optimizations?.find((item) => item.id === selectedOptimizationId) ?? (optStatusRes.activeOptimization?.id === selectedOptimizationId ? optStatusRes.activeOptimization : null);
+          if (nextSelectedOptimization) setSelectedOptimization(nextSelectedOptimization);
         }
       } catch {
         // ignore transient poll errors
@@ -334,7 +548,7 @@ export function BacktestPage() {
     void poll();
     pollRef.current = setInterval(poll, POLL_INTERVAL_MS);
     return () => { if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; } };
-  }, [activeRunId]);
+  }, [activeRunId, optimizationRunningId]);
 
   useEffect(() => {
     setHistoryPage(1);
@@ -369,7 +583,7 @@ export function BacktestPage() {
   }
 
   async function handleRun(): Promise<void> {
-    if (saving || activeRunId) return;
+    if (saving || activeRunId || optimizationRunningId) return;
 
     const normalizedSymbol = await applySymbolDraft();
     if (!normalizedSymbol) return;
@@ -649,8 +863,8 @@ export function BacktestPage() {
       </Card>
 
       <div className="rules-apply-row">
-        <Button variant="primary" fullWidth onClick={() => { void handleRun(); }} disabled={saving || Boolean(activeRunId)}>
-          {saving ? 'Starting...' : activeRunId ? 'Backtest running...' : 'Run backtest'}
+        <Button variant="primary" fullWidth onClick={() => { void handleRun(); }} disabled={saving || Boolean(activeRunId) || Boolean(optimizationRunningId)}>
+          {saving ? 'Starting...' : activeRunId ? 'Backtest running...' : optimizationRunningId ? 'Optimization running...' : 'Run backtest'}
         </Button>
       </div>
 
@@ -705,7 +919,7 @@ export function BacktestPage() {
               <div className="bt-applied-settings">
                 <h4>Applied settings</h4>
                 <div className="bt-applied-settings__grid">
-                  {formatRulesSnapshot(selectedRun).map((item) => (
+                  {formatRulesSnapshot(selectedRun.symbol, selectedRun.rulesSnapshot, selectedRun.startTimeMs, selectedRun.endTimeMs, selectedRun.biasMode).map((item) => (
                     <div key={item.label} className="bt-applied-settings__item">
                       <span className="bt-applied-settings__label">{item.label}</span>
                       <span className="bt-applied-settings__value">{item.value}</span>
@@ -719,6 +933,86 @@ export function BacktestPage() {
                   <small>{selectedRun.artifacts.tradeCount} trade events · {selectedRun.artifacts.equityCurvePoints} equity points · Engine: {selectedRun.engineVersion}/{selectedRun.engineCommit?.slice(0, 8)}</small>
                 </div>
               ) : null}
+            </>
+          ) : null}
+        </Card>
+      ) : null}
+
+      {selectedOptimization ? (
+        <Card
+          title={`Result: ${selectedOptimization.symbol} — optimized`}
+          actions={(
+            <div className="actions-row">
+              <Badge tone={selectedOptimization.status === 'completed' ? 'success' : selectedOptimization.status === 'failed' ? 'danger' : 'neutral'}>
+                {selectedOptimization.status}
+              </Badge>
+              {selectedOptimization.status === 'completed' ? (
+                <Button variant="secondary" onClick={() => applyOptimizationToForm(selectedOptimization)}>Copy</Button>
+              ) : null}
+            </div>
+          )}
+        >
+          {selectedOptimization.status === 'queued' || selectedOptimization.status === 'running' ? (
+            <div className="bt-running">
+              <span className="bt-spin" aria-hidden="true" />
+              <Badge tone="neutral">optimizing</Badge>
+              <p>
+                Optimization is running…
+                {optimizationRunningId ? ` ${selectedOptimization.evaluatedCandidates} / ${selectedOptimization.totalCandidates || '—'} candidates checked.` : ''}
+              </p>
+            </div>
+          ) : selectedOptimization.status === 'failed' ? (
+            <div className="bt-failed">
+              <Badge tone="danger">failed</Badge>
+              <p>{selectedOptimization.error || 'Unknown optimization error'}</p>
+            </div>
+          ) : selectedOptimization.bestSummary ? (
+            <>
+              <div className="bt-result__grid">
+                <div className="bt-stat"><span className="bt-stat__label">Net P&L</span><span className={`bt-stat__value ${selectedOptimization.bestSummary.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}`}>{formatMoney(selectedOptimization.bestSummary.netPnlUsd)}</span></div>
+                <div className="bt-stat"><span className="bt-stat__label">ROI</span><span className={`bt-stat__value ${selectedOptimization.bestSummary.roiPct >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}`}>{formatNumber(selectedOptimization.bestSummary.roiPct)}%</span></div>
+                <div className="bt-stat"><span className="bt-stat__label">Win Rate</span><span className="bt-stat__value">{formatNumber(selectedOptimization.bestSummary.winRatePct)}%</span></div>
+                <div className="bt-stat"><span className="bt-stat__label">Total Trades</span><span className="bt-stat__value">{selectedOptimization.bestSummary.totalTrades}</span></div>
+                <div className="bt-stat"><span className="bt-stat__label">Max Drawdown</span><span className="bt-stat__value bt-stat__value--negative">{formatNumber(selectedOptimization.bestSummary.maxDrawdownPct)}%</span></div>
+              </div>
+
+              {selectedOptimization.bestBySymbol?.length ? (
+                <div className="bt-symbol-stats">
+                  <h4>Per-Symbol Breakdown</h4>
+                  {selectedOptimization.bestBySymbol.map((row) => (
+                    <div key={row.symbol} className="bt-symbol-row">
+                      <strong>{row.symbol}</strong>
+                      <span>W:{row.wins} L:{row.losses}</span>
+                      <span>SL:{row.slCount}</span>
+                      <span>TP1:{row.tp1Count} TP2:{row.tp2Count} TP3:{row.tp3Count}</span>
+                      <span>Exit:{row.emergencyExitCount}</span>
+                      <span className={row.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}>{formatMoney(row.netPnlUsd)}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className="bt-applied-settings">
+                <h4>Optimized settings</h4>
+                <div className="bt-applied-settings__grid">
+                  {formatRulesSnapshot(
+                    selectedOptimization.symbol,
+                    normalizeTradingRules(selectedOptimization.bestParams ?? selectedOptimization.baseRulesSnapshot),
+                    selectedOptimization.startTimeMs,
+                    selectedOptimization.endTimeMs,
+                    selectedOptimization.biasMode,
+                  ).map((item) => (
+                    <div key={item.label} className="bt-applied-settings__item">
+                      <span className="bt-applied-settings__label">{item.label}</span>
+                      <span className="bt-applied-settings__value">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bt-artifacts">
+                <small>{selectedOptimization.evaluatedCandidates} / {selectedOptimization.totalCandidates} candidates · Engine: {selectedOptimization.engineVersion}/{selectedOptimization.engineCommit?.slice(0, 8)}</small>
+              </div>
             </>
           ) : null}
         </Card>
@@ -755,6 +1049,20 @@ export function BacktestPage() {
               <span className="bt-history__dates">{toLocalDateStr(run.startTimeMs)} → {toLocalDateStr(run.endTimeMs)}</span>
               <Badge tone={run.status === 'completed' ? 'success' : run.status === 'failed' ? 'danger' : 'neutral'}>{run.status}</Badge>
               {run.summary ? <span className={run.summary.netPnlUsd >= 0 ? 'bt-stat__value--positive' : 'bt-stat__value--negative'}>{formatMoney(run.summary.netPnlUsd)} ({formatNumber(run.summary.roiPct)}%)</span> : null}
+              {run.status === 'completed' ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="bt-opt-btn"
+                  disabled={Boolean(activeRunId) || Boolean(optimizationRunningId) || optimizationSubmitting}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    openOptimizationModal(run);
+                  }}
+                >
+                  Optimize
+                </Button>
+              ) : null}
               {run.aiAnalysis?.status === 'completed' && run.aiAnalysis?.report ? (
                 <button
                   type="button"
@@ -777,6 +1085,101 @@ export function BacktestPage() {
           </div>
         ) : null}
       </Card>
+
+      {optimizationModalRun ? (
+        <div className="bt-report-overlay" onClick={() => { if (!optimizationSubmitting) setOptimizationModalRun(null); }}>
+          <div className="bt-opt-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="bt-report-modal__header">
+              <div>
+                <h3>Optimize {optimizationModalRun.symbol}</h3>
+                <div className="bt-report-modal__meta">
+                  Select parameters, set min/max bounds, and start a bounded search for the best backtest settings.
+                </div>
+              </div>
+              <button type="button" className="bt-report-close" onClick={() => setOptimizationModalRun(null)} disabled={optimizationSubmitting}>×</button>
+            </div>
+
+            <div className="bt-opt-modal__summary">
+              <span>Source run: {optimizationModalRun.symbol}</span>
+              <span>{toLocalDateStr(optimizationModalRun.startTimeMs)} → {toLocalDateStr(optimizationModalRun.endTimeMs)}</span>
+              <span>Bias: {optimizationModalRun.biasMode.toUpperCase()}</span>
+            </div>
+
+            <div className="bt-opt-modal__list">
+              {optimizationDrafts.map((item, index) => (
+                <div key={item.param} className={`bt-opt-row ${item.enabled ? 'bt-opt-row--active' : ''}`}>
+                  <label className="bt-opt-row__toggle">
+                    <input
+                      type="checkbox"
+                      checked={item.enabled}
+                      disabled={optimizationSubmitting}
+                      onChange={(e) => toggleOptimizationDraft(index, e.target.checked)}
+                    />
+                    <span>{item.label}</span>
+                  </label>
+                  <div className="bt-opt-row__inputs">
+                    {(() => {
+                      const spec = OPTIMIZATION_PARAM_SPECS[index];
+                      return (
+                        <>
+                          <label>
+                            <span>Min</span>
+                            <input
+                              type="number"
+                              className="rules-input rules-input--sm"
+                              value={item.min}
+                              step={item.kind === 'decimal' ? 0.1 : 1}
+                              min={spec.min}
+                              max={spec.max}
+                              disabled={optimizationSubmitting || !item.enabled}
+                              onChange={(e) => updateOptimizationDraft(index, { min: Number(e.target.value) })}
+                            />
+                          </label>
+                          <label>
+                            <span>Max</span>
+                            <input
+                              type="number"
+                              className="rules-input rules-input--sm"
+                              value={item.max}
+                              step={item.kind === 'decimal' ? 0.1 : 1}
+                              min={spec.min}
+                              max={spec.max}
+                              disabled={optimizationSubmitting || !item.enabled}
+                              onChange={(e) => updateOptimizationDraft(index, { max: Number(e.target.value) })}
+                            />
+                          </label>
+                        </>
+                      );
+                    })()}
+                  </div>
+                  <div className="bt-opt-row__meta">
+                    Auto step: <strong>{autoOptimizationStep(item.kind, Math.min(item.min, item.max), Math.max(item.min, item.max))}</strong>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="bt-opt-modal__footer">
+              <div className="bt-opt-modal__budget">
+                {(() => {
+                  const ranges = buildOptimizationRequestRanges();
+                  const candidateCount = estimateOptimizationCandidates(ranges);
+                  return <span>Estimated search size: <strong>{candidateCount.toLocaleString()}</strong> candidates</span>;
+                })()}
+                <span>Search is bounded and runs in a separate process so the main app stays responsive.</span>
+              </div>
+              <div className="actions-row">
+                <Button variant="secondary" onClick={() => setOptimizationModalRun(null)} disabled={optimizationSubmitting}>Cancel</Button>
+                <Button variant="primary" onClick={() => { void handleStartOptimization(); }} disabled={optimizationSubmitting || optimizationRunningId !== null}>
+                  {optimizationSubmitting ? 'Starting…' : optimizationRunningId ? 'Optimization running…' : 'Start optimization'}
+                </Button>
+              </div>
+            </div>
+
+            {optimizationInfo ? <p className="stat-note muted" style={{ marginTop: 8 }}>{optimizationInfo}</p> : null}
+          </div>
+        </div>
+      ) : null}
 
       {reportRun?.aiAnalysis?.report ? (
         <div className="bt-report-overlay" onClick={() => setReportRun(null)}>

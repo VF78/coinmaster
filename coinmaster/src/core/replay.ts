@@ -67,7 +67,8 @@ function buildReplayDb(depositUsd: number): DBShape {
     telegramOutbox: [],
     aiMasterInsights: [],
     aiMasterQa: [],
-    backtestRuns: []
+    backtestRuns: [],
+    optimizationResults: [],
   };
 }
 

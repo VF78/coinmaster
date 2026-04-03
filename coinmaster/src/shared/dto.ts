@@ -724,3 +724,57 @@ export interface BacktestAiPendingResponse {
   ok: boolean;
   runs: BacktestRun[];
 }
+
+// ─── Optimization ─────────────────────────────────────────────────────
+
+export type OptimizationStatus = 'queued' | 'running' | 'completed' | 'failed';
+
+export interface OptimizationParamRange {
+  param: string;
+  min: number;
+  max: number;
+  step: number;
+}
+
+export interface OptimizationResult {
+  id: string;
+  status: OptimizationStatus;
+  sourceRunId: string;
+  symbol: string;
+  biasMode: BacktestBiasMode;
+  startTimeMs: number;
+  endTimeMs: number;
+  baseRulesSnapshot: TradingRulesSettings;
+  paramRanges: OptimizationParamRange[];
+  createdAt: string;
+  startedAt?: string;
+  finishedAt?: string;
+  totalCandidates: number;
+  evaluatedCandidates: number;
+  bestParams?: Partial<TradingRulesSettings>;
+  bestSummary?: BacktestRunSummary;
+  bestBySymbol?: BacktestRunSymbolStats[];
+  error?: string;
+  engineVersion: string;
+  engineCommit: string;
+}
+
+export interface OptimizationCreateRequest {
+  sourceRunId: string;
+  paramRanges: OptimizationParamRange[];
+}
+
+export interface OptimizationResponse {
+  ok: boolean;
+  optimization: OptimizationResult;
+}
+
+export interface OptimizationListResponse {
+  ok: boolean;
+  optimizations: OptimizationResult[];
+}
+
+export interface OptimizationStatusResponse {
+  ok: boolean;
+  optimization: OptimizationResult;
+}

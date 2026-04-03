@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import crypto from 'node:crypto';
+import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -12,6 +13,7 @@ import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
 import { applyBacktestAiAnalysisResult, createQueuedBacktestRun, markBacktestAiAnalysisRequested } from '../core/backtest.js';
 import { executeBacktestRun, isBacktestRunning, getActiveBacktestRunId } from '../core/backtestWorker.js';
+import { createQueuedOptimization } from '../core/optimizerWorker.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
@@ -23,6 +25,8 @@ import type {
   AssetClass,
   BacktestCreateRunRequest,
   BacktestRun,
+  OptimizationCreateRequest,
+  OptimizationParamRange,
   BiasMode,
   ExchangeConnectionSettingsPayload,
   LiveDashboardState,
@@ -5190,8 +5194,15 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
     requestedBy: 'owner',
   });
 
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+
   if (isBacktestRunning()) {
     return res.status(409).json({ ok: false, error: 'backtest_already_running', activeRunId: getActiveBacktestRunId() });
+  }
+  if (hasInFlightOptimization(db.data.optimizationResults)) {
+    const activeOpt = db.data.optimizationResults.find((item) => item.status === 'queued' || item.status === 'running') ?? null;
+    return res.status(409).json({ ok: false, error: 'optimization_running', activeId: activeOpt?.id ?? null });
   }
 
   db.data.backtestRuns = compactBacktestRuns([run, ...(Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [])]);
@@ -5204,6 +5215,129 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
   });
 
   return res.status(201).json({ ok: true, run });
+});
+
+// ─── Optimization Endpoints ───────────────────────────────────────────
+
+const OPTIMIZATION_HISTORY_LIMIT = 50;
+
+function hasInFlightOptimization(optimizations: Array<{ status?: string }>): boolean {
+  return optimizations.some((item) => item.status === 'queued' || item.status === 'running');
+}
+
+function spawnOptimizationProcess(optimizationId: string): void {
+  const tsxBin = path.join(rootDir, 'node_modules/.bin/tsx');
+  if (!existsSync(tsxBin)) {
+    throw new Error(`tsx_binary_not_found:${tsxBin}`);
+  }
+  const child = spawn(tsxBin, ['src/core/optimizerProcess.ts', optimizationId], {
+    cwd: rootDir,
+    detached: true,
+    stdio: 'ignore',
+    env: { ...process.env },
+  });
+  child.unref();
+}
+
+const OPTIMIZABLE_PARAMS = new Set([
+  'slPct', 'tpLevels[0]', 'tpLevels[1]', 'tpLevels[2]',
+  'tp1Pct', 'tp2Pct', 'tp3Pct',
+  'maxLeverage', 'engulfingLookbackCandles', 'fvgRetrace',
+  'fvgMinWidthPct', 'exitClosePct', 'dailyDrawdown',
+]);
+
+app.get('/api/optimization/results', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  return res.json({ ok: true, optimizations: db.data.optimizationResults });
+});
+
+app.get('/api/optimization/results/:id', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  const opt = db.data.optimizationResults.find((o) => o.id === req.params.id);
+  if (!opt) {
+    return res.status(404).json({ ok: false, error: 'optimization_not_found' });
+  }
+  return res.json({ ok: true, optimization: opt });
+});
+
+app.get('/api/optimization/status', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  const activeOpt = db.data.optimizationResults.find((o) => o.status === 'queued' || o.status === 'running') ?? null;
+  return res.json({
+    ok: true,
+    running: Boolean(activeOpt),
+    activeId: activeOpt?.id ?? null,
+    activeOptimization: activeOpt,
+  });
+});
+
+app.post('/api/optimization/start', ownerAuth, async (req, res) => {
+  const body = (req.body ?? {}) as Partial<OptimizationCreateRequest>;
+
+  if (!body.sourceRunId || typeof body.sourceRunId !== 'string') {
+    return res.status(400).json({ ok: false, error: 'source_run_id_required' });
+  }
+
+  if (!Array.isArray(body.paramRanges) || body.paramRanges.length === 0) {
+    return res.status(400).json({ ok: false, error: 'param_ranges_required' });
+  }
+
+  const db = await getDb();
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+
+  if (hasInFlightOptimization(db.data.optimizationResults)) {
+    const activeOpt = db.data.optimizationResults.find((item) => item.status === 'queued' || item.status === 'running') ?? null;
+    return res.status(409).json({ ok: false, error: 'optimization_already_running', activeId: activeOpt?.id ?? null });
+  }
+
+  // Validate param ranges
+  for (const pr of body.paramRanges) {
+    if (!OPTIMIZABLE_PARAMS.has(pr.param)) {
+      return res.status(400).json({ ok: false, error: `invalid_param:${pr.param}` });
+    }
+    if (!Number.isFinite(pr.min) || !Number.isFinite(pr.max) || !Number.isFinite(pr.step)) {
+      return res.status(400).json({ ok: false, error: `invalid_range:${pr.param}` });
+    }
+    if (pr.min > pr.max || pr.step <= 0) {
+      return res.status(400).json({ ok: false, error: `invalid_range_values:${pr.param}` });
+    }
+  }
+
+  if (isBacktestRunning()) {
+    return res.status(409).json({ ok: false, error: 'backtest_already_running', activeRunId: getActiveBacktestRunId() });
+  }
+  const sourceRun = db.data.backtestRuns.find((r) => r.id === body.sourceRunId);
+  if (!sourceRun) {
+    return res.status(404).json({ ok: false, error: 'source_run_not_found' });
+  }
+  if (sourceRun.status !== 'completed') {
+    return res.status(409).json({ ok: false, error: 'source_run_not_completed' });
+  }
+
+  const optimization = createQueuedOptimization({
+    sourceRun,
+    paramRanges: body.paramRanges as OptimizationParamRange[],
+  });
+
+  db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  db.data.optimizationResults = [optimization, ...db.data.optimizationResults].slice(0, OPTIMIZATION_HISTORY_LIMIT);
+  await db.write();
+
+  try {
+    spawnOptimizationProcess(optimization.id);
+  } catch (err) {
+    optimization.status = 'failed';
+    optimization.finishedAt = new Date().toISOString();
+    optimization.error = err instanceof Error ? err.message : String(err);
+    await db.write();
+    return res.status(500).json({ ok: false, error: 'optimization_spawn_failed' });
+  }
+
+  return res.status(201).json({ ok: true, optimization });
 });
 
 // ─── Risk Check Endpoint ──────────────────────────────────────────────
