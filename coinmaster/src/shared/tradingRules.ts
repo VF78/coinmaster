@@ -182,7 +182,7 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
   // ── Multi-timeframe arrays (back-compat: migrate from scalar if arrays absent) ──
   base.entryTimeframes = normalizeTimeframeArray(raw.entryTimeframes, [base.entryTf]);
   base.emergencyExitTimeframes = normalizeTimeframeArray(raw.emergencyExitTimeframes, [base.exitTf]);
-  base.engulfingLookbackCandles = clampNumber(raw.engulfingLookbackCandles, 1, 500, base.engulfingLookbackCandles);
+  base.engulfingLookbackCandles = Math.round(clampNumber(raw.engulfingLookbackCandles, 1, 500, base.engulfingLookbackCandles));
 
   // Keep scalar fields in sync with first element of array
   base.entryTf = base.entryTimeframes[0];
@@ -190,7 +190,7 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
 
   base.fvgRetrace = clampNumber(raw.fvgRetrace, 10, 90, base.fvgRetrace);
   base.fvgMinWidthPct = clampNumber(raw.fvgMinWidthPct, 0, 10, base.fvgMinWidthPct);
-  base.maxLeverage = clampNumber(raw.maxLeverage, 1, 50, base.maxLeverage);
+  base.maxLeverage = Math.round(clampNumber(raw.maxLeverage, 1, 50, base.maxLeverage));
   base.dailyDrawdown = clampNumber(raw.dailyDrawdown, 0, 100, base.dailyDrawdown);
   base.slPct = clampNumber(raw.slPct, 0, 1000, base.slPct);
   base.exitClosePct = clampNumber(raw.exitClosePct, 0, 100, base.exitClosePct);

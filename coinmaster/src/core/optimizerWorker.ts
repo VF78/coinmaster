@@ -34,6 +34,7 @@ import type { CandleTimeframe } from '../exchange/types.js';
 const MAX_CANDIDATES = 5000;
 const YIELD_EVERY_N = 5; // yield to event loop every N candidates
 const YIELD_MS = 2; // ms to sleep on yield
+const INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles']);
 
 const TF_LABEL_TO_CANDLE_TF: Record<string, CandleTimeframe> = {
   '5m': '5m',
@@ -78,24 +79,25 @@ function round(v: number, decimals = 2): number {
  * engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, exitClosePct, dailyDrawdown.
  */
 function applyParamToRules(rules: TradingRulesSettings, param: string, value: number): void {
-  if (param === 'slPct') rules.slPct = value;
+  const normalizedValue = INTEGER_PARAMS.has(param) ? Math.round(value) : value;
+  if (param === 'slPct') rules.slPct = normalizedValue;
   else if (param === 'tpLevels[0]' || param === 'tp1Pct') {
     if (!rules.tpLevels) rules.tpLevels = [6];
-    rules.tpLevels[0] = value;
+    rules.tpLevels[0] = normalizedValue;
   } else if (param === 'tpLevels[1]' || param === 'tp2Pct') {
     if (!rules.tpLevels) rules.tpLevels = [6];
-    if (rules.tpLevels.length < 2) rules.tpLevels.push(value);
-    else rules.tpLevels[1] = value;
+    if (rules.tpLevels.length < 2) rules.tpLevels.push(normalizedValue);
+    else rules.tpLevels[1] = normalizedValue;
   } else if (param === 'tpLevels[2]' || param === 'tp3Pct') {
     if (!rules.tpLevels) rules.tpLevels = [6];
-    while (rules.tpLevels.length < 3) rules.tpLevels.push(value);
-    rules.tpLevels[2] = value;
-  } else if (param === 'maxLeverage') rules.maxLeverage = value;
-  else if (param === 'engulfingLookbackCandles') rules.engulfingLookbackCandles = value;
-  else if (param === 'fvgRetrace') rules.fvgRetrace = value;
-  else if (param === 'fvgMinWidthPct') rules.fvgMinWidthPct = value;
-  else if (param === 'exitClosePct') rules.exitClosePct = value;
-  else if (param === 'dailyDrawdown') rules.dailyDrawdown = value;
+    while (rules.tpLevels.length < 3) rules.tpLevels.push(normalizedValue);
+    rules.tpLevels[2] = normalizedValue;
+  } else if (param === 'maxLeverage') rules.maxLeverage = normalizedValue;
+  else if (param === 'engulfingLookbackCandles') rules.engulfingLookbackCandles = normalizedValue;
+  else if (param === 'fvgRetrace') rules.fvgRetrace = normalizedValue;
+  else if (param === 'fvgMinWidthPct') rules.fvgMinWidthPct = normalizedValue;
+  else if (param === 'exitClosePct') rules.exitClosePct = normalizedValue;
+  else if (param === 'dailyDrawdown') rules.dailyDrawdown = normalizedValue;
 }
 
 function extractParamValue(rules: TradingRulesSettings, param: string): number | undefined {
@@ -131,13 +133,13 @@ function generateSteps(range: OptimizationParamRange): number[] {
  */
 function generateCandidates(
   ranges: OptimizationParamRange[],
-): Array<Record<string, number>> {
-  if (ranges.length === 0) return [{}];
+): { candidates: Array<Record<string, number>>; gridCandidates: number } {
+  if (ranges.length === 0) return { candidates: [{}], gridCandidates: 1 };
 
   // Generate per-param step arrays
   const perParam = ranges.map((r) => ({
     param: r.param,
-    values: generateSteps(r),
+    values: generateSteps(r).map((v) => (INTEGER_PARAMS.has(r.param) ? Math.round(v) : v)),
   }));
 
   // Compute total grid size
@@ -159,7 +161,7 @@ function generateCandidates(
       }
       combos = next;
     }
-    return combos;
+    return { candidates: combos, gridCandidates: perParam.reduce((acc, pp) => acc * new Set(pp.values).size, 1) };
   }
 
   // Sampled: stratified random sampling up to MAX_CANDIDATES
@@ -179,7 +181,7 @@ function generateCandidates(
       candidates.push(combo);
     }
   }
-  return candidates;
+  return { candidates, gridCandidates: perParam.reduce((acc, pp) => acc * new Set(pp.values).size, 1) };
 }
 
 // ─── Main Optimization Worker ────────────────────────────────────────
@@ -262,13 +264,14 @@ export async function executeOptimization(
     }
 
     // Generate candidates
-    const candidates = generateCandidates(opt.paramRanges);
+    const { candidates, gridCandidates } = generateCandidates(opt.paramRanges);
+    opt.searchSpaceCandidates = gridCandidates;
     opt.totalCandidates = candidates.length;
     opt.evaluatedCandidates = 0;
     await db.write();
 
     logger.info(
-      { component: 'optimizer', optimizationId, symbol, candidates: candidates.length },
+      { component: 'optimizer', optimizationId, symbol, candidates: candidates.length, gridCandidates },
       'starting optimization search',
     );
 
@@ -405,6 +408,7 @@ export function createQueuedOptimization(input: {
     baseRulesSnapshot: JSON.parse(JSON.stringify(sourceRun.rulesSnapshot)),
     paramRanges,
     createdAt: new Date().toISOString(),
+    searchSpaceCandidates: 0,
     totalCandidates: 0,
     evaluatedCandidates: 0,
     engineVersion: engine.version,

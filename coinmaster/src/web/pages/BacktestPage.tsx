@@ -105,6 +105,8 @@ const OPTIMIZATION_PARAM_SPECS: OptimizationParamSpec[] = [
   { param: 'dailyDrawdown', label: 'Daily drawdown %', kind: 'pct', min: 0.5, max: 15 },
 ];
 
+const OPTIMIZATION_INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles']);
+
 function getRulesValue(rules: TradingRulesSettings, param: string): number {
   switch (param) {
     case 'slPct': return rules.slPct;
@@ -143,12 +145,20 @@ function autoOptimizationStep(kind: OptimizationParamSpec['kind'], min: number, 
   return Math.max(1, Math.round(raw));
 }
 
+function normalizeOptimizationValue(param: string, value: number): number {
+  return OPTIMIZATION_INTEGER_PARAMS.has(param) ? Math.round(value) : value;
+}
+
 function buildOptimizationDrafts(rules: TradingRulesSettings, depth: OptimizationSearchDepth = 'balanced') {
   return OPTIMIZATION_PARAM_SPECS.map((spec) => {
     const current = getRulesValue(rules, spec.param);
     const span = Math.max(0.0001, Math.abs(current) * 0.5 || (spec.max - spec.min) * 0.3);
     let min = clampNumber(current - span, spec.min, spec.max);
     let max = clampNumber(current + span, spec.min, spec.max);
+    if (OPTIMIZATION_INTEGER_PARAMS.has(spec.param)) {
+      min = Math.round(min);
+      max = Math.round(max);
+    }
     if (min === max) {
       min = spec.min;
       max = spec.max;
@@ -395,7 +405,15 @@ export function BacktestPage() {
   }
 
   function updateOptimizationDraft(index: number, patch: Partial<(typeof optimizationDrafts)[number]>) {
-    setOptimizationDrafts((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+    setOptimizationDrafts((prev) => prev.map((item, i) => {
+      if (i !== index) return item;
+      const next = { ...item, ...patch };
+      if (OPTIMIZATION_INTEGER_PARAMS.has(next.param)) {
+        next.min = Math.round(next.min);
+        next.max = Math.round(next.max);
+      }
+      return next;
+    }));
   }
 
   function applyOptimizationDepth(depth: OptimizationSearchDepth) {
@@ -411,9 +429,9 @@ export function BacktestPage() {
     return optimizationDrafts
       .filter((item) => item.enabled)
       .map((item) => {
-        const min = Math.min(item.min, item.max);
-        const max = Math.max(item.min, item.max);
-        const step = autoOptimizationStep(item.kind, min, max, optimizationDepth);
+        const min = normalizeOptimizationValue(item.param, Math.min(item.min, item.max));
+        const max = normalizeOptimizationValue(item.param, Math.max(item.min, item.max));
+        const step = normalizeOptimizationValue(item.param, autoOptimizationStep(item.kind, min, max, optimizationDepth));
         return { param: item.param, min, max, step } satisfies OptimizationParamRange;
       });
   }
@@ -1025,7 +1043,8 @@ export function BacktestPage() {
               </div>
 
               <div className="bt-artifacts">
-                <small>{selectedOptimization.evaluatedCandidates} / {selectedOptimization.totalCandidates} candidates · Engine: {selectedOptimization.engineVersion}/{selectedOptimization.engineCommit?.slice(0, 8)}</small>
+                <small>{selectedOptimization.evaluatedCandidates} / {selectedOptimization.totalCandidates} candidates · Grid: {selectedOptimization.searchSpaceCandidates?.toLocaleString() ?? '—'} variants</small>
+                <small>Analyzed period: {toLocalDateStr(selectedOptimization.startTimeMs)} → {toLocalDateStr(selectedOptimization.endTimeMs)} · Engine: {selectedOptimization.engineVersion}/{selectedOptimization.engineCommit?.slice(0, 8)}</small>
               </div>
             </>
           ) : null}

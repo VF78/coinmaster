@@ -749,6 +749,7 @@ export interface OptimizationResult {
   createdAt: string;
   startedAt?: string;
   finishedAt?: string;
+  searchSpaceCandidates: number;
   totalCandidates: number;
   evaluatedCandidates: number;
   bestParams?: Partial<TradingRulesSettings>;
