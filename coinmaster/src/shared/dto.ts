@@ -749,6 +749,8 @@ export interface OptimizationResult {
   createdAt: string;
   startedAt?: string;
   finishedAt?: string;
+  workerPid?: number;
+  workerHeartbeatAt?: string;
   searchSpaceCandidates: number;
   totalCandidates: number;
   evaluatedCandidates: number;

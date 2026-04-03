@@ -5232,6 +5232,40 @@ function hasInFlightOptimization(optimizations: Array<{ status?: string }>): boo
   return optimizations.some((item) => item.status === 'queued' || item.status === 'running');
 }
 
+function isPidAlive(pid?: number | null): boolean {
+  if (!pid || !Number.isFinite(pid)) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function reconcileOptimizationState(db: Awaited<ReturnType<typeof getDb>>): Promise<void> {
+  db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  const activeOpt = db.data.optimizationResults.find((item) => item.status === 'queued' || item.status === 'running');
+  if (!activeOpt) return;
+
+  const nowMs = Date.now();
+  const startedMs = activeOpt.startedAt ? Date.parse(activeOpt.startedAt) : 0;
+  const heartbeatMs = activeOpt.workerHeartbeatAt ? Date.parse(activeOpt.workerHeartbeatAt) : 0;
+  const staleQueued = activeOpt.status === 'queued' && startedMs > 0 && nowMs - startedMs > 30_000;
+  const staleHeartbeat = activeOpt.status === 'running' && heartbeatMs > 0 && nowMs - heartbeatMs > 30_000;
+  const missingWorker = activeOpt.status === 'running' && activeOpt.workerPid && !isPidAlive(activeOpt.workerPid);
+
+  if (staleQueued || staleHeartbeat || missingWorker) {
+    activeOpt.status = 'failed';
+    activeOpt.finishedAt = new Date().toISOString();
+    activeOpt.error = staleQueued
+      ? 'optimizer worker did not start'
+      : missingWorker
+        ? 'optimizer worker exited unexpectedly'
+        : 'optimizer heartbeat timed out';
+    await db.write();
+  }
+}
+
 function spawnOptimizationProcess(optimizationId: string): void {
   const tsxBin = path.join(rootDir, 'node_modules/.bin/tsx');
   if (!existsSync(tsxBin)) {

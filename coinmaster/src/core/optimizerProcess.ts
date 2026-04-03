@@ -10,6 +10,16 @@ async function main() {
   }
 
   const db = await getDb();
+  await db.reload();
+  db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  const opt = db.data.optimizationResults.find((item) => item.id === optimizationId);
+  if (opt) {
+    opt.status = opt.status === 'completed' ? opt.status : 'running';
+    opt.startedAt = opt.startedAt || new Date().toISOString();
+    opt.workerPid = process.pid;
+    opt.workerHeartbeatAt = new Date().toISOString();
+    await db.write();
+  }
   const depositUsd = Number(db.data.settings?.depositUsd) || 1000;
   const exchange = new HyperliquidAdapter();
 
