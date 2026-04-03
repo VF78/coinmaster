@@ -4255,6 +4255,9 @@ rateLimitPruneTimer.unref();
 app.use('/api', (req: Request, res: Response, next: NextFunction) => {
   // Exclude health endpoints from rate limiting
   if (req.path === '/health' || req.path === '/health/perf') return next();
+  // Optimization endpoints are intentionally chatty while a long-running job is active;
+  // they are owner-protected and should not be throttled by the generic API limiter.
+  if (req.path.startsWith('/optimization')) return next();
 
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
   const now = Date.now();

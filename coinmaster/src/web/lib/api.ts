@@ -120,6 +120,7 @@ export function friendlyCodeMessage(code: string, fallback = 'Operation failed. 
     dd_lock_reset_failed: 'Could not reset the emergency stop.',
     positions_check_failed: 'Could not verify whether positions are flat. Try again in a moment.',
     positions_not_flat: 'Emergency stop can only be reset after all positions are flat.',
+    rate_limited: 'The server is temporarily busy. Try again in a few seconds.',
     test_failed: 'Could not send test message.',
     telegram_save_failed: 'Could not save Telegram settings.',
     hyperliquid_save_failed: 'Could not save Hyperliquid settings.',
