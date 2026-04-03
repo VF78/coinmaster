@@ -1043,7 +1043,12 @@ export function BacktestPage() {
               </div>
 
               <div className="bt-artifacts">
-                <small>{selectedOptimization.evaluatedCandidates} / {selectedOptimization.totalCandidates} candidates · Grid: {selectedOptimization.searchSpaceCandidates?.toLocaleString() ?? '—'} variants</small>
+                {(() => {
+                  const gridCandidates = selectedOptimization.searchSpaceCandidates ?? estimateOptimizationCandidates(selectedOptimization.paramRanges);
+                  return (
+                    <small>{selectedOptimization.evaluatedCandidates} / {selectedOptimization.totalCandidates} candidates · Grid: {gridCandidates.toLocaleString()} variants</small>
+                  );
+                })()}
                 <small>Analyzed period: {toLocalDateStr(selectedOptimization.startTimeMs)} → {toLocalDateStr(selectedOptimization.endTimeMs)} · Engine: {selectedOptimization.engineVersion}/{selectedOptimization.engineCommit?.slice(0, 8)}</small>
               </div>
             </>
