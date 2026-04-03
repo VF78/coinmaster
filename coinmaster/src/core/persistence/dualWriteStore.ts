@@ -33,6 +33,15 @@ export class DualWriteStore implements PersistenceStore {
     return this.primary.getData();
   }
 
+  async reload(): Promise<void> {
+    await this.primary.reload();
+    try {
+      await this.shadow.reload();
+    } catch (err: any) {
+      logger.error({ component: 'dual-write', err: err.message ?? err }, 'shadow reload failed (non-fatal)');
+    }
+  }
+
   async flush(): Promise<void> {
     // Primary write — must succeed
     await this.primary.flush();

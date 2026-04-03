@@ -158,6 +158,12 @@ export class LowdbStore implements PersistenceStore {
     return this.db.data;
   }
 
+  async reload(): Promise<void> {
+    if (!this.db) throw new Error('LowdbStore not initialised — call init() first');
+    this.db = await JSONFilePreset<DBShape>(this.file, defaultData);
+    ensureDbShape(this.db.data);
+  }
+
   async flush(): Promise<void> {
     if (!this.db) throw new Error('LowdbStore not initialised — call init() first');
     await this.db.write();

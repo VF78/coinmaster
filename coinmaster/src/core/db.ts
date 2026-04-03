@@ -14,6 +14,9 @@ export async function getDb() {
     get data(): DBShape {
       return store.getData();
     },
+    async reload(): Promise<void> {
+      await store.reload();
+    },
     async write(): Promise<void> {
       await store.flush();
     }

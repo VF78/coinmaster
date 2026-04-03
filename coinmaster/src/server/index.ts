@@ -5104,12 +5104,14 @@ if (ENABLE_REPLAY_API) {
 
 app.get('/api/backtest/runs', ownerAuth, async (_req, res) => {
   const db = await getDb();
+  await db.reload();
   db.data.backtestRuns = compactBacktestRuns(Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : []);
   return res.json({ ok: true, runs: db.data.backtestRuns });
 });
 
 app.get('/api/backtest/runs/:id', ownerAuth, async (req, res) => {
   const db = await getDb();
+  await db.reload();
   db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
   const run = db.data.backtestRuns.find((item) => item.id === req.params.id);
   if (!run) {
@@ -5120,6 +5122,7 @@ app.get('/api/backtest/runs/:id', ownerAuth, async (req, res) => {
 
 app.get('/api/backtest/ai-analysis/pending', ownerAuth, async (_req, res) => {
   const db = await getDb();
+  await db.reload();
   db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
   const runs = db.data.backtestRuns.filter((run) => run.status === 'completed' && run.aiAnalysis?.status === 'pending');
   return res.json({ ok: true, runs });
@@ -5251,12 +5254,14 @@ const OPTIMIZABLE_PARAMS = new Set([
 
 app.get('/api/optimization/results', ownerAuth, async (_req, res) => {
   const db = await getDb();
+  await db.reload();
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   return res.json({ ok: true, optimizations: db.data.optimizationResults });
 });
 
 app.get('/api/optimization/results/:id', ownerAuth, async (req, res) => {
   const db = await getDb();
+  await db.reload();
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   const opt = db.data.optimizationResults.find((o) => o.id === req.params.id);
   if (!opt) {
@@ -5267,6 +5272,7 @@ app.get('/api/optimization/results/:id', ownerAuth, async (req, res) => {
 
 app.get('/api/optimization/status', ownerAuth, async (_req, res) => {
   const db = await getDb();
+  await db.reload();
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   const activeOpt = db.data.optimizationResults.find((o) => o.status === 'queued' || o.status === 'running') ?? null;
   return res.json({

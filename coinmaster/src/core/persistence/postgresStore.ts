@@ -220,6 +220,23 @@ export class PostgresStore implements PersistenceStore {
     return this.data;
   }
 
+  async reload(): Promise<void> {
+    if (!this.pool) throw new Error('PostgresStore not initialised — call init() first');
+
+    const res = await this.pool.query(
+      'SELECT data FROM state_snapshot WHERE key = $1',
+      [SNAPSHOT_KEY]
+    );
+
+    if (res.rows.length > 0 && res.rows[0].data) {
+      this.data = res.rows[0].data as DBShape;
+    } else {
+      this.data = JSON.parse(JSON.stringify(defaultData));
+    }
+
+    ensureDbShape(this.data);
+  }
+
   async flush(): Promise<void> {
     if (!this.pool) throw new Error('PostgresStore not initialised — call init() first');
 

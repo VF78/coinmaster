@@ -17,6 +17,9 @@ export interface PersistenceStore {
   /** Returns the current in-memory data snapshot (mutable). */
   getData(): DBShape;
 
+  /** Reload the in-memory snapshot from the backing store. */
+  reload(): Promise<void>;
+
   /** Persist the current in-memory snapshot to the backing store. */
   flush(): Promise<void>;
 
