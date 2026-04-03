@@ -2264,6 +2264,30 @@ tbody tr:hover {
   font-size: 0.82rem;
 }
 
+.bt-opt-depth {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--border-color, #1e2d44);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+}
+
+.bt-opt-depth__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary, #e4e8f0);
+}
+
+.bt-opt-depth__buttons {
+  width: 100%;
+}
+
+.bt-opt-depth .rules-segmented__btn {
+  flex: 1;
+}
+
 .bt-opt-modal__list {
   display: grid;
   gap: 0.55rem;

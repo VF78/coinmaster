@@ -30,6 +30,13 @@ const HISTORY_PAGE_SIZE = 15;
 const POLL_INTERVAL_MS = 3_000;
 
 type HistorySortMode = 'created-desc' | 'roi-desc';
+type OptimizationSearchDepth = 'fast' | 'balanced' | 'deep';
+
+const OPTIMIZATION_SEARCH_DEPTHS: Record<OptimizationSearchDepth, { label: string; divisor: number; hint: string }> = {
+  fast: { label: 'Fast', divisor: 2, hint: 'Quicker grid, fewer candidate combinations.' },
+  balanced: { label: 'Balanced', divisor: 4, hint: 'Default mode: good coverage without brute force.' },
+  deep: { label: 'Deep', divisor: 8, hint: 'Denser grid, more candidates, still bounded.' },
+};
 
 function clampNumber(value: number, min: number, max: number) {
   if (!Number.isFinite(value)) return min;
@@ -129,14 +136,14 @@ function setRulesValue(rules: TradingRulesSettings, param: string, value: number
   }
 }
 
-function autoOptimizationStep(kind: OptimizationParamSpec['kind'], min: number, max: number): number {
+function autoOptimizationStep(kind: OptimizationParamSpec['kind'], min: number, max: number, depth: OptimizationSearchDepth): number {
   const span = Math.max(0, max - min);
-  const raw = span / 4 || (kind === 'decimal' ? 0.1 : 1);
+  const raw = span / OPTIMIZATION_SEARCH_DEPTHS[depth].divisor || (kind === 'decimal' ? 0.1 : 1);
   if (kind === 'decimal') return Number(Math.max(0.1, raw).toFixed(2));
   return Math.max(1, Math.round(raw));
 }
 
-function buildOptimizationDrafts(rules: TradingRulesSettings) {
+function buildOptimizationDrafts(rules: TradingRulesSettings, depth: OptimizationSearchDepth = 'balanced') {
   return OPTIMIZATION_PARAM_SPECS.map((spec) => {
     const current = getRulesValue(rules, spec.param);
     const span = Math.max(0.0001, Math.abs(current) * 0.5 || (spec.max - spec.min) * 0.3);
@@ -146,7 +153,7 @@ function buildOptimizationDrafts(rules: TradingRulesSettings) {
       min = spec.min;
       max = spec.max;
     }
-    const step = autoOptimizationStep(spec.kind, min, max);
+    const step = autoOptimizationStep(spec.kind, min, max, depth);
     return { ...spec, enabled: ['slPct', 'tpLevels[0]', 'maxLeverage', 'engulfingLookbackCandles', 'fvgRetrace'].includes(spec.param), min, max, step: spec.kind === 'decimal' ? Number(step.toFixed(2)) : Math.max(1, Math.round(step)) };
   });
 }
@@ -296,6 +303,7 @@ export function BacktestPage() {
   const [optimizationResults, setOptimizationResults] = useState<OptimizationResult[]>([]);
   const [selectedOptimization, setSelectedOptimization] = useState<OptimizationResult | null>(null);
   const [optimizationModalRun, setOptimizationModalRun] = useState<BacktestRun | null>(null);
+  const [optimizationDepth, setOptimizationDepth] = useState<OptimizationSearchDepth>('balanced');
   const [optimizationDrafts, setOptimizationDrafts] = useState<Array<ReturnType<typeof buildOptimizationDrafts>[number]>>([]);
   const [optimizationSubmitting, setOptimizationSubmitting] = useState(false);
   const [optimizationRunningId, setOptimizationRunningId] = useState<string | null>(null);
@@ -379,7 +387,8 @@ export function BacktestPage() {
   }, [applyRulesSnapshotToForm]);
 
   function openOptimizationModal(run: BacktestRun) {
-    const drafts = buildOptimizationDrafts(run.rulesSnapshot);
+    setOptimizationDepth('balanced');
+    const drafts = buildOptimizationDrafts(run.rulesSnapshot, 'balanced');
     setOptimizationModalRun(run);
     setOptimizationDrafts(drafts);
     setOptimizationInfo('');
@@ -387,6 +396,11 @@ export function BacktestPage() {
 
   function updateOptimizationDraft(index: number, patch: Partial<(typeof optimizationDrafts)[number]>) {
     setOptimizationDrafts((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+  }
+
+  function applyOptimizationDepth(depth: OptimizationSearchDepth) {
+    setOptimizationDepth(depth);
+    setOptimizationInfo(`Search depth set to ${OPTIMIZATION_SEARCH_DEPTHS[depth].label.toLowerCase()}.`);
   }
 
   function toggleOptimizationDraft(index: number, enabled: boolean) {
@@ -399,7 +413,7 @@ export function BacktestPage() {
       .map((item) => {
         const min = Math.min(item.min, item.max);
         const max = Math.max(item.min, item.max);
-        const step = autoOptimizationStep(item.kind, min, max);
+        const step = autoOptimizationStep(item.kind, min, max, optimizationDepth);
         return { param: item.param, min, max, step } satisfies OptimizationParamRange;
       });
   }
@@ -1105,6 +1119,31 @@ export function BacktestPage() {
               <span>Bias: {optimizationModalRun.biasMode.toUpperCase()}</span>
             </div>
 
+            <div className="bt-opt-depth">
+              <span className="bt-opt-depth__label">Search depth</span>
+              <div className="rules-segmented bt-opt-depth__buttons" role="tablist" aria-label="Optimization search depth">
+                {(Object.keys(OPTIMIZATION_SEARCH_DEPTHS) as OptimizationSearchDepth[]).map((depth) => {
+                  const meta = OPTIMIZATION_SEARCH_DEPTHS[depth];
+                  const active = optimizationDepth === depth;
+                  return (
+                    <button
+                      key={depth}
+                      type="button"
+                      className={`rules-segmented__btn ${active ? 'rules-segmented__btn--active' : ''}`}
+                      onClick={() => applyOptimizationDepth(depth)}
+                      disabled={optimizationSubmitting}
+                      title={meta.hint}
+                    >
+                      {meta.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="muted stat-note" style={{ margin: 0 }}>
+                {OPTIMIZATION_SEARCH_DEPTHS[optimizationDepth].hint}
+              </p>
+            </div>
+
             <div className="bt-opt-modal__list">
               {optimizationDrafts.map((item, index) => (
                 <div key={item.param} className={`bt-opt-row ${item.enabled ? 'bt-opt-row--active' : ''}`}>
@@ -1153,21 +1192,22 @@ export function BacktestPage() {
                     })()}
                   </div>
                   <div className="bt-opt-row__meta">
-                    Auto step: <strong>{autoOptimizationStep(item.kind, Math.min(item.min, item.max), Math.max(item.min, item.max))}</strong>
+                    Auto step: <strong>{autoOptimizationStep(item.kind, Math.min(item.min, item.max), Math.max(item.min, item.max), optimizationDepth)}</strong>
                   </div>
                 </div>
               ))}
             </div>
 
             <div className="bt-opt-modal__footer">
-              <div className="bt-opt-modal__budget">
-                {(() => {
-                  const ranges = buildOptimizationRequestRanges();
-                  const candidateCount = estimateOptimizationCandidates(ranges);
-                  return <span>Estimated search size: <strong>{candidateCount.toLocaleString()}</strong> candidates</span>;
-                })()}
-                <span>Search is bounded and runs in a separate process so the main app stays responsive.</span>
-              </div>
+            <div className="bt-opt-modal__budget">
+              {(() => {
+                const ranges = buildOptimizationRequestRanges();
+                const candidateCount = estimateOptimizationCandidates(ranges);
+                  const capNote = candidateCount > 5000 ? ' (capped at 5,000 by the worker)' : '';
+                  return <span>Estimated search size: <strong>{Math.min(candidateCount, 5000).toLocaleString()}</strong> candidates{capNote}</span>;
+              })()}
+              <span>Search is bounded and runs in a separate process so the main app stays responsive.</span>
+            </div>
               <div className="actions-row">
                 <Button variant="secondary" onClick={() => setOptimizationModalRun(null)} disabled={optimizationSubmitting}>Cancel</Button>
                 <Button variant="primary" onClick={() => { void handleStartOptimization(); }} disabled={optimizationSubmitting || optimizationRunningId !== null}>
