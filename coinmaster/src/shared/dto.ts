@@ -318,6 +318,8 @@ export interface RadarSignalRecord {
 export interface RadarSignalView extends RadarSignalRecord {
   candidateScore: number;
   verdict: RadarSignalVerdict;
+  /** Human-readable explanation of why this verdict was chosen. */
+  verdictReason?: string;
 }
 
 export interface RadarSignalCandidateGroup {
@@ -327,6 +329,8 @@ export interface RadarSignalCandidateGroup {
   bestScore: number;
   verdict: RadarSignalVerdict;
   verdictLabel: string;
+  /** Human-readable explanation of the group verdict. */
+  verdictReason?: string;
   sources: string[];
   lastSeenAt?: string;
 }
@@ -413,6 +417,12 @@ export interface RadarSignalsResponse {
     byChannel: Array<{ channel: string; count: number }>;
     qualityBySource: Array<({ source: string } & RadarSignalQualityBucket)>;
     qualityByConnector: Array<({ connector: string } & RadarSignalQualityBucket)>;
+    /** Outcome rollup by asset class (crypto, commodity, …). */
+    qualityByAsset: Array<{ asset: string } & RadarSignalQualityBucket>;
+    /** Outcome rollup by verdict class (ignore, watch, bias, actionable). */
+    qualityByVerdict: Array<{ verdict: string } & RadarSignalQualityBucket>;
+    /** Outcome rollup by signal family / kind (sourceMeta.kind). */
+    qualityByFamily: Array<{ family: string } & RadarSignalQualityBucket>;
     candidateGroups: RadarSignalCandidateGroup[];
   };
 }

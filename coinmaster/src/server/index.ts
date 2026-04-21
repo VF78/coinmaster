@@ -33,6 +33,7 @@ import type {
   LivePosition,
   PendingConfirmation,
   RadarSignalIngestPayload,
+  RadarSignalQualityBucket,
   RadarSignalRecord,
   RadarSignalStatus,
   RadarSignalVerdict,
@@ -336,7 +337,7 @@ type RadarSignalQualityAccumulator = {
 
 function summarizeRadarSignalQualityMap(
   map: Map<string, RadarSignalQualityAccumulator>,
-  key: 'source' | 'connector',
+  key: string,
 ) {
   return [...map.entries()]
     .sort((a, b) => b[1].total - a[1].total || a[0].localeCompare(b[0]))
@@ -392,13 +393,54 @@ function getRadarSignalCandidateScore(item: RadarSignalRecord): number {
   return Math.max(0, Math.min(100, score));
 }
 
-function getRadarSignalVerdict(score: number, item: Pick<RadarSignalRecord, 'status' | 'duplicateOf' | 'error'>): RadarSignalVerdict {
+/*
+ * Asset-class verdict policy.
+ *
+ * Crypto: standard thresholds (highest risk tolerance, most signals).
+ * Commodity (gold/oil): tighter — actionable requires higher conviction.
+ * Everything else: falls back to crypto-like defaults.
+ *
+ * Thresholds are { actionable, bias, watch } minimum scores.
+ */
+const RADAR_VERDICT_THRESHOLDS: Record<string, { actionable: number; bias: number; watch: number }> = {
+  crypto:    { actionable: 70, bias: 45, watch: 20 },
+  commodity: { actionable: 80, bias: 55, watch: 30 },
+};
+const RADAR_VERDICT_THRESHOLDS_DEFAULT = RADAR_VERDICT_THRESHOLDS.crypto;
+
+function getRadarVerdictThresholds(assetClass: AssetClass) {
+  return RADAR_VERDICT_THRESHOLDS[assetClass] ?? RADAR_VERDICT_THRESHOLDS_DEFAULT;
+}
+
+function getRadarSignalVerdict(
+  score: number,
+  item: Pick<RadarSignalRecord, 'status' | 'duplicateOf' | 'error'>,
+  assetClass: AssetClass = 'crypto',
+): RadarSignalVerdict {
   if (item.duplicateOf || item.error === 'duplicate_signal') return 'ignore';
   if (item.status === 'rejected') return 'ignore';
-  if (item.status === 'auto_order_placed' || score >= 70) return 'actionable';
-  if (score >= 45) return 'bias';
-  if (score >= 20) return 'watch';
+  const t = getRadarVerdictThresholds(assetClass);
+  if (item.status === 'auto_order_placed' || score >= t.actionable) return 'actionable';
+  if (score >= t.bias) return 'bias';
+  if (score >= t.watch) return 'watch';
   return 'ignore';
+}
+
+function getRadarVerdictReason(
+  score: number,
+  verdict: RadarSignalVerdict,
+  item: Pick<RadarSignalRecord, 'status' | 'duplicateOf' | 'error'>,
+  assetClass: AssetClass = 'crypto',
+): string {
+  if (item.duplicateOf || item.error === 'duplicate_signal') return 'duplicate signal — auto-ignored';
+  if (item.status === 'rejected') return 'rejected signal — auto-ignored';
+  const t = getRadarVerdictThresholds(assetClass);
+  const classLabel = assetClass === 'crypto' ? 'crypto' : assetClass === 'commodity' ? 'commodity' : assetClass;
+  if (item.status === 'auto_order_placed') return `auto-order placed → actionable (${classLabel})`;
+  if (verdict === 'actionable') return `score ${score} ≥ ${t.actionable} → actionable (${classLabel})`;
+  if (verdict === 'bias') return `score ${score} ≥ ${t.bias} → bias (${classLabel})`;
+  if (verdict === 'watch') return `score ${score} ≥ ${t.watch} → watch (${classLabel})`;
+  return `score ${score} below ${t.watch} → ignore (${classLabel})`;
 }
 
 function getRadarVerdictLabel(verdict: RadarSignalVerdict): string {
@@ -408,19 +450,23 @@ function getRadarVerdictLabel(verdict: RadarSignalVerdict): string {
   return 'Ignore';
 }
 
-function getRadarCandidateGroupVerdict(bestScore: number): RadarSignalVerdict {
-  if (bestScore >= 70) return 'actionable';
-  if (bestScore >= 45) return 'bias';
-  if (bestScore >= 20) return 'watch';
+function getRadarCandidateGroupVerdict(bestScore: number, assetClass: AssetClass = 'crypto'): RadarSignalVerdict {
+  const t = getRadarVerdictThresholds(assetClass);
+  if (bestScore >= t.actionable) return 'actionable';
+  if (bestScore >= t.bias) return 'bias';
+  if (bestScore >= t.watch) return 'watch';
   return 'ignore';
 }
 
 function enrichRadarSignal(item: RadarSignalRecord): RadarSignalView {
   const candidateScore = getRadarSignalCandidateScore(item);
+  const assetClass = inferAssetClassFromSymbol(item.symbol);
+  const verdict = getRadarSignalVerdict(candidateScore, item, assetClass);
   return {
     ...item,
     candidateScore,
-    verdict: getRadarSignalVerdict(candidateScore, item),
+    verdict,
+    verdictReason: getRadarVerdictReason(candidateScore, verdict, item, assetClass),
   };
 }
 
@@ -430,6 +476,7 @@ function buildRadarCandidateGroups(items: RadarSignalView[]) {
     side: 'buy' | 'sell';
     bestScore: number;
     verdict: RadarSignalVerdict;
+    assetClass: AssetClass;
     sources: Set<string>;
     lastSeenAt?: string;
     count: number;
@@ -439,10 +486,11 @@ function buildRadarCandidateGroups(items: RadarSignalView[]) {
     const key = `${item.symbol}:${item.side}`;
     const current = groups.get(key);
     const seenAt = getRadarSignalSeenAt(item);
+    const ac = inferAssetClassFromSymbol(item.symbol);
 
     if (current) {
       current.bestScore = Math.max(current.bestScore, item.candidateScore);
-      current.verdict = getRadarCandidateGroupVerdict(current.bestScore);
+      current.verdict = getRadarCandidateGroupVerdict(current.bestScore, ac);
       current.sources.add(item.source);
       current.count += 1;
       if (seenAt && (!current.lastSeenAt || seenAt > current.lastSeenAt)) current.lastSeenAt = seenAt;
@@ -453,7 +501,8 @@ function buildRadarCandidateGroups(items: RadarSignalView[]) {
       symbol: item.symbol,
       side: item.side,
       bestScore: item.candidateScore,
-      verdict: getRadarCandidateGroupVerdict(item.candidateScore),
+      verdict: getRadarCandidateGroupVerdict(item.candidateScore, ac),
+      assetClass: ac,
       sources: new Set([item.source]),
       lastSeenAt: seenAt,
       count: 1,
@@ -463,16 +512,21 @@ function buildRadarCandidateGroups(items: RadarSignalView[]) {
   return [...groups.values()]
     .sort((a, b) => b.bestScore - a.bestScore || b.count - a.count || String(b.lastSeenAt ?? '').localeCompare(String(a.lastSeenAt ?? '')))
     .slice(0, 30)
-    .map(({ symbol, side, bestScore, verdict, sources, lastSeenAt, count }) => ({
-      symbol,
-      side,
-      signalCount: count,
-      bestScore,
-      verdict,
-      verdictLabel: getRadarVerdictLabel(verdict),
-      sources: [...sources].sort().slice(0, 10),
-      lastSeenAt,
-    }));
+    .map(({ symbol, side, bestScore, verdict, assetClass, sources, lastSeenAt, count }) => {
+      const t = getRadarVerdictThresholds(assetClass);
+      const classLabel = assetClass === 'crypto' ? 'crypto' : assetClass === 'commodity' ? 'commodity' : assetClass;
+      return {
+        symbol,
+        side,
+        signalCount: count,
+        bestScore,
+        verdict,
+        verdictLabel: getRadarVerdictLabel(verdict),
+        verdictReason: `best score ${bestScore} vs ${classLabel} thresholds (a≥${t.actionable} b≥${t.bias} w≥${t.watch})`,
+        sources: [...sources].sort().slice(0, 10),
+        lastSeenAt,
+      };
+    });
 }
 
 function buildRadarSignalsSummary(items: RadarSignalView[]) {
@@ -482,6 +536,9 @@ function buildRadarSignalsSummary(items: RadarSignalView[]) {
   const channelCounts = new Map<string, number>();
   const sourceQuality = new Map<string, RadarSignalQualityAccumulator>();
   const connectorQuality = new Map<string, RadarSignalQualityAccumulator>();
+  const assetQuality = new Map<string, RadarSignalQualityAccumulator>();
+  const verdictQuality = new Map<string, RadarSignalQualityAccumulator>();
+  const familyQuality = new Map<string, RadarSignalQualityAccumulator>();
 
   const touchQuality = (map: Map<string, RadarSignalQualityAccumulator>, value: string | undefined, item: RadarSignalRecord) => {
     const key = String(value ?? '').trim();
@@ -520,6 +577,9 @@ function buildRadarSignalsSummary(items: RadarSignalView[]) {
 
     touchQuality(sourceQuality, item.source, item);
     touchQuality(connectorQuality, item.sourceMeta?.connector, item);
+    touchQuality(assetQuality, inferAssetClassFromSymbol(item.symbol), item);
+    touchQuality(verdictQuality, item.verdict, item);
+    touchQuality(familyQuality, item.sourceMeta?.kind, item);
   }
 
   return {
@@ -534,6 +594,9 @@ function buildRadarSignalsSummary(items: RadarSignalView[]) {
     byChannel: summarizeRadarSignalMap(channelCounts, 'channel') as Array<{ channel: string; count: number }>,
     qualityBySource: summarizeRadarSignalQualityMap(sourceQuality, 'source') as Array<{ source: string; total: number; pendingConfirmation: number; autoOrderPlaced: number; rejected: number; ignored: number; duplicates: number; lastSeenAt?: string }>,
     qualityByConnector: summarizeRadarSignalQualityMap(connectorQuality, 'connector') as Array<{ connector: string; total: number; pendingConfirmation: number; autoOrderPlaced: number; rejected: number; ignored: number; duplicates: number; lastSeenAt?: string }>,
+    qualityByAsset: summarizeRadarSignalQualityMap(assetQuality, 'asset') as Array<{ asset: string } & RadarSignalQualityBucket>,
+    qualityByVerdict: summarizeRadarSignalQualityMap(verdictQuality, 'verdict') as Array<{ verdict: string } & RadarSignalQualityBucket>,
+    qualityByFamily: summarizeRadarSignalQualityMap(familyQuality, 'family') as Array<{ family: string } & RadarSignalQualityBucket>,
     candidateGroups: buildRadarCandidateGroups(items),
   };
 }
