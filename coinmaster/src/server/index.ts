@@ -236,6 +236,43 @@ function ensureRadarSignalsState(db: Awaited<ReturnType<typeof getDb>>): RadarSi
   return db.data.radarSignals;
 }
 
+function reconcileRadarSignalOutcome(
+  db: Awaited<ReturnType<typeof getDb>>,
+  params: {
+    pendingId?: string;
+    orderId?: string;
+    status: RadarSignalStatus;
+    error?: string;
+  }
+): void {
+  const pendingId = String(params.pendingId ?? '').trim();
+  const orderId = String(params.orderId ?? '').trim();
+  if (!pendingId && !orderId) return;
+
+  const signals = ensureRadarSignalsState(db);
+  const updatedAt = new Date().toISOString();
+  let changed = false;
+
+  db.data.radarSignals = compactRadarSignals(signals.map((item) => {
+    const matchesPendingId = !!pendingId && item.pendingId === pendingId;
+    const matchesOrderId = !!orderId && item.orderId === orderId;
+    if (!matchesPendingId && !matchesOrderId) return item;
+
+    changed = true;
+    return {
+      ...item,
+      status: params.status,
+      updatedAt,
+      orderId: orderId || item.orderId,
+      error: params.error,
+    };
+  }));
+
+  if (!changed) {
+    db.data.radarSignals = signals;
+  }
+}
+
 type RadarSignalFilters = {
   status?: RadarSignalStatus;
   symbol?: string;
@@ -1990,6 +2027,11 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   // Risk check before submit
   const risk = await evaluateRiskGates({ emitAudit: false });
   if (!risk.canTrade) {
+    reconcileRadarSignalOutcome(db, {
+      pendingId,
+      status: 'rejected',
+      error: `risk_gate_blocked:${risk.blocks.join(',')}`,
+    });
     appendTradeEvent(db.data, {
       symbol: normalizedSymbol,
       source: 'live',
@@ -2136,6 +2178,11 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   });
 
   if (!ack.ok) {
+    reconcileRadarSignalOutcome(db, {
+      pendingId,
+      status: 'rejected',
+      error: ack.error ?? 'exchange_rejected',
+    });
     await db.write();
     await notifyOrderRejectedEvent({
       symbol: normalizedSymbol,
@@ -2145,6 +2192,11 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     return { ok: false, error: ack.error ?? 'exchange_rejected' };
   }
 
+  reconcileRadarSignalOutcome(db, {
+    pendingId,
+    orderId: ack.orderId,
+    status: 'auto_order_placed',
+  });
   db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
 
   const tpSl = resolveTpSlDefaults(usedPrice, side, undefined, undefined);
@@ -2174,6 +2226,11 @@ async function rejectPendingConfirmation(pendingId: string, actor: 'dashboard' |
   if (db.data.pendingConfirmations.length === before) {
     return { ok: false, error: 'pending_not_found' };
   }
+  reconcileRadarSignalOutcome(db, {
+    pendingId,
+    status: 'rejected',
+    error: 'pending_confirmation_rejected',
+  });
   appendTradeEvent(db.data, {
     symbol: LIVE_SYMBOL,
     source: 'live',
