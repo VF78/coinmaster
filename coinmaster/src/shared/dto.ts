@@ -286,6 +286,7 @@ export interface PendingConfirmation {
 }
 
 export type RadarSignalStatus = 'pending_confirmation' | 'auto_order_placed' | 'rejected' | 'ignored';
+export type RadarSignalVerdict = 'ignore' | 'watch' | 'bias' | 'actionable';
 
 export interface RadarSignalSourceMeta {
   connector?: string;
@@ -316,6 +317,7 @@ export interface RadarSignalRecord {
 
 export interface RadarSignalView extends RadarSignalRecord {
   candidateScore: number;
+  verdict: RadarSignalVerdict;
 }
 
 export interface RadarSignalCandidateGroup {
@@ -323,6 +325,8 @@ export interface RadarSignalCandidateGroup {
   side: 'buy' | 'sell';
   signalCount: number;
   bestScore: number;
+  verdict: RadarSignalVerdict;
+  verdictLabel: string;
   sources: string[];
   lastSeenAt?: string;
 }

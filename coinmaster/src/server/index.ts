@@ -35,6 +35,7 @@ import type {
   RadarSignalIngestPayload,
   RadarSignalRecord,
   RadarSignalStatus,
+  RadarSignalVerdict,
   RadarSignalView,
   SignalStrategy,
   TelegramOutboxItem,
@@ -391,10 +392,35 @@ function getRadarSignalCandidateScore(item: RadarSignalRecord): number {
   return Math.max(0, Math.min(100, score));
 }
 
+function getRadarSignalVerdict(score: number, item: Pick<RadarSignalRecord, 'status' | 'duplicateOf' | 'error'>): RadarSignalVerdict {
+  if (item.duplicateOf || item.error === 'duplicate_signal') return 'ignore';
+  if (item.status === 'rejected') return 'ignore';
+  if (item.status === 'auto_order_placed' || score >= 70) return 'actionable';
+  if (score >= 45) return 'bias';
+  if (score >= 20) return 'watch';
+  return 'ignore';
+}
+
+function getRadarVerdictLabel(verdict: RadarSignalVerdict): string {
+  if (verdict === 'actionable') return 'Actionable';
+  if (verdict === 'bias') return 'Bias';
+  if (verdict === 'watch') return 'Watch';
+  return 'Ignore';
+}
+
+function getRadarCandidateGroupVerdict(bestScore: number): RadarSignalVerdict {
+  if (bestScore >= 70) return 'actionable';
+  if (bestScore >= 45) return 'bias';
+  if (bestScore >= 20) return 'watch';
+  return 'ignore';
+}
+
 function enrichRadarSignal(item: RadarSignalRecord): RadarSignalView {
+  const candidateScore = getRadarSignalCandidateScore(item);
   return {
     ...item,
-    candidateScore: getRadarSignalCandidateScore(item),
+    candidateScore,
+    verdict: getRadarSignalVerdict(candidateScore, item),
   };
 }
 
@@ -403,6 +429,7 @@ function buildRadarCandidateGroups(items: RadarSignalView[]) {
     symbol: string;
     side: 'buy' | 'sell';
     bestScore: number;
+    verdict: RadarSignalVerdict;
     sources: Set<string>;
     lastSeenAt?: string;
     count: number;
@@ -415,6 +442,7 @@ function buildRadarCandidateGroups(items: RadarSignalView[]) {
 
     if (current) {
       current.bestScore = Math.max(current.bestScore, item.candidateScore);
+      current.verdict = getRadarCandidateGroupVerdict(current.bestScore);
       current.sources.add(item.source);
       current.count += 1;
       if (seenAt && (!current.lastSeenAt || seenAt > current.lastSeenAt)) current.lastSeenAt = seenAt;
@@ -425,6 +453,7 @@ function buildRadarCandidateGroups(items: RadarSignalView[]) {
       symbol: item.symbol,
       side: item.side,
       bestScore: item.candidateScore,
+      verdict: getRadarCandidateGroupVerdict(item.candidateScore),
       sources: new Set([item.source]),
       lastSeenAt: seenAt,
       count: 1,
@@ -434,11 +463,13 @@ function buildRadarCandidateGroups(items: RadarSignalView[]) {
   return [...groups.values()]
     .sort((a, b) => b.bestScore - a.bestScore || b.count - a.count || String(b.lastSeenAt ?? '').localeCompare(String(a.lastSeenAt ?? '')))
     .slice(0, 30)
-    .map(({ symbol, side, bestScore, sources, lastSeenAt, count }) => ({
+    .map(({ symbol, side, bestScore, verdict, sources, lastSeenAt, count }) => ({
       symbol,
       side,
       signalCount: count,
       bestScore,
+      verdict,
+      verdictLabel: getRadarVerdictLabel(verdict),
       sources: [...sources].sort().slice(0, 10),
       lastSeenAt,
     }));
