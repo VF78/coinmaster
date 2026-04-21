@@ -170,6 +170,66 @@ function compactRadarSignals(items: RadarSignalRecord[]): RadarSignalRecord[] {
     .slice(0, RADAR_SIGNAL_HISTORY_LIMIT);
 }
 
+function normalizeRadarSourceMeta(raw: Partial<RadarSignalIngestPayload>['sourceMeta']): RadarSignalRecord['sourceMeta'] | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+
+  const connector = String(raw.connector ?? '').trim().toLowerCase().slice(0, 40);
+  const kind = String(raw.kind ?? '').trim().toLowerCase().slice(0, 40);
+  const channel = String(raw.channel ?? '').trim().toLowerCase().slice(0, 80);
+  const externalId = String(raw.externalId ?? '').trim().slice(0, 160);
+  const messageTs = String(raw.messageTs ?? '').trim().slice(0, 64);
+
+  const meta: RadarSignalRecord['sourceMeta'] = {};
+  if (connector) meta.connector = connector;
+  if (kind) meta.kind = kind;
+  if (channel) meta.channel = channel;
+  if (externalId) meta.externalId = externalId;
+  if (messageTs) meta.messageTs = messageTs;
+
+  return Object.keys(meta).length > 0 ? meta : undefined;
+}
+
+function buildRadarSourceLabel(source: string, meta?: RadarSignalRecord['sourceMeta']): string {
+  const base = source.trim().slice(0, 80);
+  if (base) return base;
+
+  const parts = [meta?.connector, meta?.kind, meta?.channel]
+    .map((value) => String(value ?? '').trim())
+    .filter(Boolean);
+
+  return parts.length > 0 ? parts.join(':').slice(0, 80) : '';
+}
+
+function buildRadarSignalDedupeKey(params: {
+  symbol: string;
+  side: 'buy' | 'sell';
+  timeframe: TradingRulesTimeframe;
+  source: string;
+  reason: string;
+  sourceMeta?: RadarSignalRecord['sourceMeta'];
+}): string | undefined {
+  const connector = params.sourceMeta?.connector?.trim().toLowerCase();
+  const kind = params.sourceMeta?.kind?.trim().toLowerCase();
+  const channel = params.sourceMeta?.channel?.trim().toLowerCase();
+  const externalId = params.sourceMeta?.externalId?.trim();
+  const messageTs = params.sourceMeta?.messageTs?.trim();
+
+  if (connector && kind && channel && externalId) {
+    return [
+      connector,
+      kind,
+      channel,
+      externalId,
+      messageTs || 'na',
+      params.symbol,
+      params.side,
+      params.timeframe,
+    ].join('|');
+  }
+
+  return undefined;
+}
+
 function ensureRadarSignalsState(db: Awaited<ReturnType<typeof getDb>>): RadarSignalRecord[] {
   db.data.radarSignals = Array.isArray(db.data.radarSignals) ? compactRadarSignals(db.data.radarSignals) : [];
   return db.data.radarSignals;
@@ -5543,9 +5603,13 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
   const symbol = normalizeSymbol(String(payload.symbol ?? ''));
   const side = payload.side === 'buy' || payload.side === 'sell' ? payload.side : null;
   const timeframe = isTradingRulesTimeframe(payload.timeframe) ? payload.timeframe : '15m';
-  const source = String(payload.source ?? '').trim().slice(0, 80);
+  const sourceMeta = normalizeRadarSourceMeta(payload.sourceMeta);
+  const source = buildRadarSourceLabel(String(payload.source ?? ''), sourceMeta);
   const reason = String(payload.reason ?? '').trim().slice(0, 280);
   const price = Number(payload.price);
+  const dedupeKey = side
+    ? buildRadarSignalDedupeKey({ symbol, side, timeframe, source, reason, sourceMeta })
+    : undefined;
 
   if (!symbol || !side || !source || !reason || !Number.isFinite(price) || price <= 0) {
     return { ok: false, status: 400, error: 'invalid_radar_signal_payload' };
@@ -5555,11 +5619,13 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
   const signals = ensureRadarSignalsState(db);
   const nowIso = new Date().toISOString();
   const duplicate = signals.find((item) =>
-    item.symbol === symbol
-    && item.side === side
-    && item.timeframe === timeframe
-    && item.source === source
-    && item.reason === reason
+    (dedupeKey && item.dedupeKey ? item.dedupeKey === dedupeKey : (
+      item.symbol === symbol
+      && item.side === side
+      && item.timeframe === timeframe
+      && item.source === source
+      && item.reason === reason
+    ))
     && Number.isFinite(Date.parse(item.createdAt))
     && (Date.now() - Date.parse(item.createdAt)) <= RADAR_SIGNAL_DEDUP_MS
   );
@@ -5570,11 +5636,13 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
     side,
     timeframe,
     source,
+    sourceMeta,
     reason,
     price,
     status: 'ignored',
     createdAt: nowIso,
     updatedAt: nowIso,
+    dedupeKey,
     duplicateOf: duplicate?.id,
     error: duplicate ? 'duplicate_signal' : undefined,
   };

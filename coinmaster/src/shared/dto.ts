@@ -287,17 +287,27 @@ export interface PendingConfirmation {
 
 export type RadarSignalStatus = 'pending_confirmation' | 'auto_order_placed' | 'rejected' | 'ignored';
 
+export interface RadarSignalSourceMeta {
+  connector?: string;
+  kind?: string;
+  channel?: string;
+  externalId?: string;
+  messageTs?: string;
+}
+
 export interface RadarSignalRecord {
   id: string;
   symbol: string;
   side: 'buy' | 'sell';
   timeframe: TradingRulesTimeframe;
   source: string;
+  sourceMeta?: RadarSignalSourceMeta;
   reason: string;
   price: number;
   status: RadarSignalStatus;
   createdAt: string;
   updatedAt: string;
+  dedupeKey?: string;
   pendingId?: string;
   orderId?: string;
   error?: string;
@@ -368,7 +378,8 @@ export interface RadarSignalIngestPayload {
   symbol: string;
   side: 'buy' | 'sell';
   timeframe?: TradingRulesTimeframe;
-  source: string;
+  source?: string;
+  sourceMeta?: RadarSignalSourceMeta;
   reason: string;
   price: number;
 }
