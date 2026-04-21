@@ -41,7 +41,7 @@ import { inferAssetClassFromSymbol, normalizeTradingRules } from '../shared/trad
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
+import type { Candle, CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
 import { applyAiMasterQaAnswer, buildAiMasterInsight, buildAiMasterQaQuestion, pruneAiMasterCollections } from './aiMaster.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
@@ -6401,6 +6401,81 @@ function splitTakeProfitSizes(totalSize: number, tpCount: number, sizeDecimals: 
 /** correlationId → ActiveTradeState */
 const activeTrades = new Map<string, ActiveTradeState>();
 
+function getOrderClientOrderId(order: OrderSnapshot): string {
+  const raw = order.raw as Record<string, unknown> | undefined;
+  return String(
+    (raw as { cloid?: unknown } | undefined)?.cloid
+    ?? (raw as { clientOrderId?: unknown } | undefined)?.clientOrderId
+    ?? ''
+  ).trim();
+}
+
+function getSystemManagedProtectiveOrderMeta(order: OrderSnapshot): { kind: 'tp' | 'sl'; correlationId: string } | null {
+  const clientOrderId = getOrderClientOrderId(order).toLowerCase();
+  if (!clientOrderId) return null;
+
+  const tpMatch = clientOrderId.match(/^tptr\d+-auto-(.+)$/);
+  if (tpMatch?.[1]) {
+    return { kind: 'tp', correlationId: tpMatch[1] };
+  }
+
+  const slMatch = clientOrderId.match(/^sl-auto-(.+)$/);
+  if (slMatch?.[1]) {
+    return { kind: 'sl', correlationId: slMatch[1] };
+  }
+
+  return null;
+}
+
+async function recoverActiveTradesFromExchange(): Promise<void> {
+  if (activeTrades.size > 0) return;
+
+  const [positions, openOrders] = await Promise.all([
+    exchange.getOpenPositions(),
+    exchange.getOpenOrders(),
+  ]);
+
+  if (positions.length === 0 || openOrders.length === 0) return;
+
+  const grouped = new Map<string, { symbol: string; slOrderId: string | null; tpOrderIds: string[] }>();
+
+  for (const order of openOrders) {
+    const meta = getSystemManagedProtectiveOrderMeta(order);
+    if (!meta) continue;
+
+    const current = grouped.get(meta.correlationId) ?? {
+      symbol: order.symbol,
+      slOrderId: null,
+      tpOrderIds: [],
+    };
+
+    if (meta.kind === 'tp') current.tpOrderIds.push(order.id);
+    if (meta.kind === 'sl') current.slOrderId = order.id;
+    grouped.set(meta.correlationId, current);
+  }
+
+  let recovered = 0;
+  for (const [correlationId, row] of grouped) {
+    const position = positions.find((p) => normalizeSymbol(p.symbol) === normalizeSymbol(row.symbol));
+    if (!position || row.tpOrderIds.length === 0) continue;
+
+    activeTrades.set(correlationId, {
+      symbol: position.symbol,
+      side: position.side === 'long' ? 'buy' : 'sell',
+      entryPrice: position.entryPrice ?? position.markPrice ?? 0,
+      slOrderId: row.slOrderId,
+      tpOrderIds: [...new Set(row.tpOrderIds)],
+      firstTpFired: false,
+      positionSize: position.size,
+    });
+    recovered += 1;
+  }
+
+  if (recovered > 0) {
+    logger.info({ component: 'tp-monitor', recovered }, 'recovered system-managed TP tracking state from live exchange orders');
+  }
+}
+
 const symbolHaltBackoff = new Map<string, { untilMs: number; reason: string; updatedAt: string }>();
 const HALT_BACKOFF_MS = 10 * 60_000;
 
@@ -6557,7 +6632,17 @@ let tpFillMonitorTimer: NodeJS.Timeout | null = null;
 let tpFillMonitorBusy = false;
 
 async function runTpFillMonitorTick(): Promise<void> {
-  if (tpFillMonitorBusy || activeTrades.size === 0) return;
+  if (tpFillMonitorBusy) return;
+
+  if (activeTrades.size === 0) {
+    try {
+      await recoverActiveTradesFromExchange();
+    } catch (err) {
+      logger.warn({ component: 'tp-monitor', err }, 'failed to recover TP tracking state from live exchange orders');
+    }
+  }
+
+  if (activeTrades.size === 0) return;
   tpFillMonitorBusy = true;
   try {
     const openOrders = await exchange.getOpenOrders();
