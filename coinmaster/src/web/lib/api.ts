@@ -324,6 +324,19 @@ export function postRadarSignal(payload: RadarSignalIngestPayload) {
   });
 }
 
+export function postRadarSignalBatch(signals: RadarSignalIngestPayload[]) {
+  return jsonFetch<{
+    ok: boolean;
+    accepted: number;
+    rejected: number;
+    results: Array<{ ok: boolean; signal?: RadarSignalIngestResponse['signal']; error?: string }>;
+  }>('/api/radar/signals/batch', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ signals }),
+  });
+}
+
 // ─── Order Confirmation Flow ──────────────────────────────────────────
 
 export interface PlaceOrderPayload {

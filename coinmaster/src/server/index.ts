@@ -5534,19 +5534,12 @@ app.get('/api/live/orders/diagnostics', ownerAuth, async (_req, res) => {
   }
 });
 
-app.get('/api/radar/signals', ownerAuth, async (req, res) => {
-  const limitRaw = Number(req.query.limit ?? 50);
-  const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(200, Math.trunc(limitRaw))) : 50;
-
-  const db = await getDb();
-  const signals = ensureRadarSignalsState(db)
-    .slice(0, limit);
-
-  return res.json({ ok: true, signals });
-});
-
-app.post('/api/radar/signals', ownerAuth, async (req, res) => {
-  const payload = (req.body ?? {}) as Partial<RadarSignalIngestPayload>;
+async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ingestSource: string): Promise<{
+  ok: boolean;
+  status: number;
+  signal?: RadarSignalRecord;
+  error?: string;
+}> {
   const symbol = normalizeSymbol(String(payload.symbol ?? ''));
   const side = payload.side === 'buy' || payload.side === 'sell' ? payload.side : null;
   const timeframe = isTradingRulesTimeframe(payload.timeframe) ? payload.timeframe : '15m';
@@ -5555,7 +5548,7 @@ app.post('/api/radar/signals', ownerAuth, async (req, res) => {
   const price = Number(payload.price);
 
   if (!symbol || !side || !source || !reason || !Number.isFinite(price) || price <= 0) {
-    return res.status(400).json({ ok: false, error: 'invalid_radar_signal_payload' });
+    return { ok: false, status: 400, error: 'invalid_radar_signal_payload' };
   }
 
   const db = await getDb();
@@ -5579,7 +5572,7 @@ app.post('/api/radar/signals', ownerAuth, async (req, res) => {
     source,
     reason,
     price,
-    status: duplicate ? 'ignored' : 'ignored',
+    status: 'ignored',
     createdAt: nowIso,
     updatedAt: nowIso,
     duplicateOf: duplicate?.id,
@@ -5591,7 +5584,7 @@ app.post('/api/radar/signals', ownerAuth, async (req, res) => {
   await db.write();
 
   if (duplicate) {
-    return res.json({ ok: true, signal: record });
+    return { ok: true, status: 200, signal: record };
   }
 
   const effectiveRules = rulesCache.getEffectiveRules();
@@ -5606,7 +5599,7 @@ app.post('/api/radar/signals', ownerAuth, async (req, res) => {
     effectiveRules,
     autoConfirm: !!effectiveRules.raw?.autoConfirm,
     sourceLabel: source,
-    auditDetails: { radarSource: source, ingest: 'owner_api' },
+    auditDetails: { radarSource: source, ingest: ingestSource },
   });
 
   record.status = handoff.status;
@@ -5617,7 +5610,49 @@ app.post('/api/radar/signals', ownerAuth, async (req, res) => {
   db.data.radarSignals = compactRadarSignals(db.data.radarSignals.map((item) => item.id === record.id ? record : item));
   await db.write();
 
-  return res.status(record.status === 'rejected' ? 400 : 200).json({ ok: record.status !== 'rejected', signal: record });
+  return { ok: record.status !== 'rejected', status: record.status === 'rejected' ? 400 : 200, signal: record };
+}
+
+app.get('/api/radar/signals', ownerAuth, async (req, res) => {
+  const limitRaw = Number(req.query.limit ?? 50);
+  const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(200, Math.trunc(limitRaw))) : 50;
+
+  const db = await getDb();
+  const signals = ensureRadarSignalsState(db)
+    .slice(0, limit);
+
+  return res.json({ ok: true, signals });
+});
+
+app.post('/api/radar/signals', ownerAuth, async (req, res) => {
+  const result = await ingestRadarSignal((req.body ?? {}) as Partial<RadarSignalIngestPayload>, 'owner_api');
+  if (!result.signal) return res.status(result.status).json({ ok: false, error: result.error ?? 'radar_signal_ingest_failed' });
+  return res.status(result.status).json({ ok: result.ok, signal: result.signal });
+});
+
+app.post('/api/radar/signals/batch', ownerAuth, async (req, res) => {
+  const items = Array.isArray((req.body as { signals?: unknown } | undefined)?.signals)
+    ? ((req.body as { signals: unknown[] }).signals)
+    : [];
+
+  if (items.length === 0 || items.length > 50) {
+    return res.status(400).json({ ok: false, error: 'invalid_radar_signal_batch' });
+  }
+
+  const results: Array<{ ok: boolean; signal?: RadarSignalRecord; error?: string }> = [];
+  let rejected = 0;
+  for (const item of items) {
+    const result = await ingestRadarSignal((item ?? {}) as Partial<RadarSignalIngestPayload>, 'owner_batch_api');
+    if (!result.ok) rejected += 1;
+    results.push({ ok: result.ok, signal: result.signal, error: result.error });
+  }
+
+  return res.status(rejected > 0 ? 207 : 200).json({
+    ok: rejected === 0,
+    accepted: results.length - rejected,
+    rejected,
+    results,
+  });
 });
 
 app.get('/api/live/pending-confirmations', ownerAuth, async (_req, res) => {
