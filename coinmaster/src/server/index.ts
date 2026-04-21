@@ -322,17 +322,71 @@ function summarizeRadarSignalMap(map: Map<string, number>, key: 'source' | 'conn
     .map(([value, count]) => ({ [key]: value, count }));
 }
 
+type RadarSignalQualityAccumulator = {
+  total: number;
+  pendingConfirmation: number;
+  autoOrderPlaced: number;
+  rejected: number;
+  ignored: number;
+  duplicates: number;
+  lastSeenAt?: string;
+};
+
+function summarizeRadarSignalQualityMap(
+  map: Map<string, RadarSignalQualityAccumulator>,
+  key: 'source' | 'connector',
+) {
+  return [...map.entries()]
+    .sort((a, b) => b[1].total - a[1].total || a[0].localeCompare(b[0]))
+    .slice(0, 20)
+    .map(([value, stats]) => ({ [key]: value, ...stats }));
+}
+
 function buildRadarSignalsSummary(items: RadarSignalRecord[]) {
   const sourceCounts = new Map<string, number>();
   const connectorCounts = new Map<string, number>();
   const kindCounts = new Map<string, number>();
   const channelCounts = new Map<string, number>();
+  const sourceQuality = new Map<string, RadarSignalQualityAccumulator>();
+  const connectorQuality = new Map<string, RadarSignalQualityAccumulator>();
+
+  const touchQuality = (map: Map<string, RadarSignalQualityAccumulator>, value: string | undefined, item: RadarSignalRecord) => {
+    const key = String(value ?? '').trim();
+    if (!key) return;
+
+    const current = map.get(key) ?? {
+      total: 0,
+      pendingConfirmation: 0,
+      autoOrderPlaced: 0,
+      rejected: 0,
+      ignored: 0,
+      duplicates: 0,
+      lastSeenAt: undefined,
+    };
+
+    current.total += 1;
+    if (item.status === 'pending_confirmation') current.pendingConfirmation += 1;
+    if (item.status === 'auto_order_placed') current.autoOrderPlaced += 1;
+    if (item.status === 'rejected') current.rejected += 1;
+    if (item.status === 'ignored') current.ignored += 1;
+    if (item.duplicateOf || item.error === 'duplicate_signal') current.duplicates += 1;
+
+    const seenAt = item.updatedAt || item.createdAt;
+    if (seenAt && (!current.lastSeenAt || seenAt > current.lastSeenAt)) {
+      current.lastSeenAt = seenAt;
+    }
+
+    map.set(key, current);
+  };
 
   for (const item of items) {
     sourceCounts.set(item.source, (sourceCounts.get(item.source) ?? 0) + 1);
     if (item.sourceMeta?.connector) connectorCounts.set(item.sourceMeta.connector, (connectorCounts.get(item.sourceMeta.connector) ?? 0) + 1);
     if (item.sourceMeta?.kind) kindCounts.set(item.sourceMeta.kind, (kindCounts.get(item.sourceMeta.kind) ?? 0) + 1);
     if (item.sourceMeta?.channel) channelCounts.set(item.sourceMeta.channel, (channelCounts.get(item.sourceMeta.channel) ?? 0) + 1);
+
+    touchQuality(sourceQuality, item.source, item);
+    touchQuality(connectorQuality, item.sourceMeta?.connector, item);
   }
 
   return {
@@ -345,6 +399,8 @@ function buildRadarSignalsSummary(items: RadarSignalRecord[]) {
     byConnector: summarizeRadarSignalMap(connectorCounts, 'connector') as Array<{ connector: string; count: number }>,
     byKind: summarizeRadarSignalMap(kindCounts, 'kind') as Array<{ kind: string; count: number }>,
     byChannel: summarizeRadarSignalMap(channelCounts, 'channel') as Array<{ channel: string; count: number }>,
+    qualityBySource: summarizeRadarSignalQualityMap(sourceQuality, 'source') as Array<{ source: string; total: number; pendingConfirmation: number; autoOrderPlaced: number; rejected: number; ignored: number; duplicates: number; lastSeenAt?: string }>,
+    qualityByConnector: summarizeRadarSignalQualityMap(connectorQuality, 'connector') as Array<{ connector: string; total: number; pendingConfirmation: number; autoOrderPlaced: number; rejected: number; ignored: number; duplicates: number; lastSeenAt?: string }>,
   };
 }
 

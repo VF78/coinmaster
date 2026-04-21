@@ -371,6 +371,16 @@ export interface DashboardResponse {
   customBiasControls: DashboardCustomBiasControl[];
 }
 
+export interface RadarSignalQualityBucket {
+  total: number;
+  pendingConfirmation: number;
+  autoOrderPlaced: number;
+  rejected: number;
+  ignored: number;
+  duplicates: number;
+  lastSeenAt?: string;
+}
+
 export interface RadarSignalsResponse {
   ok: boolean;
   signals: RadarSignalRecord[];
@@ -384,6 +394,8 @@ export interface RadarSignalsResponse {
     byConnector: Array<{ connector: string; count: number }>;
     byKind: Array<{ kind: string; count: number }>;
     byChannel: Array<{ channel: string; count: number }>;
+    qualityBySource: Array<({ source: string } & RadarSignalQualityBucket)>;
+    qualityByConnector: Array<({ connector: string } & RadarSignalQualityBucket)>;
   };
 }
 
