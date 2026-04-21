@@ -26,6 +26,7 @@ import type {
   PostTradeAnalyticsResponse,
   RadarSignalIngestPayload,
   RadarSignalIngestResponse,
+  RadarSignalsQuery,
   RadarSignalsResponse,
   TradingRulesSettings,
   TradingRulesSettingsResponse,
@@ -311,8 +312,13 @@ export function rejectPendingConfirmation(id: string) {
   });
 }
 
-export function getRadarSignals(limit = 50) {
-  const params = new URLSearchParams({ limit: String(limit) });
+export function getRadarSignals(limitOrQuery: number | RadarSignalsQuery = 50) {
+  const query = typeof limitOrQuery === 'number' ? { limit: limitOrQuery } : limitOrQuery;
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value === undefined || value === null || value === '') continue;
+    params.set(key, String(value));
+  }
   return jsonFetch<RadarSignalsResponse>(`/api/radar/signals?${params.toString()}`);
 }
 

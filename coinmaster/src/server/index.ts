@@ -34,6 +34,7 @@ import type {
   PendingConfirmation,
   RadarSignalIngestPayload,
   RadarSignalRecord,
+  RadarSignalStatus,
   SignalStrategy,
   TelegramOutboxItem,
   TradeEvent,
@@ -233,6 +234,81 @@ function buildRadarSignalDedupeKey(params: {
 function ensureRadarSignalsState(db: Awaited<ReturnType<typeof getDb>>): RadarSignalRecord[] {
   db.data.radarSignals = Array.isArray(db.data.radarSignals) ? compactRadarSignals(db.data.radarSignals) : [];
   return db.data.radarSignals;
+}
+
+type RadarSignalFilters = {
+  status?: RadarSignalStatus;
+  symbol?: string;
+  connector?: string;
+  kind?: string;
+  channel?: string;
+  source?: string;
+};
+
+function isRadarSignalStatus(value: unknown): value is RadarSignalStatus {
+  return value === 'pending_confirmation' || value === 'auto_order_placed' || value === 'rejected' || value === 'ignored';
+}
+
+function normalizeRadarQueryValue(raw: unknown, maxLength: number, transform: 'lower' | 'upper' = 'lower'): string | undefined {
+  const value = String(raw ?? '').trim().slice(0, maxLength);
+  if (!value) return undefined;
+  return transform === 'upper' ? value.toUpperCase() : value.toLowerCase();
+}
+
+function parseRadarSignalFilters(query: Request['query']): RadarSignalFilters {
+  const statusRaw = normalizeRadarQueryValue(query.status, 32);
+
+  return {
+    status: isRadarSignalStatus(statusRaw) ? statusRaw : undefined,
+    symbol: normalizeRadarQueryValue(query.symbol, 32, 'upper'),
+    connector: normalizeRadarQueryValue(query.connector, 40),
+    kind: normalizeRadarQueryValue(query.kind, 40),
+    channel: normalizeRadarQueryValue(query.channel, 80),
+    source: normalizeRadarQueryValue(query.source, 80),
+  };
+}
+
+function matchesRadarSignalFilters(item: RadarSignalRecord, filters: RadarSignalFilters): boolean {
+  if (filters.status && item.status !== filters.status) return false;
+  if (filters.symbol && item.symbol.trim().toUpperCase() !== filters.symbol) return false;
+  if (filters.connector && item.sourceMeta?.connector?.trim().toLowerCase() !== filters.connector) return false;
+  if (filters.kind && item.sourceMeta?.kind?.trim().toLowerCase() !== filters.kind) return false;
+  if (filters.channel && item.sourceMeta?.channel?.trim().toLowerCase() !== filters.channel) return false;
+  if (filters.source && item.source.trim().toLowerCase() !== filters.source) return false;
+  return true;
+}
+
+function summarizeRadarSignalMap(map: Map<string, number>, key: 'source' | 'connector' | 'kind' | 'channel') {
+  return [...map.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 20)
+    .map(([value, count]) => ({ [key]: value, count }));
+}
+
+function buildRadarSignalsSummary(items: RadarSignalRecord[]) {
+  const sourceCounts = new Map<string, number>();
+  const connectorCounts = new Map<string, number>();
+  const kindCounts = new Map<string, number>();
+  const channelCounts = new Map<string, number>();
+
+  for (const item of items) {
+    sourceCounts.set(item.source, (sourceCounts.get(item.source) ?? 0) + 1);
+    if (item.sourceMeta?.connector) connectorCounts.set(item.sourceMeta.connector, (connectorCounts.get(item.sourceMeta.connector) ?? 0) + 1);
+    if (item.sourceMeta?.kind) kindCounts.set(item.sourceMeta.kind, (kindCounts.get(item.sourceMeta.kind) ?? 0) + 1);
+    if (item.sourceMeta?.channel) channelCounts.set(item.sourceMeta.channel, (channelCounts.get(item.sourceMeta.channel) ?? 0) + 1);
+  }
+
+  return {
+    total: items.length,
+    pendingConfirmation: items.filter((item) => item.status === 'pending_confirmation').length,
+    autoOrderPlaced: items.filter((item) => item.status === 'auto_order_placed').length,
+    rejected: items.filter((item) => item.status === 'rejected').length,
+    ignored: items.filter((item) => item.status === 'ignored').length,
+    bySource: summarizeRadarSignalMap(sourceCounts, 'source') as Array<{ source: string; count: number }>,
+    byConnector: summarizeRadarSignalMap(connectorCounts, 'connector') as Array<{ connector: string; count: number }>,
+    byKind: summarizeRadarSignalMap(kindCounts, 'kind') as Array<{ kind: string; count: number }>,
+    byChannel: summarizeRadarSignalMap(channelCounts, 'channel') as Array<{ channel: string; count: number }>,
+  };
 }
 
 function formatPendingTriggerLabel(strategy: SignalStrategy, timeframe: TradingRulesTimeframe): string {
@@ -5684,29 +5760,17 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
 app.get('/api/radar/signals', ownerAuth, async (req, res) => {
   const limitRaw = Number(req.query.limit ?? 50);
   const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(200, Math.trunc(limitRaw))) : 50;
+  const filters = parseRadarSignalFilters(req.query);
 
   const db = await getDb();
   const allSignals = ensureRadarSignalsState(db);
-  const signals = allSignals.slice(0, limit);
-  const sourceCounts = new Map<string, number>();
-  for (const item of allSignals) {
-    sourceCounts.set(item.source, (sourceCounts.get(item.source) ?? 0) + 1);
-  }
+  const filteredSignals = allSignals.filter((item) => matchesRadarSignalFilters(item, filters));
+  const signals = filteredSignals.slice(0, limit);
 
   return res.json({
     ok: true,
     signals,
-    summary: {
-      total: allSignals.length,
-      pendingConfirmation: allSignals.filter((item) => item.status === 'pending_confirmation').length,
-      autoOrderPlaced: allSignals.filter((item) => item.status === 'auto_order_placed').length,
-      rejected: allSignals.filter((item) => item.status === 'rejected').length,
-      ignored: allSignals.filter((item) => item.status === 'ignored').length,
-      bySource: [...sourceCounts.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 20)
-        .map(([source, count]) => ({ source, count })),
-    },
+    summary: buildRadarSignalsSummary(filteredSignals),
   });
 });
 

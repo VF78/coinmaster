@@ -314,6 +314,16 @@ export interface RadarSignalRecord {
   duplicateOf?: string;
 }
 
+export interface RadarSignalsQuery {
+  limit?: number;
+  status?: RadarSignalStatus;
+  symbol?: string;
+  connector?: string;
+  kind?: string;
+  channel?: string;
+  source?: string;
+}
+
 export interface LiveOpenOrderBreakdown {
   total: number;
   systemManagedProtective: number;
@@ -371,6 +381,9 @@ export interface RadarSignalsResponse {
     rejected: number;
     ignored: number;
     bySource: Array<{ source: string; count: number }>;
+    byConnector: Array<{ connector: string; count: number }>;
+    byKind: Array<{ kind: string; count: number }>;
+    byChannel: Array<{ channel: string; count: number }>;
   };
 }
 
