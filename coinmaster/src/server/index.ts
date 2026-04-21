@@ -42,7 +42,7 @@ import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAlloca
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
-import { buildLiveDashboardState, getSystemManagedProtectiveOrderMeta, toLiveFill } from './liveSnapshot.js';
+import { buildLiveDashboardState, getOrderClientOrderId, getSystemManagedProtectiveOrderMeta, toLiveFill } from './liveSnapshot.js';
 import { applyAiMasterQaAnswer, buildAiMasterInsight, buildAiMasterQaQuestion, pruneAiMasterCollections } from './aiMaster.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
 import { evaluateFvg, type FvgTimeframe } from '../core/fvgEvaluator.js';
@@ -5427,6 +5427,56 @@ app.get('/api/live/status', ownerAuth, async (_req, res) => {
     ...live,
     ddLock: getDdLockState(),
   });
+});
+
+app.get('/api/live/orders/diagnostics', ownerAuth, async (_req, res) => {
+  try {
+    const openOrders = await exchange.getOpenOrders();
+    const rows = openOrders.map((order) => {
+      const meta = getSystemManagedProtectiveOrderMeta(order);
+      const raw = order.raw as Record<string, unknown> | undefined;
+      const reduceOnly = raw?.reduceOnly;
+      const orderType = String(
+        (raw as { orderType?: unknown } | undefined)?.orderType
+        ?? (raw as { trigger?: { tpsl?: unknown } } | undefined)?.trigger?.tpsl
+        ?? (raw as { tpsl?: unknown } | undefined)?.tpsl
+        ?? ''
+      ).trim();
+
+      return {
+        id: order.id,
+        symbol: order.symbol,
+        side: order.side,
+        price: order.price,
+        size: order.size,
+        clientOrderId: getOrderClientOrderId(order) || undefined,
+        reduceOnly: reduceOnly === undefined ? undefined : Boolean(reduceOnly === true || reduceOnly === 'true' || reduceOnly === 1 || reduceOnly === '1'),
+        orderType: orderType || undefined,
+        classification: meta?.kind === 'tp'
+          ? 'system_take_profit'
+          : meta?.kind === 'sl'
+            ? 'system_stop_loss'
+            : 'other_manual_or_external',
+      };
+    });
+
+    return res.json({
+      ok: true,
+      summary: {
+        total: rows.length,
+        systemTakeProfit: rows.filter((row) => row.classification === 'system_take_profit').length,
+        systemStopLoss: rows.filter((row) => row.classification === 'system_stop_loss').length,
+        otherManualOrExternal: rows.filter((row) => row.classification === 'other_manual_or_external').length,
+      },
+      orders: rows,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : 'live_order_diagnostics_failed',
+      orders: [],
+    });
+  }
 });
 
 app.get('/api/live/pending-confirmations', ownerAuth, async (_req, res) => {
