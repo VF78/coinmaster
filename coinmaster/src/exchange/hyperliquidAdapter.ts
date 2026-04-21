@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { Hyperliquid } from 'hyperliquid';
 import logger from '../lib/logger.js';
 import { ExchangeAdapter } from './adapter.js';
+import { HyperliquidInfoClient } from './hyperliquidInfoClient.js';
 import {
   AccountSnapshot,
   Candle,
@@ -41,6 +42,11 @@ const EXTRA_DEXES_ENV = String(process.env.HYPERLIQUID_EXTRA_DEXES || '')
   .map((x) => x.trim().toLowerCase())
   .filter(Boolean);
 
+const INFO_MAX_CONCURRENCY = Math.max(1, Number(process.env.HYPERLIQUID_INFO_MAX_CONCURRENCY || 4));
+const INFO_MAX_RETRIES = Math.max(0, Number(process.env.HYPERLIQUID_INFO_MAX_RETRIES || 3));
+const INFO_BASE_BACKOFF_MS = Math.max(50, Number(process.env.HYPERLIQUID_INFO_BASE_BACKOFF_MS || 250));
+const INFO_MAX_BACKOFF_MS = Math.max(1000, Number(process.env.HYPERLIQUID_INFO_MAX_BACKOFF_MS || 5000));
+
 export class HyperliquidAdapter implements ExchangeAdapter {
   readonly name = 'hyperliquid';
   readonly capabilities: ExchangeCapabilities;
@@ -49,6 +55,7 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   private readonly wsUrl: string;
   private readonly fetchImpl: typeof fetch;
   private readonly testnet: boolean;
+  private readonly infoClient: HyperliquidInfoClient;
 
   private readonly accountAddress?: string;
   private readonly privateKey?: string;
@@ -80,6 +87,14 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     this.wsUrl = options.wsUrl ?? DEFAULT_WS_URL;
     this.fetchImpl = options.fetchImpl ?? fetch;
     this.testnet = options.testnet ?? false;
+    this.infoClient = new HyperliquidInfoClient({
+      infoUrl: this.infoUrl,
+      fetchImpl: this.fetchImpl,
+      maxConcurrency: INFO_MAX_CONCURRENCY,
+      maxRetries: INFO_MAX_RETRIES,
+      baseBackoffMs: INFO_BASE_BACKOFF_MS,
+      maxBackoffMs: INFO_MAX_BACKOFF_MS,
+    });
 
     this.accountAddress = (options.accountAddress ?? process.env.HYPERLIQUID_ACCOUNT_ADDRESS ?? '').trim() || undefined;
     this.privateKey = (options.apiPrivateKey ?? process.env.HYPERLIQUID_API_PRIVATE_KEY ?? '').trim() || undefined;
@@ -1128,16 +1143,11 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   private async requestInfo<T>(payload: unknown): Promise<T> {
-    const response = await this.fetchImpl(this.infoUrl, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    return this.infoClient.request<T>(payload);
+  }
 
-    if (!response.ok) {
-      throw new Error(`Hyperliquid info request failed: ${response.status}`);
-    }
-
-    return response.json() as Promise<T>;
+  /** Diagnostic counters for the shared info-request coordinator. */
+  getInfoRequestStats() {
+    return this.infoClient.getStats();
   }
 }

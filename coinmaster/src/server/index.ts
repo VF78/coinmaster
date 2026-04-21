@@ -92,6 +92,15 @@ const ENABLE_FVG_MONITOR = String(process.env.ENABLE_FVG_MONITOR ?? 'false').toL
 const FVG_MONITOR_INTERVAL_MS = Math.max(60_000, Number(process.env.FVG_MONITOR_INTERVAL_MS || 300_000)); // default 5m
 const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
 const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(5000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 5000));
+
+/**
+ * Stagger first-tick warmups of the monitor loops so their initial
+ * Hyperliquid `info` reads do not collide in the same event-loop turn.
+ * The in-adapter request coordinator dedupes concurrent identical reads,
+ * but spreading the warmups still reduces peak upstream pressure and
+ * gives the read-cache (universe, dex discovery) a chance to warm.
+ */
+const MONITOR_STARTUP_STAGGER_MS = Math.max(0, Number(process.env.MONITOR_STARTUP_STAGGER_MS || 750));
 const DAILY_ANALYTICS_TZ = process.env.DAILY_ANALYTICS_TZ || 'Europe/Madrid';
 const DAILY_ANALYTICS_HOUR = Math.min(23, Math.max(0, Number(process.env.DAILY_ANALYTICS_HOUR || 23)));
 const DAILY_ANALYTICS_MINUTE = Math.min(59, Math.max(0, Number(process.env.DAILY_ANALYTICS_MINUTE || 5)));
@@ -3001,7 +3010,7 @@ async function runDrawdownWatchdogTick() {
   }
 }
 
-function startDrawdownWatchdog() {
+function startDrawdownWatchdog(startupDelayMs = 0) {
   if (!ENABLE_DRAWDOWN_WATCHDOG) {
     logger.info({ component: 'risk-gate' }, 'drawdown watchdog disabled via ENABLE_DRAWDOWN_WATCHDOG=false');
     return;
@@ -3012,15 +3021,24 @@ function startDrawdownWatchdog() {
   }
   if (drawdownWatchdogTimer) return;
 
-  // Warm-up tick immediately so baseline is created early in the day.
-  runDrawdownWatchdogTick().catch((err) => logger.warn({ component: 'risk-gate', err }, 'drawdown watchdog tick failed'));
-
-  drawdownWatchdogTimer = setInterval(() => {
+  const kickoff = () => {
+    // Warm-up tick so baseline is created early in the day.
     runDrawdownWatchdogTick().catch((err) => logger.warn({ component: 'risk-gate', err }, 'drawdown watchdog tick failed'));
-  }, DRAWDOWN_WATCHDOG_INTERVAL_MS);
-  drawdownWatchdogTimer.unref?.();
 
-  logger.info({ component: 'risk-gate', intervalMs: DRAWDOWN_WATCHDOG_INTERVAL_MS }, 'drawdown watchdog started');
+    drawdownWatchdogTimer = setInterval(() => {
+      runDrawdownWatchdogTick().catch((err) => logger.warn({ component: 'risk-gate', err }, 'drawdown watchdog tick failed'));
+    }, DRAWDOWN_WATCHDOG_INTERVAL_MS);
+    drawdownWatchdogTimer.unref?.();
+
+    logger.info({ component: 'risk-gate', intervalMs: DRAWDOWN_WATCHDOG_INTERVAL_MS }, 'drawdown watchdog started');
+  };
+
+  if (startupDelayMs > 0) {
+    const t = setTimeout(kickoff, startupDelayMs);
+    t.unref?.();
+  } else {
+    kickoff();
+  }
 }
 
 // ─── Engulfing Monitor Loop ───────────────────────────────────────────
@@ -3721,7 +3739,7 @@ async function runFvgMonitorTick(): Promise<void> {
   }
 }
 
-function startFvgMonitor(): void {
+function startFvgMonitor(startupDelayMs = 0): void {
   if (!ENABLE_FVG_MONITOR) {
     logger.info({ component: 'fvg-monitor' }, 'FVG monitor disabled via ENABLE_FVG_MONITOR=false');
     return;
@@ -3732,15 +3750,24 @@ function startFvgMonitor(): void {
   }
   if (fvgMonitorTimer) return;
 
-  runFvgMonitorTick().catch(err => logger.warn({ component: 'fvg-monitor', err }, 'initial tick failed'));
-  fvgMonitorTimer = setInterval(() => {
-    runFvgMonitorTick().catch(err => logger.warn({ component: 'fvg-monitor', err }, 'tick failed'));
-  }, FVG_MONITOR_INTERVAL_MS);
-  fvgMonitorTimer.unref?.();
-  logger.info({ component: 'fvg-monitor', intervalMs: FVG_MONITOR_INTERVAL_MS }, 'FVG monitor started');
+  const kickoff = () => {
+    runFvgMonitorTick().catch(err => logger.warn({ component: 'fvg-monitor', err }, 'initial tick failed'));
+    fvgMonitorTimer = setInterval(() => {
+      runFvgMonitorTick().catch(err => logger.warn({ component: 'fvg-monitor', err }, 'tick failed'));
+    }, FVG_MONITOR_INTERVAL_MS);
+    fvgMonitorTimer.unref?.();
+    logger.info({ component: 'fvg-monitor', intervalMs: FVG_MONITOR_INTERVAL_MS }, 'FVG monitor started');
+  };
+
+  if (startupDelayMs > 0) {
+    const t = setTimeout(kickoff, startupDelayMs);
+    t.unref?.();
+  } else {
+    kickoff();
+  }
 }
 
-function startEngulfingMonitor(): void {
+function startEngulfingMonitor(startupDelayMs = 0): void {
   if (!ENABLE_MULTI_TF_ENGULFING) {
     logger.info({ component: 'engulfing-monitor' }, 'engulfing monitor disabled via ENABLE_MULTI_TF_ENGULFING=false');
     return;
@@ -3755,8 +3782,9 @@ function startEngulfingMonitor(): void {
   engulfingMonitorIntervalAppliedMs = intervalMs;
   logger.info({ component: 'engulfing-monitor', intervalMs }, 'engulfing monitor started');
 
-  // First tick immediately, then self-schedule with dynamic interval from latest rules.
-  scheduleNextEngulfingTick(0);
+  // First tick after the configured stagger delay, then self-schedule
+  // using the dynamic interval derived from latest rules.
+  scheduleNextEngulfingTick(Math.max(0, startupDelayMs));
 }
 
 /** Risk gate middleware for trading endpoints — checks DD + leverage before allowing order */
@@ -4536,6 +4564,7 @@ app.get('/api/health/perf', ownerAuth, (_req, res) => {
           return age === null ? true : age > LIVE_TICK_STALE_MS;
         })()
       },
+      hyperliquidInfo: (exchange as unknown as { getInfoRequestStats?: () => unknown }).getInfoRequestStats?.() ?? null,
       timestamp: new Date().toISOString(),
     });
   });
@@ -7659,10 +7688,15 @@ const server = app.listen(port, host, () => {
   rulesCache.start();
   ingestRestFallback().catch((err) => logger.warn({ component: 'live', err }, 'initial REST fallback ingest failed'));
   startLiveMidStream();
-  startDrawdownWatchdog();
+
+  // Stagger monitor warmups so their initial Hyperliquid reads do not collide.
+  // The adapter-level coordinator dedupes concurrent duplicates, but spacing
+  // the first ticks also reduces peak concurrency against the info endpoint.
+  const baseStagger = MONITOR_STARTUP_STAGGER_MS;
+  startDrawdownWatchdog(baseStagger * 1);
   startDailyDrawdownMidnightReset();
-  startEngulfingMonitor();
-  startFvgMonitor();
+  startEngulfingMonitor(baseStagger * 2);
+  startFvgMonitor(baseStagger * 3);
   startTpFillMonitor();
   startTelegramOutboxLoop();
   startTelegramUpdateLoop();
