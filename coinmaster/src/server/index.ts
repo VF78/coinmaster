@@ -48,7 +48,7 @@ import { inferAssetClassFromSymbol, normalizeTradingRules, getMonitoredSymbols, 
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
+import type { Candle, CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, getOrderClientOrderId, getSystemManagedProtectiveOrderMeta, toLiveFill } from './liveSnapshot.js';
 import { applyAiMasterQaAnswer, buildAiMasterInsight, buildAiMasterQaQuestion, pruneAiMasterCollections } from './aiMaster.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
@@ -2453,17 +2453,27 @@ function todayDateStr(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-async function getOrCreateDDBaseline(equityUsd: number): Promise<DailyDDBaseline> {
+async function getOrCreateDDBaseline(equityUsd: number, meta?: { equitySource?: string; riskValid?: boolean }): Promise<DailyDDBaseline> {
   const today = todayDateStr();
   const db = await getDb();
   let baseline = db.data.dailyDDBaselines.find(b => b.date === today);
   if (!baseline) {
-    baseline = { date: today, startEquityUsd: equityUsd, updatedAt: new Date().toISOString() };
+    baseline = {
+      date: today,
+      startEquityUsd: equityUsd,
+      updatedAt: new Date().toISOString(),
+      equitySource: meta?.equitySource,
+      riskValid: meta?.riskValid ?? true,
+    };
     db.data.dailyDDBaselines.push(baseline);
-    // Prune old baselines (keep 90 days)
     if (db.data.dailyDDBaselines.length > 90) {
       db.data.dailyDDBaselines = db.data.dailyDDBaselines.slice(-90);
     }
+    await db.write();
+  } else if ((meta?.equitySource && baseline.equitySource !== meta.equitySource) || (typeof meta?.riskValid === 'boolean' && baseline.riskValid !== meta.riskValid)) {
+    baseline.equitySource = meta?.equitySource ?? baseline.equitySource;
+    baseline.riskValid = meta?.riskValid ?? baseline.riskValid;
+    baseline.updatedAt = new Date().toISOString();
     await db.write();
   }
   return baseline;
@@ -2482,11 +2492,21 @@ async function seedNextUtcDailyDrawdownBaseline(reason = 'utc_midnight_seed') {
   drawdownMidnightBaselineBusy = true;
   try {
     const account = await exchange.getAccountState();
-    const equityUsd = account?.equityUsd ?? 0;
-    if (equityUsd > 0) {
-      const baseline = await getOrCreateDDBaseline(equityUsd);
-      logger.info({ component: 'risk-gate', reason, date: baseline.date, startEquityUsd: baseline.startEquityUsd }, 'daily drawdown baseline seeded');
+    if (!isRiskUsableAccountSnapshot(account)) {
+      logger.warn({
+        component: 'risk-gate',
+        reason,
+        equityQuality: account?.equityQuality,
+        equitySource: account?.equitySource,
+      }, 'daily drawdown midnight baseline skipped because risk-valid equity is unavailable');
+      return;
     }
+
+    const baseline = await getOrCreateDDBaseline(account?.equityUsd ?? 0, {
+      equitySource: account?.equitySource,
+      riskValid: account?.equityValidForRisk,
+    });
+    logger.info({ component: 'risk-gate', reason, date: baseline.date, startEquityUsd: baseline.startEquityUsd, equitySource: baseline.equitySource }, 'daily drawdown baseline seeded');
   } catch (error) {
     logger.warn({ component: 'risk-gate', err: error }, 'daily drawdown midnight baseline seed failed');
   } finally {
@@ -2523,46 +2543,66 @@ interface RiskCheckResult {
   blocks: string[];
   equityUsd: number;
   baselineEquityUsd: number;
+  equityValidForRisk: boolean;
+  equityQuality?: 'full' | 'partial' | 'unavailable';
+  equitySource?: string;
 }
 
 interface EmergencyCloseResult {
   flat: boolean;
   verified: boolean;
+  ordersCleared: boolean;
   rounds: number;
   remainingPositions: PositionSnapshot[];
+  remainingOrders: OrderSnapshot[];
   issues: string[];
+}
+
+function isRiskUsableAccountSnapshot(account: Awaited<ReturnType<typeof exchange.getAccountState>>): boolean {
+  return Boolean(account && account.equityValidForRisk && Number.isFinite(account.equityUsd ?? NaN) && (account.equityUsd ?? 0) > 0);
 }
 
 async function evaluateRiskGates(options?: { emitAudit?: boolean }): Promise<RiskCheckResult> {
   const emitAudit = options?.emitAudit ?? true;
   const blocks: string[] = [];
 
-  // Fetch account state
   const [account, positions] = await Promise.all([
     exchange.getAccountState(),
     exchange.getOpenPositions()
   ]);
 
   const equityUsd = account?.equityUsd ?? 0;
-
   const effectiveRules = rulesCache.getEffectiveRules();
+  const equityValidForRisk = isRiskUsableAccountSnapshot(account);
 
-  // Daily DD check
-  const baseline = await getOrCreateDDBaseline(equityUsd);
-  const ddPct = baseline.startEquityUsd > 0
-    ? ((baseline.startEquityUsd - equityUsd) / baseline.startEquityUsd) * 100
-    : 0;
+  let baselineEquityUsd = 0;
+  let ddPct = 0;
 
-  if (ddPct >= effectiveRules.dailyDDLimitPct) {
-    blocks.push('daily_loss_limit_exceeded');
-    if (emitAudit) {
-      logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'daily_loss_limit_exceeded', details: { ddPct: Number(ddPct.toFixed(2)), limit: effectiveRules.dailyDDLimitPct, equityUsd, baselineEquityUsd: baseline.startEquityUsd } });
+  if (equityValidForRisk) {
+    const baseline = await getOrCreateDDBaseline(equityUsd, {
+      equitySource: account?.equitySource,
+      riskValid: account?.equityValidForRisk,
+    });
+    baselineEquityUsd = baseline.startEquityUsd;
+    ddPct = baseline.startEquityUsd > 0
+      ? ((baseline.startEquityUsd - equityUsd) / baseline.startEquityUsd) * 100
+      : 0;
+
+    if (ddPct >= effectiveRules.dailyDDLimitPct) {
+      blocks.push('daily_loss_limit_exceeded');
+      if (emitAudit) {
+        logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'daily_loss_limit_exceeded', details: { ddPct: Number(ddPct.toFixed(2)), limit: effectiveRules.dailyDDLimitPct, equityUsd, baselineEquityUsd: baseline.startEquityUsd, equitySource: account?.equitySource } });
+      }
+    } else if (emitAudit) {
+      logRiskGateAudit({ gate: 'daily_dd', passed: true, details: { ddPct: Number(ddPct.toFixed(2)), equitySource: account?.equitySource } });
     }
-  } else if (emitAudit) {
-    logRiskGateAudit({ gate: 'daily_dd', passed: true, details: { ddPct: Number(ddPct.toFixed(2)) } });
+  } else {
+    blocks.push('risk_check_unavailable');
+    if (emitAudit) {
+      logRiskGateAudit({ gate: 'daily_dd', passed: false, reason: 'risk_check_unavailable', details: { equityQuality: account?.equityQuality, equitySource: account?.equitySource, equityUsd } });
+    }
   }
 
-  // Portfolio leverage check
   let totalNotional = 0;
   for (const pos of positions) {
     const notional = (pos.entryPrice ?? pos.markPrice ?? 0) * pos.size;
@@ -2570,7 +2610,7 @@ async function evaluateRiskGates(options?: { emitAudit?: boolean }): Promise<Ris
   }
   const portfolioLeverage = equityUsd > 0 ? totalNotional / equityUsd : 0;
 
-  if (portfolioLeverage > effectiveRules.portfolioLeverageCap) {
+  if (equityValidForRisk && portfolioLeverage > effectiveRules.portfolioLeverageCap) {
     blocks.push('leverage_limit_exceeded');
     if (emitAudit) {
       logRiskGateAudit({ gate: 'leverage_cap', passed: false, reason: 'leverage_limit_exceeded', details: { portfolioLeverage: Number(portfolioLeverage.toFixed(2)), cap: effectiveRules.portfolioLeverageCap } });
@@ -2586,7 +2626,10 @@ async function evaluateRiskGates(options?: { emitAudit?: boolean }): Promise<Ris
     portfolioLeverage: Number(portfolioLeverage.toFixed(2)),
     blocks,
     equityUsd,
-    baselineEquityUsd: baseline.startEquityUsd
+    baselineEquityUsd,
+    equityValidForRisk,
+    equityQuality: account?.equityQuality,
+    equitySource: account?.equitySource,
   };
 }
 
@@ -2669,15 +2712,19 @@ async function notifyEmergencyCloseResult({
   reason,
   flat,
   verified,
+  ordersCleared,
   rounds,
   remainingPositions,
+  remainingOrders,
   issues,
 }: {
   reason: string;
   flat: boolean;
   verified: boolean;
+  ordersCleared: boolean;
   rounds: number;
   remainingPositions: Array<{ symbol?: string; size?: number; side?: string }>;
+  remainingOrders: Array<{ symbol?: string; id?: string }>;
   issues: string[];
   }) {
   if (ddLock.emergencyCloseNotificationSent) return;
@@ -2687,8 +2734,8 @@ async function notifyEmergencyCloseResult({
   const limitText = `limit=${limitPct.toFixed(2)}%`;
   const triggeredText = `triggered=${triggeredPct.toFixed(2)}%`;
 
-  if (flat && verified) {
-    const text = `Emergency close completed: ${limitText}, ${triggeredText}, rounds=${rounds}. Positions are flat.`;
+  if (flat && verified && ordersCleared) {
+    const text = `Emergency close completed: ${limitText}, ${triggeredText}, rounds=${rounds}. Positions are flat and open orders are cleared.`;
     const cfg = await getTelegramConfig();
     if (!cfg) return;
     const key = await getEmergencyCloseNotificationKey();
@@ -2706,8 +2753,11 @@ async function notifyEmergencyCloseResult({
   const remainingText = remainingPositions.length > 0
     ? ` Remaining positions: ${remainingPositions.map((p) => `${p.symbol ?? 'unknown'}:${p.side ?? 'na'}:${p.size ?? 'na'}`).join(', ')}`
     : '';
+  const remainingOrdersText = remainingOrders.length > 0
+    ? ` Remaining orders: ${remainingOrders.map((o) => `${o.symbol ?? 'unknown'}:${o.id ?? 'na'}`).join(', ')}`
+    : '';
   const issuesText = issues.length > 0 ? ` Issues: ${issues.join('; ')}` : '';
-  const text = [`Emergency close FAILED:`, limitText, triggeredText, `rounds=${rounds}`, remainingText.trim(), issuesText.trim()]
+  const text = [`Emergency close FAILED:`, limitText, triggeredText, `rounds=${rounds}`, remainingText.trim(), remainingOrdersText.trim(), issuesText.trim()]
     .filter(Boolean)
     .join(' ');
   const cfg = await getTelegramConfig();
@@ -2725,8 +2775,10 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded'): Promise<
     return {
       flat: false,
       verified: false,
+      ordersCleared: false,
       rounds: 0,
       remainingPositions: [],
+      remainingOrders: [],
       issues: ['emergency_close_already_running'],
     };
   }
@@ -2734,8 +2786,10 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded'): Promise<
   const issues: string[] = [];
   let rounds = 0;
   let remainingPositions: PositionSnapshot[] = [];
+  let remainingOrders: OrderSnapshot[] = [];
   let flat = false;
   let verified = false;
+  let ordersCleared = false;
   const isWatchdogReason = reason.endsWith('_watchdog');
   const maxRounds = 5;
   try {
@@ -2748,6 +2802,17 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded'): Promise<
     } catch (cancelErr) {
       issues.push(`cancelAll failed: ${cancelErr instanceof Error ? cancelErr.message : String(cancelErr)}`);
       logger.warn({ component: 'risk-gate', reason, err: cancelErr }, 'failed to cancel open orders during emergency close');
+    }
+
+    try {
+      remainingOrders = await exchange.getOpenOrders();
+      ordersCleared = remainingOrders.length === 0;
+      if (!ordersCleared) {
+        issues.push(`open orders remain after cancelAll: ${remainingOrders.length}`);
+      }
+    } catch (ordersErr) {
+      issues.push(`open order check failed: ${ordersErr instanceof Error ? ordersErr.message : String(ordersErr)}`);
+      logger.warn({ component: 'risk-gate', reason, err: ordersErr }, 'failed to verify open orders during emergency close');
     }
 
     let initialPositions: PositionSnapshot[] | null = null;
@@ -2832,6 +2897,17 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded'): Promise<
     }
     flat = remainingPositions.length === 0;
 
+    try {
+      remainingOrders = await exchange.getOpenOrders();
+      ordersCleared = remainingOrders.length === 0;
+      if (!ordersCleared && !issues.some((issue) => issue.startsWith('open orders remain after cancelAll'))) {
+        issues.push(`open orders remain after emergency close: ${remainingOrders.length}`);
+      }
+    } catch (ordersErr) {
+      issues.push(`final open order check failed: ${ordersErr instanceof Error ? ordersErr.message : String(ordersErr)}`);
+      logger.warn({ component: 'risk-gate', reason, err: ordersErr }, 'failed to verify open orders after emergency close rounds');
+    }
+
     if (!flat) {
       if (verified && rounds > 0) {
         issues.push(`positions remain open after ${rounds} rounds`);
@@ -2856,8 +2932,10 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded'): Promise<
       reason,
       flat,
       verified,
+      ordersCleared,
       rounds,
       remainingPositions,
+      remainingOrders,
       issues,
     }).catch((notifyErr) => {
       logger.warn({ component: 'telegram', err: notifyErr instanceof Error ? notifyErr.message : notifyErr }, 'emergency close telegram notify failed');
@@ -2867,8 +2945,10 @@ async function emergencyCloseAll(reason = 'daily_loss_limit_exceeded'): Promise<
     return {
       flat,
       verified,
+      ordersCleared,
       rounds,
       remainingPositions,
+      remainingOrders,
       issues,
     };
   }
@@ -2937,6 +3017,18 @@ async function runDrawdownWatchdogTick() {
 
     const risk = await evaluateRiskGates({ emitAudit: false });
 
+    if (!risk.equityValidForRisk) {
+      if (shouldLogWatchdog('dd-watchdog-risk-unavailable')) {
+        logger.warn({
+          component: 'risk-gate',
+          equityQuality: risk.equityQuality,
+          equitySource: risk.equitySource,
+          equityUsd: risk.equityUsd,
+        }, 'drawdown watchdog skipped because risk-valid equity is unavailable');
+      }
+      return;
+    }
+
     if (risk.blocks.includes('daily_loss_limit_exceeded')) {
       if (!emergencyCloseLock.hardStopActive) {
         emergencyCloseLock.hardStopActive = true;
@@ -2980,7 +3072,7 @@ async function runDrawdownWatchdogTick() {
       }
 
       const closeResult = await emergencyCloseAll('daily_loss_limit_exceeded_watchdog');
-      if (closeResult.flat && closeResult.verified) {
+      if (closeResult.flat && closeResult.verified && closeResult.ordersCleared) {
         ddLock.emergencyCloseSettledAt = ddLock.emergencyCloseSettledAt || new Date().toISOString();
         await persistDdLockState();
       }
@@ -3061,7 +3153,7 @@ async function estimateSignalSize(params: {
   const leverage = effectiveRules.maxLeverage;
 
   const account = await exchange.getAccountState();
-  const equityUsd = account?.equityUsd ?? 0;
+  const equityUsd = account?.equityValidForRisk ? (account.equityUsd ?? 0) : 0;
   const availableUsd = account?.availableUsd ?? 0;
 
   let sizeDecimals = 6;
@@ -6573,7 +6665,7 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     try {
       const account = await exchange.getAccountState();
       if (account) {
-        if (!equityUsd) equityUsd = account.equityUsd ?? 0;
+        if (!equityUsd && account.equityValidForRisk) equityUsd = account.equityUsd ?? 0;
         availableUsd = account.availableUsd ?? 0;
       }
     } catch {
@@ -7314,7 +7406,7 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     try {
       const account = await exchange.getAccountState();
       if (account) {
-        if (!equityUsd) equityUsd = account.equityUsd ?? 0;
+        if (!equityUsd && account.equityValidForRisk) equityUsd = account.equityUsd ?? 0;
         availableUsd = account.availableUsd ?? 0;
       }
     } catch {

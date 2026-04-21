@@ -201,6 +201,8 @@ export interface DailyDDBaseline {
   date: string; // YYYY-MM-DD
   startEquityUsd: number;
   updatedAt: string;
+  equitySource?: string;
+  riskValid?: boolean;
 }
 
 export interface RiskGateAuditEntry {

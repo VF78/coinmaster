@@ -23,6 +23,7 @@
     "invariants:read-only-exchanges": "tsx scripts/invariants-read-only-exchanges.ts",
     "invariants:ai-master": "tsx scripts/invariants-ai-master.ts",
     "invariants:allocation-sizing": "tsx scripts/invariants-allocation-sizing.ts",
+    "invariants:daily-drawdown": "tsx scripts/invariants-daily-drawdown.ts",
     "invariants:engulfing": "tsx scripts/invariants-engulfing.ts",
     "invariants:fvg": "tsx scripts/invariants-fvg.ts",
     "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts",

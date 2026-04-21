@@ -20,10 +20,15 @@ export interface InstrumentMeta {
   raw?: unknown;
 }
 
+export type AccountEquityQuality = 'full' | 'partial' | 'unavailable';
+
 export interface AccountSnapshot {
   equityUsd?: number;
   availableUsd?: number;
   usedMarginUsd?: number;
+  equityQuality?: AccountEquityQuality;
+  equitySource?: string;
+  equityValidForRisk?: boolean;
   raw?: unknown;
 }
 

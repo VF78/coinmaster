@@ -227,13 +227,15 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   async getAccountState(): Promise<AccountSnapshot | null> {
     const user = await this.resolveEffectiveUser();
 
-    // Fetch perps state + spot state in parallel
-    const [perpState, spotState] = await Promise.all([
-      this.requestInfo<any>({ type: 'clearinghouseState', user }),
-      this.requestInfo<any>({ type: 'spotClearinghouseState', user }).catch(() => null),
-    ]);
+    let spotState: any = null;
+    let spotStateError: unknown = null;
+    const perpState = await this.requestInfo<any>({ type: 'clearinghouseState', user });
+    try {
+      spotState = await this.requestInfo<any>({ type: 'spotClearinghouseState', user });
+    } catch (error) {
+      spotStateError = error;
+    }
 
-    // Perps margin (collateral sent to perpetuals clearing account)
     const perpAccountValue = this.toNumber(
       perpState?.marginSummary?.accountValue ?? perpState?.crossMarginSummary?.accountValue
     );
@@ -242,33 +244,58 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     );
     const withdrawable = this.toNumber(perpState?.withdrawable);
 
-    // Spot USDC balance = true total equity (includes perps collateral)
-    // spotClearinghouseState.balances[USDC].total is the authoritative "Total Equity"
     const usdcBalance = (spotState?.balances as any[] | undefined)
       ?.find((b) => b?.coin === 'USDC');
     const spotTotalUsdc = this.toNumber(usdcBalance?.total);
 
-    // Available = spot available after maintenance margin
-    // tokenToAvailableAfterMaintenance: [[tokenId, amount], ...]
     const availAfterMaint = (spotState?.tokenToAvailableAfterMaintenance as any[] | undefined)
       ?.find((pair) => Array.isArray(pair) && pair[0] === 0);
     const spotAvailableUsdc = this.toNumber(availAfterMaint?.[1]);
 
-    // True equity = spot total USDC (superset of perps account value)
-    const equityUsd = spotTotalUsdc ?? perpAccountValue;
-
-    // Available = spot available after maintenance margin (if no open positions, ≈ equityUsd)
-    // Fallback: perps account value minus used margin
     const perpAvailable = perpAccountValue !== undefined
       ? Math.max(0, Number(((perpAccountValue ?? 0) - (marginUsed ?? 0)).toFixed(6)))
       : undefined;
     const availableUsd = spotAvailableUsdc ?? perpAvailable ?? withdrawable;
 
+    const hasAuthoritativeEquity = Number.isFinite(spotTotalUsdc ?? NaN) && (spotTotalUsdc ?? 0) > 0;
+    const hasPartialPerpEquity = Number.isFinite(perpAccountValue ?? NaN) && (perpAccountValue ?? 0) > 0;
+
+    let equityUsd: number | undefined;
+    let equityQuality: AccountSnapshot['equityQuality'] = 'unavailable';
+    let equitySource: string | undefined;
+    let equityValidForRisk = false;
+
+    if (hasAuthoritativeEquity) {
+      equityUsd = Number(spotTotalUsdc);
+      equityQuality = 'full';
+      equitySource = 'spotClearinghouseState.balances[USDC].total';
+      equityValidForRisk = true;
+    } else if (hasPartialPerpEquity) {
+      equityUsd = Number(perpAccountValue);
+      equityQuality = 'partial';
+      equitySource = 'clearinghouseState.marginSummary.accountValue';
+      equityValidForRisk = false;
+      logger.warn(
+        {
+          component: 'exchange',
+          exchange: this.name,
+          user,
+          spotStateAvailable: Boolean(spotState),
+          spotStateError: spotStateError instanceof Error ? spotStateError.message : spotStateError ? String(spotStateError) : undefined,
+          perpAccountValue,
+        },
+        'spot equity unavailable, falling back to partial perp equity for display only'
+      );
+    }
+
     return {
       equityUsd,
       availableUsd,
       usedMarginUsd: marginUsed,
-      raw: { perpState, spotState },
+      equityQuality,
+      equitySource,
+      equityValidForRisk,
+      raw: { perpState, spotState, spotStateError: spotStateError instanceof Error ? spotStateError.message : spotStateError ?? undefined },
     };
   }
 
