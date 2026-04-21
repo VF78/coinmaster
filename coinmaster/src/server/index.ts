@@ -2850,6 +2850,121 @@ async function estimateSignalSize(params: {
   return { size: sizing.size, leverage };
 }
 
+async function handoffStrategyEntrySignal(params: {
+  component: 'engulfing-monitor' | 'fvg-monitor';
+  strategy: 'engulfing' | 'fvg';
+  symbol: string;
+  timeframe: TradingRulesTimeframe;
+  side: 'buy' | 'sell';
+  price: number;
+  reason: string;
+  effectiveRules: ReturnType<typeof rulesCache.getEffectiveRules>;
+  autoConfirm: boolean;
+  auditDetails?: Record<string, unknown>;
+}): Promise<'continue' | 'break'> {
+  const { component, strategy, symbol, timeframe, side, price, reason, effectiveRules, autoConfirm, auditDetails } = params;
+  const source = `${strategy}:auto:${timeframe}`;
+
+  if (!autoConfirm) {
+    const estimate = await estimateSignalSize({ symbol, side, price, effectiveRules });
+    if (!estimate.size || estimate.size <= 0) {
+      logger.warn({ component, symbol, timeframe, side, reason: 'invalid_sizing', strategy }, 'entry signal skipped: invalid sizing');
+      return 'continue';
+    }
+
+    const correlationId = `${strategy}-pending-${nanoid(8)}`;
+    const queued = await queuePendingConfirmation({
+      symbol,
+      side: side === 'buy' ? 'long' : 'short',
+      strategy,
+      timeframe,
+      reason,
+      price,
+      size: estimate.size,
+      leverage: estimate.leverage,
+      correlationId,
+    });
+
+    logger.info({ component, symbol, timeframe, side, strategy, pendingId: queued.id, queued: queued.queued, reason, source }, 'entry signal queued for manual confirmation');
+    return 'break';
+  }
+
+  try {
+    const account = await exchange.getAccountState();
+    const equityUsd = account?.equityUsd ?? 0;
+    const availableUsd = account?.availableUsd ?? 0;
+    if (equityUsd <= 0) {
+      logger.warn({ component, strategy, symbol, timeframe }, 'auto-entry: zero equity');
+      return 'continue';
+    }
+
+    let sizeDecimals = 6;
+    try {
+      const meta = await exchange.getInstrumentMeta(symbol);
+      if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals;
+    } catch {
+      // best effort
+    }
+
+    const sizing = computeAllocationSize({ symbol, price, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
+    if (!sizing.ok) {
+      logRiskGateAudit({ gate: strategy === 'fvg' ? 'fvg_entry_signal' : 'engulfing_entry_signal', passed: false, reason: sizing.reason, details: { symbol, timeframe, strategy, ...auditDetails } });
+      logger.warn({ component, strategy, symbol, timeframe, reason: sizing.reason }, 'auto-entry sizing failed');
+      return 'continue';
+    }
+
+    const risk = await evaluateRiskGates({ emitAudit: false });
+    if (!risk.canTrade) {
+      logger.warn({ component, strategy, symbol, timeframe, blocks: risk.blocks }, 'auto-entry blocked by risk gates');
+      await notifySignalRejectedEvent({
+        symbol,
+        source,
+        reason: 'auto_entry_blocked_risk_gate',
+        blocks: risk.blocks.join(','),
+      }).catch(() => undefined);
+      return 'continue';
+    }
+
+    const correlationId = `${strategy}-auto-${nanoid(8)}`;
+    const ack = await exchange.placeLimitOrder({ symbol, side, price, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+
+    logRiskGateAudit({
+      gate: strategy === 'fvg' ? 'fvg_entry_signal' : 'engulfing_entry_signal',
+      passed: ack.ok,
+      reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
+      details: { symbol, timeframe, strategy, side, size: sizing.size, price, orderId: ack.orderId, error: ack.error, reason, ...auditDetails },
+    });
+    logger.info({ component, strategy, symbol, timeframe, side, size: sizing.size, price, ok: ack.ok, orderId: ack.orderId, reason, source }, 'auto-entry order result');
+
+    if (ack.ok) {
+      try {
+        await notifyTradeOpen({ symbol, side, price, size: sizing.size, source });
+      } catch (error) {
+        logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
+      }
+      const tpSl = resolveTpSlDefaults(price, side, undefined, undefined);
+      if (tpSl) {
+        try {
+          await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, price);
+        } catch {
+          // best effort
+        }
+      }
+      return 'break';
+    }
+
+    await notifyOrderRejectedEvent({
+      symbol,
+      source,
+      error: ack.error ?? 'exchange_rejected',
+    }).catch(() => undefined);
+  } catch (err) {
+    logger.error({ component, strategy, symbol, timeframe, err, reason, source }, 'auto-entry order failed');
+  }
+
+  return 'continue';
+}
+
 /**
  * One tick of the engulfing background monitor.
  * - Entry signals: detected on entryTimeframes[] when no open position → log + auto-order if autoConfirm
@@ -2949,94 +3064,19 @@ async function runEngulfingMonitorTick(): Promise<void> {
           const currentPrice = resolveMonitorPrice(mids, symbol, closedCandles);
           if (!currentPrice) { logger.warn({ component: 'engulfing-monitor' }, 'entry signal: no price'); continue; }
 
-          // Manual mode: queue confirmation only if sizing is valid; otherwise skip.
-          if (!raw.autoConfirm) {
-            const estimate = await estimateSignalSize({ symbol, side, price: currentPrice, effectiveRules });
-            if (!estimate.size || estimate.size <= 0) {
-              logger.warn({ component: 'engulfing-monitor', symbol, tf, side, reason: 'invalid_sizing' }, 'entry signal skipped: invalid sizing');
-              continue;
-            }
-
-            const correlationId = `engulf-pending-${nanoid(8)}`;
-            const queued = await queuePendingConfirmation({
-              symbol,
-              side: side === 'buy' ? 'long' : 'short',
-              strategy: 'engulfing',
-              timeframe: tf,
-              reason: signal.reason,
-              price: currentPrice,
-              size: estimate.size,
-              leverage: estimate.leverage,
-              correlationId,
-            });
-
-            logger.info({ component: 'engulfing-monitor', symbol, tf, side, pendingId: queued.id, queued: queued.queued }, 'entry signal queued for manual confirmation');
-            break;
-          }
-
-          // Auto-confirm mode: place order immediately
-          try {
-            const account = await exchange.getAccountState();
-            const equityUsd = account?.equityUsd ?? 0;
-            const availableUsd = account?.availableUsd ?? 0;
-            if (equityUsd <= 0) { logger.warn({ component: 'engulfing-monitor' }, 'auto-entry: zero equity'); continue; }
-
-            let sizeDecimals = 6;
-            try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
-
-            const sizing = computeAllocationSize({ symbol, price: currentPrice, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
-
-            if (!sizing.ok) {
-              logRiskGateAudit({ gate: 'engulfing_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
-              logger.warn({ component: 'engulfing-monitor', reason: sizing.reason }, 'auto-entry sizing failed');
-              continue;
-            }
-
-            // Run risk gates before placing
-            const risk = await evaluateRiskGates({ emitAudit: false });
-            if (!risk.canTrade) {
-              logger.warn({ component: 'engulfing-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates');
-              await notifySignalRejectedEvent({
-                symbol,
-                source: `engulfing:auto:${tf}`,
-                reason: 'auto_entry_blocked_risk_gate',
-                blocks: risk.blocks.join(','),
-              }).catch(() => undefined);
-              continue;
-            }
-
-            const correlationId = `engulf-auto-${nanoid(8)}`;
-            const ack = await exchange.placeLimitOrder({ symbol, side, price: currentPrice, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
-
-            logRiskGateAudit({
-              gate: 'engulfing_entry_signal',
-              passed: ack.ok,
-              reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
-              details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: currentPrice, orderId: ack.orderId, error: ack.error },
-            });
-            logger.info({ component: 'engulfing-monitor', symbol, side, size: sizing.size, orderId: ack.orderId, ok: ack.ok }, 'auto-entry order result');
-
-            // Auto-apply TP/SL if available
-            if (ack.ok) {
-              try {
-                await notifyTradeOpen({ symbol, side, price: currentPrice, size: sizing.size, source: 'engulfing:auto' });
-              } catch (error) {
-                logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
-              }
-              const tpSl = resolveTpSlDefaults(currentPrice, side, undefined, undefined);
-              if (tpSl) {
-                try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, currentPrice); } catch { /* best-effort */ }
-              }
-            } else {
-              await notifyOrderRejectedEvent({
-                symbol,
-                source: `engulfing:auto:${tf}`,
-                error: ack.error ?? 'exchange_rejected',
-              }).catch(() => undefined);
-            }
-          } catch (err) {
-            logger.error({ component: 'engulfing-monitor', err }, 'auto-entry order failed');
-          }
+          const handoff = await handoffStrategyEntrySignal({
+            component: 'engulfing-monitor',
+            strategy: 'engulfing',
+            symbol,
+            timeframe: tf,
+            side,
+            price: currentPrice,
+            reason: signal.reason,
+            effectiveRules,
+            autoConfirm: !!raw.autoConfirm,
+            auditDetails: { direction: signal.direction, confidence: signal.confidence },
+          });
+          if (handoff === 'break') break;
         } catch (err) {
           logger.warn({ component: 'engulfing-monitor', tf, err }, 'entry signal evaluation failed for tf');
         }
@@ -3408,88 +3448,24 @@ async function runFvgMonitorTick(): Promise<void> {
           'FVG retrace entry signal detected',
         );
 
-        // Manual mode: queue signal only if sizing is valid; otherwise skip.
-        if (!raw.autoConfirm) {
-          const estimate = await estimateSignalSize({ symbol, side, price: currentPrice, effectiveRules });
-          if (!estimate.size || estimate.size <= 0) {
-            logger.warn({ component: 'fvg-monitor', symbol, tf, side, reason: 'invalid_sizing' }, 'FVG signal skipped: invalid sizing');
-            continue;
-          }
-
-          const correlationId = `fvg-pending-${nanoid(8)}`;
-          const queued = await queuePendingConfirmation({
-            symbol,
-            side: side === 'buy' ? 'long' : 'short',
-            strategy: 'fvg',
-            timeframe: tf,
-            reason: signal.reason,
-            price: currentPrice,
-            size: estimate.size,
-            leverage: estimate.leverage,
-            correlationId,
-          });
-          logger.info({ component: 'fvg-monitor', symbol, tf, side, pendingId: queued.id, queued: queued.queued }, 'FVG signal queued for manual confirmation');
-          break;
-        }
-
-        // Auto-confirm mode: place order immediately
-        try {
-          const account = await exchange.getAccountState();
-          const equityUsd = account?.equityUsd ?? 0;
-          const availableUsd = account?.availableUsd ?? 0;
-          if (equityUsd <= 0) { logger.warn({ component: 'fvg-monitor' }, 'auto-entry: zero equity'); continue; }
-
-          let sizeDecimals = 6;
-          try { const meta = await exchange.getInstrumentMeta(symbol); if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals; } catch { /* best-effort */ }
-
-          const sizing = computeAllocationSize({ symbol, price: currentPrice, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
-
-          if (!sizing.ok) {
-            logRiskGateAudit({ gate: 'fvg_entry_signal', passed: false, reason: sizing.reason, details: { symbol, tf } });
-            continue;
-          }
-
-          const risk = await evaluateRiskGates({ emitAudit: false });
-          if (!risk.canTrade) {
-            logger.warn({ component: 'fvg-monitor', blocks: risk.blocks }, 'auto-entry blocked by risk gates');
-            await notifySignalRejectedEvent({
-              symbol,
-              source: `fvg:auto:${tf}`,
-              reason: 'auto_entry_blocked_risk_gate',
-              blocks: risk.blocks.join(','),
-            }).catch(() => undefined);
-            continue;
-          }
-
-          const correlationId = `fvg-auto-${nanoid(8)}`;
-          const ack = await exchange.placeLimitOrder({ symbol, side, price: currentPrice, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
-
-          logRiskGateAudit({
-            gate: 'fvg_entry_signal',
-            passed: ack.ok,
-            reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
-            details: { symbol, tf, direction: signal.direction, side, size: sizing.size, price: currentPrice, orderId: ack.orderId, error: ack.error },
-          });
-          logger.info({ component: 'fvg-monitor', symbol, side, size: sizing.size, ok: ack.ok, orderId: ack.orderId }, 'FVG auto-entry result');
-
-          if (ack.ok) {
-            try {
-              await notifyTradeOpen({ symbol, side, price: currentPrice, size: sizing.size, source: 'fvg:auto' });
-            } catch (error) {
-              logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
-            }
-            const tpSl = resolveTpSlDefaults(currentPrice, side, undefined, undefined);
-            if (tpSl) { try { await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, currentPrice); } catch { /* best-effort */ } }
-          } else {
-            await notifyOrderRejectedEvent({
-              symbol,
-              source: `fvg:auto:${tf}`,
-              error: ack.error ?? 'exchange_rejected',
-            }).catch(() => undefined);
-          }
-        } catch (err) {
-          logger.error({ component: 'fvg-monitor', err }, 'FVG auto-entry order failed');
-        }
+        const handoff = await handoffStrategyEntrySignal({
+          component: 'fvg-monitor',
+          strategy: 'fvg',
+          symbol,
+          timeframe: tf,
+          side,
+          price: currentPrice,
+          reason: signal.reason,
+          effectiveRules,
+          autoConfirm: !!raw.autoConfirm,
+          auditDetails: {
+            direction: signal.direction,
+            triggerPrice: signal.triggerPrice,
+            zoneTop: signal.zone?.top,
+            zoneBottom: signal.zone?.bottom,
+          },
+        });
+        if (handoff === 'break') break;
       } catch (err) {
         logger.warn({ component: 'fvg-monitor', tf, err }, 'FVG signal evaluation failed for tf');
       }
