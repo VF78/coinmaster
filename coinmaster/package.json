@@ -25,7 +25,8 @@
     "invariants:allocation-sizing": "tsx scripts/invariants-allocation-sizing.ts",
     "invariants:engulfing": "tsx scripts/invariants-engulfing.ts",
     "invariants:fvg": "tsx scripts/invariants-fvg.ts",
-    "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts"
+    "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts",
+    "invariants:radar-handoff": "tsx scripts/invariants-radar-handoff.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
