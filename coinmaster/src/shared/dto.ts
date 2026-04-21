@@ -354,6 +354,14 @@ export interface DashboardResponse {
 export interface RadarSignalsResponse {
   ok: boolean;
   signals: RadarSignalRecord[];
+  summary: {
+    total: number;
+    pendingConfirmation: number;
+    autoOrderPlaced: number;
+    rejected: number;
+    ignored: number;
+    bySource: Array<{ source: string; count: number }>;
+  };
 }
 
 export interface RadarSignalIngestPayload {

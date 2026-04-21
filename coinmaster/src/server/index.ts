@@ -5618,10 +5618,28 @@ app.get('/api/radar/signals', ownerAuth, async (req, res) => {
   const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(200, Math.trunc(limitRaw))) : 50;
 
   const db = await getDb();
-  const signals = ensureRadarSignalsState(db)
-    .slice(0, limit);
+  const allSignals = ensureRadarSignalsState(db);
+  const signals = allSignals.slice(0, limit);
+  const sourceCounts = new Map<string, number>();
+  for (const item of allSignals) {
+    sourceCounts.set(item.source, (sourceCounts.get(item.source) ?? 0) + 1);
+  }
 
-  return res.json({ ok: true, signals });
+  return res.json({
+    ok: true,
+    signals,
+    summary: {
+      total: allSignals.length,
+      pendingConfirmation: allSignals.filter((item) => item.status === 'pending_confirmation').length,
+      autoOrderPlaced: allSignals.filter((item) => item.status === 'auto_order_placed').length,
+      rejected: allSignals.filter((item) => item.status === 'rejected').length,
+      ignored: allSignals.filter((item) => item.status === 'ignored').length,
+      bySource: [...sourceCounts.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 20)
+        .map(([source, count]) => ({ source, count })),
+    },
+  });
 });
 
 app.post('/api/radar/signals', ownerAuth, async (req, res) => {
