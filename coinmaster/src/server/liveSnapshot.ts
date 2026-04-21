@@ -1,6 +1,6 @@
 import type { ExchangeAdapter } from '../exchange/adapter.js';
 import type { ExposureSnapshot, FillEvent, OrderSnapshot, PositionSnapshot } from '../exchange/types.js';
-import type { LiveDashboardState, LiveFill, LivePnlSummary, LivePosition } from '../shared/dto.js';
+import type { LiveDashboardState, LiveFill, LiveOpenOrderBreakdown, LivePnlSummary, LivePosition } from '../shared/dto.js';
 
 export interface LiveModeConfig {
   manualConfirmation: boolean;
@@ -39,6 +39,49 @@ function isReduceOnlyOrder(order: OrderSnapshot): boolean {
   if (reduceOnly === true || reduceOnly === 'true' || reduceOnly === 1 || reduceOnly === '1') return true;
   if (reduceOnly === false || reduceOnly === 'false' || reduceOnly === 0 || reduceOnly === '0') return false;
   return true; // fallback when adapter/raw does not expose reduceOnly flag
+}
+
+export function getOrderClientOrderId(order: OrderSnapshot): string {
+  const raw = order.raw as Record<string, unknown> | undefined;
+  return String(
+    (raw as { cloid?: unknown } | undefined)?.cloid
+    ?? (raw as { clientOrderId?: unknown } | undefined)?.clientOrderId
+    ?? ''
+  ).trim();
+}
+
+export function getSystemManagedProtectiveOrderMeta(order: OrderSnapshot): { kind: 'tp' | 'sl'; correlationId: string } | null {
+  const clientOrderId = getOrderClientOrderId(order).toLowerCase();
+  if (!clientOrderId) return null;
+
+  const tpMatch = clientOrderId.match(/^tptr\d+-auto-(.+)$/);
+  if (tpMatch?.[1]) return { kind: 'tp', correlationId: tpMatch[1] };
+
+  const slMatch = clientOrderId.match(/^sl-auto-(.+)$/);
+  if (slMatch?.[1]) return { kind: 'sl', correlationId: slMatch[1] };
+
+  return null;
+}
+
+function buildOpenOrderBreakdown(openOrders: OrderSnapshot[]): LiveOpenOrderBreakdown {
+  let systemManagedTakeProfit = 0;
+  let systemManagedStopLoss = 0;
+
+  for (const order of openOrders) {
+    const meta = getSystemManagedProtectiveOrderMeta(order);
+    if (!meta) continue;
+    if (meta.kind === 'tp') systemManagedTakeProfit += 1;
+    if (meta.kind === 'sl') systemManagedStopLoss += 1;
+  }
+
+  const systemManagedProtective = systemManagedTakeProfit + systemManagedStopLoss;
+  return {
+    total: openOrders.length,
+    systemManagedProtective,
+    systemManagedTakeProfit,
+    systemManagedStopLoss,
+    other: Math.max(0, openOrders.length - systemManagedProtective),
+  };
 }
 
 function normalizeLiveSymbol(symbol: string): string {
@@ -349,6 +392,13 @@ export async function buildLiveDashboardState(
     account: null,
     pnl: emptyPnl(),
     openOrders: 0,
+    openOrderBreakdown: {
+      total: 0,
+      systemManagedProtective: 0,
+      systemManagedTakeProfit: 0,
+      systemManagedStopLoss: 0,
+      other: 0,
+    },
     openPositions: [],
     pendingConfirmations
   };
@@ -389,6 +439,7 @@ export async function buildLiveDashboardState(
         : null,
       pnl: computeLivePnl(fills),
       openOrders: openOrders.length,
+      openOrderBreakdown: buildOpenOrderBreakdown(openOrders),
       openPositions: openExposures.map((p) => toLivePosition(p, openOrders, fills)),
       pendingConfirmations
     };

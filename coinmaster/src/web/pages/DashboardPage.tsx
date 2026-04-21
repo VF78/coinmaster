@@ -408,6 +408,13 @@ export function DashboardPage() {
             <Stat label="Open orders"    value={String(data.live.openOrders)} />
             <Stat label="Open positions" value={String(data.live.openPositions.length)} />
           </div>
+          {data.live.openOrderBreakdown ? (
+            <p className="muted stat-note" style={{ marginBottom: '0.75rem' }}>
+              System TP/SL: {data.live.openOrderBreakdown.systemManagedProtective}
+              {' '}({data.live.openOrderBreakdown.systemManagedTakeProfit} TP, {data.live.openOrderBreakdown.systemManagedStopLoss} SL)
+              {' '}• Other/manual: {data.live.openOrderBreakdown.other}
+            </p>
+          ) : null}
 
           {/* Row 3: P&L — click anywhere to cycle Daily → Weekly → Monthly */}
           <div

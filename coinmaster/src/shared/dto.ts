@@ -284,6 +284,14 @@ export interface PendingConfirmation {
   createdAt: string;
 }
 
+export interface LiveOpenOrderBreakdown {
+  total: number;
+  systemManagedProtective: number;
+  systemManagedTakeProfit: number;
+  systemManagedStopLoss: number;
+  other: number;
+}
+
 export interface LiveDashboardState {
   connected: boolean;
   mode: {
@@ -293,6 +301,7 @@ export interface LiveDashboardState {
   account: LiveAccountSummary | null;
   pnl: LivePnlSummary;
   openOrders: number;
+  openOrderBreakdown?: LiveOpenOrderBreakdown;
   openPositions: LivePosition[];
   pendingConfirmations: LivePosition[];
   error?: string;

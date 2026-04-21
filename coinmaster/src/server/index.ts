@@ -41,8 +41,8 @@ import { inferAssetClassFromSymbol, normalizeTradingRules } from '../shared/trad
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { Candle, CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
-import { buildLiveDashboardState, toLiveFill } from './liveSnapshot.js';
+import type { Candle, CandleTimeframe, FillEvent, OrderIntent, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
+import { buildLiveDashboardState, getSystemManagedProtectiveOrderMeta, toLiveFill } from './liveSnapshot.js';
 import { applyAiMasterQaAnswer, buildAiMasterInsight, buildAiMasterQaQuestion, pruneAiMasterCollections } from './aiMaster.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
 import { evaluateFvg, type FvgTimeframe } from '../core/fvgEvaluator.js';
@@ -6400,32 +6400,6 @@ function splitTakeProfitSizes(totalSize: number, tpCount: number, sizeDecimals: 
 }
 /** correlationId → ActiveTradeState */
 const activeTrades = new Map<string, ActiveTradeState>();
-
-function getOrderClientOrderId(order: OrderSnapshot): string {
-  const raw = order.raw as Record<string, unknown> | undefined;
-  return String(
-    (raw as { cloid?: unknown } | undefined)?.cloid
-    ?? (raw as { clientOrderId?: unknown } | undefined)?.clientOrderId
-    ?? ''
-  ).trim();
-}
-
-function getSystemManagedProtectiveOrderMeta(order: OrderSnapshot): { kind: 'tp' | 'sl'; correlationId: string } | null {
-  const clientOrderId = getOrderClientOrderId(order).toLowerCase();
-  if (!clientOrderId) return null;
-
-  const tpMatch = clientOrderId.match(/^tptr\d+-auto-(.+)$/);
-  if (tpMatch?.[1]) {
-    return { kind: 'tp', correlationId: tpMatch[1] };
-  }
-
-  const slMatch = clientOrderId.match(/^sl-auto-(.+)$/);
-  if (slMatch?.[1]) {
-    return { kind: 'sl', correlationId: slMatch[1] };
-  }
-
-  return null;
-}
 
 async function recoverActiveTradesFromExchange(): Promise<void> {
   if (activeTrades.size > 0) return;
