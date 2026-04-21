@@ -314,6 +314,19 @@ export interface RadarSignalRecord {
   duplicateOf?: string;
 }
 
+export interface RadarSignalView extends RadarSignalRecord {
+  candidateScore: number;
+}
+
+export interface RadarSignalCandidateGroup {
+  symbol: string;
+  side: 'buy' | 'sell';
+  signalCount: number;
+  bestScore: number;
+  sources: string[];
+  lastSeenAt?: string;
+}
+
 export interface RadarSignalsQuery {
   limit?: number;
   status?: RadarSignalStatus;
@@ -383,7 +396,7 @@ export interface RadarSignalQualityBucket {
 
 export interface RadarSignalsResponse {
   ok: boolean;
-  signals: RadarSignalRecord[];
+  signals: RadarSignalView[];
   summary: {
     total: number;
     pendingConfirmation: number;
@@ -396,6 +409,7 @@ export interface RadarSignalsResponse {
     byChannel: Array<{ channel: string; count: number }>;
     qualityBySource: Array<({ source: string } & RadarSignalQualityBucket)>;
     qualityByConnector: Array<({ connector: string } & RadarSignalQualityBucket)>;
+    candidateGroups: RadarSignalCandidateGroup[];
   };
 }
 

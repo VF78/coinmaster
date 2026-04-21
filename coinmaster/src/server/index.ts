@@ -35,6 +35,7 @@ import type {
   RadarSignalIngestPayload,
   RadarSignalRecord,
   RadarSignalStatus,
+  RadarSignalView,
   SignalStrategy,
   TelegramOutboxItem,
   TradeEvent,
@@ -342,7 +343,108 @@ function summarizeRadarSignalQualityMap(
     .map(([value, stats]) => ({ [key]: value, ...stats }));
 }
 
-function buildRadarSignalsSummary(items: RadarSignalRecord[]) {
+function getRadarSignalSeenAt(item: RadarSignalRecord): string | undefined {
+  return item.updatedAt || item.createdAt;
+}
+
+function getRadarSignalStatusWeight(status: RadarSignalStatus): number {
+  if (status === 'auto_order_placed') return 40;
+  if (status === 'pending_confirmation') return 30;
+  if (status === 'ignored') return 10;
+  return 5;
+}
+
+function getRadarSignalFreshnessScore(seenAt?: string): number {
+  const seenMs = seenAt ? Date.parse(seenAt) : Number.NaN;
+  if (!Number.isFinite(seenMs)) return 0;
+
+  const ageMs = Math.max(0, Date.now() - seenMs);
+  if (ageMs <= 15 * 60 * 1000) return 30;
+  if (ageMs <= 60 * 60 * 1000) return 20;
+  if (ageMs <= 4 * 60 * 60 * 1000) return 10;
+  return 0;
+}
+
+function getRadarSignalSourceMetaRichness(item: RadarSignalRecord): number {
+  const meta = item.sourceMeta;
+  if (!meta) return 0;
+
+  let count = 0;
+  if (meta.connector) count += 1;
+  if (meta.kind) count += 1;
+  if (meta.channel) count += 1;
+  if (meta.externalId) count += 1;
+  if (meta.messageTs) count += 1;
+  return Math.min(10, count * 2);
+}
+
+function getRadarSignalDuplicatePenalty(item: RadarSignalRecord): number {
+  return item.duplicateOf || item.error === 'duplicate_signal' ? 20 : 0;
+}
+
+function getRadarSignalCandidateScore(item: RadarSignalRecord): number {
+  const score = getRadarSignalStatusWeight(item.status)
+    + getRadarSignalFreshnessScore(getRadarSignalSeenAt(item))
+    + getRadarSignalSourceMetaRichness(item)
+    - getRadarSignalDuplicatePenalty(item);
+
+  return Math.max(0, Math.min(100, score));
+}
+
+function enrichRadarSignal(item: RadarSignalRecord): RadarSignalView {
+  return {
+    ...item,
+    candidateScore: getRadarSignalCandidateScore(item),
+  };
+}
+
+function buildRadarCandidateGroups(items: RadarSignalView[]) {
+  const groups = new Map<string, {
+    symbol: string;
+    side: 'buy' | 'sell';
+    bestScore: number;
+    sources: Set<string>;
+    lastSeenAt?: string;
+    count: number;
+  }>();
+
+  for (const item of items) {
+    const key = `${item.symbol}:${item.side}`;
+    const current = groups.get(key);
+    const seenAt = getRadarSignalSeenAt(item);
+
+    if (current) {
+      current.bestScore = Math.max(current.bestScore, item.candidateScore);
+      current.sources.add(item.source);
+      current.count += 1;
+      if (seenAt && (!current.lastSeenAt || seenAt > current.lastSeenAt)) current.lastSeenAt = seenAt;
+      continue;
+    }
+
+    groups.set(key, {
+      symbol: item.symbol,
+      side: item.side,
+      bestScore: item.candidateScore,
+      sources: new Set([item.source]),
+      lastSeenAt: seenAt,
+      count: 1,
+    });
+  }
+
+  return [...groups.values()]
+    .sort((a, b) => b.bestScore - a.bestScore || b.count - a.count || String(b.lastSeenAt ?? '').localeCompare(String(a.lastSeenAt ?? '')))
+    .slice(0, 30)
+    .map(({ symbol, side, bestScore, sources, lastSeenAt, count }) => ({
+      symbol,
+      side,
+      signalCount: count,
+      bestScore,
+      sources: [...sources].sort().slice(0, 10),
+      lastSeenAt,
+    }));
+}
+
+function buildRadarSignalsSummary(items: RadarSignalView[]) {
   const sourceCounts = new Map<string, number>();
   const connectorCounts = new Map<string, number>();
   const kindCounts = new Map<string, number>();
@@ -371,7 +473,7 @@ function buildRadarSignalsSummary(items: RadarSignalRecord[]) {
     if (item.status === 'ignored') current.ignored += 1;
     if (item.duplicateOf || item.error === 'duplicate_signal') current.duplicates += 1;
 
-    const seenAt = item.updatedAt || item.createdAt;
+    const seenAt = getRadarSignalSeenAt(item);
     if (seenAt && (!current.lastSeenAt || seenAt > current.lastSeenAt)) {
       current.lastSeenAt = seenAt;
     }
@@ -401,6 +503,7 @@ function buildRadarSignalsSummary(items: RadarSignalRecord[]) {
     byChannel: summarizeRadarSignalMap(channelCounts, 'channel') as Array<{ channel: string; count: number }>,
     qualityBySource: summarizeRadarSignalQualityMap(sourceQuality, 'source') as Array<{ source: string; total: number; pendingConfirmation: number; autoOrderPlaced: number; rejected: number; ignored: number; duplicates: number; lastSeenAt?: string }>,
     qualityByConnector: summarizeRadarSignalQualityMap(connectorQuality, 'connector') as Array<{ connector: string; total: number; pendingConfirmation: number; autoOrderPlaced: number; rejected: number; ignored: number; duplicates: number; lastSeenAt?: string }>,
+    candidateGroups: buildRadarCandidateGroups(items),
   };
 }
 
@@ -5878,12 +5981,13 @@ app.get('/api/radar/signals', ownerAuth, async (req, res) => {
   const db = await getDb();
   const allSignals = ensureRadarSignalsState(db);
   const filteredSignals = allSignals.filter((item) => matchesRadarSignalFilters(item, filters));
-  const signals = filteredSignals.slice(0, limit);
+  const enrichedSignals = filteredSignals.map(enrichRadarSignal);
+  const signals = enrichedSignals.slice(0, limit);
 
   return res.json({
     ok: true,
     signals,
-    summary: buildRadarSignalsSummary(filteredSignals),
+    summary: buildRadarSignalsSummary(enrichedSignals),
   });
 });
 
