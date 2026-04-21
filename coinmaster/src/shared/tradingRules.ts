@@ -216,3 +216,51 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
 
   return base;
 }
+
+function normalizeSymbol(symbol: string): string {
+  const raw = String(symbol ?? '').trim();
+  if (!raw) return '';
+
+  if (raw.includes(':')) {
+    const [namespaceRaw, symbolRaw] = raw.split(':', 2);
+    const namespace = String(namespaceRaw ?? '').trim().toLowerCase();
+    const symbolPart = String(symbolRaw ?? '').trim().toUpperCase();
+    if (!namespace || !symbolPart) return '';
+    return `${namespace}:${symbolPart}`;
+  }
+
+  return raw.toUpperCase();
+}
+
+/**
+ * Returns the concrete list of symbols to monitor for entry signals (Radar, Engulfing, FVG).
+ *
+ * This is the single source of truth for "which assets are actively monitored."
+ * Monitored symbols come exclusively from Trading Rules enabled coins list.
+ *
+ * Asset classes (crypto/commodity/forex/etc) are used ONLY for:
+ *   - Verdict policy thresholds (different score cutoffs per asset class)
+ *   - Diagnostics and display labels
+ *   - Bias policy organization
+ *
+ * Asset classes do NOT determine which symbols are monitored.
+ *
+ * Note: Returns normalized symbols. Deduplicates if multiple entries resolve to same symbol.
+ * Falls back to a default symbol if enabled list is empty (to maintain backwards compatibility).
+ */
+export function getMonitoredSymbols(rules: TradingRulesSettings, fallbackSymbol = 'BTC'): string[] {
+  const enabled = (rules.coins ?? [])
+    .filter((coin) => coin.enabled)
+    .map((coin) => normalizeSymbol(coin.symbol))
+    .filter((s) => s.length > 0);
+
+  const base = enabled.length > 0 ? enabled : [fallbackSymbol];
+  return [...new Set(base)];
+}
+
+/** Check if a symbol is in the monitored set (enabled in Trading Rules). */
+export function isSymbolMonitored(rules: TradingRulesSettings, symbol: string): boolean {
+  const normalized = normalizeRuleSymbol(symbol);
+  if (!normalized) return false;
+  return (rules.coins ?? []).some((coin) => normalizeRuleSymbol(coin.symbol) === normalized && coin.enabled);
+}

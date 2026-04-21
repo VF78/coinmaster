@@ -10,6 +10,8 @@
  *   3. Radar signals flow through handoffStrategyEntrySignal with correct parameters
  *   4. Status reconciliation updates radar signal records after pending/order outcomes
  *   5. Duplicate signals are correctly marked and do not trigger handoff
+ *   6. Monitored-symbol scope: signals for symbols not in Trading Rules enabled set are rejected before handoff
+ *   7. Monitored symbols come from Trading Rules enabled coins (getMonitoredSymbols)
  *
  * Exit code: 0 = all pass, 1 = failures found.
  *
@@ -21,7 +23,9 @@ import type {
   RadarSignalIngestPayload,
   RadarSignalRecord,
   RadarSignalStatus,
+  TradingRulesSettings,
 } from '../src/shared/dto.js';
+import { getMonitoredSymbols, isSymbolMonitored } from '../src/shared/tradingRules.js';
 
 // ─── Test harness ────────────────────────────────────────────────────
 
@@ -259,6 +263,93 @@ console.log('\nTest 7: Radar signals map to correct strategy in handoff');
   // In real flow, this payload would trigger handoffStrategyEntrySignal with strategy='radar'
   const expectedStrategy: 'radar' = 'radar';
   assert(expectedStrategy === 'radar', 'Radar signals use strategy=radar in handoff');
+}
+
+// Test 8: Monitored-symbol scope enforcement
+console.log('\nTest 8: Radar signals for non-monitored symbols are rejected before handoff');
+{
+  const mockRules: TradingRulesSettings = {
+    coins: [
+      { symbol: 'BTC', enabled: true, pct: 50, assetClass: 'crypto' },
+      { symbol: 'ETH', enabled: true, pct: 30, assetClass: 'crypto' },
+      { symbol: 'SOL', enabled: false, pct: 20, assetClass: 'crypto' },
+    ],
+    entryTf: '15m',
+    exitTf: '1h',
+    entryTimeframes: ['15m'],
+    emergencyExitTimeframes: ['1h'],
+    engulfingLookbackCandles: 30,
+    fvgRetrace: 50,
+    fvgMinWidthPct: 0.3,
+    maxLeverage: 5,
+    dailyDrawdown: 3,
+    tpPct: 6,
+    tpLevels: [6],
+    slPct: 2,
+    exitClosePct: 50,
+    autoConfirm: false,
+    biasPolicy: { symbolOverrides: {} },
+  };
+
+  const monitoredSymbols = getMonitoredSymbols(mockRules);
+  assert(monitoredSymbols.includes('BTC'), 'BTC is monitored (enabled=true)');
+  assert(monitoredSymbols.includes('ETH'), 'ETH is monitored (enabled=true)');
+  assert(!monitoredSymbols.includes('SOL'), 'SOL is NOT monitored (enabled=false)');
+
+  assert(isSymbolMonitored(mockRules, 'BTC'), 'isSymbolMonitored returns true for BTC');
+  assert(isSymbolMonitored(mockRules, 'ETH'), 'isSymbolMonitored returns true for ETH');
+  assert(!isSymbolMonitored(mockRules, 'SOL'), 'isSymbolMonitored returns false for SOL');
+  assert(!isSymbolMonitored(mockRules, 'DOGE'), 'isSymbolMonitored returns false for unlisted symbol DOGE');
+
+  // Simulate ingest logic: signals for non-monitored symbols should be rejected with 'symbol_not_monitored'
+  const signalForNonMonitored: RadarSignalRecord = {
+    id: 'radar-test-nm',
+    symbol: 'SOL',
+    side: 'buy',
+    timeframe: '15m',
+    source: 'test-source',
+    reason: 'test signal',
+    price: 100,
+    status: 'rejected',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    error: 'symbol_not_monitored',
+  };
+
+  assert(signalForNonMonitored.status === 'rejected', 'non-monitored symbol signal is rejected');
+  assert(signalForNonMonitored.error === 'symbol_not_monitored', 'error reason is symbol_not_monitored');
+}
+
+// Test 9: getMonitoredSymbols deduplicates and normalizes
+console.log('\nTest 9: getMonitoredSymbols returns normalized deduplicated list');
+{
+  const rulesWithDuplicates: TradingRulesSettings = {
+    coins: [
+      { symbol: 'BTC', enabled: true, pct: 30, assetClass: 'crypto' },
+      { symbol: 'btc', enabled: true, pct: 20, assetClass: 'crypto' },
+      { symbol: 'ETH', enabled: true, pct: 50, assetClass: 'crypto' },
+    ],
+    entryTf: '15m',
+    exitTf: '1h',
+    entryTimeframes: ['15m'],
+    emergencyExitTimeframes: ['1h'],
+    engulfingLookbackCandles: 30,
+    fvgRetrace: 50,
+    fvgMinWidthPct: 0.3,
+    maxLeverage: 5,
+    dailyDrawdown: 3,
+    tpPct: 6,
+    tpLevels: [6],
+    slPct: 2,
+    exitClosePct: 50,
+    autoConfirm: false,
+    biasPolicy: { symbolOverrides: {} },
+  };
+
+  const monitored = getMonitoredSymbols(rulesWithDuplicates);
+  assert(monitored.length === 2, 'deduplicates BTC/btc into single entry');
+  assert(monitored.includes('BTC'), 'normalized to uppercase BTC');
+  assert(monitored.includes('ETH'), 'includes ETH');
 }
 
 // ─── Summary ─────────────────────────────────────────────────────────

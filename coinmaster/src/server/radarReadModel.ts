@@ -9,6 +9,10 @@
  * - Summary rollup by source/connector/kind/quality
  *
  * Does NOT contain persistence logic or ingest logic — those remain in server/index.ts.
+ *
+ * IMPORTANT: Asset classes are used ONLY for verdict thresholds and diagnostics.
+ * The concrete list of monitored symbols comes from Trading Rules enabled coins (see shared/tradingRules.ts).
+ * Radar ingestion rejects signals for symbols outside the enabled set before handoff.
  */
 
 import type {
@@ -79,6 +83,10 @@ export function getRadarSignalCandidateScore(item: RadarSignalRecord): number {
 /**
  * Asset-class verdict policy.
  *
+ * IMPORTANT: Asset classes control verdict THRESHOLDS and diagnostics ONLY.
+ * They do NOT determine which symbols are monitored.
+ * The concrete list of monitored symbols comes from Trading Rules enabled coins (see getMonitoredSymbols).
+ *
  * Crypto: standard thresholds (highest risk tolerance, most signals).
  * Commodity (gold/oil): tighter — actionable requires higher conviction.
  * Everything else: falls back to crypto-like defaults.
@@ -91,6 +99,11 @@ const RADAR_VERDICT_THRESHOLDS: Record<string, { actionable: number; bias: numbe
 };
 const RADAR_VERDICT_THRESHOLDS_DEFAULT = RADAR_VERDICT_THRESHOLDS.crypto;
 
+/**
+ * Get verdict thresholds for an asset class (for policy/diagnostics only).
+ *
+ * NOTE: This does NOT gate which symbols are monitored — that's controlled by Trading Rules.
+ */
 export function getRadarVerdictThresholds(assetClass: AssetClass) {
   return RADAR_VERDICT_THRESHOLDS[assetClass] ?? RADAR_VERDICT_THRESHOLDS_DEFAULT;
 }

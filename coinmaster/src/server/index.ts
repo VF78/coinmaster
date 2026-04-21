@@ -44,7 +44,7 @@ import type {
   TradingRulesSettings,
   TradingRulesTimeframe
 } from '../shared/dto.js';
-import { inferAssetClassFromSymbol, normalizeTradingRules } from '../shared/tradingRules.js';
+import { inferAssetClassFromSymbol, normalizeTradingRules, getMonitoredSymbols, isSymbolMonitored } from '../shared/tradingRules.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
@@ -785,6 +785,12 @@ function getLatestClassBias(biasCommands: Array<{ symbol: string; bias: Bias }>,
   return getLatestBias(biasCommands, classBiasCommandSymbol(assetClass));
 }
 
+/**
+ * Returns the asset class for a symbol (for bias policy and diagnostics only).
+ *
+ * NOTE: Asset class does NOT determine whether a symbol is monitored.
+ * Monitoring is controlled exclusively by Trading Rules enabled coins list (see getMonitoredSymbols).
+ */
 function getAssetClassForSymbol(rules: TradingRulesSettings, symbol: string): AssetClass {
   const normalized = normalizeSymbol(symbol);
   const fromRules = rules.coins.find((coin) => normalizeSymbol(coin.symbol) === normalized);
@@ -943,15 +949,6 @@ async function isSymbolResolvableOnExchange(symbol: string): Promise<boolean> {
   }
 }
 
-function getMonitoredSymbols(raw: TradingRulesSettings): string[] {
-  const enabled = (raw.coins ?? [])
-    .filter((coin) => coin.enabled)
-    .map((coin) => normalizeSymbol(coin.symbol))
-    .filter((s) => s.length > 0);
-
-  const base = enabled.length > 0 ? enabled : [LIVE_SYMBOL];
-  return [...new Set(base)];
-}
 
 async function getFreshExitClosePct(fallback = 50): Promise<number> {
   try {
@@ -3224,7 +3221,7 @@ async function runEngulfingMonitorTick(): Promise<void> {
     const raw = effectiveRules.raw;
     if (!raw) return; // env fallback, no rules configured
 
-    const symbols = getMonitoredSymbols(raw);
+    const symbols = getMonitoredSymbols(raw, LIVE_SYMBOL);
     const lookback = raw.engulfingLookbackCandles ?? 30;
     const entryTfs = raw.entryTimeframes?.length ? raw.entryTimeframes : ['15m' as const];
     const exitTfs = raw.emergencyExitTimeframes?.length ? raw.emergencyExitTimeframes : ['1h' as const];
@@ -3603,7 +3600,7 @@ async function runFvgMonitorTick(): Promise<void> {
     const fvgMinWidthPct = raw.fvgMinWidthPct ?? 0.3;
     if (!Number.isFinite(fvgRetracePct) || fvgRetracePct <= 0) return;
 
-    const symbols = getMonitoredSymbols(raw);
+    const symbols = getMonitoredSymbols(raw, LIVE_SYMBOL);
     const now = Date.now();
 
     // Open positions (entry only when flat for each monitored symbol)
@@ -5725,6 +5722,20 @@ app.get('/api/live/orders/diagnostics', ownerAuth, async (_req, res) => {
   }
 });
 
+/**
+ * Ingest a Radar signal from upstream source (external API, webhook, etc).
+ *
+ * Architecture:
+ *   1. Validate + normalize payload → create RadarSignalRecord
+ *   2. Deduplicate (ignore if same signal seen recently)
+ *   3. Handoff to unified entry flow via handoffStrategyEntrySignal
+ *      - This respects Trading Rules: only enabled symbols can proceed
+ *      - Asset class is used ONLY for verdict thresholds/diagnostics, NOT for gating which symbols are monitored
+ *   4. Update RadarSignalRecord with handoff outcome (pending/order_placed/rejected)
+ *
+ * The concrete list of monitored symbols is controlled by Trading Rules enabled coins list (see getMonitoredSymbols).
+ * Radar does NOT use asset classes to determine which symbols to monitor.
+ */
 async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ingestSource: string): Promise<{
   ok: boolean;
   status: number;
@@ -5786,7 +5797,18 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
     return { ok: true, status: 200, signal: record };
   }
 
+  // Explicit monitored-symbol scope check: reject signals for symbols not in Trading Rules enabled set.
   const effectiveRules = rulesCache.getEffectiveRules();
+  if (!effectiveRules.raw || !isSymbolMonitored(effectiveRules.raw, symbol)) {
+    record.status = 'rejected';
+    record.error = 'symbol_not_monitored';
+    record.updatedAt = new Date().toISOString();
+    db.data.radarSignals = compactRadarSignals(db.data.radarSignals.map((item) => item.id === record.id ? record : item));
+    await db.write();
+    logger.info({ component: 'radar-ingest', symbol, source, reason: 'symbol_not_monitored' }, 'Radar signal rejected: symbol not in Trading Rules enabled set');
+    return { ok: false, status: 400, signal: record, error: 'symbol_not_monitored' };
+  }
+
   const handoff = await handoffStrategyEntrySignal({
     component: 'radar-ingest',
     strategy: 'radar',
