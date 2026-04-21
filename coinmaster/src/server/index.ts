@@ -32,6 +32,9 @@ import type {
   LiveDashboardState,
   LivePosition,
   PendingConfirmation,
+  RadarSignalIngestPayload,
+  RadarSignalRecord,
+  SignalStrategy,
   TelegramOutboxItem,
   TradeEvent,
   TradingRulesSettings,
@@ -158,15 +161,37 @@ function compactBacktestRuns(items: BacktestRun[]): BacktestRun[] {
     .slice(0, BACKTEST_RUN_HISTORY_LIMIT);
 }
 
+const RADAR_SIGNAL_HISTORY_LIMIT = 500;
+const RADAR_SIGNAL_DEDUP_MS = 5 * 60 * 1000;
+
+function compactRadarSignals(items: RadarSignalRecord[]): RadarSignalRecord[] {
+  return [...items]
+    .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
+    .slice(0, RADAR_SIGNAL_HISTORY_LIMIT);
+}
+
+function ensureRadarSignalsState(db: Awaited<ReturnType<typeof getDb>>): RadarSignalRecord[] {
+  db.data.radarSignals = Array.isArray(db.data.radarSignals) ? compactRadarSignals(db.data.radarSignals) : [];
+  return db.data.radarSignals;
+}
+
+function formatPendingTriggerLabel(strategy: SignalStrategy, timeframe: TradingRulesTimeframe): string {
+  if (strategy === 'engulfing') return `${timeframe.toUpperCase()} Engulfing`;
+  if (strategy === 'fvg') return `${timeframe.toUpperCase()} FVG`;
+  return `${timeframe.toUpperCase()} Radar`;
+}
+
+function isTradingRulesTimeframe(value: unknown): value is TradingRulesTimeframe {
+  return value === '5m' || value === '15m' || value === '1h' || value === '4h';
+}
+
 function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
   const cutoff = Date.now() - PENDING_CONFIRMATION_TTL_MS;
   return list.filter((p) => Date.parse(p.createdAt) >= cutoff && Number.isFinite(p.size) && p.size > 0 && Number.isFinite(p.price) && p.price > 0 && Number.isFinite(p.leverage) && p.leverage > 0);
 }
 
 function pendingToLivePosition(pending: PendingConfirmation): LivePosition {
-  const triggerLabel = pending.strategy === 'engulfing'
-    ? `${pending.timeframe.toUpperCase()} Engulfing`
-    : `${pending.timeframe.toUpperCase()} FVG`;
+  const triggerLabel = formatPendingTriggerLabel(pending.strategy, pending.timeframe);
 
   return {
     id: pending.id,
@@ -531,9 +556,7 @@ async function notifyPendingConfirmationTelegram(pending: PendingConfirmation): 
   const cfg = await getTelegramConfig();
   if (!cfg || !cfg.notifyManualConfirm) return;
 
-  const triggerLabel = pending.strategy === 'engulfing'
-    ? `${pending.timeframe.toUpperCase()} Engulfing`
-    : `${pending.timeframe.toUpperCase()} FVG`;
+  const triggerLabel = formatPendingTriggerLabel(pending.strategy, pending.timeframe);
   const dealValue = Number.isFinite(pending.price * pending.size)
     ? Number((pending.price * pending.size).toFixed(2))
     : 0;
@@ -774,7 +797,7 @@ async function getFreshExitClosePct(fallback = 50): Promise<number> {
 async function queuePendingConfirmation(params: {
   symbol: string;
   side: 'long' | 'short';
-  strategy: 'engulfing' | 'fvg';
+  strategy: SignalStrategy;
   timeframe: TradingRulesTimeframe;
   reason: string;
   price: number;
@@ -790,7 +813,7 @@ async function queuePendingConfirmation(params: {
   const biasBlocked = operatorBias === 'off' || operatorBias !== directionBias;
   if (biasBlocked) {
     logRiskGateAudit({
-      gate: params.strategy === 'fvg' ? 'fvg_entry_signal' : 'engulfing_entry_signal',
+      gate: getEntrySignalAuditGate(params.strategy),
       passed: false,
       reason: 'operator_bias_block',
       details: { symbol: params.symbol, strategy: params.strategy, side: params.side, operatorBias },
@@ -2850,9 +2873,20 @@ async function estimateSignalSize(params: {
   return { size: sizing.size, leverage };
 }
 
+function getEntrySignalAuditGate(strategy: SignalStrategy): RiskGateAuditEntry['gate'] {
+  if (strategy === 'engulfing') return 'engulfing_entry_signal';
+  if (strategy === 'fvg') return 'fvg_entry_signal';
+  return 'radar_entry_signal';
+}
+
+function normalizeSignalSourceLabel(strategy: SignalStrategy, timeframe: TradingRulesTimeframe, sourceLabel?: string): string {
+  const clean = String(sourceLabel ?? '').trim().toLowerCase().replace(/[^a-z0-9:_-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  return clean ? `${strategy}:${clean}:${timeframe}` : `${strategy}:auto:${timeframe}`;
+}
+
 async function handoffStrategyEntrySignal(params: {
-  component: 'engulfing-monitor' | 'fvg-monitor';
-  strategy: 'engulfing' | 'fvg';
+  component: 'engulfing-monitor' | 'fvg-monitor' | 'radar-ingest';
+  strategy: SignalStrategy;
   symbol: string;
   timeframe: TradingRulesTimeframe;
   side: 'buy' | 'sell';
@@ -2860,16 +2894,25 @@ async function handoffStrategyEntrySignal(params: {
   reason: string;
   effectiveRules: ReturnType<typeof rulesCache.getEffectiveRules>;
   autoConfirm: boolean;
+  sourceLabel?: string;
   auditDetails?: Record<string, unknown>;
-}): Promise<'continue' | 'break'> {
-  const { component, strategy, symbol, timeframe, side, price, reason, effectiveRules, autoConfirm, auditDetails } = params;
-  const source = `${strategy}:auto:${timeframe}`;
+}): Promise<{
+  flow: 'continue' | 'break';
+  status: 'pending_confirmation' | 'auto_order_placed' | 'rejected' | 'ignored';
+  source: string;
+  pendingId?: string;
+  orderId?: string;
+  error?: string;
+}> {
+  const { component, strategy, symbol, timeframe, side, price, reason, effectiveRules, autoConfirm, sourceLabel, auditDetails } = params;
+  const source = normalizeSignalSourceLabel(strategy, timeframe, sourceLabel);
+  const auditGate = getEntrySignalAuditGate(strategy);
 
   if (!autoConfirm) {
     const estimate = await estimateSignalSize({ symbol, side, price, effectiveRules });
     if (!estimate.size || estimate.size <= 0) {
       logger.warn({ component, symbol, timeframe, side, reason: 'invalid_sizing', strategy }, 'entry signal skipped: invalid sizing');
-      return 'continue';
+      return { flow: 'continue', status: 'ignored', source, error: 'invalid_sizing' };
     }
 
     const correlationId = `${strategy}-pending-${nanoid(8)}`;
@@ -2886,7 +2929,16 @@ async function handoffStrategyEntrySignal(params: {
     });
 
     logger.info({ component, symbol, timeframe, side, strategy, pendingId: queued.id, queued: queued.queued, reason, source }, 'entry signal queued for manual confirmation');
-    return 'break';
+
+    if (queued.queued) {
+      return { flow: 'break', status: 'pending_confirmation', source, pendingId: queued.id };
+    }
+
+    if (queued.id.startsWith('pc-')) {
+      return { flow: 'break', status: 'pending_confirmation', source, pendingId: queued.id };
+    }
+
+    return { flow: 'break', status: 'rejected', source, error: queued.id };
   }
 
   try {
@@ -2895,7 +2947,7 @@ async function handoffStrategyEntrySignal(params: {
     const availableUsd = account?.availableUsd ?? 0;
     if (equityUsd <= 0) {
       logger.warn({ component, strategy, symbol, timeframe }, 'auto-entry: zero equity');
-      return 'continue';
+      return { flow: 'continue', status: 'rejected', source, error: 'zero_equity' };
     }
 
     let sizeDecimals = 6;
@@ -2908,13 +2960,14 @@ async function handoffStrategyEntrySignal(params: {
 
     const sizing = computeAllocationSize({ symbol, price, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
     if (!sizing.ok) {
-      logRiskGateAudit({ gate: strategy === 'fvg' ? 'fvg_entry_signal' : 'engulfing_entry_signal', passed: false, reason: sizing.reason, details: { symbol, timeframe, strategy, ...auditDetails } });
+      logRiskGateAudit({ gate: auditGate, passed: false, reason: sizing.reason, details: { symbol, timeframe, strategy, ...auditDetails } });
       logger.warn({ component, strategy, symbol, timeframe, reason: sizing.reason }, 'auto-entry sizing failed');
-      return 'continue';
+      return { flow: 'continue', status: 'rejected', source, error: sizing.reason };
     }
 
     const risk = await evaluateRiskGates({ emitAudit: false });
     if (!risk.canTrade) {
+      const reasonCode = `risk_gate_blocked:${risk.blocks.join(',')}`;
       logger.warn({ component, strategy, symbol, timeframe, blocks: risk.blocks }, 'auto-entry blocked by risk gates');
       await notifySignalRejectedEvent({
         symbol,
@@ -2922,14 +2975,14 @@ async function handoffStrategyEntrySignal(params: {
         reason: 'auto_entry_blocked_risk_gate',
         blocks: risk.blocks.join(','),
       }).catch(() => undefined);
-      return 'continue';
+      return { flow: 'continue', status: 'rejected', source, error: reasonCode };
     }
 
     const correlationId = `${strategy}-auto-${nanoid(8)}`;
     const ack = await exchange.placeLimitOrder({ symbol, side, price, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
 
     logRiskGateAudit({
-      gate: strategy === 'fvg' ? 'fvg_entry_signal' : 'engulfing_entry_signal',
+      gate: auditGate,
       passed: ack.ok,
       reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
       details: { symbol, timeframe, strategy, side, size: sizing.size, price, orderId: ack.orderId, error: ack.error, reason, ...auditDetails },
@@ -2950,7 +3003,7 @@ async function handoffStrategyEntrySignal(params: {
           // best effort
         }
       }
-      return 'break';
+      return { flow: 'break', status: 'auto_order_placed', source, orderId: ack.orderId };
     }
 
     await notifyOrderRejectedEvent({
@@ -2958,11 +3011,13 @@ async function handoffStrategyEntrySignal(params: {
       source,
       error: ack.error ?? 'exchange_rejected',
     }).catch(() => undefined);
+
+    return { flow: 'continue', status: 'rejected', source, error: ack.error ?? 'exchange_rejected' };
   } catch (err) {
     logger.error({ component, strategy, symbol, timeframe, err, reason, source }, 'auto-entry order failed');
   }
 
-  return 'continue';
+  return { flow: 'continue', status: 'rejected', source, error: 'auto_entry_failed' };
 }
 
 /**
@@ -3076,7 +3131,7 @@ async function runEngulfingMonitorTick(): Promise<void> {
             autoConfirm: !!raw.autoConfirm,
             auditDetails: { direction: signal.direction, confidence: signal.confidence },
           });
-          if (handoff === 'break') break;
+          if (handoff.flow === 'break') break;
         } catch (err) {
           logger.warn({ component: 'engulfing-monitor', tf, err }, 'entry signal evaluation failed for tf');
         }
@@ -3465,7 +3520,7 @@ async function runFvgMonitorTick(): Promise<void> {
             zoneBottom: signal.zone?.bottom,
           },
         });
-        if (handoff === 'break') break;
+        if (handoff.flow === 'break') break;
       } catch (err) {
         logger.warn({ component: 'fvg-monitor', tf, err }, 'FVG signal evaluation failed for tf');
       }
@@ -5477,6 +5532,92 @@ app.get('/api/live/orders/diagnostics', ownerAuth, async (_req, res) => {
       orders: [],
     });
   }
+});
+
+app.get('/api/radar/signals', ownerAuth, async (req, res) => {
+  const limitRaw = Number(req.query.limit ?? 50);
+  const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(200, Math.trunc(limitRaw))) : 50;
+
+  const db = await getDb();
+  const signals = ensureRadarSignalsState(db)
+    .slice(0, limit);
+
+  return res.json({ ok: true, signals });
+});
+
+app.post('/api/radar/signals', ownerAuth, async (req, res) => {
+  const payload = (req.body ?? {}) as Partial<RadarSignalIngestPayload>;
+  const symbol = normalizeSymbol(String(payload.symbol ?? ''));
+  const side = payload.side === 'buy' || payload.side === 'sell' ? payload.side : null;
+  const timeframe = isTradingRulesTimeframe(payload.timeframe) ? payload.timeframe : '15m';
+  const source = String(payload.source ?? '').trim().slice(0, 80);
+  const reason = String(payload.reason ?? '').trim().slice(0, 280);
+  const price = Number(payload.price);
+
+  if (!symbol || !side || !source || !reason || !Number.isFinite(price) || price <= 0) {
+    return res.status(400).json({ ok: false, error: 'invalid_radar_signal_payload' });
+  }
+
+  const db = await getDb();
+  const signals = ensureRadarSignalsState(db);
+  const nowIso = new Date().toISOString();
+  const duplicate = signals.find((item) =>
+    item.symbol === symbol
+    && item.side === side
+    && item.timeframe === timeframe
+    && item.source === source
+    && item.reason === reason
+    && Number.isFinite(Date.parse(item.createdAt))
+    && (Date.now() - Date.parse(item.createdAt)) <= RADAR_SIGNAL_DEDUP_MS
+  );
+
+  const record: RadarSignalRecord = {
+    id: `radar-${nanoid(10)}`,
+    symbol,
+    side,
+    timeframe,
+    source,
+    reason,
+    price,
+    status: duplicate ? 'ignored' : 'ignored',
+    createdAt: nowIso,
+    updatedAt: nowIso,
+    duplicateOf: duplicate?.id,
+    error: duplicate ? 'duplicate_signal' : undefined,
+  };
+
+  signals.unshift(record);
+  db.data.radarSignals = compactRadarSignals(signals);
+  await db.write();
+
+  if (duplicate) {
+    return res.json({ ok: true, signal: record });
+  }
+
+  const effectiveRules = rulesCache.getEffectiveRules();
+  const handoff = await handoffStrategyEntrySignal({
+    component: 'radar-ingest',
+    strategy: 'radar',
+    symbol,
+    timeframe,
+    side,
+    price,
+    reason,
+    effectiveRules,
+    autoConfirm: !!effectiveRules.raw?.autoConfirm,
+    sourceLabel: source,
+    auditDetails: { radarSource: source, ingest: 'owner_api' },
+  });
+
+  record.status = handoff.status;
+  record.updatedAt = new Date().toISOString();
+  record.pendingId = handoff.pendingId;
+  record.orderId = handoff.orderId;
+  record.error = handoff.error;
+  db.data.radarSignals = compactRadarSignals(db.data.radarSignals.map((item) => item.id === record.id ? record : item));
+  await db.write();
+
+  return res.status(record.status === 'rejected' ? 400 : 200).json({ ok: record.status !== 'rejected', signal: record });
 });
 
 app.get('/api/live/pending-confirmations', ownerAuth, async (_req, res) => {

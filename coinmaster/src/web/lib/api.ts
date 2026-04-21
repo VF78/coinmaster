@@ -24,6 +24,9 @@ import type {
   ExternalExchangesSettingsResponse,
   ExchangeConnectionStatus,
   PostTradeAnalyticsResponse,
+  RadarSignalIngestPayload,
+  RadarSignalIngestResponse,
+  RadarSignalsResponse,
   TradingRulesSettings,
   TradingRulesSettingsResponse,
   TradingRulesSymbolsResponse
@@ -305,6 +308,19 @@ export function confirmPendingConfirmation(id: string) {
 export function rejectPendingConfirmation(id: string) {
   return jsonFetch<{ ok: boolean; error?: string }>(`/api/live/pending-confirmations/${encodeURIComponent(id)}/reject`, {
     method: 'POST'
+  });
+}
+
+export function getRadarSignals(limit = 50) {
+  const params = new URLSearchParams({ limit: String(limit) });
+  return jsonFetch<RadarSignalsResponse>(`/api/radar/signals?${params.toString()}`);
+}
+
+export function postRadarSignal(payload: RadarSignalIngestPayload) {
+  return jsonFetch<RadarSignalIngestResponse>('/api/radar/signals', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload),
   });
 }
 

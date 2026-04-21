@@ -4,6 +4,7 @@ export type PositionStatus = 'open' | 'closed';
 export type StatsPeriod = 'week' | 'month';
 
 export type TradingRulesTimeframe = '5m' | '15m' | '1h' | '4h';
+export type SignalStrategy = 'engulfing' | 'fvg' | 'radar';
 export type AssetClass = 'crypto' | 'commodity' | 'forex' | 'index' | 'other';
 export type BiasMode = 'global' | 'symbol';
 
@@ -204,7 +205,7 @@ export interface DailyDDBaseline {
 
 export interface RiskGateAuditEntry {
   timestamp: string;
-  gate: 'daily_dd' | 'leverage_cap' | 'auth' | 'symbol_allowlist' | 'allocation_cap' | 'allocation_sizing' | 'tp_sl_defaults' | 'market_data' | 'multi_tf_engulfing' | 'engulfing_entry_signal' | 'engulfing_emergency_exit' | 'fvg_entry_signal' | 'tp_fill_monitor' | 'partial_close' | 'break_even_sl_after_partial';
+  gate: 'daily_dd' | 'leverage_cap' | 'auth' | 'symbol_allowlist' | 'allocation_cap' | 'allocation_sizing' | 'tp_sl_defaults' | 'market_data' | 'multi_tf_engulfing' | 'engulfing_entry_signal' | 'engulfing_emergency_exit' | 'fvg_entry_signal' | 'radar_entry_signal' | 'tp_fill_monitor' | 'partial_close' | 'break_even_sl_after_partial';
   passed: boolean;
   reason?: string;
   details?: Record<string, unknown>;
@@ -275,13 +276,32 @@ export interface PendingConfirmation {
   id: string;
   symbol: string;
   side: TradeSide;
-  strategy: 'engulfing' | 'fvg';
+  strategy: SignalStrategy;
   timeframe: TradingRulesTimeframe;
   reason: string;
   price: number;
   size: number;
   leverage: number;
   createdAt: string;
+}
+
+export type RadarSignalStatus = 'pending_confirmation' | 'auto_order_placed' | 'rejected' | 'ignored';
+
+export interface RadarSignalRecord {
+  id: string;
+  symbol: string;
+  side: 'buy' | 'sell';
+  timeframe: TradingRulesTimeframe;
+  source: string;
+  reason: string;
+  price: number;
+  status: RadarSignalStatus;
+  createdAt: string;
+  updatedAt: string;
+  pendingId?: string;
+  orderId?: string;
+  error?: string;
+  duplicateOf?: string;
 }
 
 export interface LiveOpenOrderBreakdown {
@@ -329,6 +349,25 @@ export interface DashboardResponse {
   };
   classBiasControls: DashboardClassBiasControl[];
   customBiasControls: DashboardCustomBiasControl[];
+}
+
+export interface RadarSignalsResponse {
+  ok: boolean;
+  signals: RadarSignalRecord[];
+}
+
+export interface RadarSignalIngestPayload {
+  symbol: string;
+  side: 'buy' | 'sell';
+  timeframe?: TradingRulesTimeframe;
+  source: string;
+  reason: string;
+  price: number;
+}
+
+export interface RadarSignalIngestResponse {
+  ok: boolean;
+  signal: RadarSignalRecord;
 }
 
 export interface HistoryResponse {

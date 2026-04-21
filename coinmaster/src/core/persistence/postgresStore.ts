@@ -48,7 +48,8 @@ const defaultData: DBShape = {
   aiMasterInsights: [],
   aiMasterQa: [],
   backtestRuns: [],
-  optimizationResults: []
+  optimizationResults: [],
+  radarSignals: []
 };
 
 function ensureDbShape(data: DBShape) {
@@ -139,6 +140,7 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.aiMasterQa)) data.aiMasterQa = [];
   if (!Array.isArray(data.backtestRuns)) data.backtestRuns = [];
   if (!Array.isArray(data.optimizationResults)) data.optimizationResults = [];
+  if (!Array.isArray(data.radarSignals)) data.radarSignals = [];
 }
 
 /**

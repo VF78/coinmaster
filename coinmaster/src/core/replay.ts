@@ -69,6 +69,7 @@ function buildReplayDb(depositUsd: number): DBShape {
     aiMasterQa: [],
     backtestRuns: [],
     optimizationResults: [],
+    radarSignals: [],
   };
 }
 
