@@ -1,7 +1,7 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-22 Europe/Madrid
-Status: FALLBACK / bounded implementation in progress
+Status: ACTIVE / clarified scope, implementation paused for user-approved logic
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Branch / HEAD / origin/main / deploy commit / divergence: main / e9d54fc2f6ff5410e8aebadd9eded0769ffed019 / e9d54fc2f6ff5410e8aebadd9eded0769ffed019 / 069f37919e903aefedf94eb5624e217282dc16d1 / synced with origin, deploy behind HEAD
@@ -20,6 +20,10 @@ Done:
   - sweep + displacement
   - lower-TF confirmation after HTF FVG touch
   - fresh / first-touch / already mitigated
+- user clarified two hard constraints before continuing:
+  - the improvement is intended to ship into prod first, then be evaluated with backtests afterward
+  - lower-TF confirmation mapping must be configurable in Trading Rules, not hardcoded
+- user requested that any other logic changes be explicitly agreed before implementation continues
 - updated #26 checklist to reflect the agreed first implementation slice and verification scope
 - completed mandatory preflight for coding:
   - branch = main
@@ -28,7 +32,7 @@ Done:
   - origin/main divergence = 0 / 0
   - deployed commit = 069f37919e903aefedf94eb5624e217282dc16d1
 - Claude CLI route unavailable under current root runtime; switched implementation to fallback coding path per protocol
-Next exact step: implement one shared FVG qualification layer for live + backtest with the 3 agreed optional filters and Trading Rules controls via fallback coding agent, then run comparative backtests and core checks
+Next exact step: realign the #26 implementation spec to the clarified constraints (prod-first deployment intent, configurable lower-TF mapping, no unagreed logic changes), then continue coding only inside that approved scope
 Checks / commit / deploy / push:
 - latest product checks: invariants:radar-handoff, check, build passed
 - latest product deploy: scripts/deploy-prod-safe.sh successful
@@ -37,7 +41,8 @@ Checks / commit / deploy / push:
 Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
 - external ICT/FVG material is mostly practitioner content, not statistically rigorous research; treat as heuristic input, not proof
-- prod defaults for the new filters should be chosen only after backtest comparison; until then, keep behavior backward-comparable via toggles
+- partial product-repo edits exist from interrupted fallback pass and must be reviewed/reworked before any commit
+- lower-TF mapping and any other logic beyond the explicitly agreed slice must be configurable or re-approved before coding continues
 Key files:
 - .ops/PROJECT_TRUTH.md
 - .ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md
