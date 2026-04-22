@@ -54,6 +54,11 @@ export interface TradingRulesSettings {
   biasPolicy?: BiasPolicySettings;
 }
 
+export interface RadarRuntimeSettings {
+  enabled: boolean;
+  autoConfirm: boolean;
+}
+
 export interface TelegramNotifySettings {
   botToken: string;
   chatId: string;
@@ -116,6 +121,7 @@ export type ReadOnlyExchangesSettings = ExternalExchangesSettings;
 export interface AppSettings {
   depositUsd: number;
   tradingRules: TradingRulesSettings;
+  radarRuntime: RadarRuntimeSettings;
   telegramNotify?: TelegramNotifySettings;
   hyperliquid?: HyperliquidCredentialsSettings;
   /** External exchange connections (Bybit, Binance, etc.) */
@@ -675,6 +681,11 @@ export type ReadOnlyExchangesSettingsResponse = ExternalExchangesSettingsRespons
 export interface TradingRulesSettingsResponse {
   ok: boolean;
   rules: TradingRulesSettings;
+}
+
+export interface RadarRuntimeSettingsResponse {
+  ok: boolean;
+  runtime: RadarRuntimeSettings;
 }
 
 export interface TradingRulesSymbolsResponse {

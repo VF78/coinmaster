@@ -33,6 +33,8 @@ import type {
   LivePosition,
   PendingConfirmation,
   RadarSignalIngestPayload,
+  RadarRuntimeSettings,
+  RadarRuntimeSettingsResponse,
   RadarSignalQualityBucket,
   RadarSignalRecord,
   RadarSignalStatus,
@@ -45,6 +47,7 @@ import type {
   TradingRulesTimeframe
 } from '../shared/dto.js';
 import { inferAssetClassFromSymbol, normalizeTradingRules, getMonitoredSymbols, isSymbolMonitored } from '../shared/tradingRules.js';
+import { normalizeRadarRuntimeSettings } from '../shared/radarRuntime.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
@@ -363,6 +366,10 @@ function formatPendingTriggerLabel(strategy: SignalStrategy, timeframe: TradingR
 
 function isTradingRulesTimeframe(value: unknown): value is TradingRulesTimeframe {
   return value === '5m' || value === '15m' || value === '1h' || value === '4h';
+}
+
+function normalizeRadarRuntimeFromSettings(settings: { radarRuntime?: unknown; tradingRules: TradingRulesSettings }): RadarRuntimeSettings {
+  return normalizeRadarRuntimeSettings(settings.radarRuntime, normalizeTradingRules(settings.tradingRules).autoConfirm);
 }
 
 function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
@@ -5060,6 +5067,31 @@ app.get('/api/settings/trading-rules/effective', ownerAuth, (_req, res) => {
   return res.json({ ok: true, ...rulesCache.getEffectiveRules() });
 });
 
+app.get('/api/settings/radar', async (_req, res) => {
+  const db = await getDb();
+  const persisted = db.data.settings.radarRuntime;
+  const runtime = normalizeRadarRuntimeFromSettings(db.data.settings);
+
+  if (JSON.stringify(runtime) !== JSON.stringify(persisted)) {
+    db.data.settings.radarRuntime = runtime;
+    await db.write();
+  }
+
+  const payload: RadarRuntimeSettingsResponse = { ok: true, runtime };
+  return res.json(payload);
+});
+
+app.put('/api/settings/radar', async (req, res) => {
+  const db = await getDb();
+  const current = normalizeRadarRuntimeFromSettings(db.data.settings);
+  const runtime = normalizeRadarRuntimeSettings({ ...current, ...(req.body as Record<string, unknown> | undefined) }, current.autoConfirm);
+  db.data.settings.radarRuntime = runtime;
+  await db.write();
+
+  const payload: RadarRuntimeSettingsResponse = { ok: true, runtime };
+  return res.json(payload);
+});
+
 app.get('/api/settings/exchange', async (_req, res) => {
   const liveMode = getLiveMode();
   const live = await getCachedExchangeLiveState(LIVE_SYMBOL, liveMode);
@@ -5880,6 +5912,7 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
 
   const db = await getDb();
   const signals = ensureRadarSignalsState(db);
+  const radarRuntime = normalizeRadarRuntimeFromSettings(db.data.settings);
   const nowIso = new Date().toISOString();
   const duplicate = signals.find((item) =>
     (dedupeKey && item.dedupeKey ? item.dedupeKey === dedupeKey : (
@@ -5918,6 +5951,16 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
     return { ok: true, status: 200, signal: record };
   }
 
+  if (!radarRuntime.enabled) {
+    record.status = 'ignored';
+    record.error = 'radar_disabled';
+    record.updatedAt = new Date().toISOString();
+    db.data.radarSignals = compactRadarSignals(db.data.radarSignals.map((item) => item.id === record.id ? record : item));
+    await db.write();
+    logger.info({ component: 'radar-ingest', symbol, source, reason: 'radar_disabled' }, 'Radar signal ignored: runtime disabled');
+    return { ok: false, status: 409, signal: record, error: 'radar_disabled' };
+  }
+
   // Explicit monitored-symbol scope check: reject signals for symbols not in Trading Rules enabled set.
   const effectiveRules = rulesCache.getEffectiveRules();
   if (!effectiveRules.raw || !isSymbolMonitored(effectiveRules.raw, symbol)) {
@@ -5939,7 +5982,7 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
     price,
     reason,
     effectiveRules,
-    autoConfirm: !!effectiveRules.raw?.autoConfirm,
+    autoConfirm: radarRuntime.autoConfirm,
     sourceLabel: source,
     auditDetails: { radarSource: source, ingest: ingestSource },
   });

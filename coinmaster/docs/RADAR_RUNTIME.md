@@ -23,6 +23,8 @@ What Radar does:
   `strategy='radar'`, exactly like the engulfing and FVG monitors.
 - Score and classify signals deterministically for diagnostics and dashboards.
 - Return enriched signals plus summary rollups from `GET /api/radar/signals`.
+- Expose Radar runtime settings via `GET/PUT /api/settings/radar`:
+  `enabled` pauses ingest/handoff; `autoConfirm` only affects Radar signals.
 
 What Radar does **not** do:
 

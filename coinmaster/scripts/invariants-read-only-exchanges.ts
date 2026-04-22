@@ -1,6 +1,7 @@
 import { applyBybitConnectionPatch, getBybitConnectionSettings, getMaskedBybitConnectionSettings } from '../src/integrations/readOnlyExchanges/service.js';
 import { normalizeBybitExecutionToFill, type BybitExecutionRow } from '../src/integrations/readOnlyExchanges/bybitReadOnlyConnector.js';
 import type { AppSettings } from '../src/shared/dto.js';
+import { cloneRadarRuntimeDefaults } from '../src/shared/radarRuntime.js';
 
 let passed = 0;
 let failed = 0;
@@ -30,10 +31,10 @@ function makeSettings(): AppSettings {
       notifyOrderRejected: false,
       notifyPositionClosed: false,
     },
-    tradingRules: {
-      coins: [],
-      entryTf: '15m',
-      exitTf: '1h',
+      tradingRules: {
+        coins: [],
+        entryTf: '15m',
+        exitTf: '1h',
       entryTimeframes: ['15m'],
       emergencyExitTimeframes: ['1h'],
       engulfingLookbackCandles: 5,
@@ -44,11 +45,12 @@ function makeSettings(): AppSettings {
       tpPct: 2,
       slPct: 1,
       tpLevels: [3],
-      exitClosePct: 50,
-      autoConfirm: false,
-    },
-    externalExchanges: {
-      bybit: {
+        exitClosePct: 50,
+        autoConfirm: false,
+      },
+      radarRuntime: cloneRadarRuntimeDefaults(),
+      externalExchanges: {
+        bybit: {
         mode: 'off',
         apiKey: '',
         apiSecret: '',

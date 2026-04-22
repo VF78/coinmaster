@@ -3,6 +3,7 @@ import { runSimulationStep } from './simulation.js';
 import { submitBias } from './services.js';
 import { Bias, DBShape } from './types.js';
 import { cloneTradingRulesDefaults } from '../shared/tradingRules.js';
+import { cloneRadarRuntimeDefaults } from '../shared/radarRuntime.js';
 
 export interface ReplayRequest {
   symbol: string;
@@ -43,6 +44,7 @@ function buildReplayDb(depositUsd: number): DBShape {
     settings: {
       depositUsd,
       tradingRules: cloneTradingRulesDefaults(),
+      radarRuntime: cloneRadarRuntimeDefaults(),
       telegramNotify: {
         botToken: '',
         chatId: '',

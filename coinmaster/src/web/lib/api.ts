@@ -26,6 +26,8 @@ import type {
   PostTradeAnalyticsResponse,
   RadarSignalIngestPayload,
   RadarSignalIngestResponse,
+  RadarRuntimeSettings,
+  RadarRuntimeSettingsResponse,
   RadarSignalsQuery,
   RadarSignalsResponse,
   TradingRulesSettings,
@@ -265,6 +267,18 @@ export function getTelegramNotifyHealth() {
 
 export function getTradingRules() {
   return jsonFetch<TradingRulesSettingsResponse>('/api/settings/trading-rules');
+}
+
+export function getRadarRuntimeSettings() {
+  return jsonFetch<RadarRuntimeSettingsResponse>('/api/settings/radar');
+}
+
+export function saveRadarRuntimeSettings(payload: Partial<RadarRuntimeSettings>) {
+  return jsonFetch<RadarRuntimeSettingsResponse>('/api/settings/radar', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
 }
 
 export function getTradingRuleSymbols() {

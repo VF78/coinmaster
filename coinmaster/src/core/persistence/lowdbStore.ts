@@ -2,12 +2,14 @@ import { JSONFilePreset } from 'lowdb/node';
 import type { Low } from 'lowdb';
 import type { DBShape } from '../types.js';
 import { cloneTradingRulesDefaults } from '../../shared/tradingRules.js';
+import { cloneRadarRuntimeDefaults, normalizeRadarRuntimeSettings } from '../../shared/radarRuntime.js';
 import type { PersistenceStore } from './types.js';
 
 const defaultData: DBShape = {
   settings: {
     depositUsd: 1000,
     tradingRules: cloneTradingRulesDefaults(),
+    radarRuntime: cloneRadarRuntimeDefaults(),
     telegramNotify: {
       botToken: '',
       chatId: '',
@@ -52,13 +54,17 @@ const defaultData: DBShape = {
 };
 
 function ensureDbShape(data: DBShape) {
-  data.settings = data.settings ?? { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults() };
+  data.settings = data.settings ?? { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults(), radarRuntime: cloneRadarRuntimeDefaults() };
   if (!Number.isFinite(data.settings.depositUsd)) {
     data.settings.depositUsd = 1000;
   }
   if (!data.settings.tradingRules || typeof data.settings.tradingRules !== 'object') {
     data.settings.tradingRules = cloneTradingRulesDefaults();
   }
+  data.settings.radarRuntime = normalizeRadarRuntimeSettings(
+    data.settings.radarRuntime,
+    data.settings.tradingRules.autoConfirm,
+  );
   data.settings.telegramNotify = data.settings.telegramNotify ?? {
     botToken: '',
     chatId: '',
