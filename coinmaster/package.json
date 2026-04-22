@@ -27,7 +27,8 @@
     "invariants:engulfing": "tsx scripts/invariants-engulfing.ts",
     "invariants:fvg": "tsx scripts/invariants-fvg.ts",
     "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts",
-    "invariants:radar-handoff": "tsx scripts/invariants-radar-handoff.ts"
+    "invariants:radar-handoff": "tsx scripts/invariants-radar-handoff.ts",
+    "invariants:backtest-run-persistence": "tsx scripts/invariants-backtest-run-persistence.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

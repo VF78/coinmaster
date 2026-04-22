@@ -57,6 +57,25 @@ export function getActiveBacktestRunId(): string | null {
   return activeRunId;
 }
 
+export function requireBacktestRun(runId: string, runs: BacktestRun[]): BacktestRun {
+  const run = runs.find((item) => item.id === runId);
+  if (!run) {
+    throw new Error(`backtest_run_not_found:${runId}`);
+  }
+  return run;
+}
+
+export function mutateBacktestRun(
+  db: Pick<Awaited<ReturnType<typeof getDb>>, 'data'>,
+  runId: string,
+  mutate: (run: BacktestRun) => void,
+): BacktestRun {
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const run = requireBacktestRun(runId, db.data.backtestRuns);
+  mutate(run);
+  return run;
+}
+
 // ─── Worker ──────────────────────────────────────────────────────────
 
 export async function executeBacktestRun(
@@ -70,26 +89,27 @@ export async function executeBacktestRun(
 
   const db = await getDb();
   db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
-  const run = db.data.backtestRuns.find((r) => r.id === runId);
-  if (!run) {
-    throw new Error(`backtest_run_not_found:${runId}`);
-  }
-  if (run.status !== 'queued') {
-    throw new Error(`backtest_run_not_queued:${run.status}`);
+  const initialRun = requireBacktestRun(runId, db.data.backtestRuns);
+  if (initialRun.status !== 'queued') {
+    throw new Error(`backtest_run_not_queued:${initialRun.status}`);
   }
 
   activeRunId = runId;
-  run.status = 'running';
-  run.startedAt = new Date().toISOString();
   const engine = getBacktestEngineVersion();
-  run.engineVersion = engine.version;
-  run.engineCommit = engine.commit;
+  mutateBacktestRun(db, runId, (run) => {
+    run.status = 'running';
+    run.startedAt = new Date().toISOString();
+    run.engineVersion = engine.version;
+    run.engineCommit = engine.commit;
+  });
   await db.write();
 
-  try {
-    const rules = run.rulesSnapshot;
-    const symbol = run.symbol;
+  const rules = initialRun.rulesSnapshot;
+  const symbol = initialRun.symbol;
+  const startTimeMs = initialRun.startTimeMs;
+  const endTimeMs = initialRun.endTimeMs;
 
+  try {
     // Determine all required timeframes
     const requiredTfs = new Set<string>();
     for (const tf of rules.entryTimeframes ?? ['15m']) requiredTfs.add(tf);
@@ -118,8 +138,8 @@ export async function executeBacktestRun(
         const candles = await candleLoader.getCandles({
           symbol,
           timeframe: candleTf,
-          startTimeMs: run.startTimeMs - paddingMs,
-          endTimeMs: run.endTimeMs,
+          startTimeMs: startTimeMs - paddingMs,
+          endTimeMs,
         });
 
         candleSets.push({ symbol, timeframe: candleTf, candles });
@@ -150,39 +170,65 @@ export async function executeBacktestRun(
         if (ms > maxLoadedMs) maxLoadedMs = ms;
       }
     }
-    run.marketDataCoverage = {
-      requestedFromMs: run.startTimeMs,
-      requestedToMs: run.endTimeMs,
-      loadedFromMs: Number.isFinite(minLoadedMs) ? minLoadedMs : undefined,
-      loadedToMs: Number.isFinite(maxLoadedMs) ? maxLoadedMs : undefined,
-    };
+    mutateBacktestRun(db, runId, (run) => {
+      run.marketDataCoverage = {
+        requestedFromMs: startTimeMs,
+        requestedToMs: endTimeMs,
+        loadedFromMs: Number.isFinite(minLoadedMs) ? minLoadedMs : undefined,
+        loadedToMs: Number.isFinite(maxLoadedMs) ? maxLoadedMs : undefined,
+      };
+    });
 
     // Run engine
-    const result = runBacktestEngine({ run, candleSets, depositUsd });
+    const result = runBacktestEngine({
+      run: {
+        ...initialRun,
+        status: 'running',
+        startedAt: initialRun.startedAt ?? new Date().toISOString(),
+        engineVersion: engine.version,
+        engineCommit: engine.commit,
+        marketDataCoverage: {
+          requestedFromMs: startTimeMs,
+          requestedToMs: endTimeMs,
+          loadedFromMs: Number.isFinite(minLoadedMs) ? minLoadedMs : undefined,
+          loadedToMs: Number.isFinite(maxLoadedMs) ? maxLoadedMs : undefined,
+        },
+      },
+      candleSets,
+      depositUsd,
+    });
 
-    // Write results
-    run.summary = result.summary;
-    run.bySymbol = result.bySymbol;
-    run.artifacts = {
-      tradeCount: result.trades.length,
-      equityCurvePoints: result.equityCurve.length,
-      eventCount: result.trades.length,
-    };
-    run.status = 'completed';
-    run.finishedAt = new Date().toISOString();
-    run.aiAnalysis = { status: 'idle' };
+    // Write results onto the latest snapshot object, not a stale pre-reload reference.
+    mutateBacktestRun(db, runId, (run) => {
+      run.summary = result.summary;
+      run.bySymbol = result.bySymbol;
+      run.artifacts = {
+        tradeCount: result.trades.length,
+        equityCurvePoints: result.equityCurve.length,
+        eventCount: result.trades.length,
+      };
+      run.status = 'completed';
+      run.finishedAt = new Date().toISOString();
+      run.error = undefined;
+      run.aiAnalysis = run.aiAnalysis?.status === 'pending'
+        ? run.aiAnalysis
+        : { status: 'idle' };
+    });
 
     logger.info(
       { component: 'backtest-worker', runId, symbol, trades: result.summary.totalTrades, pnl: result.summary.netPnlUsd },
       'backtest run completed',
     );
   } catch (err) {
-    run.status = 'failed';
-    run.finishedAt = new Date().toISOString();
-    run.error = err instanceof Error ? err.message : String(err);
+    const error = err instanceof Error ? err.message : String(err);
+    mutateBacktestRun(db, runId, (run) => {
+      run.status = 'failed';
+      run.finishedAt = new Date().toISOString();
+      run.error = error;
+    });
 
     logger.error(
-      { component: 'backtest-worker', runId, err: run.error },
+      { component: 'backtest-worker', runId, err: error },
       'backtest run failed',
     );
   } finally {
