@@ -1,101 +1,30 @@
 # OPS_MINIMUM.md
 
-Дата: 2026-02-23 (Europe/Madrid)
-Назначение: минимально достаточный операционный контур для стабильного сопровождения Coinmaster.
+Minimal startup/read path for Coinmaster operations.
 
-## 1) Команды запуска
+## Read first
 
-```bash
-# перейти в рабочее приложение
-cd coinmaster
+1. `.ops/PROJECT_TRUTH.md`
+2. `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
+3. `.ops/RESET_PREP_PROTOCOL.md`
+4. `.ops/TASK_STATE_PROTOCOL.md`
+5. `.ops/ACTIVE_TASK.md`
 
-# установка зависимостей
-npm ci
+## Command references
 
-# локальная разработка (API + web)
-npm run dev
+- OpenClaw / VPS bot operations: `RUNBOOK_COMMANDS.md`
+- Coinmaster app operations: `coinmaster/RUNBOOK_COMMANDS.md`
 
-# API-only
-npm run start
-
-# API-only на альтернативном порту (если 8787 занят)
-PORT=8878 HOST=127.0.0.1 npm run start
-```
-
-## 2) Команды диагностики
+## Recovery preflight
 
 ```bash
-# статическая проверка
-npm run check
-
-# сборка фронтенда
-npm run build
-
-# health API
-curl -sS http://127.0.0.1:8787/api/health
-
-# live status (проверка обменника/ключей)
-curl -sS http://127.0.0.1:8787/api/live/status | jq .
-
-# кто занимает порт API
-ss -ltnp | grep ':8787'
+cd /root/.openclaw/workspace/coinmaster/coinmaster
+git status --short
+git rev-parse HEAD
+git rev-list --left-right --count origin/main...HEAD
+cat /opt/coinmaster/.deploy-source-commit
 ```
 
-## 3) Команды проверки ключевого сценария
+## Rule
 
-```bash
-# 1) поднять API на тестовом порту
-PORT=8878 HOST=127.0.0.1 npm run start
-
-# 2) проверить health
-curl -sS http://127.0.0.1:8878/api/health
-
-# 3) проверить dashboard контракт
-curl -sS http://127.0.0.1:8878/api/dashboard | jq 'keys'
-
-# 4) проверить live readiness
-curl -sS http://127.0.0.1:8878/api/live/status | jq .
-```
-
-## 4) Шаблон отчёта по итерации (обязательный)
-
-```md
-Статус: <in_progress | done | blocked>
-Классификация: <infra/devops | bugfix | feature | refactor | diagnostics>
-Цель текущей итерации: <1 строка>
-План:
-1) <подзадача 1>
-2) <подзадача 2>
-
-Команды проверки:
-- <точная команда 1>
-- <точная команда 2>
-
-После выполнения:
-- Что сделано: <факты>
-- Что проверено: <команды + результаты>
-- Риски: <если есть>
-- Rollback (если меняли infra/config): <точные шаги>
-- Что дальше: <следующий квант>
-```
-
-### 5) Специальные проверки по MEX-RO / AI Master
-
-```bash
-# unit/invariant checks
-npm run invariants:read-only-exchanges
-npm run invariants:ai-master
-
-# secured smoke (если включён OWNER_AUTH_TOKEN)
-API_BASE_URL=http://127.0.0.1:8787 OWNER_AUTH_TOKEN=<token> npm run ops:smoke
-```
-
-Runbooks:
-- `docs/RUNBOOK_MEX_RO_BYBIT.md`
-- `docs/RUNBOOK_AI_MASTER.md`
-
-# 6) Быстрые правила надёжности
-- Короткие итерации 20–45 минут.
-- Если 30 минут без подтверждённого прогресса → `blocked`.
-- После 2 неудачных попыток → stop + гипотезы + запрос данных у человека.
-- Не менять trading logic / risk параметры / execution path без явного подтверждения владельца.
+Do not use this file as a second truth document. It is only a compact index into the canonical `.ops/` protocol set.

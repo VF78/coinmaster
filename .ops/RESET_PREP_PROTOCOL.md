@@ -53,14 +53,21 @@ Run this before any planned:
    - move temporary investigation files out of the repo
    - if any intentional untracked file remains, list it explicitly in `.ops/ACTIVE_TASK.md`
 
-7. **Use a dated reset handoff only if strictly needed**
+7. **Sync restart-critical state into GitHub repo**
+   - `.ops/ACTIVE_TASK.md` is not local-only; it is a repo-backed restart artifact.
+   - If restart-critical docs changed (`.ops/ACTIVE_TASK.md`, protocol docs, runbooks, current truth docs), commit them.
+   - Push `main` to `origin` before reset unless the user explicitly says not to or push is blocked.
+   - If push is blocked, write the exact reason and current divergence into `.ops/ACTIVE_TASK.md`.
+
+8. **Use a dated reset handoff only if strictly needed**
    - Default: `.ops/ACTIVE_TASK.md` is enough.
    - Create/update `RESET_HANDOFF_YYYY-MM-DD.md` only when there is incident-grade detail or bounded context that cannot fit safely in `.ops/ACTIVE_TASK.md`.
    - Keep it short and practical.
 
-8. **Final reset gate**
+9. **Final reset gate**
    - GitHub Project status is current.
    - `.ops/ACTIVE_TASK.md` is current.
+   - GitHub repo is synced, or the push blocker is explicitly recorded.
    - next exact step is written
    - blockers are written
    - repo/deploy state is written
@@ -96,6 +103,7 @@ Read only this by default:
    - `git status --short`
    - `git rev-parse HEAD`
    - `git rev-list --left-right --count origin/main...HEAD`
+   - `git rev-parse origin/main`
    - `cat /opt/coinmaster/.deploy-source-commit`
 
 Only then, if `.ops/ACTIVE_TASK.md` says it matters, open:

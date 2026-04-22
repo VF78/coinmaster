@@ -1,17 +1,19 @@
-# AGENTS.md - Startup
+# AGENTS.md - Coinmaster startup
 
-**Every session:**
-1. `SOUL.md` — who you are
-2. `USER.md` — who you help
-3. `MEMORY.md` — (main session only)
-4. `memory/YYYY-MM-DD.md` — recent context
+Read the minimum authoritative set first:
 
-## Safety & Process
+1. `SOUL.md`
+2. `USER.md`
+3. `.ops/PROJECT_TRUTH.md`
+4. `.ops/ACTIVE_TASK.md`
 
-- **Write things down.** Memory doesn't survive restarts.
-- **Don't exfiltrate.** Private data stays private.
-- **Ask before external actions.** (emails, tweets, etc.)
+Open deeper docs only if `.ops/ACTIVE_TASK.md` says they matter.
 
-## Heartbeats
+## Rules
 
-`HEARTBEAT.md` tracks periodic checks. Reply `HEARTBEAT_OK` if nothing needs attention.
+- Write important state to repo-backed docs, not only chat context.
+- Keep task status aligned with GitHub Project.
+- Develop only in the canonical repo: `/root/.openclaw/workspace/coinmaster/coinmaster`.
+- Do not edit `/opt/coinmaster` manually.
+- Keep the workspace clean; remove temporary junk before commit/reset.
+- Before reset, follow `.ops/RESET_PREP_PROTOCOL.md`.

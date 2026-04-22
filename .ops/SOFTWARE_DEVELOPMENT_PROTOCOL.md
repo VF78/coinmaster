@@ -63,6 +63,12 @@ Run or verify these before starting implementation:
 
 - Default working branch: **`main` only**.
 - Do not create feature branches, detached-head work, or parallel local variants unless the user explicitly asks.
+- Restart-critical operational docs live in the repo, not only in local chat/context:
+  - `.ops/PROJECT_TRUTH.md`
+  - `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
+  - `.ops/RESET_PREP_PROTOCOL.md`
+  - `.ops/TASK_STATE_PROTOCOL.md`
+  - `.ops/ACTIVE_TASK.md`
 - Keep three states visible and distinct:
   - workspace `HEAD`
   - `origin/main`
@@ -109,3 +115,15 @@ Keep these current during real work:
 - GitHub Project status
 - `.ops/ACTIVE_TASK.md`
 - optional dated reset handoff only when `.ops/ACTIVE_TASK.md` is too small to carry a safe restart
+
+## 11) Minimal document map
+
+Read/maintain the smallest authoritative set first:
+
+- project truth → `.ops/PROJECT_TRUTH.md`
+- development rules → `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
+- reset rules → `.ops/RESET_PREP_PROTOCOL.md`
+- task-state/watchdog rules → `.ops/TASK_STATE_PROTOCOL.md`
+- current task snapshot → `.ops/ACTIVE_TASK.md`
+
+Treat older deep-dive docs as reference material, not default startup context.
