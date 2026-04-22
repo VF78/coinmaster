@@ -2,11 +2,13 @@ import type {
   AssetClass,
   BiasMode,
   BiasPolicySettings,
+  FvgLowerTfConfirmation,
   TradingRulesSettings,
   TradingRulesTimeframe
 } from './dto.js';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
+const FVG_LOWER_TF_CONFIRMATIONS: FvgLowerTfConfirmation[] = ['off', '5m', '15m', '1h'];
 const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
 
 const DEFAULT_COINS = [
@@ -31,6 +33,15 @@ export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   engulfingLookbackCandles: 30,
   fvgRetrace: 50,
   fvgMinWidthPct: 0.3,
+  fvgRequireSweepDisplacement: false,
+  fvgSweepLookbackCandles: 20,
+  fvgDisplacementMinBodyPct: 60,
+  fvgRequireFirstTouch: false,
+  fvgRequireLowerTfConfirmation: false,
+  fvgLowerTfConfirmations: {
+    '1h': '15m',
+    '4h': '1h',
+  },
   maxLeverage: 5,
   dailyDrawdown: 3,
   tpPct: 6,
@@ -85,6 +96,13 @@ function normalizeRuleSymbol(value: unknown): string | null {
 function normalizeBiasMode(value: unknown, fallback: BiasMode): BiasMode {
   const raw = String(value ?? '').trim().toLowerCase();
   return raw === 'global' || raw === 'symbol' ? raw : fallback;
+}
+
+function normalizeFvgLowerTfConfirmation(value: unknown, fallback: FvgLowerTfConfirmation): FvgLowerTfConfirmation {
+  const raw = String(value ?? '').trim().toLowerCase();
+  return FVG_LOWER_TF_CONFIRMATIONS.includes(raw as FvgLowerTfConfirmation)
+    ? (raw as FvgLowerTfConfirmation)
+    : fallback;
 }
 
 export function inferAssetClassFromSymbol(symbol: string): AssetClass {
@@ -190,6 +208,18 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
 
   base.fvgRetrace = clampNumber(raw.fvgRetrace, 10, 90, base.fvgRetrace);
   base.fvgMinWidthPct = clampNumber(raw.fvgMinWidthPct, 0, 10, base.fvgMinWidthPct);
+  base.fvgRequireSweepDisplacement = Boolean(raw.fvgRequireSweepDisplacement);
+  base.fvgSweepLookbackCandles = Math.round(clampNumber(raw.fvgSweepLookbackCandles, 3, 100, base.fvgSweepLookbackCandles));
+  base.fvgDisplacementMinBodyPct = clampNumber(raw.fvgDisplacementMinBodyPct, 10, 100, base.fvgDisplacementMinBodyPct);
+  base.fvgRequireFirstTouch = Boolean(raw.fvgRequireFirstTouch);
+  base.fvgRequireLowerTfConfirmation = Boolean(raw.fvgRequireLowerTfConfirmation);
+  const fvgLowerTfConfirmationsRaw = raw.fvgLowerTfConfirmations && typeof raw.fvgLowerTfConfirmations === 'object'
+    ? (raw.fvgLowerTfConfirmations as Record<string, unknown>)
+    : {};
+  base.fvgLowerTfConfirmations = {
+    '1h': normalizeFvgLowerTfConfirmation(fvgLowerTfConfirmationsRaw['1h'], base.fvgLowerTfConfirmations['1h']),
+    '4h': normalizeFvgLowerTfConfirmation(fvgLowerTfConfirmationsRaw['4h'], base.fvgLowerTfConfirmations['4h']),
+  };
   base.maxLeverage = Math.round(clampNumber(raw.maxLeverage, 1, 50, base.maxLeverage));
   base.dailyDrawdown = clampNumber(raw.dailyDrawdown, 0, 100, base.dailyDrawdown);
   base.slPct = clampNumber(raw.slPct, 0, 1000, base.slPct);

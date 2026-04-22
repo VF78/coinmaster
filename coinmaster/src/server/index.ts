@@ -3714,8 +3714,17 @@ async function runFvgMonitorTick(): Promise<void> {
     if (!raw) return; // env fallback
 
     const fvgRetracePct = raw.fvgRetrace ?? 50;
-    const fvgMinWidthPct = raw.fvgMinWidthPct ?? 0.3;
     if (!Number.isFinite(fvgRetracePct) || fvgRetracePct <= 0) return;
+    const fvgQualification = {
+      minWidthPct: raw.fvgMinWidthPct ?? 0.3,
+      requireSweepDisplacement: raw.fvgRequireSweepDisplacement ?? false,
+      sweepLookbackCandles: raw.fvgSweepLookbackCandles ?? 20,
+      displacementMinBodyPct: raw.fvgDisplacementMinBodyPct ?? 60,
+      requireFirstTouch: raw.fvgRequireFirstTouch ?? false,
+      requireLowerTfConfirmation: raw.fvgRequireLowerTfConfirmation ?? false,
+      lowerTfConfirmations: raw.fvgLowerTfConfirmations ?? { '1h': '15m', '4h': '1h' },
+      engulfingLookbackCandles: raw.engulfingLookbackCandles ?? 30,
+    };
 
     const symbols = getMonitoredSymbols(raw, LIVE_SYMBOL);
     const now = Date.now();
@@ -3759,7 +3768,30 @@ async function runFvgMonitorTick(): Promise<void> {
           const closedCandles = candles.filter((c) => Date.parse(c.timestamp) <= now - tfMs);
           const currentPrice = resolveMonitorPrice(mids, symbol, closedCandles);
           if (!currentPrice) continue;
-          const signal = evaluateFvg(closedCandles, tf, currentPrice, fvgRetracePct, lookback, fvgMinWidthPct);
+
+          const lowerTfCandles: Partial<Record<TradingRulesTimeframe, Candle[]>> = {};
+          if (fvgQualification.requireLowerTfConfirmation) {
+            const mappedTf = fvgQualification.lowerTfConfirmations[tf];
+            if (mappedTf && mappedTf !== 'off') {
+              const mappedTfMs = TF_MS[mappedTf];
+              const mappedCandles = await exchange.getCandles({
+                symbol,
+                timeframe: mappedTf,
+                startTimeMs: now - mappedTfMs * (lookback + 40),
+                endTimeMs: now,
+              });
+              lowerTfCandles[mappedTf] = mappedCandles.filter((c) => Date.parse(c.timestamp) <= now - mappedTfMs);
+            }
+          }
+
+          const signal = evaluateFvg(closedCandles, tf, {
+            currentPrice,
+            currentTimeMs: now,
+            retracePct: fvgRetracePct,
+            lookback,
+            qualification: fvgQualification,
+            lowerTfCandles,
+          });
           if (!signal.detected || !signal.direction) continue;
 
           const side: 'buy' | 'sell' = signal.direction === 'bullish' ? 'buy' : 'sell';
@@ -3798,9 +3830,11 @@ async function runFvgMonitorTick(): Promise<void> {
             zoneTop: signal.zone?.top,
             zoneBottom: signal.zone?.bottom,
             fvgRetracePct,
-            fvgMinWidthPct,
+            fvgMinWidthPct: fvgQualification.minWidthPct,
             operatorBias,
             reason: signal.reason,
+            touchTimestamp: signal.touchTimestamp,
+            lowerTfConfirmationTimeframe: signal.lowerTfConfirmationTimeframe,
           },
         });
         logger.info(

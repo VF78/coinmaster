@@ -94,8 +94,14 @@ export async function executeBacktestRun(
     const requiredTfs = new Set<string>();
     for (const tf of rules.entryTimeframes ?? ['15m']) requiredTfs.add(tf);
     for (const tf of rules.emergencyExitTimeframes ?? ['1h']) requiredTfs.add(tf);
-    requiredTfs.add('1h'); // FVG always needs 1h
-    requiredTfs.add('4h'); // FVG always needs 4h
+    requiredTfs.add('1h');
+    requiredTfs.add('4h');
+    if (rules.fvgRequireLowerTfConfirmation) {
+      const oneHourTf = rules.fvgLowerTfConfirmations?.['1h'];
+      const fourHourTf = rules.fvgLowerTfConfirmations?.['4h'];
+      if (oneHourTf && oneHourTf !== 'off') requiredTfs.add(oneHourTf);
+      if (fourHourTf && fourHourTf !== 'off') requiredTfs.add(fourHourTf);
+    }
 
     // Load candles for all required timeframes
     const candleSets: BacktestCandleSet[] = [];

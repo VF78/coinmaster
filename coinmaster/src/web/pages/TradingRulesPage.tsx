@@ -6,6 +6,8 @@ import type {
   AssetClass,
   BiasMode,
   BiasPolicySymbolOverride,
+  FvgLowerTfConfirmation,
+  FvgTimeframe,
   TradingCoinAllocation,
   TradingRulesSettings,
   TradingRulesTimeframe
@@ -16,6 +18,8 @@ import type { RiskCheckResponse } from '../lib/api';
 import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
+const FVG_TIMEFRAMES: FvgTimeframe[] = ['1h', '4h'];
+const FVG_LOWER_TF_OPTIONS: FvgLowerTfConfirmation[] = ['off', '5m', '15m', '1h'];
 const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
 const BIAS_MODE_OPTIONS: Array<{ value: BiasMode; label: string }> = [
   { value: 'global', label: 'shared' },
@@ -167,6 +171,12 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
   const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
   const [fvgMinWidthPct, setFvgMinWidthPct] = useState(defaults.fvgMinWidthPct);
+  const [fvgRequireSweepDisplacement, setFvgRequireSweepDisplacement] = useState(defaults.fvgRequireSweepDisplacement);
+  const [fvgSweepLookbackCandles, setFvgSweepLookbackCandles] = useState(defaults.fvgSweepLookbackCandles);
+  const [fvgDisplacementMinBodyPct, setFvgDisplacementMinBodyPct] = useState(defaults.fvgDisplacementMinBodyPct);
+  const [fvgRequireFirstTouch, setFvgRequireFirstTouch] = useState(defaults.fvgRequireFirstTouch);
+  const [fvgRequireLowerTfConfirmation, setFvgRequireLowerTfConfirmation] = useState(defaults.fvgRequireLowerTfConfirmation);
+  const [fvgLowerTfConfirmations, setFvgLowerTfConfirmations] = useState<Record<FvgTimeframe, FvgLowerTfConfirmation>>(defaults.fvgLowerTfConfirmations);
   const [maxLeverage, setMaxLeverage] = useState(defaults.maxLeverage);
   const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
   const [tpLevels, setTpLevels] = useState<number[]>(defaults.tpLevels ?? [defaults.tpPct]);
@@ -197,6 +207,12 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     engulfingLookbackCandles,
     fvgRetrace,
     fvgMinWidthPct,
+    fvgRequireSweepDisplacement,
+    fvgSweepLookbackCandles,
+    fvgDisplacementMinBodyPct,
+    fvgRequireFirstTouch,
+    fvgRequireLowerTfConfirmation,
+    fvgLowerTfConfirmations,
     maxLeverage,
     dailyDrawdown,
     tpPct: tpLevels[0] ?? 6,
@@ -214,6 +230,12 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     engulfingLookbackCandles,
     fvgRetrace,
     fvgMinWidthPct,
+    fvgRequireSweepDisplacement,
+    fvgSweepLookbackCandles,
+    fvgDisplacementMinBodyPct,
+    fvgRequireFirstTouch,
+    fvgRequireLowerTfConfirmation,
+    fvgLowerTfConfirmations,
     maxLeverage,
     dailyDrawdown,
     tpLevels,
@@ -257,6 +279,12 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setEngulfingLookbackCandles(normalized.engulfingLookbackCandles);
     setFvgRetrace(normalized.fvgRetrace);
     setFvgMinWidthPct(normalized.fvgMinWidthPct);
+    setFvgRequireSweepDisplacement(normalized.fvgRequireSweepDisplacement);
+    setFvgSweepLookbackCandles(normalized.fvgSweepLookbackCandles);
+    setFvgDisplacementMinBodyPct(normalized.fvgDisplacementMinBodyPct);
+    setFvgRequireFirstTouch(normalized.fvgRequireFirstTouch);
+    setFvgRequireLowerTfConfirmation(normalized.fvgRequireLowerTfConfirmation);
+    setFvgLowerTfConfirmations(normalized.fvgLowerTfConfirmations);
     setMaxLeverage(normalized.maxLeverage);
     setDailyDrawdown(normalized.dailyDrawdown);
     setTpLevels(normalized.tpLevels ?? [normalized.tpPct]);
@@ -445,6 +473,10 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     }
   }
 
+  function setFvgLowerTfConfirmation(timeframe: FvgTimeframe, value: FvgLowerTfConfirmation) {
+    setFvgLowerTfConfirmations((prev) => ({ ...prev, [timeframe]: value }));
+  }
+
   function getRowBiasMode(coin: TradingCoinAllocation): BiasMode {
     const symbol = normalizeAssetSymbol(coin.symbol);
     const override = symbol ? symbolBiasOverrides[symbol] : undefined;
@@ -544,7 +576,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     if (!onRegisterSaveHandler) return;
     onRegisterSaveHandler(() => handleApply());
     return () => onRegisterSaveHandler(null);
-  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, symbolBiasOverrides]);
+  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, fvgRequireSweepDisplacement, fvgSweepLookbackCandles, fvgDisplacementMinBodyPct, fvgRequireFirstTouch, fvgRequireLowerTfConfirmation, fvgLowerTfConfirmations, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, symbolBiasOverrides]);
 
   return (
     <main className="terminal-layout trading-rules-page">
@@ -767,6 +799,80 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                 <span>0%</span><span>0.3%</span><span>2%</span>
               </div>
             </div>
+          </div>
+
+          <div style={{ display: 'grid', gap: 14, marginTop: 14 }}>
+            <label className="rules-toggle-row">
+              <span>Require HTF sweep + displacement</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={fvgRequireSweepDisplacement}
+                className={`rules-toggle ${fvgRequireSweepDisplacement ? 'rules-toggle--on' : ''}`}
+                onClick={() => setFvgRequireSweepDisplacement((v) => !v)}
+              >
+                <span className="rules-toggle__thumb" />
+              </button>
+            </label>
+            {fvgRequireSweepDisplacement ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
+                <div style={{ display: 'grid', gap: 6 }}>
+                  <span className="rules-label" style={{ margin: 0 }}>Sweep lookback candles</span>
+                  <Stepper value={fvgSweepLookbackCandles} min={3} max={100} step={1} decimals={0} onChange={setFvgSweepLookbackCandles} />
+                </div>
+                <div style={{ display: 'grid', gap: 6 }}>
+                  <span className="rules-label" style={{ margin: 0 }}>Displacement min body %</span>
+                  <Stepper value={fvgDisplacementMinBodyPct} min={10} max={100} step={5} unit="%" decimals={0} onChange={setFvgDisplacementMinBodyPct} />
+                </div>
+              </div>
+            ) : null}
+
+            <label className="rules-toggle-row">
+              <span>Only first touch of fresh FVG</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={fvgRequireFirstTouch}
+                className={`rules-toggle ${fvgRequireFirstTouch ? 'rules-toggle--on' : ''}`}
+                onClick={() => setFvgRequireFirstTouch((v) => !v)}
+              >
+                <span className="rules-toggle__thumb" />
+              </button>
+            </label>
+            <p className="stat-note muted" style={{ marginTop: -8 }}>
+              {fvgRequireFirstTouch ? 'Rejects already mitigated HTF gaps; only the first live touch can qualify.' : 'Already mitigated HTF gaps remain eligible.'}
+            </p>
+
+            <label className="rules-toggle-row">
+              <span>Require lower-TF confirmation after HTF touch</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={fvgRequireLowerTfConfirmation}
+                className={`rules-toggle ${fvgRequireLowerTfConfirmation ? 'rules-toggle--on' : ''}`}
+                onClick={() => setFvgRequireLowerTfConfirmation((v) => !v)}
+              >
+                <span className="rules-toggle__thumb" />
+              </button>
+            </label>
+            {fvgRequireLowerTfConfirmation ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
+                {FVG_TIMEFRAMES.map((tf) => (
+                  <label key={tf} style={{ display: 'grid', gap: 6 }}>
+                    <span className="rules-label" style={{ margin: 0 }}>{tf} confirmation TF</span>
+                    <select
+                      className="rules-input"
+                      value={fvgLowerTfConfirmations[tf]}
+                      onChange={(e) => setFvgLowerTfConfirmation(tf, e.target.value as FvgLowerTfConfirmation)}
+                    >
+                      {FVG_LOWER_TF_OPTIONS.map((option) => (
+                        <option key={`${tf}-${option}`} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  </label>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
 

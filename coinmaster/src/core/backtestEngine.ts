@@ -162,6 +162,11 @@ function isSideAllowed(side: TradeSide, biasMode: BacktestRun['biasMode'] | unde
   return side === effective;
 }
 
+function closedCandlesAtTime(candles: Candle[], eventCloseMs: number, tf: string): Candle[] {
+  const tfMs = TF_MS[tf] ?? 900_000;
+  return candles.filter((c) => Date.parse(c.timestamp) + tfMs <= eventCloseMs);
+}
+
 // ─── Main Engine ──────────────────────────────────────────────────────
 
 export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOutput {
@@ -186,8 +191,17 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
   const fvgTfs: FvgTimeframe[] = ['1h', '4h'];
   const lookback = rules.engulfingLookbackCandles ?? 30;
   const fvgRetracePct = rules.fvgRetrace ?? 50;
-  const fvgMinWidthPct = rules.fvgMinWidthPct ?? 0.3;
   const exitClosePct = rules.exitClosePct ?? 50;
+  const fvgQualification = {
+    minWidthPct: rules.fvgMinWidthPct ?? 0.3,
+    requireSweepDisplacement: rules.fvgRequireSweepDisplacement ?? false,
+    sweepLookbackCandles: rules.fvgSweepLookbackCandles ?? 20,
+    displacementMinBodyPct: rules.fvgDisplacementMinBodyPct ?? 60,
+    requireFirstTouch: rules.fvgRequireFirstTouch ?? false,
+    requireLowerTfConfirmation: rules.fvgRequireLowerTfConfirmation ?? false,
+    lowerTfConfirmations: rules.fvgLowerTfConfirmations ?? { '1h': '15m', '4h': '1h' },
+    engulfingLookbackCandles: lookback,
+  };
 
   // Build a unified timeline of candle close events across all TFs
   // Each event = { timestamp, tf, candleIndex }
@@ -455,54 +469,70 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
     }
 
     // FVG entry
-    const fvgTfSet = fvgTfs as string[];
-    if (fvgTfSet.includes(tf) && !getOpenPosition()) {
-      const fvgSignal = evaluateFvg(closedCandles, tf as FvgTimeframe, currentPrice, fvgRetracePct, 10, fvgMinWidthPct);
-      if (fvgSignal.detected && fvgSignal.direction) {
+    if (!getOpenPosition()) {
+      let openedFvgPosition = false;
+      for (const fvgTf of fvgTfs) {
+        const htfCandles = closedCandlesAtTime(candlesByTf.get(fvgTf) ?? [], timestampMs, fvgTf);
+        if (htfCandles.length < 3) continue;
+
+        const fvgSignal = evaluateFvg(htfCandles, fvgTf, {
+          currentPrice,
+          currentTimeMs: timestampMs,
+          retracePct: fvgRetracePct,
+          lookback: 10,
+          qualification: fvgQualification,
+          lowerTfCandles: {
+            '5m': closedCandlesAtTime(candlesByTf.get('5m') ?? [], timestampMs, '5m'),
+            '15m': closedCandlesAtTime(candlesByTf.get('15m') ?? [], timestampMs, '15m'),
+            '1h': closedCandlesAtTime(candlesByTf.get('1h') ?? [], timestampMs, '1h'),
+            '4h': closedCandlesAtTime(candlesByTf.get('4h') ?? [], timestampMs, '4h'),
+          },
+        });
+        if (!fvgSignal.detected || !fvgSignal.direction) continue;
+
         const side: TradeSide = fvgSignal.direction === 'bullish' ? 'long' : 'short';
         if (!isSideAllowed(side, run.biasMode)) {
           rejectedSignals++;
-          equityCurve.push(currentEquity);
           continue;
         }
-        const debounceKey = `fvg:${symbol}:${tf}:${fvgSignal.direction}`;
-        const tfMs = TF_MS[tf] ?? 3_600_000;
+        const debounceKey = `fvg:${symbol}:${fvgTf}:${fvgSignal.direction}`;
+        const debounceTfMs = TF_MS[fvgTf] ?? 3_600_000;
         const lastFired = entryDebounce.get(debounceKey) ?? 0;
-        if (timestampMs - lastFired >= tfMs) {
-          entryDebounce.set(debounceKey, timestampMs);
+        if (timestampMs - lastFired < debounceTfMs) continue;
+        entryDebounce.set(debounceKey, timestampMs);
 
-          if (currentEquity <= 0) {
-            rejectedSignals++;
-            equityCurve.push(currentEquity);
-            continue;
-          }
-
-          const size = computeSizeFromRules(currentPrice, currentEquity, rules, symbol);
-          if (size <= 0) { rejectedSignals++; equityCurve.push(currentEquity); continue; }
-
-          const { stopLoss, takeProfits } = resolveTpSlFromRules(currentPrice, side, rules);
-          const pos: SimPosition = {
-            id: nanoid(),
-            symbol,
-            side,
-            entryPrice: currentPrice,
-            size,
-            remainingSize: size,
-            stopLoss,
-            takeProfits,
-            tp1Done: false,
-            tp2Done: false,
-            tp3Done: false,
-            openedAt: timestamp,
-            status: 'open',
-            realizedPnl: 0,
-          };
-          positions.push(pos);
-          recordTrade(pos.id, 'open', currentPrice, size, 0, `fvg_entry_${tf}`, timestamp);
-          equityCurve.push(currentEquity);
+        if (currentEquity <= 0) {
+          rejectedSignals++;
           continue;
         }
+
+        const size = computeSizeFromRules(currentPrice, currentEquity, rules, symbol);
+        if (size <= 0) { rejectedSignals++; continue; }
+
+        const { stopLoss, takeProfits } = resolveTpSlFromRules(currentPrice, side, rules);
+        const pos: SimPosition = {
+          id: nanoid(),
+          symbol,
+          side,
+          entryPrice: currentPrice,
+          size,
+          remainingSize: size,
+          stopLoss,
+          takeProfits,
+          tp1Done: false,
+          tp2Done: false,
+          tp3Done: false,
+          openedAt: timestamp,
+          status: 'open',
+          realizedPnl: 0,
+        };
+        positions.push(pos);
+        recordTrade(pos.id, 'open', currentPrice, size, 0, `fvg_entry_${fvgTf}_${fvgSignal.reason}`, timestamp);
+        equityCurve.push(currentEquity);
+        openedFvgPosition = true;
+        break;
       }
+      if (openedFvgPosition) continue;
     }
 
     equityCurve.push(currentEquity);
