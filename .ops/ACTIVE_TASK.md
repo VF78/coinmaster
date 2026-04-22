@@ -1,11 +1,11 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-22 Europe/Madrid
-Status: ACTIVE / approved #26 spec locked, implementation in progress
+Status: ACTIVE / #26 implementation shipped, post-implementation backtest pending
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / HEAD / origin/main / deploy commit / divergence: main / e9d54fc2f6ff5410e8aebadd9eded0769ffed019 / e9d54fc2f6ff5410e8aebadd9eded0769ffed019 / 069f37919e903aefedf94eb5624e217282dc16d1 / synced with origin, deploy behind HEAD
-Goal: implement the first bounded FVG quality-improvement slice inside one shared live/backtest architecture, then verify via backtest + checks before any prod promotion
+Branch / HEAD / origin/main / deploy commit / divergence: main / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / synced with origin and deploy
+Goal: evaluate the newly shipped bounded FVG qualification slice with post-implementation backtests and decide what to tune next for ROI
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -16,32 +16,32 @@ Done:
 - removed non-ROI / obsolete items from the GitHub Project board
 - reopened GitHub issue #26 and moved it back into active work
 - completed FVG repo audit + external ICT/FVG research pass
-- agreed with user on the first bounded filter set for implementation:
-  - sweep + displacement
-  - lower-TF confirmation after HTF FVG touch
-  - fresh / first-touch / already mitigated
-- user clarified two hard constraints before continuing:
-  - the improvement is intended to ship into prod first, then be evaluated with backtests afterward
-  - lower-TF confirmation mapping must be configurable in Trading Rules, not hardcoded
-- user requested that any other logic changes be explicitly agreed before implementation continues
-- updated #26 checklist to reflect the agreed first implementation slice and verification scope
-- completed mandatory preflight for coding:
-  - branch = main
-  - workspace status clean
-  - HEAD = e9d54fc2f6ff5410e8aebadd9eded0769ffed019
-  - origin/main divergence = 0 / 0
-  - deployed commit = 069f37919e903aefedf94eb5624e217282dc16d1
-- Claude CLI route unavailable under current root runtime; switched implementation to fallback coding path per protocol
-Next exact step: implement ST1-ST6 of #26 on a clean tree inside the approved configurable scope, then run checks, deploy, and evaluate with post-implementation backtests
+- clarified and locked the approved #26 implementation scope in GitHub + ops state
+- implemented and deployed the first bounded FVG quality slice:
+  - sweep + displacement gate
+  - fresh / first-touch mitigation gate
+  - lower-TF confirmation gate
+  - configurable lower-TF mapping in Trading Rules
+  - shared live/backtest FVG qualification path
+  - updated invariants and settings model/UI
+- verification completed:
+  - npm run check ✅
+  - npm run invariants:fvg ✅
+  - npm run build ✅
+  - deploy-prod-safe.sh ✅
+  - /api/health ✅
+  - /api/settings/trading-rules returns new FVG fields ✅
+Next exact step: run ST9 post-implementation comparative backtests on the shipped FVG slice, review ROI/signal-quality impact, and decide whether defaults or thresholds should change
 Checks / commit / deploy / push:
-- latest product checks: invariants:radar-handoff, check, build passed
+- latest product commit: 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 (`Implement shared FVG qualification rules`)
+- latest product checks: check, invariants:fvg, build passed
 - latest product deploy: scripts/deploy-prod-safe.sh successful
-- latest ops commit: e9d54fc2f6ff5410e8aebadd9eded0769ffed019 (`docs: mark #26 as active fvg research task`)
-- push state: synced to origin/main
+- latest ops commit: bee6ed5 (`docs: lock approved #26 execution spec`)
+- push state: product + ops synced to origin/main
 Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
 - external ICT/FVG material is mostly practitioner content, not statistically rigorous research; treat as heuristic input, not proof
-- lower-TF mapping and any other logic beyond the explicitly agreed slice must be configurable or re-approved before coding continues
+- ROI value of the new shipped gates is still unproven until ST9 comparative backtests are run and reviewed
 Key files:
 - .ops/PROJECT_TRUTH.md
 - .ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md
