@@ -2,6 +2,11 @@
 
 Цель: стабильное выполнение без «пустых» напоминаний и без зависания на одном блокере.
 
+Связанные документы:
+- правила разработки ПО: `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
+- подготовка к reset: `.ops/RESET_PREP_PROTOCOL.md`
+- компактный текущий слепок задачи: `.ops/ACTIVE_TASK.md`
+
 ## 1) Состояния
 
 - **ACTIVE** — есть исполняемый микро-шаг с проверяемым результатом (diff/test/log).
@@ -77,3 +82,23 @@
    - Attempt 1: обычный restart того же шага.
    - Attempt 2: restart с явным "summarize done + continue from last file".
    - Attempt 3: one-shot (`claude -p --model sonnet --permission-mode acceptEdits`) на узкий подшаг, затем обратно в interactive flow.
+
+## 7) Обязательная синхронизация состояния
+
+После каждого значимого перехода состояния и перед любым reset:
+
+1. Актуализировать GitHub Project status.
+2. Актуализировать `.ops/ACTIVE_TASK.md`.
+3. Зафиксировать минимум:
+   - текущий task / status,
+   - canonical root,
+   - branch / HEAD / origin/main / deploy commit,
+   - что уже сделано,
+   - exact next step,
+   - blockers / risks.
+
+## 8) Правило handoff-документа
+
+- По умолчанию достаточно `.ops/ACTIVE_TASK.md`.
+- `RESET_HANDOFF_YYYY-MM-DD.md` — только overflow-документ, когда компактного слепка недостаточно.
+- Не плодить длинные handoff-файлы без необходимости.

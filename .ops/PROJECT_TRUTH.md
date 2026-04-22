@@ -1,6 +1,6 @@
 # Coinmaster Project Truth
 
-Updated: 2026-03-26 Europe/Madrid
+Updated: 2026-04-22 Europe/Madrid
 
 ## Source of truth
 - Tasks and statuses: GitHub Project `https://github.com/users/VF78/projects/2`
@@ -8,17 +8,18 @@ Updated: 2026-03-26 Europe/Madrid
 - Deploy mirror: `/opt/coinmaster`
 - This file stores only stable operating rules, not a backlog.
 
-## Model policy
-- **Primary model for my main work:** `openai-codex/gpt-5.4-mini`
-- **Reserve model only:** `anthropic/claude-sonnet-4-6`
-- After each completed GitHub Project task: reset any temporary model override to default.
+## Operational protocol map
+- Software development protocol: `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
+- Reset preparation protocol: `.ops/RESET_PREP_PROTOCOL.md`
+- Task-state / watchdog protocol: `.ops/TASK_STATE_PROTOCOL.md`
+- Current compact handoff / restart snapshot: `.ops/ACTIVE_TASK.md`
 
-## Coding policy
-- Software development goes through a **subagent / coding agent**, not the main chat.
-- Coding model policy:
-  - **Default:** Sonnet 4.6
-  - **Hard / architectural / stuck reruns:** Opus 4.6
-  - **Fallback only:** Codex 5.4 (when Claude limit is reached)
+## Core operating invariants
+- Software development goes through a **subagent / coding agent** for non-trivial work.
+- Canonical software-development rules live in `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`.
+- Reset / restart preparation rules live in `.ops/RESET_PREP_PROTOCOL.md`.
+- `.ops/ACTIVE_TASK.md` must stay current whenever a task is active or partially complete.
+- After each completed GitHub Project task: reset any temporary model override to default.
 
 ## Deployment invariant
 - All code edits happen in the canonical workspace repo only.
@@ -36,14 +37,10 @@ Updated: 2026-03-26 Europe/Madrid
 - For task status and priorities, check GitHub Project first.
 - No secrets in repo, truth files, or issue bodies.
 
-## Watchdog
-- progress: 8m (+4m if inference-only)
-- silent stall: 90s => restart
-- hard timeout: 25m
-
 ## Restart recovery
 1. `SOUL.md`
 2. `USER.md`
-3. `memory/YYYY-MM-DD.md` (today + yesterday)
-4. `.ops/PROJECT_TRUTH.md`
-5. `.ops/issue-25C-checklist.md`
+3. `.ops/PROJECT_TRUTH.md`
+4. `.ops/ACTIVE_TASK.md`
+5. live preflight (`git status --short`, `git rev-parse HEAD`, `git rev-list --left-right --count origin/main...HEAD`, `/opt/coinmaster/.deploy-source-commit`)
+6. only then open deeper handoff/checklist/memory files if `.ops/ACTIVE_TASK.md` says they matter
