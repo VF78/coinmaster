@@ -1,11 +1,11 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-22 Europe/Madrid
-Status: ACTIVE / runner persistence fixed, comparative batch completed on clean state
+Status: ACTIVE / approved FVG logic revision in progress
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Branch / HEAD / origin/main / deploy commit / divergence: main / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / synced with origin and deploy
-Goal: interpret the now-complete clean comparative FVG backtest results and decide the next narrow ROI-focused follow-up
+Goal: implement the newly approved bounded FVG logic revision, deploy it on the shared live/backtest path, then run optimization backtests for the revised parameters
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -31,7 +31,7 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: analyze why all three new FVG gates collapse to the same 28-trade result on this BTC range, then choose the next narrow follow-up (logic overlap analysis vs wider validation set)
+Next exact step: implement the approved revision to the 3 FVG parameters (sweep-only, first-touch + maxZoneAgeCandles, engulfing-only confirmation after retrace touch across allowed confirmation TFs), then run checks, deploy, and backtest-optimize values
 Checks / commit / deploy / push:
 - latest product commit: 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 (`Implement shared FVG qualification rules`)
 - latest product checks: check, invariants:fvg, build passed
@@ -61,7 +61,12 @@ Blockers / risks:
   - first-touch only: ROI 314.28%, 28 trades, max DD 58.16%
   - lower-TF only: ROI 314.28%, 28 trades, max DD 58.16%
   - combined: ROI 314.28%, 28 trades, max DD 58.16%
-- implication: on this BTC window, all three new gates converge to the same accepted trade set; next work should explain overlap rather than assuming incremental edge from each filter
+- implication from prior analysis: on the tested BTC window, all three prior gate versions converged to the same accepted trade set
+- user approved the next bounded revision:
+  - remove displacement logic and keep sweep-only over configurable lookback X
+  - keep first-touch logic and add maxZoneAgeCandles
+  - replace lower-TF mapping confirmation with post-retrace engulfing-body confirmation over allowed confirmation timeframes (5m/15m/1h/4h)
+- no other logic changes are approved for this pass
 Key files:
 - .ops/PROJECT_TRUTH.md
 - .ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md
