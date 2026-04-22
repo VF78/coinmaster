@@ -1,11 +1,11 @@
 # ACTIVE_TASK
 
-Updated: 2026-04-22 Europe/Madrid
-Status: ACTIVE / approved FVG logic revision in progress
+Updated: 2026-04-23 Europe/Madrid
+Status: ACTIVE / revised FVG logic deployed, post-change backtests starting
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / HEAD / origin/main / deploy commit / divergence: main / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / synced with origin and deploy
-Goal: implement the newly approved bounded FVG logic revision, deploy it on the shared live/backtest path, then run optimization backtests for the revised parameters
+Branch / HEAD / origin/main / deploy commit / divergence: main / 7b7b7830ba34fe8771caca6ee9dced505c56ed31 / 7b7b7830ba34fe8771caca6ee9dced505c56ed31 / 7b7b7830ba34fe8771caca6ee9dced505c56ed31 / synced with origin and deploy
+Goal: evaluate the newly deployed revised FVG logic with post-change backtests and find better parameter values for ROI
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -31,7 +31,7 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: implement the approved revision to the 3 FVG parameters (sweep-only, first-touch + maxZoneAgeCandles, engulfing-only confirmation after retrace touch across allowed confirmation TFs), then run checks, deploy, and backtest-optimize values
+Next exact step: run post-change backtests for the revised FVG semantics (sweep-only, first-touch + maxZoneAgeCandles, engulfing-body confirmation) and identify the best parameter candidates for follow-up tuning
 Checks / commit / deploy / push:
 - latest product commit: 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 (`Implement shared FVG qualification rules`)
 - latest product checks: check, invariants:fvg, build passed
@@ -62,10 +62,27 @@ Blockers / risks:
   - lower-TF only: ROI 314.28%, 28 trades, max DD 58.16%
   - combined: ROI 314.28%, 28 trades, max DD 58.16%
 - implication from prior analysis: on the tested BTC window, all three prior gate versions converged to the same accepted trade set
-- user approved the next bounded revision:
+- user approved and implementation completed for the next bounded revision:
   - remove displacement logic and keep sweep-only over configurable lookback X
   - keep first-touch logic and add maxZoneAgeCandles
   - replace lower-TF mapping confirmation with post-retrace engulfing-body confirmation over allowed confirmation timeframes (5m/15m/1h/4h)
+- revised FVG logic shipped in product commit `7b7b7830ba34fe8771caca6ee9dced505c56ed31` (`revise FVG sweep and confirmation rules`)
+- verification completed on revised logic:
+  - npm run check ✅
+  - npm run invariants:fvg ✅
+  - npm run invariants:rule-engine ✅
+  - npm run invariants:backtest-run-persistence ✅
+  - npm run build ✅
+  - deploy-prod-safe.sh ✅
+  - /api/health ✅
+  - /api/settings/trading-rules returns revised FVG fields ✅
+- live rules API now exposes revised settings:
+  - fvgRequireSweep
+  - fvgSweepLookbackCandles
+  - fvgRequireFirstTouch
+  - maxZoneAgeCandles
+  - fvgRequireConfirmation
+  - fvgConfirmationTimeframes
 - no other logic changes are approved for this pass
 Key files:
 - .ops/PROJECT_TRUTH.md
