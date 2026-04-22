@@ -1,7 +1,7 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-22 Europe/Madrid
-Status: ACTIVE / ready for bounded implementation
+Status: FALLBACK / bounded implementation in progress
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Branch / HEAD / origin/main / deploy commit / divergence: main / e9d54fc2f6ff5410e8aebadd9eded0769ffed019 / e9d54fc2f6ff5410e8aebadd9eded0769ffed019 / 069f37919e903aefedf94eb5624e217282dc16d1 / synced with origin, deploy behind HEAD
@@ -27,7 +27,8 @@ Done:
   - HEAD = e9d54fc2f6ff5410e8aebadd9eded0769ffed019
   - origin/main divergence = 0 / 0
   - deployed commit = 069f37919e903aefedf94eb5624e217282dc16d1
-Next exact step: implement one shared FVG qualification layer for live + backtest with the 3 agreed optional filters and Trading Rules controls, then run comparative backtests and core checks
+- Claude CLI route unavailable under current root runtime; switched implementation to fallback coding path per protocol
+Next exact step: implement one shared FVG qualification layer for live + backtest with the 3 agreed optional filters and Trading Rules controls via fallback coding agent, then run comparative backtests and core checks
 Checks / commit / deploy / push:
 - latest product checks: invariants:radar-handoff, check, build passed
 - latest product deploy: scripts/deploy-prod-safe.sh successful
