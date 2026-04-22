@@ -2,22 +2,24 @@
 
 Updated: 2026-04-22 Europe/Madrid
 Status: IDLE / planning
-GitHub Project item: none active; Radar #41-#46 completed, #47 still Todo
+GitHub Project item: none active; ROI-focused board retained (#26, #40, #41-#54, AE1-4), non-ROI/obsolete items removed from Project
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / HEAD / origin/main / deploy commit / divergence: main / e6f3ff989717e03d08705dde4a6349ab0499423f / e6f3ff989717e03d08705dde4a6349ab0499423f / 069f37919e903aefedf94eb5624e217282dc16d1 / synced with origin
-Goal: keep repo-backed operational context minimal, current, and restart-safe before the next implementation task
+Branch / HEAD / origin/main / deploy commit / divergence: main / TO_UPDATE_AFTER_COMMIT / a60d5239abe505d3950f485b790bb10fcf07913a / 069f37919e903aefedf94eb5624e217282dc16d1 / local main ahead of origin
+Goal: align project truth and GitHub Project with the ROI mandate, then agree the next execution plan before coding
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
 - analyzed reset-context loss and execution-controls drift
 - split ops docs into dedicated development + reset protocols
 - removed bootstrap residue and trimmed duplicate/stale top-level docs into compact pointers/indexes
-Next exact step: wait for Vladimir to approve the next task plan, then pick an existing GitHub Project item and set it active before coding
+- added explicit ROI mandate to project truth docs
+- removed non-ROI / obsolete items from the GitHub Project board
+Next exact step: agree the next active ROI task and select the top 2-3 AE4/FVG-adjacent subtasks before starting implementation
 Checks / commit / deploy / push:
 - latest product checks: invariants:radar-handoff, check, build passed
 - latest product deploy: scripts/deploy-prod-safe.sh successful
-- protocol/doc commits: 160eb61001c57ef359792f9166d841bb92f3e067, c01d382c630f45998cdb6cb3fac62850afcdd561, e6f3ff989717e03d08705dde4a6349ab0499423f
-- push state: synced to origin/main
+- doc/project cleanup commit: pending
+- push state: pending after current doc update
 Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
 - do not start a new implementation task until plan is agreed

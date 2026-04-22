@@ -8,6 +8,12 @@ Updated: 2026-04-22 Europe/Madrid
 - Deploy mirror: `/opt/coinmaster`
 - This file stores only stable operating rules, not a backlog.
 
+## Project objective
+- Coinmaster must autonomously trade within Trading Rules and Radar settings and reach **≥50% monthly ROI**.
+- Every product, bugfix, refactor, and ops task must have a direct path to that objective: improve profitability, improve execution quality, reduce profit loss/risk, or increase the speed/quality of hypothesis testing.
+- No refactoring for its own sake.
+- Operating mandate: Coinmaster must continuously either increase deposit / realized performance or validate a hypothesis that can move the system toward the target ROI. A day without deposit growth or a tested hypothesis is a lost day.
+
 ## Operational protocol map
 - Software development protocol: `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
 - Reset preparation protocol: `.ops/RESET_PREP_PROTOCOL.md`

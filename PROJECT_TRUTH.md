@@ -6,6 +6,9 @@ Canonical project truth: `.ops/PROJECT_TRUTH.md`
 
 Quick rules:
 - GitHub Project is the only task backlog and source of status.
+- Project objective: autonomous trading within Trading Rules + Radar with target **≥50% monthly ROI**.
+- Every task must directly support ROI growth, execution quality, loss/risk reduction, or faster hypothesis testing. No refactor-for-refactor.
+- Operating mandate: either increase deposit / realized performance or validate a hypothesis that can move the system toward target ROI.
 - Development rules live in `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`.
 - Reset-prep rules live in `.ops/RESET_PREP_PROTOCOL.md`.
 - Current compact task snapshot lives in `.ops/ACTIVE_TASK.md`.
