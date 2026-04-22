@@ -39,13 +39,12 @@ function makeCandles(count: number, base = 100): Candle[] {
 function baseQualification(overrides: Partial<FvgQualificationSettings> = {}): FvgQualificationSettings {
   return {
     minWidthPct: 0,
-    requireSweepDisplacement: false,
+    requireSweep: false,
     sweepLookbackCandles: 20,
-    displacementMinBodyPct: 60,
     requireFirstTouch: false,
-    requireLowerTfConfirmation: false,
-    lowerTfConfirmations: { '1h': '15m', '4h': '1h' },
-    engulfingLookbackCandles: 5,
+    maxZoneAgeCandles: 12,
+    requireConfirmation: false,
+    confirmationTimeframes: ['15m'],
     ...overrides,
   };
 }
@@ -100,12 +99,12 @@ console.log('\n── Case 3: Retrace + qualification flow ──');
   const signal = evaluateFvg(candles, '1h', {
     currentPrice: 104,
     retracePct: 50,
-    qualification: baseQualification({ requireSweepDisplacement: true }),
+    qualification: baseQualification({ requireSweep: true }),
     lookback: 10,
     currentTimeMs: Date.parse('2026-01-02T01:30:00Z'),
   });
   assert(signal.detected === true, 'qualified bullish FVG signal detected');
-  assert(signal.reason.includes('sweep_displacement'), 'reason includes sweep/displacement coverage');
+  assert(signal.reason.includes('sweep'), 'reason includes sweep coverage');
 }
 
 console.log('\n── Case 4: First-touch filter rejects mitigated zone ──');
@@ -129,7 +128,7 @@ console.log('\n── Case 4: First-touch filter rejects mitigated zone ──')
   assert(signal.reason.includes('already_mitigated') || signal.reason.includes('first_touch'), 'reason covers mitigation rejection');
 }
 
-console.log('\n── Case 5: Lower-TF confirmation required ──');
+console.log('\n── Case 5: Confirmation required ──');
 {
   const htfCandles: Candle[] = [
     ...makeCandles(22, 100),
@@ -151,13 +150,13 @@ console.log('\n── Case 5: Lower-TF confirmation required ──');
   const signal = evaluateFvg(htfCandles, '1h', {
     currentPrice: 104,
     retracePct: 50,
-    qualification: baseQualification({ requireLowerTfConfirmation: true, engulfingLookbackCandles: 2 }),
+    qualification: baseQualification({ requireConfirmation: true, confirmationTimeframes: ['15m'] }),
     lookback: 10,
     currentTimeMs: Date.parse('2026-01-02T02:40:00Z'),
     lowerTfCandles: { '15m': ltfCandles },
   });
-  assert(signal.detected === true, 'lower-TF confirmation allows qualified entry');
-  assert(signal.lowerTfConfirmationTimeframe === '15m', 'mapped lower TF reported');
+  assert(signal.detected === true, 'confirmation allows qualified entry');
+  assert(signal.confirmationTimeframe === '15m', 'confirmation TF reported');
 }
 
 console.log('\n── Case 6: Trigger helpers ──');

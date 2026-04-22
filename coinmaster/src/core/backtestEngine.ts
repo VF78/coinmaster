@@ -194,13 +194,12 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
   const exitClosePct = rules.exitClosePct ?? 50;
   const fvgQualification = {
     minWidthPct: rules.fvgMinWidthPct ?? 0.3,
-    requireSweepDisplacement: rules.fvgRequireSweepDisplacement ?? false,
+    requireSweep: rules.fvgRequireSweep ?? false,
     sweepLookbackCandles: rules.fvgSweepLookbackCandles ?? 20,
-    displacementMinBodyPct: rules.fvgDisplacementMinBodyPct ?? 60,
     requireFirstTouch: rules.fvgRequireFirstTouch ?? false,
-    requireLowerTfConfirmation: rules.fvgRequireLowerTfConfirmation ?? false,
-    lowerTfConfirmations: rules.fvgLowerTfConfirmations ?? { '1h': '15m', '4h': '1h' },
-    engulfingLookbackCandles: lookback,
+    maxZoneAgeCandles: rules.maxZoneAgeCandles ?? 12,
+    requireConfirmation: rules.fvgRequireConfirmation ?? false,
+    confirmationTimeframes: rules.fvgConfirmationTimeframes ?? ['15m'],
   };
 
   // Build a unified timeline of candle close events across all TFs

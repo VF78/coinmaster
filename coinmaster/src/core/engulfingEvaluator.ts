@@ -110,6 +110,55 @@ const TF_CONFIDENCE: Record<TradingRulesTimeframe, number> = {
  *   - 1 "swept" candle (the one that may break out)
  *   - 1 "engulf" candle (the current closed candle)
  */
+export function evaluateBodyEngulfingTimeframe(
+  candles: Candle[],
+  tf: TradingRulesTimeframe,
+): EngulfingSignal {
+  if (candles.length < 2) {
+    return {
+      detected: false,
+      direction: null,
+      timeframe: tf,
+      confidence: 0.1,
+      reason: `insufficient_candles_${candles.length}_need_2`,
+    };
+  }
+
+  const curr = candles[candles.length - 1];
+  const prev = candles[candles.length - 2];
+  const confidence = TF_CONFIDENCE[tf] ?? 0.7;
+  const bullishBody = isBullishEngulfingBody(prev, curr);
+  const bearishBody = isBearishEngulfingBody(prev, curr);
+
+  if (bullishBody) {
+    return {
+      detected: true,
+      direction: 'bullish',
+      timeframe: tf,
+      confidence,
+      reason: `bullish_body_engulf_${tf}`,
+    };
+  }
+
+  if (bearishBody) {
+    return {
+      detected: true,
+      direction: 'bearish',
+      timeframe: tf,
+      confidence,
+      reason: `bearish_body_engulf_${tf}`,
+    };
+  }
+
+  return {
+    detected: false,
+    direction: null,
+    timeframe: tf,
+    confidence: 0.3,
+    reason: `no_body_engulf_${tf}`,
+  };
+}
+
 export function evaluateTimeframe(
   candles: Candle[],
   tf: TradingRulesTimeframe,

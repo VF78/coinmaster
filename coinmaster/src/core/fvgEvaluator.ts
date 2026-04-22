@@ -1,6 +1,6 @@
 import type { Candle } from '../exchange/types.js';
-import { evaluateTimeframe } from './engulfingEvaluator.js';
-import type { FvgLowerTfConfirmation, FvgTimeframe, TradingRulesTimeframe } from '../shared/dto.js';
+import { evaluateBodyEngulfingTimeframe } from './engulfingEvaluator.js';
+import type { FvgTimeframe, TradingRulesTimeframe } from '../shared/dto.js';
 
 export type { FvgTimeframe } from '../shared/dto.js';
 
@@ -18,13 +18,12 @@ export interface FvgZone {
 
 export interface FvgQualificationSettings {
   minWidthPct: number;
-  requireSweepDisplacement: boolean;
+  requireSweep: boolean;
   sweepLookbackCandles: number;
-  displacementMinBodyPct: number;
   requireFirstTouch: boolean;
-  requireLowerTfConfirmation: boolean;
-  lowerTfConfirmations: Record<FvgTimeframe, FvgLowerTfConfirmation>;
-  engulfingLookbackCandles: number;
+  maxZoneAgeCandles: number;
+  requireConfirmation: boolean;
+  confirmationTimeframes: TradingRulesTimeframe[];
 }
 
 export interface FvgEvaluationOptions {
@@ -45,7 +44,7 @@ export interface FvgSignal {
   timeframe: FvgTimeframe;
   reason: string;
   touchTimestamp?: string;
-  lowerTfConfirmationTimeframe?: TradingRulesTimeframe;
+  confirmationTimeframe?: TradingRulesTimeframe;
 }
 
 export function detectStructureBreak(
@@ -154,14 +153,9 @@ function candleTouchesZone(candle: Candle, zone: FvgZone): boolean {
   return candle.low <= zone.top && candle.high >= zone.bottom;
 }
 
-function bodyPct(candle: Candle): number {
-  const range = Math.max(candle.high - candle.low, Number.EPSILON);
-  return (Math.abs(candle.close - candle.open) / range) * 100;
-}
-
-function qualifiesSweepDisplacement(zone: FvgZone, candles: Candle[], settings: FvgQualificationSettings): boolean {
+function qualifiesSweep(zone: FvgZone, candles: Candle[], settings: FvgQualificationSettings): boolean {
   const completionIndex = zone.completionIndex;
-  if (!settings.requireSweepDisplacement) return true;
+  if (!settings.requireSweep) return true;
   if (completionIndex === undefined || completionIndex < 2) return false;
 
   const closed = candles.slice(0, -1);
@@ -176,19 +170,7 @@ function qualifiesSweepDisplacement(zone: FvgZone, candles: Candle[], settings: 
 
   const sweptLow = Math.min(c0.low, c1.low, c2.low) < Math.min(...history.map((c) => c.low));
   const sweptHigh = Math.max(c0.high, c1.high, c2.high) > Math.max(...history.map((c) => c.high));
-  const displacementPct = Math.max(bodyPct(c1), bodyPct(c2));
-
-  if (zone.direction === 'bullish') {
-    return sweptLow
-      && displacementPct >= settings.displacementMinBodyPct
-      && c1.close > c1.open
-      && c2.close >= c1.close;
-  }
-
-  return sweptHigh
-    && displacementPct >= settings.displacementMinBodyPct
-    && c1.close < c1.open
-    && c2.close <= c1.close;
+  return zone.direction === 'bullish' ? sweptLow : sweptHigh;
 }
 
 function findFirstTouch(zone: FvgZone, candles: Candle[], currentPrice: number, currentTimeMs?: number): string | null {
@@ -204,29 +186,34 @@ function findFirstTouch(zone: FvgZone, candles: Candle[], currentPrice: number, 
   return null;
 }
 
-function qualifiesFirstTouch(zone: FvgZone, candles: Candle[], currentPrice: number, currentTimeMs?: number): { ok: boolean; touchTimestamp: string | null } {
+function qualifiesFirstTouch(zone: FvgZone, candles: Candle[], currentPrice: number, currentTimeMs?: number, maxZoneAgeCandles?: number): { ok: boolean; touchTimestamp: string | null } {
+  const closed = candles.slice(0, -1);
+  if (typeof maxZoneAgeCandles === 'number' && zone.completionIndex !== undefined) {
+    const zoneAgeCandles = closed.length - 1 - zone.completionIndex;
+    if (zoneAgeCandles > maxZoneAgeCandles) {
+      return { ok: false, touchTimestamp: null };
+    }
+  }
   const touchTimestamp = findFirstTouch(zone, candles, currentPrice, currentTimeMs);
   if (!touchTimestamp) return { ok: true, touchTimestamp: null };
   if (!isFvgRetracedToLevel(zone, currentPrice, 100) && !(currentPrice >= zone.bottom && currentPrice <= zone.top)) {
     return { ok: false, touchTimestamp };
   }
-  const closed = candles.slice(0, -1);
   const priorTouches = closed.filter((c) => Date.parse(c.timestamp) < Date.parse(touchTimestamp) && candleTouchesZone(c, zone));
   return { ok: priorTouches.length === 0, touchTimestamp };
 }
 
-function findLowerTfConfirmation(
+function findConfirmation(
   direction: 'bullish' | 'bearish',
   confirmationTf: TradingRulesTimeframe,
-  lowerTfCandles: Candle[],
+  confirmationCandles: Candle[],
   touchTimestamp: string,
-  lookback: number,
 ): string | null {
   const touchMs = Date.parse(touchTimestamp);
-  for (let i = Math.max(0, lookback + 1); i < lowerTfCandles.length; i++) {
-    const candle = lowerTfCandles[i];
+  for (let i = 1; i < confirmationCandles.length; i++) {
+    const candle = confirmationCandles[i];
     if (Date.parse(candle.timestamp) < touchMs) continue;
-    const signal = evaluateTimeframe(lowerTfCandles.slice(0, i + 1), confirmationTf, lookback);
+    const signal = evaluateBodyEngulfingTimeframe(confirmationCandles.slice(0, i + 1), confirmationTf);
     if (!signal.detected || !signal.direction) continue;
     if ((direction === 'bullish' && signal.direction === 'bullish') || (direction === 'bearish' && signal.direction === 'bearish')) {
       return candle.timestamp;
@@ -271,7 +258,7 @@ export function evaluateFvg(
   }
 
   for (const zone of [...zones].reverse()) {
-    if (!qualifiesSweepDisplacement(zone, candles, options.qualification)) {
+    if (!qualifiesSweep(zone, candles, options.qualification)) {
       continue;
     }
     if (!isFvgRetracedToLevel(zone, currentPrice, options.retracePct)) {
@@ -280,37 +267,38 @@ export function evaluateFvg(
 
     let touchTimestamp: string | null = null;
     if (options.qualification.requireFirstTouch) {
-      const firstTouch = qualifiesFirstTouch(zone, candles, currentPrice, options.currentTimeMs);
+      const firstTouch = qualifiesFirstTouch(
+        zone,
+        candles,
+        currentPrice,
+        options.currentTimeMs,
+        options.qualification.maxZoneAgeCandles,
+      );
       if (!firstTouch.ok) continue;
       touchTimestamp = firstTouch.touchTimestamp;
     } else {
       touchTimestamp = findFirstTouch(zone, candles, currentPrice, options.currentTimeMs);
     }
 
-    let lowerTfConfirmationTimeframe: TradingRulesTimeframe | undefined;
-    if (options.qualification.requireLowerTfConfirmation) {
-      const mapped = options.qualification.lowerTfConfirmations[timeframe];
-      if (!mapped || mapped === 'off') {
-        return noSignal(`lower_tf_confirmation_mapping_off_${timeframe}`);
-      }
-      const lowerTfCandles = options.lowerTfCandles?.[mapped];
-      if (!lowerTfCandles?.length) {
-        return noSignal(`lower_tf_confirmation_candles_missing_${timeframe}_${mapped}`);
-      }
+    let confirmationTimeframe: TradingRulesTimeframe | undefined;
+    if (options.qualification.requireConfirmation) {
       if (!touchTimestamp) {
-        return noSignal(`lower_tf_confirmation_touch_missing_${timeframe}`);
+        return noSignal(`confirmation_touch_missing_${timeframe}`);
       }
-      const confirmationTs = findLowerTfConfirmation(
-        zone.direction,
-        mapped,
-        lowerTfCandles,
-        touchTimestamp,
-        options.qualification.engulfingLookbackCandles,
-      );
-      if (!confirmationTs) {
+      const allowedTimeframes = options.qualification.confirmationTimeframes ?? [];
+      let confirmed = false;
+      for (const allowedTf of allowedTimeframes) {
+        const confirmationCandles = options.lowerTfCandles?.[allowedTf];
+        if (!confirmationCandles?.length) continue;
+        const confirmationTs = findConfirmation(zone.direction, allowedTf, confirmationCandles, touchTimestamp);
+        if (!confirmationTs) continue;
+        confirmationTimeframe = allowedTf;
+        confirmed = true;
+        break;
+      }
+      if (!confirmed) {
         continue;
       }
-      lowerTfConfirmationTimeframe = mapped;
     }
 
     const triggerPrice = computeRetraceTrigger(zone, options.retracePct);
@@ -327,23 +315,23 @@ export function evaluateFvg(
         zone.direction,
         timeframe,
         structureBreak ? `bos_${structureBreak}` : null,
-        options.qualification.requireSweepDisplacement ? 'sweep_displacement' : null,
+        options.qualification.requireSweep ? 'sweep' : null,
         options.qualification.requireFirstTouch ? 'first_touch' : null,
-        lowerTfConfirmationTimeframe ? `ltf_confirm_${lowerTfConfirmationTimeframe}` : null,
+        confirmationTimeframe ? `confirm_${confirmationTimeframe}` : null,
       ].filter(Boolean).join('_'),
       touchTimestamp: touchTimestamp ?? undefined,
-      lowerTfConfirmationTimeframe,
+      confirmationTimeframe,
     };
   }
 
-  if (options.qualification.requireLowerTfConfirmation) {
-    return noSignal('price_in_fvg_without_lower_tf_confirmation');
+  if (options.qualification.requireConfirmation) {
+    return noSignal('price_in_fvg_without_confirmation');
   }
   if (options.qualification.requireFirstTouch) {
     return noSignal('price_not_in_fvg_retrace_zone_or_zone_already_mitigated');
   }
-  if (options.qualification.requireSweepDisplacement) {
-    return noSignal('price_not_in_fvg_retrace_zone_or_sweep_displacement_missing');
+  if (options.qualification.requireSweep) {
+    return noSignal('price_not_in_fvg_retrace_zone_or_sweep_missing');
   }
   return noSignal('price_not_in_fvg_retrace_zone');
 }

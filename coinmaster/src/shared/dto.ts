@@ -5,7 +5,6 @@ export type StatsPeriod = 'week' | 'month';
 
 export type TradingRulesTimeframe = '5m' | '15m' | '1h' | '4h';
 export type FvgTimeframe = '1h' | '4h';
-export type FvgLowerTfConfirmation = 'off' | '5m' | '15m' | '1h';
 export type SignalStrategy = 'engulfing' | 'fvg' | 'radar';
 export type AssetClass = 'crypto' | 'commodity' | 'forex' | 'index' | 'other';
 export type BiasMode = 'global' | 'symbol';
@@ -42,18 +41,18 @@ export interface TradingRulesSettings {
   fvgRetrace: number;
   /** Minimum FVG zone width as % of current price (filters out micro-gaps/noise). */
   fvgMinWidthPct: number;
-  /** Require the originating HTF FVG impulse to include a liquidity sweep + displacement candle. */
-  fvgRequireSweepDisplacement: boolean;
+  /** Require the originating HTF FVG impulse to include a liquidity sweep over the configured lookback. */
+  fvgRequireSweep: boolean;
   /** Prior HTF candles checked for the qualifying liquidity sweep. */
   fvgSweepLookbackCandles: number;
-  /** Minimum displacement candle body size as % of its full range. */
-  fvgDisplacementMinBodyPct: number;
   /** Only allow the first touch of a fresh HTF FVG; reject already mitigated zones. */
   fvgRequireFirstTouch: boolean;
-  /** Require lower-timeframe confirmation after the HTF FVG touch. */
-  fvgRequireLowerTfConfirmation: boolean;
-  /** Per-HTF mapping for lower-timeframe confirmation. `off` disables that HTF mapping. */
-  fvgLowerTfConfirmations: Record<FvgTimeframe, FvgLowerTfConfirmation>;
+  /** Maximum age of an FVG zone, in candles, when first-touch mode is enabled. */
+  maxZoneAgeCandles: number;
+  /** Require engulfing-body confirmation after the HTF FVG retrace touch. */
+  fvgRequireConfirmation: boolean;
+  /** Allowed confirmation timeframes after the HTF FVG retrace touch. */
+  fvgConfirmationTimeframes: TradingRulesTimeframe[];
   maxLeverage: number;
   dailyDrawdown: number;
   /** @deprecated use tpLevels[] — kept for back-compat serialisation */

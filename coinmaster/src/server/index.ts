@@ -3717,13 +3717,12 @@ async function runFvgMonitorTick(): Promise<void> {
     if (!Number.isFinite(fvgRetracePct) || fvgRetracePct <= 0) return;
     const fvgQualification = {
       minWidthPct: raw.fvgMinWidthPct ?? 0.3,
-      requireSweepDisplacement: raw.fvgRequireSweepDisplacement ?? false,
+      requireSweep: raw.fvgRequireSweep ?? false,
       sweepLookbackCandles: raw.fvgSweepLookbackCandles ?? 20,
-      displacementMinBodyPct: raw.fvgDisplacementMinBodyPct ?? 60,
       requireFirstTouch: raw.fvgRequireFirstTouch ?? false,
-      requireLowerTfConfirmation: raw.fvgRequireLowerTfConfirmation ?? false,
-      lowerTfConfirmations: raw.fvgLowerTfConfirmations ?? { '1h': '15m', '4h': '1h' },
-      engulfingLookbackCandles: raw.engulfingLookbackCandles ?? 30,
+      maxZoneAgeCandles: raw.maxZoneAgeCandles ?? 12,
+      requireConfirmation: raw.fvgRequireConfirmation ?? false,
+      confirmationTimeframes: raw.fvgConfirmationTimeframes ?? ['15m'],
     };
 
     const symbols = getMonitoredSymbols(raw, LIVE_SYMBOL);
@@ -3770,17 +3769,16 @@ async function runFvgMonitorTick(): Promise<void> {
           if (!currentPrice) continue;
 
           const lowerTfCandles: Partial<Record<TradingRulesTimeframe, Candle[]>> = {};
-          if (fvgQualification.requireLowerTfConfirmation) {
-            const mappedTf = fvgQualification.lowerTfConfirmations[tf];
-            if (mappedTf && mappedTf !== 'off') {
-              const mappedTfMs = TF_MS[mappedTf];
-              const mappedCandles = await exchange.getCandles({
+          if (fvgQualification.requireConfirmation) {
+            for (const confirmationTf of fvgQualification.confirmationTimeframes) {
+              const confirmationTfMs = TF_MS[confirmationTf];
+              const confirmationCandles = await exchange.getCandles({
                 symbol,
-                timeframe: mappedTf,
-                startTimeMs: now - mappedTfMs * (lookback + 40),
+                timeframe: confirmationTf,
+                startTimeMs: now - confirmationTfMs * (lookback + 40),
                 endTimeMs: now,
               });
-              lowerTfCandles[mappedTf] = mappedCandles.filter((c) => Date.parse(c.timestamp) <= now - mappedTfMs);
+              lowerTfCandles[confirmationTf] = confirmationCandles.filter((c) => Date.parse(c.timestamp) <= now - confirmationTfMs);
             }
           }
 
@@ -3834,7 +3832,7 @@ async function runFvgMonitorTick(): Promise<void> {
             operatorBias,
             reason: signal.reason,
             touchTimestamp: signal.touchTimestamp,
-            lowerTfConfirmationTimeframe: signal.lowerTfConfirmationTimeframe,
+            confirmationTimeframe: signal.confirmationTimeframe,
           },
         });
         logger.info(
