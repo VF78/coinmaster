@@ -1,7 +1,7 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-22 Europe/Madrid
-Status: ACTIVE / #26 implementation shipped, post-implementation backtest in progress
+Status: ACTIVE / #26 implementation shipped, comparative backtests in progress
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Branch / HEAD / origin/main / deploy commit / divergence: main / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / synced with origin and deploy
@@ -31,7 +31,7 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: finish the started baseline BTC post-implementation backtest (`huh1LCpCRj8K1kpHpBHwZ`), then run comparative variants with the new FVG gates enabled and review ROI/signal-quality impact
+Next exact step: finish the started sweep+displacement comparative BTC backtest (`nwGE_8FLRInJU1dxxw7Hm`), then run the remaining comparative variants (first-touch / lower-TF / combined) and review ROI vs baseline
 Checks / commit / deploy / push:
 - latest product commit: 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 (`Implement shared FVG qualification rules`)
 - latest product checks: check, invariants:fvg, build passed
@@ -42,7 +42,9 @@ Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
 - external ICT/FVG material is mostly practitioner content, not statistically rigorous research; treat as heuristic input, not proof
 - ROI value of the new shipped gates is still unproven until ST9 comparative backtests are run and reviewed
-- first ST9 baseline backtest has been started for BTC over 2026-01-01 → now; follow-up comparative runs still pending
+- baseline BTC ST9 backtest completed: `huh1LCpCRj8K1kpHpBHwZ` → ROI -43.5%, net PnL -435.04 USD, 40 trades, max DD 81.21%
+- sweep+displacement comparative BTC run started: `nwGE_8FLRInJU1dxxw7Hm`
+- remaining comparative runs still pending
 Key files:
 - .ops/PROJECT_TRUTH.md
 - .ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md
