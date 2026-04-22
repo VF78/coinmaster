@@ -1,11 +1,11 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-22 Europe/Madrid
-Status: ACTIVE / #26 implementation shipped, comparative backtests verified and runner issue identified
+Status: ACTIVE / runner persistence fixed, comparative batch completed on clean state
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Branch / HEAD / origin/main / deploy commit / divergence: main / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / synced with origin and deploy
-Goal: fix the backtest-run persistence bug cleanly inside the shared architecture, then resume post-implementation FVG comparisons and decide what to tune next for ROI
+Goal: interpret the now-complete clean comparative FVG backtest results and decide the next narrow ROI-focused follow-up
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -31,7 +31,7 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: fix the backtest-run persistence bug in the shared runner/persistence flow (no duplicates, no special-case backtest path), deploy it, and only then resume lower-TF / combined comparisons on a clean runner state
+Next exact step: analyze why all three new FVG gates collapse to the same 28-trade result on this BTC range, then choose the next narrow follow-up (logic overlap analysis vs wider validation set)
 Checks / commit / deploy / push:
 - latest product commit: 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 (`Implement shared FVG qualification rules`)
 - latest product checks: check, invariants:fvg, build passed
@@ -50,8 +50,18 @@ Blockers / risks:
   - rerun first-touch-only: `lCcddlzxT6WqXqSLVnmOO` → ROI 314.28%, net PnL 3142.84 USD, 28 trades, win rate 67.86%, max DD 58.16%
   - rerun sweep+displacement: `-McOPrL9N27Ly4hHMgTwG` → ROI 314.28%, net PnL 3142.84 USD, 28 trades, win rate 67.86%, max DD 58.16%
 - comparison harness check passed: all other tested parameters were held constant; only the intended FVG gate booleans changed between the reruns
-- likely root cause to verify/fix: backtest worker keeps a run object reference across awaits while shared store reloads can replace the underlying snapshot object; completion state can then be written to a stale object and never reach persisted state
-- remaining comparative runs (lower-TF only / combined) are intentionally paused until the runner persistence anomaly is fixed cleanly
+- runner persistence bug fixed and deployed in product commit `fc36b2aa2a79c880615cfe9c419623295e9080c3` (`fix: persist backtest run completion`)
+- root cause confirmed: backtest worker held a stale `run` reference across awaits while shared store reloads could replace the underlying snapshot object
+- added regression invariant: `npm run invariants:backtest-run-persistence` ✅
+- lower-TF-only rerun on clean fixed runner: `svMCr1Kw7cYESMzAl5ods` → ROI 314.28%, net PnL 3142.84 USD, 28 trades, win rate 67.86%, max DD 58.16%
+- combined rerun on clean fixed runner: `WY5iIPdIwvW8lO9-SllvM` → ROI 314.28%, net PnL 3142.84 USD, 28 trades, win rate 67.86%, max DD 58.16%
+- clean-comparison outcome for BTC on 2026-01-01 → now:
+  - baseline: ROI -43.5%, 40 trades, max DD 81.21%
+  - sweep+displacement only: ROI 314.28%, 28 trades, max DD 58.16%
+  - first-touch only: ROI 314.28%, 28 trades, max DD 58.16%
+  - lower-TF only: ROI 314.28%, 28 trades, max DD 58.16%
+  - combined: ROI 314.28%, 28 trades, max DD 58.16%
+- implication: on this BTC window, all three new gates converge to the same accepted trade set; next work should explain overlap rather than assuming incremental edge from each filter
 Key files:
 - .ops/PROJECT_TRUTH.md
 - .ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md
