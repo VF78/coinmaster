@@ -5,7 +5,7 @@ Status: ACTIVE / #26 implementation shipped, comparative backtests verified and 
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Branch / HEAD / origin/main / deploy commit / divergence: main / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 / synced with origin and deploy
-Goal: evaluate the newly shipped bounded FVG qualification slice with post-implementation backtests and decide what to tune next for ROI
+Goal: fix the backtest-run persistence bug cleanly inside the shared architecture, then resume post-implementation FVG comparisons and decide what to tune next for ROI
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -31,7 +31,7 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: decide whether to fix the backtest-run persistence bug before continuing lower-TF / combined comparisons, then resume comparative FVG testing on a clean runner state
+Next exact step: fix the backtest-run persistence bug in the shared runner/persistence flow (no duplicates, no special-case backtest path), deploy it, and only then resume lower-TF / combined comparisons on a clean runner state
 Checks / commit / deploy / push:
 - latest product commit: 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 (`Implement shared FVG qualification rules`)
 - latest product checks: check, invariants:fvg, build passed
@@ -50,7 +50,8 @@ Blockers / risks:
   - rerun first-touch-only: `lCcddlzxT6WqXqSLVnmOO` → ROI 314.28%, net PnL 3142.84 USD, 28 trades, win rate 67.86%, max DD 58.16%
   - rerun sweep+displacement: `-McOPrL9N27Ly4hHMgTwG` → ROI 314.28%, net PnL 3142.84 USD, 28 trades, win rate 67.86%, max DD 58.16%
 - comparison harness check passed: all other tested parameters were held constant; only the intended FVG gate booleans changed between the reruns
-- remaining comparative runs (lower-TF only / combined) are intentionally paused until the runner persistence anomaly is addressed or explicitly bypassed
+- likely root cause to verify/fix: backtest worker keeps a run object reference across awaits while shared store reloads can replace the underlying snapshot object; completion state can then be written to a stale object and never reach persisted state
+- remaining comparative runs (lower-TF only / combined) are intentionally paused until the runner persistence anomaly is fixed cleanly
 Key files:
 - .ops/PROJECT_TRUTH.md
 - .ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md
