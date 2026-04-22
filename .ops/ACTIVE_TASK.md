@@ -1,7 +1,7 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-22 Europe/Madrid
-Status: ACTIVE / clarified scope, clean tree, awaiting exact approved spec
+Status: ACTIVE / approved #26 spec locked, implementation in progress
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Branch / HEAD / origin/main / deploy commit / divergence: main / e9d54fc2f6ff5410e8aebadd9eded0769ffed019 / e9d54fc2f6ff5410e8aebadd9eded0769ffed019 / 069f37919e903aefedf94eb5624e217282dc16d1 / synced with origin, deploy behind HEAD
@@ -32,7 +32,7 @@ Done:
   - origin/main divergence = 0 / 0
   - deployed commit = 069f37919e903aefedf94eb5624e217282dc16d1
 - Claude CLI route unavailable under current root runtime; switched implementation to fallback coding path per protocol
-Next exact step: realign the #26 implementation spec to the clarified constraints (prod-first deployment intent, configurable lower-TF mapping, no unagreed logic changes), then continue coding only inside that approved scope
+Next exact step: implement ST1-ST6 of #26 on a clean tree inside the approved configurable scope, then run checks, deploy, and evaluate with post-implementation backtests
 Checks / commit / deploy / push:
 - latest product checks: invariants:radar-handoff, check, build passed
 - latest product deploy: scripts/deploy-prod-safe.sh successful
@@ -41,7 +41,6 @@ Checks / commit / deploy / push:
 Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
 - external ICT/FVG material is mostly practitioner content, not statistically rigorous research; treat as heuristic input, not proof
-- interrupted fallback pass was rolled back to restore a clean product tree before re-spec
 - lower-TF mapping and any other logic beyond the explicitly agreed slice must be configurable or re-approved before coding continues
 Key files:
 - .ops/PROJECT_TRUTH.md
