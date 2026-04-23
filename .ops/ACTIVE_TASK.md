@@ -31,7 +31,7 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: run post-change backtests for the revised FVG semantics (sweep-only, first-touch + maxZoneAgeCandles, engulfing-body confirmation) and identify the best parameter candidates for follow-up tuning
+Next exact step: audit backtest-page parity against Trading Rules, add the missing engine settings to Backtest UI on the shared rules model, then continue parameter tuning from the improved backtest surface
 Checks / commit / deploy / push:
 - latest product commit: 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 (`Implement shared FVG qualification rules`)
 - latest product checks: check, invariants:fvg, build passed
@@ -83,6 +83,12 @@ Blockers / risks:
   - maxZoneAgeCandles
   - fvgRequireConfirmation
   - fvgConfirmationTimeframes
+- latest user-requested follow-up:
+  - verify whether backtest uses the same shared trading decision logic as prod without hidden duplicate signal paths
+  - add all missing engine settings from Trading Rules to Backtest page, preferably mirroring the Trading Rules controls where practical
+- current conclusion:
+  - backtest shares canonical FVG/engulfing evaluators and common rules semantics, but still runs through a separate isolated simulation loop rather than the literal live execution pipeline
+  - Backtest page is currently missing the newly revised FVG controls that already exist in Trading Rules and the backtest API model
 - no other logic changes are approved for this pass
 Key files:
 - .ops/PROJECT_TRUTH.md
