@@ -775,6 +775,15 @@ export interface AiMasterSnapshotResponse {
 export type BacktestRunStatus = 'queued' | 'running' | 'completed' | 'failed';
 export type BacktestAiAnalysisStatus = 'idle' | 'pending' | 'completed' | 'failed';
 export type BacktestBiasMode = 'long' | 'short' | 'both';
+export type ComputeJobLifecycleStatus = 'queued' | 'running' | 'completed' | 'failed';
+
+export interface ComputeJobProgress {
+  completed: number;
+  total: number;
+  percent: number;
+  stage?: string;
+  updatedAt: string;
+}
 
 export interface BacktestRunSummary {
   totalTrades: number;
@@ -820,6 +829,8 @@ export interface BacktestRun {
   startedAt?: string;
   finishedAt?: string;
   createdAt: string;
+  workerPid?: number;
+  workerHeartbeatAt?: string;
   requestedBy?: string;
   startTimeMs: number;
   endTimeMs: number;
@@ -831,6 +842,7 @@ export interface BacktestRun {
     loadedFromMs?: number;
     loadedToMs?: number;
   };
+  progress?: ComputeJobProgress;
   rulesSnapshot: TradingRulesSettings;
   summary?: BacktestRunSummary;
   bySymbol: BacktestRunSymbolStats[];
@@ -873,7 +885,7 @@ export interface BacktestAiPendingResponse {
 
 // ─── Optimization ─────────────────────────────────────────────────────
 
-export type OptimizationStatus = 'queued' | 'running' | 'completed' | 'failed';
+export type OptimizationStatus = ComputeJobLifecycleStatus;
 
 export interface OptimizationParamRange {
   param: string;
@@ -897,6 +909,7 @@ export interface OptimizationResult {
   finishedAt?: string;
   workerPid?: number;
   workerHeartbeatAt?: string;
+  progress?: ComputeJobProgress;
   searchSpaceCandidates: number;
   totalCandidates: number;
   evaluatedCandidates: number;

@@ -15,7 +15,15 @@ import logger from '../lib/logger.js';
 import { getDb } from './db.js';
 import { runBacktestEngine, type BacktestCandleSet } from './backtestEngine.js';
 import { getBacktestEngineVersion } from './backtest.js';
-import type { BacktestRun, TradingRulesSettings, TradingRulesTimeframe } from '../shared/dto.js';
+import {
+  computeCandleLoadWindow,
+  getRequiredComputeTimeframes,
+  markComputeJobCompleted,
+  markComputeJobFailed,
+  markComputeJobStarted,
+  updateComputeJobProgress,
+} from './computeJob.js';
+import type { BacktestRun } from '../shared/dto.js';
 import type { CandleTimeframe } from '../exchange/types.js';
 
 // ─── Types ────────────────────────────────────────────────────────────
@@ -36,13 +44,6 @@ const TF_LABEL_TO_CANDLE_TF: Record<string, CandleTimeframe> = {
   '15m': '15m',
   '1h': '1h',
   '4h': '4h',
-};
-
-const TF_MS: Record<string, number> = {
-  '5m': 5 * 60_000,
-  '15m': 15 * 60_000,
-  '1h': 60 * 60_000,
-  '4h': 4 * 60 * 60_000,
 };
 
 // ─── Concurrency guard ───────────────────────────────────────────────
@@ -97,8 +98,11 @@ export async function executeBacktestRun(
   activeRunId = runId;
   const engine = getBacktestEngineVersion();
   mutateBacktestRun(db, runId, (run) => {
-    run.status = 'running';
-    run.startedAt = new Date().toISOString();
+    markComputeJobStarted(run, {
+      stage: 'loading_market_data',
+      completed: 0,
+      total: 2,
+    });
     run.engineVersion = engine.version;
     run.engineCommit = engine.commit;
   });
@@ -110,35 +114,26 @@ export async function executeBacktestRun(
   const endTimeMs = initialRun.endTimeMs;
 
   try {
-    // Determine all required timeframes
-    const requiredTfs = new Set<string>();
-    for (const tf of rules.entryTimeframes ?? ['15m']) requiredTfs.add(tf);
-    for (const tf of rules.emergencyExitTimeframes ?? ['1h']) requiredTfs.add(tf);
-    requiredTfs.add('1h');
-    requiredTfs.add('4h');
-    if (rules.fvgRequireConfirmation) {
-      for (const tf of rules.fvgConfirmationTimeframes ?? []) {
-        requiredTfs.add(tf);
-      }
-    }
+    const requiredTfs = getRequiredComputeTimeframes(rules);
 
     // Load candles for all required timeframes
     const candleSets: BacktestCandleSet[] = [];
-    const extraPadding = 50; // extra candles before start for lookback
 
     for (const tf of requiredTfs) {
       const candleTf = TF_LABEL_TO_CANDLE_TF[tf];
       if (!candleTf) continue;
-
-      const tfMs = TF_MS[tf] ?? 900_000;
-      const paddingMs = tfMs * extraPadding;
+      const window = computeCandleLoadWindow({
+        timeframe: tf,
+        startTimeMs,
+        endTimeMs,
+      });
 
       try {
         const candles = await candleLoader.getCandles({
           symbol,
           timeframe: candleTf,
-          startTimeMs: startTimeMs - paddingMs,
-          endTimeMs,
+          startTimeMs: window.startTimeMs,
+          endTimeMs: window.endTimeMs,
         });
 
         candleSets.push({ symbol, timeframe: candleTf, candles });
@@ -176,6 +171,12 @@ export async function executeBacktestRun(
         loadedFromMs: Number.isFinite(minLoadedMs) ? minLoadedMs : undefined,
         loadedToMs: Number.isFinite(maxLoadedMs) ? maxLoadedMs : undefined,
       };
+      updateComputeJobProgress(run, {
+        completed: 1,
+        total: 2,
+        stage: 'executing_backtest',
+        heartbeat: false,
+      });
     });
 
     // Run engine
@@ -206,9 +207,10 @@ export async function executeBacktestRun(
         equityCurvePoints: result.equityCurve.length,
         eventCount: result.trades.length,
       };
-      run.status = 'completed';
-      run.finishedAt = new Date().toISOString();
-      run.error = undefined;
+      markComputeJobCompleted(run, {
+        stage: 'completed',
+        total: 2,
+      });
       run.aiAnalysis = run.aiAnalysis?.status === 'pending'
         ? run.aiAnalysis
         : { status: 'idle' };
@@ -221,9 +223,7 @@ export async function executeBacktestRun(
   } catch (err) {
     const error = err instanceof Error ? err.message : String(err);
     mutateBacktestRun(db, runId, (run) => {
-      run.status = 'failed';
-      run.finishedAt = new Date().toISOString();
-      run.error = error;
+      markComputeJobFailed(run, error, { stage: 'failed' });
     });
 
     logger.error(

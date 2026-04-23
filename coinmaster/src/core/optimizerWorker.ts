@@ -18,6 +18,16 @@ import logger from '../lib/logger.js';
 import { getDb } from './db.js';
 import { runBacktestEngine, type BacktestCandleSet } from './backtestEngine.js';
 import { getBacktestEngineVersion } from './backtest.js';
+import {
+  computeCandleLoadWindow,
+  createComputeJobProgress,
+  getRequiredComputeTimeframes,
+  markComputeJobCompleted,
+  markComputeJobFailed,
+  markComputeJobStarted,
+  shouldPersistProgress,
+  updateComputeJobProgress,
+} from './computeJob.js';
 import type {
   BacktestRun,
   BacktestRunSummary,
@@ -41,13 +51,6 @@ const TF_LABEL_TO_CANDLE_TF: Record<string, CandleTimeframe> = {
   '15m': '15m',
   '1h': '1h',
   '4h': '4h',
-};
-
-const TF_MS: Record<string, number> = {
-  '5m': 5 * 60_000,
-  '15m': 15 * 60_000,
-  '1h': 60 * 60_000,
-  '4h': 4 * 60 * 60_000,
 };
 
 // ─── Concurrency guard ───────────────────────────────────────────────
@@ -213,38 +216,37 @@ export async function executeOptimization(
   }
 
   activeOptimizationId = optimizationId;
-  opt.status = 'running';
-  opt.startedAt = new Date().toISOString();
+  markComputeJobStarted(opt, {
+    stage: 'loading_market_data',
+    completed: 0,
+    total: 1,
+  });
   await db.write();
 
   try {
     const baseRules = opt.baseRulesSnapshot;
     const symbol = opt.symbol;
 
-    // Determine all required timeframes (same logic as backtestWorker)
-    const requiredTfs = new Set<string>();
-    for (const tf of baseRules.entryTimeframes ?? ['15m']) requiredTfs.add(tf);
-    for (const tf of baseRules.emergencyExitTimeframes ?? ['1h']) requiredTfs.add(tf);
-    requiredTfs.add('1h');
-    requiredTfs.add('4h');
+    const requiredTfs = getRequiredComputeTimeframes(baseRules);
 
     // Load candles once (shared across all candidates)
     const candleSets: BacktestCandleSet[] = [];
-    const extraPadding = 50;
 
     for (const tf of requiredTfs) {
       const candleTf = TF_LABEL_TO_CANDLE_TF[tf];
       if (!candleTf) continue;
-
-      const tfMs = TF_MS[tf] ?? 900_000;
-      const paddingMs = tfMs * extraPadding;
+      const window = computeCandleLoadWindow({
+        timeframe: tf,
+        startTimeMs: opt.startTimeMs,
+        endTimeMs: opt.endTimeMs,
+      });
 
       try {
         const candles = await candleLoader.getCandles({
           symbol,
           timeframe: candleTf,
-          startTimeMs: opt.startTimeMs - paddingMs,
-          endTimeMs: opt.endTimeMs,
+          startTimeMs: window.startTimeMs,
+          endTimeMs: window.endTimeMs,
         });
         candleSets.push({ symbol, timeframe: candleTf, candles });
         logger.info(
@@ -268,6 +270,7 @@ export async function executeOptimization(
     opt.searchSpaceCandidates = gridCandidates;
     opt.totalCandidates = candidates.length;
     opt.evaluatedCandidates = 0;
+    opt.progress = createComputeJobProgress(0, candidates.length, 'evaluating_candidates');
     await db.write();
 
     logger.info(
@@ -327,14 +330,22 @@ export async function executeOptimization(
       }
 
       opt.evaluatedCandidates = i + 1;
+      updateComputeJobProgress(opt, {
+        completed: opt.evaluatedCandidates,
+        total: candidates.length,
+        stage: 'evaluating_candidates',
+      });
 
       // Yield to event loop periodically
       if ((i + 1) % YIELD_EVERY_N === 0) {
         await sleep(YIELD_MS);
       }
 
-      // Progress save every 500 candidates
-      if ((i + 1) % 500 === 0) {
+      if (shouldPersistProgress({
+        completed: opt.evaluatedCandidates,
+        total: candidates.length,
+        forceEvery: 25,
+      })) {
         await db.write().catch(() => {});
       }
     }
@@ -363,17 +374,21 @@ export async function executeOptimization(
       opt.bestBySymbol = bestBySymbol;
     }
 
-    opt.status = 'completed';
-    opt.finishedAt = new Date().toISOString();
+    markComputeJobCompleted(opt, {
+      stage: 'completed',
+      total: candidates.length,
+    });
 
     logger.info(
       { component: 'optimizer', optimizationId, symbol, evaluated: opt.evaluatedCandidates, bestPnl: bestSummary?.netPnlUsd },
       'optimization completed',
     );
   } catch (err) {
-    opt.status = 'failed';
-    opt.finishedAt = new Date().toISOString();
-    opt.error = err instanceof Error ? err.message : String(err);
+    markComputeJobFailed(
+      opt,
+      err instanceof Error ? err.message : String(err),
+      { stage: 'failed' },
+    );
 
     logger.error(
       { component: 'optimizer', optimizationId, err: opt.error },
@@ -408,6 +423,7 @@ export function createQueuedOptimization(input: {
     baseRulesSnapshot: JSON.parse(JSON.stringify(sourceRun.rulesSnapshot)),
     paramRanges,
     createdAt: new Date().toISOString(),
+    progress: createComputeJobProgress(0, 0, 'queued'),
     searchSpaceCandidates: 0,
     totalCandidates: 0,
     evaluatedCandidates: 0,

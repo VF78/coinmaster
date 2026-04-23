@@ -12,8 +12,8 @@ import logger from '../lib/logger.js';
 import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
 import { applyBacktestAiAnalysisResult, createQueuedBacktestRun, markBacktestAiAnalysisRequested } from '../core/backtest.js';
-import { executeBacktestRun, isBacktestRunning, getActiveBacktestRunId } from '../core/backtestWorker.js';
 import { createQueuedOptimization } from '../core/optimizerWorker.js';
+import { markComputeJobFailed, reconcileComputeJob } from '../core/computeJob.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
@@ -5509,6 +5509,8 @@ if (ENABLE_REPLAY_API) {
 app.get('/api/backtest/runs', ownerAuth, async (_req, res) => {
   const db = await getDb();
   await db.reload();
+  await reconcileBacktestState(db);
+  await reconcileOptimizationState(db);
   db.data.backtestRuns = compactBacktestRuns(Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : []);
   return res.json({ ok: true, runs: db.data.backtestRuns });
 });
@@ -5516,6 +5518,7 @@ app.get('/api/backtest/runs', ownerAuth, async (_req, res) => {
 app.get('/api/backtest/runs/:id', ownerAuth, async (req, res) => {
   const db = await getDb();
   await db.reload();
+  await reconcileBacktestState(db);
   db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
   const run = db.data.backtestRuns.find((item) => item.id === req.params.id);
   if (!run) {
@@ -5607,9 +5610,12 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
 
   db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  await reconcileBacktestState(db);
+  await reconcileOptimizationState(db);
+  const activeBacktest = db.data.backtestRuns.find((item) => item.status === 'queued' || item.status === 'running') ?? null;
 
-  if (isBacktestRunning()) {
-    return res.status(409).json({ ok: false, error: 'backtest_already_running', activeRunId: getActiveBacktestRunId() });
+  if (activeBacktest) {
+    return res.status(409).json({ ok: false, error: 'backtest_already_running', activeRunId: activeBacktest.id ?? null });
   }
   if (hasInFlightOptimization(db.data.optimizationResults)) {
     const activeOpt = db.data.optimizationResults.find((item) => item.status === 'queued' || item.status === 'running') ?? null;
@@ -5619,11 +5625,13 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
   db.data.backtestRuns = compactBacktestRuns([run, ...(Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [])]);
   await db.write();
 
-  // Fire-and-forget: run in background, never blocks the response
-  const depositUsd = Number(db.data.settings?.depositUsd) || 1000;
-  executeBacktestRun(run.id, exchange, depositUsd).catch((err) => {
-    logger.error({ component: 'backtest', runId: run.id, err: err instanceof Error ? err.message : err }, 'backtest background run failed');
-  });
+  try {
+    spawnComputeJobProcess('backtest', run.id);
+  } catch (err) {
+    markComputeJobFailed(run, err instanceof Error ? err.message : String(err), { stage: 'failed' });
+    await db.write();
+    return res.status(500).json({ ok: false, error: 'backtest_spawn_failed' });
+  }
 
   return res.status(201).json({ ok: true, run });
 });
@@ -5651,31 +5659,45 @@ async function reconcileOptimizationState(db: Awaited<ReturnType<typeof getDb>>)
   const activeOpt = db.data.optimizationResults.find((item) => item.status === 'queued' || item.status === 'running');
   if (!activeOpt) return;
 
-  const nowMs = Date.now();
-  const startedMs = activeOpt.startedAt ? Date.parse(activeOpt.startedAt) : 0;
-  const heartbeatMs = activeOpt.workerHeartbeatAt ? Date.parse(activeOpt.workerHeartbeatAt) : 0;
-  const staleQueued = activeOpt.status === 'queued' && startedMs > 0 && nowMs - startedMs > 30_000;
-  const staleHeartbeat = activeOpt.status === 'running' && heartbeatMs > 0 && nowMs - heartbeatMs > 30_000;
-  const missingWorker = activeOpt.status === 'running' && activeOpt.workerPid && !isPidAlive(activeOpt.workerPid);
+  const failureReason = reconcileComputeJob({
+    job: activeOpt,
+    isWorkerAlive: activeOpt.workerPid ? isPidAlive(activeOpt.workerPid) : undefined,
+    queuedFailureReason: 'optimizer worker did not start',
+    runningFailureReason: activeOpt.workerHeartbeatAt
+      ? 'optimizer heartbeat timed out'
+      : 'optimizer worker is not active',
+    missingWorkerReason: 'optimizer worker exited unexpectedly',
+  });
 
-  if (staleQueued || staleHeartbeat || missingWorker) {
-    activeOpt.status = 'failed';
-    activeOpt.finishedAt = new Date().toISOString();
-    activeOpt.error = staleQueued
-      ? 'optimizer worker did not start'
-      : missingWorker
-        ? 'optimizer worker exited unexpectedly'
-        : 'optimizer heartbeat timed out';
+  if (failureReason) {
+    markComputeJobFailed(activeOpt, failureReason, { stage: 'failed' });
     await db.write();
   }
 }
 
-function spawnOptimizationProcess(optimizationId: string): void {
-  const tsxBin = path.join(rootDir, 'node_modules/.bin/tsx');
-  if (!existsSync(tsxBin)) {
-    throw new Error(`tsx_binary_not_found:${tsxBin}`);
+async function reconcileBacktestState(db: Awaited<ReturnType<typeof getDb>>): Promise<void> {
+  db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
+  const activeRun = db.data.backtestRuns.find((item) => item.status === 'queued' || item.status === 'running');
+  if (!activeRun) return;
+
+  const failureReason = reconcileComputeJob({
+    job: activeRun,
+    isWorkerAlive: activeRun.workerPid ? isPidAlive(activeRun.workerPid) : undefined,
+    queuedFailureReason: 'backtest worker did not start',
+    runningFailureReason: activeRun.workerHeartbeatAt
+      ? 'backtest heartbeat timed out'
+      : 'backtest worker is not active',
+    missingWorkerReason: 'backtest worker exited unexpectedly',
+  });
+
+  if (failureReason) {
+    markComputeJobFailed(activeRun, failureReason, { stage: 'failed' });
+    await db.write();
   }
-  const child = spawn(tsxBin, ['src/core/optimizerProcess.ts', optimizationId], {
+}
+
+function spawnComputeJobProcess(kind: 'backtest' | 'optimization', jobId: string): void {
+  const child = spawn(process.execPath, ['--import', 'tsx/esm', 'src/core/computeJobProcess.ts', kind, jobId], {
     cwd: rootDir,
     detached: true,
     stdio: 'ignore',
@@ -5694,6 +5716,8 @@ const OPTIMIZABLE_PARAMS = new Set([
 app.get('/api/optimization/results', ownerAuth, async (_req, res) => {
   const db = await getDb();
   await db.reload();
+  await reconcileOptimizationState(db);
+  await reconcileBacktestState(db);
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   return res.json({ ok: true, optimizations: db.data.optimizationResults });
 });
@@ -5701,6 +5725,7 @@ app.get('/api/optimization/results', ownerAuth, async (_req, res) => {
 app.get('/api/optimization/results/:id', ownerAuth, async (req, res) => {
   const db = await getDb();
   await db.reload();
+  await reconcileOptimizationState(db);
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   const opt = db.data.optimizationResults.find((o) => o.id === req.params.id);
   if (!opt) {
@@ -5712,10 +5737,12 @@ app.get('/api/optimization/results/:id', ownerAuth, async (req, res) => {
 app.get('/api/optimization/status', ownerAuth, async (_req, res) => {
   const db = await getDb();
   await db.reload();
+  await reconcileOptimizationState(db);
+  await reconcileBacktestState(db);
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   const activeOpt = db.data.optimizationResults.find((o) => o.status === 'queued' || o.status === 'running') ?? null;
   db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
-  const runningBacktest = db.data.backtestRuns.find((run) => run.status === 'running') ?? null;
+  const runningBacktest = db.data.backtestRuns.find((run) => run.status === 'queued' || run.status === 'running') ?? null;
   return res.json({
     ok: true,
     running: Boolean(activeOpt),
@@ -5742,6 +5769,9 @@ app.post('/api/optimization/start', ownerAuth, async (req, res) => {
   await db.reload();
   db.data.backtestRuns = Array.isArray(db.data.backtestRuns) ? db.data.backtestRuns : [];
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  await reconcileBacktestState(db);
+  await reconcileOptimizationState(db);
+  const activeBacktest = db.data.backtestRuns.find((item) => item.status === 'queued' || item.status === 'running') ?? null;
 
   if (hasInFlightOptimization(db.data.optimizationResults)) {
     const activeOpt = db.data.optimizationResults.find((item) => item.status === 'queued' || item.status === 'running') ?? null;
@@ -5761,8 +5791,8 @@ app.post('/api/optimization/start', ownerAuth, async (req, res) => {
     }
   }
 
-  if (isBacktestRunning()) {
-    return res.status(409).json({ ok: false, error: 'backtest_already_running', activeRunId: getActiveBacktestRunId() });
+  if (activeBacktest) {
+    return res.status(409).json({ ok: false, error: 'backtest_already_running', activeRunId: activeBacktest.id ?? null });
   }
   const sourceRun = db.data.backtestRuns.find((r) => r.id === body.sourceRunId);
   if (!sourceRun) {
@@ -5782,11 +5812,9 @@ app.post('/api/optimization/start', ownerAuth, async (req, res) => {
   await db.write();
 
   try {
-    spawnOptimizationProcess(optimization.id);
+    spawnComputeJobProcess('optimization', optimization.id);
   } catch (err) {
-    optimization.status = 'failed';
-    optimization.finishedAt = new Date().toISOString();
-    optimization.error = err instanceof Error ? err.message : String(err);
+    markComputeJobFailed(optimization, err instanceof Error ? err.message : String(err), { stage: 'failed' });
     await db.write();
     return res.status(500).json({ ok: false, error: 'optimization_spawn_failed' });
   }

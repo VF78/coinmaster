@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import type { BacktestBiasMode, BacktestCreateRunRequest, BacktestRun, TradingRulesSettings } from '../shared/dto.js';
+import { createComputeJobProgress } from './computeJob.js';
 import { inferAssetClassFromSymbol, normalizeTradingRules } from '../shared/tradingRules.js';
 
 const BACKTEST_AI_SUMMARY_MAX_CHARS = 2_000;
@@ -112,6 +113,7 @@ export function createQueuedBacktestRun(input: {
       requestedFromMs: input.request.startTimeMs,
       requestedToMs: input.request.endTimeMs,
     },
+    progress: createComputeJobProgress(0, 2, 'queued', now),
     rulesSnapshot: normalizeBacktestRules(input.rules, input.symbol),
     bySymbol: [],
     aiAnalysis: {

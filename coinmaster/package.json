@@ -28,7 +28,8 @@
     "invariants:fvg": "tsx scripts/invariants-fvg.ts",
     "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts",
     "invariants:radar-handoff": "tsx scripts/invariants-radar-handoff.ts",
-    "invariants:backtest-run-persistence": "tsx scripts/invariants-backtest-run-persistence.ts"
+    "invariants:backtest-run-persistence": "node --import tsx/esm scripts/invariants-backtest-run-persistence.ts",
+    "invariants:compute-jobs": "node --import tsx/esm scripts/invariants-compute-jobs.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
