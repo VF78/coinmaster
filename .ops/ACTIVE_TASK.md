@@ -1,11 +1,11 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-23 Europe/Madrid
-Status: ACTIVE / backtest form reset bug fixed and deployed; revised FVG logic remains deployed for continued ROI testing
+Status: ACTIVE / optimizer startup race fixed and deployed; backtest surface stable for continued ROI testing
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / HEAD / origin/main / deploy commit / divergence: main / 699901df947455c2f7db8f8a9620fa17638b9178 / 699901df947455c2f7db8f8a9620fa17638b9178 / 699901df947455c2f7db8f8a9620fa17638b9178 / synced with origin and deploy
-Goal: keep FVG/live/backtest on one shared rules surface, with a stable Backtest UI that preserves manual edits and copied rule snapshots for reproducible ROI experiments
+Branch / HEAD / origin/main / deploy commit / divergence: main / 05291c5122b019a71dbaf89981795806e8778e6c / 05291c5122b019a71dbaf89981795806e8778e6c / 05291c5122b019a71dbaf89981795806e8778e6c / synced with origin and deploy
+Goal: keep FVG/live/backtest/optimization on one shared rules surface, with a stable Backtest UI and a working optimizer for reproducible ROI experiments
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -31,13 +31,13 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: confirm Backtest manual edits/copy behavior is stable in real use, then resume the next narrow FVG parameter batch from the stable UI surface
+Next exact step: use the now-working optimizer on bounded FVG parameter batches, then compare out-of-sample stability before any live rule changes
 Checks / commit / deploy / push:
-- latest product commit: 699901df947455c2f7db8f8a9620fa17638b9178 (`fix: stabilize backtest form defaults`)
+- latest product commit: 05291c5122b019a71dbaf89981795806e8778e6c (`fix: keep optimization queued until worker claim`)
 - latest product checks: check, build passed
 - latest product deploy: scripts/deploy-prod-safe.sh successful
-- latest ops commit: 4c5dc6c (`docs: record backtest ui parity delivery`)
-- push state: product + ops synced to origin/main
+- latest ops commit: pending current task-state sync
+- push state: product synced to origin/main; ops sync pending current update
 Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
 - external ICT/FVG material is mostly practitioner content, not statistically rigorous research; treat as heuristic input, not proof
@@ -106,7 +106,19 @@ Blockers / risks:
   - /api/health ✅
   - /backtest served after deploy ✅
 - product commit for latest pass: `699901df947455c2f7db8f8a9620fa17638b9178` (`fix: stabilize backtest form defaults`)
-- no other logic changes are approved for this pass
+- no other trading-logic changes are approved for this pass
+- latest fix completed:
+  - root cause of `optimization_not_queued:running` confirmed in `src/core/optimizerProcess.ts`
+  - process wrapper was pre-setting queued optimization records to `running` before `executeOptimization(...)`
+  - worker correctly requires `queued` and owns the `queued -> running` transition, so the process was making the worker fail itself
+  - clean fix shipped: process now only writes `workerPid` + `workerHeartbeatAt` while status is still `queued`; worker remains the single owner of `startedAt` and `running`
+  - verification completed:
+    - npm run check ✅
+    - npm run build ✅
+    - deploy-prod-safe.sh ✅
+    - /api/health ✅
+    - /backtest served after deploy ✅
+    - end-to-end optimizer regression run completed successfully on prod persistence: `verify-1776943552903-f28170` → completed, 1/1 candidate evaluated
 Key files:
 - .ops/PROJECT_TRUTH.md
 - .ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md
