@@ -1,11 +1,11 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-23 Europe/Madrid
-Status: ACTIVE / revised FVG logic deployed, post-change backtests starting
+Status: ACTIVE / backtest UI parity shipped; revised FVG logic remains deployed for continued ROI testing
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / HEAD / origin/main / deploy commit / divergence: main / 7b7b7830ba34fe8771caca6ee9dced505c56ed31 / 7b7b7830ba34fe8771caca6ee9dced505c56ed31 / 7b7b7830ba34fe8771caca6ee9dced505c56ed31 / synced with origin and deploy
-Goal: evaluate the newly deployed revised FVG logic with post-change backtests and find better parameter values for ROI
+Branch / HEAD / origin/main / deploy commit / divergence: main / 509c40396cbe1a07490c69433e4263b71414e494 / 509c40396cbe1a07490c69433e4263b71414e494 / 509c40396cbe1a07490c69433e4263b71414e494 / synced with origin and deploy
+Goal: keep FVG/live/backtest on one shared rules surface, with Backtest page exposing the same relevant engine controls as Trading Rules so ROI experiments are reproducible
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -31,12 +31,12 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: audit backtest-page parity against Trading Rules, add the missing engine settings to Backtest UI on the shared rules model, then continue parameter tuning from the improved backtest surface
+Next exact step: use the now-complete Backtest rules surface to run the next narrow FVG parameter batch and compare ROI across approved revised settings
 Checks / commit / deploy / push:
-- latest product commit: 53e5d0d1b1e6422feef3483f1928e5a49ed5bcc0 (`Implement shared FVG qualification rules`)
-- latest product checks: check, invariants:fvg, build passed
+- latest product commit: 509c40396cbe1a07490c69433e4263b71414e494 (`feat: add backtest fvg rule controls`)
+- latest product checks: check, build passed
 - latest product deploy: scripts/deploy-prod-safe.sh successful
-- latest ops commit: bee6ed5 (`docs: lock approved #26 execution spec`)
+- latest ops commit: cf469d9 (`docs: note backtest parity audit and ui gap`)
 - push state: product + ops synced to origin/main
 Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
@@ -88,7 +88,19 @@ Blockers / risks:
   - add all missing engine settings from Trading Rules to Backtest page, preferably mirroring the Trading Rules controls where practical
 - current conclusion:
   - backtest shares canonical FVG/engulfing evaluators and common rules semantics, but still runs through a separate isolated simulation loop rather than the literal live execution pipeline
-  - Backtest page is currently missing the newly revised FVG controls that already exist in Trading Rules and the backtest API model
+  - Backtest page parity task is now completed for the revised FVG controls on the shared rules model
+- completed in this pass:
+  - added the missing revised FVG controls to Backtest page
+  - wired them through load/reset/run snapshot handling using the existing TradingRulesSettings model
+  - mirrored Trading Rules toggle/conditional-control patterns where practical
+  - kept trading logic unchanged
+- verification for this pass:
+  - npm run check ✅
+  - npm run build ✅
+  - deploy-prod-safe.sh ✅
+  - /api/health ✅
+  - /backtest served after deploy ✅
+- product commit for this pass: `509c40396cbe1a07490c69433e4263b71414e494` (`feat: add backtest fvg rule controls`)
 - no other logic changes are approved for this pass
 Key files:
 - .ops/PROJECT_TRUTH.md
