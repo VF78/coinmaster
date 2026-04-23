@@ -294,7 +294,7 @@ function Segmented<T extends string | number>({ options, value, format, onChange
 }
 
 export function BacktestPage() {
-  const defaults = cloneTradingRulesDefaults();
+  const [defaults] = useState<TradingRulesSettings>(() => cloneTradingRulesDefaults());
   const dialog = useDialog();
 
   const [availableSymbols, setAvailableSymbols] = useState<string[]>([]);
