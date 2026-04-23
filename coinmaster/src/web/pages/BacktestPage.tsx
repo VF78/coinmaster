@@ -200,6 +200,14 @@ function formatRulesSnapshot(
     { label: 'Lookback candles', value: String(rules.engulfingLookbackCandles ?? 30) },
     { label: 'FVG Retrace Level', value: `${rules.fvgRetrace ?? 50}%` },
     { label: 'FVG Min Width Filter', value: `${rules.fvgMinWidthPct ?? 0.3}%` },
+    { label: 'Require HTF sweep', value: rules.fvgRequireSweep ? 'On' : 'Off' },
+    ...(rules.fvgRequireSweep ? [{ label: 'Sweep lookback candles', value: String(rules.fvgSweepLookbackCandles ?? 3) }] : []),
+    { label: 'Only first touch of fresh FVG', value: rules.fvgRequireFirstTouch ? 'On' : 'Off' },
+    ...(rules.fvgRequireFirstTouch ? [{ label: 'Max zone age candles', value: String(rules.maxZoneAgeCandles ?? 1) }] : []),
+    { label: 'Require confirmation after retrace touch', value: rules.fvgRequireConfirmation ? 'On' : 'Off' },
+    ...(rules.fvgRequireConfirmation
+      ? [{ label: 'Allowed confirmation timeframes', value: (rules.fvgConfirmationTimeframes ?? []).join(', ') || '—' }]
+      : []),
     { label: 'Close size on exit signal', value: `${rules.exitClosePct ?? 50}%` },
     { label: 'Daily Drawdown Limit', value: `${rules.dailyDrawdown ?? 0}%` },
     { label: 'Max Leverage', value: `${rules.maxLeverage ?? 1}x` },
@@ -307,6 +315,12 @@ export function BacktestPage() {
   const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
   const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
   const [fvgMinWidthPct, setFvgMinWidthPct] = useState(defaults.fvgMinWidthPct);
+  const [fvgRequireSweep, setFvgRequireSweep] = useState(defaults.fvgRequireSweep);
+  const [fvgSweepLookbackCandles, setFvgSweepLookbackCandles] = useState(defaults.fvgSweepLookbackCandles);
+  const [fvgRequireFirstTouch, setFvgRequireFirstTouch] = useState(defaults.fvgRequireFirstTouch);
+  const [maxZoneAgeCandles, setMaxZoneAgeCandles] = useState(defaults.maxZoneAgeCandles);
+  const [fvgRequireConfirmation, setFvgRequireConfirmation] = useState(defaults.fvgRequireConfirmation);
+  const [fvgConfirmationTimeframes, setFvgConfirmationTimeframes] = useState<TradingRulesTimeframe[]>(defaults.fvgConfirmationTimeframes);
   const [maxLeverage, setMaxLeverage] = useState(defaults.maxLeverage);
   const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
   const [tpLevels, setTpLevels] = useState<number[]>(defaults.tpLevels);
@@ -365,6 +379,12 @@ export function BacktestPage() {
     setEngulfingLookbackCandles(rules.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
     setFvgRetrace(rules.fvgRetrace ?? defaults.fvgRetrace);
     setFvgMinWidthPct(rules.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
+    setFvgRequireSweep(rules.fvgRequireSweep ?? defaults.fvgRequireSweep);
+    setFvgSweepLookbackCandles(rules.fvgSweepLookbackCandles ?? defaults.fvgSweepLookbackCandles);
+    setFvgRequireFirstTouch(rules.fvgRequireFirstTouch ?? defaults.fvgRequireFirstTouch);
+    setMaxZoneAgeCandles(rules.maxZoneAgeCandles ?? defaults.maxZoneAgeCandles);
+    setFvgRequireConfirmation(rules.fvgRequireConfirmation ?? defaults.fvgRequireConfirmation);
+    setFvgConfirmationTimeframes(rules.fvgConfirmationTimeframes?.length ? rules.fvgConfirmationTimeframes : defaults.fvgConfirmationTimeframes);
     setMaxLeverage(rules.maxLeverage ?? defaults.maxLeverage);
     setDailyDrawdown(rules.dailyDrawdown ?? defaults.dailyDrawdown);
     setTpLevels(rules.tpLevels?.length ? [...rules.tpLevels] : defaults.tpLevels);
@@ -387,6 +407,12 @@ export function BacktestPage() {
     setEngulfingLookbackCandles(rules.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
     setFvgRetrace(rules.fvgRetrace ?? defaults.fvgRetrace);
     setFvgMinWidthPct(rules.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
+    setFvgRequireSweep(rules.fvgRequireSweep ?? defaults.fvgRequireSweep);
+    setFvgSweepLookbackCandles(rules.fvgSweepLookbackCandles ?? defaults.fvgSweepLookbackCandles);
+    setFvgRequireFirstTouch(rules.fvgRequireFirstTouch ?? defaults.fvgRequireFirstTouch);
+    setMaxZoneAgeCandles(rules.maxZoneAgeCandles ?? defaults.maxZoneAgeCandles);
+    setFvgRequireConfirmation(rules.fvgRequireConfirmation ?? defaults.fvgRequireConfirmation);
+    setFvgConfirmationTimeframes(rules.fvgConfirmationTimeframes?.length ? rules.fvgConfirmationTimeframes : defaults.fvgConfirmationTimeframes);
     setMaxLeverage(rules.maxLeverage ?? defaults.maxLeverage);
     setDailyDrawdown(rules.dailyDrawdown ?? defaults.dailyDrawdown);
     setTpLevels(rules.tpLevels?.length ? [...rules.tpLevels] : defaults.tpLevels);
@@ -504,6 +530,12 @@ export function BacktestPage() {
         setEngulfingLookbackCandles(normalized.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
         setFvgRetrace(normalized.fvgRetrace ?? defaults.fvgRetrace);
         setFvgMinWidthPct(normalized.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
+        setFvgRequireSweep(normalized.fvgRequireSweep ?? defaults.fvgRequireSweep);
+        setFvgSweepLookbackCandles(normalized.fvgSweepLookbackCandles ?? defaults.fvgSweepLookbackCandles);
+        setFvgRequireFirstTouch(normalized.fvgRequireFirstTouch ?? defaults.fvgRequireFirstTouch);
+        setMaxZoneAgeCandles(normalized.maxZoneAgeCandles ?? defaults.maxZoneAgeCandles);
+        setFvgRequireConfirmation(normalized.fvgRequireConfirmation ?? defaults.fvgRequireConfirmation);
+        setFvgConfirmationTimeframes(normalized.fvgConfirmationTimeframes?.length ? normalized.fvgConfirmationTimeframes : defaults.fvgConfirmationTimeframes);
         setMaxLeverage(normalized.maxLeverage ?? defaults.maxLeverage);
         setDailyDrawdown(normalized.dailyDrawdown ?? defaults.dailyDrawdown);
         setTpLevels(normalized.tpLevels?.length ? [...normalized.tpLevels] : defaults.tpLevels);
@@ -654,6 +686,12 @@ export function BacktestPage() {
         engulfingLookbackCandles,
         fvgRetrace,
         fvgMinWidthPct,
+        fvgRequireSweep,
+        fvgSweepLookbackCandles,
+        fvgRequireFirstTouch,
+        maxZoneAgeCandles,
+        fvgRequireConfirmation,
+        fvgConfirmationTimeframes,
         maxLeverage,
         dailyDrawdown,
         tpLevels,
@@ -834,6 +872,82 @@ export function BacktestPage() {
               <input type="range" min={0} max={2} step={0.1} value={fvgMinWidthPct} onChange={(e) => setFvgMinWidthPct(clampNumber(Number(e.target.value), 0, 10))} className="rules-range" style={{ width: '100%', marginTop: 0 }} />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted, #666)' }}><span>0%</span><span>0.3%</span><span>2%</span></div>
             </div>
+          </div>
+
+          <div style={{ display: 'grid', gap: 14, marginTop: 14 }}>
+            <label className="rules-toggle-row">
+              <span>Require HTF sweep</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={fvgRequireSweep}
+                className={`rules-toggle ${fvgRequireSweep ? 'rules-toggle--on' : ''}`}
+                onClick={() => setFvgRequireSweep((v) => !v)}
+              >
+                <span className="rules-toggle__thumb" />
+              </button>
+            </label>
+            {fvgRequireSweep ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(220px, 320px)', gap: 14 }}>
+                <div style={{ display: 'grid', gap: 6 }}>
+                  <span className="rules-label" style={{ margin: 0 }}>Sweep lookback candles</span>
+                  <Stepper value={fvgSweepLookbackCandles} min={3} max={100} step={1} decimals={0} onChange={setFvgSweepLookbackCandles} />
+                </div>
+              </div>
+            ) : null}
+
+            <label className="rules-toggle-row">
+              <span>Only first touch of fresh FVG</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={fvgRequireFirstTouch}
+                className={`rules-toggle ${fvgRequireFirstTouch ? 'rules-toggle--on' : ''}`}
+                onClick={() => setFvgRequireFirstTouch((v) => !v)}
+              >
+                <span className="rules-toggle__thumb" />
+              </button>
+            </label>
+            <p className="stat-note muted" style={{ marginTop: -8 }}>
+              {fvgRequireFirstTouch ? 'Rejects already mitigated HTF gaps; only the first live touch can qualify.' : 'Already mitigated HTF gaps remain eligible.'}
+            </p>
+            {fvgRequireFirstTouch ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(220px, 320px)', gap: 14 }}>
+                <div style={{ display: 'grid', gap: 6 }}>
+                  <span className="rules-label" style={{ margin: 0 }}>Max zone age candles</span>
+                  <Stepper value={maxZoneAgeCandles} min={1} max={500} step={1} decimals={0} onChange={setMaxZoneAgeCandles} />
+                </div>
+              </div>
+            ) : null}
+
+            <label className="rules-toggle-row">
+              <span>Require engulfing-body confirmation after retrace touch</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={fvgRequireConfirmation}
+                className={`rules-toggle ${fvgRequireConfirmation ? 'rules-toggle--on' : ''}`}
+                onClick={() => setFvgRequireConfirmation((v) => !v)}
+              >
+                <span className="rules-toggle__thumb" />
+              </button>
+            </label>
+            {fvgRequireConfirmation ? (
+              <div style={{ display: 'grid', gap: 8 }}>
+                <span className="rules-label" style={{ margin: 0 }}>Allowed confirmation timeframes</span>
+                <div className="rules-btn-group rules-btn-group--left">
+                  {TIMEFRAMES.map((tf) => (
+                    <Button
+                      key={`bt-fvg-confirm-${tf}`}
+                      variant={fvgConfirmationTimeframes.includes(tf) ? 'primary' : 'secondary'}
+                      onClick={() => toggleTf(tf, fvgConfirmationTimeframes, setFvgConfirmationTimeframes)}
+                    >
+                      {tf}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
 
