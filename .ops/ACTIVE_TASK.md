@@ -1,11 +1,11 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-23 Europe/Madrid
-Status: ACTIVE / backtest UI parity shipped; revised FVG logic remains deployed for continued ROI testing
+Status: ACTIVE / backtest form reset bug fixed and deployed; revised FVG logic remains deployed for continued ROI testing
 GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / HEAD / origin/main / deploy commit / divergence: main / 509c40396cbe1a07490c69433e4263b71414e494 / 509c40396cbe1a07490c69433e4263b71414e494 / 509c40396cbe1a07490c69433e4263b71414e494 / synced with origin and deploy
-Goal: keep FVG/live/backtest on one shared rules surface, with Backtest page exposing the same relevant engine controls as Trading Rules so ROI experiments are reproducible
+Branch / HEAD / origin/main / deploy commit / divergence: main / 699901df947455c2f7db8f8a9620fa17638b9178 / 699901df947455c2f7db8f8a9620fa17638b9178 / 699901df947455c2f7db8f8a9620fa17638b9178 / synced with origin and deploy
+Goal: keep FVG/live/backtest on one shared rules surface, with a stable Backtest UI that preserves manual edits and copied rule snapshots for reproducible ROI experiments
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -31,12 +31,12 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: use the now-complete Backtest rules surface to run the next narrow FVG parameter batch and compare ROI across approved revised settings
+Next exact step: confirm Backtest manual edits/copy behavior is stable in real use, then resume the next narrow FVG parameter batch from the stable UI surface
 Checks / commit / deploy / push:
-- latest product commit: 509c40396cbe1a07490c69433e4263b71414e494 (`feat: add backtest fvg rule controls`)
+- latest product commit: 699901df947455c2f7db8f8a9620fa17638b9178 (`fix: stabilize backtest form defaults`)
 - latest product checks: check, build passed
 - latest product deploy: scripts/deploy-prod-safe.sh successful
-- latest ops commit: cf469d9 (`docs: note backtest parity audit and ui gap`)
+- latest ops commit: 4c5dc6c (`docs: record backtest ui parity delivery`)
 - push state: product + ops synced to origin/main
 Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
@@ -89,18 +89,23 @@ Blockers / risks:
 - current conclusion:
   - backtest shares canonical FVG/engulfing evaluators and common rules semantics, but still runs through a separate isolated simulation loop rather than the literal live execution pipeline
   - Backtest page parity task is now completed for the revised FVG controls on the shared rules model
-- completed in this pass:
+- completed in the previous pass:
   - added the missing revised FVG controls to Backtest page
   - wired them through load/reset/run snapshot handling using the existing TradingRulesSettings model
   - mirrored Trading Rules toggle/conditional-control patterns where practical
   - kept trading logic unchanged
-- verification for this pass:
+- resolved in the latest pass:
+  - Backtest form values no longer get reinitialized after ordinary edits/copy actions
+  - root cause was UI-only: `cloneTradingRulesDefaults()` was being recreated on every render while the initial load effect depended on `defaults`, so server rules were replayed into form state after edits
+  - fix was the smallest clean change in current architecture: make `defaults` stable for the component lifetime with `useState(() => cloneTradingRulesDefaults())`
+  - no trading logic or backtest engine semantics changed
+- verification for the latest pass:
   - npm run check ✅
   - npm run build ✅
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /backtest served after deploy ✅
-- product commit for this pass: `509c40396cbe1a07490c69433e4263b71414e494` (`feat: add backtest fvg rule controls`)
+- product commit for latest pass: `699901df947455c2f7db8f8a9620fa17638b9178` (`fix: stabilize backtest form defaults`)
 - no other logic changes are approved for this pass
 Key files:
 - .ops/PROJECT_TRUTH.md
