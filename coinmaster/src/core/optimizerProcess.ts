@@ -13,9 +13,7 @@ async function main() {
   await db.reload();
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   const opt = db.data.optimizationResults.find((item) => item.id === optimizationId);
-  if (opt) {
-    opt.status = opt.status === 'completed' ? opt.status : 'running';
-    opt.startedAt = opt.startedAt || new Date().toISOString();
+  if (opt?.status === 'queued') {
     opt.workerPid = process.pid;
     opt.workerHeartbeatAt = new Date().toISOString();
     await db.write();
