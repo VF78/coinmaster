@@ -1,11 +1,11 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-23 Europe/Madrid
-Status: ACTIVE / optimizer startup race fixed and deployed; backtest surface stable for continued ROI testing
-GitHub Project item: #26 active — TR-03 FVG retrace trigger engine (structure break + retrace %)
+Status: ACTIVE / #55 unified job runner delivered, verified, and deployed; next work can return to ROI testing on the stabilized compute lane
+GitHub Project item: #55 done — [TR] Unified Job Runner for backtest and optimizer
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / HEAD / origin/main / deploy commit / divergence: main / 05291c5122b019a71dbaf89981795806e8778e6c / 05291c5122b019a71dbaf89981795806e8778e6c / 05291c5122b019a71dbaf89981795806e8778e6c / synced with origin and deploy
-Goal: keep FVG/live/backtest/optimization on one shared rules surface, with a stable Backtest UI and a working optimizer for reproducible ROI experiments
+Branch / HEAD / origin/main / deploy commit / divergence: main / 2b661291fbd7265fc4d8e4680c09a91cea6a0131 / 2b661291fbd7265fc4d8e4680c09a91cea6a0131 / 2b661291fbd7265fc4d8e4680c09a91cea6a0131 / synced with origin and deploy
+Goal: keep one simpler shared compute lane for backtest and optimization, then resume ROI-focused hypothesis testing on top of the stabilized runner
 Done:
 - restored and deployed Alpha Radar end-to-end
 - updated GitHub Project Radar statuses to Done where completed
@@ -31,13 +31,13 @@ Done:
   - deploy-prod-safe.sh ✅
   - /api/health ✅
   - /api/settings/trading-rules returns new FVG fields ✅
-Next exact step: use the now-working optimizer on bounded FVG parameter batches, then compare out-of-sample stability before any live rule changes
+Next exact step: resume ROI testing using the stabilized unified runner, starting with bounded FVG / backtest optimization batches on the now-reliable compute lane
 Checks / commit / deploy / push:
-- latest product commit: 05291c5122b019a71dbaf89981795806e8778e6c (`fix: keep optimization queued until worker claim`)
-- latest product checks: check, build passed
+- latest product commit: 2b661291fbd7265fc4d8e4680c09a91cea6a0131 (`refactor: unify compute job runner`)
+- latest product checks: `npm run check`, `npm run invariants:compute-jobs`, `npm run invariants:backtest-run-persistence`, `npm run build`
 - latest product deploy: scripts/deploy-prod-safe.sh successful
 - latest ops commit: pending current task-state sync
-- push state: product synced to origin/main; ops sync pending current update
+- push state: product synced to origin/main and deploy; ops sync pending current update
 Blockers / risks:
 - memory_search unavailable; rely on local docs + live repo state
 - external ICT/FVG material is mostly practitioner content, not statistically rigorous research; treat as heuristic input, not proof
@@ -119,6 +119,21 @@ Blockers / risks:
     - /api/health ✅
     - /backtest served after deploy ✅
     - end-to-end optimizer regression run completed successfully on prod persistence: `verify-1776943552903-f28170` → completed, 1/1 candidate evaluated
+- completed reliability scope:
+  - GitHub issue `#55` delivered and moved to Done in Project #2
+  - Slice 1/2/3 completed in one pass without widening into a heavyweight queue system
+  - one shared detached compute-job process now runs both `backtest` and `optimization`
+  - shared compute-job helpers now own lifecycle/progress/heartbeat/recovery semantics
+  - shared candle timeframe + load-window selection now keeps optimizer aligned with backtest, including confirmation TF coverage
+  - legacy split optimizer process path removed (`src/core/optimizerProcess.ts` deleted)
+  - API reconciliation now runs against the same process-owned semantics for both job types
+  - new regression coverage added: `scripts/invariants-compute-jobs.ts` / `npm run invariants:compute-jobs`
+  - prod smoke after deploy succeeded:
+    - `/api/health` OK
+    - `/backtest` 200 OK
+    - backtest smoke run `pvMDpXd7-jIYQtSYQVIEk` completed through unified runner
+    - optimization smoke run `0Pt8mMR7af0pApFAC7yHw` completed through unified runner
+  - implementation commit: `2b661291fbd7265fc4d8e4680c09a91cea6a0131` (`refactor: unify compute job runner`)
 Key files:
 - .ops/PROJECT_TRUTH.md
 - .ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md
