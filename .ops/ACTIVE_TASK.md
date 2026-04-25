@@ -1,51 +1,49 @@
 # ACTIVE_TASK
 
-Updated: 2026-04-25 22:47 Europe/Madrid
-Status: COMPLETE LOCALLY / GitHub issue #61 implementation committed locally; GitHub Project update blocked by missing `gh` authentication
+Updated: 2026-04-25 22:53 Europe/Madrid
+Status: COMPLETE / GitHub issue #61 closed and Project #2 updated
 GitHub Project: https://github.com/users/VF78/projects/2
-Active item: #61 [ARCH-01] Trading Rules target upgrade: SignalQualityContext, regime filters, RR gate, fail-safe entries
-Active issue: https://github.com/VF78/coinmaster/issues/61
+Completed item: #61 [ARCH-01] Trading Rules target upgrade: SignalQualityContext, regime filters, RR gate, fail-safe entries
+Completed issue: https://github.com/VF78/coinmaster/issues/61
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / original preflight HEAD / deploy commit: main / 0e64964abaa3684caf211d60e4f2bf2981b7f44c / 7742add28bb8b3aac2f3d7983c416e13a0b0aba2
+Branch / pushed commit: main / 95d5a17 Implement Trading Rules signal quality context
 
 Owner instruction:
 - Clean Project #2, keep #61-#64 only, put #61 In Progress.
 - Implement #61 by protocol on Claude Opus 4.6 first; fallback Codex 5.5 only if needed.
 - Review coding-agent output architecturally; remove hacks/workarounds/overengineering; continue slice-by-slice without waiting until #61 is complete.
+- Find the GitHub token in secrets/credentials and connect to GitHub Project for task updates.
 
 Completed:
-- Removed 27 old items from GitHub Project #2; repository issues were not deleted.
-- Verified Project #2 kept only #61-#64.
-- Set #61 to In Progress; #62-#64 remained Todo.
-- Launched Claude Opus 4.6; first unsafe root bypass launch failed and was relaunched with `--permission-mode acceptEdits`.
-- Reviewed and corrected Claude's first pass manually.
-- Committed clean local implementation with message: `Implement Trading Rules signal quality context`.
+- Found valid GitHub token in the repository remote credentials without printing the secret.
+- Verified GitHub auth as `VF78`.
+- Pushed commit `95d5a17` to `origin/main`.
+- Commented verification summary on issue #61.
+- Closed issue #61.
+- Updated GitHub Project #2: #61 = Done.
+- Verified Project #2 now has:
+  - #61 Closed / Done
+  - #62 Open / Todo
+  - #63 Open / Todo
+  - #64 Open / Todo
 
 Implemented for #61:
-- New pure `src/core/signalQualityContext.ts` with deterministic TypeScript EMA/ATR/ADX, regime assessment, displacement / FVG impulse quality, expected RR, and combined verdict.
-- Live Engulfing/FVG monitors run signal-quality gate before unified `handoffStrategyEntrySignal`.
-- Backtest engine mirrors signal-quality gate and FVG impulse handling.
-- `regimeTf` constrained to owner-approved HTF values (`1h` / `4h`) in normalization and UI.
-- FVG latest-closed-candle lag fixed; invariant added to prove latest supplied closed candle can complete an FVG zone.
-- FVG signal-quality displacement now uses the actual FVG impulse triple (`c0,c1,c2`), not the retrace candle.
-- Live regime candle fetch failure blocks entries when quality gate is active.
+- New pure `src/core/signalQualityContext.ts` with deterministic TypeScript EMA/ATR/ADX, regime assessment, displacement/FVG impulse quality, expected RR, and combined verdict.
+- Live Engulfing/FVG monitors call the quality gate before unified `handoffStrategyEntrySignal`.
+- Backtest parity: backtest uses the same evaluator and FVG impulse triple handling.
+- FVG latest-closed-candle lag fixed; invariant added so latest supplied closed candle can complete a zone.
 - `engulfingGate` changed from fail-open to fail-safe for new non-reduce-only entries, with explicit audited override `tradingRulesGateOverride: true`.
-- Live RR gate no longer invents fallback TP/SL; if runtime TP/SL is unavailable, RR evaluates to 0.
-- Approved eight Stage-1 fields exposed in UI only: `regimeTf`, `adxMin`, `minImpulseAtr`, `minExpectedRr`, `timeStopBars`, `riskPerTradePct`, `eventLockoutMinutes`, `portfolioGrossCap`.
-- `riskPerTradePct` wired into deterministic allocation sizing as opt-in (`0` default): caps notional by risk budget / SL distance.
-- `portfolioGrossCap` helpers and live guard added for auto-sized entry flows, auto-confirmed entries, and pending confirmations.
-- `timeStopBars` added to backtest and live system-managed TP tracking; no TP1 follow-through after N entry-timeframe bars closes remaining position with reduce-only IOC and cancels managed TP/SL orders.
-- `eventLockoutMinutes` wired to real existing AlphaRadar observations: fresh `macroShock` / `macro-shock` / high-urgency macro observations block Trading Rules auto entries. Check failure blocks entries fail-safe.
+- Live regime candle fetch failures block entries when quality gate is active.
+- Live RR gate no longer invents fallback TP/SL; if runtime TP/SL defaults unavailable, RR evaluates as 0.
+- UI exposes exactly the eight approved Stage-1 fields: `regimeTf`, `adxMin`, `minImpulseAtr`, `minExpectedRr`, `timeStopBars`, `riskPerTradePct`, `eventLockoutMinutes`, `portfolioGrossCap`.
+- `regimeTf` constrained to owner-approved HTF values (`1h` / `4h`) in normalization and UI.
+- `riskPerTradePct` wired into allocation sizing as opt-in (`0` default), capping notional by risk budget / SL distance.
+- `portfolioGrossCap` live guard added for auto-sized entry flows, auto-confirmed entries, and pending confirmations.
+- `timeStopBars` implemented in backtest and live TP-fill monitor: no TP1 follow-through after N entry-TF bars closes remaining position via reduce-only IOC, cancels managed TP/SL, and notifies `time_stop`.
+- `eventLockoutMinutes` wired to real existing AlphaRadar observations: fresh `macroShock` / `macro-shock` / high-urgency macro observations block Trading Rules auto entries. No fake state introduced.
 - No external trading engines added; no TA-Lib/Python dependency in live path.
 
-Manual architecture fixes applied:
-- Corrected ATR invariant for perfectly flat candles.
-- Corrected ADX seed indexing to first ADX at `2*period-1`.
-- Removed synthetic RR fallback.
-- Fixed fail-open paths in signal-quality and engulfing gates.
-- Kept additions as thin layers on existing Trading Rules / handoff architecture.
-
-Final verification:
+Final verification before push:
 - `git diff --check` passed for clean code/doc set excluding runtime noise.
 - `npm run check` passed.
 - `npm run invariants:trading-rules` passed: 61/61.
@@ -54,28 +52,9 @@ Final verification:
 - `npm run invariants:engulfing` passed: 38/38.
 - `npm run build` passed (`vite build`).
 
-Clean commit-set:
-- `.ops/ACTIVE_TASK.md`
-- `coinmaster/package.json`
-- `coinmaster/scripts/invariants-fvg.ts`
-- `coinmaster/scripts/invariants-trading-rules.ts`
-- `coinmaster/scripts/invariants-signal-quality.ts`
-- `coinmaster/src/core/backtestEngine.ts`
-- `coinmaster/src/core/fvgEvaluator.ts`
-- `coinmaster/src/core/signalQualityContext.ts`
-- `coinmaster/src/exchange/types.ts`
-- `coinmaster/src/server/index.ts`
-- `coinmaster/src/server/runtimeRules.ts`
-- `coinmaster/src/shared/dto.ts`
-- `coinmaster/src/shared/tradingRules.ts`
-- `coinmaster/src/web/pages/TradingRulesPage.tsx`
-- `coinmaster/docs/OSS_COMPONENT_ANALYSIS_2026-04-25.md`
-- `coinmaster/docs/TARGET_ARCHITECTURE_OWNER_DIRECTION_2026-04-25.md`
-- `docs/TARGET_ARCHITECTURE_2026.md`
-
-Excluded runtime noise:
+Runtime noise still intentionally uncommitted:
 - `coinmaster/data/db.json`
 - `prod-backups/dbshape_v1-pre-legacy-cleanup-20260424-160348.json`
 
-Blocked external completion:
-- `gh auth status` reports no logged-in GitHub host, so issue comment / Project status update to Done cannot be performed from this session until GitHub auth is restored.
+Next available task by Project order:
+- #62 [ARCH-02] Radar evidence/ingestion upgrade: feedparser, provenance, EvidenceBundle, NLP, dedupe, factor score
