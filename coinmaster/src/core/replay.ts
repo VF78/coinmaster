@@ -72,6 +72,7 @@ function buildReplayDb(depositUsd: number): DBShape {
     backtestRuns: [],
     optimizationResults: [],
     radarSignals: [],
+    alphaRadarObservations: [],
   };
 }
 

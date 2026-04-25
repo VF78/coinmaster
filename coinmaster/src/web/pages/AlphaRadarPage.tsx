@@ -1,325 +1,479 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type {
+  AlphaRadarIdea,
+  AlphaRadarLiveResponse,
+  AlphaRadarSettings,
+  AlphaRadarSnapshotResponse,
   RadarRuntimeSettings,
-  RadarSignalCandidateGroup,
   RadarSignalVerdict,
-  RadarSignalView,
   RadarSignalsResponse,
-  TradingCoinAllocation,
-  TradingRulesSettings,
+  TradingRulesSymbolsResponse,
 } from '../../shared/dto.js';
-import { getRadarRuntimeSettings, getRadarSignals, getTradingRules, saveRadarRuntimeSettings, friendlyErrorMessage } from '../lib/api';
+import {
+  friendlyErrorMessage,
+  getAlphaRadarIdeas,
+  getAlphaRadarLive,
+  getAlphaRadarObservations,
+  getAlphaRadarSettings,
+  getRadarRuntimeSettings,
+  getRadarSignals,
+  getTradingRuleSymbols,
+  saveAlphaRadarSettings,
+  saveRadarRuntimeSettings,
+} from '../lib/api';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
-import { DataTable } from '../components/DataTable';
-import { Stat } from '../components/Stat';
-import { formatDate, formatMoney, formatNumber } from '../lib/format';
+import { formatMoney } from '../lib/format';
 
-const REFRESH_MS = 5_000;
+const REFRESH_MS = 15_000;
 
 function formatAge(value?: string): string {
   const parsed = value ? Date.parse(value) : Number.NaN;
   if (!Number.isFinite(parsed)) return '—';
-
   const seconds = Math.max(0, Math.round((Date.now() - parsed) / 1000));
   if (seconds < 60) return `${seconds}s ago`;
   const minutes = Math.round(seconds / 60);
   if (minutes < 60) return `${minutes}m ago`;
   const hours = Math.round(minutes / 60);
   if (hours < 48) return `${hours}h ago`;
-  const days = Math.round(hours / 24);
-  return `${days}d ago`;
+  return `${Math.round(hours / 24)}d ago`;
 }
 
-function statusTone(status: RadarSignalView['status']): 'success' | 'danger' | 'neutral' {
-  if (status === 'auto_order_placed') return 'success';
-  if (status === 'rejected') return 'danger';
-  return 'neutral';
+function compactText(value: string, max = 120): string {
+  const text = value.replace(/\s+/g, ' ').trim();
+  if (text.length <= max) return text;
+  return `${text.slice(0, Math.max(0, max - 1)).trimEnd()}…`;
 }
 
-function verdictTone(verdict: RadarSignalVerdict): 'success' | 'danger' | 'neutral' {
+function toneFromVerdict(verdict: RadarSignalVerdict): 'success' | 'danger' | 'neutral' {
   if (verdict === 'actionable') return 'success';
   if (verdict === 'ignore') return 'danger';
   return 'neutral';
 }
 
-function sideTone(side: 'buy' | 'sell'): 'success' | 'danger' {
-  return side === 'buy' ? 'success' : 'danger';
+function toneFromHealth(status?: 'fresh' | 'stale' | 'inactive'): 'success' | 'danger' | 'neutral' {
+  if (status === 'fresh') return 'success';
+  if (status === 'stale') return 'danger';
+  return 'neutral';
 }
 
-function compactMeta(meta?: RadarSignalView['sourceMeta']): string {
-  return [meta?.connector, meta?.kind, meta?.channel].filter(Boolean).join(' · ') || '—';
+function toneFromIdea(verdict: AlphaRadarIdea['verdict']): 'success' | 'danger' | 'neutral' {
+  if (verdict === 'idea') return 'success';
+  if (verdict === 'cash') return 'danger';
+  return 'neutral';
 }
 
-function countRows<T extends { id: string }>(rows: Array<T>): Array<T> {
-  return rows;
+function toneFromSignalStatus(status: string): 'success' | 'danger' | 'neutral' {
+  if (status === 'auto_order_placed') return 'success';
+  if (status === 'rejected' || status === 'ignored') return 'danger';
+  return 'neutral';
 }
 
 export function AlphaRadarPage() {
-  const [runtime, setRuntime] = useState<RadarRuntimeSettings | null>(null);
-  const [rules, setRules] = useState<TradingRulesSettings | null>(null);
+  const [alphaSettings, setAlphaSettings] = useState<AlphaRadarSettings | null>(null);
+  const [handoffRuntime, setHandoffRuntime] = useState<RadarRuntimeSettings | null>(null);
+  const [snapshot, setSnapshot] = useState<AlphaRadarSnapshotResponse | null>(null);
+  const [live, setLive] = useState<AlphaRadarLiveResponse | null>(null);
+  const [ideas, setIdeas] = useState<AlphaRadarIdea[]>([]);
   const [signals, setSignals] = useState<RadarSignalsResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  const [tradingSymbols, setTradingSymbols] = useState<TradingRulesSymbolsResponse | null>(null);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [busyKey, setBusyKey] = useState<string | null>(null);
   const refreshInFlightRef = useRef<Promise<void> | null>(null);
-  const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function refresh() {
     if (refreshInFlightRef.current) return refreshInFlightRef.current;
-
     const run = (async () => {
-      const [runtimeResp, rulesResp, signalsResp] = await Promise.all([
+      const [
+        alphaSettingsRes,
+        handoffRuntimeRes,
+        snapshotRes,
+        liveRes,
+        ideasRes,
+        signalsRes,
+        tradingSymbolsRes,
+      ] = await Promise.all([
+        getAlphaRadarSettings().catch(() => null),
         getRadarRuntimeSettings().catch(() => null),
-        getTradingRules().catch(() => null),
-        getRadarSignals(200).catch(() => null),
+        getAlphaRadarObservations(8, 'recent').catch(() => null),
+        getAlphaRadarLive().catch(() => null),
+        getAlphaRadarIdeas().catch(() => null),
+        getRadarSignals(20).catch(() => null),
+        getTradingRuleSymbols().catch(() => null),
       ]);
 
-      if (runtimeResp?.runtime) setRuntime(runtimeResp.runtime);
-      if (rulesResp?.rules) setRules(rulesResp.rules);
-      if (signalsResp) setSignals(signalsResp);
-      if (isLoading) setIsLoading(false);
+      if (alphaSettingsRes?.settings) setAlphaSettings(alphaSettingsRes.settings);
+      if (handoffRuntimeRes?.runtime) setHandoffRuntime(handoffRuntimeRes.runtime);
+      if (snapshotRes) setSnapshot(snapshotRes);
+      if (liveRes) setLive(liveRes);
+      if (ideasRes?.ideas) setIdeas(ideasRes.ideas);
+      if (signalsRes) setSignals(signalsRes);
+      if (tradingSymbolsRes) setTradingSymbols(tradingSymbolsRes);
+      setIsLoading(false);
     })().catch((error) => {
-      if (isLoading) setIsLoading(false);
+      setIsLoading(false);
       setMessage(`Radar refresh failed: ${friendlyErrorMessage(error, 'Could not refresh Radar.')}`);
     });
-
     refreshInFlightRef.current = run.finally(() => {
       refreshInFlightRef.current = null;
     });
-
     return refreshInFlightRef.current;
   }
 
   useEffect(() => {
     void refresh();
-    refreshTimerRef.current = setInterval(() => {
+    const timer = setInterval(() => {
       void refresh();
     }, REFRESH_MS);
-    return () => {
-      if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
-    };
+    return () => clearInterval(timer);
   }, []);
 
-  async function updateRuntime(next: Partial<RadarRuntimeSettings>) {
-    if (!runtime) return;
-    setIsSaving(true);
-    setMessage('Saving Radar runtime…');
+  async function toggleRadar() {
+    if (!alphaSettings || !handoffRuntime) return;
+    const nextEnabled = !(alphaSettings.enabled && handoffRuntime.enabled);
+    setBusyKey('radar-toggle');
     try {
-      const result = await saveRadarRuntimeSettings(next);
-      setRuntime(result.runtime);
-      setMessage('Radar runtime saved.');
+      const [alphaResult, handoffResult] = await Promise.all([
+        saveAlphaRadarSettings({ ...alphaSettings, enabled: nextEnabled }),
+        saveRadarRuntimeSettings({ enabled: nextEnabled }),
+      ]);
+      setAlphaSettings(alphaResult.settings);
+      setHandoffRuntime(handoffResult.runtime);
+      setMessage(nextEnabled ? 'Radar enabled.' : 'Radar disabled.');
       await refresh();
     } catch (error) {
-      setMessage(`Save failed: ${friendlyErrorMessage(error, 'Could not save Radar runtime.')}`);
+      setMessage(`Save failed: ${friendlyErrorMessage(error, 'Could not change Radar state.')}`);
     } finally {
-      setIsSaving(false);
+      setBusyKey(null);
     }
   }
 
-  const monitoredCoins = useMemo(() => (rules?.coins ?? []).filter((coin) => coin.enabled), [rules]);
-  const signalGroups = signals?.summary.candidateGroups ?? [];
-  const rawSignals = signals?.signals ?? [];
-  const activeSignals = useMemo(
-    () => rawSignals.filter((signal) => signal.status === 'pending_confirmation' || signal.status === 'auto_order_placed'),
-    [rawSignals],
+  async function toggleAutoConfirm() {
+    if (!handoffRuntime) return;
+    setBusyKey('auto-confirm');
+    try {
+      const result = await saveRadarRuntimeSettings({ autoConfirm: !handoffRuntime.autoConfirm });
+      setHandoffRuntime(result.runtime);
+      setMessage(result.runtime.autoConfirm ? 'Auto confirmation enabled.' : 'Manual confirmation enabled.');
+      await refresh();
+    } catch (error) {
+      setMessage(`Save failed: ${friendlyErrorMessage(error, 'Could not change confirmation mode.')}`);
+    } finally {
+      setBusyKey(null);
+    }
+  }
+
+  const radarEnabled = Boolean(alphaSettings?.enabled && handoffRuntime?.enabled);
+  const collectors = live?.monitoring.collectors ?? [];
+  const connectors = useMemo(
+    () => Object.entries(alphaSettings?.connectors ?? {}).map(([key, value]) => ({ key, value })),
+    [alphaSettings],
   );
+  const trendItems = useMemo(() => (snapshot?.observations ?? []).slice(0, 3), [snapshot]);
+  const activeIdeas = useMemo(() => ideas.filter((item) => item.verdict !== 'cash'), [ideas]);
+  const liveIdeas = useMemo(() => activeIdeas.slice(0, 3), [activeIdeas]);
+  const tradableSignals = useMemo(
+    () => (signals?.signals ?? []).filter((item) => item.status === 'pending_confirmation' || item.status === 'auto_order_placed').slice(0, 4),
+    [signals],
+  );
+  const handoffHistory = useMemo(() => (signals?.signals ?? []).slice(0, 6), [signals]);
+  const topAssets = useMemo(() => (snapshot?.summary.topAssets ?? []).slice(0, 8), [snapshot]);
+  const monitoringOnlyAssets = live?.monitoring.monitoringOnlyAssets ?? snapshot?.summary.monitoringOnlyAssets ?? [];
+  const tradableAssets = tradingSymbols?.symbols ?? [];
+  const sourceHealth = useMemo(() => (live?.monitoring.sourceHealth ?? []).slice(0, 4), [live]);
+  const dedupedMergedCount = useMemo(() => {
+    const observationMerges = (snapshot?.observations ?? []).reduce((acc, item) => {
+      const merged = Number(item.metadata?.dedupeMergedCount ?? 0);
+      return acc + (Number.isFinite(merged) && merged > 0 ? merged : 0);
+    }, 0);
+    const duplicateSignals = (signals?.signals ?? []).filter((item) => item.duplicateOf || item.error === 'duplicate_signal').length;
+    return observationMerges + duplicateSignals;
+  }, [signals, snapshot]);
+  const handedOffCount = (signals?.summary.pendingConfirmation ?? 0) + (signals?.summary.autoOrderPlaced ?? 0);
+  const rejectedHandoffCount = signals?.summary.rejected ?? 0;
 
-  const monitoredRows = useMemo(() => {
-    return monitoredCoins.map((coin: TradingCoinAllocation) => {
-      const coinSignals = rawSignals.filter((signal) => signal.symbol === coin.symbol);
-      const coinGroups = signalGroups.filter((group) => group.symbol === coin.symbol);
-      const best = coinGroups.sort((a, b) => b.bestScore - a.bestScore || b.signalCount - a.signalCount)[0];
-      return {
-        id: coin.symbol,
-        symbol: coin.symbol,
-        assetClass: coin.assetClass ?? 'crypto',
-        allocationPct: coin.pct,
-        signalCount: coinSignals.length,
-        bestScore: best?.bestScore,
-        bestVerdict: best?.verdict,
-        lastSeenAt: best?.lastSeenAt,
-        sideMix: [...new Set(coinSignals.map((signal) => signal.side))].join(', ') || '—',
-      };
-    });
-  }, [monitoredCoins, rawSignals, signalGroups]);
-
-  const sourceRows = useMemo(() => countRows((signals?.summary.qualityBySource ?? []).map((row) => ({ id: row.source, ...row }))), [signals]);
-  const connectorRows = useMemo(() => countRows((signals?.summary.qualityByConnector ?? []).map((row) => ({ id: row.connector, ...row }))), [signals]);
-
-  const latestSignalRows = useMemo(() => rawSignals.slice(0, 20).map((row) => ({
-    ...row,
-    id: row.id,
-  })), [rawSignals]);
-
-  const runtimeEnabled = runtime?.enabled ?? false;
-  const runtimeAutoConfirm = runtime?.autoConfirm ?? false;
-
-  if (isLoading && !runtime && !rules && !signals) {
-    return <p className="muted">Loading Alpha Radar…</p>;
+  if (isLoading && !live && !snapshot && !signals) {
+    return <p className="muted">Loading Radar…</p>;
   }
 
   return (
-    <main className="terminal-layout radar-layout">
+    <main className="terminal-layout radar-simple-page">
       <Card
-        title="Alpha Radar runtime"
-        className="terminal-card full-width"
-        actions={
-          <div className="actions-row">
-            <Badge tone={runtimeEnabled ? 'success' : 'danger'}>{runtimeEnabled ? 'ENABLED' : 'PAUSED'}</Badge>
-            <Badge tone={runtimeAutoConfirm ? 'success' : 'neutral'}>{runtimeAutoConfirm ? 'AUTO-CONFIRM' : 'MANUAL REVIEW'}</Badge>
-          </div>
-        }
+        title="Radar status"
+        className="terminal-card radar-simple-card"
+        actions={<Badge tone={radarEnabled ? 'success' : 'danger'}>{radarEnabled ? 'LIVE' : 'OFF'}</Badge>}
       >
-        <div className="stats-grid" style={{ marginBottom: '0.85rem' }}>
-          <Stat label="Ingested signals" value={String(signals?.summary.total ?? 0)} />
-          <Stat label="Active groups" value={String(signalGroups.length)} />
-          <Stat label="Monitored assets" value={String(monitoredCoins.length)} />
-          <Stat label="Pending handoff" value={String(activeSignals.length)} />
+        <div className="radar-simple-stack">
+          <div className="radar-simple-row">
+            <div>
+              <p className="muted radar-simple-label">Observation plane</p>
+              <strong>{alphaSettings?.enabled ? 'Enabled' : 'Disabled'}</strong>
+            </div>
+            <div>
+              <p className="muted radar-simple-label">Handoff</p>
+              <strong>{handoffRuntime?.enabled ? 'Enabled' : 'Disabled'}</strong>
+            </div>
+            <div>
+              <p className="muted radar-simple-label">Confirm mode</p>
+              <strong>{handoffRuntime?.autoConfirm ? 'Auto' : 'Manual'}</strong>
+            </div>
+          </div>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Connectors</h3>
+              <span className="muted">{connectors.length}</span>
+            </div>
+            <div className="radar-compact-list">
+              {connectors.map(({ key, value }) => (
+                <article key={key} className="radar-compact-item">
+                  <div className="radar-compact-item__top">
+                    <strong>{key}</strong>
+                    <Badge tone={value.state?.status === 'connected' ? 'success' : value.enabled ? 'neutral' : 'danger'}>
+                      {value.state?.status ?? (value.enabled ? 'enabled' : 'off')}
+                    </Badge>
+                  </div>
+                  <p className="muted">{compactText(String(value.state?.message ?? value.state?.connectionLabel ?? value.sourceLabel ?? 'No connector note'), 88)}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Collectors</h3>
+            </div>
+            <div className="radar-compact-list radar-compact-list--tight">
+              {collectors.map((collector) => (
+                <article key={collector.plane} className="radar-inline-stat">
+                  <div>
+                    <strong>{collector.label}</strong>
+                    <p className="muted">{collector.lastCompletedAt ? formatAge(collector.lastCompletedAt) : 'No completed run yet'}</p>
+                  </div>
+                  <Badge tone={collector.lastStatus === 'ok' ? 'success' : collector.lastStatus === 'error' ? 'danger' : 'neutral'}>
+                    {collector.busy ? 'running' : (collector.lastStatus ?? 'idle')}
+                  </Badge>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Tradable assets</h3>
+              <span className="muted">{tradableAssets.length}</span>
+            </div>
+            <div className="radar-chip-grid">
+              {tradableAssets.length ? tradableAssets.slice(0, 10).map((asset) => <span key={asset} className="radar-chip">{asset}</span>) : <span className="muted">No tradable assets configured.</span>}
+            </div>
+          </section>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Monitoring universe</h3>
+              <span className="muted">{monitoringOnlyAssets.length}</span>
+            </div>
+            <div className="radar-chip-grid">
+              {monitoringOnlyAssets.length ? monitoringOnlyAssets.slice(0, 10).map((asset) => <span key={asset} className="radar-chip radar-chip--muted">{asset}</span>) : <span className="muted">No monitoring-only assets.</span>}
+            </div>
+          </section>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Freshness</h3>
+            </div>
+            <div className="radar-compact-list radar-compact-list--tight">
+              {sourceHealth.map((item) => (
+                <article key={item.source} className="radar-inline-stat">
+                  <div>
+                    <strong>{compactText(item.source, 24)}</strong>
+                    <p className="muted">{item.lastObservedAt ? formatAge(item.lastObservedAt) : '—'}</p>
+                  </div>
+                  <Badge tone={toneFromHealth(item.status)}>{item.status}</Badge>
+                </article>
+              ))}
+            </div>
+          </section>
         </div>
-
-        <p className="muted" style={{ marginBottom: '0.75rem' }}>
-          Upstream-only Radar: signals enter through the shared handoff flow, monitored symbols come from Trading Rules, and auto-confirm here only affects Radar ingest.
-        </p>
-
-        <div className="actions-row" style={{ marginBottom: '0.6rem' }}>
-          <Button
-            variant={runtimeEnabled ? 'secondary' : 'primary'}
-            onClick={() => { void updateRuntime({ enabled: !runtimeEnabled }); }}
-            disabled={isSaving || !runtime}
-          >
-            {runtimeEnabled ? 'Pause Radar' : 'Resume Radar'}
-          </Button>
-          <Button
-            variant={runtimeAutoConfirm ? 'danger' : 'primary'}
-            onClick={() => { void updateRuntime({ autoConfirm: !runtimeAutoConfirm }); }}
-            disabled={isSaving || !runtime}
-          >
-            {runtimeAutoConfirm ? 'Disable auto-confirm' : 'Enable auto-confirm'}
-          </Button>
-        </div>
-
-        {message ? <p className="muted radar-note">{message}</p> : null}
-        <p className="muted radar-note">
-          Runtime defaults: enabled on, auto-confirm off. Dedup window: 5m. History cap: 500.
-        </p>
       </Card>
 
-      <div className="radar-grid">
-        <Card title="Monitored assets" className="terminal-card">
-          <DataTable
-            rows={monitoredRows}
-            mobileTitle={(row) => row.symbol}
-            mobileSubtitle={(row) => `${row.assetClass} · ${row.signalCount} signal groups`}
-            emptyText="No enabled assets in Trading Rules."
-            columns={[
-              { key: 'symbol', header: 'Symbol', render: (row) => <strong>{row.symbol}</strong> },
-              { key: 'assetClass', header: 'Asset class', render: (row) => row.assetClass },
-              { key: 'allocationPct', header: 'Allocation', render: (row) => `${formatNumber(row.allocationPct)}%` },
-              { key: 'signalCount', header: 'Radar groups', render: (row) => row.signalCount ? String(row.signalCount) : '—' },
-              { key: 'bestScore', header: 'Best score', render: (row) => row.bestScore !== undefined ? String(row.bestScore) : '—' },
-              { key: 'bestVerdict', header: 'Best verdict', render: (row) => row.bestVerdict ? <Badge tone={verdictTone(row.bestVerdict)}>{row.bestVerdict}</Badge> : '—' },
-              { key: 'lastSeenAt', header: 'Last seen', render: (row) => row.lastSeenAt ? formatAge(row.lastSeenAt) : '—' },
-              { key: 'sideMix', header: 'Sides', render: (row) => row.sideMix },
-            ]}
-          />
-        </Card>
+      <Card title="Live feed" className="terminal-card radar-simple-card radar-simple-card--feed">
+        <div className="radar-simple-stack">
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Trending now</h3>
+              <span className="muted">{trendItems.length}</span>
+            </div>
+            <div className="radar-feed-list">
+              {trendItems.length ? trendItems.map((item) => (
+                <article key={item.id} className="radar-feed-item">
+                  <div className="radar-feed-item__top">
+                    <strong>{compactText(item.title, 76)}</strong>
+                    <span className="muted">{formatAge(item.observedAt)}</span>
+                  </div>
+                  <p className="muted">{item.assetTags.slice(0, 4).join(', ') || item.source}</p>
+                </article>
+              )) : <p className="muted">No fresh trend items yet.</p>}
+            </div>
+          </section>
 
-        <Card title="Current signal groups" className="terminal-card">
-          <DataTable
-            rows={signalGroups.map((row) => ({ ...row, id: `${row.symbol}:${row.side}` }))}
-            mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
-            mobileSubtitle={(row) => row.verdictReason ?? '—'}
-            emptyText="No signal groups yet."
-            columns={[
-              { key: 'symbol', header: 'Symbol', render: (row) => <strong>{row.symbol}</strong> },
-              { key: 'side', header: 'Side', render: (row) => <Badge tone={sideTone(row.side)}>{row.side}</Badge> },
-              { key: 'signalCount', header: 'Signals', render: (row) => String(row.signalCount) },
-              { key: 'bestScore', header: 'Best score', render: (row) => String(row.bestScore) },
-              { key: 'verdict', header: 'Verdict', render: (row) => <Badge tone={verdictTone(row.verdict)}>{row.verdictLabel}</Badge> },
-              { key: 'sources', header: 'Sources', render: (row) => row.sources.join(', ') || '—' },
-              { key: 'lastSeenAt', header: 'Last seen', render: (row) => row.lastSeenAt ? formatDate(row.lastSeenAt) : '—' },
-            ]}
-          />
-        </Card>
-      </div>
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>In work</h3>
+              <span className="muted">{activeIdeas.length}</span>
+            </div>
+            <div className="radar-feed-list">
+              {liveIdeas.length ? liveIdeas.map((idea) => (
+                <article key={idea.id} className="radar-feed-item">
+                  <div className="radar-feed-item__top">
+                    <div className="stack-row">
+                      <strong>{idea.symbol ?? 'CASH'}</strong>
+                      <Badge tone={toneFromIdea(idea.verdict)}>{idea.signalFamily}</Badge>
+                    </div>
+                    <span className="muted">{idea.score.toFixed(2)}</span>
+                  </div>
+                  <p>{compactText(idea.actionability.summary, 96)}</p>
+                  <p className="muted">{idea.trigger ? `Trigger ${formatMoney(idea.trigger)}` : compactText(idea.whyNow[0] ?? idea.title, 96)}</p>
+                </article>
+              )) : <p className="muted">No active ideas yet.</p>}
+            </div>
+          </section>
 
-      <Card title="Live feed" className="terminal-card full-width">
-        <div className="radar-feed-strip" aria-label="Recent Radar feed items">
-          {latestSignalRows.slice(0, 5).map((row) => (
-            <article
-              key={row.id}
-              className={`radar-feed-tile ${Date.now() - Date.parse(row.updatedAt || row.createdAt) <= 10 * 60_000 ? 'radar-feed-tile--fresh' : ''}`}
-            >
-              <span className="radar-feed-tile__dot" />
-              <div className="radar-feed-tile__body">
-                <div className="radar-feed-tile__top">
-                  <strong>{row.symbol}</strong>
-                  <Badge tone={statusTone(row.status)}>{row.status}</Badge>
-                  <span className="muted">{formatAge(row.updatedAt || row.createdAt)}</span>
-                </div>
-                <p>{row.source} · {row.reason}</p>
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Tradable now</h3>
+              <span className="muted">{tradableSignals.length}</span>
+            </div>
+            <div className="radar-feed-list">
+              {tradableSignals.length ? tradableSignals.map((signal) => (
+                <article key={signal.id} className="radar-feed-item">
+                  <div className="radar-feed-item__top">
+                    <div className="stack-row">
+                      <strong>{signal.symbol} {signal.side.toUpperCase()}</strong>
+                      <Badge tone={signal.status === 'auto_order_placed' ? 'success' : 'neutral'}>{signal.status}</Badge>
+                    </div>
+                    <span className="muted">{formatAge(signal.updatedAt || signal.createdAt)}</span>
+                  </div>
+                  <p>{compactText(signal.reason, 96)}</p>
+                  <p className="muted">{signal.source}</p>
+                </article>
+              )) : <p className="muted">No pending or confirmed handoff signals right now.</p>}
+            </div>
+          </section>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Funnel</h3>
+              <span className="muted">source → handoff</span>
+            </div>
+            <div className="radar-simple-row radar-simple-row--compact radar-simple-row--funnel">
+              <div>
+                <p className="muted radar-simple-label">Collected</p>
+                <strong>{snapshot?.summary.total ?? 0}</strong>
               </div>
-            </article>
-          ))}
-        </div>
+              <div>
+                <p className="muted radar-simple-label">Deduped</p>
+                <strong>{dedupedMergedCount}</strong>
+              </div>
+              <div>
+                <p className="muted radar-simple-label">Promoted</p>
+                <strong>{activeIdeas.length}</strong>
+              </div>
+              <div>
+                <p className="muted radar-simple-label">Handed off</p>
+                <strong>{handedOffCount}</strong>
+              </div>
+              <div>
+                <p className="muted radar-simple-label">Rejected</p>
+                <strong>{rejectedHandoffCount}</strong>
+              </div>
+            </div>
 
-        <DataTable
-          rows={latestSignalRows}
-          mobileTitle={(row) => `${row.symbol} ${row.side.toUpperCase()}`}
-          mobileSubtitle={(row) => `${row.source} · ${row.verdictReason ?? '—'}`}
-          emptyText="No signals have been ingested yet."
-          columns={[
-            { key: 'createdAt', header: 'Seen', render: (row) => <span className="radar-feed__seen">{formatAge(row.updatedAt || row.createdAt)}</span> },
-            { key: 'symbol', header: 'Symbol', render: (row) => <strong>{row.symbol}</strong> },
-            { key: 'side', header: 'Side', render: (row) => <Badge tone={sideTone(row.side)}>{row.side}</Badge> },
-            { key: 'source', header: 'Source', render: (row) => row.source },
-            { key: 'meta', header: 'Meta', render: (row) => <span className="muted">{compactMeta(row.sourceMeta)}</span> },
-            { key: 'status', header: 'Status', render: (row) => <Badge tone={statusTone(row.status)}>{row.status}</Badge> },
-            { key: 'verdict', header: 'Verdict', render: (row) => <Badge tone={verdictTone(row.verdict)}>{row.verdict}</Badge> },
-            { key: 'score', header: 'Score', render: (row) => String(row.candidateScore) },
-            { key: 'price', header: 'Price', render: (row) => formatMoney(row.price) },
-            { key: 'reason', header: 'Reason', render: (row) => row.reason },
-          ]}
-        />
+            <div className="radar-chip-grid">
+              {topAssets.length ? topAssets.map((item) => (
+                <span key={item.asset} className="radar-chip">{item.asset} · {item.count}</span>
+              )) : <span className="muted">No active asset concentration yet.</span>}
+            </div>
+          </section>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Handoff history</h3>
+              <span className="muted">{signals?.summary.total ?? 0}</span>
+            </div>
+            <div className="radar-feed-list">
+              {handoffHistory.length ? handoffHistory.map((signal) => (
+                <article key={signal.id} className="radar-feed-item">
+                  <div className="radar-feed-item__top">
+                    <div className="stack-row">
+                      <strong>{signal.symbol} {signal.side.toUpperCase()}</strong>
+                      <Badge tone={toneFromSignalStatus(signal.status)}>{signal.status}</Badge>
+                    </div>
+                    <span className="muted">{formatAge(signal.updatedAt || signal.createdAt)}</span>
+                  </div>
+                  <p>{compactText(signal.reason, 96)}</p>
+                  <p className="muted">
+                    {signal.error ? `Reason: ${signal.error}` : signal.orderId ? `Order ${signal.orderId}` : signal.pendingId ? `Pending ${signal.pendingId}` : signal.verdictReason ?? signal.source}
+                  </p>
+                </article>
+              )) : <p className="muted">No handoff attempts yet.</p>}
+            </div>
+          </section>
+        </div>
       </Card>
 
-      <div className="radar-grid">
-        <Card title="Top sources" className="terminal-card">
-          <DataTable
-            rows={sourceRows}
-            mobileTitle={(row) => row.source}
-            mobileSubtitle={(row) => `${row.total} signals`}
-            emptyText="No source data yet."
-            columns={[
-              { key: 'source', header: 'Source', render: (row) => <strong>{row.source}</strong> },
-              { key: 'count', header: 'Count', render: (row) => String(row.total) },
-              { key: 'pendingConfirmation', header: 'Pending', render: (row) => String(row.pendingConfirmation) },
-              { key: 'autoOrderPlaced', header: 'Auto', render: (row) => String(row.autoOrderPlaced) },
-              { key: 'rejected', header: 'Rejected', render: (row) => String(row.rejected) },
-              { key: 'ignored', header: 'Ignored', render: (row) => String(row.ignored) },
-            ]}
-          />
-        </Card>
+      <Card title="Settings" className="terminal-card radar-simple-card">
+        <div className="radar-simple-stack">
+          <section className="radar-setting-block">
+            <div>
+              <h3>Radar master switch</h3>
+              <p className="muted">Single on/off control for monitoring + handoff.</p>
+            </div>
+            <Button
+              variant={radarEnabled ? 'danger' : 'primary'}
+              onClick={() => { void toggleRadar(); }}
+              disabled={busyKey !== null || !alphaSettings || !handoffRuntime}
+              fullWidth
+            >
+              {radarEnabled ? 'Turn radar off' : 'Turn radar on'}
+            </Button>
+          </section>
 
-        <Card title="Top connectors" className="terminal-card">
-          <DataTable
-            rows={connectorRows}
-            mobileTitle={(row) => row.connector}
-            mobileSubtitle={(row) => `${row.total} signals`}
-            emptyText="No connector data yet."
-            columns={[
-              { key: 'connector', header: 'Connector', render: (row) => <strong>{row.connector}</strong> },
-              { key: 'count', header: 'Count', render: (row) => String(row.total) },
-              { key: 'pendingConfirmation', header: 'Pending', render: (row) => String(row.pendingConfirmation) },
-              { key: 'autoOrderPlaced', header: 'Auto', render: (row) => String(row.autoOrderPlaced) },
-              { key: 'rejected', header: 'Rejected', render: (row) => String(row.rejected) },
-              { key: 'ignored', header: 'Ignored', render: (row) => String(row.ignored) },
-            ]}
-          />
-        </Card>
-      </div>
+          <section className="radar-setting-block">
+            <div>
+              <h3>Deal confirmation</h3>
+              <p className="muted">Choose automatic or manual confirmation for tradable handoff signals.</p>
+            </div>
+            <Button
+              variant={handoffRuntime?.autoConfirm ? 'danger' : 'primary'}
+              onClick={() => { void toggleAutoConfirm(); }}
+              disabled={busyKey !== null || !handoffRuntime}
+              fullWidth
+            >
+              {handoffRuntime?.autoConfirm ? 'Switch to manual confirmation' : 'Switch to auto confirmation'}
+            </Button>
+          </section>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Current mode</h3>
+            </div>
+            <div className="radar-chip-grid">
+              <span className={`radar-chip ${radarEnabled ? 'radar-chip--success' : 'radar-chip--danger'}`}>
+                {radarEnabled ? 'Radar active' : 'Radar stopped'}
+              </span>
+              <span className={`radar-chip ${handoffRuntime?.autoConfirm ? 'radar-chip--success' : 'radar-chip--muted'}`}>
+                {handoffRuntime?.autoConfirm ? 'Auto confirm' : 'Manual confirm'}
+              </span>
+              <span className="radar-chip radar-chip--muted">Refresh {Math.round(REFRESH_MS / 1000)}s</span>
+            </div>
+          </section>
+
+          {message ? <p className="muted radar-note">{message}</p> : null}
+        </div>
+      </Card>
     </main>
   );
 }

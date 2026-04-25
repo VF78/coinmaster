@@ -1,214 +1,159 @@
 # Radar Runtime
 
-This document describes the **actual** implemented Radar runtime — not aspirational
-connector infrastructure. If Radar behavior here disagrees with code, treat the code
-as authoritative and file a doc fix.
+This document describes the implemented Radar runtime. If code and this document diverge, treat code as authoritative and fix the doc in the same change.
 
-## Scope
+## End-to-end flow
 
-Radar is an **owner-only, upstream-only signal intake**. It accepts pre-computed
-trade candidates (symbol, side, price, reason) from external sources the owner
-chooses to run — Telegram scrapers, GPTs, third-party alert feeds, custom
-notebooks — and hands each accepted signal to the **single unified trading
-engine** for sizing, risk gating, and order placement. Radar does **not** run
-its own market-data connectors, indicator logic, or a second execution path.
-
-What Radar does:
-
-- Accept `RadarSignalIngestPayload` via `POST /api/radar/signals` (single) and
-  `POST /api/radar/signals/batch` (≤ 50 items).
-- Deduplicate within a 5-minute window (see `RADAR_SIGNAL_DEDUP_MS`).
-- Enforce monitored-symbol scope using **Trading Rules enabled coins** only.
-- Hand off accepted signals to `handoffStrategyEntrySignal` with
-  `strategy='radar'`, exactly like the engulfing and FVG monitors.
-- Score and classify signals deterministically for diagnostics and dashboards.
-- Return enriched signals plus summary rollups from `GET /api/radar/signals`.
-- Expose Radar runtime settings via `GET/PUT /api/settings/radar`:
-  `enabled` pauses ingest/handoff; `autoConfirm` only affects Radar signals.
-
-What Radar does **not** do:
-
-- No internal upstream connectors (no internal WebSocket clients, no scheduled
-  scrapers, no reconnect/backoff loops for external feeds). The ingest surface
-  is exclusively the two POST endpoints above.
-- No separate execution engine. Orders flow through the same
-  `handoffStrategyEntrySignal` → risk gates → `exchange.placeLimitOrder` path
-  used by the other strategies.
-- No new persistence. Signals are stored in the shared lowdb `radarSignals`
-  array (see `RADAR_SIGNAL_HISTORY_LIMIT`).
-- No asset-class gating of monitored symbols. Asset class influences **verdict
-  thresholds only** (see below).
-
-## Ingest
-
-### Endpoints
-
-| Method | Path                          | Auth        | Body                                    |
-| ------ | ----------------------------- | ----------- | --------------------------------------- |
-| POST   | `/api/radar/signals`          | `ownerAuth` | `RadarSignalIngestPayload`              |
-| POST   | `/api/radar/signals/batch`    | `ownerAuth` | `{ signals: RadarSignalIngestPayload[] }` (max 50) |
-| GET    | `/api/radar/signals`          | `ownerAuth` | query: `limit`, `status`, `symbol`, `connector`, `kind`, `channel`, `source` |
-
-Payload fields: `symbol`, `side` (`buy`/`sell`), `price` (> 0), `reason`
-(required, ≤ 280 chars), `timeframe` (optional — falls back to `15m`),
-`source` (free-form label), optional `sourceMeta` with `connector`, `kind`,
-`channel`, `externalId`, `messageTs`.
-
-Any payload missing `symbol`, `side`, `source`, `reason`, or a finite positive
-`price` is rejected with `400 invalid_radar_signal_payload` before hitting the
-engine.
-
-### Deduplication
-
-A signal is considered a duplicate if it matches an existing record by the
-dedupe key (`symbol|side|timeframe|source|reason|sourceMeta`) and the older
-record is within `RADAR_SIGNAL_DEDUP_MS` (5 min). Duplicates are persisted
-with `status='ignored'`, `error='duplicate_signal'`, and a `duplicateOf` back-
-reference. No handoff runs for duplicates.
-
-### Monitored-symbol scope
-
-Before handoff, `isSymbolMonitored(effectiveRules.raw, symbol)` enforces that
-the incoming symbol is in the **enabled coins list** of the current Trading
-Rules snapshot. Signals for symbols outside that set are rejected with
-`status='rejected'`, `error='symbol_not_monitored'`. The enabled set is
-authoritative — asset class is not used here.
-
-### Handoff to the unified engine
-
-Accepted signals call `handoffStrategyEntrySignal` with `strategy='radar'`
-and `component='radar-ingest'`. Manual vs. auto-confirm is taken from
-`effectiveRules.raw?.autoConfirm`:
-
-- **Manual** → signal queued via `queuePendingConfirmation` → owner confirms in
-  the dashboard → same pending-confirmation flow shared with engulfing/FVG.
-- **Auto-confirm** → sizing computed via `computeAllocationSize`, risk gates
-  re-evaluated via `evaluateRiskGates`, `exchange.placeLimitOrder` invoked,
-  TP/SL trigger orders placed best-effort, Telegram trade-open notify sent.
-
-Outcome is written back to the `RadarSignalRecord` as one of:
-
-| status                  | meaning                                                     |
-| ----------------------- | ----------------------------------------------------------- |
-| `pending_confirmation`  | queued for owner confirmation                               |
-| `auto_order_placed`     | auto-confirm order accepted by exchange                     |
-| `rejected`              | blocked by sizing, risk gate, monitored-symbol scope, etc.  |
-| `ignored`               | invalid sizing, duplicate, or monitor-path skip             |
-
-## Scoring, verdicts, and summaries
-
-`src/server/radarReadModel.ts` is pure-function deterministic logic:
-`enrichRadarSignal` computes `candidateScore` and `verdict` for each record;
-`buildRadarSignalsSummary` produces the rollup returned alongside the list.
-
-### Candidate score (0–100)
-
-```
-score = statusWeight + freshnessScore + sourceMetaRichness − duplicatePenalty
-clamp(score, 0, 100)
+```text
+source connectors / feeds / market monitors
+  -> Alpha Radar observations
+  -> dedupe + source health + freshness state
+  -> idea promotion / watch-only classification
+  -> confirmed tradable candidate
+  -> POST /api/radar/signals or internal Radar handoff surface
+  -> unified entry handoff (`handoffStrategyEntrySignal`)
+  -> pending confirmation or auto-order via the single trading engine
 ```
 
-- **statusWeight:** `auto_order_placed=40`, `pending_confirmation=30`,
-  `ignored=10`, `rejected=5`.
-- **freshnessScore:** `≤15m→30`, `≤1h→20`, `≤4h→10`, else `0` — based on
-  `updatedAt ?? createdAt`.
-- **sourceMetaRichness:** 2 points per populated meta field (connector, kind,
-  channel, externalId, messageTs), capped at 10.
-- **duplicatePenalty:** 20 if the record is marked `duplicate_signal` or has a
-  `duplicateOf` back-reference.
+There are two deliberately separate planes:
 
-### Asset-class verdict thresholds (diagnostics only)
+- **Source Radar / Alpha Radar** collects observations broadly from market snapshots, configured feeds, and social/connectors. It owns source health, freshness, live ideas, and monitoring-only context.
+- **Execution Radar ingest** accepts only concrete trade candidates and hands them to the existing unified trade flow. It does not size, risk-gate, or place orders itself.
 
-Verdict is derived from the score and the inferred asset class of the symbol
-(`inferAssetClassFromSymbol`). Thresholds are:
+The handoff boundary is strict: Source Radar may display broad context, but only enabled Trading Rules symbols can become tradable handoff signals.
 
-| asset class  | actionable | bias | watch |
-| ------------ | ---------- | ---- | ----- |
-| crypto       | 70         | 45   | 20    |
-| commodity    | 80         | 55   | 30    |
-| other        | falls back to crypto defaults            |
+## Source plane
 
-**Important:** these thresholds shape the **verdict label and diagnostic
-summary rollups only**. They do **not** gate which symbols are monitored or
-which signals get handed to the engine — that is controlled exclusively by
-Trading Rules enabled coins.
+Source collection is repo-owned and starts from `startAlphaRadarMonitoringPlane()` during server boot. It currently has two collector loops:
 
-Duplicate, rejected records, or scores below the `watch` threshold return
-verdict `ignore`. `auto_order_placed` short-circuits to `actionable`.
+- **Market snapshot**: builds observations from live market ticks plus configured macro/proxy/equity monitoring assets.
+- **External feeds/connectors**: polls configured RSS/JSON/GDELT feeds and connector-backed social sources where configured/authenticated.
 
-### Summary rollups
+Runtime state is exposed through:
 
-`buildRadarSignalsSummary` groups the enriched records into:
+- `GET /api/settings/alpha-radar`
+- `PUT /api/settings/alpha-radar`
+- `GET /api/alpha-radar/live`
+- `GET /api/alpha-radar/observations`
+- `GET /api/alpha-radar/ideas`
+- `POST /api/alpha-radar/collect/market-snapshot`
+- `POST /api/alpha-radar/collect/external-feeds`
 
-- `bySource`, `byConnector`, `byKind`, `byChannel` — raw counts.
-- `qualityBySource`, `qualityByConnector`, `qualityByAsset`,
-  `qualityByVerdict`, `qualityByFamily` — outcome buckets
-  (`pendingConfirmation`, `autoOrderPlaced`, `rejected`, `ignored`,
-  `duplicates`, `lastSeenAt`).
-- `candidateGroups` — top symbols×side ranked by best score, used to drive the
-  Radar dashboard view.
+Health/freshness surface includes collector status, last run, last success/error, expected source health, stale/inactive/fresh state, and connector state. A stalled source plane should be visible from the Radar page without log diving.
+
+## Execution ingest and handoff
+
+Execution handoff is exposed through:
+
+- `POST /api/radar/signals`
+- `POST /api/radar/signals/batch` (≤ 50 items)
+- `GET /api/radar/signals`
+- `GET/PUT /api/settings/radar`
+
+A `RadarSignalIngestPayload` must include `symbol`, `side`, `price`, `reason`, and `source`/source metadata. Invalid payloads are rejected before handoff.
+
+Accepted signals follow this sequence:
+
+1. Normalize payload and create a `RadarSignalRecord`.
+2. Deduplicate within `RADAR_SIGNAL_DEDUP_MS` (5 minutes).
+3. Enforce monitored-symbol scope via Trading Rules enabled coins.
+4. Call `handoffStrategyEntrySignal({ strategy: 'radar', component: 'radar-ingest', ... })`.
+5. Persist outcome: `pending_confirmation`, `auto_order_placed`, `rejected`, or `ignored`.
+
+Manual vs auto confirm is controlled by Radar runtime settings:
+
+- **Manual**: queue pending confirmation; owner confirms through the shared dashboard pending-confirm flow.
+- **Auto**: use the same sizing, risk gates, exchange order path, and TP/SL best-effort placement as other strategies.
+
+Radar never creates a second execution engine and never bypasses the unified handoff path.
+
+## Tradable vs monitoring-only policy
+
+Policy:
+
+- Observe broadly.
+- Display non-tradable but relevant live ideas as monitoring-only context.
+- Only confirmed candidates for symbols enabled in Trading Rules may be handed off.
+- Non-tradable observations must not appear as trade-ready.
+
+Implementation anchors:
+
+- Source Radar can include monitoring-only macro/proxy/equity assets in `AlphaRadarObservation` and UI sections.
+- Execution Radar rejects any handoff symbol not returned by `getMonitoredSymbols(normalizeTradingRules(settings.tradingRules))` with `symbol_not_monitored`.
+- Asset class affects verdict labels/diagnostics only; it does not expand the tradable universe.
+
+## Candidate-generation audit
+
+The current retained candidate logic is intentionally simple and explainable.
+
+### Retained rules
+
+- **Freshness**: recent observations/signals rank higher; stale sources are clearly marked. Rationale: live trading ideas decay quickly.
+- **Source independence**: confirmation improves when sources span different source types/classes/layers. Rationale: reduces single-feed noise.
+- **Primary-source presence**: ideas prefer at least one primary source or validated market source. Rationale: narrative-only signals are weak.
+- **Market structure readiness**: watch/idea split uses compression, breakout/follow-through, relative strength, trigger/invalidation/target availability. Rationale: observation quality alone is not enough for execution.
+- **Trading Rules handoff gate**: only enabled symbols can become execution candidates. Rationale: keeps monitoring breadth separate from capital deployment.
+- **Duplicate suppression**: repeated identical handoff signals are persisted as ignored duplicates. Rationale: protects from connector spam and repeated alerts.
+- **Outcome reconciliation**: pending/order/rejected outcomes are written back to the source record. Rationale: the operator can inspect what happened after handoff.
+
+### Removed or simplified rules
+
+- No separate Radar execution engine.
+- No hidden runtime outside repo boot/startup code.
+- No asset-class expansion of tradable symbols.
+- No opaque multi-engine scoring path; scoring stays deterministic and surfaced through DTO/read-model fields.
+- No automatic execution for monitoring-only macro/proxy/equity observations.
+
+### Promotion criteria
+
+- **Ignored**: invalid payload, duplicate handoff, Radar disabled, insufficient sizing, or candidate below useful watch/actionability thresholds.
+- **Watch/live idea**: fresh observation set with useful context or early structure, but not enough execution readiness/cross-confirmation for handoff.
+- **Confirmed tradable candidate**: symbol is enabled in Trading Rules, direction/price/reason are explicit, duplicate check passes, and the candidate reaches the Radar handoff API or internal handoff surface.
+- **Rejected at handoff**: candidate reached the handoff gate but failed Trading Rules scope, risk gates, sizing, or exchange acceptance. The rejection reason must be visible in handoff history.
+
+## Operator UI requirements
+
+The Radar page must keep these concepts visually separate:
+
+- **Radar health/status**: collectors, connectors, freshness/stale state, and runtime switches.
+- **Live feed**: recent observations and active ideas.
+- **Tradable now**: only pending-confirmation or auto-placed handoff signals.
+- **Funnel counters**: collected, deduped/merged, promoted, handed off, rejected at handoff.
+- **Handoff history**: recent pending/placed/rejected/ignored signals with reason/error.
+
+This prevents conflating source monitoring with execution ingest history.
+
+## Scoring and verdicts
+
+`src/server/radarReadModel.ts` is deterministic read-model logic. It enriches `RadarSignalRecord` rows with candidate score and verdict:
+
+```text
+score = statusWeight + freshnessScore + sourceMetaRichness - duplicatePenalty
+```
+
+Verdict thresholds are diagnostics only:
+
+| asset class | actionable | bias | watch |
+| --- | ---: | ---: | ---: |
+| crypto | 70 | 45 | 20 |
+| commodity | 80 | 55 | 30 |
+
+Rejected and duplicate signals always return `ignore`. `auto_order_placed` is always actionable.
 
 ## Persistence and history cap
 
-Radar signals live in the shared lowdb store under `radarSignals`. After every
-mutation the list is passed through `compactRadarSignals`, which sorts by
-`updatedAt` descending and truncates to `RADAR_SIGNAL_HISTORY_LIMIT` (500).
-No migration or separate table is involved; adding persistence beyond this is
-out of scope for the current runtime baseline.
-
-## Upstream read pressure and shared coordinator
-
-Radar itself does not call Hyperliquid, but the unified engine that Radar
-hands off to does, alongside the drawdown watchdog, engulfing monitor, FVG
-monitor, TP-fill monitor, REST fallback ingest, and live dashboard warmup.
-
-All **idempotent `info` POST reads** go through a single shared coordinator,
-`HyperliquidInfoClient` (`src/exchange/hyperliquidInfoClient.ts`), wired into
-`HyperliquidAdapter` via `requestInfo`:
-
-- **In-flight dedupe:** simultaneous identical payloads share one fetch
-  (keyed by stable-stringified payload).
-- **Bounded concurrency:** hard cap (`HYPERLIQUID_INFO_MAX_CONCURRENCY`,
-  default 4) with a FIFO queue.
-- **Retry + backoff:** transient `429` and `5xx` retry with jittered
-  exponential backoff (`HYPERLIQUID_INFO_BASE_BACKOFF_MS`→
-  `HYPERLIQUID_INFO_MAX_BACKOFF_MS`, defaults 250ms → 5000ms), honoring
-  `Retry-After` when present. Network errors retry identically.
-- **Scope:** `info` reads only. Order placement goes through the SDK directly
-  and is **not** wrapped.
-
-Monitor first-tick warmups are additionally staggered at boot
-(`MONITOR_STARTUP_STAGGER_MS`, default 750ms) so the drawdown watchdog, FVG
-monitor, and engulfing monitor do not fire their initial fetches in the same
-event-loop turn.
-
-Observability: coordinator counters (`totalRequests`, `dedupedRequests`,
-`retries`, `failures`, `activeCount`, `queueLength`, `inFlightCount`) are
-surfaced at `GET /api/health/perf` under `hyperliquidInfo`.
-
-## Environment variables
-
-| Variable                              | Default | Purpose                                              |
-| ------------------------------------- | ------- | ---------------------------------------------------- |
-| `HYPERLIQUID_INFO_MAX_CONCURRENCY`    | 4       | Max concurrent `info` upstream calls                 |
-| `HYPERLIQUID_INFO_MAX_RETRIES`        | 3       | Retry attempts on 429/5xx/network errors             |
-| `HYPERLIQUID_INFO_BASE_BACKOFF_MS`    | 250     | Base backoff for jittered exponential retry          |
-| `HYPERLIQUID_INFO_MAX_BACKOFF_MS`     | 5000    | Cap for the computed backoff                         |
-| `MONITOR_STARTUP_STAGGER_MS`          | 750     | Spacing between monitor first-tick warmups at boot   |
-
-The `RADAR_SIGNAL_DEDUP_MS` (5 min) and `RADAR_SIGNAL_HISTORY_LIMIT` (500)
-constants are currently hard-coded — change them in `src/server/index.ts` if
-required.
+- Source observations live in shared persistence as `alphaRadarObservations` and are pruned/compacted.
+- Execution handoff records live in shared persistence as `radarSignals`.
+- Radar signal history is capped by `RADAR_SIGNAL_HISTORY_LIMIT` (500).
 
 ## Invariants
 
-`scripts/invariants-radar-handoff.ts` (runnable via
-`npm run invariants:radar-handoff`) asserts:
+Run before shipping Radar-adjacent changes:
 
-- Radar handoff reuses the unified entry flow (manual + auto).
-- Duplicates are ignored without side effects.
-- Monitored-symbol scope is enforced via Trading Rules enabled coins.
-- Outcome reconciliation writes back correct `pendingId`/`orderId`/`status`.
-- Summary rollups and verdict thresholds remain deterministic.
+```bash
+npm run check
+npm run build
+npm run invariants:radar-handoff
+```
 
-Run it alongside `npm run check` before shipping Radar-adjacent changes.
+`invariants-radar-handoff` asserts that manual/auto handoff reuse the unified entry flow, duplicate signals are ignored, Trading Rules scope is enforced, and outcomes reconcile back to Radar records.

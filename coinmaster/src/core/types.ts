@@ -1,4 +1,4 @@
-import type { AiMasterInsight, AiMasterQaItem, AppSettings, BacktestRun, BiasCommand, DailyDDBaseline, MarketTick, OptimizationResult, PendingConfirmation, Position, RadarSignalRecord, RiskGateAuditEntry, TelegramOutboxItem, TradeEvent, TradeLog } from '../shared/dto.js';
+import type { AiMasterInsight, AiMasterQaItem, AlphaRadarObservation, AppSettings, BacktestRun, BiasCommand, DailyDDBaseline, MarketTick, OptimizationResult, PendingConfirmation, Position, RadarSignalRecord, RiskGateAuditEntry, TelegramOutboxItem, TradeEvent, TradeLog } from '../shared/dto.js';
 
 export type {
   AppSettings,
@@ -34,4 +34,5 @@ export interface DBShape {
   backtestRuns: BacktestRun[];
   optimizationResults: OptimizationResult[];
   radarSignals: RadarSignalRecord[];
+  alphaRadarObservations: AlphaRadarObservation[];
 }

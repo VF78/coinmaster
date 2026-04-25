@@ -1,6 +1,11 @@
 import type {
   AiMasterQaItem,
   AiMasterSnapshotResponse,
+  AlphaRadarIdeasResponse,
+  AlphaRadarLiveResponse,
+  AlphaRadarSettings,
+  AlphaRadarSettingsResponse,
+  AlphaRadarSnapshotResponse,
   AnalyticsQualityMetrics,
   AnalyticsWeeklyReportResponse,
   BacktestAiAnalysisRequestResponse,
@@ -354,6 +359,43 @@ export function postRadarSignalBatch(signals: RadarSignalIngestPayload[]) {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ signals }),
+  });
+}
+
+export function getAlphaRadarObservations(limit = 25, sort: 'rank' | 'recent' = 'rank') {
+  const params = new URLSearchParams({ limit: String(limit), sort });
+  return jsonFetch<AlphaRadarSnapshotResponse>(`/api/alpha-radar/observations?${params.toString()}`);
+}
+
+export function getAlphaRadarIdeas() {
+  return jsonFetch<AlphaRadarIdeasResponse>('/api/alpha-radar/ideas');
+}
+
+export function getAlphaRadarLive() {
+  return jsonFetch<AlphaRadarLiveResponse>('/api/alpha-radar/live');
+}
+
+export function getAlphaRadarSettings() {
+  return jsonFetch<AlphaRadarSettingsResponse>('/api/settings/alpha-radar');
+}
+
+export function saveAlphaRadarSettings(settings: AlphaRadarSettings) {
+  return jsonFetch<AlphaRadarSettingsResponse>('/api/settings/alpha-radar', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(settings),
+  });
+}
+
+export function collectAlphaRadarFeeds() {
+  return jsonFetch<{ ok: boolean; createdCount: number }>('/api/alpha-radar/collect/external-feeds', {
+    method: 'POST',
+  });
+}
+
+export function collectAlphaRadarMarketSnapshot() {
+  return jsonFetch<{ ok: boolean; createdCount: number }>('/api/alpha-radar/collect/market-snapshot', {
+    method: 'POST',
   });
 }
 

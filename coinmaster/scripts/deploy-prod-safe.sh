@@ -11,6 +11,8 @@ TARGET_DIR="${TARGET_DIR:-/opt/coinmaster}"
 SERVICE="${SERVICE:-coinmaster.service}"
 OWNER_USER="${OWNER_USER:-coinmaster}"
 OWNER_GROUP="${OWNER_GROUP:-coinmaster}"
+APP_HOST="${APP_HOST:-127.0.0.1}"
+APP_PORT="${APP_PORT:-8787}"
 
 BACKUP_ROOT="$TARGET_DIR/.deploy-backups"
 TS="$(date +%Y%m%d-%H%M%S)"
@@ -22,7 +24,7 @@ require_cmd() {
   command -v "$1" >/dev/null 2>&1 || { echo "Missing required command: $1" >&2; exit 1; }
 }
 
-for cmd in npm rsync curl systemctl cmp; do
+for cmd in npm rsync curl systemctl cmp ss; do
   require_cmd "$cmd"
 done
 
@@ -89,8 +91,17 @@ if [[ -d "$TARGET_DIR/dist" ]]; then mv "$TARGET_DIR/dist" "$TARGET_DIR/dist.pre
 mv "$TARGET_DIR/src.new" "$TARGET_DIR/src"
 mv "$TARGET_DIR/dist.new" "$TARGET_DIR/dist"
 
-log "Restarting $SERVICE"
-systemctl restart "$SERVICE"
+log "Stopping $SERVICE for clean port handoff"
+systemctl stop "$SERVICE"
+
+if ss -ltnp "( sport = :$APP_PORT )" | tail -n +2 | grep -q LISTEN; then
+  echo "Port $APP_PORT is still busy after stopping $SERVICE; refusing deploy." >&2
+  ss -ltnp "( sport = :$APP_PORT )" >&2 || true
+  exit 1
+fi
+
+log "Starting $SERVICE"
+systemctl start "$SERVICE"
 
 log "Waiting for active state"
 for i in {1..20}; do
@@ -114,8 +125,8 @@ fi
 log "Running smoke checks"
 SMOKE_OK=0
 for i in {1..25}; do
-  HEALTH="$(curl -fsS --max-time 2 http://127.0.0.1:8787/api/health || true)"
-  ROOT_HTML="$(curl -fsS --max-time 2 http://127.0.0.1:8787/ || true)"
+  HEALTH="$(curl -fsS --max-time 2 http://$APP_HOST:$APP_PORT/api/health || true)"
+  ROOT_HTML="$(curl -fsS --max-time 2 http://$APP_HOST:$APP_PORT/ || true)"
   if [[ "$HEALTH" == *'"ok":true'* ]] && [[ "$ROOT_HTML" == *'<div id="root"></div>'* ]]; then
     SMOKE_OK=1
     break

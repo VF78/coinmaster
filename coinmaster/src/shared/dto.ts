@@ -72,6 +72,129 @@ export interface RadarRuntimeSettings {
   autoConfirm: boolean;
 }
 
+export type AlphaRadarObservationKind = 'external' | 'market';
+export type AlphaRadarSourceType = 'rss' | 'news' | 'market' | 'manual' | 'direct' | 'social';
+export type AlphaRadarSourceLayer = 'primary' | 'duplicate' | 'narrative';
+export type AlphaRadarSourceClass = 'market' | 'official' | 'newswire' | 'macro' | 'flow' | 'social';
+export type AlphaRadarConnectorType = 'telegram' | 'reddit' | 'bluesky';
+export type AlphaRadarMonitoringGroup = 'macro' | 'proxy' | 'equity';
+
+export interface AlphaRadarConnectorAuthSession {
+  kind: 'telegram_qr';
+  status: 'pending' | 'expired' | 'cancelled' | 'error';
+  startedAt?: string;
+  expiresAt?: string;
+  pollAfterMs?: number;
+  qrUrl?: string;
+  qrTokenBase64Url?: string;
+  message?: string;
+  error?: string;
+}
+
+export interface AlphaRadarConnectorState {
+  status: 'idle' | 'connected' | 'needs_auth' | 'awaiting_code' | 'awaiting_qr' | 'error';
+  configured: boolean;
+  needsAuth: boolean;
+  lastSyncAt?: string;
+  lastSyncStatus: 'pending' | 'success' | 'error';
+  lastSyncCursor?: string;
+  connectionLabel?: string;
+  message?: string;
+  error?: string;
+  authSession?: AlphaRadarConnectorAuthSession;
+}
+
+export interface AlphaRadarConnectorSettings {
+  enabled: boolean;
+  sourceLabel?: string;
+  sourceLayer?: AlphaRadarSourceLayer;
+  sourceClass?: AlphaRadarSourceClass;
+  weight?: number;
+  watchlist: string[];
+  allowlist: string[];
+  state: AlphaRadarConnectorState;
+}
+
+export interface AlphaRadarConnectorRuntime {
+  type: AlphaRadarConnectorType;
+  source: string;
+  sourceType: 'social';
+  settings: AlphaRadarConnectorSettings;
+}
+
+export interface AlphaRadarConnectorRuntimeSummary {
+  type: AlphaRadarConnectorType;
+  source: string;
+  sourceType: 'social';
+  sourceLayer?: AlphaRadarSourceLayer;
+  sourceClass?: AlphaRadarSourceClass;
+  enabled: boolean;
+  watchlistCount: number;
+  allowlistCount: number;
+  weight: number;
+  sourceLabel?: string;
+  state: AlphaRadarConnectorState;
+}
+
+export interface AlphaRadarProvenance {
+  feedId?: string;
+  sourceLabel?: string;
+  publisher?: string;
+  author?: string;
+  url?: string;
+  publishedAt?: string;
+  ingestedAt?: string;
+}
+
+export interface AlphaRadarFeedConfig {
+  id: string;
+  label: string;
+  url: string;
+  enabled: boolean;
+  source: string;
+  collectorType?: 'rss' | 'rsshub' | 'gdelt' | 'json';
+  parser?: 'statuspage_incidents' | 'statuspage_maintenances' | 'binance_cms_articles' | 'tree_news';
+  sourceLayer?: AlphaRadarSourceLayer;
+  sourceClass?: AlphaRadarSourceClass;
+  weight?: number;
+  assetTags?: string[];
+  topicTags?: string[];
+}
+
+export interface AlphaRadarMonitoringWatchAsset {
+  id: string;
+  label: string;
+  symbol: string;
+  provider: 'stooq';
+  providerSymbol: string;
+  realtimeSymbol?: string;
+  enabled: boolean;
+  monitoringOnly: boolean;
+  monitoringGroup?: AlphaRadarMonitoringGroup;
+  sourceClass?: AlphaRadarSourceClass;
+  weight?: number;
+  topicTags?: string[];
+}
+
+export interface AlphaRadarMarketSnapshotSettings {
+  macroWatchlist: AlphaRadarMonitoringWatchAsset[];
+  equityWatchlist: AlphaRadarMonitoringWatchAsset[];
+}
+
+export interface AlphaRadarSettings {
+  enabled: boolean;
+  manualQueueOnly: boolean;
+  autoConfirmOrders: boolean;
+  allowHypothesisEntries: boolean;
+  maxIdeasPerCycle: number;
+  minIdeaScore: number;
+  collectorLookbackHours: number;
+  refreshIntervalMinutes: number;
+  feeds: AlphaRadarFeedConfig[];
+  marketSnapshot?: AlphaRadarMarketSnapshotSettings;
+  connectors?: Record<AlphaRadarConnectorType, AlphaRadarConnectorSettings>;
+}
+
 export interface TelegramNotifySettings {
   botToken: string;
   chatId: string;
@@ -135,6 +258,7 @@ export interface AppSettings {
   depositUsd: number;
   tradingRules: TradingRulesSettings;
   radarRuntime: RadarRuntimeSettings;
+  alphaRadar?: AlphaRadarSettings;
   telegramNotify?: TelegramNotifySettings;
   hyperliquid?: HyperliquidCredentialsSettings;
   /** External exchange connections (Bybit, Binance, etc.) */
@@ -461,6 +585,209 @@ export interface RadarSignalIngestPayload {
 export interface RadarSignalIngestResponse {
   ok: boolean;
   signal: RadarSignalRecord;
+}
+
+export type AlphaRadarActivityLevel = 'info' | 'warn' | 'error';
+export type AlphaRadarActivityPlane = 'market' | 'external' | 'system';
+
+export interface AlphaRadarActivityEvent {
+  id: string;
+  plane: AlphaRadarActivityPlane;
+  level: AlphaRadarActivityLevel;
+  status: 'started' | 'ok' | 'partial' | 'error';
+  title: string;
+  message: string;
+  source?: string;
+  sourceLabel?: string;
+  observedAt: string;
+  createdAt: string;
+  assetTags?: string[];
+  topicTags?: string[];
+  metadata?: Record<string, unknown>;
+}
+
+export interface AlphaRadarCollectorRuntime {
+  plane: AlphaRadarActivityPlane;
+  label: string;
+  intervalMs: number;
+  enabled: boolean;
+  busy: boolean;
+  lastStartedAt?: string;
+  lastCompletedAt?: string;
+  nextRunAt?: string;
+  lastStatus?: 'ok' | 'partial' | 'error';
+  lastMessage?: string;
+  lastCreatedCount?: number;
+  lastErrorCount?: number;
+}
+
+export interface AlphaRadarSourceHealth {
+  source: string;
+  kind: 'market' | 'external';
+  sourceType?: AlphaRadarSourceType;
+  sourceLayer?: AlphaRadarSourceLayer;
+  sourceClass?: AlphaRadarSourceClass;
+  sourceWeight?: number;
+  lastObservedAt?: string;
+  ageMs?: number;
+  stale: boolean;
+  itemCount: number;
+  status: 'fresh' | 'stale' | 'inactive';
+  details?: Record<string, unknown>;
+}
+
+export interface AlphaRadarLiveResponse {
+  ok: boolean;
+  openPositions: LivePosition[];
+  pendingConfirmations: LivePosition[];
+  monitoring: {
+    autoCollectEnabled: boolean;
+    marketSnapshotIntervalMs: number;
+    externalFeedsIntervalMs: number;
+    collectors: AlphaRadarCollectorRuntime[];
+    events: AlphaRadarActivityEvent[];
+    sourceHealth?: AlphaRadarSourceHealth[];
+    monitoringOnlyAssets?: string[];
+    llmMode: 'on_demand';
+  };
+}
+
+export interface AlphaRadarObservation {
+  id: string;
+  kind: AlphaRadarObservationKind;
+  source: string;
+  sourceType: AlphaRadarSourceType;
+  sourceLayer?: AlphaRadarSourceLayer;
+  sourceClass?: AlphaRadarSourceClass;
+  sourceWeight?: number;
+  title: string;
+  excerpt: string;
+  assetTags: string[];
+  topicTags: string[];
+  sentimentScore?: number;
+  noveltyScore?: number;
+  urgencyScore?: number;
+  marketAlignmentScore?: number;
+  rank: number;
+  observedAt: string;
+  cycleId?: string;
+  runId?: string;
+  timeframe?: string;
+  provenance?: AlphaRadarProvenance;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface AlphaRadarSnapshotResponse {
+  ok: boolean;
+  observations: AlphaRadarObservation[];
+  settings?: AlphaRadarSettings;
+  connectorRuntimes?: AlphaRadarConnectorRuntimeSummary[];
+  summary: {
+    total: number;
+    external: number;
+    market: number;
+    topAssets: Array<{ asset: string; count: number }>;
+    monitoringOnlyAssets?: string[];
+  };
+}
+
+export interface AlphaRadarPerpContext {
+  symbol: string;
+  asOf: string;
+  fundingRate8h?: number;
+  openInterestUsd?: number;
+  volume24hUsd?: number;
+}
+
+export interface AlphaRadarIdea {
+  id: string;
+  symbol?: string;
+  direction?: TradeSide;
+  score: number;
+  observationQualityScore?: number;
+  tradeActionabilityScore?: number;
+  verdict: 'idea' | 'watch_breakout' | 'cash';
+  signalFamily: 'catalyst' | 'expansion' | 'rotation' | 'cash';
+  actionability: {
+    actionable: boolean;
+    summary: string;
+    blockers: string[];
+  };
+  title: string;
+  whyNow: string[];
+  trigger?: number;
+  invalidation?: number;
+  targets: number[];
+  expectedRr?: number;
+  rotationAction: 'rotate' | 'keep' | 'cash';
+  rotationSummary: string;
+  thesis: string;
+  assetTags: string[];
+  topicTags: string[];
+  supportingObservationIds: string[];
+  supportingObservationTitles: string[];
+  primarySource?: string;
+  marketStructure?: {
+    regime: 'trend' | 'range' | 'chop' | 'thin';
+    windowChangePct?: number;
+    latestMovePct?: number;
+    rangePosition?: number;
+    trendEfficiency?: number;
+    structureAlignmentScore?: number;
+    structureMetrics?: Record<string, unknown>;
+  };
+  confirmation?: {
+    sourceCount: number;
+    sourceTypeCount: number;
+    layerCount: number;
+    sourceClassCount: number;
+    primaryCount: number;
+    crossTypeConfirmed: boolean;
+    crossLayerConfirmed: boolean;
+    crossClassConfirmed: boolean;
+    sourceTypes: AlphaRadarSourceType[];
+    sourceLayers: AlphaRadarSourceLayer[];
+    sourceClasses: AlphaRadarSourceClass[];
+  };
+  actionabilityInputs?: {
+    fundingRate8h?: number;
+    openInterestUsd?: number;
+    volume24hUsd?: number;
+    liquidityScore?: number;
+    crowdingScore?: number;
+    actionabilityBias?: number;
+    notes: string[];
+  };
+  rotationContext?: {
+    openRiskCount: number;
+    weakestOpenSymbol?: string;
+    weakestOpenUnrealizedPnlPct?: number;
+    rotationEdgeScore?: number;
+  };
+  hypothesisVersion?: string;
+  warnings: string[];
+  asOf: string;
+}
+
+export interface AlphaRadarIdeasResponse {
+  ok: boolean;
+  settings: AlphaRadarSettings;
+  connectorRuntimes?: AlphaRadarConnectorRuntimeSummary[];
+  ideas: AlphaRadarIdea[];
+  marketSummary: {
+    trackedAssets: number;
+    monitoringOnlyAssets?: string[];
+    openPositions: number;
+    strongestObservation?: string;
+    sourceHealth?: AlphaRadarSourceHealth[];
+    llmMode?: 'on_demand';
+  };
+}
+
+export interface AlphaRadarSettingsResponse {
+  ok: boolean;
+  settings: AlphaRadarSettings;
 }
 
 export interface HistoryResponse {

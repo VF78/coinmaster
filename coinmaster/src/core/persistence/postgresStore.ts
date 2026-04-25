@@ -1,6 +1,7 @@
 import type { DBShape } from '../types.js';
 import { cloneTradingRulesDefaults } from '../../shared/tradingRules.js';
 import { cloneRadarRuntimeDefaults, normalizeRadarRuntimeSettings } from '../../shared/radarRuntime.js';
+import { DEFAULT_ALPHA_RADAR_SETTINGS, normalizeAlphaRadarSettings } from '../../server/alphaRadar.js';
 import logger from '../../lib/logger.js';
 import type { PersistenceStore } from './types.js';
 
@@ -11,6 +12,7 @@ const defaultData: DBShape = {
     depositUsd: 1000,
     tradingRules: cloneTradingRulesDefaults(),
     radarRuntime: cloneRadarRuntimeDefaults(),
+    alphaRadar: DEFAULT_ALPHA_RADAR_SETTINGS,
     telegramNotify: {
       botToken: '',
       chatId: '',
@@ -51,11 +53,12 @@ const defaultData: DBShape = {
   aiMasterQa: [],
   backtestRuns: [],
   optimizationResults: [],
-  radarSignals: []
+  radarSignals: [],
+  alphaRadarObservations: [],
 };
 
 function ensureDbShape(data: DBShape) {
-  data.settings = data.settings ?? { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults(), radarRuntime: cloneRadarRuntimeDefaults() };
+  data.settings = data.settings ?? { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults(), radarRuntime: cloneRadarRuntimeDefaults(), alphaRadar: DEFAULT_ALPHA_RADAR_SETTINGS };
   if (!Number.isFinite(data.settings.depositUsd)) {
     data.settings.depositUsd = 1000;
   }
@@ -66,6 +69,7 @@ function ensureDbShape(data: DBShape) {
     data.settings.radarRuntime,
     data.settings.tradingRules.autoConfirm,
   );
+  data.settings.alphaRadar = normalizeAlphaRadarSettings(data.settings.alphaRadar);
   data.settings.telegramNotify = data.settings.telegramNotify ?? {
     botToken: '',
     chatId: '',
@@ -147,6 +151,7 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.backtestRuns)) data.backtestRuns = [];
   if (!Array.isArray(data.optimizationResults)) data.optimizationResults = [];
   if (!Array.isArray(data.radarSignals)) data.radarSignals = [];
+  if (!Array.isArray(data.alphaRadarObservations)) data.alphaRadarObservations = [];
 }
 
 /**

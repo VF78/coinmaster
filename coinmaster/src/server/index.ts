@@ -22,6 +22,18 @@ import type {
   AiMasterInsight,
   AiMasterQaItem,
   AiMasterSnapshotResponse,
+  AlphaRadarActivityEvent,
+  AlphaRadarCollectorRuntime,
+  AlphaRadarConnectorSettings,
+  AlphaRadarConnectorRuntimeSummary,
+  AlphaRadarConnectorType,
+  AlphaRadarIdea,
+  AlphaRadarLiveResponse,
+  AlphaRadarMonitoringWatchAsset,
+  AlphaRadarObservation,
+  AlphaRadarSettings,
+  AlphaRadarSnapshotResponse,
+  AlphaRadarSourceHealth,
   AssetClass,
   BacktestCreateRunRequest,
   BacktestRun,
@@ -31,6 +43,7 @@ import type {
   ExchangeConnectionSettingsPayload,
   LiveDashboardState,
   LivePosition,
+  MarketTick,
   PendingConfirmation,
   RadarSignalIngestPayload,
   RadarRuntimeSettings,
@@ -48,6 +61,25 @@ import type {
 } from '../shared/dto.js';
 import { inferAssetClassFromSymbol, normalizeTradingRules, getMonitoredSymbols, isSymbolMonitored } from '../shared/tradingRules.js';
 import { normalizeRadarRuntimeSettings } from '../shared/radarRuntime.js';
+import {
+  DEFAULT_ALPHA_RADAR_SETTINGS,
+  applyAlphaRadarMonitoringFreshnessPolicy,
+  applyConnectedIdleSourceHealthPolicy,
+  buildAlphaRadarSourceHealth as buildSharedAlphaRadarSourceHealth,
+  buildIdeaCandidates,
+  buildMarketObservationCandidates,
+  buildAlphaRadarMarketObservationDedupeKey,
+  buildAlphaRadarObservation,
+  enabledAlphaRadarMonitoringWatchlist,
+  extractGdeltItems,
+  extractJsonFeedItems,
+  extractRssItems,
+  normalizeAlphaRadarSettings,
+  pruneAlphaRadarObservations,
+} from './alphaRadar.js';
+import { alphaRadarFetchJson, alphaRadarFetchText, mapWithConcurrency, summarizeAlphaRadarFetchFailure } from './alphaRadarHttp.js';
+import { buildAlphaRadarConnectorHealth, summarizeAlphaRadarConnectorRuntimes } from './alphaRadarConnectors.js';
+import { collectBlueskyConnector, collectRedditConnector, collectTelegramAuthReadyConnector } from './alphaRadarSocial.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
@@ -119,6 +151,19 @@ const TELEGRAM_OUTBOX_MAX_ATTEMPTS = Math.max(3, Number(process.env.TELEGRAM_OUT
 const TELEGRAM_OUTBOX_SENT_RETENTION_MS = 24 * 60 * 60_000;
 const TELEGRAM_OUTBOX_FAILED_RETENTION_MS = 7 * 24 * 60 * 60_000;
 const BACKTEST_RUN_HISTORY_LIMIT = Math.max(20, Number(process.env.BACKTEST_RUN_HISTORY_LIMIT || 200));
+const ALPHA_RADAR_COLLECTOR_MIN_INTERVAL_MS = 15_000;
+const ALPHA_RADAR_MARKET_SNAPSHOT_INTERVAL_MS = Math.max(ALPHA_RADAR_COLLECTOR_MIN_INTERVAL_MS, Number(process.env.ALPHA_RADAR_MARKET_SNAPSHOT_INTERVAL_MS || 30_000));
+const ALPHA_RADAR_EXTERNAL_FEEDS_INTERVAL_MS = Math.max(ALPHA_RADAR_COLLECTOR_MIN_INTERVAL_MS, Number(process.env.ALPHA_RADAR_EXTERNAL_FEEDS_INTERVAL_MS || 15_000));
+const ALPHA_RADAR_EXTERNAL_FEED_CONCURRENCY = Math.max(1, Number(process.env.ALPHA_RADAR_EXTERNAL_FEED_CONCURRENCY || 4));
+const ALPHA_RADAR_MONITORING_STOOQ_CONCURRENCY = Math.max(1, Number(process.env.ALPHA_RADAR_MONITORING_STOOQ_CONCURRENCY || 4));
+const ALPHA_RADAR_MARKET_MONITOR_NEAR_RT_MS = Math.max(15_000, Number(process.env.ALPHA_RADAR_MARKET_MONITOR_NEAR_RT_MS || 30_000));
+const ALPHA_RADAR_MARKET_MONITOR_FALLBACK_MS = Math.max(60_000, Number(process.env.ALPHA_RADAR_MARKET_MONITOR_FALLBACK_MS || 15 * 60_000));
+const ALPHA_RADAR_FEED_FAST_MS = Math.max(15_000, Number(process.env.ALPHA_RADAR_FEED_FAST_MS || 15_000));
+const ALPHA_RADAR_FEED_NORMAL_MS = Math.max(60_000, Number(process.env.ALPHA_RADAR_FEED_NORMAL_MS || 3 * 60_000));
+const ALPHA_RADAR_FEED_SLOW_MS = Math.max(5 * 60_000, Number(process.env.ALPHA_RADAR_FEED_SLOW_MS || 15 * 60_000));
+const ALPHA_RADAR_CONNECTOR_FAST_MS = Math.max(15_000, Number(process.env.ALPHA_RADAR_CONNECTOR_FAST_MS || 20_000));
+const ALPHA_RADAR_CONNECTOR_NORMAL_MS = Math.max(60_000, Number(process.env.ALPHA_RADAR_CONNECTOR_NORMAL_MS || 2 * 60_000));
+const ALPHA_RADAR_ACTIVITY_LIMIT = 80;
 
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
 const rulesCache = new RuntimeRulesCache(5_000);
@@ -370,6 +415,1022 @@ function isTradingRulesTimeframe(value: unknown): value is TradingRulesTimeframe
 
 function normalizeRadarRuntimeFromSettings(settings: { radarRuntime?: unknown; tradingRules: TradingRulesSettings }): RadarRuntimeSettings {
   return normalizeRadarRuntimeSettings(settings.radarRuntime, normalizeTradingRules(settings.tradingRules).autoConfirm);
+}
+
+let alphaRadarMarketTimer: ReturnType<typeof setInterval> | null = null;
+let alphaRadarExternalTimer: ReturnType<typeof setInterval> | null = null;
+
+const alphaRadarCollectors: Record<'market' | 'external', AlphaRadarCollectorRuntime> = {
+  market: {
+    plane: 'market',
+    label: 'Market snapshot',
+    intervalMs: ALPHA_RADAR_MARKET_SNAPSHOT_INTERVAL_MS,
+    enabled: true,
+    busy: false,
+  },
+  external: {
+    plane: 'external',
+    label: 'External feeds',
+    intervalMs: ALPHA_RADAR_EXTERNAL_FEEDS_INTERVAL_MS,
+    enabled: true,
+    busy: false,
+  },
+};
+
+let alphaRadarActivityEvents: AlphaRadarActivityEvent[] = [];
+
+type AlphaRadarSourceRuntimeState = {
+  lastAttemptedAt?: string;
+  lastSucceededAt?: string;
+  lastStatus?: 'ok' | 'error';
+  lastMessage?: string;
+};
+
+const alphaRadarSourceRuntime = new Map<string, AlphaRadarSourceRuntimeState>();
+
+function ensureAlphaRadarSettings(input: unknown): AlphaRadarSettings {
+  return normalizeAlphaRadarSettings(input ?? DEFAULT_ALPHA_RADAR_SETTINGS);
+}
+
+function getAlphaRadarConnectors(settings: AlphaRadarSettings): Record<AlphaRadarConnectorType, AlphaRadarConnectorSettings> {
+  return (settings.connectors ?? DEFAULT_ALPHA_RADAR_SETTINGS.connectors ?? {}) as Record<AlphaRadarConnectorType, AlphaRadarConnectorSettings>;
+}
+
+function ensureAlphaRadarObservationsState(db: Awaited<ReturnType<typeof getDb>>): AlphaRadarObservation[] {
+  db.data.alphaRadarObservations = Array.isArray(db.data.alphaRadarObservations) ? db.data.alphaRadarObservations : [];
+  pruneAlphaRadarObservations(db.data.alphaRadarObservations);
+  return db.data.alphaRadarObservations;
+}
+
+async function getAlphaRadarSettingsState(): Promise<AlphaRadarSettings> {
+  const db = await getDb();
+  const settings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+  if (JSON.stringify(db.data.settings.alphaRadar ?? null) !== JSON.stringify(settings)) {
+    db.data.settings.alphaRadar = settings;
+    await db.write();
+  }
+  return settings;
+}
+
+function alphaRadarObservationComparator(sort: 'recent' | 'rank') {
+  if (sort === 'recent') {
+    return (a: AlphaRadarObservation, b: AlphaRadarObservation) =>
+      Date.parse(b.observedAt) - Date.parse(a.observedAt) || b.rank - a.rank;
+  }
+  return (a: AlphaRadarObservation, b: AlphaRadarObservation) =>
+    b.rank - a.rank || Date.parse(b.observedAt) - Date.parse(a.observedAt);
+}
+
+function alphaRadarObservationCutoffIso(settings: AlphaRadarSettings, nowIso: string): string {
+  return new Date(Date.parse(nowIso) - Math.max(1, settings.collectorLookbackHours) * 60 * 60_000).toISOString();
+}
+
+function alphaRadarObservationMatchesCurrentSources(settings: AlphaRadarSettings, observation: AlphaRadarObservation): boolean {
+  const monitoringSources = new Set(enabledAlphaRadarMonitoringWatchlist(settings).map((item) => alphaRadarMonitoringSourceId(item)));
+  const feedSources = new Set(settings.feeds.filter((item) => item.enabled).map((item) => item.source));
+  const connectors = getAlphaRadarConnectors(settings);
+  const metadata = observation.metadata && typeof observation.metadata === 'object'
+    ? observation.metadata as Record<string, unknown>
+    : {};
+  const connectorType = String(metadata.connectorType ?? '').trim().toLowerCase();
+
+  if (observation.source === 'coinmaster_market_ticks') return true;
+  if (monitoringSources.has(observation.source)) return true;
+  if (feedSources.has(observation.source)) return true;
+  if (connectorType === 'telegram') return connectors.telegram?.enabled === true;
+  if (connectorType === 'reddit') return connectors.reddit?.enabled === true;
+  if (connectorType === 'bluesky') return connectors.bluesky?.enabled === true;
+  if (observation.source.startsWith('social_telegram:')) return connectors.telegram?.enabled === true;
+  if (observation.source === 'social_reddit') return connectors.reddit?.enabled === true;
+  if (observation.source === 'social_bluesky') return connectors.bluesky?.enabled === true;
+  return false;
+}
+
+function currentAlphaRadarObservations(settings: AlphaRadarSettings, observations: AlphaRadarObservation[], nowIso: string): AlphaRadarObservation[] {
+  const cutoffIso = alphaRadarObservationCutoffIso(settings, nowIso);
+  return observations.filter((item) => item.observedAt >= cutoffIso && alphaRadarObservationMatchesCurrentSources(settings, item));
+}
+
+function recordAlphaRadarActivity(input: Omit<AlphaRadarActivityEvent, 'id' | 'createdAt'>) {
+  const createdAt = new Date().toISOString();
+  alphaRadarActivityEvents = [
+    {
+      id: `alpha-radar-evt-${nanoid(10)}`,
+      createdAt,
+      ...input,
+    },
+    ...alphaRadarActivityEvents,
+  ].slice(0, ALPHA_RADAR_ACTIVITY_LIMIT);
+}
+
+function updateAlphaRadarSourceRuntime(source: string, patch: Partial<AlphaRadarSourceRuntimeState>) {
+  const key = String(source ?? '').trim();
+  if (!key) return;
+  alphaRadarSourceRuntime.set(key, {
+    ...(alphaRadarSourceRuntime.get(key) ?? {}),
+    ...patch,
+  });
+}
+
+function alphaRadarSourceRuntimeLastTouchMs(source: string, fallbackIso?: string): number | null {
+  const runtime = alphaRadarSourceRuntime.get(source);
+  const candidate = runtime?.lastAttemptedAt ?? runtime?.lastSucceededAt ?? fallbackIso;
+  const parsed = candidate ? Date.parse(candidate) : NaN;
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function alphaRadarSourceDue(source: string, cadenceMs: number, nowMs: number, fallbackIso?: string): boolean {
+  const lastTouchMs = alphaRadarSourceRuntimeLastTouchMs(source, fallbackIso);
+  if (!Number.isFinite(lastTouchMs ?? NaN)) return true;
+  return nowMs - (lastTouchMs ?? 0) >= cadenceMs;
+}
+
+function alphaRadarLatestObservationBySource(observations: AlphaRadarObservation[]): Map<string, string> {
+  const latest = new Map<string, string>();
+  for (const observation of observations) {
+    const source = String(observation.source ?? '').trim();
+    const observedAt = String(observation.observedAt ?? '').trim();
+    if (!source || !observedAt) continue;
+    const current = latest.get(source);
+    if (!current || Date.parse(observedAt) > Date.parse(current)) {
+      latest.set(source, observedAt);
+    }
+  }
+  return latest;
+}
+
+function alphaRadarMonitoringCadenceMs(asset: AlphaRadarMonitoringWatchAsset): number {
+  return asset.realtimeSymbol ? ALPHA_RADAR_MARKET_MONITOR_NEAR_RT_MS : ALPHA_RADAR_MARKET_MONITOR_FALLBACK_MS;
+}
+
+function alphaRadarFeedCadenceMs(feed: AlphaRadarSettings['feeds'][number]): number {
+  if (feed.id === 'tree-news') return ALPHA_RADAR_FEED_FAST_MS;
+  if (feed.parser === 'binance_cms_articles' || feed.parser === 'statuspage_incidents' || feed.parser === 'statuspage_maintenances') {
+    return 60_000;
+  }
+  if (feed.sourceClass === 'official') return ALPHA_RADAR_FEED_SLOW_MS;
+  if (feed.collectorType === 'json') return 60_000;
+  if (feed.collectorType === 'rss' || feed.collectorType === 'rsshub') return ALPHA_RADAR_FEED_NORMAL_MS;
+  return ALPHA_RADAR_FEED_SLOW_MS;
+}
+
+function alphaRadarConnectorCadenceMs(type: AlphaRadarConnectorType): number {
+  if (type === 'reddit') return ALPHA_RADAR_CONNECTOR_NORMAL_MS;
+  return ALPHA_RADAR_CONNECTOR_FAST_MS;
+}
+
+function alphaRadarMonitoringSourceId(asset: Pick<AlphaRadarMonitoringWatchAsset, 'id'>): string {
+  return `stooq_hourly_${String(asset.id ?? '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
+}
+
+type AlphaRadarMonitoringQuoteMode = 'near_realtime' | 'hourly';
+
+type AlphaRadarRealtimeBatchQuote = {
+  provider: 'yahoo_spark';
+  providerSymbol: string;
+  price: number;
+  timestamp: string;
+  providerBarKey: string;
+  timeframe: '1m';
+};
+
+function alphaRadarMonitoringSourceLabel(asset: Pick<AlphaRadarMonitoringWatchAsset, 'label' | 'monitoringGroup'>, mode: AlphaRadarMonitoringQuoteMode): string {
+  const scope = asset.monitoringGroup === 'equity'
+    ? 'equity'
+    : asset.monitoringGroup === 'proxy'
+      ? 'proxy'
+      : 'macro';
+  return `${asset.label} ${mode === 'near_realtime' ? 'near-real-time' : 'hourly'} ${scope} monitor`;
+}
+
+async function fetchAlphaRadarRealtimeBatchQuotes(watchlist: AlphaRadarMonitoringWatchAsset[]): Promise<Map<string, AlphaRadarRealtimeBatchQuote>> {
+  const realtimeAssets = watchlist.filter((asset) => typeof asset.realtimeSymbol === 'string' && asset.realtimeSymbol.trim().length > 0);
+  if (realtimeAssets.length === 0) return new Map();
+
+  const requestedSymbols = [...new Set(realtimeAssets.map((asset) => String(asset.realtimeSymbol).trim().toUpperCase()).filter(Boolean))];
+  if (requestedSymbols.length === 0) return new Map();
+
+  const payload = await alphaRadarFetchJson<Record<string, {
+    symbol?: string;
+    timestamp?: unknown[];
+    close?: unknown[];
+  }>>(
+    `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${encodeURIComponent(requestedSymbols.join(','))}&range=1d&interval=1m`,
+    {
+      headers: {
+        'user-agent': 'coinmaster-alpha-radar/2.2',
+        accept: 'application/json',
+      },
+    },
+  );
+
+  const quotes = new Map<string, AlphaRadarRealtimeBatchQuote>();
+  for (const asset of realtimeAssets) {
+    const realtimeSymbol = String(asset.realtimeSymbol ?? '').trim().toUpperCase();
+    if (!realtimeSymbol) continue;
+    const row = payload[realtimeSymbol];
+    if (!row || !Array.isArray(row.close) || !Array.isArray(row.timestamp)) continue;
+
+    let lastIndex = Math.min(row.close.length, row.timestamp.length) - 1;
+    while (lastIndex >= 0) {
+      const close = Number(row.close[lastIndex]);
+      const timestamp = Number(row.timestamp[lastIndex]);
+      if (Number.isFinite(close) && close > 0 && Number.isFinite(timestamp) && timestamp > 0) {
+        quotes.set(asset.id, {
+          provider: 'yahoo_spark',
+          providerSymbol: realtimeSymbol,
+          price: close,
+          timestamp: new Date(timestamp * 1000).toISOString(),
+          providerBarKey: `${realtimeSymbol}:${timestamp}`,
+          timeframe: '1m',
+        });
+        break;
+      }
+      lastIndex -= 1;
+    }
+  }
+
+  return quotes;
+}
+
+function parseStooqHourlyClose(payload: string): { providerSymbol: string; providerDate?: string; providerTime?: string; close: number } | null {
+  const line = payload
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .find(Boolean);
+  if (!line) return null;
+
+  const parts = line.split(',').map((item) => item.trim());
+  if (parts.length < 7) return null;
+  const close = Number(parts[6]);
+  if (!Number.isFinite(close) || close <= 0) return null;
+
+  return {
+    providerSymbol: parts[0] ?? '',
+    providerDate: parts[1] || undefined,
+    providerTime: parts[2] || undefined,
+    close,
+  };
+}
+
+function zonedParts(date: Date, timeZone: string): { year: number; month: number; day: number; hour: number; minute: number; second: number } {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(date);
+  const pick = (type: string) => Number(parts.find((item) => item.type === type)?.value ?? 0);
+  return {
+    year: pick('year'),
+    month: pick('month'),
+    day: pick('day'),
+    hour: pick('hour'),
+    minute: pick('minute'),
+    second: pick('second'),
+  };
+}
+
+function zonedLocalIso(input: { year: number; month: number; day: number; hour: number; minute: number; second: number }, timeZone: string): string {
+  let guess = Date.UTC(input.year, input.month - 1, input.day, input.hour, input.minute, input.second);
+  const target = Date.UTC(input.year, input.month - 1, input.day, input.hour, input.minute, input.second);
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const parts = zonedParts(new Date(guess), timeZone);
+    const asUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+    const diff = asUtc - target;
+    if (diff === 0) break;
+    guess -= diff;
+  }
+  return new Date(guess).toISOString();
+}
+
+function parseMonitoringProviderTimestamp(asset: Pick<AlphaRadarMonitoringWatchAsset, 'monitoringGroup'>, quote: { providerDate?: string; providerTime?: string }): string | undefined {
+  const providerDate = String(quote.providerDate ?? '').trim();
+  const providerTime = String(quote.providerTime ?? '').trim();
+  if (!/^\d{8}$/.test(providerDate) || !/^\d{4,6}$/.test(providerTime)) return undefined;
+  const year = Number(providerDate.slice(0, 4));
+  const month = Number(providerDate.slice(4, 6));
+  const day = Number(providerDate.slice(6, 8));
+  const paddedTime = providerTime.padEnd(6, '0');
+  const hour = Number(paddedTime.slice(0, 2));
+  const minute = Number(paddedTime.slice(2, 4));
+  const second = Number(paddedTime.slice(4, 6));
+  if (asset.monitoringGroup === 'equity' || asset.monitoringGroup === 'proxy') {
+    return zonedLocalIso({ year, month, day, hour, minute, second }, 'America/New_York');
+  }
+  const utcMs = Date.UTC(year, month - 1, day, hour, minute, second);
+  return Number.isFinite(utcMs) ? new Date(utcMs).toISOString() : undefined;
+}
+
+async function fetchAlphaRadarMonitoringQuote(asset: AlphaRadarMonitoringWatchAsset): Promise<{ providerSymbol: string; providerDate?: string; providerTime?: string; close: number; providerTimestamp?: string }> {
+  const payload = await alphaRadarFetchText(`https://stooq.com/q/l/?s=${encodeURIComponent(asset.providerSymbol)}&i=60`, {
+    headers: { 'user-agent': 'coinmaster-alpha-radar/2.2' },
+  });
+  const parsed = parseStooqHourlyClose(payload);
+  if (!parsed) throw new Error('stooq_parse_failed');
+  return {
+    ...parsed,
+    providerTimestamp: parseMonitoringProviderTimestamp(asset, parsed),
+  };
+}
+
+async function fetchAlphaRadarMonitoringTicks(input: {
+  settings: AlphaRadarSettings;
+  latestObservedAtBySource?: Map<string, string>;
+  trigger: 'auto' | 'manual';
+}): Promise<{
+  ticks: MarketTick[];
+  profilesBySymbol: Record<string, {
+    label: string;
+    source: string;
+    sourceClass: 'macro' | 'market';
+    sourceWeight: number;
+    topicTags: string[];
+    assetTags: string[];
+    timeframe: '1m' | '60m';
+    monitoringOnly: true;
+    sourceLabel: string;
+    publisher: 'stooq' | 'yahoo_spark';
+    metadata: Record<string, unknown>;
+  }>;
+  monitoringOnlyAssets: string[];
+}> {
+  const watchlist = enabledAlphaRadarMonitoringWatchlist(input.settings);
+  if (watchlist.length === 0) {
+    return { ticks: [], profilesBySymbol: {}, monitoringOnlyAssets: [] };
+  }
+
+  const nowMs = Date.now();
+  const dueWatchlist = input.trigger === 'manual'
+    ? watchlist
+    : watchlist.filter((asset) => {
+      const source = alphaRadarMonitoringSourceId(asset);
+      return alphaRadarSourceDue(source, alphaRadarMonitoringCadenceMs(asset), nowMs, input.latestObservedAtBySource?.get(source));
+    });
+
+  if (dueWatchlist.length === 0) {
+    return { ticks: [], profilesBySymbol: {}, monitoringOnlyAssets: watchlist.map((item) => normalizeSymbol(item.symbol)) };
+  }
+
+  const realtimeQuotes = await fetchAlphaRadarRealtimeBatchQuotes(dueWatchlist).catch((error) => {
+    logger.warn({ component: 'alpha-radar', err: error instanceof Error ? error.message : error }, 'alpha radar realtime quote batch fetch failed');
+    return new Map<string, AlphaRadarRealtimeBatchQuote>();
+  });
+
+  const results = await mapWithConcurrency(dueWatchlist, ALPHA_RADAR_MONITORING_STOOQ_CONCURRENCY, async (asset) => {
+    const normalizedSymbol = normalizeSymbol(asset.symbol);
+    const fetchedAt = new Date().toISOString();
+    const source = alphaRadarMonitoringSourceId(asset);
+    const sourceClass = asset.sourceClass === 'market' ? 'market' as const : 'macro' as const;
+
+    const realtimeQuote = realtimeQuotes.get(asset.id);
+    if (realtimeQuote) {
+      updateAlphaRadarSourceRuntime(source, {
+        lastAttemptedAt: fetchedAt,
+        lastSucceededAt: fetchedAt,
+        lastStatus: 'ok',
+        lastMessage: 'monitor refreshed via yahoo_spark',
+      });
+      return {
+        tick: {
+          symbol: normalizedSymbol,
+          price: realtimeQuote.price,
+          timestamp: realtimeQuote.timestamp,
+        } satisfies MarketTick,
+        profile: {
+          label: asset.label,
+          source,
+          sourceClass,
+          sourceWeight: asset.weight ?? 1.04,
+          topicTags: [...(asset.topicTags ?? [])],
+          assetTags: [normalizedSymbol],
+          timeframe: realtimeQuote.timeframe,
+          monitoringOnly: true as const,
+          sourceLabel: alphaRadarMonitoringSourceLabel(asset, 'near_realtime'),
+          publisher: realtimeQuote.provider,
+          metadata: {
+            provider: asset.provider,
+            providerSymbol: asset.providerSymbol,
+            realtimeProvider: realtimeQuote.provider,
+            realtimeSymbol: realtimeQuote.providerSymbol,
+            providerBarKey: realtimeQuote.providerBarKey,
+            monitoringMode: 'near_realtime',
+            monitoringOnly: true,
+            monitoringGroup: asset.monitoringGroup,
+          },
+        },
+        monitoringOnlyAsset: normalizedSymbol,
+      };
+    }
+
+    try {
+      const parsed = await fetchAlphaRadarMonitoringQuote(asset);
+      const providerBarKey = [parsed.providerDate, parsed.providerTime].filter(Boolean).join('T') || fetchedAt;
+      updateAlphaRadarSourceRuntime(source, {
+        lastAttemptedAt: fetchedAt,
+        lastSucceededAt: fetchedAt,
+        lastStatus: 'ok',
+        lastMessage: 'monitor refreshed via stooq',
+      });
+      return {
+        tick: {
+          symbol: normalizedSymbol,
+          price: parsed.close,
+          timestamp: parsed.providerTimestamp ?? fetchedAt,
+        } satisfies MarketTick,
+        profile: {
+          label: asset.label,
+          source,
+          sourceClass,
+          sourceWeight: asset.weight ?? 1.04,
+          topicTags: [...(asset.topicTags ?? [])],
+          assetTags: [normalizedSymbol],
+          timeframe: '60m' as const,
+          monitoringOnly: true as const,
+          sourceLabel: alphaRadarMonitoringSourceLabel(asset, 'hourly'),
+          publisher: 'stooq' as const,
+          metadata: {
+            provider: asset.provider,
+            providerSymbol: asset.providerSymbol,
+            providerTicker: parsed.providerSymbol,
+            providerDate: parsed.providerDate,
+            providerTime: parsed.providerTime,
+            providerTimestamp: parsed.providerTimestamp,
+            providerBarKey,
+            monitoringMode: 'hourly_fallback',
+            monitoringOnly: true,
+            monitoringGroup: asset.monitoringGroup,
+          },
+        },
+        monitoringOnlyAsset: normalizedSymbol,
+      };
+    } catch (error) {
+      updateAlphaRadarSourceRuntime(source, {
+        lastAttemptedAt: fetchedAt,
+        lastStatus: 'error',
+        lastMessage: error instanceof Error ? error.message : String(error),
+      });
+      logger.warn({
+        component: 'alpha-radar',
+        symbol: normalizedSymbol,
+        providerSymbol: asset.providerSymbol,
+        realtimeSymbol: asset.realtimeSymbol,
+        err: error instanceof Error ? error.message : error,
+      }, 'alpha radar monitoring quote fetch failed');
+      return {
+        tick: null,
+        profile: null,
+        monitoringOnlyAsset: normalizedSymbol,
+      };
+    }
+  });
+
+  return {
+    ticks: results.map((item) => item.tick).filter((item): item is MarketTick => Boolean(item)),
+    profilesBySymbol: Object.fromEntries(results.filter((item) => item.profile).map((item) => [String(item.profile?.assetTags[0]), item.profile!])),
+    monitoringOnlyAssets: watchlist.map((item) => normalizeSymbol(item.symbol)),
+  };
+}
+
+function alphaRadarCollectorFinished(
+  plane: 'market' | 'external',
+  status: 'ok' | 'partial' | 'error',
+  message: string,
+  createdCount: number,
+  errorCount = 0,
+) {
+  const collector = alphaRadarCollectors[plane];
+  collector.busy = false;
+  collector.lastCompletedAt = new Date().toISOString();
+  collector.lastStatus = status;
+  collector.lastMessage = message;
+  collector.lastCreatedCount = createdCount;
+  collector.lastErrorCount = errorCount;
+  collector.nextRunAt = new Date(Date.now() + collector.intervalMs).toISOString();
+}
+
+function alphaRadarCollectorStarted(plane: 'market' | 'external') {
+  const collector = alphaRadarCollectors[plane];
+  collector.busy = true;
+  collector.lastStartedAt = new Date().toISOString();
+}
+
+function buildAlphaRadarObservationSummary(observations: AlphaRadarObservation[], settings: AlphaRadarSettings) {
+  const topAssets = new Map<string, number>();
+  for (const observation of observations) {
+    for (const asset of observation.assetTags) {
+      topAssets.set(asset, (topAssets.get(asset) ?? 0) + 1);
+    }
+  }
+
+  return {
+    total: observations.length,
+    external: observations.filter((item) => item.kind === 'external').length,
+    market: observations.filter((item) => item.kind === 'market').length,
+    topAssets: [...topAssets.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 8)
+      .map(([asset, count]) => ({ asset, count })),
+    monitoringOnlyAssets: enabledAlphaRadarMonitoringWatchlist(settings)
+      .filter((item) => item.monitoringOnly)
+      .map((item) => item.symbol),
+  };
+}
+
+function buildAlphaRadarSourceHealth(settings: AlphaRadarSettings, observations: AlphaRadarObservation[]): AlphaRadarSourceHealth[] {
+  const now = Date.now();
+  const nowIso = new Date(now).toISOString();
+  const maxIso = (...values: Array<string | undefined>) => {
+    const valid = values.filter((value): value is string => typeof value === 'string' && Number.isFinite(Date.parse(value)));
+    if (valid.length === 0) return undefined;
+    return valid.sort((a, b) => Date.parse(b) - Date.parse(a))[0];
+  };
+
+  const monitoringExpected = enabledAlphaRadarMonitoringWatchlist(settings).map((asset) => {
+    const source = alphaRadarMonitoringSourceId(asset);
+    const runtime = alphaRadarSourceRuntime.get(source);
+    const sourceClass = asset.sourceClass === 'market' ? 'market' as const : 'macro' as const;
+    return {
+      source,
+      kind: 'market' as const,
+      sourceType: 'market' as const,
+      sourceLayer: 'primary' as const,
+      sourceClass,
+      sourceWeight: asset.weight ?? 1.04,
+      details: {
+        monitoringOnly: true,
+        monitoringGroup: asset.monitoringGroup,
+        monitoringMode: runtime?.lastMessage?.includes('yahoo_spark') ? 'near_realtime' : 'hourly_fallback',
+        cadenceMs: alphaRadarMonitoringCadenceMs(asset),
+        symbol: normalizeSymbol(asset.symbol),
+        label: asset.label,
+        enabled: asset.enabled !== false,
+        runtimeLastAttemptedAt: runtime?.lastAttemptedAt,
+        runtimeLastSucceededAt: runtime?.lastSucceededAt,
+        runtimeLastStatus: runtime?.lastStatus,
+        runtimeLastMessage: runtime?.lastMessage,
+      },
+    };
+  });
+
+  const feedExpected = settings.feeds
+    .filter((item) => item.enabled)
+    .map((feed) => {
+      const runtime = alphaRadarSourceRuntime.get(feed.source);
+      return {
+        source: feed.source,
+        kind: 'external' as const,
+        sourceType: feed.collectorType === 'gdelt' ? 'news' as const : feed.collectorType === 'json' || feed.collectorType === 'rsshub' ? 'direct' as const : 'rss' as const,
+        sourceLayer: feed.sourceLayer,
+        sourceClass: feed.sourceClass,
+        sourceWeight: feed.weight,
+        details: {
+          label: feed.label,
+          cadenceMs: alphaRadarFeedCadenceMs(feed),
+          enabled: true,
+          runtimeLastAttemptedAt: runtime?.lastAttemptedAt,
+          runtimeLastSucceededAt: runtime?.lastSucceededAt,
+          runtimeLastStatus: runtime?.lastStatus,
+          runtimeLastMessage: runtime?.lastMessage,
+        },
+      };
+    });
+
+  const expectedSources = [...monitoringExpected, ...feedExpected];
+  const expectedKeys = new Set(expectedSources.map((item) => `${item.kind}:${item.source}`));
+
+  const fromObservations = buildSharedAlphaRadarSourceHealth({
+    observations: observations.filter((item) => expectedKeys.has(`${item.kind}:${item.source}`)),
+    nowIso,
+    expectedSources,
+    staleAfterMsByKind: {
+      market: ALPHA_RADAR_MARKET_SNAPSHOT_INTERVAL_MS * 2,
+      external: ALPHA_RADAR_EXTERNAL_FEEDS_INTERVAL_MS * 2,
+    },
+  }).map((item) => {
+    const details = item.details && typeof item.details === 'object'
+      ? { ...item.details }
+      : {};
+    const runtimeLastAttemptedAt = typeof details.runtimeLastAttemptedAt === 'string' ? details.runtimeLastAttemptedAt : undefined;
+    const runtimeLastSucceededAt = typeof details.runtimeLastSucceededAt === 'string' ? details.runtimeLastSucceededAt : undefined;
+    const runtimeLastStatus = details.runtimeLastStatus === 'error' || details.runtimeLastStatus === 'ok'
+      ? details.runtimeLastStatus
+      : undefined;
+    const effectiveLastObservedAt = maxIso(item.lastObservedAt, runtimeLastSucceededAt);
+    const effectiveAgeMs = effectiveLastObservedAt ? Math.max(0, now - Date.parse(effectiveLastObservedAt)) : undefined;
+    const detailsCadenceMs = typeof details.cadenceMs === 'number' && Number.isFinite(details.cadenceMs)
+      ? Math.max(ALPHA_RADAR_COLLECTOR_MIN_INTERVAL_MS, Number(details.cadenceMs))
+      : undefined;
+    const staleAfterMs = detailsCadenceMs
+      ? detailsCadenceMs * 2
+      : item.kind === 'market'
+        ? ALPHA_RADAR_MARKET_SNAPSHOT_INTERVAL_MS * 2
+        : ALPHA_RADAR_EXTERNAL_FEEDS_INTERVAL_MS * 2;
+
+    let next: AlphaRadarSourceHealth = {
+      ...item,
+      lastObservedAt: effectiveLastObservedAt,
+      ageMs: effectiveAgeMs,
+      stale: effectiveAgeMs === undefined ? true : effectiveAgeMs > staleAfterMs,
+      status: effectiveAgeMs === undefined ? 'inactive' : effectiveAgeMs > staleAfterMs ? 'stale' : 'fresh',
+      details: {
+        ...details,
+        lastContentObservedAt: item.lastObservedAt,
+      },
+    };
+
+    if (runtimeLastStatus === 'error' && runtimeLastAttemptedAt && (!runtimeLastSucceededAt || Date.parse(runtimeLastAttemptedAt) >= Date.parse(runtimeLastSucceededAt))) {
+      next = {
+        ...next,
+        lastObservedAt: runtimeLastAttemptedAt,
+        ageMs: Math.max(0, now - Date.parse(runtimeLastAttemptedAt)),
+        stale: true,
+        status: 'stale',
+        details: {
+          ...(next.details ?? {}),
+          runtimeState: 'error',
+          freshnessNote: typeof details.runtimeLastMessage === 'string' ? details.runtimeLastMessage : 'latest source poll failed',
+        },
+      };
+    }
+
+    if ((next.details as { monitoringOnly?: unknown } | undefined)?.monitoringOnly === true) {
+      next = applyAlphaRadarMonitoringFreshnessPolicy({ nowIso, health: next });
+    }
+
+    return next;
+  });
+
+  const connectorHealth = buildAlphaRadarConnectorHealth(getAlphaRadarConnectors(settings))
+    .map((item) => applyConnectedIdleSourceHealthPolicy({ nowIso, health: item }));
+
+  const merged = new Map<string, AlphaRadarSourceHealth>();
+  for (const item of [...fromObservations, ...connectorHealth]) {
+    merged.set(item.source, item);
+  }
+
+  const liveMarketTick = latestTickBySymbol.get(LIVE_SYMBOL);
+  if (liveMarketTick) {
+    const ageMs = Math.max(0, now - Date.parse(liveMarketTick.timestamp));
+    const existing = merged.get('coinmaster_market_ticks');
+    merged.set('coinmaster_market_ticks', {
+      source: 'coinmaster_market_ticks',
+      kind: 'market',
+      sourceType: 'market',
+      sourceLayer: 'primary',
+      sourceClass: 'market',
+      sourceWeight: existing?.sourceWeight ?? 1.2,
+      lastObservedAt: liveMarketTick.timestamp,
+      ageMs,
+      stale: ageMs > LIVE_TICK_STALE_MS,
+      itemCount: existing?.itemCount ?? 0,
+      status: ageMs > LIVE_TICK_STALE_MS ? 'stale' : 'fresh',
+      details: {
+        title: `${LIVE_SYMBOL} live tick`,
+        price: liveMarketTick.price,
+        source: liveMarketTick.source,
+      },
+    });
+  }
+
+  return [...merged.values()].sort((a, b) => {
+    const severity = (row: AlphaRadarSourceHealth) => row.status === 'stale' ? 0 : row.status === 'inactive' ? 1 : 2;
+    return severity(a) - severity(b) || (b.itemCount ?? 0) - (a.itemCount ?? 0) || a.source.localeCompare(b.source);
+  });
+}
+
+async function saveAlphaRadarObservations(observations: AlphaRadarObservation[]): Promise<number> {
+  const db = await getDb();
+  const existing = ensureAlphaRadarObservationsState(db);
+  const existingKeys = new Set(existing.map((item) => {
+    if (item.kind === 'market') return buildAlphaRadarMarketObservationDedupeKey(item);
+    return `${item.source}|${item.title.toLowerCase()}|${item.observedAt}`;
+  }));
+
+  let createdCount = 0;
+  for (const observation of observations) {
+    const dedupeKey = observation.kind === 'market'
+      ? buildAlphaRadarMarketObservationDedupeKey(observation)
+      : `${observation.source}|${observation.title.toLowerCase()}|${observation.observedAt}`;
+    if (existingKeys.has(dedupeKey)) continue;
+    existing.push(observation);
+    existingKeys.add(dedupeKey);
+    createdCount += 1;
+  }
+
+  pruneAlphaRadarObservations(existing);
+  db.data.alphaRadarObservations = existing
+    .slice()
+    .sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))
+    .slice(0, 2000);
+  await db.write();
+  return createdCount;
+}
+
+function alphaRadarMarketTickSnapshot(dbTicks: { symbol: string; price: number; timestamp: string }[]) {
+  const merged = new Map<string, { symbol: string; price: number; timestamp: string }>();
+  for (const tick of dbTicks) {
+    merged.set(`${normalizeSymbol(tick.symbol)}|${tick.timestamp}`, tick);
+  }
+  for (const [symbol, tick] of latestTickBySymbol.entries()) {
+    merged.set(`${normalizeSymbol(symbol)}|${tick.timestamp}`, {
+      symbol: normalizeSymbol(symbol),
+      price: tick.price,
+      timestamp: tick.timestamp,
+    });
+  }
+  return [...merged.values()]
+    .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp))
+    .slice(-5000);
+}
+
+async function collectAlphaRadarMarketSnapshotRun(trigger: 'auto' | 'manual'): Promise<{ createdCount: number }> {
+  const nowIso = new Date().toISOString();
+  alphaRadarCollectorStarted('market');
+  try {
+    const db = await getDb();
+    const settings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+    const latestObservedAtBySource = alphaRadarLatestObservationBySource(ensureAlphaRadarObservationsState(db));
+    const rules = normalizeTradingRules(db.data.settings.tradingRules);
+    const tradableSymbols = getMonitoredSymbols(rules);
+    const monitoring = await fetchAlphaRadarMonitoringTicks({ settings, latestObservedAtBySource, trigger });
+    const candidates = buildMarketObservationCandidates({
+      nowIso,
+      ticks: alphaRadarMarketTickSnapshot([...db.data.marketTicks, ...monitoring.ticks]),
+      positions: db.data.positions,
+      tradableSymbols: [...new Set([...tradableSymbols, ...Object.keys(monitoring.profilesBySymbol)])],
+      profilesBySymbol: monitoring.profilesBySymbol,
+    });
+    const observations = candidates
+      .map((candidate) => buildAlphaRadarObservation({
+        id: `obs-${nanoid(10)}`,
+        createdAt: nowIso,
+        ...candidate,
+      }))
+      .filter((row): row is { ok: true; observation: AlphaRadarObservation } => row.ok)
+      .map((row) => row.observation);
+    const createdCount = await saveAlphaRadarObservations(observations);
+    alphaRadarCollectorFinished('market', 'ok', `${trigger} market snapshot collected`, createdCount);
+    recordAlphaRadarActivity({
+      plane: 'market',
+      level: 'info',
+      status: 'ok',
+      title: 'Market snapshot refreshed',
+      message: `${createdCount} new market observations across ${Object.keys(monitoring.profilesBySymbol).length} polled monitoring sources.`,
+      observedAt: nowIso,
+      topicTags: ['market-source-health'],
+      metadata: { trigger, createdCount, polledMonitoringSources: Object.keys(monitoring.profilesBySymbol).length, monitoringUniverse: monitoring.monitoringOnlyAssets.length },
+    });
+    return { createdCount };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    alphaRadarCollectorFinished('market', 'error', message, 0, 1);
+    recordAlphaRadarActivity({
+      plane: 'market',
+      level: 'error',
+      status: 'error',
+      title: 'Market snapshot failed',
+      message,
+      observedAt: nowIso,
+      topicTags: ['market-source-health', 'collector-error'],
+      metadata: { trigger },
+    });
+    throw error;
+  }
+}
+
+async function collectAlphaRadarExternalFeedsRun(trigger: 'auto' | 'manual'): Promise<{ createdCount: number }> {
+  const nowIso = new Date().toISOString();
+  alphaRadarCollectorStarted('external');
+  try {
+    const db = await getDb();
+    const settings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+    const latestObservedAtBySource = alphaRadarLatestObservationBySource(ensureAlphaRadarObservationsState(db));
+    const nowMs = Date.parse(nowIso);
+    const observations: AlphaRadarObservation[] = [];
+    let errorCount = 0;
+
+    const enabledFeeds = settings.feeds.filter((item) => item.enabled);
+    const dueFeeds = trigger === 'manual'
+      ? enabledFeeds
+      : enabledFeeds.filter((feed) => alphaRadarSourceDue(feed.source, alphaRadarFeedCadenceMs(feed), nowMs, latestObservedAtBySource.get(feed.source)));
+    const feedResults = await mapWithConcurrency(dueFeeds, ALPHA_RADAR_EXTERNAL_FEED_CONCURRENCY, async (feed) => {
+      const attemptedAt = new Date().toISOString();
+      try {
+        const items = feed.collectorType === 'json'
+          ? extractJsonFeedItems(await alphaRadarFetchJson<unknown>(feed.url), feed.parser)
+          : feed.collectorType === 'gdelt'
+            ? extractGdeltItems(await alphaRadarFetchJson<unknown>(feed.url))
+            : extractRssItems(await alphaRadarFetchText(feed.url));
+        const builtObservations = items
+          .map((item) => buildAlphaRadarObservation({
+            id: `obs-${nanoid(10)}`,
+            createdAt: nowIso,
+            kind: 'external',
+            source: feed.source,
+            sourceType: feed.collectorType === 'json' ? 'direct' : feed.collectorType === 'gdelt' ? 'news' : 'rss',
+            sourceLayer: feed.sourceLayer,
+            sourceClass: feed.sourceClass,
+            sourceWeight: feed.weight,
+            title: item.title,
+            excerpt: item.excerpt,
+            assetTags: [...(feed.assetTags ?? []), ...(item.assetTags ?? [])],
+            topicTags: [...(feed.topicTags ?? []), ...(item.topicTags ?? [])],
+            observedAt: item.observedAt ?? nowIso,
+            provenance: {
+              feedId: feed.id,
+              sourceLabel: feed.label,
+              publisher: item.sourceName,
+              url: item.link,
+              publishedAt: item.observedAt,
+              ingestedAt: nowIso,
+            },
+            metadata: item.metadata,
+          }))
+          .filter((row): row is { ok: true; observation: AlphaRadarObservation } => row.ok)
+          .map((row) => row.observation);
+        return { feed, observations: builtObservations, failure: null, attemptedAt };
+      } catch (error) {
+        return { feed, observations: [], failure: summarizeAlphaRadarFetchFailure(error), attemptedAt };
+      }
+    });
+
+    for (const result of feedResults) {
+      observations.push(...result.observations);
+      if (!result.failure) {
+        updateAlphaRadarSourceRuntime(result.feed.source, {
+          lastAttemptedAt: result.attemptedAt,
+          lastSucceededAt: result.attemptedAt,
+          lastStatus: 'ok',
+          lastMessage: 'feed refreshed',
+        });
+        continue;
+      }
+      updateAlphaRadarSourceRuntime(result.feed.source, {
+        lastAttemptedAt: result.attemptedAt,
+        lastStatus: 'error',
+        lastMessage: result.failure.operatorMessage,
+      });
+      errorCount += 1;
+      recordAlphaRadarActivity({
+        plane: 'external',
+        level: 'warn',
+        status: 'partial',
+        title: `${result.feed.label} fetch issue`,
+        message: result.failure.operatorMessage,
+        source: result.feed.source,
+        sourceLabel: result.feed.label,
+        observedAt: nowIso,
+        topicTags: ['collector-health', 'collector-error'],
+        metadata: { code: result.failure.code, trigger },
+      });
+    }
+
+    const connectorSettings = getAlphaRadarConnectors(settings);
+    const connectorCollectors: Array<{ type: AlphaRadarConnectorType; run: typeof collectTelegramAuthReadyConnector | typeof collectRedditConnector | typeof collectBlueskyConnector }> = [
+      { type: 'telegram', run: collectTelegramAuthReadyConnector },
+      { type: 'reddit', run: collectRedditConnector },
+      { type: 'bluesky', run: collectBlueskyConnector },
+    ];
+    let polledConnectorCount = 0;
+    for (const connector of connectorCollectors) {
+      const connectorSource = `connector:${connector.type}`;
+      const fallbackSyncAt = connectorSettings[connector.type]?.state?.lastSyncAt;
+      if (trigger !== 'manual' && !alphaRadarSourceDue(connectorSource, alphaRadarConnectorCadenceMs(connector.type), nowMs, fallbackSyncAt)) {
+        continue;
+      }
+      polledConnectorCount += 1;
+      try {
+        const result = await connector.run(connectorSettings[connector.type] ?? DEFAULT_ALPHA_RADAR_SETTINGS.connectors?.[connector.type]!);
+        if (settings.connectors) settings.connectors[result.type] = { ...connectorSettings[result.type], state: result.state };
+        updateAlphaRadarSourceRuntime(connectorSource, {
+          lastAttemptedAt: result.state.lastSyncAt ?? nowIso,
+          lastSucceededAt: result.state.lastSyncStatus === 'success' ? (result.state.lastSyncAt ?? nowIso) : undefined,
+          lastStatus: result.state.lastSyncStatus === 'success' ? 'ok' : 'error',
+          lastMessage: result.state.message,
+        });
+        for (const candidate of result.candidates) {
+          const built = buildAlphaRadarObservation({
+            id: `obs-${nanoid(10)}`,
+            createdAt: nowIso,
+            kind: 'external',
+            source: candidate.source,
+            sourceType: 'social',
+            sourceLayer: connectorSettings[result.type]?.sourceLayer,
+            sourceClass: connectorSettings[result.type]?.sourceClass,
+            sourceWeight: connectorSettings[result.type]?.weight,
+            title: candidate.title,
+            excerpt: candidate.excerpt,
+            assetTags: candidate.assetTags,
+            topicTags: candidate.topicTags,
+            sentimentScore: candidate.sentimentScore,
+            noveltyScore: candidate.noveltyScore,
+            urgencyScore: candidate.urgencyScore,
+            marketAlignmentScore: candidate.marketAlignmentScore,
+            observedAt: candidate.observedAt ?? nowIso,
+            provenance: candidate.provenance,
+            metadata: candidate.metadata,
+          });
+          if (built.ok) observations.push(built.observation);
+        }
+      } catch (error) {
+        updateAlphaRadarSourceRuntime(connectorSource, {
+          lastAttemptedAt: nowIso,
+          lastStatus: 'error',
+          lastMessage: error instanceof Error ? error.message : String(error),
+        });
+        errorCount += 1;
+      }
+    }
+
+    db.data.settings.alphaRadar = settings;
+    const createdCount = await saveAlphaRadarObservations(observations);
+    alphaRadarCollectorFinished('external', errorCount > 0 ? 'partial' : 'ok', `${trigger} external collection complete`, createdCount, errorCount);
+    recordAlphaRadarActivity({
+      plane: 'external',
+      level: errorCount > 0 ? 'warn' : 'info',
+      status: errorCount > 0 ? 'partial' : 'ok',
+      title: 'External collection finished',
+      message: `${createdCount} new external observations from ${dueFeeds.length} feeds and ${polledConnectorCount} connectors${errorCount > 0 ? `, ${errorCount} upstream issue(s)` : ''}.`,
+      observedAt: nowIso,
+      topicTags: ['collector-health'],
+      metadata: { trigger, createdCount, errorCount, polledFeeds: dueFeeds.length, polledConnectors: polledConnectorCount },
+    });
+    return { createdCount };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    alphaRadarCollectorFinished('external', 'error', message, 0, 1);
+    recordAlphaRadarActivity({
+      plane: 'external',
+      level: 'error',
+      status: 'error',
+      title: 'External collection failed',
+      message,
+      observedAt: nowIso,
+      topicTags: ['collector-health', 'collector-error'],
+      metadata: { trigger },
+    });
+    throw error;
+  }
+}
+
+async function buildAlphaRadarLiveState(): Promise<AlphaRadarLiveResponse> {
+  const db = await getDb();
+  const settings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+  const openPositions = db.data.positions
+    .filter((position) => position.status === 'open')
+    .map((position) => ({
+      id: position.id,
+      symbol: position.symbol,
+      side: position.side,
+      size: position.remainingSize ?? position.size,
+      entryPrice: position.entryPrice,
+      leverage: position.leverage,
+      openedAt: position.openedAt,
+      source: position.source,
+      unrealizedPnl: position.pnl,
+    })) as LivePosition[];
+  return {
+    ok: true,
+    openPositions,
+    pendingConfirmations: await loadPendingConfirmationRows(),
+    monitoring: {
+      autoCollectEnabled: settings.enabled,
+      marketSnapshotIntervalMs: ALPHA_RADAR_MARKET_SNAPSHOT_INTERVAL_MS,
+      externalFeedsIntervalMs: ALPHA_RADAR_EXTERNAL_FEEDS_INTERVAL_MS,
+      collectors: Object.values(alphaRadarCollectors),
+      events: alphaRadarActivityEvents.slice(0, 20),
+      sourceHealth: buildAlphaRadarSourceHealth(settings, ensureAlphaRadarObservationsState(db)),
+      monitoringOnlyAssets: enabledAlphaRadarMonitoringWatchlist(settings).filter((item) => item.monitoringOnly).map((item) => item.symbol),
+      llmMode: 'on_demand',
+    },
+  };
+}
+
+function startAlphaRadarMonitoringPlane() {
+  if (alphaRadarMarketTimer || alphaRadarExternalTimer) return;
+  const kickMarket = () => {
+    if (alphaRadarCollectors.market.busy) return;
+    void collectAlphaRadarMarketSnapshotRun('auto').catch((err) =>
+      logger.warn({ component: 'alpha-radar', plane: 'market', err }, 'alpha radar market snapshot failed')
+    );
+  };
+  const kickExternal = () => {
+    if (alphaRadarCollectors.external.busy) return;
+    void collectAlphaRadarExternalFeedsRun('auto').catch((err) =>
+      logger.warn({ component: 'alpha-radar', plane: 'external', err }, 'alpha radar external collection failed')
+    );
+  };
+  kickMarket();
+  kickExternal();
+  alphaRadarCollectors.market.nextRunAt = new Date(Date.now() + ALPHA_RADAR_MARKET_SNAPSHOT_INTERVAL_MS).toISOString();
+  alphaRadarCollectors.external.nextRunAt = new Date(Date.now() + ALPHA_RADAR_EXTERNAL_FEEDS_INTERVAL_MS).toISOString();
+  alphaRadarMarketTimer = setInterval(kickMarket, ALPHA_RADAR_MARKET_SNAPSHOT_INTERVAL_MS);
+  alphaRadarExternalTimer = setInterval(kickExternal, ALPHA_RADAR_EXTERNAL_FEEDS_INTERVAL_MS);
 }
 
 function prunePendingConfirmations(list: PendingConfirmation[]): PendingConfirmation[] {
@@ -6107,6 +7168,90 @@ app.post('/api/radar/signals/batch', ownerAuth, async (req, res) => {
   });
 });
 
+app.get('/api/settings/alpha-radar', ownerAuth, async (_req, res) => {
+  const settings = await getAlphaRadarSettingsState();
+  return res.json({ ok: true, settings });
+});
+
+app.put('/api/settings/alpha-radar', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  const current = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+  const settings = normalizeAlphaRadarSettings({ ...current, ...(req.body as Record<string, unknown> | undefined) });
+  db.data.settings.alphaRadar = settings;
+  await db.write();
+  return res.json({ ok: true, settings });
+});
+
+app.get('/api/alpha-radar/observations', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  const settings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+  const nowIso = new Date().toISOString();
+  const sort = req.query.sort === 'recent' ? 'recent' : 'rank';
+  const limitRaw = Number(req.query.limit ?? 25);
+  const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(200, Math.trunc(limitRaw))) : 25;
+  const observations = currentAlphaRadarObservations(settings, ensureAlphaRadarObservationsState(db), nowIso)
+    .slice()
+    .sort(alphaRadarObservationComparator(sort))
+    .slice(0, limit);
+  const connectorRuntimes = summarizeAlphaRadarConnectorRuntimes(getAlphaRadarConnectors(settings));
+  const payload: AlphaRadarSnapshotResponse = {
+    ok: true,
+    observations,
+    settings,
+    connectorRuntimes,
+    summary: buildAlphaRadarObservationSummary(currentAlphaRadarObservations(settings, ensureAlphaRadarObservationsState(db), nowIso), settings),
+  };
+  return res.json(payload);
+});
+
+app.get('/api/alpha-radar/live', ownerAuth, async (_req, res) => {
+  return res.json(await buildAlphaRadarLiveState());
+});
+
+app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  const settings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+  const nowIso = new Date().toISOString();
+  const observations = currentAlphaRadarObservations(settings, ensureAlphaRadarObservationsState(db), nowIso)
+    .slice()
+    .sort(alphaRadarObservationComparator('rank'))
+    .slice(0, 250);
+  const rules = normalizeTradingRules(db.data.settings.tradingRules);
+  const tradableSymbols = getMonitoredSymbols(rules);
+  const ideas: AlphaRadarIdea[] = buildIdeaCandidates({
+    observations,
+    ticks: alphaRadarMarketTickSnapshot(db.data.marketTicks),
+    positions: db.data.positions,
+    settings,
+    tradableSymbols,
+    nowIso,
+  });
+  return res.json({
+    ok: true,
+    settings,
+    connectorRuntimes: summarizeAlphaRadarConnectorRuntimes(getAlphaRadarConnectors(settings)),
+    ideas,
+    marketSummary: {
+      trackedAssets: tradableSymbols.length,
+      monitoringOnlyAssets: enabledAlphaRadarMonitoringWatchlist(settings).filter((item) => item.monitoringOnly).map((item) => item.symbol),
+      openPositions: db.data.positions.filter((item) => item.status === 'open').length,
+      strongestObservation: observations[0]?.title,
+      sourceHealth: buildAlphaRadarSourceHealth(settings, ensureAlphaRadarObservationsState(db)),
+      llmMode: 'on_demand',
+    },
+  });
+});
+
+app.post('/api/alpha-radar/collect/market-snapshot', ownerAuth, async (_req, res) => {
+  const result = await collectAlphaRadarMarketSnapshotRun('manual');
+  return res.json({ ok: true, createdCount: result.createdCount });
+});
+
+app.post('/api/alpha-radar/collect/external-feeds', ownerAuth, async (_req, res) => {
+  const result = await collectAlphaRadarExternalFeedsRun('manual');
+  return res.json({ ok: true, createdCount: result.createdCount });
+});
+
 app.get('/api/live/pending-confirmations', ownerAuth, async (_req, res) => {
   const pending = await loadPendingConfirmations();
   return res.json({ ok: true, pending });
@@ -7896,6 +9041,7 @@ const server = app.listen(port, host, () => {
   startTelegramOutboxLoop();
   startTelegramUpdateLoop();
   startDailyAnalyticsLoop();
+  startAlphaRadarMonitoringPlane();
   void refreshLiveSnapshotState(LIVE_SYMBOL, getLiveMode()).catch((err) => logger.warn({ component: 'live', err }, 'initial live snapshot warmup failed'));
   getTelegramConfig()
     .then((cfg) => {
@@ -7930,6 +9076,8 @@ async function gracefulShutdown(signal: string) {
   if (telegramOutboxTimer) { clearInterval(telegramOutboxTimer); telegramOutboxTimer = null; }
   if (telegramUpdateTimer) { clearInterval(telegramUpdateTimer); telegramUpdateTimer = null; }
   if (dailyAnalyticsTimer) { clearInterval(dailyAnalyticsTimer); dailyAnalyticsTimer = null; }
+  if (alphaRadarMarketTimer) { clearInterval(alphaRadarMarketTimer); alphaRadarMarketTimer = null; }
+  if (alphaRadarExternalTimer) { clearInterval(alphaRadarExternalTimer); alphaRadarExternalTimer = null; }
   if (restFallbackTimer) { clearInterval(restFallbackTimer); restFallbackTimer = null; }
   if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
 
