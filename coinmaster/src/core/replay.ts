@@ -75,6 +75,8 @@ function buildReplayDb(depositUsd: number): DBShape {
     alphaRadarObservations: [],
     evidenceBundles: [],
     signalCandidates: [],
+    radarContextPolicies: [],
+    executionIntents: [],
   };
 }
 

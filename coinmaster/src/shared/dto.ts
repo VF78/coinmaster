@@ -388,7 +388,7 @@ export interface DailyDDBaseline {
 
 export interface RiskGateAuditEntry {
   timestamp: string;
-  gate: 'daily_dd' | 'leverage_cap' | 'auth' | 'symbol_allowlist' | 'allocation_cap' | 'allocation_sizing' | 'tp_sl_defaults' | 'market_data' | 'multi_tf_engulfing' | 'engulfing_entry_signal' | 'engulfing_emergency_exit' | 'fvg_entry_signal' | 'radar_entry_signal' | 'tp_fill_monitor' | 'partial_close' | 'break_even_sl_after_partial';
+  gate: 'daily_dd' | 'leverage_cap' | 'auth' | 'symbol_allowlist' | 'allocation_cap' | 'allocation_sizing' | 'tp_sl_defaults' | 'market_data' | 'multi_tf_engulfing' | 'engulfing_entry_signal' | 'engulfing_emergency_exit' | 'fvg_entry_signal' | 'radar_entry_signal' | 'radar_context_policy' | 'tp_fill_monitor' | 'partial_close' | 'break_even_sl_after_partial';
   passed: boolean;
   reason?: string;
   details?: Record<string, unknown>;
@@ -465,11 +465,19 @@ export interface PendingConfirmation {
   price: number;
   size: number;
   leverage: number;
+  executionIntentId?: string;
   createdAt: string;
 }
 
 export type RadarSignalStatus = 'pending_confirmation' | 'auto_order_placed' | 'rejected' | 'ignored';
 export type RadarSignalVerdict = 'ignore' | 'watch' | 'bias' | 'actionable';
+export type RadarContextDirectionMode = 'long_only' | 'short_only' | 'both' | 'blocked';
+export type RadarContextPolicyReasonCode =
+  | 'direction_blocked'
+  | 'event_lockout'
+  | 'ttl_expired'
+  | 'risk_multiplier_blocked'
+  | 'missing_required_evidence';
 
 export interface RadarSignalSourceMeta {
   connector?: string;
@@ -494,6 +502,7 @@ export interface RadarSignalRecord {
   dedupeKey?: string;
   pendingId?: string;
   orderId?: string;
+  executionIntentId?: string;
   error?: string;
   duplicateOf?: string;
 }
@@ -516,6 +525,86 @@ export interface RadarSignalCandidateGroup {
   verdictReason?: string;
   sources: string[];
   lastSeenAt?: string;
+}
+
+export interface RadarContextAssetOverride {
+  symbol: string;
+  directionMode?: RadarContextDirectionMode;
+  riskMultiplier?: number;
+  lockNewEntries?: boolean;
+  eventLockoutUntil?: string;
+  narrativeRegime?: string;
+  priorityScore?: number;
+  validUntil?: string;
+  reasonCodes?: RadarContextPolicyReasonCode[];
+  evidenceIds?: string[];
+}
+
+export interface RadarContextPolicy {
+  id: string;
+  symbol: string;
+  assetScope: 'symbol' | 'asset_class';
+  assetClass?: AssetClass;
+  directionMode: RadarContextDirectionMode;
+  riskMultiplier: number;
+  lockNewEntries: boolean;
+  eventLockoutUntil?: string;
+  narrativeRegime: string;
+  priorityScore: number;
+  validUntil?: string;
+  assetSpecificOverrides: RadarContextAssetOverride[];
+  reasonCodes: RadarContextPolicyReasonCode[];
+  evidenceIds: string[];
+  signalCandidateId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExecutionIntentPolicySnapshot {
+  policyId?: string;
+  symbol: string;
+  directionMode?: RadarContextDirectionMode;
+  riskMultiplier?: number;
+  lockNewEntries?: boolean;
+  eventLockoutUntil?: string;
+  narrativeRegime?: string;
+  priorityScore?: number;
+  validUntil?: string;
+  reasonCodes: RadarContextPolicyReasonCode[];
+  evidenceIds: string[];
+}
+
+export type ExecutionIntentPolicyDecision = 'accepted' | 'rejected' | 'override' | 'not_applicable';
+export type ExecutionIntentStatus =
+  | 'created'
+  | 'policy_rejected'
+  | 'pending_confirmation'
+  | 'auto_order_placed'
+  | 'rejected'
+  | 'ignored';
+
+export interface ExecutionIntent {
+  id: string;
+  component: 'engulfing-monitor' | 'fvg-monitor' | 'radar-ingest' | 'owner-order-api' | 'owner-order-limit-api' | 'pending-confirmation';
+  strategy: SignalStrategy | 'manual';
+  symbol: string;
+  side: 'buy' | 'sell';
+  timeframe?: TradingRulesTimeframe;
+  price: number;
+  reduceOnly: boolean;
+  reason: string;
+  sourceLabel: string;
+  status: ExecutionIntentStatus;
+  auditedOperatorOverride: boolean;
+  policyDecision: ExecutionIntentPolicyDecision;
+  policyReasonCode?: RadarContextPolicyReasonCode;
+  policySnapshot?: ExecutionIntentPolicySnapshot;
+  pendingId?: string;
+  orderId?: string;
+  radarSignalId?: string;
+  metadata?: Record<string, string | number | boolean | null>;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface RadarSignalsQuery {
@@ -993,6 +1082,12 @@ export interface AlphaRadarIdeasResponse {
     evidenceBundles?: number;
     signalCandidates?: number;
     dedupeSuppressed?: number;
+    radarContextPolicies?: number;
+    activeRadarContextPolicies?: number;
+    lockedRadarContextPolicies?: number;
+    expiredRadarContextPolicies?: number;
+    policyAcceptedEntries?: number;
+    policyBlockedEntries?: number;
     sourceHealth?: AlphaRadarSourceHealth[];
     llmMode?: 'on_demand';
   };

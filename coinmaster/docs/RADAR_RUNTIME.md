@@ -145,6 +145,8 @@ Rejected and duplicate signals always return `ignore`. `auto_order_placed` is al
 - Source observations live in shared persistence as `alphaRadarObservations` and are pruned/compacted.
 - Durable evidence clusters live as `evidenceBundles`.
 - Durable Radar promotion lifecycle records live as `signalCandidates`.
+- Durable Radar context-controller records live as `radarContextPolicies`.
+- Auditable pre-handoff entry decisions live as `executionIntents`.
 - Execution handoff records live in shared persistence as `radarSignals`.
 - Radar signal history is capped by `RADAR_SIGNAL_HISTORY_LIMIT` (500).
 
@@ -178,7 +180,25 @@ Rejected and duplicate signals always return `ignore`. `auto_order_placed` is al
   - time decay;
   - market confirmation;
   - executionability.
+- `RadarContextPolicy` is built deterministically from those durable candidates and evidence:
+  - one active per monitored Trading Rules symbol;
+  - direction mode is `long_only`, `short_only`, `both`, or `blocked`;
+  - `riskMultiplier`, `lockNewEntries`, `eventLockoutUntil`, `validUntil`, `priorityScore`, and `reasonCodes` come from explicit candidate/evidence state;
+  - expired or evidence-missing policies block new non-reduce-only entries with explicit reason codes.
 - `AlphaRadarIdea` now attaches durable evidence/candidate references where they exist so the operator can audit promotion lineage without turning the UI into a second control plane.
+
+## Trading Rules context gate
+
+- `runEngulfingMonitorTick` and `runFvgMonitorTick` now read the active `RadarContextPolicy` before handoff.
+- Owner/manual new non-reduce-only orders are gated by the same policy unless `radarContextPolicyOverride: true` is explicitly supplied; the override is persisted as an audited `ExecutionIntent`.
+- Reduce-only exits remain always allowed.
+- Explicit policy rejection reasons are surfaced as:
+  - `direction_blocked`;
+  - `event_lockout`;
+  - `ttl_expired`;
+  - `risk_multiplier_blocked`;
+  - `missing_required_evidence`.
+- `/api/radar/signals` remains only a handoff surface into the unified entry flow; it does not become a second independent trader.
 
 ## Parser and enrichment boundaries
 
@@ -201,6 +221,7 @@ Run before shipping Radar-adjacent changes:
 
 ```bash
 npm run check
+npm run invariants:radar-context-policy
 npm run build
 npm run invariants:radar-handoff
 ```

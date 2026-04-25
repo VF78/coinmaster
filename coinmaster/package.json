@@ -29,6 +29,7 @@
     "invariants:signal-quality": "tsx scripts/invariants-signal-quality.ts",
     "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts",
     "invariants:radar-evidence": "node --import tsx/esm scripts/invariants-radar-evidence.ts",
+    "invariants:radar-context-policy": "node --import tsx/esm scripts/invariants-radar-context-policy.ts",
     "invariants:radar-handoff": "node --import tsx/esm scripts/invariants-radar-handoff.ts",
     "invariants:backtest-run-persistence": "node --import tsx/esm scripts/invariants-backtest-run-persistence.ts",
     "invariants:compute-jobs": "node --import tsx/esm scripts/invariants-compute-jobs.ts"

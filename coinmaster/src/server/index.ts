@@ -42,10 +42,13 @@ import type {
   OptimizationParamRange,
   BiasMode,
   ExchangeConnectionSettingsPayload,
+  ExecutionIntent,
   LiveDashboardState,
   LivePosition,
   MarketTick,
   PendingConfirmation,
+  RadarContextPolicy,
+  RadarContextPolicyReasonCode,
   RadarSignalIngestPayload,
   RadarRuntimeSettings,
   RadarRuntimeSettingsResponse,
@@ -85,6 +88,7 @@ import { alphaRadarFetchJson, alphaRadarFetchJsonWithMeta, alphaRadarFetchText, 
 import { buildAlphaRadarConnectorHealth, summarizeAlphaRadarConnectorRuntimes } from './alphaRadarConnectors.js';
 import { collectBlueskyConnector, collectRedditConnector, collectTelegramAuthReadyConnector } from './alphaRadarSocial.js';
 import { ingestObservationIntoEvidence, pruneEvidenceBundles, syncSignalCandidatesFromEvidence } from './alphaRadarEvidence.js';
+import { buildRadarContextPolicyBook, evaluateRadarContextPolicyEntry, readActiveRadarContextPolicy } from './radarContextPolicy.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize, maxPortfolioGrossNotional, wouldExceedPortfolioGrossCap } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
@@ -476,6 +480,63 @@ function ensureEvidenceBundlesState(db: Awaited<ReturnType<typeof getDb>>): Evid
 function ensureSignalCandidatesState(db: Awaited<ReturnType<typeof getDb>>): SignalCandidate[] {
   db.data.signalCandidates = Array.isArray(db.data.signalCandidates) ? db.data.signalCandidates : [];
   return db.data.signalCandidates;
+}
+
+function ensureRadarContextPoliciesState(db: Awaited<ReturnType<typeof getDb>>): RadarContextPolicy[] {
+  db.data.radarContextPolicies = Array.isArray(db.data.radarContextPolicies) ? db.data.radarContextPolicies : [];
+  return db.data.radarContextPolicies;
+}
+
+function ensureExecutionIntentsState(db: Awaited<ReturnType<typeof getDb>>): ExecutionIntent[] {
+  db.data.executionIntents = Array.isArray(db.data.executionIntents) ? db.data.executionIntents : [];
+  return db.data.executionIntents;
+}
+
+function syncRadarContextPolicies(params: {
+  db: Awaited<ReturnType<typeof getDb>>;
+  nowIso: string;
+}): RadarContextPolicy[] {
+  const rules = normalizeTradingRules(params.db.data.settings.tradingRules);
+  const policies = buildRadarContextPolicyBook({
+    bundles: ensureEvidenceBundlesState(params.db),
+    candidates: ensureSignalCandidatesState(params.db),
+    monitoredCoins: rules.coins,
+    nowIso: params.nowIso,
+    eventLockoutMinutes: rules.eventLockoutMinutes,
+  });
+  params.db.data.radarContextPolicies = policies;
+  return policies;
+}
+
+function appendExecutionIntent(
+  db: Awaited<ReturnType<typeof getDb>>,
+  input: Omit<ExecutionIntent, 'id' | 'createdAt' | 'updatedAt'>,
+): ExecutionIntent {
+  const nowIso = new Date().toISOString();
+  const next: ExecutionIntent = {
+    ...input,
+    id: `intent-${nanoid(10)}`,
+    createdAt: nowIso,
+    updatedAt: nowIso,
+  };
+  const intents = ensureExecutionIntentsState(db);
+  intents.unshift(next);
+  db.data.executionIntents = intents.slice(0, 1000);
+  return next;
+}
+
+function updateExecutionIntent(
+  db: Awaited<ReturnType<typeof getDb>>,
+  intentId: string | undefined,
+  patch: Partial<ExecutionIntent>,
+): void {
+  if (!intentId) return;
+  const intents = ensureExecutionIntentsState(db);
+  db.data.executionIntents = intents.map((item) => (
+    item.id === intentId
+      ? { ...item, ...patch, updatedAt: new Date().toISOString() }
+      : item
+  ));
 }
 
 async function getAlphaRadarSettingsState(): Promise<AlphaRadarSettings> {
@@ -1158,6 +1219,7 @@ async function saveAlphaRadarObservations(observations: AlphaRadarObservation[])
     monitoredCoins: normalizeTradingRules(db.data.settings.tradingRules).coins,
     nowIso,
   });
+  db.data.radarContextPolicies = syncRadarContextPolicies({ db, nowIso });
   await db.write();
   return createdCount;
 }
@@ -2103,6 +2165,7 @@ async function queuePendingConfirmation(params: {
   size: number;
   leverage: number;
   correlationId: string;
+  executionIntentId?: string;
 }): Promise<{ queued: boolean; id: string }> {
   const db = await getDb();
   const now = new Date().toISOString();
@@ -2147,6 +2210,7 @@ async function queuePendingConfirmation(params: {
     price,
     size,
     leverage,
+    executionIntentId: params.executionIntentId,
     createdAt: now,
   };
 
@@ -3155,6 +3219,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   // Risk check before submit
   const risk = await evaluateRiskGates({ emitAudit: false });
   if (!risk.canTrade) {
+    updateExecutionIntent(db, pending.executionIntentId, { status: 'rejected' });
     reconcileRadarSignalOutcome(db, {
       pendingId,
       status: 'rejected',
@@ -3324,6 +3389,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   });
 
   if (!ack.ok) {
+    updateExecutionIntent(db, pending.executionIntentId, { status: 'rejected' });
     reconcileRadarSignalOutcome(db, {
       pendingId,
       status: 'rejected',
@@ -3343,6 +3409,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     orderId: ack.orderId,
     status: 'auto_order_placed',
   });
+  updateExecutionIntent(db, pending.executionIntentId, { status: 'auto_order_placed', orderId: ack.orderId, pendingId });
   db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
 
   const tpSl = resolveTpSlDefaults(usedPrice, side, undefined, undefined);
@@ -3367,6 +3434,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
 
 async function rejectPendingConfirmation(pendingId: string, actor: 'dashboard' | 'telegram'): Promise<{ ok: boolean; error?: string }> {
   const db = await getDb();
+  const pending = db.data.pendingConfirmations.find((p) => p.id === pendingId);
   const before = db.data.pendingConfirmations.length;
   db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
   if (db.data.pendingConfirmations.length === before) {
@@ -3377,6 +3445,7 @@ async function rejectPendingConfirmation(pendingId: string, actor: 'dashboard' |
     status: 'rejected',
     error: 'pending_confirmation_rejected',
   });
+  updateExecutionIntent(db, pending?.executionIntentId, { status: 'rejected', pendingId });
   appendTradeEvent(db.data, {
     symbol: LIVE_SYMBOL,
     source: 'live',
@@ -4324,6 +4393,21 @@ function normalizeSignalSourceLabel(strategy: SignalStrategy, timeframe: Trading
   return clean ? `${strategy}:${clean}:${timeframe}` : `${strategy}:auto:${timeframe}`;
 }
 
+function normalizeExecutionIntentMetadata(details?: Record<string, unknown>): Record<string, string | number | boolean | null> | undefined {
+  if (!details) return undefined;
+  const metadata: Record<string, string | number | boolean | null> = {};
+  for (const [key, value] of Object.entries(details)) {
+    if (value === null) {
+      metadata[key] = null;
+    } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      metadata[key] = value;
+    } else if (value instanceof Date) {
+      metadata[key] = value.toISOString();
+    }
+  }
+  return Object.keys(metadata).length > 0 ? metadata : undefined;
+}
+
 async function handoffStrategyEntrySignal(params: {
   component: 'engulfing-monitor' | 'fvg-monitor' | 'radar-ingest';
   strategy: SignalStrategy;
@@ -4336,23 +4420,86 @@ async function handoffStrategyEntrySignal(params: {
   autoConfirm: boolean;
   sourceLabel?: string;
   auditDetails?: Record<string, unknown>;
+  radarSignalId?: string;
 }): Promise<{
   flow: 'continue' | 'break';
   status: 'pending_confirmation' | 'auto_order_placed' | 'rejected' | 'ignored';
   source: string;
+  executionIntentId?: string;
   pendingId?: string;
   orderId?: string;
   error?: string;
 }> {
-  const { component, strategy, symbol, timeframe, side, price, reason, effectiveRules, autoConfirm, sourceLabel, auditDetails } = params;
+  const { component, strategy, symbol, timeframe, side, price, reason, effectiveRules, autoConfirm, sourceLabel, auditDetails, radarSignalId } = params;
   const source = normalizeSignalSourceLabel(strategy, timeframe, sourceLabel);
   const auditGate = getEntrySignalAuditGate(strategy);
+  const db = await getDb();
+  const nowIso = new Date().toISOString();
+  const policies = syncRadarContextPolicies({ db, nowIso });
+  const policyGate = evaluateRadarContextPolicyEntry({
+    policies,
+    symbol,
+    side,
+    nowIso,
+  });
+  const intent = appendExecutionIntent(db, {
+    component,
+    strategy,
+    symbol,
+    side,
+    timeframe,
+    price,
+    reduceOnly: false,
+    reason,
+    sourceLabel: source,
+    status: policyGate.allowed ? 'created' : 'policy_rejected',
+    auditedOperatorOverride: false,
+    policyDecision: policyGate.allowed ? 'accepted' : 'rejected',
+    policyReasonCode: policyGate.reasonCode,
+    policySnapshot: policyGate.snapshot,
+    radarSignalId,
+    metadata: normalizeExecutionIntentMetadata(auditDetails),
+  });
+
+  if (!policyGate.allowed) {
+    logRiskGateAudit({
+      gate: auditGate,
+      passed: false,
+      reason: policyGate.reasonCode ?? 'radar_context_policy_blocked',
+      details: { symbol, timeframe, strategy, executionIntentId: intent.id, ...auditDetails },
+    });
+    appendTradeEvent(db.data, {
+      symbol,
+      source: 'live',
+      type: 'signal_rejected',
+      timestamp: nowIso,
+      correlationId: `intent-${intent.id}`,
+      side: side === 'buy' ? 'long' : 'short',
+      price,
+      reason: 'radar_context_policy_rejected',
+      payload: {
+        executionIntentId: intent.id,
+        policyReasonCode: policyGate.reasonCode ?? 'radar_context_policy_blocked',
+        policyId: policyGate.snapshot?.policyId ?? null,
+      },
+    });
+    await db.write();
+    await notifySignalRejectedEvent({
+      symbol,
+      source,
+      reason: policyGate.reasonCode ?? 'radar_context_policy_blocked',
+      blocks: policyGate.snapshot?.reasonCodes.join(',') || policyGate.reasonCode,
+    }).catch(() => undefined);
+    return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: policyGate.reasonCode ?? 'radar_context_policy_blocked' };
+  }
 
   if (!autoConfirm) {
     const estimate = await estimateSignalSize({ symbol, side, price, effectiveRules });
     if (!estimate.size || estimate.size <= 0) {
+      updateExecutionIntent(db, intent.id, { status: 'ignored' });
+      await db.write();
       logger.warn({ component, symbol, timeframe, side, reason: 'invalid_sizing', strategy }, 'entry signal skipped: invalid sizing');
-      return { flow: 'continue', status: 'ignored', source, error: 'invalid_sizing' };
+      return { flow: 'continue', status: 'ignored', source, executionIntentId: intent.id, error: 'invalid_sizing' };
     }
 
     const correlationId = `${strategy}-pending-${nanoid(8)}`;
@@ -4366,19 +4513,26 @@ async function handoffStrategyEntrySignal(params: {
       size: estimate.size,
       leverage: estimate.leverage,
       correlationId,
+      executionIntentId: intent.id,
     });
 
     logger.info({ component, symbol, timeframe, side, strategy, pendingId: queued.id, queued: queued.queued, reason, source }, 'entry signal queued for manual confirmation');
 
     if (queued.queued) {
-      return { flow: 'break', status: 'pending_confirmation', source, pendingId: queued.id };
+      updateExecutionIntent(db, intent.id, { status: 'pending_confirmation', pendingId: queued.id });
+      await db.write();
+      return { flow: 'break', status: 'pending_confirmation', source, executionIntentId: intent.id, pendingId: queued.id };
     }
 
     if (queued.id.startsWith('pc-')) {
-      return { flow: 'break', status: 'pending_confirmation', source, pendingId: queued.id };
+      updateExecutionIntent(db, intent.id, { status: 'pending_confirmation', pendingId: queued.id });
+      await db.write();
+      return { flow: 'break', status: 'pending_confirmation', source, executionIntentId: intent.id, pendingId: queued.id };
     }
 
-    return { flow: 'break', status: 'rejected', source, error: queued.id };
+    updateExecutionIntent(db, intent.id, { status: 'rejected' });
+    await db.write();
+    return { flow: 'break', status: 'rejected', source, executionIntentId: intent.id, error: queued.id };
   }
 
   try {
@@ -4386,8 +4540,10 @@ async function handoffStrategyEntrySignal(params: {
     const equityUsd = account?.equityUsd ?? 0;
     const availableUsd = account?.availableUsd ?? 0;
     if (equityUsd <= 0) {
+      updateExecutionIntent(db, intent.id, { status: 'rejected' });
+      await db.write();
       logger.warn({ component, strategy, symbol, timeframe }, 'auto-entry: zero equity');
-      return { flow: 'continue', status: 'rejected', source, error: 'zero_equity' };
+      return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: 'zero_equity' };
     }
 
     let sizeDecimals = 6;
@@ -4401,8 +4557,10 @@ async function handoffStrategyEntrySignal(params: {
     const sizing = computeAllocationSize({ symbol, price, equityUsd, availableUsd, rules: effectiveRules, sizeDecimals });
     if (!sizing.ok) {
       logRiskGateAudit({ gate: auditGate, passed: false, reason: sizing.reason, details: { symbol, timeframe, strategy, ...auditDetails } });
+      updateExecutionIntent(db, intent.id, { status: 'rejected' });
+      await db.write();
       logger.warn({ component, strategy, symbol, timeframe, reason: sizing.reason }, 'auto-entry sizing failed');
-      return { flow: 'continue', status: 'rejected', source, error: sizing.reason };
+      return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: sizing.reason };
     }
 
     const risk = await evaluateRiskGates({ emitAudit: false });
@@ -4415,7 +4573,9 @@ async function handoffStrategyEntrySignal(params: {
         reason: 'auto_entry_blocked_risk_gate',
         blocks: risk.blocks.join(','),
       }).catch(() => undefined);
-      return { flow: 'continue', status: 'rejected', source, error: reasonCode };
+      updateExecutionIntent(db, intent.id, { status: 'rejected' });
+      await db.write();
+      return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: reasonCode };
     }
 
     const gross = await checkPortfolioGrossCap({ symbol, price, size: sizing.size, effectiveRules, riskCheck: risk });
@@ -4432,7 +4592,9 @@ async function handoffStrategyEntrySignal(params: {
         reason: 'portfolio_gross_cap_exceeded',
         blocks: `gross_${gross.totalGross.toFixed(2)}_gt_${gross.cap.toFixed(2)}`,
       }).catch(() => undefined);
-      return { flow: 'continue', status: 'rejected', source, error: 'portfolio_gross_cap_exceeded' };
+      updateExecutionIntent(db, intent.id, { status: 'rejected' });
+      await db.write();
+      return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: 'portfolio_gross_cap_exceeded' };
     }
 
     const correlationId = `${strategy}-auto-${nanoid(8)}`;
@@ -4460,7 +4622,9 @@ async function handoffStrategyEntrySignal(params: {
           // best effort
         }
       }
-      return { flow: 'break', status: 'auto_order_placed', source, orderId: ack.orderId };
+      updateExecutionIntent(db, intent.id, { status: 'auto_order_placed', orderId: ack.orderId });
+      await db.write();
+      return { flow: 'break', status: 'auto_order_placed', source, executionIntentId: intent.id, orderId: ack.orderId };
     }
 
     await notifyOrderRejectedEvent({
@@ -4469,12 +4633,16 @@ async function handoffStrategyEntrySignal(params: {
       error: ack.error ?? 'exchange_rejected',
     }).catch(() => undefined);
 
-    return { flow: 'continue', status: 'rejected', source, error: ack.error ?? 'exchange_rejected' };
+    updateExecutionIntent(db, intent.id, { status: 'rejected' });
+    await db.write();
+    return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: ack.error ?? 'exchange_rejected' };
   } catch (err) {
     logger.error({ component, strategy, symbol, timeframe, err, reason, source }, 'auto-entry order failed');
   }
 
-  return { flow: 'continue', status: 'rejected', source, error: 'auto_entry_failed' };
+  updateExecutionIntent(db, intent.id, { status: 'rejected' });
+  await db.write();
+  return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: 'auto_entry_failed' };
 }
 
 function alphaRadarObservationIsEventLockoutCandidate(observation: AlphaRadarObservation): boolean {
@@ -5706,6 +5874,93 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
       error: 'Trading Rules gate failed. New entry orders are blocked unless operator override is explicit.',
     });
   }
+}
+
+async function radarContextPolicyGate(req: Request, res: Response, next: NextFunction) {
+  const body = (req.body ?? {}) as {
+    symbol?: string;
+    side?: 'buy' | 'sell';
+    price?: number;
+    reduceOnly?: boolean;
+    radarContextPolicyOverride?: boolean;
+  };
+  if (body.reduceOnly || isProtectionOnlyRequest(req)) return next();
+  if (body.side !== 'buy' && body.side !== 'sell') return next();
+
+  const symbol = normalizeSymbol(body.symbol ?? LIVE_SYMBOL);
+  const side = body.side;
+  const price = Number(body.price);
+  const operatorOverride = body.radarContextPolicyOverride === true;
+  const component = req.path.includes('/limit') ? 'owner-order-limit-api' : 'owner-order-api';
+  const sourceLabel = component === 'owner-order-limit-api' ? 'manual:limit' : 'manual:market';
+
+  const db = await getDb();
+  const nowIso = new Date().toISOString();
+  const policies = syncRadarContextPolicies({ db, nowIso });
+  const policyGate = evaluateRadarContextPolicyEntry({ policies, symbol, side, nowIso });
+  const intent = appendExecutionIntent(db, {
+    component,
+    strategy: 'manual',
+    symbol,
+    side,
+    timeframe: undefined,
+    price: Number.isFinite(price) ? price : 0,
+    reduceOnly: false,
+    reason: 'manual_live_order',
+    sourceLabel,
+    status: !policyGate.allowed && !operatorOverride ? 'policy_rejected' : 'created',
+    auditedOperatorOverride: operatorOverride,
+    policyDecision: operatorOverride ? 'override' : policyGate.allowed ? 'accepted' : 'rejected',
+    policyReasonCode: policyGate.reasonCode,
+    policySnapshot: policyGate.snapshot,
+    metadata: {
+      requestPath: req.path,
+      method: req.method,
+    },
+  });
+
+  (req as any)._executionIntentId = intent.id;
+  (req as any)._radarContextPolicyGate = {
+    allowed: policyGate.allowed,
+    override: operatorOverride,
+    snapshot: policyGate.snapshot,
+  };
+
+  logRiskGateAudit({
+    gate: 'radar_context_policy',
+    passed: policyGate.allowed || operatorOverride,
+    reason: operatorOverride ? 'operator_override' : policyGate.reasonCode,
+    details: { symbol, side, executionIntentId: intent.id, policyId: policyGate.snapshot?.policyId ?? null, requestPath: req.path },
+  });
+
+  if (!policyGate.allowed && !operatorOverride) {
+    appendTradeEvent(db.data, {
+      symbol,
+      source: 'live',
+      type: 'signal_rejected',
+      timestamp: nowIso,
+      correlationId: `intent-${intent.id}`,
+      side: toTradeSide(side),
+      price: Number.isFinite(price) ? price : undefined,
+      reason: 'manual_live_order_radar_policy_rejected',
+      payload: {
+        executionIntentId: intent.id,
+        policyReasonCode: policyGate.reasonCode ?? 'radar_context_policy_blocked',
+        policyId: policyGate.snapshot?.policyId ?? null,
+      },
+    });
+    await db.write();
+    return res.status(403).json({
+      ok: false,
+      errorCode: 'invalid_params' as TradingErrorCode,
+      error: policyGate.reasonCode ?? 'radar_context_policy_blocked',
+      executionIntentId: intent.id,
+      policyId: policyGate.snapshot?.policyId ?? null,
+    });
+  }
+
+  await db.write();
+  return next();
 }
 
 let ingestBusy = false;
@@ -7479,12 +7734,14 @@ async function ingestRadarSignal(payload: Partial<RadarSignalIngestPayload>, ing
     autoConfirm: radarRuntime.autoConfirm,
     sourceLabel: source,
     auditDetails: { radarSource: source, ingest: ingestSource },
+    radarSignalId: record.id,
   });
 
   record.status = handoff.status;
   record.updatedAt = new Date().toISOString();
   record.pendingId = handoff.pendingId;
   record.orderId = handoff.orderId;
+  record.executionIntentId = handoff.executionIntentId;
   record.error = handoff.error;
   db.data.radarSignals = compactRadarSignals(db.data.radarSignals.map((item) => item.id === record.id ? record : item));
   await db.write();
@@ -7592,6 +7849,13 @@ app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
     monitoredCoins: normalizeTradingRules(db.data.settings.tradingRules).coins,
     nowIso,
   });
+  const radarContextPolicies = buildRadarContextPolicyBook({
+    bundles: evidenceBundles,
+    candidates: signalCandidates,
+    monitoredCoins: normalizeTradingRules(db.data.settings.tradingRules).coins,
+    nowIso,
+    eventLockoutMinutes: normalizeTradingRules(db.data.settings.tradingRules).eventLockoutMinutes,
+  });
   const observations = currentAlphaRadarObservations(settings, ensureAlphaRadarObservationsState(db), nowIso)
     .slice()
     .sort(alphaRadarObservationComparator('rank'))
@@ -7609,6 +7873,8 @@ app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
     nowIso,
   });
   const dedupeSuppressed = evidenceBundles.reduce((acc, bundle) => acc + bundle.duplicateSuppressedCount + bundle.exactMatchCount + bundle.canonicalUrlMatchCount + bundle.externalIdMatchCount + bundle.fuzzyMatchCount, 0);
+  const policyAcceptedEntries = ensureExecutionIntentsState(db).filter((item) => item.policyDecision === 'accepted' && item.status !== 'created').length;
+  const policyBlockedEntries = ensureExecutionIntentsState(db).filter((item) => item.policyDecision === 'rejected').length;
   return res.json({
     ok: true,
     settings,
@@ -7622,6 +7888,12 @@ app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
       evidenceBundles: evidenceBundles.filter((item) => item.status === 'active').length,
       signalCandidates: signalCandidates.length,
       dedupeSuppressed,
+      radarContextPolicies: radarContextPolicies.length,
+      activeRadarContextPolicies: radarContextPolicies.filter((item) => readActiveRadarContextPolicy({ policies: radarContextPolicies, symbol: item.symbol, nowIso }).policy).length,
+      lockedRadarContextPolicies: radarContextPolicies.filter((item) => item.lockNewEntries || item.directionMode === 'blocked').length,
+      expiredRadarContextPolicies: radarContextPolicies.filter((item) => readActiveRadarContextPolicy({ policies: radarContextPolicies, symbol: item.symbol, nowIso }).reasonCode === 'ttl_expired').length,
+      policyAcceptedEntries,
+      policyBlockedEntries,
       sourceHealth: buildAlphaRadarSourceHealth(settings, ensureAlphaRadarObservationsState(db)),
       llmMode: 'on_demand',
     },
@@ -8252,7 +8524,7 @@ app.post('/api/live/position/levels', ownerAuth, riskGateMiddleware, symbolAlloc
   });
 });
 
-app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, engulfingGate, async (req, res) => {
+app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, engulfingGate, radarContextPolicyGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -8274,6 +8546,8 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     takeProfit?: number;
     confirm?: boolean;
   };
+  const executionIntentId = (req as any)._executionIntentId as string | undefined;
+  const radarPolicyGate = (req as any)._radarContextPolicyGate as { snapshot?: { policyId?: string }; override?: boolean } | undefined;
 
   if (side !== 'buy' && side !== 'sell') {
     return res.status(400).json({ error: 'invalid_side' });
@@ -8324,6 +8598,9 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     });
 
     if (!sizing.ok) {
+      const db = await getDb();
+      updateExecutionIntent(db, executionIntentId, { status: 'rejected' });
+      await db.write();
       logRiskGateAudit({ gate: 'allocation_sizing', passed: false, reason: sizing.reason, details: { symbol: normalizedSym, price: px, equityUsd, availableUsd } });
       return res.status(400).json({
         ok: false,
@@ -8365,6 +8642,9 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
       });
     }
     if (!gross.ok) {
+      const db = await getDb();
+      updateExecutionIntent(db, executionIntentId, { status: 'rejected' });
+      await db.write();
       return res.status(403).json({
         ok: false,
         errorCode: 'portfolio_gross_cap_exceeded' as TradingErrorCode,
@@ -8402,7 +8682,10 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     payload: {
       reduceOnly: Boolean(reduceOnly),
       notionalUsdc: Number(notional.toFixed(4)),
-      manualConfirmation: rulesCache.getEffectiveRules().manualConfirmation
+      manualConfirmation: rulesCache.getEffectiveRules().manualConfirmation,
+      executionIntentId: executionIntentId ?? null,
+      radarPolicyId: radarPolicyGate?.snapshot?.policyId ?? null,
+      radarContextOverride: radarPolicyGate?.override === true,
     }
   });
 
@@ -8430,9 +8713,14 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     payload: {
       orderId: ack.orderId ?? null,
       status: ack.status ?? null,
-      error: ack.error ?? null
+      error: ack.error ?? null,
+      executionIntentId: executionIntentId ?? null,
     }
   });
+
+  updateExecutionIntent(db, executionIntentId, ack.ok
+    ? { status: 'auto_order_placed', orderId: ack.orderId }
+    : { status: 'rejected' });
 
   if (!ack.ok) {
     await notifyOrderRejectedEvent({
@@ -9084,7 +9372,7 @@ function pruneIdempotencyCache() {
 }
 
 // POST /api/live/order — idempotent place order
-app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, engulfingGate, async (req, res) => {
+app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, symbolAllocationGate, engulfingGate, radarContextPolicyGate, async (req, res) => {
   const {
     symbol = LIVE_SYMBOL,
     side,
@@ -9108,6 +9396,8 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     takeProfit?: number;
     confirm?: boolean;
   };
+  const executionIntentId = (req as any)._executionIntentId as string | undefined;
+  const radarPolicyGate = (req as any)._radarContextPolicyGate as { snapshot?: { policyId?: string }; override?: boolean } | undefined;
 
   // Validation
   if (side !== 'buy' && side !== 'sell') {
@@ -9159,6 +9449,9 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     });
 
     if (!sizing.ok) {
+      const db = await getDb();
+      updateExecutionIntent(db, executionIntentId, { status: 'rejected' });
+      await db.write();
       logRiskGateAudit({ gate: 'allocation_sizing', passed: false, reason: sizing.reason, details: { symbol: normalizedSym, price: px, equityUsd, availableUsd } });
       return res.status(400).json({
         ok: false,
@@ -9192,6 +9485,9 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
         riskCheck: (req as any)._riskCheck,
       });
     } catch (error) {
+      const db = await getDb();
+      updateExecutionIntent(db, executionIntentId, { status: 'rejected' });
+      await db.write();
       logger.error({ component: 'risk-gate', err: error }, 'portfolio gross cap check failed');
       return res.status(503).json({
         ok: false,
@@ -9200,6 +9496,9 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
       });
     }
     if (!gross.ok) {
+      const db = await getDb();
+      updateExecutionIntent(db, executionIntentId, { status: 'rejected' });
+      await db.write();
       return res.status(403).json({
         ok: false,
         errorCode: 'portfolio_gross_cap_exceeded' as TradingErrorCode,
@@ -9251,6 +9550,12 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     reason: 'live_place_order',
     payload: { reduceOnly: Boolean(reduceOnly), notionalUsdc: Number(notional.toFixed(4)), clientOrderId: correlationId }
   });
+  db.data.tradeEvents[db.data.tradeEvents.length - 1].payload = {
+    ...(db.data.tradeEvents[db.data.tradeEvents.length - 1].payload ?? {}),
+    executionIntentId: executionIntentId ?? null,
+    radarPolicyId: radarPolicyGate?.snapshot?.policyId ?? null,
+    radarContextOverride: radarPolicyGate?.override === true,
+  };
 
   const intent: OrderIntent = { symbol: normalizedSymbol, side, price: px, size: qty, reduceOnly: Boolean(reduceOnly), clientOrderId: correlationId };
   const ack = await exchange.placeLimitOrder(intent);
@@ -9269,6 +9574,14 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     reason: ack.ok ? 'live_order_ack' : 'live_order_rejected',
     payload: { orderId: ack.orderId ?? null, status: ack.status ?? null, error: ack.error ?? null, errorCode: errorCode ?? null }
   });
+  db.data.tradeEvents[db.data.tradeEvents.length - 1].payload = {
+    ...(db.data.tradeEvents[db.data.tradeEvents.length - 1].payload ?? {}),
+    executionIntentId: executionIntentId ?? null,
+  };
+
+  updateExecutionIntent(db, executionIntentId, ack.ok
+    ? { status: 'auto_order_placed', orderId: ack.orderId }
+    : { status: 'rejected' });
 
   if (!ack.ok) {
     await notifyOrderRejectedEvent({

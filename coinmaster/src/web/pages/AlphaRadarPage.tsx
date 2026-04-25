@@ -201,6 +201,11 @@ export function AlphaRadarPage() {
   }, [ideasPayload, signals, snapshot]);
   const handedOffCount = (signals?.summary.pendingConfirmation ?? 0) + (signals?.summary.autoOrderPlaced ?? 0);
   const rejectedHandoffCount = signals?.summary.rejected ?? 0;
+  const activePolicyCount = ideasPayload?.marketSummary.activeRadarContextPolicies ?? 0;
+  const lockedPolicyCount = ideasPayload?.marketSummary.lockedRadarContextPolicies ?? 0;
+  const expiredPolicyCount = ideasPayload?.marketSummary.expiredRadarContextPolicies ?? 0;
+  const policyBlockedEntries = ideasPayload?.marketSummary.policyBlockedEntries ?? 0;
+  const policyAcceptedEntries = ideasPayload?.marketSummary.policyAcceptedEntries ?? 0;
 
   if (isLoading && !live && !snapshot && !signals) {
     return <p className="muted">Loading Radar…</p>;
@@ -403,6 +408,14 @@ export function AlphaRadarPage() {
               {typeof ideasPayload?.marketSummary.evidenceBundles === 'number' ? (
                 <span className="radar-chip radar-chip--muted">Evidence {ideasPayload.marketSummary.evidenceBundles}</span>
               ) : null}
+              {typeof ideasPayload?.marketSummary.radarContextPolicies === 'number' ? (
+                <span className="radar-chip radar-chip--muted">Policies {ideasPayload.marketSummary.radarContextPolicies}</span>
+              ) : null}
+              <span className="radar-chip radar-chip--muted">Active policy {activePolicyCount}</span>
+              <span className="radar-chip radar-chip--muted">Locked {lockedPolicyCount}</span>
+              <span className="radar-chip radar-chip--muted">Expired {expiredPolicyCount}</span>
+              <span className="radar-chip radar-chip--muted">Policy pass {policyAcceptedEntries}</span>
+              <span className="radar-chip radar-chip--muted">Policy block {policyBlockedEntries}</span>
               {topAssets.length ? topAssets.map((item) => (
                 <span key={item.asset} className="radar-chip">{item.asset} · {item.count}</span>
               )) : <span className="muted">No active asset concentration yet.</span>}
