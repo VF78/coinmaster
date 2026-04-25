@@ -42,6 +42,7 @@ npm run build >/tmp/coinmaster-deploy-build.log 2>&1 || {
   exit 1
 }
 
+DEPENDENCY_DRIFT=0
 if [[ -f "$TARGET_DIR/package-lock.json" ]]; then
   if ! LOCK_SRC="$APP_DIR/package-lock.json" LOCK_TGT="$TARGET_DIR/package-lock.json" python3 - <<'PY'
 import json, sys, os
@@ -58,8 +59,8 @@ except Exception as e:
     sys.exit(1)
 PY
   then
-    echo "Dependency drift detected between workspace and production target; run npm install / npm ci in workspace, then redeploy." >&2
-    exit 1
+    DEPENDENCY_DRIFT=1
+    log "Dependency drift detected; production npm install will run after package files are staged"
   fi
 fi
 
@@ -78,6 +79,17 @@ rsync -a --delete "$APP_DIR/dist/" "$TARGET_DIR/dist.new/"
 install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package.json" "$TARGET_DIR/package.json"
 install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"
 chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new"
+
+if [[ "$DEPENDENCY_DRIFT" -eq 1 ]]; then
+  log "Installing production dependencies from staged lockfile"
+  if ! npm install --prefix "$TARGET_DIR" --no-audit --no-fund >/tmp/coinmaster-deploy-npm-install.log 2>&1; then
+    cat /tmp/coinmaster-deploy-npm-install.log >&2
+    if [[ -f "$BACKUP_DIR/package.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package.json" "$TARGET_DIR/package.json"; fi
+    if [[ -f "$BACKUP_DIR/package-lock.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"; fi
+    exit 1
+  fi
+  chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/node_modules" "$TARGET_DIR/package-lock.json" "$TARGET_DIR/package.json"
+fi
 
 if [[ ! -f "$TARGET_DIR/dist.new/index.html" ]]; then
   echo "dist.new/index.html missing after build/sync" >&2
