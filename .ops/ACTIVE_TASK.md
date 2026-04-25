@@ -1,31 +1,28 @@
 # ACTIVE_TASK
 
-Updated: 2026-04-25 22:53 Europe/Madrid
-Status: COMPLETE / GitHub issue #61 closed and Project #2 updated
+Updated: 2026-04-25 22:55 Europe/Madrid
+Status: COMPLETE / #61 implemented, pushed, GitHub Project updated, and deployed to production
 GitHub Project: https://github.com/users/VF78/projects/2
 Completed item: #61 [ARCH-01] Trading Rules target upgrade: SignalQualityContext, regime filters, RR gate, fail-safe entries
 Completed issue: https://github.com/VF78/coinmaster/issues/61
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / pushed commit: main / 95d5a17 Implement Trading Rules signal quality context
-
-Owner instruction:
-- Clean Project #2, keep #61-#64 only, put #61 In Progress.
-- Implement #61 by protocol on Claude Opus 4.6 first; fallback Codex 5.5 only if needed.
-- Review coding-agent output architecturally; remove hacks/workarounds/overengineering; continue slice-by-slice without waiting until #61 is complete.
-- Find the GitHub token in secrets/credentials and connect to GitHub Project for task updates.
+Branch / pushed commit before deploy: main / 6f90ca3da937c73761a2c0d9613742e9f4732b7d
+Production target: /opt/coinmaster
+Production service: coinmaster.service
 
 Completed:
-- Found valid GitHub token in the repository remote credentials without printing the secret.
+- Found valid GitHub token in repository remote credentials without printing the secret.
 - Verified GitHub auth as `VF78`.
-- Pushed commit `95d5a17` to `origin/main`.
+- Pushed implementation and task-state commits to `origin/main`.
 - Commented verification summary on issue #61.
 - Closed issue #61.
 - Updated GitHub Project #2: #61 = Done.
-- Verified Project #2 now has:
+- Verified Project #2:
   - #61 Closed / Done
   - #62 Open / Todo
   - #63 Open / Todo
   - #64 Open / Todo
+- Deployed to production via `coinmaster/scripts/deploy-prod-safe.sh` only; no manual edits in `/opt/coinmaster`.
 
 Implemented for #61:
 - New pure `src/core/signalQualityContext.ts` with deterministic TypeScript EMA/ATR/ADX, regime assessment, displacement/FVG impulse quality, expected RR, and combined verdict.
@@ -43,14 +40,24 @@ Implemented for #61:
 - `eventLockoutMinutes` wired to real existing AlphaRadar observations: fresh `macroShock` / `macro-shock` / high-urgency macro observations block Trading Rules auto entries. No fake state introduced.
 - No external trading engines added; no TA-Lib/Python dependency in live path.
 
-Final verification before push:
-- `git diff --check` passed for clean code/doc set excluding runtime noise.
-- `npm run check` passed.
-- `npm run invariants:trading-rules` passed: 61/61.
-- `npm run invariants:signal-quality` passed: 32/32.
-- `npm run invariants:fvg` passed: 18/18.
-- `npm run invariants:engulfing` passed: 38/38.
-- `npm run build` passed (`vite build`).
+Pre-deploy checks passed:
+- `npm run check`
+- `npm run invariants:trading-rules` → 61/61
+- `npm run invariants:signal-quality` → 32/32
+- `npm run invariants:fvg` → 18/18
+- `npm run invariants:engulfing` → 38/38
+- `npm run build`
+
+Deploy verification passed:
+- `/opt/coinmaster/.deploy-source-commit` matched workspace HEAD at deploy time.
+- `coinmaster.service` active.
+- `GET http://127.0.0.1:8787/api/health` returned `{"ok":true}`.
+- Root HTML returned `<div id="root"></div>`.
+- Production files include `src/core/signalQualityContext.ts`.
+- Production server contains `resolveEventLockout`.
+- Production `package.json` contains `invariants:signal-quality`.
+- `GET /api/settings/trading-rules` returned all eight Stage-1 fields.
+- Recent journal showed clean graceful restart and startup; no deploy rollback.
 
 Runtime noise still intentionally uncommitted:
 - `coinmaster/data/db.json`
