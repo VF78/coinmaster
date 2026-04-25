@@ -1,12 +1,14 @@
 # ACTIVE_TASK
 
-Updated: 2026-04-25 23:51 Europe/Madrid
-Status: COMPLETE / #62 implemented, pushed, GitHub issue closed, Project updated; pending production deploy of final pushed HEAD
+Updated: 2026-04-25 23:48 Europe/Madrid
+Status: COMPLETE / #62 implemented, verified, pushed, GitHub issue closed, Project Done, production deployed
 GitHub Project: https://github.com/users/VF78/projects/2
 Completed item: #62 [ARCH-02] Radar evidence/ingestion upgrade: feedparser, provenance, EvidenceBundle, NLP, dedupe, factor score
 Completed issue: https://github.com/VF78/coinmaster/issues/62
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Implementation commit: dbacb893ad588bdc57230655923e0b30677fd848
+Task sync commit: 9cad7dfb6d3b8fd95622e0fdf0f93295c6d80303
+Deploy script dependency-drift fix: 62ef387a97334ca3b767e60dd73a7f72b842e568
 Production target: /opt/coinmaster
 Production service: coinmaster.service
 
@@ -21,13 +23,24 @@ Completed for #62:
 - Kept `/api/alpha-radar/ideas` read-only; durable evidence/candidate persistence happens during observation saves.
 - Updated `docs/RADAR_RUNTIME.md` with evidence/candidate runtime, parser/enrichment boundaries, and discuss-before-implementation gates for SentenceTransformers/OpenBB/cryptofeed.
 - Added `scripts/invariants-radar-evidence.ts` and package script `invariants:radar-evidence`.
+- Updated safe deploy script so approved dependency drift is installed through the deploy protocol rather than manual `/opt/coinmaster` patching.
 
-Verification passed before commit/push:
+Verification passed before commit/push/deploy:
 - `git diff --check`
 - `npm run check`
 - `npm run invariants:radar-evidence` → 15/15
 - `npm run invariants:radar-handoff` → 34/34
 - `npm run build`
+
+Production verification after deploy:
+- `/opt/coinmaster/.deploy-source-commit` matched deployed source commit at verification time.
+- `coinmaster.service`: active.
+- `/api/health`: `{"ok":true}`.
+- root HTML contained `<div id="root"></div>`.
+- `/opt/coinmaster/node_modules/feedparser/package.json`: `2.3.1`.
+- `/opt/coinmaster/src/server/alphaRadarEvidence.ts`: present.
+- `/opt/coinmaster/src/server/alphaRadarFeedParser.ts`: present.
+- `/opt/coinmaster/src/shared/dto.ts`: contains `EvidenceBundle`.
 
 GitHub sync:
 - Commented verification summary on issue #62.
@@ -47,5 +60,5 @@ Runtime noise still intentionally uncommitted:
 - `coinmaster/data/db.json`
 - `prod-backups/dbshape_v1-pre-legacy-cleanup-20260424-160348.json`
 
-Next exact step:
-- Commit/push this task-state update, then deploy final pushed HEAD via `coinmaster/scripts/deploy-prod-safe.sh` only and verify production.
+Next task:
+- #63 [ARCH-03] Radar role change: make RadarContextPolicy the context controller for Trading Rules entries.
