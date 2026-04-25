@@ -1428,6 +1428,7 @@ export interface BacktestRunSummary {
   netPnlUsd: number;
   roiPct: number;
   maxDrawdownPct: number;
+  expectancyUsd?: number;
 }
 
 export interface BacktestRunSymbolStats {
@@ -1456,6 +1457,114 @@ export interface BacktestRunAiAnalysis {
   recommendations?: string[];
 }
 
+export interface ResearchWindowRange {
+  startTimeMs: number;
+  endTimeMs: number;
+}
+
+export interface ResearchCoverage {
+  symbols: string[];
+  timeframes: TradingRulesTimeframe[];
+  window: ResearchWindowRange;
+}
+
+export interface RollingWindowSlice {
+  index: number;
+  train: ResearchWindowRange;
+  test: ResearchWindowRange;
+  coverage: ResearchCoverage;
+}
+
+export interface RollingWindowSchedule {
+  anchorTimeMs: number;
+  trainWindowMonths: number;
+  testWindowMonths: number;
+  walkForwardStepMonths: number;
+  coverage: ResearchCoverage;
+  windows: RollingWindowSlice[];
+}
+
+export interface ResearchReplayAssumptions {
+  mode: 'no_policy_replay' | 'snapshot_only' | 'deterministic_policy_replay';
+  notes: string[];
+  policySnapshots: ExecutionIntentPolicySnapshot[];
+  contextPolicyIds?: string[];
+  capturedAt?: string;
+}
+
+export interface ResearchObjectiveMetrics {
+  objectiveName: 'net_pnl_usd' | 'roi_pct' | 'expectancy_usd' | 'win_rate_pct' | 'drawdown_adjusted_return';
+  objectiveValue: number;
+  totalTrades: number;
+  winRatePct: number;
+  expectancyUsd: number;
+  netPnlUsd: number;
+  roiPct: number;
+  maxDrawdownPct: number;
+}
+
+export interface ResearchRejectionStats {
+  totalRejectedSignals: number;
+  policyBlockedSignals: number;
+  sizingRejectedSignals: number;
+  riskRejectedSignals: number;
+  emergencyExitCount: number;
+  stopLossCount: number;
+}
+
+export interface BacktestTradeBreakdownItem {
+  setup: string;
+  timeframe: TradingRulesTimeframe;
+  source: string;
+  tradeCount: number;
+  wins: number;
+  losses: number;
+  netPnlUsd: number;
+}
+
+export interface BacktestLiveDeltaBreakdownItem {
+  setup: string;
+  timeframe?: TradingRulesTimeframe;
+  source: string;
+  expectedTrades: number;
+  realizedTrades: number;
+}
+
+export interface BacktestLiveDeltaReport {
+  status: 'available' | 'insufficient_data';
+  expectedTradeCount: number;
+  realizedTradeCount: number;
+  tradeCountDrift: number;
+  expectedWinRatePct?: number;
+  realizedWinRatePct?: number;
+  winRateDriftPct?: number;
+  expectedExpectancyUsd?: number;
+  realizedExpectancyUsd?: number;
+  expectancyDriftUsd?: number;
+  expectedMaxDrawdownPct?: number;
+  realizedMaxDrawdownPct?: number;
+  drawdownDriftPct?: number;
+  breakdown: BacktestLiveDeltaBreakdownItem[];
+  notes: string[];
+  generatedAt: string;
+}
+
+export interface QuantStatsReportRecord {
+  status: 'pending' | 'completed' | 'failed' | 'unavailable' | 'skipped';
+  requestedAt?: string;
+  completedAt?: string;
+  adapter: 'python_quantstats';
+  reason?: string;
+  artifactPath?: string;
+}
+
+export interface BacktestResearchArtifacts {
+  eventCount?: number;
+  tradeCount?: number;
+  equityCurvePoints?: number;
+  tradeBreakdown?: BacktestTradeBreakdownItem[];
+}
+
 export interface BacktestRun {
   id: string;
   status: BacktestRunStatus;
@@ -1482,11 +1591,13 @@ export interface BacktestRun {
   summary?: BacktestRunSummary;
   bySymbol: BacktestRunSymbolStats[];
   aiAnalysis: BacktestRunAiAnalysis;
-  artifacts?: {
-    eventCount?: number;
-    tradeCount?: number;
-    equityCurvePoints?: number;
-  };
+  replayAssumptions?: ResearchReplayAssumptions;
+  coverage?: ResearchCoverage;
+  objectiveMetrics?: ResearchObjectiveMetrics;
+  rejectionStats?: ResearchRejectionStats;
+  deltaReport?: BacktestLiveDeltaReport;
+  quantStatsReport?: QuantStatsReportRecord;
+  artifacts?: BacktestResearchArtifacts;
   error?: string;
 }
 
@@ -1529,16 +1640,160 @@ export interface OptimizationParamRange {
   step: number;
 }
 
+export interface OptunaPrunerConfig {
+  type: 'median' | 'percentile' | 'successive_halving' | 'none';
+  warmupSteps: number;
+  minCompletedTrials: number;
+  percentile?: number;
+}
+
+export interface OptunaAdapterRequest {
+  storageBackend: 'postgres_rdbstorage';
+  studyName: string;
+  direction: 'maximize' | 'minimize';
+  objectiveName: ResearchObjectiveMetrics['objectiveName'];
+  pruner: OptunaPrunerConfig;
+  requestedAt: string;
+}
+
+export interface OptunaAdapterStatus {
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'unavailable' | 'skipped';
+  adapter: 'python_optuna';
+  checkedAt?: string;
+  reason?: string;
+  runtime?: {
+    pythonExecutable?: string;
+    optunaVersion?: string;
+    dashboardSupported?: boolean;
+  };
+}
+
+export interface ExperimentTrialWindowResult {
+  windowIndex: number;
+  train: ResearchWindowRange;
+  test: ResearchWindowRange;
+  metrics: ResearchObjectiveMetrics;
+  rejectionStats: ResearchRejectionStats;
+  summary: BacktestRunSummary;
+}
+
+export type ExperimentTrialStatus = 'queued' | 'running' | 'completed' | 'failed' | 'pruned' | 'skipped';
+
+export interface ExperimentTrial {
+  schemaVersion: 'experiment_trial_v1';
+  id: string;
+  experimentId: string;
+  optimizationResultId?: string;
+  sourceRunId?: string;
+  status: ExperimentTrialStatus;
+  trialNumber: number;
+  parameterValues: Partial<TradingRulesSettings>;
+  rulesSnapshot: TradingRulesSettings;
+  replayAssumptions: ResearchReplayAssumptions;
+  coverage: ResearchCoverage;
+  objectiveMetrics?: ResearchObjectiveMetrics;
+  rejectionStats?: ResearchRejectionStats;
+  summary?: BacktestRunSummary;
+  bySymbol?: BacktestRunSymbolStats[];
+  tradeBreakdown?: BacktestTradeBreakdownItem[];
+  deltaReport?: BacktestLiveDeltaReport;
+  quantStatsReport?: QuantStatsReportRecord;
+  optunaRequest?: OptunaAdapterRequest;
+  optunaStatus?: OptunaAdapterStatus;
+  prunerDecision?: {
+    status: 'kept' | 'early_pruned';
+    reason?: string;
+    decidedAt?: string;
+    afterWindowIndex?: number;
+  };
+  windowResults?: ExperimentTrialWindowResult[];
+  engineVersion: string;
+  engineCommit: string;
+  createdAt: string;
+  startedAt?: string;
+  finishedAt?: string;
+  error?: string;
+}
+
+export interface ExperimentAcceptanceCriteria {
+  minTrades?: number;
+  minExpectancyUsd?: number;
+  minWinRatePct?: number;
+  maxDrawdownPct?: number;
+  maxOutOfSampleWindowsWithNegativePnl?: number;
+}
+
+export interface Experiment {
+  id: string;
+  status: 'queued' | 'running' | 'completed' | 'failed' | 'promoted';
+  name: string;
+  sourceRunId?: string;
+  optimizationResultId?: string;
+  rulesSnapshot: TradingRulesSettings;
+  replayAssumptions: ResearchReplayAssumptions;
+  schedule: RollingWindowSchedule;
+  coverage: ResearchCoverage;
+  objectiveName: ResearchObjectiveMetrics['objectiveName'];
+  acceptanceCriteria: ExperimentAcceptanceCriteria;
+  trialIds: string[];
+  candidateTrialId?: string;
+  championConfigId?: string;
+  engineVersion: string;
+  engineCommit: string;
+  createdAt: string;
+  startedAt?: string;
+  finishedAt?: string;
+  requestedBy?: string;
+  error?: string;
+}
+
+export interface ChampionEvidenceReference {
+  type: 'experiment' | 'trial' | 'backtest_run' | 'optimization_result' | 'report';
+  id: string;
+}
+
+export interface ChampionConfig {
+  id: string;
+  status: 'candidate' | 'active' | 'replaced' | 'rolled_back' | 'rejected';
+  experimentId: string;
+  trialId: string;
+  rulesSnapshot: TradingRulesSettings;
+  replayAssumptions: ResearchReplayAssumptions;
+  objectiveMetrics: ResearchObjectiveMetrics;
+  deltaReport?: BacktestLiveDeltaReport;
+  acceptanceCriteria: ExperimentAcceptanceCriteria;
+  acceptancePassed: boolean;
+  evidence: ChampionEvidenceReference[];
+  engineVersion: string;
+  engineCommit: string;
+  createdAt: string;
+  promotedAt?: string;
+  promotedBy?: string;
+  replacedChampionId?: string;
+  replacedByChampionId?: string;
+  rollbackOfChampionId?: string;
+  notes?: string[];
+}
+
 export interface OptimizationResult {
   id: string;
   status: OptimizationStatus;
   sourceRunId: string;
+  experimentId?: string;
   symbol: string;
   biasMode: BacktestBiasMode;
   startTimeMs: number;
   endTimeMs: number;
   baseRulesSnapshot: TradingRulesSettings;
   paramRanges: OptimizationParamRange[];
+  rollingWindowSchedule?: RollingWindowSchedule;
+  replayAssumptions?: ResearchReplayAssumptions;
+  acceptanceCriteria?: ExperimentAcceptanceCriteria;
+  objectiveName?: ResearchObjectiveMetrics['objectiveName'];
+  optunaRequest?: OptunaAdapterRequest;
+  optunaStatus?: OptunaAdapterStatus;
+  quantStatsReport?: QuantStatsReportRecord;
+  trialIds?: string[];
   createdAt: string;
   startedAt?: string;
   finishedAt?: string;
@@ -1548,9 +1803,12 @@ export interface OptimizationResult {
   searchSpaceCandidates: number;
   totalCandidates: number;
   evaluatedCandidates: number;
+  prunedCandidates?: number;
   bestParams?: Partial<TradingRulesSettings>;
   bestSummary?: BacktestRunSummary;
   bestBySymbol?: BacktestRunSymbolStats[];
+  bestTrialId?: string;
+  bestObjectiveMetrics?: ResearchObjectiveMetrics;
   error?: string;
   engineVersion: string;
   engineCommit: string;

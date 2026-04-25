@@ -52,6 +52,9 @@ const defaultData: DBShape = {
   aiMasterQa: [],
   backtestRuns: [],
   optimizationResults: [],
+  experiments: [],
+  experimentTrials: [],
+  championConfigs: [],
   radarSignals: [],
   alphaRadarObservations: [],
   evidenceBundles: [],
@@ -153,6 +156,9 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.aiMasterQa)) data.aiMasterQa = [];
   if (!Array.isArray(data.backtestRuns)) data.backtestRuns = [];
   if (!Array.isArray(data.optimizationResults)) data.optimizationResults = [];
+  if (!Array.isArray(data.experiments)) data.experiments = [];
+  if (!Array.isArray(data.experimentTrials)) data.experimentTrials = [];
+  if (!Array.isArray(data.championConfigs)) data.championConfigs = [];
   if (!Array.isArray(data.radarSignals)) data.radarSignals = [];
   if (!Array.isArray(data.alphaRadarObservations)) data.alphaRadarObservations = [];
   if (!Array.isArray(data.evidenceBundles)) data.evidenceBundles = [];

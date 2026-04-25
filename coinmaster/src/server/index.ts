@@ -14,6 +14,7 @@ import { runDeterministicReplay } from '../core/replay.js';
 import { applyBacktestAiAnalysisResult, createQueuedBacktestRun, markBacktestAiAnalysisRequested } from '../core/backtest.js';
 import { createQueuedOptimization } from '../core/optimizerWorker.js';
 import { markComputeJobFailed, reconcileComputeJob } from '../core/computeJob.js';
+import { createExperimentFromRun, ensureExperimentCollections, evaluateChampionAcceptance, promoteChampionTrial } from '../core/experimentGovernance.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
 import { appendTradeEvent } from '../core/tradeEvents.js';
@@ -37,6 +38,9 @@ import type {
   AssetClass,
   BacktestCreateRunRequest,
   BacktestRun,
+  ChampionConfig,
+  Experiment,
+  ExperimentTrial,
   EvidenceBundle,
   OptimizationCreateRequest,
   OptimizationParamRange,
@@ -490,6 +494,21 @@ function ensureRadarContextPoliciesState(db: Awaited<ReturnType<typeof getDb>>):
 function ensureExecutionIntentsState(db: Awaited<ReturnType<typeof getDb>>): ExecutionIntent[] {
   db.data.executionIntents = Array.isArray(db.data.executionIntents) ? db.data.executionIntents : [];
   return db.data.executionIntents;
+}
+
+function ensureExperimentsState(db: Awaited<ReturnType<typeof getDb>>): Experiment[] {
+  ensureExperimentCollections(db.data);
+  return db.data.experiments;
+}
+
+function ensureExperimentTrialsState(db: Awaited<ReturnType<typeof getDb>>): ExperimentTrial[] {
+  ensureExperimentCollections(db.data);
+  return db.data.experimentTrials;
+}
+
+function ensureChampionConfigsState(db: Awaited<ReturnType<typeof getDb>>): ChampionConfig[] {
+  ensureExperimentCollections(db.data);
+  return db.data.championConfigs;
 }
 
 function syncRadarContextPolicies(params: {
@@ -7495,6 +7514,21 @@ app.post('/api/optimization/start', ownerAuth, async (req, res) => {
     sourceRun,
     paramRanges: body.paramRanges as OptimizationParamRange[],
   });
+  const experiments = ensureExperimentsState(db);
+  if (optimization.experimentId && !experiments.some((item) => item.id === optimization.experimentId)) {
+    const experiment = createExperimentFromRun({
+      sourceRun,
+      optimizationResultId: optimization.id,
+      requestedBy: 'owner',
+    });
+    experiment.id = optimization.experimentId;
+    experiment.schedule = optimization.rollingWindowSchedule ?? experiment.schedule;
+    experiment.coverage = experiment.schedule.coverage;
+    experiment.replayAssumptions = optimization.replayAssumptions ?? experiment.replayAssumptions;
+    experiment.acceptanceCriteria = optimization.acceptanceCriteria ?? experiment.acceptanceCriteria;
+    experiment.objectiveName = optimization.objectiveName ?? experiment.objectiveName;
+    experiments.unshift(experiment);
+  }
 
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
   db.data.optimizationResults = [optimization, ...db.data.optimizationResults].slice(0, OPTIMIZATION_HISTORY_LIMIT);
@@ -7509,6 +7543,68 @@ app.post('/api/optimization/start', ownerAuth, async (req, res) => {
   }
 
   return res.status(201).json({ ok: true, optimization });
+});
+
+app.get('/api/experiments', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  await db.reload();
+  return res.json({
+    ok: true,
+    experiments: ensureExperimentsState(db),
+    trials: ensureExperimentTrialsState(db),
+  });
+});
+
+app.get('/api/champions', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  await db.reload();
+  return res.json({
+    ok: true,
+    champions: ensureChampionConfigsState(db),
+  });
+});
+
+app.post('/api/champions/promote', ownerAuth, async (req, res) => {
+  const body = (req.body ?? {}) as { experimentId?: string; trialId?: string };
+  if (!body.experimentId || typeof body.experimentId !== 'string') {
+    return res.status(400).json({ ok: false, error: 'experiment_id_required' });
+  }
+
+  const db = await getDb();
+  await db.reload();
+  const experiment = ensureExperimentsState(db).find((item) => item.id === body.experimentId);
+  if (!experiment) {
+    return res.status(404).json({ ok: false, error: 'experiment_not_found' });
+  }
+
+  const trialId = typeof body.trialId === 'string' && body.trialId.trim()
+    ? body.trialId
+    : experiment.candidateTrialId;
+  if (!trialId) {
+    return res.status(409).json({ ok: false, error: 'candidate_trial_not_selected' });
+  }
+
+  const trial = ensureExperimentTrialsState(db).find((item) => item.id === trialId && item.experimentId === experiment.id);
+  if (!trial) {
+    return res.status(404).json({ ok: false, error: 'experiment_trial_not_found' });
+  }
+  if (trial.status !== 'completed') {
+    return res.status(409).json({ ok: false, error: 'experiment_trial_not_completed' });
+  }
+
+  const acceptance = evaluateChampionAcceptance({ trial, experiment });
+  if (!acceptance.passed) {
+    return res.status(409).json({ ok: false, error: 'acceptance_criteria_failed', notes: acceptance.notes });
+  }
+
+  const champion = promoteChampionTrial({
+    db: db.data,
+    experiment,
+    trial,
+    promotedBy: 'owner',
+  });
+  await db.write();
+  return res.status(201).json({ ok: true, champion });
 });
 
 // ─── Risk Check Endpoint ──────────────────────────────────────────────

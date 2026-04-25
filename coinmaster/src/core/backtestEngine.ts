@@ -45,7 +45,7 @@ interface SimPosition {
   closeReason?: string;
 }
 
-interface BacktestTradeRecord {
+export interface BacktestTradeRecord {
   positionId: string;
   symbol: string;
   side: TradeSide;
@@ -645,6 +645,7 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
     netPnlUsd: round(realizedPnl),
     roiPct: round(roiPct),
     maxDrawdownPct: computeMaxDrawdownPct(equityCurve),
+    expectancyUsd: round(closedPositions.length > 0 ? realizedPnl / closedPositions.length : 0),
   };
 
   const symbolStats: BacktestRunSymbolStats = {

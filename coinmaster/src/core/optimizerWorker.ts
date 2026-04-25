@@ -32,12 +32,30 @@ import type {
   BacktestRun,
   BacktestRunSummary,
   BacktestRunSymbolStats,
+  BacktestTradeBreakdownItem,
+  ExperimentTrialWindowResult,
   OptimizationParamRange,
   OptimizationResult,
   TradingRulesSettings,
 } from '../shared/dto.js';
 import type { BacktestCandleLoader } from './backtestWorker.js';
 import type { CandleTimeframe } from '../exchange/types.js';
+import {
+  buildBacktestLiveDeltaReport,
+  buildDefaultReplayAssumptions,
+  buildRollingWindowSchedule,
+  buildObjectiveMetrics,
+  buildRejectionStats,
+  createExperimentFromRun,
+  createExperimentTrial,
+  createOptunaRequest,
+  createUnavailableQuantStatsReport,
+  detectOptunaAvailability,
+  ensureExperimentCollections,
+  pickBestTrial,
+  shouldEarlyPruneTrial,
+  summarizeBacktestTradeBreakdown,
+} from './experimentGovernance.js';
 
 // ─── Constants ────────────────────────────────────────────────────────
 
@@ -187,6 +205,87 @@ function generateCandidates(
   return { candidates, gridCandidates: perParam.reduce((acc, pp) => acc * new Set(pp.values).size, 1) };
 }
 
+function sliceCandleSetsForWindow(candleSets: BacktestCandleSet[], startTimeMs: number, endTimeMs: number): BacktestCandleSet[] {
+  return candleSets.map((set) => ({
+    ...set,
+    candles: set.candles.filter((candle) => {
+      const timeMs = Date.parse(candle.timestamp);
+      return Number.isFinite(timeMs) && timeMs >= startTimeMs && timeMs <= endTimeMs;
+    }),
+  }));
+}
+
+function combineSummaries(summaries: BacktestRunSummary[]): BacktestRunSummary {
+  const totalTrades = summaries.reduce((acc, summary) => acc + summary.totalTrades, 0);
+  const netPnlUsd = round(summaries.reduce((acc, summary) => acc + summary.netPnlUsd, 0));
+  const realizedPnlUsd = round(summaries.reduce((acc, summary) => acc + summary.realizedPnlUsd, 0));
+  const openPnlUsd = round(summaries.reduce((acc, summary) => acc + summary.openPnlUsd, 0));
+  const weightedWins = summaries.reduce((acc, summary) => acc + ((summary.winRatePct / 100) * summary.totalTrades), 0);
+  const weightedWinRate = totalTrades > 0 ? round((weightedWins / totalTrades) * 100) : 0;
+  const maxDrawdownPct = summaries.reduce((acc, summary) => Math.max(acc, summary.maxDrawdownPct), 0);
+  return {
+    totalTrades,
+    winRatePct: weightedWinRate,
+    realizedPnlUsd,
+    openPnlUsd,
+    netPnlUsd,
+    roiPct: round(summaries.reduce((acc, summary) => acc + summary.roiPct, 0)),
+    maxDrawdownPct: round(maxDrawdownPct),
+    expectancyUsd: round(totalTrades > 0 ? netPnlUsd / totalTrades : 0),
+  };
+}
+
+function combineBySymbol(windows: BacktestRunSymbolStats[][]): BacktestRunSymbolStats[] {
+  const grouped = new Map<string, BacktestRunSymbolStats>();
+  for (const rows of windows) {
+    for (const row of rows) {
+      const current = grouped.get(row.symbol) ?? {
+        ...row,
+        totalTrades: 0,
+        wins: 0,
+        losses: 0,
+        realizedPnlUsd: 0,
+        netPnlUsd: 0,
+        slCount: 0,
+        tp1Count: 0,
+        tp2Count: 0,
+        tp3Count: 0,
+        emergencyExitCount: 0,
+        rejectedSignals: 0,
+      };
+      current.totalTrades += row.totalTrades;
+      current.wins += row.wins;
+      current.losses += row.losses;
+      current.realizedPnlUsd = round(current.realizedPnlUsd + row.realizedPnlUsd);
+      current.netPnlUsd = round(current.netPnlUsd + row.netPnlUsd);
+      current.slCount += row.slCount;
+      current.tp1Count += row.tp1Count;
+      current.tp2Count += row.tp2Count;
+      current.tp3Count += row.tp3Count;
+      current.emergencyExitCount += row.emergencyExitCount;
+      current.rejectedSignals += row.rejectedSignals;
+      grouped.set(row.symbol, current);
+    }
+  }
+  return [...grouped.values()];
+}
+
+function combineTradeBreakdowns(windows: BacktestTradeBreakdownItem[][]): BacktestTradeBreakdownItem[] {
+  const grouped = new Map<string, BacktestTradeBreakdownItem>();
+  for (const rows of windows) {
+    for (const row of rows) {
+      const key = `${row.setup}|${row.timeframe}|${row.source}`;
+      const current = grouped.get(key) ?? { ...row, tradeCount: 0, wins: 0, losses: 0, netPnlUsd: 0 };
+      current.tradeCount += row.tradeCount;
+      current.wins += row.wins;
+      current.losses += row.losses;
+      current.netPnlUsd = round(current.netPnlUsd + row.netPnlUsd);
+      grouped.set(key, current);
+    }
+  }
+  return [...grouped.values()];
+}
+
 // ─── Main Optimization Worker ────────────────────────────────────────
 
 export async function executeOptimization(
@@ -200,6 +299,7 @@ export async function executeOptimization(
 
   const db = await getDb();
   db.data.optimizationResults = Array.isArray(db.data.optimizationResults) ? db.data.optimizationResults : [];
+  ensureExperimentCollections(db.data);
   const opt = db.data.optimizationResults.find((o) => o.id === optimizationId);
   if (!opt) {
     throw new Error(`optimization_not_found:${optimizationId}`);
@@ -215,17 +315,43 @@ export async function executeOptimization(
     throw new Error(`source_run_not_found:${opt.sourceRunId}`);
   }
 
+  let experiment = opt.experimentId
+    ? db.data.experiments.find((item) => item.id === opt.experimentId)
+    : undefined;
+  if (!experiment) {
+    experiment = createExperimentFromRun({
+      sourceRun,
+      optimizationResultId: opt.id,
+      requestedBy: 'optimizer_worker',
+    });
+    db.data.experiments.unshift(experiment);
+    opt.experimentId = experiment.id;
+  }
+
   activeOptimizationId = optimizationId;
   markComputeJobStarted(opt, {
     stage: 'loading_market_data',
     completed: 0,
     total: 1,
   });
+  experiment.status = 'running';
+  experiment.startedAt = experiment.startedAt ?? new Date().toISOString();
+  opt.rollingWindowSchedule = opt.rollingWindowSchedule ?? experiment.schedule;
+  opt.replayAssumptions = opt.replayAssumptions ?? sourceRun.replayAssumptions ?? buildDefaultReplayAssumptions();
+  opt.acceptanceCriteria = opt.acceptanceCriteria ?? experiment.acceptanceCriteria;
+  opt.objectiveName = opt.objectiveName ?? experiment.objectiveName;
+  opt.optunaRequest = opt.optunaRequest ?? createOptunaRequest({
+    experimentId: experiment.id,
+    objectiveName: opt.objectiveName,
+  });
+  opt.optunaStatus = detectOptunaAvailability();
+  opt.quantStatsReport = opt.quantStatsReport ?? createUnavailableQuantStatsReport('quantstats sidecar not available in optimizer worker');
   await db.write();
 
   try {
     const baseRules = opt.baseRulesSnapshot;
     const symbol = opt.symbol;
+    const schedule = opt.rollingWindowSchedule ?? experiment.schedule;
 
     const requiredTfs = getRequiredComputeTimeframes(baseRules);
 
@@ -270,6 +396,8 @@ export async function executeOptimization(
     opt.searchSpaceCandidates = gridCandidates;
     opt.totalCandidates = candidates.length;
     opt.evaluatedCandidates = 0;
+    opt.prunedCandidates = 0;
+    opt.trialIds = Array.isArray(opt.trialIds) ? opt.trialIds : [];
     opt.progress = createComputeJobProgress(0, candidates.length, 'evaluating_candidates');
     await db.write();
 
@@ -292,34 +420,124 @@ export async function executeOptimization(
         applyParamToRules(candidateRules, param, value);
       }
 
-      // Build a synthetic BacktestRun for the engine
-      const syntheticRun: BacktestRun = {
-        id: `opt_${optimizationId}_${i}`,
-        status: 'running',
-        symbol,
-        biasMode: opt.biasMode,
-        createdAt: new Date().toISOString(),
-        startTimeMs: opt.startTimeMs,
-        endTimeMs: opt.endTimeMs,
+      const trial = createExperimentTrial({
+        experiment,
+        optimizationResultId: opt.id,
+        sourceRunId: sourceRun.id,
+        trialNumber: i,
+        parameterValues: combo,
+        rulesSnapshot: candidateRules,
         engineVersion: opt.engineVersion,
         engineCommit: opt.engineCommit,
-        rulesSnapshot: candidateRules,
-        bySymbol: [],
-        aiAnalysis: { status: 'idle' },
-      };
+        optunaRequest: opt.optunaRequest,
+        optunaStatus: opt.optunaStatus,
+      });
+      trial.status = 'running';
+      trial.startedAt = new Date().toISOString();
+      db.data.experimentTrials.unshift(trial);
+      experiment.trialIds.push(trial.id);
+      opt.trialIds.push(trial.id);
+
+      const windowResults: ExperimentTrialWindowResult[] = [];
+      const summaryWindows: BacktestRunSummary[] = [];
+      const bySymbolWindows: BacktestRunSymbolStats[][] = [];
+      const breakdownWindows: BacktestTradeBreakdownItem[][] = [];
+      let pruned = false;
 
       try {
-        const result = runBacktestEngine({
-          run: syntheticRun,
-          candleSets,
-          depositUsd,
-        });
+        for (const window of schedule.windows) {
+          const trialCandleSets = sliceCandleSetsForWindow(candleSets, window.train.startTimeMs, window.test.endTimeMs);
+          const syntheticRun: BacktestRun = {
+            id: `opt_${optimizationId}_${i}_${window.index}`,
+            status: 'running',
+            symbol,
+            biasMode: opt.biasMode,
+            createdAt: new Date().toISOString(),
+            startTimeMs: window.test.startTimeMs,
+            endTimeMs: window.test.endTimeMs,
+            engineVersion: opt.engineVersion,
+            engineCommit: opt.engineCommit,
+            rulesSnapshot: candidateRules,
+            bySymbol: [],
+            aiAnalysis: { status: 'idle' },
+            coverage: window.coverage,
+            replayAssumptions: opt.replayAssumptions,
+          };
+          const result = runBacktestEngine({
+            run: syntheticRun,
+            candleSets: trialCandleSets,
+            depositUsd,
+          });
+          const metrics = buildObjectiveMetrics(result.summary);
+          const rejectionStats = buildRejectionStats(result.bySymbol);
+          if (!metrics) {
+            throw new Error('trial_metrics_unavailable');
+          }
+          windowResults.push({
+            windowIndex: window.index,
+            train: window.train,
+            test: window.test,
+            metrics,
+            rejectionStats,
+            summary: result.summary,
+          });
+          summaryWindows.push(result.summary);
+          bySymbolWindows.push(result.bySymbol);
+          breakdownWindows.push(summarizeBacktestTradeBreakdown(result.trades));
 
-        if (result.summary.netPnlUsd > bestPnl) {
-          bestPnl = result.summary.netPnlUsd;
-          bestSummary = result.summary;
-          bestBySymbol = result.bySymbol;
-          bestParamCombo = combo;
+          const pruneDecision = shouldEarlyPruneTrial({
+            acceptanceCriteria: experiment.acceptanceCriteria,
+            windowResults,
+          });
+          if (pruneDecision.prune) {
+            pruned = true;
+            trial.status = 'pruned';
+            trial.prunerDecision = {
+              status: 'early_pruned',
+              reason: pruneDecision.reason,
+              decidedAt: new Date().toISOString(),
+              afterWindowIndex: window.index,
+            };
+            opt.prunedCandidates = (opt.prunedCandidates ?? 0) + 1;
+            break;
+          }
+        }
+
+        if (!pruned) {
+          const combinedSummary = combineSummaries(summaryWindows);
+          const combinedBySymbol = combineBySymbol(bySymbolWindows);
+          const combinedBreakdown = combineTradeBreakdowns(breakdownWindows);
+          const objectiveMetrics = buildObjectiveMetrics(combinedSummary);
+
+          trial.summary = combinedSummary;
+          trial.bySymbol = combinedBySymbol;
+          trial.tradeBreakdown = combinedBreakdown;
+          trial.objectiveMetrics = objectiveMetrics;
+          trial.rejectionStats = buildRejectionStats(combinedBySymbol);
+          trial.deltaReport = buildBacktestLiveDeltaReport({
+            coverage: experiment.coverage,
+            backtestSummary: combinedSummary,
+            tradeBreakdown: combinedBreakdown,
+            livePositions: db.data.positions,
+            executionIntents: db.data.executionIntents,
+          });
+          trial.windowResults = windowResults;
+          trial.quantStatsReport = createUnavailableQuantStatsReport('quantstats sidecar not available in optimizer worker');
+          trial.status = 'completed';
+          trial.finishedAt = new Date().toISOString();
+          trial.prunerDecision = { status: 'kept', decidedAt: trial.finishedAt };
+
+          if ((objectiveMetrics?.objectiveValue ?? -Infinity) > bestPnl) {
+            bestPnl = objectiveMetrics?.objectiveValue ?? -Infinity;
+            bestSummary = combinedSummary;
+            bestBySymbol = combinedBySymbol;
+            bestParamCombo = combo;
+            opt.bestTrialId = trial.id;
+            opt.bestObjectiveMetrics = objectiveMetrics;
+          }
+        } else {
+          trial.windowResults = windowResults;
+          trial.finishedAt = new Date().toISOString();
         }
       } catch (err) {
         // Skip failed candidates silently
@@ -327,6 +545,9 @@ export async function executeOptimization(
           { component: 'optimizer', optimizationId, candidate: i, err },
           'candidate evaluation failed, skipping',
         );
+        trial.status = 'failed';
+        trial.error = err instanceof Error ? err.message : String(err);
+        trial.finishedAt = new Date().toISOString();
       }
 
       opt.evaluatedCandidates = i + 1;
@@ -374,6 +595,14 @@ export async function executeOptimization(
       opt.bestBySymbol = bestBySymbol;
     }
 
+    const trialRows = db.data.experimentTrials.filter((item) => item.experimentId === experiment.id);
+    const bestTrial = pickBestTrial(trialRows);
+    if (bestTrial) {
+      experiment.candidateTrialId = bestTrial.id;
+    }
+    experiment.status = 'completed';
+    experiment.finishedAt = new Date().toISOString();
+
     markComputeJobCompleted(opt, {
       stage: 'completed',
       total: candidates.length,
@@ -394,6 +623,9 @@ export async function executeOptimization(
       { component: 'optimizer', optimizationId, err: opt.error },
       'optimization failed',
     );
+    experiment.status = 'failed';
+    experiment.error = opt.error;
+    experiment.finishedAt = new Date().toISOString();
   } finally {
     activeOptimizationId = null;
     await db.write().catch((writeErr) => {
@@ -411,22 +643,50 @@ export function createQueuedOptimization(input: {
 }): OptimizationResult {
   const { sourceRun, paramRanges } = input;
   const engine = getBacktestEngineVersion();
+  const rollingWindowSchedule = buildRollingWindowSchedule({
+    symbol: sourceRun.symbol,
+    rules: sourceRun.rulesSnapshot,
+    startTimeMs: sourceRun.startTimeMs,
+    endTimeMs: sourceRun.endTimeMs,
+  });
+  const replayAssumptions = sourceRun.replayAssumptions ?? buildDefaultReplayAssumptions();
+  const experiment = createExperimentFromRun({
+    sourceRun,
+    requestedBy: 'owner',
+  });
+  const optunaRequest = createOptunaRequest({
+    experimentId: experiment.id,
+  });
 
   return {
     id: nanoid(),
     status: 'queued',
     sourceRunId: sourceRun.id,
+    experimentId: experiment.id,
     symbol: sourceRun.symbol,
     biasMode: sourceRun.biasMode,
     startTimeMs: sourceRun.startTimeMs,
     endTimeMs: sourceRun.endTimeMs,
     baseRulesSnapshot: JSON.parse(JSON.stringify(sourceRun.rulesSnapshot)),
     paramRanges,
+    rollingWindowSchedule,
+    replayAssumptions,
+    acceptanceCriteria: experiment.acceptanceCriteria,
+    objectiveName: experiment.objectiveName,
+    optunaRequest,
+    optunaStatus: {
+      status: 'pending',
+      adapter: 'python_optuna',
+      checkedAt: new Date().toISOString(),
+    },
+    quantStatsReport: createUnavailableQuantStatsReport('quantstats sidecar not requested yet'),
+    trialIds: [],
     createdAt: new Date().toISOString(),
     progress: createComputeJobProgress(0, 0, 'queued'),
     searchSpaceCandidates: 0,
     totalCandidates: 0,
     evaluatedCandidates: 0,
+    prunedCandidates: 0,
     engineVersion: engine.version,
     engineCommit: engine.commit,
   };

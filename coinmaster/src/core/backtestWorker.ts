@@ -25,6 +25,13 @@ import {
 } from './computeJob.js';
 import type { BacktestRun } from '../shared/dto.js';
 import type { CandleTimeframe } from '../exchange/types.js';
+import {
+  buildBacktestLiveDeltaReport,
+  buildObjectiveMetrics,
+  buildRejectionStats,
+  createUnavailableQuantStatsReport,
+  summarizeBacktestTradeBreakdown,
+} from './experimentGovernance.js';
 
 // ─── Types ────────────────────────────────────────────────────────────
 
@@ -202,10 +209,28 @@ export async function executeBacktestRun(
     mutateBacktestRun(db, runId, (run) => {
       run.summary = result.summary;
       run.bySymbol = result.bySymbol;
+      run.objectiveMetrics = buildObjectiveMetrics(result.summary);
+      run.rejectionStats = buildRejectionStats(result.bySymbol);
+      run.deltaReport = buildBacktestLiveDeltaReport({
+        coverage: run.coverage ?? {
+          symbols: [run.symbol],
+          timeframes: getRequiredComputeTimeframes(run.rulesSnapshot),
+          window: {
+            startTimeMs: run.startTimeMs,
+            endTimeMs: run.endTimeMs,
+          },
+        },
+        backtestSummary: result.summary,
+        tradeBreakdown: summarizeBacktestTradeBreakdown(result.trades),
+        livePositions: db.data.positions,
+        executionIntents: db.data.executionIntents,
+      });
+      run.quantStatsReport = run.quantStatsReport ?? createUnavailableQuantStatsReport('quantstats sidecar not available in detached worker');
       run.artifacts = {
         tradeCount: result.trades.length,
         equityCurvePoints: result.equityCurve.length,
         eventCount: result.trades.length,
+        tradeBreakdown: summarizeBacktestTradeBreakdown(result.trades),
       };
       markComputeJobCompleted(run, {
         stage: 'completed',

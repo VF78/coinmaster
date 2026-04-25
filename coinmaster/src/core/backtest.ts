@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import type { BacktestBiasMode, BacktestCreateRunRequest, BacktestRun, TradingRulesSettings } from '../shared/dto.js';
 import { createComputeJobProgress } from './computeJob.js';
 import { inferAssetClassFromSymbol, normalizeTradingRules } from '../shared/tradingRules.js';
+import { buildDefaultReplayAssumptions, buildRollingWindowSchedule, createUnavailableQuantStatsReport } from './experimentGovernance.js';
 
 const BACKTEST_AI_SUMMARY_MAX_CHARS = 2_000;
 const BACKTEST_AI_REPORT_MAX_CHARS = 24_000;
@@ -97,6 +98,13 @@ export function createQueuedBacktestRun(input: {
 }): BacktestRun {
   const now = new Date().toISOString();
   const engine = getBacktestEngineVersion();
+  const rulesSnapshot = normalizeBacktestRules(input.rules, input.symbol);
+  const schedule = buildRollingWindowSchedule({
+    symbol: input.symbol,
+    rules: rulesSnapshot,
+    startTimeMs: input.request.startTimeMs,
+    endTimeMs: input.request.endTimeMs,
+  });
 
   return {
     id: nanoid(),
@@ -114,7 +122,10 @@ export function createQueuedBacktestRun(input: {
       requestedToMs: input.request.endTimeMs,
     },
     progress: createComputeJobProgress(0, 2, 'queued', now),
-    rulesSnapshot: normalizeBacktestRules(input.rules, input.symbol),
+    rulesSnapshot,
+    coverage: schedule.coverage,
+    replayAssumptions: buildDefaultReplayAssumptions(),
+    quantStatsReport: createUnavailableQuantStatsReport('quantstats sidecar not wired in this runtime'),
     bySymbol: [],
     aiAnalysis: {
       status: 'idle',
