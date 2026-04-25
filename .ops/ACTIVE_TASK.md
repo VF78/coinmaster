@@ -1,24 +1,26 @@
 # ACTIVE_TASK
 
-Updated: 2026-04-25 23:58 Europe/Madrid
-Status: IMPLEMENTED / #63 local code complete after Codex fallback; architect-reviewed and verification gates passing; pending commit/push/GitHub sync/deploy
+Updated: 2026-04-26 00:03 Europe/Madrid
+Status: COMPLETE / #63 implemented, pushed, GitHub issue closed, Project updated; pending production deploy of final pushed HEAD
 GitHub Project: https://github.com/users/VF78/projects/2
-Active item: #63 [ARCH-03] Radar role change: make RadarContextPolicy the context controller for Trading Rules entries
-Active issue: https://github.com/VF78/coinmaster/issues/63
+Completed item: #63 [ARCH-03] Radar role change: make RadarContextPolicy the context controller for Trading Rules entries
+Completed issue: https://github.com/VF78/coinmaster/issues/63
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / starting HEAD / origin divergence / deploy commit: main / 35e39b500a20d9f69b9895044437e1931a4bb4a9 / 0 ahead, 0 behind / 35e39b500a20d9f69b9895044437e1931a4bb4a9
+Implementation commit: d2d06a9dd681e6205deb1b4719398fb5d1743383
+Production target: /opt/coinmaster
+Production service: coinmaster.service
 
 Project state:
 - #61 Closed / Done
 - #62 Closed / Done
-- #63 Open / In Progress
+- #63 Closed / Done
 - #64 Open / Todo
 
 Execution note:
 - Claude Opus was known-blocked by usage limit until 03:10 Europe/Madrid from the #62 attempt.
 - Codex fallback was used per owner instruction.
 
-Implemented for #63:
+Completed for #63:
 - Added durable `RadarContextPolicy` DTO/persistence collection.
 - Added durable `ExecutionIntent` audit object and wired pending confirmations / Radar signal records to `executionIntentId`.
 - Added deterministic `src/server/radarContextPolicy.ts` policy builder using #62 `EvidenceBundle` + `SignalCandidate` scores, not opaque LLM output.
@@ -33,7 +35,7 @@ Implemented for #63:
 - Updated `docs/RADAR_RUNTIME.md`.
 - Added `scripts/invariants-radar-context-policy.ts` and package script `invariants:radar-context-policy`.
 
-Verification passed locally:
+Verification passed locally before issue sync:
 - `git diff --check`
 - `npm run check`
 - `npm run invariants:radar-context-policy` → 12/12
@@ -41,9 +43,14 @@ Verification passed locally:
 - `npm run invariants:trading-rules` → 61/61
 - `npm run build`
 
+GitHub sync:
+- Commented verification summary on issue #63.
+- Closed issue #63.
+- Updated GitHub Project #2: #61 Done, #62 Done, #63 Done, #64 Todo.
+
 Do not commit runtime noise:
 - `coinmaster/data/db.json`
 - `prod-backups/`
 
 Next exact step:
-- Commit #63 implementation excluding runtime noise, push, update GitHub issue/Project, then deploy via `coinmaster/scripts/deploy-prod-safe.sh` only and verify production.
+- Commit/push this task-state update, then deploy final pushed HEAD via `coinmaster/scripts/deploy-prod-safe.sh` only and verify production.
