@@ -1,12 +1,13 @@
 # ACTIVE_TASK
 
 Updated: 2026-04-26 00:27 Europe/Madrid
-Status: COMPLETE / #64 implemented, locally verified, pushed, GitHub issue closed, Project Done; pending production deploy verification
+Status: COMPLETE / #64 implemented, verified, pushed, GitHub issue closed, Project Done, production deployed
 GitHub Project: https://github.com/users/VF78/projects/2
 Completed item: #64 [ARCH-04] Backtest and optimizer target upgrade: Optuna, QuantStats, rolling windows, Experiment/ChampionConfig
 Completed issue: https://github.com/VF78/coinmaster/issues/64
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
 Implementation commit: d93b3f81b3b484e8d3e882cecc527f9438b941a4
+Task sync commit: 85a8c0eaad5fb457fb1776ee04b9132a056cba06
 Production target: /opt/coinmaster
 Production service: coinmaster.service
 
@@ -46,11 +47,21 @@ GitHub sync:
 - Closed issue #64.
 - Updated GitHub Project #2: #61 Done, #62 Done, #63 Done, #64 Done.
 
-Do not commit runtime noise:
+Production deploy:
+- Deploy command: `TARGET_DIR=/opt/coinmaster SERVICE=coinmaster.service ./coinmaster/scripts/deploy-prod-safe.sh`
+- Safe deploy completed successfully.
+- Production verification after deploy:
+  - `/opt/coinmaster/.deploy-source-commit` matched deployed source commit at verification time.
+  - `coinmaster.service`: active.
+  - `/api/health`: `{"ok":true}`.
+  - root HTML contained `<div id="root"></div>`.
+  - `/opt/coinmaster/src/core/experimentGovernance.ts`: present.
+  - `/opt/coinmaster/src/shared/dto.ts`: contains `Experiment` and `ChampionConfig`.
+  - `/opt/coinmaster/src/server/index.ts`: contains `/api/champions/promote`.
+
+Runtime noise still intentionally uncommitted:
 - `coinmaster/data/db.json`
 - `prod-backups/`
 
-Next steps:
-- Commit/push this task-state sync.
-- Deploy only through `coinmaster/scripts/deploy-prod-safe.sh`.
-- Verify `/opt/coinmaster/.deploy-source-commit`, service, `/api/health`, root HTML, and production source anchors.
+Next task:
+- No active implementation task remains in the four-task target architecture sequence.
