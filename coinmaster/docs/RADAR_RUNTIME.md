@@ -143,8 +143,57 @@ Rejected and duplicate signals always return `ignore`. `auto_order_placed` is al
 ## Persistence and history cap
 
 - Source observations live in shared persistence as `alphaRadarObservations` and are pruned/compacted.
+- Durable evidence clusters live as `evidenceBundles`.
+- Durable Radar promotion lifecycle records live as `signalCandidates`.
 - Execution handoff records live in shared persistence as `radarSignals`.
 - Radar signal history is capped by `RADAR_SIGNAL_HISTORY_LIMIT` (500).
+
+## Evidence and candidate runtime
+
+- Every saved Alpha Radar observation is normalized with audit provenance where available:
+  - canonical URL;
+  - payload hash;
+  - published / observed / fetched timestamps;
+  - HTTP ETag / Last-Modified / status;
+  - compact raw-payload reference.
+- Observations are merged into durable `EvidenceBundle` rows using explainable dedupe:
+  - exact payload hash;
+  - canonical URL;
+  - external/source id;
+  - fuzzy title/body similarity.
+- `SignalCandidate` is now a durable state-machine scaffold derived from active evidence for monitored symbols:
+  - `new`;
+  - `validated`;
+  - `actionable`;
+  - `routed`;
+  - `executed`;
+  - `expired`;
+  - `rejected`;
+  - `postmortem_ready`.
+- Current candidate scoring uses explicit deterministic factors:
+  - relevance;
+  - novelty;
+  - source reliability;
+  - event severity;
+  - time decay;
+  - market confirmation;
+  - executionability.
+- `AlphaRadarIdea` now attaches durable evidence/candidate references where they exist so the operator can audit promotion lineage without turning the UI into a second control plane.
+
+## Parser and enrichment boundaries
+
+- RSS/Atom parsing now uses the repo-owned `feedparser` package as the primary parser for external feed collectors.
+- If the primary parser fails on malformed XML or times out, collectors fall back to the built-in bounded parser and continue without crashing. This is an operational fallback, not the normal path.
+- NLP/sentiment enrichment is non-blocking and optional:
+  - if spaCy/FinBERT-style runtime assets are unavailable, Radar uses deterministic fallback enrichment;
+  - fallback enrichment is explicitly marked on the stored `EvidenceBundle.enrichment`;
+  - collectors must keep running even when enrichment is unavailable or times out.
+
+## Discuss-before-implementation gates
+
+- `SentenceTransformers`: discuss before adding semantic dedupe beyond the current exact/canonical/fuzzy layer.
+- `OpenBB`: discuss before adding macro/calendar/regulatory enrichment sources.
+- `cryptofeed`: discuss before adding multi-exchange trades/books/tickers ingestion to Radar.
 
 ## Invariants
 

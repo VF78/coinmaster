@@ -37,6 +37,7 @@ import type {
   AssetClass,
   BacktestCreateRunRequest,
   BacktestRun,
+  EvidenceBundle,
   OptimizationCreateRequest,
   OptimizationParamRange,
   BiasMode,
@@ -53,6 +54,7 @@ import type {
   RadarSignalStatus,
   RadarSignalVerdict,
   RadarSignalView,
+  SignalCandidate,
   SignalStrategy,
   TelegramOutboxItem,
   TradeEvent,
@@ -75,12 +77,14 @@ import {
   extractGdeltItems,
   extractJsonFeedItems,
   extractRssItems,
+  extractRssItemsWithProvenance,
   normalizeAlphaRadarSettings,
   pruneAlphaRadarObservations,
 } from './alphaRadar.js';
-import { alphaRadarFetchJson, alphaRadarFetchText, mapWithConcurrency, summarizeAlphaRadarFetchFailure } from './alphaRadarHttp.js';
+import { alphaRadarFetchJson, alphaRadarFetchJsonWithMeta, alphaRadarFetchText, alphaRadarFetchTextWithMeta, mapWithConcurrency, summarizeAlphaRadarFetchFailure } from './alphaRadarHttp.js';
 import { buildAlphaRadarConnectorHealth, summarizeAlphaRadarConnectorRuntimes } from './alphaRadarConnectors.js';
 import { collectBlueskyConnector, collectRedditConnector, collectTelegramAuthReadyConnector } from './alphaRadarSocial.js';
+import { ingestObservationIntoEvidence, pruneEvidenceBundles, syncSignalCandidatesFromEvidence } from './alphaRadarEvidence.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize, maxPortfolioGrossNotional, wouldExceedPortfolioGrossCap } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
@@ -462,6 +466,16 @@ function ensureAlphaRadarObservationsState(db: Awaited<ReturnType<typeof getDb>>
   db.data.alphaRadarObservations = Array.isArray(db.data.alphaRadarObservations) ? db.data.alphaRadarObservations : [];
   pruneAlphaRadarObservations(db.data.alphaRadarObservations);
   return db.data.alphaRadarObservations;
+}
+
+function ensureEvidenceBundlesState(db: Awaited<ReturnType<typeof getDb>>): EvidenceBundle[] {
+  db.data.evidenceBundles = Array.isArray(db.data.evidenceBundles) ? db.data.evidenceBundles : [];
+  return db.data.evidenceBundles;
+}
+
+function ensureSignalCandidatesState(db: Awaited<ReturnType<typeof getDb>>): SignalCandidate[] {
+  db.data.signalCandidates = Array.isArray(db.data.signalCandidates) ? db.data.signalCandidates : [];
+  return db.data.signalCandidates;
 }
 
 async function getAlphaRadarSettingsState(): Promise<AlphaRadarSettings> {
@@ -1108,18 +1122,26 @@ function buildAlphaRadarSourceHealth(settings: AlphaRadarSettings, observations:
 async function saveAlphaRadarObservations(observations: AlphaRadarObservation[]): Promise<number> {
   const db = await getDb();
   const existing = ensureAlphaRadarObservationsState(db);
+  const bundles = ensureEvidenceBundlesState(db);
   const existingKeys = new Set(existing.map((item) => {
     if (item.kind === 'market') return buildAlphaRadarMarketObservationDedupeKey(item);
     return `${item.source}|${item.title.toLowerCase()}|${item.observedAt}`;
   }));
 
   let createdCount = 0;
+  const nowIso = new Date().toISOString();
   for (const observation of observations) {
     const dedupeKey = observation.kind === 'market'
       ? buildAlphaRadarMarketObservationDedupeKey(observation)
       : `${observation.source}|${observation.title.toLowerCase()}|${observation.observedAt}`;
     if (existingKeys.has(dedupeKey)) continue;
-    existing.push(observation);
+    const { observation: durableObservation } = await ingestObservationIntoEvidence({
+      observation,
+      bundles,
+      nowIso,
+      nextBundleId: () => `evidence-${nanoid(10)}`,
+    });
+    existing.push(durableObservation);
     existingKeys.add(dedupeKey);
     createdCount += 1;
   }
@@ -1129,6 +1151,13 @@ async function saveAlphaRadarObservations(observations: AlphaRadarObservation[])
     .slice()
     .sort((a, b) => Date.parse(b.observedAt) - Date.parse(a.observedAt))
     .slice(0, 2000);
+  db.data.evidenceBundles = pruneEvidenceBundles(bundles, nowIso);
+  db.data.signalCandidates = syncSignalCandidatesFromEvidence({
+    bundles: db.data.evidenceBundles,
+    candidates: ensureSignalCandidatesState(db),
+    monitoredCoins: normalizeTradingRules(db.data.settings.tradingRules).coins,
+    nowIso,
+  });
   await db.write();
   return createdCount;
 }
@@ -1223,11 +1252,21 @@ async function collectAlphaRadarExternalFeedsRun(trigger: 'auto' | 'manual'): Pr
     const feedResults = await mapWithConcurrency(dueFeeds, ALPHA_RADAR_EXTERNAL_FEED_CONCURRENCY, async (feed) => {
       const attemptedAt = new Date().toISOString();
       try {
-        const items = feed.collectorType === 'json'
-          ? extractJsonFeedItems(await alphaRadarFetchJson<unknown>(feed.url), feed.parser)
-          : feed.collectorType === 'gdelt'
-            ? extractGdeltItems(await alphaRadarFetchJson<unknown>(feed.url))
-            : extractRssItems(await alphaRadarFetchText(feed.url));
+        let items: ReturnType<typeof extractJsonFeedItems> | ReturnType<typeof extractGdeltItems> | ReturnType<typeof extractRssItems> = [];
+        let fetchMeta: Awaited<ReturnType<typeof alphaRadarFetchTextWithMeta>>['meta'];
+        if (feed.collectorType === 'json') {
+          const fetched = await alphaRadarFetchJsonWithMeta<unknown>(feed.url);
+          items = extractJsonFeedItems(fetched.json, feed.parser);
+          fetchMeta = fetched.meta;
+        } else if (feed.collectorType === 'gdelt') {
+          const fetched = await alphaRadarFetchJsonWithMeta<unknown>(feed.url);
+          items = extractGdeltItems(fetched.json);
+          fetchMeta = fetched.meta;
+        } else {
+          const fetched = await alphaRadarFetchTextWithMeta(feed.url);
+          items = await extractRssItemsWithProvenance(fetched.text);
+          fetchMeta = fetched.meta;
+        }
         const builtObservations = items
           .map((item) => buildAlphaRadarObservation({
             id: `obs-${nanoid(10)}`,
@@ -1247,11 +1286,24 @@ async function collectAlphaRadarExternalFeedsRun(trigger: 'auto' | 'manual'): Pr
               feedId: feed.id,
               sourceLabel: feed.label,
               publisher: item.sourceName,
+              author: item.author,
               url: item.link,
+              canonicalUrl: item.canonicalUrl,
               publishedAt: item.observedAt,
               ingestedAt: nowIso,
+              fetchedAt: fetchMeta.fetchedAt,
+              observedAt: item.observedAt ?? nowIso,
+              httpEtag: fetchMeta.httpEtag,
+              httpLastModified: fetchMeta.lastModified,
+              httpStatus: fetchMeta.status,
+              rawPayloadRef: item.rawPayloadRef,
+              externalId: item.externalId,
+              parser: String(item.metadata?.parser ?? (feed.collectorType === 'rss' || feed.collectorType === 'rsshub' ? 'feedparser' : feed.collectorType)).trim(),
             },
-            metadata: item.metadata,
+            metadata: {
+              ...(item.metadata ?? {}),
+              fetchedUrl: fetchMeta.url,
+            },
           }))
           .filter((row): row is { ok: true; observation: AlphaRadarObservation } => row.ok)
           .map((row) => row.observation);
@@ -7533,6 +7585,13 @@ app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
   const db = await getDb();
   const settings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
   const nowIso = new Date().toISOString();
+  const evidenceBundles = pruneEvidenceBundles(ensureEvidenceBundlesState(db), nowIso);
+  const signalCandidates = syncSignalCandidatesFromEvidence({
+    bundles: evidenceBundles,
+    candidates: ensureSignalCandidatesState(db),
+    monitoredCoins: normalizeTradingRules(db.data.settings.tradingRules).coins,
+    nowIso,
+  });
   const observations = currentAlphaRadarObservations(settings, ensureAlphaRadarObservationsState(db), nowIso)
     .slice()
     .sort(alphaRadarObservationComparator('rank'))
@@ -7545,8 +7604,11 @@ app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
     positions: db.data.positions,
     settings,
     tradableSymbols,
+    evidenceBundles,
+    signalCandidates,
     nowIso,
   });
+  const dedupeSuppressed = evidenceBundles.reduce((acc, bundle) => acc + bundle.duplicateSuppressedCount + bundle.exactMatchCount + bundle.canonicalUrlMatchCount + bundle.externalIdMatchCount + bundle.fuzzyMatchCount, 0);
   return res.json({
     ok: true,
     settings,
@@ -7557,6 +7619,9 @@ app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
       monitoringOnlyAssets: enabledAlphaRadarMonitoringWatchlist(settings).filter((item) => item.monitoringOnly).map((item) => item.symbol),
       openPositions: db.data.positions.filter((item) => item.status === 'open').length,
       strongestObservation: observations[0]?.title,
+      evidenceBundles: evidenceBundles.filter((item) => item.status === 'active').length,
+      signalCandidates: signalCandidates.length,
+      dedupeSuppressed,
       sourceHealth: buildAlphaRadarSourceHealth(settings, ensureAlphaRadarObservationsState(db)),
       llmMode: 'on_demand',
     },

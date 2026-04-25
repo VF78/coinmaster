@@ -117,9 +117,45 @@ export async function alphaRadarFetchText(url: string, init: RequestInit = {}): 
   return response.text();
 }
 
+export interface AlphaRadarFetchResponseMeta {
+  url: string;
+  status: number;
+  fetchedAt: string;
+  httpEtag?: string;
+  lastModified?: string;
+}
+
+export async function alphaRadarFetchTextWithMeta(url: string, init: RequestInit = {}): Promise<{ text: string; meta: AlphaRadarFetchResponseMeta }> {
+  const response = await alphaRadarFetchWithRetry(url, init);
+  return {
+    text: await response.text(),
+    meta: {
+      url: response.url || url,
+      status: response.status,
+      fetchedAt: new Date().toISOString(),
+      httpEtag: response.headers.get('etag') ?? undefined,
+      lastModified: response.headers.get('last-modified') ?? undefined,
+    },
+  };
+}
+
 export async function alphaRadarFetchJson<T>(url: string, init: RequestInit = {}): Promise<T> {
   const response = await alphaRadarFetchWithRetry(url, init);
   return response.json() as Promise<T>;
+}
+
+export async function alphaRadarFetchJsonWithMeta<T>(url: string, init: RequestInit = {}): Promise<{ json: T; meta: AlphaRadarFetchResponseMeta }> {
+  const response = await alphaRadarFetchWithRetry(url, init);
+  return {
+    json: await response.json() as T,
+    meta: {
+      url: response.url || url,
+      status: response.status,
+      fetchedAt: new Date().toISOString(),
+      httpEtag: response.headers.get('etag') ?? undefined,
+      lastModified: response.headers.get('last-modified') ?? undefined,
+    },
+  };
 }
 
 export async function mapWithConcurrency<T, R>(items: T[], limit: number, worker: (item: T, index: number) => Promise<R>): Promise<R[]> {

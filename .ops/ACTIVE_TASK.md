@@ -1,67 +1,48 @@
 # ACTIVE_TASK
 
-Updated: 2026-04-25 22:55 Europe/Madrid
-Status: COMPLETE / #61 implemented, pushed, GitHub Project updated, and deployed to production
+Updated: 2026-04-25 23:45 Europe/Madrid
+Status: IMPLEMENTED / #62 local code complete after Claude-limit fallback to Codex; architect-reviewed and verification gates passing; pending commit/push/project-sync/deploy
 GitHub Project: https://github.com/users/VF78/projects/2
-Completed item: #61 [ARCH-01] Trading Rules target upgrade: SignalQualityContext, regime filters, RR gate, fail-safe entries
-Completed issue: https://github.com/VF78/coinmaster/issues/61
+Active item: #62 [ARCH-02] Radar evidence/ingestion upgrade: feedparser, provenance, EvidenceBundle, NLP, dedupe, factor score
+Active issue: https://github.com/VF78/coinmaster/issues/62
 Canonical root: /root/.openclaw/workspace/coinmaster/coinmaster
-Branch / pushed commit before deploy: main / 6f90ca3da937c73761a2c0d9613742e9f4732b7d
-Production target: /opt/coinmaster
-Production service: coinmaster.service
+Branch / starting HEAD / origin divergence / deploy commit: main / 25e1f9054c5df8f67631792316b3abd7e0751628 / 0 ahead, 0 behind / 25e1f9054c5df8f67631792316b3abd7e0751628
 
-Completed:
-- Found valid GitHub token in repository remote credentials without printing the secret.
-- Verified GitHub auth as `VF78`.
-- Pushed implementation and task-state commits to `origin/main`.
-- Commented verification summary on issue #61.
-- Closed issue #61.
-- Updated GitHub Project #2: #61 = Done.
-- Verified Project #2:
-  - #61 Closed / Done
-  - #62 Open / Todo
-  - #63 Open / Todo
-  - #64 Open / Todo
-- Deployed to production via `coinmaster/scripts/deploy-prod-safe.sh` only; no manual edits in `/opt/coinmaster`.
+Execution notes:
+- Claude Opus first pass was attempted first and hit usage limit: `resets 3:10am (Europe/Madrid)`.
+- Fallback to Codex was used per owner instruction.
+- Architect review fixed the first pass to use the repo-owned npm `feedparser` package as primary RSS/Atom parser instead of a host Python/runtime dependency.
+- GET `/api/alpha-radar/ideas` was kept read-only; durable evidence/candidate persistence happens during observation saves.
 
-Implemented for #61:
-- New pure `src/core/signalQualityContext.ts` with deterministic TypeScript EMA/ATR/ADX, regime assessment, displacement/FVG impulse quality, expected RR, and combined verdict.
-- Live Engulfing/FVG monitors call the quality gate before unified `handoffStrategyEntrySignal`.
-- Backtest parity: backtest uses the same evaluator and FVG impulse triple handling.
-- FVG latest-closed-candle lag fixed; invariant added so latest supplied closed candle can complete a zone.
-- `engulfingGate` changed from fail-open to fail-safe for new non-reduce-only entries, with explicit audited override `tradingRulesGateOverride: true`.
-- Live regime candle fetch failures block entries when quality gate is active.
-- Live RR gate no longer invents fallback TP/SL; if runtime TP/SL defaults unavailable, RR evaluates as 0.
-- UI exposes exactly the eight approved Stage-1 fields: `regimeTf`, `adxMin`, `minImpulseAtr`, `minExpectedRr`, `timeStopBars`, `riskPerTradePct`, `eventLockoutMinutes`, `portfolioGrossCap`.
-- `regimeTf` constrained to owner-approved HTF values (`1h` / `4h`) in normalization and UI.
-- `riskPerTradePct` wired into allocation sizing as opt-in (`0` default), capping notional by risk budget / SL distance.
-- `portfolioGrossCap` live guard added for auto-sized entry flows, auto-confirmed entries, and pending confirmations.
-- `timeStopBars` implemented in backtest and live TP-fill monitor: no TP1 follow-through after N entry-TF bars closes remaining position via reduce-only IOC, cancels managed TP/SL, and notifies `time_stop`.
-- `eventLockoutMinutes` wired to real existing AlphaRadar observations: fresh `macroShock` / `macro-shock` / high-urgency macro observations block Trading Rules auto entries. No fake state introduced.
-- No external trading engines added; no TA-Lib/Python dependency in live path.
+Implemented for #62:
+- Added durable `EvidenceBundle` DTO/state and persistence shape.
+- Added durable `SignalCandidate` DTO/state-machine scaffold with explicit states: `new`, `validated`, `actionable`, `routed`, `executed`, `expired`, `rejected`, `postmortem_ready`.
+- Added `feedparser` dependency and primary RSS/Atom parser with bounded fallback parser.
+- Added provenance fields for canonical URL, payload hash, external id/guid, published/observed/fetched timestamps, HTTP ETag/Last-Modified/status, parser id, and compact raw payload reference.
+- Added explainable evidence dedupe by payload hash, canonical URL, external/source id, and fuzzy title/body similarity.
+- Added optional/fail-safe NLP enrichment boundary with deterministic fallback labels; no fake spaCy/FinBERT claims and no collector crash if external ML assets are unavailable.
+- Added explicit Radar factor scoring: relevance, novelty, sourceReliability, eventSeverity, timeDecay, marketConfirmation, executionability.
+- Wired AlphaRadar ideas to durable evidence/candidate references where available.
+- Added compact UI/read-model counters for evidence bundles, signal candidates, and dedupe suppression.
+- Updated `docs/RADAR_RUNTIME.md` with evidence/candidate runtime, parser/enrichment boundaries, and discuss-before-implementation gates for SentenceTransformers/OpenBB/cryptofeed.
+- Added `scripts/invariants-radar-evidence.ts` and package script `invariants:radar-evidence`.
 
-Pre-deploy checks passed:
+Verification passed locally:
+- `git diff --check`
 - `npm run check`
-- `npm run invariants:trading-rules` → 61/61
-- `npm run invariants:signal-quality` → 32/32
-- `npm run invariants:fvg` → 18/18
-- `npm run invariants:engulfing` → 38/38
+- `npm run invariants:radar-evidence` → 15/15
+- `npm run invariants:radar-handoff` → 34/34
 - `npm run build`
 
-Deploy verification passed:
-- `/opt/coinmaster/.deploy-source-commit` matched workspace HEAD at deploy time.
-- `coinmaster.service` active.
-- `GET http://127.0.0.1:8787/api/health` returned `{"ok":true}`.
-- Root HTML returned `<div id="root"></div>`.
-- Production files include `src/core/signalQualityContext.ts`.
-- Production server contains `resolveEventLockout`.
-- Production `package.json` contains `invariants:signal-quality`.
-- `GET /api/settings/trading-rules` returned all eight Stage-1 fields.
-- Recent journal showed clean graceful restart and startup; no deploy rollback.
+Current Project state:
+- #61 Closed / Done / deployed.
+- #62 Open / In Progress.
+- #63 Open / Todo.
+- #64 Open / Todo.
 
-Runtime noise still intentionally uncommitted:
+Do not commit runtime noise:
 - `coinmaster/data/db.json`
 - `prod-backups/dbshape_v1-pre-legacy-cleanup-20260424-160348.json`
 
-Next available task by Project order:
-- #62 [ARCH-02] Radar evidence/ingestion upgrade: feedparser, provenance, EvidenceBundle, NLP, dedupe, factor score
+Next exact step:
+- Commit #62 implementation excluding runtime noise, push, update GitHub issue/Project, then deploy via `coinmaster/scripts/deploy-prod-safe.sh` only.

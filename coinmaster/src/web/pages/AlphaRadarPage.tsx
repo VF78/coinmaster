@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type {
   AlphaRadarIdea,
+  AlphaRadarIdeasResponse,
   AlphaRadarLiveResponse,
   AlphaRadarSettings,
   AlphaRadarSnapshotResponse,
@@ -76,6 +77,7 @@ export function AlphaRadarPage() {
   const [snapshot, setSnapshot] = useState<AlphaRadarSnapshotResponse | null>(null);
   const [live, setLive] = useState<AlphaRadarLiveResponse | null>(null);
   const [ideas, setIdeas] = useState<AlphaRadarIdea[]>([]);
+  const [ideasPayload, setIdeasPayload] = useState<AlphaRadarIdeasResponse | null>(null);
   const [signals, setSignals] = useState<RadarSignalsResponse | null>(null);
   const [tradingSymbols, setTradingSymbols] = useState<TradingRulesSymbolsResponse | null>(null);
   const [message, setMessage] = useState('');
@@ -108,7 +110,10 @@ export function AlphaRadarPage() {
       if (handoffRuntimeRes?.runtime) setHandoffRuntime(handoffRuntimeRes.runtime);
       if (snapshotRes) setSnapshot(snapshotRes);
       if (liveRes) setLive(liveRes);
-      if (ideasRes?.ideas) setIdeas(ideasRes.ideas);
+      if (ideasRes) {
+        setIdeas(ideasRes.ideas);
+        setIdeasPayload(ideasRes);
+      }
       if (signalsRes) setSignals(signalsRes);
       if (tradingSymbolsRes) setTradingSymbols(tradingSymbolsRes);
       setIsLoading(false);
@@ -184,13 +189,16 @@ export function AlphaRadarPage() {
   const tradableAssets = tradingSymbols?.symbols ?? [];
   const sourceHealth = useMemo(() => (live?.monitoring.sourceHealth ?? []).slice(0, 4), [live]);
   const dedupedMergedCount = useMemo(() => {
+    if (typeof ideasPayload?.marketSummary.dedupeSuppressed === 'number') {
+      return ideasPayload.marketSummary.dedupeSuppressed;
+    }
     const observationMerges = (snapshot?.observations ?? []).reduce((acc, item) => {
       const merged = Number(item.metadata?.dedupeMergedCount ?? 0);
       return acc + (Number.isFinite(merged) && merged > 0 ? merged : 0);
     }, 0);
     const duplicateSignals = (signals?.signals ?? []).filter((item) => item.duplicateOf || item.error === 'duplicate_signal').length;
     return observationMerges + duplicateSignals;
-  }, [signals, snapshot]);
+  }, [ideasPayload, signals, snapshot]);
   const handedOffCount = (signals?.summary.pendingConfirmation ?? 0) + (signals?.summary.autoOrderPlaced ?? 0);
   const rejectedHandoffCount = signals?.summary.rejected ?? 0;
 
@@ -379,7 +387,7 @@ export function AlphaRadarPage() {
               </div>
               <div>
                 <p className="muted radar-simple-label">Promoted</p>
-                <strong>{activeIdeas.length}</strong>
+                <strong>{ideasPayload?.marketSummary.signalCandidates ?? activeIdeas.length}</strong>
               </div>
               <div>
                 <p className="muted radar-simple-label">Handed off</p>
@@ -392,6 +400,9 @@ export function AlphaRadarPage() {
             </div>
 
             <div className="radar-chip-grid">
+              {typeof ideasPayload?.marketSummary.evidenceBundles === 'number' ? (
+                <span className="radar-chip radar-chip--muted">Evidence {ideasPayload.marketSummary.evidenceBundles}</span>
+              ) : null}
               {topAssets.length ? topAssets.map((item) => (
                 <span key={item.asset} className="radar-chip">{item.asset} · {item.count}</span>
               )) : <span className="muted">No active asset concentration yet.</span>}

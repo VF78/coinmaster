@@ -55,6 +55,8 @@ const defaultData: DBShape = {
   optimizationResults: [],
   radarSignals: [],
   alphaRadarObservations: [],
+  evidenceBundles: [],
+  signalCandidates: [],
 };
 
 function ensureDbShape(data: DBShape) {
@@ -152,6 +154,8 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.optimizationResults)) data.optimizationResults = [];
   if (!Array.isArray(data.radarSignals)) data.radarSignals = [];
   if (!Array.isArray(data.alphaRadarObservations)) data.alphaRadarObservations = [];
+  if (!Array.isArray(data.evidenceBundles)) data.evidenceBundles = [];
+  if (!Array.isArray(data.signalCandidates)) data.signalCandidates = [];
 }
 
 /**

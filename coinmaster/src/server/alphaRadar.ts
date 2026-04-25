@@ -1,5 +1,6 @@
 import type {
   AlphaRadarConnectorType,
+  EvidenceBundle,
   AlphaRadarMarketSnapshotSettings,
   AlphaRadarMonitoringWatchAsset,
   AlphaRadarPerpContext,
@@ -15,8 +16,10 @@ import type {
   AlphaRadarSourceType,
   MarketTick,
   Position,
+  SignalCandidate,
 } from '../shared/dto.js';
 import { defaultAlphaRadarConnectorSettings, normalizeAlphaRadarConnectors } from './alphaRadarConnectors.js';
+import { extractRssItems as extractRssItemsFallback, extractRssItemsWithFeedparser } from './alphaRadarFeedParser.js';
 
 const DEFAULT_ALPHA_RADAR_MACRO_WATCHLIST: AlphaRadarMonitoringWatchAsset[] = [
   {
@@ -226,6 +229,10 @@ type AlphaRadarCollectedItem = {
   link?: string;
   observedAt?: string;
   sourceName?: string;
+  author?: string;
+  externalId?: string;
+  canonicalUrl?: string;
+  rawPayloadRef?: string;
   assetTags?: string[];
   topicTags?: string[];
   metadata?: Record<string, unknown>;
@@ -1295,35 +1302,11 @@ export function buildMarketObservationCandidates(input: {
 }
 
 export function extractRssItems(xml: string): AlphaRadarCollectedItem[] {
-  const items = [...xml.matchAll(/<(?:item|entry)>([\s\S]*?)<\/(?:item|entry)>/gi)];
-  return items.slice(0, 30).map((match) => {
-    const chunk = match[1] ?? '';
-    const decode = (value: string) => value
-      .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/\s+/g, ' ')
-      .trim();
-    const pick = (tag: string) => {
-      const m = chunk.match(new RegExp(`<${tag}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}>`, 'i'));
-      return m?.[1] ? decode(m[1]) : '';
-    };
-    const pickAttr = (tag: string, attr: string) => {
-      const m = chunk.match(new RegExp(`<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*\/?>`, 'i'));
-      return m?.[1] ? decode(m[1]) : '';
-    };
-    return {
-      title: pick('title'),
-      excerpt: pick('description') || pick('content:encoded') || pick('content') || pick('summary') || pick('title'),
-      link: pick('link') || pickAttr('link', 'href') || undefined,
-      observedAt: pick('pubDate') || pick('published') || pick('updated') || undefined,
-      sourceName: pick('author') || pick('dc:creator') || undefined,
-    };
-  }).filter((item) => item.title && item.excerpt);
+  return extractRssItemsFallback(xml);
+}
+
+export async function extractRssItemsWithProvenance(xml: string): Promise<AlphaRadarCollectedItem[]> {
+  return extractRssItemsWithFeedparser(xml);
 }
 
 export function buildAlphaRadarClusterKey(title: string, url?: string): string {
@@ -2022,6 +2005,8 @@ export function buildIdeaCandidates(input: {
   perpContexts?: AlphaRadarPerpContext[];
   settings: AlphaRadarSettings;
   tradableSymbols: string[];
+  evidenceBundles?: EvidenceBundle[];
+  signalCandidates?: SignalCandidate[];
   nowIso: string;
 }): AlphaRadarIdea[] {
   const tradable = [...new Set(input.tradableSymbols.map((item) => normalizeAlphaRadarSymbol(item)).filter(Boolean))];
@@ -2075,6 +2060,16 @@ export function buildIdeaCandidates(input: {
   const volumeUniverse = (input.perpContexts ?? []).map((item) => Number(item.volume24hUsd)).filter((item) => Number.isFinite(item) && item > 0);
 
   const ideas: AlphaRadarIdea[] = [];
+  const bundleByObservationId = new Map<string, EvidenceBundle>();
+  for (const bundle of input.evidenceBundles ?? []) {
+    for (const observationId of bundle.observationIds) {
+      bundleByObservationId.set(observationId, bundle);
+    }
+  }
+  const candidateByBundleAndSymbol = new Map<string, SignalCandidate>();
+  for (const candidate of input.signalCandidates ?? []) {
+    candidateByBundleAndSymbol.set(`${candidate.evidenceBundleId}|${candidate.symbol.toUpperCase()}`, candidate);
+  }
   for (const symbol of tradable) {
     const allSymbolObservations = (observationsBySymbol.get(symbol) ?? [])
       .slice()
@@ -2233,6 +2228,12 @@ export function buildIdeaCandidates(input: {
       `${confirmedLayers.join(' + ') || 'primary'} layers`,
     );
     const primaryObservation = symbolObservations.find((item) => observationConfirmedLayers(item).includes('primary'));
+    const primaryBundle = symbolObservations
+      .map((item) => bundleByObservationId.get(item.id))
+      .find((bundle): bundle is EvidenceBundle => Boolean(bundle));
+    const signalCandidate = primaryBundle
+      ? candidateByBundleAndSymbol.get(`${primaryBundle.id}|${symbol.toUpperCase()}`)
+      : undefined;
     const warnings = ['Manual confirmation required.', 'Wait for the trigger.', 'No headline-only entries.'];
     if (!effectiveCrossTypeConfirmed) warnings.push('Prefer 2+ independent source types before treating this as actionable.');
     if (!effectiveCrossClassConfirmed) warnings.push('Still thin on cross-class confirmation, avoid treating repeated headlines as independent proof.');
@@ -2243,6 +2244,10 @@ export function buildIdeaCandidates(input: {
 
     ideas.push({
       id: `idea-${symbol}-${direction}-${input.nowIso.slice(0, 16)}`,
+      evidenceBundleId: primaryBundle?.id,
+      signalCandidateId: signalCandidate?.id,
+      signalCandidateState: signalCandidate?.state,
+      durableScore: signalCandidate?.score,
       symbol,
       direction,
       score,

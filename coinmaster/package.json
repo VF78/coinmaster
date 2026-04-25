@@ -28,19 +28,21 @@
     "invariants:fvg": "tsx scripts/invariants-fvg.ts",
     "invariants:signal-quality": "tsx scripts/invariants-signal-quality.ts",
     "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts",
-    "invariants:radar-handoff": "tsx scripts/invariants-radar-handoff.ts",
+    "invariants:radar-evidence": "node --import tsx/esm scripts/invariants-radar-evidence.ts",
+    "invariants:radar-handoff": "node --import tsx/esm scripts/invariants-radar-handoff.ts",
     "invariants:backtest-run-persistence": "node --import tsx/esm scripts/invariants-backtest-run-persistence.ts",
     "invariants:compute-jobs": "node --import tsx/esm scripts/invariants-compute-jobs.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "feedparser": "^2.3.1",
     "hyperliquid": "^1.7.7",
     "lightweight-charts": "^4.2.3",
     "lowdb": "^7.0.1",
+    "nanoid": "^5.0.7",
     "pg": "^8.13.1",
     "pino": "^9.6.0",
-    "nanoid": "^5.0.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

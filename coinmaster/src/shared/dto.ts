@@ -162,6 +162,26 @@ export interface AlphaRadarProvenance {
   url?: string;
   publishedAt?: string;
   ingestedAt?: string;
+  /** Canonicalized URL (lowercased host, stripped tracking params) used for cross-source dedupe. */
+  canonicalUrl?: string;
+  /** Hash (sha-1 hex) of the normalized title+excerpt+url payload — used as exact-match dedupe key. */
+  payloadHash?: string;
+  /** External/source-supplied id (RSS guid, GDELT id, statuspage incident id, etc.). */
+  externalId?: string;
+  /** When the upstream item was actually fetched (HTTP response time). */
+  fetchedAt?: string;
+  /** When this observation was first written to durable storage. */
+  observedAt?: string;
+  /** HTTP cache headers from the most recent fetch, used for conditional requests. */
+  httpEtag?: string;
+  httpLastModified?: string;
+  httpStatus?: number;
+  /** Compact reference to the raw upstream payload (truncated; for audit only — not full payloads). */
+  rawPayloadRef?: string;
+  /** Identifier of the parser that produced this observation (e.g. 'rss-xml', 'gdelt', 'statuspage_incidents'). */
+  parser?: string;
+  /** Arbitrary upstream metadata kept verbatim for audit (cap enforced at write site). */
+  raw?: Record<string, unknown>;
 }
 
 export interface AlphaRadarFeedConfig {
@@ -710,6 +730,174 @@ export interface AlphaRadarSnapshotResponse {
   };
 }
 
+export type EvidenceBundleStatus = 'active' | 'merged' | 'expired';
+
+/**
+ * Durable evidence bundle: one or more AlphaRadar observations clustered around the same
+ * underlying news event (matched by exact hash, canonical URL, or fuzzy title), used as the
+ * upstream record for SignalCandidate promotion. EvidenceBundles are append-only — when a
+ * later observation matches an existing bundle, it is appended to `observationIds` and the
+ * dedupe counters are incremented.
+ */
+export interface EvidenceBundle {
+  id: string;
+  /** Stable cluster key (canonicalUrl or normalized title) used for dedupe lookup. */
+  clusterKey: string;
+  /** Exact-match hash for the canonical payload (if known). */
+  payloadHash?: string;
+  /** Canonical URL of the underlying event (best one across observations). */
+  canonicalUrl?: string;
+  /** Best title across all observations in the cluster. */
+  title: string;
+  /** Best short excerpt across all observations. */
+  excerpt: string;
+  /** Asset tags merged from all observations. */
+  assetTags: string[];
+  /** Topic tags merged from all observations. */
+  topicTags: string[];
+  /** Distinct source identifiers that contributed to this bundle. */
+  sources: string[];
+  /** Distinct source classes (official, newswire, social, …) that contributed. */
+  sourceClasses: AlphaRadarSourceClass[];
+  /** Distinct source layers (primary, duplicate, narrative). */
+  sourceLayers: AlphaRadarSourceLayer[];
+  /** Observation ids in this bundle (most-recent last). */
+  observationIds: string[];
+  /** Source-supplied external ids/guids merged into this bundle. */
+  externalIds: string[];
+  /** Observations matched by exact hash. */
+  exactMatchCount: number;
+  /** Observations matched by canonical URL. */
+  canonicalUrlMatchCount: number;
+  /** Observations matched by source-supplied external id. */
+  externalIdMatchCount: number;
+  /** Observations matched by fuzzy title similarity (no hash/url overlap). */
+  fuzzyMatchCount: number;
+  /** Observations rejected as duplicates (exact match within suppression window). */
+  duplicateSuppressedCount: number;
+  /** When the cluster was first formed. */
+  firstObservedAt: string;
+  /** Most recent observation timestamp. */
+  lastObservedAt: string;
+  status: EvidenceBundleStatus;
+  /** If status is 'merged', the bundle id this one was folded into. */
+  mergedIntoId?: string;
+  /** If status is 'expired', the reason (e.g. 'staleness', 'pruned'). */
+  expiredReason?: string;
+  /** Optional NLP/sentiment enrichment — adapter-driven, fail-safe with deterministic fallback. */
+  enrichment?: EvidenceBundleEnrichment;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Adapter-driven enrichment kept on the bundle. Always optional and never blocking. */
+export interface EvidenceBundleEnrichment {
+  /** Sentiment score in [-1, 1] (positive = bullish, negative = bearish). */
+  sentimentScore?: number;
+  /** Confidence the score should be trusted, in [0, 1]. */
+  sentimentConfidence?: number;
+  /** Adapter that produced the score (e.g. 'lexicon-fallback', 'finbert', 'manual'). */
+  sentimentAdapter?: string;
+  /** Human-readable label inferred from the score. */
+  sentimentLabel?: 'bearish' | 'neutral' | 'bullish';
+  /** Named entity recognition hits (tickers, organizations, locations). */
+  namedEntities?: Array<{ type: 'ticker' | 'org' | 'person' | 'location' | 'event'; value: string }>;
+  /** Adapter that produced the NER hits. */
+  nerAdapter?: string;
+  /** Whether enrichment used the deterministic fallback path. */
+  usedFallback: boolean;
+  /** Last enrichment attempt timestamp. */
+  computedAt: string;
+}
+
+/**
+ * SignalCandidate state machine. Drives the lifecycle of a tradable candidate
+ * derived from an EvidenceBundle. States are intentionally narrow:
+ *
+ *   new → validated → actionable → routed → executed
+ *           │             │
+ *           ↓             ↓
+ *       expired        rejected
+ *           │             │
+ *           └────► postmortem_ready
+ */
+export type SignalCandidateState =
+  | 'new'
+  | 'validated'
+  | 'actionable'
+  | 'routed'
+  | 'executed'
+  | 'expired'
+  | 'rejected'
+  | 'postmortem_ready';
+
+export interface SignalCandidateScoringFactors {
+  /** Topical/asset relevance to monitored Trading Rules symbols (0..1). */
+  relevance: number;
+  /** Novelty vs. recently-seen evidence bundles (0..1, 1 = brand new). */
+  novelty: number;
+  /** Reliability of contributing sources (0..1). */
+  sourceReliability: number;
+  /** Severity of the underlying event (regulatory, security, listing, …) (0..1). */
+  eventSeverity: number;
+  /** Time decay factor — how recent the freshest observation is (0..1). */
+  timeDecay: number;
+  /** Live-market confirmation (price/volume/structure aligns) (0..1). */
+  marketConfirmation: number;
+  /** Executability — whether the symbol is monitored, sized, and not blocked (0..1). */
+  executionability: number;
+}
+
+export interface SignalCandidateScore {
+  factors: SignalCandidateScoringFactors;
+  /** Composite score in [0, 100], computed from factors via deterministic weights. */
+  composite: number;
+  /** Weights used to compose the score, kept on the candidate for auditability. */
+  weights: SignalCandidateScoringFactors;
+}
+
+export interface SignalCandidateStateTransition {
+  from: SignalCandidateState;
+  to: SignalCandidateState;
+  reason: string;
+  at: string;
+  /** Optional pointer to the radar signal record this transition produced. */
+  radarSignalId?: string;
+  /** Optional pointer to the pending confirmation produced. */
+  pendingId?: string;
+  /** Optional pointer to the placed order id. */
+  orderId?: string;
+}
+
+export interface SignalCandidate {
+  id: string;
+  /** EvidenceBundle this candidate was derived from. */
+  evidenceBundleId: string;
+  symbol: string;
+  side: 'buy' | 'sell';
+  state: SignalCandidateState;
+  /** When this candidate stops being eligible for promotion (ISO timestamp). */
+  expiresAt?: string;
+  /** Why the candidate is in its current state (last transition reason). */
+  stateReason?: string;
+  /** Full transition history — append-only. */
+  transitions: SignalCandidateStateTransition[];
+  /** Latest scoring snapshot (recomputed on transitions). */
+  score?: SignalCandidateScore;
+  /** Reference to the radar signal record once the candidate routes to handoff. */
+  radarSignalId?: string;
+  /** Pending confirmation id if manual queue. */
+  pendingId?: string;
+  /** Order id if auto-routed. */
+  orderId?: string;
+  /** Final outcome string for postmortem ('filled', 'tp_hit', 'sl_hit', 'rejected', 'manual_dismiss'). */
+  outcome?: string;
+  /** Free-text postmortem notes — only present once state === 'postmortem_ready'. */
+  postmortemNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AlphaRadarPerpContext {
   symbol: string;
   asOf: string;
@@ -720,6 +908,10 @@ export interface AlphaRadarPerpContext {
 
 export interface AlphaRadarIdea {
   id: string;
+  evidenceBundleId?: string;
+  signalCandidateId?: string;
+  signalCandidateState?: SignalCandidateState;
+  durableScore?: SignalCandidateScore;
   symbol?: string;
   direction?: TradeSide;
   score: number;
@@ -798,6 +990,9 @@ export interface AlphaRadarIdeasResponse {
     monitoringOnlyAssets?: string[];
     openPositions: number;
     strongestObservation?: string;
+    evidenceBundles?: number;
+    signalCandidates?: number;
+    dedupeSuppressed?: number;
     sourceHealth?: AlphaRadarSourceHealth[];
     llmMode?: 'on_demand';
   };
