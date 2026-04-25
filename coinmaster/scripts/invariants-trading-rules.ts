@@ -12,6 +12,7 @@
  *   5. riskPerTradePct caps auto-sizing by configured SL distance
  *   6. portfolioGrossCap caps aggregate gross exposure
  *   7. regimeTf is constrained to owner-approved HTF values (1h/4h)
+ *   8. Backtest sizing mirrors live riskPerTradePct and portfolioGrossCap limits
  *
  * Exit code: 0 = all pass, 1 = failures found.
  *
@@ -23,6 +24,7 @@
 
 import { normalizeTradingRules } from '../src/shared/tradingRules.js';
 import type { TradingRulesSettings } from '../src/shared/dto.js';
+import { computeSizeFromRules as computeBacktestSizeFromRules } from '../src/core/backtestEngine.js';
 import {
   isSymbolEnabled,
   getCoinAllocation,
@@ -354,6 +356,45 @@ console.log('\n── Invariant 7: regimeTf constrained to 1h/4h ──');
   assert(normalizeTradingRules({ regimeTf: '4h' }).regimeTf === '4h', 'regimeTf accepts 4h');
   assert(normalizeTradingRules({ regimeTf: '5m' }).regimeTf === '1h', 'regimeTf rejects 5m and falls back to 1h');
   assert(normalizeTradingRules({ regimeTf: '15m' }).regimeTf === '1h', 'regimeTf rejects 15m and falls back to 1h');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INVARIANT 8: backtest sizing mirrors live risk caps
+// ═══════════════════════════════════════════════════════════════════════
+
+console.log('\n── Invariant 8: backtest sizing mirrors live risk caps ──');
+
+{
+  const base = normalizeTradingRules({
+    maxLeverage: 10,
+    slPct: 2,
+    riskPerTradePct: 0,
+    portfolioGrossCap: 0,
+    coins: [{ symbol: 'BTC', enabled: true, pct: 50 }],
+  });
+  const riskCapped = normalizeTradingRules({
+    maxLeverage: 10,
+    slPct: 2,
+    riskPerTradePct: 1,
+    portfolioGrossCap: 0,
+    coins: [{ symbol: 'BTC', enabled: true, pct: 50 }],
+  });
+  const grossBlocked = normalizeTradingRules({
+    maxLeverage: 10,
+    slPct: 2,
+    riskPerTradePct: 0,
+    portfolioGrossCap: 100,
+    coins: [{ symbol: 'BTC', enabled: true, pct: 50 }],
+  });
+
+  const baseSize = computeBacktestSizeFromRules(50_000, 100_000, base, 'BTC');
+  const riskSize = computeBacktestSizeFromRules(50_000, 100_000, riskCapped, 'BTC');
+  const grossSize = computeBacktestSizeFromRules(50_000, 100_000, grossBlocked, 'BTC');
+
+  assertClose(baseSize, 10, 'backtest base size = $500k notional / $50k price');
+  assertClose(riskSize, 1, 'backtest risk cap size = $50k notional / $50k price');
+  assert(riskSize < baseSize, 'backtest riskPerTradePct caps size below allocation model');
+  assert(grossSize === 0, 'backtest portfolioGrossCap blocks oversized new entry instead of shrinking it');
 }
 
 // ─── Summary ─────────────────────────────────────────────────────────

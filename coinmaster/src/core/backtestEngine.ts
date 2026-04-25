@@ -116,18 +116,39 @@ function resolveTpSlFromRules(
   return { stopLoss: round(stopLoss, 8), takeProfits: takeProfits.map((tp) => round(tp, 8)) };
 }
 
-function computeSizeFromRules(
+export function computeSizeFromRules(
   price: number,
   depositUsd: number,
   rules: TradingRulesSettings,
   symbol: string,
 ): number {
+  if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(depositUsd) || depositUsd <= 0) return 0;
+
   const coin = rules.coins.find((c) => c.symbol.toUpperCase() === symbol.toUpperCase());
+  if (coin && coin.enabled === false) return 0;
+
   const allocationPct = coin?.pct ?? 100;
   const leverage = rules.maxLeverage || 1;
+  if (!Number.isFinite(allocationPct) || allocationPct <= 0 || !Number.isFinite(leverage) || leverage <= 0) return 0;
 
-  const marginUsd = depositUsd * (allocationPct / 100);
-  const notionalUsd = marginUsd * leverage;
+  const allocationMarginUsd = depositUsd * (allocationPct / 100);
+  const allocationNotionalUsd = allocationMarginUsd * leverage;
+  const riskPerTradePct = Number(rules.riskPerTradePct ?? 0);
+  const slPct = Number(rules.slPct ?? 0);
+  const riskCapNotionalUsd = riskPerTradePct > 0 && slPct > 0
+    ? depositUsd * (riskPerTradePct / 100) / (slPct / 100)
+    : Number.POSITIVE_INFINITY;
+
+  const notionalUsd = Math.min(allocationNotionalUsd, riskCapNotionalUsd);
+  const marginUsd = notionalUsd / leverage;
+  if (!Number.isFinite(notionalUsd) || notionalUsd <= 0 || !Number.isFinite(marginUsd) || marginUsd > depositUsd) return 0;
+
+  const portfolioGrossCap = Number(rules.portfolioGrossCap ?? 0);
+  if (Number.isFinite(portfolioGrossCap) && portfolioGrossCap > 0) {
+    const capNotionalUsd = depositUsd * (portfolioGrossCap / 100);
+    if (notionalUsd > capNotionalUsd) return 0;
+  }
+
   const rawSize = notionalUsd / price;
 
   return Math.floor(rawSize * 1e6) / 1e6;
