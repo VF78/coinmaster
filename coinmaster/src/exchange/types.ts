@@ -129,12 +129,16 @@ export type TradingErrorCode =
   | 'leverage_limit_exceeded'
   | 'symbol_not_enabled'
   | 'allocation_limit_exceeded'
+  | 'portfolio_gross_cap_exceeded'
   | 'risk_check_unavailable'
   | 'allocation_check_unavailable'
   | 'stale_market_data'
   | 'auth_required'
   | 'allocation_sizing_failed'
   | 'no_engulfing_entry_signal'
+  | 'trading_rules_unavailable'
+  | 'trading_rules_market_data_unavailable'
+  | 'trading_rules_gate_unavailable'
   | 'dd_lock_active';
 
 export interface ExchangeCapabilities {

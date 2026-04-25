@@ -56,6 +56,7 @@ import type {
   SignalStrategy,
   TelegramOutboxItem,
   TradeEvent,
+  TradeSide,
   TradingRulesSettings,
   TradingRulesTimeframe
 } from '../shared/dto.js';
@@ -80,7 +81,7 @@ import {
 import { alphaRadarFetchJson, alphaRadarFetchText, mapWithConcurrency, summarizeAlphaRadarFetchFailure } from './alphaRadarHttp.js';
 import { buildAlphaRadarConnectorHealth, summarizeAlphaRadarConnectorRuntimes } from './alphaRadarConnectors.js';
 import { collectBlueskyConnector, collectRedditConnector, collectTelegramAuthReadyConnector } from './alphaRadarSocial.js';
-import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize } from './runtimeRules.js';
+import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize, maxPortfolioGrossNotional, wouldExceedPortfolioGrossCap } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { Candle, CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
@@ -88,6 +89,7 @@ import { buildLiveDashboardState, getOrderClientOrderId, getSystemManagedProtect
 import { applyAiMasterQaAnswer, buildAiMasterInsight, buildAiMasterQaQuestion, pruneAiMasterCollections } from './aiMaster.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
 import { evaluateFvg, type FvgTimeframe } from '../core/fvgEvaluator.js';
+import { evaluateSignalQuality, type SignalQualityVerdict } from '../core/signalQualityContext.js';
 import {
   applyBybitConnectionPatch,
   collectExternalFills,
@@ -2255,14 +2257,16 @@ async function notifyPositionClosedEvent(params: {
 }): Promise<void> {
   const cfg = await getTelegramConfig();
   if (!cfg || !cfg.notifyPositionClosed) return;
+  const reason = String(params.reason || 'tp_all_filled');
+  const isTimeStop = reason === 'time_stop';
   await enqueueTelegramOutbox({
     category: 'position_closed',
     dedupeKey: `position_closed:${params.correlationId}`,
     text: [
-      '✅ Position fully closed',
+      isTimeStop ? '⏱️ Position closed by time stop' : '✅ Position fully closed',
       `${params.symbol}`,
-      `All TPs filled (${params.tpsFilled}). Position flat.`,
-      `closed_by: ${String(params.reason || 'tp_all_filled')}`, 
+      isTimeStop ? 'No TP1 follow-through within configured timeStopBars.' : `All TPs filled (${params.tpsFilled}). Position flat.`,
+      `closed_by: ${reason}`,
     ].join('\n'),
   });
 }
@@ -3201,6 +3205,24 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
           };
         }
 
+        const risk = await withTimeout(evaluateRiskGates({ emitAudit: false }), 5000, 'confirm_risk_gates');
+        if (!risk.canTrade) {
+          return {
+            ack: { ok: false, error: `risk_gate_blocked:${risk.blocks.join(',')}` },
+            usedPrice: price,
+            usedSize: 0,
+          };
+        }
+
+        const gross = await checkPortfolioGrossCap({ symbol: normalizedSymbol, price, size: sizing.size, effectiveRules: rules, riskCheck: risk });
+        if (!gross.ok) {
+          return {
+            ack: { ok: false, error: 'portfolio_gross_cap_exceeded' },
+            usedPrice: price,
+            usedSize: 0,
+          };
+        }
+
         lastSize = sizing.size;
         const ack = await withTimeout(exchange.placeLimitOrder({
           symbol: normalizedSymbol,
@@ -3274,7 +3296,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   const tpSl = resolveTpSlDefaults(usedPrice, side, undefined, undefined);
   if (tpSl) {
     try {
-      await placeTpSlTriggerOrders(normalizedSymbol, side, usedSize, tpSl, correlationId, usedPrice);
+      await placeTpSlTriggerOrders(normalizedSymbol, side, usedSize, tpSl, correlationId, usedPrice, pending.timeframe);
     } catch {
       // best effort
     }
@@ -4344,6 +4366,23 @@ async function handoffStrategyEntrySignal(params: {
       return { flow: 'continue', status: 'rejected', source, error: reasonCode };
     }
 
+    const gross = await checkPortfolioGrossCap({ symbol, price, size: sizing.size, effectiveRules, riskCheck: risk });
+    if (!gross.ok) {
+      logRiskGateAudit({
+        gate: auditGate,
+        passed: false,
+        reason: 'portfolio_gross_cap_exceeded',
+        details: { symbol, timeframe, strategy, currentGross: gross.currentGross, newNotional: gross.newNotional, totalGross: gross.totalGross, cap: gross.cap },
+      });
+      await notifySignalRejectedEvent({
+        symbol,
+        source,
+        reason: 'portfolio_gross_cap_exceeded',
+        blocks: `gross_${gross.totalGross.toFixed(2)}_gt_${gross.cap.toFixed(2)}`,
+      }).catch(() => undefined);
+      return { flow: 'continue', status: 'rejected', source, error: 'portfolio_gross_cap_exceeded' };
+    }
+
     const correlationId = `${strategy}-auto-${nanoid(8)}`;
     const ack = await exchange.placeLimitOrder({ symbol, side, price, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
 
@@ -4364,7 +4403,7 @@ async function handoffStrategyEntrySignal(params: {
       const tpSl = resolveTpSlDefaults(price, side, undefined, undefined);
       if (tpSl) {
         try {
-          await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, price);
+          await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, price, timeframe);
         } catch {
           // best effort
         }
@@ -4384,6 +4423,117 @@ async function handoffStrategyEntrySignal(params: {
   }
 
   return { flow: 'continue', status: 'rejected', source, error: 'auto_entry_failed' };
+}
+
+function alphaRadarObservationIsEventLockoutCandidate(observation: AlphaRadarObservation): boolean {
+  const tags = new Set((observation.topicTags ?? []).map((tag) => String(tag).toLowerCase()));
+  const metadata = observation.metadata && typeof observation.metadata === 'object'
+    ? observation.metadata as Record<string, unknown>
+    : {};
+  return tags.has('macro-shock') || Boolean(metadata.macroShock) || observation.sourceClass === 'macro' && Number(observation.urgencyScore ?? 0) >= 0.8;
+}
+
+async function resolveEventLockout(params: { symbol: string; raw: TradingRulesSettings }): Promise<{ active: boolean; reason?: string } | undefined> {
+  const minutes = Math.max(0, Math.round(Number(params.raw.eventLockoutMinutes ?? 0)));
+  if (minutes <= 0) return undefined;
+
+  const now = Date.now();
+  const cutoffMs = now - minutes * 60_000;
+  const db = await getDb();
+  const settings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+  const observations = currentAlphaRadarObservations(settings, ensureAlphaRadarObservationsState(db), new Date(now).toISOString());
+  const hit = observations.find((observation) => {
+    const observedMs = Date.parse(observation.observedAt);
+    return Number.isFinite(observedMs)
+      && observedMs >= cutoffMs
+      && alphaRadarObservationIsEventLockoutCandidate(observation);
+  });
+
+  if (!hit) return { active: false };
+  const label = hit.topicTags?.includes('macro-shock') ? 'macro-shock' : hit.sourceClass ?? hit.source;
+  return { active: true, reason: `event_lockout_${label}_${params.symbol}` };
+}
+
+/**
+ * Issue #61 — Signal-quality gate shared by the engulfing and FVG monitors.
+ * Pulls regime candles for `rules.regimeTf`, computes ATR/EMA/ADX, displacement
+ * quality, and expected RR, and returns the deterministic verdict from
+ * `signalQualityContext.evaluateSignalQuality`.
+ *
+ * Designed to fail-safe: when thresholds are zero (default settings) every
+ * filter remains permissive so existing operators see no behavioural change
+ * until they opt in via the Trading Rules UI.
+ */
+async function runSignalQualityGate(params: {
+  symbol: string;
+  side: 'buy' | 'sell';
+  entryTf: TradingRulesTimeframe;
+  entryCandles: Candle[];
+  currentPrice: number;
+  raw: TradingRulesSettings;
+  impulseTriple?: { c0: Candle; c1: Candle; c2: Candle };
+}): Promise<SignalQualityVerdict> {
+  const { symbol, side, entryTf, entryCandles, currentPrice, raw, impulseTriple } = params;
+  const tradeSide: TradeSide = side === 'buy' ? 'long' : 'short';
+  const regimeTf = (raw.regimeTf ?? '1h') as TradingRulesTimeframe;
+  const adxMin = Number(raw.adxMin ?? 0);
+  const minImpulseAtr = Number(raw.minImpulseAtr ?? 0);
+  const minExpectedRr = Number(raw.minExpectedRr ?? 0);
+  const eventLockout = await resolveEventLockout({ symbol, raw }).catch((err) => {
+    logger.warn({ component: 'signal-quality', symbol, err }, 'event lockout check failed — signal-quality gate blocks entry');
+    return { active: true, reason: 'event_lockout_check_unavailable' };
+  });
+
+  // When all thresholds are zero, the gate is a no-op; skip the candle fetch.
+  if (adxMin <= 0 && minImpulseAtr <= 0 && minExpectedRr <= 0 && !eventLockout?.active) {
+    return { ok: true, details: {} };
+  }
+
+  // Regime candles: enough history for slow EMA(55) + ADX seed (2*period).
+  const regimeTfMs = TF_MS[regimeTf] ?? 3_600_000;
+  let regimeCandles: Candle[] = entryCandles;
+  if (regimeTf !== entryTf) {
+    try {
+      const now = Date.now();
+      const fetched = await exchange.getCandles({
+        symbol,
+        timeframe: TF_LABEL_TO_CANDLE_TF[regimeTf],
+        startTimeMs: now - regimeTfMs * 120,
+        endTimeMs: now,
+      });
+      regimeCandles = fetched.filter((c) => Date.parse(c.timestamp) <= now - regimeTfMs);
+    } catch (err) {
+      logger.warn({ component: 'signal-quality', regimeTf, err }, 'regime candle fetch failed — signal-quality gate blocks entry');
+      return {
+        ok: false,
+        reasonCode: 'regime_data_insufficient',
+        reason: `regime_fetch_failed_${regimeTf}`,
+        details: {},
+      };
+    }
+  }
+
+  const tpSl = resolveTpSlDefaults(currentPrice, side, undefined, undefined);
+  const stopLoss = tpSl?.stopLoss ?? 0;
+  const takeProfits = tpSl?.takeProfits?.length ? tpSl.takeProfits : [];
+
+  return evaluateSignalQuality({
+    side: tradeSide,
+    regimeCandles,
+    regimeTf,
+    entryCandles,
+    impulseTriple,
+    entry: currentPrice,
+    stopLoss,
+    takeProfits,
+    eventLockout,
+    thresholds: {
+      adxMin,
+      minImpulseAtr,
+      minExpectedRr,
+      requireQuartile: minImpulseAtr > 0,
+    },
+  });
 }
 
 /**
@@ -4485,6 +4635,41 @@ async function runEngulfingMonitorTick(): Promise<void> {
           const currentPrice = resolveMonitorPrice(mids, symbol, closedCandles);
           if (!currentPrice) { logger.warn({ component: 'engulfing-monitor' }, 'entry signal: no price'); continue; }
 
+          // Issue #61 — Signal-quality gate (regime, displacement, RR).
+          const quality = await runSignalQualityGate({
+            symbol,
+            side,
+            entryTf: tf,
+            entryCandles: closedCandles,
+            currentPrice,
+            raw,
+          });
+          if (!quality.ok) {
+            logRiskGateAudit({
+              gate: 'engulfing_entry_signal',
+              passed: false,
+              reason: quality.reasonCode ?? 'signal_quality_block',
+              details: {
+                symbol,
+                tf,
+                direction: signal.direction,
+                regimeTf: raw.regimeTf,
+                regime: quality.details.regime?.direction,
+                adx: quality.details.regime?.adx,
+                bodyAtr: quality.details.displacement?.bodyAtrRatio,
+                expectedRr: quality.details.expectedRr,
+                reason: quality.reason,
+              },
+            });
+            await notifySignalRejectedEvent({
+              symbol,
+              source: `engulfing:auto:${tf}`,
+              reason: quality.reasonCode ?? 'signal_quality_block',
+              blocks: quality.reason,
+            }).catch(() => undefined);
+            continue;
+          }
+
           const handoff = await handoffStrategyEntrySignal({
             component: 'engulfing-monitor',
             strategy: 'engulfing',
@@ -4495,7 +4680,13 @@ async function runEngulfingMonitorTick(): Promise<void> {
             reason: signal.reason,
             effectiveRules,
             autoConfirm: !!raw.autoConfirm,
-            auditDetails: { direction: signal.direction, confidence: signal.confidence },
+            auditDetails: {
+              direction: signal.direction,
+              confidence: signal.confidence,
+              regimeTf: raw.regimeTf,
+              regime: quality.details.regime?.direction,
+              expectedRr: quality.details.expectedRr,
+            },
           });
           if (handoff.flow === 'break') break;
         } catch (err) {
@@ -4901,6 +5092,50 @@ async function runFvgMonitorTick(): Promise<void> {
           'FVG retrace entry signal detected',
         );
 
+        // Issue #61 — Signal-quality gate (regime, impulse displacement, RR).
+        const fvgCompletionIndex = signal.zone?.completionIndex;
+        const fvgImpulseTriple = typeof fvgCompletionIndex === 'number'
+          ? {
+              c0: closedCandles[fvgCompletionIndex - 2],
+              c1: closedCandles[fvgCompletionIndex - 1],
+              c2: closedCandles[fvgCompletionIndex],
+            }
+          : undefined;
+        const fvgQuality = await runSignalQualityGate({
+          symbol,
+          side,
+          entryTf: tf,
+          entryCandles: closedCandles,
+          currentPrice,
+          raw,
+          impulseTriple: fvgImpulseTriple?.c0 && fvgImpulseTriple.c1 && fvgImpulseTriple.c2 ? fvgImpulseTriple : undefined,
+        });
+        if (!fvgQuality.ok) {
+          logRiskGateAudit({
+            gate: 'fvg_entry_signal',
+            passed: false,
+            reason: fvgQuality.reasonCode ?? 'signal_quality_block',
+            details: {
+              symbol,
+              tf,
+              direction: signal.direction,
+              regimeTf: raw.regimeTf,
+              regime: fvgQuality.details.regime?.direction,
+              adx: fvgQuality.details.regime?.adx,
+              bodyAtr: fvgQuality.details.displacement?.bodyAtrRatio,
+              expectedRr: fvgQuality.details.expectedRr,
+              reason: fvgQuality.reason,
+            },
+          });
+          await notifySignalRejectedEvent({
+            symbol,
+            source: `fvg:auto:${tf}`,
+            reason: fvgQuality.reasonCode ?? 'signal_quality_block',
+            blocks: fvgQuality.reason,
+          }).catch(() => undefined);
+          continue;
+        }
+
         const handoff = await handoffStrategyEntrySignal({
           component: 'fvg-monitor',
           strategy: 'fvg',
@@ -4916,6 +5151,9 @@ async function runFvgMonitorTick(): Promise<void> {
             triggerPrice: signal.triggerPrice,
             zoneTop: signal.zone?.top,
             zoneBottom: signal.zone?.bottom,
+            regimeTf: raw.regimeTf,
+            regime: fvgQuality.details.regime?.direction,
+            expectedRr: fvgQuality.details.expectedRr,
           },
         });
         if (handoff.flow === 'break') break;
@@ -4983,6 +5221,39 @@ function startEngulfingMonitor(startupDelayMs = 0): void {
 function isProtectionOnlyRequest(req: Request): boolean {
   const p = (req.path || req.originalUrl || '').toLowerCase();
   return p.startsWith('/api/live/position/levels');
+}
+
+function positionGrossNotional(pos: PositionSnapshot): number {
+  const px = Number(pos.markPrice ?? pos.entryPrice ?? 0);
+  const size = Number(pos.size ?? 0);
+  if (!Number.isFinite(px) || px <= 0 || !Number.isFinite(size) || size <= 0) return 0;
+  return px * size;
+}
+
+async function checkPortfolioGrossCap(params: {
+  symbol: string;
+  price: number;
+  size: number;
+  effectiveRules: ReturnType<typeof rulesCache.getEffectiveRules>;
+  riskCheck?: RiskCheckResult;
+}): Promise<{ ok: true } | { ok: false; cap: number; currentGross: number; newNotional: number; totalGross: number }> {
+  const { symbol, price, size, effectiveRules, riskCheck } = params;
+  const equityUsd = Number(riskCheck?.equityUsd ?? 0);
+  const cap = maxPortfolioGrossNotional(equityUsd, effectiveRules);
+  if (!Number.isFinite(cap)) return { ok: true };
+
+  const positions = await exchange.getOpenPositions().catch(() => null);
+  if (!positions) throw new Error('portfolio_positions_unavailable');
+
+  const currentGross = positions.reduce((sum, pos) => sum + positionGrossNotional(pos), 0);
+  const newNotional = price * size;
+  const totalGross = currentGross + newNotional;
+  if (!wouldExceedPortfolioGrossCap({ equityUsd, rules: effectiveRules, currentGrossNotional: currentGross, newOrderNotional: newNotional })) {
+    return { ok: true };
+  }
+
+  logger.warn({ component: 'risk-gate', symbol, currentGross, newNotional, totalGross, cap }, 'portfolio gross cap exceeded');
+  return { ok: false, cap, currentGross, newNotional, totalGross };
 }
 
 async function riskGateMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -5136,6 +5407,38 @@ async function symbolAllocationGate(req: Request, res: Response, next: NextFunct
         }
       }
 
+      const gross = await checkPortfolioGrossCap({
+        symbol,
+        price,
+        size,
+        effectiveRules,
+        riskCheck: (req as any)._riskCheck,
+      });
+      if (!gross.ok) {
+        logRiskGateAudit({
+          gate: 'allocation_cap',
+          passed: false,
+          reason: 'portfolio_gross_cap_exceeded',
+          details: {
+            symbol,
+            currentGross: Number(gross.currentGross.toFixed(2)),
+            newNotional: Number(gross.newNotional.toFixed(2)),
+            totalGross: Number(gross.totalGross.toFixed(2)),
+            cap: Number(gross.cap.toFixed(2)),
+          },
+        });
+        return res.status(403).json({
+          ok: false,
+          errorCode: 'portfolio_gross_cap_exceeded' as TradingErrorCode,
+          error: `Order would bring portfolio gross exposure to $${gross.totalGross.toFixed(2)}, exceeding cap of $${gross.cap.toFixed(2)}.`,
+          symbol,
+          currentGross: Number(gross.currentGross.toFixed(2)),
+          newNotional: Number(gross.newNotional.toFixed(2)),
+          totalGross: Number(gross.totalGross.toFixed(2)),
+          cap: Number(gross.cap.toFixed(2)),
+        });
+      }
+
       logRiskGateAudit({
         gate: 'allocation_cap',
         passed: true,
@@ -5227,21 +5530,28 @@ const TF_MS: Record<TradingRulesTimeframe, number> = {
 
 async function engulfingGate(req: Request, res: Response, next: NextFunction) {
 
-  const body = (req.body ?? {}) as { symbol?: string; reduceOnly?: boolean };
+  const body = (req.body ?? {}) as { symbol?: string; reduceOnly?: boolean; tradingRulesGateOverride?: boolean };
   if (body.reduceOnly) return next();
+  const operatorOverride = body.tradingRulesGateOverride === true;
 
   try {
     const effectiveRules = rulesCache.getEffectiveRules();
     const raw = effectiveRules.raw;
 
-    // Fail-safe: rules unavailable => allow through, but audit explicit reason.
+    // Fail-safe: rules unavailable blocks new entry orders unless the operator
+    // explicitly includes tradingRulesGateOverride=true in the request.
     if (!raw) {
       logRiskGateAudit({
         gate: 'multi_tf_engulfing',
-        passed: true,
-        reason: 'rules_unavailable_failsafe',
+        passed: operatorOverride,
+        reason: operatorOverride ? 'rules_unavailable_operator_override' : 'rules_unavailable_fail_safe_block',
       });
-      return next();
+      if (operatorOverride) return next();
+      return res.status(503).json({
+        ok: false,
+        errorCode: 'trading_rules_unavailable' as TradingErrorCode,
+        error: 'Trading Rules are unavailable. New entry orders are blocked unless operator override is explicit.',
+      });
     }
 
     const symbol = normalizeSymbol(body.symbol ?? LIVE_SYMBOL);
@@ -5273,15 +5583,20 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
       }
     }));
 
-    // Fail-safe: data fetch failed => allow through, but audit explicit reason.
+    // Fail-safe: data fetch failure blocks new entry orders unless explicitly overridden.
     if (fetchFailedTfs.length > 0) {
       logRiskGateAudit({
         gate: 'multi_tf_engulfing',
-        passed: true,
-        reason: 'candle_fetch_error_failsafe',
+        passed: operatorOverride,
+        reason: operatorOverride ? 'candle_fetch_error_operator_override' : 'candle_fetch_error_fail_safe_block',
         details: { symbol, failedTimeframes: fetchFailedTfs },
       });
-      return next();
+      if (operatorOverride) return next();
+      return res.status(503).json({
+        ok: false,
+        errorCode: 'trading_rules_market_data_unavailable' as TradingErrorCode,
+        error: 'Trading Rules market data is unavailable. New entry orders are blocked unless operator override is explicit.',
+      });
     }
 
     const result = evaluateMultiTf(candlesByTf, {
@@ -5293,18 +5608,19 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
     // Attach result for downstream handlers to inspect
     (req as any)._engulfingResult = result;
 
-    // Hard gate under feature-flag: no entry signal => block order.
+    // Hard gate: no entry signal blocks, unless the operator explicitly overrides.
     if (!result.anyEntry) {
       logRiskGateAudit({
         gate: 'multi_tf_engulfing',
-        passed: false,
-        reason: 'no_engulfing_entry_signal',
+        passed: operatorOverride,
+        reason: operatorOverride ? 'no_engulfing_entry_signal_operator_override' : 'no_engulfing_entry_signal',
         details: {
           symbol,
           signals: result.entry.map((s) => ({ tf: s.timeframe, detected: s.detected, reason: s.reason })),
         },
       });
 
+      if (operatorOverride) return next();
       return res.status(403).json({
         ok: false,
         errorCode: 'no_engulfing_entry_signal' as TradingErrorCode,
@@ -5326,12 +5642,17 @@ async function engulfingGate(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     logRiskGateAudit({
       gate: 'multi_tf_engulfing',
-      passed: true,
-      reason: 'gate_exception_failsafe',
+      passed: operatorOverride,
+      reason: operatorOverride ? 'gate_exception_operator_override' : 'gate_exception_fail_safe_block',
       details: { error: error instanceof Error ? error.message : String(error) },
     });
-    logger.error({ component: 'engulfing-gate', err: error }, 'engulfing gate error, allowing trade through');
-    return next();
+    logger.error({ component: 'engulfing-gate', err: error, operatorOverride }, 'engulfing gate error');
+    if (operatorOverride) return next();
+    return res.status(503).json({
+      ok: false,
+      errorCode: 'trading_rules_gate_unavailable' as TradingErrorCode,
+      error: 'Trading Rules gate failed. New entry orders are blocked unless operator override is explicit.',
+    });
   }
 }
 
@@ -7958,6 +8279,38 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
   }
 
   const notional = px * qty;
+  const normalizedSymbol = normalizeSymbol(symbol);
+
+  if (!reduceOnly && sizingSource === 'runtime_allocation') {
+    let gross: Awaited<ReturnType<typeof checkPortfolioGrossCap>>;
+    try {
+      gross = await checkPortfolioGrossCap({
+        symbol: normalizedSymbol,
+        price: px,
+        size: qty,
+        effectiveRules: rulesCache.getEffectiveRules(),
+        riskCheck: (req as any)._riskCheck,
+      });
+    } catch (error) {
+      logger.error({ component: 'risk-gate', err: error }, 'portfolio gross cap check failed');
+      return res.status(503).json({
+        ok: false,
+        errorCode: 'allocation_check_unavailable' as TradingErrorCode,
+        error: 'Portfolio gross exposure guard unavailable. Trading is temporarily blocked.',
+      });
+    }
+    if (!gross.ok) {
+      return res.status(403).json({
+        ok: false,
+        errorCode: 'portfolio_gross_cap_exceeded' as TradingErrorCode,
+        error: `Order would bring portfolio gross exposure to $${gross.totalGross.toFixed(2)}, exceeding cap of $${gross.cap.toFixed(2)}.`,
+        currentGross: Number(gross.currentGross.toFixed(2)),
+        newNotional: Number(gross.newNotional.toFixed(2)),
+        totalGross: Number(gross.totalGross.toFixed(2)),
+        cap: Number(gross.cap.toFixed(2)),
+      });
+    }
+  }
 
   if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
     return res.status(409).json({
@@ -7967,7 +8320,6 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     });
   }
 
-  const normalizedSymbol = normalizeSymbol(symbol);
   const correlationId = clientOrderId || nanoid();
   const now = new Date().toISOString();
 
@@ -8183,6 +8535,8 @@ interface ActiveTradeState {
   tpOrderIds: string[];        // pending TP order IDs (removed as they fill)
   firstTpFired: boolean;
   positionSize: number;
+  openedAt?: string;
+  entryTimeframe?: TradingRulesTimeframe;
 }
 
 function splitTakeProfitSizes(totalSize: number, tpCount: number, sizeDecimals: number): number[] {
@@ -8354,6 +8708,7 @@ async function placeTpSlTriggerOrders(
   tpSl: TpSlDefaults,
   correlationId: string,
   entryPrice?: number,
+  entryTimeframe?: TradingRulesTimeframe,
 ): Promise<{
   stopLossOrder: { ok: boolean; orderId?: string; error?: string };
   takeProfitOrder: { ok: boolean; orderId?: string; error?: string };
@@ -8409,11 +8764,14 @@ async function placeTpSlTriggerOrders(
 
   // Register in active trade tracking (for TP fill monitor)
   const tpOrderIds = tpOrders.map(o => o.orderId).filter((id): id is string => Boolean(id));
-  if (tpOrderIds.length > 0 && tpCount > 1) {
+  const timeStopBars = Math.max(0, Math.round(Number(rulesCache.getEffectiveRules().raw?.timeStopBars ?? 0)));
+  if (tpOrderIds.length > 0 && (tpCount > 1 || (timeStopBars > 0 && entryTimeframe))) {
     activeTrades.set(correlationId, {
       symbol, side, entryPrice: entryPrice ?? tpSl.stopLoss,
       slOrderId: slOrder.orderId ?? null,
       tpOrderIds, firstTpFired: false, positionSize: size,
+      openedAt: new Date().toISOString(),
+      entryTimeframe,
     });
   }
 
@@ -8427,6 +8785,61 @@ async function placeTpSlTriggerOrders(
 // ─── TP Fill Monitor (SL → entry price after first TP) ────────────────
 let tpFillMonitorTimer: NodeJS.Timeout | null = null;
 let tpFillMonitorBusy = false;
+
+async function maybeApplyActiveTradeTimeStop(correlationId: string, trade: ActiveTradeState): Promise<boolean> {
+  const timeStopBars = Math.max(0, Math.round(Number(rulesCache.getEffectiveRules().raw?.timeStopBars ?? 0)));
+  if (timeStopBars <= 0 || trade.firstTpFired || !trade.openedAt || !trade.entryTimeframe) return false;
+
+  const tfMs = TF_MS[trade.entryTimeframe] ?? 0;
+  const openedMs = Date.parse(trade.openedAt);
+  if (!tfMs || !Number.isFinite(openedMs)) return false;
+  if (Date.now() - openedMs < timeStopBars * tfMs) return false;
+
+  const positions = await exchange.getOpenPositions(trade.symbol).catch(() => []);
+  const pos = positions.find((p) => normalizeSymbol(p.symbol) === normalizeSymbol(trade.symbol));
+  if (!pos || pos.size <= 0) {
+    activeTrades.delete(correlationId);
+    return true;
+  }
+
+  const closingSide: 'buy' | 'sell' = pos.side === 'long' ? 'sell' : 'buy';
+  const topOfBook = typeof exchange.getTopOfBook === 'function'
+    ? await exchange.getTopOfBook(trade.symbol).catch(() => null)
+    : null;
+  const price = emergencyClosePrice(pos, closingSide, topOfBook);
+
+  const ack = await exchange.placeLimitOrder({
+    symbol: trade.symbol,
+    side: closingSide,
+    price,
+    size: pos.size,
+    reduceOnly: true,
+    timeInForce: 'Ioc',
+    clientOrderId: `time-stop-${correlationId}-${nanoid(6)}`,
+  }).catch((error) => ({ ok: false, error: error instanceof Error ? error.message : 'time_stop_close_failed' }));
+
+  logRiskGateAudit({
+    gate: 'tp_fill_monitor',
+    passed: ack.ok,
+    reason: ack.ok ? 'time_stop_close_submitted' : 'time_stop_close_failed',
+    details: { symbol: trade.symbol, correlationId, timeStopBars, entryTimeframe: trade.entryTimeframe, size: pos.size, price, error: ack.error ?? null },
+  });
+
+  if (!ack.ok) return false;
+
+  for (const orderId of [trade.slOrderId, ...trade.tpOrderIds].filter((id): id is string => Boolean(id))) {
+    await exchange.cancelOrder(orderId).catch(() => undefined);
+  }
+
+  await notifyPositionClosedEvent({
+    symbol: trade.symbol,
+    correlationId,
+    tpsFilled: 0,
+    reason: 'time_stop',
+  }).catch(() => undefined);
+  activeTrades.delete(correlationId);
+  return true;
+}
 
 async function runTpFillMonitorTick(): Promise<void> {
   if (tpFillMonitorBusy) return;
@@ -8448,6 +8861,8 @@ async function runTpFillMonitorTick(): Promise<void> {
     for (const [correlationId, trade] of activeTrades) {
       const stillPending = trade.tpOrderIds.filter(id => openOrderIds.has(id));
       const justFilled = trade.tpOrderIds.filter(id => !openOrderIds.has(id));
+
+      if (await maybeApplyActiveTradeTimeStop(correlationId, trade)) continue;
 
       // If SL order disappeared before any TP fill, DO NOT assume immediate SL fill.
       // Confirm with live position state first to avoid false alerts from order id churn.
@@ -8699,6 +9114,38 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
   }
 
   const notional = px * qty;
+  const normalizedSymbol = normalizeSymbol(symbol);
+
+  if (!reduceOnly && sizingSource === 'runtime_allocation') {
+    let gross: Awaited<ReturnType<typeof checkPortfolioGrossCap>>;
+    try {
+      gross = await checkPortfolioGrossCap({
+        symbol: normalizedSymbol,
+        price: px,
+        size: qty,
+        effectiveRules: rulesCache.getEffectiveRules(),
+        riskCheck: (req as any)._riskCheck,
+      });
+    } catch (error) {
+      logger.error({ component: 'risk-gate', err: error }, 'portfolio gross cap check failed');
+      return res.status(503).json({
+        ok: false,
+        errorCode: 'allocation_check_unavailable' as TradingErrorCode,
+        error: 'Portfolio gross exposure guard unavailable. Trading is temporarily blocked.',
+      });
+    }
+    if (!gross.ok) {
+      return res.status(403).json({
+        ok: false,
+        errorCode: 'portfolio_gross_cap_exceeded' as TradingErrorCode,
+        error: `Order would bring portfolio gross exposure to $${gross.totalGross.toFixed(2)}, exceeding cap of $${gross.cap.toFixed(2)}.`,
+        currentGross: Number(gross.currentGross.toFixed(2)),
+        newNotional: Number(gross.newNotional.toFixed(2)),
+        totalGross: Number(gross.totalGross.toFixed(2)),
+        cap: Number(gross.cap.toFixed(2)),
+      });
+    }
+  }
 
   // Manual confirmation gate
   if (rulesCache.getEffectiveRules().manualConfirmation && !isConfirmed(confirm)) {
@@ -8713,8 +9160,6 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     const cached = idempotencyCache.get(clientOrderId)!;
     return res.status(200).json({ ...cached.response, idempotent: true });
   }
-
-  const normalizedSymbol = normalizeSymbol(symbol);
 
   // Set leverage if provided — enforce runtime maxLeverage cap
   if (leverage !== undefined) {

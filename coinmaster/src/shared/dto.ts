@@ -65,6 +65,24 @@ export interface TradingRulesSettings {
   exitClosePct: number;
   autoConfirm: boolean;
   biasPolicy?: BiasPolicySettings;
+
+  // ── Stage-1 SignalQualityContext / portfolio fields (issue #61) ─────
+  /** Higher-timeframe used for the regime filter (EMA slope + ADX). */
+  regimeTf?: TradingRulesTimeframe;
+  /** Minimum ADX required on the regime timeframe to consider direction trending. */
+  adxMin?: number;
+  /** Minimum impulse body / range as a fraction of ATR for displacement quality. */
+  minImpulseAtr?: number;
+  /** Hard reject gate: minimum expected reward-to-risk before handoff. */
+  minExpectedRr?: number;
+  /** Time stop for new entries — close if no follow-through after N bars. */
+  timeStopBars?: number;
+  /** Per-trade risk in % of equity used by sizing helpers. */
+  riskPerTradePct?: number;
+  /** Lock new entries for N minutes after a flagged macro/event window. */
+  eventLockoutMinutes?: number;
+  /** Maximum aggregate gross exposure across the portfolio, in % of equity. */
+  portfolioGrossCap?: number;
 }
 
 export interface RadarRuntimeSettings {

@@ -16,6 +16,7 @@ import type { RiskCheckResponse } from '../lib/api';
 import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
+const REGIME_TIMEFRAMES: TradingRulesTimeframe[] = ['1h', '4h'];
 const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
 const BIAS_MODE_OPTIONS: Array<{ value: BiasMode; label: string }> = [
   { value: 'global', label: 'shared' },
@@ -179,6 +180,14 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [slPct, setSlPct] = useState(defaults.slPct);
   const [exitClosePct, setExitClosePct] = useState(defaults.exitClosePct ?? 50);
   const [autoConfirm, setAutoConfirm] = useState(defaults.autoConfirm);
+  const [regimeTf, setRegimeTf] = useState<TradingRulesTimeframe>(defaults.regimeTf ?? '1h');
+  const [adxMin, setAdxMin] = useState(defaults.adxMin ?? 0);
+  const [minImpulseAtr, setMinImpulseAtr] = useState(defaults.minImpulseAtr ?? 0);
+  const [minExpectedRr, setMinExpectedRr] = useState(defaults.minExpectedRr ?? 0);
+  const [timeStopBars, setTimeStopBars] = useState(defaults.timeStopBars ?? 0);
+  const [riskPerTradePct, setRiskPerTradePct] = useState(defaults.riskPerTradePct ?? 0);
+  const [eventLockoutMinutes, setEventLockoutMinutes] = useState(defaults.eventLockoutMinutes ?? 0);
+  const [portfolioGrossCap, setPortfolioGrossCap] = useState(defaults.portfolioGrossCap ?? 200);
   const [symbolBiasOverrides, setSymbolBiasOverrides] = useState<Record<string, BiasPolicySymbolOverride>>(
     cloneSymbolOverrides(defaults.biasPolicy?.symbolOverrides)
   );
@@ -216,6 +225,14 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     slPct,
     exitClosePct,
     autoConfirm,
+    regimeTf,
+    adxMin,
+    minImpulseAtr,
+    minExpectedRr,
+    timeStopBars,
+    riskPerTradePct,
+    eventLockoutMinutes,
+    portfolioGrossCap,
     biasPolicy: {
       symbolOverrides: cloneSymbolOverrides(symbolBiasOverrides),
     },
@@ -238,6 +255,14 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     slPct,
     exitClosePct,
     autoConfirm,
+    regimeTf,
+    adxMin,
+    minImpulseAtr,
+    minExpectedRr,
+    timeStopBars,
+    riskPerTradePct,
+    eventLockoutMinutes,
+    portfolioGrossCap,
     symbolBiasOverrides,
   ]);
 
@@ -287,6 +312,14 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setSlPct(normalized.slPct);
     setExitClosePct(normalized.exitClosePct ?? 50);
     setAutoConfirm(normalized.autoConfirm);
+    setRegimeTf(normalized.regimeTf ?? '1h');
+    setAdxMin(normalized.adxMin ?? 0);
+    setMinImpulseAtr(normalized.minImpulseAtr ?? 0);
+    setMinExpectedRr(normalized.minExpectedRr ?? 0);
+    setTimeStopBars(normalized.timeStopBars ?? 0);
+    setRiskPerTradePct(normalized.riskPerTradePct ?? 0);
+    setEventLockoutMinutes(normalized.eventLockoutMinutes ?? 0);
+    setPortfolioGrossCap(normalized.portfolioGrossCap ?? 200);
     setSymbolBiasOverrides(cloneSymbolOverrides(normalized.biasPolicy?.symbolOverrides));
     setSavedRules(normalized);
   }
@@ -568,7 +601,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     if (!onRegisterSaveHandler) return;
     onRegisterSaveHandler(() => handleApply());
     return () => onRegisterSaveHandler(null);
-  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, fvgRequireSweep, fvgSweepLookbackCandles, fvgRequireFirstTouch, maxZoneAgeCandles, fvgRequireConfirmation, fvgConfirmationTimeframes, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, symbolBiasOverrides]);
+  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, fvgRequireSweep, fvgSweepLookbackCandles, fvgRequireFirstTouch, maxZoneAgeCandles, fvgRequireConfirmation, fvgConfirmationTimeframes, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, autoConfirm, regimeTf, adxMin, minImpulseAtr, minExpectedRr, timeStopBars, riskPerTradePct, eventLockoutMinutes, portfolioGrossCap, symbolBiasOverrides]);
 
   return (
     <main className="terminal-layout trading-rules-page">
@@ -916,6 +949,60 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                 : '100% closes the full position.'}
           </p>
         </div>
+      </Card>
+
+      <Card title="Signal Quality / Portfolio Guards" actions={<Badge tone="neutral">Stage 1</Badge>}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: 14,
+            alignItems: 'start',
+          }}
+        >
+          <div style={{ display: 'grid', gap: 8 }}>
+            <span className="rules-label" style={{ margin: 0 }}>Regime timeframe</span>
+            <Segmented options={REGIME_TIMEFRAMES} value={regimeTf} onChange={setRegimeTf} />
+          </div>
+
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Minimum ADX</span>
+            <Stepper value={adxMin} min={0} max={100} step={1} decimals={0} onChange={setAdxMin} />
+          </div>
+
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Minimum impulse / ATR</span>
+            <Stepper value={minImpulseAtr} min={0} max={10} step={0.1} decimals={1} onChange={setMinImpulseAtr} />
+          </div>
+
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Minimum expected R:R</span>
+            <Stepper value={minExpectedRr} min={0} max={100} step={0.1} decimals={1} onChange={setMinExpectedRr} />
+          </div>
+
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Time stop</span>
+            <Stepper value={timeStopBars} min={0} max={1000} step={1} unit="bars" decimals={0} onChange={setTimeStopBars} />
+          </div>
+
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Risk per trade</span>
+            <Stepper value={riskPerTradePct} min={0} max={100} step={0.1} unit="%" decimals={1} onChange={setRiskPerTradePct} />
+          </div>
+
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Event lockout</span>
+            <Stepper value={eventLockoutMinutes} min={0} max={1440} step={5} unit="min" decimals={0} onChange={setEventLockoutMinutes} />
+          </div>
+
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Portfolio gross cap</span>
+            <Stepper value={portfolioGrossCap} min={0} max={10000} step={25} unit="%" decimals={0} onChange={setPortfolioGrossCap} />
+          </div>
+        </div>
+        <p className="stat-note muted">
+          Zero disables a guard where applicable. The live path uses deterministic TypeScript indicators only; no external trading engine is involved.
+        </p>
       </Card>
 
       <Card title="Risk Management" actions={<Badge tone="danger">Risk</Badge>}>

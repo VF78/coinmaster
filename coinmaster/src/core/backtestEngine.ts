@@ -21,6 +21,7 @@ import type {
 } from '../shared/dto.js';
 import { evaluateTimeframe } from './engulfingEvaluator.js';
 import { evaluateFvg, type FvgTimeframe } from './fvgEvaluator.js';
+import { evaluateSignalQuality } from './signalQualityContext.js';
 
 // ─── Internal types (not exported to DTO — backtest-only) ─────────────
 
@@ -37,6 +38,7 @@ interface SimPosition {
   tp2Done: boolean;
   tp3Done: boolean;
   openedAt: string;
+  entryTimeframe: TradingRulesTimeframe;
   closedAt?: string;
   status: 'open' | 'closed';
   realizedPnl: number;
@@ -201,6 +203,14 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
     requireConfirmation: rules.fvgRequireConfirmation ?? false,
     confirmationTimeframes: rules.fvgConfirmationTimeframes ?? ['15m'],
   };
+
+  // Issue #61 — Mirror live signal-quality thresholds.
+  const regimeTf: TradingRulesTimeframe = (rules.regimeTf ?? '1h');
+  const adxMin = Number(rules.adxMin ?? 0);
+  const minImpulseAtr = Number(rules.minImpulseAtr ?? 0);
+  const minExpectedRr = Number(rules.minExpectedRr ?? 0);
+  const qualityGateEnabled = adxMin > 0 || minImpulseAtr > 0 || minExpectedRr > 0;
+  const timeStopBars = Math.max(0, Math.round(Number(rules.timeStopBars ?? 0)));
 
   // Build a unified timeline of candle close events across all TFs
   // Each event = { timestamp, tf, candleIndex }
@@ -373,6 +383,25 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
         continue;
       }
 
+      // Time stop: if there is no TP1 follow-through after N entry-TF bars,
+      // close the remaining position instead of waiting for a reverse signal.
+      if (timeStopBars > 0 && !openPos.tp1Done) {
+        const entryTfMs = TF_MS[openPos.entryTimeframe] ?? TF_MS[tf] ?? 900_000;
+        const openedMs = Date.parse(openPos.openedAt);
+        const barsHeld = Number.isFinite(openedMs) ? Math.floor((timestampMs - openedMs) / entryTfMs) : 0;
+        if (barsHeld >= timeStopBars && openPos.remainingSize > 0) {
+          const remaining = openPos.remainingSize;
+          const pnl = closeChunk(openPos, currentPrice, remaining);
+          openPos.status = 'closed';
+          openPos.closedAt = timestamp;
+          openPos.closeReason = 'time_stop';
+          recordTrade(openPos.id, 'close', currentPrice, remaining, pnl, 'time_stop', timestamp);
+          currentEquity += pnl;
+          equityCurve.push(currentEquity);
+          continue;
+        }
+      }
+
       // Emergency exit check (engulfing reverse signal)
       if (exitClosePct > 0) {
         const exitTfSet = exitTfs as string[];
@@ -443,6 +472,25 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
           if (size <= 0) { rejectedSignals++; equityCurve.push(currentEquity); continue; }
 
           const { stopLoss, takeProfits } = resolveTpSlFromRules(currentPrice, side, rules);
+
+          if (qualityGateEnabled) {
+            const regimeCandles = closedCandlesAtTime(candlesByTf.get(regimeTf) ?? [], timestampMs, regimeTf);
+            const verdict = evaluateSignalQuality({
+              side,
+              regimeCandles,
+              regimeTf,
+              entryCandles: closedCandles,
+              entry: currentPrice,
+              stopLoss,
+              takeProfits,
+              thresholds: { adxMin, minImpulseAtr, minExpectedRr, requireQuartile: minImpulseAtr > 0 },
+            });
+            if (!verdict.ok) {
+              rejectedSignals++;
+              equityCurve.push(currentEquity);
+              continue;
+            }
+          }
           const pos: SimPosition = {
             id: nanoid(),
             symbol,
@@ -456,6 +504,7 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
             tp2Done: false,
             tp3Done: false,
             openedAt: timestamp,
+            entryTimeframe: tf as TradingRulesTimeframe,
             status: 'open',
             realizedPnl: 0,
           };
@@ -509,6 +558,35 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
         if (size <= 0) { rejectedSignals++; continue; }
 
         const { stopLoss, takeProfits } = resolveTpSlFromRules(currentPrice, side, rules);
+
+        if (qualityGateEnabled) {
+          const regimeCandles = closedCandlesAtTime(candlesByTf.get(regimeTf) ?? [], timestampMs, regimeTf);
+          const fvgEntryCandles = closedCandlesAtTime(candlesByTf.get(fvgTf) ?? [], timestampMs, fvgTf);
+          const fvgCompletionIndex = fvgSignal.zone?.completionIndex;
+          const fvgImpulseTriple = typeof fvgCompletionIndex === 'number'
+            ? {
+                c0: fvgEntryCandles[fvgCompletionIndex - 2],
+                c1: fvgEntryCandles[fvgCompletionIndex - 1],
+                c2: fvgEntryCandles[fvgCompletionIndex],
+              }
+            : undefined;
+          const verdict = evaluateSignalQuality({
+            side,
+            regimeCandles,
+            regimeTf,
+            entryCandles: fvgEntryCandles,
+            impulseTriple: fvgImpulseTriple?.c0 && fvgImpulseTriple.c1 && fvgImpulseTriple.c2 ? fvgImpulseTriple : undefined,
+            entry: currentPrice,
+            stopLoss,
+            takeProfits,
+            thresholds: { adxMin, minImpulseAtr, minExpectedRr, requireQuartile: minImpulseAtr > 0 },
+          });
+          if (!verdict.ok) {
+            rejectedSignals++;
+            continue;
+          }
+        }
+
         const pos: SimPosition = {
           id: nanoid(),
           symbol,
@@ -522,6 +600,7 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
           tp2Done: false,
           tp3Done: false,
           openedAt: timestamp,
+          entryTimeframe: fvgTf,
           status: 'open',
           realizedPnl: 0,
         };

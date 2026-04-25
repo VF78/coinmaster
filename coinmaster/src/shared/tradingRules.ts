@@ -45,6 +45,18 @@ export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
   exitClosePct: 50,
   autoConfirm: false,
   biasPolicy: JSON.parse(JSON.stringify(DEFAULT_BIAS_POLICY)) as BiasPolicySettings,
+
+  // ── Stage-1 SignalQualityContext / portfolio defaults (issue #61) ───
+  // Conservative defaults that preserve current behaviour: thresholds set so
+  // the regime/RR gate is permissive until the operator opts in via the UI.
+  regimeTf: '1h',
+  adxMin: 0,
+  minImpulseAtr: 0,
+  minExpectedRr: 0,
+  timeStopBars: 0,
+  riskPerTradePct: 0,
+  eventLockoutMinutes: 0,
+  portfolioGrossCap: 200,
 };
 
 function clampNumber(value: unknown, min: number, max: number, fallback: number): number {
@@ -231,6 +243,16 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
 
   base.autoConfirm = Boolean(raw.autoConfirm);
   base.biasPolicy = normalizeBiasPolicy(raw.biasPolicy, DEFAULT_BIAS_POLICY);
+
+  // ── Stage-1 SignalQualityContext fields (issue #61) ────────────────
+  base.regimeTf = raw.regimeTf === '4h' ? '4h' : raw.regimeTf === '1h' ? '1h' : (base.regimeTf ?? '1h');
+  base.adxMin = clampNumber(raw.adxMin, 0, 100, base.adxMin ?? 0);
+  base.minImpulseAtr = clampNumber(raw.minImpulseAtr, 0, 10, base.minImpulseAtr ?? 0);
+  base.minExpectedRr = clampNumber(raw.minExpectedRr, 0, 100, base.minExpectedRr ?? 0);
+  base.timeStopBars = Math.round(clampNumber(raw.timeStopBars, 0, 1000, base.timeStopBars ?? 0));
+  base.riskPerTradePct = clampNumber(raw.riskPerTradePct, 0, 100, base.riskPerTradePct ?? 0);
+  base.eventLockoutMinutes = Math.round(clampNumber(raw.eventLockoutMinutes, 0, 1440, base.eventLockoutMinutes ?? 0));
+  base.portfolioGrossCap = clampNumber(raw.portfolioGrossCap, 0, 10000, base.portfolioGrossCap ?? 200);
 
   return base;
 }

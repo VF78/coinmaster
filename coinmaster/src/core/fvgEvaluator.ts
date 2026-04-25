@@ -76,7 +76,9 @@ export function detectFvgZones(
   const zones: FvgZone[] = [];
   if (candles.length < 3) return zones;
 
-  const closed = candles.slice(0, -1);
+  // Callers pass closed candles only. Do not drop the latest candle here:
+  // doing so creates a one-candle lag in live/backtest FVG detection.
+  const closed = candles;
   const start = Math.max(2, closed.length - lookback);
 
   for (let i = start; i < closed.length; i++) {
@@ -158,7 +160,7 @@ function qualifiesSweep(zone: FvgZone, candles: Candle[], settings: FvgQualifica
   if (!settings.requireSweep) return true;
   if (completionIndex === undefined || completionIndex < 2) return false;
 
-  const closed = candles.slice(0, -1);
+  const closed = candles;
   const c0 = closed[completionIndex - 2];
   const c1 = closed[completionIndex - 1];
   const c2 = closed[completionIndex];
@@ -176,7 +178,7 @@ function qualifiesSweep(zone: FvgZone, candles: Candle[], settings: FvgQualifica
 function findFirstTouch(zone: FvgZone, candles: Candle[], currentPrice: number, currentTimeMs?: number): string | null {
   const completionIndex = zone.completionIndex;
   if (completionIndex === undefined) return null;
-  const closed = candles.slice(0, -1);
+  const closed = candles;
   for (let i = completionIndex + 1; i < closed.length; i++) {
     if (candleTouchesZone(closed[i], zone)) return closed[i].timestamp;
   }
@@ -187,7 +189,7 @@ function findFirstTouch(zone: FvgZone, candles: Candle[], currentPrice: number, 
 }
 
 function qualifiesFirstTouch(zone: FvgZone, candles: Candle[], currentPrice: number, currentTimeMs?: number, maxZoneAgeCandles?: number): { ok: boolean; touchTimestamp: string | null } {
-  const closed = candles.slice(0, -1);
+  const closed = candles;
   if (typeof maxZoneAgeCandles === 'number' && zone.completionIndex !== undefined) {
     const zoneAgeCandles = closed.length - 1 - zone.completionIndex;
     if (zoneAgeCandles > maxZoneAgeCandles) {

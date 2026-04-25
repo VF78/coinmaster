@@ -26,6 +26,7 @@
     "invariants:daily-drawdown": "tsx scripts/invariants-daily-drawdown.ts",
     "invariants:engulfing": "tsx scripts/invariants-engulfing.ts",
     "invariants:fvg": "tsx scripts/invariants-fvg.ts",
+    "invariants:signal-quality": "tsx scripts/invariants-signal-quality.ts",
     "invariants:rule-engine": "tsx scripts/invariants-rule-engine.ts",
     "invariants:radar-handoff": "tsx scripts/invariants-radar-handoff.ts",
     "invariants:backtest-run-persistence": "node --import tsx/esm scripts/invariants-backtest-run-persistence.ts",

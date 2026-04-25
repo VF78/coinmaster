@@ -9,6 +9,9 @@
  *   2. Runtime defaults applied when explicit values missing
  *   3. Symbol disabled → blocked (isSymbolEnabled returns false)
  *   4. Allocation cap exceeded → maxNotionalForSymbol enforces cap
+ *   5. riskPerTradePct caps auto-sizing by configured SL distance
+ *   6. portfolioGrossCap caps aggregate gross exposure
+ *   7. regimeTf is constrained to owner-approved HTF values (1h/4h)
  *
  * Exit code: 0 = all pass, 1 = failures found.
  *
@@ -24,6 +27,9 @@ import {
   isSymbolEnabled,
   getCoinAllocation,
   maxNotionalForSymbol,
+  computeAllocationSize,
+  maxPortfolioGrossNotional,
+  wouldExceedPortfolioGrossCap,
   type EffectiveRules,
 } from '../src/server/runtimeRules.js';
 
@@ -286,6 +292,68 @@ console.log('\n── Invariant 4: allocation cap exceeded → blocked ──');
 
   // Env fallback (raw=null) → cap is 0
   assert(maxNotionalForSymbol(equityUsd, envFallbackRules(), 'BTC') === 0, 'env_fallback → cap=0');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INVARIANT 5: riskPerTradePct caps auto-sizing
+// ═══════════════════════════════════════════════════════════════════════
+
+console.log('\n── Invariant 5: riskPerTradePct caps auto-sizing ──');
+
+{
+  const baseRules = makeRules({
+    maxLeverage: 10,
+    slPct: 2,
+    riskPerTradePct: 0,
+    coins: [{ symbol: 'BTC', enabled: true, pct: 50 }],
+  });
+  const riskRules = makeRules({
+    maxLeverage: 10,
+    slPct: 2,
+    riskPerTradePct: 1,
+    coins: [{ symbol: 'BTC', enabled: true, pct: 50 }],
+  });
+
+  const base = computeAllocationSize({ symbol: 'BTC', price: 50_000, equityUsd: 100_000, availableUsd: 100_000, rules: baseRules, sizeDecimals: 6 });
+  const risk = computeAllocationSize({ symbol: 'BTC', price: 50_000, equityUsd: 100_000, availableUsd: 100_000, rules: riskRules, sizeDecimals: 6 });
+
+  assert(base.ok === true, 'base allocation sizing succeeds');
+  assert(risk.ok === true, 'risk-capped sizing succeeds');
+  if (base.ok && risk.ok) {
+    assertClose(base.notionalUsd, 500_000, 'base allocation notional = equity * 50% * 10x');
+    assertClose(risk.notionalUsd, 50_000, 'risk cap notional = 1% equity / 2% SL');
+    assert(risk.size < base.size, 'risk-capped size is smaller than allocation size');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INVARIANT 6: portfolioGrossCap caps aggregate gross exposure
+// ═══════════════════════════════════════════════════════════════════════
+
+console.log('\n── Invariant 6: portfolioGrossCap caps aggregate gross exposure ──');
+
+{
+  const rules = makeRules({ portfolioGrossCap: 200 });
+  assertClose(maxPortfolioGrossNotional(100_000, rules), 200_000, '200% gross cap on $100k equity = $200k');
+  assert(!wouldExceedPortfolioGrossCap({ equityUsd: 100_000, rules, currentGrossNotional: 150_000, newOrderNotional: 40_000 }), '$190k ≤ $200k allowed');
+  assert(wouldExceedPortfolioGrossCap({ equityUsd: 100_000, rules, currentGrossNotional: 150_000, newOrderNotional: 60_000 }), '$210k > $200k blocked');
+
+  const disabled = makeRules({ portfolioGrossCap: 0 });
+  assert(!Number.isFinite(maxPortfolioGrossNotional(100_000, disabled)), '0% gross cap disables aggregate cap');
+  assert(!wouldExceedPortfolioGrossCap({ equityUsd: 100_000, rules: disabled, currentGrossNotional: 1_000_000, newOrderNotional: 1_000_000 }), 'disabled cap never blocks');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INVARIANT 7: regimeTf is constrained to HTF values
+// ═══════════════════════════════════════════════════════════════════════
+
+console.log('\n── Invariant 7: regimeTf constrained to 1h/4h ──');
+
+{
+  assert(normalizeTradingRules({ regimeTf: '1h' }).regimeTf === '1h', 'regimeTf accepts 1h');
+  assert(normalizeTradingRules({ regimeTf: '4h' }).regimeTf === '4h', 'regimeTf accepts 4h');
+  assert(normalizeTradingRules({ regimeTf: '5m' }).regimeTf === '1h', 'regimeTf rejects 5m and falls back to 1h');
+  assert(normalizeTradingRules({ regimeTf: '15m' }).regimeTf === '1h', 'regimeTf rejects 15m and falls back to 1h');
 }
 
 // ─── Summary ─────────────────────────────────────────────────────────

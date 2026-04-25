@@ -64,6 +64,8 @@ export interface AllocationSizingResult {
   notionalUsd: number;
   effectiveLeverage: number;
   allocationPct: number;
+  riskPerTradePct?: number;
+  riskCapNotionalUsd?: number;
 }
 
 export interface AllocationSizingError {
@@ -76,11 +78,13 @@ export type AllocationSizingOutcome = AllocationSizingResult | AllocationSizingE
 /**
  * Compute position size from Coin Distribution allocation rules.
  *
- * marginUsd     = min(availableUsd, equityUsd * allocationPct)
- * notionalUsd   = marginUsd * effectiveLeverage
- * size           = notionalUsd / price
+ * Default path preserves the existing allocation model:
+ * marginUsd   = equityUsd * allocationPct
+ * notionalUsd = marginUsd * effectiveLeverage
  *
- * Returns a deterministic size rounded to `sizeDecimals` (default 6).
+ * If riskPerTradePct > 0 and slPct > 0, cap notional so the configured SL
+ * distance risks at most riskPerTradePct of equity. This keeps risk sizing a
+ * thin deterministic layer instead of a second portfolio engine.
  */
 export function computeAllocationSize(params: {
   symbol: string;
@@ -122,13 +126,20 @@ export function computeAllocationSize(params: {
     return { ok: false, reason: 'zero_margin' };
   }
 
-  if (availableUsd < targetMarginUsd) {
+  const allocationNotionalUsd = targetMarginUsd * effectiveLeverage;
+  const riskPerTradePct = Number(rules.raw?.riskPerTradePct ?? 0);
+  const slPct = Number(rules.raw?.slPct ?? 0);
+  const riskCapNotionalUsd = riskPerTradePct > 0 && slPct > 0
+    ? equityUsd * (riskPerTradePct / 100) / (slPct / 100)
+    : Number.POSITIVE_INFINITY;
+
+  const notionalUsd = Math.min(allocationNotionalUsd, riskCapNotionalUsd);
+  const marginUsd = notionalUsd / effectiveLeverage;
+
+  if (availableUsd < marginUsd) {
     return { ok: false, reason: 'insufficient_available_margin' };
   }
 
-  const marginUsd = targetMarginUsd;
-
-  const notionalUsd = marginUsd * effectiveLeverage;
   const rawSize = notionalUsd / price;
 
   // Round to sizeDecimals, guard against zero / NaN
@@ -146,7 +157,31 @@ export function computeAllocationSize(params: {
     notionalUsd: Math.round(notionalUsd * 100) / 100,
     effectiveLeverage,
     allocationPct,
+    riskPerTradePct: riskPerTradePct > 0 ? riskPerTradePct : undefined,
+    riskCapNotionalUsd: Number.isFinite(riskCapNotionalUsd) ? Math.round(riskCapNotionalUsd * 100) / 100 : undefined,
   };
+}
+
+/** Maximum aggregate gross notional allowed by Trading Rules. */
+export function maxPortfolioGrossNotional(equityUsd: number, rules: EffectiveRules): number {
+  const capPct = Number(rules.raw?.portfolioGrossCap ?? 0);
+  if (!Number.isFinite(equityUsd) || equityUsd <= 0 || !Number.isFinite(capPct) || capPct <= 0) {
+    return Number.POSITIVE_INFINITY;
+  }
+  return equityUsd * (capPct / 100);
+}
+
+export function wouldExceedPortfolioGrossCap(params: {
+  equityUsd: number;
+  rules: EffectiveRules;
+  currentGrossNotional: number;
+  newOrderNotional: number;
+}): boolean {
+  const cap = maxPortfolioGrossNotional(params.equityUsd, params.rules);
+  if (!Number.isFinite(cap)) return false;
+  const current = Number.isFinite(params.currentGrossNotional) ? Math.max(0, params.currentGrossNotional) : 0;
+  const next = Number.isFinite(params.newOrderNotional) ? Math.max(0, params.newOrderNotional) : 0;
+  return current + next > cap;
 }
 
 /**

@@ -87,6 +87,17 @@ console.log('\n── Case 2: Bullish FVG detection ──');
   }
 }
 
+console.log('\n── Case 2.1: Latest closed candle is eligible ──');
+{
+  const candles: Candle[] = [
+    makeCandle(100, 102, 99, 101, '2026-01-01T00:00:00Z'),
+    makeCandle(101, 106, 100, 104, '2026-01-01T01:00:00Z'),
+    makeCandle(104, 110, 105, 108, '2026-01-01T02:00:00Z'),
+  ];
+  const zones = detectFvgZones(candles, '1h', 10);
+  assert(zones.some(z => z.direction === 'bullish' && z.candleTimestamp === '2026-01-01T02:00:00Z'), 'latest provided closed candle can complete FVG zone');
+}
+
 console.log('\n── Case 3: Retrace + qualification flow ──');
 {
   const candles: Candle[] = [
