@@ -42,6 +42,7 @@ import type {
   Experiment,
   ExperimentTrial,
   EvidenceBundle,
+  ExecutionIntentPolicySnapshot,
   OptimizationCreateRequest,
   OptimizationParamRange,
   BiasMode,
@@ -92,6 +93,7 @@ import { alphaRadarFetchJson, alphaRadarFetchJsonWithMeta, alphaRadarFetchText, 
 import { buildAlphaRadarConnectorHealth, summarizeAlphaRadarConnectorRuntimes } from './alphaRadarConnectors.js';
 import { collectBlueskyConnector, collectRedditConnector, collectTelegramAuthReadyConnector } from './alphaRadarSocial.js';
 import { ingestObservationIntoEvidence, pruneEvidenceBundles, syncSignalCandidatesFromEvidence } from './alphaRadarEvidence.js';
+import { transitionSignalCandidate } from './radarSignalCandidate.js';
 import { buildRadarContextPolicyBook, evaluateRadarContextPolicyEntry, readActiveRadarContextPolicy } from './radarContextPolicy.js';
 import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize, maxPortfolioGrossNotional, wouldExceedPortfolioGrossCap } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
@@ -311,6 +313,94 @@ function ensureRadarSignalsState(db: Awaited<ReturnType<typeof getDb>>): RadarSi
   return db.data.radarSignals;
 }
 
+function transitionSignalCandidateById(
+  db: Awaited<ReturnType<typeof getDb>>,
+  candidateId: string | undefined,
+  input: {
+    to: SignalCandidate['state'];
+    reason: string;
+    at: string;
+    radarSignalId?: string;
+    pendingId?: string;
+    orderId?: string;
+    outcome?: string;
+  },
+): void {
+  const id = String(candidateId ?? '').trim();
+  if (!id) return;
+  const candidates = ensureSignalCandidatesState(db);
+  const index = candidates.findIndex((candidate) => candidate.id === id);
+  if (index < 0) return;
+  const transitioned = transitionSignalCandidate(candidates[index], input);
+  if (transitioned.ok) {
+    candidates[index] = transitioned.candidate;
+  }
+}
+
+function routeSignalCandidateFromPolicySnapshot(
+  db: Awaited<ReturnType<typeof getDb>>,
+  snapshot: ExecutionIntentPolicySnapshot | undefined,
+  params: { radarSignalId?: string; pendingId?: string; orderId?: string; at: string },
+): void {
+  const candidateId = snapshot?.signalCandidateId;
+  if (!candidateId) return;
+  const candidates = ensureSignalCandidatesState(db);
+  const candidate = candidates.find((item) => item.id === candidateId);
+  if (!candidate) return;
+
+  if (candidate.state === 'validated') {
+    transitionSignalCandidateById(db, candidateId, {
+      to: 'actionable',
+      reason: 'policy_entry_accepted',
+      at: params.at,
+      radarSignalId: params.radarSignalId,
+    });
+  }
+
+  const refreshed = ensureSignalCandidatesState(db).find((item) => item.id === candidateId);
+  if (!refreshed || refreshed.state !== 'actionable') return;
+  transitionSignalCandidateById(db, candidateId, {
+    to: 'routed',
+    reason: 'entry_handoff_routed',
+    at: params.at,
+    radarSignalId: params.radarSignalId,
+    pendingId: params.pendingId,
+    orderId: params.orderId,
+  });
+}
+
+function reconcileSignalCandidateOutcome(
+  db: Awaited<ReturnType<typeof getDb>>,
+  params: { pendingId?: string; orderId?: string; status: RadarSignalStatus; error?: string; at: string },
+): void {
+  const pendingId = String(params.pendingId ?? '').trim();
+  const orderId = String(params.orderId ?? '').trim();
+  if (!pendingId && !orderId) return;
+  const candidate = ensureSignalCandidatesState(db).find((item) =>
+    (!!pendingId && item.pendingId === pendingId) || (!!orderId && item.orderId === orderId)
+  );
+  if (!candidate) return;
+  if (params.status === 'auto_order_placed') {
+    transitionSignalCandidateById(db, candidate.id, {
+      to: 'executed',
+      reason: 'order_placed',
+      at: params.at,
+      pendingId: pendingId || undefined,
+      orderId: orderId || undefined,
+      outcome: 'order_placed',
+    });
+  } else if (params.status === 'rejected') {
+    transitionSignalCandidateById(db, candidate.id, {
+      to: 'rejected',
+      reason: params.error ?? 'order_rejected',
+      at: params.at,
+      pendingId: pendingId || undefined,
+      orderId: orderId || undefined,
+      outcome: params.error ?? 'rejected',
+    });
+  }
+}
+
 function reconcileRadarSignalOutcome(
   db: Awaited<ReturnType<typeof getDb>>,
   params: {
@@ -342,6 +432,8 @@ function reconcileRadarSignalOutcome(
       error: params.error,
     };
   }));
+
+  reconcileSignalCandidateOutcome(db, { ...params, at: updatedAt });
 
   if (!changed) {
     db.data.radarSignals = signals;
@@ -3234,6 +3326,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   const normalizedSymbol = normalizeSymbol(pending.symbol);
   const side: 'buy' | 'sell' = pending.side === 'long' ? 'buy' : 'sell';
   const now = new Date().toISOString();
+  const pendingIntent = db.data.executionIntents.find((intent) => intent.id === pending.executionIntentId);
 
   // Risk check before submit
   const risk = await evaluateRiskGates({ emitAudit: false });
@@ -3350,7 +3443,16 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
           };
         }
 
-        const gross = await checkPortfolioGrossCap({ symbol: normalizedSymbol, price, size: sizing.size, effectiveRules: rules, riskCheck: risk });
+        const adjusted = applyRadarRiskMultiplierToSize(sizing.size, pendingIntent?.policySnapshot);
+        if (!adjusted.size || adjusted.size <= 0) {
+          return {
+            ack: { ok: false, error: 'radar_risk_multiplier_zero_size' },
+            usedPrice: price,
+            usedSize: 0,
+          };
+        }
+
+        const gross = await checkPortfolioGrossCap({ symbol: normalizedSymbol, price, size: adjusted.size, effectiveRules: rules, riskCheck: risk });
         if (!gross.ok) {
           return {
             ack: { ok: false, error: 'portfolio_gross_cap_exceeded' },
@@ -3359,12 +3461,12 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
           };
         }
 
-        lastSize = sizing.size;
+        lastSize = adjusted.size;
         const ack = await withTimeout(exchange.placeLimitOrder({
           symbol: normalizedSymbol,
           side,
           price,
-          size: sizing.size,
+          size: adjusted.size,
           reduceOnly: false,
           clientOrderId: `${correlationId}-${attempt + 1}`,
         }), 10_000, 'confirm_place_limit_order');
@@ -4427,6 +4529,19 @@ function normalizeExecutionIntentMetadata(details?: Record<string, unknown>): Re
   return Object.keys(metadata).length > 0 ? metadata : undefined;
 }
 
+function applyRadarRiskMultiplierToSize(
+  size: number,
+  snapshot?: ExecutionIntentPolicySnapshot,
+  sizeDecimals = 6,
+): { size: number; multiplier: number; applied: boolean } {
+  const raw = Number(snapshot?.riskMultiplier ?? 1);
+  const multiplier = Number.isFinite(raw) ? Math.max(0, Math.min(1, raw)) : 1;
+  if (multiplier >= 1) return { size, multiplier: 1, applied: false };
+  const factor = 10 ** Math.max(0, Math.min(8, Math.round(sizeDecimals)));
+  const adjusted = Math.floor(size * multiplier * factor) / factor;
+  return { size: adjusted, multiplier, applied: true };
+}
+
 async function handoffStrategyEntrySignal(params: {
   component: 'engulfing-monitor' | 'fvg-monitor' | 'radar-ingest';
   strategy: SignalStrategy;
@@ -4514,7 +4629,8 @@ async function handoffStrategyEntrySignal(params: {
 
   if (!autoConfirm) {
     const estimate = await estimateSignalSize({ symbol, side, price, effectiveRules });
-    if (!estimate.size || estimate.size <= 0) {
+    const adjusted = applyRadarRiskMultiplierToSize(estimate.size, policyGate.snapshot);
+    if (!adjusted.size || adjusted.size <= 0) {
       updateExecutionIntent(db, intent.id, { status: 'ignored' });
       await db.write();
       logger.warn({ component, symbol, timeframe, side, reason: 'invalid_sizing', strategy }, 'entry signal skipped: invalid sizing');
@@ -4529,7 +4645,7 @@ async function handoffStrategyEntrySignal(params: {
       timeframe,
       reason,
       price,
-      size: estimate.size,
+      size: adjusted.size,
       leverage: estimate.leverage,
       correlationId,
       executionIntentId: intent.id,
@@ -4539,12 +4655,14 @@ async function handoffStrategyEntrySignal(params: {
 
     if (queued.queued) {
       updateExecutionIntent(db, intent.id, { status: 'pending_confirmation', pendingId: queued.id });
+      routeSignalCandidateFromPolicySnapshot(db, policyGate.snapshot, { radarSignalId, pendingId: queued.id, at: new Date().toISOString() });
       await db.write();
       return { flow: 'break', status: 'pending_confirmation', source, executionIntentId: intent.id, pendingId: queued.id };
     }
 
     if (queued.id.startsWith('pc-')) {
       updateExecutionIntent(db, intent.id, { status: 'pending_confirmation', pendingId: queued.id });
+      routeSignalCandidateFromPolicySnapshot(db, policyGate.snapshot, { radarSignalId, pendingId: queued.id, at: new Date().toISOString() });
       await db.write();
       return { flow: 'break', status: 'pending_confirmation', source, executionIntentId: intent.id, pendingId: queued.id };
     }
@@ -4597,7 +4715,14 @@ async function handoffStrategyEntrySignal(params: {
       return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: reasonCode };
     }
 
-    const gross = await checkPortfolioGrossCap({ symbol, price, size: sizing.size, effectiveRules, riskCheck: risk });
+    const adjusted = applyRadarRiskMultiplierToSize(sizing.size, policyGate.snapshot, sizeDecimals);
+    if (!adjusted.size || adjusted.size <= 0) {
+      updateExecutionIntent(db, intent.id, { status: 'rejected' });
+      await db.write();
+      return { flow: 'continue', status: 'rejected', source, executionIntentId: intent.id, error: 'radar_risk_multiplier_zero_size' };
+    }
+
+    const gross = await checkPortfolioGrossCap({ symbol, price, size: adjusted.size, effectiveRules, riskCheck: risk });
     if (!gross.ok) {
       logRiskGateAudit({
         gate: auditGate,
@@ -4617,26 +4742,28 @@ async function handoffStrategyEntrySignal(params: {
     }
 
     const correlationId = `${strategy}-auto-${nanoid(8)}`;
-    const ack = await exchange.placeLimitOrder({ symbol, side, price, size: sizing.size, reduceOnly: false, clientOrderId: correlationId });
+    const ack = await exchange.placeLimitOrder({ symbol, side, price, size: adjusted.size, reduceOnly: false, clientOrderId: correlationId });
 
     logRiskGateAudit({
       gate: auditGate,
       passed: ack.ok,
       reason: ack.ok ? 'auto_order_placed' : 'auto_order_failed',
-      details: { symbol, timeframe, strategy, side, size: sizing.size, price, orderId: ack.orderId, error: ack.error, reason, ...auditDetails },
+      details: { symbol, timeframe, strategy, side, size: adjusted.size, radarRiskMultiplier: adjusted.multiplier, price, orderId: ack.orderId, error: ack.error, reason, ...auditDetails },
     });
-    logger.info({ component, strategy, symbol, timeframe, side, size: sizing.size, price, ok: ack.ok, orderId: ack.orderId, reason, source }, 'auto-entry order result');
+    logger.info({ component, strategy, symbol, timeframe, side, size: adjusted.size, radarRiskMultiplier: adjusted.multiplier, price, ok: ack.ok, orderId: ack.orderId, reason, source }, 'auto-entry order result');
 
     if (ack.ok) {
+      routeSignalCandidateFromPolicySnapshot(db, policyGate.snapshot, { radarSignalId, orderId: ack.orderId, at: new Date().toISOString() });
+      reconcileSignalCandidateOutcome(db, { orderId: ack.orderId, status: 'auto_order_placed', at: new Date().toISOString() });
       try {
-        await notifyTradeOpen({ symbol, side, price, size: sizing.size, source });
+        await notifyTradeOpen({ symbol, side, price, size: adjusted.size, source });
       } catch (error) {
         logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
       }
       const tpSl = resolveTpSlDefaults(price, side, undefined, undefined);
       if (tpSl) {
         try {
-          await placeTpSlTriggerOrders(symbol, side, sizing.size, tpSl, correlationId, price, timeframe);
+          await placeTpSlTriggerOrders(symbol, side, adjusted.size, tpSl, correlationId, price, timeframe);
         } catch {
           // best effort
         }
@@ -7160,57 +7287,12 @@ if (ENABLE_SIMULATION_API) {
 }
 
 if (ENABLE_REPLAY_API) {
-  app.post('/api/replay/run', async (req, res) => {
-    const {
-      symbol = LIVE_SYMBOL,
-      bias,
-      timeframe,
-      startTimeMs,
-      endTimeMs,
-      depositUsd
-    } = req.body as {
-      symbol?: string;
-      bias?: Bias;
-      timeframe?: CandleTimeframe;
-      startTimeMs?: number;
-      endTimeMs?: number;
-      depositUsd?: number;
-    };
-
-    if (bias !== 'long' && bias !== 'short') {
-      return res.status(400).json({ error: 'bias_required_long_or_short' });
-    }
-
-    const fromMs = Number(startTimeMs);
-    const toMs = Number(endTimeMs);
-    if (!Number.isFinite(fromMs) || !Number.isFinite(toMs) || toMs <= fromMs) {
-      return res.status(400).json({ error: 'invalid_time_range' });
-    }
-
-    const tf = parseTimeframe(timeframe);
-
-    try {
-      const candles = await exchange.getCandles({
-        symbol: symbol.toUpperCase(),
-        timeframe: tf,
-        startTimeMs: fromMs,
-        endTimeMs: toMs
-      });
-
-      const summary = runDeterministicReplay({
-        symbol: symbol.toUpperCase(),
-        bias,
-        timeframe: tf,
-        candles,
-        depositUsd
-      });
-
-      return res.json({ ok: true, summary });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'replay_failed';
-      const status = message === 'not_enough_candles_for_replay' ? 400 : 500;
-      return res.status(status).json({ error: message });
-    }
+  app.post('/api/replay/run', async (_req, res) => {
+    return res.status(410).json({
+      ok: false,
+      error: 'legacy_replay_disabled',
+      message: 'Legacy simulation replay is disabled so research uses the canonical backtest engine only. Create a backtest run via /api/backtest/runs instead.',
+    });
   });
 }
 
@@ -7605,6 +7687,32 @@ app.post('/api/champions/promote', ownerAuth, async (req, res) => {
   });
   await db.write();
   return res.status(201).json({ ok: true, champion });
+});
+
+app.post('/api/champions/:id/apply', ownerAuth, async (req, res) => {
+  const championId = String(req.params.id ?? '').trim();
+  const body = (req.body ?? {}) as { confirm?: boolean };
+  if (!championId) return res.status(400).json({ ok: false, error: 'champion_id_required' });
+  if (!isConfirmed(body.confirm)) {
+    return res.status(409).json({ ok: false, error: 'manual_confirmation_required', hint: 'resend with {"confirm": true}' });
+  }
+
+  const db = await getDb();
+  await db.reload();
+  const champion = ensureChampionConfigsState(db).find((item) => item.id === championId);
+  if (!champion) return res.status(404).json({ ok: false, error: 'champion_not_found' });
+  if (champion.status !== 'active' || !champion.acceptancePassed) {
+    return res.status(409).json({ ok: false, error: 'champion_not_active_or_accepted' });
+  }
+
+  const appliedRules = normalizeTradingRules(champion.rulesSnapshot);
+  db.data.settings.tradingRules = appliedRules;
+  champion.notes = [...(champion.notes ?? []), `Applied to live Trading Rules at ${new Date().toISOString()}`];
+  await db.write();
+  await rulesCache.refreshNow();
+  logger.info({ component: 'experiment-governance', championId, experimentId: champion.experimentId, trialId: champion.trialId }, 'active champion applied to live Trading Rules');
+
+  return res.json({ ok: true, championId, tradingRules: appliedRules });
 });
 
 // ─── Risk Check Endpoint ──────────────────────────────────────────────
@@ -8643,7 +8751,7 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
     confirm?: boolean;
   };
   const executionIntentId = (req as any)._executionIntentId as string | undefined;
-  const radarPolicyGate = (req as any)._radarContextPolicyGate as { snapshot?: { policyId?: string }; override?: boolean } | undefined;
+  const radarPolicyGate = (req as any)._radarContextPolicyGate as { snapshot?: ExecutionIntentPolicySnapshot; override?: boolean } | undefined;
 
   if (side !== 'buy' && side !== 'sell') {
     return res.status(400).json({ error: 'invalid_side' });
@@ -8714,6 +8822,27 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
       passed: true,
       details: { symbol: normalizedSym, size: qty, marginUsd: sizing.marginUsd, notionalUsd: sizing.notionalUsd, effectiveLeverage: sizing.effectiveLeverage, allocationPct: sizing.allocationPct },
     });
+  }
+
+  const radarAdjusted = !reduceOnly && radarPolicyGate?.override !== true
+    ? applyRadarRiskMultiplierToSize(qty, radarPolicyGate?.snapshot)
+    : { size: qty, multiplier: 1, applied: false };
+  if (radarAdjusted.applied) {
+    qty = radarAdjusted.size;
+    if (!qty || qty <= 0) {
+      const db = await getDb();
+      updateExecutionIntent(db, executionIntentId, { status: 'rejected' });
+      await db.write();
+      return res.status(403).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'radar_risk_multiplier_zero_size' });
+    }
+    if (sizingMeta) {
+      const adjustedNotional = px * qty;
+      sizingMeta = {
+        ...sizingMeta,
+        notionalUsd: Number(adjustedNotional.toFixed(2)),
+        marginUsd: Number((adjustedNotional / sizingMeta.effectiveLeverage).toFixed(2)),
+      };
+    }
   }
 
   const notional = px * qty;
@@ -8817,6 +8946,12 @@ app.post('/api/live/order/limit', ownerAuth, staleMarketDataGate, riskGateMiddle
   updateExecutionIntent(db, executionIntentId, ack.ok
     ? { status: 'auto_order_placed', orderId: ack.orderId }
     : { status: 'rejected' });
+  if (ack.ok) {
+    routeSignalCandidateFromPolicySnapshot(db, radarPolicyGate?.snapshot, { orderId: ack.orderId, at: new Date().toISOString() });
+    reconcileSignalCandidateOutcome(db, { orderId: ack.orderId, status: 'auto_order_placed', at: new Date().toISOString() });
+  } else {
+    reconcileSignalCandidateOutcome(db, { orderId: ack.orderId, status: 'rejected', error: ack.error ?? 'exchange_rejected', at: new Date().toISOString() });
+  }
 
   if (!ack.ok) {
     await notifyOrderRejectedEvent({
@@ -9493,7 +9628,7 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
     confirm?: boolean;
   };
   const executionIntentId = (req as any)._executionIntentId as string | undefined;
-  const radarPolicyGate = (req as any)._radarContextPolicyGate as { snapshot?: { policyId?: string }; override?: boolean } | undefined;
+  const radarPolicyGate = (req as any)._radarContextPolicyGate as { snapshot?: ExecutionIntentPolicySnapshot; override?: boolean } | undefined;
 
   // Validation
   if (side !== 'buy' && side !== 'sell') {
@@ -9565,6 +9700,27 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
       passed: true,
       details: { symbol: normalizedSym, size: qty, marginUsd: sizing.marginUsd, notionalUsd: sizing.notionalUsd, effectiveLeverage: sizing.effectiveLeverage, allocationPct: sizing.allocationPct },
     });
+  }
+
+  const radarAdjusted = !reduceOnly && radarPolicyGate?.override !== true
+    ? applyRadarRiskMultiplierToSize(qty, radarPolicyGate?.snapshot)
+    : { size: qty, multiplier: 1, applied: false };
+  if (radarAdjusted.applied) {
+    qty = radarAdjusted.size;
+    if (!qty || qty <= 0) {
+      const db = await getDb();
+      updateExecutionIntent(db, executionIntentId, { status: 'rejected' });
+      await db.write();
+      return res.status(403).json({ ok: false, errorCode: 'invalid_params' as TradingErrorCode, error: 'radar_risk_multiplier_zero_size' });
+    }
+    if (sizingMeta) {
+      const adjustedNotional = px * qty;
+      sizingMeta = {
+        ...sizingMeta,
+        notionalUsd: Number(adjustedNotional.toFixed(2)),
+        marginUsd: Number((adjustedNotional / sizingMeta.effectiveLeverage).toFixed(2)),
+      };
+    }
   }
 
   const notional = px * qty;
@@ -9678,6 +9834,12 @@ app.post('/api/live/order', ownerAuth, staleMarketDataGate, riskGateMiddleware, 
   updateExecutionIntent(db, executionIntentId, ack.ok
     ? { status: 'auto_order_placed', orderId: ack.orderId }
     : { status: 'rejected' });
+  if (ack.ok) {
+    routeSignalCandidateFromPolicySnapshot(db, radarPolicyGate?.snapshot, { orderId: ack.orderId, at: new Date().toISOString() });
+    reconcileSignalCandidateOutcome(db, { orderId: ack.orderId, status: 'auto_order_placed', at: new Date().toISOString() });
+  } else {
+    reconcileSignalCandidateOutcome(db, { orderId: ack.orderId, status: 'rejected', error: ack.error ?? 'exchange_rejected', at: new Date().toISOString() });
+  }
 
   if (!ack.ok) {
     await notifyOrderRejectedEvent({

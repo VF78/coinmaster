@@ -25,25 +25,27 @@ Fix:
   - blocks oversized entries when `portfolioGrossCap` would be exceeded.
 - `scripts/invariants-trading-rules.ts` now includes an explicit backtest sizing parity invariant.
 
-## Remaining architecture follow-ups
+## Follow-up fixes after owner instruction
 
-These are not immediate production health blockers, but should become explicit backlog items if the target architecture is to be made fully strict.
+The owner asked to close the remaining issues without hacks, overengineering, or architecture drift. The follow-up patch therefore made the smallest target-aligned changes:
 
-1. SignalCandidate lifecycle is durable but not fully operational.
-   - Current candidates are used for RadarContextPolicy and UI/read-models.
-   - `routed` / `executed` candidate states are not yet reconciled from pending confirmations/order outcomes; execution reconciliation primarily updates `RadarSignalRecord` and `ExecutionIntent`.
+1. SignalCandidate lifecycle is now reconciled through handoff outcomes.
+   - `ExecutionIntentPolicySnapshot` carries `signalCandidateId`.
+   - Accepted policy-controlled entries transition candidates to `routed` when they enter pending confirmation or auto-order placement.
+   - Confirmed/placed orders transition candidates to `executed`; rejected outcomes transition to `rejected` where legal.
 
-2. RadarContextPolicy is an allow/block context controller, but `riskMultiplier` is not yet a live sizing multiplier.
-   - The policy blocks entries when multiplier is zero and stores snapshots on `ExecutionIntent`.
-   - Non-zero multipliers currently do not scale live order size; this is a deliberate next decision because applying >1.0 would increase risk and should be owner-approved.
+2. RadarContextPolicy `riskMultiplier` now materially affects live size without increasing risk.
+   - Multipliers are conservative live caps in `[0, 1]`.
+   - Handoff, pending confirmation execution, and manual order routes apply the multiplier to non-reduce-only order size unless the operator uses the explicit audited Radar override.
+   - This avoids hidden risk expansion while making Radar context operational.
 
-3. ChampionConfig promotion is auditable governance, not automatic live activation.
-   - Promotion creates a durable accepted champion.
-   - Runtime Trading Rules still load from `settings.tradingRules`; applying a champion into live settings should remain an explicit future workflow.
+3. ChampionConfig has an explicit live-apply workflow.
+   - `POST /api/champions/:id/apply` requires owner auth, an active accepted champion, and manual confirmation.
+   - It applies the champion Trading Rules snapshot to live settings and refreshes runtime rules.
 
-4. Legacy deterministic replay is separate from the canonical backtest engine.
-   - `/api/replay/run` still uses `runSimulationStep` and paper adapter flow.
-   - Canonical promotion decisions use `src/core/backtestEngine.ts`; replay should either be deprecated or moved onto the canonical engine in a later cleanup.
+4. Legacy deterministic replay is disabled when the legacy replay API flag is enabled.
+   - `/api/replay/run` returns `410 legacy_replay_disabled` and points callers to canonical backtest runs.
+   - This prevents a third decision model from being mistaken for target-architecture research.
 
 ## Verification commands run
 

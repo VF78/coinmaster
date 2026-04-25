@@ -42,7 +42,7 @@ function inferRiskMultiplier(candidate: SignalCandidate, directionMode: RadarCon
   if (directionMode === 'blocked') return 0;
   const score = candidate.score?.composite ?? 0;
   if (candidate.state === 'actionable' || candidate.state === 'routed' || candidate.state === 'executed') {
-    return Number(clamp(score / 80, 0.75, 1.5).toFixed(2));
+    return Number(clamp(score / 80, 0.75, 1).toFixed(2));
   }
   if (candidate.state === 'validated') {
     return Number(clamp(score / 100, 0.35, 0.8).toFixed(2));
@@ -65,6 +65,7 @@ function mergeReasonCodes(reasonCodes: RadarContextPolicyReasonCode[]): RadarCon
 function policySnapshotFromPolicy(policy: RadarContextPolicy): ExecutionIntentPolicySnapshot {
   return {
     policyId: policy.id,
+    signalCandidateId: policy.signalCandidateId,
     symbol: policy.symbol,
     directionMode: policy.directionMode,
     riskMultiplier: policy.riskMultiplier,

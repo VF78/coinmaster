@@ -148,6 +148,12 @@ console.log('\nTest 5: state machine rejects illegal transitions');
   });
   const illegal = transitionSignalCandidate(candidate, { to: 'executed', reason: 'skip', at: nowIso });
   assert(illegal.ok === false && illegal.error === 'illegal_transition', 'illegal jump to executed is blocked');
+  const validated = transitionSignalCandidate(candidate, { to: 'validated', reason: 'score_reached_validation_threshold', at: nowIso });
+  const actionable = validated.ok ? transitionSignalCandidate(validated.candidate, { to: 'actionable', reason: 'score_reached_actionable_threshold', at: nowIso }) : validated;
+  const routed = actionable.ok ? transitionSignalCandidate(actionable.candidate, { to: 'routed', reason: 'entry_handoff_routed', at: nowIso, pendingId: 'pc-1' }) : actionable;
+  const executed = routed.ok ? transitionSignalCandidate(routed.candidate, { to: 'executed', reason: 'order_placed', at: nowIso, orderId: 'oid-1' }) : routed;
+  assert(executed.ok === true && executed.candidate.state === 'executed', 'legal lifecycle reaches executed through routed state');
+  assert(executed.candidate.pendingId === 'pc-1' && executed.candidate.orderId === 'oid-1', 'lifecycle stores pending and order ids');
 }
 
 console.log('\nTest 6: feedparser primary parser preserves provenance metadata');

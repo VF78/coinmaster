@@ -103,6 +103,8 @@ console.log('Test 1: actionable bullish candidate creates long-only active polic
   const active = readActiveRadarContextPolicy({ policies, symbol: 'BTC', nowIso });
   assert(active.policy?.directionMode === 'long_only', 'BTC policy is long_only');
   assert((active.policy?.riskMultiplier ?? 0) > 0, 'BTC policy has positive risk multiplier');
+  assert((active.policy?.riskMultiplier ?? 0) <= 1, 'BTC policy risk multiplier is a conservative live cap');
+  assert(active.snapshot?.signalCandidateId === 'candidate-btc', 'policy snapshot carries signal candidate id for lifecycle reconciliation');
 }
 
 console.log('\nTest 2: missing candidate yields missing_required_evidence block');

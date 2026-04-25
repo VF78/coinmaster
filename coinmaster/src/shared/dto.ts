@@ -562,6 +562,7 @@ export interface RadarContextPolicy {
 
 export interface ExecutionIntentPolicySnapshot {
   policyId?: string;
+  signalCandidateId?: string;
   symbol: string;
   directionMode?: RadarContextDirectionMode;
   riskMultiplier?: number;
