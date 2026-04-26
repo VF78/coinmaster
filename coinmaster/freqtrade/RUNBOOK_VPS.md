@@ -102,23 +102,31 @@ Freqtrade still returned:
 Historic data not available for Hyperliquid. Hyperliquid does not support downloading trades or ohlcv data.
 ```
 
-Use the repo bridge script, which pulls public candles from Hyperliquid `candleSnapshot` and stores Freqtrade-compatible futures OHLCV files:
+Use the dataset sync script, which merges public archival Freqtrade feather files, previous local files, and fresh Hyperliquid `candleSnapshot` candles into Freqtrade-compatible futures OHLCV files:
 
 ```bash
 docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade \
-  /freqtrade/user_data/scripts/download_hyperliquid_ohlcv.py \
+  /freqtrade/user_data/scripts/sync_hyperliquid_dataset.py \
   --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC \
-  --timeframes 15m 1h 4h \
-  --timerange 20260101-
+  --timeframes 5m 15m 1h 4h \
+  --timerange 20250701- \
+  --archives always
 ```
 
-Known data limitation observed on 2026-04-27:
+Current dataset strategy:
 
-- `15m` candles are available only for roughly the latest 5k candles from Hyperliquid, starting around `2026-03-05` for the current baseline;
-- `1h`/`4h` candles are available back to `2026-01-01` for the same request;
-- Stage 1 backtests on the current 15m strategy should use `20260306-` until a deeper data source is added.
+- public archival `1m` feather files seed older history and are resampled to `5m/15m/1h/4h`;
+- fresh Hyperliquid `candleSnapshot` pulls update each target timeframe directly;
+- previous local files are merged back in, so the VPS accumulates history over time;
+- generated OHLCV data is local runtime state and ignored by git.
 
-Generated OHLCV data is local runtime state and ignored by git.
+Initial sync observed on 2026-04-27:
+
+- `1h`/`4h`: no large gaps from 2025-07/2025-07-01 through current candles;
+- `15m`: archive + fresh data with a short March gap from upstream archive/candleSnapshot coverage;
+- `5m`: archive + fresh data with a larger March/April gap from upstream archive/candleSnapshot coverage.
+
+The daily sync will accumulate fresh candles from now onward. Once enough local daily snapshots have accumulated, the rolling recent window will have at least six months of full local history for `5m/15m/1h/4h` backtests.
 
 ## 6. Baseline backtest
 
@@ -163,7 +171,20 @@ Next refinement target:
 
 ## 8. Dry-run service
 
-Install the systemd unit:
+Install the daily dataset sync timer first:
+
+```bash
+sudo cp /opt/coinmaster/coinmaster/freqtrade/systemd/coinmaster-freqtrade-dataset-sync.* /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now coinmaster-freqtrade-dataset-sync.timer
+sudo systemctl list-timers coinmaster-freqtrade-dataset-sync.timer --no-pager
+
+# Optional immediate sync after install:
+sudo systemctl start coinmaster-freqtrade-dataset-sync.service
+sudo journalctl -u coinmaster-freqtrade-dataset-sync.service -n 120 --no-pager
+```
+
+Then install the trading service unit:
 
 ```bash
 sudo cp /opt/coinmaster/coinmaster/freqtrade/systemd/coinmaster-freqtrade.service /etc/systemd/system/

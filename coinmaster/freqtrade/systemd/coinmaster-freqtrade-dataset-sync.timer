@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily CoinMaster Freqtrade Hyperliquid dataset sync
+
+[Timer]
+OnCalendar=*-*-* 03:20:00
+RandomizedDelaySec=30min
+Persistent=true
+Unit=coinmaster-freqtrade-dataset-sync.service
+
+[Install]
+WantedBy=timers.target

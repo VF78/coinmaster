@@ -1,0 +1,12 @@
+[Unit]
+Description=CoinMaster Freqtrade Hyperliquid dataset sync
+Documentation=https://www.freqtrade.io/
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/coinmaster/coinmaster
+ExecStart=/usr/bin/docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade /freqtrade/user_data/scripts/sync_hyperliquid_dataset.py --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC --timeframes 5m 15m 1h 4h --timerange 20250701- --archives always
+TimeoutStartSec=1800
