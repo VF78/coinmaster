@@ -154,8 +154,8 @@ export function computeSizeFromRules(
   return Math.floor(rawSize * 1e6) / 1e6;
 }
 
-// TP split sizing (same as prod: 40% / 35% / 25% for 3 TPs)
-const TP_SPLIT_3 = [0.4, 0.35, 0.25];
+// TP split sizing (same as prod: 100%, 50/50, or 34/33/33)
+const TP_SPLIT_3 = [0.34, 0.33, 0.33];
 const TP_SPLIT_2 = [0.5, 0.5];
 const TP_SPLIT_1 = [1.0];
 

@@ -9135,14 +9135,17 @@ function splitTakeProfitSizes(totalSize: number, tpCount: number, sizeDecimals: 
   if (!Number.isFinite(totalSize) || totalSize <= 0 || tpCount <= 0) return [];
 
   // Explicit policy requested by owner:
+  // - 1 TP -> 100%
   // - 2 TP -> 50/50
-  // - 3 TP -> 33/33/34
+  // - 3 TP -> 34/33/33
   // - fallback: equal split
-  const weights = tpCount === 2
-    ? [0.5, 0.5]
-    : tpCount === 3
-      ? [0.33, 0.33, 0.34]
-      : Array.from({ length: tpCount }, () => 1 / tpCount);
+  const weights = tpCount === 1
+    ? [1]
+    : tpCount === 2
+      ? [0.5, 0.5]
+      : tpCount === 3
+        ? [0.34, 0.33, 0.33]
+        : Array.from({ length: tpCount }, () => 1 / tpCount);
 
   // Convert to instrument lot units first (works for integer-lot symbols too).
   const factor = 10 ** Math.max(0, sizeDecimals);

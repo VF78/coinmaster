@@ -213,7 +213,7 @@ export function runSimulationStep(db: DBShape, rawSymbol: string, price: number,
     const tp3Hit = position.tp3Price !== undefined && (position.side === 'long' ? price >= position.tp3Price : price <= position.tp3Price);
 
     if (!position.tp1Done && tp1Hit) {
-      const qty = Number((position.size * 0.4).toFixed(6));
+      const qty = Number((position.size * 0.34).toFixed(6));
       const pnlChunk = closeChunk(position, price, qty);
       position.tp1Done = true;
       position.stopLoss = round2(position.entryPrice); // BE after TP1
@@ -226,7 +226,7 @@ export function runSimulationStep(db: DBShape, rawSymbol: string, price: number,
         price,
         quantity: qty,
         pnl: pnlChunk,
-        note: 'tp1_40pct_be',
+        note: 'tp1_34pct_be',
         timestamp: now
       });
 
@@ -240,7 +240,7 @@ export function runSimulationStep(db: DBShape, rawSymbol: string, price: number,
         price,
         quantity: qty,
         pnl: pnlChunk,
-        reason: 'tp1_40pct_be',
+        reason: 'tp1_34pct_be',
         payload: {
           level: 'tp1',
           stopMovedToBe: true
@@ -249,7 +249,7 @@ export function runSimulationStep(db: DBShape, rawSymbol: string, price: number,
     }
 
     if (!position.tp2Done && tp2Hit) {
-      const qty = Number((position.size * 0.35).toFixed(6));
+      const qty = Number((position.size * 0.33).toFixed(6));
       const closeQty = Math.min(qty, positionRemainingSize(position));
       const pnlChunk = closeChunk(position, price, closeQty);
       position.tp2Done = true;
@@ -262,7 +262,7 @@ export function runSimulationStep(db: DBShape, rawSymbol: string, price: number,
         price,
         quantity: closeQty,
         pnl: pnlChunk,
-        note: 'tp2_35pct',
+        note: 'tp2_33pct',
         timestamp: now
       });
 
@@ -276,7 +276,7 @@ export function runSimulationStep(db: DBShape, rawSymbol: string, price: number,
         price,
         quantity: closeQty,
         pnl: pnlChunk,
-        reason: 'tp2_35pct',
+        reason: 'tp2_33pct',
         payload: {
           level: 'tp2',
           stopMovedToBe: false

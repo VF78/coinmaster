@@ -957,7 +957,7 @@ export function PositionLevelsPanel({ position, onClose, onApplied }: PositionLe
 
         <div className="hl-side-stack">
           <aside className="muted position-panel__hint hl-side-hint">
-            TP split policy: 2 TP = 50/50, 3 TP = 33/33/34. After TP1 fill, SL moves to break-even.
+            TP split policy: 1 TP = 100%, 2 TP = 50/50, 3 TP = 34/33/33. After TP1 fill, SL moves to break-even.
           </aside>
           <aside className="hl-side-summary">
             <div className="hl-summary-grid hl-summary-grid--compact">
