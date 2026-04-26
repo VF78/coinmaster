@@ -45,6 +45,7 @@ import type {
   ExecutionIntentPolicySnapshot,
   OptimizationCreateRequest,
   OptimizationParamRange,
+  OptimizationResult,
   BiasMode,
   ExchangeConnectionSettingsPayload,
   ExecutionIntent,
@@ -7470,6 +7471,7 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
 const OPTIMIZATION_HISTORY_LIMIT = 50;
 const COMPUTE_JOB_QUEUE_TIMEOUT_MS = Math.max(30_000, Number(process.env.COMPUTE_JOB_QUEUE_TIMEOUT_MS || 2 * 60_000));
 const COMPUTE_JOB_HEARTBEAT_TIMEOUT_MS = Math.max(60_000, Number(process.env.COMPUTE_JOB_HEARTBEAT_TIMEOUT_MS || 5 * 60_000));
+const OPTIMIZER_WORKER_AUTO_RESUME_LIMIT = Math.max(0, Number(process.env.OPTIMIZER_WORKER_AUTO_RESUME_LIMIT || 8));
 
 function hasInFlightOptimization(optimizations: Array<{ status?: string }>): boolean {
   return optimizations.some((item) => item.status === 'queued' || item.status === 'running');
@@ -7503,6 +7505,32 @@ async function reconcileOptimizationState(db: Awaited<ReturnType<typeof getDb>>)
   });
 
   if (failureReason) {
+    const canResumeOptimization =
+      OPTIMIZER_WORKER_AUTO_RESUME_LIMIT > 0 &&
+      failureReason === 'optimizer worker exited unexpectedly' &&
+      Number(activeOpt.evaluatedCandidates ?? 0) > 0 &&
+      Number(activeOpt.evaluatedCandidates ?? 0) < Number(activeOpt.totalCandidates ?? 0);
+
+    if (canResumeOptimization) {
+      const mutable = activeOpt as OptimizationResult & { workerRestartCount?: number; lastWorkerFailure?: string };
+      const restartCount = Math.max(0, Number(mutable.workerRestartCount ?? 0));
+      if (restartCount < OPTIMIZER_WORKER_AUTO_RESUME_LIMIT) {
+        mutable.workerRestartCount = restartCount + 1;
+        mutable.lastWorkerFailure = failureReason;
+        activeOpt.status = 'queued';
+        activeOpt.error = undefined;
+        activeOpt.workerPid = undefined;
+        const workerPid = spawnComputeJobProcess('optimization', activeOpt.id);
+        claimComputeJobForProcess(activeOpt, { workerPid });
+        logger.warn(
+          { component: 'optimizer', optimizationId: activeOpt.id, workerPid, restartCount: mutable.workerRestartCount, evaluated: activeOpt.evaluatedCandidates, total: activeOpt.totalCandidates, failureReason },
+          'resuming optimization after worker exit',
+        );
+        await db.write();
+        return;
+      }
+    }
+
     markComputeJobFailed(activeOpt, failureReason, { stage: 'failed' });
     await db.write();
   }

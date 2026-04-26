@@ -399,7 +399,7 @@ export async function executeOptimization(
   if (!opt) {
     throw new Error(`optimization_not_found:${optimizationId}`);
   }
-  if (opt.status !== 'queued') {
+  if (opt.status !== 'queued' && !(opt.status === 'running' && opt.workerPid === process.pid)) {
     throw new Error(`optimization_not_queued:${opt.status}`);
   }
 
@@ -498,25 +498,29 @@ export async function executeOptimization(
 
     // Generate candidates
     const { candidates, gridCandidates } = generateCandidates(opt.paramRanges);
+    const resumeFrom = Math.min(
+      candidates.length,
+      Math.max(0, Number.isFinite(Number(opt.evaluatedCandidates)) ? Math.floor(Number(opt.evaluatedCandidates)) : 0),
+    );
     opt.searchSpaceCandidates = gridCandidates;
     opt.totalCandidates = candidates.length;
-    opt.evaluatedCandidates = 0;
-    opt.prunedCandidates = 0;
-    opt.trialIds = Array.isArray(opt.trialIds) ? opt.trialIds : [];
-    opt.progress = createComputeJobProgress(0, candidates.length, 'evaluating_candidates');
+    opt.evaluatedCandidates = resumeFrom;
+    opt.prunedCandidates = resumeFrom > 0 ? Math.max(0, Number(opt.prunedCandidates ?? 0)) : 0;
+    opt.trialIds = resumeFrom > 0 && Array.isArray(opt.trialIds) ? opt.trialIds : [];
+    opt.progress = createComputeJobProgress(resumeFrom, candidates.length, 'evaluating_candidates');
     await db.write();
 
     logger.info(
-      { component: 'optimizer', optimizationId, symbol, candidates: candidates.length, gridCandidates },
+      { component: 'optimizer', optimizationId, symbol, candidates: candidates.length, gridCandidates, resumeFrom },
       'starting optimization search',
     );
 
-    let bestPnl = -Infinity;
-    let bestSummary: BacktestRunSummary | undefined;
-    let bestBySymbol: BacktestRunSymbolStats[] | undefined;
+    let bestPnl = opt.bestObjectiveMetrics?.objectiveValue ?? -Infinity;
+    let bestSummary: BacktestRunSummary | undefined = opt.bestSummary;
+    let bestBySymbol: BacktestRunSymbolStats[] | undefined = opt.bestBySymbol;
     let bestParamCombo: Record<string, number> | undefined;
 
-    for (let i = 0; i < candidates.length; i++) {
+    for (let i = resumeFrom; i < candidates.length; i++) {
       const combo = candidates[i];
 
       // Clone base rules and apply candidate params
@@ -636,6 +640,13 @@ export async function executeOptimization(
             bestParamCombo = combo;
             opt.bestTrialId = trial.id;
             opt.bestObjectiveMetrics = objectiveMetrics;
+            const completeBestRules = JSON.parse(JSON.stringify(baseRules)) as TradingRulesSettings;
+            for (const [param, value] of Object.entries(bestParamCombo)) {
+              applyParamToRules(completeBestRules, param, value);
+            }
+            opt.bestParams = completeBestRules;
+            opt.bestSummary = bestSummary;
+            opt.bestBySymbol = bestBySymbol;
             experiment.candidateTrialId = trial.id;
             persistOptimizationTrial({ dbData: db.data, experiment, opt, trial, full: true });
           }
