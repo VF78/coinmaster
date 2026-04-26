@@ -240,6 +240,9 @@ export function reconcileComputeJob(params: {
   if (params.isWorkerAlive === false) {
     return params.missingWorkerReason ?? 'compute job worker exited unexpectedly';
   }
+  if (params.isWorkerAlive === true) {
+    return null;
+  }
   if (heartbeatMs > 0 && nowMs - heartbeatMs > heartbeatTimeoutMs) {
     return params.runningFailureReason ?? 'compute job heartbeat timed out';
   }

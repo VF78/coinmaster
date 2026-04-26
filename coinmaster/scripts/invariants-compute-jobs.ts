@@ -99,7 +99,7 @@ console.log('\n── Compute Job Invariants ──');
   });
   assert(stalledBacktest === 'backtest worker is not active', 'running in-process jobs fail when no worker owns them');
 
-  const staleOptimizer = reconcileComputeJob({
+  const liveCpuBoundOptimizer = reconcileComputeJob({
     job: {
       status: 'running',
       createdAt: '2026-04-23T09:58:00.000Z',
@@ -110,7 +110,20 @@ console.log('\n── Compute Job Invariants ──');
     isWorkerAlive: true,
     runningFailureReason: 'optimizer heartbeat timed out',
   });
-  assert(staleOptimizer === 'optimizer heartbeat timed out', 'detached jobs fail when heartbeat expires');
+  assert(liveCpuBoundOptimizer === null, 'detached jobs stay active when worker pid is alive');
+
+  const deadOptimizer = reconcileComputeJob({
+    job: {
+      status: 'running',
+      createdAt: '2026-04-23T09:58:00.000Z',
+      startedAt: '2026-04-23T09:58:10.000Z',
+      workerHeartbeatAt: '2026-04-23T09:59:00.000Z',
+    },
+    nowMs: Date.parse('2026-04-23T10:00:00.000Z'),
+    isWorkerAlive: false,
+    missingWorkerReason: 'optimizer worker exited unexpectedly',
+  });
+  assert(deadOptimizer === 'optimizer worker exited unexpectedly', 'detached jobs fail when worker pid is gone');
 }
 
 if (failed > 0) {
