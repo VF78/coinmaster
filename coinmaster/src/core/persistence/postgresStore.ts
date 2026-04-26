@@ -201,6 +201,75 @@ function ensureDbShape(data: DBShape) {
   }
 }
 
+function recordTimestampMs(item: any): number {
+  const candidates = [
+    item?.progress?.updatedAt,
+    item?.updatedAt,
+    item?.finishedAt,
+    item?.startedAt,
+    item?.createdAt,
+    item?.workerHeartbeatAt,
+  ];
+  let best = 0;
+  for (const value of candidates) {
+    const ms = Date.parse(String(value ?? ''));
+    if (Number.isFinite(ms)) best = Math.max(best, ms);
+  }
+  return best;
+}
+
+function mergeById<T extends { id?: string }>(current: T[], local: T[]): T[] {
+  const byId = new Map<string, T>();
+  const order: string[] = [];
+
+  for (const item of current) {
+    const id = String(item?.id ?? '');
+    if (!id) continue;
+    byId.set(id, item);
+    order.push(id);
+  }
+
+  for (const item of local) {
+    const id = String(item?.id ?? '');
+    if (!id) continue;
+    const existing = byId.get(id);
+    if (!existing) {
+      byId.set(id, item);
+      order.unshift(id);
+      continue;
+    }
+    if (recordTimestampMs(item) >= recordTimestampMs(existing)) {
+      byId.set(id, item);
+    }
+  }
+
+  const seen = new Set<string>();
+  const merged: T[] = [];
+  for (const id of order) {
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const item = byId.get(id);
+    if (item) merged.push(item);
+  }
+  return merged;
+}
+
+function mergeSnapshotCollections(current: DBShape, local: DBShape): DBShape {
+  const merged = JSON.parse(JSON.stringify(local)) as DBShape;
+  merged.backtestRuns = mergeById(current.backtestRuns ?? [], local.backtestRuns ?? []);
+  merged.optimizationResults = mergeById(current.optimizationResults ?? [], local.optimizationResults ?? []);
+  merged.experiments = mergeById(current.experiments ?? [], local.experiments ?? []);
+  merged.experimentTrials = mergeById(current.experimentTrials ?? [], local.experimentTrials ?? []);
+  merged.championConfigs = mergeById(current.championConfigs ?? [], local.championConfigs ?? []);
+  merged.radarSignals = mergeById(current.radarSignals ?? [], local.radarSignals ?? []);
+  merged.signalCandidates = mergeById(current.signalCandidates ?? [], local.signalCandidates ?? []);
+  merged.executionIntents = mergeById(current.executionIntents ?? [], local.executionIntents ?? []);
+  merged.pendingConfirmations = mergeById(current.pendingConfirmations ?? [], local.pendingConfirmations ?? []);
+  merged.telegramOutbox = mergeById(current.telegramOutbox ?? [], local.telegramOutbox ?? []);
+  ensureDbShape(merged);
+  return merged;
+}
+
 /**
  * PostgreSQL persistence backend — Phase 1 snapshot bridge.
  *
@@ -306,6 +375,17 @@ export class PostgresStore implements PersistenceStore {
     const client = await this.pool.connect();
     try {
       await client.query('BEGIN');
+      const currentRes = await client.query(
+        'SELECT data FROM state_snapshot WHERE key = $1 FOR UPDATE',
+        [SNAPSHOT_KEY]
+      );
+      if (currentRes.rows.length > 0 && currentRes.rows[0].data) {
+        const current = currentRes.rows[0].data as DBShape;
+        ensureDbShape(current);
+        this.data = mergeSnapshotCollections(current, this.data);
+      } else {
+        ensureDbShape(this.data);
+      }
       await client.query(
         `INSERT INTO state_snapshot (key, data, updated_at)
          VALUES ($1, $2, now())
