@@ -262,7 +262,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     // Perp order sizing must use perp/cross-margin availability.  Spot USDC can
     // overstate executable margin and lead to Hyperliquid "Insufficient margin"
     // rejects even when the UI thinks there is enough room.
-    const availableUsd = withdrawable ?? perpAvailable ?? spotAvailableUsdc;
+    const availableUsd = [withdrawable, perpAvailable, spotAvailableUsdc]
+      .find((x) => Number.isFinite(x ?? NaN) && (x ?? 0) > 0);
 
     const hasAuthoritativeEquity = Number.isFinite(spotTotalUsdc ?? NaN) && (spotTotalUsdc ?? 0) > 0;
     const hasPartialPerpEquity = Number.isFinite(perpAccountValue ?? NaN) && (perpAccountValue ?? 0) > 0;
