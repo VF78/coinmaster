@@ -24,7 +24,7 @@ docker compose -f freqtrade/docker-compose.yml run --rm freqtrade show-config --
 # Build/update the local Freqtrade dataset (canonical user_data/data layout, Freqtrade DataHandler writes).
 docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade \
   /freqtrade/user_data/scripts/sync_hyperliquid_dataset.py \
-  --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC \
+  --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC HYPE/USDC:USDC ZEC/USDC:USDC XYZ-GOLD/USDC:USDC XYZ-BRENTOIL/USDC:USDC XYZ-EUR/USDC:USDC \
   --timeframes 5m 15m 1h 4h \
   --timerange 20250701- \
   --archives always

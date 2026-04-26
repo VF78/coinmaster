@@ -107,7 +107,7 @@ Because native `download-data` is unavailable for Hyperliquid, use the repo's Fr
 ```bash
 docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade \
   /freqtrade/user_data/scripts/sync_hyperliquid_dataset.py \
-  --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC \
+  --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC HYPE/USDC:USDC ZEC/USDC:USDC XYZ-GOLD/USDC:USDC XYZ-BRENTOIL/USDC:USDC XYZ-EUR/USDC:USDC \
   --timeframes 5m 15m 1h 4h \
   --timerange 20250701- \
   --archives always
@@ -115,7 +115,7 @@ docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freq
 
 Current dataset strategy:
 
-- use standard Freqtrade pair names and data layout, e.g. `BTC/USDC:USDC` → `user_data/data/hyperliquid/futures/BTC_USDC_USDC-15m-futures.feather`;
+- collect `BTC`, `ETH`, `SOL`, `HYPE`, `ZEC`, `XYZ-GOLD`, `XYZ-BRENTOIL`, and `XYZ-EUR` using standard Freqtrade pair names and data layout, e.g. `BTC/USDC:USDC` → `user_data/data/hyperliquid/futures/BTC_USDC_USDC-15m-futures.feather`;
 - write via Freqtrade `get_datahandler(...).ohlcv_store(..., CandleType.FUTURES)`, not custom CSV/runtime adapters;
 - public archival `1m` feather files seed older history and are resampled to `5m/15m/1h/4h`;
 - fresh Hyperliquid `candleSnapshot` pulls update each target timeframe directly;

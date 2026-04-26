@@ -60,7 +60,11 @@ TIMEFRAME_SECONDS = {
 
 
 def pair_to_coin(pair: str) -> str:
-    return pair.split("/", 1)[0].upper()
+    """Convert Freqtrade/CCXT pair symbols to Hyperliquid candleSnapshot coins."""
+    base = pair.split("/", 1)[0]
+    if base.startswith("XYZ-"):
+        return "xyz:" + base.removeprefix("XYZ-")
+    return base.upper()
 
 
 def normalize_ohlcv(dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -161,7 +165,20 @@ def iter_jobs(pairs: Iterable[str], timeframes: Iterable[str]) -> Iterable[tuple
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sync Hyperliquid OHLCV archive + fresh candles into Freqtrade data files.")
-    parser.add_argument("--pairs", nargs="+", default=["BTC/USDC:USDC", "ETH/USDC:USDC", "SOL/USDC:USDC"])
+    parser.add_argument(
+        "--pairs",
+        nargs="+",
+        default=[
+            "BTC/USDC:USDC",
+            "ETH/USDC:USDC",
+            "SOL/USDC:USDC",
+            "HYPE/USDC:USDC",
+            "ZEC/USDC:USDC",
+            "XYZ-GOLD/USDC:USDC",
+            "XYZ-BRENTOIL/USDC:USDC",
+            "XYZ-EUR/USDC:USDC",
+        ],
+    )
     parser.add_argument("--timeframes", nargs="+", default=["5m", "15m", "1h", "4h"])
     parser.add_argument("--timerange", default="20250701-", help="YYYYMMDD- or YYYYMMDD-YYYYMMDD")
     parser.add_argument("--datadir", default="/freqtrade/user_data/data/hyperliquid")
@@ -181,12 +198,19 @@ def main() -> None:
         archive_1m = normalize_ohlcv(pd.DataFrame())
         if should_fetch_archive(args.archives, local_by_tf):
             coin = pair_to_coin(pair)
-            url = args.archive_url_template.format(coin=coin, pair=pair.replace("/", "_").replace(":", "_"))
-            archive_1m = clip_timerange(fetch_archive(session, url), start_ms, end_ms)
-            if archive_1m.empty:
-                print(f"archive missing/empty for {pair}: {url}")
+            if coin.startswith("xyz:") and args.archive_url_template == DEFAULT_ARCHIVE_URL_TEMPLATE:
+                print(f"archive skipped for {pair}: no default public archive source for Hyperliquid XYZ markets")
             else:
-                print(summarize(pair, "archive-1m", archive_1m))
+                url = args.archive_url_template.format(
+                    coin=coin,
+                    pair=pair.replace("/", "_").replace(":", "_"),
+                    coin_slug=coin.replace(":", "-"),
+                )
+                archive_1m = clip_timerange(fetch_archive(session, url), start_ms, end_ms)
+                if archive_1m.empty:
+                    print(f"archive missing/empty for {pair}: {url}")
+                else:
+                    print(summarize(pair, "archive-1m", archive_1m))
 
         for timeframe in args.timeframes:
             archive_tf = resample_ohlcv(archive_1m, timeframe) if not archive_1m.empty else normalize_ohlcv(pd.DataFrame())

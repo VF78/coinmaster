@@ -8,5 +8,5 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=/opt/coinmaster/coinmaster
-ExecStart=/usr/bin/docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade /freqtrade/user_data/scripts/sync_hyperliquid_dataset.py --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC --timeframes 5m 15m 1h 4h --timerange 20250701- --archives always
+ExecStart=/usr/bin/docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade /freqtrade/user_data/scripts/sync_hyperliquid_dataset.py --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC HYPE/USDC:USDC ZEC/USDC:USDC XYZ-GOLD/USDC:USDC XYZ-BRENTOIL/USDC:USDC XYZ-EUR/USDC:USDC --timeframes 5m 15m 1h 4h --timerange 20250701- --archives always
 TimeoutStartSec=1800

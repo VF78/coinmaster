@@ -66,8 +66,11 @@ def parse_timerange(timerange: str) -> tuple[int, int]:
 
 
 def pair_to_coin(pair: str) -> str:
-    # Freqtrade futures pairs look like BTC/USDC:USDC; Hyperliquid wants BTC.
-    return pair.split("/", 1)[0].upper()
+    """Convert Freqtrade/CCXT pair symbols to Hyperliquid candleSnapshot coins."""
+    base = pair.split("/", 1)[0]
+    if base.startswith("XYZ-"):
+        return "xyz:" + base.removeprefix("XYZ-")
+    return base.upper()
 
 
 def request_candles(session: requests.Session, coin: str, timeframe: str, start_ms: int, end_ms: int) -> list[dict]:
