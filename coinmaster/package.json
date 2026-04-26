@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "tsx watch src/server/index.ts",
     "dev:web": "vite",
-    "build": "npm run build:web",
+    "build": "npm run build:web && npm run build:custom",
     "build:web": "vite build",
     "start": "tsx src/server/index.ts",
     "tunnel": "./scripts/tunnel-localhost-run.sh",
@@ -33,7 +33,8 @@
     "invariants:radar-handoff": "node --import tsx/esm scripts/invariants-radar-handoff.ts",
     "invariants:experiment-governance": "node --import tsx/esm scripts/invariants-experiment-governance.ts",
     "invariants:backtest-run-persistence": "node --import tsx/esm scripts/invariants-backtest-run-persistence.ts",
-    "invariants:compute-jobs": "node --import tsx/esm scripts/invariants-compute-jobs.ts"
+    "invariants:compute-jobs": "node --import tsx/esm scripts/invariants-compute-jobs.ts",
+    "build:custom": "vite build --config vite.custom.config.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

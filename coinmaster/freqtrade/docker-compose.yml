@@ -5,9 +5,11 @@ services:
     container_name: coinmaster-freqtrade
     volumes:
       - ./user_data:/freqtrade/user_data
+      - /var/lib/coinmaster/freqtrade:/freqtrade/user_data/runtime
     ports:
       - "127.0.0.1:8080:8080"
     command: >
       trade
       --config /freqtrade/user_data/config.example.json
+      --config /freqtrade/user_data/runtime/config.trading-rules.json
       --strategy CoinMasterStrategy

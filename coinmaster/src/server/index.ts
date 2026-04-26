@@ -3,7 +3,7 @@ import cors from 'cors';
 import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -119,8 +119,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../../');
 const distDir = path.join(rootDir, 'dist');
+const customDistDir = path.join(rootDir, 'dist-custom');
 const dbFilePath = process.env.COINMASTER_DB_FILE ?? 'data/db.json';
 const alertStateFilePath = path.join(path.dirname(dbFilePath), 'alert_state.json');
+const freqtradeRuntimeDir = process.env.FREQTRADE_RUNTIME_DIR ?? '/var/lib/coinmaster/freqtrade';
+const freqtradeTradingRulesPath = path.join(freqtradeRuntimeDir, 'trading_rules.json');
+const freqtradeTradingRulesConfigPath = path.join(freqtradeRuntimeDir, 'config.trading-rules.json');
 
 if (!existsSync(path.join(distDir, 'index.html'))) {
   throw new Error(`dist/index.html missing at ${distDir}; run build/deploy before starting production server`);
@@ -141,7 +145,97 @@ const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLow
 
 const ENABLE_MULTI_TF_ENGULFING = String(process.env.ENABLE_MULTI_TF_ENGULFING ?? 'false').toLowerCase() === 'true';
 const ENABLE_FVG_MONITOR = String(process.env.ENABLE_FVG_MONITOR ?? 'false').toLowerCase() === 'true';
+const ENABLE_TP_FILL_MONITOR = String(process.env.ENABLE_TP_FILL_MONITOR ?? 'false').toLowerCase() === 'true';
 const FVG_MONITOR_INTERVAL_MS = Math.max(60_000, Number(process.env.FVG_MONITOR_INTERVAL_MS || 300_000)); // default 5m
+
+function coinmasterSymbolToFreqtradePair(symbol: string): string | null {
+  const raw = String(symbol || '').trim();
+  if (!raw) return null;
+
+  if (raw.includes(':')) {
+    const [namespaceRaw, assetRaw] = raw.split(':', 2);
+    const namespace = String(namespaceRaw || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+    const asset = String(assetRaw || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+    if (!namespace || !asset) return null;
+    return `${namespace}-${asset}/USDC:USDC`;
+  }
+
+  const asset = raw.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+  return asset ? `${asset}/USDC:USDC` : null;
+}
+
+function buildFreqtradeRulesExport(rules: TradingRulesSettings) {
+  const enabledPairs = [...new Set(
+    rules.coins
+      .filter((coin) => coin.enabled)
+      .map((coin) => coinmasterSymbolToFreqtradePair(coin.symbol))
+      .filter((pair): pair is string => Boolean(pair))
+  )];
+
+  const strategyParams = {
+    engulfing_lookback: rules.engulfingLookbackCandles,
+    fvg_retrace: rules.fvgRetrace,
+    fvg_min_width_pct: rules.fvgMinWidthPct,
+    fvg_require_sweep: rules.fvgRequireSweep,
+    fvg_sweep_lookback_candles: rules.fvgSweepLookbackCandles,
+    fvg_require_first_touch: rules.fvgRequireFirstTouch,
+    max_zone_age_candles: rules.maxZoneAgeCandles,
+    fvg_require_confirmation: rules.fvgRequireConfirmation,
+    fvg_confirmation_timeframes: rules.fvgConfirmationTimeframes,
+    max_leverage_value: rules.maxLeverage,
+    risk_per_trade_pct: rules.riskPerTradePct,
+    exit_close_pct: rules.exitClosePct,
+    tp_levels_pct: rules.tpLevels,
+    sl_pct: rules.slPct,
+    adx_min: rules.adxMin,
+    min_impulse_atr: rules.minImpulseAtr,
+    min_expected_rr: rules.minExpectedRr,
+    time_stop_bars: rules.timeStopBars,
+    regime_tf: rules.regimeTf,
+    entry_timeframes: rules.entryTimeframes,
+    emergency_exit_timeframes: rules.emergencyExitTimeframes,
+    portfolio_gross_cap: rules.portfolioGrossCap,
+    bias_policy: rules.biasPolicy,
+  };
+
+  return {
+    schema_version: 1,
+    source: 'coinmaster-custom-companion',
+    updated_at: new Date().toISOString(),
+    rules,
+    freqtrade: {
+      enabled_pairs: enabledPairs,
+      strategy: 'CoinMasterStrategy',
+      strategy_params: strategyParams,
+    },
+  };
+}
+
+async function writeJsonAtomic(filePath: string, payload: unknown) {
+  const tmpPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  await writeFile(tmpPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+  await rename(tmpPath, filePath);
+}
+
+async function exportTradingRulesToFreqtrade(rules: TradingRulesSettings) {
+  const payload = buildFreqtradeRulesExport(rules);
+  await mkdir(freqtradeRuntimeDir, { recursive: true });
+  await writeJsonAtomic(freqtradeTradingRulesPath, payload);
+  await writeJsonAtomic(freqtradeTradingRulesConfigPath, {
+    exchange: {
+      name: 'hyperliquid',
+      pair_whitelist: payload.freqtrade.enabled_pairs,
+      pair_blacklist: [],
+    },
+  });
+
+  return {
+    rulesPath: freqtradeTradingRulesPath,
+    configPath: freqtradeTradingRulesConfigPath,
+    enabledPairs: payload.freqtrade.enabled_pairs,
+    configReloadRequired: true,
+  };
+}
 const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
 const DRAWDOWN_WATCHDOG_INTERVAL_MS = Math.max(5000, Number(process.env.DRAWDOWN_WATCHDOG_INTERVAL_MS || 5000));
 
@@ -6990,10 +7084,22 @@ app.put('/api/settings/trading-rules', async (req, res) => {
   db.data.settings.tradingRules = rules;
   await db.write();
 
+  let freqtradeExport: Awaited<ReturnType<typeof exportTradingRulesToFreqtrade>>;
+  try {
+    freqtradeExport = await exportTradingRulesToFreqtrade(rules);
+  } catch (error) {
+    logger.error({ component: 'freqtrade-rules-export', err: error }, 'failed to export trading rules to Freqtrade runtime');
+    return res.status(500).json({
+      ok: false,
+      error: 'freqtrade_rules_export_failed',
+      rules,
+    });
+  }
+
   // Ensure monitors pick up new rules immediately (no cache-delay window).
   await rulesCache.refreshNow().catch((err) => logger.warn({ component: 'runtime-rules', err }, 'forced rules refresh failed'));
 
-  return res.json({ ok: true, rules });
+  return res.json({ ok: true, rules, freqtradeExport });
 });
 
 // ─── Effective Trading Rules (diagnostic) ─────────────────────────────
@@ -9679,6 +9785,11 @@ async function runTpFillMonitorTick(): Promise<void> {
 }
 
 function startTpFillMonitor(): void {
+  if (!ENABLE_TP_FILL_MONITOR) {
+    logger.info({ component: 'tp-monitor' }, 'TP fill monitor disabled via ENABLE_TP_FILL_MONITOR=false');
+    return;
+  }
+
   if (tpFillMonitorTimer) return;
   tpFillMonitorTimer = setInterval(() => {
     runTpFillMonitorTick().catch(err => logger.warn({ component: 'tp-monitor', err }, 'tick error'));
@@ -10201,6 +10312,16 @@ app.put('/api/live/order/:id/reduce', ownerAuth, async (req, res) => {
     error: ack.error
   });
 });
+
+if (existsSync(path.join(customDistDir, 'index.custom.html'))) {
+  app.use('/custom', express.static(customDistDir, { index: false }));
+  app.get(['/custom', '/custom/'], (_req, res) => {
+    res.sendFile(path.join(customDistDir, 'index.custom.html'));
+  });
+  app.get('/custom/*', (_req, res) => {
+    res.sendFile(path.join(customDistDir, 'index.custom.html'));
+  });
+}
 
 app.use(express.static(distDir));
 app.get('*', (_req, res) => {

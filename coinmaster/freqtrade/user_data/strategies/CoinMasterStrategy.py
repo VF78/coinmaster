@@ -19,8 +19,11 @@ Manual confirmation is deliberately not implemented.
 
 from __future__ import annotations
 
+import json
+import logging
 from datetime import datetime
 from functools import reduce
+from pathlib import Path
 from typing import Optional
 
 import numpy as np
@@ -30,6 +33,9 @@ from pandas import DataFrame
 import talib.abstract as ta
 from freqtrade.persistence import Trade
 from freqtrade.strategy import DecimalParameter, IntParameter, IStrategy
+
+
+logger = logging.getLogger(__name__)
 
 
 class CoinMasterStrategy(IStrategy):
@@ -64,6 +70,9 @@ class CoinMasterStrategy(IStrategy):
     tp_levels_pct = (1.0, 2.0, 7.0)
     sl_pct = 2.0
 
+    runtime_rules_path = Path("/freqtrade/user_data/runtime/trading_rules.json")
+    fallback_runtime_rules_path = Path(__file__).resolve().parents[1] / "runtime" / "trading_rules.json"
+
     plot_config = {
         "main_plot": {
             "ema_fast": {"color": "orange"},
@@ -76,6 +85,61 @@ class CoinMasterStrategy(IStrategy):
             "Volatility": {"atr": {"color": "yellow"}, "body_atr": {"color": "purple"}},
         },
     }
+
+    def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        self._runtime_rules_mtime: float | None = None
+        self._runtime_strategy_params: dict[str, object] = {}
+        self._refresh_runtime_rules(force=True)
+
+    def _runtime_number(self, key: str, default: float) -> float:
+        value = self._runtime_strategy_params.get(key)
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return float(default)
+        return number if np.isfinite(number) else float(default)
+
+    def _runtime_int(self, key: str, default: int) -> int:
+        return int(round(self._runtime_number(key, float(default))))
+
+    def _runtime_tuple(self, key: str, default: tuple[float, ...]) -> tuple[float, ...]:
+        value = self._runtime_strategy_params.get(key)
+        if not isinstance(value, list):
+            return default
+        result: list[float] = []
+        for item in value[:3]:
+            try:
+                number = float(item)
+            except (TypeError, ValueError):
+                continue
+            if np.isfinite(number) and number > 0:
+                result.append(number)
+        return tuple(result) if result else default
+
+    def _refresh_runtime_rules(self, force: bool = False) -> None:
+        path = self.runtime_rules_path if self.runtime_rules_path.exists() else self.fallback_runtime_rules_path
+        if not path.exists():
+            return
+
+        try:
+            stat = path.stat()
+            if not force and self._runtime_rules_mtime == stat.st_mtime:
+                return
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            params = payload.get("freqtrade", {}).get("strategy_params", {})
+            if not isinstance(params, dict):
+                return
+            self._runtime_strategy_params = params
+            self._runtime_rules_mtime = stat.st_mtime
+            logger.info("Loaded CoinMaster runtime Trading Rules from %s", path)
+        except Exception as exc:  # pragma: no cover - defensive runtime guard
+            logger.warning("Could not load CoinMaster runtime Trading Rules from %s: %s", path, exc)
+
+    def bot_loop_start(self, current_time: datetime, **kwargs) -> None:
+        # Freqtrade-native hook: keep operator Trading Rules hot-reloadable
+        # without introducing a second execution engine.
+        self._refresh_runtime_rules()
 
     @staticmethod
     def _body_top(dataframe: DataFrame) -> pd.Series:
@@ -163,6 +227,7 @@ class CoinMasterStrategy(IStrategy):
         return dataframe
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        self._refresh_runtime_rules()
         dataframe["ema_fast"] = ta.EMA(dataframe, timeperiod=21)
         dataframe["ema_slow"] = ta.EMA(dataframe, timeperiod=55)
         dataframe["ema_slow_slope"] = dataframe["ema_slow"] - dataframe["ema_slow"].shift(3)
@@ -185,7 +250,7 @@ class CoinMasterStrategy(IStrategy):
             & (body_top >= prev_body_top)
         )
 
-        lookback = int(self.engulfing_lookback.value)
+        lookback = self._runtime_int("engulfing_lookback", int(self.engulfing_lookback.value))
         history_low = dataframe["low"].shift(2).rolling(lookback).min()
         history_high = dataframe["high"].shift(2).rolling(lookback).max()
         pair_low = pd.concat([dataframe["low"].shift(1), dataframe["low"]], axis=1).min(axis=1)
@@ -203,20 +268,22 @@ class CoinMasterStrategy(IStrategy):
         dataframe["regime_long"] = (
             (dataframe["ema_fast"] > dataframe["ema_slow"])
             & (dataframe["ema_slow_slope"] >= 0)
-            & (dataframe["adx"] >= float(self.adx_min.value))
+            & (dataframe["adx"] >= self._runtime_number("adx_min", float(self.adx_min.value)))
         )
         dataframe["regime_short"] = (
             (dataframe["ema_fast"] < dataframe["ema_slow"])
             & (dataframe["ema_slow_slope"] <= 0)
-            & (dataframe["adx"] >= float(self.adx_min.value))
+            & (dataframe["adx"] >= self._runtime_number("adx_min", float(self.adx_min.value)))
         )
 
-        dataframe["expected_rr"] = self._expected_rr(dataframe["close"], "long", self.sl_pct, self.tp_levels_pct)
+        sl_pct = self._runtime_number("sl_pct", self.sl_pct)
+        tp_levels_pct = self._runtime_tuple("tp_levels_pct", self.tp_levels_pct)
+        dataframe["expected_rr"] = self._expected_rr(dataframe["close"], "long", sl_pct, tp_levels_pct)
         dataframe = self._annotate_fvg(
             dataframe,
-            lookback=10,
-            retrace_pct=float(self.fvg_retrace.value),
-            min_width_pct=float(self.fvg_min_width_pct.value),
+            lookback=self._runtime_int("max_zone_age_candles", 10),
+            retrace_pct=self._runtime_number("fvg_retrace", float(self.fvg_retrace.value)),
+            min_width_pct=self._runtime_number("fvg_min_width_pct", float(self.fvg_min_width_pct.value)),
         )
         return dataframe
 
@@ -230,9 +297,9 @@ class CoinMasterStrategy(IStrategy):
         return [
             dataframe["volume"] > 0,
             regime,
-            dataframe["body_atr"].fillna(0) >= float(self.min_impulse_atr.value),
+            dataframe["body_atr"].fillna(0) >= self._runtime_number("min_impulse_atr", float(self.min_impulse_atr.value)),
             close_quality.fillna(False),
-            dataframe["expected_rr"].fillna(0) >= float(self.min_expected_rr.value),
+            dataframe["expected_rr"].fillna(0) >= self._runtime_number("min_expected_rr", float(self.min_expected_rr.value)),
         ]
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -253,7 +320,8 @@ class CoinMasterStrategy(IStrategy):
 
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime, current_rate: float,
                     current_profit: float, **kwargs):
-        bars = int(self.time_stop_bars.value)
+        self._refresh_runtime_rules()
+        bars = self._runtime_int("time_stop_bars", int(self.time_stop_bars.value))
         if bars > 0:
             elapsed = current_time - trade.open_date_utc
             timeframe_minutes = 15
@@ -268,11 +336,19 @@ class CoinMasterStrategy(IStrategy):
         # Freqtrade clamps returned stake into [min_stake, max_stake]. Use a
         # simple risk-per-trade cap as Stage 1 baseline and let Freqtrade own
         # wallet/available-capital accounting.
+        self._refresh_runtime_rules()
+        risk_per_trade_pct = self._runtime_number("risk_per_trade_pct", self.risk_per_trade_pct)
+        sl_pct = self._runtime_number("sl_pct", self.sl_pct)
+        if risk_per_trade_pct <= 0:
+            return min(proposed_stake, max_stake)
+
         total = self.wallets.get_total_stake_amount() if self.wallets else max_stake
-        risk_stake = total * (self.risk_per_trade_pct / max(self.sl_pct, 0.01)) / 100.0
+        risk_stake = total * (risk_per_trade_pct / max(sl_pct, 0.01)) / 100.0
         return min(proposed_stake, risk_stake, max_stake)
 
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                  proposed_leverage: float, max_leverage: float, side: str,
                  **kwargs) -> float:
-        return float(min(self.max_leverage_value, max_leverage))
+        self._refresh_runtime_rules()
+        max_leverage_value = self._runtime_number("max_leverage_value", self.max_leverage_value)
+        return float(min(max_leverage_value, max_leverage))

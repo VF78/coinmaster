@@ -211,8 +211,18 @@ Current production reverse proxy layout on `coinmaster24.com`:
 
 - `https://coinmaster24.com/` → FreqUI (`127.0.0.1:8080`)
 - `https://coinmaster24.com/api/v1/` → Freqtrade API
+- `https://coinmaster24.com/custom/` → CoinMaster companion operator app (`127.0.0.1:8787/custom/`) with Trading Rules, Radar placeholder, and Backtest placeholder
 - `https://coinmaster24.com/old/` → old CoinMaster UI (`127.0.0.1:8787`) for migration reference
-- `https://coinmaster24.com/api/` except `/api/v1/` → old CoinMaster backend API for the old UI
+- `https://coinmaster24.com/api/` except `/api/v1/` → old CoinMaster backend API for the companion app and old UI
+
+`/custom` inherits the same nginx basic-auth / auth-cookie gate as the root domain. Do not expose it through a separate unauthenticated location.
+
+Trading Rules saved from `/custom` are exported into Freqtrade runtime artifacts under `/var/lib/coinmaster/freqtrade/`:
+
+- `trading_rules.json` — hot-reloaded by `CoinMasterStrategy` through Freqtrade strategy hooks.
+- `config.trading-rules.json` — Freqtrade config overlay for the enabled pair whitelist; loaded by docker compose before the private config.
+
+Legacy CoinMaster background execution monitors must remain disabled while Stage 1 is native Freqtrade. Current production env disables the old drawdown watchdog, engulfing monitor, FVG monitor, Radar autocollect, and TP fill monitor.
 
 If public domain access should be avoided during maintenance, use an SSH tunnel instead:
 

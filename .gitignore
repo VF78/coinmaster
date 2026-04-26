@@ -16,3 +16,5 @@
 !/coinmaster/freqtrade/user_data/config.private.example.json
 /coinmaster/freqtrade/user_data/config.live*.json
 /coinmaster/freqtrade/user_data/*.sqlite*
+/coinmaster/dist-custom/
+/coinmaster/freqtrade/user_data/strategies/__pycache__/
