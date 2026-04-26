@@ -1174,7 +1174,13 @@ export class HyperliquidAdapter implements ExchangeAdapter {
   }
 
   private async requestInfo<T>(payload: unknown): Promise<T> {
-    return this.infoClient.request<T>(payload);
+    const type = payload && typeof payload === 'object'
+      ? String((payload as { type?: unknown }).type ?? '')
+      : '';
+    const priority = new Set(['clearinghouseState', 'spotClearinghouseState', 'frontendOpenOrders', 'userFills', 'l2Book', 'allMids', 'userRole']).has(type)
+      ? 'high'
+      : 'normal';
+    return this.infoClient.request<T>(payload, { priority });
   }
 
   /** Diagnostic counters for the shared info-request coordinator. */

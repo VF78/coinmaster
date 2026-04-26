@@ -96,9 +96,9 @@ import { ingestObservationIntoEvidence, pruneEvidenceBundles, syncSignalCandidat
 import { transitionSignalCandidate } from './radarSignalCandidate.js';
 import { buildRadarContextPolicyBook, evaluateRadarContextPolicyEntry, readActiveRadarContextPolicy } from './radarContextPolicy.js';
 import { RuntimeRulesCache, isSymbolEnabled, computeSymbolNotionalCap, computeAllocationSize, maxPortfolioGrossNotional, wouldExceedPortfolioGrossCap } from './runtimeRules.js';
-import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
+import type { AllocationSizingResult } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
-import type { Candle, CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
+import type { Candle, CandleTimeframe, FillEvent, OrderAck, OrderIntent, OrderSnapshot, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
 import { buildLiveDashboardState, getOrderClientOrderId, getSystemManagedProtectiveOrderMeta, toLiveFill } from './liveSnapshot.js';
 import { applyAiMasterQaAnswer, buildAiMasterInsight, buildAiMasterQaQuestion, pruneAiMasterCollections } from './aiMaster.js';
 import { evaluateMultiTf, evaluateTimeframe } from '../core/engulfingEvaluator.js';
@@ -161,6 +161,9 @@ const OWNER_AUTH_TOKEN = process.env.OWNER_AUTH_TOKEN || '';
 const OWNER_HMAC_SECRET = process.env.OWNER_HMAC_SECRET || '';
 
 const PENDING_CONFIRMATION_TTL_MS = Math.max(5 * 60_000, Number(process.env.PENDING_CONFIRMATION_TTL_MS || 6 * 60 * 60_000)); // default 6h
+const PENDING_CONFIRMATION_IOC_SLIPPAGE_PCT = Math.min(5, Math.max(0.05, Number(process.env.PENDING_CONFIRMATION_IOC_SLIPPAGE_PCT || 0.3)));
+const PENDING_CONFIRMATION_POSITION_VERIFY_TIMEOUT_MS = Math.max(3_000, Number(process.env.PENDING_CONFIRMATION_POSITION_VERIFY_TIMEOUT_MS || 12_000));
+const PENDING_CONFIRMATION_POSITION_VERIFY_INTERVAL_MS = Math.max(250, Number(process.env.PENDING_CONFIRMATION_POSITION_VERIFY_INTERVAL_MS || 500));
 const TELEGRAM_OUTBOX_RETRY_BASE_MS = Math.max(2000, Number(process.env.TELEGRAM_OUTBOX_RETRY_BASE_MS || 10_000));
 const TELEGRAM_OUTBOX_RETRY_MAX_MS = Math.max(30_000, Number(process.env.TELEGRAM_OUTBOX_RETRY_MAX_MS || 15 * 60_000));
 const TELEGRAM_OUTBOX_MAX_ATTEMPTS = Math.max(3, Number(process.env.TELEGRAM_OUTBOX_MAX_ATTEMPTS || 12));
@@ -2378,14 +2381,15 @@ async function notifyTradeOpen(params: {
   price: number;
   size: number;
   source: string;
+  verified?: boolean;
 }): Promise<void> {
   const cfg = await getTelegramConfig();
   if (!cfg || !cfg.notifyOpen) return;
   await enqueueTelegramOutbox({
     category: 'trade_open',
-    dedupeKey: `open:${params.symbol}:${params.side}:${params.price}:${params.size}:${params.source}`,
+    dedupeKey: `open:${params.symbol}:${params.side}:${params.price}:${params.size}:${params.source}:${params.verified ? 'verified' : 'ack'}`,
     text: [
-      '🟢 Trade opened',
+      params.verified ? '🟢 Trade opened (exchange verified)' : '🟢 Trade opened',
       `${params.symbol} ${params.side.toUpperCase()}`,
       `Price: ${params.price}`,
       `Size: ${params.size}`,
@@ -3317,6 +3321,88 @@ function startDailyAnalyticsLoop(): void {
   logger.info({ component: 'analytics-daily', tz: DAILY_ANALYTICS_TZ, hour: DAILY_ANALYTICS_HOUR, minute: DAILY_ANALYTICS_MINUTE, intervalMs: DAILY_ANALYTICS_TICK_MS }, 'daily analytics loop started');
 }
 
+const withTradingTimeout = async <T>(promise: Promise<T>, timeoutMs: number, tag: string): Promise<T> => {
+  let timer: NodeJS.Timeout | null = null;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`${tag}_timeout`)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+};
+
+async function resolvePendingConfirmationIocPrice(
+  symbol: string,
+  side: 'buy' | 'sell',
+  fallbackPrice: number,
+): Promise<number> {
+  const slippage = PENDING_CONFIRMATION_IOC_SLIPPAGE_PCT / 100;
+  const topOfBook = typeof exchange.getTopOfBook === 'function'
+    ? await withTradingTimeout(exchange.getTopOfBook(symbol), 1500, 'confirm_top_of_book').catch(() => null)
+    : null;
+
+  const rawPrice = topOfBook
+    ? side === 'buy'
+      ? topOfBook.ask * (1 + slippage)
+      : topOfBook.bid * (1 - slippage)
+    : await withTradingTimeout(fetchLiveMid(symbol), 1500, 'confirm_mid_price')
+      .then((mid) => mid
+        ? side === 'buy'
+          ? mid * (1 + slippage)
+          : mid * (1 - slippage)
+        : fallbackPrice)
+      .catch(() => fallbackPrice);
+
+  return Number.isFinite(rawPrice) && rawPrice > 0 ? rawPrice : fallbackPrice;
+}
+
+async function waitForVerifiedOpenPosition(params: {
+  symbol: string;
+  side: 'buy' | 'sell';
+  expectedSize: number;
+  timeoutMs?: number;
+}): Promise<PositionSnapshot> {
+  const startedAt = Date.now();
+  const deadline = startedAt + (params.timeoutMs ?? PENDING_CONFIRMATION_POSITION_VERIFY_TIMEOUT_MS);
+  const expectedPositionSide: 'long' | 'short' = params.side === 'buy' ? 'long' : 'short';
+  const minVerifiedSize = 0;
+  let lastError: string | undefined;
+
+  while (Date.now() <= deadline) {
+    try {
+      const positions = await withTradingTimeout(exchange.getOpenPositions(params.symbol), 2500, 'confirm_position_verify_read');
+      const position = positions.find((p) => (
+        normalizeSymbol(p.symbol) === normalizeSymbol(params.symbol) &&
+        p.side === expectedPositionSide &&
+        Number(p.size) > minVerifiedSize
+      ));
+      if (position) {
+        logger.info({
+          component: 'pending-confirmation',
+          symbol: normalizeSymbol(params.symbol),
+          side: expectedPositionSide,
+          size: position.size,
+          entryPrice: position.entryPrice,
+          elapsedMs: Date.now() - startedAt,
+        }, 'pending confirmation verified on exchange');
+        return position;
+      }
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error);
+    }
+
+    const waitMs = Math.min(PENDING_CONFIRMATION_POSITION_VERIFY_INTERVAL_MS, Math.max(0, deadline - Date.now()));
+    if (waitMs <= 0) break;
+    await sleep(waitMs);
+  }
+
+  throw new Error(lastError ? `confirm_position_verify_timeout:${lastError}` : 'confirm_position_verify_timeout');
+}
+
 async function executePendingConfirmation(pendingId: string, actor: 'dashboard' | 'telegram'): Promise<{ ok: boolean; error?: string }> {
   const db = await getDb();
   const resolvePending = (): PendingConfirmation | undefined => {
@@ -3368,28 +3454,15 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     payload: { actor, strategy: pending.strategy, timeframe: pending.timeframe },
   });
 
-  const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number, tag: string): Promise<T> => {
-    let timer: NodeJS.Timeout | null = null;
-    try {
-      return await Promise.race([
-        promise,
-        new Promise<T>((_, reject) => {
-          timer = setTimeout(() => reject(new Error(`${tag}_timeout`)), timeoutMs);
-        }),
-      ]);
-    } finally {
-      if (timer) clearTimeout(timer);
-    }
-  };
-
-  const placeWithRetry = async () => {
-    const attemptPrices: number[] = [pending.price];
+  const placeWithRetry = async (): Promise<{ ack: OrderAck; usedPrice: number; usedSize: number; verifiedPosition: PositionSnapshot | null }> => {
+    const attemptPrices: number[] = [await resolvePendingConfirmationIocPrice(normalizedSymbol, side, pending.price)];
     let lastAck: Awaited<ReturnType<typeof exchange.placeLimitOrder>> | null = null;
     let lastSize = pending.size;
+    let verifiedPosition: PositionSnapshot | null = null;
 
     if (Number.isFinite(pending.leverage) && pending.leverage > 0) {
       const lev = Math.min(pending.leverage, rules.maxLeverage);
-      await withTimeout(exchange.setLeverage(normalizedSymbol, lev), 3000, 'confirm_set_leverage')
+      await withTradingTimeout(exchange.setLeverage(normalizedSymbol, lev), 3000, 'confirm_set_leverage')
         .catch((error) => logger.warn(
           { component: 'pending-confirmation', pendingId: pending.id, symbol: normalizedSymbol, err: error instanceof Error ? error.message : String(error) },
           'set leverage during pending confirmation failed; submitting stored order anyway',
@@ -3406,20 +3479,30 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
             ack: { ok: false, error: 'radar_risk_multiplier_zero_size' },
             usedPrice: price,
             usedSize: 0,
+            verifiedPosition: null,
           };
         }
 
         lastSize = adjusted.size;
-        const ack = await withTimeout(exchange.placeLimitOrder({
+        const ack = await withTradingTimeout(exchange.placeLimitOrder({
           symbol: normalizedSymbol,
           side,
           price,
           size: adjusted.size,
           reduceOnly: false,
+          timeInForce: 'Ioc',
           clientOrderId: `${correlationId}-${attempt + 1}`,
         }), 10_000, 'confirm_place_limit_order');
 
-        if (ack.ok) return { ack, usedPrice: price, usedSize: adjusted.size };
+        if (ack.ok) {
+          verifiedPosition = await waitForVerifiedOpenPosition({ symbol: normalizedSymbol, side, expectedSize: adjusted.size });
+          return {
+            ack,
+            usedPrice: verifiedPosition.entryPrice ?? price,
+            usedSize: verifiedPosition.size,
+            verifiedPosition,
+          };
+        }
         lastAck = ack;
 
         const err = String(ack.error ?? '').toLowerCase();
@@ -3427,7 +3510,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
         if (attempt === 0 && retryablePriceError) {
           const mid = await fetchLiveMid(normalizedSymbol);
           if (mid && Number.isFinite(mid) && mid > 0) {
-            attemptPrices.push(mid);
+            attemptPrices.push(await resolvePendingConfirmationIocPrice(normalizedSymbol, side, mid));
             logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, requestedPendingId: pendingId, attempt: attempt + 1, originalPrice: price, fallbackMid: mid, err: ack.error }, 'retrying pending confirmation with fresh mid price');
             continue;
           }
@@ -3439,10 +3522,11 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
       }
     }
 
-    return { ack: lastAck ?? { ok: false, error: 'exchange_rejected' }, usedPrice: pending.price, usedSize: lastSize };
+    const failedAck: Awaited<ReturnType<typeof exchange.placeLimitOrder>> = lastAck ?? { ok: false, error: 'exchange_rejected' };
+    return { ack: failedAck, usedPrice: pending.price, usedSize: lastSize, verifiedPosition };
   };
 
-  const { ack, usedPrice, usedSize } = await placeWithRetry();
+  const { ack, usedPrice, usedSize, verifiedPosition } = await placeWithRetry();
 
   appendTradeEvent(db.data, {
     symbol: normalizedSymbol,
@@ -3481,21 +3565,21 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   updateExecutionIntent(db, pending.executionIntentId, { status: 'auto_order_placed', orderId: ack.orderId, pendingId: activePendingId });
   db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== activePendingId);
 
+  await db.write();
+
+  try {
+    await notifyTradeOpen({ symbol: normalizedSymbol, side, price: usedPrice, size: usedSize, source: `pending:${actor}`, verified: Boolean(verifiedPosition) });
+  } catch (error) {
+    logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
+  }
+
   const tpSl = resolveTpSlDefaults(usedPrice, side, undefined, undefined);
   if (tpSl) {
     try {
       await placeTpSlTriggerOrders(normalizedSymbol, side, usedSize, tpSl, correlationId, usedPrice, pending.timeframe);
-    } catch {
-      // best effort
+    } catch (error) {
+      logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, symbol: normalizedSymbol, err: error instanceof Error ? error.message : String(error) }, 'post-open TP/SL placement failed');
     }
-  }
-
-  await db.write();
-
-  try {
-    await notifyTradeOpen({ symbol: normalizedSymbol, side, price: usedPrice, size: usedSize, source: `pending:${actor}` });
-  } catch (error) {
-    logger.warn({ component: 'telegram', err: error instanceof Error ? error.message : error }, 'trade-open telegram notify failed');
   }
 
   return { ok: true };

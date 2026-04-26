@@ -33,6 +33,10 @@ export interface HyperliquidInfoClientOptions {
   responseCacheTtlMs?: number;
 }
 
+export interface HyperliquidInfoRequestOptions {
+  priority?: 'normal' | 'high';
+}
+
 interface CoordinatorStats {
   totalRequests: number;
   dedupedRequests: number;
@@ -108,7 +112,7 @@ export class HyperliquidInfoClient {
     this.responseCacheTtlMs = Math.max(0, options.responseCacheTtlMs ?? 1500);
   }
 
-  async request<T>(payload: unknown): Promise<T> {
+  async request<T>(payload: unknown, options?: HyperliquidInfoRequestOptions): Promise<T> {
     this.stats.totalRequests += 1;
     const dedupeKey = stableStringify(payload);
 
@@ -128,7 +132,7 @@ export class HyperliquidInfoClient {
     }
 
     const op = payloadOpTag(payload);
-    const task = this.runWithSlot<T>(payload, op);
+    const task = this.runWithSlot<T>(payload, op, options?.priority ?? 'normal');
     this.inFlight.set(dedupeKey, task);
     task.finally(() => {
       if (this.inFlight.get(dedupeKey) === task) {
@@ -149,8 +153,8 @@ export class HyperliquidInfoClient {
     };
   }
 
-  private async runWithSlot<T>(payload: unknown, op: string): Promise<T> {
-    await this.acquireSlot();
+  private async runWithSlot<T>(payload: unknown, op: string, priority: 'normal' | 'high'): Promise<T> {
+    await this.acquireSlot(priority);
     try {
       return await this.runWithRetries<T>(payload, op);
     } finally {
@@ -158,16 +162,18 @@ export class HyperliquidInfoClient {
     }
   }
 
-  private acquireSlot(): Promise<void> {
+  private acquireSlot(priority: 'normal' | 'high'): Promise<void> {
     if (this.activeCount < this.maxConcurrency) {
       this.activeCount += 1;
       return Promise.resolve();
     }
     return new Promise<void>((resolve) => {
-      this.queue.push(() => {
+      const wake = () => {
         this.activeCount += 1;
         resolve();
-      });
+      };
+      if (priority === 'high') this.queue.unshift(wake);
+      else this.queue.push(wake);
     });
   }
 
