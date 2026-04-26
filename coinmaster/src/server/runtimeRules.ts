@@ -45,14 +45,61 @@ export function getCoinAllocation(rules: EffectiveRules, symbol: string): Tradin
   return rules.raw?.coins.find((c) => c.symbol.toUpperCase() === symbol.toUpperCase());
 }
 
+export interface SymbolNotionalCap {
+  symbol: string;
+  allocationPct: number;
+  effectiveLeverage: number;
+  allocationMarginUsd: number;
+  allocationNotionalUsd: number;
+  capNotionalUsd: number;
+  riskPerTradePct?: number;
+  riskCapNotionalUsd?: number;
+}
+
 /**
- * Maximum notional (in USD) allowed for a symbol based on equity and allocation %.
- * Returns 0 if the symbol is not enabled or rules are unavailable.
+ * Maximum notional (in USD) allowed for one symbol.
+ *
+ * `coins[].pct` is the margin allocation. Notional cap therefore includes the
+ * configured leverage, then optionally gets clipped by risk-per-trade sizing.
+ * This is the canonical formula shared by auto-sizing and manual order guards.
+ */
+export function computeSymbolNotionalCap(equityUsd: number, rules: EffectiveRules, symbol: string): SymbolNotionalCap | null {
+  const coin = getCoinAllocation(rules, symbol);
+  if (!coin?.enabled || !Number.isFinite(equityUsd) || equityUsd <= 0) return null;
+
+  const allocationPct = Number(coin.pct);
+  if (!Number.isFinite(allocationPct) || allocationPct <= 0) return null;
+
+  const effectiveLeverage = Number(rules.maxLeverage);
+  if (!Number.isFinite(effectiveLeverage) || effectiveLeverage <= 0) return null;
+
+  const allocationMarginUsd = equityUsd * (allocationPct / 100);
+  const allocationNotionalUsd = allocationMarginUsd * effectiveLeverage;
+
+  const riskPerTradePct = Number(rules.raw?.riskPerTradePct ?? 0);
+  const slPct = Number(rules.raw?.slPct ?? 0);
+  const riskCapNotionalUsd = riskPerTradePct > 0 && slPct > 0
+    ? equityUsd * (riskPerTradePct / 100) / (slPct / 100)
+    : Number.POSITIVE_INFINITY;
+
+  return {
+    symbol: coin.symbol,
+    allocationPct,
+    effectiveLeverage,
+    allocationMarginUsd,
+    allocationNotionalUsd,
+    capNotionalUsd: Math.min(allocationNotionalUsd, riskCapNotionalUsd),
+    riskPerTradePct: riskPerTradePct > 0 ? riskPerTradePct : undefined,
+    riskCapNotionalUsd: Number.isFinite(riskCapNotionalUsd) ? riskCapNotionalUsd : undefined,
+  };
+}
+
+/**
+ * Maximum notional (in USD) allowed for a symbol.
+ * Returns 0 if the symbol is not enabled or rules/equity are unavailable.
  */
 export function maxNotionalForSymbol(equityUsd: number, rules: EffectiveRules, symbol: string): number {
-  const coin = getCoinAllocation(rules, symbol);
-  if (!coin?.enabled || !Number.isFinite(equityUsd) || equityUsd <= 0) return 0;
-  return equityUsd * (coin.pct / 100);
+  return computeSymbolNotionalCap(equityUsd, rules, symbol)?.capNotionalUsd ?? 0;
 }
 
 // ─── Allocation-Based Order Sizing ─────────────────────────────────────
@@ -64,6 +111,8 @@ export interface AllocationSizingResult {
   notionalUsd: number;
   effectiveLeverage: number;
   allocationPct: number;
+  allocationMarginUsd: number;
+  allocationNotionalUsd: number;
   riskPerTradePct?: number;
   riskCapNotionalUsd?: number;
 }
@@ -121,19 +170,12 @@ export function computeAllocationSize(params: {
     return { ok: false, reason: 'zero_leverage' };
   }
 
-  const targetMarginUsd = equityUsd * (allocationPct / 100);
-  if (!Number.isFinite(targetMarginUsd) || targetMarginUsd <= 0) {
+  const symbolCap = computeSymbolNotionalCap(equityUsd, rules, symbol);
+  if (!symbolCap || symbolCap.allocationMarginUsd <= 0) {
     return { ok: false, reason: 'zero_margin' };
   }
 
-  const allocationNotionalUsd = targetMarginUsd * effectiveLeverage;
-  const riskPerTradePct = Number(rules.raw?.riskPerTradePct ?? 0);
-  const slPct = Number(rules.raw?.slPct ?? 0);
-  const riskCapNotionalUsd = riskPerTradePct > 0 && slPct > 0
-    ? equityUsd * (riskPerTradePct / 100) / (slPct / 100)
-    : Number.POSITIVE_INFINITY;
-
-  const notionalUsd = Math.min(allocationNotionalUsd, riskCapNotionalUsd);
+  const notionalUsd = symbolCap.capNotionalUsd;
   const marginUsd = notionalUsd / effectiveLeverage;
 
   if (availableUsd < marginUsd) {
@@ -157,8 +199,10 @@ export function computeAllocationSize(params: {
     notionalUsd: Math.round(notionalUsd * 100) / 100,
     effectiveLeverage,
     allocationPct,
-    riskPerTradePct: riskPerTradePct > 0 ? riskPerTradePct : undefined,
-    riskCapNotionalUsd: Number.isFinite(riskCapNotionalUsd) ? Math.round(riskCapNotionalUsd * 100) / 100 : undefined,
+    allocationMarginUsd: Math.round(symbolCap.allocationMarginUsd * 100) / 100,
+    allocationNotionalUsd: Math.round(symbolCap.allocationNotionalUsd * 100) / 100,
+    riskPerTradePct: symbolCap.riskPerTradePct,
+    riskCapNotionalUsd: symbolCap.riskCapNotionalUsd !== undefined ? Math.round(symbolCap.riskCapNotionalUsd * 100) / 100 : undefined,
   };
 }
 

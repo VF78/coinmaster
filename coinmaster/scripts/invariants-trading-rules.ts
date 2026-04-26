@@ -247,15 +247,19 @@ console.log('\n── Invariant 3: symbol disabled → blocked ──');
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// INVARIANT 4: Allocation cap exceeded → blocked
+// INVARIANT 4: Allocation notional cap exceeded → blocked
 // ═══════════════════════════════════════════════════════════════════════
 
-console.log('\n── Invariant 4: allocation cap exceeded → blocked ──');
+console.log('\n── Invariant 4: allocation notional cap exceeded → blocked ──');
 
 {
   const equityUsd = 100_000;
 
-  // BTC 50% → max $50k, ETH 30% → $30k, SOL 20% → $20k
+  // coins[].pct is margin allocation; notional cap includes leverage.
+  // With 5x default leverage:
+  // BTC 50% → $50k margin → max $250k notional
+  // ETH 30% → $30k margin → max $150k notional
+  // SOL 20% → $20k margin → max $100k notional
   const rules = makeRules({
     coins: [
       { symbol: 'BTC', enabled: true, pct: 50 },
@@ -264,19 +268,19 @@ console.log('\n── Invariant 4: allocation cap exceeded → blocked ──');
     ],
   });
 
-  assertClose(maxNotionalForSymbol(equityUsd, rules, 'BTC'), 50000, 'BTC cap = $50k');
-  assertClose(maxNotionalForSymbol(equityUsd, rules, 'ETH'), 30000, 'ETH cap = $30k');
-  assertClose(maxNotionalForSymbol(equityUsd, rules, 'SOL'), 20000, 'SOL cap = $20k');
+  assertClose(maxNotionalForSymbol(equityUsd, rules, 'BTC'), 250000, 'BTC cap = $250k');
+  assertClose(maxNotionalForSymbol(equityUsd, rules, 'ETH'), 150000, 'ETH cap = $150k');
+  assertClose(maxNotionalForSymbol(equityUsd, rules, 'SOL'), 100000, 'SOL cap = $100k');
 
-  // Simulate: current exposure $40k + new order $15k = $55k > $50k cap → BLOCKED
+  // Simulate: current exposure $240k + new order $15k = $255k > $250k cap → BLOCKED
   const btcCap = maxNotionalForSymbol(equityUsd, rules, 'BTC');
-  const currentExposure = 40000;
+  const currentExposure = 240000;
   const newOrderNotional = 15000;
-  assert(currentExposure + newOrderNotional > btcCap, 'total $55k > BTC cap $50k → BLOCKED');
+  assert(currentExposure + newOrderNotional > btcCap, 'total $255k > BTC cap $250k → BLOCKED');
 
-  // Under cap: $40k + $8k = $48k ≤ $50k → allowed
+  // Under cap: $240k + $8k = $248k ≤ $250k → allowed
   const smallOrder = 8000;
-  assert(currentExposure + smallOrder <= btcCap, 'total $48k ≤ BTC cap $50k → allowed');
+  assert(currentExposure + smallOrder <= btcCap, 'total $248k ≤ BTC cap $250k → allowed');
 
   // Disabled symbol → cap is 0
   const disabledRules = makeRules({
@@ -319,6 +323,8 @@ console.log('\n── Invariant 5: riskPerTradePct caps auto-sizing ──');
   const base = computeAllocationSize({ symbol: 'BTC', price: 50_000, equityUsd: 100_000, availableUsd: 100_000, rules: baseRules, sizeDecimals: 6 });
   const risk = computeAllocationSize({ symbol: 'BTC', price: 50_000, equityUsd: 100_000, availableUsd: 100_000, rules: riskRules, sizeDecimals: 6 });
 
+  assertClose(maxNotionalForSymbol(100_000, baseRules, 'BTC'), 500_000, 'base symbol cap = equity * 50% * 10x');
+  assertClose(maxNotionalForSymbol(100_000, riskRules, 'BTC'), 50_000, 'risk-capped symbol cap = 1% equity / 2% SL');
   assert(base.ok === true, 'base allocation sizing succeeds');
   assert(risk.ok === true, 'risk-capped sizing succeeds');
   if (base.ok && risk.ok) {

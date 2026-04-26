@@ -95,7 +95,7 @@ import { collectBlueskyConnector, collectRedditConnector, collectTelegramAuthRea
 import { ingestObservationIntoEvidence, pruneEvidenceBundles, syncSignalCandidatesFromEvidence } from './alphaRadarEvidence.js';
 import { transitionSignalCandidate } from './radarSignalCandidate.js';
 import { buildRadarContextPolicyBook, evaluateRadarContextPolicyEntry, readActiveRadarContextPolicy } from './radarContextPolicy.js';
-import { RuntimeRulesCache, isSymbolEnabled, maxNotionalForSymbol, computeAllocationSize, maxPortfolioGrossNotional, wouldExceedPortfolioGrossCap } from './runtimeRules.js';
+import { RuntimeRulesCache, isSymbolEnabled, computeSymbolNotionalCap, computeAllocationSize, maxPortfolioGrossNotional, wouldExceedPortfolioGrossCap } from './runtimeRules.js';
 import type { AllocationSizingResult, AllocationSizingOutcome } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
 import type { Candle, CandleTimeframe, FillEvent, OrderIntent, OrderSnapshot, PositionSnapshot, TradingErrorCode } from '../exchange/types.js';
@@ -5727,9 +5727,9 @@ async function symbolAllocationGate(req: Request, res: Response, next: NextFunct
     if (Number.isFinite(price) && price > 0 && Number.isFinite(size) && size > 0) {
       const riskCheck: RiskCheckResult | undefined = (req as any)._riskCheck;
       const equityUsd = riskCheck?.equityUsd ?? 0;
-      const cap = maxNotionalForSymbol(equityUsd, effectiveRules, symbol);
+      const symbolCap = computeSymbolNotionalCap(equityUsd, effectiveRules, symbol);
 
-      if (cap > 0 && equityUsd > 0) {
+      if (symbolCap && equityUsd > 0) {
         // Current exposure for this symbol from open positions
         let currentExposure = 0;
         try {
@@ -5743,6 +5743,7 @@ async function symbolAllocationGate(req: Request, res: Response, next: NextFunct
           // best-effort: if we can't fetch positions, skip exposure calc
         }
 
+        const cap = symbolCap.capNotionalUsd;
         const newNotional = price * size;
         const totalExposure = currentExposure + newNotional;
 
@@ -5757,6 +5758,10 @@ async function symbolAllocationGate(req: Request, res: Response, next: NextFunct
               currentExposure: Number(currentExposure.toFixed(2)),
               totalExposure: Number(totalExposure.toFixed(2)),
               cap: Number(cap.toFixed(2)),
+              allocationPct: symbolCap.allocationPct,
+              maxLeverage: symbolCap.effectiveLeverage,
+              allocationNotionalUsd: Number(symbolCap.allocationNotionalUsd.toFixed(2)),
+              riskCapNotionalUsd: symbolCap.riskCapNotionalUsd !== undefined ? Number(symbolCap.riskCapNotionalUsd.toFixed(2)) : undefined,
               equityUsd: Number(equityUsd.toFixed(2))
             }
           });
