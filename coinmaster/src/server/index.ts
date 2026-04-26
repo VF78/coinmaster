@@ -188,7 +188,9 @@ const ALPHA_RADAR_ACTIVITY_LIMIT = 80;
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
 const rulesCache = new RuntimeRulesCache(5_000);
 const LIVE_SNAPSHOT_CACHE_MS = Math.max(500, Number(process.env.LIVE_SNAPSHOT_CACHE_MS || 2_000));
+const CONFIRM_ACCOUNT_SNAPSHOT_MAX_AGE_MS = Math.max(1_000, Number(process.env.CONFIRM_ACCOUNT_SNAPSHOT_MAX_AGE_MS || 10_000));
 let liveSnapshotCache: { key: string; expiresAt: number; value: LiveDashboardState } | null = null;
+let lastAccountSnapshot: { fetchedAtMs: number; account: NonNullable<LiveDashboardState['account']> } | null = null;
 let liveSnapshotRefreshInFlight: Promise<LiveDashboardState> | null = null;
 
 /** Build a fresh LIVE_MODE snapshot from current effective rules. */
@@ -222,9 +224,13 @@ async function refreshLiveSnapshotState(symbol: string, mode = getLiveMode()): P
 
   const run = (async () => {
     const value = await buildLiveDashboardState(exchange, symbol, mode, []);
+    const fetchedAtMs = Date.now();
+    if (value.account && Number.isFinite(value.account.equityUsd ?? NaN) && Number.isFinite(value.account.availableUsd ?? NaN)) {
+      lastAccountSnapshot = { fetchedAtMs, account: value.account };
+    }
     liveSnapshotCache = {
       key,
-      expiresAt: Date.now() + LIVE_SNAPSHOT_CACHE_MS,
+      expiresAt: fetchedAtMs + LIVE_SNAPSHOT_CACHE_MS,
       value: { ...value, pendingConfirmations: [] },
     };
     return liveSnapshotCache.value;
@@ -3404,6 +3410,33 @@ async function waitForVerifiedOpenPosition(params: {
   throw new Error(lastError ? `confirm_position_verify_timeout:${lastError}` : 'confirm_position_verify_timeout');
 }
 
+async function getFastConfirmAccountSnapshot(symbol: string): Promise<{ equityUsd: number; availableUsd: number; source: 'live_cache' | 'exchange' }> {
+  const cached = lastAccountSnapshot;
+  if (cached && Date.now() - cached.fetchedAtMs <= CONFIRM_ACCOUNT_SNAPSHOT_MAX_AGE_MS) {
+    const equityUsd = Number(cached.account.equityUsd ?? 0);
+    const availableUsd = Number(cached.account.availableUsd ?? 0);
+    if (Number.isFinite(equityUsd) && equityUsd > 0 && Number.isFinite(availableUsd) && availableUsd > 0) {
+      return { equityUsd, availableUsd, source: 'live_cache' };
+    }
+  }
+
+  const live = await withTradingTimeout(getCachedExchangeLiveState(symbol, getLiveMode()), 1500, 'confirm_live_snapshot');
+  if (live.account && Number.isFinite(live.account.equityUsd ?? NaN) && Number.isFinite(live.account.availableUsd ?? NaN)) {
+    const account = live.account;
+    lastAccountSnapshot = { fetchedAtMs: Date.now(), account };
+    return { equityUsd: Number(account.equityUsd), availableUsd: Number(account.availableUsd), source: 'live_cache' };
+  }
+
+  const account = await withTradingTimeout(exchange.getAccountState(), 10_000, 'confirm_account_state');
+  const equityUsd = Number(account?.equityUsd ?? 0);
+  const availableUsd = Number(account?.availableUsd ?? 0);
+  if (!Number.isFinite(equityUsd) || equityUsd <= 0 || !Number.isFinite(availableUsd) || availableUsd <= 0) {
+    throw new Error('confirm_account_state_unavailable');
+  }
+  lastAccountSnapshot = { fetchedAtMs: Date.now(), account: { equityUsd, availableUsd, usedMarginUsd: account?.usedMarginUsd } };
+  return { equityUsd, availableUsd, source: 'exchange' };
+}
+
 async function executePendingConfirmation(pendingId: string, actor: 'dashboard' | 'telegram'): Promise<{ ok: boolean; error?: string }> {
   const db = await getDb();
   const resolvePending = (): PendingConfirmation | undefined => {
@@ -3463,9 +3496,9 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     let verifiedPosition: PositionSnapshot | null = null;
 
     const resolveExecutableSize = async (price: number, requestedSize: number): Promise<{ ok: true; size: number } | { ok: false; error: string }> => {
-      const account = await withTradingTimeout(exchange.getAccountState(), 3000, 'confirm_account_state');
-      const equityUsd = Number(account?.equityUsd ?? 0);
-      const availableUsd = Number(account?.availableUsd ?? 0);
+      const account = await getFastConfirmAccountSnapshot(normalizedSymbol);
+      const equityUsd = account.equityUsd;
+      const availableUsd = account.availableUsd;
 
       let sizeDecimals = 6;
       let minSize = 0;
@@ -3506,6 +3539,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
           availableUsd,
           sizingNotionalUsd: sizing.notionalUsd,
           sizingMarginUsd: sizing.marginUsd,
+          accountSource: account.source,
         }, 'pending confirmation size reduced to executable account state');
       }
 
