@@ -6,6 +6,7 @@ import logger from '../../lib/logger.js';
 import type { PersistenceStore } from './types.js';
 
 const SNAPSHOT_KEY = 'dbshape_v1';
+const EXPERIMENT_TRIAL_HISTORY_LIMIT = Math.max(100, Number(process.env.EXPERIMENT_TRIAL_HISTORY_LIMIT || 500));
 
 const defaultData: DBShape = {
   settings: {
@@ -166,6 +167,38 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.signalCandidates)) data.signalCandidates = [];
   if (!Array.isArray(data.radarContextPolicies)) data.radarContextPolicies = [];
   if (!Array.isArray(data.executionIntents)) data.executionIntents = [];
+
+  if (data.experimentTrials.length > EXPERIMENT_TRIAL_HISTORY_LIMIT) {
+    const pinned = new Set<string>();
+    for (const champion of data.championConfigs) {
+      if (champion.trialId) pinned.add(champion.trialId);
+    }
+    for (const experiment of data.experiments) {
+      if (experiment.candidateTrialId) pinned.add(experiment.candidateTrialId);
+    }
+    for (const optimization of data.optimizationResults) {
+      if (optimization.bestTrialId) pinned.add(optimization.bestTrialId);
+    }
+
+    const newest = [...data.experimentTrials].sort((a, b) => {
+      const at = Date.parse(a.finishedAt ?? a.startedAt ?? a.createdAt ?? '');
+      const bt = Date.parse(b.finishedAt ?? b.startedAt ?? b.createdAt ?? '');
+      return (Number.isFinite(bt) ? bt : 0) - (Number.isFinite(at) ? at : 0);
+    });
+    const keep = new Set(pinned);
+    for (const trial of newest) {
+      if (keep.size >= EXPERIMENT_TRIAL_HISTORY_LIMIT) break;
+      keep.add(trial.id);
+    }
+
+    data.experimentTrials = data.experimentTrials.filter((trial) => keep.has(trial.id));
+    for (const experiment of data.experiments) {
+      experiment.trialIds = (experiment.trialIds ?? []).filter((id) => keep.has(id));
+    }
+    for (const optimization of data.optimizationResults) {
+      optimization.trialIds = (optimization.trialIds ?? []).filter((id) => keep.has(id));
+    }
+  }
 }
 
 /**
@@ -207,6 +240,9 @@ export class PostgresStore implements PersistenceStore {
 
     const Pool = pg.default?.Pool ?? pg.Pool;
     this.pool = new Pool({ connectionString: this.connectionString });
+    this.pool.on('error', (err: unknown) => {
+      logger.warn({ component: 'postgres', err }, 'postgres pool idle client error');
+    });
 
     // Verify connectivity
     const client = await this.pool.connect();

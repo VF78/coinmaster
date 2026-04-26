@@ -63,6 +63,8 @@ const defaultData: DBShape = {
   executionIntents: [],
 };
 
+const EXPERIMENT_TRIAL_HISTORY_LIMIT = Math.max(100, Number(process.env.EXPERIMENT_TRIAL_HISTORY_LIMIT || 500));
+
 function ensureDbShape(data: DBShape) {
   data.settings = data.settings ?? { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults(), radarRuntime: cloneRadarRuntimeDefaults(), alphaRadar: DEFAULT_ALPHA_RADAR_SETTINGS };
   if (!Number.isFinite(data.settings.depositUsd)) {
@@ -165,6 +167,38 @@ function ensureDbShape(data: DBShape) {
   if (!Array.isArray(data.signalCandidates)) data.signalCandidates = [];
   if (!Array.isArray(data.radarContextPolicies)) data.radarContextPolicies = [];
   if (!Array.isArray(data.executionIntents)) data.executionIntents = [];
+
+  if (data.experimentTrials.length > EXPERIMENT_TRIAL_HISTORY_LIMIT) {
+    const pinned = new Set<string>();
+    for (const champion of data.championConfigs) {
+      if (champion.trialId) pinned.add(champion.trialId);
+    }
+    for (const experiment of data.experiments) {
+      if (experiment.candidateTrialId) pinned.add(experiment.candidateTrialId);
+    }
+    for (const optimization of data.optimizationResults) {
+      if (optimization.bestTrialId) pinned.add(optimization.bestTrialId);
+    }
+
+    const newest = [...data.experimentTrials].sort((a, b) => {
+      const at = Date.parse(a.finishedAt ?? a.startedAt ?? a.createdAt ?? '');
+      const bt = Date.parse(b.finishedAt ?? b.startedAt ?? b.createdAt ?? '');
+      return (Number.isFinite(bt) ? bt : 0) - (Number.isFinite(at) ? at : 0);
+    });
+    const keep = new Set(pinned);
+    for (const trial of newest) {
+      if (keep.size >= EXPERIMENT_TRIAL_HISTORY_LIMIT) break;
+      keep.add(trial.id);
+    }
+
+    data.experimentTrials = data.experimentTrials.filter((trial) => keep.has(trial.id));
+    for (const experiment of data.experiments) {
+      experiment.trialIds = (experiment.trialIds ?? []).filter((id) => keep.has(id));
+    }
+    for (const optimization of data.optimizationResults) {
+      optimization.trialIds = (optimization.trialIds ?? []).filter((id) => keep.has(id));
+    }
+  }
 }
 
 export class LowdbStore implements PersistenceStore {

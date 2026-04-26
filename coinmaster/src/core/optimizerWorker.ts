@@ -33,11 +33,14 @@ import type {
   BacktestRunSummary,
   BacktestRunSymbolStats,
   BacktestTradeBreakdownItem,
+  Experiment,
+  ExperimentTrial,
   ExperimentTrialWindowResult,
   OptimizationParamRange,
   OptimizationResult,
   TradingRulesSettings,
 } from '../shared/dto.js';
+import type { DBShape } from './types.js';
 import type { BacktestCandleLoader } from './backtestWorker.js';
 import type { CandleTimeframe } from '../exchange/types.js';
 import {
@@ -63,6 +66,8 @@ const MAX_CANDIDATES = 5000;
 const YIELD_EVERY_N = 5; // yield to event loop every N candidates
 const YIELD_MS = 2; // ms to sleep on yield
 const HEARTBEAT_PERSIST_MS = 10_000;
+const OPTIMIZER_TRIAL_SAMPLE_EVERY = Math.max(1, Number(process.env.OPTIMIZER_TRIAL_SAMPLE_EVERY || 50));
+const OPTIMIZER_MAX_PERSISTED_TRIALS_PER_RUN = Math.max(25, Number(process.env.OPTIMIZER_MAX_PERSISTED_TRIALS_PER_RUN || 250));
 const INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles', 'timeStopBars', 'eventLockoutMinutes']);
 const TIMEFRAME_PARAMS = new Set(['regimeTf']);
 
@@ -309,6 +314,73 @@ function combineTradeBreakdowns(windows: BacktestTradeBreakdownItem[][]): Backte
   return [...grouped.values()];
 }
 
+function compactTrialForPersistence(trial: ExperimentTrial, full: boolean): ExperimentTrial {
+  if (full) return trial;
+
+  // Keep enough information for diagnostics and objective comparison, but avoid
+  // persisting bulky per-candidate arrays for thousands of sampled trials.
+  const compact: ExperimentTrial = {
+    ...trial,
+    bySymbol: undefined,
+    tradeBreakdown: undefined,
+    deltaReport: undefined,
+    quantStatsReport: undefined,
+    windowResults: trial.windowResults?.map((window) => ({
+      windowIndex: window.windowIndex,
+      train: window.train,
+      test: window.test,
+      metrics: window.metrics,
+      rejectionStats: window.rejectionStats,
+      summary: window.summary,
+    })),
+  };
+  return compact;
+}
+
+function compactPersistedTrialsForOptimization(dbData: DBShape, experiment: Experiment, opt: OptimizationResult): void {
+  const related = dbData.experimentTrials
+    .filter((trial) => trial.experimentId === experiment.id || trial.optimizationResultId === opt.id);
+  if (related.length <= OPTIMIZER_MAX_PERSISTED_TRIALS_PER_RUN) return;
+
+  const keep = new Set<string>();
+  if (opt.bestTrialId) keep.add(opt.bestTrialId);
+  if (experiment.candidateTrialId) keep.add(experiment.candidateTrialId);
+
+  const byNewest = [...related].sort((a, b) => {
+    const at = Date.parse(a.finishedAt ?? a.startedAt ?? a.createdAt ?? '');
+    const bt = Date.parse(b.finishedAt ?? b.startedAt ?? b.createdAt ?? '');
+    return (Number.isFinite(bt) ? bt : 0) - (Number.isFinite(at) ? at : 0);
+  });
+
+  for (const trial of byNewest) {
+    if (keep.size >= OPTIMIZER_MAX_PERSISTED_TRIALS_PER_RUN) break;
+    keep.add(trial.id);
+  }
+
+  dbData.experimentTrials = dbData.experimentTrials.filter((trial) => (
+    (trial.experimentId !== experiment.id && trial.optimizationResultId !== opt.id) || keep.has(trial.id)
+  ));
+  experiment.trialIds = (experiment.trialIds ?? []).filter((id) => keep.has(id));
+  opt.trialIds = (opt.trialIds ?? []).filter((id) => keep.has(id));
+}
+
+function persistOptimizationTrial(params: {
+  dbData: DBShape;
+  experiment: Experiment;
+  opt: OptimizationResult;
+  trial: ExperimentTrial;
+  full: boolean;
+}): void {
+  const row = compactTrialForPersistence(params.trial, params.full);
+  const idx = params.dbData.experimentTrials.findIndex((item) => item.id === row.id);
+  if (idx >= 0) params.dbData.experimentTrials[idx] = row;
+  else params.dbData.experimentTrials.unshift(row);
+
+  params.experiment.trialIds = [...new Set([...(params.experiment.trialIds ?? []), row.id])];
+  params.opt.trialIds = [...new Set([...(params.opt.trialIds ?? []), row.id])];
+  compactPersistedTrialsForOptimization(params.dbData, params.experiment, params.opt);
+}
+
 // ─── Main Optimization Worker ────────────────────────────────────────
 
 export async function executeOptimization(
@@ -467,9 +539,6 @@ export async function executeOptimization(
       });
       trial.status = 'running';
       trial.startedAt = new Date().toISOString();
-      db.data.experimentTrials.unshift(trial);
-      experiment.trialIds.push(trial.id);
-      opt.trialIds.push(trial.id);
 
       const windowResults: ExperimentTrialWindowResult[] = [];
       const summaryWindows: BacktestRunSummary[] = [];
@@ -567,6 +636,8 @@ export async function executeOptimization(
             bestParamCombo = combo;
             opt.bestTrialId = trial.id;
             opt.bestObjectiveMetrics = objectiveMetrics;
+            experiment.candidateTrialId = trial.id;
+            persistOptimizationTrial({ dbData: db.data, experiment, opt, trial, full: true });
           }
         } else {
           trial.windowResults = windowResults;
@@ -581,6 +652,11 @@ export async function executeOptimization(
         trial.status = 'failed';
         trial.error = err instanceof Error ? err.message : String(err);
         trial.finishedAt = new Date().toISOString();
+      }
+
+      const shouldPersistSample = (i + 1) % OPTIMIZER_TRIAL_SAMPLE_EVERY === 0 || i === candidates.length - 1;
+      if (trial.id !== opt.bestTrialId && shouldPersistSample) {
+        persistOptimizationTrial({ dbData: db.data, experiment, opt, trial, full: false });
       }
 
       opt.evaluatedCandidates = i + 1;
@@ -629,11 +705,12 @@ export async function executeOptimization(
       opt.bestBySymbol = bestBySymbol;
     }
 
-    const trialRows = db.data.experimentTrials.filter((item) => item.experimentId === experiment.id);
+    const trialRows = db.data.experimentTrials.filter((item) => item.experimentId === experiment.id || item.optimizationResultId === opt.id);
     const bestTrial = pickBestTrial(trialRows);
     if (bestTrial) {
       experiment.candidateTrialId = bestTrial.id;
     }
+    compactPersistedTrialsForOptimization(db.data, experiment, opt);
     experiment.status = 'completed';
     experiment.finishedAt = new Date().toISOString();
 

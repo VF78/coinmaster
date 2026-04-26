@@ -7532,11 +7532,18 @@ async function reconcileBacktestState(db: Awaited<ReturnType<typeof getDb>>): Pr
 }
 
 function spawnComputeJobProcess(kind: 'backtest' | 'optimization', jobId: string): number | undefined {
+  const env = { ...process.env };
+  if (kind === 'optimization') {
+    const maxOldSpaceMb = Math.max(256, Number(process.env.OPTIMIZER_WORKER_MAX_OLD_SPACE_MB || 768));
+    const existingNodeOptions = String(env.NODE_OPTIONS ?? '').trim();
+    env.NODE_OPTIONS = `${existingNodeOptions} --max-old-space-size=${maxOldSpaceMb}`.trim();
+  }
+
   const child = spawn(process.execPath, ['--import', 'tsx/esm', 'src/core/computeJobProcess.ts', kind, jobId], {
     cwd: rootDir,
     detached: true,
     stdio: 'ignore',
-    env: { ...process.env },
+    env,
   });
   child.unref();
   return child.pid;
