@@ -185,9 +185,38 @@ function isSideAllowed(side: TradeSide, biasMode: BacktestRun['biasMode'] | unde
   return side === effective;
 }
 
-function closedCandlesAtTime(candles: Candle[], eventCloseMs: number, tf: string): Candle[] {
+const candleCloseTimeCache = new WeakMap<Candle[], Map<string, number[]>>();
+
+function candleCloseTimes(candles: Candle[], tf: string): number[] {
+  let byTf = candleCloseTimeCache.get(candles);
+  if (!byTf) {
+    byTf = new Map();
+    candleCloseTimeCache.set(candles, byTf);
+  }
+  const cached = byTf.get(tf);
+  if (cached) return cached;
+
   const tfMs = TF_MS[tf] ?? 900_000;
-  return candles.filter((c) => Date.parse(c.timestamp) + tfMs <= eventCloseMs);
+  const closeTimes = candles.map((c) => Date.parse(c.timestamp) + tfMs);
+  byTf.set(tf, closeTimes);
+  return closeTimes;
+}
+
+function upperBound(values: number[], target: number): number {
+  let lo = 0;
+  let hi = values.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (values[mid] <= target) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo;
+}
+
+function closedCandlesAtTime(candles: Candle[], eventCloseMs: number, tf: string): Candle[] {
+  if (candles.length === 0) return [];
+  const closeTimes = candleCloseTimes(candles, tf);
+  return candles.slice(0, upperBound(closeTimes, eventCloseMs));
 }
 
 // ─── Main Engine ──────────────────────────────────────────────────────
