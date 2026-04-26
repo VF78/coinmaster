@@ -64,6 +64,7 @@ const YIELD_EVERY_N = 5; // yield to event loop every N candidates
 const YIELD_MS = 2; // ms to sleep on yield
 const HEARTBEAT_PERSIST_MS = 10_000;
 const INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles', 'timeStopBars', 'eventLockoutMinutes']);
+const TIMEFRAME_PARAMS = new Set(['regimeTf']);
 
 const TF_LABEL_TO_CANDLE_TF: Record<string, CandleTimeframe> = {
   '5m': '5m',
@@ -100,6 +101,10 @@ function round(v: number, decimals = 2): number {
  * Supports core Trading Rules / SignalQualityContext numeric knobs.
  */
 function applyParamToRules(rules: TradingRulesSettings, param: string, value: number): void {
+  if (TIMEFRAME_PARAMS.has(param)) {
+    if (param === 'regimeTf') rules.regimeTf = value >= 4 ? '4h' : '1h';
+    return;
+  }
   const normalizedValue = INTEGER_PARAMS.has(param) ? Math.round(value) : value;
   if (param === 'slPct') rules.slPct = normalizedValue;
   else if (param === 'tpLevels[0]' || param === 'tp1Pct') {
@@ -129,6 +134,7 @@ function applyParamToRules(rules: TradingRulesSettings, param: string, value: nu
 }
 
 function extractParamValue(rules: TradingRulesSettings, param: string): number | undefined {
+  if (param === 'regimeTf') return rules.regimeTf === '4h' ? 4 : 1;
   if (param === 'slPct') return rules.slPct;
   if (param === 'tpLevels[0]' || param === 'tp1Pct') return rules.tpLevels?.[0];
   if (param === 'tpLevels[1]' || param === 'tp2Pct') return rules.tpLevels?.[1];
@@ -174,7 +180,10 @@ function generateCandidates(
   // Generate per-param step arrays
   const perParam = ranges.map((r) => ({
     param: r.param,
-    values: generateSteps(r).map((v) => (INTEGER_PARAMS.has(r.param) ? Math.round(v) : v)),
+    values: generateSteps(r).map((v) => {
+      if (TIMEFRAME_PARAMS.has(r.param)) return v >= 4 ? 4 : 1;
+      return INTEGER_PARAMS.has(r.param) ? Math.round(v) : v;
+    }),
   }));
 
   // Compute total grid size

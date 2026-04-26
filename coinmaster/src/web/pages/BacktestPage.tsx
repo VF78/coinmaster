@@ -88,7 +88,7 @@ function selectionFromBiasMode(biasMode: BacktestBiasMode | undefined): { longEn
 interface OptimizationParamSpec {
   param: string;
   label: string;
-  kind: 'int' | 'pct' | 'decimal';
+  kind: 'int' | 'pct' | 'decimal' | 'timeframe';
   min: number;
   max: number;
 }
@@ -104,19 +104,21 @@ const OPTIMIZATION_PARAM_SPECS: OptimizationParamSpec[] = [
   { param: 'fvgMinWidthPct', label: 'FVG min width %', kind: 'decimal', min: 0, max: 2 },
   { param: 'exitClosePct', label: 'Exit close %', kind: 'pct', min: 0, max: 100 },
   { param: 'dailyDrawdown', label: 'Daily drawdown %', kind: 'pct', min: 0.5, max: 15 },
-  { param: 'adxMin', label: 'Regime ADX min', kind: 'decimal', min: 0, max: 60 },
-  { param: 'minImpulseAtr', label: 'Min impulse ATR', kind: 'decimal', min: 0, max: 3 },
-  { param: 'minExpectedRr', label: 'Min expected R:R', kind: 'decimal', min: 0, max: 10 },
-  { param: 'timeStopBars', label: 'Time stop bars', kind: 'int', min: 0, max: 200 },
-  { param: 'riskPerTradePct', label: 'Risk / trade %', kind: 'pct', min: 0, max: 10 },
-  { param: 'eventLockoutMinutes', label: 'Event lockout min', kind: 'int', min: 0, max: 720 },
-  { param: 'portfolioGrossCap', label: 'Portfolio gross cap %', kind: 'pct', min: 0, max: 2000 },
+  { param: 'regimeTf', label: 'Regime timeframe', kind: 'timeframe', min: 1, max: 4 },
+  { param: 'adxMin', label: 'Minimum ADX', kind: 'decimal', min: 0, max: 60 },
+  { param: 'minImpulseAtr', label: 'Minimum impulse / ATR', kind: 'decimal', min: 0, max: 3 },
+  { param: 'minExpectedRr', label: 'Minimum expected R:R', kind: 'decimal', min: 0, max: 10 },
+  { param: 'timeStopBars', label: 'Time stop', kind: 'int', min: 0, max: 200 },
+  { param: 'riskPerTradePct', label: 'Risk per trade', kind: 'pct', min: 0, max: 10 },
+  { param: 'eventLockoutMinutes', label: 'Event lockout', kind: 'int', min: 0, max: 720 },
+  { param: 'portfolioGrossCap', label: 'Portfolio gross cap', kind: 'pct', min: 0, max: 2000 },
 ];
 
 const OPTIMIZATION_INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles', 'timeStopBars', 'eventLockoutMinutes']);
 
 function getRulesValue(rules: TradingRulesSettings, param: string): number {
   switch (param) {
+    case 'regimeTf': return rules.regimeTf === '4h' ? 4 : 1;
     case 'slPct': return rules.slPct;
     case 'tpLevels[0]': return rules.tpLevels?.[0] ?? 6;
     case 'tpLevels[1]': return rules.tpLevels?.[1] ?? rules.tpLevels?.[0] ?? 9;
@@ -140,6 +142,7 @@ function getRulesValue(rules: TradingRulesSettings, param: string): number {
 
 function setRulesValue(rules: TradingRulesSettings, param: string, value: number) {
   switch (param) {
+    case 'regimeTf': rules.regimeTf = value >= 4 ? '4h' : '1h'; break;
     case 'slPct': rules.slPct = value; break;
     case 'tpLevels[0]': rules.tpLevels = [value, rules.tpLevels?.[1] ?? value * 1.5, rules.tpLevels?.[2] ?? value * 2]; break;
     case 'tpLevels[1]': rules.tpLevels = [rules.tpLevels?.[0] ?? value / 1.5, value, rules.tpLevels?.[2] ?? value * 1.5]; break;
@@ -161,6 +164,7 @@ function setRulesValue(rules: TradingRulesSettings, param: string, value: number
 }
 
 function autoOptimizationStep(kind: OptimizationParamSpec['kind'], min: number, max: number, depth: OptimizationSearchDepth): number {
+  if (kind === 'timeframe') return 3;
   const span = Math.max(0, max - min);
   const raw = span / OPTIMIZATION_SEARCH_DEPTHS[depth].divisor || (kind === 'decimal' ? 0.1 : 1);
   if (kind === 'decimal') return Number(Math.max(0.1, raw).toFixed(2));
@@ -168,7 +172,13 @@ function autoOptimizationStep(kind: OptimizationParamSpec['kind'], min: number, 
 }
 
 function normalizeOptimizationValue(param: string, value: number): number {
+  if (param === 'regimeTf') return value >= 4 ? 4 : 1;
   return OPTIMIZATION_INTEGER_PARAMS.has(param) ? Math.round(value) : value;
+}
+
+function formatOptimizationValue(item: Pick<OptimizationParamSpec, 'kind' | 'param'>, value: number): string {
+  if (item.param === 'regimeTf' || item.kind === 'timeframe') return value >= 4 ? '4h' : '1h';
+  return String(value);
 }
 
 function buildOptimizationDrafts(rules: TradingRulesSettings, depth: OptimizationSearchDepth = 'balanced') {
@@ -186,6 +196,9 @@ function buildOptimizationDrafts(rules: TradingRulesSettings, depth: Optimizatio
       max = spec.max;
     }
     const step = autoOptimizationStep(spec.kind, min, max, depth);
+    if (spec.kind === 'timeframe') {
+      return { ...spec, enabled: false, min: 1, max: 4, step: 3 };
+    }
     return { ...spec, enabled: ['slPct', 'tpLevels[0]', 'maxLeverage', 'engulfingLookbackCandles', 'fvgRetrace'].includes(spec.param), min, max, step: spec.kind === 'decimal' ? Number(step.toFixed(2)) : Math.max(1, Math.round(step)) };
   });
 }
@@ -231,11 +244,11 @@ function formatRulesSnapshot(
       ? [{ label: 'Allowed confirmation timeframes', value: (rules.fvgConfirmationTimeframes ?? []).join(', ') || '—' }]
       : []),
     { label: 'Regime timeframe', value: rules.regimeTf ?? '1h' },
-    { label: 'Regime ADX min', value: String(rules.adxMin ?? 0) },
-    { label: 'Min impulse ATR', value: String(rules.minImpulseAtr ?? 0) },
-    { label: 'Min expected R:R', value: String(rules.minExpectedRr ?? 0) },
-    { label: 'Time stop bars', value: String(rules.timeStopBars ?? 0) },
-    { label: 'Risk / trade', value: `${rules.riskPerTradePct ?? 0}%` },
+    { label: 'Minimum ADX', value: String(rules.adxMin ?? 0) },
+    { label: 'Minimum impulse / ATR', value: String(rules.minImpulseAtr ?? 0) },
+    { label: 'Minimum expected R:R', value: String(rules.minExpectedRr ?? 0) },
+    { label: 'Time stop', value: String(rules.timeStopBars ?? 0) },
+    { label: 'Risk per trade', value: `${rules.riskPerTradePct ?? 0}%` },
     { label: 'Event lockout', value: `${rules.eventLockoutMinutes ?? 0} min` },
     { label: 'Portfolio gross cap', value: `${rules.portfolioGrossCap ?? 200}%` },
     { label: 'Close size on exit signal', value: `${rules.exitClosePct ?? 50}%` },
@@ -1061,19 +1074,19 @@ export function BacktestPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14, alignItems: 'center' }}>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-            <span className="rules-label" style={{ margin: 0 }}>Regime ADX min</span>
+            <span className="rules-label" style={{ margin: 0 }}>Minimum ADX</span>
             <Stepper value={adxMin} min={0} max={100} step={1} decimals={0} onChange={setAdxMin} />
           </div>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-            <span className="rules-label" style={{ margin: 0 }}>Min impulse ATR</span>
+            <span className="rules-label" style={{ margin: 0 }}>Minimum impulse / ATR</span>
             <Stepper value={minImpulseAtr} min={0} max={10} step={0.1} decimals={1} onChange={setMinImpulseAtr} />
           </div>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-            <span className="rules-label" style={{ margin: 0 }}>Min expected R:R</span>
+            <span className="rules-label" style={{ margin: 0 }}>Minimum expected R:R</span>
             <Stepper value={minExpectedRr} min={0} max={100} step={0.1} decimals={1} onChange={setMinExpectedRr} />
           </div>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-            <span className="rules-label" style={{ margin: 0 }}>Time stop bars</span>
+            <span className="rules-label" style={{ margin: 0 }}>Time stop</span>
             <Stepper value={timeStopBars} min={0} max={1000} step={1} decimals={0} onChange={setTimeStopBars} />
           </div>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
@@ -1104,7 +1117,7 @@ export function BacktestPage() {
             <input type="range" min={1} max={20} value={maxLeverage} onChange={(e) => setMaxLeverage(clampNumber(Number(e.target.value), 1, 20))} className="rules-range" style={{ marginTop: 0 }} />
           </div>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-            <span className="rules-label" style={{ margin: 0 }}>Risk / trade</span>
+            <span className="rules-label" style={{ margin: 0 }}>Risk per trade</span>
             <Stepper value={riskPerTradePct} min={0} max={100} step={0.25} unit="%" decimals={2} onChange={setRiskPerTradePct} />
           </div>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
@@ -1462,6 +1475,38 @@ export function BacktestPage() {
                   <div className="bt-opt-row__inputs">
                     {(() => {
                       const spec = OPTIMIZATION_PARAM_SPECS[index];
+                      if (item.kind === 'timeframe') {
+                        const values = [
+                          { label: '1h', value: 1 },
+                          { label: '4h', value: 4 },
+                        ];
+                        return (
+                          <>
+                            <label>
+                              <span>Min</span>
+                              <select
+                                className="rules-input rules-input--sm"
+                                value={normalizeOptimizationValue(item.param, item.min)}
+                                disabled={optimizationSubmitting || !item.enabled}
+                                onChange={(e) => updateOptimizationDraft(index, { min: Number(e.target.value) })}
+                              >
+                                {values.map((opt) => <option key={`min-${opt.value}`} value={opt.value}>{opt.label}</option>)}
+                              </select>
+                            </label>
+                            <label>
+                              <span>Max</span>
+                              <select
+                                className="rules-input rules-input--sm"
+                                value={normalizeOptimizationValue(item.param, item.max)}
+                                disabled={optimizationSubmitting || !item.enabled}
+                                onChange={(e) => updateOptimizationDraft(index, { max: Number(e.target.value) })}
+                              >
+                                {values.map((opt) => <option key={`max-${opt.value}`} value={opt.value}>{opt.label}</option>)}
+                              </select>
+                            </label>
+                          </>
+                        );
+                      }
                       return (
                         <>
                           <label>
@@ -1495,7 +1540,7 @@ export function BacktestPage() {
                     })()}
                   </div>
                   <div className="bt-opt-row__meta">
-                    Auto step: <strong>{autoOptimizationStep(item.kind, Math.min(item.min, item.max), Math.max(item.min, item.max), optimizationDepth)}</strong>
+                    Auto step: <strong>{formatOptimizationValue(item, autoOptimizationStep(item.kind, Math.min(item.min, item.max), Math.max(item.min, item.max), optimizationDepth))}</strong>
                   </div>
                 </div>
               ))}

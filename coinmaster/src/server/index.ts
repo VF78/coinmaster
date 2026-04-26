@@ -7507,7 +7507,7 @@ const OPTIMIZABLE_PARAMS = new Set([
   'tp1Pct', 'tp2Pct', 'tp3Pct',
   'maxLeverage', 'engulfingLookbackCandles', 'fvgRetrace',
   'fvgMinWidthPct', 'exitClosePct', 'dailyDrawdown',
-  'adxMin', 'minImpulseAtr', 'minExpectedRr', 'timeStopBars',
+  'regimeTf', 'adxMin', 'minImpulseAtr', 'minExpectedRr', 'timeStopBars',
   'riskPerTradePct', 'eventLockoutMinutes', 'portfolioGrossCap',
 ]);
 
