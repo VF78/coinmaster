@@ -40,11 +40,20 @@ Create `user_data/config.private.json` from the committed example and keep it mo
 ```bash
 cd /opt/coinmaster/coinmaster/freqtrade
 cp user_data/config.private.example.json user_data/config.private.json
+# The official container runs as uid/gid 1000 (ftuser), so the private file must be readable by that user.
+sudo chown 1000:1000 user_data/config.private.json
 chmod 600 user_data/config.private.json
 editor user_data/config.private.json
 ```
 
 `docker-compose.prod.yml` overlays this private config on top of `config.example.json` for the systemd service. Local validation commands can keep using `config.example.json` only.
+
+For Hyperliquid/CCXT, use Freqtrade's DEX credential fields:
+
+- `exchange.wallet_address`
+- `exchange.private_key`
+
+Do not use generic `exchange.key` / `exchange.secret` for Hyperliquid private connectivity.
 
 Rules:
 
@@ -75,7 +84,19 @@ Expected current baseline:
 
 ## 5. Backtest data
 
-Freqtrade 2026.3 / CCXT 4.5.44 currently refuses native `download-data` for Hyperliquid with:
+Freqtrade 2026.3 / CCXT 4.5.44 currently refuses native `download-data` for Hyperliquid even when private Hyperliquid credentials are configured. The credentials validate private/account connectivity, but they do not enable Freqtrade's historical OHLCV downloader for this exchange.
+
+Observed with private overlay on 2026-04-27:
+
+```bash
+docker compose -f freqtrade/docker-compose.yml run --rm freqtrade download-data \
+  --config /freqtrade/user_data/config.example.json \
+  --config /freqtrade/user_data/config.private.json \
+  --timerange 20260420-20260421 \
+  --timeframes 15m
+```
+
+Freqtrade still returned:
 
 ```text
 Historic data not available for Hyperliquid. Hyperliquid does not support downloading trades or ohlcv data.

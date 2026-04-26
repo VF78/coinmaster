@@ -1,7 +1,7 @@
 {
   "exchange": {
-    "key": "replace-with-hyperliquid-key",
-    "secret": "replace-with-hyperliquid-secret"
+    "wallet_address": "replace-with-hyperliquid-account-or-wallet-address",
+    "private_key": "replace-with-hyperliquid-private-key"
   },
   "api_server": {
     "jwt_secret_key": "replace-with-private-random-secret",

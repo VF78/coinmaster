@@ -50,7 +50,7 @@ docker compose -f freqtrade/docker-compose.yml run --rm freqtrade hyperopt \
 
 Do not commit live secrets. Use a private config overlay or environment variables:
 
-For VPS/prod, copy `user_data/config.private.example.json` to ignored `user_data/config.private.json` and use the production compose overlay:
+For VPS/prod, copy `user_data/config.private.example.json` to ignored `user_data/config.private.json`. Hyperliquid uses `exchange.wallet_address` + `exchange.private_key` in Freqtrade/CCXT. Ensure the file is readable by the container user (`uid/gid 1000`) and use the production compose overlay:
 
 ```bash
 docker compose -f freqtrade/docker-compose.yml -f freqtrade/docker-compose.prod.yml up -d
