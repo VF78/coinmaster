@@ -1,0 +1,7 @@
+services:
+  freqtrade:
+    command: >
+      trade
+      --config /freqtrade/user_data/config.example.json
+      --config /freqtrade/user_data/config.private.json
+      --strategy CoinMasterStrategy

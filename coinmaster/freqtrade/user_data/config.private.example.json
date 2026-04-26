@@ -1,0 +1,17 @@
+{
+  "exchange": {
+    "key": "replace-with-hyperliquid-key",
+    "secret": "replace-with-hyperliquid-secret"
+  },
+  "api_server": {
+    "jwt_secret_key": "replace-with-private-random-secret",
+    "ws_token": "replace-with-private-random-ws-token",
+    "username": "coinmaster",
+    "password": "replace-with-private-password"
+  },
+  "telegram": {
+    "enabled": false,
+    "token": "replace-with-telegram-token-if-enabled",
+    "chat_id": "replace-with-telegram-chat-id-if-enabled"
+  }
+}

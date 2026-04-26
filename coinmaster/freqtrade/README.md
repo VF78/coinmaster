@@ -7,6 +7,8 @@ Stage 1 migrates CoinMaster trading to native Freqtrade:
 - No manual-confirmation layer is used in the Freqtrade path.
 - CoinMaster-specific Radar/FreqAI work is Stage 2.
 
+VPS deployment and cutover details: [RUNBOOK_VPS.md](RUNBOOK_VPS.md).
+
 ## Local commands
 
 From repo root:
@@ -18,26 +20,40 @@ docker compose -f freqtrade/docker-compose.yml run --rm freqtrade list-strategie
 # Show resolved config
 docker compose -f freqtrade/docker-compose.yml run --rm freqtrade show-config --config /freqtrade/user_data/config.example.json
 
-# Download dry/backtest data (example)
-docker compose -f freqtrade/docker-compose.yml run --rm freqtrade download-data \
-  --config /freqtrade/user_data/config.example.json \
-  --timerange 20260101- \
-  --timeframes 15m 1h 4h
+# Native Freqtrade download-data currently fails for Hyperliquid historical OHLCV.
+# Use the Stage 1 bridge script for public Hyperliquid candles instead.
+docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade \
+  /freqtrade/user_data/scripts/download_hyperliquid_ohlcv.py \
+  --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC \
+  --timeframes 15m 1h 4h \
+  --timerange 20260101-
 
-# Backtest
+# Backtest current 15m baseline (Hyperliquid public 15m history is ~latest 5k candles)
 docker compose -f freqtrade/docker-compose.yml run --rm freqtrade backtesting \
   --config /freqtrade/user_data/config.example.json \
   --strategy CoinMasterStrategy \
-  --timerange 20260101-
+  --timerange 20260306- \
+  --export trades
+
+# Hyperopt smoke test; do not promote params until there are enough trades.
+docker compose -f freqtrade/docker-compose.yml run --rm freqtrade hyperopt \
+  --config /freqtrade/user_data/config.example.json \
+  --strategy CoinMasterStrategy \
+  --timerange 20260306- \
+  --spaces buy sell \
+  --hyperopt-loss SharpeHyperOptLossDaily \
+  --epochs 20 \
+  --random-state 65
 ```
 
 ## Secrets
 
 Do not commit live secrets. Use a private config overlay or environment variables:
 
-- `FREQTRADE__EXCHANGE__KEY`
-- `FREQTRADE__EXCHANGE__SECRET`
-- `FREQTRADE__TELEGRAM__TOKEN`
-- `FREQTRADE__TELEGRAM__CHAT_ID`
+For VPS/prod, copy `user_data/config.private.example.json` to ignored `user_data/config.private.json` and use the production compose overlay:
+
+```bash
+docker compose -f freqtrade/docker-compose.yml -f freqtrade/docker-compose.prod.yml up -d
+```
 
 `config.example.json` is intentionally dry-run safe.
