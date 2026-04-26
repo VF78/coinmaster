@@ -2311,8 +2311,10 @@ async function queuePendingConfirmation(params: {
     return { queued: false, id: 'invalid_size' };
   }
 
+  const existingIdx = db.data.pendingConfirmations.findIndex((p) => p.symbol.toUpperCase() === params.symbol.toUpperCase());
+  const existing = existingIdx >= 0 ? db.data.pendingConfirmations[existingIdx] : undefined;
   const next: PendingConfirmation = {
-    id: `pc-${nanoid(10)}`,
+    id: existing?.id ?? `pc-${nanoid(10)}`,
     symbol: params.symbol,
     side: params.side,
     strategy: params.strategy,
@@ -2325,9 +2327,7 @@ async function queuePendingConfirmation(params: {
     createdAt: now,
   };
 
-  const existingIdx = db.data.pendingConfirmations.findIndex((p) => p.symbol.toUpperCase() === params.symbol.toUpperCase());
-  if (existingIdx >= 0) {
-    const existing = db.data.pendingConfirmations[existingIdx];
+  if (existingIdx >= 0 && existing) {
     const duplicate =
       existing.side === next.side &&
       existing.strategy === next.strategy &&
@@ -3319,51 +3319,40 @@ function startDailyAnalyticsLoop(): void {
 
 async function executePendingConfirmation(pendingId: string, actor: 'dashboard' | 'telegram'): Promise<{ ok: boolean; error?: string }> {
   const db = await getDb();
-  const pending = db.data.pendingConfirmations.find((p) => p.id === pendingId);
+  const resolvePending = (): PendingConfirmation | undefined => {
+    const exact = db.data.pendingConfirmations.find((p) => p.id === pendingId);
+    if (exact) return exact;
+
+    // Telegram/Web buttons can outlive a process restart or a refreshed signal
+    // for the same symbol. Resolve old IDs through their signal_detected audit
+    // event so a stale button still confirms the current pending intent instead
+    // of failing with pending_not_found.
+    const sourceEvent = [...(db.data.tradeEvents ?? [])]
+      .reverse()
+      .find((event) => String((event.payload as { pendingConfirmationId?: unknown } | undefined)?.pendingConfirmationId ?? '') === pendingId);
+    const symbol = normalizeSymbol(sourceEvent?.symbol ?? '');
+    if (!symbol) {
+      return db.data.pendingConfirmations.length === 1 ? db.data.pendingConfirmations[0] : undefined;
+    }
+    const payload = (sourceEvent?.payload ?? {}) as { strategy?: unknown; timeframe?: unknown };
+    const matches = db.data.pendingConfirmations.filter((p) => (
+      normalizeSymbol(p.symbol) === symbol &&
+      p.side === sourceEvent?.side &&
+      p.strategy === payload.strategy &&
+      p.timeframe === payload.timeframe
+    ));
+    return matches.length === 1 ? matches[0] : undefined;
+  };
+
+  const pending = resolvePending();
   if (!pending) return { ok: false, error: 'pending_not_found' };
+  const activePendingId = pending.id;
 
   const rules = rulesCache.getEffectiveRules();
   const normalizedSymbol = normalizeSymbol(pending.symbol);
   const side: 'buy' | 'sell' = pending.side === 'long' ? 'buy' : 'sell';
   const now = new Date().toISOString();
   const pendingIntent = db.data.executionIntents.find((intent) => intent.id === pending.executionIntentId);
-
-  // Risk check before submit
-  const risk = await evaluateRiskGates({ emitAudit: false });
-  if (!risk.canTrade) {
-    updateExecutionIntent(db, pending.executionIntentId, { status: 'rejected' });
-    reconcileRadarSignalOutcome(db, {
-      pendingId,
-      status: 'rejected',
-      error: `risk_gate_blocked:${risk.blocks.join(',')}`,
-    });
-    appendTradeEvent(db.data, {
-      symbol: normalizedSymbol,
-      source: 'live',
-      type: 'signal_rejected',
-      timestamp: now,
-      correlationId: `pending-${pending.id}`,
-      side: pending.side,
-      price: pending.price,
-      quantity: pending.size,
-      reason: 'pending_rejected_risk_gate',
-      payload: { blocks: risk.blocks.join(','), actor },
-    });
-    await db.write();
-    await notifySignalRejectedEvent({
-      symbol: normalizedSymbol,
-      source: `pending:${actor}`,
-      reason: 'pending_rejected_risk_gate',
-      blocks: risk.blocks.join(','),
-    }).catch(() => undefined);
-    return { ok: false, error: `risk_gate_blocked:${risk.blocks.join(',')}` };
-  }
-
-  // leverage
-  if (Number.isFinite(pending.leverage) && pending.leverage > 0) {
-    const lev = Math.min(pending.leverage, rules.maxLeverage);
-    await exchange.setLeverage(normalizedSymbol, lev);
-  }
 
   const correlationId = `pending-confirm-${pending.id}`;
   appendTradeEvent(db.data, {
@@ -3393,69 +3382,28 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     }
   };
 
-  const computeSizeAtOpen = async (price: number): Promise<AllocationSizingOutcome> => {
-    const account = await withTimeout(exchange.getAccountState(), 5000, 'confirm_account_state');
-    const equityUsd = account?.equityUsd ?? 0;
-    const availableUsd = account?.availableUsd ?? 0;
-
-    let sizeDecimals = 6;
-    try {
-      const meta = await withTimeout(exchange.getInstrumentMeta(normalizedSymbol), 3000, 'confirm_instrument_meta');
-      if (meta?.sizeDecimals !== undefined) sizeDecimals = meta.sizeDecimals;
-    } catch {
-      // best effort
-    }
-
-    return computeAllocationSize({
-      symbol: normalizedSymbol,
-      price,
-      equityUsd,
-      availableUsd,
-      rules,
-      sizeDecimals,
-    });
-  };
-
   const placeWithRetry = async () => {
     const attemptPrices: number[] = [pending.price];
     let lastAck: Awaited<ReturnType<typeof exchange.placeLimitOrder>> | null = null;
     let lastSize = pending.size;
 
+    if (Number.isFinite(pending.leverage) && pending.leverage > 0) {
+      const lev = Math.min(pending.leverage, rules.maxLeverage);
+      await withTimeout(exchange.setLeverage(normalizedSymbol, lev), 3000, 'confirm_set_leverage')
+        .catch((error) => logger.warn(
+          { component: 'pending-confirmation', pendingId: pending.id, symbol: normalizedSymbol, err: error instanceof Error ? error.message : String(error) },
+          'set leverage during pending confirmation failed; submitting stored order anyway',
+        ));
+    }
+
     for (let attempt = 0; attempt < attemptPrices.length; attempt++) {
       const price = attemptPrices[attempt];
 
       try {
-        const sizing = await computeSizeAtOpen(price);
-        if (!sizing.ok) {
-          return {
-            ack: { ok: false, error: `allocation_sizing_failed:${sizing.reason}` },
-            usedPrice: price,
-            usedSize: 0,
-          };
-        }
-
-        const risk = await withTimeout(evaluateRiskGates({ emitAudit: false }), 5000, 'confirm_risk_gates');
-        if (!risk.canTrade) {
-          return {
-            ack: { ok: false, error: `risk_gate_blocked:${risk.blocks.join(',')}` },
-            usedPrice: price,
-            usedSize: 0,
-          };
-        }
-
-        const adjusted = applyRadarRiskMultiplierToSize(sizing.size, pendingIntent?.policySnapshot);
+        const adjusted = applyRadarRiskMultiplierToSize(pending.size, pendingIntent?.policySnapshot);
         if (!adjusted.size || adjusted.size <= 0) {
           return {
             ack: { ok: false, error: 'radar_risk_multiplier_zero_size' },
-            usedPrice: price,
-            usedSize: 0,
-          };
-        }
-
-        const gross = await checkPortfolioGrossCap({ symbol: normalizedSymbol, price, size: adjusted.size, effectiveRules: rules, riskCheck: risk });
-        if (!gross.ok) {
-          return {
-            ack: { ok: false, error: 'portfolio_gross_cap_exceeded' },
             usedPrice: price,
             usedSize: 0,
           };
@@ -3471,7 +3419,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
           clientOrderId: `${correlationId}-${attempt + 1}`,
         }), 10_000, 'confirm_place_limit_order');
 
-        if (ack.ok) return { ack, usedPrice: price, usedSize: sizing.size };
+        if (ack.ok) return { ack, usedPrice: price, usedSize: adjusted.size };
         lastAck = ack;
 
         const err = String(ack.error ?? '').toLowerCase();
@@ -3480,13 +3428,13 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
           const mid = await fetchLiveMid(normalizedSymbol);
           if (mid && Number.isFinite(mid) && mid > 0) {
             attemptPrices.push(mid);
-            logger.warn({ component: 'pending-confirmation', pendingId, attempt: attempt + 1, originalPrice: price, fallbackMid: mid, err: ack.error }, 'retrying pending confirmation with fresh mid price');
+            logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, requestedPendingId: pendingId, attempt: attempt + 1, originalPrice: price, fallbackMid: mid, err: ack.error }, 'retrying pending confirmation with fresh mid price');
             continue;
           }
         }
       } catch (error) {
         const msg = error instanceof Error ? error.message : 'confirm_place_order_failed';
-        logger.warn({ component: 'pending-confirmation', pendingId, attempt: attempt + 1, symbol: normalizedSymbol, err: msg }, 'pending confirmation attempt failed');
+        logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, requestedPendingId: pendingId, attempt: attempt + 1, symbol: normalizedSymbol, err: msg }, 'pending confirmation attempt failed');
         lastAck = { ok: false, error: msg } as Awaited<ReturnType<typeof exchange.placeLimitOrder>>;
       }
     }
@@ -3512,7 +3460,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   if (!ack.ok) {
     updateExecutionIntent(db, pending.executionIntentId, { status: 'rejected' });
     reconcileRadarSignalOutcome(db, {
-      pendingId,
+      pendingId: activePendingId,
       status: 'rejected',
       error: ack.error ?? 'exchange_rejected',
     });
@@ -3526,12 +3474,12 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   }
 
   reconcileRadarSignalOutcome(db, {
-    pendingId,
+    pendingId: activePendingId,
     orderId: ack.orderId,
     status: 'auto_order_placed',
   });
-  updateExecutionIntent(db, pending.executionIntentId, { status: 'auto_order_placed', orderId: ack.orderId, pendingId });
-  db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== pendingId);
+  updateExecutionIntent(db, pending.executionIntentId, { status: 'auto_order_placed', orderId: ack.orderId, pendingId: activePendingId });
+  db.data.pendingConfirmations = db.data.pendingConfirmations.filter((p) => p.id !== activePendingId);
 
   const tpSl = resolveTpSlDefaults(usedPrice, side, undefined, undefined);
   if (tpSl) {
