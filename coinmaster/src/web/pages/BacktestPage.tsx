@@ -25,6 +25,7 @@ import {
 import { formatDate, formatMoney, formatNumber } from '../lib/format';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
+const REGIME_TIMEFRAMES: TradingRulesTimeframe[] = ['1h', '4h'];
 const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
 const HISTORY_PAGE_SIZE = 15;
 const POLL_INTERVAL_MS = 3_000;
@@ -103,9 +104,16 @@ const OPTIMIZATION_PARAM_SPECS: OptimizationParamSpec[] = [
   { param: 'fvgMinWidthPct', label: 'FVG min width %', kind: 'decimal', min: 0, max: 2 },
   { param: 'exitClosePct', label: 'Exit close %', kind: 'pct', min: 0, max: 100 },
   { param: 'dailyDrawdown', label: 'Daily drawdown %', kind: 'pct', min: 0.5, max: 15 },
+  { param: 'adxMin', label: 'Regime ADX min', kind: 'decimal', min: 0, max: 60 },
+  { param: 'minImpulseAtr', label: 'Min impulse ATR', kind: 'decimal', min: 0, max: 3 },
+  { param: 'minExpectedRr', label: 'Min expected R:R', kind: 'decimal', min: 0, max: 10 },
+  { param: 'timeStopBars', label: 'Time stop bars', kind: 'int', min: 0, max: 200 },
+  { param: 'riskPerTradePct', label: 'Risk / trade %', kind: 'pct', min: 0, max: 10 },
+  { param: 'eventLockoutMinutes', label: 'Event lockout min', kind: 'int', min: 0, max: 720 },
+  { param: 'portfolioGrossCap', label: 'Portfolio gross cap %', kind: 'pct', min: 0, max: 2000 },
 ];
 
-const OPTIMIZATION_INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles']);
+const OPTIMIZATION_INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles', 'timeStopBars', 'eventLockoutMinutes']);
 
 function getRulesValue(rules: TradingRulesSettings, param: string): number {
   switch (param) {
@@ -119,6 +127,13 @@ function getRulesValue(rules: TradingRulesSettings, param: string): number {
     case 'fvgMinWidthPct': return rules.fvgMinWidthPct;
     case 'exitClosePct': return rules.exitClosePct;
     case 'dailyDrawdown': return rules.dailyDrawdown;
+    case 'adxMin': return rules.adxMin ?? 0;
+    case 'minImpulseAtr': return rules.minImpulseAtr ?? 0;
+    case 'minExpectedRr': return rules.minExpectedRr ?? 0;
+    case 'timeStopBars': return rules.timeStopBars ?? 0;
+    case 'riskPerTradePct': return rules.riskPerTradePct ?? 0;
+    case 'eventLockoutMinutes': return rules.eventLockoutMinutes ?? 0;
+    case 'portfolioGrossCap': return rules.portfolioGrossCap ?? 200;
     default: return 0;
   }
 }
@@ -135,6 +150,13 @@ function setRulesValue(rules: TradingRulesSettings, param: string, value: number
     case 'fvgMinWidthPct': rules.fvgMinWidthPct = value; break;
     case 'exitClosePct': rules.exitClosePct = value; break;
     case 'dailyDrawdown': rules.dailyDrawdown = value; break;
+    case 'adxMin': rules.adxMin = value; break;
+    case 'minImpulseAtr': rules.minImpulseAtr = value; break;
+    case 'minExpectedRr': rules.minExpectedRr = value; break;
+    case 'timeStopBars': rules.timeStopBars = value; break;
+    case 'riskPerTradePct': rules.riskPerTradePct = value; break;
+    case 'eventLockoutMinutes': rules.eventLockoutMinutes = value; break;
+    case 'portfolioGrossCap': rules.portfolioGrossCap = value; break;
   }
 }
 
@@ -208,6 +230,14 @@ function formatRulesSnapshot(
     ...(rules.fvgRequireConfirmation
       ? [{ label: 'Allowed confirmation timeframes', value: (rules.fvgConfirmationTimeframes ?? []).join(', ') || '—' }]
       : []),
+    { label: 'Regime timeframe', value: rules.regimeTf ?? '1h' },
+    { label: 'Regime ADX min', value: String(rules.adxMin ?? 0) },
+    { label: 'Min impulse ATR', value: String(rules.minImpulseAtr ?? 0) },
+    { label: 'Min expected R:R', value: String(rules.minExpectedRr ?? 0) },
+    { label: 'Time stop bars', value: String(rules.timeStopBars ?? 0) },
+    { label: 'Risk / trade', value: `${rules.riskPerTradePct ?? 0}%` },
+    { label: 'Event lockout', value: `${rules.eventLockoutMinutes ?? 0} min` },
+    { label: 'Portfolio gross cap', value: `${rules.portfolioGrossCap ?? 200}%` },
     { label: 'Close size on exit signal', value: `${rules.exitClosePct ?? 50}%` },
     { label: 'Daily Drawdown Limit', value: `${rules.dailyDrawdown ?? 0}%` },
     { label: 'Max Leverage', value: `${rules.maxLeverage ?? 1}x` },
@@ -326,6 +356,14 @@ export function BacktestPage() {
   const [tpLevels, setTpLevels] = useState<number[]>(defaults.tpLevels);
   const [slPct, setSlPct] = useState(defaults.slPct);
   const [exitClosePct, setExitClosePct] = useState(defaults.exitClosePct);
+  const [regimeTf, setRegimeTf] = useState<TradingRulesTimeframe>(defaults.regimeTf ?? '1h');
+  const [adxMin, setAdxMin] = useState(defaults.adxMin ?? 0);
+  const [minImpulseAtr, setMinImpulseAtr] = useState(defaults.minImpulseAtr ?? 0);
+  const [minExpectedRr, setMinExpectedRr] = useState(defaults.minExpectedRr ?? 0);
+  const [timeStopBars, setTimeStopBars] = useState(defaults.timeStopBars ?? 0);
+  const [riskPerTradePct, setRiskPerTradePct] = useState(defaults.riskPerTradePct ?? 0);
+  const [eventLockoutMinutes, setEventLockoutMinutes] = useState(defaults.eventLockoutMinutes ?? 0);
+  const [portfolioGrossCap, setPortfolioGrossCap] = useState(defaults.portfolioGrossCap ?? 200);
 
   const [runs, setRuns] = useState<BacktestRun[]>([]);
   const [selectedRun, setSelectedRun] = useState<BacktestRun | null>(null);
@@ -390,6 +428,14 @@ export function BacktestPage() {
     setTpLevels(rules.tpLevels?.length ? [...rules.tpLevels] : defaults.tpLevels);
     setSlPct(rules.slPct ?? defaults.slPct);
     setExitClosePct(rules.exitClosePct ?? defaults.exitClosePct);
+    setRegimeTf(rules.regimeTf ?? defaults.regimeTf ?? '1h');
+    setAdxMin(rules.adxMin ?? defaults.adxMin ?? 0);
+    setMinImpulseAtr(rules.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
+    setMinExpectedRr(rules.minExpectedRr ?? defaults.minExpectedRr ?? 0);
+    setTimeStopBars(rules.timeStopBars ?? defaults.timeStopBars ?? 0);
+    setRiskPerTradePct(rules.riskPerTradePct ?? defaults.riskPerTradePct ?? 0);
+    setEventLockoutMinutes(rules.eventLockoutMinutes ?? defaults.eventLockoutMinutes ?? 0);
+    setPortfolioGrossCap(rules.portfolioGrossCap ?? defaults.portfolioGrossCap ?? 200);
   }, [defaults]);
 
   const applyRulesSnapshotToForm = useCallback((rulesSnapshot: TradingRulesSettings, meta: { symbol: string; biasMode?: BacktestBiasMode; startTimeMs: number; endTimeMs: number }) => {
@@ -418,6 +464,14 @@ export function BacktestPage() {
     setTpLevels(rules.tpLevels?.length ? [...rules.tpLevels] : defaults.tpLevels);
     setSlPct(rules.slPct ?? defaults.slPct);
     setExitClosePct(rules.exitClosePct ?? defaults.exitClosePct);
+    setRegimeTf(rules.regimeTf ?? defaults.regimeTf ?? '1h');
+    setAdxMin(rules.adxMin ?? defaults.adxMin ?? 0);
+    setMinImpulseAtr(rules.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
+    setMinExpectedRr(rules.minExpectedRr ?? defaults.minExpectedRr ?? 0);
+    setTimeStopBars(rules.timeStopBars ?? defaults.timeStopBars ?? 0);
+    setRiskPerTradePct(rules.riskPerTradePct ?? defaults.riskPerTradePct ?? 0);
+    setEventLockoutMinutes(rules.eventLockoutMinutes ?? defaults.eventLockoutMinutes ?? 0);
+    setPortfolioGrossCap(rules.portfolioGrossCap ?? defaults.portfolioGrossCap ?? 200);
   }, [defaults]);
 
   const applyOptimizationToForm = useCallback((opt: OptimizationResult) => {
@@ -541,6 +595,14 @@ export function BacktestPage() {
         setTpLevels(normalized.tpLevels?.length ? [...normalized.tpLevels] : defaults.tpLevels);
         setSlPct(normalized.slPct ?? defaults.slPct);
         setExitClosePct(normalized.exitClosePct ?? defaults.exitClosePct);
+        setRegimeTf(normalized.regimeTf ?? defaults.regimeTf ?? '1h');
+        setAdxMin(normalized.adxMin ?? defaults.adxMin ?? 0);
+        setMinImpulseAtr(normalized.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
+        setMinExpectedRr(normalized.minExpectedRr ?? defaults.minExpectedRr ?? 0);
+        setTimeStopBars(normalized.timeStopBars ?? defaults.timeStopBars ?? 0);
+        setRiskPerTradePct(normalized.riskPerTradePct ?? defaults.riskPerTradePct ?? 0);
+        setEventLockoutMinutes(normalized.eventLockoutMinutes ?? defaults.eventLockoutMinutes ?? 0);
+        setPortfolioGrossCap(normalized.portfolioGrossCap ?? defaults.portfolioGrossCap ?? 200);
       } catch (err) {
         if (!cancelled) setError(friendlyErrorMessage(err));
       } finally {
@@ -697,6 +759,14 @@ export function BacktestPage() {
         tpLevels,
         slPct,
         exitClosePct,
+        regimeTf,
+        adxMin,
+        minImpulseAtr,
+        minExpectedRr,
+        timeStopBars,
+        riskPerTradePct,
+        eventLockoutMinutes,
+        portfolioGrossCap,
         autoConfirm: false,
       });
 
@@ -975,6 +1045,48 @@ export function BacktestPage() {
         </div>
       </Card>
 
+      <Card title="Signal Quality Context" actions={<Badge tone="neutral">Regime</Badge>}>
+        <div className="rules-section">
+          <p className="rules-label" style={{ marginBottom: 8 }}>
+            Regime timeframe <span className="muted" style={{ fontWeight: 400 }}>(EMA slope + ADX / ATR context)</span>
+          </p>
+          <div className="rules-btn-group rules-btn-group--left rules-btn-group--mb">
+            {REGIME_TIMEFRAMES.map((tf) => (
+              <Button key={tf} variant={regimeTf === tf ? 'primary' : 'secondary'} onClick={() => setRegimeTf(tf)}>
+                {tf}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14, alignItems: 'center' }}>
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Regime ADX min</span>
+            <Stepper value={adxMin} min={0} max={100} step={1} decimals={0} onChange={setAdxMin} />
+          </div>
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Min impulse ATR</span>
+            <Stepper value={minImpulseAtr} min={0} max={10} step={0.1} decimals={1} onChange={setMinImpulseAtr} />
+          </div>
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Min expected R:R</span>
+            <Stepper value={minExpectedRr} min={0} max={100} step={0.1} decimals={1} onChange={setMinExpectedRr} />
+          </div>
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Time stop bars</span>
+            <Stepper value={timeStopBars} min={0} max={1000} step={1} decimals={0} onChange={setTimeStopBars} />
+          </div>
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Event lockout</span>
+            <Stepper value={eventLockoutMinutes} min={0} max={1440} step={5} unit="min" decimals={0} onChange={setEventLockoutMinutes} />
+          </div>
+        </div>
+
+        <p className="stat-note muted">
+          Zero values keep the corresponding gate permissive. These fields now match Trading Rules and are included in both backtest and optimization snapshots.
+        </p>
+      </Card>
+
       <Card title="Risk Management" actions={<Badge tone="danger">Risk</Badge>}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14, alignItems: 'center' }}>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
@@ -991,8 +1103,16 @@ export function BacktestPage() {
             </div>
             <input type="range" min={1} max={20} value={maxLeverage} onChange={(e) => setMaxLeverage(clampNumber(Number(e.target.value), 1, 20))} className="rules-range" style={{ marginTop: 0 }} />
           </div>
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Risk / trade</span>
+            <Stepper value={riskPerTradePct} min={0} max={100} step={0.25} unit="%" decimals={2} onChange={setRiskPerTradePct} />
+          </div>
+          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
+            <span className="rules-label" style={{ margin: 0 }}>Portfolio gross cap</span>
+            <Stepper value={portfolioGrossCap} min={0} max={10000} step={25} unit="%" decimals={0} onChange={setPortfolioGrossCap} />
+          </div>
         </div>
-        <p className="stat-note muted">Suggested: leverage ≤ 5x and drawdown ≤ 3% for conservative operation.</p>
+        <p className="stat-note muted">Suggested: leverage ≤ 5x and drawdown ≤ 3% for conservative operation. If portfolio gross cap is below allocation × leverage, entries are rejected exactly like live risk gates.</p>
       </Card>
 
       <Card title="Default TP / SL" actions={<Badge tone="success">Targets</Badge>}>
@@ -1058,6 +1178,16 @@ export function BacktestPage() {
                 <div className="bt-stat"><span className="bt-stat__label">Total Trades</span><span className="bt-stat__value">{selectedRun.summary.totalTrades}</span></div>
                 <div className="bt-stat"><span className="bt-stat__label">Max Drawdown</span><span className="bt-stat__value bt-stat__value--negative">{formatNumber(selectedRun.summary.maxDrawdownPct)}%</span></div>
               </div>
+
+              {selectedRun.summary.totalTrades === 0 ? (
+                <div className="bt-failed" style={{ marginTop: 12 }}>
+                  <Badge tone="neutral">no trades</Badge>
+                  <p>
+                    No entries passed the active snapshot. Rejected signals: {selectedRun.rejectionStats?.totalRejectedSignals ?? selectedRun.bySymbol?.[0]?.rejectedSignals ?? 0}.
+                    Check Signal Quality, FVG first-touch/confirmation, and Portfolio gross cap vs allocation × leverage.
+                  </p>
+                </div>
+              ) : null}
 
               {selectedRun.bySymbol?.length > 0 ? (
                 <div className="bt-symbol-stats">

@@ -7429,6 +7429,8 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
 // ─── Optimization Endpoints ───────────────────────────────────────────
 
 const OPTIMIZATION_HISTORY_LIMIT = 50;
+const COMPUTE_JOB_QUEUE_TIMEOUT_MS = Math.max(30_000, Number(process.env.COMPUTE_JOB_QUEUE_TIMEOUT_MS || 2 * 60_000));
+const COMPUTE_JOB_HEARTBEAT_TIMEOUT_MS = Math.max(60_000, Number(process.env.COMPUTE_JOB_HEARTBEAT_TIMEOUT_MS || 5 * 60_000));
 
 function hasInFlightOptimization(optimizations: Array<{ status?: string }>): boolean {
   return optimizations.some((item) => item.status === 'queued' || item.status === 'running');
@@ -7451,6 +7453,8 @@ async function reconcileOptimizationState(db: Awaited<ReturnType<typeof getDb>>)
 
   const failureReason = reconcileComputeJob({
     job: activeOpt,
+    queuedTimeoutMs: COMPUTE_JOB_QUEUE_TIMEOUT_MS,
+    heartbeatTimeoutMs: COMPUTE_JOB_HEARTBEAT_TIMEOUT_MS,
     isWorkerAlive: activeOpt.workerPid ? isPidAlive(activeOpt.workerPid) : undefined,
     queuedFailureReason: 'optimizer worker did not start',
     runningFailureReason: activeOpt.workerHeartbeatAt
@@ -7472,6 +7476,8 @@ async function reconcileBacktestState(db: Awaited<ReturnType<typeof getDb>>): Pr
 
   const failureReason = reconcileComputeJob({
     job: activeRun,
+    queuedTimeoutMs: COMPUTE_JOB_QUEUE_TIMEOUT_MS,
+    heartbeatTimeoutMs: COMPUTE_JOB_HEARTBEAT_TIMEOUT_MS,
     isWorkerAlive: activeRun.workerPid ? isPidAlive(activeRun.workerPid) : undefined,
     queuedFailureReason: 'backtest worker did not start',
     runningFailureReason: activeRun.workerHeartbeatAt
@@ -7501,6 +7507,8 @@ const OPTIMIZABLE_PARAMS = new Set([
   'tp1Pct', 'tp2Pct', 'tp3Pct',
   'maxLeverage', 'engulfingLookbackCandles', 'fvgRetrace',
   'fvgMinWidthPct', 'exitClosePct', 'dailyDrawdown',
+  'adxMin', 'minImpulseAtr', 'minExpectedRr', 'timeStopBars',
+  'riskPerTradePct', 'eventLockoutMinutes', 'portfolioGrossCap',
 ]);
 
 app.get('/api/optimization/results', ownerAuth, async (_req, res) => {

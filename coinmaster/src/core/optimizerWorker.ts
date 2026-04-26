@@ -62,7 +62,8 @@ import {
 const MAX_CANDIDATES = 5000;
 const YIELD_EVERY_N = 5; // yield to event loop every N candidates
 const YIELD_MS = 2; // ms to sleep on yield
-const INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles']);
+const HEARTBEAT_PERSIST_MS = 10_000;
+const INTEGER_PARAMS = new Set(['maxLeverage', 'engulfingLookbackCandles', 'timeStopBars', 'eventLockoutMinutes']);
 
 const TF_LABEL_TO_CANDLE_TF: Record<string, CandleTimeframe> = {
   '5m': '5m',
@@ -96,8 +97,7 @@ function round(v: number, decimals = 2): number {
 
 /**
  * Map a param name to its location in TradingRulesSettings.
- * Supports: slPct, tpLevels[0], tpLevels[1], tpLevels[2], maxLeverage,
- * engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, exitClosePct, dailyDrawdown.
+ * Supports core Trading Rules / SignalQualityContext numeric knobs.
  */
 function applyParamToRules(rules: TradingRulesSettings, param: string, value: number): void {
   const normalizedValue = INTEGER_PARAMS.has(param) ? Math.round(value) : value;
@@ -119,6 +119,13 @@ function applyParamToRules(rules: TradingRulesSettings, param: string, value: nu
   else if (param === 'fvgMinWidthPct') rules.fvgMinWidthPct = normalizedValue;
   else if (param === 'exitClosePct') rules.exitClosePct = normalizedValue;
   else if (param === 'dailyDrawdown') rules.dailyDrawdown = normalizedValue;
+  else if (param === 'adxMin') rules.adxMin = normalizedValue;
+  else if (param === 'minImpulseAtr') rules.minImpulseAtr = normalizedValue;
+  else if (param === 'minExpectedRr') rules.minExpectedRr = normalizedValue;
+  else if (param === 'timeStopBars') rules.timeStopBars = normalizedValue;
+  else if (param === 'riskPerTradePct') rules.riskPerTradePct = normalizedValue;
+  else if (param === 'eventLockoutMinutes') rules.eventLockoutMinutes = normalizedValue;
+  else if (param === 'portfolioGrossCap') rules.portfolioGrossCap = normalizedValue;
 }
 
 function extractParamValue(rules: TradingRulesSettings, param: string): number | undefined {
@@ -132,6 +139,13 @@ function extractParamValue(rules: TradingRulesSettings, param: string): number |
   if (param === 'fvgMinWidthPct') return rules.fvgMinWidthPct;
   if (param === 'exitClosePct') return rules.exitClosePct;
   if (param === 'dailyDrawdown') return rules.dailyDrawdown;
+  if (param === 'adxMin') return rules.adxMin;
+  if (param === 'minImpulseAtr') return rules.minImpulseAtr;
+  if (param === 'minExpectedRr') return rules.minExpectedRr;
+  if (param === 'timeStopBars') return rules.timeStopBars;
+  if (param === 'riskPerTradePct') return rules.riskPerTradePct;
+  if (param === 'eventLockoutMinutes') return rules.eventLockoutMinutes;
+  if (param === 'portfolioGrossCap') return rules.portfolioGrossCap;
   return undefined;
 }
 
@@ -347,6 +361,7 @@ export async function executeOptimization(
   opt.optunaStatus = detectOptunaAvailability();
   opt.quantStatsReport = opt.quantStatsReport ?? createUnavailableQuantStatsReport('quantstats sidecar not available in optimizer worker');
   await db.write();
+  let lastHeartbeatPersistMs = Date.now();
 
   try {
     const baseRules = opt.baseRulesSnapshot;
@@ -358,7 +373,8 @@ export async function executeOptimization(
     // Load candles once (shared across all candidates)
     const candleSets: BacktestCandleSet[] = [];
 
-    for (const tf of requiredTfs) {
+    for (let tfIndex = 0; tfIndex < requiredTfs.length; tfIndex++) {
+      const tf = requiredTfs[tfIndex];
       const candleTf = TF_LABEL_TO_CANDLE_TF[tf];
       if (!candleTf) continue;
       const window = computeCandleLoadWindow({
@@ -385,6 +401,14 @@ export async function executeOptimization(
           'failed to load candles for timeframe',
         );
       }
+
+      updateComputeJobProgress(opt, {
+        completed: tfIndex + 1,
+        total: requiredTfs.length,
+        stage: 'loading_market_data',
+      });
+      lastHeartbeatPersistMs = Date.now();
+      await db.write().catch(() => {});
     }
 
     if (candleSets.length === 0) {
@@ -566,7 +590,8 @@ export async function executeOptimization(
         completed: opt.evaluatedCandidates,
         total: candidates.length,
         forceEvery: 25,
-      })) {
+      }) || Date.now() - lastHeartbeatPersistMs >= HEARTBEAT_PERSIST_MS) {
+        lastHeartbeatPersistMs = Date.now();
         await db.write().catch(() => {});
       }
     }

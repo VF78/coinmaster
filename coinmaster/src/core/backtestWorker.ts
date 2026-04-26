@@ -126,7 +126,8 @@ export async function executeBacktestRun(
     // Load candles for all required timeframes
     const candleSets: BacktestCandleSet[] = [];
 
-    for (const tf of requiredTfs) {
+    for (let tfIndex = 0; tfIndex < requiredTfs.length; tfIndex++) {
+      const tf = requiredTfs[tfIndex];
       const candleTf = TF_LABEL_TO_CANDLE_TF[tf];
       if (!candleTf) continue;
       const window = computeCandleLoadWindow({
@@ -155,6 +156,15 @@ export async function executeBacktestRun(
           'failed to load candles for timeframe',
         );
       }
+
+      mutateBacktestRun(db, runId, (run) => {
+        updateComputeJobProgress(run, {
+          completed: tfIndex + 1,
+          total: requiredTfs.length,
+          stage: 'loading_market_data',
+        });
+      });
+      await db.write().catch(() => {});
     }
 
     if (candleSets.length === 0) {
