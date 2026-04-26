@@ -42,10 +42,12 @@ const EXTRA_DEXES_ENV = String(process.env.HYPERLIQUID_EXTRA_DEXES || '')
   .map((x) => x.trim().toLowerCase())
   .filter(Boolean);
 
-const INFO_MAX_CONCURRENCY = Math.max(1, Number(process.env.HYPERLIQUID_INFO_MAX_CONCURRENCY || 4));
+const INFO_MAX_CONCURRENCY = Math.max(1, Number(process.env.HYPERLIQUID_INFO_MAX_CONCURRENCY || 1));
 const INFO_MAX_RETRIES = Math.max(0, Number(process.env.HYPERLIQUID_INFO_MAX_RETRIES || 3));
 const INFO_BASE_BACKOFF_MS = Math.max(50, Number(process.env.HYPERLIQUID_INFO_BASE_BACKOFF_MS || 250));
 const INFO_MAX_BACKOFF_MS = Math.max(1000, Number(process.env.HYPERLIQUID_INFO_MAX_BACKOFF_MS || 5000));
+const INFO_MIN_INTERVAL_MS = Math.max(0, Number(process.env.HYPERLIQUID_INFO_MIN_INTERVAL_MS || 500));
+const INFO_RESPONSE_CACHE_TTL_MS = Math.max(0, Number(process.env.HYPERLIQUID_INFO_RESPONSE_CACHE_TTL_MS || 1500));
 
 export class HyperliquidAdapter implements ExchangeAdapter {
   readonly name = 'hyperliquid';
@@ -94,6 +96,8 @@ export class HyperliquidAdapter implements ExchangeAdapter {
       maxRetries: INFO_MAX_RETRIES,
       baseBackoffMs: INFO_BASE_BACKOFF_MS,
       maxBackoffMs: INFO_MAX_BACKOFF_MS,
+      minIntervalMs: INFO_MIN_INTERVAL_MS,
+      responseCacheTtlMs: INFO_RESPONSE_CACHE_TTL_MS,
     });
 
     this.accountAddress = (options.accountAddress ?? process.env.HYPERLIQUID_ACCOUNT_ADDRESS ?? '').trim() || undefined;

@@ -9,10 +9,13 @@ import logger from '../lib/logger.js';
  * previously surfaced as 429/500 errors at startup and during concurrent
  * monitor ticks.
  *
- * Three bounded mechanisms, applied to `info` reads only:
+ * Bounded mechanisms, applied to `info` reads only:
  *   1. In-flight dedupe — simultaneous identical payloads share one fetch.
  *   2. Concurrency cap — hard ceiling on concurrent upstream calls.
- *   3. Retry + backoff — transient 429/5xx and network errors retry with
+ *   3. Global pacing — no bursty upstream starts even when loops wake together.
+ *   4. Short response cache — near-simultaneous sequential identical reads reuse
+ *      a fresh result instead of stampeding after the first request resolves.
+ *   5. Retry + backoff — transient 429/5xx and network errors retry with
  *      jittered exponential backoff, honoring `Retry-After` when present.
  *
  * Keep scope narrow: idempotent info reads only. Order placement goes
@@ -26,6 +29,8 @@ export interface HyperliquidInfoClientOptions {
   maxRetries?: number;
   baseBackoffMs?: number;
   maxBackoffMs?: number;
+  minIntervalMs?: number;
+  responseCacheTtlMs?: number;
 }
 
 interface CoordinatorStats {
@@ -33,9 +38,12 @@ interface CoordinatorStats {
   dedupedRequests: number;
   retries: number;
   failures: number;
+  cachedRequests: number;
   activeCount: number;
   queueLength: number;
   inFlightCount: number;
+  responseCacheCount: number;
+  minIntervalMs: number;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -78,11 +86,16 @@ export class HyperliquidInfoClient {
   private readonly maxRetries: number;
   private readonly baseBackoffMs: number;
   private readonly maxBackoffMs: number;
+  private readonly minIntervalMs: number;
+  private readonly responseCacheTtlMs: number;
 
   private readonly inFlight = new Map<string, Promise<unknown>>();
+  private readonly responseCache = new Map<string, { expiresAtMs: number; value: unknown }>();
   private readonly queue: Array<() => void> = [];
   private activeCount = 0;
-  private readonly stats = { totalRequests: 0, dedupedRequests: 0, retries: 0, failures: 0 };
+  private nextRequestStartAtMs = 0;
+  private paceTail: Promise<void> = Promise.resolve();
+  private readonly stats = { totalRequests: 0, dedupedRequests: 0, retries: 0, failures: 0, cachedRequests: 0 };
 
   constructor(options: HyperliquidInfoClientOptions) {
     this.infoUrl = options.infoUrl;
@@ -91,11 +104,23 @@ export class HyperliquidInfoClient {
     this.maxRetries = Math.max(0, options.maxRetries ?? 3);
     this.baseBackoffMs = Math.max(50, options.baseBackoffMs ?? 250);
     this.maxBackoffMs = Math.max(this.baseBackoffMs, options.maxBackoffMs ?? 5000);
+    this.minIntervalMs = Math.max(0, options.minIntervalMs ?? 500);
+    this.responseCacheTtlMs = Math.max(0, options.responseCacheTtlMs ?? 1500);
   }
 
   async request<T>(payload: unknown): Promise<T> {
     this.stats.totalRequests += 1;
     const dedupeKey = stableStringify(payload);
+
+    const cached = this.responseCache.get(dedupeKey);
+    if (cached) {
+      if (cached.expiresAtMs > Date.now()) {
+        this.stats.cachedRequests += 1;
+        return cached.value as T;
+      }
+      this.responseCache.delete(dedupeKey);
+    }
+
     const existing = this.inFlight.get(dedupeKey);
     if (existing) {
       this.stats.dedupedRequests += 1;
@@ -119,6 +144,8 @@ export class HyperliquidInfoClient {
       activeCount: this.activeCount,
       queueLength: this.queue.length,
       inFlightCount: this.inFlight.size,
+      responseCacheCount: this.responseCache.size,
+      minIntervalMs: this.minIntervalMs,
     };
   }
 
@@ -156,11 +183,40 @@ export class HyperliquidInfoClient {
     return Math.floor(exp + jitter);
   }
 
+  private reserveUpstreamTurn(): Promise<void> {
+    if (this.minIntervalMs <= 0) return Promise.resolve();
+
+    const turn = this.paceTail.then(async () => {
+      const now = Date.now();
+      const waitMs = Math.max(0, this.nextRequestStartAtMs - now);
+      if (waitMs > 0) await sleep(waitMs);
+      this.nextRequestStartAtMs = Date.now() + this.minIntervalMs;
+    });
+
+    this.paceTail = turn.catch(() => undefined);
+    return turn;
+  }
+
+  private rememberResponse(dedupeKey: string, value: unknown): void {
+    if (this.responseCacheTtlMs <= 0) return;
+    const now = Date.now();
+    this.responseCache.set(dedupeKey, { value, expiresAtMs: now + this.responseCacheTtlMs });
+
+    // Opportunistic pruning keeps this bounded without adding a timer.
+    if (this.responseCache.size > 512) {
+      for (const [key, cached] of this.responseCache) {
+        if (cached.expiresAtMs <= now) this.responseCache.delete(key);
+      }
+    }
+  }
+
   private async runWithRetries<T>(payload: unknown, op: string): Promise<T> {
+    const dedupeKey = stableStringify(payload);
     let attempt = 0;
     while (true) {
       let response: Response;
       try {
+        await this.reserveUpstreamTurn();
         response = await this.fetchImpl(this.infoUrl, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
@@ -183,7 +239,9 @@ export class HyperliquidInfoClient {
       }
 
       if (response.ok) {
-        return (await response.json()) as T;
+        const value = (await response.json()) as T;
+        this.rememberResponse(dedupeKey, value);
+        return value;
       }
 
       const status = response.status;
