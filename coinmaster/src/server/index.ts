@@ -13,7 +13,7 @@ import { getDb } from '../core/db.js';
 import { runDeterministicReplay } from '../core/replay.js';
 import { applyBacktestAiAnalysisResult, createQueuedBacktestRun, markBacktestAiAnalysisRequested } from '../core/backtest.js';
 import { createQueuedOptimization } from '../core/optimizerWorker.js';
-import { markComputeJobFailed, reconcileComputeJob } from '../core/computeJob.js';
+import { claimComputeJobForProcess, markComputeJobFailed, reconcileComputeJob } from '../core/computeJob.js';
 import { createExperimentFromRun, ensureExperimentCollections, evaluateChampionAcceptance, promoteChampionTrial } from '../core/experimentGovernance.js';
 import { submitBias } from '../core/services.js';
 import { runSimulationStep } from '../core/simulation.js';
@@ -7421,7 +7421,9 @@ app.post('/api/backtest/runs', ownerAuth, async (req, res) => {
   await db.write();
 
   try {
-    spawnComputeJobProcess('backtest', run.id);
+    const workerPid = spawnComputeJobProcess('backtest', run.id);
+    claimComputeJobForProcess(run, { workerPid });
+    await db.write();
   } catch (err) {
     markComputeJobFailed(run, err instanceof Error ? err.message : String(err), { stage: 'failed' });
     await db.write();
@@ -7497,7 +7499,7 @@ async function reconcileBacktestState(db: Awaited<ReturnType<typeof getDb>>): Pr
   }
 }
 
-function spawnComputeJobProcess(kind: 'backtest' | 'optimization', jobId: string): void {
+function spawnComputeJobProcess(kind: 'backtest' | 'optimization', jobId: string): number | undefined {
   const child = spawn(process.execPath, ['--import', 'tsx/esm', 'src/core/computeJobProcess.ts', kind, jobId], {
     cwd: rootDir,
     detached: true,
@@ -7505,6 +7507,7 @@ function spawnComputeJobProcess(kind: 'backtest' | 'optimization', jobId: string
     env: { ...process.env },
   });
   child.unref();
+  return child.pid;
 }
 
 const OPTIMIZABLE_PARAMS = new Set([
@@ -7630,7 +7633,9 @@ app.post('/api/optimization/start', ownerAuth, async (req, res) => {
   await db.write();
 
   try {
-    spawnComputeJobProcess('optimization', optimization.id);
+    const workerPid = spawnComputeJobProcess('optimization', optimization.id);
+    claimComputeJobForProcess(optimization, { workerPid });
+    await db.write();
   } catch (err) {
     markComputeJobFailed(optimization, err instanceof Error ? err.message : String(err), { stage: 'failed' });
     await db.write();
