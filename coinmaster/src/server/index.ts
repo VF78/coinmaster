@@ -188,9 +188,8 @@ const ALPHA_RADAR_ACTIVITY_LIMIT = 80;
 // ─── Runtime Rules Cache (hot-reloads from DB every 5s) ──────────────
 const rulesCache = new RuntimeRulesCache(5_000);
 const LIVE_SNAPSHOT_CACHE_MS = Math.max(500, Number(process.env.LIVE_SNAPSHOT_CACHE_MS || 2_000));
-const CONFIRM_ACCOUNT_SNAPSHOT_MAX_AGE_MS = Math.max(1_000, Number(process.env.CONFIRM_ACCOUNT_SNAPSHOT_MAX_AGE_MS || 10_000));
+const PENDING_CONFIRMATION_MARGIN_RETRY_BUFFER_PCT = Math.min(100, Math.max(1, Number(process.env.EXECUTION_AVAILABLE_MARGIN_BUFFER_PCT || 90)));
 let liveSnapshotCache: { key: string; expiresAt: number; value: LiveDashboardState } | null = null;
-let lastAccountSnapshot: { fetchedAtMs: number; account: NonNullable<LiveDashboardState['account']> } | null = null;
 let liveSnapshotRefreshInFlight: Promise<LiveDashboardState> | null = null;
 
 /** Build a fresh LIVE_MODE snapshot from current effective rules. */
@@ -224,13 +223,9 @@ async function refreshLiveSnapshotState(symbol: string, mode = getLiveMode()): P
 
   const run = (async () => {
     const value = await buildLiveDashboardState(exchange, symbol, mode, []);
-    const fetchedAtMs = Date.now();
-    if (value.account && Number.isFinite(value.account.equityUsd ?? NaN) && Number.isFinite(value.account.availableUsd ?? NaN)) {
-      lastAccountSnapshot = { fetchedAtMs, account: value.account };
-    }
     liveSnapshotCache = {
       key,
-      expiresAt: fetchedAtMs + LIVE_SNAPSHOT_CACHE_MS,
+      expiresAt: Date.now() + LIVE_SNAPSHOT_CACHE_MS,
       value: { ...value, pendingConfirmations: [] },
     };
     return liveSnapshotCache.value;
@@ -3410,33 +3405,6 @@ async function waitForVerifiedOpenPosition(params: {
   throw new Error(lastError ? `confirm_position_verify_timeout:${lastError}` : 'confirm_position_verify_timeout');
 }
 
-async function getFastConfirmAccountSnapshot(symbol: string): Promise<{ equityUsd: number; availableUsd: number; source: 'live_cache' | 'exchange' }> {
-  const cached = lastAccountSnapshot;
-  if (cached && Date.now() - cached.fetchedAtMs <= CONFIRM_ACCOUNT_SNAPSHOT_MAX_AGE_MS) {
-    const equityUsd = Number(cached.account.equityUsd ?? 0);
-    const availableUsd = Number(cached.account.availableUsd ?? 0);
-    if (Number.isFinite(equityUsd) && equityUsd > 0 && Number.isFinite(availableUsd) && availableUsd > 0) {
-      return { equityUsd, availableUsd, source: 'live_cache' };
-    }
-  }
-
-  const live = await withTradingTimeout(getCachedExchangeLiveState(symbol, getLiveMode()), 1500, 'confirm_live_snapshot');
-  if (live.account && Number.isFinite(live.account.equityUsd ?? NaN) && Number.isFinite(live.account.availableUsd ?? NaN)) {
-    const account = live.account;
-    lastAccountSnapshot = { fetchedAtMs: Date.now(), account };
-    return { equityUsd: Number(account.equityUsd), availableUsd: Number(account.availableUsd), source: 'live_cache' };
-  }
-
-  const account = await withTradingTimeout(exchange.getAccountState(), 10_000, 'confirm_account_state');
-  const equityUsd = Number(account?.equityUsd ?? 0);
-  const availableUsd = Number(account?.availableUsd ?? 0);
-  if (!Number.isFinite(equityUsd) || equityUsd <= 0 || !Number.isFinite(availableUsd) || availableUsd <= 0) {
-    throw new Error('confirm_account_state_unavailable');
-  }
-  lastAccountSnapshot = { fetchedAtMs: Date.now(), account: { equityUsd, availableUsd, usedMarginUsd: account?.usedMarginUsd } };
-  return { equityUsd, availableUsd, source: 'exchange' };
-}
-
 async function executePendingConfirmation(pendingId: string, actor: 'dashboard' | 'telegram'): Promise<{ ok: boolean; error?: string }> {
   const db = await getDb();
   const resolvePending = (): PendingConfirmation | undefined => {
@@ -3489,162 +3457,93 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   });
 
   const placeWithRetry = async (): Promise<{ ack: OrderAck; usedPrice: number; usedSize: number; verifiedPosition: PositionSnapshot | null }> => {
-    const attemptPrices: number[] = [await resolvePendingConfirmationIocPrice(normalizedSymbol, side, pending.price)];
-    let lastAck: Awaited<ReturnType<typeof exchange.placeLimitOrder>> | null = null;
-    let requestedSize = pending.size;
-    let lastSize = requestedSize;
-    let verifiedPosition: PositionSnapshot | null = null;
+    const leverage = Math.max(1, Math.min(Number(pending.leverage || rules.maxLeverage || 1), rules.maxLeverage));
+    const price = await resolvePendingConfirmationIocPrice(normalizedSymbol, side, pending.price);
+    let sizeDecimals = 6;
+    let minSize = 0;
+    try {
+      const meta = await withTradingTimeout(exchange.getInstrumentMeta(normalizedSymbol), 2_500, 'confirm_instrument_meta');
+      if (meta?.sizeDecimals !== undefined) sizeDecimals = Math.max(0, Math.min(8, Number(meta.sizeDecimals)));
+      if (Number.isFinite(Number(meta?.minSize))) minSize = Math.max(0, Number(meta?.minSize));
+    } catch {
+      // Exchange placement still validates venue constraints.
+    }
+    const factor = 10 ** sizeDecimals;
+    const roundSize = (value: number) => Math.floor(value * factor) / factor;
+    const isExecutableSize = (value: number) => Number.isFinite(value) && value > 0 && (minSize <= 0 || value >= minSize);
+    const isInsufficientMargin = (error?: string) => /insufficient\s+(margin|balance)/i.test(String(error ?? ''));
+    const placeOnce = async (size: number, attempt: number): Promise<OrderAck> => withTradingTimeout(exchange.placeLimitOrder({
+      symbol: normalizedSymbol,
+      side,
+      price,
+      size,
+      reduceOnly: false,
+      timeInForce: 'Ioc',
+      clientOrderId: `${correlationId}-${attempt}`,
+    }), 30_000, 'confirm_place_limit_order');
 
-    const resolveExecutableSize = async (price: number, requestedSize: number): Promise<{ ok: true; size: number } | { ok: false; error: string }> => {
-      const account = await getFastConfirmAccountSnapshot(normalizedSymbol);
-      const equityUsd = account.equityUsd;
-      const availableUsd = account.availableUsd;
+    const leverageAck = await withTradingTimeout(exchange.setLeverage(normalizedSymbol, leverage), 15_000, 'confirm_set_leverage');
+    if (!leverageAck.ok) {
+      return {
+        ack: { ok: false, error: leverageAck.error ?? 'confirm_set_leverage_failed' },
+        usedPrice: price,
+        usedSize: 0,
+        verifiedPosition: null,
+      };
+    }
 
-      let sizeDecimals = 6;
-      let minSize = 0;
-      try {
-        const meta = await withTradingTimeout(exchange.getInstrumentMeta(normalizedSymbol), 1500, 'confirm_instrument_meta');
-        if (meta?.sizeDecimals !== undefined) sizeDecimals = Math.max(0, Math.min(8, Number(meta.sizeDecimals)));
-        if (Number.isFinite(Number(meta?.minSize))) minSize = Math.max(0, Number(meta?.minSize));
-      } catch {
-        // best effort; exchange placement will still validate exact venue constraints
+    const adjusted = applyRadarRiskMultiplierToSize(pending.size, pendingIntent?.policySnapshot, sizeDecimals);
+    const initialSize = roundSize(adjusted.size);
+    if (!isExecutableSize(initialSize)) {
+      return {
+        ack: { ok: false, error: 'allocation_sizing_failed:computed_size_zero' },
+        usedPrice: price,
+        usedSize: 0,
+        verifiedPosition: null,
+      };
+    }
+
+    let ack = await placeOnce(initialSize, 1);
+    if (!ack.ok && isInsufficientMargin(ack.error)) {
+      const account = await withTradingTimeout(exchange.getAccountState(), 10_000, 'confirm_account_state');
+      const availableUsd = Number(account?.availableUsd ?? 0);
+      if (!Number.isFinite(availableUsd) || availableUsd <= 0) {
+        return { ack: { ok: false, error: 'confirm_account_state_unavailable' }, usedPrice: price, usedSize: initialSize, verifiedPosition: null };
       }
 
-      const sizing = computeAllocationSize({
+      // Simple rule: if the calculated order is too large for the venue right now,
+      // retry once using current executable perp margin.  Keep a small reserve for
+      // fees/maintenance so "all available" does not immediately bounce again.
+      const retrySize = roundSize((availableUsd * PENDING_CONFIRMATION_MARGIN_RETRY_BUFFER_PCT / 100 * leverage) / price);
+      logger.warn({
+        component: 'pending-confirmation',
+        pendingId: activePendingId,
+        requestedPendingId: pendingId,
         symbol: normalizedSymbol,
-        price,
-        equityUsd,
+        initialSize,
+        retrySize,
         availableUsd,
-        rules,
-        sizeDecimals,
-      });
-      if (!sizing.ok) {
-        return { ok: false, error: `allocation_sizing_failed:${sizing.reason}` };
-      }
+        leverage,
+        err: ack.error,
+      }, 'retrying pending confirmation with current available margin');
 
-      const factor = 10 ** sizeDecimals;
-      const size = Math.floor(Math.min(requestedSize, sizing.size) * factor) / factor;
-      if (!Number.isFinite(size) || size <= 0 || (minSize > 0 && size < minSize)) {
-        return { ok: false, error: 'allocation_sizing_failed:computed_size_zero' };
+      if (!isExecutableSize(retrySize)) {
+        return { ack: { ok: false, error: 'allocation_sizing_failed:computed_size_zero' }, usedPrice: price, usedSize: initialSize, verifiedPosition: null };
       }
-
-      if (size < requestedSize) {
-        logger.info({
-          component: 'pending-confirmation',
-          pendingId: activePendingId,
-          symbol: normalizedSymbol,
-          requestedSize,
-          executableSize: size,
-          equityUsd,
-          availableUsd,
-          sizingNotionalUsd: sizing.notionalUsd,
-          sizingMarginUsd: sizing.marginUsd,
-          accountSource: account.source,
-        }, 'pending confirmation size reduced to executable account state');
+      ack = await placeOnce(retrySize, 2);
+      if (ack.ok) {
+        const verifiedPosition = await waitForVerifiedOpenPosition({ symbol: normalizedSymbol, side, expectedSize: retrySize });
+        return { ack, usedPrice: verifiedPosition.entryPrice ?? price, usedSize: verifiedPosition.size, verifiedPosition };
       }
-
-      return { ok: true, size };
-    };
-
-    if (Number.isFinite(pending.leverage) && pending.leverage > 0) {
-      const lev = Math.min(pending.leverage, rules.maxLeverage);
-      try {
-        const leverageAck = await withTradingTimeout(exchange.setLeverage(normalizedSymbol, lev), 15_000, 'confirm_set_leverage');
-        if (!leverageAck.ok) {
-          return {
-            ack: { ok: false, error: leverageAck.error ?? 'confirm_set_leverage_failed' },
-            usedPrice: pending.price,
-            usedSize: 0,
-            verifiedPosition: null,
-          };
-        }
-      } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
-        logger.warn(
-          { component: 'pending-confirmation', pendingId: pending.id, symbol: normalizedSymbol, err: msg },
-          'set leverage during pending confirmation failed; aborting order submit',
-        );
-        return {
-          ack: { ok: false, error: msg || 'confirm_set_leverage_failed' },
-          usedPrice: pending.price,
-          usedSize: 0,
-          verifiedPosition: null,
-        };
-      }
+      return { ack, usedPrice: price, usedSize: retrySize, verifiedPosition: null };
     }
 
-    for (let attempt = 0; attempt < attemptPrices.length; attempt++) {
-      const price = attemptPrices[attempt];
-
-      try {
-        const adjusted = applyRadarRiskMultiplierToSize(requestedSize, pendingIntent?.policySnapshot);
-        if (!adjusted.size || adjusted.size <= 0) {
-          return {
-            ack: { ok: false, error: 'radar_risk_multiplier_zero_size' },
-            usedPrice: price,
-            usedSize: 0,
-            verifiedPosition: null,
-          };
-        }
-
-        const executable = await resolveExecutableSize(price, adjusted.size);
-        if (!executable.ok) {
-          return {
-            ack: { ok: false, error: executable.error },
-            usedPrice: price,
-            usedSize: 0,
-            verifiedPosition: null,
-          };
-        }
-
-        lastSize = executable.size;
-        const ack = await withTradingTimeout(exchange.placeLimitOrder({
-          symbol: normalizedSymbol,
-          side,
-          price,
-          size: executable.size,
-          reduceOnly: false,
-          timeInForce: 'Ioc',
-          clientOrderId: `${correlationId}-${attempt + 1}`,
-        }), 30_000, 'confirm_place_limit_order');
-
-        if (ack.ok) {
-          verifiedPosition = await waitForVerifiedOpenPosition({ symbol: normalizedSymbol, side, expectedSize: executable.size });
-          return {
-            ack,
-            usedPrice: verifiedPosition.entryPrice ?? price,
-            usedSize: verifiedPosition.size,
-            verifiedPosition,
-          };
-        }
-        lastAck = ack;
-
-        const err = String(ack.error ?? '').toLowerCase();
-        const retryablePriceError = err.includes('tick size') || err.includes('divisible') || err.includes('invalid price') || err.includes('tofixed');
-        const retryableMarginError = err.includes('insufficient margin') || err.includes('insufficient balance');
-        if (attempt === 0 && retryablePriceError) {
-          const mid = await fetchLiveMid(normalizedSymbol);
-          if (mid && Number.isFinite(mid) && mid > 0) {
-            attemptPrices.push(await resolvePendingConfirmationIocPrice(normalizedSymbol, side, mid));
-            logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, requestedPendingId: pendingId, attempt: attempt + 1, originalPrice: price, fallbackMid: mid, err: ack.error }, 'retrying pending confirmation with fresh mid price');
-            continue;
-          }
-        }
-        if (retryableMarginError && attemptPrices.length < 3) {
-          attemptPrices.push(price);
-          requestedSize = Math.floor(executable.size * 0.85 * 1_000_000) / 1_000_000;
-          logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, requestedPendingId: pendingId, attempt: attempt + 1, retrySize: requestedSize, err: ack.error }, 'retrying pending confirmation with reduced size after margin rejection');
-          continue;
-        }
-      } catch (error) {
-        const msg = error instanceof Error ? error.message : 'confirm_place_order_failed';
-        logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, requestedPendingId: pendingId, attempt: attempt + 1, symbol: normalizedSymbol, err: msg }, 'pending confirmation attempt failed');
-        lastAck = { ok: false, error: msg } as Awaited<ReturnType<typeof exchange.placeLimitOrder>>;
-      }
+    if (ack.ok) {
+      const verifiedPosition = await waitForVerifiedOpenPosition({ symbol: normalizedSymbol, side, expectedSize: initialSize });
+      return { ack, usedPrice: verifiedPosition.entryPrice ?? price, usedSize: verifiedPosition.size, verifiedPosition };
     }
 
-    const failedAck: Awaited<ReturnType<typeof exchange.placeLimitOrder>> = lastAck ?? { ok: false, error: 'exchange_rejected' };
-    return { ack: failedAck, usedPrice: pending.price, usedSize: lastSize, verifiedPosition };
+    return { ack, usedPrice: price, usedSize: initialSize, verifiedPosition: null };
   };
 
   const { ack, usedPrice, usedSize, verifiedPosition } = await placeWithRetry();

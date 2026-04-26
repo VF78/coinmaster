@@ -259,7 +259,10 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     const perpAvailable = perpAccountValue !== undefined
       ? Math.max(0, Number(((perpAccountValue ?? 0) - (marginUsed ?? 0)).toFixed(6)))
       : undefined;
-    const availableUsd = spotAvailableUsdc ?? perpAvailable ?? withdrawable;
+    // Perp order sizing must use perp/cross-margin availability.  Spot USDC can
+    // overstate executable margin and lead to Hyperliquid "Insufficient margin"
+    // rejects even when the UI thinks there is enough room.
+    const availableUsd = withdrawable ?? perpAvailable ?? spotAvailableUsdc;
 
     const hasAuthoritativeEquity = Number.isFinite(spotTotalUsdc ?? NaN) && (spotTotalUsdc ?? 0) > 0;
     const hasPartialPerpEquity = Number.isFinite(perpAccountValue ?? NaN) && (perpAccountValue ?? 0) > 0;
@@ -823,12 +826,14 @@ export class HyperliquidAdapter implements ExchangeAdapter {
         ? await (client.exchange.updateLeverage as any)(this.toSdkCoin(symbol), 'cross', leverage, dex)
         : await client.exchange.updateLeverage(this.toSdkCoin(symbol), 'cross', leverage);
       
-      const ok = response !== null && response !== undefined;
+      const status = String(response?.status ?? '').toLowerCase();
+      const rawError = response?.response ?? response?.error ?? response?.err;
+      const ok = status === 'ok' || (status === '' && response !== null && response !== undefined && !rawError);
 
       return {
         ok,
         raw: response,
-        error: ok ? undefined : 'set_leverage_failed'
+        error: ok ? undefined : (rawError ? String(rawError) : 'set_leverage_failed')
       };
     } catch (error) {
       return {
