@@ -18,6 +18,7 @@ import {
   OrderIntent,
   OrderSnapshot,
   PositionSnapshot,
+  TradeCapacitySnapshot,
   TriggerOrderIntent
 } from './types.js';
 
@@ -806,6 +807,28 @@ export class HyperliquidAdapter implements ExchangeAdapter {
     } catch {
       return null;
     }
+  }
+
+  async getTradeCapacity(symbol: string, side: 'buy' | 'sell'): Promise<TradeCapacitySnapshot | null> {
+    const user = await this.resolveEffectiveUser();
+    const normalized = this.normalizeSymbol(symbol);
+    const coin = this.coreSymbol(normalized);
+    if (!coin) return null;
+
+    const raw = await this.requestInfo<any>({ type: 'activeAssetData', user, coin });
+    const index = side === 'buy' ? 0 : 1;
+    const maxSize = this.toNumber(raw?.maxTradeSzs?.[index]) ?? 0;
+    const availableUsd = this.toNumber(raw?.availableToTrade?.[index]);
+    const leverage = this.toNumber(raw?.leverage?.value);
+
+    return {
+      symbol: normalized,
+      side,
+      maxSize: Number.isFinite(maxSize) ? Math.max(0, maxSize) : 0,
+      availableUsd,
+      leverage,
+      raw,
+    };
   }
 
   async placeReduceOnlyExit(intent: OrderIntent): Promise<OrderAck> {

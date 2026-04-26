@@ -32,6 +32,15 @@ export interface AccountSnapshot {
   raw?: unknown;
 }
 
+export interface TradeCapacitySnapshot {
+  symbol: string;
+  side: 'buy' | 'sell';
+  maxSize: number;
+  availableUsd?: number;
+  leverage?: number;
+  raw?: unknown;
+}
+
 export interface OrderSnapshot {
   id: string;
   symbol: string;

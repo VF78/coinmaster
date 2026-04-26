@@ -3505,30 +3505,40 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
 
     let ack = await placeOnce(initialSize, 1);
     if (!ack.ok && isInsufficientMargin(ack.error)) {
-      const account = await withTradingTimeout(exchange.getAccountState(), 10_000, 'confirm_account_state');
-      const availableUsd = Number(account?.availableUsd ?? 0);
-      if (!Number.isFinite(availableUsd) || availableUsd <= 0) {
-        return { ack: { ok: false, error: 'confirm_account_state_unavailable' }, usedPrice: price, usedSize: initialSize, verifiedPosition: null };
+      let retrySize = 0;
+      let availableUsd: number | undefined;
+      let capacityLeverage: number | undefined;
+
+      if (exchange.getTradeCapacity) {
+        const capacity = await withTradingTimeout(exchange.getTradeCapacity(normalizedSymbol, side), 10_000, 'confirm_trade_capacity');
+        retrySize = roundSize(Number(capacity?.maxSize ?? 0) * PENDING_CONFIRMATION_MARGIN_RETRY_BUFFER_PCT / 100);
+        availableUsd = capacity?.availableUsd;
+        capacityLeverage = capacity?.leverage;
+      } else {
+        const account = await withTradingTimeout(exchange.getAccountState(), 10_000, 'confirm_account_state');
+        availableUsd = Number(account?.availableUsd ?? 0);
+        if (!Number.isFinite(availableUsd) || availableUsd <= 0) {
+          return { ack: { ok: false, error: 'confirm_account_state_unavailable' }, usedPrice: price, usedSize: initialSize, verifiedPosition: null };
+        }
+        retrySize = roundSize((availableUsd * PENDING_CONFIRMATION_MARGIN_RETRY_BUFFER_PCT / 100 * leverage) / price);
       }
 
-      // Simple rule: if the calculated order is too large for the venue right now,
-      // retry once using current executable perp margin.  Keep a small reserve for
-      // fees/maintenance so "all available" does not immediately bounce again.
-      const retrySize = roundSize((availableUsd * PENDING_CONFIRMATION_MARGIN_RETRY_BUFFER_PCT / 100 * leverage) / price);
       logger.warn({
         component: 'pending-confirmation',
         pendingId: activePendingId,
         requestedPendingId: pendingId,
         symbol: normalizedSymbol,
+        side,
         initialSize,
         retrySize,
         availableUsd,
         leverage,
+        capacityLeverage,
         err: ack.error,
-      }, 'retrying pending confirmation with current available margin');
+      }, 'retrying pending confirmation with exchange-reported trade capacity');
 
       if (!isExecutableSize(retrySize)) {
-        return { ack: { ok: false, error: 'allocation_sizing_failed:computed_size_zero' }, usedPrice: price, usedSize: initialSize, verifiedPosition: null };
+        return { ack: { ok: false, error: `venue_available_size_zero:${side}` }, usedPrice: price, usedSize: initialSize, verifiedPosition: null };
       }
       ack = await placeOnce(retrySize, 2);
       if (ack.ok) {

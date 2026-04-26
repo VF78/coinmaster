@@ -14,6 +14,7 @@ import {
   OrderIntent,
   OrderSnapshot,
   PositionSnapshot,
+  TradeCapacitySnapshot,
   TriggerOrderIntent
 } from './types.js';
 
@@ -43,6 +44,7 @@ export interface ExchangeAdapter {
   placeReduceOnlyExit(intent: OrderIntent): Promise<OrderAck>;
   setLeverage(symbol: string, leverage: number): Promise<CommandResult>;
   getTopOfBook?(symbol: string): Promise<{ bid: number; ask: number } | null>;
+  getTradeCapacity?(symbol: string, side: 'buy' | 'sell'): Promise<TradeCapacitySnapshot | null>;
 
   // Realtime
   subscribeMids?(options: MidStreamOptions): MidStreamHandle;
