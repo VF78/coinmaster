@@ -1,5 +1,8 @@
 # Radar Runtime
 
+> **2026-04-27 update:** The target implementation path is now autonomous native Freqtrade. This older document remains useful as AS-IS/reference material, but custom CoinMaster execution/backtest/optimizer/Radar runtime should not be treated as the future runtime. See `docs/FREQTRADE_MIGRATION_2026-04-27.md`.
+
+
 This document describes the implemented Radar runtime. If code and this document diverge, treat code as authoritative and fix the doc in the same change.
 
 ## End-to-end flow

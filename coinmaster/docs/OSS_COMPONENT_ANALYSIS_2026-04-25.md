@@ -4,6 +4,12 @@ Status: draft analysis for owner approval. Do not update GitHub Project tasks fr
 
 Related architecture note: `coinmaster/docs/TARGET_ARCHITECTURE_OWNER_DIRECTION_2026-04-25.md`.
 
+## 0. 2026-04-27 supersession note
+
+This document captured the earlier recommendation to extend the custom CoinMaster engine. That recommendation is superseded by the owner decision on 2026-04-27: **migrate fully to autonomous native Freqtrade**.
+
+Use this document only as historical analysis and component background. The active migration plan is `coinmaster/docs/FREQTRADE_MIGRATION_2026-04-27.md`.
+
 ## 1. Current codebase fit
 
 CoinMaster is already closer to a modular event-driven monolith than to a framework-driven external trading bot.
@@ -26,11 +32,11 @@ Current evidence in code:
   - `src/core/computeJobProcess.ts:15`;
   - `src/core/optimizerWorker.ts:44` (`MAX_CANDIDATES`).
 
-This argues for **incremental adoption of libraries**, not replacement of the application with an external trading engine.
+Historical conclusion: this argued for incremental adoption. Superseded conclusion as of 2026-04-27: use the old code as reference only and build an autonomous native Freqtrade core.
 
 ## 2. Replace Trading Rules engine or extend it?
 
-Recommendation: **extend the current Trading Rules engine; do not replace it now.**
+Superseded recommendation: **replace the custom Trading Rules runtime with a native Freqtrade strategy/runtime.**
 
 Reasons:
 
@@ -128,7 +134,7 @@ Cons:
 - Opinionated bot architecture; would become a second system.
 - Replacing CoinMaster with Freqtrade would discard current unified handoff/risk/governance work.
 
-Decision: **do not replace Trading Rules with Freqtrade; borrow ideas only.**
+Decision updated 2026-04-27: **replace the custom Trading Rules runtime with autonomous native Freqtrade.**
 
 #### Hummingbot
 

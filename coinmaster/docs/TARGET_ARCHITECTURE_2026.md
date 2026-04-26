@@ -1,5 +1,8 @@
 # Coinmaster Target Architecture 2026
 
+> **2026-04-27 update:** The target implementation path is now autonomous native Freqtrade. This older document remains useful as AS-IS/reference material, but custom CoinMaster execution/backtest/optimizer/Radar runtime should not be treated as the future runtime. See `docs/FREQTRADE_MIGRATION_2026-04-27.md`.
+
+
 > **Issue:** #21 P1 — Target architecture for 24/7 realtime trading engine
 > **Status:** Draft
 > **Date:** 2026-02-25

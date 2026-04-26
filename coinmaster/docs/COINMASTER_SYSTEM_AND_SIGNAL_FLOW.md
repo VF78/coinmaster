@@ -1,5 +1,8 @@
 # Coinmaster — архитектура, Trading Rules engine, Radar и единый путь открытия сделок
 
+> **2026-04-27 update:** The target implementation path is now autonomous native Freqtrade. This older document remains useful as AS-IS/reference material, but custom CoinMaster execution/backtest/optimizer/Radar runtime should not be treated as the future runtime. See `docs/FREQTRADE_MIGRATION_2026-04-27.md`.
+
+
 _Статус: read-only аудит логики + сводная документация. Код торговой логики не менялся._
 
 Этот документ описывает текущую реализацию Coinmaster по коду репозитория:
