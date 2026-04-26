@@ -102,6 +102,10 @@ export function claimComputeJobForProcess<T extends ComputeJobRecord>(
   } = {},
 ): T {
   const now = options.now ?? new Date().toISOString();
+  job.status = 'running';
+  job.startedAt = job.startedAt ?? now;
+  job.finishedAt = undefined;
+  job.error = undefined;
   job.workerPid = options.workerPid ?? process.pid;
   return updateComputeJobProgress(job, {
     completed: job.progress?.completed ?? 0,
