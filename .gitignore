@@ -3,3 +3,6 @@
 
 # Deploy logs
 /coinmaster/.ops/auto-deploy.log
+
+# Local production backup artifacts
+/prod-backups/
