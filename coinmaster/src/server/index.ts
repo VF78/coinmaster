@@ -3461,6 +3461,56 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
     let lastSize = pending.size;
     let verifiedPosition: PositionSnapshot | null = null;
 
+    const resolveExecutableSize = async (price: number, requestedSize: number): Promise<{ ok: true; size: number } | { ok: false; error: string }> => {
+      const account = await withTradingTimeout(exchange.getAccountState(), 3000, 'confirm_account_state');
+      const equityUsd = Number(account?.equityUsd ?? 0);
+      const availableUsd = Number(account?.availableUsd ?? 0);
+
+      let sizeDecimals = 6;
+      let minSize = 0;
+      try {
+        const meta = await withTradingTimeout(exchange.getInstrumentMeta(normalizedSymbol), 1500, 'confirm_instrument_meta');
+        if (meta?.sizeDecimals !== undefined) sizeDecimals = Math.max(0, Math.min(8, Number(meta.sizeDecimals)));
+        if (Number.isFinite(Number(meta?.minSize))) minSize = Math.max(0, Number(meta?.minSize));
+      } catch {
+        // best effort; exchange placement will still validate exact venue constraints
+      }
+
+      const sizing = computeAllocationSize({
+        symbol: normalizedSymbol,
+        price,
+        equityUsd,
+        availableUsd,
+        rules,
+        sizeDecimals,
+      });
+      if (!sizing.ok) {
+        return { ok: false, error: `allocation_sizing_failed:${sizing.reason}` };
+      }
+
+      const factor = 10 ** sizeDecimals;
+      const size = Math.floor(Math.min(requestedSize, sizing.size) * factor) / factor;
+      if (!Number.isFinite(size) || size <= 0 || (minSize > 0 && size < minSize)) {
+        return { ok: false, error: 'allocation_sizing_failed:computed_size_zero' };
+      }
+
+      if (size < requestedSize) {
+        logger.info({
+          component: 'pending-confirmation',
+          pendingId: activePendingId,
+          symbol: normalizedSymbol,
+          requestedSize,
+          executableSize: size,
+          equityUsd,
+          availableUsd,
+          sizingNotionalUsd: sizing.notionalUsd,
+          sizingMarginUsd: sizing.marginUsd,
+        }, 'pending confirmation size reduced to executable account state');
+      }
+
+      return { ok: true, size };
+    };
+
     if (Number.isFinite(pending.leverage) && pending.leverage > 0) {
       const lev = Math.min(pending.leverage, rules.maxLeverage);
       await withTradingTimeout(exchange.setLeverage(normalizedSymbol, lev), 3000, 'confirm_set_leverage')
@@ -3484,19 +3534,29 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
           };
         }
 
-        lastSize = adjusted.size;
+        const executable = await resolveExecutableSize(price, adjusted.size);
+        if (!executable.ok) {
+          return {
+            ack: { ok: false, error: executable.error },
+            usedPrice: price,
+            usedSize: 0,
+            verifiedPosition: null,
+          };
+        }
+
+        lastSize = executable.size;
         const ack = await withTradingTimeout(exchange.placeLimitOrder({
           symbol: normalizedSymbol,
           side,
           price,
-          size: adjusted.size,
+          size: executable.size,
           reduceOnly: false,
           timeInForce: 'Ioc',
           clientOrderId: `${correlationId}-${attempt + 1}`,
         }), 10_000, 'confirm_place_limit_order');
 
         if (ack.ok) {
-          verifiedPosition = await waitForVerifiedOpenPosition({ symbol: normalizedSymbol, side, expectedSize: adjusted.size });
+          verifiedPosition = await waitForVerifiedOpenPosition({ symbol: normalizedSymbol, side, expectedSize: executable.size });
           return {
             ack,
             usedPrice: verifiedPosition.entryPrice ?? price,

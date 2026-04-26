@@ -10,7 +10,7 @@
  * Cases:
  *   1. Happy-path BTC sizing (equity=100, available=100, BTC 50%, lev 10)
  *   2. Sequential allocation: after BTC margin consumed, SOL sizing
- *   3. Insufficient available margin → allocation_sizing_failed
+ *   3. Low available margin → size clips to executable available-margin cap
  *   4. Disabled symbol → symbol_not_enabled
  *
  * Exit code: 0 = all pass, 1 = failures found.
@@ -148,13 +148,13 @@ console.log('\n── Case 2: SOL after BTC — sequential allocation ──');
 }
 
 // ═════════════════════════════════════════════════════════════════════
-// CASE 3: Insufficient available margin
-//   equity=100, available=10, ETH=30%
-//   → targetMargin = 100 * 0.30 = 30, but available=10 < 30
-//   → reason = 'insufficient_available_margin'
+// CASE 3: Low available margin clips size instead of failing
+//   equity=100, available=10, ETH=30%, leverage=10
+//   → targetMargin = 30, but usable available margin = 9.8 (98% buffer)
+//   → notional = 98, size = floor(98 / 3000, 6 decimals)
 // ═════════════════════════════════════════════════════════════════════
 
-console.log('\n── Case 3: insufficient available margin ──');
+console.log('\n── Case 3: low available margin clips size ──');
 
 {
   const rules = makeRules({
@@ -174,7 +174,12 @@ console.log('\n── Case 3: insufficient available margin ──');
     rules,
   });
 
-  assertError(r, 'insufficient_available_margin', 'ETH with insufficient margin');
+  assert(r.ok === true, 'ETH low-margin outcome is ok');
+  if (r.ok) {
+    assertClose(r.marginUsd, 9.8, 'marginUsd clipped to usable available margin');
+    assertClose(r.notionalUsd, 98, 'notionalUsd clipped to available margin * leverage');
+    assertClose(r.size, 0.032666, 'size clipped to executable quantity', 0.000001);
+  }
 }
 
 // ═════════════════════════════════════════════════════════════════════
