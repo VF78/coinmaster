@@ -21,7 +21,7 @@ docker compose -f freqtrade/docker-compose.yml run --rm freqtrade list-strategie
 docker compose -f freqtrade/docker-compose.yml run --rm freqtrade show-config --config /freqtrade/user_data/config.example.json
 
 # Native Freqtrade download-data currently fails for Hyperliquid historical OHLCV.
-# Build/update the local research dataset from public archives + fresh Hyperliquid candles.
+# Build/update the local Freqtrade dataset (canonical user_data/data layout, Freqtrade DataHandler writes).
 docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade \
   /freqtrade/user_data/scripts/sync_hyperliquid_dataset.py \
   --pairs BTC/USDC:USDC ETH/USDC:USDC SOL/USDC:USDC \
@@ -29,7 +29,7 @@ docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freq
   --timerange 20250701- \
   --archives always
 
-# Backtest current 15m baseline (Hyperliquid public 15m history is ~latest 5k candles)
+# Backtest current 15m baseline using the local Freqtrade dataset
 docker compose -f freqtrade/docker-compose.yml run --rm freqtrade backtesting \
   --config /freqtrade/user_data/config.example.json \
   --strategy CoinMasterStrategy \

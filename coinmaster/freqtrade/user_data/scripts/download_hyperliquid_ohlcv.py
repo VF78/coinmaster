@@ -3,8 +3,8 @@
 
 Freqtrade/CCXT currently reports historical OHLCV download as unavailable for
 Hyperliquid, while Hyperliquid's public info API exposes candles via
-`candleSnapshot`. This bridge keeps Stage 1 research native to Freqtrade by
-writing Freqtrade-compatible futures OHLCV files under user_data/data.
+`candleSnapshot`. This utility keeps Stage 1 research native to Freqtrade by
+writing through Freqtrade's data handler into user_data/data/hyperliquid/futures.
 
 Example inside the official Freqtrade container:
 

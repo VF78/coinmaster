@@ -102,7 +102,7 @@ Freqtrade still returned:
 Historic data not available for Hyperliquid. Hyperliquid does not support downloading trades or ohlcv data.
 ```
 
-Use the dataset sync script, which merges public archival Freqtrade feather files, previous local files, and fresh Hyperliquid `candleSnapshot` candles into Freqtrade-compatible futures OHLCV files:
+Because native `download-data` is unavailable for Hyperliquid, use the repo's Freqtrade-native dataset sync job. It merges public archival Freqtrade feather files, previous local files, and fresh Hyperliquid `candleSnapshot` candles, then writes them through Freqtrade's data handler into the canonical Freqtrade futures data directory (`user_data/data/hyperliquid/futures`). This is an operations/data-maintenance job for Freqtrade, not a runtime dependency on the old CoinMaster engine.
 
 ```bash
 docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freqtrade \
@@ -115,10 +115,12 @@ docker compose -f freqtrade/docker-compose.yml run --rm --entrypoint python freq
 
 Current dataset strategy:
 
+- use standard Freqtrade pair names and data layout, e.g. `BTC/USDC:USDC` → `user_data/data/hyperliquid/futures/BTC_USDC_USDC-15m-futures.feather`;
+- write via Freqtrade `get_datahandler(...).ohlcv_store(..., CandleType.FUTURES)`, not custom CSV/runtime adapters;
 - public archival `1m` feather files seed older history and are resampled to `5m/15m/1h/4h`;
 - fresh Hyperliquid `candleSnapshot` pulls update each target timeframe directly;
-- previous local files are merged back in, so the VPS accumulates history over time;
-- generated OHLCV data is local runtime state and ignored by git.
+- previous local Freqtrade files are merged back in, so the VPS accumulates history over time;
+- generated OHLCV data is local Freqtrade runtime state and ignored by git.
 
 Initial sync observed on 2026-04-27:
 
