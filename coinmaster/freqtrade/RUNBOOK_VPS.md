@@ -200,9 +200,16 @@ Operational checks:
 
 ```bash
 cd /opt/coinmaster/coinmaster/freqtrade
-docker compose ps
-docker compose logs --tail=200 freqtrade
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=200 freqtrade
 curl -s http://127.0.0.1:8080/api/v1/ping || true
+```
+
+FreqUI is served by the Freqtrade API server on `127.0.0.1:8080`. Keep it loopback-only by default. For operator access, use an SSH tunnel instead of exposing the port directly:
+
+```bash
+ssh -L 8080:127.0.0.1:8080 <user>@<vps-host>
+# then open http://127.0.0.1:8080 locally
 ```
 
 The example config starts with `initial_state: stopped`; explicitly start trading through FreqUI/Telegram/API only after backtest and dry-run acceptance are met.
