@@ -399,7 +399,10 @@ export async function executeOptimization(
   if (!opt) {
     throw new Error(`optimization_not_found:${optimizationId}`);
   }
-  if (opt.status !== 'queued' && !(opt.status === 'running' && opt.workerPid === process.pid)) {
+  const resumableFailed = opt.status === 'failed'
+    && Number(opt.evaluatedCandidates ?? 0) > 0
+    && Number(opt.evaluatedCandidates ?? 0) < Number(opt.totalCandidates ?? Infinity);
+  if (opt.status !== 'queued' && !(opt.status === 'running' && opt.workerPid === process.pid) && !resumableFailed) {
     throw new Error(`optimization_not_queued:${opt.status}`);
   }
 
