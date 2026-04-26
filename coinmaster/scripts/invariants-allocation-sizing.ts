@@ -150,8 +150,8 @@ console.log('\n── Case 2: SOL after BTC — sequential allocation ──');
 // ═════════════════════════════════════════════════════════════════════
 // CASE 3: Low available margin clips size instead of failing
 //   equity=100, available=10, ETH=30%, leverage=10
-//   → targetMargin = 30, but usable available margin = 9.8 (98% buffer)
-//   → notional = 98, size = floor(98 / 3000, 6 decimals)
+//   → targetMargin = 30, but usable available margin = 9 (90% buffer)
+//   → notional = 90, size = floor(90 / 3000, 6 decimals)
 // ═════════════════════════════════════════════════════════════════════
 
 console.log('\n── Case 3: low available margin clips size ──');
@@ -176,9 +176,9 @@ console.log('\n── Case 3: low available margin clips size ──');
 
   assert(r.ok === true, 'ETH low-margin outcome is ok');
   if (r.ok) {
-    assertClose(r.marginUsd, 9.8, 'marginUsd clipped to usable available margin');
-    assertClose(r.notionalUsd, 98, 'notionalUsd clipped to available margin * leverage');
-    assertClose(r.size, 0.032666, 'size clipped to executable quantity', 0.000001);
+    assertClose(r.marginUsd, 9, 'marginUsd clipped to usable available margin');
+    assertClose(r.notionalUsd, 90, 'notionalUsd clipped to available margin * leverage');
+    assertClose(r.size, 0.03, 'size clipped to executable quantity', 0.000001);
   }
 }
 

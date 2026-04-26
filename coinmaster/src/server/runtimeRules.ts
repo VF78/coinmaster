@@ -8,7 +8,7 @@ const ENV_MAX_LEVERAGE = Number(process.env.LIVE_MAX_LEVERAGE || 10);
 const ENV_MANUAL_CONFIRMATION = String(process.env.LIVE_MANUAL_CONFIRMATION ?? 'true').toLowerCase() !== 'false';
 const ENV_DAILY_DD_LIMIT_PCT = Number(process.env.LIVE_DAILY_DD_LIMIT_PCT || 20);
 const ENV_PORTFOLIO_LEVERAGE_CAP = Number(process.env.LIVE_PORTFOLIO_LEVERAGE_CAP || 10);
-const EXECUTION_AVAILABLE_MARGIN_BUFFER_PCT = Math.min(100, Math.max(1, Number(process.env.EXECUTION_AVAILABLE_MARGIN_BUFFER_PCT || 98)));
+const EXECUTION_AVAILABLE_MARGIN_BUFFER_PCT = Math.min(100, Math.max(1, Number(process.env.EXECUTION_AVAILABLE_MARGIN_BUFFER_PCT || 90)));
 
 export interface EffectiveRules {
   manualConfirmation: boolean;

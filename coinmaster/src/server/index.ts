@@ -3458,7 +3458,8 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
   const placeWithRetry = async (): Promise<{ ack: OrderAck; usedPrice: number; usedSize: number; verifiedPosition: PositionSnapshot | null }> => {
     const attemptPrices: number[] = [await resolvePendingConfirmationIocPrice(normalizedSymbol, side, pending.price)];
     let lastAck: Awaited<ReturnType<typeof exchange.placeLimitOrder>> | null = null;
-    let lastSize = pending.size;
+    let requestedSize = pending.size;
+    let lastSize = requestedSize;
     let verifiedPosition: PositionSnapshot | null = null;
 
     const resolveExecutableSize = async (price: number, requestedSize: number): Promise<{ ok: true; size: number } | { ok: false; error: string }> => {
@@ -3513,18 +3514,36 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
 
     if (Number.isFinite(pending.leverage) && pending.leverage > 0) {
       const lev = Math.min(pending.leverage, rules.maxLeverage);
-      await withTradingTimeout(exchange.setLeverage(normalizedSymbol, lev), 3000, 'confirm_set_leverage')
-        .catch((error) => logger.warn(
-          { component: 'pending-confirmation', pendingId: pending.id, symbol: normalizedSymbol, err: error instanceof Error ? error.message : String(error) },
-          'set leverage during pending confirmation failed; submitting stored order anyway',
-        ));
+      try {
+        const leverageAck = await withTradingTimeout(exchange.setLeverage(normalizedSymbol, lev), 15_000, 'confirm_set_leverage');
+        if (!leverageAck.ok) {
+          return {
+            ack: { ok: false, error: leverageAck.error ?? 'confirm_set_leverage_failed' },
+            usedPrice: pending.price,
+            usedSize: 0,
+            verifiedPosition: null,
+          };
+        }
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        logger.warn(
+          { component: 'pending-confirmation', pendingId: pending.id, symbol: normalizedSymbol, err: msg },
+          'set leverage during pending confirmation failed; aborting order submit',
+        );
+        return {
+          ack: { ok: false, error: msg || 'confirm_set_leverage_failed' },
+          usedPrice: pending.price,
+          usedSize: 0,
+          verifiedPosition: null,
+        };
+      }
     }
 
     for (let attempt = 0; attempt < attemptPrices.length; attempt++) {
       const price = attemptPrices[attempt];
 
       try {
-        const adjusted = applyRadarRiskMultiplierToSize(pending.size, pendingIntent?.policySnapshot);
+        const adjusted = applyRadarRiskMultiplierToSize(requestedSize, pendingIntent?.policySnapshot);
         if (!adjusted.size || adjusted.size <= 0) {
           return {
             ack: { ok: false, error: 'radar_risk_multiplier_zero_size' },
@@ -3553,7 +3572,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
           reduceOnly: false,
           timeInForce: 'Ioc',
           clientOrderId: `${correlationId}-${attempt + 1}`,
-        }), 10_000, 'confirm_place_limit_order');
+        }), 30_000, 'confirm_place_limit_order');
 
         if (ack.ok) {
           verifiedPosition = await waitForVerifiedOpenPosition({ symbol: normalizedSymbol, side, expectedSize: executable.size });
@@ -3568,6 +3587,7 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
 
         const err = String(ack.error ?? '').toLowerCase();
         const retryablePriceError = err.includes('tick size') || err.includes('divisible') || err.includes('invalid price') || err.includes('tofixed');
+        const retryableMarginError = err.includes('insufficient margin') || err.includes('insufficient balance');
         if (attempt === 0 && retryablePriceError) {
           const mid = await fetchLiveMid(normalizedSymbol);
           if (mid && Number.isFinite(mid) && mid > 0) {
@@ -3575,6 +3595,12 @@ async function executePendingConfirmation(pendingId: string, actor: 'dashboard' 
             logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, requestedPendingId: pendingId, attempt: attempt + 1, originalPrice: price, fallbackMid: mid, err: ack.error }, 'retrying pending confirmation with fresh mid price');
             continue;
           }
+        }
+        if (retryableMarginError && attemptPrices.length < 3) {
+          attemptPrices.push(price);
+          requestedSize = Math.floor(executable.size * 0.85 * 1_000_000) / 1_000_000;
+          logger.warn({ component: 'pending-confirmation', pendingId: activePendingId, requestedPendingId: pendingId, attempt: attempt + 1, retrySize: requestedSize, err: ack.error }, 'retrying pending confirmation with reduced size after margin rejection');
+          continue;
         }
       } catch (error) {
         const msg = error instanceof Error ? error.message : 'confirm_place_order_failed';
