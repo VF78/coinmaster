@@ -205,7 +205,16 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=200 
 curl -s http://127.0.0.1:8080/api/v1/ping || true
 ```
 
-FreqUI is served by the Freqtrade API server on `127.0.0.1:8080`. Keep it loopback-only by default. For operator access, use an SSH tunnel instead of exposing the port directly:
+FreqUI is served by the Freqtrade API server on `127.0.0.1:8080`. Keep the Freqtrade container loopback-only by default.
+
+Current production reverse proxy layout on `coinmaster24.com`:
+
+- `https://coinmaster24.com/` → FreqUI (`127.0.0.1:8080`)
+- `https://coinmaster24.com/api/v1/` → Freqtrade API
+- `https://coinmaster24.com/old/` → old CoinMaster UI (`127.0.0.1:8787`) for migration reference
+- `https://coinmaster24.com/api/` except `/api/v1/` → old CoinMaster backend API for the old UI
+
+If public domain access should be avoided during maintenance, use an SSH tunnel instead:
 
 ```bash
 ssh -L 8080:127.0.0.1:8080 <user>@<vps-host>
