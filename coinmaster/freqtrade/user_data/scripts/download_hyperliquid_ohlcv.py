@@ -41,9 +41,10 @@ INTERVAL_MS = {
     "12h": 12 * 60 * 60_000,
     "1d": 24 * 60 * 60_000,
 }
-# Hyperliquid truncates large candleSnapshot responses. Keep chunks small
-# enough that the requested start/end range is preserved for 15m candles.
-MAX_CANDLES_PER_REQUEST = 1_000
+# Safety brake for backward pagination. candleSnapshot returns the latest
+# available chunk inside [startTime, endTime], so we move endTime backward from
+# the first returned candle until the requested start is reached.
+MAX_REQUESTS_PER_JOB = 2_000
 
 
 def parse_yyyymmdd(value: str) -> int:
@@ -94,15 +95,27 @@ def fetch_pair_timeframe(session: requests.Session, pair: str, timeframe: str, s
         raise ValueError(f"Unsupported timeframe for Hyperliquid candleSnapshot: {timeframe}")
 
     coin = pair_to_coin(pair)
-    step_ms = INTERVAL_MS[timeframe] * MAX_CANDLES_PER_REQUEST
-    cursor = start_ms
+    interval_ms = INTERVAL_MS[timeframe]
+    cursor_end_ms = end_ms
     rows: list[dict] = []
+    calls = 0
 
-    while cursor < end_ms:
-        chunk_end = min(cursor + step_ms, end_ms)
-        candles = request_candles(session, coin, timeframe, cursor, chunk_end)
+    while cursor_end_ms > start_ms:
+        candles = request_candles(session, coin, timeframe, start_ms, cursor_end_ms)
+        calls += 1
+        if not candles:
+            break
+
         rows.extend(candles)
-        cursor = chunk_end + INTERVAL_MS[timeframe]
+        first_ts_ms = min(int(candle["t"]) for candle in candles)
+        next_end_ms = first_ts_ms - interval_ms
+        if next_end_ms >= cursor_end_ms:
+            break
+        cursor_end_ms = next_end_ms
+
+        if calls >= MAX_REQUESTS_PER_JOB:
+            raise RuntimeError(f"Too many Hyperliquid requests for {pair} {timeframe}; aborting")
+
         # Public endpoint: be polite and avoid rate-limit spikes.
         time.sleep(0.5)
 
