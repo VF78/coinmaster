@@ -4,7 +4,7 @@ import { useDialog } from './components/DialogProvider';
 import { Card } from './components/Card';
 import { Badge } from './components/Badge';
 import { Button } from './components/Button';
-import { getAlphaRadarIdeas, getFreqtradeRadarPolicy, refreshFreqtradeRadarPolicy, type FreqtradeRadarPolicyResponse, type FreqtradeRadarPolicyScope } from './lib/api';
+import { getAlphaRadarIdeas, getAlphaRadarSettings, getFreqtradeRadarPolicy, getRadarRuntimeSettings, refreshFreqtradeRadarPolicy, saveAlphaRadarSettings, saveRadarRuntimeSettings, type FreqtradeRadarPolicyResponse, type FreqtradeRadarPolicyScope } from './lib/api';
 
  type PageKey = 'trading-rules' | 'radar' | 'backtest';
 
@@ -21,6 +21,25 @@ function radarTone(scope?: FreqtradeRadarPolicyScope): 'success' | 'danger' | 'n
   return 'success';
 }
 
+function statusIcon(ok: boolean | undefined) {
+  return ok ? '🟢' : '🔴';
+}
+
+function sourceIcon(source: string) {
+  const text = source.toLowerCase();
+  if (text.includes('telegram')) return '✈️';
+  if (text.includes('reddit')) return '👽';
+  if (text.includes('bluesky')) return '🦋';
+  if (text.includes('market')) return '📈';
+  if (text.includes('rss') || text.includes('news')) return '📰';
+  if (text.includes('macro')) return '🌍';
+  return '🔌';
+}
+
+function pairAsset(pair: string) {
+  return pair.split('/', 1)[0].replace('-', ':');
+}
+
 function formatTimestamp(value?: string) {
   if (!value) return '—';
   const date = new Date(value);
@@ -30,18 +49,25 @@ function formatTimestamp(value?: string) {
 function RadarPolicyPage() {
   const [payload, setPayload] = useState<FreqtradeRadarPolicyResponse | null>(null);
   const [ideasPayload, setIdeasPayload] = useState<Awaited<ReturnType<typeof getAlphaRadarIdeas>> | null>(null);
+  const [alphaSettings, setAlphaSettings] = useState<Awaited<ReturnType<typeof getAlphaRadarSettings>>['settings'] | null>(null);
+  const [radarRuntime, setRadarRuntime] = useState<Awaited<ReturnType<typeof getRadarRuntimeSettings>>['runtime'] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
     try {
-      const [policyResult, ideasResult] = await Promise.all([
+      const [policyResult, ideasResult, alphaResult, runtimeResult] = await Promise.all([
         getFreqtradeRadarPolicy(),
         getAlphaRadarIdeas().catch(() => null),
+        getAlphaRadarSettings().catch(() => null),
+        getRadarRuntimeSettings().catch(() => null),
       ]);
       setPayload(policyResult);
       setIdeasPayload(ideasResult);
+      if (alphaResult?.settings) setAlphaSettings(alphaResult.settings);
+      if (runtimeResult?.runtime) setRadarRuntime(runtimeResult.runtime);
       setMessage(null);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : String(error));
@@ -53,11 +79,46 @@ function RadarPolicyPage() {
   async function refresh() {
     try {
       const result = await refreshFreqtradeRadarPolicy();
-      setPayload({ ok: true, enabled: result.enabled, path: result.path, generated: result.policy, disk: result.policy });
+      setPayload({ ok: true, enabled: result.enabled, radarEnabled: result.radarEnabled, path: result.path, generated: result.policy, disk: result.policy });
       setIdeasPayload(await getAlphaRadarIdeas().catch(() => null));
-      setMessage('Radar policy refreshed.');
+      setMessage('Radar refreshed.');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function toggleRadar() {
+    if (!alphaSettings || !radarRuntime) return;
+    const nextEnabled = !(alphaSettings.enabled && radarRuntime.enabled);
+    setBusy('radar');
+    try {
+      const [alphaResult, runtimeResult] = await Promise.all([
+        saveAlphaRadarSettings({ ...alphaSettings, enabled: nextEnabled }),
+        saveRadarRuntimeSettings({ enabled: nextEnabled }),
+      ]);
+      setAlphaSettings(alphaResult.settings);
+      setRadarRuntime(runtimeResult.runtime);
+      await refresh();
+      setMessage(nextEnabled ? 'Radar enabled.' : 'Radar disabled.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function toggleAutoConfirm() {
+    if (!radarRuntime) return;
+    setBusy('confirm');
+    try {
+      const result = await saveRadarRuntimeSettings({ autoConfirm: !radarRuntime.autoConfirm });
+      setRadarRuntime(result.runtime);
+      await refresh();
+      setMessage(result.runtime.autoConfirm ? 'Auto confirm enabled.' : 'Manual confirm enabled.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -70,105 +131,164 @@ function RadarPolicyPage() {
   const policy = payload?.disk ?? payload?.generated;
   const pairs = Object.entries(policy?.pairs ?? {});
   const diagnostics = policy?.diagnostics ?? {};
-  const global = policy?.global;
   const summary = ideasPayload?.marketSummary;
+  const radarEnabled = Boolean((payload?.radarEnabled ?? policy?.global.enabled) && alphaSettings?.enabled !== false && radarRuntime?.enabled !== false);
+  const engineConnected = Boolean(payload?.enabled && policy && policy.global.enabled && !payload?.diskError);
+  const connectors = ideasPayload?.connectorRuntimes ?? [];
+  const connectorProblems = connectors.filter((item) => item.enabled && item.state.lastSyncStatus === 'error').length;
+  const sourceHealth = (summary?.sourceHealth ?? []).slice(0, 8);
+  const monitoredAssets = pairs.length > 0 ? pairs.map(([pair]) => pairAsset(pair)) : [];
   const funnelSteps = [
-    { label: 'Collected', value: (summary?.evidenceBundles ?? 0) + (summary?.dedupeSuppressed ?? 0), note: 'raw → dedupe' },
-    { label: 'Evidence', value: summary?.evidenceBundles ?? 0, note: 'active bundles' },
-    { label: 'Candidates', value: summary?.signalCandidates ?? 0, note: 'scored context' },
-    { label: 'Policy', value: summary?.activeRadarContextPolicies ?? pairs.length, note: 'active decisions' },
-    { label: 'Freqtrade', value: pairs.length, note: 'pair overrides' },
+    { icon: '📡', label: 'Collected', value: (summary?.evidenceBundles ?? 0) + (summary?.dedupeSuppressed ?? 0), hint: 'Raw items' },
+    { icon: '🧹', label: 'Deduped', value: summary?.dedupeSuppressed ?? 0, hint: 'Noise removed' },
+    { icon: '🧩', label: 'Evidence', value: summary?.evidenceBundles ?? 0, hint: 'Useful clusters' },
+    { icon: '🎯', label: 'Candidates', value: summary?.signalCandidates ?? 0, hint: 'Scored ideas' },
+    { icon: '🧠', label: 'Policy', value: summary?.activeRadarContextPolicies ?? pairs.length, hint: 'Decisions' },
+    { icon: '⚙️', label: 'Engine', value: pairs.length, hint: 'Sent to Freqtrade' },
   ];
 
   return (
-    <main className="terminal-layout radar-simple-page">
+    <main className="radar-ux-page">
+      {message ? <div className="radar-ux-toast">{message}</div> : null}
+      {loading && !policy ? <p className="muted">Loading Radar…</p> : null}
+
       <Card
-        title="Freqtrade Radar policy"
-        className="terminal-card radar-simple-card"
-        actions={<Badge tone={payload?.enabled ? 'success' : 'neutral'}>{payload?.enabled ? 'producer on' : 'producer off'}</Badge>}
+        title="1. Radar status"
+        className="terminal-card radar-ux-card"
+        actions={<Badge tone={radarEnabled ? 'success' : 'danger'}>{radarEnabled ? 'ON' : 'OFF'}</Badge>}
       >
-        <div className="radar-simple-stack">
-          {message ? <p className="muted">{message}</p> : null}
-          {loading && !policy ? <p className="muted">Loading Radar policy…</p> : null}
+        <div className="radar-status-hero">
+          <div className={radarEnabled ? 'radar-status-orb radar-status-orb--on' : 'radar-status-orb radar-status-orb--off'}>{radarEnabled ? '🟢' : '⏸️'}</div>
+          <div>
+            <h2>{radarEnabled ? 'Radar is watching the market' : 'Radar is paused'}</h2>
+            <p className="muted">{engineConnected ? 'Policy stream to Freqtrade is healthy.' : 'No active policy stream is reaching Freqtrade.'}</p>
+          </div>
+        </div>
 
-          <section className="radar-simple-section">
-            <div className="radar-simple-section__header">
-              <h3>Policy snapshot</h3>
-              <Button variant="secondary" onClick={() => { void refresh(); }}>Refresh</Button>
-            </div>
-            <div className="radar-simple-row">
-              <div className="radar-inline-stat"><span className="muted radar-simple-label">Updated</span><strong>{formatTimestamp(policy?.updated_at)}</strong></div>
-              <div className="radar-inline-stat"><span className="muted radar-simple-label">Valid until</span><strong>{formatTimestamp(policy?.valid_until)}</strong></div>
-              <div className="radar-inline-stat"><span className="muted radar-simple-label">Path</span><strong>{payload?.path ?? '—'}</strong></div>
-            </div>
-          </section>
+        <div className="radar-big-grid">
+          <div className="radar-big-tile">
+            <span className="radar-big-icon">{statusIcon(radarEnabled)}</span>
+            <strong>Observation</strong>
+            <p>{radarEnabled ? 'Working' : 'Stopped'}</p>
+          </div>
+          <div className="radar-big-tile">
+            <span className="radar-big-icon">{statusIcon(engineConnected)}</span>
+            <strong>Freqtrade link</strong>
+            <p>{engineConnected ? 'Sending policy' : 'Neutral / disabled'}</p>
+          </div>
+          <div className="radar-big-tile">
+            <span className="radar-big-icon">🔌</span>
+            <strong>Sources</strong>
+            <p>{connectors.filter((item) => item.enabled).length} on · {connectorProblems} down</p>
+          </div>
+          <div className="radar-big-tile">
+            <span className="radar-big-icon">🪙</span>
+            <strong>Trading assets</strong>
+            <p>{monitoredAssets.length ? monitoredAssets.join(' · ') : 'No active overrides'}</p>
+          </div>
+        </div>
 
-          <section className="radar-simple-section">
-            <div className="radar-simple-section__header">
-              <h3>Global guard</h3>
-              <Badge tone={radarTone(global)}>{global?.mode ?? 'both'}</Badge>
-            </div>
-            <div className="radar-chip-grid">
-              <span className="radar-chip">risk ×{global?.risk_multiplier ?? 1}</span>
-              <span className={`radar-chip ${global?.lock_new_entries ? 'radar-chip--danger' : 'radar-chip--success'}`}>{global?.lock_new_entries ? 'entries locked' : 'entries open'}</span>
-              <span className="radar-chip radar-chip--muted">{global?.reason ?? 'neutral'}</span>
-            </div>
-          </section>
-
-          <section className="radar-simple-section">
-            <div className="radar-simple-section__header">
-              <h3>Radar funnel</h3>
-              <Badge tone="neutral">transparent flow</Badge>
-            </div>
-            <div className="radar-simple-row radar-simple-row--funnel">
-              {funnelSteps.map((step) => (
-                <div className="radar-inline-stat" key={step.label}>
-                  <span className="muted radar-simple-label">{step.label}</span>
-                  <strong>{step.value}</strong>
-                  <span className="muted radar-simple-label">{step.note}</span>
-                </div>
-              ))}
-            </div>
-            <div className="radar-chip-grid">
-              <span className="radar-chip radar-chip--muted">deduped: {summary?.dedupeSuppressed ?? 0}</span>
-              <span className="radar-chip radar-chip--muted">locked policies: {summary?.lockedRadarContextPolicies ?? 0}</span>
-              <span className="radar-chip radar-chip--muted">expired policies: {summary?.expiredRadarContextPolicies ?? diagnostics.ignored_expired_policies ?? 0}</span>
-              <span className="radar-chip radar-chip--muted">neutral ignored: {diagnostics.ignored_neutral_policies ?? 0}</span>
-            </div>
-          </section>
-
-          <section className="radar-simple-section">
-            <div className="radar-simple-section__header">
-              <h3>Pair decisions</h3>
-              <Badge tone={pairs.length > 0 ? 'neutral' : 'success'}>{pairs.length} overrides</Badge>
-            </div>
-            {pairs.length === 0 ? (
-              <p className="muted">No active pair overrides. Freqtrade strategy treats Radar as neutral.</p>
-            ) : (
-              <div className="radar-compact-list">
-                {pairs.map(([pair, scope]) => (
-                  <div className="radar-compact-item" key={pair}>
-                    <div className="radar-compact-item__top">
-                      <strong>{pair}</strong>
-                      <Badge tone={radarTone(scope)}>{scope.mode}</Badge>
-                    </div>
-                    <p className="muted">risk ×{scope.risk_multiplier} · {scope.reason}</p>
-                    {scope.reason_codes?.length ? <p className="muted">reasons: {scope.reason_codes.join(', ')}</p> : null}
-                    {scope.signal_candidate_id ? <p className="muted">candidate: {scope.signal_candidate_id}</p> : null}
-                  </div>
-                ))}
+        <details className="radar-details">
+          <summary>Show source and asset details</summary>
+          <div className="radar-source-grid">
+            {connectors.length ? connectors.map((item) => (
+              <div className="radar-source-pill" key={item.type}>
+                <span>{sourceIcon(item.type)}</span>
+                <strong>{item.sourceLabel ?? item.type}</strong>
+                <Badge tone={!item.enabled ? 'neutral' : item.state.lastSyncStatus === 'error' ? 'danger' : item.state.lastSyncStatus === 'success' ? 'success' : 'neutral'}>
+                  {!item.enabled ? 'off' : item.state.lastSyncStatus}
+                </Badge>
               </div>
-            )}
+            )) : <p className="muted">No connector runtime data yet.</p>}
+          </div>
+          <div className="radar-chip-grid">
+            {sourceHealth.map((source) => (
+              <span className={`radar-chip ${source.status === 'fresh' ? 'radar-chip--success' : source.status === 'stale' ? 'radar-chip--danger' : 'radar-chip--muted'}`} key={source.source}>
+                {sourceIcon(source.source)} {source.source}: {source.status}
+              </span>
+            ))}
+            {monitoredAssets.map((asset) => <span className="radar-chip" key={asset}>🪙 {asset}</span>)}
+          </div>
+        </details>
+      </Card>
+
+      <Card title="2. Live feed" className="terminal-card radar-ux-card">
+        <div className="radar-funnel">
+          {funnelSteps.map((step, index) => (
+            <div className="radar-funnel-step" key={step.label}>
+              <div className="radar-funnel-icon">{step.icon}</div>
+              <div className="radar-funnel-value">{step.value}</div>
+              <strong>{step.label}</strong>
+              <span>{step.hint}</span>
+              {index < funnelSteps.length - 1 ? <div className="radar-funnel-arrow">→</div> : null}
+            </div>
+          ))}
+        </div>
+
+        <section className="radar-engine-signals">
+          <div className="radar-simple-section__header">
+            <h3>Now translated to trading engine</h3>
+            <Badge tone={pairs.length ? 'success' : 'neutral'}>{pairs.length} active</Badge>
+          </div>
+          {pairs.length ? (
+            <div className="radar-signal-grid">
+              {pairs.map(([pair, scope]) => (
+                <article className="radar-signal-card" key={pair}>
+                  <div className="radar-signal-pair"><span>🪙</span><strong>{pairAsset(pair)}</strong><Badge tone={radarTone(scope)}>{scope.mode}</Badge></div>
+                  <div className="radar-risk-meter"><span style={{ width: `${Math.round(Math.max(0, Math.min(1, scope.risk_multiplier)) * 100)}%` }} /></div>
+                  <p>Risk ×{scope.risk_multiplier} · {scope.reason.replaceAll('_', ' ')}</p>
+                  <details>
+                    <summary>Why?</summary>
+                    <p className="muted">Candidate: {scope.signal_candidate_id ?? 'n/a'}</p>
+                    <p className="muted">Evidence: {scope.evidence_ids?.join(', ') || 'n/a'}</p>
+                    <p className="muted">Reason codes: {scope.reason_codes?.join(', ') || 'context_policy'}</p>
+                  </details>
+                </article>
+              ))}
+            </div>
+          ) : <p className="muted">Radar is neutral now: no pair-specific signal is being sent to Freqtrade.</p>}
+        </section>
+
+        <details className="radar-details">
+          <summary>Show funnel diagnostics</summary>
+          <div className="radar-chip-grid">
+            <span className="radar-chip radar-chip--muted">ignored neutral: {diagnostics.ignored_neutral_policies ?? 0}</span>
+            <span className="radar-chip radar-chip--muted">expired: {diagnostics.ignored_expired_policies ?? summary?.expiredRadarContextPolicies ?? 0}</span>
+            <span className="radar-chip radar-chip--muted">locked: {summary?.lockedRadarContextPolicies ?? 0}</span>
+            <span className="radar-chip radar-chip--muted">policy accepted: {summary?.policyAcceptedEntries ?? 0}</span>
+            <span className="radar-chip radar-chip--muted">policy blocked: {summary?.policyBlockedEntries ?? 0}</span>
+          </div>
+        </details>
+      </Card>
+
+      <Card title="3. Settings" className="terminal-card radar-ux-card">
+        <div className="radar-settings-grid">
+          <section className="radar-setting-block">
+            <div>
+              <h3>Radar master switch</h3>
+              <p className="muted">One switch for observation + Freqtrade policy handoff.</p>
+            </div>
+            <Button variant={radarEnabled ? 'danger' : 'primary'} onClick={() => { void toggleRadar(); }} disabled={busy !== null || !alphaSettings || !radarRuntime} fullWidth>
+              {radarEnabled ? 'Turn Radar off' : 'Turn Radar on'}
+            </Button>
           </section>
 
-          <section className="radar-simple-section">
-            <div className="radar-simple-section__header"><h3>Diagnostics</h3></div>
-            <div className="radar-chip-grid">
-              {Object.entries(diagnostics).map(([key, value]) => (
-                <span className="radar-chip radar-chip--muted" key={key}>{key}: {value}</span>
-              ))}
-              {payload?.diskError ? <span className="radar-chip radar-chip--danger">disk: {payload.diskError}</span> : null}
+          <section className="radar-setting-block">
+            <div>
+              <h3>Confirmation mode</h3>
+              <p className="muted">Policy handoff stays native Freqtrade; this only controls legacy handoff confirmations.</p>
             </div>
+            <Button variant={radarRuntime?.autoConfirm ? 'danger' : 'secondary'} onClick={() => { void toggleAutoConfirm(); }} disabled={busy !== null || !radarRuntime} fullWidth>
+              {radarRuntime?.autoConfirm ? 'Auto confirm on' : 'Manual confirm'}
+            </Button>
+          </section>
+
+          <section className="radar-setting-block">
+            <div>
+              <h3>Snapshot</h3>
+              <p className="muted">Updated {formatTimestamp(policy?.updated_at)} · valid until {formatTimestamp(policy?.valid_until)}</p>
+            </div>
+            <Button variant="secondary" onClick={() => { void refresh(); }} disabled={busy !== null} fullWidth>Refresh now</Button>
           </section>
         </div>
       </Card>

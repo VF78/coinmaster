@@ -256,13 +256,22 @@ const FREQTRADE_RADAR_POLICY_TTL_MS = Math.max(60_000, Number(process.env.FREQTR
 
 async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>, nowIso = new Date().toISOString()) {
   const rules = normalizeTradingRules(db.data.settings.tradingRules);
-  const policies = syncRadarContextPolicies({ db, nowIso });
+  const alphaSettings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
+  const radarRuntime = normalizeRadarRuntimeFromSettings(db.data.settings);
+  const radarEnabled = alphaSettings.enabled && radarRuntime.enabled;
+  const policies = radarEnabled ? syncRadarContextPolicies({ db, nowIso }) : [];
   const payload = buildFreqtradeRadarPolicySnapshot({
     policies,
     monitoredCoins: rules.coins,
     nowIso,
     ttlMs: FREQTRADE_RADAR_POLICY_TTL_MS,
   });
+  if (!radarEnabled) {
+    payload.global.enabled = false;
+    payload.global.reason = 'radar_disabled_neutral';
+    payload.pairs = {};
+    payload.diagnostics.active_pair_overrides = 0;
+  }
   if (ENABLE_FREQTRADE_RADAR_POLICY_EXPORT) {
     await mkdir(freqtradeRuntimeDir, { recursive: true });
     await writeJsonAtomic(freqtradeRadarPolicyPath, payload);
@@ -270,6 +279,7 @@ async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>,
   return {
     path: freqtradeRadarPolicyPath,
     enabled: ENABLE_FREQTRADE_RADAR_POLICY_EXPORT,
+    radarEnabled,
     payload,
   };
 }
@@ -8377,6 +8387,7 @@ app.get('/api/freqtrade/radar-policy', ownerAuth, async (_req, res) => {
   return res.json({
     ok: true,
     enabled: generated.enabled,
+    radarEnabled: generated.radarEnabled,
     path: generated.path,
     generated: generated.payload,
     disk: diskPayload,
@@ -8388,7 +8399,7 @@ app.post('/api/freqtrade/radar-policy/refresh', ownerAuth, async (_req, res) => 
   const db = await getDb();
   const result = await exportFreqtradeRadarPolicy(db);
   await db.write();
-  return res.json({ ok: true, enabled: result.enabled, path: result.path, policy: result.payload });
+  return res.json({ ok: true, enabled: result.enabled, radarEnabled: result.radarEnabled, path: result.path, policy: result.payload });
 });
 
 app.post('/api/alpha-radar/collect/market-snapshot', ownerAuth, async (_req, res) => {

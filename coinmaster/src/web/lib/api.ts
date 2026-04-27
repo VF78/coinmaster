@@ -420,6 +420,7 @@ export interface FreqtradeRadarPolicySnapshot {
 export interface FreqtradeRadarPolicyResponse {
   ok: boolean;
   enabled: boolean;
+  radarEnabled?: boolean;
   path: string;
   generated: FreqtradeRadarPolicySnapshot;
   disk?: FreqtradeRadarPolicySnapshot;
@@ -431,7 +432,7 @@ export function getFreqtradeRadarPolicy() {
 }
 
 export function refreshFreqtradeRadarPolicy() {
-  return jsonFetch<{ ok: boolean; enabled: boolean; path: string; policy: FreqtradeRadarPolicySnapshot }>('/api/freqtrade/radar-policy/refresh', {
+  return jsonFetch<{ ok: boolean; enabled: boolean; radarEnabled?: boolean; path: string; policy: FreqtradeRadarPolicySnapshot }>('/api/freqtrade/radar-policy/refresh', {
     method: 'POST',
   });
 }
