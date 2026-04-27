@@ -1029,7 +1029,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         </div>
 
         <p className="stat-note muted">
-          SL is applied through custom_stoploss(); TP1 is applied through custom_exit(). TP2/TP3 are saved for later partial-exit parity.
+          SL is applied through custom_stoploss(); after the first TP fill, the remaining position is protected at break-even. TP exits use native Freqtrade position adjustments: one TP closes 100%; two TPs close 50/50; three TPs close 34/33/33.
           {' '}R:R → TP1: <strong>{slPct > 0 ? ((tpLevels[0] ?? 0) / slPct).toFixed(1) : '—'}:1</strong>
           {tpLevels.length > 1 ? (
             <span> · TP2: <strong>{slPct > 0 ? ((tpLevels[1] ?? 0) / slPct).toFixed(1) : '—'}:1</strong></span>

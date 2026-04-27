@@ -31,7 +31,7 @@ from pandas import DataFrame
 
 import talib.abstract as ta
 from freqtrade.persistence import Trade
-from freqtrade.strategy import DecimalParameter, IntParameter, IStrategy
+from freqtrade.strategy import DecimalParameter, IntParameter, IStrategy, stoploss_from_open
 
 
 logger = logging.getLogger(__name__)
@@ -52,6 +52,8 @@ class CoinMasterStrategy(IStrategy):
     use_exit_signal = True
     exit_profit_only = False
     ignore_roi_if_entry_signal = False
+    position_adjustment_enable = True
+    max_entry_position_adjustment = 0
 
     # Current optimized/default CoinMaster-style params. These are intentionally
     # hyperoptable where Freqtrade supports it cleanly.
@@ -163,6 +165,39 @@ class CoinMasterStrategy(IStrategy):
         if isinstance(value, (int, float)):
             return bool(value)
         return default
+
+    @staticmethod
+    def _tp_current_exit_fraction(level_count: int, completed_exits: int) -> float:
+        """Return the fraction of the *current remaining* position to exit.
+
+        Trading Rules semantics:
+        - 1 TP  -> close 100% at TP1.
+        - 2 TPs -> close 50% at TP1, then 100% of the remainder at TP2.
+        - 3 TPs -> close 34% at TP1, 33% of original at TP2, remainder at TP3.
+
+        Freqtrade partial exits work on current `trade.stake_amount`, which is
+        reduced after every filled partial exit. Therefore TP2 in the 3-level
+        plan closes 33 / 66 = 50% of the remaining stake.
+        """
+        if level_count <= 1:
+            return 1.0
+        if level_count == 2:
+            return 0.5 if completed_exits == 0 else 1.0
+        if completed_exits == 0:
+            return 0.34
+        if completed_exits == 1:
+            return 0.5
+        return 1.0
+
+    @staticmethod
+    def _price_move_pct(trade: Trade, current_rate: float) -> float:
+        open_rate = float(trade.open_rate or 0.0)
+        rate = float(current_rate or 0.0)
+        if open_rate <= 0 or rate <= 0:
+            return 0.0
+        if trade.is_short:
+            return (open_rate - rate) / open_rate * 100.0
+        return (rate - open_rate) / open_rate * 100.0
 
     def _refresh_runtime_rules(self, force: bool = False) -> None:
         path = self.runtime_rules_path if self.runtime_rules_path.exists() else self.fallback_runtime_rules_path
@@ -399,14 +434,6 @@ class CoinMasterStrategy(IStrategy):
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime, current_rate: float,
                     current_profit: float, **kwargs):
         self._refresh_runtime_rules()
-        tp_levels_pct = self._runtime_tuple("tp_levels_pct", self.tp_levels_pct)
-        if tp_levels_pct:
-            open_rate = float(trade.open_rate or 0.0)
-            if open_rate > 0 and current_rate > 0:
-                price_move_pct = ((open_rate - current_rate) / open_rate * 100.0) if trade.is_short else ((current_rate - open_rate) / open_rate * 100.0)
-                if price_move_pct >= tp_levels_pct[0]:
-                    return "tp1_price_move"
-
         bars = self._runtime_int("time_stop_bars", int(self.time_stop_bars.value)) if self._runtime_bool("time_stop_enabled", False) else 0
         if bars > 0:
             elapsed = current_time - trade.open_date_utc
@@ -420,7 +447,69 @@ class CoinMasterStrategy(IStrategy):
         self._refresh_runtime_rules()
         sl_pct = self._runtime_number("sl_pct", self.sl_pct)
         leverage = max(float(getattr(trade, "leverage", 1.0) or 1.0), 1.0)
+
+        # After the first partial TP is filled, protect the remaining position
+        # at break-even using Freqtrade's native custom stoploss helper.
+        if int(getattr(trade, "nr_of_successful_exits", 0) or 0) > 0:
+            breakeven_stop = stoploss_from_open(0.0, current_profit, is_short=trade.is_short, leverage=leverage)
+            if breakeven_stop > 0:
+                return breakeven_stop
+
         return -min(max(sl_pct / 100.0 * leverage, 0.001), 0.99)
+
+    def adjust_trade_position(self, trade: Trade, current_time: datetime,
+                              current_rate: float, current_profit: float,
+                              min_stake: Optional[float], max_stake: float,
+                              current_entry_rate: float, current_exit_rate: float,
+                              current_entry_profit: float, current_exit_profit: float,
+                              **kwargs) -> float | None | tuple[float | None, str | None]:
+        """Native Freqtrade partial take-profit handling.
+
+        This is intentionally strict: only one filled TP adjustment advances the
+        next target, using `trade.nr_of_successful_exits` as durable state. That
+        prevents repeated partial exits on every bot loop while the price remains
+        above the same target.
+        """
+        self._refresh_runtime_rules()
+        if getattr(trade, "has_open_orders", False):
+            return None
+
+        tp_levels_pct = self._runtime_tuple("tp_levels_pct", self.tp_levels_pct)[:3]
+        if not tp_levels_pct:
+            return None
+
+        completed_exits = int(getattr(trade, "nr_of_successful_exits", 0) or 0)
+        if completed_exits >= len(tp_levels_pct):
+            return None
+
+        price_move_pct = self._price_move_pct(trade, current_rate)
+        target_pct = tp_levels_pct[completed_exits]
+        if price_move_pct < target_pct:
+            return None
+
+        current_stake = float(getattr(trade, "stake_amount", 0.0) or 0.0)
+        if current_stake <= 0:
+            return None
+
+        is_final_target = completed_exits >= len(tp_levels_pct) - 1
+        fraction = self._tp_current_exit_fraction(len(tp_levels_pct), completed_exits)
+        stake_to_exit = current_stake if is_final_target else current_stake * fraction
+
+        # Avoid exchange-minimum dust failures on partial exits. If the final TP
+        # is reached, close the full remainder; otherwise wait for the next loop.
+        if min_stake is not None and stake_to_exit < float(min_stake) and not is_final_target:
+            if price_move_pct >= tp_levels_pct[-1]:
+                stake_to_exit = current_stake
+                is_final_target = True
+            else:
+                return None
+
+        stake_to_exit = min(stake_to_exit, current_stake)
+        if stake_to_exit <= 0:
+            return None
+
+        tag = f"tp{completed_exits + 1}_{'final' if is_final_target else 'partial'}"
+        return -stake_to_exit, tag
 
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
                             proposed_stake: float, min_stake: Optional[float], max_stake: float,

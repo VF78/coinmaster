@@ -73,3 +73,17 @@ enables:
 For backtests, add `--enable-protections` when you want protection locks included
 in the result. Live/dry-run runtime reads these from the strategy through native
 Freqtrade protection hooks.
+
+## TP / SL handling
+
+`CoinMasterStrategy` keeps Trading Rules TP/SL in native Freqtrade callbacks:
+
+- `sl_pct` is applied through `custom_stoploss()`.
+- After the first partial TP fills, the remaining position is protected at break-even.
+- `tp_levels_pct` is applied through `adjust_trade_position()` partial exits:
+  - 1 TP level: close 100% at TP1.
+  - 2 TP levels: close 50% at TP1, then the remaining 50% at TP2.
+  - 3 TP levels: close 34% at TP1, 33% at TP2, and the remaining 33% at TP3.
+
+Standard Freqtrade ROI remains disabled with `minimal_roi = {"0": 100}` so the
+Trading Rules ladder owns profit-taking.

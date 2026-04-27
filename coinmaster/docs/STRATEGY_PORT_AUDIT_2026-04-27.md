@@ -135,14 +135,17 @@ Old canonical backtest/live logic:
 - time stop only if no TP1 follow-through;
 - allocation sizing + leverage + optional risk cap + portfolio gross cap.
 
-Current Freqtrade port:
+Current Freqtrade port after Stage 1 cleanup:
 
-- static `stoploss = -0.02`;
-- no real partial TP ladder;
-- no break-even SL after TP1;
-- opposite engulfing exit is enabled even though current `exitClosePct=0` in old rules;
-- time stop closes losing/no-profit trades after configured bars, but does not know whether TP1 fired;
-- stake sizing is simplified and currently uses arbitrary risk default (`3%`).
+- `sl_pct` is applied through `custom_stoploss()`; static `stoploss = -0.99` is only a broad fallback;
+- partial TP ladder is implemented with native Freqtrade `adjust_trade_position()`:
+  - one TP closes 100%;
+  - two TPs close 50/50;
+  - three TPs close 34/33/33;
+- after first TP fill, `custom_stoploss()` protects the remainder at break-even;
+- opposite engulfing exit is controlled by `exitClosePct` / configured emergency exit timeframe;
+- time stop closes losing/no-profit trades after configured bars when enabled;
+- stake sizing now uses Coin Distribution allocation caps plus optional risk and portfolio gross caps.
 
 Recommended refinement:
 
