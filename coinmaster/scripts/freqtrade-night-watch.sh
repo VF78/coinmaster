@@ -20,6 +20,8 @@ APP_RADAR_URL="${APP_RADAR_URL:-http://127.0.0.1:8787/api/freqtrade/radar-policy
 APP_SERVICE="${APP_SERVICE:-coinmaster.service}"
 FREQTRADE_SERVICE="${FREQTRADE_SERVICE:-coinmaster-freqtrade.service}"
 RADAR_POLICY_MAX_STALE_SEC="${RADAR_POLICY_MAX_STALE_SEC:-900}"
+DEPLOY_LOCK="${DEPLOY_LOCK:-/run/coinmaster-deploy.lock}"
+DEPLOY_LOCK_MAX_AGE_SEC="${DEPLOY_LOCK_MAX_AGE_SEC:-1800}"
 mkdir -p "$LOG_DIR"
 
 log() {
@@ -39,6 +41,15 @@ wait_for_http() {
   done
   return 1
 }
+
+if [[ -f "$DEPLOY_LOCK" ]]; then
+  lock_age=$(( $(date +%s) - $(stat -c %Y "$DEPLOY_LOCK" 2>/dev/null || echo 0) ))
+  if [[ "$lock_age" -le "$DEPLOY_LOCK_MAX_AGE_SEC" ]]; then
+    log "deploy lock active; skipping stack watch to avoid false recovery during atomic deploy"
+    exit 0
+  fi
+  log "stale deploy lock ignored after ${lock_age}s"
+fi
 
 if ! wait_for_http "$APP_HEALTH_URL" 2 1; then
   log "CoinMaster app health is down; restarting $APP_SERVICE"

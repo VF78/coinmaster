@@ -15,12 +15,17 @@ OWNER_USER="${OWNER_USER:-coinmaster}"
 OWNER_GROUP="${OWNER_GROUP:-coinmaster}"
 APP_HOST="${APP_HOST:-127.0.0.1}"
 APP_PORT="${APP_PORT:-8787}"
+DEPLOY_LOCK="${DEPLOY_LOCK:-/run/coinmaster-deploy.lock}"
 
 BACKUP_ROOT="$TARGET_DIR/.deploy-backups"
 TS="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$BACKUP_ROOT/$TS"
 
 log() { printf '[deploy-safe] %s\n' "$*"; }
+cleanup_deploy_lock() { rm -f "$DEPLOY_LOCK"; }
+mkdir -p "$(dirname "$DEPLOY_LOCK")"
+printf '%s\n' "$(date -Is) pid=$$" > "$DEPLOY_LOCK"
+trap cleanup_deploy_lock EXIT
 
 move_freqtrade_sqlite_files() {
   local source_dir="$1"
