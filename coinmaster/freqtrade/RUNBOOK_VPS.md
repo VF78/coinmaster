@@ -224,6 +224,8 @@ Trading Rules saved from `/custom` are exported into Freqtrade runtime artifacts
 
 Legacy CoinMaster background execution monitors must remain disabled while Stage 1 is native Freqtrade. Current production env disables the old drawdown watchdog, engulfing monitor, FVG monitor, Radar autocollect, and TP fill monitor.
 
+Risk locks should be handled by native Freqtrade protections in `CoinMasterStrategy.protections`, not by the old CoinMaster daily-drawdown watchdog. Current baseline enables `CooldownPeriod`, `StoplossGuard`, `MaxDrawdown`, and `LowProfitPairs`. For backtesting these locks, pass `--enable-protections`.
+
 If public domain access should be avoided during maintenance, use an SSH tunnel instead:
 
 ```bash

@@ -72,6 +72,44 @@ class CoinMasterStrategy(IStrategy):
     runtime_rules_path = Path("/freqtrade/user_data/runtime/trading_rules.json")
     fallback_runtime_rules_path = Path(__file__).resolve().parents[1] / "runtime" / "trading_rules.json"
 
+    @property
+    def protections(self) -> list[dict[str, object]]:
+        """Native Freqtrade risk locks for Stage 1.
+
+        These replace the legacy CoinMaster daily-drawdown UI/watchdog with
+        Freqtrade's own lock/protection machinery so FreqUI/API can surface the
+        resulting locks without a second execution engine.
+        """
+        return [
+            {"method": "CooldownPeriod", "stop_duration_candles": 1},
+            {
+                "method": "StoplossGuard",
+                "lookback_period_candles": 96,
+                "trade_limit": 3,
+                "stop_duration_candles": 16,
+                "required_profit": 0.0,
+                "only_per_pair": False,
+                "only_per_side": False,
+            },
+            {
+                "method": "MaxDrawdown",
+                "lookback_period_candles": 96,
+                "trade_limit": 5,
+                "stop_duration_candles": 16,
+                "max_allowed_drawdown": 0.10,
+                "calculation_mode": "equity",
+            },
+            {
+                "method": "LowProfitPairs",
+                "lookback_period_candles": 96,
+                "trade_limit": 4,
+                "stop_duration_candles": 16,
+                "required_profit": -0.03,
+                "only_per_pair": True,
+                "only_per_side": False,
+            },
+        ]
+
     plot_config = {
         "main_plot": {
             "ema_fast": {"color": "orange"},

@@ -58,3 +58,18 @@ docker compose -f freqtrade/docker-compose.yml -f freqtrade/docker-compose.prod.
 ```
 
 `config.example.json` is intentionally dry-run safe.
+
+## Native Freqtrade protections
+
+Stage 1 uses Freqtrade's built-in protection plugins instead of the legacy
+CoinMaster daily-drawdown UI. The baseline `CoinMasterStrategy.protections`
+enables:
+
+- `CooldownPeriod` — 1 candle pause after a trade.
+- `StoplossGuard` — global 4h lock after 3 stoploss-like losses inside 96 candles.
+- `MaxDrawdown` — global 4h lock if closed-trade equity drawdown exceeds 10% inside 96 candles, after at least 5 trades.
+- `LowProfitPairs` — pair-level 4h lock if a pair loses worse than -3% over 96 candles after at least 4 trades.
+
+For backtests, add `--enable-protections` when you want protection locks included
+in the result. Live/dry-run runtime reads these from the strategy through native
+Freqtrade protection hooks.

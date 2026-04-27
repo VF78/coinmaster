@@ -11,8 +11,7 @@ import type {
   TradingRulesTimeframe
 } from '../../shared/dto.js';
 import { cloneTradingRulesDefaults, inferAssetClassFromSymbol, normalizeTradingRules } from '../../shared/tradingRules.js';
-import { friendlyCodeMessage, friendlyErrorMessage, getRiskCheck, getTradingRuleSymbols, getTradingRules, resetDdLock, saveTradingRules } from '../lib/api';
-import type { RiskCheckResponse } from '../lib/api';
+import { friendlyErrorMessage, getTradingRuleSymbols, getTradingRules, saveTradingRules } from '../lib/api';
 import { useDialog } from '../components/DialogProvider';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
@@ -224,10 +223,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveInfo, setSaveInfo] = useState<string>('');
-  const [ddLock, setDdLock] = useState<RiskCheckResponse['ddLock'] | null>(null);
-  const [resettingDdLock, setResettingDdLock] = useState(false);
-  const [ddLockInfo, setDdLockInfo] = useState('');
-
   const totalPct = useMemo(
     () => Math.round(coins.filter((c) => c.enabled).reduce((s, c) => s + c.pct, 0) * 100) / 100,
     [coins],
@@ -314,11 +309,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
   useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
 
-  async function refreshDdLockState() {
-    const risk = await getRiskCheck().catch(() => null);
-    setDdLock(risk?.ddLock ?? null);
-  }
-
   useEffect(() => {
     if (!isDirty) return;
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -383,14 +373,12 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         setAvailableSymbols(mergedSymbols);
         applyRules(rulesResponse.rules);
         setSaveInfo('Rules loaded from server.');
-        await refreshDdLockState();
       } catch (error) {
         console.error('[TradingRules] failed to load rules:', error);
         if (!active) return;
         applyRules(defaults);
         setAvailableSymbols(defaults.coins.map((c) => normalizeAssetSymbol(c.symbol)).filter(Boolean));
         setSaveInfo('Could not load rules. Defaults were applied.');
-        await refreshDdLockState();
       } finally {
         if (active) setLoading(false);
       }
@@ -402,33 +390,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
   function toggleCoin(idx: number) {
     setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, enabled: !c.enabled } : c)));
-  }
-
-  async function handleResetDdLock() {
-    const confirmed = await dialog.confirm({
-      title: 'Reset emergency stop?',
-      message: 'This clears the daily drawdown lock only if all positions are flat. If positions are still open, the server will reject the reset.',
-      confirmText: 'Reset lock',
-      cancelText: 'Keep locked',
-    });
-    if (!confirmed) return;
-
-    setResettingDdLock(true);
-    setDdLockInfo('Resetting emergency stop…');
-    try {
-      const result = await resetDdLock();
-      if (!result.ok) {
-        throw new Error(friendlyCodeMessage(result.error || 'dd_lock_reset_failed', 'Could not reset the emergency stop.'));
-      }
-
-      setDdLock(result.ddLock ?? null);
-      setDdLockInfo('Emergency stop reset. New entry orders are allowed again.');
-      await refreshDdLockState();
-    } catch (error) {
-      setDdLockInfo(`Reset failed: ${friendlyErrorMessage(error, 'Could not reset the emergency stop.')}`);
-    } finally {
-      setResettingDdLock(false);
-    }
   }
 
   function setCoinSymbol(idx: number, symbol: string) {
@@ -977,7 +938,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         </p>
       </Card>
 
-      <Card title="Risk Management" actions={<Badge tone="danger">Risk</Badge>}>
+      <Card title="Execution Settings" actions={<Badge tone="neutral">Freqtrade</Badge>}>
         <div
           style={{
             display: 'grid',
@@ -986,40 +947,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
             alignItems: 'center',
           }}
         >
-          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, width: '100%', flexWrap: 'wrap' }}>
-              <span className="rules-label" style={{ margin: 0 }}>Daily Drawdown Limit</span>
-              <div className="actions-row" style={{ justifyContent: 'flex-end' }}>
-                <Stepper
-                  value={dailyDrawdown}
-                  min={0}
-                  max={100}
-                  step={0.5}
-                  unit="%"
-                  decimals={1}
-                  onChange={setDailyDrawdown}
-                />
-                <Button variant="danger" onClick={() => { void handleResetDdLock(); }} disabled={!ddLock?.active || resettingDdLock}>
-                  {resettingDdLock ? 'Resetting...' : 'Reset emergency stop'}
-                </Button>
-              </div>
-            </div>
-
-            <p className="stat-note muted" style={{ margin: 0 }}>
-              {ddLock?.active
-                ? 'Emergency stop is active. Reset it only after all positions are flat.'
-                : 'No emergency stop is active right now.'}
-            </p>
-            {ddLockInfo ? <p className="stat-note muted" style={{ margin: 0 }}>{ddLockInfo}</p> : null}
-            {ddLock?.active && (ddLock.activatedAt || typeof ddLock.triggeredDailyDDPct === 'number' || typeof ddLock.dailyDDLimitPct === 'number') ? (
-              <div className="stat-note muted" style={{ display: 'grid', gap: 4, marginTop: 2 }}>
-                {ddLock.activatedAt ? <span>Activated: {ddLock.activatedAt}</span> : null}
-                {typeof ddLock.triggeredDailyDDPct === 'number' ? <span>Triggered DD: {ddLock.triggeredDailyDDPct}%</span> : null}
-                {typeof ddLock.dailyDDLimitPct === 'number' ? <span>Limit: {ddLock.dailyDDLimitPct}%</span> : null}
-              </div>
-            ) : null}
-          </div>
-
           <div style={{ display: 'grid', gap: 6 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
               <span className="rules-label" style={{ margin: 0 }}>Max Leverage</span>
@@ -1048,7 +975,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
           </div>
         </div>
         <p className="stat-note muted">
-          Max Leverage is applied by Freqtrade leverage(). Daily Drawdown is currently an old CoinMaster emergency-lock setting, not a Freqtrade-native protection yet.
+          Max Leverage is applied by Freqtrade leverage(). Drawdown/stop-loss streak protections are native Freqtrade config protections and are intentionally not duplicated here.
         </p>
       </Card>
 
