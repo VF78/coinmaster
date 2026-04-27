@@ -145,14 +145,16 @@ export function buildFreqtradeRadarPolicySnapshot(params: {
 
     const policyMode = modeFromPolicy(policy);
     const advisoryBlock = !enforceBlocks && policyMode === 'off';
+    const advisoryDirection = !enforceBlocks && policyMode !== 'both';
     if (advisoryBlock) advisoryBlocksIgnored += 1;
-    const mode = advisoryBlock ? 'both' : policyMode;
+    const mode = enforceBlocks ? policyMode : 'both';
     const riskMultiplier = advisoryBlock ? 1 : mode === 'off' ? 0 : clamp(policy.riskMultiplier, 0, 1);
+    const advisorySuffix = advisoryBlock ? 'advisory_block_ignored' : advisoryDirection ? 'advisory_direction_ignored' : '';
     pairs[pair] = {
       mode,
       risk_multiplier: Number(riskMultiplier.toFixed(2)),
-      lock_new_entries: advisoryBlock ? false : mode === 'off' || policy.lockNewEntries,
-      reason: advisoryBlock ? `${reasonFromPolicy(policy)}:advisory_block_ignored` : reasonFromPolicy(policy),
+      lock_new_entries: enforceBlocks ? mode === 'off' || policy.lockNewEntries : false,
+      reason: advisorySuffix ? `${reasonFromPolicy(policy)}:${advisorySuffix}` : reasonFromPolicy(policy),
       reason_codes: [...policy.reasonCodes],
       narrative_regime: policy.narrativeRegime,
       priority_score: Number(clamp(policy.priorityScore, 0, 100).toFixed(2)),

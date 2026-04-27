@@ -140,6 +140,20 @@ console.log('\nTest 7: observe-only mode keeps hard blocks advisory for dry-run 
   assert(snapshot.diagnostics.advisory_blocks_ignored === 1, 'advisory block counter increments');
 }
 
+console.log('\nTest 8: observe-only removes directional filters but keeps risk reduction');
+{
+  const snapshot = buildFreqtradeRadarPolicySnapshot({
+    policies: [makePolicy({ id: 'hype-long', symbol: 'HYPE', directionMode: 'long_only', riskMultiplier: 0.78 })],
+    monitoredCoins,
+    nowIso,
+    enforceBlocks: false,
+  });
+  const hype = snapshot.pairs['HYPE/USDC:USDC'];
+  assert(hype?.mode === 'both', 'observe-only converts long_only to both');
+  assert(hype?.risk_multiplier === 0.78, 'observe-only preserves non-zero risk multiplier');
+  assert(hype?.lock_new_entries === false, 'observe-only does not lock directional policies');
+}
+
 console.log(`\n${passed} passed, ${failed} failed\n`);
 
 if (failed > 0) {

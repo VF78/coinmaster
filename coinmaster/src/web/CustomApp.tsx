@@ -364,7 +364,7 @@ function RadarPolicyPage() {
           <section className="radar-setting-block">
             <div>
               <h3>Radar enforcement</h3>
-              <p className="muted">Observe-only keeps Radar context visible but does not hard-block Freqtrade dry-run entries. Enforce allows Radar hard blocks.</p>
+              <p className="muted">Observe-only keeps Radar risk sizing but does not direction-filter or hard-block Freqtrade dry-run entries. Enforce allows Radar directional and hard blocks.</p>
             </div>
             <Button variant={radarRuntime?.autoConfirm ? 'danger' : 'secondary'} onClick={() => { void toggleAutoConfirm(); }} disabled={busy !== null || !radarRuntime} fullWidth>
               {radarRuntime?.autoConfirm ? 'Enforce Radar blocks' : 'Observe only / no hard blocks'}
