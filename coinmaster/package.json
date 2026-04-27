@@ -35,7 +35,8 @@
     "invariants:backtest-run-persistence": "node --import tsx/esm scripts/invariants-backtest-run-persistence.ts",
     "invariants:compute-jobs": "node --import tsx/esm scripts/invariants-compute-jobs.ts",
     "build:custom": "vite build --config vite.custom.config.ts",
-    "invariants:freqtrade-radar-policy": "node --import tsx/esm scripts/invariants-freqtrade-radar-policy.ts"
+    "invariants:freqtrade-radar-policy": "node --import tsx/esm scripts/invariants-freqtrade-radar-policy.ts",
+    "ops:availability-smoke": "bash ./scripts/availability-smoke.sh"
   },
   "dependencies": {
     "cors": "^2.8.5",

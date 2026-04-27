@@ -290,6 +290,21 @@ if [[ "$SMOKE_OK" -ne 1 ]]; then
   exit 1
 fi
 
+if [[ -d /etc/cron.d && -x "$TARGET_DIR/scripts/freqtrade-night-watch.sh" ]]; then
+  log "Installing CoinMaster 24/7 stack watchdog cron"
+  cat >/etc/cron.d/coinmaster-freqtrade-night-watch <<'EOF'
+# CoinMaster 24/7 stack watch
+# Every 5 minutes verify/recover companion app health, native Freqtrade dry-run
+# API/container, dry_run/running state, locks/open trades, and Radar policy
+# freshness. This watchdog never enables live trading; it refuses trading actions
+# unless Freqtrade config/API confirm dry_run=true.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+*/5 * * * * root /opt/coinmaster/scripts/freqtrade-night-watch.sh >/dev/null 2>&1
+EOF
+  chmod 0644 /etc/cron.d/coinmaster-freqtrade-night-watch
+fi
+
 if [[ "$FREQTRADE_DEPLOY_TREE_CHANGED" -eq 1 ]] && systemctl list-unit-files "$FREQTRADE_SERVICE" >/dev/null 2>&1; then
   log "Freqtrade tree changed; restarting $FREQTRADE_SERVICE so strategy/config code is loaded"
   systemctl restart "$FREQTRADE_SERVICE"

@@ -203,6 +203,26 @@ cd /opt/coinmaster/freqtrade
 docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
 docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=200 freqtrade
 curl -s http://127.0.0.1:8080/api/v1/ping || true
+cd /opt/coinmaster && npm run ops:availability-smoke
+```
+
+### 24/7 availability and auto-recovery
+
+The production dry-run stack is supervised in layers:
+
+1. `coinmaster.service` runs the companion app with `Restart=always` and `RestartSec=3`.
+2. `coinmaster-freqtrade.service` starts Docker Compose at boot; the Freqtrade container itself uses Docker `restart: unless-stopped`.
+3. `coinmaster-freqtrade-dataset-sync.timer` is `Persistent=true`, so missed dataset syncs run after host downtime.
+4. `/opt/coinmaster/scripts/freqtrade-night-watch.sh` is the stack watchdog. It verifies app `/api/health`, Freqtrade API/dry-run/running state, locks/open trades, and Radar policy freshness. It may restart `coinmaster.service` or `coinmaster-freqtrade.service`, but it refuses any action if Freqtrade is not `dry_run=true`.
+5. `npm run ops:availability-smoke` is the read-only evidence gate for this mechanism: systemd enabled/active, Docker restart policy, app health, Freqtrade dry-run state, Radar policy freshness, and watchdog status.
+
+Recommended cron install:
+
+```cron
+# CoinMaster 24/7 stack watch: app + Freqtrade dry-run + Radar policy freshness.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+*/5 * * * * root /opt/coinmaster/scripts/freqtrade-night-watch.sh >/dev/null 2>&1
 ```
 
 FreqUI is served by the Freqtrade API server on `127.0.0.1:8080`. Keep the Freqtrade container loopback-only by default.
