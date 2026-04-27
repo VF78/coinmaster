@@ -96,6 +96,7 @@ result = {
     'locks': None,
     'actions': [],
     'errors': [],
+    'log_warnings': [],
 }
 
 def merge(left, right):
@@ -220,7 +221,7 @@ try:
                 continue
             bad_lines.append(line[-500:])
     if bad_lines:
-        result['errors'].extend(bad_lines[-20:])
+        result['log_warnings'].extend(bad_lines[-20:])
 
     result['ok'] = (
         result['app_health'] == 'ok'

@@ -361,6 +361,56 @@ if show.get('dry_run') is not True or show.get('state') != 'running':
 PY
 fi
 
+if systemctl list-unit-files "$FREQTRADE_SERVICE" >/dev/null 2>&1; then
+  log "Verifying Freqtrade dry-run trader state"
+  FREQTRADE_API_OK=0
+  for i in {1..90}; do
+    if curl -fsS --max-time 3 http://127.0.0.1:8080/api/v1/ping >/dev/null 2>&1; then
+      FREQTRADE_API_OK=1
+      break
+    fi
+    sleep 1
+  done
+  if [[ "$FREQTRADE_API_OK" -ne 1 ]]; then
+    echo "Freqtrade API did not become reachable for final state check" >&2
+    exit 1
+  fi
+  TARGET_DIR="$TARGET_DIR" python3 - <<'PY'
+import base64, json, os, time, urllib.request
+from pathlib import Path
+config = {}
+def merge(left, right):
+    for key, value in right.items():
+        if isinstance(value, dict) and isinstance(left.get(key), dict):
+            merge(left[key], value)
+        else:
+            left[key] = value
+root = Path(os.environ['TARGET_DIR']) / 'freqtrade' / 'user_data'
+for name in ('config.example.json', 'config.private.json'):
+    path = root / name
+    if path.exists():
+        with path.open() as handle:
+            merge(config, json.load(handle))
+api = config.get('api_server', {})
+headers = {}
+if api.get('username') or api.get('password'):
+    token = base64.b64encode(f"{api.get('username','')}:{api.get('password','')}".encode()).decode()
+    headers['Authorization'] = f'Basic {token}'
+base = 'http://127.0.0.1:8080/api/v1'
+def request(endpoint, method='GET'):
+    req = urllib.request.Request(f'{base}{endpoint}', headers=headers, method=method)
+    with urllib.request.urlopen(req, timeout=8) as response:
+        return json.load(response)
+show = request('/show_config')
+if show.get('dry_run') is True and show.get('state') != 'running':
+    request('/start', method='POST')
+    time.sleep(2)
+    show = request('/show_config')
+if show.get('dry_run') is not True or show.get('state') != 'running':
+    raise SystemExit(f"unexpected Freqtrade final state: dry_run={show.get('dry_run')} state={show.get('state')}")
+PY
+fi
+
 printf '%s\n' "$SOURCE_COMMIT" > "$TARGET_DIR/.deploy-source-commit.new"
 chown "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/.deploy-source-commit.new"
 mv "$TARGET_DIR/.deploy-source-commit.new" "$TARGET_DIR/.deploy-source-commit"
