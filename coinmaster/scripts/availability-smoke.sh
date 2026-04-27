@@ -104,6 +104,8 @@ import json, os, sys
 from datetime import datetime, timezone
 payload = json.loads(os.environ['RADAR_JSON'])
 disk = payload.get('disk') or {}
+global_policy = disk.get('global') if isinstance(disk.get('global'), dict) else {}
+disabled_neutral = global_policy.get('enabled') is False and global_policy.get('reason') == 'radar_disabled_neutral'
 updated = disk.get('updated_at')
 valid_until = disk.get('valid_until')
 if not updated or not valid_until:
@@ -111,7 +113,9 @@ if not updated or not valid_until:
 updated_dt = datetime.fromisoformat(updated.replace('Z', '+00:00')).astimezone(timezone.utc)
 valid_dt = datetime.fromisoformat(valid_until.replace('Z', '+00:00')).astimezone(timezone.utc)
 age = (datetime.now(timezone.utc) - updated_dt).total_seconds()
-print(json.dumps({'age_sec': round(age, 1), 'valid_until': valid_until, 'pairs': len(disk.get('pairs') or {})}))
+print(json.dumps({'age_sec': round(age, 1), 'valid_until': valid_until, 'pairs': len(disk.get('pairs') or {}), 'status': 'disabled_neutral' if disabled_neutral else 'active'}))
+if disabled_neutral:
+    sys.exit(0)
 if age > int(os.environ['MAX_RADAR_AGE_SEC']) or valid_dt <= datetime.now(timezone.utc):
     sys.exit(1)
 PY
