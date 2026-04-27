@@ -240,6 +240,17 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     [coins],
   );
 
+  const otherCoinRows = useMemo(
+    () => activeCoinRows.filter(({ coin }) => {
+      const symbol = normalizeAssetSymbol(coin.symbol);
+      const assetClass = coin.assetClass ?? inferAssetClassFromSymbol(symbol);
+      return assetClass === 'other';
+    }),
+    [activeCoinRows],
+  );
+
+  const hasNonOtherActiveCoins = activeCoinRows.length > otherCoinRows.length;
+
   const totalPct = useMemo(
     () => Math.round(activeCoinRows.reduce((s, { coin }) => s + coin.pct, 0) * 100) / 100,
     [activeCoinRows],
@@ -439,7 +450,16 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   }
 
   function setCoinAssetClass(idx: number, assetClass: AssetClass) {
+    const symbol = normalizeAssetSymbol(coins[idx]?.symbol ?? '');
     setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, assetClass } : c)));
+    if (symbol && assetClass !== 'other') {
+      setSymbolBiasOverrides((prev) => {
+        if (!prev[symbol]) return prev;
+        const next = { ...prev };
+        delete next[symbol];
+        return next;
+      });
+    }
   }
 
   function removeCoin(idx: number) {
@@ -757,10 +777,13 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
               <p className="stat-note muted" style={{ marginTop: 0 }}>Freqtrade entry side bias. BOTH allows long and short; LONG/SHORT gates the opposite side; OFF blocks new entries.</p>
             </div>
             <div className="exec-bias-row">
-              <span className="exec-bias-label">Default</span>
+              <span className="exec-bias-label">{hasNonOtherActiveCoins ? 'Crypto / default' : 'Default'}</span>
               {renderBiasToggle(defaultBias, updateDefaultBias)}
             </div>
-            {activeCoinRows.map(({ coin }) => {
+            {otherCoinRows.length > 0 ? (
+              <p className="muted" style={{ margin: '0.1rem 0 0', fontSize: 12 }}>Other assets</p>
+            ) : null}
+            {otherCoinRows.map(({ coin }) => {
               const symbol = normalizeAssetSymbol(coin.symbol);
               if (!symbol) return null;
               const bias = biasForSymbol(symbol);

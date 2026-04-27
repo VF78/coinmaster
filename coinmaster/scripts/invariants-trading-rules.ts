@@ -434,24 +434,29 @@ console.log('\n── Invariant 10: trading bias policy defaults and overrides �
 
 {
   const normalized = normalizeTradingRules({
+    coins: [
+      { symbol: 'BTC', enabled: true, pct: 50, assetClass: 'crypto' },
+      { symbol: 'ETH', enabled: true, pct: 25, assetClass: 'other' },
+      { symbol: 'XRP', enabled: true, pct: 25, assetClass: 'other' },
+      { symbol: 'DOGE', enabled: false, pct: 0, assetClass: 'other' },
+    ],
     biasPolicy: {
       defaultBias: 'long',
       symbolOverrides: {
+        BTC: { mode: 'symbol', bias: 'short' },
         ETH: { mode: 'symbol', bias: 'short' },
-        SOL: { mode: 'global', bias: 'short' },
         XRP: { mode: 'symbol', bias: 'off' },
-        DOGE: { mode: 'symbol', bias: 'invalid' as never },
+        DOGE: { mode: 'symbol', bias: 'short' },
       },
     },
   });
 
   assert(normalized.biasPolicy!.defaultBias === 'long', 'default trading bias is preserved');
-  assert(normalized.biasPolicy!.symbolOverrides.ETH?.mode === 'symbol', 'ETH override remains symbol-scoped');
-  assert(normalized.biasPolicy!.symbolOverrides.ETH?.bias === 'short', 'ETH symbol bias is preserved');
-  assert(normalized.biasPolicy!.symbolOverrides.SOL?.mode === 'global', 'SOL global mode ignores symbol bias');
-  assert(normalized.biasPolicy!.symbolOverrides.SOL?.bias === undefined, 'global overrides do not keep stale symbol bias');
-  assert(normalized.biasPolicy!.symbolOverrides.XRP?.bias === 'off', 'off symbol bias is preserved');
-  assert(normalized.biasPolicy!.symbolOverrides.DOGE?.bias === 'long', 'invalid symbol bias falls back to default bias');
+  assert(normalized.biasPolicy!.symbolOverrides.BTC === undefined, 'crypto symbol override is pruned so the shared control is the only crypto bias');
+  assert(normalized.biasPolicy!.symbolOverrides.ETH?.mode === 'symbol', 'enabled other override remains symbol-scoped');
+  assert(normalized.biasPolicy!.symbolOverrides.ETH?.bias === 'short', 'enabled other symbol bias is preserved');
+  assert(normalized.biasPolicy!.symbolOverrides.XRP?.bias === 'off', 'off symbol bias is preserved for enabled other assets');
+  assert(normalized.biasPolicy!.symbolOverrides.DOGE === undefined, 'inactive other symbol override is pruned');
   assert(normalizeTradingRules({ biasPolicy: { defaultBias: 'invalid' as never, symbolOverrides: {} } }).biasPolicy!.defaultBias === 'both', 'invalid default bias falls back to both');
 }
 

@@ -289,6 +289,21 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
   base.autoConfirm = Boolean(raw.autoConfirm);
   base.biasPolicy = normalizeBiasPolicy(raw.biasPolicy, DEFAULT_BIAS_POLICY);
 
+  // Execution bias UX mirrors the old Dashboard controls:
+  // - one shared/default control for normal asset classes (crypto by default),
+  // - only assets explicitly marked as `other` get per-symbol controls.
+  // Prune hidden/stale overrides here so Freqtrade cannot apply a symbol bias
+  // that is no longer visible in Trading Rules.
+  const activeOtherSymbols = new Set(
+    base.coins
+      .filter((coin) => coin.enabled && normalizeAssetClass(coin.assetClass, inferAssetClassFromSymbol(coin.symbol)) === 'other')
+      .map((coin) => coin.symbol)
+  );
+  base.biasPolicy.symbolOverrides = Object.fromEntries(
+    Object.entries(base.biasPolicy.symbolOverrides)
+      .filter(([symbol, override]) => activeOtherSymbols.has(symbol) && override.mode === 'symbol')
+  );
+
   // ── Stage-1 SignalQualityContext fields (issue #61) ────────────────
   base.regimeTf = raw.regimeTf === '4h' ? '4h' : raw.regimeTf === '1h' ? '1h' : (base.regimeTf ?? '1h');
   base.regimeFilterEnabled = typeof raw.regimeFilterEnabled === 'boolean' ? raw.regimeFilterEnabled : (base.regimeFilterEnabled ?? true);
