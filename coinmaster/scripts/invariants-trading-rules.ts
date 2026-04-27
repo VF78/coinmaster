@@ -8,11 +8,12 @@
  *   1. Explicit TP/SL overrides runtime defaults
  *   2. Runtime defaults applied when explicit values missing
  *   3. Symbol disabled → blocked (isSymbolEnabled returns false)
- *   4. Allocation cap exceeded → maxNotionalForSymbol enforces cap
- *   5. riskPerTradePct caps auto-sizing by configured SL distance
- *   6. portfolioGrossCap caps aggregate gross exposure
- *   7. regimeTf is constrained to owner-approved HTF values (1h/4h)
- *   8. Backtest sizing mirrors live riskPerTradePct and portfolioGrossCap limits
+ *   4. Whole-percent allocations normalize decimal 100% splits to visible/applied integers
+ *   5. Allocation cap exceeded → maxNotionalForSymbol enforces cap
+ *   6. riskPerTradePct caps auto-sizing by configured SL distance
+ *   7. portfolioGrossCap caps aggregate gross exposure
+ *   8. regimeTf is constrained to owner-approved HTF values (1h/4h)
+ *   9. Backtest sizing mirrors live riskPerTradePct and portfolioGrossCap limits
  *
  * Exit code: 0 = all pass, 1 = failures found.
  *
@@ -247,10 +248,31 @@ console.log('\n── Invariant 3: symbol disabled → blocked ──');
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// INVARIANT 4: Allocation notional cap exceeded → blocked
+// INVARIANT 4: Decimal allocation total → whole visible/applied percent
 // ═══════════════════════════════════════════════════════════════════════
 
-console.log('\n── Invariant 4: allocation notional cap exceeded → blocked ──');
+console.log('\n── Invariant 4: decimal allocation total → whole visible/applied percent ──');
+
+{
+  const normalized = normalizeTradingRules({
+    coins: [
+      { symbol: 'BTC', enabled: true, pct: 33.3333 },
+      { symbol: 'ETH', enabled: true, pct: 33.3333 },
+      { symbol: 'HYPE', enabled: true, pct: 33.3334 },
+    ],
+  });
+  const total = normalized.coins.filter((coin) => coin.enabled).reduce((sum, coin) => sum + coin.pct, 0);
+
+  assert(normalized.coins.every((coin) => Number.isInteger(coin.pct)), 'allocation pct values are whole integers');
+  assert(total === 100, 'integer allocation total remains 100%');
+  assert(normalized.coins.map((coin) => coin.pct).join(',') === '34,33,33', 'rounding remainder is applied to the first active row');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INVARIANT 5: Allocation notional cap exceeded → blocked
+// ═══════════════════════════════════════════════════════════════════════
+
+console.log('\n── Invariant 5: allocation notional cap exceeded → blocked ──');
 
 {
   const equityUsd = 100_000;

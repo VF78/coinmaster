@@ -71,6 +71,35 @@ function clampNumber(value: unknown, min: number, max: number, fallback: number)
   return Math.max(min, Math.min(max, n));
 }
 
+function normalizeWholeCoinAllocations(coins: TradingRulesSettings['coins']): TradingRulesSettings['coins'] {
+  const next = coins.map((coin) => ({ ...coin, pct: Math.round(clampNumber(coin.pct, 0, 100, 0)) }));
+  const enabled = coins
+    .map((coin, idx) => ({ coin, idx, pct: clampNumber(coin.pct, 0, 100, 0) }))
+    .filter(({ coin }) => coin.enabled);
+
+  if (enabled.length === 0) return next;
+
+  const rawTotal = enabled.reduce((sum, { pct }) => sum + pct, 0);
+  if (Math.abs(rawTotal - 100) > 0.01) return next;
+
+  let diff = 100 - enabled.reduce((sum, { idx }) => sum + next[idx].pct, 0);
+  for (const { idx } of enabled) {
+    if (diff <= 0) break;
+    const add = Math.min(diff, 100 - next[idx].pct);
+    next[idx].pct += add;
+    diff -= add;
+  }
+
+  for (const { idx } of enabled) {
+    if (diff >= 0) break;
+    const remove = Math.min(-diff, next[idx].pct);
+    next[idx].pct -= remove;
+    diff += remove;
+  }
+
+  return next;
+}
+
 function normalizeTimeframe(value: unknown, fallback: TradingRulesTimeframe): TradingRulesTimeframe {
   const tf = String(value ?? '').toLowerCase();
   const matched = TIMEFRAMES.find((x) => x.toLowerCase() === tf);
@@ -196,9 +225,9 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
     });
   }
 
-  base.coins = normalizedCoins.length > 0
+  base.coins = normalizeWholeCoinAllocations(normalizedCoins.length > 0
     ? normalizedCoins
-    : DEFAULT_COINS.map((coin) => ({ ...coin }));
+    : DEFAULT_COINS.map((coin) => ({ ...coin })));
 
   base.entryTf = normalizeTimeframe(raw.entryTf, base.entryTf);
   base.exitTf = normalizeTimeframe(raw.exitTf, base.exitTf);
