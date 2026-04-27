@@ -4,7 +4,7 @@ import { useDialog } from './components/DialogProvider';
 import { Card } from './components/Card';
 import { Badge } from './components/Badge';
 import { Button } from './components/Button';
-import { getFreqtradeRadarPolicy, refreshFreqtradeRadarPolicy, type FreqtradeRadarPolicyResponse, type FreqtradeRadarPolicyScope } from './lib/api';
+import { getAlphaRadarIdeas, getFreqtradeRadarPolicy, refreshFreqtradeRadarPolicy, type FreqtradeRadarPolicyResponse, type FreqtradeRadarPolicyScope } from './lib/api';
 
  type PageKey = 'trading-rules' | 'radar' | 'backtest';
 
@@ -29,13 +29,19 @@ function formatTimestamp(value?: string) {
 
 function RadarPolicyPage() {
   const [payload, setPayload] = useState<FreqtradeRadarPolicyResponse | null>(null);
+  const [ideasPayload, setIdeasPayload] = useState<Awaited<ReturnType<typeof getAlphaRadarIdeas>> | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
     try {
-      setPayload(await getFreqtradeRadarPolicy());
+      const [policyResult, ideasResult] = await Promise.all([
+        getFreqtradeRadarPolicy(),
+        getAlphaRadarIdeas().catch(() => null),
+      ]);
+      setPayload(policyResult);
+      setIdeasPayload(ideasResult);
       setMessage(null);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : String(error));
@@ -48,6 +54,7 @@ function RadarPolicyPage() {
     try {
       const result = await refreshFreqtradeRadarPolicy();
       setPayload({ ok: true, enabled: result.enabled, path: result.path, generated: result.policy, disk: result.policy });
+      setIdeasPayload(await getAlphaRadarIdeas().catch(() => null));
       setMessage('Radar policy refreshed.');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : String(error));
@@ -64,6 +71,14 @@ function RadarPolicyPage() {
   const pairs = Object.entries(policy?.pairs ?? {});
   const diagnostics = policy?.diagnostics ?? {};
   const global = policy?.global;
+  const summary = ideasPayload?.marketSummary;
+  const funnelSteps = [
+    { label: 'Collected', value: (summary?.evidenceBundles ?? 0) + (summary?.dedupeSuppressed ?? 0), note: 'raw → dedupe' },
+    { label: 'Evidence', value: summary?.evidenceBundles ?? 0, note: 'active bundles' },
+    { label: 'Candidates', value: summary?.signalCandidates ?? 0, note: 'scored context' },
+    { label: 'Policy', value: summary?.activeRadarContextPolicies ?? pairs.length, note: 'active decisions' },
+    { label: 'Freqtrade', value: pairs.length, note: 'pair overrides' },
+  ];
 
   return (
     <main className="terminal-layout radar-simple-page">
@@ -97,6 +112,28 @@ function RadarPolicyPage() {
               <span className="radar-chip">risk ×{global?.risk_multiplier ?? 1}</span>
               <span className={`radar-chip ${global?.lock_new_entries ? 'radar-chip--danger' : 'radar-chip--success'}`}>{global?.lock_new_entries ? 'entries locked' : 'entries open'}</span>
               <span className="radar-chip radar-chip--muted">{global?.reason ?? 'neutral'}</span>
+            </div>
+          </section>
+
+          <section className="radar-simple-section">
+            <div className="radar-simple-section__header">
+              <h3>Radar funnel</h3>
+              <Badge tone="neutral">transparent flow</Badge>
+            </div>
+            <div className="radar-simple-row radar-simple-row--funnel">
+              {funnelSteps.map((step) => (
+                <div className="radar-inline-stat" key={step.label}>
+                  <span className="muted radar-simple-label">{step.label}</span>
+                  <strong>{step.value}</strong>
+                  <span className="muted radar-simple-label">{step.note}</span>
+                </div>
+              ))}
+            </div>
+            <div className="radar-chip-grid">
+              <span className="radar-chip radar-chip--muted">deduped: {summary?.dedupeSuppressed ?? 0}</span>
+              <span className="radar-chip radar-chip--muted">locked policies: {summary?.lockedRadarContextPolicies ?? 0}</span>
+              <span className="radar-chip radar-chip--muted">expired policies: {summary?.expiredRadarContextPolicies ?? diagnostics.ignored_expired_policies ?? 0}</span>
+              <span className="radar-chip radar-chip--muted">neutral ignored: {diagnostics.ignored_neutral_policies ?? 0}</span>
             </div>
           </section>
 
