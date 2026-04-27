@@ -212,3 +212,67 @@ API_BASE_URL=http://127.0.0.1:8787 npm run ops:smoke
 curl -sS http://127.0.0.1:8787/api/health/perf | jq .
 kill %1
 ```
+
+## Freqtrade Stage 1 Deployment Protocol
+
+Current production deployment is split into two surfaces:
+
+1. **CoinMaster companion app** on `127.0.0.1:8787` (`coinmaster.service`) for custom/reference UI and rules export.
+2. **Native Freqtrade** on `127.0.0.1:8080` (`coinmaster-freqtrade` container/service) for dry-run/live execution, FreqUI/API, backtests, protections, orders, and positions.
+
+### Pre-deploy gates
+
+```bash
+npm run invariants:trading-rules
+npm run invariants:signal-quality
+npm run check
+npm run build
+python3 -m py_compile freqtrade/user_data/strategies/CoinMasterStrategy.py
+```
+
+### Safe deploy
+
+Use the safe deploy script from the repo root:
+
+```bash
+TARGET_DIR=/opt/coinmaster SERVICE=coinmaster.service ./scripts/deploy-prod-safe.sh
+```
+
+The deploy script syncs only known app/runtime trees and preserves Freqtrade private/runtime state:
+
+- preserved: `freqtrade/user_data/config.private.json`, `data/`, `runtime/`, `backtest_results/`, `hyperopt_results/`, sqlite DBs;
+- synced: `src`, `dist`, `dist-custom`, `docs`, `scripts`, `freqtrade` code/config/systemd/runbooks.
+
+### Freqtrade dry-run deploy/restart check
+
+```bash
+cd /opt/coinmaster/freqtrade
+sudo systemctl daemon-reload
+sudo systemctl enable coinmaster-freqtrade || true
+sudo systemctl restart coinmaster-freqtrade || docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --remove-orphans
+
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=250 freqtrade
+curl -fsS http://127.0.0.1:8080/api/v1/ping
+```
+
+If `initial_state` is `stopped`, start dry-run through FreqUI/API only after config/log checks:
+
+```bash
+# Use Freqtrade API credentials from ignored config.private.json.
+curl -fsS http://127.0.0.1:8080/api/v1/ping
+```
+
+### Post-deploy audit
+
+Check all of the following before calling the deploy healthy:
+
+- `coinmaster.service` active and `/api/health` returns `{"ok":true}`.
+- Freqtrade API `/show_config` shows `dry_run=true`, `state=running`, expected whitelist and `timeframe=5m`.
+- Freqtrade logs have no material `ERROR`, `Traceback`, exchange failures, non-tradable pair warnings, or repeated timeouts.
+- `/api/v1/status`, `/api/v1/balance`, `/api/v1/locks`, and `/api/v1/performance` respond.
+- No old CoinMaster live execution monitors are active against the same account.
+
+### Current dry-run candidate
+
+As of the 2026-04-27 overnight run, the selected candidate is ETH/HYPE both sides with 42 trades and +39.36% on 2026-01-01..2026-04-26. Evidence lives under `reports/freqtrade-nightly-20260427/` in the working repo; do not promote to live without owner approval.

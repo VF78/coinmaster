@@ -11,7 +11,7 @@
   "trading_mode": "futures",
   "margin_mode": "cross",
   "liquidation_buffer": 0.05,
-  "timeframe": "15m",
+  "timeframe": "5m",
   "strategy": "CoinMasterStrategy",
   "force_entry_enable": false,
   "unfilledtimeout": {
@@ -25,7 +25,10 @@
     "use_order_book": true,
     "order_book_top": 1,
     "price_last_balance": 0.0,
-    "check_depth_of_market": { "enabled": false, "bids_to_ask_delta": 1 }
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
   },
   "exit_pricing": {
     "price_side": "same",
@@ -45,8 +48,16 @@
     "name": "hyperliquid",
     "key": "",
     "secret": "",
-    "ccxt_config": { "enableRateLimit": true },
-    "ccxt_async_config": { "enableRateLimit": true, "rateLimit": 150, "options": { "defaultType": "swap" } },
+    "ccxt_config": {
+      "enableRateLimit": true
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 150,
+      "options": {
+        "defaultType": "swap"
+      }
+    },
     "pair_whitelist": [
       "BTC/USDC:USDC",
       "ETH/USDC:USDC",
@@ -55,7 +66,9 @@
     "pair_blacklist": []
   },
   "pairlists": [
-    { "method": "StaticPairList" }
+    {
+      "method": "StaticPairList"
+    }
   ],
   "api_server": {
     "enabled": true,
@@ -87,5 +100,7 @@
   },
   "bot_name": "coinmaster-freqtrade",
   "initial_state": "stopped",
-  "internals": { "process_throttle_secs": 5 }
+  "internals": {
+    "process_throttle_secs": 5
+  }
 }

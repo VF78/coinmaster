@@ -182,3 +182,26 @@ Work mode:
 - push the branch after meaningful milestones;
 - update #65 when scope/acceptance materially changes;
 - do not modify old CoinMaster execution except for clearly marked migration/removal tasks.
+
+## 7. Stage 1 implementation update — 2026-04-27 overnight
+
+The Stage 1 runtime has been advanced from baseline smoke to dry-run candidate:
+
+- `CoinMasterStrategy` now executes on base `5m` with informative `15m`, `1h`, and `4h` data.
+- Trading Rules entry timeframes `5m/15m/1h/4h` are exported to Freqtrade and consumed by strategy gates.
+- HTF FVG logic runs on native informative `1h/4h` data with retrace, sweep lookback, first-touch/fresh-zone, max-age, and optional engulfing confirmation timeframes.
+- Regime filtering uses the selected informative `1h/4h` dataframe.
+- Opposite-engulfing emergency exit UI/runtime export has been removed from the Freqtrade path; exits are SL/TP/time-stop/protections.
+- Signal Quality / Portfolio guards are exported as explicit enable/disable flags and inactive guards do not affect decisions.
+- Dry-run runtime is Freqtrade-native; the companion app is configuration/reference only.
+
+Current selected dry-run candidate from 2026-01-01 through 2026-04-26 backtests:
+
+- Pairs: `ETH/USDC:USDC`, `HYPE/USDC:USDC`.
+- Sides: long + short.
+- Entry TFs: `15m`, `1h`, `4h`.
+- FVG sweep/first-touch/confirmation enabled.
+- TP levels: `1.5 / 3 / 6`; SL: `2`.
+- Result: 42 trades, +39.36%, profit factor 1.73, Sharpe 1.27, Sortino 4.89, max drawdown 15.28%.
+
+Live cutover is still a separate owner-approved step. Dry-run may run unattended for observation, but live mode must not be enabled without explicit approval after reviewing fresh dry-run orders/logs and account state.

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Safe production deploy for Coinmaster.
+# Safe production deploy for Coinmaster + native Freqtrade Stage 1.
 # - Never rsync/delete into /opt/coinmaster root directly
-# - Sync only src/ and dist/ trees
+# - Sync only known application/runtime trees
+# - Preserve Freqtrade secrets, runtime data, backtest/hyperopt artifacts, DBs
 # - Keep backup + rollback on failed smoke checks
 
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -19,6 +20,32 @@ TS="$(date +%Y%m%d-%H%M%S)"
 BACKUP_DIR="$BACKUP_ROOT/$TS"
 
 log() { printf '[deploy-safe] %s\n' "$*"; }
+
+preserve_freqtrade_runtime() {
+  local preserve_dir="$1"
+  rm -rf "$preserve_dir"
+  mkdir -p "$preserve_dir"
+  if [[ -d "$TARGET_DIR/freqtrade/user_data" ]]; then
+    for item in config.private.json data runtime backtest_results hyperopt_results; do
+      if [[ -e "$TARGET_DIR/freqtrade/user_data/$item" ]]; then
+        mkdir -p "$preserve_dir/user_data"
+        mv "$TARGET_DIR/freqtrade/user_data/$item" "$preserve_dir/user_data/$item"
+      fi
+    done
+  fi
+}
+
+restore_freqtrade_runtime() {
+  local preserve_dir="$1"
+  if [[ -d "$preserve_dir/user_data" ]]; then
+    mkdir -p "$TARGET_DIR/freqtrade/user_data"
+    for item in config.private.json data runtime backtest_results hyperopt_results; do
+      if [[ -e "$preserve_dir/user_data/$item" && ! -e "$TARGET_DIR/freqtrade/user_data/$item" ]]; then
+        mv "$preserve_dir/user_data/$item" "$TARGET_DIR/freqtrade/user_data/$item"
+      fi
+    done
+  fi
+}
 
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || { echo "Missing required command: $1" >&2; exit 1; }
@@ -68,17 +95,43 @@ log "Preparing backup at $BACKUP_DIR"
 mkdir -p "$BACKUP_DIR"
 if [[ -d "$TARGET_DIR/src" ]]; then rsync -a "$TARGET_DIR/src/" "$BACKUP_DIR/src/"; fi
 if [[ -d "$TARGET_DIR/dist" ]]; then rsync -a "$TARGET_DIR/dist/" "$BACKUP_DIR/dist/"; fi
+if [[ -d "$TARGET_DIR/dist-custom" ]]; then rsync -a "$TARGET_DIR/dist-custom/" "$BACKUP_DIR/dist-custom/"; fi
+if [[ -d "$TARGET_DIR/docs" ]]; then rsync -a "$TARGET_DIR/docs/" "$BACKUP_DIR/docs/"; fi
+if [[ -d "$TARGET_DIR/scripts" ]]; then rsync -a "$TARGET_DIR/scripts/" "$BACKUP_DIR/scripts/"; fi
+if [[ -d "$TARGET_DIR/freqtrade" ]]; then
+  rsync -a \
+    --exclude 'user_data/config.private.json' \
+    --exclude 'user_data/data/' \
+    --exclude 'user_data/runtime/' \
+    --exclude 'user_data/backtest_results/' \
+    --exclude 'user_data/hyperopt_results/' \
+    --exclude 'user_data/*.sqlite' \
+    --exclude 'user_data/strategies/__pycache__/' \
+    "$TARGET_DIR/freqtrade/" "$BACKUP_DIR/freqtrade/"
+fi
 if [[ -f "$TARGET_DIR/package.json" ]]; then cp "$TARGET_DIR/package.json" "$BACKUP_DIR/package.json"; fi
 if [[ -f "$TARGET_DIR/package-lock.json" ]]; then cp "$TARGET_DIR/package-lock.json" "$BACKUP_DIR/package-lock.json"; fi
 
 log "Syncing staged trees"
-rm -rf "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new"
-mkdir -p "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new"
+rm -rf "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new" "$TARGET_DIR/dist-custom.new" "$TARGET_DIR/docs.new" "$TARGET_DIR/scripts.new" "$TARGET_DIR/freqtrade.new"
+mkdir -p "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new" "$TARGET_DIR/dist-custom.new" "$TARGET_DIR/docs.new" "$TARGET_DIR/scripts.new" "$TARGET_DIR/freqtrade.new"
 rsync -a --delete "$APP_DIR/src/" "$TARGET_DIR/src.new/"
 rsync -a --delete "$APP_DIR/dist/" "$TARGET_DIR/dist.new/"
+rsync -a --delete "$APP_DIR/dist-custom/" "$TARGET_DIR/dist-custom.new/"
+rsync -a --delete "$APP_DIR/docs/" "$TARGET_DIR/docs.new/"
+rsync -a --delete "$APP_DIR/scripts/" "$TARGET_DIR/scripts.new/"
+rsync -a --delete \
+  --exclude 'user_data/config.private.json' \
+  --exclude 'user_data/data/' \
+  --exclude 'user_data/runtime/' \
+  --exclude 'user_data/backtest_results/' \
+  --exclude 'user_data/hyperopt_results/' \
+  --exclude 'user_data/*.sqlite' \
+  --exclude 'user_data/strategies/__pycache__/' \
+  "$APP_DIR/freqtrade/" "$TARGET_DIR/freqtrade.new/"
 install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package.json" "$TARGET_DIR/package.json"
 install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"
-chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new"
+chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new" "$TARGET_DIR/dist-custom.new" "$TARGET_DIR/docs.new" "$TARGET_DIR/scripts.new" "$TARGET_DIR/freqtrade.new"
 
 if [[ "$DEPENDENCY_DRIFT" -eq 1 ]]; then
   log "Installing production dependencies from staged lockfile"
@@ -96,12 +149,30 @@ if [[ ! -f "$TARGET_DIR/dist.new/index.html" ]]; then
   exit 1
 fi
 
-log "Atomic swap src + dist"
-rm -rf "$TARGET_DIR/src.prev" "$TARGET_DIR/dist.prev"
+log "Atomic swap application + Freqtrade deploy trees"
+rm -rf "$TARGET_DIR/src.prev" "$TARGET_DIR/dist.prev" "$TARGET_DIR/dist-custom.prev" "$TARGET_DIR/docs.prev" "$TARGET_DIR/scripts.prev" "$TARGET_DIR/freqtrade.prev"
 if [[ -d "$TARGET_DIR/src" ]]; then mv "$TARGET_DIR/src" "$TARGET_DIR/src.prev"; fi
 if [[ -d "$TARGET_DIR/dist" ]]; then mv "$TARGET_DIR/dist" "$TARGET_DIR/dist.prev"; fi
+if [[ -d "$TARGET_DIR/dist-custom" ]]; then mv "$TARGET_DIR/dist-custom" "$TARGET_DIR/dist-custom.prev"; fi
+if [[ -d "$TARGET_DIR/docs" ]]; then mv "$TARGET_DIR/docs" "$TARGET_DIR/docs.prev"; fi
+if [[ -d "$TARGET_DIR/scripts" ]]; then mv "$TARGET_DIR/scripts" "$TARGET_DIR/scripts.prev"; fi
+if [[ -d "$TARGET_DIR/freqtrade" ]]; then mv "$TARGET_DIR/freqtrade" "$TARGET_DIR/freqtrade.prev"; fi
 mv "$TARGET_DIR/src.new" "$TARGET_DIR/src"
 mv "$TARGET_DIR/dist.new" "$TARGET_DIR/dist"
+mv "$TARGET_DIR/dist-custom.new" "$TARGET_DIR/dist-custom"
+mv "$TARGET_DIR/docs.new" "$TARGET_DIR/docs"
+mv "$TARGET_DIR/scripts.new" "$TARGET_DIR/scripts"
+mv "$TARGET_DIR/freqtrade.new" "$TARGET_DIR/freqtrade"
+
+if [[ -d "$TARGET_DIR/freqtrade.prev/user_data" ]]; then
+  log "Restoring protected Freqtrade runtime files"
+  mkdir -p "$TARGET_DIR/freqtrade/user_data"
+  for item in config.private.json data runtime backtest_results hyperopt_results; do
+    if [[ -e "$TARGET_DIR/freqtrade.prev/user_data/$item" && ! -e "$TARGET_DIR/freqtrade/user_data/$item" ]]; then
+      mv "$TARGET_DIR/freqtrade.prev/user_data/$item" "$TARGET_DIR/freqtrade/user_data/$item"
+    fi
+  done
+fi
 
 log "Stopping $SERVICE for clean port handoff"
 systemctl stop "$SERVICE"
@@ -124,12 +195,20 @@ done
 
 if [[ "$(systemctl is-active "$SERVICE" || true)" != "active" ]]; then
   echo "Service failed to become active, rolling back" >&2
+  FREQTRADE_PRESERVE="$BACKUP_DIR/freqtrade-runtime-preserve-service-fail"
+  preserve_freqtrade_runtime "$FREQTRADE_PRESERVE"
   rm -rf "$TARGET_DIR/src" "$TARGET_DIR/dist"
+  rm -rf "$TARGET_DIR/dist-custom" "$TARGET_DIR/docs" "$TARGET_DIR/scripts" "$TARGET_DIR/freqtrade"
   if [[ -d "$BACKUP_DIR/src" ]]; then rsync -a "$BACKUP_DIR/src/" "$TARGET_DIR/src/"; fi
   if [[ -d "$BACKUP_DIR/dist" ]]; then rsync -a "$BACKUP_DIR/dist/" "$TARGET_DIR/dist/"; fi
+  if [[ -d "$BACKUP_DIR/dist-custom" ]]; then rsync -a "$BACKUP_DIR/dist-custom/" "$TARGET_DIR/dist-custom/"; fi
+  if [[ -d "$BACKUP_DIR/docs" ]]; then rsync -a "$BACKUP_DIR/docs/" "$TARGET_DIR/docs/"; fi
+  if [[ -d "$BACKUP_DIR/scripts" ]]; then rsync -a "$BACKUP_DIR/scripts/" "$TARGET_DIR/scripts/"; fi
+  if [[ -d "$BACKUP_DIR/freqtrade" ]]; then rsync -a "$BACKUP_DIR/freqtrade/" "$TARGET_DIR/freqtrade/"; fi
+  restore_freqtrade_runtime "$FREQTRADE_PRESERVE"
   if [[ -f "$BACKUP_DIR/package.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package.json" "$TARGET_DIR/package.json"; fi
   if [[ -f "$BACKUP_DIR/package-lock.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"; fi
-  chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src" "$TARGET_DIR/dist" || true
+  chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src" "$TARGET_DIR/dist" "$TARGET_DIR/dist-custom" "$TARGET_DIR/docs" "$TARGET_DIR/scripts" "$TARGET_DIR/freqtrade" || true
   systemctl restart "$SERVICE" || true
   exit 1
 fi
@@ -148,12 +227,20 @@ done
 
 if [[ "$SMOKE_OK" -ne 1 ]]; then
   echo "Smoke checks failed, rolling back" >&2
+  FREQTRADE_PRESERVE="$BACKUP_DIR/freqtrade-runtime-preserve-smoke-fail"
+  preserve_freqtrade_runtime "$FREQTRADE_PRESERVE"
   rm -rf "$TARGET_DIR/src" "$TARGET_DIR/dist"
+  rm -rf "$TARGET_DIR/dist-custom" "$TARGET_DIR/docs" "$TARGET_DIR/scripts" "$TARGET_DIR/freqtrade"
   if [[ -d "$BACKUP_DIR/src" ]]; then rsync -a "$BACKUP_DIR/src/" "$TARGET_DIR/src/"; fi
   if [[ -d "$BACKUP_DIR/dist" ]]; then rsync -a "$BACKUP_DIR/dist/" "$TARGET_DIR/dist/"; fi
+  if [[ -d "$BACKUP_DIR/dist-custom" ]]; then rsync -a "$BACKUP_DIR/dist-custom/" "$TARGET_DIR/dist-custom/"; fi
+  if [[ -d "$BACKUP_DIR/docs" ]]; then rsync -a "$BACKUP_DIR/docs/" "$TARGET_DIR/docs/"; fi
+  if [[ -d "$BACKUP_DIR/scripts" ]]; then rsync -a "$BACKUP_DIR/scripts/" "$TARGET_DIR/scripts/"; fi
+  if [[ -d "$BACKUP_DIR/freqtrade" ]]; then rsync -a "$BACKUP_DIR/freqtrade/" "$TARGET_DIR/freqtrade/"; fi
+  restore_freqtrade_runtime "$FREQTRADE_PRESERVE"
   if [[ -f "$BACKUP_DIR/package.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package.json" "$TARGET_DIR/package.json"; fi
   if [[ -f "$BACKUP_DIR/package-lock.json" ]]; then install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$BACKUP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"; fi
-  chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src" "$TARGET_DIR/dist" || true
+  chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src" "$TARGET_DIR/dist" "$TARGET_DIR/dist-custom" "$TARGET_DIR/docs" "$TARGET_DIR/scripts" "$TARGET_DIR/freqtrade" || true
   systemctl restart "$SERVICE" || true
   exit 1
 fi

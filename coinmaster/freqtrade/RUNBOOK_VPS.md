@@ -256,3 +256,30 @@ docker compose down
 ```
 
 Then inspect Hyperliquid account state manually before making any further live-trading decision.
+
+## 11. Current Stage 1 dry-run candidate — 2026-04-27 overnight
+
+After implementing the full Freqtrade multi-timeframe/FVG/regime path, the selected dry-run candidate is:
+
+- pair whitelist: `ETH/USDC:USDC`, `HYPE/USDC:USDC`;
+- entry timeframes: `15m`, `1h`, `4h`;
+- FVG sweep, first-touch, max-age, and confirmation enabled;
+- TP levels `1.5 / 3 / 6`, SL `2`;
+- both long and short enabled;
+- Freqtrade protections enabled.
+
+Backtest window: `20260101-20260427` (covers 2026-01-01 through 2026-04-26 closed candles).
+
+Result:
+
+- 42 trades;
+- +393.638 USDC / +39.36%;
+- profit factor 1.73;
+- Sharpe 1.27;
+- Sortino 4.89;
+- max drawdown 176.026 USDC / 15.28%;
+- entry/exit timeouts 0/0.
+
+Runtime artifacts are written under `/var/lib/coinmaster/freqtrade/` and mounted into the container as `/freqtrade/user_data/runtime`.
+
+Do not switch to live automatically. Required live gate remains: observe dry-run on fresh candles/orders, confirm account isolation/current positions, then get explicit owner approval.

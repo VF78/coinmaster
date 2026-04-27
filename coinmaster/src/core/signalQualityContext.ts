@@ -357,6 +357,8 @@ export interface SignalQualityInput {
   thresholds: {
     adxMin: number;
     minImpulseAtr: number;
+    /** Optional minimum expected reward/risk. Omit or set <=0 to disable. */
+    minExpectedRr?: number;
     requireQuartile?: boolean;
   };
   eventLockout?: { active: boolean; reason?: string };
@@ -469,6 +471,16 @@ export function evaluateSignalQuality(input: SignalQualityInput): SignalQualityV
   }
 
   const rr = expectedRewardToRisk(input.entry, input.stopLoss, input.takeProfits, input.side);
+  const minExpectedRr = Number(input.thresholds.minExpectedRr ?? 0);
+  if (Number.isFinite(minExpectedRr) && minExpectedRr > 0 && rr < minExpectedRr) {
+    return {
+      ok: false,
+      reasonCode: 'expected_rr_below_min',
+      reason: `expected_rr_${rr.toFixed(2)}_below_${minExpectedRr}`,
+      details: { regime, displacement, expectedRr: rr },
+    };
+  }
+
   return {
     ok: true,
     details: { regime, displacement, expectedRr: rr },

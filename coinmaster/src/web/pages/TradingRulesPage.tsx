@@ -17,7 +17,6 @@ import { useDialog } from '../components/DialogProvider';
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
 const REGIME_TIMEFRAMES: TradingRulesTimeframe[] = ['1h', '4h'];
 const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
-const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
 
 function clampNumber(value: number, min: number, max: number) {
   if (!Number.isFinite(value)) return min;
@@ -161,8 +160,18 @@ interface GuardControlProps {
 
 function GuardControl({ label, enabled, onToggle, children, note }: GuardControlProps) {
   return (
-    <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-      <label className="rules-toggle-row" style={{ width: '100%', gap: 8 }}>
+    <div
+      style={{
+        display: 'grid',
+        gap: 8,
+        alignContent: 'start',
+        padding: '0.75rem',
+        border: '1px solid var(--border)',
+        borderRadius: 8,
+        background: 'var(--surface-2)',
+      }}
+    >
+      <div className="rules-toggle-row" style={{ width: '100%', gap: 10, justifyContent: 'space-between' }}>
         <span className="rules-label" style={{ margin: 0 }}>{label}</span>
         <button
           type="button"
@@ -170,11 +179,12 @@ function GuardControl({ label, enabled, onToggle, children, note }: GuardControl
           aria-checked={enabled}
           className={`rules-toggle ${enabled ? 'rules-toggle--on' : ''}`}
           onClick={() => onToggle(!enabled)}
+          aria-label={`${enabled ? 'Disable' : 'Enable'} ${label}`}
         >
           <span className="rules-toggle__thumb" />
         </button>
-      </label>
-      <div style={{ opacity: enabled ? 1 : 0.45, pointerEvents: enabled ? 'auto' : 'none' }}>{children}</div>
+      </div>
+      <div style={{ opacity: enabled ? 1 : 0.45, pointerEvents: enabled ? 'auto' : 'none', width: '100%' }}>{children}</div>
       {note ? <p className="stat-note muted" style={{ margin: 0 }}>{note}</p> : null}
     </div>
   );
@@ -188,7 +198,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [availableSymbols, setAvailableSymbols] = useState<string[]>([]);
   const [newSymbol, setNewSymbol] = useState('');
   const [entryTimeframes, setEntryTimeframes] = useState<TradingRulesTimeframe[]>(defaults.entryTimeframes);
-  const [emergencyExitTimeframes, setEmergencyExitTimeframes] = useState<TradingRulesTimeframe[]>(defaults.emergencyExitTimeframes);
   const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
   const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
   const [fvgMinWidthPct, setFvgMinWidthPct] = useState(defaults.fvgMinWidthPct);
@@ -202,7 +211,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
   const [tpLevels, setTpLevels] = useState<number[]>(defaults.tpLevels ?? [defaults.tpPct]);
   const [slPct, setSlPct] = useState(defaults.slPct);
-  const [exitClosePct, setExitClosePct] = useState(defaults.exitClosePct ?? 50);
   const [regimeFilterEnabled, setRegimeFilterEnabled] = useState(defaults.regimeFilterEnabled ?? true);
   const [regimeTf, setRegimeTf] = useState<TradingRulesTimeframe>(defaults.regimeTf ?? '1h');
   const [adxEnabled, setAdxEnabled] = useState(defaults.adxEnabled ?? false);
@@ -223,15 +231,21 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveInfo, setSaveInfo] = useState<string>('');
-  const totalPct = useMemo(
-    () => Math.round(coins.filter((c) => c.enabled).reduce((s, c) => s + c.pct, 0) * 100) / 100,
+  const activeCoinRows = useMemo(
+    () => coins
+      .map((coin, idx) => ({ coin, idx }))
+      .filter(({ coin }) => coin.enabled),
     [coins],
+  );
+
+  const totalPct = useMemo(
+    () => Math.round(activeCoinRows.reduce((s, { coin }) => s + coin.pct, 0) * 100) / 100,
+    [activeCoinRows],
   );
 
   const currentRules = useMemo<TradingRulesSettings>(() => normalizeTradingRules({
     coins,
     entryTimeframes,
-    emergencyExitTimeframes,
     engulfingLookbackCandles,
     fvgRetrace,
     fvgMinWidthPct,
@@ -246,7 +260,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     tpPct: tpLevels[0] ?? 6,
     tpLevels,
     slPct,
-    exitClosePct,
     autoConfirm: false,
     regimeFilterEnabled,
     regimeTf,
@@ -268,7 +281,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   }), [
     coins,
     entryTimeframes,
-    emergencyExitTimeframes,
     engulfingLookbackCandles,
     fvgRetrace,
     fvgMinWidthPct,
@@ -282,7 +294,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     dailyDrawdown,
     tpLevels,
     slPct,
-    exitClosePct,
     regimeFilterEnabled,
     regimeTf,
     adxEnabled,
@@ -321,9 +332,8 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
   function applyRules(rules: TradingRulesSettings) {
     const normalized = normalizeTradingRules(rules);
-    setCoins(normalized.coins);
+    setCoins(normalized.coins.filter((coin) => coin.enabled));
     setEntryTimeframes(normalized.entryTimeframes);
-    setEmergencyExitTimeframes(normalized.emergencyExitTimeframes);
     setEngulfingLookbackCandles(normalized.engulfingLookbackCandles);
     setFvgRetrace(normalized.fvgRetrace);
     setFvgMinWidthPct(normalized.fvgMinWidthPct);
@@ -337,7 +347,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setDailyDrawdown(normalized.dailyDrawdown);
     setTpLevels(normalized.tpLevels ?? [normalized.tpPct]);
     setSlPct(normalized.slPct);
-    setExitClosePct(normalized.exitClosePct ?? 50);
     setRegimeFilterEnabled(normalized.regimeFilterEnabled ?? true);
     setRegimeTf(normalized.regimeTf ?? '1h');
     setAdxEnabled(normalized.adxEnabled ?? false);
@@ -389,7 +398,10 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   }, []);
 
   function toggleCoin(idx: number) {
-    setCoins((prev) => prev.map((c, i) => (i === idx ? { ...c, enabled: !c.enabled } : c)));
+    // Coin Distribution mirrors the actual Freqtrade whitelist: rows shown here
+    // are active rows only. Turning a row off removes it from the active list
+    // instead of keeping a hidden disabled asset that could block re-adding it.
+    removeCoin(idx);
   }
 
   function setCoinSymbol(idx: number, symbol: string) {
@@ -504,7 +516,8 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   }
 
   async function handleApply(): Promise<boolean> {
-    const normalizedSymbols = coins.map((coin) => normalizeAssetSymbol(coin.symbol));
+    const activeCoins = coins.filter((coin) => coin.enabled);
+    const normalizedSymbols = activeCoins.map((coin) => normalizeAssetSymbol(coin.symbol));
     const hasEmptySymbol = normalizedSymbols.some((symbol) => symbol.length === 0);
     if (hasEmptySymbol) {
       await dialog.alert({
@@ -527,8 +540,9 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
     const payload = normalizeTradingRules({
       ...currentRules,
-      coins: coins.map((coin, idx) => ({
+      coins: activeCoins.map((coin, idx) => ({
         ...coin,
+        enabled: true,
         symbol: normalizedSymbols[idx],
       })),
     });
@@ -580,7 +594,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     if (!onRegisterSaveHandler) return;
     onRegisterSaveHandler(() => handleApply());
     return () => onRegisterSaveHandler(null);
-  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, emergencyExitTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, fvgRequireSweep, fvgSweepLookbackCandles, fvgRequireFirstTouch, maxZoneAgeCandles, fvgRequireConfirmation, fvgConfirmationTimeframes, maxLeverage, dailyDrawdown, tpLevels, slPct, exitClosePct, regimeFilterEnabled, regimeTf, adxEnabled, adxMin, minImpulseAtrEnabled, minImpulseAtr, timeStopEnabled, timeStopBars, riskPerTradeEnabled, riskPerTradePct, portfolioGrossCapEnabled, portfolioGrossCap, symbolBiasOverrides]);
+  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, fvgRequireSweep, fvgSweepLookbackCandles, fvgRequireFirstTouch, maxZoneAgeCandles, fvgRequireConfirmation, fvgConfirmationTimeframes, maxLeverage, dailyDrawdown, tpLevels, slPct, regimeFilterEnabled, regimeTf, adxEnabled, adxMin, minImpulseAtrEnabled, minImpulseAtr, timeStopEnabled, timeStopBars, riskPerTradeEnabled, riskPerTradePct, portfolioGrossCapEnabled, portfolioGrossCap, symbolBiasOverrides]);
 
   return (
     <main className="terminal-layout trading-rules-page">
@@ -592,7 +606,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
       <Card title="Coin Distribution" actions={<Badge tone="neutral">Allocation</Badge>}>
         <div className="rules-grid">
-          {coins.map((coin, idx) => {
+          {activeCoinRows.map(({ coin, idx }) => {
             const normalizedSymbol = normalizeAssetSymbol(coin.symbol);
             const rowAssetClass = coin.assetClass ?? inferAssetClassFromSymbol(normalizedSymbol);
 
@@ -643,8 +657,8 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
                   variant="danger"
                   className="rules-mini-btn"
                   onClick={() => removeCoin(idx)}
-                  disabled={coins.length <= 1}
-                  title={coins.length <= 1 ? 'At least one asset row is required' : 'Remove asset'}
+                  disabled={activeCoinRows.length <= 1}
+                  title={activeCoinRows.length <= 1 ? 'At least one active asset row is required' : 'Remove asset'}
                 >
                   Remove
                 </Button>
@@ -671,17 +685,17 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
           <Button type="button" variant="secondary" onClick={() => { void addCoinFromInput(); }}>+ Add asset</Button>
         </div>
 
-        <p className="stat-note muted">Active total: <strong>{totalPct}%</strong></p>
+        <p className="stat-note muted">Active Freqtrade whitelist total: <strong>{totalPct}%</strong></p>
 
         <p className="stat-note muted" style={{ marginTop: 8 }}>
-          Enabled rows become the Freqtrade pair whitelist. Allocation % caps the maximum margin Freqtrade may use per asset via custom_stake_amount(). Pair whitelist changes require Freqtrade reload/restart; sizing changes are hot-reloaded by the strategy.
+          This list mirrors the real Freqtrade whitelist: only active assets are displayed and saved. Allocation % is exported to Freqtrade as coin_allocations and sets the target margin stake per asset in custom_stake_amount(). Pair whitelist changes require Freqtrade reload/restart; sizing changes are hot-reloaded by the strategy.
         </p>
       </Card>
 
-      <Card title="Entry / Exit Rules" actions={<Badge tone="neutral">Signals</Badge>}>
+      <Card title="Entry Rules" actions={<Badge tone="neutral">Freqtrade MTF</Badge>}>
         <div className="rules-section">
           <p className="rules-label" style={{ marginBottom: 8 }}>
-            Entry timeframe <span className="muted" style={{ fontWeight: 400 }}>(Bullish / Bearish Engulfing)</span>
+            Entry timeframes <span className="muted" style={{ fontWeight: 400 }}>(Engulfing on selected TFs; FVG uses selected 1h/4h HTFs)</span>
           </p>
           <div className="rules-btn-group rules-btn-group--left">
             {TIMEFRAMES.map((tf) => (
@@ -729,7 +743,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
             </div>
             <div style={{ display: 'grid', gap: 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                <span className="rules-label" style={{ margin: 0 }}>FVG Retrace Level (1H/4H)</span>
+                <span className="rules-label" style={{ margin: 0 }}>FVG Retrace Level (HTF 1h/4h)</span>
                 <div className="actions-row">
                   <input
                     type="number"
@@ -866,7 +880,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         </div>
       </Card>
 
-      <Card title="Signal Quality / Portfolio Guards" actions={<Badge tone="neutral">Stage 1</Badge>}>
+      <Card title="Signal Quality / Portfolio Guards" actions={<Badge tone="neutral">Live in Freqtrade</Badge>}>
         <div
           style={{
             display: 'grid',
@@ -885,40 +899,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
           <GuardControl label="Minimum impulse / ATR" enabled={minImpulseAtrEnabled} onToggle={setMinImpulseAtrEnabled}>
             <Stepper value={minImpulseAtr} min={0} max={10} step={0.1} decimals={1} onChange={setMinImpulseAtr} disabled={!minImpulseAtrEnabled} />
-          </GuardControl>
-
-          <GuardControl label="Exit timeframe (Opposite Engulfing)" enabled={exitClosePct > 0} onToggle={(enabled) => setExitClosePct(enabled ? 50 : 0)} note="0% disables opposite-engulfing exits.">
-            <div style={{ display: 'grid', gap: 8 }}>
-              <div className="rules-btn-group rules-btn-group--left">
-                {TIMEFRAMES.map((tf) => (
-                  <Button
-                    key={tf}
-                    variant={emergencyExitTimeframes.includes(tf) ? 'primary' : 'secondary'}
-                    onClick={() => toggleTf(tf, emergencyExitTimeframes, setEmergencyExitTimeframes)}
-                  >
-                    {tf}
-                  </Button>
-                ))}
-              </div>
-              <div className="actions-row" style={{ justifyContent: 'flex-start' }}>
-                <Segmented
-                  options={EXIT_CLOSE_PRESETS}
-                  value={EXIT_CLOSE_PRESETS.includes(exitClosePct) ? exitClosePct : 50}
-                  format={(v) => `${v}%`}
-                  onChange={setExitClosePct}
-                />
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={exitClosePct}
-                  className="rules-input rules-input--sm"
-                  onChange={(e) => setExitClosePct(clampNumber(Number(e.target.value), 0, 100))}
-                  aria-label="Custom close size on exit signal"
-                />
-              </div>
-            </div>
           </GuardControl>
 
           <GuardControl label="Time stop" enabled={timeStopEnabled} onToggle={setTimeStopEnabled}>

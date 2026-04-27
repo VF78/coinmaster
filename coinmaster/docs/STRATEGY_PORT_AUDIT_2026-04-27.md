@@ -234,3 +234,17 @@ Interpretation:
 1. Should Stage 1 reproduce current old Trading Rules snapshot exactly as baseline defaults, or should we intentionally start with a simpler Freqtrade-native profile and use old rules only as reference?
 2. For exits: do we require old partial TP + BE + time-stop parity before dry-run, or is a simpler Freqtrade-native exit model acceptable for first dry-run?
 3. Should the Freqtrade trading pair whitelist expand to all dataset markets now, or remain conservative until strategy parity improves?
+
+## Addendum — parity update after overnight implementation
+
+The earlier audit described the initial baseline port. The following gaps were closed after that audit:
+
+- base timeframe moved to `5m`; `15m`, `1h`, and `4h` are informative timeframes;
+- entry timeframe selection is consumed by the strategy;
+- HTF FVG now uses `1h/4h` informative data and supports sweep, sweep lookback, first-touch, max zone age, and engulfing confirmation timeframes;
+- regime filter now uses selected `1h/4h` informative data;
+- opposite engulfing exit UI/runtime export was removed from the Freqtrade path;
+- Signal Quality / Portfolio guard enable flags are exported and respected;
+- expected R:R threshold handling was fixed in `SignalQualityContext` invariants.
+
+Remaining live-gate work is operational, not a request to reintroduce the old engine: observe dry-run on fresh candles/orders and only then approve live cutover.

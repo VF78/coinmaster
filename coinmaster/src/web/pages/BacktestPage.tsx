@@ -26,7 +26,6 @@ import { formatDate, formatMoney, formatNumber } from '../lib/format';
 
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
 const REGIME_TIMEFRAMES: TradingRulesTimeframe[] = ['1h', '4h'];
-const EXIT_CLOSE_PRESETS = [0, 25, 50, 75, 100];
 const HISTORY_PAGE_SIZE = 15;
 const POLL_INTERVAL_MS = 3_000;
 
@@ -102,7 +101,6 @@ const OPTIMIZATION_PARAM_SPECS: OptimizationParamSpec[] = [
   { param: 'engulfingLookbackCandles', label: 'Lookback candles', kind: 'int', min: 5, max: 200 },
   { param: 'fvgRetrace', label: 'FVG retrace %', kind: 'pct', min: 10, max: 90 },
   { param: 'fvgMinWidthPct', label: 'FVG min width %', kind: 'decimal', min: 0, max: 2 },
-  { param: 'exitClosePct', label: 'Exit close %', kind: 'pct', min: 0, max: 100 },
   { param: 'dailyDrawdown', label: 'Daily drawdown %', kind: 'pct', min: 0.5, max: 15 },
   { param: 'regimeTf', label: 'Regime timeframe', kind: 'timeframe', min: 1, max: 4 },
   { param: 'adxMin', label: 'Minimum ADX', kind: 'decimal', min: 0, max: 60 },
@@ -126,7 +124,6 @@ function getRulesValue(rules: TradingRulesSettings, param: string): number {
     case 'engulfingLookbackCandles': return rules.engulfingLookbackCandles;
     case 'fvgRetrace': return rules.fvgRetrace;
     case 'fvgMinWidthPct': return rules.fvgMinWidthPct;
-    case 'exitClosePct': return rules.exitClosePct;
     case 'dailyDrawdown': return rules.dailyDrawdown;
     case 'adxMin': return rules.adxMin ?? 0;
     case 'minImpulseAtr': return rules.minImpulseAtr ?? 0;
@@ -149,7 +146,6 @@ function setRulesValue(rules: TradingRulesSettings, param: string, value: number
     case 'engulfingLookbackCandles': rules.engulfingLookbackCandles = value; break;
     case 'fvgRetrace': rules.fvgRetrace = value; break;
     case 'fvgMinWidthPct': rules.fvgMinWidthPct = value; break;
-    case 'exitClosePct': rules.exitClosePct = value; break;
     case 'dailyDrawdown': rules.dailyDrawdown = value; break;
     case 'adxMin': rules.adxMin = value; break;
     case 'minImpulseAtr': rules.minImpulseAtr = value; break;
@@ -228,7 +224,6 @@ function formatRulesSnapshot(
     { label: 'Asset', value: coin?.symbol ?? symbol },
     { label: 'Asset class', value: coin?.assetClass ?? inferAssetClassFromSymbol(coin?.symbol ?? symbol) },
     { label: 'Entry timeframe', value: (rules.entryTimeframes ?? []).join(', ') || '—' },
-    { label: 'Exit timeframe', value: (rules.emergencyExitTimeframes ?? []).join(', ') || '—' },
     { label: 'Lookback candles', value: String(rules.engulfingLookbackCandles ?? 30) },
     { label: 'FVG Retrace Level', value: `${rules.fvgRetrace ?? 50}%` },
     { label: 'FVG Min Width Filter', value: `${rules.fvgMinWidthPct ?? 0.3}%` },
@@ -247,7 +242,6 @@ function formatRulesSnapshot(
     { label: 'Risk per trade', value: `${rules.riskPerTradePct ?? 0}%` },
     { label: 'Event lockout', value: `${rules.eventLockoutMinutes ?? 0} min` },
     { label: 'Portfolio gross cap', value: `${rules.portfolioGrossCap ?? 200}%` },
-    { label: 'Close size on exit signal', value: `${rules.exitClosePct ?? 50}%` },
     { label: 'Daily Drawdown Limit', value: `${rules.dailyDrawdown ?? 0}%` },
     { label: 'Max Leverage', value: `${rules.maxLeverage ?? 1}x` },
     { label: 'TP Levels', value: (rules.tpLevels ?? []).map((x) => `${x}%`).join(' / ') || `${rules.tpPct ?? 0}%` },
@@ -350,7 +344,6 @@ export function BacktestPage() {
   const [shortEnabled, setShortEnabled] = useState(true);
 
   const [entryTimeframes, setEntryTimeframes] = useState<TradingRulesTimeframe[]>(defaults.entryTimeframes);
-  const [emergencyExitTimeframes, setEmergencyExitTimeframes] = useState<TradingRulesTimeframe[]>(defaults.emergencyExitTimeframes);
   const [engulfingLookbackCandles, setEngulfingLookbackCandles] = useState(defaults.engulfingLookbackCandles);
   const [fvgRetrace, setFvgRetrace] = useState(defaults.fvgRetrace);
   const [fvgMinWidthPct, setFvgMinWidthPct] = useState(defaults.fvgMinWidthPct);
@@ -364,7 +357,6 @@ export function BacktestPage() {
   const [dailyDrawdown, setDailyDrawdown] = useState(defaults.dailyDrawdown);
   const [tpLevels, setTpLevels] = useState<number[]>(defaults.tpLevels);
   const [slPct, setSlPct] = useState(defaults.slPct);
-  const [exitClosePct, setExitClosePct] = useState(defaults.exitClosePct);
   const [regimeTf, setRegimeTf] = useState<TradingRulesTimeframe>(defaults.regimeTf ?? '1h');
   const [adxMin, setAdxMin] = useState(defaults.adxMin ?? 0);
   const [minImpulseAtr, setMinImpulseAtr] = useState(defaults.minImpulseAtr ?? 0);
@@ -421,7 +413,6 @@ export function BacktestPage() {
     setLongEnabled(selection.longEnabled);
     setShortEnabled(selection.shortEnabled);
     setEntryTimeframes(rules.entryTimeframes?.length ? rules.entryTimeframes : defaults.entryTimeframes);
-    setEmergencyExitTimeframes(rules.emergencyExitTimeframes?.length ? rules.emergencyExitTimeframes : defaults.emergencyExitTimeframes);
     setEngulfingLookbackCandles(rules.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
     setFvgRetrace(rules.fvgRetrace ?? defaults.fvgRetrace);
     setFvgMinWidthPct(rules.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
@@ -435,7 +426,6 @@ export function BacktestPage() {
     setDailyDrawdown(rules.dailyDrawdown ?? defaults.dailyDrawdown);
     setTpLevels(rules.tpLevels?.length ? [...rules.tpLevels] : defaults.tpLevels);
     setSlPct(rules.slPct ?? defaults.slPct);
-    setExitClosePct(rules.exitClosePct ?? defaults.exitClosePct);
     setRegimeTf(rules.regimeTf ?? defaults.regimeTf ?? '1h');
     setAdxMin(rules.adxMin ?? defaults.adxMin ?? 0);
     setMinImpulseAtr(rules.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
@@ -456,7 +446,6 @@ export function BacktestPage() {
     setLongEnabled(selection.longEnabled);
     setShortEnabled(selection.shortEnabled);
     setEntryTimeframes(rules.entryTimeframes?.length ? rules.entryTimeframes : defaults.entryTimeframes);
-    setEmergencyExitTimeframes(rules.emergencyExitTimeframes?.length ? rules.emergencyExitTimeframes : defaults.emergencyExitTimeframes);
     setEngulfingLookbackCandles(rules.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
     setFvgRetrace(rules.fvgRetrace ?? defaults.fvgRetrace);
     setFvgMinWidthPct(rules.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
@@ -470,7 +459,6 @@ export function BacktestPage() {
     setDailyDrawdown(rules.dailyDrawdown ?? defaults.dailyDrawdown);
     setTpLevels(rules.tpLevels?.length ? [...rules.tpLevels] : defaults.tpLevels);
     setSlPct(rules.slPct ?? defaults.slPct);
-    setExitClosePct(rules.exitClosePct ?? defaults.exitClosePct);
     setRegimeTf(rules.regimeTf ?? defaults.regimeTf ?? '1h');
     setAdxMin(rules.adxMin ?? defaults.adxMin ?? 0);
     setMinImpulseAtr(rules.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
@@ -586,7 +574,6 @@ export function BacktestPage() {
         setSymbol(seedSymbol);
         setSymbolDraft(seedSymbol);
         setEntryTimeframes(normalized.entryTimeframes?.length ? normalized.entryTimeframes : defaults.entryTimeframes);
-        setEmergencyExitTimeframes(normalized.emergencyExitTimeframes?.length ? normalized.emergencyExitTimeframes : defaults.emergencyExitTimeframes);
         setEngulfingLookbackCandles(normalized.engulfingLookbackCandles ?? defaults.engulfingLookbackCandles);
         setFvgRetrace(normalized.fvgRetrace ?? defaults.fvgRetrace);
         setFvgMinWidthPct(normalized.fvgMinWidthPct ?? defaults.fvgMinWidthPct);
@@ -600,7 +587,6 @@ export function BacktestPage() {
         setDailyDrawdown(normalized.dailyDrawdown ?? defaults.dailyDrawdown);
         setTpLevels(normalized.tpLevels?.length ? [...normalized.tpLevels] : defaults.tpLevels);
         setSlPct(normalized.slPct ?? defaults.slPct);
-        setExitClosePct(normalized.exitClosePct ?? defaults.exitClosePct);
         setRegimeTf(normalized.regimeTf ?? defaults.regimeTf ?? '1h');
         setAdxMin(normalized.adxMin ?? defaults.adxMin ?? 0);
         setMinImpulseAtr(normalized.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
@@ -749,7 +735,6 @@ export function BacktestPage() {
         ...rulesBase,
         coins: [{ symbol: normalizedSymbol, enabled: true, pct: 100, assetClass: inferAssetClassFromSymbol(normalizedSymbol) }],
         entryTimeframes,
-        emergencyExitTimeframes,
         engulfingLookbackCandles,
         fvgRetrace,
         fvgMinWidthPct,
@@ -763,7 +748,6 @@ export function BacktestPage() {
         dailyDrawdown,
         tpLevels,
         slPct,
-        exitClosePct,
         regimeTf,
         adxMin,
         minImpulseAtr,
@@ -1025,28 +1009,6 @@ export function BacktestPage() {
           </div>
         </div>
 
-        <div className="rules-section">
-          <p className="rules-label" style={{ marginBottom: 8 }}>
-            Exit timeframe <span className="muted" style={{ fontWeight: 400 }}>(Opposite Engulfing)</span>
-          </p>
-          <div className="rules-btn-group rules-btn-group--left rules-btn-group--mb">
-            {TIMEFRAMES.map((tf) => (
-              <Button key={tf} variant={emergencyExitTimeframes.includes(tf) ? 'primary' : 'secondary'} onClick={() => toggleTf(tf, emergencyExitTimeframes, setEmergencyExitTimeframes)}>
-                {tf}
-              </Button>
-            ))}
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}>
-            <span className="rules-label" style={{ margin: 0 }}>Close size on exit signal</span>
-            <div className="actions-row" style={{ justifyContent: 'flex-end' }}>
-              <Segmented options={EXIT_CLOSE_PRESETS} value={EXIT_CLOSE_PRESETS.includes(exitClosePct) ? exitClosePct : 50} format={(v) => `${v}%`} onChange={setExitClosePct} />
-              <input type="number" min={0} max={100} step={1} value={exitClosePct} className="rules-input rules-input--sm" onChange={(e) => setExitClosePct(clampNumber(Number(e.target.value), 0, 100))} aria-label="Custom close size on exit signal" />
-            </div>
-          </div>
-          <p className="stat-note muted" style={{ marginTop: 8, fontSize: 11 }}>
-            {exitClosePct === 0 ? '0% disables emergency engulfing exit actions.' : exitClosePct < 100 ? `Partial close (${exitClosePct}%) moves SL to entry (break-even).` : '100% closes the full position.'}
-          </p>
-        </div>
       </Card>
 
       <Card title="Signal Quality Context" actions={<Badge tone="neutral">Regime</Badge>}>

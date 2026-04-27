@@ -190,7 +190,6 @@ function buildFreqtradeRulesExport(rules: TradingRulesSettings) {
     fvg_confirmation_timeframes: rules.fvgConfirmationTimeframes,
     max_leverage_value: rules.maxLeverage,
     risk_per_trade_pct: rules.riskPerTradeEnabled ? rules.riskPerTradePct : 0,
-    exit_close_pct: rules.exitClosePct,
     tp_levels_pct: rules.tpLevels,
     sl_pct: rules.slPct,
     regime_filter_enabled: rules.regimeFilterEnabled,
