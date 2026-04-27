@@ -21,6 +21,19 @@ BACKUP_DIR="$BACKUP_ROOT/$TS"
 
 log() { printf '[deploy-safe] %s\n' "$*"; }
 
+move_freqtrade_sqlite_files() {
+  local source_dir="$1"
+  local dest_dir="$2"
+  mkdir -p "$dest_dir"
+  shopt -s nullglob
+  local sqlite_file
+  for sqlite_file in "$source_dir"/*.sqlite "$source_dir"/*.sqlite-*; do
+    [[ -e "$sqlite_file" ]] || continue
+    mv "$sqlite_file" "$dest_dir/$(basename "$sqlite_file")"
+  done
+  shopt -u nullglob
+}
+
 preserve_freqtrade_runtime() {
   local preserve_dir="$1"
   rm -rf "$preserve_dir"
@@ -32,6 +45,7 @@ preserve_freqtrade_runtime() {
         mv "$TARGET_DIR/freqtrade/user_data/$item" "$preserve_dir/user_data/$item"
       fi
     done
+    move_freqtrade_sqlite_files "$TARGET_DIR/freqtrade/user_data" "$preserve_dir/user_data"
   fi
 }
 
@@ -44,6 +58,7 @@ restore_freqtrade_runtime() {
         mv "$preserve_dir/user_data/$item" "$TARGET_DIR/freqtrade/user_data/$item"
       fi
     done
+    move_freqtrade_sqlite_files "$preserve_dir/user_data" "$TARGET_DIR/freqtrade/user_data"
   fi
 }
 
@@ -106,6 +121,7 @@ if [[ -d "$TARGET_DIR/freqtrade" ]]; then
     --exclude 'user_data/backtest_results/' \
     --exclude 'user_data/hyperopt_results/' \
     --exclude 'user_data/*.sqlite' \
+    --exclude 'user_data/*.sqlite-*' \
     --exclude 'user_data/strategies/__pycache__/' \
     "$TARGET_DIR/freqtrade/" "$BACKUP_DIR/freqtrade/"
 fi
@@ -127,6 +143,7 @@ rsync -a --delete \
   --exclude 'user_data/backtest_results/' \
   --exclude 'user_data/hyperopt_results/' \
   --exclude 'user_data/*.sqlite' \
+  --exclude 'user_data/*.sqlite-*' \
   --exclude 'user_data/strategies/__pycache__/' \
   "$APP_DIR/freqtrade/" "$TARGET_DIR/freqtrade.new/"
 install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package.json" "$TARGET_DIR/package.json"
@@ -172,6 +189,7 @@ if [[ -d "$TARGET_DIR/freqtrade.prev/user_data" ]]; then
       mv "$TARGET_DIR/freqtrade.prev/user_data/$item" "$TARGET_DIR/freqtrade/user_data/$item"
     fi
   done
+  move_freqtrade_sqlite_files "$TARGET_DIR/freqtrade.prev/user_data" "$TARGET_DIR/freqtrade/user_data"
 fi
 
 log "Stopping $SERVICE for clean port handoff"
