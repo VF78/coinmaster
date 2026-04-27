@@ -140,6 +140,8 @@ try:
         if not isinstance(disk, dict) and radar_policy_path.exists():
             disk = json.loads(radar_policy_path.read_text())
         if isinstance(disk, dict):
+            global_policy = disk.get('global') if isinstance(disk.get('global'), dict) else {}
+            disabled_neutral = global_policy.get('enabled') is False and global_policy.get('reason') == 'radar_disabled_neutral'
             updated = disk.get('updated_at')
             valid_until = disk.get('valid_until')
             result['radar_policy_valid_until'] = valid_until
@@ -147,7 +149,9 @@ try:
             age = (datetime.now(timezone.utc) - updated_dt.astimezone(timezone.utc)).total_seconds() if updated_dt else None
             result['radar_policy_age_sec'] = round(age, 1) if age is not None else None
             valid_dt = datetime.fromisoformat(str(valid_until).replace('Z', '+00:00')) if valid_until else None
-            if age is not None and age <= radar_policy_max_stale_sec and valid_dt and valid_dt.astimezone(timezone.utc) > datetime.now(timezone.utc):
+            if disabled_neutral:
+                result['radar_policy'] = 'disabled_neutral'
+            elif age is not None and age <= radar_policy_max_stale_sec and valid_dt and valid_dt.astimezone(timezone.utc) > datetime.now(timezone.utc):
                 result['radar_policy'] = 'fresh'
             else:
                 result['radar_policy'] = 'stale'
@@ -227,7 +231,7 @@ try:
         result['app_health'] == 'ok'
         and result['dry_run'] is True
         and result['state'] == 'running'
-        and result['radar_policy'] in {'fresh', 'missing'}
+        and result['radar_policy'] in {'fresh', 'missing', 'disabled_neutral'}
         and not [e for e in result['errors'] if not str(e).startswith('radar_policy_missing')]
     )
 
