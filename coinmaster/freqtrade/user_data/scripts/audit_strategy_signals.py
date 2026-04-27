@@ -24,18 +24,34 @@ def count(series: pd.Series) -> int:
     return int(series.fillna(False).astype(bool).sum())
 
 
-def audit_pair(pair: str, dataframe: pd.DataFrame) -> dict[str, object]:
-    strategy = CoinMasterStrategy({"timeframe": "15m", "stake_currency": "USDC"})
+class LocalDataProvider:
+    def __init__(self, datadir: Path, pairs: list[str]) -> None:
+        self.datadir = datadir
+        self.pairs = pairs
+
+    def current_whitelist(self) -> list[str]:
+        return self.pairs
+
+    def get_pair_dataframe(self, pair: str, timeframe: str) -> pd.DataFrame:
+        return load_pair(self.datadir, pair, timeframe)
+
+
+def audit_pair(pair: str, dataframe: pd.DataFrame, datadir: Path, pairs: list[str]) -> dict[str, object]:
+    strategy = CoinMasterStrategy({"timeframe": "5m", "stake_currency": "USDC"})
+    strategy.dp = LocalDataProvider(datadir, pairs)
     df = strategy.populate_indicators(dataframe.copy(), {"pair": pair})
     df = strategy.populate_entry_trend(df, {"pair": pair})
     df = strategy.populate_exit_trend(df, {"pair": pair})
 
-    long_signal = df["engulf_long"].fillna(False) | (df["fvg_dir"] == 1)
-    short_signal = df["engulf_short"].fillna(False) | (df["fvg_dir"] == -1)
+    fvg_dir = pd.to_numeric(df.get("fvg_dir", pd.Series(0, index=df.index)), errors="coerce").fillna(0)
+    long_signal = df["engulf_long"].fillna(False).astype(bool) | (fvg_dir == 1)
+    short_signal = df["engulf_short"].fillna(False).astype(bool) | (fvg_dir == -1)
     volume = df["volume"] > 0
     body_guard = df["body_atr"].fillna(0) >= float(strategy.min_impulse_atr.value)
     close_long = df["close_position"].fillna(0.5) >= 0.75
     close_short = df["close_position"].fillna(0.5) <= 0.25
+    regime_long = strategy._regime_series(df, "long").fillna(False)
+    regime_short = strategy._regime_series(df, "short").fillna(False)
 
     rows = len(df)
     first = df["date"].iloc[0].isoformat() if rows and "date" in df.columns else "n/a"
@@ -51,16 +67,16 @@ def audit_pair(pair: str, dataframe: pd.DataFrame) -> dict[str, object]:
         "sweep_high": count(df["sweep_high"]),
         "engulf_long": count(df["engulf_long"]),
         "engulf_short": count(df["engulf_short"]),
-        "fvg_long_retrace": count(df["fvg_dir"] == 1),
-        "fvg_short_retrace": count(df["fvg_dir"] == -1),
+        "fvg_long_retrace": count(fvg_dir == 1),
+        "fvg_short_retrace": count(fvg_dir == -1),
         "raw_long_signal": count(long_signal),
         "raw_short_signal": count(short_signal),
-        "regime_long": count(df["regime_long"]),
-        "regime_short": count(df["regime_short"]),
-        "long_after_regime": count(long_signal & df["regime_long"].fillna(False)),
-        "short_after_regime": count(short_signal & df["regime_short"].fillna(False)),
-        "long_after_close_quality": count(long_signal & df["regime_long"].fillna(False) & close_long),
-        "short_after_close_quality": count(short_signal & df["regime_short"].fillna(False) & close_short),
+        "regime_long": count(regime_long),
+        "regime_short": count(regime_short),
+        "long_after_regime": count(long_signal & regime_long),
+        "short_after_regime": count(short_signal & regime_short),
+        "long_after_close_quality": count(long_signal & regime_long & close_long),
+        "short_after_close_quality": count(short_signal & regime_short & close_short),
         "enter_long": count(df.get("enter_long", pd.Series(False, index=df.index)) == 1),
         "enter_short": count(df.get("enter_short", pd.Series(False, index=df.index)) == 1),
         "exit_long_opposite": count(df.get("exit_long", pd.Series(False, index=df.index)) == 1),
@@ -72,16 +88,17 @@ def audit_pair(pair: str, dataframe: pd.DataFrame) -> dict[str, object]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit CoinMasterStrategy signal/guard counts on local Freqtrade data.")
-    parser.add_argument("--pairs", nargs="+", default=["BTC/USDC:USDC", "ETH/USDC:USDC", "SOL/USDC:USDC"])
-    parser.add_argument("--timeframe", default="15m")
+    parser.add_argument("--pairs", nargs="+", default=["BTC/USDC:USDC", "ETH/USDC:USDC", "HYPE/USDC:USDC"])
+    parser.add_argument("--timeframe", default="5m")
     parser.add_argument("--datadir", default="/freqtrade/user_data/data/hyperliquid")
     args = parser.parse_args()
 
     rows = []
     for pair in args.pairs:
         try:
-            dataframe = load_pair(Path(args.datadir), pair, args.timeframe)
-            rows.append(audit_pair(pair, dataframe))
+            datadir = Path(args.datadir)
+            dataframe = load_pair(datadir, pair, args.timeframe)
+            rows.append(audit_pair(pair, dataframe, datadir, args.pairs))
         except Exception as exc:
             rows.append({"pair": pair, "error": str(exc)})
 

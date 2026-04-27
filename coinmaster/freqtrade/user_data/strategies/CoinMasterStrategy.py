@@ -132,7 +132,8 @@ class CoinMasterStrategy(IStrategy):
         self._refresh_radar_policy(force=True)
 
     def informative_pairs(self):
-        pairs = self.dp.current_whitelist() if self.dp else []
+        dp = getattr(self, "dp", None)
+        pairs = dp.current_whitelist() if dp else []
         return [(pair, tf) for pair in pairs for tf in self.informative_timeframes]
 
     def _runtime_number(self, key: str, default: float) -> float:
@@ -539,7 +540,7 @@ class CoinMasterStrategy(IStrategy):
 
         dataframe = self._prepare_signal_dataframe(dataframe, include_fvg=False)
         for tf in self.informative_timeframes:
-            if not self.dp:
+            if not getattr(self, "dp", None):
                 continue
             informative = self.dp.get_pair_dataframe(pair=pair, timeframe=tf)
             if informative is None or informative.empty:
