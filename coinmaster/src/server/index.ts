@@ -149,6 +149,7 @@ const ENABLE_MULTI_TF_ENGULFING = String(process.env.ENABLE_MULTI_TF_ENGULFING ?
 const ENABLE_FVG_MONITOR = String(process.env.ENABLE_FVG_MONITOR ?? 'false').toLowerCase() === 'true';
 const ENABLE_TP_FILL_MONITOR = String(process.env.ENABLE_TP_FILL_MONITOR ?? 'false').toLowerCase() === 'true';
 const ENABLE_LEGACY_TELEGRAM_COMMANDS = String(process.env.ENABLE_LEGACY_TELEGRAM_COMMANDS ?? 'false').toLowerCase() === 'true';
+const ENABLE_ALPHA_RADAR_AUTOCOLLECT = String(process.env.ALPHA_RADAR_AUTOCOLLECT_ENABLED ?? 'true').toLowerCase() !== 'false';
 const FVG_MONITOR_INTERVAL_MS = Math.max(60_000, Number(process.env.FVG_MONITOR_INTERVAL_MS || 300_000)); // default 5m
 
 function coinmasterSymbolToFreqtradePair(symbol: string): string | null {
@@ -1858,6 +1859,18 @@ async function buildAlphaRadarLiveState(): Promise<AlphaRadarLiveResponse> {
 }
 
 function startAlphaRadarMonitoringPlane() {
+  if (!ENABLE_ALPHA_RADAR_AUTOCOLLECT) {
+    logger.info({ component: 'alpha-radar' }, 'Alpha Radar auto-collect disabled via ALPHA_RADAR_AUTOCOLLECT_ENABLED=false');
+    alphaRadarCollectors.market.enabled = false;
+    alphaRadarCollectors.market.busy = false;
+    alphaRadarCollectors.market.lastMessage = 'Auto-collect disabled by production flag.';
+    alphaRadarCollectors.market.nextRunAt = undefined;
+    alphaRadarCollectors.external.enabled = false;
+    alphaRadarCollectors.external.busy = false;
+    alphaRadarCollectors.external.lastMessage = 'Auto-collect disabled by production flag.';
+    alphaRadarCollectors.external.nextRunAt = undefined;
+    return;
+  }
   if (alphaRadarMarketTimer || alphaRadarExternalTimer) return;
   const kickMarket = () => {
     if (alphaRadarCollectors.market.busy) return;
