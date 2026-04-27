@@ -125,6 +125,21 @@ console.log('\nTest 6: invalid updatedAt values do not destabilize policy tie-br
   assert(snapshot.pairs['BTC/USDC:USDC']?.source_policy_id === 'newer-btc', 'finite updatedAt wins same-priority tie over invalid date');
 }
 
+console.log('\nTest 7: observe-only mode keeps hard blocks advisory for dry-run discovery');
+{
+  const snapshot = buildFreqtradeRadarPolicySnapshot({
+    policies: [makePolicy({ id: 'btc-event', symbol: 'BTC', directionMode: 'blocked', riskMultiplier: 0, lockNewEntries: true, reasonCodes: ['event_lockout'] })],
+    monitoredCoins,
+    nowIso,
+    enforceBlocks: false,
+  });
+  const btc = snapshot.pairs['BTC/USDC:USDC'];
+  assert(btc?.mode === 'both', 'observe-only converts hard block to both');
+  assert(btc?.risk_multiplier === 1, 'observe-only does not zero stake');
+  assert(btc?.lock_new_entries === false, 'observe-only does not lock new entries');
+  assert(snapshot.diagnostics.advisory_blocks_ignored === 1, 'advisory block counter increments');
+}
+
 console.log(`\n${passed} passed, ${failed} failed\n`);
 
 if (failed > 0) {

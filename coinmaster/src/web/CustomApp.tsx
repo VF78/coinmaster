@@ -123,7 +123,7 @@ function RadarPolicyPage() {
       const result = await saveRadarRuntimeSettings({ autoConfirm: !radarRuntime.autoConfirm });
       setRadarRuntime(result.runtime);
       await refresh();
-      setMessage(result.runtime.autoConfirm ? 'Auto confirm enabled.' : 'Manual confirm enabled.');
+      setMessage(result.runtime.autoConfirm ? 'Radar block enforcement enabled.' : 'Radar observe-only mode enabled.');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : String(error));
     } finally {
@@ -363,11 +363,11 @@ function RadarPolicyPage() {
 
           <section className="radar-setting-block">
             <div>
-              <h3>Confirmation mode</h3>
-              <p className="muted">Policy handoff stays native Freqtrade; this only controls legacy handoff confirmations.</p>
+              <h3>Radar enforcement</h3>
+              <p className="muted">Observe-only keeps Radar context visible but does not hard-block Freqtrade dry-run entries. Enforce allows Radar hard blocks.</p>
             </div>
             <Button variant={radarRuntime?.autoConfirm ? 'danger' : 'secondary'} onClick={() => { void toggleAutoConfirm(); }} disabled={busy !== null || !radarRuntime} fullWidth>
-              {radarRuntime?.autoConfirm ? 'Auto confirm on' : 'Manual confirm'}
+              {radarRuntime?.autoConfirm ? 'Enforce Radar blocks' : 'Observe only / no hard blocks'}
             </Button>
           </section>
 

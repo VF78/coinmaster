@@ -324,6 +324,7 @@ async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>,
     monitoredCoins: rules.coins,
     nowIso,
     ttlMs: FREQTRADE_RADAR_POLICY_TTL_MS,
+    enforceBlocks: radarRuntime.autoConfirm,
   });
   if (!radarEnabled) {
     payload.global.enabled = false;

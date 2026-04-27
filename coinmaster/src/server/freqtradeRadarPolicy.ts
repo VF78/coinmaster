@@ -29,6 +29,7 @@ export interface FreqtradeRadarPolicySnapshot {
     ignored_neutral_policies: number;
     ignored_expired_policies: number;
     ignored_unmonitored_policies: number;
+    advisory_blocks_ignored?: number;
   };
 }
 
@@ -99,6 +100,7 @@ export function buildFreqtradeRadarPolicySnapshot(params: {
   monitoredCoins: TradingCoinAllocation[];
   nowIso: string;
   ttlMs?: number;
+  enforceBlocks?: boolean;
 }): FreqtradeRadarPolicySnapshot {
   const nowMs = Date.parse(params.nowIso);
   const safeNowMs = Number.isFinite(nowMs) ? nowMs : Date.now();
@@ -118,9 +120,11 @@ export function buildFreqtradeRadarPolicySnapshot(params: {
     .sort((a, b) => policyPriority(b) - policyPriority(a) || safeTime(b.updatedAt) - safeTime(a.updatedAt));
 
   const pairs: Record<string, FreqtradeRadarScope> = {};
+  const enforceBlocks = params.enforceBlocks ?? true;
   let ignoredNeutral = 0;
   let ignoredExpired = 0;
   let ignoredUnmonitored = 0;
+  let advisoryBlocksIgnored = 0;
 
   for (const policy of sortedPolicies) {
     const symbol = normalizeSymbol(policy.symbol);
@@ -139,13 +143,16 @@ export function buildFreqtradeRadarPolicySnapshot(params: {
       continue;
     }
 
-    const mode = modeFromPolicy(policy);
-    const riskMultiplier = mode === 'off' ? 0 : clamp(policy.riskMultiplier, 0, 1);
+    const policyMode = modeFromPolicy(policy);
+    const advisoryBlock = !enforceBlocks && policyMode === 'off';
+    if (advisoryBlock) advisoryBlocksIgnored += 1;
+    const mode = advisoryBlock ? 'both' : policyMode;
+    const riskMultiplier = advisoryBlock ? 1 : mode === 'off' ? 0 : clamp(policy.riskMultiplier, 0, 1);
     pairs[pair] = {
       mode,
       risk_multiplier: Number(riskMultiplier.toFixed(2)),
-      lock_new_entries: mode === 'off' || policy.lockNewEntries,
-      reason: reasonFromPolicy(policy),
+      lock_new_entries: advisoryBlock ? false : mode === 'off' || policy.lockNewEntries,
+      reason: advisoryBlock ? `${reasonFromPolicy(policy)}:advisory_block_ignored` : reasonFromPolicy(policy),
       reason_codes: [...policy.reasonCodes],
       narrative_regime: policy.narrativeRegime,
       priority_score: Number(clamp(policy.priorityScore, 0, 100).toFixed(2)),
@@ -176,6 +183,7 @@ export function buildFreqtradeRadarPolicySnapshot(params: {
       ignored_neutral_policies: ignoredNeutral,
       ignored_expired_policies: ignoredExpired,
       ignored_unmonitored_policies: ignoredUnmonitored,
+      advisory_blocks_ignored: advisoryBlocksIgnored,
     },
   };
 }
