@@ -575,12 +575,38 @@ class CoinMasterStrategy(IStrategy):
     def _entry_timeframes(self) -> tuple[str, ...]:
         return self._runtime_timeframes("entry_timeframes", ("15m",))
 
-    def _side_enabled(self, side: str) -> bool:
+    @staticmethod
+    def _symbol_from_pair(pair: str) -> str:
+        base = str(pair or "").split("/", 1)[0]
+        if base.startswith("XYZ-"):
+            return f"xyz:{base[4:]}".upper().replace("XYZ:", "xyz:")
+        return base.upper()
+
+    def _bias_for_pair(self, pair: str) -> str:
+        policy = self._runtime_strategy_params.get("bias_policy")
+        if not isinstance(policy, dict):
+            return "both"
+        default_bias = str(policy.get("defaultBias") or "both").lower().strip()
+        if default_bias not in {"long", "short", "both", "off"}:
+            default_bias = "both"
+        overrides = policy.get("symbolOverrides")
+        if not isinstance(overrides, dict):
+            return default_bias
+        symbol = self._symbol_from_pair(pair)
+        override = overrides.get(symbol)
+        if not isinstance(override, dict) or str(override.get("mode") or "global").lower().strip() != "symbol":
+            return default_bias
+        bias = str(override.get("bias") or default_bias).lower().strip()
+        return bias if bias in {"long", "short", "both", "off"} else default_bias
+
+    def _side_enabled(self, pair: str, side: str) -> bool:
         value = self._runtime_strategy_params.get("enabled_sides")
-        if not isinstance(value, list):
-            return True
-        enabled = {str(item).lower().strip() for item in value}
-        return side in enabled
+        if isinstance(value, list):
+            enabled = {str(item).lower().strip() for item in value}
+            if side not in enabled:
+                return False
+        bias = self._bias_for_pair(pair)
+        return bias == "both" or bias == side
 
     def _engulf_signal(self, dataframe: DataFrame, side: str) -> pd.Series:
         col = "engulf_long" if side == "long" else "engulf_short"
@@ -641,8 +667,8 @@ class CoinMasterStrategy(IStrategy):
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         pair = str(metadata.get("pair", ""))
-        long_signal = (self._engulf_signal(dataframe, "long") | self._fvg_signal(dataframe, "long")) if self._side_enabled("long") else pd.Series(False, index=dataframe.index)
-        short_signal = (self._engulf_signal(dataframe, "short") | self._fvg_signal(dataframe, "short")) if self._side_enabled("short") else pd.Series(False, index=dataframe.index)
+        long_signal = (self._engulf_signal(dataframe, "long") | self._fvg_signal(dataframe, "long")) if self._side_enabled(pair, "long") else pd.Series(False, index=dataframe.index)
+        short_signal = (self._engulf_signal(dataframe, "short") | self._fvg_signal(dataframe, "short")) if self._side_enabled(pair, "short") else pd.Series(False, index=dataframe.index)
 
         long_conditions = [long_signal] + self._common_entry_guards(dataframe, "long")
         short_conditions = [short_signal] + self._common_entry_guards(dataframe, "short")

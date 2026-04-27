@@ -1,4 +1,5 @@
 export type Bias = 'long' | 'short' | 'off';
+export type TradingBias = 'long' | 'short' | 'both' | 'off';
 export type TradeSide = 'long' | 'short';
 export type PositionStatus = 'open' | 'closed';
 export type StatsPeriod = 'week' | 'month';
@@ -10,12 +11,16 @@ export type AssetClass = 'crypto' | 'commodity' | 'forex' | 'index' | 'other';
 export type BiasMode = 'global' | 'symbol';
 
 export interface BiasPolicySymbolOverride {
-  /** global => uses shared class bias, symbol => custom per-symbol bias */
+  /** global => uses default trading bias, symbol => custom per-symbol trading bias */
   mode: BiasMode;
+  /** Used only when mode=symbol. */
+  bias?: TradingBias;
 }
 
 export interface BiasPolicySettings {
-  /** Per-symbol mode override; absent => uses shared class bias. */
+  /** Default Freqtrade entry side policy for all enabled assets. */
+  defaultBias: TradingBias;
+  /** Per-symbol override; absent/global => uses defaultBias. */
   symbolOverrides: Record<string, BiasPolicySymbolOverride>;
 }
 

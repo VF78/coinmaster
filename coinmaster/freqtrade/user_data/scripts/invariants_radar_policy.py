@@ -168,6 +168,13 @@ with TemporaryDirectory() as tmpdir:
     assert_true(time_strategy.custom_exit("BTC/USDC:USDC", trade, opened + timedelta(minutes=30), 100, -0.01) is None, "time stop uses selected primary entry timeframe, not hardcoded 5m")
     assert_true(time_strategy.custom_exit("BTC/USDC:USDC", trade, opened + timedelta(minutes=121), 100, -0.01) == "time_stop_no_follow_through", "time stop exits after configured higher-timeframe bars")
 
+    bias_strategy = strategy_with_policy(path)
+    bias_strategy._runtime_strategy_params = {"bias_policy": {"defaultBias": "long", "symbolOverrides": {"ETH": {"mode": "symbol", "bias": "short"}}}}
+    assert_true(bias_strategy._side_enabled("BTC/USDC:USDC", "long") is True and bias_strategy._side_enabled("BTC/USDC:USDC", "short") is False, "default trading bias gates sides")
+    assert_true(bias_strategy._side_enabled("ETH/USDC:USDC", "short") is True and bias_strategy._side_enabled("ETH/USDC:USDC", "long") is False, "symbol trading bias override gates sides")
+    bias_strategy._runtime_strategy_params = {"bias_policy": {"defaultBias": "off", "symbolOverrides": {}}}
+    assert_true(bias_strategy._side_enabled("BTC/USDC:USDC", "long") is False and bias_strategy._side_enabled("BTC/USDC:USDC", "short") is False, "off trading bias blocks both sides")
+
 print(f"\nTOTAL: {passed + failed} | PASSED: {passed} | FAILED: {failed}")
 if failed:
     raise SystemExit(1)

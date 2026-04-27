@@ -14,6 +14,7 @@
  *   7. portfolioGrossCap caps aggregate gross exposure
  *   8. regimeTf is constrained to owner-approved HTF values (1h/4h)
  *   9. Backtest sizing mirrors live riskPerTradePct and portfolioGrossCap limits
+ *   10. Trading bias policy normalizes default + per-symbol overrides
  *
  * Exit code: 0 = all pass, 1 = failures found.
  *
@@ -423,6 +424,35 @@ console.log('\n── Invariant 8: backtest sizing mirrors live risk caps ──
   assertClose(riskSize, 1, 'backtest risk cap size = $50k notional / $50k price');
   assert(riskSize < baseSize, 'backtest riskPerTradePct caps size below allocation model');
   assert(grossSize === 0, 'backtest portfolioGrossCap blocks oversized new entry instead of shrinking it');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INVARIANT 10: Trading bias policy normalizes default + symbol overrides
+// ═══════════════════════════════════════════════════════════════════════
+
+console.log('\n── Invariant 10: trading bias policy defaults and overrides ──');
+
+{
+  const normalized = normalizeTradingRules({
+    biasPolicy: {
+      defaultBias: 'long',
+      symbolOverrides: {
+        ETH: { mode: 'symbol', bias: 'short' },
+        SOL: { mode: 'global', bias: 'short' },
+        XRP: { mode: 'symbol', bias: 'off' },
+        DOGE: { mode: 'symbol', bias: 'invalid' as never },
+      },
+    },
+  });
+
+  assert(normalized.biasPolicy!.defaultBias === 'long', 'default trading bias is preserved');
+  assert(normalized.biasPolicy!.symbolOverrides.ETH?.mode === 'symbol', 'ETH override remains symbol-scoped');
+  assert(normalized.biasPolicy!.symbolOverrides.ETH?.bias === 'short', 'ETH symbol bias is preserved');
+  assert(normalized.biasPolicy!.symbolOverrides.SOL?.mode === 'global', 'SOL global mode ignores symbol bias');
+  assert(normalized.biasPolicy!.symbolOverrides.SOL?.bias === undefined, 'global overrides do not keep stale symbol bias');
+  assert(normalized.biasPolicy!.symbolOverrides.XRP?.bias === 'off', 'off symbol bias is preserved');
+  assert(normalized.biasPolicy!.symbolOverrides.DOGE?.bias === 'long', 'invalid symbol bias falls back to default bias');
+  assert(normalizeTradingRules({ biasPolicy: { defaultBias: 'invalid' as never, symbolOverrides: {} } }).biasPolicy!.defaultBias === 'both', 'invalid default bias falls back to both');
 }
 
 // ─── Summary ─────────────────────────────────────────────────────────

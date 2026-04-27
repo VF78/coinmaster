@@ -294,7 +294,7 @@ console.log('\nTest 8: Radar signals for non-monitored symbols are rejected befo
     slPct: 2,
     exitClosePct: 50,
     autoConfirm: false,
-    biasPolicy: { symbolOverrides: {} },
+    biasPolicy: { defaultBias: 'both', symbolOverrides: {} },
   };
 
   const monitoredSymbols = getMonitoredSymbols(mockRules);
@@ -355,7 +355,7 @@ console.log('\nTest 9: getMonitoredSymbols returns normalized deduplicated list'
     slPct: 2,
     exitClosePct: 50,
     autoConfirm: false,
-    biasPolicy: { symbolOverrides: {} },
+    biasPolicy: { defaultBias: 'both', symbolOverrides: {} },
   };
 
   const monitored = getMonitoredSymbols(rulesWithDuplicates);

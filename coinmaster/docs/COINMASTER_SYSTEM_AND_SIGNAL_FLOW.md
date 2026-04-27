@@ -327,6 +327,7 @@ tpLevels: [6]
 slPct: 2
 exitClosePct: 50
 autoConfirm: false
+biasPolicy.defaultBias: both
 biasPolicy.symbolOverrides: {}
 ```
 
@@ -337,6 +338,7 @@ biasPolicy.symbolOverrides: {}
 - allocation `%` clamp `0–100`;
 - FVG retrace clamp `10–90`;
 - FVG min width clamp `0–10`;
+- trading bias clamp `long | short | both | off` (default `both`);
 - sweep lookback clamp `3–100`;
 - zone age clamp `1–500`;
 - max leverage clamp `1–50`;

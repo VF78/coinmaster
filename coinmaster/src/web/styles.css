@@ -333,6 +333,10 @@ button:focus-visible {
   gap: 0.35rem;
 }
 
+.exec-bias-toggle--compact {
+  gap: 0.25rem;
+}
+
 .exec-bias-btn {
   width: 4.6rem;
   min-height: 2.7rem;
@@ -1907,6 +1911,10 @@ button.radar-funnel-step {
     width: 100%;
   }
 
+  .rules-distribution-layout {
+    grid-template-columns: 1fr;
+  }
+
   .rules-grid {
     gap: 0.5rem;
   }
@@ -2174,6 +2182,33 @@ button.radar-funnel-step {
 
 /* ─── Trading Rules ──────────────────────────────────────────────── */
 
+.rules-distribution-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.rules-distribution-main {
+  min-width: 0;
+}
+
+.rules-execution-controls {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(24, 39, 62, 0.95) 0%, rgba(12, 24, 40, 0.95) 100%);
+}
+
+.rules-execution-controls .exec-bias-btn {
+  width: 3.65rem;
+  min-height: 2.45rem;
+  padding: 0.36rem 0.42rem;
+  font-size: 0.78rem;
+}
+
 .rules-grid {
   display: grid;
   gap: var(--space-2);
@@ -2188,6 +2223,10 @@ button.radar-funnel-step {
   border-radius: var(--radius-md);
   background: linear-gradient(180deg, var(--surface-2) 0%, #0f1c2e 100%);
   cursor: pointer;
+}
+
+.rules-coin-row--compact {
+  gap: 0.45rem;
 }
 
 .rules-coin-symbol {

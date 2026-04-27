@@ -2,6 +2,7 @@ import type {
   AssetClass,
   BiasMode,
   BiasPolicySettings,
+  TradingBias,
   TradingRulesSettings,
   TradingRulesTimeframe
 } from './dto.js';
@@ -16,6 +17,7 @@ const DEFAULT_COINS = [
 ] as const;
 
 const DEFAULT_BIAS_POLICY: BiasPolicySettings = {
+  defaultBias: 'both',
   symbolOverrides: {},
 };
 
@@ -140,6 +142,11 @@ function normalizeBiasMode(value: unknown, fallback: BiasMode): BiasMode {
   return raw === 'global' || raw === 'symbol' ? raw : fallback;
 }
 
+function normalizeTradingBias(value: unknown, fallback: TradingBias): TradingBias {
+  const raw = String(value ?? '').trim().toLowerCase();
+  return raw === 'long' || raw === 'short' || raw === 'both' || raw === 'off' ? raw : fallback;
+}
+
 export function inferAssetClassFromSymbol(symbol: string): AssetClass {
   const normalized = normalizeRuleSymbol(symbol) ?? String(symbol ?? '').trim().toUpperCase();
   const core = normalized.includes(':') ? normalized.split(':', 2)[1] : normalized;
@@ -178,6 +185,8 @@ function normalizeBiasPolicy(value: unknown, fallback: BiasPolicySettings): Bias
   const base = JSON.parse(JSON.stringify(fallback)) as BiasPolicySettings;
   const raw = value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
 
+  base.defaultBias = normalizeTradingBias(raw.defaultBias, base.defaultBias ?? 'both');
+
   const symbolOverridesRaw = raw.symbolOverrides && typeof raw.symbolOverrides === 'object'
     ? (raw.symbolOverrides as Record<string, unknown>)
     : {};
@@ -189,8 +198,9 @@ function normalizeBiasPolicy(value: unknown, fallback: BiasPolicySettings): Bias
 
     const override = overrideRaw as Record<string, unknown>;
     const mode = normalizeBiasMode(override.mode, 'global');
+    const bias = normalizeTradingBias(override.bias, base.defaultBias);
 
-    normalizedOverrides[symbol] = { mode };
+    normalizedOverrides[symbol] = mode === 'symbol' ? { mode, bias } : { mode };
   }
 
   base.symbolOverrides = normalizedOverrides;

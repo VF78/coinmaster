@@ -6,6 +6,7 @@ import type {
   AssetClass,
   BiasMode,
   BiasPolicySymbolOverride,
+  TradingBias,
   TradingCoinAllocation,
   TradingRulesSettings,
   TradingRulesTimeframe
@@ -17,6 +18,7 @@ import { useDialog } from '../components/DialogProvider';
 const TIMEFRAMES: TradingRulesTimeframe[] = ['5m', '15m', '1h', '4h'];
 const REGIME_TIMEFRAMES: TradingRulesTimeframe[] = ['1h', '4h'];
 const ASSET_CLASSES: AssetClass[] = ['crypto', 'commodity', 'forex', 'index', 'other'];
+const TRADING_BIAS_OPTIONS: TradingBias[] = ['long', 'short', 'both', 'off'];
 
 function clampNumber(value: number, min: number, max: number) {
   if (!Number.isFinite(value)) return min;
@@ -39,16 +41,15 @@ function normalizeAssetSymbol(value: string): string {
 }
 
 function cloneSymbolOverrides(input?: Record<string, BiasPolicySymbolOverride>): Record<string, BiasPolicySymbolOverride> {
-  return Object.fromEntries(
-    Object.entries(input ?? {})
-      .map(([key, value]) => {
-        const symbol = normalizeAssetSymbol(key);
-        if (!symbol || !value) return null;
-        const mode: BiasMode = value.mode === 'global' ? 'global' : 'symbol';
-        return [symbol, { mode } satisfies BiasPolicySymbolOverride] as const;
-      })
-      .filter((x): x is readonly [string, BiasPolicySymbolOverride] => Boolean(x))
-  );
+  const result: Record<string, BiasPolicySymbolOverride> = {};
+  for (const [key, value] of Object.entries(input ?? {})) {
+    const symbol = normalizeAssetSymbol(key);
+    if (!symbol || !value) continue;
+    const mode: BiasMode = value.mode === 'global' ? 'global' : 'symbol';
+    const bias: TradingBias = value.bias === 'long' || value.bias === 'short' || value.bias === 'both' || value.bias === 'off' ? value.bias : 'both';
+    result[symbol] = mode === 'symbol' ? { mode, bias } : { mode };
+  }
+  return result;
 }
 
 interface TradingRulesPageProps {
@@ -223,6 +224,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   const [riskPerTradePct, setRiskPerTradePct] = useState(defaults.riskPerTradePct ?? 0);
   const [portfolioGrossCapEnabled, setPortfolioGrossCapEnabled] = useState(defaults.portfolioGrossCapEnabled ?? true);
   const [portfolioGrossCap, setPortfolioGrossCap] = useState(defaults.portfolioGrossCap ?? 200);
+  const [defaultBias, setDefaultBias] = useState<TradingBias>(defaults.biasPolicy?.defaultBias ?? 'both');
   const [symbolBiasOverrides, setSymbolBiasOverrides] = useState<Record<string, BiasPolicySymbolOverride>>(
     cloneSymbolOverrides(defaults.biasPolicy?.symbolOverrides)
   );
@@ -276,6 +278,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     portfolioGrossCapEnabled,
     portfolioGrossCap,
     biasPolicy: {
+      defaultBias,
       symbolOverrides: cloneSymbolOverrides(symbolBiasOverrides),
     },
   }), [
@@ -306,6 +309,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     riskPerTradePct,
     portfolioGrossCapEnabled,
     portfolioGrossCap,
+    defaultBias,
     symbolBiasOverrides,
   ]);
 
@@ -359,6 +363,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     setRiskPerTradePct(normalized.riskPerTradePct ?? 0);
     setPortfolioGrossCapEnabled(normalized.portfolioGrossCapEnabled ?? true);
     setPortfolioGrossCap(normalized.portfolioGrossCap ?? 200);
+    setDefaultBias(normalized.biasPolicy?.defaultBias ?? 'both');
     setSymbolBiasOverrides(cloneSymbolOverrides(normalized.biasPolicy?.symbolOverrides));
     setSavedRules(normalized);
   }
@@ -452,6 +457,58 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         return next;
       });
     }
+  }
+
+  function biasForSymbol(symbol: string): TradingBias {
+    const normalized = normalizeAssetSymbol(symbol);
+    const override = normalized ? symbolBiasOverrides[normalized] : undefined;
+    return override?.mode === 'symbol' && override.bias ? override.bias : defaultBias;
+  }
+
+  function updateDefaultBias(bias: TradingBias) {
+    setDefaultBias(bias);
+    setSymbolBiasOverrides((prev) => {
+      const next = { ...prev };
+      for (const [symbol, override] of Object.entries(next)) {
+        if (override.mode !== 'symbol' || override.bias === bias) delete next[symbol];
+      }
+      return next;
+    });
+  }
+
+  function setSymbolBias(symbol: string, bias: TradingBias) {
+    const normalized = normalizeAssetSymbol(symbol);
+    if (!normalized) return;
+    setSymbolBiasOverrides((prev) => {
+      const next = { ...prev };
+      if (bias === defaultBias) {
+        delete next[normalized];
+      } else {
+        next[normalized] = { mode: 'symbol', bias };
+      }
+      return next;
+    });
+  }
+
+  function renderBiasToggle(current: TradingBias, onSelect: (bias: TradingBias) => void, compact = false) {
+    return (
+      <div className={`exec-bias-toggle ${compact ? 'exec-bias-toggle--compact' : ''}`}>
+        {TRADING_BIAS_OPTIONS.map((option) => {
+          const active = current === option;
+          return (
+            <Button
+              key={option}
+              type="button"
+              variant={option === 'short' || option === 'off' ? 'danger' : option === 'long' ? 'primary' : 'secondary'}
+              onClick={() => onSelect(option)}
+              className={`exec-bias-btn ${active ? 'exec-bias-btn--active' : ''} ${option === 'off' ? 'exec-bias-btn--off' : ''}`}
+            >
+              {option.toUpperCase()}
+            </Button>
+          );
+        })}
+      </div>
+    );
   }
 
   async function addCoinFromInput(): Promise<void> {
@@ -594,7 +651,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     if (!onRegisterSaveHandler) return;
     onRegisterSaveHandler(() => handleApply());
     return () => onRegisterSaveHandler(null);
-  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, fvgRequireSweep, fvgSweepLookbackCandles, fvgRequireFirstTouch, maxZoneAgeCandles, fvgRequireConfirmation, fvgConfirmationTimeframes, maxLeverage, dailyDrawdown, tpLevels, slPct, regimeFilterEnabled, regimeTf, adxEnabled, adxMin, minImpulseAtrEnabled, minImpulseAtr, timeStopEnabled, timeStopBars, riskPerTradeEnabled, riskPerTradePct, portfolioGrossCapEnabled, portfolioGrossCap, symbolBiasOverrides]);
+  }, [onRegisterSaveHandler, currentRules, coins, entryTimeframes, engulfingLookbackCandles, fvgRetrace, fvgMinWidthPct, fvgRequireSweep, fvgSweepLookbackCandles, fvgRequireFirstTouch, maxZoneAgeCandles, fvgRequireConfirmation, fvgConfirmationTimeframes, maxLeverage, dailyDrawdown, tpLevels, slPct, regimeFilterEnabled, regimeTf, adxEnabled, adxMin, minImpulseAtrEnabled, minImpulseAtr, timeStopEnabled, timeStopBars, riskPerTradeEnabled, riskPerTradePct, portfolioGrossCapEnabled, portfolioGrossCap, defaultBias, symbolBiasOverrides]);
 
   return (
     <main className="terminal-layout trading-rules-page">
@@ -604,92 +661,118 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
         </Card>
       )}
 
-      <Card title="Coin Distribution" actions={<Badge tone="neutral">Allocation</Badge>}>
-        <div className="rules-grid">
-          {activeCoinRows.map(({ coin, idx }) => {
-            const normalizedSymbol = normalizeAssetSymbol(coin.symbol);
-            const rowAssetClass = coin.assetClass ?? inferAssetClassFromSymbol(normalizedSymbol);
+      <Card title="Coin Distribution" actions={<Badge tone="neutral">Allocation + Bias</Badge>}>
+        <div className="rules-distribution-layout">
+          <section className="rules-distribution-main">
+            <div className="rules-grid">
+              {activeCoinRows.map(({ coin, idx }) => {
+                const normalizedSymbol = normalizeAssetSymbol(coin.symbol);
+                const rowAssetClass = coin.assetClass ?? inferAssetClassFromSymbol(normalizedSymbol);
 
-            return (
-              <div key={`${coin.symbol || 'asset'}-${idx}`} className="rules-coin-row">
-                <input
-                  type="checkbox"
-                  checked={coin.enabled}
-                  onChange={() => toggleCoin(idx)}
-                  className="rules-checkbox"
-                />
+                return (
+                  <div key={`${coin.symbol || 'asset'}-${idx}`} className="rules-coin-row rules-coin-row--compact">
+                    <input
+                      type="checkbox"
+                      checked={coin.enabled}
+                      onChange={() => toggleCoin(idx)}
+                      className="rules-checkbox"
+                    />
 
-                <input
-                  type="text"
-                  value={coin.symbol}
-                  onChange={(e) => setCoinSymbol(idx, e.target.value)}
-                  className="rules-input"
-                  style={{ width: 130, textTransform: 'uppercase' }}
-                  list="coinmaster-tradable-symbols"
-                  placeholder="SYMBOL"
-                />
+                    <input
+                      type="text"
+                      value={coin.symbol}
+                      onChange={(e) => setCoinSymbol(idx, e.target.value)}
+                      className="rules-input"
+                      style={{ width: 108, textTransform: 'uppercase' }}
+                      list="coinmaster-tradable-symbols"
+                      placeholder="SYMBOL"
+                    />
 
-                <Stepper
-                  value={coin.pct}
-                  min={0}
-                  max={100}
-                  step={1}
-                  unit="%"
-                  decimals={0}
-                  disabled={!coin.enabled}
-                  onChange={(v) => setCoinPct(idx, v)}
-                />
+                    <Stepper
+                      value={coin.pct}
+                      min={0}
+                      max={100}
+                      step={1}
+                      unit="%"
+                      decimals={0}
+                      disabled={!coin.enabled}
+                      onChange={(v) => setCoinPct(idx, v)}
+                    />
 
-                <select
-                  className="rules-input"
-                  value={rowAssetClass}
-                  onChange={(e) => setCoinAssetClass(idx, e.target.value as AssetClass)}
-                  style={{ width: 120 }}
-                  title="Asset class"
-                >
-                  {ASSET_CLASSES.map((assetClass) => (
-                    <option key={assetClass} value={assetClass}>{assetClass}</option>
-                  ))}
-                </select>
+                    <select
+                      className="rules-input"
+                      value={rowAssetClass}
+                      onChange={(e) => setCoinAssetClass(idx, e.target.value as AssetClass)}
+                      style={{ width: 108 }}
+                      title="Asset class"
+                    >
+                      {ASSET_CLASSES.map((assetClass) => (
+                        <option key={assetClass} value={assetClass}>{assetClass}</option>
+                      ))}
+                    </select>
 
-                <Button
-                  type="button"
-                  variant="danger"
-                  className="rules-mini-btn"
-                  onClick={() => removeCoin(idx)}
-                  disabled={activeCoinRows.length <= 1}
-                  title={activeCoinRows.length <= 1 ? 'At least one active asset row is required' : 'Remove asset'}
-                >
-                  Remove
-                </Button>
-              </div>
-            );
-          })}
+                    <Button
+                      type="button"
+                      variant="danger"
+                      className="rules-mini-btn"
+                      onClick={() => removeCoin(idx)}
+                      disabled={activeCoinRows.length <= 1}
+                      title={activeCoinRows.length <= 1 ? 'At least one active asset row is required' : 'Remove asset'}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <datalist id="coinmaster-tradable-symbols">
+              {availableSymbols.map((symbol) => (
+                <option key={symbol} value={symbol} />
+              ))}
+            </datalist>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, marginTop: 10 }}>
+              <input
+                type="text"
+                value={newSymbol}
+                onChange={(e) => setNewSymbol(normalizeAssetSymbol(e.target.value))}
+                className="rules-input"
+                list="coinmaster-tradable-symbols"
+                placeholder="Add asset (e.g. GOLDUSDC)"
+              />
+              <Button type="button" variant="secondary" onClick={() => { void addCoinFromInput(); }}>+ Add asset</Button>
+            </div>
+
+            <p className="stat-note muted">Active Freqtrade whitelist total: <strong>{totalPct}%</strong></p>
+
+            <p className="stat-note muted" style={{ marginTop: 8 }}>
+              This list mirrors the real Freqtrade whitelist. Allocation % sets target margin stake per asset in custom_stake_amount(). Pair whitelist changes require Freqtrade reload/restart; sizing and bias changes are hot-reloaded by the strategy.
+            </p>
+          </section>
+
+          <aside className="rules-execution-controls">
+            <div>
+              <p className="rules-label" style={{ marginBottom: 8 }}>Execution controls</p>
+              <p className="stat-note muted" style={{ marginTop: 0 }}>Freqtrade entry side bias. BOTH allows long and short; LONG/SHORT gates the opposite side; OFF blocks new entries.</p>
+            </div>
+            <div className="exec-bias-row">
+              <span className="exec-bias-label">Default</span>
+              {renderBiasToggle(defaultBias, updateDefaultBias)}
+            </div>
+            {activeCoinRows.map(({ coin }) => {
+              const symbol = normalizeAssetSymbol(coin.symbol);
+              if (!symbol) return null;
+              const bias = biasForSymbol(symbol);
+              return (
+                <div key={`rules-bias-${symbol}`} className="exec-bias-row">
+                  <span className="exec-bias-label">{symbol}</span>
+                  {renderBiasToggle(bias, (next) => setSymbolBias(symbol, next), true)}
+                </div>
+              );
+            })}
+          </aside>
         </div>
-
-        <datalist id="coinmaster-tradable-symbols">
-          {availableSymbols.map((symbol) => (
-            <option key={symbol} value={symbol} />
-          ))}
-        </datalist>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, marginTop: 10 }}>
-          <input
-            type="text"
-            value={newSymbol}
-            onChange={(e) => setNewSymbol(normalizeAssetSymbol(e.target.value))}
-            className="rules-input"
-            list="coinmaster-tradable-symbols"
-            placeholder="Add asset (e.g. GOLDUSDC)"
-          />
-          <Button type="button" variant="secondary" onClick={() => { void addCoinFromInput(); }}>+ Add asset</Button>
-        </div>
-
-        <p className="stat-note muted">Active Freqtrade whitelist total: <strong>{totalPct}%</strong></p>
-
-        <p className="stat-note muted" style={{ marginTop: 8 }}>
-          This list mirrors the real Freqtrade whitelist: only active assets are displayed and saved. Allocation % is exported to Freqtrade as coin_allocations and sets the target margin stake per asset in custom_stake_amount(). Pair whitelist changes require Freqtrade reload/restart; sizing changes are hot-reloaded by the strategy.
-        </p>
       </Card>
 
       <Card title="Entry Rules" actions={<Badge tone="neutral">Freqtrade MTF</Badge>}>
