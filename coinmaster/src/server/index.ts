@@ -254,6 +254,55 @@ async function exportTradingRulesToFreqtrade(rules: TradingRulesSettings) {
 const ENABLE_FREQTRADE_RADAR_POLICY_EXPORT = String(process.env.ENABLE_FREQTRADE_RADAR_POLICY_EXPORT ?? 'true').toLowerCase() !== 'false';
 const FREQTRADE_RADAR_POLICY_TTL_MS = Math.max(60_000, Number(process.env.FREQTRADE_RADAR_POLICY_TTL_MS || 10 * 60_000));
 
+function radarSentToFreqtradeKey(pair: string, scope: { signal_candidate_id?: string; source_policy_id?: string; mode?: string; risk_multiplier?: number; reason?: string }): string {
+  return [
+    pair,
+    scope.signal_candidate_id || scope.source_policy_id || 'policy',
+    scope.mode || 'both',
+    String(scope.risk_multiplier ?? 1),
+    scope.reason || 'context_policy',
+  ].join('|');
+}
+
+async function notifyNewFreqtradeRadarUnits(payload: ReturnType<typeof buildFreqtradeRadarPolicySnapshot>): Promise<void> {
+  if (!payload.global.enabled) return;
+  const pairs = Object.entries(payload.pairs ?? {});
+  if (pairs.length === 0) return;
+
+  const state = await readAlertState();
+  const seen = { ...(state.radarSentToFreqtradeKeys ?? {}) };
+  let changed = false;
+
+  for (const [pair, scope] of pairs) {
+    const key = radarSentToFreqtradeKey(pair, scope);
+    if (seen[key]) continue;
+
+    const queued = await enqueueTelegramOutbox({
+      category: 'system',
+      dedupeKey: `radar-sent-to-freqtrade:${key}`,
+      text: [
+        '🛰 Radar → Freqtrade',
+        `${pair}`,
+        `Mode: ${scope.mode}`,
+        `Risk: ×${scope.risk_multiplier}`,
+        `Reason: ${scope.reason}`,
+        scope.signal_candidate_id ? `Candidate: ${scope.signal_candidate_id}` : undefined,
+        `Valid until: ${payload.valid_until}`,
+      ].filter(Boolean).join('\n'),
+    });
+
+    if (queued.queued || queued.id) {
+      seen[key] = payload.updated_at;
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    const compactSeen = Object.fromEntries(Object.entries(seen).slice(-500));
+    await writeAlertState({ radarSentToFreqtradeKeys: compactSeen });
+  }
+}
+
 async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>, nowIso = new Date().toISOString()) {
   const rules = normalizeTradingRules(db.data.settings.tradingRules);
   const alphaSettings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
@@ -275,6 +324,11 @@ async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>,
   if (ENABLE_FREQTRADE_RADAR_POLICY_EXPORT) {
     await mkdir(freqtradeRuntimeDir, { recursive: true });
     await writeJsonAtomic(freqtradeRadarPolicyPath, payload);
+    try {
+      await notifyNewFreqtradeRadarUnits(payload);
+    } catch (error) {
+      logger.warn({ error }, 'Could not enqueue Radar sent-to-Freqtrade notification');
+    }
   }
   return {
     path: freqtradeRadarPolicyPath,
@@ -1931,6 +1985,7 @@ function compactTelegramOutbox(items: TelegramOutboxItem[]): TelegramOutboxItem[
 
 interface AlertState {
   lastNotifiedOpenPositionId?: string | null;
+  radarSentToFreqtradeKeys?: Record<string, string>;
   updatedAt?: string | null;
   emergencyCloseNotificationKey?: string | null;
   ddLock?: {

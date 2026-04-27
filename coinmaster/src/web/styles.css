@@ -778,6 +778,22 @@ tbody tr:hover {
   gap: 0.25rem;
 }
 
+button.radar-funnel-step {
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.radar-funnel-step--clickable {
+  border-color: #3c6f8f;
+  box-shadow: 0 0 0 1px rgba(110, 233, 207, 0.08), 0 12px 36px rgba(0, 0, 0, 0.18);
+}
+
+.radar-funnel-step--clickable:hover {
+  transform: translateY(-1px);
+  border-color: #6ee9cf;
+}
+
 .radar-funnel-icon {
   font-size: 1.6rem;
 }
@@ -847,6 +863,88 @@ tbody tr:hover {
   font-weight: 800;
 }
 
+.radar-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(1, 7, 15, 0.72);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+}
+
+.radar-modal {
+  width: min(980px, 96vw);
+  max-height: 86vh;
+  overflow: auto;
+  border: 1px solid #294563;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #101f33 0%, #07111f 100%);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+  padding: 1rem;
+}
+
+.radar-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.radar-modal-header h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+}
+
+.radar-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.radar-modal-card {
+  border: 1px solid #294563;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #13243a 0%, #0c1728 100%);
+  padding: 0.9rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.radar-modal-card p {
+  margin: 0;
+}
+
+.radar-modal-card--engine {
+  border-color: rgba(110, 233, 207, 0.45);
+}
+
+.radar-score-ring {
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 50%, #163855, #081321 70%);
+  border: 1px solid #6ee9cf;
+  color: #96ffea;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.radar-score-ring span {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: -1.4rem;
+}
+
+.radar-engine-line {
+  color: #96ffea;
+  font-weight: 800;
+}
+
 @media (min-width: 1180px) {
   .radar-simple-page {
     grid-template-columns: minmax(280px, 1.05fr) minmax(420px, 1.35fr) minmax(260px, 0.9fr);
@@ -878,7 +976,8 @@ tbody tr:hover {
   .radar-settings-grid,
   .radar-signal-grid,
   .radar-source-grid,
-  .radar-funnel {
+  .radar-funnel,
+  .radar-modal-grid {
     grid-template-columns: 1fr;
   }
 

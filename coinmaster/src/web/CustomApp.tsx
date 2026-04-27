@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { TradingRulesPage } from './pages/TradingRulesPage';
 import { useDialog } from './components/DialogProvider';
 import { Card } from './components/Card';
@@ -46,6 +46,14 @@ function formatTimestamp(value?: string) {
   return Number.isFinite(date.getTime()) ? date.toLocaleString() : value;
 }
 
+function compactText(value: string | undefined, max = 110): string {
+  const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+  if (!text) return '—';
+  return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+}
+
+type FunnelDetailKey = 'candidates' | 'policy' | 'engine';
+
 function RadarPolicyPage() {
   const [payload, setPayload] = useState<FreqtradeRadarPolicyResponse | null>(null);
   const [ideasPayload, setIdeasPayload] = useState<Awaited<ReturnType<typeof getAlphaRadarIdeas>> | null>(null);
@@ -54,6 +62,7 @@ function RadarPolicyPage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [activeDetail, setActiveDetail] = useState<FunnelDetailKey | null>(null);
 
   async function load() {
     setLoading(true);
@@ -138,14 +147,70 @@ function RadarPolicyPage() {
   const connectorProblems = connectors.filter((item) => item.enabled && item.state.lastSyncStatus === 'error').length;
   const sourceHealth = (summary?.sourceHealth ?? []).slice(0, 8);
   const monitoredAssets = pairs.length > 0 ? pairs.map(([pair]) => pairAsset(pair)) : [];
-  const funnelSteps = [
+  const candidateIdeas = (ideasPayload?.ideas ?? []).filter((item) => item.verdict !== 'cash');
+  const funnelSteps: Array<{ icon: string; label: string; value: number; hint: string; detail?: FunnelDetailKey }> = [
     { icon: '📡', label: 'Collected', value: (summary?.evidenceBundles ?? 0) + (summary?.dedupeSuppressed ?? 0), hint: 'Raw items' },
     { icon: '🧹', label: 'Deduped', value: summary?.dedupeSuppressed ?? 0, hint: 'Noise removed' },
     { icon: '🧩', label: 'Evidence', value: summary?.evidenceBundles ?? 0, hint: 'Useful clusters' },
-    { icon: '🎯', label: 'Candidates', value: summary?.signalCandidates ?? 0, hint: 'Scored ideas' },
-    { icon: '🧠', label: 'Policy', value: summary?.activeRadarContextPolicies ?? pairs.length, hint: 'Decisions' },
-    { icon: '⚙️', label: 'Engine', value: pairs.length, hint: 'Sent to Freqtrade' },
+    { icon: '🎯', label: 'Candidates', value: summary?.signalCandidates ?? candidateIdeas.length, hint: 'Click for list', detail: 'candidates' },
+    { icon: '🧠', label: 'Policy', value: summary?.activeRadarContextPolicies ?? pairs.length, hint: 'Click for rules', detail: 'policy' },
+    { icon: '⚙️', label: 'Engine', value: pairs.length, hint: 'Click for sent', detail: 'engine' },
   ];
+
+  let detailTitle = '';
+  let detailBody: ReactNode = null;
+  if (activeDetail === 'candidates') {
+    detailTitle = '🎯 Candidates';
+    detailBody = candidateIdeas.length ? (
+      <div className="radar-modal-grid">
+        {candidateIdeas.map((idea) => (
+          <article className="radar-modal-card" key={idea.id}>
+            <div className="radar-signal-pair"><strong>{idea.symbol ?? 'Market'} {idea.direction ? idea.direction.toUpperCase() : ''}</strong><Badge tone={idea.actionability.actionable ? 'success' : 'neutral'}>{idea.verdict}</Badge></div>
+            <div className="radar-score-ring">{Math.round(idea.score * 100)}<span>/100</span></div>
+            <p>{compactText(idea.title, 90)}</p>
+            <p className="muted">{compactText(idea.actionability.summary, 130)}</p>
+            {idea.actionability.blockers.length ? <p className="muted">Blocked by: {idea.actionability.blockers.slice(0, 2).join(' · ')}</p> : null}
+            <details><summary>Why now?</summary><p className="muted">{idea.whyNow.slice(0, 4).join(' · ')}</p></details>
+          </article>
+        ))}
+      </div>
+    ) : <p className="muted">No active candidates right now.</p>;
+  } else if (activeDetail === 'policy') {
+    detailTitle = '🧠 Policy decisions';
+    detailBody = (
+      <div className="radar-modal-grid">
+        <article className="radar-modal-card">
+          <div className="radar-signal-pair"><strong>Global guard</strong><Badge tone={radarTone(policy?.global)}>{policy?.global.mode ?? 'both'}</Badge></div>
+          <p>Risk ×{policy?.global.risk_multiplier ?? 1}</p>
+          <p className="muted">{policy?.global.reason ?? 'neutral'}</p>
+        </article>
+        {pairs.map(([pair, scope]) => (
+          <article className="radar-modal-card" key={pair}>
+            <div className="radar-signal-pair"><strong>{pairAsset(pair)}</strong><Badge tone={radarTone(scope)}>{scope.mode}</Badge></div>
+            <div className="radar-risk-meter"><span style={{ width: `${Math.round(Math.max(0, Math.min(1, scope.risk_multiplier)) * 100)}%` }} /></div>
+            <p>Risk ×{scope.risk_multiplier}</p>
+            <p className="muted">{scope.reason.replaceAll('_', ' ')}</p>
+            <p className="muted">Priority: {scope.priority_score ?? 'n/a'} · Candidate: {scope.signal_candidate_id ?? 'n/a'}</p>
+          </article>
+        ))}
+      </div>
+    );
+  } else if (activeDetail === 'engine') {
+    detailTitle = '⚙️ Sent to Freqtrade';
+    detailBody = pairs.length ? (
+      <div className="radar-modal-grid">
+        {pairs.map(([pair, scope]) => (
+          <article className="radar-modal-card radar-modal-card--engine" key={pair}>
+            <div className="radar-signal-pair"><strong>{pair}</strong><Badge tone={radarTone(scope)}>{scope.mode}</Badge></div>
+            <p className="radar-engine-line">✅ Strategy receives: {scope.mode} · risk ×{scope.risk_multiplier}</p>
+            <p className="muted">Policy file: {payload?.path ?? 'radar_policy.json'}</p>
+            <p className="muted">Valid until: {formatTimestamp(policy?.valid_until)}</p>
+            <p className="muted">Evidence: {scope.evidence_ids?.join(', ') || 'n/a'}</p>
+          </article>
+        ))}
+      </div>
+    ) : <p className="muted">Nothing is being sent to Freqtrade now. Radar is neutral.</p>;
+  }
 
   return (
     <main className="radar-ux-page">
@@ -214,15 +279,24 @@ function RadarPolicyPage() {
 
       <Card title="2. Live feed" className="terminal-card radar-ux-card">
         <div className="radar-funnel">
-          {funnelSteps.map((step, index) => (
-            <div className="radar-funnel-step" key={step.label}>
-              <div className="radar-funnel-icon">{step.icon}</div>
-              <div className="radar-funnel-value">{step.value}</div>
-              <strong>{step.label}</strong>
-              <span>{step.hint}</span>
-              {index < funnelSteps.length - 1 ? <div className="radar-funnel-arrow">→</div> : null}
-            </div>
-          ))}
+          {funnelSteps.map((step, index) => {
+            const content = (
+              <>
+                <div className="radar-funnel-icon">{step.icon}</div>
+                <div className="radar-funnel-value">{step.value}</div>
+                <strong>{step.label}</strong>
+                <span>{step.hint}</span>
+                {index < funnelSteps.length - 1 ? <div className="radar-funnel-arrow">→</div> : null}
+              </>
+            );
+            return step.detail ? (
+              <button type="button" className="radar-funnel-step radar-funnel-step--clickable" key={step.label} onClick={() => setActiveDetail(step.detail ?? null)}>
+                {content}
+              </button>
+            ) : (
+              <div className="radar-funnel-step" key={step.label}>{content}</div>
+            );
+          })}
         </div>
 
         <section className="radar-engine-signals">
@@ -260,6 +334,20 @@ function RadarPolicyPage() {
           </div>
         </details>
       </Card>
+
+
+
+      {activeDetail ? (
+        <div className="radar-modal-overlay" role="dialog" aria-modal="true" aria-label={detailTitle} onClick={() => setActiveDetail(null)}>
+          <div className="radar-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="radar-modal-header">
+              <h2>{detailTitle}</h2>
+              <button type="button" className="bt-report-close" onClick={() => setActiveDetail(null)}>×</button>
+            </div>
+            {detailBody}
+          </div>
+        </div>
+      ) : null}
 
       <Card title="3. Settings" className="terminal-card radar-ux-card">
         <div className="radar-settings-grid">
