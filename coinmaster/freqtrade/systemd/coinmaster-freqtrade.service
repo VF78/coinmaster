@@ -9,6 +9,7 @@ Wants=network-online.target
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/opt/coinmaster/freqtrade
+ExecStartPre=/usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm --entrypoint python freqtrade /freqtrade/user_data/scripts/preflight_db.py
 ExecStart=/usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --remove-orphans
 ExecStop=/usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml down
 TimeoutStartSec=0

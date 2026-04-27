@@ -304,7 +304,7 @@ Useful reason codes in logs: `radar_block_global`, `radar_block_pair`, `radar_di
 
 Operational hardening:
 
-- The safe deploy script restarts `coinmaster-freqtrade.service` when the deployed `freqtrade/` tree changes, verifies the API, and starts the bot only when config confirms `dry_run=true`.
+- The safe deploy script restarts `coinmaster-freqtrade.service` after every atomic `freqtrade/` tree swap so Docker bind mounts cannot stay attached to `/opt/coinmaster/freqtrade.prev/.../deleted`. Before start it runs `user_data/scripts/preflight_db.py`, which initializes/migrates the configured dry-run DB and verifies core tables such as `trades`, then verifies the API and starts the bot only when config confirms `dry_run=true`.
 - Watch `/var/lib/coinmaster/freqtrade/radar_policy.json` freshness. If `valid_until` is stale for more than ~10–15 minutes, strategy behavior becomes neutral by design and the companion app/export loop needs attention.
 - Avoid sharing raw Freqtrade websocket access logs externally; FreqUI websocket URLs may contain short-lived JWT tokens in query strings.
 

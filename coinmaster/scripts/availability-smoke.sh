@@ -50,6 +50,35 @@ else
   bad "coinmaster-freqtrade Docker restart policy is '$restart_policy'"
 fi
 
+mountinfo="$(docker exec coinmaster-freqtrade sh -lc 'cat /proc/self/mountinfo | grep " /freqtrade/user_data " || true' 2>/dev/null || true)"
+if [[ -n "$mountinfo" && "$mountinfo" != *'/deleted'* ]]; then
+  ok "Freqtrade user_data bind mount is live"
+else
+  bad "Freqtrade user_data bind mount is stale or missing"
+fi
+
+if docker exec -i coinmaster-freqtrade python - <<'PY'
+import sqlite3
+from pathlib import Path
+path = Path('/freqtrade/user_data/tradesv3.dryrun.sqlite')
+required = {'trades', 'orders', 'pairlocks', 'KeyValueStore'}
+if not path.exists():
+    raise SystemExit('dry-run sqlite DB missing')
+conn = sqlite3.connect(path)
+try:
+    tables = {row[0] for row in conn.execute("select name from sqlite_master where type='table'")}
+finally:
+    conn.close()
+missing = required - tables
+if missing:
+    raise SystemExit(f'missing tables: {sorted(missing)}')
+PY
+then
+  ok "Freqtrade dry-run DB core tables present"
+else
+  bad "Freqtrade dry-run DB core table check failed"
+fi
+
 if curl -fsS --max-time 5 "$APP_HEALTH_URL" | grep -q '"ok":true'; then
   ok "CoinMaster app /api/health ok"
 else

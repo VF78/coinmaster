@@ -194,7 +194,11 @@ class CoinMasterStrategy(IStrategy):
             params = payload.get("freqtrade", {}).get("strategy_params", {})
             if not isinstance(params, dict):
                 return
-            self._runtime_strategy_params = params
+            effective_params = dict(params)
+            dry_run_params = payload.get("freqtrade", {}).get("dry_run_strategy_params", {})
+            if bool(self.config.get("dry_run")) and isinstance(dry_run_params, dict):
+                effective_params.update(dry_run_params)
+            self._runtime_strategy_params = effective_params
             self._runtime_rules_mtime = stat.st_mtime
             logger.info("Loaded CoinMaster runtime Trading Rules from %s", path)
         except Exception as exc:  # pragma: no cover

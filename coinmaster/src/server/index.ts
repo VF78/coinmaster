@@ -214,6 +214,21 @@ function buildFreqtradeRulesExport(rules: TradingRulesSettings) {
     bias_policy: rules.biasPolicy,
   };
 
+  // Temporary Stage-1 dry-run exploration profile.  The strategy applies this
+  // block only when Freqtrade config confirms dry_run=true; live mode ignores
+  // it and uses the canonical Trading Rules above.
+  const dryRunStrategyParams = {
+    entry_timeframes: ['5m', '15m', '1h', '4h'],
+    engulfing_lookback: 32,
+    fvg_min_width_pct: 0.3,
+    fvg_require_sweep: false,
+    fvg_require_first_touch: false,
+    max_zone_age_candles: 24,
+    fvg_require_confirmation: true,
+    fvg_confirmation_timeframes: ['5m', '15m'],
+    regime_filter_enabled: false,
+  };
+
   return {
     schema_version: 1,
     source: 'coinmaster-custom-companion',
@@ -223,6 +238,7 @@ function buildFreqtradeRulesExport(rules: TradingRulesSettings) {
       enabled_pairs: enabledPairs,
       strategy: 'CoinMasterStrategy',
       strategy_params: strategyParams,
+      dry_run_strategy_params: dryRunStrategyParams,
     },
   };
 }

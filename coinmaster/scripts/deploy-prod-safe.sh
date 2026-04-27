@@ -310,9 +310,24 @@ EOF
   chmod 0644 /etc/cron.d/coinmaster-freqtrade-night-watch
 fi
 
-if [[ "$FREQTRADE_DEPLOY_TREE_CHANGED" -eq 1 ]] && systemctl list-unit-files "$FREQTRADE_SERVICE" >/dev/null 2>&1; then
-  log "Freqtrade tree changed; restarting $FREQTRADE_SERVICE so strategy/config code is loaded"
-  systemctl restart "$FREQTRADE_SERVICE"
+if systemctl list-unit-files "$FREQTRADE_SERVICE" >/dev/null 2>&1; then
+  if [[ "$FREQTRADE_DEPLOY_TREE_CHANGED" -eq 1 ]]; then
+    log "Freqtrade tree changed; restarting $FREQTRADE_SERVICE so strategy/config code is loaded"
+  else
+    log "Restarting $FREQTRADE_SERVICE to rebind the atomically swapped freqtrade/user_data mount"
+  fi
+  log "Stopping $FREQTRADE_SERVICE before DB preflight"
+  systemctl stop "$FREQTRADE_SERVICE" || true
+
+  log "Running Freqtrade DB init/migration preflight"
+  if ! (cd "$TARGET_DIR/freqtrade" && docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm --entrypoint python freqtrade /freqtrade/user_data/scripts/preflight_db.py); then
+    systemctl start "$FREQTRADE_SERVICE" || true
+    echo "Freqtrade DB preflight failed" >&2
+    exit 1
+  fi
+
+  log "Starting $FREQTRADE_SERVICE"
+  systemctl start "$FREQTRADE_SERVICE"
   log "Waiting for Freqtrade API after restart"
   FREQTRADE_API_OK=0
   for i in {1..90}; do

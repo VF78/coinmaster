@@ -65,6 +65,35 @@ if ! docker compose -f docker-compose.yml -f docker-compose.prod.yml ps --status
   sleep 10
 fi
 
+FREQTRADE_MOUNTINFO="$(docker exec coinmaster-freqtrade sh -lc 'cat /proc/self/mountinfo | grep " /freqtrade/user_data " || true' 2>/dev/null || true)"
+if [[ -z "$FREQTRADE_MOUNTINFO" || "$FREQTRADE_MOUNTINFO" == *'/deleted'* ]]; then
+  log "Freqtrade user_data bind mount is stale/missing; restarting $FREQTRADE_SERVICE"
+  systemctl restart "$FREQTRADE_SERVICE" || true
+  sleep 10
+fi
+
+if ! docker exec -i coinmaster-freqtrade python - <<'PY' >/dev/null 2>&1
+import sqlite3
+from pathlib import Path
+path = Path('/freqtrade/user_data/tradesv3.dryrun.sqlite')
+required = {'trades', 'orders', 'pairlocks', 'KeyValueStore'}
+if not path.exists():
+    raise SystemExit('dry-run sqlite DB missing')
+conn = sqlite3.connect(path)
+try:
+    tables = {row[0] for row in conn.execute("select name from sqlite_master where type='table'")}
+finally:
+    conn.close()
+missing = required - tables
+if missing:
+    raise SystemExit(f'missing tables: {sorted(missing)}')
+PY
+then
+  log "Freqtrade dry-run DB core table check failed; restarting $FREQTRADE_SERVICE to run DB preflight"
+  systemctl restart "$FREQTRADE_SERVICE" || true
+  sleep 10
+fi
+
 python3 - <<'PY' >>"/var/log/coinmaster/freqtrade-night-watch.log" 2>&1
 import base64
 import json
