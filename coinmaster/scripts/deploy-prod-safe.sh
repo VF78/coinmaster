@@ -310,8 +310,8 @@ if [[ "$FREQTRADE_DEPLOY_TREE_CHANGED" -eq 1 ]] && systemctl list-unit-files "$F
   systemctl restart "$FREQTRADE_SERVICE"
   log "Waiting for Freqtrade API after restart"
   FREQTRADE_API_OK=0
-  for i in {1..30}; do
-    if curl -fsS --max-time 2 http://127.0.0.1:8080/api/v1/ping >/dev/null 2>&1; then
+  for i in {1..90}; do
+    if curl -fsS --max-time 3 http://127.0.0.1:8080/api/v1/ping >/dev/null 2>&1; then
       FREQTRADE_API_OK=1
       break
     fi
