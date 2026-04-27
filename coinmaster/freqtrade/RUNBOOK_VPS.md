@@ -226,6 +226,51 @@ Legacy CoinMaster background execution monitors must remain disabled while Stage
 
 Risk locks should be handled by native Freqtrade protections in `CoinMasterStrategy.protections`, not by the old CoinMaster daily-drawdown watchdog. Current baseline enables `CooldownPeriod`, `StoplossGuard`, `MaxDrawdown`, and `LowProfitPairs`. For backtesting these locks, pass `--enable-protections`.
 
+### Freqtrade-native Radar policy bridge
+
+Stage 2 Radar integration is intentionally a policy/context layer, not an execution engine. Freqtrade remains the only component that opens/closes orders.
+
+`CoinMasterStrategy` hot-reads an optional policy snapshot:
+
+- host path: `/var/lib/coinmaster/freqtrade/radar_policy.json`
+- container path: `/freqtrade/user_data/runtime/radar_policy.json`
+
+If the file is missing, invalid JSON/schema, disabled, or past `valid_until`, Radar is ignored and strategy behavior is neutral/unmodified.
+
+Minimal policy example:
+
+```json
+{
+  "schema_version": 1,
+  "updated_at": "2026-04-27T10:00:00Z",
+  "valid_until": "2026-04-27T10:15:00Z",
+  "global": {
+    "enabled": true,
+    "mode": "both",
+    "risk_multiplier": 1.0,
+    "lock_new_entries": false,
+    "reason": "normal_market"
+  },
+  "pairs": {
+    "BTC/USDC:USDC": { "mode": "off", "risk_multiplier": 0.0, "reason": "weak_context" },
+    "ETH/USDC:USDC": { "mode": "long_only", "risk_multiplier": 1.0, "reason": "bullish_context" },
+    "HYPE/USDC:USDC": { "mode": "both", "risk_multiplier": 0.75, "reason": "elevated_volatility" }
+  }
+}
+```
+
+Allowed modes: `both`, `long_only`, `short_only`, `off`.
+
+Rules:
+
+- `global.lock_new_entries=true` or global `mode=off` blocks all new entries.
+- pair `mode=off` blocks new entries for that pair.
+- directional modes only filter already-detected Freqtrade entries; Radar never force-enters.
+- `risk_multiplier` is clamped to `0.0..1.0` and is applied after Trading Rules allocation/risk/gross caps.
+- Atomic writer pattern: write to `radar_policy.json.tmp`, fsync if available, then rename to `radar_policy.json`.
+
+Useful reason codes in logs: `radar_block_global`, `radar_block_pair`, `radar_direction_mismatch`, `radar_stale_ignored`, `radar_invalid_ignored`, `radar_risk_multiplier_applied`.
+
 If public domain access should be avoided during maintenance, use an SSH tunnel instead:
 
 ```bash

@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import reduce
 from pathlib import Path
 from typing import Optional
@@ -71,6 +71,9 @@ class CoinMasterStrategy(IStrategy):
 
     runtime_rules_path = Path("/freqtrade/user_data/runtime/trading_rules.json")
     fallback_runtime_rules_path = Path(__file__).resolve().parents[1] / "runtime" / "trading_rules.json"
+    radar_policy_path = Path("/freqtrade/user_data/runtime/radar_policy.json")
+    fallback_radar_policy_path = Path(__file__).resolve().parents[1] / "runtime" / "radar_policy.json"
+    radar_modes = {"both", "long_only", "short_only", "off"}
 
     @property
     def protections(self) -> list[dict[str, object]]:
@@ -121,7 +124,12 @@ class CoinMasterStrategy(IStrategy):
         super().__init__(config)
         self._runtime_rules_mtime: float | None = None
         self._runtime_strategy_params: dict[str, object] = {}
+        self._radar_policy_mtime: float | None = None
+        self._radar_policy_state: dict[str, object] = self._neutral_radar_policy("missing", "radar_missing_ignored")
+        self._radar_last_status: str | None = None
+        self._radar_logged_decisions: set[tuple[str, str, str, str]] = set()
         self._refresh_runtime_rules(force=True)
+        self._refresh_radar_policy(force=True)
 
     def informative_pairs(self):
         pairs = self.dp.current_whitelist() if self.dp else []
@@ -191,8 +199,175 @@ class CoinMasterStrategy(IStrategy):
         except Exception as exc:  # pragma: no cover
             logger.warning("Could not load CoinMaster runtime Trading Rules from %s: %s", path, exc)
 
+    @staticmethod
+    def _neutral_radar_policy(status: str, reason: str) -> dict[str, object]:
+        return {
+            "status": status,
+            "active": False,
+            "reason": reason,
+            "global": {"mode": "both", "risk_multiplier": 1.0, "lock_new_entries": False, "reason": reason},
+            "pairs": {},
+        }
+
+    @staticmethod
+    def _parse_radar_time(value: object) -> datetime | None:
+        if not isinstance(value, str) or not value.strip():
+            return None
+        try:
+            parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+        except ValueError:
+            return None
+        if parsed.tzinfo is None:
+            return parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc)
+
+    @staticmethod
+    def _safe_multiplier(value: object, default: float = 1.0) -> float:
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return default
+        if not np.isfinite(number):
+            return default
+        return max(0.0, min(1.0, number))
+
+    def _normalize_radar_scope(self, value: object, default_reason: str) -> dict[str, object] | None:
+        if not isinstance(value, dict):
+            return None
+        mode = str(value.get("mode", "both")).lower().strip()
+        if mode not in self.radar_modes:
+            return None
+        reason = str(value.get("reason") or default_reason).strip()[:120]
+        return {
+            "mode": mode,
+            "risk_multiplier": self._safe_multiplier(value.get("risk_multiplier"), 1.0),
+            "lock_new_entries": bool(value.get("lock_new_entries", False)),
+            "reason": reason or default_reason,
+        }
+
+    def _set_radar_policy_state(self, state: dict[str, object]) -> None:
+        status = str(state.get("status", "unknown"))
+        reason = str(state.get("reason", ""))
+        if status != self._radar_last_status:
+            if status == "active":
+                logger.info("Loaded active Radar policy from %s", state.get("path", self.radar_policy_path))
+            elif status == "stale":
+                logger.info("radar_stale_ignored: %s", reason)
+            elif status == "invalid":
+                logger.warning("radar_invalid_ignored: %s", reason)
+            self._radar_last_status = status
+        self._radar_policy_state = state
+
+    def _refresh_radar_policy(self, force: bool = False) -> None:
+        path = self.radar_policy_path if self.radar_policy_path.exists() else self.fallback_radar_policy_path
+        if not path.exists():
+            self._radar_policy_mtime = None
+            self._set_radar_policy_state(self._neutral_radar_policy("missing", "radar_missing_ignored"))
+            return
+        try:
+            stat = path.stat()
+            if not force and self._radar_policy_mtime == stat.st_mtime:
+                return
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(payload, dict) or int(payload.get("schema_version", 0) or 0) != 1:
+                self._radar_policy_mtime = stat.st_mtime
+                self._set_radar_policy_state(self._neutral_radar_policy("invalid", "schema_version_invalid"))
+                return
+
+            global_policy = self._normalize_radar_scope(payload.get("global", {}), "global_default")
+            if global_policy is None:
+                self._radar_policy_mtime = stat.st_mtime
+                self._set_radar_policy_state(self._neutral_radar_policy("invalid", "global_policy_invalid"))
+                return
+
+            enabled = bool((payload.get("global") or {}).get("enabled", True))
+            valid_until = self._parse_radar_time(payload.get("valid_until"))
+            if not enabled:
+                self._radar_policy_mtime = stat.st_mtime
+                self._set_radar_policy_state(self._neutral_radar_policy("disabled", "radar_disabled_ignored"))
+                return
+            if valid_until is None:
+                self._radar_policy_mtime = stat.st_mtime
+                self._set_radar_policy_state(self._neutral_radar_policy("invalid", "valid_until_invalid"))
+                return
+            if valid_until <= datetime.now(timezone.utc):
+                self._radar_policy_mtime = stat.st_mtime
+                self._set_radar_policy_state(self._neutral_radar_policy("stale", "valid_until_expired"))
+                return
+
+            raw_pairs = payload.get("pairs", {})
+            if not isinstance(raw_pairs, dict):
+                raw_pairs = {}
+            pairs: dict[str, dict[str, object]] = {}
+            for pair, raw_scope in raw_pairs.items():
+                normalized = self._normalize_radar_scope(raw_scope, "pair_default")
+                if normalized is not None:
+                    pairs[str(pair)] = normalized
+
+            self._radar_policy_mtime = stat.st_mtime
+            self._set_radar_policy_state({
+                "status": "active",
+                "active": True,
+                "reason": "active",
+                "path": str(path),
+                "updated_at": payload.get("updated_at"),
+                "valid_until": payload.get("valid_until"),
+                "global": global_policy,
+                "pairs": pairs,
+            })
+        except Exception as exc:  # pragma: no cover
+            self._set_radar_policy_state(self._neutral_radar_policy("invalid", f"read_failed:{exc}"))
+
+    @staticmethod
+    def _mode_allows_side(mode: str, side: str) -> bool:
+        return mode == "both" or (mode == "long_only" and side == "long") or (mode == "short_only" and side == "short")
+
+    def _radar_pair_scope(self, pair: str) -> dict[str, object] | None:
+        pairs = self._radar_policy_state.get("pairs")
+        if not isinstance(pairs, dict):
+            return None
+        direct = pairs.get(pair)
+        if isinstance(direct, dict):
+            return direct
+        base = pair.split("/", 1)[0].upper()
+        return next((scope for key, scope in pairs.items() if str(key).split("/", 1)[0].upper() == base and isinstance(scope, dict)), None)
+
+    def _radar_effective_policy(self, pair: str, side: str) -> dict[str, object]:
+        self._refresh_radar_policy()
+        if not self._radar_policy_state.get("active"):
+            return {"allowed": True, "risk_multiplier": 1.0, "code": str(self._radar_policy_state.get("reason", "radar_neutral")), "reason": str(self._radar_policy_state.get("reason", "radar_neutral"))}
+
+        global_policy = self._radar_policy_state.get("global") if isinstance(self._radar_policy_state.get("global"), dict) else {}
+        pair_policy = self._radar_pair_scope(pair) or {}
+        global_mode = str(global_policy.get("mode", "both"))
+        pair_mode = str(pair_policy.get("mode", "both"))
+        global_reason = str(global_policy.get("reason", "global_policy"))
+        pair_reason = str(pair_policy.get("reason", "pair_policy"))
+
+        if bool(global_policy.get("lock_new_entries", False)) or global_mode == "off":
+            return {"allowed": False, "risk_multiplier": 0.0, "code": "radar_block_global", "reason": global_reason}
+        if pair_mode == "off":
+            return {"allowed": False, "risk_multiplier": 0.0, "code": "radar_block_pair", "reason": pair_reason}
+        if not self._mode_allows_side(global_mode, side) or not self._mode_allows_side(pair_mode, side):
+            return {"allowed": False, "risk_multiplier": 0.0, "code": "radar_direction_mismatch", "reason": pair_reason if pair_policy else global_reason}
+
+        multiplier = min(
+            self._safe_multiplier(global_policy.get("risk_multiplier"), 1.0),
+            self._safe_multiplier(pair_policy.get("risk_multiplier"), 1.0) if pair_policy else 1.0,
+        )
+        return {"allowed": multiplier > 0.0, "risk_multiplier": multiplier, "code": "radar_risk_multiplier_applied" if multiplier < 1.0 else "radar_allowed", "reason": pair_reason if pair_policy else global_reason}
+
+    def _log_radar_decision(self, code: str, pair: str, side: str, reason: str, count: int | None = None) -> None:
+        key = (code, pair, side, reason)
+        if key in self._radar_logged_decisions:
+            return
+        self._radar_logged_decisions.add(key)
+        suffix = f" candidates={count}" if count is not None else ""
+        logger.info("%s pair=%s side=%s reason=%s%s", code, pair, side, reason, suffix)
+
     def bot_loop_start(self, current_time: datetime, **kwargs) -> None:
         self._refresh_runtime_rules()
+        self._refresh_radar_policy()
 
     @staticmethod
     def _body_top(dataframe: DataFrame) -> pd.Series:
@@ -460,11 +635,23 @@ class CoinMasterStrategy(IStrategy):
         ]
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        pair = str(metadata.get("pair", ""))
         long_signal = (self._engulf_signal(dataframe, "long") | self._fvg_signal(dataframe, "long")) if self._side_enabled("long") else pd.Series(False, index=dataframe.index)
         short_signal = (self._engulf_signal(dataframe, "short") | self._fvg_signal(dataframe, "short")) if self._side_enabled("short") else pd.Series(False, index=dataframe.index)
 
         long_conditions = [long_signal] + self._common_entry_guards(dataframe, "long")
         short_conditions = [short_signal] + self._common_entry_guards(dataframe, "short")
+
+        for side, conditions in (("long", long_conditions), ("short", short_conditions)):
+            radar = self._radar_effective_policy(pair, side)
+            base_candidates = reduce(lambda x, y: x & y, conditions)
+            candidate_count = int(base_candidates.fillna(False).astype(bool).sum())
+            if not bool(radar.get("allowed", True)):
+                if candidate_count > 0:
+                    self._log_radar_decision(str(radar.get("code", "radar_blocked")), pair, side, str(radar.get("reason", "radar_policy")), candidate_count)
+                conditions.append(pd.Series(False, index=dataframe.index))
+            elif float(radar.get("risk_multiplier", 1.0) or 1.0) < 1.0 and candidate_count > 0:
+                self._log_radar_decision("radar_risk_multiplier_applied", pair, side, str(radar.get("reason", "radar_policy")), candidate_count)
 
         dataframe.loc[reduce(lambda x, y: x & y, long_conditions), ["enter_long", "enter_tag"]] = (1, "coinmaster_long")
         dataframe.loc[reduce(lambda x, y: x & y, short_conditions), ["enter_short", "enter_tag"]] = (1, "coinmaster_short")
@@ -579,6 +766,11 @@ class CoinMasterStrategy(IStrategy):
                 gross_stake = total * (gross_cap_pct / 100.0) / effective_leverage
 
         stake = min(allocation_stake, risk_stake, gross_stake, max_stake)
+        radar = self._radar_effective_policy(pair, side)
+        radar_multiplier = float(radar.get("risk_multiplier", 1.0) or 0.0) if bool(radar.get("allowed", True)) else 0.0
+        if radar_multiplier < 1.0:
+            self._log_radar_decision("radar_risk_multiplier_applied", pair, side, str(radar.get("reason", "radar_policy")))
+        stake *= max(0.0, min(1.0, radar_multiplier))
         if min_stake is not None and stake < min_stake:
             return 0.0
         return max(stake, 0.0)
