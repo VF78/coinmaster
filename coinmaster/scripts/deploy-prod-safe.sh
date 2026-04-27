@@ -67,7 +67,7 @@ require_cmd() {
   command -v "$1" >/dev/null 2>&1 || { echo "Missing required command: $1" >&2; exit 1; }
 }
 
-for cmd in npm rsync curl systemctl cmp ss; do
+for cmd in npm rsync curl systemctl cmp ss diff; do
   require_cmd "$cmd"
 done
 
@@ -156,6 +156,23 @@ rsync -a --delete \
   --exclude 'user_data/*.sqlite-*' \
   --exclude 'user_data/strategies/__pycache__/' \
   "$APP_DIR/freqtrade/" "$TARGET_DIR/freqtrade.new/"
+FREQTRADE_DEPLOY_TREE_CHANGED="$FREQTRADE_TREE_CHANGED"
+if [[ -d "$TARGET_DIR/freqtrade" ]]; then
+  if ! diff -qr \
+    --exclude 'config.private.json' \
+    --exclude 'data' \
+    --exclude 'runtime' \
+    --exclude 'backtest_results' \
+    --exclude 'hyperopt_results' \
+    --exclude '*.sqlite' \
+    --exclude '*.sqlite-*' \
+    --exclude '__pycache__' \
+    "$TARGET_DIR/freqtrade" "$TARGET_DIR/freqtrade.new" >/dev/null; then
+    FREQTRADE_DEPLOY_TREE_CHANGED=1
+  fi
+else
+  FREQTRADE_DEPLOY_TREE_CHANGED=1
+fi
 install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package.json" "$TARGET_DIR/package.json"
 install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"
 chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new" "$TARGET_DIR/dist-custom.new" "$TARGET_DIR/docs.new" "$TARGET_DIR/scripts.new" "$TARGET_DIR/freqtrade.new"
@@ -273,7 +290,7 @@ if [[ "$SMOKE_OK" -ne 1 ]]; then
   exit 1
 fi
 
-if [[ "$FREQTRADE_TREE_CHANGED" -eq 1 ]] && systemctl list-unit-files "$FREQTRADE_SERVICE" >/dev/null 2>&1; then
+if [[ "$FREQTRADE_DEPLOY_TREE_CHANGED" -eq 1 ]] && systemctl list-unit-files "$FREQTRADE_SERVICE" >/dev/null 2>&1; then
   log "Freqtrade tree changed; restarting $FREQTRADE_SERVICE so strategy/config code is loaded"
   systemctl restart "$FREQTRADE_SERVICE"
   log "Waiting for Freqtrade API after restart"
