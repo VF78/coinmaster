@@ -393,6 +393,49 @@ export function collectAlphaRadarFeeds() {
   });
 }
 
+export interface FreqtradeRadarPolicyScope {
+  mode: 'both' | 'long_only' | 'short_only' | 'off';
+  risk_multiplier: number;
+  lock_new_entries?: boolean;
+  reason: string;
+  reason_codes?: string[];
+  narrative_regime?: string;
+  priority_score?: number;
+  evidence_ids?: string[];
+  signal_candidate_id?: string;
+  source_policy_id?: string;
+}
+
+export interface FreqtradeRadarPolicySnapshot {
+  schema_version: 1;
+  source: string;
+  generated_by: string;
+  updated_at: string;
+  valid_until: string;
+  global: FreqtradeRadarPolicyScope & { enabled: boolean };
+  pairs: Record<string, FreqtradeRadarPolicyScope>;
+  diagnostics?: Record<string, number>;
+}
+
+export interface FreqtradeRadarPolicyResponse {
+  ok: boolean;
+  enabled: boolean;
+  path: string;
+  generated: FreqtradeRadarPolicySnapshot;
+  disk?: FreqtradeRadarPolicySnapshot;
+  diskError?: string;
+}
+
+export function getFreqtradeRadarPolicy() {
+  return jsonFetch<FreqtradeRadarPolicyResponse>('/api/freqtrade/radar-policy');
+}
+
+export function refreshFreqtradeRadarPolicy() {
+  return jsonFetch<{ ok: boolean; enabled: boolean; path: string; policy: FreqtradeRadarPolicySnapshot }>('/api/freqtrade/radar-policy/refresh', {
+    method: 'POST',
+  });
+}
+
 export function collectAlphaRadarMarketSnapshot() {
   return jsonFetch<{ ok: boolean; createdCount: number }>('/api/alpha-radar/collect/market-snapshot', {
     method: 'POST',

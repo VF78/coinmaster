@@ -96,6 +96,7 @@ import { collectBlueskyConnector, collectRedditConnector, collectTelegramAuthRea
 import { ingestObservationIntoEvidence, pruneEvidenceBundles, syncSignalCandidatesFromEvidence } from './alphaRadarEvidence.js';
 import { transitionSignalCandidate } from './radarSignalCandidate.js';
 import { buildRadarContextPolicyBook, evaluateRadarContextPolicyEntry, readActiveRadarContextPolicy } from './radarContextPolicy.js';
+import { buildFreqtradeRadarPolicySnapshot } from './freqtradeRadarPolicy.js';
 import { RuntimeRulesCache, isSymbolEnabled, computeSymbolNotionalCap, computeAllocationSize, maxPortfolioGrossNotional, wouldExceedPortfolioGrossCap } from './runtimeRules.js';
 import type { AllocationSizingResult } from './runtimeRules.js';
 import { HyperliquidAdapter, MidStreamHandle } from '../exchange/index.js';
@@ -125,6 +126,7 @@ const alertStateFilePath = path.join(path.dirname(dbFilePath), 'alert_state.json
 const freqtradeRuntimeDir = process.env.FREQTRADE_RUNTIME_DIR ?? '/var/lib/coinmaster/freqtrade';
 const freqtradeTradingRulesPath = path.join(freqtradeRuntimeDir, 'trading_rules.json');
 const freqtradeTradingRulesConfigPath = path.join(freqtradeRuntimeDir, 'config.trading-rules.json');
+const freqtradeRadarPolicyPath = path.join(freqtradeRuntimeDir, 'radar_policy.json');
 
 if (!existsSync(path.join(distDir, 'index.html'))) {
   throw new Error(`dist/index.html missing at ${distDir}; run build/deploy before starting production server`);
@@ -246,6 +248,29 @@ async function exportTradingRulesToFreqtrade(rules: TradingRulesSettings) {
     configPath: freqtradeTradingRulesConfigPath,
     enabledPairs: payload.freqtrade.enabled_pairs,
     configReloadRequired: true,
+  };
+}
+
+const ENABLE_FREQTRADE_RADAR_POLICY_EXPORT = String(process.env.ENABLE_FREQTRADE_RADAR_POLICY_EXPORT ?? 'true').toLowerCase() !== 'false';
+const FREQTRADE_RADAR_POLICY_TTL_MS = Math.max(60_000, Number(process.env.FREQTRADE_RADAR_POLICY_TTL_MS || 10 * 60_000));
+
+async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>, nowIso = new Date().toISOString()) {
+  const rules = normalizeTradingRules(db.data.settings.tradingRules);
+  const policies = syncRadarContextPolicies({ db, nowIso });
+  const payload = buildFreqtradeRadarPolicySnapshot({
+    policies,
+    monitoredCoins: rules.coins,
+    nowIso,
+    ttlMs: FREQTRADE_RADAR_POLICY_TTL_MS,
+  });
+  if (ENABLE_FREQTRADE_RADAR_POLICY_EXPORT) {
+    await mkdir(freqtradeRuntimeDir, { recursive: true });
+    await writeJsonAtomic(freqtradeRadarPolicyPath, payload);
+  }
+  return {
+    path: freqtradeRadarPolicyPath,
+    enabled: ENABLE_FREQTRADE_RADAR_POLICY_EXPORT,
+    payload,
   };
 }
 const ENABLE_DRAWDOWN_WATCHDOG = String(process.env.ENABLE_DRAWDOWN_WATCHDOG ?? 'true').toLowerCase() !== 'false';
@@ -1441,7 +1466,11 @@ async function saveAlphaRadarObservations(observations: AlphaRadarObservation[])
     monitoredCoins: normalizeTradingRules(db.data.settings.tradingRules).coins,
     nowIso,
   });
-  db.data.radarContextPolicies = syncRadarContextPolicies({ db, nowIso });
+  try {
+    await exportFreqtradeRadarPolicy(db, nowIso);
+  } catch (error) {
+    logger.warn({ error }, 'Could not export Freqtrade Radar policy snapshot');
+  }
   await db.write();
   return createdCount;
 }
@@ -8333,6 +8362,33 @@ app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
       llmMode: 'on_demand',
     },
   });
+});
+
+app.get('/api/freqtrade/radar-policy', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  const generated = await exportFreqtradeRadarPolicy(db);
+  let diskPayload: unknown;
+  let diskError: string | undefined;
+  try {
+    diskPayload = JSON.parse(await readFile(freqtradeRadarPolicyPath, 'utf8'));
+  } catch (error) {
+    diskError = error instanceof Error ? error.message : String(error);
+  }
+  return res.json({
+    ok: true,
+    enabled: generated.enabled,
+    path: generated.path,
+    generated: generated.payload,
+    disk: diskPayload,
+    diskError,
+  });
+});
+
+app.post('/api/freqtrade/radar-policy/refresh', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  const result = await exportFreqtradeRadarPolicy(db);
+  await db.write();
+  return res.json({ ok: true, enabled: result.enabled, path: result.path, policy: result.payload });
 });
 
 app.post('/api/alpha-radar/collect/market-snapshot', ownerAuth, async (_req, res) => {

@@ -269,6 +269,17 @@ Rules:
 - `risk_multiplier` is clamped to `0.0..1.0` and is applied after Trading Rules allocation/risk/gross caps.
 - Atomic writer pattern: write to `radar_policy.json.tmp`, fsync if available, then rename to `radar_policy.json`.
 
+CoinMaster custom companion now includes the Freqtrade Radar producer:
+
+- reusable Alpha Radar connectors/parsers/evidence/candidate scoring remain the upstream observation layer;
+- producer maps the current Radar context policy book into the Freqtrade snapshot schema;
+- missing-evidence/empty policies are intentionally neutral and omitted from `pairs`;
+- active pair decisions become `mode`, `risk_multiplier`, `reason_codes`, evidence IDs, and source candidate metadata;
+- `GET /api/freqtrade/radar-policy` shows generated + disk snapshots for GUI diagnostics;
+- `POST /api/freqtrade/radar-policy/refresh` forces an atomic refresh;
+- export can be disabled with `ENABLE_FREQTRADE_RADAR_POLICY_EXPORT=false`;
+- TTL defaults to 10 minutes and can be changed with `FREQTRADE_RADAR_POLICY_TTL_MS`.
+
 Useful reason codes in logs: `radar_block_global`, `radar_block_pair`, `radar_direction_mismatch`, `radar_stale_ignored`, `radar_invalid_ignored`, `radar_risk_multiplier_applied`.
 
 If public domain access should be avoided during maintenance, use an SSH tunnel instead:
