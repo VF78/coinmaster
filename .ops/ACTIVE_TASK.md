@@ -4,7 +4,7 @@ Updated: 2026-04-27 11:11 Europe/Madrid
 Status: ACTIVE / #65 native Freqtrade Stage 1 is deployed in dry-run; allocation display/runtime rounding fixed
 GitHub Project item: #65 `Этап 1: Полный переход CoinMaster на native Freqtrade core` — In Progress
 Canonical root: /root/.openclaw/workspace/coinmaster (app: /root/.openclaw/workspace/coinmaster/coinmaster)
-Branch / HEAD / origin/main / deploy commit / divergence: freqtrade-stage1-migration / 8799fbd8df18afc9803b9b6a7169a8a82608e0c9 committed+pushed / origin/main f6f2279cd10eb97223d20cbf958a6c4e2f93737a / deploy marker 8799fbd8df18afc9803b9b6a7169a8a82608e0c9 / origin/main...HEAD about 16 commits ahead
+Branch / HEAD / origin/main / deploy commit / divergence: freqtrade-stage1-migration / eda5c7021a33a521194f0e1fb69c221baec0dda2 committed+pushed / origin/main f6f2279cd10eb97223d20cbf958a6c4e2f93737a / deploy marker 8799fbd8df18afc9803b9b6a7169a8a82608e0c9 before final marker refresh / origin/main...HEAD about 17 commits ahead
 Goal: finish Freqtrade Stage 1 dry-run validation and prepare explicit owner-approved live cutover.
 Done:
 - Freqtrade strategy now runs base 5m with informative 15m/1h/4h; entry TFs, HTF FVG sweep/first-touch/confirmation, and regime TF are implemented natively.
