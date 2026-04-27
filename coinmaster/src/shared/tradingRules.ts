@@ -48,14 +48,20 @@ export const DEFAULT_TRADING_RULES: TradingRulesSettings = {
 
   // ── Stage-1 SignalQualityContext / portfolio defaults (issue #61) ───
   // Conservative defaults that preserve current behaviour: thresholds set so
-  // the regime/RR gate is permissive until the operator opts in via the UI.
+  // optional gates are permissive until the operator opts in via the UI.
   regimeTf: '1h',
+  regimeFilterEnabled: true,
+  adxEnabled: false,
   adxMin: 0,
+  minImpulseAtrEnabled: false,
   minImpulseAtr: 0,
-  minExpectedRr: 0,
+  timeStopEnabled: false,
   timeStopBars: 0,
+  riskPerTradeEnabled: false,
   riskPerTradePct: 0,
+  eventLockoutEnabled: false,
   eventLockoutMinutes: 0,
+  portfolioGrossCapEnabled: true,
   portfolioGrossCap: 200,
 };
 
@@ -246,13 +252,19 @@ export function normalizeTradingRules(input: unknown): TradingRulesSettings {
 
   // ── Stage-1 SignalQualityContext fields (issue #61) ────────────────
   base.regimeTf = raw.regimeTf === '4h' ? '4h' : raw.regimeTf === '1h' ? '1h' : (base.regimeTf ?? '1h');
+  base.regimeFilterEnabled = typeof raw.regimeFilterEnabled === 'boolean' ? raw.regimeFilterEnabled : (base.regimeFilterEnabled ?? true);
   base.adxMin = clampNumber(raw.adxMin, 0, 100, base.adxMin ?? 0);
+  base.adxEnabled = typeof raw.adxEnabled === 'boolean' ? raw.adxEnabled : base.adxMin > 0;
   base.minImpulseAtr = clampNumber(raw.minImpulseAtr, 0, 10, base.minImpulseAtr ?? 0);
-  base.minExpectedRr = clampNumber(raw.minExpectedRr, 0, 100, base.minExpectedRr ?? 0);
+  base.minImpulseAtrEnabled = typeof raw.minImpulseAtrEnabled === 'boolean' ? raw.minImpulseAtrEnabled : base.minImpulseAtr > 0;
   base.timeStopBars = Math.round(clampNumber(raw.timeStopBars, 0, 1000, base.timeStopBars ?? 0));
+  base.timeStopEnabled = typeof raw.timeStopEnabled === 'boolean' ? raw.timeStopEnabled : base.timeStopBars > 0;
   base.riskPerTradePct = clampNumber(raw.riskPerTradePct, 0, 100, base.riskPerTradePct ?? 0);
+  base.riskPerTradeEnabled = typeof raw.riskPerTradeEnabled === 'boolean' ? raw.riskPerTradeEnabled : base.riskPerTradePct > 0;
   base.eventLockoutMinutes = Math.round(clampNumber(raw.eventLockoutMinutes, 0, 1440, base.eventLockoutMinutes ?? 0));
+  base.eventLockoutEnabled = typeof raw.eventLockoutEnabled === 'boolean' ? raw.eventLockoutEnabled : base.eventLockoutMinutes > 0;
   base.portfolioGrossCap = clampNumber(raw.portfolioGrossCap, 0, 10000, base.portfolioGrossCap ?? 200);
+  base.portfolioGrossCapEnabled = typeof raw.portfolioGrossCapEnabled === 'boolean' ? raw.portfolioGrossCapEnabled : base.portfolioGrossCap > 0;
 
   return base;
 }

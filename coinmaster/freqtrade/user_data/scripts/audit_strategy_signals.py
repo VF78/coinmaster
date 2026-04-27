@@ -34,7 +34,6 @@ def audit_pair(pair: str, dataframe: pd.DataFrame) -> dict[str, object]:
     short_signal = df["engulf_short"].fillna(False) | (df["fvg_dir"] == -1)
     volume = df["volume"] > 0
     body_guard = df["body_atr"].fillna(0) >= float(strategy.min_impulse_atr.value)
-    rr_guard = df["expected_rr"].fillna(0) >= float(strategy.min_expected_rr.value)
     close_long = df["close_position"].fillna(0.5) >= 0.75
     close_short = df["close_position"].fillna(0.5) <= 0.25
 
@@ -68,7 +67,6 @@ def audit_pair(pair: str, dataframe: pd.DataFrame) -> dict[str, object]:
         "exit_short_opposite": count(df.get("exit_short", pd.Series(False, index=df.index)) == 1),
         "volume_guard": count(volume),
         "body_guard": count(body_guard),
-        "rr_guard": count(rr_guard),
     }
 
 

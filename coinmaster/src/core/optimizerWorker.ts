@@ -131,7 +131,6 @@ function applyParamToRules(rules: TradingRulesSettings, param: string, value: nu
   else if (param === 'dailyDrawdown') rules.dailyDrawdown = normalizedValue;
   else if (param === 'adxMin') rules.adxMin = normalizedValue;
   else if (param === 'minImpulseAtr') rules.minImpulseAtr = normalizedValue;
-  else if (param === 'minExpectedRr') rules.minExpectedRr = normalizedValue;
   else if (param === 'timeStopBars') rules.timeStopBars = normalizedValue;
   else if (param === 'riskPerTradePct') rules.riskPerTradePct = normalizedValue;
   else if (param === 'eventLockoutMinutes') rules.eventLockoutMinutes = normalizedValue;
@@ -152,7 +151,6 @@ function extractParamValue(rules: TradingRulesSettings, param: string): number |
   if (param === 'dailyDrawdown') return rules.dailyDrawdown;
   if (param === 'adxMin') return rules.adxMin;
   if (param === 'minImpulseAtr') return rules.minImpulseAtr;
-  if (param === 'minExpectedRr') return rules.minExpectedRr;
   if (param === 'timeStopBars') return rules.timeStopBars;
   if (param === 'riskPerTradePct') return rules.riskPerTradePct;
   if (param === 'eventLockoutMinutes') return rules.eventLockoutMinutes;

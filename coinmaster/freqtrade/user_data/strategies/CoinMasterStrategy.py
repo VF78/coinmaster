@@ -10,7 +10,6 @@ Freqtrade. It ports the current CoinMaster Trading Rules core:
 - FVG retrace baseline
 - ADX / EMA regime guard
 - ATR impulse quality guard
-- expected R:R guard
 - leverage and stake sizing callbacks
 - time-stop exit
 
@@ -48,7 +47,8 @@ class CoinMasterStrategy(IStrategy):
 
     # CoinMaster manages exits by explicit SL/TP/time-stop logic, not static ROI.
     minimal_roi = {"0": 100}
-    stoploss = -0.02
+    stoploss = -0.99
+    use_custom_stoploss = True
     use_exit_signal = True
     exit_profit_only = False
     ignore_roi_if_entry_signal = False
@@ -60,7 +60,6 @@ class CoinMasterStrategy(IStrategy):
     fvg_min_width_pct = DecimalParameter(0, 2, decimals=2, default=1.0, space="buy")
     adx_min = DecimalParameter(0, 40, decimals=1, default=0.0, space="buy")
     min_impulse_atr = DecimalParameter(0, 2, decimals=2, default=0.0, space="buy")
-    min_expected_rr = DecimalParameter(0, 5, decimals=2, default=0.0, space="buy")
     time_stop_bars = IntParameter(0, 96, default=10, space="sell")
 
     # Non-hyperopt runtime defaults matching current CoinMaster intent.
@@ -117,6 +116,16 @@ class CoinMasterStrategy(IStrategy):
                 result.append(number)
         return tuple(result) if result else default
 
+    def _runtime_bool(self, key: str, default: bool = False) -> bool:
+        value = self._runtime_strategy_params.get(key)
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, str):
+            return value.strip().lower() in {"1", "true", "yes", "on"}
+        if isinstance(value, (int, float)):
+            return bool(value)
+        return default
+
     def _refresh_runtime_rules(self, force: bool = False) -> None:
         path = self.runtime_rules_path if self.runtime_rules_path.exists() else self.fallback_runtime_rules_path
         if not path.exists():
@@ -150,16 +159,16 @@ class CoinMasterStrategy(IStrategy):
         return dataframe[["open", "close"]].min(axis=1)
 
     @staticmethod
-    def _expected_rr(close: pd.Series, side: str, sl_pct: float, tp_levels_pct: tuple[float, ...]) -> pd.Series:
-        risk = close * (sl_pct / 100.0)
-        if len(tp_levels_pct) == 0:
-            return pd.Series(0.0, index=close.index)
-        avg_reward_pct = sum(tp_levels_pct) / len(tp_levels_pct)
-        reward = close * (avg_reward_pct / 100.0)
-        return reward / risk.replace(0, np.nan)
-
-    @staticmethod
-    def _annotate_fvg(dataframe: DataFrame, lookback: int, retrace_pct: float, min_width_pct: float) -> DataFrame:
+    def _annotate_fvg(
+        dataframe: DataFrame,
+        lookback: int,
+        retrace_pct: float,
+        min_width_pct: float,
+        require_sweep: bool,
+        sweep_lookback: int,
+        require_first_touch: bool,
+        max_zone_age: int,
+    ) -> DataFrame:
         """Annotate latest qualifying FVG zone per row.
 
         This is a first native-Freqtrade baseline of CoinMaster's FVG logic.
@@ -187,14 +196,22 @@ class CoinMasterStrategy(IStrategy):
                 c2_high = highs[j]
                 c2_low = lows[j]
 
+                sweep_start = max(0, j - 2 - sweep_lookback)
+                sweep_history_high = np.nanmax(highs[sweep_start:j - 2]) if j - 2 > sweep_start else np.nan
+                sweep_history_low = np.nanmin(lows[sweep_start:j - 2]) if j - 2 > sweep_start else np.nan
+                impulse_low = np.nanmin(lows[j - 2:j + 1])
+                impulse_high = np.nanmax(highs[j - 2:j + 1])
+                swept_low = np.isfinite(sweep_history_low) and impulse_low < sweep_history_low
+                swept_high = np.isfinite(sweep_history_high) and impulse_high > sweep_history_high
+
                 if c0_high < c2_low:
                     bottom = c0_high
                     top = c2_low
                     width = top - bottom
                     ref = max(abs((top + bottom) / 2), np.finfo(float).eps)
                     width_pct = width / ref * 100
-                    if width_pct >= min_width_pct:
-                        latest = (1, top, bottom, width_pct)
+                    if width_pct >= min_width_pct and (not require_sweep or swept_low):
+                        latest = (1, top, bottom, width_pct, j)
 
                 if c0_low > c2_high:
                     bottom = c2_high
@@ -202,17 +219,27 @@ class CoinMasterStrategy(IStrategy):
                     width = top - bottom
                     ref = max(abs((top + bottom) / 2), np.finfo(float).eps)
                     width_pct = width / ref * 100
-                    if width_pct >= min_width_pct:
-                        latest = (-1, top, bottom, width_pct)
+                    if width_pct >= min_width_pct and (not require_sweep or swept_high):
+                        latest = (-1, top, bottom, width_pct, j)
 
             if latest is None:
                 continue
-            direction, top, bottom, width_pct = latest
+            direction, top, bottom, width_pct, completion_index = latest
             width = top - bottom
             trigger = top - width * (retrace_pct / 100.0) if direction == 1 else bottom + width * (retrace_pct / 100.0)
             price = closes[i]
             retraced = (bottom <= price <= trigger) if direction == 1 else (trigger <= price <= top)
             if retraced:
+                if require_first_touch:
+                    # Reject zones that were touched before the current candle,
+                    # and reject zones older than the configured max age.
+                    zone_age = i - completion_index
+                    if zone_age > max_zone_age:
+                        continue
+                    prior_lows = lows[completion_index + 1:i]
+                    prior_highs = highs[completion_index + 1:i]
+                    if len(prior_lows) > 0 and np.any((prior_lows <= top) & (prior_highs >= bottom)):
+                        continue
                 fvg_dir[i] = direction
                 fvg_top[i] = top
                 fvg_bottom[i] = bottom
@@ -265,25 +292,29 @@ class CoinMasterStrategy(IStrategy):
         candle_range = (dataframe["high"] - dataframe["low"]).replace(0, np.nan)
         dataframe["close_position"] = (dataframe["close"] - dataframe["low"]) / candle_range
 
-        dataframe["regime_long"] = (
+        regime_enabled = self._runtime_bool("regime_filter_enabled", True)
+        adx_enabled = self._runtime_bool("adx_enabled", False)
+        adx_min = self._runtime_number("adx_min", float(self.adx_min.value)) if adx_enabled else 0.0
+        dataframe["regime_long"] = True if not regime_enabled else (
             (dataframe["ema_fast"] > dataframe["ema_slow"])
             & (dataframe["ema_slow_slope"] >= 0)
-            & (dataframe["adx"] >= self._runtime_number("adx_min", float(self.adx_min.value)))
+            & (dataframe["adx"] >= adx_min)
         )
-        dataframe["regime_short"] = (
+        dataframe["regime_short"] = True if not regime_enabled else (
             (dataframe["ema_fast"] < dataframe["ema_slow"])
             & (dataframe["ema_slow_slope"] <= 0)
-            & (dataframe["adx"] >= self._runtime_number("adx_min", float(self.adx_min.value)))
+            & (dataframe["adx"] >= adx_min)
         )
 
-        sl_pct = self._runtime_number("sl_pct", self.sl_pct)
-        tp_levels_pct = self._runtime_tuple("tp_levels_pct", self.tp_levels_pct)
-        dataframe["expected_rr"] = self._expected_rr(dataframe["close"], "long", sl_pct, tp_levels_pct)
         dataframe = self._annotate_fvg(
             dataframe,
             lookback=self._runtime_int("max_zone_age_candles", 10),
             retrace_pct=self._runtime_number("fvg_retrace", float(self.fvg_retrace.value)),
             min_width_pct=self._runtime_number("fvg_min_width_pct", float(self.fvg_min_width_pct.value)),
+            require_sweep=self._runtime_bool("fvg_require_sweep", False),
+            sweep_lookback=self._runtime_int("fvg_sweep_lookback_candles", 20),
+            require_first_touch=self._runtime_bool("fvg_require_first_touch", False),
+            max_zone_age=self._runtime_int("max_zone_age_candles", 12),
         )
         return dataframe
 
@@ -294,12 +325,16 @@ class CoinMasterStrategy(IStrategy):
         else:
             close_quality = dataframe["close_position"] <= 0.25
             regime = dataframe["regime_short"]
+        min_impulse_atr = (
+            self._runtime_number("min_impulse_atr", float(self.min_impulse_atr.value))
+            if self._runtime_bool("min_impulse_atr_enabled", False)
+            else 0.0
+        )
         return [
             dataframe["volume"] > 0,
             regime,
-            dataframe["body_atr"].fillna(0) >= self._runtime_number("min_impulse_atr", float(self.min_impulse_atr.value)),
+            dataframe["body_atr"].fillna(0) >= min_impulse_atr,
             close_quality.fillna(False),
-            dataframe["expected_rr"].fillna(0) >= self._runtime_number("min_expected_rr", float(self.min_expected_rr.value)),
         ]
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -314,14 +349,27 @@ class CoinMasterStrategy(IStrategy):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe.loc[(dataframe["engulf_short"]) & (dataframe["volume"] > 0), ["exit_long", "exit_tag"]] = (1, "opposite_engulf")
-        dataframe.loc[(dataframe["engulf_long"]) & (dataframe["volume"] > 0), ["exit_short", "exit_tag"]] = (1, "opposite_engulf")
+        self._refresh_runtime_rules()
+        exit_enabled = self._runtime_number("exit_close_pct", self.exit_close_pct) > 0
+        exit_timeframes = self._runtime_strategy_params.get("emergency_exit_timeframes")
+        timeframe_enabled = not isinstance(exit_timeframes, list) or self.timeframe in exit_timeframes
+        if exit_enabled and timeframe_enabled:
+            dataframe.loc[(dataframe["engulf_short"]) & (dataframe["volume"] > 0), ["exit_long", "exit_tag"]] = (1, "opposite_engulf")
+            dataframe.loc[(dataframe["engulf_long"]) & (dataframe["volume"] > 0), ["exit_short", "exit_tag"]] = (1, "opposite_engulf")
         return dataframe
 
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime, current_rate: float,
                     current_profit: float, **kwargs):
         self._refresh_runtime_rules()
-        bars = self._runtime_int("time_stop_bars", int(self.time_stop_bars.value))
+        tp_levels_pct = self._runtime_tuple("tp_levels_pct", self.tp_levels_pct)
+        if tp_levels_pct:
+            open_rate = float(trade.open_rate or 0.0)
+            if open_rate > 0 and current_rate > 0:
+                price_move_pct = ((open_rate - current_rate) / open_rate * 100.0) if trade.is_short else ((current_rate - open_rate) / open_rate * 100.0)
+                if price_move_pct >= tp_levels_pct[0]:
+                    return "tp1_price_move"
+
+        bars = self._runtime_int("time_stop_bars", int(self.time_stop_bars.value)) if self._runtime_bool("time_stop_enabled", False) else 0
         if bars > 0:
             elapsed = current_time - trade.open_date_utc
             timeframe_minutes = 15
@@ -329,22 +377,69 @@ class CoinMasterStrategy(IStrategy):
                 return "time_stop_no_follow_through"
         return None
 
+    def custom_stoploss(self, pair: str, trade: Trade, current_time: datetime,
+                        current_rate: float, current_profit: float, **kwargs) -> float:
+        self._refresh_runtime_rules()
+        sl_pct = self._runtime_number("sl_pct", self.sl_pct)
+        leverage = max(float(getattr(trade, "leverage", 1.0) or 1.0), 1.0)
+        return -min(max(sl_pct / 100.0 * leverage, 0.001), 0.99)
+
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
                             proposed_stake: float, min_stake: Optional[float], max_stake: float,
                             leverage: float, entry_tag: Optional[str], side: str,
                             **kwargs) -> float:
-        # Freqtrade clamps returned stake into [min_stake, max_stake]. Use a
-        # simple risk-per-trade cap as Stage 1 baseline and let Freqtrade own
-        # wallet/available-capital accounting.
+        # Freqtrade clamps returned stake into [min_stake, max_stake]. Coin
+        # Distribution is interpreted as per-asset margin allocation: a 45%
+        # BTC row means BTC entries may use at most 45% of total stake balance
+        # as margin. Optional risk and gross exposure caps further reduce it.
         self._refresh_runtime_rules()
-        risk_per_trade_pct = self._runtime_number("risk_per_trade_pct", self.risk_per_trade_pct)
-        sl_pct = self._runtime_number("sl_pct", self.sl_pct)
-        if risk_per_trade_pct <= 0:
-            return min(proposed_stake, max_stake)
-
         total = self.wallets.get_total_stake_amount() if self.wallets else max_stake
-        risk_stake = total * (risk_per_trade_pct / max(sl_pct, 0.01)) / 100.0
-        return min(proposed_stake, risk_stake, max_stake)
+        allocation_cap = total * (self._allocation_pct_for_pair(pair) / 100.0)
+
+        effective_leverage = max(float(leverage or 1.0), 1.0)
+        max_leverage_value = self._runtime_number("max_leverage_value", self.max_leverage_value)
+        effective_leverage = min(effective_leverage, max(max_leverage_value, 1.0))
+
+        risk_per_trade_pct = self._runtime_number("risk_per_trade_pct", self.risk_per_trade_pct) if self._runtime_bool("risk_per_trade_enabled", False) else 0.0
+        sl_pct = self._runtime_number("sl_pct", self.sl_pct)
+        risk_stake = total * (risk_per_trade_pct / 100.0) / max(sl_pct / 100.0, 0.0001) / effective_leverage if risk_per_trade_pct > 0 else max_stake
+
+        gross_stake = max_stake
+        if self._runtime_bool("portfolio_gross_cap_enabled", False):
+            gross_cap_pct = self._runtime_number("portfolio_gross_cap", 0.0)
+            if gross_cap_pct > 0:
+                gross_stake = total * (gross_cap_pct / 100.0) / effective_leverage
+
+        stake = min(proposed_stake, allocation_cap, risk_stake, gross_stake, max_stake)
+        if min_stake is not None and stake < min_stake:
+            return 0.0
+        return max(stake, 0.0)
+
+    def _allocation_pct_for_pair(self, pair: str) -> float:
+        allocations = self._runtime_strategy_params.get("coin_allocations")
+        if not isinstance(allocations, dict):
+            return 100.0
+        direct = allocations.get(pair)
+        if isinstance(direct, dict):
+            return self._safe_pct(direct.get("pct"), 100.0)
+        base = pair.split("/", 1)[0]
+        symbol = f"xyz:{base[4:]}" if base.startswith("XYZ-") else base.upper()
+        for value in allocations.values():
+            if not isinstance(value, dict):
+                continue
+            if str(value.get("symbol", "")).upper() == symbol.upper():
+                return self._safe_pct(value.get("pct"), 100.0)
+        return 100.0
+
+    @staticmethod
+    def _safe_pct(value, default: float) -> float:
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return default
+        if not np.isfinite(number):
+            return default
+        return max(0.0, min(100.0, number))
 
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                  proposed_leverage: float, max_leverage: float, side: str,

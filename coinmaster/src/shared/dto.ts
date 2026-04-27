@@ -73,14 +73,26 @@ export interface TradingRulesSettings {
   adxMin?: number;
   /** Minimum impulse body / range as a fraction of ATR for displacement quality. */
   minImpulseAtr?: number;
-  /** Hard reject gate: minimum expected reward-to-risk before handoff. */
-  minExpectedRr?: number;
+  /** Enable/disable the higher-timeframe regime filter. */
+  regimeFilterEnabled?: boolean;
+  /** Enable/disable the ADX threshold. */
+  adxEnabled?: boolean;
+  /** Enable/disable the impulse/ATR displacement guard. */
+  minImpulseAtrEnabled?: boolean;
+  /** Enable/disable time-stop exits. */
+  timeStopEnabled?: boolean;
   /** Time stop for new entries — close if no follow-through after N bars. */
   timeStopBars?: number;
+  /** Enable/disable per-trade risk sizing. */
+  riskPerTradeEnabled?: boolean;
   /** Per-trade risk in % of equity used by sizing helpers. */
   riskPerTradePct?: number;
+  /** Enable/disable event lockout. */
+  eventLockoutEnabled?: boolean;
   /** Lock new entries for N minutes after a flagged macro/event window. */
   eventLockoutMinutes?: number;
+  /** Enable/disable aggregate gross exposure cap. */
+  portfolioGrossCapEnabled?: boolean;
   /** Maximum aggregate gross exposure across the portfolio, in % of equity. */
   portfolioGrossCap?: number;
 }

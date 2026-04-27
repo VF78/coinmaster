@@ -256,11 +256,10 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
 
   // Issue #61 — Mirror live signal-quality thresholds.
   const regimeTf: TradingRulesTimeframe = (rules.regimeTf ?? '1h');
-  const adxMin = Number(rules.adxMin ?? 0);
-  const minImpulseAtr = Number(rules.minImpulseAtr ?? 0);
-  const minExpectedRr = Number(rules.minExpectedRr ?? 0);
-  const qualityGateEnabled = adxMin > 0 || minImpulseAtr > 0 || minExpectedRr > 0;
-  const timeStopBars = Math.max(0, Math.round(Number(rules.timeStopBars ?? 0)));
+  const adxMin = rules.adxEnabled ? Number(rules.adxMin ?? 0) : 0;
+  const minImpulseAtr = rules.minImpulseAtrEnabled ? Number(rules.minImpulseAtr ?? 0) : 0;
+  const qualityGateEnabled = Boolean(rules.regimeFilterEnabled ?? true) || adxMin > 0 || minImpulseAtr > 0;
+  const timeStopBars = rules.timeStopEnabled ? Math.max(0, Math.round(Number(rules.timeStopBars ?? 0))) : 0;
 
   // Build a unified timeline of candle close events across all TFs
   // Each event = { timestamp, tf, candleIndex }
@@ -533,7 +532,7 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
               entry: currentPrice,
               stopLoss,
               takeProfits,
-              thresholds: { adxMin, minImpulseAtr, minExpectedRr, requireQuartile: minImpulseAtr > 0 },
+              thresholds: { adxMin, minImpulseAtr, requireQuartile: minImpulseAtr > 0 },
             });
             if (!verdict.ok) {
               rejectedSignals++;
@@ -629,7 +628,7 @@ export function runBacktestEngine(input: BacktestEngineInput): BacktestEngineOut
             entry: currentPrice,
             stopLoss,
             takeProfits,
-            thresholds: { adxMin, minImpulseAtr, minExpectedRr, requireQuartile: minImpulseAtr > 0 },
+            thresholds: { adxMin, minImpulseAtr, requireQuartile: minImpulseAtr > 0 },
           });
           if (!verdict.ok) {
             rejectedSignals++;

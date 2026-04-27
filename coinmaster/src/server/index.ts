@@ -173,6 +173,12 @@ function buildFreqtradeRulesExport(rules: TradingRulesSettings) {
   )];
 
   const strategyParams = {
+    coin_allocations: Object.fromEntries(
+      rules.coins
+        .filter((coin) => coin.enabled)
+        .map((coin) => [coinmasterSymbolToFreqtradePair(coin.symbol) ?? coin.symbol, { symbol: coin.symbol, pct: coin.pct }])
+        .filter(([pair]) => Boolean(pair))
+    ),
     engulfing_lookback: rules.engulfingLookbackCandles,
     fvg_retrace: rules.fvgRetrace,
     fvg_min_width_pct: rules.fvgMinWidthPct,
@@ -183,14 +189,20 @@ function buildFreqtradeRulesExport(rules: TradingRulesSettings) {
     fvg_require_confirmation: rules.fvgRequireConfirmation,
     fvg_confirmation_timeframes: rules.fvgConfirmationTimeframes,
     max_leverage_value: rules.maxLeverage,
-    risk_per_trade_pct: rules.riskPerTradePct,
+    risk_per_trade_pct: rules.riskPerTradeEnabled ? rules.riskPerTradePct : 0,
     exit_close_pct: rules.exitClosePct,
     tp_levels_pct: rules.tpLevels,
     sl_pct: rules.slPct,
-    adx_min: rules.adxMin,
-    min_impulse_atr: rules.minImpulseAtr,
-    min_expected_rr: rules.minExpectedRr,
-    time_stop_bars: rules.timeStopBars,
+    regime_filter_enabled: rules.regimeFilterEnabled,
+    adx_enabled: rules.adxEnabled,
+    adx_min: rules.adxEnabled ? rules.adxMin : 0,
+    min_impulse_atr_enabled: rules.minImpulseAtrEnabled,
+    min_impulse_atr: rules.minImpulseAtrEnabled ? rules.minImpulseAtr : 0,
+    time_stop_enabled: rules.timeStopEnabled,
+    time_stop_bars: rules.timeStopEnabled ? rules.timeStopBars : 0,
+    risk_per_trade_enabled: rules.riskPerTradeEnabled,
+    portfolio_gross_cap_enabled: rules.portfolioGrossCapEnabled,
+    event_lockout_enabled: false,
     regime_tf: rules.regimeTf,
     entry_timeframes: rules.entryTimeframes,
     emergency_exit_timeframes: rules.emergencyExitTimeframes,
@@ -4979,7 +4991,7 @@ async function resolveEventLockout(params: { symbol: string; raw: TradingRulesSe
 /**
  * Issue #61 — Signal-quality gate shared by the engulfing and FVG monitors.
  * Pulls regime candles for `rules.regimeTf`, computes ATR/EMA/ADX, displacement
- * quality, and expected RR, and returns the deterministic verdict from
+ * quality, and returns the deterministic verdict from
  * `signalQualityContext.evaluateSignalQuality`.
  *
  * Designed to fail-safe: when thresholds are zero (default settings) every
@@ -4998,16 +5010,15 @@ async function runSignalQualityGate(params: {
   const { symbol, side, entryTf, entryCandles, currentPrice, raw, impulseTriple } = params;
   const tradeSide: TradeSide = side === 'buy' ? 'long' : 'short';
   const regimeTf = (raw.regimeTf ?? '1h') as TradingRulesTimeframe;
-  const adxMin = Number(raw.adxMin ?? 0);
-  const minImpulseAtr = Number(raw.minImpulseAtr ?? 0);
-  const minExpectedRr = Number(raw.minExpectedRr ?? 0);
+  const adxMin = raw.adxEnabled ? Number(raw.adxMin ?? 0) : 0;
+  const minImpulseAtr = raw.minImpulseAtrEnabled ? Number(raw.minImpulseAtr ?? 0) : 0;
   const eventLockout = await resolveEventLockout({ symbol, raw }).catch((err) => {
     logger.warn({ component: 'signal-quality', symbol, err }, 'event lockout check failed — signal-quality gate blocks entry');
     return { active: true, reason: 'event_lockout_check_unavailable' };
   });
 
   // When all thresholds are zero, the gate is a no-op; skip the candle fetch.
-  if (adxMin <= 0 && minImpulseAtr <= 0 && minExpectedRr <= 0 && !eventLockout?.active) {
+  if (!(raw.regimeFilterEnabled ?? true) && adxMin <= 0 && minImpulseAtr <= 0 && !eventLockout?.active) {
     return { ok: true, details: {} };
   }
 
@@ -5052,7 +5063,6 @@ async function runSignalQualityGate(params: {
     thresholds: {
       adxMin,
       minImpulseAtr,
-      minExpectedRr,
       requireQuartile: minImpulseAtr > 0,
     },
   });
@@ -7717,7 +7727,7 @@ const OPTIMIZABLE_PARAMS = new Set([
   'tp1Pct', 'tp2Pct', 'tp3Pct',
   'maxLeverage', 'engulfingLookbackCandles', 'fvgRetrace',
   'fvgMinWidthPct', 'exitClosePct', 'dailyDrawdown',
-  'regimeTf', 'adxMin', 'minImpulseAtr', 'minExpectedRr', 'timeStopBars',
+  'regimeTf', 'regimeFilterEnabled', 'adxEnabled', 'adxMin', 'minImpulseAtrEnabled', 'minImpulseAtr', 'timeStopEnabled', 'timeStopBars',
   'riskPerTradePct', 'eventLockoutMinutes', 'portfolioGrossCap',
 ]);
 

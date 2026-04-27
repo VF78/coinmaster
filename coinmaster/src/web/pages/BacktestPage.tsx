@@ -107,7 +107,6 @@ const OPTIMIZATION_PARAM_SPECS: OptimizationParamSpec[] = [
   { param: 'regimeTf', label: 'Regime timeframe', kind: 'timeframe', min: 1, max: 4 },
   { param: 'adxMin', label: 'Minimum ADX', kind: 'decimal', min: 0, max: 60 },
   { param: 'minImpulseAtr', label: 'Minimum impulse / ATR', kind: 'decimal', min: 0, max: 3 },
-  { param: 'minExpectedRr', label: 'Minimum expected R:R', kind: 'decimal', min: 0, max: 10 },
   { param: 'timeStopBars', label: 'Time stop', kind: 'int', min: 0, max: 200 },
   { param: 'riskPerTradePct', label: 'Risk per trade', kind: 'pct', min: 0, max: 10 },
   { param: 'eventLockoutMinutes', label: 'Event lockout', kind: 'int', min: 0, max: 720 },
@@ -131,7 +130,6 @@ function getRulesValue(rules: TradingRulesSettings, param: string): number {
     case 'dailyDrawdown': return rules.dailyDrawdown;
     case 'adxMin': return rules.adxMin ?? 0;
     case 'minImpulseAtr': return rules.minImpulseAtr ?? 0;
-    case 'minExpectedRr': return rules.minExpectedRr ?? 0;
     case 'timeStopBars': return rules.timeStopBars ?? 0;
     case 'riskPerTradePct': return rules.riskPerTradePct ?? 0;
     case 'eventLockoutMinutes': return rules.eventLockoutMinutes ?? 0;
@@ -155,7 +153,6 @@ function setRulesValue(rules: TradingRulesSettings, param: string, value: number
     case 'dailyDrawdown': rules.dailyDrawdown = value; break;
     case 'adxMin': rules.adxMin = value; break;
     case 'minImpulseAtr': rules.minImpulseAtr = value; break;
-    case 'minExpectedRr': rules.minExpectedRr = value; break;
     case 'timeStopBars': rules.timeStopBars = value; break;
     case 'riskPerTradePct': rules.riskPerTradePct = value; break;
     case 'eventLockoutMinutes': rules.eventLockoutMinutes = value; break;
@@ -246,7 +243,6 @@ function formatRulesSnapshot(
     { label: 'Regime timeframe', value: rules.regimeTf ?? '1h' },
     { label: 'Minimum ADX', value: String(rules.adxMin ?? 0) },
     { label: 'Minimum impulse / ATR', value: String(rules.minImpulseAtr ?? 0) },
-    { label: 'Minimum expected R:R', value: String(rules.minExpectedRr ?? 0) },
     { label: 'Time stop', value: String(rules.timeStopBars ?? 0) },
     { label: 'Risk per trade', value: `${rules.riskPerTradePct ?? 0}%` },
     { label: 'Event lockout', value: `${rules.eventLockoutMinutes ?? 0} min` },
@@ -372,7 +368,6 @@ export function BacktestPage() {
   const [regimeTf, setRegimeTf] = useState<TradingRulesTimeframe>(defaults.regimeTf ?? '1h');
   const [adxMin, setAdxMin] = useState(defaults.adxMin ?? 0);
   const [minImpulseAtr, setMinImpulseAtr] = useState(defaults.minImpulseAtr ?? 0);
-  const [minExpectedRr, setMinExpectedRr] = useState(defaults.minExpectedRr ?? 0);
   const [timeStopBars, setTimeStopBars] = useState(defaults.timeStopBars ?? 0);
   const [riskPerTradePct, setRiskPerTradePct] = useState(defaults.riskPerTradePct ?? 0);
   const [eventLockoutMinutes, setEventLockoutMinutes] = useState(defaults.eventLockoutMinutes ?? 0);
@@ -444,7 +439,6 @@ export function BacktestPage() {
     setRegimeTf(rules.regimeTf ?? defaults.regimeTf ?? '1h');
     setAdxMin(rules.adxMin ?? defaults.adxMin ?? 0);
     setMinImpulseAtr(rules.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
-    setMinExpectedRr(rules.minExpectedRr ?? defaults.minExpectedRr ?? 0);
     setTimeStopBars(rules.timeStopBars ?? defaults.timeStopBars ?? 0);
     setRiskPerTradePct(rules.riskPerTradePct ?? defaults.riskPerTradePct ?? 0);
     setEventLockoutMinutes(rules.eventLockoutMinutes ?? defaults.eventLockoutMinutes ?? 0);
@@ -480,7 +474,6 @@ export function BacktestPage() {
     setRegimeTf(rules.regimeTf ?? defaults.regimeTf ?? '1h');
     setAdxMin(rules.adxMin ?? defaults.adxMin ?? 0);
     setMinImpulseAtr(rules.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
-    setMinExpectedRr(rules.minExpectedRr ?? defaults.minExpectedRr ?? 0);
     setTimeStopBars(rules.timeStopBars ?? defaults.timeStopBars ?? 0);
     setRiskPerTradePct(rules.riskPerTradePct ?? defaults.riskPerTradePct ?? 0);
     setEventLockoutMinutes(rules.eventLockoutMinutes ?? defaults.eventLockoutMinutes ?? 0);
@@ -611,7 +604,6 @@ export function BacktestPage() {
         setRegimeTf(normalized.regimeTf ?? defaults.regimeTf ?? '1h');
         setAdxMin(normalized.adxMin ?? defaults.adxMin ?? 0);
         setMinImpulseAtr(normalized.minImpulseAtr ?? defaults.minImpulseAtr ?? 0);
-        setMinExpectedRr(normalized.minExpectedRr ?? defaults.minExpectedRr ?? 0);
         setTimeStopBars(normalized.timeStopBars ?? defaults.timeStopBars ?? 0);
         setRiskPerTradePct(normalized.riskPerTradePct ?? defaults.riskPerTradePct ?? 0);
         setEventLockoutMinutes(normalized.eventLockoutMinutes ?? defaults.eventLockoutMinutes ?? 0);
@@ -775,7 +767,6 @@ export function BacktestPage() {
         regimeTf,
         adxMin,
         minImpulseAtr,
-        minExpectedRr,
         timeStopBars,
         riskPerTradePct,
         eventLockoutMinutes,
@@ -1080,10 +1071,6 @@ export function BacktestPage() {
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
             <span className="rules-label" style={{ margin: 0 }}>Minimum impulse / ATR</span>
             <Stepper value={minImpulseAtr} min={0} max={10} step={0.1} decimals={1} onChange={setMinImpulseAtr} />
-          </div>
-          <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
-            <span className="rules-label" style={{ margin: 0 }}>Minimum expected R:R</span>
-            <Stepper value={minExpectedRr} min={0} max={100} step={0.1} decimals={1} onChange={setMinExpectedRr} />
           </div>
           <div style={{ display: 'grid', gap: 6, justifyItems: 'start' }}>
             <span className="rules-label" style={{ margin: 0 }}>Time stop</span>
