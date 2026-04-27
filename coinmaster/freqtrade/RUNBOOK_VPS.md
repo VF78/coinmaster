@@ -8,8 +8,8 @@ Recommended production path:
 
 ```bash
 /opt/coinmaster                 # git checkout of VF78/coinmaster
-/opt/coinmaster/coinmaster/freqtrade
-/opt/coinmaster/coinmaster/freqtrade/user_data/config.private.json  # private secrets, never committed
+/opt/coinmaster/freqtrade
+/opt/coinmaster/freqtrade/user_data/config.private.json  # private secrets, never committed
 ```
 
 Required host tools:
@@ -38,7 +38,7 @@ git pull --ff-only origin freqtrade-stage1-migration
 Create `user_data/config.private.json` from the committed example and keep it mode `600`:
 
 ```bash
-cd /opt/coinmaster/coinmaster/freqtrade
+cd /opt/coinmaster/freqtrade
 cp user_data/config.private.example.json user_data/config.private.json
 # The official container runs as uid/gid 1000 (ftuser), so the private file must be readable by that user.
 sudo chown 1000:1000 user_data/config.private.json
@@ -63,7 +63,7 @@ Rules:
 
 ## 4. Preflight validation
 
-From `/opt/coinmaster/coinmaster`:
+From `/opt/coinmaster`:
 
 ```bash
 docker compose -f freqtrade/docker-compose.yml pull
@@ -176,7 +176,7 @@ Next refinement target:
 Install the daily dataset sync timer first:
 
 ```bash
-sudo cp /opt/coinmaster/coinmaster/freqtrade/systemd/coinmaster-freqtrade-dataset-sync.* /etc/systemd/system/
+sudo cp /opt/coinmaster/freqtrade/systemd/coinmaster-freqtrade-dataset-sync.* /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now coinmaster-freqtrade-dataset-sync.timer
 sudo systemctl list-timers coinmaster-freqtrade-dataset-sync.timer --no-pager
@@ -189,7 +189,7 @@ sudo journalctl -u coinmaster-freqtrade-dataset-sync.service -n 120 --no-pager
 Then install the trading service unit:
 
 ```bash
-sudo cp /opt/coinmaster/coinmaster/freqtrade/systemd/coinmaster-freqtrade.service /etc/systemd/system/
+sudo cp /opt/coinmaster/freqtrade/systemd/coinmaster-freqtrade.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable coinmaster-freqtrade
 sudo systemctl start coinmaster-freqtrade
@@ -199,7 +199,7 @@ sudo systemctl status coinmaster-freqtrade --no-pager
 Operational checks:
 
 ```bash
-cd /opt/coinmaster/coinmaster/freqtrade
+cd /opt/coinmaster/freqtrade
 docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
 docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=200 freqtrade
 curl -s http://127.0.0.1:8080/api/v1/ping || true
@@ -282,6 +282,13 @@ CoinMaster custom companion now includes the Freqtrade Radar producer:
 
 Useful reason codes in logs: `radar_block_global`, `radar_block_pair`, `radar_direction_mismatch`, `radar_stale_ignored`, `radar_invalid_ignored`, `radar_risk_multiplier_applied`.
 
+Operational hardening:
+
+- The safe deploy script restarts `coinmaster-freqtrade.service` when the deployed `freqtrade/` tree changes, verifies the API, and starts the bot only when config confirms `dry_run=true`.
+- Watch `/var/lib/coinmaster/freqtrade/radar_policy.json` freshness. If `valid_until` is stale for more than ~10–15 minutes, strategy behavior becomes neutral by design and the companion app/export loop needs attention.
+- Avoid sharing raw Freqtrade websocket access logs externally; FreqUI websocket URLs may contain short-lived JWT tokens in query strings.
+
+
 If public domain access should be avoided during maintenance, use an SSH tunnel instead:
 
 ```bash
@@ -307,7 +314,7 @@ Do not start Freqtrade live until all are true:
 
 ```bash
 sudo systemctl stop coinmaster-freqtrade
-cd /opt/coinmaster/coinmaster/freqtrade
+cd /opt/coinmaster/freqtrade
 docker compose down
 ```
 

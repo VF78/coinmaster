@@ -89,6 +89,11 @@ function policyPriority(policy: RadarContextPolicy): number {
   return Number.isFinite(policy.priorityScore) ? policy.priorityScore : 0;
 }
 
+function safeTime(value: unknown): number {
+  const parsed = Date.parse(String(value ?? ''));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 export function buildFreqtradeRadarPolicySnapshot(params: {
   policies: RadarContextPolicy[];
   monitoredCoins: TradingCoinAllocation[];
@@ -110,7 +115,7 @@ export function buildFreqtradeRadarPolicySnapshot(params: {
 
   const sortedPolicies = params.policies
     .slice()
-    .sort((a, b) => policyPriority(b) - policyPriority(a) || Date.parse(b.updatedAt) - Date.parse(a.updatedAt));
+    .sort((a, b) => policyPriority(b) - policyPriority(a) || safeTime(b.updatedAt) - safeTime(a.updatedAt));
 
   const pairs: Record<string, FreqtradeRadarScope> = {};
   let ignoredNeutral = 0;

@@ -474,8 +474,12 @@ class CoinMasterStrategy(IStrategy):
             direction, top, bottom, width_pct, completion_index = latest
             width = top - bottom
             trigger = top - width * (retrace_pct / 100.0) if direction == 1 else bottom + width * (retrace_pct / 100.0)
-            price = closes[i]
-            retraced = (bottom <= price <= trigger) if direction == 1 else (trigger <= price <= top)
+            # A retrace/touch is a candle-range event, not a close-only event:
+            # wicks into the retrace band should count, while first-touch logic
+            # below still prevents old zones from repeatedly triggering.
+            candle_low = lows[i]
+            candle_high = highs[i]
+            retraced = (candle_low <= trigger and candle_high >= bottom) if direction == 1 else (candle_low <= top and candle_high >= trigger)
             if not retraced:
                 continue
 
@@ -666,7 +670,7 @@ class CoinMasterStrategy(IStrategy):
         bars = self._runtime_int("time_stop_bars", int(self.time_stop_bars.value)) if self._runtime_bool("time_stop_enabled", False) else 0
         if bars > 0:
             elapsed = current_time - trade.open_date_utc
-            timeframe_minutes = 5
+            timeframe_minutes = self._runtime_timeframe_minutes("time_stop_timeframe", self._primary_entry_timeframe())
             if elapsed.total_seconds() >= bars * timeframe_minutes * 60 and current_profit <= 0:
                 return "time_stop_no_follow_through"
         return None
@@ -741,6 +745,44 @@ class CoinMasterStrategy(IStrategy):
         tag = f"tp{completed_exits + 1}_{'final' if is_final_target else 'partial'}"
         return -stake_to_exit, tag
 
+    @staticmethod
+    def _timeframe_minutes(timeframe: str) -> int:
+        tf = str(timeframe or "5m").lower().strip()
+        if tf.endswith("m"):
+            return max(1, int(float(tf[:-1] or 5)))
+        if tf.endswith("h"):
+            return max(1, int(float(tf[:-1] or 1) * 60))
+        if tf.endswith("d"):
+            return max(1, int(float(tf[:-1] or 1) * 24 * 60))
+        return 5
+
+    def _primary_entry_timeframe(self) -> str:
+        entry_timeframes = self._runtime_timeframes("entry_timeframes", (self.timeframe,))
+        return max(entry_timeframes, key=self._timeframe_minutes) if entry_timeframes else self.timeframe
+
+    def _runtime_timeframe_minutes(self, key: str, default_tf: str) -> int:
+        value = str(self._runtime_strategy_params.get(key) or default_tf).lower().strip()
+        if value not in self.selectable_timeframes:
+            value = default_tf
+        return self._timeframe_minutes(value)
+
+    @staticmethod
+    def _open_gross_notional() -> float:
+        try:
+            trades = Trade.get_open_trades()
+        except Exception:  # pragma: no cover - depends on Freqtrade runtime DB session
+            return 0.0
+        total_notional = 0.0
+        for trade in trades:
+            try:
+                stake = float(getattr(trade, "stake_amount", 0.0) or 0.0)
+                leverage = max(float(getattr(trade, "leverage", 1.0) or 1.0), 1.0)
+            except (TypeError, ValueError):
+                continue
+            if np.isfinite(stake) and np.isfinite(leverage) and stake > 0:
+                total_notional += stake * leverage
+        return max(total_notional, 0.0)
+
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
                             proposed_stake: float, min_stake: Optional[float], max_stake: float,
                             leverage: float, entry_tag: Optional[str], side: str,
@@ -763,7 +805,9 @@ class CoinMasterStrategy(IStrategy):
         if self._runtime_bool("portfolio_gross_cap_enabled", False):
             gross_cap_pct = self._runtime_number("portfolio_gross_cap", 0.0)
             if gross_cap_pct > 0:
-                gross_stake = total * (gross_cap_pct / 100.0) / effective_leverage
+                gross_cap_notional = total * (gross_cap_pct / 100.0)
+                remaining_notional = max(0.0, gross_cap_notional - self._open_gross_notional())
+                gross_stake = remaining_notional / effective_leverage
 
         stake = min(allocation_stake, risk_stake, gross_stake, max_stake)
         radar = self._radar_effective_policy(pair, side)

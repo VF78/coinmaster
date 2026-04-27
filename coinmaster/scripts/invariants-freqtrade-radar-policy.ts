@@ -112,6 +112,19 @@ console.log('\nTest 5: snapshot has short TTL and active diagnostics');
   assert(snapshot.diagnostics.active_pair_overrides === 1, 'active override counter increments');
 }
 
+console.log('\nTest 6: invalid updatedAt values do not destabilize policy tie-breaks');
+{
+  const snapshot = buildFreqtradeRadarPolicySnapshot({
+    policies: [
+      makePolicy({ id: 'bad-date-btc', symbol: 'BTC', directionMode: 'short_only', priorityScore: 70, updatedAt: 'not-a-date' }),
+      makePolicy({ id: 'newer-btc', symbol: 'BTC', directionMode: 'long_only', priorityScore: 70, updatedAt: '2026-04-27T12:01:00.000Z' }),
+    ],
+    monitoredCoins,
+    nowIso,
+  });
+  assert(snapshot.pairs['BTC/USDC:USDC']?.source_policy_id === 'newer-btc', 'finite updatedAt wins same-priority tie over invalid date');
+}
+
 console.log(`\n${passed} passed, ${failed} failed\n`);
 
 if (failed > 0) {

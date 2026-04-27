@@ -3,7 +3,7 @@ import cors from 'cors';
 import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
-import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -202,6 +202,7 @@ function buildFreqtradeRulesExport(rules: TradingRulesSettings) {
     min_impulse_atr: rules.minImpulseAtrEnabled ? rules.minImpulseAtr : 0,
     time_stop_enabled: rules.timeStopEnabled,
     time_stop_bars: rules.timeStopEnabled ? rules.timeStopBars : 0,
+    time_stop_timeframe: rules.entryTimeframes.slice().sort((a, b) => timeframeToMs(b) - timeframeToMs(a))[0] ?? '5m',
     risk_per_trade_enabled: rules.riskPerTradeEnabled,
     portfolio_gross_cap_enabled: rules.portfolioGrossCapEnabled,
     event_lockout_enabled: false,
@@ -226,9 +227,10 @@ function buildFreqtradeRulesExport(rules: TradingRulesSettings) {
 }
 
 async function writeJsonAtomic(filePath: string, payload: unknown) {
-  const tmpPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
-  await writeFile(tmpPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+  const tmpPath = `${filePath}.${process.pid}.${Date.now()}.${nanoid(6)}.tmp`;
+  await writeFile(tmpPath, `${JSON.stringify(payload, null, 2)}\n`, { encoding: 'utf8', mode: 0o640 });
   await rename(tmpPath, filePath);
+  await chmod(filePath, 0o640);
 }
 
 async function exportTradingRulesToFreqtrade(rules: TradingRulesSettings) {
@@ -275,7 +277,15 @@ async function notifyNewFreqtradeRadarUnits(payload: ReturnType<typeof buildFreq
 
   for (const [pair, scope] of pairs) {
     const key = radarSentToFreqtradeKey(pair, scope);
-    if (seen[key]) continue;
+    if (seen[key]) {
+      const lastSeenMs = Date.parse(seen[key]);
+      const updatedMs = Date.parse(payload.updated_at);
+      if (Number.isFinite(updatedMs) && (!Number.isFinite(lastSeenMs) || updatedMs - lastSeenMs > 30 * 60_000)) {
+        seen[key] = payload.updated_at;
+        changed = true;
+      }
+      continue;
+    }
 
     const queued = await enqueueTelegramOutbox({
       category: 'system',
@@ -298,12 +308,16 @@ async function notifyNewFreqtradeRadarUnits(payload: ReturnType<typeof buildFreq
   }
 
   if (changed) {
-    const compactSeen = Object.fromEntries(Object.entries(seen).slice(-500));
+    const compactSeen = Object.fromEntries(
+      Object.entries(seen)
+        .sort(([, left], [, right]) => Date.parse(left) - Date.parse(right))
+        .slice(-500)
+    );
     await writeAlertState({ radarSentToFreqtradeKeys: compactSeen });
   }
 }
 
-async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>, nowIso = new Date().toISOString()) {
+async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>, nowIso = new Date().toISOString(), options: { write?: boolean; notify?: boolean } = {}) {
   const rules = normalizeTradingRules(db.data.settings.tradingRules);
   const alphaSettings = ensureAlphaRadarSettings(db.data.settings.alphaRadar);
   const radarRuntime = normalizeRadarRuntimeFromSettings(db.data.settings);
@@ -321,13 +335,17 @@ async function exportFreqtradeRadarPolicy(db: Awaited<ReturnType<typeof getDb>>,
     payload.pairs = {};
     payload.diagnostics.active_pair_overrides = 0;
   }
-  if (ENABLE_FREQTRADE_RADAR_POLICY_EXPORT) {
+  const shouldWrite = options.write ?? true;
+  const shouldNotify = options.notify ?? shouldWrite;
+  if (ENABLE_FREQTRADE_RADAR_POLICY_EXPORT && shouldWrite) {
     await mkdir(freqtradeRuntimeDir, { recursive: true });
     await writeJsonAtomic(freqtradeRadarPolicyPath, payload);
-    try {
-      await notifyNewFreqtradeRadarUnits(payload);
-    } catch (error) {
-      logger.warn({ error }, 'Could not enqueue Radar sent-to-Freqtrade notification');
+    if (shouldNotify) {
+      try {
+        await notifyNewFreqtradeRadarUnits(payload);
+      } catch (error) {
+        logger.warn({ error }, 'Could not enqueue Radar sent-to-Freqtrade notification');
+      }
     }
   }
   return {
@@ -8431,7 +8449,7 @@ app.get('/api/alpha-radar/ideas', ownerAuth, async (_req, res) => {
 
 app.get('/api/freqtrade/radar-policy', ownerAuth, async (_req, res) => {
   const db = await getDb();
-  const generated = await exportFreqtradeRadarPolicy(db);
+  const generated = await exportFreqtradeRadarPolicy(db, new Date().toISOString(), { write: false, notify: false });
   let diskPayload: unknown;
   let diskError: string | undefined;
   try {
@@ -8452,7 +8470,7 @@ app.get('/api/freqtrade/radar-policy', ownerAuth, async (_req, res) => {
 
 app.post('/api/freqtrade/radar-policy/refresh', ownerAuth, async (_req, res) => {
   const db = await getDb();
-  const result = await exportFreqtradeRadarPolicy(db);
+  const result = await exportFreqtradeRadarPolicy(db, new Date().toISOString(), { write: true, notify: true });
   await db.write();
   return res.json({ ok: true, enabled: result.enabled, radarEnabled: result.radarEnabled, path: result.path, policy: result.payload });
 });

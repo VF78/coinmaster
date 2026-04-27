@@ -10,6 +10,7 @@ set -euo pipefail
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET_DIR="${TARGET_DIR:-/opt/coinmaster}"
 SERVICE="${SERVICE:-coinmaster.service}"
+FREQTRADE_SERVICE="${FREQTRADE_SERVICE:-coinmaster-freqtrade.service}"
 OWNER_USER="${OWNER_USER:-coinmaster}"
 OWNER_GROUP="${OWNER_GROUP:-coinmaster}"
 APP_HOST="${APP_HOST:-127.0.0.1}"
@@ -73,6 +74,15 @@ done
 log "Running typecheck gate"
 cd "$APP_DIR"
 SOURCE_COMMIT="$(git rev-parse HEAD)"
+GIT_ROOT="$(git rev-parse --show-toplevel)"
+APP_REL="$(realpath --relative-to="$GIT_ROOT" "$APP_DIR")"
+PREVIOUS_COMMIT="$(cat "$TARGET_DIR/.deploy-source-commit" 2>/dev/null || true)"
+FREQTRADE_TREE_CHANGED=1
+if [[ -n "$PREVIOUS_COMMIT" ]] && git cat-file -e "$PREVIOUS_COMMIT^{commit}" 2>/dev/null; then
+  if git diff --quiet "$PREVIOUS_COMMIT" "$SOURCE_COMMIT" -- "$APP_REL/freqtrade"; then
+    FREQTRADE_TREE_CHANGED=0
+  fi
+fi
 npm run check >/tmp/coinmaster-deploy-check.log 2>&1 || {
   cat /tmp/coinmaster-deploy-check.log >&2
   exit 1
@@ -261,6 +271,57 @@ if [[ "$SMOKE_OK" -ne 1 ]]; then
   chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src" "$TARGET_DIR/dist" "$TARGET_DIR/dist-custom" "$TARGET_DIR/docs" "$TARGET_DIR/scripts" "$TARGET_DIR/freqtrade" || true
   systemctl restart "$SERVICE" || true
   exit 1
+fi
+
+if [[ "$FREQTRADE_TREE_CHANGED" -eq 1 ]] && systemctl list-unit-files "$FREQTRADE_SERVICE" >/dev/null 2>&1; then
+  log "Freqtrade tree changed; restarting $FREQTRADE_SERVICE so strategy/config code is loaded"
+  systemctl restart "$FREQTRADE_SERVICE"
+  log "Waiting for Freqtrade API after restart"
+  FREQTRADE_API_OK=0
+  for i in {1..30}; do
+    if curl -fsS --max-time 2 http://127.0.0.1:8080/api/v1/ping >/dev/null 2>&1; then
+      FREQTRADE_API_OK=1
+      break
+    fi
+    sleep 1
+  done
+  if [[ "$FREQTRADE_API_OK" -ne 1 ]]; then
+    echo "Freqtrade API did not become reachable after $FREQTRADE_SERVICE restart" >&2
+    exit 1
+  fi
+  TARGET_DIR="$TARGET_DIR" python3 - <<'PY'
+import base64, json, os, urllib.request
+from pathlib import Path
+config = {}
+def merge(left, right):
+    for key, value in right.items():
+        if isinstance(value, dict) and isinstance(left.get(key), dict):
+            merge(left[key], value)
+        else:
+            left[key] = value
+root = Path(os.environ['TARGET_DIR']) / 'freqtrade' / 'user_data'
+for name in ('config.example.json', 'config.private.json'):
+    path = root / name
+    if path.exists():
+        with path.open() as handle:
+            merge(config, json.load(handle))
+api = config.get('api_server', {})
+headers = {}
+if api.get('username') or api.get('password'):
+    token = base64.b64encode(f"{api.get('username','')}:{api.get('password','')}".encode()).decode()
+    headers['Authorization'] = f'Basic {token}'
+base = 'http://127.0.0.1:8080/api/v1'
+def request(endpoint, method='GET'):
+    req = urllib.request.Request(f'{base}{endpoint}', headers=headers, method=method)
+    with urllib.request.urlopen(req, timeout=5) as response:
+        return json.load(response)
+show = request('/show_config')
+if show.get('dry_run') is True and show.get('state') != 'running':
+    request('/start', method='POST')
+    show = request('/show_config')
+if show.get('dry_run') is not True or show.get('state') != 'running':
+    raise SystemExit(f"unexpected Freqtrade post-restart state: dry_run={show.get('dry_run')} state={show.get('state')}")
+PY
 fi
 
 printf '%s\n' "$SOURCE_COMMIT" > "$TARGET_DIR/.deploy-source-commit.new"

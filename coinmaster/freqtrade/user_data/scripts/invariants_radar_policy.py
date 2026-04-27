@@ -8,6 +8,9 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
+
+import pandas as pd
 
 sys.path.insert(0, "/freqtrade/user_data")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -107,6 +110,63 @@ with TemporaryDirectory() as tmpdir:
     multiplier = strategy_with_policy(path)
     eff = multiplier._radar_effective_policy("HYPE/USDC:USDC", "long")
     assert_true(eff["allowed"] is True and eff["risk_multiplier"] == 0.5, "risk multiplier reduces stake and clamps global >1")
+
+print("\n── Strategy logic invariants ──")
+
+fvg_df = pd.DataFrame([
+    {"open": 96, "high": 100, "low": 95, "close": 98},
+    {"open": 101, "high": 106, "low": 99, "close": 105},
+    {"open": 112, "high": 116, "low": 110, "close": 114},
+    {"open": 113, "high": 112, "low": 104, "close": 112},  # wick touches retrace band, close remains above
+])
+annotated = CoinMasterStrategy._annotate_fvg(
+    fvg_df.copy(),
+    lookback=5,
+    retrace_pct=50,
+    min_width_pct=1,
+    require_sweep=False,
+    sweep_lookback=3,
+    require_first_touch=False,
+    max_zone_age=10,
+)
+assert_true(int(annotated.loc[3, "fvg_dir"]) == 1, "FVG retrace accepts wick/range touch, not close-only")
+
+with TemporaryDirectory() as tmpdir:
+    path = Path(tmpdir) / "radar_policy.json"
+    stake_strategy = strategy_with_policy(path)
+    stake_strategy.wallets = SimpleNamespace(get_total_stake_amount=lambda: 1000.0)
+    stake_strategy._runtime_strategy_params = {
+        "coin_allocations": {"BTC/USDC:USDC": {"symbol": "BTC", "pct": 50}},
+        "portfolio_gross_cap_enabled": True,
+        "portfolio_gross_cap": 100,
+        "risk_per_trade_enabled": False,
+        "max_leverage_value": 2,
+        "sl_pct": 2,
+    }
+    stake_strategy._open_gross_notional = lambda: 800.0
+    stake = stake_strategy.custom_stake_amount(
+        pair="BTC/USDC:USDC",
+        current_time=datetime.now(timezone.utc),
+        current_rate=100.0,
+        proposed_stake=500.0,
+        min_stake=None,
+        max_stake=1000.0,
+        leverage=2.0,
+        entry_tag=None,
+        side="long",
+    )
+    assert_true(abs(stake - 100.0) < 1e-9, "portfolio gross cap subtracts existing open notional before sizing new stake")
+
+    time_strategy = strategy_with_policy(path)
+    time_strategy._runtime_strategy_params = {
+        "time_stop_enabled": True,
+        "time_stop_bars": 2,
+        "entry_timeframes": ["5m", "1h"],
+    }
+    opened = datetime(2026, 4, 27, 10, 0, tzinfo=timezone.utc)
+    trade = SimpleNamespace(open_date_utc=opened, is_short=False)
+    assert_true(time_strategy.custom_exit("BTC/USDC:USDC", trade, opened + timedelta(minutes=30), 100, -0.01) is None, "time stop uses selected primary entry timeframe, not hardcoded 5m")
+    assert_true(time_strategy.custom_exit("BTC/USDC:USDC", trade, opened + timedelta(minutes=121), 100, -0.01) == "time_stop_no_follow_through", "time stop exits after configured higher-timeframe bars")
 
 print(f"\nTOTAL: {passed + failed} | PASSED: {passed} | FAILED: {failed}")
 if failed:
