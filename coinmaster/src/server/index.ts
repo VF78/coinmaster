@@ -146,6 +146,7 @@ const ENABLE_REPLAY_API = String(process.env.ENABLE_REPLAY_API ?? 'false').toLow
 const ENABLE_MULTI_TF_ENGULFING = String(process.env.ENABLE_MULTI_TF_ENGULFING ?? 'false').toLowerCase() === 'true';
 const ENABLE_FVG_MONITOR = String(process.env.ENABLE_FVG_MONITOR ?? 'false').toLowerCase() === 'true';
 const ENABLE_TP_FILL_MONITOR = String(process.env.ENABLE_TP_FILL_MONITOR ?? 'false').toLowerCase() === 'true';
+const ENABLE_LEGACY_TELEGRAM_COMMANDS = String(process.env.ENABLE_LEGACY_TELEGRAM_COMMANDS ?? 'false').toLowerCase() === 'true';
 const FVG_MONITOR_INTERVAL_MS = Math.max(60_000, Number(process.env.FVG_MONITOR_INTERVAL_MS || 300_000)); // default 5m
 
 function coinmasterSymbolToFreqtradePair(symbol: string): string | null {
@@ -3857,6 +3858,7 @@ async function runTelegramUpdateTick(): Promise<void> {
 }
 
 function startTelegramUpdateLoop(): void {
+  if (!ENABLE_LEGACY_TELEGRAM_COMMANDS) return;
   if (telegramUpdateTimer) return;
   runTelegramUpdateTick().catch((err) => logger.warn({ component: 'telegram', err }, 'initial telegram tick failed'));
   telegramUpdateTimer = setInterval(() => {
