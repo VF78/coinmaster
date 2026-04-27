@@ -256,14 +256,13 @@ async function exportTradingRulesToFreqtrade(rules: TradingRulesSettings) {
 const ENABLE_FREQTRADE_RADAR_POLICY_EXPORT = String(process.env.ENABLE_FREQTRADE_RADAR_POLICY_EXPORT ?? 'true').toLowerCase() !== 'false';
 const FREQTRADE_RADAR_POLICY_TTL_MS = Math.max(60_000, Number(process.env.FREQTRADE_RADAR_POLICY_TTL_MS || 10 * 60_000));
 
-function radarSentToFreqtradeKey(pair: string, scope: { signal_candidate_id?: string; source_policy_id?: string; mode?: string; risk_multiplier?: number; reason?: string }): string {
-  return [
-    pair,
-    scope.signal_candidate_id || scope.source_policy_id || 'policy',
-    scope.mode || 'both',
-    String(scope.risk_multiplier ?? 1),
-    scope.reason || 'context_policy',
-  ].join('|');
+function radarSentToFreqtradeTopicKey(pair: string, scope: { signal_candidate_id?: string; source_policy_id?: string }): string {
+  return [pair, scope.signal_candidate_id || scope.source_policy_id || 'policy'].join('|');
+}
+
+function hasLegacyRadarSentKey(seen: Record<string, string>, topicKey: string): boolean {
+  const prefix = `${topicKey}|`;
+  return Object.keys(seen).some((key) => key.startsWith(prefix));
 }
 
 async function notifyNewFreqtradeRadarUnits(payload: ReturnType<typeof buildFreqtradeRadarPolicySnapshot>): Promise<void> {
@@ -276,11 +275,9 @@ async function notifyNewFreqtradeRadarUnits(payload: ReturnType<typeof buildFreq
   let changed = false;
 
   for (const [pair, scope] of pairs) {
-    const key = radarSentToFreqtradeKey(pair, scope);
-    if (seen[key]) {
-      const lastSeenMs = Date.parse(seen[key]);
-      const updatedMs = Date.parse(payload.updated_at);
-      if (Number.isFinite(updatedMs) && (!Number.isFinite(lastSeenMs) || updatedMs - lastSeenMs > 30 * 60_000)) {
+    const key = radarSentToFreqtradeTopicKey(pair, scope);
+    if (seen[key] || hasLegacyRadarSentKey(seen, key)) {
+      if (!seen[key]) {
         seen[key] = payload.updated_at;
         changed = true;
       }
@@ -291,13 +288,12 @@ async function notifyNewFreqtradeRadarUnits(payload: ReturnType<typeof buildFreq
       category: 'system',
       dedupeKey: `radar-sent-to-freqtrade:${key}`,
       text: [
-        '🛰 Radar → Freqtrade',
+        '🛰 Radar → Freqtrade: new context',
         `${pair}`,
         `Mode: ${scope.mode}`,
         `Risk: ×${scope.risk_multiplier}`,
         `Reason: ${scope.reason}`,
         scope.signal_candidate_id ? `Candidate: ${scope.signal_candidate_id}` : undefined,
-        `Valid until: ${payload.valid_until}`,
       ].filter(Boolean).join('\n'),
     });
 

@@ -94,7 +94,7 @@
       "exit": "silent",
       "exit_fill": "on",
       "warning": "on",
-      "status": "silent",
+      "status": "off",
       "startup": "off"
     }
   },
