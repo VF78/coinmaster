@@ -15,6 +15,7 @@
  *   8. regimeTf is constrained to owner-approved HTF values (1h/4h)
  *   9. Backtest sizing mirrors live riskPerTradePct and portfolioGrossCap limits
  *   10. Trading bias policy normalizes default + per-symbol overrides
+ *   11. Trading Rules visible-state rebuild preserves hidden fields
  *
  * Exit code: 0 = all pass, 1 = failures found.
  *
@@ -458,6 +459,63 @@ console.log('\n── Invariant 10: trading bias policy defaults and overrides �
   assert(normalized.biasPolicy!.symbolOverrides.XRP?.bias === 'off', 'off symbol bias is preserved for enabled other assets');
   assert(normalized.biasPolicy!.symbolOverrides.DOGE === undefined, 'inactive other symbol override is pruned');
   assert(normalizeTradingRules({ biasPolicy: { defaultBias: 'invalid' as never, symbolOverrides: {} } }).biasPolicy!.defaultBias === 'both', 'invalid default bias falls back to both');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INVARIANT 11: Visible-state rebuild preserves hidden fields
+// ═══════════════════════════════════════════════════════════════════════
+
+console.log('\n── Invariant 11: visible-state rebuild preserves hidden fields ──');
+
+{
+  const saved = normalizeTradingRules({
+    coins: [
+      { symbol: 'BTC', enabled: true, pct: 50, assetClass: 'crypto' },
+      { symbol: 'ETH', enabled: true, pct: 50, assetClass: 'crypto' },
+    ],
+    emergencyExitTimeframes: ['4h'],
+    exitClosePct: 0,
+    eventLockoutEnabled: true,
+    eventLockoutMinutes: 90,
+  });
+
+  const rebuiltFromVisibleState = normalizeTradingRules({
+    ...saved,
+    coins: saved.coins.filter((coin) => coin.enabled),
+    entryTimeframes: saved.entryTimeframes,
+    engulfingLookbackCandles: saved.engulfingLookbackCandles,
+    fvgRetrace: saved.fvgRetrace,
+    fvgMinWidthPct: saved.fvgMinWidthPct,
+    fvgRequireSweep: saved.fvgRequireSweep,
+    fvgSweepLookbackCandles: saved.fvgSweepLookbackCandles,
+    fvgRequireFirstTouch: saved.fvgRequireFirstTouch,
+    maxZoneAgeCandles: saved.maxZoneAgeCandles,
+    fvgRequireConfirmation: saved.fvgRequireConfirmation,
+    fvgConfirmationTimeframes: saved.fvgConfirmationTimeframes,
+    maxLeverage: saved.maxLeverage,
+    dailyDrawdown: saved.dailyDrawdown,
+    tpPct: saved.tpLevels[0],
+    tpLevels: saved.tpLevels,
+    slPct: saved.slPct,
+    regimeFilterEnabled: saved.regimeFilterEnabled,
+    regimeTf: saved.regimeTf,
+    adxEnabled: saved.adxEnabled,
+    adxMin: saved.adxMin,
+    minImpulseAtrEnabled: saved.minImpulseAtrEnabled,
+    minImpulseAtr: saved.minImpulseAtr,
+    timeStopEnabled: saved.timeStopEnabled,
+    timeStopBars: saved.timeStopBars,
+    riskPerTradeEnabled: saved.riskPerTradeEnabled,
+    riskPerTradePct: saved.riskPerTradePct,
+    portfolioGrossCapEnabled: saved.portfolioGrossCapEnabled,
+    portfolioGrossCap: saved.portfolioGrossCap,
+    biasPolicy: saved.biasPolicy,
+  });
+
+  assert(JSON.stringify(rebuiltFromVisibleState) === JSON.stringify(saved), 'rebuilding visible Trading Rules state does not create false dirty changes');
+  assert(rebuiltFromVisibleState.emergencyExitTimeframes[0] === '4h', 'hidden emergency exit timeframe is preserved');
+  assert(rebuiltFromVisibleState.exitClosePct === 0, 'hidden exit close pct is preserved');
+  assert(rebuiltFromVisibleState.eventLockoutEnabled === true && rebuiltFromVisibleState.eventLockoutMinutes === 90, 'hidden event lockout settings are preserved');
 }
 
 // ─── Summary ─────────────────────────────────────────────────────────

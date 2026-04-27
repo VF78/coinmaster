@@ -257,6 +257,10 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
   );
 
   const currentRules = useMemo<TradingRulesSettings>(() => normalizeTradingRules({
+    // Preserve Trading Rules fields that do not currently have visible controls
+    // (for example emergency exit timeframe / close pct). Dirty-state should
+    // only reflect what this page actually exposes or canonicalizes.
+    ...savedRules,
     coins,
     entryTimeframes,
     engulfingLookbackCandles,
@@ -273,7 +277,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     tpPct: tpLevels[0] ?? 6,
     tpLevels,
     slPct,
-    autoConfirm: false,
     regimeFilterEnabled,
     regimeTf,
     adxEnabled,
@@ -284,8 +287,6 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
     timeStopBars,
     riskPerTradeEnabled,
     riskPerTradePct,
-    eventLockoutEnabled: false,
-    eventLockoutMinutes: 0,
     portfolioGrossCapEnabled,
     portfolioGrossCap,
     biasPolicy: {
@@ -293,6 +294,7 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
       symbolOverrides: cloneSymbolOverrides(symbolBiasOverrides),
     },
   }), [
+    savedRules,
     coins,
     entryTimeframes,
     engulfingLookbackCandles,
@@ -347,36 +349,40 @@ export function TradingRulesPage({ onDirtyChange, onRegisterSaveHandler }: Tradi
 
   function applyRules(rules: TradingRulesSettings) {
     const normalized = normalizeTradingRules(rules);
-    setCoins(normalized.coins.filter((coin) => coin.enabled));
-    setEntryTimeframes(normalized.entryTimeframes);
-    setEngulfingLookbackCandles(normalized.engulfingLookbackCandles);
-    setFvgRetrace(normalized.fvgRetrace);
-    setFvgMinWidthPct(normalized.fvgMinWidthPct);
-    setFvgRequireSweep(normalized.fvgRequireSweep);
-    setFvgSweepLookbackCandles(normalized.fvgSweepLookbackCandles);
-    setFvgRequireFirstTouch(normalized.fvgRequireFirstTouch);
-    setMaxZoneAgeCandles(normalized.maxZoneAgeCandles);
-    setFvgRequireConfirmation(normalized.fvgRequireConfirmation);
-    setFvgConfirmationTimeframes(normalized.fvgConfirmationTimeframes);
-    setMaxLeverage(normalized.maxLeverage);
-    setDailyDrawdown(normalized.dailyDrawdown);
-    setTpLevels(normalized.tpLevels ?? [normalized.tpPct]);
-    setSlPct(normalized.slPct);
-    setRegimeFilterEnabled(normalized.regimeFilterEnabled ?? true);
-    setRegimeTf(normalized.regimeTf ?? '1h');
-    setAdxEnabled(normalized.adxEnabled ?? false);
-    setAdxMin(normalized.adxMin ?? 0);
-    setMinImpulseAtrEnabled(normalized.minImpulseAtrEnabled ?? false);
-    setMinImpulseAtr(normalized.minImpulseAtr ?? 0);
-    setTimeStopEnabled(normalized.timeStopEnabled ?? false);
-    setTimeStopBars(normalized.timeStopBars ?? 0);
-    setRiskPerTradeEnabled(normalized.riskPerTradeEnabled ?? false);
-    setRiskPerTradePct(normalized.riskPerTradePct ?? 0);
-    setPortfolioGrossCapEnabled(normalized.portfolioGrossCapEnabled ?? true);
-    setPortfolioGrossCap(normalized.portfolioGrossCap ?? 200);
-    setDefaultBias(normalized.biasPolicy?.defaultBias ?? 'both');
-    setSymbolBiasOverrides(cloneSymbolOverrides(normalized.biasPolicy?.symbolOverrides));
-    setSavedRules(normalized);
+    const visibleRules = normalizeTradingRules({
+      ...normalized,
+      coins: normalized.coins.filter((coin) => coin.enabled),
+    });
+    setCoins(visibleRules.coins.filter((coin) => coin.enabled));
+    setEntryTimeframes(visibleRules.entryTimeframes);
+    setEngulfingLookbackCandles(visibleRules.engulfingLookbackCandles);
+    setFvgRetrace(visibleRules.fvgRetrace);
+    setFvgMinWidthPct(visibleRules.fvgMinWidthPct);
+    setFvgRequireSweep(visibleRules.fvgRequireSweep);
+    setFvgSweepLookbackCandles(visibleRules.fvgSweepLookbackCandles);
+    setFvgRequireFirstTouch(visibleRules.fvgRequireFirstTouch);
+    setMaxZoneAgeCandles(visibleRules.maxZoneAgeCandles);
+    setFvgRequireConfirmation(visibleRules.fvgRequireConfirmation);
+    setFvgConfirmationTimeframes(visibleRules.fvgConfirmationTimeframes);
+    setMaxLeverage(visibleRules.maxLeverage);
+    setDailyDrawdown(visibleRules.dailyDrawdown);
+    setTpLevels(visibleRules.tpLevels ?? [visibleRules.tpPct]);
+    setSlPct(visibleRules.slPct);
+    setRegimeFilterEnabled(visibleRules.regimeFilterEnabled ?? true);
+    setRegimeTf(visibleRules.regimeTf ?? '1h');
+    setAdxEnabled(visibleRules.adxEnabled ?? false);
+    setAdxMin(visibleRules.adxMin ?? 0);
+    setMinImpulseAtrEnabled(visibleRules.minImpulseAtrEnabled ?? false);
+    setMinImpulseAtr(visibleRules.minImpulseAtr ?? 0);
+    setTimeStopEnabled(visibleRules.timeStopEnabled ?? false);
+    setTimeStopBars(visibleRules.timeStopBars ?? 0);
+    setRiskPerTradeEnabled(visibleRules.riskPerTradeEnabled ?? false);
+    setRiskPerTradePct(visibleRules.riskPerTradePct ?? 0);
+    setPortfolioGrossCapEnabled(visibleRules.portfolioGrossCapEnabled ?? true);
+    setPortfolioGrossCap(visibleRules.portfolioGrossCap ?? 200);
+    setDefaultBias(visibleRules.biasPolicy?.defaultBias ?? 'both');
+    setSymbolBiasOverrides(cloneSymbolOverrides(visibleRules.biasPolicy?.symbolOverrides));
+    setSavedRules(visibleRules);
   }
 
   useEffect(() => {
