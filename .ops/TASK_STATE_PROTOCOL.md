@@ -1,104 +1,58 @@
-# Coinmaster Task State Protocol (ACTIVE/BLOCKED/FALLBACK/SPLIT)
+# Coinmaster Task State Protocol
 
-Цель: стабильное выполнение без «пустых» напоминаний и без зависания на одном блокере.
+Purpose: keep active work moving without spam, stalls, or hidden blockers.
 
-Связанные документы:
-- правила разработки ПО: `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
-- подготовка к reset: `.ops/RESET_PREP_PROTOCOL.md`
-- компактный текущий слепок задачи: `.ops/ACTIVE_TASK.md`
+## States
 
-## 1) Состояния
+- **ACTIVE** — executable micro-step with verifiable output: diff, test, log, commit.
+- **BLOCKED** — external blocker exists; record blocker + removal condition.
+- **FALLBACK** — alternate route/executor used because default path is unavailable/ineffective.
+- **SPLIT** — current step was too large/stalled; split into smaller micro-steps.
 
-- **ACTIVE** — есть исполняемый микро-шаг с проверяемым результатом (diff/test/log).
-- **BLOCKED** — есть внешний блокер (лимит, недоступный сервис, отсутствующий доступ, и т.д.).
-- **FALLBACK** — задача продолжена альтернативным исполнителем/маршрутом (например, Codex вместо Claude).
-- **SPLIT** — задача декомпозирована на меньшие подзадачи из-за стагнации или риска.
+## Default executor
 
-## 2) Обязательные триггеры перехода
+- Default model for all tasks: `openai-codex/gpt-5.5`.
+- Non-trivial coding should run as a subagent/coding-agent with Codex 5.5 unless Vladimir says otherwise.
+- If Codex 5.5 stalls, narrow/split first; use another model/tool only when it is unavailable, rate-limited, or clearly ineffective.
 
-- Нет подтверждённого прогресса >30 минут при ACTIVE/FALLBACK:
-  1. перейти в **SPLIT**,
-  2. разбить текущий шаг на микро-шаги,
-  3. обновить checklist,
-  4. продолжить следующий микро-шаг (обычно обратно в ACTIVE/FALLBACK).
+## Transition triggers
 
-- Появился внешний блокер:
-  - перейти в **BLOCKED**,
-  - явно зафиксировать blocker + условие снятия.
+- No confirmed progress for >30 minutes in ACTIVE/FALLBACK → SPLIT, update checklist/state, continue next micro-step.
+- External blocker appears → BLOCKED, record exact blocker and unblock condition.
+- Default tool/model unavailable → FALLBACK immediately; do not wait passively.
+- Recovery window arrives → explicitly check availability; switch only if it helps.
 
-- Основной инструмент недоступен:
-  - немедленно перейти в **FALLBACK** и продолжать выполнение самостоятельно,
-  - не ждать пассивно восстановления.
+## Stalls and watchdogs
 
-- Окно восстановления инструмента наступило (например, 05:00):
-  - сделать явную проверку доступности,
-  - если доступен и ускоряет — переключиться,
-  - если нет — остаться в FALLBACK без паузы.
+- Progress watchdog: 8 minutes without concrete activity (edit/write/bash/test) → intervene.
+- Inference-only stream may get one +4 minute extension; after 12 minutes without concrete activity → SPLIT/restart.
+- Silent stall: no stdout/activity for >90 seconds in an expected-active run → restart.
+- Hard timeout: 25 minutes per run, then stop and decompose.
+- Repeated consent/permission loop with no file changes → restart; after 2 repeats, switch to a narrow one-shot recovery.
 
-## 3) Heartbeat-политика (анти-спам)
+## Heartbeat policy
 
-Отправлять heartbeat только если есть смысл:
+Send an update only for: state transition, completed micro-step with artifact, blocker change, final result, or hourly safety ping during real active work.
 
-1. переход состояния,
-2. завершённый микро-шаг с артефактом,
-3. изменение blocker,
-4. итоговый завершённый шаг/подзадача,
-5. safety-ping раз в 60 минут, если задача активна и есть реальная работа.
-
-Формат:
+Format:
 
 `Heartbeat: • Done: ... • In progress: ... • Blockers: ... • ETA: ...`
 
-## 4) Что считается «подтверждённым прогрессом»
+Never send more than two “still working” updates without a new artifact.
 
-Хотя бы одно из:
+## Confirmed progress means one of
+
 - commit hash,
-- верифицируемый diff,
-- зелёный test/run output,
-- обновлённый checklist с закрытым микро-пунктом и ссылкой на артефакт.
+- verifiable diff,
+- green test/run output,
+- updated checklist with closed micro-point and artifact reference.
 
-## 5) Стоп-правило
+## Required sync
 
-Запрещено повторять статус «в работе» без новых артефактов >2 подряд.
-На третьем цикле обязателен SPLIT + новый исполнимый микро-шаг.
+After significant state changes and before reset:
 
-## 6) Claude Code: рабочий режим
+1. Update GitHub Project status.
+2. Update `.ops/ACTIVE_TASK.md`.
+3. Record task/status, canonical root, branch/HEAD/origin/deploy commit, done, exact next step, blockers/risks.
 
-Модель по умолчанию для всех задач Coinmaster: **Sonnet 4.6** (не Opus).
-
-Режим по умолчанию: **interactive Claude Code** (PTY), короткими итерациями.
-
-Рекомендации исполнения:
-
-1. Декомпозировать работу на микро-шаги с обязательным артефактом (file/diff/commit/test output).
-2. Watchdog по активности:
-   - **Progress watchdog:** 8 минут без concrete activity (edit/write/bash).
-   - Если есть только inference/thinking поток, даётся 1 extension +4 минуты (итого 12 минут).
-   - После 12 минут без concrete activity: stalled → SPLIT/restart.
-3. **Silent stall:** если нет вообще stdout >90 секунд — считать deadlock, restart немедленно.
-4. **Hard timeout:** 25 минут на один run, затем остановка и декомпозиция.
-5. **Consent-loop detector:** повтор allow-edits prompt / exit code 143 без файловых изменений → немедленный restart; после 2 повторов для того же шага перейти в one-shot recovery.
-6. Restart backoff:
-   - Attempt 1: обычный restart того же шага.
-   - Attempt 2: restart с явным "summarize done + continue from last file".
-   - Attempt 3: one-shot (`claude -p --model sonnet --permission-mode acceptEdits`) на узкий подшаг, затем обратно в interactive flow.
-
-## 7) Обязательная синхронизация состояния
-
-После каждого значимого перехода состояния и перед любым reset:
-
-1. Актуализировать GitHub Project status.
-2. Актуализировать `.ops/ACTIVE_TASK.md`.
-3. Зафиксировать минимум:
-   - текущий task / status,
-   - canonical root,
-   - branch / HEAD / origin/main / deploy commit,
-   - что уже сделано,
-   - exact next step,
-   - blockers / risks.
-
-## 8) Правило handoff-документа
-
-- По умолчанию достаточно `.ops/ACTIVE_TASK.md`.
-- `RESET_HANDOFF_YYYY-MM-DD.md` — только overflow-документ, когда компактного слепка недостаточно.
-- Не плодить длинные handoff-файлы без необходимости.
+Default handoff is `.ops/ACTIVE_TASK.md`; create dated overflow handoffs only when compact state is insufficient.

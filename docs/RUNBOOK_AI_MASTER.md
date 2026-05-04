@@ -78,7 +78,7 @@ Success:
 ```json
 {
   "answer": "grounded answer",
-  "model": "anthropic/claude-sonnet-4-6",
+  "model": "openai-codex/gpt-5.5",
   "runId": "qa-2026-03-10T12:00:00Z",
   "worker": "openclaw-qa",
   "latencyMs": 9210,
@@ -94,7 +94,7 @@ Fallback answer:
 ```json
 {
   "fallbackMessage": "Временно не удалось получить ответ модели. Используй deterministic daily summary и повтори вопрос позже.",
-  "model": "anthropic/claude-sonnet-4-6",
+  "model": "openai-codex/gpt-5.5",
   "runId": "qa-2026-03-10T12:00:00Z",
   "worker": "openclaw-qa",
   "latencyMs": 20000,
@@ -108,7 +108,7 @@ Failure-only marker:
 ```json
 {
   "error": "llm_timeout",
-  "model": "anthropic/claude-sonnet-4-6",
+  "model": "openai-codex/gpt-5.5",
   "runId": "qa-2026-03-10T12:00:00Z",
   "worker": "openclaw-qa",
   "latencyMs": 20000,

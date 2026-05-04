@@ -1,121 +1,57 @@
 # Coinmaster Reset Preparation Protocol
 
-Purpose: make reset/restart/session handoff resumable with minimal token burn and no ambiguity.
+Purpose: make restarts resumable with minimal token burn.
 
-## 1) When this protocol is mandatory
+## When mandatory
 
-Run this before any planned:
+Before planned model/session reset, OpenClaw restart, long interruption, or stopping while work is active/partial.
 
-- model/session reset
-- OpenClaw restart
-- long interruption / handoff
-- stopping work while a task is still active or partially complete
+## Required sequence
 
-## 2) Required preparation sequence
+1. Freeze current micro-step: finish it or state exactly what remains.
+2. Sync GitHub Project status: active, done, or blocked truthfully.
+3. Overwrite `.ops/ACTIVE_TASK.md` with a compact facts-only snapshot (~25–35 lines; hard cap ~40).
+4. Record repo/deploy state: canonical root, branch, `HEAD`, `origin/main`, divergence, `/opt/coinmaster/.deploy-source-commit`, dirty/untracked state.
+5. Record execution state: current Project item, goal, done, exact next step, checks, commit/deploy/push state, blockers/risks, key files only.
+6. Clean junk: `.tmp-*`, scratch prompts, throwaway logs, stale artifacts. If intentional untracked files remain, list them.
+7. Commit/push restart-critical docs (`.ops/ACTIVE_TASK.md`, protocol/truth/runbook changes) unless Vladimir says not to or push is blocked. If blocked, record exact reason.
+8. Create `RESET_HANDOFF_YYYY-MM-DD.md` only for overflow/incident detail that cannot safely fit in `.ops/ACTIVE_TASK.md`.
 
-1. **Freeze the current micro-step cleanly**
-   - Do not reset in the middle of an unexplained edit.
-   - Either finish the micro-step or state exactly what remains.
+## Required `.ops/ACTIVE_TASK.md` shape
 
-2. **Sync GitHub Project status**
-   - Active unfinished task → correct active status.
-   - Fully finished task → `Done`.
-   - If blocked and no dedicated blocked status exists, keep the task status honest and capture the blocker in `.ops/ACTIVE_TASK.md`.
+```text
+Updated:
+Status:
+GitHub Project item:
+Canonical root:
+Branch / HEAD / origin/main / deploy commit / divergence:
+Goal:
+Done:
+Next exact step:
+Checks / commit / deploy / push:
+Blockers / risks:
+Key files:
+```
 
-3. **Update `.ops/ACTIVE_TASK.md` (mandatory)**
-   - Overwrite in place; do not keep a growing diary there.
-   - Target size: ~25–35 lines, hard cap ~40 lines.
-   - Facts only, no long narrative.
-
-4. **Record repo + deploy state in `.ops/ACTIVE_TASK.md`**
-   - canonical root
-   - branch
-   - workspace `HEAD`
-   - `origin/main`
-   - divergence vs `origin/main`
-   - deployed commit from `/opt/coinmaster/.deploy-source-commit`
-   - whether there are local uncommitted changes
-
-5. **Record execution state in `.ops/ACTIVE_TASK.md`**
-   - current GitHub Project item
-   - one-sentence goal
-   - short done list
-   - exact next step
-   - checks state
-   - commit state
-   - deploy state
-   - push state
-   - blockers / risks
-   - key files only
-
-6. **Clean workspace junk**
-   - delete `.tmp-*`, scratch prompts, throwaway logs, and stale local artifacts
-   - move temporary investigation files out of the repo
-   - if any intentional untracked file remains, list it explicitly in `.ops/ACTIVE_TASK.md`
-
-7. **Sync restart-critical state into GitHub repo**
-   - `.ops/ACTIVE_TASK.md` is not local-only; it is a repo-backed restart artifact.
-   - If restart-critical docs changed (`.ops/ACTIVE_TASK.md`, protocol docs, runbooks, current truth docs), commit them.
-   - Push `main` to `origin` before reset unless the user explicitly says not to or push is blocked.
-   - If push is blocked, write the exact reason and current divergence into `.ops/ACTIVE_TASK.md`.
-
-8. **Use a dated reset handoff only if strictly needed**
-   - Default: `.ops/ACTIVE_TASK.md` is enough.
-   - Create/update `RESET_HANDOFF_YYYY-MM-DD.md` only when there is incident-grade detail or bounded context that cannot fit safely in `.ops/ACTIVE_TASK.md`.
-   - Keep it short and practical.
-
-9. **Final reset gate**
-   - GitHub Project status is current.
-   - `.ops/ACTIVE_TASK.md` is current.
-   - GitHub repo is synced, or the push blocker is explicitly recorded.
-   - next exact step is written
-   - blockers are written
-   - repo/deploy state is written
-   - no unexplained junk remains in the workspace
-
-## 3) Required `.ops/ACTIVE_TASK.md` structure
-
-Use this shape:
-
-- `Updated:`
-- `Status:`
-- `GitHub Project item:`
-- `Canonical root:`
-- `Branch / HEAD / origin/main / deploy commit / divergence:`
-- `Goal:`
-- `Done:`
-- `Next exact step:`
-- `Checks / commit / deploy / push:`
-- `Blockers / risks:`
-- `Key files:`
-
-If no task is active, say so explicitly and state what decision/work is pending.
-
-## 4) Minimal recovery path after reset
-
-Read only this by default:
+## Minimal recovery path after reset
 
 1. `SOUL.md`
 2. `USER.md`
 3. `.ops/PROJECT_TRUTH.md`
 4. `.ops/ACTIVE_TASK.md`
-5. live preflight:
-   - `git status --short`
-   - `git rev-parse HEAD`
-   - `git rev-list --left-right --count origin/main...HEAD`
-   - `git rev-parse origin/main`
-   - `cat /opt/coinmaster/.deploy-source-commit`
+5. Live preflight:
 
-Only then, if `.ops/ACTIVE_TASK.md` says it matters, open:
+```bash
+cd /root/.openclaw/workspace/coinmaster/coinmaster
+git status --short
+git rev-parse HEAD
+git rev-parse origin/main
+git rev-list --left-right --count origin/main...HEAD
+cat /opt/coinmaster/.deploy-source-commit 2>/dev/null || true
+```
 
-- the current dated `RESET_HANDOFF_*.md`
-- the current issue/runtime checklist
-- daily memory or longer docs
+Only open deeper handoffs/checklists/memory if `.ops/ACTIVE_TASK.md` says they matter.
 
-## 5) Token discipline
+## Final reset gate
 
-- `.ops/ACTIVE_TASK.md` is the restart source, not chat history.
-- Prefer one compact authoritative file over multiple long handoffs.
-- Do not reread daily memory by default.
-- Do not paste large retrospectives into reset notes.
-- If something is worth remembering for restart, compress it into actionable bullets.
+Project status current; `.ops/ACTIVE_TASK.md` current; repo synced or blocker recorded; exact next step/blockers/repo-deploy state written; no unexplained junk.

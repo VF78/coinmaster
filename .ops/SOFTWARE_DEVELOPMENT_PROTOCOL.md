@@ -1,129 +1,78 @@
 # Coinmaster Software Development Protocol
 
-Purpose: one clear place for Coinmaster software-development rules.
+Purpose: canonical rules for Coinmaster software work with minimum restart token burn.
 
-## 1) Scope and source of truth
+## 1) Sources of truth
 
 - Canonical repo: `/root/.openclaw/workspace/coinmaster/coinmaster`
-- Deploy mirror: `/opt/coinmaster`
-- Task backlog + status source of truth: GitHub Project `https://github.com/users/VF78/projects/2`
-- One active implementation task at a time.
-- Do not create new backlog items if an existing GitHub Project item already covers the work.
+- Deploy mirror: `/opt/coinmaster` — never edit manually.
+- Backlog/status: GitHub Project #2 `https://github.com/users/VF78/projects/2`
+- Current task snapshot: `.ops/ACTIVE_TASK.md`
+- One active implementation task at a time; do not create duplicates if an existing Project item covers the work.
 
-## 2) Execution model
+## 2) Default execution model
 
-- Main chat orchestrates. Non-trivial software development goes through a subagent / coding agent.
-- Default coding executor: **Claude Sonnet 4.6**.
-- Hard / architectural / stuck reruns: **Claude Opus 4.6**.
-- Fallbacks only when Claude is unavailable, rate-limited, or clearly ineffective:
-  - **Codex 5.4 mini** for smaller bounded passes, audits, and retries.
-  - **Codex 5.4** for harder fallback runs when mini is not enough.
-- If the user explicitly requests another model/tool, follow that.
+- Default model for **all Coinmaster tasks**: `openai-codex/gpt-5.5`.
+- Main chat orchestrates, reviews, reports, and handles trivial doc/one-line changes directly.
+- Non-trivial coding uses a subagent/coding-agent with `openai-codex/gpt-5.5` unless Vladimir explicitly asks otherwise.
+- Use another executor/model only when Codex 5.5 is unavailable, rate-limited, clearly ineffective, or explicitly requested.
 
-## 3) Development principles
+## 3) Development rules
 
-- Develop inside the **current architecture and its deliberate evolution**, not beside it.
-- Prefer the smallest complete change that solves the problem cleanly.
-- No broad refactor unless explicitly requested or clearly required for safety.
-- No hacks, duplicate execution paths, sidecar logic that bypasses the engine, or “temporary” complexity that becomes permanent.
-- Use best practices: clear ownership, deterministic behavior, explicit invariants, bounded scope, and readable code.
-- Before calling something a rollback/regression, verify the actual state of `main`, `origin/main`, deployed commit, and whether the behavior belongs to a different surface/semantic model (for example, live execution controls vs backtest bias controls).
-- Protect live trading paths first:
-  - Daily Drawdown
-  - live entry / confirmation / auto-open flow
-  - TP/SL handling
-  - persistence / replay / recovery semantics
-- Runtime truth for live settings is the persisted DB snapshot; env vars are not authoritative at runtime unless the code explicitly says so.
+- Build inside the current architecture and deliberate evolution; do not create parallel engines or bypass paths.
+- Prefer the smallest complete clean change; no refactor-for-refactor.
+- No hacks, duplicate execution paths, hidden sidecars, or “temporary” complexity that can become permanent.
+- Protect live paths first: Daily Drawdown, entry/confirmation/auto-open, TP/SL, persistence, replay, recovery.
+- Runtime settings truth is the persisted DB snapshot unless code explicitly says otherwise; env vars are not assumed authoritative.
+- Before calling something a rollback/regression, verify `main`, `origin/main`, deployed commit, and semantic surface.
 
-## 4) Workspace hygiene
+## 4) Preflight before implementation
 
-- Develop only in the canonical repo. Never edit `/opt/coinmaster` manually.
-- Keep the workspace clean:
-  - no `.tmp-*`
-  - no scratch prompts in repo root
-  - no ad-hoc exports/log dumps unless intentional and documented
-  - no stale handoff files beyond the current useful one
-- Scratch work belongs in `/tmp` or another non-repo location.
-- If a temporary file inside the repo is unavoidable, delete it before commit/reset.
-- Before commit/reset, `git status --short` should contain only intentional changes.
+From canonical repo:
 
-## 5) Mandatory preflight before coding
+```bash
+git branch --show-current        # default must be main unless user requested otherwise
+git status --short
+git rev-parse HEAD
+git rev-list --left-right --count origin/main...HEAD
+cat /opt/coinmaster/.deploy-source-commit 2>/dev/null || true
+```
 
-Run or verify these before starting implementation:
+Then set/confirm the GitHub Project item state and update `.ops/ACTIVE_TASK.md`.
 
-1. `git branch --show-current` → must be `main` unless user explicitly requested otherwise.
-2. `git status --short`
-3. `git rev-parse HEAD`
-4. `git rev-list --left-right --count origin/main...HEAD`
-5. `cat /opt/coinmaster/.deploy-source-commit` (if deploy mirror exists)
-6. Set the matching GitHub Project item to the correct active state.
-7. Update `.ops/ACTIVE_TASK.md`.
+## 5) Workspace hygiene
 
-## 6) Git / branch / divergence rules
+- Work only in the canonical repo.
+- Scratch files go to `/tmp` or another non-repo path.
+- Before commit/reset, `git status --short` must contain only intentional changes; document intentional untracked/dirty state in `.ops/ACTIVE_TASK.md`.
 
-- Default working branch: **`main` only**.
-- Do not create feature branches, detached-head work, or parallel local variants unless the user explicitly asks.
-- Restart-critical operational docs live in the repo, not only in local chat/context:
-  - `.ops/PROJECT_TRUTH.md`
-  - `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
-  - `.ops/RESET_PREP_PROTOCOL.md`
-  - `.ops/TASK_STATE_PROTOCOL.md`
-  - `.ops/ACTIVE_TASK.md`
-- Keep three states visible and distinct:
-  - workspace `HEAD`
-  - `origin/main`
-  - deployed commit (`/opt/coinmaster/.deploy-source-commit`)
-- After a completed task, the default target state is convergence:
-  - local `main`
-  - `origin/main`
-  - deployed commit
-- If push is intentionally deferred, record it explicitly in `.ops/ACTIVE_TASK.md` and tell the user plainly.
+## 6) Verification standard
 
-## 7) Implementation discipline
+Use the smallest meaningful gate set:
 
-- Work in micro-steps with an artifact each time: diff, test output, log evidence, or commit.
-- Follow `.ops/TASK_STATE_PROTOCOL.md` for ACTIVE/BLOCKED/FALLBACK/SPLIT handling.
-- When stuck, narrow the step before expanding the solution.
-- Prefer fixing root causes inside existing abstractions over adding glue code around them.
+- task-specific invariant/smoke script(s),
+- `npm run check`,
+- `npm run build` when UI/server wiring changed,
+- direct runtime/API evidence when behavior changed.
 
-## 8) Verification standard
+Do not claim completion without evidence or a named blocker.
 
-Use the smallest meaningful verification set for the task, typically:
+## 7) Commit/deploy
 
-- task-specific invariant / smoke script(s)
-- `npm run check`
-- `npm run build` when UI/server wiring changed
-
-Do not claim completion without verification evidence or a named blocker.
-
-## 9) Commit / deploy protocol
-
-- Review the diff before commit.
-- Commit on `main` with a concise, concrete message.
+- Review diff before commit.
+- Default branch target: `main`; avoid feature branches unless requested.
 - Deploy only through `scripts/deploy-prod-safe.sh` or the active post-commit hook flow.
-- Never treat `/opt/coinmaster` as a manual patch target.
-- After deploy, verify at minimum:
-  - deployed commit matches workspace `HEAD`
-  - `coinmaster.service` is active
-  - health endpoint responds
-  - task-specific surface responds
+- After deploy verify: deployed commit = workspace `HEAD`, `coinmaster.service` active, health endpoint ok, and task-specific surface ok.
+- If push/deploy is deferred or blocked, record exact reason in `.ops/ACTIVE_TASK.md`.
 
-## 10) Required operational records
+## 8) Restart protocol
 
-Keep these current during real work:
+Before reset/restart/handoff, follow `.ops/RESET_PREP_PROTOCOL.md`: update GitHub Project, compress `.ops/ACTIVE_TASK.md`, record repo/deploy state, exact next step, blockers, and key files only.
 
-- GitHub Project status
-- `.ops/ACTIVE_TASK.md`
-- optional dated reset handoff only when `.ops/ACTIVE_TASK.md` is too small to carry a safe restart
+## 9) Minimal doc map
 
-## 11) Minimal document map
+Read in this order after restart:
 
-Read/maintain the smallest authoritative set first:
-
-- project truth → `.ops/PROJECT_TRUTH.md`
-- development rules → `.ops/SOFTWARE_DEVELOPMENT_PROTOCOL.md`
-- reset rules → `.ops/RESET_PREP_PROTOCOL.md`
-- task-state/watchdog rules → `.ops/TASK_STATE_PROTOCOL.md`
-- current task snapshot → `.ops/ACTIVE_TASK.md`
-
-Treat older deep-dive docs as reference material, not default startup context.
+1. `.ops/PROJECT_TRUTH.md`
+2. `.ops/ACTIVE_TASK.md`
+3. Only then open this file, reset/task-state protocols, or deep docs if needed.
