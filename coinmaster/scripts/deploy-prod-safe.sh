@@ -68,6 +68,42 @@ restore_freqtrade_runtime() {
   fi
 }
 
+validate_wave_engine_deploy_tree() {
+  local freqtrade_tree="$1"
+  local compose_file="$freqtrade_tree/docker-compose.prod.yml"
+  [[ -f "$compose_file" ]] || return 0
+
+  local mentions_wave=0
+  if grep -q -- 'CoinMasterWaveEngineV1\|config.wave-engine-dryrun.json' "$compose_file"; then
+    mentions_wave=1
+  fi
+  [[ "$mentions_wave" -eq 1 ]] || return 0
+
+  log "Validating Wave Engine deploy contract in $freqtrade_tree"
+  if ! grep -q -- '--strategy CoinMasterWaveEngineV1' "$compose_file"; then
+    echo "Wave Engine deploy contract broken: docker-compose.prod.yml mentions Wave Engine but does not run --strategy CoinMasterWaveEngineV1" >&2
+    exit 1
+  fi
+  if ! grep -q -- 'config.wave-engine-dryrun.json' "$compose_file"; then
+    echo "Wave Engine deploy contract broken: docker-compose.prod.yml must load runtime/config.wave-engine-dryrun.json" >&2
+    exit 1
+  fi
+
+  local strategy_dir="$freqtrade_tree/user_data/strategies"
+  local required_file
+  for required_file in CoinMasterWaveEngineV1.py engine.py freqtrade_adapter.py wave_engine_profiles.selected.json; do
+    if [[ ! -f "$strategy_dir/$required_file" ]]; then
+      echo "Wave Engine deploy contract broken: missing $strategy_dir/$required_file" >&2
+      exit 1
+    fi
+  done
+
+  if [[ ! -f "$TARGET_DIR/freqtrade/user_data/runtime/config.wave-engine-dryrun.json" && ! -f /var/lib/coinmaster/freqtrade/config.wave-engine-dryrun.json ]]; then
+    echo "Wave Engine deploy contract broken: runtime config.wave-engine-dryrun.json is missing" >&2
+    exit 1
+  fi
+}
+
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || { echo "Missing required command: $1" >&2; exit 1; }
 }
@@ -182,6 +218,8 @@ install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package.json" "$TAR
 install -o "$OWNER_USER" -g "$OWNER_GROUP" -m 0644 "$APP_DIR/package-lock.json" "$TARGET_DIR/package-lock.json"
 chown -R "$OWNER_USER:$OWNER_GROUP" "$TARGET_DIR/src.new" "$TARGET_DIR/dist.new" "$TARGET_DIR/dist-custom.new" "$TARGET_DIR/docs.new" "$TARGET_DIR/scripts.new" "$TARGET_DIR/freqtrade.new"
 
+validate_wave_engine_deploy_tree "$TARGET_DIR/freqtrade.new"
+
 if [[ "$DEPENDENCY_DRIFT" -eq 1 ]]; then
   log "Installing production dependencies from staged lockfile"
   if ! npm install --prefix "$TARGET_DIR" --no-audit --no-fund >/tmp/coinmaster-deploy-npm-install.log 2>&1; then
@@ -223,6 +261,8 @@ if [[ -d "$TARGET_DIR/freqtrade.prev/user_data" ]]; then
   done
   move_freqtrade_sqlite_files "$TARGET_DIR/freqtrade.prev/user_data" "$TARGET_DIR/freqtrade/user_data"
 fi
+
+validate_wave_engine_deploy_tree "$TARGET_DIR/freqtrade"
 
 log "Stopping $SERVICE for clean port handoff"
 systemctl stop "$SERVICE"
@@ -352,7 +392,7 @@ def merge(left, right):
         else:
             left[key] = value
 root = Path(os.environ['TARGET_DIR']) / 'freqtrade' / 'user_data'
-for name in ('config.example.json', 'config.private.json'):
+for name in ('config.example.json', 'runtime/config.trading-rules.json', 'config.private.json', 'runtime/config.wave-engine-dryrun.json'):
     path = root / name
     if path.exists():
         with path.open() as handle:
@@ -373,6 +413,14 @@ if show.get('dry_run') is True and show.get('state') != 'running':
     show = request('/show_config')
 if show.get('dry_run') is not True or show.get('state') != 'running':
     raise SystemExit(f"unexpected Freqtrade post-restart state: dry_run={show.get('dry_run')} state={show.get('state')}")
+compose_text = (Path(os.environ['TARGET_DIR']) / 'freqtrade' / 'docker-compose.prod.yml').read_text()
+if 'CoinMasterWaveEngineV1' in compose_text or 'config.wave-engine-dryrun.json' in compose_text:
+    expected_bot = 'coinmaster-wave-engine-dryrun'
+    if show.get('strategy') != 'CoinMasterWaveEngineV1' or show.get('bot_name') != expected_bot:
+        raise SystemExit(
+            'unexpected Wave Engine post-restart state: '
+            f"strategy={show.get('strategy')} bot_name={show.get('bot_name')}"
+        )
 PY
 fi
 
@@ -401,7 +449,7 @@ def merge(left, right):
         else:
             left[key] = value
 root = Path(os.environ['TARGET_DIR']) / 'freqtrade' / 'user_data'
-for name in ('config.example.json', 'config.private.json'):
+for name in ('config.example.json', 'runtime/config.trading-rules.json', 'config.private.json', 'runtime/config.wave-engine-dryrun.json'):
     path = root / name
     if path.exists():
         with path.open() as handle:
@@ -423,6 +471,14 @@ if show.get('dry_run') is True and show.get('state') != 'running':
     show = request('/show_config')
 if show.get('dry_run') is not True or show.get('state') != 'running':
     raise SystemExit(f"unexpected Freqtrade final state: dry_run={show.get('dry_run')} state={show.get('state')}")
+compose_text = (Path(os.environ['TARGET_DIR']) / 'freqtrade' / 'docker-compose.prod.yml').read_text()
+if 'CoinMasterWaveEngineV1' in compose_text or 'config.wave-engine-dryrun.json' in compose_text:
+    expected_bot = 'coinmaster-wave-engine-dryrun'
+    if show.get('strategy') != 'CoinMasterWaveEngineV1' or show.get('bot_name') != expected_bot:
+        raise SystemExit(
+            'unexpected Wave Engine final state: '
+            f"strategy={show.get('strategy')} bot_name={show.get('bot_name')}"
+        )
 PY
 fi
 

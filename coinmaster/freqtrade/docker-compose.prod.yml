@@ -5,4 +5,5 @@ services:
       --config /freqtrade/user_data/config.example.json
       --config /freqtrade/user_data/runtime/config.trading-rules.json
       --config /freqtrade/user_data/config.private.json
-      --strategy CoinMasterStrategy
+      --config /freqtrade/user_data/runtime/config.wave-engine-dryrun.json
+      --strategy CoinMasterWaveEngineV1

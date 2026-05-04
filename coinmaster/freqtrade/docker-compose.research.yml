@@ -1,0 +1,14 @@
+services:
+  freqtrade:
+    # Research-only override for one-shot validation/replay containers.
+    # Separate from production compose; no live/dry-run secrets and no bot restart.
+    restart: "no"
+    cpus: "${RESEARCH_CPUS:-1.0}"
+    mem_limit: "${RESEARCH_MEMORY:-3g}"
+    memswap_limit: "${RESEARCH_MEMORY_SWAP:-3g}"
+    pids_limit: 512
+    environment:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMEXPR_NUM_THREADS: "1"

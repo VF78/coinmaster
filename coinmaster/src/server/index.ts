@@ -68,10 +68,12 @@ import type {
   TelegramOutboxItem,
   TradeEvent,
   TradeSide,
+  WaveEngineRulesSettings,
   TradingRulesSettings,
   TradingRulesTimeframe
 } from '../shared/dto.js';
 import { inferAssetClassFromSymbol, normalizeTradingRules, getMonitoredSymbols, isSymbolMonitored } from '../shared/tradingRules.js';
+import { normalizeWaveEngineRules } from '../shared/tradingRulesV2.js';
 import { normalizeRadarRuntimeSettings } from '../shared/radarRuntime.js';
 import {
   DEFAULT_ALPHA_RADAR_SETTINGS,
@@ -115,6 +117,7 @@ import {
   testReadOnlyExchangeConnection,
 } from '../integrations/readOnlyExchanges/service.js';
 import { enrichRadarSignal, buildRadarSignalsSummary } from './radarReadModel.js';
+import { buildWaveEngineReplay, readWaveEngineProfiles } from './waveEngineReplay.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -7170,6 +7173,20 @@ app.get('/api/settings/trading-rules', async (_req, res) => {
   return res.json({ ok: true, rules });
 });
 
+app.get('/api/settings/trading-rules-v2', ownerAuth, async (_req, res) => {
+  const db = await getDb();
+  const persisted = db.data.settings.tradingRulesV2;
+  const rules = normalizeWaveEngineRules(persisted);
+
+  if (JSON.stringify(rules) !== JSON.stringify(persisted)) {
+    db.data.settings.tradingRulesV2 = rules;
+    await db.write();
+    logger.info({ component: 'trading-rules-v2', persistedType: typeof persisted }, 'trading rules v2 payload normalized and persisted');
+  }
+
+  return res.json({ ok: true, rules });
+});
+
 app.get('/api/settings/trading-rules/symbols', async (_req, res) => {
   const symbols = await getTradableSymbolsCached({ allowStale: true });
   if (!symbols) {
@@ -7249,6 +7266,70 @@ app.put('/api/settings/trading-rules', async (req, res) => {
   await rulesCache.refreshNow().catch((err) => logger.warn({ component: 'runtime-rules', err }, 'forced rules refresh failed'));
 
   return res.json({ ok: true, rules, freqtradeExport });
+});
+
+app.put('/api/settings/trading-rules-v2', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  const current = normalizeWaveEngineRules(db.data.settings.tradingRulesV2);
+  const rules = normalizeWaveEngineRules({
+    ...current,
+    ...((req.body ?? {}) as Partial<WaveEngineRulesSettings>),
+  });
+
+  db.data.settings.tradingRulesV2 = rules;
+  await db.write();
+
+  return res.json({ ok: true, rules });
+});
+
+app.get('/api/wave-engine/profiles', ownerAuth, async (_req, res) => {
+  try {
+    return res.json(readWaveEngineProfiles(rootDir));
+  } catch (error) {
+    logger.error({ component: 'wave-engine-profiles', err: error }, 'failed to read wave engine profiles');
+    return res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'wave_engine_profiles_failed' });
+  }
+});
+
+app.get('/api/wave-engine/replay', ownerAuth, async (req, res) => {
+  const db = await getDb();
+  const rules = normalizeWaveEngineRules(db.data.settings.tradingRulesV2);
+  const enabledPairs = rules.symbols.filter((item) => item.enabled !== false).map((item) => item.pair || item.symbol);
+  const pair = String(req.query.pair || enabledPairs[0] || 'BTC/USDC:USDC').trim().toUpperCase();
+  const timeframeRaw = String(req.query.timeframe || '5m').trim().toLowerCase();
+  const timeframe = timeframeRaw === '15m' || timeframeRaw === '1h' ? timeframeRaw : '5m';
+  const start = String(req.query.start || '2026-01-01').trim() || '2026-01-01';
+  const end = String(req.query.end || '').trim() || undefined;
+  const isDateInput = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value));
+
+  try {
+    const knownPairs = new Set([
+      ...enabledPairs.map((item) => item.toUpperCase()),
+      ...readWaveEngineProfiles(rootDir).profiles.map((item) => item.pair.toUpperCase()),
+    ]);
+    if (!knownPairs.has(pair)) {
+      return res.status(400).json({ ok: false, error: `unknown_wave_engine_pair:${pair}` });
+    }
+    if (!isDateInput(start)) {
+      return res.status(400).json({ ok: false, error: 'invalid_wave_engine_start_date' });
+    }
+    if (end && !isDateInput(end)) {
+      return res.status(400).json({ ok: false, error: 'invalid_wave_engine_end_date' });
+    }
+    if (end && Date.parse(end) < Date.parse(start)) {
+      return res.status(400).json({ ok: false, error: 'invalid_wave_engine_date_range' });
+    }
+
+    const replay = await buildWaveEngineReplay(rootDir, rules, { pair, timeframe, start, end });
+    return res.json(replay);
+  } catch (error) {
+    logger.error({ component: 'wave-engine-replay', pair, timeframe, start, end, err: error }, 'failed to build wave engine replay');
+    return res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : 'wave_engine_replay_failed',
+      request: { pair, timeframe, start, end },
+    });
+  }
 });
 
 // ─── Effective Trading Rules (diagnostic) ─────────────────────────────
@@ -7617,6 +7698,7 @@ if (ENABLE_REPLAY_API) {
     });
   });
 }
+
 
 app.get('/api/backtest/runs', ownerAuth, async (_req, res) => {
   const db = await getDb();

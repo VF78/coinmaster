@@ -37,7 +37,11 @@ import type {
   RadarSignalsResponse,
   TradingRulesSettings,
   TradingRulesSettingsResponse,
-  TradingRulesSymbolsResponse
+  TradingRulesSymbolsResponse,
+  WaveEngineProfilesResponse,
+  WaveEngineReplayResponse,
+  WaveEngineRulesSettings,
+  WaveEngineRulesSettingsResponse
 } from '../../shared/dto.js';
 
 const RISK_BLOCK_MESSAGES: Record<string, string> = {
@@ -298,6 +302,36 @@ export function saveTradingRules(rules: TradingRulesSettings) {
   });
 }
 
+export function getWaveEngineRules() {
+  return jsonFetch<WaveEngineRulesSettingsResponse>('/api/settings/trading-rules-v2');
+}
+
+export function saveWaveEngineRules(rules: Partial<WaveEngineRulesSettings>) {
+  return jsonFetch<WaveEngineRulesSettingsResponse>('/api/settings/trading-rules-v2', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(rules)
+  });
+}
+
+export function getWaveEngineProfiles() {
+  return jsonFetch<WaveEngineProfilesResponse>('/api/wave-engine/profiles');
+}
+
+export function getWaveEngineReplay(params: {
+  pair?: string;
+  timeframe?: '5m' | '15m' | '1h';
+  start?: string;
+  end?: string;
+}) {
+  const query = new URLSearchParams();
+  if (params.pair) query.set('pair', params.pair);
+  if (params.timeframe) query.set('timeframe', params.timeframe);
+  if (params.start) query.set('start', params.start);
+  if (params.end) query.set('end', params.end);
+  return jsonFetch<WaveEngineReplayResponse>(`/api/wave-engine/replay?${query.toString()}`);
+}
+
 export function getLiveCandles(symbol = 'BTC', timeframe: '1m' | '5m' | '15m' | '1h' | '4h' = '15m', limit = 200) {
   const params = new URLSearchParams({ symbol, timeframe, limit: String(limit) });
   return jsonFetch<LiveCandlesResponse>(`/api/live/candles?${params.toString()}`);
@@ -551,6 +585,7 @@ export function testBybitConnection() {
 export function getBacktestRuns() {
   return jsonFetch<BacktestRunListResponse>('/api/backtest/runs');
 }
+
 
 export function getBacktestRun(id: string) {
   return jsonFetch<BacktestRunResponse>(`/api/backtest/runs/${encodeURIComponent(id)}`);

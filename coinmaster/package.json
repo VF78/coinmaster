@@ -20,6 +20,7 @@
     "check": "tsc --noEmit",
     "ops:smoke": "bash ./scripts/preflight-smoke.sh",
     "invariants:trading-rules": "tsx scripts/invariants-trading-rules.ts",
+    "invariants:wave-engine-rules": "tsx scripts/invariants-wave-engine-rules.ts",
     "invariants:read-only-exchanges": "tsx scripts/invariants-read-only-exchanges.ts",
     "invariants:ai-master": "tsx scripts/invariants-ai-master.ts",
     "invariants:allocation-sizing": "tsx scripts/invariants-allocation-sizing.ts",

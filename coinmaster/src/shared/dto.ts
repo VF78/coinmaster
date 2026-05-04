@@ -9,6 +9,12 @@ export type FvgTimeframe = '1h' | '4h';
 export type SignalStrategy = 'engulfing' | 'fvg' | 'radar';
 export type AssetClass = 'crypto' | 'commodity' | 'forex' | 'index' | 'other';
 export type BiasMode = 'global' | 'symbol';
+export type WaveEngineType = 'atr_zigzag' | 'pct_zigzag';
+export type WaveEngineBreakBasis = 'wick' | 'close';
+export type WaveEngineEntryTimeframe = '5m' | '15m' | '1h';
+export type WaveEngineDirectionTimeframe = '4h';
+export type WaveEngineBodyConfirmation = 'body_engulfing';
+export type WaveEngineResearchMode = 'single' | 'matrix' | 'native_validation';
 
 export interface BiasPolicySymbolOverride {
   /** global => uses default trading bias, symbol => custom per-symbol trading bias */
@@ -100,6 +106,55 @@ export interface TradingRulesSettings {
   portfolioGrossCapEnabled?: boolean;
   /** Maximum aggregate gross exposure across the portfolio, in % of equity. */
   portfolioGrossCap?: number;
+}
+
+export interface WaveEngineSymbolSettings {
+  symbol: string;
+  enabled: boolean;
+  pair?: string;
+}
+
+export interface WaveEngineNumericRange {
+  min: number;
+  max: number;
+  step: number;
+}
+
+export interface WaveEngineOptimizationRanges {
+  atrMult: WaveEngineNumericRange;
+  pctMove: WaveEngineNumericRange;
+  flatExtremeLookbackHours: WaveEngineNumericRange;
+  pullbackRatio: WaveEngineNumericRange;
+  maxSlPct: WaveEngineNumericRange;
+  tp2Pct: WaveEngineNumericRange;
+  tp3Pct: WaveEngineNumericRange;
+  timeStopHours: WaveEngineNumericRange;
+}
+
+export interface WaveEngineOptimizationSettings {
+  mode: WaveEngineResearchMode;
+  ranges: WaveEngineOptimizationRanges;
+}
+
+export interface WaveEngineRulesSettings {
+  enabled: boolean;
+  symbols: WaveEngineSymbolSettings[];
+  directionTf: WaveEngineDirectionTimeframe;
+  entryTimeframes: WaveEngineEntryTimeframe[];
+  waveEngine: WaveEngineType;
+  breakBasis: WaveEngineBreakBasis;
+  atrMult: number;
+  pctMove: number;
+  flatExtremeLookbackHours: number;
+  pullbackRatio: number;
+  bodyConfirmation: WaveEngineBodyConfirmation;
+  impulseSlBuffer: number;
+  maxSlPct: number;
+  tp1MaxPct: number;
+  tp2Pct: number;
+  tp3Pct: number;
+  timeStopHours: number;
+  optimization: WaveEngineOptimizationSettings;
 }
 
 export interface RadarRuntimeSettings {
@@ -312,6 +367,7 @@ export type ReadOnlyExchangesSettings = ExternalExchangesSettings;
 export interface AppSettings {
   depositUsd: number;
   tradingRules: TradingRulesSettings;
+  tradingRulesV2?: WaveEngineRulesSettings;
   radarRuntime: RadarRuntimeSettings;
   alphaRadar?: AlphaRadarSettings;
   telegramNotify?: TelegramNotifySettings;
@@ -1347,6 +1403,145 @@ export type ReadOnlyExchangesSettingsResponse = ExternalExchangesSettingsRespons
 export interface TradingRulesSettingsResponse {
   ok: boolean;
   rules: TradingRulesSettings;
+}
+
+export interface WaveEngineRulesSettingsResponse {
+  ok: boolean;
+  rules: WaveEngineRulesSettings;
+}
+
+export interface WaveEngineSelectedProfileSummary {
+  symbol: string;
+  pair: string;
+  waveEngine: WaveEngineType;
+  breakBasis: WaveEngineBreakBasis;
+  entryTimeframe: WaveEngineEntryTimeframe;
+  pctMove?: number;
+  atrMult?: number;
+  flatExtremeLookbackHours: number;
+  pullbackRatio: number;
+  impulseSlBuffer: number;
+  maxSlPct: number;
+  tp1MaxPct: number;
+  tp2Pct: number;
+  tp3Pct: number;
+  timeStopHours: number;
+  researchMetrics?: {
+    roiPct?: number;
+    profitAbs?: number;
+    profitFactor?: number | null;
+    maxDrawdownPct?: number;
+    winratePct?: number;
+    trades?: number;
+  };
+  sourceRun?: string;
+  sourceCandidate?: string;
+}
+
+export interface WaveEngineProfilesResponse {
+  ok: boolean;
+  selectedAt?: string;
+  selectedFrom?: string;
+  researchOnly: boolean;
+  notes: string[];
+  profiles: WaveEngineSelectedProfileSummary[];
+}
+
+export type WaveEngineReplayAnnotationKind =
+  | 'pivot'
+  | 'wave_segment'
+  | 'structural_break'
+  | 'regime'
+  | 'entry'
+  | 'tp'
+  | 'sl'
+  | 'time_stop'
+  | 'exit';
+
+export interface WaveEngineReplayCandle {
+  timestamp: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+export interface WaveEngineReplayLineSegment {
+  id: string;
+  kind: WaveEngineReplayAnnotationKind;
+  label: string;
+  color: string;
+  price: number;
+  startTime: string;
+  endTime: string;
+  tradeId?: string;
+}
+
+export interface WaveEngineReplayMarker {
+  id: string;
+  kind: WaveEngineReplayAnnotationKind;
+  time: string;
+  price?: number;
+  side?: TradeSide | 'high' | 'low';
+  label: string;
+  text?: string;
+  color: string;
+  shape?: 'circle' | 'square' | 'arrowUp' | 'arrowDown';
+  tradeId?: string;
+  regimeState?: 'flat' | 'long' | 'short';
+}
+
+export interface WaveEngineReplayWave {
+  id: string;
+  direction: 'up' | 'down';
+  startTime: string;
+  startPrice: number;
+  endTime: string;
+  endPrice: number;
+  confirmed: boolean;
+  threshold?: number;
+}
+
+export interface WaveEngineReplayTrade {
+  id: string;
+  pair: string;
+  timeframe: WaveEngineEntryTimeframe;
+  side: TradeSide;
+  entryTime: string;
+  exitTime: string;
+  entryPrice: number;
+  exitPrice: number;
+  exitReason: string;
+  levels: {
+    stop: number;
+    tp1: number;
+    tp2: number;
+    tp3: number;
+  };
+  events: WaveEngineReplayMarker[];
+}
+
+export interface WaveEngineReplayResponse {
+  ok: boolean;
+  request: {
+    pair: string;
+    timeframe: WaveEngineEntryTimeframe;
+    start: string;
+    end?: string;
+  };
+  dataSource: {
+    kind: string;
+    path?: string;
+    note?: string;
+  };
+  profile: WaveEngineSelectedProfileSummary | null;
+  rules: WaveEngineRulesSettings;
+  candles: WaveEngineReplayCandle[];
+  waves: WaveEngineReplayWave[];
+  markers: WaveEngineReplayMarker[];
+  segments: WaveEngineReplayLineSegment[];
+  trades: WaveEngineReplayTrade[];
 }
 
 export interface RadarRuntimeSettingsResponse {

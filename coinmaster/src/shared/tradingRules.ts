@@ -119,7 +119,7 @@ function normalizeTimeframeArray(value: unknown, fallback: TradingRulesTimeframe
   return result.length > 0 ? result : [...fallback];
 }
 
-function normalizeRuleSymbol(value: unknown): string | null {
+export function normalizeRuleSymbol(value: unknown): string | null {
   const raw = String(value ?? '').trim();
   if (!raw) return null;
 

@@ -11,6 +11,8 @@
 /coinmaster/freqtrade/user_data/data/
 /coinmaster/freqtrade/user_data/backtest_results/
 /coinmaster/freqtrade/user_data/hyperopt_results/
+/coinmaster/freqtrade/user_data/research/
+/coinmaster/freqtrade/user_data/runtime/
 /coinmaster/freqtrade/user_data/logs/
 /coinmaster/freqtrade/user_data/config.private*.json
 !/coinmaster/freqtrade/user_data/config.private.example.json
@@ -18,3 +20,5 @@
 /coinmaster/freqtrade/user_data/*.sqlite*
 /coinmaster/dist-custom/
 /coinmaster/freqtrade/user_data/strategies/__pycache__/
+**/__pycache__/
+*.py[cod]

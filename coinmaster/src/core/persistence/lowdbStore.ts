@@ -2,6 +2,7 @@ import { JSONFilePreset } from 'lowdb/node';
 import type { Low } from 'lowdb';
 import type { DBShape } from '../types.js';
 import { cloneTradingRulesDefaults } from '../../shared/tradingRules.js';
+import { cloneWaveEngineRulesDefaults, normalizeWaveEngineRules } from '../../shared/tradingRulesV2.js';
 import { cloneRadarRuntimeDefaults, normalizeRadarRuntimeSettings } from '../../shared/radarRuntime.js';
 import { DEFAULT_ALPHA_RADAR_SETTINGS, normalizeAlphaRadarSettings } from '../../server/alphaRadar.js';
 import type { PersistenceStore } from './types.js';
@@ -10,6 +11,7 @@ const defaultData: DBShape = {
   settings: {
     depositUsd: 1000,
     tradingRules: cloneTradingRulesDefaults(),
+    tradingRulesV2: cloneWaveEngineRulesDefaults(),
     radarRuntime: cloneRadarRuntimeDefaults(),
     alphaRadar: DEFAULT_ALPHA_RADAR_SETTINGS,
     telegramNotify: {
@@ -66,13 +68,20 @@ const defaultData: DBShape = {
 const EXPERIMENT_TRIAL_HISTORY_LIMIT = Math.max(100, Number(process.env.EXPERIMENT_TRIAL_HISTORY_LIMIT || 500));
 
 function ensureDbShape(data: DBShape) {
-  data.settings = data.settings ?? { depositUsd: 1000, tradingRules: cloneTradingRulesDefaults(), radarRuntime: cloneRadarRuntimeDefaults(), alphaRadar: DEFAULT_ALPHA_RADAR_SETTINGS };
+  data.settings = data.settings ?? {
+    depositUsd: 1000,
+    tradingRules: cloneTradingRulesDefaults(),
+    tradingRulesV2: cloneWaveEngineRulesDefaults(),
+    radarRuntime: cloneRadarRuntimeDefaults(),
+    alphaRadar: DEFAULT_ALPHA_RADAR_SETTINGS,
+  };
   if (!Number.isFinite(data.settings.depositUsd)) {
     data.settings.depositUsd = 1000;
   }
   if (!data.settings.tradingRules || typeof data.settings.tradingRules !== 'object') {
     data.settings.tradingRules = cloneTradingRulesDefaults();
   }
+  data.settings.tradingRulesV2 = normalizeWaveEngineRules(data.settings.tradingRulesV2);
   data.settings.radarRuntime = normalizeRadarRuntimeSettings(
     data.settings.radarRuntime,
     data.settings.tradingRules.autoConfirm,

@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "selected_at": "2026-04-30T20:35:00Z",
+  "selected_from": "split-search-20260430T195939Z / native split validation 20260430T202419Z",
+  "research_only": true,
+  "notes": [
+    "Dry-run candidate selected after Jan-Mar train + April OOS split search.",
+    "Native candidate improved recent windows versus previous selected profile: Apr 2026 +6.59% vs previous -0.41%; Mar-Apr +6.32% vs previous -0.14%.",
+    "Native validation passed lookahead-analysis: has_bias=No, 0 biased entries/exits.",
+    "Native recursive-analysis passed after removing non-decision debug wave ids from native dataframe output.",
+    "Still dry-run only. Live trading requires explicit approval and real forward dry-run evidence. +20-30% monthly is a target, not a guarantee."
+  ],
+  "pairs": {
+    "BTC/USDC:USDC": {
+      "symbol": "BTC/USDC:USDC",
+      "wave_engine": "atr_zigzag",
+      "break_basis": "close",
+      "entry_timeframe": "15m",
+      "flat_extreme_lookback_hours": 60,
+      "pullback_ratio": 0.6,
+      "impulse_sl_buffer": 0.0033,
+      "max_sl_pct": 0.04,
+      "tp1_max_pct": 0.015,
+      "tp2_pct": 0.04,
+      "tp3_pct": 0.08,
+      "time_stop_hours": 8,
+      "pct_move": 0.04,
+      "atr_mult": 1.5,
+      "research_metrics": {
+        "split_train_jan_mar_roi_pct": 7.032594,
+        "split_oos_apr_roi_pct": 2.971727,
+        "split_full_roi_pct": 12.741023,
+        "split_full_profit_factor": 2.12586008,
+        "split_full_max_drawdown_pct": 4.827937,
+        "split_full_trades": 38
+      },
+      "source_run": "/var/lib/coinmaster/freqtrade/research/wave-engine/split-search/20260430T195939Z",
+      "source_candidate": "BTC candidate 42"
+    },
+    "ETH/USDC:USDC": {
+      "symbol": "ETH/USDC:USDC",
+      "wave_engine": "pct_zigzag",
+      "break_basis": "close",
+      "entry_timeframe": "1h",
+      "flat_extreme_lookback_hours": 90,
+      "pullback_ratio": 0.6,
+      "impulse_sl_buffer": 0.0033,
+      "max_sl_pct": 0.04,
+      "tp1_max_pct": 0.015,
+      "tp2_pct": 0.025,
+      "tp3_pct": 0.05,
+      "time_stop_hours": 12,
+      "pct_move": 0.035,
+      "atr_mult": 2.0,
+      "research_metrics": {
+        "split_train_jan_mar_roi_pct": 7.715115,
+        "split_oos_apr_roi_pct": 2.840265,
+        "split_full_roi_pct": 13.54038,
+        "split_full_profit_factor": 9.06423813,
+        "split_full_max_drawdown_pct": 1.519596,
+        "split_full_trades": 13
+      },
+      "source_run": "/var/lib/coinmaster/freqtrade/research/wave-engine/split-search/20260430T195939Z",
+      "source_candidate": "ETH candidate 78"
+    },
+    "HYPE/USDC:USDC": {
+      "symbol": "HYPE/USDC:USDC",
+      "wave_engine": "pct_zigzag",
+      "break_basis": "wick",
+      "entry_timeframe": "5m",
+      "flat_extreme_lookback_hours": 90,
+      "pullback_ratio": 0.5,
+      "impulse_sl_buffer": 0.0033,
+      "max_sl_pct": 0.02,
+      "tp1_max_pct": 0.015,
+      "tp2_pct": 0.04,
+      "tp3_pct": 0.06,
+      "time_stop_hours": 4,
+      "pct_move": 0.02,
+      "atr_mult": 1.5,
+      "research_metrics": {
+        "split_train_jan_mar_roi_pct": 15.872749,
+        "split_oos_apr_roi_pct": 3.278653,
+        "split_full_roi_pct": 19.151402,
+        "split_full_profit_factor": 1.6619245,
+        "split_full_max_drawdown_pct": 4.449048,
+        "split_full_trades": 78
+      },
+      "source_run": "/var/lib/coinmaster/freqtrade/research/wave-engine/split-search/20260430T195939Z",
+      "source_candidate": "HYPE candidate 64"
+    }
+  }
+}

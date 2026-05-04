@@ -1,0 +1,20 @@
+{
+  "enabled": false,
+  "symbol": "BTC/USDC:USDC",
+  "direction_tf": "4h",
+  "entry_timeframes": ["5m", "15m", "1h"],
+  "wave_engine": "atr_zigzag",
+  "break_basis": "wick",
+  "atr_period": 14,
+  "atr_mult": 2.5,
+  "pct_move": 0.03,
+  "flat_extreme_lookback_hours": 100,
+  "pullback_ratio": 0.5,
+  "impulse_sl_buffer": 0.0033,
+  "max_sl_pct": 0.03,
+  "tp1_max_pct": 0.015,
+  "tp2_pct": 0.03,
+  "tp3_pct": 0.06,
+  "time_stop_hours": 8,
+  "stake_per_trade": 1.0
+}

@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { TradingRulesPage } from './pages/TradingRulesPage';
+import { WaveEnginePage } from './pages/WaveEnginePage';
 import { useDialog } from './components/DialogProvider';
 import { Card } from './components/Card';
 import { Badge } from './components/Badge';
 import { Button } from './components/Button';
 import { getAlphaRadarIdeas, getAlphaRadarSettings, getFreqtradeRadarPolicy, getRadarRuntimeSettings, refreshFreqtradeRadarPolicy, saveAlphaRadarSettings, saveRadarRuntimeSettings, type FreqtradeRadarPolicyResponse, type FreqtradeRadarPolicyScope } from './lib/api';
 
- type PageKey = 'trading-rules' | 'radar' | 'backtest';
+ type PageKey = 'trading-rules' | 'wave-engine' | 'radar' | 'backtest';
 
 const SECTIONS: Array<{ key: PageKey; label: string }> = [
   { key: 'trading-rules', label: 'Trading Rules' },
+  { key: 'wave-engine', label: 'Wave Engine' },
   { key: 'radar', label: 'Radar' },
   { key: 'backtest', label: 'Backtest' },
 ];
@@ -468,6 +470,7 @@ export function CustomApp() {
               }}
             />
           ) : null}
+          {page === 'wave-engine' ? <WaveEnginePage /> : null}
           {page === 'radar' ? <RadarPolicyPage /> : null}
           {page === 'backtest' ? <BacktestPlaceholderPage /> : null}
         </section>

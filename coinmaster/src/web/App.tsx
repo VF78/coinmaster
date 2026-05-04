@@ -6,14 +6,16 @@ import { TradingRulesPage } from './pages/TradingRulesPage';
 import { AiMasterPage } from './pages/AiMasterPage';
 import { BacktestPage } from './pages/BacktestPage';
 import { AlphaRadarPage } from './pages/AlphaRadarPage';
+import { WaveEnginePage } from './pages/WaveEnginePage';
 import { useDialog } from './components/DialogProvider';
 
-type PageKey = 'dashboard' | 'radar' | 'history' | 'settings' | 'trading-rules' | 'ai-master' | 'backtest';
+type PageKey = 'dashboard' | 'radar' | 'history' | 'settings' | 'trading-rules' | 'wave-engine' | 'ai-master' | 'backtest';
 
 const SECTIONS: Array<{ key: PageKey; label: string }> = [
   { key: 'dashboard', label: 'Dashboard' },
   { key: 'radar', label: 'Radar' },
   { key: 'trading-rules', label: 'Trading Rules' },
+  { key: 'wave-engine', label: 'Wave Engine' },
   { key: 'backtest', label: 'Backtest' },
   { key: 'history', label: 'History' },
   { key: 'ai-master', label: 'AI Master' },
@@ -95,6 +97,7 @@ export function App() {
               }}
             />
           ) : null}
+          {page === 'wave-engine' ? <WaveEnginePage /> : null}
           {page === 'backtest' ? <BacktestPage /> : null}
           {page === 'settings' ? <SettingsPage /> : null}
         </section>
