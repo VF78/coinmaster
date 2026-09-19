@@ -7,7 +7,9 @@ is the only accepted launch point for the future native baseline lifecycle.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from uuid import uuid4
 
@@ -16,6 +18,22 @@ DAY_MS = 86_400_000
 WARMUP_START_MS = 1_662_076_800_000  # 2022-09-02T00:00:00Z
 TRADING_START_MS = 1_725_148_800_000  # 2024-09-01T00:00:00Z
 TRADING_END_MS = 1_788_220_800_000  # 2026-09-01T00:00:00Z, exclusive
+
+
+@dataclass(frozen=True)
+class ExecutionPolicy:
+    """Versioned matching assumptions; unknown venue facts stay explicit."""
+    version: str = "bybit-1m-close-v1"
+    execution_source: str = "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE"
+    mark_source: str = "BYBIT_GAP_FREE_1M_MARK_CLOSE"
+    latency: str = "next_available_1m_close_after_daily_decision"
+    fees: str = "UNKNOWN_PROFILE_NOT_APPLIED"
+    spread_slippage_liquidity: str = "UNKNOWN_NO_L2_OR_TRADE_TAPE"
+    liquidation: str = "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL"
+
+    @property
+    def hash(self) -> str:
+        return hashlib.sha256(json.dumps(asdict(self), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 def funding_with_prior_minute_marks(
@@ -50,7 +68,7 @@ def funding_with_prior_minute_marks(
 
 
 def run_native_diagnostic(data_root: Path, include_funding: bool = False, candidate=None) -> dict:
-    """Execute the one native Strategy on real daily Bybit bars, never rank it.
+    """Execute one native lifecycle with daily decisions and causal 1m fills.
 
     Funding settlement marks, fees, and intraminute liquidation remain
     unverified, so this route is deliberately an engineering diagnostic—not a
@@ -71,6 +89,7 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
 
     candidate = candidate or Candidate()
+    policy = ExecutionPolicy()
     def rows(symbol: str):
         return {
             row["open_time_ms"]: row
@@ -78,6 +97,15 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
             if WARMUP_START_MS <= int(row["open_time_ms"]) < TRADING_END_MS
         }
     btc, sol = rows("BTCUSDT"), rows("SOLUSDT")
+    # The full 1m streams are hash/gap checked by the manifest. Only the first
+    # closed executable minute after each daily decision is loaded into this
+    # one native lifecycle; no synthetic daily-close quote is manufactured.
+    wanted_minutes = [timestamp + 86_400_000 for timestamp in sorted(set(btc) & set(sol)) if TRADING_START_MS <= timestamp + 86_400_000 < TRADING_END_MS]
+    def minute_closes(symbol: str, stream: str) -> dict[int, dict]:
+        table = pq.read_table(data_root / "normalized" / f"bybit-{symbol}-{stream}-1m.parquet", filters=[("open_time_ms", "in", wanted_minutes)])
+        return {int(row["open_time_ms"]): row for row in table.to_pylist()}
+    btc_execution, sol_execution = minute_closes("BTCUSDT", "execution"), minute_closes("SOLUSDT", "execution")
+    btc_marks, sol_marks = minute_closes("BTCUSDT", "mark"), minute_closes("SOLUSDT", "mark")
     def kind(instrument, price_type): return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
     btc_last, sol_last = kind(BTC_PERP.id, PriceType.LAST), kind(SOL_PERP.id, PriceType.LAST)
     def bar(bar_type, row, precision, volume):
@@ -117,8 +145,14 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
         mark_ts = (timestamp + 86_400_000) * 1_000_000
         if b.get("mark_close") is None or s.get("mark_close") is None:
             continue
-        execution_data += [bar(btc_last, b, 1, "1000.000"), bar(sol_last, s, 2, "1000.0"), quote(BTC_PERP.id, f"{float(b['close']) - .05:.1f}", f"{float(b['close']) + .05:.1f}", event), quote(SOL_PERP.id, f"{float(s['close']) - .05:.2f}", f"{float(s['close']) + .05:.2f}", event)]
-        mark_data += [venue_mark(BTC_PERP.id, Decimal(str(b["mark_close"])), mark_ts), venue_mark(SOL_PERP.id, Decimal(str(s["mark_close"])), mark_ts)]
+        minute = timestamp + 86_400_000
+        be, se, bm, sm = btc_execution.get(minute), sol_execution.get(minute), btc_marks.get(minute), sol_marks.get(minute)
+        if timestamp >= TRADING_START_MS and not all((be, se, bm, sm)) and timestamp + 86_400_000 < TRADING_END_MS:
+            raise ValueError(f"MISSING_CAUSAL_1M_EXECUTION_OR_MARK:{minute}")
+        execution_data += [bar(btc_last, b, 1, "1000.000"), bar(sol_last, s, 2, "1000.0")]
+        if timestamp >= TRADING_START_MS and be and se and bm and sm:
+            execution_data += [quote(BTC_PERP.id, f"{float(be['close']):.1f}", f"{float(be['close']):.1f}", (minute + 60_000) * 1_000_000), quote(SOL_PERP.id, f"{float(se['close']):.2f}", f"{float(se['close']):.2f}", (minute + 60_000) * 1_000_000)]
+            mark_data += [venue_mark(BTC_PERP.id, Decimal(str(bm["close"])), (minute + 60_000) * 1_000_000), venue_mark(SOL_PERP.id, Decimal(str(sm["close"])), (minute + 60_000) * 1_000_000)]
     engine.add_data(execution_data, sort=False)
     engine.add_data(mark_data, client_id=ClientId("BYBIT_MARK"), sort=False)
     engine.sort_data(); engine.run()
@@ -138,7 +172,9 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
         else:
             fees = Decimal("0")
         rejected = sum("REJECTED" in str(value) for value in orders.get("status", ()))
-        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) no trading", "fills": len(fills), "native_fees": str(fees), "native_order_rejections": rejected, "funding_events_posted": len(journal.funding_audit()) if journal else 0, "funding_journal": str(journal_path) if journal else None, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["CustomData venue marks do not participate in matching", "Current public tiers/40x BTC and 20x SOL leverage are not historical tier evidence", "Funding prior-minute mark is timing-uncertain" if events else "Funding not included", "Historical fee applicability and intraminute liquidation are unverified"]}
+        data_hash = hashlib.sha256(json.dumps(json.loads((data_root / "bybit-1m" / "manifest.json").read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        config_hash = hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) feature-only", "config_hash": config_hash, "data_hash": data_hash, "policy": asdict(policy), "policy_hash": policy.hash, "fills": len(fills), "native_fees": str(fees), "native_order_rejections": rejected, "funding_events_posted": len(journal.funding_audit()) if journal else 0, "funding_journal": str(journal_path) if journal else None, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no bid/ask, L2, latency, fee, slippage, liquidity, or validated liquidation facts", "Venue marks are CustomData and do not participate in matching", "Current public tiers/40x BTC and 20x SOL leverage are not historical tier evidence", "Funding prior-minute mark is timing-uncertain" if events else "Funding not included"]}
     finally:
         engine.dispose()
         if journal:
