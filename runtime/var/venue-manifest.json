@@ -56,6 +56,42 @@
       "sha256": "e0da3637671157bf9eb8a04cc9121165884272740ca14c18948fce0ac5a0dc3e",
       "source": "Bybit mark D SOLUSDT [2022-09-02, 2022-09-03]",
       "collected_at": "2026-09-19T18:24:56Z"
+    },
+    {
+      "path": "var/raw/venues/hyperliquid-BTC-funding-warmup-start.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "source": "Hyperliquid fundingHistory BTC [2022-09-02, 2022-09-03] (empty)",
+      "collected_at": "2026-09-19T18:29:00Z"
+    },
+    {
+      "path": "var/raw/venues/hyperliquid-BTC-candle-warmup-start.json",
+      "sha256": "26a0ba0d2f78cea08ab22c9ed9355b8e499076066bf993b06dd7b5a3fd27b8e6",
+      "source": "Hyperliquid candleSnapshot BTC 1d [2022-09-02, 2022-09-03] (zero volume)",
+      "collected_at": "2026-09-19T18:29:00Z"
+    },
+    {
+      "path": "var/raw/venues/hyperliquid-BTC-funding-research-start.json",
+      "sha256": "735848805208f835fb91bcdc2b5d356e6eafd17cff01668fb84a1736933380ed",
+      "source": "Hyperliquid fundingHistory BTC [2024-09-01, 2024-09-02]",
+      "collected_at": "2026-09-19T18:29:00Z"
+    },
+    {
+      "path": "var/raw/venues/hyperliquid-SOL-funding-research-start.json",
+      "sha256": "ceb1cf4a70db32453cb9fe1890ba04e78c49ec76db9df299dccde4769f6db611",
+      "source": "Hyperliquid fundingHistory SOL [2024-09-01, 2024-09-02]",
+      "collected_at": "2026-09-19T18:29:00Z"
+    },
+    {
+      "path": "var/raw/venues/hyperliquid-BTC-candle-research-start.json",
+      "sha256": "504d46f25ac23a8d51841e6aaa71c0ad0d2754a17e0c4142340f3f52d5f1f704",
+      "source": "Hyperliquid candleSnapshot BTC 1d [2024-09-01, 2024-09-02]",
+      "collected_at": "2026-09-19T18:29:00Z"
+    },
+    {
+      "path": "var/raw/venues/hyperliquid-SOL-candle-research-start.json",
+      "sha256": "34e73fe6c46954b858b014794edde440d1c908dfe6b238a2562d25dc9c4f1f2f",
+      "source": "Hyperliquid candleSnapshot SOL 1d [2024-09-01, 2024-09-02]",
+      "collected_at": "2026-09-19T18:29:00Z"
     }
   ],
   "required_research_window": {
@@ -66,7 +102,7 @@
   },
   "coverage_probes": {
     "bybit": "BTCUSDT and SOLUSDT public mark/funding requests returned observations at warmup boundary 2022-09-02; a current BTC response is after the target cutoff. This does not establish gap-free 24-month coverage.",
-    "hyperliquid": "NOT_PROBED: no mark/funding boundary evidence is stored yet."
+    "hyperliquid": "At warmup start BTC funding is empty and the candle has zero volume; at research start 2024-09-01 BTC/SOL funding and nonzero-volume candles exist. Thus the required 730-day real warmup is unavailable from these probes; do not use warmup candle as a price proxy."
   },
   "profiles": [
     {
