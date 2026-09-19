@@ -27,6 +27,7 @@ class PaperRuntime:
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_lock (id INTEGER PRIMARY KEY CHECK(id=1), owner TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_commands (idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_events (event_id TEXT PRIMARY KEY, kind TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_snapshot (id INTEGER PRIMARY KEY CHECK(id=1), body TEXT NOT NULL)")
         self.db.commit()
 
@@ -44,6 +45,21 @@ class PaperRuntime:
             raise ValueError("unsupported paper command")
         try:
             self.db.execute("INSERT INTO paper_commands VALUES (?, ?)", (idempotency_key, command)); self.db.commit(); return True
+        except sqlite3.IntegrityError:
+            return False
+
+    def record_native_event(self, event_id: str, kind: str) -> bool:
+        """Durably de-duplicate native order/fill/funding event identities.
+
+        This is an audit/restart guard only.  It never creates an order, fill,
+        funding posting, account balance, or synthetic execution event.
+        """
+        if kind not in {"order", "fill", "funding", "account", "position"}:
+            raise ValueError("unsupported native event kind")
+        try:
+            self.db.execute("INSERT INTO paper_events VALUES (?, ?)", (event_id, kind))
+            self.db.commit()
+            return True
         except sqlite3.IntegrityError:
             return False
 

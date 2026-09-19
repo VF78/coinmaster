@@ -1,33 +1,40 @@
-"""Paper-only loopback worker; it has no private exchange or order transport."""
+"""Paper-only loopback worker backed by one native Nautilus TradingNode."""
 from __future__ import annotations
 
 import json, os, time
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from pathlib import Path
-from urllib.request import urlopen
 
 from coinmaster.ops.paper import PaperRuntime
+from coinmaster.ops.native_paper_node import NativePaperNode
 
 
 class Worker:
     def __init__(self) -> None:
         if os.getenv("COINMASTER_LIVE_ENABLED", "false").lower() != "false":
             raise RuntimeError("PAPER_WORKER_REFUSES_LIVE_ENABLED")
+        from pathlib import Path
+
         self.runtime = PaperRuntime(Path(os.environ.get("COINMASTER_PAPER_DB", "var/paper/paper.sqlite")), os.environ.get("COINMASTER_PAPER_OWNER", "coinmaster-paper"), int(120e9))
-        self.runtime.acquire(); self.marks: dict[str, str] = {}; self.last_ns = 0; self.error: str | None = None
+        self.runtime.acquire()
+        manifest = Path(os.environ.get("COINMASTER_PAPER_HISTORY_MANIFEST", "var/data/bybit/manifest.json"))
+        self.native = NativePaperNode(manifest, native_event_sink=self.runtime.record_native_event)
+        self.native.prime()
+        self.native.start()
 
     def poll(self) -> None:
-        try:
-            url = "https://api.bybit.com/v5/market/tickers?category=linear&symbol=BTCUSDT"
-            with urlopen(url, timeout=10) as response: payload = json.load(response)
-            item = payload["result"]["list"][0]; self.marks["BTCUSDT"] = item["markPrice"]
-            self.last_ns, self.error = time.time_ns(), None
-            self.runtime.snapshot(ts_ns=self.last_ns, positions=[], orders=[], funding_event_ids=[])
-        except Exception as error: self.error = type(error).__name__
+        status = self.native.status()
+        positions = [str(item) for item in self.native.node.cache.positions_open()]
+        orders = [str(item) for item in self.native.node.cache.orders_open()]
+        # A next funding time/rate is observation evidence, not a posting.  Do
+        # not record it as funded until a confirmed settlement mark is applied
+        # through the durable native funding journal.
+        self.runtime.snapshot(ts_ns=time.time_ns(), positions=positions, orders=orders, funding_event_ids=[])
 
     def status(self) -> dict:
         health = self.runtime.health(time.time_ns())
-        return {"mode": "paper", "live_order_capability": False, "venue": "bybit_public_only", "marks": self.marks, "last_data_ns": self.last_ns, "error": self.error, "safe_for_increase": health.safe_for_increase, "warnings": health.warnings}
+        native = self.native.status()
+        native.update({"mode": "paper", "safe_for_increase": health.safe_for_increase and native["state"] == "READY", "warnings": health.warnings})
+        return native
 
 
 def main() -> None:
