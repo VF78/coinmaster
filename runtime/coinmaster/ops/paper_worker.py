@@ -16,7 +16,7 @@ class Worker:
 
         self.runtime = PaperRuntime(Path(os.environ.get("COINMASTER_PAPER_DB", "var/paper/paper.sqlite")), os.environ.get("COINMASTER_PAPER_OWNER", "coinmaster-paper"), int(120e9))
         self.runtime.acquire()
-        manifest = Path(os.environ.get("COINMASTER_PAPER_HISTORY_MANIFEST", "var/data/bybit/manifest.json"))
+        manifest = Path(os.environ.get("COINMASTER_PAPER_HISTORY_MANIFEST", "var/data/paper-warmup-manifest.json"))
         self.native = NativePaperNode(manifest, native_event_sink=self.runtime.record_native_event)
         self.native.prime()
         self.native.start()

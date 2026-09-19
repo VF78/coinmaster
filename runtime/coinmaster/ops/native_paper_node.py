@@ -8,6 +8,8 @@ registered here.
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import json
 import os
 import threading
 import time
@@ -63,18 +65,25 @@ def scrub_private_execution_environment(environment: dict[str, str] | None = Non
 
 
 def _history_ready(path: Path) -> tuple[bool, str]:
-    """Require a gap-free, public-data manifest with the full daily warmup."""
+    """Verify and hydrate the minimal immutable daily BTC/SOL warmup bundle."""
     try:
-        import json
-
         manifest = json.loads(path.read_text())
-        symbols = {item["symbol"]: item for item in manifest["symbols"]}
+        if manifest["schema"] != "coinmaster-paper-warmup-v1":
+            return False, "INVALID_WARMUP_SCHEMA"
         for symbol in ("BTCUSDT", "SOLUSDT"):
-            reports = symbols[symbol]["reports"]
-            daily = next(item for item in reports if item["series"] == "kline_daily")
-            if daily["expected"] < WARMUP_DAYS or daily["missing"] or daily["duplicate_timestamps"]:
+            item = manifest["symbols"][symbol]
+            if item["daily_rows"] < WARMUP_DAYS or item["daily_gaps"] or item["daily_duplicates"]:
                 return False, f"INVALID_WARMUP_{symbol}"
-    except (OSError, KeyError, StopIteration, ValueError, TypeError):
+            daily = path.parent / item["daily_path"]
+            funding = path.parent / item["funding_path"]
+            for artifact, expected in ((daily, item["daily_sha256"]), (funding, item["funding_sha256"])):
+                if hashlib.sha256(artifact.read_bytes()).hexdigest() != expected:
+                    return False, f"WARMUP_HASH_MISMATCH_{symbol}"
+            import pyarrow.parquet as pq
+            rows = pq.read_table(daily).to_pylist()
+            if len(rows) < WARMUP_DAYS or any(row.get("mark_close") is None for row in rows):
+                return False, f"INVALID_WARMUP_DAILY_DATA_{symbol}"
+    except (OSError, KeyError, ValueError, TypeError):
         return False, "MISSING_OR_INVALID_WARMUP_MANIFEST"
     return True, "READY"
 

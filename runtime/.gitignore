@@ -3,5 +3,8 @@
 __pycache__/
 *.py[cod]
 var/
+!var/
+!var/data/
+!var/data/paper-warmup-manifest.json
 # Superseded duplicate of the canonical candle warmup probe below.
 var/raw/venues/hyperliquid-BTC-mark-warmup-start.json

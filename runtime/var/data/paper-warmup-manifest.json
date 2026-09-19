@@ -1,0 +1,8 @@
+{
+  "schema": "coinmaster-paper-warmup-v1",
+  "source_manifest_sha256": "a3ece5d12a229a6bbb7d64d079f7b2c78e914eef46867d8df1e95935c9bcac74",
+  "symbols": {
+    "BTCUSDT": {"daily_path": "normalized/bybit-BTCUSDT-daily.parquet", "daily_sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545", "funding_path": "normalized/bybit-BTCUSDT-funding.parquet", "funding_sha256": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17", "daily_rows": 1460, "daily_gaps": 0, "daily_duplicates": 0},
+    "SOLUSDT": {"daily_path": "normalized/bybit-SOLUSDT-daily.parquet", "daily_sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4", "funding_path": "normalized/bybit-SOLUSDT-funding.parquet", "funding_sha256": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d", "daily_rows": 1460, "daily_gaps": 0, "daily_duplicates": 0}
+  }
+}
