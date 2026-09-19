@@ -4,8 +4,8 @@ Updated: 2026-09-20 Europe/Moscow
 Status: ACTIVE — Nautilus paper P5.2/P6 operational hardening; no live trading is authorized.
 Canonical root: `/root/.openclaw/workspace/coinmaster/coinmaster`; branch `codex/nautilus-btc-sol-mvp`.
 Deployed state: paper and loopback runtime services are active. The paper node is native Sandbox-only (`live_order_capability=false`) with public Bybit/Hyperliquid data, verified warmup, reconciliation, and no open positions/orders.
-Current step: isolated open-group/crash-before-ACK reconciliation proof and the backup/restore/doctor/monitoring/live-gate runbook. Do not change strategy, optimizer, funding policy, live capability, proxy, firewall, or unrelated services.
-Next: commit/push, then an isolated VPS SQLite backup/restore drill and read-only monitoring. Remaining blockers: this is not live-ready; historical execution/fee/liquidation evidence and separately authorized live promotion are absent.
+Done: isolated open-group/crash-before-ACK reconciliation proof, read-only doctor, and backup/restore/monitoring/live-gate runbook. VPS online backup and restore-copy drill verified matching hashes; both doctor reports are `OK`/WAL/reconciled/zero positions-orders/`BLOCKED_PAPER_ONLY`, with both services active throughout.
+Next: paper-only monitoring and evidence collection. Remaining blockers: this is not live-ready; historical execution/fee/liquidation evidence and separately authorized live promotion are absent.
 
 ## Historical legacy Freqtrade reference
 
