@@ -131,7 +131,13 @@ class WaveOverlayStrategy(Strategy):
                 self._domain.on_parent_terminal(intent.id)
                 return
             quantity = min(quantity, float(position.quantity))
-        order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(Decimal(str(quantity))), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
+        step = instrument.size_increment.as_decimal()
+        rounded = (Decimal(str(quantity)) // step) * step
+        if rounded <= 0:
+            # A sub-step request is a reject, never an implicit size increase.
+            self._domain.on_parent_terminal(intent.id)
+            return
+        order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
         self._pending_by_order[str(order.client_order_id)] = intent
         # Preserve the sigma from the decision in the native order tag map, rather
         # than recalculating it after a later fill.
