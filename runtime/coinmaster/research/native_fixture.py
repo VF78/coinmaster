@@ -19,6 +19,7 @@ from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.model.objects import Money, Price, Quantity
 from nautilus_trader.model.orders import MarketOrder
 from nautilus_trader.trading.strategy import Strategy
+from coinmaster.ledger.journal import NativeEventJournal
 from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 
@@ -45,6 +46,10 @@ class FixtureConfig(StrategyConfig, frozen=True):
     sol_id: InstrumentId
     margin_probe: bool = False
     tier_probe: bool = False
+    tier_actions: tuple[tuple[InstrumentId, OrderSide, str], ...] = ()
+    tier_marks: tuple["MarkPriceUpdate", ...] = ()
+    tier_selected_leverage: tuple[tuple[InstrumentId, Decimal], ...] = ()
+    max_mark_age_ns: int = 0
 
 
 class FixtureStrategy(Strategy):
@@ -80,7 +85,7 @@ class FixtureStrategy(Strategy):
                 (self.config.sol_id, OrderSide.SELL, "1100.0"),
             )
         if self.config.tier_probe:
-            actions = ((self.config.btc_id, OrderSide.BUY, "4.000"),)
+            actions = self.config.tier_actions or ((self.config.btc_id, OrderSide.BUY, "4.000"),)
         if self._step >= len(actions):
             return
         instrument_id, side, quantity = actions[self._step]
@@ -93,6 +98,14 @@ class FixtureStrategy(Strategy):
             self.margin_rejections += 1
             self._step += 1
             return
+        if self.config.tier_probe and self._is_risk_increase(instrument_id, side) and not self._tier_allows_increase(
+            instrument_id,
+            Decimal(quantity),
+            tick.ts_event,
+        ):
+            self.margin_rejections += 1
+            self._step += 1
+            return
         order: MarketOrder = self.order_factory.market(
             instrument_id=instrument_id,
             order_side=side,
@@ -101,6 +114,34 @@ class FixtureStrategy(Strategy):
         )
         self.submit_order(order)
         self._step += 1
+
+    def _is_risk_increase(self, instrument_id: InstrumentId, side: OrderSide) -> bool:
+        position = next(
+            (item for item in self.cache.positions_open() if item.instrument_id == instrument_id),
+            None,
+        )
+        return position is None or (position.is_long and side == OrderSide.BUY) or (position.is_short and side == OrderSide.SELL)
+
+    def _tier_allows_increase(self, instrument_id: InstrumentId, quantity: Decimal, ts_now: int) -> bool:
+        try:
+            policy = TierMarginPolicy(
+                self.config.tier_marks,
+                dict(self.config.tier_selected_leverage),
+                self.config.max_mark_age_ns,
+            )
+            positions = {item.instrument_id: item for item in self.cache.positions_open()}
+            required = Decimal("0")
+            for current_id in (self.config.btc_id, self.config.sol_id):
+                position = positions.get(current_id)
+                current = position.quantity.as_decimal() if position is not None else Decimal("0")
+                prospective = current + quantity if current_id == instrument_id else current
+                if prospective:
+                    required += policy.margin_for(current_id, prospective, ts_now)[0]
+            account = self.cache.account_for_venue(SIM)
+            return account is not None and required <= account.balance_free(USDT).as_decimal()
+        except ValueError:
+            # Missing/stale marks and unknown tiers block new risk, never reductions.
+            return False
 
     def _margin_allows_increase(self, instrument_id: InstrumentId, quantity: Decimal) -> bool:
         """Fail closed using the pinned native margin model and native free balance."""
@@ -151,14 +192,18 @@ class FundingInstruction:
 class PerpetualFundingModule(SimulationModule):
     """Minimal native-account funding module; no second balance or PnL engine."""
 
-    def __init__(self, events: tuple[FundingInstruction, ...]) -> None:
+    def __init__(self, events: tuple[FundingInstruction, ...], journal: NativeEventJournal) -> None:
         super().__init__(SimulationModuleConfig())
         self._events = events
+        self._journal = journal
         self._applied: set[str] = set()
 
     def process(self, ts_now: int) -> None:
         for event in self._events:
             if event.event_id in self._applied or event.ts_event > ts_now:
+                continue
+            if self._journal.has_funding(event.event_id):
+                self._applied.add(event.event_id)
                 continue
             for position in self.exchange.cache.positions_open():
                 if position.instrument_id != event.instrument_id:
@@ -171,6 +216,15 @@ class PerpetualFundingModule(SimulationModule):
                 # Positive funding: longs pay and shorts receive; negative reverses it.
                 sign = Decimal("-1") if position.is_long else Decimal("1")
                 self.exchange.adjust_account(Money(sign * notional * event.rate, instrument.quote_currency))
+                account_total = self.exchange.get_account().balance_total(USDT).as_decimal()
+                self._journal.record_funding(
+                    event.event_id,
+                    str(event.instrument_id),
+                    event.ts_event,
+                    event.rate,
+                    mark,
+                    account_total,
+                )
             self._applied.add(event.event_id)
 
     def pre_process(self, data) -> None:
@@ -183,35 +237,78 @@ class PerpetualFundingModule(SimulationModule):
         self._applied.clear()
 
 
+class TierMarginPolicy:
+    """Explicit-mark, captured-profile margin policy for native account updates."""
+
+    _symbols = {BTC_PERP.id: "BTCUSDT", SOL_PERP.id: "SOLUSDT"}
+
+    def __init__(
+        self,
+        marks: tuple["MarkPriceUpdate", ...],
+        selected_leverage: dict[InstrumentId, Decimal],
+        max_mark_age_ns: int,
+    ) -> None:
+        if max_mark_age_ns < 0:
+            raise ValueError("max mark age must be non-negative")
+        self._marks = marks
+        self._selected_leverage = selected_leverage
+        self._max_mark_age_ns = max_mark_age_ns
+        self._profile = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
+
+    def margin_for(self, instrument_id: InstrumentId, quantity: Decimal, ts_now: int) -> tuple[Decimal, Decimal, Decimal]:
+        symbol = self._symbols.get(instrument_id)
+        leverage = self._selected_leverage.get(instrument_id)
+        if symbol is None or leverage is None or leverage <= 0:
+            raise ValueError("missing explicit selected leverage")
+        applicable = [item for item in self._marks if item.instrument_id == instrument_id and item.ts_event <= ts_now]
+        if not applicable:
+            raise ValueError("missing explicit mark")
+        mark_event = applicable[-1]
+        if ts_now - mark_event.ts_event > self._max_mark_age_ns:
+            raise ValueError("stale explicit mark")
+        notional = abs(quantity) * mark_event.price
+        tier = self._profile.tier_for(symbol, notional)
+        initial_rate = max(tier.im, Decimal("1") / leverage)
+        return notional * initial_rate, max(Decimal("0"), notional * tier.mm - tier.deduction), mark_event.price
+
+
 class BybitTierMarginModule(SimulationModule):
-    """Reprices captured public BTC tiers directly on the native MarginAccount."""
+    """Reprices validated captured BTC/SOL tiers directly on the native MarginAccount."""
 
     observed: list[tuple[int, Decimal, Decimal, Decimal]] = []
 
-    def __init__(self, marks: tuple["MarkPriceUpdate", ...]) -> None:
+    def __init__(
+        self,
+        marks: tuple["MarkPriceUpdate", ...],
+        selected_leverage: tuple[tuple[InstrumentId, Decimal], ...],
+        max_mark_age_ns: int,
+    ) -> None:
         super().__init__(SimulationModuleConfig())
-        self._marks = marks
-        self._profile = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
+        self._policy = TierMarginPolicy(marks, dict(selected_leverage), max_mark_age_ns)
         self.observed = []
 
     def process(self, ts_now: int) -> None:
         account = self.exchange.get_account()
+        open_ids = {position.instrument_id for position in self.exchange.cache.positions_open()}
+        for instrument_id in (BTC_PERP.id, SOL_PERP.id):
+            if instrument_id not in open_ids:
+                account.clear_margin_init(instrument_id)
+                account.clear_margin_maint(instrument_id)
         for position in self.exchange.cache.positions_open():
-            symbol = {BTC_PERP.id: "BTCUSDT", SOL_PERP.id: "SOLUSDT"}.get(position.instrument_id)
-            if symbol is None:
-                continue
-            applicable = [item for item in self._marks if item.instrument_id == position.instrument_id and item.ts_event <= ts_now]
-            if not applicable:
-                continue  # Fail closed: quote/last is not a mark price.
-            mark = applicable[-1].price
-            notional = position.quantity.as_decimal() * mark
             try:
-                tier = self._profile.tier_for(symbol, notional)
+                initial, maintenance, mark = self._policy.margin_for(
+                    position.instrument_id,
+                    position.quantity.as_decimal(),
+                    ts_now,
+                )
             except ValueError:
+                # Never leave a stale/default requirement visible as current margin.
+                account.clear_margin_init(position.instrument_id)
+                account.clear_margin_maint(position.instrument_id)
                 continue
-            account.update_margin_init(position.instrument_id, Money(notional * tier.im, USDT))
-            account.update_margin_maint(position.instrument_id, Money(max(Decimal("0"), notional * tier.mm - tier.deduction), USDT))
-            self.observed.append((ts_now, mark, notional * tier.im, max(Decimal("0"), notional * tier.mm - tier.deduction)))
+            account.update_margin_init(position.instrument_id, Money(initial, USDT))
+            account.update_margin_maint(position.instrument_id, Money(maintenance, USDT))
+            self.observed.append((ts_now, mark, initial, maintenance))
 
     def pre_process(self, data) -> None:
         pass
@@ -240,16 +337,28 @@ def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int) -> QuoteTick
 
 def build_engine(
     funding_events: tuple[FundingInstruction, ...] = (),
+    funding_journal: NativeEventJournal | None = None,
     margin_probe: bool = False,
     tier_probe: bool = False,
     marks: tuple[MarkPriceUpdate, ...] = (),
+    tier_selected_leverage: tuple[tuple[InstrumentId, Decimal], ...] = (),
+    max_mark_age_ns: int = 0,
+    tier_actions: tuple[tuple[InstrumentId, OrderSide, str], ...] = (),
 ) -> BacktestEngine:
+    if funding_events and (funding_journal is None or not funding_journal.durable):
+        raise ValueError("funding requires a durable event journal")
+    if tier_probe and not tier_selected_leverage:
+        raise ValueError("tier margin requires explicit selected leverage")
+    tier_module = (
+        BybitTierMarginModule(marks, tier_selected_leverage, max_mark_age_ns)
+        if tier_probe else None
+    )
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
     engine.add_venue(
         venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN,
         starting_balances=[Money(10_000, USDT)], base_currency=USDT,
         default_leverage=Decimal("1"),
-        modules=([PerpetualFundingModule(funding_events)] if funding_events else []) + ([BybitTierMarginModule(marks)] if tier_probe else []),
+        modules=([PerpetualFundingModule(funding_events, funding_journal)] if funding_events else []) + ([tier_module] if tier_module else []),
     )
     engine.add_instrument(BTC_PERP)
     engine.add_instrument(SOL_PERP)
@@ -258,5 +367,9 @@ def build_engine(
         sol_id=SOL_PERP.id,
         margin_probe=margin_probe,
         tier_probe=tier_probe,
+        tier_actions=tier_actions,
+        tier_marks=marks,
+        tier_selected_leverage=tier_selected_leverage,
+        max_mark_age_ns=max_mark_age_ns,
     )))
     return engine

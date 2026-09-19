@@ -8,12 +8,17 @@ from coinmaster.research.native_fixture import (
     build_engine,
     quote,
     MarkPriceUpdate,
+    TierMarginPolicy,
 )
 from nautilus_trader.model.data import FundingRateUpdate
 from nautilus_trader.backtest.models import LeveragedMarginModel
+from nautilus_trader.model.enums import OrderSide
 from nautilus_trader.model.objects import Price, Quantity
 from coinmaster.venues.margin import MarginReservations
 from coinmaster.ledger.journal import NativeEventJournal
+
+
+TIER_LEVERAGE = ((BTC_PERP.id, Decimal("100")), (SOL_PERP.id, Decimal("100")))
 
 
 def fixture_quotes():
@@ -59,13 +64,14 @@ def test_native_funding_update_alone_does_not_post_account_money() -> None:
         engine.dispose()
 
 
-def test_supported_funding_module_posts_signed_native_account_adjustments_once() -> None:
+def test_supported_funding_module_posts_signed_native_account_adjustments_once(tmp_path) -> None:
     events = (
         FundingInstruction("btc-positive", BTC_PERP.id, Decimal("0.01"), 6, Decimal("80999.5"), "synthetic_mid", True),
         FundingInstruction("sol-negative", SOL_PERP.id, Decimal("-0.01"), 6, Decimal("159.95"), "synthetic_mid", True),
         FundingInstruction("btc-positive", BTC_PERP.id, Decimal("0.01"), 6, Decimal("80999.5"), "synthetic_mid", True),  # deduped ID
     )
-    engine = build_engine(events)
+    journal = NativeEventJournal(str(tmp_path / "funding.sqlite"))
+    engine = build_engine(events, funding_journal=journal)
     engine.add_data(fixture_quotes())
     engine.run()
     try:
@@ -73,8 +79,35 @@ def test_supported_funding_module_posts_signed_native_account_adjustments_once()
         # At ts=6: BTC long 0.6 at mid 80,999.5 pays 485.997; SOL short 500 at
         # mid 159.95 pays 799.75 under a negative rate. The account owns the postings.
         assert total == Decimal("14346.303")
+        assert [row[0] for row in journal.funding_audit()] == ["btc-positive", "sol-negative"]
     finally:
         engine.dispose()
+
+
+def test_funding_replay_uses_durable_ids_and_does_not_repost_native_money(tmp_path) -> None:
+    events = (
+        FundingInstruction("btc-positive", BTC_PERP.id, Decimal("0.01"), 6, Decimal("80999.5"), "synthetic_mid", True),
+        FundingInstruction("sol-negative", SOL_PERP.id, Decimal("-0.01"), 6, Decimal("159.95"), "synthetic_mid", True),
+    )
+    database = str(tmp_path / "funding.sqlite")
+    journal = NativeEventJournal(database)
+    first = build_engine(events, funding_journal=journal)
+    first.add_data(fixture_quotes())
+    first.run()
+    first.dispose()
+    journal.close()
+
+    replay_journal = NativeEventJournal(database)
+    replay = build_engine(events, funding_journal=replay_journal)
+    replay.add_data(fixture_quotes())
+    replay.run()
+    try:
+        total = Decimal(replay.trader.generate_account_report(SIM)["total"].iloc[-1].split()[0])
+        assert total == Decimal("15632.05")
+        assert [row[0] for row in replay_journal.funding_audit()] == ["btc-positive", "sol-negative"]
+    finally:
+        replay.dispose()
+        replay_journal.close()
 
 
 def test_native_margin_model_sums_two_legs_and_engine_rejects_excess_increase() -> None:
@@ -118,8 +151,8 @@ def test_production_funding_requires_confirmed_venue_settlement_mark() -> None:
 
 def test_journal_dedupes_events_and_transfers_cannot_create_total() -> None:
     journal = NativeEventJournal()
-    assert journal.record_funding("venue-funding-1", Decimal("14346.303"))
-    assert not journal.record_funding("venue-funding-1", Decimal("14346.303"))
+    assert journal.record_funding("venue-funding-1", str(BTC_PERP.id), 6, Decimal("0.01"), Decimal("80999.5"), Decimal("14346.303"))
+    assert not journal.record_funding("venue-funding-1", str(BTC_PERP.id), 6, Decimal("0.01"), Decimal("80999.5"), Decimal("14346.303"))
     assert journal.record_transfer("transfer-1", Decimal("9000"), Decimal("8000"), Decimal("1000"), Decimal("2000"))
     assert not journal.record_transfer("transfer-1", Decimal("9000"), Decimal("8000"), Decimal("1000"), Decimal("2000"))
     NativeEventJournal.assert_total(Decimal("8000"), Decimal("2000"), Decimal("10000"))
@@ -129,15 +162,95 @@ def test_mark_tier_crossing_updates_native_margin_account_without_fill() -> None
     engine = build_engine(tier_probe=True, marks=(
         MarkPriceUpdate(BTC_PERP.id, Decimal("75000"), 1),
         MarkPriceUpdate(BTC_PERP.id, Decimal("80000"), 2),
-    ))
+    ), tier_selected_leverage=TIER_LEVERAGE)
     engine.add_data([
         quote(BTC_PERP.id, "80000.0", "80001.0", 1),
         quote(BTC_PERP.id, "80000.0", "80001.0", 2),
     ])
     engine.run()
     try:
+        policy = TierMarginPolicy(
+            (MarkPriceUpdate(BTC_PERP.id, Decimal("75000"), 1), MarkPriceUpdate(BTC_PERP.id, Decimal("80000"), 2)),
+            dict(TIER_LEVERAGE),
+            0,
+        )
+        # Selected 100x leverage imposes a 1% IM floor before the first public tier;
+        # the second tier's 1% IM then produces the same rate at the 300k boundary.
+        assert policy.margin_for(BTC_PERP.id, Decimal("4"), 1)[:2] == (Decimal("3000.00"), Decimal("990.000"))
+        assert policy.margin_for(BTC_PERP.id, Decimal("4"), 2)[:2] == (Decimal("3200.00"), Decimal("1090.00"))
         account = engine.trader._cache.account_for_venue(SIM)
         assert account.margin_init(BTC_PERP.id).as_decimal() == Decimal("3200.00")
         assert account.margin_maint(BTC_PERP.id).as_decimal() == Decimal("1090.00")
     finally:
         engine.dispose()
+
+
+def test_tier_module_clears_native_margins_after_native_btc_and_sol_closes() -> None:
+    engine = build_engine(
+        tier_probe=True,
+        tier_selected_leverage=TIER_LEVERAGE,
+        marks=(
+            MarkPriceUpdate(BTC_PERP.id, Decimal("75000"), 1),
+            MarkPriceUpdate(BTC_PERP.id, Decimal("80000"), 2),
+            MarkPriceUpdate(SOL_PERP.id, Decimal("160"), 3),
+            MarkPriceUpdate(SOL_PERP.id, Decimal("160"), 4),
+        ),
+        tier_actions=(
+            (BTC_PERP.id, OrderSide.BUY, "4.000"),
+            (BTC_PERP.id, OrderSide.SELL, "4.000"),
+            (SOL_PERP.id, OrderSide.SELL, "500.0"),
+            (SOL_PERP.id, OrderSide.BUY, "500.0"),
+        ),
+    )
+    engine.add_data([
+        quote(BTC_PERP.id, "80000.0", "80001.0", 1),
+        quote(BTC_PERP.id, "80000.0", "80001.0", 2),
+        quote(SOL_PERP.id, "159.90", "160.00", 3),
+        quote(SOL_PERP.id, "159.90", "160.00", 4),
+    ])
+    engine.run()
+    try:
+        account = engine.trader._cache.account_for_venue(SIM)
+        positions = engine.trader.generate_positions_report()
+        assert len(positions) == 2
+        assert positions["closing_order_id"].notna().all()
+        assert engine.trader._cache.orders_open() == []
+        assert account.margin_init(BTC_PERP.id) is None
+        assert account.margin_maint(BTC_PERP.id) is None
+        assert account.margin_init(SOL_PERP.id) is None
+        assert account.margin_maint(SOL_PERP.id) is None
+    finally:
+        engine.dispose()
+
+
+def test_stale_marks_reject_new_risk_but_native_reduction_still_closes() -> None:
+    engine = build_engine(
+        tier_probe=True,
+        tier_selected_leverage=TIER_LEVERAGE,
+        marks=(MarkPriceUpdate(BTC_PERP.id, Decimal("80000"), 1),),
+        max_mark_age_ns=0,
+        tier_actions=(
+            (BTC_PERP.id, OrderSide.BUY, "4.000"),
+            (BTC_PERP.id, OrderSide.BUY, "1.000"),
+            (BTC_PERP.id, OrderSide.SELL, "4.000"),
+        ),
+    )
+    engine.add_data([quote(BTC_PERP.id, "80000.0", "80001.0", ts) for ts in (1, 2, 3)])
+    engine.run()
+    try:
+        assert len(engine.trader.generate_order_fills_report()) == 2
+        assert engine.trader.generate_positions_report()["closing_order_id"].notna().all()
+        assert engine.trader._cache.orders_open() == []
+    finally:
+        engine.dispose()
+
+
+def test_tier_policy_rejects_unknown_and_out_of_range_risk() -> None:
+    policy = TierMarginPolicy((MarkPriceUpdate(BTC_PERP.id, Decimal("80000"), 1),), dict(TIER_LEVERAGE), 0)
+    for instrument_id, quantity in ((SOL_PERP.id, Decimal("1")), (BTC_PERP.id, Decimal("20000"))):
+        try:
+            policy.margin_for(instrument_id, quantity, 1)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("unknown mark or out-of-range tier must reject an increase")
