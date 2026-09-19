@@ -11,6 +11,12 @@ import json
 from pathlib import Path
 
 
+DAY_MS = 86_400_000
+WARMUP_START_MS = 1_662_076_800_000  # 2022-09-02T00:00:00Z
+TRADING_START_MS = 1_725_148_800_000  # 2024-09-01T00:00:00Z
+TRADING_END_MS = 1_788_220_800_000  # 2026-09-01T00:00:00Z, exclusive
+
+
 def funding_with_prior_minute_marks(data_root: Path):
     """Return stable native funding events from actual rows or fail closed.
 
@@ -47,33 +53,60 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False) -> dic
     from nautilus_trader.model.data import Bar, BarSpecification, BarType
     from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType
     from nautilus_trader.model.objects import Money, Price, Quantity
-    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, PerpetualFundingModule, quote
+    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, MarkPriceUpdate, PerpetualFundingModule, quote
     from coinmaster.ledger.journal import NativeEventJournal
     from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
+    from coinmaster.venues.marks import venue_mark, venue_mark_data_type
 
-    def rows(symbol: str): return {row["open_time_ms"]: row for row in pq.read_table(data_root / "normalized" / f"bybit-{symbol}-daily.parquet").to_pylist()}
+    def rows(symbol: str):
+        return {
+            row["open_time_ms"]: row
+            for row in pq.read_table(data_root / "normalized" / f"bybit-{symbol}-daily.parquet").to_pylist()
+            if WARMUP_START_MS <= int(row["open_time_ms"]) < TRADING_END_MS
+        }
     btc, sol = rows("BTCUSDT"), rows("SOLUSDT")
     def kind(instrument, price_type): return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
-    btc_last, sol_last, btc_mid, sol_mid = kind(BTC_PERP.id, PriceType.LAST), kind(SOL_PERP.id, PriceType.LAST), kind(BTC_PERP.id, PriceType.MID), kind(SOL_PERP.id, PriceType.MID)
+    btc_last, sol_last = kind(BTC_PERP.id, PriceType.LAST), kind(SOL_PERP.id, PriceType.LAST)
     def bar(bar_type, row, precision, volume):
         price = lambda key: Price.from_str(f"{float(row[key]):.{precision}f}")
         ts = (int(row["open_time_ms"]) + 86_400_000) * 1_000_000
         return Bar(bar_type, price("open"), price("high"), price("low"), price("close"), Quantity.from_str(volume), ts, ts)
     events = funding_with_prior_minute_marks(data_root) if include_funding else ()
     journal = NativeEventJournal(str(data_root / "runs" / "native-diagnostic-funding.sqlite")) if events else None
+    # Current public tiers and their 40x/20x selected leverage are an
+    # explicitly non-historical assumption.  They are used only to make the
+    # diagnostic fail closed; no historical fee/tier applicability is claimed.
+    mark_updates = tuple(
+        MarkPriceUpdate(instrument.id, Decimal(str(row["mark_close"])), (timestamp + 86_400_000) * 1_000_000)
+        for symbol, instrument, table in (("BTCUSDT", BTC_PERP, btc), ("SOLUSDT", SOL_PERP, sol))
+        for timestamp, row in table.items()
+        if row.get("mark_close") is not None
+    )
+    selected_leverage = ((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20")))
+    max_mark_age_ns = 86_400_000_000_000  # daily diagnostic mark cadence.
+    modules = [BybitTierMarginModule(mark_updates, selected_leverage, max_mark_age_ns)]
+    if journal:
+        modules.insert(0, PerpetualFundingModule(events, journal))
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"), modules=[PerpetualFundingModule(events, journal)] if journal else [])
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"), modules=modules)
     engine.add_instrument(BTC_PERP); engine.add_instrument(SOL_PERP)
-    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_bar_type=btc_mid, sol_mark_bar_type=sol_mid, active_seed=Decimal("10000"))))
-    data = []
+    from nautilus_trader.model.identifiers import ClientId
+    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=Decimal("10000"), tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=TRADING_START_MS * 1_000_000)))
+    execution_data, mark_data = [], []
     for timestamp in sorted(set(btc) & set(sol)):
         b, s = btc[timestamp], sol[timestamp]
         event = (timestamp + 86_400_000) * 1_000_000 + 1
-        data += [bar(btc_last, b, 1, "1000.000"), bar(sol_last, s, 2, "1000.0"), bar(btc_mid, b, 1, "1000.000"), bar(sol_mid, s, 2, "1000.0"), quote(BTC_PERP.id, f"{float(b['close']) - .05:.1f}", f"{float(b['close']) + .05:.1f}", event), quote(SOL_PERP.id, f"{float(s['close']) - .05:.2f}", f"{float(s['close']) + .05:.2f}", event)]
-    engine.add_data(data); engine.run()
+        mark_ts = (timestamp + 86_400_000) * 1_000_000
+        if b.get("mark_close") is None or s.get("mark_close") is None:
+            continue
+        execution_data += [bar(btc_last, b, 1, "1000.000"), bar(sol_last, s, 2, "1000.0"), quote(BTC_PERP.id, f"{float(b['close']) - .05:.1f}", f"{float(b['close']) + .05:.1f}", event), quote(SOL_PERP.id, f"{float(s['close']) - .05:.2f}", f"{float(s['close']) + .05:.2f}", event)]
+        mark_data += [venue_mark(BTC_PERP.id, Decimal(str(b["mark_close"])), mark_ts), venue_mark(SOL_PERP.id, Decimal(str(s["mark_close"])), mark_ts)]
+    engine.add_data(execution_data, sort=False)
+    engine.add_data(mark_data, client_id=ClientId("BYBIT_MARK"), sort=False)
+    engine.sort_data(); engine.run()
     try:
         report = engine.trader.generate_account_report(SIM)
-        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "fills": len(engine.trader.generate_order_fills_report()), "terminal_native_total": str(report["total"].iloc[-1]), "funding_events_posted": len(journal.funding_audit()) if journal else 0, "limitations": ["MID stand-in is not production mark routing", "Funding prior-minute mark is timing-uncertain" if events else "Funding not included", "Fees/intraminute liquidation unverified"]}
+        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) no trading", "fills": len(engine.trader.generate_order_fills_report()), "terminal_native_total": str(report["total"].iloc[-1]), "funding_events_posted": len(journal.funding_audit()) if journal else 0, "limitations": ["CustomData venue marks do not participate in matching", "Current public tiers/40x BTC and 20x SOL leverage are not historical tier evidence", "Funding prior-minute mark is timing-uncertain" if events else "Funding not included", "Historical fee applicability and intraminute liquidation are unverified"]}
     finally:
         engine.dispose()
         if journal:

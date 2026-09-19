@@ -100,6 +100,7 @@ class FixtureStrategy(Strategy):
             return
         if self.config.tier_probe and self._is_risk_increase(instrument_id, side) and not self._tier_allows_increase(
             instrument_id,
+            side,
             Decimal(quantity),
             tick.ts_event,
         ):
@@ -122,7 +123,7 @@ class FixtureStrategy(Strategy):
         )
         return position is None or (position.is_long and side == OrderSide.BUY) or (position.is_short and side == OrderSide.SELL)
 
-    def _tier_allows_increase(self, instrument_id: InstrumentId, quantity: Decimal, ts_now: int) -> bool:
+    def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         try:
             policy = TierMarginPolicy(
                 self.config.tier_marks,
@@ -133,8 +134,12 @@ class FixtureStrategy(Strategy):
             required = Decimal("0")
             for current_id in (self.config.btc_id, self.config.sol_id):
                 position = positions.get(current_id)
-                current = position.quantity.as_decimal() if position is not None else Decimal("0")
-                prospective = current + quantity if current_id == instrument_id else current
+                current = (
+                    position.quantity.as_decimal() if position is not None and position.is_long
+                    else -position.quantity.as_decimal() if position is not None
+                    else Decimal("0")
+                )
+                prospective = current + (quantity if side == OrderSide.BUY else -quantity) if current_id == instrument_id else current
                 if prospective:
                     required += policy.margin_for(current_id, prospective, ts_now)[0]
             account = self.cache.account_for_venue(SIM)
