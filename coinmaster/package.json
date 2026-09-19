@@ -9,6 +9,7 @@
     "dev:web": "vite",
     "build": "npm run build:web && npm run build:custom",
     "build:web": "vite build",
+    "generate:nautilus-api": "../runtime/.venv/bin/python ../runtime/scripts/export_openapi.py && openapi-typescript src/web/lib/nautilus.openapi.json -o src/web/lib/nautilus.generated.ts",
     "start": "tsx src/server/index.ts",
     "tunnel": "./scripts/tunnel-localhost-run.sh",
     "tunnel:fixed": "./scripts/tunnel-localhost-run.sh coinmaster-vf",
@@ -61,6 +62,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.1.2",
+    "openapi-typescript": "^7.6.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite": "^5.4.11"

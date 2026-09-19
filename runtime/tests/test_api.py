@@ -1,11 +1,11 @@
-from coinmaster.api.app import BASELINE_CONFIG, ControlStore, RunRecord, create_app, fixture_report
+from coinmaster.api.app import BASELINE_CONFIG, ControlStore, StrategyConfig, create_app, fixture_report
 
 
 def test_api_openapi_and_immutable_configuration(tmp_path) -> None:
     app = create_app(str(tmp_path / "control.sqlite"), "test-token")
     assert "/api/v1/runs" in app.openapi()["paths"]
     store = ControlStore(str(tmp_path / "control.sqlite"))
-    config = store.save_config(BASELINE_CONFIG.copy())
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
     assert store.get_config(config.id).config_hash == config.config_hash
 
 

@@ -1,6 +1,7 @@
-// DTO snapshot generated reproducibly with: curl /api/v1/openapi.json > runtime/var/openapi.json.
-export interface StrategyConfiguration { id: string; config_hash: string; created_at: string; config: Record<string, unknown> }
-export interface Run { id: string; config_id: string; kind: string; status: string; evidence: string[]; created_at: string; report?: Record<string, unknown> | null }
+import type { components } from './nautilus.generated';
+export type StrategyConfig = components['schemas']['StrategyConfig'];
+export type StrategyConfiguration = components['schemas']['ConfigurationRecord'];
+export type Run = components['schemas']['RunRecord'];
 export interface RuntimeState { status: string; active_usdt: string; reserve_usdt: string; total_usdt: string; warnings: string[] }
 export interface Preflight { requested: Record<string, string>; allowed: boolean; im: string | null; mm: string | null; reasons: string[]; cap_label?: string }
 // Local operator supplies this ephemeral value; no API secret is bundled into the UI.
@@ -11,8 +12,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (!response.ok) throw new Error((await response.text()) || `API ${response.status}`);
   return response.json() as Promise<T>;
 }
-export const getDefaultConfiguration = () => request<{ config: Record<string, unknown> }>('/configurations/default');
-export const saveConfiguration = (config: Record<string, unknown>) => request<StrategyConfiguration>('/configurations', { method: 'POST', body: JSON.stringify({ config }) });
+export const getDefaultConfiguration = () => request<{ config: StrategyConfig }>('/configurations/default');
+export const saveConfiguration = (config: StrategyConfig) => request<StrategyConfiguration>('/configurations', { method: 'POST', body: JSON.stringify({ config }) });
 export const getRuns = () => request<Run[]>('/runs');
 export const getConfigurations = () => request<StrategyConfiguration[]>('/configurations');
 export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper') => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind }) });

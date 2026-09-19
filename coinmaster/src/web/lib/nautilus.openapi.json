@@ -4,10 +4,7 @@
       "ConfigurationInput": {
         "properties": {
           "config": {
-            "additionalProperties": true,
-            "description": "Exact candidate configuration; monetary values are decimal strings.",
-            "title": "Config",
-            "type": "object"
+            "$ref": "#/components/schemas/StrategyConfig"
           }
         },
         "required": [
@@ -19,9 +16,7 @@
       "ConfigurationRecord": {
         "properties": {
           "config": {
-            "additionalProperties": true,
-            "title": "Config",
-            "type": "object"
+            "$ref": "#/components/schemas/StrategyConfig"
           },
           "config_hash": {
             "title": "Config Hash",
@@ -164,6 +159,289 @@
           "created_at"
         ],
         "title": "RunRecord",
+        "type": "object"
+      },
+      "StrategyConfig": {
+        "additionalProperties": false,
+        "properties": {
+          "beta_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Beta Days",
+            "type": "integer"
+          },
+          "btc_close_stop_fraction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Btc Close Stop Fraction"
+          },
+          "btc_close_trail_fraction": {
+            "minimum": 0.0,
+            "title": "Btc Close Trail Fraction",
+            "type": "number"
+          },
+          "btc_notional_multiplier": {
+            "exclusiveMinimum": 0.0,
+            "title": "Btc Notional Multiplier",
+            "type": "number"
+          },
+          "btc_tp_fractions_initial_qty": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Btc Tp Fractions Initial Qty",
+            "type": "array"
+          },
+          "ema_period": {
+            "exclusiveMinimum": 0.0,
+            "title": "Ema Period",
+            "type": "integer"
+          },
+          "freeze_sigma_on_first_sol_fill": {
+            "title": "Freeze Sigma On First Sol Fill",
+            "type": "boolean"
+          },
+          "future_sol_margin_fraction": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Future Sol Margin Fraction",
+            "type": "number"
+          },
+          "include_zero_waves": {
+            "title": "Include Zero Waves",
+            "type": "boolean"
+          },
+          "initial_active_fraction": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 1.0,
+            "title": "Initial Active Fraction",
+            "type": "number"
+          },
+          "initial_total_usdt": {
+            "title": "Initial Total Usdt",
+            "type": "string"
+          },
+          "insufficient_margin": {
+            "enum": [
+              "reject",
+              "clip"
+            ],
+            "title": "Insufficient Margin",
+            "type": "string"
+          },
+          "live_enabled": {
+            "const": false,
+            "title": "Live Enabled",
+            "type": "boolean"
+          },
+          "max_gross_to_active": {
+            "exclusiveMinimum": 0.0,
+            "title": "Max Gross To Active",
+            "type": "number"
+          },
+          "max_parent_notional": {
+            "title": "Max Parent Notional",
+            "type": "string"
+          },
+          "mode": {
+            "const": "paper",
+            "title": "Mode",
+            "type": "string"
+          },
+          "portfolio_loss_limit_fraction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Portfolio Loss Limit Fraction"
+          },
+          "post_liquidation": {
+            "const": "restart_from_reserve_else_pause",
+            "title": "Post Liquidation",
+            "type": "string"
+          },
+          "regime": {
+            "const": "close_vs_ema",
+            "title": "Regime",
+            "type": "string"
+          },
+          "relative_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Relative Days",
+            "type": "integer"
+          },
+          "reserve_transfer_fraction": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Reserve Transfer Fraction",
+            "type": "number"
+          },
+          "reserve_trigger_multiple": {
+            "exclusiveMinimum": 0.0,
+            "title": "Reserve Trigger Multiple",
+            "type": "number"
+          },
+          "restart_target": {
+            "const": "initial_active_seed",
+            "title": "Restart Target",
+            "type": "string"
+          },
+          "signal_timeframe": {
+            "const": "1D",
+            "title": "Signal Timeframe",
+            "type": "string"
+          },
+          "sol_direction": {
+            "const": "opposite_btc",
+            "title": "Sol Direction",
+            "type": "string"
+          },
+          "sol_entry_eligibility": {
+            "const": "persistent_after_btc_level",
+            "title": "Sol Entry Eligibility",
+            "type": "string"
+          },
+          "sol_entry_z": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Sol Entry Z",
+            "type": "array"
+          },
+          "sol_exit_all_z": {
+            "minimum": 0.0,
+            "title": "Sol Exit All Z",
+            "type": "number"
+          },
+          "sol_exit_half_z": {
+            "minimum": 0.0,
+            "title": "Sol Exit Half Z",
+            "type": "number"
+          },
+          "sol_max_holding_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Sol Max Holding Days",
+            "type": "integer"
+          },
+          "sol_size_multipliers_H": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Sol Size Multipliers H",
+            "type": "array"
+          },
+          "sol_z_stop": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sol Z Stop"
+          },
+          "strategy_id": {
+            "const": "btc_sol_wave_overlay_v1",
+            "title": "Strategy Id",
+            "type": "string"
+          },
+          "venue": {
+            "anyOf": [
+              {
+                "enum": [
+                  "bybit",
+                  "hyperliquid"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue"
+          },
+          "wave_history_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Wave History Days",
+            "type": "integer"
+          },
+          "wave_min_count": {
+            "exclusiveMinimum": 0.0,
+            "title": "Wave Min Count",
+            "type": "integer"
+          },
+          "wave_quantiles": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Wave Quantiles",
+            "type": "array"
+          },
+          "z_history_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Z History Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "strategy_id",
+          "mode",
+          "live_enabled",
+          "venue",
+          "initial_total_usdt",
+          "initial_active_fraction",
+          "signal_timeframe",
+          "regime",
+          "ema_period",
+          "beta_days",
+          "relative_days",
+          "z_history_days",
+          "wave_history_days",
+          "wave_min_count",
+          "include_zero_waves",
+          "wave_quantiles",
+          "btc_tp_fractions_initial_qty",
+          "btc_notional_multiplier",
+          "max_parent_notional",
+          "max_gross_to_active",
+          "sol_size_multipliers_H",
+          "sol_entry_z",
+          "sol_direction",
+          "sol_entry_eligibility",
+          "freeze_sigma_on_first_sol_fill",
+          "sol_exit_half_z",
+          "sol_exit_all_z",
+          "sol_max_holding_days",
+          "sol_z_stop",
+          "btc_close_stop_fraction",
+          "btc_close_trail_fraction",
+          "portfolio_loss_limit_fraction",
+          "future_sol_margin_fraction",
+          "insufficient_margin",
+          "reserve_transfer_fraction",
+          "reserve_trigger_multiple",
+          "restart_target",
+          "post_liquidation"
+        ],
+        "title": "StrategyConfig",
         "type": "object"
       },
       "ValidationError": {

@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, build_engine, quote
 from coinmaster.venues.bybit_profile import BybitVenueProfile
@@ -39,31 +39,30 @@ BASELINE_CONFIG: dict[str, Any] = {
 }
 
 
-class ConfigurationInput(BaseModel):
-    config: dict[str, Any] = Field(description="Exact candidate configuration; monetary values are decimal strings.")
+class StrategyConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    strategy_id: Literal["btc_sol_wave_overlay_v1"]; mode: Literal["paper"]; live_enabled: Literal[False]
+    venue: Literal["bybit", "hyperliquid"] | None; initial_total_usdt: str; initial_active_fraction: float = Field(gt=0, le=1)
+    signal_timeframe: Literal["1D"]; regime: Literal["close_vs_ema"]; ema_period: int = Field(gt=0); beta_days: int = Field(gt=0); relative_days: int = Field(gt=0); z_history_days: int = Field(gt=0); wave_history_days: int = Field(gt=0); wave_min_count: int = Field(gt=0)
+    include_zero_waves: bool; wave_quantiles: list[float] = Field(min_length=3, max_length=3); btc_tp_fractions_initial_qty: list[float] = Field(min_length=3, max_length=3); btc_notional_multiplier: float = Field(gt=0); max_parent_notional: str; max_gross_to_active: float = Field(gt=0)
+    sol_size_multipliers_H: list[float] = Field(min_length=3, max_length=3); sol_entry_z: list[float] = Field(min_length=3, max_length=3); sol_direction: Literal["opposite_btc"]; sol_entry_eligibility: Literal["persistent_after_btc_level"]; freeze_sigma_on_first_sol_fill: bool; sol_exit_half_z: float = Field(ge=0); sol_exit_all_z: float = Field(ge=0); sol_max_holding_days: int = Field(gt=0); sol_z_stop: float | None; btc_close_stop_fraction: float | None; btc_close_trail_fraction: float = Field(ge=0); portfolio_loss_limit_fraction: float | None; future_sol_margin_fraction: float = Field(ge=0, le=1); insufficient_margin: Literal["reject", "clip"]; reserve_transfer_fraction: float = Field(ge=0, le=1); reserve_trigger_multiple: float = Field(gt=0); restart_target: Literal["initial_active_seed"]; post_liquidation: Literal["restart_from_reserve_else_pause"]
 
     @model_validator(mode="after")
-    def validate_candidate(self) -> "ConfigurationInput":
-        if set(self.config) != set(BASELINE_CONFIG):
-            raise ValueError("configuration must contain the complete baseline parameter set")
-        for key, baseline in BASELINE_CONFIG.items():
-            value = self.config[key]
-            if baseline is not None and type(value) is not type(baseline):
-                raise ValueError(f"invalid type for {key}")
-        if self.config["venue"] not in (None, "bybit", "hyperliquid"):
-            raise ValueError("venue must be bybit, hyperliquid, or null")
-        if Decimal(self.config["initial_total_usdt"]) <= 0 or Decimal(self.config["max_parent_notional"]) <= 0:
-            raise ValueError("money values must be positive decimal strings")
-        if self.config["btc_notional_multiplier"] <= 0 or self.config["max_gross_to_active"] <= 0:
-            raise ValueError("sizing limits must be positive")
+    def validate_candidate(self) -> "StrategyConfig":
+        for value in (self.initial_total_usdt, self.max_parent_notional):
+            if not Decimal(value).is_finite() or Decimal(value) <= 0: raise ValueError("money values must be finite positive decimal strings")
+        if self.wave_quantiles != sorted(self.wave_quantiles) or self.sol_entry_z != sorted(self.sol_entry_z): raise ValueError("quantiles and z levels must be ordered")
         return self
+
+class ConfigurationInput(BaseModel):
+    config: StrategyConfig
 
 
 class ConfigurationRecord(BaseModel):
     id: str
     config_hash: str
     created_at: str
-    config: dict[str, Any]
+    config: StrategyConfig
 
 
 class RunInput(BaseModel):
@@ -110,13 +109,8 @@ class ControlStore:
             );
         """)
 
-    def save_config(self, config: dict[str, Any]) -> ConfigurationRecord:
-        if set(config) != set(BASELINE_CONFIG):
-            raise ValueError("configuration must contain the complete baseline parameter set")
-        if config["live_enabled"] is not False or config["mode"] != "paper":
-            raise ValueError("P2 accepts paper-only configurations")
-        if not all(isinstance(config[key], str) for key in ("initial_total_usdt", "max_parent_notional")):
-            raise ValueError("money fields must be decimal strings")
+    def save_config(self, config: StrategyConfig) -> ConfigurationRecord:
+        config = config.model_dump()
         body = json.dumps(config, sort_keys=True, separators=(",", ":"))
         record = ConfigurationRecord(id=str(uuid4()), config_hash=hashlib.sha256(body.encode()).hexdigest(), created_at=utcnow(), config=config)
         self.db.execute("INSERT INTO configurations VALUES (?, ?, ?, ?)", (record.id, record.config_hash, record.created_at, body))
@@ -124,13 +118,13 @@ class ControlStore:
         return record
 
     def configs(self) -> list[ConfigurationRecord]:
-        return [ConfigurationRecord(id=row[0], config_hash=row[1], created_at=row[2], config=json.loads(row[3])) for row in self.db.execute("SELECT id, config_hash, created_at, body FROM configurations ORDER BY created_at DESC")]
+        return [ConfigurationRecord(id=row[0], config_hash=row[1], created_at=row[2], config=StrategyConfig.model_validate_json(row[3])) for row in self.db.execute("SELECT id, config_hash, created_at, body FROM configurations ORDER BY created_at DESC")]
 
     def get_config(self, config_id: str) -> ConfigurationRecord:
         row = self.db.execute("SELECT id, config_hash, created_at, body FROM configurations WHERE id = ?", (config_id,)).fetchone()
         if row is None:
             raise KeyError(config_id)
-        return ConfigurationRecord(id=row[0], config_hash=row[1], created_at=row[2], config=json.loads(row[3]))
+        return ConfigurationRecord(id=row[0], config_hash=row[1], created_at=row[2], config=StrategyConfig.model_validate_json(row[3]))
 
     def save_run(self, record: RunRecord) -> RunRecord:
         self.db.execute("INSERT INTO runs VALUES (?, ?, ?, ?, ?, ?, ?)", (record.id, record.config_id, record.kind, record.status, json.dumps(record.evidence), record.created_at, json.dumps(record.report) if record.report else None))
