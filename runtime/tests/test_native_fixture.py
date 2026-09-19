@@ -122,3 +122,18 @@ def test_journal_dedupes_events_and_transfers_cannot_create_total() -> None:
     assert journal.record_transfer("transfer-1", Decimal("9000"), Decimal("8000"), Decimal("1000"), Decimal("2000"))
     assert not journal.record_transfer("transfer-1", Decimal("9000"), Decimal("8000"), Decimal("1000"), Decimal("2000"))
     NativeEventJournal.assert_total(Decimal("8000"), Decimal("2000"), Decimal("10000"))
+
+
+def test_mark_tier_crossing_updates_native_margin_account_without_fill() -> None:
+    engine = build_engine(tier_probe=True)
+    engine.add_data([
+        quote(BTC_PERP.id, "80000.0", "80001.0", 1),
+        quote(BTC_PERP.id, "99999.0", "100000.0", 2),
+    ])
+    engine.run()
+    try:
+        account = engine.trader._cache.account_for_venue(SIM)
+        assert account.margin_init(BTC_PERP.id).as_decimal() == Decimal("3999.98")
+        assert account.margin_maint(BTC_PERP.id).as_decimal() == Decimal("1489.99")
+    finally:
+        engine.dispose()

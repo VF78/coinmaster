@@ -42,6 +42,7 @@ class FixtureConfig(StrategyConfig, frozen=True):
     btc_id: InstrumentId
     sol_id: InstrumentId
     margin_probe: bool = False
+    tier_probe: bool = False
 
 
 class FixtureStrategy(Strategy):
@@ -76,6 +77,8 @@ class FixtureStrategy(Strategy):
                 (self.config.sol_id, OrderSide.SELL, "500.0"),
                 (self.config.sol_id, OrderSide.SELL, "1100.0"),
             )
+        if self.config.tier_probe:
+            actions = ((self.config.btc_id, OrderSide.BUY, "4.000"),)
         if self._step >= len(actions):
             return
         instrument_id, side, quantity = actions[self._step]
@@ -178,6 +181,40 @@ class PerpetualFundingModule(SimulationModule):
         self._applied.clear()
 
 
+class BybitTierMarginModule(SimulationModule):
+    """Reprices captured public BTC tiers directly on the native MarginAccount."""
+
+    TIERS = (
+        (Decimal("300000"), Decimal("0.0066"), Decimal("0.0033"), Decimal("0")),
+        (Decimal("2000000"), Decimal("0.01"), Decimal("0.005"), Decimal("510")),
+    )
+
+    def __init__(self) -> None:
+        super().__init__(SimulationModuleConfig())
+
+    def process(self, ts_now: int) -> None:
+        account = self.exchange.get_account()
+        for position in self.exchange.cache.positions_open():
+            if position.instrument_id != BTC_PERP.id:
+                continue
+            mark = Decimal(str(self.exchange.get_book(position.instrument_id).midpoint()))
+            notional = position.quantity.as_decimal() * mark
+            for limit, im_rate, mm_rate, deduction in self.TIERS:
+                if notional <= limit:
+                    account.update_margin_init(position.instrument_id, Money(notional * im_rate, USDT))
+                    account.update_margin_maint(position.instrument_id, Money(max(Decimal("0"), notional * mm_rate - deduction), USDT))
+                    break
+
+    def pre_process(self, data) -> None:
+        pass
+
+    def log_diagnostics(self, logger) -> None:
+        logger.info("Bybit tier margin module active")
+
+    def reset(self) -> None:
+        pass
+
+
 def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int) -> QuoteTick:
     size = "1000.0" if instrument_id == SOL_PERP.id else "1000.000"
     return QuoteTick(
@@ -189,13 +226,14 @@ def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int) -> QuoteTick
 def build_engine(
     funding_events: tuple[FundingInstruction, ...] = (),
     margin_probe: bool = False,
+    tier_probe: bool = False,
 ) -> BacktestEngine:
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
     engine.add_venue(
         venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN,
         starting_balances=[Money(10_000, USDT)], base_currency=USDT,
         default_leverage=Decimal("1"),
-        modules=[PerpetualFundingModule(funding_events)] if funding_events else None,
+        modules=([PerpetualFundingModule(funding_events)] if funding_events else []) + ([BybitTierMarginModule()] if tier_probe else []),
     )
     engine.add_instrument(BTC_PERP)
     engine.add_instrument(SOL_PERP)
@@ -203,5 +241,6 @@ def build_engine(
         btc_id=BTC_PERP.id,
         sol_id=SOL_PERP.id,
         margin_probe=margin_probe,
+        tier_probe=tier_probe,
     )))
     return engine
