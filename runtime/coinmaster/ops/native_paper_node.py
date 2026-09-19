@@ -51,6 +51,10 @@ MAX_DATA_AGE_NS = 120_000_000_000
 # live update lacks the venue-provided next settlement timestamp; it is never
 # applied to Hyperliquid, whose cadence must come from its own update.
 BYBIT_FUNDING_INTERVAL_NS = 8 * 60 * 60 * 1_000_000_000
+# Hyperliquid's official funding documentation specifies hourly payments. Its
+# adapter currently exposes no next settlement timestamp, so this is a
+# venue-documented scheduling window, not a guessed transport cadence.
+HYPERLIQUID_FUNDING_INTERVAL_NS = 60 * 60 * 1_000_000_000
 WARMUP_DAYS = 730
 DAY_NS = 86_400_000_000_000
 
@@ -280,12 +284,11 @@ class FeedBook:
         metadata remains fail-closed except for the verified Bybit 8h cadence.
         """
         if instrument_id.venue == Venue("HYPERLIQUID"):
-            # Hyperliquid's subscribed active-asset-context rate update does
-            # not expose a next settlement timestamp in this adapter. It is a
-            # live stream observation, not permission to assume a settlement
-            # cadence, so retain the short transport TTL and fail closed when
-            # that stream is actually absent.
-            return now_ns - received_ns <= MAX_DATA_AGE_NS
+            # Hyperliquid's subscribed active-asset-context update exposes no
+            # next settlement timestamp. Its official venue rule is hourly
+            # funding, so accept this rate through that documented window;
+            # after it (plus transport grace) a missing update is stale.
+            return now_ns <= received_ns + HYPERLIQUID_FUNDING_INTERVAL_NS + MAX_DATA_AGE_NS
         deadline = next_funding_ns
         if deadline is None and instrument_id.venue == Venue("BYBIT"):
             deadline = received_ns + BYBIT_FUNDING_INTERVAL_NS

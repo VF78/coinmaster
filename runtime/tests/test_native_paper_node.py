@@ -9,6 +9,7 @@ from nautilus_trader.adapters.sandbox.factory import SandboxLiveExecClientFactor
 from coinmaster.ops.native_paper_node import (
     EXECUTION_FACTORY_ALLOWLIST,
     BYBIT_FUNDING_INTERVAL_NS,
+    HYPERLIQUID_FUNDING_INTERVAL_NS,
     FeedBook,
     MAX_DATA_AGE_NS,
     _load_warmup,
@@ -78,7 +79,7 @@ def test_scheduled_bybit_funding_stays_ready_between_updates_but_expires_after_s
         assert book.status(now)[str(BYBIT_IDS[0])]["state"] == expected
 
 
-def test_hyperliquid_funding_without_next_timestamp_requires_a_fresh_live_stream() -> None:
+def test_hyperliquid_funding_without_next_timestamp_uses_official_hourly_window_then_expires() -> None:
     from nautilus_trader.model.data import FundingRateUpdate, MarkPriceUpdate, QuoteTick
     from nautilus_trader.model.identifiers import InstrumentId
     from nautilus_trader.model.objects import Price, Quantity
@@ -86,10 +87,10 @@ def test_hyperliquid_funding_without_next_timestamp_requires_a_fresh_live_stream
     instrument_id = InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID")
     book = FeedBook(ids=(instrument_id,))
     book.funding_rate(FundingRateUpdate(instrument_id, Decimal("0.0001"), 0, 0))
-    for now in (MAX_DATA_AGE_NS, MAX_DATA_AGE_NS + 1):
+    for now in (HYPERLIQUID_FUNDING_INTERVAL_NS, HYPERLIQUID_FUNDING_INTERVAL_NS + MAX_DATA_AGE_NS + 1):
         book.quote(QuoteTick(instrument_id, Price.from_str("100.0"), Price.from_str("100.1"), Quantity.from_str("1.0"), Quantity.from_str("1.0"), now, now))
         book.mark(MarkPriceUpdate(instrument_id, Price.from_str("100.0"), now, now))
-        expected = "READY" if now == MAX_DATA_AGE_NS else "DATA_STALE"
+        expected = "READY" if now == HYPERLIQUID_FUNDING_INTERVAL_NS else "DATA_STALE"
         assert book.status(now)[str(instrument_id)]["state"] == expected
 
 
