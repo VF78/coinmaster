@@ -116,12 +116,51 @@ def run_corrected_controls(data_root: Path) -> dict:
     return summary | {"artifact": str(target)}
 
 
+def run_corrected_refinement(data_root: Path) -> dict:
+    """Resume-safe BTC-size-only refinement under the corrected assumptions."""
+    v0 = Candidate()
+    variants = (("v0", v0),) + tuple(
+        (f"btc_notional_{value:g}", replace(v0, btc_notional_multiplier=value))
+        for value in (6.48, 7.29, 7.695, 8.10, 8.505, 8.91)
+    )
+    runs = data_root / "runs"
+    runs.mkdir(parents=True, exist_ok=True)
+    partial = runs / "native-optimizer-refinement.partial.json"
+    previous = json.loads(partial.read_text()) if partial.exists() else {"results": []}
+    results = list(previous["results"])
+    completed = {item["variant_id"] for item in results}
+    for variant_id, candidate in variants:
+        if variant_id in completed:
+            continue
+        try:
+            report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate)
+            item = {"variant_id": variant_id, "candidate": asdict(candidate), "candidate_hash": hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True).encode()).hexdigest(), **report}
+            item["eligible_for_assumption_ranking"] = item["terminal_open_positions"] == 0
+        except Exception as error:
+            item = {"variant_id": variant_id, "candidate": asdict(candidate), "status": "FAILED", "error": f"{type(error).__name__}:{error}", "eligible_for_assumption_ranking": False}
+        results.append(item)
+        partial.write_text(json.dumps({"results": results}, indent=2, sort_keys=True) + "\n")
+    control = next(item for item in results if item["variant_id"] == "v0")
+    ranked = [item for item in results if item["eligible_for_assumption_ranking"]]
+    best = max(ranked, key=lambda item: Decimal(item["terminal_total"])) if ranked else None
+    summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "objective": "terminal ACTIVE + RESERVE after modeled costs, funding, and terminal close", "provenance": provenance(data_root), "search_axis": {"btc_notional_multiplier": [6.48, 7.29, 7.695, 8.10, 8.505, 8.91]}, "results": results, "best_assumption_profile_candidate": best["variant_id"] if best else None, "best_delta_vs_corrected_v0": str(Decimal(best["terminal_total"]) - Decimal(control["terminal_total"])) if best else None, "limitations": ["In-sample diagnostic only; not live ranking.", "Historical fee/tier and funding settlement assumptions remain unverified."]}
+    target = runs / "native-optimizer-corrected-refinement.json"
+    target.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    csv_path = runs / "native-optimizer-corrected-refinement.csv"
+    fields = ("variant_id", "status", "eligible_for_assumption_ranking", "terminal_active", "terminal_reserve", "terminal_total", "fills", "native_fees", "funding_events_posted", "native_order_rejections", "terminal_open_positions", "candidate_hash", "error")
+    with csv_path.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields); writer.writeheader(); writer.writerows({field: item.get(field) for field in fields} for item in results)
+    return summary | {"artifacts": {"json": str(target), "csv": str(csv_path), "partial": str(partial)}}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
     parser.add_argument("--corrected-controls", action="store_true")
+    parser.add_argument("--corrected-refinement", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(run_corrected_controls(args.data_root) if args.corrected_controls else run_optimizer(args.data_root), sort_keys=True))
+    report = run_corrected_refinement(args.data_root) if args.corrected_refinement else run_corrected_controls(args.data_root) if args.corrected_controls else run_optimizer(args.data_root)
+    print(json.dumps(report, sort_keys=True))
 
 
 if __name__ == "__main__":
