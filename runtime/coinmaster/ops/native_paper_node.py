@@ -279,6 +279,13 @@ class FeedBook:
         quote TTL is not a valid freshness rule for it. Missing scheduling
         metadata remains fail-closed except for the verified Bybit 8h cadence.
         """
+        if instrument_id.venue == Venue("HYPERLIQUID"):
+            # Hyperliquid's subscribed active-asset-context rate update does
+            # not expose a next settlement timestamp in this adapter. It is a
+            # live stream observation, not permission to assume a settlement
+            # cadence, so retain the short transport TTL and fail closed when
+            # that stream is actually absent.
+            return now_ns - received_ns <= MAX_DATA_AGE_NS
         deadline = next_funding_ns
         if deadline is None and instrument_id.venue == Venue("BYBIT"):
             deadline = received_ns + BYBIT_FUNDING_INTERVAL_NS
