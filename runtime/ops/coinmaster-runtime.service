@@ -8,6 +8,7 @@ EnvironmentFile=/etc/coinmaster-paper.env
 WorkingDirectory=/root/.openclaw/workspace/coinmaster/coinmaster/runtime
 Environment=COINMASTER_RUNTIME_HOST=127.0.0.1
 Environment=COINMASTER_RUNTIME_PORT=18182
+Environment=COINMASTER_RUNTIME_DIST=/var/lib/coinmaster-runtime/web
 ExecStart=/root/.local/bin/uv run --no-sync uvicorn coinmaster.api.runtime_sidecar:app --host ${COINMASTER_RUNTIME_HOST} --port ${COINMASTER_RUNTIME_PORT}
 Restart=on-failure
 NoNewPrivileges=true
