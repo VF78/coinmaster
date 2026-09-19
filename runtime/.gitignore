@@ -2,5 +2,6 @@
 .pytest_cache/
 __pycache__/
 *.py[cod]
+var/
 # Superseded duplicate of the canonical candle warmup probe below.
 var/raw/venues/hyperliquid-BTC-mark-warmup-start.json
