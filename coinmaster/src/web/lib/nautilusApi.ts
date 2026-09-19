@@ -1,8 +1,11 @@
 import type { components } from './nautilus.generated';
+import type { components as runtimeComponents } from './runtime.generated';
 export type StrategyConfig = components['schemas']['StrategyConfig'];
 export type StrategyConfiguration = components['schemas']['ConfigurationRecord'];
 export type Run = components['schemas']['RunRecord'];
-export interface RuntimeState { status: string; active_usdt: string; reserve_usdt: string; total_usdt: string; warnings: string[] }
+export type RuntimeState = runtimeComponents['schemas']['RuntimeState'];
+export type RuntimeEventsResponse = runtimeComponents['schemas']['RuntimeEventsResponse'];
+export type RuntimeCommandResponse = runtimeComponents['schemas']['RuntimeCommandResponse'];
 export interface Preflight { requested: Record<string, string>; allowed: boolean; im: string | null; mm: string | null; reasons: string[]; cap_label?: string }
 // Local operator supplies this ephemeral value; no API secret is bundled into the UI.
 export const setApiToken = (value: string) => window.localStorage.setItem('coinmaster-api-token', value);
@@ -19,4 +22,5 @@ export const getConfigurations = () => request<StrategyConfiguration[]>('/config
 export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper') => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind }) });
 export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponent(id)}/cancel`, { method: 'POST' });
 export const getRuntime = () => request<RuntimeState>('/runtime');
+export const runtimeCommand = (command: 'pause-new-entries' | 'resume-new-entries' | 'flatten-paper') => request<RuntimeCommandResponse>(`/runtime/commands/${command}`, { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() } });
 export const getPreflight = (config: StrategyConfig, beta: string | null, leverage: string | null) => request<Preflight>('/preflight', { method: 'POST', body: JSON.stringify({ venue: config.venue ?? 'bybit', active_usdt: config.initial_total_usdt, btc_notional: (Number(config.initial_total_usdt) * config.btc_notional_multiplier).toFixed(2), beta, selected_leverage: leverage, sol_multipliers: config.sol_size_multipliers_H }) });

@@ -1,0 +1,729 @@
+{
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "RuntimeBalances": {
+        "additionalProperties": false,
+        "properties": {
+          "active_usdt": {
+            "title": "Active Usdt",
+            "type": "string"
+          },
+          "funding_state": {
+            "title": "Funding State",
+            "type": "string"
+          },
+          "modelled_funding_cash": {
+            "title": "Modelled Funding Cash",
+            "type": "string"
+          },
+          "native_cash": {
+            "title": "Native Cash",
+            "type": "string"
+          },
+          "reserve_usdt": {
+            "title": "Reserve Usdt",
+            "type": "string"
+          },
+          "total_usdt": {
+            "title": "Total Usdt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "active_usdt",
+          "reserve_usdt",
+          "total_usdt",
+          "native_cash",
+          "modelled_funding_cash",
+          "funding_state"
+        ],
+        "title": "RuntimeBalances",
+        "type": "object"
+      },
+      "RuntimeCommandResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "command": {
+            "enum": [
+              "pause-new-entries",
+              "resume-new-entries",
+              "flatten-paper"
+            ],
+            "title": "Command",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "mode": {
+            "const": "paper",
+            "title": "Mode",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACCEPTED",
+              "DUPLICATE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "idempotency_key",
+          "status",
+          "mode"
+        ],
+        "title": "RuntimeCommandResponse",
+        "type": "object"
+      },
+      "RuntimeEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "cursor": {
+            "title": "Cursor",
+            "type": "integer"
+          },
+          "event_id": {
+            "title": "Event Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cursor",
+          "event_id",
+          "kind"
+        ],
+        "title": "RuntimeEvent",
+        "type": "object"
+      },
+      "RuntimeEventsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/RuntimeEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "next_cursor": {
+            "title": "Next Cursor",
+            "type": "integer"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "events",
+          "next_cursor"
+        ],
+        "title": "RuntimeEventsResponse",
+        "type": "object"
+      },
+      "RuntimeFeed": {
+        "additionalProperties": false,
+        "properties": {
+          "funding_age_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Age Ns"
+          },
+          "funding_rate": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Rate"
+          },
+          "mark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mark"
+          },
+          "mark_age_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mark Age Ns"
+          },
+          "quote_age_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote Age Ns"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state"
+        ],
+        "title": "RuntimeFeed",
+        "type": "object"
+      },
+      "RuntimeFunding": {
+        "additionalProperties": false,
+        "properties": {
+          "cash_delta": {
+            "title": "Cash Delta",
+            "type": "string"
+          },
+          "event_id": {
+            "title": "Event Id",
+            "type": "string"
+          },
+          "instrument_id": {
+            "title": "Instrument Id",
+            "type": "string"
+          },
+          "mark": {
+            "title": "Mark",
+            "type": "string"
+          },
+          "rate": {
+            "title": "Rate",
+            "type": "string"
+          },
+          "settlement_ns": {
+            "title": "Settlement Ns",
+            "type": "integer"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "event_id",
+          "instrument_id",
+          "settlement_ns",
+          "rate",
+          "mark",
+          "cash_delta",
+          "state"
+        ],
+        "title": "RuntimeFunding",
+        "type": "object"
+      },
+      "RuntimeMargin": {
+        "additionalProperties": false,
+        "properties": {
+          "free_margin": {
+            "title": "Free Margin",
+            "type": "string"
+          },
+          "im": {
+            "title": "Im",
+            "type": "string"
+          },
+          "mm": {
+            "title": "Mm",
+            "type": "string"
+          }
+        },
+        "required": [
+          "im",
+          "mm",
+          "free_margin"
+        ],
+        "title": "RuntimeMargin",
+        "type": "object"
+      },
+      "RuntimeOrder": {
+        "additionalProperties": false,
+        "properties": {
+          "client_order_id": {
+            "title": "Client Order Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_order_id"
+        ],
+        "title": "RuntimeOrder",
+        "type": "object"
+      },
+      "RuntimePosition": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument_id": {
+            "title": "Instrument Id",
+            "type": "string"
+          },
+          "signed_quantity": {
+            "title": "Signed Quantity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument_id",
+          "signed_quantity"
+        ],
+        "title": "RuntimePosition",
+        "type": "object"
+      },
+      "RuntimeState": {
+        "additionalProperties": false,
+        "properties": {
+          "balances": {
+            "$ref": "#/components/schemas/RuntimeBalances"
+          },
+          "event_cursor": {
+            "title": "Event Cursor",
+            "type": "integer"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/RuntimeEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "feeds": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RuntimeFeed"
+            },
+            "title": "Feeds",
+            "type": "object"
+          },
+          "fees": {
+            "title": "Fees",
+            "type": "string"
+          },
+          "fills": {
+            "items": {
+              "$ref": "#/components/schemas/RuntimeEvent"
+            },
+            "title": "Fills",
+            "type": "array"
+          },
+          "funding": {
+            "items": {
+              "$ref": "#/components/schemas/RuntimeFunding"
+            },
+            "title": "Funding",
+            "type": "array"
+          },
+          "lock": {
+            "title": "Lock",
+            "type": "string"
+          },
+          "margin": {
+            "$ref": "#/components/schemas/RuntimeMargin"
+          },
+          "mode": {
+            "enum": [
+              "paper",
+              "UNKNOWN"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/RuntimeOrder"
+            },
+            "title": "Orders",
+            "type": "array"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/RuntimePosition"
+            },
+            "title": "Positions",
+            "type": "array"
+          },
+          "reconciliation": {
+            "title": "Reconciliation",
+            "type": "string"
+          },
+          "rejects": {
+            "title": "Rejects",
+            "type": "string"
+          },
+          "strategy": {
+            "$ref": "#/components/schemas/RuntimeStrategy"
+          },
+          "transfers": {
+            "title": "Transfers",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          },
+          "worker_state": {
+            "title": "Worker State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version",
+          "mode",
+          "worker_state",
+          "strategy",
+          "reconciliation",
+          "lock",
+          "balances",
+          "positions",
+          "orders",
+          "fills",
+          "feeds",
+          "margin",
+          "rejects",
+          "fees",
+          "transfers",
+          "funding",
+          "warnings",
+          "events",
+          "event_cursor"
+        ],
+        "title": "RuntimeState",
+        "type": "object"
+      },
+      "RuntimeStrategy": {
+        "additionalProperties": false,
+        "properties": {
+          "config_hash": {
+            "title": "Config Hash",
+            "type": "string"
+          },
+          "config_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config Name"
+          },
+          "entries_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entries Enabled"
+          },
+          "registered": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registered"
+          },
+          "running": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Running"
+          },
+          "strategy_class": {
+            "title": "Strategy Class",
+            "type": "string"
+          }
+        },
+        "required": [
+          "strategy_class",
+          "config_hash"
+        ],
+        "title": "RuntimeStrategy",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Coinmaster Paper Runtime API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/runtime": {
+      "get": {
+        "operationId": "runtime_api_v1_runtime_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Runtime"
+      }
+    },
+    "/api/v1/runtime/commands/{command}": {
+      "post": {
+        "operationId": "command_api_v1_runtime_commands__command__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "command",
+            "required": true,
+            "schema": {
+              "enum": [
+                "pause-new-entries",
+                "resume-new-entries",
+                "flatten-paper"
+              ],
+              "title": "Command",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeCommandResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Command"
+      }
+    },
+    "/api/v1/runtime/events": {
+      "get": {
+        "operationId": "events_api_v1_runtime_events_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Cursor",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeEventsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Events"
+      }
+    }
+  }
+}

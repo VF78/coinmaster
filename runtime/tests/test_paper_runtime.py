@@ -41,3 +41,25 @@ def test_modelled_funding_is_signed_idempotent_and_restart_safe(tmp_path) -> Non
     assert restarted.reconcile(positions=[], orders=[])
     assert not restarted.reconcile(positions=[{"instrument_id": "BTC", "signed_quantity": "1"}], orders=[])
     restarted.close()
+
+
+def test_pause_resume_and_flatten_command_audit_are_idempotent(tmp_path) -> None:
+    runtime = PaperRuntime(tmp_path / "paper.sqlite", "owner", 100)
+    runtime.acquire(); runtime.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[])
+    assert runtime.command("pause-new-entries", "pause")
+    assert runtime.health(2).paused_new_entries
+    assert runtime.command("resume-new-entries", "resume")
+    assert not runtime.health(2).paused_new_entries
+    assert runtime.command("flatten-paper", "flat")
+    assert runtime.health(2).flatten_requested
+    assert not runtime.command("flatten-paper", "flat")
+    runtime.close()
+
+
+def test_command_rejects_unknown_action_without_consuming_idempotency_key(tmp_path) -> None:
+    runtime = PaperRuntime(tmp_path / "paper.sqlite", "owner", 100)
+    runtime.acquire()
+    with pytest.raises(ValueError, match="unsupported paper command"):
+        runtime.command("live-order", "key")
+    assert runtime.command("pause-new-entries", "key")
+    runtime.close()

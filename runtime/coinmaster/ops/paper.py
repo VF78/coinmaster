@@ -28,6 +28,7 @@ class PaperRuntime:
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_lock (id INTEGER PRIMARY KEY CHECK(id=1), owner TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_commands (idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_command_audit (idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL, status TEXT NOT NULL, ts_ns INTEGER NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_events (event_id TEXT PRIMARY KEY, kind TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_snapshot (id INTEGER PRIMARY KEY CHECK(id=1), body TEXT NOT NULL)")
         # SandboxExecutionClient exposes no supported live-account cash
@@ -47,10 +48,12 @@ class PaperRuntime:
             raise RuntimeError("PAPER_OWNER_LOCKED") from error
 
     def command(self, command: str, idempotency_key: str) -> bool:
-        if command not in {"pause-new-entries", "flatten"}:
+        if command not in {"pause-new-entries", "resume-new-entries", "flatten-paper"}:
             raise ValueError("unsupported paper command")
         try:
-            self.db.execute("INSERT INTO paper_commands VALUES (?, ?)", (idempotency_key, command)); self.db.commit(); return True
+            self.db.execute("INSERT INTO paper_commands VALUES (?, ?)", (idempotency_key, command))
+            self.db.execute("INSERT INTO paper_command_audit VALUES (?, ?, ?, strftime('%s','now') * 1000000000)", (idempotency_key, command, "ACCEPTED"))
+            self.db.commit(); return True
         except sqlite3.IntegrityError:
             return False
 
@@ -108,11 +111,16 @@ class PaperRuntime:
         row = self.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()
         snapshot = json.loads(row[0]) if row else None
         commands = {row[0] for row in self.db.execute("SELECT command FROM paper_commands")}
+        latest_entry_control = self.db.execute("SELECT command FROM paper_command_audit WHERE command IN ('pause-new-entries', 'resume-new-entries') ORDER BY ts_ns DESC, rowid DESC LIMIT 1").fetchone()
+        paused = latest_entry_control[0] == "pause-new-entries" if latest_entry_control else "pause-new-entries" in commands
         warnings: list[str] = []
         if snapshot is None: warnings.append("MISSING_SNAPSHOT")
         elif now_ns - snapshot["ts_ns"] > self.max_data_age_ns: warnings.append("STALE_DATA")
         if snapshot and not snapshot.get("reconciled", False): warnings.append("SANDBOX_RECONCILIATION_MISMATCH")
         if snapshot and snapshot["orders"]: warnings.append("UNRECONCILED_ORDERS")
-        return PaperHealth(self.owner, "pause-new-entries" in commands, "flatten" in commands, not warnings and "pause-new-entries" not in commands, tuple(warnings))
+        return PaperHealth(self.owner, paused, "flatten-paper" in commands, not warnings and not paused, tuple(warnings))
+
+    def events(self, cursor: int = 0, limit: int = 100) -> list[dict]:
+        return [{"cursor": row[0], "event_id": row[1], "kind": row[2]} for row in self.db.execute("SELECT rowid, event_id, kind FROM paper_events WHERE rowid > ? ORDER BY rowid LIMIT ?", (cursor, limit))]
 
     def close(self) -> None: self.db.close()

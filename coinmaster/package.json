@@ -10,6 +10,8 @@
     "build": "npm run build:web && npm run build:custom",
     "build:web": "vite build",
     "generate:nautilus-api": "../runtime/.venv/bin/python ../runtime/scripts/export_openapi.py && openapi-typescript src/web/lib/nautilus.openapi.json -o src/web/lib/nautilus.generated.ts",
+    "generate:runtime-api": "../runtime/.venv/bin/python ../runtime/scripts/export_runtime_openapi.py && openapi-typescript src/web/lib/runtime.openapi.json -o src/web/lib/runtime.generated.ts",
+    "check:runtime-api": "npm run generate:runtime-api && git diff --exit-code -- src/web/lib/runtime.openapi.json src/web/lib/runtime.generated.ts",
     "start": "tsx src/server/index.ts",
     "tunnel": "./scripts/tunnel-localhost-run.sh",
     "tunnel:fixed": "./scripts/tunnel-localhost-run.sh coinmaster-vf",
