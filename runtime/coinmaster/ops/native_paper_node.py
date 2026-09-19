@@ -27,7 +27,7 @@ from nautilus_trader.config import InstrumentProviderConfig, LoggingConfig, Stra
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.data import FundingRateUpdate, MarkPriceUpdate, QuoteTick
-from nautilus_trader.model.identifiers import ClientId, InstrumentId
+from nautilus_trader.model.identifiers import ClientId, InstrumentId, Venue
 from nautilus_trader.trading.strategy import Strategy
 
 
@@ -244,7 +244,7 @@ class NativePaperNode:
                 self.node.kernel.cache.add_instrument(instrument)
         hyperliquid_ids = tuple(
             instrument.id
-            for instrument in self.node.cache.instruments(venue="HYPERLIQUID")
+            for instrument in self.node.cache.instruments(venue=Venue("HYPERLIQUID"))
             if getattr(instrument.base_currency, "code", None) in {"BTC", "SOL"}
         )
         if len(hyperliquid_ids) != 2 or any(self.node.cache.instrument(item) is None for item in BYBIT_IDS):
