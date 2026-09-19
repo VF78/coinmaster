@@ -188,21 +188,28 @@ class BybitTierMarginModule(SimulationModule):
         (Decimal("300000"), Decimal("0.0066"), Decimal("0.0033"), Decimal("0")),
         (Decimal("2000000"), Decimal("0.01"), Decimal("0.005"), Decimal("510")),
     )
+    observed: list[tuple[int, Decimal, Decimal, Decimal]] = []
 
-    def __init__(self) -> None:
+    def __init__(self, marks: tuple["MarkPriceUpdate", ...]) -> None:
         super().__init__(SimulationModuleConfig())
+        self._marks = marks
+        self.observed = []
 
     def process(self, ts_now: int) -> None:
         account = self.exchange.get_account()
         for position in self.exchange.cache.positions_open():
             if position.instrument_id != BTC_PERP.id:
                 continue
-            mark = Decimal(str(self.exchange.get_book(position.instrument_id).midpoint()))
+            applicable = [item for item in self._marks if item.instrument_id == position.instrument_id and item.ts_event <= ts_now]
+            if not applicable:
+                continue  # Fail closed: quote/last is not a mark price.
+            mark = applicable[-1].price
             notional = position.quantity.as_decimal() * mark
             for limit, im_rate, mm_rate, deduction in self.TIERS:
                 if notional <= limit:
                     account.update_margin_init(position.instrument_id, Money(notional * im_rate, USDT))
                     account.update_margin_maint(position.instrument_id, Money(max(Decimal("0"), notional * mm_rate - deduction), USDT))
+                    self.observed.append((ts_now, mark, notional * im_rate, max(Decimal("0"), notional * mm_rate - deduction)))
                     break
 
     def pre_process(self, data) -> None:
@@ -213,6 +220,13 @@ class BybitTierMarginModule(SimulationModule):
 
     def reset(self) -> None:
         pass
+
+
+@dataclass(frozen=True)
+class MarkPriceUpdate:
+    instrument_id: InstrumentId
+    price: Decimal
+    ts_event: int
 
 
 def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int) -> QuoteTick:
@@ -227,13 +241,14 @@ def build_engine(
     funding_events: tuple[FundingInstruction, ...] = (),
     margin_probe: bool = False,
     tier_probe: bool = False,
+    marks: tuple[MarkPriceUpdate, ...] = (),
 ) -> BacktestEngine:
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
     engine.add_venue(
         venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN,
         starting_balances=[Money(10_000, USDT)], base_currency=USDT,
         default_leverage=Decimal("1"),
-        modules=([PerpetualFundingModule(funding_events)] if funding_events else []) + ([BybitTierMarginModule()] if tier_probe else []),
+        modules=([PerpetualFundingModule(funding_events)] if funding_events else []) + ([BybitTierMarginModule(marks)] if tier_probe else []),
     )
     engine.add_instrument(BTC_PERP)
     engine.add_instrument(SOL_PERP)

@@ -7,6 +7,7 @@ from coinmaster.research.native_fixture import (
     SIM,
     build_engine,
     quote,
+    MarkPriceUpdate,
 )
 from nautilus_trader.model.data import FundingRateUpdate
 from nautilus_trader.backtest.models import LeveragedMarginModel
@@ -125,15 +126,18 @@ def test_journal_dedupes_events_and_transfers_cannot_create_total() -> None:
 
 
 def test_mark_tier_crossing_updates_native_margin_account_without_fill() -> None:
-    engine = build_engine(tier_probe=True)
+    engine = build_engine(tier_probe=True, marks=(
+        MarkPriceUpdate(BTC_PERP.id, Decimal("75000"), 1),
+        MarkPriceUpdate(BTC_PERP.id, Decimal("80000"), 2),
+    ))
     engine.add_data([
         quote(BTC_PERP.id, "80000.0", "80001.0", 1),
-        quote(BTC_PERP.id, "99999.0", "100000.0", 2),
+        quote(BTC_PERP.id, "80000.0", "80001.0", 2),
     ])
     engine.run()
     try:
         account = engine.trader._cache.account_for_venue(SIM)
-        assert account.margin_init(BTC_PERP.id).as_decimal() == Decimal("3999.98")
-        assert account.margin_maint(BTC_PERP.id).as_decimal() == Decimal("1489.99")
+        assert account.margin_init(BTC_PERP.id).as_decimal() == Decimal("3200.00")
+        assert account.margin_maint(BTC_PERP.id).as_decimal() == Decimal("1090.00")
     finally:
         engine.dispose()
