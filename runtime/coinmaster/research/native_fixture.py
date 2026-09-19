@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.config import SimulationModuleConfig
+from nautilus_trader.backtest.models import LeveragedMarginModel
 from nautilus_trader.backtest.modules import SimulationModule
 from nautilus_trader.config import BacktestEngineConfig, LoggingConfig, StrategyConfig
 from nautilus_trader.model.currencies import BTC, SOL, USDT
@@ -40,6 +41,7 @@ SOL_PERP = perpetual("SOLUSDT", SOL, "0.01", "0.1", "0.05")
 class FixtureConfig(StrategyConfig, frozen=True):
     btc_id: InstrumentId
     sol_id: InstrumentId
+    margin_probe: bool = False
 
 
 class FixtureStrategy(Strategy):
@@ -49,6 +51,7 @@ class FixtureStrategy(Strategy):
         super().__init__(config)
         self._step = 0
         self._instruments: dict[InstrumentId, CryptoPerpetual] = {}
+        self.margin_rejections = 0
 
     def on_start(self) -> None:
         for instrument_id in (self.config.btc_id, self.config.sol_id):
@@ -67,10 +70,23 @@ class FixtureStrategy(Strategy):
             (self.config.btc_id, OrderSide.SELL, "0.600"),
             (self.config.sol_id, OrderSide.BUY, "500.0"),
         )
+        if self.config.margin_probe:
+            actions = (
+                (self.config.btc_id, OrderSide.BUY, "1.000"),
+                (self.config.sol_id, OrderSide.SELL, "500.0"),
+                (self.config.sol_id, OrderSide.SELL, "1100.0"),
+            )
         if self._step >= len(actions):
             return
         instrument_id, side, quantity = actions[self._step]
         if tick.instrument_id != instrument_id:
+            return
+        if self.config.margin_probe and self._step == 2 and not self._margin_allows_increase(
+            instrument_id,
+            Decimal(quantity),
+        ):
+            self.margin_rejections += 1
+            self._step += 1
             return
         order: MarketOrder = self.order_factory.market(
             instrument_id=instrument_id,
@@ -81,6 +97,32 @@ class FixtureStrategy(Strategy):
         self.submit_order(order)
         self._step += 1
 
+    def _margin_allows_increase(self, instrument_id: InstrumentId, quantity: Decimal) -> bool:
+        """Fail closed using the pinned native margin model and native free balance."""
+        account = self.cache.account_for_venue(SIM)
+        if account is None:
+            return False
+        model = LeveragedMarginModel()
+        required = Decimal("0")
+        positions = {position.instrument_id: position for position in self.cache.positions_open()}
+        for current_id, instrument in self._instruments.items():
+            position = positions.get(current_id)
+            current_qty = position.quantity.as_decimal() if position is not None else Decimal("0")
+            total_qty = current_qty + quantity if current_id == instrument_id else current_qty
+            if total_qty == 0:
+                continue
+            quote_tick = self.cache.quote_tick(current_id)
+            if quote_tick is None:
+                return False
+            mark = (quote_tick.bid_price.as_decimal() + quote_tick.ask_price.as_decimal()) / 2
+            required += model.calculate_margin_init(
+                instrument,
+                instrument.make_qty(total_qty),
+                instrument.make_price(mark),
+                Decimal("1"),
+            ).as_decimal()
+        return required <= account.balance_free(USDT).as_decimal()
+
 
 @dataclass(frozen=True)
 class FundingInstruction:
@@ -90,6 +132,15 @@ class FundingInstruction:
     instrument_id: InstrumentId
     rate: Decimal
     ts_event: int
+    settlement_mark: Decimal | None = None
+    basis: str = "venue_mark"
+    synthetic: bool = False
+
+    def __post_init__(self) -> None:
+        if self.settlement_mark is None and not self.synthetic:
+            raise ValueError("production funding requires a confirmed settlement mark")
+        if self.basis not in {"venue_mark", "synthetic_mid"}:
+            raise ValueError(f"unsupported funding basis: {self.basis}")
 
 
 class PerpetualFundingModule(SimulationModule):
@@ -108,7 +159,9 @@ class PerpetualFundingModule(SimulationModule):
                 if position.instrument_id != event.instrument_id:
                     continue
                 instrument = self.exchange.instruments[position.instrument_id]
-                mark = Decimal(str(self.exchange.get_book(position.instrument_id).midpoint()))
+                mark = event.settlement_mark
+                if mark is None:  # Explicitly fixture-only; production must provide venue mark.
+                    mark = Decimal(str(self.exchange.get_book(position.instrument_id).midpoint()))
                 notional = position.quantity.as_decimal() * mark
                 # Positive funding: longs pay and shorts receive; negative reverses it.
                 sign = Decimal("-1") if position.is_long else Decimal("1")
@@ -133,7 +186,10 @@ def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int) -> QuoteTick
     )
 
 
-def build_engine(funding_events: tuple[FundingInstruction, ...] = ()) -> BacktestEngine:
+def build_engine(
+    funding_events: tuple[FundingInstruction, ...] = (),
+    margin_probe: bool = False,
+) -> BacktestEngine:
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
     engine.add_venue(
         venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN,
@@ -143,5 +199,9 @@ def build_engine(funding_events: tuple[FundingInstruction, ...] = ()) -> Backtes
     )
     engine.add_instrument(BTC_PERP)
     engine.add_instrument(SOL_PERP)
-    engine.add_strategy(FixtureStrategy(FixtureConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id)))
+    engine.add_strategy(FixtureStrategy(FixtureConfig(
+        btc_id=BTC_PERP.id,
+        sol_id=SOL_PERP.id,
+        margin_probe=margin_probe,
+    )))
     return engine

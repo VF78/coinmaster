@@ -9,6 +9,9 @@ from coinmaster.research.native_fixture import (
     quote,
 )
 from nautilus_trader.model.data import FundingRateUpdate
+from nautilus_trader.backtest.models import LeveragedMarginModel
+from nautilus_trader.model.objects import Price, Quantity
+from coinmaster.venues.margin import MarginReservations
 
 
 def fixture_quotes():
@@ -56,9 +59,9 @@ def test_native_funding_update_alone_does_not_post_account_money() -> None:
 
 def test_supported_funding_module_posts_signed_native_account_adjustments_once() -> None:
     events = (
-        FundingInstruction("btc-positive", BTC_PERP.id, Decimal("0.01"), 6),
-        FundingInstruction("sol-negative", SOL_PERP.id, Decimal("-0.01"), 6),
-        FundingInstruction("btc-positive", BTC_PERP.id, Decimal("0.01"), 6),  # deduped ID
+        FundingInstruction("btc-positive", BTC_PERP.id, Decimal("0.01"), 6, Decimal("80999.5"), "synthetic_mid", True),
+        FundingInstruction("sol-negative", SOL_PERP.id, Decimal("-0.01"), 6, Decimal("159.95"), "synthetic_mid", True),
+        FundingInstruction("btc-positive", BTC_PERP.id, Decimal("0.01"), 6, Decimal("80999.5"), "synthetic_mid", True),  # deduped ID
     )
     engine = build_engine(events)
     engine.add_data(fixture_quotes())
@@ -70,3 +73,42 @@ def test_supported_funding_module_posts_signed_native_account_adjustments_once()
         assert total == Decimal("14346.303")
     finally:
         engine.dispose()
+
+
+def test_native_margin_model_sums_two_legs_and_engine_rejects_excess_increase() -> None:
+    margin = LeveragedMarginModel()
+    btc_im = margin.calculate_margin_init(BTC_PERP, Quantity.from_str("1.000"), Price.from_str("80000.0"), Decimal("1"))
+    sol_im = margin.calculate_margin_init(SOL_PERP, Quantity.from_str("500.0"), Price.from_str("160.00"), Decimal("1"))
+    assert btc_im.as_decimal() + sol_im.as_decimal() == Decimal("6000")
+
+    engine = build_engine(margin_probe=True)
+    engine.add_data([
+        quote(BTC_PERP.id, "80000.0", "80001.0", 1),
+        quote(SOL_PERP.id, "159.90", "160.00", 2),
+        quote(SOL_PERP.id, "159.90", "160.00", 3),
+    ])
+    engine.run()
+    try:
+        # The 1100-SOL increase needs 8,800 additional IM after BTC+SOL's 6,000;
+        # native preflight must not let it become a third fill on a 10,000 account.
+        assert len(engine.trader.generate_order_fills_report()) == 2
+    finally:
+        engine.dispose()
+
+
+def test_partial_fill_keeps_parent_margin_reserved_until_cancel_confirmation() -> None:
+    reservations = MarginReservations()
+    reservations.reserve("btc-parent", Decimal("2000"))
+    reservations.record_fill("btc-parent", Decimal("1000"))
+    assert reservations.total_held_im() == Decimal("2000")
+    reservations.cancel_remainder("btc-parent")
+    assert reservations.total_held_im() == Decimal("1000")
+
+
+def test_production_funding_requires_confirmed_venue_settlement_mark() -> None:
+    try:
+        FundingInstruction("missing-mark", BTC_PERP.id, Decimal("0.01"), 6)
+    except ValueError as error:
+        assert "settlement mark" in str(error)
+    else:
+        raise AssertionError("funding without venue settlement mark must fail closed")
