@@ -1,0 +1,12 @@
+[Unit]
+Description=CoinMaster Nautilus paper-only worker
+After=network-online.target
+[Service]
+Type=simple
+EnvironmentFile=/etc/coinmaster-paper.env
+WorkingDirectory=/root/.openclaw/workspace/coinmaster/coinmaster/runtime
+ExecStart=/root/.local/bin/uv run --no-sync python -m coinmaster.ops.paper_worker
+Restart=on-failure
+NoNewPrivileges=true
+[Install]
+WantedBy=multi-user.target
