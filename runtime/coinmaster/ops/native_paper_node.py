@@ -46,6 +46,11 @@ BYBIT_IDS = (
 )
 EXECUTION_FACTORY_ALLOWLIST = (SandboxLiveExecClientFactory,)
 MAX_DATA_AGE_NS = 120_000_000_000
+# Bybit's captured public manifest specifies the BTCUSDT/SOLUSDT linear
+# funding cadence as eight hours.  This is only a bounded fallback when the
+# live update lacks the venue-provided next settlement timestamp; it is never
+# applied to Hyperliquid, whose cadence must come from its own update.
+BYBIT_FUNDING_INTERVAL_NS = 8 * 60 * 60 * 1_000_000_000
 WARMUP_DAYS = 730
 DAY_NS = 86_400_000_000_000
 
@@ -265,6 +270,20 @@ class FeedBook:
         if self.native_event_sink is not None:
             self.native_event_sink(event_id, kind)
 
+    @staticmethod
+    def _funding_current(instrument_id: InstrumentId, received_ns: int, next_funding_ns: int | None, now_ns: int) -> bool:
+        """Keep a rate current through its venue-defined settlement window.
+
+        Quotes and marks are executable/marking inputs and stay on the short
+        transport TTL. Funding is a scheduled observation, so a 120-second
+        quote TTL is not a valid freshness rule for it. Missing scheduling
+        metadata remains fail-closed except for the verified Bybit 8h cadence.
+        """
+        deadline = next_funding_ns
+        if deadline is None and instrument_id.venue == Venue("BYBIT"):
+            deadline = received_ns + BYBIT_FUNDING_INTERVAL_NS
+        return deadline is not None and now_ns <= deadline + MAX_DATA_AGE_NS
+
     def status(self, now_ns: int) -> dict[str, dict[str, Any]]:
         with self._lock:
             result: dict[str, dict[str, Any]] = {}
@@ -273,7 +292,10 @@ class FeedBook:
                 mark = self.marks.get(key)
                 quote = self.quotes.get(key)
                 funding = self.funding.get(key)
-                ages = [now_ns - item[1] for item in (mark, quote, funding) if item]
+                quote_mark_ready = bool(mark and quote) and all(
+                    now_ns - item[1] <= MAX_DATA_AGE_NS for item in (mark, quote)
+                )
+                funding_ready = funding is not None and self._funding_current(instrument_id, funding[1], funding[2], now_ns)
                 result[key] = {
                     "mark": mark[0] if mark else None,
                     "mark_age_ns": now_ns - mark[1] if mark else None,
@@ -281,7 +303,7 @@ class FeedBook:
                     "funding_rate": funding[0] if funding else None,
                     "funding_age_ns": now_ns - funding[1] if funding else None,
                     "next_funding_ns": funding[2] if funding else None,
-                    "state": "READY" if len(ages) == 3 and max(ages) <= MAX_DATA_AGE_NS else "DATA_STALE",
+                    "state": "READY" if quote_mark_ready and funding_ready else "DATA_STALE",
                 }
             return result
 

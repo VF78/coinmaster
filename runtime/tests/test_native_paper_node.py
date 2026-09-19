@@ -8,6 +8,7 @@ from nautilus_trader.adapters.sandbox.factory import SandboxLiveExecClientFactor
 
 from coinmaster.ops.native_paper_node import (
     EXECUTION_FACTORY_ALLOWLIST,
+    BYBIT_FUNDING_INTERVAL_NS,
     FeedBook,
     MAX_DATA_AGE_NS,
     _load_warmup,
@@ -59,6 +60,22 @@ def test_missing_native_mark_or_funding_is_stale_and_blocks_ready() -> None:
     book.mark(MarkPriceUpdate(BYBIT_IDS[0], Price.from_str("100.0"), 1, 1))
     book.funding_rate(FundingRateUpdate(BYBIT_IDS[0], Decimal("0.0001"), 1, 1))
     assert book.status(now)[str(BYBIT_IDS[0])]["state"] == "DATA_STALE"
+
+
+def test_scheduled_bybit_funding_stays_ready_between_updates_but_expires_after_settlement_grace() -> None:
+    from coinmaster.ops.native_paper_node import BYBIT_IDS
+    from nautilus_trader.model.data import FundingRateUpdate, MarkPriceUpdate, QuoteTick
+    from nautilus_trader.model.objects import Price, Quantity
+
+    book = FeedBook(ids=(BYBIT_IDS[0],))
+    next_funding = BYBIT_FUNDING_INTERVAL_NS
+    normal_between_updates = next_funding - 1
+    book.funding_rate(FundingRateUpdate(BYBIT_IDS[0], Decimal("0.0001"), 0, 0, next_funding_ns=next_funding))
+    for now in (normal_between_updates, next_funding + MAX_DATA_AGE_NS + 1):
+        book.quote(QuoteTick(BYBIT_IDS[0], Price.from_str("100.0"), Price.from_str("100.1"), Quantity.from_str("1.0"), Quantity.from_str("1.0"), now, now))
+        book.mark(MarkPriceUpdate(BYBIT_IDS[0], Price.from_str("100.0"), now, now))
+        expected = "READY" if now == normal_between_updates else "DATA_STALE"
+        assert book.status(now)[str(BYBIT_IDS[0])]["state"] == expected
 
 
 def test_verified_warmup_hydrates_causal_seed_and_default_is_corrected_v0() -> None:
