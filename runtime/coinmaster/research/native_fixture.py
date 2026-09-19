@@ -185,7 +185,7 @@ class FundingInstruction:
     def __post_init__(self) -> None:
         if self.settlement_mark is None and not self.synthetic:
             raise ValueError("production funding requires a confirmed settlement mark")
-        if self.basis not in {"venue_mark", "synthetic_mid"}:
+        if self.basis not in {"venue_mark", "venue_mark_prior_minute", "synthetic_mid"}:
             raise ValueError(f"unsupported funding basis: {self.basis}")
 
 
