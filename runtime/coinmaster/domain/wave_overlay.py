@@ -157,6 +157,7 @@ class Intent:
     side: Side
     quantity: float | None = None
     requested_notional: float | None = None
+    decision_index: int = -1
 
 
 @dataclass
@@ -181,6 +182,8 @@ class Episode:
     sol_half_decision_index: int | None = None
     best_f: float = 0.0
     pending: dict[str, Intent] = field(default_factory=dict)
+    attempted_btc_at: dict[int, int] = field(default_factory=dict)
+    attempted_sol_at: dict[int, int] = field(default_factory=dict)
 
 
 class WaveOverlayState:
@@ -189,13 +192,15 @@ class WaveOverlayState:
         self.config = config
         self.episode: Episode | None = None
         self.locked_after_liquidation = False
+        self._decision_index = -1
 
     def _intent(self, episode: Episode, action: Action, side: Side, level: int | None, **kwargs: float) -> Intent:
-        intent = Intent(str(uuid4()), episode.id, action, level, side, **kwargs)
+        intent = Intent(str(uuid4()), episode.id, action, level, side, decision_index=self._decision_index, **kwargs)
         episode.pending[intent.id] = intent
         return intent
 
     def decide(self, bars: list[DailyBar], all_features: list[Features], index: int, active_marked: float) -> list[Intent]:
+        self._decision_index = index
         feature = all_features[index]
         episode = self.episode
         if episode is None:
@@ -219,7 +224,8 @@ class WaveOverlayState:
             return [self._intent(episode, "CLOSE_ALL", -episode.side, None)]
         intents: list[Intent] = []
         for level, threshold in enumerate(episode.wave_levels or ()):
-            if f >= threshold and level not in episode.btc_filled_tps:
+            if f >= threshold and level not in episode.btc_filled_tps and episode.attempted_btc_at.get(level) != index:
+                episode.attempted_btc_at[level] = index
                 intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_open_qty)))
         if intents:
             return intents
@@ -231,7 +237,8 @@ class WaveOverlayState:
         if z is not None:
             signed_z = episode.side * z
             for level in sorted(episode.sol_rights):
-                if level not in episode.sol_adds and signed_z >= self.config.sol_entry_z[level]:
+                if level not in episode.sol_adds and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
+                    episode.attempted_sol_at[level] = index
                     intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=episode.h * self.config.sol_size_multipliers_h[level]))
             if intents:
                 return intents

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from coinmaster.domain.wave_overlay import Candidate, DailyBar, WaveOverlayState, features_for, linear_quantile
+from coinmaster.domain.wave_overlay import Candidate, DailyBar, Episode, Features, WaveOverlayState, features_for, linear_quantile
 
 
 UTC = timezone.utc
@@ -50,3 +50,37 @@ def test_episode_uses_confirmed_fills_and_fixed_sigma() -> None:
     assert state.episode.h is not None
     state.on_liquidation()
     assert state.decide(source, features, index + 1, 10_000) == []
+
+
+def test_same_day_btc_fill_earns_sol_right_only_after_parent_terminal() -> None:
+    source = bars(1)
+    feature = Features(0, 1, 1.0, 1.0, 0.0, 1.0, 2.0)
+    state = WaveOverlayState(Candidate())
+    state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=10, btc_open_qty=10, btc_entry_vwap=source[0].btc_close / 1.02, h=100, wave_levels=(0.01, 9.0, 9.0))
+    reductions = state.decide(source, [feature], 0, 10_000)
+    assert [item.action for item in reductions] == ["BTC_REDUCE"]
+    state.on_fill(reductions[0].id, 1.5, 102, source[0].close_time)
+    state.on_parent_terminal(reductions[0].id)
+    additions = state.decide(source, [feature], 0, 10_000)
+    assert [(item.action, item.requested_notional) for item in additions] == [("SOL_ADD", 10 * source[0].btc_close / 1.02)]
+
+
+def test_zero_fill_parent_retries_next_decision_not_same_decision() -> None:
+    source = bars(2)
+    feature = Features(0, 1, 1.0, 1.0, 0.0, 1.0, 2.0)
+    state = WaveOverlayState(Candidate())
+    state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=10, btc_open_qty=10, btc_entry_vwap=source[0].btc_close / 1.02, h=100, wave_levels=(0.01, 9.0, 9.0))
+    first = state.decide(source, [feature, feature], 0, 10_000)[0]
+    state.on_parent_terminal(first.id)
+    assert state.decide(source, [feature, feature], 0, 10_000) == []
+    retry = state.decide(source, [feature, feature], 1, 10_000)
+    assert retry[0].action == "BTC_REDUCE"
+
+
+def test_sol_timeout_exits_when_features_are_invalid() -> None:
+    source = bars(16)
+    invalid = Features(15, 1, None, None, None, None, None)
+    state = WaveOverlayState(Candidate(sol_max_holding_days=14))
+    state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_qty=7, sol_first_fill_at=source[0].close_time)
+    intents = state.decide(source, [invalid] * len(source), 15, 10_000)
+    assert [(item.action, item.quantity) for item in intents] == [("SOL_EXIT", 7)]

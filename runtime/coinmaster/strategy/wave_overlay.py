@@ -24,6 +24,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     sol_id: InstrumentId
     btc_bar_type: BarType
     sol_bar_type: BarType
+    btc_mark_bar_type: BarType
+    sol_mark_bar_type: BarType
     active_seed: Decimal
 
 
@@ -37,38 +39,59 @@ class WaveOverlayStrategy(Strategy):
         self._sigma_by_order: dict[str, float | None] = {}
         self._decision_index_by_order: dict[str, int] = {}
         self._last_sol_close: float | None = None
-        self._day: dict[int, dict[InstrumentId, Bar]] = {}
+        self._day: dict[int, dict[BarType, Bar]] = {}
+        self._current_btc: Bar | None = None
+        self._current_sol: Bar | None = None
+        self._current_btc_mark: Bar | None = None
+        self._current_sol_mark: Bar | None = None
+        self._current_signals = []
 
     def on_start(self) -> None:
         self.subscribe_bars(self.config.btc_bar_type)
         self.subscribe_bars(self.config.sol_bar_type)
+        self.subscribe_bars(self.config.btc_mark_bar_type)
+        self.subscribe_bars(self.config.sol_mark_bar_type)
 
     def on_bar(self, bar: Bar) -> None:
-        instrument_id = bar.bar_type.instrument_id
-        if instrument_id not in (self.config.btc_id, self.config.sol_id):
+        if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type, self.config.btc_mark_bar_type, self.config.sol_mark_bar_type):
             return
         session = bar.ts_event
         paired = self._day.setdefault(session, {})
-        paired[instrument_id] = bar
-        if self.config.btc_id not in paired or self.config.sol_id not in paired:
+        paired[bar.bar_type] = bar
+        required = (self.config.btc_bar_type, self.config.sol_bar_type, self.config.btc_mark_bar_type, self.config.sol_mark_bar_type)
+        if any(item not in paired for item in required):
             return
-        btc, sol = paired[self.config.btc_id], paired[self.config.sol_id]
+        btc, sol = paired[self.config.btc_bar_type], paired[self.config.sol_bar_type]
+        btc_mark, sol_mark = paired[self.config.btc_mark_bar_type], paired[self.config.sol_mark_bar_type]
         del self._day[session]
         timestamp = datetime.fromtimestamp(btc.ts_event / 1_000_000_000, UTC)
         self._bars.append(DailyBar(timestamp, timestamp, timestamp, float(btc.open), float(btc.close), float(sol.close)))
         self._last_sol_close = float(sol.close)
-        signals = features_for(self._bars, Candidate())
-        for intent in self._domain.decide(self._bars, signals, len(self._bars) - 1, self._active_marked()):
-            self._submit_intent(intent, float(btc.close), float(sol.close), signals[-1].sigma, len(self._bars) - 1)
+        self._current_btc, self._current_sol = btc, sol
+        self._current_btc_mark, self._current_sol_mark = btc_mark, sol_mark
+        self._current_signals = features_for(self._bars, Candidate())
+        self._advance_current_day()
 
-    def _active_marked(self) -> float:
+    def _advance_current_day(self) -> None:
+        if self._current_btc is None or self._current_sol is None or self._current_btc_mark is None or self._current_sol_mark is None:
+            return
+        for intent in self._domain.decide(self._bars, self._current_signals, len(self._bars) - 1, self._active_marked(self._current_btc_mark, self._current_sol_mark)):
+            self._submit_intent(intent, float(self._current_btc.close), float(self._current_sol.close), self._current_signals[-1].sigma, len(self._bars) - 1)
+
+    def _active_marked(self, btc_mark: Bar, sol_mark: Bar) -> float:
         account = self.cache.account_for_venue(self.config.btc_id.venue)
         instrument = self.cache.instrument(self.config.btc_id)
         if account is None or instrument is None:
             return float(self.config.active_seed)
         # Native account is the monetary source; this does not fabricate a UI
         # balance.  Full marked-equity reconciliation is still a baseline gate.
-        return float(account.balance_total(instrument.quote_currency))
+        marked = account.balance_total(instrument.quote_currency).as_decimal()
+        mark_by_instrument = {self.config.btc_id: btc_mark.close, self.config.sol_id: sol_mark.close}
+        for position in self.cache.positions_open():
+            mark = mark_by_instrument.get(position.instrument_id)
+            if mark is not None:
+                marked += position.unrealized_pnl(mark).as_decimal()
+        return float(marked)
 
     def _submit_intent(self, intent: Intent, btc_price: float, sol_price: float, sigma: float | None, decision_index: int) -> None:
         if intent.action == "CLOSE_ALL":
@@ -127,6 +150,7 @@ class WaveOverlayStrategy(Strategy):
             self._pending_by_order.pop(str(event.client_order_id), None)
             self._sigma_by_order.pop(str(event.client_order_id), None)
             self._decision_index_by_order.pop(str(event.client_order_id), None)
+            self._advance_current_day()
         if intent.action == "CLOSE_ALL" and not self.cache.positions_open():
             self._domain.on_group_flat()
 
