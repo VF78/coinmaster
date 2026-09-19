@@ -134,7 +134,9 @@ def completed_wave_levels(bars: list[DailyBar], features: list[Features], at_ind
         while end < at_index and features[end].side == wave_side:
             end += 1
         # A run is completed only because an observed opposite-side signal follows it.
-        if end < at_index and wave_side == side and start + 1 < len(bars):
+        # The dataset's first regime has no observed preceding switch, so it is
+        # not a completed statistical wave.
+        if start > 0 and end < at_index and wave_side == side and start + 1 < len(bars):
             entry = bars[start + 1].btc_open
             closes = [bars[i].btc_close for i in range(start + 1, end + 1)]
             signed = [wave_side * (close / entry - 1) for close in closes]
@@ -164,6 +166,7 @@ class Episode:
     active_entry: float
     beta_entry: float
     btc_initial_qty: float = 0.0
+    btc_open_qty: float = 0.0
     btc_entry_vwap: float | None = None
     h: float | None = None
     wave_levels: tuple[float, float, float] | None = None
@@ -175,6 +178,7 @@ class Episode:
     sol_first_fill_at: datetime | None = None
     fixed_sigma: float | None = None
     sol_half_done: bool = False
+    sol_half_decision_index: int | None = None
     best_f: float = 0.0
     pending: dict[str, Intent] = field(default_factory=dict)
 
@@ -193,8 +197,6 @@ class WaveOverlayState:
 
     def decide(self, bars: list[DailyBar], all_features: list[Features], index: int, active_marked: float) -> list[Intent]:
         feature = all_features[index]
-        if bars[index].available_at > bars[index].close_time:
-            return []
         episode = self.episode
         if episode is None:
             if self.locked_after_liquidation or feature.beta is None or not 0.2 < feature.beta < 4:
@@ -217,22 +219,26 @@ class WaveOverlayState:
             return [self._intent(episode, "CLOSE_ALL", -episode.side, None)]
         intents: list[Intent] = []
         for level, threshold in enumerate(episode.wave_levels or ()):
-            if f >= threshold and level not in episode.btc_tps:
-                episode.btc_tps.add(level)
-                intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_initial_qty)))
+            if f >= threshold and level not in episode.btc_filled_tps:
+                intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_open_qty)))
+        if intents:
+            return intents
         # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
         z = feature.z if episode.fixed_sigma is None else (feature.relative - feature.mu) / episode.fixed_sigma if feature.relative is not None and feature.mu is not None else None
+        # Timeout remains an exit even if current beta/z is unavailable.
+        if episode.sol_qty and episode.sol_first_fill_at is not None and bars[index].close_time >= episode.sol_first_fill_at + timedelta(days=self.config.sol_max_holding_days):
+            return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty)]
         if z is not None:
             signed_z = episode.side * z
             for level in sorted(episode.sol_rights):
                 if level not in episode.sol_adds and signed_z >= self.config.sol_entry_z[level]:
-                    intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, quantity=episode.h * self.config.sol_size_multipliers_h[level]))
+                    intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=episode.h * self.config.sol_size_multipliers_h[level]))
+            if intents:
+                return intents
             if episode.sol_qty and episode.sol_first_fill_at is not None:
-                if bars[index].close_time >= episode.sol_first_fill_at + timedelta(days=self.config.sol_max_holding_days):
-                    intents.append(self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty))
-                elif not episode.sol_half_done and signed_z <= self.config.sol_exit_half_z:
+                if not episode.sol_half_done and signed_z <= self.config.sol_exit_half_z:
                     intents.append(self._intent(episode, "SOL_HALF_EXIT", episode.side, None, quantity=episode.sol_qty / 2))
-                elif episode.sol_half_done and signed_z <= self.config.sol_exit_all_z:
+                elif episode.sol_half_done and episode.sol_half_decision_index is not None and index > episode.sol_half_decision_index and signed_z <= self.config.sol_exit_all_z:
                     intents.append(self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty))
         return intents
 
@@ -245,9 +251,11 @@ class WaveOverlayState:
             prior = episode.btc_initial_qty
             episode.btc_entry_vwap = ((episode.btc_entry_vwap or 0) * prior + price * quantity) / (prior + quantity)
             episode.btc_initial_qty += quantity
+            episode.btc_open_qty += quantity
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
             episode.btc_filled_tps.add(intent.level)
             episode.sol_rights.add(intent.level)
+            episode.btc_open_qty = max(0.0, episode.btc_open_qty - quantity)
         elif intent.action == "SOL_ADD":
             episode.sol_adds.add(intent.level)  # type: ignore[arg-type]
             episode.sol_qty += quantity
@@ -263,7 +271,6 @@ class WaveOverlayState:
                 episode.sol_first_fill_at = episode.fixed_sigma = None
                 episode.sol_half_done = False
         elif intent.action == "CLOSE_ALL":
-            self.episode = None
             return
         episode.h = (episode.btc_initial_qty * (episode.btc_entry_vwap or price)) / episode.beta_entry
 
@@ -271,6 +278,18 @@ class WaveOverlayState:
         if self.episode is None:
             return
         self.episode.pending.pop(intent_id, None)
+
+    def on_parent_terminal(self, intent_id: str) -> None:
+        """Called only after a native terminal order state, never an ACK."""
+        self.on_parent_cancelled(intent_id)
+
+    def on_half_exit_decision(self, index: int) -> None:
+        if self.episode is not None:
+            self.episode.sol_half_decision_index = index
+
+    def on_group_flat(self) -> None:
+        """A native cache reconciliation confirmed both legs flat."""
+        self.episode = None
 
     def on_liquidation(self) -> None:
         self.episode = None
