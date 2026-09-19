@@ -100,7 +100,8 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
     # The full 1m streams are hash/gap checked by the manifest. Only the first
     # closed executable minute after each daily decision is loaded into this
     # one native lifecycle; no synthetic daily-close quote is manufactured.
-    wanted_minutes = [timestamp + 86_400_000 for timestamp in sorted(set(btc) & set(sol)) if TRADING_START_MS <= timestamp + 86_400_000 < TRADING_END_MS]
+    decision_days = sorted(set(btc) & set(sol))
+    wanted_minutes = sorted({minute for timestamp in decision_days if timestamp >= TRADING_START_MS for minute in (timestamp + 86_400_000 - 60_000, timestamp + 86_400_000) if minute < TRADING_END_MS})
     def minute_closes(symbol: str, stream: str) -> dict[int, dict]:
         table = pq.read_table(data_root / "normalized" / f"bybit-{symbol}-{stream}-1m.parquet", filters=[("open_time_ms", "in", wanted_minutes)])
         return {int(row["open_time_ms"]): row for row in table.to_pylist()}
@@ -139,20 +140,24 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
     from nautilus_trader.model.identifiers import ClientId
     engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=Decimal("10000"), tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=TRADING_START_MS * 1_000_000, terminal_close_at_ns=TRADING_END_MS * 1_000_000, candidate=candidate)))
     execution_data, mark_data = [], []
-    for timestamp in sorted(set(btc) & set(sol)):
+    for timestamp in decision_days:
         b, s = btc[timestamp], sol[timestamp]
         event = (timestamp + 86_400_000) * 1_000_000 + 1
         mark_ts = (timestamp + 86_400_000) * 1_000_000
         if b.get("mark_close") is None or s.get("mark_close") is None:
             continue
-        minute = timestamp + 86_400_000
-        be, se, bm, sm = btc_execution.get(minute), sol_execution.get(minute), btc_marks.get(minute), sol_marks.get(minute)
-        if timestamp >= TRADING_START_MS and not all((be, se, bm, sm)) and timestamp + 86_400_000 < TRADING_END_MS:
-            raise ValueError(f"MISSING_CAUSAL_1M_EXECUTION_OR_MARK:{minute}")
+        execution_minute, mark_minute = timestamp + 86_400_000, timestamp + 86_400_000 - 60_000
+        be, se = btc_execution.get(execution_minute), sol_execution.get(execution_minute)
+        bm, sm = btc_marks.get(mark_minute), sol_marks.get(mark_minute)
+        if timestamp >= TRADING_START_MS and not all((bm, sm)):
+            raise ValueError(f"MISSING_CAUSAL_1M_MARK:{mark_minute}")
+        if timestamp >= TRADING_START_MS and timestamp + 86_400_000 < TRADING_END_MS and not all((be, se)):
+            raise ValueError(f"MISSING_CAUSAL_1M_EXECUTION:{execution_minute}")
         execution_data += [bar(btc_last, b, 1, "1000.000"), bar(sol_last, s, 2, "1000.0")]
-        if timestamp >= TRADING_START_MS and be and se and bm and sm:
-            execution_data += [quote(BTC_PERP.id, f"{float(be['close']):.1f}", f"{float(be['close']):.1f}", (minute + 60_000) * 1_000_000), quote(SOL_PERP.id, f"{float(se['close']):.2f}", f"{float(se['close']):.2f}", (minute + 60_000) * 1_000_000)]
-            mark_data += [venue_mark(BTC_PERP.id, Decimal(str(bm["close"])), (minute + 60_000) * 1_000_000), venue_mark(SOL_PERP.id, Decimal(str(sm["close"])), (minute + 60_000) * 1_000_000)]
+        if timestamp >= TRADING_START_MS and bm and sm:
+            mark_data += [venue_mark(BTC_PERP.id, Decimal(str(bm["close"])), (mark_minute + 60_000) * 1_000_000), venue_mark(SOL_PERP.id, Decimal(str(sm["close"])), (mark_minute + 60_000) * 1_000_000)]
+        if timestamp >= TRADING_START_MS and be and se:
+            execution_data += [quote(BTC_PERP.id, f"{float(be['close']):.1f}", f"{float(be['close']):.1f}", (execution_minute + 60_000) * 1_000_000), quote(SOL_PERP.id, f"{float(se['close']):.2f}", f"{float(se['close']):.2f}", (execution_minute + 60_000) * 1_000_000)]
     engine.add_data(execution_data, sort=False)
     engine.add_data(mark_data, client_id=ClientId("BYBIT_MARK"), sort=False)
     engine.sort_data(); engine.run()
