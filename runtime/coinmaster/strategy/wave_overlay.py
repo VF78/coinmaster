@@ -10,7 +10,7 @@ from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
 from nautilus_trader.config import StrategyConfig
-from nautilus_trader.model.data import Bar, BarType, CustomData, DataType
+from nautilus_trader.model.data import Bar, BarType, CustomData, DataType, MarkPriceUpdate
 from nautilus_trader.model.enums import OrderSide, TimeInForce
 from nautilus_trader.model.events import OrderCanceled, OrderExpired, OrderFilled, OrderRejected
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
@@ -37,6 +37,13 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     terminal_close_at_ns: int | None = None
     candidate: Candidate = Candidate()
     max_gross_to_active: Decimal = Decimal("50")
+    # A verified history is supplied before native start.  It is feature state
+    # only: it never replays old decisions or orders.
+    seed_bars: tuple[DailyBar, ...] = ()
+    entries_enabled: bool = True
+    entries_gate: object | None = None
+    event_sink: object | None = None
+    live_mark_client_id: ClientId | None = None
 
 
 class WaveOverlayStrategy(Strategy):
@@ -45,7 +52,7 @@ class WaveOverlayStrategy(Strategy):
         super().__init__(config)
         self._candidate = config.candidate
         self._domain = WaveOverlayState(self._candidate)
-        self._bars: list[DailyBar] = []
+        self._bars: list[DailyBar] = list(config.seed_bars)
         self._pending_by_order: dict[str, Intent] = {}
         self._sigma_by_order: dict[str, float | None] = {}
         self._decision_index_by_order: dict[str, int] = {}
@@ -56,13 +63,21 @@ class WaveOverlayStrategy(Strategy):
         self._current_sol: Bar | None = None
         self._current_btc_mark: VenueMark | None = None
         self._current_sol_mark: VenueMark | None = None
-        self._current_signals = []
+        self._current_signals = features_for(self._bars, self._candidate)
+        self._tier_marks: list[MarkPriceUpdate] = list(config.tier_marks)
 
     def on_start(self) -> None:
         self.subscribe_bars(self.config.btc_bar_type)
         self.subscribe_bars(self.config.sol_bar_type)
-        self.subscribe_data(self.config.btc_mark_data_type, client_id=self.config.mark_client_id)
-        self.subscribe_data(self.config.sol_mark_data_type, client_id=self.config.mark_client_id)
+        # Research feeds explicit VenueMark CustomData.  The live Bybit data
+        # adapter publishes MarkPriceUpdate, which is converted below into the
+        # same non-matching domain input rather than using MID/quote prices.
+        if self.config.live_mark_client_id is None:
+            self.subscribe_data(self.config.btc_mark_data_type, client_id=self.config.mark_client_id)
+            self.subscribe_data(self.config.sol_mark_data_type, client_id=self.config.mark_client_id)
+        else:
+            self.subscribe_mark_prices(self.config.btc_id, client_id=self.config.live_mark_client_id)
+            self.subscribe_mark_prices(self.config.sol_id, client_id=self.config.live_mark_client_id)
 
     def on_bar(self, bar: Bar) -> None:
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -82,8 +97,33 @@ class WaveOverlayStrategy(Strategy):
             return
         if mark.instrument_id not in (self.config.btc_id, self.config.sol_id):
             return
-        self._marks_by_session.setdefault(mark.ts_event, {})[mark.instrument_id] = mark
-        self._try_advance_session(mark.ts_event)
+        self._on_venue_mark(mark)
+
+    def on_mark_price(self, update: MarkPriceUpdate) -> None:
+        """Bridge a public venue mark into the existing non-matching input.
+
+        The mark remains a strategy/risk value only.  It is never published as
+        a quote, trade, bar, MID, or execution price.
+        """
+        if update.instrument_id not in (self.config.btc_id, self.config.sol_id):
+            return
+        self._tier_marks.append(update)
+        mark = VenueMark(
+            update.instrument_id,
+            update.value.as_decimal(),
+            update.ts_event,
+            update.ts_init,
+        )
+        # Public updates are intraday while Bybit daily bars close at UTC day
+        # boundaries.  Keep the last causal mark for that day's close rather
+        # than requiring an impossible timestamp equality.
+        session = ((update.ts_event + 86_400_000_000_000 - 1) // 86_400_000_000_000) * 86_400_000_000_000
+        self._on_venue_mark(mark, session=session)
+
+    def _on_venue_mark(self, mark: VenueMark, *, session: int | None = None) -> None:
+        session = mark.ts_event if session is None else session
+        self._marks_by_session.setdefault(session, {})[mark.instrument_id] = mark
+        self._try_advance_session(session)
 
     def _try_advance_session(self, session: int) -> None:
         paired = self._day.get(session)
@@ -98,10 +138,9 @@ class WaveOverlayStrategy(Strategy):
         del self._day[session]
         del self._marks_by_session[session]
         close_time = datetime.fromtimestamp(btc.ts_event / 1_000_000_000, UTC)
-        available_at = datetime.fromtimestamp(max(btc.ts_init, sol.ts_init, btc_mark.ts_init, sol_mark.ts_init) / 1_000_000_000, UTC)
-        if available_at < close_time:
-            self.log.warning("Discarding bars unavailable at their close timestamp")
-            return
+        # A mark observed before the close is causal, but the paired daily bar
+        # is not usable until its UTC close.  A late bar/mark delays the tuple.
+        available_at = datetime.fromtimestamp(max(btc.ts_init, sol.ts_init, btc_mark.ts_init, sol_mark.ts_init, btc.ts_event) / 1_000_000_000, UTC)
         self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
         self._last_sol_close = float(sol.close)
         self._current_btc, self._current_sol = btc, sol
@@ -119,6 +158,8 @@ class WaveOverlayStrategy(Strategy):
         # domain decision (and therefore no order) may occur before the
         # configured interval's first daily open.
         if self.config.trading_start_open_ns is not None and self._current_btc.ts_event - 86_400_000_000_000 < self.config.trading_start_open_ns:
+            return
+        if not self._entries_enabled() and not self.cache.positions_open():
             return
         for intent in self._domain.decide(self._bars, self._current_signals, len(self._bars) - 1, self._active_marked(self._current_btc_mark, self._current_sol_mark)):
             self._submit_intent(intent, float(self._current_btc.close), float(self._current_sol.close), self._current_signals[-1].sigma, len(self._bars) - 1)
@@ -167,7 +208,7 @@ class WaveOverlayStrategy(Strategy):
             return
         side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
         reduce_only = intent.action in {"BTC_REDUCE", "SOL_HALF_EXIT", "SOL_EXIT"}
-        if not reduce_only and not self._tier_allows_increase(instrument_id, side, Decimal(str(quantity)), self._current_btc_mark.ts_event if self._current_btc_mark else 0):
+        if not reduce_only and not self._tier_allows_increase(instrument_id, side, Decimal(str(quantity)), self._current_btc.ts_event if self._current_btc else 0):
             self.log.warning(f"Rejecting {intent.action}: missing/stale mark or insufficient public-tier margin")
             self._domain.on_parent_terminal(intent.id)
             return
@@ -209,10 +250,10 @@ class WaveOverlayStrategy(Strategy):
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         """Fail closed on missing/stale public marks; reductions bypass this gate."""
-        if not self.config.tier_marks or not self.config.tier_selected_leverage:
+        if not self._tier_marks or not self.config.tier_selected_leverage:
             return False
         try:
-            policy = TierMarginPolicy(self.config.tier_marks, dict(self.config.tier_selected_leverage), self.config.max_mark_age_ns)
+            policy = TierMarginPolicy(tuple(self._tier_marks), dict(self.config.tier_selected_leverage), self.config.max_mark_age_ns)
             positions = {item.instrument_id: item for item in self.cache.positions_open()}
             required = Decimal("0")
             gross = Decimal("0")
@@ -236,6 +277,7 @@ class WaveOverlayStrategy(Strategy):
             return False
 
     def on_order_filled(self, event: OrderFilled) -> None:
+        self._record_native_event(str(event.trade_id), "fill")
         intent = self._pending_by_order.get(str(event.client_order_id))
         if intent is None:
             return
@@ -267,6 +309,12 @@ class WaveOverlayStrategy(Strategy):
         if intent is not None:
             self._domain.on_parent_cancelled(intent.id)
 
+    def on_order_event(self, event) -> None:
+        self._record_native_event(str(event.client_order_id), "order")
+
+    def on_position_event(self, event) -> None:
+        self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
+
     def on_order_rejected(self, event: OrderRejected) -> None:
         self._terminal_without_fill(str(event.client_order_id))
 
@@ -279,3 +327,12 @@ class WaveOverlayStrategy(Strategy):
         self._decision_index_by_order.pop(client_order_id, None)
         if intent is not None:
             self._domain.on_parent_terminal(intent.id)
+
+    def _entries_enabled(self) -> bool:
+        gate = self.config.entries_gate
+        return self.config.entries_enabled and (bool(gate()) if callable(gate) else True)
+
+    def _record_native_event(self, event_id: str, kind: str) -> None:
+        sink = self.config.event_sink
+        if callable(sink):
+            sink(event_id, kind)

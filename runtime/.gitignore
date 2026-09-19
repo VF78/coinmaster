@@ -2,8 +2,7 @@
 .pytest_cache/
 __pycache__/
 *.py[cod]
-var/
-!var/
+var/**
 !var/data/
 !var/data/paper-warmup-manifest.json
 # Superseded duplicate of the canonical candle warmup probe below.

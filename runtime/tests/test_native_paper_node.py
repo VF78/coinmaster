@@ -10,8 +10,12 @@ from coinmaster.ops.native_paper_node import (
     EXECUTION_FACTORY_ALLOWLIST,
     FeedBook,
     MAX_DATA_AGE_NS,
+    _load_warmup,
     assert_sandbox_only,
+    candidate_hash,
     native_paper_node_config,
+    paper_candidate,
+    sandbox_cash_posting_supported,
     scrub_private_execution_environment,
 )
 
@@ -55,6 +59,38 @@ def test_missing_native_mark_or_funding_is_stale_and_blocks_ready() -> None:
     book.mark(MarkPriceUpdate(BYBIT_IDS[0], Price.from_str("100.0"), 1, 1))
     book.funding_rate(FundingRateUpdate(BYBIT_IDS[0], Decimal("0.0001"), 1, 1))
     assert book.status(now)[str(BYBIT_IDS[0])]["state"] == "DATA_STALE"
+
+
+def test_verified_warmup_hydrates_causal_seed_and_default_is_corrected_v0() -> None:
+    from pathlib import Path
+    bundle, state = _load_warmup(Path(__file__).resolve().parents[1] / "var/data/paper-warmup-manifest.json")
+    assert state == "READY"
+    assert bundle is not None and bundle.rows >= 730
+    assert bundle.bars[0].available_at == bundle.bars[0].close_time
+    assert bundle.bars[-1].close_time > bundle.bars[0].close_time
+    assert paper_candidate("corrected-v0").btc_notional_multiplier == 9.0
+    assert paper_candidate("research-6.48").btc_notional_multiplier == 6.48
+    assert candidate_hash("corrected-v0", paper_candidate("corrected-v0")) != candidate_hash("research-6.48", paper_candidate("research-6.48"))
+
+
+def test_funding_normalization_uses_stable_settlement_id_and_causal_mark_only() -> None:
+    from coinmaster.ops.native_paper_node import BYBIT_IDS
+    from nautilus_trader.model.data import FundingRateUpdate, MarkPriceUpdate
+    from nautilus_trader.model.objects import Price
+
+    book = FeedBook(ids=(BYBIT_IDS[0],))
+    book.mark(MarkPriceUpdate(BYBIT_IDS[0], Price.from_str("100"), 100, 100))
+    book.mark(MarkPriceUpdate(BYBIT_IDS[0], Price.from_str("200"), 300, 300))
+    book.funding_rate(FundingRateUpdate(BYBIT_IDS[0], Decimal("0.01"), 101, 101, next_funding_ns=200))
+    event = book.due_funding(250)[0]
+    assert event["event_id"] == f"bybit:{BYBIT_IDS[0]}:200"
+    assert event["mark"] == Decimal("100")
+
+
+def test_pinned_sandbox_live_client_has_no_supported_cash_adjustment_hook() -> None:
+    # Nautilus 1.231's adapters/sandbox/execution.py exposes submit/cancel and
+    # feeds SimulatedExchange, but no LiveExecutionClient.adjust_account API.
+    assert sandbox_cash_posting_supported() is False
 
 
 def test_native_sandbox_lifecycle_has_fills_and_finishes_flat() -> None:

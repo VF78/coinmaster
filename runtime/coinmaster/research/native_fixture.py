@@ -261,7 +261,11 @@ class TierMarginPolicy:
         self._profile = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
 
     def margin_for(self, instrument_id: InstrumentId, quantity: Decimal, ts_now: int) -> tuple[Decimal, Decimal, Decimal]:
-        symbol = self._symbols.get(instrument_id)
+        # The same validated public profile is used by the P1 fixture and the
+        # BYBIT paper node.  Only BTCUSDT/SOLUSDT linear IDs are accepted.
+        symbol = self._symbols.get(instrument_id) or instrument_id.symbol.value.removesuffix("-LINEAR")
+        if symbol not in {"BTCUSDT", "SOLUSDT"}:
+            symbol = None
         leverage = self._selected_leverage.get(instrument_id)
         if symbol is None or leverage is None or leverage <= 0:
             raise ValueError("missing explicit selected leverage")
