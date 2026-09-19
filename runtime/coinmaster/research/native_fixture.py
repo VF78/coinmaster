@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 from dataclasses import dataclass
+from pathlib import Path
 
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.config import SimulationModuleConfig
@@ -18,6 +19,7 @@ from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.model.objects import Money, Price, Quantity
 from nautilus_trader.model.orders import MarketOrder
 from nautilus_trader.trading.strategy import Strategy
+from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 
 SIM = Venue("P1SIM")
@@ -184,33 +186,32 @@ class PerpetualFundingModule(SimulationModule):
 class BybitTierMarginModule(SimulationModule):
     """Reprices captured public BTC tiers directly on the native MarginAccount."""
 
-    TIERS = (
-        (Decimal("300000"), Decimal("0.0066"), Decimal("0.0033"), Decimal("0")),
-        (Decimal("2000000"), Decimal("0.01"), Decimal("0.005"), Decimal("510")),
-    )
     observed: list[tuple[int, Decimal, Decimal, Decimal]] = []
 
     def __init__(self, marks: tuple["MarkPriceUpdate", ...]) -> None:
         super().__init__(SimulationModuleConfig())
         self._marks = marks
+        self._profile = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
         self.observed = []
 
     def process(self, ts_now: int) -> None:
         account = self.exchange.get_account()
         for position in self.exchange.cache.positions_open():
-            if position.instrument_id != BTC_PERP.id:
+            symbol = {BTC_PERP.id: "BTCUSDT", SOL_PERP.id: "SOLUSDT"}.get(position.instrument_id)
+            if symbol is None:
                 continue
             applicable = [item for item in self._marks if item.instrument_id == position.instrument_id and item.ts_event <= ts_now]
             if not applicable:
                 continue  # Fail closed: quote/last is not a mark price.
             mark = applicable[-1].price
             notional = position.quantity.as_decimal() * mark
-            for limit, im_rate, mm_rate, deduction in self.TIERS:
-                if notional <= limit:
-                    account.update_margin_init(position.instrument_id, Money(notional * im_rate, USDT))
-                    account.update_margin_maint(position.instrument_id, Money(max(Decimal("0"), notional * mm_rate - deduction), USDT))
-                    self.observed.append((ts_now, mark, notional * im_rate, max(Decimal("0"), notional * mm_rate - deduction)))
-                    break
+            try:
+                tier = self._profile.tier_for(symbol, notional)
+            except ValueError:
+                continue
+            account.update_margin_init(position.instrument_id, Money(notional * tier.im, USDT))
+            account.update_margin_maint(position.instrument_id, Money(max(Decimal("0"), notional * tier.mm - tier.deduction), USDT))
+            self.observed.append((ts_now, mark, notional * tier.im, max(Decimal("0"), notional * tier.mm - tier.deduction)))
 
     def pre_process(self, data) -> None:
         pass
