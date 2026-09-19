@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from uuid import uuid4
 
 
 DAY_MS = 86_400_000
@@ -17,7 +18,11 @@ TRADING_START_MS = 1_725_148_800_000  # 2024-09-01T00:00:00Z
 TRADING_END_MS = 1_788_220_800_000  # 2026-09-01T00:00:00Z, exclusive
 
 
-def funding_with_prior_minute_marks(data_root: Path):
+def funding_with_prior_minute_marks(
+    data_root: Path,
+    start_settlement_ms: int | None = None,
+    end_settlement_ms: int | None = None,
+):
     """Return stable native funding events from actual rows or fail closed.
 
     The final closed 1m mark before settlement is causal but not yet proven to
@@ -31,6 +36,12 @@ def funding_with_prior_minute_marks(data_root: Path):
         marks = {row["open_time_ms"]: row["close"] for row in pq.read_table(data_root / "normalized" / f"bybit-{symbol}-mark-1m.parquet").to_pylist()}
         for row in pq.read_table(data_root / "normalized" / f"bybit-{symbol}-funding.parquet").to_pylist():
             settlement = int(row["funding_time_ms"])
+            # Warmup is feature-only. At an exact range boundary, the prior
+            # causal minute is outside the captured [start, end) marks.
+            if start_settlement_ms is not None and settlement <= start_settlement_ms:
+                continue
+            if end_settlement_ms is not None and settlement >= end_settlement_ms:
+                continue
             mark = marks.get(settlement - 60_000)
             if mark is None:
                 raise ValueError(f"MISSING_CAUSAL_1M_MARK:{symbol}:{settlement}")
@@ -71,8 +82,13 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False) -> dic
         price = lambda key: Price.from_str(f"{float(row[key]):.{precision}f}")
         ts = (int(row["open_time_ms"]) + 86_400_000) * 1_000_000
         return Bar(bar_type, price("open"), price("high"), price("low"), price("close"), Quantity.from_str(volume), ts, ts)
-    events = funding_with_prior_minute_marks(data_root) if include_funding else ()
-    journal = NativeEventJournal(str(data_root / "runs" / "native-diagnostic-funding.sqlite")) if events else None
+    events = funding_with_prior_minute_marks(data_root, TRADING_START_MS, TRADING_END_MS) if include_funding else ()
+    # Each new BacktestEngine starts with a new native account. Its durable
+    # funding journal must therefore be scoped to this run: sharing a prior
+    # journal would correctly deduplicate IDs but incorrectly omit funding
+    # from a fresh account.
+    journal_path = data_root / "runs" / f"native-diagnostic-funding-{uuid4().hex}.sqlite"
+    journal = NativeEventJournal(str(journal_path)) if events else None
     # Current public tiers and their 40x/20x selected leverage are an
     # explicitly non-historical assumption.  They are used only to make the
     # diagnostic fail closed; no historical fee/tier applicability is claimed.
@@ -91,7 +107,7 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False) -> dic
     engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"), modules=modules)
     engine.add_instrument(BTC_PERP); engine.add_instrument(SOL_PERP)
     from nautilus_trader.model.identifiers import ClientId
-    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=Decimal("10000"), tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=TRADING_START_MS * 1_000_000)))
+    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=Decimal("10000"), tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=TRADING_START_MS * 1_000_000, terminal_close_at_ns=TRADING_END_MS * 1_000_000)))
     execution_data, mark_data = [], []
     for timestamp in sorted(set(btc) & set(sol)):
         b, s = btc[timestamp], sol[timestamp]
@@ -106,7 +122,21 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False) -> dic
     engine.sort_data(); engine.run()
     try:
         report = engine.trader.generate_account_report(SIM)
-        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) no trading", "fills": len(engine.trader.generate_order_fills_report()), "terminal_native_total": str(report["total"].iloc[-1]), "funding_events_posted": len(journal.funding_audit()) if journal else 0, "limitations": ["CustomData venue marks do not participate in matching", "Current public tiers/40x BTC and 20x SOL leverage are not historical tier evidence", "Funding prior-minute mark is timing-uncertain" if events else "Funding not included", "Historical fee applicability and intraminute liquidation are unverified"]}
+        fills = engine.trader.generate_order_fills_report()
+        orders = engine.trader.generate_orders_report()
+        terminal_active = Decimal(str(report["total"].iloc[-1]))
+        fee_column = next((column for column in ("commission", "fees") if column in fills.columns), None)
+        if fee_column:
+            fees = sum((Decimal(str(value)) for value in fills[fee_column]), Decimal("0"))
+        elif "commissions" in fills.columns:
+            fees = sum(
+                (Decimal(str(commission).split()[0]) for row in fills["commissions"] for commission in row),
+                Decimal("0"),
+            )
+        else:
+            fees = Decimal("0")
+        rejected = sum("REJECTED" in str(value) for value in orders.get("status", ()))
+        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) no trading", "fills": len(fills), "native_fees": str(fees), "native_order_rejections": rejected, "funding_events_posted": len(journal.funding_audit()) if journal else 0, "funding_journal": str(journal_path) if journal else None, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["CustomData venue marks do not participate in matching", "Current public tiers/40x BTC and 20x SOL leverage are not historical tier evidence", "Funding prior-minute mark is timing-uncertain" if events else "Funding not included", "Historical fee applicability and intraminute liquidation are unverified"]}
     finally:
         engine.dispose()
         if journal:
@@ -128,7 +158,17 @@ def coverage_blockers(root: Path) -> list[str]:
                 blockers.append(f"{prefix}:GAPS")
             elif not stream.get("parquet_sha256"):
                 blockers.append(f"{prefix}:UNHASHED")
-    return blockers or ["NATIVE_BASELINE_NOT_IMPLEMENTED"]
+    return blockers
+
+
+def save_diagnostic_report(data_root: Path, report: dict) -> Path:
+    """Persist a diagnostic artifact without promoting it to baseline evidence."""
+    target = data_root / "runs" / "native-diagnostic-report.json"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    temporary = target.with_suffix(".tmp")
+    temporary.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    temporary.replace(target)
+    return target
 
 
 def main() -> None:
@@ -138,14 +178,22 @@ def main() -> None:
     parser.add_argument("--diagnostic-with-prior-minute-funding", action="store_true")
     args = parser.parse_args()
     if args.diagnostic_no_funding:
-        print(json.dumps(run_native_diagnostic(args.data_root), sort_keys=True))
+        report = run_native_diagnostic(args.data_root)
+        report["artifact"] = str(save_diagnostic_report(args.data_root, report))
+        print(json.dumps(report, sort_keys=True))
         return
     if args.diagnostic_with_prior_minute_funding:
-        print(json.dumps(run_native_diagnostic(args.data_root, include_funding=True), sort_keys=True))
+        report = run_native_diagnostic(args.data_root, include_funding=True)
+        report["artifact"] = str(save_diagnostic_report(args.data_root, report))
+        print(json.dumps(report, sort_keys=True))
         return
     blockers = coverage_blockers(args.data_root)
-    print(json.dumps({"status": "BLOCKED", "ranking_eligible": False, "blockers": blockers}, sort_keys=True))
-    raise SystemExit(2)
+    if blockers:
+        print(json.dumps({"status": "BLOCKED", "ranking_eligible": False, "blockers": blockers}, sort_keys=True))
+        raise SystemExit(2)
+    report = run_native_diagnostic(args.data_root, include_funding=True)
+    report["artifact"] = str(save_diagnostic_report(args.data_root, report))
+    print(json.dumps(report, sort_keys=True))
 
 
 if __name__ == "__main__":

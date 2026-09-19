@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sqlite3
 from decimal import Decimal
+from pathlib import Path
 
 
 class NativeEventJournal:
@@ -9,6 +10,8 @@ class NativeEventJournal:
 
     def __init__(self, database: str = ":memory:") -> None:
         self.durable = database != ":memory:"
+        if self.durable:
+            Path(database).parent.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(database)
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute(

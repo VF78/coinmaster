@@ -34,6 +34,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     tier_selected_leverage: tuple[tuple[InstrumentId, Decimal], ...] = ()
     max_mark_age_ns: int = 0
     trading_start_open_ns: int | None = None
+    terminal_close_at_ns: int | None = None
 
 
 class WaveOverlayStrategy(Strategy):
@@ -103,6 +104,9 @@ class WaveOverlayStrategy(Strategy):
         self._current_btc, self._current_sol = btc, sol
         self._current_btc_mark, self._current_sol_mark = btc_mark, sol_mark
         self._current_signals = features_for(self._bars, Candidate())
+        if self.config.terminal_close_at_ns is not None and btc.ts_event >= self.config.terminal_close_at_ns:
+            self._submit_terminal_closes()
+            return
         self._advance_current_day()
 
     def _advance_current_day(self) -> None:
@@ -183,6 +187,22 @@ class WaveOverlayStrategy(Strategy):
         self._sigma_by_order[str(order.client_order_id)] = sigma
         self._decision_index_by_order[str(order.client_order_id)] = decision_index
         self.submit_order(order)
+
+    def _submit_terminal_closes(self) -> None:
+        """Realize all remaining native positions on the terminal quote only."""
+        for position in self.cache.positions_open():
+            if position.instrument_id not in (self.config.btc_id, self.config.sol_id):
+                continue
+            instrument = self.cache.instrument(position.instrument_id)
+            if instrument is None:
+                continue
+            self.submit_order(self.order_factory.market(
+                instrument_id=position.instrument_id,
+                order_side=OrderSide.SELL if position.is_long else OrderSide.BUY,
+                quantity=instrument.make_qty(position.quantity.as_decimal()),
+                time_in_force=TimeInForce.IOC,
+                reduce_only=True,
+            ))
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         """Fail closed on missing/stale public marks; reductions bypass this gate."""
