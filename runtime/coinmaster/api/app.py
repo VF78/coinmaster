@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, build_engine, quote
 from coinmaster.venues.bybit_profile import BybitVenueProfile
@@ -41,6 +41,22 @@ BASELINE_CONFIG: dict[str, Any] = {
 
 class ConfigurationInput(BaseModel):
     config: dict[str, Any] = Field(description="Exact candidate configuration; monetary values are decimal strings.")
+
+    @model_validator(mode="after")
+    def validate_candidate(self) -> "ConfigurationInput":
+        if set(self.config) != set(BASELINE_CONFIG):
+            raise ValueError("configuration must contain the complete baseline parameter set")
+        for key, baseline in BASELINE_CONFIG.items():
+            value = self.config[key]
+            if baseline is not None and type(value) is not type(baseline):
+                raise ValueError(f"invalid type for {key}")
+        if self.config["venue"] not in (None, "bybit", "hyperliquid"):
+            raise ValueError("venue must be bybit, hyperliquid, or null")
+        if Decimal(self.config["initial_total_usdt"]) <= 0 or Decimal(self.config["max_parent_notional"]) <= 0:
+            raise ValueError("money values must be positive decimal strings")
+        if self.config["btc_notional_multiplier"] <= 0 or self.config["max_gross_to_active"] <= 0:
+            raise ValueError("sizing limits must be positive")
+        return self
 
 
 class ConfigurationRecord(BaseModel):
