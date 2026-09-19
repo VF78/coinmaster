@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "collected_at": "2026-09-19T00:00:00Z",
+  "scope": "P0 public read-only metadata; not a historical profile or account verification",
+  "snapshots": [
+    {
+      "path": "var/raw/venues/bybit-BTCUSDT.json",
+      "sha256": "e3d6fc59e33b99de2fcf9932304b19c57227d54f89db881b97568f7eaf22b4f1",
+      "source": "https://api.bybit.com/v5/market/instruments-info?category=linear&symbol=BTCUSDT",
+      "collected_at": "2026-09-19T00:00:00Z"
+    },
+    {
+      "path": "var/raw/venues/bybit-SOLUSDT.json",
+      "sha256": "c90add82a38906b39f3c72e41fa00179803b7d2a625ce9cb87218cdaefa69b87",
+      "source": "https://api.bybit.com/v5/market/instruments-info?category=linear&symbol=SOLUSDT",
+      "collected_at": "2026-09-19T00:00:00Z"
+    },
+    {
+      "path": "var/raw/venues/hyperliquid-metaAndAssetCtxs.json",
+      "sha256": "a940b6bcc18a51c04a097cd9b5baab77a96834d3abb5d3ee5dba2bd9d5f95672",
+      "source": "https://api.hyperliquid.xyz/info type=metaAndAssetCtxs",
+      "collected_at": "2026-09-19T00:00:00Z"
+    }
+  ],
+  "profiles": [
+    {
+      "venue": "bybit",
+      "settlement": "USDT",
+      "instruments": [
+        {"symbol": "BTCUSDT", "qty_step": "0.001", "tick_size": "0.10", "min_notional": "5", "max_market_qty": "150", "public_max_leverage": "150", "funding_interval_minutes": 480},
+        {"symbol": "SOLUSDT", "qty_step": "0.1", "tick_size": "0.010", "min_notional": "5", "max_market_qty": "12000", "public_max_leverage": "100", "funding_interval_minutes": 480}
+      ],
+      "unknowns": ["account fee tier and effective date", "account margin mode", "account risk-limit tier/deductions", "position/open-interest limits", "historical applicability of snapshot"]
+    },
+    {
+      "venue": "hyperliquid",
+      "settlement": "USDC",
+      "instruments": [
+        {"symbol": "BTC", "size_decimals": 5, "public_max_leverage": "40"},
+        {"symbol": "SOL", "size_decimals": 2, "public_max_leverage": "20"}
+      ],
+      "unknowns": ["tick precision/min-notional/child-order cap not established by this payload", "account fee tier", "account margin mode and tiers/deductions", "funding schedule and historical funding coverage", "USDT-to-USDC conversion cost", "historical applicability of snapshot"]
+    }
+  ]
+}

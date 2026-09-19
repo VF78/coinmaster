@@ -1,6 +1,7 @@
 # ACTIVE_TASK
 
-Updated: 2026-05-04 Europe/Madrid
+Updated: 2026-09-19 Europe/Moscow
+Nautilus replacement status: see `TASK_STATE.md` for current P0 evidence and P1 next step; owner instruction of 2026-09-19 supersedes the legacy Freqtrade status below. No production actions authorized.
 Status: ACTIVE — #73 Wave Engine dry-run experiment running; #65 observer monitors it. #74 Wave Engine GUI/replay slice implemented and smoke/QA accepted locally. No live trading approved.
 GitHub Project item: #65 native Freqtrade observer In Progress; #70 Strategy C In Progress; #71 validation plan created; #72 Mozart research paused; #73 Wave Engine In Progress; #74 GUI/replay created/accepted locally.
 Canonical root: `/root/.openclaw/workspace/coinmaster` (app `/root/.openclaw/workspace/coinmaster/coinmaster`; runtime `/opt/coinmaster/freqtrade`).
