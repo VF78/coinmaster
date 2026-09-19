@@ -97,11 +97,31 @@ def run_optimizer(data_root: Path) -> dict:
     return summary
 
 
+def run_corrected_controls(data_root: Path) -> dict:
+    """Re-evaluate v0 and the prior winner after a correctness correction."""
+    controls = candidate_variants()[:2]
+    results = []
+    for variant_id, candidate in controls:
+        report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate)
+        results.append({"variant_id": variant_id, "candidate": asdict(candidate), **report})
+    summary = {
+        "status": "NOT_FAITHFUL_DIAGNOSTIC",
+        "supersedes": "native-optimizer-report.json",
+        "reason": "P3 correctness correction: staged lifecycle, beta gate, exact z window, gross guard, terminal reentry semantics",
+        "results": results,
+        "ranking_eligible_for_live": False,
+    }
+    target = data_root / "runs/native-optimizer-corrected-controls.json"
+    target.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    return summary | {"artifact": str(target)}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
+    parser.add_argument("--corrected-controls", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(run_optimizer(args.data_root), sort_keys=True))
+    print(json.dumps(run_corrected_controls(args.data_root) if args.corrected_controls else run_optimizer(args.data_root), sort_keys=True))
 
 
 if __name__ == "__main__":

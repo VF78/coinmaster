@@ -85,3 +85,40 @@ def test_sol_timeout_exits_when_features_are_invalid() -> None:
     state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_qty=7, sol_first_fill_at=source[0].close_time)
     intents = state.decide(source, [invalid] * len(source), 15, 10_000)
     assert [(item.action, item.quantity) for item in intents] == [("SOL_EXIT", 7)]
+
+
+def test_same_day_add_precedes_coincident_timeout_then_exit_after_fill() -> None:
+    source = bars(16)
+    feature = Features(15, 1, 1.0, 1.0, 0.0, 1.0, 4.0)
+    state = WaveOverlayState(Candidate(sol_max_holding_days=14))
+    state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_qty=7, sol_first_fill_at=source[0].close_time, sol_rights={0})
+    add = state.decide(source, [feature] * len(source), 15, 10_000)
+    assert [item.action for item in add] == ["SOL_ADD"]
+    state.on_parent_terminal(add[0].id)
+    assert [item.action for item in state.decide(source, [feature] * len(source), 15, 10_000)] == ["SOL_EXIT"]
+
+
+def test_invalid_current_beta_blocks_sol_add_but_not_timeout_exit() -> None:
+    source = bars(16)
+    invalid = Features(15, 1, None, 1.0, 0.0, 1.0, 4.0)
+    state = WaveOverlayState(Candidate(sol_max_holding_days=14))
+    state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_qty=7, sol_first_fill_at=source[0].close_time, sol_rights={0})
+    assert [item.action for item in state.decide(source, [invalid] * len(source), 15, 10_000)] == ["SOL_EXIT"]
+
+
+def test_regime_reason_permits_same_cycle_reentry_but_trail_does_not() -> None:
+    state = WaveOverlayState(Candidate())
+    state.episode = Episode("episode", 1, 1, 1, close_reason="REGIME")
+    assert state.on_group_flat() == "REGIME"
+    state.episode = Episode("episode", 1, 1, 1, close_reason="TRAIL")
+    assert state.on_group_flat() == "TRAIL"
+
+
+def test_z_requires_exact_previous_calendar_window_including_invalid_values() -> None:
+    source = bars(8)
+    # Flat BTC makes beta invalid and inserts None rather than retaining an
+    # older valid relative observation.
+    flat = [DailyBar(item.open_time, item.close_time, item.available_at, 100, 100, item.sol_close) for item in source]
+    candidate = Candidate(beta_days=2, relative_days=1, z_history_days=2)
+    assert features_for(flat, candidate) == batch_features_for(flat, candidate)
+    assert all(item.z is None for item in features_for(flat, candidate))

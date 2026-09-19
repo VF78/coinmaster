@@ -117,8 +117,8 @@ def batch_features_for(bars: list[DailyBar], config: Candidate) -> list[Features
         if beta is not None and index >= config.relative_days:
             relative = log(bar.sol_close / bars[index - config.relative_days].sol_close) - beta * log(bar.btc_close / bars[index - config.relative_days].btc_close)
         relatives.append(relative)
-        history = [value for value in relatives[max(0, index - config.z_history_days):index] if value is not None]
-        mu = _mean(history) if len(history) == config.z_history_days else None
+        history = relatives[max(0, index - config.z_history_days):index]
+        mu = _mean(history) if len(history) == config.z_history_days and all(value is not None for value in history) else None
         sigma = _population_std(history) if mu is not None else None
         z = None if relative is None or sigma in (None, 0) else (relative - mu) / sigma
         result.append(Features(index, side, beta, relative, mu, sigma, z))
@@ -130,7 +130,7 @@ class FeatureState:
     def __init__(self, config: Candidate) -> None:
         self.config, self.bars, self.ema = config, [], None
         self.rs: deque[tuple[float, float]] = deque(maxlen=config.beta_days)
-        self.relatives: deque[float] = deque(maxlen=config.z_history_days)
+        self.relatives: deque[float | None] = deque(maxlen=config.z_history_days)
 
     def append(self, bar: DailyBar) -> Features:
         if self.bars and bar.close_time <= self.bars[-1].close_time:
@@ -149,11 +149,11 @@ class FeatureState:
         if beta is not None and len(self.bars) >= self.config.relative_days:
             old = self.bars[-self.config.relative_days]
             relative = log(bar.sol_close / old.sol_close) - beta * log(bar.btc_close / old.btc_close)
-        if len(self.relatives) == self.config.z_history_days:
-            mu, sigma = _mean(list(self.relatives)), _population_std(list(self.relatives))
+        if len(self.relatives) == self.config.z_history_days and all(value is not None for value in self.relatives):
+            values = [value for value in self.relatives if value is not None]
+            mu, sigma = _mean(values), _population_std(values)
             z = None if relative is None or sigma == 0 else (relative - mu) / sigma
-        if relative is not None:
-            self.relatives.append(relative)
+        self.relatives.append(relative)
         self.bars.append(bar)
         return Features(len(self.bars) - 1, side, beta, relative, mu, sigma, z)
 
@@ -223,6 +223,7 @@ class Episode:
     pending: dict[str, Intent] = field(default_factory=dict)
     attempted_btc_at: dict[int, int] = field(default_factory=dict)
     attempted_sol_at: dict[int, int] = field(default_factory=dict)
+    close_reason: str | None = None
 
 
 class WaveOverlayState:
@@ -254,12 +255,14 @@ class WaveOverlayState:
         if episode.pending:
             return []
         if feature.side != episode.side:
+            episode.close_reason = "REGIME"
             return [self._intent(episode, "CLOSE_ALL", -episode.side, None)]
         if episode.btc_entry_vwap is None or episode.h is None:
             return []
         f = episode.side * (bars[index].btc_close / episode.btc_entry_vwap - 1)
         episode.best_f = max(episode.best_f, f, 0.0)
         if (episode.best_f > self.config.btc_close_trail_fraction and f <= episode.best_f - self.config.btc_close_trail_fraction):
+            episode.close_reason = "TRAIL"
             return [self._intent(episode, "CLOSE_ALL", -episode.side, None)]
         intents: list[Intent] = []
         for level, threshold in enumerate(episode.wave_levels or ()):
@@ -269,10 +272,10 @@ class WaveOverlayState:
         if intents:
             return intents
         # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
+        # An invalid current beta permits only exits/reductions, never new risk.
+        if feature.beta is None or not 0.2 < feature.beta < 4:
+            return self._sol_exits(episode, feature, bars[index], index)
         z = feature.z if episode.fixed_sigma is None else (feature.relative - feature.mu) / episode.fixed_sigma if feature.relative is not None and feature.mu is not None else None
-        # Timeout remains an exit even if current beta/z is unavailable.
-        if episode.sol_qty and episode.sol_first_fill_at is not None and bars[index].close_time >= episode.sol_first_fill_at + timedelta(days=self.config.sol_max_holding_days):
-            return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty)]
         if z is not None:
             signed_z = episode.side * z
             for level in sorted(episode.sol_rights):
@@ -281,12 +284,20 @@ class WaveOverlayState:
                     intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=episode.h * self.config.sol_size_multipliers_h[level]))
             if intents:
                 return intents
-            if episode.sol_qty and episode.sol_first_fill_at is not None:
-                if not episode.sol_half_done and signed_z <= self.config.sol_exit_half_z:
-                    intents.append(self._intent(episode, "SOL_HALF_EXIT", episode.side, None, quantity=episode.sol_qty / 2))
-                elif episode.sol_half_done and episode.sol_half_decision_index is not None and index > episode.sol_half_decision_index and signed_z <= self.config.sol_exit_all_z:
-                    intents.append(self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty))
-        return intents
+        return self._sol_exits(episode, feature, bars[index], index, z)
+
+    def _sol_exits(self, episode: Episode, feature: Features, bar: DailyBar, index: int, z: float | None = None) -> list[Intent]:
+        if episode.sol_qty and episode.sol_first_fill_at is not None and bar.close_time >= episode.sol_first_fill_at + timedelta(days=self.config.sol_max_holding_days):
+            return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty)]
+        if z is None:
+            return []
+        signed_z = episode.side * z
+        if episode.sol_qty and episode.sol_first_fill_at is not None:
+            if not episode.sol_half_done and signed_z <= self.config.sol_exit_half_z:
+                return [self._intent(episode, "SOL_HALF_EXIT", episode.side, None, quantity=episode.sol_qty / 2)]
+            if episode.sol_half_done and episode.sol_half_decision_index is not None and index > episode.sol_half_decision_index and signed_z <= self.config.sol_exit_all_z:
+                return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty)]
+        return []
 
     def on_fill(self, intent_id: str, quantity: float, price: float, when: datetime, sigma: float | None = None) -> None:
         episode = self.episode
@@ -333,9 +344,11 @@ class WaveOverlayState:
         if self.episode is not None:
             self.episode.sol_half_decision_index = index
 
-    def on_group_flat(self) -> None:
+    def on_group_flat(self) -> str | None:
         """A native cache reconciliation confirmed both legs flat."""
+        reason = self.episode.close_reason if self.episode else None
         self.episode = None
+        return reason
 
     def on_liquidation(self) -> None:
         self.episode = None

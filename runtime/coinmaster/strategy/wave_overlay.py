@@ -36,6 +36,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     trading_start_open_ns: int | None = None
     terminal_close_at_ns: int | None = None
     candidate: Candidate = Candidate()
+    max_gross_to_active: Decimal = Decimal("50")
 
 
 class WaveOverlayStrategy(Strategy):
@@ -161,7 +162,7 @@ class WaveOverlayStrategy(Strategy):
         if intent.action == "BTC_ENTRY" and intent.requested_notional is not None:
             quantity = intent.requested_notional / btc_price
         if intent.action == "SOL_ADD" and intent.requested_notional is not None:
-            quantity = intent.requested_notional / sol_price
+            quantity = min(intent.requested_notional, self._candidate.max_parent_notional) / sol_price
         if quantity is None or quantity <= 0:
             return
         side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
@@ -214,6 +215,7 @@ class WaveOverlayStrategy(Strategy):
             policy = TierMarginPolicy(self.config.tier_marks, dict(self.config.tier_selected_leverage), self.config.max_mark_age_ns)
             positions = {item.instrument_id: item for item in self.cache.positions_open()}
             required = Decimal("0")
+            gross = Decimal("0")
             for current_id in (self.config.btc_id, self.config.sol_id):
                 position = positions.get(current_id)
                 current = (
@@ -223,10 +225,13 @@ class WaveOverlayStrategy(Strategy):
                 )
                 prospective = current + (quantity if side == OrderSide.BUY else -quantity) if current_id == instrument_id else current
                 if prospective:
-                    required += policy.margin_for(current_id, prospective, ts_now)[0]
+                    initial, _, mark = policy.margin_for(current_id, prospective, ts_now)
+                    required += initial
+                    gross += abs(prospective) * mark
             account = self.cache.account_for_venue(self.config.btc_id.venue)
             instrument = self.cache.instrument(self.config.btc_id)
-            return account is not None and instrument is not None and required <= account.balance_free(instrument.quote_currency).as_decimal()
+            active = Decimal(str(self._active_marked(self._current_btc_mark, self._current_sol_mark))) if self._current_btc_mark and self._current_sol_mark else Decimal("0")
+            return account is not None and instrument is not None and active > 0 and gross <= active * self.config.max_gross_to_active and required <= account.balance_free(instrument.quote_currency).as_decimal()
         except ValueError:
             return False
 
@@ -247,7 +252,8 @@ class WaveOverlayStrategy(Strategy):
             self._decision_index_by_order.pop(str(event.client_order_id), None)
             if intent.action == "CLOSE_ALL":
                 if not self.cache.positions_open():
-                    self._domain.on_group_flat()
+                    if self._domain.on_group_flat() == "REGIME":
+                        self._advance_current_day()
                 return
             # An entry fills at the next executable event, not at the former
             # signal close; only reduction -> add -> exit phases may continue.
