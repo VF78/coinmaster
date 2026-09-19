@@ -1,7 +1,7 @@
 """Paper-only loopback worker backed by one native Nautilus TradingNode."""
 from __future__ import annotations
 
-import json, os, time
+import json, os, signal, threading, time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from coinmaster.ops.paper import PaperRuntime
@@ -44,6 +44,9 @@ def main() -> None:
             if self.path not in {"/health", "/status"}: self.send_error(404); return
             worker.poll(); body = json.dumps(worker.status()).encode(); self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(body)
         def log_message(self, *_): pass
-    HTTPServer((os.environ.get("COINMASTER_PAPER_HOST", "127.0.0.1"), int(os.environ.get("COINMASTER_PAPER_PORT", "18181"))), Handler).serve_forever()
+    server = HTTPServer((os.environ.get("COINMASTER_PAPER_HOST", "127.0.0.1"), int(os.environ.get("COINMASTER_PAPER_PORT", "18181"))), Handler)
+    def stop(*_): threading.Thread(target=server.shutdown, daemon=True).start()
+    signal.signal(signal.SIGTERM, stop); signal.signal(signal.SIGINT, stop)
+    server.serve_forever(); server.server_close()
 
 if __name__ == "__main__": main()
