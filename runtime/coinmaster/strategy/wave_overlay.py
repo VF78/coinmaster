@@ -6,7 +6,7 @@ finer execution/settlement-mark dataset and liquidation validation exist.
 """
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
 from nautilus_trader.config import StrategyConfig
@@ -64,8 +64,12 @@ class WaveOverlayStrategy(Strategy):
         btc, sol = paired[self.config.btc_bar_type], paired[self.config.sol_bar_type]
         btc_mark, sol_mark = paired[self.config.btc_mark_bar_type], paired[self.config.sol_mark_bar_type]
         del self._day[session]
-        timestamp = datetime.fromtimestamp(btc.ts_event / 1_000_000_000, UTC)
-        self._bars.append(DailyBar(timestamp, timestamp, timestamp, float(btc.open), float(btc.close), float(sol.close)))
+        close_time = datetime.fromtimestamp(btc.ts_event / 1_000_000_000, UTC)
+        available_at = datetime.fromtimestamp(max(btc.ts_init, sol.ts_init, btc_mark.ts_init, sol_mark.ts_init) / 1_000_000_000, UTC)
+        if available_at < close_time:
+            self.log.warning("Discarding bars unavailable at their close timestamp")
+            return
+        self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
         self._last_sol_close = float(sol.close)
         self._current_btc, self._current_sol = btc, sol
         self._current_btc_mark, self._current_sol_mark = btc_mark, sol_mark
