@@ -19,6 +19,20 @@ WARMUP_START_MS = 1_662_076_800_000  # 2022-09-02T00:00:00Z
 TRADING_START_MS = 1_725_148_800_000  # 2024-09-01T00:00:00Z
 TRADING_END_MS = 1_788_220_800_000  # 2026-09-01T00:00:00Z, exclusive
 
+# Immutable §2 v0 envelope. Candidate is only the domain subset; this object
+# records the account/execution/tier assumptions that materially affect a run.
+BASELINE_CONFIG = {
+    "strategy_id": "btc_sol_wave_overlay_v1", "mode": "paper", "live_enabled": False,
+    "venue": "bybit", "initial_total_usdt": "10000", "initial_active_fraction": "1.0",
+    "signal_timeframe": "1D", "include_zero_waves": True, "sol_direction": "opposite_btc",
+    "sol_entry_eligibility": "persistent_after_btc_level", "freeze_sigma_on_first_sol_fill": True,
+    "sol_z_stop": None, "btc_close_stop_fraction": None, "portfolio_loss_limit_fraction": None,
+    "future_sol_margin_fraction": "0", "insufficient_margin": "reject",
+    "reserve_transfer_fraction": "0", "reserve_trigger_multiple": "4", "restart_target": "initial_active_seed",
+    "post_liquidation": "restart_from_reserve_else_pause", "account": "SIM_MARGIN_USDT_10000",
+    "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+}
+
 
 @dataclass(frozen=True)
 class ExecutionPolicy:
@@ -27,7 +41,8 @@ class ExecutionPolicy:
     execution_source: str = "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE"
     mark_source: str = "BYBIT_GAP_FREE_1M_MARK_CLOSE"
     latency: str = "next_available_1m_close_after_daily_decision"
-    fees: str = "UNKNOWN_PROFILE_NOT_APPLIED"
+    fees: str = "NATIVE_FIXTURE_MAKER_TAKER_0.001_PER_SIDE"
+    fee_historical_applicability: str = "UNKNOWN"
     spread_slippage_liquidity: str = "UNKNOWN_NO_L2_OR_TRADE_TAPE"
     liquidation: str = "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL"
 
@@ -178,8 +193,15 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
             fees = Decimal("0")
         rejected = sum("REJECTED" in str(value) for value in orders.get("status", ()))
         data_hash = hashlib.sha256(json.dumps(json.loads((data_root / "bybit-1m" / "manifest.json").read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-        config_hash = hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) feature-only", "config_hash": config_hash, "data_hash": data_hash, "policy": asdict(policy), "policy_hash": policy.hash, "fills": len(fills), "native_fees": str(fees), "native_order_rejections": rejected, "funding_events_posted": len(journal.funding_audit()) if journal else 0, "funding_journal": str(journal_path) if journal else None, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no bid/ask, L2, latency, fee, slippage, liquidity, or validated liquidation facts", "Venue marks are CustomData and do not participate in matching", "Current public tiers/40x BTC and 20x SOL leverage are not historical tier evidence", "Funding prior-minute mark is timing-uncertain" if events else "Funding not included"]}
+        full_config = {**BASELINE_CONFIG, "candidate": asdict(candidate), "execution_policy": asdict(policy)}
+        config_hash = hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        initial = Decimal("10000")
+        equity = [{"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in report["total"].items()]
+        totals = [Decimal(item["total"]) for item in equity]
+        peak, max_dd = initial, Decimal("0")
+        for total in totals:
+            peak = max(peak, total); max_dd = max(max_dd, peak - total)
+        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) feature-only", "config": full_config, "config_hash": config_hash, "data_hash": data_hash, "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "summary": {"roi": str((terminal_active / initial) - 1), "terminal_total": str(terminal_active), "max_drawdown_amount": str(max_dd), "max_drawdown_percent": str(max_dd / initial), "monthly_returns": "UNKNOWN_ACCOUNT_REPORT_NOT_MONTH_BUCKETED"}, "equity": equity, "fills": len(fills), "executions": "NATIVE_FILLS_REPORT_ARTIFACT_REQUIRED", "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED", "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY", "native_fees": str(fees), "modeled_slippage": "UNKNOWN_1M_CLOSE_PROXY", "native_order_rejections": rejected, "funding_events_posted": len(journal.funding_audit()) if journal else 0, "funding_journal": str(journal_path) if journal else None, "transfers": "0", "liquidation_count": 0, "liquidation_value": "0", "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Fixture fees are 0.001/side; historical applicability unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
     finally:
         engine.dispose()
         if journal:

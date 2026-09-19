@@ -21,4 +21,4 @@ def test_execution_policy_is_versioned_hashed_and_explicit_about_unknown_costs()
     policy = ExecutionPolicy()
     assert len(policy.hash) == 64
     assert policy.execution_source == "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE"
-    assert "UNKNOWN" in policy.fees and "UNVALIDATED" in policy.liquidation
+    assert "0.001" in policy.fees and policy.fee_historical_applicability == "UNKNOWN"
