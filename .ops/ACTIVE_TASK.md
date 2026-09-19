@@ -1,7 +1,15 @@
 # ACTIVE_TASK
 
-Updated: 2026-09-19 Europe/Moscow
-Nautilus replacement status: see `TASK_STATE.md` for current P0 evidence and P1 next step; owner instruction of 2026-09-19 supersedes the legacy Freqtrade status below. No production actions authorized.
+Updated: 2026-09-20 Europe/Moscow
+Status: ACTIVE — Nautilus paper P5.2/P6 operational hardening; no live trading is authorized.
+Canonical root: `/root/.openclaw/workspace/coinmaster/coinmaster`; branch `codex/nautilus-btc-sol-mvp`.
+Deployed state: paper and loopback runtime services are active. The paper node is native Sandbox-only (`live_order_capability=false`) with public Bybit/Hyperliquid data, verified warmup, reconciliation, and no open positions/orders.
+Current step: isolated open-group/crash-before-ACK reconciliation proof and the backup/restore/doctor/monitoring/live-gate runbook. Do not change strategy, optimizer, funding policy, live capability, proxy, firewall, or unrelated services.
+Next: commit/push, then an isolated VPS SQLite backup/restore drill and read-only monitoring. Remaining blockers: this is not live-ready; historical execution/fee/liquidation evidence and separately authorized live promotion are absent.
+
+## Historical legacy Freqtrade reference
+
+Nautilus replacement status: the following is historical context only and must not override the current paper status above.
 Status: ACTIVE — #73 Wave Engine dry-run experiment running; #65 observer monitors it. #74 Wave Engine GUI/replay slice implemented and smoke/QA accepted locally. No live trading approved.
 GitHub Project item: #65 native Freqtrade observer In Progress; #70 Strategy C In Progress; #71 validation plan created; #72 Mozart research paused; #73 Wave Engine In Progress; #74 GUI/replay created/accepted locally.
 Canonical root: `/root/.openclaw/workspace/coinmaster` (app `/root/.openclaw/workspace/coinmaster/coinmaster`; runtime `/opt/coinmaster/freqtrade`).
