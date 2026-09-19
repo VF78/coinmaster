@@ -102,9 +102,9 @@ def test_partial_fill_keeps_parent_margin_reserved_until_cancel_confirmation() -
     reservations = MarginReservations()
     reservations.reserve("btc-parent", Decimal("2000"))
     reservations.record_fill("btc-parent", Decimal("1000"))
-    assert reservations.total_held_im() == Decimal("2000")
-    reservations.cancel_remainder("btc-parent")
     assert reservations.total_held_im() == Decimal("1000")
+    reservations.cancel_remainder("btc-parent")
+    assert reservations.total_held_im() == Decimal("0")
 
 
 def test_production_funding_requires_confirmed_venue_settlement_mark() -> None:

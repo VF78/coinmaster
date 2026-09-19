@@ -14,8 +14,8 @@ class MarginReservation:
 
     @property
     def held_im(self) -> Decimal:
-        # A partial fill cannot release the parent reservation until explicit cancel.
-        return self.filled_im if self.canceled else max(self.requested_im, self.filled_im)
+        # Native position IM owns filled exposure. This book reserves only pending parent risk.
+        return Decimal("0") if self.canceled else max(Decimal("0"), self.requested_im - self.filled_im)
 
 
 class MarginReservations:
