@@ -19,4 +19,4 @@ export const getConfigurations = () => request<StrategyConfiguration[]>('/config
 export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper') => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind }) });
 export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponent(id)}/cancel`, { method: 'POST' });
 export const getRuntime = () => request<RuntimeState>('/runtime');
-export const getPreflight = () => request<Preflight>('/preflight', { method: 'POST', body: JSON.stringify({ venue: 'bybit', active_usdt: '10000', btc_notional: '90000', sol_notional: '0' }) });
+export const getPreflight = (config: StrategyConfig, beta: string | null, leverage: string | null) => request<Preflight>('/preflight', { method: 'POST', body: JSON.stringify({ venue: config.venue ?? 'bybit', active_usdt: config.initial_total_usdt, btc_notional: (Number(config.initial_total_usdt) * config.btc_notional_multiplier).toFixed(2), beta, selected_leverage: leverage, sol_multipliers: config.sol_size_multipliers_H }) });

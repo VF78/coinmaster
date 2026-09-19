@@ -83,8 +83,17 @@ class RunRecord(BaseModel):
 class PreflightInput(BaseModel):
     venue: Literal["bybit", "hyperliquid"]
     active_usdt: str = "10000"
-    btc_notional: str = "90000"
-    sol_notional: str = "0"
+    beta: str | None = None
+    selected_leverage: str | None = None
+    btc_notional: str
+    sol_multipliers: list[float] = Field(min_length=3, max_length=3)
+
+    @model_validator(mode="after")
+    def validate_values(self) -> "PreflightInput":
+        if Decimal(self.active_usdt) <= 0 or Decimal(self.btc_notional) <= 0: raise ValueError("notionals must be positive")
+        if self.beta is not None and Decimal(self.beta) <= 0: raise ValueError("beta must be positive")
+        if self.selected_leverage is not None and Decimal(self.selected_leverage) <= 0: raise ValueError("selected leverage must be positive")
+        return self
 
 
 def utcnow() -> str:
@@ -203,17 +212,20 @@ def create_app(database: str | None = None, token: str | None = None) -> FastAPI
 
     @app.post("/api/v1/preflight", dependencies=[Depends(auth)])
     def preflight(input: PreflightInput) -> dict[str, Any]:
+        if input.beta is None:
+            return {"requested": {"btc_notional": input.btc_notional}, "allowed": False, "im": None, "mm": None, "sol_additions": ["UNKNOWN_BETA"] * 3, "reasons": ["UNKNOWN_BETA"]}
         if input.venue != "bybit":
-            return {"requested": {"btc_notional": input.btc_notional, "sol_notional": input.sol_notional}, "allowed": False, "im": None, "mm": None, "reasons": ["UNKNOWN_TIERS", "MISSING_FUNDING", "PROXY_PRICES"]}
+            return {"requested": {"btc_notional": input.btc_notional}, "allowed": False, "im": None, "mm": None, "sol_additions": ["UNKNOWN_TIERS"] * 3, "reasons": ["UNKNOWN_TIERS", "MISSING_FUNDING", "PROXY_PRICES"]}
         profile = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
-        btc = Decimal(input.btc_notional); sol = Decimal(input.sol_notional)
+        btc = Decimal(input.btc_notional); beta = Decimal(input.beta); sol_notionals = [btc / beta * Decimal(str(item)) for item in input.sol_multipliers]
         try:
-            btc_tier, sol_tier = profile.tier_for("BTCUSDT", btc), profile.tier_for("SOLUSDT", sol)
+            btc_tier = profile.tier_for("BTCUSDT", btc); sol_tiers = [profile.tier_for("SOLUSDT", item) for item in sol_notionals]
         except ValueError:
-            return {"requested": {"btc_notional": input.btc_notional, "sol_notional": input.sol_notional}, "allowed": False, "im": None, "mm": None, "reasons": ["UNKNOWN_OR_OUT_OF_RANGE_TIER"]}
-        im = btc * btc_tier.im + sol * sol_tier.im
-        mm = max(Decimal("0"), btc * btc_tier.mm - btc_tier.deduction) + max(Decimal("0"), sol * sol_tier.mm - sol_tier.deduction)
-        return {"requested": {"btc_notional": str(btc), "sol_notional": str(sol)}, "allowed": False, "im": str(im), "mm": str(mm), "reasons": ["UNKNOWN_ACCOUNT_MARGIN_MODE", "MISSING_ACCOUNT_FEES"], "cap_label": "maximum request with sufficient collateral; not a starting order"}
+            return {"requested": {"btc_notional": input.btc_notional}, "allowed": False, "im": None, "mm": None, "sol_additions": ["UNKNOWN_OR_OUT_OF_RANGE_TIER"] * 3, "reasons": ["UNKNOWN_OR_OUT_OF_RANGE_TIER"]}
+        im = btc * btc_tier.im; mm = max(Decimal("0"), btc * btc_tier.mm - btc_tier.deduction); additions = []
+        for sol, tier in zip(sol_notionals, sol_tiers):
+            im += sol * tier.im; mm += max(Decimal("0"), sol * tier.mm - tier.deduction); additions.append(str(sol))
+        return {"requested": {"btc_notional": str(btc)}, "allowed": False, "im": str(im), "mm": str(mm), "sol_additions": additions, "reasons": ["UNKNOWN_ACCOUNT_MARGIN_MODE", "MISSING_ACCOUNT_FEES"], "cap_label": "maximum request with sufficient collateral; not a starting order"}
 
     @app.post("/api/v1/runs", response_model=RunRecord, dependencies=[Depends(auth)])
     def create_run(input: RunInput) -> RunRecord:

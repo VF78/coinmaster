@@ -60,15 +60,40 @@
             "title": "Active Usdt",
             "type": "string"
           },
+          "beta": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beta"
+          },
           "btc_notional": {
-            "default": "90000",
             "title": "Btc Notional",
             "type": "string"
           },
-          "sol_notional": {
-            "default": "0",
-            "title": "Sol Notional",
-            "type": "string"
+          "selected_leverage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected Leverage"
+          },
+          "sol_multipliers": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Sol Multipliers",
+            "type": "array"
           },
           "venue": {
             "enum": [
@@ -80,7 +105,9 @@
           }
         },
         "required": [
-          "venue"
+          "venue",
+          "btc_notional",
+          "sol_multipliers"
         ],
         "title": "PreflightInput",
         "type": "object"

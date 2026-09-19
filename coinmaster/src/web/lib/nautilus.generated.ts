@@ -223,16 +223,14 @@ export interface components {
              * @default 10000
              */
             active_usdt: string;
-            /**
-             * Btc Notional
-             * @default 90000
-             */
+            /** Beta */
+            beta?: string | null;
+            /** Btc Notional */
             btc_notional: string;
-            /**
-             * Sol Notional
-             * @default 0
-             */
-            sol_notional: string;
+            /** Selected Leverage */
+            selected_leverage?: string | null;
+            /** Sol Multipliers */
+            sol_multipliers: number[];
             /**
              * Venue
              * @enum {string}
