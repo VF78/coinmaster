@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from coinmaster.domain.wave_overlay import Candidate, DailyBar, Episode, Features, WaveOverlayState, features_for, linear_quantile
+from coinmaster.domain.wave_overlay import Candidate, DailyBar, Episode, Features, WaveOverlayState, batch_features_for, features_for, linear_quantile
 
 
 UTC = timezone.utc
@@ -30,6 +30,7 @@ def test_features_are_causal_and_z_excludes_current_value() -> None:
     assert before == after[:len(before)]
     ready = next(item for item in before if item.z is not None)
     assert ready.sigma is not None and ready.sigma > 0
+    assert before == batch_features_for(source, Candidate())
 
 
 def test_episode_uses_confirmed_fills_and_fixed_sigma() -> None:

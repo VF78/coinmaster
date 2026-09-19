@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from math import exp, log, sqrt
 from typing import Literal
+from collections import deque
 from uuid import uuid4
 
 
@@ -87,7 +88,7 @@ def linear_quantile(values: list[float], q: float) -> float:
     return ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower)
 
 
-def features_for(bars: list[DailyBar], config: Candidate) -> list[Features]:
+def batch_features_for(bars: list[DailyBar], config: Candidate) -> list[Features]:
     """Compute only values available at each close; no future row is inspected."""
     if any(bars[index].close_time >= bars[index + 1].close_time for index in range(len(bars) - 1)):
         raise ValueError("bars must be strictly chronological")
@@ -122,6 +123,44 @@ def features_for(bars: list[DailyBar], config: Candidate) -> list[Features]:
         z = None if relative is None or sigma in (None, 0) else (relative - mu) / sigma
         result.append(Features(index, side, beta, relative, mu, sigma, z))
     return result
+
+
+class FeatureState:
+    """Incremental causal feature calculator; batch_features_for is its oracle."""
+    def __init__(self, config: Candidate) -> None:
+        self.config, self.bars, self.ema = config, [], None
+        self.rs: deque[tuple[float, float]] = deque(maxlen=config.beta_days)
+        self.relatives: deque[float] = deque(maxlen=config.z_history_days)
+
+    def append(self, bar: DailyBar) -> Features:
+        if self.bars and bar.close_time <= self.bars[-1].close_time:
+            raise ValueError("bars must be strictly chronological")
+        alpha = 2 / (self.config.ema_period + 1)
+        self.ema = bar.btc_close if self.ema is None else alpha * bar.btc_close + (1 - alpha) * self.ema
+        side: Side = 1 if bar.btc_close > self.ema else -1
+        beta = relative = mu = sigma = z = None
+        if self.bars:
+            self.rs.append((log(bar.sol_close / self.bars[-1].sol_close), log(bar.btc_close / self.bars[-1].btc_close)))
+        if len(self.rs) == self.config.beta_days:
+            sol_returns, btc_returns = [x for x, _ in self.rs], [y for _, y in self.rs]
+            mean_s, mean_b = _mean(sol_returns), _mean(btc_returns)
+            variance = _mean([(value - mean_b) ** 2 for value in btc_returns])
+            beta = _mean([(sol - mean_s) * (btc - mean_b) for sol, btc in zip(sol_returns, btc_returns)]) / variance if variance else None
+        if beta is not None and len(self.bars) >= self.config.relative_days:
+            old = self.bars[-self.config.relative_days]
+            relative = log(bar.sol_close / old.sol_close) - beta * log(bar.btc_close / old.btc_close)
+        if len(self.relatives) == self.config.z_history_days:
+            mu, sigma = _mean(list(self.relatives)), _population_std(list(self.relatives))
+            z = None if relative is None or sigma == 0 else (relative - mu) / sigma
+        if relative is not None:
+            self.relatives.append(relative)
+        self.bars.append(bar)
+        return Features(len(self.bars) - 1, side, beta, relative, mu, sigma, z)
+
+
+def features_for(bars: list[DailyBar], config: Candidate) -> list[Features]:
+    state = FeatureState(config)
+    return [state.append(bar) for bar in bars]
 
 
 def completed_wave_levels(bars: list[DailyBar], features: list[Features], at_index: int, config: Candidate, side: Side) -> tuple[float, float, float] | None:

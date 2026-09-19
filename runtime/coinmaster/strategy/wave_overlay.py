@@ -160,9 +160,14 @@ class WaveOverlayStrategy(Strategy):
             self._pending_by_order.pop(str(event.client_order_id), None)
             self._sigma_by_order.pop(str(event.client_order_id), None)
             self._decision_index_by_order.pop(str(event.client_order_id), None)
-            self._advance_current_day()
-        if intent.action == "CLOSE_ALL" and not self.cache.positions_open():
-            self._domain.on_group_flat()
+            if intent.action == "CLOSE_ALL":
+                if not self.cache.positions_open():
+                    self._domain.on_group_flat()
+                return
+            # An entry fills at the next executable event, not at the former
+            # signal close; only reduction -> add -> exit phases may continue.
+            if intent.action != "BTC_ENTRY":
+                self._advance_current_day()
 
     def on_order_canceled(self, event: OrderCanceled) -> None:
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
