@@ -34,6 +34,9 @@ class PaperRuntime:
         try:
             self.db.execute("INSERT INTO paper_lock VALUES (1, ?)", (self.owner,)); self.db.commit()
         except sqlite3.IntegrityError as error:
+            row = self.db.execute("SELECT owner FROM paper_lock WHERE id=1").fetchone()
+            if row and row[0] == self.owner:
+                return  # Controlled restart of the same paper owner.
             raise RuntimeError("PAPER_OWNER_LOCKED") from error
 
     def command(self, command: str, idempotency_key: str) -> bool:
