@@ -2454,6 +2454,18 @@ button.radar-funnel-step {
   gap: 0.4rem;
 }
 
+.nautilus-pre {
+  max-height: 22rem;
+  overflow: auto;
+  margin: var(--space-3) 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
 .rules-toggle-row {
   display: flex;
   justify-content: space-between;

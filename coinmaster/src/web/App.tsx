@@ -1,107 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { DashboardPage } from './pages/DashboardPage';
-import { HistoryPage } from './pages/HistoryPage';
-import { SettingsPage } from './pages/SettingsPage';
-import { TradingRulesPage } from './pages/TradingRulesPage';
-import { AiMasterPage } from './pages/AiMasterPage';
-import { BacktestPage } from './pages/BacktestPage';
-import { AlphaRadarPage } from './pages/AlphaRadarPage';
-import { WaveEnginePage } from './pages/WaveEnginePage';
-import { useDialog } from './components/DialogProvider';
+import { useEffect, useMemo, useState } from 'react';
+import { ResearchPage, RuntimePage, StrategyPage } from './pages/NautilusControlPage';
 
-type PageKey = 'dashboard' | 'radar' | 'history' | 'settings' | 'trading-rules' | 'wave-engine' | 'ai-master' | 'backtest';
-
+type PageKey = 'strategy' | 'research' | 'runtime';
 const SECTIONS: Array<{ key: PageKey; label: string }> = [
-  { key: 'dashboard', label: 'Dashboard' },
-  { key: 'radar', label: 'Radar' },
-  { key: 'trading-rules', label: 'Trading Rules' },
-  { key: 'wave-engine', label: 'Wave Engine' },
-  { key: 'backtest', label: 'Backtest' },
-  { key: 'history', label: 'History' },
-  { key: 'ai-master', label: 'AI Master' },
-  { key: 'settings', label: 'Settings' }
+  { key: 'strategy', label: 'Strategy' }, { key: 'research', label: 'Research' }, { key: 'runtime', label: 'Runtime' },
 ];
-
 export function App() {
-  const [page, setPage] = useState<PageKey>('dashboard');
-  const [tradingRulesDirty, setTradingRulesDirty] = useState(false);
-  const tradingRulesSaveRef = useRef<(() => Promise<boolean>) | null>(null);
-  const dialog = useDialog();
-
-  const pageTitle = useMemo(() => {
-    const section = SECTIONS.find((s) => s.key === page);
-    return `Coinmaster24 · ${section?.label ?? 'Dashboard'}`;
-  }, [page]);
-
-  useEffect(() => {
-    document.title = pageTitle;
-  }, [pageTitle]);
-
-  async function handleNavigate(nextPage: PageKey) {
-    if (nextPage === page) return;
-
-    if (page === 'trading-rules' && tradingRulesDirty) {
-      const shouldSave = await dialog.confirm({
-        title: 'Unsaved Trading Rules',
-        message: 'Apply Trading Rules changes before leaving this page?',
-        confirmText: 'Apply Trading Rules',
-        cancelText: "Don\'t apply",
-      });
-
-      if (shouldSave) {
-        const ok = await tradingRulesSaveRef.current?.();
-        if (!ok) return;
-      }
-
-      setTradingRulesDirty(false);
-    }
-
-    setPage(nextPage);
-  }
-
-  return (
-    <div className="app-shell">
-      <header className="app-topbar">
-        <h1>Coinmaster24</h1>
-      </header>
-
-      <div className="app-layout">
-        <aside className="sidebar" aria-label="Sections">
-          <nav className="sidebar-nav">
-            <ul className="sidebar-nav__list">
-              {SECTIONS.map((section) => (
-                <li key={section.key}>
-                  <button
-                    type="button"
-                    className={page === section.key ? 'sidebar-nav__item sidebar-nav__item--active' : 'sidebar-nav__item'}
-                    onClick={() => { void handleNavigate(section.key); }}
-                  >
-                    {section.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
-
-        <section className="app-content">
-          {page === 'dashboard' ? <DashboardPage /> : null}
-          {page === 'radar' ? <AlphaRadarPage /> : null}
-          {page === 'history' ? <HistoryPage /> : null}
-          {page === 'ai-master' ? <AiMasterPage /> : null}
-          {page === 'trading-rules' ? (
-            <TradingRulesPage
-              onDirtyChange={setTradingRulesDirty}
-              onRegisterSaveHandler={(handler) => {
-                tradingRulesSaveRef.current = handler;
-              }}
-            />
-          ) : null}
-          {page === 'wave-engine' ? <WaveEnginePage /> : null}
-          {page === 'backtest' ? <BacktestPage /> : null}
-          {page === 'settings' ? <SettingsPage /> : null}
-        </section>
-      </div>
-    </div>
-  );
+  const [page, setPage] = useState<PageKey>('strategy');
+  const pageTitle = useMemo(() => `Coinmaster24 · ${SECTIONS.find((s) => s.key === page)?.label ?? 'Strategy'}`, [page]);
+  useEffect(() => { document.title = pageTitle; }, [pageTitle]);
+  return <div className="app-shell"><header className="app-topbar"><h1>Coinmaster24</h1></header><div className="app-layout"><aside className="sidebar" aria-label="Sections"><nav className="sidebar-nav"><ul className="sidebar-nav__list">{SECTIONS.map((section) => <li key={section.key}><button type="button" className={page === section.key ? 'sidebar-nav__item sidebar-nav__item--active' : 'sidebar-nav__item'} onClick={() => setPage(section.key)}>{section.label}</button></li>)}</ul></nav></aside><section className="app-content">{page === 'strategy' ? <StrategyPage /> : null}{page === 'research' ? <ResearchPage /> : null}{page === 'runtime' ? <RuntimePage /> : null}</section></div></div>;
 }
