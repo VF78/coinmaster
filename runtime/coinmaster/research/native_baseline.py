@@ -49,7 +49,7 @@ def funding_with_prior_minute_marks(
     return tuple(events)
 
 
-def run_native_diagnostic(data_root: Path, include_funding: bool = False) -> dict:
+def run_native_diagnostic(data_root: Path, include_funding: bool = False, candidate=None) -> dict:
     """Execute the one native Strategy on real daily Bybit bars, never rank it.
 
     Funding settlement marks, fees, and intraminute liquidation remain
@@ -67,8 +67,10 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False) -> dic
     from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, MarkPriceUpdate, PerpetualFundingModule, quote
     from coinmaster.ledger.journal import NativeEventJournal
     from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
+    from coinmaster.domain.wave_overlay import Candidate
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
 
+    candidate = candidate or Candidate()
     def rows(symbol: str):
         return {
             row["open_time_ms"]: row
@@ -107,7 +109,7 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False) -> dic
     engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"), modules=modules)
     engine.add_instrument(BTC_PERP); engine.add_instrument(SOL_PERP)
     from nautilus_trader.model.identifiers import ClientId
-    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=Decimal("10000"), tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=TRADING_START_MS * 1_000_000, terminal_close_at_ns=TRADING_END_MS * 1_000_000)))
+    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=Decimal("10000"), tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=TRADING_START_MS * 1_000_000, terminal_close_at_ns=TRADING_END_MS * 1_000_000, candidate=candidate)))
     execution_data, mark_data = [], []
     for timestamp in sorted(set(btc) & set(sol)):
         b, s = btc[timestamp], sol[timestamp]

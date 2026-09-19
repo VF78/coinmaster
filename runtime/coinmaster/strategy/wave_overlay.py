@@ -35,13 +35,15 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     max_mark_age_ns: int = 0
     trading_start_open_ns: int | None = None
     terminal_close_at_ns: int | None = None
+    candidate: Candidate = Candidate()
 
 
 class WaveOverlayStrategy(Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
-        self._domain = WaveOverlayState(Candidate())
+        self._candidate = config.candidate
+        self._domain = WaveOverlayState(self._candidate)
         self._bars: list[DailyBar] = []
         self._pending_by_order: dict[str, Intent] = {}
         self._sigma_by_order: dict[str, float | None] = {}
@@ -103,7 +105,7 @@ class WaveOverlayStrategy(Strategy):
         self._last_sol_close = float(sol.close)
         self._current_btc, self._current_sol = btc, sol
         self._current_btc_mark, self._current_sol_mark = btc_mark, sol_mark
-        self._current_signals = features_for(self._bars, Candidate())
+        self._current_signals = features_for(self._bars, self._candidate)
         if self.config.terminal_close_at_ns is not None and btc.ts_event >= self.config.terminal_close_at_ns:
             self._submit_terminal_closes()
             return
