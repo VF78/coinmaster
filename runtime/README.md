@@ -16,3 +16,9 @@ uv run pytest
 
 The next slice must use Nautilus native account/events as the only source of
 trading money. Do not use this module as an order-execution adapter yet.
+
+Export the frontend contract deterministically (without binding a port):
+
+```sh
+.venv/bin/python scripts/export_openapi.py
+```
