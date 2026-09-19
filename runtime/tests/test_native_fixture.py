@@ -12,6 +12,7 @@ from nautilus_trader.model.data import FundingRateUpdate
 from nautilus_trader.backtest.models import LeveragedMarginModel
 from nautilus_trader.model.objects import Price, Quantity
 from coinmaster.venues.margin import MarginReservations
+from coinmaster.ledger.journal import NativeEventJournal
 
 
 def fixture_quotes():
@@ -112,3 +113,12 @@ def test_production_funding_requires_confirmed_venue_settlement_mark() -> None:
         assert "settlement mark" in str(error)
     else:
         raise AssertionError("funding without venue settlement mark must fail closed")
+
+
+def test_journal_dedupes_events_and_transfers_cannot_create_total() -> None:
+    journal = NativeEventJournal()
+    assert journal.record_funding("venue-funding-1", Decimal("14346.303"))
+    assert not journal.record_funding("venue-funding-1", Decimal("14346.303"))
+    assert journal.record_transfer("transfer-1", Decimal("9000"), Decimal("8000"), Decimal("1000"), Decimal("2000"))
+    assert not journal.record_transfer("transfer-1", Decimal("9000"), Decimal("8000"), Decimal("1000"), Decimal("2000"))
+    NativeEventJournal.assert_total(Decimal("8000"), Decimal("2000"), Decimal("10000"))
