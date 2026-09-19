@@ -43,7 +43,9 @@ def test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_st
     try:
         fills = engine.trader.generate_order_fills_report()
         assert not fills.empty
-        assert set(fills["instrument_id"]) <= {str(BTC_PERP.id), str(SOL_PERP.id)}
+        assert set(fills["instrument_id"]) == {str(BTC_PERP.id), str(SOL_PERP.id)}
+        assert fills["ts_last"].is_monotonic_increasing
+        assert not engine.trader.generate_positions_report()["closing_order_id"].isna().any()
         assert not engine.trader.generate_account_report(SIM).empty
     finally:
         engine.dispose()
