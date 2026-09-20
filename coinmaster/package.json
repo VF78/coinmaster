@@ -37,6 +37,7 @@
     "invariants:radar-handoff": "node --import tsx/esm scripts/invariants-radar-handoff.ts",
     "invariants:experiment-governance": "node --import tsx/esm scripts/invariants-experiment-governance.ts",
     "invariants:backtest-run-persistence": "node --import tsx/esm scripts/invariants-backtest-run-persistence.ts",
+    "invariants:nautilus-research-ui": "node --import tsx/esm scripts/invariants-nautilus-research-ui.ts",
     "invariants:compute-jobs": "node --import tsx/esm scripts/invariants-compute-jobs.ts",
     "build:custom": "vite build --config vite.custom.config.ts",
     "invariants:freqtrade-radar-policy": "node --import tsx/esm scripts/invariants-freqtrade-radar-policy.ts",

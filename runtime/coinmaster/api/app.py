@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, build_engine, quote
+from coinmaster.research.catalog import RESEARCH_CATALOG
 from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 
@@ -78,6 +79,17 @@ class RunRecord(BaseModel):
     evidence: list[str]
     created_at: str
     report: dict[str, Any] | None = None
+
+
+class ResearchCatalogEntry(BaseModel):
+    id: str; kind: str; title: str; classification: str; selected: bool
+    artifact: str; sha256: str; artifact_state: str
+    interval: str; warmup: str; settled_total: str; interval_cash: str; roi: str; drawdown_percent: str; fees: str
+    fills: int; funding: int; liquidations: int; limitations: list[str]; supersession: str
+
+
+class ResearchCatalogDetail(ResearchCatalogEntry):
+    verified_detail: dict[str, Any] | None = None
 
 
 class PreflightInput(BaseModel):
@@ -176,6 +188,42 @@ def fixture_report() -> dict[str, Any]:
         engine.dispose()
 
 
+def _catalog_artifact_state(entry: dict[str, Any]) -> str:
+    path = Path(__file__).resolve().parents[2] / "var/data" / entry["artifact"]
+    if not path.exists():
+        return "ARTIFACT_NOT_LOCAL"
+    return "VERIFIED_LOCAL" if hashlib.sha256(path.read_bytes()).hexdigest() == entry["sha256"] else "ARTIFACT_HASH_MISMATCH"
+
+
+def _catalog_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    return {**entry, "artifact_state": _catalog_artifact_state(entry)}
+
+
+def _verified_catalog_detail(entry: dict[str, Any]) -> dict[str, Any] | None:
+    if _catalog_artifact_state(entry) != "VERIFIED_LOCAL":
+        return None
+    source = json.loads((Path(__file__).resolve().parents[2] / "var/data" / entry["artifact"]).read_text())
+    variant_by_id = {
+        "bybit-reporting-v2-selected-7.5": "btc_notional_7.5",
+        "bybit-reporting-v2-candidate-8.25": "btc_notional_8.25",
+        "bybit-reporting-v2-excluded-9.75": "btc_notional_9.75",
+        "bybit-reporting-v2-excluded-10.5": "btc_notional_10.5",
+    }
+    if entry["id"] in variant_by_id:
+        source = next(item for item in source["results"] if item["variant_id"] == variant_by_id[entry["id"]])
+    if entry["id"] == "bybit-reporting-v2-fixed-stress":
+        return {"status": source["status"], "control_reuse": source["control_reuse"], "results": [{key: item.get(key) for key in ("variant_id", "status", "terminal_total", "terminal_active", "terminal_reserve", "fills", "native_fees", "funding", "liquidation_count", "pre_submit_tier_margin_gate_blocks", "post_boundary_settlement", "summary")} for item in source["results"]]}
+    if entry["id"] == "hyperliquid-public-rest-blocked":
+        return {key: source[key] for key in ("schema", "daily_interval", "funding_interval", "symbols", "faithful_comparable_1m_run_blockers", "historical_profile_applicability", "limitations")}
+    return {key: source.get(key) for key in ("status", "terminal_total", "terminal_active", "terminal_reserve", "terminal_open_positions", "fills", "native_fees", "funding", "liquidation_count", "liquidation_audit", "pre_submit_tier_margin_gate_blocks", "post_boundary_settlement", "summary", "config_hash", "data_hash", "policy_hash", "code_hash")}
+
+
+def immutable_research_reference() -> tuple[list[str], dict[str, Any]]:
+    selected = next(item for item in RESEARCH_CATALOG if item["id"] == "bybit-reporting-v2-selected-7.5")
+    state = _catalog_artifact_state(selected)
+    return ["IMMUTABLE_RESEARCH_REFERENCE", "NO_NEW_BACKTEST_COMPUTE", selected["classification"], state], {"catalog_id": selected["id"], "artifact": selected["artifact"], "sha256": selected["sha256"], "artifact_state": state, "reason": "This request references immutable native research evidence; a separate research worker is required for any new computation."}
+
+
 def create_app(database: str | None = None, token: str | None = None) -> FastAPI:
     store = ControlStore(database or os.getenv("COINMASTER_CONTROL_DB", "var/coinmaster-control.sqlite"))
     expected_token = token if token is not None else os.getenv("COINMASTER_API_TOKEN")
@@ -210,6 +258,17 @@ def create_app(database: str | None = None, token: str | None = None) -> FastAPI
         profile = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
         return {"profiles": [{"venue": "bybit", "hashes": profile.hashes, "evidence": ["UNKNOWN_ACCOUNT_TIER", "MISSING_ACCOUNT_FEES"]}, {"venue": "hyperliquid", "evidence": ["UNKNOWN_TIERS", "MISSING_FUNDING", "PROXY_PRICES"]}]}
 
+    @app.get("/api/v1/research/catalog", response_model=list[ResearchCatalogEntry], dependencies=[Depends(auth)])
+    def research_catalog() -> list[ResearchCatalogEntry]:
+        return [_catalog_entry(entry) for entry in RESEARCH_CATALOG]
+
+    @app.get("/api/v1/research/catalog/{catalog_id}", response_model=ResearchCatalogDetail, dependencies=[Depends(auth)])
+    def research_catalog_detail(catalog_id: str) -> ResearchCatalogDetail:
+        entry = next((item for item in RESEARCH_CATALOG if item["id"] == catalog_id), None)
+        if entry is None:
+            raise HTTPException(404, "research catalog entry not found")
+        return {**_catalog_entry(entry), "verified_detail": _verified_catalog_detail(entry)}
+
     @app.post("/api/v1/preflight", dependencies=[Depends(auth)])
     def preflight(input: PreflightInput) -> dict[str, Any]:
         if input.beta is None:
@@ -235,7 +294,8 @@ def create_app(database: str | None = None, token: str | None = None) -> FastAPI
         if input.kind == "fixture":
             run.status, run.evidence, run.report = "COMPLETED", ["SYNTHETIC_P1_FIXTURE", "NOT_REAL_DATA", "NOT_RANKABLE"], fixture_report()
         elif input.kind == "backtest":
-            run.status, run.evidence, run.report = "BLOCKED", ["P3_STRATEGY_AND_REAL_DATA_REQUIRED"], {"reason": "Native strategy baseline and verified historical data are not implemented; no result is fabricated."}
+            run.status = "COMPLETED_ARTIFACT_REFERENCE"
+            run.evidence, run.report = immutable_research_reference()
         return store.save_run(run)
 
     @app.get("/api/v1/runs", response_model=list[RunRecord], dependencies=[Depends(auth)])

@@ -112,6 +112,240 @@
         "title": "PreflightInput",
         "type": "object"
       },
+      "ResearchCatalogDetail": {
+        "properties": {
+          "artifact": {
+            "title": "Artifact",
+            "type": "string"
+          },
+          "artifact_state": {
+            "title": "Artifact State",
+            "type": "string"
+          },
+          "classification": {
+            "title": "Classification",
+            "type": "string"
+          },
+          "drawdown_percent": {
+            "title": "Drawdown Percent",
+            "type": "string"
+          },
+          "fees": {
+            "title": "Fees",
+            "type": "string"
+          },
+          "fills": {
+            "title": "Fills",
+            "type": "integer"
+          },
+          "funding": {
+            "title": "Funding",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "interval": {
+            "title": "Interval",
+            "type": "string"
+          },
+          "interval_cash": {
+            "title": "Interval Cash",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "liquidations": {
+            "title": "Liquidations",
+            "type": "integer"
+          },
+          "roi": {
+            "title": "Roi",
+            "type": "string"
+          },
+          "selected": {
+            "title": "Selected",
+            "type": "boolean"
+          },
+          "settled_total": {
+            "title": "Settled Total",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "supersession": {
+            "title": "Supersession",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "verified_detail": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified Detail"
+          },
+          "warmup": {
+            "title": "Warmup",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "classification",
+          "selected",
+          "artifact",
+          "sha256",
+          "artifact_state",
+          "interval",
+          "warmup",
+          "settled_total",
+          "interval_cash",
+          "roi",
+          "drawdown_percent",
+          "fees",
+          "fills",
+          "funding",
+          "liquidations",
+          "limitations",
+          "supersession"
+        ],
+        "title": "ResearchCatalogDetail",
+        "type": "object"
+      },
+      "ResearchCatalogEntry": {
+        "properties": {
+          "artifact": {
+            "title": "Artifact",
+            "type": "string"
+          },
+          "artifact_state": {
+            "title": "Artifact State",
+            "type": "string"
+          },
+          "classification": {
+            "title": "Classification",
+            "type": "string"
+          },
+          "drawdown_percent": {
+            "title": "Drawdown Percent",
+            "type": "string"
+          },
+          "fees": {
+            "title": "Fees",
+            "type": "string"
+          },
+          "fills": {
+            "title": "Fills",
+            "type": "integer"
+          },
+          "funding": {
+            "title": "Funding",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "interval": {
+            "title": "Interval",
+            "type": "string"
+          },
+          "interval_cash": {
+            "title": "Interval Cash",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "liquidations": {
+            "title": "Liquidations",
+            "type": "integer"
+          },
+          "roi": {
+            "title": "Roi",
+            "type": "string"
+          },
+          "selected": {
+            "title": "Selected",
+            "type": "boolean"
+          },
+          "settled_total": {
+            "title": "Settled Total",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "supersession": {
+            "title": "Supersession",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "warmup": {
+            "title": "Warmup",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "classification",
+          "selected",
+          "artifact",
+          "sha256",
+          "artifact_state",
+          "interval",
+          "warmup",
+          "settled_total",
+          "interval_cash",
+          "roi",
+          "drawdown_percent",
+          "fees",
+          "fills",
+          "funding",
+          "liquidations",
+          "limitations",
+          "supersession"
+        ],
+        "title": "ResearchCatalogEntry",
+        "type": "object"
+      },
       "RunInput": {
         "properties": {
           "config_id": {
@@ -819,6 +1053,111 @@
           }
         },
         "summary": "Preflight"
+      }
+    },
+    "/api/v1/research/catalog": {
+      "get": {
+        "operationId": "research_catalog_api_v1_research_catalog_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ResearchCatalogEntry"
+                  },
+                  "title": "Response Research Catalog Api V1 Research Catalog Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Research Catalog"
+      }
+    },
+    "/api/v1/research/catalog/{catalog_id}": {
+      "get": {
+        "operationId": "research_catalog_detail_api_v1_research_catalog__catalog_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "catalog_id",
+            "required": true,
+            "schema": {
+              "title": "Catalog Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchCatalogDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Research Catalog Detail"
       }
     },
     "/api/v1/runs": {

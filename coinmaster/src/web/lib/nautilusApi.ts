@@ -3,6 +3,8 @@ import type { components as runtimeComponents } from './runtime.generated';
 export type StrategyConfig = components['schemas']['StrategyConfig'];
 export type StrategyConfiguration = components['schemas']['ConfigurationRecord'];
 export type Run = components['schemas']['RunRecord'];
+export type ResearchCatalogEntry = components['schemas']['ResearchCatalogEntry'];
+export type ResearchCatalogDetail = components['schemas']['ResearchCatalogDetail'];
 export type RuntimeState = runtimeComponents['schemas']['RuntimeState'];
 export type RuntimeEventsResponse = runtimeComponents['schemas']['RuntimeEventsResponse'];
 export type RuntimeCommandResponse = runtimeComponents['schemas']['RuntimeCommandResponse'];
@@ -18,6 +20,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const getDefaultConfiguration = () => request<{ config: StrategyConfig }>('/configurations/default');
 export const saveConfiguration = (config: StrategyConfig) => request<StrategyConfiguration>('/configurations', { method: 'POST', body: JSON.stringify({ config }) });
 export const getRuns = () => request<Run[]>('/runs');
+export const getResearchCatalog = () => request<ResearchCatalogEntry[]>('/research/catalog');
+export const getResearchCatalogDetail = (id: string) => request<ResearchCatalogDetail>(`/research/catalog/${encodeURIComponent(id)}`);
 export const getConfigurations = () => request<StrategyConfiguration[]>('/configurations');
 export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper') => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind }) });
 export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponent(id)}/cancel`, { method: 'POST' });

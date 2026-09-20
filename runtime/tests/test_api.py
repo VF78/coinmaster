@@ -1,4 +1,5 @@
-from coinmaster.api.app import BASELINE_CONFIG, ControlStore, PreflightInput, StrategyConfig, create_app, fixture_report
+from coinmaster.api.app import BASELINE_CONFIG, ControlStore, PreflightInput, StrategyConfig, _catalog_entry, immutable_research_reference, create_app, fixture_report
+from coinmaster.research.catalog import RESEARCH_CATALOG
 import pytest
 
 
@@ -27,3 +28,15 @@ def test_preflight_requires_explicit_valid_beta_and_three_sol_levels() -> None:
     assert supplied.beta == "1.5" and len(supplied.sol_multipliers) == 3
     with pytest.raises(ValueError):
         PreflightInput(venue="bybit", btc_notional="90000", beta="0", sol_multipliers=[1, 1.5, 2])
+
+
+def test_research_catalog_is_read_only_and_backtest_is_an_artifact_reference(tmp_path) -> None:
+    app = create_app(str(tmp_path / "control.sqlite"), "test-token")
+    assert "/api/v1/research/catalog" in app.openapi()["paths"]
+    selected = _catalog_entry(next(item for item in RESEARCH_CATALOG if item["selected"]))
+    assert selected["id"] == "bybit-reporting-v2-selected-7.5"
+    assert selected["classification"] == "NOT_FAITHFUL_DIAGNOSTIC"
+    assert selected["artifact_state"] in {"VERIFIED_LOCAL", "ARTIFACT_NOT_LOCAL"}
+    evidence, report = immutable_research_reference()
+    assert "NO_NEW_BACKTEST_COMPUTE" in evidence
+    assert report["catalog_id"] == selected["id"]

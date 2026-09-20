@@ -90,6 +90,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/research/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Research Catalog */
+        get: operations["research_catalog_api_v1_research_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research/catalog/{catalog_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Research Catalog Detail */
+        get: operations["research_catalog_detail_api_v1_research_catalog__catalog_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/runs": {
         parameters: {
             query?: never;
@@ -236,6 +270,96 @@ export interface components {
              * @enum {string}
              */
             venue: "bybit" | "hyperliquid";
+        };
+        /** ResearchCatalogDetail */
+        ResearchCatalogDetail: {
+            /** Artifact */
+            artifact: string;
+            /** Artifact State */
+            artifact_state: string;
+            /** Classification */
+            classification: string;
+            /** Drawdown Percent */
+            drawdown_percent: string;
+            /** Fees */
+            fees: string;
+            /** Fills */
+            fills: number;
+            /** Funding */
+            funding: number;
+            /** Id */
+            id: string;
+            /** Interval */
+            interval: string;
+            /** Interval Cash */
+            interval_cash: string;
+            /** Kind */
+            kind: string;
+            /** Limitations */
+            limitations: string[];
+            /** Liquidations */
+            liquidations: number;
+            /** Roi */
+            roi: string;
+            /** Selected */
+            selected: boolean;
+            /** Settled Total */
+            settled_total: string;
+            /** Sha256 */
+            sha256: string;
+            /** Supersession */
+            supersession: string;
+            /** Title */
+            title: string;
+            /** Verified Detail */
+            verified_detail?: {
+                [key: string]: unknown;
+            } | null;
+            /** Warmup */
+            warmup: string;
+        };
+        /** ResearchCatalogEntry */
+        ResearchCatalogEntry: {
+            /** Artifact */
+            artifact: string;
+            /** Artifact State */
+            artifact_state: string;
+            /** Classification */
+            classification: string;
+            /** Drawdown Percent */
+            drawdown_percent: string;
+            /** Fees */
+            fees: string;
+            /** Fills */
+            fills: number;
+            /** Funding */
+            funding: number;
+            /** Id */
+            id: string;
+            /** Interval */
+            interval: string;
+            /** Interval Cash */
+            interval_cash: string;
+            /** Kind */
+            kind: string;
+            /** Limitations */
+            limitations: string[];
+            /** Liquidations */
+            liquidations: number;
+            /** Roi */
+            roi: string;
+            /** Selected */
+            selected: boolean;
+            /** Settled Total */
+            settled_total: string;
+            /** Sha256 */
+            sha256: string;
+            /** Supersession */
+            supersession: string;
+            /** Title */
+            title: string;
+            /** Warmup */
+            warmup: string;
         };
         /** RunInput */
         RunInput: {
@@ -576,6 +700,70 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    research_catalog_api_v1_research_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchCatalogEntry"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    research_catalog_detail_api_v1_research_catalog__catalog_id__get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                catalog_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchCatalogDetail"];
                 };
             };
             /** @description Validation Error */
