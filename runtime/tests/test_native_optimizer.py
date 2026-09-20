@@ -165,3 +165,39 @@ def test_stage_b_is_sealed_sequential_and_reuses_accepted_stage_a_control(tmp_pa
     resumed = native_optimizer.run_stage_b_sol_search(tmp_path, stage_a_report)
     assert len(calls) == call_count
     assert resumed["sealed"] == report["sealed"]
+
+
+def test_stage_c_fine_neighbors_are_exact_one_axis_variants_with_bounded_extensions() -> None:
+    control = Candidate(ema_period=34, btc_tp_fractions_initial_qty=(0.2, 0.3, 0.4))
+    ema = native_optimizer._stage_c_fine_ema_variants(control)
+    tp = native_optimizer._stage_c_fine_tp_variants(control)
+
+    assert tuple(candidate.ema_period for _, candidate in ema) == (29, 32, 34, 36, 39)
+    assert all(candidate.btc_tp_fractions_initial_qty == (0.2, 0.3, 0.4) for _, candidate in ema)
+    assert tuple(candidate.btc_tp_fractions_initial_qty for _, candidate in tp) == native_optimizer.STAGE_C_FINE_TP_AXIS
+    assert all(candidate.ema_period == 34 for _, candidate in tp)
+    low_ema = {"candidate": native_optimizer.asdict(ema[0][1])}
+    high_tp = {"candidate": native_optimizer.asdict(tp[-1][1])}
+    assert native_optimizer._stage_c_boundary_ema_variant(low_ema)[0] == "c5-boundary-ema-26"
+    assert native_optimizer._stage_c_boundary_tp_variant(high_tp)[0] == "c6-boundary-tp-l3-0.2-0.3-0.5"
+
+
+def test_stage_c_ranked_evidence_requires_hashes_reconciled_fees_and_explicit_funding(tmp_path) -> None:
+    evidence = tmp_path / "fills.csv"
+    evidence.write_text("native evidence\n")
+    item = {
+        "variant_id": "ranked",
+        "terminal_total": "1",
+        "execution_artifacts": {"fills": {"path": str(evidence), "sha256": native_optimizer.sha256_file(evidence)}},
+        "fee_attribution": {"maker": {"fees": "1"}, "taker": {"fees": "2"}, "unknown": {"fees": "0"}, "audited_total": "3", "reconciled": True},
+        "native_fees": "3",
+        "funding": {"signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA", "count": 1},
+    }
+    native_optimizer._stage_c_validate_ranked_evidence([item], tmp_path)
+    item["funding"] = {"signed_amount": "UNKNOWN"}
+    try:
+        native_optimizer._stage_c_validate_ranked_evidence([item], tmp_path)
+    except ValueError as error:
+        assert str(error) == "STAGE_C_RANKED_FUNDING_UNEXPLICIT:ranked"
+    else:
+        raise AssertionError("missing funding count must fail closed")

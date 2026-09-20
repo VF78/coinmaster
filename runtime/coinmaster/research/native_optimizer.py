@@ -36,6 +36,14 @@ STAGE_A_FURTHER_BOUNDARY_PROFILE = (2.25, 3.375, 4.5)
 STAGE_A_SUPERSEDED_NONEXECUTED_REUSE = "a3-btc-4-sol-2.25-3.375-4.5"
 STAGE_B_ID = "stage-b-sol-signal-exit-v1"
 STAGE_B_CONTROL = Candidate(btc_notional_multiplier=4.0, sol_size_multipliers_h=(2.25, 3.375, 4.5))
+STAGE_C_SEALED_WINNER_ID = "c4-joint"
+STAGE_C_SEALED_TOTAL = "656406.65217368"
+STAGE_C_FINE_EMA_AXIS = (29, 32, 34, 36, 39)
+STAGE_C_FINE_TP_AXIS = (
+    (0.15, 0.3, 0.4), (0.25, 0.3, 0.4),
+    (0.2, 0.25, 0.4), (0.2, 0.35, 0.4),
+    (0.2, 0.3, 0.35), (0.2, 0.3, 0.45),
+)
 
 
 def _atomic_json(path: Path, value: dict) -> None:
@@ -483,6 +491,227 @@ def run_stage_b_sol_search(data_root: Path, stage_a_report: Path) -> dict:
     finally:
         if lock_path.exists():
             lock_path.unlink()
+
+
+def _stage_c_variants(stage: str, control: Candidate) -> tuple[tuple[str, Candidate], ...]:
+    if stage == "c1":
+        items = [(f"c1-ema-{value}", replace(control, ema_period=value)) for value in (13, 21, 34, 55)]
+        items += [(f"c1-trail-{value:g}", replace(control, btc_close_trail_fraction=value)) for value in (0.02, 0.03, 0.04, 0.05)]
+    elif stage == "c2":
+        items = [(f"c2-quantiles-{'-'.join(f'{x:g}' for x in values)}", replace(control, wave_quantiles=values)) for values in ((0.05, 0.2, 0.5), (0.1, 0.25, 0.45), (0.1, 0.3, 0.6), (0.1, 0.4, 0.75), (0.15, 0.4, 0.7))]
+        items += [(f"c2-history-{value}", replace(control, wave_history_days=value)) for value in (365, 545, 730, 900)]
+    elif stage == "c3":
+        items = [(f"c3-tp-{'-'.join(f'{x:g}' for x in values)}", replace(control, btc_tp_fractions_initial_qty=values)) for values in ((0.1, 0.2, 0.3), (0.15, 0.25, 0.35), (0.2, 0.3, 0.4), (0.25, 0.25, 0.25), (0.1, 0.2, 0.45))]
+    else: raise ValueError(f"STAGE_C_UNKNOWN_STAGE:{stage}")
+    return tuple((name, candidate) for name, candidate in items if sum(candidate.btc_tp_fractions_initial_qty) <= 1)
+
+
+def _stage_c_fine_ema_variants(control: Candidate) -> tuple[tuple[str, Candidate], ...]:
+    """The exact authorized EMA neighborhood; no Cartesian expansion."""
+    return tuple((f"c5-ema-{value}", replace(control, ema_period=value)) for value in STAGE_C_FINE_EMA_AXIS)
+
+
+def _stage_c_fine_tp_variants(control: Candidate) -> tuple[tuple[str, Candidate], ...]:
+    """The exact authorized one-axis TP neighborhood at the sealed EMA winner."""
+    return tuple(
+        (f"c6-tp-{'-'.join(f'{value:g}' for value in values)}", replace(control, btc_tp_fractions_initial_qty=values))
+        for values in STAGE_C_FINE_TP_AXIS
+    )
+
+
+def _stage_c_boundary_ema_variant(winner: dict) -> tuple[str, Candidate] | None:
+    """One EMA step beyond an improving, tested boundary and nothing further."""
+    ema = int(winner["candidate"]["ema_period"])
+    if ema == STAGE_C_FINE_EMA_AXIS[0]:
+        value = ema - 3
+    elif ema == STAGE_C_FINE_EMA_AXIS[-1]:
+        value = ema + 3
+    else:
+        return None
+    return f"c5-boundary-ema-{value}", replace(Candidate(**winner["candidate"]), ema_period=value)
+
+
+def _stage_c_boundary_tp_variant(winner: dict) -> tuple[str, Candidate] | None:
+    """One valid 0.05 TP extension for a winning tested boundary coordinate."""
+    values = [Decimal(str(value)) for value in winner["candidate"]["btc_tp_fractions_initial_qty"]]
+    axis = tuple(tuple(Decimal(str(value)) for value in item) for item in STAGE_C_FINE_TP_AXIS)
+    current = tuple(values)
+    for index in range(3):
+        coordinate_axis = sorted({item[index] for item in axis})
+        if current[index] == coordinate_axis[0]:
+            proposed = current[index] - Decimal("0.05")
+        elif current[index] == coordinate_axis[-1]:
+            proposed = current[index] + Decimal("0.05")
+        else:
+            continue
+        extended = list(values); extended[index] = proposed
+        if proposed <= 0 or sum(extended) > 1:
+            return None
+        tuple_values = tuple(float(value) for value in extended)
+        return f"c6-boundary-tp-l{index + 1}-{'-'.join(f'{value:g}' for value in tuple_values)}", replace(Candidate(**winner["candidate"]), btc_tp_fractions_initial_qty=tuple_values)
+    return None
+
+
+def _stage_c_artifact_path(data_root: Path, value: str) -> Path:
+    """Resolve report-local evidence without trusting the caller's cwd."""
+    path = Path(value)
+    if path.is_absolute():
+        return path
+    runtime = data_root.parents[1] if len(data_root.parents) >= 2 else data_root
+    for candidate in (path, runtime / path, data_root / path.name):
+        if candidate.exists():
+            return candidate
+    return runtime / path
+
+
+def _stage_c_validate_ranked_evidence(results: list[dict], data_root: Path) -> None:
+    """Fail closed before publishing TOP20: each ranked row must be auditable."""
+    for item in results:
+        if item.get("terminal_total") is None:
+            continue
+        artifacts = item.get("execution_artifacts") or {}
+        if not artifacts:
+            raise ValueError(f"STAGE_C_RANKED_EVIDENCE_MISSING:{item['variant_id']}")
+        for artifact in artifacts.values():
+            path = _stage_c_artifact_path(data_root, artifact.get("path", ""))
+            if not path.is_file() or sha256_file(path) != artifact.get("sha256"):
+                raise ValueError(f"STAGE_C_RANKED_ARTIFACT_HASH_MISMATCH:{item['variant_id']}")
+        fee = item.get("fee_attribution") or {}
+        maker = Decimal(str((fee.get("maker") or {}).get("fees", "NaN")))
+        taker = Decimal(str((fee.get("taker") or {}).get("fees", "NaN")))
+        unknown = Decimal(str((fee.get("unknown") or {}).get("fees", "0")))
+        native = Decimal(str(item.get("native_fees", "NaN")))
+        audited = Decimal(str(fee.get("audited_total", fee.get("native_total", "NaN"))))
+        if not fee.get("reconciled") or maker + taker + unknown != native or audited != native:
+            raise ValueError(f"STAGE_C_RANKED_FEE_MISMATCH:{item['variant_id']}")
+        funding = item.get("funding") or {}
+        if not funding.get("signed_amount") or funding.get("count") is None:
+            raise ValueError(f"STAGE_C_RANKED_FUNDING_UNEXPLICIT:{item['variant_id']}")
+
+
+def _run_stage_c_fine_neighbors(
+    data_root: Path,
+    runs: Path,
+    stem: str,
+    meta: dict,
+    partial_path: Path,
+    source: dict,
+    results: list[dict],
+    sealed: dict,
+) -> dict:
+    """Execute only the authorized c5/c6 one-axis neighbors after sealed c1-c4."""
+    expected_sealed = {"c1": "c1-ema-34", "c2": "c2-quantiles-0.1-0.3-0.6", "c3": "c3-tp-0.2-0.3-0.4", "c4": STAGE_C_SEALED_WINNER_ID}
+    if {key: sealed.get(key) for key in expected_sealed} != expected_sealed:
+        raise ValueError("STAGE_C_SEALED_SELECTION_MISMATCH")
+    by_id = {item["variant_id"]: item for item in results}
+    c4 = by_id.get(STAGE_C_SEALED_WINNER_ID)
+    if not c4 or c4.get("terminal_total") != STAGE_C_SEALED_TOTAL:
+        raise ValueError("STAGE_C_SEALED_WINNER_MISMATCH")
+    base = Candidate(**c4["candidate"])
+    if base.ema_period != 34 or tuple(base.btc_tp_fractions_initial_qty) != (0.2, 0.3, 0.4):
+        raise ValueError("STAGE_C_SEALED_CANDIDATE_MISMATCH")
+    completed = set(by_id)
+    by_tuple = {_candidate_tuple_key(item["candidate"]): item for item in results}
+
+    def persist() -> None:
+        _atomic_json(partial_path, {"provenance": meta, "results": results, "sealed": sealed})
+
+    def add(name: str, candidate: Candidate) -> None:
+        if name in completed:
+            return
+        existing = by_tuple.get(_candidate_tuple_key(candidate)) or (source if candidate == Candidate(**source["candidate"]) else None)
+        item = _stage_a_reuse(name, candidate, existing) if existing else _stage_a_item(name, candidate, data_root, stem)
+        results.append(item); completed.add(name); by_tuple.setdefault(_candidate_tuple_key(candidate), item); persist()
+
+    def select(prefix: str, key: str) -> dict:
+        options = [item for item in results if item["variant_id"].startswith(prefix) and item.get("terminal_total") is not None]
+        if not options:
+            raise ValueError(f"STAGE_C_EMPTY:{key}")
+        if key not in sealed:
+            sealed[key] = max(options, key=lambda item: Decimal(item["terminal_total"]))["variant_id"]
+            persist()
+        return next(item for item in options if item["variant_id"] == sealed[key])
+
+    for name, candidate in _stage_c_fine_ema_variants(base):
+        add(name, candidate)
+    ema_winner = select("c5-ema-", "c5")
+    if Decimal(ema_winner["terminal_total"]) > Decimal(c4["terminal_total"]) and ema_winner.get("liquidation_count", 0) == 0:
+        extension = _stage_c_boundary_ema_variant(ema_winner)
+        if extension:
+            add(*extension)
+            select("c5-boundary-ema-", "c5_boundary")
+
+    for name, candidate in _stage_c_fine_tp_variants(Candidate(**ema_winner["candidate"])):
+        add(name, candidate)
+    tp_winner = select("c6-tp-", "c6")
+    if Decimal(tp_winner["terminal_total"]) > Decimal(ema_winner["terminal_total"]) and tp_winner.get("liquidation_count", 0) == 0:
+        extension = _stage_c_boundary_tp_variant(tp_winner)
+        if extension:
+            add(*extension)
+            select("c6-boundary-tp-", "c6_boundary")
+
+    for item in results:
+        item.setdefault("btc_tp_level_attribution", "UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_TP_LEVEL_OR_EXIT_REASON")
+    ranked = sorted((item for item in results if item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]), reverse=True)
+    _stage_c_validate_ranked_evidence(ranked, data_root)
+    top20, best = ranked[:20], ranked[0]
+    rows = [_stage_a_csv_row(item, meta["control_total"]) | {"delta_vs_accepted_stage_b": str(Decimal(item["terminal_total"]) - Decimal(meta["control_total"])), "btc_tp_level_attribution": "UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_TP_LEVEL_OR_EXIT_REASON"} for item in top20]
+    csv_path, temporary = runs / f"{stem}-top20.csv", runs / f"{stem}-top20.csv.tmp"
+    with temporary.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+    temporary.replace(csv_path)
+    summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": meta, "sealed": sealed, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "ranked_evidence_validated": True}, "result_count": len(results), "results": [_stage_b_compact(item, meta["control_total"], partial_path) | {"btc_tp_level_attribution": item["btc_tp_level_attribution"]} for item in results], "top20": [_stage_b_compact(item, meta["control_total"], partial_path) | {"btc_tp_level_attribution": item["btc_tp_level_attribution"]} for item in top20], "best": _stage_b_compact(best, meta["control_total"], partial_path) | {"btc_tp_level_attribution": best["btc_tp_level_attribution"]}, "delta_vs_accepted_stage_b": str(Decimal(best["terminal_total"]) - Decimal(meta["control_total"])), "limitations": ["Stage C only; no Stage D.", "BTC TP-level and exit-reason attribution UNKNOWN from native fills."]}
+    target = runs / f"{stem}.json"; _atomic_json(target, summary)
+    return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path)}
+
+
+def run_stage_c_btc_management(data_root: Path, stage_b_report: Path) -> dict:
+    """Single-owner sealed Stage-C BTC management search; never Stage D."""
+    runs, stem = data_root / "runs", "native-stage-c-btc-management-v1"; runs.mkdir(parents=True, exist_ok=True)
+    accepted = json.loads(stage_b_report.read_text()); control = Candidate(**accepted["best"]["candidate"])
+    if _candidate_tuple_key(control) != _candidate_tuple_key(STAGE_B_CONTROL): raise ValueError("STAGE_C_ACCEPTED_CONTROL_MISMATCH")
+    b_partial = data_root / "runs" / "native-stage-b-sol-signal-exit-v1.partial.json"
+    if accepted.get("local_evidence", {}).get("checkpoint_sha256") != sha256_file(b_partial): raise ValueError("STAGE_C_STAGE_B_EVIDENCE_HASH_MISMATCH")
+    source = next((item for item in json.loads(b_partial.read_text())["results"] if item["variant_id"] == accepted["best"]["variant_id"]), None)
+    if not source or _candidate_tuple_key(source.get("candidate", {})) != _candidate_tuple_key(control) or not source.get("data_hash") or not source.get("policy_hash"): raise ValueError("STAGE_C_STAGE_B_SOURCE_MISMATCH")
+    for artifact in source.get("execution_artifacts", {}).values():
+        if not Path(artifact["path"]).exists() or sha256_file(Path(artifact["path"])) != artifact["sha256"]: raise ValueError("STAGE_C_STAGE_B_ARTIFACT_HASH_MISMATCH")
+    meta = {"optimizer_id":"stage-c-btc-management-v1","stage_b_report_sha256":sha256_file(stage_b_report),"stage_b_checkpoint_sha256":sha256_file(b_partial),"control_candidate":json.loads(_candidate_tuple_key(control)),"control_total":accepted["best"]["terminal_total"],"objective":"terminal TOTAL only","ranking_eligible_for_live":False}
+    partial_path, lock_path = runs/f"{stem}.partial.json", runs/f"{stem}.lock"
+    try: fd=os.open(lock_path, os.O_CREAT|os.O_EXCL|os.O_WRONLY)
+    except FileExistsError as error: raise RuntimeError("STAGE_C_SINGLE_PROCESS_LOCK_HELD") from error
+    try:
+        os.write(fd,str(os.getpid()).encode()); os.close(fd)
+        partial=json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance":meta,"results":[],"sealed":{}}
+        if partial.get("provenance")!=meta: raise ValueError("STAGE_C_PARTIAL_PROVENANCE_MISMATCH")
+        results,sealed=list(partial["results"]),dict(partial["sealed"]); completed={x["variant_id"] for x in results}; by_tuple={_candidate_tuple_key(x["candidate"]):x for x in results}
+        # c1-c4 were independently sealed before this fine pass.  Their plan
+        # is immutable: resume can add c5/c6 only, never replay prior stages.
+        if "c4" in sealed:
+            return _run_stage_c_fine_neighbors(data_root, runs, stem, meta, partial_path, source, results, sealed)
+        def persist(): _atomic_json(partial_path,{"provenance":meta,"results":results,"sealed":sealed})
+        def add(name,candidate):
+            if name in completed:return
+            existing=by_tuple.get(_candidate_tuple_key(candidate)) or (source if candidate==control else None)
+            item=_stage_a_reuse(name,candidate,existing) if existing else _stage_a_item(name,candidate,data_root,stem)
+            results.append(item);completed.add(name);by_tuple.setdefault(_candidate_tuple_key(candidate),item);persist()
+        def stage(name,base):
+            for key,candidate in _stage_c_variants(name,base): add(key,candidate)
+            options=[x for x in results if x["variant_id"].startswith(name+"-") and x.get("terminal_total") is not None]
+            winner=max(options,key=lambda x:Decimal(x["terminal_total"]))
+            if name not in sealed: sealed[name]=winner["variant_id"];persist()
+            return next(x for x in options if x["variant_id"]==sealed[name])
+        c1=stage("c1",control); c2=stage("c2",Candidate(**c1["candidate"])); c3=stage("c3",Candidate(**c2["candidate"])); add("c4-joint",Candidate(**c3["candidate"])); sealed.setdefault("c4","c4-joint");persist()
+        ranked=sorted((x for x in results if x.get("terminal_total") is not None),key=lambda x:Decimal(x["terminal_total"]),reverse=True); top20=ranked[:20]; best=top20[0]
+        for item in results: item.setdefault("btc_tp_level_attribution","UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_TP_LEVEL_OR_EXIT_REASON")
+        rows=[_stage_a_csv_row(x,meta["control_total"])|{"delta_vs_accepted_stage_b":str(Decimal(x["terminal_total"])-Decimal(meta["control_total"])),"btc_tp_level_attribution":"UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_TP_LEVEL_OR_EXIT_REASON"} for x in top20]
+        csv_path=runs/f"{stem}-top20.csv"; tmp=csv_path.with_suffix(".csv.tmp")
+        with tmp.open("w",newline="") as stream: writer=csv.DictWriter(stream,fieldnames=rows[0].keys());writer.writeheader();writer.writerows(rows)
+        tmp.replace(csv_path)
+        summary={"status":"NOT_FAITHFUL_DIAGNOSTIC","ranking_eligible_for_live":False,"provenance":meta,"sealed":sealed,"local_evidence":{"checkpoint":str(partial_path),"checkpoint_sha256":sha256_file(partial_path)},"result_count":len(results),"results":[_stage_b_compact(x,meta["control_total"],partial_path)|{"btc_tp_level_attribution":x["btc_tp_level_attribution"]} for x in results],"top20":[_stage_b_compact(x,meta["control_total"],partial_path)|{"btc_tp_level_attribution":x["btc_tp_level_attribution"]} for x in top20],"best":_stage_b_compact(best,meta["control_total"],partial_path)|{"btc_tp_level_attribution":best["btc_tp_level_attribution"]},"delta_vs_accepted_stage_b":str(Decimal(best["terminal_total"])-Decimal(meta["control_total"])),"limitations":["Stage C only; no Stage D.","BTC TP-level and exit-reason attribution UNKNOWN from native fills."]}
+        target=runs/f"{stem}.json";_atomic_json(target,summary);return summary|{"artifact":str(target),"csv":str(csv_path),"partial":str(partial_path)}
+    finally:
+        if lock_path.exists(): lock_path.unlink()
 
 
 def run_canonical_reentry_btc_pass(
