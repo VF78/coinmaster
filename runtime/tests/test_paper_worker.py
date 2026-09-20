@@ -47,25 +47,25 @@ def test_autonomous_worker_poll_refreshes_snapshot_without_http(tmp_path) -> Non
 
 
 def test_process_crash_after_submit_before_ack_restarts_manage_only(tmp_path) -> None:
-    """A real child process dies after durable submit evidence, before ACK."""
+    """A real Sandbox lifecycle dies after partial BTC fill and SOL submit."""
     path = tmp_path / "paper.sqlite"
     child = (
-        "import os,signal,sys; from pathlib import Path; "
-        "from coinmaster.ops.paper import PaperRuntime; "
-        "r=PaperRuntime(Path(sys.argv[1]), 'paper', 1000000000); r.acquire(); "
-        "r.snapshot(ts_ns=1, positions=[{'instrument_id':'BTCUSDT-LINEAR.BYBIT','signed_quantity':'1.000'}], "
-        "orders=[{'client_order_id':'sandbox-sol-pending'}], funding_event_ids=[]); "
-        "r.record_submission(client_order_id='sandbox-sol-pending', intent_id='sol-add', episode_id='btc-sol-group', "
-        "action='SOL_ADD', instrument_id='SOLUSDT-LINEAR.BYBIT', quantity='10.0', reduce_only=False); "
-        "os.kill(os.getpid(), signal.SIGKILL)"
+        "import sys; from pathlib import Path; "
+        "from coinmaster.ops.native_sandbox_selftest import run_crash_after_partial_fill; "
+        "run_crash_after_partial_fill(Path(sys.argv[1]))"
     )
     result = subprocess.run([sys.executable, "-c", child, str(path)], check=False)
     assert result.returncode < 0
-    restarted = PaperRuntime(path, "paper", 1_000_000_000)
+    restarted = PaperRuntime(path, "paper-crash-harness", 1_000_000_000)
     restarted.acquire()
     assert restarted.recovery_state() == "MANAGE_ONLY_PENDING_INTENT"
     assert not restarted.reconcile(positions=[], orders=[])
     restarted.heartbeat(2)
     assert not restarted.health(2).safe_for_increase
-    assert restarted.pending_submissions()[0]["episode_id"] == "btc-sol-group"
+    snapshot = restarted.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()[0]
+    assert '"signed_quantity": "0.6"' in snapshot
+    pending = restarted.pending_submissions()
+    assert pending[0]["episode_id"] == "native-btc-sol-crash-group"
+    assert pending[0]["instrument_id"] == "SOLUSDT-LINEAR.BYBIT"
+    assert [item["kind"] for item in restarted.events()] == ["fill", "fill"]
     restarted.close()

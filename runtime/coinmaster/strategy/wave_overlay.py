@@ -460,12 +460,18 @@ class WaveOverlayStrategy(Strategy):
                 assert isinstance(fills, list)
                 fills.append({"instrument_id": str(event.instrument_id), "timestamp": str(event.ts_event), "value": str(event.last_qty.as_decimal() * event.last_px.as_decimal())})
                 audit["close_value"] = str(sum((Decimal(item["value"]) for item in fills), Decimal("0")))
+            order = self.cache.order(event.client_order_id)
+            if order is not None and order.is_closed:
+                self._terminal_submission(str(event.client_order_id))
             self._reconcile_liquidation_flat()
             return
         if str(event.client_order_id) in self._terminal_order_ids:
             fills = self.terminal_lifecycle["close_fills"]
             assert isinstance(fills, list)
             fills.append({"instrument_id": str(event.instrument_id), "timestamp": str(event.ts_event), "value": str(event.last_qty.as_decimal() * event.last_px.as_decimal())})
+            order = self.cache.order(event.client_order_id)
+            if order is not None and order.is_closed:
+                self._terminal_submission(str(event.client_order_id))
             self._reconcile_terminal_flat()
             return
         intent = self._pending_by_order.get(str(event.client_order_id))
