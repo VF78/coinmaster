@@ -262,19 +262,30 @@ class ControlStore:
                 self.db.commit()
             return self.get_run(run_id)
 
-    def update_run(self, run_id: str, **values: Any) -> RunRecord:
+    def has_research_lease(self, run_id: str) -> bool:
+        with self.lock:
+            return self.db.execute("SELECT 1 FROM research_leases WHERE run_id=?", (run_id,)).fetchone() is not None
+
+    def update_run(self, run_id: str, *, release_research_lease: bool = False, **values: Any) -> RunRecord:
         if not values:
             return self.get_run(run_id)
         allowed = {"status", "evidence", "report", "pid", "process_group", "started_at", "heartbeat_at", "progress", "cancel_requested_at", "finished_at", "work_dir", "process_identity", "owner_token", "idempotency_key"}
         if set(values) - allowed:
             raise ValueError("unsupported run update")
         with self.lock:
+            current = self.db.execute("SELECT kind,status FROM runs WHERE id=?", (run_id,)).fetchone()
+            if current is None:
+                raise KeyError(run_id)
+            terminal = values.get("status") not in {None, "STARTING", "RUNNING", "CANCEL_REQUESTED"}
+            leased = self.db.execute("SELECT 1 FROM research_leases WHERE run_id=?", (run_id,)).fetchone() is not None
+            if terminal and current[0] == "research" and current[1] in {"STARTING", "RUNNING", "CANCEL_REQUESTED"} and leased and not release_research_lease:
+                raise ValueError("RESEARCH_LEASE_RELEASE_UNVERIFIED")
             fields, params = [], []
             for key, value in values.items():
                 fields.append(f"{key}=?")
                 params.append(json.dumps(value) if key in {"evidence", "report"} else value)
             self.db.execute(f"UPDATE runs SET {','.join(fields)} WHERE id=?", (*params, run_id))
-            if values.get("status") not in {None, "STARTING", "RUNNING", "CANCEL_REQUESTED"}:
+            if terminal and release_research_lease:
                 self.db.execute("DELETE FROM research_leases WHERE run_id=?", (run_id,))
             self.db.commit()
         return self.get_run(run_id)

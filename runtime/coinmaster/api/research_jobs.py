@@ -87,11 +87,16 @@ class ResearchJobManager:
             owned = self._owned_identity(run)
             if owned is not None:
                 _, pgid = owned
-                self._terminate_group(pgid)
-                evidence.append("ORPHAN_OWNED_PROCESS_TERMINATED")
+                if self._terminate_group(pgid):
+                    evidence.append("ORPHAN_OWNED_PROCESS_TERMINATED")
+                    self._finish_after_verified_death(run.id, "INTERRUPTED", evidence)
+                else:
+                    self.store.update_run(run.id, status="CANCEL_REQUESTED", evidence=[*evidence, "ORPHAN_TERMINATION_UNCONFIRMED_LEASE_HELD"], cancel_requested_at=self._now(), heartbeat_at=self._now())
             else:
-                evidence.append("ORPHAN_IDENTITY_MISMATCH_NOT_SIGNALED")
-            self.store.update_run(run.id, status="INTERRUPTED", evidence=evidence, finished_at=self._now(), progress=100)
+                if self._group_gone(run.process_group):
+                    self._finish_after_verified_death(run.id, "INTERRUPTED", [*evidence, "ORPHAN_PROCESS_GROUP_CONFIRMED_GONE"])
+                else:
+                    self.store.update_run(run.id, status="CANCEL_REQUESTED", evidence=[*evidence, "ORPHAN_IDENTITY_MISMATCH_LEASE_HELD"], cancel_requested_at=self._now(), heartbeat_at=self._now())
 
     def _owned_identity(self, run: "RunRecord") -> tuple[int, int] | None:
         if not run.pid or not run.process_group or not run.process_identity or not run.work_dir:
@@ -169,45 +174,84 @@ class ResearchJobManager:
                 self._write_launch_permit(permit_path, request_hash, owner, process, digest)
             except Exception as error:
                 if "process" in locals():
-                    self._terminate_process(process)
-                self.store.update_run(run_id, status="FAILED", evidence=["RESEARCH_LAUNCH_FAILED", type(error).__name__], finished_at=self._now(), progress=100)
+                    if self._terminate_process(process):
+                        self._finish_after_verified_death(run_id, "FAILED", ["RESEARCH_LAUNCH_FAILED", type(error).__name__])
+                    else:
+                        self.store.update_run(run_id, status="CANCEL_REQUESTED", evidence=["RESEARCH_LAUNCH_FAILED", type(error).__name__, "PROCESS_DEATH_UNCONFIRMED_LEASE_HELD"], cancel_requested_at=self._now(), heartbeat_at=self._now())
+                else:
+                    # Popen itself failed, so no child exists to prove/reap.
+                    self.store.update_run(run_id, status="FAILED", evidence=["RESEARCH_LAUNCH_FAILED", type(error).__name__], finished_at=self._now(), progress=100, release_research_lease=True)
                 raise RuntimeError("RESEARCH_LAUNCH_FAILED") from error
             self.processes[run_id] = process
             threading.Thread(target=self._observe, args=(run_id, process), daemon=True, name=f"coinmaster-research-{run_id[:8]}").start()
             return started
 
     @staticmethod
-    def _terminate_process(process: subprocess.Popen[str]) -> None:
+    def _group_gone(pgid: int | None) -> bool:
+        if not pgid:
+            return False
         try:
-            os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+            os.killpg(pgid, 0)
+        except ProcessLookupError:
+            return True
+        except OSError:
+            return False
+        return False
+
+    def _finish_after_verified_death(self, run_id: str, status: str, evidence: list[str], report: dict[str, Any] | None = None) -> "RunRecord":
+        run = self.store.get_run(run_id)
+        if self.store.has_research_lease(run_id) and not self._group_gone(run.process_group):
+            return self.store.update_run(run_id, status="CANCEL_REQUESTED", evidence=[*run.evidence, "PROCESS_DEATH_UNCONFIRMED_LEASE_HELD"], cancel_requested_at=self._now(), heartbeat_at=self._now())
+        values: dict[str, Any] = {"status": status, "evidence": evidence, "finished_at": self._now(), "progress": 100}
+        if report is not None:
+            values["report"] = report
+        return self.store.update_run(run_id, release_research_lease=True, **values)
+
+    @classmethod
+    def _terminate_process(cls, process: subprocess.Popen[str]) -> bool:
+        try:
+            pgid = os.getpgid(process.pid)
+        except OSError:
+            pgid = None
+        try:
+            if pgid:
+                os.killpg(pgid, signal.SIGTERM)
         except (ProcessLookupError, OSError):
             pass
         try:
             process.wait(timeout=1)
         except subprocess.TimeoutExpired:
             try:
-                os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+                if pgid:
+                    os.killpg(pgid, signal.SIGKILL)
             except (ProcessLookupError, OSError):
                 pass
             process.wait(timeout=1)
+        return process.poll() is not None and cls._group_gone(pgid)
 
     @staticmethod
-    def _terminate_group(pgid: int) -> None:
+    def _terminate_group(pgid: int) -> bool:
         try:
             os.killpg(pgid, signal.SIGTERM)
         except (ProcessLookupError, OSError):
-            return
+            return ResearchJobManager._group_gone(pgid)
         deadline = time.monotonic() + 1
         while time.monotonic() < deadline:
             try:
                 os.killpg(pgid, 0)
             except ProcessLookupError:
-                return
+                return True
             time.sleep(0.02)
         try:
             os.killpg(pgid, signal.SIGKILL)
         except (ProcessLookupError, OSError):
             pass
+        deadline = time.monotonic() + 1
+        while time.monotonic() < deadline:
+            if ResearchJobManager._group_gone(pgid):
+                return True
+            time.sleep(0.02)
+        return ResearchJobManager._group_gone(pgid)
 
     def _observe(self, run_id: str, process: subprocess.Popen[str]) -> None:
         lines: list[str] = []
@@ -230,7 +274,7 @@ class ResearchJobManager:
             with self.lock:
                 run = self.store.get_run(run_id)
                 if run.status in ACTIVE:
-                    self.store.update_run(run_id, status="FAILED", evidence=[*run.evidence, "RESEARCH_OBSERVER_FAILED", type(error).__name__], finished_at=self._now(), progress=100)
+                    self._finish_after_verified_death(run_id, "FAILED", [*run.evidence, "RESEARCH_OBSERVER_FAILED", type(error).__name__])
         finally:
             with self.lock:
                 self.processes.pop(run_id, None)
@@ -257,18 +301,18 @@ class ResearchJobManager:
             return  # A restart/cancel terminal transition wins this observer.
         result = next((item for item in reversed([self._typed(line) for line in lines]) if item and item.get("type") == "result"), None)
         if run.status == "CANCEL_REQUESTED":
-            self.store.update_run(run_id, status="CANCELED", evidence=[*run.evidence, "CANCELED_OWNED_PROCESS_GROUP"], finished_at=self._now(), progress=100)
+            self._finish_after_verified_death(run_id, "CANCELED", [*run.evidence, "CANCELED_OWNED_PROCESS_GROUP"])
             return
         if not result or not self._matches(run_id, result):
-            self.store.update_run(run_id, status="FAILED", evidence=["INVALID_OR_MISSING_TYPED_RESULT", f"EXIT_CODE:{code}"], finished_at=self._now(), progress=100)
+            self._finish_after_verified_death(run_id, "FAILED", ["INVALID_OR_MISSING_TYPED_RESULT", f"EXIT_CODE:{code}"])
             return
         if result.get("status") == "BLOCKED" and code == 2:
-            self.store.update_run(run_id, status="BLOCKED", evidence=list(result.get("blockers", [])), report=result, finished_at=self._now(), progress=100)
+            self._finish_after_verified_death(run_id, "BLOCKED", list(result.get("blockers", [])), result)
             return
         artifact = Path(str(result.get("artifact", "")))
         work = Path(run.work_dir or "")
         if code != 0 or result.get("status") != "COMPLETED" or not artifact.is_file() or work not in artifact.parents:
-            self.store.update_run(run_id, status="FAILED", evidence=["RESULT_VALIDATION_FAILED", f"EXIT_CODE:{code}"], report=result, finished_at=self._now(), progress=100)
+            self._finish_after_verified_death(run_id, "FAILED", ["RESULT_VALIDATION_FAILED", f"EXIT_CODE:{code}"], result)
             return
         envelope = artifact.parent / "result-envelope.json"
         try:
@@ -289,10 +333,10 @@ class ResearchJobManager:
             or not isinstance(report, dict)
             or report_summary(report) != result.get("summary")
         ):
-            self.store.update_run(run_id, status="FAILED", evidence=["RESULT_ARTIFACT_HASH_MISMATCH"], report=result, finished_at=self._now(), progress=100)
+            self._finish_after_verified_death(run_id, "FAILED", ["RESULT_ARTIFACT_HASH_MISMATCH"], result)
             return
         persisted_report = {**report, "request_hash": run.request_hash, "request_config_hash": self.store.get_config(run.config_id).config_hash, "artifact": str(artifact), "artifact_sha256": actual}
-        self.store.update_run(run_id, status="COMPLETED", evidence=["NATIVE_RESEARCH_RESULT", str(report.get("status", "UNKNOWN"))], report=persisted_report, finished_at=self._now(), heartbeat_at=self._now(), progress=100)
+        self._finish_after_verified_death(run_id, "COMPLETED", ["NATIVE_RESEARCH_RESULT", str(report.get("status", "UNKNOWN"))], persisted_report)
 
     def refresh(self, run_id: str) -> "RunRecord":
         run = self.store.get_run(run_id)
@@ -307,10 +351,14 @@ class ResearchJobManager:
             run = self.store.get_run(run_id)
             if run.status not in {"RUNNING", "STARTING", "CANCEL_REQUESTED"}:
                 return self.store.cancel(run_id)
-            process = self.processes.get(run_id)
-            if process is None or self._owned_identity(run) is None:
-                return self.store.update_run(run_id, status="INTERRUPTED", evidence=[*run.evidence, "PROCESS_IDENTITY_MISMATCH_NOT_SIGNALED"], finished_at=self._now(), progress=100)
+            process, owned = self.processes.get(run_id), self._owned_identity(run)
+            if owned is None:
+                if self._group_gone(run.process_group):
+                    return self._finish_after_verified_death(run_id, "INTERRUPTED", [*run.evidence, "PROCESS_GROUP_CONFIRMED_GONE"])
+                return self.store.update_run(run_id, status="CANCEL_REQUESTED", evidence=[*run.evidence, "CANCEL_CONFLICT_IDENTITY_UNVERIFIABLE_LEASE_HELD"], cancel_requested_at=self._now(), heartbeat_at=self._now())
             if run.status != "CANCEL_REQUESTED":
                 self.store.update_run(run_id, status="CANCEL_REQUESTED", cancel_requested_at=self._now(), heartbeat_at=self._now())
-            self._terminate_process(process)
-            return self.store.get_run(run_id)
+            terminated = self._terminate_process(process) if process is not None else self._terminate_group(owned[1])
+            if not terminated:
+                return self.store.update_run(run_id, status="CANCEL_REQUESTED", evidence=[*self.store.get_run(run_id).evidence, "CANCEL_CONFLICT_TERMINATION_UNCONFIRMED_LEASE_HELD"], heartbeat_at=self._now())
+            return self._finish_after_verified_death(run_id, "CANCELED", [*self.store.get_run(run_id).evidence, "CANCELED_OWNED_PROCESS_GROUP"])

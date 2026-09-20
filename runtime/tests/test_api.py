@@ -263,7 +263,9 @@ ResearchJobManager(store, Path(sys.argv[3]), {'sleep': [sys.executable, '-m', 'c
     assert not (Path(runs[0].work_dir) / "artifacts").exists()
     recovered_store = ControlStore(str(database))
     ResearchJobManager(recovered_store, data, _helper("sleep"))
-    assert recovered_store.get_run(runs[0].id).status == "INTERRUPTED"
+    recovered = recovered_store.get_run(runs[0].id)
+    assert recovered.status == "CANCEL_REQUESTED"
+    assert "ORPHAN_IDENTITY_MISMATCH_LEASE_HELD" in recovered.evidence
 
 
 def test_two_managers_atomically_admit_one_canonical_owner(tmp_path) -> None:
@@ -285,6 +287,46 @@ def test_two_managers_atomically_admit_one_canonical_owner(tmp_path) -> None:
     owner = next(manager for manager in (first, second) if accepted[0].id in manager.processes)
     assert owner.cancel(accepted[0].id).status in {"CANCEL_REQUESTED", "CANCELED"}
     assert _wait_for_terminal(owner, accepted[0].id).status == "CANCELED"
+
+
+def test_non_owner_manager_cancels_verified_child_before_releasing_canonical_lease(tmp_path) -> None:
+    database, data = str(tmp_path / "control.sqlite"), tmp_path / "data"
+    owner_store, observer_store = ControlStore(database), ControlStore(database)
+    config = owner_store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    commands = {"native_baseline": [sys.executable, "-m", "coinmaster.research.job_test_helper", "--mode", "sleep"]}
+    owner = ResearchJobManager(owner_store, data, commands, test_options={})
+    observer = ResearchJobManager(observer_store, data, commands, test_options={})
+    run = owner.start(config, None)
+    child = owner.processes[run.id]
+    canceled = observer.cancel(run.id)
+    child.wait(timeout=3)
+    assert canceled.status == "CANCELED" and child.poll() is not None
+    assert not observer_store.has_research_lease(run.id)
+    successor = observer.start(config, None)
+    assert successor.id != run.id
+    assert observer.cancel(successor.id).status in {"CANCEL_REQUESTED", "CANCELED"}
+    assert _wait_for_terminal(observer, successor.id).status == "CANCELED"
+
+
+def test_non_owner_identity_mismatch_keeps_canonical_lease_and_refuses_successor(tmp_path) -> None:
+    database, data = str(tmp_path / "control.sqlite"), tmp_path / "data"
+    owner_store, observer_store = ControlStore(database), ControlStore(database)
+    config = owner_store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    commands = {"native_baseline": [sys.executable, "-m", "coinmaster.research.job_test_helper", "--mode", "sleep"]}
+    owner = ResearchJobManager(owner_store, data, commands, test_options={})
+    observer = ResearchJobManager(observer_store, data, commands, test_options={})
+    run = owner.start(config, None)
+    identity = run.process_identity
+    observer_store.update_run(run.id, process_identity="tampered")
+    conflict = observer.cancel(run.id)
+    assert conflict.status == "CANCEL_REQUESTED"
+    assert "CANCEL_CONFLICT_IDENTITY_UNVERIFIABLE_LEASE_HELD" in conflict.evidence
+    assert observer_store.has_research_lease(run.id)
+    with pytest.raises(ValueError, match="CANONICAL_RESEARCH_ALREADY_ACTIVE"):
+        observer.start(config, None)
+    owner_store.update_run(run.id, process_identity=identity)
+    assert owner.cancel(run.id).status in {"CANCEL_REQUESTED", "CANCELED"}
+    assert _wait_for_terminal(owner, run.id).status == "CANCELED"
 
 
 def test_research_idempotency_and_artifacts_are_per_job(tmp_path) -> None:
