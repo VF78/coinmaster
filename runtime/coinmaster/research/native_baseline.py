@@ -191,6 +191,56 @@ def monthly_returns(equity: list[dict[str, str]], initial: Decimal = Decimal("10
     return result
 
 
+def standard_drawdown(cash_series: list[dict[str, str]], initial: Decimal) -> dict[str, str]:
+    """Peak-to-trough drawdown on native cash checkpoints only.
+
+    The account report is a cash series; it must not be silently mixed with
+    mark-to-market values.  Percentage is always divided by the preceding
+    peak, rather than by the initial deposit.
+    """
+    if not cash_series:
+        raise ValueError("EMPTY_CASH_ACCOUNT_SERIES")
+    peak = Decimal(cash_series[0]["total"])
+    peak_at = trough_at = cash_series[0]["timestamp"]
+    amount = Decimal("0")
+    percent = Decimal("0")
+    for point in cash_series:
+        total = Decimal(point["total"])
+        if total > peak:
+            peak, peak_at = total, point["timestamp"]
+        current_amount = peak - total
+        current_percent = current_amount / peak if peak else Decimal("0")
+        if current_amount > amount:
+            amount, percent, trough_at = current_amount, current_percent, point["timestamp"]
+    return {
+        "amount": str(amount),
+        "percent": str(percent),
+        "start": peak_at,
+        "trough": trough_at,
+        "basis": "NATIVE_CASH_ACCOUNT_SERIES",
+    }
+
+
+def _fill_timestamp_ns(value) -> int:
+    """Normalize a native report timestamp without changing its event time."""
+    if hasattr(value, "value"):
+        return int(value.value)
+    if isinstance(value, int):
+        return value
+    timestamp = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    return int(timestamp.timestamp() * 1_000_000_000)
+
+
+def _reporting_checkpoints(start: datetime, end: datetime) -> tuple[int, ...]:
+    """True UTC month boundaries; the last one is the post-boundary mark."""
+    cursor = start.replace(day=1)
+    result: list[int] = []
+    while cursor < end:
+        cursor = cursor.replace(year=cursor.year + (cursor.month == 12), month=1 if cursor.month == 12 else cursor.month + 1)
+        result.append(int(cursor.timestamp() * 1_000_000_000))
+    return tuple(result)
+
+
 def assert_report_boundaries(report: dict) -> None:
     """Reject report shapes that cannot reconcile to their declared interval."""
     summary = report["summary"]
@@ -200,19 +250,31 @@ def assert_report_boundaries(report: dict) -> None:
     expected_months = max(1, (end.year - start.year) * 12 + end.month - start.month)
     if len(months) != expected_months:
         raise ValueError(f"MONTHLY_ROW_COUNT:{len(months)}")
-    terminal = Decimal(report["terminal_total"])
-    if Decimal(months[-1]["total"]) != terminal:
-        raise ValueError("MONTHLY_TERMINAL_MISMATCH")
+    interval_terminal = Decimal(summary["interval_cash_terminal_total"])
+    if Decimal(months[-1]["total"]) != interval_terminal:
+        raise ValueError("MONTHLY_INTERVAL_CASH_MISMATCH")
     compounded = Decimal("1")
     for month in months:
         compounded *= Decimal("1") + Decimal(month["return"])
-    ratio = terminal / Decimal(report["run_interval"]["initial_active_seed"])
+    ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
     if abs(compounded - ratio) > Decimal("1e-24"):
         raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
     for timestamp in (summary["drawdown_start"], summary["drawdown_trough"]):
         point = datetime.fromisoformat(timestamp)
-        if not start <= point <= end:
+        if not start <= point < end:
             raise ValueError(f"DRAWDOWN_OUTSIDE_TRADING_INTERVAL:{timestamp}")
+    settlement = report["post_boundary_settlement"]
+    if settlement["convention"] != "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS":
+        raise ValueError("UNKNOWN_TERMINAL_SETTLEMENT_CONVENTION")
+    boundary_ns = int(end.timestamp() * 1_000_000_000)
+    fills = report["fill_timestamps_ns"]
+    if any(timestamp < int(start.timestamp() * 1_000_000_000) or timestamp > boundary_ns for timestamp in fills):
+        raise ValueError("FILL_OUTSIDE_DECLARED_OR_SETTLEMENT_BOUNDARY")
+    at_boundary = [timestamp for timestamp in fills if timestamp == boundary_ns]
+    if len(at_boundary) != settlement["fill_count"]:
+        raise ValueError("POST_BOUNDARY_FILL_COUNT_MISMATCH")
+    if any(timestamp == boundary_ns for timestamp in fills) != bool(settlement["fill_count"]):
+        raise ValueError("POST_BOUNDARY_FILL_CONVENTION_MISMATCH")
 
 
 def save_native_artifact(frame, path: Path) -> dict[str, str | int]:
@@ -492,6 +554,7 @@ def run_native_diagnostic(
     weekly_batch_minutes: int = WEEK_MINUTES,
     cursor_batch_rows: int = WEEK_MINUTES,
     include_daily_signals: bool = True,
+    stop_on_liquidation: bool = False,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -559,7 +622,7 @@ def run_native_diagnostic(
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
-    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(
+    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(
         btc_id=btc_instrument.id, sol_id=sol_instrument.id,
         btc_bar_type=kind(btc_instrument.id, PriceType.LAST), sol_bar_type=kind(sol_instrument.id, PriceType.LAST),
         btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id),
@@ -567,9 +630,12 @@ def run_native_diagnostic(
         max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=trading_start_ms * 1_000_000,
         terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
         btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
-    )))
-    stats = {"processed_rows_per_source": expected_rows, "batch_count": 0, "event_count": 0, "max_batch_minutes": 0, "max_batch_events": 0, "cursor_batch_rows": cursor_batch_rows}
+        reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
+    ))
+    engine.add_strategy(strategy)
+    stats = {"expected_rows_per_source": expected_rows, "processed_rows_per_source": 0, "batch_count": 0, "event_count": 0, "max_batch_minutes": 0, "max_batch_events": 0, "cursor_batch_rows": cursor_batch_rows}
     spread = Decimal(policy.symmetric_adverse_spread_bps) / Decimal("10000")
+    early_liquidation_cutoff = False
     def native_quote(instrument, close: str, precision: int, available_ns: int):
         mid = Decimal(str(close))
         return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns)
@@ -596,39 +662,42 @@ def run_native_diagnostic(
             stats["event_count"] += len(marks) + len(signals) + len(quotes)
             stats["max_batch_minutes"] = max(stats["max_batch_minutes"], len(week))
             stats["max_batch_events"] = max(stats["max_batch_events"], len(marks) + len(signals) + len(quotes))
+            stats["processed_rows_per_source"] += len(week)
+            if stop_on_liquidation and strategy.liquidation_audit:
+                early_liquidation_cutoff = True
+                break
         engine.end()
         account = engine.trader.generate_account_report(SIM)
         fills, orders = engine.trader.generate_order_fills_report(), engine.trader.generate_orders_report()
         artifacts = {"fills": save_native_artifact(fills, data_root / "runs" / f"{artifact_label}-fills.csv"), "orders": save_native_artifact(orders, data_root / "runs" / f"{artifact_label}-orders.csv")}
         terminal_active = Decimal(str(account["total"].iloc[-1]))
         fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
-        equity = [{"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()]
-        trading_equity = [{"timestamp": start_at.isoformat(), "active": str(initial_active_seed), "reserve": "0", "total": str(initial_active_seed)}] + [row for row in equity if start_at <= datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc) < end_at]
-        if equity:
-            trading_equity.append({**equity[-1], "timestamp": (end_at - timedelta(microseconds=1)).isoformat()})
-        totals = [Decimal(row["total"]) for row in trading_equity]
-        peak = initial_active_seed; peak_at = trough_at = trading_equity[0]["timestamp"]; drawdown = Decimal("0")
-        for row, total in zip(trading_equity, totals):
-            if total > peak: peak, peak_at = total, row["timestamp"]
-            if peak - total > drawdown: drawdown, trough_at = peak - total, row["timestamp"]
+        cash_account_series = [{"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()]
+        interval_cash_series = [{"timestamp": start_at.isoformat(), "active": str(initial_active_seed), "reserve": "0", "total": str(initial_active_seed)}] + [row for row in cash_account_series if start_at <= datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc) < end_at]
+        interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
+        cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
+        fill_timestamps_ns = [_fill_timestamp_ns(value) for value in fills.get("ts_last", ())]
+        boundary_ns = trading_end_ms * 1_000_000
+        boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
+        adapter = strategy.reporting_state()
         audit = journal.funding_audit() if journal else []
         manifest = data_root / "bybit-1m" / "manifest.json"
         full_config = {**BASELINE_CONFIG, "candidate": asdict(candidate), "execution_policy": asdict(policy), "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
         stats["peak_rss_bytes"] = _peak_rss_bytes()
-        result = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "max_drawdown_amount": str(drawdown), "max_drawdown_percent": str(drawdown / initial_active_seed), "drawdown_start": peak_at, "drawdown_trough": trough_at, "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(trading_equity, initial_active_seed)}, "equity": trading_equity, "fills": len(fills), "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": sum("REJECTED" in str(value) for value in orders.get("status", ())), "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": 0, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Fixture fees are 0.001/side; historical applicability unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
+        result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": len(fills), "fill_timestamps_ns": fill_timestamps_ns, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": sum("REJECTED" in str(value) for value in orders.get("status", ())), "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Fixture fees are 0.001/side; historical applicability unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
         result.update({
             "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED",
             "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY",
             "modeled_slippage": policy.spread_slippage_liquidity,
             "transfers": "0",
-            "liquidation_value": "0",
             "funding": {
                 "count": len(audit),
                 "by_instrument_count": {instrument: sum(1 for row in audit if row[1] == instrument) for instrument in sorted({row[1] for row in audit})},
                 "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
             },
         })
-        assert_report_boundaries(result)
+        if not early_liquidation_cutoff:
+            assert_report_boundaries(result)
         return result
     finally:
         engine.dispose()

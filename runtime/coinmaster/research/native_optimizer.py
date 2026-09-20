@@ -25,14 +25,21 @@ CAUSAL_V1_SENSITIVITY_ID = "causal-v1-sensitivity"
 CANONICAL_REENTRY_AXIS = (7.5, 8.25, 9.75, 10.5)
 
 
-def run_canonical_reentry_btc_pass(data_root: Path, baseline_report: Path) -> dict:
+def run_canonical_reentry_btc_pass(
+    data_root: Path,
+    baseline_report: Path,
+    *,
+    optimizer_id: str = "canonical-reentry-btc-size-v1",
+    artifact_stem: str = "native-optimizer-canonical-reentry-btc",
+    supersedes_reporting_checkpoint: str | None = None,
+) -> dict:
     """Small canonical-only BTC-size pass after the re-entry reconciliation fix."""
     control = json.loads(baseline_report.read_text())
     if control["status"] != "NOT_FAITHFUL_DIAGNOSTIC" or control["terminal_open_positions"] != 0:
         raise ValueError("CANONICAL_REENTRY_CONTROL_NOT_FLAT")
     runtime = Path(__file__).resolve().parents[2]
     meta = {
-        "optimizer_id": "canonical-reentry-btc-size-v1",
+        "optimizer_id": optimizer_id,
         "control_path": str(baseline_report),
         "control_sha256": sha256_file(baseline_report),
         "control_terminal_total": control["terminal_total"],
@@ -42,11 +49,14 @@ def run_canonical_reentry_btc_pass(data_root: Path, baseline_report: Path) -> di
         "code_hashes": {name: sha256_file(runtime / name) for name in ("coinmaster/domain/wave_overlay.py", "coinmaster/strategy/wave_overlay.py", "coinmaster/research/native_baseline.py", "coinmaster/research/native_fixture.py")},
         "axis": {"btc_notional_multiplier": list(CANONICAL_REENTRY_AXIS)},
         "objective": "terminal ACTIVE + RESERVE; requires native-flat reconciliation",
+        "liquidation_early_cutoff": "stop after the first native batch containing an authoritative liquidation audit",
         "ranking_eligible_for_live": False,
     }
+    if supersedes_reporting_checkpoint is not None:
+        meta["supersedes_reporting_checkpoint"] = supersedes_reporting_checkpoint
     runs = data_root / "runs"
     runs.mkdir(parents=True, exist_ok=True)
-    partial_path = runs / "native-optimizer-canonical-reentry-btc.partial.json"
+    partial_path = runs / f"{artifact_stem}.partial.json"
     expected = {"provenance": meta}
     partial = json.loads(partial_path.read_text()) if partial_path.exists() else {**expected, "results": []}
     if {key: partial.get(key) for key in expected} != expected:
@@ -61,13 +71,14 @@ def run_canonical_reentry_btc_pass(data_root: Path, baseline_report: Path) -> di
         item = {"variant_id": variant_id, "candidate": asdict(candidate), "candidate_hash": hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest()}
         started = monotonic()
         try:
-            report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate, artifact_label=f"native-optimizer-canonical-{variant_id}")
+            report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate, artifact_label=f"{artifact_stem}-{variant_id}", stop_on_liquidation=True)
             report["wall_time_seconds"] = str(monotonic() - started)
-            assert_report_boundaries(report)
+            if not report["early_liquidation_cutoff"]:
+                assert_report_boundaries(report)
             item.update(report)
             item["terminal_flat"] = report["terminal_open_positions"] == 0
-            item["early_cutoff"] = False
-            item["eligible_within_assumption_profile"] = item["terminal_flat"] and report["liquidation_count"] == 0 and report["native_order_rejections"] == 0
+            item["early_cutoff"] = report["early_liquidation_cutoff"]
+            item["eligible_within_assumption_profile"] = not item["early_cutoff"] and item["terminal_flat"] and report["liquidation_count"] == 0 and report["native_order_rejections"] == 0
         except Exception as error:
             item.update({"status": "FAILED", "error": f"{type(error).__name__}:{error}", "terminal_flat": False, "early_cutoff": False, "eligible_within_assumption_profile": False})
         results.append(item)
@@ -84,15 +95,26 @@ def run_canonical_reentry_btc_pass(data_root: Path, baseline_report: Path) -> di
         "best_delta_vs_control": str(Decimal(best["terminal_total"]) - Decimal(control["terminal_total"])) if best else None,
         "limitations": ["No candidate is live-rankable.", "Historical fee/tier, BBO/liquidity, settlement-mark, and intraminute liquidation assumptions remain unvalidated."],
     }
-    json_path = runs / "native-optimizer-canonical-reentry-btc.json"
+    json_path = runs / f"{artifact_stem}.json"
     json_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
-    csv_path = runs / "native-optimizer-canonical-reentry-btc.csv"
-    fields = ("variant_id", "status", "candidate", "candidate_hash", "terminal_total", "terminal_active", "terminal_reserve", "terminal_flat", "fills", "native_fees", "funding", "native_order_rejections", "liquidation_count", "liquidation_value", "transfers", "wall_time_seconds", "error")
+    csv_path = runs / f"{artifact_stem}.csv"
+    fields = ("variant_id", "status", "candidate", "candidate_hash", "terminal_total", "terminal_active", "terminal_reserve", "terminal_flat", "early_cutoff", "fills", "native_fees", "funding", "native_order_rejections", "liquidation_count", "liquidation_value", "transfers", "wall_time_seconds", "error")
     with csv_path.open("w", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields)
         writer.writeheader()
         writer.writerows({field: json.dumps(item[field], sort_keys=True) if field in {"candidate", "funding"} and field in item else item.get(field) for field in fields} for item in results)
     return summary | {"artifacts": {"json": str(json_path), "csv": str(csv_path), "partial": str(partial_path)}}
+
+
+def run_canonical_reporting_btc_pass(data_root: Path, baseline_report: Path) -> dict:
+    """Fresh four-point pass with the post-audit reporting contract only."""
+    return run_canonical_reentry_btc_pass(
+        data_root,
+        baseline_report,
+        optimizer_id="canonical-reporting-v2-btc-size",
+        artifact_stem="native-optimizer-canonical-reporting-v2",
+        supersedes_reporting_checkpoint="dfd6f4c",
+    )
 
 
 def sha256_file(path: Path) -> str:

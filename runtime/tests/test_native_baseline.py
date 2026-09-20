@@ -6,7 +6,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from coinmaster.research.native_baseline import DAY_MS, MINUTE_MS, ExecutionPolicy, assert_report_boundaries, coverage_blockers, iter_minute_bundles, iter_weekly_minute_batches, monthly_returns, run_native_diagnostic, run_sparse_native_diagnostic_legacy
+from coinmaster.research.native_baseline import DAY_MS, MINUTE_MS, ExecutionPolicy, assert_report_boundaries, coverage_blockers, iter_minute_bundles, iter_weekly_minute_batches, monthly_returns, run_native_diagnostic, run_sparse_native_diagnostic_legacy, standard_drawdown
 
 
 def write_streaming_fixture(root, trading_days: int = 2) -> tuple[int, int]:
@@ -78,8 +78,17 @@ def test_report_boundaries_require_terminal_reconciliation_and_trading_dd() -> N
     months.extend({"month": f"2025-{month:02d}", "total": "11000", "return": "0"} for month in range(1, 13))
     months.extend({"month": f"2026-{month:02d}", "total": "11000", "return": "0"} for month in range(1, 8))
     months.append({"month": "2026-08", "total": "12000", "return": str((total / Decimal("11000")) - 1)})
-    report = {"terminal_total": "12000", "run_interval": {"start": "2024-09-01T00:00:00+00:00", "end_exclusive": "2026-09-01T00:00:00+00:00", "initial_active_seed": "10000"}, "summary": {"monthly_returns": months, "drawdown_start": "2024-09-01T00:00:00+00:00", "drawdown_trough": "2026-09-01T00:00:00+00:00"}}
+    report = {"terminal_total": "12000", "run_interval": {"start": "2024-09-01T00:00:00+00:00", "end_exclusive": "2026-09-01T00:00:00+00:00", "initial_active_seed": "10000"}, "summary": {"monthly_returns": months, "interval_cash_terminal_total": "12000", "drawdown_start": "2024-09-01T00:00:00+00:00", "drawdown_trough": "2026-08-31T23:59:00+00:00"}, "fill_timestamps_ns": [1788220800000000000], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "fill_count": 1}}
     assert_report_boundaries(report)
+
+
+def test_standard_drawdown_uses_preceding_peak_not_initial_seed() -> None:
+    drawdown = standard_drawdown([
+        {"timestamp": "2024-09-01T00:00:00+00:00", "total": "10000"},
+        {"timestamp": "2024-09-02T00:00:00+00:00", "total": "20000"},
+        {"timestamp": "2024-09-03T00:00:00+00:00", "total": "15000"},
+    ], Decimal("10000"))
+    assert drawdown == {"amount": "5000", "percent": "0.25", "start": "2024-09-02T00:00:00+00:00", "trough": "2024-09-03T00:00:00+00:00", "basis": "NATIVE_CASH_ACCOUNT_SERIES"}
 
 
 def test_lazy_four_stream_merge_processes_every_minute_once_in_bounded_weeks(tmp_path) -> None:
@@ -139,7 +148,8 @@ def test_streamed_native_smoke_matches_one_shot_and_keeps_callbacks_subscribed(t
     assert one_shot["fills"] == streamed["fills"]
     assert one_shot["terminal_total"] == streamed["terminal_total"]
     assert one_shot["terminal_open_positions"] == streamed["terminal_open_positions"]
-    assert one_shot["equity"] == streamed["equity"]
+    assert one_shot["cash_account_series"] == streamed["cash_account_series"]
+    assert one_shot["interval_cash_account_series"] == streamed["interval_cash_account_series"]
     assert one_shot["streaming"]["batch_count"] == 1
     assert streamed["streaming"]["batch_count"] == 2
     assert streamed["streaming"]["max_batch_minutes"] == 24 * 60

@@ -48,6 +48,10 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     btc_signal_data_type: DataType | None = None
     sol_signal_data_type: DataType | None = None
     signal_client_id: ClientId | None = None
+    # Optional, sparse reporting checkpoints.  They use the same native
+    # account/cache and paired CustomData marks as the strategy, never a
+    # second PnL or matching model.
+    reporting_checkpoint_ns: tuple[int, ...] = ()
 
 
 class WaveOverlayStrategy(Strategy):
@@ -82,6 +86,16 @@ class WaveOverlayStrategy(Strategy):
         self._liquidation_orders: set[str] = set()
         self._liquidation_submitted: set[InstrumentId] = set()
         self.liquidation_audit: list[dict[str, str]] = []
+        self.pre_submit_gate_blocks: list[dict[str, str]] = []
+        self.marked_equity_checkpoints: dict[int, dict[str, str]] = {}
+        self._terminal_order_ids: set[str] = set()
+        self.terminal_lifecycle: dict[str, object] = {
+            "reason": "NOT_TRIGGERED",
+            "status": "NOT_TRIGGERED",
+            "trigger_ts": None,
+            "close_fills": [],
+            "lockout": False,
+        }
 
     def on_start(self) -> None:
         self.subscribe_bars(self.config.btc_bar_type)
@@ -168,6 +182,16 @@ class WaveOverlayStrategy(Strategy):
     def _on_venue_mark(self, mark: VenueMark, *, session: int | None = None) -> None:
         session = mark.ts_event if session is None else session
         self._marks_by_session.setdefault(session, {})[mark.instrument_id] = mark
+        if (
+            mark.ts_event in self.config.reporting_checkpoint_ns
+            and mark.ts_event not in self.marked_equity_checkpoints
+            and all(item in self._latest_marks and self._latest_marks[item].ts_event == mark.ts_event for item in (self.config.btc_id, self.config.sol_id))
+        ):
+            self.marked_equity_checkpoints[mark.ts_event] = {
+                "timestamp": str(mark.ts_event),
+                "marked_total": str(self._active_marked(self._latest_marks[self.config.btc_id], self._latest_marks[self.config.sol_id])),
+                "basis": "NATIVE_CASH_PLUS_OPEN_POSITION_UNREALIZED_AT_PAIRED_VENUE_MARK",
+            }
         self._try_advance_session(session)
 
     def _check_mark_first_liquidation(self, ts_now: int) -> None:
@@ -199,7 +223,15 @@ class WaveOverlayStrategy(Strategy):
         self._liquidating = True
         self._queued_intents.clear()
         self._liquidation_waiting = {position.instrument_id for position in positions}
-        self.liquidation_audit.append({"trigger_ts": str(ts_now), "equity": str(equity), "maintenance": str(maintenance), "status": "ARMED"})
+        self.liquidation_audit.append({
+            "trigger_ts": str(ts_now),
+            "marked_equity": str(equity),
+            "tier_maintenance_margin": str(maintenance),
+            "status": "ARMED",
+            "close_fills": [],
+            "close_value": "0",
+            "lockout": "true",
+        })
         for order in self.cache.orders_open():
             if not order.is_reduce_only:
                 self.cancel_order(order)
@@ -319,6 +351,12 @@ class WaveOverlayStrategy(Strategy):
         reduce_only = intent.action in {"BTC_REDUCE", "SOL_HALF_EXIT", "SOL_EXIT"}
         if not reduce_only and not self._tier_allows_increase(instrument_id, side, Decimal(str(quantity)), ts_now if ts_now is not None else self._current_btc.ts_event if self._current_btc else 0):
             self.log.warning(f"Rejecting {intent.action}: missing/stale mark or insufficient public-tier margin")
+            self.pre_submit_gate_blocks.append({
+                "timestamp": str(ts_now if ts_now is not None else self._current_btc.ts_event if self._current_btc else 0),
+                "intent_id": intent.id,
+                "action": intent.action,
+                "reason": "PRE_SUBMIT_TIER_OR_MARGIN_GATE",
+            })
             self._domain.on_parent_terminal(intent.id)
             return
         if reduce_only:
@@ -343,19 +381,30 @@ class WaveOverlayStrategy(Strategy):
 
     def _submit_terminal_closes(self) -> None:
         """Realize all remaining native positions on the terminal quote only."""
+        trigger_ts = self._current_btc.ts_event if self._current_btc is not None else None
+        self.terminal_lifecycle = {
+            "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+            "status": "NO_OPEN_POSITION",
+            "trigger_ts": str(trigger_ts) if trigger_ts is not None else None,
+            "close_fills": [],
+            "lockout": True,
+        }
         for position in self.cache.positions_open():
             if position.instrument_id not in (self.config.btc_id, self.config.sol_id):
                 continue
             instrument = self.cache.instrument(position.instrument_id)
             if instrument is None:
                 continue
-            self.submit_order(self.order_factory.market(
+            order = self.order_factory.market(
                 instrument_id=position.instrument_id,
                 order_side=OrderSide.SELL if position.is_long else OrderSide.BUY,
                 quantity=instrument.make_qty(position.quantity.as_decimal()),
                 time_in_force=TimeInForce.IOC,
                 reduce_only=True,
-            ))
+            )
+            self._terminal_order_ids.add(str(order.client_order_id))
+            self.terminal_lifecycle["status"] = "CLOSE_SUBMITTED"
+            self.submit_order(order)
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         """Fail closed on missing/stale public marks; reductions bypass this gate."""
@@ -388,11 +437,19 @@ class WaveOverlayStrategy(Strategy):
     def on_order_filled(self, event: OrderFilled) -> None:
         self._record_native_event(str(event.trade_id), "fill")
         if str(event.client_order_id) in self._liquidation_orders:
-            if not self.cache.positions_open():
-                self._domain.on_liquidation()
-                if self.liquidation_audit:
-                    self.liquidation_audit[-1]["status"] = "FLAT_LOCKED"
-                    self.liquidation_audit[-1]["fill_ts"] = str(event.ts_event)
+            if self.liquidation_audit:
+                audit = self.liquidation_audit[-1]
+                fills = audit["close_fills"]
+                assert isinstance(fills, list)
+                fills.append({"instrument_id": str(event.instrument_id), "timestamp": str(event.ts_event), "value": str(event.last_qty.as_decimal() * event.last_px.as_decimal())})
+                audit["close_value"] = str(sum((Decimal(item["value"]) for item in fills), Decimal("0")))
+            self._reconcile_liquidation_flat()
+            return
+        if str(event.client_order_id) in self._terminal_order_ids:
+            fills = self.terminal_lifecycle["close_fills"]
+            assert isinstance(fills, list)
+            fills.append({"instrument_id": str(event.instrument_id), "timestamp": str(event.ts_event), "value": str(event.last_qty.as_decimal() * event.last_px.as_decimal())})
+            self._reconcile_terminal_flat()
             return
         intent = self._pending_by_order.get(str(event.client_order_id))
         if intent is None:
@@ -430,6 +487,8 @@ class WaveOverlayStrategy(Strategy):
     def on_position_event(self, event) -> None:
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
         self._reconcile_group_flat()
+        self._reconcile_liquidation_flat()
+        self._reconcile_terminal_flat()
 
     def _reconcile_group_flat(self) -> None:
         """Clear a completed close group after the native cache is actually flat."""
@@ -438,6 +497,32 @@ class WaveOverlayStrategy(Strategy):
         self._group_close_reconciliation_pending = False
         if self._domain.on_group_flat() == "REGIME":
             self._advance_current_day()
+
+    def _reconcile_liquidation_flat(self) -> None:
+        if not self._liquidating or self.cache.positions_open():
+            return
+        if self.liquidation_audit and self.liquidation_audit[-1]["status"] == "FLAT_LOCKED":
+            return
+        self._domain.on_liquidation()
+        if self.liquidation_audit:
+            self.liquidation_audit[-1]["status"] = "FLAT_LOCKED"
+
+    def _reconcile_terminal_flat(self) -> None:
+        if self.terminal_lifecycle["status"] != "CLOSE_SUBMITTED" or self.cache.positions_open():
+            return
+        self.terminal_lifecycle["status"] = "FLAT"
+
+    def reporting_state(self) -> dict[str, object]:
+        """Authoritative native adapter state for diagnostic-only exports."""
+        self._reconcile_liquidation_flat()
+        self._reconcile_terminal_flat()
+        return {
+            "liquidations": self.liquidation_audit,
+            "liquidation_lockout": self._liquidating,
+            "terminal_lifecycle": self.terminal_lifecycle,
+            "pre_submit_tier_margin_gate_blocks": self.pre_submit_gate_blocks,
+            "marked_equity_checkpoints": [self.marked_equity_checkpoints[key] for key in sorted(self.marked_equity_checkpoints)],
+        }
 
     def on_order_rejected(self, event: OrderRejected) -> None:
         self._terminal_without_fill(str(event.client_order_id))
