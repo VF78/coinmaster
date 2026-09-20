@@ -6,7 +6,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from coinmaster.research.native_baseline import DAY_MS, MINUTE_MS, ExecutionPolicy, assert_report_boundaries, coverage_blockers, iter_minute_bundles, iter_weekly_minute_batches, monthly_returns, run_native_diagnostic, run_sparse_native_diagnostic_legacy, standard_drawdown
+from coinmaster.research.native_baseline import DAY_MS, MINUTE_MS, ExecutionPolicy, FixedBaseFeePolicy, assert_report_boundaries, coverage_blockers, iter_minute_bundles, iter_weekly_minute_batches, monthly_returns, native_fee_attribution, run_native_diagnostic, run_sparse_native_diagnostic_legacy, standard_drawdown
 
 
 def write_streaming_fixture(root, trading_days: int = 2) -> tuple[int, int]:
@@ -53,7 +53,25 @@ def test_execution_policy_is_versioned_hashed_and_explicit_about_unknown_costs()
     policy = ExecutionPolicy()
     assert len(policy.hash) == 64
     assert policy.execution_source == "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE"
-    assert "0.001" in policy.fees and policy.fee_historical_applicability == "UNKNOWN" and policy.nonmatching_daily_signals
+    assert "0.00020" in policy.fees and "0.00055" in policy.fees
+    assert policy.fee_historical_applicability == "UNKNOWN" and policy.nonmatching_daily_signals
+
+
+def test_fixed_base_fee_policy_uses_owner_schedule_and_blocks_hyperliquid_history() -> None:
+    assert FixedBaseFeePolicy().rates() == (Decimal("0.00020"), Decimal("0.00055"))
+    assert FixedBaseFeePolicy(venue="hyperliquid").rates() == (Decimal("0.00015"), Decimal("0.00045"))
+    assert len(FixedBaseFeePolicy().hash) == 64
+
+
+def test_native_fee_attribution_reconciles_native_liquidity_without_inference() -> None:
+    result = native_fee_attribution([
+        {"native_liquidity_side": "MAKER", "notional": "100", "commission": "0.020"},
+        {"native_liquidity_side": "TAKER", "notional": "200", "commission": "0.110"},
+        {"native_liquidity_side": "NO_LIQUIDITY_SIDE", "notional": "50", "commission": "0"},
+    ], Decimal("0.130"))
+    assert result["maker"] == {"count": 1, "notional": "100", "fees": "0.020"}
+    assert result["taker"] == {"count": 1, "notional": "200", "fees": "0.110"}
+    assert result["unknown"]["count"] == 1 and result["reconciled"] is True
 
 
 def test_daily_bar_matching_is_rejected_before_any_data_or_engine_is_loaded(tmp_path) -> None:
@@ -69,6 +87,18 @@ def test_sparse_legacy_diagnostic_is_unreachable() -> None:
 def test_monthly_returns_carry_forward_empty_months() -> None:
     rows = [{"timestamp": "2024-09-30T00:00:00+00:00", "total": "11000"}, {"timestamp": "2024-11-01T00:00:00+00:00", "total": "12100"}]
     assert monthly_returns(rows) == [{"month": "2024-09", "total": "11000", "return": "0.1"}, {"month": "2024-10", "total": "11000", "return": "0"}, {"month": "2024-11", "total": "12100", "return": "0.1"}]
+
+
+def test_monthly_returns_preserves_native_insertion_order_for_equal_timestamps() -> None:
+    rows = [
+        {"timestamp": "2024-09-01T00:00:00+00:00", "total": "10000"},
+        {"timestamp": "2024-10-29T02:24:00+00:00", "total": "12400"},
+        {"timestamp": "2024-10-29T02:24:00+00:00", "total": "12350"},
+    ]
+    months = monthly_returns(rows)
+    assert months[-1]["total"] == "12350"
+    report = {"run_interval": {"start": "2024-09-01T00:00:00+00:00", "end_exclusive": "2024-11-01T00:00:00+00:00", "initial_active_seed": "10000"}, "summary": {"monthly_returns": months, "interval_cash_terminal_total": "12350", "drawdown_start": "2024-09-01T00:00:00+00:00", "drawdown_trough": "2024-10-29T02:24:00+00:00"}, "liquidation_count": 0, "liquidation_lockout": False, "fill_timestamps_ns": [], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "fill_count": 0}}
+    assert_report_boundaries(report)
 
 
 def test_report_boundaries_require_terminal_reconciliation_and_trading_dd() -> None:

@@ -197,6 +197,10 @@ class Intent:
     quantity: float | None = None
     requested_notional: float | None = None
     decision_index: int = -1
+    # Execution metadata is declarative only.  The Nautilus adapter remains
+    # the sole place which constructs and submits native orders.
+    reason: str | None = None
+    limit_price: float | None = None
 
 
 @dataclass
@@ -221,6 +225,9 @@ class Episode:
     sol_half_decision_index: int | None = None
     best_f: float = 0.0
     pending: dict[str, Intent] = field(default_factory=dict)
+    # Resting post-only targets are durable execution state, not a domain
+    # decision lock.  Risk exits must continue to evaluate while they rest.
+    resting_reductions: set[str] = field(default_factory=set)
     attempted_btc_at: dict[int, int] = field(default_factory=dict)
     attempted_sol_at: dict[int, int] = field(default_factory=dict)
     close_reason: str | None = None
@@ -252,21 +259,25 @@ class WaveOverlayState:
             episode = Episode(str(uuid4()), feature.side, active_marked, feature.beta, wave_levels=levels)
             self.episode = episode
             return [self._intent(episode, "BTC_ENTRY", feature.side, None, requested_notional=min(self.config.btc_notional_multiplier * active_marked, self.config.max_parent_notional))]
-        if episode.pending:
+        if any(intent_id not in episode.resting_reductions for intent_id in episode.pending):
             return []
         if feature.side != episode.side:
             episode.close_reason = "REGIME"
-            return [self._intent(episode, "CLOSE_ALL", -episode.side, None)]
+            return [self._intent(episode, "CLOSE_ALL", -episode.side, None, reason="REGIME")]
         if episode.btc_entry_vwap is None or episode.h is None:
             return []
         f = episode.side * (bars[index].btc_close / episode.btc_entry_vwap - 1)
         episode.best_f = max(episode.best_f, f, 0.0)
         if (episode.best_f > self.config.btc_close_trail_fraction and f <= episode.best_f - self.config.btc_close_trail_fraction):
             episode.close_reason = "TRAIL"
-            return [self._intent(episode, "CLOSE_ALL", -episode.side, None)]
+            return [self._intent(episode, "CLOSE_ALL", -episode.side, None, reason="TRAIL")]
         intents: list[Intent] = []
         for level, threshold in enumerate(episode.wave_levels or ()):
-            if f >= threshold and level not in episode.btc_filled_tps and episode.attempted_btc_at.get(level) != index:
+            # v3 installs known targets as genuine resting post-only orders on
+            # the confirmed initial fill.  A target that was not installed
+            # (for example an invalid/marketable post-only price) retains the
+            # old taker fallback, but no filled right is invented.
+            if f >= threshold and level not in episode.btc_tps and level not in episode.btc_filled_tps and episode.attempted_btc_at.get(level) != index:
                 episode.attempted_btc_at[level] = index
                 intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_open_qty)))
         if intents:
@@ -288,15 +299,15 @@ class WaveOverlayState:
 
     def _sol_exits(self, episode: Episode, feature: Features, bar: DailyBar, index: int, z: float | None = None) -> list[Intent]:
         if episode.sol_qty and episode.sol_first_fill_at is not None and bar.close_time >= episode.sol_first_fill_at + timedelta(days=self.config.sol_max_holding_days):
-            return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty)]
+            return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty, reason="SOL_HARD_TIMEOUT")]
         if z is None:
             return []
         signed_z = episode.side * z
         if episode.sol_qty and episode.sol_first_fill_at is not None:
             if not episode.sol_half_done and signed_z <= self.config.sol_exit_half_z:
-                return [self._intent(episode, "SOL_HALF_EXIT", episode.side, None, quantity=episode.sol_qty / 2)]
+                return [self._intent(episode, "SOL_HALF_EXIT", episode.side, None, quantity=episode.sol_qty / 2, reason="SOL_Z_HALF_EXIT")]
             if episode.sol_half_done and episode.sol_half_decision_index is not None and index > episode.sol_half_decision_index and signed_z <= self.config.sol_exit_all_z:
-                return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty)]
+                return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty, reason="SOL_Z_FULL_EXIT")]
         return []
 
     def on_fill(self, intent_id: str, quantity: float, price: float, when: datetime, sigma: float | None = None) -> None:
@@ -331,10 +342,42 @@ class WaveOverlayState:
             return
         episode.h = (episode.btc_initial_qty * (episode.btc_entry_vwap or price)) / episode.beta_entry
 
+    def plan_confirmed_btc_targets(self) -> list[Intent]:
+        """Grant TP rights only from a confirmed native BTC entry fill.
+
+        Targets are deterministic from the fill VWAP and the already-known
+        wave levels; they are still merely intents until a later native quote
+        accepts a post-only limit and a native ``OrderFilled`` confirms it.
+        """
+        episode = self.episode
+        if episode is None or episode.btc_entry_vwap is None or episode.btc_initial_qty <= 0:
+            return []
+        intents: list[Intent] = []
+        for level, threshold in enumerate(episode.wave_levels or ()):
+            if level in episode.btc_tps or level in episode.btc_filled_tps:
+                continue
+            target = episode.btc_entry_vwap * (1 + episode.side * threshold)
+            quantity = min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_open_qty)
+            if quantity <= 0 or target <= 0:
+                continue
+            episode.btc_tps.add(level)
+            intent = self._intent(
+                episode, "BTC_REDUCE", -episode.side, level,
+                quantity=quantity, reason=f"BTC_TP{level + 1}", limit_price=target,
+            )
+            episode.resting_reductions.add(intent.id)
+            intents.append(intent)
+        return intents
+
     def on_parent_cancelled(self, intent_id: str) -> None:
         if self.episode is None:
             return
-        self.episode.pending.pop(intent_id, None)
+        intent = self.episode.pending.pop(intent_id, None)
+        self.episode.resting_reductions.discard(intent_id)
+        # A canceled resting target grants no TP right.  It may be planned
+        # again by a later causal decision, while a real fill remains final.
+        if intent is not None and intent.action == "BTC_REDUCE" and intent.level is not None and intent.level not in self.episode.btc_filled_tps:
+            self.episode.btc_tps.discard(intent.level)
 
     def on_parent_terminal(self, intent_id: str) -> None:
         """Called only after a native terminal order state, never an ACK."""

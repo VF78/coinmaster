@@ -54,6 +54,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     # second PnL or matching model.
     reporting_checkpoint_ns: tuple[int, ...] = ()
     execution_delay_ns: int = 0
+    # Immutable execution-policy identity written into every native fill audit.
+    execution_policy_hash: str = ""
+    execution_policy_version: str = ""
 
 
 class WaveOverlayStrategy(Strategy):
@@ -92,6 +95,12 @@ class WaveOverlayStrategy(Strategy):
         self.pre_submit_gate_blocks: list[dict[str, str]] = []
         self.marked_equity_checkpoints: dict[int, dict[str, str]] = {}
         self._terminal_order_ids: set[str] = set()
+        self._order_audit: dict[str, dict[str, object]] = {}
+        self.fill_audit: list[dict[str, str]] = []
+        self._forced_close_reason: str | None = None
+        self._forced_close_intent: Intent | None = None
+        self._forced_close_submitted: set[InstrumentId] = set()
+        self._forced_close_orders: set[str] = set()
         self.terminal_lifecycle: dict[str, object] = {
             "reason": "NOT_TRIGGERED",
             "status": "NOT_TRIGGERED",
@@ -236,9 +245,7 @@ class WaveOverlayStrategy(Strategy):
             "close_value": "0",
             "lockout": "true",
         })
-        for order in self.cache.orders_open():
-            if not order.is_reduce_only:
-                self.cancel_order(order)
+        self._begin_forced_close("LIQUIDATION")
 
     def _try_advance_session(self, session: int) -> None:
         paired = self._day.get(session)
@@ -282,6 +289,9 @@ class WaveOverlayStrategy(Strategy):
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        if self._forced_close_reason is not None:
+            self._submit_forced_close_on_quote(tick)
+            return
         if self._liquidating:
             if tick.instrument_id in self._liquidation_waiting and tick.instrument_id not in self._liquidation_submitted:
                 position = next((item for item in self.cache.positions_open() if item.instrument_id == tick.instrument_id), None)
@@ -297,16 +307,9 @@ class WaveOverlayStrategy(Strategy):
                 continue
             target = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
             if intent.action == "CLOSE_ALL":
-                submitted = self._queued_close_submitted.setdefault(intent.id, set())
-                if tick.instrument_id not in submitted and any(position.instrument_id == tick.instrument_id for position in self.cache.positions_open()):
-                    submitted.add(tick.instrument_id)
-                    self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, only_instrument=tick.instrument_id, ts_now=tick.ts_event)
-                if all(item_id in submitted or not any(position.instrument_id == item_id for position in self.cache.positions_open()) for item_id in (self.config.btc_id, self.config.sol_id)):
-                    self._queued_intents.remove(item)
-                    self._queued_intent_ready_ns.pop(intent.id, None)
-                    if not self.cache.positions_open():
-                        self._group_close_reconciliation_pending = True
-                        self._reconcile_group_flat()
+                self._queued_intents.remove(item)
+                self._queued_intent_ready_ns.pop(intent.id, None)
+                self._begin_forced_close(intent.reason or "CLOSE_ALL", intent)
                 continue
             if target == tick.instrument_id:
                 self._queued_intents.remove(item)
@@ -383,8 +386,37 @@ class WaveOverlayStrategy(Strategy):
             # A sub-step request is a reject, never an implicit size increase.
             self._domain.on_parent_terminal(intent.id)
             return
-        order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
-        if not self._record_submission(order, intent.id, intent.episode_id, intent.action):
+        # Only known/causally planned reductions use genuine passive liquidity.
+        # MARKET/IOC orders are never relabeled: entries, adds, hard timeout,
+        # trail/regime, liquidation and terminal closure remain native taker.
+        passive_reduction = reduce_only and intent.action != "CLOSE_ALL" and intent.reason != "SOL_HARD_TIMEOUT"
+        if passive_reduction:
+            raw_price = Decimal(str(intent.limit_price)) if intent.limit_price is not None else (
+                Decimal(str(sol_price if side == OrderSide.SELL else sol_price))
+            )
+            # For a planned SOL z exit, quote at the passive side.  A target
+            # BTC price is supplied by the confirmed-entry plan above.
+            if intent.limit_price is None:
+                quote_tick = self.cache.quote_tick(instrument_id)
+                if quote_tick is None:
+                    self._domain.on_parent_cancelled(intent.id)
+                    return
+                raw_price = quote_tick.ask_price.as_decimal() if side == OrderSide.SELL else quote_tick.bid_price.as_decimal()
+            quote_tick = self.cache.quote_tick(instrument_id)
+            if quote_tick is not None:
+                # Reject marketable post-only requests locally; do not turn
+                # them into a taker order or fabricate a maker classification.
+                if (side == OrderSide.BUY and raw_price >= quote_tick.ask_price.as_decimal()) or (side == OrderSide.SELL and raw_price <= quote_tick.bid_price.as_decimal()):
+                    self._domain.on_parent_cancelled(intent.id)
+                    return
+            order = self.order_factory.limit(
+                instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded),
+                price=instrument.make_price(raw_price), time_in_force=TimeInForce.GTC,
+                post_only=True, reduce_only=True,
+            )
+        else:
+            order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
+        if not self._record_submission(order, intent.id, intent.episode_id, intent.action, intent.reason, intent.level):
             self._domain.on_parent_terminal(intent.id)
             return
         self._pending_by_order[str(order.client_order_id)] = intent
@@ -393,6 +425,86 @@ class WaveOverlayStrategy(Strategy):
         self._sigma_by_order[str(order.client_order_id)] = sigma
         self._decision_index_by_order[str(order.client_order_id)] = decision_index
         self.submit_order(order)
+
+    def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
+        """Cancel every resting order before closing actual cache leaves taker."""
+        # Terminal settlement is the final authority: it may supersede an
+        # earlier liquidation-close attempt whose native leaves remain open.
+        # A liquidation likewise supersedes a prior ordinary regime/trail
+        # close; only an already-active liquidation remains idempotent.
+        supersedes = reason == "TERMINAL_BOUNDARY_SETTLEMENT" or (
+            reason == "LIQUIDATION" and self._forced_close_reason not in {None, "LIQUIDATION"}
+        )
+        if self._forced_close_reason is not None and not supersedes:
+            return
+        self._forced_close_reason = reason
+        self._forced_close_intent = intent
+        self._forced_close_submitted.clear()
+        for order in list(self.cache.orders_open()):
+            self.cancel_order(order)
+
+    def _submit_forced_close_on_quote(self, tick: QuoteTick) -> None:
+        # Cancel confirmation/reconciliation is authoritative: no market close
+        # is submitted while a resting reduction can still consume leaves.
+        if self.cache.orders_open():
+            return
+        position = next((item for item in self.cache.positions_open() if item.instrument_id == tick.instrument_id), None)
+        if position is None or tick.instrument_id in self._forced_close_submitted:
+            if not self.cache.positions_open() and self._forced_close_intent is not None:
+                self._domain.on_parent_terminal(self._forced_close_intent.id)
+                self._group_close_reconciliation_pending = True
+                self._reconcile_group_flat()
+            return
+        instrument = self.cache.instrument(tick.instrument_id)
+        if instrument is None:
+            return
+        order = self.order_factory.market(
+            instrument_id=tick.instrument_id, order_side=OrderSide.SELL if position.is_long else OrderSide.BUY,
+            quantity=instrument.make_qty(position.quantity.as_decimal()), time_in_force=TimeInForce.IOC, reduce_only=True,
+        )
+        forced_action = "TERMINAL_CLOSE" if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT" else "LIQUIDATION_CLOSE" if self._forced_close_reason == "LIQUIDATION" else "FORCED_CLOSE"
+        if not self._record_submission(order, f"{self._forced_close_reason}:{order.client_order_id}", "forced", forced_action, self._forced_close_reason, None):
+            return
+        self._forced_close_submitted.add(tick.instrument_id)
+        self._forced_close_orders.add(str(order.client_order_id))
+        if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT":
+            self._terminal_order_ids.add(str(order.client_order_id))
+            self.terminal_lifecycle["status"] = "CLOSE_SUBMITTED"
+        elif self._forced_close_reason == "LIQUIDATION":
+            self._liquidation_orders.add(str(order.client_order_id))
+        self.submit_order(order)
+
+    def _submit_forced_closes_from_cache(self) -> None:
+        """Continue a forced close after the final native cancel confirmation."""
+        if self.cache.orders_open():
+            return
+        for position in list(self.cache.positions_open()):
+            if position.instrument_id not in (self.config.btc_id, self.config.sol_id) or position.instrument_id in self._forced_close_submitted:
+                continue
+            # A market order remains native taker; this read only verifies a
+            # current native book exists to match it against.
+            if self.cache.quote_tick(position.instrument_id) is None:
+                continue
+            instrument = self.cache.instrument(position.instrument_id)
+            if instrument is None:
+                continue
+            order = self.order_factory.market(
+                instrument_id=position.instrument_id,
+                order_side=OrderSide.SELL if position.is_long else OrderSide.BUY,
+                quantity=instrument.make_qty(position.quantity.as_decimal()),
+                time_in_force=TimeInForce.IOC, reduce_only=True,
+            )
+            forced_action = "TERMINAL_CLOSE" if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT" else "LIQUIDATION_CLOSE" if self._forced_close_reason == "LIQUIDATION" else "FORCED_CLOSE"
+            if not self._record_submission(order, f"{self._forced_close_reason}:{order.client_order_id}", "forced", forced_action, self._forced_close_reason, None):
+                continue
+            self._forced_close_submitted.add(position.instrument_id)
+            self._forced_close_orders.add(str(order.client_order_id))
+            if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT":
+                self._terminal_order_ids.add(str(order.client_order_id))
+                self.terminal_lifecycle["status"] = "CLOSE_SUBMITTED"
+            elif self._forced_close_reason == "LIQUIDATION":
+                self._liquidation_orders.add(str(order.client_order_id))
+            self.submit_order(order)
 
     def _submit_terminal_closes(self) -> None:
         """Realize all remaining native positions on the terminal quote only."""
@@ -404,24 +516,10 @@ class WaveOverlayStrategy(Strategy):
             "close_fills": [],
             "lockout": True,
         }
-        for position in self.cache.positions_open():
-            if position.instrument_id not in (self.config.btc_id, self.config.sol_id):
-                continue
-            instrument = self.cache.instrument(position.instrument_id)
-            if instrument is None:
-                continue
-            order = self.order_factory.market(
-                instrument_id=position.instrument_id,
-                order_side=OrderSide.SELL if position.is_long else OrderSide.BUY,
-                quantity=instrument.make_qty(position.quantity.as_decimal()),
-                time_in_force=TimeInForce.IOC,
-                reduce_only=True,
-            )
-            if not self._record_submission(order, f"terminal:{order.client_order_id}", "terminal", "TERMINAL_CLOSE"):
-                continue
-            self._terminal_order_ids.add(str(order.client_order_id))
-            self.terminal_lifecycle["status"] = "CLOSE_SUBMITTED"
-            self.submit_order(order)
+        if not any(position.instrument_id in (self.config.btc_id, self.config.sol_id) for position in self.cache.positions_open()):
+            self.terminal_lifecycle["status"] = "FLAT"
+            return
+        self._begin_forced_close("TERMINAL_BOUNDARY_SETTLEMENT")
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         """Fail closed on missing/stale public marks; reductions bypass this gate."""
@@ -453,6 +551,7 @@ class WaveOverlayStrategy(Strategy):
 
     def on_order_filled(self, event: OrderFilled) -> None:
         self._record_native_event(str(event.trade_id), "fill")
+        self._record_fill_audit(event)
         if str(event.client_order_id) in self._liquidation_orders:
             if self.liquidation_audit:
                 audit = self.liquidation_audit[-1]
@@ -474,6 +573,13 @@ class WaveOverlayStrategy(Strategy):
                 self._terminal_submission(str(event.client_order_id))
             self._reconcile_terminal_flat()
             return
+        if str(event.client_order_id) in self._forced_close_orders:
+            order = self.cache.order(event.client_order_id)
+            if order is not None and order.is_closed and self._forced_close_intent is not None:
+                self._domain.on_parent_terminal(self._forced_close_intent.id)
+                self._group_close_reconciliation_pending = True
+                self._reconcile_group_flat()
+            return
         intent = self._pending_by_order.get(str(event.client_order_id))
         if intent is None:
             return
@@ -489,6 +595,13 @@ class WaveOverlayStrategy(Strategy):
             self._pending_by_order.pop(str(event.client_order_id), None)
             self._sigma_by_order.pop(str(event.client_order_id), None)
             self._decision_index_by_order.pop(str(event.client_order_id), None)
+            if intent.action == "BTC_ENTRY":
+                # TP rights are derived from the native entry fill only.  They
+                # are submitted as passive limits and must fill on a later
+                # quote to receive native MAKER liquidity attribution.
+                for target in self._domain.plan_confirmed_btc_targets():
+                    self._queued_intents.append((target, sigma, intent.decision_index))
+                    self._queued_intent_ready_ns[target.id] = event.ts_event + 1
             if intent.action == "CLOSE_ALL":
                 self._group_close_reconciliation_pending = True
                 self._reconcile_group_flat()
@@ -500,14 +613,25 @@ class WaveOverlayStrategy(Strategy):
 
     def on_order_canceled(self, event: OrderCanceled) -> None:
         self._terminal_submission(str(event.client_order_id))
+        client_order_id = str(event.client_order_id)
+        if client_order_id in self._forced_close_orders:
+            order = self.cache.order(event.client_order_id)
+            if order is not None:
+                self._forced_close_submitted.discard(order.instrument_id)
+            self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
         self._sigma_by_order.pop(str(event.client_order_id), None)
         self._decision_index_by_order.pop(str(event.client_order_id), None)
         if intent is not None:
             self._domain.on_parent_cancelled(intent.id)
+        if self._forced_close_reason is not None and not self.cache.orders_open():
+            self._submit_forced_closes_from_cache()
 
     def on_order_event(self, event) -> None:
         self._record_native_event(str(event.client_order_id), "order")
+        context = self._order_audit.get(str(event.client_order_id))
+        if context is not None and context.get("accept_ns") is None:
+            context["accept_ns"] = str(getattr(event, "ts_event", getattr(event, "ts_init", "")))
         self._acknowledge_submission(str(event.client_order_id))
 
     def on_position_event(self, event) -> None:
@@ -518,14 +642,19 @@ class WaveOverlayStrategy(Strategy):
 
     def _reconcile_group_flat(self) -> None:
         """Clear a completed close group after the native cache is actually flat."""
-        if not self._group_close_reconciliation_pending or self.cache.positions_open():
+        if not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
             return
         self._group_close_reconciliation_pending = False
-        if self._domain.on_group_flat() == "REGIME":
+        reason = self._domain.on_group_flat()
+        if self._forced_close_reason not in {"LIQUIDATION", "TERMINAL_BOUNDARY_SETTLEMENT"}:
+            self._forced_close_reason = None
+            self._forced_close_intent = None
+            self._forced_close_orders.clear()
+        if reason == "REGIME":
             self._advance_current_day()
 
     def _reconcile_liquidation_flat(self) -> None:
-        if not self._liquidating or self.cache.positions_open():
+        if not self._liquidating or self.cache.positions_open() or self.cache.orders_open():
             return
         if self.liquidation_audit and self.liquidation_audit[-1]["status"] == "FLAT_LOCKED":
             return
@@ -534,7 +663,7 @@ class WaveOverlayStrategy(Strategy):
             self.liquidation_audit[-1]["status"] = "FLAT_LOCKED"
 
     def _reconcile_terminal_flat(self) -> None:
-        if self.terminal_lifecycle["status"] != "CLOSE_SUBMITTED" or self.cache.positions_open():
+        if self.terminal_lifecycle["status"] != "CLOSE_SUBMITTED" or self.cache.positions_open() or self.cache.orders_open():
             return
         self.terminal_lifecycle["status"] = "FLAT"
 
@@ -546,8 +675,10 @@ class WaveOverlayStrategy(Strategy):
             "liquidations": self.liquidation_audit,
             "liquidation_lockout": self._liquidating,
             "terminal_lifecycle": self.terminal_lifecycle,
+            "terminal_open_orders": len(self.cache.orders_open()),
             "pre_submit_tier_margin_gate_blocks": self.pre_submit_gate_blocks,
             "marked_equity_checkpoints": [self.marked_equity_checkpoints[key] for key in sorted(self.marked_equity_checkpoints)],
+            "fill_audit": self.fill_audit,
         }
 
     def on_order_rejected(self, event: OrderRejected) -> None:
@@ -558,11 +689,18 @@ class WaveOverlayStrategy(Strategy):
 
     def _terminal_without_fill(self, client_order_id: str) -> None:
         self._terminal_submission(client_order_id)
+        if client_order_id in self._forced_close_orders:
+            order = self.cache.order(client_order_id)
+            if order is not None:
+                self._forced_close_submitted.discard(order.instrument_id)
+            self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(client_order_id, None)
         self._sigma_by_order.pop(client_order_id, None)
         self._decision_index_by_order.pop(client_order_id, None)
         if intent is not None:
             self._domain.on_parent_terminal(intent.id)
+        if self._forced_close_reason is not None and not self.cache.orders_open():
+            self._submit_forced_closes_from_cache()
 
     def _entries_enabled(self) -> bool:
         gate = self.config.entries_gate
@@ -573,7 +711,13 @@ class WaveOverlayStrategy(Strategy):
         if callable(sink):
             sink(event_id, kind)
 
-    def _record_submission(self, order, intent_id: str, episode_id: str, action: str) -> bool:
+    def _record_submission(self, order, intent_id: str, episode_id: str, action: str, reason: str | None = None, level: int | None = None) -> bool:
+        self._order_audit[str(order.client_order_id)] = {
+            "venue": str(order.instrument_id.venue), "instrument": str(order.instrument_id),
+            "action": action, "reason": reason or action, "level": "" if level is None else str(level),
+            "order_type": str(order.order_type), "post_only": str(bool(order.is_post_only)).lower(),
+            "submit_ns": str(order.ts_init), "accept_ns": None,
+        }
         sink = self.config.submission_sink
         if not callable(sink):
             return True
@@ -581,6 +725,31 @@ class WaveOverlayStrategy(Strategy):
             client_order_id=str(order.client_order_id), intent_id=intent_id, episode_id=episode_id,
             action=action, instrument_id=str(order.instrument_id), quantity=str(order.quantity), reduce_only=bool(order.is_reduce_only),
         ))
+
+    def _record_fill_audit(self, event: OrderFilled) -> None:
+        """Preserve native fill facts; classification is never inferred."""
+        context = self._order_audit.get(str(event.client_order_id), {})
+        liquidity = getattr(event.liquidity_side, "name", str(event.liquidity_side))
+        commission = event.commission.as_decimal()
+        self.fill_audit.append({
+            "venue": str(context.get("venue", event.instrument_id.venue)),
+            "instrument": str(event.instrument_id),
+            "action": str(context.get("action", "UNKNOWN")),
+            "reason": str(context.get("reason", "UNKNOWN")),
+            "level": str(context.get("level", "")),
+            "order_type": str(event.order_type),
+            "post_only": str(context.get("post_only", "false")),
+            "submit_ns": str(context.get("submit_ns", event.ts_init)),
+            "accept_ns": str(context.get("accept_ns") or event.ts_init),
+            "fill_ns": str(event.ts_event),
+            "qty": str(event.last_qty.as_decimal()),
+            "px": str(event.last_px.as_decimal()),
+            "native_liquidity_side": str(liquidity),
+            "notional": str(event.last_qty.as_decimal() * event.last_px.as_decimal()),
+            "commission": str(commission),
+            "commission_currency": str(event.commission.currency),
+            "policy_hash": self.config.execution_policy_hash,
+        })
 
     def _acknowledge_submission(self, client_order_id: str) -> None:
         sink = self.config.submission_sink

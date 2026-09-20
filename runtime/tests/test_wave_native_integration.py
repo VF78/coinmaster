@@ -134,7 +134,11 @@ def test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_st
         assert not fills.empty
         assert set(fills["instrument_id"]) <= {str(BTC_PERP.id), str(SOL_PERP.id)}
         assert fills["ts_last"].is_monotonic_increasing
-        assert not engine.trader.generate_positions_report()["closing_order_id"].isna().any()
+        # v3 can intentionally retain a genuine post-only reduce-only target
+        # until a later quote reaches it; it must not convert that target to an
+        # eager market close merely to make this fixture flat.
+        open_orders = engine.trader._cache.orders_open()
+        assert all(order.is_reduce_only and order.is_post_only for order in open_orders)
         assert not engine.trader.generate_account_report(SIM).empty
         assert len(strategy._latest_marks) <= 2
         assert len(strategy._latest_tier_marks) <= 2

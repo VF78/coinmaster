@@ -66,6 +66,18 @@ def test_same_day_btc_fill_earns_sol_right_only_after_parent_terminal() -> None:
     assert [(item.action, item.requested_notional) for item in additions] == [("SOL_ADD", 10 * source[0].btc_close / 1.02)]
 
 
+def test_resting_btc_targets_do_not_block_opposite_regime_close() -> None:
+    source = bars(1)
+    state = WaveOverlayState(Candidate(wave_min_count=1))
+    state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=10, btc_open_qty=10, btc_entry_vwap=100, h=100, wave_levels=(0.01, 0.02, 0.03))
+    targets = state.plan_confirmed_btc_targets()
+    assert len(targets) == 3
+    assert set(item.id for item in targets) == state.episode.resting_reductions
+    opposite = Features(0, -1, 1.0, 0.0, 0.0, 1.0, 0.0)
+    closes = state.decide(source, [opposite], 0, 10_000)
+    assert [(item.action, item.reason) for item in closes] == [("CLOSE_ALL", "REGIME")]
+
+
 def test_zero_fill_parent_retries_next_decision_not_same_decision() -> None:
     source = bars(2)
     feature = Features(0, 1, 1.0, 1.0, 0.0, 1.0, 2.0)

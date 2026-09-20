@@ -46,11 +46,11 @@ BASELINE_CONFIG = {
 @dataclass(frozen=True)
 class ExecutionPolicy:
     """Versioned matching assumptions; unknown venue facts stay explicit."""
-    version: str = "bybit-1m-close-v1"
+    version: str = "bybit-native-resting-reductions-v2"
     execution_source: str = "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE"
     mark_source: str = "BYBIT_GAP_FREE_1M_MARK_CLOSE"
-    latency: str = "next_available_1m_close_after_daily_decision"
-    fees: str = "NATIVE_FIXTURE_MAKER_TAKER_0.001_PER_SIDE"
+    latency: str = "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes"
+    fees: str = "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055"
     fee_historical_applicability: str = "UNKNOWN"
     spread_slippage_liquidity: str = "UNKNOWN_NO_L2_OR_TRADE_TAPE"
     liquidation: str = "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL"
@@ -62,6 +62,50 @@ class ExecutionPolicy:
     @property
     def hash(self) -> str:
         return hashlib.sha256(json.dumps(asdict(self), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+@dataclass(frozen=True)
+class FixedBaseFeePolicy:
+    """Owner-specified non-VIP venue schedule; historical use is diagnostic."""
+    version: str = "fixed-base-native-maker-taker-execution-v3"
+    venue: str = "bybit"
+    bybit_maker: str = "0.00020"
+    bybit_taker: str = "0.00055"
+    hyperliquid_maker: str = "0.00015"
+    hyperliquid_taker: str = "0.00045"
+
+    def rates(self) -> tuple[Decimal, Decimal]:
+        if self.venue == "bybit":
+            return Decimal(self.bybit_maker), Decimal(self.bybit_taker)
+        if self.venue == "hyperliquid":
+            return Decimal(self.hyperliquid_maker), Decimal(self.hyperliquid_taker)
+        raise ValueError("UNKNOWN_FEE_VENUE")
+
+    @property
+    def hash(self) -> str:
+        return hashlib.sha256(json.dumps(asdict(self), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def native_fee_attribution(fill_audit: list[dict[str, str]], native_total: Decimal) -> dict[str, object]:
+    """Aggregate only native ``OrderFilled.liquidity_side`` facts.
+
+    This intentionally has no order-type fallback: if Nautilus reports an
+    unknown liquidity side it remains unknown rather than being relabeled.
+    """
+    buckets = {"MAKER": {"count": 0, "notional": Decimal("0"), "fees": Decimal("0")}, "TAKER": {"count": 0, "notional": Decimal("0"), "fees": Decimal("0")}, "UNKNOWN": {"count": 0, "notional": Decimal("0"), "fees": Decimal("0")}}
+    for row in fill_audit:
+        side = row.get("native_liquidity_side", "UNKNOWN")
+        key = side if side in buckets else "UNKNOWN"
+        buckets[key]["count"] += 1
+        buckets[key]["notional"] += Decimal(row["notional"])
+        buckets[key]["fees"] += Decimal(row["commission"])
+    audited_total = sum((bucket["fees"] for bucket in buckets.values()), Decimal("0"))
+    if audited_total != native_total:
+        raise ValueError(f"NATIVE_FEE_AUDIT_RECONCILIATION_MISMATCH:{audited_total}:{native_total}")
+    return {
+        key.lower(): {"count": bucket["count"], "notional": str(bucket["notional"]), "fees": str(bucket["fees"])}
+        for key, bucket in buckets.items()
+    } | {"native_total": str(native_total), "audited_total": str(audited_total), "reconciled": True}
 
 
 @dataclass(frozen=True)
@@ -180,7 +224,13 @@ def _peak_rss_bytes() -> int:
 
 def monthly_returns(equity: list[dict[str, str]], initial: Decimal = Decimal("10000")) -> list[dict[str, str]]:
     """Calendar months with carry-forward TOTAL, including silent months."""
-    values = sorted((datetime.fromisoformat(row["timestamp"]).replace(tzinfo=timezone.utc), Decimal(row["total"])) for row in equity)
+    # Keep native insertion order for equal timestamps.  A bare tuple sort
+    # uses the amount as a tie breaker, which can silently turn a later debit
+    # into an earlier credit at the same native report timestamp.
+    values = sorted(
+        ((datetime.fromisoformat(row["timestamp"]).replace(tzinfo=timezone.utc), Decimal(row["total"])) for row in equity),
+        key=lambda item: item[0],
+    )
     if not values: return []
     result, cursor, prior, index = [], values[0][0].replace(day=1), initial, 0
     end = values[-1][0].replace(day=1)
@@ -438,7 +488,7 @@ def run_sparse_native_diagnostic_legacy(
         if journal:
             modules.insert(0, PerpetualFundingModule(events, journal))
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules)
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel())
     engine.add_instrument(btc_instrument); engine.add_instrument(sol_instrument)
     from nautilus_trader.model.identifiers import ClientId
     engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=btc_instrument.id, sol_id=sol_instrument.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=initial_active_seed, tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=trading_start_ms * 1_000_000, terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=ClientId("BYBIT_SIGNAL"))))
@@ -559,6 +609,7 @@ def run_native_diagnostic(
     include_daily_signals: bool = True,
     stop_on_liquidation: bool = False,
     artifact_dir: Path | None = None,
+    fixed_base_fee_policy: FixedBaseFeePolicy | None = None,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -568,6 +619,7 @@ def run_native_diagnostic(
     """
     from nautilus_trader.backtest.config import BacktestEngineConfig
     from nautilus_trader.backtest.engine import BacktestEngine
+    from nautilus_trader.backtest.models import MakerTakerFeeModel
     from nautilus_trader.config import LoggingConfig
     from nautilus_trader.model.data import BarSpecification, BarType
     from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType
@@ -582,6 +634,9 @@ def run_native_diagnostic(
 
     candidate = candidate or Candidate()
     policy = execution_policy or ExecutionPolicy()
+    fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
+    if fee_policy.venue != "bybit":
+        raise ValueError("HYPERLIQUID_HISTORICAL_EXECUTION_BLOCKED")
     if trading_end_ms <= trading_start_ms or trading_start_ms - warmup_start_ms < 730 * DAY_MS:
         raise ValueError("INVALID_TRADING_INTERVAL_OR_INSUFFICIENT_730D_WARMUP")
     if policy.execution_delay_minutes < 1:
@@ -609,22 +664,20 @@ def run_native_diagnostic(
     modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
     if journal:
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
-    fee = Decimal("0.001") * Decimal(policy.fee_multiplier)
-    if fee == Decimal("0.001"):
-        btc_instrument, sol_instrument = BTC_PERP, SOL_PERP
-    else:
-        from nautilus_trader.model.currencies import BTC, SOL
-        from coinmaster.research.native_fixture import perpetual
-        btc_instrument = perpetual("BTCUSDT", BTC, "0.1", "0.001", "0.025", fee, fee)
-        sol_instrument = perpetual("SOLUSDT", SOL, "0.01", "0.1", "0.05", fee, fee)
-        selected_leverage = ((btc_instrument.id, Decimal("40")), (sol_instrument.id, Decimal("20")))
-        modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
-        if journal:
-            modules.insert(0, PerpetualFundingModule(funding_events, journal))
+    from nautilus_trader.model.currencies import BTC, SOL
+    from coinmaster.research.native_fixture import perpetual
+    maker, taker = fee_policy.rates()
+    multiplier = Decimal(policy.fee_multiplier)
+    btc_instrument = perpetual("BTCUSDT", BTC, "0.1", "0.001", "0.025", maker * multiplier, taker * multiplier)
+    sol_instrument = perpetual("SOLUSDT", SOL, "0.01", "0.1", "0.05", maker * multiplier, taker * multiplier)
+    selected_leverage = ((btc_instrument.id, Decimal("40")), (sol_instrument.id, Decimal("20")))
+    modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
+    if journal:
+        modules.insert(0, PerpetualFundingModule(funding_events, journal))
     def kind(instrument, price_type):
         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules)
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel())
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
@@ -638,6 +691,8 @@ def run_native_diagnostic(
         btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
         reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
         execution_delay_ns=(policy.execution_delay_minutes - 1) * MINUTE_MS * 1_000_000,
+        execution_policy_hash=policy.hash,
+        execution_policy_version=policy.version,
     ))
     engine.add_strategy(strategy)
     stats = {"expected_rows_per_source": expected_rows, "processed_rows_per_source": 0, "batch_count": 0, "event_count": 0, "max_batch_minutes": 0, "max_batch_events": 0, "cursor_batch_rows": cursor_batch_rows}
@@ -679,7 +734,13 @@ def run_native_diagnostic(
         artifacts = {"fills": save_native_artifact(fills, artifacts_root / f"{artifact_label}-fills.csv"), "orders": save_native_artifact(orders, artifacts_root / f"{artifact_label}-orders.csv")}
         terminal_active = Decimal(str(account["total"].iloc[-1]))
         fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
-        cash_account_series = [{"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()]
+        # Native report insertion order is not a reporting-time guarantee when
+        # orders settle across streamed batches.  The boundary invariant and
+        # monthly aggregation must use the same chronological cash sequence.
+        cash_account_series = sorted(
+            ({"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()),
+            key=lambda row: datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc),
+        )
         interval_cash_series = [{"timestamp": start_at.isoformat(), "active": str(initial_active_seed), "reserve": "0", "total": str(initial_active_seed)}] + [row for row in cash_account_series if start_at <= datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc) < end_at]
         interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
         cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
@@ -687,12 +748,18 @@ def run_native_diagnostic(
         boundary_ns = trading_end_ms * 1_000_000
         boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
         adapter = strategy.reporting_state()
+        terminal = adapter["terminal_lifecycle"]
+        if terminal["reason"] == "TERMINAL_BOUNDARY_SETTLEMENT" and (
+            terminal["status"] != "FLAT" or engine.cache.positions_open() or adapter["terminal_open_orders"]
+        ):
+            raise ValueError("TERMINAL_RECONCILIATION_INCOMPLETE")
+        fee_attribution = native_fee_attribution(adapter["fill_audit"], fees)
         audit = journal.funding_audit() if journal else []
         manifest = data_root / "bybit-1m" / "manifest.json"
-        full_config = {**BASELINE_CONFIG, "candidate": asdict(candidate), "execution_policy": asdict(policy), "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
+        full_config = {**BASELINE_CONFIG, "candidate": asdict(candidate), "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
         stats["peak_rss_bytes"] = _peak_rss_bytes()
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
-        result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": len(fills), "fill_timestamps_ns": fill_timestamps_ns, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": sum("REJECTED" in str(value) for value in orders.get("status", ())), "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Fixture fees are 0.001/side; historical applicability unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
+        result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": len(fills), "fill_timestamps_ns": fill_timestamps_ns, "fill_audit": adapter["fill_audit"], "fee_attribution": fee_attribution, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": sum("REJECTED" in str(value) for value in orders.get("status", ())), "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Owner-specified non-VIP fixed-base fees are diagnostic; historical applicability remains unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
         result.update({
             "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED",
             "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY",
