@@ -207,13 +207,16 @@ class PerpetualFundingModule(SimulationModule):
 
     def __init__(self, events: tuple[FundingInstruction, ...], journal: NativeEventJournal) -> None:
         super().__init__(SimulationModuleConfig())
-        self._events = events
+        self._events = tuple(sorted(events, key=lambda event: (event.ts_event, event.event_id)))
+        self._event_index = 0
         self._journal = journal
         self._applied: set[str] = set()
 
     def process(self, ts_now: int) -> None:
-        for event in self._events:
-            if event.event_id in self._applied or event.ts_event > ts_now:
+        while self._event_index < len(self._events) and self._events[self._event_index].ts_event <= ts_now:
+            event = self._events[self._event_index]
+            self._event_index += 1
+            if event.event_id in self._applied:
                 continue
             if self._journal.has_funding(event.event_id):
                 self._applied.add(event.event_id)
@@ -248,6 +251,7 @@ class PerpetualFundingModule(SimulationModule):
 
     def reset(self) -> None:
         self._applied.clear()
+        self._event_index = 0
 
 
 class TierMarginPolicy:
@@ -326,6 +330,8 @@ class BybitTierMarginModule(SimulationModule):
             account.update_margin_init(position.instrument_id, Money(initial, USDT))
             account.update_margin_maint(position.instrument_id, Money(maintenance, USDT))
             self.observed.append((ts_now, mark, initial, maintenance))
+            if len(self.observed) > 128:
+                del self.observed[:-128]
 
     def pre_process(self, data) -> None:
         pass
