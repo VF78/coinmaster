@@ -39,6 +39,27 @@ BASELINE_CONFIG: dict[str, Any] = {
     "post_liquidation": "restart_from_reserve_else_pause",
 }
 
+# These §2 fields are intentionally retained in an immutable configuration
+# record so its v0 envelope is explicit.  The native paper node does not yet
+# implement their account/reserve/stop semantics, however.  Accepting a
+# changed value would make the UI claim a risk control is active when it is
+# not, so only the exact inactive v0 setting is valid until each policy has a
+# native execution and recovery implementation.
+_UNIMPLEMENTED_V0_FIELDS: dict[str, Any] = {
+    "initial_active_fraction": 1.0,
+    "include_zero_waves": True,
+    "freeze_sigma_on_first_sol_fill": True,
+    "sol_z_stop": None,
+    "btc_close_stop_fraction": None,
+    "portfolio_loss_limit_fraction": None,
+    "future_sol_margin_fraction": 0.0,
+    "insufficient_margin": "reject",
+    "reserve_transfer_fraction": 0.0,
+    "reserve_trigger_multiple": 4.0,
+    "restart_target": "initial_active_seed",
+    "post_liquidation": "restart_from_reserve_else_pause",
+}
+
 
 class StrategyConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -52,7 +73,13 @@ class StrategyConfig(BaseModel):
     def validate_candidate(self) -> "StrategyConfig":
         for value in (self.initial_total_usdt, self.max_parent_notional):
             if not Decimal(value).is_finite() or Decimal(value) <= 0: raise ValueError("money values must be finite positive decimal strings")
+        if Decimal(self.initial_total_usdt) != Decimal(BASELINE_CONFIG["initial_total_usdt"]):
+            raise ValueError("UNSUPPORTED_PAPER_CONFIG:initial_total_usdt")
         if self.wave_quantiles != sorted(self.wave_quantiles) or self.sol_entry_z != sorted(self.sol_entry_z): raise ValueError("quantiles and z levels must be ordered")
+        for field, expected in _UNIMPLEMENTED_V0_FIELDS.items():
+            actual = getattr(self, field)
+            if actual != expected:
+                raise ValueError(f"UNSUPPORTED_PAPER_CONFIG:{field}")
         return self
 
 class ConfigurationInput(BaseModel):

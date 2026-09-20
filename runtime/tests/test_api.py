@@ -30,6 +30,32 @@ def test_preflight_requires_explicit_valid_beta_and_three_sol_levels() -> None:
         PreflightInput(venue="bybit", btc_notional="90000", beta="0", sol_multipliers=[1, 1.5, 2])
 
 
+@pytest.mark.parametrize(("field", "value"), [
+    ("initial_total_usdt", "9000"),
+    ("initial_active_fraction", 0.9),
+    ("include_zero_waves", False),
+    ("freeze_sigma_on_first_sol_fill", False),
+    ("sol_z_stop", 1.0),
+    ("btc_close_stop_fraction", 0.02),
+    ("portfolio_loss_limit_fraction", 0.1),
+    ("future_sol_margin_fraction", 0.1),
+    ("insufficient_margin", "clip"),
+    ("reserve_transfer_fraction", 0.1),
+    ("reserve_trigger_multiple", 5.0),
+])
+def test_unimplemented_paper_controls_reject_non_v0_values(field, value) -> None:
+    candidate = {**BASELINE_CONFIG, field: value}
+    with pytest.raises(ValueError, match=f"UNSUPPORTED_PAPER_CONFIG:{field}"):
+        StrategyConfig.model_validate(candidate)
+
+
+def test_unimplemented_paper_controls_keep_exact_inactive_v0_values() -> None:
+    config = StrategyConfig.model_validate(BASELINE_CONFIG)
+    assert config.insufficient_margin == "reject"
+    assert config.reserve_transfer_fraction == 0
+    assert config.future_sol_margin_fraction == 0
+
+
 def test_research_catalog_is_read_only_and_backtest_is_an_artifact_reference(tmp_path) -> None:
     app = create_app(str(tmp_path / "control.sqlite"), "test-token")
     assert "/api/v1/research/catalog" in app.openapi()["paths"]
