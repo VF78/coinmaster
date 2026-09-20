@@ -1248,6 +1248,36 @@ def publish_stage_g_confirmed_winner(data_root: Path, confirmation_path: Path) -
     return summary | {"artifact": str(target), "csv": str(csv_path)}
 
 
+def publish_stage_g_max_roi_confirmation(data_root: Path, confirmation_path: Path) -> dict:
+    """Correct Stage G to rank the completed maximum-ROI row after one confirmation."""
+    runs, stem = data_root / "runs", "native-stage-g-joint-closure-v1-confirmed"
+    partial_path = runs / "native-stage-g-joint-closure-v1.partial.json"
+    partial, raw = json.loads(partial_path.read_text()), json.loads(confirmation_path.read_text())
+    completed = list(partial["results"])
+    winner = next(item for item in completed if item["variant_id"] == "g4-btc-7.875")
+    runner_up = next(item for item in completed if item["variant_id"] == "g1-tp-0.2125-0.2125-0.575")
+    confirmation = {"variant_id": "g4-btc-7.875-clean-confirmation", "candidate": winner["candidate"], "candidate_hash": winner["candidate_hash"], "reused": False, **raw}
+    _stage_c_validate_ranked_evidence(completed + [confirmation], data_root)
+    fields = ("terminal_active", "terminal_reserve", "terminal_total", "native_fees", "fills", "liquidation_count", "fee_attribution", "funding")
+    economics_exact = all(winner[field] == confirmation[field] for field in fields)
+    normalized = {}
+    for kind in ("fills", "orders"):
+        hashes = [_normalized_execution_artifact_sha256(_stage_c_artifact_path(data_root, item["execution_artifacts"][kind]["path"])) for item in (winner, confirmation)]
+        if len(set(hashes)) != 1: raise ValueError(f"STAGE_G_MAX_ROI_NORMALIZED_{kind.upper()}_MISMATCH")
+        normalized[kind] = {"sha256": hashes[0], "dropped_columns": ["init_id"], "reason": "Nautilus per-engine UUID"}
+    accepted_7_5_total, stage_f_total = Decimal("138510.36099498"), Decimal("1928707.70729495")
+    compact = lambda item: _stage_b_compact(item, str(accepted_7_5_total), partial_path) | {"delta_vs_stage_f": str(Decimal(item["terminal_total"]) - stage_f_total), "delta_vs_accepted_7_5": str(Decimal(item["terminal_total"]) - accepted_7_5_total)}
+    ordered, top20 = sorted(completed, key=lambda item: Decimal(item["terminal_total"]), reverse=True), sorted(completed, key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:20]
+    rows = [_stage_a_csv_row(item, str(accepted_7_5_total)) | {"delta_vs_stage_f": str(Decimal(item["terminal_total"]) - stage_f_total), "scope": "MAX_ROI_CONFIRMED_ONE_CLEAN_REPRODUCTION"} for item in top20]
+    csv_path, temporary = runs / f"{stem}-top20.csv", runs / f"{stem}-top20.csv.tmp"
+    with temporary.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+    temporary.replace(csv_path)
+    summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC" if economics_exact else "REPRODUCTION_MISMATCH_NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "objective": "terminal TOTAL only", "completed_result_count": len(completed), "ranked_result_count": len(completed), "results": [compact(item) for item in ordered], "top20": [compact(item) for item in top20], "best": compact(winner), "runner_up": compact(runner_up), "fresh_reproduction": {"labels": [winner["variant_id"], confirmation["variant_id"]], "economics_exact": economics_exact, "exact_fields": list(fields), "normalized_execution_artifacts": normalized, "confirmation": compact(confirmation)}, "ranking_correction": {"prior_g1_confirmed_winner": runner_up["variant_id"], "reason": "MAXIMUM_ROI_CRITERION: completed g4-btc-7.875 was economically valid; prior exclusion was procedural only."}, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "confirmation": str(confirmation_path), "confirmation_sha256": sha256_file(confirmation_path), "ranked_evidence_validated": True}, "limitations": ["Exactly one completed clean from-genesis confirmation was run for the maximum completed row.", "No new parameter, grid, boundary extension, or other native simulation was run.", "All results remain diagnostic and are not ranking-eligible for live trading."]}
+    target = runs / f"{stem}.json"; _atomic_json(target, summary)
+    return summary | {"artifact": str(target), "csv": str(csv_path)}
+
+
 def run_native_hypothesis_pass(data_root: Path, stage_d_report: Path) -> dict:
     """Sequential independent H1/H3/H4 tests over a reused Stage-D H0."""
     runs, stem = data_root / "runs", "native-hypothesis-pass-v1"
