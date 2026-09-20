@@ -9,6 +9,21 @@ from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.native_paper_node import NativePaperNode
 
 
+class SubmissionJournal:
+    """Strategy callback adapter for pre-submit durable recovery evidence."""
+    def __init__(self, runtime: PaperRuntime) -> None:
+        self.runtime = runtime
+
+    def __call__(self, **kwargs) -> bool:
+        return self.runtime.record_submission(**kwargs)
+
+    def acknowledge(self, client_order_id: str) -> None:
+        self.runtime.acknowledge_submission(client_order_id)
+
+    def terminal(self, client_order_id: str) -> None:
+        self.runtime.terminal_submission(client_order_id)
+
+
 class Worker:
     def __init__(self) -> None:
         if os.getenv("COINMASTER_LIVE_ENABLED", "false").lower() != "false":
@@ -18,15 +33,23 @@ class Worker:
         self.runtime = PaperRuntime(Path(os.environ.get("COINMASTER_PAPER_DB", "var/paper/paper.sqlite")), os.environ.get("COINMASTER_PAPER_OWNER", "coinmaster-paper"), int(120e9))
         self.runtime.acquire()
         self.mode = "paper"
+        self._poll_lock = threading.Lock()
+        self._poll_stop = threading.Event()
+        self._poll_thread: threading.Thread | None = None
+        self.poll_interval_s = float(os.environ.get("COINMASTER_PAPER_POLL_INTERVAL_SECS", "5"))
+        if self.poll_interval_s <= 0:
+            raise RuntimeError("PAPER_POLL_INTERVAL_MUST_BE_POSITIVE")
         manifest = Path(os.environ.get("COINMASTER_PAPER_HISTORY_MANIFEST", "var/data/paper-warmup-manifest.json"))
         self.native = NativePaperNode(
             manifest,
             native_event_sink=self.runtime.record_native_event,
-            entries_gate=lambda: self.runtime.health(time.time_ns()).safe_for_increase,
+            entries_gate=lambda: self.recovery_state == "FLAT_RESTART" and self.runtime.health(time.time_ns()).safe_for_increase,
+            submission_sink=SubmissionJournal(self.runtime),
             strategy_name=os.environ.get("COINMASTER_PAPER_STRATEGY_CONFIG", "corrected-v0"),
         )
         self.native.prime()
-        self.reconciled = self.runtime.reconcile(positions=[], orders=[])
+        self.recovery_state = self.runtime.recovery_state()
+        self.reconciled = self.recovery_state == "FLAT_RESTART" and self.runtime.reconcile(positions=[], orders=[])
         self.native.start()
 
     def _positions(self) -> list[dict]:
@@ -40,21 +63,41 @@ class Worker:
         return sorted(({"client_order_id": str(item.client_order_id)} for item in self.native.node.cache.orders_open()), key=lambda item: item["client_order_id"])
 
     def poll(self) -> None:
-        status = self.native.status()
-        now_ns = time.time_ns()
-        positions, orders = self._positions(), self._orders()
-        position_by_id = {item["instrument_id"]: item for item in positions}
-        # The pinned live SandboxExecutionClient has no supported account cash
-        # adjustment method.  Funding is therefore an explicitly labelled
-        # model ledger, never a rate-receipt or native cash posting.
-        for event in self.native.feed.due_funding(now_ns):
-            position = position_by_id.get(event["instrument_id"])
-            signed_quantity = Decimal(position["signed_quantity"]) if position else Decimal("0")
-            self.runtime.record_modelled_funding(
-                event_id=event["event_id"], instrument_id=event["instrument_id"], settlement_ns=event["settlement_ns"],
-                rate=event["rate"], mark=event["mark"], signed_quantity=signed_quantity,
-            )
-        self.runtime.snapshot(ts_ns=now_ns, positions=positions, orders=orders, funding_event_ids=self.runtime.funding_event_ids(), reconciled=self.reconciled)
+        with self._poll_lock:
+            now_ns = time.time_ns()
+            if self.recovery_state != "FLAT_RESTART":
+                # Preserve the prior durable state rather than overwriting it
+                # with the fresh process' empty Sandbox cache.
+                self.runtime.heartbeat(now_ns)
+                return
+            positions, orders = self._positions(), self._orders()
+            position_by_id = {item["instrument_id"]: item for item in positions}
+            for event in self.native.feed.due_funding(now_ns):
+                position = position_by_id.get(event["instrument_id"])
+                signed_quantity = Decimal(position["signed_quantity"]) if position else Decimal("0")
+                self.runtime.record_modelled_funding(
+                    event_id=event["event_id"], instrument_id=event["instrument_id"], settlement_ns=event["settlement_ns"],
+                    rate=event["rate"], mark=event["mark"], signed_quantity=signed_quantity,
+                )
+            self.runtime.snapshot(ts_ns=now_ns, positions=positions, orders=orders, funding_event_ids=self.runtime.funding_event_ids(), reconciled=self.reconciled)
+
+    def start_polling(self) -> None:
+        self.poll()
+        self._poll_thread = threading.Thread(target=self._poll_loop, name="coinmaster-paper-poll", daemon=True)
+        self._poll_thread.start()
+
+    def _poll_loop(self) -> None:
+        next_tick = time.monotonic()
+        while not self._poll_stop.is_set():
+            self.poll()
+            next_tick += self.poll_interval_s
+            self._poll_stop.wait(max(0, next_tick - time.monotonic()))
+
+    def shutdown(self) -> None:
+        self._poll_stop.set()
+        if self._poll_thread is not None:
+            self._poll_thread.join(timeout=self.poll_interval_s + 1)
+        self.runtime.close()
 
     def status(self) -> dict:
         health = self.runtime.health(time.time_ns())
@@ -64,6 +107,7 @@ class Worker:
             "safe_for_increase": health.safe_for_increase and native["state"] == "READY",
             "warnings": health.warnings,
             "reconciliation": "RECONCILED" if self.reconciled else "SANDBOX_STATE_MISMATCH",
+            "recovery_state": self.recovery_state,
             "funding_posting_state": "MODELLED_LEDGER_UNPOSTED_NO_SUPPORTED_SANDBOX_CASH_ADJUSTMENT",
             "funding_ledger_event_ids": self.runtime.funding_event_ids(),
         })
@@ -85,11 +129,11 @@ class Worker:
 
 
 def main() -> None:
-    worker = Worker(); worker.poll()
+    worker = Worker(); worker.start_polling()
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
             if self.path not in {"/health", "/status"}: self.send_error(404); return
-            worker.poll(); body = json.dumps(worker.status()).encode(); self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(body)
+            body = json.dumps(worker.status()).encode(); self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(body)
         def do_POST(self):
             if self.path != "/commands": self.send_error(404); return
             expected = os.environ.get("COINMASTER_PAPER_CONTROL_TOKEN")
@@ -103,8 +147,13 @@ def main() -> None:
             body = json.dumps(result).encode(); self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(body)
         def log_message(self, *_): pass
     server = HTTPServer((os.environ.get("COINMASTER_PAPER_HOST", "127.0.0.1"), int(os.environ.get("COINMASTER_PAPER_PORT", "18181"))), Handler)
-    def stop(*_): threading.Thread(target=server.shutdown, daemon=True).start()
+    def stop(*_):
+        worker._poll_stop.set()
+        threading.Thread(target=server.shutdown, daemon=True).start()
     signal.signal(signal.SIGTERM, stop); signal.signal(signal.SIGINT, stop)
-    server.serve_forever(); server.server_close()
+    try:
+        server.serve_forever()
+    finally:
+        server.server_close(); worker.shutdown()
 
 if __name__ == "__main__": main()

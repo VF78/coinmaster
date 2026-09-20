@@ -65,29 +65,40 @@ def test_command_rejects_unknown_action_without_consuming_idempotency_key(tmp_pa
     runtime.close()
 
 
-def test_open_sandbox_group_reconciles_after_crash_before_order_ack_without_reenabling_risk(tmp_path) -> None:
-    """Isolated restart proof: submit persisted, ACK/journal callback lost.
-
-    This models a native Sandbox client order that exists in its cache after a
-    process crash, while `paper_events` has no corresponding `order` entry.
-    The matching restored group reconciles; an unknown/missing order does not.
-    Neither path can make increases safe while an order remains open.
-    """
+def test_open_sandbox_group_after_crash_enters_manage_only_without_reenabling_risk(tmp_path) -> None:
+    """Sandbox has no supported process-to-process group restoration."""
     path = tmp_path / "paper.sqlite"
     open_group_positions = [{"instrument_id": "BTCUSDT-LINEAR.BYBIT", "signed_quantity": "1.000"}]
     open_group_orders = [{"client_order_id": "SANDBOX-OPEN-GROUP-ENTRY-1"}]
     submitted = PaperRuntime(path, "paper", 1_000)
     submitted.acquire()
     submitted.snapshot(ts_ns=100, positions=open_group_positions, orders=open_group_orders, funding_event_ids=[])
-    # Deliberately no record_native_event(..., "order"): crash after submit,
-    # before the native order ACK reached the durable event journal.
+    assert submitted.record_submission(
+        client_order_id="SANDBOX-OPEN-GROUP-ENTRY-1", intent_id="intent-1", episode_id="episode-1",
+        action="BTC_ENTRY", instrument_id="BTCUSDT-LINEAR.BYBIT", quantity="1.000", reduce_only=False,
+    )
+    # Deliberately no order ACK: crash after submit, before callback.
     submitted.close()
 
     restarted = PaperRuntime(path, "paper", 1_000)
     restarted.acquire()
-    assert restarted.reconcile(positions=open_group_positions, orders=open_group_orders)
-    restarted.snapshot(ts_ns=101, positions=open_group_positions, orders=open_group_orders, funding_event_ids=[], reconciled=True)
+    assert restarted.recovery_state() == "MANAGE_ONLY_PENDING_INTENT"
+    assert not restarted.reconcile(positions=open_group_positions, orders=open_group_orders)
+    restarted.heartbeat(101)
     assert restarted.health(101).safe_for_increase is False
-    assert restarted.health(101).warnings == ("UNRECONCILED_ORDERS",)
-    assert not restarted.reconcile(positions=open_group_positions, orders=[])
+    assert restarted.health(101).warnings == ("MANAGE_ONLY_PENDING_INTENT", "SANDBOX_RECONCILIATION_MISMATCH", "UNRECONCILED_ORDERS")
+    assert not restarted.record_submission(
+        client_order_id="SANDBOX-OPEN-GROUP-ENTRY-1", intent_id="intent-1", episode_id="episode-1",
+        action="BTC_ENTRY", instrument_id="BTCUSDT-LINEAR.BYBIT", quantity="1.000", reduce_only=False,
+    )
+    restarted.close()
+
+
+def test_flat_restart_is_the_only_automatic_reconciliation_path(tmp_path) -> None:
+    runtime = PaperRuntime(tmp_path / "paper.sqlite", "paper", 1_000)
+    runtime.acquire(); runtime.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[]); runtime.close()
+    restarted = PaperRuntime(tmp_path / "paper.sqlite", "paper", 1_000)
+    restarted.acquire()
+    assert restarted.recovery_state() == "FLAT_RESTART"
+    assert restarted.reconcile(positions=[], orders=[])
     restarted.close()

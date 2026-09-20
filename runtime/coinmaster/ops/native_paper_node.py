@@ -353,7 +353,7 @@ class FeedObserver(Strategy):
 
 class NativePaperNode:
     """Owns a single native node and the public-feed warmup/readiness gates."""
-    def __init__(self, history_manifest: Path, native_event_sink: Callable[[str, str], bool] | None = None, entries_gate: Callable[[], bool] | None = None, strategy_name: str = "corrected-v0") -> None:
+    def __init__(self, history_manifest: Path, native_event_sink: Callable[[str, str], bool] | None = None, entries_gate: Callable[[], bool] | None = None, submission_sink: object | None = None, strategy_name: str = "corrected-v0") -> None:
         if os.getenv("COINMASTER_LIVE_ENABLED", "false").lower() != "false":
             raise RuntimeError("PAPER_WORKER_REFUSES_LIVE_ENABLED")
         self.scrubbed_environment = scrub_private_execution_environment()
@@ -363,6 +363,7 @@ class NativePaperNode:
         self.candidate = paper_candidate(strategy_name)
         self.strategy_hash = candidate_hash(strategy_name, self.candidate)
         self.entries_gate = entries_gate
+        self.submission_sink = submission_sink
         self.loop = asyncio.new_event_loop()
         self.config = native_paper_node_config()
         assert_sandbox_only(self.config, EXECUTION_FACTORY_ALLOWLIST)
@@ -430,6 +431,7 @@ class NativePaperNode:
                 entries_enabled=self.history_ready,
                 entries_gate=self._entries_enabled,
                 event_sink=self.feed.native_event_sink,
+                submission_sink=self.submission_sink,
             ))
             self.node.trader.add_strategy(self.strategy)
         except Exception as error:

@@ -44,6 +44,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     entries_enabled: bool = True
     entries_gate: object | None = None
     event_sink: object | None = None
+    submission_sink: object | None = None
     live_mark_client_id: ClientId | None = None
     btc_signal_data_type: DataType | None = None
     sol_signal_data_type: DataType | None = None
@@ -287,7 +288,8 @@ class WaveOverlayStrategy(Strategy):
                 instrument = self.cache.instrument(tick.instrument_id)
                 if position is not None and instrument is not None:
                     order = self.order_factory.market(instrument_id=tick.instrument_id, order_side=OrderSide.SELL if position.is_long else OrderSide.BUY, quantity=instrument.make_qty(position.quantity.as_decimal()), time_in_force=TimeInForce.IOC, reduce_only=True)
-                    self._liquidation_submitted.add(tick.instrument_id); self._liquidation_orders.add(str(order.client_order_id)); self.submit_order(order)
+                    if self._record_submission(order, f"liquidation:{order.client_order_id}", "liquidation", "LIQUIDATION_CLOSE"):
+                        self._liquidation_submitted.add(tick.instrument_id); self._liquidation_orders.add(str(order.client_order_id)); self.submit_order(order)
             return
         for item in list(self._queued_intents):
             intent, sigma, index = item
@@ -339,6 +341,8 @@ class WaveOverlayStrategy(Strategy):
                     continue
                 side = OrderSide.SELL if position.is_long else OrderSide.BUY
                 order = self.order_factory.market(instrument_id=position.instrument_id, order_side=side, quantity=instrument.make_qty(position.quantity.as_decimal()), time_in_force=TimeInForce.IOC, reduce_only=True)
+                if not self._record_submission(order, intent.id, intent.episode_id, intent.action):
+                    continue
                 self._pending_by_order[str(order.client_order_id)] = intent
                 self._sigma_by_order[str(order.client_order_id)] = sigma
                 self._decision_index_by_order[str(order.client_order_id)] = decision_index
@@ -380,6 +384,9 @@ class WaveOverlayStrategy(Strategy):
             self._domain.on_parent_terminal(intent.id)
             return
         order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
+        if not self._record_submission(order, intent.id, intent.episode_id, intent.action):
+            self._domain.on_parent_terminal(intent.id)
+            return
         self._pending_by_order[str(order.client_order_id)] = intent
         # Preserve the sigma from the decision in the native order tag map, rather
         # than recalculating it after a later fill.
@@ -410,6 +417,8 @@ class WaveOverlayStrategy(Strategy):
                 time_in_force=TimeInForce.IOC,
                 reduce_only=True,
             )
+            if not self._record_submission(order, f"terminal:{order.client_order_id}", "terminal", "TERMINAL_CLOSE"):
+                continue
             self._terminal_order_ids.add(str(order.client_order_id))
             self.terminal_lifecycle["status"] = "CLOSE_SUBMITTED"
             self.submit_order(order)
@@ -469,6 +478,7 @@ class WaveOverlayStrategy(Strategy):
             self._domain.on_half_exit_decision(self._decision_index_by_order[str(event.client_order_id)])
         order = self.cache.order(event.client_order_id)
         if order is not None and order.is_closed:
+            self._terminal_submission(str(event.client_order_id))
             self._domain.on_parent_terminal(intent.id)
             self._pending_by_order.pop(str(event.client_order_id), None)
             self._sigma_by_order.pop(str(event.client_order_id), None)
@@ -483,6 +493,7 @@ class WaveOverlayStrategy(Strategy):
                 self._advance_current_day()
 
     def on_order_canceled(self, event: OrderCanceled) -> None:
+        self._terminal_submission(str(event.client_order_id))
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
         self._sigma_by_order.pop(str(event.client_order_id), None)
         self._decision_index_by_order.pop(str(event.client_order_id), None)
@@ -491,6 +502,7 @@ class WaveOverlayStrategy(Strategy):
 
     def on_order_event(self, event) -> None:
         self._record_native_event(str(event.client_order_id), "order")
+        self._acknowledge_submission(str(event.client_order_id))
 
     def on_position_event(self, event) -> None:
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
@@ -539,6 +551,7 @@ class WaveOverlayStrategy(Strategy):
         self._terminal_without_fill(str(event.client_order_id))
 
     def _terminal_without_fill(self, client_order_id: str) -> None:
+        self._terminal_submission(client_order_id)
         intent = self._pending_by_order.pop(client_order_id, None)
         self._sigma_by_order.pop(client_order_id, None)
         self._decision_index_by_order.pop(client_order_id, None)
@@ -553,3 +566,26 @@ class WaveOverlayStrategy(Strategy):
         sink = self.config.event_sink
         if callable(sink):
             sink(event_id, kind)
+
+    def _record_submission(self, order, intent_id: str, episode_id: str, action: str) -> bool:
+        sink = self.config.submission_sink
+        if not callable(sink):
+            return True
+        return bool(sink(
+            client_order_id=str(order.client_order_id), intent_id=intent_id, episode_id=episode_id,
+            action=action, instrument_id=str(order.instrument_id), quantity=str(order.quantity), reduce_only=bool(order.is_reduce_only),
+        ))
+
+    def _acknowledge_submission(self, client_order_id: str) -> None:
+        sink = self.config.submission_sink
+        if callable(sink):
+            acknowledge = getattr(sink, "acknowledge", None)
+            if callable(acknowledge):
+                acknowledge(client_order_id)
+
+    def _terminal_submission(self, client_order_id: str) -> None:
+        sink = self.config.submission_sink
+        if callable(sink):
+            terminal = getattr(sink, "terminal", None)
+            if callable(terminal):
+                terminal(client_order_id)
