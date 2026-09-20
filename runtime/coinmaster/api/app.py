@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import sqlite3
+import threading
 from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -17,6 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, build_engine, quote
 from coinmaster.research.catalog import RESEARCH_CATALOG
+from coinmaster.api.research_jobs import ResearchJobManager
 from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 
@@ -95,7 +97,8 @@ class ConfigurationRecord(BaseModel):
 
 class RunInput(BaseModel):
     config_id: str
-    kind: Literal["fixture", "backtest", "paper"]
+    kind: Literal["fixture", "backtest", "paper", "research"]
+    research_command: str | None = None
 
 
 class RunRecord(BaseModel):
@@ -106,6 +109,15 @@ class RunRecord(BaseModel):
     evidence: list[str]
     created_at: str
     report: dict[str, Any] | None = None
+    request_hash: str | None = None
+    command_name: str | None = None
+    pid: int | None = None
+    process_group: int | None = None
+    started_at: str | None = None
+    heartbeat_at: str | None = None
+    progress: int | None = None
+    cancel_requested_at: str | None = None
+    finished_at: str | None = None
 
 
 class ResearchCatalogEntry(BaseModel):
@@ -142,6 +154,7 @@ def utcnow() -> str:
 class ControlStore:
     def __init__(self, database: str) -> None:
         Path(database).parent.mkdir(parents=True, exist_ok=True)
+        self.lock = threading.RLock()
         self.db = sqlite3.connect(database, check_same_thread=False)
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.executescript("""
@@ -156,45 +169,86 @@ class ControlStore:
                 idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL, created_at TEXT NOT NULL, result TEXT NOT NULL
             );
         """)
+        columns = {row[1] for row in self.db.execute("PRAGMA table_info(runs)")}
+        for name, definition in (
+            ("request_hash", "TEXT"), ("command_name", "TEXT"), ("pid", "INTEGER"),
+            ("process_group", "INTEGER"), ("started_at", "TEXT"), ("heartbeat_at", "TEXT"),
+            ("progress", "INTEGER"), ("cancel_requested_at", "TEXT"), ("finished_at", "TEXT"),
+        ):
+            if name not in columns:
+                self.db.execute(f"ALTER TABLE runs ADD COLUMN {name} {definition}")
+        self.db.commit()
 
     def save_config(self, config: StrategyConfig) -> ConfigurationRecord:
-        config = config.model_dump()
-        body = json.dumps(config, sort_keys=True, separators=(",", ":"))
-        record = ConfigurationRecord(id=str(uuid4()), config_hash=hashlib.sha256(body.encode()).hexdigest(), created_at=utcnow(), config=config)
-        self.db.execute("INSERT INTO configurations VALUES (?, ?, ?, ?)", (record.id, record.config_hash, record.created_at, body))
-        self.db.commit()
-        return record
+        with self.lock:
+            config = config.model_dump()
+            body = json.dumps(config, sort_keys=True, separators=(",", ":"))
+            record = ConfigurationRecord(id=str(uuid4()), config_hash=hashlib.sha256(body.encode()).hexdigest(), created_at=utcnow(), config=config)
+            self.db.execute("INSERT INTO configurations VALUES (?, ?, ?, ?)", (record.id, record.config_hash, record.created_at, body))
+            self.db.commit()
+            return record
 
     def configs(self) -> list[ConfigurationRecord]:
-        return [ConfigurationRecord(id=row[0], config_hash=row[1], created_at=row[2], config=StrategyConfig.model_validate_json(row[3])) for row in self.db.execute("SELECT id, config_hash, created_at, body FROM configurations ORDER BY created_at DESC")]
+        with self.lock:
+            return [ConfigurationRecord(id=row[0], config_hash=row[1], created_at=row[2], config=StrategyConfig.model_validate_json(row[3])) for row in self.db.execute("SELECT id, config_hash, created_at, body FROM configurations ORDER BY created_at DESC")]
 
     def get_config(self, config_id: str) -> ConfigurationRecord:
-        row = self.db.execute("SELECT id, config_hash, created_at, body FROM configurations WHERE id = ?", (config_id,)).fetchone()
-        if row is None:
-            raise KeyError(config_id)
-        return ConfigurationRecord(id=row[0], config_hash=row[1], created_at=row[2], config=StrategyConfig.model_validate_json(row[3]))
+        with self.lock:
+            row = self.db.execute("SELECT id, config_hash, created_at, body FROM configurations WHERE id = ?", (config_id,)).fetchone()
+            if row is None:
+                raise KeyError(config_id)
+            return ConfigurationRecord(id=row[0], config_hash=row[1], created_at=row[2], config=StrategyConfig.model_validate_json(row[3]))
 
     def save_run(self, record: RunRecord) -> RunRecord:
-        self.db.execute("INSERT INTO runs VALUES (?, ?, ?, ?, ?, ?, ?)", (record.id, record.config_id, record.kind, record.status, json.dumps(record.evidence), record.created_at, json.dumps(record.report) if record.report else None))
-        self.db.commit()
-        return record
+        with self.lock:
+            self.db.execute(
+                "INSERT INTO runs (id,config_id,kind,status,evidence,created_at,report,request_hash,command_name,pid,process_group,started_at,heartbeat_at,progress,cancel_requested_at,finished_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (record.id, record.config_id, record.kind, record.status, json.dumps(record.evidence), record.created_at, json.dumps(record.report) if record.report else None, record.request_hash, record.command_name, record.pid, record.process_group, record.started_at, record.heartbeat_at, record.progress, record.cancel_requested_at, record.finished_at),
+            )
+            self.db.commit()
+            return record
 
     def get_run(self, run_id: str) -> RunRecord:
-        row = self.db.execute("SELECT id, config_id, kind, status, evidence, created_at, report FROM runs WHERE id = ?", (run_id,)).fetchone()
-        if row is None:
-            raise KeyError(run_id)
-        return RunRecord(id=row[0], config_id=row[1], kind=row[2], status=row[3], evidence=json.loads(row[4]), created_at=row[5], report=json.loads(row[6]) if row[6] else None)
+        with self.lock:
+            row = self.db.execute("SELECT id,config_id,kind,status,evidence,created_at,report,request_hash,command_name,pid,process_group,started_at,heartbeat_at,progress,cancel_requested_at,finished_at FROM runs WHERE id = ?", (run_id,)).fetchone()
+            if row is None:
+                raise KeyError(run_id)
+            return RunRecord(id=row[0], config_id=row[1], kind=row[2], status=row[3], evidence=json.loads(row[4]), created_at=row[5], report=json.loads(row[6]) if row[6] else None, request_hash=row[7], command_name=row[8], pid=row[9], process_group=row[10], started_at=row[11], heartbeat_at=row[12], progress=row[13], cancel_requested_at=row[14], finished_at=row[15])
 
     def runs(self) -> list[RunRecord]:
-        return [self.get_run(row[0]) for row in self.db.execute("SELECT id FROM runs ORDER BY created_at DESC")]
+        with self.lock:
+            ids = [row[0] for row in self.db.execute("SELECT id FROM runs ORDER BY created_at DESC")]
+        return [self.get_run(run_id) for run_id in ids]
 
     def cancel(self, run_id: str) -> RunRecord:
-        run = self.get_run(run_id)
-        if run.status == "QUEUED":
-            self.db.execute("UPDATE runs SET status = ? WHERE id = ?", ("CANCELED", run_id))
-            self.db.commit()
+        with self.lock:
+            run = self.get_run(run_id)
+            if run.status == "QUEUED":
+                self.db.execute("UPDATE runs SET status = ?, finished_at = ? WHERE id = ?", ("CANCELED", utcnow(), run_id))
+                self.db.commit()
             return self.get_run(run_id)
-        return run
+
+    def update_run(self, run_id: str, **values: Any) -> RunRecord:
+        if not values:
+            return self.get_run(run_id)
+        allowed = {"status", "evidence", "report", "pid", "process_group", "started_at", "heartbeat_at", "progress", "cancel_requested_at", "finished_at"}
+        if set(values) - allowed:
+            raise ValueError("unsupported run update")
+        with self.lock:
+            fields, params = [], []
+            for key, value in values.items():
+                fields.append(f"{key}=?")
+                params.append(json.dumps(value) if key in {"evidence", "report"} else value)
+            self.db.execute(f"UPDATE runs SET {','.join(fields)} WHERE id=?", (*params, run_id))
+            self.db.commit()
+        return self.get_run(run_id)
+
+    def reconcile_orphaned_research(self) -> None:
+        with self.lock:
+            rows = self.db.execute("SELECT id,evidence FROM runs WHERE kind='research' AND status IN ('RUNNING','CANCEL_REQUESTED')").fetchall()
+            for run_id, evidence in rows:
+                self.db.execute("UPDATE runs SET status=?, evidence=?, finished_at=? WHERE id=?", ("INTERRUPTED", json.dumps([*json.loads(evidence), "CONTROL_RESTART_ORPHANED_PROCESS"]), utcnow(), run_id))
+            self.db.commit()
 
 
 def fixture_report() -> dict[str, Any]:
@@ -251,8 +305,9 @@ def immutable_research_reference() -> tuple[list[str], dict[str, Any]]:
     return ["IMMUTABLE_RESEARCH_REFERENCE", "NO_NEW_BACKTEST_COMPUTE", selected["classification"], state], {"catalog_id": selected["id"], "artifact": selected["artifact"], "sha256": selected["sha256"], "artifact_state": state, "reason": "This request references immutable native research evidence; a separate research worker is required for any new computation."}
 
 
-def create_app(database: str | None = None, token: str | None = None, include_legacy_runtime: bool = True) -> FastAPI:
+def create_app(database: str | None = None, token: str | None = None, include_legacy_runtime: bool = True, research_commands: dict[str, list[str]] | None = None, research_data_root: Path | None = None) -> FastAPI:
     store = ControlStore(database or os.getenv("COINMASTER_CONTROL_DB", str(Path(__file__).resolve().parents[2] / "var/coinmaster-control.sqlite")))
+    research = ResearchJobManager(store, research_data_root or Path(os.getenv("COINMASTER_RESEARCH_DATA_ROOT", str(Path(__file__).resolve().parents[2] / "var/data"))), research_commands)
     expected_token = token if token is not None else os.getenv("COINMASTER_API_TOKEN")
     app = FastAPI(title="Coinmaster Nautilus Control API", version="0.1.0", docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json")
     app.add_middleware(CORSMiddleware, allow_origins=[os.getenv("COINMASTER_ALLOWED_ORIGIN", "http://localhost:5173")], allow_credentials=False, allow_methods=["GET", "POST"], allow_headers=["Authorization", "Idempotency-Key"])
@@ -315,8 +370,13 @@ def create_app(database: str | None = None, token: str | None = None, include_le
 
     @app.post("/api/v1/runs", response_model=RunRecord, dependencies=[Depends(auth)])
     def create_run(input: RunInput) -> RunRecord:
-        try: store.get_config(input.config_id)
+        try: config = store.get_config(input.config_id)
         except KeyError as error: raise HTTPException(404, "configuration not found") from error
+        if input.kind == "research":
+            try:
+                return research.start(config, input.research_command)
+            except ValueError as error:
+                raise HTTPException(422, str(error)) from error
         run = RunRecord(id=str(uuid4()), config_id=input.config_id, kind=input.kind, created_at=utcnow(), status="QUEUED", evidence=[], report=None)
         if input.kind == "fixture":
             run.status, run.evidence, run.report = "COMPLETED", ["SYNTHETIC_P1_FIXTURE", "NOT_REAL_DATA", "NOT_RANKABLE"], fixture_report()
@@ -326,16 +386,21 @@ def create_app(database: str | None = None, token: str | None = None, include_le
         return store.save_run(run)
 
     @app.get("/api/v1/runs", response_model=list[RunRecord], dependencies=[Depends(auth)])
-    def list_runs() -> list[RunRecord]: return store.runs()
+    def list_runs() -> list[RunRecord]:
+        return [research.refresh(run.id) if run.kind == "research" else run for run in store.runs()]
 
     @app.get("/api/v1/runs/{run_id}", response_model=RunRecord, dependencies=[Depends(auth)])
     def get_run(run_id: str) -> RunRecord:
-        try: return store.get_run(run_id)
+        try:
+            run = store.get_run(run_id)
+            return research.refresh(run_id) if run.kind == "research" else run
         except KeyError as error: raise HTTPException(404, "run not found") from error
 
     @app.post("/api/v1/runs/{run_id}/cancel", response_model=RunRecord, dependencies=[Depends(auth)])
     def cancel_run(run_id: str) -> RunRecord:
-        try: return store.cancel(run_id)
+        try:
+            run = store.get_run(run_id)
+            return research.cancel(run_id) if run.kind == "research" else store.cancel(run_id)
         except KeyError as error: raise HTTPException(404, "run not found") from error
 
     @app.get("/api/v1/runs/{run_id}/report", dependencies=[Depends(auth)])

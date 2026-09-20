@@ -15,6 +15,7 @@ const required = [
   ['backtest control states it is an artifact reference', 'Reference selected native research'],
   ['API exposes the immutable catalog request', "request<ResearchCatalogEntry[]>('/research/catalog')"],
   ['unsupported paper risk controls are visibly fixed', 'Unsupported risk, reserve and restart policies are locked to their inactive v0 values.'],
+  ['research exposes an isolated native subprocess action', 'Start native research'],
 ] as const;
 
 let failed = 0;

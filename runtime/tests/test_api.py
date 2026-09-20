@@ -1,4 +1,8 @@
-from coinmaster.api.app import BASELINE_CONFIG, ControlStore, PreflightInput, StrategyConfig, _catalog_entry, immutable_research_reference, create_app, fixture_report
+import sys
+import time
+
+from coinmaster.api.app import BASELINE_CONFIG, ControlStore, PreflightInput, RunRecord, StrategyConfig, _catalog_entry, immutable_research_reference, create_app, fixture_report, utcnow
+from coinmaster.api.research_jobs import ResearchJobManager
 from coinmaster.research.catalog import RESEARCH_CATALOG
 import pytest
 
@@ -54,6 +58,78 @@ def test_unimplemented_paper_controls_keep_exact_inactive_v0_values() -> None:
     assert config.insufficient_margin == "reject"
     assert config.reserve_transfer_fraction == 0
     assert config.future_sol_margin_fraction == 0
+
+
+def _wait_for_terminal(manager: ResearchJobManager, run_id: str):
+    for _ in range(100):
+        run = manager.refresh(run_id)
+        if run.status not in {"RUNNING", "CANCEL_REQUESTED"}:
+            return run
+        time.sleep(0.02)
+    raise AssertionError("research helper did not finish")
+
+
+def _helper(mode: str) -> dict[str, list[str]]:
+    return {mode: [sys.executable, "-m", "coinmaster.research.job_test_helper", "--mode", mode]}
+
+
+def test_research_job_lifecycle_isolated_progressing_and_persists_result(tmp_path) -> None:
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    manager = ResearchJobManager(store, tmp_path / "data", _helper("complete"))
+    run = manager.start(config, "complete")
+    assert run.status == "RUNNING" and run.pid and run.process_group and run.request_hash
+    for _ in range(100):
+        observed = manager.refresh(run.id)
+        if observed.status == "RUNNING" and (observed.progress or 0) >= 10:
+            break
+        time.sleep(0.01)
+    else:
+        raise AssertionError("research helper did not publish progress")
+    terminal = _wait_for_terminal(manager, run.id)
+    assert terminal.status == "COMPLETED" and terminal.progress == 100
+    assert terminal.report == {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "terminal_total": "UNKNOWN_TEST_HELPER"}
+    assert terminal.finished_at and terminal.heartbeat_at
+
+
+def test_research_job_cancellation_only_targets_owned_process_group(tmp_path) -> None:
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    manager = ResearchJobManager(store, tmp_path / "data", _helper("sleep"))
+    run = manager.start(config, "sleep")
+    requested = manager.cancel(run.id)
+    assert requested.status == "CANCEL_REQUESTED" and requested.cancel_requested_at
+    terminal = _wait_for_terminal(manager, run.id)
+    assert terminal.status == "CANCELED"
+    assert "CANCELED_OWNED_PROCESS_GROUP" in terminal.evidence
+
+
+def test_production_research_missing_data_is_blocked_without_spawn(tmp_path) -> None:
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    manager = ResearchJobManager(store, tmp_path / "missing-data")
+    run = manager.start(config, None)
+    assert run.status == "BLOCKED" and run.pid is None
+    assert run.evidence == ["MISSING_1M_MANIFEST"]
+
+
+def test_control_restart_marks_running_research_orphaned(tmp_path) -> None:
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    store.save_run(RunRecord(id="orphan", config_id=config.id, kind="research", status="RUNNING", evidence=["NATIVE_RESEARCH_SUBPROCESS"], created_at=utcnow(), request_hash="hash", command_name="native_baseline", pid=123, process_group=123, started_at=utcnow(), heartbeat_at=utcnow(), progress=10))
+    ResearchJobManager(store, tmp_path / "data")
+    recovered = store.get_run("orphan")
+    assert recovered.status == "INTERRUPTED"
+    assert "CONTROL_RESTART_ORPHANED_PROCESS" in recovered.evidence
+
+
+def test_openapi_exposes_research_lifecycle_status_fields(tmp_path) -> None:
+    spec = create_app(str(tmp_path / "control.sqlite"), "test-token").openapi()
+    run_input = spec["components"]["schemas"]["RunInput"]
+    assert "research" in run_input["properties"]["kind"]["enum"]
+    run = spec["components"]["schemas"]["RunRecord"]
+    for field in ("request_hash", "pid", "process_group", "heartbeat_at", "progress", "cancel_requested_at", "finished_at"):
+        assert field in run["properties"]
 
 
 def test_research_catalog_is_read_only_and_backtest_is_an_artifact_reference(tmp_path) -> None:

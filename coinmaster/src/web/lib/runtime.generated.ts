@@ -386,24 +386,44 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "fixture" | "backtest" | "paper";
+            kind: "fixture" | "backtest" | "paper" | "research";
+            /** Research Command */
+            research_command?: string | null;
         };
         /** RunRecord */
         RunRecord: {
+            /** Cancel Requested At */
+            cancel_requested_at?: string | null;
+            /** Command Name */
+            command_name?: string | null;
             /** Config Id */
             config_id: string;
             /** Created At */
             created_at: string;
             /** Evidence */
             evidence: string[];
+            /** Finished At */
+            finished_at?: string | null;
+            /** Heartbeat At */
+            heartbeat_at?: string | null;
             /** Id */
             id: string;
             /** Kind */
             kind: string;
+            /** Pid */
+            pid?: number | null;
+            /** Process Group */
+            process_group?: number | null;
+            /** Progress */
+            progress?: number | null;
             /** Report */
             report?: {
                 [key: string]: unknown;
             } | null;
+            /** Request Hash */
+            request_hash?: string | null;
+            /** Started At */
+            started_at?: string | null;
             /** Status */
             status: string;
         };

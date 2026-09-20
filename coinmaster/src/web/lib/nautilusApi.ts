@@ -24,7 +24,7 @@ export const getRuns = () => request<Run[]>('/runs');
 export const getResearchCatalog = () => request<ResearchCatalogEntry[]>('/research/catalog');
 export const getResearchCatalogDetail = (id: string) => request<ResearchCatalogDetail>(`/research/catalog/${encodeURIComponent(id)}`);
 export const getConfigurations = () => request<StrategyConfiguration[]>('/configurations');
-export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper') => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind }) });
+export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper' | 'research') => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind }) });
 export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponent(id)}/cancel`, { method: 'POST' });
 export const getRuntime = () => request<RuntimeState>('/runtime');
 export const runtimeCommand = (command: 'pause-new-entries' | 'resume-new-entries' | 'flatten-paper') => request<RuntimeCommandResponse>(`/runtime/commands/${command}`, { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() } });
