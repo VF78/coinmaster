@@ -5,6 +5,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 from time import monotonic
 from dataclasses import asdict, replace
 from decimal import Decimal
@@ -33,6 +34,8 @@ STAGE_A_FURTHER_BOUNDARY_PROFILE = (2.25, 3.375, 4.5)
 # from the final winner.  It has no native execution of its own and is removed
 # only when it still proves that exact alias provenance.
 STAGE_A_SUPERSEDED_NONEXECUTED_REUSE = "a3-btc-4-sol-2.25-3.375-4.5"
+STAGE_B_ID = "stage-b-sol-signal-exit-v1"
+STAGE_B_CONTROL = Candidate(btc_notional_multiplier=4.0, sol_size_multipliers_h=(2.25, 3.375, 4.5))
 
 
 def _atomic_json(path: Path, value: dict) -> None:
@@ -379,6 +382,101 @@ def correct_stage_a_a3_evidence(data_root: Path) -> dict:
     correction["a3_winner"] = {"variant_id": a3_winner["variant_id"], "terminal_total": a3_winner["terminal_total"], "candidate": a3_winner["candidate"]} if a3_winner else None
     _atomic_json(correction_path, correction)
     return correction | {"artifact": str(correction_path)}
+
+
+def _stage_b_variants(stage: str, control: Candidate) -> tuple[tuple[str, Candidate], ...]:
+    """Predeclared, one-axis Stage-B variants; never a Cartesian product."""
+    if stage == "b1":
+        variants = [("b1-uniform-{:+g}".format(shift), replace(control, sol_entry_z=tuple(value + shift for value in control.sol_entry_z))) for shift in (-0.5, -0.25, 0.0, 0.25, 0.5)]
+        variants += [(f"b1-level1-{value:g}", replace(control, sol_entry_z=(value, control.sol_entry_z[1], control.sol_entry_z[2]))) for value in (0.75, 1.0, 1.5, 1.75)]
+        variants += [("b1-shape-1-2-3", replace(control, sol_entry_z=(1.0, 2.0, 3.0))), ("b1-shape-1.5-3-4.5", replace(control, sol_entry_z=(1.5, 3.0, 4.5)))]
+    elif stage == "b2":
+        variants = [(f"b2-half-{value:g}", replace(control, sol_exit_half_z=value)) for value in (0.25, 0.375, 0.5, 0.75)]
+        variants += [(f"b2-all-{value:g}", replace(control, sol_exit_all_z=value)) for value in (0.0, 0.125, 0.25) if value <= control.sol_exit_half_z]
+        variants += [(f"b2-holding-{value}", replace(control, sol_max_holding_days=value)) for value in (7, 14, 21, 28)]
+    elif stage == "b3":
+        variants = [(f"b3-beta-{value}", replace(control, beta_days=value)) for value in (180, 270, 365)]
+        variants += [(f"b3-relative-{value}", replace(control, relative_days=value)) for value in (30, 65, 90)]
+        variants += [(f"b3-z-history-{value}", replace(control, z_history_days=value)) for value in (90, 180, 270)]
+    else:
+        raise ValueError(f"STAGE_B_UNKNOWN_STAGE:{stage}")
+    return tuple((variant_id, candidate) for variant_id, candidate in variants if min(candidate.sol_entry_z) > 0 and candidate.sol_entry_z[0] <= candidate.sol_entry_z[1] <= candidate.sol_entry_z[2])
+
+
+def _stage_b_compact(item: dict, control_total: str, partial_path: Path) -> dict:
+    row = _stage_a_compact_result(item, partial_path)
+    row["delta_vs_accepted_stage_a"] = str(Decimal(item["terminal_total"]) - Decimal(control_total))
+    row["sol_fill_add_level_attribution"] = "UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_SOL_ADD_LEVEL"
+    return row
+
+
+def run_stage_b_sol_search(data_root: Path, stage_a_report: Path) -> dict:
+    """Single-owner, sealed-stage native Stage-B SOL signal/exit search."""
+    runs, stem = data_root / "runs", "native-stage-b-sol-signal-exit-v1"
+    runs.mkdir(parents=True, exist_ok=True)
+    accepted = json.loads(stage_a_report.read_text())
+    if _candidate_tuple_key(accepted.get("best", {}).get("candidate", {})) != _candidate_tuple_key(STAGE_B_CONTROL):
+        raise ValueError("STAGE_B_ACCEPTED_STAGE_A_CANDIDATE_MISMATCH")
+    partial_a = data_root / "runs" / "native-stage-a-sizing-v1.partial.json"
+    if accepted.get("local_evidence", {}).get("checkpoint_sha256") != sha256_file(partial_a):
+        raise ValueError("STAGE_B_ACCEPTED_STAGE_A_EVIDENCE_HASH_MISMATCH")
+    stage_a_source = next((item for item in json.loads(partial_a.read_text())["results"][:42] if item["variant_id"] == accepted["best"]["variant_id"]), None)
+    if not stage_a_source or _candidate_tuple_key(stage_a_source.get("candidate", {})) != _candidate_tuple_key(STAGE_B_CONTROL):
+        raise ValueError("STAGE_B_ACCEPTED_STAGE_A_SOURCE_MISMATCH")
+    meta = {"optimizer_id": STAGE_B_ID, "stage_a_report": str(stage_a_report), "stage_a_report_sha256": sha256_file(stage_a_report), "stage_a_checkpoint_sha256": sha256_file(partial_a), "control_candidate": json.loads(_candidate_tuple_key(STAGE_B_CONTROL)), "control_total": accepted["best"]["terminal_total"], "objective": "terminal TOTAL only; liquidation remains eligible at actual TOTAL", "ranking_eligible_for_live": False}
+    partial_path, lock_path = runs / f"{stem}.partial.json", runs / f"{stem}.lock"
+    try:
+        fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError as error:
+        raise RuntimeError("STAGE_B_SINGLE_PROCESS_LOCK_HELD") from error
+    try:
+        os.write(fd, str(os.getpid()).encode()); os.close(fd)
+        partial = json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance": meta, "results": [], "sealed": {}}
+        if partial.get("provenance") != meta:
+            raise ValueError("STAGE_B_PARTIAL_PROVENANCE_MISMATCH")
+        results, sealed = list(partial["results"]), dict(partial.get("sealed", {}))
+        by_tuple = {_candidate_tuple_key(item["candidate"]): item for item in results}
+        completed = {item["variant_id"] for item in results}
+        def persist() -> None:
+            _atomic_json(partial_path, {"provenance": meta, "results": results, "sealed": sealed})
+        def add(variant_id: str, candidate: Candidate, source: dict | None = None) -> None:
+            if variant_id in completed:
+                return
+            existing = by_tuple.get(_candidate_tuple_key(candidate)) or source
+            item = _stage_a_reuse(variant_id, candidate, existing) if existing else _stage_a_item(variant_id, candidate, data_root, stem)
+            results.append(item); completed.add(variant_id); by_tuple.setdefault(_candidate_tuple_key(candidate), item); persist()
+        def stage(name: str, base: Candidate) -> dict:
+            for variant_id, candidate in _stage_b_variants(name, base):
+                source = stage_a_source if candidate == STAGE_B_CONTROL else None
+                add(variant_id, candidate, source)
+            candidates = [item for item in results if item["variant_id"].startswith(f"{name}-") and item.get("terminal_total") is not None]
+            if not candidates:
+                raise ValueError(f"STAGE_B_EMPTY:{name}")
+            winner = max(candidates, key=lambda item: Decimal(item["terminal_total"]))
+            if name not in sealed:
+                sealed[name] = winner["variant_id"]; persist()
+            return next(item for item in candidates if item["variant_id"] == sealed[name])
+        b1 = stage("b1", STAGE_B_CONTROL)
+        b2 = stage("b2", Candidate(**b1["candidate"]))
+        b3 = stage("b3", Candidate(**b2["candidate"]))
+        joint = Candidate(**b3["candidate"])
+        add("b4-joint", joint)
+        if "b4" not in sealed:
+            sealed["b4"] = "b4-joint"; persist()
+        ranked = [item for item in results if item.get("terminal_total") is not None]
+        top20 = sorted(ranked, key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:20]
+        best = top20[0]
+        csv_path = runs / f"{stem}-top20.csv"
+        rows = [_stage_a_csv_row(item, meta["control_total"]) | {"delta_vs_accepted_stage_a": str(Decimal(item["terminal_total"]) - Decimal(meta["control_total"])), "sol_fill_add_level_attribution": "UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_SOL_ADD_LEVEL"} for item in top20]
+        with csv_path.with_suffix(".csv.tmp").open("w", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+        csv_path.with_suffix(".csv.tmp").replace(csv_path)
+        summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": meta, "sealed": sealed, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path)}, "result_count": len(results), "results": [_stage_b_compact(item, meta["control_total"], partial_path) for item in results], "top20": [_stage_b_compact(item, meta["control_total"], partial_path) for item in top20], "best": _stage_b_compact(best, meta["control_total"], partial_path), "delta_vs_accepted_stage_a": str(Decimal(best["terminal_total"]) - Decimal(meta["control_total"])), "limitations": ["Stage B only; no Stage C.", "SOL fill/add level attribution is UNKNOWN because native fills do not export the domain add level."]}
+        target = runs / f"{stem}.json"; _atomic_json(target, summary)
+        return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path)}
+    finally:
+        if lock_path.exists():
+            lock_path.unlink()
 
 
 def run_canonical_reentry_btc_pass(

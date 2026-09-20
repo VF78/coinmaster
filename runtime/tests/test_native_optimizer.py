@@ -142,3 +142,26 @@ def test_stage_a_migrates_existing_duplicate_tuple_to_explicit_reuse() -> None:
     assert reconciled[1]["reused"] is True
     assert reconciled[1]["reuse_provenance"]["variant_id"] == "first"
     assert native_optimizer._stage_a_dedupe_existing(reconciled)[1] is False
+
+
+def test_stage_b_is_sealed_sequential_and_reuses_accepted_stage_a_control(tmp_path, monkeypatch) -> None:
+    runs = tmp_path / "runs"; runs.mkdir()
+    control = native_optimizer.STAGE_B_CONTROL
+    source = {"variant_id": "a6-btc-4-sol-2.25-3.375-4.5", "candidate": native_optimizer.asdict(control), "candidate_hash": "stage-a", "terminal_total": "100", "terminal_active": "100", "terminal_reserve": "0", "summary": {"roi": "0", "max_drawdown_percent": "0", "max_drawdown_amount": "0"}, "fee_attribution": {"maker": {"fees": "0", "notional": "0"}, "taker": {"fees": "0", "notional": "0"}, "native_total": "0", "reconciled": True}, "native_fees": "0", "funding": {"signed_amount": "UNKNOWN", "count": 0}, "fills": 0, "liquidation_count": 0, "liquidation_value": "0", "execution_artifacts": {}}
+    stage_a_partial = runs / "native-stage-a-sizing-v1.partial.json"
+    stage_a_partial.write_text(json.dumps({"results": [source]}))
+    stage_a_report = runs / "native-stage-a-sizing-v1.json"
+    stage_a_report.write_text(json.dumps({"best": {"variant_id": source["variant_id"], "candidate": native_optimizer.asdict(control), "terminal_total": "100"}, "local_evidence": {"checkpoint_sha256": native_optimizer.sha256_file(stage_a_partial)}}, sort_keys=True))
+    calls = []
+    def fake_item(variant_id, candidate, *_args, **_kwargs):
+        calls.append(native_optimizer._candidate_tuple_key(candidate))
+        value = str(101 + len(calls))
+        return {**source, "variant_id": variant_id, "candidate": native_optimizer.asdict(candidate), "candidate_hash": variant_id, "terminal_total": value, "terminal_active": value}
+    monkeypatch.setattr(native_optimizer, "_stage_a_item", fake_item)
+    report = native_optimizer.run_stage_b_sol_search(tmp_path, stage_a_report)
+    assert len(calls) == len(set(calls))
+    assert report["result_count"] > 1 and report["sealed"].keys() == {"b1", "b2", "b3", "b4"}
+    call_count = len(calls)
+    resumed = native_optimizer.run_stage_b_sol_search(tmp_path, stage_a_report)
+    assert len(calls) == call_count
+    assert resumed["sealed"] == report["sealed"]
