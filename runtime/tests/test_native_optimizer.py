@@ -222,3 +222,12 @@ def test_hypothesis_corrected_resume_accepts_only_the_replacement_cohort() -> No
     legacy[3] = {"variant_id": "H3-strict-tp-cycle"}
     assert native_optimizer._hypothesis_corrected_resume_is_sealed(corrected)
     assert not native_optimizer._hypothesis_corrected_resume_is_sealed(legacy)
+
+
+def test_stage_e_axes_keep_ema_fixed_and_boundary_extensions_are_single_step() -> None:
+    assert len(native_optimizer.STAGE_E_TP_AXIS) == 6
+    assert all(sum(values) <= 1 for values in native_optimizer.STAGE_E_TP_AXIS)
+    assert native_optimizer.STAGE_E_BTC_AXIS == (3.875, 4.0, 4.125)
+    assert native_optimizer.STAGE_E_SOL_AXIS[1] == (2.0, 3.0, 4.0)
+    winner = {"candidate": native_optimizer.asdict(Candidate(ema_period=34, btc_tp_fractions_initial_qty=(0.175, 0.25, 0.575)))}
+    assert native_optimizer._stage_e_boundary_tp(winner)[0] == "e1-boundary-tp-l1-0.15-0.25-0.575"

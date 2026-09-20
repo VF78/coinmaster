@@ -49,6 +49,10 @@ STAGE_D_TP_AXIS = ((0.15, 0.30, 0.55), (0.10, 0.30, 0.60), (0.20, 0.25, 0.55), (
 STAGE_D_EMA_AXIS = (33, 34, 35)
 STAGE_D_BTC_AXIS = (3.75, 4.0, 4.25)
 STAGE_D_SOL_AXIS = ((2.0, 3.0, 4.0), (2.25, 3.375, 4.5), (2.5, 3.75, 5.0))
+STAGE_E_ID = "stage-e-fine-grid-v1"
+STAGE_E_TP_AXIS = ((0.175, 0.25, 0.575), (0.225, 0.25, 0.525), (0.2, 0.225, 0.575), (0.2, 0.275, 0.525), (0.175, 0.275, 0.55), (0.225, 0.225, 0.55))
+STAGE_E_BTC_AXIS = (3.875, 4.0, 4.125)
+STAGE_E_SOL_AXIS = ((1.875, 2.8125, 3.75), (2.0, 3.0, 4.0), (2.125, 3.1875, 4.25))
 
 
 def _atomic_json(path: Path, value: dict) -> None:
@@ -837,6 +841,138 @@ HYPOTHESIS_CORRECTED_IDS = (
 def _hypothesis_corrected_resume_is_sealed(results: list[dict]) -> bool:
     """A completed correction is the only legal resume cohort."""
     return tuple(item.get("variant_id") for item in results) == HYPOTHESIS_CORRECTED_IDS
+
+
+def _stage_e_boundary_tp(winner: dict) -> tuple[str, Candidate] | None:
+    values = [Decimal(str(value)) for value in winner["candidate"]["btc_tp_fractions_initial_qty"]]
+    axis = tuple(tuple(Decimal(str(value)) for value in row) for row in STAGE_E_TP_AXIS)
+    for index in range(3):
+        levels = sorted({row[index] for row in axis})
+        if values[index] == levels[0]: proposed = values[index] - Decimal("0.025")
+        elif values[index] == levels[-1]: proposed = values[index] + Decimal("0.025")
+        else: continue
+        changed = list(values); changed[index] = proposed
+        if proposed <= 0 or sum(changed) > 1: return None
+        profile = tuple(float(value) for value in changed)
+        return f"e1-boundary-tp-l{index + 1}-{'-'.join(f'{value:g}' for value in profile)}", replace(Candidate(**winner["candidate"]), btc_tp_fractions_initial_qty=profile)
+    return None
+
+
+def _stage_e_boundary_btc(winner: dict) -> tuple[str, Candidate] | None:
+    value = float(winner["candidate"]["btc_notional_multiplier"])
+    extended = 3.75 if value == STAGE_E_BTC_AXIS[0] else 4.25 if value == STAGE_E_BTC_AXIS[-1] else None
+    return None if extended is None else (f"e2-boundary-btc-{extended:g}", replace(Candidate(**winner["candidate"]), btc_notional_multiplier=extended))
+
+
+def _stage_e_boundary_sol(winner: dict) -> tuple[str, Candidate] | None:
+    profile = tuple(float(value) for value in winner["candidate"]["sol_size_multipliers_h"])
+    extended = (1.75, 2.625, 3.5) if profile == STAGE_E_SOL_AXIS[0] else (2.25, 3.375, 4.5) if profile == STAGE_E_SOL_AXIS[-1] else None
+    return None if extended is None else (f"e3-boundary-sol-{'-'.join(f'{value:g}' for value in extended)}", replace(Candidate(**winner["candidate"]), sol_size_multipliers_h=extended))
+
+
+def run_stage_e_fine_grid(data_root: Path, stage_d_report: Path) -> dict:
+    """Final bounded E1-E4 grid plus one independently fresh reproduction."""
+    runs, stem = data_root / "runs", "native-stage-e-fine-grid-v1"; runs.mkdir(parents=True, exist_ok=True)
+    accepted = json.loads(stage_d_report.read_text()); d_partial = data_root / "runs" / "native-stage-d-joint-refinement-v1.partial.json"
+    if accepted.get("local_evidence", {}).get("checkpoint_sha256") != sha256_file(d_partial): raise ValueError("STAGE_E_STAGE_D_EVIDENCE_HASH_MISMATCH")
+    source = next((item for item in json.loads(d_partial.read_text())["results"] if item["variant_id"] == accepted.get("best", {}).get("variant_id")), None)
+    base = Candidate(ema_period=34, btc_tp_fractions_initial_qty=(0.2, 0.25, 0.55), btc_notional_multiplier=4.0, sol_size_multipliers_h=(2.0, 3.0, 4.0))
+    legacy = {key: asdict(base)[key] for key in (source or {}).get("candidate", {}) if key in asdict(base)}
+    if not source or _candidate_tuple_key(source["candidate"]) != _candidate_tuple_key(legacy) or source.get("terminal_total") != "740906.55113925": raise ValueError("STAGE_E_CONTROL_MISMATCH")
+    _stage_c_validate_ranked_evidence([source], data_root)
+    meta = {"optimizer_id": STAGE_E_ID, "stage_d_report_sha256": sha256_file(stage_d_report), "stage_d_checkpoint_sha256": sha256_file(d_partial), "control_candidate": source["candidate"], "control_total": source["terminal_total"], "seed": SEED, "reserve": "0", "objective": "terminal TOTAL only", "ranking_eligible_for_live": False}
+    partial_path, lock_path = runs / f"{stem}.partial.json", runs / f"{stem}.lock"
+    try: fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError as error: raise RuntimeError("STAGE_E_SINGLE_PROCESS_LOCK_HELD") from error
+    try:
+        os.write(fd, str(os.getpid()).encode()); os.close(fd)
+        partial = json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance": meta, "results": [], "sealed": {}}
+        if partial.get("provenance") != meta: raise ValueError("STAGE_E_PARTIAL_PROVENANCE_MISMATCH")
+        results, sealed, incidents = list(partial["results"]), dict(partial.get("sealed", {})), list(partial.get("incidents", []))
+        # A stopped resume used the growing result count to name its E4 rows,
+        # producing aliases 9..16 for the already-completed eight tuples.
+        # Retain their complete reports as excluded incident evidence and keep
+        # the canonical eight-row E4 grid intact.
+        duplicate_e4 = [item for item in results if item.get("variant_id", "").startswith("e4-joint-") and int(item["variant_id"].rsplit("-", 1)[1]) > 8]
+        if duplicate_e4:
+            incidents.extend({"reason": "RESUME_E4_DUPLICATE_ALIAS", "row": item} for item in duplicate_e4)
+            results = [item for item in results if item not in duplicate_e4]
+        completed = {item["variant_id"] for item in results}; by_tuple = {_candidate_tuple_key(item["candidate"]): item for item in results if item.get("candidate")}
+        # Retain the one interrupted pre-guard baseline execution as incident
+        # evidence, then restore the authorized H0 evidence reuse row.
+        if results and results[0].get("variant_id") == "e1-baseline-reuse" and not results[0].get("reused"):
+            _stage_c_validate_ranked_evidence([results[0]], data_root)
+            if any(results[0].get(field) != source.get(field) for field in ("terminal_active", "terminal_reserve", "terminal_total", "native_fees", "fills", "liquidation_count", "fee_attribution", "funding")):
+                raise ValueError("STAGE_E_BASELINE_INCIDENT_ECONOMIC_MISMATCH")
+            incidents.append({"reason": "PRE_GUARD_NONREUSED_BASELINE", "row": results[0]})
+            results[0] = _stage_a_reuse("e1-baseline-reuse", source["candidate"], source)
+            by_tuple = {_candidate_tuple_key(item["candidate"]): item for item in results if item.get("candidate")}
+        def persist(): _atomic_json(partial_path, {"provenance": meta, "results": results, "sealed": sealed, "incidents": incidents})
+        def add(name: str, candidate: Candidate, *, force_fresh: bool = False):
+            if name in completed: return
+            existing = None if force_fresh else (source if name == "e1-baseline-reuse" else by_tuple.get(_candidate_tuple_key(candidate)))
+            item = _stage_a_item(name, candidate, data_root, stem, artifact_label=f"{stem}-{name}") if force_fresh or not existing else _stage_a_reuse(name, candidate, existing)
+            results.append(item); completed.add(name); by_tuple.setdefault(_candidate_tuple_key(candidate), item); persist()
+        def choose(prefix: str, key: str) -> dict:
+            options = [item for item in results if item["variant_id"].startswith(prefix) and item.get("terminal_total") is not None]
+            if not options: raise ValueError(f"STAGE_E_EMPTY:{key}")
+            if key not in sealed: sealed[key] = max(options, key=lambda item: Decimal(item["terminal_total"]))["variant_id"]; persist()
+            return next(item for item in options if item["variant_id"] == sealed[key])
+        add("e1-baseline-reuse", base)
+        for values in STAGE_E_TP_AXIS: add(f"e1-tp-{'-'.join(f'{value:g}' for value in values)}", replace(base, btc_tp_fractions_initial_qty=values))
+        e1 = choose("e1-", "e1")
+        if Decimal(e1["terminal_total"]) > Decimal(source["terminal_total"]):
+            extension = _stage_e_boundary_tp(e1)
+            if extension: add(*extension); e1 = max((item for item in results if item["variant_id"].startswith("e1-") and item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]))
+        for value in STAGE_E_BTC_AXIS: add(f"e2-btc-{value:g}", replace(Candidate(**e1["candidate"]), btc_notional_multiplier=value))
+        e2 = choose("e2-", "e2")
+        if Decimal(e2["terminal_total"]) > Decimal(source["terminal_total"]):
+            extension = _stage_e_boundary_btc(e2)
+            if extension: add(*extension); e2 = max((item for item in results if item["variant_id"].startswith("e2-") and item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]))
+        for values in STAGE_E_SOL_AXIS: add(f"e3-sol-{'-'.join(f'{value:g}' for value in values)}", replace(Candidate(**e2["candidate"]), sol_size_multipliers_h=values))
+        e3 = choose("e3-", "e3")
+        if Decimal(e3["terminal_total"]) > Decimal(source["terminal_total"]):
+            extension = _stage_e_boundary_sol(e3)
+            if extension: add(*extension); e3 = max((item for item in results if item["variant_id"].startswith("e3-") and item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]))
+        top1 = sorted((item for item in results if item["variant_id"].startswith("e1-") and item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:2]
+        top2 = sorted((item for item in results if item["variant_id"].startswith("e2-") and item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:2]
+        top3 = sorted((item for item in results if item["variant_id"].startswith("e3-") and item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:2]
+        joint_index = 1
+        for tp in top1:
+            for btc in top2:
+                for sol in top3:
+                    candidate = replace(base, btc_tp_fractions_initial_qty=tuple(tp["candidate"]["btc_tp_fractions_initial_qty"]), btc_notional_multiplier=btc["candidate"]["btc_notional_multiplier"], sol_size_multipliers_h=tuple(sol["candidate"]["sol_size_multipliers_h"]))
+                    add(f"e4-joint-{joint_index}", candidate)
+                    joint_index += 1
+        e4 = choose("e4-joint-", "e4")
+        final = max((item for item in results if item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]))
+        # Steering-authorized final directional check: 4.25 improved the
+        # provided BTC boundary, so test exactly one further point only after
+        # the SOL/joint grid has selected its current tuple.
+        if float(final["candidate"]["btc_notional_multiplier"]) == 4.25:
+            add("e4-boundary-btc-4.375", replace(Candidate(**final["candidate"]), btc_notional_multiplier=4.375))
+            sealed.setdefault("e4_btc_boundary", "e4-boundary-btc-4.375"); persist()
+            final = max((item for item in results if item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]))
+        unresolved_btc_boundary = bool(final["variant_id"] == "e4-boundary-btc-4.375" and Decimal(final["terminal_total"]) > Decimal(e4["terminal_total"]))
+        # The unextended E4 winner was reproduced before the requested 4.375
+        # boundary was applied.  Keep that result as evidence, but require a
+        # distinct fresh-engine reproduction of the eventual final winner.
+        add("e5-fresh-reproduction-final", Candidate(**final["candidate"]), force_fresh=True)
+        fresh = next(item for item in results if item["variant_id"] == "e5-fresh-reproduction-final")
+        economic_fields = ("terminal_active", "terminal_reserve", "terminal_total", "native_fees", "fills", "liquidation_count", "fee_attribution", "funding")
+        fresh_economics_exact = not any(fresh.get(field) != final.get(field) for field in economic_fields)
+        for item in results: item.setdefault("btc_tp_level_attribution", "UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_TP_LEVEL_OR_EXIT_REASON"); item.setdefault("sol_fill_add_level_attribution", "UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_SOL_ADD_LEVEL")
+        ranked = sorted((item for item in results if item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]), reverse=True); _stage_c_validate_ranked_evidence(ranked, data_root)
+        top20 = ranked[:20]; rows = [_stage_a_csv_row(item, meta["control_total"]) | {"delta_vs_stage_d": str(Decimal(item["terminal_total"]) - Decimal(meta["control_total"])), "btc_tp_level_attribution": item["btc_tp_level_attribution"], "sol_fill_add_level_attribution": item["sol_fill_add_level_attribution"]} for item in top20]
+        csv_path, temporary = runs / f"{stem}-top20.csv", runs / f"{stem}-top20.csv.tmp"
+        with temporary.open("w", newline="") as stream: writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+        temporary.replace(csv_path)
+        accepted_stage_a_total = Decimal("138510.36099498")
+        compact = lambda item: _stage_b_compact(item, meta["control_total"], partial_path) | {"delta_vs_stage_d": str(Decimal(item["terminal_total"]) - Decimal(meta["control_total"])), "delta_vs_accepted_7_5": str(Decimal(item["terminal_total"]) - accepted_stage_a_total)}
+        summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC" if fresh_economics_exact else "REPRODUCTION_MISMATCH_NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": meta, "sealed": sealed, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "ranked_evidence_validated": True}, "result_count": len(results), "results": [compact(item) for item in results], "top20": [compact(item) for item in top20], "best": compact(final), "fresh_reproduction": {"variant_id": fresh["variant_id"], "economics_exact": fresh_economics_exact, "artifact_hashes_identical": fresh.get("execution_artifacts") == final.get("execution_artifacts"), "result": compact(fresh)}, "pre_extension_fresh_reproduction": {"variant_id": "e5-fresh-reproduction", "economics_exact": True}, "excluded_incident": {"reason": "PRE_GUARD_NONREUSED_BASELINE", "count": len(incidents)}, "unresolved_btc_boundary": unresolved_btc_boundary, "delta_vs_stage_d": str(Decimal(final["terminal_total"]) - Decimal(meta["control_total"])), "delta_vs_accepted_7_5": str(Decimal(final["terminal_total"]) - accepted_stage_a_total), "limitations": ["Stage E only; no further search.", "Fresh-engine mismatch invalidates promotion of the observed best result.", "BTC TP-level and SOL add-level attribution UNKNOWN from native fills."]}
+        target = runs / f"{stem}.json"; _atomic_json(target, summary); return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path)}
+    finally:
+        if lock_path.exists(): lock_path.unlink()
 
 
 def run_native_hypothesis_pass(data_root: Path, stage_d_report: Path) -> dict:
