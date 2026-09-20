@@ -20,6 +20,7 @@ CAUSAL_V1_ID = "causal-v1"
 CAUSAL_V1_AXIS = (0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.5, 6.48, 9.0)
 CAUSAL_V1_REFINEMENT2_ID = "causal-v1-refinement2"
 CAUSAL_V1_REFINEMENT2_AXIS = (2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9)
+CAUSAL_V1_SENSITIVITY_ID = "causal-v1-sensitivity"
 
 
 def sha256_file(path: Path) -> str:
@@ -357,6 +358,71 @@ def run_causal_v1_refinement2(data_root: Path) -> dict:
     return summary
 
 
+def causal_v1_sensitivity_variants() -> tuple[tuple[str, Candidate], ...]:
+    """One-factor-only bounded sensitivity around the confirmed 2.4 size."""
+    control = replace(Candidate(), btc_notional_multiplier=2.4)
+    variants: list[tuple[str, Candidate]] = [("control_2.4", control)]
+    for shift in (-0.125, -0.0625, 0.0625, 0.125):
+        variants.append((f"sol_entry_z_shift_{shift:+g}", replace(control, sol_entry_z=tuple(value + shift for value in control.sol_entry_z))))
+    for field, values in (("relative_days", (60, 70)), ("beta_days", (255, 285)), ("z_history_days", (165, 195)), ("wave_history_days", (715, 745)), ("sol_max_holding_days", (9, 19))):
+        variants.extend((f"{field}_{value}", replace(control, **{field: value})) for value in values)
+    return tuple(variants)
+
+
+def run_causal_v1_sensitivity(data_root: Path) -> dict:
+    """Run exactly the approved independent one-axis variants, linked to refinement2."""
+    runs = data_root / "runs"
+    parent_path = runs / "native-optimizer-causal-v1-refinement2.json"
+    parent = json.loads(parent_path.read_text())
+    if parent.get("optimizer_id") != CAUSAL_V1_REFINEMENT2_ID:
+        raise ValueError("CAUSAL_V1_SENSITIVITY_PARENT_MISMATCH")
+    parent_provenance = parent["provenance"]
+    meta = {
+        "optimizer_id": CAUSAL_V1_SENSITIVITY_ID, "seed": SEED,
+        "parent_artifact_path": str(parent_path), "parent_artifact_sha256": sha256_file(parent_path),
+        "baseline_report_sha256": parent_provenance["baseline_report_sha256"],
+        "baseline_config": parent_provenance["baseline_config"], "baseline_config_hash": parent_provenance["baseline_config_hash"],
+        "baseline_data_hash": parent_provenance["baseline_data_hash"], "baseline_code_hash": parent_provenance["baseline_code_hash"],
+        "baseline_policy": parent_provenance["baseline_policy"], "baseline_policy_hash": parent_provenance["baseline_policy_hash"],
+        "optimizer_code_hash": sha256_file(Path(__file__)),
+    }
+    partial_path = runs / "native-optimizer-causal-v1-sensitivity.partial.json"
+    expected = {"optimizer_id": CAUSAL_V1_SENSITIVITY_ID, "provenance": meta}
+    partial = json.loads(partial_path.read_text()) if partial_path.exists() else {**expected, "results": []}
+    if {key: partial.get(key) for key in expected} != expected:
+        raise ValueError("CAUSAL_V1_SENSITIVITY_PARTIAL_PROVENANCE_MISMATCH")
+    results = list(partial["results"])
+    completed = {item["variant_id"] for item in results}
+    for variant_id, candidate in causal_v1_sensitivity_variants():
+        if variant_id not in completed:
+            results.append(causal_v1_item(variant_id, candidate, data_root, meta))
+            partial_path.write_text(json.dumps({**expected, "results": results}, indent=2, sort_keys=True) + "\n")
+    valid = [item for item in results if item["status"] == "NOT_FAITHFUL_DIAGNOSTIC" and item["terminal_flat"]]
+    best = max(valid, key=lambda item: Decimal(item["terminal_total"])) if valid else None
+    rerun = causal_v1_item(f"{best['variant_id']}__fresh_rerun", Candidate(**best["candidate"]), data_root, meta) if best and best["variant_id"] != "control_2.4" else None
+    rerun_verified = None if rerun is None else bool(rerun["status"] == "NOT_FAITHFUL_DIAGNOSTIC" and rerun["terminal_flat"] and len(rerun["summary"]["monthly_returns"]) == 24 and all(
+        rerun[key] == best[key] for key in ("terminal_active", "terminal_reserve", "terminal_total", "fills", "native_fees", "native_order_rejections", "terminal_open_positions")
+    ) and rerun["funding"] == best["funding"])
+    summary = {
+        "optimizer_id": CAUSAL_V1_SENSITIVITY_ID, "status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False,
+        "objective": "terminal ACTIVE + RESERVE after native fixture fees, funding, and terminal close",
+        "provenance": meta, "control": "control_2.4", "one_axis_only": True,
+        "search_space": [{"variant_id": variant_id, "candidate": asdict(candidate)} for variant_id, candidate in causal_v1_sensitivity_variants()],
+        "results": results, "best_assumption_profile_candidate": best["variant_id"] if best else None,
+        "fresh_rerun": rerun, "fresh_rerun_verified": rerun_verified,
+        "limitations": ["All rows are NOT_FAITHFUL_DIAGNOSTIC and non-ranking for live.", "No winning axes are combined or expanded in this pass.", "Historical fee/tier applicability, exact settlement marks, BBO/liquidity, and intraminute liquidation are unvalidated."],
+    }
+    json_path = runs / "native-optimizer-causal-v1-sensitivity.json"
+    csv_path = runs / "native-optimizer-causal-v1-sensitivity.csv"
+    json_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    rows = causal_v1_csv_rows(results)
+    with csv_path.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]) if rows else ["variant_id"])
+        writer.writeheader(); writer.writerows(rows)
+    summary["artifacts"] = {"json": str(json_path), "csv": str(csv_path), "partial": str(partial_path)}
+    return summary
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
@@ -364,8 +430,9 @@ def main() -> None:
     parser.add_argument("--corrected-refinement", action="store_true")
     parser.add_argument("--causal-v1", action="store_true")
     parser.add_argument("--causal-v1-refinement2", action="store_true")
+    parser.add_argument("--causal-v1-sensitivity", action="store_true")
     args = parser.parse_args()
-    report = run_causal_v1_refinement2(args.data_root) if args.causal_v1_refinement2 else run_causal_v1_optimizer(args.data_root) if args.causal_v1 else run_corrected_refinement(args.data_root) if args.corrected_refinement else run_corrected_controls(args.data_root) if args.corrected_controls else run_optimizer(args.data_root)
+    report = run_causal_v1_sensitivity(args.data_root) if args.causal_v1_sensitivity else run_causal_v1_refinement2(args.data_root) if args.causal_v1_refinement2 else run_causal_v1_optimizer(args.data_root) if args.causal_v1 else run_corrected_refinement(args.data_root) if args.corrected_refinement else run_corrected_controls(args.data_root) if args.corrected_controls else run_optimizer(args.data_root)
     print(json.dumps(report, sort_keys=True))
 
 
