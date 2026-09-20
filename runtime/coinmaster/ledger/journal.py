@@ -69,6 +69,12 @@ class NativeEventJournal:
             "FROM funding_events ORDER BY ts_event, event_id",
         ).fetchall()
 
+    def checkpoint(self) -> None:
+        """Flush durable evidence before an artifact DB is atomically published."""
+        self.db.commit()
+        self.db.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        self.db.commit()
+
     def close(self) -> None:
         self.db.close()
 

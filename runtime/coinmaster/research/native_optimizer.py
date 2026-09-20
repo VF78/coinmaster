@@ -974,6 +974,50 @@ def run_stage_e_fine_grid(data_root: Path, stage_d_report: Path) -> dict:
     finally:
         if lock_path.exists(): lock_path.unlink()
 
+def _normalized_execution_artifact_sha256(path: Path) -> str:
+    """Compare economic native reports while excluding only engine instance UUIDs."""
+    with path.open(newline="") as stream:
+        rows = [{key: value for key, value in row.items() if key != "init_id"} for row in csv.DictReader(stream)]
+    return hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def publish_stage_e_funding_correction(data_root: Path, clean_a_path: Path, clean_b_path: Path) -> dict:
+    """Publish one clean, reproducible Stage-E correction without reopening its grid."""
+    runs, stem = data_root / "runs", "native-stage-e-fine-grid-v1-funding-correction-v1"
+    raw_a, raw_b = json.loads(clean_a_path.read_text()), json.loads(clean_b_path.read_text())
+    candidate_a, candidate_b = raw_a["config"]["candidate"], raw_b["config"]["candidate"]
+    if _candidate_tuple_key(candidate_a) != _candidate_tuple_key(candidate_b):
+        raise ValueError("STAGE_E_CLEAN_REPRODUCTION_CANDIDATE_MISMATCH")
+    candidate_hash = hashlib.sha256(_candidate_tuple_key(candidate_a).encode()).hexdigest()
+    clean_a = {"variant_id": "e5-funding-clean-reproduction-a", "candidate": candidate_a, "candidate_hash": candidate_hash, "reused": False, **raw_a}
+    clean_b = {"variant_id": "e5-funding-clean-reproduction-b", "candidate": candidate_b, "candidate_hash": candidate_hash, "reused": False, **raw_b}
+    _stage_c_validate_ranked_evidence([clean_a, clean_b], data_root)
+    economic_fields = ("terminal_active", "terminal_reserve", "terminal_total", "native_fees", "fills", "liquidation_count", "fee_attribution", "funding")
+    if any(clean_a[field] != clean_b[field] for field in economic_fields):
+        raise ValueError("STAGE_E_CLEAN_REPRODUCTION_ECONOMIC_MISMATCH")
+    normalized_artifacts = {}
+    for kind in ("fills", "orders"):
+        left, right = clean_a["execution_artifacts"][kind], clean_b["execution_artifacts"][kind]
+        left_path, right_path = _stage_c_artifact_path(data_root, left["path"]), _stage_c_artifact_path(data_root, right["path"])
+        left_hash, right_hash = _normalized_execution_artifact_sha256(left_path), _normalized_execution_artifact_sha256(right_path)
+        if left_hash != right_hash:
+            raise ValueError(f"STAGE_E_CLEAN_REPRODUCTION_NORMALIZED_{kind.upper()}_MISMATCH")
+        normalized_artifacts[kind] = {"a_sha256": left_hash, "b_sha256": right_hash, "dropped_columns": ["init_id"], "reason": "Nautilus per-engine UUID"}
+    stage_d = json.loads((runs / "native-stage-d-joint-refinement-v1.json").read_text())
+    stage_d_total, prior_clean_total, accepted_stage_a_total = Decimal(stage_d["best"]["terminal_total"]), Decimal("788940.61008073"), Decimal("138510.36099498")
+    best = _stage_b_compact(clean_a, str(accepted_stage_a_total), clean_a_path) | {"delta_vs_stage_d": str(Decimal(clean_a["terminal_total"]) - stage_d_total), "delta_vs_prior_clean_stage_e_leader": str(Decimal(clean_a["terminal_total"]) - prior_clean_total), "delta_vs_accepted_7_5": str(Decimal(clean_a["terminal_total"]) - accepted_stage_a_total)}
+    row = _stage_a_csv_row(clean_a, str(accepted_stage_a_total)) | {"delta_vs_stage_d": best["delta_vs_stage_d"], "delta_vs_prior_clean_stage_e_leader": best["delta_vs_prior_clean_stage_e_leader"], "normalization": "drop:init_id (Nautilus per-engine UUID)"}
+    csv_path, temporary = runs / f"{stem}-top20.csv", runs / f"{stem}-top20.csv.tmp"
+    with temporary.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=row.keys()); writer.writeheader(); writer.writerow(row)
+    temporary.replace(csv_path)
+    stale = json.loads((runs / "native-stage-e-fine-grid-v1.json").read_text())
+    stale_row = next(item for item in stale["results"] if item["variant_id"] == "e4-boundary-btc-4.375")
+    summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "objective": "terminal TOTAL only", "result_count": 1, "best": best, "results": [best], "top20": [best], "fresh_reproduction": {"labels": [clean_a["variant_id"], clean_b["variant_id"]], "economics_exact": True, "normalized_execution_artifacts": normalized_artifacts}, "comparisons": {"stage_d_total": str(stage_d_total), "prior_clean_stage_e_leader_total": str(prior_clean_total), "accepted_7_5_total": str(accepted_stage_a_total)}, "unresolved_btc_boundary": True, "excluded_incident": {"reason": "PRE_FIX_CANONICAL_FUNDING_JOURNAL_REUSED_BY_FROM_GENESIS_ENGINE", "variant_id": stale_row["variant_id"], "terminal_total": stale_row["terminal_total"], "fills": stale_row["fills"], "native_fees": stale_row["native_fees"]}, "local_evidence": {"clean_reports": [{"path": str(clean_a_path), "sha256": sha256_file(clean_a_path)}, {"path": str(clean_b_path), "sha256": sha256_file(clean_b_path)}], "ranked_evidence_validated": True}, "limitations": ["Stage E grid was not reopened.", "BTC boundary remains unresolved; no point beyond 4.375 was run.", "BTC TP-level and SOL add-level attribution UNKNOWN from native fills."]}
+    target = runs / f"{stem}.json"
+    _atomic_json(target, summary)
+    return summary | {"artifact": str(target), "csv": str(csv_path)}
+
 
 def run_native_hypothesis_pass(data_root: Path, stage_d_report: Path) -> dict:
     """Sequential independent H1/H3/H4 tests over a reused Stage-D H0."""

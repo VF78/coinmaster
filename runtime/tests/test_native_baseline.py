@@ -6,7 +6,8 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from coinmaster.research.native_baseline import DAY_MS, MINUTE_MS, ExecutionPolicy, FixedBaseFeePolicy, assert_report_boundaries, coverage_blockers, iter_minute_bundles, iter_weekly_minute_batches, monthly_returns, native_fee_attribution, run_native_diagnostic, run_sparse_native_diagnostic_legacy, standard_drawdown
+from coinmaster.ledger.journal import NativeEventJournal
+from coinmaster.research.native_baseline import DAY_MS, MINUTE_MS, ExecutionPolicy, FixedBaseFeePolicy, _funding_attempt_path, _publish_clean_funding_attempt, _quarantine_funding_attempt, assert_report_boundaries, coverage_blockers, iter_minute_bundles, iter_weekly_minute_batches, monthly_returns, native_fee_attribution, run_native_diagnostic, run_sparse_native_diagnostic_legacy, standard_drawdown
 
 
 def write_streaming_fixture(root, trading_days: int = 2) -> tuple[int, int]:
@@ -77,6 +78,67 @@ def test_native_fee_attribution_reconciles_native_liquidity_without_inference() 
 def test_daily_bar_matching_is_rejected_before_any_data_or_engine_is_loaded(tmp_path) -> None:
     with pytest.raises(ValueError, match="LEGACY_DAILY_BAR_MATCHING_DISABLED"):
         run_native_diagnostic(tmp_path, execution_policy=ExecutionPolicy(nonmatching_daily_signals=False))
+
+
+def test_from_genesis_funding_attempt_never_reuses_canonical_or_interrupted_rows(tmp_path) -> None:
+    """Only a genuine same-engine restart may use durable funding IDs."""
+    canonical = tmp_path / "same-label-funding.sqlite"
+
+    def record(path, event_id: str) -> NativeEventJournal:
+        journal = NativeEventJournal(str(path))
+        assert journal.record_funding(event_id, "BTCUSDT-PERP.P1SIM", 1, Decimal("0.01"), Decimal("100"), Decimal("9999"))
+        return journal
+
+    # This is stale evidence from a previous from-genesis engine, never input.
+    stale = record(canonical, "stale")
+    stale.close()
+    first_attempt = _funding_attempt_path(canonical)
+    first = record(first_attempt, "current-run")
+    _publish_clean_funding_attempt(first, first_attempt, canonical)
+    current = NativeEventJournal(str(canonical))
+    try:
+        assert [row[0] for row in current.funding_audit()] == ["current-run"]
+    finally:
+        current.close()
+    assert list(tmp_path.glob("same-label-funding.sqlite.superseded-*"))
+
+    # An interrupted attempt is retained, then a new from-genesis attempt
+    # starts with an empty journal and reports its own funding count only.
+    interrupted_path = _funding_attempt_path(canonical)
+    interrupted = record(interrupted_path, "interrupted")
+    interrupted.close()
+    _quarantine_funding_attempt(interrupted_path)
+    resumed_path = _funding_attempt_path(canonical)
+    resumed = record(resumed_path, "resumed-current-run")
+    _publish_clean_funding_attempt(resumed, resumed_path, canonical)
+    current = NativeEventJournal(str(canonical))
+    try:
+        assert [row[0] for row in current.funding_audit()] == ["resumed-current-run"]
+    finally:
+        current.close()
+    assert list(tmp_path.glob("*.attempt-*.aborted-*"))
+
+
+def test_preexisting_canonical_funding_journal_cannot_change_from_genesis_economics(tmp_path, monkeypatch) -> None:
+    """The native diagnostic itself, not just its helper, starts from empty IDs."""
+    start, end = write_streaming_fixture(tmp_path)
+    from coinmaster.research import native_baseline
+    from coinmaster.research.native_fixture import BTC_PERP, FundingInstruction
+
+    baseline = run_native_diagnostic(tmp_path, trading_start_ms=start, trading_end_ms=end, warmup_start_ms=0, artifact_label="no-funding")
+    canonical = tmp_path / "runs" / "from-genesis-funding.sqlite"
+    stale = NativeEventJournal(str(canonical))
+    stale.record_funding("prior-engine", str(BTC_PERP.id), start * 1_000_000, Decimal("0.01"), Decimal("100"), Decimal("9999"))
+    stale.close()
+    monkeypatch.setattr(native_baseline, "funding_with_prior_minute_marks", lambda *_args: (FundingInstruction("prior-engine", BTC_PERP.id, Decimal("0.01"), start * 1_000_000, Decimal("100"), "synthetic_mid", True),))
+    clean = run_native_diagnostic(tmp_path, include_funding=True, trading_start_ms=start, trading_end_ms=end, warmup_start_ms=0, artifact_label="from-genesis")
+    assert clean["terminal_total"] == baseline["terminal_total"]
+    assert clean["funding"]["count"] == 0  # no open position; stale row was not reported.
+    published = NativeEventJournal(str(canonical))
+    try:
+        assert published.funding_audit() == []
+    finally:
+        published.close()
 
 
 def test_sparse_legacy_diagnostic_is_unreachable() -> None:

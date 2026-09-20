@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import platform
 import resource
 from dataclasses import asdict, dataclass
@@ -594,6 +595,40 @@ def _load_daily_seed(data_root: Path, warmup_start_ms: int, trading_start_ms: in
     return seed, tables
 
 
+def _funding_attempt_path(canonical_path: Path) -> Path:
+    """Return a same-directory DB that can never be execution input later."""
+    return canonical_path.with_name(f".{canonical_path.name}.attempt-{uuid4().hex}")
+
+
+def _move_sqlite_family(path: Path, marker: str) -> list[Path]:
+    """Keep a whole SQLite family as evidence without reusing it on a run."""
+    moved: list[Path] = []
+    for suffix in ("", "-wal", "-shm"):
+        source = Path(f"{path}{suffix}")
+        if source.exists():
+            destination = source.with_name(f"{source.name}.{marker}-{uuid4().hex}")
+            os.replace(source, destination)
+            moved.append(destination)
+    return moved
+
+
+def _publish_clean_funding_attempt(journal, attempt_path: Path, canonical_path: Path) -> None:
+    """Checkpoint and atomically promote an isolated successful funding DB."""
+    journal.checkpoint()
+    journal.close()
+    if Path(f"{attempt_path}-wal").exists() or Path(f"{attempt_path}-shm").exists():
+        raise ValueError("FUNDING_ATTEMPT_CHECKPOINT_LEFT_SQLITE_SIDECAR")
+    # A previous canonical artifact is never an input to this run.  Preserve it
+    # before the single-file atomic replacement, including stale WAL sidecars.
+    _move_sqlite_family(canonical_path, "superseded")
+    os.replace(attempt_path, canonical_path)
+
+
+def _quarantine_funding_attempt(attempt_path: Path) -> None:
+    """Retain failed attempt evidence under a noncanonical, never-reused name."""
+    _move_sqlite_family(attempt_path, "aborted")
+
+
 def run_native_diagnostic(
     data_root: Path,
     include_funding: bool = False,
@@ -660,7 +695,11 @@ def run_native_diagnostic(
     artifacts_root = artifact_dir or data_root / "runs"
     artifacts_root.mkdir(parents=True, exist_ok=True)
     journal_path = artifacts_root / f"{artifact_label}-funding.sqlite"
-    journal = NativeEventJournal(str(journal_path)) if funding_events else None
+    journal_attempt_path = _funding_attempt_path(journal_path) if funding_events else None
+    # Every diagnostic is a from-genesis account run.  It must not consult a
+    # prior canonical journal, whose durable IDs are only valid for genuine
+    # process restart of the same account/engine, never for a fresh engine.
+    journal = NativeEventJournal(str(journal_attempt_path)) if journal_attempt_path else None
     modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
     if journal:
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
@@ -701,6 +740,7 @@ def run_native_diagnostic(
     def native_quote(instrument, close: str, precision: int, available_ns: int):
         mid = Decimal(str(close))
         return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns)
+    successful_run = False
     try:
         for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), weekly_batch_minutes):
             marks, signals, quotes = [], [], []
@@ -773,11 +813,16 @@ def run_native_diagnostic(
         })
         if not early_liquidation_cutoff:
             assert_report_boundaries(result)
+        successful_run = True
         return result
     finally:
         engine.dispose()
         if journal:
-            journal.close()
+            if successful_run:
+                _publish_clean_funding_attempt(journal, journal_attempt_path, journal_path)
+            else:
+                journal.close()
+                _quarantine_funding_attempt(journal_attempt_path)
 
 
 def coverage_blockers(root: Path) -> list[str]:
