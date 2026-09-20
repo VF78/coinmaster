@@ -766,6 +766,17 @@
             "title": "Funding",
             "type": "array"
           },
+          "live_order_capability": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Live Order Capability"
+          },
           "lock": {
             "title": "Lock",
             "type": "string"

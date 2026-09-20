@@ -12,6 +12,7 @@ def test_runtime_sidecar_reader_has_decimals_cursor_and_unknowns_when_worker_dis
     reader = RuntimeReader(str(database), "http://127.0.0.1:9")
     body = reader.runtime()
     assert body.version == "runtime-v1" and body.balances.active_usdt == "UNKNOWN"
+    assert body.live_order_capability is None
     assert body.balances.modelled_funding_cash == "-1.00"
     assert body.funding[0].state == "MODELLED_LEDGER_UNPOSTED"
     events = reader.events(0)

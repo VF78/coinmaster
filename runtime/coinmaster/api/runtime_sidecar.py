@@ -85,6 +85,7 @@ class RuntimeMargin(RuntimeSchema):
 class RuntimeState(RuntimeSchema):
     version: str
     mode: Literal["paper", "UNKNOWN"]
+    live_order_capability: bool | None = None
     worker_state: str
     strategy: RuntimeStrategy
     reconciliation: str
@@ -150,7 +151,7 @@ class RuntimeReader:
         if not snapshot: warnings.append("MISSING_SNAPSHOT")
         strategy = health.get("strategy", {})
         return RuntimeState.model_validate({
-            "version": "runtime-v1", "mode": health.get("mode", "paper"), "worker_state": health.get("state", "WORKER_DISCONNECTED"),
+            "version": "runtime-v1", "mode": health.get("mode", "paper"), "live_order_capability": health.get("live_order_capability"), "worker_state": health.get("state", "WORKER_DISCONNECTED"),
             "strategy": {key: strategy.get(key) for key in ("strategy_class", "config_hash", "config_name", "registered", "running", "entries_enabled") if strategy.get(key) is not None} or {"strategy_class": UNKNOWN, "config_hash": UNKNOWN},
             "reconciliation": health.get("reconciliation", UNKNOWN), "lock": "UNKNOWN_READ_ONLY_SIDECAR",
             "balances": {"active_usdt": UNKNOWN, "reserve_usdt": UNKNOWN, "total_usdt": UNKNOWN, "native_cash": UNKNOWN, "modelled_funding_cash": str(sum((__import__('decimal').Decimal(x["cash_delta"]) for x in funding), __import__('decimal').Decimal("0"))), "funding_state": "MODELLED_LEDGER_UNPOSTED"},

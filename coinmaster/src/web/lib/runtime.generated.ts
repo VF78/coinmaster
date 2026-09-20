@@ -533,6 +533,8 @@ export interface components {
             fills: components["schemas"]["RuntimeEvent"][];
             /** Funding */
             funding: components["schemas"]["RuntimeFunding"][];
+            /** Live Order Capability */
+            live_order_capability?: boolean | null;
             /** Lock */
             lock: string;
             margin: components["schemas"]["RuntimeMargin"];
