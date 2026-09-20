@@ -10,14 +10,14 @@ from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
 from nautilus_trader.config import StrategyConfig
-from nautilus_trader.model.data import Bar, BarType, CustomData, DataType, MarkPriceUpdate
+from nautilus_trader.model.data import Bar, BarType, CustomData, DataType, MarkPriceUpdate, QuoteTick
 from nautilus_trader.model.enums import OrderSide, TimeInForce
 from nautilus_trader.model.events import OrderCanceled, OrderExpired, OrderFilled, OrderRejected
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 from nautilus_trader.trading.strategy import Strategy
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
-from coinmaster.research.native_fixture import TierMarginPolicy
+from coinmaster.research.native_fixture import MarkPriceUpdate as FixtureMarkPriceUpdate, TierMarginPolicy
 from coinmaster.venues.marks import VenueMark
 from coinmaster.venues.signals import DailySignalBar
 
@@ -68,7 +68,19 @@ class WaveOverlayStrategy(Strategy):
         self._current_btc_mark: VenueMark | None = None
         self._current_sol_mark: VenueMark | None = None
         self._current_signals = features_for(self._bars, self._candidate)
-        self._tier_marks: list[MarkPriceUpdate] = list(config.tier_marks)
+        self._latest_marks: dict[InstrumentId, VenueMark] = {}
+        self._latest_tier_marks: dict[InstrumentId, FixtureMarkPriceUpdate] = {}
+        for update in config.tier_marks:
+            previous = self._latest_tier_marks.get(update.instrument_id)
+            if previous is None or update.ts_event > previous.ts_event:
+                self._latest_tier_marks[update.instrument_id] = update
+        self._queued_intents: list[tuple[Intent, float | None, int]] = []
+        self._queued_close_submitted: dict[str, set[InstrumentId]] = {}
+        self._liquidating = False
+        self._liquidation_waiting: set[InstrumentId] = set()
+        self._liquidation_orders: set[str] = set()
+        self._liquidation_submitted: set[InstrumentId] = set()
+        self.liquidation_audit: list[dict[str, str]] = []
 
     def on_start(self) -> None:
         self.subscribe_bars(self.config.btc_bar_type)
@@ -85,6 +97,8 @@ class WaveOverlayStrategy(Strategy):
         if self.config.signal_client_id is not None and self.config.btc_signal_data_type is not None and self.config.sol_signal_data_type is not None:
             self.subscribe_data(self.config.btc_signal_data_type, client_id=self.config.signal_client_id)
             self.subscribe_data(self.config.sol_signal_data_type, client_id=self.config.signal_client_id)
+        self.subscribe_quote_ticks(self.config.btc_id)
+        self.subscribe_quote_ticks(self.config.sol_id)
 
     def on_bar(self, bar: Bar) -> None:
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -105,13 +119,24 @@ class WaveOverlayStrategy(Strategy):
                 return
             bar_type = self.config.btc_bar_type if mark.instrument_id == self.config.btc_id else self.config.sol_bar_type
             self._day.setdefault(mark.ts_event, {})[bar_type] = mark
+            # Input ordering is mark -> signal -> quote.  Retain only the two
+            # latest marks and pair them here at the daily boundary.
+            latest = self._latest_marks.get(mark.instrument_id)
+            if latest is not None and latest.ts_event == mark.ts_event:
+                self._on_venue_mark(latest)
             self._try_advance_session(mark.ts_event)
             return
         if not isinstance(mark, VenueMark):
             return
         if mark.instrument_id not in (self.config.btc_id, self.config.sol_id):
             return
-        self._on_venue_mark(mark)
+        self._latest_marks[mark.instrument_id] = mark
+        self._latest_tier_marks[mark.instrument_id] = FixtureMarkPriceUpdate(mark.instrument_id, mark.price, mark.ts_event)
+        self._check_mark_first_liquidation(mark.ts_event)
+        # Avoid a per-minute session map: only a daily signal can make a mark
+        # actionable for features, and it will re-pair the retained mark.
+        if mark.ts_event in self._day:
+            self._on_venue_mark(mark)
 
     def on_mark_price(self, update: MarkPriceUpdate) -> None:
         """Bridge a public venue mark into the existing non-matching input.
@@ -121,7 +146,7 @@ class WaveOverlayStrategy(Strategy):
         """
         if update.instrument_id not in (self.config.btc_id, self.config.sol_id):
             return
-        self._tier_marks.append(update)
+        self._latest_tier_marks[update.instrument_id] = FixtureMarkPriceUpdate(update.instrument_id, update.value.as_decimal(), update.ts_event)
         mark = VenueMark(
             update.instrument_id,
             update.value.as_decimal(),
@@ -138,6 +163,40 @@ class WaveOverlayStrategy(Strategy):
         session = mark.ts_event if session is None else session
         self._marks_by_session.setdefault(session, {})[mark.instrument_id] = mark
         self._try_advance_session(session)
+
+    def _check_mark_first_liquidation(self, ts_now: int) -> None:
+        if self._liquidating or any(item not in self._latest_marks for item in (self.config.btc_id, self.config.sol_id)):
+            return
+        if self._latest_marks[self.config.btc_id].ts_event != ts_now or self._latest_marks[self.config.sol_id].ts_event != ts_now:
+            return
+        positions = [item for item in self.cache.positions_open() if item.instrument_id in (self.config.btc_id, self.config.sol_id)]
+        if not positions or not self.config.tier_selected_leverage:
+            return
+        account = self.cache.account_for_venue(self.config.btc_id.venue)
+        base = self.cache.instrument(self.config.btc_id)
+        if account is None or base is None:
+            return
+        try:
+            policy = TierMarginPolicy(tuple(self._latest_tier_marks.values()), dict(self.config.tier_selected_leverage), 0)
+            equity, maintenance = account.balance_total(base.quote_currency).as_decimal(), Decimal("0")
+            for position in positions:
+                instrument = self.cache.instrument(position.instrument_id)
+                if instrument is None:
+                    return
+                mark = self._latest_marks[position.instrument_id].price
+                equity += position.unrealized_pnl(instrument.make_price(mark)).as_decimal()
+                maintenance += policy.margin_for(position.instrument_id, position.quantity.as_decimal(), ts_now)[1]
+        except ValueError:
+            return
+        if equity > maintenance:
+            return
+        self._liquidating = True
+        self._queued_intents.clear()
+        self._liquidation_waiting = {position.instrument_id for position in positions}
+        self.liquidation_audit.append({"trigger_ts": str(ts_now), "equity": str(equity), "maintenance": str(maintenance), "status": "ARMED"})
+        for order in self.cache.orders_open():
+            if not order.is_reduce_only:
+                self.cancel_order(order)
 
     def _try_advance_session(self, session: int) -> None:
         paired = self._day.get(session)
@@ -173,10 +232,35 @@ class WaveOverlayStrategy(Strategy):
         # configured interval's first daily open.
         if self.config.trading_start_open_ns is not None and self._current_btc.ts_event - 86_400_000_000_000 < self.config.trading_start_open_ns:
             return
-        if not self._entries_enabled() and not self.cache.positions_open():
+        if self._liquidating or (not self._entries_enabled() and not self.cache.positions_open()):
             return
         for intent in self._domain.decide(self._bars, self._current_signals, len(self._bars) - 1, self._active_marked(self._current_btc_mark, self._current_sol_mark)):
-            self._submit_intent(intent, float(self._current_btc.close), float(self._current_sol.close), self._current_signals[-1].sigma, len(self._bars) - 1)
+            self._queued_intents.append((intent, self._current_signals[-1].sigma, len(self._bars) - 1))
+
+    def on_quote_tick(self, tick: QuoteTick) -> None:
+        """Only quotes can execute queued daily decisions or liquidations."""
+        if self._liquidating:
+            if tick.instrument_id in self._liquidation_waiting and tick.instrument_id not in self._liquidation_submitted:
+                position = next((item for item in self.cache.positions_open() if item.instrument_id == tick.instrument_id), None)
+                instrument = self.cache.instrument(tick.instrument_id)
+                if position is not None and instrument is not None:
+                    order = self.order_factory.market(instrument_id=tick.instrument_id, order_side=OrderSide.SELL if position.is_long else OrderSide.BUY, quantity=instrument.make_qty(position.quantity.as_decimal()), time_in_force=TimeInForce.IOC, reduce_only=True)
+                    self._liquidation_submitted.add(tick.instrument_id); self._liquidation_orders.add(str(order.client_order_id)); self.submit_order(order)
+            return
+        for item in list(self._queued_intents):
+            intent, sigma, index = item
+            target = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
+            if intent.action == "CLOSE_ALL":
+                submitted = self._queued_close_submitted.setdefault(intent.id, set())
+                if tick.instrument_id not in submitted and any(position.instrument_id == tick.instrument_id for position in self.cache.positions_open()):
+                    submitted.add(tick.instrument_id)
+                    self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, only_instrument=tick.instrument_id)
+                if all(item_id in submitted or not any(position.instrument_id == item_id for position in self.cache.positions_open()) for item_id in (self.config.btc_id, self.config.sol_id)):
+                    self._queued_intents.remove(item)
+                continue
+            if target == tick.instrument_id:
+                self._queued_intents.remove(item)
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index)
 
     def _active_marked(self, btc_mark: VenueMark, sol_mark: VenueMark) -> float:
         account = self.cache.account_for_venue(self.config.btc_id.venue)
@@ -194,10 +278,12 @@ class WaveOverlayStrategy(Strategy):
                 marked += position.unrealized_pnl(position_instrument.make_price(mark)).as_decimal()
         return float(marked)
 
-    def _submit_intent(self, intent: Intent, btc_price: float, sol_price: float, sigma: float | None, decision_index: int) -> None:
+    def _submit_intent(self, intent: Intent, btc_price: float, sol_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None) -> None:
         if intent.action == "CLOSE_ALL":
             for position in self.cache.positions_open():
                 if position.instrument_id not in (self.config.btc_id, self.config.sol_id):
+                    continue
+                if only_instrument is not None and position.instrument_id != only_instrument:
                     continue
                 instrument = self.cache.instrument(position.instrument_id)
                 if instrument is None:
@@ -264,10 +350,10 @@ class WaveOverlayStrategy(Strategy):
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         """Fail closed on missing/stale public marks; reductions bypass this gate."""
-        if not self._tier_marks or not self.config.tier_selected_leverage:
+        if not self._latest_tier_marks or not self.config.tier_selected_leverage:
             return False
         try:
-            policy = TierMarginPolicy(tuple(self._tier_marks), dict(self.config.tier_selected_leverage), self.config.max_mark_age_ns)
+            policy = TierMarginPolicy(tuple(self._latest_tier_marks.values()), dict(self.config.tier_selected_leverage), self.config.max_mark_age_ns)
             positions = {item.instrument_id: item for item in self.cache.positions_open()}
             required = Decimal("0")
             gross = Decimal("0")
@@ -292,6 +378,13 @@ class WaveOverlayStrategy(Strategy):
 
     def on_order_filled(self, event: OrderFilled) -> None:
         self._record_native_event(str(event.trade_id), "fill")
+        if str(event.client_order_id) in self._liquidation_orders:
+            if not self.cache.positions_open():
+                self._domain.on_liquidation()
+                if self.liquidation_audit:
+                    self.liquidation_audit[-1]["status"] = "FLAT_LOCKED"
+                    self.liquidation_audit[-1]["fill_ts"] = str(event.ts_event)
+            return
         intent = self._pending_by_order.get(str(event.client_order_id))
         if intent is None:
             return

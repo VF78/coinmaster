@@ -32,7 +32,8 @@ def test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_st
     engine.add_instrument(BTC_PERP)
     engine.add_instrument(SOL_PERP)
     from nautilus_trader.model.identifiers import ClientId
-    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"), tier_marks=tuple(MarkPriceUpdate(BTC_PERP.id, Decimal("100"), day * 86_400_000_000_000) for day in range(1, 851)) + tuple(MarkPriceUpdate(SOL_PERP.id, Decimal("30"), day * 86_400_000_000_000) for day in range(1, 851)), tier_selected_leverage=((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20"))), max_mark_age_ns=86_400_000_000_000)))
+    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"), tier_marks=tuple(MarkPriceUpdate(BTC_PERP.id, Decimal("100"), day * 86_400_000_000_000) for day in range(1, 851)) + tuple(MarkPriceUpdate(SOL_PERP.id, Decimal("30"), day * 86_400_000_000_000) for day in range(1, 851)), tier_selected_leverage=((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20"))), max_mark_age_ns=86_400_000_000_000))
+    engine.add_strategy(strategy)
     data, marks = [], []
     for day in range(850):
         timestamp = (day + 1) * 86_400_000_000_000
@@ -51,6 +52,9 @@ def test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_st
         assert fills["ts_last"].is_monotonic_increasing
         assert not engine.trader.generate_positions_report()["closing_order_id"].isna().any()
         assert not engine.trader.generate_account_report(SIM).empty
+        assert len(strategy._latest_marks) <= 2
+        assert len(strategy._latest_tier_marks) <= 2
+        assert not strategy._queued_intents
     finally:
         engine.dispose()
 
