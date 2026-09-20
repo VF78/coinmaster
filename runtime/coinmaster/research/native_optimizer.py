@@ -1097,6 +1097,157 @@ def run_stage_f_btc_boundary(data_root: Path, stage_e_correction_path: Path) -> 
         if lock_path.exists(): lock_path.unlink()
 
 
+def run_stage_g_joint_closure(data_root: Path, stage_f_report: Path) -> dict:
+    """Final ordered TP/SOL joint closure over the clean Stage-F winner."""
+    runs, stem = data_root / "runs", "native-stage-g-joint-closure-v1"
+    accepted = json.loads(stage_f_report.read_text())
+    if accepted.get("status") != "NOT_FAITHFUL_DIAGNOSTIC" or not accepted.get("fresh_reproduction", {}).get("economics_exact"):
+        raise ValueError("STAGE_G_STAGE_F_CLEAN_REPRODUCTION_REQUIRED")
+    f_partial = _stage_c_artifact_path(data_root, accepted["local_evidence"]["checkpoint"])
+    if accepted["local_evidence"].get("checkpoint_sha256") != sha256_file(f_partial): raise ValueError("STAGE_G_STAGE_F_EVIDENCE_HASH_MISMATCH")
+    source = next((item for item in json.loads(f_partial.read_text())["results"] if item["variant_id"] == accepted["best"]["variant_id"]), None)
+    if not source or source.get("terminal_total") != "1928707.70729495": raise ValueError("STAGE_G_CONTROL_SOURCE_MISMATCH")
+    _stage_c_validate_ranked_evidence([source], data_root)
+    baseline = Candidate(**{key: tuple(value) if isinstance(value, list) else value for key, value in source["candidate"].items()})
+    if (baseline.ema_period, baseline.btc_tp_fractions_initial_qty, baseline.btc_notional_multiplier, baseline.sol_size_multipliers_h) != (34, (0.2, 0.225, 0.575), 7.75, (1.875, 2.8125, 3.75)): raise ValueError("STAGE_G_CONTROL_CANDIDATE_MISMATCH")
+    stage_f_total, accepted_7_5_total = Decimal(source["terminal_total"]), Decimal("138510.36099498")
+    meta = {"optimizer_id": "stage-g-joint-closure-v1", "stage_f_report_sha256": sha256_file(stage_f_report), "stage_f_checkpoint_sha256": sha256_file(f_partial), "control_candidate": source["candidate"], "control_total": source["terminal_total"], "objective": "terminal TOTAL only", "ranking_eligible_for_live": False}
+    partial_path, lock_path = runs / f"{stem}.partial.json", runs / f"{stem}.lock"
+    try:
+        fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY); os.write(fd, str(os.getpid()).encode()); os.close(fd)
+    except FileExistsError as error: raise RuntimeError("STAGE_G_SINGLE_PROCESS_LOCK_HELD") from error
+    try:
+        partial = json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance": meta, "results": [], "sealed": {}}
+        if partial.get("provenance") != meta: raise ValueError("STAGE_G_PARTIAL_PROVENANCE_MISMATCH")
+        results, sealed, incidents = list(partial["results"]), dict(partial.get("sealed", {})), list(partial.get("incidents", []))
+        # Retain the pre-steering strict-G3 G4 reports as non-ranking evidence.
+        legacy_g4 = [item for item in results if item["variant_id"].startswith("g4-btc-")]
+        if legacy_g4:
+            incidents.extend({"reason": "PRE_STEERING_G4_STRICT_G3_BASE", "row": item} for item in legacy_g4)
+            results = [item for item in results if item not in legacy_g4]
+        completed = {item["variant_id"] for item in results}
+        def persist(): _atomic_json(partial_path, {"provenance": meta, "results": results, "sealed": sealed, "incidents": incidents})
+        def add(name: str, candidate: Candidate, *, fresh: bool = False) -> None:
+            if name in completed: return
+            existing = None if fresh else next((item for item in results if _candidate_tuple_key(item["candidate"]) == _candidate_tuple_key(candidate)), None)
+            if existing is None and not fresh and _candidate_tuple_key(candidate) == _candidate_tuple_key(source["candidate"]): existing = source
+            results.append(_stage_a_item(name, candidate, data_root, stem) if existing is None else _stage_a_reuse(name, candidate, existing)); completed.add(name); persist()
+        add("g0-stage-f-baseline", baseline)
+        tp_axis = ((.1875,.225,.5875),(.2125,.225,.5625),(.2,.2125,.5875),(.2,.2375,.5625),(.1875,.2375,.575),(.2125,.2125,.575))
+        for values in tp_axis: add(f"g1-tp-{'-'.join(f'{value:g}' for value in values)}", replace(baseline, btc_tp_fractions_initial_qty=values))
+        g1_strict = [item for item in results if item["variant_id"].startswith("g1-")]
+        g1_top = sorted(g1_strict, key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:2]
+        g1_best = g1_top[0]; sealed.setdefault("g1", g1_best["variant_id"]); persist()
+        sol_axis = ((1.75,2.625,3.5),(1.875,2.8125,3.75),(2.0,3.0,4.0))
+        g1_candidate = Candidate(**{key: tuple(value) if isinstance(value, list) else value for key, value in g1_best["candidate"].items()})
+        for values in sol_axis: add(f"g2-sol-{'-'.join(f'{value:g}' for value in values)}", replace(g1_candidate, sol_size_multipliers_h=values))
+        g2_strict = [item for item in results if item["variant_id"].startswith("g2-") and tuple(item["candidate"]["sol_size_multipliers_h"]) != baseline.sol_size_multipliers_h]
+        g2_top = sorted(g2_strict, key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:2]
+        sealed.setdefault("g2", max((item for item in results if item["variant_id"].startswith("g2-")), key=lambda item: Decimal(item["terminal_total"]))["variant_id"]); persist()
+        joint_index = 1
+        for tp in g1_top:
+            for sol in g2_top:
+                candidate = replace(baseline, btc_tp_fractions_initial_qty=tuple(tp["candidate"]["btc_tp_fractions_initial_qty"]), sol_size_multipliers_h=tuple(sol["candidate"]["sol_size_multipliers_h"]))
+                add(f"g3-joint-{joint_index}", candidate); joint_index += 1
+        g3 = [item for item in results if item["variant_id"].startswith("g3-joint-")]
+        global_best = max([item for item in results if item["variant_id"].startswith(("g0-","g1-","g2-","g3-joint-"))], key=lambda item: Decimal(item["terminal_total"]))
+        global_candidate = Candidate(**{key: tuple(value) if isinstance(value, list) else value for key, value in global_best["candidate"].items()})
+        add("g3-global-best-reuse", global_candidate)
+        joint_best = next(item for item in results if item["variant_id"] == "g3-global-best-reuse"); sealed["g3"] = joint_best["variant_id"]; persist()
+        joint_candidate = Candidate(**{key: tuple(value) if isinstance(value, list) else value for key, value in joint_best["candidate"].items()})
+        for value in (7.625, 7.75, 7.875): add(f"g4-global-btc-{value:g}", replace(joint_candidate, btc_notional_multiplier=value))
+        def g4_rows() -> list[dict]: return [item for item in results if item["variant_id"].startswith("g4-global-")]
+        g4_best = max(g4_rows(), key=lambda item: Decimal(item["terminal_total"])); ordered = sorted(g4_rows(), key=lambda item: Decimal(str(item["candidate"]["btc_notional_multiplier"])))
+        boundary_direction = -1 if g4_best is ordered[0] else 1 if g4_best is ordered[-1] else 0
+        if boundary_direction:
+            previous = g4_best
+            value = Decimal(str(previous["candidate"]["btc_notional_multiplier"]))
+            while True:
+                value += Decimal("0.125") * boundary_direction
+                add(f"g4-global-btc-{value:g}", replace(joint_candidate, btc_notional_multiplier=float(value)))
+                current = next(item for item in g4_rows() if Decimal(str(item["candidate"]["btc_notional_multiplier"])) == value)
+                if Decimal(current["terminal_total"]) <= Decimal(previous["terminal_total"]): break
+                previous = current
+            g4_best = max(g4_rows(), key=lambda item: Decimal(item["terminal_total"]))
+        sealed.setdefault("g4", g4_best["variant_id"]); persist()
+        winner = g4_best; winner_candidate = Candidate(**{key: tuple(value) if isinstance(value, list) else value for key, value in winner["candidate"].items()})
+        add("g-final-reproduction-a", winner_candidate, fresh=True); add("g-final-reproduction-b", winner_candidate, fresh=True)
+        fresh_a, fresh_b = (next(item for item in results if item["variant_id"] == label) for label in ("g-final-reproduction-a", "g-final-reproduction-b"))
+        ranked = sorted([item for item in results if item["variant_id"].startswith(("g0-","g1-","g2-","g3-","g4-global-"))], key=lambda item: Decimal(item["terminal_total"]), reverse=True)
+        _stage_c_validate_ranked_evidence(ranked + [fresh_a, fresh_b], data_root)
+        fields = ("terminal_active","terminal_reserve","terminal_total","native_fees","fills","liquidation_count","fee_attribution","funding")
+        economics_exact = all(fresh_a[field] == fresh_b[field] == winner[field] for field in fields)
+        normalized = {}
+        for kind in ("fills","orders"):
+            hashes = [_normalized_execution_artifact_sha256(_stage_c_artifact_path(data_root, item["execution_artifacts"][kind]["path"])) for item in (winner,fresh_a,fresh_b)]
+            if len(set(hashes)) != 1: raise ValueError(f"STAGE_G_NORMALIZED_{kind.upper()}_MISMATCH")
+            normalized[kind] = {"sha256": hashes[0], "dropped_columns":["init_id"], "reason":"Nautilus per-engine UUID"}
+        compact = lambda item: _stage_b_compact(item, str(accepted_7_5_total), partial_path) | {"delta_vs_stage_f":str(Decimal(item["terminal_total"])-stage_f_total),"delta_vs_accepted_7_5":str(Decimal(item["terminal_total"])-accepted_7_5_total)}
+        top20 = ranked[:20]; rows = [_stage_a_csv_row(item,str(accepted_7_5_total)) | {"delta_vs_stage_f":str(Decimal(item["terminal_total"])-stage_f_total),"normalization":"drop:init_id (Nautilus per-engine UUID)"} for item in top20]
+        csv_path, temporary = runs/f"{stem}-top20.csv", runs/f"{stem}-top20.csv.tmp"
+        with temporary.open("w",newline="") as stream: writer=csv.DictWriter(stream,fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+        temporary.replace(csv_path)
+        summary={"status":"NOT_FAITHFUL_DIAGNOSTIC" if economics_exact else "REPRODUCTION_MISMATCH_NOT_FAITHFUL_DIAGNOSTIC","ranking_eligible_for_live":False,"provenance":meta,"sealed":sealed,"result_count":len(ranked),"results":[compact(item) for item in ranked],"top20":[compact(item) for item in top20],"best":compact(winner),"fresh_reproduction":{"labels":[fresh_a["variant_id"],fresh_b["variant_id"]],"economics_exact":economics_exact,"normalized_execution_artifacts":normalized,"a":compact(fresh_a),"b":compact(fresh_b)},"excluded_incident":{"reason":"PRE_STEERING_G4_STRICT_G3_BASE","count":len(incidents)},"local_evidence":{"checkpoint":str(partial_path),"checkpoint_sha256":sha256_file(partial_path),"ranked_evidence_validated":True},"limitations":["Stage G only; no reserve/restart or other axis.","BTC TP-level and SOL add-level attribution UNKNOWN from native fills."]}
+        target=runs/f"{stem}.json"; _atomic_json(target,summary); return summary|{"artifact":str(target),"csv":str(csv_path),"partial":str(partial_path)}
+    finally:
+        if lock_path.exists(): lock_path.unlink()
+
+
+def publish_stage_g_completed_scope(data_root: Path, stage_f_report: Path) -> dict:
+    """Seal completed-only Stage G evidence; intentionally performs no backtest."""
+    runs, stem = data_root / "runs", "native-stage-g-joint-closure-v1-completed-scope"
+    stage_f = json.loads(stage_f_report.read_text())
+    partial_path = runs / "native-stage-g-joint-closure-v1.partial.json"
+    partial = json.loads(partial_path.read_text())
+    completed, legacy_g4 = list(partial["results"]), [item for item in partial["results"] if item["variant_id"].startswith("g4-btc-")]
+    ranked = [item for item in completed if item not in legacy_g4]
+    _stage_c_validate_ranked_evidence(completed, data_root)
+    numerical_best = max(ranked, key=lambda item: Decimal(item["terminal_total"]))
+    accepted = next(item for item in ranked if item["variant_id"] == "g0-stage-f-baseline")
+    accepted_7_5_total = Decimal("138510.36099498")
+    compact = lambda item: _stage_b_compact(item, str(accepted_7_5_total), partial_path) | {"delta_vs_stage_f": str(Decimal(item["terminal_total"]) - Decimal(accepted["terminal_total"])), "delta_vs_accepted_7_5": str(Decimal(item["terminal_total"]) - accepted_7_5_total)}
+    top20 = sorted(ranked, key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:20]
+    rows = [_stage_a_csv_row(item, str(accepted_7_5_total)) | {"delta_vs_stage_f": str(Decimal(item["terminal_total"]) - Decimal(accepted["terminal_total"])), "scope": "COMPLETED_NO_NEW_NATIVE_RUNS"} for item in top20]
+    csv_path, temporary = runs / f"{stem}-top20.csv", runs / f"{stem}-top20.csv.tmp"
+    with temporary.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+    temporary.replace(csv_path)
+    summary = {"status": "COMPLETED_SCOPE_FRESH_REPRODUCTION_NOT_RUN_NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "objective": "terminal TOTAL only", "completed_result_count": len(completed), "ranked_result_count": len(ranked), "results": [compact(item) for item in sorted(ranked, key=lambda item: Decimal(item["terminal_total"]), reverse=True)], "top20": [compact(item) for item in top20], "numerical_best_without_fresh_reproduction": compact(numerical_best), "accepted_reproducible_winner": compact(accepted), "accepted_reproduction_evidence": stage_f["fresh_reproduction"], "excluded_completed_incident": {"reason": "PRE_STEERING_G4_STRICT_G3_BASE_NOT_GLOBAL_COMPLETED_TUPLE", "rows": [{"variant_id": item["variant_id"], "terminal_total": item["terminal_total"], "candidate": item["candidate"]} for item in legacy_g4]}, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "all_completed_evidence_validated": True}, "limitations": ["User stopped scope before corrected global G4 and any Stage-G fresh reproduction.", "No completed Stage-G numerical leader is accepted as reproducible.", "No new native simulations were launched while publishing this artifact."]}
+    target = runs / f"{stem}.json"; _atomic_json(target, summary)
+    return summary | {"artifact": str(target), "csv": str(csv_path)}
+
+
+def publish_stage_g_confirmed_winner(data_root: Path, confirmation_path: Path) -> dict:
+    """Publish the user-requested one-run confirmation without starting a backtest."""
+    runs, stem = data_root / "runs", "native-stage-g-joint-closure-v1-confirmed"
+    partial_path = runs / "native-stage-g-joint-closure-v1.partial.json"
+    partial, raw = json.loads(partial_path.read_text()), json.loads(confirmation_path.read_text())
+    completed = list(partial["results"])
+    legacy_g4 = [item for item in completed if item["variant_id"].startswith("g4-btc-")]
+    ranked = [item for item in completed if item not in legacy_g4]
+    leader = next(item for item in ranked if item["variant_id"] == "g1-tp-0.2125-0.2125-0.575")
+    confirmation = {"variant_id": "g1-clean-confirmation", "candidate": leader["candidate"], "candidate_hash": leader["candidate_hash"], "reused": False, **raw}
+    _stage_c_validate_ranked_evidence(ranked + [confirmation], data_root)
+    fields = ("terminal_active", "terminal_reserve", "terminal_total", "native_fees", "fills", "liquidation_count", "fee_attribution", "funding")
+    economics_exact = all(leader[field] == confirmation[field] for field in fields)
+    normalized = {}
+    for kind in ("fills", "orders"):
+        hashes = [_normalized_execution_artifact_sha256(_stage_c_artifact_path(data_root, item["execution_artifacts"][kind]["path"])) for item in (leader, confirmation)]
+        if len(set(hashes)) != 1: raise ValueError(f"STAGE_G_CONFIRMATION_NORMALIZED_{kind.upper()}_MISMATCH")
+        normalized[kind] = {"sha256": hashes[0], "dropped_columns": ["init_id"], "reason": "Nautilus per-engine UUID"}
+    accepted_7_5_total, stage_f_total = Decimal("138510.36099498"), Decimal("1928707.70729495")
+    compact = lambda item: _stage_b_compact(item, str(accepted_7_5_total), partial_path) | {"delta_vs_stage_f": str(Decimal(item["terminal_total"]) - stage_f_total), "delta_vs_accepted_7_5": str(Decimal(item["terminal_total"]) - accepted_7_5_total)}
+    ordered, top20 = sorted(ranked, key=lambda item: Decimal(item["terminal_total"]), reverse=True), sorted(ranked, key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:20]
+    rows = [_stage_a_csv_row(item, str(accepted_7_5_total)) | {"delta_vs_stage_f": str(Decimal(item["terminal_total"]) - stage_f_total), "scope": "CONFIRMED_ONE_CLEAN_REPRODUCTION"} for item in top20]
+    csv_path, temporary = runs / f"{stem}-top20.csv", runs / f"{stem}-top20.csv.tmp"
+    with temporary.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+    temporary.replace(csv_path)
+    summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC" if economics_exact else "REPRODUCTION_MISMATCH_NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "objective": "terminal TOTAL only", "completed_result_count": len(completed), "ranked_result_count": len(ranked), "results": [compact(item) for item in ordered], "top20": [compact(item) for item in top20], "best": compact(leader), "fresh_reproduction": {"labels": [leader["variant_id"], confirmation["variant_id"]], "economics_exact": economics_exact, "exact_fields": list(fields), "normalized_execution_artifacts": normalized, "confirmation": compact(confirmation)}, "excluded_completed_incident": {"reason": "PRE_STEERING_G4_STRICT_G3_BASE_NOT_GLOBAL_COMPLETED_TUPLE", "rows": [{"variant_id": item["variant_id"], "terminal_total": item["terminal_total"], "candidate": item["candidate"]} for item in legacy_g4]}, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "confirmation": str(confirmation_path), "confirmation_sha256": sha256_file(confirmation_path), "ranked_evidence_validated": True}, "limitations": ["Exactly one new clean from-genesis confirmation was run for the eligible G1 leader.", "Corrected global G4, grids, extensions, and any further native simulations were not run by user direction.", "All results remain diagnostic and are not ranking-eligible for live trading."]}
+    target = runs / f"{stem}.json"; _atomic_json(target, summary)
+    return summary | {"artifact": str(target), "csv": str(csv_path)}
+
+
 def run_native_hypothesis_pass(data_root: Path, stage_d_report: Path) -> dict:
     """Sequential independent H1/H3/H4 tests over a reused Stage-D H0."""
     runs, stem = data_root / "runs", "native-hypothesis-pass-v1"
