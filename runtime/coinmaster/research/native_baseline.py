@@ -555,6 +555,7 @@ def run_native_diagnostic(
     cursor_batch_rows: int = WEEK_MINUTES,
     include_daily_signals: bool = True,
     stop_on_liquidation: bool = False,
+    artifact_dir: Path | None = None,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -598,7 +599,9 @@ def run_native_diagnostic(
     selected_leverage = ((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20")))
     max_mark_age_ns = 2 * MINUTE_MS * 1_000_000
     funding_events = funding_with_prior_minute_marks(data_root, trading_start_ms, trading_end_ms) if include_funding else ()
-    journal_path = data_root / "runs" / f"native-diagnostic-funding-{uuid4().hex}.sqlite"
+    artifacts_root = artifact_dir or data_root / "runs"
+    artifacts_root.mkdir(parents=True, exist_ok=True)
+    journal_path = artifacts_root / f"{artifact_label}-funding.sqlite"
     journal = NativeEventJournal(str(journal_path)) if funding_events else None
     modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
     if journal:
@@ -670,7 +673,7 @@ def run_native_diagnostic(
         engine.end()
         account = engine.trader.generate_account_report(SIM)
         fills, orders = engine.trader.generate_order_fills_report(), engine.trader.generate_orders_report()
-        artifacts = {"fills": save_native_artifact(fills, data_root / "runs" / f"{artifact_label}-fills.csv"), "orders": save_native_artifact(orders, data_root / "runs" / f"{artifact_label}-orders.csv")}
+        artifacts = {"fills": save_native_artifact(fills, artifacts_root / f"{artifact_label}-fills.csv"), "orders": save_native_artifact(orders, artifacts_root / f"{artifact_label}-orders.csv")}
         terminal_active = Decimal(str(account["total"].iloc[-1]))
         fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
         cash_account_series = [{"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()]
@@ -724,9 +727,9 @@ def coverage_blockers(root: Path) -> list[str]:
     return blockers
 
 
-def save_diagnostic_report(data_root: Path, report: dict, artifact_name: str = "native-diagnostic-report") -> Path:
+def save_diagnostic_report(data_root: Path, report: dict, artifact_name: str = "native-diagnostic-report", artifact_dir: Path | None = None) -> Path:
     """Persist a diagnostic artifact without promoting it to baseline evidence."""
-    target = data_root / "runs" / f"{artifact_name}.json"
+    target = (artifact_dir or data_root / "runs") / f"{artifact_name}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     temporary = target.with_suffix(".tmp")
     temporary.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
@@ -734,12 +737,89 @@ def save_diagnostic_report(data_root: Path, report: dict, artifact_name: str = "
     return target
 
 
+def _emit(kind: str, **body) -> None:
+    print(json.dumps({"type": kind, **body}, sort_keys=True), flush=True)
+
+
+def _candidate_from_job_config(config: dict):
+    """Map every configurable native Candidate field or reject before run."""
+    from coinmaster.domain.wave_overlay import Candidate
+    if config.get("venue") not in (None, "bybit"):
+        raise ValueError("UNMAPPABLE_CONFIG:venue")
+    expected = {
+        "strategy_id": "btc_sol_wave_overlay_v1", "mode": "paper", "live_enabled": False,
+        "initial_total_usdt": "10000", "initial_active_fraction": 1.0, "signal_timeframe": "1D",
+        "regime": "close_vs_ema", "include_zero_waves": True, "sol_direction": "opposite_btc",
+        "sol_entry_eligibility": "persistent_after_btc_level", "freeze_sigma_on_first_sol_fill": True,
+        "sol_z_stop": None, "btc_close_stop_fraction": None, "portfolio_loss_limit_fraction": None,
+        "future_sol_margin_fraction": 0.0, "insufficient_margin": "reject", "reserve_transfer_fraction": 0.0,
+        "reserve_trigger_multiple": 4.0, "restart_target": "initial_active_seed",
+        "post_liquidation": "restart_from_reserve_else_pause", "max_gross_to_active": 50.0,
+    }
+    for field, value in expected.items():
+        if config.get(field) != value:
+            raise ValueError(f"UNMAPPABLE_CONFIG:{field}")
+    return Candidate(
+        ema_period=config["ema_period"], beta_days=config["beta_days"], relative_days=config["relative_days"],
+        z_history_days=config["z_history_days"], wave_history_days=config["wave_history_days"], wave_min_count=config["wave_min_count"],
+        wave_quantiles=tuple(config["wave_quantiles"]), btc_tp_fractions_initial_qty=tuple(config["btc_tp_fractions_initial_qty"]),
+        btc_notional_multiplier=config["btc_notional_multiplier"], max_parent_notional=float(config["max_parent_notional"]),
+        sol_size_multipliers_h=tuple(config["sol_size_multipliers_H"]), sol_entry_z=tuple(config["sol_entry_z"]),
+        sol_exit_half_z=config["sol_exit_half_z"], sol_exit_all_z=config["sol_exit_all_z"], sol_max_holding_days=config["sol_max_holding_days"],
+        btc_close_trail_fraction=config["btc_close_trail_fraction"],
+    )
+
+
+def run_job_request(path: Path) -> int:
+    request = json.loads(path.read_text())
+    required = {"request_hash", "config_hash", "config", "data_root", "artifact_dir"}
+    if not required <= set(request):
+        _emit("result", status="FAILED", evidence=["INVALID_JOB_REQUEST"])
+        return 1
+    canonical = json.dumps({key: request[key] for key in ("config_hash", "config", "data_root", "artifact_dir")}, sort_keys=True, separators=(",", ":"))
+    if hashlib.sha256(canonical.encode()).hexdigest() != request["request_hash"]:
+        _emit("result", status="FAILED", request_hash=request["request_hash"], config_hash=request["config_hash"], evidence=["REQUEST_HASH_MISMATCH"])
+        return 1
+    if hashlib.sha256(json.dumps(request["config"], sort_keys=True, separators=(",", ":")).encode()).hexdigest() != request["config_hash"]:
+        _emit("result", status="FAILED", request_hash=request["request_hash"], config_hash=request["config_hash"], evidence=["CONFIG_HASH_MISMATCH"])
+        return 1
+    try:
+        candidate = _candidate_from_job_config(request["config"])
+    except (KeyError, TypeError, ValueError) as error:
+        _emit("result", status="BLOCKED", request_hash=request["request_hash"], config_hash=request["config_hash"], blockers=[str(error)])
+        return 2
+    data_root, artifact_dir = Path(request["data_root"]), Path(request["artifact_dir"])
+    blockers = coverage_blockers(data_root)
+    if blockers:
+        _emit("result", status="BLOCKED", request_hash=request["request_hash"], config_hash=request["config_hash"], blockers=blockers)
+        return 2
+    _emit("progress", request_hash=request["request_hash"], config_hash=request["config_hash"], progress=1)
+    options = request.get("test_options") or {}
+    try:
+        report = run_native_diagnostic(
+            data_root, include_funding=options.get("include_funding", True), candidate=candidate, artifact_dir=artifact_dir, artifact_label="result",
+            **({"warmup_start_ms": options["warmup_start_ms"], "trading_start_ms": options["trading_start_ms"], "trading_end_ms": options["trading_end_ms"], "weekly_batch_minutes": options.get("weekly_batch_minutes", WEEK_MINUTES), "cursor_batch_rows": options.get("cursor_batch_rows", WEEK_MINUTES)} if options else {}),
+        )
+        artifact = save_diagnostic_report(data_root, report, "result", artifact_dir)
+        envelope = {"type": "result", "status": "COMPLETED", "request_hash": request["request_hash"], "config_hash": request["config_hash"], "artifact": str(artifact), "report": report}
+        (artifact_dir / "result-envelope.json").write_text(json.dumps(envelope, sort_keys=True) + "\n")
+        _emit("progress", request_hash=request["request_hash"], config_hash=request["config_hash"], progress=99)
+        _emit("result", **{key: value for key, value in envelope.items() if key != "type"})
+        return 0
+    except Exception as error:
+        _emit("result", status="FAILED", request_hash=request["request_hash"], config_hash=request["config_hash"], evidence=[f"NATIVE_RUNNER:{type(error).__name__}"])
+        return 1
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
     parser.add_argument("--diagnostic-no-funding", action="store_true")
     parser.add_argument("--diagnostic-with-prior-minute-funding", action="store_true")
+    parser.add_argument("--job-request", type=Path)
     args = parser.parse_args()
+    if args.job_request is not None:
+        raise SystemExit(run_job_request(args.job_request))
     if args.diagnostic_no_funding:
         report = run_native_diagnostic(args.data_root)
         report["artifact"] = str(save_diagnostic_report(args.data_root, report))

@@ -391,12 +391,16 @@ export interface components {
             heartbeat_at?: string | null;
             /** Id */
             id: string;
+            /** Idempotency Key */
+            idempotency_key?: string | null;
             /** Kind */
             kind: string;
             /** Pid */
             pid?: number | null;
             /** Process Group */
             process_group?: number | null;
+            /** Process Identity */
+            process_identity?: string | null;
             /** Progress */
             progress?: number | null;
             /** Report */
@@ -409,6 +413,8 @@ export interface components {
             started_at?: string | null;
             /** Status */
             status: string;
+            /** Work Dir */
+            work_dir?: string | null;
         };
         /** StrategyConfig */
         StrategyConfig: {
@@ -832,6 +838,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
+                "Idempotency-Key"?: string | null;
                 authorization?: string | null;
             };
             path?: never;

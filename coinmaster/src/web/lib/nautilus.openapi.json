@@ -446,6 +446,17 @@
             "title": "Id",
             "type": "string"
           },
+          "idempotency_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Idempotency Key"
+          },
           "kind": {
             "title": "Kind",
             "type": "string"
@@ -471,6 +482,17 @@
               }
             ],
             "title": "Process Group"
+          },
+          "process_identity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Process Identity"
           },
           "progress": {
             "anyOf": [
@@ -520,6 +542,17 @@
           "status": {
             "title": "Status",
             "type": "string"
+          },
+          "work_dir": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Work Dir"
           }
         },
         "required": [
@@ -1323,6 +1356,22 @@
       "post": {
         "operationId": "create_run_api_v1_runs_post",
         "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          },
           {
             "in": "header",
             "name": "authorization",

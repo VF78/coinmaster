@@ -118,6 +118,9 @@ class RunRecord(BaseModel):
     progress: int | None = None
     cancel_requested_at: str | None = None
     finished_at: str | None = None
+    work_dir: str | None = None
+    process_identity: str | None = None
+    idempotency_key: str | None = None
 
 
 class ResearchCatalogEntry(BaseModel):
@@ -174,9 +177,12 @@ class ControlStore:
             ("request_hash", "TEXT"), ("command_name", "TEXT"), ("pid", "INTEGER"),
             ("process_group", "INTEGER"), ("started_at", "TEXT"), ("heartbeat_at", "TEXT"),
             ("progress", "INTEGER"), ("cancel_requested_at", "TEXT"), ("finished_at", "TEXT"),
+            ("work_dir", "TEXT"), ("process_identity", "TEXT"), ("owner_token", "TEXT"), ("idempotency_key", "TEXT"),
         ):
             if name not in columns:
                 self.db.execute(f"ALTER TABLE runs ADD COLUMN {name} {definition}")
+        self.db.commit()
+        self.db.execute("CREATE UNIQUE INDEX IF NOT EXISTS runs_research_idempotency ON runs(idempotency_key) WHERE idempotency_key IS NOT NULL")
         self.db.commit()
 
     def save_config(self, config: StrategyConfig) -> ConfigurationRecord:
@@ -202,18 +208,18 @@ class ControlStore:
     def save_run(self, record: RunRecord) -> RunRecord:
         with self.lock:
             self.db.execute(
-                "INSERT INTO runs (id,config_id,kind,status,evidence,created_at,report,request_hash,command_name,pid,process_group,started_at,heartbeat_at,progress,cancel_requested_at,finished_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                (record.id, record.config_id, record.kind, record.status, json.dumps(record.evidence), record.created_at, json.dumps(record.report) if record.report else None, record.request_hash, record.command_name, record.pid, record.process_group, record.started_at, record.heartbeat_at, record.progress, record.cancel_requested_at, record.finished_at),
+                "INSERT INTO runs (id,config_id,kind,status,evidence,created_at,report,request_hash,command_name,pid,process_group,started_at,heartbeat_at,progress,cancel_requested_at,finished_at,work_dir,process_identity,idempotency_key) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (record.id, record.config_id, record.kind, record.status, json.dumps(record.evidence), record.created_at, json.dumps(record.report) if record.report else None, record.request_hash, record.command_name, record.pid, record.process_group, record.started_at, record.heartbeat_at, record.progress, record.cancel_requested_at, record.finished_at, record.work_dir, record.process_identity, record.idempotency_key),
             )
             self.db.commit()
             return record
 
     def get_run(self, run_id: str) -> RunRecord:
         with self.lock:
-            row = self.db.execute("SELECT id,config_id,kind,status,evidence,created_at,report,request_hash,command_name,pid,process_group,started_at,heartbeat_at,progress,cancel_requested_at,finished_at FROM runs WHERE id = ?", (run_id,)).fetchone()
+            row = self.db.execute("SELECT id,config_id,kind,status,evidence,created_at,report,request_hash,command_name,pid,process_group,started_at,heartbeat_at,progress,cancel_requested_at,finished_at,work_dir,process_identity,idempotency_key FROM runs WHERE id = ?", (run_id,)).fetchone()
             if row is None:
                 raise KeyError(run_id)
-            return RunRecord(id=row[0], config_id=row[1], kind=row[2], status=row[3], evidence=json.loads(row[4]), created_at=row[5], report=json.loads(row[6]) if row[6] else None, request_hash=row[7], command_name=row[8], pid=row[9], process_group=row[10], started_at=row[11], heartbeat_at=row[12], progress=row[13], cancel_requested_at=row[14], finished_at=row[15])
+            return RunRecord(id=row[0], config_id=row[1], kind=row[2], status=row[3], evidence=json.loads(row[4]), created_at=row[5], report=json.loads(row[6]) if row[6] else None, request_hash=row[7], command_name=row[8], pid=row[9], process_group=row[10], started_at=row[11], heartbeat_at=row[12], progress=row[13], cancel_requested_at=row[14], finished_at=row[15], work_dir=row[16], process_identity=row[17], idempotency_key=row[18])
 
     def runs(self) -> list[RunRecord]:
         with self.lock:
@@ -231,7 +237,7 @@ class ControlStore:
     def update_run(self, run_id: str, **values: Any) -> RunRecord:
         if not values:
             return self.get_run(run_id)
-        allowed = {"status", "evidence", "report", "pid", "process_group", "started_at", "heartbeat_at", "progress", "cancel_requested_at", "finished_at"}
+        allowed = {"status", "evidence", "report", "pid", "process_group", "started_at", "heartbeat_at", "progress", "cancel_requested_at", "finished_at", "work_dir", "process_identity", "owner_token", "idempotency_key"}
         if set(values) - allowed:
             raise ValueError("unsupported run update")
         with self.lock:
@@ -249,6 +255,11 @@ class ControlStore:
             for run_id, evidence in rows:
                 self.db.execute("UPDATE runs SET status=?, evidence=?, finished_at=? WHERE id=?", ("INTERRUPTED", json.dumps([*json.loads(evidence), "CONTROL_RESTART_ORPHANED_PROCESS"]), utcnow(), run_id))
             self.db.commit()
+
+    def run_for_idempotency(self, key: str) -> RunRecord | None:
+        with self.lock:
+            row = self.db.execute("SELECT id FROM runs WHERE idempotency_key=?", (key,)).fetchone()
+        return self.get_run(row[0]) if row else None
 
 
 def fixture_report() -> dict[str, Any]:
@@ -369,12 +380,12 @@ def create_app(database: str | None = None, token: str | None = None, include_le
         return {"requested": {"btc_notional": str(btc)}, "allowed": False, "im": str(im), "mm": str(mm), "sol_additions": additions, "reasons": ["UNKNOWN_ACCOUNT_MARGIN_MODE", "MISSING_ACCOUNT_FEES"], "cap_label": "maximum request with sufficient collateral; not a starting order"}
 
     @app.post("/api/v1/runs", response_model=RunRecord, dependencies=[Depends(auth)])
-    def create_run(input: RunInput) -> RunRecord:
+    def create_run(input: RunInput, idempotency_key: str | None = Header(default=None, alias="Idempotency-Key")) -> RunRecord:
         try: config = store.get_config(input.config_id)
         except KeyError as error: raise HTTPException(404, "configuration not found") from error
         if input.kind == "research":
             try:
-                return research.start(config, input.research_command)
+                return research.start(config, input.research_command, idempotency_key)
             except ValueError as error:
                 raise HTTPException(422, str(error)) from error
         run = RunRecord(id=str(uuid4()), config_id=input.config_id, kind=input.kind, created_at=utcnow(), status="QUEUED", evidence=[], report=None)
