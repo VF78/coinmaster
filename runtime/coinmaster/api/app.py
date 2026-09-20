@@ -346,6 +346,9 @@ def _verified_catalog_detail(entry: dict[str, Any]) -> dict[str, Any] | None:
         source = next(item for item in source["results"] if item["variant_id"] == variant_by_id[entry["id"]])
     if entry["id"] == "bybit-reporting-v2-fixed-stress":
         return {"status": source["status"], "control_reuse": source["control_reuse"], "results": [{key: item.get(key) for key in ("variant_id", "status", "terminal_total", "terminal_active", "terminal_reserve", "fills", "native_fees", "funding", "liquidation_count", "pre_submit_tier_margin_gate_blocks", "post_boundary_settlement", "summary")} for item in source["results"]]}
+    if entry["id"] == "bybit-reporting-v2-sequential-seen-data-p3-2":
+        fields = ("run_id", "phase", "status", "terminal_total", "terminal_active", "terminal_reserve", "roi", "fills", "native_fees", "funding", "liquidation_count", "liquidation_lockout", "terminal_flat", "post_boundary_settlement", "error")
+        return {"status": source["status"], "selection": source["selection"], "train_results": [{key: item.get(key) for key in fields} for item in source["train_results"]], "test_results": [{key: item.get(key) for key in fields} for item in source["test_results"]], "limitations": source["limitations"]}
     if entry["id"] == "hyperliquid-public-rest-blocked":
         return {key: source[key] for key in ("schema", "daily_interval", "funding_interval", "symbols", "faithful_comparable_1m_run_blockers", "historical_profile_applicability", "limitations")}
     return {key: source.get(key) for key in ("status", "terminal_total", "terminal_active", "terminal_reserve", "terminal_open_positions", "fills", "native_fees", "funding", "liquidation_count", "liquidation_audit", "pre_submit_tier_margin_gate_blocks", "post_boundary_settlement", "summary", "config_hash", "data_hash", "policy_hash", "code_hash")}

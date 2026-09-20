@@ -44,6 +44,12 @@ RESEARCH_CATALOG = (
         "limitations": ["fixed seen-data validation", "not optimization", "not live-rankable"], "supersession": "None.",
     },
     {
+        "id": "bybit-reporting-v2-sequential-seen-data-p3-2", "kind": "validation", "title": "P3.2 sequential seen-data validation — reporting recovery", "classification": "SEQUENTIAL_SEEN_DATA_VALIDATION_NOT_OOS + NOT_FAITHFUL_DIAGNOSTIC", "selected": False,
+        "artifact": "runs/native-sequential-seen-data-reporting-v2-reporting-recovery1.json", "sha256": "1115999202b1937ebfb13ea61f19f2dff285f0dd05a579579979b0eb12a6f02d",
+        "interval": "train [2024-09-01,2025-09-01); test [2025-09-01,2026-09-01)", "warmup": "730d feature-only per fresh run", "settled_total": "train winner 202860.47789066; test winner 19346.04346858", "interval_cash": "train winner 184548.57241066; test winner 18888.95503558", "roi": "train winner 19.286047789066; test winner 0.934604346858", "drawdown_percent": "see immutable artifact", "fees": "train winner 101355.97582650; test winner 12685.77500480", "fills": 475, "funding": 2440, "liquidations": 2,
+        "limitations": ["SEQUENTIAL_SEEN_DATA_VALIDATION_NOT_OOS", "NOT_FAITHFUL_DIAGNOSTIC", "two authorized reporting-recovery rows liquidated and locked out", "not live-rankable"], "supersession": "Supersedes the immutable pre-recovery sequential final `9966d424…`; original artifact retained.",
+    },
+    {
         "id": "hyperliquid-public-rest-blocked", "kind": "venue-evidence", "title": "Hyperliquid public REST evidence — blocked", "classification": "ARTIFACT_BLOCKED_FOR_COMPARABLE_1M", "selected": False,
         "artifact": "hyperliquid/manifest.json", "sha256": "b7feb312d8bc451e422ac3bf30742813decefb0723e49b90cb8ff787337b5183",
         "interval": "daily [2022-09-02,2026-09-01); funding [2024-09-01,2026-09-01)", "warmup": "daily proxy only", "settled_total": "UNKNOWN", "interval_cash": "UNKNOWN", "roi": "UNKNOWN", "drawdown_percent": "UNKNOWN", "fees": "UNKNOWN", "fills": 0, "funding": 17520, "liquidations": 0,

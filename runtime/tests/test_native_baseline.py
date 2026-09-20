@@ -82,6 +82,11 @@ def test_report_boundaries_require_terminal_reconciliation_and_trading_dd() -> N
     assert_report_boundaries(report)
 
 
+def test_report_boundaries_accept_authoritative_early_liquidation_lockout_months() -> None:
+    report = {"run_interval": {"start": "2024-09-01T00:00:00+00:00", "end_exclusive": "2025-09-01T00:00:00+00:00", "initial_active_seed": "10000"}, "summary": {"monthly_returns": [{"month": "2024-09", "total": "5000", "return": "-0.5"}], "interval_cash_terminal_total": "5000", "drawdown_start": "2024-09-01T00:00:00+00:00", "drawdown_trough": "2024-09-30T00:00:00+00:00"}, "liquidation_count": 1, "liquidation_lockout": True, "fill_timestamps_ns": [], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "fill_count": 0}}
+    assert_report_boundaries(report)
+
+
 def test_standard_drawdown_uses_preceding_peak_not_initial_seed() -> None:
     drawdown = standard_drawdown([
         {"timestamp": "2024-09-01T00:00:00+00:00", "total": "10000"},
