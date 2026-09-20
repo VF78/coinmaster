@@ -306,6 +306,10 @@ class BybitTierMarginModule(SimulationModule):
     ) -> None:
         super().__init__(SimulationModuleConfig())
         self._policy = TierMarginPolicy(marks, dict(selected_leverage), max_mark_age_ns)
+        self._static_marks = marks
+        self._selected_leverage = dict(selected_leverage)
+        self._max_mark_age_ns = max_mark_age_ns
+        self._dynamic_marks: dict[InstrumentId, MarkPriceUpdate] = {}
         self.observed = []
 
     def process(self, ts_now: int) -> None:
@@ -317,7 +321,12 @@ class BybitTierMarginModule(SimulationModule):
                 account.clear_margin_maint(instrument_id)
         for position in self.exchange.cache.positions_open():
             try:
-                initial, maintenance, mark = self._policy.margin_for(
+                policy = TierMarginPolicy(
+                    tuple(self._dynamic_marks.values()) if self._dynamic_marks else self._static_marks,
+                    self._selected_leverage,
+                    self._max_mark_age_ns,
+                )
+                initial, maintenance, mark = policy.margin_for(
                     position.instrument_id,
                     position.quantity.as_decimal(),
                     ts_now,
@@ -334,7 +343,14 @@ class BybitTierMarginModule(SimulationModule):
                 del self.observed[:-128]
 
     def pre_process(self, data) -> None:
-        pass
+        # Canonical full-minute diagnostics stream non-matching venue marks
+        # through the engine. Retaining only the latest mark per leg keeps the
+        # module causal and bounded; static fixture marks remain unchanged.
+        from nautilus_trader.model.data import CustomData
+        from coinmaster.venues.marks import VenueMark
+        mark = data.data if isinstance(data, CustomData) else data
+        if isinstance(mark, VenueMark):
+            self._dynamic_marks[mark.instrument_id] = MarkPriceUpdate(mark.instrument_id, mark.price, mark.ts_event)
 
     def log_diagnostics(self, logger) -> None:
         logger.info("Bybit tier margin module active")
