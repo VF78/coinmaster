@@ -16,6 +16,8 @@ from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 SEED = 0  # Search is ordered/deterministic; retained in artifacts by contract.
 BASELINE_ARTIFACT_SHA256 = "a68062578e4ce3080314164a6cbe5fb3b3afd1f10c2f4907b8e57639a9a74f25"
+CAUSAL_V1_ID = "causal-v1"
+CAUSAL_V1_AXIS = (0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.5, 6.48, 9.0)
 
 
 def sha256_file(path: Path) -> str:
@@ -153,13 +155,152 @@ def run_corrected_refinement(data_root: Path) -> dict:
     return summary | {"artifacts": {"json": str(target), "csv": str(csv_path), "partial": str(partial)}}
 
 
+def causal_v1_coarse_variants() -> tuple[tuple[str, Candidate], ...]:
+    """The only causal-v1 coarse axis: BTC size, with v0=9.0 as control."""
+    v0 = Candidate()
+    return tuple(
+        ("v0" if value == 9.0 else f"btc_notional_{value:g}", replace(v0, btc_notional_multiplier=value))
+        for value in CAUSAL_V1_AXIS
+    )
+
+
+def causal_v1_refinement_variants(value: float) -> tuple[tuple[str, Candidate], ...]:
+    """One bounded 5–10% local refinement; never extends the coarse range."""
+    v0 = Candidate()
+    values = tuple(sorted({round(value * factor, 12) for factor in (0.90, 0.95, 1.05, 1.10)}))
+    return tuple((f"btc_notional_refine_{item:g}", replace(v0, btc_notional_multiplier=item)) for item in values)
+
+
+def causal_v1_provenance(data_root: Path) -> dict:
+    """Capture the exact, current baseline report without comparing old runs."""
+    baseline_path = data_root / "runs" / "native-diagnostic-report.json"
+    baseline = json.loads(baseline_path.read_text())
+    if baseline["status"] != "NOT_FAITHFUL_DIAGNOSTIC" or baseline["ranking_eligible"]:
+        raise ValueError("CAUSAL_V1_REQUIRES_NON_RANKING_NATIVE_BASELINE")
+    return {
+        "optimizer_id": CAUSAL_V1_ID,
+        "seed": SEED,
+        "baseline_report_path": str(baseline_path),
+        "baseline_report_sha256": sha256_file(baseline_path),
+        "baseline_config": baseline["config"],
+        "baseline_config_hash": baseline["config_hash"],
+        "baseline_data_hash": baseline["data_hash"],
+        "baseline_code_hash": baseline["code_hash"],
+        "baseline_policy": baseline["policy"],
+        "baseline_policy_hash": baseline["policy_hash"],
+        "optimizer_code_hash": sha256_file(Path(__file__)),
+    }
+
+
+def causal_v1_item(variant_id: str, candidate: Candidate, data_root: Path, meta: dict) -> dict:
+    """One intentionally fresh native lifecycle; failures are first-class rows."""
+    item = {
+        "variant_id": variant_id,
+        "candidate": asdict(candidate),
+        "candidate_hash": hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+        "provenance": meta,
+    }
+    try:
+        report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate)
+        item.update(report)
+        item["terminal_flat"] = report["terminal_open_positions"] == 0
+        item["eligible_for_assumption_ranking"] = False
+    except Exception as error:  # Every attempt, including failures, stays durable.
+        item.update({"status": "FAILED", "error": f"{type(error).__name__}:{error}", "terminal_flat": False, "eligible_for_assumption_ranking": False})
+    return item
+
+
+def causal_v1_csv_rows(results: list[dict]) -> list[dict]:
+    """Keep required per-candidate evidence in the human-portable CSV too."""
+    rows = []
+    for item in results:
+        summary = item.get("summary", {})
+        funding = item.get("funding", {})
+        provenance_row = item["provenance"]
+        rows.append({
+            "variant_id": item["variant_id"], "status": item["status"], "candidate": json.dumps(item["candidate"], sort_keys=True),
+            "candidate_hash": item["candidate_hash"], "roi": summary.get("roi"), "max_drawdown_amount": summary.get("max_drawdown_amount"),
+            "max_drawdown_percent": summary.get("max_drawdown_percent"), "monthly_returns": json.dumps(summary.get("monthly_returns"), sort_keys=True),
+            "fills": item.get("fills"), "funding_events": funding.get("count"), "native_fees": item.get("native_fees"),
+            "native_order_rejections": item.get("native_order_rejections"), "liquidation_count": item.get("liquidation_count"),
+            "liquidation_value": item.get("liquidation_value"), "terminal_active": item.get("terminal_active"),
+            "terminal_reserve": item.get("terminal_reserve"), "terminal_total": item.get("terminal_total"),
+            "terminal_flat": item.get("terminal_flat"), "baseline_report_sha256": provenance_row["baseline_report_sha256"],
+            "baseline_config_hash": provenance_row["baseline_config_hash"], "baseline_data_hash": provenance_row["baseline_data_hash"],
+            "baseline_code_hash": provenance_row["baseline_code_hash"], "baseline_policy_hash": provenance_row["baseline_policy_hash"],
+            "error": item.get("error"),
+        })
+    return rows
+
+
+def run_causal_v1_optimizer(data_root: Path) -> dict:
+    """Separate causal-v1 pass; it neither consumes nor overwrites legacy runs."""
+    meta = causal_v1_provenance(data_root)
+    runs = data_root / "runs"
+    runs.mkdir(parents=True, exist_ok=True)
+    partial_path = runs / "native-optimizer-causal-v1.partial.json"
+    expected = {"optimizer_id": CAUSAL_V1_ID, "provenance": meta}
+    partial = json.loads(partial_path.read_text()) if partial_path.exists() else {**expected, "results": []}
+    if {key: partial.get(key) for key in expected} != expected:
+        raise ValueError("CAUSAL_V1_PARTIAL_PROVENANCE_MISMATCH")
+    results = list(partial["results"])
+    completed = {item["variant_id"] for item in results}
+    for variant_id, candidate in causal_v1_coarse_variants():
+        if variant_id not in completed:
+            results.append(causal_v1_item(variant_id, candidate, data_root, meta))
+            partial_path.write_text(json.dumps({**expected, "results": results}, indent=2, sort_keys=True) + "\n")
+    coarse_ids = [variant_id for variant_id, _ in causal_v1_coarse_variants()]
+    coarse = [item for item in results if item["variant_id"] in coarse_ids and item["status"] == "NOT_FAITHFUL_DIAGNOSTIC" and item["terminal_flat"]]
+    best_coarse = max(coarse, key=lambda item: Decimal(item["terminal_total"])) if coarse else None
+    refinement = []
+    boundary = None
+    if best_coarse:
+        best_index = coarse_ids.index(best_coarse["variant_id"])
+        if best_index in (0, len(coarse_ids) - 1):
+            boundary = {"variant_id": best_coarse["variant_id"], "position": "lower" if best_index == 0 else "upper", "extended": False}
+        else:
+            refinement = list(causal_v1_refinement_variants(best_coarse["candidate"]["btc_notional_multiplier"]))
+            for variant_id, candidate in refinement:
+                if variant_id not in completed:
+                    results.append(causal_v1_item(variant_id, candidate, data_root, meta))
+                    completed.add(variant_id)
+                    partial_path.write_text(json.dumps({**expected, "results": results}, indent=2, sort_keys=True) + "\n")
+    valid = [item for item in results if item["status"] == "NOT_FAITHFUL_DIAGNOSTIC" and item["terminal_flat"]]
+    best = max(valid, key=lambda item: Decimal(item["terminal_total"])) if valid else None
+    control = next(item for item in results if item["variant_id"] == "v0")
+    rerun = causal_v1_item(f"{best['variant_id']}__fresh_rerun", Candidate(**best["candidate"]), data_root, meta) if best else None
+    rerun_verified = bool(rerun and rerun["status"] == "NOT_FAITHFUL_DIAGNOSTIC" and all(
+        rerun[key] == best[key] for key in ("terminal_active", "terminal_reserve", "terminal_total", "fills", "native_fees", "native_order_rejections", "terminal_open_positions")
+    ) and rerun["funding"] == best["funding"])
+    summary = {
+        "optimizer_id": CAUSAL_V1_ID, "status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False,
+        "objective": "terminal ACTIVE + RESERVE after native fixture fees, funding, and terminal close",
+        "provenance": meta, "search_axis": {"btc_notional_multiplier": list(CAUSAL_V1_AXIS), "v0_control": "9.0"},
+        "refinement": {"performed": bool(refinement), "axis": [candidate.btc_notional_multiplier for _, candidate in refinement], "boundary": boundary},
+        "results": results, "best_assumption_profile_candidate": best["variant_id"] if best else None,
+        "best_delta_vs_v0": str(Decimal(best["terminal_total"]) - Decimal(control["terminal_total"])) if best and control["status"] == "NOT_FAITHFUL_DIAGNOSTIC" else None,
+        "fresh_rerun": rerun, "fresh_rerun_verified": rerun_verified,
+        "limitations": ["All rows are NOT_FAITHFUL_DIAGNOSTIC and non-ranking for live.", "Historical fee/tier applicability, exact settlement marks, BBO/liquidity, and intraminute liquidation are unvalidated."],
+    }
+    json_path = runs / "native-optimizer-causal-v1.json"
+    csv_path = runs / "native-optimizer-causal-v1.csv"
+    json_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    rows = causal_v1_csv_rows(results)
+    with csv_path.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]) if rows else ["variant_id"])
+        writer.writeheader(); writer.writerows(rows)
+    summary["artifacts"] = {"json": str(json_path), "csv": str(csv_path), "partial": str(partial_path)}
+    return summary
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
     parser.add_argument("--corrected-controls", action="store_true")
     parser.add_argument("--corrected-refinement", action="store_true")
+    parser.add_argument("--causal-v1", action="store_true")
     args = parser.parse_args()
-    report = run_corrected_refinement(args.data_root) if args.corrected_refinement else run_corrected_controls(args.data_root) if args.corrected_controls else run_optimizer(args.data_root)
+    report = run_causal_v1_optimizer(args.data_root) if args.causal_v1 else run_corrected_refinement(args.data_root) if args.corrected_refinement else run_corrected_controls(args.data_root) if args.corrected_controls else run_optimizer(args.data_root)
     print(json.dumps(report, sort_keys=True))
 
 
