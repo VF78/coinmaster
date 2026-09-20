@@ -23,10 +23,24 @@ class NativeEventJournal:
         self.db.execute(
             "CREATE TABLE IF NOT EXISTS native_parent_order_audit ("
             "order_id TEXT NOT NULL, state TEXT NOT NULL, requested_qty TEXT NOT NULL, filled_qty TEXT NOT NULL, "
-            "leaves_qty TEXT NOT NULL, canceled_qty TEXT NOT NULL, native_locked TEXT NOT NULL, native_free TEXT NOT NULL, "
-            "native_margin_init TEXT, parent_fees TEXT NOT NULL, close_fees TEXT NOT NULL, "
+            "leaves_qty TEXT NOT NULL, canceled_qty TEXT NOT NULL, pending_reservation TEXT, "
+            "position_initial_margin TEXT, position_maintenance_margin TEXT, native_locked TEXT NOT NULL, "
+            "native_free TEXT NOT NULL, parent_fees TEXT NOT NULL, close_fees TEXT NOT NULL, "
             "PRIMARY KEY(order_id,state))",
         )
+        columns = {row[1] for row in self.db.execute("PRAGMA table_info(native_parent_order_audit)")}
+        # The first partial-parent fixture named this raw engine snapshot as
+        # native_margin_init. It is not position IM while a parent is pending.
+        if "native_margin_init" in columns and "engine_margin_init_snapshot" not in columns:
+            self.db.execute(
+                "ALTER TABLE native_parent_order_audit RENAME COLUMN native_margin_init "
+                "TO engine_margin_init_snapshot",
+            )
+            columns.remove("native_margin_init")
+            columns.add("engine_margin_init_snapshot")
+        for name in ("pending_reservation", "position_initial_margin", "position_maintenance_margin"):
+            if name not in columns:
+                self.db.execute(f"ALTER TABLE native_parent_order_audit ADD COLUMN {name} TEXT")
 
     def has_funding(self, event_id: str) -> bool:
         return self.db.execute(
@@ -78,23 +92,29 @@ class NativeEventJournal:
 
     def record_native_parent_order(
         self, order_id: str, state: str, requested_qty: Decimal, filled_qty: Decimal, leaves_qty: Decimal,
-        canceled_qty: Decimal, native_locked: Decimal, native_free: Decimal, native_margin_init: Decimal | None,
+        canceled_qty: Decimal, pending_reservation: Decimal | None, position_initial_margin: Decimal | None,
+        position_maintenance_margin: Decimal | None, native_locked: Decimal, native_free: Decimal,
         parent_fees: Decimal, close_fees: Decimal,
     ) -> None:
         self.db.execute(
-            "INSERT OR REPLACE INTO native_parent_order_audit VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT OR REPLACE INTO native_parent_order_audit "
+            "(order_id,state,requested_qty,filled_qty,leaves_qty,canceled_qty,pending_reservation,"
+            "position_initial_margin,position_maintenance_margin,native_locked,native_free,parent_fees,close_fees) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (
                 order_id, state, str(requested_qty), str(filled_qty), str(leaves_qty), str(canceled_qty),
-                str(native_locked), str(native_free), str(native_margin_init) if native_margin_init is not None else None,
-                str(parent_fees), str(close_fees),
+                str(pending_reservation) if pending_reservation is not None else None,
+                str(position_initial_margin) if position_initial_margin is not None else None,
+                str(position_maintenance_margin) if position_maintenance_margin is not None else None,
+                str(native_locked), str(native_free), str(parent_fees), str(close_fees),
             ),
         )
         self.db.commit()
 
-    def native_parent_order_audit(self) -> list[tuple[str, str, str, str, str, str, str, str, str | None, str, str]]:
+    def native_parent_order_audit(self) -> list[tuple[str, str, str, str, str, str, str | None, str | None, str | None, str, str, str, str]]:
         return self.db.execute(
-            "SELECT order_id,state,requested_qty,filled_qty,leaves_qty,canceled_qty,native_locked,native_free,"
-            "native_margin_init,parent_fees,close_fees "
+            "SELECT order_id,state,requested_qty,filled_qty,leaves_qty,canceled_qty,pending_reservation,"
+            "position_initial_margin,position_maintenance_margin,native_locked,native_free,parent_fees,close_fees "
             "FROM native_parent_order_audit ORDER BY rowid",
         ).fetchall()
 

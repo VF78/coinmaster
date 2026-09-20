@@ -9,6 +9,7 @@ from coinmaster.research.native_fixture import (
     quote,
     MarkPriceUpdate,
     TierMarginPolicy,
+    BybitTierMarginModule,
     ReserveTransferInstruction,
     normalize_native_order_request,
     perpetual,
@@ -229,14 +230,24 @@ class PartialParentStrategy(Strategy):
         assert self.parent is not None
         account = self.cache.account_for_venue(SIM)
         assert account is not None
-        margin = account.margin_init(self.config.instrument_id)
+        position_initial_margin = account.margin_init(self.config.instrument_id)
+        position_maintenance_margin = account.margin_maint(self.config.instrument_id)
+        native_locked = account.balance_locked(BTC_PERP.quote_currency).as_decimal()
+        # Native locked collateral includes the live position maintenance
+        # amount. The remainder above that is the pending-parent reservation;
+        # it is deliberately not called position initial margin.
+        pending_reservation = native_locked - (
+            position_maintenance_margin.as_decimal() if position_maintenance_margin is not None else Decimal("0")
+        )
         self.journal.record_native_parent_order(
             str(self.parent.client_order_id), state, self.parent.quantity.as_decimal(),
             self.parent.filled_qty.as_decimal(), self.parent.leaves_qty.as_decimal(),
-            self.parent.leaves_qty.as_decimal() if state == "CANCELED" else Decimal("0"),
-            account.balance_locked(BTC_PERP.quote_currency).as_decimal(),
+            self.parent.leaves_qty.as_decimal() if self.parent.status.name == "CANCELED" else Decimal("0"),
+            pending_reservation,
+            position_initial_margin.as_decimal() if position_initial_margin is not None else None,
+            position_maintenance_margin.as_decimal() if position_maintenance_margin is not None else None,
+            native_locked,
             account.balance_free(BTC_PERP.quote_currency).as_decimal(),
-            margin.as_decimal() if margin is not None else None,
             self.parent_fees, self.close_fees,
         )
 
@@ -251,12 +262,20 @@ class PartialParentStrategy(Strategy):
             self.phase = "PARENT_SUBMITTED"
             self.submit_order(self.parent)
         elif self.phase == "PARENT_CANCELED":
+            # The tier module has now processed a fresh explicit mark against
+            # the native open position. Capture this before reducing it.
+            self._audit("POSITION_IM_HELD")
+            self.phase = "POSITION_AUDITED"
+        elif self.phase == "POSITION_AUDITED":
             self.close_order = self.order_factory.market(
                 instrument_id=tick.instrument_id, order_side=OrderSide.SELL,
                 quantity=self.instrument.make_qty(Decimal("5")), time_in_force=TimeInForce.IOC, reduce_only=True,
             )
             self.phase = "CLOSE_SUBMITTED"
             self.submit_order(self.close_order)
+        elif self.phase == "CLOSE_FILLED":
+            self._audit("CLOSED_MARGIN_CLEARED")
+            self.phase = "CLOSED"
 
     def on_order_filled(self, event) -> None:
         if self.parent is not None and event.client_order_id == self.parent.client_order_id:
@@ -270,8 +289,8 @@ class PartialParentStrategy(Strategy):
                 self.cancel_order(self.parent)
         elif self.close_order is not None and event.client_order_id == self.close_order.client_order_id:
             self.close_fees += event.commission.as_decimal()
-            self._audit("CLOSED")
-            self.phase = "CLOSED"
+            self._audit("CLOSE_FILLED")
+            self.phase = "CLOSE_FILLED"
 
     def on_order_canceled(self, event) -> None:
         if self.parent is not None and event.client_order_id == self.parent.client_order_id:
@@ -286,11 +305,22 @@ def test_native_partial_limit_parent_cancel_holds_remainder_until_confirmation(t
         venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN,
         starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency,
         default_leverage=Decimal("1"), fill_model=LimitOrderPartialFillModel(),
+        modules=[BybitTierMarginModule(
+            marks=(MarkPriceUpdate(BTC_PERP.id, Decimal("100.1"), 1),),
+            # Captured 40x selected leverage yields max(tier IM, 1/40)=2.5%.
+            selected_leverage=((BTC_PERP.id, Decimal("40")),),
+            max_mark_age_ns=1,
+        )],
     )
     engine.add_instrument(BTC_PERP)
     strategy = PartialParentStrategy(PartialParentConfig(instrument_id=BTC_PERP.id), journal)
     engine.add_strategy(strategy)
-    engine.add_data([quote(BTC_PERP.id, "100.0", "100.1", 1), quote(BTC_PERP.id, "100.0", "100.1", 2)])
+    engine.add_data([
+        quote(BTC_PERP.id, "100.0", "100.1", 1),
+        quote(BTC_PERP.id, "100.0", "100.1", 2),
+        quote(BTC_PERP.id, "100.0", "100.1", 3),
+        quote(BTC_PERP.id, "100.0", "100.1", 4),
+    ])
     engine.run()
     try:
         orders = engine.trader.generate_orders_report()
@@ -300,18 +330,30 @@ def test_native_partial_limit_parent_cancel_holds_remainder_until_confirmation(t
         assert Decimal(str(parent["quantity"])) == Decimal("10")
         assert Decimal(str(close["filled_qty"])) == Decimal("5")
         audit = {row[1]: row for row in journal.native_parent_order_audit()}
-        partial, canceled, closed = audit["PARTIALLY_FILLED"], audit["CANCELED"], audit["CLOSED"]
+        partial, canceled, held, close_filled, closed = (
+            audit["PARTIALLY_FILLED"], audit["CANCELED"], audit["POSITION_IM_HELD"],
+            audit["CLOSE_FILLED"], audit["CLOSED_MARGIN_CLEARED"],
+        )
         assert tuple(Decimal(value) for value in partial[2:5]) == (Decimal("10"), Decimal("5"), Decimal("5"))
         assert tuple(Decimal(value) for value in canceled[3:5]) == (Decimal("5"), Decimal("5"))
         assert Decimal(canceled[5]) == Decimal("5")
-        # ``locked`` is the raw native account reservation. The cancellation
-        # confirms release of the five unfilled contracts; the filled position
-        # still has native collateral locked until the reduce-only close.
-        assert Decimal(partial[6]) > Decimal(canceled[6]) > Decimal(closed[6]) == 0
-        assert Decimal(canceled[6]) == Decimal("2.5025")
-        assert Decimal(partial[7]) < Decimal(canceled[7]) < Decimal(closed[7])
-        assert Decimal(partial[9]) == Decimal("0.50050000")
-        assert Decimal(closed[10]) == Decimal("0.50000000")
+        # Distinct facts: the parent reservation is released at cancel. The
+        # native exchange's pre-tier maintenance collateral remains 2.5025;
+        # a fresh captured-tier update then holds the five-contract IM/MM.
+        assert Decimal(partial[6]) == Decimal("25.025")
+        assert Decimal(canceled[6]) == Decimal("0")
+        assert Decimal(canceled[8]) == Decimal("2.5025")
+        assert Decimal(canceled[9]) == Decimal("2.5025")
+        expected_position_im = Decimal("5") * Decimal("100.1") * Decimal("0.025")
+        assert Decimal(held[7]) == expected_position_im == Decimal("12.5125")
+        assert Decimal(held[8]) == Decimal("1.65165")
+        assert Decimal(held[9]) == Decimal(held[7]) + Decimal(held[8])
+        assert Decimal(closed[9]) == 0
+        assert closed[7] is None and closed[8] is None
+        assert Decimal(partial[10]) < Decimal(canceled[10]) < Decimal(closed[10])
+        assert Decimal(partial[11]) == Decimal("0.50050000")
+        assert Decimal(close_filled[12]) == Decimal("0.50000000")
+        assert Decimal(closed[12]) == Decimal("0.50000000")
         assert parent["commissions"] == ["0.50050000 USDT"]
         assert close["commissions"] == ["0.50000000 USDT"]
         assert engine.trader._cache.positions_open() == [] and engine.trader._cache.orders_open() == []
