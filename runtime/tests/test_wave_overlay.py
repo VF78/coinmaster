@@ -136,6 +136,30 @@ def test_episode_fixed_beta_uses_entry_beta_with_rolling_z_distribution() -> Non
     assert [item.action for item in state.decide(source, [feature, feature], 1, 10_000)] == ["SOL_ADD"]
 
 
+def test_episode_fixed_beta_ignores_a_stored_sigma_and_uses_current_rolling_sigma() -> None:
+    source = bars(2)
+    feature = Features(1, 1, 1.0, 0.0, 0.0, 1.0, 0.0)
+    candidate = Candidate(relative_days=1, sol_entry_z=(0.001, 9, 9), episode_fixed_beta=True)
+    first = WaveOverlayState(candidate)
+    first.episode = Episode("first", 1, 10_000, 0.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_rights={0}, fixed_sigma=0.000001)
+    second = WaveOverlayState(candidate)
+    second.episode = Episode("second", 1, 10_000, 0.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_rights={0}, fixed_sigma=9999)
+    assert [item.action for item in first.decide(source, [feature, feature], 1, 10_000)] == ["SOL_ADD"]
+    assert [item.action for item in second.decide(source, [feature, feature], 1, 10_000)] == ["SOL_ADD"]
+
+
+def test_strict_tp_cycle_allows_only_the_right_decision_cycle() -> None:
+    source = bars(2)
+    feature = Features(0, 1, 1.0, 1.0, 0.0, 1.0, 4.0)
+    candidate = Candidate(sol_late_entry_after_tp=False)
+    same_cycle = WaveOverlayState(candidate)
+    same_cycle.episode = Episode("same", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_rights={0}, sol_right_decision_index={0: 0})
+    assert [item.action for item in same_cycle.decide(source, [feature, feature], 0, 10_000)] == ["SOL_ADD"]
+    later = WaveOverlayState(candidate)
+    later.episode = Episode("later", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_rights={0}, sol_right_decision_index={0: 0})
+    assert later.decide(source, [feature, feature], 1, 10_000) == []
+
+
 def test_invalid_current_beta_blocks_sol_add_but_not_timeout_exit() -> None:
     source = bars(16)
     invalid = Features(15, 1, None, 1.0, 0.0, 1.0, 4.0)

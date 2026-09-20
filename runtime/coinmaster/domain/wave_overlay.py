@@ -222,6 +222,7 @@ class Episode:
     btc_tps: set[int] = field(default_factory=set)
     btc_filled_tps: set[int] = field(default_factory=set)
     sol_rights: set[int] = field(default_factory=set)
+    sol_right_decision_index: dict[int, int] = field(default_factory=dict)
     sol_adds: set[int] = field(default_factory=set)
     sol_qty: float = 0.0
     sol_first_fill_at: datetime | None = None
@@ -305,14 +306,14 @@ class WaveOverlayState:
         elif index >= self.config.relative_days:
             prior = bars[index - self.config.relative_days]
             relative = log(bars[index].sol_close / prior.sol_close) - episode.beta_entry * log(bars[index].btc_close / prior.btc_close)
-            sigma = episode.fixed_sigma if episode.fixed_sigma is not None else feature.sigma
-            z = (relative - feature.mu) / sigma if feature.mu is not None and sigma not in (None, 0) else None
+            z = (relative - feature.mu) / feature.sigma if feature.mu is not None and feature.sigma not in (None, 0) else None
         else:
             z = None
-        if self.config.sol_late_entry_after_tp and z is not None:
+        if z is not None:
             signed_z = episode.side * z
             for level in sorted(episode.sol_rights):
-                if level not in episode.sol_adds and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
+                strict_cycle = not self.config.sol_late_entry_after_tp
+                if level not in episode.sol_adds and (not strict_cycle or episode.sol_right_decision_index.get(level) == index) and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
                     episode.attempted_sol_at[level] = index
                     intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=episode.h * self.config.sol_size_multipliers_h[level]))
             if intents:
@@ -345,6 +346,7 @@ class WaveOverlayState:
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
             episode.btc_filled_tps.add(intent.level)
             episode.sol_rights.add(intent.level)
+            episode.sol_right_decision_index[intent.level] = intent.decision_index
             episode.btc_open_qty = max(0.0, episode.btc_open_qty - quantity)
         elif intent.action == "SOL_ADD":
             episode.sol_adds.add(intent.level)  # type: ignore[arg-type]
