@@ -423,6 +423,12 @@ def run_stage_b_sol_search(data_root: Path, stage_a_report: Path) -> dict:
     stage_a_source = next((item for item in json.loads(partial_a.read_text())["results"][:42] if item["variant_id"] == accepted["best"]["variant_id"]), None)
     if not stage_a_source or _candidate_tuple_key(stage_a_source.get("candidate", {})) != _candidate_tuple_key(STAGE_B_CONTROL):
         raise ValueError("STAGE_B_ACCEPTED_STAGE_A_SOURCE_MISMATCH")
+    if _candidate_tuple_key(stage_a_source.get("config", {}).get("candidate", {})) != _candidate_tuple_key(STAGE_B_CONTROL) or not stage_a_source.get("data_hash") or not stage_a_source.get("policy_hash"):
+        raise ValueError("STAGE_B_ACCEPTED_STAGE_A_POLICY_CONFIG_DATA_MISMATCH")
+    for artifact in stage_a_source.get("execution_artifacts", {}).values():
+        path = Path(artifact["path"])
+        if not path.exists() or sha256_file(path) != artifact["sha256"]:
+            raise ValueError("STAGE_B_ACCEPTED_STAGE_A_ARTIFACT_HASH_MISMATCH")
     meta = {"optimizer_id": STAGE_B_ID, "stage_a_report": str(stage_a_report), "stage_a_report_sha256": sha256_file(stage_a_report), "stage_a_checkpoint_sha256": sha256_file(partial_a), "control_candidate": json.loads(_candidate_tuple_key(STAGE_B_CONTROL)), "control_total": accepted["best"]["terminal_total"], "objective": "terminal TOTAL only; liquidation remains eligible at actual TOTAL", "ranking_eligible_for_live": False}
     partial_path, lock_path = runs / f"{stem}.partial.json", runs / f"{stem}.lock"
     try:
