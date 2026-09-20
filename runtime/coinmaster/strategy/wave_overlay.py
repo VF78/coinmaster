@@ -76,6 +76,7 @@ class WaveOverlayStrategy(Strategy):
                 self._latest_tier_marks[update.instrument_id] = update
         self._queued_intents: list[tuple[Intent, float | None, int]] = []
         self._queued_close_submitted: dict[str, set[InstrumentId]] = {}
+        self._group_close_reconciliation_pending = False
         self._liquidating = False
         self._liquidation_waiting: set[InstrumentId] = set()
         self._liquidation_orders: set[str] = set()
@@ -110,6 +111,11 @@ class WaveOverlayStrategy(Strategy):
 
     def on_data(self, data) -> None:
         """Receive explicit marks without ever making them execution data."""
+        # Native fill and position events are not guaranteed to reach strategy
+        # callbacks in cache-finalized order. The next public data event is a
+        # causal reconciliation point before any new daily decision.
+        if self._group_close_reconciliation_pending:
+            self._reconcile_group_flat()
         # The DataEngine unwraps ``CustomData`` before strategy delivery in
         # Nautilus 1.231.  Accept the wrapper too so the routing contract is
         # explicit at this boundary and remains compatible with direct calls.
@@ -254,13 +260,16 @@ class WaveOverlayStrategy(Strategy):
                 submitted = self._queued_close_submitted.setdefault(intent.id, set())
                 if tick.instrument_id not in submitted and any(position.instrument_id == tick.instrument_id for position in self.cache.positions_open()):
                     submitted.add(tick.instrument_id)
-                    self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, only_instrument=tick.instrument_id)
+                    self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, only_instrument=tick.instrument_id, ts_now=tick.ts_event)
                 if all(item_id in submitted or not any(position.instrument_id == item_id for position in self.cache.positions_open()) for item_id in (self.config.btc_id, self.config.sol_id)):
                     self._queued_intents.remove(item)
+                    if not self.cache.positions_open():
+                        self._group_close_reconciliation_pending = True
+                        self._reconcile_group_flat()
                 continue
             if target == tick.instrument_id:
                 self._queued_intents.remove(item)
-                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index)
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
 
     def _active_marked(self, btc_mark: VenueMark, sol_mark: VenueMark) -> float:
         account = self.cache.account_for_venue(self.config.btc_id.venue)
@@ -278,7 +287,7 @@ class WaveOverlayStrategy(Strategy):
                 marked += position.unrealized_pnl(position_instrument.make_price(mark)).as_decimal()
         return float(marked)
 
-    def _submit_intent(self, intent: Intent, btc_price: float, sol_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None) -> None:
+    def _submit_intent(self, intent: Intent, btc_price: float, sol_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None) -> None:
         if intent.action == "CLOSE_ALL":
             for position in self.cache.positions_open():
                 if position.instrument_id not in (self.config.btc_id, self.config.sol_id):
@@ -308,7 +317,7 @@ class WaveOverlayStrategy(Strategy):
             return
         side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
         reduce_only = intent.action in {"BTC_REDUCE", "SOL_HALF_EXIT", "SOL_EXIT"}
-        if not reduce_only and not self._tier_allows_increase(instrument_id, side, Decimal(str(quantity)), self._current_btc.ts_event if self._current_btc else 0):
+        if not reduce_only and not self._tier_allows_increase(instrument_id, side, Decimal(str(quantity)), ts_now if ts_now is not None else self._current_btc.ts_event if self._current_btc else 0):
             self.log.warning(f"Rejecting {intent.action}: missing/stale mark or insufficient public-tier margin")
             self._domain.on_parent_terminal(intent.id)
             return
@@ -400,9 +409,8 @@ class WaveOverlayStrategy(Strategy):
             self._sigma_by_order.pop(str(event.client_order_id), None)
             self._decision_index_by_order.pop(str(event.client_order_id), None)
             if intent.action == "CLOSE_ALL":
-                if not self.cache.positions_open():
-                    if self._domain.on_group_flat() == "REGIME":
-                        self._advance_current_day()
+                self._group_close_reconciliation_pending = True
+                self._reconcile_group_flat()
                 return
             # An entry fills at the next executable event, not at the former
             # signal close; only reduction -> add -> exit phases may continue.
@@ -421,6 +429,15 @@ class WaveOverlayStrategy(Strategy):
 
     def on_position_event(self, event) -> None:
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
+        self._reconcile_group_flat()
+
+    def _reconcile_group_flat(self) -> None:
+        """Clear a completed close group after the native cache is actually flat."""
+        if not self._group_close_reconciliation_pending or self.cache.positions_open():
+            return
+        self._group_close_reconciliation_pending = False
+        if self._domain.on_group_flat() == "REGIME":
+            self._advance_current_day()
 
     def on_order_rejected(self, event: OrderRejected) -> None:
         self._terminal_without_fill(str(event.client_order_id))

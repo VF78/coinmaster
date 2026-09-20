@@ -5,12 +5,13 @@ import argparse
 import csv
 import hashlib
 import json
+from time import monotonic
 from dataclasses import asdict, replace
 from decimal import Decimal
 from pathlib import Path
 
 from coinmaster.domain.wave_overlay import Candidate
-from coinmaster.research.native_baseline import run_native_diagnostic
+from coinmaster.research.native_baseline import assert_report_boundaries, run_native_diagnostic
 from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 
@@ -21,6 +22,77 @@ CAUSAL_V1_AXIS = (0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.5, 6.48, 9.0)
 CAUSAL_V1_REFINEMENT2_ID = "causal-v1-refinement2"
 CAUSAL_V1_REFINEMENT2_AXIS = (2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9)
 CAUSAL_V1_SENSITIVITY_ID = "causal-v1-sensitivity"
+CANONICAL_REENTRY_AXIS = (7.5, 8.25, 9.75, 10.5)
+
+
+def run_canonical_reentry_btc_pass(data_root: Path, baseline_report: Path) -> dict:
+    """Small canonical-only BTC-size pass after the re-entry reconciliation fix."""
+    control = json.loads(baseline_report.read_text())
+    if control["status"] != "NOT_FAITHFUL_DIAGNOSTIC" or control["terminal_open_positions"] != 0:
+        raise ValueError("CANONICAL_REENTRY_CONTROL_NOT_FLAT")
+    runtime = Path(__file__).resolve().parents[2]
+    meta = {
+        "optimizer_id": "canonical-reentry-btc-size-v1",
+        "control_path": str(baseline_report),
+        "control_sha256": sha256_file(baseline_report),
+        "control_terminal_total": control["terminal_total"],
+        "data_hash": control["data_hash"],
+        "config_hash": control["config_hash"],
+        "policy_hash": control["policy_hash"],
+        "code_hashes": {name: sha256_file(runtime / name) for name in ("coinmaster/domain/wave_overlay.py", "coinmaster/strategy/wave_overlay.py", "coinmaster/research/native_baseline.py", "coinmaster/research/native_fixture.py")},
+        "axis": {"btc_notional_multiplier": list(CANONICAL_REENTRY_AXIS)},
+        "objective": "terminal ACTIVE + RESERVE; requires native-flat reconciliation",
+        "ranking_eligible_for_live": False,
+    }
+    runs = data_root / "runs"
+    runs.mkdir(parents=True, exist_ok=True)
+    partial_path = runs / "native-optimizer-canonical-reentry-btc.partial.json"
+    expected = {"provenance": meta}
+    partial = json.loads(partial_path.read_text()) if partial_path.exists() else {**expected, "results": []}
+    if {key: partial.get(key) for key in expected} != expected:
+        raise ValueError("CANONICAL_REENTRY_PARTIAL_PROVENANCE_MISMATCH")
+    results = list(partial["results"])
+    completed = {item["variant_id"] for item in results}
+    for value in CANONICAL_REENTRY_AXIS:
+        variant_id = f"btc_notional_{value:g}"
+        if variant_id in completed:
+            continue
+        candidate = replace(Candidate(), btc_notional_multiplier=value)
+        item = {"variant_id": variant_id, "candidate": asdict(candidate), "candidate_hash": hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest()}
+        started = monotonic()
+        try:
+            report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate, artifact_label=f"native-optimizer-canonical-{variant_id}")
+            report["wall_time_seconds"] = str(monotonic() - started)
+            assert_report_boundaries(report)
+            item.update(report)
+            item["terminal_flat"] = report["terminal_open_positions"] == 0
+            item["early_cutoff"] = False
+            item["eligible_within_assumption_profile"] = item["terminal_flat"] and report["liquidation_count"] == 0 and report["native_order_rejections"] == 0
+        except Exception as error:
+            item.update({"status": "FAILED", "error": f"{type(error).__name__}:{error}", "terminal_flat": False, "early_cutoff": False, "eligible_within_assumption_profile": False})
+        results.append(item)
+        partial_path.write_text(json.dumps({**expected, "results": results}, indent=2, sort_keys=True) + "\n")
+    eligible = [item for item in results if item["eligible_within_assumption_profile"]]
+    best = max(eligible, key=lambda item: Decimal(item["terminal_total"])) if eligible else None
+    summary = {
+        "status": "NOT_FAITHFUL_DIAGNOSTIC",
+        "ranking_eligible_for_live": False,
+        "provenance": meta,
+        "control": {"variant_id": "v0", "terminal_total": control["terminal_total"], "terminal_flat": True},
+        "results": results,
+        "best_within_assumption_profile": best["variant_id"] if best else None,
+        "best_delta_vs_control": str(Decimal(best["terminal_total"]) - Decimal(control["terminal_total"])) if best else None,
+        "limitations": ["No candidate is live-rankable.", "Historical fee/tier, BBO/liquidity, settlement-mark, and intraminute liquidation assumptions remain unvalidated."],
+    }
+    json_path = runs / "native-optimizer-canonical-reentry-btc.json"
+    json_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    csv_path = runs / "native-optimizer-canonical-reentry-btc.csv"
+    fields = ("variant_id", "status", "candidate", "candidate_hash", "terminal_total", "terminal_active", "terminal_reserve", "terminal_flat", "fills", "native_fees", "funding", "native_order_rejections", "liquidation_count", "liquidation_value", "transfers", "wall_time_seconds", "error")
+    with csv_path.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows({field: json.dumps(item[field], sort_keys=True) if field in {"candidate", "funding"} and field in item else item.get(field) for field in fields} for item in results)
+    return summary | {"artifacts": {"json": str(json_path), "csv": str(csv_path), "partial": str(partial_path)}}
 
 
 def sha256_file(path: Path) -> str:

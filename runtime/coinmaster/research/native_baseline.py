@@ -654,9 +654,9 @@ def coverage_blockers(root: Path) -> list[str]:
     return blockers
 
 
-def save_diagnostic_report(data_root: Path, report: dict) -> Path:
+def save_diagnostic_report(data_root: Path, report: dict, artifact_name: str = "native-diagnostic-report") -> Path:
     """Persist a diagnostic artifact without promoting it to baseline evidence."""
-    target = data_root / "runs" / "native-diagnostic-report.json"
+    target = data_root / "runs" / f"{artifact_name}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     temporary = target.with_suffix(".tmp")
     temporary.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")

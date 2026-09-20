@@ -5,6 +5,7 @@ from __future__ import annotations
 from decimal import Decimal
 from dataclasses import dataclass
 from pathlib import Path
+from typing import ClassVar
 
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.config import SimulationModuleConfig
@@ -258,6 +259,7 @@ class TierMarginPolicy:
     """Explicit-mark, captured-profile margin policy for native account updates."""
 
     _symbols = {BTC_PERP.id: "BTCUSDT", SOL_PERP.id: "SOLUSDT"}
+    _profile_cache: ClassVar[BybitVenueProfile | None] = None
 
     def __init__(
         self,
@@ -270,7 +272,9 @@ class TierMarginPolicy:
         self._marks = marks
         self._selected_leverage = selected_leverage
         self._max_mark_age_ns = max_mark_age_ns
-        self._profile = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
+        if self._profile_cache is None:
+            type(self)._profile_cache = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
+        self._profile = self._profile_cache
 
     def margin_for(self, instrument_id: InstrumentId, quantity: Decimal, ts_now: int) -> tuple[Decimal, Decimal, Decimal]:
         # The same validated public profile is used by the P1 fixture and the

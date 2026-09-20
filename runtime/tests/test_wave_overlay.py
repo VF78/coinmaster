@@ -114,6 +114,18 @@ def test_regime_reason_permits_same_cycle_reentry_but_trail_does_not() -> None:
     assert state.on_group_flat() == "TRAIL"
 
 
+def test_group_flat_clears_episode_so_the_next_daily_decision_can_reenter() -> None:
+    source = bars(600)
+    candidate = Candidate(wave_min_count=1)
+    features = features_for(source, candidate)
+    state = WaveOverlayState(candidate)
+    index = next(index for index, feature in enumerate(features) if feature.beta is not None and 0.2 < feature.beta < 4 and state.decide(source, features, index, 10_000))
+    state.episode.close_reason = "REGIME"  # type: ignore[union-attr]
+    assert state.on_group_flat() == "REGIME"
+    assert state.episode is None
+    assert state.decide(source, features, index + 1, 10_000)[0].action == "BTC_ENTRY"
+
+
 def test_z_requires_exact_previous_calendar_window_including_invalid_values() -> None:
     source = bars(8)
     # Flat BTC makes beta invalid and inserts None rather than retaining an
