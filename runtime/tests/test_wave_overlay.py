@@ -110,6 +110,32 @@ def test_same_day_add_precedes_coincident_timeout_then_exit_after_fill() -> None
     assert [item.action for item in state.decide(source, [feature] * len(source), 15, 10_000)] == ["SOL_EXIT"]
 
 
+def test_timeout_preemption_toggle_blocks_a_coincident_sol_add() -> None:
+    source = bars(16)
+    feature = Features(15, 1, 1.0, 1.0, 0.0, 1.0, 4.0)
+    state = WaveOverlayState(Candidate(sol_max_holding_days=14, sol_timeout_preempts_add=True))
+    state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_qty=7, sol_first_fill_at=source[0].close_time, sol_rights={0})
+    assert [item.action for item in state.decide(source, [feature] * len(source), 15, 10_000)] == ["SOL_EXIT"]
+
+
+def test_sol_overlay_toggle_keeps_btc_episode_but_emits_no_sol_add() -> None:
+    source = bars(1)
+    feature = Features(0, 1, 1.0, 1.0, 0.0, 1.0, 4.0)
+    state = WaveOverlayState(Candidate(sol_overlay_enabled=False))
+    state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_rights={0})
+    assert state.decide(source, [feature], 0, 10_000) == []
+
+
+def test_episode_fixed_beta_uses_entry_beta_with_rolling_z_distribution() -> None:
+    source = bars(2)
+    # The supplied rolling relative is neutral, while the entry beta makes the
+    # current two-bar relative positive enough to cross the test threshold.
+    feature = Features(1, 1, 1.0, 0.0, 0.0, 1.0, 0.0)
+    state = WaveOverlayState(Candidate(relative_days=1, sol_entry_z=(0.001, 9, 9), episode_fixed_beta=True))
+    state.episode = Episode("episode", 1, 10_000, 0.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_rights={0})
+    assert [item.action for item in state.decide(source, [feature, feature], 1, 10_000)] == ["SOL_ADD"]
+
+
 def test_invalid_current_beta_blocks_sol_add_but_not_timeout_exit() -> None:
     source = bars(16)
     invalid = Features(15, 1, None, 1.0, 0.0, 1.0, 4.0)

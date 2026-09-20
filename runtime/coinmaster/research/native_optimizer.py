@@ -827,6 +827,81 @@ def run_stage_d_joint_refinement(data_root: Path, stage_c_report: Path) -> dict:
             lock_path.unlink()
 
 
+HYPOTHESIS_ID = "native-hypothesis-pass-v1"
+
+
+def run_native_hypothesis_pass(data_root: Path, stage_d_report: Path) -> dict:
+    """Sequential independent H1/H3/H4 tests over a reused Stage-D H0."""
+    runs, stem = data_root / "runs", "native-hypothesis-pass-v1"
+    runs.mkdir(parents=True, exist_ok=True)
+    accepted = json.loads(stage_d_report.read_text())
+    d_partial = data_root / "runs" / "native-stage-d-joint-refinement-v1.partial.json"
+    if accepted.get("local_evidence", {}).get("checkpoint_sha256") != sha256_file(d_partial):
+        raise ValueError("HYPOTHESIS_STAGE_D_EVIDENCE_HASH_MISMATCH")
+    source = next((item for item in json.loads(d_partial.read_text())["results"] if item["variant_id"] == accepted.get("best", {}).get("variant_id")), None)
+    control = Candidate(ema_period=34, btc_tp_fractions_initial_qty=(0.2, 0.25, 0.55), btc_notional_multiplier=4.0, sol_size_multipliers_h=(2.0, 3.0, 4.0))
+    source_candidate = source.get("candidate", {}) if source else {}
+    legacy_control = {key: asdict(control)[key] for key in source_candidate if key in asdict(control)}
+    if not source or _candidate_tuple_key(source_candidate) != _candidate_tuple_key(legacy_control) or source.get("terminal_total") != "740906.55113925":
+        raise ValueError("HYPOTHESIS_STAGE_D_CONTROL_MISMATCH")
+    _stage_c_validate_ranked_evidence([source], data_root)
+    meta = {"optimizer_id": HYPOTHESIS_ID, "stage_d_report_sha256": sha256_file(stage_d_report), "stage_d_checkpoint_sha256": sha256_file(d_partial), "control_candidate": source["candidate"], "control_total": source["terminal_total"], "objective": "terminal TOTAL only", "independent_hypotheses": ["H1", "H2", "H3", "H4"], "h2_definition": "freeze entry beta only; current relative uses it while rolling feature mu/sigma remain unchanged", "ranking_eligible_for_live": False}
+    partial_path, lock_path = runs / f"{stem}.partial.json", runs / f"{stem}.lock"
+    try:
+        fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError as error:
+        raise RuntimeError("HYPOTHESIS_SINGLE_PROCESS_LOCK_HELD") from error
+    try:
+        os.write(fd, str(os.getpid()).encode()); os.close(fd)
+        partial = json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance": meta, "results": []}
+        if partial.get("provenance") != meta:
+            raise ValueError("HYPOTHESIS_PARTIAL_PROVENANCE_MISMATCH")
+        results = list(partial["results"])
+        completed = {item["variant_id"] for item in results}
+
+        def persist() -> None:
+            _atomic_json(partial_path, {"provenance": meta, "results": results})
+
+        def add(name: str, candidate: Candidate | None, *, reuse: dict | None = None, blocked: str | None = None) -> None:
+            if name in completed:
+                return
+            if blocked:
+                item = {"variant_id": name, "status": "BLOCKED", "error": blocked, "candidate": source["candidate"]}
+            elif reuse:
+                item = _stage_a_reuse(name, source["candidate"], reuse)
+            else:
+                assert candidate is not None
+                item = _stage_a_item(name, candidate, data_root, stem)
+            results.append(item); completed.add(name); persist()
+
+        add("H0-control-reuse", None, reuse=source)
+        add("H1-timeout-preempts-sol-add", replace(control, sol_timeout_preempts_add=True))
+        add("H2-episode-fixed-beta", replace(control, episode_fixed_beta=True))
+        # The sealed control already permits a late z signal after a confirmed
+        # TP right. H3 executes that explicit, behavior-preserving version.
+        add("H3-late-sol-entry-after-tp", replace(control, sol_late_entry_after_tp=True))
+        add("H4-btc-only", replace(control, sol_overlay_enabled=False))
+        ranked = sorted((item for item in results if item.get("terminal_total") is not None), key=lambda item: Decimal(item["terminal_total"]), reverse=True)
+        _stage_c_validate_ranked_evidence(ranked, data_root)
+        h0 = next(item for item in results if item["variant_id"] == "H0-control-reuse")
+        h4 = next(item for item in results if item["variant_id"] == "H4-btc-only")
+        for item in ranked:
+            item.setdefault("btc_tp_level_attribution", "UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_TP_LEVEL_OR_EXIT_REASON")
+            item.setdefault("sol_fill_add_level_attribution", "UNKNOWN_NATIVE_FILLS_DO_NOT_EXPORT_SOL_ADD_LEVEL")
+        rows = [_stage_a_csv_row(item, meta["control_total"]) | {"delta_vs_h0": str(Decimal(item["terminal_total"]) - Decimal(h0["terminal_total"])), "sol_incremental_vs_btc_only": str(Decimal(h0["terminal_total"]) - Decimal(h4["terminal_total"])) if item["variant_id"] == "H4-btc-only" else None} for item in ranked]
+        csv_path, temporary = runs / f"{stem}-top20.csv", runs / f"{stem}-top20.csv.tmp"
+        with temporary.open("w", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+        temporary.replace(csv_path)
+        compact = lambda item: _stage_b_compact(item, meta["control_total"], partial_path) | {"delta_vs_h0": str(Decimal(item["terminal_total"]) - Decimal(h0["terminal_total"]))}
+        summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": meta, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "ranked_evidence_validated": True}, "result_count": len(results), "results": [compact(item) for item in results], "top20": [compact(item) for item in ranked], "h0": compact(h0), "h2": compact(next(item for item in results if item["variant_id"] == "H2-episode-fixed-beta")), "h4_sol_incremental": str(Decimal(h0["terminal_total"]) - Decimal(h4["terminal_total"])), "defaults": {"H1": "off", "H2": "off", "H3": "current control semantics retained", "H4": "off"}, "limitations": ["Independent hypotheses only; no combinations.", "No Stage E."]}
+        target = runs / f"{stem}.json"; _atomic_json(target, summary)
+        return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path)}
+    finally:
+        if lock_path.exists():
+            lock_path.unlink()
+
+
 def run_canonical_reentry_btc_pass(
     data_root: Path,
     baseline_report: Path,

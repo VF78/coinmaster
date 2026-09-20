@@ -55,6 +55,11 @@ class Candidate:
     sol_exit_all_z: float = 0.125
     sol_max_holding_days: int = 14
     btc_close_trail_fraction: float = 0.03
+    # Research-only toggles. Defaults preserve the sealed Stage-D semantics.
+    sol_timeout_preempts_add: bool = False
+    sol_late_entry_after_tp: bool = True
+    sol_overlay_enabled: bool = True
+    episode_fixed_beta: bool = False
 
 
 @dataclass(frozen=True)
@@ -282,12 +287,29 @@ class WaveOverlayState:
                 intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_open_qty)))
         if intents:
             return intents
+        # H1: a due timeout is an exit, never a same-decision opportunity to
+        # increase SOL risk. The default retains the sealed add-then-timeout
+        # ordering for reproducible control evidence.
+        if self.config.sol_timeout_preempts_add:
+            timeout = self._sol_exits(episode, feature, bars[index], index)
+            if timeout:
+                return timeout
+        if not self.config.sol_overlay_enabled:
+            return []
         # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
         # An invalid current beta permits only exits/reductions, never new risk.
         if feature.beta is None or not 0.2 < feature.beta < 4:
             return self._sol_exits(episode, feature, bars[index], index)
-        z = feature.z if episode.fixed_sigma is None else (feature.relative - feature.mu) / episode.fixed_sigma if feature.relative is not None and feature.mu is not None else None
-        if z is not None:
+        if not self.config.episode_fixed_beta:
+            z = feature.z if episode.fixed_sigma is None else (feature.relative - feature.mu) / episode.fixed_sigma if feature.relative is not None and feature.mu is not None else None
+        elif index >= self.config.relative_days:
+            prior = bars[index - self.config.relative_days]
+            relative = log(bars[index].sol_close / prior.sol_close) - episode.beta_entry * log(bars[index].btc_close / prior.btc_close)
+            sigma = episode.fixed_sigma if episode.fixed_sigma is not None else feature.sigma
+            z = (relative - feature.mu) / sigma if feature.mu is not None and sigma not in (None, 0) else None
+        else:
+            z = None
+        if self.config.sol_late_entry_after_tp and z is not None:
             signed_z = episode.side * z
             for level in sorted(episode.sol_rights):
                 if level not in episode.sol_adds and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
