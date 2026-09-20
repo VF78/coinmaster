@@ -1,10 +1,11 @@
-import type { components } from './nautilus.generated';
 import type { components as runtimeComponents } from './runtime.generated';
-export type StrategyConfig = components['schemas']['StrategyConfig'];
-export type StrategyConfiguration = components['schemas']['ConfigurationRecord'];
-export type Run = components['schemas']['RunRecord'];
-export type ResearchCatalogEntry = components['schemas']['ResearchCatalogEntry'];
-export type ResearchCatalogDetail = components['schemas']['ResearchCatalogDetail'];
+// The loopback runtime sidecar serves this whole surface; one generated
+// contract prevents the SPA from drifting from its deployed API.
+export type StrategyConfig = runtimeComponents['schemas']['StrategyConfig'];
+export type StrategyConfiguration = runtimeComponents['schemas']['ConfigurationRecord'];
+export type Run = runtimeComponents['schemas']['RunRecord'];
+export type ResearchCatalogEntry = runtimeComponents['schemas']['ResearchCatalogEntry'];
+export type ResearchCatalogDetail = runtimeComponents['schemas']['ResearchCatalogDetail'];
 export type RuntimeState = runtimeComponents['schemas']['RuntimeState'];
 export type RuntimeEventsResponse = runtimeComponents['schemas']['RuntimeEventsResponse'];
 export type RuntimeCommandResponse = runtimeComponents['schemas']['RuntimeCommandResponse'];

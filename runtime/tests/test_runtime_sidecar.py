@@ -23,14 +23,17 @@ def test_runtime_sidecar_exposes_strict_schemas_and_spa_without_shadowing_api(tm
     (dist / "index.html").write_text("<main>paper runtime</main>")
     (dist / "assets" / "app.js").write_text("export {}")
     monkeypatch.setenv("COINMASTER_RUNTIME_DIST", str(dist))
-    app = create_runtime_app(database=str(tmp_path / "missing.sqlite"), token="operator", worker_url="http://127.0.0.1:9", worker_token="relay")
+    app = create_runtime_app(database=str(tmp_path / "missing.sqlite"), control_database=str(tmp_path / "control.sqlite"), token="operator", worker_url="http://127.0.0.1:9", worker_token="relay")
     spec = app.openapi()
     schemas = spec["components"]["schemas"]
     for name in ("RuntimeState", "RuntimeBalances", "RuntimeStrategy", "RuntimeFeed", "RuntimeEvent", "RuntimeFunding", "RuntimeEventsResponse", "RuntimeCommandResponse"):
         assert schemas[name]["additionalProperties"] is False
     assert schemas["RuntimeBalances"]["properties"]["active_usdt"]["type"] == "string"
+    for path in ("/api/v1/configurations/default", "/api/v1/configurations", "/api/v1/preflight", "/api/v1/runs", "/api/v1/research/catalog", "/api/v1/runtime", "/api/v1/runtime/commands/{command}"):
+        assert path in spec["paths"]
+    assert "ResearchCatalogEntry" in schemas and "StrategyConfig" in schemas
     paths = [getattr(route, "path", "") for route in app.routes]
-    assert "/api/v1/runtime" in paths and "/{path:path}" in paths
+    assert "/api/v1/openapi.json" in paths and "/api/v1/runtime" in paths and "/{path:path}" in paths
     # The SPA fallback is registered after the authenticated API routes and
     # resolves the built root rather than a file supplied by the request.
     spa = next(route for route in app.routes if getattr(route, "path", "") == "/{path:path}")

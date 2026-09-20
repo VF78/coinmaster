@@ -1,6 +1,45 @@
 {
   "components": {
     "schemas": {
+      "ConfigurationInput": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/StrategyConfig"
+          }
+        },
+        "required": [
+          "config"
+        ],
+        "title": "ConfigurationInput",
+        "type": "object"
+      },
+      "ConfigurationRecord": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/StrategyConfig"
+          },
+          "config_hash": {
+            "title": "Config Hash",
+            "type": "string"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "config_hash",
+          "created_at",
+          "config"
+        ],
+        "title": "ConfigurationRecord",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -12,6 +51,375 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "PreflightInput": {
+        "properties": {
+          "active_usdt": {
+            "default": "10000",
+            "title": "Active Usdt",
+            "type": "string"
+          },
+          "beta": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Beta"
+          },
+          "btc_notional": {
+            "title": "Btc Notional",
+            "type": "string"
+          },
+          "selected_leverage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected Leverage"
+          },
+          "sol_multipliers": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Sol Multipliers",
+            "type": "array"
+          },
+          "venue": {
+            "enum": [
+              "bybit",
+              "hyperliquid"
+            ],
+            "title": "Venue",
+            "type": "string"
+          }
+        },
+        "required": [
+          "venue",
+          "btc_notional",
+          "sol_multipliers"
+        ],
+        "title": "PreflightInput",
+        "type": "object"
+      },
+      "ResearchCatalogDetail": {
+        "properties": {
+          "artifact": {
+            "title": "Artifact",
+            "type": "string"
+          },
+          "artifact_state": {
+            "title": "Artifact State",
+            "type": "string"
+          },
+          "classification": {
+            "title": "Classification",
+            "type": "string"
+          },
+          "drawdown_percent": {
+            "title": "Drawdown Percent",
+            "type": "string"
+          },
+          "fees": {
+            "title": "Fees",
+            "type": "string"
+          },
+          "fills": {
+            "title": "Fills",
+            "type": "integer"
+          },
+          "funding": {
+            "title": "Funding",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "interval": {
+            "title": "Interval",
+            "type": "string"
+          },
+          "interval_cash": {
+            "title": "Interval Cash",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "liquidations": {
+            "title": "Liquidations",
+            "type": "integer"
+          },
+          "roi": {
+            "title": "Roi",
+            "type": "string"
+          },
+          "selected": {
+            "title": "Selected",
+            "type": "boolean"
+          },
+          "settled_total": {
+            "title": "Settled Total",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "supersession": {
+            "title": "Supersession",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "verified_detail": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified Detail"
+          },
+          "warmup": {
+            "title": "Warmup",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "classification",
+          "selected",
+          "artifact",
+          "sha256",
+          "artifact_state",
+          "interval",
+          "warmup",
+          "settled_total",
+          "interval_cash",
+          "roi",
+          "drawdown_percent",
+          "fees",
+          "fills",
+          "funding",
+          "liquidations",
+          "limitations",
+          "supersession"
+        ],
+        "title": "ResearchCatalogDetail",
+        "type": "object"
+      },
+      "ResearchCatalogEntry": {
+        "properties": {
+          "artifact": {
+            "title": "Artifact",
+            "type": "string"
+          },
+          "artifact_state": {
+            "title": "Artifact State",
+            "type": "string"
+          },
+          "classification": {
+            "title": "Classification",
+            "type": "string"
+          },
+          "drawdown_percent": {
+            "title": "Drawdown Percent",
+            "type": "string"
+          },
+          "fees": {
+            "title": "Fees",
+            "type": "string"
+          },
+          "fills": {
+            "title": "Fills",
+            "type": "integer"
+          },
+          "funding": {
+            "title": "Funding",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "interval": {
+            "title": "Interval",
+            "type": "string"
+          },
+          "interval_cash": {
+            "title": "Interval Cash",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "liquidations": {
+            "title": "Liquidations",
+            "type": "integer"
+          },
+          "roi": {
+            "title": "Roi",
+            "type": "string"
+          },
+          "selected": {
+            "title": "Selected",
+            "type": "boolean"
+          },
+          "settled_total": {
+            "title": "Settled Total",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "supersession": {
+            "title": "Supersession",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "warmup": {
+            "title": "Warmup",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "classification",
+          "selected",
+          "artifact",
+          "sha256",
+          "artifact_state",
+          "interval",
+          "warmup",
+          "settled_total",
+          "interval_cash",
+          "roi",
+          "drawdown_percent",
+          "fees",
+          "fills",
+          "funding",
+          "liquidations",
+          "limitations",
+          "supersession"
+        ],
+        "title": "ResearchCatalogEntry",
+        "type": "object"
+      },
+      "RunInput": {
+        "properties": {
+          "config_id": {
+            "title": "Config Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "fixture",
+              "backtest",
+              "paper"
+            ],
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "config_id",
+          "kind"
+        ],
+        "title": "RunInput",
+        "type": "object"
+      },
+      "RunRecord": {
+        "properties": {
+          "config_id": {
+            "title": "Config Id",
+            "type": "string"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "evidence": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "report": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "config_id",
+          "kind",
+          "status",
+          "evidence",
+          "created_at"
+        ],
+        "title": "RunRecord",
         "type": "object"
       },
       "RuntimeBalances": {
@@ -505,6 +913,289 @@
         "title": "RuntimeStrategy",
         "type": "object"
       },
+      "StrategyConfig": {
+        "additionalProperties": false,
+        "properties": {
+          "beta_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Beta Days",
+            "type": "integer"
+          },
+          "btc_close_stop_fraction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Btc Close Stop Fraction"
+          },
+          "btc_close_trail_fraction": {
+            "minimum": 0.0,
+            "title": "Btc Close Trail Fraction",
+            "type": "number"
+          },
+          "btc_notional_multiplier": {
+            "exclusiveMinimum": 0.0,
+            "title": "Btc Notional Multiplier",
+            "type": "number"
+          },
+          "btc_tp_fractions_initial_qty": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Btc Tp Fractions Initial Qty",
+            "type": "array"
+          },
+          "ema_period": {
+            "exclusiveMinimum": 0.0,
+            "title": "Ema Period",
+            "type": "integer"
+          },
+          "freeze_sigma_on_first_sol_fill": {
+            "title": "Freeze Sigma On First Sol Fill",
+            "type": "boolean"
+          },
+          "future_sol_margin_fraction": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Future Sol Margin Fraction",
+            "type": "number"
+          },
+          "include_zero_waves": {
+            "title": "Include Zero Waves",
+            "type": "boolean"
+          },
+          "initial_active_fraction": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 1.0,
+            "title": "Initial Active Fraction",
+            "type": "number"
+          },
+          "initial_total_usdt": {
+            "title": "Initial Total Usdt",
+            "type": "string"
+          },
+          "insufficient_margin": {
+            "enum": [
+              "reject",
+              "clip"
+            ],
+            "title": "Insufficient Margin",
+            "type": "string"
+          },
+          "live_enabled": {
+            "const": false,
+            "title": "Live Enabled",
+            "type": "boolean"
+          },
+          "max_gross_to_active": {
+            "exclusiveMinimum": 0.0,
+            "title": "Max Gross To Active",
+            "type": "number"
+          },
+          "max_parent_notional": {
+            "title": "Max Parent Notional",
+            "type": "string"
+          },
+          "mode": {
+            "const": "paper",
+            "title": "Mode",
+            "type": "string"
+          },
+          "portfolio_loss_limit_fraction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Portfolio Loss Limit Fraction"
+          },
+          "post_liquidation": {
+            "const": "restart_from_reserve_else_pause",
+            "title": "Post Liquidation",
+            "type": "string"
+          },
+          "regime": {
+            "const": "close_vs_ema",
+            "title": "Regime",
+            "type": "string"
+          },
+          "relative_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Relative Days",
+            "type": "integer"
+          },
+          "reserve_transfer_fraction": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Reserve Transfer Fraction",
+            "type": "number"
+          },
+          "reserve_trigger_multiple": {
+            "exclusiveMinimum": 0.0,
+            "title": "Reserve Trigger Multiple",
+            "type": "number"
+          },
+          "restart_target": {
+            "const": "initial_active_seed",
+            "title": "Restart Target",
+            "type": "string"
+          },
+          "signal_timeframe": {
+            "const": "1D",
+            "title": "Signal Timeframe",
+            "type": "string"
+          },
+          "sol_direction": {
+            "const": "opposite_btc",
+            "title": "Sol Direction",
+            "type": "string"
+          },
+          "sol_entry_eligibility": {
+            "const": "persistent_after_btc_level",
+            "title": "Sol Entry Eligibility",
+            "type": "string"
+          },
+          "sol_entry_z": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Sol Entry Z",
+            "type": "array"
+          },
+          "sol_exit_all_z": {
+            "minimum": 0.0,
+            "title": "Sol Exit All Z",
+            "type": "number"
+          },
+          "sol_exit_half_z": {
+            "minimum": 0.0,
+            "title": "Sol Exit Half Z",
+            "type": "number"
+          },
+          "sol_max_holding_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Sol Max Holding Days",
+            "type": "integer"
+          },
+          "sol_size_multipliers_H": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Sol Size Multipliers H",
+            "type": "array"
+          },
+          "sol_z_stop": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sol Z Stop"
+          },
+          "strategy_id": {
+            "const": "btc_sol_wave_overlay_v1",
+            "title": "Strategy Id",
+            "type": "string"
+          },
+          "venue": {
+            "anyOf": [
+              {
+                "enum": [
+                  "bybit",
+                  "hyperliquid"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue"
+          },
+          "wave_history_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Wave History Days",
+            "type": "integer"
+          },
+          "wave_min_count": {
+            "exclusiveMinimum": 0.0,
+            "title": "Wave Min Count",
+            "type": "integer"
+          },
+          "wave_quantiles": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "title": "Wave Quantiles",
+            "type": "array"
+          },
+          "z_history_days": {
+            "exclusiveMinimum": 0.0,
+            "title": "Z History Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "strategy_id",
+          "mode",
+          "live_enabled",
+          "venue",
+          "initial_total_usdt",
+          "initial_active_fraction",
+          "signal_timeframe",
+          "regime",
+          "ema_period",
+          "beta_days",
+          "relative_days",
+          "z_history_days",
+          "wave_history_days",
+          "wave_min_count",
+          "include_zero_waves",
+          "wave_quantiles",
+          "btc_tp_fractions_initial_qty",
+          "btc_notional_multiplier",
+          "max_parent_notional",
+          "max_gross_to_active",
+          "sol_size_multipliers_H",
+          "sol_entry_z",
+          "sol_direction",
+          "sol_entry_eligibility",
+          "freeze_sigma_on_first_sol_fill",
+          "sol_exit_half_z",
+          "sol_exit_all_z",
+          "sol_max_holding_days",
+          "sol_z_stop",
+          "btc_close_stop_fraction",
+          "btc_close_trail_fraction",
+          "portfolio_loss_limit_fraction",
+          "future_sol_margin_fraction",
+          "insufficient_margin",
+          "reserve_transfer_fraction",
+          "reserve_trigger_multiple",
+          "restart_target",
+          "post_liquidation"
+        ],
+        "title": "StrategyConfig",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -553,6 +1244,640 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/configurations": {
+      "get": {
+        "operationId": "list_configs_api_v1_configurations_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ConfigurationRecord"
+                  },
+                  "title": "Response List Configs Api V1 Configurations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Configs"
+      },
+      "post": {
+        "operationId": "create_config_api_v1_configurations_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigurationInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationRecord"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Config"
+      }
+    },
+    "/api/v1/configurations/default": {
+      "get": {
+        "operationId": "default_config_api_v1_configurations_default_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationInput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Default Config"
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "health_api_v1_health_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Health Api V1 Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Health"
+      }
+    },
+    "/api/v1/preflight": {
+      "post": {
+        "operationId": "preflight_api_v1_preflight_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreflightInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Preflight Api V1 Preflight Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Preflight"
+      }
+    },
+    "/api/v1/research/catalog": {
+      "get": {
+        "operationId": "research_catalog_api_v1_research_catalog_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ResearchCatalogEntry"
+                  },
+                  "title": "Response Research Catalog Api V1 Research Catalog Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Research Catalog"
+      }
+    },
+    "/api/v1/research/catalog/{catalog_id}": {
+      "get": {
+        "operationId": "research_catalog_detail_api_v1_research_catalog__catalog_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "catalog_id",
+            "required": true,
+            "schema": {
+              "title": "Catalog Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchCatalogDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Research Catalog Detail"
+      }
+    },
+    "/api/v1/runs": {
+      "get": {
+        "operationId": "list_runs_api_v1_runs_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RunRecord"
+                  },
+                  "title": "Response List Runs Api V1 Runs Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Runs"
+      },
+      "post": {
+        "operationId": "create_run_api_v1_runs_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunRecord"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Run"
+      }
+    },
+    "/api/v1/runs/{run_id}": {
+      "get": {
+        "operationId": "get_run_api_v1_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunRecord"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Run"
+      }
+    },
+    "/api/v1/runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "cancel_run_api_v1_runs__run_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunRecord"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Run"
+      }
+    },
+    "/api/v1/runs/{run_id}/report": {
+      "get": {
+        "operationId": "run_report_api_v1_runs__run_id__report_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Run Report Api V1 Runs  Run Id  Report Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Run Report"
+      }
+    },
     "/api/v1/runtime": {
       "get": {
         "operationId": "runtime_api_v1_runtime_get",
@@ -723,6 +2048,54 @@
           }
         },
         "summary": "Events"
+      }
+    },
+    "/api/v1/venue-profiles": {
+      "get": {
+        "operationId": "venue_profiles_api_v1_venue_profiles_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Venue Profiles Api V1 Venue Profiles Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Venue Profiles"
       }
     }
   }

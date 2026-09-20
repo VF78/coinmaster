@@ -9,9 +9,11 @@ from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict
+
+from coinmaster.api.app import create_app as create_control_app
 
 
 UNKNOWN = "UNKNOWN"
@@ -173,13 +175,29 @@ class RuntimeReader:
             raise HTTPException(503, "paper worker command channel unavailable") from error
 
 
-def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None) -> FastAPI:
+def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None) -> FastAPI:
     expected = token if token is not None else os.getenv("COINMASTER_RUNTIME_API_TOKEN")
     relay_token = worker_token if worker_token is not None else os.getenv("COINMASTER_PAPER_CONTROL_TOKEN")
     reader = RuntimeReader(database or os.getenv("COINMASTER_PAPER_DB", "/var/lib/coinmaster-paper/paper.sqlite"), worker_url or os.getenv("COINMASTER_PAPER_WORKER_URL", "http://127.0.0.1:18181"))
-    app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url="/api/v1/openapi.json")
+    app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     def auth(authorization: str | None = Header(default=None)) -> None:
         if not expected or authorization != f"Bearer {expected}": raise HTTPException(401, "runtime token required")
+
+    @app.get("/api/v1/openapi.json", include_in_schema=False, dependencies=[Depends(auth)])
+    def openapi_document() -> JSONResponse:
+        return JSONResponse(app.openapi())
+
+    # The SPA has one loopback origin.  Reuse the control app's routes rather
+    # than mirror its configuration, research, or immutable-run semantics.
+    # The outer dependency also protects its otherwise informational health
+    # endpoint, so every /api/v1 route uses the runtime operator token.
+    control = create_control_app(
+        database=control_database or os.getenv("COINMASTER_RUNTIME_CONTROL_DB", str(Path(__file__).resolve().parents[2] / "var/runtime-control.sqlite")),
+        token=expected,
+        include_legacy_runtime=False,
+    )
+    app.include_router(control.router, dependencies=[Depends(auth)])
+
     @app.get("/api/v1/runtime", response_model=RuntimeState, dependencies=[Depends(auth)])
     def runtime() -> RuntimeState: return reader.runtime()
     @app.get("/api/v1/runtime/events", response_model=RuntimeEventsResponse, dependencies=[Depends(auth)])

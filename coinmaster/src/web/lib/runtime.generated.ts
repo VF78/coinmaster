@@ -4,6 +4,178 @@
  */
 
 export interface paths {
+    "/api/v1/configurations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Configs */
+        get: operations["list_configs_api_v1_configurations_get"];
+        put?: never;
+        /** Create Config */
+        post: operations["create_config_api_v1_configurations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/configurations/default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Default Config */
+        get: operations["default_config_api_v1_configurations_default_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Health */
+        get: operations["health_api_v1_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/preflight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preflight */
+        post: operations["preflight_api_v1_preflight_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Research Catalog */
+        get: operations["research_catalog_api_v1_research_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research/catalog/{catalog_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Research Catalog Detail */
+        get: operations["research_catalog_detail_api_v1_research_catalog__catalog_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Runs */
+        get: operations["list_runs_api_v1_runs_get"];
+        put?: never;
+        /** Create Run */
+        post: operations["create_run_api_v1_runs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run */
+        get: operations["get_run_api_v1_runs__run_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runs/{run_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel Run */
+        post: operations["cancel_run_api_v1_runs__run_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runs/{run_id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Run Report */
+        get: operations["run_report_api_v1_runs__run_id__report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/runtime": {
         parameters: {
             query?: never;
@@ -55,14 +227,185 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/venue-profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Venue Profiles */
+        get: operations["venue_profiles_api_v1_venue_profiles_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ConfigurationInput */
+        ConfigurationInput: {
+            config: components["schemas"]["StrategyConfig"];
+        };
+        /** ConfigurationRecord */
+        ConfigurationRecord: {
+            config: components["schemas"]["StrategyConfig"];
+            /** Config Hash */
+            config_hash: string;
+            /** Created At */
+            created_at: string;
+            /** Id */
+            id: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** PreflightInput */
+        PreflightInput: {
+            /**
+             * Active Usdt
+             * @default 10000
+             */
+            active_usdt: string;
+            /** Beta */
+            beta?: string | null;
+            /** Btc Notional */
+            btc_notional: string;
+            /** Selected Leverage */
+            selected_leverage?: string | null;
+            /** Sol Multipliers */
+            sol_multipliers: number[];
+            /**
+             * Venue
+             * @enum {string}
+             */
+            venue: "bybit" | "hyperliquid";
+        };
+        /** ResearchCatalogDetail */
+        ResearchCatalogDetail: {
+            /** Artifact */
+            artifact: string;
+            /** Artifact State */
+            artifact_state: string;
+            /** Classification */
+            classification: string;
+            /** Drawdown Percent */
+            drawdown_percent: string;
+            /** Fees */
+            fees: string;
+            /** Fills */
+            fills: number;
+            /** Funding */
+            funding: number;
+            /** Id */
+            id: string;
+            /** Interval */
+            interval: string;
+            /** Interval Cash */
+            interval_cash: string;
+            /** Kind */
+            kind: string;
+            /** Limitations */
+            limitations: string[];
+            /** Liquidations */
+            liquidations: number;
+            /** Roi */
+            roi: string;
+            /** Selected */
+            selected: boolean;
+            /** Settled Total */
+            settled_total: string;
+            /** Sha256 */
+            sha256: string;
+            /** Supersession */
+            supersession: string;
+            /** Title */
+            title: string;
+            /** Verified Detail */
+            verified_detail?: {
+                [key: string]: unknown;
+            } | null;
+            /** Warmup */
+            warmup: string;
+        };
+        /** ResearchCatalogEntry */
+        ResearchCatalogEntry: {
+            /** Artifact */
+            artifact: string;
+            /** Artifact State */
+            artifact_state: string;
+            /** Classification */
+            classification: string;
+            /** Drawdown Percent */
+            drawdown_percent: string;
+            /** Fees */
+            fees: string;
+            /** Fills */
+            fills: number;
+            /** Funding */
+            funding: number;
+            /** Id */
+            id: string;
+            /** Interval */
+            interval: string;
+            /** Interval Cash */
+            interval_cash: string;
+            /** Kind */
+            kind: string;
+            /** Limitations */
+            limitations: string[];
+            /** Liquidations */
+            liquidations: number;
+            /** Roi */
+            roi: string;
+            /** Selected */
+            selected: boolean;
+            /** Settled Total */
+            settled_total: string;
+            /** Sha256 */
+            sha256: string;
+            /** Supersession */
+            supersession: string;
+            /** Title */
+            title: string;
+            /** Warmup */
+            warmup: string;
+        };
+        /** RunInput */
+        RunInput: {
+            /** Config Id */
+            config_id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "fixture" | "backtest" | "paper";
+        };
+        /** RunRecord */
+        RunRecord: {
+            /** Config Id */
+            config_id: string;
+            /** Created At */
+            created_at: string;
+            /** Evidence */
+            evidence: string[];
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Report */
+            report?: {
+                [key: string]: unknown;
+            } | null;
+            /** Status */
+            status: string;
         };
         /** RuntimeBalances */
         RuntimeBalances: {
@@ -231,6 +574,115 @@ export interface components {
             /** Strategy Class */
             strategy_class: string;
         };
+        /** StrategyConfig */
+        StrategyConfig: {
+            /** Beta Days */
+            beta_days: number;
+            /** Btc Close Stop Fraction */
+            btc_close_stop_fraction: number | null;
+            /** Btc Close Trail Fraction */
+            btc_close_trail_fraction: number;
+            /** Btc Notional Multiplier */
+            btc_notional_multiplier: number;
+            /** Btc Tp Fractions Initial Qty */
+            btc_tp_fractions_initial_qty: number[];
+            /** Ema Period */
+            ema_period: number;
+            /** Freeze Sigma On First Sol Fill */
+            freeze_sigma_on_first_sol_fill: boolean;
+            /** Future Sol Margin Fraction */
+            future_sol_margin_fraction: number;
+            /** Include Zero Waves */
+            include_zero_waves: boolean;
+            /** Initial Active Fraction */
+            initial_active_fraction: number;
+            /** Initial Total Usdt */
+            initial_total_usdt: string;
+            /**
+             * Insufficient Margin
+             * @enum {string}
+             */
+            insufficient_margin: "reject" | "clip";
+            /**
+             * Live Enabled
+             * @constant
+             */
+            live_enabled: false;
+            /** Max Gross To Active */
+            max_gross_to_active: number;
+            /** Max Parent Notional */
+            max_parent_notional: string;
+            /**
+             * Mode
+             * @constant
+             */
+            mode: "paper";
+            /** Portfolio Loss Limit Fraction */
+            portfolio_loss_limit_fraction: number | null;
+            /**
+             * Post Liquidation
+             * @constant
+             */
+            post_liquidation: "restart_from_reserve_else_pause";
+            /**
+             * Regime
+             * @constant
+             */
+            regime: "close_vs_ema";
+            /** Relative Days */
+            relative_days: number;
+            /** Reserve Transfer Fraction */
+            reserve_transfer_fraction: number;
+            /** Reserve Trigger Multiple */
+            reserve_trigger_multiple: number;
+            /**
+             * Restart Target
+             * @constant
+             */
+            restart_target: "initial_active_seed";
+            /**
+             * Signal Timeframe
+             * @constant
+             */
+            signal_timeframe: "1D";
+            /**
+             * Sol Direction
+             * @constant
+             */
+            sol_direction: "opposite_btc";
+            /**
+             * Sol Entry Eligibility
+             * @constant
+             */
+            sol_entry_eligibility: "persistent_after_btc_level";
+            /** Sol Entry Z */
+            sol_entry_z: number[];
+            /** Sol Exit All Z */
+            sol_exit_all_z: number;
+            /** Sol Exit Half Z */
+            sol_exit_half_z: number;
+            /** Sol Max Holding Days */
+            sol_max_holding_days: number;
+            /** Sol Size Multipliers H */
+            sol_size_multipliers_H: number[];
+            /** Sol Z Stop */
+            sol_z_stop: number | null;
+            /**
+             * Strategy Id
+             * @constant
+             */
+            strategy_id: "btc_sol_wave_overlay_v1";
+            /** Venue */
+            venue: ("bybit" | "hyperliquid") | null;
+            /** Wave History Days */
+            wave_history_days: number;
+            /** Wave Min Count */
+            wave_min_count: number;
+            /** Wave Quantiles */
+            wave_quantiles: number[];
+            /** Z History Days */
+            z_history_days: number;
+        };
         /** ValidationError */
         ValidationError: {
             /** Context */
@@ -253,6 +705,404 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_configs_api_v1_configurations_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConfigurationRecord"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_config_api_v1_configurations_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfigurationInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConfigurationRecord"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    default_config_api_v1_configurations_default_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConfigurationInput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    health_api_v1_health_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preflight_api_v1_preflight_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreflightInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    research_catalog_api_v1_research_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchCatalogEntry"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    research_catalog_detail_api_v1_research_catalog__catalog_id__get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                catalog_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchCatalogDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_runs_api_v1_runs_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunRecord"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_run_api_v1_runs_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RunInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunRecord"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_run_api_v1_runs__run_id__get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunRecord"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_run_api_v1_runs__run_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunRecord"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    run_report_api_v1_runs__run_id__report_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     runtime_api_v1_runtime_get: {
         parameters: {
             query?: never;
@@ -338,6 +1188,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RuntimeEventsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    venue_profiles_api_v1_venue_profiles_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */

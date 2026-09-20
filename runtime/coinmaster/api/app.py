@@ -224,8 +224,8 @@ def immutable_research_reference() -> tuple[list[str], dict[str, Any]]:
     return ["IMMUTABLE_RESEARCH_REFERENCE", "NO_NEW_BACKTEST_COMPUTE", selected["classification"], state], {"catalog_id": selected["id"], "artifact": selected["artifact"], "sha256": selected["sha256"], "artifact_state": state, "reason": "This request references immutable native research evidence; a separate research worker is required for any new computation."}
 
 
-def create_app(database: str | None = None, token: str | None = None) -> FastAPI:
-    store = ControlStore(database or os.getenv("COINMASTER_CONTROL_DB", "var/coinmaster-control.sqlite"))
+def create_app(database: str | None = None, token: str | None = None, include_legacy_runtime: bool = True) -> FastAPI:
+    store = ControlStore(database or os.getenv("COINMASTER_CONTROL_DB", str(Path(__file__).resolve().parents[2] / "var/coinmaster-control.sqlite")))
     expected_token = token if token is not None else os.getenv("COINMASTER_API_TOKEN")
     app = FastAPI(title="Coinmaster Nautilus Control API", version="0.1.0", docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json")
     app.add_middleware(CORSMiddleware, allow_origins=[os.getenv("COINMASTER_ALLOWED_ORIGIN", "http://localhost:5173")], allow_credentials=False, allow_methods=["GET", "POST"], allow_headers=["Authorization", "Idempotency-Key"])
@@ -314,17 +314,18 @@ def create_app(database: str | None = None, token: str | None = None) -> FastAPI
     @app.get("/api/v1/runs/{run_id}/report", dependencies=[Depends(auth)])
     def run_report(run_id: str) -> dict[str, Any]: return get_run(run_id).model_dump()
 
-    @app.get("/api/v1/runtime", dependencies=[Depends(auth)])
-    def runtime() -> dict[str, Any]:
-        return {"status": "NOT_RUNNING", "active_usdt": "10000", "reserve_usdt": "0", "total_usdt": "10000", "positions": [], "orders": [], "warnings": ["P4 paper worker and reconciliation are not implemented"]}
+    if include_legacy_runtime:
+        @app.get("/api/v1/runtime", dependencies=[Depends(auth)])
+        def runtime() -> dict[str, Any]:
+            return {"status": "NOT_RUNNING", "active_usdt": "10000", "reserve_usdt": "0", "total_usdt": "10000", "positions": [], "orders": [], "warnings": ["P4 paper worker and reconciliation are not implemented"]}
 
-    @app.post("/api/v1/commands", dependencies=[Depends(auth)])
-    def command(command: Literal["pause-new-entries", "flatten"], idempotency_key: str = Header(alias="Idempotency-Key")) -> dict[str, str]:
-        if not idempotency_key: raise HTTPException(422, "Idempotency-Key is required")
-        result = {"status": "REJECTED_NO_RUNTIME", "command": command}
-        store.db.execute("INSERT OR IGNORE INTO commands VALUES (?, ?, ?, ?)", (idempotency_key, command, utcnow(), json.dumps(result))); store.db.commit()
-        row = store.db.execute("SELECT result FROM commands WHERE idempotency_key = ?", (idempotency_key,)).fetchone()
-        return json.loads(row[0])
+        @app.post("/api/v1/commands", dependencies=[Depends(auth)])
+        def command(command: Literal["pause-new-entries", "flatten"], idempotency_key: str = Header(alias="Idempotency-Key")) -> dict[str, str]:
+            if not idempotency_key: raise HTTPException(422, "Idempotency-Key is required")
+            result = {"status": "REJECTED_NO_RUNTIME", "command": command}
+            store.db.execute("INSERT OR IGNORE INTO commands VALUES (?, ?, ?, ?)", (idempotency_key, command, utcnow(), json.dumps(result))); store.db.commit()
+            row = store.db.execute("SELECT result FROM commands WHERE idempotency_key = ?", (idempotency_key,)).fetchone()
+            return json.loads(row[0])
 
     return app
 
