@@ -162,3 +162,6 @@ def test_streamed_native_smoke_matches_one_shot_and_keeps_callbacks_subscribed(t
     for timestamp in ((start + DAY_MS) * 1_000_000, end * 1_000_000):
         ordered = [kind for kind, event_time in seen if event_time == timestamp]
         assert ordered == ["mark", "mark", "signal", "signal", "quote", "quote"] * 2
+    delayed = run_native_diagnostic(tmp_path, weekly_batch_minutes=24 * 60, **{**common, "artifact_label": "streaming-smoke-two-minute", "execution_policy": ExecutionPolicy(execution_delay_minutes=2)})
+    assert delayed["policy"]["execution_delay_minutes"] == 2
+    assert delayed["streaming"]["processed_rows_per_source"] == (end - start) // MINUTE_MS

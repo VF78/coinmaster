@@ -11,7 +11,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from coinmaster.domain.wave_overlay import Candidate
-from coinmaster.research.native_baseline import assert_report_boundaries, run_native_diagnostic
+from coinmaster.research.native_baseline import ExecutionPolicy, assert_report_boundaries, run_native_diagnostic
 from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 
@@ -115,6 +115,86 @@ def run_canonical_reporting_btc_pass(data_root: Path, baseline_report: Path) -> 
         artifact_stem="native-optimizer-canonical-reporting-v2",
         supersedes_reporting_checkpoint="dfd6f4c",
     )
+
+
+def run_canonical_reporting_v2_stress_validation(data_root: Path, control_report: Path) -> dict:
+    """Fixed seen-data robustness checks for the reporting-v2 7.5x candidate.
+
+    This is deliberately validation, not an optimizer: the control is reused,
+    the four stress policies are predeclared, and no result selects a new
+    trading parameter.
+    """
+    source = json.loads(control_report.read_text())
+    control = next(
+        (item for item in source.get("results", ()) if item.get("variant_id") == "btc_notional_7.5"),
+        source,
+    )
+    if control["status"] != "NOT_FAITHFUL_DIAGNOSTIC" or control["terminal_open_positions"] != 0:
+        raise ValueError("STRESS_CONTROL_NOT_FLAT_DIAGNOSTIC")
+    candidate = replace(Candidate(), btc_notional_multiplier=7.5)
+    policies = (
+        ("fee_1_25x", ExecutionPolicy(fee_multiplier="1.25")),
+        ("fee_1_5x", ExecutionPolicy(fee_multiplier="1.5")),
+        ("latency_2m_spread_5bps", ExecutionPolicy(execution_delay_minutes=2, symmetric_adverse_spread_bps="5")),
+        ("latency_5m_spread_10bps", ExecutionPolicy(execution_delay_minutes=5, symmetric_adverse_spread_bps="10")),
+    )
+    runtime = Path(__file__).resolve().parents[2]
+    meta = {
+        "validation_id": "canonical-reporting-v2-stress-validation",
+        "status": "VALIDATION_SEEN_NOT_OOS + NOT_FAITHFUL_DIAGNOSTIC",
+        "control_reused": {"path": str(control_report), "sha256": sha256_file(control_report), "terminal_total": control["terminal_total"]},
+        "candidate": asdict(candidate),
+        "candidate_hash": hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+        "fixed_matrix": [{"variant_id": name, "policy": asdict(policy), "policy_hash": policy.hash} for name, policy in policies],
+        "objective": "settled ACTIVE + RESERVE after costs; interval cash returns are reported separately",
+        "code_hashes": {name: sha256_file(runtime / name) for name in ("coinmaster/domain/wave_overlay.py", "coinmaster/strategy/wave_overlay.py", "coinmaster/research/native_baseline.py", "coinmaster/research/native_fixture.py", "coinmaster/research/native_optimizer.py")},
+        "ranking_eligible_for_live": False,
+    }
+    runs = data_root / "runs"
+    runs.mkdir(parents=True, exist_ok=True)
+    stem = "native-validation-canonical-reporting-v2-stress"
+    partial_path = runs / f"{stem}.partial.json"
+    expected = {"provenance": meta}
+    partial = json.loads(partial_path.read_text()) if partial_path.exists() else {**expected, "results": []}
+    if {key: partial.get(key) for key in expected} != expected:
+        raise ValueError("STRESS_VALIDATION_PARTIAL_PROVENANCE_MISMATCH")
+    results = list(partial["results"])
+    completed = {item["variant_id"] for item in results}
+    for variant_id, policy in policies:
+        if variant_id in completed:
+            continue
+        item = {"variant_id": variant_id, "policy": asdict(policy), "policy_hash": policy.hash}
+        started = monotonic()
+        try:
+            report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate, execution_policy=policy, artifact_label=f"{stem}-{variant_id}", stop_on_liquidation=True)
+            report["wall_time_seconds"] = str(monotonic() - started)
+            if not report["early_liquidation_cutoff"]:
+                assert_report_boundaries(report)
+            item.update(report)
+            item["terminal_flat"] = report["terminal_open_positions"] == 0
+            item["excluded_for_liquidation"] = report["liquidation_count"] > 0
+            item["eligible_within_assumption_profile"] = not report["early_liquidation_cutoff"] and not item["excluded_for_liquidation"] and item["terminal_flat"] and report["native_order_rejections"] == 0
+        except Exception as error:
+            item.update({"status": "FAILED", "error": f"{type(error).__name__}:{error}", "terminal_flat": False, "excluded_for_liquidation": True, "eligible_within_assumption_profile": False})
+        results.append(item)
+        partial_path.write_text(json.dumps({**expected, "results": results}, indent=2, sort_keys=True) + "\n")
+    summary = {
+        "status": "VALIDATION_SEEN_NOT_OOS + NOT_FAITHFUL_DIAGNOSTIC",
+        "ranking_eligible_for_live": False,
+        "provenance": meta,
+        "control_reuse": {"terminal_total": control["terminal_total"], "interval_cash_terminal_total": control["summary"]["interval_cash_terminal_total"], "status": control["status"]},
+        "results": results,
+        "limitations": ["Fixed stress checks only; no parameter selection is permitted.", "Historical fee/tier, BBO/liquidity, settlement-mark, and intraminute liquidation assumptions remain unvalidated."],
+    }
+    json_path = runs / f"{stem}.json"
+    json_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    csv_path = runs / f"{stem}.csv"
+    fields = ("variant_id", "status", "policy", "policy_hash", "terminal_total", "terminal_active", "terminal_reserve", "terminal_flat", "early_liquidation_cutoff", "fills", "native_fees", "funding", "native_order_rejections", "pre_submit_tier_margin_gate_blocks", "liquidation_count", "liquidation_value", "excluded_for_liquidation", "wall_time_seconds", "error")
+    with csv_path.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows({field: json.dumps(item[field], sort_keys=True) if field in {"policy", "funding", "pre_submit_tier_margin_gate_blocks"} and field in item else item.get(field) for field in fields} for item in results)
+    return summary | {"artifacts": {"json": str(json_path), "csv": str(csv_path), "partial": str(partial_path)}}
 
 
 def sha256_file(path: Path) -> str:

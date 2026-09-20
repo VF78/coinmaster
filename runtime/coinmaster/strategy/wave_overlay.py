@@ -52,6 +52,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     # account/cache and paired CustomData marks as the strategy, never a
     # second PnL or matching model.
     reporting_checkpoint_ns: tuple[int, ...] = ()
+    execution_delay_ns: int = 0
 
 
 class WaveOverlayStrategy(Strategy):
@@ -79,6 +80,7 @@ class WaveOverlayStrategy(Strategy):
             if previous is None or update.ts_event > previous.ts_event:
                 self._latest_tier_marks[update.instrument_id] = update
         self._queued_intents: list[tuple[Intent, float | None, int]] = []
+        self._queued_intent_ready_ns: dict[str, int] = {}
         self._queued_close_submitted: dict[str, set[InstrumentId]] = {}
         self._group_close_reconciliation_pending = False
         self._liquidating = False
@@ -222,6 +224,7 @@ class WaveOverlayStrategy(Strategy):
             return
         self._liquidating = True
         self._queued_intents.clear()
+        self._queued_intent_ready_ns.clear()
         self._liquidation_waiting = {position.instrument_id for position in positions}
         self.liquidation_audit.append({
             "trigger_ts": str(ts_now),
@@ -274,6 +277,7 @@ class WaveOverlayStrategy(Strategy):
             return
         for intent in self._domain.decide(self._bars, self._current_signals, len(self._bars) - 1, self._active_marked(self._current_btc_mark, self._current_sol_mark)):
             self._queued_intents.append((intent, self._current_signals[-1].sigma, len(self._bars) - 1))
+            self._queued_intent_ready_ns[intent.id] = self._current_btc.ts_event + self.config.execution_delay_ns
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
@@ -287,6 +291,8 @@ class WaveOverlayStrategy(Strategy):
             return
         for item in list(self._queued_intents):
             intent, sigma, index = item
+            if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
+                continue
             target = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
             if intent.action == "CLOSE_ALL":
                 submitted = self._queued_close_submitted.setdefault(intent.id, set())
@@ -295,12 +301,14 @@ class WaveOverlayStrategy(Strategy):
                     self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, only_instrument=tick.instrument_id, ts_now=tick.ts_event)
                 if all(item_id in submitted or not any(position.instrument_id == item_id for position in self.cache.positions_open()) for item_id in (self.config.btc_id, self.config.sol_id)):
                     self._queued_intents.remove(item)
+                    self._queued_intent_ready_ns.pop(intent.id, None)
                     if not self.cache.positions_open():
                         self._group_close_reconciliation_pending = True
                         self._reconcile_group_flat()
                 continue
             if target == tick.instrument_id:
                 self._queued_intents.remove(item)
+                self._queued_intent_ready_ns.pop(intent.id, None)
                 self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
 
     def _active_marked(self, btc_mark: VenueMark, sol_mark: VenueMark) -> float:

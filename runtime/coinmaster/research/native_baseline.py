@@ -580,8 +580,8 @@ def run_native_diagnostic(
     policy = execution_policy or ExecutionPolicy()
     if trading_end_ms <= trading_start_ms or trading_start_ms - warmup_start_ms < 730 * DAY_MS:
         raise ValueError("INVALID_TRADING_INTERVAL_OR_INSUFFICIENT_730D_WARMUP")
-    if policy.execution_delay_minutes != 1:
-        raise ValueError("CANONICAL_STREAM_REQUIRES_ONE_MINUTE_AVAILABILITY")
+    if policy.execution_delay_minutes < 1:
+        raise ValueError("INVALID_EXECUTION_DELAY")
     if not policy.nonmatching_daily_signals:
         raise ValueError("LEGACY_DAILY_BAR_MATCHING_DISABLED")
     if Decimal(policy.symmetric_adverse_spread_bps) < 0 or Decimal(policy.fee_multiplier) <= 0:
@@ -631,6 +631,7 @@ def run_native_diagnostic(
         terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
         btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
         reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
+        execution_delay_ns=(policy.execution_delay_minutes - 1) * MINUTE_MS * 1_000_000,
     ))
     engine.add_strategy(strategy)
     stats = {"expected_rows_per_source": expected_rows, "processed_rows_per_source": 0, "batch_count": 0, "event_count": 0, "max_batch_minutes": 0, "max_batch_events": 0, "cursor_batch_rows": cursor_batch_rows}
