@@ -1,4 +1,8 @@
+import json
+
+from coinmaster.research import native_optimizer
 from coinmaster.research.native_optimizer import causal_v1_coarse_variants, causal_v1_refinement2_variants, causal_v1_refinement_variants, causal_v1_sensitivity_variants, candidate_variants
+from coinmaster.domain.wave_overlay import Candidate
 
 
 def test_compact_optimizer_grid_keeps_immutable_v0_and_only_varies_candidate_controls() -> None:
@@ -43,3 +47,76 @@ def test_causal_v1_sensitivity_is_control_plus_independent_authorized_axes() -> 
     assert variants["sol_max_holding_days_9"].sol_max_holding_days == 9
     control = variants["control_2.4"]
     assert all(sum(left != right for left, right in zip(candidate.__dict__.values(), control.__dict__.values())) == 1 for key, candidate in variants.items() if key != "control_2.4")
+
+
+def test_stage_a_reuses_complete_candidate_tuples_and_only_extends_234_when_it_improves(tmp_path, monkeypatch) -> None:
+    control_candidate = Candidate(btc_notional_multiplier=7.5)
+    control = {
+        "terminal_open_positions": 0,
+        "liquidation_count": 0,
+        "data_hash": "data",
+        "policy_hash": "policy",
+        "terminal_total": "10",
+        "config": {"candidate": native_optimizer.asdict(control_candidate)},
+    }
+    control_path = tmp_path / "control.json"
+    control_path.write_text(json.dumps(control))
+    calls = []
+
+    def fake_item(variant_id, candidate, _data_root, _stem):
+        calls.append(native_optimizer._candidate_tuple_key(candidate))
+        profile = candidate.sol_size_multipliers_h
+        score = {2.0: 20, 3.5: 90, 5.0: 80, 6.5: 70}.get(candidate.btc_notional_multiplier, 10)
+        if candidate.btc_notional_multiplier == 3.5 and profile == (1.5, 2.25, 3.0):
+            score = 100
+        if candidate.btc_notional_multiplier == 4.0 and profile == (1.5, 2.25, 3.0):
+            score = 101
+        if candidate.btc_notional_multiplier == 4.0 and profile == (1.75, 2.25, 3.0):
+            score = 102
+        if candidate.btc_notional_multiplier == 4.0 and profile == (2.0, 3.0, 4.0):
+            score = 103
+        return {
+            "variant_id": variant_id,
+            "candidate": native_optimizer.asdict(candidate),
+            "candidate_hash": "fake",
+            "status": "NOT_FAITHFUL_DIAGNOSTIC",
+            "terminal_active": str(score),
+            "terminal_reserve": "0",
+            "terminal_total": str(score),
+            "summary": {"roi": "0", "max_drawdown_percent": "0", "max_drawdown_amount": "0"},
+            "fee_attribution": {"maker": {}, "taker": {}},
+            "funding": {"signed_amount": "UNKNOWN", "count": 0},
+            "fills": 0,
+            "liquidation_count": 0,
+            "native_fees": "0",
+        }
+
+    monkeypatch.setattr(native_optimizer, "_stage_a_item", fake_item)
+    report = native_optimizer.run_stage_a_sizing(tmp_path, control_path)
+
+    assert len(calls) == len(set(calls))
+    reused = next(item for item in report["results"] if item["variant_id"] == "a2-btc-3.5-sol-1-1.5-2")
+    assert reused["reused"] is True
+    assert reused["reuse_provenance"]["variant_id"] == "a1-btc-3.5"
+    assert any(item["variant_id"] == "a6-btc-4-sol-2.25-3.375-4.5" for item in report["results"])
+    assert (tmp_path / "runs" / "native-stage-a-sizing-v1-top20.csv").exists()
+    call_count = len(calls)
+    resumed = native_optimizer.run_stage_a_sizing(tmp_path, control_path)
+    assert len(resumed["results"]) == len(report["results"])
+    assert len(calls) == call_count
+    compact = native_optimizer.write_stage_a_compact_checkpoint(tmp_path, control_path)
+    assert compact["result_count"] == 42
+    assert compact["best"]["variant_id"] == report["best"]["variant_id"]
+
+
+def test_stage_a_migrates_existing_duplicate_tuple_to_explicit_reuse() -> None:
+    candidate = native_optimizer.asdict(Candidate(btc_notional_multiplier=3.5))
+    source = {"variant_id": "first", "candidate": candidate, "candidate_hash": "source", "terminal_active": "1", "terminal_reserve": "0", "terminal_total": "1", "fills": 1, "native_fees": "0", "funding": {}, "fee_attribution": {}}
+    duplicate = {**source, "variant_id": "legacy-duplicate"}
+
+    reconciled, changed = native_optimizer._stage_a_dedupe_existing([source, duplicate])
+
+    assert changed is True
+    assert reconciled[1]["reused"] is True
+    assert reconciled[1]["reuse_provenance"]["variant_id"] == "first"
+    assert native_optimizer._stage_a_dedupe_existing(reconciled)[1] is False

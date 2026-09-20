@@ -23,6 +23,311 @@ CAUSAL_V1_REFINEMENT2_ID = "causal-v1-refinement2"
 CAUSAL_V1_REFINEMENT2_AXIS = (2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9)
 CAUSAL_V1_SENSITIVITY_ID = "causal-v1-sensitivity"
 CANONICAL_REENTRY_AXIS = (7.5, 8.25, 9.75, 10.5)
+STAGE_A_BTC_AXIS = (2.0, 3.5, 5.0, 6.5, 7.5, 8.5, 9.5, 10.5)
+STAGE_A_SOL_PROFILES = ((0.5, 0.75, 1.0), (0.75, 1.125, 1.5), (1.0, 1.5, 2.0), (1.25, 1.875, 2.5), (1.5, 2.25, 3.0), (1.5, 1.5, 1.5), (0.5, 1.5, 3.0))
+STAGE_A_BTC_REFINEMENT = (3.0, 3.5, 4.0, 4.5)
+STAGE_A_SOL_COORDINATE_DELTAS = ((0, Decimal("0.25")), (1, Decimal("0.375")), (2, Decimal("0.5")))
+STAGE_A_BOUNDARY_PROFILES = ((1.75, 2.625, 3.5), (2.0, 3.0, 4.0))
+STAGE_A_FURTHER_BOUNDARY_PROFILE = (2.25, 3.375, 4.5)
+# This alias was created by an interrupted pre-fix resume that recalculated A3
+# from the final winner.  It has no native execution of its own and is removed
+# only when it still proves that exact alias provenance.
+STAGE_A_SUPERSEDED_NONEXECUTED_REUSE = "a3-btc-4-sol-2.25-3.375-4.5"
+
+
+def _atomic_json(path: Path, value: dict) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+    temporary.replace(path)
+
+
+def _stage_a_item(variant_id: str, candidate: Candidate, data_root: Path, stem: str) -> dict:
+    """One fresh, full-period native Engine result, retained even if liquidated."""
+    item = {"variant_id": variant_id, "candidate": asdict(candidate), "candidate_hash": hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest()}
+    started = monotonic()
+    try:
+        report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate, artifact_label=f"{stem}-{variant_id}", stop_on_liquidation=False)
+        assert_report_boundaries(report)
+        item.update(report)
+        item["wall_time_seconds"] = str(monotonic() - started)
+    except Exception as error:
+        item.update({"status": "FAILED", "error": f"{type(error).__name__}:{error}", "wall_time_seconds": str(monotonic() - started)})
+    return item
+
+
+def _candidate_tuple_key(candidate: Candidate | dict) -> str:
+    """Stable complete-candidate identity; never dedupe on a partial axis."""
+    value = asdict(candidate) if isinstance(candidate, Candidate) else candidate
+    return json.dumps(value, sort_keys=True, separators=(",", ":"))
+
+
+def _stage_a_reuse(variant_id: str, candidate: Candidate | dict, source: dict) -> dict:
+    """Retain a planned variant without silently recomputing an identical tuple."""
+    candidate_value = asdict(candidate) if isinstance(candidate, Candidate) else candidate
+    item = dict(source)
+    item.update({
+        "variant_id": variant_id,
+        "candidate": candidate_value,
+        "candidate_hash": hashlib.sha256(_candidate_tuple_key(candidate).encode()).hexdigest(),
+        "reused": True,
+        "reuse_provenance": {
+            "variant_id": source["variant_id"],
+            "candidate_hash": source.get("candidate_hash"),
+        },
+    })
+    return item
+
+
+def _stage_a_dedupe_existing(results: list[dict]) -> tuple[list[dict], bool]:
+    """Migrate pre-resume checkpoints to explicit complete-tuple reuse rows."""
+    reconciled: list[dict] = []
+    by_tuple: dict[str, dict] = {}
+    changed = False
+    fields = ("terminal_active", "terminal_reserve", "terminal_total", "fills", "native_fees", "funding", "fee_attribution")
+    for item in results:
+        key = _candidate_tuple_key(item["candidate"])
+        source = by_tuple.get(key)
+        if source is None:
+            by_tuple[key] = item
+            reconciled.append(item)
+            continue
+        if any(item.get(field) != source.get(field) for field in fields):
+            raise ValueError(f"STAGE_A_DUPLICATE_TUPLE_RESULT_MISMATCH:{item['variant_id']}")
+        # A legacy duplicate needs one migration.  An already explicit reuse
+        # remains stable even if its original source is itself a reuse row.
+        if not item.get("reused"):
+            item = _stage_a_reuse(item["variant_id"], item["candidate"], source)
+            changed = True
+        reconciled.append(item)
+    return reconciled, changed
+
+
+def _stage_a_reconcile_legacy_resume(results: list[dict]) -> tuple[list[dict], bool]:
+    """Remove the one known non-executed alias produced before staged scoping."""
+    retained: list[dict] = []
+    changed = False
+    for item in results:
+        if item["variant_id"] != STAGE_A_SUPERSEDED_NONEXECUTED_REUSE:
+            retained.append(item)
+            continue
+        provenance = item.get("reuse_provenance", {})
+        if not item.get("reused") or provenance.get("variant_id") != "a6-btc-4-sol-2.25-3.375-4.5":
+            raise ValueError("STAGE_A_UNEXPECTED_LEGACY_RESUME_VARIANT")
+        changed = True
+    return retained, changed
+
+
+def _stage_a_best(results: list[dict]) -> dict | None:
+    ranked = [item for item in results if item.get("terminal_total") is not None]
+    return max(ranked, key=lambda item: Decimal(item["terminal_total"])) if ranked else None
+
+
+def _stage_a_csv_row(item: dict, control_total: str) -> dict:
+    """Compact, audit-oriented TOP20 row with all requested terminal economics."""
+    candidate = item.get("candidate", {})
+    summary = item.get("summary", {})
+    fee = item.get("fee_attribution", {})
+    maker, taker = fee.get("maker", {}), fee.get("taker", {})
+    funding = item.get("funding", {})
+    total = item.get("terminal_total")
+    return {
+        "variant_id": item.get("variant_id"),
+        "status": item.get("status"),
+        "reused": item.get("reused", False),
+        "reused_from": item.get("reuse_provenance", {}).get("variant_id"),
+        "candidate": json.dumps(candidate, sort_keys=True, separators=(",", ":")),
+        "btc_notional_multiplier": candidate.get("btc_notional_multiplier"),
+        "sol_size_multipliers_h": json.dumps(candidate.get("sol_size_multipliers_h"), separators=(",", ":")),
+        "active": item.get("terminal_active"),
+        "reserve": item.get("terminal_reserve"),
+        "total": total,
+        "roi": summary.get("roi"),
+        "max_drawdown_percent": summary.get("max_drawdown_percent"),
+        "max_drawdown_amount": summary.get("max_drawdown_amount"),
+        "liquidations": item.get("liquidation_count"),
+        "maker_notional": maker.get("notional"),
+        "maker_fees": maker.get("fees"),
+        "taker_notional": taker.get("notional"),
+        "taker_fees": taker.get("fees"),
+        "total_fees": item.get("native_fees"),
+        "funding_signed_amount": funding.get("signed_amount", "UNKNOWN"),
+        "funding_event_count": funding.get("count", "UNKNOWN"),
+        "fills": item.get("fills"),
+        "delta_vs_accepted_7_5": str(Decimal(total) - Decimal(control_total)) if total is not None else None,
+    }
+
+
+def _stage_a_compact_result(item: dict, partial_path: Path) -> dict:
+    """Keep the final artifact reviewable; full native reports remain local evidence."""
+    summary = item.get("summary", {})
+    fee = item.get("fee_attribution", {})
+    funding = item.get("funding", {})
+    return {
+        "variant_id": item.get("variant_id"),
+        "status": item.get("status"),
+        "candidate": item.get("candidate"),
+        "candidate_hash": item.get("candidate_hash"),
+        "reused": item.get("reused", False),
+        "reuse_provenance": item.get("reuse_provenance"),
+        "terminal_active": item.get("terminal_active"),
+        "terminal_reserve": item.get("terminal_reserve"),
+        "terminal_total": item.get("terminal_total"),
+        "roi": summary.get("roi"),
+        "max_drawdown_percent": summary.get("max_drawdown_percent"),
+        "max_drawdown_amount": summary.get("max_drawdown_amount"),
+        "terminal_open_positions": item.get("terminal_open_positions"),
+        "liquidation_count": item.get("liquidation_count"),
+        "liquidation_value": item.get("liquidation_value"),
+        "fills": item.get("fills"),
+        "fee_attribution": {"maker": fee.get("maker"), "taker": fee.get("taker"), "native_total": fee.get("native_total"), "reconciled": fee.get("reconciled")},
+        "native_fees": item.get("native_fees"),
+        "funding": {"signed_amount": funding.get("signed_amount", "UNKNOWN"), "count": funding.get("count", "UNKNOWN")},
+        "local_evidence": {"checkpoint": str(partial_path), "execution_artifacts": item.get("execution_artifacts"), "funding_journal": item.get("funding_journal")},
+    }
+
+
+def run_stage_a_sizing(data_root: Path, control_report: Path) -> dict:
+    """Resumable, strictly sequential BTC/SOL sizing search; never Stage B."""
+    control = json.loads(control_report.read_text())
+    if control.get("terminal_open_positions") != 0 or control.get("liquidation_count") != 0:
+        raise ValueError("STAGE_A_CONTROL_NOT_FLAT")
+    runs, stem = data_root / "runs", "native-stage-a-sizing-v1"
+    runs.mkdir(parents=True, exist_ok=True)
+    meta = {"optimizer_id": "stage-a-sizing-v1", "control_path": str(control_report), "control_sha256": sha256_file(control_report), "data_hash": control["data_hash"], "policy_hash": control["policy_hash"], "control_total": control["terminal_total"], "btc_axis": list(STAGE_A_BTC_AXIS), "sol_profiles": [list(item) for item in STAGE_A_SOL_PROFILES], "objective": "terminal TOTAL only; liquidation remains eligible at actual TOTAL", "ranking_eligible_for_live": False}
+    partial_path = runs / f"{stem}.partial.json"
+    partial = json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance": meta, "results": []}
+    if partial.get("provenance") != meta:
+        raise ValueError("STAGE_A_PARTIAL_PROVENANCE_MISMATCH")
+    results, removed_legacy_resume = _stage_a_reconcile_legacy_resume(list(partial["results"]))
+    results, deduped_existing = _stage_a_dedupe_existing(results)
+    if removed_legacy_resume or deduped_existing:
+        _atomic_json(partial_path, {"provenance": meta, "results": results})
+    completed = {item["variant_id"] for item in results}
+    # This index covers the complete Candidate payload, including fields that
+    # this pass does not vary. It makes restart/replanning safe without hiding
+    # a potentially material future Candidate-field change.
+    by_tuple: dict[str, dict] = {}
+    for item in results:
+        if item.get("candidate"):
+            by_tuple.setdefault(_candidate_tuple_key(item["candidate"]), item)
+    def append(item: dict) -> None:
+        results.append(item)
+        completed.add(item["variant_id"])
+        by_tuple.setdefault(_candidate_tuple_key(item["candidate"]), item)
+        _atomic_json(partial_path, {"provenance": meta, "results": results})
+    def append_candidate(variant_id: str, candidate: Candidate) -> None:
+        if variant_id in completed:
+            return
+        source = by_tuple.get(_candidate_tuple_key(candidate))
+        append(_stage_a_reuse(variant_id, candidate, source) if source else _stage_a_item(variant_id, candidate, data_root, stem))
+    default_sol = (1.0, 1.5, 2.0)
+    for btc in STAGE_A_BTC_AXIS:
+        key = f"a1-btc-{btc:g}"
+        if key in completed:
+            continue
+        candidate = replace(Candidate(), btc_notional_multiplier=btc, sol_size_multipliers_h=default_sol)
+        if btc == 7.5 and control.get("data_hash") == meta["data_hash"] and control.get("policy_hash") == meta["policy_hash"] and control.get("config", {}).get("candidate") == asdict(candidate):
+            append({"variant_id": key, "candidate": asdict(candidate), "candidate_hash": hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), **control, "reused": True, "reuse_provenance": {"path": str(control_report), "sha256": meta["control_sha256"]}})
+        else:
+            append_candidate(key, candidate)
+    a1 = [item for item in results if item["variant_id"].startswith("a1-") and item.get("terminal_total") is not None]
+    top_btc = []
+    for item in sorted(a1, key=lambda value: Decimal(value["terminal_total"]), reverse=True):
+        value = item["candidate"]["btc_notional_multiplier"]
+        if value not in top_btc: top_btc.append(value)
+        if len(top_btc) == 3: break
+    for btc in top_btc:
+        for profile in STAGE_A_SOL_PROFILES:
+            key = f"a2-btc-{btc:g}-sol-{'-'.join(f'{value:g}' for value in profile)}"
+            candidate = replace(Candidate(), btc_notional_multiplier=btc, sol_size_multipliers_h=profile)
+            append_candidate(key, candidate)
+
+    initial_winner = _stage_a_best([item for item in results if item["variant_id"].startswith(("a1-", "a2-"))])
+    if initial_winner is None:
+        raise ValueError("STAGE_A_NO_TERMINAL_TOTAL")
+    initial_sol = tuple(initial_winner["candidate"]["sol_size_multipliers_h"])
+    for btc in STAGE_A_BTC_REFINEMENT:
+        candidate = replace(Candidate(), btc_notional_multiplier=btc, sol_size_multipliers_h=initial_sol)
+        append_candidate(f"a3-btc-{btc:g}-sol-{'-'.join(f'{value:g}' for value in initial_sol)}", candidate)
+
+    btc_winner = _stage_a_best([item for item in results if item["variant_id"].startswith(("a1-", "a2-", "a3-"))])
+    if btc_winner is None:
+        raise ValueError("STAGE_A_BTC_REFINEMENT_NO_TERMINAL_TOTAL")
+    btc = btc_winner["candidate"]["btc_notional_multiplier"]
+    sol_winner = tuple(Decimal(str(value)) for value in btc_winner["candidate"]["sol_size_multipliers_h"])
+    for level, delta in STAGE_A_SOL_COORDINATE_DELTAS:
+        for direction in (-1, 1):
+            profile = list(sol_winner)
+            profile[level] += Decimal(direction) * delta
+            if profile[0] <= 0 or profile[0] > profile[1] or profile[1] > profile[2]:
+                continue
+            values = tuple(float(value) for value in profile)
+            direction_id = "minus" if direction < 0 else "plus"
+            candidate = replace(Candidate(), btc_notional_multiplier=btc, sol_size_multipliers_h=values)
+            append_candidate(f"a4-btc-{btc:g}-sol-l{level + 1}-{direction_id}-{'-'.join(f'{value:g}' for value in values)}", candidate)
+
+    sol_winner = _stage_a_best([item for item in results if item["variant_id"].startswith(("a1-", "a2-", "a3-", "a4-"))])
+    if sol_winner is None:
+        raise ValueError("STAGE_A_SOL_REFINEMENT_NO_TERMINAL_TOTAL")
+    btc = sol_winner["candidate"]["btc_notional_multiplier"]
+    before_boundaries_total = Decimal(sol_winner["terminal_total"])
+    for profile in STAGE_A_BOUNDARY_PROFILES:
+        candidate = replace(Candidate(), btc_notional_multiplier=btc, sol_size_multipliers_h=profile)
+        append_candidate(f"a5-btc-{btc:g}-sol-{'-'.join(f'{value:g}' for value in profile)}", candidate)
+    profile_234 = next((item for item in results if item["variant_id"] == f"a5-btc-{btc:g}-sol-2-3-4"), None)
+    if profile_234 and Decimal(profile_234["terminal_total"]) > before_boundaries_total:
+        profile = STAGE_A_FURTHER_BOUNDARY_PROFILE
+        candidate = replace(Candidate(), btc_notional_multiplier=btc, sol_size_multipliers_h=profile)
+        append_candidate(f"a6-btc-{btc:g}-sol-{'-'.join(f'{value:g}' for value in profile)}", candidate)
+
+    ranked = [item for item in results if item.get("terminal_total") is not None]
+    top20 = sorted(ranked, key=lambda value: Decimal(value["terminal_total"]), reverse=True)[:20]
+    best = _stage_a_best(results)
+    csv_path = runs / f"{stem}-top20.csv"
+    fields = tuple(_stage_a_csv_row(top20[0], control["terminal_total"]).keys()) if top20 else ("variant_id",)
+    temporary_csv = csv_path.with_suffix(csv_path.suffix + ".tmp")
+    with temporary_csv.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader(); writer.writerows(_stage_a_csv_row(item, control["terminal_total"]) for item in top20)
+    temporary_csv.replace(csv_path)
+    evidence = {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "checkpoint_result_count": len(results)}
+    summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": meta, "result_count": len(results), "local_evidence": evidence, "results": [_stage_a_compact_result(item, partial_path) for item in results], "top20": [_stage_a_compact_result(item, partial_path) for item in top20], "best": _stage_a_compact_result(best, partial_path) if best else None, "delta_vs_accepted_7_5": str(Decimal(best["terminal_total"]) - Decimal(control["terminal_total"])) if best else None, "limitations": ["Stage A only; no Stage B.", "Full per-candidate native reports and journals remain in the local ignored checkpoint; this aggregate is intentionally compact.", "Historical execution and fee applicability remain diagnostic assumptions."]}
+    target = runs / f"{stem}.json"; _atomic_json(target, summary)
+    return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path)}
+
+
+def write_stage_a_compact_checkpoint(data_root: Path, control_report: Path) -> dict:
+    """Write the compact final Stage-A artifact without resuming or mutating evidence.
+
+    The first 42 rows are the completed, ordered Stage-A plan.  Later rows are
+    retained only in the ignored local checkpoint as an interrupted-resume
+    incident and are deliberately excluded from ranking.
+    """
+    runs, stem = data_root / "runs", "native-stage-a-sizing-v1"
+    partial_path = runs / f"{stem}.partial.json"
+    partial = json.loads(partial_path.read_text())
+    results = list(partial["results"])
+    canonical = results[:42]
+    if len(canonical) != 42 or canonical[-1].get("variant_id") != "a6-btc-4-sol-2.25-3.375-4.5":
+        raise ValueError("STAGE_A_CANONICAL_CHECKPOINT_SEQUENCE_MISMATCH")
+    if any(item.get("terminal_total") is None for item in canonical):
+        raise ValueError("STAGE_A_CANONICAL_CHECKPOINT_INCOMPLETE")
+    control = json.loads(control_report.read_text())
+    top20 = sorted(canonical, key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:20]
+    best = top20[0]
+    csv_path = runs / f"{stem}-top20.csv"
+    fields = tuple(_stage_a_csv_row(top20[0], control["terminal_total"]).keys())
+    temporary_csv = csv_path.with_suffix(csv_path.suffix + ".tmp")
+    with temporary_csv.open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader(); writer.writerows(_stage_a_csv_row(item, control["terminal_total"]) for item in top20)
+    temporary_csv.replace(csv_path)
+    incident = [{"variant_id": item.get("variant_id"), "reused": item.get("reused", False), "terminal_total": item.get("terminal_total"), "execution_artifacts": item.get("execution_artifacts")} for item in results[42:]]
+    evidence = {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "canonical_result_count": len(canonical), "excluded_resume_incident_count": len(incident)}
+    summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": partial["provenance"], "result_count": len(canonical), "local_evidence": evidence, "results": [_stage_a_compact_result(item, partial_path) for item in canonical], "top20": [_stage_a_compact_result(item, partial_path) for item in top20], "best": _stage_a_compact_result(best, partial_path), "delta_vs_accepted_7_5": str(Decimal(best["terminal_total"]) - Decimal(control["terminal_total"])), "excluded_resume_incident": {"reason": "INTERRUPTED_PRE_FIX_RESUME_NOT_STAGE_A_PLAN", "rows": incident}, "limitations": ["Stage A only; no Stage B.", "Full per-candidate native reports and journals remain in the local ignored checkpoint; this aggregate is intentionally compact.", "Historical execution and fee applicability remain diagnostic assumptions."]}
+    target = runs / f"{stem}.json"
+    _atomic_json(target, summary)
+    return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path)}
 
 
 def run_canonical_reentry_btc_pass(
