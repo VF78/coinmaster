@@ -107,6 +107,14 @@ def test_stage_a_reuses_complete_candidate_tuples_and_only_extends_234_when_it_i
     compact = native_optimizer.write_stage_a_compact_checkpoint(tmp_path, control_path)
     assert compact["result_count"] == 42
     assert compact["best"]["variant_id"] == report["best"]["variant_id"]
+    checkpoint_path = tmp_path / "runs" / "native-stage-a-sizing-v1.partial.json"
+    checkpoint = json.loads(checkpoint_path.read_text())
+    checkpoint["results"].append({**checkpoint["results"][-1], "variant_id": "out-of-plan-resume-incident"})
+    checkpoint_path.write_text(json.dumps(checkpoint))
+    sealed = native_optimizer.run_stage_a_sizing(tmp_path, control_path)
+    assert len(sealed["results"]) == 42
+    assert all(item["variant_id"] != "out-of-plan-resume-incident" for item in sealed["results"])
+    assert len(calls) == call_count
 
 
 def test_stage_a_migrates_existing_duplicate_tuple_to_explicit_reuse() -> None:

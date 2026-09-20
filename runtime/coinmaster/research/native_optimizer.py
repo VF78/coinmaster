@@ -41,12 +41,12 @@ def _atomic_json(path: Path, value: dict) -> None:
     temporary.replace(path)
 
 
-def _stage_a_item(variant_id: str, candidate: Candidate, data_root: Path, stem: str) -> dict:
+def _stage_a_item(variant_id: str, candidate: Candidate, data_root: Path, stem: str, *, artifact_label: str | None = None) -> dict:
     """One fresh, full-period native Engine result, retained even if liquidated."""
     item = {"variant_id": variant_id, "candidate": asdict(candidate), "candidate_hash": hashlib.sha256(json.dumps(asdict(candidate), sort_keys=True, separators=(",", ":")).encode()).hexdigest()}
     started = monotonic()
     try:
-        report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate, artifact_label=f"{stem}-{variant_id}", stop_on_liquidation=False)
+        report = run_native_diagnostic(data_root, include_funding=True, candidate=candidate, artifact_label=artifact_label or f"{stem}-{variant_id}", stop_on_liquidation=False)
         assert_report_boundaries(report)
         item.update(report)
         item["wall_time_seconds"] = str(monotonic() - started)
@@ -198,7 +198,10 @@ def run_stage_a_sizing(data_root: Path, control_report: Path) -> dict:
     partial = json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance": meta, "results": []}
     if partial.get("provenance") != meta:
         raise ValueError("STAGE_A_PARTIAL_PROVENANCE_MISMATCH")
-    results, removed_legacy_resume = _stage_a_reconcile_legacy_resume(list(partial["results"]))
+    # Once Stage A has its original complete cohort, later interrupted resume
+    # rows are immutable incident evidence only.  They must never affect a
+    # normal resume's plan, ranking, or artifact references.
+    results, removed_legacy_resume = _stage_a_reconcile_legacy_resume(list(partial["results"][:42]))
     results, deduped_existing = _stage_a_dedupe_existing(results)
     if removed_legacy_resume or deduped_existing:
         _atomic_json(partial_path, {"provenance": meta, "results": results})
@@ -312,6 +315,13 @@ def write_stage_a_compact_checkpoint(data_root: Path, control_report: Path) -> d
         raise ValueError("STAGE_A_CANONICAL_CHECKPOINT_SEQUENCE_MISMATCH")
     if any(item.get("terminal_total") is None for item in canonical):
         raise ValueError("STAGE_A_CANONICAL_CHECKPOINT_INCOMPLETE")
+    correction_path = runs / f"{stem}-evidence-correction-v1.json"
+    correction = json.loads(correction_path.read_text()) if correction_path.exists() else None
+    if correction:
+        if correction.get("status") != "SEALED_EVIDENCE_CORRECTION" or correction.get("partial_sha256_before") != sha256_file(partial_path):
+            raise ValueError("STAGE_A_CORRECTION_PROVENANCE_MISMATCH")
+        replacements = correction.get("replacements", {})
+        canonical = [replacements.get(item["variant_id"], item) for item in canonical]
     control = json.loads(control_report.read_text())
     top20 = sorted(canonical, key=lambda item: Decimal(item["terminal_total"]), reverse=True)[:20]
     best = top20[0]
@@ -323,11 +333,47 @@ def write_stage_a_compact_checkpoint(data_root: Path, control_report: Path) -> d
         writer.writeheader(); writer.writerows(_stage_a_csv_row(item, control["terminal_total"]) for item in top20)
     temporary_csv.replace(csv_path)
     incident = [{"variant_id": item.get("variant_id"), "reused": item.get("reused", False), "terminal_total": item.get("terminal_total"), "execution_artifacts": item.get("execution_artifacts")} for item in results[42:]]
-    evidence = {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "canonical_result_count": len(canonical), "excluded_resume_incident_count": len(incident)}
+    evidence = {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "canonical_result_count": len(canonical), "excluded_resume_incident_count": len(incident), "correction": {"path": str(correction_path), "sha256": sha256_file(correction_path)} if correction else None}
     summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": partial["provenance"], "result_count": len(canonical), "local_evidence": evidence, "results": [_stage_a_compact_result(item, partial_path) for item in canonical], "top20": [_stage_a_compact_result(item, partial_path) for item in top20], "best": _stage_a_compact_result(best, partial_path), "delta_vs_accepted_7_5": str(Decimal(best["terminal_total"]) - Decimal(control["terminal_total"])), "excluded_resume_incident": {"reason": "INTERRUPTED_PRE_FIX_RESUME_NOT_STAGE_A_PLAN", "rows": incident}, "limitations": ["Stage A only; no Stage B.", "Full per-candidate native reports and journals remain in the local ignored checkpoint; this aggregate is intentionally compact.", "Historical execution and fee applicability remain diagnostic assumptions."]}
     target = runs / f"{stem}.json"
     _atomic_json(target, summary)
     return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path)}
+
+
+def correct_stage_a_a3_evidence(data_root: Path) -> dict:
+    """Fresh, sequential replacement evidence for the two overwritten A3 rows."""
+    runs, stem = data_root / "runs", "native-stage-a-sizing-v1"
+    partial_path = runs / f"{stem}.partial.json"
+    source = json.loads(partial_path.read_text())
+    canonical = source["results"][:42]
+    targets = ("a3-btc-3-sol-1.5-2.25-3", "a3-btc-4-sol-1.5-2.25-3")
+    by_id = {item["variant_id"]: item for item in canonical}
+    if any(target not in by_id for target in targets):
+        raise ValueError("STAGE_A_A3_CORRECTION_TARGET_MISSING")
+    correction_path = runs / f"{stem}-evidence-correction-v1.json"
+    correction = json.loads(correction_path.read_text()) if correction_path.exists() else {
+        "status": "SEALED_EVIDENCE_CORRECTION",
+        "partial_sha256_before": sha256_file(partial_path),
+        "targets": list(targets),
+        "superseded_rows": {target: by_id[target] for target in targets},
+        "replacements": {},
+    }
+    if correction.get("partial_sha256_before") != sha256_file(partial_path) or correction.get("targets") != list(targets):
+        raise ValueError("STAGE_A_A3_CORRECTION_PROVENANCE_MISMATCH")
+    for target in targets:
+        if target in correction["replacements"]:
+            continue
+        candidate = Candidate(**by_id[target]["candidate"])
+        replacement = _stage_a_item(target, candidate, data_root, stem, artifact_label=f"{stem}-evidence-correction-v1-{target}")
+        correction["replacements"][target] = replacement
+        _atomic_json(correction_path, correction)
+    merged = [correction["replacements"].get(item["variant_id"], item) for item in canonical]
+    a3_winner = _stage_a_best([item for item in merged if item["variant_id"].startswith(("a1-", "a2-", "a3-"))])
+    expected = Candidate(btc_notional_multiplier=4.0, sol_size_multipliers_h=(1.5, 2.25, 3.0))
+    correction["downstream_plan_valid"] = bool(a3_winner and _candidate_tuple_key(a3_winner["candidate"]) == _candidate_tuple_key(expected))
+    correction["a3_winner"] = {"variant_id": a3_winner["variant_id"], "terminal_total": a3_winner["terminal_total"], "candidate": a3_winner["candidate"]} if a3_winner else None
+    _atomic_json(correction_path, correction)
+    return correction | {"artifact": str(correction_path)}
 
 
 def run_canonical_reentry_btc_pass(
