@@ -115,6 +115,20 @@ def test_stage_a_reuses_complete_candidate_tuples_and_only_extends_234_when_it_i
     assert len(sealed["results"]) == 42
     assert all(item["variant_id"] != "out-of-plan-resume-incident" for item in sealed["results"])
     assert len(calls) == call_count
+    corrected_target = checkpoint["results"][0]
+    corrected = {**corrected_target, "execution_artifacts": {"fresh": {"path": "fresh.csv", "sha256": "fresh-hash"}}}
+    correction_path = tmp_path / "runs" / "native-stage-a-sizing-v1-evidence-correction-v1.json"
+    correction_path.write_text(json.dumps({
+        "status": "SEALED_EVIDENCE_CORRECTION",
+        "partial_sha256_before": native_optimizer.sha256_file(checkpoint_path),
+        "replacements": {corrected_target["variant_id"]: corrected},
+    }))
+    corrected_resume = native_optimizer.run_stage_a_sizing(tmp_path, control_path)
+    assert corrected_resume["local_evidence"]["correction"]["sha256"] == native_optimizer.sha256_file(correction_path)
+    restored = next(item for item in corrected_resume["results"] if item["variant_id"] == corrected_target["variant_id"])
+    assert restored["local_evidence"]["execution_artifacts"]["fresh"]["path"] == "fresh.csv"
+    assert corrected_resume["local_evidence"]["excluded_resume_incident_count"] == 1
+    assert len(calls) == call_count
 
 
 def test_stage_a_migrates_existing_duplicate_tuple_to_explicit_reuse() -> None:

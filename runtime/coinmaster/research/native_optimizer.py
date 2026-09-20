@@ -198,6 +198,11 @@ def run_stage_a_sizing(data_root: Path, control_report: Path) -> dict:
     partial = json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance": meta, "results": []}
     if partial.get("provenance") != meta:
         raise ValueError("STAGE_A_PARTIAL_PROVENANCE_MISMATCH")
+    # A corrected complete cohort is sealed: normal resume is export-only and
+    # must not reopen its plan or replace correction-backed evidence.
+    correction_path = runs / f"{stem}-evidence-correction-v1.json"
+    if len(partial["results"]) >= 42 and correction_path.exists():
+        return write_stage_a_compact_checkpoint(data_root, control_report)
     # Once Stage A has its original complete cohort, later interrupted resume
     # rows are immutable incident evidence only.  They must never affect a
     # normal resume's plan, ranking, or artifact references.
