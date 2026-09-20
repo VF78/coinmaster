@@ -1019,6 +1019,84 @@ def publish_stage_e_funding_correction(data_root: Path, clean_a_path: Path, clea
     return summary | {"artifact": str(target), "csv": str(csv_path)}
 
 
+def run_stage_f_btc_boundary(data_root: Path, stage_e_correction_path: Path) -> dict:
+    """Close only the clean Stage-E BTC boundary; no other candidate axis moves."""
+    runs, stem = data_root / "runs", "native-stage-f-btc-boundary-v1"
+    accepted = json.loads(stage_e_correction_path.read_text())
+    if accepted.get("status") != "NOT_FAITHFUL_DIAGNOSTIC" or not accepted.get("fresh_reproduction", {}).get("economics_exact"):
+        raise ValueError("STAGE_F_STAGE_E_CLEAN_REPRODUCTION_REQUIRED")
+    source_reports = accepted.get("local_evidence", {}).get("clean_reports", [])
+    if len(source_reports) != 2 or any(sha256_file(_stage_c_artifact_path(data_root, report["path"])) != report["sha256"] for report in source_reports):
+        raise ValueError("STAGE_F_STAGE_E_EVIDENCE_HASH_MISMATCH")
+    source_raw = json.loads(_stage_c_artifact_path(data_root, source_reports[0]["path"]).read_text())
+    source_candidate = source_raw["config"]["candidate"]
+    baseline = Candidate(**{key: tuple(value) if isinstance(value, list) else value for key, value in source_candidate.items()})
+    if (baseline.ema_period, baseline.btc_tp_fractions_initial_qty, baseline.btc_notional_multiplier, baseline.sol_size_multipliers_h) != (34, (0.2, 0.225, 0.575), 4.375, (1.875, 2.8125, 3.75)):
+        raise ValueError("STAGE_F_CONTROL_CANDIDATE_MISMATCH")
+    source = {"variant_id": "e5-funding-clean-reproduction-a", "candidate": source_candidate, "candidate_hash": hashlib.sha256(_candidate_tuple_key(source_candidate).encode()).hexdigest(), "reused": False, **source_raw}
+    _stage_c_validate_ranked_evidence([source], data_root)
+    stage_d_total, accepted_7_5_total = Decimal("740906.55113925"), Decimal("138510.36099498")
+    meta = {"optimizer_id": "stage-f-btc-boundary-v1", "stage_e_correction_sha256": sha256_file(stage_e_correction_path), "control_total": source["terminal_total"], "control_candidate": source_candidate, "objective": "terminal TOTAL only", "btc_initial_axis": [4.5, 4.75, 5.0], "btc_step": 0.25, "btc_max": 10.5, "ranking_eligible_for_live": False}
+    partial_path, lock_path = runs / f"{stem}.partial.json", runs / f"{stem}.lock"
+    try:
+        fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY); os.write(fd, str(os.getpid()).encode()); os.close(fd)
+    except FileExistsError as error:
+        raise RuntimeError("STAGE_F_SINGLE_PROCESS_LOCK_HELD") from error
+    try:
+        partial = json.loads(partial_path.read_text()) if partial_path.exists() else {"provenance": meta, "results": [], "sealed": {}}
+        if partial.get("provenance") != meta:
+            raise ValueError("STAGE_F_PARTIAL_PROVENANCE_MISMATCH")
+        results, sealed = list(partial["results"]), dict(partial.get("sealed", {})); completed = {item["variant_id"] for item in results}
+        def persist(): _atomic_json(partial_path, {"provenance": meta, "results": results, "sealed": sealed})
+        def add(name: str, candidate: Candidate, *, fresh: bool = False) -> None:
+            if name in completed: return
+            item = _stage_a_item(name, candidate, data_root, stem) if fresh or name != "f0-stage-e-clean-baseline" else _stage_a_reuse(name, candidate, source)
+            results.append(item); completed.add(name); persist()
+        add("f0-stage-e-clean-baseline", baseline)
+        for value in (4.5, 4.75, 5.0): add(f"f-btc-{value:g}", replace(baseline, btc_notional_multiplier=value), fresh=True)
+        def search_rows() -> list[dict]: return [item for item in results if item["variant_id"].startswith("f0-") or item["variant_id"].startswith("f-btc-")]
+        def ranked_search() -> list[dict]: return sorted(search_rows(), key=lambda item: Decimal(item["terminal_total"]), reverse=True)
+        last_value = Decimal("5.0")
+        while last_value < Decimal("10.5"):
+            ordered = sorted(search_rows(), key=lambda item: Decimal(str(item["candidate"]["btc_notional_multiplier"])))
+            upper, best = ordered[-1], ranked_search()[0]
+            upper_value = Decimal(str(upper["candidate"]["btc_notional_multiplier"]))
+            lower_best = max((item for item in ordered[:-1]), key=lambda item: Decimal(item["terminal_total"]))
+            if upper.get("liquidation_count", 0) or best is not upper or Decimal(upper["terminal_total"]) <= Decimal(lower_best["terminal_total"]): break
+            last_value = upper_value + Decimal("0.25")
+            add(f"f-btc-{last_value:g}", replace(baseline, btc_notional_multiplier=float(last_value)), fresh=True)
+        ordered, best = sorted(search_rows(), key=lambda item: Decimal(str(item["candidate"]["btc_notional_multiplier"]))), ranked_search()[0]
+        best_value, upper_value = Decimal(str(best["candidate"]["btc_notional_multiplier"])), Decimal(str(ordered[-1]["candidate"]["btc_notional_multiplier"]))
+        upper_liquidated = bool(ordered[-1].get("liquidation_count", 0))
+        if best_value < upper_value and not upper_liquidated:
+            for value in (best_value - Decimal("0.125"), best_value + Decimal("0.125")):
+                add(f"f-btc-{value:g}", replace(baseline, btc_notional_multiplier=float(value)), fresh=True)
+            best = ranked_search()[0]
+        sealed.setdefault("search_best", best["variant_id"]); persist()
+        final_candidate = Candidate(**best["candidate"])
+        add("f-final-reproduction-a", final_candidate, fresh=True); add("f-final-reproduction-b", final_candidate, fresh=True)
+        fresh_a, fresh_b = (next(item for item in results if item["variant_id"] == label) for label in ("f-final-reproduction-a", "f-final-reproduction-b"))
+        _stage_c_validate_ranked_evidence(search_rows() + [fresh_a, fresh_b], data_root)
+        economic_fields = ("terminal_active", "terminal_reserve", "terminal_total", "native_fees", "fills", "liquidation_count", "fee_attribution", "funding")
+        economics_exact = all(fresh_a[field] == fresh_b[field] == best[field] for field in economic_fields)
+        normalized = {}
+        for kind in ("fills", "orders"):
+            hashes = [_normalized_execution_artifact_sha256(_stage_c_artifact_path(data_root, item["execution_artifacts"][kind]["path"])) for item in (best, fresh_a, fresh_b)]
+            if len(set(hashes)) != 1: raise ValueError(f"STAGE_F_NORMALIZED_{kind.upper()}_MISMATCH")
+            normalized[kind] = {"sha256": hashes[0], "dropped_columns": ["init_id"], "reason": "Nautilus per-engine UUID"}
+        ranked = ranked_search(); top20 = ranked[:20]
+        compact = lambda item: _stage_b_compact(item, str(accepted_7_5_total), partial_path) | {"delta_vs_stage_d": str(Decimal(item["terminal_total"]) - stage_d_total), "delta_vs_stage_e": str(Decimal(item["terminal_total"]) - Decimal(source["terminal_total"])), "delta_vs_accepted_7_5": str(Decimal(item["terminal_total"]) - accepted_7_5_total)}
+        rows = [_stage_a_csv_row(item, str(accepted_7_5_total)) | {"delta_vs_stage_d": str(Decimal(item["terminal_total"]) - stage_d_total), "delta_vs_stage_e": str(Decimal(item["terminal_total"]) - Decimal(source["terminal_total"])), "normalization": "drop:init_id (Nautilus per-engine UUID)"} for item in top20]
+        csv_path, temporary = runs / f"{stem}-top20.csv", runs / f"{stem}-top20.csv.tmp"
+        with temporary.open("w", newline="") as stream: writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
+        temporary.replace(csv_path)
+        final_upper = max(search_rows(), key=lambda item: Decimal(str(item["candidate"]["btc_notional_multiplier"])))
+        summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC" if economics_exact else "REPRODUCTION_MISMATCH_NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": meta, "sealed": sealed, "result_count": len(search_rows()), "results": [compact(item) for item in ranked], "top20": [compact(item) for item in top20], "best": compact(best), "fresh_reproduction": {"labels": [fresh_a["variant_id"], fresh_b["variant_id"]], "economics_exact": economics_exact, "normalized_execution_artifacts": normalized, "a": compact(fresh_a), "b": compact(fresh_b)}, "boundary": {"upper_tested": final_upper["candidate"]["btc_notional_multiplier"], "upper_liquidated": bool(final_upper.get("liquidation_count", 0)), "unresolved": bool(best is final_upper and Decimal(str(final_upper["candidate"]["btc_notional_multiplier"])) >= Decimal("10.5"))}, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "ranked_evidence_validated": True}, "limitations": ["Stage F only; no non-BTC axis changed.", "BTC TP-level and SOL add-level attribution UNKNOWN from native fills."]}
+        target = runs / f"{stem}.json"; _atomic_json(target, summary); return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path)}
+    finally:
+        if lock_path.exists(): lock_path.unlink()
+
+
 def run_native_hypothesis_pass(data_root: Path, stage_d_report: Path) -> dict:
     """Sequential independent H1/H3/H4 tests over a reused Stage-D H0."""
     runs, stem = data_root / "runs", "native-hypothesis-pass-v1"
