@@ -5,13 +5,36 @@ from nautilus_trader.backtest.config import BacktestEngineConfig
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.model.data import Bar, BarSpecification, BarType
-from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType
+from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, OrderSide, PriceType, TimeInForce
 from nautilus_trader.model.objects import Money, Price, Quantity
 
 from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, MarkPriceUpdate, quote
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
-from coinmaster.domain.wave_overlay import DailyBar
+from coinmaster.domain.wave_overlay import Candidate, DailyBar
 from coinmaster.venues.marks import venue_mark, venue_mark_data_type
+from coinmaster.venues.signals import daily_signal, daily_signal_data_type
+
+
+class WaveOverlayWithNativeSolShort(WaveOverlayStrategy):
+    """Test-only second-leg intent, submitted by the adapter's quote callback."""
+
+    def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+        super().__init__(config)
+        self._sol_short_submitted = False
+
+    def on_quote_tick(self, tick) -> None:
+        super().on_quote_tick(tick)
+        if self._sol_short_submitted or tick.instrument_id != self.config.sol_id:
+            return
+        instrument = self.cache.instrument(self.config.sol_id)
+        assert instrument is not None
+        self.submit_order(self.order_factory.market(
+            instrument_id=self.config.sol_id,
+            order_side=OrderSide.SELL,
+            quantity=instrument.make_qty(Decimal("500")),
+            time_in_force=TimeInForce.IOC,
+        ))
+        self._sol_short_submitted = True
 
 
 def make_bar_type(instrument_id, price_type):
@@ -116,5 +139,113 @@ def test_warmup_only_has_no_native_orders() -> None:
     engine.add_data(data, sort=False); engine.add_data(marks, client_id=ClientId("TEST_MARKS"), sort=False); engine.sort_data(); engine.run()
     try:
         assert engine.trader.generate_order_fills_report().empty
+    finally:
+        engine.dispose()
+
+
+def test_paired_marks_liquidate_each_native_leg_on_its_own_next_quote() -> None:
+    """A same-minute mark breach is non-executable until each leg's own quote."""
+    day = 86_400_000_000_000
+    signal_ts = 9 * day
+    candidate = Candidate(
+        ema_period=2,
+        beta_days=2,
+        relative_days=2,
+        z_history_days=2,
+        wave_min_count=1,
+        wave_history_days=30,
+    )
+    seed_values = (100, 110, 90, 110, 90, 110, 90, 110)
+    seed = tuple(
+        DailyBar(
+            datetime.fromtimestamp((index - 1) * 86_400, UTC),
+            datetime.fromtimestamp(index * 86_400, UTC),
+            datetime.fromtimestamp(index * 86_400, UTC),
+            seed_values[index - 2] if index > 1 else value,
+            value,
+            value * 0.3,
+        )
+        for index, value in enumerate(seed_values, start=1)
+    )
+    engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"))
+    engine.add_instrument(BTC_PERP)
+    engine.add_instrument(SOL_PERP)
+    from nautilus_trader.model.identifiers import ClientId
+    marks_client, signals_client = ClientId("TEST_MARKS"), ClientId("TEST_SIGNALS")
+    monitor = WaveOverlayWithNativeSolShort(WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP.id,
+        sol_id=SOL_PERP.id,
+        btc_bar_type=make_bar_type(BTC_PERP.id, PriceType.LAST),
+        sol_bar_type=make_bar_type(SOL_PERP.id, PriceType.LAST),
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP.id),
+        sol_mark_data_type=venue_mark_data_type(SOL_PERP.id),
+        mark_client_id=marks_client,
+        btc_signal_data_type=daily_signal_data_type(BTC_PERP.id),
+        sol_signal_data_type=daily_signal_data_type(SOL_PERP.id),
+        signal_client_id=signals_client,
+        active_seed=Decimal("10000"),
+        candidate=candidate,
+        seed_bars=seed,
+        trading_start_open_ns=8 * day,
+        tier_selected_leverage=((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20"))),
+        max_mark_age_ns=day,
+    ))
+    engine.add_strategy(monitor)
+    marks = (
+        venue_mark(BTC_PERP.id, Decimal("100"), signal_ts),
+        venue_mark(SOL_PERP.id, Decimal("30"), signal_ts),
+        # Both legs are above maintenance first; the only audit must be the
+        # later adverse same-minute pair.
+        venue_mark(BTC_PERP.id, Decimal("109"), signal_ts + 3),
+        venue_mark(SOL_PERP.id, Decimal("31"), signal_ts + 3),
+        venue_mark(BTC_PERP.id, Decimal("1"), signal_ts + 4),
+        venue_mark(SOL_PERP.id, Decimal("100"), signal_ts + 4),
+        # Duplicate delivery of the breach pair cannot arm twice or submit a
+        # second set of liquidation orders.
+        venue_mark(BTC_PERP.id, Decimal("1"), signal_ts + 4),
+        venue_mark(SOL_PERP.id, Decimal("100"), signal_ts + 4),
+        venue_mark(BTC_PERP.id, Decimal("1"), 10 * day),
+        venue_mark(SOL_PERP.id, Decimal("100"), 10 * day),
+    )
+    signals = (
+        daily_signal(BTC_PERP.id, Decimal("100"), Decimal("110"), Decimal("90"), Decimal("110"), signal_ts),
+        daily_signal(SOL_PERP.id, Decimal("30"), Decimal("33"), Decimal("27"), Decimal("33"), signal_ts),
+        # A subsequent valid pair cannot enter again after the fill-confirmed lock.
+        daily_signal(BTC_PERP.id, Decimal("1"), Decimal("2"), Decimal("1"), Decimal("1"), 10 * day),
+        daily_signal(SOL_PERP.id, Decimal("100"), Decimal("101"), Decimal("99"), Decimal("100"), 10 * day),
+    )
+    quotes = (
+        # No quote accompanies the initial mark/signal pair, so no fill can
+        # predate this BTC quote.
+        quote(BTC_PERP.id, "110.0", "110.1", signal_ts + 1),
+        quote(SOL_PERP.id, "30.00", "30.10", signal_ts + 2),
+        quote(BTC_PERP.id, "1.0", "1.1", signal_ts + 5),
+        quote(SOL_PERP.id, "100.00", "100.10", signal_ts + 6),
+        quote(BTC_PERP.id, "1.0", "1.1", 10 * day + 1),
+        quote(SOL_PERP.id, "100.00", "100.10", 10 * day + 2),
+    )
+    engine.add_data(list(marks), client_id=marks_client, sort=False)
+    engine.add_data(list(signals), client_id=signals_client, sort=False)
+    engine.add_data(list(quotes), sort=False)
+    engine.sort_data()
+    engine.run()
+    try:
+        fills = engine.trader.generate_order_fills_report()
+        assert len(fills) == 4, (fills, monitor.liquidation_audit)
+        assert list(fills["instrument_id"]) == [str(BTC_PERP.id), str(SOL_PERP.id), str(BTC_PERP.id), str(SOL_PERP.id)]
+        assert [item.value for item in fills["ts_last"]] == [signal_ts + 1, signal_ts + 2, signal_ts + 5, signal_ts + 6]
+        assert [Decimal(str(item)) for item in fills["avg_px"]] == [Decimal("110.1"), Decimal("30.0"), Decimal("1.0"), Decimal("100.1")]
+        assert list(fills["is_reduce_only"]) == [False, False, True, True]
+        assert len(monitor.liquidation_audit) == 1
+        audit = monitor.liquidation_audit[0]
+        assert set(audit) == {"trigger_ts", "equity", "maintenance", "status", "fill_ts"}
+        assert audit["trigger_ts"] == str(signal_ts + 4)
+        assert audit["status"] == "FLAT_LOCKED"
+        assert audit["fill_ts"] == str(signal_ts + 6)
+        assert Decimal(audit["equity"]) <= Decimal(audit["maintenance"])
+        assert engine.trader.generate_positions_report()["closing_order_id"].notna().all()
+        assert engine.trader.generate_orders_report()["status"].eq("FILLED").all()
+        assert not engine.trader.generate_account_report(SIM).empty
     finally:
         engine.dispose()
