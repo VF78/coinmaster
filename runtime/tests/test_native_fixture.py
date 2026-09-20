@@ -9,13 +9,18 @@ from coinmaster.research.native_fixture import (
     quote,
     MarkPriceUpdate,
     TierMarginPolicy,
+    ReserveTransferInstruction,
+    normalize_native_order_request,
+    perpetual,
 )
 from nautilus_trader.model.data import FundingRateUpdate
 from nautilus_trader.backtest.models import LeveragedMarginModel
 from nautilus_trader.model.enums import OrderSide
 from nautilus_trader.model.objects import Price, Quantity
-from coinmaster.venues.margin import MarginReservations
 from coinmaster.ledger.journal import NativeEventJournal
+from nautilus_trader.backtest.engine import BacktestEngine
+from nautilus_trader.backtest.models import FillModel
+import pytest
 
 
 TIER_LEVERAGE = ((BTC_PERP.id, Decimal("100")), (SOL_PERP.id, Decimal("100")))
@@ -84,6 +89,69 @@ def test_supported_funding_module_posts_signed_native_account_adjustments_once(t
         engine.dispose()
 
 
+def test_native_funding_matrix_boundaries_duplicates_and_negative_rates(tmp_path) -> None:
+    """Only the at-entry settlement changes native cash; signs come from native positions."""
+    quotes = [
+        quote(SOL_PERP.id, "100.00", "100.10", 1),  # before-settlement: no BTC position
+        quote(BTC_PERP.id, "100.0", "100.1", 2),  # native entry then at-settlement
+        quote(BTC_PERP.id, "100.0", "100.1", 3),  # native close; reconnect duplicate is ignored
+        quote(SOL_PERP.id, "100.00", "100.10", 4),  # after-settlement: flat BTC
+    ]
+    cases = ((OrderSide.BUY, Decimal("0.01"), Decimal("-1")), (OrderSide.BUY, Decimal("-0.01"), Decimal("1")), (OrderSide.SELL, Decimal("0.01"), Decimal("1")), (OrderSide.SELL, Decimal("-0.01"), Decimal("-1")))
+    for index, (entry_side, rate, expected_delta) in enumerate(cases):
+        actions = ((BTC_PERP.id, entry_side, "1.000"), (BTC_PERP.id, OrderSide.SELL if entry_side == OrderSide.BUY else OrderSide.BUY, "1.000"))
+        baseline = build_engine(actions=actions)
+        database = str(tmp_path / f"funding-{index}.sqlite")
+        journal = NativeEventJournal(database)
+        events = (
+            FundingInstruction(f"before-{index}", BTC_PERP.id, rate, 1, Decimal("100"), "synthetic_mid", True),
+            FundingInstruction(f"at-{index}", BTC_PERP.id, rate, 2, Decimal("100"), "synthetic_mid", True),
+            FundingInstruction(f"at-{index}", BTC_PERP.id, rate, 3, Decimal("100"), "synthetic_mid", True),
+            FundingInstruction(f"after-{index}", BTC_PERP.id, rate, 4, Decimal("100"), "synthetic_mid", True),
+        )
+        funded = build_engine(events, funding_journal=journal, actions=actions)
+        baseline.add_data(quotes); funded.add_data(quotes)
+        baseline.run(); funded.run()
+        try:
+            plain_total = Decimal(baseline.trader.generate_account_report(SIM)["total"].iloc[-1].split()[0])
+            funded_total = Decimal(funded.trader.generate_account_report(SIM)["total"].iloc[-1].split()[0])
+            assert funded_total - plain_total == expected_delta
+            assert [row[0] for row in journal.funding_audit()] == [f"at-{index}"]
+        finally:
+            baseline.dispose(); funded.dispose(); journal.close()
+
+
+def test_native_tick_step_and_min_notional_decisions_are_auditable() -> None:
+    btc = perpetual("BTC-AUDIT", BTC_PERP.base_currency, "0.1", "0.001", "0.025", min_quantity="0.001", min_notional="5")
+    sol = perpetual("SOL-AUDIT", SOL_PERP.base_currency, "0.01", "0.1", "0.05", min_quantity="0.1", min_notional="20")
+    btc_rounded = normalize_native_order_request(btc, Decimal("100.05"), Decimal("0.0504"))
+    sol_rounded = normalize_native_order_request(sol, Decimal("160.005"), Decimal("0.24"))
+    btc_too_small = normalize_native_order_request(btc, Decimal("100.04"), Decimal("0.001"))
+    sol_bad_step = normalize_native_order_request(sol, Decimal("160.005"), Decimal("0.0009"))
+    sol_too_small = normalize_native_order_request(sol, Decimal("160.004"), Decimal("0.1"))
+    assert (btc_rounded.requested_price, btc_rounded.accepted_price, btc_rounded.requested_quantity, btc_rounded.accepted_quantity, btc_rounded.status) == ("100.05", "100.0", "0.0504", "0.050", "ACCEPTED")
+    assert (sol_rounded.accepted_price, sol_rounded.accepted_quantity, sol_rounded.status) == ("160.00", "0.2", "ACCEPTED")
+    assert (btc_too_small.status, btc_too_small.reason) == ("REJECTED", "MIN_NOTIONAL")
+    assert sol_bad_step.status == "REJECTED" and sol_bad_step.reason.startswith("NATIVE_INCREMENT:")
+    assert (sol_too_small.status, sol_too_small.reason) == ("REJECTED", "MIN_NOTIONAL")
+
+
+def test_native_active_to_reserve_transfer_debits_collateral_and_replays_neutrally(tmp_path) -> None:
+    journal = NativeEventJournal(str(tmp_path / "reserve.sqlite"))
+    events = (ReserveTransferInstruction("reserve-1", Decimal("1000"), 1), ReserveTransferInstruction("reserve-1", Decimal("1000"), 2))
+    engine = build_engine(actions=(), transfer_events=events, transfer_journal=journal)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.1", 1), quote(BTC_PERP.id, "100.0", "100.1", 2)])
+    engine.run()
+    try:
+        account = engine.trader._cache.account_for_venue(SIM)
+        assert account.balance_total(BTC_PERP.quote_currency).as_decimal() == Decimal("9000")
+        assert account.balance_free(BTC_PERP.quote_currency).as_decimal() == Decimal("9000")
+        assert journal.transfer_audit() == [("reserve-1", "10000", "9000", "0", "1000")]
+        NativeEventJournal.assert_total(Decimal("9000"), Decimal("1000"), Decimal("10000"))
+    finally:
+        engine.dispose(); journal.close()
+
+
 def test_funding_replay_uses_durable_ids_and_does_not_repost_native_money(tmp_path) -> None:
     events = (
         FundingInstruction("btc-positive", BTC_PERP.id, Decimal("0.01"), 6, Decimal("80999.5"), "synthetic_mid", True),
@@ -131,13 +199,15 @@ def test_native_margin_model_sums_two_legs_and_engine_rejects_excess_increase() 
         engine.dispose()
 
 
-def test_partial_fill_keeps_parent_margin_reserved_until_cancel_confirmation() -> None:
-    reservations = MarginReservations()
-    reservations.reserve("btc-parent", Decimal("2000"))
-    reservations.record_fill("btc-parent", Decimal("1000"))
-    assert reservations.total_held_im() == Decimal("1000")
-    reservations.cancel_remainder("btc-parent")
-    assert reservations.total_held_im() == Decimal("0")
+def test_pinned_native_partial_fill_and_liquidation_paths_fail_closed_without_fiction() -> None:
+    from coinmaster.research.native_fixture import NATIVE_1231_UNSUPPORTED, require_native_execution_capability
+    # The pin's FillModel exposes probabilities only; it has no requested vs
+    # partial accepted quantity. add_venue likewise has no liquidation flags.
+    assert "partial" not in FillModel.__doc__.lower()
+    assert "liquidation" not in BacktestEngine.add_venue.__doc__.lower()
+    for capability, code in NATIVE_1231_UNSUPPORTED.items():
+        with pytest.raises(RuntimeError, match=code):
+            require_native_execution_capability(capability)
 
 
 def test_production_funding_requires_confirmed_venue_settlement_mark() -> None:

@@ -335,11 +335,24 @@ def test_paired_marks_liquidate_each_native_leg_on_its_own_next_quote() -> None:
         assert audit["trigger_ts"] == str(signal_ts + 4)
         assert audit["status"] == "FLAT_LOCKED"
         assert [item["timestamp"] for item in audit["close_fills"]] == [str(signal_ts + 5), str(signal_ts + 6)]
-        assert Decimal(audit["close_value"]) > 0
         assert audit["lockout"] == "true"
+        # Hand reconciliation uses native fills/commissions only; no shadow
+        # liquidation or PnL model is introduced by this fixture.
+        btc_quantity = Decimal(str(fills.iloc[0]["filled_qty"]))
+        sol_quantity = Decimal(str(fills.iloc[1]["filled_qty"]))
+        btc_pnl = (Decimal(str(fills.iloc[2]["avg_px"])) - Decimal(str(fills.iloc[0]["avg_px"]))) * btc_quantity
+        sol_pnl = (Decimal(str(fills.iloc[1]["avg_px"])) - Decimal(str(fills.iloc[3]["avg_px"]))) * sol_quantity
+        fees = sum((Decimal(str(item).split()[0]) for row in fills["commissions"] for item in row), Decimal("0"))
+        close_fees = sum((Decimal(str(item).split()[0]) for row in fills.iloc[2:]["commissions"] for item in row), Decimal("0"))
+        final_cash = Decimal(engine.trader.generate_account_report(SIM)["total"].iloc[-1].split()[0])
+        assert final_cash == Decimal("10000") + btc_pnl + sol_pnl - fees
+        assert close_fees == Decimal("50.86818100")
+        assert Decimal(audit["close_value"]) == btc_quantity * Decimal("1.0") + sol_quantity * Decimal("100.1")
         assert Decimal(audit["marked_equity"]) <= Decimal(audit["tier_maintenance_margin"])
         assert engine.trader.generate_positions_report()["closing_order_id"].notna().all()
         assert engine.trader.generate_orders_report()["status"].eq("FILLED").all()
+        assert engine.trader._cache.positions_open() == []
+        assert engine.trader._cache.orders_open() == []
         assert not engine.trader.generate_account_report(SIM).empty
     finally:
         engine.dispose()

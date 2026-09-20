@@ -5,7 +5,7 @@ from __future__ import annotations
 from decimal import Decimal
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.backtest.config import SimulationModuleConfig
@@ -26,6 +26,21 @@ from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 SIM = Venue("P1SIM")
 
+# Nautilus 1.231's Python BacktestEngine API exposes neither a partial-fill
+# quantity generator nor liquidation controls on ``add_venue``.  Do not turn
+# an in-memory reservation book into fictional native execution evidence.
+NATIVE_1231_UNSUPPORTED = {
+    "partial_fill": "UNSUPPORTED_NAUTILUS_1_231_NATIVE_PARTIAL_FILL_GENERATOR",
+    "liquidation": "UNSUPPORTED_NAUTILUS_1_231_ADD_VENUE_LIQUIDATION_PATH",
+}
+
+
+def require_native_execution_capability(capability: str) -> None:
+    """Fail closed at the adapter boundary for unsupported pinned execution."""
+    if capability not in NATIVE_1231_UNSUPPORTED:
+        raise ValueError("unknown native execution capability")
+    raise RuntimeError(NATIVE_1231_UNSUPPORTED[capability])
+
 
 def perpetual(
     symbol: str,
@@ -35,12 +50,16 @@ def perpetual(
     im: str,
     maker_fee: Decimal = Decimal("0.001"),
     taker_fee: Decimal = Decimal("0.001"),
+    min_quantity: str | None = None,
+    min_notional: str | None = None,
 ) -> CryptoPerpetual:
     instrument_id = InstrumentId(Symbol(f"{symbol}-PERP"), SIM)
     return CryptoPerpetual(
         instrument_id, Symbol(symbol), base, USDT, USDT, False,
         len(tick.partition(".")[2]), len(step.partition(".")[2]),
         Price.from_str(tick), Quantity.from_str(step), 0, 0,
+        min_quantity=Quantity.from_str(min_quantity) if min_quantity else None,
+        min_notional=Money(Decimal(min_notional), USDT) if min_notional else None,
         margin_init=Decimal(im), margin_maint=Decimal("0.005"),
         maker_fee=maker_fee, taker_fee=taker_fee,
     )
@@ -59,6 +78,7 @@ class FixtureConfig(StrategyConfig, frozen=True):
     tier_marks: tuple["MarkPriceUpdate", ...] = ()
     tier_selected_leverage: tuple[tuple[InstrumentId, Decimal], ...] = ()
     max_mark_age_ns: int = 0
+    actions: tuple[tuple[InstrumentId, OrderSide, str], ...] | None = None
 
 
 class FixtureStrategy(Strategy):
@@ -80,7 +100,7 @@ class FixtureStrategy(Strategy):
     def on_quote_tick(self, tick: QuoteTick) -> None:
         # Each order fills against the next quote. This creates BTC entry,
         # partial BTC reduce, SOL add, and final closes from native fill events.
-        actions = (
+        actions = self.config.actions if self.config.actions is not None else (
             (self.config.btc_id, OrderSide.BUY, "1.000"),
             (self.config.btc_id, OrderSide.SELL, "0.400"),
             (self.config.sol_id, OrderSide.SELL, "500.0"),
@@ -203,6 +223,43 @@ class FundingInstruction:
             raise ValueError(f"unsupported funding basis: {self.basis}")
 
 
+@dataclass(frozen=True)
+class ReserveTransferInstruction:
+    """One durable ACTIVE→RESERVE transfer, processed by the native account."""
+    event_id: str
+    amount: Decimal
+    ts_event: int
+
+    def __post_init__(self) -> None:
+        if self.amount <= 0:
+            raise ValueError("reserve transfer must be positive")
+
+
+@dataclass(frozen=True)
+class NativeOrderDecision:
+    requested_price: str
+    requested_quantity: str
+    accepted_price: str | None
+    accepted_quantity: str | None
+    status: str
+    reason: str | None
+
+
+def normalize_native_order_request(instrument: CryptoPerpetual, requested_price: Decimal, requested_quantity: Decimal) -> NativeOrderDecision:
+    """Use Nautilus instrument rounding and limits; retain requested/audited values."""
+    try:
+        price = instrument.make_price(requested_price)
+        quantity = instrument.make_qty(requested_quantity)
+    except ValueError as error:
+        return NativeOrderDecision(str(requested_price), str(requested_quantity), None, None, "REJECTED", f"NATIVE_INCREMENT:{error}")
+    notional = price.as_decimal() * quantity.as_decimal()
+    if instrument.min_quantity is not None and quantity.as_decimal() < instrument.min_quantity.as_decimal():
+        return NativeOrderDecision(str(requested_price), str(requested_quantity), str(price), str(quantity), "REJECTED", "MIN_QUANTITY")
+    if instrument.min_notional is not None and notional < instrument.min_notional.as_decimal():
+        return NativeOrderDecision(str(requested_price), str(requested_quantity), str(price), str(quantity), "REJECTED", "MIN_NOTIONAL")
+    return NativeOrderDecision(str(requested_price), str(requested_quantity), str(price), str(quantity), "ACCEPTED", None)
+
+
 class PerpetualFundingModule(SimulationModule):
     """Minimal native-account funding module; no second balance or PnL engine."""
 
@@ -252,6 +309,41 @@ class PerpetualFundingModule(SimulationModule):
 
     def reset(self) -> None:
         self._applied.clear()
+        self._event_index = 0
+
+
+class ActiveReserveTransferModule(SimulationModule):
+    """Moves native collateral to an explicit durable RESERVE, never margin."""
+
+    def __init__(self, events: tuple[ReserveTransferInstruction, ...], journal: NativeEventJournal) -> None:
+        super().__init__(SimulationModuleConfig())
+        self._events = tuple(sorted(events, key=lambda item: (item.ts_event, item.event_id)))
+        self._event_index = 0
+        self._journal = journal
+        self.reserve = Decimal("0")
+
+    def process(self, ts_now: int) -> None:
+        while self._event_index < len(self._events) and self._events[self._event_index].ts_event <= ts_now:
+            event = self._events[self._event_index]
+            self._event_index += 1
+            if self._journal.has_transfer(event.event_id):
+                continue
+            account = self.exchange.get_account()
+            active_before = account.balance_total(USDT).as_decimal()
+            if event.amount > account.balance_free(USDT).as_decimal():
+                raise ValueError("RESERVE_TRANSFER_EXCEEDS_NATIVE_FREE_COLLATERAL")
+            active_after, reserve_after = active_before - event.amount, self.reserve + event.amount
+            if self._journal.record_transfer(event.event_id, active_before, active_after, self.reserve, reserve_after):
+                self.exchange.adjust_account(Money(-event.amount, USDT))
+                self.reserve = reserve_after
+
+    def pre_process(self, data) -> None:
+        pass
+
+    def log_diagnostics(self, logger) -> None:
+        logger.info("Native ACTIVE→RESERVE transfer module active")
+
+    def reset(self) -> None:
         self._event_index = 0
 
 
@@ -387,9 +479,14 @@ def build_engine(
     tier_selected_leverage: tuple[tuple[InstrumentId, Decimal], ...] = (),
     max_mark_age_ns: int = 0,
     tier_actions: tuple[tuple[InstrumentId, OrderSide, str], ...] = (),
+    actions: tuple[tuple[InstrumentId, OrderSide, str], ...] | None = None,
+    transfer_events: tuple[ReserveTransferInstruction, ...] = (),
+    transfer_journal: NativeEventJournal | None = None,
 ) -> BacktestEngine:
     if funding_events and (funding_journal is None or not funding_journal.durable):
         raise ValueError("funding requires a durable event journal")
+    if transfer_events and (transfer_journal is None or not transfer_journal.durable):
+        raise ValueError("reserve transfers require a durable event journal")
     if tier_probe and not tier_selected_leverage:
         raise ValueError("tier margin requires explicit selected leverage")
     tier_module = (
@@ -401,7 +498,7 @@ def build_engine(
         venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN,
         starting_balances=[Money(10_000, USDT)], base_currency=USDT,
         default_leverage=Decimal("1"),
-        modules=([PerpetualFundingModule(funding_events, funding_journal)] if funding_events else []) + ([tier_module] if tier_module else []),
+        modules=([PerpetualFundingModule(funding_events, funding_journal)] if funding_events else []) + ([ActiveReserveTransferModule(transfer_events, transfer_journal)] if transfer_events else []) + ([tier_module] if tier_module else []),
     )
     engine.add_instrument(BTC_PERP)
     engine.add_instrument(SOL_PERP)
@@ -414,5 +511,6 @@ def build_engine(
         tier_marks=marks,
         tier_selected_leverage=tier_selected_leverage,
         max_mark_age_ns=max_mark_age_ns,
+        actions=actions,
     )))
     return engine

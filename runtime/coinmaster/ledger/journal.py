@@ -61,6 +61,14 @@ class NativeEventJournal:
         self.db.commit()
         return cursor.rowcount == 1
 
+    def has_transfer(self, event_id: str) -> bool:
+        return self.db.execute("SELECT 1 FROM transfers WHERE event_id=?", (event_id,)).fetchone() is not None
+
+    def transfer_audit(self) -> list[tuple[str, str, str, str, str]]:
+        return self.db.execute(
+            "SELECT event_id,active_before,active_after,reserve_before,reserve_after FROM transfers ORDER BY event_id",
+        ).fetchall()
+
     @staticmethod
     def assert_total(native_active: Decimal, reserve: Decimal, expected_total: Decimal) -> None:
         if native_active + reserve != expected_total:
