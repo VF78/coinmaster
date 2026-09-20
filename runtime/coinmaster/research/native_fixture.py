@@ -26,11 +26,9 @@ from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 SIM = Venue("P1SIM")
 
-# Nautilus 1.231's Python BacktestEngine API exposes neither a partial-fill
-# quantity generator nor liquidation controls on ``add_venue``.  Do not turn
-# an in-memory reservation book into fictional native execution evidence.
+# Nautilus 1.231 exposes LimitOrderPartialFillModel, but its Python
+# BacktestEngine ``add_venue`` still has no automatic-liquidation controls.
 NATIVE_1231_UNSUPPORTED = {
-    "partial_fill": "UNSUPPORTED_NAUTILUS_1_231_NATIVE_PARTIAL_FILL_GENERATOR",
     "liquidation": "UNSUPPORTED_NAUTILUS_1_231_ADD_VENUE_LIQUIDATION_PATH",
 }
 

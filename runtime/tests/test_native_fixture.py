@@ -16,10 +16,15 @@ from coinmaster.research.native_fixture import (
 from nautilus_trader.model.data import FundingRateUpdate
 from nautilus_trader.backtest.models import LeveragedMarginModel
 from nautilus_trader.model.enums import OrderSide
-from nautilus_trader.model.objects import Price, Quantity
+from nautilus_trader.model.objects import Money, Price, Quantity
 from coinmaster.ledger.journal import NativeEventJournal
+from nautilus_trader.backtest.config import BacktestEngineConfig
 from nautilus_trader.backtest.engine import BacktestEngine
-from nautilus_trader.backtest.models import FillModel
+from nautilus_trader.backtest.models import LimitOrderPartialFillModel
+from nautilus_trader.config import LoggingConfig, StrategyConfig
+from nautilus_trader.model.enums import AccountType, OmsType, TimeInForce
+from nautilus_trader.model.identifiers import InstrumentId
+from nautilus_trader.trading.strategy import Strategy
 import pytest
 
 
@@ -199,11 +204,125 @@ def test_native_margin_model_sums_two_legs_and_engine_rejects_excess_increase() 
         engine.dispose()
 
 
-def test_pinned_native_partial_fill_and_liquidation_paths_fail_closed_without_fiction() -> None:
+class PartialParentConfig(StrategyConfig, frozen=True):
+    instrument_id: InstrumentId
+
+
+class PartialParentStrategy(Strategy):
+    """Native callback fixture: cancel only after Nautilus reports a partial fill."""
+    def __init__(self, config: PartialParentConfig, journal: NativeEventJournal) -> None:
+        super().__init__(config)
+        self.journal = journal
+        self.instrument = None
+        self.parent = None
+        self.close_order = None
+        self.parent_fees = Decimal("0")
+        self.close_fees = Decimal("0")
+        self.phase = "NEW"
+
+    def on_start(self) -> None:
+        self.instrument = self.cache.instrument(self.config.instrument_id)
+        assert self.instrument is not None
+        self.subscribe_quote_ticks(self.config.instrument_id)
+
+    def _audit(self, state: str) -> None:
+        assert self.parent is not None
+        account = self.cache.account_for_venue(SIM)
+        assert account is not None
+        margin = account.margin_init(self.config.instrument_id)
+        self.journal.record_native_parent_order(
+            str(self.parent.client_order_id), state, self.parent.quantity.as_decimal(),
+            self.parent.filled_qty.as_decimal(), self.parent.leaves_qty.as_decimal(),
+            self.parent.leaves_qty.as_decimal() if state == "CANCELED" else Decimal("0"),
+            account.balance_locked(BTC_PERP.quote_currency).as_decimal(),
+            account.balance_free(BTC_PERP.quote_currency).as_decimal(),
+            margin.as_decimal() if margin is not None else None,
+            self.parent_fees, self.close_fees,
+        )
+
+    def on_quote_tick(self, tick) -> None:
+        assert self.instrument is not None
+        if self.phase == "NEW":
+            self.parent = self.order_factory.limit(
+                instrument_id=tick.instrument_id, order_side=OrderSide.BUY,
+                quantity=self.instrument.make_qty(Decimal("10")), price=self.instrument.make_price(Decimal("100.1")),
+                time_in_force=TimeInForce.GTC,
+            )
+            self.phase = "PARENT_SUBMITTED"
+            self.submit_order(self.parent)
+        elif self.phase == "PARENT_CANCELED":
+            self.close_order = self.order_factory.market(
+                instrument_id=tick.instrument_id, order_side=OrderSide.SELL,
+                quantity=self.instrument.make_qty(Decimal("5")), time_in_force=TimeInForce.IOC, reduce_only=True,
+            )
+            self.phase = "CLOSE_SUBMITTED"
+            self.submit_order(self.close_order)
+
+    def on_order_filled(self, event) -> None:
+        if self.parent is not None and event.client_order_id == self.parent.client_order_id:
+            # LimitOrderPartialFillModel emits a genuine native 5-contract
+            # fill before this callback; do not manufacture a partial event.
+            if self.parent.is_open:
+                assert self.parent.status.name == "PARTIALLY_FILLED"
+                self.parent_fees += event.commission.as_decimal()
+                self._audit(self.parent.status.name)
+                self.phase = "CANCEL_REQUESTED"
+                self.cancel_order(self.parent)
+        elif self.close_order is not None and event.client_order_id == self.close_order.client_order_id:
+            self.close_fees += event.commission.as_decimal()
+            self._audit("CLOSED")
+            self.phase = "CLOSED"
+
+    def on_order_canceled(self, event) -> None:
+        if self.parent is not None and event.client_order_id == self.parent.client_order_id:
+            self._audit("CANCELED")
+            self.phase = "PARENT_CANCELED"
+
+
+def test_native_partial_limit_parent_cancel_holds_remainder_until_confirmation(tmp_path) -> None:
+    journal = NativeEventJournal(str(tmp_path / "partial-parent.sqlite"))
+    engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
+    engine.add_venue(
+        venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN,
+        starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency,
+        default_leverage=Decimal("1"), fill_model=LimitOrderPartialFillModel(),
+    )
+    engine.add_instrument(BTC_PERP)
+    strategy = PartialParentStrategy(PartialParentConfig(instrument_id=BTC_PERP.id), journal)
+    engine.add_strategy(strategy)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.1", 1), quote(BTC_PERP.id, "100.0", "100.1", 2)])
+    engine.run()
+    try:
+        orders = engine.trader.generate_orders_report()
+        parent = orders[orders["type"] == "LIMIT"].iloc[0]
+        close = orders[orders["type"] == "MARKET"].iloc[0]
+        assert parent["status"] == "CANCELED" and Decimal(str(parent["filled_qty"])) == Decimal("5")
+        assert Decimal(str(parent["quantity"])) == Decimal("10")
+        assert Decimal(str(close["filled_qty"])) == Decimal("5")
+        audit = {row[1]: row for row in journal.native_parent_order_audit()}
+        partial, canceled, closed = audit["PARTIALLY_FILLED"], audit["CANCELED"], audit["CLOSED"]
+        assert tuple(Decimal(value) for value in partial[2:5]) == (Decimal("10"), Decimal("5"), Decimal("5"))
+        assert tuple(Decimal(value) for value in canceled[3:5]) == (Decimal("5"), Decimal("5"))
+        assert Decimal(canceled[5]) == Decimal("5")
+        # ``locked`` is the raw native account reservation. The cancellation
+        # confirms release of the five unfilled contracts; the filled position
+        # still has native collateral locked until the reduce-only close.
+        assert Decimal(partial[6]) > Decimal(canceled[6]) > Decimal(closed[6]) == 0
+        assert Decimal(canceled[6]) == Decimal("2.5025")
+        assert Decimal(partial[7]) < Decimal(canceled[7]) < Decimal(closed[7])
+        assert Decimal(partial[9]) == Decimal("0.50050000")
+        assert Decimal(closed[10]) == Decimal("0.50000000")
+        assert parent["commissions"] == ["0.50050000 USDT"]
+        assert close["commissions"] == ["0.50000000 USDT"]
+        assert engine.trader._cache.positions_open() == [] and engine.trader._cache.orders_open() == []
+        assert strategy.phase == "CLOSED"
+    finally:
+        engine.dispose(); journal.close()
+
+
+def test_pinned_automatic_liquidation_path_fails_closed_without_fiction() -> None:
     from coinmaster.research.native_fixture import NATIVE_1231_UNSUPPORTED, require_native_execution_capability
-    # The pin's FillModel exposes probabilities only; it has no requested vs
-    # partial accepted quantity. add_venue likewise has no liquidation flags.
-    assert "partial" not in FillModel.__doc__.lower()
+    assert "maximum 5 contracts" in LimitOrderPartialFillModel.__doc__
     assert "liquidation" not in BacktestEngine.add_venue.__doc__.lower()
     for capability, code in NATIVE_1231_UNSUPPORTED.items():
         with pytest.raises(RuntimeError, match=code):
