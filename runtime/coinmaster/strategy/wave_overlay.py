@@ -19,6 +19,7 @@ from nautilus_trader.trading.strategy import Strategy
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
 from coinmaster.research.native_fixture import TierMarginPolicy
 from coinmaster.venues.marks import VenueMark
+from coinmaster.venues.signals import DailySignalBar
 
 
 class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
@@ -44,6 +45,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     entries_gate: object | None = None
     event_sink: object | None = None
     live_mark_client_id: ClientId | None = None
+    btc_signal_data_type: DataType | None = None
+    sol_signal_data_type: DataType | None = None
+    signal_client_id: ClientId | None = None
 
 
 class WaveOverlayStrategy(Strategy):
@@ -78,6 +82,9 @@ class WaveOverlayStrategy(Strategy):
         else:
             self.subscribe_mark_prices(self.config.btc_id, client_id=self.config.live_mark_client_id)
             self.subscribe_mark_prices(self.config.sol_id, client_id=self.config.live_mark_client_id)
+        if self.config.signal_client_id is not None and self.config.btc_signal_data_type is not None and self.config.sol_signal_data_type is not None:
+            self.subscribe_data(self.config.btc_signal_data_type, client_id=self.config.signal_client_id)
+            self.subscribe_data(self.config.sol_signal_data_type, client_id=self.config.signal_client_id)
 
     def on_bar(self, bar: Bar) -> None:
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -93,6 +100,13 @@ class WaveOverlayStrategy(Strategy):
         # Nautilus 1.231.  Accept the wrapper too so the routing contract is
         # explicit at this boundary and remains compatible with direct calls.
         mark = data.data if isinstance(data, CustomData) else data
+        if isinstance(mark, DailySignalBar):
+            if mark.instrument_id not in (self.config.btc_id, self.config.sol_id):
+                return
+            bar_type = self.config.btc_bar_type if mark.instrument_id == self.config.btc_id else self.config.sol_bar_type
+            self._day.setdefault(mark.ts_event, {})[bar_type] = mark
+            self._try_advance_session(mark.ts_event)
+            return
         if not isinstance(mark, VenueMark):
             return
         if mark.instrument_id not in (self.config.btc_id, self.config.sol_id):

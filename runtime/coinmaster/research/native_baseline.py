@@ -13,7 +13,7 @@ from dataclasses import asdict, dataclass
 from decimal import Decimal
 from pathlib import Path
 from uuid import uuid4
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 
 DAY_MS = 86_400_000
@@ -47,32 +47,39 @@ class ExecutionPolicy:
     fee_historical_applicability: str = "UNKNOWN"
     spread_slippage_liquidity: str = "UNKNOWN_NO_L2_OR_TRADE_TAPE"
     liquidation: str = "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL"
+    execution_delay_minutes: int = 1
+    symmetric_adverse_spread_bps: str = "0"
+    fee_multiplier: str = "1"
+    nonmatching_daily_signals: bool = True
 
     @property
     def hash(self) -> str:
         return hashlib.sha256(json.dumps(asdict(self), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
-def monthly_returns(equity: list[dict[str, str]]) -> list[dict[str, str]]:
+def monthly_returns(equity: list[dict[str, str]], initial: Decimal = Decimal("10000")) -> list[dict[str, str]]:
     """Calendar months with carry-forward TOTAL, including silent months."""
     values = sorted((datetime.fromisoformat(row["timestamp"]).replace(tzinfo=timezone.utc), Decimal(row["total"])) for row in equity)
     if not values: return []
-    result, cursor, prior, index = [], values[0][0].replace(day=1), Decimal("10000"), 0
+    result, cursor, prior, index = [], values[0][0].replace(day=1), initial, 0
     end = values[-1][0].replace(day=1)
     while cursor <= end:
         while index < len(values) and values[index][0].year == cursor.year and values[index][0].month == cursor.month:
             prior = values[index][1]; index += 1
-        base = Decimal("10000") if not result else Decimal(result[-1]["total"])
+        base = initial if not result else Decimal(result[-1]["total"])
         result.append({"month": cursor.strftime("%Y-%m"), "total": str(prior), "return": str((prior / base) - 1)})
         cursor = cursor.replace(year=cursor.year + (cursor.month == 12), month=1 if cursor.month == 12 else cursor.month + 1)
     return result
 
 
 def assert_report_boundaries(report: dict) -> None:
-    """Reject report shapes that cannot reconcile to the v0 trading interval."""
+    """Reject report shapes that cannot reconcile to their declared interval."""
     summary = report["summary"]
     months = summary["monthly_returns"]
-    if len(months) != 24:
+    start = datetime.fromisoformat(report["run_interval"]["start"])
+    end = datetime.fromisoformat(report["run_interval"]["end_exclusive"])
+    expected_months = (end.year - start.year) * 12 + end.month - start.month
+    if len(months) != expected_months:
         raise ValueError(f"MONTHLY_ROW_COUNT:{len(months)}")
     terminal = Decimal(report["terminal_total"])
     if Decimal(months[-1]["total"]) != terminal:
@@ -80,11 +87,12 @@ def assert_report_boundaries(report: dict) -> None:
     compounded = Decimal("1")
     for month in months:
         compounded *= Decimal("1") + Decimal(month["return"])
-    ratio = terminal / Decimal("10000")
+    ratio = terminal / Decimal(report["run_interval"]["initial_active_seed"])
     if abs(compounded - ratio) > Decimal("1e-24"):
         raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
     for timestamp in (summary["drawdown_start"], summary["drawdown_trough"]):
-        if not "2024-09-01T00:00:00+00:00" <= timestamp <= "2026-09-01T00:00:00+00:00":
+        point = datetime.fromisoformat(timestamp)
+        if not start <= point <= end:
             raise ValueError(f"DRAWDOWN_OUTSIDE_TRADING_INTERVAL:{timestamp}")
 
 
@@ -126,7 +134,16 @@ def funding_with_prior_minute_marks(
     return tuple(events)
 
 
-def run_native_diagnostic(data_root: Path, include_funding: bool = False, candidate=None) -> dict:
+def run_native_diagnostic(
+    data_root: Path,
+    include_funding: bool = False,
+    candidate=None,
+    trading_start_ms: int = TRADING_START_MS,
+    trading_end_ms: int = TRADING_END_MS,
+    initial_active_seed: Decimal = Decimal("10000"),
+    execution_policy: ExecutionPolicy | None = None,
+    artifact_label: str = "native-diagnostic",
+) -> dict:
     """Execute one native lifecycle with daily decisions and causal 1m fills.
 
     Funding settlement marks, fees, and intraminute liquidation remain
@@ -140,27 +157,40 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
     from nautilus_trader.config import LoggingConfig
     from nautilus_trader.model.data import Bar, BarSpecification, BarType
     from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType
-    from nautilus_trader.model.objects import Money, Price, Quantity
+    from nautilus_trader.model.objects import Money
     from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, MarkPriceUpdate, PerpetualFundingModule, quote
     from coinmaster.ledger.journal import NativeEventJournal
     from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
     from coinmaster.domain.wave_overlay import Candidate
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
+    from coinmaster.venues.signals import daily_signal, daily_signal_data_type
 
     candidate = candidate or Candidate()
-    policy = ExecutionPolicy()
+    policy = execution_policy or ExecutionPolicy()
+    if trading_end_ms <= trading_start_ms or trading_start_ms - WARMUP_START_MS < 730 * DAY_MS:
+        raise ValueError("INVALID_TRADING_INTERVAL_OR_INSUFFICIENT_730D_WARMUP")
+    if policy.execution_delay_minutes < 1:
+        raise ValueError("INVALID_EXECUTION_DELAY")
+    if Decimal(policy.symmetric_adverse_spread_bps) < 0 or Decimal(policy.fee_multiplier) <= 0:
+        raise ValueError("INVALID_EXECUTION_STRESS")
+    if not policy.nonmatching_daily_signals:
+        raise ValueError("LEGACY_DAILY_BAR_MATCHING_DISABLED")
+    start_at = datetime.fromtimestamp(trading_start_ms / 1000, tz=timezone.utc)
+    end_at = datetime.fromtimestamp(trading_end_ms / 1000, tz=timezone.utc)
+    start_iso, end_iso = start_at.isoformat(), end_at.isoformat()
     def rows(symbol: str):
         return {
             row["open_time_ms"]: row
             for row in pq.read_table(data_root / "normalized" / f"bybit-{symbol}-daily.parquet").to_pylist()
-            if WARMUP_START_MS <= int(row["open_time_ms"]) < TRADING_END_MS
+            if WARMUP_START_MS <= int(row["open_time_ms"]) < trading_end_ms
         }
     btc, sol = rows("BTCUSDT"), rows("SOLUSDT")
     # The full 1m streams are hash/gap checked by the manifest. Only the first
     # closed executable minute after each daily decision is loaded into this
     # one native lifecycle; no synthetic daily-close quote is manufactured.
     decision_days = sorted(set(btc) & set(sol))
-    wanted_minutes = sorted({minute for timestamp in decision_days if timestamp >= TRADING_START_MS for minute in (timestamp + 86_400_000 - 60_000, timestamp + 86_400_000) if minute < TRADING_END_MS})
+    execution_offset_ms = (policy.execution_delay_minutes - 1) * 60_000
+    wanted_minutes = sorted({minute for timestamp in decision_days if timestamp >= trading_start_ms for minute in (timestamp + 86_400_000 - 60_000, timestamp + 86_400_000 + execution_offset_ms) if minute < trading_end_ms})
     def minute_closes(symbol: str, stream: str) -> dict[int, dict]:
         table = pq.read_table(data_root / "normalized" / f"bybit-{symbol}-{stream}-1m.parquet", filters=[("open_time_ms", "in", wanted_minutes)])
         return {int(row["open_time_ms"]): row for row in table.to_pylist()}
@@ -168,11 +198,7 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
     btc_marks, sol_marks = minute_closes("BTCUSDT", "mark"), minute_closes("SOLUSDT", "mark")
     def kind(instrument, price_type): return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
     btc_last, sol_last = kind(BTC_PERP.id, PriceType.LAST), kind(SOL_PERP.id, PriceType.LAST)
-    def bar(bar_type, row, precision, volume):
-        price = lambda key: Price.from_str(f"{float(row[key]):.{precision}f}")
-        ts = (int(row["open_time_ms"]) + 86_400_000) * 1_000_000
-        return Bar(bar_type, price("open"), price("high"), price("low"), price("close"), Quantity.from_str(volume), ts, ts)
-    events = funding_with_prior_minute_marks(data_root, TRADING_START_MS, TRADING_END_MS) if include_funding else ()
+    events = funding_with_prior_minute_marks(data_root, trading_start_ms, trading_end_ms) if include_funding else ()
     # Each new BacktestEngine starts with a new native account. Its durable
     # funding journal must therefore be scoped to this run: sharing a prior
     # journal would correctly deduplicate IDs but incorrectly omit funding
@@ -193,31 +219,53 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
     modules = [BybitTierMarginModule(mark_updates, selected_leverage, max_mark_age_ns)]
     if journal:
         modules.insert(0, PerpetualFundingModule(events, journal))
+    fee = Decimal("0.001") * Decimal(policy.fee_multiplier)
+    if fee == Decimal("0.001"):
+        btc_instrument, sol_instrument = BTC_PERP, SOL_PERP
+    else:
+        from nautilus_trader.model.currencies import BTC, SOL
+        from coinmaster.research.native_fixture import perpetual
+        btc_instrument = perpetual("BTCUSDT", BTC, "0.1", "0.001", "0.025", fee, fee)
+        sol_instrument = perpetual("SOLUSDT", SOL, "0.01", "0.1", "0.05", fee, fee)
+        selected_leverage = ((btc_instrument.id, Decimal("40")), (sol_instrument.id, Decimal("20")))
+        mark_updates = tuple(
+            MarkPriceUpdate(instrument.id, Decimal(str(row["mark_close"])), (timestamp + 86_400_000) * 1_000_000)
+            for symbol, instrument, table in (("BTCUSDT", btc_instrument, btc), ("SOLUSDT", sol_instrument, sol))
+            for timestamp, row in table.items() if row.get("mark_close") is not None
+        )
+        modules = [BybitTierMarginModule(mark_updates, selected_leverage, max_mark_age_ns)]
+        if journal:
+            modules.insert(0, PerpetualFundingModule(events, journal))
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"), modules=modules)
-    engine.add_instrument(BTC_PERP); engine.add_instrument(SOL_PERP)
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules)
+    engine.add_instrument(btc_instrument); engine.add_instrument(sol_instrument)
     from nautilus_trader.model.identifiers import ClientId
-    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=Decimal("10000"), tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=TRADING_START_MS * 1_000_000, terminal_close_at_ns=TRADING_END_MS * 1_000_000, candidate=candidate)))
-    execution_data, mark_data = [], []
+    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=btc_instrument.id, sol_id=sol_instrument.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=initial_active_seed, tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=trading_start_ms * 1_000_000, terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=ClientId("BYBIT_SIGNAL"))))
+    signal_data, quote_data, mark_data = [], [], []
     for timestamp in decision_days:
         b, s = btc[timestamp], sol[timestamp]
         event = (timestamp + 86_400_000) * 1_000_000 + 1
         mark_ts = (timestamp + 86_400_000) * 1_000_000
         if b.get("mark_close") is None or s.get("mark_close") is None:
             continue
-        execution_minute, mark_minute = timestamp + 86_400_000, timestamp + 86_400_000 - 60_000
+        execution_minute, mark_minute = timestamp + 86_400_000 + execution_offset_ms, timestamp + 86_400_000 - 60_000
         be, se = btc_execution.get(execution_minute), sol_execution.get(execution_minute)
         bm, sm = btc_marks.get(mark_minute), sol_marks.get(mark_minute)
-        if timestamp >= TRADING_START_MS and not all((bm, sm)):
+        if timestamp >= trading_start_ms and not all((bm, sm)):
             raise ValueError(f"MISSING_CAUSAL_1M_MARK:{mark_minute}")
-        if timestamp >= TRADING_START_MS and timestamp + 86_400_000 < TRADING_END_MS and not all((be, se)):
+        if timestamp >= trading_start_ms and timestamp + 86_400_000 + execution_offset_ms < trading_end_ms and not all((be, se)):
             raise ValueError(f"MISSING_CAUSAL_1M_EXECUTION:{execution_minute}")
-        execution_data += [bar(btc_last, b, 1, "1000.000"), bar(sol_last, s, 2, "1000.0")]
-        if timestamp >= TRADING_START_MS and bm and sm:
-            mark_data += [venue_mark(BTC_PERP.id, Decimal(str(bm["close"])), (mark_minute + 60_000) * 1_000_000), venue_mark(SOL_PERP.id, Decimal(str(sm["close"])), (mark_minute + 60_000) * 1_000_000)]
-        if timestamp >= TRADING_START_MS and be and se:
-            execution_data += [quote(BTC_PERP.id, f"{float(be['close']):.1f}", f"{float(be['close']):.1f}", (execution_minute + 60_000) * 1_000_000), quote(SOL_PERP.id, f"{float(se['close']):.2f}", f"{float(se['close']):.2f}", (execution_minute + 60_000) * 1_000_000)]
-    engine.add_data(execution_data, sort=False)
+        signal_data += [daily_signal(btc_instrument.id, Decimal(str(b["open"])), Decimal(str(b["high"])), Decimal(str(b["low"])), Decimal(str(b["close"])), (timestamp + 86_400_000) * 1_000_000), daily_signal(sol_instrument.id, Decimal(str(s["open"])), Decimal(str(s["high"])), Decimal(str(s["low"])), Decimal(str(s["close"])), (timestamp + 86_400_000) * 1_000_000)]
+        if timestamp >= trading_start_ms and bm and sm:
+            mark_data += [venue_mark(btc_instrument.id, Decimal(str(bm["close"])), (mark_minute + 60_000) * 1_000_000), venue_mark(sol_instrument.id, Decimal(str(sm["close"])), (mark_minute + 60_000) * 1_000_000)]
+        if timestamp >= trading_start_ms and be and se:
+            spread = Decimal(policy.symmetric_adverse_spread_bps) / Decimal("10000")
+            def stressed_quote(instrument, close, precision):
+                mid = Decimal(str(close))
+                return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", (execution_minute + 60_000) * 1_000_000)
+            quote_data += [stressed_quote(btc_instrument, be["close"], 1), stressed_quote(sol_instrument, se["close"], 2)]
+    engine.add_data(signal_data, client_id=ClientId("BYBIT_SIGNAL"), sort=False)
+    engine.add_data(quote_data, sort=False)
     engine.add_data(mark_data, client_id=ClientId("BYBIT_MARK"), sort=False)
     engine.sort_data(); engine.run()
     try:
@@ -225,7 +273,7 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
         fills = engine.trader.generate_order_fills_report()
         orders = engine.trader.generate_orders_report()
         artifact_root = data_root / "runs"
-        artifacts = {"fills": save_native_artifact(fills, artifact_root / "native-diagnostic-fills.csv"), "orders": save_native_artifact(orders, artifact_root / "native-diagnostic-orders.csv")}
+        artifacts = {"fills": save_native_artifact(fills, artifact_root / f"{artifact_label}-fills.csv"), "orders": save_native_artifact(orders, artifact_root / f"{artifact_label}-orders.csv")}
         terminal_active = Decimal(str(report["total"].iloc[-1]))
         fee_column = next((column for column in ("commission", "fees") if column in fills.columns), None)
         if fee_column:
@@ -239,14 +287,17 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
             fees = Decimal("0")
         rejected = sum("REJECTED" in str(value) for value in orders.get("status", ()))
         data_hash = hashlib.sha256(json.dumps(json.loads((data_root / "bybit-1m" / "manifest.json").read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-        full_config = {**BASELINE_CONFIG, "candidate": asdict(candidate), "execution_policy": asdict(policy)}
+        full_config = {**BASELINE_CONFIG, "candidate": asdict(candidate), "execution_policy": asdict(policy), "run_interval": {"start": start_iso, "end_exclusive": end_iso, "initial_active_seed": str(initial_active_seed)}}
         config_hash = hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-        initial = Decimal("10000")
+        initial = initial_active_seed
         equity = [{"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in report["total"].items()]
-        trading_equity = [{"timestamp": "2024-09-01T00:00:00+00:00", "active": "10000", "reserve": "0", "total": "10000"}] + [item for item in equity if "2024-09-01" <= item["timestamp"] < "2026-09-01"]
-        terminal_rows = [item for item in equity if item["timestamp"].startswith("2026-09-01")]
+        trading_equity = [{"timestamp": start_iso, "active": str(initial), "reserve": "0", "total": str(initial)}] + [
+            item for item in equity
+            if start_at <= datetime.fromisoformat(item["timestamp"]).astimezone(timezone.utc) < end_at
+        ]
+        terminal_rows = [item for item in equity if item["timestamp"].startswith(end_iso[:10])]
         if terminal_rows:
-            trading_equity.append({**terminal_rows[-1], "timestamp": "2026-08-31T23:59:59.999999+00:00"})
+            trading_equity.append({**terminal_rows[-1], "timestamp": (end_at - timedelta(microseconds=1)).isoformat()})
         totals = [Decimal(item["total"]) for item in trading_equity]
         peak, peak_at, max_dd, trough_at = initial, trading_equity[0]["timestamp"], Decimal("0"), trading_equity[0]["timestamp"]
         for item, total in zip(trading_equity, totals):
@@ -254,7 +305,7 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
             if peak - total > max_dd: max_dd, trough_at = peak - total, item["timestamp"]
         audit = journal.funding_audit() if journal else []
         funding_by_instrument = {instrument: sum(1 for row in audit if row[1] == instrument) for instrument in sorted({row[1] for row in audit})}
-        result = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) feature-only", "config": full_config, "config_hash": config_hash, "data_hash": data_hash, "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "summary": {"roi": str((terminal_active / initial) - 1), "terminal_total": str(terminal_active), "max_drawdown_amount": str(max_dd), "max_drawdown_percent": str(max_dd / initial), "drawdown_start": peak_at, "drawdown_trough": trough_at, "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(trading_equity)}, "equity": trading_equity, "fills": len(fills), "execution_artifacts": artifacts, "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED", "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY", "native_fees": str(fees), "modeled_slippage": "UNKNOWN_1M_CLOSE_PROXY", "native_order_rejections": rejected, "funding": {"count": len(audit), "by_instrument_count": funding_by_instrument, "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "transfers": "0", "liquidation_count": 0, "liquidation_value": "0", "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Fixture fees are 0.001/side; historical applicability unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
+        result = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_iso},{end_iso})", "run_interval": {"start": start_iso, "end_exclusive": end_iso, "initial_active_seed": str(initial), "feature_warmup_start": datetime.fromtimestamp(WARMUP_START_MS / 1000, tz=timezone.utc).isoformat(), "feature_warmup_days": (trading_start_ms - WARMUP_START_MS) // DAY_MS}, "warmup": f"[{datetime.fromtimestamp(WARMUP_START_MS / 1000, tz=timezone.utc).isoformat()},{start_iso}) feature-only", "config": full_config, "config_hash": config_hash, "data_hash": data_hash, "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "summary": {"roi": str((terminal_active / initial) - 1), "terminal_total": str(terminal_active), "max_drawdown_amount": str(max_dd), "max_drawdown_percent": str(max_dd / initial), "drawdown_start": peak_at, "drawdown_trough": trough_at, "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(trading_equity, initial)}, "equity": trading_equity, "fills": len(fills), "execution_artifacts": artifacts, "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED", "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY", "native_fees": str(fees), "modeled_slippage": policy.spread_slippage_liquidity, "native_order_rejections": rejected, "funding": {"count": len(audit), "by_instrument_count": funding_by_instrument, "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "transfers": "0", "liquidation_count": 0, "liquidation_value": "0", "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Fixture fees are 0.001/side; historical applicability unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
         assert_report_boundaries(result)
         return result
     finally:

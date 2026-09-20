@@ -26,14 +26,22 @@ from coinmaster.venues.bybit_profile import BybitVenueProfile
 SIM = Venue("P1SIM")
 
 
-def perpetual(symbol: str, base, tick: str, step: str, im: str) -> CryptoPerpetual:
+def perpetual(
+    symbol: str,
+    base,
+    tick: str,
+    step: str,
+    im: str,
+    maker_fee: Decimal = Decimal("0.001"),
+    taker_fee: Decimal = Decimal("0.001"),
+) -> CryptoPerpetual:
     instrument_id = InstrumentId(Symbol(f"{symbol}-PERP"), SIM)
     return CryptoPerpetual(
         instrument_id, Symbol(symbol), base, USDT, USDT, False,
         len(tick.partition(".")[2]), len(step.partition(".")[2]),
         Price.from_str(tick), Quantity.from_str(step), 0, 0,
         margin_init=Decimal(im), margin_maint=Decimal("0.005"),
-        maker_fee=Decimal("0.001"), taker_fee=Decimal("0.001"),
+        maker_fee=maker_fee, taker_fee=taker_fee,
     )
 
 
