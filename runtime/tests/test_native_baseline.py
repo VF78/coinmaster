@@ -1,6 +1,7 @@
 import json
+from decimal import Decimal
 
-from coinmaster.research.native_baseline import ExecutionPolicy, coverage_blockers, monthly_returns
+from coinmaster.research.native_baseline import ExecutionPolicy, assert_report_boundaries, coverage_blockers, monthly_returns
 
 
 def test_baseline_refuses_partial_or_unhashed_minute_coverage(tmp_path) -> None:
@@ -27,3 +28,14 @@ def test_execution_policy_is_versioned_hashed_and_explicit_about_unknown_costs()
 def test_monthly_returns_carry_forward_empty_months() -> None:
     rows = [{"timestamp": "2024-09-30T00:00:00+00:00", "total": "11000"}, {"timestamp": "2024-11-01T00:00:00+00:00", "total": "12100"}]
     assert monthly_returns(rows) == [{"month": "2024-09", "total": "11000", "return": "0.1"}, {"month": "2024-10", "total": "11000", "return": "0"}, {"month": "2024-11", "total": "12100", "return": "0.1"}]
+
+
+def test_report_boundaries_require_terminal_reconciliation_and_trading_dd() -> None:
+    total = Decimal("12000")
+    months = [{"month": "2024-09", "total": "11000", "return": "0.1"}]
+    months.extend({"month": f"2024-{month:02d}", "total": "11000", "return": "0"} for month in range(10, 13))
+    months.extend({"month": f"2025-{month:02d}", "total": "11000", "return": "0"} for month in range(1, 13))
+    months.extend({"month": f"2026-{month:02d}", "total": "11000", "return": "0"} for month in range(1, 8))
+    months.append({"month": "2026-08", "total": "12000", "return": str((total / Decimal("11000")) - 1)})
+    report = {"terminal_total": "12000", "summary": {"monthly_returns": months, "drawdown_start": "2024-09-01T00:00:00+00:00", "drawdown_trough": "2026-09-01T00:00:00+00:00"}}
+    assert_report_boundaries(report)

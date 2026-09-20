@@ -68,6 +68,26 @@ def monthly_returns(equity: list[dict[str, str]]) -> list[dict[str, str]]:
     return result
 
 
+def assert_report_boundaries(report: dict) -> None:
+    """Reject report shapes that cannot reconcile to the v0 trading interval."""
+    summary = report["summary"]
+    months = summary["monthly_returns"]
+    if len(months) != 24:
+        raise ValueError(f"MONTHLY_ROW_COUNT:{len(months)}")
+    terminal = Decimal(report["terminal_total"])
+    if Decimal(months[-1]["total"]) != terminal:
+        raise ValueError("MONTHLY_TERMINAL_MISMATCH")
+    compounded = Decimal("1")
+    for month in months:
+        compounded *= Decimal("1") + Decimal(month["return"])
+    ratio = terminal / Decimal("10000")
+    if abs(compounded - ratio) > Decimal("1e-24"):
+        raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
+    for timestamp in (summary["drawdown_start"], summary["drawdown_trough"]):
+        if not "2024-09-01T00:00:00+00:00" <= timestamp <= "2026-09-01T00:00:00+00:00":
+            raise ValueError(f"DRAWDOWN_OUTSIDE_TRADING_INTERVAL:{timestamp}")
+
+
 def save_native_artifact(frame, path: Path) -> dict[str, str | int]:
     path.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(path, index=True)
@@ -223,15 +243,20 @@ def run_native_diagnostic(data_root: Path, include_funding: bool = False, candid
         config_hash = hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
         initial = Decimal("10000")
         equity = [{"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in report["total"].items()]
-        totals = [Decimal(item["total"]) for item in equity]
-        peak, peak_at, max_dd, trough_at = initial, equity[0]["timestamp"], Decimal("0"), equity[0]["timestamp"]
-        for item, total in zip(equity, totals):
+        trading_equity = [{"timestamp": "2024-09-01T00:00:00+00:00", "active": "10000", "reserve": "0", "total": "10000"}] + [item for item in equity if "2024-09-01" <= item["timestamp"] < "2026-09-01"]
+        terminal_rows = [item for item in equity if item["timestamp"].startswith("2026-09-01")]
+        if terminal_rows:
+            trading_equity.append({**terminal_rows[-1], "timestamp": "2026-08-31T23:59:59.999999+00:00"})
+        totals = [Decimal(item["total"]) for item in trading_equity]
+        peak, peak_at, max_dd, trough_at = initial, trading_equity[0]["timestamp"], Decimal("0"), trading_equity[0]["timestamp"]
+        for item, total in zip(trading_equity, totals):
             if total > peak: peak, peak_at = total, item["timestamp"]
             if peak - total > max_dd: max_dd, trough_at = peak - total, item["timestamp"]
         audit = journal.funding_audit() if journal else []
         funding_by_instrument = {instrument: sum(1 for row in audit if row[1] == instrument) for instrument in sorted({row[1] for row in audit})}
-        trading_equity = [{"timestamp": "2024-09-01T00:00:00+00:00", "active": "10000", "reserve": "0", "total": "10000"}] + [item for item in equity if "2024-09-01" <= item["timestamp"] < "2026-09-01"]
-        return {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) feature-only", "config": full_config, "config_hash": config_hash, "data_hash": data_hash, "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "summary": {"roi": str((terminal_active / initial) - 1), "terminal_total": str(terminal_active), "max_drawdown_amount": str(max_dd), "max_drawdown_percent": str(max_dd / initial), "drawdown_start": peak_at, "drawdown_trough": trough_at, "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(trading_equity)}, "equity": equity, "fills": len(fills), "execution_artifacts": artifacts, "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED", "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY", "native_fees": str(fees), "modeled_slippage": "UNKNOWN_1M_CLOSE_PROXY", "native_order_rejections": rejected, "funding": {"count": len(audit), "by_instrument_count": funding_by_instrument, "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "transfers": "0", "liquidation_count": 0, "liquidation_value": "0", "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Fixture fees are 0.001/side; historical applicability unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
+        result = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": "[2024-09-01,2026-09-01)", "warmup": "[2022-09-02,2024-09-01) feature-only", "config": full_config, "config_hash": config_hash, "data_hash": data_hash, "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "summary": {"roi": str((terminal_active / initial) - 1), "terminal_total": str(terminal_active), "max_drawdown_amount": str(max_dd), "max_drawdown_percent": str(max_dd / initial), "drawdown_start": peak_at, "drawdown_trough": trough_at, "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(trading_equity)}, "equity": trading_equity, "fills": len(fills), "execution_artifacts": artifacts, "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED", "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY", "native_fees": str(fees), "modeled_slippage": "UNKNOWN_1M_CLOSE_PROXY", "native_order_rejections": rejected, "funding": {"count": len(audit), "by_instrument_count": funding_by_instrument, "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "transfers": "0", "liquidation_count": 0, "liquidation_value": "0", "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Fixture fees are 0.001/side; historical applicability unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
+        assert_report_boundaries(result)
+        return result
     finally:
         engine.dispose()
         if journal:
