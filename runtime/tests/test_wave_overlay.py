@@ -160,6 +160,24 @@ def test_strict_tp_cycle_allows_only_the_right_decision_cycle() -> None:
     assert later.decide(source, [feature, feature], 1, 10_000) == []
 
 
+def test_strict_tp_cycle_uses_confirmed_resting_fill_cycle_not_creation_cycle() -> None:
+    source = bars(3)
+    feature = Features(0, 1, 1.0, 1.0, 0.0, 1.0, 4.0)
+    candidate = Candidate(sol_late_entry_after_tp=False)
+    eligible = WaveOverlayState(candidate)
+    eligible.episode = Episode("eligible", 1, 10_000, 1.0, btc_initial_qty=10, btc_open_qty=10, btc_entry_vwap=source[0].btc_close / 1.02, h=100, wave_levels=(0.01, 9, 9))
+    reduction = eligible.decide(source, [feature] * len(source), 0, 10_000)[0]
+    eligible.on_fill(reduction.id, 1.5, 102, source[1].close_time, decision_index=1)
+    eligible.on_parent_terminal(reduction.id)
+    assert [item.action for item in eligible.decide(source, [feature] * len(source), 1, 10_000)] == ["SOL_ADD"]
+    expired = WaveOverlayState(candidate)
+    expired.episode = Episode("expired", 1, 10_000, 1.0, btc_initial_qty=10, btc_open_qty=10, btc_entry_vwap=source[0].btc_close / 1.02, h=100, wave_levels=(0.01, 9, 9))
+    reduction = expired.decide(source, [feature] * len(source), 0, 10_000)[0]
+    expired.on_fill(reduction.id, 1.5, 102, source[1].close_time, decision_index=1)
+    expired.on_parent_terminal(reduction.id)
+    assert expired.decide(source, [feature] * len(source), 2, 10_000) == []
+
+
 def test_invalid_current_beta_blocks_sol_add_but_not_timeout_exit() -> None:
     source = bars(16)
     invalid = Features(15, 1, None, 1.0, 0.0, 1.0, 4.0)

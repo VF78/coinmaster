@@ -16,7 +16,7 @@ Coinmaster must autonomously trade within Trading Rules/Radar and move toward **
 
 ## Latest native research checkpoint
 
-Stage D joint refinement (2026-09-20, local-only) is sealed at EMA34, BTC TP `(0.2,0.25,0.55)`, BTC multiplier `4.0`, and SOL size profile `(2,3,4)`: terminal ACTIVE+RESERVE TOTAL `740906.55113925`. Corrected isolated H1/H2 tie H0 exactly, while strict same-cycle TP-right H3 is `548601.24002896`; accepted late-right control semantics remain default. H4 BTC-only was `89591.16982085`, evidencing SOL increment `651315.38131840`. All remain `NOT_FAITHFUL_DIAGNOSTIC`, non-ranking for live; no Stage E ran. Corrected five-row checkpoint SHA-256 `439d68a0e449f49916446d3b16543efbe24a6563f795d2b1617957ce1b7c82d9` with retained supersession evidence SHA-256 `7aad4e663c6702440006bb72e4ea87ad1548dd6a3128721ab6b8c8ead018b136`.
+Stage D joint refinement (2026-09-20, local-only) is sealed at EMA34, BTC TP `(0.2,0.25,0.55)`, BTC multiplier `4.0`, and SOL size profile `(2,3,4)`: terminal ACTIVE+RESERVE TOTAL `740906.55113925`. Corrected isolated H1/H2 tie H0 exactly, while strict TP fill-cycle H3 is `548601.24002896`; accepted late-right control semantics remain default. H4 BTC-only was `89591.16982085`, evidencing SOL increment `651315.38131840`. All remain `NOT_FAITHFUL_DIAGNOSTIC`, non-ranking for live; no Stage E ran. Final sealed five-row checkpoint SHA-256 `7d2de71d1b4a4c54fe0cf1ee036cf224f654c93d4fa474f0416b917853ad9d60` with retained correction evidence SHA-256 `92f874ee17084c5d035c7f0faf52a352b465f5aa7c83bd31e69411f7aa88e58b`.
 
 ## Core invariants
 

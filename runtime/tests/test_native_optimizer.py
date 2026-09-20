@@ -214,3 +214,11 @@ def test_stage_d_coordinates_are_bounded_and_allow_only_one_final_sol_extension(
     middle = {"candidate": native_optimizer.asdict(sol[1][1])}
     assert native_optimizer._stage_d_sol_boundary_extension(high)[0] == "d5-boundary-sol-2.75-4.125-5.5"
     assert native_optimizer._stage_d_sol_boundary_extension(middle) is None
+
+
+def test_hypothesis_corrected_resume_accepts_only_the_replacement_cohort() -> None:
+    corrected = [{"variant_id": value} for value in native_optimizer.HYPOTHESIS_CORRECTED_IDS]
+    legacy = corrected.copy()
+    legacy[3] = {"variant_id": "H3-strict-tp-cycle"}
+    assert native_optimizer._hypothesis_corrected_resume_is_sealed(corrected)
+    assert not native_optimizer._hypothesis_corrected_resume_is_sealed(legacy)

@@ -828,6 +828,15 @@ def run_stage_d_joint_refinement(data_root: Path, stage_c_report: Path) -> dict:
 
 
 HYPOTHESIS_ID = "native-hypothesis-pass-v1"
+HYPOTHESIS_CORRECTED_IDS = (
+    "H0-control-reuse", "H1-timeout-preempts-sol-add",
+    "H2-episode-fixed-beta-rolling-z", "H3-strict-tp-fill-cycle", "H4-btc-only",
+)
+
+
+def _hypothesis_corrected_resume_is_sealed(results: list[dict]) -> bool:
+    """A completed correction is the only legal resume cohort."""
+    return tuple(item.get("variant_id") for item in results) == HYPOTHESIS_CORRECTED_IDS
 
 
 def run_native_hypothesis_pass(data_root: Path, stage_d_report: Path) -> dict:
@@ -847,6 +856,17 @@ def run_native_hypothesis_pass(data_root: Path, stage_d_report: Path) -> dict:
     _stage_c_validate_ranked_evidence([source], data_root)
     meta = {"optimizer_id": HYPOTHESIS_ID, "stage_d_report_sha256": sha256_file(stage_d_report), "stage_d_checkpoint_sha256": sha256_file(d_partial), "control_candidate": source["candidate"], "control_total": source["terminal_total"], "objective": "terminal TOTAL only", "independent_hypotheses": ["H1", "H2", "H3", "H4"], "h2_definition": "freeze entry beta only; current relative uses it while rolling feature mu/sigma remain unchanged", "ranking_eligible_for_live": False}
     partial_path, lock_path = runs / f"{stem}.partial.json", runs / f"{stem}.lock"
+    correction_path = runs / f"{stem}-h2-h3-correction-v1.json"
+    if correction_path.exists():
+        correction = json.loads(correction_path.read_text())
+        if correction.get("status") != "H2_H3_CORRECTION_COMPLETE":
+            raise ValueError("HYPOTHESIS_CORRECTION_NOT_COMPLETE")
+        corrected = json.loads(partial_path.read_text()).get("results", [])
+        if not _hypothesis_corrected_resume_is_sealed(corrected):
+            raise ValueError("HYPOTHESIS_CORRECTED_RESUME_COHORT_MISMATCH")
+        # The correction function is idempotent and rewrites only compact
+        # output; it cannot append the former H2/H3 names or execute rows.
+        return correct_native_hypothesis_h2_h3(data_root, stage_d_report)
     try:
         fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
     except FileExistsError as error:
@@ -939,12 +959,18 @@ def correct_native_hypothesis_h2_h3(data_root: Path, stage_d_report: Path) -> di
         if correction["status"] != "H2_H3_CORRECTION_COMPLETE" and correction["partial_sha256_before"] != sha256_file(partial_path):
             raise ValueError("HYPOTHESIS_CORRECTION_PARTIAL_CHANGED")
         control = Candidate(ema_period=34, btc_tp_fractions_initial_qty=(0.2, 0.25, 0.55), btc_notional_multiplier=4.0, sol_size_multipliers_h=(2.0, 3.0, 4.0))
-        targets = (("H2-episode-fixed-beta-rolling-z", replace(control, episode_fixed_beta=True)), ("H3-strict-tp-cycle", replace(control, sol_late_entry_after_tp=False)))
+        # This is still the same correction record: only its H3 replacement
+        # is superseded because the fill lifecycle used a stale creation index.
+        if "H3-strict-tp-fill-cycle" not in correction["replacements"]:
+            correction.setdefault("superseded_followup", {})["H3-strict-tp-cycle"] = correction["replacements"]["H3-strict-tp-cycle"]
+            correction["status"] = "H2_H3_CORRECTION_IN_PROGRESS"
+            _atomic_json(correction_path, correction)
+        targets = (("H2-episode-fixed-beta-rolling-z", replace(control, episode_fixed_beta=True)), ("H3-strict-tp-fill-cycle", replace(control, sol_late_entry_after_tp=False)))
         for name, candidate in targets:
             if name not in correction["replacements"]:
                 correction["replacements"][name] = _stage_a_item(name, candidate, data_root, stem)
                 _atomic_json(correction_path, correction)
-        results = [by_id["H0-control-reuse"], by_id["H1-timeout-preempts-sol-add"], correction["replacements"]["H2-episode-fixed-beta-rolling-z"], correction["replacements"]["H3-strict-tp-cycle"], by_id["H4-btc-only"]]
+        results = [by_id["H0-control-reuse"], by_id["H1-timeout-preempts-sol-add"], correction["replacements"]["H2-episode-fixed-beta-rolling-z"], correction["replacements"]["H3-strict-tp-fill-cycle"], by_id["H4-btc-only"]]
         _atomic_json(partial_path, {"provenance": meta, "results": results})
         correction["status"] = "H2_H3_CORRECTION_COMPLETE"
         correction["partial_sha256_after"] = sha256_file(partial_path)
@@ -961,7 +987,7 @@ def correct_native_hypothesis_h2_h3(data_root: Path, stage_d_report: Path) -> di
             writer = csv.DictWriter(stream, fieldnames=rows[0].keys()); writer.writeheader(); writer.writerows(rows)
         temporary.replace(csv_path)
         compact = lambda item: _stage_b_compact(item, meta["control_total"], partial_path) | {"delta_vs_h0": str(Decimal(item["terminal_total"]) - Decimal(h0["terminal_total"]))}
-        summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": meta, "correction": {"path": str(correction_path), "sha256": sha256_file(correction_path), "reason": "H2 rolling sigma and H3 strict TP-cycle semantics"}, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "ranked_evidence_validated": True}, "result_count": len(results), "results": [compact(item) for item in results], "top20": [compact(item) for item in ranked], "h0": compact(h0), "h2": compact(results[2]), "h3": compact(results[3]), "h4_sol_incremental": str(Decimal(h0["terminal_total"]) - Decimal(h4["terminal_total"])), "defaults": {"H1": "off", "H2": "off", "H3": "current late-right semantics retained", "H4": "off"}, "limitations": ["Independent hypotheses only; no combinations.", "No Stage E."]}
+        summary = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible_for_live": False, "provenance": meta, "correction": {"path": str(correction_path), "sha256": sha256_file(correction_path), "reason": "H2 rolling sigma and H3 strict TP fill-cycle semantics"}, "local_evidence": {"checkpoint": str(partial_path), "checkpoint_sha256": sha256_file(partial_path), "ranked_evidence_validated": True}, "result_count": len(results), "results": [compact(item) for item in results], "top20": [compact(item) for item in ranked], "h0": compact(h0), "h2": compact(results[2]), "h3": compact(results[3]), "h4_sol_incremental": str(Decimal(h0["terminal_total"]) - Decimal(h4["terminal_total"])), "defaults": {"H1": "off", "H2": "off", "H3": "current late-right semantics retained", "H4": "off"}, "limitations": ["Independent hypotheses only; no combinations.", "No Stage E."]}
         target = runs / f"{stem}.json"; _atomic_json(target, summary)
         return summary | {"artifact": str(target), "csv": str(csv_path), "partial": str(partial_path), "correction_path": str(correction_path)}
     finally:

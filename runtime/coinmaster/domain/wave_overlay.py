@@ -333,7 +333,7 @@ class WaveOverlayState:
                 return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty, reason="SOL_Z_FULL_EXIT")]
         return []
 
-    def on_fill(self, intent_id: str, quantity: float, price: float, when: datetime, sigma: float | None = None) -> None:
+    def on_fill(self, intent_id: str, quantity: float, price: float, when: datetime, sigma: float | None = None, decision_index: int | None = None) -> None:
         episode = self.episode
         if episode is None or intent_id not in episode.pending or quantity <= 0:
             return
@@ -346,7 +346,10 @@ class WaveOverlayState:
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
             episode.btc_filled_tps.add(intent.level)
             episode.sol_rights.add(intent.level)
-            episode.sol_right_decision_index[intent.level] = intent.decision_index
+            # Resting targets can fill days after their creation. Strict H3
+            # compares against the fill's applied decision cycle, never the
+            # stale intent creation cycle.
+            episode.sol_right_decision_index[intent.level] = self._decision_index if decision_index is None else decision_index
             episode.btc_open_qty = max(0.0, episode.btc_open_qty - quantity)
         elif intent.action == "SOL_ADD":
             episode.sol_adds.add(intent.level)  # type: ignore[arg-type]

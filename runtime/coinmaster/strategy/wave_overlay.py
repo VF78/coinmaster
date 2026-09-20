@@ -585,7 +585,7 @@ class WaveOverlayStrategy(Strategy):
             return
         sigma = self._sigma_by_order.get(str(event.client_order_id))
         when = datetime.fromtimestamp(event.ts_event / 1_000_000_000, UTC)
-        self._domain.on_fill(intent.id, float(event.last_qty), float(event.last_px), when, sigma)
+        self._domain.on_fill(intent.id, float(event.last_qty), float(event.last_px), when, sigma, decision_index=max(0, len(self._bars) - 1))
         if intent.action == "SOL_HALF_EXIT":
             self._domain.on_half_exit_decision(self._decision_index_by_order[str(event.client_order_id)])
         order = self.cache.order(event.client_order_id)
