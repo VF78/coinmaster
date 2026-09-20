@@ -201,3 +201,16 @@ def test_stage_c_ranked_evidence_requires_hashes_reconciled_fees_and_explicit_fu
         assert str(error) == "STAGE_C_RANKED_FUNDING_UNEXPLICIT:ranked"
     else:
         raise AssertionError("missing funding count must fail closed")
+
+
+def test_stage_d_coordinates_are_bounded_and_allow_only_one_final_sol_extension() -> None:
+    control = Candidate(ema_period=34, btc_tp_fractions_initial_qty=(0.2, 0.3, 0.5), btc_notional_multiplier=4.0, sol_size_multipliers_h=(2.25, 3.375, 4.5))
+    assert tuple(candidate.btc_tp_fractions_initial_qty for _, candidate in native_optimizer._stage_d_variants("d1", control)) == native_optimizer.STAGE_D_TP_AXIS
+    assert tuple(candidate.ema_period for _, candidate in native_optimizer._stage_d_variants("d2", control)) == (33, 34, 35)
+    assert tuple(candidate.btc_notional_multiplier for _, candidate in native_optimizer._stage_d_variants("d3", control)) == (3.75, 4.0, 4.25)
+    sol = native_optimizer._stage_d_variants("d4", control)
+    assert tuple(candidate.sol_size_multipliers_h for _, candidate in sol) == native_optimizer.STAGE_D_SOL_AXIS
+    high = {"candidate": native_optimizer.asdict(sol[-1][1])}
+    middle = {"candidate": native_optimizer.asdict(sol[1][1])}
+    assert native_optimizer._stage_d_sol_boundary_extension(high)[0] == "d5-boundary-sol-2.75-4.125-5.5"
+    assert native_optimizer._stage_d_sol_boundary_extension(middle) is None

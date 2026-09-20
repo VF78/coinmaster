@@ -14,6 +14,10 @@ Updated: 2026-05-04 Europe/Madrid
 
 Coinmaster must autonomously trade within Trading Rules/Radar and move toward **≥50% monthly ROI**. Every task must directly improve profitability, execution quality, risk/loss control, or hypothesis-testing speed/quality. No refactor-for-refactor.
 
+## Latest native research checkpoint
+
+Stage D joint refinement (2026-09-20, local-only) is sealed at EMA34, BTC TP `(0.2,0.25,0.55)`, BTC multiplier `4.0`, and SOL size profile `(2,3,4)`: terminal ACTIVE+RESERVE TOTAL `740906.55113925`. It is `NOT_FAITHFUL_DIAGNOSTIC`, non-ranking for live, and stops before Stage E/hypotheses. Its 18 ranked checkpoint rows are evidence-hash/fee/funding validated; the local ignored checkpoint SHA-256 is `67cbc3b42bc6afce6df6268483189b7942b3446cfebf66ede65ad189021e5076`.
+
 ## Core invariants
 
 - One active implementation task at a time.
