@@ -145,6 +145,10 @@ def test_streamed_native_smoke_matches_one_shot_and_keeps_callbacks_subscribed(t
     assert streamed["streaming"]["max_batch_minutes"] == 24 * 60
     assert streamed["streaming"]["processed_rows_per_source"] == 2 * 24 * 60
     assert streamed["streaming"]["max_batch_events"] <= 4 * 24 * 60 + 2
+    assert streamed["episodes"] == "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED"
+    assert streamed["realized_unrealized"] == "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY"
+    assert streamed["transfers"] == "0" and streamed["liquidation_value"] == "0"
+    assert set(streamed["funding"]) == {"count", "by_instrument_count", "signed_amount"}
     for timestamp in ((start + DAY_MS) * 1_000_000, end * 1_000_000):
         ordered = [kind for kind, event_time in seen if event_time == timestamp]
         assert ordered == ["mark", "mark", "signal", "signal", "quote", "quote"] * 2
