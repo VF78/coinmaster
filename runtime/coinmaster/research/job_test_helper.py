@@ -7,6 +7,8 @@ import signal
 import time
 from pathlib import Path
 
+from coinmaster.research.job_protocol import report_summary, sha256_file, wait_for_launch_permit
+
 
 def emit(kind: str, request: dict, **body) -> None:
     print(json.dumps({"type": kind, "request_hash": request["request_hash"], "config_hash": request["config_hash"], **body}), flush=True)
@@ -14,10 +16,12 @@ def emit(kind: str, request: dict, **body) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=("complete", "sleep", "ignore-term", "blocked", "wrong-hash"), required=True)
+    parser.add_argument("--mode", choices=("complete", "sleep", "ignore-term", "blocked", "wrong-hash", "large-report", "tampered-artifact"), required=True)
     parser.add_argument("--job-request", type=Path, required=True)
     args = parser.parse_args()
     request = json.loads(args.job_request.read_text())
+    if not wait_for_launch_permit(request):
+        raise SystemExit(1)
     emit("progress", request, progress=10)
     if args.mode == "complete":
         time.sleep(0.5)
@@ -31,10 +35,14 @@ def main() -> None:
     artifact_dir = Path(request["artifact_dir"]); artifact_dir.mkdir(parents=True, exist_ok=True)
     artifact = artifact_dir / "result.json"
     report = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "terminal_total": "UNKNOWN_TEST_HELPER"}
+    if args.mode == "large-report":
+        report["padding"] = "x" * (708 * 1024)
     artifact.write_text(json.dumps(report, sort_keys=True) + "\n")
     emitted_request_hash = "wrong" if args.mode == "wrong-hash" else request["request_hash"]
-    envelope = {"type": "result", "status": "COMPLETED", "request_hash": emitted_request_hash, "config_hash": request["config_hash"], "artifact": str(artifact), "report": report}
+    envelope = {"type": "result", "status": "COMPLETED", "request_hash": emitted_request_hash, "config_hash": request["config_hash"], "artifact": str(artifact), "artifact_sha256": sha256_file(artifact), "summary": report_summary(report)}
     (artifact_dir / "result-envelope.json").write_text(json.dumps(envelope, sort_keys=True) + "\n")
+    if args.mode == "tampered-artifact":
+        artifact.write_text(json.dumps({**report, "tampered": True}, sort_keys=True) + "\n")
     emit("progress", request, progress=90)
     print(json.dumps(envelope), flush=True)
 

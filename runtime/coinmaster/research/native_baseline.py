@@ -18,6 +18,8 @@ from typing import Iterator
 from uuid import uuid4
 from datetime import datetime, timedelta, timezone
 
+from coinmaster.research.job_protocol import report_summary, sha256_file, wait_for_launch_permit
+
 
 DAY_MS = 86_400_000
 MINUTE_MS = 60_000
@@ -772,16 +774,18 @@ def _candidate_from_job_config(config: dict):
 
 def run_job_request(path: Path) -> int:
     request = json.loads(path.read_text())
-    required = {"request_hash", "config_hash", "config", "data_root", "artifact_dir"}
+    required = {"request_hash", "config_hash", "config", "data_root", "artifact_dir", "launch_permit", "launch_owner_token"}
     if not required <= set(request):
         _emit("result", status="FAILED", evidence=["INVALID_JOB_REQUEST"])
         return 1
-    canonical = json.dumps({key: request[key] for key in ("config_hash", "config", "data_root", "artifact_dir")}, sort_keys=True, separators=(",", ":"))
+    canonical = json.dumps({key: request[key] for key in ("config_hash", "config", "data_root", "artifact_dir", "launch_permit", "launch_owner_token")}, sort_keys=True, separators=(",", ":"))
     if hashlib.sha256(canonical.encode()).hexdigest() != request["request_hash"]:
         _emit("result", status="FAILED", request_hash=request["request_hash"], config_hash=request["config_hash"], evidence=["REQUEST_HASH_MISMATCH"])
         return 1
     if hashlib.sha256(json.dumps(request["config"], sort_keys=True, separators=(",", ":")).encode()).hexdigest() != request["config_hash"]:
         _emit("result", status="FAILED", request_hash=request["request_hash"], config_hash=request["config_hash"], evidence=["CONFIG_HASH_MISMATCH"])
+        return 1
+    if not wait_for_launch_permit(request):
         return 1
     try:
         candidate = _candidate_from_job_config(request["config"])
@@ -801,7 +805,7 @@ def run_job_request(path: Path) -> int:
             **({"warmup_start_ms": options["warmup_start_ms"], "trading_start_ms": options["trading_start_ms"], "trading_end_ms": options["trading_end_ms"], "weekly_batch_minutes": options.get("weekly_batch_minutes", WEEK_MINUTES), "cursor_batch_rows": options.get("cursor_batch_rows", WEEK_MINUTES)} if options else {}),
         )
         artifact = save_diagnostic_report(data_root, report, "result", artifact_dir)
-        envelope = {"type": "result", "status": "COMPLETED", "request_hash": request["request_hash"], "config_hash": request["config_hash"], "artifact": str(artifact), "report": report}
+        envelope = {"type": "result", "status": "COMPLETED", "request_hash": request["request_hash"], "config_hash": request["config_hash"], "artifact": str(artifact), "artifact_sha256": sha256_file(artifact), "summary": report_summary(report)}
         (artifact_dir / "result-envelope.json").write_text(json.dumps(envelope, sort_keys=True) + "\n")
         _emit("progress", request_hash=request["request_hash"], config_hash=request["config_hash"], progress=99)
         _emit("result", **{key: value for key, value in envelope.items() if key != "type"})

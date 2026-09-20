@@ -2,6 +2,9 @@ import sys
 import time
 import sqlite3
 import json
+import os
+import subprocess
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from coinmaster.api.app import BASELINE_CONFIG, ControlStore, PreflightInput, RunInput, RunRecord, StrategyConfig, _catalog_entry, immutable_research_reference, create_app, fixture_report, utcnow
@@ -193,6 +196,95 @@ def test_wrong_typed_result_hash_never_completes(tmp_path) -> None:
     manager = ResearchJobManager(store, tmp_path / "data", _helper("wrong-hash"))
     run = manager.start(config, "wrong-hash")
     assert _wait_for_terminal(manager, run.id).status == "FAILED"
+
+
+def test_large_artifact_completes_with_compact_stdout_envelope(tmp_path) -> None:
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    manager = ResearchJobManager(store, tmp_path / "data", _helper("large-report"))
+    run = manager.start(config, "large-report")
+    terminal = _wait_for_terminal(manager, run.id)
+    artifact = Path(terminal.work_dir) / "artifacts" / "result.json"
+    envelope = json.loads((artifact.parent / "result-envelope.json").read_text())
+    assert terminal.status == "COMPLETED" and artifact.stat().st_size > 707 * 1024
+    assert "report" not in envelope and len(json.dumps(envelope)) < 4_096
+
+
+def test_tampered_result_artifact_never_completes(tmp_path) -> None:
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    manager = ResearchJobManager(store, tmp_path / "data", _helper("tampered-artifact"))
+    assert _wait_for_terminal(manager, manager.start(config, "tampered-artifact").id).status == "FAILED"
+
+
+def test_observer_progress_db_failure_reaps_owned_running_child(tmp_path, monkeypatch) -> None:
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    manager = ResearchJobManager(store, tmp_path / "data", _helper("sleep"))
+    original = store.update_run
+    failed = False
+    def fail_progress(run_id, **values):
+        nonlocal failed
+        if values.get("progress") == 10 and not failed:
+            failed = True
+            raise sqlite3.OperationalError("injected progress failure")
+        return original(run_id, **values)
+    monkeypatch.setattr(store, "update_run", fail_progress)
+    run = manager.start(config, "sleep")
+    child = manager.processes[run.id]
+    terminal = _wait_for_terminal(manager, run.id)
+    assert failed and terminal.status == "FAILED"
+    assert child.poll() is not None
+
+
+def test_child_aborts_without_permit_when_manager_dies_after_popen(tmp_path) -> None:
+    database, data = tmp_path / "control.sqlite", tmp_path / "data"
+    setup = ControlStore(str(database))
+    config = setup.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    script = """
+import os, sys
+from pathlib import Path
+from coinmaster.api.app import ControlStore
+from coinmaster.api.research_jobs import ResearchJobManager
+store = ControlStore(sys.argv[1])
+config = store.get_config(sys.argv[2])
+original = store.update_run
+def abort_after_popen(run_id, **values):
+    if values.get('status') == 'RUNNING': os._exit(97)
+    return original(run_id, **values)
+store.update_run = abort_after_popen
+ResearchJobManager(store, Path(sys.argv[3]), {'sleep': [sys.executable, '-m', 'coinmaster.research.job_test_helper', '--mode', 'sleep']}).start(config, 'sleep')
+"""
+    crashed = subprocess.run([sys.executable, "-c", script, str(database), config.id, str(data)], cwd=Path(__file__).parents[1])
+    assert crashed.returncode == 97
+    runs = setup.runs()
+    assert len(runs) == 1 and runs[0].status == "STARTING" and runs[0].pid is None
+    time.sleep(2)
+    assert not (Path(runs[0].work_dir) / "artifacts").exists()
+    recovered_store = ControlStore(str(database))
+    ResearchJobManager(recovered_store, data, _helper("sleep"))
+    assert recovered_store.get_run(runs[0].id).status == "INTERRUPTED"
+
+
+def test_two_managers_atomically_admit_one_canonical_owner(tmp_path) -> None:
+    database, data = str(tmp_path / "control.sqlite"), tmp_path / "data"
+    first_store, second_store = ControlStore(database), ControlStore(database)
+    config = first_store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    commands = {"native_baseline": [sys.executable, "-m", "coinmaster.research.job_test_helper", "--mode", "sleep"]}
+    first = ResearchJobManager(first_store, data, commands, test_options={})
+    second = ResearchJobManager(second_store, data, commands, test_options={})
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(manager.start, config, None, "same-canonical-request") for manager in (first, second)]
+        accepted = [future.result() for future in futures]
+    assert len({run.id for run in accepted}) == 1
+    assert sum(run.status in {"STARTING", "RUNNING", "CANCEL_REQUESTED"} for run in first_store.runs()) == 1
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(manager.start, config, None) for manager in (first, second)]
+        rejected = [future.exception() for future in futures]
+    assert all(isinstance(error, ValueError) and str(error) == "CANONICAL_RESEARCH_ALREADY_ACTIVE" for error in rejected)
+    owner = next(manager for manager in (first, second) if accepted[0].id in manager.processes)
+    assert owner.cancel(accepted[0].id).status in {"CANCEL_REQUESTED", "CANCELED"}
+    assert _wait_for_terminal(owner, accepted[0].id).status == "CANCELED"
 
 
 def test_research_idempotency_and_artifacts_are_per_job(tmp_path) -> None:

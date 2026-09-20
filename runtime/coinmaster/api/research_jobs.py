@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
 from coinmaster.research.native_baseline import _candidate_from_job_config, coverage_blockers
+from coinmaster.research.job_protocol import report_summary
 
 if TYPE_CHECKING:
     from coinmaster.api.app import ConfigurationRecord, ControlStore, RunRecord
@@ -45,7 +46,9 @@ class ResearchJobManager:
     @staticmethod
     def _ps_identity(pid: int, request_path: Path) -> tuple[int, str] | None:
         try:
-            output = subprocess.check_output(["ps", "-o", "pgid=", "-o", "command=", "-p", str(pid)], text=True).strip()
+            # ``lstart`` binds the identity to this process incarnation, rather
+            # than trusting a reusable PID plus command/process-group alone.
+            output = subprocess.check_output(["ps", "-o", "pgid=", "-o", "lstart=", "-o", "command=", "-p", str(pid)], text=True).strip()
             if not output:
                 return None
             pgid_text, command = output.split(None, 1)
@@ -65,7 +68,15 @@ class ResearchJobManager:
     def _work_dir(self, run_id: str) -> Path:
         path = self.data_root / "runs" / "jobs" / run_id
         path.mkdir(parents=True, exist_ok=False)
+        os.chmod(path, 0o700)
         return path
+
+    @staticmethod
+    def _write_launch_permit(path: Path, request_hash: str, owner: str, process: subprocess.Popen[str], identity: str) -> None:
+        temporary = path.with_suffix(".tmp")
+        temporary.write_text(json.dumps({"request_hash": request_hash, "owner_token": owner, "pid": process.pid, "process_identity": identity}, sort_keys=True) + "\n")
+        os.chmod(temporary, 0o600)
+        temporary.replace(path)
 
     def _reconcile_restart(self) -> None:
         """Stop only a surviving child whose command and owner file still match."""
@@ -114,19 +125,18 @@ class ResearchJobManager:
                     return existing
                 raise ValueError("IDEMPOTENCY_KEY_REUSED")
         with self.lock:
-            if command_name == "native_baseline" and any(run.kind == "research" and run.command_name == "native_baseline" and run.status in ACTIVE for run in self.store.runs()):
-                raise ValueError("CANONICAL_RESEARCH_ALREADY_ACTIVE")
             run_id, owner = uuid4().hex, secrets.token_urlsafe(24)
             work_dir = self._work_dir(run_id)
-            owner_path, request_path = work_dir / "owner.token", work_dir / "request.json"
+            owner_path, request_path, permit_path = work_dir / "owner.token", work_dir / "request.json", work_dir / "launch-permit.json"
             owner_path.write_text(owner + "\n")
             os.chmod(owner_path, 0o600)
-            request = {"config_hash": config.config_hash, "config": config.config.model_dump(), "data_root": str(self.data_root), "artifact_dir": str(work_dir / "artifacts")}
+            request = {"config_hash": config.config_hash, "config": config.config.model_dump(), "data_root": str(self.data_root), "artifact_dir": str(work_dir / "artifacts"), "launch_permit": str(permit_path), "launch_owner_token": owner}
             request_hash = self._request_hash(request)
             request["request_hash"] = request_hash
             if self.test_options is not None:
                 request["test_options"] = self.test_options
             request_path.write_text(json.dumps(request, sort_keys=True) + "\n")
+            os.chmod(request_path, 0o600)
             try:
                 _candidate_from_job_config(request["config"])
             except (KeyError, TypeError, ValueError) as error:
@@ -134,7 +144,17 @@ class ResearchJobManager:
             blocked = coverage_blockers(self.data_root) if command_name == "native_baseline" and self.test_options is None else []
             if blocked:
                 return self.store.save_run(RunRecord(id=run_id, config_id=config.id, kind="research", status="BLOCKED", evidence=blocked, created_at=self._now(), report={"type": "result", "status": "BLOCKED", "request_hash": request_hash, "config_hash": config.config_hash, "blockers": blocked}, request_hash=request_hash, command_name=command_name, work_dir=str(work_dir), idempotency_key=idempotency_key, progress=100, finished_at=self._now()))
-            self.store.save_run(RunRecord(id=run_id, config_id=config.id, kind="research", status="STARTING", evidence=["NATIVE_RESEARCH_START_INTENT"], created_at=self._now(), request_hash=request_hash, command_name=command_name, work_dir=str(work_dir), idempotency_key=idempotency_key, progress=0))
+            starting_record = RunRecord(id=run_id, config_id=config.id, kind="research", status="STARTING", evidence=["NATIVE_RESEARCH_START_INTENT"], created_at=self._now(), request_hash=request_hash, command_name=command_name, work_dir=str(work_dir), idempotency_key=idempotency_key, progress=0)
+            if command_name == "native_baseline":
+                acquired, existing = self.store.acquire_research_start(starting_record)
+                if acquired == "EXISTING":
+                    if existing and existing.config_id == config.id and existing.command_name == command_name:
+                        return existing
+                    raise ValueError("IDEMPOTENCY_KEY_REUSED")
+                if acquired == "BUSY":
+                    raise ValueError("CANONICAL_RESEARCH_ALREADY_ACTIVE")
+            else:
+                self.store.save_run(starting_record)
             self.store.update_run(run_id, owner_token=owner)
             command = [part.replace("{job_request}", str(request_path)) for part in self.commands[command_name]]
             if "{job_request}" not in self.commands[command_name]:
@@ -146,6 +166,7 @@ class ResearchJobManager:
                     raise RuntimeError("PROCESS_IDENTITY_UNVERIFIABLE")
                 pgid, digest = identity
                 started = self.store.update_run(run_id, status="RUNNING", pid=process.pid, process_group=pgid, process_identity=digest, started_at=self._now(), heartbeat_at=self._now())
+                self._write_launch_permit(permit_path, request_hash, owner, process, digest)
             except Exception as error:
                 if "process" in locals():
                     self._terminate_process(process)
@@ -205,7 +226,11 @@ class ResearchJobManager:
             code = process.wait()
             self._finalize(run_id, code, lines)
         except Exception as error:
-            self.store.update_run(run_id, status="FAILED", evidence=["RESEARCH_OBSERVER_FAILED", type(error).__name__], finished_at=self._now(), progress=100)
+            self._terminate_process(process)
+            with self.lock:
+                run = self.store.get_run(run_id)
+                if run.status in ACTIVE:
+                    self.store.update_run(run_id, status="FAILED", evidence=[*run.evidence, "RESEARCH_OBSERVER_FAILED", type(error).__name__], finished_at=self._now(), progress=100)
         finally:
             with self.lock:
                 self.processes.pop(run_id, None)
@@ -246,11 +271,28 @@ class ResearchJobManager:
             self.store.update_run(run_id, status="FAILED", evidence=["RESULT_VALIDATION_FAILED", f"EXIT_CODE:{code}"], report=result, finished_at=self._now(), progress=100)
             return
         envelope = artifact.parent / "result-envelope.json"
-        if not envelope.is_file() or json.loads(envelope.read_text()).get("request_hash") != run.request_hash:
+        try:
+            expected = str(result["artifact_sha256"])
+            actual = hashlib.sha256(artifact.read_bytes()).hexdigest()
+            stored_envelope = json.loads(envelope.read_text())
+            report = json.loads(artifact.read_text())
+        except (KeyError, OSError, TypeError, json.JSONDecodeError):
+            expected = actual = ""
+            stored_envelope, report = {}, None
+        if (
+            not envelope.is_file() or expected != actual
+            or stored_envelope.get("request_hash") != run.request_hash
+            or stored_envelope.get("config_hash") != self.store.get_config(run.config_id).config_hash
+            or stored_envelope.get("artifact") != str(artifact)
+            or stored_envelope.get("artifact_sha256") != expected
+            or stored_envelope.get("summary") != result.get("summary")
+            or not isinstance(report, dict)
+            or report_summary(report) != result.get("summary")
+        ):
             self.store.update_run(run_id, status="FAILED", evidence=["RESULT_ARTIFACT_HASH_MISMATCH"], report=result, finished_at=self._now(), progress=100)
             return
-        report = {**result["report"], "request_hash": run.request_hash, "request_config_hash": self.store.get_config(run.config_id).config_hash, "artifact": str(artifact)}
-        self.store.update_run(run_id, status="COMPLETED", evidence=["NATIVE_RESEARCH_RESULT", str(result["report"].get("status", "UNKNOWN"))], report=report, finished_at=self._now(), heartbeat_at=self._now(), progress=100)
+        persisted_report = {**report, "request_hash": run.request_hash, "request_config_hash": self.store.get_config(run.config_id).config_hash, "artifact": str(artifact), "artifact_sha256": actual}
+        self.store.update_run(run_id, status="COMPLETED", evidence=["NATIVE_RESEARCH_RESULT", str(report.get("status", "UNKNOWN"))], report=persisted_report, finished_at=self._now(), heartbeat_at=self._now(), progress=100)
 
     def refresh(self, run_id: str) -> "RunRecord":
         run = self.store.get_run(run_id)

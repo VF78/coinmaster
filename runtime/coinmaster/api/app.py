@@ -171,6 +171,9 @@ class ControlStore:
             CREATE TABLE IF NOT EXISTS commands (
                 idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL, created_at TEXT NOT NULL, result TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS research_leases (
+                name TEXT PRIMARY KEY, run_id TEXT NOT NULL UNIQUE
+            );
         """)
         columns = {row[1] for row in self.db.execute("PRAGMA table_info(runs)")}
         for name, definition in (
@@ -214,6 +217,31 @@ class ControlStore:
             self.db.commit()
             return record
 
+    def acquire_research_start(self, record: RunRecord) -> tuple[str, RunRecord | None]:
+        """Atomically return an idempotent run, reject an active owner, or start one."""
+        with self.lock:
+            self.db.execute("BEGIN IMMEDIATE")
+            try:
+                if record.idempotency_key:
+                    row = self.db.execute("SELECT id FROM runs WHERE idempotency_key=?", (record.idempotency_key,)).fetchone()
+                    if row:
+                        self.db.commit()
+                        return "EXISTING", self.get_run(row[0])
+                try:
+                    self.db.execute("INSERT INTO research_leases (name,run_id) VALUES ('native_baseline',?)", (record.id,))
+                except sqlite3.IntegrityError:
+                    self.db.commit()
+                    return "BUSY", None
+                self.db.execute(
+                    "INSERT INTO runs (id,config_id,kind,status,evidence,created_at,report,request_hash,command_name,pid,process_group,started_at,heartbeat_at,progress,cancel_requested_at,finished_at,work_dir,process_identity,idempotency_key) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (record.id, record.config_id, record.kind, record.status, json.dumps(record.evidence), record.created_at, json.dumps(record.report) if record.report else None, record.request_hash, record.command_name, record.pid, record.process_group, record.started_at, record.heartbeat_at, record.progress, record.cancel_requested_at, record.finished_at, record.work_dir, record.process_identity, record.idempotency_key),
+                )
+                self.db.commit()
+                return "ACQUIRED", record
+            except Exception:
+                self.db.rollback()
+                raise
+
     def get_run(self, run_id: str) -> RunRecord:
         with self.lock:
             row = self.db.execute("SELECT id,config_id,kind,status,evidence,created_at,report,request_hash,command_name,pid,process_group,started_at,heartbeat_at,progress,cancel_requested_at,finished_at,work_dir,process_identity,idempotency_key FROM runs WHERE id = ?", (run_id,)).fetchone()
@@ -246,6 +274,8 @@ class ControlStore:
                 fields.append(f"{key}=?")
                 params.append(json.dumps(value) if key in {"evidence", "report"} else value)
             self.db.execute(f"UPDATE runs SET {','.join(fields)} WHERE id=?", (*params, run_id))
+            if values.get("status") not in {None, "STARTING", "RUNNING", "CANCEL_REQUESTED"}:
+                self.db.execute("DELETE FROM research_leases WHERE run_id=?", (run_id,))
             self.db.commit()
         return self.get_run(run_id)
 
