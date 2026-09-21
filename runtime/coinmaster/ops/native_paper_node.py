@@ -36,6 +36,7 @@ from nautilus_trader.model.identifiers import ClientId, InstrumentId, Venue
 from nautilus_trader.trading.strategy import Strategy
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar
+from coinmaster.ops.stage_g_config import InstanceConfig, candidate_content_hash
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
 from coinmaster.venues.marks import venue_mark_data_type
 
@@ -80,9 +81,9 @@ def paper_candidate(name: str) -> Candidate:
     raise ValueError("unknown paper strategy config")
 
 
-def candidate_hash(name: str, candidate: Candidate) -> str:
-    from dataclasses import asdict
-    return hashlib.sha256(json.dumps({"name": name, "candidate": asdict(candidate)}, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+def candidate_hash(_name: str, candidate: Candidate) -> str:
+    """Compatibility wrapper; labels are intentionally excluded from the hash."""
+    return candidate_content_hash(candidate)
 
 
 def sandbox_cash_posting_supported() -> bool:
@@ -162,11 +163,11 @@ def bybit_daily_bar_type(instrument_id: InstrumentId) -> BarType:
     return BarType(instrument_id, BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL)
 
 
-def native_paper_node_config() -> TradingNodeConfig:
+def native_paper_node_config(trader_id: str = "COINMASTER-PAPER") -> TradingNodeConfig:
     """Return config containing public data and exactly one sandbox exec route."""
     return TradingNodeConfig(
         environment=Environment.LIVE,
-        trader_id="COINMASTER-PAPER",
+        trader_id=trader_id,
         logging=LoggingConfig(log_level="INFO", log_colors=False),
         # Sandbox cannot report a remote account/order history.  It is the
         # native source of this paper account, so remote reconciliation is not
@@ -353,19 +354,21 @@ class FeedObserver(Strategy):
 
 class NativePaperNode:
     """Owns a single native node and the public-feed warmup/readiness gates."""
-    def __init__(self, history_manifest: Path, native_event_sink: Callable[[str, str], bool] | None = None, entries_gate: Callable[[], bool] | None = None, submission_sink: object | None = None, strategy_name: str = "corrected-v0") -> None:
+    def __init__(self, history_manifest: Path, native_event_sink: Callable[[str, str], bool] | None = None, entries_gate: Callable[[], bool] | None = None, submission_sink: object | None = None, candidate: Candidate | None = None, strategy_hash: str | None = None, instance: InstanceConfig | None = None) -> None:
         if os.getenv("COINMASTER_LIVE_ENABLED", "false").lower() != "false":
             raise RuntimeError("PAPER_WORKER_REFUSES_LIVE_ENABLED")
         self.scrubbed_environment = scrub_private_execution_environment()
         self.warmup_bundle, self.history_state = _load_warmup(history_manifest)
         self.history_ready = self.warmup_bundle is not None
-        self.strategy_name = strategy_name
-        self.candidate = paper_candidate(strategy_name)
-        self.strategy_hash = candidate_hash(strategy_name, self.candidate)
+        # Direct construction is retained only for isolated/local tests.  The
+        # production worker always supplies a preloaded immutable candidate.
+        self.instance = instance
+        self.candidate = candidate if candidate is not None else Candidate()
+        self.strategy_hash = strategy_hash if strategy_hash is not None else candidate_content_hash(self.candidate)
         self.entries_gate = entries_gate
         self.submission_sink = submission_sink
         self.loop = asyncio.new_event_loop()
-        self.config = native_paper_node_config()
+        self.config = native_paper_node_config(instance.trader_id if instance else "COINMASTER-PAPER-TEST")
         assert_sandbox_only(self.config, EXECUTION_FACTORY_ALLOWLIST)
         self.node = TradingNode(config=self.config, loop=self.loop)
         self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
@@ -397,6 +400,21 @@ class NativePaperNode:
             raise RuntimeError("PAPER_REQUIRED_INSTRUMENTS_NOT_LOADED")
         return (*BYBIT_IDS, *sorted(hyperliquid_ids, key=str))
 
+    def _wave_strategy_config(self) -> WaveOverlayStrategyConfig:
+        """Build the actual strategy config from the immutable instance identity."""
+        btc_bar, sol_bar = bybit_daily_bar_type(BYBIT_IDS[0]), bybit_daily_bar_type(BYBIT_IDS[1])
+        return WaveOverlayStrategyConfig(
+            btc_id=BYBIT_IDS[0], sol_id=BYBIT_IDS[1], btc_bar_type=btc_bar, sol_bar_type=sol_bar,
+            btc_mark_data_type=venue_mark_data_type(BYBIT_IDS[0]), sol_mark_data_type=venue_mark_data_type(BYBIT_IDS[1]),
+            mark_client_id=ClientId("BYBIT"), live_mark_client_id=ClientId("BYBIT"),
+            active_seed=Decimal("100000"), tier_selected_leverage=((BYBIT_IDS[0], Decimal("40")), (BYBIT_IDS[1], Decimal("20"))),
+            max_mark_age_ns=MAX_DATA_AGE_NS, candidate=self.candidate,
+            seed_bars=self.warmup_bundle.bars if self.warmup_bundle else (), entries_enabled=self.history_ready,
+            entries_gate=self._entries_enabled, event_sink=self.feed.native_event_sink, submission_sink=self.submission_sink,
+            strategy_id=self.instance.strategy_id if self.instance else None,
+            order_id_tag=self.instance.order_id_tag if self.instance else None,
+        )
+
     def prime(self) -> None:
         try:
             instrument_ids = self.loop.run_until_complete(self._prime_public_instruments())
@@ -413,26 +431,7 @@ class NativePaperNode:
             # Daily bars come directly from Bybit public data.  The strategy
             # consumes the live MarkPriceUpdate as a VenueMark-equivalent
             # dual input, never as quote/MID/execution data.
-            btc_bar, sol_bar = bybit_daily_bar_type(BYBIT_IDS[0]), bybit_daily_bar_type(BYBIT_IDS[1])
-            self.strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(
-                btc_id=BYBIT_IDS[0],
-                sol_id=BYBIT_IDS[1],
-                btc_bar_type=btc_bar,
-                sol_bar_type=sol_bar,
-                btc_mark_data_type=venue_mark_data_type(BYBIT_IDS[0]),
-                sol_mark_data_type=venue_mark_data_type(BYBIT_IDS[1]),
-                mark_client_id=ClientId("BYBIT"),
-                live_mark_client_id=ClientId("BYBIT"),
-                active_seed=Decimal("100000"),
-                tier_selected_leverage=((BYBIT_IDS[0], Decimal("40")), (BYBIT_IDS[1], Decimal("20"))),
-                max_mark_age_ns=MAX_DATA_AGE_NS,
-                candidate=self.candidate,
-                seed_bars=self.warmup_bundle.bars if self.warmup_bundle else (),
-                entries_enabled=self.history_ready,
-                entries_gate=self._entries_enabled,
-                event_sink=self.feed.native_event_sink,
-                submission_sink=self.submission_sink,
-            ))
+            self.strategy = WaveOverlayStrategy(self._wave_strategy_config())
             self.node.trader.add_strategy(self.strategy)
         except Exception as error:
             self.prime_error = type(error).__name__
@@ -469,12 +468,19 @@ class NativePaperNode:
                 "strategy_class": f"{WaveOverlayStrategy.__module__}.{WaveOverlayStrategy.__name__}",
                 "registered": self.strategy is not None,
                 "running": self.node.is_running() and self.strategy is not None,
-                "config_name": self.strategy_name,
+                "config_name": str(self.instance.strategy_config) if self.instance else "TEST_DEFAULT",
                 "config_hash": self.strategy_hash,
                 "warmup_rows": self.warmup_bundle.rows if self.warmup_bundle else 0,
                 "warmup_range_ns": [self.warmup_bundle.first_open_ns, self.warmup_bundle.last_close_ns] if self.warmup_bundle else None,
                 "warmup_hash": self.warmup_bundle.source_hash if self.warmup_bundle else None,
                 "entries_enabled": self._entries_enabled(),
+            },
+            "instance": {
+                "instance_id": self.instance.instance_id if self.instance else "TEST_DEFAULT",
+                "venue": self.instance.venue if self.instance else "BYBIT",
+                "mode": self.instance.mode if self.instance else "paper",
+                "strategy_id": self.instance.strategy_id if self.instance else "TEST_DEFAULT",
+                "order_id_tag": self.instance.order_id_tag if self.instance else "TEST_DEFAULT",
             },
             # Sandbox does not generate venue funding cash adjustments.  A
             # posting remains blocked until a venue settlement mark and stable

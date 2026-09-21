@@ -1,0 +1,1 @@
+{"instance_id":"paper-stage-g-example","venue":"BYBIT","mode":"paper","strategy_config":"stage-g-v1.json","state_db":"../var/paper/paper-stage-g.sqlite","trader_id":"COINMASTER-PAPER-G","strategy_id":"stage-g-v1","order_id_tag":"SG"}

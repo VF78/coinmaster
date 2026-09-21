@@ -1,6 +1,6 @@
 # Coinmaster Project Truth
 
-Updated: 2026-05-04 Europe/Madrid
+Updated: 2026-09-22 Europe/Moscow
 
 ## Sources of truth
 
@@ -17,6 +17,10 @@ Coinmaster must autonomously trade within Trading Rules/Radar and move toward **
 ## Latest native research checkpoint
 
 Stage G maximum-ROI reproducible research winner is EMA34, TP `(0.2125,0.2125,0.575)`, BTC `7.875`, SOL `(1.75,2.625,3.5)`, TOTAL `1978792.33053629` (+`50084.62324134` vs Stage F). Its completed G4 row and one clean from-genesis confirmation match exactly across TOTAL/ACTIVE/reserve, fee splits/notionals, 421 fills, zero liquidations, 2280 funding postings, and normalized fills/orders (only engine `init_id` is dropped). Prior G1 at `1945213.42678339` is runner-up. The prior G4 exclusion was procedural, not evidence of an invalid simulation; no new parameter/grid/extension or other native simulation ran. The confirmed report remains `NOT_FAITHFUL_DIAGNOSTIC` and non-live-ranking. Corrected isolated H1/H2 tie Stage D H0 exactly, strict TP fill-cycle H3 is `548601.24002896`, and H4 BTC-only is `89591.16982085`; their final sealed checkpoint SHA-256 remains `7d2de71d1b4a4c54fe0cf1ee036cf224f654c93d4fa474f0416b917853ad9d60`.
+
+## Immutable runtime configuration checkpoint
+
+Issue #94 D0 is implemented locally: `runtime/configs/stage-g-v1.json` pins the entire sealed Stage-G `Candidate` schema. The strict file loader canonicalizes and SHA-256 hashes Candidate content (never labels), rejects missing/extra/non-finite/economically invalid data, and returns a frozen Candidate. The non-secret `paper-stage-g-example.instance.json` documents the required instance envelope. Production paper startup now requires a strict instance config and loads it plus the strategy file once before `TradingNode` construction; it logs and reports `instance_id`, venue, mode, strategy/order identity, and exact candidate hash, while passing the latter IDs into the actual native strategy config. Missing or invalid production config fails closed; an in-process default exists only for isolated tests. Focused tests: 26 passed. No deploy/VPS/paper/live/optimizer action or push occurred. The explicitly addressed CLT Git binary is usable for the local checkpoint. D1 remains separately scoped operational activation/validation only.
 
 ## Core invariants
 

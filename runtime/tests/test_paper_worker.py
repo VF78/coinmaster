@@ -6,7 +6,8 @@ import threading
 import time
 
 from coinmaster.ops.paper import PaperRuntime
-from coinmaster.ops.paper_worker import Worker
+from coinmaster.ops.paper_worker import Worker, _log_startup
+from coinmaster.ops.stage_g_config import InstanceConfig
 
 
 class _Cache:
@@ -69,3 +70,16 @@ def test_process_crash_after_submit_before_ack_restarts_manage_only(tmp_path) ->
     assert pending[0]["instrument_id"] == "SOLUSDT-LINEAR.BYBIT"
     assert [item["kind"] for item in restarted.events()] == ["fill", "fill"]
     restarted.close()
+
+
+def test_startup_identity_and_hash_are_emitted_at_info_level(caplog, tmp_path) -> None:
+    instance = InstanceConfig(
+        instance_id="paper-stage-g", venue="BYBIT", mode="paper",
+        strategy_config=tmp_path / "stage-g.json", state_db=tmp_path / "paper.sqlite",
+        trader_id="COINMASTER-PAPER-G", strategy_id="stage-g-v1", order_id_tag="SG", path=tmp_path / "instance.json",
+    )
+    with caplog.at_level("INFO"):
+        _log_startup(instance, "a" * 64)
+    assert "instance_id=paper-stage-g venue=BYBIT mode=paper" in caplog.text
+    assert "strategy_id=stage-g-v1 order_id_tag=SG" in caplog.text
+    assert f"strategy_config_sha256={'a' * 64}" in caplog.text

@@ -1,12 +1,24 @@
 """Paper-only loopback worker backed by one native Nautilus TradingNode."""
 from __future__ import annotations
 
-import json, os, signal, threading, time
+import json, logging, os, signal, threading, time
 from decimal import Decimal
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.native_paper_node import NativePaperNode
+from coinmaster.ops.stage_g_config import ConfigurationError, load_candidate, load_instance_config
+
+
+LOG = logging.getLogger(__name__)
+
+
+def _log_startup(instance, strategy_hash: str) -> None:
+    LOG.info(
+        "paper startup instance_id=%s venue=%s mode=%s strategy_id=%s order_id_tag=%s strategy_config_sha256=%s",
+        instance.instance_id, instance.venue, instance.mode,
+        instance.strategy_id, instance.order_id_tag, strategy_hash,
+    )
 
 
 class SubmissionJournal:
@@ -30,7 +42,13 @@ class Worker:
             raise RuntimeError("PAPER_WORKER_REFUSES_LIVE_ENABLED")
         from pathlib import Path
 
-        self.runtime = PaperRuntime(Path(os.environ.get("COINMASTER_PAPER_DB", "var/paper/paper.sqlite")), os.environ.get("COINMASTER_PAPER_OWNER", "coinmaster-paper"), int(120e9))
+        instance_path = os.environ.get("COINMASTER_PAPER_INSTANCE_CONFIG")
+        if not instance_path:
+            raise ConfigurationError("MISSING_PAPER_INSTANCE_CONFIG")
+        self.instance = load_instance_config(Path(instance_path))
+        self.loaded_candidate = load_candidate(self.instance.strategy_config)
+        _log_startup(self.instance, self.loaded_candidate.sha256)
+        self.runtime = PaperRuntime(self.instance.state_db, self.instance.instance_id, int(120e9))
         self.runtime.acquire()
         self.mode = "paper"
         self._poll_lock = threading.Lock()
@@ -45,7 +63,9 @@ class Worker:
             native_event_sink=self.runtime.record_native_event,
             entries_gate=lambda: self.recovery_state == "FLAT_RESTART" and self.runtime.health(time.time_ns()).safe_for_increase,
             submission_sink=SubmissionJournal(self.runtime),
-            strategy_name=os.environ.get("COINMASTER_PAPER_STRATEGY_CONFIG", "corrected-v0"),
+            candidate=self.loaded_candidate.candidate,
+            strategy_hash=self.loaded_candidate.sha256,
+            instance=self.instance,
         )
         self.native.prime()
         self.recovery_state = self.runtime.recovery_state()
@@ -103,7 +123,7 @@ class Worker:
         health = self.runtime.health(time.time_ns())
         native = self.native.status()
         native.update({
-            "mode": "paper",
+            "mode": self.instance.mode,
             "safe_for_increase": health.safe_for_increase and native["state"] == "READY",
             "warnings": health.warnings,
             "reconciliation": "RECONCILED" if self.reconciled else "SANDBOX_STATE_MISMATCH",
@@ -129,6 +149,7 @@ class Worker:
 
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     worker = Worker(); worker.start_polling()
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):

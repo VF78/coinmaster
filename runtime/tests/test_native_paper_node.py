@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from decimal import Decimal
+from pathlib import Path
 
 import pytest
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
@@ -16,10 +17,13 @@ from coinmaster.ops.native_paper_node import (
     assert_sandbox_only,
     candidate_hash,
     native_paper_node_config,
+    NativePaperNode,
     paper_candidate,
     sandbox_cash_posting_supported,
     scrub_private_execution_environment,
 )
+from coinmaster.ops.stage_g_config import InstanceConfig, load_candidate
+from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
 
 
 def test_native_node_is_public_data_plus_exactly_one_sandbox_exec_factory() -> None:
@@ -103,6 +107,7 @@ def test_verified_warmup_hydrates_causal_seed_and_default_is_corrected_v0() -> N
     assert bundle.bars[-1].close_time > bundle.bars[0].close_time
     assert paper_candidate("corrected-v0").btc_notional_multiplier == 9.0
     assert paper_candidate("research-6.48").btc_notional_multiplier == 6.48
+    assert candidate_hash("label-a", paper_candidate("corrected-v0")) == candidate_hash("label-b", paper_candidate("corrected-v0"))
     assert candidate_hash("corrected-v0", paper_candidate("corrected-v0")) != candidate_hash("research-6.48", paper_candidate("research-6.48"))
 
 
@@ -124,6 +129,40 @@ def test_pinned_sandbox_live_client_has_no_supported_cash_adjustment_hook() -> N
     # Nautilus 1.231's adapters/sandbox/execution.py exposes submit/cancel and
     # feeds SimulatedExchange, but no LiveExecutionClient.adjust_account API.
     assert sandbox_cash_posting_supported() is False
+
+
+def test_status_exposes_immutable_instance_identity_and_candidate_hash() -> None:
+    class _Node:
+        def is_built(self): return True
+        def is_running(self): return False
+    class _Feed:
+        native_event_sink = None
+        def status(self, _now): return {}
+
+    root = Path(__file__).resolve().parents[1]
+    loaded = load_candidate(root / "configs/stage-g-v1.json")
+    instance = InstanceConfig(
+        instance_id="paper-stage-g", venue="BYBIT", mode="paper",
+        strategy_config=loaded.path, state_db=root / "var/paper/test.sqlite",
+        trader_id="COINMASTER-PAPER-G", strategy_id="stage-g-v1", order_id_tag="SG",
+        path=root / "configs/instance.json",
+    )
+    native = NativePaperNode.__new__(NativePaperNode)
+    native.node, native.feed, native.instance = _Node(), _Feed(), instance
+    native.history_state, native.history_ready, native.prime_error = "READY", True, None
+    native.strategy, native.strategy_hash, native.warmup_bundle, native.entries_gate = None, loaded.sha256, None, None
+    native.candidate, native.submission_sink = loaded.candidate, None
+    native.scrubbed_environment = ()
+    status = native.status()
+    assert status["instance"] == {
+        "instance_id": "paper-stage-g", "venue": "BYBIT", "mode": "paper",
+        "strategy_id": "stage-g-v1", "order_id_tag": "SG",
+    }
+    assert status["strategy"]["config_hash"] == loaded.sha256
+    actual = native._wave_strategy_config()
+    assert actual.strategy_id == instance.strategy_id
+    assert actual.order_id_tag == instance.order_id_tag
+    assert WaveOverlayStrategy(actual).config.strategy_id == instance.strategy_id
 
 
 def test_native_sandbox_lifecycle_has_fills_and_finishes_flat() -> None:
