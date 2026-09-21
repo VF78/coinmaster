@@ -1,0 +1,29 @@
+{
+  "schema": "coinmaster-hyperliquid-production-meta-v1",
+  "collected_at": "2026-09-21T23:33:17Z",
+  "source": "https://api.hyperliquid.xyz/info type=metaAndAssetCtxs, public read-only mainnet response",
+  "request": {"type": "metaAndAssetCtxs"},
+  "response": {
+    "collateralToken": 0,
+    "universe": [
+      {"name": "BTC", "szDecimals": 5, "maxLeverage": 40, "marginTableId": 56},
+      {"name": "SOL", "szDecimals": 2, "maxLeverage": 20, "marginTableId": 54}
+    ],
+    "marginTables": [
+      [54, {"description": "tiered 20x (2)", "marginTiers": [{"lowerBound": "0.0", "maxLeverage": 20}, {"lowerBound": "70000000.0", "maxLeverage": 10}]}],
+      [56, {"description": "tiered 40x", "marginTiers": [{"lowerBound": "0.0", "maxLeverage": 40}, {"lowerBound": "150000000.0", "maxLeverage": 20}]}]
+    ]
+  },
+  "documentation": [
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/tick-and-lot-size",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/error-responses",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margin-tiers",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding"
+  ],
+  "unknowns": [
+    "Authenticated account margin mode, selected leverage, collateral, fee tier, and limits are not public metadata.",
+    "This current metadata does not validate 24-month historical execution data."
+  ]
+}
