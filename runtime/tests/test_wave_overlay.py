@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
+import pytest
+
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Episode, Features, WaveOverlayState, batch_features_for, features_for, linear_quantile
 
 
@@ -99,14 +101,11 @@ def test_sol_timeout_exits_when_features_are_invalid() -> None:
     assert [(item.action, item.quantity) for item in intents] == [("SOL_EXIT", 7)]
 
 
-def test_same_day_add_precedes_coincident_timeout_then_exit_after_fill() -> None:
+def test_due_timeout_preempts_a_coincident_sol_add_under_control_a() -> None:
     source = bars(16)
     feature = Features(15, 1, 1.0, 1.0, 0.0, 1.0, 4.0)
     state = WaveOverlayState(Candidate(sol_max_holding_days=14))
     state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_qty=7, sol_first_fill_at=source[0].close_time, sol_rights={0})
-    add = state.decide(source, [feature] * len(source), 15, 10_000)
-    assert [item.action for item in add] == ["SOL_ADD"]
-    state.on_parent_terminal(add[0].id)
     assert [item.action for item in state.decide(source, [feature] * len(source), 15, 10_000)] == ["SOL_EXIT"]
 
 
@@ -116,6 +115,42 @@ def test_timeout_preemption_toggle_blocks_a_coincident_sol_add() -> None:
     state = WaveOverlayState(Candidate(sol_max_holding_days=14, sol_timeout_preempts_add=True))
     state.episode = Episode("episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100, sol_qty=7, sol_first_fill_at=source[0].close_time, sol_rights={0})
     assert [item.action for item in state.decide(source, [feature] * len(source), 15, 10_000)] == ["SOL_EXIT"]
+
+
+def test_partial_btc_tp_grants_only_a_proportional_sol_right() -> None:
+    source = bars(1)
+    feature = Features(0, 1, 1.0, 1.0, 0.0, 1.0, 4.0)
+    state = WaveOverlayState(Candidate(sol_size_multipliers_h=(1.0, 9.0, 9.0)))
+    state.episode = Episode(
+        "episode", 1, 10_000, 1.0, btc_initial_qty=10, btc_open_qty=10,
+        btc_entry_vwap=source[0].btc_close / 1.02, h=100,
+        wave_levels=(0.01, 9.0, 9.0),
+    )
+    target = state.decide(source, [feature], 0, 10_000)[0]
+    assert target.action == "BTC_REDUCE" and target.quantity == 1.5
+    # Ten percent of the native TP target fills. A full SOL tranche would be
+    # 100 notional, so the earned right is only 10.
+    state.on_fill(target.id, 0.15, 102, source[0].close_time)
+    state.on_parent_terminal(target.id)
+    additions = state.decide(source, [feature], 0, 10_000)
+    assert additions[0].action == "SOL_ADD"
+    assert additions[0].requested_notional == pytest.approx(state.episode.h * 0.1)
+    assert additions[0].requested_notional < state.episode.h
+
+
+def test_timeout_preempts_a_pending_planned_sol_exit() -> None:
+    source = bars(16)
+    feature = Features(15, 1, 1.0, 1.0, 0.0, 1.0, 4.0)
+    state = WaveOverlayState(Candidate(sol_max_holding_days=14))
+    state.episode = Episode(
+        "episode", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1,
+        btc_entry_vwap=100, h=100, sol_qty=7,
+        sol_first_fill_at=source[0].close_time,
+    )
+    planned = state._intent(state.episode, "SOL_HALF_EXIT", 1, None, quantity=3.5, reason="SOL_Z_HALF_EXIT")
+    assert planned.id in state.episode.pending
+    exits = state.decide(source, [feature] * len(source), 15, 10_000)
+    assert [(item.action, item.reason, item.quantity) for item in exits] == [("SOL_EXIT", "SOL_HARD_TIMEOUT", 7)]
 
 
 def test_sol_overlay_toggle_keeps_btc_episode_but_emits_no_sol_add() -> None:
@@ -167,6 +202,7 @@ def test_strict_tp_cycle_uses_confirmed_resting_fill_cycle_not_creation_cycle() 
     eligible = WaveOverlayState(candidate)
     eligible.episode = Episode("eligible", 1, 10_000, 1.0, btc_initial_qty=10, btc_open_qty=10, btc_entry_vwap=source[0].btc_close / 1.02, h=100, wave_levels=(0.01, 9, 9))
     reduction = eligible.decide(source, [feature] * len(source), 0, 10_000)[0]
+    assert reduction.decision_index == 0  # The resting target was created in cycle 0.
     eligible.on_fill(reduction.id, 1.5, 102, source[1].close_time, decision_index=1)
     eligible.on_parent_terminal(reduction.id)
     assert [item.action for item in eligible.decide(source, [feature] * len(source), 1, 10_000)] == ["SOL_ADD"]

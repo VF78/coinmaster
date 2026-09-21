@@ -10,7 +10,7 @@ from nautilus_trader.model.objects import Money, Price, Quantity
 
 from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, MarkPriceUpdate, quote
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
-from coinmaster.domain.wave_overlay import Candidate, DailyBar
+from coinmaster.domain.wave_overlay import Candidate, DailyBar, Episode
 from coinmaster.domain.wave_overlay import Intent
 from coinmaster.venues.marks import venue_mark, venue_mark_data_type
 from coinmaster.venues.signals import daily_signal, daily_signal_data_type
@@ -98,6 +98,131 @@ class CallbackOrderedReentryProbe(WaveOverlayStrategy):
         return ts_now == self.reentry_quote_ts
 
 
+class ControlAExitProbe(WaveOverlayStrategy):
+    """Opens one SOL leg, then exercises the production SOL exit path."""
+
+    def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+        super().__init__(config)
+        self.phase = "OPEN"
+        self.entry_order_id: str | None = None
+        self.entry_filled = False
+
+    def on_quote_tick(self, tick) -> None:
+        if tick.instrument_id != self.config.sol_id:
+            return
+        instrument = self.cache.instrument(tick.instrument_id)
+        assert instrument is not None
+        if self.phase == "OPEN":
+            order = self.order_factory.market(instrument_id=tick.instrument_id, order_side=OrderSide.BUY, quantity=instrument.make_qty(Decimal("1")), time_in_force=TimeInForce.IOC)
+            self.entry_order_id = str(order.client_order_id)
+            self.phase = "ENTRY_SUBMITTED"
+            self.submit_order(order)
+        elif self.phase == "EXIT_READY":
+            self.phase = "EXIT_SUBMITTED"
+            self._submit_intent(Intent("sol-exit", "probe", "SOL_EXIT", None, -1, quantity=1, reason="SOL_Z_FULL_EXIT"), float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+
+    def on_order_filled(self, event) -> None:
+        super().on_order_filled(event)
+        if str(event.client_order_id) == self.entry_order_id:
+            self.entry_filled = True
+
+    def on_position_event(self, event) -> None:
+        super().on_position_event(event)
+        if self.entry_filled and self.cache.positions_open():
+            self.phase = "EXIT_READY"
+
+
+class QueuedPauseProbe(WaveOverlayStrategy):
+    """A queued entry sees the gate again at the later executable quote."""
+
+    def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+        super().__init__(config)
+        self.phase = "QUEUE"
+        self.allow_increase = True
+
+    def on_quote_tick(self, tick) -> None:
+        if tick.instrument_id != self.config.btc_id:
+            return
+        if self.phase == "QUEUE":
+            intent = Intent("queued-entry", "probe", "BTC_ENTRY", None, 1, requested_notional=100)
+            self._queued_intents.append((intent, None, 0))
+            self._queued_intent_ready_ns[intent.id] = tick.ts_event + 1
+            self.allow_increase = False
+            self.phase = "BLOCKED"
+            return
+        super().on_quote_tick(tick)
+
+    def _entries_enabled(self) -> bool:
+        return self.allow_increase
+
+    def _tier_allows_increase(self, instrument_id, side, quantity, ts_now: int) -> bool:
+        return True
+
+
+class SideAwareSizingProbe(WaveOverlayStrategy):
+    """Submits a buy and a sell with deliberately asymmetric executable books."""
+
+    def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+        super().__init__(config)
+        self.btc_sent = False
+        self.sol_sent = False
+
+    def on_quote_tick(self, tick) -> None:
+        if tick.instrument_id == self.config.btc_id and not self.btc_sent:
+            self.btc_sent = True
+            self._submit_intent(Intent("buy", "probe", "BTC_ENTRY", None, 1, requested_notional=100), float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+        if tick.instrument_id == self.config.sol_id and not self.sol_sent:
+            self.sol_sent = True
+            self._submit_intent(Intent("sell", "probe", "SOL_ADD", None, -1, requested_notional=100), float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+
+    def _tier_allows_increase(self, instrument_id, side, quantity, ts_now: int) -> bool:
+        return True
+
+
+class TimeoutLiquidationPreemptionProbe(WaveOverlayStrategy):
+    """Arms an oversized queued timeout before a native forced liquidation."""
+
+    def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+        super().__init__(config)
+        self.btc_opened = False
+        self.sol_opened = False
+        self.forced_timeout_cleared = False
+        self.timeout_id = "timeout-before-liquidation"
+
+    def on_quote_tick(self, tick) -> None:
+        instrument = self.cache.instrument(tick.instrument_id)
+        assert instrument is not None
+        if tick.instrument_id == self.config.btc_id and not self.btc_opened:
+            self.btc_opened = True
+            self.submit_order(self.order_factory.market(
+                instrument_id=tick.instrument_id, order_side=OrderSide.BUY,
+                quantity=instrument.make_qty(Decimal("1")), time_in_force=TimeInForce.IOC,
+            ))
+            return
+        if tick.instrument_id == self.config.sol_id and not self.sol_opened:
+            self.sol_opened = True
+            self.submit_order(self.order_factory.market(
+                instrument_id=tick.instrument_id, order_side=OrderSide.BUY,
+                quantity=instrument.make_qty(Decimal("1")), time_in_force=TimeInForce.IOC,
+            ))
+            return
+        super().on_quote_tick(tick)
+
+    def on_position_event(self, event) -> None:
+        super().on_position_event(event)
+        open_ids = {position.instrument_id for position in self.cache.positions_open()}
+        if self.forced_timeout_cleared or open_ids != {self.config.btc_id, self.config.sol_id}:
+            return
+        timeout = Intent(self.timeout_id, "probe", "SOL_EXIT", None, -1, quantity=10, reason="SOL_HARD_TIMEOUT")
+        self._domain.episode = Episode("probe", 1, 10_000, 1.0, btc_initial_qty=1, btc_open_qty=1, btc_entry_vwap=100, h=100)
+        self._domain.episode.pending[timeout.id] = timeout
+        self._mandatory_sol_exit = (timeout, None, 0)
+        self._liquidating = True
+        self._liquidation_waiting = {self.config.btc_id, self.config.sol_id}
+        self._begin_forced_close("LIQUIDATION")
+        self.forced_timeout_cleared = self._mandatory_sol_exit is None and timeout.id not in self._domain.episode.pending
+
+
 def make_bar_type(instrument_id, price_type):
     return BarType(instrument_id, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
 
@@ -107,6 +232,100 @@ def make_bar(kind, open_price: float, close_price: float, timestamp: int) -> Bar
     precision = 1 if kind.instrument_id == BTC_PERP.id else 2
     price = lambda value: Price.from_str(f"{value:.{precision}f}")
     return Bar(kind, price(open_price), price(max(open_price, close_price)), price(min(open_price, close_price)), price(close_price), Quantity.from_str(volume), timestamp, timestamp)
+
+
+def native_engine(strategy: WaveOverlayStrategy) -> BacktestEngine:
+    engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(10_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"))
+    engine.add_instrument(BTC_PERP)
+    engine.add_instrument(SOL_PERP)
+    engine.add_strategy(strategy)
+    return engine
+
+
+def probe_config() -> WaveOverlayStrategyConfig:
+    from nautilus_trader.model.identifiers import ClientId
+    return WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP.id, sol_id=SOL_PERP.id,
+        btc_bar_type=make_bar_type(BTC_PERP.id, PriceType.LAST), sol_bar_type=make_bar_type(SOL_PERP.id, PriceType.LAST),
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id),
+        mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"),
+    )
+
+
+def test_control_a_sol_exit_is_taker_ioc_at_zero_spread() -> None:
+    strategy = ControlAExitProbe(probe_config())
+    engine = native_engine(strategy)
+    engine.add_data([quote(SOL_PERP.id, f"{price:.2f}", f"{price:.2f}", ts) for ts, price in enumerate((100, 101, 102, 103, 104), start=1)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        fills = engine.trader.generate_order_fills_report()
+        assert len(fills) == 2
+        assert list(fills["is_reduce_only"]) == [False, True]
+        sol_exit = next(item for item in strategy.fill_audit if item["action"] == "SOL_EXIT")
+        assert sol_exit["post_only"] == "false"
+        assert sol_exit["native_liquidity_side"] == "TAKER"
+    finally:
+        engine.dispose()
+
+
+def test_queued_increase_is_rejected_after_pause_gate_transition() -> None:
+    strategy = QueuedPauseProbe(probe_config())
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.1", ts) for ts in (1, 2)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert engine.trader.generate_order_fills_report().empty
+        assert strategy.pre_submit_gate_blocks == [{"timestamp": "2", "intent_id": "queued-entry", "action": "BTC_ENTRY", "reason": "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM"}]
+    finally:
+        engine.dispose()
+
+
+def test_notional_sizing_uses_buy_ask_and_sell_bid_before_rounding() -> None:
+    strategy = SideAwareSizingProbe(probe_config())
+    engine = native_engine(strategy)
+    engine.add_data([
+        quote(BTC_PERP.id, "100.0", "110.0", 1),
+        quote(SOL_PERP.id, "30.00", "40.00", 2),
+    ], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        fills = engine.trader.generate_order_fills_report()
+        quantities = {row.instrument_id: Decimal(str(row.filled_qty)) for row in fills.itertuples()}
+        assert quantities[str(BTC_PERP.id)] == Decimal("0.909")  # 100 / ask 110, then 0.001 step.
+        assert quantities[str(SOL_PERP.id)] == Decimal("3.3")  # 100 / bid 30, then 0.1 step.
+    finally:
+        engine.dispose()
+
+
+def test_forced_liquidation_supersedes_timeout_and_closes_native_remaining_leaves() -> None:
+    strategy = TimeoutLiquidationPreemptionProbe(probe_config())
+    engine = native_engine(strategy)
+    engine.add_data([
+        quote(BTC_PERP.id, "100.0", "100.1", 1),  # open BTC
+        quote(SOL_PERP.id, "30.00", "30.01", 2),  # open SOL, arm timeout then liquidation
+        quote(BTC_PERP.id, "99.0", "99.1", 3),    # must not wait for a SOL quote
+        quote(SOL_PERP.id, "29.00", "29.01", 4),  # close actual 1 SOL, not timeout's 10
+    ], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        fills = engine.trader.generate_order_fills_report()
+        btc_reduction = fills[(fills["instrument_id"] == str(BTC_PERP.id)) & fills["is_reduce_only"]].iloc[0]
+        sol_reduction = fills[(fills["instrument_id"] == str(SOL_PERP.id)) & fills["is_reduce_only"]].iloc[0]
+        assert btc_reduction["ts_last"].value == 3
+        assert Decimal(str(sol_reduction["filled_qty"])) == Decimal("1")
+        assert strategy.forced_timeout_cleared
+        assert all(item["action"] != "SOL_EXIT" for item in strategy.fill_audit)
+    finally:
+        engine.dispose()
+
+
+def test_resting_btc_tp_uses_current_confirmed_fill_cycle_not_target_creation() -> None:
+    strategy = WaveOverlayStrategy(probe_config())
+    strategy._bars = [object(), object(), object()]  # Only current cycle length is relevant here.
+    resting_target = Intent("resting-tp", "probe", "BTC_REDUCE", 0, -1, quantity=1, decision_index=0)
+    strategy._decision_index_by_order["resting-order"] = 0
+    assert strategy._confirmed_fill_cycle(resting_target, "resting-order") == 2
 
 
 def test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_streams() -> None:
@@ -350,7 +569,9 @@ def test_paired_marks_liquidate_each_native_leg_on_its_own_next_quote() -> None:
         close_fees = sum((Decimal(str(item).split()[0]) for row in fills.iloc[2:]["commissions"] for item in row), Decimal("0"))
         final_cash = Decimal(engine.trader.generate_account_report(SIM)["total"].iloc[-1].split()[0])
         assert final_cash == Decimal("10000") + btc_pnl + sol_pnl - fees
-        assert close_fees == Decimal("50.86818100")
+        # Entry sizing now uses the executable ask, not the prior bid. The
+        # native liquidation remains reduce-only and reconciles identically.
+        assert close_fees == Decimal("50.86743800")
         assert Decimal(audit["close_value"]) == btc_quantity * Decimal("1.0") + sol_quantity * Decimal("100.1")
         assert Decimal(audit["marked_equity"]) <= Decimal(audit["tier_maintenance_margin"])
         assert engine.trader.generate_positions_report()["closing_order_id"].notna().all()

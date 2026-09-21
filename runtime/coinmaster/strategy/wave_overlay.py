@@ -85,6 +85,7 @@ class WaveOverlayStrategy(Strategy):
                 self._latest_tier_marks[update.instrument_id] = update
         self._queued_intents: list[tuple[Intent, float | None, int]] = []
         self._queued_intent_ready_ns: dict[str, int] = {}
+        self._mandatory_sol_exit: tuple[Intent, float | None, int] | None = None
         self._queued_close_submitted: dict[str, set[InstrumentId]] = {}
         self._group_close_reconciliation_pending = False
         self._liquidating = False
@@ -284,11 +285,30 @@ class WaveOverlayStrategy(Strategy):
         if self._liquidating or (not self._entries_enabled() and not self.cache.positions_open()):
             return
         for intent in self._domain.decide(self._bars, self._current_signals, len(self._bars) - 1, self._active_marked(self._current_btc_mark, self._current_sol_mark)):
+            if intent.action == "CLOSE_ALL":
+                # A mandatory group exit owns the next executable quotes.  It
+                # must not wait behind an older queued SOL add or planned exit.
+                self._discard_queued_intents(lambda queued: queued.id != intent.id)
+                self._begin_forced_close(intent.reason or "CLOSE_ALL", intent)
+                return
+            if intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+                self._preempt_with_mandatory_sol_exit(intent, self._current_signals[-1].sigma, len(self._bars) - 1)
+                return
             self._queued_intents.append((intent, self._current_signals[-1].sigma, len(self._bars) - 1))
             self._queued_intent_ready_ns[intent.id] = self._current_btc.ts_event + self.config.execution_delay_ns
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        if self._mandatory_sol_exit is not None:
+            # A timeout is allowed to cancel a stale/resting SOL reduction,
+            # then uses the actual native position leaves on the next SOL
+            # quote. No queued increase may pass while this is in progress.
+            if tick.instrument_id != self.config.sol_id or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open()):
+                return
+            intent, sigma, index = self._mandatory_sol_exit
+            self._mandatory_sol_exit = None
+            self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
+            return
         if self._forced_close_reason is not None:
             self._submit_forced_close_on_quote(tick)
             return
@@ -332,7 +352,7 @@ class WaveOverlayStrategy(Strategy):
                 marked += position.unrealized_pnl(position_instrument.make_price(mark)).as_decimal()
         return float(marked)
 
-    def _submit_intent(self, intent: Intent, btc_price: float, sol_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None) -> None:
+    def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None) -> None:
         if intent.action == "CLOSE_ALL":
             for position in self.cache.positions_open():
                 if position.instrument_id not in (self.config.btc_id, self.config.sol_id):
@@ -355,25 +375,16 @@ class WaveOverlayStrategy(Strategy):
         instrument = self.cache.instrument(instrument_id)
         if instrument is None:
             return
+        side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
+        executable_price = Decimal(str(ask_price if side == OrderSide.BUY else bid_price))
         quantity = intent.quantity
         if intent.action == "BTC_ENTRY" and intent.requested_notional is not None:
-            quantity = intent.requested_notional / btc_price
+            quantity = float(Decimal(str(intent.requested_notional)) / executable_price)
         if intent.action == "SOL_ADD" and intent.requested_notional is not None:
-            quantity = min(intent.requested_notional, self._candidate.max_parent_notional) / sol_price
+            quantity = float(Decimal(str(min(intent.requested_notional, self._candidate.max_parent_notional))) / executable_price)
         if quantity is None or quantity <= 0:
             return
-        side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
         reduce_only = intent.action in {"BTC_REDUCE", "SOL_HALF_EXIT", "SOL_EXIT"}
-        if not reduce_only and not self._tier_allows_increase(instrument_id, side, Decimal(str(quantity)), ts_now if ts_now is not None else self._current_btc.ts_event if self._current_btc else 0):
-            self.log.warning(f"Rejecting {intent.action}: missing/stale mark or insufficient public-tier margin")
-            self.pre_submit_gate_blocks.append({
-                "timestamp": str(ts_now if ts_now is not None else self._current_btc.ts_event if self._current_btc else 0),
-                "intent_id": intent.id,
-                "action": intent.action,
-                "reason": "PRE_SUBMIT_TIER_OR_MARGIN_GATE",
-            })
-            self._domain.on_parent_terminal(intent.id)
-            return
         if reduce_only:
             position = next((item for item in self.cache.positions_open() if item.instrument_id == instrument_id), None)
             if position is None:
@@ -386,13 +397,30 @@ class WaveOverlayStrategy(Strategy):
             # A sub-step request is a reject, never an implicit size increase.
             self._domain.on_parent_terminal(intent.id)
             return
-        # Only known/causally planned reductions use genuine passive liquidity.
-        # MARKET/IOC orders are never relabeled: entries, adds, hard timeout,
-        # trail/regime, liquidation and terminal closure remain native taker.
-        passive_reduction = reduce_only and intent.action != "CLOSE_ALL" and intent.reason != "SOL_HARD_TIMEOUT"
+        # Increases are gated at the last safe point, after executable-price
+        # sizing/normalization and immediately before native order creation.
+        # Reductions deliberately bypass both the pause/stale and margin gates.
+        if not reduce_only:
+            now = ts_now if ts_now is not None else self._current_btc.ts_event if self._current_btc else 0
+            min_quantity = instrument.min_quantity.as_decimal() if instrument.min_quantity is not None else None
+            min_notional = instrument.min_notional.as_decimal() if instrument.min_notional is not None else None
+            meets_minimum = (min_quantity is None or rounded >= min_quantity) and (min_notional is None or rounded * executable_price >= min_notional)
+            if not meets_minimum or not self._entries_enabled() or not self._tier_allows_increase(instrument_id, side, rounded, now):
+                self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
+                self.pre_submit_gate_blocks.append({
+                    "timestamp": str(now),
+                    "intent_id": intent.id,
+                    "action": intent.action,
+                    "reason": "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM",
+                })
+                self._domain.on_parent_terminal(intent.id)
+                return
+        # Control A makes every planned SOL exit a native taker IOC.  Resting
+        # post-only liquidity remains only for explicit BTC TP targets.
+        passive_reduction = intent.action == "BTC_REDUCE" and intent.limit_price is not None
         if passive_reduction:
             raw_price = Decimal(str(intent.limit_price)) if intent.limit_price is not None else (
-                Decimal(str(sol_price if side == OrderSide.SELL else sol_price))
+                executable_price
             )
             # For a planned SOL z exit, quote at the passive side.  A target
             # BTC price is supplied by the confirmed-entry plan above.
@@ -426,6 +454,26 @@ class WaveOverlayStrategy(Strategy):
         self._decision_index_by_order[str(order.client_order_id)] = decision_index
         self.submit_order(order)
 
+    def _discard_queued_intents(self, predicate) -> None:
+        """Terminally remove queued work that a mandatory exit supersedes."""
+        retained: list[tuple[Intent, float | None, int]] = []
+        for queued in self._queued_intents:
+            intent, _, _ = queued
+            if predicate(intent):
+                self._queued_intent_ready_ns.pop(intent.id, None)
+                self._domain.on_parent_terminal(intent.id)
+            else:
+                retained.append(queued)
+        self._queued_intents = retained
+
+    def _preempt_with_mandatory_sol_exit(self, intent: Intent, sigma: float | None, index: int) -> None:
+        """Cancel SOL leaves before a timeout reduces the reconciled remainder."""
+        self._discard_queued_intents(lambda queued: queued.action.startswith("SOL") and queued.id != intent.id)
+        for order in list(self.cache.orders_open()):
+            if order.instrument_id == self.config.sol_id:
+                self.cancel_order(order)
+        self._mandatory_sol_exit = (intent, sigma, index)
+
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
         """Cancel every resting order before closing actual cache leaves taker."""
         # Terminal settlement is the final authority: it may supersede an
@@ -437,6 +485,16 @@ class WaveOverlayStrategy(Strategy):
         )
         if self._forced_close_reason is not None and not supersedes:
             return
+        # A forced group close owns both instruments. A queued timeout has no
+        # authority to wait for a SOL quote ahead of liquidation, regime,
+        # trail, or terminal settlement. Clear its domain marker before the
+        # cancellation callbacks race with a native fill; the forced path
+        # always reads actual cache leaves for its reduce-only quantity.
+        if self._mandatory_sol_exit is not None:
+            timeout, _, _ = self._mandatory_sol_exit
+            self._mandatory_sol_exit = None
+            self._domain.on_parent_terminal(timeout.id)
+        self._discard_queued_intents(lambda _queued: True)
         self._forced_close_reason = reason
         self._forced_close_intent = intent
         self._forced_close_submitted.clear()
@@ -585,7 +643,10 @@ class WaveOverlayStrategy(Strategy):
             return
         sigma = self._sigma_by_order.get(str(event.client_order_id))
         when = datetime.fromtimestamp(event.ts_event / 1_000_000_000, UTC)
-        self._domain.on_fill(intent.id, float(event.last_qty), float(event.last_px), when, sigma, decision_index=max(0, len(self._bars) - 1))
+        self._domain.on_fill(
+            intent.id, float(event.last_qty), float(event.last_px), when, sigma,
+            decision_index=self._confirmed_fill_cycle(intent, str(event.client_order_id)),
+        )
         if intent.action == "SOL_HALF_EXIT":
             self._domain.on_half_exit_decision(self._decision_index_by_order[str(event.client_order_id)])
         order = self.cache.order(event.client_order_id)
@@ -705,6 +766,18 @@ class WaveOverlayStrategy(Strategy):
     def _entries_enabled(self) -> bool:
         gate = self.config.entries_gate
         return self.config.entries_enabled and (bool(gate()) if callable(gate) else True)
+
+    def _confirmed_fill_cycle(self, intent: Intent, client_order_id: str) -> int:
+        """Map a confirmed TP fill to the current causal decision cycle.
+
+        A BTC target may rest across daily decisions. Strict H3 rights must
+        use the cycle in which Nautilus confirms that fill, not its old target
+        creation/submission index. Other intents retain their own decision
+        context for audit and exit ordering.
+        """
+        if intent.action == "BTC_REDUCE":
+            return max(0, len(self._bars) - 1)
+        return self._decision_index_by_order.get(client_order_id, max(0, len(self._bars) - 1))
 
     def _record_native_event(self, event_id: str, kind: str) -> None:
         sink = self.config.event_sink

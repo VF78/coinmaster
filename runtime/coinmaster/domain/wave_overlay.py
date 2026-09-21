@@ -222,8 +222,14 @@ class Episode:
     btc_tps: set[int] = field(default_factory=set)
     btc_filled_tps: set[int] = field(default_factory=set)
     sol_rights: set[int] = field(default_factory=set)
+    # A BTC target can report more than one confirmed native fill.  SOL
+    # exposure is earned only in the same proportion as the target quantity
+    # that has actually filled, never when the target is merely accepted.
+    btc_tp_filled_qty: dict[int, float] = field(default_factory=dict)
+    sol_right_fraction: dict[int, float] = field(default_factory=dict)
     sol_right_decision_index: dict[int, int] = field(default_factory=dict)
     sol_adds: set[int] = field(default_factory=set)
+    sol_add_filled_notional: dict[int, float] = field(default_factory=dict)
     sol_qty: float = 0.0
     sol_first_fill_at: datetime | None = None
     fixed_sigma: float | None = None
@@ -265,18 +271,26 @@ class WaveOverlayState:
             episode = Episode(str(uuid4()), feature.side, active_marked, feature.beta, wave_levels=levels)
             self.episode = episode
             return [self._intent(episode, "BTC_ENTRY", feature.side, None, requested_notional=min(self.config.btc_notional_multiplier * active_marked, self.config.max_parent_notional))]
-        if any(intent_id not in episode.resting_reductions for intent_id in episode.pending):
+        if episode.btc_entry_vwap is None or episode.h is None:
             return []
         if feature.side != episode.side:
             episode.close_reason = "REGIME"
             return [self._intent(episode, "CLOSE_ALL", -episode.side, None, reason="REGIME")]
-        if episode.btc_entry_vwap is None or episode.h is None:
-            return []
         f = episode.side * (bars[index].btc_close / episode.btc_entry_vwap - 1)
         episode.best_f = max(episode.best_f, f, 0.0)
         if (episode.best_f > self.config.btc_close_trail_fraction and f <= episode.best_f - self.config.btc_close_trail_fraction):
             episode.close_reason = "TRAIL"
             return [self._intent(episode, "CLOSE_ALL", -episode.side, None, reason="TRAIL")]
+        # A due timeout is a mandatory reduction.  It must preempt a queued
+        # add or a resting planned exit under every candidate, including the
+        # legacy control flag retained in the immutable candidate schema.
+        timeout = self._sol_exits(episode, feature, bars[index], index)
+        if timeout:
+            return timeout
+        # Ordinary work waits for a parent to become terminal, but the
+        # mandatory exits above deliberately bypass that lock.
+        if any(intent_id not in episode.resting_reductions for intent_id in episode.pending):
+            return []
         intents: list[Intent] = []
         for level, threshold in enumerate(episode.wave_levels or ()):
             # v3 installs known targets as genuine resting post-only orders on
@@ -288,13 +302,6 @@ class WaveOverlayState:
                 intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_open_qty)))
         if intents:
             return intents
-        # H1: a due timeout is an exit, never a same-decision opportunity to
-        # increase SOL risk. The default retains the sealed add-then-timeout
-        # ordering for reproducible control evidence.
-        if self.config.sol_timeout_preempts_add:
-            timeout = self._sol_exits(episode, feature, bars[index], index)
-            if timeout:
-                return timeout
         if not self.config.sol_overlay_enabled:
             return []
         # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
@@ -313,9 +320,12 @@ class WaveOverlayState:
             signed_z = episode.side * z
             for level in sorted(episode.sol_rights):
                 strict_cycle = not self.config.sol_late_entry_after_tp
-                if level not in episode.sol_adds and (not strict_cycle or episode.sol_right_decision_index.get(level) == index) and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
+                fraction = episode.sol_right_fraction.get(level, 1.0)
+                allowed_notional = episode.h * self.config.sol_size_multipliers_h[level] * fraction
+                remaining_notional = allowed_notional - episode.sol_add_filled_notional.get(level, 0.0)
+                if remaining_notional > 1e-12 and (not strict_cycle or episode.sol_right_decision_index.get(level) == index) and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
                     episode.attempted_sol_at[level] = index
-                    intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=episode.h * self.config.sol_size_multipliers_h[level]))
+                    intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=remaining_notional))
             if intents:
                 return intents
         return self._sol_exits(episode, feature, bars[index], index, z)
@@ -346,6 +356,12 @@ class WaveOverlayState:
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
             episode.btc_filled_tps.add(intent.level)
             episode.sol_rights.add(intent.level)
+            target_quantity = intent.quantity or 0.0
+            filled_quantity = episode.btc_tp_filled_qty.get(intent.level, 0.0) + quantity
+            if target_quantity > 0:
+                filled_quantity = min(filled_quantity, target_quantity)
+                episode.sol_right_fraction[intent.level] = min(1.0, filled_quantity / target_quantity)
+            episode.btc_tp_filled_qty[intent.level] = filled_quantity
             # Resting targets can fill days after their creation. Strict H3
             # compares against the fill's applied decision cycle, never the
             # stale intent creation cycle.
@@ -354,6 +370,8 @@ class WaveOverlayState:
         elif intent.action == "SOL_ADD":
             episode.sol_adds.add(intent.level)  # type: ignore[arg-type]
             episode.sol_qty += quantity
+            if intent.level is not None:
+                episode.sol_add_filled_notional[intent.level] = episode.sol_add_filled_notional.get(intent.level, 0.0) + quantity * price
             if episode.sol_first_fill_at is None:
                 episode.sol_first_fill_at, episode.fixed_sigma = when, sigma
             episode.sol_half_done = False
