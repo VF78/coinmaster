@@ -48,6 +48,10 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     live_mark_client_id: ClientId | None = None
     btc_signal_data_type: DataType | None = None
     sol_signal_data_type: DataType | None = None
+    # Signals retain their source-venue identity; execution IDs above may be
+    # different instruments/venues (for example Bybit signals, HL Sandbox).
+    btc_signal_id: InstrumentId | None = None
+    sol_signal_id: InstrumentId | None = None
     signal_client_id: ClientId | None = None
     # Optional, sparse reporting checkpoints.  They use the same native
     # account/cache and paired CustomData marks as the strategy, never a
@@ -148,13 +152,15 @@ class WaveOverlayStrategy(Strategy):
         # explicit at this boundary and remains compatible with direct calls.
         mark = data.data if isinstance(data, CustomData) else data
         if isinstance(mark, DailySignalBar):
-            if mark.instrument_id not in (self.config.btc_id, self.config.sol_id):
+            signal_ids = (self.config.btc_signal_id or self.config.btc_id, self.config.sol_signal_id or self.config.sol_id)
+            if mark.instrument_id not in signal_ids:
                 return
-            bar_type = self.config.btc_bar_type if mark.instrument_id == self.config.btc_id else self.config.sol_bar_type
+            execution_id = self.config.btc_id if mark.instrument_id == signal_ids[0] else self.config.sol_id
+            bar_type = self.config.btc_bar_type if execution_id == self.config.btc_id else self.config.sol_bar_type
             self._day.setdefault(mark.ts_event, {})[bar_type] = mark
             # Input ordering is mark -> signal -> quote.  Retain only the two
             # latest marks and pair them here at the daily boundary.
-            latest = self._latest_marks.get(mark.instrument_id)
+            latest = self._latest_marks.get(execution_id)
             if latest is not None and latest.ts_event == mark.ts_event:
                 self._on_venue_mark(latest)
             self._try_advance_session(mark.ts_event)

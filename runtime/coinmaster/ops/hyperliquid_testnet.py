@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import json
 import os
 import threading
 import time
@@ -16,6 +17,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
 
+from nautilus_trader.adapters.bybit import BybitLiveDataClientFactory
+from nautilus_trader.adapters.bybit.config import BybitDataClientConfig
 from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
@@ -29,8 +32,9 @@ from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 
 from coinmaster.domain.wave_overlay import Candidate
-from coinmaster.ops.native_paper_node import EXECUTION_FACTORY_ALLOWLIST, FeedBook, FeedObserver, FeedObserverConfig, _load_warmup, scrub_private_execution_environment
+from coinmaster.ops.native_paper_node import BYBIT_IDS, EXECUTION_FACTORY_ALLOWLIST, FeedBook, FeedObserver, FeedObserverConfig, scrub_private_execution_environment
 from coinmaster.ops.paper import PaperRuntime
+from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
 from coinmaster.ops.stage_g_config import TestnetInstanceConfig, candidate_content_hash
 from coinmaster.venues.hyperliquid_profile import HyperliquidProfileEnvironment, HyperliquidVenueProfile
 
@@ -39,7 +43,8 @@ PUBLIC_MAINNET_ENVIRONMENT = nautilus_pyo3.HyperliquidEnvironment.MAINNET
 BTC_PERP = InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID")
 SOL_PERP = InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID")
 TESTNET_IDS = (BTC_PERP, SOL_PERP)
-NATIVE_TESTNET_FACTORIES = (HyperliquidLiveDataClientFactory, SandboxLiveExecClientFactory)
+PUBLIC_DATA_FACTORIES = (BybitLiveDataClientFactory, HyperliquidLiveDataClientFactory)
+NATIVE_TESTNET_FACTORIES = (SandboxLiveExecClientFactory,)
 
 
 @dataclass(frozen=True)
@@ -54,8 +59,12 @@ class CrossVenueStageGGate:
     execution_ids: tuple[str, str]
     candidate_hash: str
     strategy_code_hash: str
+    execution_policy_hash: str
     warmup_state: str
     margin_policy_state: str
+    execution_policy_state: str
+    funding_state: str
+    capital_state: str
     attachable: bool
 
 
@@ -66,21 +75,41 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
     are execution instruments only. Existing strategy code is rejected until
     it no longer imports research-only margin machinery.
     """
-    _, warmup_state = _load_warmup(warmup_manifest, now_ns=now_ns)
+    _, warmup_state = load_stageg_bybit_warmup(warmup_manifest, now_ms=None if now_ns is None else now_ns // 1_000_000)
     source = strategy_path.read_bytes()
     strategy_code_hash = hashlib.sha256(source).hexdigest()
     profile = HyperliquidVenueProfile.from_snapshot(profile_root, environment=HyperliquidProfileEnvironment.MAINNET)
-    margin_policy_state = "READY_HL_MAINNET_PROFILE" if profile.instruments else "MISSING_HL_MAINNET_PROFILE"
+    margin_policy_state = "PUBLIC_TIERS_ONLY_ACCOUNT_MARGIN_UNPROVEN" if profile.instruments else "MISSING_HL_MAINNET_PROFILE"
     if b"research.native_fixture" in source or b"TierMarginPolicy" in source:
         margin_policy_state = "BLOCKED_RESEARCH_MARGIN_POLICY"
-    attachable = warmup_state == "READY" and margin_policy_state == "READY_HL_MAINNET_PROFILE"
+    execution_policy = {
+        "version": "hl-mainnet-public-data-native-sandbox-v1",
+        "maker_fee_assumption": "0.00015",
+        "taker_fee_assumption": "0.00045",
+        "account_fee_tier": "UNKNOWN",
+        "execution_quality": "UNKNOWN_NO_24M_BBO_L2_OR_TRADE_TAPE",
+        "funding_cash": "UNPOSTED",
+    }
+    execution_policy_hash = hashlib.sha256(
+        json.dumps(execution_policy, sort_keys=True, separators=(",", ":")).encode(),
+    ).hexdigest()
+    execution_policy_state = "BLOCKED_ACCOUNT_FEES_AND_EXECUTION_QUALITY_UNPROVEN"
+    funding_state = "BLOCKED_SANDBOX_FUNDING_CASH_POSTING_UNSUPPORTED"
+    capital_state = "EXPLICIT_10000_USDC_VS_10000_USDT_1_TO_1_PEG_ASSUMPTION_NOT_PARITY"
+    # Public profile tiers and an explicit fee/currency assumption are not
+    # evidence of account-specific executable parity. Stay unattached.
+    attachable = False
     return CrossVenueStageGGate(
         signal_ids=("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT"),
         execution_ids=(str(BTC_PERP), str(SOL_PERP)),
         candidate_hash=candidate_content_hash(candidate),
         strategy_code_hash=strategy_code_hash,
+        execution_policy_hash=execution_policy_hash,
         warmup_state=warmup_state,
         margin_policy_state=margin_policy_state,
+        execution_policy_state=execution_policy_state,
+        funding_state=funding_state,
+        capital_state=capital_state,
         attachable=attachable,
     )
 
@@ -185,9 +214,10 @@ def require_testnet_sandbox(environment: Mapping[str, str] | None = None) -> Non
 
 
 def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
-    """Build exactly one public MAINNET-data + native-sandbox node route."""
+    """Build public Bybit signals + HL MAINNET execution data + Sandbox."""
     provider = InstrumentProviderConfig(load_ids=frozenset(TESTNET_IDS))
     routing = RoutingConfig(venues=frozenset({"HYPERLIQUID"}))
+    bybit_routing = RoutingConfig(venues=frozenset({"BYBIT"}))
     return TradingNodeConfig(
         environment=Environment.LIVE,
         trader_id=trader_id,
@@ -197,6 +227,11 @@ def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
         # reconciliation.
         exec_engine=LiveExecEngineConfig(reconciliation=False),
         data_clients={
+            "BYBIT-PUBLIC-SIGNAL": BybitDataClientConfig(
+                api_key=None, api_secret=None,
+                instrument_provider=InstrumentProviderConfig(load_ids=frozenset(BYBIT_IDS)),
+                routing=bybit_routing,
+            ),
             "HYPERLIQUID-MAINNET-DATA": HyperliquidDataClientConfig(
                 instrument_provider=provider, routing=routing, environment=PUBLIC_MAINNET_ENVIRONMENT,
             ),
@@ -204,7 +239,10 @@ def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
         exec_clients={
             "SANDBOX": SandboxExecutionClientConfig(
                 venue="HYPERLIQUID",
-                starting_balances=["100000 USDC"],
+                # Stage-G sealed research begins with 10,000 USDT.  The
+                # Sandbox denomination is 10,000 USDC under an explicit
+                # 1:1 peg assumption; this is not an assertion of parity.
+                starting_balances=["10000 USDC"],
                 base_currency="USDC",
                 use_reduce_only=True,
                 routing=routing,
@@ -214,13 +252,17 @@ def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
 
 
 def assert_native_testnet_only(config: TradingNodeConfig) -> None:
-    """Reject any route beyond public mainnet data and native Sandbox exec."""
-    if set(config.data_clients) != {"HYPERLIQUID-MAINNET-DATA"} or set(config.exec_clients) != {"SANDBOX"}:
+    """Allow two public data-only venues and exactly one Sandbox exec route."""
+    expected_data = {"BYBIT-PUBLIC-SIGNAL", "HYPERLIQUID-MAINNET-DATA"}
+    if set(config.data_clients) != expected_data or set(config.exec_clients) != {"SANDBOX"}:
         raise RuntimeError("HL_TESTNET_SINGLE_NATIVE_ROUTE_REQUIRED")
+    bybit = config.data_clients["BYBIT-PUBLIC-SIGNAL"]
     data = config.data_clients["HYPERLIQUID-MAINNET-DATA"]
     execution = config.exec_clients["SANDBOX"]
-    if not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, SandboxExecutionClientConfig):
+    if not isinstance(bybit, BybitDataClientConfig) or not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, SandboxExecutionClientConfig):
         raise RuntimeError("HL_TESTNET_NATIVE_CONFIG_REQUIRED")
+    if bybit.api_key is not None or bybit.api_secret is not None:
+        raise RuntimeError("HL_TESTNET_BYBIT_SIGNAL_CLIENT_MUST_BE_PUBLIC")
     if data.environment is not PUBLIC_MAINNET_ENVIRONMENT:
         raise RuntimeError("HL_TESTNET_MAINNET_OR_UNSET_ENVIRONMENT")
     if execution.venue != "HYPERLIQUID" or execution.base_currency != "USDC":
@@ -239,6 +281,7 @@ class HyperliquidTestnetNode:
         self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id)
         assert_native_testnet_only(self.config)
         self.node = TradingNode(config=self.config, loop=self.loop)
+        self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
         self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
         self.node.add_exec_client_factory("SANDBOX", SandboxLiveExecClientFactory)
         self.node.build()
@@ -279,7 +322,8 @@ class HyperliquidTestnetNode:
             "node_class": type(self.node).__name__,
             "node_built": self.node.is_built(),
             "node_running": self.node.is_running(),
-            "data_client_classes": ["HyperliquidDataClient"],
+            "data_client_classes": ["BybitDataClient", "HyperliquidDataClient"],
+            "data_factories": [f"{item.__module__}.{item.__name__}" for item in PUBLIC_DATA_FACTORIES],
             "execution_client_classes": [SandboxExecutionClient.__name__],
             "execution_factories": [f"{item.__module__}.{item.__name__}" for item in NATIVE_TESTNET_FACTORIES],
             "execution_factory_allowlist": [f"{SandboxLiveExecClientFactory.__module__}.{SandboxLiveExecClientFactory.__name__}"],

@@ -28,7 +28,7 @@ from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStr
 from coinmaster.venues.marks import venue_mark_data_type
 from nautilus_trader.model.data import BarSpecification, BarType
 from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType
-from nautilus_trader.model.identifiers import ClientId
+from nautilus_trader.model.identifiers import ClientId, InstrumentId
 
 
 ROOT = __import__("pathlib").Path(__file__).resolve().parents[1]
@@ -69,14 +69,17 @@ def test_testnet_runtime_guard_fails_closed_before_native_client_construction(ch
 def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route() -> None:
     require_testnet_sandbox(_environment())
     config = hyperliquid_testnet_node_config(trader_id="COINMASTER-HL-STAGEG-TESTNET")
-    assert set(config.data_clients) == {"HYPERLIQUID-MAINNET-DATA"}
+    assert set(config.data_clients) == {"BYBIT-PUBLIC-SIGNAL", "HYPERLIQUID-MAINNET-DATA"}
     assert set(config.exec_clients) == {"SANDBOX"}
     data = config.data_clients["HYPERLIQUID-MAINNET-DATA"]
+    bybit = config.data_clients["BYBIT-PUBLIC-SIGNAL"]
     execution = config.exec_clients["SANDBOX"]
+    from nautilus_trader.adapters.bybit.config import BybitDataClientConfig
+    assert isinstance(bybit, BybitDataClientConfig) and bybit.api_key is None and bybit.api_secret is None
     assert isinstance(data, HyperliquidDataClientConfig) and data.environment is PUBLIC_MAINNET_ENVIRONMENT
     assert isinstance(execution, SandboxExecutionClientConfig)
     assert execution.venue == "HYPERLIQUID" and execution.base_currency == "USDC"
-    assert execution.starting_balances == ["100000 USDC"]
+    assert execution.starting_balances == ["10000 USDC"]
     assert_native_testnet_only(config)
     source = (ROOT / "coinmaster/ops/hyperliquid_testnet.py").read_text()
     assert "HyperliquidLiveExecClientFactory" not in source
@@ -85,7 +88,7 @@ def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route()
     assert "SandboxLiveExecClientFactory" in source
 
 
-def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_stale_research_margin_strategy() -> None:
+def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_unproven_parity() -> None:
     gate = cross_venue_stage_g_gate(
         candidate=load_candidate(ROOT / "configs/stage-g-v1.json").candidate,
         warmup_manifest=ROOT / "var/data/paper-warmup-manifest.json",
@@ -95,9 +98,36 @@ def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_stale_research_m
     )
     assert gate.signal_ids == ("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT")
     assert gate.execution_ids == (str(BTC_PERP), "SOL-USD-PERP.HYPERLIQUID")
-    assert gate.warmup_state == "WARMUP_STALE_LATEST_COMPLETED_SESSION"
+    assert gate.warmup_state == "INVALID_STAGEG_WARMUP_SCHEMA_OR_VENUE"
     assert gate.margin_policy_state == "BLOCKED_RESEARCH_MARGIN_POLICY"
+    assert gate.execution_policy_state == "BLOCKED_ACCOUNT_FEES_AND_EXECUTION_QUALITY_UNPROVEN"
+    assert gate.funding_state == "BLOCKED_SANDBOX_FUNDING_CASH_POSTING_UNSUPPORTED"
+    assert gate.capital_state == "EXPLICIT_10000_USDC_VS_10000_USDT_1_TO_1_PEG_ASSUMPTION_NOT_PARITY"
     assert gate.attachable is False
+
+
+def test_daily_signal_keeps_bybit_identity_while_pairing_to_hl_execution_bar_type() -> None:
+    signal_btc = InstrumentId.from_str("BTCUSDT-LINEAR.BYBIT")
+    signal_sol = InstrumentId.from_str("SOLUSDT-LINEAR.BYBIT")
+    execution_btc = BTC_PERP
+    execution_sol = InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID")
+    btc_bar = BarType(signal_btc, BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL)
+    sol_bar = BarType(signal_sol, BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL)
+    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(
+        btc_id=execution_btc, sol_id=execution_sol, btc_bar_type=btc_bar, sol_bar_type=sol_bar,
+        btc_mark_data_type=venue_mark_data_type(execution_btc), sol_mark_data_type=venue_mark_data_type(execution_sol),
+        mark_client_id=ClientId("HL-MAINNET"), active_seed=0,
+        btc_signal_id=signal_btc, sol_signal_id=signal_sol,
+    ))
+    from coinmaster.venues.signals import DailySignalBar
+    signal = DailySignalBar(signal_btc, 100, 110, 90, 105, 86_400_000_000_000)
+    strategy.on_data(signal)
+    paired = strategy._day[signal.ts_event]
+    assert paired[btc_bar] is signal
+    assert signal.instrument_id == signal_btc  # never relabel source provenance as HL.
+    assert strategy.config.btc_bar_type.instrument_id == signal_btc
+    assert strategy.config.sol_bar_type.instrument_id == signal_sol
+    assert execution_btc not in (signal_btc, signal_sol)
 
 
 def test_d1_lifecycle_hooks_cover_native_submit_cancel_reduce_only_post_only_taker_partial_fill_and_pause(tmp_path) -> None:
