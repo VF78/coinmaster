@@ -14,6 +14,8 @@ import os
 import threading
 import time
 from dataclasses import dataclass
+from datetime import UTC, datetime
+from decimal import Decimal
 from pathlib import Path
 from typing import Mapping
 
@@ -29,14 +31,19 @@ from nautilus_trader.config import InstrumentProviderConfig, LoggingConfig
 from nautilus_trader.core import nautilus_pyo3
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
+from nautilus_trader.model.currencies import USDC
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
+from nautilus_trader.model.objects import Money
 
-from coinmaster.domain.wave_overlay import Candidate
-from coinmaster.ops.native_paper_node import BYBIT_IDS, EXECUTION_FACTORY_ALLOWLIST, FeedBook, FeedObserver, FeedObserverConfig, scrub_private_execution_environment
+from coinmaster.domain.wave_overlay import Candidate, DailyBar
+from coinmaster.ops.native_paper_node import BYBIT_IDS, DAY_NS, EXECUTION_FACTORY_ALLOWLIST, FeedBook, FeedObserver, FeedObserverConfig, WarmupBundle, bybit_daily_bar_type, sandbox_cash_posting_supported, scrub_private_execution_environment
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
 from coinmaster.ops.stage_g_config import TestnetInstanceConfig, candidate_content_hash
-from coinmaster.venues.hyperliquid_profile import HyperliquidProfileEnvironment, HyperliquidVenueProfile
+from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
+from coinmaster.venues.hyperliquid_profile import HyperliquidProfileEnvironment, HyperliquidVenueProfile, normalize_funding_event
+from coinmaster.venues.margin_policy import HyperliquidSandboxMarginPolicy
+from coinmaster.venues.marks import venue_mark_data_type
 
 
 PUBLIC_MAINNET_ENVIRONMENT = nautilus_pyo3.HyperliquidEnvironment.MAINNET
@@ -45,6 +52,8 @@ SOL_PERP = InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID")
 TESTNET_IDS = (BTC_PERP, SOL_PERP)
 PUBLIC_DATA_FACTORIES = (BybitLiveDataClientFactory, HyperliquidLiveDataClientFactory)
 NATIVE_TESTNET_FACTORIES = (SandboxLiveExecClientFactory,)
+SANDBOX_LEVERAGES = {BTC_PERP: Decimal("40"), SOL_PERP: Decimal("20")}
+SANDBOX_MARK_MAX_AGE_NS = 120_000_000_000
 
 
 @dataclass(frozen=True)
@@ -79,26 +88,24 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
     source = strategy_path.read_bytes()
     strategy_code_hash = hashlib.sha256(source).hexdigest()
     profile = HyperliquidVenueProfile.from_snapshot(profile_root, environment=HyperliquidProfileEnvironment.MAINNET)
-    margin_policy_state = "PUBLIC_TIERS_ONLY_ACCOUNT_MARGIN_UNPROVEN" if profile.instruments else "MISSING_HL_MAINNET_PROFILE"
+    margin_policy_state = "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE" if profile.instruments else "MISSING_HL_MAINNET_PROFILE"
     if b"research.native_fixture" in source or b"TierMarginPolicy" in source:
         margin_policy_state = "BLOCKED_RESEARCH_MARGIN_POLICY"
     execution_policy = {
         "version": "hl-mainnet-public-data-native-sandbox-v1",
         "maker_fee_assumption": "0.00015",
         "taker_fee_assumption": "0.00045",
-        "account_fee_tier": "UNKNOWN",
+        "fee_basis": "FIXED_PUBLIC_BASE_RATE_NOT_ACCOUNT_SPECIFIC",
         "execution_quality": "UNKNOWN_NO_24M_BBO_L2_OR_TRADE_TAPE",
-        "funding_cash": "UNPOSTED",
+        "funding_cash": "NATIVE_SANDBOX_POST_IF_ADAPTER_CONFIRMS_SETTLEMENT",
     }
     execution_policy_hash = hashlib.sha256(
         json.dumps(execution_policy, sort_keys=True, separators=(",", ":")).encode(),
     ).hexdigest()
-    execution_policy_state = "BLOCKED_ACCOUNT_FEES_AND_EXECUTION_QUALITY_UNPROVEN"
-    funding_state = "BLOCKED_SANDBOX_FUNDING_CASH_POSTING_UNSUPPORTED"
-    capital_state = "EXPLICIT_10000_USDC_VS_10000_USDT_1_TO_1_PEG_ASSUMPTION_NOT_PARITY"
-    # Public profile tiers and an explicit fee/currency assumption are not
-    # evidence of account-specific executable parity. Stay unattached.
-    attachable = False
+    execution_policy_state = "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED"
+    funding_state = "NATIVE_SANDBOX_POST_IF_CONFIRMED_HL_SETTLEMENT_MARK"
+    capital_state = "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION"
+    attachable = warmup_state == "READY" and margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
     return CrossVenueStageGGate(
         signal_ids=("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT"),
         execution_ids=(str(BTC_PERP), str(SOL_PERP)),
@@ -112,6 +119,56 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
         capital_state=capital_state,
         attachable=attachable,
     )
+
+
+def load_stageg_warmup_bundle(path: Path, *, now_ns: int | None = None) -> tuple[WarmupBundle | None, str]:
+    """Return feature-only Bybit history while retaining its source identity."""
+    rows, state = load_stageg_bybit_warmup(path, now_ms=None if now_ns is None else now_ns // 1_000_000)
+    if state != "READY":
+        return None, state
+    btc, sol = rows["BTCUSDT"], rows["SOLUSDT"]
+    bars = []
+    for btc_row, sol_row in zip(btc, sol, strict=True):
+        open_ns = int(btc_row["open_time_ms"]) * 1_000_000
+        close_ns = open_ns + DAY_NS
+        bars.append(DailyBar(
+            datetime.fromtimestamp(open_ns / 1_000_000_000, UTC),
+            datetime.fromtimestamp(close_ns / 1_000_000_000, UTC),
+            datetime.fromtimestamp(close_ns / 1_000_000_000, UTC),
+            float(btc_row["open"]), float(btc_row["close"]), float(sol_row["close"]),
+        ))
+    return WarmupBundle(
+        tuple(bars), hashlib.sha256(path.read_bytes()).hexdigest(), len(bars),
+        int(btc[0]["open_time_ms"]) * 1_000_000, int(btc[-1]["open_time_ms"]) * 1_000_000 + DAY_NS,
+    ), "READY"
+
+
+class NativeSandboxFundingPoster:
+    """Causal, durable native USDC funding post through Sandbox exchange.
+
+    A pre-post journal reservation intentionally locks the virtual account to
+    MANAGE_ONLY on a crash between persistence and ``adjust_account``.
+    """
+
+    def __init__(self, *, exchange, runtime: PaperRuntime) -> None:
+        self.exchange = exchange
+        self.runtime = runtime
+
+    def __call__(self, *, instrument_id: InstrumentId, settlement_ns: int, rate: Decimal, settlement_mark: Decimal, signed_quantity: Decimal) -> None:
+        event = normalize_funding_event(
+            environment=HyperliquidProfileEnvironment.MAINNET,
+            instrument_id=str(instrument_id), settlement_ns=settlement_ns,
+            rate=rate, settlement_mark=settlement_mark,
+        )
+        accepted, delta = self.runtime.prepare_native_funding(
+            event_id=event.event_id, instrument_id=event.instrument_id,
+            settlement_ns=event.settlement_ns, rate=event.rate,
+            mark=event.settlement_mark, signed_quantity=signed_quantity,
+        )
+        if not accepted:
+            return
+        self.exchange.adjust_account(Money(delta, USDC))
+        self.runtime.complete_native_funding(event.event_id)
 
 
 @dataclass(frozen=True)
@@ -244,6 +301,7 @@ def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
                 # 1:1 peg assumption; this is not an assertion of parity.
                 starting_balances=["10000 USDC"],
                 base_currency="USDC",
+                leverages=dict(SANDBOX_LEVERAGES),
                 use_reduce_only=True,
                 routing=routing,
             ),
@@ -277,6 +335,14 @@ class HyperliquidTestnetNode:
         self.instance, self.candidate, self.state = instance, candidate, state
         self.scrubbed_environment = scrub_private_execution_environment()
         self.candidate_hash = candidate_content_hash(candidate)
+        self.profile_root = Path(__file__).resolve().parents[2]
+        self.profile = HyperliquidVenueProfile.from_snapshot(self.profile_root, environment=HyperliquidProfileEnvironment.MAINNET)
+        self.warmup_bundle, self.warmup_state = load_stageg_warmup_bundle(instance.signal_warmup_manifest)
+        self.gate = cross_venue_stage_g_gate(
+            candidate=candidate, warmup_manifest=instance.signal_warmup_manifest,
+            strategy_path=self.profile_root / "coinmaster/strategy/wave_overlay.py",
+            profile_root=self.profile_root,
+        )
         self.loop = asyncio.new_event_loop()
         self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id)
         assert_native_testnet_only(self.config)
@@ -288,23 +354,54 @@ class HyperliquidTestnetNode:
         self.hooks = LifecycleHooks(state)
         self.feed = FeedBook(ids=TESTNET_IDS, native_event_sink=self.hooks.record_event)
         self.feed_observer: FeedObserver | None = None
+        self.strategy: WaveOverlayStrategy | None = None
         self.prime_error: str | None = None
         self._thread: threading.Thread | None = None
 
-    def prime(self) -> None:
-        """Register only public BTC/SOL observation in the D3 running node.
+    def _sandbox_exchange(self):
+        clients = self.node.kernel.exec_engine._clients  # Nautilus 1.231 lacks a public client lookup.
+        client = next((item for item in clients.values() if isinstance(item, SandboxExecutionClient)), None)
+        exchange = getattr(client, "exchange", None)
+        if exchange is None or not sandbox_cash_posting_supported():
+            raise RuntimeError("SANDBOX_NATIVE_CASH_POSTING_UNAVAILABLE")
+        return exchange
 
-        No trading strategy is registered: this is the execution boundary for
-        D3, so neither entries nor reductions/cancels/forced closes can reach
-        the native execution client. LifecycleHooks remain separately
-        injectable test fixtures for the existing D1 strategy path.
-        """
+    def _wave_strategy_config(self) -> WaveOverlayStrategyConfig:
+        if self.warmup_bundle is None or not self.gate.attachable:
+            raise RuntimeError(f"STAGEG_STRATEGY_ATTACHMENT_BLOCKED:{self.warmup_state}")
+        policy = HyperliquidSandboxMarginPolicy(self.profile, SANDBOX_LEVERAGES, SANDBOX_MARK_MAX_AGE_NS)
+        return WaveOverlayStrategyConfig(
+            btc_id=BTC_PERP, sol_id=SOL_PERP,
+            btc_bar_type=bybit_daily_bar_type(BYBIT_IDS[0]), sol_bar_type=bybit_daily_bar_type(BYBIT_IDS[1]),
+            btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
+            mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
+            active_seed=Decimal("10000"), margin_policy=policy,
+            candidate=self.candidate, seed_bars=self.warmup_bundle.bars,
+            entries_enabled=True, entries_gate=self._entries_enabled,
+            event_sink=self.hooks.record_event, submission_sink=self.hooks,
+            btc_signal_id=BYBIT_IDS[0], sol_signal_id=BYBIT_IDS[1],
+            execution_policy_hash=self.gate.execution_policy_hash,
+            execution_policy_version="hl-mainnet-public-data-native-sandbox-v1",
+            funding_sink=NativeSandboxFundingPoster(exchange=self._sandbox_exchange(), runtime=self.state),
+        )
+
+    def _entries_enabled(self) -> bool:
+        feeds = self.feed.status(time.time_ns())
+        return self.gate.attachable and self.state.health(time.time_ns()).safe_for_increase and bool(feeds) and all(item["state"] == "READY" for item in feeds.values())
+
+    def prime(self) -> None:
+        """Attach Stage-G only when fresh source and executable gates pass."""
         try:
             client_id = ClientId("HYPERLIQUID-MAINNET-DATA")
             self.feed_observer = FeedObserver(FeedObserverConfig(
                 instrument_ids=TESTNET_IDS, client_ids=(client_id, client_id), feed=self.feed,
             ))
             self.node.trader.add_strategy(self.feed_observer)
+            # Retain the observation-only test seam for a deliberately
+            # incomplete object; real nodes always define an audited gate.
+            if hasattr(self, "gate"):
+                self.strategy = WaveOverlayStrategy(self._wave_strategy_config())
+                self.node.trader.add_strategy(self.strategy)
         except Exception as error:
             self.prime_error = type(error).__name__
 
@@ -312,6 +409,20 @@ class HyperliquidTestnetNode:
         if self.prime_error is None:
             self._thread = threading.Thread(target=self.node.run, name="hl-stageg-testnet-native", daemon=True)
             self._thread.start()
+
+    def sandbox_snapshot(self) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+        """The local Sandbox cache is authoritative only for this process."""
+        positions = [
+            {"instrument_id": str(position.instrument_id), "signed_quantity": str(position.quantity.as_decimal() if position.is_long else -position.quantity.as_decimal())}
+            for position in self.node.cache.positions_open()
+            if position.instrument_id in TESTNET_IDS
+        ]
+        orders = [
+            {"client_order_id": str(order.client_order_id), "instrument_id": str(order.instrument_id)}
+            for order in self.node.cache.orders_open()
+            if order.instrument_id in TESTNET_IDS
+        ]
+        return sorted(positions, key=lambda item: item["instrument_id"]), sorted(orders, key=lambda item: item["client_order_id"])
 
     def status(self) -> dict:
         feeds = self.feed.status(time.time_ns())
@@ -330,19 +441,18 @@ class HyperliquidTestnetNode:
             "live_order_capability": False,
             "candidate_hash": self.candidate_hash,
             "state_db": str(self.instance.state_db),
-            "orders_enabled": False,
-            "trading_strategy_registered": False,
+            "orders_enabled": self._entries_enabled() if self.strategy is not None else False,
+            "trading_strategy_registered": self.strategy is not None,
             "feed_observer_registered": self.feed_observer is not None,
             "feeds": feeds,
             "state": "PUBLIC_FEEDS_READY" if ready else "DATA_STALE/PAUSED",
             "prime_error": self.prime_error,
             "scrubbed_private_environment": list(self.scrubbed_environment),
-            # Public rate/mark observations are not account postings. Sandbox
-            # commissions/margin are native local-model outcomes, and actual
-            # account fee tiers, funding cash and margin remain unknown.
+            "warmup": {"state": self.warmup_state, "rows": self.warmup_bundle.rows if self.warmup_bundle else 0},
+            "stage_g_gate": self.gate.__dict__,
             "accounting": {
-                "fees": {"observed": "SANDBOX_NATIVE_FILL_COMMISSION", "modelled": "HYPERLIQUID_ACCOUNT_FEE_TIER_UNKNOWN"},
-                "funding": {"observed": "PUBLIC_RATE_AND_MARK_ONLY", "modelled": "UNPOSTED_NO_SANDBOX_CASH_ADJUSTMENT"},
-                "margin": {"observed": "NO_REMOTE_ACCOUNT", "modelled": "NATIVE_SANDBOX_INSTRUMENT_MODEL"},
+                "fees": {"observed": "SANDBOX_NATIVE_FILL_COMMISSION", "policy": "FIXED_HL_PUBLIC_BASE_MAKER_0.00015_TAKER_0.00045"},
+                "funding": {"observed": "PUBLIC_RATE_AND_MARK", "posting": "NATIVE_SANDBOX_POST_ONLY_WITH_ADAPTER_SETTLEMENT_TIMESTAMP_AND_CAUSAL_MARK"},
+                "margin": {"observed": "NATIVE_SANDBOX_ACCOUNT", "policy": "CURRENT_PUBLIC_HL_MAINNET_TIERS_LOCAL_40X_BTC_20X_SOL"},
             },
         }

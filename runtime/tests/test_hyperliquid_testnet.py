@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import time
+from decimal import Decimal
 from types import SimpleNamespace
 
 import pytest
@@ -10,6 +11,7 @@ from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 
 from coinmaster.ops.hyperliquid_testnet import (
     BTC_PERP,
+    NativeSandboxFundingPoster,
     cross_venue_stage_g_gate,
     FeedBook,
     FeedObserver,
@@ -21,6 +23,7 @@ from coinmaster.ops.hyperliquid_testnet import (
     hyperliquid_testnet_node_config,
     require_testnet_sandbox,
 )
+from coinmaster.ops.native_paper_node import sandbox_cash_posting_supported
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import ConfigurationError, load_testnet_instance_config
 from coinmaster.ops.stage_g_config import load_candidate
@@ -54,6 +57,7 @@ def test_hl_stageg_testnet_identity_is_strict_and_has_a_separate_state_db() -> N
     assert instance.state_db.name == "hl-stageg-testnet.sqlite"
     assert instance.state_db.parent == __import__("pathlib").Path("/var/lib/coinmaster-hl-stageg-testnet").resolve()
     assert instance.strategy_config.name == "stage-g-v1.json"
+    assert instance.signal_warmup_manifest.name == "manifest.json"
 
 
 @pytest.mark.parametrize("change,reason", [
@@ -80,6 +84,8 @@ def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route()
     assert isinstance(execution, SandboxExecutionClientConfig)
     assert execution.venue == "HYPERLIQUID" and execution.base_currency == "USDC"
     assert execution.starting_balances == ["10000 USDC"]
+    assert execution.leverages == {BTC_PERP: Decimal("40"), InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID"): Decimal("20")}
+    assert sandbox_cash_posting_supported() is True
     assert_native_testnet_only(config)
     source = (ROOT / "coinmaster/ops/hyperliquid_testnet.py").read_text()
     assert "HyperliquidLiveExecClientFactory" not in source
@@ -99,10 +105,10 @@ def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_unproven_parity(
     assert gate.signal_ids == ("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT")
     assert gate.execution_ids == (str(BTC_PERP), "SOL-USD-PERP.HYPERLIQUID")
     assert gate.warmup_state == "INVALID_STAGEG_WARMUP_SCHEMA_OR_VENUE"
-    assert gate.margin_policy_state == "BLOCKED_RESEARCH_MARGIN_POLICY"
-    assert gate.execution_policy_state == "BLOCKED_ACCOUNT_FEES_AND_EXECUTION_QUALITY_UNPROVEN"
-    assert gate.funding_state == "BLOCKED_SANDBOX_FUNDING_CASH_POSTING_UNSUPPORTED"
-    assert gate.capital_state == "EXPLICIT_10000_USDC_VS_10000_USDT_1_TO_1_PEG_ASSUMPTION_NOT_PARITY"
+    assert gate.margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
+    assert gate.execution_policy_state == "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED"
+    assert gate.funding_state == "NATIVE_SANDBOX_POST_IF_CONFIRMED_HL_SETTLEMENT_MARK"
+    assert gate.capital_state == "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION"
     assert gate.attachable is False
 
 
@@ -128,6 +134,21 @@ def test_daily_signal_keeps_bybit_identity_while_pairing_to_hl_execution_bar_typ
     assert strategy.config.btc_bar_type.instrument_id == signal_btc
     assert strategy.config.sol_bar_type.instrument_id == signal_sol
     assert execution_btc not in (signal_btc, signal_sol)
+
+
+def test_native_sandbox_funding_poster_is_idempotent_and_uses_only_confirmed_hl_identity(tmp_path) -> None:
+    class Exchange:
+        def __init__(self): self.adjustments = []
+        def adjust_account(self, money): self.adjustments.append(money)
+
+    runtime = PaperRuntime(tmp_path / "funding.sqlite", "hl-stageg-testnet", int(120e9)); runtime.acquire()
+    exchange = Exchange()
+    poster = NativeSandboxFundingPoster(exchange=exchange, runtime=runtime)
+    poster(instrument_id=BTC_PERP, settlement_ns=100, rate=Decimal("0.01"), settlement_mark=Decimal("100"), signed_quantity=Decimal("2"))
+    poster(instrument_id=BTC_PERP, settlement_ns=100, rate=Decimal("0.01"), settlement_mark=Decimal("100"), signed_quantity=Decimal("2"))
+    assert [item.as_decimal() for item in exchange.adjustments] == [Decimal("-2.00")]
+    assert runtime.pending_native_funding() == []
+    runtime.close()
 
 
 def test_d1_lifecycle_hooks_cover_native_submit_cancel_reduce_only_post_only_taker_partial_fill_and_pause(tmp_path) -> None:

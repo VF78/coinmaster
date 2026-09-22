@@ -360,11 +360,18 @@ class TierMarginPolicy:
         if max_mark_age_ns < 0:
             raise ValueError("max mark age must be non-negative")
         self._marks = marks
+        self._dynamic_marks: dict[InstrumentId, tuple[Decimal, int]] = {}
         self._selected_leverage = selected_leverage
         self._max_mark_age_ns = max_mark_age_ns
         if self._profile_cache is None:
             type(self)._profile_cache = BybitVenueProfile.from_raw(Path(__file__).resolve().parents[2])
         self._profile = self._profile_cache
+
+    def update_mark(self, mark) -> None:
+        """Research adapter for the strategy's venue-neutral policy hook."""
+        previous = self._dynamic_marks.get(mark.instrument_id)
+        if previous is None or mark.ts_event >= previous[1]:
+            self._dynamic_marks[mark.instrument_id] = (Decimal(mark.price), mark.ts_event)
 
     def margin_for(self, instrument_id: InstrumentId, quantity: Decimal, ts_now: int) -> tuple[Decimal, Decimal, Decimal]:
         # The same validated public profile is used by the P1 fixture and the
@@ -376,15 +383,17 @@ class TierMarginPolicy:
         if symbol is None or leverage is None or leverage <= 0:
             raise ValueError("missing explicit selected leverage")
         applicable = [item for item in self._marks if item.instrument_id == instrument_id and item.ts_event <= ts_now]
-        if not applicable:
+        dynamic = self._dynamic_marks.get(instrument_id)
+        if not applicable and (dynamic is None or dynamic[1] > ts_now):
             raise ValueError("missing explicit mark")
-        mark_event = applicable[-1]
-        if ts_now - mark_event.ts_event > self._max_mark_age_ns:
+        static = applicable[-1] if applicable else None
+        price, mark_ts = ((static.price, static.ts_event) if static is not None and (dynamic is None or static.ts_event >= dynamic[1]) else dynamic)
+        if ts_now - mark_ts > self._max_mark_age_ns:
             raise ValueError("stale explicit mark")
-        notional = abs(quantity) * mark_event.price
+        notional = abs(quantity) * price
         tier = self._profile.tier_for(symbol, notional)
         initial_rate = max(tier.im, Decimal("1") / leverage)
-        return notional * initial_rate, max(Decimal("0"), notional * tier.mm - tier.deduction), mark_event.price
+        return notional * initial_rate, max(Decimal("0"), notional * tier.mm - tier.deduction), price
 
 
 class BybitTierMarginModule(SimulationModule):

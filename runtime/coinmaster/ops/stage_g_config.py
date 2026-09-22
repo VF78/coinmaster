@@ -48,6 +48,7 @@ class TestnetInstanceConfig:
     environment: str
     mode: str
     strategy_config: Path
+    signal_warmup_manifest: Path
     state_db: Path
     trader_id: str
     strategy_id: str
@@ -138,7 +139,7 @@ def load_instance_config(path: Path) -> InstanceConfig:
     if set(document) != names:
         missing, extra = sorted(names - set(document)), sorted(set(document) - names)
         raise ConfigurationError(f"INSTANCE_FIELDS_MISMATCH:missing={missing}:extra={extra}")
-    strings = {name: document[name] for name in names if name not in {"strategy_config", "state_db"}}
+    strings = {name: document[name] for name in names if name not in {"strategy_config", "signal_warmup_manifest", "state_db"}}
     if any(not isinstance(value, str) or not value.strip() for value in strings.values()):
         raise ConfigurationError("INVALID_INSTANCE_VALUE")
     if document["mode"] != "paper" or document["venue"] != "BYBIT":
@@ -162,7 +163,7 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
     if set(document) != names:
         missing, extra = sorted(names - set(document)), sorted(set(document) - names)
         raise ConfigurationError(f"TESTNET_INSTANCE_FIELDS_MISMATCH:missing={missing}:extra={extra}")
-    strings = {name: document[name] for name in names if name not in {"strategy_config", "state_db"}}
+    strings = {name: document[name] for name in names if name not in {"strategy_config", "signal_warmup_manifest", "state_db"}}
     if any(not isinstance(value, str) or not value.strip() for value in strings.values()):
         raise ConfigurationError("INVALID_TESTNET_INSTANCE_VALUE")
     if (
@@ -174,15 +175,18 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
         raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
     if document["strategy_config"] != "/srv/coinmaster/runtime/configs/stage-g-v1.json":
         raise ConfigurationError("UNSAFE_TESTNET_STRATEGY_PATH")
+    if document["signal_warmup_manifest"] != "/var/lib/coinmaster-hl-stageg-testnet/data/stageg-bybit-warmup-20260922-verified2/manifest.json":
+        raise ConfigurationError("UNSAFE_TESTNET_WARMUP_PATH")
     if document["state_db"] != "/var/lib/coinmaster-hl-stageg-testnet/hl-stageg-testnet.sqlite":
         raise ConfigurationError("UNSAFE_TESTNET_STATE_DB_PATH")
     base = path.resolve().parent
-    for name in ("strategy_config", "state_db"):
+    for name in ("strategy_config", "signal_warmup_manifest", "state_db"):
         if not isinstance(document[name], str) or not document[name]:
             raise ConfigurationError(f"INVALID_TESTNET_INSTANCE_VALUE:{name}")
     return TestnetInstanceConfig(
         **strings,
         strategy_config=(base / document["strategy_config"]).resolve(),
+        signal_warmup_manifest=(base / document["signal_warmup_manifest"]).resolve(),
         state_db=(base / document["state_db"]).resolve(),
         path=path.resolve(),
     )

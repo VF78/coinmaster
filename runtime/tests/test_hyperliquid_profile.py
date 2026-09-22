@@ -17,6 +17,7 @@ from coinmaster.venues.hyperliquid_profile import (
     HyperliquidVenueProfile,
     normalize_funding_event,
 )
+from coinmaster.venues.margin_policy import HyperliquidSandboxMarginPolicy, MarginMark
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,6 +72,17 @@ def test_margin_preflight_uses_hyperliquid_tiers_and_never_assumes_account_state
         available_collateral=Decimal("2000"),
     )
     assert sol.allowed and sol.required_initial_margin == Decimal("1000") and sol.maintenance_margin == Decimal("500")
+
+
+def test_local_sandbox_margin_policy_uses_current_hl_tiers_and_causal_marks() -> None:
+    profile = HyperliquidVenueProfile.from_snapshot(ROOT, environment=HyperliquidProfileEnvironment.MAINNET)
+    btc_id = InstrumentId.from_str(BTC_PERP_ID)
+    policy = HyperliquidSandboxMarginPolicy(profile, {btc_id: Decimal("40")}, max_mark_age_ns=10)
+    policy.update_mark(MarginMark(btc_id, Decimal("100000"), 100))
+    initial, maintenance, mark = policy.margin_for(btc_id, Decimal("1"), 105)
+    assert (initial, maintenance, mark) == (Decimal("2500"), Decimal("1250.0"), Decimal("100000"))
+    with pytest.raises(ValueError, match="stale public mark"):
+        policy.margin_for(btc_id, Decimal("1"), 111)
 
 
 def test_normalized_hyperliquid_funding_identity_is_stable_and_requires_venue_mark() -> None:

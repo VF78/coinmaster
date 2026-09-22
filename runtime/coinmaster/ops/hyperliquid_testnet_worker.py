@@ -17,7 +17,7 @@ LOG = logging.getLogger(__name__)
 
 
 class TestnetWorker:
-    """One process / one node / one durable state DB, with no order activation."""
+    """One process / one node / one durable local Sandbox state DB."""
     def __init__(self, environment: dict[str, str] | None = None) -> None:
         environment = os.environ if environment is None else environment
         path = environment.get("COINMASTER_HL_TESTNET_INSTANCE_CONFIG")
@@ -28,13 +28,12 @@ class TestnetWorker:
         self.candidate = load_candidate(self.instance.strategy_config)
         self.runtime = PaperRuntime(self.instance.state_db, self.instance.instance_id, int(120e9))
         self.runtime.acquire()
-        # Local absence is never remote-flat evidence. A prior durable open
-        # state remains MANAGE_ONLY; a locally flat DB is still UNVERIFIED
-        # until a separately authorized native account/order reconciliation
-        # records authenticated evidence.
+        # Sandbox cache cannot be restored into a later process. Durable open
+        # state therefore remains MANAGE_ONLY after restart without querying a
+        # Hyperliquid account.
         durable_recovery = self.runtime.recovery_state()
-        self.recovery_state = durable_recovery if durable_recovery != "FLAT_RESTART" else "UNVERIFIED_REMOTE_STATE"
-        self.reconciled = False
+        self.recovery_state = durable_recovery
+        self.reconciled = durable_recovery == "FLAT_RESTART"
         self.native = HyperliquidTestnetNode(instance=self.instance, candidate=self.candidate.candidate, state=self.runtime)
         self.native.prime()
 
@@ -42,21 +41,31 @@ class TestnetWorker:
         self.native.start()
 
     def poll(self) -> None:
-        # Do not snapshot a local Sandbox cache as exchange reconciliation
-        # proof. It is a local model, not a Hyperliquid account report.
-        self.runtime.heartbeat(time.time_ns())
+        # Sandbox is the only execution venue here, making its native cache
+        # authoritative for this process only. A later process receives the
+        # persisted open state and remains MANAGE_ONLY.
+        native = getattr(self, "native", None)
+        if native is not None and native.node.is_running() and native.strategy is not None:
+            positions, orders = self.native.sandbox_snapshot()
+            self.runtime.snapshot(
+                ts_ns=time.time_ns(), positions=positions, orders=orders,
+                funding_event_ids=self.runtime.funding_event_ids(), reconciled=True,
+            )
+        else:
+            self.runtime.heartbeat(time.time_ns())
 
     def status(self) -> dict:
         self.poll()
+        self.recovery_state = self.runtime.recovery_state()
         result = self.native.status()
         health = self.runtime.health(time.time_ns())
         result.update({
             "candidate_hash": self.candidate.sha256,
             "recovery_state": self.recovery_state,
-            "reconciliation": "SANDBOX_NO_REMOTE_RECONCILIATION",
-            "safe_for_increase": False,
+            "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
+            "safe_for_increase": health.safe_for_increase and self.native.gate.attachable,
             "warnings": list(dict.fromkeys((*health.warnings, self.recovery_state))),
-            "orders_enabled": False,
+            "orders_enabled": result["orders_enabled"],
         })
         return result
 
@@ -68,8 +77,9 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     worker = TestnetWorker(); worker.start()
     LOG.info(
-        "hl testnet startup instance_id=%s environment=testnet strategy_id=%s candidate_sha256=%s orders_enabled=false",
+        "hl sandbox startup instance_id=%s environment=mainnet-public strategy_id=%s candidate_sha256=%s orders_enabled=%s",
         worker.instance.instance_id, worker.instance.strategy_id, worker.candidate.sha256,
+        worker.native.status()["orders_enabled"],
     )
     stopped = False
     def stop(*_):

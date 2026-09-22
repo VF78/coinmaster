@@ -138,10 +138,10 @@ def test_funding_normalization_uses_stable_settlement_id_and_causal_mark_only() 
     assert event["mark"] == Decimal("100")
 
 
-def test_pinned_sandbox_live_client_has_no_supported_cash_adjustment_hook() -> None:
-    # Nautilus 1.231's adapters/sandbox/execution.py exposes submit/cancel and
-    # feeds SimulatedExchange, but no LiveExecutionClient.adjust_account API.
-    assert sandbox_cash_posting_supported() is False
+def test_pinned_sandbox_live_client_exposes_native_exchange_cash_adjustment() -> None:
+    # The LiveExecutionClient has no direct hook, but its public ``exchange``
+    # is a SimulatedExchange with the supported native account adjustment.
+    assert sandbox_cash_posting_supported() is True
 
 
 def test_status_exposes_immutable_instance_identity_and_candidate_hash() -> None:

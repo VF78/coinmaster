@@ -43,6 +43,23 @@ def test_modelled_funding_is_signed_idempotent_and_restart_safe(tmp_path) -> Non
     restarted.close()
 
 
+def test_native_funding_prepare_blocks_restart_until_native_post_is_completed(tmp_path) -> None:
+    path = tmp_path / "native-funding.sqlite"
+    runtime = PaperRuntime(path, "native-funding", 10)
+    runtime.acquire()
+    accepted, delta = runtime.prepare_native_funding(
+        event_id="hyperliquid:mainnet:BTC:1", instrument_id="BTC", settlement_ns=1,
+        rate=Decimal("0.01"), mark=Decimal("100"), signed_quantity=Decimal("2"),
+    )
+    assert accepted and delta == Decimal("-2.00")
+    runtime.close()
+    restarted = PaperRuntime(path, "native-funding", 10); restarted.acquire()
+    assert restarted.recovery_state() == "MANAGE_ONLY_PENDING_NATIVE_FUNDING"
+    restarted.complete_native_funding("hyperliquid:mainnet:BTC:1")
+    assert restarted.pending_native_funding() == []
+    restarted.close()
+
+
 def test_pause_resume_and_flatten_command_audit_are_idempotent(tmp_path) -> None:
     runtime = PaperRuntime(tmp_path / "paper.sqlite", "owner", 100)
     runtime.acquire(); runtime.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[])

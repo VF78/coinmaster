@@ -35,6 +35,7 @@ class PaperRuntime:
     def __init__(self, database: Path, owner: str, max_data_age_ns: int) -> None:
         database.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
+        self._local_sandbox_active = False
         self.db, self.owner, self.max_data_age_ns = sqlite3.connect(database, check_same_thread=False), owner, max_data_age_ns
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_lock (id INTEGER PRIMARY KEY CHECK(id=1), owner TEXT NOT NULL)")
@@ -47,11 +48,14 @@ class PaperRuntime:
         # restart.  We deliberately do not attempt an unsupported cache/group
         # reconstruction: pending work moves the worker to MANAGE_ONLY.
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_intents (client_order_id TEXT PRIMARY KEY, intent_id TEXT NOT NULL, episode_id TEXT NOT NULL, action TEXT NOT NULL, instrument_id TEXT NOT NULL, state TEXT NOT NULL, body TEXT NOT NULL)")
-        # SandboxExecutionClient exposes no supported live-account cash
-        # adjustment API in Nautilus 1.231.  Funding is therefore recorded in
-        # this separate, explicitly modelled/reconciled ledger and never
-        # presented as sandbox account cash.
+        # Legacy diagnostic ledger. It is never a substitute for a native
+        # Sandbox account posting.
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_funding_ledger (event_id TEXT PRIMARY KEY, instrument_id TEXT NOT NULL, settlement_ns INTEGER NOT NULL, rate TEXT NOT NULL, mark TEXT NOT NULL, cash_delta TEXT NOT NULL, state TEXT NOT NULL)")
+        # A native Sandbox account adjustment cannot share SQLite's
+        # transaction. Persist PREPARED before the native call; a crash in
+        # that window is deliberately MANAGE_ONLY rather than risking a
+        # duplicate funding post after restart.
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_native_funding (event_id TEXT PRIMARY KEY, instrument_id TEXT NOT NULL, settlement_ns INTEGER NOT NULL, rate TEXT NOT NULL, mark TEXT NOT NULL, cash_delta TEXT NOT NULL, state TEXT NOT NULL)")
         self.db.commit()
 
     @_journal_locked
@@ -133,7 +137,9 @@ class PaperRuntime:
         snapshot = json.loads(row[0]) if row else None
         if self.pending_submissions():
             return "MANAGE_ONLY_PENDING_INTENT"
-        if snapshot and (snapshot.get("positions") or snapshot.get("orders")):
+        if self.pending_native_funding():
+            return "MANAGE_ONLY_PENDING_NATIVE_FUNDING"
+        if snapshot and (snapshot.get("positions") or snapshot.get("orders")) and not self._local_sandbox_active:
             return "MANAGE_ONLY_DURABLE_OPEN_STATE"
         return "FLAT_RESTART"
 
@@ -159,6 +165,30 @@ class PaperRuntime:
             return False
 
     @_journal_locked
+    def prepare_native_funding(self, *, event_id: str, instrument_id: str, settlement_ns: int, rate: Decimal, mark: Decimal, signed_quantity: Decimal) -> tuple[bool, Decimal]:
+        """Durably reserve exactly one native funding adjustment."""
+        delta = self.funding_cash_delta(signed_quantity, mark, rate)
+        try:
+            self.db.execute(
+                "INSERT INTO paper_native_funding VALUES (?, ?, ?, ?, ?, ?, 'PREPARED')",
+                (event_id, instrument_id, settlement_ns, str(rate), str(mark), str(delta)),
+            )
+            self.db.commit()
+            return True, delta
+        except sqlite3.IntegrityError:
+            return False, delta
+
+    @_journal_locked
+    def complete_native_funding(self, event_id: str) -> None:
+        self.db.execute("UPDATE paper_native_funding SET state='POSTED' WHERE event_id=? AND state='PREPARED'", (event_id,))
+        self.db.execute("INSERT OR IGNORE INTO paper_events VALUES (?, 'funding')", (event_id,))
+        self.db.commit()
+
+    @_journal_locked
+    def pending_native_funding(self) -> list[str]:
+        return [row[0] for row in self.db.execute("SELECT event_id FROM paper_native_funding WHERE state='PREPARED' ORDER BY event_id")]
+
+    @_journal_locked
     def reconcile(self, *, positions: list[dict], orders: list[dict]) -> bool:
         """Only a documented flat restart can be reconciled automatically."""
         if self.recovery_state() != "FLAT_RESTART":
@@ -177,6 +207,8 @@ class PaperRuntime:
     def snapshot(self, *, ts_ns: int, positions: list[dict], orders: list[dict], funding_event_ids: list[str], reconciled: bool = True) -> None:
         body = {"ts_ns": ts_ns, "positions": positions, "orders": orders, "funding_event_ids": funding_event_ids, "reconciled": reconciled}
         self.db.execute("INSERT OR REPLACE INTO paper_snapshot VALUES (1, ?)", (json.dumps(body, sort_keys=True),)); self.db.commit()
+        if reconciled:
+            self._local_sandbox_active = True
 
     @_journal_locked
     def heartbeat(self, ts_ns: int) -> None:

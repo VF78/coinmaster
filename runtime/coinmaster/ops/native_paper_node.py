@@ -25,6 +25,7 @@ from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactor
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.adapters.sandbox.execution import SandboxExecutionClient
+from nautilus_trader.backtest.engine import SimulatedExchange
 from nautilus_trader.adapters.sandbox.factory import SandboxLiveExecClientFactory
 from nautilus_trader.common import Environment
 from nautilus_trader.config import InstrumentProviderConfig, LoggingConfig, StrategyConfig
@@ -92,8 +93,8 @@ def candidate_hash(_name: str, candidate: Candidate) -> str:
 
 
 def sandbox_cash_posting_supported() -> bool:
-    """Pinned 1.231 client API check; only SimulationModule.exchange has it."""
-    return callable(getattr(SandboxExecutionClient, "adjust_account", None))
+    """Pinned 1.231 Sandbox route: client.exchange owns the native posting."""
+    return callable(getattr(SimulatedExchange, "adjust_account", None))
 
 
 def scrub_private_execution_environment(environment: dict[str, str] | None = None) -> tuple[str, ...]:

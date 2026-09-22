@@ -410,7 +410,7 @@ def run_sparse_native_diagnostic_legacy(
     from nautilus_trader.model.data import BarSpecification, BarType
     from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType
     from nautilus_trader.model.objects import Money
-    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, MarkPriceUpdate, PerpetualFundingModule, quote
+    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, MarkPriceUpdate, PerpetualFundingModule, TierMarginPolicy, quote
     from coinmaster.ledger.journal import NativeEventJournal
     from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
     from coinmaster.domain.wave_overlay import Candidate
@@ -492,7 +492,7 @@ def run_sparse_native_diagnostic_legacy(
     engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel())
     engine.add_instrument(btc_instrument); engine.add_instrument(sol_instrument)
     from nautilus_trader.model.identifiers import ClientId
-    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=btc_instrument.id, sol_id=sol_instrument.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=initial_active_seed, tier_marks=mark_updates, tier_selected_leverage=selected_leverage, max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=trading_start_ms * 1_000_000, terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=ClientId("BYBIT_SIGNAL"))))
+    engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=btc_instrument.id, sol_id=sol_instrument.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id), mark_client_id=ClientId("BYBIT_MARK"), active_seed=initial_active_seed, margin_policy=TierMarginPolicy(mark_updates, dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000, terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=ClientId("BYBIT_SIGNAL"))))
     signal_data, quote_data, mark_data = [], [], []
     for timestamp in decision_days:
         b, s = btc[timestamp], sol[timestamp]
@@ -662,7 +662,7 @@ def run_native_diagnostic(
     from nautilus_trader.model.identifiers import ClientId
     from coinmaster.domain.wave_overlay import Candidate
     from coinmaster.ledger.journal import NativeEventJournal
-    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, PerpetualFundingModule, quote
+    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, PerpetualFundingModule, TierMarginPolicy, quote
     from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
     from coinmaster.venues.signals import daily_signal, daily_signal_data_type
@@ -724,8 +724,8 @@ def run_native_diagnostic(
         btc_id=btc_instrument.id, sol_id=sol_instrument.id,
         btc_bar_type=kind(btc_instrument.id, PriceType.LAST), sol_bar_type=kind(sol_instrument.id, PriceType.LAST),
         btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id),
-        mark_client_id=mark_client, active_seed=initial_active_seed, tier_selected_leverage=selected_leverage,
-        max_mark_age_ns=max_mark_age_ns, trading_start_open_ns=trading_start_ms * 1_000_000,
+        mark_client_id=mark_client, active_seed=initial_active_seed,
+        margin_policy=TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
         terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
         btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
         reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),

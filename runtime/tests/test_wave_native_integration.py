@@ -8,7 +8,7 @@ from nautilus_trader.model.data import Bar, BarSpecification, BarType
 from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, OrderSide, PriceType, TimeInForce
 from nautilus_trader.model.objects import Money, Price, Quantity
 
-from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, MarkPriceUpdate, quote
+from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, MarkPriceUpdate, TierMarginPolicy, quote
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Episode
 from coinmaster.domain.wave_overlay import Intent
@@ -355,7 +355,8 @@ def test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_st
     engine.add_instrument(BTC_PERP)
     engine.add_instrument(SOL_PERP)
     from nautilus_trader.model.identifiers import ClientId
-    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"), tier_marks=tuple(MarkPriceUpdate(BTC_PERP.id, Decimal("100"), day * 86_400_000_000_000) for day in range(1, 851)) + tuple(MarkPriceUpdate(SOL_PERP.id, Decimal("30"), day * 86_400_000_000_000) for day in range(1, 851)), tier_selected_leverage=((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20"))), max_mark_age_ns=86_400_000_000_000))
+    marks = tuple(MarkPriceUpdate(BTC_PERP.id, Decimal("100"), day * 86_400_000_000_000) for day in range(1, 851)) + tuple(MarkPriceUpdate(SOL_PERP.id, Decimal("30"), day * 86_400_000_000_000) for day in range(1, 851))
+    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last, btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"), margin_policy=TierMarginPolicy(marks, {BTC_PERP.id: Decimal("40"), SOL_PERP.id: Decimal("20")}, 86_400_000_000_000)))
     engine.add_strategy(strategy)
     data, marks = [], []
     for day in range(850):
@@ -380,7 +381,6 @@ def test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_st
         assert all(order.is_reduce_only and order.is_post_only for order in open_orders)
         assert not engine.trader.generate_account_report(SIM).empty
         assert len(strategy._latest_marks) <= 2
-        assert len(strategy._latest_tier_marks) <= 2
         assert not strategy._queued_intents
     finally:
         engine.dispose()
@@ -409,7 +409,7 @@ def test_seed_warmup_never_replays_orders_and_first_live_daily_close_can_fill() 
     engine.add_strategy(WaveOverlayStrategy(WaveOverlayStrategyConfig(
         btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_last, sol_bar_type=sol_last,
         btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id), mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"),
-        tier_marks=marks, tier_selected_leverage=((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20"))), max_mark_age_ns=86_400_000_000_000,
+        margin_policy=TierMarginPolicy(marks, {BTC_PERP.id: Decimal("40"), SOL_PERP.id: Decimal("20")}, 86_400_000_000_000),
         seed_bars=tuple(seed), trading_start_open_ns=800 * 86_400_000_000_000,
     )))
     engine.add_data(data, sort=False); engine.add_data(custom_marks, client_id=ClientId("TEST_MARKS"), sort=False); engine.sort_data(); engine.run()
@@ -523,8 +523,7 @@ def test_paired_marks_liquidate_each_native_leg_on_its_own_next_quote() -> None:
         candidate=candidate,
         seed_bars=seed,
         trading_start_open_ns=8 * day,
-        tier_selected_leverage=((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20"))),
-        max_mark_age_ns=day,
+        margin_policy=TierMarginPolicy((), {BTC_PERP.id: Decimal("40"), SOL_PERP.id: Decimal("20")}, day),
     ))
     engine.add_strategy(monitor)
     marks = (
