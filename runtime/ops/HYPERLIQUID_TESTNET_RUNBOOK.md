@@ -1,8 +1,8 @@
-# Hyperliquid Stage-G public-data / native-sandbox dry run (D3)
+# Hyperliquid Stage-G public-MAINNET-data / native-sandbox dry run (D3)
 
 This is a separate `hl-stageg-testnet` OS process with its own state database
 and exactly one Nautilus 1.231 `TradingNode`. It uses only the native public
-Hyperliquid TESTNET data factory and Nautilus `SandboxExecutionClient`; no
+Hyperliquid MAINNET data factory and Nautilus `SandboxExecutionClient`; no
 Hyperliquid execution factory is registered. Its immutable Stage-G
 candidate is loaded from `configs/stage-g-v1.json`; the canonical candidate
 SHA-256 is reported at startup and in status.
@@ -28,7 +28,7 @@ The local layout check is read-only and does not start a node:
 ```
 
 `COINMASTER_LIVE_ENABLED` must be `false`, `COINMASTER_HL_TESTNET_ENABLED`
-must be `true`, and `COINMASTER_HL_TESTNET_ENVIRONMENT` must be `testnet`.
+must be `true`, and `COINMASTER_HL_TESTNET_ENVIRONMENT` must be `mainnet`.
 Any other value refuses startup. The unit registers only the public
 `FeedObserver` and no trading strategy, so no submit/cancel/reduce/forced-close
 path exists. Its only available execution client is local native Sandbox; it

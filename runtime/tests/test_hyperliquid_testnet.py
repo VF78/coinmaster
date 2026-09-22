@@ -15,7 +15,7 @@ from coinmaster.ops.hyperliquid_testnet import (
     HyperliquidTestnetNode,
     LifecycleHooks,
     LifecycleRequest,
-    TESTNET_ENVIRONMENT,
+    PUBLIC_MAINNET_ENVIRONMENT,
     assert_native_testnet_only,
     hyperliquid_testnet_node_config,
     require_testnet_sandbox,
@@ -34,7 +34,7 @@ def _environment(**overrides: str) -> dict[str, str]:
     value = {
         "COINMASTER_LIVE_ENABLED": "false",
         "COINMASTER_HL_TESTNET_ENABLED": "true",
-        "COINMASTER_HL_TESTNET_ENVIRONMENT": "testnet",
+        "COINMASTER_HL_TESTNET_ENVIRONMENT": "mainnet",
         # Corrected D3 does not consume either of these values.
         "HYPERLIQUID_TESTNET_PK": "must-not-be-read",
         "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS": "must-not-be-read",
@@ -47,7 +47,8 @@ def test_hl_stageg_testnet_identity_is_strict_and_has_a_separate_state_db() -> N
     instance = load_testnet_instance_config(ROOT / "configs/hl-stageg-testnet.instance.json")
     assert instance.instance_id == "hl-stageg-testnet"
     assert instance.venue == "HYPERLIQUID"
-    assert instance.environment == "testnet"
+    assert instance.environment == "mainnet"
+    assert instance.mode == "sandbox"
     assert instance.state_db.name == "hl-stageg-testnet.sqlite"
     assert instance.state_db.parent == __import__("pathlib").Path("/var/lib/coinmaster-hl-stageg-testnet").resolve()
     assert instance.strategy_config.name == "stage-g-v1.json"
@@ -56,21 +57,21 @@ def test_hl_stageg_testnet_identity_is_strict_and_has_a_separate_state_db() -> N
 @pytest.mark.parametrize("change,reason", [
     ({"COINMASTER_LIVE_ENABLED": "true"}, "HL_TESTNET_REFUSES_LIVE_ENABLED"),
     ({"COINMASTER_HL_TESTNET_ENABLED": "false"}, "HL_TESTNET_NOT_EXPLICITLY_ENABLED"),
-    ({"COINMASTER_HL_TESTNET_ENVIRONMENT": "mainnet"}, "HL_TESTNET_ENVIRONMENT_GUARD"),
+    ({"COINMASTER_HL_TESTNET_ENVIRONMENT": "testnet"}, "HL_PUBLIC_MAINNET_ENVIRONMENT_GUARD"),
 ])
 def test_testnet_runtime_guard_fails_closed_before_native_client_construction(change, reason) -> None:
     with pytest.raises(RuntimeError, match=reason):
         require_testnet_sandbox(_environment(**change))
 
 
-def test_native_config_has_one_testnet_data_and_native_sandbox_execution_route() -> None:
+def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route() -> None:
     require_testnet_sandbox(_environment())
     config = hyperliquid_testnet_node_config(trader_id="COINMASTER-HL-STAGEG-TESTNET")
-    assert set(config.data_clients) == {"HYPERLIQUID-TESTNET-DATA"}
+    assert set(config.data_clients) == {"HYPERLIQUID-MAINNET-DATA"}
     assert set(config.exec_clients) == {"SANDBOX"}
-    data = config.data_clients["HYPERLIQUID-TESTNET-DATA"]
+    data = config.data_clients["HYPERLIQUID-MAINNET-DATA"]
     execution = config.exec_clients["SANDBOX"]
-    assert isinstance(data, HyperliquidDataClientConfig) and data.environment is TESTNET_ENVIRONMENT
+    assert isinstance(data, HyperliquidDataClientConfig) and data.environment is PUBLIC_MAINNET_ENVIRONMENT
     assert isinstance(execution, SandboxExecutionClientConfig)
     assert execution.venue == "HYPERLIQUID" and execution.base_currency == "USDC"
     assert execution.starting_balances == ["100000 USDC"]
@@ -156,7 +157,7 @@ def test_recovered_open_testnet_position_remains_manage_only_after_restart(tmp_p
 
 def test_testnet_instance_rejects_mainnet_or_an_agent_address_field(tmp_path) -> None:
     source = json.loads((ROOT / "configs/hl-stageg-testnet.instance.json").read_text())
-    source["environment"] = "mainnet"
+    source["environment"] = "testnet"
     path = tmp_path / "instance.json"; path.write_text(json.dumps(source))
     with pytest.raises(ConfigurationError, match="UNSUPPORTED_TESTNET_INSTANCE_IDENTITY"):
         load_testnet_instance_config(path)

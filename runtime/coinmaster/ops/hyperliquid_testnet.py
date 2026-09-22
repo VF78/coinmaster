@@ -1,7 +1,7 @@
 """D3's isolated Hyperliquid public-data / native-sandbox dry-run boundary.
 
 This is not a second engine or a bespoke exchange transport.  It consumes
-Nautilus 1.231's public Hyperliquid TESTNET adapter and uses Nautilus'
+Nautilus 1.231's public Hyperliquid MAINNET adapter and uses Nautilus'
 ``SandboxExecutionClient`` as its *only* execution route.  It has no API
 wallet, account query, Hyperliquid execution factory, or exchange-order path.
 """
@@ -32,7 +32,7 @@ from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import TestnetInstanceConfig, candidate_content_hash
 
 
-TESTNET_ENVIRONMENT = nautilus_pyo3.HyperliquidEnvironment.TESTNET
+PUBLIC_MAINNET_ENVIRONMENT = nautilus_pyo3.HyperliquidEnvironment.MAINNET
 BTC_PERP = InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID")
 SOL_PERP = InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID")
 TESTNET_IDS = (BTC_PERP, SOL_PERP)
@@ -134,12 +134,12 @@ def require_testnet_sandbox(environment: Mapping[str, str] | None = None) -> Non
         raise RuntimeError("HL_TESTNET_REFUSES_LIVE_ENABLED")
     if environment.get("COINMASTER_HL_TESTNET_ENABLED") != "true":
         raise RuntimeError("HL_TESTNET_NOT_EXPLICITLY_ENABLED")
-    if environment.get("COINMASTER_HL_TESTNET_ENVIRONMENT") != "testnet":
-        raise RuntimeError("HL_TESTNET_ENVIRONMENT_GUARD")
+    if environment.get("COINMASTER_HL_TESTNET_ENVIRONMENT") != "mainnet":
+        raise RuntimeError("HL_PUBLIC_MAINNET_ENVIRONMENT_GUARD")
 
 
 def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
-    """Build exactly one public TESTNET-data + native-sandbox node route."""
+    """Build exactly one public MAINNET-data + native-sandbox node route."""
     provider = InstrumentProviderConfig(load_ids=frozenset(TESTNET_IDS))
     routing = RoutingConfig(venues=frozenset({"HYPERLIQUID"}))
     return TradingNodeConfig(
@@ -151,8 +151,8 @@ def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
         # reconciliation.
         exec_engine=LiveExecEngineConfig(reconciliation=False),
         data_clients={
-            "HYPERLIQUID-TESTNET-DATA": HyperliquidDataClientConfig(
-                instrument_provider=provider, routing=routing, environment=TESTNET_ENVIRONMENT,
+            "HYPERLIQUID-MAINNET-DATA": HyperliquidDataClientConfig(
+                instrument_provider=provider, routing=routing, environment=PUBLIC_MAINNET_ENVIRONMENT,
             ),
         },
         exec_clients={
@@ -168,14 +168,14 @@ def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
 
 
 def assert_native_testnet_only(config: TradingNodeConfig) -> None:
-    """Reject any route beyond public testnet data and native Sandbox exec."""
-    if set(config.data_clients) != {"HYPERLIQUID-TESTNET-DATA"} or set(config.exec_clients) != {"SANDBOX"}:
+    """Reject any route beyond public mainnet data and native Sandbox exec."""
+    if set(config.data_clients) != {"HYPERLIQUID-MAINNET-DATA"} or set(config.exec_clients) != {"SANDBOX"}:
         raise RuntimeError("HL_TESTNET_SINGLE_NATIVE_ROUTE_REQUIRED")
-    data = config.data_clients["HYPERLIQUID-TESTNET-DATA"]
+    data = config.data_clients["HYPERLIQUID-MAINNET-DATA"]
     execution = config.exec_clients["SANDBOX"]
     if not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, SandboxExecutionClientConfig):
         raise RuntimeError("HL_TESTNET_NATIVE_CONFIG_REQUIRED")
-    if data.environment is not TESTNET_ENVIRONMENT:
+    if data.environment is not PUBLIC_MAINNET_ENVIRONMENT:
         raise RuntimeError("HL_TESTNET_MAINNET_OR_UNSET_ENVIRONMENT")
     if execution.venue != "HYPERLIQUID" or execution.base_currency != "USDC":
         raise RuntimeError("HL_TESTNET_SANDBOX_VENUE_OR_CURRENCY_MISMATCH")
@@ -211,7 +211,7 @@ class HyperliquidTestnetNode:
         injectable test fixtures for the existing D1 strategy path.
         """
         try:
-            client_id = ClientId("HYPERLIQUID-TESTNET-DATA")
+            client_id = ClientId("HYPERLIQUID-MAINNET-DATA")
             self.feed_observer = FeedObserver(FeedObserverConfig(
                 instrument_ids=TESTNET_IDS, client_ids=(client_id, client_id), feed=self.feed,
             ))
@@ -229,7 +229,7 @@ class HyperliquidTestnetNode:
         ready = bool(feeds) and all(item["state"] == "READY" for item in feeds.values()) and self.prime_error is None
         return {
             "instance_id": self.instance.instance_id,
-            "environment": "testnet",
+            "environment": "mainnet-public",
             "node_class": type(self.node).__name__,
             "node_built": self.node.is_built(),
             "node_running": self.node.is_running(),

@@ -168,8 +168,8 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
     if (
         document["instance_id"] != "hl-stageg-testnet"
         or document["venue"] != "HYPERLIQUID"
-        or document["environment"] != "testnet"
-        or document["mode"] != "testnet"
+        or document["environment"] != "mainnet"
+        or document["mode"] != "sandbox"
     ):
         raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
     if document["strategy_config"] != "/srv/coinmaster/runtime/configs/stage-g-v1.json":
