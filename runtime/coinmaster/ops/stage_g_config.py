@@ -39,10 +39,9 @@ class InstanceConfig:
 class TestnetInstanceConfig:
     """Identity envelope for the isolated Hyperliquid testnet process.
 
-    It intentionally contains the *name* of the master-address environment
-    variable, never an address or any API-wallet material.  Address presence
-    is checked at process startup so an agent-wallet address can never be
-    silently used as an account-query target.
+    It contains no address, credential, or account-query setting. Corrected
+    D3 consumes public testnet data and routes all local execution through
+    Nautilus SandboxExecutionClient.
     """
     instance_id: str
     venue: str
@@ -53,7 +52,6 @@ class TestnetInstanceConfig:
     trader_id: str
     strategy_id: str
     order_id_tag: str
-    master_account_address_env: str
     path: Path
 
 
@@ -172,7 +170,6 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
         or document["venue"] != "HYPERLIQUID"
         or document["environment"] != "testnet"
         or document["mode"] != "testnet"
-        or document["master_account_address_env"] != "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS"
     ):
         raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
     if document["strategy_config"] != "/srv/coinmaster/runtime/configs/stage-g-v1.json":

@@ -21,7 +21,8 @@ example `normalized` and `bybit-1m`). Do not copy, mount, or link a trader,
 paper, or control SQLite DB into this directory.
 
 Install `/etc/coinmaster-hl-stageg-testnet.env` as `root:root`, mode `0600`.
-It is the only trader secret file and may contain `HYPERLIQUID_TESTNET_PK`.
+It contains only the non-secret sandbox/public-data guard values; it must not
+contain a Hyperliquid private key or account address.
 Install `/etc/coinmaster-runtime.env` as `root:root`, mode `0600`; it may hold
 runtime relay tokens but must never contain Hyperliquid or Bybit credentials.
 Install the non-secret instance config as

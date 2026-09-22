@@ -1,23 +1,24 @@
-"""D3's isolated, one-node Hyperliquid TESTNET integration boundary.
+"""D3's isolated Hyperliquid public-data / native-sandbox dry-run boundary.
 
-This is intentionally not a second engine or a bespoke exchange transport.
-It uses Nautilus 1.231's native Hyperliquid data and execution factories.  The
-process is disabled unless its explicit testnet guard and master account
-address are present.  The API-wallet private key is deliberately left to the
-native client to source from its runtime-only environment variable.
+This is not a second engine or a bespoke exchange transport.  It consumes
+Nautilus 1.231's public Hyperliquid TESTNET adapter and uses Nautilus'
+``SandboxExecutionClient`` as its *only* execution route.  It has no API
+wallet, account query, Hyperliquid execution factory, or exchange-order path.
 """
 from __future__ import annotations
 
 import asyncio
 import os
-import re
 import threading
 import time
 from dataclasses import dataclass
 from typing import Mapping
 
-from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory, HyperliquidLiveExecClientFactory
-from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig, HyperliquidExecClientConfig
+from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory
+from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig
+from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
+from nautilus_trader.adapters.sandbox.execution import SandboxExecutionClient
+from nautilus_trader.adapters.sandbox.factory import SandboxLiveExecClientFactory
 from nautilus_trader.common import Environment
 from nautilus_trader.config import InstrumentProviderConfig, LoggingConfig
 from nautilus_trader.core import nautilus_pyo3
@@ -26,7 +27,7 @@ from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 
 from coinmaster.domain.wave_overlay import Candidate
-from coinmaster.ops.native_paper_node import FeedBook, FeedObserver, FeedObserverConfig
+from coinmaster.ops.native_paper_node import EXECUTION_FACTORY_ALLOWLIST, FeedBook, FeedObserver, FeedObserverConfig, scrub_private_execution_environment
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import TestnetInstanceConfig, candidate_content_hash
 
@@ -35,15 +36,7 @@ TESTNET_ENVIRONMENT = nautilus_pyo3.HyperliquidEnvironment.TESTNET
 BTC_PERP = InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID")
 SOL_PERP = InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID")
 TESTNET_IDS = (BTC_PERP, SOL_PERP)
-ADDRESS_RE = re.compile(r"0x[0-9a-fA-F]{40}")
-NATIVE_TESTNET_FACTORIES = (HyperliquidLiveDataClientFactory, HyperliquidLiveExecClientFactory)
-
-
-@dataclass(frozen=True)
-class TestnetAuthContext:
-    """Non-secret identity required before authenticated native queries exist."""
-    master_account_address: str
-    __test__ = False
+NATIVE_TESTNET_FACTORIES = (HyperliquidLiveDataClientFactory, SandboxLiveExecClientFactory)
 
 
 @dataclass(frozen=True)
@@ -129,12 +122,12 @@ class LifecycleHooks:
         self.runtime.terminal_submission(client_order_id)
 
 
-def require_testnet_auth(environment: Mapping[str, str] | None = None) -> TestnetAuthContext:
-    """Fail closed before constructing a client capable of account queries.
+def require_testnet_sandbox(environment: Mapping[str, str] | None = None) -> None:
+    """Fail closed unless this is the explicitly enabled non-live dry run.
 
-    The master account is not inferred from the API/agent signer.  Nautilus
-    gets ``private_key=None`` below, allowing only its testnet runtime-secret
-    resolution; this function never reads, copies, or logs that secret.
+    This guard intentionally does not read an API-wallet secret or an account
+    address.  Sandbox execution cannot authenticate with Hyperliquid and all
+    state it creates remains local to the durable sandbox journal.
     """
     environment = os.environ if environment is None else environment
     if environment.get("COINMASTER_LIVE_ENABLED", "false").lower() != "false":
@@ -143,70 +136,65 @@ def require_testnet_auth(environment: Mapping[str, str] | None = None) -> Testne
         raise RuntimeError("HL_TESTNET_NOT_EXPLICITLY_ENABLED")
     if environment.get("COINMASTER_HL_TESTNET_ENVIRONMENT") != "testnet":
         raise RuntimeError("HL_TESTNET_ENVIRONMENT_GUARD")
-    # Presence only: the value is passed directly to Nautilus through its
-    # environment fallback and is never retained by Coinmaster code.
-    if not environment.get("HYPERLIQUID_TESTNET_PK"):
-        raise RuntimeError("HL_TESTNET_API_WALLET_SECRET_MISSING")
-    address = environment.get("COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS")
-    if not address or not ADDRESS_RE.fullmatch(address):
-        raise RuntimeError("HL_TESTNET_MASTER_ACCOUNT_ADDRESS_REQUIRED")
-    return TestnetAuthContext(master_account_address=address.lower())
 
 
-def hyperliquid_testnet_node_config(*, trader_id: str, auth: TestnetAuthContext) -> TradingNodeConfig:
-    """Build config for exactly one native TESTNET node and execution route."""
+def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
+    """Build exactly one public TESTNET-data + native-sandbox node route."""
     provider = InstrumentProviderConfig(load_ids=frozenset(TESTNET_IDS))
     routing = RoutingConfig(venues=frozenset({"HYPERLIQUID"}))
     return TradingNodeConfig(
         environment=Environment.LIVE,
         trader_id=trader_id,
         logging=LoggingConfig(log_level="INFO", log_colors=False),
-        exec_engine=LiveExecEngineConfig(reconciliation=True),
+        # Sandbox has no remote account/order history.  Durable recovery is
+        # handled by PaperRuntime and must never be described as exchange
+        # reconciliation.
+        exec_engine=LiveExecEngineConfig(reconciliation=False),
         data_clients={
             "HYPERLIQUID-TESTNET-DATA": HyperliquidDataClientConfig(
                 instrument_provider=provider, routing=routing, environment=TESTNET_ENVIRONMENT,
             ),
         },
         exec_clients={
-            "HYPERLIQUID-TESTNET-EXEC": HyperliquidExecClientConfig(
-                instrument_provider=provider,
+            "SANDBOX": SandboxExecutionClientConfig(
+                venue="HYPERLIQUID",
+                starting_balances=["100000 USDC"],
+                base_currency="USDC",
+                use_reduce_only=True,
                 routing=routing,
-                # Keep this None: Nautilus resolves HYPERLIQUID_TESTNET_PK at
-                # runtime, and Coinmaster never receives/logs that value.
-                private_key=None,
-                account_address=auth.master_account_address,
-                environment=TESTNET_ENVIRONMENT,
-                include_builder_attribution=False,
             ),
         },
     )
 
 
-def assert_native_testnet_only(config: TradingNodeConfig, auth: TestnetAuthContext) -> None:
-    """Reject mainnet, an extra node route, or implicit agent-account query."""
-    if set(config.data_clients) != {"HYPERLIQUID-TESTNET-DATA"} or set(config.exec_clients) != {"HYPERLIQUID-TESTNET-EXEC"}:
+def assert_native_testnet_only(config: TradingNodeConfig) -> None:
+    """Reject any route beyond public testnet data and native Sandbox exec."""
+    if set(config.data_clients) != {"HYPERLIQUID-TESTNET-DATA"} or set(config.exec_clients) != {"SANDBOX"}:
         raise RuntimeError("HL_TESTNET_SINGLE_NATIVE_ROUTE_REQUIRED")
     data = config.data_clients["HYPERLIQUID-TESTNET-DATA"]
-    execution = config.exec_clients["HYPERLIQUID-TESTNET-EXEC"]
-    if not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, HyperliquidExecClientConfig):
+    execution = config.exec_clients["SANDBOX"]
+    if not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, SandboxExecutionClientConfig):
         raise RuntimeError("HL_TESTNET_NATIVE_CONFIG_REQUIRED")
-    if data.environment is not TESTNET_ENVIRONMENT or execution.environment is not TESTNET_ENVIRONMENT:
+    if data.environment is not TESTNET_ENVIRONMENT:
         raise RuntimeError("HL_TESTNET_MAINNET_OR_UNSET_ENVIRONMENT")
-    if execution.private_key is not None or execution.vault_address is not None or execution.account_address != auth.master_account_address:
-        raise RuntimeError("HL_TESTNET_ACCOUNT_QUERY_TARGET_REQUIRED")
+    if execution.venue != "HYPERLIQUID" or execution.base_currency != "USDC":
+        raise RuntimeError("HL_TESTNET_SANDBOX_VENUE_OR_CURRENCY_MISMATCH")
+    if EXECUTION_FACTORY_ALLOWLIST != (SandboxLiveExecClientFactory,):
+        raise RuntimeError("HL_TESTNET_EXECUTION_ALLOWLIST_MISMATCH")
 
 
 class HyperliquidTestnetNode:
-    """One OS-process owner of one Nautilus node; no activation of order flow."""
-    def __init__(self, *, instance: TestnetInstanceConfig, candidate: Candidate, state: PaperRuntime, auth: TestnetAuthContext) -> None:
-        self.instance, self.candidate, self.state, self.auth = instance, candidate, state, auth
+    """One OS-process owner of public feeds and a local Sandbox account."""
+    def __init__(self, *, instance: TestnetInstanceConfig, candidate: Candidate, state: PaperRuntime) -> None:
+        self.instance, self.candidate, self.state = instance, candidate, state
+        self.scrubbed_environment = scrub_private_execution_environment()
         self.candidate_hash = candidate_content_hash(candidate)
         self.loop = asyncio.new_event_loop()
-        self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id, auth=auth)
-        assert_native_testnet_only(self.config, auth)
+        self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id)
+        assert_native_testnet_only(self.config)
         self.node = TradingNode(config=self.config, loop=self.loop)
         self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
-        self.node.add_exec_client_factory("HYPERLIQUID", HyperliquidLiveExecClientFactory)
+        self.node.add_exec_client_factory("SANDBOX", SandboxLiveExecClientFactory)
         self.node.build()
         self.hooks = LifecycleHooks(state)
         self.feed = FeedBook(ids=TESTNET_IDS, native_event_sink=self.hooks.record_event)
@@ -246,15 +234,25 @@ class HyperliquidTestnetNode:
             "node_built": self.node.is_built(),
             "node_running": self.node.is_running(),
             "data_client_classes": ["HyperliquidDataClient"],
-            "execution_client_classes": ["HyperliquidExecutionClient"],
+            "execution_client_classes": [SandboxExecutionClient.__name__],
             "execution_factories": [f"{item.__module__}.{item.__name__}" for item in NATIVE_TESTNET_FACTORIES],
+            "execution_factory_allowlist": [f"{SandboxLiveExecClientFactory.__module__}.{SandboxLiveExecClientFactory.__name__}"],
+            "live_order_capability": False,
             "candidate_hash": self.candidate_hash,
             "state_db": str(self.instance.state_db),
-            "authenticated_query_account": self.auth.master_account_address,
             "orders_enabled": False,
             "trading_strategy_registered": False,
             "feed_observer_registered": self.feed_observer is not None,
             "feeds": feeds,
             "state": "PUBLIC_FEEDS_READY" if ready else "DATA_STALE/PAUSED",
             "prime_error": self.prime_error,
+            "scrubbed_private_environment": list(self.scrubbed_environment),
+            # Public rate/mark observations are not account postings. Sandbox
+            # commissions/margin are native local-model outcomes, and actual
+            # account fee tiers, funding cash and margin remain unknown.
+            "accounting": {
+                "fees": {"observed": "SANDBOX_NATIVE_FILL_COMMISSION", "modelled": "HYPERLIQUID_ACCOUNT_FEE_TIER_UNKNOWN"},
+                "funding": {"observed": "PUBLIC_RATE_AND_MARK_ONLY", "modelled": "UNPOSTED_NO_SANDBOX_CASH_ADJUSTMENT"},
+                "margin": {"observed": "NO_REMOTE_ACCOUNT", "modelled": "NATIVE_SANDBOX_INSTRUMENT_MODEL"},
+            },
         }

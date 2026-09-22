@@ -85,8 +85,8 @@ def check() -> list[str]:
         failures.append("TRADER_STATE_DB_PATH_MISMATCH")
     if '"strategy_config":"/srv/coinmaster/runtime/configs/stage-g-v1.json"' not in config:
         failures.append("TRADER_SHARED_CODE_PATH_MISMATCH")
-    if "HYPERLIQUID_TESTNET_PK=" not in trader_env or "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS=" not in trader_env:
-        failures.append("TRADER_SECRET_ENV_CONTRACT_MISSING")
+    if any(name in trader_env for name in ("HYPERLIQUID_TESTNET_PK", "HYPERLIQUID_PRIVATE_KEY", "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS")):
+        failures.append("TRADER_ENV_CONTAINS_FORBIDDEN_AUTHENTICATED_HL_CONTRACT")
     if "COINMASTER_RUNTIME_API_TOKEN" in trader_env or "COINMASTER_PAPER_DB" in trader_env:
         failures.append("TRADER_ENV_CROSSES_API_OR_PAPER_BOUNDARY")
     if "HYPERLIQUID" in runtime_env or "BYBIT_" in runtime_env:
@@ -117,7 +117,7 @@ def main() -> None:
         ))
     if failures:
         raise SystemExit("FAIL " + ";".join(failures))
-    print("OK trader=separate-uid/one-node research=separate-uid/one-worker credentials=isolated paths=isolated")
+    print("OK trader=separate-uid/one-node/sandbox-only research=separate-uid/one-worker credentials=none paths=isolated")
 
 
 if __name__ == "__main__":

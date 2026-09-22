@@ -5,7 +5,8 @@ import time
 from types import SimpleNamespace
 
 import pytest
-from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig, HyperliquidExecClientConfig
+from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig
+from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 
 from coinmaster.ops.hyperliquid_testnet import (
     BTC_PERP,
@@ -15,10 +16,9 @@ from coinmaster.ops.hyperliquid_testnet import (
     LifecycleHooks,
     LifecycleRequest,
     TESTNET_ENVIRONMENT,
-    TestnetAuthContext,
     assert_native_testnet_only,
     hyperliquid_testnet_node_config,
-    require_testnet_auth,
+    require_testnet_sandbox,
 )
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import ConfigurationError, load_testnet_instance_config
@@ -30,16 +30,14 @@ from nautilus_trader.model.identifiers import ClientId
 
 
 ROOT = __import__("pathlib").Path(__file__).resolve().parents[1]
-MASTER = "0x1234567890abcdef1234567890abcdef12345678"
-
-
 def _environment(**overrides: str) -> dict[str, str]:
     value = {
         "COINMASTER_LIVE_ENABLED": "false",
         "COINMASTER_HL_TESTNET_ENABLED": "true",
         "COINMASTER_HL_TESTNET_ENVIRONMENT": "testnet",
-        "HYPERLIQUID_TESTNET_PK": "runtime-only-fixture-not-a-secret",
-        "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS": MASTER,
+        # Corrected D3 does not consume either of these values.
+        "HYPERLIQUID_TESTNET_PK": "must-not-be-read",
+        "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS": "must-not-be-read",
     }
     value.update(overrides)
     return value
@@ -59,27 +57,29 @@ def test_hl_stageg_testnet_identity_is_strict_and_has_a_separate_state_db() -> N
     ({"COINMASTER_LIVE_ENABLED": "true"}, "HL_TESTNET_REFUSES_LIVE_ENABLED"),
     ({"COINMASTER_HL_TESTNET_ENABLED": "false"}, "HL_TESTNET_NOT_EXPLICITLY_ENABLED"),
     ({"COINMASTER_HL_TESTNET_ENVIRONMENT": "mainnet"}, "HL_TESTNET_ENVIRONMENT_GUARD"),
-    ({"HYPERLIQUID_TESTNET_PK": ""}, "HL_TESTNET_API_WALLET_SECRET_MISSING"),
-    ({"COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS": "agent-address-is-not-an-account"}, "HL_TESTNET_MASTER_ACCOUNT_ADDRESS_REQUIRED"),
 ])
 def test_testnet_runtime_guard_fails_closed_before_native_client_construction(change, reason) -> None:
     with pytest.raises(RuntimeError, match=reason):
-        require_testnet_auth(_environment(**change))
+        require_testnet_sandbox(_environment(**change))
 
 
-def test_native_config_has_one_testnet_data_and_execution_route_and_explicit_master_query_target() -> None:
-    auth = require_testnet_auth(_environment())
-    config = hyperliquid_testnet_node_config(trader_id="COINMASTER-HL-STAGEG-TESTNET", auth=auth)
+def test_native_config_has_one_testnet_data_and_native_sandbox_execution_route() -> None:
+    require_testnet_sandbox(_environment())
+    config = hyperliquid_testnet_node_config(trader_id="COINMASTER-HL-STAGEG-TESTNET")
     assert set(config.data_clients) == {"HYPERLIQUID-TESTNET-DATA"}
-    assert set(config.exec_clients) == {"HYPERLIQUID-TESTNET-EXEC"}
+    assert set(config.exec_clients) == {"SANDBOX"}
     data = config.data_clients["HYPERLIQUID-TESTNET-DATA"]
-    execution = config.exec_clients["HYPERLIQUID-TESTNET-EXEC"]
+    execution = config.exec_clients["SANDBOX"]
     assert isinstance(data, HyperliquidDataClientConfig) and data.environment is TESTNET_ENVIRONMENT
-    assert isinstance(execution, HyperliquidExecClientConfig) and execution.environment is TESTNET_ENVIRONMENT
-    assert execution.private_key is None
-    assert execution.account_address == MASTER
-    assert execution.include_builder_attribution is False
-    assert_native_testnet_only(config, auth)
+    assert isinstance(execution, SandboxExecutionClientConfig)
+    assert execution.venue == "HYPERLIQUID" and execution.base_currency == "USDC"
+    assert execution.starting_balances == ["100000 USDC"]
+    assert_native_testnet_only(config)
+    source = (ROOT / "coinmaster/ops/hyperliquid_testnet.py").read_text()
+    assert "HyperliquidLiveExecClientFactory" not in source
+    assert "HyperliquidExecClientConfig" not in source
+    assert "HYPERLIQUID_TESTNET_PK" not in source
+    assert "SandboxLiveExecClientFactory" in source
 
 
 def test_d1_lifecycle_hooks_cover_native_submit_cancel_reduce_only_post_only_taker_partial_fill_and_pause(tmp_path) -> None:
@@ -161,7 +161,7 @@ def test_testnet_instance_rejects_mainnet_or_an_agent_address_field(tmp_path) ->
     with pytest.raises(ConfigurationError, match="UNSUPPORTED_TESTNET_INSTANCE_IDENTITY"):
         load_testnet_instance_config(path)
     source = json.loads((ROOT / "configs/hl-stageg-testnet.instance.json").read_text())
-    source["agent_address"] = MASTER
+    source["agent_address"] = "0x1234567890abcdef1234567890abcdef12345678"
     path.write_text(json.dumps(source))
     with pytest.raises(ConfigurationError, match="TESTNET_INSTANCE_FIELDS_MISMATCH"):
         load_testnet_instance_config(path)

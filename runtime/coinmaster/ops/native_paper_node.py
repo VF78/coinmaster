@@ -104,8 +104,9 @@ def scrub_private_execution_environment(environment: dict[str, str] | None = Non
         private_bybit = upper.startswith("BYBIT_") and any(
             token in upper for token in ("KEY", "SECRET", "PRIVATE", "WALLET")
         )
-        private_hyperliquid = upper.startswith("HYPERLIQUID_") and any(
-            token in upper for token in ("KEY", "SECRET", "PRIVATE", "WALLET")
+        private_hyperliquid = upper.startswith("HYPERLIQUID_") and (
+            any(token in upper for token in ("KEY", "SECRET", "PRIVATE", "WALLET"))
+            or upper.endswith("_PK")
         )
         if private_bybit or private_hyperliquid:
             environment.pop(name, None)

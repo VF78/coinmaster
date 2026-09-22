@@ -8,7 +8,7 @@ import signal
 import time
 from pathlib import Path
 
-from coinmaster.ops.hyperliquid_testnet import HyperliquidTestnetNode, require_testnet_auth
+from coinmaster.ops.hyperliquid_testnet import HyperliquidTestnetNode, require_testnet_sandbox
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import ConfigurationError, load_candidate, load_testnet_instance_config
 
@@ -24,7 +24,7 @@ class TestnetWorker:
         if not path:
             raise ConfigurationError("MISSING_HL_TESTNET_INSTANCE_CONFIG")
         self.instance = load_testnet_instance_config(Path(path))
-        self.auth = require_testnet_auth(environment)
+        require_testnet_sandbox(environment)
         self.candidate = load_candidate(self.instance.strategy_config)
         self.runtime = PaperRuntime(self.instance.state_db, self.instance.instance_id, int(120e9))
         self.runtime.acquire()
@@ -35,17 +35,15 @@ class TestnetWorker:
         durable_recovery = self.runtime.recovery_state()
         self.recovery_state = durable_recovery if durable_recovery != "FLAT_RESTART" else "UNVERIFIED_REMOTE_STATE"
         self.reconciled = False
-        self.native = HyperliquidTestnetNode(
-            instance=self.instance, candidate=self.candidate.candidate, state=self.runtime, auth=self.auth,
-        )
+        self.native = HyperliquidTestnetNode(instance=self.instance, candidate=self.candidate.candidate, state=self.runtime)
         self.native.prime()
 
     def start(self) -> None:
         self.native.start()
 
     def poll(self) -> None:
-        # Do not snapshot a local native cache as remote reconciliation proof.
-        # It may be empty before the authenticated client has supplied reports.
+        # Do not snapshot a local Sandbox cache as exchange reconciliation
+        # proof. It is a local model, not a Hyperliquid account report.
         self.runtime.heartbeat(time.time_ns())
 
     def status(self) -> dict:
@@ -55,7 +53,7 @@ class TestnetWorker:
         result.update({
             "candidate_hash": self.candidate.sha256,
             "recovery_state": self.recovery_state,
-            "reconciliation": "UNVERIFIED_REMOTE_STATE",
+            "reconciliation": "SANDBOX_NO_REMOTE_RECONCILIATION",
             "safe_for_increase": False,
             "warnings": list(dict.fromkeys((*health.warnings, self.recovery_state))),
             "orders_enabled": False,

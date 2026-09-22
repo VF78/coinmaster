@@ -43,12 +43,14 @@ def test_private_execution_environment_is_scrubbed_before_public_adapters() -> N
         "BYBIT_API_SECRET": "must-not-reach-adapter",
         "HYPERLIQUID_PRIVATE_KEY": "must-not-reach-adapter",
         "HYPERLIQUID_WALLET": "must-not-reach-adapter",
+        "HYPERLIQUID_TESTNET_PK": "must-not-reach-adapter",
         "UNRELATED": "kept",
     }
     assert scrub_private_execution_environment(environment) == (
         "BYBIT_API_KEY",
         "BYBIT_API_SECRET",
         "HYPERLIQUID_PRIVATE_KEY",
+        "HYPERLIQUID_TESTNET_PK",
         "HYPERLIQUID_WALLET",
     )
     assert environment == {"UNRELATED": "kept"}
