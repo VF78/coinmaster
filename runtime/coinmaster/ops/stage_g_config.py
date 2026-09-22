@@ -35,6 +35,28 @@ class InstanceConfig:
     path: Path
 
 
+@dataclass(frozen=True)
+class TestnetInstanceConfig:
+    """Identity envelope for the isolated Hyperliquid testnet process.
+
+    It intentionally contains the *name* of the master-address environment
+    variable, never an address or any API-wallet material.  Address presence
+    is checked at process startup so an agent-wallet address can never be
+    silently used as an account-query target.
+    """
+    instance_id: str
+    venue: str
+    environment: str
+    mode: str
+    strategy_config: Path
+    state_db: Path
+    trader_id: str
+    strategy_id: str
+    order_id_tag: str
+    master_account_address_env: str
+    path: Path
+
+
 def _read_object(path: Path) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -128,6 +150,36 @@ def load_instance_config(path: Path) -> InstanceConfig:
         if not isinstance(document[name], str) or not document[name]:
             raise ConfigurationError(f"INVALID_INSTANCE_VALUE:{name}")
     return InstanceConfig(
+        **strings,
+        strategy_config=(base / document["strategy_config"]).resolve(),
+        state_db=(base / document["state_db"]).resolve(),
+        path=path.resolve(),
+    )
+
+
+def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
+    """Load the one permitted D3 testnet identity without widening paper mode."""
+    document = _read_object(path)
+    names = {item.name for item in fields(TestnetInstanceConfig)} - {"path"}
+    if set(document) != names:
+        missing, extra = sorted(names - set(document)), sorted(set(document) - names)
+        raise ConfigurationError(f"TESTNET_INSTANCE_FIELDS_MISMATCH:missing={missing}:extra={extra}")
+    strings = {name: document[name] for name in names if name not in {"strategy_config", "state_db"}}
+    if any(not isinstance(value, str) or not value.strip() for value in strings.values()):
+        raise ConfigurationError("INVALID_TESTNET_INSTANCE_VALUE")
+    if (
+        document["instance_id"] != "hl-stageg-testnet"
+        or document["venue"] != "HYPERLIQUID"
+        or document["environment"] != "testnet"
+        or document["mode"] != "testnet"
+        or document["master_account_address_env"] != "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS"
+    ):
+        raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
+    base = path.resolve().parent
+    for name in ("strategy_config", "state_db"):
+        if not isinstance(document[name], str) or not document[name]:
+            raise ConfigurationError(f"INVALID_TESTNET_INSTANCE_VALUE:{name}")
+    return TestnetInstanceConfig(
         **strings,
         strategy_config=(base / document["strategy_config"]).resolve(),
         state_db=(base / document["state_db"]).resolve(),

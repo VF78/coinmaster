@@ -269,6 +269,26 @@ def test_control_a_sol_exit_is_taker_ioc_at_zero_spread() -> None:
         engine.dispose()
 
 
+def test_native_order_submission_hook_receives_enum_names_not_numeric_values() -> None:
+    class Capture:
+        def __init__(self): self.calls = []
+        def __call__(self, **kwargs): self.calls.append(kwargs); return True
+        def acknowledge(self, _client_order_id): pass
+        def terminal(self, _client_order_id): pass
+
+    capture = Capture()
+    strategy = ControlAExitProbe(probe_config().__replace__(submission_sink=capture))
+    engine = native_engine(strategy)
+    engine.add_data([quote(SOL_PERP.id, f"{price:.2f}", f"{price:.2f}", ts) for ts, price in enumerate((100, 101, 102, 103, 104), start=1)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert capture.calls
+        assert capture.calls[-1]["order_kind"] == "MARKET"
+        assert capture.calls[-1]["time_in_force"] == "IOC"
+    finally:
+        engine.dispose()
+
+
 def test_queued_increase_is_rejected_after_pause_gate_transition() -> None:
     strategy = QueuedPauseProbe(probe_config())
     engine = native_engine(strategy)

@@ -797,6 +797,8 @@ class WaveOverlayStrategy(Strategy):
         return bool(sink(
             client_order_id=str(order.client_order_id), intent_id=intent_id, episode_id=episode_id,
             action=action, instrument_id=str(order.instrument_id), quantity=str(order.quantity), reduce_only=bool(order.is_reduce_only),
+            order_kind=getattr(order.order_type, "name", str(order.order_type)),
+            time_in_force=getattr(order.time_in_force, "name", str(order.time_in_force)), post_only=bool(order.is_post_only),
         ))
 
     def _record_fill_audit(self, event: OrderFilled) -> None:

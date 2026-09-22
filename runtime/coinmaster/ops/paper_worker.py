@@ -27,7 +27,12 @@ class SubmissionJournal:
         self.runtime = runtime
 
     def __call__(self, **kwargs) -> bool:
-        return self.runtime.record_submission(**kwargs)
+        # D1 supplies order-shape audit fields too; the paper journal's durable
+        # schema intentionally persists only its restart-critical subset.
+        return self.runtime.record_submission(**{
+            name: kwargs[name]
+            for name in ("client_order_id", "intent_id", "episode_id", "action", "instrument_id", "quantity", "reduce_only")
+        })
 
     def acknowledge(self, client_order_id: str) -> None:
         self.runtime.acknowledge_submission(client_order_id)

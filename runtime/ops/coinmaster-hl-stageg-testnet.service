@@ -1,0 +1,14 @@
+[Unit]
+Description=CoinMaster Hyperliquid Stage-G TESTNET observation node
+After=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/coinmaster-hl-stageg-testnet.env
+WorkingDirectory=/root/.openclaw/workspace/coinmaster/coinmaster/runtime
+ExecStart=/root/.local/bin/uv run --no-sync python -m coinmaster.ops.hyperliquid_testnet_worker
+Restart=on-failure
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
