@@ -58,6 +58,11 @@ BYBIT_FUNDING_INTERVAL_NS = 8 * 60 * 60 * 1_000_000_000
 HYPERLIQUID_FUNDING_INTERVAL_NS = 60 * 60 * 1_000_000_000
 WARMUP_DAYS = 730
 DAY_NS = 86_400_000_000_000
+# A completed UTC daily bar may arrive after its session closes, but an older
+# manifest cannot be treated as production-ready merely because its hashes and
+# row count are valid. Two days accommodates one completed-session publication
+# delay while failing closed before a stale signal seed can trade.
+MAX_WARMUP_STALENESS_NS = 2 * DAY_NS
 
 
 @dataclass(frozen=True)
@@ -114,7 +119,7 @@ def scrub_private_execution_environment(environment: dict[str, str] | None = Non
     return tuple(sorted(removed))
 
 
-def _load_warmup(path: Path) -> tuple[WarmupBundle | None, str]:
+def _load_warmup(path: Path, *, now_ns: int | None = None) -> tuple[WarmupBundle | None, str]:
     """Verify and return causal BTC/SOL daily seed bars from immutable data."""
     try:
         manifest = json.loads(path.read_text())
@@ -134,12 +139,19 @@ def _load_warmup(path: Path) -> tuple[WarmupBundle | None, str]:
             rows = pq.read_table(daily).to_pylist()
             if len(rows) < WARMUP_DAYS or any(row.get("mark_close") is None for row in rows):
                 return None, f"INVALID_WARMUP_DAILY_DATA_{symbol}"
+            opens = [int(row["open_time_ms"]) * 1_000_000 for row in rows]
+            if any(right - left != DAY_NS for left, right in zip(opens, opens[1:], strict=False)):
+                return None, f"INVALID_WARMUP_DAILY_SESSION_GAP_{symbol}"
             rows_by_symbol[symbol] = rows
     except (OSError, KeyError, ValueError, TypeError):
         return None, "MISSING_OR_INVALID_WARMUP_MANIFEST"
     btc_rows, sol_rows = rows_by_symbol["BTCUSDT"], rows_by_symbol["SOLUSDT"]
     if len(btc_rows) != len(sol_rows) or any(left["open_time_ms"] != right["open_time_ms"] for left, right in zip(btc_rows, sol_rows)):
         return None, "WARMUP_SYMBOL_SESSION_MISMATCH"
+    last_close_ns = int(btc_rows[-1]["open_time_ms"]) * 1_000_000 + DAY_NS
+    current_ns = time.time_ns() if now_ns is None else now_ns
+    if current_ns - last_close_ns > MAX_WARMUP_STALENESS_NS:
+        return None, "WARMUP_STALE_LATEST_COMPLETED_SESSION"
     bars: list[DailyBar] = []
     for btc, sol in zip(btc_rows, sol_rows):
         open_ns = int(btc["open_time_ms"]) * 1_000_000
@@ -151,7 +163,7 @@ def _load_warmup(path: Path) -> tuple[WarmupBundle | None, str]:
             close,  # static verified history was available before live start
             float(btc["open"]), float(btc["close"]), float(sol["close"]),
         ))
-    return WarmupBundle(tuple(bars), manifest["source_manifest_sha256"], len(bars), int(btc_rows[0]["open_time_ms"]) * 1_000_000, int(btc_rows[-1]["open_time_ms"]) * 1_000_000 + DAY_NS), "READY"
+    return WarmupBundle(tuple(bars), manifest["source_manifest_sha256"], len(bars), int(btc_rows[0]["open_time_ms"]) * 1_000_000, last_close_ns), "READY"
 
 
 def _history_ready(path: Path) -> tuple[bool, str]:

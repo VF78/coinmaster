@@ -13,6 +13,7 @@ from coinmaster.ops.native_paper_node import (
     HYPERLIQUID_FUNDING_INTERVAL_NS,
     FeedBook,
     MAX_DATA_AGE_NS,
+    MAX_WARMUP_STALENESS_NS,
     _load_warmup,
     assert_sandbox_only,
     candidate_hash,
@@ -102,7 +103,10 @@ def test_hyperliquid_funding_without_next_timestamp_uses_official_hourly_window_
 
 def test_verified_warmup_hydrates_causal_seed_and_default_is_corrected_v0() -> None:
     from pathlib import Path
-    bundle, state = _load_warmup(Path(__file__).resolve().parents[1] / "var/data/paper-warmup-manifest.json")
+    path = Path(__file__).resolve().parents[1] / "var/data/paper-warmup-manifest.json"
+    # This historical checked-in fixture is intentionally no longer current;
+    # evaluate it at its final completed daily session to verify its shape.
+    bundle, state = _load_warmup(path, now_ns=1_788_220_800_000_000_000)
     assert state == "READY"
     assert bundle is not None and bundle.rows >= 730
     assert bundle.bars[0].available_at == bundle.bars[0].close_time
@@ -111,6 +115,13 @@ def test_verified_warmup_hydrates_causal_seed_and_default_is_corrected_v0() -> N
     assert paper_candidate("research-6.48").btc_notional_multiplier == 6.48
     assert candidate_hash("label-a", paper_candidate("corrected-v0")) == candidate_hash("label-b", paper_candidate("corrected-v0"))
     assert candidate_hash("corrected-v0", paper_candidate("corrected-v0")) != candidate_hash("research-6.48", paper_candidate("research-6.48"))
+
+
+def test_stale_hash_valid_warmup_fails_closed_before_a_native_node_can_be_ready() -> None:
+    path = Path(__file__).resolve().parents[1] / "var/data/paper-warmup-manifest.json"
+    bundle, state = _load_warmup(path, now_ns=1_788_220_800_000_000_000 + MAX_WARMUP_STALENESS_NS + 1)
+    assert bundle is None
+    assert state == "WARMUP_STALE_LATEST_COMPLETED_SESSION"
 
 
 def test_funding_normalization_uses_stable_settlement_id_and_causal_mark_only() -> None:
