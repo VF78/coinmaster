@@ -10,6 +10,7 @@ from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 
 from coinmaster.ops.hyperliquid_testnet import (
     BTC_PERP,
+    cross_venue_stage_g_gate,
     FeedBook,
     FeedObserver,
     HyperliquidTestnetNode,
@@ -22,6 +23,7 @@ from coinmaster.ops.hyperliquid_testnet import (
 )
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import ConfigurationError, load_testnet_instance_config
+from coinmaster.ops.stage_g_config import load_candidate
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
 from coinmaster.venues.marks import venue_mark_data_type
 from nautilus_trader.model.data import BarSpecification, BarType
@@ -81,6 +83,21 @@ def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route()
     assert "HyperliquidExecClientConfig" not in source
     assert "HYPERLIQUID_TESTNET_PK" not in source
     assert "SandboxLiveExecClientFactory" in source
+
+
+def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_stale_research_margin_strategy() -> None:
+    gate = cross_venue_stage_g_gate(
+        candidate=load_candidate(ROOT / "configs/stage-g-v1.json").candidate,
+        warmup_manifest=ROOT / "var/data/paper-warmup-manifest.json",
+        strategy_path=ROOT / "coinmaster/strategy/wave_overlay.py",
+        profile_root=ROOT,
+        now_ns=1_790_000_000_000_000_000,
+    )
+    assert gate.signal_ids == ("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT")
+    assert gate.execution_ids == (str(BTC_PERP), "SOL-USD-PERP.HYPERLIQUID")
+    assert gate.warmup_state == "WARMUP_STALE_LATEST_COMPLETED_SESSION"
+    assert gate.margin_policy_state == "BLOCKED_RESEARCH_MARGIN_POLICY"
+    assert gate.attachable is False
 
 
 def test_d1_lifecycle_hooks_cover_native_submit_cancel_reduce_only_post_only_taker_partial_fill_and_pause(tmp_path) -> None:
