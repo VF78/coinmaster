@@ -1,5 +1,6 @@
 {
   "schema": "coinmaster-hyperliquid-production-meta-v1",
+  "environment": "mainnet",
   "collected_at": "2026-09-21T23:33:17Z",
   "source": "https://api.hyperliquid.xyz/info type=metaAndAssetCtxs, public read-only mainnet response",
   "request": {"type": "metaAndAssetCtxs"},

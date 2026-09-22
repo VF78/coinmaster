@@ -1,0 +1,33 @@
+{
+  "schema": "coinmaster-hyperliquid-production-meta-v1",
+  "environment": "testnet",
+  "collected_at": "2026-09-22T21:01:26Z",
+  "source": "https://api.hyperliquid-testnet.xyz/info type=metaAndAssetCtxs, public read-only testnet response",
+  "request": {"type": "metaAndAssetCtxs"},
+  "response": {
+    "collateralToken": 0,
+    "universe": [
+      {"name": "BTC", "szDecimals": 5, "maxLeverage": 40, "marginTableId": 54},
+      {"name": "SOL", "szDecimals": 2, "maxLeverage": 10, "marginTableId": 10}
+    ],
+    "marginTables": [
+      [54, {"description": "tiered 40x", "marginTiers": [{"lowerBound": "0.0", "maxLeverage": 40}, {"lowerBound": "10000.0", "maxLeverage": 25}, {"lowerBound": "50000.0", "maxLeverage": 10}]}]
+    ]
+  },
+  "derived_facts": {
+    "provenance": "Derived data is deliberately outside response: the public response contains table 54 but does not contain table 10.",
+    "margin_table_derivations": [
+      {"marginTableId": 10, "rule": "DOCUMENTED_MARGIN_TABLE_ID_LT_50_SINGLE_TIER", "source": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margin-tiers", "derivedMarginTiers": [{"lowerBound": "0.0", "maxLeverage": 10}]}
+    ]
+  },
+  "documentation": [
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margin-tiers",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/contract-specifications",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/tick-and-lot-size",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/error-responses"
+  ],
+  "unknowns": [
+    "Testnet account mode, selected leverage, collateral, effective fee tier, and limits require authenticated account evidence and are intentionally not queried.",
+    "This current public testnet metadata does not validate 24-month historical execution data."
+  ]
+}
