@@ -45,7 +45,10 @@ class TestnetWorker:
         # authoritative for this process only. A later process receives the
         # persisted open state and remains MANAGE_ONLY.
         native = getattr(self, "native", None)
-        if native is not None and native.node.is_running() and native.strategy is not None:
+        # A later process cannot inspect or restore the former process's
+        # Sandbox cache. Never replace durable open/uncertain state with an
+        # empty fresh cache: that would falsely manufacture FLAT_RESTART.
+        if getattr(self, "reconciled", self.runtime.recovery_state() == "FLAT_RESTART") and native is not None and native.node.is_running() and native.strategy is not None:
             positions, orders = self.native.sandbox_snapshot()
             self.runtime.snapshot(
                 ts_ns=time.time_ns(), positions=positions, orders=orders,

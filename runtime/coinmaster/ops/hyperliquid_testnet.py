@@ -97,13 +97,13 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
         "taker_fee_assumption": "0.00045",
         "fee_basis": "FIXED_PUBLIC_BASE_RATE_NOT_ACCOUNT_SPECIFIC",
         "execution_quality": "UNKNOWN_NO_24M_BBO_L2_OR_TRADE_TAPE",
-        "funding_cash": "NATIVE_SANDBOX_POST_IF_ADAPTER_CONFIRMS_SETTLEMENT",
+        "funding_cash": "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE",
     }
     execution_policy_hash = hashlib.sha256(
         json.dumps(execution_policy, sort_keys=True, separators=(",", ":")).encode(),
     ).hexdigest()
     execution_policy_state = "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED"
-    funding_state = "NATIVE_SANDBOX_POST_IF_CONFIRMED_HL_SETTLEMENT_MARK"
+    funding_state = "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE"
     capital_state = "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION"
     attachable = warmup_state == "READY" and margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
     return CrossVenueStageGGate(
@@ -452,7 +452,7 @@ class HyperliquidTestnetNode:
             "stage_g_gate": self.gate.__dict__,
             "accounting": {
                 "fees": {"observed": "SANDBOX_NATIVE_FILL_COMMISSION", "policy": "FIXED_HL_PUBLIC_BASE_MAKER_0.00015_TAKER_0.00045"},
-                "funding": {"observed": "PUBLIC_RATE_AND_MARK", "posting": "NATIVE_SANDBOX_POST_ONLY_WITH_ADAPTER_SETTLEMENT_TIMESTAMP_AND_CAUSAL_MARK"},
+                "funding": {"observed": "PUBLIC_RATE_AND_MARK", "posting": "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE"},
                 "margin": {"observed": "NATIVE_SANDBOX_ACCOUNT", "policy": "CURRENT_PUBLIC_HL_MAINNET_TIERS_LOCAL_40X_BTC_20X_SOL"},
             },
         }

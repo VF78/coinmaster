@@ -107,7 +107,7 @@ def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_unproven_parity(
     assert gate.warmup_state == "INVALID_STAGEG_WARMUP_SCHEMA_OR_VENUE"
     assert gate.margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
     assert gate.execution_policy_state == "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED"
-    assert gate.funding_state == "NATIVE_SANDBOX_POST_IF_CONFIRMED_HL_SETTLEMENT_MARK"
+    assert gate.funding_state == "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE"
     assert gate.capital_state == "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION"
     assert gate.attachable is False
 
@@ -149,6 +149,23 @@ def test_native_sandbox_funding_poster_is_idempotent_and_uses_only_confirmed_hl_
     assert [item.as_decimal() for item in exchange.adjustments] == [Decimal("-2.00")]
     assert runtime.pending_native_funding() == []
     runtime.close()
+
+
+def test_next_funding_timestamp_is_observation_only_not_an_early_cash_post() -> None:
+    from nautilus_trader.model.data import FundingRateUpdate, MarkPriceUpdate
+    from nautilus_trader.model.objects import Price
+
+    posted = []
+    bar = BarType(BTC_PERP, BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL)
+    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP, sol_id=InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID"), btc_bar_type=bar, sol_bar_type=bar,
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID")),
+        mark_client_id=ClientId("fixture"), active_seed=0,
+        funding_sink=lambda **kwargs: posted.append(kwargs),
+    ))
+    strategy.on_mark_price(MarkPriceUpdate(BTC_PERP, Price.from_str("100"), 100, 100))
+    strategy.on_funding_rate(FundingRateUpdate(BTC_PERP, Decimal("0.01"), 100, 100, next_funding_ns=200))
+    assert posted == []
 
 
 def test_d1_lifecycle_hooks_cover_native_submit_cancel_reduce_only_post_only_taker_partial_fill_and_pause(tmp_path) -> None:
@@ -221,6 +238,28 @@ def test_recovered_open_testnet_position_remains_manage_only_after_restart(tmp_p
     restarted.heartbeat(2)
     assert not restarted.health(2).safe_for_increase
     restarted.close()
+
+
+def test_running_attached_node_never_overwrites_durable_open_recovery_with_empty_cache(tmp_path) -> None:
+    from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker
+
+    path = tmp_path / "testnet.sqlite"
+    original = PaperRuntime(path, "hl-stageg-testnet", int(120e9)); original.acquire()
+    original.snapshot(ts_ns=time.time_ns(), positions=[{"instrument_id": str(BTC_PERP), "signed_quantity": "0.01"}], orders=[], funding_event_ids=[])
+    original.close()
+    runtime = PaperRuntime(path, "hl-stageg-testnet", int(120e9)); runtime.acquire()
+    worker = TestnetWorker.__new__(TestnetWorker)
+    worker.runtime, worker.reconciled = runtime, False
+    worker.native = SimpleNamespace(
+        node=SimpleNamespace(is_running=lambda: True), strategy=object(),
+        sandbox_snapshot=lambda: ([], []),
+    )
+    worker.poll()
+    assert runtime.recovery_state() == "MANAGE_ONLY_DURABLE_OPEN_STATE"
+    saved = runtime.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()[0]
+    assert str(BTC_PERP) in saved
+    assert not runtime.health(time.time_ns()).safe_for_increase
+    runtime.close()
 
 
 def test_testnet_instance_rejects_mainnet_or_an_agent_address_field(tmp_path) -> None:

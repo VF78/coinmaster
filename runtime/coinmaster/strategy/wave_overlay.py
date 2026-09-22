@@ -66,8 +66,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     # Immutable execution-policy identity written into every native fill audit.
     execution_policy_hash: str = ""
     execution_policy_version: str = ""
-    # Optional native-Sandbox funding poster. It receives only a rate with an
-    # explicit venue settlement timestamp and a causal same-venue mark.
+    # Reserved for a future adapter event carrying a confirmed venue
+    # settlement. ``FundingRateUpdate.next_funding_ns`` is explicitly *not*
+    # such an event: it names the next scheduled payment.
     funding_sink: object | None = None
 
 
@@ -206,25 +207,15 @@ class WaveOverlayStrategy(Strategy):
         self._on_venue_mark(mark, session=session)
 
     def on_funding_rate(self, update: FundingRateUpdate) -> None:
-        """Post only an adapter-confirmed settlement through the native sink."""
-        sink = self.config.funding_sink
-        if sink is None or update.instrument_id not in (self.config.btc_id, self.config.sol_id):
-            return
-        settlement_ns = update.next_funding_ns
-        mark = self._latest_marks.get(update.instrument_id)
-        if settlement_ns is None or mark is None or mark.ts_event > settlement_ns:
-            return
-        position = next((item for item in self.cache.positions_open() if item.instrument_id == update.instrument_id), None)
-        if position is None:
-            return
-        signed_quantity = position.quantity.as_decimal() if position.is_long else -position.quantity.as_decimal()
-        sink(
-            instrument_id=update.instrument_id,
-            settlement_ns=settlement_ns,
-            rate=Decimal(update.rate),
-            settlement_mark=mark.price,
-            signed_quantity=signed_quantity,
-        )
+        """Observe rates without mistaking the next scheduled payment for settlement.
+
+        Nautilus' ``FundingRateUpdate.next_funding_ns`` is the *next* payment
+        timestamp. The public Hyperliquid adapter supplies no prior/confirmed
+        settlement identity or settlement mark in this update. Posting from it
+        would charge funding early, so this path intentionally remains a
+        no-op until the adapter provides a confirmed settlement event.
+        """
+        return
 
     def _on_venue_mark(self, mark: VenueMark, *, session: int | None = None) -> None:
         session = mark.ts_event if session is None else session
