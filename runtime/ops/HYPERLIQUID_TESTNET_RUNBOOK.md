@@ -6,6 +6,26 @@ Hyperliquid TESTNET data and execution factories. Its immutable Stage-G
 candidate is loaded from `configs/stage-g-v1.json`; the canonical candidate
 SHA-256 is reported at startup and in status.
 
+## D4 process boundary
+
+`coinmaster-hl-stageg-testnet.service` is the trader unit. It owns exactly one
+Nautilus `TradingNode`, its testnet state DB, and the separate protected
+`/etc/coinmaster-hl-stageg-testnet.env` secret environment. The unit runs as
+the non-login `coinmaster-hl` identity, while the runtime API/research unit
+runs as distinct `coinmaster-research`; their StateDirectories are `0700` and
+they share only the read-only `/srv/coinmaster/runtime` release. It neither
+requires nor is required by `coinmaster-runtime.service`; stop/restart either
+unit independently. Research remains API-owned child subprocesses, one
+canonical worker at a time on the shared VPS. Each child receives a private
+`runs/jobs` artifact directory and a scrubbed environment: no Hyperliquid or
+Bybit credential, trader/paper/control DB path, or API/relay token is inherited.
+
+The local layout check is read-only and does not start a node:
+
+```sh
+.venv/bin/python scripts/process_isolation_doctor.py
+```
+
 `COINMASTER_LIVE_ENABLED` must be `false`, `COINMASTER_HL_TESTNET_ENABLED`
 must be `true`, and `COINMASTER_HL_TESTNET_ENVIRONMENT` must be `testnet`.
 Any other value refuses startup. This unit has no mainnet route and orders are
@@ -31,7 +51,8 @@ and the [Info endpoint](https://hyperliquid.gitbook.io/hyperliquid-docs/for-deve
 
 ## Recovery rule
 
-The durable state is `runtime/var/testnet/hl-stageg-testnet.sqlite`. On any
+The durable state is
+`/var/lib/coinmaster-hl-stageg-testnet/hl-stageg-testnet.sqlite`. On any
 recovered open position/order or pending submit, the worker stays
 `MANAGE_ONLY`; it never treats a fresh native cache as proof that exposure is
 flat. Only a documented flat restart is reconciled automatically.

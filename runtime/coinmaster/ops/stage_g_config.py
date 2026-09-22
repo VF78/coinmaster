@@ -175,6 +175,10 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
         or document["master_account_address_env"] != "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS"
     ):
         raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
+    if document["strategy_config"] != "/srv/coinmaster/runtime/configs/stage-g-v1.json":
+        raise ConfigurationError("UNSAFE_TESTNET_STRATEGY_PATH")
+    if document["state_db"] != "/var/lib/coinmaster-hl-stageg-testnet/hl-stageg-testnet.sqlite":
+        raise ConfigurationError("UNSAFE_TESTNET_STATE_DB_PATH")
     base = path.resolve().parent
     for name in ("strategy_config", "state_db"):
         if not isinstance(document[name], str) or not document[name]:

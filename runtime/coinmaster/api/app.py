@@ -360,9 +360,14 @@ def immutable_research_reference() -> tuple[list[str], dict[str, Any]]:
     return ["IMMUTABLE_RESEARCH_REFERENCE", "NO_NEW_BACKTEST_COMPUTE", selected["classification"], state], {"catalog_id": selected["id"], "artifact": selected["artifact"], "sha256": selected["sha256"], "artifact_state": state, "reason": "This request references immutable native research evidence; a separate research worker is required for any new computation."}
 
 
+def configured_research_data_root(environment: dict[str, str] | None = None) -> Path:
+    environment = os.environ if environment is None else environment
+    return Path(environment.get("COINMASTER_RESEARCH_DATA_ROOT", str(Path(__file__).resolve().parents[2] / "var/data")))
+
+
 def create_app(database: str | None = None, token: str | None = None, include_legacy_runtime: bool = True, research_commands: dict[str, list[str]] | None = None, research_data_root: Path | None = None) -> FastAPI:
     store = ControlStore(database or os.getenv("COINMASTER_CONTROL_DB", str(Path(__file__).resolve().parents[2] / "var/coinmaster-control.sqlite")))
-    research = ResearchJobManager(store, research_data_root or Path(os.getenv("COINMASTER_RESEARCH_DATA_ROOT", str(Path(__file__).resolve().parents[2] / "var/data"))), research_commands)
+    research = ResearchJobManager(store, research_data_root or configured_research_data_root(), research_commands)
     expected_token = token if token is not None else os.getenv("COINMASTER_API_TOKEN")
     app = FastAPI(title="Coinmaster Nautilus Control API", version="0.1.0", docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json")
     app.add_middleware(CORSMiddleware, allow_origins=[os.getenv("COINMASTER_ALLOWED_ORIGIN", "http://localhost:5173")], allow_credentials=False, allow_methods=["GET", "POST"], allow_headers=["Authorization", "Idempotency-Key"])

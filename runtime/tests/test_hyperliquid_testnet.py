@@ -51,7 +51,7 @@ def test_hl_stageg_testnet_identity_is_strict_and_has_a_separate_state_db() -> N
     assert instance.venue == "HYPERLIQUID"
     assert instance.environment == "testnet"
     assert instance.state_db.name == "hl-stageg-testnet.sqlite"
-    assert instance.state_db.parent.name == "testnet"
+    assert instance.state_db.parent == __import__("pathlib").Path("/var/lib/coinmaster-hl-stageg-testnet").resolve()
     assert instance.strategy_config.name == "stage-g-v1.json"
 
 
@@ -164,4 +164,9 @@ def test_testnet_instance_rejects_mainnet_or_an_agent_address_field(tmp_path) ->
     source["agent_address"] = MASTER
     path.write_text(json.dumps(source))
     with pytest.raises(ConfigurationError, match="TESTNET_INSTANCE_FIELDS_MISMATCH"):
+        load_testnet_instance_config(path)
+    source = json.loads((ROOT / "configs/hl-stageg-testnet.instance.json").read_text())
+    source["state_db"] = "/tmp/testnet.sqlite"
+    path.write_text(json.dumps(source))
+    with pytest.raises(ConfigurationError, match="UNSAFE_TESTNET_STATE_DB_PATH"):
         load_testnet_instance_config(path)

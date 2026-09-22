@@ -23,6 +23,25 @@ if TYPE_CHECKING:
 
 MAX_STDOUT_BYTES = 256 * 1024
 ACTIVE = {"STARTING", "RUNNING", "CANCEL_REQUESTED"}
+RESEARCH_ENV_DENY_PREFIXES = (
+    "HYPERLIQUID_",
+    "COINMASTER_HL_",
+    "COINMASTER_TRADER_",
+)
+RESEARCH_ENV_DENY_NAMES = {
+    "BYBIT_API_KEY",
+    "BYBIT_API_SECRET",
+    "BYBIT_TESTNET_API_KEY",
+    "BYBIT_TESTNET_API_SECRET",
+    "HYPERLIQUID_PRIVATE_KEY",
+    "COINMASTER_LIVE_ENABLED",
+    "COINMASTER_PAPER_DB",
+    "COINMASTER_CONTROL_DB",
+    "COINMASTER_RUNTIME_CONTROL_DB",
+    "COINMASTER_API_TOKEN",
+    "COINMASTER_RUNTIME_API_TOKEN",
+    "COINMASTER_PAPER_CONTROL_TOKEN",
+}
 
 
 class ResearchJobManager:
@@ -38,6 +57,12 @@ class ResearchJobManager:
     def _now() -> str:
         from coinmaster.api.app import utcnow
         return utcnow()
+
+    def _assert_one_shared_worker(self) -> None:
+        """Keep research at one subprocess on the shared VPS by default."""
+        configured = os.getenv("COINMASTER_RESEARCH_MAX_WORKERS", "1")
+        if configured != "1":
+            raise RuntimeError("RESEARCH_WORKER_LIMIT_MUST_BE_ONE")
 
     @staticmethod
     def _request_hash(payload: dict[str, Any]) -> str:
@@ -70,6 +95,23 @@ class ResearchJobManager:
         path.mkdir(parents=True, exist_ok=False)
         os.chmod(path, 0o700)
         return path
+
+    @staticmethod
+    def isolated_child_environment(parent: dict[str, str] | None = None) -> dict[str, str]:
+        """Return a research-only child environment without trader credentials/state.
+
+        Research communicates only through its immutable request file and its
+        private run directory. It must not inherit a trader API wallet, a
+        trader/control SQLite location, or operator relay credentials from the
+        API process which launched it.
+        """
+        source = os.environ if parent is None else parent
+        return {
+            key: value for key, value in source.items()
+            if key not in RESEARCH_ENV_DENY_NAMES
+            and not key.startswith(RESEARCH_ENV_DENY_PREFIXES)
+            and not key.startswith("BYBIT_")
+        } | {"COINMASTER_RESEARCH_CHILD": "true"}
 
     @staticmethod
     def _write_launch_permit(path: Path, request_hash: str, owner: str, process: subprocess.Popen[str], identity: str) -> None:
@@ -130,6 +172,7 @@ class ResearchJobManager:
                     return existing
                 raise ValueError("IDEMPOTENCY_KEY_REUSED")
         with self.lock:
+            self._assert_one_shared_worker()
             run_id, owner = uuid4().hex, secrets.token_urlsafe(24)
             work_dir = self._work_dir(run_id)
             owner_path, request_path, permit_path = work_dir / "owner.token", work_dir / "request.json", work_dir / "launch-permit.json"
@@ -165,7 +208,14 @@ class ResearchJobManager:
             if "{job_request}" not in self.commands[command_name]:
                 command.extend(["--job-request", str(request_path)])
             try:
-                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, start_new_session=True)
+                process = subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    start_new_session=True,
+                    env=self.isolated_child_environment(),
+                )
                 identity = self._ps_identity(process.pid, request_path)
                 if identity is None:
                     raise RuntimeError("PROCESS_IDENTITY_UNVERIFIABLE")

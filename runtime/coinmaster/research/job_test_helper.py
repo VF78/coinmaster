@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import signal
 import time
 from pathlib import Path
@@ -16,7 +17,7 @@ def emit(kind: str, request: dict, **body) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=("complete", "sleep", "ignore-term", "blocked", "wrong-hash", "large-report", "tampered-artifact"), required=True)
+    parser.add_argument("--mode", choices=("complete", "environment", "sleep", "ignore-term", "blocked", "wrong-hash", "large-report", "tampered-artifact"), required=True)
     parser.add_argument("--job-request", type=Path, required=True)
     args = parser.parse_args()
     request = json.loads(args.job_request.read_text())
@@ -35,6 +36,14 @@ def main() -> None:
     artifact_dir = Path(request["artifact_dir"]); artifact_dir.mkdir(parents=True, exist_ok=True)
     artifact = artifact_dir / "result.json"
     report = {"status": "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "terminal_total": "UNKNOWN_TEST_HELPER"}
+    if args.mode == "environment":
+        # Presence flags prove actual Popen inheritance without emitting a
+        # credential value into test output or any artifact.
+        report["sensitive_environment_present"] = sorted(key for key in (
+            "HYPERLIQUID_TESTNET_PK", "HYPERLIQUID_PRIVATE_KEY", "BYBIT_API_KEY",
+            "BYBIT_API_SECRET", "COINMASTER_HL_TESTNET_MASTER_ACCOUNT_ADDRESS",
+            "COINMASTER_PAPER_DB", "COINMASTER_RUNTIME_CONTROL_DB",
+        ) if key in os.environ)
     if args.mode == "large-report":
         report["padding"] = "x" * (708 * 1024)
     artifact.write_text(json.dumps(report, sort_keys=True) + "\n")

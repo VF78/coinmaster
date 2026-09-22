@@ -1,14 +1,26 @@
 [Unit]
-Description=CoinMaster Hyperliquid Stage-G TESTNET observation node
+Description=CoinMaster isolated Hyperliquid Stage-G TESTNET trader node
 After=network-online.target
 
 [Service]
 Type=simple
 EnvironmentFile=/etc/coinmaster-hl-stageg-testnet.env
-WorkingDirectory=/root/.openclaw/workspace/coinmaster/coinmaster/runtime
-ExecStart=/root/.local/bin/uv run --no-sync python -m coinmaster.ops.hyperliquid_testnet_worker
+User=coinmaster-hl
+Group=coinmaster-hl
+WorkingDirectory=/srv/coinmaster/runtime
+ExecStart=/srv/coinmaster/runtime/.venv/bin/python -m coinmaster.ops.hyperliquid_testnet_worker
 Restart=on-failure
 NoNewPrivileges=true
+UMask=0077
+StateDirectory=coinmaster-hl-stageg-testnet
+StateDirectoryMode=0700
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/srv/coinmaster/runtime /etc/coinmaster
+ReadWritePaths=/var/lib/coinmaster-hl-stageg-testnet
+Environment=PYTHONDONTWRITEBYTECODE=1
+# This service deliberately has no Requires=/After= relationship to the API
+# sidecar or research children. Each may be stopped/restarted independently.
 
 [Install]
 WantedBy=multi-user.target

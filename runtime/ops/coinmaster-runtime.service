@@ -4,15 +4,29 @@ After=coinmaster-paper.service
 
 [Service]
 Type=simple
-EnvironmentFile=/etc/coinmaster-paper.env
-WorkingDirectory=/root/.openclaw/workspace/coinmaster/coinmaster/runtime
+EnvironmentFile=/etc/coinmaster-runtime.env
+User=coinmaster-research
+Group=coinmaster-research
+WorkingDirectory=/srv/coinmaster/runtime
 Environment=COINMASTER_RUNTIME_HOST=127.0.0.1
 Environment=COINMASTER_RUNTIME_PORT=18182
 Environment=COINMASTER_RUNTIME_DIST=/var/lib/coinmaster-runtime/web
 Environment=COINMASTER_RUNTIME_CONTROL_DB=/var/lib/coinmaster-runtime/control.sqlite
-ExecStart=/root/.local/bin/uv run --no-sync uvicorn coinmaster.api.runtime_sidecar:app --host ${COINMASTER_RUNTIME_HOST} --port ${COINMASTER_RUNTIME_PORT}
+Environment=COINMASTER_RESEARCH_DATA_ROOT=/var/lib/coinmaster-runtime/data
+# One bounded research child at a time is enforced by ResearchJobManager's
+# canonical lease. The runtime unit deliberately has no trader secret env.
+Environment=COINMASTER_RESEARCH_MAX_WORKERS=1
+ExecStart=/srv/coinmaster/runtime/.venv/bin/uvicorn coinmaster.api.runtime_sidecar:app --host ${COINMASTER_RUNTIME_HOST} --port ${COINMASTER_RUNTIME_PORT}
 Restart=on-failure
 NoNewPrivileges=true
+UMask=0077
+StateDirectory=coinmaster-runtime
+StateDirectoryMode=0700
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/srv/coinmaster/runtime /srv/coinmaster/research-inputs
+ReadWritePaths=/var/lib/coinmaster-runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
 
 [Install]
 WantedBy=multi-user.target
