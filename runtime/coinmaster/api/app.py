@@ -19,6 +19,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, build_engine, quote
 from coinmaster.research.catalog import RESEARCH_CATALOG
 from coinmaster.api.research_jobs import ResearchJobManager
+from coinmaster.research.native_baseline import TRADING_END_MS, TRADING_START_MS, coverage_blockers
 from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 
@@ -121,6 +122,16 @@ class RunRecord(BaseModel):
     work_dir: str | None = None
     process_identity: str | None = None
     idempotency_key: str | None = None
+
+
+class ResearchCapabilities(BaseModel):
+    baseline_state: Literal["READY", "BLOCKED"]
+    baseline_blockers: list[str]
+    baseline_start: str
+    baseline_end_exclusive: str
+    baseline_objective: Literal["TOTAL only"]
+    optimizer_state: Literal["BLOCKED"]
+    optimizer_blocker: Literal["OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED"]
 
 
 class ResearchCatalogEntry(BaseModel):
@@ -365,6 +376,23 @@ def configured_research_data_root(environment: dict[str, str] | None = None) -> 
     return Path(environment.get("COINMASTER_RESEARCH_DATA_ROOT", str(Path(__file__).resolve().parents[2] / "var/data")))
 
 
+def research_capabilities(data_root: Path) -> ResearchCapabilities:
+    """Expose native-job availability without returning source manifests."""
+    try:
+        blockers = coverage_blockers(data_root)
+    except (OSError, TypeError, ValueError, json.JSONDecodeError):
+        blockers = ["INVALID_1M_MANIFEST"]
+    return ResearchCapabilities(
+        baseline_state="READY" if not blockers else "BLOCKED",
+        baseline_blockers=blockers,
+        baseline_start=datetime.fromtimestamp(TRADING_START_MS / 1000, tz=UTC).date().isoformat(),
+        baseline_end_exclusive=datetime.fromtimestamp(TRADING_END_MS / 1000, tz=UTC).date().isoformat(),
+        baseline_objective="TOTAL only",
+        optimizer_state="BLOCKED",
+        optimizer_blocker="OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED",
+    )
+
+
 def create_app(database: str | None = None, token: str | None = None, include_legacy_runtime: bool = True, research_commands: dict[str, list[str]] | None = None, research_data_root: Path | None = None) -> FastAPI:
     store = ControlStore(database or os.getenv("COINMASTER_CONTROL_DB", str(Path(__file__).resolve().parents[2] / "var/coinmaster-control.sqlite")))
     research = ResearchJobManager(store, research_data_root or configured_research_data_root(), research_commands)
@@ -403,6 +431,10 @@ def create_app(database: str | None = None, token: str | None = None, include_le
     @app.get("/api/v1/research/catalog", response_model=list[ResearchCatalogEntry], dependencies=[Depends(auth)])
     def research_catalog() -> list[ResearchCatalogEntry]:
         return [_catalog_entry(entry) for entry in RESEARCH_CATALOG]
+
+    @app.get("/api/v1/research/capabilities", response_model=ResearchCapabilities, dependencies=[Depends(auth)])
+    def research_capability() -> ResearchCapabilities:
+        return research_capabilities(research.data_root)
 
     @app.get("/api/v1/research/catalog/{catalog_id}", response_model=ResearchCatalogDetail, dependencies=[Depends(auth)])
     def research_catalog_detail(catalog_id: str) -> ResearchCatalogDetail:

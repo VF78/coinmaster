@@ -4,7 +4,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
-import { cancelRun, createRun, getConfigurations, getDefaultConfiguration, getHlStagegProjection, getHlStagegStrategy, getResearchCatalog, getRuns, saveConfiguration, setApiToken, type HlStagegProjection, type HlStagegStrategy, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
+import { cancelRun, createRun, getConfigurations, getDefaultConfiguration, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, setApiToken, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
 type ArrayKey = 'wave_quantiles' | 'btc_tp_fractions_initial_qty' | 'sol_size_multipliers_H' | 'sol_entry_z';
@@ -59,9 +59,102 @@ export function StrategyPage() {
   </main>;
 }
 
-export function ResearchPage() {
+function LegacyResearchPage() {
   const [config, setConfig] = useState<StrategyConfiguration | null>(null); const [configs, setConfigs] = useState<StrategyConfiguration[]>([]); const [runs, setRuns] = useState<Run[]>([]); const [catalog, setCatalog] = useState<ResearchCatalogEntry[]>([]); const [message, setMessage] = useState(''); async function load() { try { setRuns(await getRuns()); setCatalog(await getResearchCatalog()); const items = await getConfigurations(); setConfigs(items); const selected = window.localStorage.getItem('coinmaster-selected-config'); setConfig(items.find((item) => item.id === selected) ?? items[0] ?? null); } catch (error) { setMessage(String(error)); } } useEffect(() => { void load(); }, []); async function ensureConfig() { if (config) return config; const selected = window.localStorage.getItem('coinmaster-selected-config'); const existing = (await getConfigurations()).find((item) => item.id === selected); if (existing) { setConfig(existing); return existing; } const base = await getDefaultConfiguration(); const saved = await saveConfiguration(base.config); setConfig(saved); return saved; } async function start(kind: 'fixture' | 'backtest' | 'research') { try { const saved = await ensureConfig(); const run = await createRun(saved.id, kind); setRuns((items) => [run, ...items]); } catch (error) { setMessage(String(error)); } }
   return <main className="terminal-layout"><Card title="Immutable research catalog" actions={<Badge tone="neutral">READ ONLY</Badge>}><p className="muted">All values are diagnostic evidence. Selected 7.5 is not the paper default; liquidated candidates are retained as exclusions.</p><div className="table-wrap"><table><thead><tr><th>Evidence</th><th>Class</th><th>TOTAL / ROI / DD</th><th>Fees / fills / funding</th><th>Artifact</th></tr></thead><tbody>{catalog.map((item) => <tr key={item.id}><td>{item.title}<br /><span className="muted">{item.limitations.join(' · ')}</span></td><td><Badge tone={item.liquidations ? 'danger' : 'neutral'}>{item.classification}</Badge></td><td>{item.settled_total} / {item.roi} / {item.drawdown_percent}</td><td>{item.fees} / {item.fills} / {item.funding}</td><td>{item.artifact_state}</td></tr>)}</tbody></table></div></Card><Card title="Research runs" actions={<Badge tone="neutral">ISOLATED SUBPROCESS</Badge>}><label className="rules-field"><span>Saved immutable candidate</span><select value={config?.id ?? ''} onChange={(event) => { const next = configs.find((item) => item.id === event.target.value) ?? null; setConfig(next); if (next) window.localStorage.setItem('coinmaster-selected-config', next.id); }}>{configs.map((item) => <option key={item.id} value={item.id}>{item.config_hash.slice(0, 12)} · {item.id.slice(0, 8)}</option>)}</select></label><p className="muted">Native research starts only in an owned local subprocess and blocks honestly when source coverage is missing. Artifact reference never starts a calculation.</p><div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" onClick={() => void start('fixture')}>Run synthetic P1 fixture</Button><Button variant="primary" onClick={() => void start('backtest')}>Reference selected native research</Button><Button variant="secondary" onClick={() => void start('research')}>Start native research</Button><Button variant="secondary" onClick={load}>Refresh status</Button></div>{message ? <p className="muted">{message}</p> : null}<div className="table-wrap"><table><thead><tr><th>Run</th><th>Status / progress</th><th>Evidence</th><th>Result</th><th /></tr></thead><tbody>{runs.map((run) => <tr key={run.id}><td>{run.kind} · {run.id.slice(0, 8)}</td><td><Badge tone={tone(run.status)}>{run.status}{run.progress === null || run.progress === undefined ? '' : ` · ${run.progress}%`}</Badge></td><td>{run.evidence.join(', ')}</td><td>{String(run.report?.terminal_total_usdt ?? run.report?.terminal_total ?? run.report?.catalog_id ?? (run.report as { blockers?: string[] } | undefined)?.blockers?.join(', ') ?? '—')}</td><td>{run.status === 'QUEUED' || run.status === 'RUNNING' || run.status === 'CANCEL_REQUESTED' ? <Button variant="danger" onClick={() => void cancelRun(run.id).then(load)}>Cancel</Button> : null}</td></tr>)}</tbody></table></div></Card></main>;
+}
+
+export function ResearchPage() {
+  const [config, setConfig] = useState<StrategyConfiguration | null>(null);
+  const [configs, setConfigs] = useState<StrategyConfiguration[]>([]);
+  const [runs, setRuns] = useState<Run[]>([]);
+  const [catalog, setCatalog] = useState<ResearchCatalogEntry[]>([]);
+  const [capabilities, setCapabilities] = useState<ResearchCapabilities | null>(null);
+  const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [starting, setStarting] = useState(false);
+
+  async function load() {
+    const [runResult, catalogResult, configResult, capabilityResult] = await Promise.allSettled([
+      getRuns(), getResearchCatalog(), getConfigurations(), getResearchCapabilities(),
+    ]);
+    if (runResult.status === 'fulfilled') {
+      setRuns(runResult.value);
+      setSelectedRunId((selected) => selected && runResult.value.some((item) => item.id === selected) ? selected : runResult.value[0]?.id ?? null);
+    }
+    if (catalogResult.status === 'fulfilled') setCatalog(catalogResult.value);
+    if (configResult.status === 'fulfilled') {
+      setConfigs(configResult.value);
+      setConfig((current) => current ?? configResult.value.find((item) => item.id === window.localStorage.getItem('coinmaster-selected-config')) ?? configResult.value[0] ?? null);
+    }
+    if (capabilityResult.status === 'fulfilled') setCapabilities(capabilityResult.value);
+    const failed = [runResult, catalogResult, configResult, capabilityResult].find((result) => result.status === 'rejected');
+    if (failed?.status === 'rejected') setMessage(failed.reason instanceof Error ? failed.reason.message : 'Unable to load native research status.');
+    setLoading(false);
+  }
+
+  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    if (!runs.some((item) => ['STARTING', 'RUNNING', 'CANCEL_REQUESTED', 'QUEUED'].includes(item.status))) return;
+    const timer = window.setInterval(() => { void load(); }, 3000);
+    return () => window.clearInterval(timer);
+  }, [runs]);
+
+  async function ensureConfig() {
+    if (config) return config;
+    const template = await getDefaultConfiguration();
+    const saved = await saveConfiguration(template.config);
+    setConfigs((items) => [saved, ...items]);
+    setConfig(saved);
+    return saved;
+  }
+
+  async function startBaseline() {
+    if (starting || capabilities?.baseline_state !== 'READY') return;
+    setStarting(true); setMessage('Creating verified native baseline job…');
+    try {
+      const saved = await ensureConfig();
+      const run = await createRun(saved.id, 'research', 'native_baseline');
+      setRuns((items) => [run, ...items]); setSelectedRunId(run.id);
+      setMessage(run.status === 'BLOCKED' ? run.evidence.join(' · ') : 'Native baseline job started.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unable to start native baseline job.');
+    } finally { setStarting(false); void load(); }
+  }
+
+  const selectedRun = runs.find((item) => item.id === selectedRunId) ?? null;
+  const activeRun = runs.find((item) => ['STARTING', 'RUNNING', 'CANCEL_REQUESTED', 'QUEUED'].includes(item.status));
+  const terminalTotal = selectedRun?.report?.summary && typeof selectedRun.report.summary === 'object'
+    ? (selectedRun.report.summary as { terminal_total?: string }).terminal_total
+    : selectedRun?.report?.terminal_total;
+  const baselineReady = capabilities?.baseline_state === 'READY';
+  return <main className="terminal-layout">
+    <Card title="Native baseline period" actions={<Badge tone={baselineReady ? 'success' : 'danger'}>{capabilities?.baseline_state ?? (loading ? 'LOADING' : 'BLOCKED')}</Badge>}>
+      <div className="rules-form-grid">
+        <label className="rules-field"><span>Immutable configuration</span><select value={config?.id ?? ''} onChange={(event) => { const next = configs.find((item) => item.id === event.target.value) ?? null; setConfig(next); if (next) window.localStorage.setItem('coinmaster-selected-config', next.id); }}>{configs.map((item) => <option key={item.id} value={item.id}>{item.config_hash.slice(0, 12)} · {item.created_at}</option>)}</select></label>
+        <label className="rules-field"><span>Start date</span><input disabled value={capabilities?.baseline_start ?? 'UNKNOWN'} /></label>
+        <label className="rules-field"><span>End date (exclusive)</span><input disabled value={capabilities?.baseline_end_exclusive ?? 'UNKNOWN'} /></label>
+        <label className="rules-field"><span>Ranking objective</span><input disabled value={capabilities?.baseline_objective ?? 'TOTAL only'} /></label>
+      </div>
+      <p className="muted">The period is fixed by the verified native baseline contract. Its child validates the immutable configuration and 1m coverage again before work begins.</p>
+      {capabilities?.baseline_blockers.length ? <p className="muted">Baseline blocked: {capabilities.baseline_blockers.join(' · ')}</p> : null}
+      <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!baselineReady || starting || Boolean(activeRun)} onClick={() => void startBaseline()}>{starting ? 'Starting…' : activeRun ? 'Native job running…' : 'Run verified native baseline'}</Button><Button variant="secondary" onClick={() => void load()}>Refresh status</Button></div>
+    </Card>
+    <Card title="Bounded native optimizer" actions={<Badge tone="danger">BLOCKED</Badge>}>
+      <p className="muted">Optimize is unavailable: {capabilities?.optimizer_blocker ?? 'OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED'}. The current optimizer CLI has no immutable job request, progress/result envelope, lease binding or per-job artifact-hash contract.</p>
+      <Button variant="primary" disabled>Optimize TOTAL only</Button>
+    </Card>
+    <Card title="Run progress and result" actions={<Badge tone={selectedRun ? tone(selectedRun.status) : 'neutral'}>{selectedRun ? `${selectedRun.status}${selectedRun.progress === null || selectedRun.progress === undefined ? '' : ` · ${selectedRun.progress}%`}` : 'NO RUN SELECTED'}</Badge>}>
+      <p className="muted">{activeRun ? `Active native job ${activeRun.id.slice(0, 8)} updates every three seconds.` : 'Choose a run from history to inspect its compact result.'}</p>
+      <div className="stats-grid"><Stat label="Terminal TOTAL" value={String(terminalTotal ?? '—')} /><Stat label="Evidence" value={selectedRun?.evidence.join(' · ') ?? '—'} /></div>
+      {selectedRun && ['STARTING', 'RUNNING', 'CANCEL_REQUESTED', 'QUEUED'].includes(selectedRun.status) ? <Button variant="danger" onClick={() => void cancelRun(selectedRun.id).then(load)}>Cancel owned job</Button> : null}
+      <p className="muted">The page displays compact status and result fields only; job artifacts remain hash-checked private evidence.</p>
+    </Card>
+    <Card title="Native run history" actions={<Badge tone="neutral">TOTAL ONLY</Badge>}><DataTable rows={runs.map((run) => ({ ...run, id: run.id }))} emptyText="No native research jobs yet." mobileTitle={(run) => `${run.command_name ?? run.kind} · ${run.id.slice(0, 8)}`} columns={[{ key: 'run', header: 'Run', render: (run) => <Button variant="secondary" onClick={() => setSelectedRunId(run.id)}>{run.command_name ?? run.kind} · {run.id.slice(0, 8)}</Button> }, { key: 'status', header: 'Status / progress', render: (run) => <Badge tone={tone(run.status)}>{run.status}{run.progress === null || run.progress === undefined ? '' : ` · ${run.progress}%`}</Badge> }, { key: 'total', header: 'Terminal TOTAL', render: (run) => String((run.report?.summary as { terminal_total?: string } | undefined)?.terminal_total ?? run.report?.terminal_total ?? '—') }, { key: 'evidence', header: 'Evidence', render: (run) => run.evidence.join(' · ') }]} /></Card>
+    <Card title="Immutable research catalog" actions={<Badge tone="neutral">READ ONLY</Badge>}><p className="muted">Diagnostic evidence remains separate from native job history. It never substitutes for a newly launched calculation.</p><DataTable rows={catalog.map((item) => ({ ...item, id: item.id }))} emptyText="No catalog evidence." mobileTitle={(item) => item.title} columns={[{ key: 'evidence', header: 'Evidence', render: (item) => item.title }, { key: 'class', header: 'Class', render: (item) => <Badge tone={item.liquidations ? 'danger' : 'neutral'}>{item.classification}</Badge> }, { key: 'total', header: 'TOTAL', render: (item) => item.settled_total }, { key: 'artifact', header: 'Artifact', render: (item) => item.artifact_state }]} /></Card>
+    {message ? <p className="muted">{message}</p> : null}
+  </main>;
 }
 
 export function RuntimePage() {

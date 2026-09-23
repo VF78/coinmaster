@@ -379,6 +379,18 @@ def test_openapi_exposes_research_lifecycle_status_fields(tmp_path) -> None:
         assert field in run["properties"]
 
 
+def test_research_capabilities_blocks_optimizer_and_missing_baseline_data(tmp_path) -> None:
+    app = create_app(str(tmp_path / "control.sqlite"), "test-token", research_data_root=tmp_path / "missing-data")
+    route = next(item for item in app.routes if getattr(item, "path", None) == "/api/v1/research/capabilities")
+    body = route.endpoint()
+    assert body.baseline_state == "BLOCKED" and body.baseline_blockers == ["MISSING_1M_MANIFEST"]
+    assert body.baseline_start == "2024-09-01" and body.baseline_end_exclusive == "2026-09-01"
+    assert body.baseline_objective == "TOTAL only"
+    assert body.optimizer_state == "BLOCKED"
+    assert body.optimizer_blocker == "OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED"
+    assert "/api/v1/research/capabilities" in app.openapi()["paths"]
+
+
 def test_research_catalog_is_read_only_and_backtest_is_an_artifact_reference(tmp_path) -> None:
     app = create_app(str(tmp_path / "control.sqlite"), "test-token")
     assert "/api/v1/research/catalog" in app.openapi()["paths"]

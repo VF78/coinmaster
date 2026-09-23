@@ -22,7 +22,13 @@ const required = [
   ['backtest control states it is an artifact reference', 'Reference selected native research'],
   ['API exposes the immutable catalog request', "request<ResearchCatalogEntry[]>('/research/catalog')"],
   ['account-specific facts remain explicitly unknown', 'Account margin:'],
-  ['research exposes an isolated native subprocess action', 'Start native research'],
+  ['research exposes an isolated native subprocess action', 'Run verified native baseline'],
+  ['research shows the verified native baseline period', 'Native baseline period'],
+  ['research launches the owned native baseline job', 'Run verified native baseline'],
+  ['research shows native job progress and history', 'Native run history'],
+  ['research ranks the workspace by TOTAL only', 'TOTAL ONLY'],
+  ['research blocks optimizer until it has the job protocol', 'OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED'],
+  ['API exposes research launch capabilities', "request<ResearchCapabilities>('/research/capabilities')"],
 ] as const;
 
 let failed = 0;
