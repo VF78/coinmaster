@@ -1,20 +1,20 @@
-# Enable only after the cm.f-ai.studio certificate and login gates pass.
+# Enable only after the coinmaster24.com certificate and login gates pass.
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name cm.f-ai.studio;
-    ssl_certificate /etc/letsencrypt/live/cm.f-ai.studio/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/cm.f-ai.studio/privkey.pem;
+    server_name coinmaster24.com;
+    ssl_certificate /etc/letsencrypt/live/coinmaster24.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/coinmaster24.com/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-    if ($host != cm.f-ai.studio) { return 421; }
+    if ($host != coinmaster24.com) { return 421; }
     add_header Strict-Transport-Security "max-age=31536000" always;
 
     location / {
         proxy_pass http://127.0.0.1:18182;
         proxy_http_version 1.1;
-        proxy_set_header Host cm.f-ai.studio;
+        proxy_set_header Host coinmaster24.com;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header Authorization "";

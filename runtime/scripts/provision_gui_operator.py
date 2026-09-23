@@ -18,7 +18,8 @@ import sys
 from coinmaster.api.gui_auth import password_hash
 
 
-SERVICE = "cm.f-ai.studio CoinMaster operator"
+SERVICE = "coinmaster24.com CoinMaster operator"
+LEGACY_SERVICE = "cm.f-ai.studio CoinMaster operator"
 REMOTE = r'''
 import os, re, sys, tempfile
 from pathlib import Path
@@ -64,9 +65,9 @@ def store_keychain_password(password: str) -> None:
         raise SystemExit(f"Keychain rejected operator credential creation ({status}); VPS unchanged")
 
 
-def keychain_password() -> str:
+def keychain_password(service: str = SERVICE) -> str:
     found = subprocess.run(
-        ["security", "find-generic-password", "-a", "operator", "-s", SERVICE, "-w"],
+        ["security", "find-generic-password", "-a", "operator", "-s", service, "-w"],
         capture_output=True, text=True, check=False,
     )
     return found.stdout.rstrip("\n") if found.returncode == 0 else ""
@@ -80,7 +81,10 @@ def main() -> int:
         parser.error("host must be a verified root@host target")
     password = keychain_password()
     if not password:
-        password = secrets.token_urlsafe(36)
+        # The public host changed, not the operator. Reuse the existing secret.
+        password = keychain_password(LEGACY_SERVICE) or secrets.token_urlsafe(36)
+        if len(password) < 32:
+            raise SystemExit("Existing Keychain operator credential is unexpectedly short; VPS unchanged")
         store_keychain_password(password)
         if keychain_password() != password:
             raise SystemExit("Keychain credential verification failed; VPS unchanged")

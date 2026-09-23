@@ -2,11 +2,11 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name cm.f-ai.studio;
+    server_name coinmaster24.com;
 
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/letsencrypt;
         try_files $uri =404;
     }
-    location / { return 308 https://cm.f-ai.studio$request_uri; }
+    location / { return 308 https://coinmaster24.com$request_uri; }
 }

@@ -20,11 +20,11 @@ def serve(app):
 
 def request(app, method: str, path: str, *, headers: dict[str, str] | None = None, body: bytes | None = None):
     parsed = urlsplit(path)
-    header_values = {"Host": "cm.f-ai.studio", "X-Coinmaster-Public-Proxy": "1", **(headers or {})}
+    header_values = {"Host": "coinmaster24.com", "X-Coinmaster-Public-Proxy": "1", **(headers or {})}
     scope = {"type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1", "scheme": "https", "method": method,
         "path": parsed.path, "raw_path": parsed.path.encode(), "query_string": parsed.query.encode(),
         "headers": [(key.lower().encode(), value.encode()) for key, value in header_values.items()],
-        "server": ("cm.f-ai.studio", 443), "client": ("127.0.0.1", 12345), "root_path": ""}
+        "server": ("coinmaster24.com", 443), "client": ("127.0.0.1", 12345), "root_path": ""}
     sent = []
     async def exchange():
         received = False
@@ -56,7 +56,7 @@ def test_one_login_protects_shell_assets_runtime_and_included_control_routes(tmp
     app = create_runtime_app(database=str(tmp_path / "missing-paper.sqlite"), control_database=str(tmp_path / "control.sqlite"),
         token="machine-token", worker_token="", worker_url="http://127.0.0.1:9", operator_username="operator",
         operator_password_hash=password_hash("a long test password", salt=b"fixed-salt-for-test-0123456789abc"),
-        session_database=str(db), public_origin="https://cm.f-ai.studio")
+        session_database=str(db), public_origin="https://coinmaster24.com")
     with serve(app) as port:
         assert request(port, "GET", "/")[0] == 303
         # A sign-prefixed token passes int(..., 16), then used to make
@@ -77,7 +77,8 @@ def test_one_login_protects_shell_assets_runtime_and_included_control_routes(tmp
         form = urlencode({"username": "operator", "password": "a long test password", "challenge": challenge}).encode()
         base_headers = {"Cookie": preauth, "Content-Type": "application/x-www-form-urlencoded"}
         assert request(port, "POST", "/login", headers={**base_headers, "Origin": "https://evil.f-ai.studio"}, body=form)[0] == 403
-        status, headers, _ = request(port, "POST", "/login", headers={**base_headers, "Origin": "https://cm.f-ai.studio"}, body=form)
+        assert request(port, "POST", "/login", headers={**base_headers, "Origin": "https://cm.f-ai.studio"}, body=form)[0] == 403
+        status, headers, _ = request(port, "POST", "/login", headers={**base_headers, "Origin": "https://coinmaster24.com"}, body=form)
         assert status == 303
         session_header = headers["set-cookie"]
         assert session_header.startswith("__Host-cm-session=")
@@ -96,11 +97,12 @@ def test_one_login_protects_shell_assets_runtime_and_included_control_routes(tmp
         status, _, body = request(port, "GET", "/api/v1/auth/session", headers={"Cookie": cookie})
         csrf = json.loads(body)["csrf_token"]
         assert status == 200 and len(csrf) == 64
-        assert request(port, "POST", "/api/v1/runs/missing/cancel", headers={"Cookie": cookie, "Origin": "https://cm.f-ai.studio"})[0] == 403
-        assert request(port, "POST", "/api/v1/runs/missing/cancel", headers={"Cookie": cookie, "Origin": "https://cm.f-ai.studio", "X-CSRF-Token": csrf})[0] == 404
-        assert request(port, "POST", "/api/v1/auth/logout", headers={"Cookie": cookie, "Origin": "https://cm.f-ai.studio"})[0] == 403
+        assert request(port, "POST", "/api/v1/runs/missing/cancel", headers={"Cookie": cookie, "Origin": "https://coinmaster24.com"})[0] == 403
+        assert request(port, "POST", "/api/v1/runs/missing/cancel", headers={"Cookie": cookie, "Origin": "https://coinmaster24.com", "X-CSRF-Token": csrf})[0] == 404
+        assert request(port, "POST", "/api/v1/auth/logout", headers={"Cookie": cookie, "Origin": "https://coinmaster24.com"})[0] == 403
         assert request(port, "POST", "/api/v1/auth/logout", headers={"Cookie": cookie, "Origin": "https://evil.f-ai.studio", "X-CSRF-Token": csrf})[0] == 403
-        assert request(port, "POST", "/api/v1/auth/logout", headers={"Cookie": cookie, "Origin": "https://cm.f-ai.studio", "X-CSRF-Token": csrf})[0] == 200
+        assert request(port, "POST", "/api/v1/auth/logout", headers={"Cookie": cookie, "Origin": "https://cm.f-ai.studio", "X-CSRF-Token": csrf})[0] == 403
+        assert request(port, "POST", "/api/v1/auth/logout", headers={"Cookie": cookie, "Origin": "https://coinmaster24.com", "X-CSRF-Token": csrf})[0] == 200
         assert request(port, "GET", "/api/v1/configurations/default", headers={"Cookie": cookie})[0] == 401
 
         # Expiration is enforced from server-side state, independent of cookie lifetime.
@@ -108,7 +110,7 @@ def test_one_login_protects_shell_assets_runtime_and_included_control_routes(tmp
         challenge = re.search(rb'name="challenge" value="([0-9a-f]+)"', body).group(1).decode()
         preauth = headers["set-cookie"].split(";", 1)[0]
         form = urlencode({"username": "operator", "password": "a long test password", "challenge": challenge}).encode()
-        _, headers, _ = request(port, "POST", "/login", headers={"Cookie": preauth, "Content-Type": "application/x-www-form-urlencoded", "Origin": "https://cm.f-ai.studio"}, body=form)
+        _, headers, _ = request(port, "POST", "/login", headers={"Cookie": preauth, "Content-Type": "application/x-www-form-urlencoded", "Origin": "https://coinmaster24.com"}, body=form)
         second_cookie = headers["set-cookie"].split(";", 1)[0]
         with sqlite3.connect(db) as conn:
             conn.execute("UPDATE gui_sessions SET touched_at=? WHERE revoked_at IS NULL", (int(time.time()) - 1801,))

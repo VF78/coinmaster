@@ -1,0 +1,14 @@
+# Retired GUI hostname: never fall through to another application's default vhost.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name cm.f-ai.studio;
+    return 421;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name cm.f-ai.studio;
+    ssl_reject_handshake on;
+}

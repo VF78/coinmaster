@@ -170,7 +170,7 @@ PY
   [[ -z "$(ss -ltn '( sport = :18184 )' | tail -n +2)" ]] || { echo 'smoke port is already occupied' >&2; exit 1; }
   (cd "$RELEASE.incoming/runtime" && runuser -u coinmaster-research -- env -i PATH=/usr/bin:/bin \
     COINMASTER_RUNTIME_API_TOKEN="$TOKEN" COINMASTER_GUI_USERNAME="$GUI_USERNAME" COINMASTER_GUI_PASSWORD_HASH="$GUI_PASSWORD_HASH" \
-    COINMASTER_GUI_ORIGIN=https://cm.f-ai.studio COINMASTER_GUI_SESSION_DB="$SMOKE/auth.sqlite" \
+    COINMASTER_GUI_ORIGIN=https://coinmaster24.com COINMASTER_GUI_SESSION_DB="$SMOKE/auth.sqlite" \
     COINMASTER_RUNTIME_CONTROL_DB="$SMOKE/control.sqlite" COINMASTER_CONTROL_DB="$SMOKE/legacy-control.sqlite" \
     COINMASTER_RESEARCH_DATA_ROOT="$SMOKE/data" COINMASTER_RUNTIME_DIST="$RELEASE.incoming/web" \
     COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183 COINMASTER_PAPER_DB="$SMOKE/no-paper.sqlite" \

@@ -49,18 +49,21 @@ The Stage-G status GET listener is a separate change. Until it is installed,
 the GUI must report `UNAVAILABLE` and keep all controls disabled. No trader
 restart, real credential, wallet, or order path is part of this procedure.
 
-## `cm.f-ai.studio` login and HTTPS gate (#109)
+## `coinmaster24.com` login and HTTPS gate (#109)
 
-The single browser account is `operator`. Generate its random password in the
-macOS Keychain and provision only the scrypt verifier in the root-owned VPS
-environment before staging the new release:
+The single browser account is `operator`. The existing random password and its
+root-owned VPS scrypt verifier remain valid across this host change, so the
+cutover does not rotate them. The Keychain item remains
+`cm.f-ai.studio CoinMaster operator` until the provisioning helper is run; it
+will reuse that secret under `coinmaster24.com CoinMaster operator` if future
+provisioning is needed:
 
 ```sh
 PYTHONPATH=runtime runtime/.venv/bin/python runtime/scripts/provision_gui_operator.py --host root@46.225.163.123
 ```
 
-The password can later be retrieved privately from the macOS Keychain item
-`cm.f-ai.studio CoinMaster operator` (`operator` account). Do not paste it into
+The password can be retrieved privately from the existing macOS Keychain item
+(`operator` account). Do not paste it into
 the repo, issue, service unit, screenshots, or shell history. The existing
 Bearer token remains for loopback automation only; the browser uses a revocable
 host-only session cookie. The root-only VPS file
@@ -69,15 +72,19 @@ automation token. Stage and activate the new commit-SHA API/SPA through the
 wrapper above; its stage smoke still uses the loopback Bearer path and checks
 that the unauthenticated shell opens the login page.
 
-The checked-in `cm.f-ai.studio.http.nginx` handles only the ACME webroot and
-redirect, and `cm.f-ai.studio.https.nginx` is the dedicated HTTPS proxy. Stage
-them in `sites-available`; do not enable HTTPS until the certificate exists.
-Before DNS changes, test the HTTP host with `curl --resolve
-cm.f-ai.studio:80:127.0.0.1` on the VPS. Then the DNS owner adds exactly an A
-record for `cm` to `46.225.163.123` with TTL 300. Add no AAAA until IPv6 is
-verified. Certbot can then issue the exact-host certificate using webroot
-`/var/www/letsencrypt`; only after that, enable HTTPS, run `nginx -t`, and
-verify the exact Host with `curl --resolve` before testing external DNS/HTTPS.
+The checked-in `coinmaster24.com.http.nginx` handles only the ACME webroot and
+redirect, and `coinmaster24.com.https.nginx` is the dedicated HTTPS proxy.
+GoDaddy's `@` A record points to `46.225.163.123` (TTL 600); verify both
+authoritative nameservers and public resolvers, plus the absence of an AAAA,
+before issuance. Stage the HTTP host in `sites-available`, enable it, run
+`nginx -t`, and test with `curl --resolve coinmaster24.com:80:127.0.0.1` on
+the VPS. Issue only the apex certificate with Certbot webroot
+`/var/www/letsencrypt`. Enable HTTPS only after the certificate exists, then
+run `nginx -t` and verify exact Host routing and the certificate before
+external browser acceptance. After the new host passes, replace the old
+`cm.f-ai.studio` HTTP redirect with `cm.f-ai.studio.retired.nginx` and run
+`nginx -t` before reloading. It returns 421 on HTTP and rejects the old TLS
+handshake, keeping that Host away from both the GUI and the default app.
 
 Acceptance requires a real desktop/390px browser login and logout, expired
 session and CSRF denial, 401 on unauthenticated APIs, no browser API token, no
