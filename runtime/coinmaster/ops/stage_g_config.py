@@ -175,7 +175,7 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
         raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
     if document["strategy_config"] != "/srv/coinmaster/runtime/configs/stage-g-v1.json":
         raise ConfigurationError("UNSAFE_TESTNET_STRATEGY_PATH")
-    if document["signal_warmup_manifest"] != "/var/lib/coinmaster-hl-stageg-testnet/data/stageg-bybit-warmup-20260923-verified2/manifest.json":
+    if document["signal_warmup_manifest"] != "/var/lib/coinmaster-hl-stageg-testnet/data/stageg-bybit-warmup-20260923-verified3/manifest.json":
         raise ConfigurationError("UNSAFE_TESTNET_WARMUP_PATH")
     if document["state_db"] != "/var/lib/coinmaster-hl-stageg-testnet/hl-stageg-testnet.sqlite":
         raise ConfigurationError("UNSAFE_TESTNET_STATE_DB_PATH")

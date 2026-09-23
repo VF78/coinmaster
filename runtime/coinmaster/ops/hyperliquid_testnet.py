@@ -117,7 +117,11 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
         "taker_fee_assumption": "0.00045",
         "fee_basis": "FIXED_PUBLIC_BASE_RATE_NOT_ACCOUNT_SPECIFIC",
         "execution_quality": "UNKNOWN_NO_24M_BBO_L2_OR_TRADE_TAPE",
-        "funding_cash": "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE",
+        # A public update is evidence of a current rate and *future* schedule,
+        # not of a payment which has already settled.  It is therefore useful
+        # feed observability, but never an account posting or an attachment
+        # blocker for this credential-free virtual run.
+        "funding_cash": "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
     }
     execution_policy_hash = hashlib.sha256(
         json.dumps(execution_policy, sort_keys=True, separators=(",", ":")).encode(),
@@ -129,13 +133,12 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
         approval_path=profile_root / "configs" / "stage-g-hl-sandbox-approval.json",
     )
     execution_policy_state = "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED"
-    funding_state = "BLOCKED_FUNDING_SETTLEMENT_ORACLE_NEXT_PAYMENT_ONLY"
+    funding_state = "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT"
     capital_state = "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION"
     attachable = (
         warmup_state == "READY"
         and margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
         and approval_state == "SEALED_APPROVAL_MATCH"
-        and funding_state != "BLOCKED_FUNDING_SETTLEMENT_ORACLE_NEXT_PAYMENT_ONLY"
     )
     return CrossVenueStageGGate(
         signal_ids=("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT"),
@@ -484,7 +487,11 @@ class HyperliquidTestnetNode:
             "stage_g_gate": self.gate.__dict__,
             "accounting": {
                 "fees": {"observed": "SANDBOX_NATIVE_FILL_COMMISSION", "policy": "FIXED_HL_PUBLIC_BASE_MAKER_0.00015_TAKER_0.00045"},
-                "funding": {"observed": "PUBLIC_RATE_AND_MARK", "posting": "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE"},
+                "funding": {
+                    "observed": "PUBLIC_RATE_AND_FUTURE_SCHEDULE",
+                    "modelled": "NO_SETTLEMENT_CASHFLOW_MODELLED",
+                    "posting": "UNPOSTED_NEXT_PAYMENT_IS_NOT_CONFIRMED_SETTLEMENT",
+                },
                 "margin": {"observed": "NATIVE_SANDBOX_ACCOUNT", "policy": "CURRENT_PUBLIC_HL_MAINNET_TIERS_LOCAL_40X_BTC_20X_SOL"},
             },
         }

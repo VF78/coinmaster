@@ -94,7 +94,7 @@ def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route()
     assert "SandboxLiveExecClientFactory" in source
 
 
-def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_unproven_parity() -> None:
+def test_cross_venue_gate_preserves_bybit_signal_ids_and_labels_unposted_funding() -> None:
     gate = cross_venue_stage_g_gate(
         candidate=load_candidate(ROOT / "configs/stage-g-v1.json").candidate,
         warmup_manifest=ROOT / "var/data/paper-warmup-manifest.json",
@@ -107,10 +107,29 @@ def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_unproven_parity(
     assert gate.warmup_state == "INVALID_STAGEG_WARMUP_SCHEMA_OR_VENUE"
     assert gate.margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
     assert gate.execution_policy_state == "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED"
-    assert gate.funding_state == "BLOCKED_FUNDING_SETTLEMENT_ORACLE_NEXT_PAYMENT_ONLY"
+    assert gate.funding_state == "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT"
     assert gate.capital_state == "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION"
     assert gate.approval_state == "SEALED_APPROVAL_MATCH"
     assert gate.attachable is False
+
+
+def test_verified_latest_bybit_tail_unlocks_attachment_without_posting_scheduled_funding() -> None:
+    manifest = ROOT / "var/data/stageg-bybit-warmup-20260923-verified3/manifest.json"
+    document = json.loads(manifest.read_text())
+    assert document["completed_sessions"] == 1482
+    assert document["provenance"]["append_raw_manifest_sha256"] == "0974b9e0d2c39a0cdf6afa6a522540710ebbdb5b3ec0569659532b87da7fb7e0"
+    assert {item["daily_gaps"] for item in document["symbols"].values()} == {0}
+    gate = cross_venue_stage_g_gate(
+        candidate=load_candidate(ROOT / "configs/stage-g-v1.json").candidate,
+        warmup_manifest=manifest,
+        strategy_path=ROOT / "coinmaster/strategy/wave_overlay.py",
+        profile_root=ROOT,
+        now_ns=1_790_121_600_000_000_000,
+    )
+    assert gate.warmup_state == "READY"
+    assert gate.approval_state == "SEALED_APPROVAL_MATCH"
+    assert gate.funding_state == "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT"
+    assert gate.attachable is True
 
 
 def test_daily_signal_keeps_bybit_identity_while_pairing_to_hl_execution_bar_type() -> None:
