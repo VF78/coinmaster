@@ -2,10 +2,11 @@ from decimal import Decimal
 
 import io
 import json
+from pathlib import Path
 from types import SimpleNamespace
 from urllib.error import URLError
 
-from coinmaster.api.runtime_sidecar import HlStagegProjectionReader, RuntimeReader, create_runtime_app
+from coinmaster.api.runtime_sidecar import HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker as HlStagegWorker, create_status_server
 from coinmaster.ops.paper import PaperRuntime
 
@@ -33,10 +34,10 @@ def test_runtime_sidecar_exposes_strict_schemas_and_spa_without_shadowing_api(tm
     app = create_runtime_app(database=str(tmp_path / "missing.sqlite"), control_database=str(tmp_path / "control.sqlite"), token="operator", worker_url="http://127.0.0.1:9", worker_token="relay")
     spec = app.openapi()
     schemas = spec["components"]["schemas"]
-    for name in ("RuntimeState", "RuntimeBalances", "RuntimeStrategy", "RuntimeFeed", "RuntimeEvent", "RuntimeFunding", "RuntimeEventsResponse", "RuntimeCommandResponse", "HlStagegProjection", "HlStagegHashes"):
+    for name in ("RuntimeState", "RuntimeBalances", "RuntimeStrategy", "RuntimeFeed", "RuntimeEvent", "RuntimeFunding", "RuntimeEventsResponse", "RuntimeCommandResponse", "HlStagegProjection", "HlStagegStrategy", "HlStagegHashes"):
         assert schemas[name]["additionalProperties"] is False
     assert schemas["RuntimeBalances"]["properties"]["active_usdt"]["type"] == "string"
-    for path in ("/api/v1/configurations/default", "/api/v1/configurations", "/api/v1/preflight", "/api/v1/runs", "/api/v1/research/catalog", "/api/v1/runtime", "/api/v1/runtime/commands/{command}", "/api/v1/instances/hl-stageg-testnet"):
+    for path in ("/api/v1/configurations/default", "/api/v1/configurations", "/api/v1/preflight", "/api/v1/runs", "/api/v1/research/catalog", "/api/v1/runtime", "/api/v1/runtime/commands/{command}", "/api/v1/instances/hl-stageg-testnet", "/api/v1/instances/hl-stageg-testnet/strategy"):
         assert path in spec["paths"]
     assert "ResearchCatalogEntry" in schemas and "StrategyConfig" in schemas
     paths = [getattr(route, "path", "") for route in app.routes]
@@ -46,6 +47,18 @@ def test_runtime_sidecar_exposes_strict_schemas_and_spa_without_shadowing_api(tm
     spa = next(route for route in app.routes if getattr(route, "path", "") == "/{path:path}")
     response = spa.endpoint("")
     assert response.path == dist / "index.html"
+
+
+def test_hl_stageg_strategy_is_sealed_source_identity_with_unknown_account_facts() -> None:
+    root = Path(__file__).resolve().parents[1]
+    body = HlStagegStrategyReader(root).strategy()
+    assert body.source_state == "SEALED_SOURCE_CHECKED"
+    assert body.instance_id == "hl-stageg-testnet" and body.mode == "sandbox"
+    assert body.hashes.candidate_sha256 == "637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d"
+    assert body.candidate["ema_period"] == "34"
+    assert body.account_margin == "UNKNOWN" and body.account_fee_schedule == "UNKNOWN"
+    assert body.promotion_enabled is False
+    assert body.promotion_reason == "SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"
 
 
 def _ready_hl_projection(*, observed_at_ns=None, instance_id="hl-stageg-testnet"):

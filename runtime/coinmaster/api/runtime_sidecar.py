@@ -6,6 +6,8 @@ import os
 import sqlite3
 import urllib.request
 import time
+from dataclasses import asdict
+from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal
 
@@ -15,6 +17,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict
 
 from coinmaster.api.app import create_app as create_control_app
+from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 
 
 UNKNOWN = "UNKNOWN"
@@ -184,6 +187,30 @@ class HlStagegProjection(RuntimeSchema):
     warnings: list[str]
 
 
+# This is intentionally a source-identity document, not another runtime
+# projection. It lets the Strategy page describe exactly what is sealed for
+# the isolated Sandbox worker without suggesting account facts or a mutable
+# control channel exist.
+class HlStagegStrategy(RuntimeSchema):
+    version: Literal["hl-stageg-strategy-v1"]
+    instance_id: Literal["hl-stageg-testnet"]
+    source_state: Literal["SEALED_SOURCE_CHECKED", "INVALID"]
+    strategy_id: str
+    mode: Literal["sandbox"]
+    environment: Literal["mainnet-public"]
+    candidate: dict[str, str]
+    hashes: HlStagegHashes
+    capital_assumption: str
+    research_comparison_assumption: str
+    public_venue_profile: str
+    account_margin: str
+    account_fee_schedule: str
+    funding_treatment: str
+    promotion_enabled: Literal[False] = False
+    promotion_reason: Literal["SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"]
+    warnings: list[str]
+
+
 def _worker_health(url: str) -> dict[str, Any]:
     try:
         with urllib.request.urlopen(f"{url.rstrip('/')}/health", timeout=3) as response:
@@ -286,11 +313,64 @@ class HlStagegProjectionReader:
             return self.unavailable("INVALID", "INVALID_HL_STAGEG_PROJECTION")
 
 
-def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_status_url: str | None = None) -> FastAPI:
+class HlStagegStrategyReader:
+    """Load and verify only the checked-in identity of the sealed candidate."""
+
+    def __init__(self, runtime_root: Path | None = None) -> None:
+        self.runtime_root = runtime_root or Path(__file__).resolve().parents[2]
+
+    def strategy(self) -> HlStagegStrategy:
+        unknown_hashes = {"candidate_sha256": UNKNOWN, "strategy_sha256": UNKNOWN, "execution_policy_sha256": UNKNOWN}
+        try:
+            configs = self.runtime_root / "configs"
+            approval = json.loads((configs / "stage-g-hl-sandbox-approval.json").read_text(encoding="utf-8"))
+            instance = load_testnet_instance_config(configs / "hl-stageg-testnet.instance.json")
+            loaded = load_candidate(configs / "stage-g-v1.json")
+            strategy_hash = sha256((self.runtime_root / "coinmaster/strategy/wave_overlay.py").read_bytes()).hexdigest()
+            hashes = {
+                "candidate_sha256": loaded.sha256,
+                "strategy_sha256": strategy_hash,
+                "execution_policy_sha256": str(approval.get("execution_policy_sha256", UNKNOWN)),
+            }
+            if (
+                approval.get("schema") != "coinmaster-stageg-hl-sandbox-approval-v1"
+                or approval.get("candidate_sha256") != loaded.sha256
+                or approval.get("strategy_sha256") != strategy_hash
+            ):
+                raise ValueError("SEALED_APPROVAL_MISMATCH")
+            candidate = {
+                key: json.dumps(value, separators=(",", ":")) if isinstance(value, tuple) else str(value).lower() if isinstance(value, bool) else str(value)
+                for key, value in asdict(loaded.candidate).items()
+            }
+            return HlStagegStrategy(
+                version="hl-stageg-strategy-v1", instance_id="hl-stageg-testnet", source_state="SEALED_SOURCE_CHECKED",
+                strategy_id=instance.strategy_id, mode="sandbox", environment="mainnet-public", candidate=candidate, hashes=hashes,
+                capital_assumption="10,000 USDC nominal Sandbox seed; not an observed account balance",
+                research_comparison_assumption="10,000 USDT comparison only under an explicit 1:1 assumption",
+                public_venue_profile="Current public Hyperliquid mainnet tiers and Sandbox leverage policy; account-specific tier is not claimed",
+                account_margin=UNKNOWN, account_fee_schedule=UNKNOWN,
+                funding_treatment="OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
+                promotion_enabled=False, promotion_reason="SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED",
+                warnings=["ACCOUNT_SPECIFIC_MARGIN_UNKNOWN", "ACCOUNT_SPECIFIC_FEES_UNKNOWN", "NO_RUNNING_INSTANCE_MUTATION"],
+            )
+        except (OSError, ValueError, TypeError, json.JSONDecodeError):
+            return HlStagegStrategy(
+                version="hl-stageg-strategy-v1", instance_id="hl-stageg-testnet", source_state="INVALID",
+                strategy_id=UNKNOWN, mode="sandbox", environment="mainnet-public", candidate={}, hashes=unknown_hashes,
+                capital_assumption="UNKNOWN", research_comparison_assumption="UNKNOWN", public_venue_profile="UNKNOWN",
+                account_margin=UNKNOWN, account_fee_schedule=UNKNOWN,
+                funding_treatment="UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
+                promotion_enabled=False, promotion_reason="SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED",
+                warnings=["INVALID_SEALED_STAGEG_SOURCE"],
+            )
+
+
+def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_status_url: str | None = None, runtime_root: Path | None = None) -> FastAPI:
     expected = token if token is not None else os.getenv("COINMASTER_RUNTIME_API_TOKEN")
     relay_token = worker_token if worker_token is not None else os.getenv("COINMASTER_PAPER_CONTROL_TOKEN")
     reader = RuntimeReader(database or os.getenv("COINMASTER_PAPER_DB", "/var/lib/coinmaster-paper/paper.sqlite"), worker_url or os.getenv("COINMASTER_PAPER_WORKER_URL", "http://127.0.0.1:18181"))
     hl_reader = HlStagegProjectionReader(hl_stageg_status_url or os.getenv("COINMASTER_HL_STAGEG_STATUS_URL", "http://127.0.0.1:18183"))
+    hl_strategy_reader = HlStagegStrategyReader(runtime_root)
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     def auth(authorization: str | None = Header(default=None)) -> None:
         if not expected or authorization != f"Bearer {expected}": raise HTTPException(401, "runtime token required")
@@ -317,6 +397,9 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     @app.get("/api/v1/instances/hl-stageg-testnet", response_model=HlStagegProjection, dependencies=[Depends(auth)])
     def hl_stageg_runtime() -> HlStagegProjection:
         return hl_reader.runtime()
+    @app.get("/api/v1/instances/hl-stageg-testnet/strategy", response_model=HlStagegStrategy, dependencies=[Depends(auth)])
+    def hl_stageg_strategy() -> HlStagegStrategy:
+        return hl_strategy_reader.strategy()
     @app.post("/api/v1/runtime/commands/{command}", response_model=RuntimeCommandResponse, dependencies=[Depends(auth)])
     def command(command: Literal["pause-new-entries", "resume-new-entries", "flatten-paper"], idempotency_key: str = Header(alias="Idempotency-Key")) -> RuntimeCommandResponse:
         if not idempotency_key: raise HTTPException(422, "Idempotency-Key is required")

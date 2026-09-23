@@ -349,6 +349,115 @@
         "title": "HlStagegProjection",
         "type": "object"
       },
+      "HlStagegStrategy": {
+        "additionalProperties": false,
+        "properties": {
+          "account_fee_schedule": {
+            "title": "Account Fee Schedule",
+            "type": "string"
+          },
+          "account_margin": {
+            "title": "Account Margin",
+            "type": "string"
+          },
+          "candidate": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Candidate",
+            "type": "object"
+          },
+          "capital_assumption": {
+            "title": "Capital Assumption",
+            "type": "string"
+          },
+          "environment": {
+            "const": "mainnet-public",
+            "title": "Environment",
+            "type": "string"
+          },
+          "funding_treatment": {
+            "title": "Funding Treatment",
+            "type": "string"
+          },
+          "hashes": {
+            "$ref": "#/components/schemas/HlStagegHashes"
+          },
+          "instance_id": {
+            "const": "hl-stageg-testnet",
+            "title": "Instance Id",
+            "type": "string"
+          },
+          "mode": {
+            "const": "sandbox",
+            "title": "Mode",
+            "type": "string"
+          },
+          "promotion_enabled": {
+            "const": false,
+            "default": false,
+            "title": "Promotion Enabled",
+            "type": "boolean"
+          },
+          "promotion_reason": {
+            "const": "SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED",
+            "title": "Promotion Reason",
+            "type": "string"
+          },
+          "public_venue_profile": {
+            "title": "Public Venue Profile",
+            "type": "string"
+          },
+          "research_comparison_assumption": {
+            "title": "Research Comparison Assumption",
+            "type": "string"
+          },
+          "source_state": {
+            "enum": [
+              "SEALED_SOURCE_CHECKED",
+              "INVALID"
+            ],
+            "title": "Source State",
+            "type": "string"
+          },
+          "strategy_id": {
+            "title": "Strategy Id",
+            "type": "string"
+          },
+          "version": {
+            "const": "hl-stageg-strategy-v1",
+            "title": "Version",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "version",
+          "instance_id",
+          "source_state",
+          "strategy_id",
+          "mode",
+          "environment",
+          "candidate",
+          "hashes",
+          "capital_assumption",
+          "research_comparison_assumption",
+          "public_venue_profile",
+          "account_margin",
+          "account_fee_schedule",
+          "funding_treatment",
+          "promotion_reason",
+          "warnings"
+        ],
+        "title": "HlStagegStrategy",
+        "type": "object"
+      },
       "HlStagegWarmup": {
         "additionalProperties": false,
         "properties": {
@@ -1964,6 +2073,52 @@
           }
         },
         "summary": "Hl Stageg Runtime"
+      }
+    },
+    "/api/v1/instances/hl-stageg-testnet/strategy": {
+      "get": {
+        "operationId": "hl_stageg_strategy_api_v1_instances_hl_stageg_testnet_strategy_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegStrategy"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Hl Stageg Strategy"
       }
     },
     "/api/v1/preflight": {

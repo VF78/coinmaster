@@ -7,7 +7,7 @@ export type Run = runtimeComponents['schemas']['RunRecord'];
 export type ResearchCatalogEntry = runtimeComponents['schemas']['ResearchCatalogEntry'];
 export type ResearchCatalogDetail = runtimeComponents['schemas']['ResearchCatalogDetail'];
 export type HlStagegProjection = runtimeComponents['schemas']['HlStagegProjection'];
-export interface Preflight { requested: Record<string, string>; allowed: boolean; im: string | null; mm: string | null; reasons: string[]; cap_label?: string }
+export type HlStagegStrategy = runtimeComponents['schemas']['HlStagegStrategy'];
 // Local operator supplies this ephemeral value; no API secret is bundled into the UI.
 export const setApiToken = (value: string) => window.localStorage.setItem('coinmaster-api-token', value);
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -27,4 +27,4 @@ export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponen
 // Never substitute /runtime here: that route is intentionally the separate
 // coinmaster-paper worker and has a command relay.
 export const getHlStagegProjection = () => request<HlStagegProjection>('/instances/hl-stageg-testnet');
-export const getPreflight = (config: StrategyConfig, beta: string | null, leverage: string | null) => request<Preflight>('/preflight', { method: 'POST', body: JSON.stringify({ venue: config.venue ?? 'bybit', active_usdt: config.initial_total_usdt, btc_notional: (Number(config.initial_total_usdt) * config.btc_notional_multiplier).toFixed(2), beta, selected_leverage: leverage, sol_multipliers: config.sol_size_multipliers_H }) });
+export const getHlStagegStrategy = () => request<HlStagegStrategy>('/instances/hl-stageg-testnet/strategy');

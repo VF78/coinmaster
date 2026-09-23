@@ -73,6 +73,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/instances/hl-stageg-testnet/strategy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Hl Stageg Strategy */
+        get: operations["hl_stageg_strategy_api_v1_instances_hl_stageg_testnet_strategy_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/preflight": {
         parameters: {
             query?: never;
@@ -427,6 +444,66 @@ export interface components {
              */
             version: "hl-stageg-projection-v1";
             warmup: components["schemas"]["HlStagegWarmup"];
+            /** Warnings */
+            warnings: string[];
+        };
+        /** HlStagegStrategy */
+        HlStagegStrategy: {
+            /** Account Fee Schedule */
+            account_fee_schedule: string;
+            /** Account Margin */
+            account_margin: string;
+            /** Candidate */
+            candidate: {
+                [key: string]: string;
+            };
+            /** Capital Assumption */
+            capital_assumption: string;
+            /**
+             * Environment
+             * @constant
+             */
+            environment: "mainnet-public";
+            /** Funding Treatment */
+            funding_treatment: string;
+            hashes: components["schemas"]["HlStagegHashes"];
+            /**
+             * Instance Id
+             * @constant
+             */
+            instance_id: "hl-stageg-testnet";
+            /**
+             * Mode
+             * @constant
+             */
+            mode: "sandbox";
+            /**
+             * Promotion Enabled
+             * @default false
+             * @constant
+             */
+            promotion_enabled: false;
+            /**
+             * Promotion Reason
+             * @constant
+             */
+            promotion_reason: "SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED";
+            /** Public Venue Profile */
+            public_venue_profile: string;
+            /** Research Comparison Assumption */
+            research_comparison_assumption: string;
+            /**
+             * Source State
+             * @enum {string}
+             */
+            source_state: "SEALED_SOURCE_CHECKED" | "INVALID";
+            /** Strategy Id */
+            strategy_id: string;
+            /**
+             * Version
+             * @constant
+             */
+            version: "hl-stageg-strategy-v1";
             /** Warnings */
             warnings: string[];
         };
@@ -1051,6 +1128,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HlStagegProjection"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    hl_stageg_strategy_api_v1_instances_hl_stageg_testnet_strategy_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegStrategy"];
                 };
             };
             /** @description Validation Error */
