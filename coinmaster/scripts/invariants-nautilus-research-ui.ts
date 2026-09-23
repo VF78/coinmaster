@@ -8,6 +8,8 @@ const required = [
   ['catalog is loaded from the local API', 'getResearchCatalog'],
   ['strategy reads sealed Stage-G identity from the local API', 'getHlStagegStrategy'],
   ['strategy identifies the running sealed instance', 'Running sealed Stage-G'],
+  ['strategy confirms running only on the API hash-match state', "strategy?.running_state === 'RUNNING_MATCH'"],
+  ['strategy labels an unconfirmed runner honestly', 'Local sealed configuration; running not confirmed.'],
   ['strategy keeps research drafts separate from the runner', 'Research drafts'],
   ['strategy requires a separate native promotion gate', 'SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED'],
   ['strategy read-backs a saved research draft', 'Saved draft could not be read back.'],

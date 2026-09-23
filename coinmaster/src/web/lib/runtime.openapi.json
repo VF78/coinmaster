@@ -412,6 +412,15 @@
             "title": "Research Comparison Assumption",
             "type": "string"
           },
+          "running_state": {
+            "enum": [
+              "RUNNING_MATCH",
+              "MISMATCH",
+              "NOT_CONFIRMED"
+            ],
+            "title": "Running State",
+            "type": "string"
+          },
           "source_state": {
             "enum": [
               "SEALED_SOURCE_CHECKED",
@@ -441,6 +450,7 @@
           "version",
           "instance_id",
           "source_state",
+          "running_state",
           "strategy_id",
           "mode",
           "environment",

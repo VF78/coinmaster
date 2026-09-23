@@ -493,6 +493,11 @@ export interface components {
             /** Research Comparison Assumption */
             research_comparison_assumption: string;
             /**
+             * Running State
+             * @enum {string}
+             */
+            running_state: "RUNNING_MATCH" | "MISMATCH" | "NOT_CONFIRMED";
+            /**
              * Source State
              * @enum {string}
              */

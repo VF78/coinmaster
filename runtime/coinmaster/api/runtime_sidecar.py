@@ -195,6 +195,7 @@ class HlStagegStrategy(RuntimeSchema):
     version: Literal["hl-stageg-strategy-v1"]
     instance_id: Literal["hl-stageg-testnet"]
     source_state: Literal["SEALED_SOURCE_CHECKED", "INVALID"]
+    running_state: Literal["RUNNING_MATCH", "MISMATCH", "NOT_CONFIRMED"]
     strategy_id: str
     mode: Literal["sandbox"]
     environment: Literal["mainnet-public"]
@@ -316,8 +317,20 @@ class HlStagegProjectionReader:
 class HlStagegStrategyReader:
     """Load and verify only the checked-in identity of the sealed candidate."""
 
-    def __init__(self, runtime_root: Path | None = None) -> None:
+    def __init__(self, runtime_root: Path | None = None, projection_reader: HlStagegProjectionReader | None = None) -> None:
         self.runtime_root = runtime_root or Path(__file__).resolve().parents[2]
+        self.projection_reader = projection_reader
+
+    @staticmethod
+    def _running_state(hashes: dict[str, str], projection: HlStagegProjection | None) -> Literal["RUNNING_MATCH", "MISMATCH", "NOT_CONFIRMED"]:
+        if projection is None or projection.projection_state != "READY" or projection.process_state in {
+            "DATA_STALE/PAUSED", "WORKER_DISCONNECTED", "WORKER_PROJECTION_UNAVAILABLE",
+        }:
+            return "NOT_CONFIRMED"
+        projected = projection.hashes.model_dump()
+        if all(hashes[key] == projected[key] for key in hashes):
+            return "RUNNING_MATCH"
+        return "MISMATCH"
 
     def strategy(self) -> HlStagegStrategy:
         unknown_hashes = {"candidate_sha256": UNKNOWN, "strategy_sha256": UNKNOWN, "execution_policy_sha256": UNKNOWN}
@@ -338,12 +351,15 @@ class HlStagegStrategyReader:
                 or approval.get("strategy_sha256") != strategy_hash
             ):
                 raise ValueError("SEALED_APPROVAL_MISMATCH")
+            projection = self.projection_reader.runtime() if self.projection_reader else None
+            running_state = self._running_state(hashes, projection)
             candidate = {
                 key: json.dumps(value, separators=(",", ":")) if isinstance(value, tuple) else str(value).lower() if isinstance(value, bool) else str(value)
                 for key, value in asdict(loaded.candidate).items()
             }
             return HlStagegStrategy(
                 version="hl-stageg-strategy-v1", instance_id="hl-stageg-testnet", source_state="SEALED_SOURCE_CHECKED",
+                running_state=running_state,
                 strategy_id=instance.strategy_id, mode="sandbox", environment="mainnet-public", candidate=candidate, hashes=hashes,
                 capital_assumption="10,000 USDC nominal Sandbox seed; not an observed account balance",
                 research_comparison_assumption="10,000 USDT comparison only under an explicit 1:1 assumption",
@@ -351,11 +367,12 @@ class HlStagegStrategyReader:
                 account_margin=UNKNOWN, account_fee_schedule=UNKNOWN,
                 funding_treatment="OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
                 promotion_enabled=False, promotion_reason="SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED",
-                warnings=["ACCOUNT_SPECIFIC_MARGIN_UNKNOWN", "ACCOUNT_SPECIFIC_FEES_UNKNOWN", "NO_RUNNING_INSTANCE_MUTATION"],
+                warnings=["ACCOUNT_SPECIFIC_MARGIN_UNKNOWN", "ACCOUNT_SPECIFIC_FEES_UNKNOWN", "NO_RUNNING_INSTANCE_MUTATION"] + ([] if running_state == "RUNNING_MATCH" else [f"HL_STAGEG_RUNNING_{running_state}"]),
             )
         except (OSError, ValueError, TypeError, json.JSONDecodeError):
             return HlStagegStrategy(
                 version="hl-stageg-strategy-v1", instance_id="hl-stageg-testnet", source_state="INVALID",
+                running_state="NOT_CONFIRMED",
                 strategy_id=UNKNOWN, mode="sandbox", environment="mainnet-public", candidate={}, hashes=unknown_hashes,
                 capital_assumption="UNKNOWN", research_comparison_assumption="UNKNOWN", public_venue_profile="UNKNOWN",
                 account_margin=UNKNOWN, account_fee_schedule=UNKNOWN,
@@ -370,7 +387,7 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     relay_token = worker_token if worker_token is not None else os.getenv("COINMASTER_PAPER_CONTROL_TOKEN")
     reader = RuntimeReader(database or os.getenv("COINMASTER_PAPER_DB", "/var/lib/coinmaster-paper/paper.sqlite"), worker_url or os.getenv("COINMASTER_PAPER_WORKER_URL", "http://127.0.0.1:18181"))
     hl_reader = HlStagegProjectionReader(hl_stageg_status_url or os.getenv("COINMASTER_HL_STAGEG_STATUS_URL", "http://127.0.0.1:18183"))
-    hl_strategy_reader = HlStagegStrategyReader(runtime_root)
+    hl_strategy_reader = HlStagegStrategyReader(runtime_root, hl_reader)
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     def auth(authorization: str | None = Header(default=None)) -> None:
         if not expected or authorization != f"Bearer {expected}": raise HTTPException(401, "runtime token required")

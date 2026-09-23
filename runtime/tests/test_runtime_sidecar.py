@@ -6,7 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from urllib.error import URLError
 
-from coinmaster.api.runtime_sidecar import HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app
+from coinmaster.api.runtime_sidecar import HlStagegProjection, HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker as HlStagegWorker, create_status_server
 from coinmaster.ops.paper import PaperRuntime
 
@@ -56,9 +56,33 @@ def test_hl_stageg_strategy_is_sealed_source_identity_with_unknown_account_facts
     assert body.instance_id == "hl-stageg-testnet" and body.mode == "sandbox"
     assert body.hashes.candidate_sha256 == "637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d"
     assert body.candidate["ema_period"] == "34"
+    assert body.running_state == "NOT_CONFIRMED"
     assert body.account_margin == "UNKNOWN" and body.account_fee_schedule == "UNKNOWN"
     assert body.promotion_enabled is False
     assert body.promotion_reason == "SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"
+
+
+def test_hl_stageg_strategy_requires_fresh_full_hash_match_to_claim_running(monkeypatch) -> None:
+    import coinmaster.api.runtime_sidecar as sidecar
+    root = Path(__file__).resolve().parents[1]
+    local = HlStagegStrategyReader(root).strategy()
+
+    mismatched = HlStagegProjection.model_validate(_ready_hl_projection())
+    result = HlStagegStrategyReader(root, SimpleNamespace(runtime=lambda: mismatched)).strategy()
+    assert result.running_state == "MISMATCH"
+
+    matching_payload = _ready_hl_projection()
+    matching_payload["hashes"] = local.hashes.model_dump()
+    matching = HlStagegProjection.model_validate(matching_payload)
+    result = HlStagegStrategyReader(root, SimpleNamespace(runtime=lambda: matching)).strategy()
+    assert result.running_state == "RUNNING_MATCH"
+
+    stale_payload = json.dumps(_ready_hl_projection(observed_at_ns=1)).encode()
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *args, **kwargs: io.BytesIO(stale_payload))
+    stale = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
+    result = HlStagegStrategyReader(root, SimpleNamespace(runtime=lambda: stale)).strategy()
+    assert stale.projection_state == "STALE"
+    assert result.running_state == "NOT_CONFIRMED"
 
 
 def _ready_hl_projection(*, observed_at_ns=None, instance_id="hl-stageg-testnet"):
