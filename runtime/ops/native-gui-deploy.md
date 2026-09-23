@@ -19,7 +19,8 @@ creates a distinct `coinmaster-research` identity and root-only environment,
 installs from the frozen runtime lockfile, and smoke-tests a temporary loopback
 API using a copy of the control DB. Its receipt records the paper/trader PIDs.
 `activate-api` backs up the previous runtime unit and release pointer, copies
-the control DB into research-owned state, and starts only the runtime API from
+the old control DB only on the first isolated activation, preserves that
+research-owned DB on later releases, and starts only the runtime API from
 the immutable release. It verifies authenticated API/SPA, disabled HL controls,
 the absent paper command route, and unchanged peer PIDs. It restores the prior
 runtime unit automatically if activation checks fail, waiting up to 30 seconds

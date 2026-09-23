@@ -21,6 +21,7 @@ RUNTIME=coinmaster-runtime.service
 pid() { systemctl show -P MainPID "$1"; }
 active() { [[ "$(systemctl show -P ActiveState "$1")" == active ]]; }
 assert_peers() { active "$PAPER" && active "$TRADER" && [[ "$(pid "$PAPER")" == "$1" ]] && [[ "$(pid "$TRADER")" == "$2" ]]; }
+source_db() { if [[ -L "$CURRENT" ]]; then printf '%s\n' "$STATE/control.sqlite"; else printf '%s\n' "$OLD_DB"; fi; }
 check_no_jobs() {
   python3 - "$1" <<'PY'
 import sqlite3, sys
@@ -114,7 +115,7 @@ PY
 }
 if [[ "$ACTION" == plan ]]; then
   active "$PAPER" && active "$TRADER" && active "$RUNTIME" || { echo 'required service is inactive' >&2; exit 1; }
-  check_no_jobs "$OLD_DB"
+  check_no_jobs "$(source_db)"
   token_from_paper_env >/dev/null
   [[ -x /root/.local/bin/uv ]] || { echo 'pinned Linux uv runtime unavailable' >&2; exit 1; }
   [[ -e "$UNIT" ]] || { echo 'current runtime unit missing' >&2; exit 1; }
@@ -129,7 +130,7 @@ if [[ "$ACTION" == stage ]]; then
   [[ -f "$ARCHIVE" && ! -e "$RELEASE" && ! -e "$RELEASE.incoming" ]] || { echo 'release/archive already exists or is missing' >&2; exit 1; }
   [[ "$(sha256sum "$ARCHIVE" | cut -d ' ' -f1)" == "$ARCHIVE_SHA" ]] || { echo 'archive digest mismatch' >&2; exit 1; }
   active "$PAPER" && active "$TRADER" && active "$RUNTIME" || { echo 'required service inactive' >&2; exit 1; }
-  check_no_jobs "$OLD_DB"
+  check_no_jobs "$(source_db)"
   PAPER_BEFORE="$(pid "$PAPER")"; TRADER_BEFORE="$(pid "$TRADER")"
   TOKEN="$(token_from_paper_env)"
   GUI_AUTH_RAW="$(python3 - "$ENV_FILE" "$TOKEN" <<'PY'
@@ -164,7 +165,7 @@ PY
   chmod -R a+rX "$RELEASE.incoming"
   SMOKE="$STATE/smoke-$COMMIT"
   install -d -m 0700 -o coinmaster-research -g coinmaster-research "$SMOKE" "$SMOKE/data"
-  backup_db "$OLD_DB" "$SMOKE/control.sqlite"
+  backup_db "$(source_db)" "$SMOKE/control.sqlite"
   chown coinmaster-research:coinmaster-research "$SMOKE/control.sqlite"
   [[ -z "$(ss -ltn '( sport = :18184 )' | tail -n +2)" ]] || { echo 'smoke port is already occupied' >&2; exit 1; }
   (cd "$RELEASE.incoming/runtime" && runuser -u coinmaster-research -- env -i PATH=/usr/bin:/bin \
@@ -206,7 +207,7 @@ fi
 [[ -d "$RELEASE" && -f "$RELEASE/stage.receipt" ]] || { echo 'release has no verified stage receipt' >&2; exit 1; }
 TOKEN="$(token_from_paper_env)"
 if [[ "$ACTION" == activate-api ]]; then
-  check_no_jobs "$OLD_DB"
+  check_no_jobs "$(source_db)"
   [[ "$(pid "$PAPER")" == "$(sed -n 's/^paper_pid=//p' "$RELEASE/stage.receipt")" && "$(pid "$TRADER")" == "$(sed -n 's/^trader_pid=//p' "$RELEASE/stage.receipt")" ]] || { echo 'peer PID changed since stage' >&2; exit 1; }
   [[ "$(basename "$RELEASE")" == "$COMMIT" && "$(sed -n 's/^archive_sha256=//p' "$RELEASE/stage.receipt")" =~ ^[0-9a-f]{64}$ ]] || { echo 'staged release identity or receipt digest is invalid' >&2; exit 1; }
   if [[ -d "$BACKUPS/$COMMIT" ]]; then
@@ -225,8 +226,10 @@ if [[ "$ACTION" == activate-api ]]; then
     printf 'runtime_pid=%s\npaper_pid=%s\ntrader_pid=%s\n' "$(pid "$RUNTIME")" "$(pid "$PAPER")" "$(pid "$TRADER")" > "$BACKUPS/$COMMIT/prior.pids"
   fi
   systemctl stop "$RUNTIME"
-  backup_db "$OLD_DB" "$STATE/control.sqlite"
-  chown coinmaster-research:coinmaster-research "$STATE/control.sqlite"
+  if [[ ! -L "$CURRENT" ]]; then
+    backup_db "$OLD_DB" "$STATE/control.sqlite"
+    chown coinmaster-research:coinmaster-research "$STATE/control.sqlite"
+  fi
   cp "$RELEASE/runtime/ops/coinmaster-native-gui.service" "$UNIT"
   ln -s "$RELEASE" "$CURRENT.next"
   mv -Tf "$CURRENT.next" "$CURRENT"
