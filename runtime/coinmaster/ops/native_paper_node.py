@@ -21,7 +21,7 @@ from typing import Any, Callable
 
 from nautilus_trader.adapters.bybit import BybitLiveDataClientFactory
 from nautilus_trader.adapters.bybit.config import BybitDataClientConfig
-from nautilus_trader.adapters.hyperliquid import HyperliquidAllDexsAssetCtxs, HyperliquidLiveDataClientFactory
+from nautilus_trader.adapters.hyperliquid import HYPERLIQUID_CLIENT_ID, HyperliquidAllDexsAssetCtxs, HyperliquidLiveDataClientFactory
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.adapters.sandbox.execution import SandboxExecutionClient
@@ -357,8 +357,9 @@ class FeedObserver(Strategy):
                 hyperliquid_clients.add(client_id)
         if len(hyperliquid_clients) > 1:
             raise RuntimeError("HYPERLIQUID_AGGREGATE_REQUIRES_ONE_DATA_CLIENT")
-        for client_id in hyperliquid_clients:
-            self.subscribe_data(DataType(HyperliquidAllDexsAssetCtxs), client_id=client_id)
+        if hyperliquid_clients:
+            # Custom data has no venue; Nautilus routes it by the adapter's native ID.
+            self.subscribe_data(DataType(HyperliquidAllDexsAssetCtxs), client_id=HYPERLIQUID_CLIENT_ID)
 
     def on_data(self, data: HyperliquidAllDexsAssetCtxs) -> None:
         if isinstance(data, HyperliquidAllDexsAssetCtxs):

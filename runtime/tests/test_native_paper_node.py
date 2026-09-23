@@ -87,7 +87,7 @@ def test_scheduled_bybit_funding_stays_ready_between_updates_but_expires_after_s
 
 
 def test_hyperliquid_aggregate_frames_refresh_identical_rates_but_missing_entries_expire() -> None:
-    from nautilus_trader.adapters.hyperliquid import HyperliquidAllDexsAssetCtxs
+    from nautilus_trader.adapters.hyperliquid import HYPERLIQUID_CLIENT_ID, HyperliquidAllDexsAssetCtxs
     from nautilus_trader.adapters.hyperliquid.data import HyperliquidDexAssetCtx
     from nautilus_trader.model.data import DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
     from nautilus_trader.model.identifiers import InstrumentId
@@ -131,7 +131,8 @@ def test_hyperliquid_aggregate_frames_refresh_identical_rates_but_missing_entrie
     FeedObserver.on_start(fake)
     assert len(subscribed) == 1
     assert subscribed[0][0].type.__name__ == "HyperliquidAllDexsAssetCtxs"
-    assert subscribed[0][1]["client_id"] == ClientId("HL")
+    assert subscribed[0][1]["client_id"] == HYPERLIQUID_CLIENT_ID
+    assert HYPERLIQUID_CLIENT_ID == ClientId("HYPERLIQUID")
 
     rate = Decimal("0.0000125")
     frame(1, [entry(btc, rate), entry(sol, rate)])
