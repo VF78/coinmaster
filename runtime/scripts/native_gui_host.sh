@@ -85,7 +85,9 @@ assert '/api/v1/runtime/commands/{command}' not in spec['paths']
 assert '/api/v1/research/capabilities' in spec['paths']
 assert get('/api/v1/research/capabilities')[0] == 200
 assert get('/api/v1/instances/hl-stageg-testnet/controls', method='POST')[0] == 405
-assert get('/', False)[0] == 200
+assert get('/api/v1/auth/session', False)[0] == 401
+assert b'Operator sign in' in get('/', False)[1]
+assert get('/', True)[0] == 200
 db = sqlite3.connect(f"file:{os.environ['GUI_SMOKE_DB']}?mode=ro", uri=True)
 assert db.execute('SELECT count(*) FROM research_leases').fetchone()[0] == 0
 print('API_SMOKE_OK: auth, SPA, HL unavailable/disabled, no paper command route, research lease clear')
@@ -130,6 +132,23 @@ if [[ "$ACTION" == stage ]]; then
   check_no_jobs "$OLD_DB"
   PAPER_BEFORE="$(pid "$PAPER")"; TRADER_BEFORE="$(pid "$TRADER")"
   TOKEN="$(token_from_paper_env)"
+  GUI_AUTH_RAW="$(python3 - "$ENV_FILE" "$TOKEN" <<'PY'
+import os, re, sys
+from pathlib import Path
+path = Path(sys.argv[1])
+stat = path.stat()
+if stat.st_uid != 0 or stat.st_mode & 0o077:
+    raise SystemExit('GUI environment must be root-owned mode 0600')
+entries = dict(line.split('=', 1) for line in path.read_text().splitlines() if '=' in line)
+if entries.get('COINMASTER_RUNTIME_API_TOKEN') != sys.argv[2]:
+    raise SystemExit('GUI automation token differs from current operator token')
+user, verifier = entries.get('COINMASTER_GUI_USERNAME', ''), entries.get('COINMASTER_GUI_PASSWORD_HASH', '')
+if not re.fullmatch(r'[A-Za-z0-9_-]{3,32}', user) or not re.fullmatch(r'scrypt\$15\$8\$1\$[0-9a-f]{64}\$[0-9a-f]{128}', verifier):
+    raise SystemExit('one GUI operator and a strong password verifier are required')
+print(user); print(verifier)
+PY
+)"
+  GUI_USERNAME="${GUI_AUTH_RAW%%$'\n'*}"; GUI_PASSWORD_HASH="${GUI_AUTH_RAW#*$'\n'}"
   if ! id coinmaster-research >/dev/null 2>&1; then
     useradd --system --user-group --no-create-home --home-dir /nonexistent --shell /usr/sbin/nologin coinmaster-research
   fi
@@ -138,8 +157,6 @@ if [[ "$ACTION" == stage ]]; then
   install -d -m 0700 -o coinmaster-research -g coinmaster-research "$STATE" "$STATE/data"
   install -d -m 0700 "$BACKUPS"
   umask 077
-  printf 'COINMASTER_RUNTIME_API_TOKEN=%s\n' "$TOKEN" > "$ENV_FILE"
-  chmod 0600 "$ENV_FILE"
   mkdir "$RELEASE.incoming"
   tar -xzf "$ARCHIVE" -C "$RELEASE.incoming" --no-same-owner
   [[ -f "$RELEASE.incoming/runtime/uv.lock" && -f "$RELEASE.incoming/runtime/ops/coinmaster-native-gui.service" && -f "$RELEASE.incoming/web/index.html" ]] || { echo 'incomplete release' >&2; exit 1; }
@@ -151,7 +168,9 @@ if [[ "$ACTION" == stage ]]; then
   chown coinmaster-research:coinmaster-research "$SMOKE/control.sqlite"
   [[ -z "$(ss -ltn '( sport = :18184 )' | tail -n +2)" ]] || { echo 'smoke port is already occupied' >&2; exit 1; }
   (cd "$RELEASE.incoming/runtime" && runuser -u coinmaster-research -- env -i PATH=/usr/bin:/bin \
-    COINMASTER_RUNTIME_API_TOKEN="$TOKEN" COINMASTER_RUNTIME_CONTROL_DB="$SMOKE/control.sqlite" COINMASTER_CONTROL_DB="$SMOKE/legacy-control.sqlite" \
+    COINMASTER_RUNTIME_API_TOKEN="$TOKEN" COINMASTER_GUI_USERNAME="$GUI_USERNAME" COINMASTER_GUI_PASSWORD_HASH="$GUI_PASSWORD_HASH" \
+    COINMASTER_GUI_ORIGIN=https://cm.f-ai.studio COINMASTER_GUI_SESSION_DB="$SMOKE/auth.sqlite" \
+    COINMASTER_RUNTIME_CONTROL_DB="$SMOKE/control.sqlite" COINMASTER_CONTROL_DB="$SMOKE/legacy-control.sqlite" \
     COINMASTER_RESEARCH_DATA_ROOT="$SMOKE/data" COINMASTER_RUNTIME_DIST="$RELEASE.incoming/web" \
     COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183 COINMASTER_PAPER_DB="$SMOKE/no-paper.sqlite" \
     PYTHONPATH="$RELEASE.incoming/runtime" PYTHONDONTWRITEBYTECODE=1 GUI_SMOKE_PIDFILE="$SMOKE/uvicorn.pid" GUI_PYTHON="$RELEASE.incoming/runtime/.venv/bin/python" \

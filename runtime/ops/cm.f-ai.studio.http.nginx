@@ -1,0 +1,12 @@
+# Enable first for exact-Host ACME testing. No GUI upstream is exposed here.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name cm.f-ai.studio;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+        try_files $uri =404;
+    }
+    location / { return 308 https://cm.f-ai.studio$request_uri; }
+}

@@ -9,7 +9,7 @@ import threading
 from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Callable, Literal
 from uuid import uuid4
 
 from fastapi import Depends, FastAPI, Header, HTTPException
@@ -411,16 +411,17 @@ def research_capabilities(data_root: Path, config: ConfigurationRecord | None = 
     )
 
 
-def create_app(database: str | None = None, token: str | None = None, include_legacy_runtime: bool = True, research_commands: dict[str, list[str]] | None = None, research_data_root: Path | None = None) -> FastAPI:
+def create_app(database: str | None = None, token: str | None = None, include_legacy_runtime: bool = True, research_commands: dict[str, list[str]] | None = None, research_data_root: Path | None = None, auth_dependency: Callable[..., str | None] | None = None) -> FastAPI:
     store = ControlStore(database or os.getenv("COINMASTER_CONTROL_DB", str(Path(__file__).resolve().parents[2] / "var/coinmaster-control.sqlite")))
     research = ResearchJobManager(store, research_data_root or configured_research_data_root(), research_commands)
     expected_token = token if token is not None else os.getenv("COINMASTER_API_TOKEN")
     app = FastAPI(title="Coinmaster Nautilus Control API", version="0.1.0", docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json")
     app.add_middleware(CORSMiddleware, allow_origins=[os.getenv("COINMASTER_ALLOWED_ORIGIN", "http://localhost:5173")], allow_credentials=False, allow_methods=["GET", "POST"], allow_headers=["Authorization", "Idempotency-Key"])
 
-    def auth(authorization: str | None = Header(default=None)) -> None:
+    def local_auth(authorization: str | None = Header(default=None)) -> None:
         if not expected_token or authorization != f"Bearer {expected_token}":
             raise HTTPException(401, "local API token required")
+    auth = auth_dependency or local_auth
 
     @app.get("/api/v1/health")
     def health() -> dict[str, str]:

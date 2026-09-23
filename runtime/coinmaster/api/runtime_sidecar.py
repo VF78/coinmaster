@@ -11,12 +11,12 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Query
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, ConfigDict
 
 from coinmaster.api.app import create_app as create_control_app
+from coinmaster.api.gui_auth import GuiAuth, SESSION_COOKIE
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 
 
@@ -414,15 +414,46 @@ class HlStagegStrategyReader:
             )
 
 
-def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_status_url: str | None = None, runtime_root: Path | None = None) -> FastAPI:
+def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_status_url: str | None = None, runtime_root: Path | None = None, operator_username: str | None = None, operator_password_hash: str | None = None, session_database: str | None = None, public_origin: str | None = None) -> FastAPI:
     expected = token if token is not None else os.getenv("COINMASTER_RUNTIME_API_TOKEN")
     relay_token = worker_token if worker_token is not None else os.getenv("COINMASTER_PAPER_CONTROL_TOKEN")
     reader = RuntimeReader(database or os.getenv("COINMASTER_PAPER_DB", "/var/lib/coinmaster-paper/paper.sqlite"), worker_url or os.getenv("COINMASTER_PAPER_WORKER_URL", "http://127.0.0.1:18181"))
     hl_reader = HlStagegProjectionReader(hl_stageg_status_url or os.getenv("COINMASTER_HL_STAGEG_STATUS_URL", "http://127.0.0.1:18183"))
     hl_strategy_reader = HlStagegStrategyReader(runtime_root, hl_reader)
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
-    def auth(authorization: str | None = Header(default=None)) -> None:
-        if not expected or authorization != f"Bearer {expected}": raise HTTPException(401, "runtime token required")
+    gui_auth = GuiAuth(
+        username=operator_username if operator_username is not None else os.getenv("COINMASTER_GUI_USERNAME"),
+        encoded_password=operator_password_hash if operator_password_hash is not None else os.getenv("COINMASTER_GUI_PASSWORD_HASH"),
+        database=session_database or os.getenv("COINMASTER_GUI_SESSION_DB", "/var/lib/coinmaster-native-gui/auth.sqlite"),
+        origin=public_origin if public_origin is not None else os.getenv("COINMASTER_GUI_ORIGIN"), bearer_token=expected,
+    )
+    def auth(request: Request, authorization: str | None = Header(default=None), x_csrf_token: str | None = Header(default=None, alias="X-CSRF-Token")) -> str:
+        return gui_auth.authorize(request, authorization, x_csrf_token)
+
+    @app.get("/login", include_in_schema=False)
+    def login_page(request: Request):
+        return gui_auth.login_page(request)
+
+    @app.post("/login", include_in_schema=False)
+    async def login(request: Request):
+        return await gui_auth.login(request)
+
+    @app.get("/api/v1/auth/session", include_in_schema=False)
+    def gui_session(request: Request):
+        cookie = request.cookies.get(SESSION_COOKIE)
+        if not gui_auth._session(cookie):
+            raise HTTPException(401, "operator session required")
+        return JSONResponse({"username": gui_auth.username, "csrf_token": gui_auth.csrf(cookie)}, headers={"Cache-Control": "no-store"})
+
+    @app.post("/api/v1/auth/logout", include_in_schema=False, dependencies=[Depends(auth)])
+    def gui_logout(request: Request):
+        cookie = request.cookies.get(SESSION_COOKIE)
+        if not cookie:
+            raise HTTPException(401, "operator session required")
+        gui_auth.logout(cookie)
+        response = JSONResponse({"ok": True}, headers={"Cache-Control": "no-store"})
+        response.delete_cookie(SESSION_COOKIE, path="/", secure=True, httponly=True, samesite="strict")
+        return response
 
     @app.get("/api/v1/openapi.json", include_in_schema=False, dependencies=[Depends(auth)])
     def openapi_document() -> JSONResponse:
@@ -436,6 +467,7 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
         database=control_database or os.getenv("COINMASTER_RUNTIME_CONTROL_DB", str(Path(__file__).resolve().parents[2] / "var/runtime-control.sqlite")),
         token=expected,
         include_legacy_runtime=False,
+        auth_dependency=auth,
     )
     app.include_router(control.router, dependencies=[Depends(auth)])
 
@@ -459,11 +491,25 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
             return reader.command(command, idempotency_key, relay_token)
     dist = Path(os.getenv("COINMASTER_RUNTIME_DIST", Path(__file__).resolve().parents[3] / "coinmaster/dist"))
     if dist.is_dir():
-        app.mount("/assets", StaticFiles(directory=dist / "assets"), name="assets")
+        asset_root = (dist / "assets").resolve()
+        @app.get("/assets/{path:path}", include_in_schema=False, dependencies=[Depends(auth)])
+        def assets(path: str):
+            target = (asset_root / path).resolve()
+            if not target.is_relative_to(asset_root) or not target.is_file():
+                raise HTTPException(404, "asset not found")
+            return FileResponse(target)
+
         @app.get("/{path:path}", include_in_schema=False)
-        def spa(path: str):
-            target = dist / path
-            return FileResponse(target if path and target.is_file() else dist / "index.html")
+        def spa(path: str, request: Request, authorization: str | None = Header(default=None)):
+            if path == "api" or path.startswith("api/"):
+                return JSONResponse({"detail": "Not Found"}, status_code=404)
+            try:
+                auth(request, authorization, None)
+            except HTTPException as error:
+                if error.status_code != 401:
+                    raise
+                return RedirectResponse("/login", status_code=303)
+            return FileResponse(dist / "index.html", headers={"Cache-Control": "no-store"})
     return app
 
 

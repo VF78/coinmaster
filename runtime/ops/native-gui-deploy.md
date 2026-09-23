@@ -47,3 +47,40 @@ do not manually modify the paper/trader services as part of this rollout.
 The Stage-G status GET listener is a separate change. Until it is installed,
 the GUI must report `UNAVAILABLE` and keep all controls disabled. No trader
 restart, real credential, wallet, or order path is part of this procedure.
+
+## `cm.f-ai.studio` login and HTTPS gate (#109)
+
+The single browser account is `operator`. Generate its random password in the
+macOS Keychain and provision only the scrypt verifier in the root-owned VPS
+environment before staging the new release:
+
+```sh
+PYTHONPATH=runtime runtime/.venv/bin/python runtime/scripts/provision_gui_operator.py --host root@46.225.163.123
+```
+
+The password can later be retrieved privately from the macOS Keychain item
+`cm.f-ai.studio CoinMaster operator` (`operator` account). Do not paste it into
+the repo, issue, service unit, screenshots, or shell history. The existing
+Bearer token remains for loopback automation only; the browser uses a revocable
+host-only session cookie. The root-only VPS file
+`/etc/coinmaster-native-gui.env` contains the username, verifier and
+automation token. Stage and activate the new commit-SHA API/SPA through the
+wrapper above; its stage smoke still uses the loopback Bearer path and checks
+that the unauthenticated shell opens the login page.
+
+The checked-in `cm.f-ai.studio.http.nginx` handles only the ACME webroot and
+redirect, and `cm.f-ai.studio.https.nginx` is the dedicated HTTPS proxy. Stage
+them in `sites-available`; do not enable HTTPS until the certificate exists.
+Before DNS changes, test the HTTP host with `curl --resolve
+cm.f-ai.studio:80:127.0.0.1` on the VPS. Then the DNS owner adds exactly an A
+record for `cm` to `46.225.163.123` with TTL 300. Add no AAAA until IPv6 is
+verified. Certbot can then issue the exact-host certificate using webroot
+`/var/www/letsencrypt`; only after that, enable HTTPS, run `nginx -t`, and
+verify the exact Host with `curl --resolve` before testing external DNS/HTTPS.
+
+Acceptance requires a real desktop/390px browser login and logout, expired
+session and CSRF denial, 401 on unauthenticated APIs, no browser API token, no
+public Bearer bypass, no static path escape or API-to-SPA fallback, disabled HL
+controls, absent paper command route, and unchanged paper/trader PIDs. If DNS,
+certificate, Host routing, or these gates are missing, leave public HTTPS
+disabled; the current default Host reaches the unrelated Paperclip app.

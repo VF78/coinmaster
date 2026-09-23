@@ -7,6 +7,8 @@ from pathlib import Path
 from types import SimpleNamespace
 from urllib.error import URLError
 from fastapi import HTTPException
+from fastapi import Request
+from fastapi.responses import RedirectResponse
 
 from coinmaster.api.runtime_sidecar import HlStagegProjection, HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app, hl_stageg_controls
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker as HlStagegWorker, create_status_server
@@ -44,11 +46,14 @@ def test_runtime_sidecar_exposes_strict_schemas_and_spa_without_shadowing_api(tm
     assert "ResearchCatalogEntry" in schemas and "StrategyConfig" in schemas
     paths = [getattr(route, "path", "") for route in app.routes]
     assert "/api/v1/openapi.json" in paths and "/api/v1/runtime" in paths and "/{path:path}" in paths
-    # The SPA fallback is registered after the authenticated API routes and
-    # resolves the built root rather than a file supplied by the request.
+    # The SPA fallback is registered after API routes and routes an
+    # unauthenticated browser to the single operator login.
     spa = next(route for route in app.routes if getattr(route, "path", "") == "/{path:path}")
-    response = spa.endpoint("")
+    request = Request({"type": "http", "method": "GET", "path": "/", "headers": [], "client": ("127.0.0.1", 1234), "scheme": "http"})
+    assert isinstance(spa.endpoint("", request, None), RedirectResponse)
+    response = spa.endpoint("", request, "Bearer operator")
     assert response.path == dist / "index.html"
+    assert spa.endpoint("api/v1/not-a-route", request, "Bearer operator").status_code == 404
 
 
 def test_hl_stageg_controls_are_authenticated_instance_bound_and_fail_closed(tmp_path) -> None:
@@ -56,10 +61,11 @@ def test_hl_stageg_controls_are_authenticated_instance_bound_and_fail_closed(tmp
     path = "/api/v1/instances/hl-stageg-testnet/controls"
     route = next(item for item in app.routes if getattr(item, "path", "") == path)
     auth = next(dependency.call for dependency in route.dependant.dependencies if dependency.call.__name__ == "auth")
+    request = Request({"type": "http", "method": "GET", "path": path, "headers": [], "client": ("127.0.0.1", 1234), "scheme": "http"})
     with pytest.raises(HTTPException) as denied:
-        auth(None)
+        auth(request, None, None)
     assert denied.value.status_code == 401
-    auth("Bearer operator")
+    auth(request, "Bearer operator", None)
     body = route.endpoint().model_dump()
     assert body["instance_id"] == "hl-stageg-testnet" and body["mode"] == "sandbox"
     assert body["projection_state"] == "UNAVAILABLE"

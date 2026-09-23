@@ -10,11 +10,27 @@ export type ResearchCapabilities = runtimeComponents['schemas']['ResearchCapabil
 export type HlStagegProjection = runtimeComponents['schemas']['HlStagegProjection'];
 export type HlStagegStrategy = runtimeComponents['schemas']['HlStagegStrategy'];
 export type HlStagegControls = runtimeComponents['schemas']['HlStagegControls'];
-// Local operator supplies this ephemeral value; no API secret is bundled into the UI.
-export const setApiToken = (value: string) => window.localStorage.setItem('coinmaster-api-token', value);
+type GuiSession = { username: string; csrf_token: string };
+let guiSession: GuiSession | null = null;
+export async function getGuiSession(): Promise<GuiSession> {
+  const response = await fetch('/api/v1/auth/session', { credentials: 'same-origin', cache: 'no-store' });
+  if (response.status === 401) { window.location.assign('/login'); throw new Error('Operator session expired.'); }
+  if (!response.ok) throw new Error(`Session API ${response.status}`);
+  guiSession = await response.json() as GuiSession;
+  return guiSession;
+}
+export async function logoutGuiSession(): Promise<void> {
+  const session = guiSession ?? await getGuiSession();
+  const response = await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'same-origin', headers: { 'X-CSRF-Token': session.csrf_token } });
+  guiSession = null;
+  if (!response.ok) throw new Error(`Logout API ${response.status}`);
+  window.location.assign('/login');
+}
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const token = window.localStorage.getItem('coinmaster-api-token') ?? '';
-  const response = await fetch(`/api/v1${path}`, { ...init, headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', ...(init?.headers ?? {}) } });
+  const changing = !!init?.method && !['GET', 'HEAD'].includes(init.method.toUpperCase());
+  const csrf = changing ? (guiSession ?? await getGuiSession()).csrf_token : null;
+  const response = await fetch(`/api/v1${path}`, { ...init, credentials: 'same-origin', headers: { ...(init?.body ? { 'Content-Type': 'application/json' } : {}), ...(csrf ? { 'X-CSRF-Token': csrf } : {}), ...(init?.headers ?? {}) } });
+  if (response.status === 401) { guiSession = null; window.location.assign('/login'); throw new Error('Operator session expired.'); }
   if (!response.ok) throw new Error((await response.text()) || `API ${response.status}`);
   return response.json() as Promise<T>;
 }
