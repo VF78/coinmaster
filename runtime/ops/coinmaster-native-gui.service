@@ -1,0 +1,33 @@
+[Unit]
+Description=CoinMaster isolated native GUI and research API
+After=network-online.target
+
+[Service]
+Type=simple
+User=coinmaster-research
+Group=coinmaster-research
+EnvironmentFile=/etc/coinmaster-native-gui.env
+WorkingDirectory=/srv/coinmaster-native-gui/current/runtime
+Environment=COINMASTER_RUNTIME_HOST=127.0.0.1
+Environment=COINMASTER_RUNTIME_PORT=18182
+Environment=COINMASTER_RUNTIME_DIST=/srv/coinmaster-native-gui/current/web
+Environment=COINMASTER_RUNTIME_CONTROL_DB=/var/lib/coinmaster-native-gui/control.sqlite
+Environment=COINMASTER_RESEARCH_DATA_ROOT=/var/lib/coinmaster-native-gui/data
+Environment=COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183
+Environment=COINMASTER_RESEARCH_MAX_WORKERS=1
+Environment=PYTHONPATH=/srv/coinmaster-native-gui/current/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+UnsetEnvironment=COINMASTER_PAPER_CONTROL_TOKEN COINMASTER_PAPER_DB HYPERLIQUID_PRIVATE_KEY HYPERLIQUID_TESTNET_PK BYBIT_API_KEY BYBIT_API_SECRET COINMASTER_LIVE_ENABLED
+ExecStart=/srv/coinmaster-native-gui/current/runtime/.venv/bin/uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18182
+Restart=on-failure
+NoNewPrivileges=true
+UMask=0077
+StateDirectory=coinmaster-native-gui
+StateDirectoryMode=0700
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/srv/coinmaster-native-gui
+ReadWritePaths=/var/lib/coinmaster-native-gui
+
+[Install]
+WantedBy=multi-user.target

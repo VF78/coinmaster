@@ -76,6 +76,12 @@ def test_hl_stageg_controls_are_authenticated_instance_bound_and_fail_closed(tmp
     assert ready.promotion.blocker == "SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"
 
 
+def test_isolated_gui_has_no_paper_command_route_without_relay_token(tmp_path) -> None:
+    app = create_runtime_app(database=str(tmp_path / "missing.sqlite"), control_database=str(tmp_path / "control.sqlite"), token="operator", worker_token="", worker_url="http://127.0.0.1:9")
+    assert "/api/v1/runtime/commands/{command}" not in app.openapi()["paths"]
+    assert all(getattr(route, "path", "") != "/api/v1/runtime/commands/{command}" for route in app.routes)
+
+
 def test_hl_stageg_strategy_is_sealed_source_identity_with_unknown_account_facts() -> None:
     root = Path(__file__).resolve().parents[1]
     body = HlStagegStrategyReader(root).strategy()

@@ -452,11 +452,11 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     @app.get("/api/v1/instances/hl-stageg-testnet/controls", response_model=HlStagegControls, dependencies=[Depends(auth)])
     def hl_stageg_control_capabilities() -> HlStagegControls:
         return hl_stageg_controls(hl_reader.runtime())
-    @app.post("/api/v1/runtime/commands/{command}", response_model=RuntimeCommandResponse, dependencies=[Depends(auth)])
-    def command(command: Literal["pause-new-entries", "resume-new-entries", "flatten-paper"], idempotency_key: str = Header(alias="Idempotency-Key")) -> RuntimeCommandResponse:
-        if not idempotency_key: raise HTTPException(422, "Idempotency-Key is required")
-        if not relay_token: raise HTTPException(503, "paper worker command channel unavailable")
-        return reader.command(command, idempotency_key, relay_token)
+    if relay_token:
+        @app.post("/api/v1/runtime/commands/{command}", response_model=RuntimeCommandResponse, dependencies=[Depends(auth)])
+        def command(command: Literal["pause-new-entries", "resume-new-entries", "flatten-paper"], idempotency_key: str = Header(alias="Idempotency-Key")) -> RuntimeCommandResponse:
+            if not idempotency_key: raise HTTPException(422, "Idempotency-Key is required")
+            return reader.command(command, idempotency_key, relay_token)
     dist = Path(os.getenv("COINMASTER_RUNTIME_DIST", Path(__file__).resolve().parents[3] / "coinmaster/dist"))
     if dist.is_dir():
         app.mount("/assets", StaticFiles(directory=dist / "assets"), name="assets")
