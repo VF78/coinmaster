@@ -21,7 +21,7 @@ from typing import Any, Callable
 
 from nautilus_trader.adapters.bybit import BybitLiveDataClientFactory
 from nautilus_trader.adapters.bybit.config import BybitDataClientConfig
-from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory
+from nautilus_trader.adapters.hyperliquid import HyperliquidAllDexsAssetCtxs, HyperliquidLiveDataClientFactory
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.adapters.sandbox.execution import SandboxExecutionClient
@@ -31,7 +31,7 @@ from nautilus_trader.common import Environment
 from nautilus_trader.config import InstrumentProviderConfig, LoggingConfig, StrategyConfig
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
-from nautilus_trader.model.data import BarSpecification, BarType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
+from nautilus_trader.model.data import BarSpecification, BarType, CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
 from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType
 from nautilus_trader.model.identifiers import ClientId, InstrumentId, Venue
 from nautilus_trader.trading.strategy import Strategy
@@ -50,13 +50,8 @@ EXECUTION_FACTORY_ALLOWLIST = (SandboxLiveExecClientFactory,)
 MAX_DATA_AGE_NS = 120_000_000_000
 # Bybit's captured public manifest specifies the BTCUSDT/SOLUSDT linear
 # funding cadence as eight hours.  This is only a bounded fallback when the
-# live update lacks the venue-provided next settlement timestamp; it is never
-# applied to Hyperliquid, whose cadence must come from its own update.
+# live update lacks the venue-provided next settlement timestamp.
 BYBIT_FUNDING_INTERVAL_NS = 8 * 60 * 60 * 1_000_000_000
-# Hyperliquid's official funding documentation specifies hourly payments. Its
-# adapter currently exposes no next settlement timestamp, so this is a
-# venue-documented scheduling window, not a guessed transport cadence.
-HYPERLIQUID_FUNDING_INTERVAL_NS = 60 * 60 * 1_000_000_000
 WARMUP_DAYS = 730
 DAY_NS = 86_400_000_000_000
 # A completed UTC daily bar may arrive after its session closes, but an older
@@ -255,10 +250,27 @@ class FeedBook:
 
     def funding_rate(self, update: FundingRateUpdate) -> None:
         with self._lock:
-            self.funding[str(update.instrument_id)] = (str(update.rate), update.ts_init, update.next_funding_ns)
-            history = self.funding_history.setdefault(str(update.instrument_id), [])
+            key = str(update.instrument_id)
+            current = self.funding.get(key)
+            if current is not None and update.ts_init < current[1]:
+                return
+            self.funding[key] = (str(update.rate), update.ts_init, update.next_funding_ns)
+            history = self.funding_history.setdefault(key, [])
             history.append((Decimal(update.rate), update.ts_event, update.next_funding_ns))
             del history[:-32]
+
+    def hyperliquid_context(self, context: HyperliquidAllDexsAssetCtxs) -> None:
+        """Record only mapped, actual public funding observations from each venue frame."""
+        expected = {str(instrument_id) for instrument_id in self.ids if instrument_id.venue == Venue("HYPERLIQUID")}
+        with self._lock:
+            for entry in context.entries:
+                key = str(entry.instrument_id)
+                if key not in expected or not entry.funding_rate.is_finite():
+                    continue
+                current = self.funding.get(key)
+                if current is not None and context.ts_init < current[1]:
+                    continue
+                self.funding[key] = (str(entry.funding_rate), context.ts_init, None)
 
     def due_funding(self, now_ns: int) -> tuple[dict[str, Any], ...]:
         """Normalize stable Bybit settlement IDs with only causal live marks."""
@@ -291,19 +303,9 @@ class FeedBook:
 
     @staticmethod
     def _funding_current(instrument_id: InstrumentId, received_ns: int, next_funding_ns: int | None, now_ns: int) -> bool:
-        """Keep a rate current through its venue-defined settlement window.
-
-        Quotes and marks are executable/marking inputs and stay on the short
-        transport TTL. Funding is a scheduled observation, so a 120-second
-        quote TTL is not a valid freshness rule for it. Missing scheduling
-        metadata remains fail-closed except for the verified Bybit 8h cadence.
-        """
+        """Require a recent direct Hyperliquid observation or Bybit schedule."""
         if instrument_id.venue == Venue("HYPERLIQUID"):
-            # Hyperliquid's subscribed active-asset-context update exposes no
-            # next settlement timestamp. Its official venue rule is hourly
-            # funding, so accept this rate through that documented window;
-            # after it (plus transport grace) a missing update is stale.
-            return now_ns <= received_ns + HYPERLIQUID_FUNDING_INTERVAL_NS + MAX_DATA_AGE_NS
+            return 0 <= now_ns - received_ns <= MAX_DATA_AGE_NS
         deadline = next_funding_ns
         if deadline is None and instrument_id.venue == Venue("BYBIT"):
             deadline = received_ns + BYBIT_FUNDING_INTERVAL_NS
@@ -320,7 +322,9 @@ class FeedBook:
                 quote_mark_ready = bool(mark and quote) and all(
                     now_ns - item[1] <= MAX_DATA_AGE_NS for item in (mark, quote)
                 )
-                funding_ready = funding is not None and self._funding_current(instrument_id, funding[1], funding[2], now_ns)
+                funding_ready = funding is not None and self._funding_current(
+                    instrument_id, funding[1], funding[2], now_ns,
+                )
                 result[key] = {
                     "mark": mark[0] if mark else None,
                     "mark_age_ns": now_ns - mark[1] if mark else None,
@@ -342,10 +346,21 @@ class FeedObserverConfig(StrategyConfig, frozen=True):
 class FeedObserver(Strategy):
     """Subscribes to native public feeds and observes native event callbacks."""
     def on_start(self) -> None:
+        hyperliquid_clients: set[ClientId] = set()
         for instrument_id, client_id in zip(self.config.instrument_ids, self.config.client_ids, strict=True):
             self.subscribe_quote_ticks(instrument_id, client_id=client_id)
             self.subscribe_mark_prices(instrument_id, client_id=client_id)
             self.subscribe_funding_rates(instrument_id, client_id=client_id)
+            if instrument_id.venue == Venue("HYPERLIQUID"):
+                hyperliquid_clients.add(client_id)
+        if len(hyperliquid_clients) > 1:
+            raise RuntimeError("HYPERLIQUID_AGGREGATE_REQUIRES_ONE_DATA_CLIENT")
+        for client_id in hyperliquid_clients:
+            self.subscribe_data(DataType(HyperliquidAllDexsAssetCtxs), client_id=client_id)
+
+    def on_data(self, data: CustomData) -> None:
+        if isinstance(data.data, HyperliquidAllDexsAssetCtxs):
+            self.config.feed.hyperliquid_context(data.data)
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         self.config.feed.quote(tick)

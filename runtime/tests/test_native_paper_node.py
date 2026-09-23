@@ -10,7 +10,6 @@ from nautilus_trader.adapters.sandbox.factory import SandboxLiveExecClientFactor
 from coinmaster.ops.native_paper_node import (
     EXECUTION_FACTORY_ALLOWLIST,
     BYBIT_FUNDING_INTERVAL_NS,
-    HYPERLIQUID_FUNDING_INTERVAL_NS,
     FeedBook,
     MAX_DATA_AGE_NS,
     MAX_WARMUP_STALENESS_NS,
@@ -86,19 +85,62 @@ def test_scheduled_bybit_funding_stays_ready_between_updates_but_expires_after_s
         assert book.status(now)[str(BYBIT_IDS[0])]["state"] == expected
 
 
-def test_hyperliquid_funding_without_next_timestamp_uses_official_hourly_window_then_expires() -> None:
-    from nautilus_trader.model.data import FundingRateUpdate, MarkPriceUpdate, QuoteTick
+def test_hyperliquid_aggregate_frames_refresh_identical_rates_but_missing_entries_expire() -> None:
+    from nautilus_trader.adapters.hyperliquid import HyperliquidAllDexsAssetCtxs
+    from nautilus_trader.adapters.hyperliquid.data import HyperliquidDexAssetCtx
+    from nautilus_trader.model.data import CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
     from nautilus_trader.model.identifiers import InstrumentId
     from nautilus_trader.model.objects import Price, Quantity
+    from types import SimpleNamespace
+    from coinmaster.ops.native_paper_node import FeedObserver
 
-    instrument_id = InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID")
-    book = FeedBook(ids=(instrument_id,))
-    book.funding_rate(FundingRateUpdate(instrument_id, Decimal("0.0001"), 0, 0))
-    for now in (HYPERLIQUID_FUNDING_INTERVAL_NS, HYPERLIQUID_FUNDING_INTERVAL_NS + MAX_DATA_AGE_NS + 1):
-        book.quote(QuoteTick(instrument_id, Price.from_str("100.0"), Price.from_str("100.1"), Quantity.from_str("1.0"), Quantity.from_str("1.0"), now, now))
-        book.mark(MarkPriceUpdate(instrument_id, Price.from_str("100.0"), now, now))
-        expected = "READY" if now == HYPERLIQUID_FUNDING_INTERVAL_NS else "DATA_STALE"
-        assert book.status(now)[str(instrument_id)]["state"] == expected
+    btc = InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID")
+    sol = InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID")
+    other = InstrumentId.from_str("ETH-USD-PERP.HYPERLIQUID")
+    book = FeedBook(ids=(btc, sol))
+
+    def entry(instrument_id: InstrumentId, rate: Decimal) -> HyperliquidDexAssetCtx:
+        price = Price.from_str("100.0")
+        return HyperliquidDexAssetCtx(
+            dex="", instrument_id=instrument_id, mark_price=price, oracle_price=price,
+            prev_day_price=price, mid_price=None, impact_prices=None, funding_rate=rate,
+            open_interest=Decimal("1"), premium=None, day_ntl_volume=Decimal("1"),
+            day_base_volume=Decimal("1"),
+        )
+
+    def frame(ts: int, entries: list[HyperliquidDexAssetCtx]) -> None:
+        payload = HyperliquidAllDexsAssetCtxs(entries, ts, ts)
+        data = CustomData(DataType(HyperliquidAllDexsAssetCtxs), payload)
+        FeedObserver.on_data(SimpleNamespace(config=SimpleNamespace(feed=book)), data)
+
+    def fresh_prices(ts: int) -> None:
+        for instrument_id in (btc, sol):
+            book.quote(QuoteTick(instrument_id, Price.from_str("100.0"), Price.from_str("100.1"), Quantity.from_str("1.0"), Quantity.from_str("1.0"), ts, ts))
+            book.mark(MarkPriceUpdate(instrument_id, Price.from_str("100.0"), ts, ts))
+
+    rate = Decimal("0.0000125")
+    frame(1, [entry(btc, rate), entry(sol, rate)])
+    for ts in (3_600_000_000_001, 7_200_000_000_001):
+        frame(ts, [entry(btc, rate), entry(sol, rate)])
+        fresh_prices(ts)
+        assert all(feed["state"] == "READY" and feed["funding_age_ns"] == 0 for feed in book.status(ts).values())
+
+    stale_at = ts + MAX_DATA_AGE_NS + 1
+    frame(stale_at, [entry(other, rate)])
+    fresh_prices(stale_at)
+    assert all(feed["state"] == "DATA_STALE" for feed in book.status(stale_at).values())
+    frame(stale_at + 1, [entry(btc, rate)])
+    fresh_prices(stale_at + 1)
+    status = book.status(stale_at + 1)
+    assert status[str(btc)]["state"] == "READY"
+    assert status[str(sol)]["state"] == "DATA_STALE"
+
+    # An older native callback must not overwrite the newer aggregate value.
+    book.funding_rate(FundingRateUpdate(btc, Decimal("0.1"), 2, 2))
+    assert book.status(stale_at + 1)[str(btc)]["funding_rate"] == str(rate)
+
+    frame(stale_at + 2, [entry(sol, Decimal("NaN"))])
+    assert book.status(stale_at + 2)[str(sol)]["state"] == "DATA_STALE"
 
 
 def test_verified_warmup_hydrates_causal_seed_and_default_is_corrected_v0() -> None:
