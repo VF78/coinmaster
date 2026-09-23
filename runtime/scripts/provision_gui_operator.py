@@ -8,6 +8,7 @@ in the repository.
 from __future__ import annotations
 
 import argparse
+import ctypes
 import re
 import secrets
 import shlex
@@ -45,21 +46,44 @@ print('GUI_OPERATOR_ENV_READY')
 '''
 
 
+def store_keychain_password(password: str) -> None:
+    """Store a new secret without exposing it in process arguments or output."""
+    security = ctypes.CDLL("/System/Library/Frameworks/Security.framework/Security")
+    security.SecKeychainAddGenericPassword.argtypes = [
+        ctypes.c_void_p, ctypes.c_uint32, ctypes.c_char_p,
+        ctypes.c_uint32, ctypes.c_char_p, ctypes.c_uint32,
+        ctypes.c_char_p, ctypes.c_void_p,
+    ]
+    security.SecKeychainAddGenericPassword.restype = ctypes.c_int32
+    service, account, secret = SERVICE.encode(), b"operator", password.encode()
+    status = security.SecKeychainAddGenericPassword(
+        None, len(service), service, len(account), account,
+        len(secret), secret, None,
+    )
+    if status != 0:
+        raise SystemExit(f"Keychain rejected operator credential creation ({status}); VPS unchanged")
+
+
+def keychain_password() -> str:
+    found = subprocess.run(
+        ["security", "find-generic-password", "-a", "operator", "-s", SERVICE, "-w"],
+        capture_output=True, text=True, check=False,
+    )
+    return found.stdout.rstrip("\n") if found.returncode == 0 else ""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host", required=True, help="verified root@host SSH target")
     args = parser.parse_args()
     if not re.fullmatch(r"root@[A-Za-z0-9.:-]+", args.host):
         parser.error("host must be a verified root@host target")
-    find = subprocess.run(["security", "find-generic-password", "-a", "operator", "-s", SERVICE, "-w"], capture_output=True, text=True, check=False)
-    if find.returncode == 0:
-        password = find.stdout.rstrip("\n")
-    else:
+    password = keychain_password()
+    if not password:
         password = secrets.token_urlsafe(36)
-        # With -w as the final option, security reads the value from stdin.
-        stored = subprocess.run(["security", "add-generic-password", "-a", "operator", "-s", SERVICE, "-w"], input=password + "\n", capture_output=True, text=True, check=False)
-        if stored.returncode != 0:
-            raise SystemExit("Keychain rejected operator credential creation; VPS unchanged")
+        store_keychain_password(password)
+        if keychain_password() != password:
+            raise SystemExit("Keychain credential verification failed; VPS unchanged")
     if len(password) < 32:
         raise SystemExit("Keychain operator credential is unexpectedly short")
     verifier = password_hash(password)
