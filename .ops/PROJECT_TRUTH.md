@@ -58,7 +58,7 @@ Issue #94 D0 is implemented locally: `runtime/configs/stage-g-v1.json` pins the 
 ## Core invariants
 
 - One active implementation task at a time.
-- Default model for all Coinmaster tasks: `openai-codex/gpt-5.5`.
+- Route new CoinMaster tasks by `.ops/MODEL_ROUTING.md`; the current user-approved GPT-6 routing supersedes the older blanket `openai-codex/gpt-5.5` default.
 - Non-trivial development uses subagent/coding-agent unless the change is trivial or Vladimir requests otherwise.
 - GitHub Project status and `.ops/ACTIVE_TASK.md` must stay current.
 - No secrets in repo, truth files, issue bodies, or chat.

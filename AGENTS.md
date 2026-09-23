@@ -11,5 +11,5 @@ Rules:
 - Write important state to repo-backed docs, not only chat.
 - GitHub Project #2 is backlog/status truth.
 - Develop only in `/root/.openclaw/workspace/coinmaster/coinmaster`; never edit `/opt/coinmaster` manually.
-- Default model for Coinmaster work: `openai-codex/gpt-5.5`.
+- Route models and reasoning effort for new CoinMaster work by `.ops/MODEL_ROUTING.md`.
 - Before reset, follow `.ops/RESET_PREP_PROTOCOL.md`.
