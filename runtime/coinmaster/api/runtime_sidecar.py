@@ -118,6 +118,71 @@ class RuntimeCommandResponse(RuntimeSchema):
     mode: Literal["paper"]
 
 
+# This contract is intentionally independent from RuntimeState.  The latter
+# is the older coinmaster-paper projection and must never be relabelled as
+# this isolated Hyperliquid/Sandbox instance.
+class HlStagegHashes(RuntimeSchema):
+    candidate_sha256: str
+    strategy_sha256: str
+    execution_policy_sha256: str
+
+
+class HlStagegWarmup(RuntimeSchema):
+    state: str
+    rows: int | None = None
+
+
+class HlStagegAccount(RuntimeSchema):
+    native_cash: str = UNKNOWN
+    equity: str = UNKNOWN
+    im: str = UNKNOWN
+    mm: str = UNKNOWN
+    free_margin: str = UNKNOWN
+
+
+class HlStagegEvent(RuntimeSchema):
+    cursor: int
+    event_id: str
+    kind: str
+    provenance: Literal["SANDBOX"] = "SANDBOX"
+
+
+class HlStagegPosition(RuntimeSchema):
+    instrument_id: str
+    signed_quantity: str
+    provenance: Literal["SANDBOX"] = "SANDBOX"
+
+
+class HlStagegOrder(RuntimeSchema):
+    client_order_id: str
+    instrument_id: str | None = None
+    provenance: Literal["SANDBOX"] = "SANDBOX"
+
+
+class HlStagegProjection(RuntimeSchema):
+    version: Literal["hl-stageg-projection-v1"]
+    instance_id: Literal["hl-stageg-testnet"]
+    projection_state: Literal["READY", "UNAVAILABLE", "INVALID"]
+    observed_at_ns: int | None = None
+    mode: Literal["sandbox"]
+    environment: Literal["mainnet-public"]
+    live_order_capability: Literal[False] = False
+    process_state: str
+    reconciliation: str
+    hashes: HlStagegHashes
+    warmup: HlStagegWarmup
+    gates: dict[str, str | bool]
+    account: HlStagegAccount
+    funding_state: str
+    feeds: dict[str, RuntimeFeed]
+    positions: list[HlStagegPosition]
+    orders: list[HlStagegOrder]
+    events: list[HlStagegEvent]
+    event_cursor: int
+    provenance: Literal["SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION"]
+    warnings: list[str]
+
+
 def _worker_health(url: str) -> dict[str, Any]:
     try:
         with urllib.request.urlopen(f"{url.rstrip('/')}/health", timeout=3) as response:
@@ -176,10 +241,45 @@ class RuntimeReader:
             raise HTTPException(503, "paper worker command channel unavailable") from error
 
 
-def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None) -> FastAPI:
+class HlStagegProjectionReader:
+    """Read only the worker-published HL projection, never a paper journal."""
+    def __init__(self, path: str) -> None:
+        self.path = Path(path)
+
+    @staticmethod
+    def unavailable(state: Literal["UNAVAILABLE", "INVALID"], warning: str) -> HlStagegProjection:
+        return HlStagegProjection.model_validate({
+            "version": "hl-stageg-projection-v1", "instance_id": "hl-stageg-testnet",
+            "projection_state": state, "mode": "sandbox", "environment": "mainnet-public",
+            "live_order_capability": False, "process_state": "WORKER_PROJECTION_UNAVAILABLE",
+            "reconciliation": UNKNOWN,
+            "hashes": {"candidate_sha256": UNKNOWN, "strategy_sha256": UNKNOWN, "execution_policy_sha256": UNKNOWN},
+            "warmup": {"state": UNKNOWN}, "gates": {}, "account": {},
+            "funding_state": "UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
+            "feeds": {}, "positions": [], "orders": [], "events": [], "event_cursor": 0,
+            "provenance": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION", "warnings": [warning],
+        })
+
+    def runtime(self) -> HlStagegProjection:
+        try:
+            payload = json.loads(self.path.read_text())
+            # The worker fixes identity and capability too, but validate them
+            # again at the API boundary to fail closed on a swapped file.
+            projection = HlStagegProjection.model_validate(payload)
+            if projection.projection_state != "READY" or projection.live_order_capability is not False:
+                return self.unavailable("INVALID", "INVALID_HL_STAGEG_PROJECTION")
+            return projection
+        except FileNotFoundError:
+            return self.unavailable("UNAVAILABLE", "HL_STAGEG_PROJECTION_UNAVAILABLE")
+        except (OSError, ValueError, TypeError):
+            return self.unavailable("INVALID", "INVALID_HL_STAGEG_PROJECTION")
+
+
+def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_projection_path: str | None = None) -> FastAPI:
     expected = token if token is not None else os.getenv("COINMASTER_RUNTIME_API_TOKEN")
     relay_token = worker_token if worker_token is not None else os.getenv("COINMASTER_PAPER_CONTROL_TOKEN")
     reader = RuntimeReader(database or os.getenv("COINMASTER_PAPER_DB", "/var/lib/coinmaster-paper/paper.sqlite"), worker_url or os.getenv("COINMASTER_PAPER_WORKER_URL", "http://127.0.0.1:18181"))
+    hl_reader = HlStagegProjectionReader(hl_stageg_projection_path or os.getenv("COINMASTER_HL_STAGEG_PROJECTION_PATH", "/run/coinmaster/hl-stageg-testnet-projection.json"))
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     def auth(authorization: str | None = Header(default=None)) -> None:
         if not expected or authorization != f"Bearer {expected}": raise HTTPException(401, "runtime token required")
@@ -203,6 +303,9 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     def runtime() -> RuntimeState: return reader.runtime()
     @app.get("/api/v1/runtime/events", response_model=RuntimeEventsResponse, dependencies=[Depends(auth)])
     def events(cursor: int = Query(0, ge=0)) -> RuntimeEventsResponse: return reader.events(cursor)
+    @app.get("/api/v1/instances/hl-stageg-testnet", response_model=HlStagegProjection, dependencies=[Depends(auth)])
+    def hl_stageg_runtime() -> HlStagegProjection:
+        return hl_reader.runtime()
     @app.post("/api/v1/runtime/commands/{command}", response_model=RuntimeCommandResponse, dependencies=[Depends(auth)])
     def command(command: Literal["pause-new-entries", "resume-new-entries", "flatten-paper"], idempotency_key: str = Header(alias="Idempotency-Key")) -> RuntimeCommandResponse:
         if not idempotency_key: raise HTTPException(422, "Idempotency-Key is required")

@@ -6,9 +6,7 @@ export type StrategyConfiguration = runtimeComponents['schemas']['ConfigurationR
 export type Run = runtimeComponents['schemas']['RunRecord'];
 export type ResearchCatalogEntry = runtimeComponents['schemas']['ResearchCatalogEntry'];
 export type ResearchCatalogDetail = runtimeComponents['schemas']['ResearchCatalogDetail'];
-export type RuntimeState = runtimeComponents['schemas']['RuntimeState'];
-export type RuntimeEventsResponse = runtimeComponents['schemas']['RuntimeEventsResponse'];
-export type RuntimeCommandResponse = runtimeComponents['schemas']['RuntimeCommandResponse'];
+export type HlStagegProjection = runtimeComponents['schemas']['HlStagegProjection'];
 export interface Preflight { requested: Record<string, string>; allowed: boolean; im: string | null; mm: string | null; reasons: string[]; cap_label?: string }
 // Local operator supplies this ephemeral value; no API secret is bundled into the UI.
 export const setApiToken = (value: string) => window.localStorage.setItem('coinmaster-api-token', value);
@@ -26,6 +24,7 @@ export const getResearchCatalogDetail = (id: string) => request<ResearchCatalogD
 export const getConfigurations = () => request<StrategyConfiguration[]>('/configurations');
 export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper' | 'research') => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind }) });
 export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponent(id)}/cancel`, { method: 'POST' });
-export const getRuntime = () => request<RuntimeState>('/runtime');
-export const runtimeCommand = (command: 'pause-new-entries' | 'resume-new-entries' | 'flatten-paper') => request<RuntimeCommandResponse>(`/runtime/commands/${command}`, { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() } });
+// Never substitute /runtime here: that route is intentionally the separate
+// coinmaster-paper worker and has a command relay.
+export const getHlStagegProjection = () => request<HlStagegProjection>('/instances/hl-stageg-testnet');
 export const getPreflight = (config: StrategyConfig, beta: string | null, leverage: string | null) => request<Preflight>('/preflight', { method: 'POST', body: JSON.stringify({ venue: config.venue ?? 'bybit', active_usdt: config.initial_total_usdt, btc_notional: (Number(config.initial_total_usdt) * config.btc_notional_multiplier).toFixed(2), beta, selected_leverage: leverage, sol_multipliers: config.sol_size_multipliers_H }) });

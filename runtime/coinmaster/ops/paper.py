@@ -240,4 +240,11 @@ class PaperRuntime:
         return [{"cursor": row[0], "event_id": row[1], "kind": row[2]} for row in self.db.execute("SELECT rowid, event_id, kind FROM paper_events WHERE rowid > ? ORDER BY rowid LIMIT ?", (cursor, limit))]
 
     @_journal_locked
+    def projection_snapshot(self) -> tuple[list[dict], list[dict]]:
+        """Bounded state for a worker-owned, read-only status projection."""
+        row = self.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()
+        snapshot = json.loads(row[0]) if row else {}
+        return snapshot.get("positions", []), snapshot.get("orders", [])
+
+    @_journal_locked
     def close(self) -> None: self.db.close()

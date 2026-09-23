@@ -53,6 +53,326 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "HlStagegAccount": {
+        "additionalProperties": false,
+        "properties": {
+          "equity": {
+            "default": "UNKNOWN",
+            "title": "Equity",
+            "type": "string"
+          },
+          "free_margin": {
+            "default": "UNKNOWN",
+            "title": "Free Margin",
+            "type": "string"
+          },
+          "im": {
+            "default": "UNKNOWN",
+            "title": "Im",
+            "type": "string"
+          },
+          "mm": {
+            "default": "UNKNOWN",
+            "title": "Mm",
+            "type": "string"
+          },
+          "native_cash": {
+            "default": "UNKNOWN",
+            "title": "Native Cash",
+            "type": "string"
+          }
+        },
+        "title": "HlStagegAccount",
+        "type": "object"
+      },
+      "HlStagegEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "cursor": {
+            "title": "Cursor",
+            "type": "integer"
+          },
+          "event_id": {
+            "title": "Event Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "provenance": {
+            "const": "SANDBOX",
+            "default": "SANDBOX",
+            "title": "Provenance",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cursor",
+          "event_id",
+          "kind"
+        ],
+        "title": "HlStagegEvent",
+        "type": "object"
+      },
+      "HlStagegHashes": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_sha256": {
+            "title": "Candidate Sha256",
+            "type": "string"
+          },
+          "execution_policy_sha256": {
+            "title": "Execution Policy Sha256",
+            "type": "string"
+          },
+          "strategy_sha256": {
+            "title": "Strategy Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "candidate_sha256",
+          "strategy_sha256",
+          "execution_policy_sha256"
+        ],
+        "title": "HlStagegHashes",
+        "type": "object"
+      },
+      "HlStagegOrder": {
+        "additionalProperties": false,
+        "properties": {
+          "client_order_id": {
+            "title": "Client Order Id",
+            "type": "string"
+          },
+          "instrument_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instrument Id"
+          },
+          "provenance": {
+            "const": "SANDBOX",
+            "default": "SANDBOX",
+            "title": "Provenance",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_order_id"
+        ],
+        "title": "HlStagegOrder",
+        "type": "object"
+      },
+      "HlStagegPosition": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument_id": {
+            "title": "Instrument Id",
+            "type": "string"
+          },
+          "provenance": {
+            "const": "SANDBOX",
+            "default": "SANDBOX",
+            "title": "Provenance",
+            "type": "string"
+          },
+          "signed_quantity": {
+            "title": "Signed Quantity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument_id",
+          "signed_quantity"
+        ],
+        "title": "HlStagegPosition",
+        "type": "object"
+      },
+      "HlStagegProjection": {
+        "additionalProperties": false,
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/HlStagegAccount"
+          },
+          "environment": {
+            "const": "mainnet-public",
+            "title": "Environment",
+            "type": "string"
+          },
+          "event_cursor": {
+            "title": "Event Cursor",
+            "type": "integer"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/HlStagegEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "feeds": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RuntimeFeed"
+            },
+            "title": "Feeds",
+            "type": "object"
+          },
+          "funding_state": {
+            "title": "Funding State",
+            "type": "string"
+          },
+          "gates": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "title": "Gates",
+            "type": "object"
+          },
+          "hashes": {
+            "$ref": "#/components/schemas/HlStagegHashes"
+          },
+          "instance_id": {
+            "const": "hl-stageg-testnet",
+            "title": "Instance Id",
+            "type": "string"
+          },
+          "live_order_capability": {
+            "const": false,
+            "default": false,
+            "title": "Live Order Capability",
+            "type": "boolean"
+          },
+          "mode": {
+            "const": "sandbox",
+            "title": "Mode",
+            "type": "string"
+          },
+          "observed_at_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed At Ns"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/HlStagegOrder"
+            },
+            "title": "Orders",
+            "type": "array"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/HlStagegPosition"
+            },
+            "title": "Positions",
+            "type": "array"
+          },
+          "process_state": {
+            "title": "Process State",
+            "type": "string"
+          },
+          "projection_state": {
+            "enum": [
+              "READY",
+              "UNAVAILABLE",
+              "INVALID"
+            ],
+            "title": "Projection State",
+            "type": "string"
+          },
+          "provenance": {
+            "const": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION",
+            "title": "Provenance",
+            "type": "string"
+          },
+          "reconciliation": {
+            "title": "Reconciliation",
+            "type": "string"
+          },
+          "version": {
+            "const": "hl-stageg-projection-v1",
+            "title": "Version",
+            "type": "string"
+          },
+          "warmup": {
+            "$ref": "#/components/schemas/HlStagegWarmup"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "version",
+          "instance_id",
+          "projection_state",
+          "mode",
+          "environment",
+          "process_state",
+          "reconciliation",
+          "hashes",
+          "warmup",
+          "gates",
+          "account",
+          "funding_state",
+          "feeds",
+          "positions",
+          "orders",
+          "events",
+          "event_cursor",
+          "provenance",
+          "warnings"
+        ],
+        "title": "HlStagegProjection",
+        "type": "object"
+      },
+      "HlStagegWarmup": {
+        "additionalProperties": false,
+        "properties": {
+          "rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rows"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state"
+        ],
+        "title": "HlStagegWarmup",
+        "type": "object"
+      },
       "PreflightInput": {
         "properties": {
           "active_usdt": {
@@ -1597,6 +1917,52 @@
           }
         },
         "summary": "Health"
+      }
+    },
+    "/api/v1/instances/hl-stageg-testnet": {
+      "get": {
+        "operationId": "hl_stageg_runtime_api_v1_instances_hl_stageg_testnet_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegProjection"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Hl Stageg Runtime"
       }
     },
     "/api/v1/preflight": {

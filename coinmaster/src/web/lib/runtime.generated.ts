@@ -56,6 +56,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/instances/hl-stageg-testnet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Hl Stageg Runtime */
+        get: operations["hl_stageg_runtime_api_v1_instances_hl_stageg_testnet_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/preflight": {
         parameters: {
             query?: never;
@@ -266,6 +283,159 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HlStagegAccount */
+        HlStagegAccount: {
+            /**
+             * Equity
+             * @default UNKNOWN
+             */
+            equity: string;
+            /**
+             * Free Margin
+             * @default UNKNOWN
+             */
+            free_margin: string;
+            /**
+             * Im
+             * @default UNKNOWN
+             */
+            im: string;
+            /**
+             * Mm
+             * @default UNKNOWN
+             */
+            mm: string;
+            /**
+             * Native Cash
+             * @default UNKNOWN
+             */
+            native_cash: string;
+        };
+        /** HlStagegEvent */
+        HlStagegEvent: {
+            /** Cursor */
+            cursor: number;
+            /** Event Id */
+            event_id: string;
+            /** Kind */
+            kind: string;
+            /**
+             * Provenance
+             * @default SANDBOX
+             * @constant
+             */
+            provenance: "SANDBOX";
+        };
+        /** HlStagegHashes */
+        HlStagegHashes: {
+            /** Candidate Sha256 */
+            candidate_sha256: string;
+            /** Execution Policy Sha256 */
+            execution_policy_sha256: string;
+            /** Strategy Sha256 */
+            strategy_sha256: string;
+        };
+        /** HlStagegOrder */
+        HlStagegOrder: {
+            /** Client Order Id */
+            client_order_id: string;
+            /** Instrument Id */
+            instrument_id?: string | null;
+            /**
+             * Provenance
+             * @default SANDBOX
+             * @constant
+             */
+            provenance: "SANDBOX";
+        };
+        /** HlStagegPosition */
+        HlStagegPosition: {
+            /** Instrument Id */
+            instrument_id: string;
+            /**
+             * Provenance
+             * @default SANDBOX
+             * @constant
+             */
+            provenance: "SANDBOX";
+            /** Signed Quantity */
+            signed_quantity: string;
+        };
+        /** HlStagegProjection */
+        HlStagegProjection: {
+            account: components["schemas"]["HlStagegAccount"];
+            /**
+             * Environment
+             * @constant
+             */
+            environment: "mainnet-public";
+            /** Event Cursor */
+            event_cursor: number;
+            /** Events */
+            events: components["schemas"]["HlStagegEvent"][];
+            /** Feeds */
+            feeds: {
+                [key: string]: components["schemas"]["RuntimeFeed"];
+            };
+            /** Funding State */
+            funding_state: string;
+            /** Gates */
+            gates: {
+                [key: string]: string | boolean;
+            };
+            hashes: components["schemas"]["HlStagegHashes"];
+            /**
+             * Instance Id
+             * @constant
+             */
+            instance_id: "hl-stageg-testnet";
+            /**
+             * Live Order Capability
+             * @default false
+             * @constant
+             */
+            live_order_capability: false;
+            /**
+             * Mode
+             * @constant
+             */
+            mode: "sandbox";
+            /** Observed At Ns */
+            observed_at_ns?: number | null;
+            /** Orders */
+            orders: components["schemas"]["HlStagegOrder"][];
+            /** Positions */
+            positions: components["schemas"]["HlStagegPosition"][];
+            /** Process State */
+            process_state: string;
+            /**
+             * Projection State
+             * @enum {string}
+             */
+            projection_state: "READY" | "UNAVAILABLE" | "INVALID";
+            /**
+             * Provenance
+             * @constant
+             */
+            provenance: "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION";
+            /** Reconciliation */
+            reconciliation: string;
+            /**
+             * Version
+             * @constant
+             */
+            version: "hl-stageg-projection-v1";
+            warmup: components["schemas"]["HlStagegWarmup"];
+            /** Warnings */
+            warnings: string[];
+        };
+        /** HlStagegWarmup */
+        HlStagegWarmup: {
+            /** Rows */
+            rows?: number | null;
+            /** State */
+            state: string;
         };
         /** PreflightInput */
         PreflightInput: {
@@ -850,6 +1020,37 @@ export interface operations {
                     "application/json": {
                         [key: string]: string;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    hl_stageg_runtime_api_v1_instances_hl_stageg_testnet_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegProjection"];
                 };
             };
             /** @description Validation Error */
