@@ -12,6 +12,7 @@ Environment=COINMASTER_RUNTIME_HOST=127.0.0.1
 Environment=COINMASTER_RUNTIME_PORT=18182
 Environment=COINMASTER_RUNTIME_DIST=/srv/coinmaster-native-gui/current/web
 Environment=COINMASTER_RUNTIME_CONTROL_DB=/var/lib/coinmaster-native-gui/control.sqlite
+Environment=COINMASTER_CONTROL_DB=/var/lib/coinmaster-native-gui/legacy-control.sqlite
 Environment=COINMASTER_RESEARCH_DATA_ROOT=/var/lib/coinmaster-native-gui/data
 Environment=COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183
 Environment=COINMASTER_RESEARCH_MAX_WORKERS=1

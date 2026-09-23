@@ -132,7 +132,7 @@ if [[ "$ACTION" == stage ]]; then
   chown coinmaster-research:coinmaster-research "$SMOKE/control.sqlite"
   [[ -z "$(ss -ltn '( sport = :18184 )' | tail -n +2)" ]] || { echo 'smoke port is already occupied' >&2; exit 1; }
   (cd "$RELEASE.incoming/runtime" && runuser -u coinmaster-research -- env -i PATH=/usr/bin:/bin \
-    COINMASTER_RUNTIME_API_TOKEN="$TOKEN" COINMASTER_RUNTIME_CONTROL_DB="$SMOKE/control.sqlite" \
+    COINMASTER_RUNTIME_API_TOKEN="$TOKEN" COINMASTER_RUNTIME_CONTROL_DB="$SMOKE/control.sqlite" COINMASTER_CONTROL_DB="$SMOKE/legacy-control.sqlite" \
     COINMASTER_RESEARCH_DATA_ROOT="$SMOKE/data" COINMASTER_RUNTIME_DIST="$RELEASE.incoming/web" \
     COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183 COINMASTER_PAPER_DB="$SMOKE/no-paper.sqlite" \
     PYTHONPATH="$RELEASE.incoming/runtime" PYTHONDONTWRITEBYTECODE=1 GUI_SMOKE_PIDFILE="$SMOKE/uvicorn.pid" GUI_UVICORN="$RELEASE.incoming/runtime/.venv/bin/uvicorn" \
