@@ -29,11 +29,12 @@ The local layout check is read-only and does not start a node:
 
 `COINMASTER_LIVE_ENABLED` must be `false`, `COINMASTER_HL_TESTNET_ENABLED`
 must be `true`, and `COINMASTER_HL_TESTNET_ENVIRONMENT` must be `mainnet`.
-Any other value refuses startup. The unit registers only the public
-`FeedObserver` and no trading strategy, so no submit/cancel/reduce/forced-close
-path exists. Its only available execution client is local native Sandbox; it
-cannot query an account, sign, transfer, or place an exchange order. A local
-Sandbox cache is never exchange reconciliation.
+Any other value refuses startup. The unit registers the public `FeedObserver`
+and the sealed Stage-G `WaveOverlayStrategy` only after its warmup and approval
+gate pass. Its sole execution client is local native Sandbox; it cannot query
+an account, sign, transfer, or place an exchange order. A local Sandbox cache
+is never exchange reconciliation. This virtual process uses public HL MAINNET
+data; the historical `testnet` name is only its isolated service identity.
 
 ## Recovery rule
 
