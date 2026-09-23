@@ -31,7 +31,7 @@ from nautilus_trader.common import Environment
 from nautilus_trader.config import InstrumentProviderConfig, LoggingConfig, StrategyConfig
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
-from nautilus_trader.model.data import BarSpecification, BarType, CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
+from nautilus_trader.model.data import BarSpecification, BarType, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
 from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType
 from nautilus_trader.model.identifiers import ClientId, InstrumentId, Venue
 from nautilus_trader.trading.strategy import Strategy
@@ -52,6 +52,8 @@ MAX_DATA_AGE_NS = 120_000_000_000
 # funding cadence as eight hours.  This is only a bounded fallback when the
 # live update lacks the venue-provided next settlement timestamp.
 BYBIT_FUNDING_INTERVAL_NS = 8 * 60 * 60 * 1_000_000_000
+# Hyperliquid funds hourly; allow the existing transport grace after that window.
+HYPERLIQUID_FUNDING_INTERVAL_NS = 60 * 60 * 1_000_000_000
 WARMUP_DAYS = 730
 DAY_NS = 86_400_000_000_000
 # A completed UTC daily bar may arrive after its session closes, but an older
@@ -305,7 +307,7 @@ class FeedBook:
     def _funding_current(instrument_id: InstrumentId, received_ns: int, next_funding_ns: int | None, now_ns: int) -> bool:
         """Require a recent direct Hyperliquid observation or Bybit schedule."""
         if instrument_id.venue == Venue("HYPERLIQUID"):
-            return 0 <= now_ns - received_ns <= MAX_DATA_AGE_NS
+            return 0 <= now_ns - received_ns <= HYPERLIQUID_FUNDING_INTERVAL_NS + MAX_DATA_AGE_NS
         deadline = next_funding_ns
         if deadline is None and instrument_id.venue == Venue("BYBIT"):
             deadline = received_ns + BYBIT_FUNDING_INTERVAL_NS
@@ -358,9 +360,9 @@ class FeedObserver(Strategy):
         for client_id in hyperliquid_clients:
             self.subscribe_data(DataType(HyperliquidAllDexsAssetCtxs), client_id=client_id)
 
-    def on_data(self, data: CustomData) -> None:
-        if isinstance(data.data, HyperliquidAllDexsAssetCtxs):
-            self.config.feed.hyperliquid_context(data.data)
+    def on_data(self, data: HyperliquidAllDexsAssetCtxs) -> None:
+        if isinstance(data, HyperliquidAllDexsAssetCtxs):
+            self.config.feed.hyperliquid_context(data)
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         self.config.feed.quote(tick)

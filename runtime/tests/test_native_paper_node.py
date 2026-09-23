@@ -11,6 +11,7 @@ from coinmaster.ops.native_paper_node import (
     EXECUTION_FACTORY_ALLOWLIST,
     BYBIT_FUNDING_INTERVAL_NS,
     FeedBook,
+    HYPERLIQUID_FUNDING_INTERVAL_NS,
     MAX_DATA_AGE_NS,
     MAX_WARMUP_STALENESS_NS,
     _load_warmup,
@@ -88,7 +89,7 @@ def test_scheduled_bybit_funding_stays_ready_between_updates_but_expires_after_s
 def test_hyperliquid_aggregate_frames_refresh_identical_rates_but_missing_entries_expire() -> None:
     from nautilus_trader.adapters.hyperliquid import HyperliquidAllDexsAssetCtxs
     from nautilus_trader.adapters.hyperliquid.data import HyperliquidDexAssetCtx
-    from nautilus_trader.model.data import CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
+    from nautilus_trader.model.data import DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
     from nautilus_trader.model.identifiers import InstrumentId
     from nautilus_trader.model.objects import Price, Quantity
     from types import SimpleNamespace
@@ -110,13 +111,27 @@ def test_hyperliquid_aggregate_frames_refresh_identical_rates_but_missing_entrie
 
     def frame(ts: int, entries: list[HyperliquidDexAssetCtx]) -> None:
         payload = HyperliquidAllDexsAssetCtxs(entries, ts, ts)
-        data = CustomData(DataType(HyperliquidAllDexsAssetCtxs), payload)
-        FeedObserver.on_data(SimpleNamespace(config=SimpleNamespace(feed=book)), data)
+        FeedObserver.on_data(SimpleNamespace(config=SimpleNamespace(feed=book)), payload)
 
     def fresh_prices(ts: int) -> None:
         for instrument_id in (btc, sol):
             book.quote(QuoteTick(instrument_id, Price.from_str("100.0"), Price.from_str("100.1"), Quantity.from_str("1.0"), Quantity.from_str("1.0"), ts, ts))
             book.mark(MarkPriceUpdate(instrument_id, Price.from_str("100.0"), ts, ts))
+
+    # Nautilus 1.231 routes one aggregate subscription to the shared HL client.
+    from nautilus_trader.model.identifiers import ClientId
+    subscribed = []
+    fake = SimpleNamespace(
+        config=SimpleNamespace(instrument_ids=(btc, sol), client_ids=(ClientId("HL"), ClientId("HL"))),
+        subscribe_quote_ticks=lambda *a, **kw: None,
+        subscribe_mark_prices=lambda *a, **kw: None,
+        subscribe_funding_rates=lambda *a, **kw: None,
+        subscribe_data=lambda data_type, **kw: subscribed.append((data_type, kw)),
+    )
+    FeedObserver.on_start(fake)
+    assert len(subscribed) == 1
+    assert subscribed[0][0].type.__name__ == "HyperliquidAllDexsAssetCtxs"
+    assert subscribed[0][1]["client_id"] == ClientId("HL")
 
     rate = Decimal("0.0000125")
     frame(1, [entry(btc, rate), entry(sol, rate)])
@@ -125,7 +140,7 @@ def test_hyperliquid_aggregate_frames_refresh_identical_rates_but_missing_entrie
         fresh_prices(ts)
         assert all(feed["state"] == "READY" and feed["funding_age_ns"] == 0 for feed in book.status(ts).values())
 
-    stale_at = ts + MAX_DATA_AGE_NS + 1
+    stale_at = ts + HYPERLIQUID_FUNDING_INTERVAL_NS + MAX_DATA_AGE_NS + 1
     frame(stale_at, [entry(other, rate)])
     fresh_prices(stale_at)
     assert all(feed["state"] == "DATA_STALE" for feed in book.status(stale_at).values())
