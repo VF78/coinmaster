@@ -293,6 +293,7 @@
           "projection_state": {
             "enum": [
               "READY",
+              "STALE",
               "UNAVAILABLE",
               "INVALID"
             ],

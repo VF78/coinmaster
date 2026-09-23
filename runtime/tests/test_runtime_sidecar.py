@@ -1,10 +1,12 @@
 from decimal import Decimal
 
+import io
 import json
 from types import SimpleNamespace
+from urllib.error import URLError
 
 from coinmaster.api.runtime_sidecar import HlStagegProjectionReader, RuntimeReader, create_runtime_app
-from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker as HlStagegWorker
+from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker as HlStagegWorker, create_status_server
 from coinmaster.ops.paper import PaperRuntime
 
 
@@ -46,16 +48,12 @@ def test_runtime_sidecar_exposes_strict_schemas_and_spa_without_shadowing_api(tm
     assert response.path == dist / "index.html"
 
 
-def test_hl_stageg_projection_is_separate_from_paper_and_preserves_unknown_unposted(tmp_path) -> None:
-    projection_path = tmp_path / "hl-stageg-projection.json"
-    missing = HlStagegProjectionReader(str(projection_path)).runtime()
-    assert missing.projection_state == "UNAVAILABLE"
-    assert missing.account.native_cash == "UNKNOWN"
-    assert missing.funding_state == "UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT"
-
-    projection_path.write_text(json.dumps({
-        "version": "hl-stageg-projection-v1", "instance_id": "hl-stageg-testnet", "projection_state": "READY",
-        "observed_at_ns": 7, "mode": "sandbox", "environment": "mainnet-public", "live_order_capability": False,
+def _ready_hl_projection(*, observed_at_ns=None, instance_id="hl-stageg-testnet"):
+    import time
+    return {
+        "version": "hl-stageg-projection-v1", "instance_id": instance_id, "projection_state": "READY",
+        "observed_at_ns": time.time_ns() if observed_at_ns is None else observed_at_ns,
+        "mode": "sandbox", "environment": "mainnet-public", "live_order_capability": False,
         "process_state": "PUBLIC_FEEDS_READY", "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
         "hashes": {"candidate_sha256": "candidate", "strategy_sha256": "strategy", "execution_policy_sha256": "policy"},
         "warmup": {"state": "READY", "rows": 1482}, "gates": {"attachable": True}, "account": {},
@@ -64,36 +62,71 @@ def test_hl_stageg_projection_is_separate_from_paper_and_preserves_unknown_unpos
         "positions": [{"instrument_id": "BTC-USD-PERP.HYPERLIQUID", "signed_quantity": "0.01", "provenance": "SANDBOX"}],
         "orders": [], "events": [{"cursor": 3, "event_id": "sandbox-fill", "kind": "fill", "provenance": "SANDBOX"}], "event_cursor": 3,
         "provenance": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION", "warnings": [],
-    }))
-    body = HlStagegProjectionReader(str(projection_path)).runtime()
+    }
+
+
+def test_hl_stageg_projection_is_fresh_instance_bound_and_preserves_unknown_unposted(monkeypatch) -> None:
+    import coinmaster.api.runtime_sidecar as sidecar
+    response = json.dumps(_ready_hl_projection()).encode()
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *args, **kwargs: __import__("io").BytesIO(response))
+    body = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
     assert body.projection_state == "READY"
     assert body.positions[0].provenance == "SANDBOX"
     assert body.account.equity == "UNKNOWN"
 
-    # A paper-shaped or live-capable file is rejected instead of being mapped
-    # into this instance's response.
-    projection_path.write_text('{"mode":"paper","live_order_capability":true}')
-    rejected = HlStagegProjectionReader(str(projection_path)).runtime()
-    assert rejected.projection_state == "INVALID"
+    response = json.dumps(_ready_hl_projection(observed_at_ns=1)).encode()
+    stale = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
+    assert stale.projection_state == "STALE" and stale.warnings == ["HL_STAGEG_STATUS_STALE"]
+
+    response = json.dumps(_ready_hl_projection(instance_id="coinmaster-paper")).encode()
+    wrong_instance = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
+    assert wrong_instance.projection_state == "INVALID"
+
+    def disconnected(*_args, **_kwargs):
+        raise URLError("worker stopped")
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", disconnected)
+    dead = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
+    assert dead.projection_state == "UNAVAILABLE"
+    assert dead.account.native_cash == "UNKNOWN"
+    assert dead.funding_state == "UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT"
 
 
-def test_hl_worker_publishes_bounded_sandbox_projection_without_journal_path(tmp_path) -> None:
+def test_hl_worker_serves_bounded_projection_on_loopback_with_get_only(tmp_path, monkeypatch) -> None:
+    import coinmaster.ops.hyperliquid_testnet_worker as worker_module
     journal = tmp_path / "worker.sqlite"; runtime = PaperRuntime(journal, "hl-stageg-testnet", 100)
     runtime.acquire(); runtime.snapshot(ts_ns=1, positions=[{"instrument_id": "BTC", "signed_quantity": "0.01"}], orders=[], funding_event_ids=[])
     runtime.record_native_event("sandbox-fill", "fill")
     worker = HlStagegWorker.__new__(HlStagegWorker)
-    worker.projection_path = tmp_path / "handoff" / "status.json"
     worker.runtime = runtime
     worker.native = SimpleNamespace(gate=SimpleNamespace(
         candidate_hash="candidate", strategy_code_hash="strategy", execution_policy_hash="policy", attachable=True,
         approval_state="SEALED_APPROVAL_MATCH", margin_policy_state="READY", execution_policy_state="READY", capital_state="ASSUMPTION", funding_state="UNPOSTED",
-    ))
-    worker._publish_projection({
+    ), status=lambda: {
         "state": "PUBLIC_FEEDS_READY", "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
         "warmup": {"state": "READY", "rows": 1482}, "feeds": {}, "warnings": [],
-    })
-    raw = worker.projection_path.read_text()
-    body = HlStagegProjectionReader(str(worker.projection_path)).runtime()
-    assert body.projection_state == "READY" and body.positions[0].provenance == "SANDBOX"
-    assert str(journal) not in raw and "paper_snapshot" not in raw
+    }, node=SimpleNamespace(is_running=lambda: False), strategy=None)
+    projection = worker.projection()
+    assert projection["instance_id"] == "hl-stageg-testnet" and projection["observed_at_ns"] > 0
+    assert json.loads(runtime.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()[0])["ts_ns"] == 1
+    for index in range(105):
+        runtime.record_native_event(f"fill-{index}", "fill")
+    class ServerStub:
+        def __init__(self, address, handler):
+            self.server_address, self.handler = address, handler
+    monkeypatch.setattr(worker_module, "ThreadingHTTPServer", ServerStub)
+    server = create_status_server(worker, 18183)
+    assert server.server_address == ("127.0.0.1", 18183)
+    handler = server.handler.__new__(server.handler)
+    handler.path = "/status"; handler.wfile = io.BytesIO(); observed = []
+    handler.send_response = lambda code: observed.append(("status", code))
+    handler.send_header = lambda key, value: observed.append((key, value))
+    handler.end_headers = lambda: None
+    handler.send_error = lambda code: observed.append(("error", code))
+    handler.do_GET()
+    payload = json.loads(handler.wfile.getvalue())
+    assert payload["instance_id"] == "hl-stageg-testnet" and payload["positions"][0]["provenance"] == "SANDBOX"
+    assert payload["event_cursor"] == 106 and len(payload["events"]) == 100
+    assert payload["events"][0]["event_id"] == "fill-5"
+    handler.do_POST()
+    assert ("error", 405) in observed
     runtime.close()

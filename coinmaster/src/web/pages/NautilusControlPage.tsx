@@ -58,14 +58,17 @@ export function ResearchPage() {
 export function RuntimePage() {
   const [state, setState] = useState<HlStagegProjection | null>(null);
   const [message, setMessage] = useState('');
-  const load = () => void getHlStagegProjection().then(setState).catch((error: Error) => setMessage(error.message));
-  useEffect(load, []);
-  const toneForProjection = state?.projection_state === 'READY' ? 'success' : 'danger';
+  const load = () => void getHlStagegProjection().then((next) => { setState(next); setMessage(''); }).catch((error: Error) => { setState(null); setMessage(error.message); });
+  useEffect(() => { load(); const timer = window.setInterval(load, 5000); return () => window.clearInterval(timer); }, []);
+  const runtimeHealthy = state?.projection_state === 'READY' && state.process_state !== 'DATA_STALE/PAUSED' && state.process_state !== 'WORKER_DISCONNECTED';
+  const toneForProjection = runtimeHealthy ? 'success' : 'danger';
   const eventRows = (state?.events ?? []).map((event) => ({ ...event, id: `${event.cursor}:${event.event_id}` }));
   const positionRows = (state?.positions ?? []).map((position) => ({ ...position, id: position.instrument_id }));
   const orderRows = (state?.orders ?? []).map((order) => ({ ...order, id: order.client_order_id }));
+  const feedRows = Object.entries(state?.feeds ?? {}).map(([instrument_id, feed]) => ({ ...feed, instrument_id, id: instrument_id }));
+  const age = (value: number | null | undefined) => value === null || value === undefined ? 'UNKNOWN' : `${(value / 1_000_000_000).toFixed(1)}s`;
   return <main className="terminal-layout">
-    <Card title="HL Stage-G Sandbox runtime" actions={<Badge tone={toneForProjection}>{state?.projection_state ?? 'OFFLINE'}</Badge>}>
+    <Card title="HL Stage-G Sandbox runtime" actions={<Badge tone={toneForProjection}>{state ? `${state.projection_state} · ${state.process_state}` : 'OFFLINE'}</Badge>}>
       <p className="muted">Isolated instance: <code>hl-stageg-testnet</code> · public MAINNET data · local native Sandbox · read only. This is not <code>coinmaster-paper</code>.</p>
       <div className="stats-grid">
         <Stat label="Native cash" value={state?.account.native_cash ?? 'UNKNOWN'} />
@@ -78,7 +81,7 @@ export function RuntimePage() {
       <p className="muted">Warmup: {state?.warmup.state ?? 'UNKNOWN'} ({state?.warmup.rows ?? 'UNKNOWN'} rows) · funding: {state?.funding_state ?? 'UNPOSTED'}</p>
       <p className="muted">Money and PnL remain UNKNOWN unless verified by the native Sandbox projection. Future funding is UNPOSTED; it is not settled cash.</p>
     </Card>
-    <Card title="Public feed gates"><div className="table-wrap"><table><thead><tr><th>Feed</th><th>State</th><th>Mark</th><th>Funding</th></tr></thead><tbody>{Object.entries(state?.feeds ?? {}).map(([id, feed]) => <tr key={id}><td>{id}</td><td>{feed.state}</td><td>{feed.mark ?? 'UNKNOWN'}</td><td>{feed.funding_rate ?? 'UNKNOWN'}</td></tr>)}</tbody></table></div></Card>
+    <Card title="Public feed gates"><DataTable rows={feedRows} emptyText="No public feed observations." mobileTitle={(row) => row.instrument_id} columns={[{ key: 'instrument', header: 'Instrument', render: (row) => row.instrument_id }, { key: 'state', header: 'State', render: (row) => row.state }, { key: 'mark', header: 'Mark', render: (row) => row.mark ?? 'UNKNOWN' }, { key: 'mark-age', header: 'Mark age', render: (row) => age(row.mark_age_ns) }, { key: 'funding', header: 'Funding', render: (row) => row.funding_rate ?? 'UNKNOWN' }, { key: 'funding-age', header: 'Funding age', render: (row) => age(row.funding_age_ns) }]} /></Card>
     <Card title="Sandbox exposure"><DataTable rows={positionRows} emptyText="No projected Sandbox positions." mobileTitle={(row) => row.instrument_id} columns={[{ key: 'instrument', header: 'Instrument', render: (row) => row.instrument_id }, { key: 'quantity', header: 'Quantity', render: (row) => row.signed_quantity }, { key: 'provenance', header: 'Provenance', render: (row) => row.provenance }]} /><DataTable rows={orderRows} emptyText="No projected Sandbox orders." mobileTitle={(row) => row.client_order_id} columns={[{ key: 'order', header: 'Client order', render: (row) => row.client_order_id }, { key: 'instrument', header: 'Instrument', render: (row) => row.instrument_id ?? 'UNKNOWN' }, { key: 'provenance', header: 'Provenance', render: (row) => row.provenance }]} /></Card>
     <Card title="Sandbox event history"><DataTable rows={eventRows} emptyText="No projected Sandbox events." mobileTitle={(row) => `${row.kind} · ${row.event_id}`} columns={[{ key: 'cursor', header: 'Cursor', render: (row) => row.cursor }, { key: 'kind', header: 'Kind', render: (row) => row.kind }, { key: 'event', header: 'Event', render: (row) => row.event_id }, { key: 'provenance', header: 'Provenance', render: (row) => row.provenance }]} /><p className="muted">Event metadata is an audit cursor, not a claimed exchange fill or PnL history.</p></Card>
     <p className="muted">{state?.warnings.join(' · ') || message}</p>

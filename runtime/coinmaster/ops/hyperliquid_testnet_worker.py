@@ -6,7 +6,11 @@ import logging
 import os
 import signal
 import time
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from threading import Thread
+from typing import Any
+from urllib.parse import urlsplit
 
 from coinmaster.ops.hyperliquid_testnet import HyperliquidTestnetNode, require_testnet_sandbox
 from coinmaster.ops.paper import PaperRuntime
@@ -24,10 +28,6 @@ class TestnetWorker:
         if not path:
             raise ConfigurationError("MISSING_HL_TESTNET_INSTANCE_CONFIG")
         self.instance = load_testnet_instance_config(Path(path))
-        # Optional, deliberately one-way handoff to the runtime sidecar.  The
-        # sidecar cannot open this worker's SQLite journal or send it commands.
-        projection_path = environment.get("COINMASTER_HL_STAGEG_PROJECTION_PATH")
-        self.projection_path = Path(projection_path) if projection_path else None
         require_testnet_sandbox(environment)
         self.candidate = load_candidate(self.instance.strategy_config)
         self.runtime = PaperRuntime(self.instance.state_db, self.instance.instance_id, int(120e9))
@@ -74,20 +74,20 @@ class TestnetWorker:
             "warnings": list(dict.fromkeys((*health.warnings, self.recovery_state))),
             "orders_enabled": result["orders_enabled"],
         })
-        self._publish_projection(result)
         return result
 
-    def _publish_projection(self, status: dict) -> None:
-        """Atomically publish only the bounded, safe UI read model.
-
-        The status file has no commands, secrets, private paths, raw logs, or
-        journal payloads.  An operator provisions a readable handoff path
-        separately; a missing path cannot affect the trading node.
-        """
-        if self.projection_path is None:
-            return
+    def projection(self) -> dict[str, Any]:
+        """Return a bounded, one-way read model with no command surface."""
+        status = self.native.status()
+        recovery_state = self.runtime.recovery_state()
+        health = self.runtime.health(time.time_ns())
         gate = self.native.gate
-        projection = {
+        events, event_cursor = self.runtime.projection_events(100)
+        if recovery_state == "FLAT_RESTART" and self.native.node.is_running() and self.native.strategy is not None:
+            positions, orders = self.native.sandbox_snapshot()
+        else:
+            positions, orders = self.runtime_snapshot()
+        return {
             "version": "hl-stageg-projection-v1",
             "instance_id": "hl-stageg-testnet",
             "projection_state": "READY",
@@ -116,21 +116,13 @@ class TestnetWorker:
             "account": {},
             "funding_state": gate.funding_state,
             "feeds": status["feeds"],
-            "positions": [dict(item, provenance="SANDBOX") for item in self.runtime_snapshot()[0]],
-            "orders": [dict(item, provenance="SANDBOX") for item in self.runtime_snapshot()[1]],
-            "events": [dict(item, provenance="SANDBOX") for item in self.runtime.events(0, 100)],
-            "event_cursor": max((item["cursor"] for item in self.runtime.events(0, 100)), default=0),
+            "positions": [dict(item, provenance="SANDBOX") for item in positions],
+            "orders": [dict(item, provenance="SANDBOX") for item in orders],
+            "events": [dict(item, provenance="SANDBOX") for item in events],
+            "event_cursor": event_cursor,
             "provenance": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION",
-            "warnings": list(dict.fromkeys(status["warnings"])),
+            "warnings": list(dict.fromkeys((*health.warnings, recovery_state))),
         }
-        try:
-            self.projection_path.parent.mkdir(parents=True, exist_ok=True)
-            temporary = self.projection_path.with_name(f".{self.projection_path.name}.tmp")
-            temporary.write_text(json.dumps(projection, sort_keys=True, separators=(",", ":")))
-            temporary.chmod(0o640)
-            temporary.replace(self.projection_path)
-        except OSError as error:
-            LOG.warning("hl sandbox projection unavailable: %s", type(error).__name__)
 
     def runtime_snapshot(self) -> tuple[list[dict], list[dict]]:
         """Expose durable state only through the bounded worker projection."""
@@ -140,9 +132,48 @@ class TestnetWorker:
         self.runtime.close()
 
 
+def create_status_server(worker: TestnetWorker, port: int = 18183) -> ThreadingHTTPServer:
+    """Expose GET /status on IPv4 loopback only; mutation methods are 405."""
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:
+            if urlsplit(self.path).path != "/status":
+                self.send_error(404)
+                return
+            try:
+                payload = json.dumps(worker.projection(), sort_keys=True, separators=(",", ":")).encode()
+            except Exception as error:
+                LOG.warning("hl sandbox status projection failed: %s", type(error).__name__)
+                self.send_error(503)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+
+        def do_POST(self) -> None: self.send_error(405)
+        def do_PUT(self) -> None: self.send_error(405)
+        def do_DELETE(self) -> None: self.send_error(405)
+        def log_message(self, _format: str, *args: Any) -> None: return
+
+    return ThreadingHTTPServer(("127.0.0.1", port), Handler)
+
+
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     worker = TestnetWorker(); worker.start()
+    status_port = int(os.getenv("COINMASTER_HL_STAGEG_STATUS_PORT", "18183"))
+    try:
+        status_server = create_status_server(worker, status_port) if status_port > 0 else None
+    except OSError as error:
+        # An observability bind conflict must not prevent the isolated trader
+        # from running; the sidecar will show UNAVAILABLE until it is fixed.
+        LOG.error("hl sandbox read-only status listener unavailable: %s", type(error).__name__)
+        status_server = None
+    status_thread = Thread(target=status_server.serve_forever, name="hl-stageg-readonly-status", daemon=True) if status_server else None
+    if status_thread is not None:
+        status_thread.start()
     LOG.info(
         "hl sandbox startup instance_id=%s environment=mainnet-public strategy_id=%s candidate_sha256=%s orders_enabled=%s",
         worker.instance.instance_id, worker.instance.strategy_id, worker.candidate.sha256,
@@ -158,6 +189,9 @@ def main() -> None:
             LOG.info("hl testnet status=%s", json.dumps(worker.status(), sort_keys=True))
             time.sleep(5)
     finally:
+        if status_server is not None:
+            status_server.shutdown()
+            status_server.server_close()
         worker.close()
 
 

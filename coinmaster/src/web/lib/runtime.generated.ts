@@ -413,7 +413,7 @@ export interface components {
              * Projection State
              * @enum {string}
              */
-            projection_state: "READY" | "UNAVAILABLE" | "INVALID";
+            projection_state: "READY" | "STALE" | "UNAVAILABLE" | "INVALID";
             /**
              * Provenance
              * @constant

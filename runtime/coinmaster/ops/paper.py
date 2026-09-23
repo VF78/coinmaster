@@ -247,4 +247,12 @@ class PaperRuntime:
         return snapshot.get("positions", []), snapshot.get("orders", [])
 
     @_journal_locked
+    def projection_events(self, limit: int = 100) -> tuple[list[dict], int]:
+        """Return the latest bounded event window and the durable high-water cursor."""
+        rows = list(self.db.execute("SELECT rowid,event_id,kind FROM paper_events ORDER BY rowid DESC LIMIT ?", (limit,)))
+        cursor = self.db.execute("SELECT COALESCE(MAX(rowid), 0) FROM paper_events").fetchone()[0]
+        rows.reverse()
+        return ([{"cursor": row[0], "event_id": row[1], "kind": row[2]} for row in rows], cursor)
+
+    @_journal_locked
     def close(self) -> None: self.db.close()

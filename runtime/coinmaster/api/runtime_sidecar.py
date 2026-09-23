@@ -5,6 +5,7 @@ import json
 import os
 import sqlite3
 import urllib.request
+import time
 from pathlib import Path
 from typing import Any, Literal
 
@@ -162,7 +163,7 @@ class HlStagegOrder(RuntimeSchema):
 class HlStagegProjection(RuntimeSchema):
     version: Literal["hl-stageg-projection-v1"]
     instance_id: Literal["hl-stageg-testnet"]
-    projection_state: Literal["READY", "UNAVAILABLE", "INVALID"]
+    projection_state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
     observed_at_ns: int | None = None
     mode: Literal["sandbox"]
     environment: Literal["mainnet-public"]
@@ -242,12 +243,15 @@ class RuntimeReader:
 
 
 class HlStagegProjectionReader:
-    """Read only the worker-published HL projection, never a paper journal."""
-    def __init__(self, path: str) -> None:
-        self.path = Path(path)
+    """Read only the HL worker's loopback GET endpoint, never a journal."""
+    MAX_AGE_NS = 15_000_000_000
+    MAX_FUTURE_SKEW_NS = 5_000_000_000
+
+    def __init__(self, url: str) -> None:
+        self.url = url.rstrip("/")
 
     @staticmethod
-    def unavailable(state: Literal["UNAVAILABLE", "INVALID"], warning: str) -> HlStagegProjection:
+    def unavailable(state: Literal["STALE", "UNAVAILABLE", "INVALID"], warning: str) -> HlStagegProjection:
         return HlStagegProjection.model_validate({
             "version": "hl-stageg-projection-v1", "instance_id": "hl-stageg-testnet",
             "projection_state": state, "mode": "sandbox", "environment": "mainnet-public",
@@ -262,24 +266,31 @@ class HlStagegProjectionReader:
 
     def runtime(self) -> HlStagegProjection:
         try:
-            payload = json.loads(self.path.read_text())
+            request = urllib.request.Request(f"{self.url}/status", method="GET", headers={"Accept": "application/json"})
+            with urllib.request.urlopen(request, timeout=2) as response:
+                payload = json.loads(response.read())
             # The worker fixes identity and capability too, but validate them
-            # again at the API boundary to fail closed on a swapped file.
+            # again at the API boundary to fail closed on a swapped endpoint.
             projection = HlStagegProjection.model_validate(payload)
             if projection.projection_state != "READY" or projection.live_order_capability is not False:
                 return self.unavailable("INVALID", "INVALID_HL_STAGEG_PROJECTION")
+            now_ns = time.time_ns()
+            if projection.observed_at_ns is None or projection.observed_at_ns > now_ns + self.MAX_FUTURE_SKEW_NS:
+                return self.unavailable("INVALID", "INVALID_HL_STAGEG_OBSERVATION_TIME")
+            if now_ns - projection.observed_at_ns > self.MAX_AGE_NS:
+                return self.unavailable("STALE", "HL_STAGEG_STATUS_STALE")
             return projection
-        except FileNotFoundError:
+        except (OSError, TimeoutError):
             return self.unavailable("UNAVAILABLE", "HL_STAGEG_PROJECTION_UNAVAILABLE")
-        except (OSError, ValueError, TypeError):
+        except (ValueError, TypeError):
             return self.unavailable("INVALID", "INVALID_HL_STAGEG_PROJECTION")
 
 
-def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_projection_path: str | None = None) -> FastAPI:
+def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_status_url: str | None = None) -> FastAPI:
     expected = token if token is not None else os.getenv("COINMASTER_RUNTIME_API_TOKEN")
     relay_token = worker_token if worker_token is not None else os.getenv("COINMASTER_PAPER_CONTROL_TOKEN")
     reader = RuntimeReader(database or os.getenv("COINMASTER_PAPER_DB", "/var/lib/coinmaster-paper/paper.sqlite"), worker_url or os.getenv("COINMASTER_PAPER_WORKER_URL", "http://127.0.0.1:18181"))
-    hl_reader = HlStagegProjectionReader(hl_stageg_projection_path or os.getenv("COINMASTER_HL_STAGEG_PROJECTION_PATH", "/run/coinmaster/hl-stageg-testnet-projection.json"))
+    hl_reader = HlStagegProjectionReader(hl_stageg_status_url or os.getenv("COINMASTER_HL_STAGEG_STATUS_URL", "http://127.0.0.1:18183"))
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     def auth(authorization: str | None = Header(default=None)) -> None:
         if not expected or authorization != f"Bearer {expected}": raise HTTPException(401, "runtime token required")

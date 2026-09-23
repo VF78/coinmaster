@@ -12,6 +12,7 @@ Environment=COINMASTER_RUNTIME_HOST=127.0.0.1
 Environment=COINMASTER_RUNTIME_PORT=18182
 Environment=COINMASTER_RUNTIME_DIST=/var/lib/coinmaster-runtime/web
 Environment=COINMASTER_RUNTIME_CONTROL_DB=/var/lib/coinmaster-runtime/control.sqlite
+Environment=COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183
 Environment=COINMASTER_RESEARCH_DATA_ROOT=/var/lib/coinmaster-runtime/data
 # One bounded research child at a time is enforced by ResearchJobManager's
 # canonical lease. The runtime unit deliberately has no trader secret env.

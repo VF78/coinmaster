@@ -92,6 +92,29 @@ p {
   font-size: clamp(1.1rem, 2.2vw, 1.4rem);
   letter-spacing: 0.01em;
 }
+.nautilus-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.nautilus-topbar .muted {
+  margin-top: 0.2rem;
+  font-size: var(--text-sm);
+}
+.sidebar-group + .sidebar-group {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+.sidebar-group__title {
+  margin: 0 0 var(--space-2);
+  padding-inline: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
 
 .app-layout {
   display: grid;
@@ -133,6 +156,15 @@ p {
 }
 
 .app-content {
+  min-width: 0;
+}
+
+.nautilus-app-shell .terminal-layout {
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.nautilus-app-shell .terminal-layout > * {
   min-width: 0;
 }
 
@@ -1721,6 +1753,28 @@ button.radar-funnel-step {
   .sidebar-nav__list {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.35rem;
+  }
+
+  .nautilus-topbar {
+    align-items: flex-start;
+  }
+
+  .nautilus-sidebar .sidebar-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .nautilus-sidebar .sidebar-group {
+    display: contents;
+  }
+
+  .nautilus-sidebar .sidebar-group__title {
+    display: none;
+  }
+
+  .nautilus-sidebar .sidebar-nav__list {
+    display: contents;
   }
 
   .sidebar-nav__item {
