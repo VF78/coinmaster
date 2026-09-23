@@ -59,6 +59,10 @@ def test_one_login_protects_shell_assets_runtime_and_included_control_routes(tmp
         session_database=str(db), public_origin="https://cm.f-ai.studio")
     with serve(app) as port:
         assert request(port, "GET", "/")[0] == 303
+        # A sign-prefixed token passes int(..., 16), then used to make
+        # bytes.fromhex raise instead of treating the cookie as unauthenticated.
+        malformed_cookie = "+" + "0" * 63
+        assert request(port, "GET", "/api/v1/auth/session", headers={"Cookie": f"__Host-cm-session={malformed_cookie}"})[0] == 401
         assert request(port, "GET", "/assets/app.js")[0] == 401
         assert request(port, "GET", "/api/v1/configurations/default")[0] == 401
         assert request(port, "GET", "/api/v1/instances/hl-stageg-testnet/controls")[0] == 401
@@ -67,6 +71,7 @@ def test_one_login_protects_shell_assets_runtime_and_included_control_routes(tmp
 
         status, headers, body = request(port, "GET", "/login")
         assert status == 200 and b"Operator sign in" in body
+        assert b"main{box-sizing:border-box;width:min(22rem,calc(100vw - 2rem))" in body
         challenge = re.search(rb'name="challenge" value="([0-9a-f]+)"', body).group(1).decode()
         preauth = headers["set-cookie"].split(";", 1)[0]
         form = urlencode({"username": "operator", "password": "a long test password", "challenge": challenge}).encode()

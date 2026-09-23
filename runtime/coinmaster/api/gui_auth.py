@@ -79,11 +79,7 @@ class GuiAuth:
         return db
 
     def _session(self, token: str | None) -> bool:
-        if not self.enabled or not token or len(token) != 64:
-            return False
-        try:
-            int(token, 16)
-        except ValueError:
+        if not self.enabled or not token or len(token) != 64 or any(char not in "0123456789abcdefABCDEF" for char in token):
             return False
         now = int(time.time())
         digest = hashlib.sha256(bytes.fromhex(token)).hexdigest()
@@ -123,7 +119,7 @@ class GuiAuth:
         challenge = secrets.token_hex(32)
         notice = '<p role="alert">Invalid credentials. Please try again.</p>' if request.query_params.get("invalid") == "1" else ""
         page = f"""<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Coinmaster24 · Sign in</title><style>body{{margin:0;min-height:100vh;display:grid;place-items:center;background:#101827;color:#e5eef9;font:16px system-ui}}main{{width:min(22rem,calc(100vw - 2rem));padding:2rem;border:1px solid #34465d;border-radius:1rem;background:#172235}}label{{display:block;margin:1rem 0}}input{{display:block;box-sizing:border-box;width:100%;margin-top:.4rem;padding:.7rem;background:#0f1726;color:inherit;border:1px solid #60758f;border-radius:.4rem}}button{{width:100%;padding:.75rem;background:#38cbb9;color:#08201d;border:0;border-radius:.4rem;font-weight:700}}p{{color:#eeb0b8}}</style>
+<title>Coinmaster24 · Sign in</title><style>body{{margin:0;min-height:100vh;display:grid;place-items:center;background:#101827;color:#e5eef9;font:16px system-ui}}main{{box-sizing:border-box;width:min(22rem,calc(100vw - 2rem));padding:2rem;border:1px solid #34465d;border-radius:1rem;background:#172235}}label{{display:block;margin:1rem 0}}input{{display:block;box-sizing:border-box;width:100%;margin-top:.4rem;padding:.7rem;background:#0f1726;color:inherit;border:1px solid #60758f;border-radius:.4rem}}button{{width:100%;padding:.75rem;background:#38cbb9;color:#08201d;border:0;border-radius:.4rem;font-weight:700}}p{{color:#eeb0b8}}</style>
 <main><h1>Coinmaster24</h1><h2>Operator sign in</h2>{notice}<form method="post" action="/login"><input type="hidden" name="challenge" value="{html.escape(challenge)}"><label>Username<input name="username" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">Sign in</button></form></main></html>"""
         response = HTMLResponse(page, headers={"Cache-Control": "no-store", "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'", "X-Frame-Options": "DENY"})
         response.set_cookie(PREAUTH_COOKIE, challenge, secure=True, httponly=True, samesite="strict", path="/")
