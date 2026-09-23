@@ -19,7 +19,7 @@ Environment=COINMASTER_RESEARCH_MAX_WORKERS=1
 Environment=PYTHONPATH=/srv/coinmaster-native-gui/current/runtime
 Environment=PYTHONDONTWRITEBYTECODE=1
 UnsetEnvironment=COINMASTER_PAPER_CONTROL_TOKEN COINMASTER_PAPER_DB HYPERLIQUID_PRIVATE_KEY HYPERLIQUID_TESTNET_PK BYBIT_API_KEY BYBIT_API_SECRET COINMASTER_LIVE_ENABLED
-ExecStart=/srv/coinmaster-native-gui/current/runtime/.venv/bin/uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18182
+ExecStart=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python -m uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18182
 Restart=on-failure
 NoNewPrivileges=true
 UMask=0077

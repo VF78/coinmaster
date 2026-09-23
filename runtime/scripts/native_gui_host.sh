@@ -97,7 +97,7 @@ wait_api_ready() {
     if python3 - <<'PY' >/dev/null 2>&1
 import urllib.error, urllib.request
 try:
-    urllib.request.urlopen('http://127.0.0.1:18182/api/v1/instances/hl-stageg-testnet/controls', timeout=1)
+    urllib.request.urlopen('http://127.0.0.1:18182/api/v1/health', timeout=1)
 except urllib.error.HTTPError as error:
     raise SystemExit(0 if error.code == 401 else 1)
 except Exception:
@@ -154,8 +154,8 @@ if [[ "$ACTION" == stage ]]; then
     COINMASTER_RUNTIME_API_TOKEN="$TOKEN" COINMASTER_RUNTIME_CONTROL_DB="$SMOKE/control.sqlite" COINMASTER_CONTROL_DB="$SMOKE/legacy-control.sqlite" \
     COINMASTER_RESEARCH_DATA_ROOT="$SMOKE/data" COINMASTER_RUNTIME_DIST="$RELEASE.incoming/web" \
     COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183 COINMASTER_PAPER_DB="$SMOKE/no-paper.sqlite" \
-    PYTHONPATH="$RELEASE.incoming/runtime" PYTHONDONTWRITEBYTECODE=1 GUI_SMOKE_PIDFILE="$SMOKE/uvicorn.pid" GUI_UVICORN="$RELEASE.incoming/runtime/.venv/bin/uvicorn" \
-    sh -c 'echo $$ > "$GUI_SMOKE_PIDFILE"; exec "$GUI_UVICORN" coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18184' >/dev/null 2>&1) &
+    PYTHONPATH="$RELEASE.incoming/runtime" PYTHONDONTWRITEBYTECODE=1 GUI_SMOKE_PIDFILE="$SMOKE/uvicorn.pid" GUI_PYTHON="$RELEASE.incoming/runtime/.venv/bin/python" \
+    sh -c 'echo $$ > "$GUI_SMOKE_PIDFILE"; exec "$GUI_PYTHON" -m uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18184' >/dev/null 2>&1) &
   SMOKE_PARENT=$!
   trap 'if [[ -f "$SMOKE/uvicorn.pid" ]]; then kill "$(cat "$SMOKE/uvicorn.pid")" 2>/dev/null || true; fi; kill "$SMOKE_PARENT" 2>/dev/null || true; wait "$SMOKE_PARENT" 2>/dev/null || true' EXIT
   for _ in {1..30}; do
@@ -178,6 +178,7 @@ PY
   printf 'archive_sha256=%s\npaper_pid=%s\ntrader_pid=%s\n' "$ARCHIVE_SHA" "$PAPER_BEFORE" "$TRADER_BEFORE" > "$RELEASE.incoming/stage.receipt"
   chmod -R a-w "$RELEASE.incoming"
   mv "$RELEASE.incoming" "$RELEASE"
+  "$RELEASE/runtime/.venv/bin/python" -m uvicorn --version >/dev/null
   rm -f -- "$ARCHIVE"
   echo "STAGED_OK commit=$COMMIT archive_sha256=$ARCHIVE_SHA"
   exit
