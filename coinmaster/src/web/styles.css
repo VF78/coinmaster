@@ -168,6 +168,11 @@ p {
   min-width: 0;
 }
 
+.nautilus-app-shell .card p,
+.nautilus-app-shell .mobile-card :is(h3, dd) {
+  overflow-wrap: anywhere;
+}
+
 .terminal-layout {
   display: grid;
   gap: var(--space-4);
