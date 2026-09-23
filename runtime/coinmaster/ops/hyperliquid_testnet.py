@@ -74,7 +74,27 @@ class CrossVenueStageGGate:
     execution_policy_state: str
     funding_state: str
     capital_state: str
+    approval_state: str
     attachable: bool
+
+
+def _sealed_approval_state(*, candidate_hash: str, strategy_code_hash: str, execution_policy_hash: str, approval_path: Path) -> str:
+    try:
+        approval = json.loads(approval_path.read_text())
+        expected = {"schema", "candidate_sha256", "strategy_sha256", "execution_policy_sha256"}
+        if set(approval) != expected or approval["schema"] != "coinmaster-stageg-hl-sandbox-approval-v1":
+            return "BLOCKED_SEALED_APPROVAL_SCHEMA"
+        if not all(isinstance(approval[item], str) for item in expected - {"schema"}):
+            return "BLOCKED_SEALED_APPROVAL_SCHEMA"
+        if approval["candidate_sha256"] != candidate_hash:
+            return "BLOCKED_SEALED_CANDIDATE_MISMATCH"
+        if approval["strategy_sha256"] != strategy_code_hash:
+            return "BLOCKED_SEALED_STRATEGY_MISMATCH"
+        if approval["execution_policy_sha256"] != execution_policy_hash:
+            return "BLOCKED_SEALED_EXECUTION_POLICY_MISMATCH"
+        return "SEALED_APPROVAL_MATCH"
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return "BLOCKED_SEALED_APPROVAL_MISSING_OR_INVALID"
 
 
 def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, strategy_path: Path, profile_root: Path, now_ns: int | None = None) -> CrossVenueStageGGate:
@@ -102,14 +122,25 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
     execution_policy_hash = hashlib.sha256(
         json.dumps(execution_policy, sort_keys=True, separators=(",", ":")).encode(),
     ).hexdigest()
+    candidate_hash = candidate_content_hash(candidate)
+    approval_state = _sealed_approval_state(
+        candidate_hash=candidate_hash, strategy_code_hash=strategy_code_hash,
+        execution_policy_hash=execution_policy_hash,
+        approval_path=profile_root / "configs" / "stage-g-hl-sandbox-approval.json",
+    )
     execution_policy_state = "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED"
-    funding_state = "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE"
+    funding_state = "BLOCKED_FUNDING_SETTLEMENT_ORACLE_NEXT_PAYMENT_ONLY"
     capital_state = "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION"
-    attachable = warmup_state == "READY" and margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
+    attachable = (
+        warmup_state == "READY"
+        and margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
+        and approval_state == "SEALED_APPROVAL_MATCH"
+        and funding_state != "BLOCKED_FUNDING_SETTLEMENT_ORACLE_NEXT_PAYMENT_ONLY"
+    )
     return CrossVenueStageGGate(
         signal_ids=("BTCUSDT-LINEAR.BYBIT", "SOLUSDT-LINEAR.BYBIT"),
         execution_ids=(str(BTC_PERP), str(SOL_PERP)),
-        candidate_hash=candidate_content_hash(candidate),
+        candidate_hash=candidate_hash,
         strategy_code_hash=strategy_code_hash,
         execution_policy_hash=execution_policy_hash,
         warmup_state=warmup_state,
@@ -117,6 +148,7 @@ def cross_venue_stage_g_gate(*, candidate: Candidate, warmup_manifest: Path, str
         execution_policy_state=execution_policy_state,
         funding_state=funding_state,
         capital_state=capital_state,
+        approval_state=approval_state,
         attachable=attachable,
     )
 

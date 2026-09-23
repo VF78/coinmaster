@@ -305,28 +305,141 @@ def prepare_stageg_bybit_warmup(*, base_root: Path, tail_root: Path, output_root
     return manifest_path
 
 
+def extend_stageg_bybit_warmup(*, predecessor_manifest: Path, tail_root: Path, output_root: Path, now_ms: int | None = None) -> Path:
+    """Append a newly captured public daily tail without rewriting prior evidence.
+
+    The result embeds a complete predecessor artifact plus the new,
+    content-addressed Bybit pages. It is deliberately a new v2 artifact, so a
+    restart can validate every inherited and appended byte without relying on
+    a mutable data mount.
+    """
+    if output_root.exists():
+        raise FileExistsError("REFUSE_TO_OVERWRITE_STAGEG_WARMUP_ARTIFACT")
+    predecessor = json.loads(predecessor_manifest.read_text())
+    predecessor_end = int(predecessor["warmup_end_exclusive_ms"])
+    predecessor_rows, predecessor_state = load_stageg_bybit_warmup(predecessor_manifest, now_ms=predecessor_end)
+    if predecessor_state != "READY":
+        raise ValueError(f"PREDECESSOR_WARMUP_NOT_VERIFIED:{predecessor_state}")
+    tail_manifest_path = tail_root / "bybit" / "manifest.json"
+    tail_manifest = json.loads(tail_manifest_path.read_text())
+    if (tail_manifest.get("venue"), tail_manifest.get("category")) != ("bybit", "linear"):
+        raise ValueError("TAIL_SIGNAL_SOURCE_NOT_BYBIT_LINEAR")
+    if int(datetime.fromisoformat(tail_manifest["requested_start"].replace("Z", "+00:00")).timestamp() * 1000) != predecessor_end:
+        raise ValueError("WARMUP_SOURCE_BOUNDARY_MISMATCH")
+    _validate_coverage(tail_manifest, require_daily_complete=True)
+    now_ms = int(datetime.now(UTC).timestamp() * 1000) if now_ms is None else now_ms
+    tail_end = int(datetime.fromisoformat(tail_manifest["requested_end_exclusive"].replace("Z", "+00:00")).timestamp() * 1000)
+    if tail_end != now_ms // DAY_MS * DAY_MS:
+        raise ValueError("WARMUP_LATEST_COMPLETED_SESSION_MISSING")
+
+    output_root.mkdir(parents=True)
+    predecessor_out = output_root / "sources" / "predecessor"
+    shutil.copytree(predecessor_manifest.parent, predecessor_out)
+    append_out = output_root / "sources" / "append"
+    append_out.mkdir(parents=True)
+    shutil.copy2(tail_manifest_path, append_out / "manifest.json")
+    raw_inputs = _manifest_raw_inputs(tail_manifest_path, tail_root, normalize_absolute_paths=True)
+    appended_raw: list[dict[str, str]] = []
+    for item in raw_inputs:
+        source, destination = tail_root / item["path"], append_out / item["path"]
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+        appended_raw.append({"path": destination.relative_to(output_root).as_posix(), "sha256": item["sha256"]})
+
+    normalized_root = output_root / "normalized"
+    normalized_root.mkdir()
+    symbols: dict[str, dict] = {}
+    for symbol in SYMBOLS:
+        appended = _rebuild_daily_from_raw(tail_manifest, tail_root, symbol)
+        rows = list(predecessor_rows[symbol]) + appended
+        if len({int(row["open_time_ms"]) for row in rows}) != len(rows):
+            raise ValueError(f"WARMUP_DUPLICATE_SESSION:{symbol}")
+        _validate_daily_rows(rows, symbol=symbol)
+        target = normalized_root / f"bybit-{symbol}-daily.parquet"
+        pq.write_table(pa.Table.from_pylist(rows), target, compression="zstd")
+        symbols[symbol] = {
+            "signal_source": "BYBIT_LINEAR_PUBLIC_DAILY_KLINE",
+            "daily_path": target.relative_to(output_root).as_posix(),
+            "daily_sha256": _sha256(target), "daily_rows": len(rows),
+            "first_open_ms": int(rows[0]["open_time_ms"]),
+            "last_open_ms": int(rows[-1]["open_time_ms"]),
+            "last_completed_close_ms": int(rows[-1]["open_time_ms"]) + DAY_MS,
+            "daily_gaps": 0, "daily_duplicates": 0,
+            "mark_close_provenance": "BYBIT_LINEAR_PUBLIC_DAILY_MARK_KLINE",
+            "mark_close_complete": all(row.get("mark_close") is not None for row in rows),
+        }
+    if symbols["BTCUSDT"]["last_completed_close_ms"] != tail_end or symbols["SOLUSDT"]["last_completed_close_ms"] != tail_end:
+        raise ValueError("WARMUP_SYMBOL_SESSION_RANGE_MISMATCH")
+    manifest = {
+        "schema": "coinmaster-stageg-bybit-signal-warmup-v2",
+        "venue": "bybit", "category": "linear",
+        "captured_at": datetime.now(UTC).isoformat(),
+        "signal_source": "BYBIT_LINEAR_PUBLIC_DAILY_KLINE",
+        "execution_source": "HYPERLIQUID_PUBLIC_MAINNET_MARK_AND_QUOTE",
+        "warmup_start_ms": symbols["BTCUSDT"]["first_open_ms"],
+        "warmup_end_exclusive_ms": tail_end,
+        "completed_sessions": symbols["BTCUSDT"]["daily_rows"],
+        "provenance": {
+            "predecessor_manifest_path": (predecessor_out / "manifest.json").relative_to(output_root).as_posix(),
+            "predecessor_manifest_sha256": _sha256(predecessor_out / "manifest.json"),
+            "append_manifest_path": (append_out / "manifest.json").relative_to(output_root).as_posix(),
+            "append_manifest_sha256": _sha256(append_out / "manifest.json"),
+            "append_raw_manifest_sha256": tail_manifest["raw_manifest_sha256"],
+            "append_raw_files": appended_raw,
+        },
+        "funding": {"strategy_warmup_usage": "NOT_USED_FOR_HL_SANDBOX_CASH", "hl_funding_cash": "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE"},
+        "symbols": symbols,
+    }
+    manifest_path = output_root / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+    return manifest_path
+
+
 def load_stageg_bybit_warmup(manifest_path: Path, *, now_ms: int | None = None) -> tuple[dict[str, tuple[dict, ...]], str]:
     """Verify the prepared artifact and return Bybit rows without relabelling."""
     try:
         manifest = json.loads(manifest_path.read_text())
-        if manifest.get("schema") != "coinmaster-stageg-bybit-signal-warmup-v1" or manifest.get("venue") != "bybit" or manifest.get("category") != "linear":
+        if manifest.get("schema") not in {"coinmaster-stageg-bybit-signal-warmup-v1", "coinmaster-stageg-bybit-signal-warmup-v2"} or manifest.get("venue") != "bybit" or manifest.get("category") != "linear":
             return {}, "INVALID_STAGEG_WARMUP_SCHEMA_OR_VENUE"
-        for source_name, source in manifest["provenance"].items():
-            if source["manifest_sha256"] != EXPECTED_SOURCE_MANIFEST_SHA256[source_name]:
-                return {}, f"UNEXPECTED_STAGEG_SOURCE_MANIFEST_{source_name.upper()}"
-            if source["raw_manifest_sha256"] != EXPECTED_RAW_MANIFEST_SHA256[source_name]:
-                return {}, f"UNEXPECTED_STAGEG_RAW_MANIFEST_{source_name.upper()}"
-            source_manifest = manifest_path.parent / source["manifest_path"]
-            if _sha256(source_manifest) != source["manifest_sha256"]:
-                return {}, f"STAGEG_SOURCE_MANIFEST_HASH_MISMATCH_{source_name.upper()}"
+        if manifest["schema"].endswith("v1"):
+            for source_name, source in manifest["provenance"].items():
+                if source["manifest_sha256"] != EXPECTED_SOURCE_MANIFEST_SHA256[source_name]:
+                    return {}, f"UNEXPECTED_STAGEG_SOURCE_MANIFEST_{source_name.upper()}"
+                if source["raw_manifest_sha256"] != EXPECTED_RAW_MANIFEST_SHA256[source_name]:
+                    return {}, f"UNEXPECTED_STAGEG_RAW_MANIFEST_{source_name.upper()}"
+                source_manifest = manifest_path.parent / source["manifest_path"]
+                if _sha256(source_manifest) != source["manifest_sha256"]:
+                    return {}, f"STAGEG_SOURCE_MANIFEST_HASH_MISMATCH_{source_name.upper()}"
+                raw_hashes = []
+                for raw in source["raw_files"]:
+                    raw_path = manifest_path.parent / raw["path"]
+                    if _sha256(raw_path) != raw["sha256"] or _canonical_raw_hash(raw_path) != raw["sha256"]:
+                        return {}, f"STAGEG_RAW_PAGE_HASH_MISMATCH_{source_name.upper()}"
+                    raw_hashes.append(raw["sha256"])
+                if hashlib.sha256("".join(sorted(raw_hashes)).encode()).hexdigest() != source["raw_manifest_sha256"]:
+                    return {}, f"STAGEG_RAW_MANIFEST_MISMATCH_{source_name.upper()}"
+        else:
+            provenance = manifest["provenance"]
+            predecessor_path = manifest_path.parent / provenance["predecessor_manifest_path"]
+            predecessor = json.loads(predecessor_path.read_text())
+            if _sha256(predecessor_path) != provenance["predecessor_manifest_sha256"]:
+                return {}, "STAGEG_PREDECESSOR_MANIFEST_HASH_MISMATCH"
+            _, predecessor_state = load_stageg_bybit_warmup(predecessor_path, now_ms=int(predecessor["warmup_end_exclusive_ms"]))
+            if predecessor_state != "READY":
+                return {}, f"STAGEG_PREDECESSOR_INVALID:{predecessor_state}"
+            append_manifest_path = manifest_path.parent / provenance["append_manifest_path"]
+            append_manifest = json.loads(append_manifest_path.read_text())
+            if _sha256(append_manifest_path) != provenance["append_manifest_sha256"]:
+                return {}, "STAGEG_APPEND_MANIFEST_HASH_MISMATCH"
             raw_hashes = []
-            for raw in source["raw_files"]:
+            for raw in provenance["append_raw_files"]:
                 raw_path = manifest_path.parent / raw["path"]
                 if _sha256(raw_path) != raw["sha256"] or _canonical_raw_hash(raw_path) != raw["sha256"]:
-                    return {}, f"STAGEG_RAW_PAGE_HASH_MISMATCH_{source_name.upper()}"
+                    return {}, "STAGEG_APPEND_RAW_PAGE_HASH_MISMATCH"
                 raw_hashes.append(raw["sha256"])
-            if hashlib.sha256("".join(sorted(raw_hashes)).encode()).hexdigest() != source["raw_manifest_sha256"]:
-                return {}, f"STAGEG_RAW_MANIFEST_MISMATCH_{source_name.upper()}"
+            if hashlib.sha256("".join(sorted(raw_hashes)).encode()).hexdigest() != provenance["append_raw_manifest_sha256"]:
+                return {}, "STAGEG_APPEND_RAW_MANIFEST_MISMATCH"
+            _validate_coverage(append_manifest, require_daily_complete=True)
         symbols: dict[str, tuple[dict, ...]] = {}
         for symbol in SYMBOLS:
             item = manifest["symbols"][symbol]
@@ -335,6 +448,10 @@ def load_stageg_bybit_warmup(manifest_path: Path, *, now_ms: int | None = None) 
                 return {}, f"STAGEG_DAILY_HASH_MISMATCH_{symbol}"
             rows = pq.read_table(daily).to_pylist()
             _validate_daily_rows(rows, symbol=symbol)
+            if manifest["schema"].endswith("v2"):
+                appended = _rebuild_daily_from_raw(append_manifest, append_manifest_path.parent, symbol)
+                if not appended or not _daily_rows_equal(rows[-len(appended):], appended):
+                    return {}, f"STAGEG_APPEND_DAILY_NOT_REPRODUCIBLE_FROM_RAW_{symbol}"
             if len(rows) != item["daily_rows"] or len(rows) < 730 or not item["mark_close_complete"]:
                 return {}, f"STAGEG_DAILY_COVERAGE_INVALID_{symbol}"
             if int(rows[-1]["open_time_ms"]) + DAY_MS != int(manifest["warmup_end_exclusive_ms"]):

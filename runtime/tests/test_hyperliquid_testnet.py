@@ -107,8 +107,9 @@ def test_cross_venue_gate_preserves_bybit_signal_ids_and_blocks_unproven_parity(
     assert gate.warmup_state == "INVALID_STAGEG_WARMUP_SCHEMA_OR_VENUE"
     assert gate.margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
     assert gate.execution_policy_state == "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED"
-    assert gate.funding_state == "UNPOSTED_ADAPTER_HAS_NEXT_PAYMENT_ONLY_NO_SETTLEMENT_ORACLE"
+    assert gate.funding_state == "BLOCKED_FUNDING_SETTLEMENT_ORACLE_NEXT_PAYMENT_ONLY"
     assert gate.capital_state == "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION"
+    assert gate.approval_state == "SEALED_APPROVAL_MATCH"
     assert gate.attachable is False
 
 
