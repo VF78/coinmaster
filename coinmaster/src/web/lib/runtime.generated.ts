@@ -73,6 +73,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/instances/hl-stageg-testnet/controls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Hl Stageg Control Capabilities */
+        get: operations["hl_stageg_control_capabilities_api_v1_instances_hl_stageg_testnet_controls_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/instances/hl-stageg-testnet/strategy": {
         parameters: {
             query?: never;
@@ -345,6 +362,46 @@ export interface components {
              * @default UNKNOWN
              */
             native_cash: string;
+        };
+        /** HlStagegControlAction */
+        HlStagegControlAction: {
+            /** Blocker */
+            blocker: string;
+            /**
+             * Enabled
+             * @default false
+             * @constant
+             */
+            enabled: false;
+            /**
+             * Requires Confirmation
+             * @default false
+             */
+            requires_confirmation: boolean;
+        };
+        /** HlStagegControls */
+        HlStagegControls: {
+            flatten: components["schemas"]["HlStagegControlAction"];
+            /**
+             * Instance Id
+             * @default hl-stageg-testnet
+             * @constant
+             */
+            instance_id: "hl-stageg-testnet";
+            /**
+             * Mode
+             * @default sandbox
+             * @constant
+             */
+            mode: "sandbox";
+            pause: components["schemas"]["HlStagegControlAction"];
+            /**
+             * Projection State
+             * @enum {string}
+             */
+            projection_state: "READY" | "STALE" | "UNAVAILABLE" | "INVALID";
+            promotion: components["schemas"]["HlStagegControlAction"];
+            resume: components["schemas"]["HlStagegControlAction"];
         };
         /** HlStagegEvent */
         HlStagegEvent: {
@@ -1188,6 +1245,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HlStagegProjection"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    hl_stageg_control_capabilities_api_v1_instances_hl_stageg_testnet_controls_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegControls"];
                 };
             };
             /** @description Validation Error */

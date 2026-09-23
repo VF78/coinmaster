@@ -15,11 +15,11 @@ const required = [
   ['strategy read-backs a saved research draft', 'Saved draft could not be read back.'],
   ['strategy does not render obsolete corrected-v0 framing', 'corrected-v0'],
   ['research retains the original reporting-v2 baseline', 'Original v0'],
-  ['research presents selected 7.5 evidence', 'Selected 7.5 is not the paper default'],
-  ['research labels liquidated candidates as exclusions', 'liquidated candidates are retained as exclusions'],
+  ['research keeps the catalog read only', 'Immutable research catalog'],
+  ['research preserves diagnostic classification', 'item.classification'],
   ['research renders every catalog evidence row', 'catalog.map((item)'],
   ['catalog includes the Hyperliquid blocked evidence', 'Hyperliquid public REST evidence — blocked'],
-  ['backtest control states it is an artifact reference', 'Reference selected native research'],
+  ['unused legacy research component was removed', 'LegacyResearchPage'],
   ['API exposes the immutable catalog request', "request<ResearchCatalogEntry[]>('/research/catalog')"],
   ['account-specific facts remain explicitly unknown', 'Account margin:'],
   ['research exposes an isolated native subprocess action', 'Run verified native baseline'],
@@ -31,12 +31,14 @@ const required = [
   ['research displays the bounded optimizer budget', 'optimizerSearch?.max_variants'],
   ['research launches the owned native optimizer job', "'native_optimizer', capabilities.optimizer_search"],
   ['API exposes selected-config research capabilities', "request<ResearchCapabilities>(`/research/capabilities"],
+  ['HL Sandbox controls remain disabled', '<Button variant="danger" disabled>Flatten virtual exposure</Button>'],
+  ['HL controls use only instance-bound read API', "request<HlStagegControls>('/instances/hl-stageg-testnet/controls')"],
 ] as const;
 
 let failed = 0;
 for (const [label, text] of required) {
   const source = text.startsWith('request<') ? api : text.startsWith('Original v0') || text.startsWith('Hyperliquid') ? catalog : page;
-  const absent = label.includes('does not render');
+  const absent = label.includes('does not render') || label.includes('was removed');
   if (source.includes(text) !== absent) console.log(`  ✓ ${label}`);
   else { failed += 1; console.error(`  ✗ ${label}`); }
 }

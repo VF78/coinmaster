@@ -2,11 +2,13 @@ from decimal import Decimal
 
 import io
 import json
+import pytest
 from pathlib import Path
 from types import SimpleNamespace
 from urllib.error import URLError
+from fastapi import HTTPException
 
-from coinmaster.api.runtime_sidecar import HlStagegProjection, HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app
+from coinmaster.api.runtime_sidecar import HlStagegProjection, HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app, hl_stageg_controls
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker as HlStagegWorker, create_status_server
 from coinmaster.ops.paper import PaperRuntime
 
@@ -34,10 +36,10 @@ def test_runtime_sidecar_exposes_strict_schemas_and_spa_without_shadowing_api(tm
     app = create_runtime_app(database=str(tmp_path / "missing.sqlite"), control_database=str(tmp_path / "control.sqlite"), token="operator", worker_url="http://127.0.0.1:9", worker_token="relay")
     spec = app.openapi()
     schemas = spec["components"]["schemas"]
-    for name in ("RuntimeState", "RuntimeBalances", "RuntimeStrategy", "RuntimeFeed", "RuntimeEvent", "RuntimeFunding", "RuntimeEventsResponse", "RuntimeCommandResponse", "HlStagegProjection", "HlStagegStrategy", "HlStagegHashes"):
+    for name in ("RuntimeState", "RuntimeBalances", "RuntimeStrategy", "RuntimeFeed", "RuntimeEvent", "RuntimeFunding", "RuntimeEventsResponse", "RuntimeCommandResponse", "HlStagegProjection", "HlStagegStrategy", "HlStagegHashes", "HlStagegControls", "HlStagegControlAction"):
         assert schemas[name]["additionalProperties"] is False
     assert schemas["RuntimeBalances"]["properties"]["active_usdt"]["type"] == "string"
-    for path in ("/api/v1/configurations/default", "/api/v1/configurations", "/api/v1/preflight", "/api/v1/runs", "/api/v1/research/catalog", "/api/v1/runtime", "/api/v1/runtime/commands/{command}", "/api/v1/instances/hl-stageg-testnet", "/api/v1/instances/hl-stageg-testnet/strategy"):
+    for path in ("/api/v1/configurations/default", "/api/v1/configurations", "/api/v1/preflight", "/api/v1/runs", "/api/v1/research/catalog", "/api/v1/runtime", "/api/v1/runtime/commands/{command}", "/api/v1/instances/hl-stageg-testnet", "/api/v1/instances/hl-stageg-testnet/strategy", "/api/v1/instances/hl-stageg-testnet/controls"):
         assert path in spec["paths"]
     assert "ResearchCatalogEntry" in schemas and "StrategyConfig" in schemas
     paths = [getattr(route, "path", "") for route in app.routes]
@@ -47,6 +49,31 @@ def test_runtime_sidecar_exposes_strict_schemas_and_spa_without_shadowing_api(tm
     spa = next(route for route in app.routes if getattr(route, "path", "") == "/{path:path}")
     response = spa.endpoint("")
     assert response.path == dist / "index.html"
+
+
+def test_hl_stageg_controls_are_authenticated_instance_bound_and_fail_closed(tmp_path) -> None:
+    app = create_runtime_app(database=str(tmp_path / "missing.sqlite"), control_database=str(tmp_path / "control.sqlite"), token="operator", worker_url="http://127.0.0.1:9", hl_stageg_status_url="http://127.0.0.1:9")
+    path = "/api/v1/instances/hl-stageg-testnet/controls"
+    route = next(item for item in app.routes if getattr(item, "path", "") == path)
+    auth = next(dependency.call for dependency in route.dependant.dependencies if dependency.call.__name__ == "auth")
+    with pytest.raises(HTTPException) as denied:
+        auth(None)
+    assert denied.value.status_code == 401
+    auth("Bearer operator")
+    body = route.endpoint().model_dump()
+    assert body["instance_id"] == "hl-stageg-testnet" and body["mode"] == "sandbox"
+    assert body["projection_state"] == "UNAVAILABLE"
+    assert all(body[action]["enabled"] is False for action in ("pause", "resume", "flatten", "promotion"))
+    assert body["pause"]["blocker"] == "NATIVE_PROJECTION_UNAVAILABLE"
+    assert body["flatten"]["requires_confirmation"] is True
+    assert app.openapi()["paths"][path].keys() == {"get"}
+    assert not any(getattr(route, "path", "").startswith("/api/v1/instances/hl-stageg-testnet/") and "POST" in getattr(route, "methods", set()) for route in app.routes)
+
+    ready = hl_stageg_controls(HlStagegProjection.model_validate(_ready_hl_projection()))
+    assert ready.pause.blocker == "NO_INSTANCE_BOUND_NATIVE_PAUSE_COMMAND"
+    assert ready.resume.blocker == "NO_INSTANCE_BOUND_NATIVE_RESUME_COMMAND"
+    assert ready.flatten.blocker == "NO_IDEMPOTENT_NATIVE_FLATTEN_RECOVERY"
+    assert ready.promotion.blocker == "SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"
 
 
 def test_hl_stageg_strategy_is_sealed_source_identity_with_unknown_account_facts() -> None:

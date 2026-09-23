@@ -9,6 +9,7 @@ export type ResearchCatalogDetail = runtimeComponents['schemas']['ResearchCatalo
 export type ResearchCapabilities = runtimeComponents['schemas']['ResearchCapabilities'];
 export type HlStagegProjection = runtimeComponents['schemas']['HlStagegProjection'];
 export type HlStagegStrategy = runtimeComponents['schemas']['HlStagegStrategy'];
+export type HlStagegControls = runtimeComponents['schemas']['HlStagegControls'];
 // Local operator supplies this ephemeral value; no API secret is bundled into the UI.
 export const setApiToken = (value: string) => window.localStorage.setItem('coinmaster-api-token', value);
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -30,3 +31,4 @@ export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponen
 // coinmaster-paper worker and has a command relay.
 export const getHlStagegProjection = () => request<HlStagegProjection>('/instances/hl-stageg-testnet');
 export const getHlStagegStrategy = () => request<HlStagegStrategy>('/instances/hl-stageg-testnet/strategy');
+export const getHlStagegControls = () => request<HlStagegControls>('/instances/hl-stageg-testnet/controls');

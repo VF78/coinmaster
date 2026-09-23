@@ -212,6 +212,38 @@ class HlStagegStrategy(RuntimeSchema):
     warnings: list[str]
 
 
+class HlStagegControlAction(RuntimeSchema):
+    enabled: Literal[False] = False
+    blocker: str
+    requires_confirmation: bool = False
+
+
+class HlStagegControls(RuntimeSchema):
+    instance_id: Literal["hl-stageg-testnet"] = "hl-stageg-testnet"
+    mode: Literal["sandbox"] = "sandbox"
+    projection_state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
+    pause: HlStagegControlAction
+    resume: HlStagegControlAction
+    flatten: HlStagegControlAction
+    promotion: HlStagegControlAction
+
+
+def hl_stageg_controls(projection: HlStagegProjection) -> HlStagegControls:
+    """No mutation route exists until the isolated native worker owns commands.
+
+    The legacy /runtime/commands relay targets coinmaster-paper and must never
+    be represented as authority over this HL Stage-G Sandbox instance.
+    """
+    unavailable = None if projection.projection_state == "READY" else f"NATIVE_PROJECTION_{projection.projection_state}"
+    return HlStagegControls(
+        projection_state=projection.projection_state,
+        pause=HlStagegControlAction(blocker=unavailable or "NO_INSTANCE_BOUND_NATIVE_PAUSE_COMMAND"),
+        resume=HlStagegControlAction(blocker=unavailable or "NO_INSTANCE_BOUND_NATIVE_RESUME_COMMAND"),
+        flatten=HlStagegControlAction(blocker=unavailable or "NO_IDEMPOTENT_NATIVE_FLATTEN_RECOVERY", requires_confirmation=True),
+        promotion=HlStagegControlAction(blocker="SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"),
+    )
+
+
 def _worker_health(url: str) -> dict[str, Any]:
     try:
         with urllib.request.urlopen(f"{url.rstrip('/')}/health", timeout=3) as response:
@@ -417,6 +449,9 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     @app.get("/api/v1/instances/hl-stageg-testnet/strategy", response_model=HlStagegStrategy, dependencies=[Depends(auth)])
     def hl_stageg_strategy() -> HlStagegStrategy:
         return hl_strategy_reader.strategy()
+    @app.get("/api/v1/instances/hl-stageg-testnet/controls", response_model=HlStagegControls, dependencies=[Depends(auth)])
+    def hl_stageg_control_capabilities() -> HlStagegControls:
+        return hl_stageg_controls(hl_reader.runtime())
     @app.post("/api/v1/runtime/commands/{command}", response_model=RuntimeCommandResponse, dependencies=[Depends(auth)])
     def command(command: Literal["pause-new-entries", "resume-new-entries", "flatten-paper"], idempotency_key: str = Header(alias="Idempotency-Key")) -> RuntimeCommandResponse:
         if not idempotency_key: raise HTTPException(422, "Idempotency-Key is required")

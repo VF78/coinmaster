@@ -85,6 +85,79 @@
         "title": "HlStagegAccount",
         "type": "object"
       },
+      "HlStagegControlAction": {
+        "additionalProperties": false,
+        "properties": {
+          "blocker": {
+            "title": "Blocker",
+            "type": "string"
+          },
+          "enabled": {
+            "const": false,
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "requires_confirmation": {
+            "default": false,
+            "title": "Requires Confirmation",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "blocker"
+        ],
+        "title": "HlStagegControlAction",
+        "type": "object"
+      },
+      "HlStagegControls": {
+        "additionalProperties": false,
+        "properties": {
+          "flatten": {
+            "$ref": "#/components/schemas/HlStagegControlAction"
+          },
+          "instance_id": {
+            "const": "hl-stageg-testnet",
+            "default": "hl-stageg-testnet",
+            "title": "Instance Id",
+            "type": "string"
+          },
+          "mode": {
+            "const": "sandbox",
+            "default": "sandbox",
+            "title": "Mode",
+            "type": "string"
+          },
+          "pause": {
+            "$ref": "#/components/schemas/HlStagegControlAction"
+          },
+          "projection_state": {
+            "enum": [
+              "READY",
+              "STALE",
+              "UNAVAILABLE",
+              "INVALID"
+            ],
+            "title": "Projection State",
+            "type": "string"
+          },
+          "promotion": {
+            "$ref": "#/components/schemas/HlStagegControlAction"
+          },
+          "resume": {
+            "$ref": "#/components/schemas/HlStagegControlAction"
+          }
+        },
+        "required": [
+          "projection_state",
+          "pause",
+          "resume",
+          "flatten",
+          "promotion"
+        ],
+        "title": "HlStagegControls",
+        "type": "object"
+      },
       "HlStagegEvent": {
         "additionalProperties": false,
         "properties": {
@@ -2183,6 +2256,52 @@
           }
         },
         "summary": "Hl Stageg Runtime"
+      }
+    },
+    "/api/v1/instances/hl-stageg-testnet/controls": {
+      "get": {
+        "operationId": "hl_stageg_control_capabilities_api_v1_instances_hl_stageg_testnet_controls_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegControls"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Hl Stageg Control Capabilities"
       }
     },
     "/api/v1/instances/hl-stageg-testnet/strategy": {
