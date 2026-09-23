@@ -3408,3 +3408,68 @@ button.radar-funnel-step {
   align-items: center;
   gap: 0.75rem;
 }
+
+/* Scoped native trading workspace */
+.nautilus-app-shell { --bg:#090d0e; --bg-elevated:#101617; --surface:#12191a; --surface-2:#172021; --surface-3:#1a2828; --text:#e5f1ed; --text-muted:#819994; --border:#253430; --border-strong:#365148; --accent:#67e1be; --success:#64dfb6; --danger:#f4777c; width:min(1920px,100%); padding:0 1rem 2rem; color:var(--text); }
+body:has(.nautilus-app-shell) { background:#090d0e; }
+.nautilus-app-shell .app-topbar { position:sticky; top:0; z-index:10; margin:0 -1rem .8rem; padding:.65rem 1.2rem; border:0; border-bottom:1px solid var(--border); border-radius:0; background:#0d1314; box-shadow:none; }
+.nautilus-brand { display:flex; align-items:center; gap:.7rem; min-width:0; }
+.nautilus-brand__mark { display:grid; place-items:center; width:2rem; height:2rem; border-radius:.45rem; background:#62dcb5; color:#05261d; font-weight:900; }
+.nautilus-brand h1 { font-size:1rem; letter-spacing:-.025em; line-height:1.05; }
+.nautilus-brand h1 span { color:#6de4be; }
+.nautilus-brand p { color:var(--text-muted); font-size:.66rem; letter-spacing:.035em; text-transform:uppercase; }
+.nautilus-topbar__right { display:flex; align-items:center; gap:.65rem; }
+.nautilus-operator { color:var(--text-muted); font-size:.75rem; }
+.nautilus-app-shell .app-layout { grid-template-columns:13rem minmax(0,1fr); gap:1.15rem; }
+.nautilus-app-shell .sidebar { align-self:start; position:sticky; top:4.5rem; min-height:calc(100vh - 6rem); padding:.6rem; border-radius:.45rem; background:#101617; }
+.nautilus-app-shell .sidebar-group + .sidebar-group { margin-top:.4rem; padding-top:.4rem; }
+.nautilus-app-shell .sidebar-group__title { margin:.55rem 0 .3rem; color:#648078; font-size:.62rem; letter-spacing:.14em; }
+.nautilus-app-shell .sidebar-nav__list { display:grid; grid-template-columns:1fr; gap:.15rem; }
+.nautilus-app-shell .sidebar-nav__item { display:flex; align-items:center; gap:.7rem; min-height:2.1rem; padding:.4rem .55rem; text-align:left; border:0; border-left:2px solid transparent; border-radius:.15rem; background:none; font-weight:600; }
+.nautilus-app-shell .sidebar-nav__item:hover { color:var(--text); background:#1a2624; }
+.nautilus-app-shell .sidebar-nav__item--active { color:#82ecc8; border-left-color:#67e1be; background:#182a25; }
+.nautilus-nav-icon { width:1rem; text-align:center; font-size:1rem; }
+.nautilus-nav-short { display:none; }
+.nautilus-sidebar__foot { margin:1.5rem .5rem 0; padding-top:.85rem; border-top:1px solid var(--border); color:var(--text-muted); font-size:.7rem; }
+.nautilus-live-dot { display:inline-block; width:.42rem; height:.42rem; margin-right:.4rem; border-radius:50%; background:#64dfb6; box-shadow:0 0 .55rem #64dfb690; }
+
+.nautilus-page-heading { display:flex; align-items:end; justify-content:space-between; gap:.7rem; margin:.2rem 0 .9rem; }
+.nautilus-page-heading h2 { font-size:clamp(1.25rem,2vw,1.6rem); line-height:1.1; letter-spacing:-.035em; }
+.nautilus-page-heading > p { color:var(--text-muted); font-size:.75rem; }
+.nautilus-page-heading > p span { color:#66dfbc; }
+.nautilus-kicker { margin-bottom:.25rem; color:#67e1be; font-size:.61rem; font-weight:800; letter-spacing:.14em; }
+.nautilus-app-shell .terminal-layout { gap:.75rem; }
+.nautilus-app-shell .card { padding:.85rem 1rem; border-radius:.45rem; background:#111819; box-shadow:none; }
+.nautilus-app-shell .card__header { padding-bottom:.6rem; border-bottom:1px solid var(--border); }
+.nautilus-app-shell .card__title { font-size:.85rem; font-weight:700; }
+.nautilus-app-shell .stat { border-radius:.35rem; background:#16201f; }
+.nautilus-app-shell .rules-field input, .nautilus-app-shell .rules-field select { border-color:var(--border-strong); border-radius:.3rem; background:#0c1414; }
+.nautilus-app-shell .table-wrap th { color:#8ba99e; background:#16211f; }
+.nautilus-app-shell .table-wrap td { border-color:var(--border); }
+.nautilus-app-shell .muted { color:var(--text-muted); }
+.nautilus-alert { margin-bottom:.75rem; color:#f4777c; }
+.nautilus-app-shell .stats-grid { gap:.45rem; }
+.nautilus-app-shell .mobile-card { border-color:var(--border); background:#131d1d; }
+@media (max-width:760px) {
+ .nautilus-app-shell { padding:0 .65rem 5rem; }
+ .nautilus-app-shell .app-topbar { margin:0 -.65rem .7rem; padding:.6rem .7rem; }
+ .nautilus-topbar__right .badge, .nautilus-operator { display:none; }
+ .nautilus-app-shell .app-layout { display:block; }
+ .nautilus-app-shell .sidebar { position:fixed; z-index:20; inset:auto 0 0; min-height:0; padding:.25rem .4rem calc(.25rem + env(safe-area-inset-bottom)); border:0; border-top:1px solid var(--border); border-radius:0; background:#0c1313; }
+ .nautilus-app-shell .sidebar-nav { display:grid; grid-template-columns:repeat(4,1fr); }
+ .nautilus-app-shell .sidebar-group, .nautilus-app-shell .sidebar-group + .sidebar-group { margin:0; padding:0; border:0; }
+ .nautilus-app-shell .sidebar-group__title, .nautilus-sidebar__foot, .nautilus-nav-full { display:none; }
+ .nautilus-nav-short { display:inline; }
+ .nautilus-app-shell .sidebar-nav__item { flex-direction:column; justify-content:center; gap:.1rem; min-height:3.3rem; padding:.25rem .1rem; border:0; border-top:2px solid transparent; text-align:center; font-size:.66rem; }
+ .nautilus-app-shell .sidebar-nav__item--active { border-top-color:#67e1be; }
+ .nautilus-page-heading { align-items:start; }
+ .nautilus-page-heading > p { max-width:9rem; text-align:right; }
+}
+
+.nautilus-strategy-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.7rem; margin:.9rem 0; }
+.nautilus-strategy-group { min-width:0; padding:.85rem; border:1px solid var(--border); border-radius:.35rem; background:#0d1515; }
+.nautilus-strategy-group h3, .nautilus-subheading { margin:0 0 .3rem; color:#b9e9d7; font-size:.82rem; }
+.nautilus-strategy-group > p { margin-bottom:.7rem; font-size:.72rem; }
+.nautilus-strategy-group .rules-form-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+@media (max-width:1000px) { .nautilus-strategy-grid { grid-template-columns:1fr; } }
+@media (max-width:560px) { .nautilus-strategy-group .rules-form-grid { grid-template-columns:1fr; } }
