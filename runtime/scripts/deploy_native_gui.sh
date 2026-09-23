@@ -8,8 +8,10 @@ HOST="${GUI_DEPLOY_HOST:?set GUI_DEPLOY_HOST to the verified SSH target}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 GIT=/Library/Developer/CommandLineTools/usr/bin/git
 [[ -x "$GIT" ]] || GIT=git
-COMMIT="$("$GIT" -C "$ROOT" rev-parse HEAD)"
-[[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]] || { echo 'invalid commit' >&2; exit 2; }
+SOURCE_COMMIT="$("$GIT" -C "$ROOT" rev-parse HEAD)"
+COMMIT="${GUI_DEPLOY_RELEASE_SHA:-$SOURCE_COMMIT}"
+[[ "$SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ && "$COMMIT" =~ ^[0-9a-f]{40}$ ]] || { echo 'invalid commit' >&2; exit 2; }
+if [[ "$ACTION" == stage ]]; then COMMIT="$SOURCE_COMMIT"; fi
 HELPER="$ROOT/runtime/scripts/native_gui_host.sh"
 SSH=(ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=8 "$HOST")
 

@@ -22,7 +22,13 @@ API using a copy of the control DB. Its receipt records the paper/trader PIDs.
 the control DB into research-owned state, and starts only the runtime API from
 the immutable release. It verifies authenticated API/SPA, disabled HL controls,
 the absent paper command route, and unchanged peer PIDs. It restores the prior
-runtime unit automatically if activation checks fail.
+runtime unit automatically if activation checks fail, waiting up to 30 seconds
+for the API to answer its expected unauthenticated `401` before smoke-testing.
+After an automatic rollback, retry the same staged release with its SHA:
+
+```sh
+GUI_DEPLOY_RELEASE_SHA=<staged-40-character-commit> runtime/scripts/deploy_native_gui.sh activate-api
+```
 
 To revert the active API release, from the same commit:
 

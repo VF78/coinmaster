@@ -91,6 +91,25 @@ assert db.execute('SELECT count(*) FROM research_leases').fetchone()[0] == 0
 print('API_SMOKE_OK: auth, SPA, HL unavailable/disabled, no paper command route, research lease clear')
 PY
 }
+wait_api_ready() {
+  local deadline=$((SECONDS + 30))
+  while (( SECONDS < deadline )); do
+    if python3 - <<'PY' >/dev/null 2>&1
+import urllib.error, urllib.request
+try:
+    urllib.request.urlopen('http://127.0.0.1:18182/api/v1/instances/hl-stageg-testnet/controls', timeout=1)
+except urllib.error.HTTPError as error:
+    raise SystemExit(0 if error.code == 401 else 1)
+except Exception:
+    raise SystemExit(1)
+raise SystemExit(1)
+PY
+    then return 0; fi
+    sleep 1
+  done
+  echo 'runtime API did not become ready within 30 seconds' >&2
+  return 1
+}
 if [[ "$ACTION" == plan ]]; then
   active "$PAPER" && active "$TRADER" && active "$RUNTIME" || { echo 'required service is inactive' >&2; exit 1; }
   check_no_jobs "$OLD_DB"
@@ -167,15 +186,24 @@ fi
 [[ -d "$RELEASE" && -f "$RELEASE/stage.receipt" ]] || { echo 'release has no verified stage receipt' >&2; exit 1; }
 TOKEN="$(token_from_paper_env)"
 if [[ "$ACTION" == activate-api ]]; then
-  [[ ! -e "$BACKUPS/$COMMIT" ]] || { echo 'this release was already activated' >&2; exit 1; }
   check_no_jobs "$OLD_DB"
   [[ "$(pid "$PAPER")" == "$(sed -n 's/^paper_pid=//p' "$RELEASE/stage.receipt")" && "$(pid "$TRADER")" == "$(sed -n 's/^trader_pid=//p' "$RELEASE/stage.receipt")" ]] || { echo 'peer PID changed since stage' >&2; exit 1; }
-  install -d -m 0700 "$BACKUPS/$COMMIT"
-  cp "$UNIT" "$BACKUPS/$COMMIT/prior.unit"
-  systemctl show -P EnvironmentFiles "$RUNTIME" > "$BACKUPS/$COMMIT/prior.env-ref"
-  sha256sum /etc/coinmaster-paper.env > "$BACKUPS/$COMMIT/prior.env-sha256"
-  readlink "$CURRENT" > "$BACKUPS/$COMMIT/prior.release" 2>/dev/null || printf 'none\n' > "$BACKUPS/$COMMIT/prior.release"
-  printf 'runtime_pid=%s\npaper_pid=%s\ntrader_pid=%s\n' "$(pid "$RUNTIME")" "$(pid "$PAPER")" "$(pid "$TRADER")" > "$BACKUPS/$COMMIT/prior.pids"
+  [[ "$(basename "$RELEASE")" == "$COMMIT" && "$(sed -n 's/^archive_sha256=//p' "$RELEASE/stage.receipt")" =~ ^[0-9a-f]{64}$ ]] || { echo 'staged release identity or receipt digest is invalid' >&2; exit 1; }
+  if [[ -d "$BACKUPS/$COMMIT" ]]; then
+    [[ -f "$BACKUPS/$COMMIT/prior.unit" && -f "$BACKUPS/$COMMIT/prior.release" && -f "$BACKUPS/$COMMIT/prior.pids" ]] || { echo 'incomplete prior activation backup; refusing retry' >&2; exit 1; }
+    cmp -s "$UNIT" "$BACKUPS/$COMMIT/prior.unit" && active "$RUNTIME" || { echo 'runtime no longer matches the saved pre-activation state' >&2; exit 1; }
+    PREVIOUS="$(cat "$BACKUPS/$COMMIT/prior.release")"
+    if [[ "$PREVIOUS" == none ]]; then [[ ! -L "$CURRENT" ]] || { echo 'release pointer changed since rollback' >&2; exit 1; }
+    else [[ "$(readlink "$CURRENT" 2>/dev/null || true)" == "$PREVIOUS" ]] || { echo 'release pointer changed since rollback' >&2; exit 1; }; fi
+    assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || { echo 'paper/trader PID differs from activation backup' >&2; exit 1; }
+  else
+    install -d -m 0700 "$BACKUPS/$COMMIT"
+    cp "$UNIT" "$BACKUPS/$COMMIT/prior.unit"
+    systemctl show -P EnvironmentFiles "$RUNTIME" > "$BACKUPS/$COMMIT/prior.env-ref"
+    sha256sum /etc/coinmaster-paper.env > "$BACKUPS/$COMMIT/prior.env-sha256"
+    readlink "$CURRENT" > "$BACKUPS/$COMMIT/prior.release" 2>/dev/null || printf 'none\n' > "$BACKUPS/$COMMIT/prior.release"
+    printf 'runtime_pid=%s\npaper_pid=%s\ntrader_pid=%s\n' "$(pid "$RUNTIME")" "$(pid "$PAPER")" "$(pid "$TRADER")" > "$BACKUPS/$COMMIT/prior.pids"
+  fi
   systemctl stop "$RUNTIME"
   backup_db "$OLD_DB" "$STATE/control.sqlite"
   chown coinmaster-research:coinmaster-research "$STATE/control.sqlite"
@@ -183,7 +211,7 @@ if [[ "$ACTION" == activate-api ]]; then
   ln -s "$RELEASE" "$CURRENT.next"
   mv -Tf "$CURRENT.next" "$CURRENT"
   systemctl daemon-reload
-  if ! systemctl start "$RUNTIME" || ! active "$RUNTIME" || ! assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || ! api_smoke 18182 "$STATE/control.sqlite"; then
+  if ! systemctl start "$RUNTIME" || ! wait_api_ready || ! active "$RUNTIME" || ! assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || ! api_smoke 18182 "$STATE/control.sqlite"; then
     echo 'activation failed; restoring the prior runtime unit' >&2
     systemctl stop "$RUNTIME" || true
     cp "$BACKUPS/$COMMIT/prior.unit" "$UNIT"
@@ -191,6 +219,7 @@ if [[ "$ACTION" == activate-api ]]; then
     if [[ "$PREVIOUS" == none ]]; then rm -f -- "$CURRENT"; else ln -s "$PREVIOUS" "$CURRENT.rollback"; mv -Tf "$CURRENT.rollback" "$CURRENT"; fi
     systemctl daemon-reload
     systemctl start "$RUNTIME"
+    wait_api_ready && active "$RUNTIME" && assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || { echo 'automatic rollback did not pass readiness/PID checks' >&2; exit 2; }
     exit 1
   fi
   echo "ACTIVE_OK commit=$COMMIT runtime_pid=$(pid "$RUNTIME") paper_pid=$(pid "$PAPER") trader_pid=$(pid "$TRADER")"
@@ -206,5 +235,5 @@ PREVIOUS="$(cat "$BACKUPS/$COMMIT/prior.release")"
 if [[ "$PREVIOUS" == none ]]; then rm -f -- "$CURRENT"; else ln -s "$PREVIOUS" "$CURRENT.rollback"; mv -Tf "$CURRENT.rollback" "$CURRENT"; fi
 systemctl daemon-reload
 systemctl start "$RUNTIME"
-active "$RUNTIME" && assert_peers "$PAPER_BEFORE" "$TRADER_BEFORE" || { echo 'rollback needs operator attention' >&2; exit 1; }
+wait_api_ready && active "$RUNTIME" && assert_peers "$PAPER_BEFORE" "$TRADER_BEFORE" || { echo 'rollback needs operator attention' >&2; exit 1; }
 echo "ROLLBACK_OK runtime_pid=$(pid "$RUNTIME") paper_pid=$PAPER_BEFORE trader_pid=$TRADER_BEFORE"
