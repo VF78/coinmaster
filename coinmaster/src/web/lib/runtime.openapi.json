@@ -583,12 +583,44 @@
             "type": "string"
           },
           "optimizer_blocker": {
-            "const": "OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED",
-            "title": "Optimizer Blocker",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Optimizer Blocker"
+          },
+          "optimizer_blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Optimizer Blockers",
+            "type": "array"
+          },
+          "optimizer_search": {
+            "additionalProperties": true,
+            "title": "Optimizer Search",
+            "type": "object"
+          },
+          "optimizer_source_manifest_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Optimizer Source Manifest Sha256"
           },
           "optimizer_state": {
-            "const": "BLOCKED",
+            "enum": [
+              "READY",
+              "BLOCKED"
+            ],
             "title": "Optimizer State",
             "type": "string"
           }
@@ -600,7 +632,10 @@
           "baseline_end_exclusive",
           "baseline_objective",
           "optimizer_state",
-          "optimizer_blocker"
+          "optimizer_blocker",
+          "optimizer_blockers",
+          "optimizer_search",
+          "optimizer_source_manifest_sha256"
         ],
         "title": "ResearchCapabilities",
         "type": "object"
@@ -854,6 +889,18 @@
             ],
             "title": "Kind",
             "type": "string"
+          },
+          "optimizer_search": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Optimizer Search"
           },
           "research_command": {
             "anyOf": [
@@ -2246,6 +2293,22 @@
       "get": {
         "operationId": "research_capability_api_v1_research_capabilities_get",
         "parameters": [
+          {
+            "in": "query",
+            "name": "config_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Config Id"
+            }
+          },
           {
             "in": "header",
             "name": "authorization",

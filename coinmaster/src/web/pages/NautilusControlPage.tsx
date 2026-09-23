@@ -76,8 +76,8 @@ export function ResearchPage() {
   const [starting, setStarting] = useState(false);
 
   async function load() {
-    const [runResult, catalogResult, configResult, capabilityResult] = await Promise.allSettled([
-      getRuns(), getResearchCatalog(), getConfigurations(), getResearchCapabilities(),
+    const [runResult, catalogResult, configResult] = await Promise.allSettled([
+      getRuns(), getResearchCatalog(), getConfigurations(),
     ]);
     if (runResult.status === 'fulfilled') {
       setRuns(runResult.value);
@@ -86,8 +86,10 @@ export function ResearchPage() {
     if (catalogResult.status === 'fulfilled') setCatalog(catalogResult.value);
     if (configResult.status === 'fulfilled') {
       setConfigs(configResult.value);
-      setConfig((current) => current ?? configResult.value.find((item) => item.id === window.localStorage.getItem('coinmaster-selected-config')) ?? configResult.value[0] ?? null);
+      setConfig(configResult.value.find((item) => item.id === window.localStorage.getItem('coinmaster-selected-config')) ?? configResult.value[0] ?? null);
     }
+    const selectedConfig = configResult.status === 'fulfilled' ? configResult.value.find((item) => item.id === window.localStorage.getItem('coinmaster-selected-config')) ?? configResult.value[0] : config;
+    const capabilityResult = await Promise.allSettled([getResearchCapabilities(selectedConfig?.id)]).then(([result]) => result);
     if (capabilityResult.status === 'fulfilled') setCapabilities(capabilityResult.value);
     const failed = [runResult, catalogResult, configResult, capabilityResult].find((result) => result.status === 'rejected');
     if (failed?.status === 'rejected') setMessage(failed.reason instanceof Error ? failed.reason.message : 'Unable to load native research status.');
@@ -123,16 +125,30 @@ export function ResearchPage() {
     } finally { setStarting(false); void load(); }
   }
 
+  async function startOptimizer() {
+    if (starting || capabilities?.optimizer_state !== 'READY' || !config || activeRun) return;
+    setStarting(true); setMessage('Starting bounded native optimizer…');
+    try {
+      const run = await createRun(config.id, 'research', 'native_optimizer', capabilities.optimizer_search);
+      setRuns((items) => [run, ...items]); setSelectedRunId(run.id);
+      setMessage(run.status === 'BLOCKED' ? run.evidence.join(' · ') : 'Native optimizer job started.');
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Unable to start optimizer.'); }
+    finally { setStarting(false); void load(); }
+  }
+
   const selectedRun = runs.find((item) => item.id === selectedRunId) ?? null;
   const activeRun = runs.find((item) => ['STARTING', 'RUNNING', 'CANCEL_REQUESTED', 'QUEUED'].includes(item.status));
   const terminalTotal = selectedRun?.report?.summary && typeof selectedRun.report.summary === 'object'
     ? (selectedRun.report.summary as { terminal_total?: string }).terminal_total
     : selectedRun?.report?.terminal_total;
   const baselineReady = capabilities?.baseline_state === 'READY';
+  const optimizerReady = capabilities?.optimizer_state === 'READY';
+  const optimizerSearch = capabilities?.optimizer_search as { axis: string; values: string[]; max_variants: number; source_candidate_sha256: string } | undefined;
+  const top20 = Array.isArray(selectedRun?.report?.top20) ? selectedRun.report.top20 as { candidate_id: string; candidate_sha256: string; terminal_total: string; roi: string; drawdown_percent: string; liquidations: number; maker_fees: string; taker_fees: string; funding: { count?: number; signed_amount?: string }; fills: number; limitations: string[]; artifact_sha256: string; classification: string }[] : [];
   return <main className="terminal-layout">
     <Card title="Native baseline period" actions={<Badge tone={baselineReady ? 'success' : 'danger'}>{capabilities?.baseline_state ?? (loading ? 'LOADING' : 'BLOCKED')}</Badge>}>
       <div className="rules-form-grid">
-        <label className="rules-field"><span>Immutable configuration</span><select value={config?.id ?? ''} onChange={(event) => { const next = configs.find((item) => item.id === event.target.value) ?? null; setConfig(next); if (next) window.localStorage.setItem('coinmaster-selected-config', next.id); }}>{configs.map((item) => <option key={item.id} value={item.id}>{item.config_hash.slice(0, 12)} · {item.created_at}</option>)}</select></label>
+        <label className="rules-field"><span>Immutable configuration</span><select value={config?.id ?? ''} onChange={(event) => { const next = configs.find((item) => item.id === event.target.value) ?? null; setConfig(next); setCapabilities(null); if (next) { window.localStorage.setItem('coinmaster-selected-config', next.id); void getResearchCapabilities(next.id).then(setCapabilities).catch((error: Error) => setMessage(error.message)); } }}>{configs.map((item) => <option key={item.id} value={item.id}>{item.config_hash.slice(0, 12)} · {item.created_at}</option>)}</select></label>
         <label className="rules-field"><span>Start date</span><input disabled value={capabilities?.baseline_start ?? 'UNKNOWN'} /></label>
         <label className="rules-field"><span>End date (exclusive)</span><input disabled value={capabilities?.baseline_end_exclusive ?? 'UNKNOWN'} /></label>
         <label className="rules-field"><span>Ranking objective</span><input disabled value={capabilities?.baseline_objective ?? 'TOTAL only'} /></label>
@@ -141,13 +157,17 @@ export function ResearchPage() {
       {capabilities?.baseline_blockers.length ? <p className="muted">Baseline blocked: {capabilities.baseline_blockers.join(' · ')}</p> : null}
       <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!baselineReady || starting || Boolean(activeRun)} onClick={() => void startBaseline()}>{starting ? 'Starting…' : activeRun ? 'Native job running…' : 'Run verified native baseline'}</Button><Button variant="secondary" onClick={() => void load()}>Refresh status</Button></div>
     </Card>
-    <Card title="Bounded native optimizer" actions={<Badge tone="danger">BLOCKED</Badge>}>
-      <p className="muted">Optimize is unavailable: {capabilities?.optimizer_blocker ?? 'OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED'}. The current optimizer CLI has no immutable job request, progress/result envelope, lease binding or per-job artifact-hash contract.</p>
-      <Button variant="primary" disabled>Optimize TOTAL only</Button>
+    <Card title="Bounded native optimizer" actions={<Badge tone={optimizerReady ? 'success' : 'danger'}>{capabilities?.optimizer_state ?? 'BLOCKED'}</Badge>}>
+      <p className="muted">Sealed Stage-G source {optimizerSearch?.source_candidate_sha256.slice(0, 12) ?? 'UNKNOWN'} · verified 1m manifest {capabilities?.optimizer_source_manifest_sha256?.slice(0, 12) ?? 'UNKNOWN'}.</p>
+      <p className="muted">One axis: {optimizerSearch?.axis ?? 'btc_notional_multiplier'} = {optimizerSearch?.values.join(', ') ?? '—'} · budget {optimizerSearch?.max_variants ?? '—'} native variants · ranking by terminal ACTIVE+RESERVE TOTAL. Diagnostic only; no promotion.</p>
+      {capabilities?.optimizer_blockers.length ? <p className="muted">Blocked: {capabilities.optimizer_blockers.join(' · ')}</p> : null}
+      <Button variant="primary" disabled={!optimizerReady || !config || starting || Boolean(activeRun)} onClick={() => void startOptimizer()}>{starting ? 'Starting…' : activeRun ? 'Worker busy…' : 'Optimize TOTAL only'}</Button>
     </Card>
     <Card title="Run progress and result" actions={<Badge tone={selectedRun ? tone(selectedRun.status) : 'neutral'}>{selectedRun ? `${selectedRun.status}${selectedRun.progress === null || selectedRun.progress === undefined ? '' : ` · ${selectedRun.progress}%`}` : 'NO RUN SELECTED'}</Badge>}>
       <p className="muted">{activeRun ? `Active native job ${activeRun.id.slice(0, 8)} updates every three seconds.` : 'Choose a run from history to inspect its compact result.'}</p>
       <div className="stats-grid"><Stat label="Terminal TOTAL" value={String(terminalTotal ?? '—')} /><Stat label="Evidence" value={selectedRun?.evidence.join(' · ') ?? '—'} /></div>
+      {selectedRun?.command_name === 'native_optimizer' ? <p className="muted">Request {selectedRun.request_hash?.slice(0, 12) ?? '—'} · config {selectedRun.report?.request_config_hash?.toString().slice(0, 12) ?? '—'} · result {selectedRun.report?.artifact_sha256?.toString().slice(0, 12) ?? '—'} · classification {selectedRun.report?.status?.toString() ?? '—'}.</p> : null}
+      {top20.length ? <DataTable rows={top20.map((row) => ({ ...row, id: row.candidate_id }))} emptyText="No ranked candidates." mobileTitle={(row) => row.candidate_id} columns={[{ key: 'candidate', header: 'Candidate / SHA', render: (row) => `${row.candidate_id} · ${row.candidate_sha256.slice(0, 12)}` }, { key: 'total', header: 'TOTAL', render: (row) => row.terminal_total }, { key: 'risk', header: 'ROI / DD / liq', render: (row) => `${row.roi} / ${row.drawdown_percent} / ${row.liquidations}` }, { key: 'evidence', header: 'Native evidence', render: (row) => `${row.classification} · fills ${row.fills} · fees ${row.maker_fees}/${row.taker_fees} · funding ${row.funding?.count ?? '—'} (${row.funding?.signed_amount ?? 'UNKNOWN'}) · ${row.artifact_sha256.slice(0, 12)} · ${row.limitations.join('; ')}` }]} /> : null}
       {selectedRun && ['STARTING', 'RUNNING', 'CANCEL_REQUESTED', 'QUEUED'].includes(selectedRun.status) ? <Button variant="danger" onClick={() => void cancelRun(selectedRun.id).then(load)}>Cancel owned job</Button> : null}
       <p className="muted">The page displays compact status and result fields only; job artifacts remain hash-checked private evidence.</p>
     </Card>

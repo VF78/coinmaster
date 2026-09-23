@@ -575,16 +575,21 @@ export interface components {
              * @enum {string}
              */
             baseline_state: "READY" | "BLOCKED";
-            /**
-             * Optimizer Blocker
-             * @constant
-             */
-            optimizer_blocker: "OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED";
+            /** Optimizer Blocker */
+            optimizer_blocker: string | null;
+            /** Optimizer Blockers */
+            optimizer_blockers: string[];
+            /** Optimizer Search */
+            optimizer_search: {
+                [key: string]: unknown;
+            };
+            /** Optimizer Source Manifest Sha256 */
+            optimizer_source_manifest_sha256: string | null;
             /**
              * Optimizer State
-             * @constant
+             * @enum {string}
              */
-            optimizer_state: "BLOCKED";
+            optimizer_state: "READY" | "BLOCKED";
         };
         /** ResearchCatalogDetail */
         ResearchCatalogDetail: {
@@ -685,6 +690,10 @@ export interface components {
              * @enum {string}
              */
             kind: "fixture" | "backtest" | "paper" | "research";
+            /** Optimizer Search */
+            optimizer_search?: {
+                [key: string]: unknown;
+            } | null;
             /** Research Command */
             research_command?: string | null;
         };
@@ -1262,7 +1271,9 @@ export interface operations {
     };
     research_capability_api_v1_research_capabilities_get: {
         parameters: {
-            query?: never;
+            query?: {
+                config_id?: string | null;
+            };
             header?: {
                 authorization?: string | null;
             };

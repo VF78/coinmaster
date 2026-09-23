@@ -20,6 +20,7 @@ from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, build_en
 from coinmaster.research.catalog import RESEARCH_CATALOG
 from coinmaster.api.research_jobs import ResearchJobManager
 from coinmaster.research.native_baseline import TRADING_END_MS, TRADING_START_MS, coverage_blockers
+from coinmaster.research.optimizer_job import config_blockers, search_spec, source_blockers
 from coinmaster.venues.bybit_profile import BybitVenueProfile
 
 
@@ -100,6 +101,7 @@ class RunInput(BaseModel):
     config_id: str
     kind: Literal["fixture", "backtest", "paper", "research"]
     research_command: str | None = None
+    optimizer_search: dict[str, Any] | None = None
 
 
 class RunRecord(BaseModel):
@@ -130,8 +132,11 @@ class ResearchCapabilities(BaseModel):
     baseline_start: str
     baseline_end_exclusive: str
     baseline_objective: Literal["TOTAL only"]
-    optimizer_state: Literal["BLOCKED"]
-    optimizer_blocker: Literal["OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED"]
+    optimizer_state: Literal["READY", "BLOCKED"]
+    optimizer_blocker: str | None
+    optimizer_blockers: list[str]
+    optimizer_search: dict[str, Any]
+    optimizer_source_manifest_sha256: str | None
 
 
 class ResearchCatalogEntry(BaseModel):
@@ -376,20 +381,33 @@ def configured_research_data_root(environment: dict[str, str] | None = None) -> 
     return Path(environment.get("COINMASTER_RESEARCH_DATA_ROOT", str(Path(__file__).resolve().parents[2] / "var/data")))
 
 
-def research_capabilities(data_root: Path) -> ResearchCapabilities:
+def research_capabilities(data_root: Path, config: ConfigurationRecord | None = None, lease_busy: bool = False) -> ResearchCapabilities:
     """Expose native-job availability without returning source manifests."""
     try:
         blockers = coverage_blockers(data_root)
     except (OSError, TypeError, ValueError, json.JSONDecodeError):
         blockers = ["INVALID_1M_MANIFEST"]
+    try:
+        optimizer_blockers, source_hash = source_blockers(data_root)
+    except (OSError, TypeError, ValueError, json.JSONDecodeError):
+        optimizer_blockers, source_hash = ["INVALID_1M_MANIFEST"], None
+    if config is None:
+        optimizer_blockers.append("CONFIG_REQUIRED")
+    else:
+        optimizer_blockers.extend(config_blockers(config.config.model_dump()))
+    if lease_busy:
+        optimizer_blockers.append("NATIVE_RESEARCH_WORKER_BUSY")
     return ResearchCapabilities(
         baseline_state="READY" if not blockers else "BLOCKED",
         baseline_blockers=blockers,
         baseline_start=datetime.fromtimestamp(TRADING_START_MS / 1000, tz=UTC).date().isoformat(),
         baseline_end_exclusive=datetime.fromtimestamp(TRADING_END_MS / 1000, tz=UTC).date().isoformat(),
         baseline_objective="TOTAL only",
-        optimizer_state="BLOCKED",
-        optimizer_blocker="OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED",
+        optimizer_state="BLOCKED" if optimizer_blockers else "READY",
+        optimizer_blocker=optimizer_blockers[0] if optimizer_blockers else None,
+        optimizer_blockers=optimizer_blockers,
+        optimizer_search=search_spec(),
+        optimizer_source_manifest_sha256=source_hash,
     )
 
 
@@ -433,8 +451,15 @@ def create_app(database: str | None = None, token: str | None = None, include_le
         return [_catalog_entry(entry) for entry in RESEARCH_CATALOG]
 
     @app.get("/api/v1/research/capabilities", response_model=ResearchCapabilities, dependencies=[Depends(auth)])
-    def research_capability() -> ResearchCapabilities:
-        return research_capabilities(research.data_root)
+    def research_capability(config_id: str | None = None) -> ResearchCapabilities:
+        selected = None
+        if config_id:
+            try:
+                selected = store.get_config(config_id)
+            except KeyError:
+                pass
+        busy = store.db.execute("SELECT 1 FROM research_leases WHERE name='native_baseline'").fetchone() is not None
+        return research_capabilities(research.data_root, selected, busy)
 
     @app.get("/api/v1/research/catalog/{catalog_id}", response_model=ResearchCatalogDetail, dependencies=[Depends(auth)])
     def research_catalog_detail(catalog_id: str) -> ResearchCatalogDetail:
@@ -466,7 +491,7 @@ def create_app(database: str | None = None, token: str | None = None, include_le
         except KeyError as error: raise HTTPException(404, "configuration not found") from error
         if input.kind == "research":
             try:
-                return research.start(config, input.research_command, idempotency_key)
+                return research.start(config, input.research_command, idempotency_key, input.optimizer_search)
             except ValueError as error:
                 raise HTTPException(422, str(error)) from error
         run = RunRecord(id=str(uuid4()), config_id=input.config_id, kind=input.kind, created_at=utcnow(), status="QUEUED", evidence=[], report=None)

@@ -27,8 +27,10 @@ const required = [
   ['research launches the owned native baseline job', 'Run verified native baseline'],
   ['research shows native job progress and history', 'Native run history'],
   ['research ranks the workspace by TOTAL only', 'TOTAL ONLY'],
-  ['research blocks optimizer until it has the job protocol', 'OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED'],
-  ['API exposes research launch capabilities', "request<ResearchCapabilities>('/research/capabilities')"],
+  ['research enables optimizer only when capability is READY', "capabilities?.optimizer_state === 'READY'"],
+  ['research displays the bounded optimizer budget', 'optimizerSearch?.max_variants'],
+  ['research launches the owned native optimizer job', "'native_optimizer', capabilities.optimizer_search"],
+  ['API exposes selected-config research capabilities', "request<ResearchCapabilities>(`/research/capabilities"],
 ] as const;
 
 let failed = 0;

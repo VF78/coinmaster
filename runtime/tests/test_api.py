@@ -387,7 +387,9 @@ def test_research_capabilities_blocks_optimizer_and_missing_baseline_data(tmp_pa
     assert body.baseline_start == "2024-09-01" and body.baseline_end_exclusive == "2026-09-01"
     assert body.baseline_objective == "TOTAL only"
     assert body.optimizer_state == "BLOCKED"
-    assert body.optimizer_blocker == "OPTIMIZER_JOB_PROTOCOL_NOT_IMPLEMENTED"
+    assert body.optimizer_blocker == "MISSING_1M_MANIFEST"
+    assert "CONFIG_REQUIRED" in body.optimizer_blockers
+    assert body.optimizer_search["max_variants"] == 5
     assert "/api/v1/research/capabilities" in app.openapi()["paths"]
 
 
