@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import time
 from dataclasses import fields, is_dataclass
 from datetime import datetime
 from decimal import Decimal
@@ -134,6 +135,32 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         super().__init__(config)
         self.recovery_confirmed = False
         self._recovery_runtime = None
+        # Process-local evidence: a restored checkpoint never grants feed freshness.
+        self._quote_ns = {}
+
+    def _feeds_fresh(self, now_ns: int) -> bool:
+        age = self.config.max_mark_age_ns
+        if not self.recovery_confirmed or age <= 0:
+            return False
+        for instrument_id in (self.config.btc_id, self.config.sol_id):
+            quote_ns = self._quote_ns.get(instrument_id)
+            mark = self._latest_marks.get(instrument_id)
+            if quote_ns is None or mark is None:
+                return False
+            if not (0 <= now_ns - quote_ns <= age and 0 <= now_ns - mark.ts_event <= age):
+                return False
+        return True
+
+    def on_quote_tick(self, tick) -> None:
+        if tick.instrument_id not in (self.config.btc_id, self.config.sol_id):
+            return
+        self._quote_ns[tick.instrument_id] = tick.ts_event
+        if self._feeds_fresh(time.time_ns()):
+            super().on_quote_tick(tick)
+
+    def _record_submission(self, *args, **kwargs) -> bool:
+        # Final pre-submit gate covers queued entries and every reduce-only management action.
+        return self._feeds_fresh(time.time_ns()) and super()._record_submission(*args, **kwargs)
 
     def attach_recovery_runtime(self, runtime) -> None:
         self._recovery_runtime = runtime
@@ -147,7 +174,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             raise RuntimeError("RECOVERY_FILL_CHECKPOINT_CONFLICT")
 
     def _entries_enabled(self) -> bool:
-        return self.recovery_confirmed and super()._entries_enabled()
+        return self._feeds_fresh(time.time_ns()) and super()._entries_enabled()
 
     def on_save(self) -> dict[str, bytes]:
         document = {

@@ -53,6 +53,41 @@ def test_versioned_episode_and_order_mapping_roundtrip_stays_paused():
     assert restored._entries_enabled() is False
 
 
+def test_recovered_management_and_entries_require_new_fresh_public_feeds():
+    import time
+    import msgspec
+    from test_hl_stageg_sandbox_lifecycle import HL_SOL
+
+    config = msgspec.structs.replace(
+        _strategy().config, entries_enabled=True, max_mark_age_ns=5_000_000_000,
+    )
+    strategy = RecoverableWaveOverlayStrategy(config)
+    now = time.time_ns()
+    strategy._latest_marks[HL_BTC.id] = VenueMark(HL_BTC.id, Decimal("60000"), now)
+    strategy._latest_marks[HL_SOL.id] = VenueMark(HL_SOL.id, Decimal("200"), now)
+    strategy._quote_ns[HL_BTC.id] = now
+    strategy._quote_ns[HL_SOL.id] = now
+    assert not strategy._feeds_fresh(now)
+    assert not strategy._entries_enabled()
+    assert strategy._record_submission() is False
+
+    strategy.recovery_confirmed = True
+    assert strategy._feeds_fresh(now)
+    assert strategy._entries_enabled()
+    strategy._quote_ns[HL_SOL.id] = now - config.max_mark_age_ns - 1
+    assert not strategy._feeds_fresh(now)
+    assert not strategy._entries_enabled()
+    assert strategy._record_submission() is False
+
+    strategy._quote_ns[HL_SOL.id] = now
+    strategy._latest_marks[HL_BTC.id] = VenueMark(HL_BTC.id, Decimal("60000"), now - config.max_mark_age_ns - 1)
+    assert not strategy._feeds_fresh(now)
+    restored = RecoverableWaveOverlayStrategy(config)
+    restored.on_load(strategy.on_save())
+    assert restored._quote_ns == {}
+    assert not restored._feeds_fresh(now)
+
+
 def test_versioned_state_rejects_wrong_candidate_and_unknown_schema():
     source = RecoverableWaveOverlayStrategy(_strategy().config)
     payload = source.on_save()
