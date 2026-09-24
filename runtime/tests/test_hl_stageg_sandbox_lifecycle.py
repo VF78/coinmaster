@@ -11,6 +11,9 @@ from __future__ import annotations
 
 import asyncio
 from decimal import Decimal
+from types import SimpleNamespace
+
+import pytest
 
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.adapters.sandbox.factory import SandboxLiveExecClientFactory
@@ -18,7 +21,7 @@ from nautilus_trader.common import Environment
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
-from nautilus_trader.model.currencies import BTC, SOL, USDC
+from nautilus_trader.model.currencies import BTC, SOL, USD, USDC
 from nautilus_trader.model.data import BarSpecification, BarType, MarkPriceUpdate, QuoteTick
 from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType
 from nautilus_trader.model.identifiers import ClientId, InstrumentId, Symbol, Venue
@@ -36,7 +39,7 @@ from coinmaster.ops.hyperliquid_testnet import (
 )
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import load_candidate
-from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
+from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig, _native_account_money
 from coinmaster.venues.hyperliquid_profile import HyperliquidProfileEnvironment, HyperliquidVenueProfile
 from coinmaster.venues.margin_policy import HyperliquidSandboxMarginPolicy
 from coinmaster.venues.marks import venue_mark_data_type
@@ -46,10 +49,10 @@ ROOT = __import__("pathlib").Path(__file__).resolve().parents[1]
 HYPERLIQUID = Venue("HYPERLIQUID")
 
 
-def _perpetual(symbol: str, base, tick: str, step: str) -> CryptoPerpetual:
+def _perpetual(symbol: str, base, tick: str, step: str, *, quote=USDC) -> CryptoPerpetual:
     """Local instrument metadata for the public HL IDs; no adapter request."""
     return CryptoPerpetual(
-        InstrumentId(Symbol(f"{symbol}-PERP"), HYPERLIQUID), Symbol(symbol), base, USDC, USDC,
+        InstrumentId(Symbol(f"{symbol}-PERP"), HYPERLIQUID), Symbol(symbol), base, quote, USDC,
         False, len(tick.partition(".")[2]), len(step.partition(".")[2]),
         Price.from_str(tick), Quantity.from_str(step), 0, 0,
         min_quantity=Quantity.from_str(step), min_notional=Money(Decimal("10"), USDC),
@@ -102,6 +105,30 @@ existing ``_submit_intent`` path retains Stage-G order normalization,
             intent = Intent("hl-stageg-exit", "hl-stageg-lifecycle", "BTC_REDUCE", 0, -1, quantity=0.01)
         self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
         self.step += 1
+
+
+def test_native_money_reads_usdc_account_for_usd_quote_and_never_uses_seed() -> None:
+    usd_quoted = _perpetual("BTC-USD", BTC, "0.1", "0.00001", quote=USD)
+    assert usd_quoted.quote_currency == USD
+    account = SimpleNamespace(
+        base_currency=USDC,
+        balance_total=lambda currency: Money(Decimal("8765"), USDC) if currency == USDC else None,
+        balance_free=lambda currency: Money(Decimal("7654"), USDC) if currency == USDC else None,
+    )
+    assert _native_account_money(account) == Decimal("8765")
+    assert _native_account_money(account, free=True) == Decimal("7654")
+    cache = SimpleNamespace(
+        account_for_venue=lambda venue: account,
+        instrument=lambda instrument_id: HL_BTC,
+        positions_open=lambda: [],
+    )
+    strategy = SimpleNamespace(config=SimpleNamespace(btc_id=BTC_PERP, sol_id=SOL_PERP, active_seed=Decimal("10000")), cache=cache)
+    btc_mark = SimpleNamespace(price=Decimal("60000"))
+    sol_mark = SimpleNamespace(price=Decimal("150"))
+    assert WaveOverlayStrategy._active_marked(strategy, btc_mark, sol_mark) == 8765.0
+    cache.account_for_venue = lambda venue: None
+    with pytest.raises(ValueError, match="NATIVE_ACCOUNT_OR_INSTRUMENT_MISSING"):
+        WaveOverlayStrategy._active_marked(strategy, btc_mark, sol_mark)
 
 
 async def _run_lifecycle(journal_path) -> tuple[AttachedStageGEntryExitProbe, PaperRuntime, TradingNode]:

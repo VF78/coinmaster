@@ -72,6 +72,17 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     funding_sink: object | None = None
 
 
+def _native_account_money(account, *, free: bool = False) -> Decimal:
+    """Read native account cash in its ledger currency; absent cash fails closed."""
+    currency = account.base_currency
+    if currency is None:
+        raise ValueError("NATIVE_ACCOUNT_BASE_CURRENCY_MISSING")
+    balance = account.balance_free(currency) if free else account.balance_total(currency)
+    if balance is None:
+        raise ValueError(f"NATIVE_ACCOUNT_BALANCE_MISSING:{currency}")
+    return balance.as_decimal()
+
+
 class WaveOverlayStrategy(Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
@@ -246,7 +257,7 @@ class WaveOverlayStrategy(Strategy):
             return
         try:
             policy = self.config.margin_policy
-            equity, maintenance = account.balance_total(base.quote_currency).as_decimal(), Decimal("0")
+            equity, maintenance = _native_account_money(account), Decimal("0")
             for position in positions:
                 instrument = self.cache.instrument(position.instrument_id)
                 if instrument is None:
@@ -365,10 +376,10 @@ class WaveOverlayStrategy(Strategy):
         account = self.cache.account_for_venue(self.config.btc_id.venue)
         instrument = self.cache.instrument(self.config.btc_id)
         if account is None or instrument is None:
-            return float(self.config.active_seed)
+            raise ValueError("NATIVE_ACCOUNT_OR_INSTRUMENT_MISSING")
         # Native account is the monetary source; this does not fabricate a UI
         # balance.  Full marked-equity reconciliation is still a baseline gate.
-        marked = account.balance_total(instrument.quote_currency).as_decimal()
+        marked = _native_account_money(account)
         mark_by_instrument = {self.config.btc_id: btc_mark.price, self.config.sol_id: sol_mark.price}
         for position in self.cache.positions_open():
             mark = mark_by_instrument.get(position.instrument_id)
@@ -628,7 +639,7 @@ class WaveOverlayStrategy(Strategy):
             account = self.cache.account_for_venue(self.config.btc_id.venue)
             instrument = self.cache.instrument(self.config.btc_id)
             active = Decimal(str(self._active_marked(self._current_btc_mark, self._current_sol_mark))) if self._current_btc_mark and self._current_sol_mark else Decimal("0")
-            return account is not None and instrument is not None and active > 0 and gross <= active * self.config.max_gross_to_active and required <= account.balance_free(instrument.quote_currency).as_decimal()
+            return account is not None and instrument is not None and active > 0 and gross <= active * self.config.max_gross_to_active and required <= _native_account_money(account, free=True)
         except ValueError:
             return False
 
