@@ -1,0 +1,147 @@
+from __future__ import annotations
+
+from datetime import UTC, datetime, timedelta
+from decimal import Decimal
+
+import pytest
+
+from coinmaster.domain.wave_overlay import DailyBar, Episode, Intent
+from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
+from coinmaster.venues.marks import VenueMark
+from test_live_native_report_recovery import _strategy
+from test_hl_stageg_sandbox_lifecycle import HL_BTC
+
+
+def test_versioned_episode_and_order_mapping_roundtrip_stays_paused():
+    source = RecoverableWaveOverlayStrategy(_strategy().config)
+    open_time = datetime(2026, 9, 23, tzinfo=UTC)
+    source._bars.append(DailyBar(open_time, open_time + timedelta(days=1),
+                                 open_time + timedelta(days=1), 60000, 61000, 150))
+    episode = Episode("episode-1", 1, 10000, 1.2, btc_initial_qty=0.02, btc_open_qty=0.01)
+    episode.btc_tps.add(0)
+    episode.sol_rights.add(0)
+    episode.sol_right_fraction[0] = 0.5
+    intent = Intent("intent-1", episode.id, "BTC_REDUCE", 0, -1, quantity=0.01)
+    episode.pending[intent.id] = intent
+    source._domain.episode = episode
+    source._domain._decision_index = 1483
+    source._pending_by_order["HLTG-RESTART-PROBE-1"] = intent
+    source._sigma_by_order["HLTG-RESTART-PROBE-1"] = 0.18
+    source._decision_index_by_order["HLTG-RESTART-PROBE-1"] = 1483
+    source._latest_marks[HL_BTC.id] = VenueMark(HL_BTC.id, Decimal("61000"), 1)
+    encoded = source.on_save()
+    restored = RecoverableWaveOverlayStrategy(_strategy().config)
+    restored.on_load(encoded)
+    assert restored._domain.episode == episode
+    assert restored._pending_by_order == source._pending_by_order
+    assert restored._sigma_by_order == source._sigma_by_order
+    assert restored._decision_index_by_order == source._decision_index_by_order
+    assert restored._bars == source._bars
+    assert restored._latest_marks[HL_BTC.id].price == Decimal("61000")
+    assert restored.recovery_confirmed is False
+    assert restored._entries_enabled() is False
+
+
+def test_versioned_state_rejects_wrong_candidate_and_unknown_schema():
+    source = RecoverableWaveOverlayStrategy(_strategy().config)
+    payload = source.on_save()
+    bad = {key: value.replace(b"coinmaster-wave-overlay-live-recovery-v1", b"unknown-v1")
+           for key, value in payload.items()}
+    with pytest.raises(ValueError, match="RECOVERY_STATE_IDENTITY_MISMATCH"):
+        RecoverableWaveOverlayStrategy(_strategy().config).on_load(bad)
+
+
+def test_pre_submit_intent_and_complete_episode_checkpoint_commit_atomically(tmp_path):
+    import time
+    from coinmaster.ops.live_recovery import LiveRecoverySubmissionSink
+    from coinmaster.ops.paper import PaperRuntime
+
+    journal = tmp_path / "live-outbox.sqlite"
+    runtime = PaperRuntime(journal, "live-recovery", 10**20)
+    runtime.acquire()
+    runtime.snapshot(ts_ns=time.time_ns(), positions=[], orders=[], funding_event_ids=[])
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    episode = Episode("episode-1", 1, 10000, 1.2)
+    intent = Intent("intent-1", episode.id, "BTC_ENTRY", None, 1, quantity=0.02)
+    episode.pending[intent.id] = intent
+    strategy._domain.episode = episode
+    order_id = "HLTG-RESTART-PROBE-1"
+    strategy._pending_by_order[order_id] = intent
+    strategy._sigma_by_order[order_id] = 0.2
+    strategy._decision_index_by_order[order_id] = 1483
+    sink = LiveRecoverySubmissionSink(runtime, strategy, frozenset({str(HL_BTC.id)}))
+    request = {
+        "client_order_id": order_id, "intent_id": intent.id,
+        "episode_id": episode.id, "action": "BTC_ENTRY",
+        "instrument_id": str(HL_BTC.id), "quantity": "0.02000",
+        "reduce_only": False,
+    }
+    assert sink(**request)
+    first_checkpoint = runtime.strategy_checkpoint()
+    assert first_checkpoint is not None
+    assert first_checkpoint[1] == runtime.native_revision()
+    assert not sink(**request)
+    assert runtime.strategy_checkpoint() == first_checkpoint
+    runtime.close()
+
+    reopened = PaperRuntime(journal, "live-recovery", 10**20)
+    assert reopened.pending_submissions()[0]["client_order_id"] == order_id
+    persisted = reopened.strategy_checkpoint()
+    assert persisted == first_checkpoint
+    recovered = RecoverableWaveOverlayStrategy(_strategy().config)
+    recovered.on_load({"wave_overlay_live_recovery_v1": persisted[0]})
+    assert recovered._domain.episode == episode
+    assert recovered._pending_by_order[order_id] == intent
+    assert not recovered._entries_enabled()
+    reopened.close()
+
+
+def test_wrong_native_fill_identity_never_advances_episode_or_trade_cursor(tmp_path):
+    from types import SimpleNamespace
+    from nautilus_trader.model.identifiers import AccountId, ClientOrderId, VenueOrderId, TradeId
+    from nautilus_trader.model.objects import Price, Quantity
+    from coinmaster.ops.live_recovery import LiveRecoveryReconciler
+    from coinmaster.ops.paper import PaperRuntime
+
+    runtime = PaperRuntime(tmp_path / "wrong-fill.sqlite", "live-recovery", 10**20)
+    runtime.acquire()
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    episode = Episode("episode-1", 1, 10000, 1.2)
+    intent = Intent("intent-1", episode.id, "BTC_ENTRY", None, 1, quantity=0.02)
+    episode.pending[intent.id] = intent
+    strategy._domain.episode = episode
+    order_id = "HLTG-RESTART-PROBE-1"
+    strategy._pending_by_order[order_id] = intent
+    report = SimpleNamespace(
+        account_id=AccountId("WRONG-master"), client_order_id=ClientOrderId(order_id),
+        venue_order_id=VenueOrderId("venue-1"), instrument_id=HL_BTC.id,
+        trade_id=TradeId("trade-wrong"), last_qty=Quantity.from_str("0.01000"),
+        last_px=Price.from_str("60000.0"), ts_event=1,
+    )
+    order = SimpleNamespace(
+        client_order_id=ClientOrderId(order_id), venue_order_id=VenueOrderId("venue-1"),
+        instrument_id=HL_BTC.id, is_closed=False,
+    )
+    with pytest.raises(ValueError, match="RECOVERY_FILL_IDENTITY_MISMATCH"):
+        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills([report], [order], [])
+    assert episode.btc_open_qty == 0
+    assert not runtime.has_recovered_fill("trade-wrong")
+    runtime.close()
+
+
+def test_missing_native_fill_history_with_open_position_fails_closed(tmp_path):
+    from types import SimpleNamespace
+    from nautilus_trader.model.objects import Quantity
+    from coinmaster.ops.live_recovery import LiveRecoveryReconciler
+    from coinmaster.ops.paper import PaperRuntime
+
+    runtime = PaperRuntime(tmp_path / "missing-fill.sqlite", "live-recovery", 10**20)
+    runtime.acquire()
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    strategy._domain.episode = Episode("episode-1", 1, 10000, 1.2)
+    position = SimpleNamespace(instrument_id=HL_BTC.id, quantity=Quantity.from_str("0.01000"), is_long=True)
+    with pytest.raises(ValueError, match="RECOVERY_EPISODE_POSITION_MISMATCH"):
+        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills([], [], [position])
+    assert not strategy.recovery_confirmed
+    assert runtime.strategy_checkpoint() is None
+    runtime.close()

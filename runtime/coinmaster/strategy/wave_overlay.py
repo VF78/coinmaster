@@ -400,11 +400,15 @@ class WaveOverlayStrategy(Strategy):
                     continue
                 side = OrderSide.SELL if position.is_long else OrderSide.BUY
                 order = self.order_factory.market(instrument_id=position.instrument_id, order_side=side, quantity=instrument.make_qty(position.quantity.as_decimal()), time_in_force=TimeInForce.IOC, reduce_only=True)
+                client_order_id = str(order.client_order_id)
+                self._pending_by_order[client_order_id] = intent
+                self._sigma_by_order[client_order_id] = sigma
+                self._decision_index_by_order[client_order_id] = decision_index
                 if not self._record_submission(order, intent.id, intent.episode_id, intent.action):
+                    self._pending_by_order.pop(client_order_id, None)
+                    self._sigma_by_order.pop(client_order_id, None)
+                    self._decision_index_by_order.pop(client_order_id, None)
                     continue
-                self._pending_by_order[str(order.client_order_id)] = intent
-                self._sigma_by_order[str(order.client_order_id)] = sigma
-                self._decision_index_by_order[str(order.client_order_id)] = decision_index
                 self.submit_order(order)
             return
         instrument_id = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
@@ -480,14 +484,18 @@ class WaveOverlayStrategy(Strategy):
             )
         else:
             order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
+        client_order_id = str(order.client_order_id)
+        self._pending_by_order[client_order_id] = intent
+        # A pre-submit durable checkpoint must see the exact order-to-episode
+        # mapping before native transport can accept or fill this order.
+        self._sigma_by_order[client_order_id] = sigma
+        self._decision_index_by_order[client_order_id] = decision_index
         if not self._record_submission(order, intent.id, intent.episode_id, intent.action, intent.reason, intent.level):
+            self._pending_by_order.pop(client_order_id, None)
+            self._sigma_by_order.pop(client_order_id, None)
+            self._decision_index_by_order.pop(client_order_id, None)
             self._domain.on_parent_terminal(intent.id)
             return
-        self._pending_by_order[str(order.client_order_id)] = intent
-        # Preserve the sigma from the decision in the native order tag map, rather
-        # than recalculating it after a later fill.
-        self._sigma_by_order[str(order.client_order_id)] = sigma
-        self._decision_index_by_order[str(order.client_order_id)] = decision_index
         self.submit_order(order)
 
     def _discard_queued_intents(self, predicate) -> None:

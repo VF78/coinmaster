@@ -1,3 +1,5 @@
+2026-09-24 #110 live-first source checkpoint: a credential-free native Nautilus 1.231 TradingNode recovery slice now persists versioned WaveOverlay episode state atomically with the pre-submit intent and replays missing domain fill transitions from verified native report/cache identity with a trade-ID cursor. A real disposable Redis cache and fake report-only execution transport proved crash-before-ACK, partial BTC fill, native account/position/order reconciliation, exactly-once episode transition across two restarts, and zero duplicate submits. 44 relevant tests passed; compile/diff checks passed. This is a fail-closed proof, not operational activation: recovery_confirmed stays false; absent/conflicting reports block takeover, and complete live management/entry gates remain future work. Current Stage-G service is unchanged; no credentials, real orders, approval update, or deploy.
+
 # ACTIVE_TASK
 
 Updated: 2026-09-24 Europe/Moscow

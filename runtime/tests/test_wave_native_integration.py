@@ -271,13 +271,20 @@ def test_control_a_sol_exit_is_taker_ioc_at_zero_spread() -> None:
 
 def test_native_order_submission_hook_receives_enum_names_not_numeric_values() -> None:
     class Capture:
-        def __init__(self): self.calls = []
-        def __call__(self, **kwargs): self.calls.append(kwargs); return True
+        def __init__(self): self.calls = []; self.strategy = None
+        def __call__(self, **kwargs):
+            order_id = kwargs["client_order_id"]
+            assert order_id in self.strategy._pending_by_order
+            assert order_id in self.strategy._sigma_by_order
+            assert order_id in self.strategy._decision_index_by_order
+            self.calls.append(kwargs)
+            return True
         def acknowledge(self, _client_order_id): pass
         def terminal(self, _client_order_id): pass
 
     capture = Capture()
     strategy = ControlAExitProbe(probe_config().__replace__(submission_sink=capture))
+    capture.strategy = strategy
     engine = native_engine(strategy)
     engine.add_data([quote(SOL_PERP.id, f"{price:.2f}", f"{price:.2f}", ts) for ts, price in enumerate((100, 101, 102, 103, 104), start=1)], sort=False)
     engine.sort_data(); engine.run()

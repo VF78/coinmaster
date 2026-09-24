@@ -60,6 +60,10 @@ class PaperRuntime:
         # A terminal fill can arrive after the last snapshot and before a
         # process crash. Its revision remains dirty until a coherent native
         # cache snapshot is durably recorded.
+        # A live-recovery pre-submit boundary commits the exact strategy
+        # episode/order mapping with its intent in one SQLite transaction.
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_strategy_checkpoint (id INTEGER PRIMARY KEY CHECK(id=1), body BLOB NOT NULL, native_revision INTEGER NOT NULL)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_recovered_fills (trade_id TEXT PRIMARY KEY)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_native_revision (id INTEGER PRIMARY KEY CHECK(id=1), value INTEGER NOT NULL)")
         self.db.execute("INSERT OR IGNORE INTO paper_native_revision VALUES (1, 0)")
         self.db.commit()
@@ -125,12 +129,14 @@ class PaperRuntime:
             return False
 
     @_journal_locked
-    def record_submission(self, *, client_order_id: str, intent_id: str, episode_id: str, action: str, instrument_id: str, quantity: str, reduce_only: bool) -> bool:
+    def record_submission(self, *, client_order_id: str, intent_id: str, episode_id: str, action: str, instrument_id: str, quantity: str, reduce_only: bool, strategy_state: bytes | None = None) -> bool:
         """Durably mark a native submit before handing it to Nautilus.
 
         ``SUBMITTING`` is intentionally uncertain until a terminal callback;
         it therefore survives a crash-before-ACK as a recovery gate.
         """
+        if strategy_state is not None and (not isinstance(strategy_state, bytes) or not strategy_state):
+            raise ValueError("INVALID_STRATEGY_CHECKPOINT")
         body = json.dumps({"quantity": quantity, "reduce_only": reduce_only}, sort_keys=True)
         try:
             self.db.execute(
@@ -138,9 +144,48 @@ class PaperRuntime:
                 (client_order_id, intent_id, episode_id, action, instrument_id, body),
             )
             self._bump_native_revision()
+            if strategy_state is not None:
+                self.db.execute(
+                    "INSERT OR REPLACE INTO paper_strategy_checkpoint VALUES (1, ?, ?)",
+                    (strategy_state, self.native_revision()),
+                )
             self.db.commit()
             return True
         except sqlite3.IntegrityError:
+            self.db.rollback()
+            return False
+
+    @_journal_locked
+    def strategy_checkpoint(self) -> tuple[bytes, int] | None:
+        row = self.db.execute("SELECT body,native_revision FROM paper_strategy_checkpoint WHERE id=1").fetchone()
+        return (bytes(row[0]), int(row[1])) if row else None
+
+    @_journal_locked
+    def has_recovered_fill(self, trade_id: str) -> bool:
+        return self.db.execute("SELECT 1 FROM paper_recovered_fills WHERE trade_id=?", (trade_id,)).fetchone() is not None
+
+    @_journal_locked
+    def commit_recovered_fill(self, trade_id: str, strategy_state: bytes) -> bool:
+        """Checkpoint one domain transition and its native trade cursor atomically.
+
+        Native Cache/Portfolio already owns the fill and monetary posting.
+        This cursor only prevents applying the domain rights twice.
+        """
+        if not trade_id or not isinstance(strategy_state, bytes) or not strategy_state:
+            raise ValueError("INVALID_RECOVERED_FILL_CHECKPOINT")
+        if self.has_recovered_fill(trade_id):
+            return False
+        try:
+            self.db.execute("INSERT INTO paper_recovered_fills VALUES (?)", (trade_id,))
+            self._bump_native_revision()
+            self.db.execute(
+                "INSERT OR REPLACE INTO paper_strategy_checkpoint VALUES (1, ?, ?)",
+                (strategy_state, self.native_revision()),
+            )
+            self.db.commit()
+            return True
+        except sqlite3.IntegrityError:
+            self.db.rollback()
             return False
 
     @_journal_locked
