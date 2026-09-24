@@ -864,7 +864,10 @@ class WaveOverlayStrategy(Strategy):
             client_order_id=str(order.client_order_id), intent_id=intent_id, episode_id=episode_id,
             action=action, instrument_id=str(order.instrument_id), quantity=str(order.quantity), reduce_only=bool(order.is_reduce_only),
             order_kind=getattr(order.order_type, "name", str(order.order_type)),
-            time_in_force=getattr(order.time_in_force, "name", str(order.time_in_force)), post_only=bool(order.is_post_only),
+            time_in_force=getattr(order.time_in_force, "name", str(order.time_in_force)),
+            order_side=getattr(order.side, "name", str(order.side)),
+            post_only=bool(order.is_post_only),
+            price=str(order.price) if order.has_price else None,
         ))
 
     def _record_fill_audit(self, event: OrderFilled) -> None:

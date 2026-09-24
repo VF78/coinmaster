@@ -11,7 +11,7 @@ from decimal import Decimal
 from typing import TYPE_CHECKING
 
 from nautilus_trader.model.currencies import USDC
-from nautilus_trader.model.enums import OrderSide
+from nautilus_trader.model.enums import OrderSide, OrderStatus
 
 from coinmaster.ops.paper import PaperRuntime
 
@@ -42,6 +42,11 @@ class LiveRecoverySubmissionSink:
             quantity=request["quantity"],
             reduce_only=request["reduce_only"],
             strategy_state=checkpoint,
+            order_shape={
+                "side": request["order_side"], "kind": request["order_kind"],
+                "tif": request["time_in_force"], "post_only": request["post_only"],
+                "price": request["price"],
+            } if all(key in request for key in ("order_side", "order_kind", "time_in_force", "post_only", "price")) else None,
         )
 
 
@@ -128,10 +133,38 @@ class LiveRecoveryReconciler:
                 or str(order.instrument_id) not in owned
                 or recorded["instrument_id"] != str(order.instrument_id)
                 or (intent is not None and (
-                    recorded["intent_id"] != intent.id or recorded["action"] != intent.action
+                    recorded["intent_id"] != intent.id
+                    or recorded["episode_id"] != intent.episode_id
+                    or recorded["action"] != intent.action
+                    or intent.id not in episode.pending
+                    or order.side != (OrderSide.BUY if intent.side == 1 else OrderSide.SELL)
                 ))
             ):
                 raise ValueError("RECOVERY_ORDER_OWNERSHIP_MISMATCH")
+            if intent is not None and intent.action == "BTC_REDUCE":
+                shape = recorded["body"].get("shape")
+                expected_side = "BUY" if intent.side == 1 else "SELL"
+                if not isinstance(shape, dict) or set(shape) != {"side", "kind", "tif", "post_only", "price"}:
+                    raise ValueError("RECOVERY_ORDER_SHAPE_MISSING")
+                if (
+                    shape["side"] != expected_side
+                    or shape["kind"] != "LIMIT"
+                    or shape["tif"] != "GTC"
+                    or shape["post_only"] is not True
+                    or shape["price"] is None
+                    or shape["price"] != str(order.price)
+                    or status_report.price is None
+                    or Decimal(shape["price"]) != status_report.price.as_decimal()
+                    or getattr(order.order_type, "name", None) != shape["kind"]
+                    or getattr(status_report.order_type, "name", None) != shape["kind"]
+                    or getattr(order.time_in_force, "name", None) != shape["tif"]
+                    or getattr(status_report.time_in_force, "name", None) != shape["tif"]
+                    or not order.is_post_only or not status_report.post_only
+                    or (not order.is_closed and status_report.order_status not in {
+                        OrderStatus.ACCEPTED, OrderStatus.PARTIALLY_FILLED
+                    })
+                ):
+                    raise ValueError("RECOVERY_ORDER_SHAPE_MISMATCH")
             known_ids = {str(item) for item in order.trade_ids}
             reported_ids = {str(item.trade_id) for item in reports_by_order[order_id]}
             quantity = sum((item.last_qty.as_decimal() for item in reports_by_order[order_id]), Decimal("0"))

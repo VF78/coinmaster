@@ -129,7 +129,7 @@ class PaperRuntime:
             return False
 
     @_journal_locked
-    def record_submission(self, *, client_order_id: str, intent_id: str, episode_id: str, action: str, instrument_id: str, quantity: str, reduce_only: bool, strategy_state: bytes | None = None) -> bool:
+    def record_submission(self, *, client_order_id: str, intent_id: str, episode_id: str, action: str, instrument_id: str, quantity: str, reduce_only: bool, strategy_state: bytes | None = None, order_shape: dict | None = None) -> bool:
         """Durably mark a native submit before handing it to Nautilus.
 
         ``SUBMITTING`` is intentionally uncertain until a terminal callback;
@@ -137,7 +137,9 @@ class PaperRuntime:
         """
         if strategy_state is not None and (not isinstance(strategy_state, bytes) or not strategy_state):
             raise ValueError("INVALID_STRATEGY_CHECKPOINT")
-        body = json.dumps({"quantity": quantity, "reduce_only": reduce_only}, sort_keys=True)
+        if order_shape is not None and set(order_shape) != {"side", "kind", "tif", "post_only", "price"}:
+            raise ValueError("INVALID_DURABLE_ORDER_SHAPE")
+        body = json.dumps({"quantity": quantity, "reduce_only": reduce_only, "shape": order_shape}, sort_keys=True)
         try:
             self.db.execute(
                 "INSERT INTO paper_intents VALUES (?, ?, ?, ?, ?, 'SUBMITTING', ?)",

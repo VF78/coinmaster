@@ -285,11 +285,15 @@ def test_sol_half_exit_full_fill_replay_preserves_cooldown_and_terminal_cleanup(
     assert runtime.strategy_checkpoint() == checkpoint
     runtime.close()
 
-@pytest.mark.parametrize("fault", ["missing", "foreign", "not_reduce_only", "wrong_account"])
+@pytest.mark.parametrize(
+    "fault",
+    ["missing", "foreign", "not_reduce_only", "wrong_account",
+     "wrong_direction", "wrong_price", "wrong_type", "wrong_tif", "not_open", "missing_shape"],
+)
 def test_open_btc_reduce_only_ownership_rejects_uncertain_reports(tmp_path, fault):
-    from nautilus_trader.model.enums import OrderSide
+    from nautilus_trader.model.enums import OrderSide, OrderStatus, OrderType, TimeInForce
     from nautilus_trader.model.identifiers import ClientOrderId, VenueOrderId
-    from nautilus_trader.model.objects import Quantity
+    from nautilus_trader.model.objects import Price, Quantity
     from coinmaster.ops.live_recovery import LiveRecoveryReconciler
     from coinmaster.ops.paper import PaperRuntime
 
@@ -309,18 +313,24 @@ def test_open_btc_reduce_only_ownership_rejects_uncertain_reports(tmp_path, faul
         client_order_id=order_id, intent_id=intent.id, episode_id=episode.id,
         action=intent.action, instrument_id=str(HL_BTC.id), quantity="0.01000",
         reduce_only=True, strategy_state=strategy.on_save()["wave_overlay_live_recovery_v1"],
+        order_shape=None if fault == "missing_shape" else {"side": "SELL", "kind": "LIMIT", "tif": "GTC",
+                     "post_only": True, "price": "60000.0"},
     )
     account = AccountId("HYPERLIQUID-master")
     order = SimpleNamespace(
         client_order_id=ClientOrderId(order_id), venue_order_id=VenueOrderId("tp-venue-1"),
         instrument_id=HL_BTC.id, account_id=None, strategy_id=str(strategy.id),
-        side=OrderSide.SELL, is_closed=False, is_reduce_only=True, trade_ids=[],
+        side=OrderSide.SELL, is_closed=False, is_reduce_only=True, is_post_only=True,
+        order_type=OrderType.LIMIT, time_in_force=TimeInForce.GTC,
+        price=Price.from_str("60000.0"), trade_ids=[],
         quantity=Quantity.from_str("0.01000"), filled_qty=Quantity.from_str("0.00000"),
     )
     status = SimpleNamespace(
         client_order_id=order.client_order_id, venue_order_id=order.venue_order_id,
         instrument_id=HL_BTC.id, account_id=account, order_side=OrderSide.SELL,
         filled_qty=order.filled_qty, quantity=order.quantity, reduce_only=True,
+        post_only=True, order_type=OrderType.LIMIT, time_in_force=TimeInForce.GTC,
+        price=Price.from_str("60000.0"), order_status=OrderStatus.ACCEPTED,
     )
     position = SimpleNamespace(
         instrument_id=HL_BTC.id, account_id=account, strategy_id=str(strategy.id),
@@ -329,8 +339,9 @@ def test_open_btc_reduce_only_ownership_rejects_uncertain_reports(tmp_path, faul
     reconciler = LiveRecoveryReconciler(runtime, strategy, str(account))
     before = runtime.strategy_checkpoint()
     assert before is not None
-    reconciler.apply_partial_fills([], [order], [position], [status], _native_account())
-    assert runtime.strategy_checkpoint() == before
+    if fault != "missing_shape":
+        reconciler.apply_partial_fills([], [order], [position], [status], _native_account())
+        assert runtime.strategy_checkpoint() == before
     if fault == "missing":
         native_orders, statuses, native_account = [], [], _native_account()
         expected = "RECOVERY_EXPECTED_ORDER_MISSING"
@@ -344,9 +355,37 @@ def test_open_btc_reduce_only_ownership_rejects_uncertain_reports(tmp_path, faul
         statuses = [SimpleNamespace(**{**vars(status), "reduce_only": False})]
         native_account = _native_account()
         expected = "RECOVERY_ORDER_OWNERSHIP_MISMATCH"
-    else:
+    elif fault == "wrong_account":
         native_orders, statuses, native_account = [order], [status], _native_account("OTHER-master")
         expected = "RECOVERY_ACCOUNT_IDENTITY_MISMATCH"
+    elif fault == "missing_shape":
+        native_orders, statuses, native_account = [order], [status], _native_account()
+        expected = "RECOVERY_ORDER_SHAPE_MISSING"
+    elif fault == "wrong_direction":
+        native_orders = [SimpleNamespace(**{**vars(order), "side": OrderSide.BUY})]
+        statuses = [SimpleNamespace(**{**vars(status), "order_side": OrderSide.BUY})]
+        native_account = _native_account()
+        expected = "RECOVERY_ORDER_OWNERSHIP_MISMATCH"
+    elif fault == "wrong_price":
+        native_orders = [order]
+        statuses = [SimpleNamespace(**{**vars(status), "price": Price.from_str("59999.0")})]
+        native_account = _native_account()
+        expected = "RECOVERY_ORDER_SHAPE_MISMATCH"
+    elif fault == "wrong_type":
+        native_orders = [SimpleNamespace(**{**vars(order), "order_type": OrderType.MARKET})]
+        statuses = [SimpleNamespace(**{**vars(status), "order_type": OrderType.MARKET})]
+        native_account = _native_account()
+        expected = "RECOVERY_ORDER_SHAPE_MISMATCH"
+    elif fault == "wrong_tif":
+        native_orders = [SimpleNamespace(**{**vars(order), "time_in_force": TimeInForce.IOC})]
+        statuses = [SimpleNamespace(**{**vars(status), "time_in_force": TimeInForce.IOC})]
+        native_account = _native_account()
+        expected = "RECOVERY_ORDER_SHAPE_MISMATCH"
+    else:
+        native_orders = [order]
+        statuses = [SimpleNamespace(**{**vars(status), "order_status": OrderStatus.CANCELED})]
+        native_account = _native_account()
+        expected = "RECOVERY_ORDER_SHAPE_MISMATCH"
     with pytest.raises(ValueError, match=expected):
         reconciler.apply_partial_fills([], native_orders, [position], statuses, native_account)
     assert runtime.strategy_checkpoint() == before
