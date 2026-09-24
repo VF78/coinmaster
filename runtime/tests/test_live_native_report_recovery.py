@@ -72,18 +72,46 @@ class FakeReportClient(LiveExecutionClient):
         pass
 
     async def _submit_order(self, command):
-        Path(os.environ["CM_FAKE_SUBMIT_LOG"]).write_text(str(command.order.client_order_id))
-        raise AssertionError("unexpected submit during recovery")
+        log = Path(os.environ["CM_FAKE_SUBMIT_LOG"])
+        log.write_text(str(command.order.client_order_id))
+        if os.environ.get("CM_FAKE_ACCEPT_CRASH") != "1":
+            raise AssertionError("unexpected submit during recovery")
+        path = Path(os.environ["CM_FAKE_VENUE_STATE"])
+        state = json.loads(path.read_text())
+        if state.get("partial"):
+            raise AssertionError("duplicate fake venue submit")
+        state.update(partial=True, accepted_order=str(command.order.client_order_id))
+        temporary = path.with_suffix(".accepted")
+        with temporary.open("w") as stream:
+            json.dump(state, stream, sort_keys=True)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+        if os.environ.get("CM_FAKE_ACCEPT_LIVE") == "1":
+            order = command.order
+            now = self._clock.timestamp_ns()
+            self.generate_order_accepted(order.strategy_id, order.instrument_id, order.client_order_id, VENUE_ORDER, now)
+            self.generate_order_filled(
+                order.strategy_id, order.instrument_id, order.client_order_id,
+                VENUE_ORDER, None, TradeId("trade-1"), OrderSide.BUY, OrderType.LIMIT,
+                Quantity.from_str("0.01000"), Price.from_str("60000.0"),
+                USDC, Money(Decimal("0.27"), USDC), LiquiditySide.TAKER, now,
+            )
+            total = Money(Decimal("9999.73"), USDC)
+            self.generate_account_state([AccountBalance(total, Money(0, USDC), total)], [], True, now)
+            return
+        os._exit(137)  # Fake venue accepted; native ACK was not emitted.
 
     async def generate_order_status_reports(self, command):
         if not self._fake_venue_state["partial"]:
             return []
         now = self._clock.timestamp_ns()
+        client_order = ClientOrderId(self._fake_venue_state.get("accepted_order", str(CLIENT_ORDER)))
         return [OrderStatusReport(
             ACCOUNT, HL_BTC.id, VENUE_ORDER, OrderSide.BUY, OrderType.LIMIT,
             TimeInForce.GTC, OrderStatus.PARTIALLY_FILLED,
             Quantity.from_str("0.02000"), Quantity.from_str("0.01000"),
-            UUID4(), now, now, now, client_order_id=CLIENT_ORDER,
+            UUID4(), now, now, now, client_order_id=client_order,
             price=Price.from_str("60000.0"),
         )]
 
@@ -91,11 +119,12 @@ class FakeReportClient(LiveExecutionClient):
         if not self._fake_venue_state["partial"] or self._fake_venue_state.get("omit_fill"):
             return []
         now = self._clock.timestamp_ns()
+        client_order = ClientOrderId(self._fake_venue_state.get("accepted_order", str(CLIENT_ORDER)))
         return [FillReport(
             ACCOUNT, HL_BTC.id, VENUE_ORDER, TradeId("trade-1"),
             OrderSide.BUY, Quantity.from_str("0.01000"), Price.from_str("60000.0"),
             Money(Decimal("0.27"), USDC), LiquiditySide.TAKER,
-            UUID4(), now, now, client_order_id=CLIENT_ORDER,
+            UUID4(), now, now, client_order_id=client_order,
         )]
 
     async def generate_position_status_reports(self, command):
@@ -175,7 +204,35 @@ async def _run_child():
             strategy.on_load({"wave_overlay_live_recovery_v1": checkpoint[0]})
     node.trader.add_strategy(strategy)
     await node.kernel.start_async()
-    if journal and json.loads(Path(os.environ["CM_FAKE_VENUE_STATE"]).read_text())["partial"]:
+    if os.environ.get("CM_FAKE_SUBMIT") == "1":
+        assert journal
+        active = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
+        active.acquire()
+        active.snapshot(ts_ns=node.kernel.clock.timestamp_ns(), positions=[], orders=[], funding_event_ids=[])
+        episode = Episode("episode-accepted", 1, 10000, 1.2)
+        intent = Intent("intent-accepted", episode.id, "BTC_ENTRY", None, 1, quantity=0.02)
+        episode.pending[intent.id] = intent
+        strategy._domain.episode = episode
+        order = strategy.order_factory.limit(
+            instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
+            quantity=Quantity.from_str("0.02000"), price=Price.from_str("60000.0"),
+            time_in_force=TimeInForce.GTC,
+        )
+        order_id = str(order.client_order_id)
+        strategy._pending_by_order[order_id] = intent
+        strategy._sigma_by_order[order_id] = None
+        strategy._decision_index_by_order[order_id] = 1483
+        assert LiveRecoverySubmissionSink(active, strategy, frozenset({str(HL_BTC.id)}))(
+            client_order_id=order_id, intent_id=intent.id, episode_id=episode.id,
+            action="BTC_ENTRY", instrument_id=str(HL_BTC.id), quantity="0.02000", reduce_only=False,
+        )
+        strategy.attach_recovery_runtime(active)
+        strategy.submit_order(order)
+        await asyncio.sleep(3)
+        if os.environ.get("CM_FAKE_ACCEPT_LIVE") != "1":
+            raise AssertionError("fake venue did not accept native submit")
+        active.close()
+    if journal and os.environ.get("CM_FAKE_SUBMIT") != "1" and json.loads(Path(os.environ["CM_FAKE_VENUE_STATE"]).read_text())["partial"]:
         client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
         reports = await client.generate_fill_reports(None)
         order_reports = await client.generate_order_status_reports(None)
@@ -204,6 +261,7 @@ async def _run_child():
         "orders": [(str(o.client_order_id), str(o.quantity), str(o.filled_qty)) for o in node.cache.orders_open()],
         "positions": [(str(p.instrument_id), str(p.quantity)) for p in node.cache.positions_open()],
         "fills": len(node.trader.generate_order_fills_report()),
+        "native_commissions": sorted(str(item.get("commission")) for item in node.trader.generate_fills_report().to_dict("records")),
         "episode_btc_open_qty": episode.btc_open_qty if episode else None,
         "episode_pending": sorted(episode.pending) if episode else None,
         "native_total_usdc": str(node.cache.account_for_venue(Venue("HYPERLIQUID")).balance_total(USDC).as_decimal()),
@@ -311,6 +369,55 @@ def test_normal_partial_callback_restarts_without_replay(tmp_path):
     final = PaperRuntime(journal, "live-recovery-probe", 10**20)
     assert final.strategy_checkpoint() == checkpoint
     final.close()
+
+
+def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tmp_path):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state, journal, submit_log = (tmp_path / name for name in ("state.json", "intents.sqlite", "submits.txt"))
+    state.write_text('{"partial": false}')
+    env = dict(os.environ, CM_FAKE_VENUE_STATE=str(state), CM_FAKE_JOURNAL=str(journal),
+               CM_FAKE_SUBMIT_LOG=str(submit_log), CM_FAKE_TRADER_ID="HL-ACCEPT-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper())
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    env["CM_FAKE_SUBMIT"] = env["CM_FAKE_ACCEPT_CRASH"] = "1"
+    crashed = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert crashed.returncode == 137, crashed.stderr
+    accepted = json.loads(state.read_text())
+    order_id = accepted["accepted_order"]
+    assert accepted["partial"] is True
+    assert submit_log.read_text() == order_id
+    pending = PaperRuntime(journal, "live-recovery-probe", 10**20)
+    assert pending.pending_submissions()[0]["client_order_id"] == order_id
+    assert pending.pending_submissions()[0]["state"] == "SUBMITTING"
+    assert pending.strategy_checkpoint() is not None
+    pending.close()
+    env.pop("CM_FAKE_SUBMIT")
+    env.pop("CM_FAKE_ACCEPT_CRASH")
+    recovered = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert recovered.returncode == 0, recovered.stderr
+    result = json.loads(next(line.split("=", 1)[1] for line in recovered.stdout.splitlines() if line.startswith("RECOVERY_PROOF=")))
+    assert result["orders"] == [[order_id, "0.02000", "0.01000"]]
+    assert result["positions"] == [[str(HL_BTC.id), "0.01000"]]
+    assert result["episode_btc_open_qty"] == 0.01
+    assert result["fills"] == 1
+    assert submit_log.read_text() == order_id
+
+    # Independent uninterrupted native path, same fake venue account/fill facts.
+    live_state = tmp_path / "live-state.json"
+    live_journal = tmp_path / "live-intents.sqlite"
+    live_log = tmp_path / "live-submits.txt"
+    live_state.write_text('{"partial": false}')
+    live_env = dict(env, CM_FAKE_VENUE_STATE=str(live_state), CM_FAKE_JOURNAL=str(live_journal),
+                    CM_FAKE_SUBMIT_LOG=str(live_log), CM_FAKE_TRADER_ID="HL-LIVE-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
+                    CM_FAKE_SUBMIT="1", CM_FAKE_ACCEPT_CRASH="1", CM_FAKE_ACCEPT_LIVE="1")
+    uninterrupted = subprocess.run([sys.executable, __file__, "--child"], env=live_env, capture_output=True, text=True, timeout=45)
+    assert uninterrupted.returncode == 0, uninterrupted.stderr
+    live_result = json.loads(next(line.split("=", 1)[1] for line in uninterrupted.stdout.splitlines() if line.startswith("RECOVERY_PROOF=")))
+    assert live_result["positions"] == result["positions"]
+    assert live_result["fills"] == result["fills"]
+    assert live_result["native_commissions"] == result["native_commissions"]
+    assert len(result["native_commissions"]) == 1 and "0.27" in result["native_commissions"][0]
+    assert live_result["native_total_usdc"] == result["native_total_usdc"]
 
 
 if __name__ == "__main__" and "--child" in sys.argv:

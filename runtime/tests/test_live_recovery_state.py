@@ -210,3 +210,64 @@ def test_valid_native_fill_with_wrong_position_does_not_poison_checkpoint(tmp_pa
     assert runtime.has_applied_fill("trade-1")
     assert strategy._domain.episode.btc_open_qty == 0.01
     runtime.close()
+def test_sol_half_exit_full_fill_replay_preserves_cooldown_and_terminal_cleanup(tmp_path):
+    from types import SimpleNamespace
+    from nautilus_trader.model.enums import OrderSide
+    from nautilus_trader.model.identifiers import AccountId, ClientOrderId, VenueOrderId, TradeId
+    from nautilus_trader.model.objects import Price, Quantity
+    from coinmaster.ops.live_recovery import LiveRecoveryReconciler
+    from coinmaster.ops.paper import PaperRuntime
+    from test_hl_stageg_sandbox_lifecycle import HL_SOL
+
+    runtime = PaperRuntime(tmp_path / "sol-half.sqlite", "live-recovery", 10**20)
+    runtime.acquire()
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    episode = Episode("episode-sol", -1, 10000, 1.2, sol_qty=0.02)
+    intent = Intent("intent-half", episode.id, "SOL_HALF_EXIT", None, -1, quantity=0.01)
+    episode.pending[intent.id] = intent
+    strategy._domain.episode = episode
+    order_id = "HLTG-SOL-HALF-1"
+    strategy._pending_by_order[order_id] = intent
+    strategy._sigma_by_order[order_id] = 0.2
+    strategy._decision_index_by_order[order_id] = 1490
+    assert runtime.record_submission(client_order_id=order_id, intent_id=intent.id, episode_id=episode.id,
+                                     action=intent.action, instrument_id=str(HL_SOL.id), quantity="0.01000",
+                                     reduce_only=True, strategy_state=strategy.on_save()["wave_overlay_live_recovery_v1"])
+    report = SimpleNamespace(
+        account_id=AccountId("HYPERLIQUID-master"), client_order_id=ClientOrderId(order_id),
+        venue_order_id=VenueOrderId("sol-venue-1"), instrument_id=HL_SOL.id,
+        trade_id=TradeId("sol-half-trade"), last_qty=Quantity.from_str("0.01000"),
+        last_px=Price.from_str("150.0"), ts_event=1, order_side=OrderSide.SELL,
+    )
+    order = SimpleNamespace(
+        client_order_id=report.client_order_id, venue_order_id=report.venue_order_id,
+        instrument_id=HL_SOL.id, account_id=None, strategy_id=str(strategy.id),
+        side=OrderSide.SELL, is_closed=True, trade_ids=[report.trade_id],
+        filled_qty=Quantity.from_str("0.01000"),
+    )
+    status = SimpleNamespace(
+        client_order_id=report.client_order_id, venue_order_id=report.venue_order_id,
+        instrument_id=HL_SOL.id, account_id=report.account_id,
+        order_side=OrderSide.SELL, filled_qty=order.filled_qty,
+    )
+    position = SimpleNamespace(
+        instrument_id=HL_SOL.id, account_id=report.account_id,
+        strategy_id=str(strategy.id), quantity=Quantity.from_str("0.01000"), is_long=True,
+    )
+    reconciler = LiveRecoveryReconciler(runtime, strategy, str(report.account_id))
+    reconciler.apply_partial_fills([report], [order], [position], [status])
+    assert strategy._domain.episode.sol_qty == 0.01
+    assert strategy._domain.episode.sol_half_done is True
+    assert strategy._domain.episode.sol_half_decision_index == 1490
+    assert intent.id not in strategy._domain.episode.pending
+    assert order_id not in strategy._pending_by_order
+    checkpoint = runtime.strategy_checkpoint()
+    assert runtime.has_applied_fill("sol-half-trade")
+    restored = RecoverableWaveOverlayStrategy(_strategy().config)
+    restored.on_load({"wave_overlay_live_recovery_v1": checkpoint[0]})
+    LiveRecoveryReconciler(runtime, restored, str(report.account_id)).apply_partial_fills(
+        [report], [order], [position], [status],
+    )
+    assert restored._domain.episode == strategy._domain.episode
+    assert runtime.strategy_checkpoint() == checkpoint
+    runtime.close()

@@ -213,6 +213,16 @@ class PaperRuntime:
         ]
 
     @_journal_locked
+    def all_submissions(self) -> list[dict]:
+        return [
+            {"client_order_id": row[0], "intent_id": row[1], "episode_id": row[2], "action": row[3],
+             "instrument_id": row[4], "state": row[5], "body": json.loads(row[6])}
+            for row in self.db.execute(
+                "SELECT client_order_id,intent_id,episode_id,action,instrument_id,state,body FROM paper_intents ORDER BY client_order_id"
+            )
+        ]
+
+    @_journal_locked
     def recovery_state(self) -> str:
         """Return the only supported restart contract for durable exposure."""
         row = self.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()

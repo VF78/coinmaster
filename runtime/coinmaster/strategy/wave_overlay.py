@@ -692,29 +692,15 @@ class WaveOverlayStrategy(Strategy):
         intent = self._pending_by_order.get(str(event.client_order_id))
         if intent is None:
             return
-        sigma = self._sigma_by_order.get(str(event.client_order_id))
-        when = datetime.fromtimestamp(event.ts_event / 1_000_000_000, UTC)
-        self._domain.on_fill(
-            intent.id, float(event.last_qty), float(event.last_px), when, sigma,
-            decision_index=self._confirmed_fill_cycle(intent, str(event.client_order_id)),
+        order = self.cache.order(event.client_order_id)
+        closed = order is not None and order.is_closed
+        self._apply_confirmed_domain_fill(
+            intent, str(event.client_order_id), float(event.last_qty), float(event.last_px),
+            event.ts_event, closed,
         )
         self._after_domain_fill(event)
-        if intent.action == "SOL_HALF_EXIT":
-            self._domain.on_half_exit_decision(self._decision_index_by_order[str(event.client_order_id)])
-        order = self.cache.order(event.client_order_id)
-        if order is not None and order.is_closed:
+        if closed:
             self._terminal_submission(str(event.client_order_id))
-            self._domain.on_parent_terminal(intent.id)
-            self._pending_by_order.pop(str(event.client_order_id), None)
-            self._sigma_by_order.pop(str(event.client_order_id), None)
-            self._decision_index_by_order.pop(str(event.client_order_id), None)
-            if intent.action == "BTC_ENTRY":
-                # TP rights are derived from the native entry fill only.  They
-                # are submitted as passive limits and must fill on a later
-                # quote to receive native MAKER liquidity attribution.
-                for target in self._domain.plan_confirmed_btc_targets():
-                    self._queued_intents.append((target, sigma, intent.decision_index))
-                    self._queued_intent_ready_ns[target.id] = event.ts_event + 1
             if intent.action == "CLOSE_ALL":
                 self._group_close_reconciliation_pending = True
                 self._reconcile_group_flat()
@@ -723,6 +709,31 @@ class WaveOverlayStrategy(Strategy):
             # signal close; only reduction -> add -> exit phases may continue.
             if intent.action != "BTC_ENTRY":
                 self._advance_current_day()
+
+    def _apply_confirmed_domain_fill(
+        self, intent: Intent, client_order_id: str, quantity: float,
+        price: float, ts_event: int, order_closed: bool,
+    ) -> None:
+        """Pure episode/intent transition shared by callbacks and report replay."""
+        sigma = self._sigma_by_order.get(client_order_id)
+        when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
+        self._domain.on_fill(
+            intent.id, quantity, price, when, sigma,
+            decision_index=self._confirmed_fill_cycle(intent, client_order_id),
+        )
+        if intent.action == "SOL_HALF_EXIT":
+            self._domain.on_half_exit_decision(self._decision_index_by_order[client_order_id])
+        if not order_closed:
+            return
+        self._domain.on_parent_terminal(intent.id)
+        self._pending_by_order.pop(client_order_id, None)
+        self._sigma_by_order.pop(client_order_id, None)
+        self._decision_index_by_order.pop(client_order_id, None)
+        if intent.action == "BTC_ENTRY":
+            # Native entry fills grant targets; they wait for a later quote.
+            for target in self._domain.plan_confirmed_btc_targets():
+                self._queued_intents.append((target, sigma, intent.decision_index))
+                self._queued_intent_ready_ns[target.id] = ts_event + 1
 
     def _after_domain_fill(self, event: OrderFilled) -> None:
         """Optional durable domain checkpoint, before any follow-on decision."""

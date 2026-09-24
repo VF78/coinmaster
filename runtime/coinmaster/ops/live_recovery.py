@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import time
 from collections import defaultdict
-from datetime import UTC, datetime
 from decimal import Decimal
 from typing import TYPE_CHECKING
 
@@ -57,7 +56,7 @@ class LiveRecoveryReconciler:
         self.strategy.recovery_confirmed = False
         owned = {str(self.strategy.config.btc_id), str(self.strategy.config.sol_id)}
         strategy_id = str(self.strategy.id)
-        journal = {item["client_order_id"]: item for item in self.runtime.pending_submissions()}
+        journal = {item["client_order_id"]: item for item in self.runtime.all_submissions()}
         orders = {str(item.client_order_id): item for item in native_orders}
         status = {str(item.client_order_id): item for item in order_reports}
         if len(orders) != len(native_orders) or len(status) != len(order_reports) or set(status) != set(orders):
@@ -82,18 +81,22 @@ class LiveRecoveryReconciler:
             order = orders.get(order_id)
             intent = self.strategy._pending_by_order.get(order_id)
             recorded = journal.get(order_id)
+            previously_applied = self.runtime.has_applied_fill(trade_id)
             if (
-                order is None or intent is None or recorded is None
-                or recorded["intent_id"] != intent.id
-                or recorded["episode_id"] != intent.episode_id
+                order is None or recorded is None
+                or (intent is None and (not order.is_closed or not previously_applied))
+                or (intent is not None and (
+                    recorded["intent_id"] != intent.id
+                    or recorded["episode_id"] != intent.episode_id
+                    or recorded["action"] != intent.action
+                    or intent.id not in episode.pending
+                ))
                 or recorded["instrument_id"] != str(report.instrument_id)
-                or recorded["action"] != intent.action
-                or intent.id not in episode.pending
                 or str(report.account_id) != self.expected_account_id
                 or str(report.venue_order_id) != str(order.venue_order_id)
                 or report.instrument_id != order.instrument_id
                 or report.order_side != order.side
-                or order.side != (OrderSide.BUY if intent.side == 1 else OrderSide.SELL)
+                or (intent is not None and order.side != (OrderSide.BUY if intent.side == 1 else OrderSide.SELL))
                 or Decimal(str(report.last_qty)) <= 0
                 or Decimal(str(report.last_px)) <= 0
             ):
@@ -103,7 +106,10 @@ class LiveRecoveryReconciler:
             recorded = journal.get(order_id)
             status_report = status[order_id]
             if (
-                intent is None or recorded is None
+                recorded is None
+                or (intent is None and (not order.is_closed or any(
+                    not self.runtime.has_applied_fill(str(trade)) for trade in order.trade_ids
+                )))
                 or str(status_report.account_id) != self.expected_account_id
                 or (order.account_id is not None and str(order.account_id) != self.expected_account_id)
                 or str(status_report.venue_order_id) != str(order.venue_order_id)
@@ -112,10 +118,10 @@ class LiveRecoveryReconciler:
                 or status_report.filled_qty.as_decimal() != order.filled_qty.as_decimal()
                 or str(order.strategy_id) != strategy_id
                 or str(order.instrument_id) not in owned
-                or order.is_closed
-                or recorded["intent_id"] != intent.id
                 or recorded["instrument_id"] != str(order.instrument_id)
-                or recorded["action"] != intent.action
+                or (intent is not None and (
+                    recorded["intent_id"] != intent.id or recorded["action"] != intent.action
+                ))
             ):
                 raise ValueError("RECOVERY_ORDER_OWNERSHIP_MISMATCH")
             known_ids = {str(item) for item in order.trade_ids}
@@ -140,17 +146,22 @@ class LiveRecoveryReconciler:
         candidate = type(self.strategy)(self.strategy.config)
         candidate.on_load({"wave_overlay_live_recovery_v1": current})
         missing = []
-        for report in sorted(reports, key=lambda item: (item.ts_event, str(item.trade_id))):
+        ordered_reports = sorted(reports, key=lambda item: (item.ts_event, str(item.trade_id)))
+        last_trade_by_order = {
+            order_id: str(max(items, key=lambda item: (item.ts_event, str(item.trade_id))).trade_id)
+            for order_id, items in reports_by_order.items()
+        }
+        for report in ordered_reports:
             trade_id = str(report.trade_id)
             if self.runtime.has_applied_fill(trade_id):
                 continue
             order_id = str(report.client_order_id)
-            intent = candidate._pending_by_order[order_id]
-            candidate._domain.on_fill(
-                intent.id, float(report.last_qty), float(report.last_px),
-                datetime.fromtimestamp(report.ts_event / 1_000_000_000, UTC),
-                candidate._sigma_by_order.get(order_id),
-                decision_index=candidate._confirmed_fill_cycle(intent, order_id),
+            intent = candidate._pending_by_order.get(order_id)
+            if intent is None:
+                raise ValueError("RECOVERY_MISSING_INTENT_FOR_UNAPPLIED_FILL")
+            candidate._apply_confirmed_domain_fill(
+                intent, order_id, float(report.last_qty), float(report.last_px), report.ts_event,
+                orders[order_id].is_closed and trade_id == last_trade_by_order[order_id],
             )
             missing.append(trade_id)
         candidate_episode = candidate._domain.episode
