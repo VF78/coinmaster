@@ -133,6 +133,18 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def __init__(self, config):
         super().__init__(config)
         self.recovery_confirmed = False
+        self._recovery_runtime = None
+
+    def attach_recovery_runtime(self, runtime) -> None:
+        self._recovery_runtime = runtime
+
+    def _after_domain_fill(self, event) -> None:
+        if self._recovery_runtime is None:
+            raise RuntimeError("RECOVERY_JOURNAL_NOT_ATTACHED")
+        checkpoint = self.on_save()[_KEY]
+        if not self._recovery_runtime.commit_applied_fills([str(event.trade_id)], checkpoint):
+            self.recovery_confirmed = False
+            raise RuntimeError("RECOVERY_FILL_CHECKPOINT_CONFLICT")
 
     def _entries_enabled(self) -> bool:
         return self.recovery_confirmed and super()._entries_enabled()

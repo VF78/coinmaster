@@ -112,6 +112,10 @@ def test_wrong_native_fill_identity_never_advances_episode_or_trade_cursor(tmp_p
     strategy._domain.episode = episode
     order_id = "HLTG-RESTART-PROBE-1"
     strategy._pending_by_order[order_id] = intent
+    assert runtime.record_submission(client_order_id=order_id, intent_id=intent.id, episode_id=episode.id,
+                                     action=intent.action, instrument_id=str(HL_BTC.id), quantity="0.02000",
+                                     reduce_only=False, strategy_state=strategy.on_save()["wave_overlay_live_recovery_v1"])
+    before = runtime.strategy_checkpoint()
     report = SimpleNamespace(
         account_id=AccountId("WRONG-master"), client_order_id=ClientOrderId(order_id),
         venue_order_id=VenueOrderId("venue-1"), instrument_id=HL_BTC.id,
@@ -123,7 +127,8 @@ def test_wrong_native_fill_identity_never_advances_episode_or_trade_cursor(tmp_p
         instrument_id=HL_BTC.id, is_closed=False,
     )
     with pytest.raises(ValueError, match="RECOVERY_FILL_IDENTITY_MISMATCH"):
-        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills([report], [order], [])
+        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills([report], [order], [], [SimpleNamespace(client_order_id=ClientOrderId(order_id))])
+    assert runtime.strategy_checkpoint() == before
     assert episode.btc_open_qty == 0
     assert not runtime.has_recovered_fill("trade-wrong")
     runtime.close()
@@ -139,9 +144,69 @@ def test_missing_native_fill_history_with_open_position_fails_closed(tmp_path):
     runtime.acquire()
     strategy = RecoverableWaveOverlayStrategy(_strategy().config)
     strategy._domain.episode = Episode("episode-1", 1, 10000, 1.2)
-    position = SimpleNamespace(instrument_id=HL_BTC.id, quantity=Quantity.from_str("0.01000"), is_long=True)
+    assert runtime.record_submission(client_order_id="unfilled", intent_id="intent-1", episode_id="episode-1",
+                                     action="BTC_ENTRY", instrument_id=str(HL_BTC.id), quantity="0.02000",
+                                     reduce_only=False, strategy_state=strategy.on_save()["wave_overlay_live_recovery_v1"])
+    before = runtime.strategy_checkpoint()
+    position = SimpleNamespace(instrument_id=HL_BTC.id, quantity=Quantity.from_str("0.01000"), is_long=True,
+                               account_id="HYPERLIQUID-master", strategy_id=str(strategy.id))
     with pytest.raises(ValueError, match="RECOVERY_EPISODE_POSITION_MISMATCH"):
-        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills([], [], [position])
+        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills([], [], [position], [])
+    assert runtime.strategy_checkpoint() == before
     assert not strategy.recovery_confirmed
-    assert runtime.strategy_checkpoint() is None
+    runtime.close()
+
+def test_valid_native_fill_with_wrong_position_does_not_poison_checkpoint(tmp_path):
+    from types import SimpleNamespace
+    from nautilus_trader.model.enums import OrderSide
+    from nautilus_trader.model.identifiers import AccountId, ClientOrderId, VenueOrderId, TradeId
+    from nautilus_trader.model.objects import Price, Quantity
+    from coinmaster.ops.live_recovery import LiveRecoveryReconciler
+    from coinmaster.ops.paper import PaperRuntime
+
+    runtime = PaperRuntime(tmp_path / "parity.sqlite", "live-recovery", 10**20)
+    runtime.acquire()
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    episode = Episode("episode-1", 1, 10000, 1.2)
+    intent = Intent("intent-1", episode.id, "BTC_ENTRY", None, 1, quantity=0.02)
+    episode.pending[intent.id] = intent
+    strategy._domain.episode = episode
+    order_id = "HLTG-RESTART-PROBE-1"
+    strategy._pending_by_order[order_id] = intent
+    assert runtime.record_submission(client_order_id=order_id, intent_id=intent.id, episode_id=episode.id,
+                                     action=intent.action, instrument_id=str(HL_BTC.id), quantity="0.02000",
+                                     reduce_only=False, strategy_state=strategy.on_save()["wave_overlay_live_recovery_v1"])
+    before = runtime.strategy_checkpoint()
+    report = SimpleNamespace(
+        account_id=AccountId("HYPERLIQUID-master"), client_order_id=ClientOrderId(order_id),
+        venue_order_id=VenueOrderId("venue-1"), instrument_id=HL_BTC.id,
+        trade_id=TradeId("trade-1"), last_qty=Quantity.from_str("0.01000"),
+        last_px=Price.from_str("60000.0"), ts_event=1, order_side=OrderSide.BUY,
+    )
+    order = SimpleNamespace(
+        client_order_id=report.client_order_id, venue_order_id=report.venue_order_id,
+        instrument_id=HL_BTC.id, account_id=None, strategy_id=str(strategy.id),
+        side=OrderSide.BUY, is_closed=False, trade_ids=[report.trade_id],
+        filled_qty=Quantity.from_str("0.01000"),
+    )
+    status = SimpleNamespace(
+        client_order_id=report.client_order_id, venue_order_id=report.venue_order_id,
+        instrument_id=HL_BTC.id, account_id=report.account_id,
+        order_side=OrderSide.BUY, filled_qty=order.filled_qty,
+    )
+    wrong_position = SimpleNamespace(
+        instrument_id=HL_BTC.id, account_id=report.account_id,
+        strategy_id=str(strategy.id), quantity=Quantity.from_str("0.02000"), is_long=True,
+    )
+    reconciler = LiveRecoveryReconciler(runtime, strategy, str(report.account_id))
+    with pytest.raises(ValueError, match="RECOVERY_EPISODE_POSITION_MISMATCH"):
+        reconciler.apply_partial_fills([report], [order], [wrong_position], [status])
+    assert runtime.strategy_checkpoint() == before
+    assert not runtime.has_applied_fill("trade-1")
+    assert strategy.on_save()["wave_overlay_live_recovery_v1"] == before[0]
+    assert episode.btc_open_qty == 0
+    good_position = SimpleNamespace(**{**vars(wrong_position), "quantity": Quantity.from_str("0.01000")})
+    reconciler.apply_partial_fills([report], [order], [good_position], [status])
+    assert runtime.has_applied_fill("trade-1")
+    assert strategy._domain.episode.btc_open_qty == 0.01
     runtime.close()

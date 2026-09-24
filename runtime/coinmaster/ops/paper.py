@@ -161,22 +161,24 @@ class PaperRuntime:
         return (bytes(row[0]), int(row[1])) if row else None
 
     @_journal_locked
-    def has_recovered_fill(self, trade_id: str) -> bool:
+    def has_applied_fill(self, trade_id: str) -> bool:
         return self.db.execute("SELECT 1 FROM paper_recovered_fills WHERE trade_id=?", (trade_id,)).fetchone() is not None
 
-    @_journal_locked
-    def commit_recovered_fill(self, trade_id: str, strategy_state: bytes) -> bool:
-        """Checkpoint one domain transition and its native trade cursor atomically.
+    def has_recovered_fill(self, trade_id: str) -> bool:
+        return self.has_applied_fill(trade_id)
 
-        Native Cache/Portfolio already owns the fill and monetary posting.
-        This cursor only prevents applying the domain rights twice.
-        """
-        if not trade_id or not isinstance(strategy_state, bytes) or not strategy_state:
-            raise ValueError("INVALID_RECOVERED_FILL_CHECKPOINT")
-        if self.has_recovered_fill(trade_id):
-            return False
+    @_journal_locked
+    def commit_applied_fills(self, trade_ids: list[str], strategy_state: bytes) -> bool:
+        """Atomically persist domain state and all native trade IDs it includes."""
+        if not trade_ids or len(set(trade_ids)) != len(trade_ids) or any(not item for item in trade_ids):
+            raise ValueError("INVALID_APPLIED_FILL_IDS")
+        if not isinstance(strategy_state, bytes) or not strategy_state:
+            raise ValueError("INVALID_APPLIED_FILL_CHECKPOINT")
         try:
-            self.db.execute("INSERT INTO paper_recovered_fills VALUES (?)", (trade_id,))
+            self.db.executemany(
+                "INSERT INTO paper_recovered_fills VALUES (?)",
+                [(item,) for item in trade_ids],
+            )
             self._bump_native_revision()
             self.db.execute(
                 "INSERT OR REPLACE INTO paper_strategy_checkpoint VALUES (1, ?, ?)",
@@ -187,6 +189,9 @@ class PaperRuntime:
         except sqlite3.IntegrityError:
             self.db.rollback()
             return False
+
+    def commit_recovered_fill(self, trade_id: str, strategy_state: bytes) -> bool:
+        return self.commit_applied_fills([trade_id], strategy_state)
 
     @_journal_locked
     def acknowledge_submission(self, client_order_id: str) -> None:

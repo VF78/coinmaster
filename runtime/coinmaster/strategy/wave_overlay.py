@@ -698,6 +698,7 @@ class WaveOverlayStrategy(Strategy):
             intent.id, float(event.last_qty), float(event.last_px), when, sigma,
             decision_index=self._confirmed_fill_cycle(intent, str(event.client_order_id)),
         )
+        self._after_domain_fill(event)
         if intent.action == "SOL_HALF_EXIT":
             self._domain.on_half_exit_decision(self._decision_index_by_order[str(event.client_order_id)])
         order = self.cache.order(event.client_order_id)
@@ -722,6 +723,9 @@ class WaveOverlayStrategy(Strategy):
             # signal close; only reduction -> add -> exit phases may continue.
             if intent.action != "BTC_ENTRY":
                 self._advance_current_day()
+
+    def _after_domain_fill(self, event: OrderFilled) -> None:
+        """Optional durable domain checkpoint, before any follow-on decision."""
 
     def on_order_canceled(self, event: OrderCanceled) -> None:
         self._terminal_submission(str(event.client_order_id))

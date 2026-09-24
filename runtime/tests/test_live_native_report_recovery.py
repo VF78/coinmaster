@@ -11,6 +11,7 @@ import json
 import os
 import subprocess
 import sys
+from types import SimpleNamespace
 from decimal import Decimal
 from pathlib import Path
 
@@ -177,10 +178,24 @@ async def _run_child():
     if journal and json.loads(Path(os.environ["CM_FAKE_VENUE_STATE"]).read_text())["partial"]:
         client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
         reports = await client.generate_fill_reports(None)
+        order_reports = await client.generate_order_status_reports(None)
         active = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
         active.acquire()
+        if os.environ.get("CM_FAKE_NORMAL_CALLBACK") == "1":
+            strategy.attach_recovery_runtime(active)
+            report = reports[0]
+            strategy.on_order_filled(SimpleNamespace(
+                trade_id=report.trade_id, client_order_id=report.client_order_id,
+                instrument_id=report.instrument_id, last_qty=report.last_qty,
+                last_px=report.last_px, ts_event=report.ts_event, ts_init=report.ts_init,
+                commission=report.commission, liquidity_side=report.liquidity_side,
+                order_type=OrderType.LIMIT,
+            ))
+            assert active.has_applied_fill(str(report.trade_id))
+            assert active.strategy_checkpoint()[0] == strategy.on_save()["wave_overlay_live_recovery_v1"]
+            os._exit(137)
         LiveRecoveryReconciler(active, strategy, str(ACCOUNT)).apply_partial_fills(
-            reports, node.cache.orders_open(), node.cache.positions_open(),
+            reports, node.cache.orders_open(), node.cache.positions_open(), order_reports,
         )
         active.close()
     episode = strategy._domain.episode
@@ -253,6 +268,49 @@ def test_crash_before_ack_then_native_partial_report_recovers_once(tmp_path):
     recovered.on_load({"wave_overlay_live_recovery_v1": persisted[0]})
     assert recovered._domain.episode.btc_open_qty == 0.01
     reopened.close()
+
+
+def test_normal_partial_callback_restarts_without_replay(tmp_path):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state, journal, submit_log = (tmp_path / name for name in ("state.json", "intents.sqlite", "submits.txt"))
+    state.write_text('{"partial": true}')
+    env = dict(os.environ, CM_FAKE_VENUE_STATE=str(state), CM_FAKE_JOURNAL=str(journal),
+               CM_FAKE_SUBMIT_LOG=str(submit_log), CM_FAKE_TRADER_ID="HL-NORMAL-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper())
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    runtime = PaperRuntime(journal, "live-recovery-probe", 10**20)
+    runtime.acquire()
+    runtime.snapshot(ts_ns=__import__("time").time_ns(), positions=[], orders=[], funding_event_ids=[])
+    strategy = _strategy()
+    episode = Episode("episode-1", 1, 10000, 1.2)
+    intent = Intent("intent-1", episode.id, "BTC_ENTRY", None, 1, quantity=0.02)
+    episode.pending[intent.id] = intent
+    strategy._domain.episode = episode
+    strategy._pending_by_order[str(CLIENT_ORDER)] = intent
+    strategy._sigma_by_order[str(CLIENT_ORDER)] = None
+    strategy._decision_index_by_order[str(CLIENT_ORDER)] = 1483
+    assert LiveRecoverySubmissionSink(runtime, strategy, frozenset({str(HL_BTC.id)}))(
+        client_order_id=str(CLIENT_ORDER), intent_id=intent.id, episode_id=episode.id,
+        action="BTC_ENTRY", instrument_id=str(HL_BTC.id), quantity="0.02000", reduce_only=False,
+    )
+    runtime.close()
+    env["CM_FAKE_NORMAL_CALLBACK"] = "1"
+    first = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert first.returncode == 137, first.stderr
+    env.pop("CM_FAKE_NORMAL_CALLBACK")
+    persisted = PaperRuntime(journal, "live-recovery-probe", 10**20)
+    checkpoint = persisted.strategy_checkpoint()
+    assert persisted.has_applied_fill("trade-1")
+    persisted.close()
+    second = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert second.returncode == 0, second.stderr
+    result = json.loads(next(line.split("=", 1)[1] for line in second.stdout.splitlines() if line.startswith("RECOVERY_PROOF=")))
+    assert result["episode_btc_open_qty"] == 0.01
+    assert result["fills"] == 1
+    assert not submit_log.exists()
+    final = PaperRuntime(journal, "live-recovery-probe", 10**20)
+    assert final.strategy_checkpoint() == checkpoint
+    final.close()
 
 
 if __name__ == "__main__" and "--child" in sys.argv:
