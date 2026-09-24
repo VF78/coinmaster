@@ -186,7 +186,8 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
     return TestnetInstanceConfig(
         **strings,
         strategy_config=(base / document["strategy_config"]).resolve(),
-        signal_warmup_manifest=(base / document["signal_warmup_manifest"]).resolve(),
+        # Keep the validated current symlink lexical so a running worker sees daily promotions.
+        signal_warmup_manifest=base / document["signal_warmup_manifest"],
         state_db=(base / document["state_db"]).resolve(),
         path=path.resolve(),
     )

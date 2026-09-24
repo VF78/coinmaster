@@ -57,7 +57,7 @@ def test_hl_stageg_testnet_identity_is_strict_and_has_a_separate_state_db() -> N
     assert instance.state_db.name == "hl-stageg-testnet.sqlite"
     assert instance.state_db.parent == __import__("pathlib").Path("/var/lib/coinmaster-hl-stageg-testnet").resolve()
     assert instance.strategy_config.name == "stage-g-v1.json"
-    assert instance.signal_warmup_manifest.name == "manifest.json"
+    assert str(instance.signal_warmup_manifest) == "/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json"
 
 
 @pytest.mark.parametrize("change,reason", [
