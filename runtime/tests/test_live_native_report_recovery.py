@@ -73,7 +73,10 @@ class FakeReportClient(LiveExecutionClient):
 
     async def _submit_order(self, command):
         log = Path(os.environ["CM_FAKE_SUBMIT_LOG"])
-        log.write_text(str(command.order.client_order_id))
+        with log.open("a") as stream:
+            stream.write(str(command.order.client_order_id) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
         if os.environ.get("CM_FAKE_ACCEPT_CRASH") != "1":
             raise AssertionError("unexpected submit during recovery")
         path = Path(os.environ["CM_FAKE_VENUE_STATE"])
@@ -385,7 +388,7 @@ def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tm
     accepted = json.loads(state.read_text())
     order_id = accepted["accepted_order"]
     assert accepted["partial"] is True
-    assert submit_log.read_text() == order_id
+    assert submit_log.read_text().splitlines() == [order_id]
     pending = PaperRuntime(journal, "live-recovery-probe", 10**20)
     assert pending.pending_submissions()[0]["client_order_id"] == order_id
     assert pending.pending_submissions()[0]["state"] == "SUBMITTING"
@@ -400,7 +403,7 @@ def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tm
     assert result["positions"] == [[str(HL_BTC.id), "0.01000"]]
     assert result["episode_btc_open_qty"] == 0.01
     assert result["fills"] == 1
-    assert submit_log.read_text() == order_id
+    assert submit_log.read_text().splitlines() == [order_id]
 
     # Independent uninterrupted native path, same fake venue account/fill facts.
     live_state = tmp_path / "live-state.json"
@@ -416,7 +419,10 @@ def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tm
     assert live_result["positions"] == result["positions"]
     assert live_result["fills"] == result["fills"]
     assert live_result["native_commissions"] == result["native_commissions"]
-    assert len(result["native_commissions"]) == 1 and "0.27" in result["native_commissions"][0]
+    assert len(result["native_commissions"]) == 1
+    amount, currency = result["native_commissions"][0].rsplit(" ", 1)
+    assert Decimal(amount) == Decimal("0.27") and currency == "USDC"
+    assert live_log.read_text().splitlines() == [json.loads(live_state.read_text())["accepted_order"]]
     assert live_result["native_total_usdc"] == result["native_total_usdc"]
 
 
