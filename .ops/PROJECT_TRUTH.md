@@ -1,3 +1,5 @@
+2026-09-24 Stage-G recovery scope: Nautilus 1.231.0 is the actual isolated worker, canonical venv, and lock pin. The installed Sandbox has no supported open matching-engine restoration. #110 in GitHub Project #2 therefore tracks an isolated live-ready recovery proof using native Nautilus strategy/risk and fake HL transport; no live order is authorized. The Stage-G reliability source checkpoint adds genuine incremental UTC warmup, fail-closed crash revision and flat cash/health preparation, but does not satisfy open-state takeover or 24/7 continuity. #99 stays In Progress.
+
 # Coinmaster Project Truth
 
 Updated: 2026-09-23 Europe/Moscow

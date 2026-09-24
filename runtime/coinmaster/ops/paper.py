@@ -32,10 +32,11 @@ class PaperHealth:
 
 
 class PaperRuntime:
-    def __init__(self, database: Path, owner: str, max_data_age_ns: int) -> None:
+    def __init__(self, database: Path, owner: str, max_data_age_ns: int, *, require_native_cash: bool = False) -> None:
         database.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
         self._local_sandbox_active = False
+        self.require_native_cash = require_native_cash
         self.db, self.owner, self.max_data_age_ns = sqlite3.connect(database, check_same_thread=False), owner, max_data_age_ns
         self.db.execute("PRAGMA journal_mode=WAL")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_lock (id INTEGER PRIMARY KEY CHECK(id=1), owner TEXT NOT NULL)")
@@ -56,7 +57,34 @@ class PaperRuntime:
         # that window is deliberately MANAGE_ONLY rather than risking a
         # duplicate funding post after restart.
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_native_funding (event_id TEXT PRIMARY KEY, instrument_id TEXT NOT NULL, settlement_ns INTEGER NOT NULL, rate TEXT NOT NULL, mark TEXT NOT NULL, cash_delta TEXT NOT NULL, state TEXT NOT NULL)")
+        # A terminal fill can arrive after the last snapshot and before a
+        # process crash. Its revision remains dirty until a coherent native
+        # cache snapshot is durably recorded.
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_native_revision (id INTEGER PRIMARY KEY CHECK(id=1), value INTEGER NOT NULL)")
+        self.db.execute("INSERT OR IGNORE INTO paper_native_revision VALUES (1, 0)")
         self.db.commit()
+
+    @_journal_locked
+    def native_revision(self) -> int:
+        return int(self.db.execute("SELECT value FROM paper_native_revision WHERE id=1").fetchone()[0])
+
+    def _bump_native_revision(self) -> None:
+        self.db.execute("UPDATE paper_native_revision SET value=value+1 WHERE id=1")
+
+    @_journal_locked
+    def coherent_snapshot(self) -> bool:
+        row = self.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()
+        if row is None:
+            return False
+        snapshot = json.loads(row[0])
+        return (
+            snapshot.get("reconciled") is True
+            and snapshot.get("native_revision") == self.native_revision()
+            and snapshot.get("native_account_currency") == "USDC"
+            and snapshot.get("native_account_total") is not None
+            and snapshot.get("strategy_restartable") is True
+        )
+
 
     @_journal_locked
     def acquire(self) -> None:
@@ -90,6 +118,7 @@ class PaperRuntime:
             raise ValueError("unsupported native event kind")
         try:
             self.db.execute("INSERT INTO paper_events VALUES (?, ?)", (event_id, kind))
+            self._bump_native_revision()
             self.db.commit()
             return True
         except sqlite3.IntegrityError:
@@ -108,6 +137,7 @@ class PaperRuntime:
                 "INSERT INTO paper_intents VALUES (?, ?, ?, ?, ?, 'SUBMITTING', ?)",
                 (client_order_id, intent_id, episode_id, action, instrument_id, body),
             )
+            self._bump_native_revision()
             self.db.commit()
             return True
         except sqlite3.IntegrityError:
@@ -120,7 +150,9 @@ class PaperRuntime:
 
     @_journal_locked
     def terminal_submission(self, client_order_id: str) -> None:
-        self.db.execute("UPDATE paper_intents SET state='TERMINAL' WHERE client_order_id=?", (client_order_id,))
+        changed = self.db.execute("UPDATE paper_intents SET state='TERMINAL' WHERE client_order_id=? AND state!='TERMINAL'", (client_order_id,)).rowcount
+        if changed:
+            self._bump_native_revision()
         self.db.commit()
 
     @_journal_locked
@@ -139,9 +171,43 @@ class PaperRuntime:
             return "MANAGE_ONLY_PENDING_INTENT"
         if self.pending_native_funding():
             return "MANAGE_ONLY_PENDING_NATIVE_FUNDING"
+        if snapshot is None:
+            activity = self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_events UNION ALL SELECT 1 FROM paper_intents UNION ALL SELECT 1 FROM paper_native_funding)").fetchone()[0]
+            if activity:
+                return "RECOVERY_REQUIRED_UNSNAPSHOTTED_NATIVE_STATE"
+        revision = self.native_revision()
+        if snapshot and snapshot.get("native_revision") is None and not self._local_sandbox_active:
+            legacy_activity = self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_events UNION ALL SELECT 1 FROM paper_intents UNION ALL SELECT 1 FROM paper_native_funding)").fetchone()[0]
+            if legacy_activity:
+                return "RECOVERY_REQUIRED_LEGACY_UNSNAPSHOTTED_STATE"
+        elif snapshot and snapshot.get("native_revision") != revision and not self._local_sandbox_active:
+            return "RECOVERY_REQUIRED_UNSNAPSHOTTED_NATIVE_STATE"
         if snapshot and (snapshot.get("positions") or snapshot.get("orders")) and not self._local_sandbox_active:
             return "MANAGE_ONLY_DURABLE_OPEN_STATE"
+        if self.require_native_cash and not self._local_sandbox_active and snapshot:
+            if snapshot.get("strategy_restartable") is not True:
+                activity = self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_events UNION ALL SELECT 1 FROM paper_intents UNION ALL SELECT 1 FROM paper_native_funding)").fetchone()[0]
+                if activity:
+                    return "RECOVERY_REQUIRED_STRATEGY_STATE"
+            if not snapshot.get("native_account_total") or snapshot.get("native_account_currency") != "USDC":
+                activity = self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_events UNION ALL SELECT 1 FROM paper_intents UNION ALL SELECT 1 FROM paper_native_funding)").fetchone()[0]
+                if activity:
+                    return "RECOVERY_REQUIRED_ACCOUNT_SNAPSHOT"
         return "FLAT_RESTART"
+
+    @_journal_locked
+    def flat_native_cash(self) -> Decimal | None:
+        if self.recovery_state() != "FLAT_RESTART":
+            return None
+        row = self.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()
+        snapshot = json.loads(row[0]) if row else {}
+        total = snapshot.get("native_account_total")
+        if total is None:
+            return Decimal("10000")  # Legacy pristine Sandbox only.
+        if snapshot.get("native_account_currency") != "USDC" or snapshot.get("positions") or snapshot.get("orders"):
+            return None
+        cash = Decimal(total)
+        return cash if cash.is_finite() and cash > 0 else None
 
     @staticmethod
     def funding_cash_delta(signed_quantity: Decimal, settlement_mark: Decimal, rate: Decimal) -> Decimal:
@@ -180,8 +246,10 @@ class PaperRuntime:
 
     @_journal_locked
     def complete_native_funding(self, event_id: str) -> None:
-        self.db.execute("UPDATE paper_native_funding SET state='POSTED' WHERE event_id=? AND state='PREPARED'", (event_id,))
+        changed = self.db.execute("UPDATE paper_native_funding SET state='POSTED' WHERE event_id=? AND state='PREPARED'", (event_id,)).rowcount
         self.db.execute("INSERT OR IGNORE INTO paper_events VALUES (?, 'funding')", (event_id,))
+        if changed:
+            self._bump_native_revision()
         self.db.commit()
 
     @_journal_locked
@@ -204,11 +272,26 @@ class PaperRuntime:
         return [row[0] for row in self.db.execute("SELECT event_id FROM paper_funding_ledger ORDER BY event_id")]
 
     @_journal_locked
-    def snapshot(self, *, ts_ns: int, positions: list[dict], orders: list[dict], funding_event_ids: list[str], reconciled: bool = True) -> None:
-        body = {"ts_ns": ts_ns, "positions": positions, "orders": orders, "funding_event_ids": funding_event_ids, "reconciled": reconciled}
+    def snapshot(self, *, ts_ns: int, positions: list[dict], orders: list[dict], funding_event_ids: list[str], reconciled: bool = True, expected_revision: int | None = None, native_account_total: str | None = None, strategy_restartable: bool | None = None, run_epoch: str | None = None) -> bool:
+        revision = self.native_revision()
+        if expected_revision is not None and revision != expected_revision:
+            self.heartbeat(ts_ns)
+            return False
+        body = {"ts_ns": ts_ns, "positions": positions, "orders": orders, "funding_event_ids": funding_event_ids, "reconciled": reconciled, "native_revision": revision}
+        if native_account_total is not None:
+            cash = Decimal(native_account_total)
+            if not cash.is_finite() or cash <= 0:
+                raise ValueError("INVALID_NATIVE_ACCOUNT_TOTAL")
+            body["native_account_total"] = str(cash)
+            body["native_account_currency"] = "USDC"
+        if strategy_restartable is not None:
+            body["strategy_restartable"] = strategy_restartable
+        if run_epoch is not None:
+            body["run_epoch"] = run_epoch
         self.db.execute("INSERT OR REPLACE INTO paper_snapshot VALUES (1, ?)", (json.dumps(body, sort_keys=True),)); self.db.commit()
         if reconciled:
             self._local_sandbox_active = True
+        return True
 
     @_journal_locked
     def heartbeat(self, ts_ns: int) -> None:

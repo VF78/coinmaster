@@ -84,6 +84,8 @@ def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route()
     assert isinstance(execution, SandboxExecutionClientConfig)
     assert execution.venue == "HYPERLIQUID" and execution.base_currency == "USDC"
     assert execution.starting_balances == ["10000 USDC"]
+    continued = hyperliquid_testnet_node_config(trader_id="COINMASTER-HL-STAGEG-TESTNET", starting_cash=Decimal("9999.87654321"))
+    assert continued.exec_clients["SANDBOX"].starting_balances == ["9999.87654321 USDC"]
     assert execution.leverages == {BTC_PERP: Decimal("40"), InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID"): Decimal("20")}
     assert sandbox_cash_posting_supported() is True
     assert_native_testnet_only(config)

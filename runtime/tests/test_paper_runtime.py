@@ -20,7 +20,7 @@ def test_paper_runtime_is_wal_durable_idempotent_and_fail_closed(tmp_path) -> No
     assert reopened.record_native_event("native-order-1", "order") is False
     assert reopened.record_native_event("native-fill-1", "fill") is False
     assert reopened.record_native_event("native-funding-1", "funding") is False
-    assert reopened.health(16).warnings == ("STALE_DATA",)
+    assert reopened.health(16).warnings == ("STALE_DATA", "RECOVERY_REQUIRED_UNSNAPSHOTTED_NATIVE_STATE")
     with pytest.raises(RuntimeError, match="PAPER_OWNER_LOCKED"): reopened.acquire()
     reopened.close()
 
@@ -118,4 +118,83 @@ def test_flat_restart_is_the_only_automatic_reconciliation_path(tmp_path) -> Non
     restarted.acquire()
     assert restarted.recovery_state() == "FLAT_RESTART"
     assert restarted.reconcile(positions=[], orders=[])
+    restarted.close()
+
+
+def test_terminal_fill_before_native_snapshot_cannot_reopen_flat(tmp_path) -> None:
+    path = tmp_path / "terminal-crash.sqlite"
+    first = PaperRuntime(path, "stageg", 10**20, require_native_cash=True)
+    first.acquire()
+    first.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[], native_account_total="10000", strategy_restartable=True)
+    assert first.record_submission(client_order_id="entry-1", intent_id="i-1", episode_id="e-1", action="BTC_ENTRY", instrument_id="BTC", quantity="0.01", reduce_only=False)
+    first.terminal_submission("entry-1")
+    first.close()
+    restarted = PaperRuntime(path, "stageg", 10**20, require_native_cash=True)
+    assert restarted.recovery_state() == "RECOVERY_REQUIRED_UNSNAPSHOTTED_NATIVE_STATE"
+    assert restarted.flat_native_cash() is None
+    assert not restarted.health(2).safe_for_increase
+    restarted.close()
+
+
+def test_verified_flat_native_cash_handoff_preserves_exact_decimal(tmp_path) -> None:
+    path = tmp_path / "cash.sqlite"
+    first = PaperRuntime(path, "stageg", 10**20, require_native_cash=True)
+    first.acquire()
+    first.record_native_event("fill-1", "fill")
+    revision = first.native_revision()
+    assert first.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[],
+                          expected_revision=revision, native_account_total="9999.987654321",
+                          strategy_restartable=True, run_epoch="first")
+    assert first.coherent_snapshot()
+    first.close()
+    restarted = PaperRuntime(path, "stageg", 10**20, require_native_cash=True)
+    assert restarted.recovery_state() == "FLAT_RESTART"
+    assert restarted.flat_native_cash() == Decimal("9999.987654321")
+    restarted.acquire()
+    restarted.record_native_event("fill-2", "fill")
+    assert not restarted.coherent_snapshot()
+    assert restarted.recovery_state() == "RECOVERY_REQUIRED_UNSNAPSHOTTED_NATIVE_STATE"
+    revision = restarted.native_revision()
+    assert restarted.snapshot(ts_ns=2, positions=[], orders=[], funding_event_ids=[],
+                              expected_revision=revision, native_account_total="9999.975308642",
+                              strategy_restartable=True, run_epoch="second")
+    restarted.close()
+    third = PaperRuntime(path, "stageg", 10**20, require_native_cash=True)
+    assert third.flat_native_cash() == Decimal("9999.975308642")
+    third.close()
+
+
+def test_flat_cash_handoff_blocks_unrestored_episode_and_revision_race(tmp_path) -> None:
+    path = tmp_path / "episode.sqlite"
+    first = PaperRuntime(path, "stageg", 10**20, require_native_cash=True)
+    first.acquire()
+    first.record_native_event("fill-1", "fill")
+    revision = first.native_revision()
+    first.record_native_event("fill-2", "fill")
+    assert not first.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[],
+                              expected_revision=revision, native_account_total="9999",
+                              strategy_restartable=True)
+    assert first.recovery_state() == "RECOVERY_REQUIRED_UNSNAPSHOTTED_NATIVE_STATE"
+    assert first.snapshot(ts_ns=2, positions=[], orders=[], funding_event_ids=[],
+                          expected_revision=first.native_revision(), native_account_total="9999",
+                          strategy_restartable=False)
+    first.close()
+    restarted = PaperRuntime(path, "stageg", 10**20, require_native_cash=True)
+    assert restarted.recovery_state() == "RECOVERY_REQUIRED_STRATEGY_STATE"
+    assert restarted.flat_native_cash() is None
+    restarted.close()
+
+
+def test_current_native_process_can_continue_after_event_until_next_snapshot(tmp_path) -> None:
+    runtime = PaperRuntime(tmp_path / "active.sqlite", "stageg", 10**20, require_native_cash=True)
+    runtime.acquire()
+    runtime.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[],
+                     native_account_total="10000", strategy_restartable=True)
+    runtime.record_native_event("fill-1", "fill")
+    assert runtime.recovery_state() == "FLAT_RESTART"
+    assert not runtime.coherent_snapshot()
+    assert runtime.health(2).safe_for_increase
+    runtime.close()
+    restarted = PaperRuntime(tmp_path / "active.sqlite", "stageg", 10**20, require_native_cash=True)
+    assert restarted.recovery_state() == "RECOVERY_REQUIRED_UNSNAPSHOTTED_NATIVE_STATE"
     restarted.close()

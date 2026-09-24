@@ -1,0 +1,18 @@
+[Unit]
+Description=Refresh verified public Bybit daily history for Stage-G Sandbox
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=coinmaster-hl
+Group=coinmaster-hl
+WorkingDirectory=/srv/coinmaster/runtime
+ExecStart=/srv/coinmaster/runtime/.venv/bin/python -m coinmaster.ops.stage_g_refresh --data-root /var/lib/coinmaster-hl-stageg-testnet/data
+TimeoutStartSec=180
+NoNewPrivileges=true
+UMask=0077
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/srv/coinmaster/runtime
+ReadWritePaths=/var/lib/coinmaster-hl-stageg-testnet
+Environment=PYTHONDONTWRITEBYTECODE=1

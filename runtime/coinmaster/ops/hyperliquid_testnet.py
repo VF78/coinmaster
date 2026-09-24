@@ -13,7 +13,7 @@ import json
 import os
 import threading
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -305,8 +305,10 @@ def require_testnet_sandbox(environment: Mapping[str, str] | None = None) -> Non
         raise RuntimeError("HL_PUBLIC_MAINNET_ENVIRONMENT_GUARD")
 
 
-def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
+def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = Decimal("10000")) -> TradingNodeConfig:
     """Build public Bybit signals + HL MAINNET execution data + Sandbox."""
+    if not starting_cash.is_finite() or starting_cash <= 0:
+        raise ValueError("INVALID_NATIVE_SANDBOX_STARTING_CASH")
     provider = InstrumentProviderConfig(load_ids=frozenset(TESTNET_IDS))
     routing = RoutingConfig(venues=frozenset({"HYPERLIQUID"}))
     bybit_routing = RoutingConfig(venues=frozenset({"BYBIT"}))
@@ -334,7 +336,7 @@ def hyperliquid_testnet_node_config(*, trader_id: str) -> TradingNodeConfig:
                 # Stage-G sealed research begins with 10,000 USDT.  The
                 # Sandbox denomination is 10,000 USDC under an explicit
                 # 1:1 peg assumption; this is not an assertion of parity.
-                starting_balances=["10000 USDC"],
+                starting_balances=[f"{starting_cash} USDC"],
                 base_currency="USDC",
                 leverages=dict(SANDBOX_LEVERAGES),
                 use_reduce_only=True,
@@ -366,20 +368,25 @@ def assert_native_testnet_only(config: TradingNodeConfig) -> None:
 
 class HyperliquidTestnetNode:
     """One OS-process owner of public feeds and a local Sandbox account."""
-    def __init__(self, *, instance: TestnetInstanceConfig, candidate: Candidate, state: PaperRuntime) -> None:
+    def __init__(self, *, instance: TestnetInstanceConfig, candidate: Candidate, state: PaperRuntime, starting_cash: Decimal = Decimal("10000")) -> None:
         self.instance, self.candidate, self.state = instance, candidate, state
+        self.starting_cash = starting_cash
+        self._seed_verified = False
         self.scrubbed_environment = scrub_private_execution_environment()
         self.candidate_hash = candidate_content_hash(candidate)
         self.profile_root = Path(__file__).resolve().parents[2]
         self.profile = HyperliquidVenueProfile.from_snapshot(self.profile_root, environment=HyperliquidProfileEnvironment.MAINNET)
         self.warmup_bundle, self.warmup_state = load_stageg_warmup_bundle(instance.signal_warmup_manifest)
+        self._warmup_verified_day = time.time_ns() // 86_400_000_000_000
+        self._warmup_verified_target = instance.signal_warmup_manifest.resolve()
+        self._warmup_checked_at_ns = time.time_ns()
         self.gate = cross_venue_stage_g_gate(
             candidate=candidate, warmup_manifest=instance.signal_warmup_manifest,
             strategy_path=self.profile_root / "coinmaster/strategy/wave_overlay.py",
             profile_root=self.profile_root,
         )
         self.loop = asyncio.new_event_loop()
-        self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id)
+        self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id, starting_cash=starting_cash)
         assert_native_testnet_only(self.config)
         self.node = TradingNode(config=self.config, loop=self.loop)
         self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
@@ -410,7 +417,7 @@ class HyperliquidTestnetNode:
             btc_bar_type=bybit_daily_bar_type(BYBIT_IDS[0]), sol_bar_type=bybit_daily_bar_type(BYBIT_IDS[1]),
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
-            active_seed=Decimal("10000"), margin_policy=policy,
+            active_seed=self.starting_cash, margin_policy=policy,
             candidate=self.candidate, seed_bars=self.warmup_bundle.bars,
             entries_enabled=True, entries_gate=self._entries_enabled,
             event_sink=self.hooks.record_event, submission_sink=self.hooks,
@@ -420,9 +427,68 @@ class HyperliquidTestnetNode:
             funding_sink=NativeSandboxFundingPoster(exchange=self._sandbox_exchange(), runtime=self.state),
         )
 
+    def _refresh_warmup_readiness(self) -> None:
+        """Pause at each UTC boundary until verified history and live bars agree."""
+        now_ns = time.time_ns()
+        day = now_ns // 86_400_000_000_000
+        try:
+            target = self.instance.signal_warmup_manifest.resolve(strict=True)
+        except OSError:
+            target = None
+        if (
+            day != self._warmup_verified_day
+            or target != self._warmup_verified_target
+            or now_ns - self._warmup_checked_at_ns >= 900_000_000_000
+        ):
+            bundle, state = load_stageg_warmup_bundle(self.instance.signal_warmup_manifest)
+            self.warmup_bundle, self.warmup_state = bundle, state
+            self._warmup_verified_day = day
+            self._warmup_verified_target = target
+            self._warmup_checked_at_ns = now_ns
+        latest_live_close_ms = (
+            int(self.strategy._bars[-1].close_time.timestamp() * 1000)
+            if self.strategy is not None and self.strategy._bars else 0
+        )
+        covered = latest_live_close_ms >= day * 86_400_000
+        state = self.warmup_state if self.warmup_state != "READY" or covered else "STRATEGY_LIVE_SESSION_MISSING"
+        self.gate = replace(
+            self.gate, warmup_state=state,
+            attachable=(state == "READY" and self.gate.approval_state == "SEALED_APPROVAL_MATCH"
+                        and self.gate.margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"),
+        )
+
+    def native_account_total(self) -> Decimal:
+        account = self.node.cache.account_for_venue(BTC_PERP.venue)
+        if account is None or account.base_currency is None or account.base_currency.code != "USDC":
+            raise ValueError("NATIVE_USDC_ACCOUNT_MISSING")
+        total = account.balance_total(account.base_currency)
+        if total is None:
+            raise ValueError("NATIVE_USDC_TOTAL_MISSING")
+        return total.as_decimal()
+
+    def strategy_restartable(self) -> bool:
+        strategy = self.strategy
+        if strategy is None:
+            return False
+        return (
+            strategy._domain.episode is None
+            and not strategy._domain.locked_after_liquidation
+            and not strategy._queued_intents
+            and strategy._mandatory_sol_exit is None
+            and strategy._forced_close_reason is None
+        )
+
     def _entries_enabled(self) -> bool:
+        self._refresh_warmup_readiness()
+        if not self._seed_verified:
+            try:
+                self._seed_verified = self.native_account_total() == self.starting_cash
+            except ValueError:
+                return False
+            if not self._seed_verified:
+                return False
         feeds = self.feed.status(time.time_ns())
-        return self.gate.attachable and self.state.health(time.time_ns()).safe_for_increase and bool(feeds) and all(item["state"] == "READY" for item in feeds.values())
+        return self.node.is_running() and self.gate.attachable and self.state.health(time.time_ns()).safe_for_increase and bool(feeds) and all(item["state"] == "READY" for item in feeds.values())
 
     def prime(self) -> None:
         """Attach Stage-G only when fresh source and executable gates pass."""
@@ -445,6 +511,14 @@ class HyperliquidTestnetNode:
             self._thread = threading.Thread(target=self.node.run, name="hl-stageg-testnet-native", daemon=True)
             self._thread.start()
 
+    def stop(self) -> bool:
+        """Stop native callbacks before the worker closes its durable journal."""
+        if self._thread is None or not self._thread.is_alive():
+            return True
+        self.loop.call_soon_threadsafe(self.node.stop)
+        self._thread.join(timeout=30)
+        return not self._thread.is_alive()
+
     def sandbox_snapshot(self) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
         """The local Sandbox cache is authoritative only for this process."""
         positions = [
@@ -460,8 +534,9 @@ class HyperliquidTestnetNode:
         return sorted(positions, key=lambda item: item["instrument_id"]), sorted(orders, key=lambda item: item["client_order_id"])
 
     def status(self) -> dict:
+        self._refresh_warmup_readiness()
         feeds = self.feed.status(time.time_ns())
-        ready = bool(feeds) and all(item["state"] == "READY" for item in feeds.values()) and self.prime_error is None
+        ready = self.node.is_running() and bool(self._thread and self._thread.is_alive()) and bool(feeds) and all(item["state"] == "READY" for item in feeds.values()) and self.prime_error is None
         return {
             "instance_id": self.instance.instance_id,
             "environment": "mainnet-public",

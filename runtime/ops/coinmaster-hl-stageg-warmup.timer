@@ -1,0 +1,10 @@
+[Unit]
+Description=Keep Stage-G Sandbox daily signal history current
+
+[Timer]
+OnCalendar=*:0/15
+Persistent=true
+Unit=coinmaster-hl-stageg-warmup.service
+
+[Install]
+WantedBy=timers.target

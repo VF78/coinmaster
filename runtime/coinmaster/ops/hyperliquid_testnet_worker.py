@@ -6,6 +6,8 @@ import logging
 import os
 import signal
 import time
+import uuid
+from decimal import Decimal
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
@@ -28,17 +30,21 @@ class TestnetWorker:
         if not path:
             raise ConfigurationError("MISSING_HL_TESTNET_INSTANCE_CONFIG")
         self.instance = load_testnet_instance_config(Path(path))
+        self.run_epoch = uuid.uuid4().hex
         require_testnet_sandbox(environment)
         self.candidate = load_candidate(self.instance.strategy_config)
-        self.runtime = PaperRuntime(self.instance.state_db, self.instance.instance_id, int(120e9))
+        self.runtime = PaperRuntime(self.instance.state_db, self.instance.instance_id, int(120e9), require_native_cash=True)
         self.runtime.acquire()
-        # Sandbox cache cannot be restored into a later process. Durable open
-        # state therefore remains MANAGE_ONLY after restart without querying a
-        # Hyperliquid account.
+        # Only a coherent flat predecessor can seed the next local Sandbox.
+        # Open or uncertain native state stays frozen for explicit recovery.
         durable_recovery = self.runtime.recovery_state()
         self.recovery_state = durable_recovery
         self.reconciled = durable_recovery == "FLAT_RESTART"
-        self.native = HyperliquidTestnetNode(instance=self.instance, candidate=self.candidate.candidate, state=self.runtime)
+        self.starting_cash = self.runtime.flat_native_cash() if self.reconciled else None
+        self.native = HyperliquidTestnetNode(
+            instance=self.instance, candidate=self.candidate.candidate, state=self.runtime,
+            starting_cash=self.starting_cash if self.starting_cash is not None else Decimal("10000"),
+        )
         self.native.prime()
 
     def start(self) -> None:
@@ -52,11 +58,19 @@ class TestnetWorker:
         # A later process cannot inspect or restore the former process's
         # Sandbox cache. Never replace durable open/uncertain state with an
         # empty fresh cache: that would falsely manufacture FLAT_RESTART.
-        if getattr(self, "reconciled", self.runtime.recovery_state() == "FLAT_RESTART") and native is not None and native.node.is_running() and native.strategy is not None:
+        if getattr(self, "reconciled", self.runtime.recovery_state() == "FLAT_RESTART") and native is not None and native.node.is_running() and native.strategy is not None and native._seed_verified:
+            revision = self.runtime.native_revision()
             positions, orders = self.native.sandbox_snapshot()
+            try:
+                native_cash = self.native.native_account_total()
+            except ValueError:
+                self.runtime.heartbeat(time.time_ns())
+                return
             self.runtime.snapshot(
                 ts_ns=time.time_ns(), positions=positions, orders=orders,
                 funding_event_ids=self.runtime.funding_event_ids(), reconciled=True,
+                expected_revision=revision, native_account_total=str(native_cash),
+                strategy_restartable=self.native.strategy_restartable(), run_epoch=self.run_epoch,
             )
         else:
             self.runtime.heartbeat(time.time_ns())
@@ -70,7 +84,13 @@ class TestnetWorker:
             "candidate_hash": self.candidate.sha256,
             "recovery_state": self.recovery_state,
             "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
-            "safe_for_increase": health.safe_for_increase and self.native.gate.attachable,
+            "safe_for_increase": health.safe_for_increase and result["orders_enabled"],
+            "recovery_required": self.recovery_state != "FLAT_RESTART",
+            "recovery_capability": "NO_NATIVE_SANDBOX_REHYDRATION",
+            "run_epoch": self.run_epoch,
+            "virtual_capital_resets_on_flat_restart": False if self.starting_cash is not None else True,
+            "sandbox_starting_cash_usdc": str(self.starting_cash) if self.starting_cash is not None else None,
+            "native_thread_alive": bool(self.native._thread and self.native._thread.is_alive()),
             "warnings": list(dict.fromkeys((*health.warnings, self.recovery_state))),
             "orders_enabled": result["orders_enabled"],
         })
@@ -95,6 +115,12 @@ class TestnetWorker:
             "mode": "sandbox",
             "environment": "mainnet-public",
             "live_order_capability": False,
+            "run_epoch": self.run_epoch,
+            "virtual_capital_resets_on_flat_restart": False if self.starting_cash is not None else True,
+            "sandbox_starting_cash_usdc": str(self.starting_cash) if self.starting_cash is not None else None,
+            "recovery_required": recovery_state != "FLAT_RESTART",
+            "recovery_capability": "NO_NATIVE_SANDBOX_REHYDRATION",
+            "native_thread_alive": bool(self.native._thread and self.native._thread.is_alive()),
             "process_state": status["state"],
             "reconciliation": status["reconciliation"],
             "hashes": {
@@ -128,8 +154,43 @@ class TestnetWorker:
         """Expose durable state only through the bounded worker projection."""
         return self.runtime.projection_snapshot()
 
+    def flat_quiescent(self) -> bool:
+        if self.runtime.recovery_state() != "FLAT_RESTART" or not self.runtime.coherent_snapshot():
+            return False
+        if self.runtime.pending_submissions() or self.runtime.pending_native_funding():
+            return False
+        durable_positions, durable_orders = self.runtime.projection_snapshot()
+        native_positions, native_orders = self.native.sandbox_snapshot()
+        if durable_positions or durable_orders or native_positions or native_orders:
+            return False
+        if not self.native.strategy_restartable():
+            return False
+        try:
+            cash = self.native.native_account_total()
+        except ValueError:
+            return False
+        return cash.is_finite() and cash > 0
+
     def close(self) -> None:
-        self.runtime.close()
+        stopped = self.native.stop()
+        if stopped and self.reconciled and self.native.strategy is not None:
+            revision = self.runtime.native_revision()
+            positions, orders = self.native.sandbox_snapshot()
+            try:
+                native_cash = self.native.native_account_total()
+            except ValueError:
+                self.runtime.heartbeat(time.time_ns())
+            else:
+                self.runtime.snapshot(
+                    ts_ns=time.time_ns(), positions=positions, orders=orders,
+                    funding_event_ids=self.runtime.funding_event_ids(), reconciled=True,
+                    expected_revision=revision, native_account_total=str(native_cash),
+                    strategy_restartable=self.native.strategy_restartable(), run_epoch=self.run_epoch,
+                )
+        elif not stopped:
+            self.runtime.heartbeat(time.time_ns())
+        if stopped:
+            self.runtime.close()
 
 
 def create_status_server(worker: TestnetWorker, port: int = 18183) -> ThreadingHTTPServer:
@@ -185,8 +246,20 @@ def main() -> None:
         stopped = True
     signal.signal(signal.SIGTERM, stop); signal.signal(signal.SIGINT, stop)
     try:
+        ready_once = False
+        stale_since_ns: int | None = None
         while not stopped:
-            LOG.info("hl testnet status=%s", json.dumps(worker.status(), sort_keys=True))
+            status = worker.status()
+            LOG.info("hl testnet status=%s", json.dumps(status, sort_keys=True))
+            if status["state"] == "PUBLIC_FEEDS_READY":
+                ready_once = True
+                stale_since_ns = None
+            elif ready_once and stale_since_ns is None:
+                stale_since_ns = time.time_ns()
+            thread_failed = worker.native._thread is not None and not worker.native._thread.is_alive()
+            prolonged_stale = stale_since_ns is not None and time.time_ns() - stale_since_ns > 900_000_000_000
+            if (thread_failed or prolonged_stale or worker.native.prime_error is not None) and worker.flat_quiescent():
+                raise RuntimeError("STAGEG_FLAT_WORKER_RESTART_REQUIRED")
             time.sleep(5)
     finally:
         if status_server is not None:
