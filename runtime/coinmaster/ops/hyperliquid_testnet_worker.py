@@ -122,7 +122,7 @@ class TestnetWorker:
             "recovery_capability": "NO_NATIVE_SANDBOX_REHYDRATION",
             "native_thread_alive": bool(self.native._thread and self.native._thread.is_alive()),
             "process_state": status["state"],
-            "reconciliation": status["reconciliation"],
+            "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
             "hashes": {
                 "candidate_sha256": gate.candidate_hash,
                 "strategy_sha256": gate.strategy_code_hash,

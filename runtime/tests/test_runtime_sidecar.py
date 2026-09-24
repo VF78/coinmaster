@@ -174,15 +174,18 @@ def test_hl_worker_serves_bounded_projection_on_loopback_with_get_only(tmp_path,
     runtime.record_native_event("sandbox-fill", "fill")
     worker = HlStagegWorker.__new__(HlStagegWorker)
     worker.runtime = runtime
-    worker.native = SimpleNamespace(gate=SimpleNamespace(
+    worker.run_epoch = "test-epoch"
+    worker.starting_cash = Decimal("10000")
+    worker.native = SimpleNamespace(_thread=None, gate=SimpleNamespace(
         candidate_hash="candidate", strategy_code_hash="strategy", execution_policy_hash="policy", attachable=True,
         approval_state="SEALED_APPROVAL_MATCH", margin_policy_state="READY", execution_policy_state="READY", capital_state="ASSUMPTION", funding_state="UNPOSTED",
     ), status=lambda: {
-        "state": "PUBLIC_FEEDS_READY", "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
+        "state": "PUBLIC_FEEDS_READY",
         "warmup": {"state": "READY", "rows": 1482}, "feeds": {}, "warnings": [],
     }, node=SimpleNamespace(is_running=lambda: False), strategy=None)
     projection = worker.projection()
     assert projection["instance_id"] == "hl-stageg-testnet" and projection["observed_at_ns"] > 0
+    assert projection["reconciliation"] == "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY"
     assert json.loads(runtime.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()[0])["ts_ns"] == 1
     for index in range(105):
         runtime.record_native_event(f"fill-{index}", "fill")
