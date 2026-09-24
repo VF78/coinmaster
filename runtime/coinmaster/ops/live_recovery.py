@@ -10,6 +10,7 @@ from collections import defaultdict
 from decimal import Decimal
 from typing import TYPE_CHECKING
 
+from nautilus_trader.model.currencies import USDC
 from nautilus_trader.model.enums import OrderSide
 
 from coinmaster.ops.paper import PaperRuntime
@@ -52,7 +53,7 @@ class LiveRecoveryReconciler:
         self.strategy = strategy
         self.expected_account_id = expected_account_id
 
-    def apply_partial_fills(self, reports: list, native_orders: list, native_positions: list, order_reports: list) -> None:
+    def apply_partial_fills(self, reports: list, native_orders: list, native_positions: list, order_reports: list, native_account=None) -> None:
         self.strategy.recovery_confirmed = False
         owned = {str(self.strategy.config.btc_id), str(self.strategy.config.sol_id)}
         strategy_id = str(self.strategy.id)
@@ -61,6 +62,9 @@ class LiveRecoveryReconciler:
         status = {str(item.client_order_id): item for item in order_reports}
         if len(orders) != len(native_orders) or len(status) != len(order_reports) or set(status) != set(orders):
             raise ValueError("RECOVERY_DUPLICATE_NATIVE_ORDER")
+        expected_open = set(self.strategy._pending_by_order)
+        if not expected_open.issubset(orders):
+            raise ValueError("RECOVERY_EXPECTED_ORDER_MISSING")
         episode = self.strategy._domain.episode
         if episode is None:
             raise ValueError("RECOVERY_EPISODE_MISSING")
@@ -116,6 +120,10 @@ class LiveRecoveryReconciler:
                 or status_report.instrument_id != order.instrument_id
                 or status_report.order_side != order.side
                 or status_report.filled_qty.as_decimal() != order.filled_qty.as_decimal()
+                or bool(status_report.reduce_only) != bool(recorded["body"]["reduce_only"])
+                or bool(order.is_reduce_only) != bool(recorded["body"]["reduce_only"])
+                or status_report.quantity.as_decimal() != Decimal(recorded["body"]["quantity"])
+                or order.quantity.as_decimal() != status_report.quantity.as_decimal()
                 or str(order.strategy_id) != strategy_id
                 or str(order.instrument_id) not in owned
                 or recorded["instrument_id"] != str(order.instrument_id)
@@ -140,6 +148,11 @@ class LiveRecoveryReconciler:
                 or str(position.strategy_id) != strategy_id
             ):
                 raise ValueError("RECOVERY_POSITION_OWNERSHIP_MISMATCH")
+        if native_account is None or str(native_account.id) != self.expected_account_id:
+            raise ValueError("RECOVERY_ACCOUNT_IDENTITY_MISMATCH")
+        total = native_account.balance_total(USDC)
+        if total is None or total.currency != USDC or not total.as_decimal().is_finite() or total.as_decimal() <= 0:
+            raise ValueError("RECOVERY_NATIVE_USDC_BALANCE_MISSING")
 
         # Work on a detached, versioned domain copy. Rejected reports leave
         # live memory, SQLite checkpoint, and trade cursor byte-identical.
@@ -149,7 +162,7 @@ class LiveRecoveryReconciler:
         ordered_reports = sorted(reports, key=lambda item: (item.ts_event, str(item.trade_id)))
         last_trade_by_order = {
             order_id: str(max(items, key=lambda item: (item.ts_event, str(item.trade_id))).trade_id)
-            for order_id, items in reports_by_order.items()
+            for order_id, items in reports_by_order.items() if items
         }
         for report in ordered_reports:
             trade_id = str(report.trade_id)

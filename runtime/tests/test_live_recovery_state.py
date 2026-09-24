@@ -2,14 +2,25 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+from types import SimpleNamespace
 
 import pytest
+from nautilus_trader.model.currencies import USDC
+from nautilus_trader.model.identifiers import AccountId
+from nautilus_trader.model.objects import Money
 
 from coinmaster.domain.wave_overlay import DailyBar, Episode, Intent
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 from coinmaster.venues.marks import VenueMark
 from test_live_native_report_recovery import _strategy
 from test_hl_stageg_sandbox_lifecycle import HL_BTC
+
+
+def _native_account(account_id="HYPERLIQUID-master"):
+    return SimpleNamespace(
+        id=AccountId(account_id),
+        balance_total=lambda currency: Money(Decimal("9999.73"), USDC) if currency == USDC else None,
+    )
 
 
 def test_versioned_episode_and_order_mapping_roundtrip_stays_paused():
@@ -151,7 +162,7 @@ def test_missing_native_fill_history_with_open_position_fails_closed(tmp_path):
     position = SimpleNamespace(instrument_id=HL_BTC.id, quantity=Quantity.from_str("0.01000"), is_long=True,
                                account_id="HYPERLIQUID-master", strategy_id=str(strategy.id))
     with pytest.raises(ValueError, match="RECOVERY_EPISODE_POSITION_MISMATCH"):
-        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills([], [], [position], [])
+        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills([], [], [position], [], _native_account())
     assert runtime.strategy_checkpoint() == before
     assert not strategy.recovery_confirmed
     runtime.close()
@@ -186,13 +197,14 @@ def test_valid_native_fill_with_wrong_position_does_not_poison_checkpoint(tmp_pa
     order = SimpleNamespace(
         client_order_id=report.client_order_id, venue_order_id=report.venue_order_id,
         instrument_id=HL_BTC.id, account_id=None, strategy_id=str(strategy.id),
-        side=OrderSide.BUY, is_closed=False, trade_ids=[report.trade_id],
-        filled_qty=Quantity.from_str("0.01000"),
+        side=OrderSide.BUY, is_closed=False, is_reduce_only=False, trade_ids=[report.trade_id],
+        quantity=Quantity.from_str("0.02000"), filled_qty=Quantity.from_str("0.01000"),
     )
     status = SimpleNamespace(
         client_order_id=report.client_order_id, venue_order_id=report.venue_order_id,
         instrument_id=HL_BTC.id, account_id=report.account_id,
         order_side=OrderSide.BUY, filled_qty=order.filled_qty,
+        quantity=order.quantity, reduce_only=False,
     )
     wrong_position = SimpleNamespace(
         instrument_id=HL_BTC.id, account_id=report.account_id,
@@ -200,13 +212,13 @@ def test_valid_native_fill_with_wrong_position_does_not_poison_checkpoint(tmp_pa
     )
     reconciler = LiveRecoveryReconciler(runtime, strategy, str(report.account_id))
     with pytest.raises(ValueError, match="RECOVERY_EPISODE_POSITION_MISMATCH"):
-        reconciler.apply_partial_fills([report], [order], [wrong_position], [status])
+        reconciler.apply_partial_fills([report], [order], [wrong_position], [status], _native_account())
     assert runtime.strategy_checkpoint() == before
     assert not runtime.has_applied_fill("trade-1")
     assert strategy.on_save()["wave_overlay_live_recovery_v1"] == before[0]
     assert episode.btc_open_qty == 0
     good_position = SimpleNamespace(**{**vars(wrong_position), "quantity": Quantity.from_str("0.01000")})
-    reconciler.apply_partial_fills([report], [order], [good_position], [status])
+    reconciler.apply_partial_fills([report], [order], [good_position], [status], _native_account())
     assert runtime.has_applied_fill("trade-1")
     assert strategy._domain.episode.btc_open_qty == 0.01
     runtime.close()
@@ -242,20 +254,21 @@ def test_sol_half_exit_full_fill_replay_preserves_cooldown_and_terminal_cleanup(
     order = SimpleNamespace(
         client_order_id=report.client_order_id, venue_order_id=report.venue_order_id,
         instrument_id=HL_SOL.id, account_id=None, strategy_id=str(strategy.id),
-        side=OrderSide.SELL, is_closed=True, trade_ids=[report.trade_id],
-        filled_qty=Quantity.from_str("0.01000"),
+        side=OrderSide.SELL, is_closed=True, is_reduce_only=True, trade_ids=[report.trade_id],
+        quantity=Quantity.from_str("0.01000"), filled_qty=Quantity.from_str("0.01000"),
     )
     status = SimpleNamespace(
         client_order_id=report.client_order_id, venue_order_id=report.venue_order_id,
         instrument_id=HL_SOL.id, account_id=report.account_id,
         order_side=OrderSide.SELL, filled_qty=order.filled_qty,
+        quantity=order.quantity, reduce_only=True,
     )
     position = SimpleNamespace(
         instrument_id=HL_SOL.id, account_id=report.account_id,
         strategy_id=str(strategy.id), quantity=Quantity.from_str("0.01000"), is_long=True,
     )
     reconciler = LiveRecoveryReconciler(runtime, strategy, str(report.account_id))
-    reconciler.apply_partial_fills([report], [order], [position], [status])
+    reconciler.apply_partial_fills([report], [order], [position], [status], _native_account())
     assert strategy._domain.episode.sol_qty == 0.01
     assert strategy._domain.episode.sol_half_done is True
     assert strategy._domain.episode.sol_half_decision_index == 1490
@@ -266,8 +279,101 @@ def test_sol_half_exit_full_fill_replay_preserves_cooldown_and_terminal_cleanup(
     restored = RecoverableWaveOverlayStrategy(_strategy().config)
     restored.on_load({"wave_overlay_live_recovery_v1": checkpoint[0]})
     LiveRecoveryReconciler(runtime, restored, str(report.account_id)).apply_partial_fills(
-        [report], [order], [position], [status],
+        [report], [order], [position], [status], _native_account(),
     )
     assert restored._domain.episode == strategy._domain.episode
     assert runtime.strategy_checkpoint() == checkpoint
+    runtime.close()
+
+@pytest.mark.parametrize("fault", ["missing", "foreign", "not_reduce_only", "wrong_account"])
+def test_open_btc_reduce_only_ownership_rejects_uncertain_reports(tmp_path, fault):
+    from nautilus_trader.model.enums import OrderSide
+    from nautilus_trader.model.identifiers import ClientOrderId, VenueOrderId
+    from nautilus_trader.model.objects import Quantity
+    from coinmaster.ops.live_recovery import LiveRecoveryReconciler
+    from coinmaster.ops.paper import PaperRuntime
+
+    runtime = PaperRuntime(tmp_path / "open-reduction.sqlite", "live-recovery", 10**20)
+    runtime.acquire()
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    episode = Episode("episode-open", 1, 10000, 1.2, btc_initial_qty=0.02,
+                      btc_open_qty=0.02, btc_entry_vwap=60000)
+    intent = Intent("intent-reduce", episode.id, "BTC_REDUCE", 0, -1, quantity=0.01)
+    episode.pending[intent.id] = intent
+    episode.btc_tps.add(0)
+    strategy._domain.episode = episode
+    order_id = "HLTG-REDUCE-1"
+    strategy._pending_by_order[order_id] = intent
+    strategy._decision_index_by_order[order_id] = 1483
+    assert runtime.record_submission(
+        client_order_id=order_id, intent_id=intent.id, episode_id=episode.id,
+        action=intent.action, instrument_id=str(HL_BTC.id), quantity="0.01000",
+        reduce_only=True, strategy_state=strategy.on_save()["wave_overlay_live_recovery_v1"],
+    )
+    account = AccountId("HYPERLIQUID-master")
+    order = SimpleNamespace(
+        client_order_id=ClientOrderId(order_id), venue_order_id=VenueOrderId("tp-venue-1"),
+        instrument_id=HL_BTC.id, account_id=None, strategy_id=str(strategy.id),
+        side=OrderSide.SELL, is_closed=False, is_reduce_only=True, trade_ids=[],
+        quantity=Quantity.from_str("0.01000"), filled_qty=Quantity.from_str("0.00000"),
+    )
+    status = SimpleNamespace(
+        client_order_id=order.client_order_id, venue_order_id=order.venue_order_id,
+        instrument_id=HL_BTC.id, account_id=account, order_side=OrderSide.SELL,
+        filled_qty=order.filled_qty, quantity=order.quantity, reduce_only=True,
+    )
+    position = SimpleNamespace(
+        instrument_id=HL_BTC.id, account_id=account, strategy_id=str(strategy.id),
+        quantity=Quantity.from_str("0.02000"), is_long=True,
+    )
+    reconciler = LiveRecoveryReconciler(runtime, strategy, str(account))
+    before = runtime.strategy_checkpoint()
+    assert before is not None
+    reconciler.apply_partial_fills([], [order], [position], [status], _native_account())
+    assert runtime.strategy_checkpoint() == before
+    if fault == "missing":
+        native_orders, statuses, native_account = [], [], _native_account()
+        expected = "RECOVERY_EXPECTED_ORDER_MISSING"
+    elif fault == "foreign":
+        foreign = SimpleNamespace(**{**vars(order), "client_order_id": ClientOrderId("FOREIGN-ORDER")})
+        foreign_status = SimpleNamespace(**{**vars(status), "client_order_id": foreign.client_order_id})
+        native_orders, statuses, native_account = [order, foreign], [status, foreign_status], _native_account()
+        expected = "RECOVERY_ORDER_OWNERSHIP_MISMATCH"
+    elif fault == "not_reduce_only":
+        native_orders = [order]
+        statuses = [SimpleNamespace(**{**vars(status), "reduce_only": False})]
+        native_account = _native_account()
+        expected = "RECOVERY_ORDER_OWNERSHIP_MISMATCH"
+    else:
+        native_orders, statuses, native_account = [order], [status], _native_account("OTHER-master")
+        expected = "RECOVERY_ACCOUNT_IDENTITY_MISMATCH"
+    with pytest.raises(ValueError, match=expected):
+        reconciler.apply_partial_fills([], native_orders, [position], statuses, native_account)
+    assert runtime.strategy_checkpoint() == before
+    assert strategy.on_save()["wave_overlay_live_recovery_v1"] == before[0]
+    assert strategy.recovery_confirmed is False
+    runtime.close()
+
+def test_unreported_venue_flat_cannot_clear_open_episode(tmp_path):
+    from coinmaster.ops.live_recovery import LiveRecoveryReconciler
+    from coinmaster.ops.paper import PaperRuntime
+
+    runtime = PaperRuntime(tmp_path / "venue-flat.sqlite", "live-recovery", 10**20)
+    runtime.acquire()
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    strategy._domain.episode = Episode(
+        "episode-open", 1, 10000, 1.2,
+        btc_initial_qty=0.02, btc_open_qty=0.02, btc_entry_vwap=60000,
+    )
+    state = strategy.on_save()["wave_overlay_live_recovery_v1"]
+    assert runtime.commit_applied_fills(["prior-native-fill"], state)
+    before = runtime.strategy_checkpoint()
+    with pytest.raises(ValueError, match="RECOVERY_EPISODE_POSITION_MISMATCH"):
+        LiveRecoveryReconciler(runtime, strategy, "HYPERLIQUID-master").apply_partial_fills(
+            [], [], [], [], _native_account(),
+        )
+    assert runtime.strategy_checkpoint() == before
+    assert runtime.has_applied_fill("prior-native-fill")
+    assert strategy._domain.episode.btc_open_qty == 0.02
+    assert strategy.recovery_confirmed is False
     runtime.close()

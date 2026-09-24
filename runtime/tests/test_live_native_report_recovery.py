@@ -256,6 +256,7 @@ async def _run_child():
             os._exit(137)
         LiveRecoveryReconciler(active, strategy, str(ACCOUNT)).apply_partial_fills(
             reports, node.cache.orders_open(), node.cache.positions_open(), order_reports,
+            node.cache.account_for_venue(Venue("HYPERLIQUID")),
         )
         active.close()
     episode = strategy._domain.episode
