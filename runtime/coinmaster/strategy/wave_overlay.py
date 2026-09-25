@@ -210,7 +210,7 @@ class WaveOverlayStrategy(Strategy):
             return
         mark = VenueMark(
             update.instrument_id,
-            update.price.as_decimal(),
+            update.value.as_decimal(),
             update.ts_event,
             getattr(update, "ts_init", update.ts_event),
         )

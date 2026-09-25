@@ -255,10 +255,16 @@ def probe_config() -> WaveOverlayStrategyConfig:
 
 
 def test_native_mark_callback_runs_the_existing_mark_first_liquidation_gate() -> None:
+    # This is Nautilus 1.231's actual callback type, rather than the separate
+    # research fixture that uses a different mark representation.
+    from nautilus_trader.model.data import MarkPriceUpdate as NativeMarkPriceUpdate
+
     strategy = WaveOverlayStrategy(probe_config())
     observed: list[int] = []
     strategy._check_mark_first_liquidation = observed.append
-    strategy.on_mark_price(MarkPriceUpdate(BTC_PERP.id, Price.from_str("100.0"), 123))
+    update = NativeMarkPriceUpdate(BTC_PERP.id, Price.from_str("100.0"), 123, 124)
+    strategy.on_mark_price(update)
+    assert update.value == Price.from_str("100.0")
     assert observed == [123]
 
 
