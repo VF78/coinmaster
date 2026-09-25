@@ -171,6 +171,12 @@ class HlStagegProjection(RuntimeSchema):
     mode: Literal["sandbox"]
     environment: Literal["mainnet-public"]
     live_order_capability: Literal[False] = False
+    run_epoch: str | None = None
+    virtual_capital_resets_on_flat_restart: bool | None = None
+    sandbox_starting_cash_usdc: str | None = None
+    recovery_required: bool | None = None
+    recovery_capability: str | None = None
+    native_thread_alive: bool | None = None
     process_state: str
     reconciliation: str
     hashes: HlStagegHashes

@@ -492,6 +492,8 @@ export interface components {
              * @constant
              */
             mode: "sandbox";
+            /** Native Thread Alive */
+            native_thread_alive?: boolean | null;
             /** Observed At Ns */
             observed_at_ns?: number | null;
             /** Orders */
@@ -512,11 +514,21 @@ export interface components {
             provenance: "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION";
             /** Reconciliation */
             reconciliation: string;
+            /** Recovery Capability */
+            recovery_capability?: string | null;
+            /** Recovery Required */
+            recovery_required?: boolean | null;
+            /** Run Epoch */
+            run_epoch?: string | null;
+            /** Sandbox Starting Cash Usdc */
+            sandbox_starting_cash_usdc?: string | null;
             /**
              * Version
              * @constant
              */
             version: "hl-stageg-projection-v1";
+            /** Virtual Capital Resets On Flat Restart */
+            virtual_capital_resets_on_flat_restart?: boolean | null;
             warmup: components["schemas"]["HlStagegWarmup"];
             /** Warnings */
             warnings: string[];
@@ -1102,6 +1114,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1133,6 +1146,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1168,6 +1182,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1199,6 +1214,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1232,6 +1248,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1263,6 +1280,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1294,6 +1312,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1325,6 +1344,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1364,6 +1384,7 @@ export interface operations {
             };
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1395,6 +1416,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1426,6 +1448,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path: {
                 catalog_id: string;
@@ -1459,6 +1482,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1491,6 +1515,7 @@ export interface operations {
             header?: {
                 "Idempotency-Key"?: string | null;
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1526,6 +1551,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path: {
                 run_id: string;
@@ -1559,6 +1585,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path: {
                 run_id: string;
@@ -1592,6 +1619,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path: {
                 run_id: string;
@@ -1627,6 +1655,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1659,6 +1688,7 @@ export interface operations {
             header: {
                 "Idempotency-Key": string;
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path: {
                 command: "pause-new-entries" | "resume-new-entries" | "flatten-paper";
@@ -1694,6 +1724,7 @@ export interface operations {
             };
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;
@@ -1725,6 +1756,7 @@ export interface operations {
             query?: never;
             header?: {
                 authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
             };
             path?: never;
             cookie?: never;

@@ -130,6 +130,8 @@ def _ready_hl_projection(*, observed_at_ns=None, instance_id="hl-stageg-testnet"
         "version": "hl-stageg-projection-v1", "instance_id": instance_id, "projection_state": "READY",
         "observed_at_ns": time.time_ns() if observed_at_ns is None else observed_at_ns,
         "mode": "sandbox", "environment": "mainnet-public", "live_order_capability": False,
+        "run_epoch": "test-epoch", "virtual_capital_resets_on_flat_restart": False, "sandbox_starting_cash_usdc": "10000",
+        "recovery_required": False, "recovery_capability": "NO_NATIVE_SANDBOX_REHYDRATION", "native_thread_alive": True,
         "process_state": "PUBLIC_FEEDS_READY", "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
         "hashes": {"candidate_sha256": "candidate", "strategy_sha256": "strategy", "execution_policy_sha256": "policy"},
         "warmup": {"state": "READY", "rows": 1482}, "gates": {"attachable": True}, "account": {},
@@ -147,6 +149,7 @@ def test_hl_stageg_projection_is_fresh_instance_bound_and_preserves_unknown_unpo
     monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *args, **kwargs: __import__("io").BytesIO(response))
     body = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
     assert body.projection_state == "READY"
+    assert body.run_epoch == "test-epoch" and body.native_thread_alive is True
     assert body.positions[0].provenance == "SANDBOX"
     assert body.account.equity == "UNKNOWN"
 
