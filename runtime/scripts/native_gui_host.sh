@@ -78,9 +78,17 @@ assert get('/api/v1/instances/hl-stageg-testnet/controls', False)[0] == 401
 status, raw = get('/api/v1/instances/hl-stageg-testnet/controls')
 assert status == 200
 controls = json.loads(raw)
-assert controls['instance_id'] == 'hl-stageg-testnet' and controls['projection_state'] == 'UNAVAILABLE'
+projection = json.loads(get('/api/v1/instances/hl-stageg-testnet')[1])
+assert projection['instance_id'] == 'hl-stageg-testnet'
+assert projection['projection_state'] == 'READY'
+assert projection['live_order_capability'] is False
+assert projection['hashes'] == {
+    'candidate_sha256': '637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d',
+    'strategy_sha256': '3d79e50495de8b648045a43ecf4a6b320d4565bead3140e2455848a879c012f7',
+    'execution_policy_sha256': 'eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687',
+}
+assert controls['instance_id'] == 'hl-stageg-testnet' and controls['projection_state'] == 'READY'
 assert all(not controls[name]['enabled'] for name in ('pause','resume','flatten','promotion'))
-assert json.loads(get('/api/v1/instances/hl-stageg-testnet')[1])['projection_state'] == 'UNAVAILABLE'
 spec = json.loads(get('/api/v1/openapi.json')[1])
 assert '/api/v1/runtime/commands/{command}' not in spec['paths']
 assert '/api/v1/research/capabilities' in spec['paths']
