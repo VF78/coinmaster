@@ -111,6 +111,48 @@ def test_open_sandbox_group_after_crash_enters_manage_only_without_reenabling_ri
     restarted.close()
 
 
+def test_current_reconciled_owned_btc_tp_orders_do_not_block_increases(tmp_path) -> None:
+    runtime = PaperRuntime(tmp_path / "owned-tp.sqlite", "stageg", 1_000)
+    runtime.acquire()
+    assert runtime.record_submission(
+        client_order_id="tp-2", intent_id="intent-2", episode_id="episode-1",
+        action="BTC_REDUCE", instrument_id="BTC-USD-PERP.HYPERLIQUID", quantity="0.10000",
+        reduce_only=True,
+    )
+    runtime.acknowledge_submission("tp-2")
+    assert runtime.snapshot(
+        ts_ns=1,
+        positions=[{"instrument_id": "BTC-USD-PERP.HYPERLIQUID", "signed_quantity": "0.50000"}],
+        orders=[{
+            "client_order_id": "tp-2", "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+            "reduce_only": True,
+        }],
+        funding_event_ids=[],
+    )
+    assert runtime.recovery_state() == "ACTIVE_OWNED_REDUCTIONS"
+    assert runtime.health(2).safe_for_increase
+    runtime.close()
+
+
+def test_unknown_or_restarted_open_order_remains_fail_closed(tmp_path) -> None:
+    path = tmp_path / "unknown-tp.sqlite"
+    runtime = PaperRuntime(path, "stageg", 1_000)
+    runtime.acquire()
+    runtime.snapshot(
+        ts_ns=1, positions=[],
+        orders=[{"client_order_id": "foreign", "instrument_id": "BTC-USD-PERP.HYPERLIQUID", "reduce_only": True}],
+        funding_event_ids=[],
+    )
+    assert not runtime.health(2).safe_for_increase
+    assert "UNRECONCILED_ORDERS" in runtime.health(2).warnings
+    runtime.close()
+    restarted = PaperRuntime(path, "stageg", 1_000)
+    restarted.acquire()
+    assert restarted.recovery_state() == "MANAGE_ONLY_DURABLE_OPEN_STATE"
+    assert not restarted.health(2).safe_for_increase
+    restarted.close()
+
+
 def test_flat_restart_is_the_only_automatic_reconciliation_path(tmp_path) -> None:
     runtime = PaperRuntime(tmp_path / "paper.sqlite", "paper", 1_000)
     runtime.acquire(); runtime.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[]); runtime.close()

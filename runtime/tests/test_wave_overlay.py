@@ -138,6 +138,24 @@ def test_partial_btc_tp_grants_only_a_proportional_sol_right() -> None:
     assert additions[0].requested_notional < state.episode.h
 
 
+def test_partial_btc_tp_cancel_replans_only_its_unsold_remainder() -> None:
+    source = bars(1)
+    state = WaveOverlayState(Candidate())
+    state.episode = Episode(
+        "episode", 1, 10_000, 1.0, btc_initial_qty=10, btc_open_qty=10,
+        btc_entry_vwap=100, h=100, wave_levels=(0.01, 0.02, 0.03),
+    )
+    target = state.plan_confirmed_btc_targets()[0]
+    assert target.quantity == 1.5
+    state.on_fill(target.id, 0.5, 101, source[0].close_time)
+    state.on_parent_cancelled(target.id)
+    replacements = state.plan_confirmed_btc_targets()
+    replacement = next(item for item in replacements if item.level == 0)
+    assert replacement.quantity == pytest.approx(1.0)
+    assert 0 not in state.episode.btc_filled_tps
+    assert state.episode.btc_tp_filled_qty[0] == pytest.approx(0.5)
+
+
 def test_timeout_preempts_a_pending_planned_sol_exit() -> None:
     source = bars(16)
     feature = Features(15, 1, 1.0, 1.0, 0.0, 1.0, 4.0)

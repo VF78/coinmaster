@@ -535,7 +535,11 @@ class HyperliquidTestnetNode:
             if position.instrument_id in TESTNET_IDS
         ]
         orders = [
-            {"client_order_id": str(order.client_order_id), "instrument_id": str(order.instrument_id)}
+            {
+                "client_order_id": str(order.client_order_id),
+                "instrument_id": str(order.instrument_id),
+                "reduce_only": bool(order.is_reduce_only),
+            }
             for order in self.node.cache.orders_open()
             if order.instrument_id in TESTNET_IDS
         ]

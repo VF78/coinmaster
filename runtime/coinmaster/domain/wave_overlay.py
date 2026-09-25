@@ -354,7 +354,6 @@ class WaveOverlayState:
             episode.btc_initial_qty += quantity
             episode.btc_open_qty += quantity
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
-            episode.btc_filled_tps.add(intent.level)
             episode.sol_rights.add(intent.level)
             target_quantity = intent.quantity or 0.0
             filled_quantity = episode.btc_tp_filled_qty.get(intent.level, 0.0) + quantity
@@ -362,6 +361,8 @@ class WaveOverlayState:
                 filled_quantity = min(filled_quantity, target_quantity)
                 episode.sol_right_fraction[intent.level] = min(1.0, filled_quantity / target_quantity)
             episode.btc_tp_filled_qty[intent.level] = filled_quantity
+            if target_quantity > 0 and filled_quantity >= target_quantity - 1e-12:
+                episode.btc_filled_tps.add(intent.level)
             # Resting targets can fill days after their creation. Strict H3
             # compares against the fill's applied decision cycle, never the
             # stale intent creation cycle.
@@ -402,7 +403,8 @@ class WaveOverlayState:
             if level in episode.btc_tps or level in episode.btc_filled_tps:
                 continue
             target = episode.btc_entry_vwap * (1 + episode.side * threshold)
-            quantity = min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_open_qty)
+            target_quantity = episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level]
+            quantity = min(max(0.0, target_quantity - episode.btc_tp_filled_qty.get(level, 0.0)), episode.btc_open_qty)
             if quantity <= 0 or target <= 0:
                 continue
             episode.btc_tps.add(level)

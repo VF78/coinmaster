@@ -1,5 +1,6 @@
 from decimal import Decimal
 from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
 
 from nautilus_trader.backtest.config import BacktestEngineConfig
 from nautilus_trader.backtest.engine import BacktestEngine
@@ -251,6 +252,54 @@ def probe_config() -> WaveOverlayStrategyConfig:
         btc_mark_data_type=venue_mark_data_type(BTC_PERP.id), sol_mark_data_type=venue_mark_data_type(SOL_PERP.id),
         mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"),
     )
+
+
+def test_native_mark_callback_runs_the_existing_mark_first_liquidation_gate() -> None:
+    strategy = WaveOverlayStrategy(probe_config())
+    observed: list[int] = []
+    strategy._check_mark_first_liquidation = observed.append
+    strategy.on_mark_price(MarkPriceUpdate(BTC_PERP.id, Price.from_str("100.0"), 123))
+    assert observed == [123]
+
+
+def test_consecutive_timeout_preserves_first_mandatory_intent() -> None:
+    strategy = WaveOverlayStrategy(probe_config())
+    first = Intent("timeout-1", "episode", "SOL_EXIT", None, -1, quantity=1, reason="SOL_HARD_TIMEOUT")
+    duplicate = Intent("timeout-2", "episode", "SOL_EXIT", None, -1, quantity=1, reason="SOL_HARD_TIMEOUT")
+    strategy._domain.episode = Episode("episode", 1, 10_000, 1.0, sol_qty=1)
+    strategy._domain.episode.pending[first.id] = first
+    strategy._domain.episode.pending[duplicate.id] = duplicate
+    strategy._mandatory_sol_exit = (first, None, 0)
+    strategy._preempt_with_mandatory_sol_exit(duplicate, None, 1)
+    assert strategy._mandatory_sol_exit[0].id == first.id
+    assert first.id in strategy._domain.episode.pending
+    assert duplicate.id not in strategy._domain.episode.pending
+
+
+def test_native_partial_btc_callbacks_requeue_targets_and_only_unsold_tp_leaves() -> None:
+    strategy = WaveOverlayStrategy(probe_config())
+    episode = Episode(
+        "episode", 1, 10_000, 1.0, wave_levels=(0.01, 0.02, 0.03),
+    )
+    strategy._domain.episode = episode
+    entry = Intent("entry", "episode", "BTC_ENTRY", None, 1, quantity=1)
+    episode.pending[entry.id] = entry
+    strategy._pending_by_order["entry-order"] = entry
+    strategy._sigma_by_order["entry-order"] = None
+    strategy._decision_index_by_order["entry-order"] = 7
+    strategy._apply_confirmed_domain_fill(entry, "entry-order", 0.5, 100, 1, False)
+    strategy.on_order_canceled(SimpleNamespace(client_order_id="entry-order", ts_event=2))
+    assert {item[0].level for item in strategy._queued_intents} == {0, 1, 2}
+
+    target = strategy._queued_intents.pop(0)[0]
+    strategy._queued_intent_ready_ns.pop(target.id)
+    strategy._pending_by_order["tp-order"] = target
+    strategy._sigma_by_order["tp-order"] = None
+    strategy._decision_index_by_order["tp-order"] = 8
+    strategy._apply_confirmed_domain_fill(target, "tp-order", target.quantity / 2, 101, 3, False)
+    strategy.on_order_canceled(SimpleNamespace(client_order_id="tp-order", ts_event=4))
+    replacement = next(item[0] for item in strategy._queued_intents if item[0].level == target.level)
+    assert replacement.quantity == target.quantity / 2
 
 
 def test_control_a_sol_exit_is_taker_ioc_at_zero_spread() -> None:

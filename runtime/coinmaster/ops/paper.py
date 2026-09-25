@@ -257,7 +257,15 @@ class PaperRuntime:
         """Return the only supported restart contract for durable exposure."""
         row = self.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()
         snapshot = json.loads(row[0]) if row else None
-        if self.pending_submissions():
+        pending = self.pending_submissions()
+        # A local Sandbox process may continue to manage a reconciled resting
+        # BTC take-profit. The order must be visible in this snapshot and
+        # match its own acknowledged durable reduction record exactly. This
+        # exception is deliberately process-local: the same bytes after a
+        # restart remain MANAGE_ONLY because Sandbox cannot restore its cache.
+        if pending and self._local_sandbox_active and self._owned_open_btc_reductions(snapshot, pending):
+            return "ACTIVE_OWNED_REDUCTIONS"
+        if pending:
             return "MANAGE_ONLY_PENDING_INTENT"
         if self.pending_native_funding():
             return "MANAGE_ONLY_PENDING_NATIVE_FUNDING"
@@ -284,6 +292,32 @@ class PaperRuntime:
                 if activity:
                     return "RECOVERY_REQUIRED_ACCOUNT_SNAPSHOT"
         return "FLAT_RESTART"
+
+    @staticmethod
+    def _owned_open_btc_reductions(snapshot: dict | None, pending: list[dict]) -> bool:
+        """Accept only snapshot-confirmed owned BTC TP reductions in-process."""
+        if not snapshot or snapshot.get("reconciled") is not True:
+            return False
+        orders = snapshot.get("orders")
+        if not isinstance(orders, list) or not orders:
+            return False
+        records = {item["client_order_id"]: item for item in pending}
+        for order in orders:
+            if not isinstance(order, dict):
+                return False
+            client_order_id = order.get("client_order_id")
+            record = records.get(client_order_id)
+            if (
+                not isinstance(client_order_id, str)
+                or record is None
+                or record["state"] != "ACKED"
+                or record["action"] != "BTC_REDUCE"
+                or record["instrument_id"] != order.get("instrument_id")
+                or record["body"].get("reduce_only") is not True
+                or order.get("reduce_only") is not True
+            ):
+                return False
+        return len(records) == len(orders)
 
     @_journal_locked
     def flat_native_cash(self) -> Decimal | None:
@@ -402,9 +436,9 @@ class PaperRuntime:
         if snapshot is None: warnings.append("MISSING_SNAPSHOT")
         elif now_ns - snapshot["ts_ns"] > self.max_data_age_ns: warnings.append("STALE_DATA")
         recovery = self.recovery_state()
-        if recovery != "FLAT_RESTART": warnings.append(recovery)
+        if recovery not in {"FLAT_RESTART", "ACTIVE_OWNED_REDUCTIONS"}: warnings.append(recovery)
         if snapshot and not snapshot.get("reconciled", False): warnings.append("SANDBOX_RECONCILIATION_MISMATCH")
-        if snapshot and snapshot["orders"]: warnings.append("UNRECONCILED_ORDERS")
+        if snapshot and snapshot["orders"] and not self._owned_open_btc_reductions(snapshot, self.pending_submissions()): warnings.append("UNRECONCILED_ORDERS")
         return PaperHealth(self.owner, paused, "flatten-paper" in commands, not warnings and not paused, tuple(warnings))
 
     @_journal_locked

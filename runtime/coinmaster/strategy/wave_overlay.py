@@ -210,12 +210,13 @@ class WaveOverlayStrategy(Strategy):
             return
         mark = VenueMark(
             update.instrument_id,
-            update.value.as_decimal(),
+            update.price.as_decimal(),
             update.ts_event,
-            update.ts_init,
+            getattr(update, "ts_init", update.ts_event),
         )
         self._latest_marks[update.instrument_id] = mark
         self._update_margin_mark(mark.instrument_id, mark.price, mark.ts_event)
+        self._check_mark_first_liquidation(mark.ts_event)
         # Public updates are intraday while Bybit daily bars close at UTC day
         # boundaries.  Keep the last causal mark for that day's close rather
         # than requiring an impossible timestamp equality.
@@ -543,6 +544,13 @@ class WaveOverlayStrategy(Strategy):
 
     def _preempt_with_mandatory_sol_exit(self, intent: Intent, sigma: float | None, index: int) -> None:
         """Cancel SOL leaves before a timeout reduces the reconciled remainder."""
+        if self._mandatory_sol_exit is not None:
+            # The first timeout remains authoritative while cancellation and
+            # the next executable SOL quote are pending. A later daily
+            # decision creates a new domain intent, so terminally remove that
+            # duplicate rather than overwriting the original and orphaning it.
+            self._domain.on_parent_terminal(intent.id)
+            return
         self._discard_queued_intents(lambda queued: queued.action.startswith("SOL") and queued.id != intent.id)
         for order in list(self.cache.orders_open()):
             if order.instrument_id == self.config.sol_id:
@@ -761,10 +769,27 @@ class WaveOverlayStrategy(Strategy):
         self._sigma_by_order.pop(client_order_id, None)
         self._decision_index_by_order.pop(client_order_id, None)
         if intent.action == "BTC_ENTRY":
-            # Native entry fills grant targets; they wait for a later quote.
-            for target in self._domain.plan_confirmed_btc_targets():
-                self._queued_intents.append((target, sigma, intent.decision_index))
-                self._queued_intent_ready_ns[target.id] = ts_event + 1
+            self._queue_confirmed_btc_targets(sigma, intent.decision_index, ts_event)
+
+    def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
+        """Queue every remaining confirmed-entry target for the next quote."""
+        for target in self._domain.plan_confirmed_btc_targets():
+            self._queued_intents.append((target, sigma, decision_index))
+            self._queued_intent_ready_ns[target.id] = ready_ns + 1
+
+    def _has_confirmed_btc_remainder(self, intent: Intent) -> bool:
+        """Return whether a canceled BTC parent had a confirmed unsold remainder."""
+        episode = self._domain.episode
+        if episode is None or self._forced_close_reason is not None or self._liquidating:
+            return False
+        if intent.action == "BTC_ENTRY":
+            return episode.btc_initial_qty > 0 and episode.btc_open_qty > 0
+        return (
+            intent.action == "BTC_REDUCE"
+            and intent.level is not None
+            and intent.level not in episode.btc_filled_tps
+            and episode.btc_tp_filled_qty.get(intent.level, 0.0) > 0
+        )
 
     def _after_domain_fill(self, event: OrderFilled) -> None:
         """Optional durable domain checkpoint, before any follow-on decision."""
@@ -778,10 +803,15 @@ class WaveOverlayStrategy(Strategy):
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
-        self._sigma_by_order.pop(str(event.client_order_id), None)
-        self._decision_index_by_order.pop(str(event.client_order_id), None)
+        sigma = self._sigma_by_order.pop(str(event.client_order_id), None)
+        decision_index = self._decision_index_by_order.pop(str(event.client_order_id), 0)
         if intent is not None:
             self._domain.on_parent_cancelled(intent.id)
+            if self._has_confirmed_btc_remainder(intent):
+                # IOC entry and TP parents can cancel after a real partial
+                # fill. Re-plan from confirmed domain leaves; the next quote
+                # still sizes every reduction against the native position.
+                self._queue_confirmed_btc_targets(sigma, decision_index, event.ts_event)
         if self._forced_close_reason is not None and not self.cache.orders_open():
             self._submit_forced_closes_from_cache()
 
@@ -853,10 +883,12 @@ class WaveOverlayStrategy(Strategy):
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(client_order_id, None)
-        self._sigma_by_order.pop(client_order_id, None)
-        self._decision_index_by_order.pop(client_order_id, None)
+        sigma = self._sigma_by_order.pop(client_order_id, None)
+        decision_index = self._decision_index_by_order.pop(client_order_id, 0)
         if intent is not None:
             self._domain.on_parent_terminal(intent.id)
+            if self._has_confirmed_btc_remainder(intent):
+                self._queue_confirmed_btc_targets(sigma, decision_index, 0)
         if self._forced_close_reason is not None and not self.cache.orders_open():
             self._submit_forced_closes_from_cache()
 
