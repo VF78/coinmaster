@@ -103,8 +103,20 @@ class TestnetWorker:
         health = self.runtime.health(time.time_ns())
         gate = self.native.gate
         events, event_cursor = self.runtime.projection_events(100)
+        account: dict[str, str] = {}
+        account_warning: tuple[str, ...] = ()
         if recovery_state == "FLAT_RESTART" and self.native.node.is_running() and self.native.strategy is not None:
             positions, orders = self.native.sandbox_snapshot()
+            # The local Sandbox ledger is authoritative only while this
+            # process owns it. Project its actual USDC total as cash, but do
+            # not manufacture equity, margin, PnL, fees, or fills from it.
+            try:
+                native_cash = self.native.native_account_total()
+                if not native_cash.is_finite() or native_cash <= 0:
+                    raise ValueError("INVALID_NATIVE_USDC_TOTAL")
+                account = {"native_cash": str(native_cash)}
+            except (ValueError, ArithmeticError):
+                account_warning = ("NATIVE_SANDBOX_ACCOUNT_UNAVAILABLE",)
         else:
             positions, orders = self.runtime_snapshot()
         return {
@@ -136,10 +148,7 @@ class TestnetWorker:
                 "execution_policy_state": gate.execution_policy_state,
                 "capital_state": gate.capital_state,
             },
-            # Native Sandbox account values are only shown once a dedicated
-            # verified projection field exists.  Do not turn missing money
-            # into zero in this UI bridge.
-            "account": {},
+            "account": account,
             "funding_state": gate.funding_state,
             "feeds": status["feeds"],
             "positions": [dict(item, provenance="SANDBOX") for item in positions],
@@ -147,7 +156,7 @@ class TestnetWorker:
             "events": [dict(item, provenance="SANDBOX") for item in events],
             "event_cursor": event_cursor,
             "provenance": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION",
-            "warnings": list(dict.fromkeys((*health.warnings, recovery_state))),
+            "warnings": list(dict.fromkeys((*health.warnings, *account_warning, recovery_state))),
         }
 
     def runtime_snapshot(self) -> tuple[list[dict], list[dict]]:

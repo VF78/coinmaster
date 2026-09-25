@@ -186,6 +186,17 @@ def test_hl_worker_serves_bounded_projection_on_loopback_with_get_only(tmp_path,
     projection = worker.projection()
     assert projection["instance_id"] == "hl-stageg-testnet" and projection["observed_at_ns"] > 0
     assert projection["reconciliation"] == "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY"
+    worker.native.node = SimpleNamespace(is_running=lambda: True)
+    worker.native.strategy = object()
+    worker.native.sandbox_snapshot = lambda: ([{"instrument_id": "BTC", "signed_quantity": "0.01"}], [])
+    worker.native.native_account_total = lambda: Decimal("10000")
+    assert worker.projection()["account"] == {"native_cash": "10000"}
+    def missing_native_cash():
+        raise ValueError("NATIVE_USDC_TOTAL_MISSING")
+    worker.native.native_account_total = missing_native_cash
+    unavailable_account = worker.projection()
+    assert unavailable_account["account"] == {}
+    assert "NATIVE_SANDBOX_ACCOUNT_UNAVAILABLE" in unavailable_account["warnings"]
     assert json.loads(runtime.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()[0])["ts_ns"] == 1
     for index in range(105):
         runtime.record_native_event(f"fill-{index}", "fill")

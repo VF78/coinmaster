@@ -29,13 +29,20 @@ export function StrategyPage() {
   async function save() { if (!config || saving) return; if (!Number.isFinite(Number(config.initial_total_usdt)) || Number(config.initial_total_usdt) <= 0) { setMessage('Research draft validation failed: initial total must be a positive number.'); return; } setSaving(true); setMessage('Saving research draft…'); try { const next = await saveConfiguration(config); const refreshed = await getConfigurations(); const persisted = refreshed.find((item) => item.id === next.id); if (!persisted) throw new Error('Saved draft could not be read back.'); setDrafts(refreshed); setSaved(persisted); setConfig(persisted.config); window.localStorage.setItem('coinmaster-selected-config', persisted.id); setMessage(`Research draft saved and read back: ${persisted.config_hash.slice(0, 12)}.`); } catch (error) { setMessage(error instanceof Error ? error.message : 'Research draft save failed.'); } finally { setSaving(false); } }
   const runningMatch = strategy?.running_state === 'RUNNING_MATCH';
   const sourceChecked = strategy?.source_state === 'SEALED_SOURCE_CHECKED';
+  const runningParameters = Object.entries(strategy?.candidate ?? {}).map(([parameter, value]) => ({ id: parameter, parameter, value }));
+  const strategyGroups = [
+    ['BTC sizing and exits', runningParameters.filter((row) => row.parameter.startsWith('btc_'))],
+    ['SOL sizing and exits', runningParameters.filter((row) => row.parameter.startsWith('sol_'))],
+    ['Signal and safety settings', runningParameters.filter((row) => !row.parameter.startsWith('btc_') && !row.parameter.startsWith('sol_'))],
+  ] as const;
   return <main className="terminal-layout">
-    <Card title={runningMatch ? 'Running sealed Stage-G' : sourceChecked ? 'Local sealed configuration' : 'Sealed configuration unavailable'} actions={<Badge tone={runningMatch ? 'success' : 'danger'}>{strategy?.running_state ?? (loading ? 'LOADING' : 'NOT_CONFIRMED')}</Badge>}>
-      <p className="muted">{runningMatch ? 'Fresh worker projection matches the local sealed hashes.' : sourceChecked ? 'Local sealed configuration; running not confirmed.' : 'Sealed configuration could not be loaded or verified; running not confirmed.'}</p>
-      <p className="muted">Instance <code>hl-stageg-testnet</code> · {strategy?.strategy_id ?? 'UNKNOWN'} · native Sandbox using public MAINNET data.</p>
-      <p className="muted">Candidate {strategy?.hashes.candidate_sha256 ?? 'UNKNOWN'} · strategy {strategy?.hashes.strategy_sha256 ?? 'UNKNOWN'} · policy {strategy?.hashes.execution_policy_sha256 ?? 'UNKNOWN'}</p>
-      <DataTable rows={Object.entries(strategy?.candidate ?? {}).map(([parameter, value]) => ({ id: parameter, parameter, value }))} emptyText="No sealed candidate is available." mobileTitle={(row) => row.parameter} columns={[{ key: 'parameter', header: 'Sealed parameter', render: (row) => row.parameter }, { key: 'value', header: 'Value', render: (row) => row.value }]} />
+    <Card title={runningMatch ? 'Running Stage-G strategy' : sourceChecked ? 'Sealed Stage-G configuration' : 'Sealed configuration unavailable'} actions={<Badge tone={runningMatch ? 'success' : 'danger'}>{strategy?.running_state ?? (loading ? 'LOADING' : 'NOT_CONFIRMED')}</Badge>}>
+      <p className="muted">{runningMatch ? 'The active worker matches this sealed strategy configuration.' : sourceChecked ? 'Local sealed configuration; running not confirmed.' : 'Sealed configuration could not be loaded or verified; running not confirmed.'}</p>
+      <div className="stats-grid"><Stat label="Strategy" value={strategy?.strategy_id ?? 'UNKNOWN'} /><Stat label="Execution" value="Local Sandbox" /><Stat label="Market data" value="HL mainnet public" /><Stat label="Apply to dry run" value="Unavailable" /></div>
+      <p className="muted">Running settings are read-only. Research drafts below never change the active trader.</p>
     </Card>
+    {strategyGroups.map(([group, rows]) => <Card key={group} title={group} actions={<Badge tone="neutral">RUNNING</Badge>}><DataTable rows={rows} emptyText="No sealed settings available." mobileTitle={(row) => row.parameter} columns={[{ key: 'parameter', header: 'Setting', render: (row) => title(row.parameter) }, { key: 'value', header: 'Running value', render: (row) => row.value }]} /></Card>)}
+    <details className="nautilus-diagnostics"><summary>Strategy identity and account limits</summary><p className="muted">Candidate: {strategy?.hashes.candidate_sha256 ?? 'UNKNOWN'} · strategy: {strategy?.hashes.strategy_sha256 ?? 'UNKNOWN'} · policy: {strategy?.hashes.execution_policy_sha256 ?? 'UNKNOWN'}.</p><p className="muted">{strategy?.public_venue_profile ?? 'UNKNOWN'} Account margin: {strategy?.account_margin ?? 'UNKNOWN'} · account fee schedule: {strategy?.account_fee_schedule ?? 'UNKNOWN'} · funding: {strategy?.funding_treatment ?? 'UNKNOWN'}.</p></details>
     <Card title="Sandbox assumptions and unknown account facts" actions={<Badge tone="neutral">HONEST LIMITS</Badge>}><p className="muted">{strategy?.capital_assumption ?? 'UNKNOWN'} · {strategy?.research_comparison_assumption ?? 'UNKNOWN'}.</p><p className="muted">{strategy?.public_venue_profile ?? 'UNKNOWN'} Account margin: {strategy?.account_margin ?? 'UNKNOWN'} · account fee schedule: {strategy?.account_fee_schedule ?? 'UNKNOWN'} · funding: {strategy?.funding_treatment ?? 'UNKNOWN'}.</p></Card>
     <Card title="Promotion" actions={<Badge tone="danger">BLOCKED</Badge>}><p className="muted">Promotion is intentionally unavailable: {strategy?.promotion_reason ?? 'SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED'}. Saving a draft never mutates the running Nautilus instance.</p><Button variant="primary" disabled>Promote to running instance</Button></Card>
     <Card title="Research drafts" actions={<Badge tone="neutral">SEPARATE FROM RUNNER</Badge>}>
@@ -223,26 +230,34 @@ export function RuntimePage() {
   const orderRows = (state?.orders ?? []).map((order) => ({ ...order, id: order.client_order_id }));
   const feedRows = Object.entries(state?.feeds ?? {}).map(([instrument_id, feed]) => ({ ...feed, instrument_id, id: instrument_id }));
   const age = (value: number | null | undefined) => value === null || value === undefined ? 'UNKNOWN' : `${(value / 1_000_000_000).toFixed(1)}s`;
+  const accountIsUnknown = !state || Object.values(state.account).every((value) => value === 'UNKNOWN');
+  const activeExposure = state ? (positionRows.length ? `${positionRows.length} open` : 'Flat') : 'UNKNOWN';
+  const hasNativeActivity = (state?.events.length ?? 0) > 0;
   return <main className="terminal-layout">
-    <Card title="Sandbox account and health" actions={<Badge tone={toneForProjection}>{state ? `${state.projection_state} · ${state.process_state}` : loading ? 'LOADING' : 'UNAVAILABLE'}</Badge>}>
-      <p className="muted">Isolated instance: <code>hl-stageg-testnet</code> · public MAINNET data · local native Sandbox · read only. This is not <code>coinmaster-paper</code>.</p>
+    <Card title="Stage-G virtual account" actions={<Badge tone={toneForProjection}>{state ? `${state.projection_state} · ${state.process_state}` : loading ? 'LOADING' : 'UNAVAILABLE'}</Badge>}>
+      <p className="muted">BTC and SOL use public Hyperliquid market data with local Sandbox execution. Live orders are disabled.</p>
       <div className="stats-grid">
-        <Stat label="Native cash" value={state?.account.native_cash ?? 'UNKNOWN'} />
-        <Stat label="Equity" value={state?.account.equity ?? 'UNKNOWN'} />
+        <Stat label="Observed cash" value={state?.account.native_cash ?? 'UNKNOWN'} />
+        <Stat label="Observed equity" value={state?.account.equity ?? 'UNKNOWN'} />
+        <Stat label="Active exposure" value={activeExposure} />
+        <Stat label="Open orders" value={state ? String(orderRows.length) : 'UNKNOWN'} />
         <Stat label="Free margin" value={state?.account.free_margin ?? 'UNKNOWN'} />
-        <Stat label="Initial margin" value={state?.account.im ?? 'UNKNOWN'} />
-        <Stat label="Maintenance margin" value={state?.account.mm ?? 'UNKNOWN'} />
-        <Stat label="Selected leverage" value="UNKNOWN" />
+        <Stat label="Realized PnL" value="UNKNOWN" />
       </div>
       <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" onClick={load}>Refresh projection</Button></div>
-      <p className="muted">Process: {state?.process_state ?? 'UNKNOWN'} · reconciliation: {state?.reconciliation ?? 'UNKNOWN'} · live order capability: false</p>
-      <p className="muted">Candidate: {state?.hashes.candidate_sha256 ?? 'UNKNOWN'} · Strategy: {state?.hashes.strategy_sha256 ?? 'UNKNOWN'} · Policy: {state?.hashes.execution_policy_sha256 ?? 'UNKNOWN'}</p>
-      <p className="muted">Warmup: {state?.warmup.state ?? 'UNKNOWN'} ({state?.warmup.rows ?? 'UNKNOWN'} rows) · funding: {state?.funding_state ?? 'UNPOSTED'}</p>
-      <p className="muted">Account figures are UNKNOWN until the native worker supplies verified values. Future funding is UNPOSTED, never settled cash.</p>
+      {accountIsUnknown ? <p className="muted">The worker has not provided a verified account snapshot. The 10,000 USDC Sandbox seed is a startup assumption, not displayed as observed cash or PnL.</p> : null}
     </Card>
-    <Card title="Open positions and orders" actions={<Badge tone="neutral">SANDBOX</Badge>}><DataTable rows={positionRows} emptyText="No projected Sandbox positions." mobileTitle={(row) => row.instrument_id} columns={[{ key: 'instrument', header: 'Instrument', render: (row) => row.instrument_id }, { key: 'quantity', header: 'Quantity', render: (row) => row.signed_quantity }, { key: 'provenance', header: 'Provenance', render: (row) => row.provenance }]} /><DataTable rows={orderRows} emptyText="No projected Sandbox orders." mobileTitle={(row) => row.client_order_id} columns={[{ key: 'order', header: 'Client order', render: (row) => row.client_order_id }, { key: 'instrument', header: 'Instrument', render: (row) => row.instrument_id ?? 'UNKNOWN' }, { key: 'provenance', header: 'Provenance', render: (row) => row.provenance }]} /></Card>
-    <Card title="Recent native activity" actions={<Badge tone="neutral">EVENT CURSOR</Badge>}><DataTable rows={eventRows} emptyText="No projected Sandbox events." mobileTitle={(row) => `${row.kind} · ${row.event_id}`} columns={[{ key: 'cursor', header: 'Cursor', render: (row) => row.cursor }, { key: 'kind', header: 'Kind', render: (row) => row.kind }, { key: 'event', header: 'Event', render: (row) => row.event_id }, { key: 'provenance', header: 'Provenance', render: (row) => row.provenance }]} /><p className="muted">Trade and fill detail: UNKNOWN. Event metadata is an audit cursor, not a claimed exchange fill or PnL history.</p></Card>
-    <Card title="Public feed health" actions={<Badge tone="neutral">DIAGNOSTICS</Badge>}><DataTable rows={feedRows} emptyText="No public feed observations." mobileTitle={(row) => row.instrument_id} columns={[{ key: 'instrument', header: 'Instrument', render: (row) => row.instrument_id }, { key: 'state', header: 'State', render: (row) => row.state }, { key: 'mark', header: 'Mark', render: (row) => row.mark ?? 'UNKNOWN' }, { key: 'mark-age', header: 'Mark age', render: (row) => age(row.mark_age_ns) }, { key: 'funding', header: 'Funding', render: (row) => row.funding_rate ?? 'UNKNOWN' }, { key: 'funding-age', header: 'Funding age', render: (row) => age(row.funding_age_ns) }]} /></Card>
+    <Card title="BTC / SOL market context" actions={<Badge tone="neutral">PUBLIC MARKET DATA</Badge>}>
+      <DataTable rows={feedRows} emptyText="Market observations are unavailable." mobileTitle={(row) => row.instrument_id} mobileSubtitle={(row) => `${row.mark ?? 'UNKNOWN'} · ${row.state}`} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id }, { key: 'state', header: 'Feed', render: (row) => <Badge tone={row.state === 'READY' ? 'success' : 'danger'}>{row.state}</Badge> }, { key: 'mark', header: 'Mark', render: (row) => row.mark ?? 'UNKNOWN' }, { key: 'mark-age', header: 'Mark freshness', render: (row) => age(row.mark_age_ns) }, { key: 'funding', header: 'Funding rate', render: (row) => row.funding_rate ?? 'UNKNOWN' }, { key: 'funding-age', header: 'Funding freshness', render: (row) => age(row.funding_age_ns) }]} />
+      <p className="muted">Funding is observed market context only; future payments are not posted to Sandbox cash.</p>
+    </Card>
+    <Card title="Open positions" actions={<Badge tone="neutral">SANDBOX</Badge>}><DataTable rows={positionRows} emptyText="No open virtual positions." mobileTitle={(row) => row.instrument_id} mobileSubtitle={(row) => `${row.signed_quantity} · Sandbox`} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id }, { key: 'quantity', header: 'Position size', render: (row) => row.signed_quantity }, { key: 'provenance', header: 'Execution', render: (row) => row.provenance }]} /></Card>
+    <Card title="Open orders" actions={<Badge tone="neutral">SANDBOX</Badge>}><DataTable rows={orderRows} emptyText="No open virtual orders." mobileTitle={(row) => row.instrument_id ?? row.client_order_id} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id ?? 'UNKNOWN' }, { key: 'order', header: 'Order reference', render: (row) => row.client_order_id }, { key: 'provenance', header: 'Execution', render: (row) => row.provenance }]} /></Card>
+    <Card title="Virtual trade history" actions={<Badge tone="neutral">NATIVE EVIDENCE ONLY</Badge>}>
+      <p className="muted">No virtual trades yet.</p>
+      {hasNativeActivity ? <p className="muted">Native activity exists, but the current worker does not provide verified fill, fee, or realized-PnL detail. It is not shown as trade history.</p> : null}
+    </Card>
+    <details className="nautilus-diagnostics"><summary>Diagnostics and source identity</summary><div className="terminal-layout"><p className="muted">Instance: <code>{state?.instance_id ?? 'hl-stageg-testnet'}</code> · reconciliation: {state?.reconciliation ?? 'UNKNOWN'} · warmup: {state?.warmup.state ?? 'UNKNOWN'} ({state?.warmup.rows ?? 'UNKNOWN'} rows).</p><p className="muted">Candidate: {state?.hashes.candidate_sha256 ?? 'UNKNOWN'} · strategy: {state?.hashes.strategy_sha256 ?? 'UNKNOWN'} · policy: {state?.hashes.execution_policy_sha256 ?? 'UNKNOWN'}.</p><p className="muted">Initial margin: {state?.account.im ?? 'UNKNOWN'} · maintenance margin: {state?.account.mm ?? 'UNKNOWN'} · activity cursor: {state?.event_cursor ?? 'UNKNOWN'}.</p><DataTable rows={eventRows} emptyText="No native activity recorded." mobileTitle={(row) => row.kind} columns={[{ key: 'cursor', header: 'Cursor', render: (row) => row.cursor }, { key: 'kind', header: 'Kind', render: (row) => row.kind }, { key: 'event', header: 'Event reference', render: (row) => row.event_id }]} /></div></details>
     <p className="muted">{state?.warnings.join(' · ') || message}</p>
   </main>;
 }
@@ -270,8 +285,10 @@ export function WorkspaceSettingsPage() {
       <Button variant="secondary" onClick={() => void refresh()}>Refresh connection</Button>
     </Card>
     <Card title="Native control permissions" actions={<Badge tone="danger">READ ONLY</Badge>}>
+      <p className="muted">The active Stage-G worker has no authenticated, instance-bound command lifecycle yet. These controls cannot target coinmaster-paper, Freqtrade, or a real exchange.</p>
+      <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" disabled title={controls?.pause.blocker ?? 'UNAVAILABLE'}>Pause new entries</Button><Button variant="secondary" disabled title={controls?.resume.blocker ?? 'UNAVAILABLE'}>Resume new entries</Button><Button variant="danger" disabled title={controls?.flatten.blocker ?? 'UNAVAILABLE'}>Flatten virtual exposure</Button></div>
       <p className="muted">Pause: {controls?.pause.blocker ?? 'UNAVAILABLE'} · Resume: {controls?.resume.blocker ?? 'UNAVAILABLE'} · Flatten: {controls?.flatten.blocker ?? 'UNAVAILABLE'} · Promotion: {controls?.promotion.blocker ?? 'UNAVAILABLE'}.</p>
-      <p className="muted">Controls require a separate native lifecycle gate. Research drafts and jobs never change the running trader.</p>
+      <p className="muted">Each remains disabled until native intent persistence, read-back, and open-state recovery are proven for this same worker.</p>
     </Card>
     <Card title="Data provenance"><p className="muted">Account cash, equity, free margin, leverage, position PnL and fee tier stay UNKNOWN until verified by a native Sandbox read model. Observed future funding is unposted, so no settlement cash is claimed.</p>{message ? <p role="alert">{message}</p> : null}</Card>
   </main>;

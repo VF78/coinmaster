@@ -7,7 +7,7 @@ const catalog = readFileSync(new URL('../../runtime/coinmaster/research/catalog.
 const required = [
   ['catalog is loaded from the local API', 'getResearchCatalog'],
   ['strategy reads sealed Stage-G identity from the local API', 'getHlStagegStrategy'],
-  ['strategy identifies the running sealed instance', 'Running sealed Stage-G'],
+  ['strategy identifies the running sealed instance', 'Running Stage-G strategy'],
   ['strategy confirms running only on the API hash-match state', "strategy?.running_state === 'RUNNING_MATCH'"],
   ['strategy labels an unconfirmed runner honestly', 'Local sealed configuration; running not confirmed.'],
   ['strategy keeps research drafts separate from the runner', 'Research drafts'],
@@ -38,6 +38,14 @@ const required = [
   ['API exposes selected-config research capabilities', "request<ResearchCapabilities>(`/research/capabilities"],
   ['HL Sandbox controls remain read only', 'Native control permissions'],
   ['HL controls use only instance-bound read API', "request<HlStagegControls>('/instances/hl-stageg-testnet/controls')"],
+  ['dashboard presents the verified virtual account before diagnostics', 'Stage-G virtual account'],
+  ['dashboard does not turn the Sandbox seed into observed cash', 'not displayed as observed cash or PnL'],
+  ['dashboard presents public BTC/SOL market context', 'BTC / SOL market context'],
+  ['dashboard keeps empty trade history explicit', 'No virtual trades yet.'],
+  ['dashboard keeps raw identity in collapsed diagnostics', 'Diagnostics and source identity'],
+  ['strategy groups exact running settings for traders', 'Signal and safety settings'],
+  ['strategy moves source hashes into diagnostics', 'Strategy identity and account limits'],
+  ['settings leaves unproven Stage-G controls disabled', 'Flatten virtual exposure'],
 ] as const;
 
 let failed = 0;

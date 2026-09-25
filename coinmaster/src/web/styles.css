@@ -3473,3 +3473,22 @@ body:has(.nautilus-app-shell) { background:#090d0e; }
 .nautilus-strategy-group .rules-form-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 @media (max-width:1000px) { .nautilus-strategy-grid { grid-template-columns:1fr; } }
 @media (max-width:560px) { .nautilus-strategy-group .rules-form-grid { grid-template-columns:1fr; } }
+
+.nautilus-diagnostics {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(9, 15, 28, 0.55);
+  padding: var(--space-3) var(--space-4);
+}
+
+.nautilus-diagnostics summary {
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.nautilus-diagnostics[open] summary {
+  color: var(--text);
+  margin-bottom: var(--space-3);
+}
