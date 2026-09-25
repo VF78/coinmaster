@@ -208,6 +208,152 @@ p {
   letter-spacing: 0.01em;
 }
 
+/* Stage-G trader workspace: compact information hierarchy without inventing data. */
+.trader-hero {
+  border-color: #2a5a68;
+  background:
+    radial-gradient(circle at 88% -70%, rgba(73, 229, 202, 0.18), transparent 53%),
+    linear-gradient(135deg, #102438 0%, #0c1728 62%, #091420 100%);
+}
+
+.trader-hero .card__title {
+  font-size: clamp(1.05rem, 1.6vw, 1.32rem);
+  letter-spacing: -0.015em;
+}
+
+.trader-hero__lead {
+  color: #dbeaf6;
+  font-size: 0.95rem;
+  max-width: 76ch;
+}
+
+.trader-note,
+.runtime-empty-note {
+  color: #8fa8bd;
+  font-size: var(--text-sm);
+  margin-top: var(--space-3);
+}
+
+.runtime-empty-note {
+  border-left: 2px solid #49798b;
+  padding-left: var(--space-3);
+}
+
+.runtime-hero__heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.runtime-account-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.4fr) repeat(3, minmax(125px, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.runtime-account-grid .stat:first-child {
+  border-color: #3d9b8a;
+  background: linear-gradient(135deg, rgba(50, 205, 172, 0.16), rgba(17, 44, 56, 0.74));
+}
+
+.runtime-account-grid .stat__value {
+  color: #f1fffb;
+  font-size: clamp(1.05rem, 2vw, 1.42rem);
+}
+
+.runtime-market-and-positions,
+.runtime-history-grid,
+.strategy-secondary-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.8fr);
+  gap: var(--space-4);
+}
+
+.runtime-history-grid {
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+}
+
+.market-board,
+.positions-board,
+.orders-board,
+.history-board,
+.strategy-settings-card,
+.research-action-card,
+.research-result-card,
+.research-drafts-card {
+  background: linear-gradient(165deg, #111f31 0%, #0b1523 100%);
+}
+
+.positions-board .mobile-card,
+.history-board {
+  border-color: #27495d;
+}
+
+.empty-state-title {
+  color: #e0edf7;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.28rem;
+}
+
+.strategy-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.strategy-settings-card .data-table th:first-child,
+.strategy-settings-card .data-table td:first-child {
+  width: 66%;
+}
+
+.strategy-secondary-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.trader-secondary-card {
+  background: linear-gradient(165deg, #0f1c2c 0%, #0b1421 100%);
+}
+
+.nautilus-research-workspace .research-hero {
+  border-color: #3a6377;
+}
+
+.nautilus-research-workspace .rules-form-grid {
+  margin-top: var(--space-4);
+}
+
+.nautilus-diagnostics {
+  border: 1px solid #1e3445;
+  border-radius: var(--radius-md);
+  background: rgba(6, 14, 24, 0.66);
+  color: var(--text-muted);
+  padding: 0.35rem 0.8rem;
+}
+
+.nautilus-diagnostics summary {
+  color: #92aabd;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+@media (max-width: 1040px) {
+  .strategy-settings-grid { grid-template-columns: 1fr; }
+  .runtime-account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .runtime-hero__heading { flex-direction: column; }
+  .runtime-hero__heading .btn { width: 100%; }
+  .runtime-market-and-positions,
+  .runtime-history-grid,
+  .strategy-secondary-grid { grid-template-columns: 1fr; }
+  .runtime-account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .full-width {
   grid-column: 1 / -1;
 }
