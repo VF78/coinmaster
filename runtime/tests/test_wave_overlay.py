@@ -154,6 +154,15 @@ def test_partial_btc_tp_cancel_replans_only_its_unsold_remainder() -> None:
     assert replacement.quantity == pytest.approx(1.0)
     assert 0 not in state.episode.btc_filled_tps
     assert state.episode.btc_tp_filled_qty[0] == pytest.approx(0.5)
+    state.on_fill(replacement.id, 0.5, 102, source[0].close_time)
+    state.on_parent_cancelled(replacement.id)
+    final = next(item for item in state.plan_confirmed_btc_targets() if item.level == 0)
+    assert final.quantity == pytest.approx(0.5)
+    state.on_fill(final.id, 0.5, 103, source[0].close_time)
+    state.on_parent_terminal(final.id)
+    assert 0 in state.episode.btc_filled_tps
+    assert state.episode.btc_tp_filled_qty[0] == pytest.approx(1.5)
+    assert state.episode.sol_right_fraction[0] == pytest.approx(1.0)
 
 
 def test_timeout_preempts_a_pending_planned_sol_exit() -> None:

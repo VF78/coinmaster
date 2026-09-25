@@ -226,6 +226,9 @@ class Episode:
     # exposure is earned only in the same proportion as the target quantity
     # that has actually filled, never when the target is merely accepted.
     btc_tp_filled_qty: dict[int, float] = field(default_factory=dict)
+    # Each target's original size is fixed from confirmed entry quantity.
+    # Replacement intents carry only the remaining leaves.
+    btc_tp_target_qty: dict[int, float] = field(default_factory=dict)
     sol_right_fraction: dict[int, float] = field(default_factory=dict)
     sol_right_decision_index: dict[int, int] = field(default_factory=dict)
     sol_adds: set[int] = field(default_factory=set)
@@ -355,7 +358,10 @@ class WaveOverlayState:
             episode.btc_open_qty += quantity
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
             episode.sol_rights.add(intent.level)
-            target_quantity = intent.quantity or 0.0
+            target_quantity = episode.btc_tp_target_qty.setdefault(
+                intent.level,
+                episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[intent.level],
+            )
             filled_quantity = episode.btc_tp_filled_qty.get(intent.level, 0.0) + quantity
             if target_quantity > 0:
                 filled_quantity = min(filled_quantity, target_quantity)
@@ -403,7 +409,10 @@ class WaveOverlayState:
             if level in episode.btc_tps or level in episode.btc_filled_tps:
                 continue
             target = episode.btc_entry_vwap * (1 + episode.side * threshold)
-            target_quantity = episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level]
+            target_quantity = episode.btc_tp_target_qty.setdefault(
+                level,
+                episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level],
+            )
             quantity = min(max(0.0, target_quantity - episode.btc_tp_filled_qty.get(level, 0.0)), episode.btc_open_qty)
             if quantity <= 0 or target <= 0:
                 continue

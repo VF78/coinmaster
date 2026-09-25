@@ -131,6 +131,13 @@ def test_current_reconciled_owned_btc_tp_orders_do_not_block_increases(tmp_path)
     )
     assert runtime.recovery_state() == "ACTIVE_OWNED_REDUCTIONS"
     assert runtime.health(2).safe_for_increase
+    accepted, _ = runtime.prepare_native_funding(
+        event_id="funding-1", instrument_id="BTC", settlement_ns=2,
+        rate=Decimal("0.01"), mark=Decimal("100"), signed_quantity=Decimal("1"),
+    )
+    assert accepted
+    assert runtime.recovery_state() == "MANAGE_ONLY_PENDING_NATIVE_FUNDING"
+    assert not runtime.health(2).safe_for_increase
     runtime.close()
 
 

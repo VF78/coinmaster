@@ -300,6 +300,17 @@ def test_native_partial_btc_callbacks_requeue_targets_and_only_unsold_tp_leaves(
     strategy.on_order_canceled(SimpleNamespace(client_order_id="tp-order", ts_event=4))
     replacement = next(item[0] for item in strategy._queued_intents if item[0].level == target.level)
     assert replacement.quantity == target.quantity / 2
+    strategy._queued_intents.remove(next(item for item in strategy._queued_intents if item[0].id == replacement.id))
+    strategy._queued_intent_ready_ns.pop(replacement.id)
+    strategy._pending_by_order["tp-order-2"] = replacement
+    strategy._sigma_by_order["tp-order-2"] = None
+    strategy._decision_index_by_order["tp-order-2"] = 9
+    strategy._apply_confirmed_domain_fill(replacement, "tp-order-2", replacement.quantity / 2, 102, 5, False)
+    strategy.on_order_canceled(SimpleNamespace(client_order_id="tp-order-2", ts_event=6))
+    final = next(item[0] for item in strategy._queued_intents if item[0].level == target.level)
+    strategy._apply_confirmed_domain_fill(final, "tp-order-3", final.quantity, 103, 7, True)
+    assert target.level in strategy._domain.episode.btc_filled_tps
+    assert strategy._domain.episode.sol_right_fraction[target.level] == 1.0
 
 
 def test_control_a_sol_exit_is_taker_ioc_at_zero_spread() -> None:

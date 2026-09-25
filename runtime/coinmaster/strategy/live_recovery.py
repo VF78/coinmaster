@@ -116,7 +116,14 @@ def _decode(value):
         return VenueMark(*[_decode(item) for item in body])
     if kind in _DATACLASSES:
         cls = _DATACLASSES[kind]
-        if set(body) != {f.name for f in fields(cls)}:
+        expected = {f.name for f in fields(cls)}
+        # The target-size map was added after earlier fail-closed checkpoints.
+        # It is derivable from immutable confirmed entry size and candidate
+        # fractions on the first later fill, so retain compatibility without
+        # weakening any native reconciliation requirement.
+        if kind == "Episode" and set(body) == expected - {"btc_tp_target_qty"}:
+            body = {**body, "btc_tp_target_qty": _encode({})}
+        if set(body) != expected:
             raise ValueError(f"RECOVERY_FIELDS_MISMATCH:{kind}")
         return cls(**{name: _decode(item) for name, item in body.items()})
     if kind == "set":

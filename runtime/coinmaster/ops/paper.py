@@ -257,6 +257,8 @@ class PaperRuntime:
         """Return the only supported restart contract for durable exposure."""
         row = self.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()
         snapshot = json.loads(row[0]) if row else None
+        if self.pending_native_funding():
+            return "MANAGE_ONLY_PENDING_NATIVE_FUNDING"
         pending = self.pending_submissions()
         # A local Sandbox process may continue to manage a reconciled resting
         # BTC take-profit. The order must be visible in this snapshot and
@@ -267,8 +269,6 @@ class PaperRuntime:
             return "ACTIVE_OWNED_REDUCTIONS"
         if pending:
             return "MANAGE_ONLY_PENDING_INTENT"
-        if self.pending_native_funding():
-            return "MANAGE_ONLY_PENDING_NATIVE_FUNDING"
         if snapshot is None:
             activity = self.db.execute("SELECT EXISTS(SELECT 1 FROM paper_events UNION ALL SELECT 1 FROM paper_intents UNION ALL SELECT 1 FROM paper_native_funding)").fetchone()[0]
             if activity:
