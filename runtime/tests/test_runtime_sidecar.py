@@ -78,6 +78,15 @@ def test_hl_stageg_controls_are_authenticated_instance_bound_and_fail_closed(tmp
     ready = hl_stageg_controls(HlStagegProjection.model_validate(_ready_hl_projection()))
     assert ready.pause.enabled is False and ready.pause.blocker == "NATIVE_ENTRY_CONTROL_UNAVAILABLE"
     assert ready.resume.enabled is False and ready.resume.blocker == "NATIVE_ENTRY_CONTROL_UNAVAILABLE"
+    transport_missing = _ready_hl_projection()
+    transport_missing["entry_control"] = {"state": "RUNNING", "capability": "READY"}
+    transport_missing = hl_stageg_controls(HlStagegProjection.model_validate(transport_missing))
+    assert transport_missing.pause.enabled is False and transport_missing.pause.blocker == "NATIVE_ENTRY_CONTROL_TRANSPORT_UNAVAILABLE"
+    worker_ready = _ready_hl_projection()
+    worker_ready["entry_control"] = {"state": "RUNNING", "capability": "READY"}
+    ready = hl_stageg_controls(HlStagegProjection.model_validate(worker_ready), control_transport_available=True)
+    assert ready.pause.enabled is True and ready.pause.blocker is None
+    assert ready.resume.enabled is True and ready.resume.blocker is None
     assert ready.flatten.blocker == "NO_IDEMPOTENT_NATIVE_FLATTEN_RECOVERY"
     assert ready.promotion.blocker == "SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"
 

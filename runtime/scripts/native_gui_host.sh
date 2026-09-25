@@ -61,8 +61,8 @@ print(token)
 PY
 }
 api_smoke() {
-  local port="$1" db="$2"
-  GUI_SMOKE_PORT="$port" GUI_SMOKE_DB="$db" COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY'
+  local port="$1" db="$2" expect_entry_controls="${3:-0}"
+  GUI_SMOKE_PORT="$port" GUI_SMOKE_DB="$db" GUI_EXPECT_ENTRY_CONTROLS="$expect_entry_controls" COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY'
 import json, os, sqlite3, urllib.error, urllib.request
 base = f"http://127.0.0.1:{os.environ['GUI_SMOKE_PORT']}"
 token = os.environ['COINMASTER_RUNTIME_API_TOKEN']
@@ -88,7 +88,13 @@ assert projection['hashes'] == {
     'execution_policy_sha256': 'eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687',
 }
 assert controls['instance_id'] == 'hl-stageg-testnet' and controls['projection_state'] == 'READY'
-assert all(not controls[name]['enabled'] for name in ('pause','resume','flatten','promotion'))
+expected_entry_controls = os.environ['GUI_EXPECT_ENTRY_CONTROLS'] == '1'
+assert controls['flatten']['enabled'] is False and controls['promotion']['enabled'] is False
+assert controls['pause']['enabled'] is expected_entry_controls
+assert controls['resume']['enabled'] is expected_entry_controls
+if expected_entry_controls:
+    assert projection['entry_control']['capability'] == 'READY'
+    assert projection['entry_control']['state'] == 'RUNNING'
 spec = json.loads(get('/api/v1/openapi.json')[1])
 assert '/api/v1/runtime/commands/{command}' not in spec['paths']
 assert '/api/v1/research/capabilities' in spec['paths']
@@ -100,6 +106,41 @@ assert get('/', True)[0] == 200
 db = sqlite3.connect(f"file:{os.environ['GUI_SMOKE_DB']}?mode=ro", uri=True)
 assert db.execute('SELECT count(*) FROM research_leases').fetchone()[0] == 0
 print('API_SMOKE_OK: auth, SPA, HL unavailable/disabled, no paper command route, research lease clear')
+PY
+}
+entry_control_smoke() {
+  local port="$1"
+  GUI_SMOKE_PORT="$port" COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY'
+import json, os, urllib.error, urllib.request, uuid
+base = f"http://127.0.0.1:{os.environ['GUI_SMOKE_PORT']}"
+token = os.environ['COINMASTER_RUNTIME_API_TOKEN']
+def request(path, method='GET', key=None):
+    headers = {'Authorization': f'Bearer {token}'}
+    if key is not None:
+        headers['Idempotency-Key'] = key
+    req = urllib.request.Request(base + path, data=b'{}' if method == 'POST' else None, headers=headers, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=3) as response:
+            return response.status, response.read()
+    except urllib.error.HTTPError as error:
+        return error.code, error.read()
+def projection():
+    status, raw = request('/api/v1/instances/hl-stageg-testnet')
+    assert status == 200
+    return json.loads(raw)
+for command, expected_state in (('pause-new-entries', 'PAUSED'), ('resume-new-entries', 'RUNNING')):
+    key = 'stageg-control-' + uuid.uuid4().hex
+    status, raw = request(f'/api/v1/instances/hl-stageg-testnet/controls/{command}', 'POST', key)
+    assert status == 200, (command, status)
+    body = json.loads(raw)
+    assert body['instance_id'] == 'hl-stageg-testnet'
+    assert body['command'] == command and body['idempotency_key'] == key
+    assert body['status'] == 'ACCEPTED' and body['entry_control'] == expected_state
+    state = projection()
+    assert state['projection_state'] == 'READY'
+    assert state['entry_control']['state'] == expected_state
+    assert state['live_order_capability'] is False
+print('ENTRY_CONTROL_SMOKE_OK: authenticated pause/read-back/resume/read-back; no order submitted')
 PY
 }
 wait_api_ready() {
@@ -242,7 +283,7 @@ if [[ "$ACTION" == activate-api ]]; then
   ln -s "$RELEASE" "$CURRENT.next"
   mv -Tf "$CURRENT.next" "$CURRENT"
   systemctl daemon-reload
-  if ! systemctl start "$RUNTIME" || ! wait_api_ready || ! active "$RUNTIME" || ! assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || ! api_smoke 18182 "$STATE/control.sqlite"; then
+  if ! systemctl start "$RUNTIME" || ! wait_api_ready || ! active "$RUNTIME" || ! assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || ! api_smoke 18182 "$STATE/control.sqlite" 1 || ! entry_control_smoke 18182; then
     echo 'activation failed; restoring the prior runtime unit' >&2
     systemctl stop "$RUNTIME" || true
     cp "$BACKUPS/$COMMIT/prior.unit" "$UNIT"

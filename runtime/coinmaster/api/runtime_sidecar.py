@@ -250,15 +250,22 @@ class HlStagegControlCommand(RuntimeSchema):
     entry_control: Literal["RUNNING", "PAUSED"]
 
 
-def hl_stageg_controls(projection: HlStagegProjection) -> HlStagegControls:
+def hl_stageg_controls(projection: HlStagegProjection, control_transport_available: bool = False) -> HlStagegControls:
     """No mutation route exists until the isolated native worker owns commands.
 
     The legacy /runtime/commands relay targets coinmaster-paper and must never
     be represented as authority over this HL Stage-G Sandbox instance.
     """
     unavailable = None if projection.projection_state == "READY" else f"NATIVE_PROJECTION_{projection.projection_state}"
-    enabled = unavailable is None and projection.native_thread_alive is True and projection.entry_control.capability == "READY"
-    blocker = None if enabled else unavailable or "NATIVE_ENTRY_CONTROL_UNAVAILABLE"
+    enabled = (
+        unavailable is None
+        and projection.native_thread_alive is True
+        and projection.entry_control.capability == "READY"
+        and control_transport_available
+    )
+    blocker = None if enabled else unavailable or (
+        "NATIVE_ENTRY_CONTROL_UNAVAILABLE" if projection.entry_control.capability != "READY" else "NATIVE_ENTRY_CONTROL_TRANSPORT_UNAVAILABLE"
+    )
     return HlStagegControls(
         projection_state=projection.projection_state,
         pause=HlStagegControlAction(enabled=enabled, blocker=blocker),
@@ -535,7 +542,7 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
         return hl_strategy_reader.strategy()
     @app.get("/api/v1/instances/hl-stageg-testnet/controls", response_model=HlStagegControls, dependencies=[Depends(auth)])
     def hl_stageg_control_capabilities() -> HlStagegControls:
-        return hl_stageg_controls(hl_reader.runtime())
+        return hl_stageg_controls(hl_reader.runtime(), control_transport_available=bool(hl_control.token))
     @app.post("/api/v1/instances/hl-stageg-testnet/controls/{command}", response_model=HlStagegControlCommand, dependencies=[Depends(auth)])
     def hl_stageg_control_command(command: Literal["pause-new-entries", "resume-new-entries"], idempotency_key: str = Header(alias="Idempotency-Key")) -> HlStagegControlCommand:
         if not idempotency_key:
