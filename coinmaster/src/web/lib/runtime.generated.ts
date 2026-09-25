@@ -875,6 +875,8 @@ export interface components {
             mark?: string | null;
             /** Mark Age Ns */
             mark_age_ns?: number | null;
+            /** Next Funding Ns */
+            next_funding_ns?: number | null;
             /** Quote Age Ns */
             quote_age_ns?: number | null;
             /** State */

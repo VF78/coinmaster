@@ -1424,6 +1424,17 @@
             ],
             "title": "Mark Age Ns"
           },
+          "next_funding_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Funding Ns"
+          },
           "quote_age_ns": {
             "anyOf": [
               {

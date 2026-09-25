@@ -136,7 +136,7 @@ def _ready_hl_projection(*, observed_at_ns=None, instance_id="hl-stageg-testnet"
         "hashes": {"candidate_sha256": "candidate", "strategy_sha256": "strategy", "execution_policy_sha256": "policy"},
         "warmup": {"state": "READY", "rows": 1482}, "gates": {"attachable": True}, "account": {},
         "funding_state": "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
-        "feeds": {"BTC-USD-PERP.HYPERLIQUID": {"state": "READY", "mark": "100"}},
+        "feeds": {"BTC-USD-PERP.HYPERLIQUID": {"state": "READY", "mark": "100", "next_funding_ns": None}},
         "positions": [{"instrument_id": "BTC-USD-PERP.HYPERLIQUID", "signed_quantity": "0.01", "provenance": "SANDBOX"}],
         "orders": [], "events": [{"cursor": 3, "event_id": "sandbox-fill", "kind": "fill", "provenance": "SANDBOX"}], "event_cursor": 3,
         "provenance": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION", "warnings": [],
@@ -150,6 +150,7 @@ def test_hl_stageg_projection_is_fresh_instance_bound_and_preserves_unknown_unpo
     body = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
     assert body.projection_state == "READY"
     assert body.run_epoch == "test-epoch" and body.native_thread_alive is True
+    assert body.feeds["BTC-USD-PERP.HYPERLIQUID"].next_funding_ns is None
     assert body.positions[0].provenance == "SANDBOX"
     assert body.account.equity == "UNKNOWN"
 

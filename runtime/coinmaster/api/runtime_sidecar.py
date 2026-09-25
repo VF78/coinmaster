@@ -53,6 +53,7 @@ class RuntimeFeed(RuntimeSchema):
     quote_age_ns: int | None = None
     funding_rate: str | None = None
     funding_age_ns: int | None = None
+    next_funding_ns: int | None = None
 
 
 class RuntimeEvent(RuntimeSchema):
