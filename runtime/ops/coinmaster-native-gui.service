@@ -7,6 +7,7 @@ Type=simple
 User=coinmaster-research
 Group=coinmaster-research
 EnvironmentFile=/etc/coinmaster-native-gui.env
+EnvironmentFile=/etc/coinmaster-hl-stageg-control.env
 WorkingDirectory=/srv/coinmaster-native-gui/current/runtime
 Environment=COINMASTER_RUNTIME_HOST=127.0.0.1
 Environment=COINMASTER_RUNTIME_PORT=18182

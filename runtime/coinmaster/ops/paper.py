@@ -112,6 +112,34 @@ class PaperRuntime:
             return False
 
     @_journal_locked
+    def entry_control_command(self, command: str, idempotency_key: str) -> str:
+        """Persist an exact Stage-G entry admission command before acknowledgement."""
+        if command not in {"pause-new-entries", "resume-new-entries"}:
+            raise ValueError("unsupported entry control command")
+        previous = self.db.execute(
+            "SELECT command FROM paper_commands WHERE idempotency_key=?", (idempotency_key,)
+        ).fetchone()
+        if previous is not None:
+            if previous[0] != command:
+                raise ValueError("IDEMPOTENCY_KEY_CONFLICT")
+            return "DUPLICATE"
+        self.db.execute("INSERT INTO paper_commands VALUES (?, ?)", (idempotency_key, command))
+        self.db.execute(
+            "INSERT INTO paper_command_audit VALUES (?, ?, ?, strftime('%s','now') * 1000000000)",
+            (idempotency_key, command, "ACCEPTED"),
+        )
+        self.db.commit()
+        return "ACCEPTED"
+
+    @_journal_locked
+    def entry_control_state(self) -> str:
+        row = self.db.execute(
+            "SELECT command FROM paper_command_audit WHERE command IN ('pause-new-entries', 'resume-new-entries') "
+            "ORDER BY ts_ns DESC, rowid DESC LIMIT 1"
+        ).fetchone()
+        return "PAUSED" if row is not None and row[0] == "pause-new-entries" else "RUNNING"
+
+    @_journal_locked
     def record_native_event(self, event_id: str, kind: str) -> bool:
         """Durably de-duplicate native order/fill/funding event identities.
 
@@ -369,8 +397,7 @@ class PaperRuntime:
         row = self.db.execute("SELECT body FROM paper_snapshot WHERE id=1").fetchone()
         snapshot = json.loads(row[0]) if row else None
         commands = {row[0] for row in self.db.execute("SELECT command FROM paper_commands")}
-        latest_entry_control = self.db.execute("SELECT command FROM paper_command_audit WHERE command IN ('pause-new-entries', 'resume-new-entries') ORDER BY ts_ns DESC, rowid DESC LIMIT 1").fetchone()
-        paused = latest_entry_control[0] == "pause-new-entries" if latest_entry_control else "pause-new-entries" in commands
+        paused = self.entry_control_state() == "PAUSED"
         warnings: list[str] = []
         if snapshot is None: warnings.append("MISSING_SNAPSHOT")
         elif now_ns - snapshot["ts_ns"] > self.max_data_age_ns: warnings.append("STALE_DATA")

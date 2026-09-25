@@ -10,7 +10,7 @@ from fastapi import HTTPException
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 
-from coinmaster.api.runtime_sidecar import HlStagegProjection, HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app, hl_stageg_controls
+from coinmaster.api.runtime_sidecar import HlStagegControlRelay, HlStagegProjection, HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app, hl_stageg_controls
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker as HlStagegWorker, create_status_server
 from coinmaster.ops.paper import PaperRuntime
 
@@ -73,11 +73,11 @@ def test_hl_stageg_controls_are_authenticated_instance_bound_and_fail_closed(tmp
     assert body["pause"]["blocker"] == "NATIVE_PROJECTION_UNAVAILABLE"
     assert body["flatten"]["requires_confirmation"] is True
     assert app.openapi()["paths"][path].keys() == {"get"}
-    assert not any(getattr(route, "path", "").startswith("/api/v1/instances/hl-stageg-testnet/") and "POST" in getattr(route, "methods", set()) for route in app.routes)
+    assert "/api/v1/instances/hl-stageg-testnet/controls/{command}" in app.openapi()["paths"]
 
     ready = hl_stageg_controls(HlStagegProjection.model_validate(_ready_hl_projection()))
-    assert ready.pause.blocker == "NO_INSTANCE_BOUND_NATIVE_PAUSE_COMMAND"
-    assert ready.resume.blocker == "NO_INSTANCE_BOUND_NATIVE_RESUME_COMMAND"
+    assert ready.pause.enabled is False and ready.pause.blocker == "NATIVE_ENTRY_CONTROL_UNAVAILABLE"
+    assert ready.resume.enabled is False and ready.resume.blocker == "NATIVE_ENTRY_CONTROL_UNAVAILABLE"
     assert ready.flatten.blocker == "NO_IDEMPOTENT_NATIVE_FLATTEN_RECOVERY"
     assert ready.promotion.blocker == "SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"
 
@@ -134,7 +134,7 @@ def _ready_hl_projection(*, observed_at_ns=None, instance_id="hl-stageg-testnet"
         "recovery_required": False, "recovery_capability": "NO_NATIVE_SANDBOX_REHYDRATION", "native_thread_alive": True,
         "process_state": "PUBLIC_FEEDS_READY", "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
         "hashes": {"candidate_sha256": "candidate", "strategy_sha256": "strategy", "execution_policy_sha256": "policy"},
-        "warmup": {"state": "READY", "rows": 1482}, "gates": {"attachable": True}, "account": {},
+        "warmup": {"state": "READY", "rows": 1482}, "gates": {"attachable": True}, "account": {}, "entry_control": {"state": "RUNNING", "capability": "UNAVAILABLE"},
         "funding_state": "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
         "feeds": {"BTC-USD-PERP.HYPERLIQUID": {"state": "READY", "mark": "100", "next_funding_ns": None}},
         "positions": [{"instrument_id": "BTC-USD-PERP.HYPERLIQUID", "signed_quantity": "0.01", "provenance": "SANDBOX"}],
@@ -180,6 +180,7 @@ def test_hl_worker_serves_bounded_projection_on_loopback_with_get_only(tmp_path,
     worker.runtime = runtime
     worker.run_epoch = "test-epoch"
     worker.starting_cash = Decimal("10000")
+    worker.control_available = False
     worker.native = SimpleNamespace(_thread=None, gate=SimpleNamespace(
         candidate_hash="candidate", strategy_code_hash="strategy", execution_policy_hash="policy", attachable=True,
         approval_state="SEALED_APPROVAL_MATCH", margin_policy_state="READY", execution_policy_state="READY", capital_state="ASSUMPTION", funding_state="UNPOSTED",
@@ -224,3 +225,28 @@ def test_hl_worker_serves_bounded_projection_on_loopback_with_get_only(tmp_path,
     handler.do_POST()
     assert ("error", 405) in observed
     runtime.close()
+
+
+def test_stageg_entry_control_is_durable_idempotent_and_conflict_safe(tmp_path) -> None:
+    runtime = PaperRuntime(tmp_path / "worker.sqlite", "hl-stageg-testnet", 100)
+    runtime.acquire()
+    assert runtime.entry_control_state() == "RUNNING"
+    assert runtime.entry_control_command("pause-new-entries", "a" * 16) == "ACCEPTED"
+    assert runtime.entry_control_state() == "PAUSED"
+    assert runtime.entry_control_command("pause-new-entries", "a" * 16) == "DUPLICATE"
+    with pytest.raises(ValueError, match="IDEMPOTENCY_KEY_CONFLICT"):
+        runtime.entry_control_command("resume-new-entries", "a" * 16)
+    runtime.close()
+    resumed = PaperRuntime(tmp_path / "worker.sqlite", "hl-stageg-testnet", 100)
+    assert resumed.entry_control_state() == "PAUSED"
+    assert resumed.entry_control_command("resume-new-entries", "b" * 16) == "ACCEPTED"
+    assert resumed.health(1).paused_new_entries is False
+    resumed.close()
+
+
+def test_stageg_entry_control_relay_fails_closed_on_timeout(monkeypatch) -> None:
+    import coinmaster.api.runtime_sidecar as sidecar
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *_args, **_kwargs: (_ for _ in ()).throw(TimeoutError()))
+    with pytest.raises(HTTPException) as unavailable:
+        HlStagegControlRelay("http://127.0.0.1:18183", "internal-test-token").command("pause-new-entries", "c" * 16)
+    assert unavailable.value.status_code == 503

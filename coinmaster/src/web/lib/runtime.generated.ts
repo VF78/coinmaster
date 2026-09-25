@@ -90,6 +90,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/instances/hl-stageg-testnet/controls/{command}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Hl Stageg Control Command */
+        post: operations["hl_stageg_control_command_api_v1_instances_hl_stageg_testnet_controls__command__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/instances/hl-stageg-testnet/strategy": {
         parameters: {
             query?: never;
@@ -366,18 +383,42 @@ export interface components {
         /** HlStagegControlAction */
         HlStagegControlAction: {
             /** Blocker */
-            blocker: string;
+            blocker?: string | null;
             /**
              * Enabled
              * @default false
-             * @constant
              */
-            enabled: false;
+            enabled: boolean;
             /**
              * Requires Confirmation
              * @default false
              */
             requires_confirmation: boolean;
+        };
+        /** HlStagegControlCommand */
+        HlStagegControlCommand: {
+            /**
+             * Command
+             * @enum {string}
+             */
+            command: "pause-new-entries" | "resume-new-entries";
+            /**
+             * Entry Control
+             * @enum {string}
+             */
+            entry_control: "RUNNING" | "PAUSED";
+            /** Idempotency Key */
+            idempotency_key: string;
+            /**
+             * Instance Id
+             * @constant
+             */
+            instance_id: "hl-stageg-testnet";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "DUPLICATE";
         };
         /** HlStagegControls */
         HlStagegControls: {
@@ -402,6 +443,19 @@ export interface components {
             projection_state: "READY" | "STALE" | "UNAVAILABLE" | "INVALID";
             promotion: components["schemas"]["HlStagegControlAction"];
             resume: components["schemas"]["HlStagegControlAction"];
+        };
+        /** HlStagegEntryControl */
+        HlStagegEntryControl: {
+            /**
+             * Capability
+             * @enum {string}
+             */
+            capability: "READY" | "UNAVAILABLE";
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "RUNNING" | "PAUSED";
         };
         /** HlStagegEvent */
         HlStagegEvent: {
@@ -456,6 +510,7 @@ export interface components {
         /** HlStagegProjection */
         HlStagegProjection: {
             account: components["schemas"]["HlStagegAccount"];
+            entry_control: components["schemas"]["HlStagegEntryControl"];
             /**
              * Environment
              * @constant
@@ -1296,6 +1351,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HlStagegControls"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    hl_stageg_control_command_api_v1_instances_hl_stageg_testnet_controls__command__post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path: {
+                command: "pause-new-entries" | "resume-new-entries";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegControlCommand"];
                 };
             };
             /** @description Validation Error */

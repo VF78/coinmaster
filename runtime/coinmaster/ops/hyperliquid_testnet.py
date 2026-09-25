@@ -479,7 +479,15 @@ class HyperliquidTestnetNode:
         )
 
     def _entries_enabled(self) -> bool:
-        self._refresh_warmup_readiness()
+        # This durable same-worker control is checked again at WaveOverlay's
+        # final non-reduce submit boundary.  A read error fails closed; exits
+        # bypass this callback in the strategy by design.
+        try:
+            if self.state.entry_control_state() == "PAUSED":
+                return False
+            self._refresh_warmup_readiness()
+        except Exception:
+            return False
         if not self._seed_verified:
             try:
                 self._seed_verified = self.native_account_total() == self.starting_cash

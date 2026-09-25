@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import json
+import hmac
 import logging
 import os
+import re
 import signal
 import time
 import uuid
@@ -30,6 +32,7 @@ class TestnetWorker:
         if not path:
             raise ConfigurationError("MISSING_HL_TESTNET_INSTANCE_CONFIG")
         self.instance = load_testnet_instance_config(Path(path))
+        self.control_available = bool(environment.get("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
         self.run_epoch = uuid.uuid4().hex
         require_testnet_sandbox(environment)
         self.candidate = load_candidate(self.instance.strategy_config)
@@ -100,6 +103,7 @@ class TestnetWorker:
         """Return a bounded, one-way read model with no command surface."""
         status = self.native.status()
         recovery_state = self.runtime.recovery_state()
+        entry_control_state = self.runtime.entry_control_state()
         health = self.runtime.health(time.time_ns())
         gate = self.native.gate
         events, event_cursor = self.runtime.projection_events(100)
@@ -150,6 +154,10 @@ class TestnetWorker:
             },
             "account": account,
             "funding_state": gate.funding_state,
+            "entry_control": {
+                "state": entry_control_state,
+                "capability": "READY" if self.control_available else "UNAVAILABLE",
+            },
             "feeds": status["feeds"],
             "positions": [dict(item, provenance="SANDBOX") for item in positions],
             "orders": [dict(item, provenance="SANDBOX") for item in orders],
@@ -202,8 +210,8 @@ class TestnetWorker:
             self.runtime.close()
 
 
-def create_status_server(worker: TestnetWorker, port: int = 18183) -> ThreadingHTTPServer:
-    """Expose GET /status on IPv4 loopback only; mutation methods are 405."""
+def create_status_server(worker: TestnetWorker, port: int = 18183, control_token: str | None = None) -> ThreadingHTTPServer:
+    """Loopback status plus narrowly-scoped, worker-owned entry admission control."""
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:
             if urlsplit(self.path).path != "/status":
@@ -222,7 +230,42 @@ def create_status_server(worker: TestnetWorker, port: int = 18183) -> ThreadingH
             self.end_headers()
             self.wfile.write(payload)
 
-        def do_POST(self) -> None: self.send_error(405)
+        def do_POST(self) -> None:
+            command = {
+                "/controls/pause-new-entries": "pause-new-entries",
+                "/controls/resume-new-entries": "resume-new-entries",
+            }.get(urlsplit(self.path).path)
+            if command is None:
+                self.send_error(405)
+                return
+            authorization = self.headers.get("Authorization", "")
+            expected = f"Bearer {control_token}" if control_token else ""
+            if not expected or not hmac.compare_digest(authorization, expected):
+                self.send_error(401)
+                return
+            if self.headers.get("X-Coinmaster-Instance") != worker.instance.instance_id:
+                self.send_error(403)
+                return
+            key = self.headers.get("Idempotency-Key", "")
+            if not re.fullmatch(r"[A-Za-z0-9._~-]{16,128}", key):
+                self.send_error(422)
+                return
+            try:
+                status = worker.runtime.entry_control_command(command, key)
+                payload = json.dumps({"instance_id": worker.instance.instance_id, "command": command, "idempotency_key": key, "status": status, "entry_control": worker.runtime.entry_control_state()}, sort_keys=True).encode()
+            except ValueError as error:
+                self.send_error(409, str(error))
+                return
+            except Exception as error:
+                LOG.warning("hl sandbox entry control failed: %s", type(error).__name__)
+                self.send_error(503)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
         def do_PUT(self) -> None: self.send_error(405)
         def do_DELETE(self) -> None: self.send_error(405)
         def log_message(self, _format: str, *args: Any) -> None: return
@@ -235,7 +278,7 @@ def main() -> None:
     worker = TestnetWorker(); worker.start()
     status_port = int(os.getenv("COINMASTER_HL_STAGEG_STATUS_PORT", "18183"))
     try:
-        status_server = create_status_server(worker, status_port) if status_port > 0 else None
+        status_server = create_status_server(worker, status_port, os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN")) if status_port > 0 else None
     except OSError as error:
         # An observability bind conflict must not prevent the isolated trader
         # from running; the sidecar will show UNAVAILABLE until it is fixed.

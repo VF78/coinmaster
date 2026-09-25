@@ -8,6 +8,7 @@ ExecStartPre=/srv/coinmaster/runtime/.venv/bin/python -m coinmaster.ops.stage_g_
 TimeoutStartSec=180
 RestartSec=300
 EnvironmentFile=/etc/coinmaster-hl-stageg-testnet.env
+EnvironmentFile=/etc/coinmaster-hl-stageg-control.env
 User=coinmaster-hl
 Group=coinmaster-hl
 WorkingDirectory=/srv/coinmaster/runtime

@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import sqlite3
+import urllib.error
 import urllib.request
 import time
 from dataclasses import asdict
@@ -145,6 +146,11 @@ class HlStagegAccount(RuntimeSchema):
     free_margin: str = UNKNOWN
 
 
+class HlStagegEntryControl(RuntimeSchema):
+    state: Literal["RUNNING", "PAUSED"]
+    capability: Literal["READY", "UNAVAILABLE"]
+
+
 class HlStagegEvent(RuntimeSchema):
     cursor: int
     event_id: str
@@ -184,6 +190,7 @@ class HlStagegProjection(RuntimeSchema):
     warmup: HlStagegWarmup
     gates: dict[str, str | bool]
     account: HlStagegAccount
+    entry_control: HlStagegEntryControl
     funding_state: str
     feeds: dict[str, RuntimeFeed]
     positions: list[HlStagegPosition]
@@ -220,8 +227,8 @@ class HlStagegStrategy(RuntimeSchema):
 
 
 class HlStagegControlAction(RuntimeSchema):
-    enabled: Literal[False] = False
-    blocker: str
+    enabled: bool = False
+    blocker: str | None = None
     requires_confirmation: bool = False
 
 
@@ -235,6 +242,14 @@ class HlStagegControls(RuntimeSchema):
     promotion: HlStagegControlAction
 
 
+class HlStagegControlCommand(RuntimeSchema):
+    instance_id: Literal["hl-stageg-testnet"]
+    command: Literal["pause-new-entries", "resume-new-entries"]
+    idempotency_key: str
+    status: Literal["ACCEPTED", "DUPLICATE"]
+    entry_control: Literal["RUNNING", "PAUSED"]
+
+
 def hl_stageg_controls(projection: HlStagegProjection) -> HlStagegControls:
     """No mutation route exists until the isolated native worker owns commands.
 
@@ -242,10 +257,12 @@ def hl_stageg_controls(projection: HlStagegProjection) -> HlStagegControls:
     be represented as authority over this HL Stage-G Sandbox instance.
     """
     unavailable = None if projection.projection_state == "READY" else f"NATIVE_PROJECTION_{projection.projection_state}"
+    enabled = unavailable is None and projection.native_thread_alive is True and projection.entry_control.capability == "READY"
+    blocker = None if enabled else unavailable or "NATIVE_ENTRY_CONTROL_UNAVAILABLE"
     return HlStagegControls(
         projection_state=projection.projection_state,
-        pause=HlStagegControlAction(blocker=unavailable or "NO_INSTANCE_BOUND_NATIVE_PAUSE_COMMAND"),
-        resume=HlStagegControlAction(blocker=unavailable or "NO_INSTANCE_BOUND_NATIVE_RESUME_COMMAND"),
+        pause=HlStagegControlAction(enabled=enabled, blocker=blocker),
+        resume=HlStagegControlAction(enabled=enabled, blocker=blocker),
         flatten=HlStagegControlAction(blocker=unavailable or "NO_IDEMPOTENT_NATIVE_FLATTEN_RECOVERY", requires_confirmation=True),
         promotion=HlStagegControlAction(blocker="SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED"),
     )
@@ -325,7 +342,7 @@ class HlStagegProjectionReader:
             "live_order_capability": False, "process_state": "WORKER_PROJECTION_UNAVAILABLE",
             "reconciliation": UNKNOWN,
             "hashes": {"candidate_sha256": UNKNOWN, "strategy_sha256": UNKNOWN, "execution_policy_sha256": UNKNOWN},
-            "warmup": {"state": UNKNOWN}, "gates": {}, "account": {},
+            "warmup": {"state": UNKNOWN}, "gates": {}, "account": {}, "entry_control": {"state": "RUNNING", "capability": "UNAVAILABLE"},
             "funding_state": "UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
             "feeds": {}, "positions": [], "orders": [], "events": [], "event_cursor": 0,
             "provenance": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION", "warnings": [warning],
@@ -351,6 +368,33 @@ class HlStagegProjectionReader:
             return self.unavailable("UNAVAILABLE", "HL_STAGEG_PROJECTION_UNAVAILABLE")
         except (ValueError, TypeError):
             return self.unavailable("INVALID", "INVALID_HL_STAGEG_PROJECTION")
+
+
+class HlStagegControlRelay:
+    """Relay only entry admission commands to the exact loopback Stage-G worker."""
+    def __init__(self, url: str, token: str | None) -> None:
+        self.url, self.token = url.rstrip("/"), token
+
+    def command(self, command: Literal["pause-new-entries", "resume-new-entries"], idempotency_key: str) -> HlStagegControlCommand:
+        if not self.token:
+            raise HTTPException(503, "Stage-G native entry control is unavailable")
+        request = urllib.request.Request(
+            f"{self.url}/controls/{command}", data=b"{}", method="POST",
+            headers={"Authorization": f"Bearer {self.token}", "Idempotency-Key": idempotency_key,
+                     "X-Coinmaster-Instance": "hl-stageg-testnet", "Content-Type": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=3) as response:
+                payload = HlStagegControlCommand.model_validate(json.loads(response.read()))
+        except urllib.error.HTTPError as error:
+            if error.code == 409:
+                raise HTTPException(409, "Stage-G idempotency key conflicts with a prior command") from error
+            raise HTTPException(503, "Stage-G native entry control is unavailable") from error
+        except (OSError, TimeoutError, ValueError, TypeError):
+            raise HTTPException(503, "Stage-G native entry control is unavailable")
+        if payload.instance_id != "hl-stageg-testnet" or payload.command != command:
+            raise HTTPException(503, "Stage-G native entry control identity mismatch")
+        return payload
 
 
 class HlStagegStrategyReader:
@@ -421,11 +465,12 @@ class HlStagegStrategyReader:
             )
 
 
-def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_status_url: str | None = None, runtime_root: Path | None = None, operator_username: str | None = None, operator_password_hash: str | None = None, session_database: str | None = None, public_origin: str | None = None) -> FastAPI:
+def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_status_url: str | None = None, hl_stageg_control_token: str | None = None, runtime_root: Path | None = None, operator_username: str | None = None, operator_password_hash: str | None = None, session_database: str | None = None, public_origin: str | None = None) -> FastAPI:
     expected = token if token is not None else os.getenv("COINMASTER_RUNTIME_API_TOKEN")
     relay_token = worker_token if worker_token is not None else os.getenv("COINMASTER_PAPER_CONTROL_TOKEN")
     reader = RuntimeReader(database or os.getenv("COINMASTER_PAPER_DB", "/var/lib/coinmaster-paper/paper.sqlite"), worker_url or os.getenv("COINMASTER_PAPER_WORKER_URL", "http://127.0.0.1:18181"))
     hl_reader = HlStagegProjectionReader(hl_stageg_status_url or os.getenv("COINMASTER_HL_STAGEG_STATUS_URL", "http://127.0.0.1:18183"))
+    hl_control = HlStagegControlRelay(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
     hl_strategy_reader = HlStagegStrategyReader(runtime_root, hl_reader)
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     gui_auth = GuiAuth(
@@ -491,6 +536,15 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     @app.get("/api/v1/instances/hl-stageg-testnet/controls", response_model=HlStagegControls, dependencies=[Depends(auth)])
     def hl_stageg_control_capabilities() -> HlStagegControls:
         return hl_stageg_controls(hl_reader.runtime())
+    @app.post("/api/v1/instances/hl-stageg-testnet/controls/{command}", response_model=HlStagegControlCommand, dependencies=[Depends(auth)])
+    def hl_stageg_control_command(command: Literal["pause-new-entries", "resume-new-entries"], idempotency_key: str = Header(alias="Idempotency-Key")) -> HlStagegControlCommand:
+        if not idempotency_key:
+            raise HTTPException(422, "Idempotency-Key is required")
+        result = hl_control.command(command, idempotency_key)
+        projection = hl_reader.runtime()
+        if projection.projection_state != "READY" or projection.entry_control.state != result.entry_control:
+            raise HTTPException(503, "Stage-G entry control read-back mismatch")
+        return result
     if relay_token:
         @app.post("/api/v1/runtime/commands/{command}", response_model=RuntimeCommandResponse, dependencies=[Depends(auth)])
         def command(command: Literal["pause-new-entries", "resume-new-entries", "flatten-paper"], idempotency_key: str = Header(alias="Idempotency-Key")) -> RuntimeCommandResponse:

@@ -48,3 +48,4 @@ export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponen
 export const getHlStagegProjection = () => request<HlStagegProjection>('/instances/hl-stageg-testnet');
 export const getHlStagegStrategy = () => request<HlStagegStrategy>('/instances/hl-stageg-testnet/strategy');
 export const getHlStagegControls = () => request<HlStagegControls>('/instances/hl-stageg-testnet/controls');
+export const commandHlStagegEntries = (command: 'pause-new-entries' | 'resume-new-entries', idempotencyKey: string) => request<{ instance_id: 'hl-stageg-testnet'; command: 'pause-new-entries' | 'resume-new-entries'; idempotency_key: string; status: 'ACCEPTED' | 'DUPLICATE'; entry_control: 'RUNNING' | 'PAUSED' }>(`/instances/hl-stageg-testnet/controls/${command}`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey } });

@@ -89,11 +89,17 @@
         "additionalProperties": false,
         "properties": {
           "blocker": {
-            "title": "Blocker",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocker"
           },
           "enabled": {
-            "const": false,
             "default": false,
             "title": "Enabled",
             "type": "boolean"
@@ -104,10 +110,54 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "blocker"
-        ],
         "title": "HlStagegControlAction",
+        "type": "object"
+      },
+      "HlStagegControlCommand": {
+        "additionalProperties": false,
+        "properties": {
+          "command": {
+            "enum": [
+              "pause-new-entries",
+              "resume-new-entries"
+            ],
+            "title": "Command",
+            "type": "string"
+          },
+          "entry_control": {
+            "enum": [
+              "RUNNING",
+              "PAUSED"
+            ],
+            "title": "Entry Control",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "instance_id": {
+            "const": "hl-stageg-testnet",
+            "title": "Instance Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACCEPTED",
+              "DUPLICATE"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instance_id",
+          "command",
+          "idempotency_key",
+          "status",
+          "entry_control"
+        ],
+        "title": "HlStagegControlCommand",
         "type": "object"
       },
       "HlStagegControls": {
@@ -156,6 +206,33 @@
           "promotion"
         ],
         "title": "HlStagegControls",
+        "type": "object"
+      },
+      "HlStagegEntryControl": {
+        "additionalProperties": false,
+        "properties": {
+          "capability": {
+            "enum": [
+              "READY",
+              "UNAVAILABLE"
+            ],
+            "title": "Capability",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "RUNNING",
+              "PAUSED"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state",
+          "capability"
+        ],
+        "title": "HlStagegEntryControl",
         "type": "object"
       },
       "HlStagegEvent": {
@@ -273,6 +350,9 @@
         "properties": {
           "account": {
             "$ref": "#/components/schemas/HlStagegAccount"
+          },
+          "entry_control": {
+            "$ref": "#/components/schemas/HlStagegEntryControl"
           },
           "environment": {
             "const": "mainnet-public",
@@ -476,6 +556,7 @@
           "warmup",
           "gates",
           "account",
+          "entry_control",
           "funding_state",
           "feeds",
           "positions",
@@ -2475,6 +2556,90 @@
           }
         },
         "summary": "Hl Stageg Control Capabilities"
+      }
+    },
+    "/api/v1/instances/hl-stageg-testnet/controls/{command}": {
+      "post": {
+        "operationId": "hl_stageg_control_command_api_v1_instances_hl_stageg_testnet_controls__command__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "command",
+            "required": true,
+            "schema": {
+              "enum": [
+                "pause-new-entries",
+                "resume-new-entries"
+              ],
+              "title": "Command",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegControlCommand"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Hl Stageg Control Command"
       }
     },
     "/api/v1/instances/hl-stageg-testnet/strategy": {

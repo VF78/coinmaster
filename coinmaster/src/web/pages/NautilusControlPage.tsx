@@ -4,7 +4,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
-import { cancelRun, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlStagegControls, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
+import { cancelRun, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlStagegControls, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
 type ArrayKey = 'wave_quantiles' | 'btc_tp_fractions_initial_qty' | 'sol_size_multipliers_H' | 'sol_entry_z';
@@ -278,6 +278,7 @@ export function WorkspaceSettingsPage() {
   const [controls, setControls] = useState<HlStagegControls | null>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [commandInFlight, setCommandInFlight] = useState<'pause-new-entries' | 'resume-new-entries' | null>(null);
   async function refresh() {
     setLoading(true);
     const [projection, capabilities] = await Promise.allSettled([getHlStagegProjection(), getHlStagegControls()]);
@@ -288,6 +289,16 @@ export function WorkspaceSettingsPage() {
     setLoading(false);
   }
   useEffect(() => { void refresh(); }, []);
+  async function commandEntries(command: 'pause-new-entries' | 'resume-new-entries') {
+    if (commandInFlight) return;
+    setCommandInFlight(command); setMessage('Sending Stage-G entry control…');
+    try {
+      const result = await commandHlStagegEntries(command, crypto.randomUUID());
+      await refresh();
+      setMessage(`${result.command === 'pause-new-entries' ? 'New entries paused' : 'New entries resumed'} (${result.status.toLowerCase()} and read back).`);
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Stage-G entry control failed.'); }
+    finally { setCommandInFlight(null); }
+  }
   return <main className="terminal-layout">
     <Card title="Workspace connection" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'LOADING' : state?.projection_state ?? 'UNAVAILABLE'}</Badge>}>
       <div className="stats-grid"><Stat label="Instance" value={state?.instance_id ?? 'hl-stageg-testnet'} /><Stat label="Execution" value="Native Sandbox" /><Stat label="Live orders" value="DISABLED" /></div>
@@ -295,9 +306,9 @@ export function WorkspaceSettingsPage() {
       <p className="muted">Observed at: {state?.observed_at_ns ? new Date(state.observed_at_ns / 1_000_000).toLocaleString() : 'UNKNOWN'} · Reconciliation: {state?.reconciliation ?? 'UNKNOWN'} · Funding: {state?.funding_state ?? 'UNPOSTED'}.</p>
       <Button variant="secondary" onClick={() => void refresh()}>Refresh connection</Button>
     </Card>
-    <Card title="Native control permissions" actions={<Badge tone="danger">READ ONLY</Badge>}>
-      <p className="muted">The active Stage-G worker has no authenticated, instance-bound command lifecycle yet. These controls cannot target coinmaster-paper, Freqtrade, or a real exchange.</p>
-      <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" disabled title={controls?.pause.blocker ?? 'UNAVAILABLE'}>Pause new entries</Button><Button variant="secondary" disabled title={controls?.resume.blocker ?? 'UNAVAILABLE'}>Resume new entries</Button><Button variant="danger" disabled title={controls?.flatten.blocker ?? 'UNAVAILABLE'}>Flatten virtual exposure</Button></div>
+    <Card title="Native control permissions" actions={<Badge tone={controls?.pause.enabled ? 'success' : 'danger'}>{controls?.pause.enabled ? 'ENTRY CONTROL READY' : 'READ ONLY'}</Badge>}>
+      <p className="muted">Pause and resume affect only new entries on this Stage-G Sandbox worker. They are authenticated, idempotent, and read back from the worker. They never target coinmaster-paper, Freqtrade, or a real exchange.</p>
+      <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" disabled={!controls?.pause.enabled || commandInFlight !== null} title={controls?.pause.blocker ?? 'READY'} onClick={() => void commandEntries('pause-new-entries')}>{commandInFlight === 'pause-new-entries' ? 'Pausing…' : 'Pause new entries'}</Button><Button variant="secondary" disabled={!controls?.resume.enabled || commandInFlight !== null} title={controls?.resume.blocker ?? 'READY'} onClick={() => void commandEntries('resume-new-entries')}>{commandInFlight === 'resume-new-entries' ? 'Resuming…' : 'Resume new entries'}</Button><Button variant="danger" disabled title={controls?.flatten.blocker ?? 'UNAVAILABLE'}>Flatten virtual exposure</Button></div>
       <p className="muted">Pause: {controls?.pause.blocker ?? 'UNAVAILABLE'} · Resume: {controls?.resume.blocker ?? 'UNAVAILABLE'} · Flatten: {controls?.flatten.blocker ?? 'UNAVAILABLE'} · Promotion: {controls?.promotion.blocker ?? 'UNAVAILABLE'}.</p>
       <p className="muted">Each remains disabled until native intent persistence, read-back, and open-state recovery are proven for this same worker.</p>
     </Card>
