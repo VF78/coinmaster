@@ -101,6 +101,11 @@ class WaveOverlayStrategy(Strategy):
         self._current_btc_mark: VenueMark | None = None
         self._current_sol_mark: VenueMark | None = None
         self._current_signals = features_for(self._bars, self._candidate)
+        # A completed daily tuple can arrive while the fail-closed entry gate
+        # is paused (for example, while fresh warmup is being verified). Keep
+        # only that current flat session for a one-shot retry on a later quote.
+        # Queued/submitted work already has its own native lifecycle handling.
+        self._deferred_entry_session: int | None = None
         self._latest_marks: dict[InstrumentId, VenueMark] = {}
         self._queued_intents: list[tuple[Intent, float | None, int]] = []
         self._queued_intent_ready_ns: dict[str, int] = {}
@@ -318,8 +323,16 @@ class WaveOverlayStrategy(Strategy):
         # configured interval's first daily open.
         if self.config.trading_start_open_ns is not None and self._current_btc.ts_event - 86_400_000_000_000 < self.config.trading_start_open_ns:
             return
-        if self._liquidating or (not self._entries_enabled() and not self.cache.positions_open()):
+        if self._liquidating:
             return
+        if not self._entries_enabled() and not self.cache.positions_open():
+            # `_try_advance_session` has intentionally consumed its paired
+            # source tuple by now. Preserve this exact session so reopening a
+            # readiness/control gate can evaluate the same causal daily bar.
+            self._deferred_entry_session = self._current_btc.ts_event
+            return
+        if self._deferred_entry_session == self._current_btc.ts_event:
+            self._deferred_entry_session = None
         for intent in self._domain.decide(self._bars, self._current_signals, len(self._bars) - 1, self._active_marked(self._current_btc_mark, self._current_sol_mark)):
             if intent.action == "CLOSE_ALL":
                 # A mandatory group exit owns the next executable quotes.  It
@@ -333,8 +346,26 @@ class WaveOverlayStrategy(Strategy):
             self._queued_intents.append((intent, self._current_signals[-1].sigma, len(self._bars) - 1))
             self._queued_intent_ready_ns[intent.id] = self._current_btc.ts_event + self.config.execution_delay_ns
 
+    def _retry_deferred_daily_decision(self) -> None:
+        """Retry one blocked flat daily decision after its entry gate reopens."""
+        if self._current_btc is None or self._deferred_entry_session != self._current_btc.ts_event:
+            return
+        if self.cache.positions_open():
+            # A native position is authoritative; a deferred flat entry must
+            # never add risk after the state has changed.
+            self._deferred_entry_session = None
+            return
+        if not self._entries_enabled():
+            return
+        # Clear before deciding. If the final gate closes again, the regular
+        # path reinstates the same session; otherwise later quotes cannot
+        # create a duplicate domain decision.
+        self._deferred_entry_session = None
+        self._advance_current_day()
+
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        self._retry_deferred_daily_decision()
         if self._mandatory_sol_exit is not None:
             # A timeout is allowed to cancel a stale/resting SOL reduction,
             # then uses the actual native position leaves on the next SOL

@@ -9,9 +9,11 @@ import pytest
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 
+from coinmaster.domain.wave_overlay import Intent
 from coinmaster.ops.hyperliquid_testnet import (
     BTC_PERP,
     NativeSandboxFundingPoster,
+    SOL_PERP,
     cross_venue_stage_g_gate,
     FeedBook,
     FeedObserver,
@@ -157,6 +159,45 @@ def test_daily_signal_keeps_bybit_identity_while_pairing_to_hl_execution_bar_typ
     assert strategy.config.sol_bar_type.instrument_id == signal_sol
     assert execution_btc not in (signal_btc, signal_sol)
 
+
+def test_flat_daily_decision_retries_once_after_entry_gate_reopens() -> None:
+    class DeferredEntryProbe(WaveOverlayStrategy):
+        @property
+        def cache(self):
+            return SimpleNamespace(positions_open=lambda: [])
+
+    gate_open = False
+    strategy = DeferredEntryProbe(WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP, sol_id=SOL_PERP,
+        btc_bar_type=BarType(InstrumentId.from_str("BTCUSDT-LINEAR.BYBIT"), BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL),
+        sol_bar_type=BarType(InstrumentId.from_str("SOLUSDT-LINEAR.BYBIT"), BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL),
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
+        mark_client_id=ClientId("fixture"), active_seed=Decimal("10000"),
+        entries_gate=lambda: gate_open,
+    ))
+    session = 86_400_000_000_000
+    current = SimpleNamespace(ts_event=session)
+    strategy._current_btc = strategy._current_sol = current
+    strategy._current_btc_mark = strategy._current_sol_mark = current
+    strategy._bars = [object()]  # The probe owns the deterministic domain output below.
+    strategy._current_signals = [SimpleNamespace(sigma=None)]
+    decisions: list[int] = []
+    strategy._active_marked = lambda *_args: 10_000  # type: ignore[method-assign]
+    strategy._domain.decide = lambda _bars, _signals, index, _active: (  # type: ignore[method-assign]
+        decisions.append(index) or [Intent("deferred-entry", "episode", "BTC_ENTRY", None, 1, requested_notional=100)]
+    )
+
+    strategy._advance_current_day()
+    assert strategy._deferred_entry_session == session
+    assert decisions == [] and strategy._queued_intents == []
+
+    gate_open = True
+    quote = SimpleNamespace(instrument_id=InstrumentId.from_str("ETH-USD-PERP.HYPERLIQUID"), ts_event=session)
+    strategy.on_quote_tick(quote)
+    strategy.on_quote_tick(quote)
+    assert decisions == [0]
+    assert [intent.id for intent, _, _ in strategy._queued_intents] == ["deferred-entry"]
+    assert strategy._deferred_entry_session is None
 
 def test_native_sandbox_funding_poster_is_idempotent_and_uses_only_confirmed_hl_identity(tmp_path) -> None:
     class Exchange:
