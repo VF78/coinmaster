@@ -151,6 +151,31 @@ def test_account_economics_changed_between_sweeps_fail_closed():
         )
 
 
+
+def test_open_position_mark_only_account_value_change_cannot_qualify_monitor_generation():
+    # No order, fill, raw cash, or position-size change: an ordinary mark
+    # update moves accountValue while the position stays open. The current
+    # exact two-sweep comparator rejects it, so this cannot certify a live
+    # periodic monitor for open exposure.
+    first = receipt()
+    data = raw()
+    data["clearinghouseState"]["marginSummary"]["accountValue"] = "9999.20"
+    second = receipt(data, end_ms=201)
+    assert first.open_orders == second.open_orders
+    assert first.order_statuses == second.order_statuses
+    assert first.fills == second.fills
+    assert first.positions == second.positions
+    assert first.account_summary[1] == second.account_summary[1]  # raw cash
+    with pytest.raises(IncompleteInfoReport, match="INFO_GENERATION_NOT_CONVERGED"):
+        qualified_mass_status(
+            first, second, expected_account_ref=ACCOUNT, expected_dex="",
+            account_id=ACCOUNT_ID, client_id=ClientId("HYPERLIQUID"),
+            venue=Venue("HYPERLIQUID"), instruments={"BTC": HL_BTC, "SOL": HL_SOL},
+            durable_orders={CLIENT: (CLOID, 7)}, native_orders=[native_order()],
+            applied_trade_ids=frozenset({"8", "9"}), ts_init=202_000_000,
+        )
+
+
 def test_identical_replayed_sweep_does_not_count_as_convergence():
     one = receipt()
     with pytest.raises(IncompleteInfoReport, match="INFO_GENERATION_NOT_CONVERGED"):
