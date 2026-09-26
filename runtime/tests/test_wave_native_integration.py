@@ -723,3 +723,111 @@ def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> No
     assert partial._domain.episode is not None
     assert partial._domain.episode.btc_open_qty == 0.25
     assert partial.daily_decision_status()["reason"] == "PARTIAL_ENTRY_RETAINED"
+
+
+def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash() -> None:
+    """Feature-only seed; one accelerated native engine processes 22 live UTC closes."""
+    from nautilus_trader.model.identifiers import ClientId
+
+    class ReplayTrace(WaveOverlayStrategy):
+        def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+            super().__init__(config)
+            self.entry_episodes: list[str] = []
+            self.flat_accounts: list[tuple[Decimal, Decimal, Decimal]] = []
+
+        def on_order_filled(self, event) -> None:
+            intent = self._pending_by_order.get(str(event.client_order_id))
+            if intent is not None and intent.action == "BTC_ENTRY" and intent.episode_id not in self.entry_episodes:
+                self.entry_episodes.append(intent.episode_id)
+            super().on_order_filled(event)
+
+        def on_position_event(self, event) -> None:
+            super().on_position_event(event)
+            if not self.cache.positions_open() and self.fill_audit:
+                account = self.cache.account_for_venue(SIM)
+                if account is not None:
+                    currency = BTC_PERP.quote_currency
+                    self.flat_accounts.append((
+                        account.balance_total(currency).as_decimal(),
+                        account.balance_free(currency).as_decimal(),
+                        account.balance_locked(currency).as_decimal(),
+                    ))
+
+    day_ns = 86_400_000_000_000
+    btc_type = make_bar_type(BTC_PERP.id, PriceType.LAST)
+    sol_type = make_bar_type(SOL_PERP.id, PriceType.LAST)
+    policy_marks = tuple(
+        MarkPriceUpdate(instrument.id, Decimal("100" if instrument.id == BTC_PERP.id else "30"), day * day_ns)
+        for instrument in (BTC_PERP, SOL_PERP) for day in range(1, 823)
+    )
+    seed: list[DailyBar] = []
+    live, marks = [], []
+    for day in range(822):
+        ts = (day + 1) * day_ns
+        btc = 100 + day * 0.04 + (6 if (day // 20) % 2 else -6) + (day % 5) * 0.1
+        sol = 30 + day * 0.02 + (btc - 100) * 0.30 + (3 if (day // 17) % 2 else -3) + (day % 7) * 0.1
+        if day == 807:
+            # The first episode is BTC short: a one-day negative SOL residual
+            # earns its confirmed-TP SOL right, then reverts through both exits.
+            sol -= 6
+        if day < 800:
+            close = datetime.fromtimestamp(ts / 1_000_000_000, UTC)
+            seed.append(DailyBar(close - timedelta(days=1), close, close, btc - 0.2, btc, sol))
+            continue
+        live.extend((
+            make_bar(btc_type, btc - 0.2, btc, ts),
+            make_bar(sol_type, sol - 0.1, sol, ts),
+            quote(BTC_PERP.id, f"{btc - 0.05:.1f}", f"{btc + 0.05:.1f}", ts + 1),
+            quote(SOL_PERP.id, f"{sol - 0.05:.2f}", f"{sol + 0.05:.2f}", ts + 1),
+        ))
+        marks.extend((
+            venue_mark(BTC_PERP.id, Decimal(str(btc)), ts),
+            venue_mark(SOL_PERP.id, Decimal(str(sol)), ts),
+        ))
+    strategy = ReplayTrace(WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP.id, sol_id=SOL_PERP.id, btc_bar_type=btc_type, sol_bar_type=sol_type,
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP.id),
+        sol_mark_data_type=venue_mark_data_type(SOL_PERP.id),
+        mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"),
+        margin_policy=TierMarginPolicy(
+            policy_marks, {BTC_PERP.id: Decimal("40"), SOL_PERP.id: Decimal("20")}, day_ns,
+        ),
+        seed_bars=tuple(seed), trading_start_open_ns=800 * day_ns,
+    ))
+    engine = native_engine(strategy)
+    engine.add_data(live, sort=False)
+    engine.add_data(marks, client_id=ClientId("TEST_MARKS"), sort=False)
+    engine.sort_data()
+    engine.run()
+    try:
+        fills = strategy.fill_audit
+        assert [(row["action"], int(row["fill_ns"]) // day_ns) for row in fills] == [
+            ("BTC_ENTRY", 801),
+            ("BTC_REDUCE", 806), ("BTC_REDUCE", 806), ("BTC_REDUCE", 806),
+            ("SOL_ADD", 808), ("SOL_HALF_EXIT", 809), ("SOL_EXIT", 810),
+            ("FORCED_CLOSE", 821), ("BTC_ENTRY", 822),
+        ]
+        assert len(strategy.entry_episodes) == 2
+        assert strategy.entry_episodes[0] != strategy.entry_episodes[1]
+        first_entry = Decimal(fills[0]["qty"])
+        tps = fills[1:4]
+        assert [row["reason"] for row in tps] == ["BTC_TP1", "BTC_TP2", "BTC_TP3"]
+        assert all(row["post_only"] == "true" and row["native_liquidity_side"] == "MAKER" for row in tps)
+        for row, fraction in zip(tps, (Decimal("0.15"), Decimal("0.25"), Decimal("0.35"))):
+            assert 0 <= first_entry * fraction - Decimal(row["qty"]) < Decimal("0.001")
+        assert Decimal(fills[4]["qty"]) == Decimal(fills[5]["qty"]) + Decimal(fills[6]["qty"])
+        assert first_entry == sum((Decimal(row["qty"]) for row in tps), Decimal("0")) + Decimal(fills[7]["qty"])
+        assert all(Decimal(row["commission"]) > 0 for row in fills)
+        assert all(row["commission_currency"] == str(BTC_PERP.quote_currency) for row in fills)
+        assert strategy.flat_accounts
+        flat_total, flat_free, flat_locked = strategy.flat_accounts[0]
+        assert flat_total == flat_free and flat_locked == 0
+        assert flat_total != Decimal("10000")
+        native_fills = engine.trader.generate_order_fills_report()
+        assert len(native_fills) == len(fills)
+        assert len({(row["action"], row["fill_ns"], row["qty"], row["px"]) for row in fills}) == len(fills)
+        assert strategy._domain.episode is not None
+        assert strategy._domain.episode.id == strategy.entry_episodes[1]
+        assert all(order.is_reduce_only and order.is_post_only for order in engine.trader._cache.orders_open())
+    finally:
+        engine.dispose()
