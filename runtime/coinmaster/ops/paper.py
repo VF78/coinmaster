@@ -49,6 +49,8 @@ class PaperRuntime:
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_commands (idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_command_audit (idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL, status TEXT NOT NULL, ts_ns INTEGER NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_events (event_id TEXT PRIMARY KEY, kind TEXT NOT NULL)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_deposit_protection (id INTEGER PRIMARY KEY CHECK(id=1), instance_id TEXT NOT NULL, account_id TEXT NOT NULL, currency TEXT NOT NULL, body TEXT NOT NULL)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_deposit_audit (event_key TEXT PRIMARY KEY, action TEXT NOT NULL, old_body TEXT, new_body TEXT NOT NULL, ts_ns INTEGER NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_snapshot (id INTEGER PRIMARY KEY CHECK(id=1), body TEXT NOT NULL)")
         # A native Sandbox cache is process-local.  Persist the intent before
         # submit so a crash between submit and its ACK cannot look flat after
@@ -484,6 +486,55 @@ class PaperRuntime:
         cursor = self.db.execute("SELECT COALESCE(MAX(rowid), 0) FROM paper_events").fetchone()[0]
         rows.reverse()
         return ([{"cursor": row[0], "event_id": row[1], "kind": row[2]} for row in rows], cursor)
+
+    @_journal_locked
+    def deposit_protection_state(self, *, instance_id: str, account_id: str) -> dict | None:
+        row = self.db.execute(
+            "SELECT instance_id,account_id,currency,body FROM paper_deposit_protection WHERE id=1"
+        ).fetchone()
+        if row is None:
+            return None
+        if row[:3] != (instance_id, account_id, "USDC"):
+            raise ValueError("DEPOSIT_ACCOUNT_IDENTITY_MISMATCH")
+        body = json.loads(row[3])
+        if not isinstance(body, dict):
+            raise ValueError("DEPOSIT_STATE_INVALID")
+        return body
+
+    @_journal_locked
+    def deposit_audit_action(self, event_key: str) -> str | None:
+        row = self.db.execute(
+            "SELECT action FROM paper_deposit_audit WHERE event_key=?", (event_key,)
+        ).fetchone()
+        return row[0] if row else None
+
+    @_journal_locked
+    def save_deposit_protection(
+        self, *, instance_id: str, account_id: str, action: str,
+        event_key: str, state: dict, ts_ns: int,
+    ) -> bool:
+        if not instance_id or not account_id or not action or not event_key or not isinstance(state, dict):
+            raise ValueError("DEPOSIT_SAVE_INVALID")
+        existing = self.deposit_protection_state(instance_id=instance_id, account_id=account_id)
+        body = json.dumps(state, sort_keys=True, separators=(",", ":"))
+        prior = self.db.execute(
+            "SELECT action,new_body FROM paper_deposit_audit WHERE event_key=?", (event_key,)
+        ).fetchone()
+        if prior is not None:
+            if prior != (action, body):
+                raise ValueError("DEPOSIT_IDEMPOTENCY_CONFLICT")
+            return False
+        old_body = None if existing is None else json.dumps(existing, sort_keys=True, separators=(",", ":"))
+        with self.db:
+            self.db.execute(
+                "INSERT OR REPLACE INTO paper_deposit_protection VALUES (1, ?, ?, 'USDC', ?)",
+                (instance_id, account_id, body),
+            )
+            self.db.execute(
+                "INSERT INTO paper_deposit_audit VALUES (?, ?, ?, ?, ?)",
+                (event_key, action, old_body, body, ts_ns),
+            )
+        return True
 
     @_journal_locked
     def close(self) -> None:

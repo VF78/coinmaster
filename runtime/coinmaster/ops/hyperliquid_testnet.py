@@ -36,7 +36,7 @@ from nautilus_trader.model.objects import Money
 from coinmaster.domain.wave_overlay import Candidate, DailyBar
 from coinmaster.ops.native_paper_node import BYBIT_IDS, DAY_NS, FeedBook, FeedObserver, FeedObserverConfig, WarmupBundle, bybit_daily_bar_type, sandbox_cash_posting_supported, scrub_private_execution_environment
 from coinmaster.ops.paper import PaperRuntime
-from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, model_fx_pair_and_quote, model_fx_ready
+from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, model_fx_pair_and_quote, model_fx_ready, native_equity
 from coinmaster.ops.hl_native_account import native_usdc_balances
 from coinmaster.ops.hl_live_execution import ScopedHyperliquidExecClientFactory
 from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
@@ -453,6 +453,16 @@ class HyperliquidTestnetNode:
             execution_policy_hash=self.gate.execution_policy_hash,
             execution_policy_version="hl-mainnet-public-data-native-sandbox-v1",
             funding_sink=NativeSandboxFundingPoster(exchange=self._sandbox_exchange(), runtime=self.state),
+            market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
+            deposit_runtime=self.state, deposit_instance_id=self.instance.instance_id,
+            deposit_account_id="HYPERLIQUID-001",
+            deposit_equity_reader=lambda strategy: native_equity(
+                strategy.cache, strategy._latest_marks, now_ns=time.time_ns(),
+            ),
+            deposit_initialization_allowed=lambda: (
+                self._seed_verified and self.state.recovery_state() == "FLAT_RESTART"
+                and not self.state.all_submissions() and not self.state.projection_events(1)[0]
+            ),
         )
 
     def _refresh_warmup_readiness(self) -> None:
@@ -523,7 +533,8 @@ class HyperliquidTestnetNode:
             if not self._seed_verified:
                 return False
         feeds = self.feed.status(time.time_ns())
-        return self.node.is_running() and self.gate.attachable and self.state.health(time.time_ns()).safe_for_increase and bool(feeds) and all(item["state"] == "READY" for item in feeds.values())
+        protected = self.strategy is not None and self.strategy.deposit_projection()["state"] == "ARMED"
+        return self.node.is_running() and self.gate.attachable and protected and self.state.health(time.time_ns()).safe_for_increase and bool(feeds) and all(item["state"] == "READY" for item in feeds.values())
 
     def prime(self) -> None:
         """Attach Stage-G only when fresh source and executable gates pass."""

@@ -2,6 +2,8 @@ from decimal import Decimal
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 
+import pytest
+
 from nautilus_trader.backtest.config import BacktestEngineConfig
 from nautilus_trader.backtest.engine import BacktestEngine
 from nautilus_trader.config import LoggingConfig
@@ -852,6 +854,201 @@ def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
         first_episode = strategy.entry_episodes[0]
         assert not [item for item in journal.pending_submissions() if item["episode_id"] == first_episode]
         assert len([item for item in journal.events() if item["kind"] == "fill"]) == len(fills)
+    finally:
+        engine.dispose()
+        journal.close()
+
+
+def test_pinned_market_exit_calls_python_submit_hook_for_tagged_reduce_only_ioc():
+    """Native Cython path must remain interceptable before DP journals orders."""
+    from nautilus_trader.model.identifiers import ClientId
+
+    class MarketExitHookProbe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.quotes = 0
+            self.seen = []
+            self.exit_started = False
+
+        def submit_order(self, order, *args, **kwargs):
+            self.seen.append((str(order.client_order_id), tuple(order.tags or ()), order.is_reduce_only, order.time_in_force))
+            return super().submit_order(order, *args, **kwargs)
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.btc_id:
+                return
+            self.quotes += 1
+            if self.quotes == 1:
+                instrument = self.cache.instrument(tick.instrument_id)
+                self.submit_order(self.order_factory.market(
+                    instrument_id=tick.instrument_id, order_side=OrderSide.BUY,
+                    quantity=instrument.make_qty(Decimal("1")), time_in_force=TimeInForce.IOC,
+                ))
+            elif self.quotes == 2:
+                self.exit_started = True
+                self.market_exit()
+
+    config = WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP.id, sol_id=SOL_PERP.id,
+        btc_bar_type=make_bar_type(BTC_PERP.id, PriceType.LAST),
+        sol_bar_type=make_bar_type(SOL_PERP.id, PriceType.LAST),
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP.id),
+        sol_mark_data_type=venue_mark_data_type(SOL_PERP.id),
+        mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"),
+        market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
+    )
+    strategy = MarketExitHookProbe(config)
+    engine = native_engine(strategy)
+    engine.add_data([
+        quote(BTC_PERP.id, "100.0", "100.1", 1),
+        quote(BTC_PERP.id, "101.0", "101.1", 2),
+        quote(BTC_PERP.id, "102.0", "102.1", 3),
+    ], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert strategy.exit_started
+        tagged = [item for item in strategy.seen if "MARKET_EXIT" in item[1]]
+        assert len(tagged) == 1
+        assert tagged[0][2:] == (True, TimeInForce.IOC)
+        fills = engine.trader.generate_order_fills_report()
+        assert len(fills) == 2
+        assert list(fills["is_reduce_only"]) == [False, True]
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize("fail_exit", [False, True])
+def test_deposit_protection_native_market_exit_journals_once_and_stays_latched(tmp_path, fail_exit):
+    """Actual native quote, position, cash and fill callbacks drive a durable exit."""
+    from nautilus_trader.model.identifiers import ClientId
+    from coinmaster.ops.paper import PaperRuntime
+
+    journal = PaperRuntime(tmp_path / "deposit-native.sqlite", "deposit-native", 10**20)
+    journal.acquire()
+
+    class SubmissionSink:
+        def __call__(self, **item):
+            return journal.record_submission(
+                client_order_id=item["client_order_id"], intent_id=item["intent_id"],
+                episode_id=item["episode_id"], action=item["action"],
+                instrument_id=item["instrument_id"], quantity=item["quantity"],
+                reduce_only=item["reduce_only"],
+            )
+
+        def acknowledge(self, oid):
+            journal.acknowledge_submission(oid)
+
+        def terminal(self, oid):
+            journal.terminal_submission(oid)
+
+    def native_current_equity(strategy):
+        account = strategy.cache.account_for_venue(SIM)
+        if account is None:
+            return None
+        total = account.balance_total(BTC_PERP.quote_currency).as_decimal()
+        for position in strategy.cache.positions_open():
+            latest = strategy.cache.quote_tick(position.instrument_id)
+            if latest is None:
+                return None
+            total += position.unrealized_pnl(latest.bid_price).as_decimal()
+        return total
+
+    class DepositNativeProbe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.quotes = 0
+            self.rejected_increase = False
+            self.exit_attempts = 0
+
+        def market_exit(self):
+            self.exit_attempts += 1
+            if fail_exit:
+                raise RuntimeError("NATIVE_EXIT_FAILED")
+            return super().market_exit()
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.btc_id:
+                return
+            self.quotes += 1
+            if self.quotes == 1:
+                assert self._deposit_check()
+                instrument = self.cache.instrument(tick.instrument_id)
+                self.submit_order(self.order_factory.market(
+                    instrument_id=tick.instrument_id, order_side=OrderSide.BUY,
+                    quantity=instrument.make_qty(Decimal("75")),
+                    time_in_force=TimeInForce.IOC,
+                ))
+            elif self.quotes >= 2:
+                self.rejected_increase = not self._deposit_check()
+                if self.quotes == 3:
+                    instrument = self.cache.instrument(tick.instrument_id)
+                    self.submit_order(self.order_factory.market(
+                        instrument_id=tick.instrument_id, order_side=OrderSide.BUY,
+                        quantity=instrument.make_qty(Decimal("1")),
+                        time_in_force=TimeInForce.IOC,
+                    ))
+
+    config = WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP.id, sol_id=SOL_PERP.id,
+        btc_bar_type=make_bar_type(BTC_PERP.id, PriceType.LAST),
+        sol_bar_type=make_bar_type(SOL_PERP.id, PriceType.LAST),
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP.id),
+        sol_mark_data_type=venue_mark_data_type(SOL_PERP.id),
+        mark_client_id=ClientId("TEST_MARKS"), active_seed=Decimal("10000"),
+        market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
+        deposit_runtime=journal, deposit_instance_id="native-test",
+        deposit_account_id="SIM-001", deposit_equity_reader=native_current_equity,
+        deposit_initialization_allowed=lambda: True,
+        submission_sink=SubmissionSink(), event_sink=journal.record_native_event,
+    )
+    strategy = DepositNativeProbe(config)
+    engine = native_engine(strategy)
+    engine.add_data([
+        quote(BTC_PERP.id, "100.0", "100.1", 1),
+        quote(BTC_PERP.id, "1.0", "1.1", 2),
+        quote(BTC_PERP.id, "1.0", "1.1", 2_000_000_000),
+    ], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        fills = engine.trader.generate_order_fills_report()
+        assert len(fills) == (1 if fail_exit else 2)
+        assert strategy.rejected_increase
+        assert strategy._deposit.latched
+        assert strategy.exit_attempts == 1
+        assert strategy.deposit_projection()["state"] == ("EXIT_INCOMPLETE" if fail_exit else "TRIPPED_FLAT")
+        assert bool(engine.trader._cache.positions_open()) == fail_exit
+        assert not journal.pending_submissions()
+        if not fail_exit:
+            assert [item["action"] for item in strategy.fill_audit][-1] == "MARKET_EXIT"
+        assert len([item for item in journal.events() if item["kind"] == "fill"]) == len(fills)
+        saved = journal.deposit_protection_state(
+            instance_id="native-test", account_id="SIM-001",
+        )
+        assert saved["latched"] and saved["exit_state"] == ("EXIT_INCOMPLETE" if fail_exit else "TRIPPED_FLAT")
+        journal.entry_control_command("resume-new-entries", "resume-keeps-latch")
+        assert strategy.deposit_projection()["state"] != "ARMED"
+        with pytest.raises(ValueError, match="DEPOSIT_CONTROL_REQUIRES_PAUSED_CONFIRMED_FLAT"):
+            strategy.apply_deposit_control("reset-deposit-protection", "reset-before-pause", confirm=True)
+        journal.entry_control_command("pause-new-entries", "pause-for-dp")
+        if fail_exit:
+            with pytest.raises(ValueError, match="DEPOSIT_CONTROL_REQUIRES_PAUSED_CONFIRMED_FLAT"):
+                strategy.apply_deposit_control("reset-deposit-protection", "reset-open", confirm=True)
+        else:
+            changed = strategy.apply_deposit_control(
+                "set-deposit-protection", "limit-40", drawdown_limit_percent=40,
+            )
+            assert changed["drawdown_limit_percent"] == 40
+            assert journal.deposit_audit_action("deposit:control:limit-40") == "set-deposit-protection:40"
+            assert strategy.apply_deposit_control(
+                "set-deposit-protection", "limit-40", drawdown_limit_percent=40,
+            )["drawdown_limit_percent"] == 40
+            reset = strategy.apply_deposit_control(
+                "reset-deposit-protection", "reset-flat", confirm=True,
+            )
+            assert reset["state"] == "ARMED" and reset["high_water_equity"] == reset["equity"]
+            assert not journal.deposit_protection_state(
+                instance_id="native-test", account_id="SIM-001",
+            )["latched"]
     finally:
         engine.dispose()
         journal.close()

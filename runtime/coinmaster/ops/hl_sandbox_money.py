@@ -152,6 +152,32 @@ class SandboxLiveExecClientFactory(NativeSandboxFactory):
 MARK_MAX_AGE_NS = 120_000_000_000
 
 
+def native_equity(cache, marks, *, now_ns: int | None = None) -> Decimal:
+    """Current native USDC cash plus open marked PnL; UNKNOWN raises."""
+    now_ns = time.time_ns() if now_ns is None else now_ns
+    if not model_fx_ready(cache):
+        raise ValueError("HL_SANDBOX_MODEL_FX_MISSING")
+    account = cache.account_for_venue(HL_VENUE)
+    if account is None or account.base_currency != USDC:
+        raise ValueError("NATIVE_USDC_ACCOUNT_MISSING")
+    balance = account.balance_total(USDC)
+    if balance is None or balance.currency != USDC or not balance.as_decimal().is_finite():
+        raise ValueError("NATIVE_USDC_BALANCE_MISSING")
+    total = balance.as_decimal()
+    for position in cache.positions_open():
+        if position.instrument_id not in HL_IDS:
+            raise ValueError("FOREIGN_SANDBOX_POSITION")
+        mark = marks.get(position.instrument_id)
+        instrument = cache.instrument(position.instrument_id)
+        if mark is None or instrument is None or mark.ts_event > now_ns or now_ns - mark.ts_event > MARK_MAX_AGE_NS:
+            raise ValueError("NATIVE_EQUITY_MARK_STALE_OR_MISSING")
+        pnl = position.unrealized_pnl(instrument.make_price(mark.price))
+        if pnl.currency != USD or not pnl.as_decimal().is_finite():
+            raise ValueError("NATIVE_UNREALIZED_CURRENCY_CHANGED")
+        total += pnl.as_decimal()  # Same explicit 1:1 model FX as native_money_projection.
+    return total
+
+
 def native_money_projection(cache, marks, *, now_ns: int | None = None) -> dict[str, str | None]:
     """Read current and archived native position cycles against one USDC account.
 

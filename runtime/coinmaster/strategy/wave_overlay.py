@@ -8,6 +8,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+import pandas as pd
+
+from coinmaster.domain.deposit_protection import DepositProtection, percent
 
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.model.data import Bar, BarType, CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
@@ -70,6 +73,11 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     # settlement. ``FundingRateUpdate.next_funding_ns`` is explicitly *not*
     # such an event: it names the next scheduled payment.
     funding_sink: object | None = None
+    deposit_runtime: object | None = None
+    deposit_instance_id: str = ""
+    deposit_account_id: str = ""
+    deposit_equity_reader: object | None = None
+    deposit_initialization_allowed: object | None = None
 
 
 def _native_account_money(account, *, free: bool = False) -> Decimal:
@@ -130,6 +138,17 @@ class WaveOverlayStrategy(Strategy):
         self._order_audit: dict[str, dict[str, object]] = {}
         self.fill_audit: list[dict[str, str]] = []
         self._seen_trade_ids: set[str] = set()
+        self._deposit_exit_orders: set[str] = set()
+        self._deposit_storage_failed = False
+        self._deposit_exit_started = False
+        self._deposit_timer_name = f"COINMASTER_DEPOSIT_CHECK:{self.id}"
+        self._deposit = DepositProtection()
+        if config.deposit_runtime is not None:
+            stored = config.deposit_runtime.deposit_protection_state(
+                instance_id=config.deposit_instance_id, account_id=config.deposit_account_id,
+            )
+            if stored is not None:
+                self._deposit = DepositProtection.from_durable(stored)
         self._forced_close_reason: str | None = None
         self._forced_close_intent: Intent | None = None
         self._forced_close_submitted: set[InstrumentId] = set()
@@ -162,6 +181,15 @@ class WaveOverlayStrategy(Strategy):
         if self.config.funding_sink is not None:
             self.subscribe_funding_rates(self.config.btc_id, client_id=self.config.live_mark_client_id)
             self.subscribe_funding_rates(self.config.sol_id, client_id=self.config.live_mark_client_id)
+        if self.config.deposit_runtime is not None:
+            self.clock.set_timer(
+                self._deposit_timer_name, pd.Timedelta(seconds=1), None, None,
+                self._on_deposit_timer, True, False,
+            )
+
+    def on_stop(self) -> None:
+        if self.config.deposit_runtime is not None and self._deposit_timer_name in self.clock.timer_names:
+            self.clock.cancel_timer(self._deposit_timer_name)
 
     def on_bar(self, bar: Bar) -> None:
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -411,6 +439,9 @@ class WaveOverlayStrategy(Strategy):
         }
 
     def _advance_current_day(self) -> None:
+        if self.config.deposit_runtime is not None and self._deposit.latched:
+            self._daily_decision_reason = "DEPOSIT_PROTECTION_LATCHED"
+            return
         if self._current_btc is None or self._current_sol is None or self._current_btc_mark is None or self._current_sol_mark is None:
             return
         # Bars are emitted at close.  Features may warm up beforehand, but no
@@ -688,6 +719,8 @@ class WaveOverlayStrategy(Strategy):
         self._mandatory_sol_exit = (intent, sigma, index)
 
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
+        if self.config.deposit_runtime is not None and self._deposit.latched:
+            return
         """Cancel every resting order before closing actual cache leaves taker."""
         # Terminal settlement is the final authority: it may supersede an
         # earlier liquidation-close attempt whose native leaves remain open.
@@ -793,6 +826,8 @@ class WaveOverlayStrategy(Strategy):
         self._begin_forced_close("TERMINAL_BOUNDARY_SETTLEMENT")
 
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
+        if self.config.deposit_runtime is not None and not self._deposit_check():
+            return False
         """Fail closed on missing/stale public marks; reductions bypass this gate."""
         if self.config.margin_policy is None:
             return False
@@ -836,6 +871,11 @@ class WaveOverlayStrategy(Strategy):
         self._record_native_event(trade_id, "fill")
         self._seen_trade_ids.add(trade_id)
         self._record_fill_audit(event)
+        if str(event.client_order_id) in self._deposit_exit_orders:
+            order = self.cache.order(event.client_order_id)
+            if order is not None and order.is_closed:
+                self._terminal_submission(str(event.client_order_id))
+            return
         if str(event.client_order_id) in self._liquidation_orders:
             if self.liquidation_audit:
                 audit = self.liquidation_audit[-1]
@@ -1068,7 +1108,162 @@ class WaveOverlayStrategy(Strategy):
         if self._forced_close_reason is not None and not self.cache.orders_open():
             self._submit_forced_closes_from_cache()
 
+    def _on_deposit_timer(self, _event) -> None:
+        self._deposit_check()
+
+    def _deposit_equity(self) -> Decimal | None:
+        reader = self.config.deposit_equity_reader
+        if not callable(reader):
+            return None
+        try:
+            value = reader(self)
+            return value if isinstance(value, Decimal) and value.is_finite() else None
+        except Exception:
+            return None
+
+    def _persist_deposit(self, action: str, key: str, now_ns: int) -> None:
+        try:
+            self.config.deposit_runtime.save_deposit_protection(
+                instance_id=self.config.deposit_instance_id,
+                account_id=self.config.deposit_account_id,
+                action=action, event_key=key, state=self._deposit.durable(), ts_ns=now_ns,
+            )
+        except Exception:
+            self._deposit_storage_failed = True
+            self.log.error("Deposit protection persistence failed; increases blocked")
+
+    def _deposit_check(self) -> bool:
+        if self.config.deposit_runtime is None:
+            return True
+        now_ns = self.clock.timestamp_ns()
+        current = self._deposit_equity()
+        if self._deposit.high_water is None:
+            allowed = self.config.deposit_initialization_allowed
+            if (
+                current is not None and current > 0 and callable(allowed) and allowed()
+                and not self.cache.positions_open() and not self.cache.orders_open()
+                and not self.cache.orders_inflight()
+            ):
+                self._deposit.initialize(current, now_ns)
+                self._persist_deposit("INITIALIZE", f"deposit:init:{now_ns}", now_ns)
+            return self._deposit.high_water is not None and not self._deposit_storage_failed
+        changed, tripped = self._deposit.observe(current, now_ns)
+        if changed:
+            action = "TRIGGER" if tripped else "UTC_BOUNDARY"
+            key = f"deposit:{action.lower()}:{now_ns if tripped else self._deposit.last_boundary_ns}"
+            self._persist_deposit(action, key, now_ns)
+        if tripped:
+            self._start_deposit_exit(now_ns)
+        return (
+            current is not None and not self._deposit.latched
+            and not self._deposit.daily_sample_missed
+            and not self._deposit_storage_failed
+        )
+
+    def _start_deposit_exit(self, now_ns: int) -> None:
+        self._discard_queued_intents(lambda _queued: True)
+        if self._mandatory_sol_exit is not None:
+            intent, _, _ = self._mandatory_sol_exit
+            self._mandatory_sol_exit = None
+            self._domain.on_parent_terminal(intent.id)
+        if self._deposit_exit_started:
+            return
+        self._deposit_exit_started = True
+        if self._forced_close_reason is not None or self._liquidating or self.is_exiting():
+            self._deposit.exit_state = "EXIT_INCOMPLETE"
+            self._persist_deposit("EXIT_INCOMPLETE", f"deposit:competing:{now_ns}", now_ns)
+            return
+        try:
+            self.market_exit()
+        except Exception:
+            self._deposit.exit_state = "EXIT_INCOMPLETE"
+            self._persist_deposit("EXIT_INCOMPLETE", f"deposit:market-exit-error:{now_ns}", now_ns)
+            self.log.error("Native market exit failed; deposit latch retained")
+
+    def submit_order(self, order, *args, **kwargs):
+        if self.config.deposit_runtime is not None and not order.is_reduce_only and not self._deposit_check():
+            self.log.warning("Deposit protection blocks native increase submission")
+            return None
+        if self.config.deposit_runtime is not None and "MARKET_EXIT" in (order.tags or ()):
+            if (
+                not self._deposit.latched or not order.is_reduce_only
+                or order.time_in_force != TimeInForce.IOC
+                or order.instrument_id not in (self.config.btc_id, self.config.sol_id)
+            ):
+                raise RuntimeError("DEPOSIT_NATIVE_EXIT_ORDER_INVALID")
+            oid = str(order.client_order_id)
+            if not self._record_submission(order, f"deposit:{oid}", "deposit-protection", "MARKET_EXIT", "DEPOSIT_DRAWDOWN_LIMIT"):
+                self._deposit.exit_state = "EXIT_INCOMPLETE"
+                return
+            self._deposit_exit_orders.add(oid)
+        return super().submit_order(order, *args, **kwargs)
+
+    def post_market_exit(self) -> None:
+        if self.config.deposit_runtime is None or not self._deposit.latched:
+            return
+        flat = not (
+            self.cache.positions_open()
+            or self.cache.orders_open()
+            or self.cache.orders_inflight()
+            or self.config.deposit_runtime.pending_submissions()
+        )
+        self._deposit.exit_state = "TRIPPED_FLAT" if flat else "EXIT_INCOMPLETE"
+        if flat:
+            self._domain.episode = None
+            self._pending_by_order.clear()
+        now_ns = self.clock.timestamp_ns()
+        self._persist_deposit(self._deposit.exit_state, f"deposit:exit:{now_ns}", now_ns)
+
+    def deposit_projection(self) -> dict[str, object]:
+        result = self._deposit.projection()
+        if self._deposit_storage_failed:
+            result["state"] = "NOT_INITIALIZED/RECOVERY_REQUIRED"
+        return result
+
+    def apply_deposit_control(
+        self, command: str, key: str, *, drawdown_limit_percent: int | None = None,
+        confirm: bool = False,
+    ) -> dict[str, object]:
+        if self.config.deposit_runtime is None or not key:
+            raise ValueError("DEPOSIT_CONTROL_UNAVAILABLE")
+        runtime = self.config.deposit_runtime
+        if (
+            runtime.entry_control_state() != "PAUSED"
+            or self.cache.positions_open()
+            or self.cache.orders_open()
+            or self.cache.orders_inflight()
+            or runtime.pending_submissions() or runtime.pending_native_funding()
+        ):
+            raise ValueError("DEPOSIT_CONTROL_REQUIRES_PAUSED_CONFIRMED_FLAT")
+        if command == "set-deposit-protection":
+            action = f"{command}:{percent(drawdown_limit_percent)}"
+        elif command == "reset-deposit-protection" and confirm is True:
+            action = command
+        else:
+            raise ValueError("DEPOSIT_CONTROL_INVALID")
+        event_key = f"deposit:control:{key}"
+        prior = runtime.deposit_audit_action(event_key)
+        if prior is not None:
+            if prior != action:
+                raise ValueError("DEPOSIT_IDEMPOTENCY_CONFLICT")
+            return self.deposit_projection()
+        now_ns = self.clock.timestamp_ns()
+        current = self._deposit_equity()
+        if current is None or current <= 0:
+            raise ValueError("DEPOSIT_CONTROL_EQUITY_UNKNOWN")
+        if command == "set-deposit-protection":
+            self._deposit.limit_percent = percent(drawdown_limit_percent)
+        else:
+            self._deposit.reset(current, now_ns)
+            self._deposit_exit_started = False
+        self._persist_deposit(action, event_key, now_ns)
+        if self._deposit_storage_failed:
+            raise RuntimeError("DEPOSIT_CONTROL_PERSISTENCE_FAILED")
+        return self.deposit_projection()
+
     def _entries_enabled(self) -> bool:
+        if self.config.deposit_runtime is not None and not self._deposit_check():
+            return False
         gate = self.config.entries_gate
         return self.config.entries_enabled and (bool(gate()) if callable(gate) else True)
 

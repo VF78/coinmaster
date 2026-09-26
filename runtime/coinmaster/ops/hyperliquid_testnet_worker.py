@@ -10,6 +10,7 @@ import signal
 import time
 import uuid
 from decimal import Decimal
+from concurrent.futures import Future, TimeoutError as FutureTimeoutError
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
@@ -114,6 +115,28 @@ class TestnetWorker:
         })
         return result
 
+    def deposit_control(
+        self, command: str, key: str, *, drawdown_limit_percent: int | None = None,
+        confirm: bool = False,
+    ) -> dict[str, object]:
+        strategy = self.native.strategy
+        if strategy is None or not self.native.node.is_running():
+            raise RuntimeError("DEPOSIT_NATIVE_STRATEGY_UNAVAILABLE")
+        result: Future = Future()
+        def apply() -> None:
+            try:
+                result.set_result(strategy.apply_deposit_control(
+                    command, key, drawdown_limit_percent=drawdown_limit_percent,
+                    confirm=confirm,
+                ))
+            except BaseException as error:
+                result.set_exception(error)
+        self.native.loop.call_soon_threadsafe(apply)
+        try:
+            return result.result(timeout=5)
+        except FutureTimeoutError as error:
+            raise RuntimeError("DEPOSIT_NATIVE_CONTROL_TIMEOUT") from error
+
     def projection(self) -> dict[str, Any]:
         """Return a bounded, one-way read model with no command surface."""
         status = self.native.status()
@@ -166,6 +189,7 @@ class TestnetWorker:
                 "capital_state": gate.capital_state,
             },
             "account": account,
+            "deposit_protection": self.native.strategy.deposit_projection() if callable(getattr(self.native.strategy, "deposit_projection", None)) else {"state": "NOT_INITIALIZED/RECOVERY_REQUIRED", "drawdown_limit_percent": 50},
             "funding_state": gate.funding_state,
             "entry_control": {
                 "state": entry_control_state,
@@ -247,6 +271,8 @@ def create_status_server(worker: TestnetWorker, port: int = 18183, control_token
             command = {
                 "/controls/pause-new-entries": "pause-new-entries",
                 "/controls/resume-new-entries": "resume-new-entries",
+                "/controls/set-deposit-protection": "set-deposit-protection",
+                "/controls/reset-deposit-protection": "reset-deposit-protection",
             }.get(urlsplit(self.path).path)
             if command is None:
                 self.send_error(405)
@@ -264,8 +290,24 @@ def create_status_server(worker: TestnetWorker, port: int = 18183, control_token
                 self.send_error(422)
                 return
             try:
-                status = worker.runtime.entry_control_command(command, key)
-                payload = json.dumps({"instance_id": worker.instance.instance_id, "command": command, "idempotency_key": key, "status": status, "entry_control": worker.runtime.entry_control_state()}, sort_keys=True).encode()
+                if command in {"set-deposit-protection", "reset-deposit-protection"}:
+                    length = int(self.headers.get("Content-Length", "0"))
+                    if not 0 < length <= 1024:
+                        raise ValueError("DEPOSIT_CONTROL_BODY_INVALID")
+                    body = json.loads(self.rfile.read(length))
+                    if not isinstance(body, dict) or body.get("idempotency_key") != key:
+                        raise ValueError("DEPOSIT_CONTROL_KEY_MISMATCH")
+                    allowed = {"idempotency_key", "drawdown_limit_percent"} if command == "set-deposit-protection" else {"idempotency_key", "confirm"}
+                    if set(body) != allowed:
+                        raise ValueError("DEPOSIT_CONTROL_FIELDS_INVALID")
+                    view = worker.deposit_control(
+                        command, key, drawdown_limit_percent=body.get("drawdown_limit_percent"),
+                        confirm=body.get("confirm") is True,
+                    )
+                    payload = json.dumps({"instance_id": worker.instance.instance_id, "command": command, "idempotency_key": key, "status": "APPLIED", "deposit_protection": view}, sort_keys=True).encode()
+                else:
+                    status = worker.runtime.entry_control_command(command, key)
+                    payload = json.dumps({"instance_id": worker.instance.instance_id, "command": command, "idempotency_key": key, "status": status, "entry_control": worker.runtime.entry_control_state()}, sort_keys=True).encode()
             except ValueError as error:
                 self.send_error(409, str(error))
                 return
