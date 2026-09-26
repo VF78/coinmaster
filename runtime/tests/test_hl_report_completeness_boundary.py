@@ -13,7 +13,7 @@ import pytest
 import nautilus_trader.adapters.hyperliquid.execution as execution
 from nautilus_trader.adapters.hyperliquid.execution import HyperliquidExecutionClient
 from nautilus_trader.live.execution_client import LiveExecutionClient
-from nautilus_trader.model.identifiers import AccountId, ClientId, Venue
+from nautilus_trader.model.identifiers import AccountId, ClientId, ClientOrderId, Venue, VenueOrderId
 
 
 METHODS = (
@@ -205,3 +205,37 @@ def test_native_websocket_dispatcher_swallows_handler_exception(monkeypatch):
     )
     assert HyperliquidExecutionClient._handle_msg(client, FakeFillMessage()) is None
     assert len(errors) == 1 and isinstance(errors[0][1], ValueError)
+
+def test_pinned_ws_fill_handler_can_return_after_buffering_without_native_effect(monkeypatch):
+    # _handle_msg can return normally while a fill is neither processed nor in Cache.
+    # A report-owner drain must inspect pending fills and later cache parity.
+    report = SimpleNamespace(
+        trade_id=SimpleNamespace(value="9"),
+        client_order_id=ClientOrderId("CM05-OWNED"),
+        venue_order_id=VenueOrderId("7"),
+        last_qty="0.001", last_px="60000",
+    )
+    monkeypatch.setattr(execution.FillReport, "from_pyo3", lambda _: report)
+    pending = {}
+    client = SimpleNamespace(
+        _log=SimpleNamespace(debug=lambda *args: None, warning=lambda *args: None),
+        _processed_trade_ids=set(),
+        _resolve_cloid=lambda x: x,
+        _is_external_order=lambda _: False,
+        _cache=SimpleNamespace(order=lambda _: None),
+        _pending_fills=pending,
+    )
+    msg = object()
+    assert HyperliquidExecutionClient._handle_fill_report_pyo3(client, msg) is None
+    assert pending == {"CM05-OWNED": [msg]}
+    assert "9" not in client._processed_trade_ids
+
+
+def test_pinned_ws_position_status_handler_only_logs(monkeypatch):
+    # A successful return from this native WS branch does not update Cache.
+    report = object()
+    monkeypatch.setattr(execution.PositionStatusReport, "from_pyo3", lambda _: report)
+    seen = []
+    client = SimpleNamespace(_log=SimpleNamespace(debug=lambda *args: seen.append(args)))
+    assert HyperliquidExecutionClient._handle_position_status_report_pyo3(client, object()) is None
+    assert seen and seen[0][0].startswith("Received ")
