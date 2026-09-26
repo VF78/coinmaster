@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 
 import pytest
 
@@ -318,3 +319,50 @@ def test_partial_entry_then_terminal_retains_episode_and_confirmed_qty() -> None
     assert state.episode.id == first.episode_id
     assert state.episode.btc_initial_qty == state.episode.btc_open_qty == 0.25
     assert state.episode.btc_entry_vwap == source[index].btc_open
+
+def test_stageg_btc_tp_targets_use_native_lots_and_replan_only_partial_leaves() -> None:
+    state = WaveOverlayState(Candidate(btc_tp_fractions_initial_qty=(0.2125, 0.2125, 0.575)))
+    state.set_execution_lots(btc=Decimal("0.00001"), sol=Decimal("0.01"))
+    state.episode = Episode(
+        "lot-episode", 1, 100, 1, btc_initial_qty=0.00787, btc_open_qty=0.00787,
+        btc_entry_vwap=60000, wave_levels=(0.01, 0.02, 0.03),
+    )
+    targets = state.plan_confirmed_btc_targets()
+    assert [item.quantity for item in targets] == [0.00167, 0.00167, 0.00453]
+    assert sum((Decimal(str(item.quantity)) for item in targets), Decimal(0)) == Decimal("0.00787")
+    first = targets[0]
+    state.on_fill(first.id, 0.00050, 60600, bars(1)[0].close_time)
+    assert state.episode.sol_right_fraction[0] == pytest.approx(50 / 167)
+    state.on_parent_cancelled(first.id)
+    replacement = next(item for item in state.plan_confirmed_btc_targets() if item.level == 0)
+    assert replacement.quantity == 0.00117
+    state.on_fill(replacement.id, 0.00117, 60600, bars(1)[0].close_time)
+    state.on_parent_terminal(replacement.id)
+    assert 0 in state.episode.btc_filled_tps
+    assert state.episode.sol_right_fraction[0] == 1
+    assert all(item.level != 0 for item in state.plan_confirmed_btc_targets())
+
+
+def test_sol_half_retry_keeps_fixed_native_lot_target_after_partial_cancel() -> None:
+    source = bars(2)
+    state = WaveOverlayState(Candidate())
+    state.set_execution_lots(btc=Decimal("0.00001"), sol=Decimal("0.01"))
+    state.episode = Episode(
+        "sol-half", 1, 100, 1, sol_qty=10.01,
+        sol_first_fill_at=source[0].close_time,
+    )
+    feature = Features(0, 1, 1, 1, 0, 1, 0.2)
+    first = state._sol_exits(state.episode, feature, source[0], 0, z=0.2)[0]
+    assert first.quantity == 5.0
+    state.on_fill(first.id, 0.01, 150, source[0].close_time)
+    assert not state.episode.sol_half_done
+    state.on_parent_cancelled(first.id)
+    retry = state._sol_exits(state.episode, feature, source[0], 0, z=0.2)[0]
+    assert retry.quantity == 4.99
+    state.on_fill(retry.id, 4.99, 150, source[0].close_time)
+    state.on_parent_terminal(retry.id)
+    assert state.episode.sol_half_done
+    assert state.episode.sol_half_filled_lots == state.episode.sol_half_target_lots == 500
+    state.on_half_exit_decision(0)
+    final = state._sol_exits(state.episode, feature, source[1], 1, z=0.1)[0]
+    assert final.action == "SOL_EXIT" and final.quantity == pytest.approx(5.01)

@@ -483,3 +483,94 @@ def test_late_sol_signal_completes_btc_day_once() -> None:
     strategy.on_data(DailySignalBar(sol_id, 30, 33, 27, 30, session))
     assert len(strategy._bars) == 2
     assert decisions == [session]
+
+def test_submitted_is_not_accepted_and_native_denial_terminalizes_journal(tmp_path) -> None:
+    runtime = PaperRuntime(tmp_path / "denied.sqlite", "hl-stageg-testnet", 10**20)
+    runtime.acquire()
+    assert runtime.record_submission(
+        client_order_id="oid-denied", intent_id="intent-denied", episode_id="episode",
+        action="BTC_ENTRY", instrument_id=str(BTC_PERP), quantity="0.01", reduce_only=False,
+    )
+    hooks = LifecycleHooks(runtime)
+    bar = BarType(BTC_PERP, BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL)
+    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP, sol_id=SOL_PERP, btc_bar_type=bar, sol_bar_type=bar,
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP),
+        sol_mark_data_type=venue_mark_data_type(SOL_PERP),
+        mark_client_id=ClientId("fixture"), active_seed=0,
+        event_sink=hooks.record_event, submission_sink=hooks,
+    ))
+    strategy._order_audit["oid-denied"] = {"accept_ns": None}
+    strategy.on_order_event(SimpleNamespace(client_order_id="oid-denied", ts_event=1))
+    assert runtime.pending_submissions()[0]["state"] == "SUBMITTING"
+    assert strategy._order_audit["oid-denied"]["accept_ns"] is None
+    strategy.on_order_denied(SimpleNamespace(client_order_id="oid-denied"))
+    assert runtime.pending_submissions() == []
+    # A distinct native acceptance is the only event that can advance ACK.
+    assert runtime.record_submission(
+        client_order_id="oid-accepted", intent_id="intent-accepted", episode_id="episode",
+        action="BTC_ENTRY", instrument_id=str(BTC_PERP), quantity="0.01", reduce_only=False,
+    )
+    strategy._order_audit["oid-accepted"] = {"accept_ns": None}
+    strategy.on_order_accepted(SimpleNamespace(client_order_id="oid-accepted", ts_event=2))
+    assert runtime.pending_submissions()[0]["state"] == "ACKED"
+    assert strategy._order_audit["oid-accepted"]["accept_ns"] == "2"
+    runtime.close()
+
+def test_forced_close_native_fill_terminalizes_journal_once_and_clears_group(tmp_path) -> None:
+    from nautilus_trader.model.currencies import USDC
+    from nautilus_trader.model.enums import LiquiditySide
+    from nautilus_trader.model.objects import Money, Price, Quantity
+    from coinmaster.domain.wave_overlay import Episode
+
+    runtime = PaperRuntime(tmp_path / "forced.sqlite", "hl-stageg-testnet", 10**20)
+    runtime.acquire()
+    assert runtime.record_submission(
+        client_order_id="forced-oid", intent_id="forced-intent", episode_id="forced",
+        action="FORCED_CLOSE", instrument_id=str(BTC_PERP), quantity="0.01", reduce_only=True,
+    )
+    hooks = LifecycleHooks(runtime)
+    cache = SimpleNamespace(
+        order=lambda _id: SimpleNamespace(is_closed=True),
+        positions_open=lambda: [],
+        orders_open=lambda: [],
+    )
+
+    class Probe(WaveOverlayStrategy):
+        @property
+        def cache(self):
+            return cache
+
+    bar = BarType(BTC_PERP, BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL)
+    strategy = Probe(WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP, sol_id=SOL_PERP, btc_bar_type=bar, sol_bar_type=bar,
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP),
+        sol_mark_data_type=venue_mark_data_type(SOL_PERP),
+        mark_client_id=ClientId("fixture"), active_seed=0,
+        event_sink=hooks.record_event, submission_sink=hooks,
+    ))
+    close = Intent("forced-intent", "forced", "CLOSE_ALL", None, -1, reason="REGIME")
+    strategy._domain.episode = Episode("forced", 1, 100, 1, close_reason="REGIME")
+    strategy._domain.episode.pending[close.id] = close
+    strategy._forced_close_reason = "REGIME"
+    strategy._forced_close_intent = close
+    strategy._forced_close_orders.add("forced-oid")
+    strategy._order_audit["forced-oid"] = {"action": "FORCED_CLOSE"}
+    fill = SimpleNamespace(
+        trade_id="forced-trade", client_order_id="forced-oid", instrument_id=BTC_PERP,
+        last_qty=Quantity.from_str("0.01"), last_px=Price.from_str("60000"),
+        commission=Money(Decimal("0.27"), USDC), liquidity_side=LiquiditySide.TAKER,
+        order_type="MARKET", ts_event=1, ts_init=1,
+    )
+    # Simulate a crash after audit insert but before the domain callback.
+    assert runtime.record_native_event("forced-trade", "fill")
+    strategy.on_order_filled(fill)
+    assert runtime.pending_submissions() == []
+    assert strategy._domain.episode is None
+    assert strategy._forced_close_reason is None
+    assert len(strategy.fill_audit) == 1
+    revision = runtime.native_revision()
+    strategy.on_order_filled(fill)
+    assert runtime.native_revision() == revision
+    assert len(strategy.fill_audit) == 1
+    runtime.close()

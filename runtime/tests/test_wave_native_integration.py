@@ -725,9 +725,28 @@ def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> No
     assert partial.daily_decision_status()["reason"] == "PARTIAL_ENTRY_RETAINED"
 
 
-def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash() -> None:
+def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash(tmp_path) -> None:
     """Feature-only seed; one accelerated native engine processes 22 live UTC closes."""
     from nautilus_trader.model.identifiers import ClientId
+    from coinmaster.ops.paper import PaperRuntime
+
+    journal = PaperRuntime(tmp_path / "two-episodes.sqlite", "native-replay", 10**20)
+    journal.acquire()
+
+    class JournalSink:
+        def __call__(self, **item) -> bool:
+            return journal.record_submission(
+                client_order_id=item["client_order_id"], intent_id=item["intent_id"],
+                episode_id=item["episode_id"], action=item["action"],
+                instrument_id=item["instrument_id"], quantity=item["quantity"],
+                reduce_only=item["reduce_only"],
+            )
+
+        def acknowledge(self, client_order_id: str) -> None:
+            journal.acknowledge_submission(client_order_id)
+
+        def terminal(self, client_order_id: str) -> None:
+            journal.terminal_submission(client_order_id)
 
     class ReplayTrace(WaveOverlayStrategy):
         def __init__(self, config: WaveOverlayStrategyConfig) -> None:
@@ -793,6 +812,7 @@ def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
             policy_marks, {BTC_PERP.id: Decimal("40"), SOL_PERP.id: Decimal("20")}, day_ns,
         ),
         seed_bars=tuple(seed), trading_start_open_ns=800 * day_ns,
+        event_sink=journal.record_native_event, submission_sink=JournalSink(),
     ))
     engine = native_engine(strategy)
     engine.add_data(live, sort=False)
@@ -829,5 +849,9 @@ def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
         assert strategy._domain.episode is not None
         assert strategy._domain.episode.id == strategy.entry_episodes[1]
         assert all(order.is_reduce_only and order.is_post_only for order in engine.trader._cache.orders_open())
+        first_episode = strategy.entry_episodes[0]
+        assert not [item for item in journal.pending_submissions() if item["episode_id"] == first_episode]
+        assert len([item for item in journal.events() if item["kind"] == "fill"]) == len(fills)
     finally:
         engine.dispose()
+        journal.close()

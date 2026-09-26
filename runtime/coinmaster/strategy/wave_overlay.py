@@ -12,7 +12,7 @@ from decimal import Decimal
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.model.data import Bar, BarType, CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
 from nautilus_trader.model.enums import OrderSide, TimeInForce
-from nautilus_trader.model.events import OrderCanceled, OrderExpired, OrderFilled, OrderRejected
+from nautilus_trader.model.events import OrderAccepted, OrderCanceled, OrderDenied, OrderExpired, OrderFilled, OrderRejected
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 from nautilus_trader.trading.strategy import Strategy
 
@@ -129,6 +129,7 @@ class WaveOverlayStrategy(Strategy):
         self._terminal_order_ids: set[str] = set()
         self._order_audit: dict[str, dict[str, object]] = {}
         self.fill_audit: list[dict[str, str]] = []
+        self._seen_trade_ids: set[str] = set()
         self._forced_close_reason: str | None = None
         self._forced_close_intent: Intent | None = None
         self._forced_close_submitted: set[InstrumentId] = set()
@@ -428,6 +429,7 @@ class WaveOverlayStrategy(Strategy):
             return
         if self._deferred_entry_session == self._current_btc.ts_event:
             self._deferred_entry_session = None
+        self._bind_native_lots()
         intents = self._domain.decide(
             self._bars, self._current_signals, len(self._bars) - 1,
             self._active_marked(self._current_btc_mark, self._current_sol_mark),
@@ -826,7 +828,13 @@ class WaveOverlayStrategy(Strategy):
             update(MarginMark(instrument_id, price, ts_event))
 
     def on_order_filled(self, event: OrderFilled) -> None:
-        self._record_native_event(str(event.trade_id), "fill")
+        trade_id = str(event.trade_id)
+        if trade_id in self._seen_trade_ids:
+            return
+        # The audit event may have committed just before a crash; it is not
+        # an atomic receipt that the domain fill was applied.
+        self._record_native_event(trade_id, "fill")
+        self._seen_trade_ids.add(trade_id)
         self._record_fill_audit(event)
         if str(event.client_order_id) in self._liquidation_orders:
             if self.liquidation_audit:
@@ -851,8 +859,10 @@ class WaveOverlayStrategy(Strategy):
             return
         if str(event.client_order_id) in self._forced_close_orders:
             order = self.cache.order(event.client_order_id)
-            if order is not None and order.is_closed and self._forced_close_intent is not None:
-                self._domain.on_parent_terminal(self._forced_close_intent.id)
+            if order is not None and order.is_closed:
+                self._terminal_submission(str(event.client_order_id))
+                if self._forced_close_intent is not None:
+                    self._domain.on_parent_terminal(self._forced_close_intent.id)
                 self._group_close_reconciliation_pending = True
                 self._reconcile_group_flat()
             return
@@ -882,13 +892,14 @@ class WaveOverlayStrategy(Strategy):
         price: float, ts_event: int, order_closed: bool,
     ) -> None:
         """Pure episode/intent transition shared by callbacks and report replay."""
+        self._bind_native_lots()
         sigma = self._sigma_by_order.get(client_order_id)
         when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
         self._domain.on_fill(
             intent.id, quantity, price, when, sigma,
             decision_index=self._confirmed_fill_cycle(intent, client_order_id),
         )
-        if intent.action == "SOL_HALF_EXIT":
+        if intent.action == "SOL_HALF_EXIT" and self._domain.episode is not None and self._domain.episode.sol_half_done:
             self._domain.on_half_exit_decision(self._decision_index_by_order[client_order_id])
         if not order_closed:
             return
@@ -899,8 +910,20 @@ class WaveOverlayStrategy(Strategy):
         if intent.action == "BTC_ENTRY":
             self._queue_confirmed_btc_targets(sigma, intent.decision_index, ts_event)
 
+    def _bind_native_lots(self) -> None:
+        cache = getattr(self, "cache", None)
+        instrument = getattr(cache, "instrument", None)
+        if not callable(instrument):
+            return
+        btc, sol = instrument(self.config.btc_id), instrument(self.config.sol_id)
+        if btc is not None and sol is not None:
+            self._domain.set_execution_lots(
+                btc=btc.size_increment.as_decimal(), sol=sol.size_increment.as_decimal(),
+            )
+
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
+        self._bind_native_lots()
         for target in self._domain.plan_confirmed_btc_targets():
             self._queued_intents.append((target, sigma, decision_index))
             self._queued_intent_ready_ns[target.id] = ready_ns + 1
@@ -949,11 +972,26 @@ class WaveOverlayStrategy(Strategy):
             self._submit_forced_closes_from_cache()
 
     def on_order_event(self, event) -> None:
-        self._record_native_event(str(event.client_order_id), "order")
+        # Event identity, not client order identity, preserves the sequence
+        # Submitted -> Accepted -> terminal without manufacturing an ACK.
+        event_id = getattr(event, "id", None)
+        if event_id is None:
+            event_id = f"{event.client_order_id}:{type(event).__name__}:{getattr(event, 'ts_event', getattr(event, 'ts_init', ''))}"
+        self._record_native_event(str(event_id), "order")
+        if isinstance(event, OrderAccepted):
+            self._accept_native_order(event)
+
+    def on_order_accepted(self, event: OrderAccepted) -> None:
+        self._accept_native_order(event)
+
+    def _accept_native_order(self, event: OrderAccepted) -> None:
         context = self._order_audit.get(str(event.client_order_id))
         if context is not None and context.get("accept_ns") is None:
-            context["accept_ns"] = str(getattr(event, "ts_event", getattr(event, "ts_init", "")))
+            context["accept_ns"] = str(event.ts_event)
         self._acknowledge_submission(str(event.client_order_id))
+
+    def on_order_denied(self, event: OrderDenied) -> None:
+        self._terminal_without_fill(str(event.client_order_id))
 
     def on_position_event(self, event) -> None:
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
@@ -1046,10 +1084,9 @@ class WaveOverlayStrategy(Strategy):
             return max(0, len(self._bars) - 1)
         return self._decision_index_by_order.get(client_order_id, max(0, len(self._bars) - 1))
 
-    def _record_native_event(self, event_id: str, kind: str) -> None:
+    def _record_native_event(self, event_id: str, kind: str) -> bool | None:
         sink = self.config.event_sink
-        if callable(sink):
-            sink(event_id, kind)
+        return sink(event_id, kind) if callable(sink) else None
 
     def _record_submission(self, order, intent_id: str, episode_id: str, action: str, reason: str | None = None, level: int | None = None) -> bool:
         self._order_audit[str(order.client_order_id)] = {

@@ -247,3 +247,23 @@ def test_current_native_process_can_continue_after_event_until_next_snapshot(tmp
     restarted = PaperRuntime(tmp_path / "active.sqlite", "stageg", 10**20, require_native_cash=True)
     assert restarted.recovery_state() == "RECOVERY_REQUIRED_UNSNAPSHOTTED_NATIVE_STATE"
     restarted.close()
+
+def test_process_lifetime_lock_rejects_second_owner_process(tmp_path) -> None:
+    import subprocess
+    import sys
+
+    path = tmp_path / "single-owner.sqlite"
+    first = PaperRuntime(path, "same-account", 10)
+    first.acquire()
+    child = (
+        "import sys; from pathlib import Path; from coinmaster.ops.paper import PaperRuntime; "
+        "p=PaperRuntime(Path(sys.argv[1]), 'same-account', 10); "
+        "\ntry: p.acquire(); print('ACQUIRED')"
+        "\nexcept RuntimeError as error: print(str(error))"
+        "\nfinally: p.close()"
+    )
+    blocked = subprocess.run([sys.executable, "-c", child, str(path)], capture_output=True, text=True, check=True)
+    assert blocked.stdout.strip() == "PAPER_PROCESS_LOCKED"
+    first.close()
+    resumed = subprocess.run([sys.executable, "-c", child, str(path)], capture_output=True, text=True, check=True)
+    assert resumed.stdout.strip() == "ACQUIRED"

@@ -5,7 +5,9 @@ adapters/orders. A separate native worker may read the durable snapshots.
 """
 from __future__ import annotations
 
+import fcntl
 import json
+import os
 import sqlite3
 import threading
 from functools import wraps
@@ -35,6 +37,10 @@ class PaperRuntime:
     def __init__(self, database: Path, owner: str, max_data_age_ns: int, *, require_native_cash: bool = False) -> None:
         database.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
+        # The SQLite owner row is durable identity, not an exclusive process
+        # lease.  This OS lock is held from acquire until close or process exit.
+        self._process_lock_path = database.with_name(database.name + ".owner.lock")
+        self._process_lock_fd: int | None = None
         self._local_sandbox_active = False
         self.require_native_cash = require_native_cash
         self.db, self.owner, self.max_data_age_ns = sqlite3.connect(database, check_same_thread=False), owner, max_data_age_ns
@@ -92,13 +98,25 @@ class PaperRuntime:
 
     @_journal_locked
     def acquire(self) -> None:
+        if self._process_lock_fd is not None:
+            return
+        fd = os.open(self._process_lock_path, os.O_CREAT | os.O_RDWR, 0o600)
         try:
-            self.db.execute("INSERT INTO paper_lock VALUES (1, ?)", (self.owner,)); self.db.commit()
-        except sqlite3.IntegrityError as error:
-            row = self.db.execute("SELECT owner FROM paper_lock WHERE id=1").fetchone()
-            if row and row[0] == self.owner:
-                return  # Controlled restart of the same paper owner.
-            raise RuntimeError("PAPER_OWNER_LOCKED") from error
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as error:
+                raise RuntimeError("PAPER_PROCESS_LOCKED") from error
+            try:
+                self.db.execute("INSERT INTO paper_lock VALUES (1, ?)", (self.owner,))
+                self.db.commit()
+            except sqlite3.IntegrityError as error:
+                row = self.db.execute("SELECT owner FROM paper_lock WHERE id=1").fetchone()
+                if not row or row[0] != self.owner:
+                    raise RuntimeError("PAPER_OWNER_LOCKED") from error
+            self._process_lock_fd = fd
+        except BaseException:
+            os.close(fd)
+            raise
 
     @_journal_locked
     def command(self, command: str, idempotency_key: str) -> bool:
@@ -468,4 +486,11 @@ class PaperRuntime:
         return ([{"cursor": row[0], "event_id": row[1], "kind": row[2]} for row in rows], cursor)
 
     @_journal_locked
-    def close(self) -> None: self.db.close()
+    def close(self) -> None:
+        try:
+            self.db.close()
+        finally:
+            if self._process_lock_fd is not None:
+                fcntl.flock(self._process_lock_fd, fcntl.LOCK_UN)
+                os.close(self._process_lock_fd)
+                self._process_lock_fd = None

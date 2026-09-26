@@ -268,10 +268,9 @@ class LifecycleHooks:
         ))
 
     def record_event(self, event_id: str, kind: str) -> bool:
-        recorded = self.runtime.record_native_event(event_id, kind)
-        if kind == "order":
-            self.runtime.acknowledge_submission(event_id)
-        return recorded
+        # An order event may be Submitted, Denied, or unresolved.  Only the
+        # strategy's native Accepted callback advances the durable ACK state.
+        return self.runtime.record_native_event(event_id, kind)
 
     def on_native_order_event(self, client_order_id: str) -> None:
         self.record_event(client_order_id, "order")

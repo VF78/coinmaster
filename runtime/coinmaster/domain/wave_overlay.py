@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal, ROUND_FLOOR, ROUND_HALF_UP
 from math import exp, log, sqrt
 from typing import Literal
 from collections import deque
@@ -229,6 +230,8 @@ class Episode:
     # Each target's original size is fixed from confirmed entry quantity.
     # Replacement intents carry only the remaining leaves.
     btc_tp_target_qty: dict[int, float] = field(default_factory=dict)
+    btc_tp_target_lots: dict[int, int] = field(default_factory=dict)
+    btc_tp_filled_lots: dict[int, int] = field(default_factory=dict)
     sol_right_fraction: dict[int, float] = field(default_factory=dict)
     sol_right_decision_index: dict[int, int] = field(default_factory=dict)
     sol_adds: set[int] = field(default_factory=set)
@@ -237,6 +240,8 @@ class Episode:
     sol_first_fill_at: datetime | None = None
     fixed_sigma: float | None = None
     sol_half_done: bool = False
+    sol_half_target_lots: int | None = None
+    sol_half_filled_lots: int = 0
     sol_half_decision_index: int | None = None
     best_f: float = 0.0
     pending: dict[str, Intent] = field(default_factory=dict)
@@ -259,6 +264,57 @@ class WaveOverlayState:
         # same daily decision/side must never create a second entry attempt.
         self._last_entry_attempt: tuple[int, Side] | None = None
         self.last_decision_reason = "NOT_EVALUATED"
+        self.btc_lot_step: Decimal | None = None
+        self.sol_lot_step: Decimal | None = None
+
+    def set_execution_lots(self, *, btc: Decimal, sol: Decimal) -> None:
+        """Bind exact native instrument increments before any target is made."""
+        if btc <= 0 or sol <= 0:
+            raise ValueError("INVALID_NATIVE_LOT_STEP")
+        if (self.btc_lot_step is not None and self.btc_lot_step != btc) or (
+            self.sol_lot_step is not None and self.sol_lot_step != sol
+        ):
+            raise ValueError("NATIVE_LOT_STEP_CHANGED_DURING_EPISODE")
+        self.btc_lot_step, self.sol_lot_step = btc, sol
+
+    @staticmethod
+    def _lots(quantity: float, step: Decimal) -> int:
+        ratio = Decimal(str(quantity)) / step
+        nearest = ratio.to_integral_value(rounding=ROUND_HALF_UP)
+        if abs(ratio - nearest) > Decimal("0.000001"):
+            raise ValueError("NATIVE_FILL_OFF_LOT")
+        return int(nearest)
+
+    def _ensure_btc_targets(self, episode: Episode) -> None:
+        if self.btc_lot_step is None or episode.btc_tp_target_lots:
+            return
+        initial_lots = self._lots(episode.btc_initial_qty, self.btc_lot_step)
+        assigned = 0
+        fractions = tuple(Decimal(str(value)) for value in self.config.btc_tp_fractions_initial_qty)
+        full_exit = sum(fractions) == Decimal("1")
+        for level, fraction in enumerate(fractions):
+            lots = (
+                initial_lots - assigned if full_exit and level == len(fractions) - 1 else
+                int((Decimal(initial_lots) * fraction).to_integral_value(rounding=ROUND_FLOOR))
+            )
+            episode.btc_tp_target_lots[level] = lots
+            episode.btc_tp_target_qty[level] = float(Decimal(lots) * self.btc_lot_step)
+            assigned += lots
+
+    def _btc_target_leaves(self, episode: Episode, level: int) -> float:
+        if self.btc_lot_step is None:
+            target = episode.btc_tp_target_qty.setdefault(
+                level, episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level],
+            )
+            return min(max(0.0, target - episode.btc_tp_filled_qty.get(level, 0.0)), episode.btc_open_qty)
+        self._ensure_btc_targets(episode)
+        initial_lots = self._lots(episode.btc_initial_qty, self.btc_lot_step)
+        sold_lots = sum(episode.btc_tp_filled_lots.values())
+        leaves = min(
+            episode.btc_tp_target_lots[level] - episode.btc_tp_filled_lots.get(level, 0),
+            initial_lots - sold_lots,
+        )
+        return float(Decimal(max(0, leaves)) * self.btc_lot_step)
 
     def _intent(self, episode: Episode, action: Action, side: Side, level: int | None, **kwargs: float) -> Intent:
         intent = Intent(str(uuid4()), episode.id, action, level, side, decision_index=self._decision_index, **kwargs)
@@ -317,7 +373,9 @@ class WaveOverlayState:
             # old taker fallback, but no filled right is invented.
             if f >= threshold and level not in episode.btc_tps and level not in episode.btc_filled_tps and episode.attempted_btc_at.get(level) != index:
                 episode.attempted_btc_at[level] = index
-                intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=min(episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level], episode.btc_open_qty)))
+                leaves = self._btc_target_leaves(episode, level)
+                if leaves > 0:
+                    intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=leaves))
         if intents:
             return intents
         if not self.config.sol_overlay_enabled:
@@ -356,7 +414,14 @@ class WaveOverlayState:
         signed_z = episode.side * z
         if episode.sol_qty and episode.sol_first_fill_at is not None:
             if not episode.sol_half_done and signed_z <= self.config.sol_exit_half_z:
-                return [self._intent(episode, "SOL_HALF_EXIT", episode.side, None, quantity=episode.sol_qty / 2, reason="SOL_Z_HALF_EXIT")]
+                if self.sol_lot_step is None:
+                    leaves = episode.sol_qty / 2
+                else:
+                    if episode.sol_half_target_lots is None:
+                        episode.sol_half_target_lots = self._lots(episode.sol_qty, self.sol_lot_step) // 2
+                    leaves = float(Decimal(max(0, episode.sol_half_target_lots - episode.sol_half_filled_lots)) * self.sol_lot_step)
+                if leaves > 0:
+                    return [self._intent(episode, "SOL_HALF_EXIT", episode.side, None, quantity=leaves, reason="SOL_Z_HALF_EXIT")]
             if episode.sol_half_done and episode.sol_half_decision_index is not None and index > episode.sol_half_decision_index and signed_z <= self.config.sol_exit_all_z:
                 return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty, reason="SOL_Z_FULL_EXIT")]
         return []
@@ -373,16 +438,29 @@ class WaveOverlayState:
             episode.btc_open_qty += quantity
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
             episode.sol_rights.add(intent.level)
-            target_quantity = episode.btc_tp_target_qty.setdefault(
-                intent.level,
-                episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[intent.level],
-            )
-            filled_quantity = episode.btc_tp_filled_qty.get(intent.level, 0.0) + quantity
-            if target_quantity > 0:
-                filled_quantity = min(filled_quantity, target_quantity)
-                episode.sol_right_fraction[intent.level] = min(1.0, filled_quantity / target_quantity)
+            if self.btc_lot_step is not None:
+                self._ensure_btc_targets(episode)
+                target_lots = episode.btc_tp_target_lots[intent.level]
+                filled_lots = min(
+                    target_lots,
+                    episode.btc_tp_filled_lots.get(intent.level, 0) + self._lots(quantity, self.btc_lot_step),
+                )
+                episode.btc_tp_filled_lots[intent.level] = filled_lots
+                filled_quantity = float(Decimal(filled_lots) * self.btc_lot_step)
+                target_quantity = episode.btc_tp_target_qty[intent.level]
+                if target_lots > 0:
+                    episode.sol_right_fraction[intent.level] = filled_lots / target_lots
+                complete = target_lots > 0 and filled_lots == target_lots
+            else:
+                target_quantity = episode.btc_tp_target_qty.setdefault(
+                    intent.level, episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[intent.level],
+                )
+                filled_quantity = min(episode.btc_tp_filled_qty.get(intent.level, 0.0) + quantity, target_quantity)
+                if target_quantity > 0:
+                    episode.sol_right_fraction[intent.level] = min(1.0, filled_quantity / target_quantity)
+                complete = target_quantity > 0 and filled_quantity >= target_quantity - 1e-12
             episode.btc_tp_filled_qty[intent.level] = filled_quantity
-            if target_quantity > 0 and filled_quantity >= target_quantity - 1e-12:
+            if complete:
                 episode.btc_filled_tps.add(intent.level)
             # Resting targets can fill days after their creation. Strict H3
             # compares against the fill's applied decision cycle, never the
@@ -397,9 +475,20 @@ class WaveOverlayState:
             if episode.sol_first_fill_at is None:
                 episode.sol_first_fill_at, episode.fixed_sigma = when, sigma
             episode.sol_half_done = False
+            episode.sol_half_target_lots = None
+            episode.sol_half_filled_lots = 0
         elif intent.action == "SOL_HALF_EXIT":
             episode.sol_qty = max(0.0, episode.sol_qty - quantity)
-            episode.sol_half_done = True
+            if self.sol_lot_step is None:
+                episode.sol_half_done = True
+            else:
+                if episode.sol_half_target_lots is None:
+                    raise ValueError("SOL_HALF_TARGET_MISSING")
+                episode.sol_half_filled_lots = min(
+                    episode.sol_half_target_lots,
+                    episode.sol_half_filled_lots + self._lots(quantity, self.sol_lot_step),
+                )
+                episode.sol_half_done = episode.sol_half_filled_lots == episode.sol_half_target_lots
         elif intent.action == "SOL_EXIT":
             episode.sol_qty = max(0.0, episode.sol_qty - quantity)
             if episode.sol_qty == 0:
@@ -424,11 +513,7 @@ class WaveOverlayState:
             if level in episode.btc_tps or level in episode.btc_filled_tps:
                 continue
             target = episode.btc_entry_vwap * (1 + episode.side * threshold)
-            target_quantity = episode.btc_tp_target_qty.setdefault(
-                level,
-                episode.btc_initial_qty * self.config.btc_tp_fractions_initial_qty[level],
-            )
-            quantity = min(max(0.0, target_quantity - episode.btc_tp_filled_qty.get(level, 0.0)), episode.btc_open_qty)
+            quantity = self._btc_target_leaves(episode, level)
             if quantity <= 0 or target <= 0:
                 continue
             episode.btc_tps.add(level)
