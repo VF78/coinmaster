@@ -31,6 +31,7 @@ class InfoReceipt:
     order_statuses: tuple[dict, ...]
     fill_anchor_proven: bool = False
     conditional_only: bool = True
+    account_value: str = ""
 
 
 def _number(value: Any, name: str) -> Decimal:
@@ -135,7 +136,8 @@ async def collect_info_receipt(
     summary = state.get("marginSummary")
     if not isinstance(summary, dict):
         raise IncompleteInfoReport("MALFORMED_ACCOUNT_SUMMARY")
-    if _number(summary.get("accountValue"), "ACCOUNT_VALUE") < 0:
+    account_value = _number(summary.get("accountValue"), "ACCOUNT_VALUE")
+    if account_value < 0:
         raise IncompleteInfoReport("BAD_ACCOUNT_VALUE")
 
     statuses = []
@@ -241,5 +243,6 @@ async def collect_info_receipt(
     fills = tuple(sorted(fills_by_tid.values(), key=lambda item: (item["time"], item["tid"])))
     return InfoReceipt(
         account, dex, anchor_ms, end_ms, tuple(open_orders), tuple(positions),
-        fills, tuple(statuses), anchor_tid is not None,
+        fills, tuple(statuses), fill_anchor_proven=anchor_tid is not None,
+        account_value=str(account_value),
     )
