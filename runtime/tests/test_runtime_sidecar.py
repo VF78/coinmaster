@@ -161,7 +161,7 @@ def test_hl_stageg_projection_is_fresh_instance_bound_and_preserves_unknown_unpo
     assert body.run_epoch == "test-epoch" and body.native_thread_alive is True
     assert body.feeds["BTC-USD-PERP.HYPERLIQUID"].next_funding_ns is None
     assert body.positions[0].provenance == "SANDBOX"
-    assert body.account.equity == "UNKNOWN"
+    assert body.account.equity is None and body.account.status == "UNAVAILABLE"
 
     response = json.dumps(_ready_hl_projection(observed_at_ns=1)).encode()
     stale = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
@@ -176,8 +176,39 @@ def test_hl_stageg_projection_is_fresh_instance_bound_and_preserves_unknown_unpo
     monkeypatch.setattr(sidecar.urllib.request, "urlopen", disconnected)
     dead = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
     assert dead.projection_state == "UNAVAILABLE"
-    assert dead.account.native_cash == "UNKNOWN"
+    assert dead.account.native_cash is None and dead.account.status == "UNAVAILABLE"
     assert dead.funding_state == "UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT"
+
+
+
+def test_captured_native_owned_tp_passes_strict_api_projection(monkeypatch, tmp_path) -> None:
+    import time
+    import coinmaster.api.runtime_sidecar as sidecar
+
+    # Captured from the running token-free /status worker endpoint with a
+    # native BTC position and owned reduce-only TP. Refresh observation time.
+    payload = json.loads((Path(__file__).parent / "fixtures" / "hl_stageg_owned_tp_status.json").read_text())
+    assert payload["positions"][0]["signed_quantity"] == "0.53865"
+    assert payload["orders"][0]["reduce_only"] is True
+    payload["observed_at_ns"] = time.time_ns()
+    response = json.dumps(payload).encode()
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *args, **kwargs: io.BytesIO(response))
+    app = create_runtime_app(database=str(tmp_path / "missing.sqlite"), control_database=str(tmp_path / "control.sqlite"), token="operator")
+    route = next(item for item in app.routes if getattr(item, "path", "") == "/api/v1/instances/hl-stageg-testnet")
+    projected = route.endpoint()
+    assert projected.projection_state == "READY"
+    assert projected.positions[0].signed_quantity == "0.53865"
+    assert projected.orders[0].reduce_only is True
+    assert projected.account.status == "UNAVAILABLE" and projected.account.native_cash is None
+    assert projected.recovery_required is True
+    zero = HlStagegProjection.model_validate({**payload, "account": {"native_cash": "0"}})
+    negative = HlStagegProjection.model_validate({**payload, "account": {"native_cash": "-0.1"}})
+    assert zero.account.status == "PARTIAL" and zero.account.native_cash == "0"
+    assert negative.account.native_cash == "-0.1"
+    with pytest.raises(ValueError):
+        HlStagegProjection.model_validate({**payload, "account": {"native_cash": "UNKNOWN"}})
+    with pytest.raises(ValueError):
+        HlStagegProjection.model_validate({**payload, "orders": [{**payload["orders"][0], "unexpected": 1}]})
 
 
 def test_hl_worker_serves_bounded_projection_on_loopback_with_get_only(tmp_path, monkeypatch) -> None:

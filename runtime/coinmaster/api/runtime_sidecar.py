@@ -8,13 +8,14 @@ import urllib.error
 import urllib.request
 import time
 from dataclasses import asdict
+from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
 from coinmaster.api.app import create_app as create_control_app
 from coinmaster.api.gui_auth import GuiAuth, SESSION_COOKIE
@@ -139,11 +140,34 @@ class HlStagegWarmup(RuntimeSchema):
 
 
 class HlStagegAccount(RuntimeSchema):
-    native_cash: str = UNKNOWN
-    equity: str = UNKNOWN
-    im: str = UNKNOWN
-    mm: str = UNKNOWN
-    free_margin: str = UNKNOWN
+    status: Literal["AVAILABLE", "PARTIAL", "UNAVAILABLE"] = "UNAVAILABLE"
+    observed_at_ns: int | None = None
+    native_cash: str | None = None
+    equity: str | None = None
+    im: str | None = None
+    mm: str | None = None
+    free_margin: str | None = None
+
+    @field_validator("native_cash", "equity", "im", "mm", "free_margin")
+    @classmethod
+    def decimal_or_unavailable(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        try:
+            if not Decimal(value).is_finite():
+                raise ValueError("non-finite account decimal")
+        except InvalidOperation as error:
+            raise ValueError("invalid account decimal") from error
+        return value
+
+    @model_validator(mode="before")
+    @classmethod
+    def classify_native_fields(cls, value: Any) -> Any:
+        if isinstance(value, dict) and "status" not in value:
+            fields = ("native_cash", "equity", "im", "mm", "free_margin")
+            known = sum(value.get(field) is not None for field in fields)
+            return {**value, "status": "AVAILABLE" if known == len(fields) else "PARTIAL" if known else "UNAVAILABLE"}
+        return value
 
 
 class HlStagegEntryControl(RuntimeSchema):
@@ -167,6 +191,20 @@ class HlStagegPosition(RuntimeSchema):
 class HlStagegOrder(RuntimeSchema):
     client_order_id: str
     instrument_id: str | None = None
+    account_id: str | None = None
+    venue_order_id: str | None = None
+    side: str | None = None
+    order_type: str | None = None
+    time_in_force: str | None = None
+    price: str | None = None
+    quantity: str | None = None
+    filled_quantity: str | None = None
+    leaves_quantity: str | None = None
+    reduce_only: bool | None = None
+    post_only: bool | None = None
+    status: str | None = None
+    submitted_at_ns: int | None = None
+    updated_at_ns: int | None = None
     provenance: Literal["SANDBOX"] = "SANDBOX"
 
 

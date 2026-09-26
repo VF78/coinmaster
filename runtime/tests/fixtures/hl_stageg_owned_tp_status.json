@@ -1,0 +1,141 @@
+{
+  "account": {},
+  "entry_control": {
+    "capability": "READY",
+    "state": "RUNNING"
+  },
+  "environment": "mainnet-public",
+  "event_cursor": 10,
+  "events": [
+    {
+      "cursor": 1,
+      "event_id": "O-20260926-000006-TESTNET-001-1",
+      "kind": "order",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 2,
+      "event_id": "T-5b43e69d4bfe15c3-001",
+      "kind": "fill",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 3,
+      "event_id": "BTC-USD-PERP.HYPERLIQUID-WaveOverlayStrategy-001:1790380806551353799",
+      "kind": "position",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 4,
+      "event_id": "O-20260926-000006-TESTNET-001-2",
+      "kind": "order",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 5,
+      "event_id": "O-20260926-000006-TESTNET-001-3",
+      "kind": "order",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 6,
+      "event_id": "O-20260926-000006-TESTNET-001-4",
+      "kind": "order",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 7,
+      "event_id": "T-ac11696053fcf2ef-002",
+      "kind": "fill",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 8,
+      "event_id": "BTC-USD-PERP.HYPERLIQUID-WaveOverlayStrategy-001:1790381300355942108",
+      "kind": "position",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 9,
+      "event_id": "T-ac11696053fcf2ef-003",
+      "kind": "fill",
+      "provenance": "SANDBOX"
+    },
+    {
+      "cursor": 10,
+      "event_id": "BTC-USD-PERP.HYPERLIQUID-WaveOverlayStrategy-001:1790381300362081900",
+      "kind": "position",
+      "provenance": "SANDBOX"
+    }
+  ],
+  "feeds": {
+    "BTC-USD-PERP.HYPERLIQUID": {
+      "funding_age_ns": 593938640,
+      "funding_rate": "0.0000023518",
+      "mark": "84049.2",
+      "mark_age_ns": 6918596433,
+      "next_funding_ns": null,
+      "quote_age_ns": 93475882,
+      "state": "READY"
+    },
+    "SOL-USD-PERP.HYPERLIQUID": {
+      "funding_age_ns": 11091059179,
+      "funding_rate": "0.0000125",
+      "mark": "122.0542",
+      "mark_age_ns": 6918578315,
+      "next_funding_ns": null,
+      "quote_age_ns": 93423650,
+      "state": "READY"
+    }
+  },
+  "funding_state": "OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT",
+  "gates": {
+    "approval_state": "SEALED_APPROVAL_MATCH",
+    "attachable": true,
+    "capital_state": "NOMINAL_10000_USDC_SANDBOX_SEED_VS_10000_USDT_RESEARCH_1_TO_1_ASSUMPTION",
+    "execution_policy_state": "FIXED_PUBLIC_BASE_FEES_NATIVE_SANDBOX_COMMISSION_AUDITED",
+    "margin_policy_state": "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"
+  },
+  "hashes": {
+    "candidate_sha256": "637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d",
+    "execution_policy_sha256": "eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687",
+    "strategy_sha256": "f890667eb14a3e399f36325554ffa237dc548af54d5a62395517ae67fd94d4a0"
+  },
+  "instance_id": "hl-stageg-testnet",
+  "live_order_capability": false,
+  "mode": "sandbox",
+  "native_thread_alive": true,
+  "observed_at_ns": 1790381676537636501,
+  "orders": [
+    {
+      "client_order_id": "O-20260926-000006-TESTNET-001-4",
+      "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+      "provenance": "SANDBOX",
+      "reduce_only": true
+    }
+  ],
+  "positions": [
+    {
+      "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+      "provenance": "SANDBOX",
+      "signed_quantity": "0.53865"
+    }
+  ],
+  "process_state": "PUBLIC_FEEDS_READY",
+  "projection_state": "READY",
+  "provenance": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION",
+  "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
+  "recovery_capability": "NO_NATIVE_SANDBOX_REHYDRATION",
+  "recovery_required": true,
+  "run_epoch": "78b3450ff8c940b0b23145bdc86c20d1",
+  "sandbox_starting_cash_usdc": "10000",
+  "version": "hl-stageg-projection-v1",
+  "virtual_capital_resets_on_flat_restart": false,
+  "warmup": {
+    "rows": 1485,
+    "state": "READY"
+  },
+  "warnings": [
+    "ACTIVE_OWNED_REDUCTIONS"
+  ]
+}

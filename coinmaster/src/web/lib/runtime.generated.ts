@@ -354,31 +354,24 @@ export interface components {
         };
         /** HlStagegAccount */
         HlStagegAccount: {
+            /** Equity */
+            equity?: string | null;
+            /** Free Margin */
+            free_margin?: string | null;
+            /** Im */
+            im?: string | null;
+            /** Mm */
+            mm?: string | null;
+            /** Native Cash */
+            native_cash?: string | null;
+            /** Observed At Ns */
+            observed_at_ns?: number | null;
             /**
-             * Equity
-             * @default UNKNOWN
+             * Status
+             * @default UNAVAILABLE
+             * @enum {string}
              */
-            equity: string;
-            /**
-             * Free Margin
-             * @default UNKNOWN
-             */
-            free_margin: string;
-            /**
-             * Im
-             * @default UNKNOWN
-             */
-            im: string;
-            /**
-             * Mm
-             * @default UNKNOWN
-             */
-            mm: string;
-            /**
-             * Native Cash
-             * @default UNKNOWN
-             */
-            native_cash: string;
+            status: "AVAILABLE" | "PARTIAL" | "UNAVAILABLE";
         };
         /** HlStagegControlAction */
         HlStagegControlAction: {
@@ -483,16 +476,44 @@ export interface components {
         };
         /** HlStagegOrder */
         HlStagegOrder: {
+            /** Account Id */
+            account_id?: string | null;
             /** Client Order Id */
             client_order_id: string;
+            /** Filled Quantity */
+            filled_quantity?: string | null;
             /** Instrument Id */
             instrument_id?: string | null;
+            /** Leaves Quantity */
+            leaves_quantity?: string | null;
+            /** Order Type */
+            order_type?: string | null;
+            /** Post Only */
+            post_only?: boolean | null;
+            /** Price */
+            price?: string | null;
             /**
              * Provenance
              * @default SANDBOX
              * @constant
              */
             provenance: "SANDBOX";
+            /** Quantity */
+            quantity?: string | null;
+            /** Reduce Only */
+            reduce_only?: boolean | null;
+            /** Side */
+            side?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Submitted At Ns */
+            submitted_at_ns?: number | null;
+            /** Time In Force */
+            time_in_force?: string | null;
+            /** Updated At Ns */
+            updated_at_ns?: number | null;
+            /** Venue Order Id */
+            venue_order_id?: string | null;
         };
         /** HlStagegPosition */
         HlStagegPosition: {
