@@ -18,6 +18,7 @@ from urllib.parse import urlsplit
 
 from coinmaster.ops.hyperliquid_testnet import HyperliquidTestnetNode, require_testnet_sandbox
 from coinmaster.ops.paper import PaperRuntime
+from coinmaster.ops.hl_sandbox_money import native_money_projection
 from coinmaster.ops.stage_g_config import ConfigurationError, load_candidate, load_testnet_instance_config
 
 
@@ -107,18 +108,15 @@ class TestnetWorker:
         health = self.runtime.health(time.time_ns())
         gate = self.native.gate
         events, event_cursor = self.runtime.projection_events(100)
-        account: dict[str, str] = {}
+        account: dict[str, str | None] = {}
         account_warning: tuple[str, ...] = ()
         if recovery_state == "FLAT_RESTART" and self.native.node.is_running() and self.native.strategy is not None:
             positions, orders = self.native.sandbox_snapshot()
             # The local Sandbox ledger is authoritative only while this
-            # process owns it. Project its actual USDC total as cash, but do
-            # not manufacture equity, margin, PnL, fees, or fills from it.
+            # process owns it. Read cash, collateral and native position PnL;
+            # stale marks keep open-position equity unavailable.
             try:
-                native_cash = self.native.native_account_total()
-                if not native_cash.is_finite() or native_cash <= 0:
-                    raise ValueError("INVALID_NATIVE_USDC_TOTAL")
-                account = {"native_cash": str(native_cash)}
+                account = native_money_projection(self.native.node.cache, self.native.strategy._latest_marks)
             except (ValueError, ArithmeticError):
                 account_warning = ("NATIVE_SANDBOX_ACCOUNT_UNAVAILABLE",)
         else:

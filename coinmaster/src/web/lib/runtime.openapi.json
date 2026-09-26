@@ -67,6 +67,17 @@
             ],
             "title": "Equity"
           },
+          "fees": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fees"
+          },
           "free_margin": {
             "anyOf": [
               {
@@ -88,6 +99,21 @@
               }
             ],
             "title": "Im"
+          },
+          "mark_state": {
+            "anyOf": [
+              {
+                "enum": [
+                  "CURRENT",
+                  "STALE_OR_MISSING"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mark State"
           },
           "mm": {
             "anyOf": [
@@ -111,6 +137,28 @@
             ],
             "title": "Native Cash"
           },
+          "native_free": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Native Free"
+          },
+          "native_locked": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Native Locked"
+          },
           "observed_at_ns": {
             "anyOf": [
               {
@@ -122,6 +170,17 @@
             ],
             "title": "Observed At Ns"
           },
+          "realized_pnl_net_fees": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Realized Pnl Net Fees"
+          },
           "status": {
             "default": "UNAVAILABLE",
             "enum": [
@@ -131,6 +190,17 @@
             ],
             "title": "Status",
             "type": "string"
+          },
+          "unrealized_pnl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unrealized Pnl"
           }
         },
         "title": "HlStagegAccount",

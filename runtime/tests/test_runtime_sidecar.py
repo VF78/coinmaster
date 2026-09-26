@@ -233,12 +233,16 @@ def test_hl_worker_serves_bounded_projection_on_loopback_with_get_only(tmp_path,
     assert projection["reconciliation"] == "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY"
     worker.native.node = SimpleNamespace(is_running=lambda: True)
     worker.native.strategy = object()
+    worker.native.strategy = SimpleNamespace(_latest_marks={})
+    worker.native.node.cache = object()
     worker.native.sandbox_snapshot = lambda: ([{"instrument_id": "BTC", "signed_quantity": "0.01"}], [])
     worker.native.native_account_total = lambda: Decimal("10000")
-    assert worker.projection()["account"] == {"native_cash": "10000"}
+    monkeypatch.setattr(worker_module, "native_money_projection", lambda cache, marks: {"native_cash": "10000", "native_free": "10000", "native_locked": "0", "realized_pnl_net_fees": "0", "fees": "0", "unrealized_pnl": "0", "equity": "10000", "mark_state": "CURRENT"})
+    assert worker.projection()["account"]["equity"] == "10000"
     def missing_native_cash():
         raise ValueError("NATIVE_USDC_TOTAL_MISSING")
     worker.native.native_account_total = missing_native_cash
+    monkeypatch.setattr(worker_module, "native_money_projection", lambda cache, marks: missing_native_cash())
     unavailable_account = worker.projection()
     assert unavailable_account["account"] == {}
     assert "NATIVE_SANDBOX_ACCOUNT_UNAVAILABLE" in unavailable_account["warnings"]

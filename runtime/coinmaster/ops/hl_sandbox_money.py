@@ -7,6 +7,7 @@ commissions are calculated at USDC precision by a native FeeModel.
 """
 from __future__ import annotations
 
+import time
 from decimal import Decimal
 
 from nautilus_trader.adapters.sandbox.execution import SandboxExecutionClient
@@ -147,3 +148,54 @@ class SandboxLiveExecClientFactory(NativeSandboxFactory):
             loop=loop, portfolio=portfolio, msgbus=msgbus, cache=cache,
             clock=clock, config=config,
         )
+
+MARK_MAX_AGE_NS = 120_000_000_000
+
+
+def native_money_projection(cache, marks, *, now_ns: int | None = None) -> dict[str, str | None]:
+    """Project native account cash and position PnL with current marks."""
+    now_ns = time.time_ns() if now_ns is None else now_ns
+    account = cache.account_for_venue(HL_VENUE)
+    if account is None or account.base_currency != USDC:
+        raise ValueError("NATIVE_USDC_ACCOUNT_MISSING")
+    result = {}
+    for name, getter in (("native_cash", account.balance_total), ("native_free", account.balance_free), ("native_locked", account.balance_locked)):
+        value = getter(USDC)
+        if value is None or value.currency != USDC or not value.as_decimal().is_finite():
+            raise ValueError("NATIVE_USDC_BALANCE_MISSING")
+        result[name] = str(value.as_decimal())
+    realized = Decimal("0")
+    fees = Decimal("0")
+    unrealized = Decimal("0")
+    marks_ready = True
+    for position in cache.positions():
+        if position.instrument_id not in HL_IDS:
+            continue
+        pnl = position.realized_pnl
+        if pnl is not None:
+            if pnl.currency != USDC:
+                raise ValueError("NATIVE_REALIZED_CURRENCY_CHANGED")
+            realized += pnl.as_decimal()
+        for commission in position.commissions():
+            if commission.currency != USDC:
+                raise ValueError("NATIVE_FEE_CURRENCY_CHANGED")
+            fees += commission.as_decimal()
+        if not position.is_open:
+            continue
+        mark = marks.get(position.instrument_id)
+        instrument = cache.instrument(position.instrument_id)
+        if mark is None or instrument is None or mark.ts_event > now_ns or now_ns - mark.ts_event > MARK_MAX_AGE_NS:
+            marks_ready = False
+            continue
+        value = position.unrealized_pnl(instrument.make_price(mark.price))
+        if value.currency != USDC:
+            raise ValueError("NATIVE_UNREALIZED_CURRENCY_CHANGED")
+        unrealized += value.as_decimal()
+    result.update({
+        "realized_pnl_net_fees": str(realized),
+        "fees": str(fees),
+        "unrealized_pnl": str(unrealized) if marks_ready else None,
+        "equity": str(Decimal(result["native_cash"]) + unrealized) if marks_ready else None,
+        "mark_state": "CURRENT" if marks_ready else "STALE_OR_MISSING",
+    })
+    return result

@@ -356,22 +356,34 @@ export interface components {
         HlStagegAccount: {
             /** Equity */
             equity?: string | null;
+            /** Fees */
+            fees?: string | null;
             /** Free Margin */
             free_margin?: string | null;
             /** Im */
             im?: string | null;
+            /** Mark State */
+            mark_state?: ("CURRENT" | "STALE_OR_MISSING") | null;
             /** Mm */
             mm?: string | null;
             /** Native Cash */
             native_cash?: string | null;
+            /** Native Free */
+            native_free?: string | null;
+            /** Native Locked */
+            native_locked?: string | null;
             /** Observed At Ns */
             observed_at_ns?: number | null;
+            /** Realized Pnl Net Fees */
+            realized_pnl_net_fees?: string | null;
             /**
              * Status
              * @default UNAVAILABLE
              * @enum {string}
              */
             status: "AVAILABLE" | "PARTIAL" | "UNAVAILABLE";
+            /** Unrealized Pnl */
+            unrealized_pnl?: string | null;
         };
         /** HlStagegControlAction */
         HlStagegControlAction: {

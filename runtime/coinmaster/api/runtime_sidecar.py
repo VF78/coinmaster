@@ -143,12 +143,18 @@ class HlStagegAccount(RuntimeSchema):
     status: Literal["AVAILABLE", "PARTIAL", "UNAVAILABLE"] = "UNAVAILABLE"
     observed_at_ns: int | None = None
     native_cash: str | None = None
+    native_free: str | None = None
+    native_locked: str | None = None
+    realized_pnl_net_fees: str | None = None
+    unrealized_pnl: str | None = None
+    fees: str | None = None
+    mark_state: Literal["CURRENT", "STALE_OR_MISSING"] | None = None
     equity: str | None = None
     im: str | None = None
     mm: str | None = None
     free_margin: str | None = None
 
-    @field_validator("native_cash", "equity", "im", "mm", "free_margin")
+    @field_validator("native_cash", "native_free", "native_locked", "realized_pnl_net_fees", "unrealized_pnl", "fees", "equity", "im", "mm", "free_margin")
     @classmethod
     def decimal_or_unavailable(cls, value: str | None) -> str | None:
         if value is None:
@@ -164,7 +170,7 @@ class HlStagegAccount(RuntimeSchema):
     @classmethod
     def classify_native_fields(cls, value: Any) -> Any:
         if isinstance(value, dict) and "status" not in value:
-            fields = ("native_cash", "equity", "im", "mm", "free_margin")
+            fields = ("native_cash", "native_free", "native_locked", "realized_pnl_net_fees", "unrealized_pnl", "fees", "equity")
             known = sum(value.get(field) is not None for field in fields)
             return {**value, "status": "AVAILABLE" if known == len(fields) else "PARTIAL" if known else "UNAVAILABLE"}
         return value
