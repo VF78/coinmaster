@@ -141,15 +141,17 @@ def test_bound_factory_checks_durable_ids_before_native_construction():
     scope = NativeLiveRecoveryScope(
         ACCOUNT, "", 1, None, (("CM05-ORDER", "0x" + "b" * 32, None),), frozenset({"BTC"}),
     )
+    from test_live_native_report_recovery import _strategy
     mismatch = SimpleNamespace(all_submissions=lambda: [])
     with pytest.raises(ValueError, match="RECOVERY_DURABLE_SCOPE_MISMATCH"):
-        ScopedHyperliquidExecClientFactory.bind(scope, mismatch)
+        ScopedHyperliquidExecClientFactory.bind(scope, mismatch, _strategy())
     matching = SimpleNamespace(
         all_submissions=lambda: [{"client_order_id": "CM05-ORDER"}],
         applied_fill_ids=lambda: frozenset(),
     )
-    bound = ScopedHyperliquidExecClientFactory.bind(scope, matching)
-    assert bound._scope is scope and bound._runtime is matching
+    strategy = _strategy()
+    bound = ScopedHyperliquidExecClientFactory.bind(scope, matching, strategy)
+    assert bound._scope is scope and bound._runtime is matching and bound._strategy is strategy
     assert ScopedHyperliquidExecClientFactory._scope is None
 
 
@@ -191,4 +193,43 @@ def test_periodic_strict_parity_failure_revokes_without_disconnect(monkeypatch):
         assert not client.recovery_healthy()
         assert client._cm_ws_failure == "WS_PERIODIC_EFFECT_PARITY_FAILED"
         assert revoked
+    asyncio.run(run())
+
+
+def test_bound_handover_rejects_open_funding_unknown_and_latches_before_release():
+    from nautilus_trader.model.identifiers import AccountId, Venue
+    from coinmaster.ops.hl_live_execution import bind_clean_flat_live_handover
+    from test_live_native_report_recovery import _strategy
+
+    async def run():
+        client = Probe()
+        client.venue = Venue("HYPERLIQUID")
+        client.account_id = AccountId("HYPERLIQUID-master")
+        client._cm_scope = NativeLiveRecoveryScope(
+            ACCOUNT, "", 1, None,
+            (("HLTG-PENDING", "0x" + "b" * 32, None),), frozenset({"BTC", "SOL"}),
+        )
+        client._cm_last_receipt = object()
+        client._clock = SimpleNamespace(timestamp_ns=lambda: 2_000_000)
+        client._cache = SimpleNamespace(
+            orders=lambda **_kwargs: [], positions_open=lambda: [],
+            account_for_venue=lambda _venue: None,
+        )
+        async def mass(_lookback=None):
+            return SimpleNamespace(
+                account_id=client.account_id, venue=client.venue,
+                order_reports={}, fill_reports={}, position_reports={},
+            )
+        client.generate_mass_status = mass
+        runtime = SimpleNamespace(
+            all_submissions=lambda: [], applied_fill_ids=lambda: frozenset(),
+            strategy_checkpoint=lambda: None,
+        )
+        strategy = _strategy()
+        bind_clean_flat_live_handover(client, strategy, runtime)
+        with pytest.raises(ValueError, match="LIVE_OPEN_FUNDING_CURSOR_UNPROVEN"):
+            await strategy._post_drain_verifier()
+        assert strategy.recovery_confirmed is False
+        assert client._cm_ws_failure == "WS_EFFECT_PARITY_FAILED"
+        assert client._cm_ws_phase == "BUFFERING"
     asyncio.run(run())

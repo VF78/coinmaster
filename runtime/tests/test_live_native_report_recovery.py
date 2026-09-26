@@ -59,7 +59,8 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
         super().__init__(
             loop=loop, client_id=ClientId("HYPERLIQUID"), venue=Venue("HYPERLIQUID"),
             oms_type=OmsType.NETTING, account_type=AccountType.MARGIN,
-            base_currency=USDC, instrument_provider=InstrumentProvider(),
+            base_currency=None if os.environ.get("CM_FAKE_PRODUCTION_PARITY") == "1" else USDC,
+            instrument_provider=InstrumentProvider(),
             msgbus=msgbus, cache=cache, clock=clock,
         )
         self._set_account_id(ACCOUNT)
@@ -324,7 +325,7 @@ class RecoveryProbeStrategy(RecoverableWaveOverlayStrategy):
     """The exact decision/submit implementation, without public subscriptions."""
 
     def on_start(self):
-        if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
+        if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1" or os.environ.get("CM_FAKE_PRODUCTION_PARITY") == "1":
             self._on_start_reconciled = self._probe_engine._startup_reconciliation_event.is_set()
             return super().on_start()
 
@@ -381,6 +382,39 @@ async def _run_child():
         previous.close()
         if checkpoint:
             strategy.on_load({"wave_overlay_live_recovery_v1": checkpoint[0]})
+    if os.environ.get("CM_FAKE_PRODUCTION_PARITY") == "1":
+        from coinmaster.ops.hl_live_execution import bind_clean_flat_live_handover
+        from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
+
+        assert journal
+        client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
+        client.parity_data = {
+            "frontendOpenOrders": [], "userFillsByTime": [],
+            "userRole": {"role": "user"}, "userAbstraction": "disabled",
+            "userDexAbstraction": False,
+            "clearinghouseState": {
+                "assetPositions": [],
+                "marginSummary": {
+                    "accountValue": "10000", "totalRawUsd": "10000",
+                    "totalMarginUsed": "0", "totalNtlPos": "0",
+                },
+                "crossMarginSummary": {
+                    "accountValue": "10000", "totalRawUsd": "10000",
+                    "totalMarginUsed": "0", "totalNtlPos": "0",
+                },
+                "withdrawable": "10000",
+            },
+        }
+        async def strict_info(body):
+            return client.parity_data[body["type"]]
+        client.configure_info_boundary(
+            NativeLiveRecoveryScope("0x" + "a" * 40, "", 1, None, (), frozenset({"BTC", "SOL"})),
+            strict_info, lambda: frozenset(),
+        )
+        active = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
+        active.acquire()
+        strategy._probe_engine = node.kernel.exec_engine
+        bind_clean_flat_live_handover(client, strategy, active, monitor_interval_secs=0.01)
     if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
         from coinmaster.ops.hl_info_receipt import collect_info_receipt
         from coinmaster.ops.hl_qualified_reports import qualified_mass_status
@@ -451,6 +485,44 @@ async def _run_child():
         strategy.attach_post_drain_verifier(verified_clean_flat)
     node.trader.add_strategy(strategy)
     await node.kernel.start_async()
+    if os.environ.get("CM_FAKE_PRODUCTION_PARITY") == "1":
+        assert strategy._on_start_reconciled is True
+        assert strategy.recovery_confirmed is False
+        await strategy._post_drain_task
+        assert strategy.recovery_confirmed is True
+        assert strategy._validated_live_money().equity == Decimal("10000")
+        client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
+        failure = os.environ.get("CM_FAKE_PARITY_FAILURE", "account")
+        if failure == "account":
+            account = client.parity_data["clearinghouseState"]
+            for summary in ("marginSummary", "crossMarginSummary"):
+                account[summary]["accountValue"] = "9990"
+                account[summary]["totalRawUsd"] = "9990"
+            account["withdrawable"] = "9990"
+            expected = "WS_PERIODIC_EFFECT_PARITY_FAILED"
+        elif failure == "socket":
+            client.socket_active = False
+            expected = "WS_TRANSPORT_INACTIVE"
+        elif failure == "info":
+            async def failed_info(_body):
+                raise TimeoutError("strict Info unavailable")
+            client._cm_info = failed_info
+            expected = "INFO_GENERATION_FAILED"
+        else:
+            raise AssertionError("unsupported fake parity failure")
+        await asyncio.sleep(0.08)
+        assert strategy.recovery_confirmed is False
+        assert client._cm_ws_failure == expected
+        print("CLEAN_FLAT_HANDOVER_PROOF=" + json.dumps({
+            "on_start_after_reconcile": strategy._on_start_reconciled,
+            "confirmed_after_strict_parity": True,
+            "revoked_after_failure": True,
+            "failure": failure,
+        }), flush=True)
+        await node.kernel.stop_async()
+        node.kernel.dispose()
+        active.close()
+        return
     if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
         assert strategy._on_start_reconciled is True
         assert strategy.recovery_confirmed is False
@@ -906,3 +978,29 @@ def test_kernel_reconciles_before_post_start_async_parity_gate(tmp_path):
         "batch_cancel_order_id": result["native_order_id"],
         "native_order_id": result["native_order_id"],
     }
+
+
+@pytest.mark.parametrize("failure", ("account", "socket", "info"))
+def test_connected_clean_flat_production_handover_revokes_on_failure(tmp_path, failure):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state, journal, submit_log = (tmp_path / name for name in ("state.json", "intents.sqlite", "submits.txt"))
+    state.write_text('{"partial": false}')
+    env = dict(
+        os.environ, CM_FAKE_VENUE_STATE=str(state), CM_FAKE_JOURNAL=str(journal),
+        CM_FAKE_SUBMIT_LOG=str(submit_log),
+        CM_FAKE_TRADER_ID="HL-MONEY-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
+        CM_FAKE_PRODUCTION_PARITY="1", CM_FAKE_SCOPED_OWNER="1",
+        CM_FAKE_PARITY_FAILURE=failure,
+    )
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    run = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert run.returncode == 0, run.stderr
+    proof = json.loads(next(
+        line.split("=", 1)[1] for line in run.stdout.splitlines()
+        if line.startswith("CLEAN_FLAT_HANDOVER_PROOF=")
+    ))
+    assert proof["failure"] == failure
+    assert proof["on_start_after_reconcile"] and proof["confirmed_after_strict_parity"]
+    assert proof["revoked_after_failure"]
+    assert not submit_log.exists()

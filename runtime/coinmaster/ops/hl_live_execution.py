@@ -21,8 +21,10 @@ from nautilus_trader.live.factories import LiveExecClientFactory
 from nautilus_trader.model.identifiers import InstrumentId
 
 from coinmaster.ops.hl_info_receipt import IncompleteInfoReport, collect_info_receipt
+from coinmaster.ops.hl_live_money import live_perps_money_view
 from coinmaster.ops.hl_qualified_reports import qualified_mass_status
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
+from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 
 
 InfoTransport = Callable[[dict[str, Any]], Awaitable[Any]]
@@ -197,7 +199,12 @@ class QualifiedInfoBoundary:
             mass = await self.generate_mass_status()
             if self._cm_ws_queue:
                 continue
-            if await verify(mass) is not True:
+            try:
+                verified = await verify(mass)
+            except BaseException:
+                self._cm_fail("WS_EFFECT_PARITY_FAILED")
+                raise
+            if verified is not True:
                 self._cm_fail("WS_EFFECT_PARITY_FAILED")
                 break
             if self._cm_ws_queue:
@@ -265,11 +272,12 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
     _scope = None
     _runtime = None
     _info = None
+    _strategy = None
 
     @classmethod
-    def bind(cls, scope: NativeLiveRecoveryScope, runtime, info: InfoTransport | None = None):
-        if not isinstance(scope, NativeLiveRecoveryScope) or runtime is None:
-            raise ValueError("RECOVERY_SCOPE_REQUIRED")
+    def bind(cls, scope: NativeLiveRecoveryScope, runtime, strategy, info: InfoTransport | None = None):
+        if not isinstance(scope, NativeLiveRecoveryScope) or runtime is None or strategy is None:
+            raise ValueError("RECOVERY_SCOPE_AND_STRATEGY_REQUIRED")
         journal_ids = {row["client_order_id"] for row in runtime.all_submissions()}
         scoped_ids = {client for client, _, _ in scope.durable_orders}
         if journal_ids != scoped_ids:
@@ -277,12 +285,13 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
         class Bound(cls):
             _scope = scope
             _runtime = runtime
+            _strategy = strategy
             _info = info
         return Bound
 
     @classmethod
     def create(cls, loop, name, config, msgbus, cache, clock):
-        if cls._scope is None or cls._runtime is None:
+        if cls._scope is None or cls._runtime is None or cls._strategy is None:
             raise RuntimeError("RECOVERY_SCOPE_NOT_BOUND")
         environment = _resolve_environment(config.environment)
         address = nautilus_pyo3.hyperliquid_resolve_execution_account_address(
@@ -308,8 +317,69 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
                 body, testnet=environment == nautilus_pyo3.HyperliquidEnvironment.TESTNET,
                 timeout=config.http_timeout_secs,
             )
-        return QualifiedHyperliquidExecutionClient(
+        owner = QualifiedHyperliquidExecutionClient(
             loop=loop, client=client, msgbus=msgbus, cache=cache, clock=clock,
             instrument_provider=provider, config=config, name=name, account_address=address,
             scope=cls._scope, info=info, applied_fill_ids=cls._runtime.applied_fill_ids,
         )
+        bind_clean_flat_live_handover(owner, cls._strategy, cls._runtime)
+        return owner
+
+
+def bind_clean_flat_live_handover(
+    client: QualifiedInfoBoundary, strategy, runtime, *,
+    monitor_interval_secs: float = 5.0,
+) -> None:
+    """Bind one strict clean-flat post-drain owner; open funding remains unproved.
+
+    The native engine has already applied startup mass status before strategy
+    on_start. This callback only checks its effects and never posts PnL or fills.
+    Open exposure or unresolved orders stay RECOVERY_REQUIRED until a venue
+    funding cursor and owned partial-TP handover have their own proof.
+    """
+    if not isinstance(client, QualifiedInfoBoundary) or not hasattr(client, "_cm_scope"):
+        raise RuntimeError("LIVE_HANDOVER_CLIENT_UNQUALIFIED")
+    if not isinstance(strategy, RecoverableWaveOverlayStrategy):
+        raise RuntimeError("LIVE_HANDOVER_STRATEGY_UNQUALIFIED")
+    if strategy.config.btc_id.venue != client.venue or strategy.config.sol_id.venue != client.venue:
+        raise RuntimeError("LIVE_HANDOVER_VENUE_MISMATCH")
+    if runtime is None or not callable(getattr(runtime, "all_submissions", None)):
+        raise RuntimeError("LIVE_HANDOVER_DURABLE_RUNTIME_REQUIRED")
+    latest_money = [None]
+    scope = client._cm_scope
+
+    async def verify(mass) -> bool:
+        receipt = client._cm_last_receipt
+        if receipt is None or mass.account_id != client.account_id or mass.venue != client.venue:
+            raise IncompleteInfoReport("LIVE_HANDOVER_GENERATION_MISSING")
+        if (
+            scope.durable_orders or runtime.all_submissions() or runtime.applied_fill_ids()
+            or mass.order_reports or mass.fill_reports or mass.position_reports
+            or client._cache.orders(venue=client.venue) or client._cache.positions_open()
+            or strategy._domain.episode is not None or strategy._pending_by_order
+        ):
+            raise IncompleteInfoReport("LIVE_OPEN_FUNDING_CURSOR_UNPROVEN")
+        checkpoint = runtime.strategy_checkpoint()
+        if checkpoint is not None and checkpoint[0] != strategy.on_save()["wave_overlay_live_recovery_v1"]:
+            raise IncompleteInfoReport("LIVE_HANDOVER_DOMAIN_CHECKPOINT_MISMATCH")
+        account = client._cache.account_for_venue(client.venue)
+        latest_money[0] = live_perps_money_view(
+            receipt, account_ref=scope.account_ref, dex=scope.dex,
+            account_id=str(client.account_id), native_account=account,
+            native_positions=(), now_ms=client._clock.timestamp_ns() // 1_000_000,
+        )
+        return True
+
+    async def release() -> None:
+        await client.release_after_effect_parity(
+            verify, monitor_interval_secs=monitor_interval_secs,
+        )
+        if latest_money[0] is None or not client.recovery_healthy():
+            raise RuntimeError("LIVE_HANDOVER_UNCONFIRMED")
+        strategy.recovery_confirmed = True
+
+    strategy.attach_live_money_view(lambda: latest_money[0])
+    strategy.attach_recovery_health(client.recovery_healthy)
+    client.bind_recovery_revocation(lambda: setattr(strategy, "recovery_confirmed", False))
+    strategy.attach_recovery_runtime(runtime)
+    strategy.attach_post_drain_verifier(release)
