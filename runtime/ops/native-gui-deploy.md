@@ -30,8 +30,10 @@ API using a copy of the control DB. Its receipt records the paper/trader PIDs.
 `activate-api` backs up the previous runtime unit and release pointer, copies
 the old control DB only on the first isolated activation, preserves that
 research-owned DB on later releases, and starts only the runtime API from
-the immutable release. It verifies authenticated API/SPA, disabled HL controls,
-the absent paper command route, and unchanged peer PIDs. It restores the prior
+the immutable release. It verifies authenticated API/SPA, the read-only HL control contract,
+the absent paper command route, unchanged worker projection state/strategy hash,
+and unchanged peer PIDs. It sends no pause/resume commands during GUI activation.
+It restores the prior
 runtime unit automatically if activation checks fail, waiting up to 30 seconds
 for `/api/v1/health` to answer its expected unauthenticated `401` before
 smoke-testing. The service invokes Uvicorn through the venv Python module so

@@ -3,7 +3,7 @@
 set -euo pipefail
 ACTION="${1:-}"; COMMIT="${2:-}"; ARCHIVE_SHA="${3:-none}"
 [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]] || { echo 'invalid release SHA' >&2; exit 2; }
-case "$ACTION" in plan|stage|activate-api|rollback) ;; *) exit 2;; esac
+case "$ACTION" in plan|stage|activate-api|rollback|cleanup-stage) ;; *) exit 2;; esac
 [[ "$(id -u)" == 0 ]] || { echo 'root is required for isolated unit provisioning' >&2; exit 2; }
 BASE=/srv/coinmaster-native-gui
 RELEASE="$BASE/releases/$COMMIT"
@@ -61,9 +61,11 @@ print(token)
 PY
 }
 api_smoke() {
-  local port="$1" db="$2" expect_entry_controls="${3:-0}"
-  GUI_SMOKE_PORT="$port" GUI_SMOKE_DB="$db" GUI_EXPECT_ENTRY_CONTROLS="$expect_entry_controls" COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY'
-import json, os, sqlite3, urllib.error, urllib.request
+  local port="$1" db="$2" expect_entry_controls="${3:-0}" expected_worker_state="${4:-}" expected_worker_strategy="${5:-}"
+  GUI_SMOKE_PORT="$port" GUI_SMOKE_DB="$db" GUI_EXPECT_ENTRY_CONTROLS="$expect_entry_controls" \
+    GUI_EXPECT_WORKER_STATE="$expected_worker_state" GUI_EXPECT_WORKER_STRATEGY="$expected_worker_strategy" \
+    COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY'
+import json, os, re, sqlite3, urllib.error, urllib.request
 base = f"http://127.0.0.1:{os.environ['GUI_SMOKE_PORT']}"
 token = os.environ['COINMASTER_RUNTIME_API_TOKEN']
 def get(path, authorized=True, method='GET'):
@@ -82,11 +84,11 @@ projection = json.loads(get('/api/v1/instances/hl-stageg-testnet')[1])
 assert projection['instance_id'] == 'hl-stageg-testnet'
 assert projection['projection_state'] == 'READY'
 assert projection['live_order_capability'] is False
-assert projection['hashes'] == {
-    'candidate_sha256': '637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d',
-    'strategy_sha256': '3d79e50495de8b648045a43ecf4a6b320d4565bead3140e2455848a879c012f7',
-    'execution_policy_sha256': 'eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687',
-}
+assert projection['hashes']['candidate_sha256'] == '637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d'
+assert projection['hashes']['execution_policy_sha256'] == 'eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687'
+assert re.fullmatch(r'[0-9a-f]{64}', projection['hashes']['strategy_sha256'])
+assert projection['projection_state'] == os.environ['GUI_EXPECT_WORKER_STATE']
+assert projection['hashes']['strategy_sha256'] == os.environ['GUI_EXPECT_WORKER_STRATEGY']
 assert controls['instance_id'] == 'hl-stageg-testnet' and controls['projection_state'] == 'READY'
 expected_entry_controls = os.environ['GUI_EXPECT_ENTRY_CONTROLS'] == '1'
 assert controls['flatten']['enabled'] is False and controls['promotion']['enabled'] is False
@@ -174,6 +176,11 @@ fi
 
 exec 9>/run/coinmaster-native-gui-deploy.lock
 flock -n 9 || { echo 'another native GUI deploy holds the lock' >&2; exit 1; }
+if [[ "$ACTION" == cleanup-stage ]]; then
+  python3 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/scripts/native_gui_stage_cleanup.py \
+    --base "$BASE" --archive-root /var/tmp --current "$CURRENT" "$COMMIT"
+  exit
+fi
 if [[ "$ACTION" == stage ]]; then
   [[ "$ARCHIVE_SHA" =~ ^[0-9a-f]{64}$ ]] || { echo 'invalid archive digest' >&2; exit 2; }
   [[ -f "$ARCHIVE" && ! -e "$RELEASE" && ! -e "$RELEASE.incoming" ]] || { echo 'release/archive already exists or is missing' >&2; exit 1; }
@@ -182,6 +189,20 @@ if [[ "$ACTION" == stage ]]; then
   check_no_jobs "$(source_db)"
   PAPER_BEFORE="$(pid "$PAPER")"; TRADER_BEFORE="$(pid "$TRADER")"
   TOKEN="$(token_from_paper_env)"
+  WORKER_FINGERPRINT="$(COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY'
+import json, os, urllib.request
+request = urllib.request.Request('http://127.0.0.1:18182/api/v1/instances/hl-stageg-testnet', headers={'Authorization': f"Bearer {os.environ['COINMASTER_RUNTIME_API_TOKEN']}"})
+with urllib.request.urlopen(request, timeout=3) as response:
+    projection = json.loads(response.read())
+state = projection.get('projection_state')
+strategy = projection.get('hashes', {}).get('strategy_sha256')
+if state not in {'READY', 'STALE', 'UNAVAILABLE', 'INVALID'} or not isinstance(strategy, str) or len(strategy) != 64:
+    raise SystemExit('current worker projection fingerprint is incomplete')
+print(state); print(strategy)
+PY
+)"
+  WORKER_STATE="${WORKER_FINGERPRINT%%$'\n'*}"
+  WORKER_STRATEGY="${WORKER_FINGERPRINT#*$'\n'}"
   GUI_AUTH_RAW="$(python3 - "$ENV_FILE" "$TOKEN" <<'PY'
 import os, re, sys
 from pathlib import Path
@@ -243,13 +264,14 @@ PY
     sleep 1
   done
   [[ -f "$SMOKE/uvicorn.pid" ]] && kill -0 "$(cat "$SMOKE/uvicorn.pid")" || { echo 'smoke process died before validation' >&2; exit 1; }
-  api_smoke 18184 "$SMOKE/control.sqlite"
+  api_smoke 18184 "$SMOKE/control.sqlite" 0 "$WORKER_STATE" "$WORKER_STRATEGY"
   kill "$(cat "$SMOKE/uvicorn.pid")" 2>/dev/null || true
   kill "$SMOKE_PARENT" 2>/dev/null || true
   wait "$SMOKE_PARENT" 2>/dev/null || true
   trap - EXIT
   assert_peers "$PAPER_BEFORE" "$TRADER_BEFORE" || { echo 'peer PID changed during stage' >&2; exit 1; }
-  printf 'archive_sha256=%s\npaper_pid=%s\ntrader_pid=%s\n' "$ARCHIVE_SHA" "$PAPER_BEFORE" "$TRADER_BEFORE" > "$RELEASE.incoming/stage.receipt"
+  printf 'archive_sha256=%s\npaper_pid=%s\ntrader_pid=%s\nworker_projection_state=%s\nworker_strategy_sha256=%s\n' \
+    "$ARCHIVE_SHA" "$PAPER_BEFORE" "$TRADER_BEFORE" "$WORKER_STATE" "$WORKER_STRATEGY" > "$RELEASE.incoming/stage.receipt"
   chmod -R a-w "$RELEASE.incoming"
   mv "$RELEASE.incoming" "$RELEASE"
   "$RELEASE/runtime/.venv/bin/python" -m uvicorn --version >/dev/null
@@ -262,6 +284,9 @@ fi
 TOKEN="$(token_from_paper_env)"
 if [[ "$ACTION" == activate-api ]]; then
   check_no_jobs "$(source_db)"
+  WORKER_STATE="$(sed -n 's/^worker_projection_state=//p' "$RELEASE/stage.receipt")"
+  WORKER_STRATEGY="$(sed -n 's/^worker_strategy_sha256=//p' "$RELEASE/stage.receipt")"
+  [[ "$WORKER_STATE" =~ ^(READY|STALE|UNAVAILABLE|INVALID)$ && "$WORKER_STRATEGY" =~ ^[0-9a-f]{64}$ ]] || { echo 'staged worker fingerprint is invalid' >&2; exit 1; }
   [[ "$(pid "$PAPER")" == "$(sed -n 's/^paper_pid=//p' "$RELEASE/stage.receipt")" && "$(pid "$TRADER")" == "$(sed -n 's/^trader_pid=//p' "$RELEASE/stage.receipt")" ]] || { echo 'peer PID changed since stage' >&2; exit 1; }
   [[ "$(basename "$RELEASE")" == "$COMMIT" && "$(sed -n 's/^archive_sha256=//p' "$RELEASE/stage.receipt")" =~ ^[0-9a-f]{64}$ ]] || { echo 'staged release identity or receipt digest is invalid' >&2; exit 1; }
   if [[ -d "$BACKUPS/$COMMIT" ]]; then
@@ -288,7 +313,7 @@ if [[ "$ACTION" == activate-api ]]; then
   ln -s "$RELEASE" "$CURRENT.next"
   mv -Tf "$CURRENT.next" "$CURRENT"
   systemctl daemon-reload
-  if ! systemctl start "$RUNTIME" || ! wait_api_ready || ! active "$RUNTIME" || ! assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || ! api_smoke 18182 "$STATE/control.sqlite" 1 || ! entry_control_smoke 18182; then
+  if ! systemctl start "$RUNTIME" || ! wait_api_ready || ! active "$RUNTIME" || ! assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || ! api_smoke 18182 "$STATE/control.sqlite" 1 "$WORKER_STATE" "$WORKER_STRATEGY"; then
     echo 'activation failed; restoring the prior runtime unit' >&2
     systemctl stop "$RUNTIME" || true
     cp "$BACKUPS/$COMMIT/prior.unit" "$UNIT"
