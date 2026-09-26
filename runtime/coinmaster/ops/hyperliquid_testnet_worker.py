@@ -79,9 +79,21 @@ class TestnetWorker:
         else:
             self.runtime.heartbeat(time.time_ns())
 
+    def _current_process_owns_sandbox(self, recovery_state: str) -> bool:
+        """Classify recovery from both journal state and this process's native owner."""
+        if recovery_state not in {"FLAT_RESTART", "ACTIVE_OWNED_REDUCTIONS"}:
+            return False
+        native = getattr(self, "native", None)
+        return bool(
+            native is not None
+            and native.node.is_running()
+            and native.strategy is not None
+        )
+
     def status(self) -> dict:
         self.poll()
         self.recovery_state = self.runtime.recovery_state()
+        process_owns_sandbox = self._current_process_owns_sandbox(self.recovery_state)
         result = self.native.status()
         health = self.runtime.health(time.time_ns())
         result.update({
@@ -89,7 +101,7 @@ class TestnetWorker:
             "recovery_state": self.recovery_state,
             "reconciliation": "SANDBOX_LOCAL_PROCESS_RECONCILIATION_ONLY",
             "safe_for_increase": health.safe_for_increase and result["orders_enabled"],
-            "recovery_required": self.recovery_state != "FLAT_RESTART",
+            "recovery_required": not process_owns_sandbox,
             "recovery_capability": "NO_NATIVE_SANDBOX_REHYDRATION",
             "run_epoch": self.run_epoch,
             "virtual_capital_resets_on_flat_restart": False if self.starting_cash is not None else True,
@@ -110,7 +122,8 @@ class TestnetWorker:
         events, event_cursor = self.runtime.projection_events(100)
         account: dict[str, str | None] = {}
         account_warning: tuple[str, ...] = ()
-        if recovery_state == "FLAT_RESTART" and self.native.node.is_running() and self.native.strategy is not None:
+        process_owns_sandbox = self._current_process_owns_sandbox(recovery_state)
+        if process_owns_sandbox:
             positions, orders = self.native.sandbox_snapshot()
             # The local Sandbox ledger is authoritative only while this
             # process owns it. Read cash, collateral and native position PnL;
@@ -132,7 +145,7 @@ class TestnetWorker:
             "run_epoch": self.run_epoch,
             "virtual_capital_resets_on_flat_restart": False if self.starting_cash is not None else True,
             "sandbox_starting_cash_usdc": str(self.starting_cash) if self.starting_cash is not None else None,
-            "recovery_required": recovery_state != "FLAT_RESTART",
+            "recovery_required": not process_owns_sandbox,
             "recovery_capability": "NO_NATIVE_SANDBOX_REHYDRATION",
             "native_thread_alive": bool(self.native._thread and self.native._thread.is_alive()),
             "process_state": status["state"],

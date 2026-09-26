@@ -211,6 +211,87 @@ def test_captured_native_owned_tp_passes_strict_api_projection(monkeypatch, tmp_
         HlStagegProjection.model_validate({**payload, "orders": [{**payload["orders"][0], "unexpected": 1}]})
 
 
+def test_worker_projects_native_account_for_current_owned_tp_but_restart_stays_recovery_required(tmp_path, monkeypatch) -> None:
+    import time
+    import coinmaster.ops.hyperliquid_testnet_worker as worker_module
+
+    path = tmp_path / "owned-tp-worker.sqlite"
+    runtime = PaperRuntime(path, "hl-stageg-testnet", 120_000_000_000, require_native_cash=True)
+    runtime.acquire()
+    assert runtime.record_submission(
+        client_order_id="tp-1", intent_id="intent-1", episode_id="episode-1",
+        action="BTC_REDUCE", instrument_id="BTC-USD-PERP.HYPERLIQUID",
+        quantity="0.10000", reduce_only=True,
+    )
+    runtime.acknowledge_submission("tp-1")
+    positions = [{"instrument_id": "BTC-USD-PERP.HYPERLIQUID", "signed_quantity": "0.50000"}]
+    orders = [{
+        "client_order_id": "tp-1", "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+        "reduce_only": True,
+    }]
+    assert runtime.snapshot(
+        ts_ns=time.time_ns(), positions=positions, orders=orders,
+        funding_event_ids=[], native_account_total="10000", strategy_restartable=True,
+    )
+    assert runtime.recovery_state() == "ACTIVE_OWNED_REDUCTIONS"
+
+    money = {
+        "native_cash": "10000", "native_free": "9900", "native_locked": "100",
+        "realized_pnl_net_fees": "0", "fees": "0", "unrealized_pnl": "5",
+        "equity": "10005", "mark_state": "CURRENT",
+    }
+    monkeypatch.setattr(worker_module, "native_money_projection", lambda cache, marks: money)
+
+    def native_stub():
+        return SimpleNamespace(
+            _thread=None, _seed_verified=True,
+            gate=SimpleNamespace(
+                candidate_hash="candidate", strategy_code_hash="strategy",
+                execution_policy_hash="policy", attachable=True,
+                approval_state="SEALED_APPROVAL_MATCH", margin_policy_state="READY",
+                execution_policy_state="READY", capital_state="ASSUMPTION",
+                funding_state="UNPOSTED",
+            ),
+            node=SimpleNamespace(is_running=lambda: True, cache=object()),
+            strategy=SimpleNamespace(_latest_marks={}),
+            status=lambda: {
+                "state": "PUBLIC_FEEDS_READY", "orders_enabled": True,
+                "warmup": {"state": "READY", "rows": 1482}, "feeds": {}, "warnings": [],
+            },
+            sandbox_snapshot=lambda: (positions, orders),
+            native_account_total=lambda: Decimal("10000"),
+            strategy_restartable=lambda: True,
+        )
+
+    worker = HlStagegWorker.__new__(HlStagegWorker)
+    worker.runtime, worker.reconciled = runtime, True
+    worker.native = native_stub()
+    worker.candidate = SimpleNamespace(sha256="candidate")
+    worker.run_epoch, worker.starting_cash, worker.control_available = "same-process", Decimal("10000"), False
+    projection = worker.projection()
+    assert projection["account"] == money
+    assert projection["positions"][0]["signed_quantity"] == "0.50000"
+    assert projection["orders"][0]["reduce_only"] is True
+    assert projection["recovery_required"] is False
+    assert worker.status()["recovery_required"] is False
+
+    runtime.close()
+    restarted_runtime = PaperRuntime(path, "hl-stageg-testnet", 120_000_000_000, require_native_cash=True)
+    restarted_runtime.acquire()
+    assert restarted_runtime.recovery_state() == "MANAGE_ONLY_PENDING_INTENT"
+    restarted = HlStagegWorker.__new__(HlStagegWorker)
+    restarted.runtime, restarted.reconciled = restarted_runtime, False
+    restarted.native = native_stub()
+    restarted.candidate = SimpleNamespace(sha256="candidate")
+    restarted.run_epoch, restarted.starting_cash, restarted.control_available = "new-process", None, False
+    restarted_projection = restarted.projection()
+    assert restarted_projection["account"] == {}
+    assert restarted_projection["positions"][0]["signed_quantity"] == "0.50000"
+    assert restarted_projection["recovery_required"] is True
+    assert restarted.status()["recovery_required"] is True
+    restarted_runtime.close()
+
+
 def test_hl_worker_serves_bounded_projection_on_loopback_with_get_only(tmp_path, monkeypatch) -> None:
     import coinmaster.ops.hyperliquid_testnet_worker as worker_module
     journal = tmp_path / "worker.sqlite"; runtime = PaperRuntime(journal, "hl-stageg-testnet", 100)
