@@ -117,7 +117,10 @@ async def collect_info_receipt(
         except ValueError as exc:
             raise IncompleteInfoReport("BAD_CLOID") from exc
         if oid is not None:
-            known_oids.add(_oid(oid))
+            oid = _oid(oid)
+            if oid in known_oids:
+                raise IncompleteInfoReport("DUPLICATE_DURABLE_VENUE_ORDER_ID")
+            known_oids.add(oid)
 
     async def request(body: dict[str, Any]) -> Any:
         try:
@@ -136,6 +139,8 @@ async def collect_info_receipt(
         raise IncompleteInfoReport("BAD_ACCOUNT_VALUE")
 
     statuses = []
+    resolved_oids = set()
+    oid_coin: dict[int, str] = {}
     for cloid, expected_oid in expected_orders.items():
         status = await request({"type": "orderStatus", "user": account, "oid": cloid})
         if not isinstance(status, dict) or status.get("status") != "order" or not isinstance(status.get("order"), dict):
@@ -154,11 +159,13 @@ async def collect_info_receipt(
             raise IncompleteInfoReport("LOST_ACK_CLOID_UNPROVED")
         if expected_oid is not None and actual_oid != expected_oid:
             raise IncompleteInfoReport("ORDER_ID_MISMATCH")
-        if actual_oid in known_oids and expected_oid is None:
+        if actual_oid in resolved_oids or (actual_oid in known_oids and expected_oid is None):
             raise IncompleteInfoReport("DUPLICATE_VENUE_ORDER_ID")
+        resolved_oids.add(actual_oid)
         known_oids.add(actual_oid)
         if order.get("coin") not in owned_coins:
             raise IncompleteInfoReport("FOREIGN_ORDER")
+        oid_coin[actual_oid] = order["coin"]
         if item.get("status") not in ("open", "filled", "canceled"):
             raise IncompleteInfoReport("UNKNOWN_ORDER_TERMINAL")
         statuses.append(status)
@@ -170,6 +177,8 @@ async def collect_info_receipt(
         oid = _oid(row.get("oid"))
         if oid not in known_oids or oid in open_oids:
             raise IncompleteInfoReport("UNKNOWN_OPEN_ORDER")
+        if row["coin"] != oid_coin[oid]:
+            raise IncompleteInfoReport("OPEN_ORDER_COIN_MISMATCH")
         open_oids.add(oid)
         if _number(row.get("sz"), "OPEN_LEAVES") <= 0 or _number(row.get("origSz"), "ORIGINAL_SIZE") <= 0:
             raise IncompleteInfoReport("BAD_OPEN_ORDER_SIZE")
@@ -211,6 +220,8 @@ async def collect_info_receipt(
             time, tid, oid = _fill(row, start, end)
             if row["coin"] not in owned_coins or oid not in known_oids:
                 raise IncompleteInfoReport("FOREIGN_OR_UNKNOWN_FILL")
+            if row["coin"] != oid_coin[oid]:
+                raise IncompleteInfoReport("FILL_COIN_MISMATCH")
             previous = fills_by_tid.get(tid)
             if previous is not None and previous != row:
                 raise IncompleteInfoReport("CONFLICTING_DUPLICATE_FILL")

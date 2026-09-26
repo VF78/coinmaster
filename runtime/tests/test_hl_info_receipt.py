@@ -48,11 +48,14 @@ class FakeInfo:
 
 
 def collect(fake=None, **kwargs):
-    return asyncio.run(collect_info_receipt(
-        fake or FakeInfo(), account=ACCOUNT, dex="", anchor_ms=100,
-        anchor_tid=9, end_ms=200, expected_orders={CLOID: None},
-        owned_coins=frozenset({"BTC", "SOL"}), **kwargs,
-    ))
+    options = {
+        "account": ACCOUNT, "dex": "", "anchor_ms": 100,
+        "anchor_tid": 9, "end_ms": 200,
+        "expected_orders": {CLOID: None},
+        "owned_coins": frozenset({"BTC", "SOL"}),
+    }
+    options.update(kwargs)
+    return asyncio.run(collect_info_receipt(fake or FakeInfo(), **options))
 
 
 def test_partial_tp_conditional_receipt_and_lost_ack_cloid_resolution():
@@ -168,4 +171,38 @@ def test_order_status_and_cloid_must_resolve():
     data = deepcopy(BASE)
     data["orderStatus"]["order"]["order"]["cloid"] = None
     with pytest.raises(IncompleteInfoReport, match="LOST_ACK_CLOID_UNPROVED"):
+        collect(FakeInfo(data))
+
+
+
+def test_two_durable_cloids_cannot_alias_one_known_oid_even_with_null_venue_cloid():
+    second_cloid = "0x" + "c" * 32
+    data = deepcopy(BASE)
+    data["orderStatus"]["order"]["order"]["cloid"] = None
+    with pytest.raises(IncompleteInfoReport, match="DUPLICATE_DURABLE_VENUE_ORDER_ID"):
+        collect(FakeInfo(data), expected_orders={CLOID: 7, second_cloid: 7})
+
+
+def test_status_responses_cannot_resolve_two_cloids_to_one_oid():
+    second_cloid = "0x" + "c" * 32
+
+    class AliasedStatus(FakeInfo):
+        async def __call__(self, body):
+            result = await super().__call__(body)
+            if body["type"] == "orderStatus":
+                result["order"]["order"]["cloid"] = body["oid"]
+            return result
+
+    with pytest.raises(IncompleteInfoReport, match="DUPLICATE_VENUE_ORDER_ID"):
+        collect(AliasedStatus(), expected_orders={CLOID: 7, second_cloid: None})
+
+
+def test_oid_coin_must_match_open_order_and_fill():
+    data = deepcopy(BASE)
+    data["frontendOpenOrders"] = [{**ORDER, "coin": "SOL"}]
+    with pytest.raises(IncompleteInfoReport, match="OPEN_ORDER_COIN_MISMATCH"):
+        collect(FakeInfo(data))
+    data = deepcopy(BASE)
+    data["userFillsByTime"][0]["coin"] = "SOL"
+    with pytest.raises(IncompleteInfoReport, match="FILL_COIN_MISMATCH"):
         collect(FakeInfo(data))

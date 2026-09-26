@@ -1,3 +1,5 @@
+CM-05 Info identity correction (2026-09-26): reject durable/resolved OID aliases and coin disagreement across orderStatus, frontendOpenOrders and fills; 42 focused tests pass. Conditional receipt only, no takeover or worker action. See .ops/CM05_PINNED_REPORT_BLOCKER.md.
+
 CM-05 read-only Info evidence (2026-09-26): pure collector with scoped account/DEX, durable CLOID/OID and inclusive fill anchor, capped-window splitting/dedup, and strict malformed/foreign/unknown rejection; 39 focused tests pass. Receipt is CONDITIONAL_ONLY and never wired to native execution or recovery_confirmed because no cross-endpoint atomic snapshot/cursor or silent omission proof. No API call, order, deploy or worker restart. See .ops/CM05_PINNED_REPORT_BLOCKER.md.
 
 CM-05 HL report completeness (2026-09-26): pinned 1.231 bulk order/fill/position APIs return identical [] for genuine empty, transport failure and malformed reply; ignore command start/end and expose no pagination/completeness receipt. Focused fake-transport negative test added. NO-GO for automatic recovery takeover; no production hook or worker restart. See .ops/CM05_PINNED_REPORT_BLOCKER.md.
