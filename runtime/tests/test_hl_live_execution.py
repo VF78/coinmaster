@@ -388,3 +388,161 @@ def test_current_process_owned_partial_tp_uses_dynamic_strict_info_generation():
             "frontendOpenOrders", "clearinghouseState", "orderStatus", "userFillsByTime",
         }
     asyncio.run(run())
+
+
+def _owned_raw_client(info, revision, order, rows, *, anchor_tid=9):
+    from nautilus_trader.model.identifiers import AccountId, ClientId, Venue
+    from test_hl_qualified_reports import CLIENT, CLOID
+    from test_hl_stageg_sandbox_lifecycle import HL_BTC, HL_SOL
+
+    class NativeProbe(QualifiedInfoBoundary):
+        pass
+
+    client = NativeProbe()
+    client.configure_info_boundary(
+        NativeLiveRecoveryScope(
+            ACCOUNT, "", 100, anchor_tid,
+            ((CLIENT, CLOID, 7),) if anchor_tid is not None else (),
+            frozenset({"BTC", "SOL"}),
+        ), info, lambda: frozenset({"8", "9"}) if anchor_tid is not None else frozenset(),
+    )
+    client._cm_bootstrapped = True
+    client._cm_runtime = SimpleNamespace(
+        native_revision=lambda: revision[0],
+        all_submissions=lambda: rows,
+        applied_fill_ids=lambda: frozenset({"8", "9"}) if anchor_tid is not None else frozenset(),
+    )
+    client._cache = SimpleNamespace(
+        orders=lambda **_: (order,),
+        instrument=lambda identity: {HL_BTC.id: HL_BTC, HL_SOL.id: HL_SOL}.get(identity),
+    )
+    client._clock = SimpleNamespace(timestamp_ns=lambda: 200_000_000)
+    client.account_id = AccountId("HYPERLIQUID-master")
+    client.id = ClientId("HYPERLIQUID")
+    client.venue = Venue("HYPERLIQUID")
+    return client
+
+
+@pytest.mark.parametrize("observed_revision_change", [False, True])
+@pytest.mark.parametrize("race_kind, error_code", [
+    ("partial", "OPEN_ORDER_STATUS_FIELD_MISMATCH"),
+    ("cancel", "ORDER_OPEN_STATUS_MISMATCH"),
+])
+def test_mid_sweep_partial_mismatch_retries_only_after_native_revision_moves(
+    observed_revision_change, race_kind, error_code,
+):
+    from copy import deepcopy
+    from coinmaster.ops.hl_info_receipt import IncompleteInfoReport
+    from test_hl_info_receipt import FakeInfo
+    from test_hl_qualified_reports import CLIENT, native_order, raw
+
+    data = deepcopy(raw())
+    data["clearinghouseState"]["crossMarginSummary"] = deepcopy(data["clearinghouseState"]["marginSummary"])
+    data.update(userRole={"role": "user"}, userAbstraction="disabled", userDexAbstraction=False)
+    revision = [2]
+
+    class RacingInfo(FakeInfo):
+        async def __call__(self, body):
+            result = await super().__call__(body)
+            if body["type"] == "orderStatus" and self.calls.count(body) == 1:
+                if race_kind == "partial":
+                    result["order"]["order"]["sz"] = "0.024"
+                else:
+                    result["order"]["status"] = "canceled"
+                if observed_revision_change:
+                    revision[0] += 1
+            return result
+
+    info = RacingInfo(data)
+    client = _owned_raw_client(info, revision, native_order(), [{"client_order_id": CLIENT}])
+    if observed_revision_change:
+        mass = asyncio.run(client.generate_mass_status())
+        assert len(mass.order_reports) == 1
+        assert len([call for call in info.calls if call["type"] == "orderStatus"]) == 3
+        assert client._cm_ws_failure is None
+    else:
+        with pytest.raises(IncompleteInfoReport, match=error_code):
+            asyncio.run(client.generate_mass_status())
+        assert len([call for call in info.calls if call["type"] == "orderStatus"]) == 1
+        assert client._cm_ws_failure == "INFO_GENERATION_FAILED"
+
+
+def test_native_local_denial_requires_no_venue_order_status_but_unknown_ack_does():
+    from copy import deepcopy
+    from nautilus_trader.core.uuid import UUID4
+    from nautilus_trader.model.enums import OrderSide, TimeInForce
+    from nautilus_trader.model.events import OrderDenied
+    from nautilus_trader.model.identifiers import ClientOrderId
+    from nautilus_trader.model.objects import Quantity
+    from nautilus_trader.model.orders import MarketOrder
+    from coinmaster.ops.hl_info_receipt import IncompleteInfoReport
+    from test_hl_info_receipt import FakeInfo, BASE
+    from test_hl_qualified_reports import CLIENT, TRADER, STRATEGY
+    from test_hl_stageg_sandbox_lifecycle import HL_BTC
+
+    order = MarketOrder(
+        TRADER, STRATEGY, HL_BTC.id, ClientOrderId(CLIENT), OrderSide.BUY,
+        Quantity.from_str("0.01000"), UUID4(), 90_000_000,
+        time_in_force=TimeInForce.IOC,
+    )
+    order.apply(OrderDenied(
+        TRADER, STRATEGY, HL_BTC.id, ClientOrderId(CLIENT),
+        "native local risk deny", UUID4(), 90_000_001,
+    ))
+    data = deepcopy(BASE)
+    data["frontendOpenOrders"] = []
+    data["clearinghouseState"]["assetPositions"] = []
+    data["clearinghouseState"]["crossMarginSummary"] = deepcopy(data["clearinghouseState"]["marginSummary"])
+    data["userFillsByTime"] = []
+    data.update(userRole={"role": "user"}, userAbstraction="disabled", userDexAbstraction=False)
+    info = FakeInfo(data)
+    rows = [{"client_order_id": CLIENT, "state": "TERMINAL"}]
+    client = _owned_raw_client(info, [3], order, rows, anchor_tid=None)
+    mass = asyncio.run(client.generate_mass_status())
+    assert not mass.order_reports and not mass.fill_reports
+    assert "orderStatus" not in [call["type"] for call in info.calls]
+    assert rows[0]["client_order_id"] == CLIENT  # Durable history was retained.
+    rows[0]["state"] = "SUBMITTING"  # Unknown ACK is not a local denial.
+    info.data["orderStatus"] = {"status": "unknownOid"}
+    with pytest.raises(IncompleteInfoReport, match="ORDER_STATUS_UNKNOWN"):
+        asyncio.run(client.generate_mass_status())
+    assert client._cm_ws_failure == "INFO_GENERATION_FAILED"
+
+
+def test_monitor_blocks_increase_through_retry_then_restores_only_after_parity(monkeypatch):
+    from coinmaster.ops import hl_live_execution as owner
+    from test_live_native_report_recovery import _strategy
+
+    monkeypatch.setattr(owner, "_WS_HANDLERS", ((Event, "handle"),))
+
+    async def run():
+        client = Probe()
+        strategy = _strategy()
+        strategy.recovery_confirmed = True
+        first_retry = asyncio.Event()
+        resumed = asyncio.Event()
+        checks = [0]
+        client.bind_recovery_revocation(lambda: setattr(strategy, "recovery_confirmed", False))
+        client.bind_recovery_suspension(
+            lambda: setattr(strategy, "recovery_confirmed", False),
+            lambda: (setattr(strategy, "recovery_confirmed", True), resumed.set()),
+        )
+        async def verify(_):
+            checks[0] += 1
+            if checks[0] == 2:
+                first_retry.set()
+                return False
+            return True
+        await client.release_after_effect_parity(verify, monitor_interval_secs=0.01)
+        await asyncio.wait_for(first_retry.wait(), timeout=1)
+        with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
+            strategy._require_recovery_confirmed()
+        await asyncio.wait_for(resumed.wait(), timeout=1)
+        assert strategy.recovery_confirmed is True
+        assert client._cm_ws_failure is None
+        client._cm_parity_task.cancel()
+        try:
+            await client._cm_parity_task
+        except asyncio.CancelledError:
+            pass
+    asyncio.run(run())

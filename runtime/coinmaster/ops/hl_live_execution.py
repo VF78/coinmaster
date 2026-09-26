@@ -21,6 +21,8 @@ from nautilus_trader.adapters.hyperliquid.factories import (
 from nautilus_trader.core import nautilus_pyo3
 from nautilus_trader.live.factories import LiveExecClientFactory
 from nautilus_trader.model.identifiers import InstrumentId
+from nautilus_trader.model.enums import OrderStatus
+from nautilus_trader.model.events import OrderDenied
 
 from coinmaster.ops.hl_info_receipt import IncompleteInfoReport, collect_info_receipt
 from coinmaster.ops.hl_live_money import live_perps_money_view
@@ -30,6 +32,18 @@ from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 
 
 InfoTransport = Callable[[dict[str, Any]], Awaitable[Any]]
+
+
+def _proven_local_denial(row: dict, order: Any) -> bool:
+    """A native OrderDenied with no venue or fill can never require orderStatus."""
+    return (
+        row.get("state") == "TERMINAL"
+        and order.status == OrderStatus.DENIED
+        and order.venue_order_id is None
+        and order.filled_qty.as_decimal() == 0
+        and not order.trade_ids
+        and any(isinstance(event, OrderDenied) for event in order.events)
+    )
 _WS_HANDLERS = (
     (nautilus_pyo3.AccountState, "_handle_account_state"),
     (nautilus_pyo3.OrderAccepted, "_handle_order_accepted_pyo3"),
@@ -82,6 +96,8 @@ class QualifiedInfoBoundary:
         self._cm_last_revision = None
         self._cm_runtime = None
         self._cm_bootstrapped = False
+        self._cm_suspend_recovery = None
+        self._cm_resume_recovery = None
 
     def _cm_transport_ok(self) -> bool:
         socket = getattr(self, "_ws_client", None)
@@ -107,6 +123,14 @@ class QualifiedInfoBoundary:
         if not callable(revoke):
             raise TypeError("RECOVERY_REVOCATION_REQUIRED")
         self._cm_revoke_recovery = revoke
+
+    def bind_recovery_suspension(
+        self, suspend: Callable[[], None], resume: Callable[[], None],
+    ) -> None:
+        if not callable(suspend) or not callable(resume):
+            raise TypeError("RECOVERY_SUSPENSION_CALLBACKS_REQUIRED")
+        self._cm_suspend_recovery = suspend
+        self._cm_resume_recovery = resume
 
     def _cm_require_healthy(self) -> None:
         if self._cm_ws_failure is not None:
@@ -161,6 +185,7 @@ class QualifiedInfoBoundary:
             raise IncompleteInfoReport("LIVE_DURABLE_ORDER_NOT_IN_CACHE")
         durable = []
         signature = []
+        local_denied = set()
         for row in rows:
             client = row["client_order_id"]
             order = by_client[client]
@@ -168,7 +193,10 @@ class QualifiedInfoBoundary:
                 nautilus_pyo3.ClientOrderId(client)
             ))
             oid = int(str(order.venue_order_id)) if order.venue_order_id is not None else None
-            durable.append((client, cloid, oid))
+            if _proven_local_denial(row, order):
+                local_denied.add(client)
+            else:
+                durable.append((client, cloid, oid))
             signature.append((
                 client, oid, str(order.status), str(order.filled_qty),
                 tuple(str(tid) for tid in order.trade_ids),
@@ -176,14 +204,18 @@ class QualifiedInfoBoundary:
         applied = runtime.applied_fill_ids()
         if runtime.native_revision() != revision:
             raise IncompleteInfoReport("LIVE_DURABLE_REVISION_MOVED")
-        return replace(self._cm_scope, durable_orders=tuple(durable)), revision, native_orders, applied, tuple(signature)
+        venue_orders = tuple(order for order in native_orders if str(order.client_order_id) not in local_denied)
+        return replace(self._cm_scope, durable_orders=tuple(durable)), revision, venue_orders, applied, tuple(signature)
 
     async def generate_mass_status(self, lookback_mins=None):
         self._cm_last_receipt = None
         self._cm_last_revision = None
         try:
             self._cm_require_healthy()
+            if self._cm_bootstrapped and self._cm_ws_phase == "LIVE" and self._cm_suspend_recovery is not None:
+                self._cm_suspend_recovery()
             for attempt in range(4):
+                revision = None
                 try:
                     scope, revision, native_orders, applied, signature = self._cm_owned_scope()
                     expected = {cloid: oid for _, cloid, oid in scope.durable_orders}
@@ -221,10 +253,21 @@ class QualifiedInfoBoundary:
                     self._cm_last_revision = revision
                     return mass
                 except IncompleteInfoReport as error:
-                    if attempt == 3 or str(error) not in {
-                        "INFO_GENERATION_NOT_CONVERGED", "ORDER_STATUS_UNKNOWN",
-                        "LIVE_DURABLE_ORDER_NOT_IN_CACHE", "LIVE_DURABLE_REVISION_MOVED",
-                    }:
+                    race = (
+                        revision is not None and self._cm_runtime is not None
+                        and self._cm_runtime.native_revision() != revision
+                    )
+                    if attempt == 3 or not (
+                        str(error) in {
+                            "ORDER_STATUS_UNKNOWN", "LIVE_DURABLE_ORDER_NOT_IN_CACHE",
+                            "LIVE_DURABLE_REVISION_MOVED",
+                        }
+                        or (race and str(error) in {
+                            "INFO_GENERATION_NOT_CONVERGED",
+                            "OPEN_ORDER_STATUS_FIELD_MISMATCH",
+                            "ORDER_OPEN_STATUS_MISMATCH",
+                        })
+                    ):
                         raise
                     await asyncio.sleep(0.25)
         except BaseException:
@@ -287,11 +330,18 @@ class QualifiedInfoBoundary:
                 await asyncio.sleep(interval)
                 if not self._cm_transport_ok():
                     return
+                if self._cm_suspend_recovery is not None:
+                    self._cm_suspend_recovery()
                 for attempt in range(4):
                     try:
                         mass = await self.generate_mass_status()
                         if await verify(mass) is not True:
                             raise IncompleteInfoReport("LIVE_OWNED_EFFECT_PARITY_FAILED")
+                        self._cm_require_healthy()
+                        if not self._cm_transport_ok():
+                            self._cm_require_healthy()
+                        if self._cm_resume_recovery is not None:
+                            self._cm_resume_recovery()
                         break
                     except IncompleteInfoReport as error:
                         if attempt == 3 or str(error) not in {
@@ -450,21 +500,29 @@ def bind_clean_flat_live_handover(
             ):
                 raise IncompleteInfoReport("LIVE_OPEN_FUNDING_CURSOR_UNPROVEN")
         else:
-            journal = {row["client_order_id"]: row for row in runtime.all_submissions()}
+            rows = runtime.all_submissions()
+            journal = {row["client_order_id"]: row for row in rows}
             orders = {str(order.client_order_id): order for order in native_orders}
             reports = {
                 str(report.client_order_id): report
                 for batch in mass.order_reports.values() for report in batch
             }
+            local_denied = {
+                client_id for client_id, row in journal.items()
+                if client_id in orders and _proven_local_denial(row, orders[client_id])
+            }
             if (
-                len(journal) != len(runtime.all_submissions())
+                len(journal) != len(rows)
                 or len(orders) != len(native_orders)
                 or len(reports) != sum(map(len, mass.order_reports.values()))
-                or set(journal) != set(orders) or set(journal) != set(reports)
+                or set(journal) != set(orders) or set(reports) != set(journal) - local_denied
                 or not set(strategy._pending_by_order).issubset(journal)
+                or set(strategy._pending_by_order) & local_denied
             ):
                 raise IncompleteInfoReport("LIVE_OWNED_ORDER_SET_MISMATCH")
             for client_id, order in orders.items():
+                if client_id in local_denied:
+                    continue
                 report = reports[client_id]
                 row = journal[client_id]
                 if (
@@ -526,5 +584,9 @@ def bind_clean_flat_live_handover(
     strategy.attach_live_money_view(lambda: latest_money[0])
     strategy.attach_recovery_health(client.recovery_healthy)
     client.bind_recovery_revocation(lambda: setattr(strategy, "recovery_confirmed", False))
+    client.bind_recovery_suspension(
+        lambda: setattr(strategy, "recovery_confirmed", False),
+        lambda: setattr(strategy, "recovery_confirmed", client.recovery_healthy()),
+    )
     strategy.attach_recovery_runtime(runtime)
     strategy.attach_post_drain_verifier(release)
