@@ -250,3 +250,126 @@ def test_stale_candidate_queues_until_fresh_live_money_and_budget_failure_keeps_
     strategy._queued_intents.clear()  # Native quote path removes the queued item before retry.
     strategy._submit_intent(intent, 100, 101, None, 1, ts_now=time.time_ns())
     assert submitted == [intent.id]
+
+
+@pytest.mark.parametrize("action", ("BTC_REDUCE", "SOL_HALF_EXIT", "SOL_EXIT"))
+def test_stale_owned_reduction_is_retained_until_fresh_receipt(monkeypatch, action):
+    import time
+    from coinmaster.domain.wave_overlay import Intent
+    from test_hl_stageg_sandbox_lifecycle import HL_BTC, HL_SOL
+
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    stale = replace(view(receipt(), native_account("10000", "10000")),
+                    end_ms=time.time_ns() // 1_000_000 - 20_000)
+    money = [stale]
+    refreshes = []
+    strategy.attach_live_money_view(lambda: money[0])
+    strategy.attach_live_refresh(lambda: refreshes.append(action) or True)
+    strategy.recovery_confirmed = True
+    strategy._feeds_fresh = lambda *_args: True  # Focus this quote on money, not fake data subscriptions.
+    submitted = []
+    monkeypatch.setattr(WaveOverlayStrategy, "_submit_intent", lambda *args, **kwargs: submitted.append(args[1].id))
+    intent = Intent(action + "-1", "owned-episode", action, 0, -1, quantity=0.01)
+    strategy._queued_intents.append((intent, None, 1))
+    strategy._queued_intent_ready_ns[intent.id] = 0
+    target = HL_BTC.id if action == "BTC_REDUCE" else HL_SOL.id
+    tick = SimpleNamespace(instrument_id=target, ts_event=time.time_ns(), bid_price=100, ask_price=101)
+    strategy.on_quote_tick(tick)
+    assert submitted == [] and refreshes == [action]
+    assert [item[0].id for item in strategy._queued_intents] == [intent.id]
+    money[0] = replace(stale, end_ms=time.time_ns() // 1_000_000)
+    strategy.on_quote_tick(tick)
+    assert submitted == [intent.id] and not strategy._queued_intents
+
+
+def test_fresh_ttl_but_changed_native_account_or_owned_fill_defers_increase(tmp_path, monkeypatch):
+    import time
+    from coinmaster.domain.wave_overlay import Intent
+    from coinmaster.ops.paper import PaperRuntime
+
+    class Probe(RecoverableWaveOverlayStrategy):
+        @property
+        def cache(self):
+            return self.probe_cache
+
+    strategy = Probe(_strategy().config)
+    runtime = PaperRuntime(tmp_path / "owner.sqlite", "probe", 10**20)
+    strategy.attach_recovery_runtime(runtime)
+    money = [replace(view(receipt(), native_account("10000", "10000")),
+                     end_ms=time.time_ns() // 1_000_000, native_revision=0)]
+    strategy.attach_live_money_view(lambda: money[0])
+    refreshes = []
+    strategy.attach_live_refresh(lambda: refreshes.append(1) or True)
+    account = [native_account("10000", "10000")]
+    strategy.probe_cache = SimpleNamespace(
+        account_for_venue=lambda _: account[0], positions_open=lambda: (),
+        orders=lambda **_: (),
+    )
+    strategy.recovery_confirmed = True
+    submitted = []
+    monkeypatch.setattr(WaveOverlayStrategy, "_submit_intent", lambda *args, **kwargs: submitted.append(args[1].id))
+    first = Intent("account-updated", "owned-episode", "BTC_ENTRY", None, 1, requested_notional=50)
+    account[0] = native_account("9990", "9990")  # Receipt is 1s fresh but obsolete.
+    strategy._submit_intent(first, 100, 101, None, 1, ts_now=time.time_ns())
+    assert not submitted and strategy._queued_intents[-1][0] == first and refreshes
+    money[0] = replace(money[0], raw_usd=Decimal("9990"), free_collateral=Decimal("9990"))
+    strategy._queued_intents.clear()
+    runtime.commit_applied_fills(["owned-fill-1"], strategy.on_save()["wave_overlay_live_recovery_v1"])
+    second = Intent("fill-updated", "owned-episode", "SOL_ADD", None, 1, requested_notional=50)
+    strategy._submit_intent(second, 100, 101, None, 1, ts_now=time.time_ns())
+    assert not submitted and strategy._queued_intents[-1][0] == second
+    assert len(refreshes) == 2
+    runtime.close()
+
+
+def test_native_pending_opening_and_adverse_selected_mark_gate_margin(tmp_path):
+    import time
+    from nautilus_trader.core.uuid import UUID4
+    from nautilus_trader.model.enums import OrderSide, TimeInForce
+    from nautilus_trader.model.events import OrderAccepted
+    from nautilus_trader.model.identifiers import ClientOrderId, TraderId, VenueOrderId
+    from nautilus_trader.model.orders import MarketOrder
+    from coinmaster.ops.hl_live_money import SelectedCrossAsset
+    from coinmaster.ops.paper import PaperRuntime
+    from test_hl_stageg_sandbox_lifecycle import HL_BTC, HL_SOL
+
+    class Probe(RecoverableWaveOverlayStrategy):
+        @property
+        def cache(self):
+            return self.probe_cache
+
+    strategy = Probe(_strategy().config)
+    runtime = PaperRuntime(tmp_path / "owned.sqlite", "probe", 10**20)
+    strategy.attach_recovery_runtime(runtime)
+    now = time.time_ns()
+    order = MarketOrder(
+        TraderId("CM-MARGIN"), strategy.id, HL_BTC.id, ClientOrderId("CM-MARGIN-PENDING-1"),
+        OrderSide.BUY, Quantity.from_str("0.03000"), UUID4(), now,
+        time_in_force=TimeInForce.IOC,
+    )
+    order.apply(OrderAccepted(
+        order.trader_id, strategy.id, HL_BTC.id, order.client_order_id,
+        VenueOrderId("101"), AccountId(ACCOUNT), UUID4(), now, now,
+    ))
+    assert runtime.record_submission(
+        client_order_id=str(order.client_order_id), intent_id="pending", episode_id="episode",
+        action="BTC_ENTRY", instrument_id=str(HL_BTC.id), quantity=str(order.quantity),
+        reduce_only=False,
+    )
+    strategy.probe_cache = SimpleNamespace(
+        account_for_venue=lambda _: native_account("100", "100"),
+        positions_open=lambda: (), orders=lambda **_: (order,),
+    )
+    money = [replace(view(receipt(equity="100", raw="100", margin="0", free="100"),
+                          native_account("100", "100")),
+                     end_ms=now // 1_000_000, native_revision=runtime.native_revision(),
+                     selected_assets=(SelectedCrossAsset("BTC", 10, Decimal("10000")),
+                                      SelectedCrossAsset("SOL", 5, Decimal("100"))))]
+    strategy.attach_live_money_view(lambda: money[0])
+    strategy.recovery_confirmed = True
+    assert strategy._tier_allows_increase(HL_SOL.id, OrderSide.BUY, Decimal("3"), now)
+    money[0] = replace(money[0], selected_assets=(
+        SelectedCrossAsset("BTC", 10, Decimal("15000")), money[0].selected_assets[1],
+    ))
+    assert not strategy._tier_allows_increase(HL_SOL.id, OrderSide.BUY, Decimal("3"), now)
+    runtime.close()

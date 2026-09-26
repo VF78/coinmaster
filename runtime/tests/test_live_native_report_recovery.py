@@ -425,7 +425,10 @@ async def _run_child():
         active.acquire()
         client._cm_runtime = active  # Same binding as the selected owner factory.
         strategy._probe_engine = node.kernel.exec_engine
-        bind_clean_flat_live_handover(client, strategy, active, monitor_interval_secs=0.01)
+        bind_clean_flat_live_handover(
+            client, strategy, active,
+            monitor_interval_secs=0.05 if os.environ.get("CM_FAKE_PARITY_FAILURE") == "denied" else 0.01,
+        )
     if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
         from coinmaster.ops.hl_info_receipt import collect_info_receipt
         from coinmaster.ops.hl_qualified_reports import qualified_mass_status
@@ -563,6 +566,31 @@ async def _run_child():
             next_intent = Intent("intent-next", next_episode.id, "BTC_ENTRY", None, 1, quantity=0.01)
             next_episode.pending[next_intent.id] = next_intent
             strategy._domain.episode = next_episode
+            strategy._queued_intents.append((next_intent, None, 1484))
+            strategy._queued_intent_ready_ns[next_intent.id] = now
+            strategy._persist_transient_checkpoint()
+            assert active.strategy_checkpoint()[0] == strategy.on_save()["wave_overlay_live_recovery_v1"]
+            from dataclasses import replace
+            original_money = strategy._live_money_provider
+            stale = [True]
+            strategy._live_money_provider = lambda: replace(
+                original_money(), end_ms=node.kernel.clock.timestamp_ns() // 1_000_000 - 20_000,
+            ) if stale[0] else original_money()
+            strategy._feeds_fresh = lambda *_args: True  # Isolate the money gate from absent fake data clients.
+            client._cm_info_usage.clear()  # 50ms fake monitor accelerates a 30s production cadence.
+            strategy.on_quote_tick(SimpleNamespace(instrument_id=HL_BTC.id, ts_event=now))
+            assert [item[0].id for item in strategy._queued_intents] == [next_intent.id]
+            assert active.strategy_checkpoint()[0] == strategy.on_save()["wave_overlay_live_recovery_v1"]
+            stale[0] = False
+            assert client._cm_refresh_task is not None
+            await client._cm_refresh_task  # Actual strict Info/cache/domain/account verifier.
+            assert client._cm_ws_failure is None and strategy.recovery_confirmed
+            assert [item[0].id for item in strategy._queued_intents] == [next_intent.id]
+            # The fake strategy deliberately has entries_enabled=False; keep
+            # the existing separate direct-sink next-submit proof explicit.
+            strategy._queued_intents.clear()
+            strategy._queued_intent_ready_ns.pop(next_intent.id, None)
+            strategy._persist_transient_checkpoint()
             next_order = strategy.order_factory.market(
                 instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
                 quantity=Quantity.from_str("0.01000"), time_in_force=TimeInForce.IOC,
@@ -581,6 +609,7 @@ async def _run_child():
                 "terminal_checkpoint_matches": True,
                 "full_periodic_verifier_healthy": True,
                 "next_durable_submit": active.pending_submissions()[0]["client_order_id"] == next_id,
+                "stale_quote_retained_then_strict_refresh": True,
             }), flush=True)
             await node.kernel.stop_async()
             node.kernel.dispose()
@@ -1126,5 +1155,6 @@ def test_connected_local_denial_keeps_full_periodic_parity_and_next_submit(tmp_p
         "terminal_checkpoint_matches": True,
         "full_periodic_verifier_healthy": True,
         "next_durable_submit": True,
+        "stale_quote_retained_then_strict_refresh": True,
     }
     assert not submit_log.exists()  # No fake or external execution call.

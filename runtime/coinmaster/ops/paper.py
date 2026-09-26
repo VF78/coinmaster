@@ -245,6 +245,28 @@ class PaperRuntime:
         return (bytes(row[0]), int(row[1])) if row else None
 
     @_journal_locked
+    def persist_strategy_checkpoint(self, strategy_state: bytes, expected_revision: int) -> bool:
+        """Commit a domain-only transition at its unchanged native revision."""
+        if not isinstance(strategy_state, bytes) or not strategy_state or type(expected_revision) is not int:
+            raise ValueError("INVALID_STRATEGY_CHECKPOINT")
+        try:
+            self.db.execute("BEGIN IMMEDIATE")
+            if self.native_revision() != expected_revision:
+                self.db.rollback()
+                return False
+            row = self.db.execute("SELECT body FROM paper_strategy_checkpoint WHERE id=1").fetchone()
+            if row is None or bytes(row[0]) != strategy_state:
+                self.db.execute(
+                    "INSERT OR REPLACE INTO paper_strategy_checkpoint VALUES (1, ?, ?)",
+                    (strategy_state, expected_revision),
+                )
+            self.db.commit()
+            return True
+        except BaseException:
+            self.db.rollback()
+            raise
+
+    @_journal_locked
     def has_applied_fill(self, trade_id: str) -> bool:
         return self.db.execute("SELECT 1 FROM paper_recovered_fills WHERE trade_id=?", (trade_id,)).fetchone() is not None
 

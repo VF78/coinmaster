@@ -576,3 +576,19 @@ def test_stale_live_money_defers_open_exposure_daily_decision_and_retries_once()
     assert decisions == [(0, 10000.0)]
     assert strategy._deferred_entry_session is None
     assert next_session in strategy._day
+
+
+def test_transient_checkpoint_is_atomic_with_unchanged_native_revision(tmp_path):
+    from coinmaster.ops.paper import PaperRuntime
+
+    runtime = PaperRuntime(tmp_path / "owner.sqlite", "probe", 10**20)
+    assert runtime.persist_strategy_checkpoint(b"queued-btc-tp", 0)
+    assert runtime.strategy_checkpoint() == (b"queued-btc-tp", 0)
+    assert runtime.record_submission(
+        client_order_id="CM-NEW-1", intent_id="entry", episode_id="episode",
+        action="BTC_ENTRY", instrument_id=str(HL_BTC.id), quantity="0.01000",
+        reduce_only=False, strategy_state=b"native-submit",
+    )
+    assert not runtime.persist_strategy_checkpoint(b"stale-queued-state", 0)
+    assert runtime.strategy_checkpoint() == (b"native-submit", 1)
+    runtime.close()

@@ -183,14 +183,16 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def _advance_current_day(self) -> None:
         # A native open position cannot bypass a stale venue money view.
         try:
-            self._validated_live_money()
-        except ValueError:
+            self._current_owned_money()
+        except (ValueError, RuntimeError):
             if self._current_btc is not None:
                 self._deferred_entry_session = self._current_btc.ts_event
                 self._daily_decision_reason = "DEFERRED_LIVE_MONEY"
+            self._persist_transient_checkpoint()
             self._request_live_refresh()
             return
         super()._advance_current_day()
+        self._persist_transient_checkpoint()
 
     def _retry_deferred_daily_decision(self) -> None:
         if self._current_btc is None or self._deferred_entry_session != self._current_btc.ts_event:
@@ -207,48 +209,55 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def _free_margin_for_increase(self, account) -> Decimal:
         return self._validated_live_money().free_collateral
 
+    def _current_owned_money(self, *, max_age_ms: int = 9_000):
+        self._require_recovery_confirmed()
+        view = self._validated_live_money()
+        view.require_fresh(time.time_ns() // 1_000_000, max_age_ms)
+        if self._recovery_runtime is None:
+            return view, {}, ()  # Unbound source probes cannot submit live orders.
+        if view.native_revision != self._recovery_runtime.native_revision():
+            raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")
+        account = self.cache.account_for_venue(self.config.btc_id.venue)
+        if account is None or account.balance_total(USDC) is None or account.balance_free(USDC) is None:
+            raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")
+        projected_total = view.raw_usd if view.raw_usd < 0 else max(view.raw_usd, view.free_collateral)
+        if (
+            account.balance_total(USDC).as_decimal() != projected_total
+            or account.balance_free(USDC).as_decimal() != view.free_collateral
+        ):
+            raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")
+        positions = {}
+        for position in self.cache.positions_open():
+            if (
+                str(position.strategy_id) != str(self.id)
+                or position.instrument_id not in (self.config.btc_id, self.config.sol_id)
+            ):
+                raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")
+            coin = "BTC" if position.instrument_id == self.config.btc_id else "SOL"
+            if coin in positions:
+                raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")
+            positions[coin] = position.quantity.as_decimal() * (1 if position.is_long else -1)
+        if tuple(sorted(positions.items())) != view.position_sizes:
+            raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")
+        journal = {row["client_order_id"]: row for row in self._recovery_runtime.all_submissions()}
+        pending = []
+        for order in self.cache.orders(venue=self.config.btc_id.venue):
+            if str(order.strategy_id) != str(self.id) or str(order.client_order_id) not in journal:
+                raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")
+            if order.is_closed or order.is_reduce_only:
+                continue
+            if order.venue_order_id is None:
+                raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")  # A forwarded order without venue proof is an unknown ACK.
+            leaves = order.quantity.as_decimal() - order.filled_qty.as_decimal()
+            if leaves <= 0:
+                raise ValueError("LIVE_OWNED_MONEY_OBSOLETE")
+            order_coin = "BTC" if order.instrument_id == self.config.btc_id else "SOL" if order.instrument_id == self.config.sol_id else ""
+            pending.append((order_coin, order.side.name, leaves))
+        return view, positions, tuple(pending)
+
     def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
         try:
-            self._require_recovery_confirmed()
-            view = self._validated_live_money()
-            if self._recovery_runtime is None or view.native_revision != self._recovery_runtime.native_revision():
-                return False
-            account = self.cache.account_for_venue(self.config.btc_id.venue)
-            if account is None or account.balance_total(USDC) is None or account.balance_free(USDC) is None:
-                return False
-            projected_total = view.raw_usd if view.raw_usd < 0 else max(view.raw_usd, view.free_collateral)
-            if (
-                account.balance_total(USDC).as_decimal() != projected_total
-                or account.balance_free(USDC).as_decimal() != view.free_collateral
-            ):
-                return False
-            positions = {}
-            for position in self.cache.positions_open():
-                if (
-                    str(position.strategy_id) != str(self.id)
-                    or position.instrument_id not in (self.config.btc_id, self.config.sol_id)
-                ):
-                    return False
-                coin = "BTC" if position.instrument_id == self.config.btc_id else "SOL"
-                if coin in positions:
-                    return False
-                positions[coin] = position.quantity.as_decimal() * (1 if position.is_long else -1)
-            if tuple(sorted(positions.items())) != view.position_sizes:
-                return False
-            journal = {row["client_order_id"]: row for row in self._recovery_runtime.all_submissions()}
-            pending = []
-            for order in self.cache.orders(venue=self.config.btc_id.venue):
-                if str(order.strategy_id) != str(self.id) or str(order.client_order_id) not in journal:
-                    return False
-                if order.is_closed or order.is_reduce_only:
-                    continue
-                if order.venue_order_id is None:
-                    return False  # A forwarded order without venue proof is an unknown ACK.
-                leaves = order.quantity.as_decimal() - order.filled_qty.as_decimal()
-                if leaves <= 0:
-                    return False
-                order_coin = "BTC" if order.instrument_id == self.config.btc_id else "SOL" if order.instrument_id == self.config.sol_id else ""
-                pending.append((order_coin, order.side.name, leaves))
+            view, positions, pending = self._current_owned_money()
             coin = "BTC" if instrument_id == self.config.btc_id else "SOL" if instrument_id == self.config.sol_id else ""
             return prospective_cross_margin_ok(
                 view, positions=positions, pending_openings=pending,
@@ -257,6 +266,19 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             )
         except (AttributeError, RuntimeError, TypeError, ValueError):
             return False
+
+    def _persist_transient_checkpoint(self) -> None:
+        runtime = self._recovery_runtime
+        if runtime is None:
+            return
+        revision = runtime.native_revision()
+        body = self.on_save()[_KEY]
+        checkpoint = runtime.strategy_checkpoint()
+        if checkpoint is not None and checkpoint == (body, revision):
+            return
+        if not runtime.persist_strategy_checkpoint(body, revision):
+            self.recovery_confirmed = False
+            raise RuntimeError("LIVE_TRANSIENT_CHECKPOINT_REVISION_MOVED")
 
     def _check_mark_first_liquidation(self, ts_now: int) -> None:
         # The live venue owns liquidation. The Sandbox policy is not a live order source.
@@ -357,22 +379,28 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             return
         self._quote_ns[tick.instrument_id] = tick.ts_event
         if self._feeds_fresh(time.time_ns()):
+            if self.config.deposit_runtime is None or not self._deposit.latched:
+                try:
+                    self._current_owned_money()
+                except (ValueError, RuntimeError):
+                    self._request_live_refresh()
+                    return
             super().on_quote_tick(tick)
+            self._persist_transient_checkpoint()
 
     def _submit_intent(
         self, intent: Intent, bid_price: float, ask_price: float,
         sigma: float | None, decision_index: int,
         only_instrument: InstrumentId | None = None, ts_now: int | None = None,
     ) -> None:
-        if intent.action in {"BTC_ENTRY", "SOL_ADD"}:
+        if intent.action != "CLOSE_ALL":
             try:
-                view = self._validated_live_money()
-                # Leave a small margin for order construction and final submit.
-                view.require_fresh(time.time_ns() // 1_000_000, 9_000)
-            except ValueError:
+                self._current_owned_money()
+            except (ValueError, RuntimeError):
                 if not any(item[0].id == intent.id for item in self._queued_intents):
                     self._queued_intents.append((intent, sigma, decision_index))
                 self._queued_intent_ready_ns[intent.id] = (ts_now or time.time_ns()) + 1
+                self._persist_transient_checkpoint()
                 self._request_live_refresh()
                 return
         return super()._submit_intent(
