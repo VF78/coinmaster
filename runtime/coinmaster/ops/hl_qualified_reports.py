@@ -68,7 +68,7 @@ def qualified_mass_status(
     applied_trade_ids: frozenset[str],
     ts_init: int,
 ) -> ExecutionMassStatus:
-    """Convert two equal strict generations; require exact native fill prefix.
+    """Convert two converged strict generations; require exact native fill prefix.
 
     durable_orders maps native ClientOrderId to (derived CLOID, known OID).
     The native order cache must include every applied fill, including those
@@ -128,6 +128,7 @@ def qualified_mass_status(
         raise IncompleteInfoReport("DURABLE_STATUS_SET_MISMATCH")
 
     native_by_client: dict[str, object] = {}
+    native_types: dict[str, OrderType] = {}
     prefix: dict[str, object] = {}
     for order in native_orders:
         client = str(order.client_order_id)
@@ -138,17 +139,29 @@ def qualified_mass_status(
         instrument = instruments[row["coin"]]
         tif = TimeInForce.IOC if row["tif"] == "Ioc" else TimeInForce.GTC
         side = OrderSide.BUY if row["side"] == "B" else OrderSide.SELL
+        native_type = order.order_type
+        if native_type not in (OrderType.LIMIT, OrderType.MARKET):
+            raise IncompleteInfoReport("NATIVE_ORDER_TYPE_UNSUPPORTED")
         if (
             order.instrument_id != instrument.id
-            or order.side != side or order.order_type != OrderType.LIMIT
+            or order.side != side
             or order.time_in_force != tif
             or Decimal(str(order.quantity)) != Decimal(row["origSz"])
-            or Decimal(str(order.price)) != Decimal(row["limitPx"])
             or bool(order.is_reduce_only) != row["reduceOnly"]
-            or bool(order.is_post_only) != (row["tif"] == "Alo")
             or (order.venue_order_id is not None and str(order.venue_order_id) != str(row["oid"]))
         ):
             raise IncompleteInfoReport("NATIVE_ORDER_SHAPE_MISMATCH")
+        if native_type == OrderType.MARKET:
+            # The pinned adapter submits native MARKET/IOC as a protective
+            # venue Limit/Ioc. The calculated wire price is not order.price.
+            if row["orderType"] != "Limit" or row["tif"] != "Ioc" or order.is_post_only or order.has_price:
+                raise IncompleteInfoReport("MARKET_WIRE_SHAPE_MISMATCH")
+        elif (
+            Decimal(str(order.price)) != Decimal(row["limitPx"])
+            or bool(order.is_post_only) != (row["tif"] == "Alo")
+        ):
+            raise IncompleteInfoReport("NATIVE_ORDER_SHAPE_MISMATCH")
+        native_types[client] = native_type
         for event in order.events:
             if not hasattr(event, "trade_id"):
                 continue
@@ -232,13 +245,20 @@ def qualified_mass_status(
         ) if status == "open" else (
             OrderStatus.FILLED if status == "filled" else OrderStatus.CANCELED
         )
+        native_type = native_types.get(client)
+        if native_type is None:
+            # Raw Limit/Ioc cannot identify an absent native MARKET intent.
+            if row["tif"] == "Ioc":
+                raise IncompleteInfoReport("NATIVE_IOC_KIND_UNPROVED")
+            native_type = OrderType.LIMIT
         orders.append(OrderStatusReport(
             account_id, instrument.id, VenueOrderId(str(row["oid"])),
             OrderSide.BUY if row["side"] == "B" else OrderSide.SELL,
-            OrderType.LIMIT, TimeInForce.IOC if row["tif"] == "Ioc" else TimeInForce.GTC,
+            native_type, TimeInForce.IOC if row["tif"] == "Ioc" else TimeInForce.GTC,
             order_status, Quantity.from_str(str(total)), Quantity.from_str(str(fill_qty[client])),
             UUID4(), row["timestamp"] * 1_000_000, status_ms * 1_000_000, ts_init,
-            client_order_id=ClientOrderId(client), price=Price.from_str(str(px)),
+            client_order_id=ClientOrderId(client),
+            price=None if native_type == OrderType.MARKET else Price.from_str(str(px)),
             post_only=row["tif"] == "Alo", reduce_only=row["reduceOnly"],
         ))
 
@@ -251,7 +271,9 @@ def qualified_mass_status(
         size = _precise(row["szi"], instrument.size_precision, "POSITION_SIZE")
         if size == 0:
             continue
-        avg = _precise(row["entryPx"], instrument.price_precision, "POSITION_ENTRY_PRICE")
+        avg = Decimal(str(row["entryPx"]))
+        if not avg.is_finite() or avg <= 0:
+            raise IncompleteInfoReport("BAD_POSITION_ENTRY_PRICE")
         positions.append(PositionStatusReport(
             account_id, instrument.id,
             PositionSide.LONG if size > 0 else PositionSide.SHORT,

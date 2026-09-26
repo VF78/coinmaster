@@ -31,8 +31,11 @@ from nautilus_trader.model.enums import (
     AccountType, AggregationSource, BarAggregation, LiquiditySide, OmsType,
     OrderSide, OrderStatus, OrderType, PositionSide, PriceType, TimeInForce,
 )
-from nautilus_trader.model.identifiers import AccountId, ClientId, ClientOrderId, InstrumentId, TradeId, Venue, VenueOrderId
+from nautilus_trader.model.identifiers import AccountId, ClientId, ClientOrderId, InstrumentId, PositionId, TradeId, TraderId, Venue, VenueOrderId
 from nautilus_trader.model.objects import AccountBalance, Money, Price, Quantity
+from nautilus_trader.model.events import OrderAccepted, OrderFilled
+from nautilus_trader.model.orders import MarketOrder
+from nautilus_trader.model.position import Position
 
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.live_recovery import LiveRecoverySubmissionSink, LiveRecoveryReconciler
@@ -103,7 +106,7 @@ class FakeReportClient(LiveExecutionClient):
             total = Money(Decimal("9999.73"), USDC)
             self.generate_account_state([AccountBalance(total, Money(0, USDC), total)], [], True, now)
             return
-        os._exit(137)  # Fake venue accepted; native ACK was not emitted.
+        os._exit(137)  # Abrupt process exit after fake acceptance, before native ACK.
 
     async def generate_mass_status(self, lookback_mins=None):
         if os.environ.get("CM_FAKE_RAW_CONVERTER") != "1":
@@ -139,14 +142,17 @@ class FakeReportClient(LiveExecutionClient):
         else:
             fill_ms = max(order_ms + 1, self._clock.timestamp_ns() // 1_000_000 - 1)
             anchor_tid = None
+        market_ioc = os.environ.get("CM_FAKE_MARKET_IOC") == "1"
         order = {
             "coin": "BTC", "oid": 7, "cloid": cloid,
             "side": "B", "origSz": "0.02000", "sz": "0.01000",
-            "reduceOnly": False, "orderType": "Limit", "tif": "Gtc",
-            "limitPx": "60000.0", "timestamp": order_ms,
+            "reduceOnly": False, "orderType": "Limit",
+            "tif": "Ioc" if market_ioc else "Gtc",
+            "limitPx": "60300.0" if market_ioc else "60000.0",
+            "timestamp": order_ms,
         }
         data = {
-            "frontendOpenOrders": [order],
+            "frontendOpenOrders": [] if market_ioc else [order],
             "clearinghouseState": {
                 "assetPositions": [{"position": {
                     "coin": "BTC", "szi": "0.01000", "entryPx": "60000.0",
@@ -159,7 +165,8 @@ class FakeReportClient(LiveExecutionClient):
             },
             "orderStatus": {
                 "status": "order", "order": {
-                    "order": order, "status": "open", "statusTimestamp": fill_ms,
+                    "order": order, "status": "canceled" if market_ioc else "open",
+                    "statusTimestamp": fill_ms,
                 },
             },
             "userFillsByTime": [{
@@ -315,6 +322,97 @@ async def _run_child():
             strategy.on_load({"wave_overlay_live_recovery_v1": checkpoint[0]})
     node.trader.add_strategy(strategy)
     await node.kernel.start_async()
+    if os.environ.get("CM_FAKE_EXIT_RECONCILE") == "1":
+        from nautilus_trader.core import nautilus_pyo3
+        from coinmaster.ops.hl_info_receipt import collect_info_receipt
+        from coinmaster.ops.hl_qualified_reports import qualified_mass_status
+        from test_hl_info_receipt import FakeInfo
+
+        now = node.kernel.clock.timestamp_ns()
+        trader = TraderId(str(node.trader.id))
+        strategy_id = strategy.id
+        position_id = PositionId("CM05-EXIT-POS")
+        entry = OrderFilled(
+            trader, strategy_id, HL_BTC.id, ClientOrderId("CM05-SEED"),
+            VenueOrderId("6"), ACCOUNT, TradeId("seed"), position_id,
+            OrderSide.BUY, OrderType.MARKET, Quantity.from_str("0.01000"),
+            Price.from_str("60000.0"), USDC, Money(Decimal("0.27"), USDC),
+            LiquiditySide.TAKER, UUID4(), now - 2_000_000, now - 2_000_000,
+        )
+        node.cache.add_position(Position(HL_BTC, entry), OmsType.NETTING)
+        exit_order = MarketOrder(
+            trader, strategy_id, HL_BTC.id, CLIENT_ORDER, OrderSide.SELL,
+            Quantity.from_str("0.01000"), UUID4(), now - 1_000_000,
+            time_in_force=TimeInForce.IOC, reduce_only=True,
+        )
+        exit_order.apply(OrderAccepted(
+            trader, strategy_id, HL_BTC.id, CLIENT_ORDER, VENUE_ORDER, ACCOUNT,
+            UUID4(), now - 1_000_000, now - 1_000_000,
+        ))
+        node.cache.add_order(exit_order, position_id=position_id, client_id=ClientId("HYPERLIQUID"))
+        cloid = str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(
+            nautilus_pyo3.ClientOrderId(str(CLIENT_ORDER))
+        ))
+        order_ms = exit_order.ts_init // 1_000_000
+        fill_ms = order_ms + 1
+        row = {
+            "coin": "BTC", "oid": 7, "cloid": cloid,
+            "side": "A", "origSz": "0.01000", "sz": "0",
+            "reduceOnly": True, "orderType": "Limit", "tif": "Ioc",
+            "limitPx": "59700.0", "timestamp": order_ms,
+        }
+        data = {
+            "frontendOpenOrders": [],
+            "clearinghouseState": {
+                "assetPositions": [],
+                "marginSummary": {
+                    "accountValue": "9999.73", "totalRawUsd": "10000",
+                    "totalMarginUsed": "0", "totalNtlPos": "0",
+                },
+                "withdrawable": "9999.73",
+            },
+            "orderStatus": {"status": "order", "order": {
+                "order": row, "status": "filled", "statusTimestamp": fill_ms,
+            }},
+            "userFillsByTime": [{
+                "coin": "BTC", "oid": 7, "tid": 9, "time": fill_ms,
+                "side": "A", "sz": "0.01000", "px": "60000.0",
+                "fee": "0.27", "feeToken": "USDC", "hash": "0xexit",
+                "crossed": True,
+            }],
+        }
+        async def info(body):
+            value = data[body["type"]]
+            if body["type"] == "userFillsByTime":
+                return [item for item in value if body["startTime"] <= item["time"] <= body["endTime"]]
+            return value
+        async def sweep(end_ms):
+            return await collect_info_receipt(
+                info, account="0x" + "a" * 40, dex="", anchor_ms=order_ms,
+                anchor_tid=None, end_ms=end_ms, expected_orders={cloid: 7},
+                owned_coins=frozenset({"BTC", "SOL"}),
+            )
+        mass = qualified_mass_status(
+            await sweep(fill_ms + 1), await sweep(fill_ms + 2),
+            expected_account_ref="0x" + "a" * 40, expected_dex="",
+            account_id=ACCOUNT, client_id=ClientId("HYPERLIQUID"),
+            venue=Venue("HYPERLIQUID"), instruments={"BTC": HL_BTC, "SOL": HL_SOL},
+            durable_orders={str(CLIENT_ORDER): (cloid, 7)},
+            native_orders=[exit_order], applied_trade_ids=frozenset(),
+            ts_init=node.kernel.clock.timestamp_ns(),
+        )
+        applied = node.kernel.exec_engine._reconcile_execution_mass_status(mass)
+        print("EXIT_PROOF=" + json.dumps({
+            "applied": applied,
+            "order_type": next(iter(mass.order_reports.values())).order_type.name,
+            "positions_open": [
+                (str(p.instrument_id), str(p.quantity)) for p in node.cache.positions_open()
+            ],
+            "order_filled_qty": str(node.cache.order(CLIENT_ORDER).filled_qty),
+        }), flush=True)
+        await node.kernel.stop_async()
+        node.kernel.dispose()
+        return
     if os.environ.get("CM_FAKE_SUBMIT") == "1":
         assert journal
         active = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
@@ -324,11 +422,17 @@ async def _run_child():
         intent = Intent("intent-accepted", episode.id, "BTC_ENTRY", None, 1, quantity=0.02)
         episode.pending[intent.id] = intent
         strategy._domain.episode = episode
-        order = strategy.order_factory.limit(
-            instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
-            quantity=Quantity.from_str("0.02000"), price=Price.from_str("60000.0"),
-            time_in_force=TimeInForce.GTC,
-        )
+        if os.environ.get("CM_FAKE_MARKET_IOC") == "1":
+            order = strategy.order_factory.market(
+                instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
+                quantity=Quantity.from_str("0.02000"), time_in_force=TimeInForce.IOC,
+            )
+        else:
+            order = strategy.order_factory.limit(
+                instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
+                quantity=Quantity.from_str("0.02000"), price=Price.from_str("60000.0"),
+                time_in_force=TimeInForce.GTC,
+            )
         order_id = str(order.client_order_id)
         strategy._pending_by_order[order_id] = intent
         strategy._sigma_by_order[order_id] = None
@@ -343,7 +447,7 @@ async def _run_child():
         if os.environ.get("CM_FAKE_ACCEPT_LIVE") != "1":
             raise AssertionError("fake venue did not accept native submit")
         active.close()
-    if journal and os.environ.get("CM_FAKE_SUBMIT") != "1" and json.loads(Path(os.environ["CM_FAKE_VENUE_STATE"]).read_text())["partial"]:
+    if journal and os.environ.get("CM_FAKE_SUBMIT") != "1" and os.environ.get("CM_FAKE_MARKET_IOC") != "1" and json.loads(Path(os.environ["CM_FAKE_VENUE_STATE"]).read_text())["partial"]:
         client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
         reports = await client.generate_fill_reports(None)
         order_reports = await client.generate_order_status_reports(None)
@@ -371,6 +475,7 @@ async def _run_child():
     result = {
         "running": node.is_running(),
         "orders": [(str(o.client_order_id), str(o.quantity), str(o.filled_qty)) for o in node.cache.orders_open()],
+        "native_order_types": sorted(str(o.order_type.name) for o in node.cache.orders(venue=Venue("HYPERLIQUID"))),
         "positions": [(str(p.instrument_id), str(p.quantity)) for p in node.cache.positions_open()],
         "fills": len(node.trader.generate_order_fills_report()),
         "cached_fill_events": sorted(
@@ -549,3 +654,48 @@ def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tm
 
 if __name__ == "__main__" and "--child" in sys.argv:
     asyncio.run(_run_child())
+
+def test_market_ioc_entry_lost_ack_reconciles_native_type(tmp_path):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state, journal, submit_log = (tmp_path / name for name in ("state.json", "intents.sqlite", "submits.txt"))
+    state.write_text('{"partial": false}')
+    env = dict(
+        os.environ, CM_FAKE_VENUE_STATE=str(state), CM_FAKE_JOURNAL=str(journal),
+        CM_FAKE_SUBMIT_LOG=str(submit_log),
+        CM_FAKE_TRADER_ID="HL-MARKET-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
+        CM_FAKE_MARKET_IOC="1", CM_FAKE_SUBMIT="1", CM_FAKE_ACCEPT_CRASH="1",
+    )
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    first = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert first.returncode == 137, first.stderr
+    assert json.loads(state.read_text())["partial"] is True
+    env.pop("CM_FAKE_SUBMIT")
+    env.pop("CM_FAKE_ACCEPT_CRASH")
+    env["CM_FAKE_RAW_CONVERTER"] = "1"
+    second = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert second.returncode == 0, second.stderr
+    result = json.loads(next(line.split("=", 1)[1] for line in second.stdout.splitlines() if line.startswith("RECOVERY_PROOF=")))
+    assert result["native_order_types"] == ["MARKET"]
+    assert result["positions"] == [[str(HL_BTC.id), "0.01000"]]
+    assert result["fills"] == 1
+    assert len(submit_log.read_text().splitlines()) == 1
+
+def test_reduce_only_market_ioc_exit_reconciles_native_flat(tmp_path):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state = tmp_path / "state.json"
+    state.write_text('{"partial": false}')
+    env = dict(
+        os.environ, CM_FAKE_VENUE_STATE=str(state),
+        CM_FAKE_TRADER_ID="HL-EXIT-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
+        CM_FAKE_EXIT_RECONCILE="1",
+    )
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    run = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert run.returncode == 0, run.stderr
+    result = json.loads(next(line.split("=", 1)[1] for line in run.stdout.splitlines() if line.startswith("EXIT_PROOF=")))
+    assert result == {
+        "applied": True, "order_type": "MARKET",
+        "positions_open": [], "order_filled_qty": "0.01000",
+    }

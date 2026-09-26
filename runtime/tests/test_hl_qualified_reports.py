@@ -15,7 +15,7 @@ from nautilus_trader.model.identifiers import (
     AccountId, ClientId, ClientOrderId, StrategyId, TradeId, TraderId, Venue, VenueOrderId,
 )
 from nautilus_trader.model.objects import Money, Price, Quantity
-from nautilus_trader.model.orders import LimitOrder
+from nautilus_trader.model.orders import LimitOrder, MarketOrder
 
 from coinmaster.ops.hl_info_receipt import IncompleteInfoReport, collect_info_receipt
 from coinmaster.ops.hl_qualified_reports import qualified_mass_status
@@ -186,3 +186,72 @@ def test_wrong_account_or_dex_scope_rejects_mass_status():
             durable_orders={CLIENT: (CLOID, 7)}, native_orders=[native_order()],
             applied_trade_ids=frozenset({"8", "9"}), ts_init=202_000_000,
         )
+
+@pytest.mark.parametrize(
+    ("side", "reduce_only", "position_size"),
+    [
+        (OrderSide.BUY, False, "0.01000"),
+        (OrderSide.SELL, True, "0"),
+    ],
+)
+def test_strategy_market_ioc_wire_limit_maps_to_native_market(side, reduce_only, position_size):
+    client = ClientOrderId(CLIENT)
+    venue = VenueOrderId("7")
+    order = MarketOrder(
+        TRADER, STRATEGY, HL_BTC.id, client, side,
+        Quantity.from_str("0.01000"), UUID4(), 90_000_000,
+        time_in_force=TimeInForce.IOC, reduce_only=reduce_only,
+    )
+    order.apply(OrderAccepted(
+        TRADER, STRATEGY, HL_BTC.id, client, venue, ACCOUNT_ID,
+        UUID4(), 90_000_000, 90_000_000,
+    ))
+    order.apply(OrderFilled(
+        TRADER, STRATEGY, HL_BTC.id, client, venue, ACCOUNT_ID,
+        TradeId("9"), None, side, OrderType.MARKET,
+        Quantity.from_str("0.01000"), Price.from_str("60000.0"),
+        USDC, Money(Decimal("0.27"), USDC), LiquiditySide.TAKER,
+        UUID4(), 100_000_000, 100_000_000,
+    ))
+    data = raw(anchor_qty="0.01000", anchor_fee="0.27")
+    row = data["orderStatus"]["order"]["order"]
+    row.update(
+        side="B" if side == OrderSide.BUY else "A",
+        origSz="0.01000", sz="0", reduceOnly=reduce_only,
+        orderType="Limit", tif="Ioc", limitPx="60200.0",
+    )
+    data["orderStatus"]["order"]["status"] = "filled"
+    data["frontendOpenOrders"] = []
+    data["userFillsByTime"][0].update(
+        side="B" if side == OrderSide.BUY else "A",
+        px="60000.0", crossed=True,
+    )
+    if position_size == "0":
+        data["clearinghouseState"]["assetPositions"] = []
+    else:
+        data["clearinghouseState"]["assetPositions"][0]["position"].update(
+            szi=position_size, entryPx="60000.123456",
+        )
+    mass = convert(data, native=order, applied=frozenset({"9"}))
+    report = next(iter(mass.order_reports.values()))
+    assert report.order_type == OrderType.MARKET
+    assert report.time_in_force == TimeInForce.IOC
+    assert report.price is None
+    assert report.reduce_only is reduce_only
+    assert report.filled_qty.as_decimal() == Decimal("0.01")
+    assert sum(map(len, mass.fill_reports.values())) == 1
+    if position_size == "0":
+        assert not mass.position_reports
+    else:
+        position = next(iter(mass.position_reports.values()))[0]
+        assert position.avg_px_open == Decimal("60000.123456")
+
+
+def test_market_wire_shape_and_absent_native_ioc_kind_fail_closed():
+    data = raw(anchor_qty="0.005", anchor_fee="0.045")
+    row = data["orderStatus"]["order"]["order"]
+    row.update(origSz="0.005", sz="0", tif="Ioc", limitPx="60020.0")
+    data["orderStatus"]["order"]["status"] = "filled"
+    data["frontendOpenOrders"] = []
+    with pytest.raises(IncompleteInfoReport, match="NATIVE_IOC_KIND_UNPROVED"):
+        convert(data, applied=frozenset(), known_oid=None)
