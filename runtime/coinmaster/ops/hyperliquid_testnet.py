@@ -30,6 +30,7 @@ from nautilus_trader.core import nautilus_pyo3
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.currencies import USDC
+from nautilus_trader.model.enums import TimeInForce
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 from nautilus_trader.model.objects import Money
 

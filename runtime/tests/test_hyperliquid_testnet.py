@@ -32,7 +32,7 @@ from coinmaster.ops.stage_g_config import load_candidate
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
 from coinmaster.venues.marks import venue_mark_data_type
 from nautilus_trader.model.data import BarSpecification, BarType
-from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType
+from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType, TimeInForce
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 
 
@@ -273,6 +273,46 @@ def test_observation_node_registers_only_feed_observer_and_has_no_native_order_p
     assert isinstance(observation.node.trader.added[0], FeedObserver)
     assert not hasattr(observation, "strategy")
 
+
+
+def test_stageg_prime_registers_trading_strategy_with_native_market_exit(tmp_path) -> None:
+    from coinmaster.venues.hyperliquid_profile import HyperliquidProfileEnvironment, HyperliquidVenueProfile
+
+    class Trader:
+        def __init__(self) -> None:
+            self.added = []
+
+        def add_strategy(self, strategy) -> None:
+            self.added.append(strategy)
+
+    runtime = PaperRuntime(tmp_path / "stageg-prime.sqlite", "hl-stageg-testnet", int(120e9), require_native_cash=True)
+    runtime.acquire()
+    try:
+        node = HyperliquidTestnetNode.__new__(HyperliquidTestnetNode)
+        node.warmup_bundle = SimpleNamespace(bars=())
+        node.warmup_state = "READY"
+        node.gate = SimpleNamespace(attachable=True, execution_policy_hash="policy")
+        node.profile = HyperliquidVenueProfile.from_snapshot(ROOT, environment=HyperliquidProfileEnvironment.MAINNET)
+        node.starting_cash = Decimal("10000")
+        node.candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
+        node.hooks = SimpleNamespace(record_event=lambda event: None)
+        node.state = runtime
+        node.instance = SimpleNamespace(instance_id="hl-stageg-testnet")
+        node._sandbox_exchange = lambda: SimpleNamespace()
+        node.node = SimpleNamespace(trader=Trader())
+        node.feed = FeedBook(ids=(BTC_PERP, SOL_PERP))
+        node.feed_observer = None
+        node.strategy = None
+        node.prime_error = None
+
+        node.prime()
+
+        assert node.prime_error is None
+        assert [type(item).__name__ for item in node.node.trader.added] == ["FeedObserver", "WaveOverlayStrategy"]
+        assert node.strategy.config.market_exit_time_in_force == TimeInForce.IOC
+        assert node.strategy.config.market_exit_reduce_only is True
+    finally:
+        runtime.close()
 
 def test_unverified_worker_poll_does_not_snapshot_empty_native_cache_as_reconciled(tmp_path) -> None:
     from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker
