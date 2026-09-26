@@ -189,18 +189,8 @@ if [[ "$ACTION" == stage ]]; then
   check_no_jobs "$(source_db)"
   PAPER_BEFORE="$(pid "$PAPER")"; TRADER_BEFORE="$(pid "$TRADER")"
   TOKEN="$(token_from_paper_env)"
-  WORKER_FINGERPRINT="$(COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY'
-import json, os, urllib.request
-request = urllib.request.Request('http://127.0.0.1:18182/api/v1/instances/hl-stageg-testnet', headers={'Authorization': f"Bearer {os.environ['COINMASTER_RUNTIME_API_TOKEN']}"})
-with urllib.request.urlopen(request, timeout=3) as response:
-    projection = json.loads(response.read())
-state = projection.get('projection_state')
-strategy = projection.get('hashes', {}).get('strategy_sha256')
-if state not in {'READY', 'STALE', 'UNAVAILABLE', 'INVALID'} or not isinstance(strategy, str) or len(strategy) != 64:
-    raise SystemExit('current worker projection fingerprint is incomplete')
-print(state); print(strategy)
-PY
-)"
+  WORKER_FINGERPRINT="$(python3 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/scripts/native_gui_worker_gate.py \
+    --url http://127.0.0.1:18183/status)"
   WORKER_STATE="${WORKER_FINGERPRINT%%$'\n'*}"
   WORKER_STRATEGY="${WORKER_FINGERPRINT#*$'\n'}"
   GUI_AUTH_RAW="$(python3 - "$ENV_FILE" "$TOKEN" <<'PY'
