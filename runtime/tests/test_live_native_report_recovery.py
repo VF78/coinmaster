@@ -413,6 +413,7 @@ async def _run_child():
         )
         active = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
         active.acquire()
+        client._cm_runtime = active  # Same binding as the selected owner factory.
         strategy._probe_engine = node.kernel.exec_engine
         bind_clean_flat_live_handover(client, strategy, active, monitor_interval_secs=0.01)
     if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
@@ -493,6 +494,85 @@ async def _run_child():
         assert strategy._validated_live_money().equity == Decimal("10000")
         client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
         failure = os.environ.get("CM_FAKE_PARITY_FAILURE", "account")
+        if failure == "denied":
+            from nautilus_trader.model.events import OrderDenied
+
+            now = node.kernel.clock.timestamp_ns()
+            active.snapshot(
+                ts_ns=now, positions=[], orders=[], funding_event_ids=[],
+                native_account_total="10000", strategy_restartable=True,
+            )
+            strategy.attach_recovery_runtime(active)
+            episode = Episode("episode-denied", 1, 10000, 1.2)
+            intent = Intent("intent-denied", episode.id, "BTC_ENTRY", None, 1, quantity=0.01)
+            episode.pending[intent.id] = intent
+            strategy._domain.episode = episode
+            order = strategy.order_factory.market(
+                instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
+                quantity=Quantity.from_str("0.01000"), time_in_force=TimeInForce.IOC,
+            )
+            client_order_id = str(order.client_order_id)
+            strategy._pending_by_order[client_order_id] = intent
+            strategy._sigma_by_order[client_order_id] = None
+            strategy._decision_index_by_order[client_order_id] = 1483
+            sink = LiveRecoverySubmissionSink(active, strategy, frozenset({str(HL_BTC.id)}))
+            assert sink(
+                client_order_id=client_order_id, intent_id=intent.id,
+                episode_id=episode.id, action="BTC_ENTRY",
+                instrument_id=str(HL_BTC.id), quantity="0.01000", reduce_only=False,
+            )
+            node.cache.add_order(order, client_id=ClientId("HYPERLIQUID"))
+            denied = OrderDenied(
+                node.trader.id, strategy.id, HL_BTC.id, order.client_order_id,
+                "native local risk denial", UUID4(), now,
+            )
+            order.apply(denied)
+            strategy.on_order_event(denied)
+            strategy.on_order_denied(denied)
+            assert active.all_submissions()[0]["state"] == "TERMINAL"
+            assert active.strategy_checkpoint()[0] == strategy.on_save()["wave_overlay_live_recovery_v1"]
+            assert client_order_id not in strategy._pending_by_order
+            terminal_revision = active.native_revision()
+            for _ in range(200):
+                if (client._cm_last_revision == terminal_revision
+                    and strategy.recovery_confirmed and client.recovery_healthy()):
+                    break
+                await asyncio.sleep(0.01)
+            assert client._cm_last_revision == terminal_revision, client._cm_ws_failure
+            assert strategy.recovery_confirmed and client.recovery_healthy()
+            strategy._require_recovery_confirmed()
+            active.snapshot(
+                ts_ns=node.kernel.clock.timestamp_ns(), positions=[], orders=[],
+                funding_event_ids=[], native_account_total="10000",
+                strategy_restartable=True,
+            )
+            next_episode = Episode("episode-next", 1, 10000, 1.2)
+            next_intent = Intent("intent-next", next_episode.id, "BTC_ENTRY", None, 1, quantity=0.01)
+            next_episode.pending[next_intent.id] = next_intent
+            strategy._domain.episode = next_episode
+            next_order = strategy.order_factory.market(
+                instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
+                quantity=Quantity.from_str("0.01000"), time_in_force=TimeInForce.IOC,
+            )
+            next_id = str(next_order.client_order_id)
+            strategy._pending_by_order[next_id] = next_intent
+            strategy._sigma_by_order[next_id] = None
+            strategy._decision_index_by_order[next_id] = 1484
+            assert sink(
+                client_order_id=next_id, intent_id=next_intent.id,
+                episode_id=next_episode.id, action="BTC_ENTRY",
+                instrument_id=str(HL_BTC.id), quantity="0.01000", reduce_only=False,
+            )
+            print("DENIAL_PARITY_PROOF=" + json.dumps({
+                "reconciled_before_on_start": strategy._on_start_reconciled,
+                "terminal_checkpoint_matches": True,
+                "full_periodic_verifier_healthy": True,
+                "next_durable_submit": active.pending_submissions()[0]["client_order_id"] == next_id,
+            }), flush=True)
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+            active.close()
+            return
         if failure == "account":
             account = client.parity_data["clearinghouseState"]
             for summary in ("marginSummary", "crossMarginSummary"):
@@ -1004,3 +1084,31 @@ def test_connected_clean_flat_production_handover_revokes_on_failure(tmp_path, f
     assert proof["on_start_after_reconcile"] and proof["confirmed_after_strict_parity"]
     assert proof["revoked_after_failure"]
     assert not submit_log.exists()
+
+
+def test_connected_local_denial_keeps_full_periodic_parity_and_next_submit(tmp_path):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state, journal, submit_log = (tmp_path / name for name in ("state.json", "intents.sqlite", "submits.txt"))
+    state.write_text('{"partial": false}')
+    env = dict(
+        os.environ, CM_FAKE_VENUE_STATE=str(state), CM_FAKE_JOURNAL=str(journal),
+        CM_FAKE_SUBMIT_LOG=str(submit_log),
+        CM_FAKE_TRADER_ID="HL-DENIED-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
+        CM_FAKE_PRODUCTION_PARITY="1", CM_FAKE_SCOPED_OWNER="1",
+        CM_FAKE_PARITY_FAILURE="denied",
+    )
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    run = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert run.returncode == 0, run.stderr
+    proof = json.loads(next(
+        line.split("=", 1)[1] for line in run.stdout.splitlines()
+        if line.startswith("DENIAL_PARITY_PROOF=")
+    ))
+    assert proof == {
+        "reconciled_before_on_start": True,
+        "terminal_checkpoint_matches": True,
+        "full_periodic_verifier_healthy": True,
+        "next_durable_submit": True,
+    }
+    assert not submit_log.exists()  # No fake or external execution call.

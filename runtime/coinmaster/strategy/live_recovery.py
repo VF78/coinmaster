@@ -306,6 +306,35 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def attach_recovery_runtime(self, runtime) -> None:
         self._recovery_runtime = runtime
 
+    def _terminal_submission(self, client_order_id: str) -> None:
+        if self._recovery_runtime is None:
+            return super()._terminal_submission(client_order_id)
+        if getattr(self, "_terminal_checkpoint_deferred", None) != client_order_id:
+            try:
+                self._recovery_runtime.terminal_submission(client_order_id, self.on_save()[_KEY])
+            except BaseException:
+                self.recovery_confirmed = False
+                raise
+
+    def _terminal_without_fill(self, client_order_id: str) -> None:
+        # The base callback removes pending/domain state after its terminal hook.
+        # Commit the journal transition and the resulting checkpoint together.
+        self._terminal_checkpoint_deferred = client_order_id
+        try:
+            super()._terminal_without_fill(client_order_id)
+        finally:
+            self._terminal_checkpoint_deferred = None
+        self._terminal_submission(client_order_id)
+
+    def on_order_canceled(self, event) -> None:
+        client_order_id = str(event.client_order_id)
+        self._terminal_checkpoint_deferred = client_order_id
+        try:
+            super().on_order_canceled(event)
+        finally:
+            self._terminal_checkpoint_deferred = None
+        self._terminal_submission(client_order_id)
+
     def _after_domain_fill(self, event) -> None:
         if self._recovery_runtime is None:
             raise RuntimeError("RECOVERY_JOURNAL_NOT_ATTACHED")

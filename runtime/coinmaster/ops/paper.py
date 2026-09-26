@@ -256,11 +256,29 @@ class PaperRuntime:
         self.db.commit()
 
     @_journal_locked
-    def terminal_submission(self, client_order_id: str) -> None:
-        changed = self.db.execute("UPDATE paper_intents SET state='TERMINAL' WHERE client_order_id=? AND state!='TERMINAL'", (client_order_id,)).rowcount
-        if changed:
-            self._bump_native_revision()
-        self.db.commit()
+    def terminal_submission(self, client_order_id: str, strategy_state: bytes | None = None) -> None:
+        if strategy_state is not None and (not isinstance(strategy_state, bytes) or not strategy_state):
+            raise ValueError("INVALID_STRATEGY_CHECKPOINT")
+        try:
+            changed = self.db.execute(
+                "UPDATE paper_intents SET state='TERMINAL' WHERE client_order_id=? AND state!='TERMINAL'",
+                (client_order_id,),
+            ).rowcount
+            if changed:
+                self._bump_native_revision()
+                if strategy_state is not None:
+                    self.db.execute(
+                        "INSERT OR REPLACE INTO paper_strategy_checkpoint VALUES (1, ?, ?)",
+                        (strategy_state, self.native_revision()),
+                    )
+            elif strategy_state is not None and not self.db.execute(
+                "SELECT 1 FROM paper_intents WHERE client_order_id=?", (client_order_id,),
+            ).fetchone():
+                raise ValueError("UNKNOWN_TERMINAL_SUBMISSION")
+            self.db.commit()
+        except BaseException:
+            self.db.rollback()
+            raise
 
     @_journal_locked
     def pending_submissions(self) -> list[dict]:
