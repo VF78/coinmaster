@@ -1,3 +1,5 @@
+2026-09-26 CM-05 Stage-G Sandbox cutover checkpoint: owner-approved strategy SHA 16a8bd9bf8de177832cff820ab8997de2254567158ddc24393c3b145ed8c9851 sealed in b13cc6b; 78 focused tests passed; genuine 24m warmup and installed preflight passed. Only Stage-G service restarted on installed b13cc6b, old virtual BTC/TP preserved in rollback then intentionally discarded; new flat Sandbox has 10,000 USDC, BTC/SOL feeds READY, PID 1154285/NRestarts=0, live_order_capability=false. Runtime entries remain fail-closed: STRATEGY_LIVE_SESSION_MISSING until a post-start paired live daily close, earliest 2026-09-27 00:00 UTC; do not mark DRY_RUN_STARTED yet. See .ops/CM05_SANDBOX_CUTOVER_20260926.md.
+
 2026-09-26 architecture correction: The streaming BacktestEngine production-host idea is superseded. Keep one TradingNode with native Sandbox for dry-run; any future live path must use native LiveExecutionEngine/cache reconciliation, with CoinMaster limited to durable intent/episode state and native report-completeness checks.
 Pinned Nautilus 1.231 Sandbox cannot fully restore an open exchange position; open-position restart remains blocked and fail-closed.
 
