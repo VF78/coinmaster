@@ -14,19 +14,21 @@ CLOID = "0x" + "b" * 32
 ORDER = {
     "coin": "BTC", "oid": 7, "cloid": CLOID, "sz": "0.025",
     "origSz": "0.03", "side": "A", "reduceOnly": True,
+    "orderType": "Limit", "tif": "Alo", "limitPx": "60010", "timestamp": 90,
 }
 ANCHOR = {
     "coin": "BTC", "oid": 7, "tid": 9, "time": 100,
     "side": "A", "sz": "0.005", "px": "60010",
-    "fee": "0.045", "feeToken": "USDC", "hash": "0xabc",
+    "fee": "0.045", "feeToken": "USDC", "hash": "0xabc", "crossed": False,
 }
 BASE = {
     "frontendOpenOrders": [ORDER],
     "clearinghouseState": {
-        "assetPositions": [{"position": {"coin": "BTC", "szi": "0.025"}}],
-        "marginSummary": {"accountValue": "9999.19"},
+        "assetPositions": [{"position": {"coin": "BTC", "szi": "0.025", "entryPx": "60000"}}],
+        "marginSummary": {"accountValue": "9999.19", "totalRawUsd": "10000", "totalMarginUsed": "100", "totalNtlPos": "1500"},
+        "withdrawable": "9900",
     },
-    "orderStatus": {"status": "order", "order": {"order": ORDER, "status": "open"}},
+    "orderStatus": {"status": "order", "order": {"order": deepcopy(ORDER), "status": "open", "statusTimestamp": 95}},
     "userFillsByTime": [ANCHOR],
 }
 
@@ -60,6 +62,7 @@ def collect(fake=None, **kwargs):
 
 def test_partial_tp_conditional_receipt_and_lost_ack_cloid_resolution():
     fake = FakeInfo()
+    del fake.data["frontendOpenOrders"][0]["tif"]
     receipt = collect(fake)
     assert receipt.conditional_only and receipt.fill_anchor_proven
     assert len(receipt.fills) == len(receipt.open_orders) == len(receipt.positions) == 1
@@ -115,7 +118,8 @@ def test_foreign_open_order_and_position_fail_closed():
         ("frontendOpenOrders", [{**ORDER, "oid": 8}]),
         ("clearinghouseState", {
             "assetPositions": [{"position": {"coin": "ETH", "szi": "1"}}],
-            "marginSummary": {"accountValue": "9999"},
+            "marginSummary": {"accountValue": "9999", "totalRawUsd": "10000", "totalMarginUsed": "100", "totalNtlPos": "1500"},
+            "withdrawable": "9900",
         }),
     ):
         data = deepcopy(BASE)
@@ -206,3 +210,45 @@ def test_oid_coin_must_match_open_order_and_fill():
     data["userFillsByTime"][0]["coin"] = "SOL"
     with pytest.raises(IncompleteInfoReport, match="FILL_COIN_MISMATCH"):
         collect(FakeInfo(data))
+
+
+@pytest.mark.parametrize(
+    ("part", "field", "value", "reason"),
+    [
+        ("order", "tif", None, "UNSUPPORTED_ORDER_TYPE_OR_TIF"),
+        ("order", "timestamp", None, "BAD_ORDER_TIMESTAMP"),
+        ("order", "limitPx", None, "BAD_LIMIT_PRICE"),
+        ("fill", "crossed", None, "BAD_FILL_LIQUIDITY"),
+        ("position", "entryPx", None, "BAD_POSITION_ENTRY_PRICE"),
+        ("summary", "totalRawUsd", None, "BAD_totalRawUsd"),
+    ],
+)
+def test_native_report_critical_raw_field_missing_fails_closed(part, field, value, reason):
+    data = deepcopy(BASE)
+    target = {
+        "order": data["orderStatus"]["order"]["order"],
+        "fill": data["userFillsByTime"][0],
+        "position": data["clearinghouseState"]["assetPositions"][0]["position"],
+        "summary": data["clearinghouseState"]["marginSummary"],
+    }[part]
+    target[field] = value
+    with pytest.raises(IncompleteInfoReport, match=reason):
+        collect(FakeInfo(data))
+
+
+def test_open_order_and_status_price_mismatch_fails_closed():
+    data = deepcopy(BASE)
+    data["frontendOpenOrders"][0]["limitPx"] = "60011"
+    with pytest.raises(IncompleteInfoReport, match="OPEN_ORDER_STATUS_FIELD_MISMATCH"):
+        collect(FakeInfo(data))
+
+
+def test_retained_anchor_does_not_certify_older_applied_fill_prefix():
+    data = deepcopy(BASE)
+    data["userFillsByTime"][0]["sz"] = "0.001"
+    # orderStatus says 0.005 was filled. The retained anchor proves only
+    # the latest 0.001; four prior millis may have fallen outside the window.
+    receipt = collect(FakeInfo(data))
+    assert receipt.fill_anchor_proven
+    assert receipt.conditional_only
+    assert sum(float(row["sz"]) for row in receipt.fills) == 0.001

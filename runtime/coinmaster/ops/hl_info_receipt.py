@@ -50,6 +50,23 @@ def _oid(value: Any) -> int:
     return value
 
 
+def _order_fields(row: dict) -> None:
+    """Reject raw rows missing native order-report identity or economics."""
+    if row.get("side") not in ("B", "A") or type(row.get("reduceOnly")) is not bool:
+        raise IncompleteInfoReport("BAD_ORDER_FLAGS")
+    original = _number(row.get("origSz"), "ORIGINAL_SIZE")
+    leaves = _number(row.get("sz"), "ORDER_LEAVES")
+    if original <= 0 or leaves < 0 or leaves > original:
+        raise IncompleteInfoReport("BAD_ORDER_SIZE")
+    if row.get("orderType") != "Limit" or row.get("tif") not in ("Gtc", "Ioc", "Alo"):
+        raise IncompleteInfoReport("UNSUPPORTED_ORDER_TYPE_OR_TIF")
+    if _number(row.get("limitPx"), "LIMIT_PRICE") <= 0:
+        raise IncompleteInfoReport("BAD_LIMIT_PRICE")
+    timestamp = row.get("timestamp")
+    if isinstance(timestamp, bool) or not isinstance(timestamp, int) or timestamp < 0:
+        raise IncompleteInfoReport("BAD_ORDER_TIMESTAMP")
+
+
 def _fill(row: Any, start: int, end: int) -> tuple[int, int, int]:
     if not isinstance(row, dict):
         raise IncompleteInfoReport("BAD_FILL")
@@ -67,6 +84,8 @@ def _fill(row: Any, start: int, end: int) -> tuple[int, int, int]:
     if _number(row.get("sz"), "FILL_SIZE") <= 0 or _number(row.get("px"), "FILL_PRICE") <= 0:
         raise IncompleteInfoReport("BAD_FILL_ECONOMICS")
     _number(row.get("fee"), "FILL_FEE")
+    if type(row.get("crossed")) is not bool:
+        raise IncompleteInfoReport("BAD_FILL_LIQUIDITY")
     if not isinstance(row.get("feeToken"), str) or row["feeToken"].strip() != "USDC":
         raise IncompleteInfoReport("UNKNOWN_FILL_FEE_CURRENCY")
     if not isinstance(row.get("hash"), str) or not row["hash"].startswith("0x"):
@@ -139,6 +158,11 @@ async def collect_info_receipt(
     account_value = _number(summary.get("accountValue"), "ACCOUNT_VALUE")
     if account_value < 0:
         raise IncompleteInfoReport("BAD_ACCOUNT_VALUE")
+    for field in ("totalRawUsd", "totalMarginUsed", "totalNtlPos"):
+        if _number(summary.get(field), field) < 0:
+            raise IncompleteInfoReport(f"BAD_{field}")
+    if _number(state.get("withdrawable"), "WITHDRAWABLE") < 0:
+        raise IncompleteInfoReport("BAD_WITHDRAWABLE")
 
     statuses = []
     resolved_oids = set()
@@ -167,9 +191,13 @@ async def collect_info_receipt(
         known_oids.add(actual_oid)
         if order.get("coin") not in owned_coins:
             raise IncompleteInfoReport("FOREIGN_ORDER")
-        oid_coin[actual_oid] = order["coin"]
         if item.get("status") not in ("open", "filled", "canceled"):
             raise IncompleteInfoReport("UNKNOWN_ORDER_TERMINAL")
+        _order_fields(order)
+        status_timestamp = item.get("statusTimestamp")
+        if isinstance(status_timestamp, bool) or not isinstance(status_timestamp, int) or status_timestamp < order["timestamp"]:
+            raise IncompleteInfoReport("BAD_STATUS_TIMESTAMP")
+        oid_coin[actual_oid] = order["coin"]
         statuses.append(status)
 
     open_oids = set()
@@ -181,9 +209,17 @@ async def collect_info_receipt(
             raise IncompleteInfoReport("UNKNOWN_OPEN_ORDER")
         if row["coin"] != oid_coin[oid]:
             raise IncompleteInfoReport("OPEN_ORDER_COIN_MISMATCH")
-        open_oids.add(oid)
         if _number(row.get("sz"), "OPEN_LEAVES") <= 0 or _number(row.get("origSz"), "ORIGINAL_SIZE") <= 0:
             raise IncompleteInfoReport("BAD_OPEN_ORDER_SIZE")
+        status_order = next(item["order"]["order"] for item in statuses if item["order"]["order"]["oid"] == oid)
+        # frontendOpenOrders omits some orderStatus fields (notably TIF).
+        # Compare every shared conversion field without inventing missing ones.
+        for field in ("side", "origSz", "sz", "limitPx", "reduceOnly", "orderType", "timestamp"):
+            if row.get(field) != status_order.get(field):
+                raise IncompleteInfoReport("OPEN_ORDER_STATUS_FIELD_MISMATCH")
+        if "tif" in row and row["tif"] != status_order["tif"]:
+            raise IncompleteInfoReport("OPEN_ORDER_STATUS_FIELD_MISMATCH")
+        open_oids.add(oid)
     status_open = {
         item["order"]["order"]["oid"] for item in statuses
         if item["order"]["status"] == "open"
@@ -198,7 +234,9 @@ async def collect_info_receipt(
         position = row["position"]
         if position.get("coin") not in owned_coins:
             raise IncompleteInfoReport("FOREIGN_POSITION")
-        _number(position.get("szi"), "POSITION_SIZE")
+        size = _number(position.get("szi"), "POSITION_SIZE")
+        if size and _number(position.get("entryPx"), "POSITION_ENTRY_PRICE") <= 0:
+            raise IncompleteInfoReport("BAD_POSITION_ENTRY_PRICE")
         if position["coin"] in seen_positions:
             raise IncompleteInfoReport("DUPLICATE_POSITION")
         seen_positions.add(position["coin"])
