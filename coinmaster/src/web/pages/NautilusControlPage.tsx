@@ -241,6 +241,17 @@ export function RuntimePage() {
   useEffect(() => { load(); const timer = window.setInterval(load, 5000); return () => window.clearInterval(timer); }, []);
   const runtimeHealthy = state?.projection_state === 'READY' && state.process_state !== 'DATA_STALE/PAUSED' && state.process_state !== 'WORKER_DISCONNECTED';
   const toneForProjection = runtimeHealthy ? 'success' : 'danger';
+  const entryGateMessage = state?.projection_state !== 'READY'
+    ? 'Native entry gate unavailable'
+    : state.gates.attachable === false
+      ? 'Native entry gate closed; new Sandbox entries are blocked'
+      : state.gates.attachable !== true
+        ? 'Native entry gate unknown'
+        : state.entry_control.state === 'PAUSED'
+          ? 'New Sandbox entries paused'
+          : runtimeHealthy
+            ? 'Native entry gate ready; awaiting a strategy decision'
+            : 'New Sandbox entries blocked while process or feeds are unhealthy';
   const eventRows = (state?.events ?? []).map((event) => ({ ...event, id: `${event.cursor}:${event.event_id}` }));
   const positionRows = (state?.positions ?? []).map((position) => ({ ...position, id: position.instrument_id, mark: state?.feeds[position.instrument_id]?.mark ?? null }));
   const orderRows = (state?.orders ?? []).map((order) => ({ ...order, id: order.client_order_id }));
@@ -253,7 +264,7 @@ export function RuntimePage() {
   const hasNativeActivity = (state?.events.length ?? 0) > 0;
   return <main className="terminal-layout nautilus-runtime-workspace">
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={toneForProjection}>{state ? `${state.projection_state} · ${state.process_state}` : loading ? 'LOADING' : 'UNAVAILABLE'}</Badge>}>
-      <div className="runtime-hero__heading"><div><p className="trader-hero__lead">Local Sandbox execution for BTC and SOL. Live orders are disabled.</p><p className="trader-note">Figures below come directly from the native Sandbox account read. Funding is {fundingLabel(state)} and is not included as a cash posting.</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
+      <div className="runtime-hero__heading"><div><p className="trader-hero__lead">Local Sandbox execution for BTC and SOL. Live orders are disabled.</p><p className="trader-note">{entryGateMessage}.</p><p className="trader-note">Figures below come directly from the native Sandbox account read. Funding is {fundingLabel(state)} and is not included as a cash posting.</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
       <div className="runtime-account-grid">
         {figures.map((figure) => <Stat key={figure.label} label={figure.label} value={figure.value} />)}
         <Stat label="Open exposure" value={activeExposure} />
