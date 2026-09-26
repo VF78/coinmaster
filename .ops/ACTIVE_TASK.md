@@ -1,3 +1,5 @@
+2026-09-26 CM-05 source-only execution-mode/account seam: separate live state identity selects pinned 1.231 native HL config/factory, but live worker/node fail before build/connect/submit. Native multi-currency USDC fixture reads total/free/locked and separate margin; cash/equity remain UNKNOWN because pinned adapter maps totalRawUsd, not accountValue. 24 focused/connected tests passed; 2 known exact strategy-seal cases deselected. Live strategy/economic/recovery path remains blocked; no deploy, restart, secret, or exchange call. See .ops/CM05_LIVE_MODE_SEAM.md.
+
 2026-09-26 architecture correction: The streaming BacktestEngine production-host idea is superseded. Keep one TradingNode with native Sandbox for dry-run; any future live path must use native LiveExecutionEngine/cache reconciliation, with CoinMaster limited to durable intent/episode state and native report-completeness checks.
 Pinned Nautilus 1.231 Sandbox cannot fully restore an open exchange position; open-position restart remains blocked and fail-closed.
 

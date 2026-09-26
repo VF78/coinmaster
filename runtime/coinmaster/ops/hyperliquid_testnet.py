@@ -1,9 +1,7 @@
-"""D3's isolated Hyperliquid public-data / native-sandbox dry-run boundary.
+"""Isolated Stage-G public data and mode-specific native execution config.
 
-This is not a second engine or a bespoke exchange transport.  It consumes
-Nautilus 1.231's public Hyperliquid MAINNET adapter and uses Nautilus'
-``SandboxExecutionClient`` as its *only* execution route.  It has no API
-wallet, account query, Hyperliquid execution factory, or exchange-order path.
+The running dry-run uses Nautilus 1.231 Sandbox. A distinct live identity
+selects Nautilus Hyperliquid execution config but is blocked before node build.
 """
 from __future__ import annotations
 
@@ -21,8 +19,8 @@ from typing import Mapping
 
 from nautilus_trader.adapters.bybit import BybitLiveDataClientFactory
 from nautilus_trader.adapters.bybit.config import BybitDataClientConfig
-from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory
-from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig
+from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory, HyperliquidLiveExecClientFactory
+from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig, HyperliquidExecClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.adapters.sandbox.execution import SandboxExecutionClient
 from nautilus_trader.adapters.sandbox.factory import SandboxLiveExecClientFactory
@@ -39,6 +37,7 @@ from coinmaster.domain.wave_overlay import Candidate, DailyBar
 from coinmaster.ops.native_paper_node import BYBIT_IDS, DAY_NS, FeedBook, FeedObserver, FeedObserverConfig, WarmupBundle, bybit_daily_bar_type, sandbox_cash_posting_supported, scrub_private_execution_environment
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, model_fx_pair_and_quote, model_fx_ready
+from coinmaster.ops.hl_native_account import native_usdc_balances
 from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
 from coinmaster.ops.stage_g_config import TestnetInstanceConfig, candidate_content_hash
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
@@ -306,9 +305,18 @@ def require_testnet_sandbox(environment: Mapping[str, str] | None = None) -> Non
         raise RuntimeError("HL_PUBLIC_MAINNET_ENVIRONMENT_GUARD")
 
 
-def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = Decimal("10000")) -> TradingNodeConfig:
-    """Build public Bybit signals + HL MAINNET execution data + Sandbox."""
-    if not starting_cash.is_finite() or starting_cash <= 0:
+def execution_factory_for_mode(mode: str):
+    if mode == "sandbox":
+        return "SANDBOX", HyperliquidUsdcSandboxFactory
+    if mode == "live":
+        return "HYPERLIQUID-LIVE", HyperliquidLiveExecClientFactory
+    raise ValueError("UNKNOWN_EXECUTION_MODE")
+
+
+def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = Decimal("10000"), execution_mode: str = "sandbox") -> TradingNodeConfig:
+    """Build one native execution route; constructing the config never loads secrets."""
+    execution_factory_for_mode(execution_mode)
+    if execution_mode == "sandbox" and (not starting_cash.is_finite() or starting_cash <= 0):
         raise ValueError("INVALID_NATIVE_SANDBOX_STARTING_CASH")
     provider = InstrumentProviderConfig(load_ids=frozenset(TESTNET_IDS))
     routing = RoutingConfig(venues=frozenset({"HYPERLIQUID"}))
@@ -334,37 +342,47 @@ def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = 
         exec_clients={
             "SANDBOX": SandboxExecutionClientConfig(
                 venue="HYPERLIQUID",
-                # Stage-G sealed research begins with 10,000 USDT.  The
-                # Sandbox denomination is 10,000 USDC under an explicit
-                # 1:1 peg assumption; this is not an assertion of parity.
+                # Stage-G sealed research begins with 10,000 USDT. The
+                # Sandbox denomination uses an explicit nominal 1:1 model.
                 starting_balances=[f"{starting_cash} USDC"],
                 base_currency="USDC",
                 leverages=dict(SANDBOX_LEVERAGES),
                 use_reduce_only=True,
                 routing=routing,
             ),
+        } if execution_mode == "sandbox" else {
+            "HYPERLIQUID-LIVE": HyperliquidExecClientConfig(
+                instrument_provider=provider, routing=routing,
+                environment=PUBLIC_MAINNET_ENVIRONMENT,
+                private_key=None, vault_address=None, account_address=None,
+            ),
         },
     )
 
 
-def assert_native_testnet_only(config: TradingNodeConfig) -> None:
-    """Allow two public data-only venues and exactly one Sandbox exec route."""
+def assert_native_testnet_only(config: TradingNodeConfig, execution_mode: str = "sandbox") -> None:
+    """Require exactly one mode-specific native execution route."""
     expected_data = {"BYBIT-PUBLIC-SIGNAL", "HYPERLIQUID-MAINNET-DATA"}
-    if set(config.data_clients) != expected_data or set(config.exec_clients) != {"SANDBOX"}:
+    client_key, factory = execution_factory_for_mode(execution_mode)
+    if set(config.data_clients) != expected_data or set(config.exec_clients) != {client_key}:
         raise RuntimeError("HL_TESTNET_SINGLE_NATIVE_ROUTE_REQUIRED")
     bybit = config.data_clients["BYBIT-PUBLIC-SIGNAL"]
     data = config.data_clients["HYPERLIQUID-MAINNET-DATA"]
-    execution = config.exec_clients["SANDBOX"]
-    if not isinstance(bybit, BybitDataClientConfig) or not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, SandboxExecutionClientConfig):
+    execution = config.exec_clients[client_key]
+    expected_type = SandboxExecutionClientConfig if execution_mode == "sandbox" else HyperliquidExecClientConfig
+    if not isinstance(bybit, BybitDataClientConfig) or not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, expected_type):
         raise RuntimeError("HL_TESTNET_NATIVE_CONFIG_REQUIRED")
     if bybit.api_key is not None or bybit.api_secret is not None:
         raise RuntimeError("HL_TESTNET_BYBIT_SIGNAL_CLIENT_MUST_BE_PUBLIC")
     if data.environment is not PUBLIC_MAINNET_ENVIRONMENT:
         raise RuntimeError("HL_TESTNET_MAINNET_OR_UNSET_ENVIRONMENT")
-    if execution.venue != "HYPERLIQUID" or execution.base_currency != "USDC":
-        raise RuntimeError("HL_TESTNET_SANDBOX_VENUE_OR_CURRENCY_MISMATCH")
-    if NATIVE_TESTNET_FACTORIES != (HyperliquidUsdcSandboxFactory,) or not issubclass(HyperliquidUsdcSandboxFactory, SandboxLiveExecClientFactory):
-        raise RuntimeError("HL_TESTNET_EXECUTION_ALLOWLIST_MISMATCH")
+    if execution_mode == "sandbox":
+        if execution.venue != "HYPERLIQUID" or execution.base_currency != "USDC":
+            raise RuntimeError("HL_TESTNET_SANDBOX_VENUE_OR_CURRENCY_MISMATCH")
+        if factory is not HyperliquidUsdcSandboxFactory or not issubclass(factory, SandboxLiveExecClientFactory):
+            raise RuntimeError("HL_TESTNET_EXECUTION_ALLOWLIST_MISMATCH")
+    elif execution.environment is not PUBLIC_MAINNET_ENVIRONMENT or factory is not HyperliquidLiveExecClientFactory:
+        raise RuntimeError("HL_LIVE_NATIVE_FACTORY_MISMATCH")
 
 
 class HyperliquidTestnetNode:
@@ -387,12 +405,16 @@ class HyperliquidTestnetNode:
             profile_root=self.profile_root,
         )
         self.loop = asyncio.new_event_loop()
-        self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id, starting_cash=starting_cash)
-        assert_native_testnet_only(self.config)
+        self.config = hyperliquid_testnet_node_config(trader_id=instance.trader_id, starting_cash=starting_cash, execution_mode=instance.mode)
+        assert_native_testnet_only(self.config, instance.mode)
+        if instance.mode != "sandbox":
+            # A later approval must supply native account economics, complete
+            # recovery, and a guarded order route before building a live node.
+            raise RuntimeError("HL_LIVE_ROUTE_NOT_APPROVED")
         self.node = TradingNode(config=self.config, loop=self.loop)
         self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
         self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
-        self.node.add_exec_client_factory("SANDBOX", HyperliquidUsdcSandboxFactory)
+        self.node.add_exec_client_factory(*execution_factory_for_mode(instance.mode))
         self.node.build()
         # Model-only, constant 1:1 USD/USDC assumption in the same venue's
         # native Cache FX graph. This is never subscribed to public data.
@@ -467,12 +489,7 @@ class HyperliquidTestnetNode:
 
     def native_account_total(self) -> Decimal:
         account = self.node.cache.account_for_venue(BTC_PERP.venue)
-        if account is None or account.base_currency is None or account.base_currency.code != "USDC":
-            raise ValueError("NATIVE_USDC_ACCOUNT_MISSING")
-        total = account.balance_total(account.base_currency)
-        if total is None:
-            raise ValueError("NATIVE_USDC_TOTAL_MISSING")
-        return total.as_decimal()
+        return native_usdc_balances(account)["total"]
 
     def strategy_restartable(self) -> bool:
         strategy = self.strategy

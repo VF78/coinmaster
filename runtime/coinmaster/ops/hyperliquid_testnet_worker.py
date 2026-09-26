@@ -33,6 +33,8 @@ class TestnetWorker:
         if not path:
             raise ConfigurationError("MISSING_HL_TESTNET_INSTANCE_CONFIG")
         self.instance = load_testnet_instance_config(Path(path))
+        if self.instance.mode != "sandbox":
+            raise RuntimeError("HL_LIVE_ROUTE_NOT_APPROVED")
         self.control_available = bool(environment.get("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
         self.run_epoch = uuid.uuid4().hex
         require_testnet_sandbox(environment)

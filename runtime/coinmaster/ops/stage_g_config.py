@@ -39,9 +39,8 @@ class InstanceConfig:
 class TestnetInstanceConfig:
     """Identity envelope for the isolated Hyperliquid testnet process.
 
-    It contains no address, credential, or account-query setting. Corrected
-    D3 consumes public testnet data and routes all local execution through
-    Nautilus SandboxExecutionClient.
+    It contains no address, credential, or account-query setting. Sandbox
+    and unapproved live identities have disjoint state and warmup namespaces.
     """
     instance_id: str
     venue: str
@@ -166,18 +165,21 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
     strings = {name: document[name] for name in names if name not in {"strategy_config", "signal_warmup_manifest", "state_db"}}
     if any(not isinstance(value, str) or not value.strip() for value in strings.values()):
         raise ConfigurationError("INVALID_TESTNET_INSTANCE_VALUE")
+    identities = {"sandbox": "hl-stageg-testnet", "live": "hl-stageg-live"}
+    mode = document["mode"]
     if (
-        document["instance_id"] != "hl-stageg-testnet"
+        mode not in identities
+        or document["instance_id"] != identities[mode]
         or document["venue"] != "HYPERLIQUID"
         or document["environment"] != "mainnet"
-        or document["mode"] != "sandbox"
     ):
         raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
     if document["strategy_config"] != "/srv/coinmaster/runtime/configs/stage-g-v1.json":
         raise ConfigurationError("UNSAFE_TESTNET_STRATEGY_PATH")
-    if document["signal_warmup_manifest"] != "/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json":
+    state_root = f"/var/lib/coinmaster-{identities[mode]}"
+    if document["signal_warmup_manifest"] != f"{state_root}/data/current/manifest.json":
         raise ConfigurationError("UNSAFE_TESTNET_WARMUP_PATH")
-    if document["state_db"] != "/var/lib/coinmaster-hl-stageg-testnet/hl-stageg-testnet.sqlite":
+    if document["state_db"] != f"{state_root}/{identities[mode]}.sqlite":
         raise ConfigurationError("UNSAFE_TESTNET_STATE_DB_PATH")
     base = path.resolve().parent
     for name in ("strategy_config", "signal_warmup_manifest", "state_db"):

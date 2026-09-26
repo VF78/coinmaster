@@ -92,8 +92,6 @@ def test_native_config_has_one_mainnet_data_and_native_sandbox_execution_route()
     assert sandbox_cash_posting_supported() is True
     assert_native_testnet_only(config)
     source = (ROOT / "coinmaster/ops/hyperliquid_testnet.py").read_text()
-    assert "HyperliquidLiveExecClientFactory" not in source
-    assert "HyperliquidExecClientConfig" not in source
     assert "HYPERLIQUID_TESTNET_PK" not in source
     assert "SandboxLiveExecClientFactory" in source
 
