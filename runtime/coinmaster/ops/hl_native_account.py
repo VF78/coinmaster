@@ -36,8 +36,9 @@ def native_usdc_balances(account) -> dict[str, Decimal]:
 def native_live_usdc_projection(account) -> dict[str, str | None]:
     """Expose reported HL balances without fabricating cash or account equity.
 
-    Pinned 1.231 maps `balance_total` from HL `totalRawUsd`, which is not
-    `accountValue`. Native account-wide margin is kept separate from locked.
+    Pinned 1.231 starts from HL `totalRawUsd` but raises a nonnegative total
+    to `withdrawable` when free exceeds it. This native total is not the HL
+    `accountValue`. Account-wide margin is kept separate from locked.
     """
     amounts = native_usdc_balances(account)
     margin = account.account_margins().get(USDC) if callable(getattr(account, "account_margins", None)) else None

@@ -26,7 +26,7 @@ from coinmaster.ops.stage_g_config import ConfigurationError, load_testnet_insta
 
 def _native_account(total='100', locked='20', free='80', *, include_usdc=True):
     balances = [AccountBalance(Money(total, USDC), Money(locked, USDC), Money(free, USDC))] if include_usdc else []
-    margins = [MarginBalance(Money('15', USDC), Money('8', USDC), None)]
+    margins = [MarginBalance(Money('15', USDC), Money('15', USDC), None)]
     event = AccountState(AccountId('HYPERLIQUID-master'), AccountType.MARGIN, None, True,
                          balances, margins, {}, UUID4(), 1, 1)
     return MarginAccount(event)
@@ -38,12 +38,13 @@ def test_native_multicurrency_usdc_balances_preserve_pending_lock_and_do_not_inf
     assert native_usdc_balances(account) == {
         'total': Decimal('100'), 'free': Decimal('80'), 'locked': Decimal('20'),
     }
-    # HL account-wide margin is a distinct report; it is not native locked balance.
+    # Adapter-shaped account-wide margin uses one totalMarginUsed source for
+    # both fields. This fixture tests getters, not actual venue economics.
     assert account.account_margins()[USDC].initial.as_decimal() == Decimal('15')
-    assert account.account_margins()[USDC].maintenance.as_decimal() == Decimal('8')
+    assert account.account_margins()[USDC].maintenance.as_decimal() == Decimal('15')
     projection = native_live_usdc_projection(account)
     assert tuple(Decimal(projection[key]) for key in ('native_balance_total', 'native_free', 'native_locked')) == (Decimal('100'), Decimal('80'), Decimal('20'))
-    assert tuple(Decimal(projection[key]) for key in ('native_margin_initial', 'native_margin_maintenance')) == (Decimal('15'), Decimal('8'))
+    assert tuple(Decimal(projection[key]) for key in ('native_margin_initial', 'native_margin_maintenance')) == (Decimal('15'), Decimal('15'))
     assert projection['cash'] is None and projection['equity'] is None
     assert projection['money_state'] == 'UNKNOWN_NATIVE_HL_ACCOUNT_VALUE_UNMAPPED'
     assert native_usdc_balances(_native_account('100', '0', '100'))['locked'] == 0
