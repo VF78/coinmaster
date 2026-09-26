@@ -165,6 +165,28 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         view.require_fresh(time.time_ns() // 1_000_000, 10_000)
         return view
 
+    def _halt_on_deferred_daily_decision(self) -> bool:
+        return True
+
+    def _advance_current_day(self) -> None:
+        # A native open position cannot bypass a stale venue money view.
+        try:
+            self._validated_live_money()
+        except ValueError:
+            if self._current_btc is not None:
+                self._deferred_entry_session = self._current_btc.ts_event
+                self._daily_decision_reason = "DEFERRED_LIVE_MONEY"
+            return
+        super()._advance_current_day()
+
+    def _retry_deferred_daily_decision(self) -> None:
+        if self._current_btc is None or self._deferred_entry_session != self._current_btc.ts_event:
+            return
+        if not self._entries_enabled():
+            return
+        self._deferred_entry_session = None
+        self._advance_current_day()
+
     def _active_marked(self, btc_mark: VenueMark, sol_mark: VenueMark) -> float:
         # Venue accountValue is already marked; do not add native UPNL twice.
         return float(self._validated_live_money().equity)

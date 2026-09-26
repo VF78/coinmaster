@@ -522,3 +522,57 @@ def test_failed_post_drain_verifier_never_releases_order_gate():
     assert strategy.recovery_confirmed is False
     with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
         strategy.submit_order()
+
+
+def test_stale_live_money_defers_open_exposure_daily_decision_and_retries_once():
+    import time
+    from coinmaster.ops.hl_live_money import LivePerpsMoneyView
+
+    class OpenExposureProbe(RecoverableWaveOverlayStrategy):
+        @property
+        def cache(self):
+            return SimpleNamespace(positions_open=lambda: [object()])
+
+    strategy = OpenExposureProbe(_strategy().config)
+    now_ms = time.time_ns() // 1_000_000
+    current_view = [LivePerpsMoneyView(
+        "0x" + "a" * 40, "", 1,
+        Decimal("10000"), Decimal("9000"), Decimal("100"), Decimal("5000"),
+    )]
+    strategy.attach_live_money_view(lambda: current_view[0])
+    strategy.recovery_confirmed = True
+    strategy._feeds_fresh = lambda *_args: True
+    strategy._entries_enabled = lambda: current_view[0].end_ms > 1
+    session = 86_400_000_000_000
+    current = SimpleNamespace(ts_event=session)
+    strategy._current_btc = strategy._current_sol = current
+    strategy._current_btc_mark = strategy._current_sol_mark = current
+    strategy._bars = [object()]
+    strategy._current_signals = [SimpleNamespace(sigma=0.1)]
+    strategy._last_accepted_session = session
+    decisions = []
+    strategy._domain.decide = lambda _bars, _signals, index, equity: (
+        decisions.append((index, equity)) or []
+    )
+
+    strategy._advance_current_day()
+    assert strategy._deferred_entry_session == session
+    assert strategy._daily_decision_reason == "DEFERRED_LIVE_MONEY"
+    assert decisions == []
+
+    next_session = session + 86_400_000_000_000
+    strategy._day[next_session] = {}
+    strategy._try_advance_session(next_session)
+    assert strategy._last_accepted_session == session
+    assert next_session in strategy._day
+    assert strategy._deferred_entry_session == session
+
+    current_view[0] = LivePerpsMoneyView(
+        current_view[0].account, "", now_ms,
+        Decimal("10000"), Decimal("9000"), Decimal("100"), Decimal("5000"),
+    )
+    strategy._retry_deferred_daily_decision()
+    strategy._retry_deferred_daily_decision()
+    assert decisions == [(0, 10000.0)]
+    assert strategy._deferred_entry_session is None
+    assert next_session in strategy._day

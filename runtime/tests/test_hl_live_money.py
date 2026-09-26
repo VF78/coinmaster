@@ -17,6 +17,7 @@ from nautilus_trader.model.objects import AccountBalance, Money, Quantity
 from coinmaster.ops.hl_info_receipt import InfoReceipt, IncompleteInfoReport
 from coinmaster.ops.hl_live_money import live_perps_money_view
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
+from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
 from test_live_recovery_state import _strategy
 
 REF = "0x" + "a" * 40
@@ -144,3 +145,33 @@ def test_mixed_long_short_uses_account_value_without_raw_plus_notional_shortcut(
     result = view(raw, native_account("1010.57173", "1010.57173"), native)
     assert result.equity == Decimal("1182.312496")
     assert result.equity != result.raw_usd + Decimal("357.15452")
+
+
+def test_negative_native_total_preserved_and_valid_reduction_gate_open(monkeypatch):
+    import time
+
+    positions = ({
+        "coin": "BTC", "szi": "0.10000", "entryPx": "2000",
+        "positionValue": "200", "unrealizedPnl": "0",
+        "leverage": {"type": "cross"},
+    },)
+    raw = receipt(
+        equity="100", raw="-100", margin="25", notional="200",
+        free="50", positions=positions,
+    )
+    native = (native_position("BTC", "0.10000"),)
+    result = view(raw, native_account("-100", "50"), native)
+    assert (result.equity, result.free_collateral, result.raw_usd) == (
+        Decimal("100"), Decimal("50"), Decimal("-100"),
+    )
+    with pytest.raises(IncompleteInfoReport, match="NATIVE_BALANCE_MISMATCH"):
+        view(raw, native_account("50", "50"), native)
+
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    strategy.attach_live_money_view(
+        lambda: replace(result, end_ms=time.time_ns() // 1_000_000),
+    )
+    strategy.recovery_confirmed = True
+    strategy._feeds_fresh = lambda *_args: True
+    monkeypatch.setattr(WaveOverlayStrategy, "_record_submission", lambda *_args, **_kwargs: True)
+    assert strategy._record_submission("reduce-only-probe") is True

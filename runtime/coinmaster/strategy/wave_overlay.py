@@ -312,6 +312,8 @@ class WaveOverlayStrategy(Strategy):
     def _try_advance_session(self, session: int) -> None:
         """Consume each paired UTC close once and only in contiguous order."""
         while self._day:
+            if self._deferred_entry_session is not None and self._halt_on_deferred_daily_decision():
+                return
             next_session = (
                 self._last_accepted_session + 86_400_000_000_000
                 if self._last_accepted_session is not None else min(self._day)
@@ -443,6 +445,9 @@ class WaveOverlayStrategy(Strategy):
                 return
             self._queued_intents.append((intent, self._current_signals[-1].sigma, len(self._bars) - 1))
             self._queued_intent_ready_ns[intent.id] = self._current_btc.ts_event + self.config.execution_delay_ns
+
+    def _halt_on_deferred_daily_decision(self) -> bool:
+        return False
 
     def _retry_deferred_daily_decision(self) -> None:
         """Retry one blocked flat daily decision after its entry gate reopens."""

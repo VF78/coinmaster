@@ -83,12 +83,12 @@ def live_perps_money_view(
         raise IncompleteInfoReport("LIVE_MONEY_NATIVE_ACCOUNT_MISMATCH")
     native_total = native_account.balance_total(USDC)
     native_free = native_account.balance_free(USDC)
-    # Pinned 1.231 Rust maps cross totalRawUsd through a nonnegative clamp
-    # and raises total to withdrawable; that total is not venue equity.
+    # Pinned 1.231 preserves negative cross totalRawUsd. It only raises
+    # nonnegative total to withdrawable; neither projection is venue equity.
     if (
         native_total is None or native_free is None
         or native_total.currency != USDC or native_free.currency != USDC
-        or native_total.as_decimal() != max(cross_raw, free, Decimal("0"))
+        or native_total.as_decimal() != (cross_raw if cross_raw < 0 else max(cross_raw, free))
         or native_free.as_decimal() != free
     ):
         raise IncompleteInfoReport("LIVE_MONEY_NATIVE_BALANCE_MISMATCH")
