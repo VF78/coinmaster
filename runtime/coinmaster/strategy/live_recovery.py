@@ -142,8 +142,17 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         super().__init__(config)
         self.recovery_confirmed = False
         self._recovery_runtime = None
+        self._report_handover = None
         # Process-local evidence: a restored checkpoint never grants feed freshness.
         self._quote_ns = {}
+
+    def attach_report_handover(self, client) -> None:
+        self._report_handover = client
+
+    def on_start(self) -> None:
+        super().on_start()
+        if self._report_handover is not None:
+            self._report_handover.release_ws_after_strategy_start()
 
     def _feeds_fresh(self, now_ns: int) -> bool:
         age = self.config.max_mark_age_ns

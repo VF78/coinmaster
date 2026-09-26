@@ -19,7 +19,7 @@ from typing import Mapping
 
 from nautilus_trader.adapters.bybit import BybitLiveDataClientFactory
 from nautilus_trader.adapters.bybit.config import BybitDataClientConfig
-from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory, HyperliquidLiveExecClientFactory
+from nautilus_trader.adapters.hyperliquid import HyperliquidLiveDataClientFactory
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidDataClientConfig, HyperliquidExecClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.adapters.sandbox.execution import SandboxExecutionClient
@@ -38,6 +38,7 @@ from coinmaster.ops.native_paper_node import BYBIT_IDS, DAY_NS, FeedBook, FeedOb
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, model_fx_pair_and_quote, model_fx_ready
 from coinmaster.ops.hl_native_account import native_usdc_balances
+from coinmaster.ops.hl_qualified_execution import QualifiedHyperliquidLiveExecClientFactory
 from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
 from coinmaster.ops.stage_g_config import TestnetInstanceConfig, candidate_content_hash
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
@@ -309,7 +310,7 @@ def execution_factory_for_mode(mode: str):
     if mode == "sandbox":
         return "SANDBOX", HyperliquidUsdcSandboxFactory
     if mode == "live":
-        return "HYPERLIQUID-LIVE", HyperliquidLiveExecClientFactory
+        return "HYPERLIQUID-LIVE", QualifiedHyperliquidLiveExecClientFactory
     raise ValueError("UNKNOWN_EXECUTION_MODE")
 
 
@@ -325,10 +326,9 @@ def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = 
         environment=Environment.LIVE,
         trader_id=trader_id,
         logging=LoggingConfig(log_level="INFO", log_colors=False),
-        # Sandbox has no remote account/order history.  Durable recovery is
-        # handled by PaperRuntime and must never be described as exchange
-        # reconciliation.
-        exec_engine=LiveExecEngineConfig(reconciliation=False),
+        # Sandbox has no remote account/order history. Live mode must await
+        # native reconciliation before strategy on_start releases buffered WS.
+        exec_engine=LiveExecEngineConfig(reconciliation=execution_mode == "live"),
         data_clients={
             "BYBIT-PUBLIC-SIGNAL": BybitDataClientConfig(
                 api_key=None, api_secret=None,
@@ -369,6 +369,8 @@ def assert_native_testnet_only(config: TradingNodeConfig, execution_mode: str = 
     bybit = config.data_clients["BYBIT-PUBLIC-SIGNAL"]
     data = config.data_clients["HYPERLIQUID-MAINNET-DATA"]
     execution = config.exec_clients[client_key]
+    if config.exec_engine.reconciliation is not (execution_mode == "live"):
+        raise RuntimeError("HL_NATIVE_RECONCILIATION_MODE_MISMATCH")
     expected_type = SandboxExecutionClientConfig if execution_mode == "sandbox" else HyperliquidExecClientConfig
     if not isinstance(bybit, BybitDataClientConfig) or not isinstance(data, HyperliquidDataClientConfig) or not isinstance(execution, expected_type):
         raise RuntimeError("HL_TESTNET_NATIVE_CONFIG_REQUIRED")
@@ -381,7 +383,7 @@ def assert_native_testnet_only(config: TradingNodeConfig, execution_mode: str = 
             raise RuntimeError("HL_TESTNET_SANDBOX_VENUE_OR_CURRENCY_MISMATCH")
         if factory is not HyperliquidUsdcSandboxFactory or not issubclass(factory, SandboxLiveExecClientFactory):
             raise RuntimeError("HL_TESTNET_EXECUTION_ALLOWLIST_MISMATCH")
-    elif execution.environment is not PUBLIC_MAINNET_ENVIRONMENT or factory is not HyperliquidLiveExecClientFactory:
+    elif execution.environment is not PUBLIC_MAINNET_ENVIRONMENT or factory is not QualifiedHyperliquidLiveExecClientFactory:
         raise RuntimeError("HL_LIVE_NATIVE_FACTORY_MISMATCH")
 
 
