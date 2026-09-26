@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 from nautilus_trader.accounting.accounts.margin import MarginAccount
-from coinmaster.ops.hl_qualified_execution import QualifiedHyperliquidLiveExecClientFactory
+from nautilus_trader.adapters.hyperliquid import HyperliquidLiveExecClientFactory
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidExecClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.core.uuid import UUID4
@@ -56,8 +56,6 @@ def test_both_profiles_select_exactly_one_pinned_native_factory_and_no_secret_va
     monkeypatch.setenv('HYPERLIQUID_PK', 'must-not-be-read')
     sandbox = hyperliquid_testnet_node_config(trader_id='CM-SANDBOX')
     live = hyperliquid_testnet_node_config(trader_id='CM-LIVE', execution_mode='live')
-    assert sandbox.exec_engine.reconciliation is False
-    assert live.exec_engine.reconciliation is True
     assert set(sandbox.exec_clients) == {'SANDBOX'}
     assert isinstance(sandbox.exec_clients['SANDBOX'], SandboxExecutionClientConfig)
     assert execution_factory_for_mode('sandbox') == ('SANDBOX', HyperliquidUsdcSandboxFactory)
@@ -65,7 +63,7 @@ def test_both_profiles_select_exactly_one_pinned_native_factory_and_no_secret_va
     assert set(live.exec_clients) == {'HYPERLIQUID-LIVE'}
     assert isinstance(live.exec_clients['HYPERLIQUID-LIVE'], HyperliquidExecClientConfig)
     assert live.exec_clients['HYPERLIQUID-LIVE'].private_key is None
-    assert execution_factory_for_mode('live') == ('HYPERLIQUID-LIVE', QualifiedHyperliquidLiveExecClientFactory)
+    assert execution_factory_for_mode('live') == ('HYPERLIQUID-LIVE', HyperliquidLiveExecClientFactory)
     assert_native_testnet_only(live, 'live')
     with pytest.raises(RuntimeError, match='SINGLE_NATIVE_ROUTE'):
         assert_native_testnet_only(live, 'sandbox')

@@ -174,3 +174,34 @@ def test_inherited_mass_status_accepts_three_empty_lists_after_transport_failure
     assert result is not None
     assert len(transport.calls) == 3
     assert client.reconciliation_active is False
+
+
+def test_simulated_rust_skipped_raw_row_has_no_completeness_signal():
+    # The pinned Rust report parser can log/skip an unparseable venue row and
+    # hand Python an Ok([]). FakeTransport models precisely that Python seam.
+    transport = FakeTransport([])
+    transport.hidden_raw_rows = [{"malformed": True}]
+    client, errors = fake_client(transport)
+    assert asyncio.run(HyperliquidExecutionClient.generate_fill_reports(client, command())) == []
+    assert errors == []
+    assert transport.calls == [("fills", {"instrument_id": None})]
+    # No returned field or Python callback distinguishes this from raw [].
+    assert transport.hidden_raw_rows
+
+
+def test_native_websocket_dispatcher_swallows_handler_exception(monkeypatch):
+    class FakeFillMessage:
+        pass
+
+    monkeypatch.setattr(execution.nautilus_pyo3, "FillReport", FakeFillMessage)
+    errors = []
+
+    def fail(_msg):
+        raise ValueError("native fill handler failed")
+
+    client = SimpleNamespace(
+        _handle_fill_report_pyo3=fail,
+        _log=SimpleNamespace(exception=lambda *args: errors.append(args)),
+    )
+    assert HyperliquidExecutionClient._handle_msg(client, FakeFillMessage()) is None
+    assert len(errors) == 1 and isinstance(errors[0][1], ValueError)
