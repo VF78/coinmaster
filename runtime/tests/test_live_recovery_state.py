@@ -451,3 +451,69 @@ def test_unreported_venue_flat_cannot_clear_open_episode(tmp_path):
     assert strategy._domain.episode.btc_open_qty == 0.02
     assert strategy.recovery_confirmed is False
     runtime.close()
+
+
+@pytest.mark.parametrize("method", [
+    "submit_order", "submit_order_list", "modify_order", "cancel_order",
+    "cancel_all_orders", "close_position", "close_all_positions",
+])
+def test_recovery_final_order_api_gate_blocks_until_confirmed(monkeypatch, method):
+    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
+        getattr(strategy, method)()
+    called = []
+    marker = object()
+    monkeypatch.setattr(
+        WaveOverlayStrategy, method,
+        lambda self, *args, **kwargs: called.append((args, kwargs)) or marker,
+    )
+    strategy.recovery_confirmed = True
+    assert getattr(strategy, method)("fake") is marker
+    assert called == [(("fake",), {})]
+
+
+def test_async_verifier_return_cannot_confirm_recovery():
+    import asyncio
+
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+
+    async def report_only():
+        return True
+
+    strategy.attach_post_drain_verifier(report_only)
+    asyncio.run(strategy._run_post_drain_verifier())
+    assert strategy.recovery_confirmed is False
+    with pytest.raises(RuntimeError, match="RECOVERY_VERIFIER_ALREADY_ATTACHED"):
+        strategy.attach_post_drain_verifier(report_only)
+
+
+def test_live_info_scope_requires_selected_account_and_durable_anchor():
+    from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
+
+    account = "0x" + "a" * 40
+    scope = NativeLiveRecoveryScope(
+        account, "", 100, 9,
+        (("CM05-ORDER", "0x" + "b" * 32, None),), frozenset({"BTC", "SOL"}),
+    )
+    assert scope.account_ref == account and scope.anchor_tid == 9
+    with pytest.raises(ValueError, match="LIVE_ACCOUNT_REF_REQUIRED"):
+        NativeLiveRecoveryScope("", "", 100, None, (), frozenset({"BTC"}))
+    with pytest.raises(ValueError, match="LIVE_ANCHOR_WITHOUT_DURABLE_ORDER"):
+        NativeLiveRecoveryScope(account, "", 100, 9, (), frozenset({"BTC"}))
+
+def test_failed_post_drain_verifier_never_releases_order_gate():
+    import asyncio
+
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+
+    async def fail():
+        raise RuntimeError("WS_BUFFER_OVERFLOW")
+
+    strategy.attach_post_drain_verifier(fail)
+    with pytest.raises(RuntimeError, match="WS_BUFFER_OVERFLOW"):
+        asyncio.run(strategy._run_post_drain_verifier())
+    assert strategy.recovery_confirmed is False
+    with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
+        strategy.submit_order()

@@ -6,6 +6,7 @@ Nautilus remains authoritative; recovered intents are never resubmitted.
 from __future__ import annotations
 
 import time
+from dataclasses import dataclass
 from collections import defaultdict
 from decimal import Decimal
 from typing import TYPE_CHECKING
@@ -17,6 +18,53 @@ from coinmaster.ops.paper import PaperRuntime
 
 if TYPE_CHECKING:
     from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
+
+
+@dataclass(frozen=True)
+class NativeLiveRecoveryScope:
+    """Explicit read-only venue identity and durable cursor for a live owner.
+
+    This is separate from Sandbox instance config and contains no credential.
+    A factory must bind it to one selected execution account before any Info
+    generation; it never grants readiness by construction.
+    """
+    account_ref: str
+    dex: str
+    anchor_ms: int
+    anchor_tid: int | None
+    durable_orders: tuple[tuple[str, str, int | None], ...]
+    owned_coins: frozenset[str]
+
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.account_ref, str)
+            or len(self.account_ref) != 42
+            or not self.account_ref.startswith("0x")
+        ):
+            raise ValueError("LIVE_ACCOUNT_REF_REQUIRED")
+        try:
+            if int(self.account_ref[2:], 16) == 0:
+                raise ValueError("LIVE_ACCOUNT_REF_REQUIRED")
+        except ValueError as exc:
+            raise ValueError("LIVE_ACCOUNT_REF_REQUIRED") from exc
+        if (
+            not isinstance(self.dex, str)
+            or isinstance(self.anchor_ms, bool)
+            or not isinstance(self.anchor_ms, int)
+            or self.anchor_ms < 0
+            or (self.anchor_tid is not None and (
+                isinstance(self.anchor_tid, bool)
+                or not isinstance(self.anchor_tid, int)
+                or self.anchor_tid < 0
+            ))
+            or not self.owned_coins
+            or not self.owned_coins.issubset({"BTC", "SOL"})
+        ):
+            raise ValueError("LIVE_INFO_CURSOR_INVALID")
+        if len({item[0] for item in self.durable_orders}) != len(self.durable_orders):
+            raise ValueError("LIVE_DURABLE_ORDER_DUPLICATE")
+        if self.anchor_tid is not None and not self.durable_orders:
+            raise ValueError("LIVE_ANCHOR_WITHOUT_DURABLE_ORDER")
 
 
 class LiveRecoverySubmissionSink:

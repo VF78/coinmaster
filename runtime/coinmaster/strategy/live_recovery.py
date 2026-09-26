@@ -6,6 +6,7 @@ the episode, orders, fills, account, and fresh public feeds coherent.
 """
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 import math
@@ -144,6 +145,72 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._recovery_runtime = None
         # Process-local evidence: a restored checkpoint never grants feed freshness.
         self._quote_ns = {}
+        self._post_drain_verifier = None
+        self._post_drain_task = None
+
+    def attach_post_drain_verifier(self, verifier) -> None:
+        """Install one async verifier; it cannot grant readiness by return value."""
+        if self._post_drain_verifier is not None or self._post_drain_task is not None:
+            raise RuntimeError("RECOVERY_VERIFIER_ALREADY_ATTACHED")
+        if not callable(verifier):
+            raise TypeError("RECOVERY_VERIFIER_REQUIRED")
+        self._post_drain_verifier = verifier
+
+    def on_start(self) -> None:
+        self.recovery_confirmed = False
+        super().on_start()
+        if self._post_drain_verifier is not None:
+            # Kernel starts the Trader only after native execution reconciliation.
+            # The verifier owns fresh Info/cache/domain/account parity and may
+            # confirm recovery explicitly; a successful return proves nothing.
+            self._post_drain_task = asyncio.get_running_loop().create_task(
+                self._run_post_drain_verifier()
+            )
+
+    async def _run_post_drain_verifier(self) -> None:
+        try:
+            await self._post_drain_verifier()
+        except BaseException:
+            self.recovery_confirmed = False
+            raise
+
+    def on_stop(self) -> None:
+        self.recovery_confirmed = False
+        if self._post_drain_task is not None and not self._post_drain_task.done():
+            self._post_drain_task.cancel()
+        super().on_stop()
+
+    def _require_recovery_confirmed(self) -> None:
+        if not self.recovery_confirmed:
+            raise RuntimeError("RECOVERY_NOT_CONFIRMED")
+
+    def submit_order(self, *args, **kwargs):
+        self._require_recovery_confirmed()
+        return super().submit_order(*args, **kwargs)
+
+    def submit_order_list(self, *args, **kwargs):
+        self._require_recovery_confirmed()
+        return super().submit_order_list(*args, **kwargs)
+
+    def modify_order(self, *args, **kwargs):
+        self._require_recovery_confirmed()
+        return super().modify_order(*args, **kwargs)
+
+    def cancel_order(self, *args, **kwargs):
+        self._require_recovery_confirmed()
+        return super().cancel_order(*args, **kwargs)
+
+    def cancel_all_orders(self, *args, **kwargs):
+        self._require_recovery_confirmed()
+        return super().cancel_all_orders(*args, **kwargs)
+
+    def close_position(self, *args, **kwargs):
+        self._require_recovery_confirmed()
+        return super().close_position(*args, **kwargs)
+
+    def close_all_positions(self, *args, **kwargs):
+        self._require_recovery_confirmed()
+        return super().close_all_positions(*args, **kwargs)
 
     def _feeds_fresh(self, now_ns: int) -> bool:
         age = self.config.max_mark_age_ns

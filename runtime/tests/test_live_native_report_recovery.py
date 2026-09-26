@@ -265,7 +265,9 @@ class RecoveryProbeStrategy(RecoverableWaveOverlayStrategy):
     """The exact decision/submit implementation, without public subscriptions."""
 
     def on_start(self):
-        pass
+        if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
+            self._on_start_reconciled = self._probe_engine._startup_reconciliation_event.is_set()
+            return super().on_start()
 
 
 def _strategy():
@@ -320,8 +322,80 @@ async def _run_child():
         previous.close()
         if checkpoint:
             strategy.on_load({"wave_overlay_live_recovery_v1": checkpoint[0]})
+    if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
+        from coinmaster.ops.hl_info_receipt import collect_info_receipt
+        from coinmaster.ops.hl_qualified_reports import qualified_mass_status
+
+        strategy._probe_engine = node.kernel.exec_engine
+        gate = asyncio.Event()
+        strategy._probe_release = gate
+
+        async def verified_clean_flat():
+            strategy._probe_verifier_started = True
+            await gate.wait()
+            account_ref = "0x" + "a" * 40
+            data = {
+                "frontendOpenOrders": [],
+                "clearinghouseState": {
+                    "assetPositions": [],
+                    "marginSummary": {
+                        "accountValue": "10000", "totalRawUsd": "10000",
+                        "totalMarginUsed": "0", "totalNtlPos": "0",
+                    },
+                    "withdrawable": "10000",
+                },
+                "userFillsByTime": [],
+            }
+
+            async def info(body):
+                return data[body["type"]]
+
+            async def sweep(end_ms):
+                return await collect_info_receipt(
+                    info, account=account_ref, dex="", anchor_ms=1,
+                    anchor_tid=None, end_ms=end_ms, expected_orders={},
+                    owned_coins=frozenset({"BTC", "SOL"}),
+                )
+
+            first, second = await sweep(2), await sweep(3)
+            mass = qualified_mass_status(
+                first, second, expected_account_ref=account_ref, expected_dex="",
+                account_id=ACCOUNT, client_id=ClientId("HYPERLIQUID"),
+                venue=Venue("HYPERLIQUID"),
+                instruments={"BTC": HL_BTC, "SOL": HL_SOL},
+                durable_orders={}, native_orders=node.cache.orders(venue=Venue("HYPERLIQUID")),
+                applied_trade_ids=frozenset(), ts_init=node.kernel.clock.timestamp_ns(),
+            )
+            native_account = node.cache.account_for_venue(Venue("HYPERLIQUID"))
+            if (
+                mass.order_reports or mass.fill_reports or mass.position_reports
+                or node.cache.positions_open() or strategy._domain.episode is not None
+                or native_account is None
+                or native_account.balance_total(USDC).as_decimal() != Decimal("10000")
+            ):
+                raise RuntimeError("FAKE_POST_DRAIN_PARITY_FAILED")
+            strategy.recovery_confirmed = True
+
+        strategy.attach_post_drain_verifier(verified_clean_flat)
     node.trader.add_strategy(strategy)
     await node.kernel.start_async()
+    if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
+        assert strategy._on_start_reconciled is True
+        assert strategy.recovery_confirmed is False
+        with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
+            strategy.cancel_all_orders()
+        await asyncio.sleep(0)
+        assert strategy._probe_verifier_started is True
+        strategy._probe_release.set()
+        await strategy._post_drain_task
+        print("HANDOVER_PROOF=" + json.dumps({
+            "on_start_after_reconcile": strategy._on_start_reconciled,
+            "blocked_before_parity": True,
+            "confirmed_after_parity": strategy.recovery_confirmed,
+        }), flush=True)
+        await node.kernel.stop_async()
+        node.kernel.dispose()
+        return
     if os.environ.get("CM_FAKE_EXIT_RECONCILE") == "1":
         from nautilus_trader.core import nautilus_pyo3
         from coinmaster.ops.hl_info_receipt import collect_info_receipt
@@ -414,6 +488,8 @@ async def _run_child():
         node.kernel.dispose()
         return
     if os.environ.get("CM_FAKE_SUBMIT") == "1":
+        # This branch models a prior healthy fake session, not recovery startup.
+        strategy.recovery_confirmed = True
         assert journal
         active = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
         active.acquire()
@@ -698,4 +774,24 @@ def test_reduce_only_market_ioc_exit_reconciles_native_flat(tmp_path):
     assert result == {
         "applied": True, "order_type": "MARKET",
         "positions_open": [], "order_filled_qty": "0.01000",
+    }
+
+def test_kernel_reconciles_before_post_start_async_parity_gate(tmp_path):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state = tmp_path / "state.json"
+    state.write_text('{"partial": false}')
+    env = dict(
+        os.environ, CM_FAKE_VENUE_STATE=str(state),
+        CM_FAKE_TRADER_ID="HL-HANDOVER-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
+        CM_FAKE_HANDOVER_PROBE="1",
+    )
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    run = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert run.returncode == 0, run.stderr
+    result = json.loads(next(line.split("=", 1)[1] for line in run.stdout.splitlines() if line.startswith("HANDOVER_PROOF=")))
+    assert result == {
+        "on_start_after_reconcile": True,
+        "blocked_before_parity": True,
+        "confirmed_after_parity": True,
     }

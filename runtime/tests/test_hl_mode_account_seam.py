@@ -56,6 +56,8 @@ def test_both_profiles_select_exactly_one_pinned_native_factory_and_no_secret_va
     monkeypatch.setenv('HYPERLIQUID_PK', 'must-not-be-read')
     sandbox = hyperliquid_testnet_node_config(trader_id='CM-SANDBOX')
     live = hyperliquid_testnet_node_config(trader_id='CM-LIVE', execution_mode='live')
+    assert sandbox.exec_engine.reconciliation is False
+    assert live.exec_engine.reconciliation is True
     assert set(sandbox.exec_clients) == {'SANDBOX'}
     assert isinstance(sandbox.exec_clients['SANDBOX'], SandboxExecutionClientConfig)
     assert execution_factory_for_mode('sandbox') == ('SANDBOX', HyperliquidUsdcSandboxFactory)

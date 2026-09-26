@@ -328,7 +328,7 @@ def hyperliquid_testnet_node_config(*, trader_id: str, starting_cash: Decimal = 
         # Sandbox has no remote account/order history.  Durable recovery is
         # handled by PaperRuntime and must never be described as exchange
         # reconciliation.
-        exec_engine=LiveExecEngineConfig(reconciliation=False),
+        exec_engine=LiveExecEngineConfig(reconciliation=execution_mode == "live"),
         data_clients={
             "BYBIT-PUBLIC-SIGNAL": BybitDataClientConfig(
                 api_key=None, api_secret=None,
