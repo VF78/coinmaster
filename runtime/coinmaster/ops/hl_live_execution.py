@@ -74,6 +74,7 @@ class QualifiedInfoBoundary:
         self._cm_ws_phase = "BUFFERING"
         self._cm_ws_failure = None
         self._cm_parity_task = None
+        self._cm_last_receipt = None
 
     def _cm_transport_ok(self) -> bool:
         socket = getattr(self, "_ws_client", None)
@@ -135,6 +136,7 @@ class QualifiedInfoBoundary:
             raise
 
     async def generate_mass_status(self, lookback_mins=None):
+        self._cm_last_receipt = None
         try:
             self._cm_require_healthy()
             scope = self._cm_scope
@@ -145,6 +147,7 @@ class QualifiedInfoBoundary:
                     self._cm_info, account=scope.account_ref, dex=scope.dex,
                     anchor_ms=scope.anchor_ms, anchor_tid=scope.anchor_tid,
                     end_ms=at, expected_orders=expected, owned_coins=scope.owned_coins,
+                    require_money_scope=True,
                 )
             first = await sweep(end)
             second = await sweep(max(end + 1, self._clock.timestamp_ns() // 1_000_000))
@@ -154,7 +157,7 @@ class QualifiedInfoBoundary:
             }
             if any(item is None for item in instruments.values()):
                 raise IncompleteInfoReport("NATIVE_INSTRUMENT_MISSING")
-            return qualified_mass_status(
+            mass = qualified_mass_status(
                 first, second, expected_account_ref=scope.account_ref, expected_dex=scope.dex,
                 account_id=self.account_id, client_id=self.id, venue=self.venue,
                 instruments=instruments, durable_orders={
@@ -162,6 +165,8 @@ class QualifiedInfoBoundary:
                 }, native_orders=self._cache.orders(venue=self.venue),
                 applied_trade_ids=self._cm_applied_fill_ids(), ts_init=self._clock.timestamp_ns(),
             )
+            self._cm_last_receipt = second
+            return mass
         except BaseException:
             if self._cm_ws_failure is None:
                 self._cm_fail("INFO_GENERATION_FAILED")

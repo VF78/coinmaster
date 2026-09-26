@@ -19,6 +19,7 @@ from nautilus_trader.model.data import Bar, BarType
 from nautilus_trader.model.identifiers import InstrumentId
 
 from coinmaster.domain.wave_overlay import DailyBar, Episode, Intent
+from coinmaster.ops.hl_live_money import LivePerpsMoneyView
 from coinmaster.ops.stage_g_config import canonical_candidate_json
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
 from coinmaster.venues.marks import VenueMark
@@ -148,6 +149,32 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._post_drain_verifier = None
         self._post_drain_task = None
         self._recovery_health = None
+        self._live_money_provider = None
+
+    def attach_live_money_view(self, provider) -> None:
+        if not callable(provider) or self._live_money_provider is not None:
+            raise RuntimeError("LIVE_MONEY_PROVIDER_INVALID")
+        self._live_money_provider = provider
+
+    def _validated_live_money(self) -> LivePerpsMoneyView:
+        if not self.recovery_confirmed or self._live_money_provider is None:
+            raise ValueError("LIVE_MONEY_UNCONFIRMED")
+        view = self._live_money_provider()
+        if not isinstance(view, LivePerpsMoneyView):
+            raise ValueError("LIVE_MONEY_VIEW_UNKNOWN")
+        view.require_fresh(time.time_ns() // 1_000_000, 10_000)
+        return view
+
+    def _active_marked(self, btc_mark: VenueMark, sol_mark: VenueMark) -> float:
+        # Venue accountValue is already marked; do not add native UPNL twice.
+        return float(self._validated_live_money().equity)
+
+    def _free_margin_for_increase(self, account) -> Decimal:
+        return self._validated_live_money().free_collateral
+
+    def _check_mark_first_liquidation(self, ts_now: int) -> None:
+        # The live venue owns liquidation. The Sandbox policy is not a live order source.
+        return
 
     def attach_recovery_health(self, healthy) -> None:
         if not callable(healthy) or self._recovery_health is not None:
@@ -237,6 +264,9 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         return True
 
     def on_quote_tick(self, tick) -> None:
+        if self._liquidating:
+            self.recovery_confirmed = False
+            raise RuntimeError("LIVE_LOCAL_LIQUIDATION_FORBIDDEN")
         if tick.instrument_id not in (self.config.btc_id, self.config.sol_id):
             return
         self._quote_ns[tick.instrument_id] = tick.ts_event
@@ -245,6 +275,10 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
 
     def _record_submission(self, *args, **kwargs) -> bool:
         # Final pre-submit gate covers queued entries and every reduce-only management action.
+        try:
+            self._validated_live_money()
+        except ValueError:
+            return False
         return self._feeds_fresh(time.time_ns()) and super()._record_submission(*args, **kwargs)
 
     def attach_recovery_runtime(self, runtime) -> None:
@@ -259,6 +293,10 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             raise RuntimeError("RECOVERY_FILL_CHECKPOINT_CONFLICT")
 
     def _entries_enabled(self) -> bool:
+        try:
+            self._validated_live_money()
+        except ValueError:
+            return False
         return self._feeds_fresh(time.time_ns()) and super()._entries_enabled()
 
     def on_save(self) -> dict[str, bytes]:

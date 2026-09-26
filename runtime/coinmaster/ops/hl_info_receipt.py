@@ -34,6 +34,10 @@ class InfoReceipt:
     account_value: str = ""
     anchor_tid: int | None = None
     account_summary: tuple[str, str, str, str, str] = ()
+    cross_account_summary: tuple[str, str, str, str] = ()
+    account_role: str = ""
+    abstraction: str = ""
+    dex_abstraction: bool | None = None
 
 
 def _number(value: Any, name: str) -> Decimal:
@@ -105,6 +109,7 @@ async def collect_info_receipt(
     end_ms: int,
     expected_orders: dict[str, int | None],
     owned_coins: frozenset[str],
+    require_money_scope: bool = False,
 ) -> InfoReceipt:
     """Collect a validated, bounded batch; raises on uncertainty.
 
@@ -163,12 +168,33 @@ async def collect_info_receipt(
     totals = []
     for field in ("totalRawUsd", "totalMarginUsed", "totalNtlPos"):
         value = _number(summary.get(field), field)
-        if value < 0:
+        if field != "totalRawUsd" and value < 0:
             raise IncompleteInfoReport(f"BAD_{field}")
         totals.append(str(value))
     withdrawable = _number(state.get("withdrawable"), "WITHDRAWABLE")
     if withdrawable < 0:
         raise IncompleteInfoReport("BAD_WITHDRAWABLE")
+    cross_values: tuple[str, str, str, str] = ()
+    role = abstraction = ""
+    dex_abstraction = None
+    if require_money_scope:
+        cross = state.get("crossMarginSummary")
+        if not isinstance(cross, dict):
+            raise IncompleteInfoReport("CROSS_MARGIN_SUMMARY_MISSING")
+        cross_numbers = tuple(
+            _number(cross.get(field), "CROSS_" + field)
+            for field in ("accountValue", "totalRawUsd", "totalMarginUsed", "totalNtlPos")
+        )
+        if cross_numbers[0] < 0 or cross_numbers[2] < 0 or cross_numbers[3] < 0:
+            raise IncompleteInfoReport("BAD_CROSS_MARGIN_SUMMARY")
+        cross_values = tuple(str(value) for value in cross_numbers)
+        raw_role = await request({"type": "userRole", "user": account})
+        raw_abstraction = await request({"type": "userAbstraction", "user": account})
+        dex_abstraction = await request({"type": "userDexAbstraction", "user": account})
+        role = raw_role.get("role") if isinstance(raw_role, dict) else ""
+        abstraction = raw_abstraction if isinstance(raw_abstraction, str) else ""
+        if role != "user" or abstraction != "disabled" or dex_abstraction is not False:
+            raise IncompleteInfoReport("UNSUPPORTED_ACCOUNT_ABSTRACTION")
 
     statuses = []
     resolved_oids = set()
@@ -290,4 +316,6 @@ async def collect_info_receipt(
         fills, tuple(statuses), fill_anchor_proven=anchor_tid is not None,
         account_value=str(account_value), anchor_tid=anchor_tid,
         account_summary=(str(account_value), *totals, str(withdrawable)),
+        cross_account_summary=cross_values, account_role=role,
+        abstraction=abstraction, dex_abstraction=dex_abstraction,
     )

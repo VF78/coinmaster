@@ -252,3 +252,43 @@ def test_retained_anchor_does_not_certify_older_applied_fill_prefix():
     assert receipt.fill_anchor_proven
     assert receipt.conditional_only
     assert sum(float(row["sz"]) for row in receipt.fills) == 0.001
+
+
+def test_scoped_money_receipt_accepts_signed_raw_usd_and_records_account_mode():
+    data = deepcopy(BASE)
+    data["clearinghouseState"]["marginSummary"]["totalRawUsd"] = "-22358.938225"
+    data["clearinghouseState"]["crossMarginSummary"] = {
+        "accountValue": "1736.030875", "totalRawUsd": "-22358.938225",
+        "totalMarginUsed": "963.798764", "totalNtlPos": "24094.9691",
+    }
+    data.update(
+        userRole={"role": "user"}, userAbstraction="disabled",
+        userDexAbstraction=False,
+    )
+    result = collect(FakeInfo(data), require_money_scope=True)
+    assert result.account_summary[1] == "-22358.938225"
+    assert result.cross_account_summary[1] == "-22358.938225"
+    assert (result.account_role, result.abstraction, result.dex_abstraction) == (
+        "user", "disabled", False,
+    )
+
+
+@pytest.mark.parametrize("field,value", [
+    ("userRole", {"role": "vault"}),
+    ("userAbstraction", "unifiedAccount"),
+    ("userAbstraction", "portfolioMargin"),
+    ("userAbstraction", "default"),
+    ("userDexAbstraction", True),
+])
+def test_scoped_money_receipt_rejects_unsupported_mode(field, value):
+    data = deepcopy(BASE)
+    data["clearinghouseState"]["crossMarginSummary"] = deepcopy(
+        data["clearinghouseState"]["marginSummary"]
+    )
+    data.update(
+        userRole={"role": "user"}, userAbstraction="disabled",
+        userDexAbstraction=False,
+    )
+    data[field] = value
+    with pytest.raises(IncompleteInfoReport, match="UNSUPPORTED_ACCOUNT_ABSTRACTION"):
+        collect(FakeInfo(data), require_money_scope=True)

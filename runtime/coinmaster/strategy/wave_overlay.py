@@ -524,6 +524,9 @@ class WaveOverlayStrategy(Strategy):
                 marked += position.unrealized_pnl(position_instrument.make_price(mark)).as_decimal()
         return float(marked)
 
+    def _free_margin_for_increase(self, account) -> Decimal:
+        return _native_account_money(account, free=True)
+
     def _deny_local_entry(self, intent: Intent, reason: str, ts_now: int | None) -> None:
         self.pre_submit_gate_blocks.append({
             "timestamp": str(ts_now or 0),
@@ -806,7 +809,7 @@ class WaveOverlayStrategy(Strategy):
             account = self.cache.account_for_venue(self.config.btc_id.venue)
             instrument = self.cache.instrument(self.config.btc_id)
             active = Decimal(str(self._active_marked(self._current_btc_mark, self._current_sol_mark))) if self._current_btc_mark and self._current_sol_mark else Decimal("0")
-            return account is not None and instrument is not None and active > 0 and gross <= active * self.config.max_gross_to_active and required <= _native_account_money(account, free=True)
+            return account is not None and instrument is not None and active > 0 and gross <= active * self.config.max_gross_to_active and required <= self._free_margin_for_increase(account)
         except ValueError:
             return False
 

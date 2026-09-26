@@ -126,9 +126,15 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
             from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
             data = {
                 "frontendOpenOrders": [], "userFillsByTime": [],
+                "userRole": {"role": "user"}, "userAbstraction": "disabled",
+                "userDexAbstraction": False,
                 "clearinghouseState": {
                     "assetPositions": [],
                     "marginSummary": {
+                        "accountValue": "10000", "totalRawUsd": "10000",
+                        "totalMarginUsed": "0", "totalNtlPos": "0",
+                    },
+                    "crossMarginSummary": {
                         "accountValue": "10000", "totalRawUsd": "10000",
                         "totalMarginUsed": "0", "totalNtlPos": "0",
                     },
@@ -187,11 +193,19 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
         }
         data = {
             "frontendOpenOrders": [] if market_ioc else [order],
+            "userRole": {"role": "user"}, "userAbstraction": "disabled",
+            "userDexAbstraction": False,
             "clearinghouseState": {
                 "assetPositions": [{"position": {
                     "coin": "BTC", "szi": "0.01000", "entryPx": "60000.0",
+                    "leverage": {"type": "cross"}, "positionValue": "600",
+                    "unrealizedPnl": "0",
                 }}],
                 "marginSummary": {
+                    "accountValue": "9999.73", "totalRawUsd": "10000",
+                    "totalMarginUsed": "100", "totalNtlPos": "600",
+                },
+                "crossMarginSummary": {
                     "accountValue": "9999.73", "totalRawUsd": "10000",
                     "totalMarginUsed": "100", "totalNtlPos": "600",
                 },
@@ -385,9 +399,15 @@ async def _run_child():
             account_ref = "0x" + "a" * 40
             data = {
                 "frontendOpenOrders": [],
+                "userRole": {"role": "user"}, "userAbstraction": "disabled",
+                "userDexAbstraction": False,
                 "clearinghouseState": {
                     "assetPositions": [],
                     "marginSummary": {
+                        "accountValue": "10000", "totalRawUsd": "10000",
+                        "totalMarginUsed": "0", "totalNtlPos": "0",
+                    },
+                    "crossMarginSummary": {
                         "accountValue": "10000", "totalRawUsd": "10000",
                         "totalMarginUsed": "0", "totalNtlPos": "0",
                     },

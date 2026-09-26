@@ -49,6 +49,10 @@ def _same_generation(first: InfoReceipt, second: InfoReceipt) -> None:
         or first.positions != second.positions
         or first.fills != second.fills
         or first.account_summary != second.account_summary
+        or first.cross_account_summary != second.cross_account_summary
+        or first.account_role != second.account_role
+        or first.abstraction != second.abstraction
+        or first.dex_abstraction != second.dex_abstraction
     ):
         raise IncompleteInfoReport("INFO_GENERATION_NOT_CONVERGED")
 

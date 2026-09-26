@@ -63,6 +63,11 @@ def test_recovered_management_and_entries_require_new_fresh_public_feeds():
     )
     strategy = RecoverableWaveOverlayStrategy(config)
     now = time.time_ns()
+    from coinmaster.ops.hl_live_money import LivePerpsMoneyView
+    strategy.attach_live_money_view(lambda: LivePerpsMoneyView(
+        "0x" + "a" * 40, "", now // 1_000_000,
+        Decimal("10000"), Decimal("10000"), Decimal("0"), Decimal("10000"),
+    ))
     strategy._latest_marks[HL_BTC.id] = VenueMark(HL_BTC.id, Decimal("60000"), now)
     strategy._latest_marks[HL_SOL.id] = VenueMark(HL_SOL.id, Decimal("200"), now)
     strategy._quote_ns[HL_BTC.id] = now
