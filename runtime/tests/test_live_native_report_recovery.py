@@ -66,6 +66,10 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
         self._fake_venue_state = json.loads(Path(os.environ["CM_FAKE_VENUE_STATE"]).read_text())
 
         self.batch_cancel_commands = []
+        self.socket_active = True
+        self._ws_client = SimpleNamespace(
+            is_active=lambda: self.socket_active, is_closed=lambda: not self.socket_active,
+        )
 
     async def _connect(self):
         total = Decimal("9999.73") if self._fake_venue_state["partial"] else Decimal("10000")
@@ -454,7 +458,11 @@ async def _run_child():
         strategy.cancel_orders([cancel_order])
         await asyncio.sleep(0.1)
         assert client.recovery_healthy()
-        client._handle_msg(object())
+        client.socket_active = False  # Rust-side loss; no Python _disconnect callback.
+        with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
+            strategy.cancel_orders([cancel_order])
+        assert client._cm_ws_failure == "WS_TRANSPORT_INACTIVE"
+        client.socket_active = True  # Reconnect cannot clear the failure latch.
         with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
             strategy.cancel_orders([cancel_order])
         assert len(client.batch_cancel_commands) == 1
@@ -462,7 +470,7 @@ async def _run_child():
             "on_start_after_reconcile": strategy._on_start_reconciled,
             "blocked_before_parity": True,
             "confirmed_after_parity": True,
-            "revoked_after_ws_error": not strategy.recovery_confirmed,
+            "revoked_after_socket_loss": not strategy.recovery_confirmed,
             "batch_commands_before_confirmation": 0,
             "batch_commands_after_confirmation": len(client.batch_cancel_commands),
             "batch_cancel_order_id": str(client.batch_cancel_commands[0].cancels[0].client_order_id),
@@ -872,7 +880,7 @@ def test_kernel_reconciles_before_post_start_async_parity_gate(tmp_path):
         "on_start_after_reconcile": True,
         "blocked_before_parity": True,
         "confirmed_after_parity": True,
-        "revoked_after_ws_error": True,
+        "revoked_after_socket_loss": True,
         "batch_commands_before_confirmation": 0,
         "batch_commands_after_confirmation": 1,
         "batch_cancel_order_id": result["native_order_id"],

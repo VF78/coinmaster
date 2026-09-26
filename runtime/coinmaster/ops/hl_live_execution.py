@@ -73,9 +73,22 @@ class QualifiedInfoBoundary:
         self._cm_ws_limit = max_ws_messages
         self._cm_ws_phase = "BUFFERING"
         self._cm_ws_failure = None
+        self._cm_parity_task = None
+
+    def _cm_transport_ok(self) -> bool:
+        socket = getattr(self, "_ws_client", None)
+        try:
+            active = socket is not None and socket.is_active() and not socket.is_closed()
+        except BaseException:
+            active = False
+        if not active:
+            self._cm_fail("WS_TRANSPORT_INACTIVE")
+        return bool(active)
 
     def recovery_healthy(self) -> bool:
-        return self._cm_ws_failure is None and self._cm_ws_phase == "LIVE"
+        if self._cm_ws_failure is not None or self._cm_ws_phase != "LIVE":
+            return False
+        return self._cm_transport_ok()
 
     def _cm_fail(self, reason: str) -> None:
         self._cm_ws_failure = reason
@@ -154,13 +167,19 @@ class QualifiedInfoBoundary:
                 self._cm_fail("INFO_GENERATION_FAILED")
             raise
 
-    async def release_after_effect_parity(self, verify: Callable[[Any], Awaitable[bool]]) -> None:
+    async def release_after_effect_parity(
+        self, verify: Callable[[Any], Awaitable[bool]], *, monitor_interval_secs: float = 5.0,
+    ) -> None:
         """Release WS only after fresh strict reports match native/domain/account effects.
 
         A successful handler return is never a delivery receipt. The verifier must
         examine actual native state; this method does not confirm strategy recovery.
         """
         self._cm_require_healthy()
+        if self._cm_ws_phase != "BUFFERING" or not 0 < monitor_interval_secs <= 60:
+            raise RuntimeError("WS_HANDOVER_STATE_OR_MONITOR_INVALID")
+        if not self._cm_transport_ok():
+            self._cm_require_healthy()
         for _ in range(4):
             while self._cm_ws_queue:
                 self._cm_require_healthy()
@@ -179,11 +198,36 @@ class QualifiedInfoBoundary:
             if self._cm_ws_queue:
                 continue
             self._cm_require_healthy()
+            if not self._cm_transport_ok():
+                self._cm_require_healthy()
             self._cm_ws_phase = "LIVE"
+            self._cm_parity_task = asyncio.get_running_loop().create_task(
+                self._cm_monitor_parity(verify, monitor_interval_secs)
+            )
             return
         if self._cm_ws_failure is None:
             self._cm_fail("WS_HANDOVER_NOT_CONVERGED")
         self._cm_require_healthy()
+
+    async def _cm_monitor_parity(
+        self, verify: Callable[[Any], Awaitable[bool]], interval: float,
+    ) -> None:
+        try:
+            while self._cm_ws_phase == "LIVE" and self._cm_ws_failure is None:
+                await asyncio.sleep(interval)
+                if not self._cm_transport_ok():
+                    return
+                mass = await self.generate_mass_status()
+                if await verify(mass) is not True:
+                    self._cm_fail("WS_PERIODIC_EFFECT_PARITY_FAILED")
+                    return
+        except asyncio.CancelledError:
+            if self._cm_ws_failure is None:
+                self._cm_fail("WS_PARITY_MONITOR_CANCELED")
+            raise
+        except BaseException:
+            if self._cm_ws_failure is None:
+                self._cm_fail("WS_PERIODIC_EFFECT_PARITY_FAILED")
 
 
 class QualifiedHyperliquidExecutionClient(QualifiedInfoBoundary, HyperliquidExecutionClient):
@@ -194,6 +238,8 @@ class QualifiedHyperliquidExecutionClient(QualifiedInfoBoundary, HyperliquidExec
 
     async def _disconnect(self) -> None:
         self._cm_fail("WS_DISCONNECTED")
+        if self._cm_parity_task is not None:
+            self._cm_parity_task.cancel()
         await super()._disconnect()
 
     async def generate_order_status_reports(self, command):
