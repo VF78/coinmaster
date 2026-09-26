@@ -214,7 +214,7 @@ PY
     --runtime-root "$RELEASE.incoming/runtime" \
     --release-root "$RELEASE.incoming" \
     --manifest "$RELEASE.incoming/runtime/release-manifest.json" \
-    --expected-commit "$COMMIT"
+    --expected-commit "$COMMIT" --component gui
   (cd "$RELEASE.incoming/runtime" && /root/.local/bin/uv sync --frozen --no-dev --no-install-project)
   chmod -R a+rX "$RELEASE.incoming"
   SMOKE="$STATE/smoke-$COMMIT"

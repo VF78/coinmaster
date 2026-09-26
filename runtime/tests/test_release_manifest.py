@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import shutil
@@ -18,7 +19,7 @@ sys.modules[spec.name] = release_manifest
 spec.loader.exec_module(release_manifest)
 
 
-def fixture_source(tmp_path: Path) -> tuple[Path, Path, Path]:
+def fixture_source(tmp_path: Path, *, strategy_mismatch: bool = False) -> tuple[Path, Path, Path]:
     source = tmp_path / "source"
     release = source / "payload"
     runtime = release / "runtime"
@@ -51,6 +52,13 @@ def fixture_source(tmp_path: Path) -> tuple[Path, Path, Path]:
     web_assets.mkdir(parents=True)
     (web_assets / "app.js").write_text("window.release = 'fixture';\n")
     (release / "web/index.html").write_text("<!doctype html><script src='/assets/app.js'></script>\n")
+    strategy = runtime / "coinmaster/strategy/wave_overlay.py"
+    approval = runtime / "configs/stage-g-hl-sandbox-approval.json"
+    approval_data = json.loads(approval.read_text(encoding="utf-8"))
+    approval_data["strategy_sha256"] = hashlib.sha256(strategy.read_bytes()).hexdigest()
+    if strategy_mismatch:
+        strategy.write_text("STRATEGY_CODE_CHANGED = True\n", encoding="utf-8")
+    approval.write_text(json.dumps(approval_data, sort_keys=True) + "\n", encoding="utf-8")
     subprocess.run(["git", "init", "-q", str(source)], check=True)
     subprocess.run(["git", "-C", str(source), "config", "user.email", "test@example.invalid"], check=True)
     subprocess.run(["git", "-C", str(source), "config", "user.name", "Fixture"], check=True)
@@ -84,6 +92,23 @@ def test_verify_detects_script_and_web_asset_mismatch(tmp_path: Path, relative: 
     (release / relative).write_text(changed, encoding="utf-8")
     with pytest.raises(ValueError, match="mismatch: release_tree"):
         release_manifest.verify_manifest(runtime, release, output, manifest["source"]["commit"])
+
+
+def test_gui_manifest_accepts_strategy_change_but_trader_manifest_rejects_it(tmp_path: Path) -> None:
+    source, runtime, release = fixture_source(tmp_path, strategy_mismatch=True)
+    manifest = release_manifest.make_manifest(source, runtime, release, component="gui")
+    assert manifest["component"] == "gui"
+    assert "sealed_inputs" not in manifest
+    strategy_hash = hashlib.sha256((runtime / "coinmaster/strategy/wave_overlay.py").read_bytes()).hexdigest()
+    assert any(row["sha256"] == strategy_hash and row["path"] == "strategy/wave_overlay.py" for row in manifest["runtime_coinmaster"]["files"])
+    output = runtime / "release-manifest.json"
+    output.write_text(json.dumps(manifest, sort_keys=True))
+
+    release_manifest.verify_manifest(runtime, release, output, manifest["source"]["commit"], component="gui")
+    with pytest.raises(ValueError, match="component mismatch"):
+        release_manifest.verify_manifest(runtime, release, output, manifest["source"]["commit"], component="trader")
+    with pytest.raises(ValueError, match="strategy_sha256"):
+        release_manifest.make_manifest(source, runtime, release, component="trader")
 
 
 def test_generate_records_dirty_source_status(tmp_path: Path) -> None:

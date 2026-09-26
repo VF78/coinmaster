@@ -33,7 +33,7 @@ mkdir -p "$TEMP/release/web"
 rsync -a "$ROOT/coinmaster/dist/" "$TEMP/release/web/"
 python3 "$ROOT/runtime/scripts/release_manifest.py" generate \
   --source-root "$ROOT" --runtime-root "$TEMP/release/runtime" \
-  --release-root "$TEMP/release" \
+  --release-root "$TEMP/release" --component gui \
   --output "$TEMP/release/runtime/release-manifest.json"
 tar -C "$TEMP/release" -czf "$TEMP/release.tar.gz" runtime web
 DIGEST="$(shasum -a 256 "$TEMP/release.tar.gz" | cut -d ' ' -f1)"

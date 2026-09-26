@@ -111,7 +111,9 @@ def seal_inputs(runtime_root: Path) -> dict[str, str]:
     }
 
 
-def make_manifest(source_root: Path, runtime_root: Path, release_root: Path) -> dict[str, Any]:
+def make_manifest(source_root: Path, runtime_root: Path, release_root: Path, component: str = "trader") -> dict[str, Any]:
+    if component not in {"gui", "trader"}:
+        raise ValueError("component must be gui or trader")
     commit = subprocess.run(
         ["git", "-C", str(source_root), "rev-parse", "HEAD"], check=True,
         capture_output=True, text=True,
@@ -126,12 +128,12 @@ def make_manifest(source_root: Path, runtime_root: Path, release_root: Path) -> 
     lock_path, project_path = runtime_root / "uv.lock", runtime_root / "pyproject.toml"
     if not lock_path.is_file() or not project_path.is_file():
         raise ValueError("pinned runtime dependency files are missing")
-    return {
+    manifest = {
         "schema": SCHEMA,
+        "component": component,
         "source": {"commit": commit, "dirty": bool(status), "status": status},
         "release_tree": payload_tree(release_root),
         "runtime_coinmaster": code_tree(runtime_root),
-        "sealed_inputs": seal_inputs(runtime_root),
         "pinned_dependencies": {
             "lockfile": "uv.lock",
             "lockfile_sha256": sha256_file(lock_path),
@@ -139,25 +141,31 @@ def make_manifest(source_root: Path, runtime_root: Path, release_root: Path) -> 
             "project_file_sha256": sha256_file(project_path),
         },
     }
+    if component == "trader":
+        manifest["sealed_inputs"] = seal_inputs(runtime_root)
+    return manifest
 
 
-def write_manifest(source_root: Path, runtime_root: Path, release_root: Path, output: Path) -> None:
-    manifest = make_manifest(source_root, runtime_root, release_root)
+def write_manifest(source_root: Path, runtime_root: Path, release_root: Path, output: Path, component: str = "trader") -> None:
+    manifest = make_manifest(source_root, runtime_root, release_root, component)
     output.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     print(f"MANIFEST_WRITTEN commit={manifest['source']['commit']} dirty={str(manifest['source']['dirty']).lower()} release_sha256={manifest['release_tree']['sha256']}")
 
 
-def verify_manifest(runtime_root: Path, release_root: Path, path: Path, expected_commit: str) -> None:
+def verify_manifest(runtime_root: Path, release_root: Path, path: Path, expected_commit: str, component: str = "trader") -> None:
+    if component not in {"gui", "trader"}:
+        raise ValueError("component must be gui or trader")
     manifest = json.loads(path.read_text(encoding="utf-8"))
     if manifest.get("schema") != SCHEMA:
         raise ValueError("release manifest schema mismatch")
+    if manifest.get("component", "trader") != component:
+        raise ValueError("release manifest component mismatch")
     source = manifest.get("source", {})
     if source.get("commit") != expected_commit or source.get("dirty") is not False or source.get("status") != []:
         raise ValueError("release manifest source identity mismatch")
     current = {
         "release_tree": payload_tree(release_root),
         "runtime_coinmaster": code_tree(runtime_root),
-        "sealed_inputs": seal_inputs(runtime_root),
         "pinned_dependencies": {
             "lockfile": "uv.lock",
             "lockfile_sha256": sha256_file(runtime_root / "uv.lock"),
@@ -165,6 +173,8 @@ def verify_manifest(runtime_root: Path, release_root: Path, path: Path, expected
             "project_file_sha256": sha256_file(runtime_root / "pyproject.toml"),
         },
     }
+    if component == "trader":
+        current["sealed_inputs"] = seal_inputs(runtime_root)
     for name, value in current.items():
         if manifest.get(name) != value:
             raise ValueError(f"release manifest mismatch: {name}")
@@ -179,17 +189,19 @@ def main() -> int:
     generate.add_argument("--runtime-root", type=Path, required=True)
     generate.add_argument("--release-root", type=Path, required=True)
     generate.add_argument("--output", type=Path, required=True)
+    generate.add_argument("--component", choices=("gui", "trader"), default="trader")
     verify = subparsers.add_parser("verify")
     verify.add_argument("--runtime-root", type=Path, required=True)
     verify.add_argument("--release-root", type=Path, required=True)
     verify.add_argument("--manifest", type=Path, required=True)
     verify.add_argument("--expected-commit", required=True)
+    verify.add_argument("--component", choices=("gui", "trader"), default="trader")
     args = parser.parse_args()
     try:
         if args.action == "generate":
-            write_manifest(args.source_root.resolve(), args.runtime_root.resolve(), args.release_root.resolve(), args.output.resolve())
+            write_manifest(args.source_root.resolve(), args.runtime_root.resolve(), args.release_root.resolve(), args.output.resolve(), args.component)
         else:
-            verify_manifest(args.runtime_root.resolve(), args.release_root.resolve(), args.manifest.resolve(), args.expected_commit)
+            verify_manifest(args.runtime_root.resolve(), args.release_root.resolve(), args.manifest.resolve(), args.expected_commit, args.component)
     except (OSError, ValueError, subprocess.CalledProcessError, json.JSONDecodeError) as error:
         print(f"RELEASE_MANIFEST_ERROR: {error}", file=sys.stderr)
         return 1
