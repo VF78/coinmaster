@@ -45,7 +45,7 @@ from test_hl_stageg_sandbox_lifecycle import HL_BTC, HL_SOL
 
 ACCOUNT = AccountId("HYPERLIQUID-master")
 CLIENT_ORDER = ClientOrderId("HLTG-RESTART-PROBE-1")
-VENUE_ORDER = VenueOrderId("venue-1")
+VENUE_ORDER = VenueOrderId("7")
 
 
 class FakeReportClient(LiveExecutionClient):
@@ -105,6 +105,98 @@ class FakeReportClient(LiveExecutionClient):
             return
         os._exit(137)  # Fake venue accepted; native ACK was not emitted.
 
+    async def generate_mass_status(self, lookback_mins=None):
+        if os.environ.get("CM_FAKE_RAW_CONVERTER") != "1":
+            return await super().generate_mass_status(lookback_mins)
+        from nautilus_trader.core import nautilus_pyo3
+        from coinmaster.ops.hl_info_receipt import collect_info_receipt
+        from coinmaster.ops.hl_qualified_reports import qualified_mass_status
+
+        client = self._fake_venue_state.get("accepted_order", str(CLIENT_ORDER))
+        cloid = str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(
+            nautilus_pyo3.ClientOrderId(client)
+        ))
+        native_orders = self._cache.orders(venue=self.venue)
+        assert len(native_orders) == 1
+        cached = native_orders[0]
+        order_ms = cached.ts_init // 1_000_000
+        journal = os.environ.get("CM_FAKE_JOURNAL")
+        if journal:
+            durable = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
+            applied = durable.applied_fill_ids()
+            durable.close()
+        else:
+            applied = frozenset()
+        native_fills = [
+            event for event in cached.events if hasattr(event, "trade_id")
+            and str(event.trade_id) in applied
+        ]
+        if applied:
+            assert len(native_fills) == len(applied)
+            anchor_event = max(native_fills, key=lambda event: (event.ts_event, int(str(event.trade_id))))
+            fill_ms = anchor_event.ts_event // 1_000_000
+            anchor_tid = int(str(anchor_event.trade_id))
+        else:
+            fill_ms = max(order_ms + 1, self._clock.timestamp_ns() // 1_000_000 - 1)
+            anchor_tid = None
+        order = {
+            "coin": "BTC", "oid": 7, "cloid": cloid,
+            "side": "B", "origSz": "0.02000", "sz": "0.01000",
+            "reduceOnly": False, "orderType": "Limit", "tif": "Gtc",
+            "limitPx": "60000.0", "timestamp": order_ms,
+        }
+        data = {
+            "frontendOpenOrders": [order],
+            "clearinghouseState": {
+                "assetPositions": [{"position": {
+                    "coin": "BTC", "szi": "0.01000", "entryPx": "60000.0",
+                }}],
+                "marginSummary": {
+                    "accountValue": "9999.73", "totalRawUsd": "10000",
+                    "totalMarginUsed": "100", "totalNtlPos": "600",
+                },
+                "withdrawable": "9900",
+            },
+            "orderStatus": {
+                "status": "order", "order": {
+                    "order": order, "status": "open", "statusTimestamp": fill_ms,
+                },
+            },
+            "userFillsByTime": [{
+                "coin": "BTC", "oid": 7, "tid": anchor_tid or 1, "time": fill_ms,
+                "side": "B",
+                "sz": "0.00500" if os.environ.get("CM_FAKE_TWO_FILLS") == "1" else "0.01000",
+                "px": "60000.0",
+                "fee": "0.135" if os.environ.get("CM_FAKE_TWO_FILLS") == "1" else "0.27",
+                "feeToken": "USDC", "hash": "0xfake",
+                "crossed": True,
+            }],
+        }
+
+        async def info(body):
+            value = data[body["type"]]
+            if body["type"] == "userFillsByTime":
+                return [x for x in value if body["startTime"] <= x["time"] <= body["endTime"]]
+            return value
+
+        async def collect(end_ms):
+            return await collect_info_receipt(
+                info, account="0x" + "a" * 40, dex="",
+                anchor_ms=fill_ms if anchor_tid is not None else order_ms,
+                anchor_tid=anchor_tid, end_ms=end_ms,
+                expected_orders={cloid: None}, owned_coins=frozenset({"BTC", "SOL"}),
+            )
+
+        first = await collect(fill_ms + 1)
+        second = await collect(fill_ms + 2)
+        return qualified_mass_status(
+            first, second, expected_account_ref="0x" + "a" * 40, expected_dex="",
+            account_id=ACCOUNT, client_id=self.id, venue=self.venue,
+            instruments={"BTC": HL_BTC, "SOL": HL_SOL},
+            durable_orders={client: (cloid, None)}, native_orders=native_orders,
+            applied_trade_ids=applied, ts_init=self._clock.timestamp_ns(),
+        )
+
     async def generate_order_status_reports(self, command):
         if not self._fake_venue_state["partial"]:
             return []
@@ -123,8 +215,24 @@ class FakeReportClient(LiveExecutionClient):
             return []
         now = self._clock.timestamp_ns()
         client_order = ClientOrderId(self._fake_venue_state.get("accepted_order", str(CLIENT_ORDER)))
+        if os.environ.get("CM_FAKE_TWO_FILLS") == "1":
+            return [
+                FillReport(
+                    ACCOUNT, HL_BTC.id, VENUE_ORDER, TradeId(str(tid)),
+                    OrderSide.BUY, Quantity.from_str("0.00500"), Price.from_str("60000.0"),
+                    Money(Decimal("0.135"), USDC), LiquiditySide.TAKER,
+                    UUID4(), now - (9 - tid) * 1_000_000, now,
+                    client_order_id=client_order,
+                )
+                for tid in (8, 9)
+            ]
         return [FillReport(
-            ACCOUNT, HL_BTC.id, VENUE_ORDER, TradeId("trade-1"),
+            ACCOUNT, HL_BTC.id, VENUE_ORDER,
+            TradeId(
+                "9" if os.environ.get("CM_FAKE_NUMERIC_FILL") == "1"
+                else "1" if os.environ.get("CM_FAKE_RAW_CONVERTER") == "1"
+                else "trade-1"
+            ),
             OrderSide.BUY, Quantity.from_str("0.01000"), Price.from_str("60000.0"),
             Money(Decimal("0.27"), USDC), LiquiditySide.TAKER,
             UUID4(), now, now, client_order_id=client_order,
@@ -243,15 +351,15 @@ async def _run_child():
         active.acquire()
         if os.environ.get("CM_FAKE_NORMAL_CALLBACK") == "1":
             strategy.attach_recovery_runtime(active)
-            report = reports[0]
-            strategy.on_order_filled(SimpleNamespace(
-                trade_id=report.trade_id, client_order_id=report.client_order_id,
-                instrument_id=report.instrument_id, last_qty=report.last_qty,
-                last_px=report.last_px, ts_event=report.ts_event, ts_init=report.ts_init,
-                commission=report.commission, liquidity_side=report.liquidity_side,
-                order_type=OrderType.LIMIT,
-            ))
-            assert active.has_applied_fill(str(report.trade_id))
+            for report in reports:
+                strategy.on_order_filled(SimpleNamespace(
+                    trade_id=report.trade_id, client_order_id=report.client_order_id,
+                    instrument_id=report.instrument_id, last_qty=report.last_qty,
+                    last_px=report.last_px, ts_event=report.ts_event, ts_init=report.ts_init,
+                    commission=report.commission, liquidity_side=report.liquidity_side,
+                    order_type=OrderType.LIMIT,
+                ))
+                assert active.has_applied_fill(str(report.trade_id))
             assert active.strategy_checkpoint()[0] == strategy.on_save()["wave_overlay_live_recovery_v1"]
             os._exit(137)
         LiveRecoveryReconciler(active, strategy, str(ACCOUNT)).apply_partial_fills(
@@ -265,6 +373,11 @@ async def _run_child():
         "orders": [(str(o.client_order_id), str(o.quantity), str(o.filled_qty)) for o in node.cache.orders_open()],
         "positions": [(str(p.instrument_id), str(p.quantity)) for p in node.cache.positions_open()],
         "fills": len(node.trader.generate_order_fills_report()),
+        "cached_fill_events": sorted(
+            str(event.trade_id)
+            for order in node.cache.orders(venue=Venue("HYPERLIQUID"))
+            for event in order.events if hasattr(event, "trade_id")
+        ),
         "native_commissions": sorted(str(item.get("commission")) for item in node.trader.generate_fills_report().to_dict("records")),
         "episode_btc_open_qty": episode.btc_open_qty if episode else None,
         "episode_pending": sorted(episode.pending) if episode else None,
@@ -357,18 +470,23 @@ def test_normal_partial_callback_restarts_without_replay(tmp_path):
     )
     runtime.close()
     env["CM_FAKE_NORMAL_CALLBACK"] = "1"
+    env["CM_FAKE_NUMERIC_FILL"] = "1"
+    env["CM_FAKE_TWO_FILLS"] = "1"
     first = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
     assert first.returncode == 137, first.stderr
     env.pop("CM_FAKE_NORMAL_CALLBACK")
+    env["CM_FAKE_RAW_CONVERTER"] = "1"
     persisted = PaperRuntime(journal, "live-recovery-probe", 10**20)
     checkpoint = persisted.strategy_checkpoint()
-    assert persisted.has_applied_fill("trade-1")
+    assert persisted.applied_fill_ids() == frozenset({"8", "9"})
     persisted.close()
     second = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
     assert second.returncode == 0, second.stderr
     result = json.loads(next(line.split("=", 1)[1] for line in second.stdout.splitlines() if line.startswith("RECOVERY_PROOF=")))
     assert result["episode_btc_open_qty"] == 0.01
-    assert result["fills"] == 1
+    assert result["fills"] == 1, result
+    assert len(result["native_commissions"]) == 2, result
+    assert result["cached_fill_events"] == ["8", "9"]
     assert not submit_log.exists()
     final = PaperRuntime(journal, "live-recovery-probe", 10**20)
     assert final.strategy_checkpoint() == checkpoint
@@ -397,6 +515,7 @@ def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tm
     pending.close()
     env.pop("CM_FAKE_SUBMIT")
     env.pop("CM_FAKE_ACCEPT_CRASH")
+    env["CM_FAKE_RAW_CONVERTER"] = "1"
     recovered = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
     assert recovered.returncode == 0, recovered.stderr
     result = json.loads(next(line.split("=", 1)[1] for line in recovered.stdout.splitlines() if line.startswith("RECOVERY_PROOF=")))
@@ -413,7 +532,8 @@ def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tm
     live_state.write_text('{"partial": false}')
     live_env = dict(env, CM_FAKE_VENUE_STATE=str(live_state), CM_FAKE_JOURNAL=str(live_journal),
                     CM_FAKE_SUBMIT_LOG=str(live_log), CM_FAKE_TRADER_ID="HL-LIVE-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
-                    CM_FAKE_SUBMIT="1", CM_FAKE_ACCEPT_CRASH="1", CM_FAKE_ACCEPT_LIVE="1")
+                    CM_FAKE_SUBMIT="1", CM_FAKE_ACCEPT_CRASH="1", CM_FAKE_ACCEPT_LIVE="1",
+                    CM_FAKE_RAW_CONVERTER="0")
     uninterrupted = subprocess.run([sys.executable, __file__, "--child"], env=live_env, capture_output=True, text=True, timeout=45)
     assert uninterrupted.returncode == 0, uninterrupted.stderr
     live_result = json.loads(next(line.split("=", 1)[1] for line in uninterrupted.stdout.splitlines() if line.startswith("RECOVERY_PROOF=")))

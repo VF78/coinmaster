@@ -32,6 +32,8 @@ class InfoReceipt:
     fill_anchor_proven: bool = False
     conditional_only: bool = True
     account_value: str = ""
+    anchor_tid: int | None = None
+    account_summary: tuple[str, str, str, str, str] = ()
 
 
 def _number(value: Any, name: str) -> Decimal:
@@ -158,10 +160,14 @@ async def collect_info_receipt(
     account_value = _number(summary.get("accountValue"), "ACCOUNT_VALUE")
     if account_value < 0:
         raise IncompleteInfoReport("BAD_ACCOUNT_VALUE")
+    totals = []
     for field in ("totalRawUsd", "totalMarginUsed", "totalNtlPos"):
-        if _number(summary.get(field), field) < 0:
+        value = _number(summary.get(field), field)
+        if value < 0:
             raise IncompleteInfoReport(f"BAD_{field}")
-    if _number(state.get("withdrawable"), "WITHDRAWABLE") < 0:
+        totals.append(str(value))
+    withdrawable = _number(state.get("withdrawable"), "WITHDRAWABLE")
+    if withdrawable < 0:
         raise IncompleteInfoReport("BAD_WITHDRAWABLE")
 
     statuses = []
@@ -282,5 +288,6 @@ async def collect_info_receipt(
     return InfoReceipt(
         account, dex, anchor_ms, end_ms, tuple(open_orders), tuple(positions),
         fills, tuple(statuses), fill_anchor_proven=anchor_tid is not None,
-        account_value=str(account_value),
+        account_value=str(account_value), anchor_tid=anchor_tid,
+        account_summary=(str(account_value), *totals, str(withdrawable)),
     )

@@ -198,6 +198,13 @@ class PaperRuntime:
         return self.has_applied_fill(trade_id)
 
     @_journal_locked
+    def applied_fill_ids(self) -> frozenset[str]:
+        """Return the durable domain fill cursor for native event parity."""
+        return frozenset(
+            row[0] for row in self.db.execute("SELECT trade_id FROM paper_recovered_fills")
+        )
+
+    @_journal_locked
     def commit_applied_fills(self, trade_ids: list[str], strategy_state: bytes) -> bool:
         """Atomically persist domain state and all native trade IDs it includes."""
         if not trade_ids or len(set(trade_ids)) != len(trade_ids) or any(not item for item in trade_ids):
