@@ -341,3 +341,147 @@ def test_testnet_instance_rejects_mainnet_or_an_agent_address_field(tmp_path) ->
     path.write_text(json.dumps(source))
     with pytest.raises(ConfigurationError, match="UNSAFE_TESTNET_STATE_DB_PATH"):
         load_testnet_instance_config(path)
+
+
+
+def _utc_signal_probe(seed_close_ns: int):
+    from datetime import UTC, datetime, timedelta
+    from coinmaster.domain.wave_overlay import DailyBar
+    from coinmaster.venues.marks import VenueMark
+    from coinmaster.venues.signals import DailySignalBar
+
+    day = 86_400_000_000_000
+    btc_source = InstrumentId.from_str("BTCUSDT-LINEAR.BYBIT")
+    sol_source = InstrumentId.from_str("SOLUSDT-LINEAR.BYBIT")
+    btc_bar = BarType(btc_source, BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL)
+    sol_bar = BarType(sol_source, BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL)
+    close = datetime.fromtimestamp(seed_close_ns / 1_000_000_000, UTC)
+    seed = DailyBar(close - timedelta(days=1), close, close, 100, 101, 30)
+    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(
+        btc_id=BTC_PERP, sol_id=SOL_PERP,
+        btc_bar_type=btc_bar, sol_bar_type=sol_bar,
+        btc_mark_data_type=venue_mark_data_type(BTC_PERP),
+        sol_mark_data_type=venue_mark_data_type(SOL_PERP),
+        mark_client_id=ClientId("fixture"), active_seed=Decimal("10000"),
+        seed_bars=(seed,), btc_signal_id=btc_source, sol_signal_id=sol_source,
+    ))
+    decisions = []
+    strategy._advance_current_day = lambda: decisions.append(strategy._current_btc.ts_event)
+    def feed(session: int) -> None:
+        strategy._marks_by_session[session] = {
+            BTC_PERP: VenueMark(BTC_PERP, Decimal("100"), session),
+            SOL_PERP: VenueMark(SOL_PERP, Decimal("30"), session),
+        }
+        strategy.on_data(DailySignalBar(btc_source, 100, 110, 90, 101, session))
+        strategy.on_data(DailySignalBar(sol_source, 30, 33, 27, 30, session))
+    return strategy, decisions, feed, seed, day
+
+
+def test_utc_late_pair_duplicate_and_gap_are_contiguous_and_idempotent() -> None:
+    seed_close = 1_672_617_600_000_000_000
+    strategy, decisions, feed, seed, day = _utc_signal_probe(seed_close)
+    feed(seed_close + 2 * day)
+    assert len(strategy._bars) == 1
+    assert strategy.daily_decision_status()["reason"] == "WAITING_CONTIGUOUS_PAIRED_SESSION"
+    feed(seed_close + day)
+    assert [int(row.close_time.timestamp() * 1_000_000_000) for row in strategy._bars] == [
+        seed_close, seed_close + day, seed_close + 2 * day,
+    ]
+    assert decisions == [seed_close + 2 * day]
+    feed(seed_close + day)
+    feed(seed_close + 2 * day)
+    assert len(strategy._bars) == 3
+    assert decisions == [seed_close + 2 * day]
+
+
+def test_verified_gap_backfill_updates_features_without_retrotrade_and_restart_waits() -> None:
+    from datetime import timedelta
+    from coinmaster.domain.wave_overlay import DailyBar
+
+    seed_close = 1_672_617_600_000_000_000
+    strategy, decisions, feed, seed, day = _utc_signal_probe(seed_close)
+    future = seed_close + 3 * day
+    rows = [
+        DailyBar(seed.close_time + timedelta(days=i-1), seed.close_time + timedelta(days=i),
+                 seed.close_time + timedelta(days=i), 100+i, 101+i, 30+i)
+        for i in (1, 2)
+    ]
+    strategy.queue_verified_backfill(rows)
+    assert decisions == [] and len(strategy._bars) == 1
+    feed(future)
+    assert decisions == [future]
+    assert len(strategy._bars) == 4
+    assert strategy.daily_decision_status()["accepted_session_ns"] == future
+
+    # A fresh process receives only verified feature history, never a
+    # process-local deferred order or retroactive quote execution.
+    restarted, restarted_decisions, _, _, _ = _utc_signal_probe(future)
+    assert restarted._deferred_entry_session is None
+    assert restarted_decisions == []
+    assert restarted.daily_decision_status()["accepted_session_ns"] == future
+
+
+
+def test_verified_backfill_repairs_partial_prior_day_without_retrotrade() -> None:
+    from datetime import timedelta
+    from coinmaster.domain.wave_overlay import DailyBar
+    from coinmaster.venues.marks import VenueMark
+    from coinmaster.venues.signals import DailySignalBar
+
+    seed_close = 1_672_617_600_000_000_000
+    strategy, decisions, feed, seed, day = _utc_signal_probe(seed_close)
+    prior, current = seed_close + day, seed_close + 2 * day
+    btc_id = strategy.config.btc_signal_id
+    strategy._marks_by_session[prior] = {
+        BTC_PERP: VenueMark(BTC_PERP, Decimal("100"), prior),
+    }
+    strategy.on_data(DailySignalBar(btc_id, 100, 110, 90, 101, prior))
+    feed(current)
+    assert decisions == []
+    assert prior in strategy._day and prior in strategy._marks_by_session
+    assert strategy.daily_decision_status()["reason"] == "WAITING_CONTIGUOUS_PAIRED_SESSION"
+
+    verified_prior = DailyBar(
+        seed.close_time, seed.close_time + timedelta(days=1),
+        seed.close_time + timedelta(days=1), 100, 101, 30,
+    )
+    strategy.queue_verified_backfill([verified_prior])
+    assert decisions == []
+    strategy._apply_verified_backfill()  # The next native callback applies the queued artifact.
+    assert [int(row.close_time.timestamp() * 1_000_000_000) for row in strategy._bars] == [
+        seed_close, prior, current,
+    ]
+    assert prior not in strategy._day and prior not in strategy._marks_by_session
+    assert decisions == [current]
+    assert strategy.daily_decision_status()["accepted_session_ns"] == current
+    feed(prior)
+    feed(current)
+    assert decisions == [current]
+
+    # Intraday quotes before the first live close cannot consume the queued
+    # artifact before a safe current-session cutoff exists.
+    fresh, _, _, _, _ = _utc_signal_probe(seed_close)
+    fresh.queue_verified_backfill([verified_prior])
+    fresh.on_quote_tick(SimpleNamespace())
+    assert fresh._pending_verified_backfill == (verified_prior,)
+
+
+def test_late_sol_signal_completes_btc_day_once() -> None:
+    from coinmaster.venues.marks import VenueMark
+    from coinmaster.venues.signals import DailySignalBar
+
+    seed_close = 1_672_617_600_000_000_000
+    strategy, decisions, _, _, day = _utc_signal_probe(seed_close)
+    session = seed_close + day
+    strategy._marks_by_session[session] = {
+        BTC_PERP: VenueMark(BTC_PERP, Decimal("100"), session),
+        SOL_PERP: VenueMark(SOL_PERP, Decimal("30"), session),
+    }
+    btc_id = strategy.config.btc_signal_id
+    sol_id = strategy.config.sol_signal_id
+    strategy.on_data(DailySignalBar(btc_id, 100, 110, 90, 101, session))
+    assert len(strategy._bars) == 1 and decisions == []
+    strategy.on_data(DailySignalBar(sol_id, 30, 33, 27, 30, session))
+    strategy.on_data(DailySignalBar(sol_id, 30, 33, 27, 30, session))
+    assert len(strategy._bars) == 2
+    assert decisions == [session]

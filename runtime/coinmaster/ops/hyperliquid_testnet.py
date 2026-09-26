@@ -448,12 +448,14 @@ class HyperliquidTestnetNode:
         ):
             bundle, state = load_stageg_warmup_bundle(self.instance.signal_warmup_manifest)
             self.warmup_bundle, self.warmup_state = bundle, state
+            if self.strategy is not None and bundle is not None and state == "READY":
+                self.strategy.queue_verified_backfill(bundle.bars)
             self._warmup_verified_day = day
             self._warmup_verified_target = target
             self._warmup_checked_at_ns = now_ns
         latest_live_close_ms = (
-            int(self.strategy._bars[-1].close_time.timestamp() * 1000)
-            if self.strategy is not None and self.strategy._bars else 0
+            self.strategy._current_btc.ts_event // 1_000_000
+            if self.strategy is not None and self.strategy._current_btc is not None else 0
         )
         covered = latest_live_close_ms >= day * 86_400_000
         state = self.warmup_state if self.warmup_state != "READY" or covered else "STRATEGY_LIVE_SESSION_MISSING"
@@ -580,6 +582,7 @@ class HyperliquidTestnetNode:
             "scrubbed_private_environment": list(self.scrubbed_environment),
             "warmup": {"state": self.warmup_state, "rows": self.warmup_bundle.rows if self.warmup_bundle else 0},
             "stage_g_gate": self.gate.__dict__,
+            "daily_decision": self.strategy.daily_decision_status() if self.strategy is not None else None,
             "accounting": {
                 "fees": {"observed": "SANDBOX_NATIVE_FILL_COMMISSION", "policy": "FIXED_HL_PUBLIC_BASE_MAKER_0.00015_TAKER_0.00045"},
                 "funding": {

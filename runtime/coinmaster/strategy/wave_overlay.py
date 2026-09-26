@@ -90,6 +90,13 @@ class WaveOverlayStrategy(Strategy):
         self._candidate = config.candidate
         self._domain = WaveOverlayState(self._candidate)
         self._bars: list[DailyBar] = list(config.seed_bars)
+        self._last_accepted_session: int | None = (
+            int(self._bars[-1].close_time.timestamp() * 1_000_000_000) if self._bars else None
+        )
+        self._latest_seen_session: int | None = self._last_accepted_session
+        self._daily_decision_reason = "SEED_ONLY"
+        self._pending_verified_backfill: tuple[DailyBar, ...] | None = None
+        self._backfill_error: str | None = None
         self._pending_by_order: dict[str, Intent] = {}
         self._sigma_by_order: dict[str, float | None] = {}
         self._decision_index_by_order: dict[str, int] = {}
@@ -159,6 +166,11 @@ class WaveOverlayStrategy(Strategy):
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
             return
         session = bar.ts_event
+        self._latest_seen_session = max(self._latest_seen_session or session, session)
+        self._apply_verified_backfill()
+        if self._last_accepted_session is not None and session <= self._last_accepted_session:
+            return
+        self._latest_seen_session = max(self._latest_seen_session or session, session)
         paired = self._day.setdefault(session, {})
         paired[bar.bar_type] = bar
         self._try_advance_session(session)
@@ -178,8 +190,13 @@ class WaveOverlayStrategy(Strategy):
             signal_ids = (self.config.btc_signal_id or self.config.btc_id, self.config.sol_signal_id or self.config.sol_id)
             if mark.instrument_id not in signal_ids:
                 return
+            self._latest_seen_session = max(self._latest_seen_session or mark.ts_event, mark.ts_event)
+            self._apply_verified_backfill()
             execution_id = self.config.btc_id if mark.instrument_id == signal_ids[0] else self.config.sol_id
             bar_type = self.config.btc_bar_type if execution_id == self.config.btc_id else self.config.sol_bar_type
+            if self._last_accepted_session is not None and mark.ts_event <= self._last_accepted_session:
+                return
+            self._latest_seen_session = max(self._latest_seen_session or mark.ts_event, mark.ts_event)
             self._day.setdefault(mark.ts_event, {})[bar_type] = mark
             # Input ordering is mark -> signal -> quote.  Retain only the two
             # latest marks and pair them here at the daily boundary.
@@ -236,6 +253,8 @@ class WaveOverlayStrategy(Strategy):
 
     def _on_venue_mark(self, mark: VenueMark, *, session: int | None = None) -> None:
         session = mark.ts_event if session is None else session
+        if self._last_accepted_session is not None and session <= self._last_accepted_session:
+            return
         self._marks_by_session.setdefault(session, {})[mark.instrument_id] = mark
         if (
             mark.ts_event in self.config.reporting_checkpoint_ns
@@ -291,30 +310,102 @@ class WaveOverlayStrategy(Strategy):
         self._begin_forced_close("LIQUIDATION")
 
     def _try_advance_session(self, session: int) -> None:
-        paired = self._day.get(session)
-        marks = self._marks_by_session.get(session)
-        if paired is None or marks is None:
+        """Consume each paired UTC close once and only in contiguous order."""
+        while self._day:
+            next_session = (
+                self._last_accepted_session + 86_400_000_000_000
+                if self._last_accepted_session is not None else min(self._day)
+            )
+            paired = self._day.get(next_session)
+            marks = self._marks_by_session.get(next_session)
+            required = (self.config.btc_bar_type, self.config.sol_bar_type)
+            if paired is None or marks is None or any(item not in paired for item in required) or any(
+                item not in marks for item in (self.config.btc_id, self.config.sol_id)
+            ):
+                self._daily_decision_reason = "WAITING_CONTIGUOUS_PAIRED_SESSION"
+                return
+            btc, sol = paired[self.config.btc_bar_type], paired[self.config.sol_bar_type]
+            btc_mark, sol_mark = marks[self.config.btc_id], marks[self.config.sol_id]
+            del self._day[next_session]
+            del self._marks_by_session[next_session]
+            close_time = datetime.fromtimestamp(next_session / 1_000_000_000, UTC)
+            available_at = datetime.fromtimestamp(
+                max(btc.ts_init, sol.ts_init, btc_mark.ts_init, sol_mark.ts_init, next_session) / 1_000_000_000, UTC,
+            )
+            self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
+            self._last_accepted_session = next_session
+            self._last_sol_close = float(sol.close)
+            self._current_btc, self._current_sol = btc, sol
+            self._current_btc_mark, self._current_sol_mark = btc_mark, sol_mark
+            self._current_signals = features_for(self._bars, self._candidate)
+            if next_session < (self._latest_seen_session or next_session):
+                # This session arrived after a newer signal. It repairs the
+                # feature chain but must never replay an old execution price.
+                self._daily_decision_reason = "BACKFILL_FEATURES_ONLY"
+                continue
+            if self.config.terminal_close_at_ns is not None and next_session >= self.config.terminal_close_at_ns:
+                self._submit_terminal_closes()
+                return
+            self._daily_decision_reason = "CURRENT_PAIRED_SESSION"
+            self._advance_current_day()
+
+    def queue_verified_backfill(self, rows: list[DailyBar]) -> None:
+        """Hand off a validated same-source artifact to the native callback thread."""
+        self._pending_verified_backfill = tuple(rows)
+
+    def _apply_verified_backfill(self) -> None:
+        rows = self._pending_verified_backfill
+        if rows is None:
             return
-        required = (self.config.btc_bar_type, self.config.sol_bar_type)
-        if any(item not in paired for item in required) or self.config.btc_id not in marks or self.config.sol_id not in marks:
-            return
-        btc, sol = paired[self.config.btc_bar_type], paired[self.config.sol_bar_type]
-        btc_mark, sol_mark = marks[self.config.btc_id], marks[self.config.sol_id]
-        del self._day[session]
-        del self._marks_by_session[session]
-        close_time = datetime.fromtimestamp(btc.ts_event / 1_000_000_000, UTC)
-        # A mark observed before the close is causal, but the paired daily bar
-        # is not usable until its UTC close.  A late bar/mark delays the tuple.
-        available_at = datetime.fromtimestamp(max(btc.ts_init, sol.ts_init, btc_mark.ts_init, sol_mark.ts_init, btc.ts_event) / 1_000_000_000, UTC)
-        self._bars.append(DailyBar(close_time - timedelta(days=1), close_time, available_at, float(btc.open), float(btc.close), float(sol.close)))
-        self._last_sol_close = float(sol.close)
-        self._current_btc, self._current_sol = btc, sol
-        self._current_btc_mark, self._current_sol_mark = btc_mark, sol_mark
-        self._current_signals = features_for(self._bars, self._candidate)
-        if self.config.terminal_close_at_ns is not None and btc.ts_event >= self.config.terminal_close_at_ns:
-            self._submit_terminal_closes()
-            return
-        self._advance_current_day()
+        self._pending_verified_backfill = None
+        try:
+            self.backfill_signal_history(list(rows))
+        except ValueError as error:
+            self._backfill_error = str(error)
+            self._daily_decision_reason = "SIGNAL_BACKFILL_GAP"
+
+    def backfill_signal_history(self, rows: list[DailyBar]) -> int:
+        """Import verified same-source closed days as features, never trades."""
+        # Only sessions strictly before the latest observed live signal may be
+        # repaired from verified history. A partial earlier live session must
+        # not block its own verified replacement or replay an old decision.
+        cutoff = self._latest_seen_session
+        if cutoff is None or (self._last_accepted_session is not None and cutoff <= self._last_accepted_session):
+            return 0
+        appended = 0
+        for row in rows:
+            session = int(row.close_time.timestamp() * 1_000_000_000)
+            if self._last_accepted_session is not None and session <= self._last_accepted_session:
+                continue
+            if cutoff is not None and session >= cutoff:
+                break
+            if self._last_accepted_session is not None and session != self._last_accepted_session + 86_400_000_000_000:
+                raise ValueError("SIGNAL_BACKFILL_GAP")
+            self._bars.append(row)
+            self._last_accepted_session = session
+            # The verified same-source row supersedes any incomplete live
+            # tuple/mark for this closed session; neither may hold the cursor.
+            self._day.pop(session, None)
+            self._marks_by_session.pop(session, None)
+            appended += 1
+        if appended:
+            self._current_signals = features_for(self._bars, self._candidate)
+            if self._deferred_entry_session is not None and self._deferred_entry_session <= self._last_accepted_session:
+                self._deferred_entry_session = None
+            self._daily_decision_reason = "BACKFILL_FEATURES_ONLY"
+            # A current paired session may already be waiting behind the
+            # repaired gap. Consume it once, never the historical row above.
+            self._try_advance_session(cutoff)
+        return appended
+
+    def daily_decision_status(self) -> dict[str, object]:
+        return {
+            "accepted_session_ns": self._last_accepted_session,
+            "latest_seen_session_ns": self._latest_seen_session,
+            "deferred_entry_session_ns": self._deferred_entry_session,
+            "reason": self._daily_decision_reason,
+            "backfill_error": self._backfill_error,
+        }
 
     def _advance_current_day(self) -> None:
         if self._current_btc is None or self._current_sol is None or self._current_btc_mark is None or self._current_sol_mark is None:
@@ -324,17 +415,23 @@ class WaveOverlayStrategy(Strategy):
         # configured interval's first daily open.
         if self.config.trading_start_open_ns is not None and self._current_btc.ts_event - 86_400_000_000_000 < self.config.trading_start_open_ns:
             return
-        if self._liquidating:
+        if self._liquidating or self._backfill_error is not None:
             return
         if not self._entries_enabled() and not self.cache.positions_open():
             # `_try_advance_session` has intentionally consumed its paired
             # source tuple by now. Preserve this exact session so reopening a
             # readiness/control gate can evaluate the same causal daily bar.
             self._deferred_entry_session = self._current_btc.ts_event
+            self._daily_decision_reason = "DEFERRED_ENTRY_GATE"
             return
         if self._deferred_entry_session == self._current_btc.ts_event:
             self._deferred_entry_session = None
-        for intent in self._domain.decide(self._bars, self._current_signals, len(self._bars) - 1, self._active_marked(self._current_btc_mark, self._current_sol_mark)):
+        intents = self._domain.decide(
+            self._bars, self._current_signals, len(self._bars) - 1,
+            self._active_marked(self._current_btc_mark, self._current_sol_mark),
+        )
+        self._daily_decision_reason = getattr(self._domain, "last_decision_reason", "CURRENT_DECISION_EVALUATED") if not intents else "CURRENT_DECISION_INTENTS"
+        for intent in intents:
             if intent.action == "CLOSE_ALL":
                 # A mandatory group exit owns the next executable quotes.  It
                 # must not wait behind an older queued SOL add or planned exit.
@@ -366,6 +463,13 @@ class WaveOverlayStrategy(Strategy):
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        # Verified artifacts are queued off-thread. A quote may apply one
+        # after the latest paired session is buffered, but must not consume
+        # warmup history before any live signal establishes a safe cutoff.
+        if self._latest_seen_session is not None and (
+            self._last_accepted_session is None or self._latest_seen_session > self._last_accepted_session
+        ):
+            self._apply_verified_backfill()
         self._retry_deferred_daily_decision()
         if self._mandatory_sol_exit is not None:
             # A timeout is allowed to cancel a stale/resting SOL reduction,
@@ -420,6 +524,16 @@ class WaveOverlayStrategy(Strategy):
                 marked += position.unrealized_pnl(position_instrument.make_price(mark)).as_decimal()
         return float(marked)
 
+    def _deny_local_entry(self, intent: Intent, reason: str, ts_now: int | None) -> None:
+        self.pre_submit_gate_blocks.append({
+            "timestamp": str(ts_now or 0),
+            "intent_id": intent.id,
+            "action": intent.action,
+            "reason": reason,
+        })
+        self._daily_decision_reason = f"LOCAL_ENTRY_DENIED:{reason}"
+        self._domain.on_parent_terminal(intent.id)
+
     def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None) -> None:
         if intent.action == "CLOSE_ALL":
             for position in self.cache.positions_open():
@@ -446,6 +560,8 @@ class WaveOverlayStrategy(Strategy):
         instrument_id = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
         instrument = self.cache.instrument(instrument_id)
         if instrument is None:
+            if intent.action == "BTC_ENTRY":
+                self._deny_local_entry(intent, "INSTRUMENT_MISSING", ts_now)
             return
         side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
         executable_price = Decimal(str(ask_price if side == OrderSide.BUY else bid_price))
@@ -455,6 +571,8 @@ class WaveOverlayStrategy(Strategy):
         if intent.action == "SOL_ADD" and intent.requested_notional is not None:
             quantity = float(Decimal(str(min(intent.requested_notional, self._candidate.max_parent_notional))) / executable_price)
         if quantity is None or quantity <= 0:
+            if intent.action == "BTC_ENTRY":
+                self._deny_local_entry(intent, "QUANTITY_INVALID", ts_now)
             return
         reduce_only = intent.action in {"BTC_REDUCE", "SOL_HALF_EXIT", "SOL_EXIT"}
         if reduce_only:
@@ -467,7 +585,10 @@ class WaveOverlayStrategy(Strategy):
         rounded = (Decimal(str(quantity)) // step) * step
         if rounded <= 0:
             # A sub-step request is a reject, never an implicit size increase.
-            self._domain.on_parent_terminal(intent.id)
+            if intent.action == "BTC_ENTRY":
+                self._deny_local_entry(intent, "QUANTITY_BELOW_STEP", ts_now)
+            else:
+                self._domain.on_parent_terminal(intent.id)
             return
         # Increases are gated at the last safe point, after executable-price
         # sizing/normalization and immediately before native order creation.
@@ -479,13 +600,7 @@ class WaveOverlayStrategy(Strategy):
             meets_minimum = (min_quantity is None or rounded >= min_quantity) and (min_notional is None or rounded * executable_price >= min_notional)
             if not meets_minimum or not self._entries_enabled() or not self._tier_allows_increase(instrument_id, side, rounded, now):
                 self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
-                self.pre_submit_gate_blocks.append({
-                    "timestamp": str(now),
-                    "intent_id": intent.id,
-                    "action": intent.action,
-                    "reason": "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM",
-                })
-                self._domain.on_parent_terminal(intent.id)
+                self._deny_local_entry(intent, "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM", now)
                 return
         # Control A makes every planned SOL exit a native taker IOC.  Resting
         # post-only liquidity remains only for explicit BTC TP targets.
@@ -526,8 +641,13 @@ class WaveOverlayStrategy(Strategy):
             self._pending_by_order.pop(client_order_id, None)
             self._sigma_by_order.pop(client_order_id, None)
             self._decision_index_by_order.pop(client_order_id, None)
-            self._domain.on_parent_terminal(intent.id)
+            if intent.action == "BTC_ENTRY":
+                self._deny_local_entry(intent, "DURABLE_SUBMIT_PREP_REJECTED", ts_now)
+            else:
+                self._domain.on_parent_terminal(intent.id)
             return
+        if intent.action == "BTC_ENTRY":
+            self._daily_decision_reason = "NATIVE_SUBMISSION_PENDING_ACK"
         self.submit_order(order)
 
     def _discard_queued_intents(self, predicate) -> None:
@@ -803,6 +923,11 @@ class WaveOverlayStrategy(Strategy):
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
+        if intent is not None and intent.action == "BTC_ENTRY":
+            self._daily_decision_reason = (
+                "PARTIAL_ENTRY_RETAINED" if self._domain.episode is not None and self._domain.episode.btc_initial_qty > 0
+                else "NATIVE_ENTRY_ZERO_FILL_CANCELED"
+            )
         sigma = self._sigma_by_order.pop(str(event.client_order_id), None)
         decision_index = self._decision_index_by_order.pop(str(event.client_order_id), 0)
         if intent is not None:
@@ -883,6 +1008,11 @@ class WaveOverlayStrategy(Strategy):
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(client_order_id, None)
+        if intent is not None and intent.action == "BTC_ENTRY":
+            self._daily_decision_reason = (
+                "PARTIAL_ENTRY_RETAINED" if self._domain.episode is not None and self._domain.episode.btc_initial_qty > 0
+                else "NATIVE_ENTRY_ZERO_FILL_TERMINAL"
+            )
         sigma = self._sigma_by_order.pop(client_order_id, None)
         decision_index = self._decision_index_by_order.pop(client_order_id, 0)
         if intent is not None:

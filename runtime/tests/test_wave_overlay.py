@@ -277,3 +277,44 @@ def test_z_requires_exact_previous_calendar_window_including_invalid_values() ->
     candidate = Candidate(beta_days=2, relative_days=1, z_history_days=2)
     assert features_for(flat, candidate) == batch_features_for(flat, candidate)
     assert all(item.z is None for item in features_for(flat, candidate))
+
+
+def test_zero_fill_entry_terminal_releases_only_empty_episode_and_waits_next_daily_decision() -> None:
+    source = bars()
+    candidate = Candidate(wave_min_count=1)
+    features = features_for(source, candidate)
+    state = WaveOverlayState(candidate)
+    index = next(
+        i for i in range(len(source) - 1)
+        if features[i].beta is not None
+        and 0.2 < features[i].beta < 4
+        and state.decide(source, features, i, 10_000)
+    )
+    first = next(iter(state.episode.pending.values()))
+    assert first.action == "BTC_ENTRY"
+    state.on_parent_terminal(first.id)
+    assert state.episode is None
+    assert state.decide(source, features, index, 10_000) == []
+    later = state.decide(source, features, index + 1, 10_000)
+    assert len(later) == 1 and later[0].action == "BTC_ENTRY"
+    assert later[0].episode_id != first.episode_id
+
+
+def test_partial_entry_then_terminal_retains_episode_and_confirmed_qty() -> None:
+    source = bars()
+    candidate = Candidate(wave_min_count=1)
+    features = features_for(source, candidate)
+    state = WaveOverlayState(candidate)
+    index = next(
+        i for i in range(len(source) - 1)
+        if features[i].beta is not None
+        and 0.2 < features[i].beta < 4
+        and state.decide(source, features, i, 10_000)
+    )
+    first = next(iter(state.episode.pending.values()))
+    state.on_fill(first.id, 0.25, source[index].btc_open, source[index].close_time)
+    state.on_parent_terminal(first.id)
+    assert state.episode is not None
+    assert state.episode.id == first.episode_id
+    assert state.episode.btc_initial_qty == state.episode.btc_open_qty == 0.25
+    assert state.episode.btc_entry_vwap == source[index].btc_open

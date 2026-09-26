@@ -255,6 +255,10 @@ class WaveOverlayState:
         self.episode: Episode | None = None
         self.locked_after_liquidation = False
         self._decision_index = -1
+        # A proven zero-fill terminal may release its empty episode, but the
+        # same daily decision/side must never create a second entry attempt.
+        self._last_entry_attempt: tuple[int, Side] | None = None
+        self.last_decision_reason = "NOT_EVALUATED"
 
     def _intent(self, episode: Episode, action: Action, side: Side, level: int | None, **kwargs: float) -> Intent:
         intent = Intent(str(uuid4()), episode.id, action, level, side, decision_index=self._decision_index, **kwargs)
@@ -266,15 +270,26 @@ class WaveOverlayState:
         feature = all_features[index]
         episode = self.episode
         if episode is None:
-            if self.locked_after_liquidation or feature.beta is None or not 0.2 < feature.beta < 4:
+            if self._last_entry_attempt == (index, feature.side):
+                self.last_decision_reason = "ENTRY_ATTEMPTED_THIS_SESSION"
+                return []
+            if self.locked_after_liquidation:
+                self.last_decision_reason = "LIQUIDATION_LOCKOUT"
+                return []
+            if feature.beta is None or not 0.2 < feature.beta < 4:
+                self.last_decision_reason = "BETA_INVALID"
                 return []
             levels = completed_wave_levels(bars, all_features, index, self.config, feature.side)
             if levels is None:
+                self.last_decision_reason = "WAVES_UNAVAILABLE"
                 return []
             episode = Episode(str(uuid4()), feature.side, active_marked, feature.beta, wave_levels=levels)
             self.episode = episode
+            self._last_entry_attempt = (index, feature.side)
+            self.last_decision_reason = "BTC_ENTRY_INTENT"
             return [self._intent(episode, "BTC_ENTRY", feature.side, None, requested_notional=min(self.config.btc_notional_multiplier * active_marked, self.config.max_parent_notional))]
         if episode.btc_entry_vwap is None or episode.h is None:
+            self.last_decision_reason = "PENDING_NATIVE_ENTRY_OUTCOME"
             return []
         if feature.side != episode.side:
             episode.close_reason = "REGIME"
@@ -434,6 +449,17 @@ class WaveOverlayState:
         # again by a later causal decision, while a real fill remains final.
         if intent is not None and intent.action == "BTC_REDUCE" and intent.level is not None and intent.level not in self.episode.btc_filled_tps:
             self.episode.btc_tps.discard(intent.level)
+        # Only an authoritative terminal with zero confirmed entry fills may
+        # release this otherwise permanent empty episode. Partial fills and
+        # any other pending risk keep their original episode identity.
+        if (
+            intent is not None and intent.action == "BTC_ENTRY"
+            and self.episode.btc_initial_qty == 0
+            and self.episode.btc_open_qty == 0
+            and self.episode.sol_qty == 0
+            and not self.episode.pending
+        ):
+            self.episode = None
 
     def on_parent_terminal(self, intent_id: str) -> None:
         """Called only after a native terminal order state, never an ACK."""
