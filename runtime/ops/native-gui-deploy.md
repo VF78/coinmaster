@@ -14,8 +14,14 @@ runtime/scripts/deploy_native_gui.sh activate-api
 ```
 
 `plan` checks active services, the existing control DB for active research work,
-the operator token, and the Linux runtime. `stage` verifies the archive digest,
-creates a distinct `coinmaster-research` identity and root-only environment,
+the operator token, and the Linux runtime. `stage` embeds and verifies a generated
+`runtime/release-manifest.json` before dependency installation. It records the
+source commit and dirty status, an inventory and aggregate hash of all
+`runtime/coinmaster` source files, the existing candidate/strategy/execution-policy
+seal identities, and hashes of `uv.lock` and `pyproject.toml`. The helper checks
+the current values against the existing approval seal and aborts staging on any
+identity mismatch. `stage` then verifies the archive digest, creates a distinct
+`coinmaster-research` identity and root-only environment,
 installs from the frozen runtime lockfile, and smoke-tests a temporary loopback
 API using a copy of the control DB. Its receipt records the paper/trader PIDs.
 `activate-api` backs up the previous runtime unit and release pointer, copies
