@@ -137,12 +137,20 @@ async def native_run(events):
     await node.kernel.start_async()
     try:
         boundary = None
+        dispatch_return = None
         for event in events:
             node.kernel.data_engine.process(event)
+            if event.ts_event == 1:
+                dispatch_return = snapshot(node, strategy)
             await asyncio.sleep(0.05)
             if event.ts_event == 4:
                 boundary = snapshot(node, strategy)
-        return boundary, snapshot(node, strategy)
+        try:
+            await asyncio.wait_for(node.kernel.data_engine._data_queue.join(), timeout=0.05)
+            data_queue_join_completed = True
+        except TimeoutError:
+            data_queue_join_completed = False
+        return dispatch_return, boundary, snapshot(node, strategy), data_queue_join_completed
     finally:
         await node.kernel.stop_async()
         node.kernel.dispose()
@@ -160,8 +168,13 @@ def test_pinned_native_open_partial_tp_replays_before_next_decision():
             ),
             quote(5, "60009.0", "60011.0"),
         ]
-        uninterrupted_boundary, uninterrupted_next = await native_run(events)
-        replayed_boundary, replayed_next = await native_run(events)
+        uninterrupted_dispatch, uninterrupted_boundary, uninterrupted_next, uninterrupted_join = await native_run(events)
+        replayed_dispatch, replayed_boundary, replayed_next, replayed_join = await native_run(events)
+        assert uninterrupted_dispatch == replayed_dispatch
+        assert uninterrupted_dispatch['positions'] == []
+        assert uninterrupted_dispatch['fills'] == []
+        assert uninterrupted_dispatch['strategy_step'] == 0
+        assert not uninterrupted_join and not replayed_join
         assert uninterrupted_boundary == replayed_boundary
         assert uninterrupted_next == replayed_next
         assert uninterrupted_boundary["positions"] == [(str(BTC_PERP), "0.02500", True)]
