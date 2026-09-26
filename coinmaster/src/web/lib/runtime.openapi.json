@@ -329,6 +329,111 @@
         "title": "HlStagegControls",
         "type": "object"
       },
+      "HlStagegDepositProtection": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "drawdown_limit_percent": {
+            "title": "Drawdown Limit Percent",
+            "type": "integer"
+          },
+          "equity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity"
+          },
+          "high_water_equity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High Water Equity"
+          },
+          "last_daily_close_utc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Daily Close Utc"
+          },
+          "observed_at_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed At Ns"
+          },
+          "state": {
+            "enum": [
+              "NOT_INITIALIZED",
+              "RECOVERY_REQUIRED",
+              "ARMED",
+              "EQUITY_UNAVAILABLE",
+              "EXITING",
+              "TRIPPED_FLAT",
+              "EXIT_INCOMPLETE"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "threshold_equity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Equity"
+          },
+          "trigger": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trigger"
+          }
+        },
+        "required": [
+          "state",
+          "drawdown_limit_percent"
+        ],
+        "title": "HlStagegDepositProtection",
+        "type": "object"
+      },
       "HlStagegEntryControl": {
         "additionalProperties": false,
         "properties": {
@@ -626,6 +731,16 @@
           "account": {
             "$ref": "#/components/schemas/HlStagegAccount"
           },
+          "deposit_protection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HlStagegDepositProtection"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "entry_control": {
             "$ref": "#/components/schemas/HlStagegEntryControl"
           },
@@ -842,6 +957,84 @@
           "warnings"
         ],
         "title": "HlStagegProjection",
+        "type": "object"
+      },
+      "HlStagegProtectionCommand": {
+        "additionalProperties": false,
+        "properties": {
+          "command": {
+            "enum": [
+              "set-deposit-protection",
+              "reset-deposit-protection"
+            ],
+            "title": "Command",
+            "type": "string"
+          },
+          "deposit_protection": {
+            "$ref": "#/components/schemas/HlStagegDepositProtection"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "instance_id": {
+            "const": "hl-stageg-testnet",
+            "title": "Instance Id",
+            "type": "string"
+          },
+          "status": {
+            "const": "APPLIED",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instance_id",
+          "command",
+          "idempotency_key",
+          "status",
+          "deposit_protection"
+        ],
+        "title": "HlStagegProtectionCommand",
+        "type": "object"
+      },
+      "HlStagegProtectionCommandRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "drawdown_limit_percent": {
+            "title": "Drawdown Limit Percent",
+            "type": "integer"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "drawdown_limit_percent"
+        ],
+        "title": "HlStagegProtectionCommandRequest",
+        "type": "object"
+      },
+      "HlStagegProtectionResetRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "confirm": {
+            "const": true,
+            "title": "Confirm",
+            "type": "boolean"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "confirm"
+        ],
+        "title": "HlStagegProtectionResetRequest",
         "type": "object"
       },
       "HlStagegStrategy": {
@@ -2831,6 +3024,150 @@
           }
         },
         "summary": "Hl Stageg Control Capabilities"
+      }
+    },
+    "/api/v1/instances/hl-stageg-testnet/controls/reset-deposit-protection": {
+      "post": {
+        "operationId": "reset_hl_stageg_deposit_protection_api_v1_instances_hl_stageg_testnet_controls_reset_deposit_protection_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HlStagegProtectionResetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegProtectionCommand"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reset Hl Stageg Deposit Protection"
+      }
+    },
+    "/api/v1/instances/hl-stageg-testnet/controls/set-deposit-protection": {
+      "post": {
+        "operationId": "set_hl_stageg_deposit_protection_api_v1_instances_hl_stageg_testnet_controls_set_deposit_protection_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HlStagegProtectionCommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegProtectionCommand"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Hl Stageg Deposit Protection"
       }
     },
     "/api/v1/instances/hl-stageg-testnet/controls/{command}": {

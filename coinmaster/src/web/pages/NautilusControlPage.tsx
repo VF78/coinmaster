@@ -4,7 +4,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
-import { cancelRun, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlStagegControls, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
+import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlStagegControls, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
 import { accountFigures, fundingLabel } from '../lib/accountPresentation';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
@@ -262,6 +262,9 @@ export function RuntimePage() {
   const figures = accountFigures(projectionReady ? state : null);
   const activeExposure = projectionReady ? (positionRows.length ? `${positionRows.length} open` : 'Flat') : 'Unavailable';
   const hasNativeActivity = (state?.events.length ?? 0) > 0;
+  const protection = state?.deposit_protection;
+  const protectionFresh = Boolean(projectionReady && protection?.observed_at_ns && Date.now() * 1_000_000 - protection.observed_at_ns <= 15_000_000_000);
+  const protectionArmed = protectionFresh && protection?.state === 'ARMED';
   return <main className="terminal-layout nautilus-runtime-workspace">
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={toneForProjection}>{state ? `${state.projection_state} · ${state.process_state}` : loading ? 'LOADING' : 'UNAVAILABLE'}</Badge>}>
       <div className="runtime-hero__heading"><div><p className="trader-hero__lead">Local Sandbox execution for BTC and SOL. Live orders are disabled.</p><p className="trader-note">{entryGateMessage}.</p><p className="trader-note">Figures below come directly from the native Sandbox account read. Funding is {fundingLabel(state)} and is not included as a cash posting.</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
@@ -273,6 +276,17 @@ export function RuntimePage() {
       {accountIsUnknown ? <p className="runtime-empty-note">Native account values are UNKNOWN until a same-worker read is available. The 10,000 USDC seed is a setup value, not account performance.</p> : null}
       {state?.account.mark_state === 'STALE_OR_MISSING' ? <p className="runtime-empty-note">Mark is STALE_OR_MISSING. Marked equity and unrealized PnL are stale and are not presented as current.</p> : null}
       {state?.account.status === 'PARTIAL' ? <p className="runtime-empty-note">Account read is PARTIAL. Missing native fields remain UNKNOWN.</p> : null}
+    </Card>
+    <Card title="Защита депозита" actions={<Badge tone={protectionArmed ? 'success' : 'danger'}>{protectionFresh ? protection?.state : protection ? 'STALE / UNKNOWN' : 'UNKNOWN'}</Badge>}>
+      <div className="runtime-account-grid">
+        <Stat label="Допустимая просадка" value={protection ? `${protection.drawdown_limit_percent}%` : 'UNKNOWN'} />
+        <Stat label="Equity (E)" value={protection?.equity ? `${protection.equity} ${protection.currency ?? ''}`.trim() : 'UNKNOWN'} />
+        <Stat label="High-water (H)" value={protection?.high_water_equity ?? 'UNKNOWN'} />
+        <Stat label="Порог (T)" value={protection?.threshold_equity ?? 'UNKNOWN'} />
+        <Stat label="Суточный снимок UTC" value={protection?.last_daily_close_utc ?? 'UNKNOWN'} />
+        <Stat label="Наблюдение" value={protection?.observed_at_ns ? new Date(protection.observed_at_ns / 1_000_000).toLocaleString() : 'UNKNOWN'} />
+      </div>
+      <p className="muted">Максимум повышается по итогам суток UTC; порог проверяется внутри дня. При срабатывании позиции закрываются, новые входы заблокированы до подтверждения. Это порог реакции, не гарантия точного остатка.</p>
     </Card>
     <section className="runtime-market-and-positions"><Card className="market-board" title="Markets" actions={<Badge tone="neutral">PUBLIC DATA</Badge>}>
       <DataTable rows={feedRows} emptyText="Market observations are unavailable." mobileTitle={(row) => row.instrument_id} mobileSubtitle={(row) => `${row.mark ?? 'UNKNOWN'} · ${row.state}`} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id }, { key: 'state', header: 'Feed', render: (row) => <Badge tone={row.state === 'READY' ? 'success' : 'danger'}>{row.state}</Badge> }, { key: 'mark', header: 'Mark', render: (row) => row.mark ?? 'UNKNOWN' }, { key: 'mark-age', header: 'Mark freshness', render: (row) => age(row.mark_age_ns) }, { key: 'funding', header: 'Funding rate', render: (row) => row.funding_rate ?? 'UNKNOWN' }, { key: 'funding-age', header: 'Funding freshness', render: (row) => age(row.funding_age_ns) }]} />
@@ -293,17 +307,48 @@ export function WorkspaceSettingsPage() {
   const [controls, setControls] = useState<HlStagegControls | null>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [commandInFlight, setCommandInFlight] = useState<'pause-new-entries' | 'resume-new-entries' | null>(null);
+  const [commandInFlight, setCommandInFlight] = useState<string | null>(null);
+  const [protectionDraft, setProtectionDraft] = useState('50');
   async function refresh() {
     setLoading(true);
     const [projection, capabilities] = await Promise.allSettled([getHlStagegProjection(), getHlStagegControls()]);
     setState(projection.status === 'fulfilled' ? projection.value : null);
+    if (projection.status === 'fulfilled') setProtectionDraft(String(projection.value.deposit_protection?.drawdown_limit_percent ?? 50));
     setControls(capabilities.status === 'fulfilled' ? capabilities.value : null);
     const failed = [projection, capabilities].find((result) => result.status === 'rejected');
     setMessage(failed?.status === 'rejected' ? String(failed.reason) : '');
     setLoading(false);
   }
   useEffect(() => { void refresh(); }, []);
+  const protection = state?.deposit_protection;
+  const pausedAndFlat = state?.projection_state === 'READY'
+    && state.entry_control.state === 'PAUSED'
+    && state.positions.every((position) => Number(position.signed_quantity) === 0)
+    && state.orders.length === 0;
+  const percent = Number(protectionDraft);
+  async function saveProtection() {
+    if (commandInFlight || !Number.isInteger(percent) || percent < 1 || percent > 99 || !pausedAndFlat) return;
+    setCommandInFlight('set-deposit-protection'); setMessage('Saving deposit protection…');
+    try {
+      const result = await commandHlStagegDepositProtection('set-deposit-protection', crypto.randomUUID(), percent);
+      await refresh();
+      if (result.status !== 'APPLIED' || result.deposit_protection.drawdown_limit_percent !== percent) throw new Error('Deposit protection read-back mismatch.');
+      setMessage('Deposit protection saved and read back.');
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Deposit protection save failed.'); }
+    finally { setCommandInFlight(null); }
+  }
+  async function resetProtection() {
+    if (commandInFlight || !pausedAndFlat || protection?.equity == null) return;
+    if (!window.confirm('Set a new deposit protection baseline from current equity? The worker remains paused; resume is a separate action.')) return;
+    setCommandInFlight('reset-deposit-protection'); setMessage('Resetting deposit protection baseline…');
+    try {
+      const result = await commandHlStagegDepositProtection('reset-deposit-protection', crypto.randomUUID());
+      await refresh();
+      if (result.status !== 'APPLIED') throw new Error('Deposit protection reset was not confirmed.');
+      setMessage('New baseline applied and read back. The worker remains paused.');
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Deposit protection reset failed.'); }
+    finally { setCommandInFlight(null); }
+  }
   async function commandEntries(command: 'pause-new-entries' | 'resume-new-entries') {
     if (commandInFlight) return;
     setCommandInFlight(command); setMessage('Sending Stage-G entry control…');
@@ -320,6 +365,14 @@ export function WorkspaceSettingsPage() {
       <p className="muted">Public Hyperliquid MAINNET prices and Bybit signal data feed the isolated virtual Stage-G instance. No exchange credential or wallet setting is used here.</p>
       <p className="muted">Observed at: {state?.observed_at_ns ? new Date(state.observed_at_ns / 1_000_000).toLocaleString() : 'UNKNOWN'} · Reconciliation: {state?.reconciliation ?? 'UNKNOWN'} · Funding: {state?.funding_state ?? 'UNPOSTED'}.</p>
       <Button variant="secondary" onClick={() => void refresh()}>Refresh connection</Button>
+    </Card>
+    <Card title="Защита депозита">
+      <p className="muted">Изменение и сброс доступны только при паузе и подтверждённом flat-счёте.</p>
+      <div className="rules-form-grid">
+        <label className="rules-field"><span>Допустимая просадка, %</span><input aria-label="Допустимая просадка, %" type="number" min={1} max={99} step={1} value={protectionDraft} onChange={(event) => setProtectionDraft(event.target.value)} /></label>
+        <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" disabled={!pausedAndFlat || !Number.isInteger(percent) || percent < 1 || percent > 99 || commandInFlight !== null} onClick={() => void saveProtection()}>{commandInFlight === 'set-deposit-protection' ? 'Сохранение…' : 'Сохранить'}</Button><Button variant="danger" disabled={!pausedAndFlat || protection?.equity == null || commandInFlight !== null} onClick={() => void resetProtection()}>{commandInFlight === 'reset-deposit-protection' ? 'Сброс…' : 'Новая база после ручного перевода / повторный запуск'}</Button></div>
+      </div>
+      <p className="muted">Текущее состояние: {protection?.state ?? 'UNKNOWN'} · E: {protection?.equity ?? 'UNKNOWN'} {protection?.currency ?? ''} · H: {protection?.high_water_equity ?? 'UNKNOWN'} · T: {protection?.threshold_equity ?? 'UNKNOWN'}.</p>
     </Card>
     <Card title="Native control permissions" actions={<Badge tone={controls?.pause.enabled ? 'success' : 'danger'}>{controls?.pause.enabled ? 'ENTRY CONTROL READY' : 'READ ONLY'}</Badge>}>
       <p className="muted">Pause and resume affect only new entries on this Stage-G Sandbox worker. They are authenticated, idempotent, and read back from the worker. They never target coinmaster-paper, Freqtrade, or a real exchange.</p>

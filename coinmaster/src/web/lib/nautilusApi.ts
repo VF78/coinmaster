@@ -10,6 +10,8 @@ export type ResearchCapabilities = runtimeComponents['schemas']['ResearchCapabil
 export type HlStagegProjection = runtimeComponents['schemas']['HlStagegProjection'];
 export type HlStagegStrategy = runtimeComponents['schemas']['HlStagegStrategy'];
 export type HlStagegControls = runtimeComponents['schemas']['HlStagegControls'];
+export type HlStagegDepositProtection = runtimeComponents['schemas']['HlStagegDepositProtection'];
+export type HlStagegProtectionCommand = runtimeComponents['schemas']['HlStagegProtectionCommand'];
 type GuiSession = { username: string; csrf_token: string };
 let guiSession: GuiSession | null = null;
 export async function getGuiSession(): Promise<GuiSession> {
@@ -49,3 +51,10 @@ export const getHlStagegProjection = () => request<HlStagegProjection>('/instanc
 export const getHlStagegStrategy = () => request<HlStagegStrategy>('/instances/hl-stageg-testnet/strategy');
 export const getHlStagegControls = () => request<HlStagegControls>('/instances/hl-stageg-testnet/controls');
 export const commandHlStagegEntries = (command: 'pause-new-entries' | 'resume-new-entries', idempotencyKey: string) => request<{ instance_id: 'hl-stageg-testnet'; command: 'pause-new-entries' | 'resume-new-entries'; idempotency_key: string; status: 'ACCEPTED' | 'DUPLICATE'; entry_control: 'RUNNING' | 'PAUSED' }>(`/instances/hl-stageg-testnet/controls/${command}`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey } });
+
+export const commandHlStagegDepositProtection = (command: 'set-deposit-protection' | 'reset-deposit-protection', idempotencyKey: string, drawdownLimitPercent?: number) => request<HlStagegProtectionCommand>(`/instances/hl-stageg-testnet/controls/${command}`, {
+  method: 'POST',
+  body: JSON.stringify(command === 'set-deposit-protection'
+    ? { idempotency_key: idempotencyKey, drawdown_limit_percent: drawdownLimitPercent }
+    : { idempotency_key: idempotencyKey, confirm: true }),
+});

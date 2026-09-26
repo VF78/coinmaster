@@ -10,7 +10,7 @@ from fastapi import HTTPException
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 
-from coinmaster.api.runtime_sidecar import HlStagegControlRelay, HlStagegProjection, HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app, hl_stageg_controls
+from coinmaster.api.runtime_sidecar import HlStagegControlRelay, HlStagegDepositProtection, HlStagegDepositProtectionRelay, HlStagegProtectionCommandRequest, HlStagegProjection, HlStagegProjectionReader, HlStagegStrategyReader, RuntimeReader, create_runtime_app, hl_stageg_controls
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker as HlStagegWorker, create_status_server
 from coinmaster.ops.paper import PaperRuntime
 
@@ -74,6 +74,8 @@ def test_hl_stageg_controls_are_authenticated_instance_bound_and_fail_closed(tmp
     assert body["flatten"]["requires_confirmation"] is True
     assert app.openapi()["paths"][path].keys() == {"get"}
     assert "/api/v1/instances/hl-stageg-testnet/controls/{command}" in app.openapi()["paths"]
+    assert "/api/v1/instances/hl-stageg-testnet/controls/set-deposit-protection" in app.openapi()["paths"]
+    assert "/api/v1/instances/hl-stageg-testnet/controls/reset-deposit-protection" in app.openapi()["paths"]
 
     ready = hl_stageg_controls(HlStagegProjection.model_validate(_ready_hl_projection()))
     assert ready.pause.enabled is False and ready.pause.blocker == "NATIVE_ENTRY_CONTROL_UNAVAILABLE"
@@ -375,3 +377,156 @@ def test_stageg_entry_control_relay_fails_closed_on_timeout(monkeypatch) -> None
     with pytest.raises(HTTPException) as unavailable:
         HlStagegControlRelay("http://127.0.0.1:18183", "internal-test-token").command("pause-new-entries", "c" * 16)
     assert unavailable.value.status_code == 503
+
+
+def test_deposit_protection_contract_uses_money_strings_and_strict_integer_percent() -> None:
+    protection = HlStagegDepositProtection.model_validate({
+        "state": "ARMED", "drawdown_limit_percent": 50, "currency": "USDC",
+        "equity": "10000.00", "high_water_equity": "11000.00", "threshold_equity": "5500.00",
+        "observed_at_ns": 123, "last_daily_close_utc": "2026-09-26T00:00:00Z", "trigger": None,
+    })
+    assert protection.equity == "10000.00" and protection.threshold_equity == "5500.00"
+    for invalid in (0, 100, 50.5, True, "50"):
+        with pytest.raises(ValueError):
+            HlStagegProtectionCommandRequest(idempotency_key="test-key", drawdown_limit_percent=invalid)
+    assert HlStagegProtectionCommandRequest(idempotency_key="test-key", drawdown_limit_percent=1).drawdown_limit_percent == 1
+    assert HlStagegProtectionCommandRequest(idempotency_key="test-key", drawdown_limit_percent=99).drawdown_limit_percent == 99
+
+
+def test_deposit_protection_relay_requires_worker_applied_readback_and_fails_closed_on_timeout(monkeypatch) -> None:
+    import coinmaster.api.runtime_sidecar as sidecar
+    body = {"idempotency_key": "dp-test", "drawdown_limit_percent": 40}
+    import time
+    worker_reply = {
+        "instance_id": "hl-stageg-testnet", "command": "set-deposit-protection",
+        "idempotency_key": "dp-test", "status": "APPLIED",
+        "deposit_protection": {
+            "state": "ARMED", "drawdown_limit_percent": 40, "currency": "USDC",
+            "equity": "10000", "high_water_equity": "10000", "threshold_equity": "6000",
+            "observed_at_ns": time.time_ns(), "last_daily_close_utc": None, "trigger": None,
+        },
+    }
+    captured = {}
+    def reply(request, timeout):
+        captured["request"] = request
+        captured["timeout"] = timeout
+        return io.BytesIO(json.dumps(worker_reply).encode())
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", reply)
+    result = HlStagegDepositProtectionRelay("http://127.0.0.1:18183", "worker-token").command("set-deposit-protection", body)
+    assert result.status == "APPLIED" and result.deposit_protection.drawdown_limit_percent == 40
+    request = captured["request"]
+    assert request.get_header("X-coinmaster-instance") == "hl-stageg-testnet"
+    assert request.get_header("Idempotency-key") == body["idempotency_key"]
+    assert json.loads(request.data) == body and captured["timeout"] == 3
+
+    stale_reply = {**worker_reply, "deposit_protection": {**worker_reply["deposit_protection"], "observed_at_ns": 1}}
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *_args, **_kwargs: io.BytesIO(json.dumps(stale_reply).encode()))
+    with pytest.raises(HTTPException) as stale:
+        HlStagegDepositProtectionRelay("http://127.0.0.1:18183", "worker-token").command("set-deposit-protection", body)
+    assert stale.value.status_code == 503
+
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *_args, **_kwargs: (_ for _ in ()).throw(TimeoutError()))
+    with pytest.raises(HTTPException) as unavailable:
+        HlStagegDepositProtectionRelay("http://127.0.0.1:18183", "worker-token").command("set-deposit-protection", body)
+    assert unavailable.value.status_code == 503
+
+
+def test_authenticated_api_set_and_reset_relay_round_trip_with_worker_status(tmp_path):
+    import asyncio
+    import threading
+    import time
+    from http.server import ThreadingHTTPServer
+
+    class Worker:
+        instance = SimpleNamespace(instance_id="hl-stageg-testnet")
+
+        def __init__(self):
+            self.body = _ready_hl_projection()
+            self.body["positions"] = []
+            self.body["orders"] = []
+            self.body["entry_control"] = {"state": "PAUSED", "capability": "READY"}
+            self.body["account"] = {"equity": "10000"}
+            self.protection = {
+                "state": "ARMED", "drawdown_limit_percent": 50, "currency": "USDC",
+                "equity": "10000", "high_water_equity": "10000", "threshold_equity": "5000",
+                "observed_at_ns": time.time_ns(), "last_daily_close_utc": None, "trigger": None,
+            }
+
+        def projection(self):
+            self.body["observed_at_ns"] = time.time_ns()
+            return {**self.body, "deposit_protection": dict(self.protection)}
+
+        def deposit_control(self, command, key, *, drawdown_limit_percent=None, confirm=False):
+            if not key or self.body["entry_control"]["state"] != "PAUSED" or self.body["positions"] or self.body["orders"]:
+                raise ValueError("DEPOSIT_CONTROL_REQUIRES_PAUSED_CONFIRMED_FLAT")
+            if command == "set-deposit-protection" and type(drawdown_limit_percent) is int and 1 <= drawdown_limit_percent <= 99:
+                self.protection["drawdown_limit_percent"] = drawdown_limit_percent
+                threshold = Decimal(self.protection["high_water_equity"]) * Decimal(100 - drawdown_limit_percent) / Decimal(100)
+                self.protection["threshold_equity"] = str(threshold)
+            elif command == "reset-deposit-protection" and confirm is True:
+                self.protection["high_water_equity"] = self.protection["equity"]
+                self.protection["state"] = "ARMED"
+                self.protection["trigger"] = None
+            else:
+                raise ValueError("DEPOSIT_CONTROL_INVALID")
+            self.protection["observed_at_ns"] = time.time_ns()
+            return dict(self.protection)
+
+    worker = Worker()
+    server = create_status_server(worker, port=0, control_token="worker-secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        app = create_runtime_app(
+            database=str(tmp_path / "paper.sqlite"), control_database=str(tmp_path / "control.sqlite"),
+            token="operator-secret", hl_stageg_status_url=f"http://127.0.0.1:{server.server_address[1]}",
+            hl_stageg_control_token="worker-secret",
+        )
+
+        async def call(method, path, body=None, *, authorized=True):
+            headers = [(b"host", b"localhost"), (b"content-type", b"application/json")]
+            if authorized:
+                headers.append((b"authorization", b"Bearer operator-secret"))
+            scope = {
+                "type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1",
+                "scheme": "http", "method": method, "path": path, "raw_path": path.encode(),
+                "query_string": b"", "headers": headers, "server": ("localhost", 80),
+                "client": ("127.0.0.1", 4321), "root_path": "",
+            }
+            payload = json.dumps(body).encode() if body is not None else b""
+            messages = []
+            received = False
+            async def receive():
+                nonlocal received
+                if not received:
+                    received = True
+                    return {"type": "http.request", "body": payload, "more_body": False}
+                return {"type": "http.disconnect"}
+            async def send(message):
+                messages.append(message)
+            await app(scope, receive, send)
+            start = next(item for item in messages if item["type"] == "http.response.start")
+            response_body = b"".join(item.get("body", b"") for item in messages if item["type"] == "http.response.body")
+            return start["status"], json.loads(response_body)
+
+        set_key = "set-" + "a" * 32
+        path = "/api/v1/instances/hl-stageg-testnet/controls/set-deposit-protection"
+        assert asyncio.run(call("POST", path, {"idempotency_key": set_key, "drawdown_limit_percent": 40}, authorized=False))[0] == 401
+        status, applied = asyncio.run(call("POST", path, {"idempotency_key": set_key, "drawdown_limit_percent": 40}))
+        assert status == 200 and applied["status"] == "APPLIED"
+        assert applied["deposit_protection"]["drawdown_limit_percent"] == 40
+        status, projection = asyncio.run(call("GET", "/api/v1/instances/hl-stageg-testnet"))
+        assert status == 200 and projection["deposit_protection"]["threshold_equity"] == "6000"
+
+        reset_key = "reset-" + "b" * 32
+        status, reset = asyncio.run(call(
+            "POST", "/api/v1/instances/hl-stageg-testnet/controls/reset-deposit-protection",
+            {"idempotency_key": reset_key, "confirm": True},
+        ))
+        assert status == 200 and reset["status"] == "APPLIED"
+        assert reset["deposit_protection"]["high_water_equity"] == reset["deposit_protection"]["equity"]
+        assert worker.body["entry_control"]["state"] == "PAUSED"
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)

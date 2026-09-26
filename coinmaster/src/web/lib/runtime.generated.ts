@@ -90,6 +90,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/instances/hl-stageg-testnet/controls/reset-deposit-protection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset Hl Stageg Deposit Protection */
+        post: operations["reset_hl_stageg_deposit_protection_api_v1_instances_hl_stageg_testnet_controls_reset_deposit_protection_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/instances/hl-stageg-testnet/controls/set-deposit-protection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set Hl Stageg Deposit Protection */
+        post: operations["set_hl_stageg_deposit_protection_api_v1_instances_hl_stageg_testnet_controls_set_deposit_protection_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/instances/hl-stageg-testnet/controls/{command}": {
         parameters: {
             query?: never;
@@ -449,6 +483,30 @@ export interface components {
             promotion: components["schemas"]["HlStagegControlAction"];
             resume: components["schemas"]["HlStagegControlAction"];
         };
+        /** HlStagegDepositProtection */
+        HlStagegDepositProtection: {
+            /** Currency */
+            currency?: string | null;
+            /** Drawdown Limit Percent */
+            drawdown_limit_percent: number;
+            /** Equity */
+            equity?: string | null;
+            /** High Water Equity */
+            high_water_equity?: string | null;
+            /** Last Daily Close Utc */
+            last_daily_close_utc?: string | null;
+            /** Observed At Ns */
+            observed_at_ns?: number | null;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "NOT_INITIALIZED" | "RECOVERY_REQUIRED" | "ARMED" | "EQUITY_UNAVAILABLE" | "EXITING" | "TRIPPED_FLAT" | "EXIT_INCOMPLETE";
+            /** Threshold Equity */
+            threshold_equity?: string | null;
+            /** Trigger */
+            trigger?: string | null;
+        };
         /** HlStagegEntryControl */
         HlStagegEntryControl: {
             /**
@@ -543,6 +601,7 @@ export interface components {
         /** HlStagegProjection */
         HlStagegProjection: {
             account: components["schemas"]["HlStagegAccount"];
+            deposit_protection?: components["schemas"]["HlStagegDepositProtection"] | null;
             entry_control: components["schemas"]["HlStagegEntryControl"];
             /**
              * Environment
@@ -620,6 +679,44 @@ export interface components {
             warmup: components["schemas"]["HlStagegWarmup"];
             /** Warnings */
             warnings: string[];
+        };
+        /** HlStagegProtectionCommand */
+        HlStagegProtectionCommand: {
+            /**
+             * Command
+             * @enum {string}
+             */
+            command: "set-deposit-protection" | "reset-deposit-protection";
+            deposit_protection: components["schemas"]["HlStagegDepositProtection"];
+            /** Idempotency Key */
+            idempotency_key: string;
+            /**
+             * Instance Id
+             * @constant
+             */
+            instance_id: "hl-stageg-testnet";
+            /**
+             * Status
+             * @constant
+             */
+            status: "APPLIED";
+        };
+        /** HlStagegProtectionCommandRequest */
+        HlStagegProtectionCommandRequest: {
+            /** Drawdown Limit Percent */
+            drawdown_limit_percent: number;
+            /** Idempotency Key */
+            idempotency_key: string;
+        };
+        /** HlStagegProtectionResetRequest */
+        HlStagegProtectionResetRequest: {
+            /**
+             * Confirm
+             * @constant
+             */
+            confirm: true;
+            /** Idempotency Key */
+            idempotency_key: string;
         };
         /** HlStagegStrategy */
         HlStagegStrategy: {
@@ -1384,6 +1481,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HlStagegControls"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reset_hl_stageg_deposit_protection_api_v1_instances_hl_stageg_testnet_controls_reset_deposit_protection_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HlStagegProtectionResetRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegProtectionCommand"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_hl_stageg_deposit_protection_api_v1_instances_hl_stageg_testnet_controls_set_deposit_protection_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HlStagegProtectionCommandRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegProtectionCommand"];
                 };
             };
             /** @description Validation Error */

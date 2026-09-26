@@ -139,6 +139,76 @@ class HlStagegWarmup(RuntimeSchema):
     rows: int | None = None
 
 
+class HlStagegDepositProtection(RuntimeSchema):
+    state: Literal["NOT_INITIALIZED", "RECOVERY_REQUIRED", "ARMED", "EQUITY_UNAVAILABLE", "EXITING", "TRIPPED_FLAT", "EXIT_INCOMPLETE"]
+    drawdown_limit_percent: int
+    currency: str | None = None
+    equity: str | None = None
+    high_water_equity: str | None = None
+    threshold_equity: str | None = None
+    observed_at_ns: int | None = None
+    last_daily_close_utc: str | None = None
+    trigger: str | None = None
+
+    @field_validator("equity", "high_water_equity", "threshold_equity")
+    @classmethod
+    def decimal_or_unavailable(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        try:
+            if not Decimal(value).is_finite():
+                raise ValueError("non-finite deposit protection decimal")
+        except InvalidOperation as error:
+            raise ValueError("invalid deposit protection decimal") from error
+        return value
+
+
+class HlStagegProtectionCommandRequest(RuntimeSchema):
+    idempotency_key: str
+    drawdown_limit_percent: int
+
+    @field_validator("idempotency_key")
+    @classmethod
+    def nonempty_idempotency_key(cls, value: str) -> str:
+        if not value.strip() or len(value) > 200:
+            raise ValueError("invalid idempotency key")
+        return value
+
+    @field_validator("drawdown_limit_percent", mode="before")
+    @classmethod
+    def strict_percent(cls, value: Any) -> int:
+        if type(value) is not int or not 1 <= value <= 99:
+            raise ValueError("drawdown_limit_percent must be an integer from 1 to 99")
+        return value
+
+
+class HlStagegProtectionResetRequest(RuntimeSchema):
+    idempotency_key: str
+    confirm: Literal[True]
+
+    @field_validator("idempotency_key")
+    @classmethod
+    def nonempty_idempotency_key(cls, value: str) -> str:
+        if not value.strip() or len(value) > 200:
+            raise ValueError("invalid idempotency key")
+        return value
+
+    @field_validator("confirm", mode="before")
+    @classmethod
+    def require_explicit_confirmation(cls, value: Any) -> bool:
+        if value is not True:
+            raise ValueError("confirm must be true")
+        return True
+
+
+class HlStagegProtectionCommand(RuntimeSchema):
+    instance_id: Literal["hl-stageg-testnet"]
+    command: Literal["set-deposit-protection", "reset-deposit-protection"]
+    idempotency_key: str
+    status: Literal["APPLIED"]
+    deposit_protection: HlStagegDepositProtection
+
+
 class HlStagegAccount(RuntimeSchema):
     status: Literal["AVAILABLE", "PARTIAL", "UNAVAILABLE"] = "UNAVAILABLE"
     observed_at_ns: int | None = None
@@ -238,6 +308,7 @@ class HlStagegProjection(RuntimeSchema):
     funding_state: str
     feeds: dict[str, RuntimeFeed]
     positions: list[HlStagegPosition]
+    deposit_protection: HlStagegDepositProtection | None = None
     orders: list[HlStagegOrder]
     events: list[HlStagegEvent]
     event_cursor: int
@@ -448,6 +519,44 @@ class HlStagegControlRelay:
         return payload
 
 
+class HlStagegDepositProtectionRelay:
+    """Relay bounded deposit policy commands to the instance-bound loopback worker."""
+    def __init__(self, url: str, token: str | None) -> None:
+        self.url, self.token = url.rstrip("/"), token
+
+    def command(self, command: Literal["set-deposit-protection", "reset-deposit-protection"], body: dict[str, Any]) -> HlStagegProtectionCommand:
+        if not self.token:
+            raise HTTPException(503, "Stage-G deposit protection control is unavailable")
+        request = urllib.request.Request(
+            f"{self.url}/controls/{command}", data=json.dumps(body).encode(), method="POST",
+            headers={"Authorization": f"Bearer {self.token}", "X-Coinmaster-Instance": "hl-stageg-testnet",
+                     "Idempotency-Key": str(body.get("idempotency_key", "")), "Content-Type": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=3) as response:
+                payload = HlStagegProtectionCommand.model_validate(json.loads(response.read()))
+        except urllib.error.HTTPError as error:
+            if error.code == 409:
+                raise HTTPException(409, "Stage-G idempotency key conflicts with a prior command") from error
+            raise HTTPException(503, "Stage-G deposit protection control is unavailable") from error
+        except (OSError, TimeoutError, ValueError, TypeError):
+            raise HTTPException(503, "Stage-G deposit protection control is unavailable")
+        if payload.instance_id != "hl-stageg-testnet" or payload.command != command or payload.idempotency_key != body.get("idempotency_key"):
+            raise HTTPException(503, "Stage-G deposit protection identity mismatch")
+        readback = payload.deposit_protection
+        now_ns = time.time_ns()
+        if readback.observed_at_ns is None or readback.observed_at_ns > now_ns + HlStagegProjectionReader.MAX_FUTURE_SKEW_NS or now_ns - readback.observed_at_ns > HlStagegProjectionReader.MAX_AGE_NS:
+            raise HTTPException(503, "Stage-G deposit protection read-back is stale")
+        if command == "set-deposit-protection" and readback.drawdown_limit_percent != body.get("drawdown_limit_percent"):
+            raise HTTPException(503, "Stage-G deposit protection percentage read-back mismatch")
+        if command == "reset-deposit-protection":
+            if readback.state != "ARMED" or readback.trigger is not None or readback.equity is None or readback.high_water_equity is None:
+                raise HTTPException(503, "Stage-G deposit protection reset read-back mismatch")
+            if Decimal(readback.equity) != Decimal(readback.high_water_equity):
+                raise HTTPException(503, "Stage-G deposit protection reset baseline mismatch")
+        return payload
+
+
 class HlStagegStrategyReader:
     """Load and verify only the checked-in identity of the sealed candidate."""
 
@@ -522,6 +631,7 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     reader = RuntimeReader(database or os.getenv("COINMASTER_PAPER_DB", "/var/lib/coinmaster-paper/paper.sqlite"), worker_url or os.getenv("COINMASTER_PAPER_WORKER_URL", "http://127.0.0.1:18181"))
     hl_reader = HlStagegProjectionReader(hl_stageg_status_url or os.getenv("COINMASTER_HL_STAGEG_STATUS_URL", "http://127.0.0.1:18183"))
     hl_control = HlStagegControlRelay(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
+    hl_protection_control = HlStagegDepositProtectionRelay(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
     hl_strategy_reader = HlStagegStrategyReader(runtime_root, hl_reader)
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     gui_auth = GuiAuth(
@@ -587,6 +697,12 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     @app.get("/api/v1/instances/hl-stageg-testnet/controls", response_model=HlStagegControls, dependencies=[Depends(auth)])
     def hl_stageg_control_capabilities() -> HlStagegControls:
         return hl_stageg_controls(hl_reader.runtime(), control_transport_available=bool(hl_control.token))
+    @app.post("/api/v1/instances/hl-stageg-testnet/controls/set-deposit-protection", response_model=HlStagegProtectionCommand, dependencies=[Depends(auth)])
+    def set_hl_stageg_deposit_protection(body: HlStagegProtectionCommandRequest) -> HlStagegProtectionCommand:
+        return hl_protection_control.command("set-deposit-protection", body.model_dump())
+    @app.post("/api/v1/instances/hl-stageg-testnet/controls/reset-deposit-protection", response_model=HlStagegProtectionCommand, dependencies=[Depends(auth)])
+    def reset_hl_stageg_deposit_protection(body: HlStagegProtectionResetRequest) -> HlStagegProtectionCommand:
+        return hl_protection_control.command("reset-deposit-protection", body.model_dump())
     @app.post("/api/v1/instances/hl-stageg-testnet/controls/{command}", response_model=HlStagegControlCommand, dependencies=[Depends(auth)])
     def hl_stageg_control_command(command: Literal["pause-new-entries", "resume-new-entries"], idempotency_key: str = Header(alias="Idempotency-Key")) -> HlStagegControlCommand:
         if not idempotency_key:
