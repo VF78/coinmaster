@@ -341,14 +341,28 @@ def bind_clean_flat_live_handover(
         raise RuntimeError("LIVE_HANDOVER_CLIENT_UNQUALIFIED")
     if not isinstance(strategy, RecoverableWaveOverlayStrategy):
         raise RuntimeError("LIVE_HANDOVER_STRATEGY_UNQUALIFIED")
-    if strategy.config.btc_id.venue != client.venue or strategy.config.sol_id.venue != client.venue:
-        raise RuntimeError("LIVE_HANDOVER_VENUE_MISMATCH")
+    scope = client._cm_scope
+    expected_ids = (
+        InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID"),
+        InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID"),
+    )
+    if (
+        client.venue.value != "HYPERLIQUID"
+        or (strategy.config.btc_id, strategy.config.sol_id) != expected_ids
+        or scope.dex != "" or scope.owned_coins != frozenset({"BTC", "SOL"})
+    ):
+        raise RuntimeError("LIVE_HANDOVER_INSTRUMENT_SCOPE_MISMATCH")
     if runtime is None or not callable(getattr(runtime, "all_submissions", None)):
         raise RuntimeError("LIVE_HANDOVER_DURABLE_RUNTIME_REQUIRED")
     latest_money = [None]
-    scope = client._cm_scope
 
     async def verify(mass) -> bool:
+        if (
+            strategy.cache is not client._cache
+            or strategy.msgbus is not client._msgbus
+            or strategy.trader_id != client.trader_id
+        ):
+            raise IncompleteInfoReport("LIVE_HANDOVER_NATIVE_ROUTE_MISMATCH")
         receipt = client._cm_last_receipt
         if receipt is None or mass.account_id != client.account_id or mass.venue != client.venue:
             raise IncompleteInfoReport("LIVE_HANDOVER_GENERATION_MISSING")

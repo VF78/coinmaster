@@ -211,10 +211,10 @@ def test_bound_handover_rejects_open_funding_unknown_and_latches_before_release(
         )
         client._cm_last_receipt = object()
         client._clock = SimpleNamespace(timestamp_ns=lambda: 2_000_000)
-        client._cache = SimpleNamespace(
-            orders=lambda **_kwargs: [], positions_open=lambda: [],
-            account_for_venue=lambda _venue: None,
-        )
+        strategy = _strategy()
+        client._cache = strategy.cache
+        client._msgbus = strategy.msgbus
+        client.trader_id = strategy.trader_id
         async def mass(_lookback=None):
             return SimpleNamespace(
                 account_id=client.account_id, venue=client.venue,
@@ -225,11 +225,75 @@ def test_bound_handover_rejects_open_funding_unknown_and_latches_before_release(
             all_submissions=lambda: [], applied_fill_ids=lambda: frozenset(),
             strategy_checkpoint=lambda: None,
         )
-        strategy = _strategy()
         bind_clean_flat_live_handover(client, strategy, runtime)
         with pytest.raises(ValueError, match="LIVE_OPEN_FUNDING_CURSOR_UNPROVEN"):
             await strategy._post_drain_verifier()
         assert strategy.recovery_confirmed is False
         assert client._cm_ws_failure == "WS_EFFECT_PARITY_FAILED"
         assert client._cm_ws_phase == "BUFFERING"
+    asyncio.run(run())
+
+
+def test_handover_rejects_other_instrument_or_dex_scope_before_attach():
+    import msgspec
+    from nautilus_trader.model.identifiers import InstrumentId, Venue
+    from coinmaster.ops.hl_live_execution import bind_clean_flat_live_handover
+    from test_live_native_report_recovery import _strategy
+
+    client = Probe()
+    client.venue = Venue("HYPERLIQUID")
+    client._cm_scope = NativeLiveRecoveryScope(
+        ACCOUNT, "", 1, None, (), frozenset({"BTC", "SOL"}),
+    )
+    runtime = SimpleNamespace(all_submissions=lambda: [])
+    correct = _strategy()
+    wrong = type(correct)(msgspec.structs.replace(
+        correct.config, btc_id=InstrumentId.from_str("ETH-USD-PERP.HYPERLIQUID"),
+    ))
+    with pytest.raises(RuntimeError, match="INSTRUMENT_SCOPE_MISMATCH"):
+        bind_clean_flat_live_handover(client, wrong, runtime)
+    assert wrong._post_drain_verifier is None
+    client._cm_scope = NativeLiveRecoveryScope(
+        ACCOUNT, "other-dex", 1, None, (), frozenset({"BTC", "SOL"}),
+    )
+    with pytest.raises(RuntimeError, match="INSTRUMENT_SCOPE_MISMATCH"):
+        bind_clean_flat_live_handover(client, correct, runtime)
+    client._cm_scope = NativeLiveRecoveryScope(
+        ACCOUNT, "", 1, None, (), frozenset({"BTC"}),
+    )
+    with pytest.raises(RuntimeError, match="INSTRUMENT_SCOPE_MISMATCH"):
+        bind_clean_flat_live_handover(client, correct, runtime)
+
+
+def test_handover_rejects_different_native_cache_after_start():
+    from nautilus_trader.model.identifiers import AccountId, Venue
+    from coinmaster.ops.hl_live_execution import bind_clean_flat_live_handover
+    from test_live_native_report_recovery import _strategy
+
+    async def run():
+        client = Probe()
+        client.venue = Venue("HYPERLIQUID")
+        client.account_id = AccountId("HYPERLIQUID-master")
+        client._cm_scope = NativeLiveRecoveryScope(
+            ACCOUNT, "", 1, None, (), frozenset({"BTC", "SOL"}),
+        )
+        strategy = _strategy()
+        client._cache = object()  # Different owner, even if both venues say HYPERLIQUID.
+        client._msgbus = strategy.msgbus
+        client.trader_id = strategy.trader_id
+        async def mass(_lookback=None):
+            return SimpleNamespace(
+                account_id=client.account_id, venue=client.venue,
+                order_reports={}, fill_reports={}, position_reports={},
+            )
+        client.generate_mass_status = mass
+        runtime = SimpleNamespace(
+            all_submissions=lambda: [], applied_fill_ids=lambda: frozenset(),
+            strategy_checkpoint=lambda: None,
+        )
+        bind_clean_flat_live_handover(client, strategy, runtime)
+        with pytest.raises(ValueError, match="NATIVE_ROUTE_MISMATCH"):
+            await strategy._post_drain_verifier()
+        assert not strategy.recovery_confirmed
+        assert client._cm_ws_failure == "WS_EFFECT_PARITY_FAILED"
     asyncio.run(run())
