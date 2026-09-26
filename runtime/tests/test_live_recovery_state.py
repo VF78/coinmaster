@@ -592,3 +592,30 @@ def test_transient_checkpoint_is_atomic_with_unchanged_native_revision(tmp_path)
     assert not runtime.persist_strategy_checkpoint(b"stale-queued-state", 0)
     assert runtime.strategy_checkpoint() == (b"native-submit", 1)
     runtime.close()
+
+
+def test_durable_projection_ignores_only_public_input_caches():
+    from coinmaster.strategy.live_recovery import durable_decision_checkpoint
+    from test_hl_stageg_sandbox_lifecycle import HL_SOL
+
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    key = "wave_overlay_live_recovery_v1"
+    baseline = durable_decision_checkpoint(strategy.on_save()[key])
+    strategy._latest_marks[HL_BTC.id] = VenueMark(HL_BTC.id, Decimal("60001"), 42)
+    strategy._marks_by_session[42] = {
+        HL_BTC.id: strategy._latest_marks[HL_BTC.id],
+        HL_SOL.id: VenueMark(HL_SOL.id, Decimal("201"), 42),
+    }
+    strategy._bars.append(DailyBar(
+        datetime(2026, 9, 25, tzinfo=UTC), datetime(2026, 9, 26, tzinfo=UTC),
+        datetime(2026, 9, 26, tzinfo=UTC), 60000, 60001, 201,
+    ))
+    assert durable_decision_checkpoint(strategy.on_save()[key]) == baseline
+    intent = Intent("owned-1", "episode", "BTC_REDUCE", 0, -1, quantity=0.01)
+    strategy._queued_intents.append((intent, None, 1))
+    assert durable_decision_checkpoint(strategy.on_save()[key]) != baseline
+    strategy._queued_intents.clear()
+    strategy._pending_by_order["CM-NATIVE-1"] = intent
+    assert durable_decision_checkpoint(strategy.on_save()[key]) != baseline
+    with pytest.raises(ValueError, match="RECOVERY_CHECKPOINT_STRUCTURE_UNKNOWN"):
+        durable_decision_checkpoint(b"{malformed")

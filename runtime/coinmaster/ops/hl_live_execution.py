@@ -30,7 +30,7 @@ from coinmaster.ops.hl_info_receipt import IncompleteInfoReport, collect_info_re
 from coinmaster.ops.hl_live_money import collect_selected_cross_assets, live_perps_money_view
 from coinmaster.ops.hl_qualified_reports import qualified_mass_status
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
-from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
+from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy, durable_decision_checkpoint
 
 
 InfoTransport = Callable[[dict[str, Any]], Awaitable[Any]]
@@ -665,7 +665,9 @@ def bind_clean_flat_live_handover(
                 ):
                     raise IncompleteInfoReport("LIVE_EPISODE_POSITION_MISMATCH")
         checkpoint = runtime.strategy_checkpoint()
-        if checkpoint is not None and checkpoint[0] != strategy.on_save()["wave_overlay_live_recovery_v1"]:
+        if checkpoint is not None and durable_decision_checkpoint(checkpoint[0]) != durable_decision_checkpoint(
+            strategy.on_save()["wave_overlay_live_recovery_v1"]
+        ):
             raise IncompleteInfoReport("LIVE_HANDOVER_DOMAIN_CHECKPOINT_MISMATCH")
         account = client._cache.account_for_venue(client.venue)
         candidate_money = live_perps_money_view(

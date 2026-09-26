@@ -43,7 +43,7 @@ from coinmaster.ops.hl_live_execution import QualifiedInfoBoundary
 from coinmaster.domain.wave_overlay import Episode, Intent
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategyConfig
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
-from coinmaster.venues.marks import venue_mark_data_type
+from coinmaster.venues.marks import VenueMark, venue_mark_data_type
 from test_hl_stageg_sandbox_lifecycle import HL_BTC, HL_SOL
 
 
@@ -570,6 +570,20 @@ async def _run_child():
             strategy._queued_intent_ready_ns[next_intent.id] = now
             strategy._persist_transient_checkpoint()
             assert active.strategy_checkpoint()[0] == strategy.on_save()["wave_overlay_live_recovery_v1"]
+            # Public marks can move before and during an awaited Info sweep;
+            # neither is a native order/fill/domain decision mutation.
+            strategy._latest_marks[HL_BTC.id] = VenueMark(HL_BTC.id, Decimal("60001"), now)
+            strategy._marks_by_session.setdefault(now, {})[HL_BTC.id] = strategy._latest_marks[HL_BTC.id]
+            original_info = client._cm_info
+            moved_during_info = [False]
+            async def moving_info(body):
+                if body["type"] == "clearinghouseState" and not moved_during_info[0]:
+                    await asyncio.sleep(0)
+                    strategy._latest_marks[HL_SOL.id] = VenueMark(HL_SOL.id, Decimal("201"), now + 1)
+                    strategy._marks_by_session.setdefault(now, {})[HL_SOL.id] = strategy._latest_marks[HL_SOL.id]
+                    moved_during_info[0] = True
+                return await original_info(body)
+            client._cm_info = moving_info
             from dataclasses import replace
             original_money = strategy._live_money_provider
             stale = [True]
@@ -580,10 +594,11 @@ async def _run_child():
             client._cm_info_usage.clear()  # 50ms fake monitor accelerates a 30s production cadence.
             strategy.on_quote_tick(SimpleNamespace(instrument_id=HL_BTC.id, ts_event=now))
             assert [item[0].id for item in strategy._queued_intents] == [next_intent.id]
-            assert active.strategy_checkpoint()[0] == strategy.on_save()["wave_overlay_live_recovery_v1"]
+            assert active.strategy_checkpoint()[0] != strategy.on_save()["wave_overlay_live_recovery_v1"]
             stale[0] = False
             assert client._cm_refresh_task is not None
             await client._cm_refresh_task  # Actual strict Info/cache/domain/account verifier.
+            assert moved_during_info[0]
             assert client._cm_ws_failure is None and strategy.recovery_confirmed
             assert [item[0].id for item in strategy._queued_intents] == [next_intent.id]
             # The fake strategy deliberately has entries_enabled=False; keep
@@ -604,6 +619,7 @@ async def _run_child():
                 episode_id=next_episode.id, action="BTC_ENTRY",
                 instrument_id=str(HL_BTC.id), quantity="0.01000", reduce_only=False,
             )
+            assert len(active.all_submissions()) == 2  # Denied parent plus one successor.
             print("DENIAL_PARITY_PROOF=" + json.dumps({
                 "reconciled_before_on_start": strategy._on_start_reconciled,
                 "terminal_checkpoint_matches": True,

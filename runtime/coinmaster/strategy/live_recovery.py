@@ -45,6 +45,39 @@ _FIELDS = (
 )
 
 
+# Public feed buffers may advance while the strict Info generation awaits.
+# They are needed for restart/input continuity, but do not grant ownership of
+# an order, fill, episode decision, exit or durable submission.
+_PUBLIC_INPUT_FIELDS = frozenset({
+    "_bars", "_last_sol_close", "_day", "_marks_by_session",
+    "_current_btc", "_current_sol", "_current_btc_mark", "_current_sol_mark",
+    "_latest_marks", "marked_equity_checkpoints",
+})
+
+
+def durable_decision_checkpoint(snapshot: bytes) -> bytes:
+    """Compare exact owned decisions while allowing public input caches to move."""
+    try:
+        document = json.loads(snapshot)
+        if (
+            not isinstance(document, dict)
+            or set(document) != {"schema", "candidate_sha256", "strategy_id", "domain", "state"}
+            or document["schema"] != _SCHEMA
+            or not isinstance(document["domain"], dict)
+            or set(document["domain"]) != {"episode", "locked_after_liquidation", "decision_index"}
+            or not isinstance(document["state"], dict)
+            or set(document["state"]) != set(_FIELDS)
+        ):
+            raise ValueError("RECOVERY_CHECKPOINT_STRUCTURE_UNKNOWN")
+        document["state"] = {
+            name: value for name, value in document["state"].items()
+            if name not in _PUBLIC_INPUT_FIELDS
+        }
+        return json.dumps(document, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    except (TypeError, ValueError, UnicodeDecodeError) as exc:
+        raise ValueError("RECOVERY_CHECKPOINT_STRUCTURE_UNKNOWN") from exc
+
+
 def _encode(value):
     if value is None or isinstance(value, (str, bool, int)):
         return value
@@ -274,7 +307,10 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         revision = runtime.native_revision()
         body = self.on_save()[_KEY]
         checkpoint = runtime.strategy_checkpoint()
-        if checkpoint is not None and checkpoint == (body, revision):
+        if (
+            checkpoint is not None and checkpoint[1] == revision
+            and durable_decision_checkpoint(checkpoint[0]) == durable_decision_checkpoint(body)
+        ):
             return
         if not runtime.persist_strategy_checkpoint(body, revision):
             self.recovery_confirmed = False
