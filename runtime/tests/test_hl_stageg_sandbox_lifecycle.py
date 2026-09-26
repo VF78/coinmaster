@@ -10,6 +10,7 @@ settlement source exists.
 from __future__ import annotations
 
 import asyncio
+import time
 from decimal import Decimal
 from types import SimpleNamespace
 
@@ -22,7 +23,7 @@ from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, Tra
 from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.currencies import BTC, SOL, USD, USDC
 from nautilus_trader.model.data import BarSpecification, BarType, MarkPriceUpdate, QuoteTick
-from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType, LiquiditySide
+from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType, LiquiditySide, TimeInForce
 from nautilus_trader.model.identifiers import ClientId, InstrumentId, Symbol, Venue
 from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.model.objects import Money, Price, Quantity
@@ -36,7 +37,7 @@ from coinmaster.ops.hyperliquid_testnet import (
     LifecycleHooks,
     cross_venue_stage_g_gate,
 )
-from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, HyperliquidUsdcFeeModel, HyperliquidUsdcSandboxExecutionClient, model_fx_pair_and_quote, model_fx_ready
+from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, HyperliquidUsdcFeeModel, HyperliquidUsdcSandboxExecutionClient, model_fx_pair_and_quote, model_fx_ready, native_equity
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import load_candidate
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig, _native_account_money
@@ -278,6 +279,147 @@ def test_hl_stageg_configured_native_sandbox_entry_exit_fees_account_and_manage_
 
     asyncio.run(scenario())
 
+
+
+def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path) -> None:
+    """Real HL-ID Sandbox fills, native equity and one PaperRuntime own the latch."""
+    async def scenario() -> None:
+        candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
+        profile = HyperliquidVenueProfile.from_snapshot(ROOT, environment=HyperliquidProfileEnvironment.MAINNET)
+        runtime = PaperRuntime(tmp_path / "stageg-deposit.sqlite", "hl-stageg-deposit", 10**20, require_native_cash=True)
+        runtime.acquire()
+        runtime.snapshot(
+            ts_ns=1, positions=[], orders=[], funding_event_ids=[],
+            native_account_total="10000", strategy_restartable=True,
+        )
+        hooks = LifecycleHooks(runtime)
+        policy = HyperliquidSandboxMarginPolicy(profile, SANDBOX_LEVERAGES, SANDBOX_MARK_MAX_AGE_NS)
+
+        class DepositProbe(WaveOverlayStrategy):
+            def __init__(self, config):
+                super().__init__(config)
+                self.quotes = 0
+                self.exit_checks = 0
+
+            def on_quote_tick(self, tick):
+                if tick.instrument_id != self.config.btc_id or self.quotes >= 2:
+                    return
+                self.on_mark_price(MarkPriceUpdate(
+                    self.config.btc_id, tick.bid_price, tick.ts_event, tick.ts_init,
+                ))
+                self.on_mark_price(MarkPriceUpdate(
+                    self.config.sol_id, Price.from_str("150.00"), tick.ts_event, tick.ts_init,
+                ))
+                self._current_btc_mark = self._latest_marks[self.config.btc_id]
+                self._current_sol_mark = self._latest_marks[self.config.sol_id]
+                self.quotes += 1
+                if self.quotes == 1:
+                    intent = Intent("deposit-entry", "deposit-episode", "BTC_ENTRY", 0, 1, quantity=0.1)
+                    self._submit_intent(
+                        intent, float(tick.bid_price), float(tick.ask_price),
+                        None, 0, ts_now=tick.ts_event,
+                    )
+                else:
+                    self.exit_checks += 1
+                    self._deposit_check()
+
+        config = WaveOverlayStrategyConfig(
+            btc_id=BTC_PERP, sol_id=SOL_PERP,
+            btc_bar_type=BarType(
+                InstrumentId.from_str("BTCUSDT-LINEAR.BYBIT"),
+                BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL,
+            ),
+            sol_bar_type=BarType(
+                InstrumentId.from_str("SOLUSDT-LINEAR.BYBIT"),
+                BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL,
+            ),
+            btc_mark_data_type=venue_mark_data_type(BTC_PERP),
+            sol_mark_data_type=venue_mark_data_type(SOL_PERP),
+            mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
+            live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
+            active_seed=Decimal("10000"), margin_policy=policy, candidate=candidate,
+            entries_enabled=True, entries_gate=lambda: runtime.entry_control_state() == "RUNNING",
+            event_sink=hooks.record_event, submission_sink=hooks,
+            market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
+            deposit_runtime=runtime, deposit_instance_id="hl-stageg-deposit",
+            deposit_account_id="HYPERLIQUID-001",
+            deposit_equity_reader=lambda strategy: native_equity(
+                strategy.cache, strategy._latest_marks, now_ns=time.time_ns(),
+            ),
+            deposit_initialization_allowed=lambda: True,
+        )
+        strategy = DepositProbe(config)
+        node = TradingNode(config=TradingNodeConfig(
+            environment=Environment.LIVE, trader_id="HL-STAGEG-DEPOSIT-PROBE",
+            logging=LoggingConfig(log_level="ERROR"),
+            exec_engine=LiveExecEngineConfig(reconciliation=False),
+            exec_clients={"SANDBOX": SandboxExecutionClientConfig(
+                venue="HYPERLIQUID", starting_balances=["10000 USDC"], base_currency="USDC",
+                leverages=dict(SANDBOX_LEVERAGES), use_reduce_only=True,
+                routing=RoutingConfig(venues=frozenset({"HYPERLIQUID"})),
+            )},
+        ), loop=asyncio.get_running_loop())
+        node.add_exec_client_factory("SANDBOX", HyperliquidUsdcSandboxFactory)
+        node.build()
+        node.cache.add_instrument(HL_BTC)
+        node.cache.add_instrument(HL_SOL)
+        fx_pair, fx_quote = model_fx_pair_and_quote()
+        node.cache.add_instrument(fx_pair)
+        node.cache.add_quote_tick(fx_quote)
+        node.trader.add_strategy(strategy)
+        await node.kernel.start_async()
+        try:
+            assert strategy._deposit_check()
+            runtime.entry_control_command("pause-new-entries", "set-limit")
+            runtime.snapshot(
+                ts_ns=time.time_ns(), positions=[], orders=[], funding_event_ids=[],
+                native_account_total="10000", strategy_restartable=True,
+            )
+            set_result = strategy.apply_deposit_control(
+                "set-deposit-protection", "limit-one", drawdown_limit_percent=1,
+            )
+            assert set_result["drawdown_limit_percent"] == 1
+            runtime.entry_control_command("resume-new-entries", "resume-after-limit")
+
+            node.kernel.data_engine.process(_quote(BTC_PERP, "59999.0", "60000.0", time.time_ns()))
+            await asyncio.sleep(0.1)
+            assert len(node.cache.positions_open()) == 1
+            assert strategy.deposit_projection()["state"] == "ARMED"
+            node.kernel.data_engine.process(_quote(BTC_PERP, "58899.0", "58900.0", time.time_ns()))
+            await asyncio.sleep(0.1)
+
+            fills = node.trader.generate_order_fills_report()
+            assert strategy.exit_checks == 1
+            assert len(fills) == 2
+            assert node.cache.positions_open() == []
+            assert runtime.pending_submissions() == []
+            assert [item["action"] for item in strategy.fill_audit] == ["BTC_ENTRY", "MARKET_EXIT"]
+            assert all(Decimal(item["commission"]) > 0 for item in strategy.fill_audit)
+            assert strategy.deposit_projection()["state"] == "TRIPPED_FLAT"
+            saved = runtime.deposit_protection_state(
+                instance_id="hl-stageg-deposit", account_id="HYPERLIQUID-001",
+            )
+            assert saved["latched"] and saved["exit_state"] == "TRIPPED_FLAT"
+            assert len([item for item in runtime.events() if item["kind"] == "fill"]) == len(fills)
+            assert node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal() < Decimal("10000")
+        finally:
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+            runtime.close()
+
+    asyncio.run(scenario())
+    reopened = PaperRuntime(
+        tmp_path / "stageg-deposit.sqlite", "hl-stageg-deposit", 10**20, require_native_cash=True,
+    )
+    reopened.acquire()
+    try:
+        saved = reopened.deposit_protection_state(
+            instance_id="hl-stageg-deposit", account_id="HYPERLIQUID-001",
+        )
+        assert saved["latched"] and saved["exit_state"] == "TRIPPED_FLAT"
+        assert reopened.pending_submissions() == []
+    finally:
+        reopened.close()
 
 def test_native_usdc_fee_model_preserves_tiny_partial_maker_precision() -> None:
     model = HyperliquidUsdcFeeModel()
