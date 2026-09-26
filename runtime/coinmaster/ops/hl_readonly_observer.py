@@ -11,7 +11,7 @@ import re
 import time
 import urllib.request
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 from coinmaster.ops.hl_info_receipt import (
     IncompleteInfoReport, InfoReceipt, InfoTransport, collect_info_receipt,
@@ -110,6 +110,7 @@ class ReadOnlyAccountObserver:
         owned_coins: frozenset[str],
         max_age_ms: int = 10_000,
         request_timeout_s: float = 20.0,
+        monotonic_ns: Callable[[], int] = time.monotonic_ns,
     ) -> None:
         self.account_ref = _account_ref(account_ref)
         if not isinstance(dex, str) or not isinstance(max_age_ms, int) or max_age_ms <= 0:
@@ -124,8 +125,10 @@ class ReadOnlyAccountObserver:
         self.owned_coins = owned_coins
         self.max_age_ms = max_age_ms
         self.request_timeout_s = request_timeout_s
+        self._monotonic_ns = monotonic_ns
         self._receipt: InfoReceipt | None = None
         self._observed_at_ms: int | None = None
+        self._observed_at_monotonic_ns: int | None = None
         self._state = "UNKNOWN"
         self._reason = "NOT_OBSERVED"
         self._generation = 0
@@ -141,6 +144,7 @@ class ReadOnlyAccountObserver:
         self._generation += 1
         self._receipt = None
         self._observed_at_ms = None
+        self._observed_at_monotonic_ns = None
         self._state = "RECOVERY_REQUIRED"
         self._reason = "INFO_DISCONNECTED"
 
@@ -151,8 +155,10 @@ class ReadOnlyAccountObserver:
             raise ValueError("INVALID_OBSERVATION_TIME")
         self._generation += 1
         generation = self._generation
+        started_monotonic_ns = self._monotonic_ns()
         self._receipt = None
         self._observed_at_ms = None
+        self._observed_at_monotonic_ns = None
         self._state = "RECOVERING"
         self._reason = "INFO_READ_IN_PROGRESS"
         try:
@@ -185,19 +191,27 @@ class ReadOnlyAccountObserver:
             return self.status(now_ms=now_ms if explicit_clock else None)
         self._receipt = receipt
         self._observed_at_ms = now_ms
+        self._observed_at_monotonic_ns = started_monotonic_ns
         self._state = "CONNECTED_INFO"
         self._reason = "CONDITIONAL_ONLY_NO_ATOMIC_SNAPSHOT"
         return self.status(now_ms=now_ms if explicit_clock else None)
 
     def status(self, *, now_ms: int | None = None) -> ReadOnlyAccountStatus:
-        now_ms = time.time_ns() // 1_000_000 if now_ms is None else now_ms
-        fresh = (
-            self._receipt is not None and self._observed_at_ms is not None
-            and 0 <= now_ms - self._observed_at_ms <= self.max_age_ms
-        )
-        receipt = self._receipt if fresh else None
-        state = self._state if fresh or self._receipt is None else "STALE"
-        reason = self._reason if state != "STALE" else "INFO_OBSERVATION_STALE"
+        # Retain the caller's wall-time argument for the read-model API, but
+        # it cannot influence receipt freshness or revive expired facts.
+        if self._receipt is not None:
+            observed = self._observed_at_monotonic_ns
+            age_ns = self._monotonic_ns() - observed if observed is not None else -1
+            if age_ns < 0 or age_ns > self.max_age_ms * 1_000_000:
+                # Expiry is irreversible for this receipt, including if the
+                # wall clock later moves backwards.
+                self._receipt = None
+                self._observed_at_monotonic_ns = None
+                self._state = "STALE"
+                self._reason = "INFO_OBSERVATION_STALE"
+        receipt = self._receipt
+        state = self._state
+        reason = self._reason
         return ReadOnlyAccountStatus(
             account_ref=self.account_ref,
             connection_state=state,

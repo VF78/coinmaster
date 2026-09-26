@@ -37,7 +37,8 @@ def _observer(info, **changes):
 
 def test_conditional_account_read_disconnect_and_resync():
     fake = RoleInfo()
-    observer = _observer(fake)
+    clock = [0]
+    observer = _observer(fake, monotonic_ns=lambda: clock[0])
     initial = observer.status(now_ms=200)
     assert initial.connection_state == "UNKNOWN"
     assert initial.recovery_required and not initial.orders_enabled and not initial.retry_uncertain_orders
@@ -54,8 +55,34 @@ def test_conditional_account_read_disconnect_and_resync():
     assert disconnected.evidence_state == "UNKNOWN"
     assert disconnected.account_value is None
     assert asyncio.run(observer.observe(now_ms=202)).connection_state == "CONNECTED_INFO"
+    clock[0] = 11_000_000
     assert observer.status(now_ms=213).connection_state == "STALE"
     assert observer.status(now_ms=213).account_value is None
+
+
+def test_expired_receipt_never_resurrects_after_wall_clock_rollback():
+    clock = [0]
+    observer = _observer(RoleInfo(), monotonic_ns=lambda: clock[0])
+    assert asyncio.run(observer.observe(now_ms=200)).account_value == "9999.19"
+    clock[0] = 11_000_000
+    expired = observer.status(now_ms=213)
+    assert expired.connection_state == "STALE"
+    assert expired.account_value is None
+    rollback = observer.status(now_ms=205)
+    assert rollback.connection_state == "STALE"
+    assert rollback.evidence_state == "UNKNOWN"
+    assert rollback.account_value is None
+    assert rollback.recovery_required and not rollback.orders_enabled
+    assert not rollback.retry_uncertain_orders and not rollback.live_order_capability
+    # Even an invalid backwards monotonic reading cannot revive the receipt.
+    clock[0] = 5_000_000
+    assert observer.status(now_ms=205).account_value is None
+    # A new validated read is the only path back to conditional evidence.
+    clock[0] = 12_000_000
+    refreshed = asyncio.run(observer.observe(now_ms=214))
+    assert refreshed.connection_state == "CONNECTED_INFO"
+    assert refreshed.evidence_state == "CONDITIONAL_ONLY"
+    assert refreshed.recovery_required and not refreshed.orders_enabled
 
 
 def test_error_partial_and_wrong_role_clear_previous_read():
