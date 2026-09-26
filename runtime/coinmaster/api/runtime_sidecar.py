@@ -9,13 +9,14 @@ import urllib.request
 import time
 from dataclasses import asdict
 from decimal import Decimal, InvalidOperation
+from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, StrictBool, field_validator, model_validator
 
 from coinmaster.api.app import create_app as create_control_app
 from coinmaster.api.gui_auth import GuiAuth, SESSION_COOKIE
@@ -147,8 +148,25 @@ class HlStagegDepositProtection(RuntimeSchema):
     high_water_equity: str | None = None
     threshold_equity: str | None = None
     observed_at_ns: int | None = None
+    # Worker wire values are UTC epoch nanoseconds; normalize exactly to ISO
+    # text before returning to browsers, whose Number type cannot hold int64 ns.
     last_daily_close_utc: str | None = None
+    daily_sample_missed: StrictBool
     trigger: str | None = None
+
+    @field_validator("last_daily_close_utc", mode="before")
+    @classmethod
+    def worker_utc_ns_to_iso(cls, value: object) -> str | None:
+        if value is None:
+            return None
+        if type(value) is not int or value < 0:
+            raise ValueError("invalid UTC epoch nanoseconds")
+        seconds, nanoseconds = divmod(value, 1_000_000_000)
+        try:
+            instant = datetime.fromtimestamp(seconds, timezone.utc)
+        except (OverflowError, OSError, ValueError) as error:
+            raise ValueError("invalid UTC epoch nanoseconds") from error
+        return f"{instant:%Y-%m-%dT%H:%M:%S}.{nanoseconds:09d}Z"
 
     @field_validator("equity", "high_water_equity", "threshold_equity")
     @classmethod

@@ -487,6 +487,8 @@ export interface components {
         HlStagegDepositProtection: {
             /** Currency */
             currency?: string | null;
+            /** Daily Sample Missed */
+            daily_sample_missed: boolean;
             /** Drawdown Limit Percent */
             drawdown_limit_percent: number;
             /** Equity */

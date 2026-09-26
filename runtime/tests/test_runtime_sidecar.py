@@ -383,14 +383,61 @@ def test_deposit_protection_contract_uses_money_strings_and_strict_integer_perce
     protection = HlStagegDepositProtection.model_validate({
         "state": "ARMED", "drawdown_limit_percent": 50, "currency": "USDC",
         "equity": "10000.00", "high_water_equity": "11000.00", "threshold_equity": "5500.00",
-        "observed_at_ns": 123, "last_daily_close_utc": "2026-09-26T00:00:00Z", "trigger": None,
+        "observed_at_ns": 123, "last_daily_close_utc": 1790380800000000000,
+        "daily_sample_missed": False, "trigger": None,
     })
     assert protection.equity == "10000.00" and protection.threshold_equity == "5500.00"
+    assert protection.last_daily_close_utc == "2026-09-26T00:00:00.000000000Z"
+    assert protection.daily_sample_missed is False
+    for invalid in ("2026-09-26T00:00:00Z", True, -1):
+        with pytest.raises(ValueError):
+            HlStagegDepositProtection.model_validate({
+                "state": "ARMED", "drawdown_limit_percent": 50,
+                "last_daily_close_utc": invalid, "daily_sample_missed": False,
+            })
+    for invalid in (0, 1, "false", None):
+        with pytest.raises(ValueError):
+            HlStagegDepositProtection.model_validate({
+                "state": "ARMED", "drawdown_limit_percent": 50,
+                "last_daily_close_utc": 1790380800000000000, "daily_sample_missed": invalid,
+            })
+    with pytest.raises(ValueError):
+        HlStagegDepositProtection.model_validate({
+            "state": "ARMED", "drawdown_limit_percent": 50,
+            "last_daily_close_utc": 1790380800000000000,
+        })
+    with pytest.raises(ValueError):
+        HlStagegDepositProtection.model_validate({
+            "state": "ARMED", "drawdown_limit_percent": 50,
+            "last_daily_close_utc": 1790380800000000000, "daily_sample_missed": False,
+            "unrecognized": True,
+        })
     for invalid in (0, 100, 50.5, True, "50"):
         with pytest.raises(ValueError):
             HlStagegProtectionCommandRequest(idempotency_key="test-key", drawdown_limit_percent=invalid)
     assert HlStagegProtectionCommandRequest(idempotency_key="test-key", drawdown_limit_percent=1).drawdown_limit_percent == 1
     assert HlStagegProtectionCommandRequest(idempotency_key="test-key", drawdown_limit_percent=99).drawdown_limit_percent == 99
+
+
+def test_captured_real_worker_status_deposit_fields_validate_and_preserve_exact_utc_ns(monkeypatch) -> None:
+    import time
+    import coinmaster.api.runtime_sidecar as sidecar
+
+    # These two wire fields were captured from the live Stage-G /status payload.
+    captured_fields = json.loads((Path(__file__).parent / "fixtures" / "hl_stageg_deposit_protection_wire_fields.json").read_text())
+    payload = _ready_hl_projection()
+    payload["deposit_protection"] = {
+        "state": "ARMED", "drawdown_limit_percent": 50, "currency": "USDC",
+        "equity": "10000", "high_water_equity": "10000", "threshold_equity": "5000",
+        "observed_at_ns": time.time_ns(), **captured_fields, "trigger": None,
+    }
+    response = json.dumps(payload).encode()
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *args, **kwargs: io.BytesIO(response))
+    projection = HlStagegProjectionReader("http://127.0.0.1:18183").runtime()
+    assert projection.projection_state == "READY"
+    assert projection.deposit_protection is not None
+    assert projection.deposit_protection.last_daily_close_utc == "2026-09-26T00:00:00.000000000Z"
+    assert projection.deposit_protection.daily_sample_missed is False
 
 
 def test_deposit_protection_relay_requires_worker_applied_readback_and_fails_closed_on_timeout(monkeypatch) -> None:
@@ -403,7 +450,7 @@ def test_deposit_protection_relay_requires_worker_applied_readback_and_fails_clo
         "deposit_protection": {
             "state": "ARMED", "drawdown_limit_percent": 40, "currency": "USDC",
             "equity": "10000", "high_water_equity": "10000", "threshold_equity": "6000",
-            "observed_at_ns": time.time_ns(), "last_daily_close_utc": None, "trigger": None,
+            "observed_at_ns": time.time_ns(), "last_daily_close_utc": None, "daily_sample_missed": False, "trigger": None,
         },
     }
     captured = {}
@@ -449,7 +496,7 @@ def test_authenticated_api_set_and_reset_relay_round_trip_with_worker_status(tmp
             self.protection = {
                 "state": "ARMED", "drawdown_limit_percent": 50, "currency": "USDC",
                 "equity": "10000", "high_water_equity": "10000", "threshold_equity": "5000",
-                "observed_at_ns": time.time_ns(), "last_daily_close_utc": None, "trigger": None,
+                "observed_at_ns": time.time_ns(), "last_daily_close_utc": None, "daily_sample_missed": False, "trigger": None,
             }
 
         def projection(self):

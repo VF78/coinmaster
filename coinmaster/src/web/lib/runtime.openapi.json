@@ -343,6 +343,10 @@
             ],
             "title": "Currency"
           },
+          "daily_sample_missed": {
+            "title": "Daily Sample Missed",
+            "type": "boolean"
+          },
           "drawdown_limit_percent": {
             "title": "Drawdown Limit Percent",
             "type": "integer"
@@ -429,7 +433,8 @@
         },
         "required": [
           "state",
-          "drawdown_limit_percent"
+          "drawdown_limit_percent",
+          "daily_sample_missed"
         ],
         "title": "HlStagegDepositProtection",
         "type": "object"
