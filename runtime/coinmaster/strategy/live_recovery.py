@@ -147,6 +147,12 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._quote_ns = {}
         self._post_drain_verifier = None
         self._post_drain_task = None
+        self._recovery_health = None
+
+    def attach_recovery_health(self, healthy) -> None:
+        if not callable(healthy) or self._recovery_health is not None:
+            raise RuntimeError("RECOVERY_HEALTH_BINDING_INVALID")
+        self._recovery_health = healthy
 
     def attach_post_drain_verifier(self, verifier) -> None:
         """Install one async verifier; it cannot grant readiness by return value."""
@@ -181,7 +187,8 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         super().on_stop()
 
     def _require_recovery_confirmed(self) -> None:
-        if not self.recovery_confirmed:
+        if not self.recovery_confirmed or (self._recovery_health is not None and not self._recovery_health()):
+            self.recovery_confirmed = False
             raise RuntimeError("RECOVERY_NOT_CONFIRMED")
 
     def submit_order(self, *args, **kwargs):

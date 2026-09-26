@@ -39,6 +39,7 @@ from nautilus_trader.model.position import Position
 
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.live_recovery import LiveRecoverySubmissionSink, LiveRecoveryReconciler
+from coinmaster.ops.hl_live_execution import QualifiedInfoBoundary
 from coinmaster.domain.wave_overlay import Episode, Intent
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategyConfig
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
@@ -51,7 +52,7 @@ CLIENT_ORDER = ClientOrderId("HLTG-RESTART-PROBE-1")
 VENUE_ORDER = VenueOrderId("7")
 
 
-class FakeReportClient(LiveExecutionClient):
+class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
     """Report-only transport: submits are recorded and rejected by the test."""
 
     def __init__(self, loop, msgbus, cache, clock):
@@ -111,11 +112,35 @@ class FakeReportClient(LiveExecutionClient):
             total = Money(Decimal("9999.73"), USDC)
             self.generate_account_state([AccountBalance(total, Money(0, USDC), total)], [], True, now)
             return
-        os._exit(137)  # Abrupt process exit after fake acceptance, before native ACK.
+        if os.environ.get("CM_FAKE_ACTUAL_SIGKILL") == "1":
+            import signal
+            os.kill(os.getpid(), signal.SIGKILL)
+        os._exit(137)  # Other fixtures retain their earlier abrupt-exit contract.
 
     async def generate_mass_status(self, lookback_mins=None):
+        if os.environ.get("CM_FAKE_SCOPED_OWNER") == "1" and not self._fake_venue_state["partial"]:
+            from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
+            data = {
+                "frontendOpenOrders": [], "userFillsByTime": [],
+                "clearinghouseState": {
+                    "assetPositions": [],
+                    "marginSummary": {
+                        "accountValue": "10000", "totalRawUsd": "10000",
+                        "totalMarginUsed": "0", "totalNtlPos": "0",
+                    },
+                    "withdrawable": "10000",
+                },
+            }
+            async def info(body):
+                return data[body["type"]]
+            if not hasattr(self, "_cm_scope"):
+                self.configure_info_boundary(
+                    NativeLiveRecoveryScope("0x" + "a" * 40, "", 1, None, (), frozenset({"BTC", "SOL"})),
+                    info, lambda: frozenset(),
+                )
+            return await QualifiedInfoBoundary.generate_mass_status(self)
         if os.environ.get("CM_FAKE_RAW_CONVERTER") != "1":
-            return await super().generate_mass_status(lookback_mins)
+            return await LiveExecutionClient.generate_mass_status(self, lookback_mins)
         from nautilus_trader.core import nautilus_pyo3
         from coinmaster.ops.hl_info_receipt import collect_info_receipt
         from coinmaster.ops.hl_qualified_reports import qualified_mass_status
@@ -190,6 +215,17 @@ class FakeReportClient(LiveExecutionClient):
             if body["type"] == "userFillsByTime":
                 return [x for x in value if body["startTime"] <= x["time"] <= body["endTime"]]
             return value
+
+        if os.environ.get("CM_FAKE_SCOPED_OWNER") == "1":
+            from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
+            if not hasattr(self, "_cm_scope"):
+                self.configure_info_boundary(
+                    NativeLiveRecoveryScope(
+                        "0x" + "a" * 40, "", fill_ms if anchor_tid is not None else order_ms,
+                        anchor_tid, ((client, cloid, None),), frozenset({"BTC", "SOL"}),
+                    ), info, lambda: applied,
+                )
+            return await QualifiedInfoBoundary.generate_mass_status(self)
 
         async def collect(end_ms):
             return await collect_info_receipt(
@@ -332,6 +368,10 @@ async def _run_child():
         from coinmaster.ops.hl_qualified_reports import qualified_mass_status
 
         strategy._probe_engine = node.kernel.exec_engine
+        client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
+        # The fake client configures its strict owner during native reconciliation.
+        strategy.attach_recovery_health(client.recovery_healthy)
+        client.bind_recovery_revocation(lambda: setattr(strategy, "recovery_confirmed", False))
         gate = asyncio.Event()
         strategy._probe_release = gate
 
@@ -372,14 +412,17 @@ async def _run_child():
                 applied_trade_ids=frozenset(), ts_init=node.kernel.clock.timestamp_ns(),
             )
             native_account = node.cache.account_for_venue(Venue("HYPERLIQUID"))
-            if (
-                mass.order_reports or mass.fill_reports or mass.position_reports
-                or node.cache.positions_open() or strategy._domain.episode is not None
-                or native_account is None
-                or native_account.balance_total(USDC).as_decimal() != Decimal("10000")
-            ):
+            async def parity(fresh_mass):
+                return (
+                    not fresh_mass.order_reports and not fresh_mass.fill_reports
+                    and not fresh_mass.position_reports and not node.cache.positions_open()
+                    and strategy._domain.episode is None and native_account is not None
+                    and native_account.balance_total(USDC).as_decimal() == Decimal("10000")
+                )
+            if mass.order_reports or mass.fill_reports or mass.position_reports:
                 raise RuntimeError("FAKE_POST_DRAIN_PARITY_FAILED")
-            strategy.recovery_confirmed = True
+            await client.release_after_effect_parity(parity)
+            strategy.recovery_confirmed = client.recovery_healthy()
 
         strategy.attach_post_drain_verifier(verified_clean_flat)
     node.trader.add_strategy(strategy)
@@ -410,10 +453,16 @@ async def _run_child():
         node.cache.add_order(cancel_order, client_id=ClientId("HYPERLIQUID"))
         strategy.cancel_orders([cancel_order])
         await asyncio.sleep(0.1)
+        assert client.recovery_healthy()
+        client._handle_msg(object())
+        with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
+            strategy.cancel_orders([cancel_order])
+        assert len(client.batch_cancel_commands) == 1
         print("HANDOVER_PROOF=" + json.dumps({
             "on_start_after_reconcile": strategy._on_start_reconciled,
             "blocked_before_parity": True,
-            "confirmed_after_parity": strategy.recovery_confirmed,
+            "confirmed_after_parity": True,
+            "revoked_after_ws_error": not strategy.recovery_confirmed,
             "batch_commands_before_confirmation": 0,
             "batch_commands_after_confirmation": len(client.batch_cancel_commands),
             "batch_cancel_order_id": str(client.batch_cancel_commands[0].cancels[0].client_order_id),
@@ -709,8 +758,10 @@ def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tm
                CM_FAKE_SUBMIT_LOG=str(submit_log), CM_FAKE_TRADER_ID="HL-ACCEPT-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper())
     env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
     env["CM_FAKE_SUBMIT"] = env["CM_FAKE_ACCEPT_CRASH"] = "1"
+    env["CM_FAKE_ACTUAL_SIGKILL"] = "1"
     crashed = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
-    assert crashed.returncode == 137, crashed.stderr
+    assert crashed.returncode == -9, crashed.stderr
+    env.pop("CM_FAKE_ACTUAL_SIGKILL")
     accepted = json.loads(state.read_text())
     order_id = accepted["accepted_order"]
     assert accepted["partial"] is True
@@ -723,6 +774,7 @@ def test_fake_transport_accepts_before_ack_then_restart_recovers_native_order(tm
     env.pop("CM_FAKE_SUBMIT")
     env.pop("CM_FAKE_ACCEPT_CRASH")
     env["CM_FAKE_RAW_CONVERTER"] = "1"
+    env["CM_FAKE_SCOPED_OWNER"] = "1"
     recovered = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
     assert recovered.returncode == 0, recovered.stderr
     result = json.loads(next(line.split("=", 1)[1] for line in recovered.stdout.splitlines() if line.startswith("RECOVERY_PROOF=")))
@@ -810,7 +862,7 @@ def test_kernel_reconciles_before_post_start_async_parity_gate(tmp_path):
     env = dict(
         os.environ, CM_FAKE_VENUE_STATE=str(state),
         CM_FAKE_TRADER_ID="HL-HANDOVER-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
-        CM_FAKE_HANDOVER_PROBE="1",
+        CM_FAKE_HANDOVER_PROBE="1", CM_FAKE_SCOPED_OWNER="1",
     )
     env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
     run = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
@@ -820,6 +872,7 @@ def test_kernel_reconciles_before_post_start_async_parity_gate(tmp_path):
         "on_start_after_reconcile": True,
         "blocked_before_parity": True,
         "confirmed_after_parity": True,
+        "revoked_after_ws_error": True,
         "batch_commands_before_confirmation": 0,
         "batch_commands_after_confirmation": 1,
         "batch_cancel_order_id": result["native_order_id"],

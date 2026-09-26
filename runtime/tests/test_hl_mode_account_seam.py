@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 from nautilus_trader.accounting.accounts.margin import MarginAccount
-from nautilus_trader.adapters.hyperliquid import HyperliquidLiveExecClientFactory
+from coinmaster.ops.hl_live_execution import ScopedHyperliquidExecClientFactory
 from nautilus_trader.adapters.hyperliquid.config import HyperliquidExecClientConfig
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.core.uuid import UUID4
@@ -65,7 +65,7 @@ def test_both_profiles_select_exactly_one_pinned_native_factory_and_no_secret_va
     assert set(live.exec_clients) == {'HYPERLIQUID-LIVE'}
     assert isinstance(live.exec_clients['HYPERLIQUID-LIVE'], HyperliquidExecClientConfig)
     assert live.exec_clients['HYPERLIQUID-LIVE'].private_key is None
-    assert execution_factory_for_mode('live') == ('HYPERLIQUID-LIVE', HyperliquidLiveExecClientFactory)
+    assert execution_factory_for_mode('live') == ('HYPERLIQUID-LIVE', ScopedHyperliquidExecClientFactory)
     assert_native_testnet_only(live, 'live')
     with pytest.raises(RuntimeError, match='SINGLE_NATIVE_ROUTE'):
         assert_native_testnet_only(live, 'sandbox')

@@ -38,6 +38,7 @@ from coinmaster.ops.native_paper_node import BYBIT_IDS, DAY_NS, FeedBook, FeedOb
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, model_fx_pair_and_quote, model_fx_ready
 from coinmaster.ops.hl_native_account import native_usdc_balances
+from coinmaster.ops.hl_live_execution import ScopedHyperliquidExecClientFactory
 from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
 from coinmaster.ops.stage_g_config import TestnetInstanceConfig, candidate_content_hash
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
@@ -309,7 +310,7 @@ def execution_factory_for_mode(mode: str):
     if mode == "sandbox":
         return "SANDBOX", HyperliquidUsdcSandboxFactory
     if mode == "live":
-        return "HYPERLIQUID-LIVE", HyperliquidLiveExecClientFactory
+        return "HYPERLIQUID-LIVE", ScopedHyperliquidExecClientFactory
     raise ValueError("UNKNOWN_EXECUTION_MODE")
 
 
@@ -381,7 +382,7 @@ def assert_native_testnet_only(config: TradingNodeConfig, execution_mode: str = 
             raise RuntimeError("HL_TESTNET_SANDBOX_VENUE_OR_CURRENCY_MISMATCH")
         if factory is not HyperliquidUsdcSandboxFactory or not issubclass(factory, SandboxLiveExecClientFactory):
             raise RuntimeError("HL_TESTNET_EXECUTION_ALLOWLIST_MISMATCH")
-    elif execution.environment is not PUBLIC_MAINNET_ENVIRONMENT or factory is not HyperliquidLiveExecClientFactory:
+    elif execution.environment is not PUBLIC_MAINNET_ENVIRONMENT or factory is not ScopedHyperliquidExecClientFactory:
         raise RuntimeError("HL_LIVE_NATIVE_FACTORY_MISMATCH")
 
 
