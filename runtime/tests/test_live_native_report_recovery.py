@@ -101,6 +101,13 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
             stream.write(str(command.order.client_order_id) + "\n")
             stream.flush()
             os.fsync(stream.fileno())
+        if os.environ.get("CM_FAKE_QUOTE_ORDER") == "1":
+            order = command.order
+            self.generate_order_accepted(
+                order.strategy_id, order.instrument_id, order.client_order_id,
+                VENUE_ORDER, self._clock.timestamp_ns(),
+            )
+            return
         if os.environ.get("CM_FAKE_ACCEPT_CRASH") != "1":
             raise AssertionError("unexpected submit during recovery")
         path = Path(os.environ["CM_FAKE_VENUE_STATE"])
@@ -340,7 +347,7 @@ class RecoveryProbeStrategy(RecoverableWaveOverlayStrategy):
             return super().on_start()
 
 
-def _strategy():
+def _strategy(*, entries_enabled=False, submission_sink=None):
     btc = BarType(
         InstrumentId.from_str("BTCUSDT-LINEAR.BYBIT"),
         BarSpecification(1, BarAggregation.DAY, PriceType.LAST),
@@ -358,7 +365,8 @@ def _strategy():
         btc_mark_data_type=venue_mark_data_type(HL_BTC.id),
         sol_mark_data_type=venue_mark_data_type(HL_SOL.id),
         mark_client_id=ClientId("HYPERLIQUID"),
-        active_seed=Decimal("10000"), entries_enabled=False,
+        active_seed=Decimal("10000"), entries_enabled=entries_enabled,
+        submission_sink=submission_sink,
     ))
 
 
@@ -384,7 +392,15 @@ async def _run_child():
     node.build()
     node.cache.add_instrument(HL_BTC)
     node.cache.add_instrument(HL_SOL)
-    strategy = _strategy()
+    quote_sink = [None]
+    def bound_quote_sink(**request):
+        assert quote_sink[0] is not None
+        return quote_sink[0](**request)
+    quote_mode = os.environ.get("CM_FAKE_QUOTE_ORDER") == "1"
+    strategy = _strategy(
+        entries_enabled=quote_mode,
+        submission_sink=bound_quote_sink if quote_mode else None,
+    )
     journal = os.environ.get("CM_FAKE_JOURNAL")
     if journal:
         previous = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
@@ -423,11 +439,13 @@ async def _run_child():
         )
         active = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
         active.acquire()
+        if quote_mode:
+            quote_sink[0] = LiveRecoverySubmissionSink(active, strategy, frozenset({str(HL_BTC.id), str(HL_SOL.id)}))
         client._cm_runtime = active  # Same binding as the selected owner factory.
         strategy._probe_engine = node.kernel.exec_engine
         bind_clean_flat_live_handover(
             client, strategy, active,
-            monitor_interval_secs=0.05 if os.environ.get("CM_FAKE_PARITY_FAILURE") == "denied" else 0.01,
+            monitor_interval_secs=30.0 if quote_mode else 0.05 if os.environ.get("CM_FAKE_PARITY_FAILURE") == "denied" else 0.01,
         )
     if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
         from coinmaster.ops.hl_info_receipt import collect_info_receipt
@@ -507,6 +525,59 @@ async def _run_child():
         assert strategy._validated_live_money().equity == Decimal("10000")
         client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
         failure = os.environ.get("CM_FAKE_PARITY_FAILURE", "account")
+        if failure == "quote_order":
+            from dataclasses import replace
+            submit_log = os.environ["CM_FAKE_SUBMIT_LOG"]
+            active.snapshot(
+                ts_ns=node.kernel.clock.timestamp_ns(), positions=[], orders=[],
+                funding_event_ids=[], native_account_total="10000", strategy_restartable=True,
+            )
+            now = node.kernel.clock.timestamp_ns()
+            episode = Episode("episode-quote", 1, 10000, 1.2)
+            intent = Intent("intent-quote", episode.id, "BTC_ENTRY", None, 1, requested_notional=100)
+            episode.pending[intent.id] = intent
+            strategy._domain.episode = episode
+            strategy._queued_intents.append((intent, None, 1484))
+            strategy._queued_intent_ready_ns[intent.id] = now
+            strategy._persist_transient_checkpoint()
+            fresh_money = strategy._live_money_provider
+            stale = [True]
+            strategy._live_money_provider = lambda: replace(
+                fresh_money(), end_ms=node.kernel.clock.timestamp_ns() // 1_000_000 - 20_000,
+            ) if stale[0] else fresh_money()
+            strategy._feeds_fresh = lambda *_args: True  # Fake node has no public data clients.
+            quote = SimpleNamespace(
+                instrument_id=HL_BTC.id, ts_event=now,
+                bid_price=Price.from_str("59999.0"), ask_price=Price.from_str("60000.0"),
+            )
+            strategy.on_quote_tick(quote)
+            assert strategy._queued_intents[0][0].id == intent.id
+            assert not Path(submit_log).exists()
+            stale[0] = False
+            await client._cm_refresh_task
+            assert strategy.recovery_confirmed and client._cm_ws_failure is None
+            strategy.on_quote_tick(quote)
+            for _ in range(200):
+                if Path(submit_log).exists():
+                    break
+                await asyncio.sleep(0.01)
+            assert Path(submit_log).exists()
+            submitted = Path(submit_log).read_text().splitlines()
+            assert len(submitted) == 1
+            assert len(active.all_submissions()) == 1
+            assert active.all_submissions()[0]["client_order_id"] == submitted[0]
+            assert not strategy._queued_intents
+            print("QUOTE_ORDER_PROOF=" + json.dumps({
+                "reconciled_before_on_start": strategy._on_start_reconciled,
+                "stale_candidate_retained": True,
+                "strict_refresh_confirmed": True,
+                "native_submit_count": len(submitted),
+                "durable_submit_count": len(active.all_submissions()),
+            }), flush=True)
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+            active.close()
+            return
         # The fake monitor runs at 10ms; clear its synthetic accelerated
         # weight ledger before injecting one specific failure.
         client._cm_info_usage.clear()
@@ -1174,3 +1245,30 @@ def test_connected_local_denial_keeps_full_periodic_parity_and_next_submit(tmp_p
         "stale_quote_retained_then_strict_refresh": True,
     }
     assert not submit_log.exists()  # No fake or external execution call.
+
+
+def test_connected_quote_stale_money_refresh_submits_one_native_order(tmp_path):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state, journal, submit_log = (tmp_path / name for name in ("state.json", "intents.sqlite", "submits.txt"))
+    state.write_text('{"partial": false}')
+    env = dict(
+        os.environ, CM_FAKE_VENUE_STATE=str(state), CM_FAKE_JOURNAL=str(journal),
+        CM_FAKE_SUBMIT_LOG=str(submit_log),
+        CM_FAKE_TRADER_ID="HL-QUOTE-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
+        CM_FAKE_PRODUCTION_PARITY="1", CM_FAKE_SCOPED_OWNER="1",
+        CM_FAKE_PARITY_FAILURE="quote_order", CM_FAKE_QUOTE_ORDER="1",
+    )
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    run = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert run.returncode == 0, run.stderr
+    proof = json.loads(next(
+        line.split("=", 1)[1] for line in run.stdout.splitlines()
+        if line.startswith("QUOTE_ORDER_PROOF=")
+    ))
+    assert proof == {
+        "reconciled_before_on_start": True, "stale_candidate_retained": True,
+        "strict_refresh_confirmed": True, "native_submit_count": 1,
+        "durable_submit_count": 1,
+    }
+    assert len(submit_log.read_text().splitlines()) == 1
