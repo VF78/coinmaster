@@ -43,6 +43,11 @@ class FakeInfo:
         self.calls.append(dict(body))
         if body["type"] == self.failure:
             raise RuntimeError("read failure")
+        if body["type"] == "activeAssetData":
+            return deepcopy(self.data.get("activeAssetData", {
+                "BTC": {"user": ACCOUNT, "coin": "BTC", "leverage": {"type": "cross", "value": 10}, "markPx": "60000"},
+                "SOL": {"user": ACCOUNT, "coin": "SOL", "leverage": {"type": "cross", "value": 10}, "markPx": "200"},
+            })[body["coin"]])
         value = self.data[body["type"]]
         if body["type"] == "userFillsByTime" and isinstance(value, list):
             return [row for row in value if body["startTime"] <= row["time"] <= body["endTime"]]

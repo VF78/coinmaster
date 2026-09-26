@@ -16,10 +16,12 @@ from datetime import datetime
 from decimal import Decimal
 
 from nautilus_trader.model.data import Bar, BarType
+from nautilus_trader.model.enums import OrderSide
+from nautilus_trader.model.currencies import USDC
 from nautilus_trader.model.identifiers import InstrumentId
 
 from coinmaster.domain.wave_overlay import DailyBar, Episode, Intent
-from coinmaster.ops.hl_live_money import LivePerpsMoneyView
+from coinmaster.ops.hl_live_money import LivePerpsMoneyView, prospective_cross_margin_ok
 from coinmaster.ops.stage_g_config import canonical_candidate_json
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
 from coinmaster.venues.marks import VenueMark
@@ -150,11 +152,21 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._post_drain_task = None
         self._recovery_health = None
         self._live_money_provider = None
+        self._live_refresh = None
 
     def attach_live_money_view(self, provider) -> None:
         if not callable(provider) or self._live_money_provider is not None:
             raise RuntimeError("LIVE_MONEY_PROVIDER_INVALID")
         self._live_money_provider = provider
+
+    def attach_live_refresh(self, refresh) -> None:
+        if not callable(refresh) or self._live_refresh is not None:
+            raise RuntimeError("LIVE_REFRESH_BINDING_INVALID")
+        self._live_refresh = refresh
+
+    def _request_live_refresh(self) -> None:
+        if self._live_refresh is not None:
+            self._live_refresh()
 
     def _validated_live_money(self) -> LivePerpsMoneyView:
         if not self.recovery_confirmed or self._live_money_provider is None:
@@ -176,6 +188,7 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             if self._current_btc is not None:
                 self._deferred_entry_session = self._current_btc.ts_event
                 self._daily_decision_reason = "DEFERRED_LIVE_MONEY"
+            self._request_live_refresh()
             return
         super()._advance_current_day()
 
@@ -193,6 +206,57 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
 
     def _free_margin_for_increase(self, account) -> Decimal:
         return self._validated_live_money().free_collateral
+
+    def _tier_allows_increase(self, instrument_id: InstrumentId, side: OrderSide, quantity: Decimal, ts_now: int) -> bool:
+        try:
+            self._require_recovery_confirmed()
+            view = self._validated_live_money()
+            if self._recovery_runtime is None or view.native_revision != self._recovery_runtime.native_revision():
+                return False
+            account = self.cache.account_for_venue(self.config.btc_id.venue)
+            if account is None or account.balance_total(USDC) is None or account.balance_free(USDC) is None:
+                return False
+            projected_total = view.raw_usd if view.raw_usd < 0 else max(view.raw_usd, view.free_collateral)
+            if (
+                account.balance_total(USDC).as_decimal() != projected_total
+                or account.balance_free(USDC).as_decimal() != view.free_collateral
+            ):
+                return False
+            positions = {}
+            for position in self.cache.positions_open():
+                if (
+                    str(position.strategy_id) != str(self.id)
+                    or position.instrument_id not in (self.config.btc_id, self.config.sol_id)
+                ):
+                    return False
+                coin = "BTC" if position.instrument_id == self.config.btc_id else "SOL"
+                if coin in positions:
+                    return False
+                positions[coin] = position.quantity.as_decimal() * (1 if position.is_long else -1)
+            if tuple(sorted(positions.items())) != view.position_sizes:
+                return False
+            journal = {row["client_order_id"]: row for row in self._recovery_runtime.all_submissions()}
+            pending = []
+            for order in self.cache.orders(venue=self.config.btc_id.venue):
+                if str(order.strategy_id) != str(self.id) or str(order.client_order_id) not in journal:
+                    return False
+                if order.is_closed or order.is_reduce_only:
+                    continue
+                if order.venue_order_id is None:
+                    return False  # A forwarded order without venue proof is an unknown ACK.
+                leaves = order.quantity.as_decimal() - order.filled_qty.as_decimal()
+                if leaves <= 0:
+                    return False
+                order_coin = "BTC" if order.instrument_id == self.config.btc_id else "SOL" if order.instrument_id == self.config.sol_id else ""
+                pending.append((order_coin, order.side.name, leaves))
+            coin = "BTC" if instrument_id == self.config.btc_id else "SOL" if instrument_id == self.config.sol_id else ""
+            return prospective_cross_margin_ok(
+                view, positions=positions, pending_openings=pending,
+                coin=coin, side=side.name, quantity=quantity,
+                max_gross_multiple=self.config.max_gross_to_active,
+            )
+        except (AttributeError, RuntimeError, TypeError, ValueError):
+            return False
 
     def _check_mark_first_liquidation(self, ts_now: int) -> None:
         # The live venue owns liquidation. The Sandbox policy is not a live order source.
@@ -295,13 +359,42 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         if self._feeds_fresh(time.time_ns()):
             super().on_quote_tick(tick)
 
+    def _submit_intent(
+        self, intent: Intent, bid_price: float, ask_price: float,
+        sigma: float | None, decision_index: int,
+        only_instrument: InstrumentId | None = None, ts_now: int | None = None,
+    ) -> None:
+        if intent.action in {"BTC_ENTRY", "SOL_ADD"}:
+            try:
+                view = self._validated_live_money()
+                # Leave a small margin for order construction and final submit.
+                view.require_fresh(time.time_ns() // 1_000_000, 9_000)
+            except ValueError:
+                if not any(item[0].id == intent.id for item in self._queued_intents):
+                    self._queued_intents.append((intent, sigma, decision_index))
+                self._queued_intent_ready_ns[intent.id] = (ts_now or time.time_ns()) + 1
+                self._request_live_refresh()
+                return
+        return super()._submit_intent(
+            intent, bid_price, ask_price, sigma, decision_index,
+            only_instrument=only_instrument, ts_now=ts_now,
+        )
+
     def _record_submission(self, *args, **kwargs) -> bool:
         # Final pre-submit gate covers queued entries and every reduce-only management action.
         try:
             self._validated_live_money()
         except ValueError:
             return False
-        return self._feeds_fresh(time.time_ns()) and super()._record_submission(*args, **kwargs)
+        if not self._feeds_fresh(time.time_ns()):
+            return False
+        if args and getattr(args[0], "is_reduce_only", True) is False:
+            order = args[0]
+            if not self._tier_allows_increase(
+                order.instrument_id, order.side, order.quantity.as_decimal(), time.time_ns(),
+            ):
+                return False
+        return super()._record_submission(*args, **kwargs)
 
     def attach_recovery_runtime(self, runtime) -> None:
         self._recovery_runtime = runtime

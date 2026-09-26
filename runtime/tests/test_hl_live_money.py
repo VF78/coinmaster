@@ -175,3 +175,78 @@ def test_negative_native_total_preserved_and_valid_reduction_gate_open(monkeypat
     strategy._feeds_fresh = lambda *_args: True
     monkeypatch.setattr(WaveOverlayStrategy, "_record_submission", lambda *_args, **_kwargs: True)
     assert strategy._record_submission("reduce-only-probe") is True
+
+
+def test_selected_cross_leverage_identity_and_prospective_total_im():
+    import asyncio
+    from coinmaster.ops.hl_live_money import (
+        SelectedCrossAsset, collect_selected_cross_assets, prospective_cross_margin_ok,
+    )
+
+    async def selected(body):
+        return {
+            "user": body["user"], "coin": body["coin"],
+            "markPx": "100" if body["coin"] == "BTC" else "10",
+            "leverage": {"type": "cross", "value": 10 if body["coin"] == "BTC" else 5},
+            "availableToTrade": ["0", "0"], "maxTradeSzs": ["0", "0"],
+        }
+
+    assets = asyncio.run(collect_selected_cross_assets(selected, account_ref=REF, coins=frozenset({"BTC", "SOL"})))
+    assert assets == (SelectedCrossAsset("BTC", 10, Decimal("100")), SelectedCrossAsset("SOL", 5, Decimal("10")))
+    money = replace(view(receipt(equity="99.5", raw="99.5", margin="20", free="79.5"),
+                         native_account("99.5", "79.5")), selected_assets=assets)
+    allows = lambda **kwargs: prospective_cross_margin_ok(
+        money, max_gross_multiple=Decimal("50"), fee_reserve_rate=Decimal("0.0005"), **kwargs,
+    )
+    assert allows(positions={}, pending_openings=(), coin="BTC", side="BUY", quantity=Decimal("5"))
+    assert not allows(positions={}, pending_openings=(), coin="BTC", side="BUY", quantity=Decimal("11"))
+    # Partial BTC TP leaves 2 BTC; reserve all pending opens and prospective SOL IM.
+    assert allows(positions={"BTC": Decimal("2")},
+                  pending_openings=(("BTC", "BUY", Decimal("3")),),
+                  coin="SOL", side="BUY", quantity=Decimal("20"))
+    assert not allows(positions={"BTC": Decimal("2")},
+                      pending_openings=(("BTC", "BUY", Decimal("6")),),
+                      coin="SOL", side="BUY", quantity=Decimal("20"))
+    assert not allows(positions={}, pending_openings=(("ETH", "BUY", Decimal("1")),),
+                      coin="BTC", side="BUY", quantity=Decimal("1"))
+    # The venue equity already includes fees/funding; no second free-margin deduction.
+    repriced = replace(money, equity=Decimal("61"), margin_used=Decimal("50"),
+                       selected_assets=(SelectedCrossAsset("BTC", 10, Decimal("110")), assets[1]))
+    assert prospective_cross_margin_ok(
+        repriced, positions={"BTC": Decimal("5")}, pending_openings=(),
+        coin="SOL", side="BUY", quantity=Decimal("2"),
+        max_gross_multiple=Decimal("50"),
+    )
+
+    async def foreign(body):
+        raw = await selected(body)
+        raw["user"] = "0x" + "b" * 40
+        return raw
+    with pytest.raises(IncompleteInfoReport, match="ACCOUNT_OR_LEVERAGE_UNKNOWN"):
+        asyncio.run(collect_selected_cross_assets(foreign, account_ref=REF, coins=frozenset({"BTC", "SOL"})))
+
+
+def test_stale_candidate_queues_until_fresh_live_money_and_budget_failure_keeps_it(monkeypatch):
+    import time
+    from coinmaster.domain.wave_overlay import Intent
+
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    now_ms = time.time_ns() // 1_000_000
+    money = [replace(view(receipt(), native_account("10000", "10000")), end_ms=now_ms - 20_000)]
+    refreshes = []
+    strategy.attach_live_money_view(lambda: money[0])
+    strategy.attach_live_refresh(lambda: refreshes.append("requested") or len(refreshes) > 1)
+    strategy.recovery_confirmed = True
+    submitted = []
+    monkeypatch.setattr(WaveOverlayStrategy, "_submit_intent", lambda *args, **kwargs: submitted.append(args[1].id))
+    intent = Intent("btc-candidate", "episode", "BTC_ENTRY", None, 1, requested_notional=50)
+    strategy._submit_intent(intent, 100, 101, None, 1, ts_now=time.time_ns())
+    assert refreshes == ["requested"] and not submitted  # First refresh lacks rate budget.
+    assert [queued[0].id for queued in strategy._queued_intents] == [intent.id]
+    strategy._submit_intent(intent, 100, 101, None, 1, ts_now=time.time_ns())
+    assert refreshes == ["requested", "requested"] and not submitted
+    assert len(strategy._queued_intents) == 1
+    money[0] = replace(money[0], end_ms=time.time_ns() // 1_000_000)
+    strategy._queued_intents.clear()  # Native quote path removes the queued item before retry.
+    strategy._submit_intent(intent, 100, 101, None, 1, ts_now=time.time_ns())
+    assert submitted == [intent.id]

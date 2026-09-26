@@ -48,7 +48,17 @@ from test_hl_stageg_sandbox_lifecycle import HL_BTC, HL_SOL
 
 
 ACCOUNT = AccountId("HYPERLIQUID-master")
+ACCOUNT_REF = "0x" + "a" * 40
 CLIENT_ORDER = ClientOrderId("HLTG-RESTART-PROBE-1")
+
+
+def selected_asset_data(body):
+    coin = body["coin"]
+    return {
+        "user": ACCOUNT_REF, "coin": coin,
+        "leverage": {"type": "cross", "value": 10},
+        "markPx": "60000" if coin == "BTC" else "200",
+    }
 VENUE_ORDER = VenueOrderId("7")
 
 
@@ -143,7 +153,7 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
                 },
             }
             async def info(body):
-                return data[body["type"]]
+                return selected_asset_data(body) if body["type"] == "activeAssetData" else data[body["type"]]
             if not hasattr(self, "_cm_scope"):
                 self.configure_info_boundary(
                     NativeLiveRecoveryScope("0x" + "a" * 40, "", 1, None, (), frozenset({"BTC", "SOL"})),
@@ -230,7 +240,7 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
         }
 
         async def info(body):
-            value = data[body["type"]]
+            value = selected_asset_data(body) if body["type"] == "activeAssetData" else data[body["type"]]
             if body["type"] == "userFillsByTime":
                 return [x for x in value if body["startTime"] <= x["time"] <= body["endTime"]]
             return value
@@ -406,7 +416,7 @@ async def _run_child():
             },
         }
         async def strict_info(body):
-            return client.parity_data[body["type"]]
+            return selected_asset_data(body) if body["type"] == "activeAssetData" else client.parity_data[body["type"]]
         client.configure_info_boundary(
             NativeLiveRecoveryScope("0x" + "a" * 40, "", 1, None, (), frozenset({"BTC", "SOL"})),
             strict_info, lambda: frozenset(),
@@ -494,6 +504,9 @@ async def _run_child():
         assert strategy._validated_live_money().equity == Decimal("10000")
         client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
         failure = os.environ.get("CM_FAKE_PARITY_FAILURE", "account")
+        # The fake monitor runs at 10ms; clear its synthetic accelerated
+        # weight ledger before injecting one specific failure.
+        client._cm_info_usage.clear()
         if failure == "denied":
             from nautilus_trader.model.events import OrderDenied
 
@@ -590,9 +603,12 @@ async def _run_child():
             expected = "INFO_GENERATION_FAILED"
         else:
             raise AssertionError("unsupported fake parity failure")
-        await asyncio.sleep(0.08)
+        for _ in range(200):
+            if client._cm_ws_failure is not None:
+                break
+            await asyncio.sleep(0.01)
         assert strategy.recovery_confirmed is False
-        assert client._cm_ws_failure == expected
+        assert client._cm_ws_failure == expected, (client._cm_ws_failure, expected, list(client._cm_info_usage))
         print("CLEAN_FLAT_HANDOVER_PROOF=" + json.dumps({
             "on_start_after_reconcile": strategy._on_start_reconciled,
             "confirmed_after_strict_parity": True,

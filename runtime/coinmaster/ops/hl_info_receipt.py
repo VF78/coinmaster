@@ -152,6 +152,8 @@ async def collect_info_receipt(
     async def request(body: dict[str, Any]) -> Any:
         try:
             return await info(body)
+        except IncompleteInfoReport:
+            raise
         except Exception as exc:
             raise IncompleteInfoReport("INFO_TRANSPORT_FAILED") from exc
 

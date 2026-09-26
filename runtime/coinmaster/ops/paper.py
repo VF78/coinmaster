@@ -6,6 +6,7 @@ adapters/orders. A separate native worker may read the durable snapshots.
 from __future__ import annotations
 
 import fcntl
+import hashlib
 import json
 import os
 import sqlite3
@@ -41,6 +42,8 @@ class PaperRuntime:
         # lease.  This OS lock is held from acquire until close or process exit.
         self._process_lock_path = database.with_name(database.name + ".owner.lock")
         self._process_lock_fd: int | None = None
+        self._live_account_lock_fd: int | None = None
+        self._live_account_identity: tuple[str, str] | None = None
         self._local_sandbox_active = False
         self.require_native_cash = require_native_cash
         self.db, self.owner, self.max_data_age_ns = sqlite3.connect(database, check_same_thread=False), owner, max_data_age_ns
@@ -82,6 +85,37 @@ class PaperRuntime:
 
     def _bump_native_revision(self) -> None:
         self.db.execute("UPDATE paper_native_revision SET value=value+1 WHERE id=1")
+
+    @_journal_locked
+    def acquire_live_account(
+        self, account_ref: str, venue: str, *, lock_root: Path = Path("/run/lock/coinmaster"),
+    ) -> None:
+        """Hold one account+venue OS lease across SQLite paths until close/exit."""
+        if (
+            not isinstance(account_ref, str) or len(account_ref) != 42
+            or not account_ref.startswith("0x") or venue != "HYPERLIQUID"
+            or not isinstance(lock_root, Path) or not lock_root.is_absolute()
+        ):
+            raise ValueError("LIVE_ACCOUNT_LEASE_SCOPE_INVALID")
+        try:
+            int(account_ref[2:], 16)
+        except ValueError as exc:
+            raise ValueError("LIVE_ACCOUNT_LEASE_SCOPE_INVALID") from exc
+        identity = (venue, account_ref.lower())
+        if self._live_account_lock_fd is not None:
+            if identity != self._live_account_identity:
+                raise RuntimeError("LIVE_ACCOUNT_LEASE_REBIND_FORBIDDEN")
+            return
+        lock_root.mkdir(mode=0o700, parents=True, exist_ok=True)
+        digest = hashlib.sha256(f"{venue}:{account_ref.lower()}".encode()).hexdigest()
+        fd = os.open(lock_root / f"{digest}.lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BaseException as exc:
+            os.close(fd)
+            raise RuntimeError("LIVE_ACCOUNT_ALREADY_OWNED") from exc
+        self._live_account_lock_fd = fd
+        self._live_account_identity = identity
 
     @_journal_locked
     def coherent_snapshot(self) -> bool:
@@ -559,6 +593,11 @@ class PaperRuntime:
         try:
             self.db.close()
         finally:
+            if self._live_account_lock_fd is not None:
+                fcntl.flock(self._live_account_lock_fd, fcntl.LOCK_UN)
+                os.close(self._live_account_lock_fd)
+                self._live_account_lock_fd = None
+                self._live_account_identity = None
             if self._process_lock_fd is not None:
                 fcntl.flock(self._process_lock_fd, fcntl.LOCK_UN)
                 os.close(self._process_lock_fd)

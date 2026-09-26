@@ -146,13 +146,16 @@ def test_bound_factory_checks_durable_ids_before_native_construction():
     mismatch = SimpleNamespace(all_submissions=lambda: [])
     with pytest.raises(ValueError, match="RECOVERY_DURABLE_SCOPE_MISMATCH"):
         ScopedHyperliquidExecClientFactory.bind(scope, mismatch, _strategy())
+    leases = []
     matching = SimpleNamespace(
         all_submissions=lambda: [{"client_order_id": "CM05-ORDER"}],
         applied_fill_ids=lambda: frozenset(),
+        acquire_live_account=lambda *args, **kwargs: leases.append((args, kwargs)),
     )
     strategy = _strategy()
     bound = ScopedHyperliquidExecClientFactory.bind(scope, matching, strategy)
     assert bound._scope is scope and bound._runtime is matching and bound._strategy is strategy
+    assert leases[0][0] == (ACCOUNT, "HYPERLIQUID")
     assert ScopedHyperliquidExecClientFactory._scope is None
 
 
@@ -545,4 +548,83 @@ def test_monitor_blocks_increase_through_retry_then_restores_only_after_parity(m
             await client._cm_parity_task
         except asyncio.CancelledError:
             pass
+    asyncio.run(run())
+
+
+
+def test_live_account_lease_excludes_same_account_across_journals_and_processes(tmp_path):
+    import os
+    import subprocess
+    import sys
+    from pathlib import Path
+    from coinmaster.ops.paper import PaperRuntime
+
+    lock_root = tmp_path / "account-leases"
+    first = PaperRuntime(tmp_path / "first.sqlite", "first", 10**20)
+    second = PaperRuntime(tmp_path / "second.sqlite", "second", 10**20)
+    try:
+        first.acquire_live_account(ACCOUNT, "HYPERLIQUID", lock_root=lock_root)
+        with pytest.raises(RuntimeError, match="LIVE_ACCOUNT_ALREADY_OWNED"):
+            second.acquire_live_account(ACCOUNT.upper().replace("0X", "0x"), "HYPERLIQUID", lock_root=lock_root)
+        child = """
+from pathlib import Path
+from coinmaster.ops.paper import PaperRuntime
+import sys
+runtime = PaperRuntime(Path(sys.argv[1]), "child", 10**20)
+try:
+    runtime.acquire_live_account(sys.argv[3], "HYPERLIQUID", lock_root=Path(sys.argv[2]))
+except RuntimeError as error:
+    print(str(error))
+else:
+    print("UNEXPECTED_ACQUIRED")
+finally:
+    runtime.close()
+"""
+        environment = dict(os.environ, PYTHONPATH=str(Path(__file__).resolve().parents[1]))
+        result = subprocess.run(
+            [sys.executable, "-c", child, str(tmp_path / "third.sqlite"), str(lock_root), ACCOUNT],
+            env=environment, capture_output=True, text=True, check=True,
+        )
+        assert result.stdout.strip() == "LIVE_ACCOUNT_ALREADY_OWNED"
+    finally:
+        first.close()
+    try:
+        second.acquire_live_account(ACCOUNT, "HYPERLIQUID", lock_root=lock_root)
+    finally:
+        second.close()
+
+
+def test_on_demand_strict_refresh_uses_shared_budget_and_never_resumes_on_exhaustion():
+    from copy import deepcopy
+    from test_hl_info_receipt import FakeInfo
+    from test_hl_qualified_reports import native_order, raw
+
+    data = deepcopy(raw())
+    data["clearinghouseState"]["crossMarginSummary"] = deepcopy(data["clearinghouseState"]["marginSummary"])
+    data.update(userRole={"role": "user"}, userAbstraction="disabled", userDexAbstraction=False)
+    info = FakeInfo(data)
+    client = _owned_raw_client(info, [2], native_order(), [{"client_order_id": str(native_order().client_order_id)}])
+    gate = [False]
+    client._cm_ws_phase = "LIVE"
+    client._cm_transport_ok = lambda: True
+    client.bind_recovery_suspension(lambda: gate.__setitem__(0, False), lambda: gate.__setitem__(0, True))
+    async def verify(_mass):
+        return True
+    client._cm_parity_verifier = verify
+
+    async def run():
+        assert client.request_effect_parity_refresh()
+        await client._cm_refresh_task
+        assert gate[0] is True and client._cm_ws_failure is None
+        assert client.request_effect_parity_refresh()
+        await client._cm_refresh_task
+        assert gate[0] is True and client._cm_ws_failure is None
+        assert client.request_effect_parity_refresh()
+        await client._cm_refresh_task
+        assert gate[0] is True  # A third clean generation still fits the shared limit.
+        assert client.request_effect_parity_refresh()
+        await client._cm_refresh_task
+        assert gate[0] is False  # Budget exhausted; no accepted stale receipt.
+        assert client._cm_last_receipt is None
+        assert sum(weight for _, weight in client._cm_info_usage) <= 1000
     asyncio.run(run())

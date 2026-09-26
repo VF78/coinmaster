@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
-from typing import Sequence
+from typing import Any, Awaitable, Callable, Sequence
 
 from nautilus_trader.model.currencies import USDC
 
@@ -26,6 +26,44 @@ def _amount(value: str, name: str) -> Decimal:
 
 
 @dataclass(frozen=True)
+class SelectedCrossAsset:
+    coin: str
+    leverage: int
+    mark: Decimal
+
+
+async def collect_selected_cross_assets(
+    info: Callable[[dict[str, Any]], Awaitable[Any]], *,
+    account_ref: str, coins: frozenset[str],
+) -> tuple[SelectedCrossAsset, ...]:
+    """Read the selected account's leverage/mark, never side-indexed capacity."""
+    if not coins or not coins.issubset({"BTC", "SOL"}):
+        raise IncompleteInfoReport("LIVE_ASSET_SCOPE_UNKNOWN")
+    selected = []
+    for coin in sorted(coins):
+        try:
+            raw = await info({"type": "activeAssetData", "user": account_ref, "coin": coin})
+        except IncompleteInfoReport:
+            raise
+        except Exception as exc:
+            raise IncompleteInfoReport("LIVE_ASSET_TRANSPORT_FAILED") from exc
+        if (
+            not isinstance(raw, dict) or not isinstance(raw.get("user"), str)
+            or raw["user"].lower() != account_ref.lower()
+            or raw.get("coin") != coin or not isinstance(raw.get("leverage"), dict)
+            or raw["leverage"].get("type") != "cross"
+            or type(raw["leverage"].get("value")) is not int
+            or raw["leverage"]["value"] <= 0
+        ):
+            raise IncompleteInfoReport("LIVE_ASSET_ACCOUNT_OR_LEVERAGE_UNKNOWN")
+        mark = _amount(raw.get("markPx"), "SELECTED_MARK")
+        if mark <= 0:
+            raise IncompleteInfoReport("LIVE_ASSET_MARK_UNKNOWN")
+        selected.append(SelectedCrossAsset(coin, raw["leverage"]["value"], mark))
+    return tuple(selected)
+
+
+@dataclass(frozen=True)
 class LivePerpsMoneyView:
     account: str
     dex: str
@@ -34,6 +72,9 @@ class LivePerpsMoneyView:
     free_collateral: Decimal
     margin_used: Decimal
     raw_usd: Decimal
+    selected_assets: tuple[SelectedCrossAsset, ...] = ()
+    position_sizes: tuple[tuple[str, Decimal], ...] = ()
+    native_revision: int | None = None
 
     def require_fresh(self, now_ms: int, max_age_ms: int) -> None:
         if (
@@ -47,7 +88,8 @@ class LivePerpsMoneyView:
 def live_perps_money_view(
     receipt: InfoReceipt, *, account_ref: str, dex: str, account_id: str,
     native_account, native_positions: Sequence[object], now_ms: int,
-    max_age_ms: int = 10_000,
+    max_age_ms: int = 10_000, selected_assets: tuple[SelectedCrossAsset, ...] = (),
+    native_revision: int | None = None,
 ) -> LivePerpsMoneyView:
     if (
         not isinstance(receipt, InfoReceipt)
@@ -126,6 +168,61 @@ def live_perps_money_view(
         raise IncompleteInfoReport("LIVE_MONEY_NOTIONAL_POSITION_MISMATCH")
     if raw_positions != native:
         raise IncompleteInfoReport("LIVE_MONEY_POSITION_MISMATCH")
-    view = LivePerpsMoneyView(account_ref, dex, receipt.end_ms, equity, free, margin, raw)
+    if selected_assets and (
+        len(selected_assets) != 2 or {item.coin for item in selected_assets} != {"BTC", "SOL"}
+    ):
+        raise IncompleteInfoReport("LIVE_ASSET_SCOPE_UNKNOWN")
+    view = LivePerpsMoneyView(
+        account_ref, dex, receipt.end_ms, equity, free, margin, raw,
+        selected_assets, tuple(sorted(raw_positions.items())), native_revision,
+    )
     view.require_fresh(now_ms, max_age_ms)
     return view
+
+
+
+def prospective_cross_margin_ok(
+    view: LivePerpsMoneyView, *,
+    positions: dict[str, Decimal],
+    pending_openings: Sequence[tuple[str, str, Decimal]],
+    coin: str, side: str, quantity: Decimal,
+    max_gross_multiple: Decimal,
+    fee_reserve_rate: Decimal = Decimal("0.0005"),
+) -> bool:
+    """Total worst-side IM plus opening costs against venue equity, not withdrawable."""
+    assets = {item.coin: item for item in view.selected_assets}
+    if (
+        set(assets) != {"BTC", "SOL"} or set(positions) - set(assets)
+        or coin not in assets or side not in {"BUY", "SELL"}
+        or not quantity.is_finite() or quantity <= 0
+        or not fee_reserve_rate.is_finite() or fee_reserve_rate < Decimal("0.00045")
+        or max_gross_multiple <= 0
+    ):
+        return False
+    buys = {name: Decimal("0") for name in assets}
+    sells = {name: Decimal("0") for name in assets}
+    fees_notional = quantity * assets[coin].mark
+    for pending_coin, pending_side, leaves in pending_openings:
+        if (
+            pending_coin not in assets or pending_side not in {"BUY", "SELL"}
+            or not leaves.is_finite() or leaves <= 0
+        ):
+            return False
+        (buys if pending_side == "BUY" else sells)[pending_coin] += leaves
+        fees_notional += leaves * assets[pending_coin].mark
+    (buys if side == "BUY" else sells)[coin] += quantity
+    prospective_im = gross = Decimal("0")
+    for name, asset in assets.items():
+        current = positions.get(name, Decimal("0"))
+        if not current.is_finite() or asset.mark <= 0 or asset.leverage <= 0:
+            return False
+        worst = max(abs(current + buys[name]), abs(current - sells[name]))
+        prospective_im += worst * asset.mark / asset.leverage
+        gross += worst * asset.mark
+    # totalMarginUsed is a floor for native margin not explained by our
+    # selected BTC/SOL model. Never subtract existing IM from accountValue twice.
+    required = max(view.margin_used, prospective_im)
+    return (
+        required + fees_notional * fee_reserve_rate <= view.equity
+        and gross <= view.equity * max_gross_multiple
+    )

@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import asyncio
 import json
+import time
 from collections import deque
 from dataclasses import replace
 from decimal import Decimal
+from pathlib import Path
 from typing import Any, Awaitable, Callable
 from urllib.request import Request, urlopen
 
@@ -25,13 +27,35 @@ from nautilus_trader.model.enums import OrderStatus
 from nautilus_trader.model.events import OrderDenied
 
 from coinmaster.ops.hl_info_receipt import IncompleteInfoReport, collect_info_receipt
-from coinmaster.ops.hl_live_money import live_perps_money_view
+from coinmaster.ops.hl_live_money import collect_selected_cross_assets, live_perps_money_view
 from coinmaster.ops.hl_qualified_reports import qualified_mass_status
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 
 
 InfoTransport = Callable[[dict[str, Any]], Awaitable[Any]]
+
+
+class InfoWeightBudget:
+    """One bounded strict generation; leave shared-IP headroom for other users."""
+
+    def __init__(self, info: InfoTransport, limit: int = 400) -> None:
+        self.info, self.limit, self.used = info, limit, 0
+
+    async def __call__(self, body: dict[str, Any]):
+        kind = body["type"]
+        cost = 60 if kind == "userRole" else 2 if kind in {
+            "clearinghouseState", "orderStatus",
+        } else 20
+        if self.used + cost > self.limit:
+            raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
+        self.used += cost
+        value = await self.info(body)
+        if kind == "userFillsByTime" and isinstance(value, list):
+            self.used += (len(value) + 19) // 20
+            if self.used > self.limit:
+                raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
+        return value
 
 
 def _proven_local_denial(row: dict, order: Any) -> bool:
@@ -93,11 +117,16 @@ class QualifiedInfoBoundary:
         self._cm_ws_failure = None
         self._cm_parity_task = None
         self._cm_last_receipt = None
+        self._cm_last_margin_assets = None
         self._cm_last_revision = None
         self._cm_runtime = None
         self._cm_bootstrapped = False
         self._cm_suspend_recovery = None
         self._cm_resume_recovery = None
+        self._cm_info_usage = deque()
+        self._cm_parity_lock = asyncio.Lock()
+        self._cm_refresh_task = None
+        self._cm_parity_verifier = None
 
     def _cm_transport_ok(self) -> bool:
         socket = getattr(self, "_ws_client", None)
@@ -209,21 +238,31 @@ class QualifiedInfoBoundary:
 
     async def generate_mass_status(self, lookback_mins=None):
         self._cm_last_receipt = None
+        self._cm_last_margin_assets = None
         self._cm_last_revision = None
         try:
             self._cm_require_healthy()
             if self._cm_bootstrapped and self._cm_ws_phase == "LIVE" and self._cm_suspend_recovery is not None:
                 self._cm_suspend_recovery()
             for attempt in range(4):
+                now = time.monotonic()
+                while self._cm_info_usage and now - self._cm_info_usage[0][0] >= 60:
+                    self._cm_info_usage.popleft()
+                # Every attempt stays under 400; retries also consume the
+                # rolling 1000/min budget. The transport wrapper enforces the
+                # remaining allowance on each request, including fill rows.
+                remaining = 1000 - sum(weight for _, weight in self._cm_info_usage)
+                if remaining <= 0:
+                    raise IncompleteInfoReport("LIVE_INFO_RATE_BUDGET_EXCEEDED")
+                weighted_info = InfoWeightBudget(self._cm_info, min(400, remaining))
                 revision = None
                 try:
                     scope, revision, native_orders, applied, signature = self._cm_owned_scope()
                     expected = {cloid: oid for _, cloid, oid in scope.durable_orders}
                     end = self._clock.timestamp_ns() // 1_000_000
-
                     async def sweep(at: int):
                         return await collect_info_receipt(
-                            self._cm_info, account=scope.account_ref, dex=scope.dex,
+                            weighted_info, account=scope.account_ref, dex=scope.dex,
                             anchor_ms=scope.anchor_ms, anchor_tid=scope.anchor_tid,
                             end_ms=at, expected_orders=expected, owned_coins=scope.owned_coins,
                             require_money_scope=True,
@@ -231,6 +270,9 @@ class QualifiedInfoBoundary:
 
                     first = await sweep(end)
                     second = await sweep(max(end + 1, self._clock.timestamp_ns() // 1_000_000))
+                    selected_assets = await collect_selected_cross_assets(
+                        weighted_info, account_ref=scope.account_ref, coins=scope.owned_coins,
+                    )
                     instruments = {
                         coin: self._cache.instrument(InstrumentId.from_str(f"{coin}-USD-PERP.HYPERLIQUID"))
                         for coin in scope.owned_coins
@@ -250,6 +292,7 @@ class QualifiedInfoBoundary:
                         if (current_revision, current_applied, current_signature) != (revision, applied, signature):
                             raise IncompleteInfoReport("LIVE_DURABLE_REVISION_MOVED")
                     self._cm_last_receipt = second
+                    self._cm_last_margin_assets = selected_assets
                     self._cm_last_revision = revision
                     return mass
                 except IncompleteInfoReport as error:
@@ -270,6 +313,16 @@ class QualifiedInfoBoundary:
                     ):
                         raise
                     await asyncio.sleep(0.25)
+                finally:
+                    if weighted_info.used:
+                        self._cm_info_usage.append((now, weighted_info.used))
+        except IncompleteInfoReport as error:
+            if str(error) == "LIVE_INFO_RATE_BUDGET_EXCEEDED":
+                if self._cm_suspend_recovery is not None:
+                    self._cm_suspend_recovery()
+            elif self._cm_ws_failure is None:
+                self._cm_fail("INFO_GENERATION_FAILED")
+            raise
         except BaseException:
             if self._cm_ws_failure is None:
                 self._cm_fail("INFO_GENERATION_FAILED")
@@ -314,6 +367,7 @@ class QualifiedInfoBoundary:
             if not self._cm_transport_ok():
                 self._cm_require_healthy()
             self._cm_ws_phase = "LIVE"
+            self._cm_parity_verifier = verify
             self._cm_parity_task = asyncio.get_running_loop().create_task(
                 self._cm_monitor_parity(verify, monitor_interval_secs)
             )
@@ -321,6 +375,40 @@ class QualifiedInfoBoundary:
         if self._cm_ws_failure is None:
             self._cm_fail("WS_HANDOVER_NOT_CONVERGED")
         self._cm_require_healthy()
+
+    def request_effect_parity_refresh(self) -> bool:
+        """One candidate-triggered strict refresh, serialized with the monitor."""
+        if self._cm_ws_phase != "LIVE" or self._cm_ws_failure or self._cm_parity_verifier is None:
+            return False
+        if self._cm_refresh_task is None or self._cm_refresh_task.done():
+            self._cm_refresh_task = asyncio.get_running_loop().create_task(
+                self._cm_refresh_effect_parity()
+            )
+        return True
+
+    async def _cm_refresh_effect_parity(self) -> None:
+        try:
+            async with self._cm_parity_lock:
+                if self._cm_suspend_recovery is not None:
+                    self._cm_suspend_recovery()
+                mass = await self.generate_mass_status()
+                if await self._cm_parity_verifier(mass) is not True:
+                    raise IncompleteInfoReport("LIVE_OWNED_EFFECT_PARITY_FAILED")
+                self._cm_require_healthy()
+                if not self._cm_transport_ok():
+                    self._cm_require_healthy()
+                if self._cm_resume_recovery is not None:
+                    self._cm_resume_recovery()
+        except IncompleteInfoReport as error:
+            # Shared-IP budget exhaustion leaves the candidate queued. No
+            # evidence is accepted and the increase gate stays suspended.
+            if str(error) != "LIVE_INFO_RATE_BUDGET_EXCEEDED":
+                self._cm_fail("WS_ON_DEMAND_EFFECT_PARITY_FAILED")
+        except asyncio.CancelledError:
+            self._cm_fail("WS_ON_DEMAND_EFFECT_PARITY_CANCELED")
+            raise
+        except BaseException:
+            self._cm_fail("WS_ON_DEMAND_EFFECT_PARITY_FAILED")
 
     async def _cm_monitor_parity(
         self, verify: Callable[[Any], Awaitable[bool]], interval: float,
@@ -330,20 +418,27 @@ class QualifiedInfoBoundary:
                 await asyncio.sleep(interval)
                 if not self._cm_transport_ok():
                     return
-                if self._cm_suspend_recovery is not None:
-                    self._cm_suspend_recovery()
+                seen_parity_error = False
                 for attempt in range(4):
                     try:
-                        mass = await self.generate_mass_status()
-                        if await verify(mass) is not True:
-                            raise IncompleteInfoReport("LIVE_OWNED_EFFECT_PARITY_FAILED")
-                        self._cm_require_healthy()
-                        if not self._cm_transport_ok():
+                        async with self._cm_parity_lock:
+                            if self._cm_suspend_recovery is not None:
+                                self._cm_suspend_recovery()
+                            mass = await self.generate_mass_status()
+                            if await verify(mass) is not True:
+                                raise IncompleteInfoReport("LIVE_OWNED_EFFECT_PARITY_FAILED")
                             self._cm_require_healthy()
-                        if self._cm_resume_recovery is not None:
-                            self._cm_resume_recovery()
+                            if not self._cm_transport_ok():
+                                self._cm_require_healthy()
+                            if self._cm_resume_recovery is not None:
+                                self._cm_resume_recovery()
                         break
                     except IncompleteInfoReport as error:
+                        if str(error) == "LIVE_INFO_RATE_BUDGET_EXCEEDED":
+                            if seen_parity_error:
+                                raise  # A proved mismatch may not be erased by retry budget.
+                            break  # Stale evidence blocks increases until a later affordable read.
+                        seen_parity_error = True
                         if attempt == 3 or str(error) not in {
                             "LIVE_VERIFIER_REVISION_MOVED", "LIVE_OWNED_ORDER_SET_MISMATCH",
                             "LIVE_OWNED_ORDER_PARITY_FAILED", "LIVE_OWNED_FILL_PARITY_FAILED",
@@ -371,6 +466,8 @@ class QualifiedHyperliquidExecutionClient(QualifiedInfoBoundary, HyperliquidExec
         self._cm_fail("WS_DISCONNECTED")
         if self._cm_parity_task is not None:
             self._cm_parity_task.cancel()
+        if self._cm_refresh_task is not None:
+            self._cm_refresh_task.cancel()
         await super()._disconnect()
 
     async def generate_order_status_reports(self, command):
@@ -394,13 +491,20 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
     _strategy = None
 
     @classmethod
-    def bind(cls, scope: NativeLiveRecoveryScope, runtime, strategy, info: InfoTransport | None = None):
+    def bind(
+        cls, scope: NativeLiveRecoveryScope, runtime, strategy, info: InfoTransport | None = None,
+        *, account_lock_root: Path = Path("/run/lock/coinmaster"),
+    ):
         if not isinstance(scope, NativeLiveRecoveryScope) or runtime is None or strategy is None:
             raise ValueError("RECOVERY_SCOPE_AND_STRATEGY_REQUIRED")
         journal_ids = {row["client_order_id"] for row in runtime.all_submissions()}
         scoped_ids = {client for client, _, _ in scope.durable_orders}
         if journal_ids != scoped_ids:
             raise ValueError("RECOVERY_DURABLE_SCOPE_MISMATCH")
+        acquire = getattr(runtime, "acquire_live_account", None)
+        if not callable(acquire):
+            raise RuntimeError("LIVE_ACCOUNT_LEASE_REQUIRED")
+        acquire(scope.account_ref, "HYPERLIQUID", lock_root=account_lock_root)
         class Bound(cls):
             _scope = scope
             _runtime = runtime
@@ -412,6 +516,8 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
     def create(cls, loop, name, config, msgbus, cache, clock):
         if cls._scope is None or cls._runtime is None or cls._strategy is None:
             raise RuntimeError("RECOVERY_SCOPE_NOT_BOUND")
+        if config.include_builder_attribution:
+            raise RuntimeError("LIVE_BUILDER_FEE_UNQUALIFIED")
         environment = _resolve_environment(config.environment)
         address = nautilus_pyo3.hyperliquid_resolve_execution_account_address(
             private_key=config.private_key, vault_address=config.vault_address,
@@ -448,7 +554,7 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
 
 def bind_clean_flat_live_handover(
     client: QualifiedInfoBoundary, strategy, runtime, *,
-    monitor_interval_secs: float = 5.0,
+    monitor_interval_secs: float = 30.0,
 ) -> None:
     """Require clean-flat restart bootstrap, then monitor current-process owned state.
 
@@ -566,7 +672,11 @@ def bind_clean_flat_live_handover(
             receipt, account_ref=scope.account_ref, dex=scope.dex,
             account_id=str(client.account_id), native_account=account,
             native_positions=native_positions, now_ms=client._clock.timestamp_ns() // 1_000_000,
+            selected_assets=client._cm_last_margin_assets or (),
+            native_revision=runtime.native_revision(),
         )
+        if not candidate_money.selected_assets:
+            raise IncompleteInfoReport("LIVE_SELECTED_MARGIN_UNKNOWN")
         if client._cm_bootstrapped and runtime.native_revision() != client._cm_last_revision:
             raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
         latest_money[0] = candidate_money
@@ -582,6 +692,7 @@ def bind_clean_flat_live_handover(
         strategy.recovery_confirmed = True
 
     strategy.attach_live_money_view(lambda: latest_money[0])
+    strategy.attach_live_refresh(client.request_effect_parity_refresh)
     strategy.attach_recovery_health(client.recovery_healthy)
     client.bind_recovery_revocation(lambda: setattr(strategy, "recovery_confirmed", False))
     client.bind_recovery_suspension(
