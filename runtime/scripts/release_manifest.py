@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 SCHEMA = "coinmaster-release-identity-v1"
+CACHE_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".cache", "node_modules"}
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -20,6 +21,28 @@ def sha256_bytes(value: bytes) -> str:
 
 def sha256_file(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
+
+
+def payload_tree(root: Path) -> dict[str, Any]:
+    file_count = 0
+    tree = hashlib.sha256()
+    for path in sorted(root.rglob("*")):
+        if path.is_symlink():
+            raise ValueError(f"release payload symlink is not allowed: {path.relative_to(root)}")
+        if not path.is_file():
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative == "runtime/release-manifest.json":
+            continue
+        parts = Path(relative).parts
+        if any(part in CACHE_DIRS for part in parts) or path.suffix in {".pyc", ".pyo"}:
+            continue
+        digest = sha256_file(path)
+        file_count += 1
+        tree.update(relative.encode("utf-8") + b"\0" + bytes.fromhex(digest) + b"\n")
+    if file_count == 0:
+        raise ValueError("staged release contains no payload files")
+    return {"sha256": tree.hexdigest(), "file_count": file_count}
 
 
 def code_tree(root: Path) -> dict[str, Any]:
@@ -88,7 +111,7 @@ def seal_inputs(runtime_root: Path) -> dict[str, str]:
     }
 
 
-def make_manifest(source_root: Path, runtime_root: Path) -> dict[str, Any]:
+def make_manifest(source_root: Path, runtime_root: Path, release_root: Path) -> dict[str, Any]:
     commit = subprocess.run(
         ["git", "-C", str(source_root), "rev-parse", "HEAD"], check=True,
         capture_output=True, text=True,
@@ -106,6 +129,7 @@ def make_manifest(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     return {
         "schema": SCHEMA,
         "source": {"commit": commit, "dirty": bool(status), "status": status},
+        "release_tree": payload_tree(release_root),
         "runtime_coinmaster": code_tree(runtime_root),
         "sealed_inputs": seal_inputs(runtime_root),
         "pinned_dependencies": {
@@ -117,13 +141,13 @@ def make_manifest(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     }
 
 
-def write_manifest(source_root: Path, runtime_root: Path, output: Path) -> None:
-    manifest = make_manifest(source_root, runtime_root)
+def write_manifest(source_root: Path, runtime_root: Path, release_root: Path, output: Path) -> None:
+    manifest = make_manifest(source_root, runtime_root, release_root)
     output.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-    print(f"MANIFEST_WRITTEN commit={manifest['source']['commit']} dirty={str(manifest['source']['dirty']).lower()} code_sha256={manifest['runtime_coinmaster']['sha256']}")
+    print(f"MANIFEST_WRITTEN commit={manifest['source']['commit']} dirty={str(manifest['source']['dirty']).lower()} release_sha256={manifest['release_tree']['sha256']}")
 
 
-def verify_manifest(runtime_root: Path, path: Path, expected_commit: str) -> None:
+def verify_manifest(runtime_root: Path, release_root: Path, path: Path, expected_commit: str) -> None:
     manifest = json.loads(path.read_text(encoding="utf-8"))
     if manifest.get("schema") != SCHEMA:
         raise ValueError("release manifest schema mismatch")
@@ -131,6 +155,7 @@ def verify_manifest(runtime_root: Path, path: Path, expected_commit: str) -> Non
     if source.get("commit") != expected_commit or source.get("dirty") is not False or source.get("status") != []:
         raise ValueError("release manifest source identity mismatch")
     current = {
+        "release_tree": payload_tree(release_root),
         "runtime_coinmaster": code_tree(runtime_root),
         "sealed_inputs": seal_inputs(runtime_root),
         "pinned_dependencies": {
@@ -152,17 +177,19 @@ def main() -> int:
     generate = subparsers.add_parser("generate")
     generate.add_argument("--source-root", type=Path, required=True)
     generate.add_argument("--runtime-root", type=Path, required=True)
+    generate.add_argument("--release-root", type=Path, required=True)
     generate.add_argument("--output", type=Path, required=True)
     verify = subparsers.add_parser("verify")
     verify.add_argument("--runtime-root", type=Path, required=True)
+    verify.add_argument("--release-root", type=Path, required=True)
     verify.add_argument("--manifest", type=Path, required=True)
     verify.add_argument("--expected-commit", required=True)
     args = parser.parse_args()
     try:
         if args.action == "generate":
-            write_manifest(args.source_root.resolve(), args.runtime_root.resolve(), args.output.resolve())
+            write_manifest(args.source_root.resolve(), args.runtime_root.resolve(), args.release_root.resolve(), args.output.resolve())
         else:
-            verify_manifest(args.runtime_root.resolve(), args.manifest.resolve(), args.expected_commit)
+            verify_manifest(args.runtime_root.resolve(), args.release_root.resolve(), args.manifest.resolve(), args.expected_commit)
     except (OSError, ValueError, subprocess.CalledProcessError, json.JSONDecodeError) as error:
         print(f"RELEASE_MANIFEST_ERROR: {error}", file=sys.stderr)
         return 1

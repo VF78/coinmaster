@@ -212,6 +212,7 @@ PY
   [[ -f "$RELEASE.incoming/runtime/uv.lock" && -f "$RELEASE.incoming/runtime/ops/coinmaster-native-gui.service" && -f "$RELEASE.incoming/runtime/release-manifest.json" && -f "$RELEASE.incoming/web/index.html" ]] || { echo 'incomplete release' >&2; exit 1; }
   python3 "$RELEASE.incoming/runtime/scripts/release_manifest.py" verify \
     --runtime-root "$RELEASE.incoming/runtime" \
+    --release-root "$RELEASE.incoming" \
     --manifest "$RELEASE.incoming/runtime/release-manifest.json" \
     --expected-commit "$COMMIT"
   (cd "$RELEASE.incoming/runtime" && /root/.local/bin/uv sync --frozen --no-dev --no-install-project)

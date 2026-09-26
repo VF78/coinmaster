@@ -16,14 +16,13 @@ from types import SimpleNamespace
 import pytest
 
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
-from nautilus_trader.adapters.sandbox.factory import SandboxLiveExecClientFactory
 from nautilus_trader.common import Environment
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.currencies import BTC, SOL, USD, USDC
 from nautilus_trader.model.data import BarSpecification, BarType, MarkPriceUpdate, QuoteTick
-from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType
+from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType, LiquiditySide
 from nautilus_trader.model.identifiers import ClientId, InstrumentId, Symbol, Venue
 from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.model.objects import Money, Price, Quantity
@@ -37,6 +36,7 @@ from coinmaster.ops.hyperliquid_testnet import (
     LifecycleHooks,
     cross_venue_stage_g_gate,
 )
+from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, HyperliquidUsdcFeeModel, HyperliquidUsdcSandboxExecutionClient, model_fx_pair_and_quote, model_fx_ready
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import load_candidate
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig, _native_account_money
@@ -55,14 +55,20 @@ def _perpetual(symbol: str, base, tick: str, step: str, *, quote=USDC) -> Crypto
         InstrumentId(Symbol(f"{symbol}-PERP"), HYPERLIQUID), Symbol(symbol), base, quote, USDC,
         False, len(tick.partition(".")[2]), len(step.partition(".")[2]),
         Price.from_str(tick), Quantity.from_str(step), 0, 0,
-        min_quantity=Quantity.from_str(step), min_notional=Money(Decimal("10"), USDC),
+        min_quantity=Quantity.from_str(step), min_notional=Money(Decimal("10"), quote),
         margin_init=Decimal("0.025"), margin_maint=Decimal("0.0125"),
         maker_fee=Decimal("0.00015"), taker_fee=Decimal("0.00045"),
     )
 
 
-HL_BTC = _perpetual("BTC-USD", BTC, "0.1", "0.00001")
-HL_SOL = _perpetual("SOL-USD", SOL, "0.01", "0.01")
+def _public_perpetual(symbol: str, base, tick: str, step: str) -> CryptoPerpetual:
+    fields = CryptoPerpetual.to_dict(_perpetual(symbol, base, tick, step, quote=USD))
+    fields.update(maker_fee="0", taker_fee="0")
+    return CryptoPerpetual.from_dict(fields)
+
+
+HL_BTC = _public_perpetual("BTC-USD", BTC, "0.1", "0.00001")
+HL_SOL = _public_perpetual("SOL-USD", SOL, "0.01", "0.01")
 assert HL_BTC.id == BTC_PERP
 assert HL_SOL.id == SOL_PERP
 
@@ -102,9 +108,16 @@ existing ``_submit_intent`` path retains Stage-G order normalization,
         if self.step == 0:
             intent = Intent("hl-stageg-entry", "hl-stageg-lifecycle", "BTC_ENTRY", 0, 1, quantity=0.01)
         else:
-            intent = Intent("hl-stageg-exit", "hl-stageg-lifecycle", "BTC_REDUCE", 0, -1, quantity=0.01)
+            intent = Intent("hl-stageg-exit", "hl-stageg-lifecycle", "BTC_REDUCE", 0, -1, quantity=0.01, limit_price=self.exit_price)
         self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
         self.step += 1
+
+
+def test_public_instrument_stays_usd_quoted_and_model_fx_is_explicit() -> None:
+    assert (HL_BTC.quote_currency, HL_BTC.settlement_currency) == (USD, USDC)
+    fx_pair, fx_quote = model_fx_pair_and_quote()
+    assert (fx_pair.base_currency, fx_pair.quote_currency) == (USD, USDC)
+    assert fx_quote.bid_price.as_decimal() == fx_quote.ask_price.as_decimal() == 1
 
 
 def test_native_money_reads_usdc_account_for_usd_quote_and_never_uses_seed() -> None:
@@ -131,7 +144,7 @@ def test_native_money_reads_usdc_account_for_usd_quote_and_never_uses_seed() -> 
         WaveOverlayStrategy._active_marked(strategy, btc_mark, sol_mark)
 
 
-async def _run_lifecycle(journal_path) -> tuple[AttachedStageGEntryExitProbe, PaperRuntime, TradingNode]:
+async def _run_lifecycle(journal_path, *, losing: bool = False) -> tuple[AttachedStageGEntryExitProbe, PaperRuntime, TradingNode]:
     candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
     gate = cross_venue_stage_g_gate(
         candidate=candidate,
@@ -166,6 +179,7 @@ async def _run_lifecycle(journal_path) -> tuple[AttachedStageGEntryExitProbe, Pa
         execution_policy_hash=gate.execution_policy_hash,
         execution_policy_version="hl-mainnet-public-data-native-sandbox-v1",
     ))
+    strategy.exit_price = 59990.0 if losing else 60010.0
     config = TradingNodeConfig(
         environment=Environment.LIVE, trader_id="HL-STAGEG-LIFECYCLE-PROBE", logging=LoggingConfig(log_level="ERROR"),
         exec_engine=LiveExecEngineConfig(reconciliation=False),
@@ -176,15 +190,37 @@ async def _run_lifecycle(journal_path) -> tuple[AttachedStageGEntryExitProbe, Pa
         )},
     )
     node = TradingNode(config=config, loop=asyncio.get_running_loop())
-    node.add_exec_client_factory("SANDBOX", SandboxLiveExecClientFactory)
+    node.add_exec_client_factory("SANDBOX", HyperliquidUsdcSandboxFactory)
     node.build()
     node.cache.add_instrument(HL_BTC)
     node.cache.add_instrument(HL_SOL)
+    fx_pair, fx_quote = model_fx_pair_and_quote()
+    node.cache.add_instrument(fx_pair)
+    node.cache.add_quote_tick(fx_quote)
+    assert model_fx_ready(node.cache)
     node.trader.add_strategy(strategy)
     await node.kernel.start_async()
-    for tick in (_quote(BTC_PERP, "59999.0", "60000.0", 1), _quote(BTC_PERP, "60001.0", "60002.0", 2)):
+    quotes = (
+        (_quote(BTC_PERP, "59999.0", "60000.0", 1), _quote(BTC_PERP, "59980.0", "59981.0", 2), _quote(BTC_PERP, "59991.0", "59992.0", 3))
+        if losing else
+        (_quote(BTC_PERP, "59999.0", "60000.0", 1), _quote(BTC_PERP, "60001.0", "60002.0", 2), _quote(BTC_PERP, "60011.0", "60012.0", 3))
+    )
+    for tick in quotes:
         node.kernel.data_engine.process(tick)
         await asyncio.sleep(0.05)
+        if tick.ts_event == 1:
+            account = node.cache.account_for_venue(HYPERLIQUID)
+            strategy.entry_money = {
+                "total": account.balance_total(USDC).as_decimal(),
+                "free": account.balance_free(USDC).as_decimal(),
+                "locked": account.balance_locked(USDC).as_decimal(),
+                "positions": len(node.cache.positions_open()),
+            }
+            # A later public provider refresh must retain its canonical USD
+            # quote; the native fee model still posts USDC on the maker fill.
+            node.kernel.data_engine.process(HL_BTC)
+            await asyncio.sleep(0.05)
+            assert node.cache.instrument(BTC_PERP).quote_currency == USD
     return strategy, runtime, node
 
 
@@ -201,7 +237,25 @@ def test_hl_stageg_configured_native_sandbox_entry_exit_fees_account_and_manage_
             assert [item["instrument"] for item in strategy.fill_audit] == [str(BTC_PERP), str(BTC_PERP)]
             assert [item["action"] for item in strategy.fill_audit] == ["BTC_ENTRY", "BTC_REDUCE"]
             assert all(Decimal(item["commission"]) > 0 for item in strategy.fill_audit)
+            assert [item["native_liquidity_side"] for item in strategy.fill_audit] == ["TAKER", "MAKER"]
+            assert [Decimal(item["commission"]) for item in strategy.fill_audit] == [
+                Decimal("600.00") * Decimal("0.00045"),
+                Decimal("600.10") * Decimal("0.00015"),
+            ]
             assert all(item["commission_currency"] == "USDC" for item in strategy.fill_audit)
+            assert strategy.entry_money == {
+                "total": Decimal("9999.73"),
+                "free": Decimal("9999.54"),
+                "locked": Decimal("0.19"),
+                "positions": 1,
+            }
+            native_account = node.cache.account_for_venue(HYPERLIQUID)
+            expected_total = Decimal("10000") + Decimal("0.01") * Decimal("10") - sum(
+                Decimal(item["commission"]) for item in strategy.fill_audit
+            )
+            assert native_account.balance_total(USDC).as_decimal() == expected_total
+            assert native_account.balance_free(USDC).as_decimal() == expected_total
+            assert native_account.balance_locked(USDC).as_decimal() == 0
             assert runtime.pending_submissions() == []
 
             # A durable position copied from the actual native entry identity
@@ -217,6 +271,53 @@ def test_hl_stageg_configured_native_sandbox_entry_exit_fees_account_and_manage_
             assert restarted.recovery_state() == "MANAGE_ONLY_DURABLE_OPEN_STATE"
             assert not restarted.reconcile(positions=[], orders=[])
             restarted.close()
+        finally:
+            runtime.close()
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+
+    asyncio.run(scenario())
+
+
+def test_native_usdc_fee_model_preserves_tiny_partial_maker_precision() -> None:
+    model = HyperliquidUsdcFeeModel()
+    order = SimpleNamespace(liquidity_side=LiquiditySide.MAKER)
+    commission = model.get_commission(
+        order, Quantity.from_str("0.00001"), Price.from_str("60000.0"), HL_BTC,
+    )
+    assert commission.currency == USDC
+    assert commission.as_decimal() == Decimal("0.00009")
+    assert sum((commission.as_decimal() for _ in range(2)), Decimal("0")) == Decimal("0.00018")
+    partial = model.get_commission(
+        order, Quantity.from_str("0.00500"), Price.from_str("60000.1"), HL_BTC,
+    )
+    assert partial.as_decimal() == Decimal("0.04500008")
+
+
+def test_model_fx_missing_blocks_native_order_gate() -> None:
+    cache = SimpleNamespace(get_xrate=lambda venue, source, target, side: 0.0)
+    assert not model_fx_ready(cache)
+    with pytest.raises(RuntimeError, match="HL_SANDBOX_MODEL_FX_MISSING"):
+        HyperliquidUsdcSandboxExecutionClient.submit_order(
+            SimpleNamespace(_cache=cache), SimpleNamespace(order=SimpleNamespace(instrument_id=BTC_PERP)),
+        )
+    cache.get_xrate = lambda venue, source, target, side: 1.0
+    assert model_fx_ready(cache)
+
+
+def test_native_losing_maker_exit_reconciles_usdc_cash(tmp_path) -> None:
+    async def scenario():
+        strategy, runtime, node = await _run_lifecycle(tmp_path / "losing.sqlite", losing=True)
+        try:
+            fills = strategy.fill_audit
+            assert [item["native_liquidity_side"] for item in fills] == ["TAKER", "MAKER"]
+            assert [Decimal(item["commission"]) for item in fills] == [Decimal("0.27"), Decimal("0.089985")]
+            assert node.cache.positions_open() == []
+            account = node.cache.account_for_venue(HYPERLIQUID)
+            expected = Decimal("10000") - Decimal("0.10") - Decimal("0.27") - Decimal("0.089985")
+            assert account.balance_total(USDC).as_decimal() == expected
+            assert account.balance_free(USDC).as_decimal() == expected
+            assert account.balance_locked(USDC).as_decimal() == 0
         finally:
             runtime.close()
             await node.kernel.stop_async()

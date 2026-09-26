@@ -36,8 +36,9 @@ from nautilus_trader.model.identifiers import ClientId, InstrumentId
 from nautilus_trader.model.objects import Money
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar
-from coinmaster.ops.native_paper_node import BYBIT_IDS, DAY_NS, EXECUTION_FACTORY_ALLOWLIST, FeedBook, FeedObserver, FeedObserverConfig, WarmupBundle, bybit_daily_bar_type, sandbox_cash_posting_supported, scrub_private_execution_environment
+from coinmaster.ops.native_paper_node import BYBIT_IDS, DAY_NS, FeedBook, FeedObserver, FeedObserverConfig, WarmupBundle, bybit_daily_bar_type, sandbox_cash_posting_supported, scrub_private_execution_environment
 from coinmaster.ops.paper import PaperRuntime
+from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, model_fx_pair_and_quote, model_fx_ready
 from coinmaster.ops.stage_g_warmup import load_stageg_bybit_warmup
 from coinmaster.ops.stage_g_config import TestnetInstanceConfig, candidate_content_hash
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
@@ -51,7 +52,7 @@ BTC_PERP = InstrumentId.from_str("BTC-USD-PERP.HYPERLIQUID")
 SOL_PERP = InstrumentId.from_str("SOL-USD-PERP.HYPERLIQUID")
 TESTNET_IDS = (BTC_PERP, SOL_PERP)
 PUBLIC_DATA_FACTORIES = (BybitLiveDataClientFactory, HyperliquidLiveDataClientFactory)
-NATIVE_TESTNET_FACTORIES = (SandboxLiveExecClientFactory,)
+NATIVE_TESTNET_FACTORIES = (HyperliquidUsdcSandboxFactory,)
 SANDBOX_LEVERAGES = {BTC_PERP: Decimal("40"), SOL_PERP: Decimal("20")}
 SANDBOX_MARK_MAX_AGE_NS = 120_000_000_000
 
@@ -362,7 +363,7 @@ def assert_native_testnet_only(config: TradingNodeConfig) -> None:
         raise RuntimeError("HL_TESTNET_MAINNET_OR_UNSET_ENVIRONMENT")
     if execution.venue != "HYPERLIQUID" or execution.base_currency != "USDC":
         raise RuntimeError("HL_TESTNET_SANDBOX_VENUE_OR_CURRENCY_MISMATCH")
-    if EXECUTION_FACTORY_ALLOWLIST != (SandboxLiveExecClientFactory,):
+    if NATIVE_TESTNET_FACTORIES != (HyperliquidUsdcSandboxFactory,) or not issubclass(HyperliquidUsdcSandboxFactory, SandboxLiveExecClientFactory):
         raise RuntimeError("HL_TESTNET_EXECUTION_ALLOWLIST_MISMATCH")
 
 
@@ -391,8 +392,13 @@ class HyperliquidTestnetNode:
         self.node = TradingNode(config=self.config, loop=self.loop)
         self.node.add_data_client_factory("BYBIT", BybitLiveDataClientFactory)
         self.node.add_data_client_factory("HYPERLIQUID", HyperliquidLiveDataClientFactory)
-        self.node.add_exec_client_factory("SANDBOX", SandboxLiveExecClientFactory)
+        self.node.add_exec_client_factory("SANDBOX", HyperliquidUsdcSandboxFactory)
         self.node.build()
+        # Model-only, constant 1:1 USD/USDC assumption in the same venue's
+        # native Cache FX graph. This is never subscribed to public data.
+        fx_pair, fx_quote = model_fx_pair_and_quote()
+        self.node.cache.add_instrument(fx_pair)
+        self.node.cache.add_quote_tick(fx_quote)
         self.hooks = LifecycleHooks(state)
         self.feed = FeedBook(ids=TESTNET_IDS, native_event_sink=self.hooks.record_event)
         self.feed_observer: FeedObserver | None = None
@@ -487,6 +493,8 @@ class HyperliquidTestnetNode:
                 return False
             self._refresh_warmup_readiness()
         except Exception:
+            return False
+        if not model_fx_ready(self.node.cache):
             return False
         if not self._seed_verified:
             try:

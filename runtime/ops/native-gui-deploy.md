@@ -15,10 +15,12 @@ runtime/scripts/deploy_native_gui.sh activate-api
 
 `plan` checks active services, the existing control DB for active research work,
 the operator token, and the Linux runtime. `stage` embeds and verifies a generated
-`runtime/release-manifest.json` before dependency installation. It records the
-source commit and dirty status, an inventory and aggregate hash of all
-`runtime/coinmaster` source files, the existing candidate/strategy/execution-policy
-seal identities, and hashes of `uv.lock` and `pyproject.toml`. The helper checks
+`runtime/release-manifest.json` before dependency installation. It records the source commit and dirty status, plus a deterministic tree digest of
+the complete staged `runtime/` and `web/` payload, including runtime scripts and
+built browser assets. The digest excludes the manifest itself and generated
+caches. A separate inventory covers every `runtime/coinmaster` source file; the
+manifest also records the existing candidate/strategy/execution-policy seal
+identities and hashes of `uv.lock` and `pyproject.toml`. The helper checks
 the current values against the existing approval seal and aborts staging on any
 identity mismatch. `stage` then verifies the archive digest, creates a distinct
 `coinmaster-research` identity and root-only environment,

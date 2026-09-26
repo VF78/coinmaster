@@ -30,10 +30,11 @@ TEMP="$(mktemp -d /private/tmp/coinmaster-native-gui.XXXXXX)"
 trap 'rm -rf -- "$TEMP"' EXIT
 mkdir -p "$TEMP/release/web"
 "$GIT" -C "$ROOT" archive "$COMMIT" runtime | tar -x -C "$TEMP/release"
+rsync -a "$ROOT/coinmaster/dist/" "$TEMP/release/web/"
 python3 "$ROOT/runtime/scripts/release_manifest.py" generate \
   --source-root "$ROOT" --runtime-root "$TEMP/release/runtime" \
+  --release-root "$TEMP/release" \
   --output "$TEMP/release/runtime/release-manifest.json"
-rsync -a "$ROOT/coinmaster/dist/" "$TEMP/release/web/"
 tar -C "$TEMP/release" -czf "$TEMP/release.tar.gz" runtime web
 DIGEST="$(shasum -a 256 "$TEMP/release.tar.gz" | cut -d ' ' -f1)"
 scp -q "$TEMP/release.tar.gz" "$HOST:/var/tmp/coinmaster-native-gui-$COMMIT.tar.gz"

@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -17,9 +18,10 @@ sys.modules[spec.name] = release_manifest
 spec.loader.exec_module(release_manifest)
 
 
-def fixture_source(tmp_path: Path) -> tuple[Path, Path]:
+def fixture_source(tmp_path: Path) -> tuple[Path, Path, Path]:
     source = tmp_path / "source"
-    runtime = source / "runtime"
+    release = source / "payload"
+    runtime = release / "runtime"
     for relative in (
         "coinmaster/__init__.py",
         "coinmaster/domain/__init__.py",
@@ -42,38 +44,51 @@ def fixture_source(tmp_path: Path) -> tuple[Path, Path]:
         else:
             destination.write_text("", encoding="utf-8")
     (runtime / "coinmaster/ops/fixture_executable.py").write_text("VALUE = 1\n")
-    import subprocess
-
+    scripts = runtime / "scripts"
+    scripts.mkdir(parents=True)
+    (scripts / "deploy_native_gui.sh").write_text("#!/bin/sh\nexit 0\n")
+    web_assets = release / "web/assets"
+    web_assets.mkdir(parents=True)
+    (web_assets / "app.js").write_text("window.release = 'fixture';\n")
+    (release / "web/index.html").write_text("<!doctype html><script src='/assets/app.js'></script>\n")
     subprocess.run(["git", "init", "-q", str(source)], check=True)
     subprocess.run(["git", "-C", str(source), "config", "user.email", "test@example.invalid"], check=True)
     subprocess.run(["git", "-C", str(source), "config", "user.name", "Fixture"], check=True)
-    subprocess.run(["git", "-C", str(source), "add", "runtime"], check=True)
+    subprocess.run(["git", "-C", str(source), "add", "payload"], check=True)
     subprocess.run(["git", "-C", str(source), "commit", "-qm", "fixture"], check=True)
-    return source, runtime
+    return source, runtime, release
 
 
 def test_manifest_is_deterministic_for_same_clean_release(tmp_path: Path) -> None:
-    source, runtime = fixture_source(tmp_path)
-    first = release_manifest.make_manifest(source, runtime)
-    second = release_manifest.make_manifest(source, runtime)
+    source, runtime, release = fixture_source(tmp_path)
+    first = release_manifest.make_manifest(source, runtime, release)
+    second = release_manifest.make_manifest(source, runtime, release)
     assert first == second
     assert first["source"]["dirty"] is False
     assert first["runtime_coinmaster"]["file_count"] == 9
+    assert first["release_tree"]["file_count"] > first["runtime_coinmaster"]["file_count"]
 
 
-def test_verify_detects_executable_code_mismatch(tmp_path: Path) -> None:
-    source, runtime = fixture_source(tmp_path)
-    manifest = release_manifest.make_manifest(source, runtime)
+@pytest.mark.parametrize(
+    ("relative", "changed"),
+    [
+        ("runtime/scripts/deploy_native_gui.sh", "#!/bin/sh\nexit 1\n"),
+        ("web/assets/app.js", "window.release = 'tampered';\n"),
+    ],
+)
+def test_verify_detects_script_and_web_asset_mismatch(tmp_path: Path, relative: str, changed: str) -> None:
+    source, runtime, release = fixture_source(tmp_path)
+    manifest = release_manifest.make_manifest(source, runtime, release)
     output = runtime / "release-manifest.json"
     output.write_text(json.dumps(manifest, sort_keys=True))
-    (runtime / "coinmaster/ops/fixture_executable.py").write_text("VALUE = 2\n")
-    with pytest.raises(ValueError, match="mismatch: runtime_coinmaster"):
-        release_manifest.verify_manifest(runtime, output, manifest["source"]["commit"])
+    (release / relative).write_text(changed, encoding="utf-8")
+    with pytest.raises(ValueError, match="mismatch: release_tree"):
+        release_manifest.verify_manifest(runtime, release, output, manifest["source"]["commit"])
 
 
 def test_generate_records_dirty_source_status(tmp_path: Path) -> None:
-    source, runtime = fixture_source(tmp_path)
-    (source / "runtime/fixture-untracked.txt").write_text("change\n")
-    manifest = release_manifest.make_manifest(source, runtime)
+    source, runtime, release = fixture_source(tmp_path)
+    (source / "runtime-fixture-untracked.txt").write_text("change\n")
+    manifest = release_manifest.make_manifest(source, runtime, release)
     assert manifest["source"]["dirty"] is True
-    assert manifest["source"]["status"] == ["?? runtime/fixture-untracked.txt"]
+    assert manifest["source"]["status"] == ["?? runtime-fixture-untracked.txt"]
