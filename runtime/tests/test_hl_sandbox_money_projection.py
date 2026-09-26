@@ -1,7 +1,7 @@
 from decimal import Decimal
 from types import SimpleNamespace
 
-from nautilus_trader.model.currencies import USDC
+from nautilus_trader.model.currencies import USD, USDC
 from nautilus_trader.model.objects import Money
 
 from coinmaster.ops.hl_sandbox_money import HL_VENUE, MARK_MAX_AGE_NS, native_money_projection
@@ -28,7 +28,9 @@ class Position:
     instrument_id = BTC_PERP
 
     def __init__(self, realized, fees, quantity):
-        self.realized_pnl = Money(realized, USDC)
+        self.realized_pnl = Money(realized, USD)
+        self.trade_ids = ['fixture-trade']
+        self.ts_last = 1
         self._fees = [Money(fee, USDC) for fee in fees]
         self.quantity = Decimal(quantity)
         self.is_open = self.quantity != 0
@@ -37,7 +39,7 @@ class Position:
         return self._fees
 
     def unrealized_pnl(self, mark):
-        return Money(self.quantity * (Decimal(mark) - Decimal('60000')), USDC)
+        return Money(self.quantity * (Decimal(mark) - Decimal('60000')), USD)
 
 
 class Cache:
@@ -52,6 +54,12 @@ class Cache:
     def positions(self):
         return [self.position]
 
+    def position_snapshots(self):
+        return []
+
+    def get_xrate(self, venue, source, target, side):
+        return 1.0
+
     def instrument(self, instrument_id):
         assert instrument_id == BTC_PERP
         return SimpleNamespace(make_price=lambda value: value)
@@ -59,7 +67,7 @@ class Cache:
 
 def test_native_money_after_entry_partial_tp_adverse_mark_and_close():
     now = 1_000_000_000_000
-    entry = Cache('9999.73', '9999.54', '0.19', Position('-.27', ['.27'], '.01'))
+    entry = Cache('9999.73', '9999.54', '0.19', Position('0', ['.27'], '.01'))
     mark = {BTC_PERP: SimpleNamespace(price=Decimal('60000'), ts_event=now)}
     result = native_money_projection(entry, mark, now_ns=now)
     assert (result['native_cash'], result['native_free'], result['native_locked']) == ('9999.73', '9999.54', '0.19')
@@ -67,7 +75,7 @@ def test_native_money_after_entry_partial_tp_adverse_mark_and_close():
     assert result['fees'] == '0.27'
     assert Decimal(result["equity"]) == Decimal("9999.73")
 
-    partial = Cache('9999.7349925', '9999.64', '0.0949925', Position('-.2650075', ['.27', '.0450075'], '.005'))
+    partial = Cache('9999.7349925', '9999.64', '0.0949925', Position('.05', ['.27', '.0450075'], '.005'))
     mark[BTC_PERP] = SimpleNamespace(price=Decimal('59000'), ts_event=now)
     result = native_money_projection(partial, mark, now_ns=now)
     assert result['fees'] == '0.3150075'
@@ -79,7 +87,7 @@ def test_native_money_after_entry_partial_tp_adverse_mark_and_close():
     assert stale['equity'] is None and stale['unrealized_pnl'] is None
     assert stale['mark_state'] == 'STALE_OR_MISSING'
 
-    closed = Cache('9999.739985', '9999.739985', '0', Position('-.260015', ['.27', '.090015'], '0'))
+    closed = Cache('9999.739985', '9999.739985', '0', Position('.1', ['.27', '.090015'], '0'))
     result = native_money_projection(closed, {}, now_ns=now)
     assert Decimal(result['equity']) == Decimal('9999.739985')
     assert result['native_locked'] == '0'

@@ -153,8 +153,15 @@ MARK_MAX_AGE_NS = 120_000_000_000
 
 
 def native_money_projection(cache, marks, *, now_ns: int | None = None) -> dict[str, str | None]:
-    """Project native account cash and position PnL with current marks."""
+    """Read current and archived native position cycles against one USDC account.
+
+    The pinned HL instrument quotes PnL in USD, while native commissions and
+    cash are USDC. The explicit 1:1 model FX cache quote converts native PnL;
+    no fill, realized PnL, or funding cashflow is independently recomputed.
+    """
     now_ns = time.time_ns() if now_ns is None else now_ns
+    if not model_fx_ready(cache):
+        raise ValueError("HL_SANDBOX_MODEL_FX_MISSING")
     account = cache.account_for_venue(HL_VENUE)
     if account is None or account.base_currency != USDC:
         raise ValueError("NATIVE_USDC_ACCOUNT_MISSING")
@@ -164,22 +171,35 @@ def native_money_projection(cache, marks, *, now_ns: int | None = None) -> dict[
         if value is None or value.currency != USDC or not value.as_decimal().is_finite():
             raise ValueError("NATIVE_USDC_BALANCE_MISSING")
         result[name] = str(value.as_decimal())
-    realized = Decimal("0")
-    fees = Decimal("0")
-    unrealized = Decimal("0")
-    marks_ready = True
-    for position in cache.positions():
+
+    # NETTING replaces a closed cycle on reopen. The old native Position is
+    # retained as a closed snapshot; count each fill-trade set only once.
+    cycles = {}
+    archived = [item for item in cache.position_snapshots() if item.is_closed]
+    for position in (*archived, *cache.positions()):
         if position.instrument_id not in HL_IDS:
             continue
+        if not position.trade_ids:
+            raise ValueError("NATIVE_POSITION_TRADES_MISSING")
+        key = (str(position.instrument_id), tuple(sorted(map(str, position.trade_ids))))
+        previous = cycles.get(key)
+        if previous is None or position.ts_last >= previous.ts_last:
+            cycles[key] = position
+
+    gross_realized_usd = Decimal("0")
+    fees_usdc = Decimal("0")
+    unrealized_usd = Decimal("0")
+    marks_ready = True
+    for position in cycles.values():
         pnl = position.realized_pnl
         if pnl is not None:
-            if pnl.currency != USDC:
+            if pnl.currency != USD or not pnl.as_decimal().is_finite():
                 raise ValueError("NATIVE_REALIZED_CURRENCY_CHANGED")
-            realized += pnl.as_decimal()
+            gross_realized_usd += pnl.as_decimal()
         for commission in position.commissions():
-            if commission.currency != USDC:
+            if commission.currency != USDC or not commission.as_decimal().is_finite():
                 raise ValueError("NATIVE_FEE_CURRENCY_CHANGED")
-            fees += commission.as_decimal()
+            fees_usdc += commission.as_decimal()
         if not position.is_open:
             continue
         mark = marks.get(position.instrument_id)
@@ -188,14 +208,16 @@ def native_money_projection(cache, marks, *, now_ns: int | None = None) -> dict[
             marks_ready = False
             continue
         value = position.unrealized_pnl(instrument.make_price(mark.price))
-        if value.currency != USDC:
+        if value.currency != USD or not value.as_decimal().is_finite():
             raise ValueError("NATIVE_UNREALIZED_CURRENCY_CHANGED")
-        unrealized += value.as_decimal()
+        unrealized_usd += value.as_decimal()
+    # The same 1:1 model quote used by the native Sandbox account conversion.
+    realized_net_usdc = gross_realized_usd - fees_usdc
     result.update({
-        "realized_pnl_net_fees": str(realized),
-        "fees": str(fees),
-        "unrealized_pnl": str(unrealized) if marks_ready else None,
-        "equity": str(Decimal(result["native_cash"]) + unrealized) if marks_ready else None,
+        "realized_pnl_net_fees": str(realized_net_usdc),
+        "fees": str(fees_usdc),
+        "unrealized_pnl": str(unrealized_usd) if marks_ready else None,
+        "equity": str(Decimal(result["native_cash"]) + unrealized_usd) if marks_ready else None,
         "mark_state": "CURRENT" if marks_ready else "STALE_OR_MISSING",
     })
     return result
