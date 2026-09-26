@@ -8,6 +8,8 @@ from __future__ import annotations
 import asyncio
 import json
 from collections import deque
+from dataclasses import replace
+from decimal import Decimal
 from typing import Any, Awaitable, Callable
 from urllib.request import Request, urlopen
 
@@ -77,6 +79,9 @@ class QualifiedInfoBoundary:
         self._cm_ws_failure = None
         self._cm_parity_task = None
         self._cm_last_receipt = None
+        self._cm_last_revision = None
+        self._cm_runtime = None
+        self._cm_bootstrapped = False
 
     def _cm_transport_ok(self) -> bool:
         socket = getattr(self, "_ws_client", None)
@@ -137,38 +142,91 @@ class QualifiedInfoBoundary:
                 self._cm_fail("WS_DISPATCH_FAILED")
             raise
 
+    def _cm_owned_scope(self):
+        """Freeze journal/cache identity for one current-process Info generation."""
+        if not self._cm_bootstrapped:
+            return self._cm_scope, None, tuple(self._cache.orders(venue=self.venue)), self._cm_applied_fill_ids(), None
+        runtime = self._cm_runtime
+        if runtime is None:
+            raise IncompleteInfoReport("LIVE_DURABLE_RUNTIME_MISSING")
+        revision = runtime.native_revision()
+        rows = runtime.all_submissions()
+        native_orders = tuple(self._cache.orders(venue=self.venue))
+        by_client = {str(order.client_order_id): order for order in native_orders}
+        if len(by_client) != len(native_orders):
+            raise IncompleteInfoReport("LIVE_DUPLICATE_NATIVE_ORDER")
+        if set(by_client) - {row["client_order_id"] for row in rows}:
+            raise IncompleteInfoReport("LIVE_FOREIGN_NATIVE_ORDER")
+        if set(by_client) != {row["client_order_id"] for row in rows}:
+            raise IncompleteInfoReport("LIVE_DURABLE_ORDER_NOT_IN_CACHE")
+        durable = []
+        signature = []
+        for row in rows:
+            client = row["client_order_id"]
+            order = by_client[client]
+            cloid = str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(
+                nautilus_pyo3.ClientOrderId(client)
+            ))
+            oid = int(str(order.venue_order_id)) if order.venue_order_id is not None else None
+            durable.append((client, cloid, oid))
+            signature.append((
+                client, oid, str(order.status), str(order.filled_qty),
+                tuple(str(tid) for tid in order.trade_ids),
+            ))
+        applied = runtime.applied_fill_ids()
+        if runtime.native_revision() != revision:
+            raise IncompleteInfoReport("LIVE_DURABLE_REVISION_MOVED")
+        return replace(self._cm_scope, durable_orders=tuple(durable)), revision, native_orders, applied, tuple(signature)
+
     async def generate_mass_status(self, lookback_mins=None):
         self._cm_last_receipt = None
+        self._cm_last_revision = None
         try:
             self._cm_require_healthy()
-            scope = self._cm_scope
-            expected = {cloid: oid for _, cloid, oid in scope.durable_orders}
-            end = self._clock.timestamp_ns() // 1_000_000
-            async def sweep(at: int):
-                return await collect_info_receipt(
-                    self._cm_info, account=scope.account_ref, dex=scope.dex,
-                    anchor_ms=scope.anchor_ms, anchor_tid=scope.anchor_tid,
-                    end_ms=at, expected_orders=expected, owned_coins=scope.owned_coins,
-                    require_money_scope=True,
-                )
-            first = await sweep(end)
-            second = await sweep(max(end + 1, self._clock.timestamp_ns() // 1_000_000))
-            instruments = {
-                coin: self._cache.instrument(InstrumentId.from_str(f"{coin}-USD-PERP.HYPERLIQUID"))
-                for coin in scope.owned_coins
-            }
-            if any(item is None for item in instruments.values()):
-                raise IncompleteInfoReport("NATIVE_INSTRUMENT_MISSING")
-            mass = qualified_mass_status(
-                first, second, expected_account_ref=scope.account_ref, expected_dex=scope.dex,
-                account_id=self.account_id, client_id=self.id, venue=self.venue,
-                instruments=instruments, durable_orders={
-                    client: (cloid, oid) for client, cloid, oid in scope.durable_orders
-                }, native_orders=self._cache.orders(venue=self.venue),
-                applied_trade_ids=self._cm_applied_fill_ids(), ts_init=self._clock.timestamp_ns(),
-            )
-            self._cm_last_receipt = second
-            return mass
+            for attempt in range(4):
+                try:
+                    scope, revision, native_orders, applied, signature = self._cm_owned_scope()
+                    expected = {cloid: oid for _, cloid, oid in scope.durable_orders}
+                    end = self._clock.timestamp_ns() // 1_000_000
+
+                    async def sweep(at: int):
+                        return await collect_info_receipt(
+                            self._cm_info, account=scope.account_ref, dex=scope.dex,
+                            anchor_ms=scope.anchor_ms, anchor_tid=scope.anchor_tid,
+                            end_ms=at, expected_orders=expected, owned_coins=scope.owned_coins,
+                            require_money_scope=True,
+                        )
+
+                    first = await sweep(end)
+                    second = await sweep(max(end + 1, self._clock.timestamp_ns() // 1_000_000))
+                    instruments = {
+                        coin: self._cache.instrument(InstrumentId.from_str(f"{coin}-USD-PERP.HYPERLIQUID"))
+                        for coin in scope.owned_coins
+                    }
+                    if any(item is None for item in instruments.values()):
+                        raise IncompleteInfoReport("NATIVE_INSTRUMENT_MISSING")
+                    mass = qualified_mass_status(
+                        first, second, expected_account_ref=scope.account_ref, expected_dex=scope.dex,
+                        account_id=self.account_id, client_id=self.id, venue=self.venue,
+                        instruments=instruments, durable_orders={
+                            client: (cloid, oid) for client, cloid, oid in scope.durable_orders
+                        }, native_orders=native_orders, applied_trade_ids=applied,
+                        ts_init=self._clock.timestamp_ns(),
+                    )
+                    if revision is not None:
+                        _, current_revision, _, current_applied, current_signature = self._cm_owned_scope()
+                        if (current_revision, current_applied, current_signature) != (revision, applied, signature):
+                            raise IncompleteInfoReport("LIVE_DURABLE_REVISION_MOVED")
+                    self._cm_last_receipt = second
+                    self._cm_last_revision = revision
+                    return mass
+                except IncompleteInfoReport as error:
+                    if attempt == 3 or str(error) not in {
+                        "INFO_GENERATION_NOT_CONVERGED", "ORDER_STATUS_UNKNOWN",
+                        "LIVE_DURABLE_ORDER_NOT_IN_CACHE", "LIVE_DURABLE_REVISION_MOVED",
+                    }:
+                        raise
+                    await asyncio.sleep(0.25)
         except BaseException:
             if self._cm_ws_failure is None:
                 self._cm_fail("INFO_GENERATION_FAILED")
@@ -229,10 +287,21 @@ class QualifiedInfoBoundary:
                 await asyncio.sleep(interval)
                 if not self._cm_transport_ok():
                     return
-                mass = await self.generate_mass_status()
-                if await verify(mass) is not True:
-                    self._cm_fail("WS_PERIODIC_EFFECT_PARITY_FAILED")
-                    return
+                for attempt in range(4):
+                    try:
+                        mass = await self.generate_mass_status()
+                        if await verify(mass) is not True:
+                            raise IncompleteInfoReport("LIVE_OWNED_EFFECT_PARITY_FAILED")
+                        break
+                    except IncompleteInfoReport as error:
+                        if attempt == 3 or str(error) not in {
+                            "LIVE_VERIFIER_REVISION_MOVED", "LIVE_OWNED_ORDER_SET_MISMATCH",
+                            "LIVE_OWNED_ORDER_PARITY_FAILED", "LIVE_OWNED_FILL_PARITY_FAILED",
+                            "LIVE_EPISODE_POSITION_MISMATCH", "LIVE_MONEY_NATIVE_BALANCE_MISMATCH",
+                            "LIVE_OWNED_EFFECT_PARITY_FAILED",
+                        }:
+                            raise
+                        await asyncio.sleep(0.25)
         except asyncio.CancelledError:
             if self._cm_ws_failure is None:
                 self._cm_fail("WS_PARITY_MONITOR_CANCELED")
@@ -322,6 +391,7 @@ class ScopedHyperliquidExecClientFactory(LiveExecClientFactory):
             instrument_provider=provider, config=config, name=name, account_address=address,
             scope=cls._scope, info=info, applied_fill_ids=cls._runtime.applied_fill_ids,
         )
+        owner._cm_runtime = cls._runtime
         bind_clean_flat_live_handover(owner, cls._strategy, cls._runtime)
         return owner
 
@@ -330,12 +400,11 @@ def bind_clean_flat_live_handover(
     client: QualifiedInfoBoundary, strategy, runtime, *,
     monitor_interval_secs: float = 5.0,
 ) -> None:
-    """Bind one strict clean-flat post-drain owner; open funding remains unproved.
+    """Require clean-flat restart bootstrap, then monitor current-process owned state.
 
-    The native engine has already applied startup mass status before strategy
-    on_start. This callback only checks its effects and never posts PnL or fills.
-    Open exposure or unresolved orders stay RECOVERY_REQUIRED until a venue
-    funding cursor and owned partial-TP handover have their own proof.
+    Native startup reconciliation precedes strategy on_start. Existing open
+    exposure still fails closed on restart; only orders born after this clean
+    bootstrap can enter the periodic owned-state parity path.
     """
     if not isinstance(client, QualifiedInfoBoundary) or not hasattr(client, "_cm_scope"):
         raise RuntimeError("LIVE_HANDOVER_CLIENT_UNQUALIFIED")
@@ -364,24 +433,85 @@ def bind_clean_flat_live_handover(
         ):
             raise IncompleteInfoReport("LIVE_HANDOVER_NATIVE_ROUTE_MISMATCH")
         receipt = client._cm_last_receipt
+        if client._cm_bootstrapped and runtime.native_revision() != client._cm_last_revision:
+            raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
         if receipt is None or mass.account_id != client.account_id or mass.venue != client.venue:
             raise IncompleteInfoReport("LIVE_HANDOVER_GENERATION_MISSING")
-        if (
-            scope.durable_orders or runtime.all_submissions() or runtime.applied_fill_ids()
-            or mass.order_reports or mass.fill_reports or mass.position_reports
-            or client._cache.orders(venue=client.venue) or client._cache.positions_open()
-            or strategy._domain.episode is not None or strategy._pending_by_order
-        ):
+        if not client._cm_bootstrapped and scope.durable_orders:
             raise IncompleteInfoReport("LIVE_OPEN_FUNDING_CURSOR_UNPROVEN")
+        native_orders = tuple(client._cache.orders(venue=client.venue))
+        native_positions = tuple(client._cache.positions_open())
+        if not client._cm_bootstrapped:
+            if (
+                scope.durable_orders or runtime.all_submissions() or runtime.applied_fill_ids()
+                or mass.order_reports or mass.fill_reports or mass.position_reports
+                or native_orders or native_positions
+                or strategy._domain.episode is not None or strategy._pending_by_order
+            ):
+                raise IncompleteInfoReport("LIVE_OPEN_FUNDING_CURSOR_UNPROVEN")
+        else:
+            journal = {row["client_order_id"]: row for row in runtime.all_submissions()}
+            orders = {str(order.client_order_id): order for order in native_orders}
+            reports = {
+                str(report.client_order_id): report
+                for batch in mass.order_reports.values() for report in batch
+            }
+            if (
+                len(journal) != len(runtime.all_submissions())
+                or len(orders) != len(native_orders)
+                or len(reports) != sum(map(len, mass.order_reports.values()))
+                or set(journal) != set(orders) or set(journal) != set(reports)
+                or not set(strategy._pending_by_order).issubset(journal)
+            ):
+                raise IncompleteInfoReport("LIVE_OWNED_ORDER_SET_MISMATCH")
+            for client_id, order in orders.items():
+                report = reports[client_id]
+                row = journal[client_id]
+                if (
+                    str(order.strategy_id) != str(strategy.id)
+                    or row["instrument_id"] != str(order.instrument_id)
+                    or report.instrument_id != order.instrument_id
+                    or report.venue_order_id != order.venue_order_id
+                    or report.quantity != order.quantity
+                    or report.filled_qty != order.filled_qty
+                    or report.order_status != order.status
+                    or bool(report.reduce_only) != bool(row["body"]["reduce_only"])
+                ):
+                    raise IncompleteInfoReport("LIVE_OWNED_ORDER_PARITY_FAILED")
+            fill_ids = [
+                str(report.trade_id)
+                for batch in mass.fill_reports.values() for report in batch
+            ]
+            if len(fill_ids) != len(set(fill_ids)) or set(fill_ids) != runtime.applied_fill_ids():
+                raise IncompleteInfoReport("LIVE_OWNED_FILL_PARITY_FAILED")
+            if any(str(position.strategy_id) != str(strategy.id) for position in native_positions):
+                raise IncompleteInfoReport("LIVE_FOREIGN_NATIVE_POSITION")
+            episode = strategy._domain.episode
+            by_coin = {str(position.instrument_id): position for position in native_positions}
+            if len(by_coin) != len(native_positions) or (episode is None and by_coin):
+                raise IncompleteInfoReport("LIVE_EPISODE_POSITION_MISMATCH")
+            if episode is not None:
+                btc = by_coin.get(str(strategy.config.btc_id))
+                sol = by_coin.get(str(strategy.config.sol_id))
+                if (
+                    Decimal(str(episode.btc_open_qty)) != (btc.quantity.as_decimal() if btc else 0)
+                    or Decimal(str(episode.sol_qty)) != (sol.quantity.as_decimal() if sol else 0)
+                    or (btc is not None and btc.is_long != (episode.side == 1))
+                    or (sol is not None and sol.is_long != (episode.side == -1))
+                ):
+                    raise IncompleteInfoReport("LIVE_EPISODE_POSITION_MISMATCH")
         checkpoint = runtime.strategy_checkpoint()
         if checkpoint is not None and checkpoint[0] != strategy.on_save()["wave_overlay_live_recovery_v1"]:
             raise IncompleteInfoReport("LIVE_HANDOVER_DOMAIN_CHECKPOINT_MISMATCH")
         account = client._cache.account_for_venue(client.venue)
-        latest_money[0] = live_perps_money_view(
+        candidate_money = live_perps_money_view(
             receipt, account_ref=scope.account_ref, dex=scope.dex,
             account_id=str(client.account_id), native_account=account,
-            native_positions=(), now_ms=client._clock.timestamp_ns() // 1_000_000,
+            native_positions=native_positions, now_ms=client._clock.timestamp_ns() // 1_000_000,
         )
+        if client._cm_bootstrapped and runtime.native_revision() != client._cm_last_revision:
+            raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
+        latest_money[0] = candidate_money
         return True
 
     async def release() -> None:
@@ -390,6 +520,7 @@ def bind_clean_flat_live_handover(
         )
         if latest_money[0] is None or not client.recovery_healthy():
             raise RuntimeError("LIVE_HANDOVER_UNCONFIRMED")
+        client._cm_bootstrapped = True
         strategy.recovery_confirmed = True
 
     strategy.attach_live_money_view(lambda: latest_money[0])

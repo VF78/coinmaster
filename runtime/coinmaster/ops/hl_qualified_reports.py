@@ -35,7 +35,11 @@ def _precise(value: object, precision: int, label: str) -> Decimal:
 
 
 def _same_generation(first: InfoReceipt, second: InfoReceipt) -> None:
-    # A genuinely later, overlapping read must repeat every economic row.
+    # A genuinely later, overlapping read must repeat execution structure.
+    # Mark/equity/collateral fields may move between Info calls; the latest
+    # values are checked against the native account after conversion.
+    def position_structure(rows: tuple[dict, ...]) -> tuple:
+        return tuple((row.get("coin"), row.get("szi"), row.get("entryPx"), row.get("leverage")) for row in rows)
     # Comparing dataclass equality would require identical end_ms and could
     # accidentally certify a replay of one response as two observations.
     if (
@@ -46,10 +50,8 @@ def _same_generation(first: InfoReceipt, second: InfoReceipt) -> None:
         or first.fill_anchor_proven != second.fill_anchor_proven
         or first.open_orders != second.open_orders
         or first.order_statuses != second.order_statuses
-        or first.positions != second.positions
+        or position_structure(first.positions) != position_structure(second.positions)
         or first.fills != second.fills
-        or first.account_summary != second.account_summary
-        or first.cross_account_summary != second.cross_account_summary
         or first.account_role != second.account_role
         or first.abstraction != second.abstraction
         or first.dex_abstraction != second.dex_abstraction

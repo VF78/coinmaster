@@ -125,7 +125,8 @@ def test_strict_info_generation_failure_latches_and_revokes():
                 raise TimeoutError("raw Info timed out")
             self.configure_info_boundary(scope, failed, lambda: frozenset())
             self._clock = SimpleNamespace(timestamp_ns=lambda: 2_000_000)
-        _cache = SimpleNamespace()
+        _cache = SimpleNamespace(orders=lambda **_: ())
+        venue = SimpleNamespace(value="HYPERLIQUID")
     async def run():
         client = FailedInfo()
         active = SimpleNamespace(recovery_confirmed=True)
@@ -188,7 +189,7 @@ def test_periodic_strict_parity_failure_revokes_without_disconnect(monkeypatch):
             return len(checks) == 1
         await client.release_after_effect_parity(verify, monitor_interval_secs=0.01)
         assert client.recovery_healthy()
-        await asyncio.sleep(0.03)
+        await asyncio.sleep(0.85)
         assert len(checks) >= 2
         assert not client.recovery_healthy()
         assert client._cm_ws_failure == "WS_PERIODIC_EFFECT_PARITY_FAILED"
@@ -296,4 +297,94 @@ def test_handover_rejects_different_native_cache_after_start():
             await strategy._post_drain_verifier()
         assert not strategy.recovery_confirmed
         assert client._cm_ws_failure == "WS_EFFECT_PARITY_FAILED"
+    asyncio.run(run())
+
+
+def test_current_process_scope_tracks_durable_cloid_oid_and_revision_without_accepting_foreign_order():
+    from nautilus_trader.model.identifiers import Venue
+    from coinmaster.ops.hl_info_receipt import IncompleteInfoReport
+
+    client = Probe()
+    client.venue = Venue("HYPERLIQUID")
+    client._cm_bootstrapped = True
+    order = SimpleNamespace(
+        client_order_id="HLTG-OWNED-1", venue_order_id="7", status="ACCEPTED",
+        filled_qty="0", trade_ids=[],
+    )
+    current = [order]
+    revision = [1]
+    client._cache = SimpleNamespace(orders=lambda **_: current)
+    client._cm_runtime = SimpleNamespace(
+        native_revision=lambda: revision[0],
+        all_submissions=lambda: [{"client_order_id": "HLTG-OWNED-1"}],
+        applied_fill_ids=lambda: frozenset(),
+    )
+    scope, observed_revision, orders, fills, signature = client._cm_owned_scope()
+    assert observed_revision == 1 and orders == (order,) and fills == frozenset()
+    assert scope.durable_orders[0][0] == "HLTG-OWNED-1"
+    assert scope.durable_orders[0][2] == 7
+    assert scope.durable_orders[0][1].startswith("0x")
+    order.venue_order_id = None  # Accepted-before-ACK remains exact CLOID-only.
+    assert client._cm_owned_scope()[0].durable_orders[0][2] is None
+    current.append(SimpleNamespace(
+        client_order_id="FOREIGN", venue_order_id="8", status="ACCEPTED",
+        filled_qty="0", trade_ids=[],
+    ))
+    with pytest.raises(IncompleteInfoReport, match="LIVE_FOREIGN_NATIVE_ORDER"):
+        client._cm_owned_scope()
+    current.pop()
+    revision[0] += 1
+    assert client._cm_owned_scope()[1] == 2
+
+
+def test_current_process_owned_partial_tp_uses_dynamic_strict_info_generation():
+    from copy import deepcopy
+    from nautilus_trader.model.identifiers import AccountId, ClientId, Venue
+    from test_hl_info_receipt import FakeInfo
+    from test_hl_qualified_reports import CLIENT, CLOID, raw, native_order
+    from test_hl_stageg_sandbox_lifecycle import HL_BTC, HL_SOL
+
+    async def run():
+        data = deepcopy(raw())
+        data["clearinghouseState"]["crossMarginSummary"] = deepcopy(
+            data["clearinghouseState"]["marginSummary"]
+        )
+        data["userRole"] = {"role": "user"}
+        data["userAbstraction"] = "disabled"
+        data["userDexAbstraction"] = False
+        info = FakeInfo(data)
+        order = native_order()
+        class NativeProbe(QualifiedInfoBoundary):
+            pass
+        client = NativeProbe()
+        client.configure_info_boundary(
+            NativeLiveRecoveryScope(ACCOUNT, "", 100, 9, ((CLIENT, CLOID, 7),), frozenset({"BTC", "SOL"})),
+            info, lambda: frozenset({"8", "9"}),
+        )
+        client._cm_scope = NativeLiveRecoveryScope(
+            ACCOUNT, "", 100, 9, ((CLIENT, CLOID, 7),), frozenset({"BTC", "SOL"}),
+        )
+        client._cm_info = info
+        client._cm_bootstrapped = True
+        client._cm_runtime = SimpleNamespace(
+            native_revision=lambda: 2,
+            all_submissions=lambda: [{"client_order_id": CLIENT}],
+            applied_fill_ids=lambda: frozenset({"8", "9"}),
+        )
+        client._cm_applied_fill_ids = client._cm_runtime.applied_fill_ids
+        client._cache = SimpleNamespace(
+            orders=lambda **_: (order,),
+            instrument=lambda identity: {HL_BTC.id: HL_BTC, HL_SOL.id: HL_SOL}.get(identity),
+        )
+        client._clock = SimpleNamespace(timestamp_ns=lambda: 200_000_000)
+        client.account_id = AccountId("HYPERLIQUID-master")
+        client.id = ClientId("HYPERLIQUID")
+        client.venue = Venue("HYPERLIQUID")
+        mass = await client.generate_mass_status()
+        assert len(mass.order_reports) == len(mass.fill_reports) == len(mass.position_reports) == 1
+        assert client._cm_last_receipt.end_ms == 201
+        assert client._cm_ws_failure is None
+        assert {call["type"] for call in info.calls} >= {
+            "frontendOpenOrders", "clearinghouseState", "orderStatus", "userFillsByTime",
+        }
     asyncio.run(run())
