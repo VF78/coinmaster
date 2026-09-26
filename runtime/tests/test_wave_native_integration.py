@@ -1034,6 +1034,17 @@ def test_deposit_protection_native_market_exit_journals_once_and_stays_latched(t
             with pytest.raises(ValueError, match="DEPOSIT_CONTROL_REQUIRES_PAUSED_CONFIRMED_FLAT"):
                 strategy.apply_deposit_control("reset-deposit-protection", "reset-open", confirm=True)
         else:
+            # A flat process cache alone is insufficient: only a current,
+            # reconciled, account-bearing flat journal may authorize control.
+            with pytest.raises(ValueError, match="DEPOSIT_CONTROL_REQUIRES_PAUSED_CONFIRMED_FLAT"):
+                strategy.apply_deposit_control(
+                    "set-deposit-protection", "before-flat-checkpoint", drawdown_limit_percent=40,
+                )
+            journal.snapshot(
+                ts_ns=strategy.clock.timestamp_ns(), positions=[], orders=[], funding_event_ids=[],
+                native_account_total=str(native_current_equity(strategy)), strategy_restartable=True,
+            )
+            assert journal.coherent_snapshot() and journal.recovery_state() == "FLAT_RESTART"
             changed = strategy.apply_deposit_control(
                 "set-deposit-protection", "limit-40", drawdown_limit_percent=40,
             )
@@ -1049,6 +1060,177 @@ def test_deposit_protection_native_market_exit_journals_once_and_stays_latched(t
             assert not journal.deposit_protection_state(
                 instance_id="native-test", account_id="SIM-001",
             )["latched"]
+    finally:
+        engine.dispose()
+        journal.close()
+
+
+def test_latched_deposit_exit_suppresses_late_btc_tp_partial_cancel_and_sol_reductions():
+    """Late native callbacks update confirmed leaves but cannot launch legacy closes."""
+    import msgspec
+    from nautilus_trader.model.enums import LiquiditySide, OrderType
+    from coinmaster.domain.deposit_protection import DepositProtection
+
+    class FakeCache:
+        def instrument(self, instrument_id):
+            return {BTC_PERP.id: BTC_PERP, SOL_PERP.id: SOL_PERP}.get(instrument_id)
+
+        def order(self, _order_id):
+            return SimpleNamespace(is_closed=False, instrument_id=BTC_PERP.id)
+
+        def orders_open(self):
+            return []
+
+    class RaceProbe(WaveOverlayStrategy):
+        @property
+        def cache(self):
+            return self.fake_cache
+
+    config = msgspec.structs.replace(
+        probe_config(), deposit_runtime=SimpleNamespace(deposit_protection_state=lambda **_kwargs: None),
+    )
+    strategy = RaceProbe(config)
+    strategy.fake_cache = FakeCache()
+    strategy._deposit = DepositProtection()
+    strategy._deposit.initialize(Decimal("20000"), 1)
+    assert strategy._deposit.observe(Decimal("10000"), 2) == (True, True)
+    episode = Episode(
+        "two-leg", 1, 20000, 1.0, btc_initial_qty=1.0, btc_open_qty=1.0,
+        btc_entry_vwap=100.0, wave_levels=(0.1, 0.2, 0.3), sol_qty=2.0,
+    )
+    tp = Intent("tp-late", "two-leg", "BTC_REDUCE", 0, -1, quantity=0.5)
+    sol = Intent("sol-late", "two-leg", "SOL_EXIT", None, -1, quantity=2.0)
+    episode.pending[tp.id] = tp
+    episode.pending[sol.id] = sol
+    episode.btc_tps.add(0)
+    episode.resting_reductions.add(tp.id)
+    strategy._domain.episode = episode
+    strategy._pending_by_order["tp-order"] = tp
+    strategy._sigma_by_order["tp-order"] = None
+    strategy._decision_index_by_order["tp-order"] = 0
+    strategy._queued_intents.append((sol, None, 0))
+    strategy._mandatory_sol_exit = (sol, None, 0)
+    strategy._forced_close_reason = "LIQUIDATION"
+    attempted = []
+    strategy._submit_intent = lambda *args, **kwargs: attempted.append("legacy-intent")
+    strategy.on_quote_tick(quote(BTC_PERP.id, "100.0", "100.1", 3))
+    strategy.on_quote_tick(quote(SOL_PERP.id, "30.0", "30.1", 4))
+    strategy._check_mark_first_liquidation(5)
+    assert strategy.submit_order(SimpleNamespace(is_reduce_only=True, tags=())) is None
+    assert not attempted and not strategy._liquidating
+    # One late native partial TP fill is still applied to the existing domain
+    # leaves. Its later cancel must not queue a replacement TP under the latch.
+    late = SimpleNamespace(
+        trade_id="late-partial", client_order_id="tp-order",
+        instrument_id=BTC_PERP.id, last_qty=Quantity.from_str("0.10"),
+        last_px=Price.from_str("110.0"), ts_init=1, ts_event=6,
+        commission=Money(Decimal("0.01"), BTC_PERP.quote_currency),
+        liquidity_side=LiquiditySide.MAKER, order_type=OrderType.LIMIT,
+    )
+    strategy.on_order_filled(late)
+    assert episode.btc_open_qty == pytest.approx(0.9)
+    strategy.on_order_canceled(SimpleNamespace(client_order_id="tp-order", ts_event=7))
+    assert strategy._queued_intents == [(sol, None, 0)]
+    assert episode.sol_qty == 2.0
+    assert not attempted
+
+
+def test_deposit_reset_rejects_durable_open_snapshot_with_empty_new_cache(tmp_path):
+    import msgspec
+    from coinmaster.domain.deposit_protection import DepositProtection
+    from coinmaster.ops.paper import PaperRuntime
+
+    path = tmp_path / "restarted-open.sqlite"
+    first = PaperRuntime(path, "same-account", 10**20)
+    first.acquire()
+    state = DepositProtection()
+    state.initialize(Decimal("20000"), 1)
+    state.observe(Decimal("10000"), 2)
+    state.exit_state = "TRIPPED_FLAT"  # A stale local claim is not restart proof.
+    first.save_deposit_protection(
+        instance_id="native-test", account_id="SIM-001", action="TRIGGER",
+        event_key="deposit:trigger:2", state=state.durable(), ts_ns=2,
+    )
+    first.snapshot(
+        ts_ns=3, positions=[{"instrument_id": str(BTC_PERP.id), "signed_quantity": "1"}],
+        orders=[], funding_event_ids=[], native_account_total="10000", strategy_restartable=True,
+    )
+    first.close()
+    restarted = PaperRuntime(path, "same-account", 10**20)
+    restarted.acquire()
+    restarted.entry_control_command("pause-new-entries", "paused-open")
+    assert restarted.recovery_state() == "MANAGE_ONLY_DURABLE_OPEN_STATE"
+
+    class EmptyCacheProbe(WaveOverlayStrategy):
+        @property
+        def cache(self):
+            return SimpleNamespace(
+                positions_open=lambda: [], orders_open=lambda: [], orders_inflight=lambda: [],
+            )
+
+    config = msgspec.structs.replace(
+        probe_config(), deposit_runtime=restarted, deposit_instance_id="native-test",
+        deposit_account_id="SIM-001", deposit_equity_reader=lambda _strategy: Decimal("10000"),
+    )
+    strategy = EmptyCacheProbe(config)
+    for command, kwargs in (
+        ("set-deposit-protection", {"drawdown_limit_percent": 40}),
+        ("reset-deposit-protection", {"confirm": True}),
+    ):
+        with pytest.raises(ValueError, match="DEPOSIT_CONTROL_REQUIRES_PAUSED_CONFIRMED_FLAT"):
+            strategy.apply_deposit_control(command, command, **kwargs)
+    saved = restarted.deposit_protection_state(
+        instance_id="native-test", account_id="SIM-001",
+    )
+    assert saved["high_water_equity"] == "20000" and saved["latched"]
+    restarted.close()
+
+
+def test_deposit_control_on_initial_confirmed_flat_native_run(tmp_path):
+    """A pristine account can configure p after a coherent flat checkpoint."""
+    import msgspec
+    from coinmaster.ops.paper import PaperRuntime
+
+    journal = PaperRuntime(tmp_path / "first-run.sqlite", "first-run", 10**20)
+    journal.acquire()
+    assert journal.snapshot(
+        ts_ns=1, positions=[], orders=[], funding_event_ids=[],
+        native_account_total="10000", strategy_restartable=True,
+    )
+    assert journal.recovery_state() == "FLAT_RESTART" and journal.coherent_snapshot()
+
+    class Passive(WaveOverlayStrategy):
+        def on_quote_tick(self, tick):
+            pass
+
+    def native_cash(strategy):
+        account = strategy.cache.account_for_venue(SIM)
+        return None if account is None else account.balance_total(BTC_PERP.quote_currency).as_decimal()
+
+    config = msgspec.structs.replace(
+        probe_config(), deposit_runtime=journal, deposit_instance_id="first-run",
+        deposit_account_id="SIM-001", deposit_equity_reader=native_cash,
+        deposit_initialization_allowed=lambda: True,
+    )
+    strategy = Passive(config)
+    engine = native_engine(strategy)
+    engine.add_data([
+        quote(BTC_PERP.id, "100.0", "100.1", 1),
+        quote(BTC_PERP.id, "100.0", "100.1", 2_000_000_000),
+    ], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert strategy.deposit_projection()["state"] == "ARMED"
+        assert Decimal(strategy.deposit_projection()["high_water_equity"]) == Decimal("10000")
+        journal.entry_control_command("pause-new-entries", "initial-pause")
+        assert strategy.apply_deposit_control(
+            "set-deposit-protection", "initial-p40", drawdown_limit_percent=40,
+        )["drawdown_limit_percent"] == 40
+        view = strategy.apply_deposit_control(
+            "reset-deposit-protection", "initial-reset", confirm=True,
+        )
+        assert view["state"] == "ARMED" and view["drawdown_limit_percent"] == 40
+        assert journal.deposit_audit_action("deposit:control:initial-reset") == "reset-deposit-protection"
     finally:
         engine.dispose()
         journal.close()

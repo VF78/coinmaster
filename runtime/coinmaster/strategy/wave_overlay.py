@@ -298,6 +298,8 @@ class WaveOverlayStrategy(Strategy):
         self._try_advance_session(session)
 
     def _check_mark_first_liquidation(self, ts_now: int) -> None:
+        if self.config.deposit_runtime is not None and self._deposit.latched:
+            return  # Native market_exit owns every close after the drawdown latch.
         if self._liquidating or any(item not in self._latest_marks for item in (self.config.btc_id, self.config.sol_id)):
             return
         if self._latest_marks[self.config.btc_id].ts_event != ts_now or self._latest_marks[self.config.sol_id].ts_event != ts_now:
@@ -501,6 +503,8 @@ class WaveOverlayStrategy(Strategy):
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        if self.config.deposit_runtime is not None and self._deposit.latched:
+            return
         # Verified artifacts are queued off-thread. A quote may apply one
         # after the latest paired session is buffered, but must not consume
         # warmup history before any live signal establishes a safe cutoff.
@@ -576,6 +580,9 @@ class WaveOverlayStrategy(Strategy):
         self._domain.on_parent_terminal(intent.id)
 
     def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None) -> None:
+        if self.config.deposit_runtime is not None and self._deposit.latched:
+            self._domain.on_parent_terminal(intent.id)
+            return
         if intent.action == "CLOSE_ALL":
             for position in self.cache.positions_open():
                 if position.instrument_id not in (self.config.btc_id, self.config.sol_id):
@@ -705,6 +712,9 @@ class WaveOverlayStrategy(Strategy):
 
     def _preempt_with_mandatory_sol_exit(self, intent: Intent, sigma: float | None, index: int) -> None:
         """Cancel SOL leaves before a timeout reduces the reconciled remainder."""
+        if self.config.deposit_runtime is not None and self._deposit.latched:
+            self._domain.on_parent_terminal(intent.id)
+            return
         if self._mandatory_sol_exit is not None:
             # The first timeout remains authoritative while cancellation and
             # the next executable SOL quote are pending. A later daily
@@ -780,6 +790,8 @@ class WaveOverlayStrategy(Strategy):
 
     def _submit_forced_closes_from_cache(self) -> None:
         """Continue a forced close after the final native cancel confirmation."""
+        if self.config.deposit_runtime is not None and self._deposit.latched:
+            return
         if self.cache.orders_open():
             return
         for position in list(self.cache.positions_open()):
@@ -963,6 +975,8 @@ class WaveOverlayStrategy(Strategy):
 
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
+        if self.config.deposit_runtime is not None and self._deposit.latched:
+            return
         self._bind_native_lots()
         for target in self._domain.plan_confirmed_btc_targets():
             self._queued_intents.append((target, sigma, decision_index))
@@ -971,7 +985,7 @@ class WaveOverlayStrategy(Strategy):
     def _has_confirmed_btc_remainder(self, intent: Intent) -> bool:
         """Return whether a canceled BTC parent had a confirmed unsold remainder."""
         episode = self._domain.episode
-        if episode is None or self._forced_close_reason is not None or self._liquidating:
+        if episode is None or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
             return False
         if intent.action == "BTC_ENTRY":
             return episode.btc_initial_qty > 0 and episode.btc_open_qty > 0
@@ -1181,6 +1195,9 @@ class WaveOverlayStrategy(Strategy):
             self.log.error("Native market exit failed; deposit latch retained")
 
     def submit_order(self, order, *args, **kwargs):
+        if self.config.deposit_runtime is not None and self._deposit.latched and "MARKET_EXIT" not in (order.tags or ()):
+            self.log.warning("Deposit market exit owns closure; other orders blocked")
+            return None
         if self.config.deposit_runtime is not None and not order.is_reduce_only and not self._deposit_check():
             self.log.warning("Deposit protection blocks native increase submission")
             return None
@@ -1229,10 +1246,19 @@ class WaveOverlayStrategy(Strategy):
         runtime = self.config.deposit_runtime
         if (
             runtime.entry_control_state() != "PAUSED"
+            or runtime.recovery_state() != "FLAT_RESTART"
+            or not runtime.coherent_snapshot()
+            or runtime.projection_snapshot() != ([], [])
+            or not runtime.reconcile(positions=[], orders=[])
             or self.cache.positions_open()
             or self.cache.orders_open()
             or self.cache.orders_inflight()
             or runtime.pending_submissions() or runtime.pending_native_funding()
+            or self._queued_intents or self._mandatory_sol_exit is not None
+            or self._pending_by_order or self._domain.episode is not None
+            or self._forced_close_reason is not None or self._liquidating
+            or self._group_close_reconciliation_pending or self.is_exiting()
+            or (self._deposit.latched and self._deposit.exit_state != "TRIPPED_FLAT")
         ):
             raise ValueError("DEPOSIT_CONTROL_REQUIRES_PAUSED_CONFIRMED_FLAT")
         if command == "set-deposit-protection":
