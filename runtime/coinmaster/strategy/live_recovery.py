@@ -200,6 +200,10 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
         self._require_recovery_confirmed()
         return super().cancel_order(*args, **kwargs)
 
+    def cancel_orders(self, *args, **kwargs):
+        self._require_recovery_confirmed()
+        return super().cancel_orders(*args, **kwargs)
+
     def cancel_all_orders(self, *args, **kwargs):
         self._require_recovery_confirmed()
         return super().cancel_all_orders(*args, **kwargs)

@@ -64,6 +64,8 @@ class FakeReportClient(LiveExecutionClient):
         self._set_account_id(ACCOUNT)
         self._fake_venue_state = json.loads(Path(os.environ["CM_FAKE_VENUE_STATE"]).read_text())
 
+        self.batch_cancel_commands = []
+
     async def _connect(self):
         total = Decimal("9999.73") if self._fake_venue_state["partial"] else Decimal("10000")
         self.generate_account_state(
@@ -73,6 +75,9 @@ class FakeReportClient(LiveExecutionClient):
 
     async def _disconnect(self):
         pass
+
+    async def _batch_cancel_orders(self, command):
+        self.batch_cancel_commands.append(command)
 
     async def _submit_order(self, command):
         log = Path(os.environ["CM_FAKE_SUBMIT_LOG"])
@@ -382,16 +387,37 @@ async def _run_child():
     if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
         assert strategy._on_start_reconciled is True
         assert strategy.recovery_confirmed is False
+        client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
+        cancel_order = strategy.order_factory.limit(
+            instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
+            quantity=Quantity.from_str("0.00100"), price=Price.from_str("60000.0"),
+            time_in_force=TimeInForce.GTC,
+        )
+        with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
+            strategy.cancel_orders([cancel_order])
+        assert client.batch_cancel_commands == []
         with pytest.raises(RuntimeError, match="RECOVERY_NOT_CONFIRMED"):
             strategy.cancel_all_orders()
         await asyncio.sleep(0)
         assert strategy._probe_verifier_started is True
         strategy._probe_release.set()
         await strategy._post_drain_task
+        now = node.kernel.clock.timestamp_ns()
+        cancel_order.apply(OrderAccepted(
+            node.trader.id, strategy.id, HL_BTC.id, cancel_order.client_order_id,
+            VenueOrderId("CM05-BATCH-7"), ACCOUNT, UUID4(), now, now,
+        ))
+        node.cache.add_order(cancel_order, client_id=ClientId("HYPERLIQUID"))
+        strategy.cancel_orders([cancel_order])
+        await asyncio.sleep(0.1)
         print("HANDOVER_PROOF=" + json.dumps({
             "on_start_after_reconcile": strategy._on_start_reconciled,
             "blocked_before_parity": True,
             "confirmed_after_parity": strategy.recovery_confirmed,
+            "batch_commands_before_confirmation": 0,
+            "batch_commands_after_confirmation": len(client.batch_cancel_commands),
+            "batch_cancel_order_id": str(client.batch_cancel_commands[0].cancels[0].client_order_id),
+            "native_order_id": str(cancel_order.client_order_id),
         }), flush=True)
         await node.kernel.stop_async()
         node.kernel.dispose()
@@ -794,4 +820,8 @@ def test_kernel_reconciles_before_post_start_async_parity_gate(tmp_path):
         "on_start_after_reconcile": True,
         "blocked_before_parity": True,
         "confirmed_after_parity": True,
+        "batch_commands_before_confirmation": 0,
+        "batch_commands_after_confirmation": 1,
+        "batch_cancel_order_id": result["native_order_id"],
+        "native_order_id": result["native_order_id"],
     }

@@ -455,7 +455,7 @@ def test_unreported_venue_flat_cannot_clear_open_episode(tmp_path):
 
 @pytest.mark.parametrize("method", [
     "submit_order", "submit_order_list", "modify_order", "cancel_order",
-    "cancel_all_orders", "close_position", "close_all_positions",
+    "cancel_orders", "cancel_all_orders", "close_position", "close_all_positions",
 ])
 def test_recovery_final_order_api_gate_blocks_until_confirmed(monkeypatch, method):
     from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
