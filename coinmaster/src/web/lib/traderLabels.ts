@@ -77,3 +77,16 @@ export function humanizeResearchCode(code: string): string {
   if (!normalized) return "Unavailable";
   return normalized.replaceAll("_", " ").replaceAll(":", " · ").toLowerCase().replace(/^./, (letter) => letter.toUpperCase());
 }
+
+
+export function strategyRunnerLabel(code: string | null | undefined): string {
+  if (code === "RUNNING_MATCH") return "SEALED STRATEGY MATCH";
+  if (code === "SEALED_SOURCE_CHECKED") return "SOURCE CHECKED · RUNNER UNCONFIRMED";
+  return humanizeResearchCode(code ?? "NOT_CONFIRMED");
+}
+
+export function researchResultContext(activeRunId: string | null | undefined, selectedRunId: string | null | undefined): string {
+  if (activeRunId) return "Active native job " + activeRunId.slice(0, 8) + " updates every three seconds.";
+  if (selectedRunId) return "Selected run " + selectedRunId.slice(0, 8) + " · reported results shown below.";
+  return "Choose a run from history to inspect its compact result.";
+}

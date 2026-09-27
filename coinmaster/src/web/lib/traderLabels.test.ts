@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, strategySettingLabel, strategySettingValue } from './traderLabels';
+import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, researchResultContext, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from './traderLabels';
 
 test('humanizes exact strategy keys and values without altering data', () => {
   assert.equal(strategySettingLabel('sol_timeout_preempts_add'), 'SOL timeout stops further additions');
@@ -23,4 +23,13 @@ test('humanizes research evidence codes while retaining precise diagnostic label
   assert.equal(humanizeResearchCode('VALIDATION_SEEN_NOT_OOS + NOT_FAITHFUL_DIAGNOSTIC'), 'Seen-data validation · not out-of-sample');
   assert.equal(humanizeResearchCode('ARTIFACT_NOT_LOCAL'), 'Artifact unavailable on this host');
   assert.equal(humanizeResearchCode('PUBLIC_FEEDS_READY'), 'Public market data ready');
+});
+
+
+test("presents the exact strategy match plainly and keeps run-selection copy consistent", () => {
+  assert.equal(strategyRunnerLabel("RUNNING_MATCH"), "SEALED STRATEGY MATCH");
+  assert.equal(strategyRunnerLabel("SEALED_SOURCE_CHECKED"), "SOURCE CHECKED · RUNNER UNCONFIRMED");
+  assert.equal(researchResultContext(null, "5226e711-abc"), "Selected run 5226e711 · reported results shown below.");
+  assert.equal(researchResultContext("12345678-current", "5226e711-abc"), "Active native job 12345678 updates every three seconds.");
+  assert.equal(researchResultContext(null, null), "Choose a run from history to inspect its compact result.");
 });
