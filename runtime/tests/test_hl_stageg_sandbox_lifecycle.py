@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import time
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from types import SimpleNamespace
 
@@ -22,19 +23,20 @@ from nautilus_trader.config import LoggingConfig
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.currencies import BTC, SOL, USD, USDC
-from nautilus_trader.model.data import BarSpecification, BarType, MarkPriceUpdate, QuoteTick
-from nautilus_trader.model.enums import AggregationSource, BarAggregation, PriceType, LiquiditySide, TimeInForce
-from nautilus_trader.model.identifiers import ClientId, InstrumentId, Symbol, Venue
+from nautilus_trader.model.data import BarSpecification, BarType, MarkPriceUpdate, QuoteTick, TradeTick
+from nautilus_trader.model.enums import AggressorSide, AggregationSource, BarAggregation, PriceType, LiquiditySide, TimeInForce
+from nautilus_trader.model.identifiers import ClientId, InstrumentId, Symbol, TradeId, Venue
 from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.model.objects import Money, Price, Quantity
 
-from coinmaster.domain.wave_overlay import Episode, Intent
+from coinmaster.domain.wave_overlay import DailyBar, Episode, Features, Intent
 from coinmaster.ops.hyperliquid_testnet import (
     BTC_PERP,
     SOL_PERP,
     SANDBOX_LEVERAGES,
     SANDBOX_MARK_MAX_AGE_NS,
     LifecycleHooks,
+    HyperliquidTestnetNode,
     cross_venue_stage_g_gate,
 )
 from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, HyperliquidUsdcFeeModel, HyperliquidUsdcSandboxExecutionClient, model_fx_pair_and_quote, model_fx_ready, native_equity
@@ -532,3 +534,175 @@ def test_native_losing_maker_exit_reconciles_usdc_cash(tmp_path) -> None:
             node.kernel.dispose()
 
     asyncio.run(scenario())
+
+
+def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_path) -> None:
+    """Real Sandbox fills and production snapshots bridge TP rights to SOL and a later episode."""
+    async def scenario() -> None:
+        runtime = PaperRuntime(tmp_path / "two-episode.sqlite", "attached-two-episode", 10**20)
+        runtime.acquire()
+        runtime.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[], native_account_total="10000", strategy_restartable=True)
+        hooks = LifecycleHooks(runtime)
+        candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
+        profile = HyperliquidVenueProfile.from_snapshot(ROOT, environment=HyperliquidProfileEnvironment.MAINNET)
+        policy = HyperliquidSandboxMarginPolicy(profile, SANDBOX_LEVERAGES, SANDBOX_MARK_MAX_AGE_NS)
+
+        class Probe(WaveOverlayStrategy):
+            def __init__(self, config):
+                super().__init__(config)
+                self.next_intent = None
+                self.cycle = 0
+
+            def on_start(self):
+                self.subscribe_quote_ticks(self.config.btc_id)
+
+            def on_quote_tick(self, tick):
+                self.on_mark_price(MarkPriceUpdate(self.config.btc_id, Price.from_str("60000.0"), tick.ts_event, tick.ts_init))
+                self.on_mark_price(MarkPriceUpdate(self.config.sol_id, Price.from_str("150.00"), tick.ts_event, tick.ts_init))
+                self._current_btc_mark = self._latest_marks[self.config.btc_id]
+                self._current_sol_mark = self._latest_marks[self.config.sol_id]
+                self.cycle += 1
+                if self.next_intent is not None:
+                    intent, self.next_intent = self.next_intent, None
+                    bid, ask = (float(tick.bid_price), float(tick.ask_price)) if intent.action.startswith("BTC") else (149.99, 150.01)
+                    self._submit_intent(intent, bid, ask, 1.0, self.cycle, ts_now=tick.ts_event)
+                else:
+                    super().on_quote_tick(tick)
+
+        config = WaveOverlayStrategyConfig(
+            btc_id=BTC_PERP, sol_id=SOL_PERP,
+            btc_bar_type=BarType(InstrumentId.from_str("BTCUSDT-LINEAR.BYBIT"), BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL),
+            sol_bar_type=BarType(InstrumentId.from_str("SOLUSDT-LINEAR.BYBIT"), BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL),
+            btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
+            mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), active_seed=Decimal("10000"),
+            candidate=candidate, margin_policy=policy, entries_enabled=True, entries_gate=lambda: True,
+            event_sink=hooks.record_event, native_fill_sink=runtime.record_native_fill, submission_sink=hooks,
+        )
+        strategy = Probe(config)
+        node = TradingNode(config=TradingNodeConfig(
+            environment=Environment.LIVE, trader_id="HL-TWO-EPISODE-PROBE", logging=LoggingConfig(log_level="ERROR"),
+            exec_engine=LiveExecEngineConfig(reconciliation=False),
+            exec_clients={"SANDBOX": SandboxExecutionClientConfig(
+                venue="HYPERLIQUID", starting_balances=["10000 USDC"], base_currency="USDC",
+                leverages=dict(SANDBOX_LEVERAGES), use_reduce_only=True,
+                routing=RoutingConfig(venues=frozenset({"HYPERLIQUID"})),
+            )},
+        ), loop=asyncio.get_running_loop())
+        node.add_exec_client_factory("SANDBOX", HyperliquidUsdcSandboxFactory)
+        node.build()
+        node.cache.add_instrument(HL_BTC)
+        node.cache.add_instrument(HL_SOL)
+        pair, fx = model_fx_pair_and_quote()
+        node.cache.add_instrument(pair)
+        node.cache.add_quote_tick(fx)
+        node.trader.add_strategy(strategy)
+
+        async def btc_quote(bid: str, ask: str, ts: int) -> None:
+            node.kernel.data_engine.process(_quote(BTC_PERP, bid, ask, ts))
+            await asyncio.sleep(0.1)
+
+        def native_snapshot(*, restartable: bool) -> None:
+            # Exact production cache->journal path; a stale flat fixture must
+            # never grant a SOL increase while acknowledged BTC TP orders rest.
+            positions, orders = HyperliquidTestnetNode.sandbox_snapshot(SimpleNamespace(node=node))
+            assert runtime.snapshot(
+                ts_ns=time.time_ns(), positions=positions, orders=orders,
+                funding_event_ids=runtime.funding_event_ids(), expected_revision=runtime.native_revision(),
+                native_account_total=str(node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal()),
+                strategy_restartable=restartable, run_epoch="attached-two-episode",
+            )
+
+        await node.kernel.start_async()
+        try:
+            first = Episode("episode-one", 1, 10000, 1.0, wave_levels=(0.0001, 0.0002, 0.0003))
+            strategy._domain.episode = first
+            entry = Intent("first-entry", first.id, "BTC_ENTRY", None, 1, quantity=0.00167, decision_index=1)
+            first.pending[entry.id] = entry
+            strategy.next_intent = entry
+            await btc_quote("59999.0", "60000.0", 1)
+            assert [(row["action"], row["qty"]) for row in strategy.fill_audit] == [("BTC_ENTRY", "0.00167")]
+            await btc_quote("60000.0", "60001.0", 2)
+            assert sorted(str(order.price) for order in node.cache.orders_open()) == ["60006.0", "60012.0", "60018.0"]
+
+            node.kernel.data_engine.process(TradeTick(BTC_PERP, Price.from_str("60006.0"), Quantity.from_str("0.00010"), AggressorSide.BUYER, TradeId("ATTACHED-PART-ONE"), 3, 3))
+            await asyncio.sleep(0.1)
+            target = next(order for order in node.cache.orders_open() if order.has_price and str(order.price) == "60006.0")
+            assert str(target.filled_qty) == "0.00010" and str(target.leaves_qty) == "0.00025"
+            strategy.cancel_order(target)
+            await asyncio.sleep(0.1)
+            assert target.status.name == "CANCELED"
+            await btc_quote("60005.0", "60007.0", 4)
+            replacement = next(order for order in node.cache.orders_open() if order.has_price and str(order.price) == "60006.0")
+            assert str(replacement.quantity) == "0.00025" and replacement.status.name == "ACCEPTED"
+            node.kernel.data_engine.process(TradeTick(BTC_PERP, Price.from_str("60006.0"), Quantity.from_str("0.00025"), AggressorSide.BUYER, TradeId("ATTACHED-PART-TWO"), 5, 5))
+            await asyncio.sleep(0.1)
+            assert first.sol_right_fraction[0] == pytest.approx(1.0)
+
+            native_snapshot(restartable=False)
+            assert runtime.recovery_state() == "ACTIVE_OWNED_REDUCTIONS"
+            assert runtime.health(time.time_ns()).safe_for_increase
+            node.kernel.data_engine.process(QuoteTick(SOL_PERP, Price.from_str("149.99"), Price.from_str("150.01"), Quantity.from_str("1000.00"), Quantity.from_str("1000.00"), 6, 6))
+            sol_add = strategy._domain._intent(first, "SOL_ADD", -first.side, 0, requested_notional=30)
+            strategy.next_intent = sol_add
+            await btc_quote("60000.0", "60001.0", 6)
+            assert first.sol_qty == pytest.approx(0.2)
+            day = datetime(1970, 1, 1, tzinfo=UTC)
+            bar = DailyBar(day, day + timedelta(seconds=1), day + timedelta(seconds=1), 60000.0, 60000.0, 150.0)
+            half = strategy._domain._sol_exits(first, Features(7, 1, 1.0, 0.0, 0.0, 1.0, 0.3), bar, 7, z=0.3)
+            assert len(half) == 1 and half[0].action == "SOL_HALF_EXIT"
+            strategy.next_intent = half[0]
+            await btc_quote("60000.0", "60001.0", 7)
+            assert first.sol_qty == pytest.approx(0.1) and first.sol_half_done
+            full = strategy._domain._sol_exits(first, Features(8, 1, 1.0, 0.0, 0.0, 1.0, 0.1), bar, 8, z=0.1)
+            assert len(full) == 1 and full[0].action == "SOL_EXIT"
+            strategy.next_intent = full[0]
+            await btc_quote("60000.0", "60001.0", 8)
+            assert first.sol_qty == 0 and all(position.instrument_id != SOL_PERP for position in node.cache.positions_open())
+
+            strategy._begin_forced_close("TEST_GROUP_CLOSE")
+            await asyncio.sleep(0.1)
+            await btc_quote("60000.0", "60001.0", 9)
+            assert strategy._domain.episode is None
+            assert node.cache.positions_open() == [] and node.cache.orders_open() == [] and runtime.pending_submissions() == []
+            native_snapshot(restartable=True)
+            assert runtime.recovery_state() == "FLAT_RESTART"
+
+            second = Episode("episode-two", 1, 10000, 1.0, wave_levels=(0.0001, 0.0002, 0.0003))
+            strategy._domain.episode = second
+            entry_two = Intent("second-entry", second.id, "BTC_ENTRY", None, 1, quantity=0.00167, decision_index=10)
+            second.pending[entry_two.id] = entry_two
+            strategy.next_intent = entry_two
+            await btc_quote("59999.0", "60000.0", 10)
+            assert [(str(position.instrument_id), str(position.quantity)) for position in node.cache.positions_open()] == [(str(BTC_PERP), "0.00167")]
+            strategy._begin_forced_close("TEST_SECOND_CLOSE")
+            await btc_quote("60000.0", "60001.0", 11)
+            assert strategy._domain.episode is None
+            assert node.cache.positions_open() == [] and node.cache.orders_open() == [] and node.cache.orders_inflight() == []
+            assert runtime.pending_submissions() == []
+
+            fills = runtime.native_fill_details()
+            assert len(fills) == len(strategy.fill_audit) == 9
+            assert len({row["trade_id"] for row in fills}) == len(fills)
+            assert [row["action"] for row in strategy.fill_audit] == [
+                "BTC_ENTRY", "BTC_REDUCE", "BTC_REDUCE", "SOL_ADD", "SOL_HALF_EXIT", "SOL_EXIT",
+                "FORCED_CLOSE", "BTC_ENTRY", "FORCED_CLOSE",
+            ]
+            assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("MAKER") == 2
+            assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("TAKER") == 7
+            fees = sum((Decimal(row["commission_amount"]) for row in fills), Decimal("0"))
+            assert fees == Decimal("0.20106031")
+            cash = node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal()
+            assert cash == Decimal("10000") - fees
+        finally:
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+            runtime.close()
+
+    asyncio.run(scenario())
+    reopened = PaperRuntime(tmp_path / "two-episode.sqlite", "attached-two-episode", 10**20)
+    reopened.acquire()
+    try:
+        assert len(reopened.native_fill_details()) == 9
+        assert reopened.pending_submissions() == []
+    finally:
+        reopened.close()
