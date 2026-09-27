@@ -1150,7 +1150,6 @@ class WaveOverlayStrategy(Strategy):
                 instance_id=self.config.deposit_instance_id,
                 account_id=self.config.deposit_account_id,
                 action=action, event_key=key, state=self._deposit.durable(), ts_ns=now_ns,
-                pause_on_flat=action == "TRIPPED_FLAT",
             )
         except Exception:
             self._deposit_storage_failed = True

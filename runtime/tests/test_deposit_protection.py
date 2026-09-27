@@ -119,7 +119,6 @@ def test_verified_flat_pause_and_deposit_state_commit_atomically(tmp_path):
         kwargs = dict(
             instance_id="stage-g-a", account_id="HYPERLIQUID-001", action="TRIPPED_FLAT",
             event_key="deposit:exit:one", state=state.durable(), ts_ns=DAY_NS + 3,
-            pause_on_flat=True,
         )
         runtime.db.execute("""
             CREATE TRIGGER reject_deposit_pause BEFORE INSERT ON paper_command_audit

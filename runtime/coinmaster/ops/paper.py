@@ -686,16 +686,15 @@ class PaperRuntime:
     @_journal_locked
     def save_deposit_protection(
         self, *, instance_id: str, account_id: str, action: str,
-        event_key: str, state: dict, ts_ns: int, pause_on_flat: bool = False,
+        event_key: str, state: dict, ts_ns: int,
     ) -> bool:
         if not instance_id or not account_id or not action or not event_key or not isinstance(state, dict):
             raise ValueError("DEPOSIT_SAVE_INVALID")
-        if pause_on_flat and (
-            action != "TRIPPED_FLAT" or state.get("latched") is not True
-            or state.get("exit_state") != "TRIPPED_FLAT"
+        if action == "TRIPPED_FLAT" and (
+            state.get("latched") is not True or state.get("exit_state") != "TRIPPED_FLAT"
         ):
             raise ValueError("DEPOSIT_PAUSE_REQUIRES_TRIPPED_FLAT")
-        pause_key = f"{event_key}:pause" if pause_on_flat else None
+        pause_key = f"{event_key}:pause" if action == "TRIPPED_FLAT" else None
         existing = self.deposit_protection_state(instance_id=instance_id, account_id=account_id)
         body = json.dumps(state, sort_keys=True, separators=(",", ":"))
         prior = self.db.execute(
