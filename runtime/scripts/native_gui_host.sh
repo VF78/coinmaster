@@ -20,7 +20,8 @@ RUNTIME=coinmaster-runtime.service
 
 pid() { systemctl show -P MainPID "$1"; }
 active() { [[ "$(systemctl show -P ActiveState "$1")" == active ]]; }
-assert_peers() { active "$PAPER" && active "$TRADER" && [[ "$(pid "$PAPER")" == "$1" ]] && [[ "$(pid "$TRADER")" == "$2" ]]; }
+paper_retired() { python3 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/scripts/native_gui_peer_guard.py >/dev/null; }
+assert_peers() { paper_retired && active "$TRADER" && [[ "$(pid "$PAPER")" == "$1" ]] && [[ "$(pid "$TRADER")" == "$2" ]]; }
 source_db() { if [[ -L "$CURRENT" ]]; then printf '%s\n' "$STATE/control.sqlite"; else printf '%s\n' "$OLD_DB"; fi; }
 check_no_jobs() {
   python3 - "$1" <<'PY'
@@ -165,7 +166,7 @@ PY
   return 1
 }
 if [[ "$ACTION" == plan ]]; then
-  active "$PAPER" && active "$TRADER" && active "$RUNTIME" || { echo 'required service is inactive' >&2; exit 1; }
+  paper_retired && active "$TRADER" && active "$RUNTIME" || { echo 'required service is inactive' >&2; exit 1; }
   check_no_jobs "$(source_db)"
   token_from_paper_env >/dev/null
   [[ -x /root/.local/bin/uv ]] || { echo 'pinned Linux uv runtime unavailable' >&2; exit 1; }
@@ -185,7 +186,7 @@ if [[ "$ACTION" == stage ]]; then
   [[ "$ARCHIVE_SHA" =~ ^[0-9a-f]{64}$ ]] || { echo 'invalid archive digest' >&2; exit 2; }
   [[ -f "$ARCHIVE" && ! -e "$RELEASE" && ! -e "$RELEASE.incoming" ]] || { echo 'release/archive already exists or is missing' >&2; exit 1; }
   [[ "$(sha256sum "$ARCHIVE" | cut -d ' ' -f1)" == "$ARCHIVE_SHA" ]] || { echo 'archive digest mismatch' >&2; exit 1; }
-  active "$PAPER" && active "$TRADER" && active "$RUNTIME" || { echo 'required service inactive' >&2; exit 1; }
+  paper_retired && active "$TRADER" && active "$RUNTIME" || { echo 'required service inactive' >&2; exit 1; }
   check_no_jobs "$(source_db)"
   PAPER_BEFORE="$(pid "$PAPER")"; TRADER_BEFORE="$(pid "$TRADER")"
   TOKEN="$(token_from_paper_env)"
