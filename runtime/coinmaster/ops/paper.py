@@ -13,7 +13,7 @@ import sqlite3
 import threading
 from functools import wraps
 from dataclasses import dataclass
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 
@@ -55,6 +55,8 @@ class PaperRuntime:
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_native_fill_details (trade_id TEXT PRIMARY KEY, native_event_id TEXT, client_order_id TEXT, venue_order_id TEXT, episode_id TEXT, instrument_id TEXT NOT NULL, order_side TEXT, quantity TEXT NOT NULL, price TEXT NOT NULL, commission_amount TEXT, commission_currency TEXT, liquidity_side TEXT, ts_event_ns INTEGER, ts_init_ns INTEGER)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_deposit_protection (id INTEGER PRIMARY KEY CHECK(id=1), instance_id TEXT NOT NULL, account_id TEXT NOT NULL, currency TEXT NOT NULL, body TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_deposit_audit (event_key TEXT PRIMARY KEY, action TEXT NOT NULL, old_body TEXT, new_body TEXT NOT NULL, ts_ns INTEGER NOT NULL)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_native_equity_observations (run_epoch TEXT NOT NULL, observed_at_ns INTEGER NOT NULL, equity_usdc TEXT NOT NULL, PRIMARY KEY(run_epoch, observed_at_ns))")
+        self.db.execute("CREATE INDEX IF NOT EXISTS paper_native_equity_by_time ON paper_native_equity_observations(observed_at_ns)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_snapshot (id INTEGER PRIMARY KEY CHECK(id=1), body TEXT NOT NULL)")
         # A native Sandbox cache is process-local.  Persist the intent before
         # submit so a crash between submit and its ACK cannot look flat after
@@ -283,6 +285,84 @@ class PaperRuntime:
             "FROM paper_native_fill_details WHERE rowid > ? ORDER BY rowid LIMIT ?",
             (cursor, limit),
         )]
+
+    EQUITY_SAMPLE_INTERVAL_NS = 300_000_000_000
+    EQUITY_BASELINE_TOLERANCE_NS = 600_000_000_000
+    EQUITY_RETENTION_NS = 31 * 86_400_000_000_000
+    EQUITY_WINDOWS_NS = {"24h": 86_400_000_000_000, "7d": 7 * 86_400_000_000_000, "30d": 30 * 86_400_000_000_000}
+
+    @_journal_locked
+    def record_native_equity_observation(self, *, run_epoch: str, observed_at_ns: int, equity_usdc: str) -> bool:
+        """Keep sparse native account facts; never backfill from a snapshot."""
+        if not isinstance(run_epoch, str) or not 1 <= len(run_epoch) <= 128 or not run_epoch.isascii():
+            raise ValueError("NATIVE_EQUITY_EPOCH_INVALID")
+        if type(observed_at_ns) is not int or observed_at_ns <= 0:
+            raise ValueError("NATIVE_EQUITY_TIME_INVALID")
+        if not isinstance(equity_usdc, str):
+            raise ValueError("NATIVE_EQUITY_VALUE_INVALID")
+        try:
+            value = Decimal(equity_usdc)
+        except (InvalidOperation, ValueError) as error:
+            raise ValueError("NATIVE_EQUITY_VALUE_INVALID") from error
+        if not value.is_finite():
+            raise ValueError("NATIVE_EQUITY_VALUE_INVALID")
+        last = self.db.execute(
+            "SELECT observed_at_ns FROM paper_native_equity_observations WHERE run_epoch=? ORDER BY observed_at_ns DESC LIMIT 1",
+            (run_epoch,),
+        ).fetchone()
+        if last is not None and observed_at_ns - last[0] < self.EQUITY_SAMPLE_INTERVAL_NS:
+            return False
+        self.db.execute(
+            "INSERT INTO paper_native_equity_observations VALUES (?, ?, ?)",
+            (run_epoch, observed_at_ns, equity_usdc),
+        )
+        self.db.execute(
+            "DELETE FROM paper_native_equity_observations WHERE observed_at_ns < ?",
+            (observed_at_ns - self.EQUITY_RETENTION_NS - self.EQUITY_BASELINE_TOLERANCE_NS,),
+        )
+        self.db.commit()
+        return True
+
+    @_journal_locked
+    def native_equity_changes(self, *, run_epoch: str, now_ns: int) -> dict:
+        """Compare real same-epoch endpoints only when the latest read is current."""
+        if not isinstance(run_epoch, str) or not 1 <= len(run_epoch) <= 128 or not run_epoch.isascii():
+            raise ValueError("NATIVE_EQUITY_EPOCH_INVALID")
+        if type(now_ns) is not int or now_ns <= 0:
+            raise ValueError("NATIVE_EQUITY_TIME_INVALID")
+        latest = self.db.execute(
+            "SELECT observed_at_ns, equity_usdc FROM paper_native_equity_observations WHERE run_epoch=? ORDER BY observed_at_ns DESC LIMIT 1",
+            (run_epoch,),
+        ).fetchone()
+        windows = {}
+        state = "UNAVAILABLE" if latest is None else (
+            "READY" if 0 <= now_ns - latest[0] <= self.EQUITY_BASELINE_TOLERANCE_NS else "STALE"
+        )
+        for label, duration in self.EQUITY_WINDOWS_NS.items():
+            value = {"state": "UNAVAILABLE", "baseline_at_ns": None, "baseline_equity_usdc": None,
+                     "change_usdc": None, "change_percent": None}
+            if state == "READY":
+                target = latest[0] - duration
+                baseline = self.db.execute(
+                    "SELECT observed_at_ns, equity_usdc FROM paper_native_equity_observations "
+                    "WHERE run_epoch=? AND observed_at_ns<=? ORDER BY observed_at_ns DESC LIMIT 1",
+                    (run_epoch, target),
+                ).fetchone()
+                if baseline is not None and target - baseline[0] <= self.EQUITY_BASELINE_TOLERANCE_NS:
+                    previous = Decimal(baseline[1])
+                    if previous > 0:
+                        current = Decimal(latest[1])
+                        value = {"state": "AVAILABLE", "baseline_at_ns": baseline[0],
+                                 "baseline_equity_usdc": baseline[1], "change_usdc": str(current - previous),
+                                 "change_percent": str((current - previous) / previous * Decimal("100"))}
+            windows[label] = value
+        return {
+            "version": "hl-native-equity-changes-v1", "instance_id": "hl-stageg-testnet",
+            "run_epoch": run_epoch, "source": "NATIVE_SANDBOX_ACCOUNT",
+            "state": state, "as_of_ns": latest[0] if latest else None,
+            "equity_usdc": latest[1] if latest else None,
+            "windows": windows,
+        }
 
     @_journal_locked
     def native_fill_history(self, cursor: int = 0, limit: int = 100) -> dict:

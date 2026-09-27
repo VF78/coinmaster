@@ -99,6 +99,19 @@ class TestnetWorker:
         process_owns_sandbox = self._current_process_owns_sandbox(self.recovery_state)
         result = self.native.status()
         health = self.runtime.health(time.time_ns())
+        # Independent of GUI polling: the worker heartbeat owns sparse native
+        # equity facts while this process and fresh public marks are valid.
+        if result["state"] == "PUBLIC_FEEDS_READY" and process_owns_sandbox:
+            try:
+                money = native_money_projection(self.native.node.cache, self.native.strategy._latest_marks)
+                if money["mark_state"] == "CURRENT" and money["equity"] is not None:
+                    self.runtime.record_native_equity_observation(
+                        run_epoch=self.run_epoch, observed_at_ns=time.time_ns(),
+                        equity_usdc=money["equity"],
+                    )
+            except Exception as error:
+                # Optional observability must never change native order admission.
+                LOG.warning("hl sandbox equity observation unavailable: %s", type(error).__name__)
         result.update({
             "candidate_hash": self.candidate.sha256,
             "recovery_state": self.recovery_state,
@@ -272,6 +285,20 @@ def create_status_server(worker: TestnetWorker, port: int = 18183, control_token
 
         def do_GET(self) -> None:
             target = urlsplit(self.path)
+            if target.path == "/equity-changes":
+                if not self._authorized():
+                    return
+                if target.query:
+                    self.send_error(422)
+                    return
+                try:
+                    self._send_json(worker.runtime.native_equity_changes(
+                        run_epoch=worker.run_epoch, now_ns=time.time_ns(),
+                    ))
+                except Exception as error:
+                    LOG.warning("hl sandbox equity history failed: %s", type(error).__name__)
+                    self.send_error(503)
+                return
             if target.path == "/fills":
                 if not self._authorized():
                     return

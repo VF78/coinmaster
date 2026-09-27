@@ -20,6 +20,7 @@ from pydantic import BaseModel, ConfigDict, StrictBool, field_validator, model_v
 
 from coinmaster.api.app import create_app as create_control_app
 from coinmaster.api.gui_auth import GuiAuth, SESSION_COOKIE
+from coinmaster.api.hl_public_candles import public_candles
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 
 
@@ -466,6 +467,87 @@ class RuntimeReader:
             raise HTTPException(503, "paper worker command channel unavailable") from error
 
 
+class HlPublicCandle(RuntimeSchema):
+    open_time_ms: int
+    close_time_ms: int
+    open: str
+    high: str
+    low: str
+    close: str
+    volume: str
+    trades: int
+
+
+class HlPublicCandles(RuntimeSchema):
+    version: Literal["hl-public-candles-v1"]
+    venue: Literal["HYPERLIQUID"]
+    environment: Literal["mainnet-public"]
+    source: Literal["OFFICIAL_INFO_CANDLE_SNAPSHOT"]
+    execution_evidence: Literal[False]
+    coin: Literal["BTC", "SOL"]
+    interval: Literal["1m", "5m", "15m", "1h", "4h", "1d"]
+    state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
+    observed_at_ms: int | None
+    latest_closed_at_ms: int | None
+    candles: list[HlPublicCandle]
+    reason: str | None
+
+
+class HlNativeEquityWindow(RuntimeSchema):
+    state: Literal["AVAILABLE", "UNAVAILABLE"]
+    baseline_at_ns: int | None
+    baseline_equity_usdc: str | None
+    change_usdc: str | None
+    change_percent: str | None
+
+    @field_validator("baseline_equity_usdc", "change_usdc", "change_percent")
+    @classmethod
+    def finite_decimal(cls, value: str | None) -> str | None:
+        if value is not None:
+            try:
+                if not Decimal(value).is_finite():
+                    raise ValueError("invalid native equity decimal")
+            except InvalidOperation as error:
+                raise ValueError("invalid native equity decimal") from error
+        return value
+
+
+class HlNativeEquityChanges(RuntimeSchema):
+    version: Literal["hl-native-equity-changes-v1"]
+    instance_id: Literal["hl-stageg-testnet"]
+    run_epoch: str | None
+    source: Literal["NATIVE_SANDBOX_ACCOUNT"]
+    state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
+    as_of_ns: int | None
+    equity_usdc: str | None
+    windows: dict[str, HlNativeEquityWindow]
+
+    @field_validator("equity_usdc")
+    @classmethod
+    def finite_equity(cls, value: str | None) -> str | None:
+        if value is not None:
+            try:
+                if not Decimal(value).is_finite():
+                    raise ValueError("invalid native equity")
+            except InvalidOperation as error:
+                raise ValueError("invalid native equity") from error
+        return value
+
+    @model_validator(mode="after")
+    def exact_windows(self):
+        if set(self.windows) != {"24h", "7d", "30d"}:
+            raise ValueError("invalid native equity windows")
+        if self.state == "READY" and (not self.run_epoch or self.as_of_ns is None or self.equity_usdc is None):
+            raise ValueError("incomplete native equity identity")
+        for item in self.windows.values():
+            values = (item.baseline_at_ns, item.baseline_equity_usdc, item.change_usdc, item.change_percent)
+            if item.state == "UNAVAILABLE" and any(value is not None for value in values):
+                raise ValueError("unavailable native equity window carries values")
+            if item.state == "AVAILABLE" and any(value is None for value in values):
+                raise ValueError("available native equity window is incomplete")
+        return self
+
+
 class HlStagegFill(RuntimeSchema):
     cursor: int
     trade_id: str
@@ -527,6 +609,50 @@ class HlStagegFillReader:
             raise
         except Exception as error:
             raise HTTPException(503, "Stage-G fill journal is unavailable") from error
+
+
+class HlNativeEquityReader:
+    """Proxy this process's worker-owned history without reading its SQLite."""
+    MAX_AGE_NS = 600_000_000_000
+    MAX_FUTURE_SKEW_NS = 5_000_000_000
+
+    def __init__(self, url: str, token: str | None) -> None:
+        self.url, self.token = url.rstrip("/"), token
+
+    @staticmethod
+    def unavailable(state: Literal["UNAVAILABLE", "INVALID", "STALE"]) -> HlNativeEquityChanges:
+        return HlNativeEquityChanges.model_validate({
+            "version": "hl-native-equity-changes-v1", "instance_id": "hl-stageg-testnet",
+            "run_epoch": None, "source": "NATIVE_SANDBOX_ACCOUNT", "state": state,
+            "as_of_ns": None, "equity_usdc": None,
+            "windows": {key: {"state": "UNAVAILABLE", "baseline_at_ns": None,
+                              "baseline_equity_usdc": None, "change_usdc": None,
+                              "change_percent": None} for key in ("24h", "7d", "30d")},
+        })
+
+    def changes(self) -> HlNativeEquityChanges:
+        if not self.token:
+            return self.unavailable("UNAVAILABLE")
+        request = urllib.request.Request(
+            f"{self.url}/equity-changes", method="GET",
+            headers={"Accept": "application/json", "Authorization": f"Bearer {self.token}",
+                     "X-Coinmaster-Instance": "hl-stageg-testnet"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=2) as response:
+                payload = json.loads(response.read())
+            result = HlNativeEquityChanges.model_validate(payload)
+            if result.state == "READY":
+                now_ns = time.time_ns()
+                if result.as_of_ns > now_ns + self.MAX_FUTURE_SKEW_NS:
+                    return self.unavailable("INVALID")
+                if now_ns - result.as_of_ns > self.MAX_AGE_NS:
+                    return self.unavailable("STALE")
+            return result
+        except (OSError, TimeoutError):
+            return self.unavailable("UNAVAILABLE")
+        except (ValueError, TypeError):
+            return self.unavailable("INVALID")
 
 
 class HlStagegProjectionReader:
@@ -715,6 +841,7 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     hl_protection_control = HlStagegDepositProtectionRelay(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
     hl_strategy_reader = HlStagegStrategyReader(runtime_root, hl_reader)
     hl_fill_reader = HlStagegFillReader(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
+    hl_equity_reader = HlNativeEquityReader(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     gui_auth = GuiAuth(
         username=operator_username if operator_username is not None else os.getenv("COINMASTER_GUI_USERNAME"),
@@ -776,6 +903,15 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     @app.get("/api/v1/instances/hl-stageg-testnet/fills", response_model=HlStagegFillHistory, dependencies=[Depends(auth)])
     def hl_stageg_fills(cursor: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=100)) -> HlStagegFillHistory:
         return hl_fill_reader.history(cursor, limit)
+    @app.get("/api/v1/instances/hl-stageg-testnet/equity-changes", response_model=HlNativeEquityChanges, dependencies=[Depends(auth)])
+    def hl_stageg_equity_changes() -> HlNativeEquityChanges:
+        return hl_equity_reader.changes()
+    @app.get("/api/v1/markets/hyperliquid/candles", response_model=HlPublicCandles, dependencies=[Depends(auth)])
+    def hl_public_candles(
+        coin: Literal["BTC", "SOL"], interval: Literal["1m", "5m", "15m", "1h", "4h", "1d"],
+        limit: int = Query(200, ge=1, le=500),
+    ) -> HlPublicCandles:
+        return HlPublicCandles.model_validate(public_candles(coin, interval, limit))
     @app.get("/api/v1/instances/hl-stageg-testnet/strategy", response_model=HlStagegStrategy, dependencies=[Depends(auth)])
     def hl_stageg_strategy() -> HlStagegStrategy:
         return hl_strategy_reader.strategy()
