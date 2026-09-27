@@ -2,6 +2,12 @@ name: Pinned HL epoch wheel
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - codex/nautilus-btc-sol-mvp
+    paths:
+      - .github/workflows/hl-epoch-wheel.yml
+      - runtime/patches/nautilus-1.231.0-hl-connection-epoch.patch
 
 permissions:
   contents: read
