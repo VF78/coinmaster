@@ -28,7 +28,7 @@ from nautilus_trader.model.identifiers import ClientId, InstrumentId, Symbol, Ve
 from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.model.objects import Money, Price, Quantity
 
-from coinmaster.domain.wave_overlay import Intent
+from coinmaster.domain.wave_overlay import Episode, Intent
 from coinmaster.ops.hyperliquid_testnet import (
     BTC_PERP,
     SOL_PERP,
@@ -314,7 +314,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
                 return super().market_exit()
 
             def on_quote_tick(self, tick):
-                if tick.instrument_id != self.config.btc_id or self.quotes >= 2:
+                if tick.instrument_id != self.config.btc_id or self.quotes >= 3:
                     return
                 self.on_mark_price(MarkPriceUpdate(
                     self.config.btc_id, tick.bid_price, tick.ts_event, tick.ts_init,
@@ -326,11 +326,17 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
                 self._current_sol_mark = self._latest_marks[self.config.sol_id]
                 self.quotes += 1
                 if self.quotes == 1:
-                    intent = Intent("deposit-entry", "deposit-episode", "BTC_ENTRY", 0, 1, quantity=0.1)
+                    self._domain.episode = Episode(
+                        "deposit-episode", 1, 10000, 1.0, wave_levels=(0.1, 0.2, 0.3),
+                    )
+                    intent = Intent("deposit-entry", "deposit-episode", "BTC_ENTRY", None, 1, quantity=0.1)
+                    self._domain.episode.pending[intent.id] = intent
                     self._submit_intent(
                         intent, float(tick.bid_price), float(tick.ask_price),
                         None, 0, ts_now=tick.ts_event,
                     )
+                elif self.quotes == 2:
+                    super().on_quote_tick(tick)
                 else:
                     self.exit_checks += 1
                     self._deposit_check()
@@ -397,6 +403,10 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             await asyncio.sleep(0.1)
             assert len(node.cache.positions_open()) == 1
             assert strategy.deposit_projection()["state"] == "ARMED"
+            node.kernel.data_engine.process(_quote(BTC_PERP, "59999.0", "60000.0", time.time_ns()))
+            await asyncio.sleep(0.1)
+            assert len(node.cache.orders_open()) == 3
+            assert len(runtime.pending_submissions()) == 3
             node.kernel.data_engine.process(_quote(BTC_PERP, "58899.0", "58900.0", time.time_ns()))
             await asyncio.sleep(0.1)
 
@@ -405,10 +415,9 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             assert strategy.exit_checks == strategy.exit_attempts == 1
             assert len(fills) == (1 if fail_exit else 2)
             assert bool(node.cache.positions_open()) == fail_exit
-            assert runtime.pending_submissions() == []
-            if not fail_exit:
-                assert node.cache.orders_open() == []
-                assert node.cache.orders_inflight() == []
+            assert len(node.cache.orders_open()) == (3 if fail_exit else 0)
+            assert node.cache.orders_inflight() == []
+            assert len(runtime.pending_submissions()) == (3 if fail_exit else 0)
             assert [item["action"] for item in strategy.fill_audit] == (
                 ["BTC_ENTRY"] if fail_exit else ["BTC_ENTRY", "MARKET_EXIT"]
             )
@@ -442,7 +451,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             instance_id="hl-stageg-deposit", account_id="HYPERLIQUID-001",
         )
         assert saved["latched"] and saved["exit_state"] == ("EXIT_INCOMPLETE" if fail_exit else "TRIPPED_FLAT")
-        assert reopened.pending_submissions() == []
+        assert len(reopened.pending_submissions()) == (3 if fail_exit else 0)
     finally:
         reopened.close()
 
