@@ -86,7 +86,7 @@ export function strategyRunnerLabel(code: string | null | undefined): string {
 }
 
 export function researchResultContext(activeRunId: string | null | undefined, selectedRunId: string | null | undefined): string {
-  if (activeRunId) return "Active native job " + activeRunId.slice(0, 8) + " updates every three seconds.";
-  if (selectedRunId) return "Selected run " + selectedRunId.slice(0, 8) + " · reported results shown below.";
-  return "Choose a run from history to inspect its compact result.";
+  if (activeRunId) return "Research is in progress; status refreshes automatically.";
+  if (selectedRunId) return "Selected run results are shown below.";
+  return "Choose a run from history to inspect its results.";
 }

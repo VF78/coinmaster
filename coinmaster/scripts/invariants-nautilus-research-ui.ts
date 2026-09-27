@@ -1,10 +1,22 @@
 import { readFileSync } from 'node:fs';
 
 const page = readFileSync(new URL('../src/web/pages/NautilusControlPage.tsx', import.meta.url), 'utf8');
+const app = readFileSync(new URL('../src/web/App.tsx', import.meta.url), 'utf8');
 const api = readFileSync(new URL('../src/web/lib/nautilusApi.ts', import.meta.url), 'utf8');
 const catalog = readFileSync(new URL('../../runtime/coinmaster/research/catalog.py', import.meta.url), 'utf8');
 
 const required = [
+  ['navigation includes Dashboard', "label: 'Dashboard'"],
+  ['navigation includes Strategy', "label: 'Strategy'"],
+  ['navigation includes Backtest', "label: 'Backtest'"],
+  ['navigation includes Settings', "label: 'Settings'"],
+  ['top bar keeps one clear Sandbox and live-order state', 'Sandbox · live orders off'],
+  ['top bar removes the public-feed badge', 'PUBLIC MARKET DATA'],
+  ['top bar removes the redundant Sandbox badge', 'LOCAL SANDBOX'],
+  ['top bar removes operator clutter', 'nautilus-operator'],
+  ['Dashboard surfaces current margin and PnL only after account verification', 'accountIsUnknown ? null : <div className="runtime-account-secondary"'],
+  ['dashboard keeps warnings visible in human-readable form', 'className="runtime-warning-list"'],
+  ['Backtest presents run status in trader-facing language', 'humanizeResearchCode(run.status)'],
   ['catalog is loaded from the local API', 'getResearchCatalog'],
   ['strategy reads sealed Stage-G identity from the local API', 'getHlStagegStrategy'],
   ['strategy identifies the running sealed instance', 'Running strategy'],
@@ -25,12 +37,12 @@ const required = [
   ['unused legacy research component was removed', 'LegacyResearchPage'],
   ['API exposes the immutable catalog request', "request<ResearchCatalogEntry[]>('/research/catalog')"],
   ['account-specific facts remain explicitly unknown', 'Account margin:'],
-  ['research exposes an isolated native subprocess action', 'Run verified native baseline'],
+  ['research exposes the historical baseline action', 'Run historical baseline'],
   ['research shows the verified native baseline period', 'Start date'],
-  ['research launches the owned native baseline job', 'Run verified native baseline'],
-  ['research shows native job progress and history', 'Run history · select to compare'],
+  ['research launches the owned native baseline job', "createRun(saved.id, 'research', 'native_baseline')"],
+  ['research shows run progress and history', 'title="Run history"'],
   ['research describes a selected result instead of asking the user to select again', 'researchResultContext(activeRun?.id, selectedRun?.id)'],
-  ['research ranks the workspace by TOTAL only', 'TOTAL ONLY'],
+  ['research ranks the workspace by terminal total', 'Terminal total'],
   ['research compares native TOP-20 totals and capital split', 'terminal TOTAL comparison'],
   ['research reads back started jobs', 'Native job was accepted but could not be read back.'],
   ['research reads back canceled jobs', 'Cancellation was not confirmed by read-back.'],
@@ -44,14 +56,14 @@ const required = [
   ['dashboard withholds account figures when unverified or recovering', 'const figures = accountIsUnknown ? [] : accountFigures(state)'],
   ['dashboard presents public BTC/SOL market context', 'Markets'],
   ['dashboard does not invent a zero trade-history claim', 'No virtual trades yet'],
-  ['dashboard explains ID-only history remains unavailable', 'Older ID-only events stay unavailable.'],
+  ['dashboard explains when historical fill details were not retained', 'IDs only; prices and quantities were not retained.'],
   ['dashboard withholds stale drawdown protection values', '{protectionFresh ? <><p className="trader-note">Maximum drawdown limit'],
   ['dashboard keeps raw identity in collapsed diagnostics', 'Diagnostics and source identity'],
   ['strategy groups exact running settings for traders', 'Signal and safety settings'],
   ['strategy folds technical parameters under advanced rules', 'Advanced strategy rules'],
   ['research maps blockers to human text and preserves codes', 'Technical blocker codes'],
-  ['dashboard shows native fill history without pnl reconstruction', 'Native fill history'],
-  ['dashboard never computes completed-round-trip PnL', 'no trade PnL or reconstructed round trips are inferred'],
+  ['dashboard shows recent native fills without pnl reconstruction', 'Recent fills'],
+  ['dashboard does not calculate round-trip PnL', 'no round-trip P&amp;L is calculated'],
   ['dashboard binds fill rows to current worker epoch', 'fillHistory?.run_epoch === state.run_epoch'],
   ['worker epoch changes discard paged rows from the old run', 'current.run_epoch !== data.run_epoch'],
   ['strategy moves source hashes into diagnostics', 'Strategy identity and account limits'],
@@ -60,8 +72,8 @@ const required = [
 
 let failed = 0;
 for (const [label, text] of required) {
-  const source = text.startsWith('request<') ? api : text.startsWith('Original v0') || text.startsWith('Hyperliquid') ? catalog : page;
-  const absent = label.includes('does not render') || label.includes('does not invent') || label.includes('was removed');
+  const source = label.startsWith('navigation') || label.startsWith('top bar') ? app : label.startsWith('catalog') && text.startsWith('getResearchCatalog') ? page : text.startsWith('request<') ? api : text.startsWith('Original v0') || text.startsWith('Hyperliquid') ? catalog : page;
+  const absent = label.includes('does not render') || label.includes('does not invent') || label.includes('was removed') || label.startsWith('top bar removes');
   if (source.includes(text) !== absent) console.log(`  ✓ ${label}`);
   else { failed += 1; console.error(`  ✗ ${label}`); }
 }
