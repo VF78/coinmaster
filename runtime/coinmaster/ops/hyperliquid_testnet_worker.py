@@ -15,7 +15,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlsplit
 
 from coinmaster.ops.hyperliquid_testnet import HyperliquidTestnetNode, require_testnet_sandbox
 from coinmaster.ops.paper import PaperRuntime
@@ -250,8 +250,55 @@ class TestnetWorker:
 def create_status_server(worker: TestnetWorker, port: int = 18183, control_token: str | None = None) -> ThreadingHTTPServer:
     """Loopback status plus narrowly-scoped, worker-owned entry admission control."""
     class Handler(BaseHTTPRequestHandler):
+        def _authorized(self) -> bool:
+            authorization = self.headers.get("Authorization", "")
+            expected = f"Bearer {control_token}" if control_token else ""
+            if not expected or not hmac.compare_digest(authorization, expected):
+                self.send_error(401)
+                return False
+            if self.headers.get("X-Coinmaster-Instance") != worker.instance.instance_id:
+                self.send_error(403)
+                return False
+            return True
+
+        def _send_json(self, payload: dict) -> None:
+            body = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
         def do_GET(self) -> None:
-            if urlsplit(self.path).path != "/status":
+            target = urlsplit(self.path)
+            if target.path == "/fills":
+                if not self._authorized():
+                    return
+                pairs = parse_qsl(target.query, keep_blank_values=True)
+                params = dict(pairs)
+                if len(params) != len(pairs) or set(params) - {"cursor", "limit"}:
+                    self.send_error(422)
+                    return
+                cursor_text, limit_text = params.get("cursor", "0"), params.get("limit", "100")
+                if (len(cursor_text) > 19 or len(limit_text) > 3
+                        or not re.fullmatch(r"[0-9]+", cursor_text)
+                        or not re.fullmatch(r"[0-9]+", limit_text)):
+                    self.send_error(422)
+                    return
+                cursor, limit = int(cursor_text), int(limit_text)
+                if cursor > 2**63 - 1 or not 1 <= limit <= 100:
+                    self.send_error(422)
+                    return
+                try:
+                    history = worker.runtime.native_fill_history(cursor, limit)
+                    self._send_json({"version": "hl-stageg-native-fills-v1", "instance_id": worker.instance.instance_id,
+                                     "run_epoch": worker.run_epoch, **history})
+                except Exception as error:
+                    LOG.warning("hl sandbox fill history failed: %s", type(error).__name__)
+                    self.send_error(503)
+                return
+            if target.path != "/status":
                 self.send_error(404)
                 return
             try:
@@ -277,13 +324,7 @@ def create_status_server(worker: TestnetWorker, port: int = 18183, control_token
             if command is None:
                 self.send_error(405)
                 return
-            authorization = self.headers.get("Authorization", "")
-            expected = f"Bearer {control_token}" if control_token else ""
-            if not expected or not hmac.compare_digest(authorization, expected):
-                self.send_error(401)
-                return
-            if self.headers.get("X-Coinmaster-Instance") != worker.instance.instance_id:
-                self.send_error(403)
+            if not self._authorized():
                 return
             key = self.headers.get("Idempotency-Key", "")
             if not re.fullmatch(r"[A-Za-z0-9._~-]{16,128}", key):

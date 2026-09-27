@@ -285,6 +285,33 @@ class PaperRuntime:
         )]
 
     @_journal_locked
+    def native_fill_history(self, cursor: int = 0, limit: int = 100) -> dict:
+        """Read detail rows and the count of earlier ID-only fill evidence."""
+        if type(cursor) is not int or cursor < 0 or cursor > 2**63 - 1 or type(limit) is not int or not 1 <= limit <= 500:
+            raise ValueError("NATIVE_FILL_QUERY_BOUNDS_INVALID")
+        available = self.db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type=? AND name=?",
+            ("table", "paper_native_fill_details"),
+        ).fetchone() is not None
+        fills = self.native_fill_details(cursor, limit) if available else []
+        if available:
+            historical_id_only_count = self.db.execute(
+                "SELECT COUNT(*) FROM paper_events e WHERE e.kind=? AND NOT EXISTS "
+                "(SELECT 1 FROM paper_native_fill_details d WHERE d.trade_id=e.event_id)",
+                ("fill",),
+            ).fetchone()[0]
+        else:
+            historical_id_only_count = self.db.execute(
+                "SELECT COUNT(*) FROM paper_events WHERE kind=?", ("fill",),
+            ).fetchone()[0]
+        return {
+            "fills": fills,
+            "next_cursor": fills[-1]["cursor"] if fills else cursor,
+            "detail_store_available": available,
+            "historical_id_only_count": historical_id_only_count,
+        }
+
+    @_journal_locked
     def record_submission(self, *, client_order_id: str, intent_id: str, episode_id: str, action: str, instrument_id: str, quantity: str, reduce_only: bool, strategy_state: bytes | None = None, order_shape: dict | None = None) -> bool:
         """Durably mark a native submit before handing it to Nautilus.
 
