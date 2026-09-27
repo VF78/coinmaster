@@ -11,7 +11,7 @@ const required = [
   ['strategy confirms running only on the API hash-match state', "strategy?.running_state === 'RUNNING_MATCH'"],
   ['strategy labels an unconfirmed runner honestly', 'worker match is not confirmed'],
   ['strategy keeps research drafts separate from the runner', 'Research drafts'],
-  ['strategy requires a separate native promotion gate', 'SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED'],
+  ['strategy leaves promotion disabled without a native gate', '<Button variant="primary" disabled>Apply strategy</Button>'],
   ['strategy read-backs a saved research draft', 'Saved draft could not be read back.'],
   ['strategy separates BTC sizing from SOL exits', 'BTC sizing and exits'],
   ['strategy shows SOL sizing and exits', 'SOL sizing and exits'],
@@ -39,9 +39,10 @@ const required = [
   ['HL Sandbox controls remain read only', 'Native control permissions'],
   ['HL controls use only instance-bound read API', "request<HlStagegControls>('/instances/hl-stageg-testnet/controls')"],
   ['dashboard presents the verified virtual account before diagnostics', 'Account overview'],
-  ['dashboard does not turn the Sandbox seed into observed cash', 'not account performance'],
+  ['dashboard withholds account figures when unverified or recovering', 'const figures = accountIsUnknown ? [] : accountFigures(state)'],
   ['dashboard presents public BTC/SOL market context', 'Markets'],
-  ['dashboard keeps empty trade history explicit', 'No virtual trades yet'],
+  ['dashboard does not invent a zero trade-history claim', 'No virtual trades yet'],
+  ['dashboard explains the native history evidence limit', 'Fill-level trade history is not included in the native dashboard projection.'],
   ['dashboard keeps raw identity in collapsed diagnostics', 'Diagnostics and source identity'],
   ['strategy groups exact running settings for traders', 'Signal and safety settings'],
   ['strategy moves source hashes into diagnostics', 'Strategy identity and account limits'],
@@ -51,7 +52,7 @@ const required = [
 let failed = 0;
 for (const [label, text] of required) {
   const source = text.startsWith('request<') ? api : text.startsWith('Original v0') || text.startsWith('Hyperliquid') ? catalog : page;
-  const absent = label.includes('does not render') || label.includes('was removed');
+  const absent = label.includes('does not render') || label.includes('does not invent') || label.includes('was removed');
   if (source.includes(text) !== absent) console.log(`  ✓ ${label}`);
   else { failed += 1; console.error(`  ✗ ${label}`); }
 }
