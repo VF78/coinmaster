@@ -1,6 +1,6 @@
 # #101 source-only live100 instance and release preparation
 
-Status: BLOCKED_TP_PRICE_PARITY_ACCOUNT_SCOPE_AND_RELEASE; Project #2 #101 remains Todo. This
+Status: BLOCKED_ACCOUNT_SCOPE_AND_RELEASE; Project #2 #101 remains Todo. This
 plan and the separate `configs/hl-stageg-live.instance.json` are not an installed
 release and grant no live-order capability. The Sandbox worker, its state DB,
 service identity and 10,000 USDC virtual seed remain separate and unchanged.
@@ -9,11 +9,12 @@ service identity and 10,000 USDC virtual seed remain separate and unchanged.
 
 - Immutable candidate: `configs/stage-g-v1.json`, canonical candidate SHA-256
   `637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d`.
-- Owner-approved Stage-G strategy source SHA-256
+- Previously installed Stage-G strategy source SHA-256
   `5f4ed8f5aaf07188d258b17dbc5a92e0548380143216f3a1828cb1155aca013e`.
   The source-only #101 TP price correction currently has SHA-256
   `0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511`;
-  this new hash is **not approved or sealed** and cannot enter a release yet.
+  this exact hash was owner-approved and sealed in the source tree; a guarded
+  installed release remains separate and has not occurred.
   `configs/stage-g-hl-sandbox-approval.json` also seals execution policy
   `eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687`.
 - Pinned execution dependency: Nautilus 1.231.0 patched CPython 3.12 Linux
@@ -60,9 +61,9 @@ funding and every resulting child order must be checked at the submit boundary.
 The public preflight without account collateral correctly returns
 `ACCOUNT_COLLATERAL_UNKNOWN`.
 
-## TP price parity blocker (P1)
+## TP price parity correction (source only)
 
-The sealed strategy builds a planned BTC TP as a native limit price with
+The previous sealed strategy built a planned BTC TP as a native limit price with
 `instrument.make_price(raw_price)` (BTC stock price precision 0.1), checks
 post-only against that native/raw price, then the pinned adapter independently
 rounds to five significant figures before wire submission. At BTC TP 84583.5,
@@ -79,9 +80,10 @@ post-only BBO check to that exact price. Ten direct price/submit regression
 cases pass against the pinned patched wheel, including BTC tie and magnitude
 boundaries, both post-only sides, and high-price SOL. The native price equals
 the pinned adapter wire calculation, which is the strict Info equality
-contract. The existing Stage-G approval intentionally rejects this changed
-source with `BLOCKED_SEALED_STRATEGY_MISMATCH`; the owner must explicitly
-approve the new exact hash before the seal or a live release can change.
+contract. The owner approved exact strategy SHA
+`0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511`
+and the source seal now matches it. This does not stage or activate a release;
+selected-account and owner live-order gates below remain mandatory.
 
 ## Live-only guards to satisfy before a separate owner approval
 
