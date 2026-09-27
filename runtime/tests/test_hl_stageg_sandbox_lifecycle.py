@@ -29,6 +29,7 @@ from nautilus_trader.model.currencies import BTC, SOL, USD, USDC
 from nautilus_trader.model.data import BarSpecification, BarType, MarkPriceUpdate, QuoteTick, TradeTick
 from nautilus_trader.model.enums import AggressorSide, AggregationSource, BarAggregation, PriceType, LiquiditySide, OrderSide, TimeInForce
 from nautilus_trader.model.identifiers import ClientId, InstrumentId, StrategyId, Symbol, TradeId, TraderId, Venue
+from nautilus_trader.model.events import OrderFilled
 from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.model.objects import Money, Price, Quantity
 
@@ -739,6 +740,10 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             await asyncio.sleep(0.1)
             target = next(order for order in node.cache.orders_open() if order.has_price and str(order.price) == "60006.0")
             assert str(target.filled_qty) == "0.00010" and str(target.leaves_qty) == "0.00025"
+            confirmed = next(event for event in target.events if isinstance(event, OrderFilled))
+            before_duplicate = (len(strategy.fill_audit), len(runtime.native_fill_details()), runtime.native_revision(), first.btc_open_qty)
+            strategy.on_order_filled(confirmed)
+            assert (len(strategy.fill_audit), len(runtime.native_fill_details()), runtime.native_revision(), first.btc_open_qty) == before_duplicate
             strategy.cancel_order(target)
             await asyncio.sleep(0.1)
             assert target.status.name == "CANCELED"
@@ -792,29 +797,75 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             strategy.next_intent = entry_two
             await btc_quote("59999.0", "60000.0", 10)
             assert [(str(position.instrument_id), str(position.quantity)) for position in node.cache.positions_open()] == [(str(BTC_PERP), "0.00167")]
-            strategy._begin_forced_close("TEST_SECOND_CLOSE")
             await btc_quote("60000.0", "60001.0", 11)
+            assert sorted(str(order.price) for order in node.cache.orders_open()) == ["60006.0", "60012.0", "60018.0"]
+            node.kernel.data_engine.process(TradeTick(
+                BTC_PERP, Price.from_str("60006.0"), Quantity.from_str("0.00035"),
+                AggressorSide.BUYER, TradeId("ATTACHED-SECOND-TP"), 12, 12,
+            ))
+            await asyncio.sleep(0.1)
+            assert second.sol_right_fraction[0] == pytest.approx(1.0)
+            native_snapshot(restartable=False)
+            assert runtime.health(time.time_ns()).safe_for_increase
+            node.kernel.data_engine.process(QuoteTick(
+                SOL_PERP, Price.from_str("149.99"), Price.from_str("150.01"),
+                Quantity.from_str("1000.00"), Quantity.from_str("1000.00"), 13, 13,
+            ))
+            second_sol_add = strategy._domain._intent(second, "SOL_ADD", -second.side, 0, requested_notional=30)
+            strategy.next_intent = second_sol_add
+            await btc_quote("60000.0", "60001.0", 13)
+            assert second.sol_qty == pytest.approx(0.2)
+            assert {str(position.instrument_id) for position in node.cache.positions_open()} == {str(BTC_PERP), str(SOL_PERP)}
+            node.kernel.data_engine.process(QuoteTick(
+                SOL_PERP, Price.from_str("150.99"), Price.from_str("151.01"),
+                Quantity.from_str("1000.00"), Quantity.from_str("1000.00"), 14, 14,
+            ))
+            await asyncio.sleep(0.1)
+            second_half = strategy._domain._sol_exits(second, Features(14, 1, 1.0, 0.0, 0.0, 1.0, 0.3), bar, 14, z=0.3)
+            assert len(second_half) == 1 and second_half[0].action == "SOL_HALF_EXIT"
+            strategy.next_intent = second_half[0]
+            await btc_quote("60000.0", "60001.0", 14)
+            assert second.sol_qty == pytest.approx(0.1) and second.sol_half_done
+            second_full = strategy._domain._sol_exits(second, Features(15, 1, 1.0, 0.0, 0.0, 1.0, 0.1), bar, 15, z=0.1)
+            assert len(second_full) == 1 and second_full[0].action == "SOL_EXIT"
+            strategy.next_intent = second_full[0]
+            await btc_quote("60000.0", "60001.0", 15)
+            assert second.sol_qty == 0 and all(position.instrument_id != SOL_PERP for position in node.cache.positions_open())
+            strategy._begin_forced_close("TEST_SECOND_CLOSE")
+            await asyncio.sleep(0.1)
+            await btc_quote("60000.0", "60001.0", 16)
             assert strategy._domain.episode is None
             assert node.cache.positions_open() == [] and node.cache.orders_open() == [] and node.cache.orders_inflight() == []
             assert runtime.pending_submissions() == []
+            assert len(runtime.all_submissions()) == 17
+            assert all(row["state"] == "TERMINAL" for row in runtime.all_submissions())
+            native_snapshot(restartable=True)
+            assert runtime.recovery_state() == "FLAT_RESTART"
 
             fills = runtime.native_fill_details()
-            assert len(fills) == len(strategy.fill_audit) == 9
+            assert len(fills) == len(strategy.fill_audit) == 13
             assert len({row["trade_id"] for row in fills}) == len(fills)
             assert [row["action"] for row in strategy.fill_audit] == [
                 "BTC_ENTRY", "BTC_REDUCE", "BTC_REDUCE", "SOL_ADD", "SOL_HALF_EXIT", "SOL_EXIT",
-                "FORCED_CLOSE", "BTC_ENTRY", "FORCED_CLOSE",
+                "FORCED_CLOSE", "BTC_ENTRY", "BTC_REDUCE", "SOL_ADD", "SOL_HALF_EXIT", "SOL_EXIT", "FORCED_CLOSE",
             ]
-            assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("MAKER") == 2
-            assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("TAKER") == 7
+            assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("MAKER") == 3
+            assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("TAKER") == 10
             fees = sum((Decimal(row["commission_amount"]) for row in fills), Decimal("0"))
-            assert fees == Decimal("0.20115031")
+            assert fees == sum((Decimal(row["commission"]) for row in strategy.fill_audit), Decimal("0"))
+            assert fees == Decimal("0.22194063")
             positions = node.trader.generate_positions_report().to_dict("records")
-            assert len(positions) == 3 and all(row["side"] == "FLAT" for row in positions)
-            sol_position = next(row for row in positions if str(row["instrument_id"]) == str(SOL_PERP))
-            assert Decimal(str(sol_position["realized_pnl"]).split()[0]) == Decimal("-0.20")
-            cash = node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal()
-            assert cash == Decimal("10000") - Decimal("0.20") - fees
+            assert len(positions) == 4 and all(row["side"] == "FLAT" for row in positions)
+            sol_positions = [row for row in positions if str(row["instrument_id"]) == str(SOL_PERP)]
+            assert len(sol_positions) == 2
+            assert all(Decimal(str(row["realized_pnl"]).split()[0]) == Decimal("-0.20") for row in sol_positions)
+            realized = sum((Decimal(str(row["realized_pnl"]).split()[0]) for row in positions), Decimal("0"))
+            account = node.cache.account_for_venue(HYPERLIQUID)
+            cash = account.balance_total(USDC).as_decimal()
+            assert cash == Decimal("10000") + realized - fees == Decimal("9999.37805937")
+            assert account.balance_free(USDC).as_decimal() == cash
+            assert account.balance_locked(USDC).as_decimal() == 0
+            assert runtime.flat_native_cash() == cash
         finally:
             await node.kernel.stop_async()
             node.kernel.dispose()
@@ -824,8 +875,9 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
     reopened = PaperRuntime(tmp_path / "two-episode.sqlite", "attached-two-episode", 10**20)
     reopened.acquire()
     try:
-        assert len(reopened.native_fill_details()) == 9
+        assert len(reopened.native_fill_details()) == 13
         assert reopened.pending_submissions() == []
+        assert reopened.flat_native_cash() == Decimal("9999.37805937")
     finally:
         reopened.close()
 
