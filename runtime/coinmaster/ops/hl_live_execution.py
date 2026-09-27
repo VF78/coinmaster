@@ -678,9 +678,22 @@ def bind_clean_flat_live_handover(
             if episode is not None:
                 btc = by_coin.get(str(strategy.config.btc_id))
                 sol = by_coin.get(str(strategy.config.sol_id))
+                # Domain float arithmetic may drift below one native lot;
+                # normalize only within half an actual instrument size step.
+                def same_episode_size(value: float, native_size: Decimal, instrument_id: InstrumentId) -> bool:
+                    instrument = client._cache.instrument(instrument_id)
+                    domain_size = Decimal(str(value))
+                    if instrument is None or not domain_size.is_finite():
+                        return False
+                    step = instrument.size_increment.as_decimal()
+                    if step <= 0:
+                        return False
+                    normalized = (domain_size / step).to_integral_value() * step
+                    return abs(domain_size - normalized) < step / 2 and normalized == native_size
+
                 if (
-                    Decimal(str(episode.btc_open_qty)) != (btc.quantity.as_decimal() if btc else 0)
-                    or Decimal(str(episode.sol_qty)) != (sol.quantity.as_decimal() if sol else 0)
+                    not same_episode_size(episode.btc_open_qty, btc.quantity.as_decimal() if btc else Decimal("0"), strategy.config.btc_id)
+                    or not same_episode_size(episode.sol_qty, sol.quantity.as_decimal() if sol else Decimal("0"), strategy.config.sol_id)
                     or (btc is not None and btc.is_long != (episode.side == 1))
                     or (sol is not None and sol.is_long != (episode.side == -1))
                 ):

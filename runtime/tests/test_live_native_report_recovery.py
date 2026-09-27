@@ -105,9 +105,11 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
             os.fsync(stream.fileno())
         if os.environ.get("CM_FAKE_COUPLED_OPEN") == "1":
             order = command.order
+            statuses = getattr(self, "parity_data", {}).get("orderStatuses", {})
+            venue_order_id = VenueOrderId(str(7 + len(statuses)))
             self.generate_order_accepted(
                 order.strategy_id, order.instrument_id, order.client_order_id,
-                VENUE_ORDER, self._clock.timestamp_ns(),
+                venue_order_id, self._clock.timestamp_ns(),
             )
             return
         if os.environ.get("CM_FAKE_QUOTE_ORDER") == "1":
@@ -356,7 +358,7 @@ class RecoveryProbeStrategy(RecoverableWaveOverlayStrategy):
             return super().on_start()
 
 
-def _strategy(*, entries_enabled=False, submission_sink=None):
+def _strategy(*, entries_enabled=False, submission_sink=None, native_fill_sink=None):
     btc = BarType(
         InstrumentId.from_str("BTCUSDT-LINEAR.BYBIT"),
         BarSpecification(1, BarAggregation.DAY, PriceType.LAST),
@@ -375,7 +377,7 @@ def _strategy(*, entries_enabled=False, submission_sink=None):
         sol_mark_data_type=venue_mark_data_type(HL_SOL.id),
         mark_client_id=ClientId("HYPERLIQUID"),
         active_seed=Decimal("10000"), entries_enabled=entries_enabled,
-        submission_sink=submission_sink,
+        submission_sink=submission_sink, native_fill_sink=native_fill_sink,
     ))
 
 
@@ -402,6 +404,10 @@ async def _run_child():
     node.cache.add_instrument(HL_BTC)
     node.cache.add_instrument(HL_SOL)
     quote_sink = [None]
+    coupled_runtime = [None]
+    def bound_native_fill(**facts):
+        assert coupled_runtime[0] is not None
+        return coupled_runtime[0].record_native_fill(**facts)
     def bound_quote_sink(**request):
         assert quote_sink[0] is not None
         return quote_sink[0](**request)
@@ -409,6 +415,7 @@ async def _run_child():
     strategy = _strategy(
         entries_enabled=quote_mode,
         submission_sink=bound_quote_sink if quote_mode else None,
+        native_fill_sink=bound_native_fill if os.environ.get("CM_FAKE_COUPLED_OPEN") == "1" else None,
     )
     journal = os.environ.get("CM_FAKE_JOURNAL")
     if journal:
@@ -448,6 +455,8 @@ async def _run_child():
         )
         active = PaperRuntime(Path(journal), "live-recovery-probe", 10**20)
         active.acquire()
+        if os.environ.get("CM_FAKE_COUPLED_OPEN") == "1":
+            coupled_runtime[0] = active
         if quote_mode:
             quote_sink[0] = LiveRecoverySubmissionSink(active, strategy, frozenset({str(HL_BTC.id), str(HL_SOL.id)}))
         client._cm_runtime = active  # Same binding as the selected owner factory.
@@ -584,6 +593,9 @@ async def _run_child():
                 "limitPx": "10000.0", "timestamp": order_ms,
             }
             client.parity_data.update({
+                "orderStatuses": {cloid: {"status": "order", "order": {
+                    "order": raw_order, "status": "open", "statusTimestamp": order_ms + 1,
+                }}},
                 "frontendOpenOrders": [raw_order],
                 "userFillsByTime": [],
                 "orderStatus": {"status": "order", "order": {
@@ -613,6 +625,11 @@ async def _run_child():
                     data = selected_asset_data(body)
                     data["markPx"] = marks[body["coin"]]
                     return data
+                if body["type"] == "userFillsByTime":
+                    return [row for row in client.parity_data["userFillsByTime"]
+                            if body["startTime"] <= row["time"] <= body["endTime"]]
+                if body["type"] == "orderStatus":
+                    return client.parity_data["orderStatuses"].get(body["oid"], {"status": "unknown"})
                 return await original_info(body)
 
             client._cm_info = staged_info
@@ -647,13 +664,346 @@ async def _run_child():
             assert info_calls[0] > before
             assert client.recovery_healthy(), client._cm_ws_failure
 
+            fill_ms = node.kernel.clock.timestamp_ns() // 1_000_000
+            fill_ns = fill_ms * 1_000_000
+            client.generate_order_filled(
+                order.strategy_id, order.instrument_id, order.client_order_id,
+                VENUE_ORDER, None, TradeId("101"), OrderSide.BUY, OrderType.LIMIT,
+                Quantity.from_str("0.03000"), Price.from_str("10000.0"),
+                USDC, Money(Decimal("0.135"), USDC), LiquiditySide.TAKER, fill_ns,
+            )
+            for _ in range(200):
+                if active.has_applied_fill("101") and order.status == OrderStatus.FILLED:
+                    break
+                await asyncio.sleep(0.01)
+            assert order.status == OrderStatus.FILLED
+            assert active.has_applied_fill("101")
+            assert active.native_fill_details()[0]["commission_amount"] == "0.135"
+            raw_order["sz"] = "0.00000"
+            client.parity_data["frontendOpenOrders"] = []
+            client.parity_data["orderStatuses"][cloid]["order"]["status"] = "filled"
+            client.parity_data["orderStatuses"][cloid]["order"]["statusTimestamp"] = fill_ms
+            client.parity_data["userFillsByTime"] = [{
+                "coin": "BTC", "oid": 7, "tid": 101, "time": fill_ms,
+                "side": "B", "sz": "0.03000", "px": "10000.0",
+                "fee": "0.135", "feeToken": "USDC", "hash": "0xfake101",
+                "crossed": True,
+            }]
+            client.parity_data["clearinghouseState"]["assetPositions"] = [{"position": {
+                "coin": "BTC", "szi": "0.03000", "entryPx": "10000.0",
+                "leverage": {"type": "cross"}, "positionValue": "300",
+                "unrealizedPnl": "0",
+            }}]
+            state = client.parity_data["clearinghouseState"]
+            for summary in (state["marginSummary"], state["crossMarginSummary"]):
+                summary.update(accountValue="99.865", totalRawUsd="99.865",
+                               totalMarginUsed="30", totalNtlPos="300")
+            state["withdrawable"] = "69.865"
+            total = Money(Decimal("99.865"), USDC)
+            free = Money(Decimal("69.865"), USDC)
+            client.generate_account_state(
+                [AccountBalance(total, Money(Decimal("30"), USDC), free)],
+                [], True, fill_ns,
+            )
+            await asyncio.sleep(0.05)
+            client._cm_info_usage.clear()
+            assert client.request_effect_parity_refresh()
+            await client._cm_refresh_task
+            assert client.recovery_healthy(), client._cm_ws_failure
+            assert strategy._validated_live_money().position_sizes == (("BTC", Decimal("0.03000")),)
+
             fault = os.environ["CM_FAKE_COUPLED_FAULT"]
+            if fault == "cycle":
+                tp_intent = strategy._domain._intent(
+                    episode, "BTC_REDUCE", -1, 1, quantity=0.01,
+                )
+                tp = strategy.order_factory.limit(
+                    instrument_id=HL_BTC.id, order_side=OrderSide.SELL,
+                    quantity=Quantity.from_str("0.01000"), price=Price.from_str("10000.0"),
+                    time_in_force=TimeInForce.GTC, reduce_only=True,
+                )
+                tp_id = str(tp.client_order_id)
+                strategy._pending_by_order[tp_id] = tp_intent
+                strategy._sigma_by_order[tp_id] = None
+                strategy._decision_index_by_order[tp_id] = 1484
+                assert sink(
+                    client_order_id=tp_id, intent_id=tp_intent.id,
+                    episode_id=episode.id, action="BTC_REDUCE",
+                    instrument_id=str(HL_BTC.id), quantity="0.01000", reduce_only=True,
+                )
+                strategy.submit_order(tp)
+                for _ in range(200):
+                    if tp.status == OrderStatus.ACCEPTED:
+                        break
+                    await asyncio.sleep(0.01)
+                assert tp.status == OrderStatus.ACCEPTED
+                assert str(tp.venue_order_id) == "8"
+                tp_cloid = str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(
+                    nautilus_pyo3.ClientOrderId(tp_id),
+                ))
+                tp_raw = {
+                    "coin": "BTC", "oid": 8, "cloid": tp_cloid,
+                    "side": "A", "origSz": "0.01000", "sz": "0.01000",
+                    "reduceOnly": True, "orderType": "Limit", "tif": "Gtc",
+                    "limitPx": "10000.0", "timestamp": tp.ts_init // 1_000_000,
+                }
+                client.parity_data["orderStatuses"][tp_cloid] = {
+                    "status": "order", "order": {
+                        "order": tp_raw, "status": "open",
+                        "statusTimestamp": tp_raw["timestamp"] + 1,
+                    },
+                }
+                client.parity_data["frontendOpenOrders"].append(tp_raw)
+                client._cm_info_usage.clear()
+                assert client.request_effect_parity_refresh()
+                await client._cm_refresh_task
+                assert client.recovery_healthy(), client._cm_ws_failure
+                tp_fill_ms = node.kernel.clock.timestamp_ns() // 1_000_000
+                tp_fill_ns = tp_fill_ms * 1_000_000
+                client.generate_order_filled(
+                    tp.strategy_id, tp.instrument_id, tp.client_order_id,
+                    tp.venue_order_id, None, TradeId("102"), OrderSide.SELL, OrderType.LIMIT,
+                    Quantity.from_str("0.00500"), Price.from_str("10000.0"),
+                    USDC, Money(Decimal("0.0225"), USDC), LiquiditySide.TAKER, tp_fill_ns,
+                )
+                for _ in range(200):
+                    if active.has_applied_fill("102"):
+                        break
+                    await asyncio.sleep(0.01)
+                assert active.has_applied_fill("102")
+                assert tp.status == OrderStatus.PARTIALLY_FILLED
+                tp_raw["sz"] = "0.00500"
+                client.parity_data["orderStatuses"][tp_cloid]["order"]["statusTimestamp"] = tp_fill_ms
+                client.parity_data["userFillsByTime"].append({
+                    "coin": "BTC", "oid": 8, "tid": 102, "time": tp_fill_ms,
+                    "side": "A", "sz": "0.00500", "px": "10000.0",
+                    "fee": "0.0225", "feeToken": "USDC",
+                    "hash": "0xfake102", "crossed": True,
+                })
+                state = client.parity_data["clearinghouseState"]
+                state["assetPositions"][0]["position"].update(
+                    szi="0.02500", positionValue="250",
+                )
+                for summary in (state["marginSummary"], state["crossMarginSummary"]):
+                    summary.update(accountValue="99.8425", totalRawUsd="99.8425",
+                                   totalMarginUsed="25", totalNtlPos="250")
+                state["withdrawable"] = "74.8425"
+                client.generate_account_state([
+                    AccountBalance(Money(Decimal("99.8425"), USDC),
+                                   Money(Decimal("25"), USDC),
+                                   Money(Decimal("74.8425"), USDC)),
+                ], [], True, tp_fill_ns)
+                await asyncio.sleep(0.05)
+                client._cm_info_usage.clear()
+                from coinmaster.ops.hl_info_receipt import IncompleteInfoReport
+                diagnostic_mass = await client.generate_mass_status()
+                genuine_size = episode.btc_open_qty
+                episode.btc_open_qty += float(HL_BTC.size_increment.as_decimal())
+                with pytest.raises(IncompleteInfoReport, match="LIVE_EPISODE_POSITION_MISMATCH"):
+                    await client._cm_parity_verifier(diagnostic_mass)
+                episode.btc_open_qty = genuine_size
+                assert await client._cm_parity_verifier(diagnostic_mass)
+                assert client.request_effect_parity_refresh()
+                await client._cm_refresh_task
+                assert client.recovery_healthy(), client._cm_ws_failure
+                assert strategy._validated_live_money().position_sizes == (("BTC", Decimal("0.02500")),)
+                cancel_ms = node.kernel.clock.timestamp_ns() // 1_000_000
+                client.generate_order_canceled(
+                    tp.strategy_id, tp.instrument_id, tp.client_order_id,
+                    tp.venue_order_id, cancel_ms * 1_000_000,
+                )
+                for _ in range(200):
+                    if tp.status == OrderStatus.CANCELED:
+                        break
+                    await asyncio.sleep(0.01)
+                assert tp.status == OrderStatus.CANCELED
+                client.parity_data["frontendOpenOrders"].remove(tp_raw)
+                client.parity_data["orderStatuses"][tp_cloid]["order"].update(
+                    status="canceled", statusTimestamp=cancel_ms,
+                )
+                client._cm_info_usage.clear()
+                assert client.request_effect_parity_refresh()
+                await client._cm_refresh_task
+                assert client.recovery_healthy(), client._cm_ws_failure
+                assert len(active.native_fill_details()) == 2
+                marks["BTC"] = "10000"
+
+                async def complete_owned(action, instrument, side, quantity, price,
+                                         reduce_only, level, trade_id, fee,
+                                         btc_size, sol_size, equity):
+                    intent = strategy._domain._intent(
+                        episode, action, 1 if side == OrderSide.BUY else -1,
+                        level, quantity=float(quantity),
+                    )
+                    native = strategy.order_factory.limit(
+                        instrument_id=instrument.id, order_side=side,
+                        quantity=Quantity.from_str(quantity), price=Price.from_str(price),
+                        time_in_force=TimeInForce.GTC, reduce_only=reduce_only,
+                    )
+                    native_id = str(native.client_order_id)
+                    strategy._pending_by_order[native_id] = intent
+                    strategy._sigma_by_order[native_id] = None
+                    strategy._decision_index_by_order[native_id] = 1485 + trade_id
+                    assert sink(
+                        client_order_id=native_id, intent_id=intent.id, episode_id=episode.id,
+                        action=action, instrument_id=str(instrument.id),
+                        quantity=quantity, reduce_only=reduce_only,
+                    )
+                    strategy.submit_order(native)
+                    for _ in range(200):
+                        if native.status == OrderStatus.ACCEPTED:
+                            break
+                        await asyncio.sleep(0.01)
+                    assert native.status == OrderStatus.ACCEPTED, (native.status, client._cm_ws_failure, [(row["action"], row["state"]) for row in active.all_submissions()], [(type(event).__name__, getattr(event, "reason", None)) for event in native.events])
+                    coin = "BTC" if instrument.id == HL_BTC.id else "SOL"
+                    order_cloid = str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(
+                        nautilus_pyo3.ClientOrderId(native_id),
+                    ))
+                    raw = {
+                        "coin": coin, "oid": int(str(native.venue_order_id)),
+                        "cloid": order_cloid,
+                        "side": "B" if side == OrderSide.BUY else "A",
+                        "origSz": quantity, "sz": quantity,
+                        "reduceOnly": reduce_only, "orderType": "Limit",
+                        "tif": "Gtc", "limitPx": price,
+                        "timestamp": native.ts_init // 1_000_000,
+                    }
+                    client.parity_data["orderStatuses"][order_cloid] = {
+                        "status": "order", "order": {
+                            "order": raw, "status": "open",
+                            "statusTimestamp": raw["timestamp"] + 1,
+                        },
+                    }
+                    client.parity_data["frontendOpenOrders"].append(raw)
+                    client._cm_info_usage.clear()
+                    assert client.request_effect_parity_refresh(), client._cm_ws_failure
+                    await client._cm_refresh_task
+                    assert client.recovery_healthy(), client._cm_ws_failure
+
+                    await asyncio.sleep(0.005)
+                    event_ms = node.kernel.clock.timestamp_ns() // 1_000_000
+                    event_ns = event_ms * 1_000_000
+                    raw["sz"] = "0.00000"
+                    client.parity_data["frontendOpenOrders"].remove(raw)
+                    client.parity_data["orderStatuses"][order_cloid]["order"].update(
+                        status="filled", statusTimestamp=event_ms,
+                    )
+                    client.parity_data["userFillsByTime"].append({
+                        "coin": coin, "oid": raw["oid"], "tid": trade_id,
+                        "time": event_ms, "side": raw["side"],
+                        "sz": quantity, "px": price, "fee": fee,
+                        "feeToken": "USDC", "hash": "0xfake" + str(trade_id),
+                        "crossed": True,
+                    })
+                    positions = []
+                    for position_coin, size, mark in (
+                        ("BTC", btc_size, Decimal("10000")),
+                        ("SOL", sol_size, Decimal("100")),
+                    ):
+                        if size:
+                            positions.append({"position": {
+                                "coin": position_coin, "szi": str(size),
+                                "entryPx": str(mark), "leverage": {"type": "cross"},
+                                "positionValue": str(abs(size) * mark),
+                                "unrealizedPnl": "0",
+                            }})
+                    venue_state = client.parity_data["clearinghouseState"]
+                    venue_state["assetPositions"] = positions
+                    margin = abs(btc_size) * Decimal("1000") + abs(sol_size) * Decimal("10")
+                    notional = abs(btc_size) * Decimal("10000") + abs(sol_size) * Decimal("100")
+                    free = equity - margin
+                    for summary in (venue_state["marginSummary"], venue_state["crossMarginSummary"]):
+                        summary.update(accountValue=str(equity), totalRawUsd=str(equity),
+                                       totalMarginUsed=str(margin), totalNtlPos=str(notional))
+                    venue_state["withdrawable"] = str(free)
+                    client.generate_account_state([
+                        AccountBalance(Money(equity, USDC), Money(margin, USDC), Money(free, USDC)),
+                    ], [], True, event_ns)
+                    client.generate_order_filled(
+                        native.strategy_id, native.instrument_id, native.client_order_id,
+                        native.venue_order_id, None, TradeId(str(trade_id)), side,
+                        OrderType.LIMIT, Quantity.from_str(quantity), Price.from_str(price),
+                        USDC, Money(Decimal(fee), USDC), LiquiditySide.TAKER, event_ns,
+                    )
+                    for _ in range(200):
+                        if active.has_applied_fill(str(trade_id)) and native.status == OrderStatus.FILLED:
+                            break
+                        await asyncio.sleep(0.01)
+                    assert native.status == OrderStatus.FILLED
+                    assert active.has_applied_fill(str(trade_id))
+                    await asyncio.sleep(0.05)
+                    client._cm_info_usage.clear()
+                    assert client.request_effect_parity_refresh(), client._cm_ws_failure
+                    await client._cm_refresh_task
+                    assert client.recovery_healthy(), client._cm_ws_failure
+                    view = strategy._validated_live_money()
+                    assert (view.equity, view.margin_used, view.free_collateral) == (equity, margin, free)
+                    assert view.position_sizes == tuple(sorted(
+                        (name, size) for name, size in (("BTC", btc_size), ("SOL", sol_size)) if size
+                    ))
+                    return native
+
+                replacement_order = await complete_owned(
+                    "BTC_REDUCE", HL_BTC, OrderSide.SELL, "0.00500", "10000.0",
+                    True, 1, 103, "0.0225", Decimal("0.02000"),
+                    Decimal("0"), Decimal("99.8200"),
+                )
+                sol_add = await complete_owned(
+                    "SOL_ADD", HL_SOL, OrderSide.SELL, "0.10", "100.00",
+                    False, 1, 104, "0.0045", Decimal("0.02000"),
+                    Decimal("-0.10000"), Decimal("99.8155"),
+                )
+                sol_exit = await complete_owned(
+                    "SOL_EXIT", HL_SOL, OrderSide.BUY, "0.10", "100.00",
+                    True, None, 105, "0.0045", Decimal("0.02000"),
+                    Decimal("0"), Decimal("99.8110"),
+                )
+                btc_close = await complete_owned(
+                    "BTC_REDUCE", HL_BTC, OrderSide.SELL, "0.02000", "10000.0",
+                    True, 2, 106, "0.0900", Decimal("0"),
+                    Decimal("0"), Decimal("99.7210"),
+                )
+                final_mass = await client.generate_mass_status()
+                assert len(final_mass.order_reports) == 6
+                assert sum(len(batch) for batch in final_mass.fill_reports.values()) == 6
+                assert not final_mass.position_reports
+                assert await client._cm_parity_verifier(final_mass)
+                assert node.cache.positions_open() == []
+                assert active.applied_fill_ids() == frozenset({str(tid) for tid in range(101, 107)})
+                durable_fills = active.native_fill_details()
+                assert len(durable_fills) == 6
+                durable_fees = sum((Decimal(row["commission_amount"]) for row in durable_fills), Decimal("0"))
+                native_fills = node.trader.generate_fills_report().to_dict("records")
+                assert len(native_fills) == 6
+                native_fees = sum((Decimal(str(row["commission"]).split()[0]) for row in native_fills), Decimal("0"))
+                assert native_fees == durable_fees == Decimal("0.2790")
+                native_account = node.cache.account_for_venue(Venue("HYPERLIQUID"))
+                assert native_account.balance_total(USDC).as_decimal() == Decimal("99.7210")
+                assert native_account.balance_free(USDC).as_decimal() == Decimal("99.7210")
+                assert len(active.all_submissions()) == 6
+                assert all(row["state"] == "TERMINAL" for row in active.all_submissions())
+                client._cm_info_usage.clear()
+                assert client.request_effect_parity_refresh(), client._cm_ws_failure
+                await client._cm_refresh_task
+                assert strategy.recovery_confirmed, client._cm_ws_failure
+                final_money = strategy._validated_live_money()
+                print("COUPLED_CYCLE_PROOF=" + json.dumps({
+                    "stage": "flat", "orders": len(final_mass.order_reports),
+                    "fills": len(native_fills), "fees": str(native_fees),
+                    "equity": str(final_money.equity),
+                    "margin": str(final_money.margin_used),
+                    "strict_generations": info_calls[0],
+                }), flush=True)
+                await node.kernel.stop_async()
+                node.kernel.dispose()
+                active.close()
+                return
             if fault == "foreign":
                 client.parity_data["frontendOpenOrders"].append({
                     **raw_order, "oid": 8, "cloid": "0x" + "f" * 32,
                 })
             elif fault == "unknown":
-                client.parity_data["orderStatus"] = {"status": "unknown"}
+                client.parity_data["orderStatuses"][cloid] = {"status": "unknown"}
             elif fault == "stale":
                 client.generate_account_state(
                     [AccountBalance(Money(Decimal("99"), USDC), Money(0, USDC), Money(Decimal("99"), USDC))],
@@ -1402,7 +1752,7 @@ def test_connected_local_denial_keeps_full_periodic_parity_and_next_submit(tmp_p
     assert not submit_log.exists()  # No fake or external execution call.
 
 
-@pytest.mark.parametrize("fault", ("foreign", "unknown", "stale"))
+@pytest.mark.parametrize("fault", ("cycle", "foreign", "unknown", "stale"))
 def test_connected_owned_open_order_periodic_info_and_margin_fail_closed(tmp_path, fault):
     if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
         pytest.skip("requires disposable loopback Redis")
@@ -1420,6 +1770,16 @@ def test_connected_owned_open_order_periodic_info_and_margin_fail_closed(tmp_pat
     env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
     run = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
     assert run.returncode == 0, run.stderr
+    if fault == "cycle":
+        proof = json.loads(next(line.split("=", 1)[1] for line in run.stdout.splitlines() if line.startswith("COUPLED_CYCLE_PROOF=")))
+        assert Decimal(proof.pop("fees")) == Decimal("0.2790")
+        assert proof == {
+            "stage": "flat", "orders": 6, "fills": 6,
+            "equity": "99.7210", "margin": "0",
+            "strict_generations": proof["strict_generations"],
+        }
+        assert proof["strict_generations"] >= 9
+        return
     result = json.loads(next(line.split("=", 1)[1] for line in run.stdout.splitlines() if line.startswith("COUPLED_OPEN_PROOF=")))
     assert result["fault"] == fault
     assert result["strict_generations"] >= 3
