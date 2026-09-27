@@ -3660,6 +3660,7 @@ body:has(.nautilus-app-shell) { background:#090d0e; }
   border-radius: var(--radius-md);
   background: rgba(9, 15, 28, 0.55);
   padding: var(--space-3) var(--space-4);
+  overflow-wrap: anywhere;
 }
 
 .nautilus-diagnostics summary {
