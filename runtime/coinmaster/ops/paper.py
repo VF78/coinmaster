@@ -52,6 +52,7 @@ class PaperRuntime:
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_commands (idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_command_audit (idempotency_key TEXT PRIMARY KEY, command TEXT NOT NULL, status TEXT NOT NULL, ts_ns INTEGER NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_events (event_id TEXT PRIMARY KEY, kind TEXT NOT NULL)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS paper_native_fill_details (trade_id TEXT PRIMARY KEY, native_event_id TEXT, client_order_id TEXT, venue_order_id TEXT, episode_id TEXT, instrument_id TEXT NOT NULL, order_side TEXT, quantity TEXT NOT NULL, price TEXT NOT NULL, commission_amount TEXT, commission_currency TEXT, liquidity_side TEXT, ts_event_ns INTEGER, ts_init_ns INTEGER)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_deposit_protection (id INTEGER PRIMARY KEY CHECK(id=1), instance_id TEXT NOT NULL, account_id TEXT NOT NULL, currency TEXT NOT NULL, body TEXT NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_deposit_audit (event_key TEXT PRIMARY KEY, action TEXT NOT NULL, old_body TEXT, new_body TEXT NOT NULL, ts_ns INTEGER NOT NULL)")
         self.db.execute("CREATE TABLE IF NOT EXISTS paper_snapshot (id INTEGER PRIMARY KEY CHECK(id=1), body TEXT NOT NULL)")
@@ -209,6 +210,78 @@ class PaperRuntime:
             return True
         except sqlite3.IntegrityError:
             return False
+
+    @_journal_locked
+    def record_native_fill(
+        self, *, trade_id: str, native_event_id: str | None,
+        client_order_id: str | None, venue_order_id: str | None,
+        instrument_id: str, order_side: str | None, quantity: str, price: str,
+        commission_amount: str | None, commission_currency: str | None,
+        liquidity_side: str | None, ts_event_ns: int | None,
+        ts_init_ns: int | None,
+    ) -> bool:
+        """Append exact native fill facts with the existing fill-event cursor."""
+        if not trade_id or not instrument_id or not quantity or not price:
+            raise ValueError("NATIVE_FILL_REQUIRED_FACT_MISSING")
+        try:
+            self.db.execute("BEGIN IMMEDIATE")
+            self.db.execute("INSERT INTO paper_events VALUES (?, ?)", (trade_id, "fill"))
+            episode = self.db.execute(
+                "SELECT episode_id FROM paper_intents WHERE client_order_id=?", (client_order_id,),
+            ).fetchone() if client_order_id is not None else None
+            self.db.execute(
+                "INSERT INTO paper_native_fill_details VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (trade_id, native_event_id, client_order_id, venue_order_id,
+                 episode[0] if episode is not None else None, instrument_id, order_side,
+                 quantity, price, commission_amount, commission_currency,
+                 liquidity_side, ts_event_ns, ts_init_ns),
+            )
+            self._bump_native_revision()
+            self.db.commit()
+            return True
+        except sqlite3.IntegrityError as error:
+            self.db.rollback()
+            row = self.db.execute("SELECT kind FROM paper_events WHERE event_id=?", (trade_id,)).fetchone()
+            if row is not None and row[0] == "fill":
+                existing = self.db.execute(
+                    "SELECT native_event_id, client_order_id, venue_order_id, instrument_id, "
+                    "order_side, quantity, price, commission_amount, commission_currency, "
+                    "liquidity_side, ts_event_ns, ts_init_ns "
+                    "FROM paper_native_fill_details WHERE trade_id=?", (trade_id,),
+                ).fetchone()
+                if existing is None:
+                    # A pre-schema fill event stays historical ID-only evidence.
+                    return False
+                if existing == (
+                    native_event_id, client_order_id, venue_order_id, instrument_id,
+                    order_side, quantity, price, commission_amount, commission_currency,
+                    liquidity_side, ts_event_ns, ts_init_ns,
+                ):
+                    return False
+                raise ValueError("NATIVE_FILL_FACT_CONFLICT") from error
+            raise RuntimeError("NATIVE_FILL_ID_COLLISION") from error
+        except BaseException:
+            self.db.rollback()
+            raise
+
+    @_journal_locked
+    def native_fill_details(self, cursor: int = 0, limit: int = 100) -> list[dict]:
+        """Read future native fill facts only; no historical reconstruction."""
+        if type(cursor) is not int or cursor < 0 or type(limit) is not int or not 1 <= limit <= 500:
+            raise ValueError("NATIVE_FILL_QUERY_BOUNDS_INVALID")
+        columns = (
+            "cursor", "trade_id", "native_event_id", "client_order_id",
+            "venue_order_id", "episode_id", "instrument_id", "order_side",
+            "quantity", "price", "commission_amount", "commission_currency",
+            "liquidity_side", "ts_event_ns", "ts_init_ns",
+        )
+        return [dict(zip(columns, row)) for row in self.db.execute(
+            "SELECT rowid, trade_id, native_event_id, client_order_id, venue_order_id, "
+            "episode_id, instrument_id, order_side, quantity, price, commission_amount, "
+            "commission_currency, liquidity_side, ts_event_ns, ts_init_ns "
+            "FROM paper_native_fill_details WHERE rowid > ? ORDER BY rowid LIMIT ?",
+            (cursor, limit),
+        )]
 
     @_journal_locked
     def record_submission(self, *, client_order_id: str, intent_id: str, episode_id: str, action: str, instrument_id: str, quantity: str, reduce_only: bool, strategy_state: bytes | None = None, order_shape: dict | None = None) -> bool:

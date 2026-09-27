@@ -294,6 +294,10 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             native_account_total="10000", strategy_restartable=True,
         )
         hooks = LifecycleHooks(runtime)
+        generic_kinds = []
+        def generic_event(event_id, kind):
+            generic_kinds.append(kind)
+            return hooks.record_event(event_id, kind)
         policy = HyperliquidSandboxMarginPolicy(profile, SANDBOX_LEVERAGES, SANDBOX_MARK_MAX_AGE_NS)
 
         class DepositProbe(WaveOverlayStrategy):
@@ -347,7 +351,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
             active_seed=Decimal("10000"), margin_policy=policy, candidate=candidate,
             entries_enabled=True, entries_gate=lambda: runtime.entry_control_state() == "RUNNING",
-            event_sink=hooks.record_event, submission_sink=hooks,
+            event_sink=generic_event, native_fill_sink=runtime.record_native_fill, submission_sink=hooks,
             market_exit_time_in_force=TimeInForce.IOC, market_exit_reduce_only=True,
             deposit_runtime=runtime, deposit_instance_id="hl-stageg-deposit",
             deposit_account_id="HYPERLIQUID-001",
@@ -412,6 +416,13 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             )
             assert saved["latched"] and saved["exit_state"] == expected_state
             assert len([item for item in runtime.events() if item["kind"] == "fill"]) == len(fills)
+            assert "fill" not in generic_kinds  # No second event-sink write.
+            details = runtime.native_fill_details()
+            assert len(details) == len(fills)
+            assert len({item["trade_id"] for item in details}) == len(details)
+            assert all(item["instrument_id"] == str(BTC_PERP) and item["order_side"] in {"BUY", "SELL"} for item in details)
+            assert all(item["quantity"] and item["price"] and item["commission_currency"] == "USDC" for item in details)
+            assert all(item["ts_event_ns"] is not None and item["native_event_id"] is not None for item in details)
             assert node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal() < Decimal("10000")
         finally:
             await node.kernel.stop_async()

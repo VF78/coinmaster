@@ -52,6 +52,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     entries_enabled: bool = True
     entries_gate: object | None = None
     event_sink: object | None = None
+    native_fill_sink: object | None = None
     submission_sink: object | None = None
     live_mark_client_id: ClientId | None = None
     btc_signal_data_type: DataType | None = None
@@ -880,7 +881,7 @@ class WaveOverlayStrategy(Strategy):
             return
         # The audit event may have committed just before a crash; it is not
         # an atomic receipt that the domain fill was applied.
-        self._record_native_event(trade_id, "fill")
+        self._record_native_fill(event)
         self._seen_trade_ids.add(trade_id)
         self._record_fill_audit(event)
         if str(event.client_order_id) in self._deposit_exit_orders:
@@ -1328,6 +1329,25 @@ class WaveOverlayStrategy(Strategy):
         if intent.action == "BTC_REDUCE":
             return max(0, len(self._bars) - 1)
         return self._decision_index_by_order.get(client_order_id, max(0, len(self._bars) - 1))
+
+    def _record_native_fill(self, event: OrderFilled) -> None:
+        sink = self.config.native_fill_sink
+        if not callable(sink):
+            self._record_native_event(str(event.trade_id), "fill")
+            return
+        optional = lambda value: None if value is None else str(value)
+        sink(
+            trade_id=str(event.trade_id), native_event_id=optional(getattr(event, "id", None)),
+            client_order_id=optional(getattr(event, "client_order_id", None)),
+            venue_order_id=optional(getattr(event, "venue_order_id", None)),
+            instrument_id=str(event.instrument_id),
+            order_side=optional(getattr(getattr(event, "order_side", None), "name", None)),
+            quantity=str(event.last_qty.as_decimal()), price=str(event.last_px.as_decimal()),
+            commission_amount=str(event.commission.as_decimal()) if event.commission is not None else None,
+            commission_currency=str(event.commission.currency) if event.commission is not None else None,
+            liquidity_side=optional(getattr(getattr(event, "liquidity_side", None), "name", None)),
+            ts_event_ns=getattr(event, "ts_event", None), ts_init_ns=getattr(event, "ts_init", None),
+        )
 
     def _record_native_event(self, event_id: str, kind: str) -> bool | None:
         sink = self.config.event_sink

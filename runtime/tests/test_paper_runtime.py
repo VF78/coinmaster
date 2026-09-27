@@ -25,6 +25,65 @@ def test_paper_runtime_is_wal_durable_idempotent_and_fail_closed(tmp_path) -> No
     reopened.close()
 
 
+def test_native_fill_details_are_atomic_idempotent_future_only_and_restart_durable(tmp_path) -> None:
+    path = tmp_path / "native-fill.sqlite"
+    runtime = PaperRuntime(path, "native-fill", 10**20)
+    runtime.acquire()
+    assert runtime.record_submission(
+        client_order_id="client-1", intent_id="intent-1", episode_id="episode-1",
+        action="BTC_REDUCE", instrument_id="BTC-USD-PERP.HYPERLIQUID",
+        quantity="0.01000", reduce_only=True,
+    )
+    detail = dict(
+        trade_id="trade-1", native_event_id="event-1", client_order_id="client-1",
+        venue_order_id="venue-1", instrument_id="BTC-USD-PERP.HYPERLIQUID",
+        order_side="SELL", quantity="0.00500", price="60000.1",
+        commission_amount="0.045000", commission_currency="USDC",
+        liquidity_side="MAKER", ts_event_ns=123, ts_init_ns=124,
+    )
+    before = runtime.native_revision()
+    assert runtime.record_native_fill(**detail)
+    rows = runtime.native_fill_details()
+    assert rows == [{"cursor": rows[0]["cursor"], **detail, "episode_id": "episode-1"}]
+    assert runtime.native_revision() == before + 1
+    assert [item for item in runtime.events() if item["kind"] == "fill"] == [
+        {"cursor": runtime.events()[-1]["cursor"], "event_id": "trade-1", "kind": "fill"},
+    ]
+    assert runtime.native_fill_details(cursor=rows[0]["cursor"]) == []
+    assert not runtime.record_native_fill(**detail)
+    assert runtime.native_revision() == before + 1 and runtime.native_fill_details() == rows
+    for changed in ({"price": "60000.2"}, {"commission_amount": "0.046000"}):
+        with pytest.raises(ValueError, match="NATIVE_FILL_FACT_CONFLICT"):
+            runtime.record_native_fill(**{**detail, **changed})
+        assert runtime.native_revision() == before + 1 and runtime.native_fill_details() == rows
+    # Existing ID-only historical fills are not fabricated into new detail rows.
+    assert runtime.record_native_event("old-trade", "fill")
+    assert not runtime.record_native_fill(**{**detail, "trade_id": "old-trade"})
+    assert len(runtime.native_fill_details()) == 1
+    # If the detail insert fails, the event and revision roll back together.
+    runtime.db.execute("CREATE TRIGGER reject_fill BEFORE INSERT ON paper_native_fill_details WHEN NEW.trade_id=\"reject\" BEGIN SELECT RAISE(ABORT, \"reject\"); END")
+    failed = {**detail, "trade_id": "reject"}
+    with pytest.raises(RuntimeError, match="NATIVE_FILL_ID_COLLISION"):
+        runtime.record_native_fill(**failed)
+    assert not any(item["event_id"] == "reject" for item in runtime.events())
+    assert runtime.native_revision() == before + 2
+    runtime.close()
+    reopened = PaperRuntime(path, "native-fill", 10**20)
+    assert reopened.native_fill_details() == rows
+    assert not reopened.record_native_fill(**detail)
+    unknown = {
+        **detail, "trade_id": "trade-2", "native_event_id": None,
+        "client_order_id": None, "venue_order_id": None, "order_side": None,
+        "commission_amount": None, "commission_currency": None,
+        "liquidity_side": None, "ts_event_ns": None, "ts_init_ns": None,
+    }
+    assert reopened.record_native_fill(**unknown)
+    assert reopened.native_fill_details(cursor=rows[0]["cursor"]) == [
+        {"cursor": reopened.native_fill_details()[-1]["cursor"], **unknown, "episode_id": None},
+    ]
+    reopened.close()
+
+
 def test_modelled_funding_is_signed_idempotent_and_restart_safe(tmp_path) -> None:
     path = tmp_path / "paper.sqlite"
     runtime = PaperRuntime(path, "owner-a", 100)

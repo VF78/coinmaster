@@ -449,7 +449,7 @@ class HyperliquidTestnetNode:
             active_seed=self.starting_cash, margin_policy=policy,
             candidate=self.candidate, seed_bars=self.warmup_bundle.bars,
             entries_enabled=True, entries_gate=self._entries_enabled,
-            event_sink=self.hooks.record_event, submission_sink=self.hooks,
+            event_sink=self.hooks.record_event, native_fill_sink=self.state.record_native_fill, submission_sink=self.hooks,
             btc_signal_id=BYBIT_IDS[0], sol_signal_id=BYBIT_IDS[1],
             execution_policy_hash=self.gate.execution_policy_hash,
             execution_policy_version="hl-mainnet-public-data-native-sandbox-v1",
