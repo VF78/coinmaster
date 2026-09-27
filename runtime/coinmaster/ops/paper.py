@@ -209,6 +209,7 @@ class PaperRuntime:
             self.db.commit()
             return True
         except sqlite3.IntegrityError:
+            self.db.rollback()
             return False
 
     @_journal_locked

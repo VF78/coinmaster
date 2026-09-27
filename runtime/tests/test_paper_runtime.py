@@ -41,6 +41,8 @@ def test_native_fill_details_are_atomic_idempotent_future_only_and_restart_durab
         commission_amount="0.045000", commission_currency="USDC",
         liquidity_side="MAKER", ts_event_ns=123, ts_init_ns=124,
     )
+    assert runtime.record_native_event("order-1", "order")
+    assert not runtime.record_native_event("order-1", "order")
     before = runtime.native_revision()
     assert runtime.record_native_fill(**detail)
     rows = runtime.native_fill_details()
