@@ -26,3 +26,135 @@
 +    #[pyo3(name = "connection_epoch")]
 +    fn py_connection_epoch(&self) -> u64 {
 +        self.connection_epoch()
+--- a/crates/adapters/hyperliquid/src/websocket/handler.rs
++++ b/crates/adapters/hyperliquid/src/websocket/handler.rs
+@@ -322,0 +323 @@
++                            let is_action = matches!(&request, PostRequest::Action { .. });
+@@ -327 +328,15 @@
+-                                    if let Err(e) = self.send_with_retry(payload).await {
++                                    // Trading actions are approved only for the initial socket.
++                                    // A held command must never cross a reconnect or be retried
++                                    // on a replacement writer. Info reads retain their retry path.
++                                    let sent = if is_action {
++                                        match &self.client {
++                                            Some(client) => client
++                                                .send_text_on_connection(payload, None, 0)
++                                                .await
++                                                .map_err(|e| anyhow::anyhow!("{e}")),
++                                            None => Err(anyhow::anyhow!("No WebSocket client available")),
++                                        }
++                                    } else {
++                                        self.send_with_retry(payload).await
++                                    };
++                                    if let Err(e) = sent {
+@@ -1489,0 +1505,110 @@
++    }
++
++    #[tokio::test]
++    async fn held_action_post_is_not_sent_on_replacement_socket() {
++        use futures_util::{SinkExt, StreamExt};
++        use nautilus_network::websocket::{
++            TransportBackend, WebSocketClient, WebSocketConfig, channel_message_handler,
++        };
++        use tokio_tungstenite::accept_async;
++
++        use crate::http::models::{
++            HyperliquidExchangeRequest, HyperliquidExecAction, HyperliquidSignature,
++        };
++
++        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
++        let url = format!("ws://{}", listener.local_addr().unwrap());
++        let (drop_tx, drop_rx) = tokio::sync::oneshot::channel();
++        let (ready_tx, ready_rx) = tokio::sync::oneshot::channel();
++        let (check_tx, check_rx) = tokio::sync::oneshot::channel();
++        let server = tokio::spawn(async move {
++            let (first, _) = listener.accept().await.unwrap();
++            let mut first = accept_async(first).await.unwrap();
++            drop_rx.await.unwrap();
++            first.send(tokio_tungstenite::tungstenite::Message::Close(None)).await.unwrap();
++            drop(first);
++            let (second, _) = listener.accept().await.unwrap();
++            let mut second = accept_async(second).await.unwrap();
++            ready_tx.send(()).unwrap();
++            check_rx.await.unwrap();
++            // No Action frame may appear on the replacement socket.
++            tokio::time::timeout(Duration::from_millis(250), second.next())
++                .await
++                .is_err()
++        });
++
++        let (message_handler, raw_rx) = channel_message_handler();
++        let ws = WebSocketClient::connect(
++            WebSocketConfig {
++                url,
++                headers: vec![],
++                heartbeat: None,
++                heartbeat_msg: None,
++                reconnect_timeout_ms: Some(2_000),
++                reconnect_delay_initial_ms: Some(1),
++                reconnect_delay_max_ms: Some(10),
++                reconnect_backoff_factor: Some(2.0),
++                reconnect_jitter_ms: Some(0),
++                reconnect_max_attempts: None,
++                idle_timeout_ms: None,
++                backend: TransportBackend::Tungstenite,
++                proxy_url: None,
++            },
++            Some(message_handler),
++            None,
++            None,
++            vec![],
++            None,
++        )
++        .await
++        .unwrap();
++        let epoch = ws.connection_epoch_atomic();
++        let signal = Arc::new(AtomicBool::new(false));
++        let (cmd_tx, cmd_rx) = tokio::sync::mpsc::unbounded_channel();
++        let (out_tx, _out_rx) = tokio::sync::mpsc::unbounded_channel();
++        let post_router = PostRouter::new();
++        let cloid_cache: CloidCache = Arc::new(Mutex::new(FifoCacheMap::<
++            Ustr,
++            ClientOrderId,
++            CLOID_CACHE_CAPACITY,
++        >::new()));
++        let mut handler = FeedHandler::new(
++            signal,
++            cmd_rx,
++            raw_rx,
++            out_tx,
++            None,
++            SubscriptionState::new(':'),
++            cloid_cache,
++            Arc::clone(&post_router),
++        );
++        let id = 100;
++        let rx = post_router.register(id).await.unwrap();
++        cmd_tx.send(HandlerCommand::SetClient(ws)).unwrap();
++        cmd_tx.send(HandlerCommand::Post {
++            id,
++            request: PostRequest::Action {
++                payload: HyperliquidExchangeRequest::new(
++                    HyperliquidExecAction::Cancel { cancels: vec![], fast: None },
++                    1,
++                    HyperliquidSignature::new("0x00".into(), "0x00".into(), 0),
++                ),
++            },
++        }).unwrap();
++
++        // The handler queue is intentionally held until the transport has
++        // swapped writers. Old-epoch Action must fail at the writer.
++        drop_tx.send(()).unwrap();
++        tokio::time::timeout(Duration::from_secs(3), ready_rx).await.unwrap().unwrap();
++        tokio::time::timeout(Duration::from_secs(3), async {
++            while epoch.load(std::sync::atomic::Ordering::Acquire) == 0 {
++                tokio::task::yield_now().await;
++            }
++        }).await.unwrap();
++        let task = tokio::spawn(async move {
++            while handler.next().await.is_some() {}
++        });
++        assert!(tokio::time::timeout(Duration::from_secs(3), rx).await.unwrap().is_err());
++        check_tx.send(()).unwrap();
++        assert!(server.await.unwrap());
++        task.abort();
