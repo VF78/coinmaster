@@ -43,6 +43,7 @@ const required = [
   ['dashboard presents public BTC/SOL market context', 'Markets'],
   ['dashboard does not invent a zero trade-history claim', 'No virtual trades yet'],
   ['dashboard explains the native history evidence limit', 'Fill-level trade history is not included in the native dashboard projection.'],
+  ['dashboard withholds stale drawdown protection values', '{protectionFresh ? <div className="runtime-account-grid">'],
   ['dashboard keeps raw identity in collapsed diagnostics', 'Diagnostics and source identity'],
   ['strategy groups exact running settings for traders', 'Signal and safety settings'],
   ['strategy moves source hashes into diagnostics', 'Strategy identity and account limits'],

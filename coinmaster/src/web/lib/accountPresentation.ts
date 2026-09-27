@@ -53,3 +53,15 @@ export function dashboardState(state: HlStagegProjection | null): DashboardState
 export function protectionIsVerified(state: HlStagegProjection | null): boolean {
   return Boolean(state && state.recovery_required !== true && state.projection_state === "READY" && state.deposit_protection?.state === "ARMED");
 }
+
+export function protectionIsFresh(
+  state: HlStagegProjection | null,
+  nowNs = Date.now() * 1_000_000,
+  maxAgeNs = 15_000_000_000,
+): boolean {
+  if (!protectionIsVerified(state)) return false;
+  const observedAtNs = state?.deposit_protection?.observed_at_ns;
+  if (observedAtNs == null || !Number.isFinite(observedAtNs)) return false;
+  const ageNs = nowNs - observedAtNs;
+  return ageNs >= 0 && ageNs <= maxAgeNs;
+}

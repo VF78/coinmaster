@@ -5,7 +5,7 @@ import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
 import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlStagegControls, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
-import { accountFigures, dashboardState, fundingLabel, protectionIsVerified } from '../lib/accountPresentation';
+import { accountFigures, dashboardState, fundingLabel, protectionIsFresh, protectionIsVerified } from '../lib/accountPresentation';
 import { appendSessionMarkSample, markSparklinePath, positionPresentation, TRADER_MARKETS, type MarkSample } from '../lib/traderPresentation';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
@@ -270,7 +270,7 @@ export function RuntimePage() {
   const activeExposure = runtimeStatus.exposure;
   const protection = state?.deposit_protection;
   const protectionVerified = protectionIsVerified(state);
-  const protectionFresh = Boolean(protectionVerified && protection?.observed_at_ns && Date.now() * 1_000_000 - protection.observed_at_ns <= 15_000_000_000);
+  const protectionFresh = protectionIsFresh(state);
   const protectionArmed = protectionFresh && protection?.state === 'ARMED';
   return <main className="terminal-layout nautilus-runtime-workspace">
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={runtimeStatus.tone}>{loading && !state ? "LOADING" : runtimeStatus.label}</Badge>}>
@@ -285,7 +285,7 @@ export function RuntimePage() {
       {state?.account.status === 'PARTIAL' ? <p className="runtime-empty-note">Account read is PARTIAL. Missing native fields remain UNKNOWN.</p> : null}
     </Card>
     <Card title="Drawdown protection" actions={<Badge tone={protectionArmed ? "success" : "danger"}>{protectionArmed ? "ARMED" : state?.recovery_required ? "UNVERIFIED" : protection?.state ?? "NOT ARMED"}</Badge>}>
-      {protectionVerified ? <div className="runtime-account-grid"><Stat label="Drawdown limit" value={String(protection?.drawdown_limit_percent) + "%"} /><Stat label="Equity" value={protection?.equity ?? "Unavailable"} /><Stat label="High-water" value={protection?.high_water_equity ?? "Unavailable"} /><Stat label="Threshold" value={protection?.threshold_equity ?? "Unavailable"} /><Stat label="Daily close UTC" value={protection?.last_daily_close_utc ?? "Unavailable"} /><Stat label="Observed" value={protection?.observed_at_ns ? new Date(protection.observed_at_ns / 1_000_000).toLocaleString() : "Unavailable"} /></div> : <p className="runtime-empty-note">{state?.recovery_required ? "Protection baseline is unverified while recovery is required. Displayed values are withheld until the native account is recovered." : protectionVerified ? "Protection read is stale. Values are withheld until a fresh worker read is available." : "Protection is not armed."}</p>}
+      {protectionFresh ? <div className="runtime-account-grid"><Stat label="Drawdown limit" value={String(protection?.drawdown_limit_percent) + "%"} /><Stat label="Equity" value={protection?.equity ?? "Unavailable"} /><Stat label="High-water" value={protection?.high_water_equity ?? "Unavailable"} /><Stat label="Threshold" value={protection?.threshold_equity ?? "Unavailable"} /><Stat label="Daily close UTC" value={protection?.last_daily_close_utc ?? "Unavailable"} /><Stat label="Observed" value={protection?.observed_at_ns ? new Date(protection.observed_at_ns / 1_000_000).toLocaleString() : "Unavailable"} /></div> : <p className="runtime-empty-note">{state?.recovery_required ? "Protection baseline is unverified while recovery is required. Displayed values are withheld until the native account is recovered." : protectionVerified ? "Protection read is stale. Values are withheld until a fresh worker read is available." : "Protection is not armed."}</p>}
     </Card>
     <section className="trader-market-grid" aria-label="BTC and SOL Markets">
       {TRADER_MARKETS.map(({ symbol, instrumentId }) => {

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import type { HlStagegProjection } from './nautilusApi';
-import { accountFigures, dashboardState, fundingLabel, protectionIsVerified } from './accountPresentation';
+import { accountFigures, dashboardState, fundingLabel, protectionIsFresh, protectionIsVerified } from './accountPresentation';
 
 function projection(account: Partial<HlStagegProjection['account']>, overrides: Partial<HlStagegProjection> = {}): HlStagegProjection {
   return {
@@ -84,4 +84,18 @@ test("healthy owned flat projection can say flat and trusts only armed protectio
   assert.equal(status.exposure, "Flat");
   assert.equal(status.canAssertFlat, true);
   assert.equal(protectionIsVerified({ ...healthy, deposit_protection: { state: "ARMED", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), true);
+});
+
+test('protection values are fresh only for a current sample within the 15-second window', () => {
+  const observedAt = 100_000_000_000;
+  const armed = projection({}, {
+    deposit_protection: {
+      state: 'ARMED', drawdown_limit_percent: 50, equity: '10000', high_water_equity: '10000',
+      threshold_equity: '5000', daily_sample_missed: false, observed_at_ns: observedAt,
+    },
+  });
+  assert.equal(protectionIsFresh(armed, observedAt + 15_000_000_000), true);
+  assert.equal(protectionIsFresh(armed, observedAt + 15_000_000_001), false);
+  assert.equal(protectionIsFresh(armed, observedAt - 1), false);
+  assert.equal(protectionIsFresh(projection({}, { deposit_protection: { ...armed.deposit_protection!, observed_at_ns: null } }), observedAt), false);
 });
