@@ -586,6 +586,7 @@ def test_stageg_fill_reader_relays_bounded_authenticated_get_and_exact_nullable_
     from contextlib import contextmanager
 
     body = {
+        "version": "hl-stageg-native-fills-v1", "instance_id": "hl-stageg-testnet", "run_epoch": "epoch-1",
         "fills": [{
             "cursor": 7, "trade_id": "trade-7", "native_event_id": "event-7",
             "client_order_id": "client-7", "venue_order_id": None, "episode_id": None,
@@ -687,3 +688,27 @@ def test_stageg_fill_endpoint_keeps_operator_auth_and_relays_worker_facts(monkey
     assert result["fills"][0]["trade_id"] == "fill-1"
     assert result["fills"][0]["commission_amount"] is None
     assert result["version"] == "hl-stageg-native-fills-v1"
+
+
+def test_stageg_fill_reader_rejects_missing_or_wrong_worker_identity(monkeypatch):
+    import coinmaster.api.runtime_sidecar as sidecar
+    from coinmaster.api.runtime_sidecar import HlStagegFillReader
+
+    base = {
+        "version": "hl-stageg-native-fills-v1", "instance_id": "hl-stageg-testnet", "run_epoch": "epoch-1",
+        "fills": [], "next_cursor": 0, "detail_store_available": True, "historical_id_only_count": 0,
+    }
+    class Response:
+        def __init__(self, body): self.body = body
+        def __enter__(self): return self
+        def __exit__(self, *_args): return None
+        def read(self): return json.dumps(self.body).encode()
+    for invalid in (
+        {**base, "version": "other"},
+        {**base, "instance_id": "coinmaster-paper"},
+        {key: value for key, value in base.items() if key != "run_epoch"},
+    ):
+        monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *_args, body=invalid, **_kwargs: Response(body))
+        with pytest.raises(HTTPException) as error:
+            HlStagegFillReader("http://127.0.0.1:18183", "internal-token").history()
+        assert error.value.status_code == 503

@@ -669,48 +669,32 @@
             "type": "integer"
           },
           "instance_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Instance Id"
+            "const": "hl-stageg-testnet",
+            "title": "Instance Id",
+            "type": "string"
           },
           "next_cursor": {
             "title": "Next Cursor",
             "type": "integer"
           },
           "run_epoch": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Run Epoch"
+            "title": "Run Epoch",
+            "type": "string"
           },
           "version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Version"
+            "const": "hl-stageg-native-fills-v1",
+            "title": "Version",
+            "type": "string"
           }
         },
         "required": [
           "fills",
           "next_cursor",
           "detail_store_available",
-          "historical_id_only_count"
+          "historical_id_only_count",
+          "version",
+          "instance_id",
+          "run_epoch"
         ],
         "title": "HlStagegFillHistory",
         "type": "object"
@@ -1788,6 +1772,20 @@
       },
       "RunInput": {
         "properties": {
+          "bounded_interval": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bounded Interval"
+          },
           "config_id": {
             "title": "Config Id",
             "type": "string"

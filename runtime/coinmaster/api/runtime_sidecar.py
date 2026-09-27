@@ -489,9 +489,16 @@ class HlStagegFillHistory(RuntimeSchema):
     next_cursor: int
     detail_store_available: bool
     historical_id_only_count: int
-    version: str | None = None
-    instance_id: str | None = None
-    run_epoch: str | None = None
+    version: Literal["hl-stageg-native-fills-v1"]
+    instance_id: Literal["hl-stageg-testnet"]
+    run_epoch: str
+
+    @field_validator("run_epoch")
+    @classmethod
+    def nonempty_run_epoch(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("run_epoch is required")
+        return value
 
 
 class HlStagegFillReader:
@@ -500,7 +507,7 @@ class HlStagegFillReader:
         self.url, self.token = url.rstrip("/"), token
 
     def history(self, cursor: int = 0, limit: int = 100) -> HlStagegFillHistory:
-        if cursor < 0 or not 1 <= limit <= 500:
+        if cursor < 0 or not 1 <= limit <= 100:
             raise HTTPException(422, "fill history query bounds invalid")
         if not self.token:
             raise HTTPException(503, "Stage-G fill history is unavailable")
@@ -513,7 +520,7 @@ class HlStagegFillReader:
             with urllib.request.urlopen(request, timeout=2) as response:
                 payload = json.loads(response.read())
             result = HlStagegFillHistory.model_validate(payload)
-            if result.version not in (None, "hl-stageg-native-fills-v1") or result.instance_id not in (None, "hl-stageg-testnet"):
+            if result.version != "hl-stageg-native-fills-v1" or result.instance_id != "hl-stageg-testnet" or not result.run_epoch:
                 raise ValueError("invalid Stage-G fill response identity")
             return result
         except HTTPException:

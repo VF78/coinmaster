@@ -248,8 +248,9 @@ export function RuntimePage() {
     const refreshFills = () => void getHlStagegFills(0, 100).then((data) => {
       if (active) {
         setFillHistory((current) => {
-          const retained = current?.fills.filter((fill) => fill.cursor > data.next_cursor) ?? [];
-          return { ...data, fills: [...data.fills, ...retained], next_cursor: Math.max(data.next_cursor, current?.next_cursor ?? 0) };
+          if (!current || current.run_epoch !== data.run_epoch) return data;
+          const retained = current.fills.filter((fill) => fill.cursor > data.next_cursor);
+          return { ...data, fills: [...data.fills, ...retained], next_cursor: Math.max(data.next_cursor, current.next_cursor) };
         });
         setFillHistoryHasMore(data.fills.length === 100);
         setFillHistoryUnavailable(false);
@@ -260,7 +261,7 @@ export function RuntimePage() {
     return () => { active = false; window.clearInterval(timer); };
   }, []);
   const loadMoreFills = () => {
-    if (!fillHistory || !fillHistoryHasMore) return;
+    if (!fillHistory || !fillHistoryHasMore || !state?.run_epoch || fillHistory.run_epoch !== state.run_epoch) return;
     void getHlStagegFills(fillHistory.next_cursor, 100).then((data) => {
       setFillHistory((current) => current ? {
         ...current, fills: [...current.fills, ...data.fills],
@@ -302,6 +303,7 @@ export function RuntimePage() {
   const protectionVerified = protectionIsVerified(state);
   const protectionFresh = protectionIsFresh(state);
   const protectionArmed = protectionFresh && protection?.state === 'ARMED';
+  const fillHistoryMatchesRun = Boolean(state?.run_epoch && fillHistory?.run_epoch === state.run_epoch);
   return <main className="terminal-layout nautilus-runtime-workspace">
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={runtimeStatus.tone}>{loading && !state ? "LOADING" : runtimeStatus.label}</Badge>}>
       <div className="runtime-hero__heading"><div><p className="trader-hero__lead">Local Sandbox execution for BTC and SOL. Live orders are disabled.</p><p className="trader-note">{entryGateMessage}. Live orders are disabled.</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
@@ -363,8 +365,10 @@ export function RuntimePage() {
     })()}
     <Card title="Native fill history" actions={<Badge tone="neutral">READ ONLY</Badge>}>
       <p className="muted">Exact native fills recorded by the Stage-G journal. Fees and identifiers are shown only when present; no trade PnL or reconstructed round trips are inferred.</p>
-      {fillHistoryUnavailable || !fillHistory?.detail_store_available
-        ? <p className="runtime-empty-note">Fill details are unavailable from this worker journal. {fillHistory?.historical_id_only_count != null ? fillHistory.historical_id_only_count + ' historical fill event' + (fillHistory.historical_id_only_count === 1 ? ' has' : 's have') + ' IDs only; prices and quantities were not retained.' : 'History availability is unknown.'}</p>
+      {!fillHistoryMatchesRun
+        ? <p className="runtime-empty-note">{fillHistoryUnavailable ? 'Native fill history could not be read.' : !state?.run_epoch ? 'Current worker identity is unavailable; fill history is hidden.' : 'History is refreshing after a worker restart; rows from the previous run are hidden.'}</p>
+        : !fillHistory?.detail_store_available
+        ? <p className="runtime-empty-note">Fill details are unavailable from this worker journal. {(fillHistory?.historical_id_only_count ?? 'Unknown') + ' historical fill event' + (fillHistory?.historical_id_only_count === 1 ? ' has' : 's have') + ' IDs only; prices and quantities were not retained.'}</p>
         : <>
           {fillHistory.historical_id_only_count > 0 ? <p className="muted">{fillHistory.historical_id_only_count} older fill event{fillHistory.historical_id_only_count === 1 ? ' has' : 's have'} IDs only. Their trade details are unavailable and were not reconstructed.</p> : null}
           <DataTable rows={fillHistory.fills.map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed native fills recorded yet." mobileTitle={(fill) => fill.instrument_id} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[

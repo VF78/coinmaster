@@ -50,6 +50,8 @@ const required = [
   ['research maps blockers to human text and preserves codes', 'Technical blocker codes'],
   ['dashboard shows native fill history without pnl reconstruction', 'Native fill history'],
   ['dashboard never computes completed-round-trip PnL', 'no trade PnL or reconstructed round trips are inferred'],
+  ['dashboard binds fill rows to current worker epoch', 'fillHistory?.run_epoch === state.run_epoch'],
+  ['worker epoch changes discard paged rows from the old run', 'current.run_epoch !== data.run_epoch'],
   ['strategy moves source hashes into diagnostics', 'Strategy identity and account limits'],
   ['settings leaves unproven Stage-G controls disabled', 'Flatten virtual exposure'],
 ] as const;

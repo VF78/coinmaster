@@ -595,14 +595,20 @@ export interface components {
             fills: components["schemas"]["HlStagegFill"][];
             /** Historical Id Only Count */
             historical_id_only_count: number;
-            /** Instance Id */
-            instance_id?: string | null;
+            /**
+             * Instance Id
+             * @constant
+             */
+            instance_id: "hl-stageg-testnet";
             /** Next Cursor */
             next_cursor: number;
             /** Run Epoch */
-            run_epoch?: string | null;
-            /** Version */
-            version?: string | null;
+            run_epoch: string;
+            /**
+             * Version
+             * @constant
+             */
+            version: "hl-stageg-native-fills-v1";
         };
         /** HlStagegHashes */
         HlStagegHashes: {
@@ -1006,6 +1012,10 @@ export interface components {
         };
         /** RunInput */
         RunInput: {
+            /** Bounded Interval */
+            bounded_interval?: {
+                [key: string]: string;
+            } | null;
             /** Config Id */
             config_id: string;
             /**
