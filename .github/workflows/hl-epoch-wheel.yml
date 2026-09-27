@@ -29,18 +29,19 @@ jobs:
           command -v clang
           command -v clang++
           df -h .
-      - name: Verify official sdist and apply tracked adapter patch
+      - name: Verify official tag and apply tracked adapter patch
         run: |
           mkdir -p "$RUNNER_TEMP/hl-wheel"
           cd "$RUNNER_TEMP/hl-wheel"
-          curl -fL --retry 3 -o nautilus_trader-1.231.0.tar.gz https://files.pythonhosted.org/packages/22/b7/a899df9daa2d84b9bb546a982b951f9336c814014c8545466d3eb138993b/nautilus_trader-1.231.0.tar.gz
-          printf "%s  %s\n" 142dde40e77339745aa5fe6bcbb3de5624cee087f526879da00f127df077530f nautilus_trader-1.231.0.tar.gz | sha256sum -c -
-          tar -xzf nautilus_trader-1.231.0.tar.gz
+          git clone --depth 1 --branch v1.231.0 https://github.com/nautechsystems/nautilus_trader.git nautilus_trader-1.231.0
           cd nautilus_trader-1.231.0
+          test "$(git rev-parse HEAD)" = 27a8e54e7ac3c57d6cbf8891f0283dfbaee97317
+          test "$(git describe --tags --exact-match)" = v1.231.0
+          grep -Fqx "version = \"1.231.0\"" pyproject.toml
+          test -f Cargo.lock
+          test -f examples/tutorials/Cargo.toml
+          test -f patches/pyo3-stub-gen/Cargo.toml
           sha256sum Cargo.lock > "$RUNNER_TEMP/hl-wheel/cargo-lock.sha256"
-          test ! -e examples/tutorials/Cargo.toml
-          grep -Fqx "  \"examples/tutorials\"," Cargo.toml
-          sed -i "/^  \"examples\/tutorials\",$/d" Cargo.toml
           patch --dry-run -p1 < "$GITHUB_WORKSPACE/runtime/patches/nautilus-1.231.0-hl-connection-epoch.patch"
           patch -p1 < "$GITHUB_WORKSPACE/runtime/patches/nautilus-1.231.0-hl-connection-epoch.patch"
           # Official build.py accepts stable/nightly aliases only. Permit the
@@ -54,6 +55,7 @@ jobs:
           RUSTUP_TOOLCHAIN=1.97.1 CARGO_INCREMENTAL=0 python -m build --wheel --outdir "$RUNNER_TEMP/hl-wheel/nautilus_trader-1.231.0/dist" "$RUNNER_TEMP/hl-wheel/nautilus_trader-1.231.0"
           cd nautilus_trader-1.231.0
           cargo +1.97.1 test --release -p nautilus-hyperliquid held_action_post_is_not_sent_on_replacement_socket --lib
+          sha256sum -c "$RUNNER_TEMP/hl-wheel/cargo-lock.sha256"
           sha256sum dist/*.whl > "$RUNNER_TEMP/hl-wheel/wheel.sha256"
           cat "$RUNNER_TEMP/hl-wheel/wheel.sha256"
       - uses: actions/upload-artifact@v4
