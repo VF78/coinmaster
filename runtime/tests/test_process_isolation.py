@@ -3,9 +3,11 @@ from __future__ import annotations
 import os
 import sys
 import time
+from pathlib import Path
 from types import SimpleNamespace
 
 from coinmaster.api.app import BASELINE_CONFIG, ControlStore, StrategyConfig, configured_research_data_root
+from coinmaster.api import research_jobs
 from coinmaster.api.research_jobs import ResearchJobManager
 from coinmaster.ops.hyperliquid_testnet import BTC_PERP, FeedBook, HyperliquidTestnetNode
 from scripts.process_isolation_doctor import check, check_host_metadata
@@ -62,7 +64,7 @@ def test_runtime_research_data_root_is_writable_state_directory_for_job_creation
             break
         time.sleep(0.02)
     assert result.status == "COMPLETED"
-    assert state_data in __import__("pathlib").Path(run.work_dir).parents
+    assert state_data in Path(run.work_dir).parents
 
 
 def test_actual_popen_child_does_not_inherit_venue_credentials_or_trader_paths(tmp_path, monkeypatch) -> None:
@@ -111,3 +113,53 @@ def test_research_child_and_public_only_trader_observation_stub_run_concurrently
     finally:
         canceled = manager.cancel(run.id)
         assert canceled.status == "CANCELED"
+
+
+def _wait_for_terminal(store, run_id: str, timeout: float = 8):
+    deadline = time.monotonic() + timeout
+    result = store.get_run(run_id)
+    while time.monotonic() < deadline:
+        result = store.get_run(run_id)
+        if result.status not in {"STARTING", "RUNNING", "CANCEL_REQUESTED"}:
+            return result
+        time.sleep(0.02)
+    return result
+
+
+def test_research_job_memory_ceiling_fails_closed(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(research_jobs, "MAX_JOB_ADDRESS_SPACE_BYTES", 256 * 1024 * 1024)
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    command = [sys.executable, "-m", "coinmaster.research.job_test_helper", "--mode", "memory-over-limit"]
+    manager = ResearchJobManager(store, tmp_path / "data", {"native_baseline": command}, test_options={})
+    run = manager.start(config, "native_baseline")
+    result = _wait_for_terminal(store, run.id)
+    work = Path(run.work_dir)
+    assert result.status == "FAILED"
+    assert (work / "memory-allocation-started").is_file()
+    assert not (work / "memory-allocation-completed").exists()
+    assert ResearchJobManager._group_gone(result.process_group)
+    assert not store.has_research_lease(run.id)
+
+
+def test_research_job_wall_limit_terminates_owned_descendants(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(research_jobs, "MAX_JOB_WALL_SECONDS", 2.0)
+    store = ControlStore(str(tmp_path / "control.sqlite"))
+    config = store.save_config(StrategyConfig.model_validate(BASELINE_CONFIG))
+    command = [sys.executable, "-m", "coinmaster.research.job_test_helper", "--mode", "spawn-descendant"]
+    manager = ResearchJobManager(store, tmp_path / "data", {"native_baseline": command}, test_options={})
+    run = manager.start(config, "native_baseline")
+    work = Path(run.work_dir)
+    marker = work / "descendant.pid"
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline and not marker.exists():
+        time.sleep(0.02)
+    assert marker.is_file(), "test child did not spawn its descendant before the wall deadline"
+    descendant_pid, descendant_pgid = (int(value) for value in marker.read_text().split())
+    assert descendant_pid > 0
+    assert descendant_pgid == run.process_group
+    result = _wait_for_terminal(store, run.id)
+    assert result.status == "FAILED"
+    assert "RESEARCH_WALL_TIME_LIMIT_EXCEEDED" in result.evidence
+    assert ResearchJobManager._group_gone(result.process_group)
+    assert not store.has_research_lease(run.id)

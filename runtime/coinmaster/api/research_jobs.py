@@ -23,6 +23,8 @@ if TYPE_CHECKING:
 
 
 MAX_STDOUT_BYTES = 256 * 1024
+MAX_JOB_ADDRESS_SPACE_BYTES = 1024 * 1024 * 1024
+MAX_JOB_WALL_SECONDS = 6 * 60 * 60
 ACTIVE = {"STARTING", "RUNNING", "CANCEL_REQUESTED"}
 RESEARCH_ENV_DENY_PREFIXES = (
     "HYPERLIQUID_",
@@ -70,15 +72,15 @@ class ResearchJobManager:
         return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
     @staticmethod
-    def _ps_identity(pid: int, request_path: Path) -> tuple[int, str] | None:
+    def _ps_identity(pid: int, request_path: Path, excluded_command_fragment: str | None = None) -> tuple[int, str] | None:
         try:
             # ``lstart`` binds the identity to this process incarnation, rather
             # than trusting a reusable PID plus command/process-group alone.
-            output = subprocess.check_output(["ps", "-o", "pgid=", "-o", "lstart=", "-o", "command=", "-p", str(pid)], text=True).strip()
+            output = subprocess.check_output(["ps", "-ww", "-o", "pgid=", "-o", "lstart=", "-o", "command=", "-p", str(pid)], text=True).strip()
             if not output:
                 return None
             pgid_text, command = output.split(None, 1)
-            if str(request_path) not in command:
+            if str(request_path) not in command or (excluded_command_fragment and excluded_command_fragment in command):
                 return None
             return int(pgid_text), hashlib.sha256(output.encode()).hexdigest()
         except (OSError, subprocess.CalledProcessError, ValueError):
@@ -218,16 +220,25 @@ class ResearchJobManager:
             command = [part.replace("{job_request}", str(request_path)) for part in self.commands[command_name]]
             if "{job_request}" not in self.commands[command_name]:
                 command.extend(["--job-request", str(request_path)])
+            limiter = Path(__file__).resolve().parents[1] / "research" / "job_limiter.py"
+            launch_command = [sys.executable, str(limiter), str(MAX_JOB_ADDRESS_SPACE_BYTES), "--", *command]
             try:
                 process = subprocess.Popen(
-                    command,
+                    launch_command,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     text=True,
                     start_new_session=True,
                     env=self.isolated_child_environment(),
                 )
-                identity = self._ps_identity(process.pid, request_path)
+                identity = None
+                identity_deadline = time.monotonic() + 2
+                while identity is None and time.monotonic() < identity_deadline and process.poll() is None:
+                    # The memory-limit bootstrap execs the actual allowlisted
+                    # job in place; persist the stable post-exec identity.
+                    identity = self._ps_identity(process.pid, request_path, str(limiter))
+                    if identity is None:
+                        time.sleep(0.01)
                 if identity is None:
                     raise RuntimeError("PROCESS_IDENTITY_UNVERIFIABLE")
                 pgid, digest = identity
@@ -269,11 +280,12 @@ class ResearchJobManager:
         return self.store.update_run(run_id, release_research_lease=True, **values)
 
     @classmethod
-    def _terminate_process(cls, process: subprocess.Popen[str]) -> bool:
-        try:
-            pgid = os.getpgid(process.pid)
-        except OSError:
-            pgid = None
+    def _terminate_process(cls, process: subprocess.Popen[str], pgid: int | None = None) -> bool:
+        if pgid is None:
+            try:
+                pgid = os.getpgid(process.pid)
+            except OSError:
+                pgid = None
         try:
             if pgid:
                 os.killpg(pgid, signal.SIGTERM)
@@ -287,7 +299,20 @@ class ResearchJobManager:
                     os.killpg(pgid, signal.SIGKILL)
             except (ProcessLookupError, OSError):
                 pass
-            process.wait(timeout=1)
+            try:
+                process.wait(timeout=1)
+            except subprocess.TimeoutExpired:
+                return False
+        # Reap the owned leader before checking whether descendants remain in
+        # its process group; a zombie leader still makes killpg(pgid, 0) true.
+        if pgid and not cls._group_gone(pgid):
+            try:
+                os.killpg(pgid, signal.SIGKILL)
+            except (ProcessLookupError, OSError):
+                pass
+            deadline = time.monotonic() + 1
+            while time.monotonic() < deadline and not cls._group_gone(pgid):
+                time.sleep(0.02)
         return process.poll() is not None and cls._group_gone(pgid)
 
     @staticmethod
@@ -317,26 +342,55 @@ class ResearchJobManager:
     def _observe(self, run_id: str, process: subprocess.Popen[str]) -> None:
         lines: list[str] = []
         size = 0
+        run = self.store.get_run(run_id)
+        pgid = run.process_group or process.pid
+        expired = threading.Event()
+        termination_finished = threading.Event()
+        termination: list[bool] = []
+
+        def expire() -> None:
+            if process.poll() is not None and self._group_gone(pgid):
+                return
+            expired.set()
+            termination.append(self._terminate_group(pgid))
+            termination_finished.set()
+
+        wall_timer = threading.Timer(MAX_JOB_WALL_SECONDS, expire)
+        wall_timer.daemon = True
+        wall_timer.start()
         try:
             assert process.stdout is not None
             for line in process.stdout:
                 size += len(line.encode())
                 if size > MAX_STDOUT_BYTES:
-                    self._terminate_process(process)
+                    self._terminate_process(process, pgid)
                     raise RuntimeError("RESEARCH_STDOUT_LIMIT")
                 lines.append(line)
                 item = self._typed(line)
                 if item and item.get("type") == "progress" and self._matches(run_id, item):
                     self.store.update_run(run_id, heartbeat_at=self._now(), progress=max(0, min(99, int(item["progress"]))))
             code = process.wait()
-            self._finalize(run_id, code, lines)
+            if expired.is_set():
+                termination_finished.wait(timeout=3)
+                with self.lock:
+                    current = self.store.get_run(run_id)
+                    if current.status == "CANCEL_REQUESTED":
+                        self._finish_after_verified_death(run_id, "CANCELED", [*current.evidence, "CANCELED_OWNED_PROCESS_GROUP"])
+                    elif current.status in ACTIVE:
+                        if termination and termination[-1] and self._group_gone(pgid):
+                            self._finish_after_verified_death(run_id, "FAILED", [*current.evidence, "RESEARCH_WALL_TIME_LIMIT_EXCEEDED"])
+                        else:
+                            self.store.update_run(run_id, status="CANCEL_REQUESTED", evidence=[*current.evidence, "RESEARCH_WALL_TIME_LIMIT_EXCEEDED", "RESEARCH_WALL_TIMEOUT_TERMINATION_UNCONFIRMED_LEASE_HELD"], cancel_requested_at=self._now(), heartbeat_at=self._now())
+            else:
+                self._finalize(run_id, code, lines)
         except Exception as error:
-            self._terminate_process(process)
+            self._terminate_process(process, pgid)
             with self.lock:
                 run = self.store.get_run(run_id)
                 if run.status in ACTIVE:
                     self._finish_after_verified_death(run_id, "FAILED", [*run.evidence, "RESEARCH_OBSERVER_FAILED", type(error).__name__])
         finally:
+            wall_timer.cancel()
             with self.lock:
                 self.processes.pop(run_id, None)
 
@@ -427,7 +481,7 @@ class ResearchJobManager:
                 return self.store.update_run(run_id, status="CANCEL_REQUESTED", evidence=[*run.evidence, "CANCEL_CONFLICT_IDENTITY_UNVERIFIABLE_LEASE_HELD"], cancel_requested_at=self._now(), heartbeat_at=self._now())
             if run.status != "CANCEL_REQUESTED":
                 self.store.update_run(run_id, status="CANCEL_REQUESTED", cancel_requested_at=self._now(), heartbeat_at=self._now())
-            terminated = self._terminate_process(process) if process is not None else self._terminate_group(owned[1])
+            terminated = self._terminate_process(process, owned[1]) if process is not None else self._terminate_group(owned[1])
             if not terminated:
                 return self.store.update_run(run_id, status="CANCEL_REQUESTED", evidence=[*self.store.get_run(run_id).evidence, "CANCEL_CONFLICT_TERMINATION_UNCONFIRMED_LEASE_HELD"], heartbeat_at=self._now())
             return self._finish_after_verified_death(run_id, "CANCELED", [*self.store.get_run(run_id).evidence, "CANCELED_OWNED_PROCESS_GROUP"])

@@ -5,6 +5,8 @@ import argparse
 import json
 import os
 import signal
+import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -17,13 +19,24 @@ def emit(kind: str, request: dict, **body) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=("complete", "environment", "sleep", "ignore-term", "blocked", "wrong-hash", "large-report", "tampered-artifact"), required=True)
+    parser.add_argument("--mode", choices=("complete", "environment", "sleep", "ignore-term", "memory-over-limit", "spawn-descendant", "blocked", "wrong-hash", "large-report", "tampered-artifact"), required=True)
     parser.add_argument("--job-request", type=Path, required=True)
     args = parser.parse_args()
     request = json.loads(args.job_request.read_text())
     if not wait_for_launch_permit(request):
         raise SystemExit(1)
     emit("progress", request, progress=10)
+    if args.mode == "memory-over-limit":
+        work_dir = Path(request["artifact_dir"]).parent
+        (work_dir / "memory-allocation-started").write_text("started\n")
+        bytearray(384 * 1024 * 1024)
+        (work_dir / "memory-allocation-completed").write_text("allocated\n")
+        raise SystemExit(0)
+    if args.mode == "spawn-descendant":
+        child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
+        child_group = os.getpgid(child.pid)
+        (Path(request["artifact_dir"]).parent / "descendant.pid").write_text(f"{child.pid} {child_group}\n")
+        time.sleep(30)
     if args.mode == "complete":
         time.sleep(0.5)
     if args.mode == "ignore-term":
