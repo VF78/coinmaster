@@ -524,7 +524,9 @@ export interface components {
             /** Threshold Equity */
             threshold_equity?: string | null;
             /** Trigger */
-            trigger?: string | null;
+            trigger?: {
+                [key: string]: string;
+            } | null;
         };
         /** HlStagegEntryControl */
         HlStagegEntryControl: {

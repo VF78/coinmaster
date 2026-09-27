@@ -43,7 +43,7 @@ from coinmaster.ops.hyperliquid_testnet import (
     HyperliquidTestnetNode,
     cross_venue_stage_g_gate,
 )
-from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, HyperliquidUsdcFeeModel, HyperliquidUsdcSandboxExecutionClient, model_fx_pair_and_quote, model_fx_ready, native_equity
+from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, HyperliquidUsdcFeeModel, HyperliquidUsdcSandboxExecutionClient, model_fx_pair_and_quote, model_fx_ready, native_equity, native_money_projection
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import load_candidate
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig, _native_account_money, _native_limit_price
@@ -392,6 +392,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
         node.cache.add_quote_tick(fx_quote)
         node.trader.add_strategy(strategy)
         await node.kernel.start_async()
+        server = thread = None
         try:
             assert strategy._deposit_check()
             runtime.entry_control_command("pause-new-entries", "set-limit")
@@ -416,6 +417,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
 
                 class AttachedWorker:
                     instance = SimpleNamespace(instance_id="hl-stageg-testnet")
+                    run_epoch = "attached-deposit-probe"
                     deposit_control = TestnetWorker.deposit_control
 
                     def __init__(self):
@@ -424,11 +426,15 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
 
                     def projection(self):
                         body = _ready_hl_projection(instance_id=self.instance.instance_id)
-                        body["positions"] = []
-                        body["orders"] = []
-                        body["account"] = {"equity": str(native_equity(
+                        # Use this attached node's native cache and money model; the
+                        # loopback /fills endpoint reads the same durable journal.
+                        body["positions"], body["orders"] = HyperliquidTestnetNode.sandbox_snapshot(
+                            SimpleNamespace(node=node),
+                        )
+                        body["account"] = native_money_projection(
                             strategy.cache, strategy._latest_marks, now_ns=time.time_ns(),
-                        ))}
+                        )
+                        body["events"], body["event_cursor"] = runtime.projection_events(100)
                         body["entry_control"] = {"state": runtime.entry_control_state(), "capability": "READY"}
                         body["deposit_protection"] = strategy.deposit_projection()
                         return body
@@ -486,42 +492,61 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
                         lambda: asyncio.run(api_call(app, method, path, body, authorized=authorized, command_key=command_key)),
                     )
 
-                try:
-                    app = sidecar()
-                    path = "/api/v1/instances/hl-stageg-testnet/controls/set-deposit-protection"
-                    command = {"idempotency_key": "limit-one-" + "a" * 24, "drawdown_limit_percent": 1}
-                    assert (await relay(app, "POST", path, command, authorized=False))[0] == 401
-                    status, applied = await relay(app, "POST", path, command)
-                    assert status == 200 and applied["status"] == "APPLIED"
-                    assert applied["deposit_protection"]["drawdown_limit_percent"] == 1
-                    assert strategy.deposit_projection()["threshold_equity"] == "9900"
-                    # Recreate the ASGI app; trader identity and command state survive.
-                    app = sidecar()
-                    status, projection = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
-                    assert status == 200
-                    assert projection["deposit_protection"]["drawdown_limit_percent"] == 1
-                    assert projection["deposit_protection"]["threshold_equity"] == "9900"
-                    assert os.getpid() == trader_pid and id(node) == trader_identity and node.is_running()
-                    status, resumed = await relay(
-                        app, "POST", "/api/v1/instances/hl-stageg-testnet/controls/resume-new-entries",
-                        command_key="resume-after-limit-" + "b" * 24,
-                    )
-                    assert status == 200 and resumed["entry_control"] == "RUNNING"
-                    assert runtime.entry_control_state() == "RUNNING"
-                finally:
-                    server.shutdown()
-                    server.server_close()
-                    thread.join(timeout=2)
+                app = sidecar()
+                path = "/api/v1/instances/hl-stageg-testnet/controls/set-deposit-protection"
+                command = {"idempotency_key": "limit-one-" + "a" * 24, "drawdown_limit_percent": 1}
+                assert (await relay(app, "POST", path, command, authorized=False))[0] == 401
+                status, applied = await relay(app, "POST", path, command)
+                assert status == 200 and applied["status"] == "APPLIED"
+                assert applied["deposit_protection"]["drawdown_limit_percent"] == 1
+                assert strategy.deposit_projection()["threshold_equity"] == "9900"
+                # Recreate the ASGI app; trader identity and command state survive.
+                app = sidecar()
+                status, projection = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
+                assert status == 200
+                assert projection["deposit_protection"]["drawdown_limit_percent"] == 1
+                assert projection["deposit_protection"]["threshold_equity"] == "9900"
+                assert os.getpid() == trader_pid and id(node) == trader_identity and node.is_running()
+                status, resumed = await relay(
+                    app, "POST", "/api/v1/instances/hl-stageg-testnet/controls/resume-new-entries",
+                    command_key="resume-after-limit-" + "b" * 24,
+                )
+                assert status == 200 and resumed["entry_control"] == "RUNNING"
+                assert runtime.entry_control_state() == "RUNNING"
 
             node.kernel.data_engine.process(_quote(BTC_PERP, "59999.0", "60000.0", time.time_ns()))
             await asyncio.sleep(0.1)
             assert len(node.cache.positions_open()) == 1
             assert strategy.deposit_projection()["state"] == "ARMED"
+            if not fail_exit:
+                status, opened = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
+                assert status == 200 and opened["projection_state"] == "READY"
+                assert opened["positions"] == [{"instrument_id": str(BTC_PERP), "signed_quantity": "0.1", "provenance": "SANDBOX"}]
+                assert opened["orders"] == []
+                assert opened["account"]["native_cash"] == str(node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal())
+                status, first_fills = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet/fills")
+                assert status == 200 and len(first_fills["fills"]) == 1
+                assert first_fills["fills"][0]["trade_id"] == runtime.native_fill_details()[0]["trade_id"]
             node.kernel.data_engine.process(_quote(BTC_PERP, "59999.0", "60000.0", time.time_ns()))
             await asyncio.sleep(0.1)
             assert len(node.cache.orders_open()) == 3
             assert len(runtime.pending_submissions()) == 3
             assert runtime.entry_control_state() == "RUNNING"
+            if not fail_exit:
+                status, working = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
+                assert status == 200 and working["deposit_protection"]["state"] == "ARMED"
+                assert working["deposit_protection"]["threshold_equity"] == "9900"
+                assert (await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet", authorized=False))[0] == 401
+                assert working["positions"] == opened["positions"]
+                assert {item["client_order_id"] for item in working["orders"]} == {
+                    str(order.client_order_id) for order in node.cache.orders_open()
+                }
+                assert len(working["orders"]) == 3
+                assert all(item["reduce_only"] and item["provenance"] == "SANDBOX" for item in working["orders"])
+                assert Decimal(working["account"]["equity"]) == native_equity(
+                    strategy.cache, strategy._latest_marks, now_ns=time.time_ns(),
+                )
+                assert working["entry_control"]["state"] == "RUNNING"
             node.kernel.data_engine.process(_quote(BTC_PERP, "58899.0", "58900.0", time.time_ns()))
             await asyncio.sleep(0.1)
 
@@ -555,7 +580,32 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             assert all(item["quantity"] and item["price"] and item["commission_currency"] == "USDC" for item in details)
             assert all(item["ts_event_ns"] is not None and item["native_event_id"] is not None for item in details)
             assert node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal() < Decimal("10000")
+            if not fail_exit:
+                from coinmaster.api.runtime_sidecar import HlStagegProjection
+                HlStagegProjection.model_validate(worker.projection())
+                status, tripped = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
+                assert status == 200 and tripped["projection_state"] == "READY", tripped
+                assert tripped["positions"] == [] and tripped["orders"] == []
+                assert tripped["deposit_protection"]["state"] == "TRIPPED_FLAT"
+                assert tripped["deposit_protection"]["drawdown_limit_percent"] == 1
+                assert tripped["deposit_protection"]["trigger"]["reason"] == "DEPOSIT_DRAWDOWN_LIMIT"
+                assert tripped["deposit_protection"]["trigger"]["threshold_equity"] == "9900"
+                assert tripped["entry_control"]["state"] == "PAUSED"
+                assert tripped["account"]["native_cash"] == str(node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal())
+                assert Decimal(tripped["account"]["fees"]) == sum(
+                    (Decimal(item["commission"]) for item in strategy.fill_audit), Decimal("0"),
+                )
+                status, closed_fills = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet/fills")
+                assert status == 200 and len(closed_fills["fills"]) == 2
+                assert {item["trade_id"] for item in closed_fills["fills"]} == {
+                    item["trade_id"] for item in runtime.native_fill_details()
+                }
+                assert os.getpid() == trader_pid and id(node) == trader_identity and node.is_running()
         finally:
+            if server is not None:
+                server.shutdown()
+                server.server_close()
+                thread.join(timeout=2)
             await node.kernel.stop_async()
             node.kernel.dispose()
             runtime.close()

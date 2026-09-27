@@ -390,6 +390,19 @@ def test_deposit_protection_contract_uses_money_strings_and_strict_integer_perce
     assert protection.equity == "10000.00" and protection.threshold_equity == "5500.00"
     assert protection.last_daily_close_utc == "2026-09-26T00:00:00.000000000Z"
     assert protection.daily_sample_missed is False
+    triggered = HlStagegDepositProtection.model_validate({
+        "state": "TRIPPED_FLAT", "drawdown_limit_percent": 1,
+        "daily_sample_missed": False,
+        "trigger": {"reason": "DEPOSIT_DRAWDOWN_LIMIT", "equity": "9899.00",
+                    "high_water_equity": "10000", "threshold_equity": "9900",
+                    "drawdown_limit_percent": "1", "observed_at_ns": "1790546959573408018"},
+    })
+    assert triggered.trigger["threshold_equity"] == "9900"
+    with pytest.raises(ValueError):
+        HlStagegDepositProtection.model_validate({
+            "state": "TRIPPED_FLAT", "drawdown_limit_percent": 1,
+            "daily_sample_missed": False, "trigger": "DEPOSIT_DRAWDOWN_LIMIT",
+        })
     for invalid in ("2026-09-26T00:00:00Z", True, -1):
         with pytest.raises(ValueError):
             HlStagegDepositProtection.model_validate({

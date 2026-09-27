@@ -152,7 +152,7 @@ class HlStagegDepositProtection(RuntimeSchema):
     # text before returning to browsers, whose Number type cannot hold int64 ns.
     last_daily_close_utc: str | None = None
     daily_sample_missed: StrictBool
-    trigger: str | None = None
+    trigger: dict[str, str] | None = None
 
     @field_validator("last_daily_close_utc", mode="before")
     @classmethod
