@@ -38,6 +38,9 @@ jobs:
           tar -xzf nautilus_trader-1.231.0.tar.gz
           cd nautilus_trader-1.231.0
           sha256sum Cargo.lock > "$RUNNER_TEMP/hl-wheel/cargo-lock.sha256"
+          test ! -e examples/tutorials/Cargo.toml
+          grep -Fqx "  \"examples/tutorials\"," Cargo.toml
+          sed -i "/^  \"examples\/tutorials\",$/d" Cargo.toml
           patch --dry-run -p1 < "$GITHUB_WORKSPACE/runtime/patches/nautilus-1.231.0-hl-connection-epoch.patch"
           patch -p1 < "$GITHUB_WORKSPACE/runtime/patches/nautilus-1.231.0-hl-connection-epoch.patch"
           # Official build.py accepts stable/nightly aliases only. Permit the
