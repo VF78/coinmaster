@@ -887,6 +887,7 @@ class WaveOverlayStrategy(Strategy):
             order = self.cache.order(event.client_order_id)
             if order is not None and order.is_closed:
                 self._terminal_submission(str(event.client_order_id))
+            self._reconcile_deposit_flat()
             return
         if str(event.client_order_id) in self._liquidation_orders:
             if self.liquidation_audit:
@@ -1052,6 +1053,7 @@ class WaveOverlayStrategy(Strategy):
         self._reconcile_group_flat()
         self._reconcile_liquidation_flat()
         self._reconcile_terminal_flat()
+        self._reconcile_deposit_flat()
 
     def _reconcile_group_flat(self) -> None:
         """Clear a completed close group after the native cache is actually flat."""
@@ -1102,6 +1104,10 @@ class WaveOverlayStrategy(Strategy):
 
     def _terminal_without_fill(self, client_order_id: str) -> None:
         self._terminal_submission(client_order_id)
+        if client_order_id in self._deposit_exit_orders and self._deposit.exit_state == "EXITING":
+            self._deposit.exit_state = "EXIT_INCOMPLETE"
+            now_ns = self.clock.timestamp_ns()
+            self._persist_deposit("EXIT_INCOMPLETE", f"deposit:exit-terminal:{client_order_id}:{now_ns}", now_ns)
         if client_order_id in self._forced_close_orders:
             order = self.cache.order(client_order_id)
             if order is not None:
@@ -1123,6 +1129,8 @@ class WaveOverlayStrategy(Strategy):
             self._submit_forced_closes_from_cache()
 
     def _on_deposit_timer(self, _event) -> None:
+        # Callback delivery can precede the final native cache update.
+        self._reconcile_deposit_flat()
         self._deposit_check()
 
     def _deposit_equity(self) -> Decimal | None:
@@ -1215,21 +1223,37 @@ class WaveOverlayStrategy(Strategy):
             self._deposit_exit_orders.add(oid)
         return super().submit_order(order, *args, **kwargs)
 
-    def post_market_exit(self) -> None:
-        if self.config.deposit_runtime is None or not self._deposit.latched:
-            return
-        flat = not (
-            self.cache.positions_open()
+    def _reconcile_deposit_flat(self) -> bool:
+        """Finish only after native cache and durable submit state confirm flat."""
+        if (
+            self.config.deposit_runtime is None
+            or not self._deposit.latched
+            or not self._deposit_exit_started
+            or self._deposit.exit_state != "EXITING"
+            or self.cache.positions_open()
             or self.cache.orders_open()
             or self.cache.orders_inflight()
             or self.config.deposit_runtime.pending_submissions()
-        )
-        self._deposit.exit_state = "TRIPPED_FLAT" if flat else "EXIT_INCOMPLETE"
-        if flat:
-            self._domain.episode = None
-            self._pending_by_order.clear()
+        ):
+            return False
+        self._deposit.exit_state = "TRIPPED_FLAT"
+        self._domain.episode = None
+        self._pending_by_order.clear()
         now_ns = self.clock.timestamp_ns()
-        self._persist_deposit(self._deposit.exit_state, f"deposit:exit:{now_ns}", now_ns)
+        self._persist_deposit("TRIPPED_FLAT", f"deposit:exit:{now_ns}", now_ns)
+        return True
+
+    def post_market_exit(self) -> None:
+        if self.config.deposit_runtime is None or not self._deposit.latched:
+            return
+        if self._reconcile_deposit_flat():
+            return
+        # Nautilus may finalize its own exit while a submitted order is still
+        # invisible in the cache. Only a zero-submit attempt is a known failure.
+        if self._deposit.exit_state == "EXITING" and not self._deposit_exit_orders:
+            self._deposit.exit_state = "EXIT_INCOMPLETE"
+            now_ns = self.clock.timestamp_ns()
+            self._persist_deposit("EXIT_INCOMPLETE", f"deposit:exit-no-submit:{now_ns}", now_ns)
 
     def deposit_projection(self) -> dict[str, object]:
         result = self._deposit.projection()

@@ -281,7 +281,8 @@ def test_hl_stageg_configured_native_sandbox_entry_exit_fees_account_and_manage_
 
 
 
-def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path) -> None:
+@pytest.mark.parametrize("fail_exit", [False, True])
+def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, fail_exit) -> None:
     """Real HL-ID Sandbox fills, native equity and one PaperRuntime own the latch."""
     async def scenario() -> None:
         candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
@@ -300,6 +301,13 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path) 
                 super().__init__(config)
                 self.quotes = 0
                 self.exit_checks = 0
+                self.exit_attempts = 0
+
+            def market_exit(self):
+                self.exit_attempts += 1
+                if fail_exit:
+                    raise RuntimeError("NATIVE_EXIT_FAILED")
+                return super().market_exit()
 
             def on_quote_tick(self, tick):
                 if tick.instrument_id != self.config.btc_id or self.quotes >= 2:
@@ -389,17 +397,20 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path) 
             await asyncio.sleep(0.1)
 
             fills = node.trader.generate_order_fills_report()
-            assert strategy.exit_checks == 1
-            assert len(fills) == 2
-            assert node.cache.positions_open() == []
+            expected_state = "EXIT_INCOMPLETE" if fail_exit else "TRIPPED_FLAT"
+            assert strategy.exit_checks == strategy.exit_attempts == 1
+            assert len(fills) == (1 if fail_exit else 2)
+            assert bool(node.cache.positions_open()) == fail_exit
             assert runtime.pending_submissions() == []
-            assert [item["action"] for item in strategy.fill_audit] == ["BTC_ENTRY", "MARKET_EXIT"]
+            assert [item["action"] for item in strategy.fill_audit] == (
+                ["BTC_ENTRY"] if fail_exit else ["BTC_ENTRY", "MARKET_EXIT"]
+            )
             assert all(Decimal(item["commission"]) > 0 for item in strategy.fill_audit)
-            assert strategy.deposit_projection()["state"] == "TRIPPED_FLAT"
+            assert strategy.deposit_projection()["state"] == expected_state
             saved = runtime.deposit_protection_state(
                 instance_id="hl-stageg-deposit", account_id="HYPERLIQUID-001",
             )
-            assert saved["latched"] and saved["exit_state"] == "TRIPPED_FLAT"
+            assert saved["latched"] and saved["exit_state"] == expected_state
             assert len([item for item in runtime.events() if item["kind"] == "fill"]) == len(fills)
             assert node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal() < Decimal("10000")
         finally:
@@ -416,10 +427,30 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path) 
         saved = reopened.deposit_protection_state(
             instance_id="hl-stageg-deposit", account_id="HYPERLIQUID-001",
         )
-        assert saved["latched"] and saved["exit_state"] == "TRIPPED_FLAT"
+        assert saved["latched"] and saved["exit_state"] == ("EXIT_INCOMPLETE" if fail_exit else "TRIPPED_FLAT")
         assert reopened.pending_submissions() == []
     finally:
         reopened.close()
+
+def test_deposit_post_market_exit_waits_for_created_native_order_visibility_gap() -> None:
+    """A premature Nautilus finalizer cannot turn an unknown exit into failure."""
+    writes = []
+    deposit = SimpleNamespace(latched=True, exit_state="EXITING")
+    probe = SimpleNamespace(
+        config=SimpleNamespace(deposit_runtime=SimpleNamespace(pending_submissions=lambda: [])),
+        _deposit=deposit, _deposit_exit_started=True, _deposit_exit_orders={"exit-order"},
+        cache=SimpleNamespace(positions_open=lambda: [object()], orders_open=lambda: [], orders_inflight=lambda: []),
+        clock=SimpleNamespace(timestamp_ns=lambda: 10),
+        _persist_deposit=lambda *args: writes.append(args),
+    )
+    probe._reconcile_deposit_flat = lambda: WaveOverlayStrategy._reconcile_deposit_flat(probe)
+    WaveOverlayStrategy.post_market_exit(probe)
+    assert deposit.exit_state == "EXITING" and writes == []
+    probe._deposit_exit_orders.clear()
+    WaveOverlayStrategy.post_market_exit(probe)
+    assert deposit.exit_state == "EXIT_INCOMPLETE"
+    assert writes == [("EXIT_INCOMPLETE", "deposit:exit-no-submit:10", 10)]
+
 
 def test_native_usdc_fee_model_preserves_tiny_partial_maker_precision() -> None:
     model = HyperliquidUsdcFeeModel()
