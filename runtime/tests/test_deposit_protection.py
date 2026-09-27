@@ -35,6 +35,28 @@ def test_utc_high_water_uses_only_fresh_daily_close_and_missed_day_never_fabrica
     assert state.daily_sample_missed
 
 
+def test_default_half_drawdown_uses_initial_or_confirmed_daily_high():
+    initial = DepositProtection()
+    initial.initialize(Decimal("100"), DAY_NS + 1)
+    assert initial.threshold == Decimal("50")
+    assert initial.observe(Decimal("50.01"), DAY_NS + 2) == (False, False)
+    assert initial.observe(Decimal("50"), DAY_NS + 3) == (True, True)
+    assert initial.trigger["high_water_equity"] == "100"
+    assert initial.trigger["threshold_equity"] == "50"
+
+    daily_high = DepositProtection()
+    daily_high.initialize(Decimal("100"), DAY_NS + 1)
+    daily_high.observe(Decimal("110"), 2 * DAY_NS - 1)
+    assert daily_high.high_water == Decimal("100")
+    daily_high.observe(Decimal("109"), 2 * DAY_NS + 1)
+    assert daily_high.high_water == Decimal("110")
+    assert daily_high.threshold == Decimal("55")
+    assert daily_high.observe(Decimal("55.01"), 2 * DAY_NS + 2) == (False, False)
+    assert daily_high.observe(Decimal("55"), 2 * DAY_NS + 3) == (True, True)
+    assert daily_high.trigger["high_water_equity"] == "110"
+    assert daily_high.trigger["threshold_equity"] == "55"
+
+
 def test_true_zero_triggers_and_percent_bounds():
     state = DepositProtection(limit_percent=50)
     state.initialize(Decimal("100"), DAY_NS + 1)

@@ -406,6 +406,9 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             assert len(fills) == (1 if fail_exit else 2)
             assert bool(node.cache.positions_open()) == fail_exit
             assert runtime.pending_submissions() == []
+            if not fail_exit:
+                assert node.cache.orders_open() == []
+                assert node.cache.orders_inflight() == []
             assert [item["action"] for item in strategy.fill_audit] == (
                 ["BTC_ENTRY"] if fail_exit else ["BTC_ENTRY", "MARKET_EXIT"]
             )
