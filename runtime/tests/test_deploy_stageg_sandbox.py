@@ -142,20 +142,33 @@ def test_stage_and_installed_python_checks_execute_against_release_fixture(tmp_p
         "sealed_inputs": {"ok": 2},
     }))
     (root / ".release-commit").write_text(commit + "\n")
+    prime_test = root / "tests/test_hyperliquid_testnet.py"
+    prime_test.write_text("def test_stageg_prime_registers_trading_strategy_with_native_market_exit(): pass\n")
+    # Production Python intentionally refuses pytest, as on the VPS.
+    production_python = tmp_path / "production-python"
+    production_python.write_text(
+        f"#!{sys.executable}\nimport os,sys\n"
+        "if sys.argv[1:3] == ['-m', 'pytest']: sys.exit(97)\n"
+        "os.execv(sys.executable, [sys.executable, *sys.argv[1:]])\n"
+    )
+    production_python.chmod(0o755)
     monkeypatch.setattr(deploy, "RELEASES", tmp_path / "releases")
     monkeypatch.setattr(deploy, "INSTALLED", root)
-    monkeypatch.setattr(deploy, "PYTHON", Path(sys.executable))
+    monkeypatch.setattr(deploy, "PYTHON", production_python)
+    monkeypatch.setattr(deploy, "TEST_PYTHON", Path(sys.executable))
     monkeypatch.setattr(deploy, "manifest_check", lambda *_: None)
     commands = []
     def execute(*args, cwd=None, env=None):
         commands.append(args)
-        if len(args) > 1 and args[1] == "-c":
-            subprocess.run(args, cwd=cwd, env=env, check=True)
+        subprocess.run(args, cwd=cwd, env=env, check=True)
     monkeypatch.setattr(deploy, "run", execute)
     deploy.stage_check(commit)
     deploy.installed_check(commit)
-    assert sum(len(command) > 1 and command[1] == "-c" for command in commands) == 2
-    assert any(len(command) > 2 and command[1:3] == ("-m", "pytest") for command in commands)
+    assert all(command[0] != str(production_python) for command in commands if command[1:3] == ("-m", "pytest"))
+    assert any(command[0] == sys.executable and command[1:3] == ("-m", "pytest") for command in commands)
+    prime_test.write_text("def test_stageg_prime_registers_trading_strategy_with_native_market_exit(): assert False\n")
+    with pytest.raises(subprocess.CalledProcessError):
+        deploy.stage_check(commit)
 
 
 def test_retired_paper_peer_is_explicit_and_active_or_open_port_fails(tmp_path: Path, monkeypatch) -> None:

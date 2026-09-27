@@ -28,6 +28,7 @@ DB = Path("/var/lib/coinmaster-hl-stageg-testnet/hl-stageg-testnet.sqlite")
 BACKUPS = Path("/var/lib/coinmaster-hl-stageg-testnet/backups")
 UNIT_FILE = Path("/etc/systemd/system/coinmaster-hl-stageg-testnet.service")
 PYTHON = INSTALLED / ".venv/bin/python"
+TEST_PYTHON = REPO / "runtime/.venv/bin/python"
 LOCK = Path("/run/coinmaster-stageg-deploy.lock")
 TRADER = "coinmaster-hl-stageg-testnet.service"
 PEERS = ("coinmaster-paper.service", "coinmaster-runtime.service")
@@ -99,8 +100,13 @@ def stage_check(commit: str) -> None:
         "assert g.warmup_state==\"READY\" and g.approval_state==\"SEALED_APPROVAL_MATCH\" and g.attachable\n"
     )
     run(str(PYTHON), "-c", gate, cwd=root, env=env)
+    # The installed interpreter is intentionally production-only; pytest lives
+    # in the canonical source test venv. Both must use pinned Nautilus 1.231.
+    version_check = "import nautilus_trader; assert nautilus_trader.__version__ == '1.231.0'"
+    run(str(PYTHON), "-c", version_check, cwd=root, env=env)
+    run(str(TEST_PYTHON), "-c", version_check, cwd=root, env=env)
     run(
-        str(PYTHON), "-m", "pytest", "-q",
+        str(TEST_PYTHON), "-m", "pytest", "-q",
         str(root / "tests/test_hyperliquid_testnet.py")
         + "::test_stageg_prime_registers_trading_strategy_with_native_market_exit",
         cwd=root, env=env,
