@@ -56,8 +56,10 @@ export function StrategyPage() {
       <div className="stats-grid"><Stat label="Strategy" value={strategy?.strategy_id ?? 'Unavailable'} /><Stat label="Execution" value="Local Sandbox" /><Stat label="Market data" value="HL mainnet public" /><Stat label="Apply to dry run" value="Unavailable" /></div>
       <p className="trader-note">Running settings are read-only. A research draft never changes the active trader.</p>
     </Card>
-    <section className="strategy-settings-grid">{strategyGroups.map(([group, rows]) => <Card className="strategy-settings-card" key={group} title={group} actions={<Badge tone="neutral">RUNNING</Badge>}><DataTable rows={rows} emptyText="No sealed settings available." mobileTitle={(row) => title(row.parameter)} columns={[{ key: 'parameter', header: 'Setting', render: (row) => title(row.parameter) }, { key: 'value', header: 'Running value', render: (row) => displaySetting(row.parameter, row.value) }]} /></Card>)}</section>
-    {advancedRunningParameters.length ? <details className="nautilus-diagnostics"><summary>Advanced strategy rules</summary><DataTable rows={advancedRunningParameters} emptyText="No advanced rules." mobileTitle={(row) => title(row.parameter)} columns={[{ key: 'parameter', header: 'Rule', render: (row) => title(row.parameter) }, { key: 'value', header: 'Running value', render: (row) => displaySetting(row.parameter, row.value) }]} /></details> : null}
+    <section className="strategy-settings-grid">{strategyGroups.map(([group, rows]) => <Card className="strategy-settings-card" key={group} title={group} actions={<Badge tone={runningMatch ? 'success' : 'neutral'}>{runningMatch ? 'Confirmed' : 'Unconfirmed'}</Badge>}>
+      {rows.length ? <dl className="strategy-setting-list">{rows.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl> : <p className="runtime-empty-note">No sealed settings are available.</p>}
+    </Card>)}</section>
+    {advancedRunningParameters.length ? <details className="nautilus-diagnostics"><summary>Advanced strategy rules</summary><dl className="strategy-setting-list">{advancedRunningParameters.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl></details> : null}
     <details className="nautilus-diagnostics"><summary>Strategy identity and account limits</summary><p className="muted">Runner state code: {strategy?.running_state ?? "UNKNOWN"}.</p><p className="muted">Candidate: {strategy?.hashes.candidate_sha256 ?? 'UNKNOWN'} · strategy: {strategy?.hashes.strategy_sha256 ?? 'UNKNOWN'} · policy: {strategy?.hashes.execution_policy_sha256 ?? 'UNKNOWN'}.</p><p className="muted">{strategy?.public_venue_profile ?? 'UNKNOWN'} Account margin: {strategy?.account_margin ?? 'UNKNOWN'} · account fee schedule: {strategy?.account_fee_schedule ?? 'UNKNOWN'} · funding: {strategy?.funding_treatment ?? 'UNKNOWN'}.</p></details>
     <Card className="trader-secondary-card" title="Strategy promotion" actions={<Badge tone="danger">UNAVAILABLE</Badge>}><p className="muted">The running strategy is read-only. Use Research for separate draft and backtest work.</p><Button variant="primary" disabled>Apply strategy</Button></Card>
     <details className="nautilus-diagnostics strategy-research-drafts"><summary>Research drafts / separate from running strategy</summary><Card className="research-drafts-card" title="Saved research draft">
@@ -448,22 +450,21 @@ export function WorkspaceSettingsPage() {
   }
   async function commandEntries(command: 'pause-new-entries' | 'resume-new-entries') {
     if (commandInFlight) return;
-    setCommandInFlight(command); setMessage('Sending Stage-G entry control…');
+    setCommandInFlight(command); setMessage('Updating entry controls…');
     try {
       const result = await commandHlStagegEntries(command, crypto.randomUUID());
       await refresh();
       setMessage(`${result.command === 'pause-new-entries' ? 'New entries paused' : 'New entries resumed'} (${result.status.toLowerCase()} and read back).`);
-    } catch (error) { setMessage(error instanceof Error ? error.message : 'Stage-G entry control failed.'); }
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Entry control update failed.'); }
     finally { setCommandInFlight(null); }
   }
   return <main className="terminal-layout">
-    <Card title="Workspace connection" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'LOADING' : state?.projection_state ?? 'UNAVAILABLE'}</Badge>}>
-      <div className="stats-grid"><Stat label="Instance" value={state?.instance_id ?? 'hl-stageg-testnet'} /><Stat label="Execution" value="Native Sandbox" /><Stat label="Live orders" value="DISABLED" /></div>
-
-      <p className="muted">Funding treatment: {fundingLabel(state)}. It is not posted to Sandbox cash.</p>
+    <Card title="Workspace" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'Connecting' : state?.projection_state === 'READY' ? 'Connected' : state?.projection_state === 'STALE' ? 'Stale' : 'Unavailable'}</Badge>}>
+      <div className="stats-grid"><Stat label="Environment" value="Hyperliquid Sandbox" /><Stat label="Execution" value="Sandbox" /><Stat label="Live order routing" value="Off" /></div>
+      <p className="muted">Funding is observed for reference only and is never credited to Sandbox cash. {fundingLabel(state)}.</p>
       <Button variant="secondary" onClick={() => void refresh()}>Refresh connection</Button>
     </Card>
-    <Card title="Drawdown protection" actions={<Badge tone={protectionFresh ? "success" : "danger"}>{protectionFresh ? "ARMED" : state?.recovery_required ? "UNVERIFIED" : protectionVerified ? "STALE" : "NOT ARMED"}</Badge>}>
+    <Card title="Drawdown protection" actions={<Badge tone={protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
       {state?.recovery_required ? <p className="runtime-empty-note">Recovery is required. Protection values are withheld and settings remain read-only until account ownership is restored.</p> : <>
       <p className="muted">Changes require a paused worker and confirmed flat exposure.</p>
       <div className="rules-form-grid">

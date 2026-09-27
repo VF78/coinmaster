@@ -37,7 +37,7 @@ test('shows native open-account figures and unposted funding as provided', () =>
     '9975.0 USDC', '9971.2 USDC', '3.8 USDC', '10004.1 USDC',
     '-1.2 USDC', '29.1 USDC', '0.8 USDC',
   ]);
-  assert.equal(fundingLabel(projection({})), 'Observed/modelled; not posted');
+  assert.equal(fundingLabel(projection({})), 'Observed only; not credited');
 });
 
 test('keeps missing values unknown and marks equity/PnL stale when the mark is stale', () => {

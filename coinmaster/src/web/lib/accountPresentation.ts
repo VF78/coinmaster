@@ -23,9 +23,9 @@ export function accountFigures(state: HlStagegProjection | null): AccountFigure[
 export function fundingLabel(state: HlStagegProjection | null): string {
   const raw = state?.funding_state?.trim();
   if (!raw) return 'Not posted; settlement is unconfirmed';
-  if (raw === 'OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT') return 'Observed/modelled; next payment and settlement are unconfirmed';
-  if (raw === 'OBSERVED_MODELLED_UNPOSTED') return 'Observed/modelled; not posted';
-  if (raw === 'UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT') return 'Not posted; next payment and settlement are unconfirmed';
+  if (raw === 'OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT') return 'Observed only; next payment and settlement are unconfirmed';
+  if (raw === 'OBSERVED_MODELLED_UNPOSTED') return 'Observed only; not credited';
+  if (raw === 'UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT') return 'Not credited; next payment and settlement are unconfirmed';
   return raw.replaceAll('_', ' ').toLowerCase().replace(/^./, (letter) => letter.toUpperCase());
 }
 

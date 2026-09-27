@@ -27,8 +27,8 @@ test('humanizes research evidence codes while retaining precise diagnostic label
 
 
 test("presents the exact strategy match plainly and keeps run-selection copy consistent", () => {
-  assert.equal(strategyRunnerLabel("RUNNING_MATCH"), "SEALED STRATEGY MATCH");
-  assert.equal(strategyRunnerLabel("SEALED_SOURCE_CHECKED"), "SOURCE CHECKED · RUNNER UNCONFIRMED");
+  assert.equal(strategyRunnerLabel("RUNNING_MATCH"), "Match confirmed");
+  assert.equal(strategyRunnerLabel("SEALED_SOURCE_CHECKED"), "Source checked · worker match unconfirmed");
   assert.equal(researchResultContext(null, "5226e711-abc"), "Selected run 5226e711 · reported results shown below.");
   assert.equal(researchResultContext("12345678-current", "5226e711-abc"), "Active native job 12345678 updates every three seconds.");
   assert.equal(researchResultContext(null, null), "Choose a run from history to inspect its compact result.");

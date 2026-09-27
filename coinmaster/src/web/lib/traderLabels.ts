@@ -80,8 +80,8 @@ export function humanizeResearchCode(code: string): string {
 
 
 export function strategyRunnerLabel(code: string | null | undefined): string {
-  if (code === "RUNNING_MATCH") return "SEALED STRATEGY MATCH";
-  if (code === "SEALED_SOURCE_CHECKED") return "SOURCE CHECKED · RUNNER UNCONFIRMED";
+  if (code === "RUNNING_MATCH") return "Match confirmed";
+  if (code === "SEALED_SOURCE_CHECKED") return "Source checked · worker match unconfirmed";
   return humanizeResearchCode(code ?? "NOT_CONFIRMED");
 }
 
