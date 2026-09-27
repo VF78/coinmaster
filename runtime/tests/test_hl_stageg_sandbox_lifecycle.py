@@ -646,6 +646,13 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             strategy.next_intent = sol_add
             await btc_quote("60000.0", "60001.0", 6)
             assert first.sol_qty == pytest.approx(0.2)
+            # Make native SOL price PnL exceed USD's cent precision so cash
+            # reconciliation tests realized PnL as well as exact USDC fees.
+            node.kernel.data_engine.process(QuoteTick(
+                SOL_PERP, Price.from_str("150.99"), Price.from_str("151.01"),
+                Quantity.from_str("1000.00"), Quantity.from_str("1000.00"), 7, 7,
+            ))
+            await asyncio.sleep(0.1)
             day = datetime(1970, 1, 1, tzinfo=UTC)
             bar = DailyBar(day, day + timedelta(seconds=1), day + timedelta(seconds=1), 60000.0, 60000.0, 150.0)
             half = strategy._domain._sol_exits(first, Features(7, 1, 1.0, 0.0, 0.0, 1.0, 0.3), bar, 7, z=0.3)
@@ -690,9 +697,13 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("MAKER") == 2
             assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("TAKER") == 7
             fees = sum((Decimal(row["commission_amount"]) for row in fills), Decimal("0"))
-            assert fees == Decimal("0.20106031")
+            assert fees == Decimal("0.20115031")
+            positions = node.trader.generate_positions_report().to_dict("records")
+            assert len(positions) == 3 and all(row["side"] == "FLAT" for row in positions)
+            sol_position = next(row for row in positions if str(row["instrument_id"]) == str(SOL_PERP))
+            assert Decimal(str(sol_position["realized_pnl"]).split()[0]) == Decimal("-0.20")
             cash = node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal()
-            assert cash == Decimal("10000") - fees
+            assert cash == Decimal("10000") - Decimal("0.20") - fees
         finally:
             await node.kernel.stop_async()
             node.kernel.dispose()
