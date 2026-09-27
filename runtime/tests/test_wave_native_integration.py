@@ -728,7 +728,7 @@ def test_unknown_ack_stays_pending_until_proven_zero_or_partial_terminal() -> No
 
 
 def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash(tmp_path) -> None:
-    """Feature-only seed; one accelerated native engine processes 22 live UTC closes."""
+    """Feature-only seed; one accelerated native engine closes two episodes."""
     from nautilus_trader.model.identifiers import ClientId
     from coinmaster.ops.paper import PaperRuntime
 
@@ -779,11 +779,11 @@ def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
     sol_type = make_bar_type(SOL_PERP.id, PriceType.LAST)
     policy_marks = tuple(
         MarkPriceUpdate(instrument.id, Decimal("100" if instrument.id == BTC_PERP.id else "30"), day * day_ns)
-        for instrument in (BTC_PERP, SOL_PERP) for day in range(1, 823)
+        for instrument in (BTC_PERP, SOL_PERP) for day in range(1, 846)
     )
     seed: list[DailyBar] = []
     live, marks = [], []
-    for day in range(822):
+    for day in range(845):
         ts = (day + 1) * day_ns
         btc = 100 + day * 0.04 + (6 if (day // 20) % 2 else -6) + (day % 5) * 0.1
         sol = 30 + day * 0.02 + (btc - 100) * 0.30 + (3 if (day // 17) % 2 else -3) + (day % 7) * 0.1
@@ -815,6 +815,8 @@ def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
         ),
         seed_bars=tuple(seed), trading_start_open_ns=800 * day_ns,
         event_sink=journal.record_native_event, submission_sink=JournalSink(),
+        # Bound this acceptance to two entries while preserving all strategy rules.
+        entries_gate=lambda: len(strategy.entry_episodes) < 2,
     ))
     engine = native_engine(strategy)
     engine.add_data(live, sort=False)
@@ -828,6 +830,8 @@ def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
             ("BTC_REDUCE", 806), ("BTC_REDUCE", 806), ("BTC_REDUCE", 806),
             ("SOL_ADD", 808), ("SOL_HALF_EXIT", 809), ("SOL_EXIT", 810),
             ("FORCED_CLOSE", 821), ("BTC_ENTRY", 822),
+            ("FORCED_CLOSE", 841), ("FORCED_CLOSE", 841),
+            ("FORCED_CLOSE", 841), ("FORCED_CLOSE", 841),
         ]
         assert len(strategy.entry_episodes) == 2
         assert strategy.entry_episodes[0] != strategy.entry_episodes[1]
@@ -841,19 +845,28 @@ def test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
         assert first_entry == sum((Decimal(row["qty"]) for row in tps), Decimal("0")) + Decimal(fills[7]["qty"])
         assert all(Decimal(row["commission"]) > 0 for row in fills)
         assert all(row["commission_currency"] == str(BTC_PERP.quote_currency) for row in fills)
-        assert strategy.flat_accounts
-        flat_total, flat_free, flat_locked = strategy.flat_accounts[0]
+        second_entry = Decimal(fills[8]["qty"])
+        assert second_entry == sum((Decimal(row["qty"]) for row in fills[9:]), Decimal("0"))
+        assert len(strategy.flat_accounts) >= 2
+        first_flat_total, first_flat_free, first_flat_locked = strategy.flat_accounts[0]
+        assert first_flat_total == first_flat_free and first_flat_locked == 0
+        assert first_flat_total != Decimal("10000")
+        flat_total, flat_free, flat_locked = strategy.flat_accounts[-1]
         assert flat_total == flat_free and flat_locked == 0
-        assert flat_total != Decimal("10000")
         native_fills = engine.trader.generate_order_fills_report()
         assert len(native_fills) == len(fills)
-        assert len({(row["action"], row["fill_ns"], row["qty"], row["px"]) for row in fills}) == len(fills)
-        assert strategy._domain.episode is not None
-        assert strategy._domain.episode.id == strategy.entry_episodes[1]
-        assert all(order.is_reduce_only and order.is_post_only for order in engine.trader._cache.orders_open())
-        first_episode = strategy.entry_episodes[0]
-        assert not [item for item in journal.pending_submissions() if item["episode_id"] == first_episode]
-        assert len([item for item in journal.events() if item["kind"] == "fill"]) == len(fills)
+        native_positions = engine.trader.generate_positions_report().to_dict("records")
+        assert len(native_positions) == 3 and all(row["side"] == "FLAT" for row in native_positions)
+        native_fees = sum((Decimal(str(fee).split()[0]) for row in native_positions for fee in row["commissions"]), Decimal("0"))
+        assert native_fees == sum((Decimal(row["commission"]) for row in fills), Decimal("0"))
+        assert flat_total == Decimal("10000") + sum((Decimal(str(row["realized_pnl"]).split()[0]) for row in native_positions), Decimal("0"))
+        assert strategy._domain.episode is None
+        assert engine.trader._cache.positions_open() == []
+        assert engine.trader._cache.orders_open() == []
+        assert journal.pending_submissions() == []
+        fill_events = [item for item in journal.events() if item["kind"] == "fill"]
+        assert len(fill_events) == len(fills)
+        assert len({item["event_id"] for item in fill_events}) == len(fills)
     finally:
         engine.dispose()
         journal.close()
