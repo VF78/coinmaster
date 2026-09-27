@@ -9,6 +9,7 @@ import io
 import json
 import os
 import shutil
+import socket
 import sqlite3
 import subprocess
 import sys
@@ -49,6 +50,27 @@ def pid(unit: str) -> int:
     return int(out("systemctl", "show", "-P", "MainPID", unit))
 
 
+def paper_port_open() -> bool:
+    try:
+        with socket.create_connection(("127.0.0.1", 18181), timeout=0.5):
+            return True
+    except ConnectionRefusedError:
+        return False
+
+
+def peers_healthy(peers: dict[str, int]) -> bool:
+    paper, runtime = PEERS
+    return (
+        set(peers) == set(PEERS)
+        and peers[paper] == 0
+        and out("systemctl", "show", "-P", "ActiveState", paper) == "inactive"
+        and out("systemctl", "show", "-P", "UnitFileState", paper) == "disabled"
+        and pid(paper) == 0
+        and not paper_port_open()
+        and peers[runtime] > 0 and active(runtime) and pid(runtime) == peers[runtime]
+    )
+
+
 def status() -> dict:
     with urllib.request.urlopen("http://127.0.0.1:18183/status", timeout=3) as response:
         return json.load(response)
@@ -71,10 +93,10 @@ def stage_check(commit: str) -> None:
         "from pathlib import Path\n"
         "from coinmaster.ops.stage_g_config import load_candidate\n"
         "from coinmaster.ops.hyperliquid_testnet import cross_venue_stage_g_gate\n"
-        "r=Path.cwd();g=cross_venue_stage_g_gate(candidate=load_candidate(r/configs/stage-g-v1.json).candidate,"
-        "warmup_manifest=Path(/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json),"
-        "strategy_path=r/coinmaster/strategy/wave_overlay.py,profile_root=r)\n"
-        "assert g.warmup_state==READY and g.approval_state==SEALED_APPROVAL_MATCH and g.attachable\n"
+        "r=Path.cwd();g=cross_venue_stage_g_gate(candidate=load_candidate(r/\"configs/stage-g-v1.json\").candidate,"
+        "warmup_manifest=Path(\"/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json\"),"
+        "strategy_path=r/\"coinmaster/strategy/wave_overlay.py\",profile_root=r)\n"
+        "assert g.warmup_state==\"READY\" and g.approval_state==\"SEALED_APPROVAL_MATCH\" and g.attachable\n"
     )
     run(str(PYTHON), "-c", gate, cwd=root, env=env)
     run(
@@ -91,11 +113,11 @@ def installed_check(commit: str) -> None:
     code = (
         "import json,sys\n"
         "from pathlib import Path\n"
-        "r=Path.cwd();sys.path.insert(0,str(r/scripts));import release_manifest as m\n"
-        "x=json.loads((r/release-manifest.json).read_text())\n"
-        "assert x[source][commit]==sys.argv[1]\n"
-        "assert m.code_tree(r)==x[runtime_coinmaster]\n"
-        "assert m.seal_inputs(r)==x[sealed_inputs]\n"
+        "r=Path.cwd();sys.path.insert(0,str(r/\"scripts\"));import release_manifest as m\n"
+        "x=json.loads((r/\"release-manifest.json\").read_text())\n"
+        "assert x[\"source\"][\"commit\"]==sys.argv[1]\n"
+        "assert m.code_tree(r)==x[\"runtime_coinmaster\"]\n"
+        "assert m.seal_inputs(r)==x[\"sealed_inputs\"]\n"
     )
     run(str(PYTHON), "-c", code, commit, cwd=INSTALLED)
 
@@ -196,7 +218,7 @@ def health(cash: Decimal, peers: dict[str, int]) -> None:
                 if (
                     not active(TRADER) or worker_pid <= 0 or pid(TRADER) != worker_pid
                     or int(out("systemctl", "show", "-P", "NRestarts", TRADER)) != 0
-                    or any(not active(unit) or pid(unit) != peer for unit, peer in peers.items())
+                    or not peers_healthy(peers)
                     or s.get("process_state") != "PUBLIC_FEEDS_READY"
                     or s.get("native_thread_alive") is not True
                     or s.get("recovery_required") is not False
@@ -231,6 +253,8 @@ def activate(commit: str) -> str:
     stage_check(commit)
     prior = (INSTALLED / ".release-commit").read_text().strip()
     peers = {unit: pid(unit) for unit in PEERS}
+    if not peers_healthy(peers):
+        raise RuntimeError("PEER_STATE_UNEXPECTED")
     if prior == commit:
         installed_check(commit)
         cash = Decimal(status().get("account", {}).get("native_cash", "NaN"))
