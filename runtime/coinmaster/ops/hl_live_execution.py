@@ -108,6 +108,19 @@ class QualifiedInfoBoundary:
             raise RuntimeError("RECOVERY_ACCOUNT_ADDRESS_MISMATCH")
         if hasattr(self, "_cm_scope"):
             raise RuntimeError("RECOVERY_BOUNDARY_ALREADY_CONFIGURED")
+        socket = getattr(self, "_ws_client", None)
+        # Report-only probes may have no socket; such a boundary can never
+        # release LIVE. A real client must expose the patched native epoch.
+        if socket is None:
+            self._cm_ws_epoch = None
+        else:
+            epoch_reader = getattr(socket, "connection_epoch", None)
+            if not callable(epoch_reader):
+                raise RuntimeError("WS_CONNECTION_EPOCH_UNAVAILABLE")
+            epoch = epoch_reader()
+            if not isinstance(epoch, int) or epoch < 0:
+                raise RuntimeError("WS_CONNECTION_EPOCH_INVALID")
+            self._cm_ws_epoch = epoch
         self._cm_scope = scope
         self._cm_info = info
         self._cm_applied_fill_ids = applied_fill_ids
@@ -131,7 +144,15 @@ class QualifiedInfoBoundary:
     def _cm_transport_ok(self) -> bool:
         socket = getattr(self, "_ws_client", None)
         try:
-            active = socket is not None and socket.is_active() and not socket.is_closed()
+            # The native writer increments this epoch before reconnect becomes
+            # active. Two reads bracket current-state checks so a hidden
+            # disconnect/reconnect cannot restore a pre-gap healthy view.
+            before = socket.connection_epoch()
+            active = socket.is_active() and not socket.is_closed()
+            after = socket.connection_epoch()
+            if before != self._cm_ws_epoch or after != before:
+                self._cm_fail("WS_CONNECTION_EPOCH_CHANGED")
+                return False
         except BaseException:
             active = False
         if not active:

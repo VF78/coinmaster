@@ -20,9 +20,10 @@ class Probe(QualifiedInfoBoundary):
         self.fail = fail
         self.no_effect = no_effect
         self.effects = 0
-        self.socket = SimpleNamespace(active=True, closed=False)
+        self.socket = SimpleNamespace(active=True, closed=False, epoch=0)
         self._ws_client = SimpleNamespace(
             is_active=lambda: self.socket.active, is_closed=lambda: self.socket.closed,
+            connection_epoch=lambda: self.socket.epoch,
         )
         scope = NativeLiveRecoveryScope(ACCOUNT, "", 1, None, (), frozenset({"BTC"}))
         self.configure_info_boundary(scope, lambda _: None, lambda: frozenset(), max_ws_messages=limit)
@@ -175,6 +176,36 @@ def test_socket_loss_without_native_disconnect_revokes_and_stays_latched_after_r
         assert client._cm_ws_failure == "WS_TRANSPORT_INACTIVE"
         client.socket.active = True
         assert not client.recovery_healthy()
+        assert revoked
+    asyncio.run(run())
+
+
+def test_stock_socket_without_epoch_cannot_configure_live_boundary():
+    class MissingEpoch(QualifiedInfoBoundary):
+        pass
+    client = MissingEpoch()
+    client._ws_client = SimpleNamespace(is_active=lambda: True, is_closed=lambda: False)
+    scope = NativeLiveRecoveryScope(ACCOUNT, "", 1, None, (), frozenset({"BTC"}))
+    with pytest.raises(RuntimeError, match="WS_CONNECTION_EPOCH_UNAVAILABLE"):
+        client.configure_info_boundary(scope, lambda _: None, lambda: frozenset())
+
+
+def test_hidden_reconnect_epoch_revokes_healthy_status(monkeypatch):
+    from coinmaster.ops import hl_live_execution as owner
+    monkeypatch.setattr(owner, "_WS_HANDLERS", ((Event, "handle"),))
+    async def run():
+        client = Probe()
+        revoked = []
+        client.bind_recovery_revocation(lambda: revoked.append(True))
+        await client.release_after_effect_parity(
+            lambda _: asyncio.sleep(0, result=True), monitor_interval_secs=0.01,
+        )
+        assert client.recovery_healthy()
+        client.socket.active = False
+        client.socket.epoch += 1
+        client.socket.active = True
+        assert not client.recovery_healthy()
+        assert client._cm_ws_failure == "WS_CONNECTION_EPOCH_CHANGED"
         assert revoked
     asyncio.run(run())
 

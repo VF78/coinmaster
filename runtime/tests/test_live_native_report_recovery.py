@@ -78,8 +78,10 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
 
         self.batch_cancel_commands = []
         self.socket_active = True
+        self.socket_epoch = 0
         self._ws_client = SimpleNamespace(
             is_active=lambda: self.socket_active, is_closed=lambda: not self.socket_active,
+            connection_epoch=lambda: self.socket_epoch,
         )
 
     async def _connect(self):

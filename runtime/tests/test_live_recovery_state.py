@@ -93,7 +93,6 @@ def test_recovered_management_and_entries_require_new_fresh_public_feeds():
     assert not restored._feeds_fresh(now)
 
 
-@pytest.mark.xfail(strict=True, reason="pinned 1.231 WS has no disconnect generation; a hidden reconnect leaves old Info proof usable")
 def test_hidden_ws_reconnect_requires_new_strict_receipt_before_reduce_only_submit():
     """A recent money timestamp cannot certify a gap-free native event stream."""
     import time
@@ -101,8 +100,22 @@ def test_hidden_ws_reconnect_requires_new_strict_receipt_before_reduce_only_subm
 
     strategy = RecoverableWaveOverlayStrategy(_strategy().config)
     now = time.time_ns()
-    socket_active = [True]
-    strategy.attach_recovery_health(lambda: socket_active[0])
+    from coinmaster.ops.hl_live_execution import QualifiedInfoBoundary
+    from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
+
+    class EpochProbe(QualifiedInfoBoundary):
+        pass
+
+    client = EpochProbe()
+    socket = SimpleNamespace(active=True, epoch=0)
+    client._ws_client = SimpleNamespace(
+        is_active=lambda: socket.active, is_closed=lambda: not socket.active,
+        connection_epoch=lambda: socket.epoch,
+    )
+    scope = NativeLiveRecoveryScope("0x" + "a" * 40, "", 1, None, (), frozenset({"BTC"}))
+    client.configure_info_boundary(scope, lambda _: None, lambda: frozenset())
+    client._cm_ws_phase = "LIVE"
+    strategy.attach_recovery_health(client.recovery_healthy)
     strategy.attach_live_money_view(lambda: LivePerpsMoneyView(
         "0x" + "a" * 40, "", now // 1_000_000,
         Decimal("10000"), Decimal("10000"), Decimal("0"), Decimal("10000"),
@@ -110,10 +123,10 @@ def test_hidden_ws_reconnect_requires_new_strict_receipt_before_reduce_only_subm
     strategy.recovery_confirmed = True
     strategy._feeds_fresh = lambda _now: True
     # The socket drops and reconnects entirely between health/parity polls.
-    # Pinned Nautilus exposes only current is_active/is_closed, so health is
-    # green again while the last strict Info generation predates the gap.
-    socket_active[0] = False
-    socket_active[0] = True
+    # Current status is green again, but the native writer epoch has advanced.
+    socket.active = False
+    socket.epoch += 1
+    socket.active = True
     order = SimpleNamespace(
         client_order_id="HLTG-HIDDEN-GAP-REDUCE", instrument_id=HL_BTC.id,
         order_type="LIMIT", is_post_only=True, is_reduce_only=True,
@@ -122,6 +135,8 @@ def test_hidden_ws_reconnect_requires_new_strict_receipt_before_reduce_only_subm
     assert strategy._record_submission(
         order, "reduce-after-gap", "episode-after-gap", "BTC_REDUCE",
     ) is False
+    assert client._cm_ws_failure == "WS_CONNECTION_EPOCH_CHANGED"
+    assert not client.recovery_healthy()
 
 
 def test_versioned_state_rejects_wrong_candidate_and_unknown_schema():

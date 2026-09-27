@@ -447,6 +447,10 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
     def _record_submission(self, *args, **kwargs) -> bool:
         # Final pre-submit gate covers queued entries and every reduce-only management action.
         try:
+            self._require_recovery_confirmed()
+        except RuntimeError:
+            return False
+        try:
             self._validated_live_money()
         except ValueError:
             return False

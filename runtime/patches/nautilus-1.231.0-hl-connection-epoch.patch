@@ -1,0 +1,28 @@
+--- a/crates/adapters/hyperliquid/src/websocket/client.rs
++++ b/crates/adapters/hyperliquid/src/websocket/client.rs
+@@ -20 +20 @@
+-        atomic::{AtomicBool, AtomicU8, Ordering},
++        atomic::{AtomicBool, AtomicU8, AtomicU64, Ordering},
+@@ -126,0 +127 @@
++    connection_epoch: Arc<ArcSwap<AtomicU64>>,
+@@ -155,0 +157 @@
++            connection_epoch: Arc::clone(&self.connection_epoch),
+@@ -203,0 +206 @@
++            connection_epoch: Arc::new(ArcSwap::new(Arc::new(AtomicU64::new(0)))),
+@@ -272,0 +276 @@
++        self.connection_epoch.store(client.connection_epoch_atomic());
+@@ -1047,0 +1052,5 @@
++    /// Returns the transport writer epoch, advanced before a reconnect becomes active.
++    pub fn connection_epoch(&self) -> u64 {
++        self.connection_epoch.load().load(Ordering::Acquire)
++    }
++
+--- a/crates/adapters/hyperliquid/src/python/websocket.rs
++++ b/crates/adapters/hyperliquid/src/python/websocket.rs
+@@ -96,0 +97,6 @@
++    }
++
++    /// Returns the transport writer epoch, including completed reconnects.
++    #[pyo3(name = "connection_epoch")]
++    fn py_connection_epoch(&self) -> u64 {
++        self.connection_epoch()
