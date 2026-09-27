@@ -107,3 +107,31 @@ def test_fill_http_old_schema_reports_id_only_count_without_fabrication(fill_ser
     assert payload["historical_id_only_count"] == 1
     assert payload["fills"] == [] and payload["next_cursor"] == 0
     assert runtime.native_revision() == before
+
+
+def test_fill_action_requires_exact_immutable_intent_identity(fill_server):
+    runtime, base = fill_server
+    assert runtime.record_submission(
+        client_order_id="owned-tp", intent_id="intent-tp", episode_id="episode-a",
+        action="BTC_REDUCE", instrument_id="BTC-USD-PERP.HYPERLIQUID",
+        quantity="0.01", reduce_only=True,
+    )
+    assert runtime.record_native_fill(**{**fill("matched"), "client_order_id": "owned-tp"})
+    assert runtime.record_native_fill(**{**fill("wrong-instrument"), "client_order_id": "owned-tp", "instrument_id": "SOL-USD-PERP.HYPERLIQUID"})
+    assert runtime.record_native_fill(**{**fill("unknown-order"), "client_order_id": "missing-tp"})
+    # An old fill whose stored episode differs from the immutable intent cannot
+    # inherit its action, even when the client order ID happens to match.
+    assert runtime.record_native_fill(**{**fill("wrong-episode"), "client_order_id": "owned-tp"})
+    runtime.db.execute(
+        "UPDATE paper_native_fill_details SET episode_id=? WHERE trade_id=?",
+        ("episode-other", "wrong-episode"),
+    )
+    runtime.db.commit()
+    status, payload, _ = fetch(base, "/fills")
+    assert status == 200
+    assert {item["trade_id"]: item["action"] for item in payload["fills"]} == {
+        "matched": "BTC_REDUCE",
+        "wrong-instrument": None,
+        "unknown-order": None,
+        "wrong-episode": None,
+    }

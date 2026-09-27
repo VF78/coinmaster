@@ -521,7 +521,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             if not fail_exit:
                 status, opened = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
                 assert status == 200 and opened["projection_state"] == "READY"
-                assert opened["positions"] == [{"instrument_id": str(BTC_PERP), "signed_quantity": "0.1", "provenance": "SANDBOX"}]
+                assert opened["positions"] == [{"instrument_id": str(BTC_PERP), "signed_quantity": "0.1", "average_entry_price": "60000.0", "provenance": "SANDBOX"}]
                 assert opened["orders"] == []
                 assert opened["account"]["native_cash"] == str(node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal())
                 status, first_fills = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet/fills")
@@ -543,6 +543,22 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
                 }
                 assert len(working["orders"]) == 3
                 assert all(item["reduce_only"] and item["provenance"] == "SANDBOX" for item in working["orders"])
+                native_orders = {str(order.client_order_id): order for order in node.cache.orders_open()}
+                for item in working["orders"]:
+                    native = native_orders[item["client_order_id"]]
+                    assert item["side"] == native.side.name == "SELL"
+                    assert item["order_type"] == native.order_type.name == "LIMIT"
+                    assert item["time_in_force"] == native.time_in_force.name
+                    assert item["price"] == str(native.price)
+                    assert item["quantity"] == str(native.quantity)
+                    assert item["filled_quantity"] == str(native.filled_qty)
+                    assert item["leaves_quantity"] == str(native.leaves_qty)
+                    assert item["status"] == native.status.name == "ACCEPTED"
+                    assert item["post_only"] is native.is_post_only
+                    assert item["account_id"] == str(native.account_id)
+                    assert item["venue_order_id"] == (str(native.venue_order_id) if native.venue_order_id else None)
+                    assert item["submitted_at_ns"] == (native.ts_submitted or None)
+                    assert item["updated_at_ns"] == (native.ts_last or None)
                 assert Decimal(working["account"]["equity"]) == native_equity(
                     strategy.cache, strategy._latest_marks, now_ns=time.time_ns(),
                 )
@@ -785,11 +801,26 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             assert [(row["action"], row["qty"]) for row in strategy.fill_audit] == [("BTC_ENTRY", "0.00167")]
             await btc_quote("60000.0", "60001.0", 2)
             assert sorted(str(order.price) for order in node.cache.orders_open()) == ["60006.0", "60012.0", "60018.0"]
+            positions, orders = HyperliquidTestnetNode.sandbox_snapshot(SimpleNamespace(node=node))
+            assert positions == [{
+                "instrument_id": str(BTC_PERP), "signed_quantity": "0.00167",
+                "average_entry_price": str(node.cache.positions_open()[0].avg_px_open),
+            }]
+            assert {order["price"] for order in orders} == {"60006.0", "60012.0", "60018.0"}
+            assert all(order["side"] == "SELL" and order["order_type"] == "LIMIT"
+                       and order["status"] == "ACCEPTED" and order["reduce_only"]
+                       and order["post_only"] and order["filled_quantity"] == "0.00000"
+                       for order in orders)
 
             node.kernel.data_engine.process(TradeTick(BTC_PERP, Price.from_str("60006.0"), Quantity.from_str("0.00010"), AggressorSide.BUYER, TradeId("ATTACHED-PART-ONE"), 3, 3))
             await asyncio.sleep(0.1)
             target = next(order for order in node.cache.orders_open() if order.has_price and str(order.price) == "60006.0")
             assert str(target.filled_qty) == "0.00010" and str(target.leaves_qty) == "0.00025"
+            _, partial_orders = HyperliquidTestnetNode.sandbox_snapshot(SimpleNamespace(node=node))
+            partial = next(order for order in partial_orders if order["client_order_id"] == str(target.client_order_id))
+            assert (partial["price"], partial["quantity"], partial["filled_quantity"], partial["leaves_quantity"]) == (
+                "60006.0", "0.00035", "0.00010", "0.00025",
+            )
             confirmed = next(event for event in target.events if isinstance(event, OrderFilled))
             before_duplicate = (len(strategy.fill_audit), len(runtime.native_fill_details()), runtime.native_revision(), first.btc_open_qty)
             strategy.on_order_filled(confirmed)
@@ -800,6 +831,12 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             await btc_quote("60005.0", "60007.0", 4)
             replacement = next(order for order in node.cache.orders_open() if order.has_price and str(order.price) == "60006.0")
             assert str(replacement.quantity) == "0.00025" and replacement.status.name == "ACCEPTED"
+            _, replacement_orders = HyperliquidTestnetNode.sandbox_snapshot(SimpleNamespace(node=node))
+            assert str(target.client_order_id) not in {order["client_order_id"] for order in replacement_orders}
+            replaced = next(order for order in replacement_orders if order["client_order_id"] == str(replacement.client_order_id))
+            assert (replaced["price"], replaced["quantity"], replaced["filled_quantity"], replaced["leaves_quantity"]) == (
+                "60006.0", "0.00025", "0.00000", "0.00025",
+            )
             node.kernel.data_engine.process(TradeTick(BTC_PERP, Price.from_str("60006.0"), Quantity.from_str("0.00025"), AggressorSide.BUYER, TradeId("ATTACHED-PART-TWO"), 5, 5))
             await asyncio.sleep(0.1)
             assert first.sol_right_fraction[0] == pytest.approx(1.0)
@@ -812,6 +849,14 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             strategy.next_intent = sol_add
             await btc_quote("60000.0", "60001.0", 6)
             assert first.sol_qty == pytest.approx(0.2)
+            two_positions, _ = HyperliquidTestnetNode.sandbox_snapshot(SimpleNamespace(node=node))
+            assert {item["instrument_id"] for item in two_positions} == {str(BTC_PERP), str(SOL_PERP)}
+            for item in two_positions:
+                native = next(position for position in node.cache.positions_open() if str(position.instrument_id) == item["instrument_id"])
+                assert item["average_entry_price"] == str(native.avg_px_open)
+                assert Decimal(item["signed_quantity"]) == (
+                    native.quantity.as_decimal() if native.is_long else -native.quantity.as_decimal()
+                )
             # Make native SOL price PnL exceed USD's cent precision so cash
             # reconciliation tests realized PnL as well as exact USDC fees.
             node.kernel.data_engine.process(QuoteTick(
@@ -1023,3 +1068,20 @@ def test_hl_tp_submit_checks_wire_equivalent_native_price_before_post_only(
         assert Decimal(str(outgoing[0]["price"])) == native
         # Strict Info requires exact numeric equality with venue limitPx.
         assert native == Decimal(str(wire))
+
+
+def test_native_market_order_snapshot_never_fabricates_limit_price() -> None:
+    factory = OrderFactory(TraderId("TESTER-001"), StrategyId("SNAPSHOT-001"), TestClock())
+    native = factory.market(
+        instrument_id=BTC_PERP, order_side=OrderSide.BUY,
+        quantity=Quantity.from_str("0.00010"), time_in_force=TimeInForce.IOC,
+    )
+    cache = SimpleNamespace(positions_open=lambda: [], orders_open=lambda: [native])
+    positions, orders = HyperliquidTestnetNode.sandbox_snapshot(
+        SimpleNamespace(node=SimpleNamespace(cache=cache)),
+    )
+    assert positions == []
+    assert len(orders) == 1
+    assert orders[0]["order_type"] == "MARKET"
+    assert orders[0]["price"] is None
+    assert orders[0]["submitted_at_ns"] is None

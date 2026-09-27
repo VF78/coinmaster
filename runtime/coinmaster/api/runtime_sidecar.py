@@ -280,7 +280,19 @@ class HlStagegEvent(RuntimeSchema):
 class HlStagegPosition(RuntimeSchema):
     instrument_id: str
     signed_quantity: str
+    average_entry_price: str | None = None
     provenance: Literal["SANDBOX"] = "SANDBOX"
+
+    @field_validator("average_entry_price")
+    @classmethod
+    def native_average_entry(cls, value: str | None) -> str | None:
+        if value is not None:
+            try:
+                if not Decimal(value).is_finite() or Decimal(value) <= 0:
+                    raise ValueError("invalid native average entry")
+            except InvalidOperation as error:
+                raise ValueError("invalid native average entry") from error
+        return value
 
 
 class HlStagegOrder(RuntimeSchema):
@@ -556,6 +568,7 @@ class HlStagegFill(RuntimeSchema):
     venue_order_id: str | None
     episode_id: str | None
     instrument_id: str
+    action: str | None = None
     order_side: str | None
     quantity: str
     price: str

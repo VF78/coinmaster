@@ -374,6 +374,14 @@ class PaperRuntime:
             ("table", "paper_native_fill_details"),
         ).fetchone() is not None
         fills = self.native_fill_details(cursor, limit) if available else []
+        for fill in fills:
+            # Intent action is durable submission metadata. Never classify a
+            # fill from side/reduce-only, or from a reused/mismatched order ID.
+            intent = self.db.execute(
+                "SELECT action FROM paper_intents WHERE client_order_id=? AND episode_id=? AND instrument_id=?",
+                (fill["client_order_id"], fill["episode_id"], fill["instrument_id"]),
+            ).fetchone() if fill["client_order_id"] is not None and fill["episode_id"] is not None else None
+            fill["action"] = intent[0] if intent is not None else None
         if available:
             historical_id_only_count = self.db.execute(
                 "SELECT COUNT(*) FROM paper_events e WHERE e.kind=? AND NOT EXISTS "

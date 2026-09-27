@@ -13,7 +13,7 @@ import threading
 import time
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Mapping
 
@@ -566,10 +566,30 @@ class HyperliquidTestnetNode:
         self._thread.join(timeout=30)
         return not self._thread.is_alive()
 
-    def sandbox_snapshot(self) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
-        """The local Sandbox cache is authoritative only for this process."""
+    def sandbox_snapshot(self) -> tuple[list[dict], list[dict]]:
+        """Expose only this process's authoritative native cache facts."""
+        def average_entry(position) -> str | None:
+            value = getattr(position, "avg_px_open", None)
+            try:
+                return str(value) if value is not None and Decimal(str(value)).is_finite() and Decimal(str(value)) > 0 else None
+            except (InvalidOperation, ValueError, TypeError):
+                return None
+
+        def identifier(value) -> str | None:
+            return None if value is None else str(value)
+
+        def enum_name(value) -> str | None:
+            return None if value is None else value.name
+
+        def timestamp(value) -> int | None:
+            return value if type(value) is int and value > 0 else None
+
         positions = [
-            {"instrument_id": str(position.instrument_id), "signed_quantity": str(position.quantity.as_decimal() if position.is_long else -position.quantity.as_decimal())}
+            {
+                "instrument_id": str(position.instrument_id),
+                "signed_quantity": str(position.quantity.as_decimal() if position.is_long else -position.quantity.as_decimal()),
+                "average_entry_price": average_entry(position),
+            }
             for position in self.node.cache.positions_open()
             if position.instrument_id in TESTNET_IDS
         ]
@@ -577,7 +597,20 @@ class HyperliquidTestnetNode:
             {
                 "client_order_id": str(order.client_order_id),
                 "instrument_id": str(order.instrument_id),
+                "account_id": identifier(order.account_id),
+                "venue_order_id": identifier(order.venue_order_id),
+                "side": enum_name(order.side),
+                "order_type": enum_name(order.order_type),
+                "time_in_force": enum_name(order.time_in_force),
+                "price": identifier(getattr(order, "price", None)) if order.has_price else None,
+                "quantity": str(order.quantity),
+                "filled_quantity": str(order.filled_qty),
+                "leaves_quantity": str(order.leaves_qty),
                 "reduce_only": bool(order.is_reduce_only),
+                "post_only": bool(order.is_post_only),
+                "status": enum_name(order.status),
+                "submitted_at_ns": timestamp(order.ts_submitted),
+                "updated_at_ns": timestamp(order.ts_last),
             }
             for order in self.node.cache.orders_open()
             if order.instrument_id in TESTNET_IDS
