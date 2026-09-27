@@ -632,7 +632,7 @@ def bind_clean_flat_live_handover(
             orders = {str(order.client_order_id): order for order in native_orders}
             reports = {
                 str(report.client_order_id): report
-                for batch in mass.order_reports.values() for report in batch
+                for report in mass.order_reports.values()
             }
             local_denied = {
                 client_id for client_id, row in journal.items()
@@ -641,7 +641,7 @@ def bind_clean_flat_live_handover(
             if (
                 len(journal) != len(rows)
                 or len(orders) != len(native_orders)
-                or len(reports) != sum(map(len, mass.order_reports.values()))
+                or len(reports) != len(mass.order_reports)
                 or set(journal) != set(orders) or set(reports) != set(journal) - local_denied
                 or not set(strategy._pending_by_order).issubset(journal)
                 or set(strategy._pending_by_order) & local_denied

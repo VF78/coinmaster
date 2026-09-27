@@ -103,6 +103,13 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
             stream.write(str(command.order.client_order_id) + "\n")
             stream.flush()
             os.fsync(stream.fileno())
+        if os.environ.get("CM_FAKE_COUPLED_OPEN") == "1":
+            order = command.order
+            self.generate_order_accepted(
+                order.strategy_id, order.instrument_id, order.client_order_id,
+                VENUE_ORDER, self._clock.timestamp_ns(),
+            )
+            return
         if os.environ.get("CM_FAKE_QUOTE_ORDER") == "1":
             order = command.order
             self.generate_order_accepted(
@@ -447,7 +454,7 @@ async def _run_child():
         strategy._probe_engine = node.kernel.exec_engine
         bind_clean_flat_live_handover(
             client, strategy, active,
-            monitor_interval_secs=30.0 if quote_mode else 0.05 if os.environ.get("CM_FAKE_PARITY_FAILURE") == "denied" else 0.01,
+            monitor_interval_secs=2.0 if os.environ.get("CM_FAKE_COUPLED_OPEN") == "1" else 30.0 if quote_mode else 0.05 if os.environ.get("CM_FAKE_PARITY_FAILURE") == "denied" else 0.01,
         )
     if os.environ.get("CM_FAKE_HANDOVER_PROBE") == "1":
         from coinmaster.ops.hl_info_receipt import collect_info_receipt
@@ -527,6 +534,152 @@ async def _run_child():
         assert strategy._validated_live_money().equity == Decimal("10000")
         client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
         failure = os.environ.get("CM_FAKE_PARITY_FAILURE", "account")
+        if failure == "coupled_open":
+            from nautilus_trader.core import nautilus_pyo3
+
+            now = node.kernel.clock.timestamp_ns()
+            account_100 = Money(Decimal("100"), USDC)
+            client.generate_account_state(
+                [AccountBalance(account_100, Money(0, USDC), account_100)],
+                [], True, now,
+            )
+            await asyncio.sleep(0.05)
+            active.snapshot(
+                ts_ns=now, positions=[], orders=[], funding_event_ids=[],
+                native_account_total="100", strategy_restartable=True,
+            )
+            episode = Episode("episode-open", 1, 100, 1.2)
+            intent = Intent("intent-open", episode.id, "BTC_ENTRY", None, 1, quantity=0.03)
+            episode.pending[intent.id] = intent
+            strategy._domain.episode = episode
+            order = strategy.order_factory.limit(
+                instrument_id=HL_BTC.id, order_side=OrderSide.BUY,
+                quantity=Quantity.from_str("0.03000"), price=Price.from_str("10000.0"),
+                time_in_force=TimeInForce.GTC,
+            )
+            order_id = str(order.client_order_id)
+            strategy._pending_by_order[order_id] = intent
+            strategy._sigma_by_order[order_id] = None
+            strategy._decision_index_by_order[order_id] = 1483
+            sink = LiveRecoverySubmissionSink(active, strategy, frozenset({str(HL_BTC.id), str(HL_SOL.id)}))
+            assert sink(
+                client_order_id=order_id, intent_id=intent.id, episode_id=episode.id,
+                action="BTC_ENTRY", instrument_id=str(HL_BTC.id),
+                quantity="0.03000", reduce_only=False,
+            )
+            strategy.submit_order(order)
+            for _ in range(200):
+                if order.status == OrderStatus.ACCEPTED:
+                    break
+                await asyncio.sleep(0.01)
+            assert order.status == OrderStatus.ACCEPTED
+            cloid = str(nautilus_pyo3.hyperliquid_cloid_from_client_order_id(
+                nautilus_pyo3.ClientOrderId(order_id),
+            ))
+            order_ms = order.ts_init // 1_000_000
+            raw_order = {
+                "coin": "BTC", "oid": 7, "cloid": cloid,
+                "side": "B", "origSz": "0.03000", "sz": "0.03000",
+                "reduceOnly": False, "orderType": "Limit", "tif": "Gtc",
+                "limitPx": "10000.0", "timestamp": order_ms,
+            }
+            client.parity_data.update({
+                "frontendOpenOrders": [raw_order],
+                "userFillsByTime": [],
+                "orderStatus": {"status": "order", "order": {
+                    "order": raw_order, "status": "open", "statusTimestamp": order_ms + 1,
+                }},
+                "clearinghouseState": {
+                    "assetPositions": [],
+                    "marginSummary": {
+                        "accountValue": "100", "totalRawUsd": "100",
+                        "totalMarginUsed": "0", "totalNtlPos": "0",
+                    },
+                    "crossMarginSummary": {
+                        "accountValue": "100", "totalRawUsd": "100",
+                        "totalMarginUsed": "0", "totalNtlPos": "0",
+                    },
+                    "withdrawable": "100",
+                },
+            })
+            marks = {"BTC": "10000", "SOL": "100"}
+            info_calls = [0]
+            original_info = client._cm_info
+
+            async def staged_info(body):
+                if body["type"] == "clearinghouseState":
+                    info_calls[0] += 1
+                if body["type"] == "activeAssetData":
+                    data = selected_asset_data(body)
+                    data["markPx"] = marks[body["coin"]]
+                    return data
+                return await original_info(body)
+
+            client._cm_info = staged_info
+            mass_probe = await client.generate_mass_status()
+            assert len(mass_probe.order_reports) == 1
+            assert await client._cm_parity_verifier(mass_probe)
+            client._cm_info_usage.clear()
+            assert client.request_effect_parity_refresh()
+            await client._cm_refresh_task
+            assert client.recovery_healthy(), client._cm_ws_failure
+            assert strategy.recovery_confirmed
+            money = strategy._validated_live_money()
+            native_account = node.cache.account_for_venue(Venue("HYPERLIQUID"))
+            assert money.equity == Decimal("100")
+            assert money.free_collateral == Decimal("100")
+            assert money.margin_used == Decimal("0")
+            assert native_account.balance_total(USDC).as_decimal() == money.equity
+            assert native_account.balance_free(USDC).as_decimal() == money.free_collateral
+            assert strategy._tier_allows_increase(HL_SOL.id, OrderSide.BUY, Decimal("6"), now)
+            marks["BTC"] = "15000"
+            client._cm_info_usage.clear()
+            assert client.request_effect_parity_refresh()
+            await client._cm_refresh_task
+            assert client.recovery_healthy(), client._cm_ws_failure
+            assert not strategy._tier_allows_increase(HL_SOL.id, OrderSide.BUY, Decimal("6"), now)
+            client._cm_info_usage.clear()
+            before = info_calls[0]
+            for _ in range(250):
+                if info_calls[0] > before:
+                    break
+                await asyncio.sleep(0.01)
+            assert info_calls[0] > before
+            assert client.recovery_healthy(), client._cm_ws_failure
+
+            fault = os.environ["CM_FAKE_COUPLED_FAULT"]
+            if fault == "foreign":
+                client.parity_data["frontendOpenOrders"].append({
+                    **raw_order, "oid": 8, "cloid": "0x" + "f" * 32,
+                })
+            elif fault == "unknown":
+                client.parity_data["orderStatus"] = {"status": "unknown"}
+            elif fault == "stale":
+                client.generate_account_state(
+                    [AccountBalance(Money(Decimal("99"), USDC), Money(0, USDC), Money(Decimal("99"), USDC))],
+                    [], True, node.kernel.clock.timestamp_ns(),
+                )
+                await asyncio.sleep(0.05)
+            else:
+                raise AssertionError("unknown coupled fault")
+            client._cm_info_usage.clear()
+            assert client.request_effect_parity_refresh()
+            await client._cm_refresh_task
+            assert not strategy.recovery_confirmed
+            assert client._cm_ws_failure is not None
+            print("COUPLED_OPEN_PROOF=" + json.dumps({
+                "native_open_order": order_id,
+                "strict_generations": info_calls[0],
+                "pending_open_margin_allowed": True,
+                "adverse_mark_denied": True,
+                "fault": fault,
+                "failure": client._cm_ws_failure,
+                "durable_submissions": len(active.all_submissions()),
+            }), flush=True)
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+            active.close()
+            return
         if failure == "quote_order":
             from dataclasses import replace
             submit_log = os.environ["CM_FAKE_SUBMIT_LOG"]
@@ -1247,6 +1400,32 @@ def test_connected_local_denial_keeps_full_periodic_parity_and_next_submit(tmp_p
         "stale_quote_retained_then_strict_refresh": True,
     }
     assert not submit_log.exists()  # No fake or external execution call.
+
+
+@pytest.mark.parametrize("fault", ("foreign", "unknown", "stale"))
+def test_connected_owned_open_order_periodic_info_and_margin_fail_closed(tmp_path, fault):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+        pytest.skip("requires disposable loopback Redis")
+    state, journal, submit_log = (tmp_path / name for name in ("state.json", "intents.sqlite", "submits.txt"))
+    state.write_text('{"partial": false}')
+    env = dict(
+        os.environ,
+        CM_FAKE_VENUE_STATE=str(state), CM_FAKE_JOURNAL=str(journal),
+        CM_FAKE_SUBMIT_LOG=str(submit_log),
+        CM_FAKE_TRADER_ID="HL-OPEN-" + hashlib.sha256(str(tmp_path).encode()).hexdigest()[:8].upper(),
+        CM_FAKE_PRODUCTION_PARITY="1", CM_FAKE_SCOPED_OWNER="1",
+        CM_FAKE_PARITY_FAILURE="coupled_open",
+        CM_FAKE_COUPLED_OPEN="1", CM_FAKE_COUPLED_FAULT=fault,
+    )
+    env["PYTHONPATH"] = os.pathsep.join((str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parent)))
+    run = subprocess.run([sys.executable, __file__, "--child"], env=env, capture_output=True, text=True, timeout=45)
+    assert run.returncode == 0, run.stderr
+    result = json.loads(next(line.split("=", 1)[1] for line in run.stdout.splitlines() if line.startswith("COUPLED_OPEN_PROOF=")))
+    assert result["fault"] == fault
+    assert result["strict_generations"] >= 3
+    assert result["durable_submissions"] == 1
+    assert result["pending_open_margin_allowed"] and result["adverse_mark_denied"]
+    assert submit_log.read_text().splitlines() == [result["native_open_order"]]
 
 
 def test_connected_quote_stale_money_refresh_submits_one_native_order(tmp_path):
