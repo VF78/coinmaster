@@ -7,7 +7,7 @@ finer execution/settlement-mark dataset and liquidation validation exist.
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_EVEN
 import pandas as pd
 
 from coinmaster.domain.deposit_protection import DepositProtection, percent
@@ -90,6 +90,23 @@ def _native_account_money(account, *, free: bool = False) -> Decimal:
     if balance is None:
         raise ValueError(f"NATIVE_ACCOUNT_BALANCE_MISSING:{currency}")
     return balance.as_decimal()
+
+
+def _native_limit_price(instrument, raw_price: Decimal):
+    # Keep HL native order identity equal to the adapter wire limit price.
+    price = instrument.make_price(raw_price)
+    if instrument.id.venue.value != "HYPERLIQUID":
+        return price
+    value = price.as_decimal()
+    if not value.is_finite() or value <= 0:
+        raise ValueError("INVALID_HYPERLIQUID_LIMIT_PRICE")
+    # Pinned HL 1.231 normalizes to five significant figures on submission.
+    quantum = Decimal(1).scaleb(value.adjusted() - 4)
+    canonical = value.quantize(quantum, rounding=ROUND_HALF_EVEN)
+    result = instrument.make_price(canonical)
+    if result.as_decimal() != canonical:
+        raise ValueError("HYPERLIQUID_LIMIT_PRICE_PRECISION_MISMATCH")
+    return result
 
 
 class WaveOverlayStrategy(Strategy):
@@ -666,16 +683,18 @@ class WaveOverlayStrategy(Strategy):
                     self._domain.on_parent_cancelled(intent.id)
                     return
                 raw_price = quote_tick.ask_price.as_decimal() if side == OrderSide.SELL else quote_tick.bid_price.as_decimal()
+            limit_price = _native_limit_price(instrument, raw_price)
             quote_tick = self.cache.quote_tick(instrument_id)
             if quote_tick is not None:
-                # Reject marketable post-only requests locally; do not turn
-                # them into a taker order or fabricate a maker classification.
-                if (side == OrderSide.BUY and raw_price >= quote_tick.ask_price.as_decimal()) or (side == OrderSide.SELL and raw_price <= quote_tick.bid_price.as_decimal()):
+                # Check the exact wire-equivalent native price.  A five-sig
+                # rounding step may otherwise turn a passive quote marketable.
+                canonical = limit_price.as_decimal()
+                if (side == OrderSide.BUY and canonical >= quote_tick.ask_price.as_decimal()) or (side == OrderSide.SELL and canonical <= quote_tick.bid_price.as_decimal()):
                     self._domain.on_parent_cancelled(intent.id)
                     return
             order = self.order_factory.limit(
                 instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded),
-                price=instrument.make_price(raw_price), time_in_force=TimeInForce.GTC,
+                price=limit_price, time_in_force=TimeInForce.GTC,
                 post_only=True, reduce_only=True,
             )
         else:

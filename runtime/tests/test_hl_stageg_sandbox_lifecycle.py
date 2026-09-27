@@ -17,15 +17,18 @@ from types import SimpleNamespace
 
 import pytest
 
+from nautilus_trader.adapters.hyperliquid.execution import HyperliquidExecutionClient
 from nautilus_trader.adapters.sandbox.config import SandboxExecutionClientConfig
 from nautilus_trader.common import Environment
+from nautilus_trader.common.component import TestClock
+from nautilus_trader.common.factories import OrderFactory
 from nautilus_trader.config import LoggingConfig
 from nautilus_trader.live.config import LiveExecEngineConfig, RoutingConfig, TradingNodeConfig
 from nautilus_trader.live.node import TradingNode
 from nautilus_trader.model.currencies import BTC, SOL, USD, USDC
 from nautilus_trader.model.data import BarSpecification, BarType, MarkPriceUpdate, QuoteTick, TradeTick
-from nautilus_trader.model.enums import AggressorSide, AggregationSource, BarAggregation, PriceType, LiquiditySide, TimeInForce
-from nautilus_trader.model.identifiers import ClientId, InstrumentId, Symbol, TradeId, Venue
+from nautilus_trader.model.enums import AggressorSide, AggregationSource, BarAggregation, PriceType, LiquiditySide, OrderSide, TimeInForce
+from nautilus_trader.model.identifiers import ClientId, InstrumentId, StrategyId, Symbol, TradeId, TraderId, Venue
 from nautilus_trader.model.instruments import CryptoPerpetual
 from nautilus_trader.model.objects import Money, Price, Quantity
 
@@ -42,7 +45,7 @@ from coinmaster.ops.hyperliquid_testnet import (
 from coinmaster.ops.hl_sandbox_money import SandboxLiveExecClientFactory as HyperliquidUsdcSandboxFactory, HyperliquidUsdcFeeModel, HyperliquidUsdcSandboxExecutionClient, model_fx_pair_and_quote, model_fx_ready, native_equity
 from coinmaster.ops.paper import PaperRuntime
 from coinmaster.ops.stage_g_config import load_candidate
-from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig, _native_account_money
+from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig, _native_account_money, _native_limit_price
 from coinmaster.venues.hyperliquid_profile import HyperliquidProfileEnvironment, HyperliquidVenueProfile
 from coinmaster.venues.margin_policy import HyperliquidSandboxMarginPolicy
 from coinmaster.venues.marks import venue_mark_data_type
@@ -825,3 +828,96 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
         assert reopened.pending_submissions() == []
     finally:
         reopened.close()
+
+
+@pytest.mark.parametrize("instrument,raw,expected", [
+    (HL_BTC, "84583.5", "84584"),
+    (HL_BTC, "84582.5", "84582"),
+    (HL_BTC, "9999.9", "9999.9"),
+    (HL_BTC, "99999.5", "100000"),
+    (HL_SOL, "122.855", "122.86"),
+    (HL_SOL, "1234.56", "1234.6"),
+])
+def test_hl_tp_native_price_equals_pinned_adapter_wire_price(instrument, raw, expected) -> None:
+    native = _native_limit_price(instrument, Decimal(raw))
+    wire = HyperliquidExecutionClient._round_to_significant_figures(None, native.as_decimal())
+    assert native.as_decimal() == Decimal(expected) == wire
+
+
+@pytest.mark.parametrize("side,raw,bid,ask,accepted,expected", [
+    (-1, 84583.5, "84583.4", "84583.6", True, "84584"),
+    (-1, 84583.4, "84583.3", "84583.6", False, None),
+    (1, 84583.5, "84583.3", "84584.0", False, None),
+    (1, 84582.5, "84582.0", "84583.0", True, "84582"),
+])
+def test_hl_tp_submit_checks_wire_equivalent_native_price_before_post_only(
+    side, raw, bid, ask, accepted, expected,
+) -> None:
+    submitted = []
+    canceled = []
+    created = []
+    durable_prices = []
+
+    native_factory = OrderFactory(TraderId("TP-TESTER-001"), StrategyId("TP-TEST-001"), TestClock())
+
+    def make_limit(**kwargs):
+        created.append(kwargs)
+        return native_factory.limit(**kwargs)
+
+    position = SimpleNamespace(instrument_id=BTC_PERP, quantity=Quantity.from_str("0.01000"))
+    fake = SimpleNamespace(
+        config=SimpleNamespace(deposit_runtime=None, btc_id=BTC_PERP, sol_id=SOL_PERP),
+        cache=SimpleNamespace(
+            instrument=lambda _: HL_BTC,
+            positions_open=lambda: [position],
+            quote_tick=lambda _: _quote(BTC_PERP, bid, ask, 1),
+        ),
+        _domain=SimpleNamespace(on_parent_cancelled=canceled.append, on_parent_terminal=lambda _: None),
+        order_factory=SimpleNamespace(limit=make_limit),
+        _pending_by_order={}, _sigma_by_order={}, _decision_index_by_order={},
+        _record_submission=lambda order, *args: durable_prices.append(str(order.price)) or True,
+        submit_order=submitted.append,
+    )
+    intent = Intent("TP-intent", "TP-episode", "BTC_REDUCE", 0, side, quantity=0.005, limit_price=raw)
+    WaveOverlayStrategy._submit_intent(fake, intent, float(bid), float(ask), None, 0, ts_now=1)
+    if not accepted:
+        assert created == submitted == durable_prices == []
+        assert canceled == [intent.id]
+    else:
+        assert canceled == [] and len(submitted) == len(created) == 1
+        kwargs = created[0]
+        assert kwargs["post_only"] is True and kwargs["reduce_only"] is True
+        assert kwargs["time_in_force"] == TimeInForce.GTC
+        native = kwargs["price"].as_decimal()
+        wire = HyperliquidExecutionClient._round_to_significant_figures(None, native)
+        assert native == wire == Decimal(expected)
+        assert Decimal(durable_prices[0]) == native
+        # Capture the pinned adapters actual outbound submit arguments. No
+        # signer, endpoint or connection is used by this fake WS boundary.
+        outgoing = []
+
+        class CapturingWS:
+            def cache_cloid_mapping(self, *_):
+                pass
+
+            async def submit_order(self, _client, **fields):
+                outgoing.append(fields)
+                return None
+
+        execution = SimpleNamespace(
+            _check_time_in_force=lambda _: True,
+            generate_order_submitted=lambda **_: None,
+            _clock=TestClock(),
+            _config=SimpleNamespace(normalize_prices=True),
+            _round_to_significant_figures=lambda value: HyperliquidExecutionClient._round_to_significant_figures(None, value),
+            _ws_client=CapturingWS(), _client=object(),
+            _process_submit_reports=lambda _: None,
+        )
+        asyncio.run(HyperliquidExecutionClient._submit_order(
+            execution, SimpleNamespace(order=submitted[0]),
+        ))
+        assert len(outgoing) == 1
+        assert outgoing[0]["post_only"] is True and outgoing[0]["reduce_only"] is True
+        assert Decimal(str(outgoing[0]["price"])) == native
+        # Strict Info requires exact numeric equality with venue limitPx.
+        assert native == Decimal(str(wire))

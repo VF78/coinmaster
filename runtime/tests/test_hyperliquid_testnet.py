@@ -50,6 +50,23 @@ def _environment(**overrides: str) -> dict[str, str]:
     return value
 
 
+def test_source_only_live100_identity_is_separate_and_still_prebuild_blocked() -> None:
+    live = load_testnet_instance_config(ROOT / "configs/hl-stageg-live.instance.json")
+    sandbox = load_testnet_instance_config(ROOT / "configs/hl-stageg-testnet.instance.json")
+    assert live.mode == "live" and live.instance_id == "hl-stageg-live"
+    assert (live.trader_id, live.strategy_id, live.order_id_tag) != (
+        sandbox.trader_id, sandbox.strategy_id, sandbox.order_id_tag,
+    )
+    assert live.state_db != sandbox.state_db
+    assert live.signal_warmup_manifest != sandbox.signal_warmup_manifest
+    config = hyperliquid_testnet_node_config(trader_id=live.trader_id, execution_mode="live")
+    assert_native_testnet_only(config, "live")
+    execution = config.exec_clients["HYPERLIQUID-LIVE"]
+    assert execution.private_key is None and execution.account_address is None
+    source = (ROOT / "coinmaster/ops/hyperliquid_testnet.py").read_text()
+    assert "HL_LIVE_ROUTE_NOT_APPROVED" in source
+
+
 def test_hl_stageg_testnet_identity_is_strict_and_has_a_separate_state_db() -> None:
     instance = load_testnet_instance_config(ROOT / "configs/hl-stageg-testnet.instance.json")
     assert instance.instance_id == "hl-stageg-testnet"

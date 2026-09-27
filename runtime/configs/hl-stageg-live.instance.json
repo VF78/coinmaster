@@ -1,0 +1,12 @@
+{
+  "instance_id": "hl-stageg-live",
+  "venue": "HYPERLIQUID",
+  "environment": "mainnet",
+  "mode": "live",
+  "strategy_config": "/srv/coinmaster/runtime/configs/stage-g-v1.json",
+  "signal_warmup_manifest": "/var/lib/coinmaster-hl-stageg-live/data/current/manifest.json",
+  "state_db": "/var/lib/coinmaster-hl-stageg-live/hl-stageg-live.sqlite",
+  "trader_id": "COINMASTER-HL-STAGEG-LIVE",
+  "strategy_id": "stage-g-v1-hl-live-mainnet",
+  "order_id_tag": "HLLV"
+}
