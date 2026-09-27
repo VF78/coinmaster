@@ -57,3 +57,23 @@ export function controlAvailabilityLabel(enabled: boolean | null | undefined, re
   if (recoveryRequired === true) return 'Unavailable · recovery required';
   return enabled ? 'Pause / resume available' : 'Read-only';
 }
+
+
+const RESEARCH_LABELS: Record<string, string> = {
+  NOT_FAITHFUL_DIAGNOSTIC: "Diagnostic evidence · not suitable for live ranking",
+  "VALIDATION_SEEN_NOT_OOS + NOT_FAITHFUL_DIAGNOSTIC": "Seen-data validation · not out-of-sample",
+  "SEQUENTIAL_SEEN_DATA_VALIDATION_NOT_OOS + NOT_FAITHFUL_DIAGNOSTIC": "Sequential validation · not out-of-sample",
+  LIQUIDATED_EARLY_CUTOFF: "Liquidated before the test period ended",
+  ARTIFACT_BLOCKED_FOR_COMPARABLE_1M: "Comparable 1-minute data unavailable",
+  ARTIFACT_NOT_LOCAL: "Artifact unavailable on this host",
+  PUBLIC_FEEDS_READY: "Public market data ready",
+  READY: "Ready",
+  BLOCKED: "Blocked",
+};
+
+export function humanizeResearchCode(code: string): string {
+  const normalized = code.trim();
+  if (RESEARCH_LABELS[normalized]) return RESEARCH_LABELS[normalized];
+  if (!normalized) return "Unavailable";
+  return normalized.replaceAll("_", " ").replaceAll(":", " · ").toLowerCase().replace(/^./, (letter) => letter.toUpperCase());
+}

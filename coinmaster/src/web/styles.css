@@ -267,6 +267,23 @@ p {
   overflow-wrap: anywhere;
 }
 
+.runtime-priority-grid {
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  margin-bottom: var(--space-2);
+}
+
+.runtime-priority-grid .stat:first-child .stat__value {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+.runtime-account-details {
+  margin-top: var(--space-2);
+}
+
+.runtime-account-details .runtime-account-grid {
+  margin-top: var(--space-3);
+}
+
 .runtime-account-grid .stat__value {
   color: #f1fffb;
   font-size: clamp(1.05rem, 2vw, 1.42rem);
@@ -342,6 +359,11 @@ p {
   padding: 0.35rem 0.8rem;
 }
 
+.nautilus-research-workspace input:disabled {
+  color: #c4d3df;
+  opacity: 1;
+}
+
 .nautilus-diagnostics summary {
   color: #92aabd;
   cursor: pointer;
@@ -353,6 +375,7 @@ p {
   .strategy-settings-grid { grid-template-columns: 1fr; }
   .runtime-account-grid,
   .runtime-account-grid--compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .runtime-priority-grid .stat:first-child { grid-column: 1 / -1; }
 }
 
 @media (max-width: 760px) {
@@ -363,6 +386,7 @@ p {
   .strategy-secondary-grid { grid-template-columns: 1fr; }
   .runtime-account-grid,
   .runtime-account-grid--compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .runtime-priority-grid .stat:first-child { grid-column: 1 / -1; }
 }
 
 .full-width {

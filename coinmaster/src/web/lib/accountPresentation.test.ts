@@ -80,7 +80,7 @@ test("healthy owned flat projection can say flat and trusts only armed protectio
     realized_pnl_net_fees: "0", unrealized_pnl: "0", fees: "0", mark_state: "CURRENT",
   }, { recovery_required: false, positions: [], orders: [] });
   const status = dashboardState(healthy);
-  assert.equal(status.label, "READY");
+  assert.equal(status.label, "Sandbox worker ready");
   assert.equal(status.exposure, "Flat");
   assert.equal(status.canAssertFlat, true);
   assert.equal(protectionIsVerified({ ...healthy, deposit_protection: { state: "ARMED", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), true);

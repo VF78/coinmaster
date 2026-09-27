@@ -43,7 +43,7 @@ const required = [
   ['dashboard presents public BTC/SOL market context', 'Markets'],
   ['dashboard does not invent a zero trade-history claim', 'No virtual trades yet'],
   ['dashboard explains ID-only history remains unavailable', 'Older ID-only events stay unavailable.'],
-  ['dashboard withholds stale drawdown protection values', '{protectionFresh ? <div className="runtime-account-grid">'],
+  ['dashboard withholds stale drawdown protection values', '{protectionFresh ? <><p className="trader-note">Maximum drawdown limit'],
   ['dashboard keeps raw identity in collapsed diagnostics', 'Diagnostics and source identity'],
   ['strategy groups exact running settings for traders', 'Signal and safety settings'],
   ['strategy folds technical parameters under advanced rules', 'Advanced strategy rules'],

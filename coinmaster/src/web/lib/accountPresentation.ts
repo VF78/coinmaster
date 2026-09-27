@@ -64,7 +64,13 @@ export function dashboardState(state: HlStagegProjection | null): DashboardState
   };
   if (state.projection_state !== "READY") return { label: state.projection_state, tone: "danger", detail: "Stage-G status is not ready; exposure cannot be confirmed.", exposure: exposure || "Unavailable", canAssertFlat: false };
   if (state.account.status === "UNAVAILABLE") return { label: "ACCOUNT UNAVAILABLE", tone: "danger", detail: "The native account read is unavailable. No account value is inferred from the Sandbox seed.", exposure: exposure || (canAssertFlat ? "Flat" : "Exposure not reconciled"), canAssertFlat };
-  return { label: state.process_state, tone: "success", detail: "Native Sandbox account and exposure are available.", exposure: exposure || (canAssertFlat ? "Flat" : "Exposure not reconciled"), canAssertFlat };
+  const processLabels: Record<string, string> = {
+    PUBLIC_FEEDS_READY: "Public market data ready",
+    READY: "Sandbox worker ready",
+    "DATA_STALE/PAUSED": "Market data stale · paused",
+    WORKER_DISCONNECTED: "Worker disconnected",
+  };
+  return { label: processLabels[state.process_state] ?? state.process_state.replaceAll("_", " ").toLowerCase().replace(/^./, (letter) => letter.toUpperCase()), tone: "success", detail: "Native Sandbox account and exposure are available.", exposure: exposure || (canAssertFlat ? "Flat" : "Exposure not reconciled"), canAssertFlat };
 }
 
 export function protectionIsVerified(state: HlStagegProjection | null): boolean {
