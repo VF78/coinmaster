@@ -395,11 +395,119 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
                 ts_ns=time.time_ns(), positions=[], orders=[], funding_event_ids=[],
                 native_account_total="10000", strategy_restartable=True,
             )
-            set_result = strategy.apply_deposit_control(
-                "set-deposit-protection", "limit-one", drawdown_limit_percent=1,
-            )
-            assert set_result["drawdown_limit_percent"] == 1
-            runtime.entry_control_command("resume-new-entries", "resume-after-limit")
+            if fail_exit:
+                set_result = strategy.apply_deposit_control(
+                    "set-deposit-protection", "limit-one", drawdown_limit_percent=1,
+                )
+                assert set_result["drawdown_limit_percent"] == 1
+                runtime.entry_control_command("resume-new-entries", "resume-after-limit")
+            else:
+                # The real control handler schedules the command on this attached native loop.
+                # The sidecar is replaceable while the same TradingNode remains alive.
+                import os
+                import threading
+                from coinmaster.api.runtime_sidecar import create_runtime_app
+                from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker, create_status_server
+                from test_runtime_sidecar import _ready_hl_projection
+
+                class AttachedWorker:
+                    instance = SimpleNamespace(instance_id="hl-stageg-testnet")
+                    deposit_control = TestnetWorker.deposit_control
+
+                    def __init__(self):
+                        self.runtime = runtime
+                        self.native = SimpleNamespace(strategy=strategy, node=node, loop=asyncio.get_running_loop())
+
+                    def projection(self):
+                        body = _ready_hl_projection(instance_id=self.instance.instance_id)
+                        body["positions"] = []
+                        body["orders"] = []
+                        body["account"] = {"equity": str(native_equity(
+                            strategy.cache, strategy._latest_marks, now_ns=time.time_ns(),
+                        ))}
+                        body["entry_control"] = {"state": runtime.entry_control_state(), "capability": "READY"}
+                        body["deposit_protection"] = strategy.deposit_projection()
+                        return body
+
+                worker = AttachedWorker()
+                server = create_status_server(worker, port=0, control_token="worker-secret")
+                thread = threading.Thread(target=server.serve_forever, daemon=True)
+                thread.start()
+                trader_pid, trader_identity = os.getpid(), id(node)
+                api_url = f"http://127.0.0.1:{server.server_address[1]}"
+
+                def sidecar():
+                    return create_runtime_app(
+                        database=str(tmp_path / "missing.sqlite"),
+                        control_database=str(tmp_path / "control.sqlite"),
+                        token="operator-secret", hl_stageg_status_url=api_url,
+                        hl_stageg_control_token="worker-secret",
+                    )
+
+                async def api_call(app, method, path, body=None, *, authorized=True, command_key=None):
+                    import json
+                    headers = [(b"host", b"localhost"), (b"content-type", b"application/json")]
+                    if authorized:
+                        headers.append((b"authorization", b"Bearer operator-secret"))
+                    if command_key:
+                        headers.append((b"idempotency-key", command_key.encode()))
+                    scope = {
+                        "type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1",
+                        "scheme": "http", "method": method, "path": path, "raw_path": path.encode(),
+                        "query_string": b"", "headers": headers, "server": ("localhost", 80),
+                        "client": ("127.0.0.1", 4321), "root_path": "",
+                    }
+                    payload = json.dumps(body).encode() if body is not None else b""
+                    messages = []
+                    received = False
+
+                    async def receive():
+                        nonlocal received
+                        if not received:
+                            received = True
+                            return {"type": "http.request", "body": payload, "more_body": False}
+                        return {"type": "http.disconnect"}
+
+                    async def send(message):
+                        messages.append(message)
+
+                    await app(scope, receive, send)
+                    start = next(item for item in messages if item["type"] == "http.response.start")
+                    response = b"".join(item.get("body", b"") for item in messages if item["type"] == "http.response.body")
+                    return start["status"], json.loads(response)
+
+                async def relay(app, method, path, body=None, *, authorized=True, command_key=None):
+                    # Sidecar HTTP and worker HTTP block; keep native callbacks running.
+                    return await asyncio.to_thread(
+                        lambda: asyncio.run(api_call(app, method, path, body, authorized=authorized, command_key=command_key)),
+                    )
+
+                try:
+                    app = sidecar()
+                    path = "/api/v1/instances/hl-stageg-testnet/controls/set-deposit-protection"
+                    command = {"idempotency_key": "limit-one-" + "a" * 24, "drawdown_limit_percent": 1}
+                    assert (await relay(app, "POST", path, command, authorized=False))[0] == 401
+                    status, applied = await relay(app, "POST", path, command)
+                    assert status == 200 and applied["status"] == "APPLIED"
+                    assert applied["deposit_protection"]["drawdown_limit_percent"] == 1
+                    assert strategy.deposit_projection()["threshold_equity"] == "9900"
+                    # Recreate the ASGI app; trader identity and command state survive.
+                    app = sidecar()
+                    status, projection = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
+                    assert status == 200
+                    assert projection["deposit_protection"]["drawdown_limit_percent"] == 1
+                    assert projection["deposit_protection"]["threshold_equity"] == "9900"
+                    assert os.getpid() == trader_pid and id(node) == trader_identity and node.is_running()
+                    status, resumed = await relay(
+                        app, "POST", "/api/v1/instances/hl-stageg-testnet/controls/resume-new-entries",
+                        command_key="resume-after-limit-" + "b" * 24,
+                    )
+                    assert status == 200 and resumed["entry_control"] == "RUNNING"
+                    assert runtime.entry_control_state() == "RUNNING"
+                finally:
+                    server.shutdown()
+                    server.server_close()
+                    thread.join(timeout=2)
 
             node.kernel.data_engine.process(_quote(BTC_PERP, "59999.0", "60000.0", time.time_ns()))
             await asyncio.sleep(0.1)
