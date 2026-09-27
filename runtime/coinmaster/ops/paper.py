@@ -686,10 +686,16 @@ class PaperRuntime:
     @_journal_locked
     def save_deposit_protection(
         self, *, instance_id: str, account_id: str, action: str,
-        event_key: str, state: dict, ts_ns: int,
+        event_key: str, state: dict, ts_ns: int, pause_on_flat: bool = False,
     ) -> bool:
         if not instance_id or not account_id or not action or not event_key or not isinstance(state, dict):
             raise ValueError("DEPOSIT_SAVE_INVALID")
+        if pause_on_flat and (
+            action != "TRIPPED_FLAT" or state.get("latched") is not True
+            or state.get("exit_state") != "TRIPPED_FLAT"
+        ):
+            raise ValueError("DEPOSIT_PAUSE_REQUIRES_TRIPPED_FLAT")
+        pause_key = f"{event_key}:pause" if pause_on_flat else None
         existing = self.deposit_protection_state(instance_id=instance_id, account_id=account_id)
         body = json.dumps(state, sort_keys=True, separators=(",", ":"))
         prior = self.db.execute(
@@ -698,6 +704,10 @@ class PaperRuntime:
         if prior is not None:
             if prior != (action, body):
                 raise ValueError("DEPOSIT_IDEMPOTENCY_CONFLICT")
+            if pause_key is not None and self.db.execute(
+                "SELECT command FROM paper_commands WHERE idempotency_key=?", (pause_key,)
+            ).fetchone() != ("pause-new-entries",):
+                raise ValueError("DEPOSIT_PAUSE_AUDIT_MISSING")
             return False
         old_body = None if existing is None else json.dumps(existing, sort_keys=True, separators=(",", ":"))
         with self.db:
@@ -709,6 +719,14 @@ class PaperRuntime:
                 "INSERT INTO paper_deposit_audit VALUES (?, ?, ?, ?, ?)",
                 (event_key, action, old_body, body, ts_ns),
             )
+            if pause_key is not None:
+                # The verified-flat state and existing entry-control pause are
+                # one commit: neither can become visible without the other.
+                self.db.execute("INSERT INTO paper_commands VALUES (?, 'pause-new-entries')", (pause_key,))
+                self.db.execute(
+                    "INSERT INTO paper_command_audit VALUES (?, 'pause-new-entries', 'ACCEPTED', strftime('%s','now') * 1000000000)",
+                    (pause_key,),
+                )
         return True
 
     @_journal_locked

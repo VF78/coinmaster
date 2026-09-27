@@ -407,6 +407,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             await asyncio.sleep(0.1)
             assert len(node.cache.orders_open()) == 3
             assert len(runtime.pending_submissions()) == 3
+            assert runtime.entry_control_state() == "RUNNING"
             node.kernel.data_engine.process(_quote(BTC_PERP, "58899.0", "58900.0", time.time_ns()))
             await asyncio.sleep(0.1)
 
@@ -418,6 +419,10 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             assert len(node.cache.orders_open()) == (3 if fail_exit else 0)
             assert node.cache.orders_inflight() == []
             assert len(runtime.pending_submissions()) == (3 if fail_exit else 0)
+            assert runtime.entry_control_state() == ("RUNNING" if fail_exit else "PAUSED")
+            assert runtime.db.execute(
+                "SELECT COUNT(*) FROM paper_command_audit WHERE command='pause-new-entries'"
+            ).fetchone()[0] == (1 if fail_exit else 2)
             assert [item["action"] for item in strategy.fill_audit] == (
                 ["BTC_ENTRY"] if fail_exit else ["BTC_ENTRY", "MARKET_EXIT"]
             )
@@ -452,6 +457,13 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
         )
         assert saved["latched"] and saved["exit_state"] == ("EXIT_INCOMPLETE" if fail_exit else "TRIPPED_FLAT")
         assert len(reopened.pending_submissions()) == (3 if fail_exit else 0)
+        assert reopened.entry_control_state() == ("RUNNING" if fail_exit else "PAUSED")
+        if not fail_exit:
+            reopened.entry_control_command("resume-new-entries", "resume-after-dp")
+            assert reopened.entry_control_state() == "RUNNING"
+            assert reopened.deposit_protection_state(
+                instance_id="hl-stageg-deposit", account_id="HYPERLIQUID-001",
+            )["latched"]
     finally:
         reopened.close()
 

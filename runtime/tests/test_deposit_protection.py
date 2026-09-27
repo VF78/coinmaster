@@ -1,4 +1,5 @@
 from decimal import Decimal
+import sqlite3
 
 import pytest
 
@@ -96,3 +97,48 @@ def test_sqlite_account_instance_binding_and_idempotent_audit(tmp_path):
             instance_id="stage-g-a", account_id="HYPERLIQUID-OTHER", action="RESET",
             event_key="deposit:reset:one", state=state.durable(), ts_ns=DAY_NS + 2,
         )
+
+
+def test_verified_flat_pause_and_deposit_state_commit_atomically(tmp_path):
+    runtime = PaperRuntime(tmp_path / "paper.sqlite", "dp-owner", 10**20)
+    runtime.acquire()
+    try:
+        state = DepositProtection()
+        state.initialize(Decimal("100"), DAY_NS + 1)
+        runtime.save_deposit_protection(
+            instance_id="stage-g-a", account_id="HYPERLIQUID-001", action="INITIALIZE",
+            event_key="deposit:init:one", state=state.durable(), ts_ns=DAY_NS + 1,
+        )
+        state.observe(Decimal("50"), DAY_NS + 2)
+        runtime.save_deposit_protection(
+            instance_id="stage-g-a", account_id="HYPERLIQUID-001", action="TRIGGER",
+            event_key="deposit:trigger:one", state=state.durable(), ts_ns=DAY_NS + 2,
+        )
+        assert runtime.entry_control_state() == "RUNNING"
+        state.exit_state = "TRIPPED_FLAT"
+        kwargs = dict(
+            instance_id="stage-g-a", account_id="HYPERLIQUID-001", action="TRIPPED_FLAT",
+            event_key="deposit:exit:one", state=state.durable(), ts_ns=DAY_NS + 3,
+            pause_on_flat=True,
+        )
+        runtime.db.execute("""
+            CREATE TRIGGER reject_deposit_pause BEFORE INSERT ON paper_command_audit
+            WHEN NEW.command='pause-new-entries'
+            BEGIN SELECT RAISE(ABORT, 'TEST_PAUSE_WRITE_FAILED'); END
+        """)
+        with pytest.raises(sqlite3.DatabaseError, match="TEST_PAUSE_WRITE_FAILED"):
+            runtime.save_deposit_protection(**kwargs)
+        assert runtime.entry_control_state() == "RUNNING"
+        assert runtime.deposit_protection_state(
+            instance_id="stage-g-a", account_id="HYPERLIQUID-001",
+        )["exit_state"] == "EXITING"
+        assert runtime.deposit_audit_action("deposit:exit:one") is None
+        runtime.db.execute("DROP TRIGGER reject_deposit_pause")
+        assert runtime.save_deposit_protection(**kwargs)
+        assert not runtime.save_deposit_protection(**kwargs)
+        assert runtime.entry_control_state() == "PAUSED"
+        assert runtime.db.execute(
+            "SELECT COUNT(*) FROM paper_command_audit WHERE command='pause-new-entries'"
+        ).fetchone()[0] == 1
+    finally:
+        runtime.close()
