@@ -12,6 +12,11 @@ export type HlStagegStrategy = runtimeComponents['schemas']['HlStagegStrategy'];
 export type HlStagegControls = runtimeComponents['schemas']['HlStagegControls'];
 export type HlStagegDepositProtection = runtimeComponents['schemas']['HlStagegDepositProtection'];
 export type HlStagegProtectionCommand = runtimeComponents['schemas']['HlStagegProtectionCommand'];
+export type HlStagegPosition = runtimeComponents['schemas']['HlStagegPosition'];
+export type HlStagegOrder = runtimeComponents['schemas']['HlStagegOrder'];
+export type HlPublicCandles = runtimeComponents['schemas']['HlPublicCandles'];
+export type HlPublicCandle = runtimeComponents['schemas']['HlPublicCandle'];
+export type HlNativeEquityChanges = runtimeComponents['schemas']['HlNativeEquityChanges'];
 type GuiSession = { username: string; csrf_token: string };
 let guiSession: GuiSession | null = null;
 export async function getGuiSession(): Promise<GuiSession> {
@@ -63,3 +68,7 @@ export type HlStagegFill = runtimeComponents['schemas']['HlStagegFill'];
 export type HlStagegFillHistory = runtimeComponents['schemas']['HlStagegFillHistory'];
 export const getHlStagegFills = (cursor = 0, limit = 100) =>
   request<HlStagegFillHistory>('/instances/hl-stageg-testnet/fills?cursor=' + cursor + '&limit=' + limit);
+export const getHyperliquidCandles = (coin: 'BTC' | 'SOL', interval: '1m' | '5m' | '15m' | '1h' | '4h' | '1d', limit = 300) =>
+  request<HlPublicCandles>(`/markets/hyperliquid/candles?coin=${coin}&interval=${interval}&limit=${limit}`);
+export const getHlStagegEquityChanges = () =>
+  request<HlNativeEquityChanges>('/instances/hl-stageg-testnet/equity-changes');

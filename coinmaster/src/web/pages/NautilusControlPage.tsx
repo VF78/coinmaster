@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
+import { DashboardMarketChart } from '../components/DashboardMarketChart';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
-import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegFills, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlStagegControls, type HlStagegFillHistory, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
+import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegEquityChanges, getHlStagegFills, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlNativeEquityChanges, type HlStagegControls, type HlStagegFillHistory, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
 import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, protectionIsFresh, protectionIsVerified } from '../lib/accountPresentation';
-import { appendSessionMarkSample, markSparklinePath, positionPresentation, TRADER_MARKETS, type MarkSample } from '../lib/traderPresentation';
+import { positionPresentation, TRADER_MARKETS } from '../lib/traderPresentation';
 import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, researchResultContext, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
@@ -236,7 +237,7 @@ export function RuntimePage() {
   const [state, setState] = useState<HlStagegProjection | null>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [sessionMarks, setSessionMarks] = useState<Record<string, MarkSample[]>>({});
+  const [equityChanges, setEquityChanges] = useState<HlNativeEquityChanges | null>(null);
   const [fillHistory, setFillHistory] = useState<HlStagegFillHistory | null>(null);
   const [fillHistoryUnavailable, setFillHistoryUnavailable] = useState(false);
   const [fillHistoryHasMore, setFillHistoryHasMore] = useState(false);
@@ -246,6 +247,7 @@ export function RuntimePage() {
     setState(null); setMessage(error instanceof Error ? error.message : 'Sandbox projection unavailable.');
   }).finally(() => setLoading(false));
   useEffect(() => { load(); const timer = window.setInterval(load, 5000); return () => window.clearInterval(timer); }, []);
+  useEffect(() => { let active = true; const refresh = () => void getHlStagegEquityChanges().then((data) => { if (active) setEquityChanges(data); }).catch(() => { if (active) setEquityChanges(null); }); refresh(); const timer = window.setInterval(refresh, 60_000); return () => { active = false; window.clearInterval(timer); }; }, []);
   useEffect(() => {
     let active = true;
     const refreshFills = () => void getHlStagegFills(0, 100).then((data) => {
@@ -274,11 +276,6 @@ export function RuntimePage() {
       setFillHistoryHasMore(data.fills.length === 100);
     }).catch(() => setFillHistoryUnavailable(true));
   };
-  useEffect(() => {
-    setSessionMarks((current) => Object.fromEntries(TRADER_MARKETS.map(({ instrumentId }) => [
-      instrumentId, appendSessionMarkSample(current[instrumentId] ?? [], state, instrumentId),
-    ])));
-  }, [state]);
   const runtimeStatus = dashboardState(state);
   const runtimeHealthy = state?.projection_state === 'READY' && state?.recovery_required !== true && state.process_state !== 'DATA_STALE/PAUSED' && state.process_state !== 'WORKER_DISCONNECTED';
   const entryGateMessage = state?.recovery_required === true
@@ -331,12 +328,11 @@ export function RuntimePage() {
       {state?.account.mark_state === 'STALE_OR_MISSING' ? <p className="runtime-empty-note">Mark is stale or missing. Marked equity and unrealized P&amp;L are not current.</p> : null}
       {state?.account.status === 'PARTIAL' ? <p className="runtime-empty-note">Account read is partial. Missing account fields remain unavailable.</p> : null}
     </Card>
+    <DashboardMarketChart projection={state} history={fillHistoryMatchesRun ? fillHistory : null} equity={equityChanges} />
     <section className="trader-market-grid" aria-label="BTC and SOL Markets">
       {TRADER_MARKETS.map(({ symbol, instrumentId }) => {
         const feed = state?.feeds[instrumentId];
         const fresh = feed?.state === 'READY' && feed.mark_age_ns != null && feed.mark_age_ns >= 0 && feed.mark_age_ns <= 15_000_000_000;
-        const marks = sessionMarks[instrumentId] ?? [];
-        const path = markSparklinePath(marks);
         const position = positionPresentation(state, instrumentId);
         const linkedOrders = orderRows.filter((order) => order.instrument_id === instrumentId);
         return <Card key={instrumentId} className="trader-market-card" title={symbol} actions={<Badge tone={fresh ? 'success' : 'danger'}>{fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
@@ -344,11 +340,6 @@ export function RuntimePage() {
             <span>{fresh ? 'Mark' : 'Previous mark'}</span>
             <strong>{feed?.mark ?? 'UNKNOWN'}</strong>
             <small>{fresh ? `Mark age ${age(feed?.mark_age_ns)}` : feed?.mark ? `Stale · ${age(feed.mark_age_ns)}` : 'Mark unavailable'}</small>
-          </div>
-          <div className="trader-session-chart">
-            <div className="trader-session-chart__heading"><span>Browser-session mark samples · not historical candles</span><span>{marks.length ? `${marks.length} samples` : 'No samples'}</span></div>
-            {path ? <svg viewBox="0 0 240 52" preserveAspectRatio="none" role="img" aria-label={`${symbol} browser-session mark samples`}><path d={path} fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" /></svg> : <p>{fresh ? 'Gathering a second fresh mark sample…' : 'Samples cleared while the mark feed is stale or unavailable.'}</p>}
-            {marks.length > 1 ? <div className="trader-session-chart__range"><span>{new Date(marks[0].observedAtNs / 1_000_000).toLocaleTimeString()}</span><span>{new Date(marks.at(-1)!.observedAtNs / 1_000_000).toLocaleTimeString()}</span></div> : null}
           </div>
           <div className="trader-market-exposure">
             <div className="trader-market-exposure__heading"><span>Sandbox position</span><Badge tone={position.state === 'OPEN' ? 'success' : position.state === 'FLAT' ? 'neutral' : 'danger'}>{position.state === 'OPEN' ? 'Open' : position.state === 'FLAT' ? 'Flat' : 'Unconfirmed'}</Badge></div>

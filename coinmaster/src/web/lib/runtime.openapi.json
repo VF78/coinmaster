@@ -53,6 +53,319 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "HlNativeEquityChanges": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of Ns"
+          },
+          "equity_usdc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity Usdc"
+          },
+          "instance_id": {
+            "const": "hl-stageg-testnet",
+            "title": "Instance Id",
+            "type": "string"
+          },
+          "run_epoch": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Epoch"
+          },
+          "source": {
+            "const": "NATIVE_SANDBOX_ACCOUNT",
+            "title": "Source",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "READY",
+              "STALE",
+              "UNAVAILABLE",
+              "INVALID"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "version": {
+            "const": "hl-native-equity-changes-v1",
+            "title": "Version",
+            "type": "string"
+          },
+          "windows": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/HlNativeEquityWindow"
+            },
+            "title": "Windows",
+            "type": "object"
+          }
+        },
+        "required": [
+          "version",
+          "instance_id",
+          "run_epoch",
+          "source",
+          "state",
+          "as_of_ns",
+          "equity_usdc",
+          "windows"
+        ],
+        "title": "HlNativeEquityChanges",
+        "type": "object"
+      },
+      "HlNativeEquityWindow": {
+        "additionalProperties": false,
+        "properties": {
+          "baseline_at_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline At Ns"
+          },
+          "baseline_equity_usdc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Equity Usdc"
+          },
+          "change_percent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Percent"
+          },
+          "change_usdc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Usdc"
+          },
+          "state": {
+            "enum": [
+              "AVAILABLE",
+              "UNAVAILABLE"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state",
+          "baseline_at_ns",
+          "baseline_equity_usdc",
+          "change_usdc",
+          "change_percent"
+        ],
+        "title": "HlNativeEquityWindow",
+        "type": "object"
+      },
+      "HlPublicCandle": {
+        "additionalProperties": false,
+        "properties": {
+          "close": {
+            "title": "Close",
+            "type": "string"
+          },
+          "close_time_ms": {
+            "title": "Close Time Ms",
+            "type": "integer"
+          },
+          "high": {
+            "title": "High",
+            "type": "string"
+          },
+          "low": {
+            "title": "Low",
+            "type": "string"
+          },
+          "open": {
+            "title": "Open",
+            "type": "string"
+          },
+          "open_time_ms": {
+            "title": "Open Time Ms",
+            "type": "integer"
+          },
+          "trades": {
+            "title": "Trades",
+            "type": "integer"
+          },
+          "volume": {
+            "title": "Volume",
+            "type": "string"
+          }
+        },
+        "required": [
+          "open_time_ms",
+          "close_time_ms",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "trades"
+        ],
+        "title": "HlPublicCandle",
+        "type": "object"
+      },
+      "HlPublicCandles": {
+        "additionalProperties": false,
+        "properties": {
+          "candles": {
+            "items": {
+              "$ref": "#/components/schemas/HlPublicCandle"
+            },
+            "title": "Candles",
+            "type": "array"
+          },
+          "coin": {
+            "enum": [
+              "BTC",
+              "SOL"
+            ],
+            "title": "Coin",
+            "type": "string"
+          },
+          "environment": {
+            "const": "mainnet-public",
+            "title": "Environment",
+            "type": "string"
+          },
+          "execution_evidence": {
+            "const": false,
+            "title": "Execution Evidence",
+            "type": "boolean"
+          },
+          "interval": {
+            "enum": [
+              "1m",
+              "5m",
+              "15m",
+              "1h",
+              "4h",
+              "1d"
+            ],
+            "title": "Interval",
+            "type": "string"
+          },
+          "latest_closed_at_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Closed At Ms"
+          },
+          "observed_at_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed At Ms"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "source": {
+            "const": "OFFICIAL_INFO_CANDLE_SNAPSHOT",
+            "title": "Source",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "READY",
+              "STALE",
+              "UNAVAILABLE",
+              "INVALID"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "venue": {
+            "const": "HYPERLIQUID",
+            "title": "Venue",
+            "type": "string"
+          },
+          "version": {
+            "const": "hl-public-candles-v1",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version",
+          "venue",
+          "environment",
+          "source",
+          "execution_evidence",
+          "coin",
+          "interval",
+          "state",
+          "observed_at_ms",
+          "latest_closed_at_ms",
+          "candles",
+          "reason"
+        ],
+        "title": "HlPublicCandles",
+        "type": "object"
+      },
       "HlStagegAccount": {
         "additionalProperties": false,
         "properties": {
@@ -502,6 +815,17 @@
       "HlStagegFill": {
         "additionalProperties": false,
         "properties": {
+          "action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action"
+          },
           "client_order_id": {
             "anyOf": [
               {
@@ -914,6 +1238,17 @@
       "HlStagegPosition": {
         "additionalProperties": false,
         "properties": {
+          "average_entry_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Entry Price"
+          },
           "instrument_id": {
             "title": "Instrument Id",
             "type": "string"
@@ -3479,6 +3814,68 @@
         "summary": "Hl Stageg Control Command"
       }
     },
+    "/api/v1/instances/hl-stageg-testnet/equity-changes": {
+      "get": {
+        "operationId": "hl_stageg_equity_changes_api_v1_instances_hl_stageg_testnet_equity_changes_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlNativeEquityChanges"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Hl Stageg Equity Changes"
+      }
+    },
     "/api/v1/instances/hl-stageg-testnet/fills": {
       "get": {
         "operationId": "hl_stageg_fills_api_v1_instances_hl_stageg_testnet_fills_get",
@@ -3624,6 +4021,110 @@
           }
         },
         "summary": "Hl Stageg Strategy"
+      }
+    },
+    "/api/v1/markets/hyperliquid/candles": {
+      "get": {
+        "operationId": "hl_public_candles_api_v1_markets_hyperliquid_candles_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "coin",
+            "required": true,
+            "schema": {
+              "enum": [
+                "BTC",
+                "SOL"
+              ],
+              "title": "Coin",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "interval",
+            "required": true,
+            "schema": {
+              "enum": [
+                "1m",
+                "5m",
+                "15m",
+                "1h",
+                "4h",
+                "1d"
+              ],
+              "title": "Interval",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlPublicCandles"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Hl Public Candles"
       }
     },
     "/api/v1/preflight": {

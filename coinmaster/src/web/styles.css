@@ -3756,23 +3756,6 @@ body:has(.nautilus-app-shell) { background:var(--bg); }
   font-variant-numeric: tabular-nums;
 }
 .trader-market-price > small { grid-column: 1 / -1; }
-.trader-session-chart {
-  padding: .55rem .65rem .35rem;
-  border: 1px solid #233a4b;
-  border-radius: var(--radius-sm);
-  background: rgba(4, 12, 21, .66);
-  color: #5fe0c0;
-}
-.trader-session-chart__heading,
-.trader-session-chart__range {
-  display: flex;
-  justify-content: space-between;
-  gap: .6rem;
-  color: var(--text-muted);
-  font-size: .68rem;
-}
-.trader-session-chart svg { display: block; width: 100%; height: 3.25rem; margin: .15rem 0; overflow: visible; }
-.trader-session-chart > p { min-height: 3.55rem; display: grid; align-items: center; color: var(--text-muted); font-size: .75rem; }
 .trader-market-exposure,
 .trader-market-orders {
   margin-top: .75rem;
@@ -3819,3 +3802,38 @@ body:has(.nautilus-app-shell) { background:var(--bg); }
 }
 
 @media (max-width:760px) { .runtime-account-secondary { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+
+.dashboard-market-section { display: grid; gap: .75rem; min-width: 0; }
+.dashboard-market-section__head { display: flex; justify-content: space-between; align-items: start; gap: 1rem; }
+.dashboard-market-section__head h2 { margin: 0; font-size: 1rem; }
+.dashboard-market-section__head > div:first-child { min-width: 0; }
+.dashboard-market-section__head .muted { margin: .3rem 0 0; font-size: .78rem; }
+.dashboard-equity-windows { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: .45rem; }
+.dashboard-equity-windows > div { display: grid; gap: .15rem; min-width: 6.5rem; padding: .45rem .65rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: rgba(9, 24, 20, .8); }
+.dashboard-equity-windows span { color: var(--text-muted); font-size: .68rem; }
+.dashboard-equity-windows strong { color: var(--text); font-size: .82rem; font-variant-numeric: tabular-nums; }
+.dashboard-equity-windows > .muted { max-width: 20rem; font-size: .72rem; }
+.dashboard-equity-asof { margin: -.3rem 0 0; color: var(--text-muted); text-align: right; font-size: .67rem; }
+.dashboard-chart-card { min-width: 0; padding: .7rem; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-md); background: #07110f; }
+.dashboard-chart-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; padding: 0 .2rem .6rem; }
+.dashboard-chart-selectors { display: flex; gap: .25rem; padding: .2rem; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.dashboard-chart-selectors button { padding: .35rem .6rem; border: 0; border-radius: 5px; color: var(--text-muted); background: transparent; cursor: pointer; }
+.dashboard-chart-selectors button.selected { color: #e5fff5; background: #164b3d; }
+.dashboard-chart-toolbar label { display: flex; align-items: center; gap: .4rem; color: var(--text-muted); font-size: .75rem; }
+.dashboard-chart-toolbar select { min-height: 2rem; padding: .25rem .5rem; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm); background: #0c1915; }
+.dashboard-candles__canvas { width: 100%; min-height: 245px; }
+.dashboard-chart-notice { margin: 0 0 .5rem; padding: .5rem .65rem; color: #e5c994; border: 1px solid rgba(232, 170, 101, .3); border-radius: var(--radius-sm); font-size: .78rem; }
+.dashboard-chart-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .35rem .8rem; padding: .4rem .2rem 0; color: var(--text-muted); font-size: .65rem; }
+@media (max-width: 700px) {
+  .dashboard-market-section__head { display: grid; }
+  .dashboard-equity-windows { justify-content: flex-start; }
+  .dashboard-equity-windows > div { flex: 1 1 5.25rem; min-width: 0; }
+  .dashboard-equity-windows > .muted { max-width: none; }
+  .dashboard-equity-asof { text-align: left; }
+  .dashboard-chart-card { padding: .45rem; }
+  .dashboard-chart-toolbar { gap: .45rem; }
+  .dashboard-chart-toolbar > :last-child { margin-left: auto; }
+  .dashboard-chart-meta { justify-content: flex-start; }
+  .dashboard-candles__canvas { min-height: 225px; }
+}

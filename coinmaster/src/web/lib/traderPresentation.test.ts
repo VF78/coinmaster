@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import testCase from 'node:test';
 import type { HlStagegProjection } from './nautilusApi';
-import { appendSessionMarkSample, markSparklinePath, positionPresentation } from './traderPresentation';
+import { positionPresentation } from './traderPresentation';
 
 function projection(overrides: Partial<HlStagegProjection> = {}): HlStagegProjection {
   return {
@@ -41,29 +41,4 @@ testCase('flat appears only after a ready, recovered empty positions-and-orders 
   assert.deepEqual(positionPresentation(stored, 'BTC-USD-PERP.HYPERLIQUID'), {
     state: 'OPEN', side: 'LONG', quantity: '0.53645',
   });
-});
-
-testCase('mark history accepts only fresh ready feed samples and resets on stale data', () => {
-  const instrumentId = 'BTC-USD-PERP.HYPERLIQUID';
-  const fresh = projection({
-    feeds: { [instrumentId]: { state: 'READY', mark: '64250.5', mark_age_ns: 2_000_000_000 } },
-    observed_at_ns: 2_000_000,
-  });
-  const one = appendSessionMarkSample([], fresh, instrumentId);
-  assert.deepEqual(one, [{ observedAtNs: 2_000_000, mark: 64250.5 }]);
-  const stale = projection({
-    feeds: { [instrumentId]: { state: 'STALE', mark: '64250.5', mark_age_ns: 20_000_000_000 } },
-    observed_at_ns: 3_000_000,
-  });
-  assert.deepEqual(appendSessionMarkSample(one, stale, instrumentId), []);
-  assert.equal(markSparklinePath(one), '');
-  assert.match(markSparklinePath([...one, { observedAtNs: 4_000_000, mark: 64255 }]), /^M0\.0,/);
-});
-
-testCase('missing mark and missing freshness remain unknown and are not plotted', () => {
-  const instrumentId = 'SOL-USD-PERP.HYPERLIQUID';
-  const projectionWithMissing = projection({
-    feeds: { [instrumentId]: { state: 'READY', mark: null, mark_age_ns: null } },
-  });
-  assert.deepEqual(appendSessionMarkSample([], projectionWithMissing, instrumentId), []);
 });

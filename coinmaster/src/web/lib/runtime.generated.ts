@@ -141,6 +141,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/instances/hl-stageg-testnet/equity-changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Hl Stageg Equity Changes */
+        get: operations["hl_stageg_equity_changes_api_v1_instances_hl_stageg_testnet_equity_changes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/instances/hl-stageg-testnet/fills": {
         parameters: {
             query?: never;
@@ -167,6 +184,23 @@ export interface paths {
         };
         /** Hl Stageg Strategy */
         get: operations["hl_stageg_strategy_api_v1_instances_hl_stageg_testnet_strategy_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/markets/hyperliquid/candles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Hl Public Candles */
+        get: operations["hl_public_candles_api_v1_markets_hyperliquid_candles_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -403,6 +437,125 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** HlNativeEquityChanges */
+        HlNativeEquityChanges: {
+            /** As Of Ns */
+            as_of_ns: number | null;
+            /** Equity Usdc */
+            equity_usdc: string | null;
+            /**
+             * Instance Id
+             * @constant
+             */
+            instance_id: "hl-stageg-testnet";
+            /** Run Epoch */
+            run_epoch: string | null;
+            /**
+             * Source
+             * @constant
+             */
+            source: "NATIVE_SANDBOX_ACCOUNT";
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "READY" | "STALE" | "UNAVAILABLE" | "INVALID";
+            /**
+             * Version
+             * @constant
+             */
+            version: "hl-native-equity-changes-v1";
+            /** Windows */
+            windows: {
+                [key: string]: components["schemas"]["HlNativeEquityWindow"];
+            };
+        };
+        /** HlNativeEquityWindow */
+        HlNativeEquityWindow: {
+            /** Baseline At Ns */
+            baseline_at_ns: number | null;
+            /** Baseline Equity Usdc */
+            baseline_equity_usdc: string | null;
+            /** Change Percent */
+            change_percent: string | null;
+            /** Change Usdc */
+            change_usdc: string | null;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "AVAILABLE" | "UNAVAILABLE";
+        };
+        /** HlPublicCandle */
+        HlPublicCandle: {
+            /** Close */
+            close: string;
+            /** Close Time Ms */
+            close_time_ms: number;
+            /** High */
+            high: string;
+            /** Low */
+            low: string;
+            /** Open */
+            open: string;
+            /** Open Time Ms */
+            open_time_ms: number;
+            /** Trades */
+            trades: number;
+            /** Volume */
+            volume: string;
+        };
+        /** HlPublicCandles */
+        HlPublicCandles: {
+            /** Candles */
+            candles: components["schemas"]["HlPublicCandle"][];
+            /**
+             * Coin
+             * @enum {string}
+             */
+            coin: "BTC" | "SOL";
+            /**
+             * Environment
+             * @constant
+             */
+            environment: "mainnet-public";
+            /**
+             * Execution Evidence
+             * @constant
+             */
+            execution_evidence: false;
+            /**
+             * Interval
+             * @enum {string}
+             */
+            interval: "1m" | "5m" | "15m" | "1h" | "4h" | "1d";
+            /** Latest Closed At Ms */
+            latest_closed_at_ms: number | null;
+            /** Observed At Ms */
+            observed_at_ms: number | null;
+            /** Reason */
+            reason: string | null;
+            /**
+             * Source
+             * @constant
+             */
+            source: "OFFICIAL_INFO_CANDLE_SNAPSHOT";
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "READY" | "STALE" | "UNAVAILABLE" | "INVALID";
+            /**
+             * Venue
+             * @constant
+             */
+            venue: "HYPERLIQUID";
+            /**
+             * Version
+             * @constant
+             */
+            version: "hl-public-candles-v1";
+        };
         /** HlStagegAccount */
         HlStagegAccount: {
             /** Equity */
@@ -558,6 +711,8 @@ export interface components {
         };
         /** HlStagegFill */
         HlStagegFill: {
+            /** Action */
+            action?: string | null;
             /** Client Order Id */
             client_order_id: string | null;
             /** Commission Amount */
@@ -664,6 +819,8 @@ export interface components {
         };
         /** HlStagegPosition */
         HlStagegPosition: {
+            /** Average Entry Price */
+            average_entry_price?: string | null;
             /** Instrument Id */
             instrument_id: string;
             /**
@@ -1682,6 +1839,38 @@ export interface operations {
             };
         };
     };
+    hl_stageg_equity_changes_api_v1_instances_hl_stageg_testnet_equity_changes_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlNativeEquityChanges"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     hl_stageg_fills_api_v1_instances_hl_stageg_testnet_fills_get: {
         parameters: {
             query?: {
@@ -1736,6 +1925,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HlStagegStrategy"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    hl_public_candles_api_v1_markets_hyperliquid_candles_get: {
+        parameters: {
+            query: {
+                coin: "BTC" | "SOL";
+                interval: "1m" | "5m" | "15m" | "1h" | "4h" | "1d";
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlPublicCandles"];
                 };
             };
             /** @description Validation Error */
