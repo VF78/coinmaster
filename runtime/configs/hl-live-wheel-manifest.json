@@ -1,0 +1,29 @@
+{
+  "schema": "coinmaster-hl-live-wheel-qualification-v1",
+  "state": "QUALIFIED_NOT_DEPLOYED_OR_LIVE_APPROVED",
+  "nautilus_version": "1.231.0",
+  "upstream": {
+    "repository": "https://github.com/nautechsystems/nautilus_trader",
+    "tag": "v1.231.0",
+    "commit": "27a8e54e7ac3c57d6cbf8891f0283dfbaee97317",
+    "cargo_lock_sha256": "a03c8e7e800b08505a654bd5163f812e582d604814b27499e36e67aed566be66"
+  },
+  "adapter_patch": {
+    "path": "runtime/patches/nautilus-1.231.0-hl-connection-epoch.patch",
+    "sha256": "b6c1a9e40f1cb013284d59d6230800a826e229600783900a105e59db0fe7dda7"
+  },
+  "build": {
+    "workflow": ".github/workflows/hl-epoch-wheel.yml",
+    "source_commit": "b75ee90baa086161a2a95b21fa434b55d9198ef4",
+    "github_actions_run_id": 36341940809,
+    "artifact_id": 10939478808,
+    "artifact_retention_days": 7,
+    "python": "CPython 3.12",
+    "rust": "1.97.1",
+    "platform": "Linux x86_64"
+  },
+  "wheel": {
+    "filename": "nautilus_trader-1.231.0-cp312-cp312-manylinux_2_35_x86_64.whl",
+    "sha256": "8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46"
+  }
+}
