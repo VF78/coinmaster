@@ -1,0 +1,10 @@
+{
+  "schema": "coinmaster-hl-live-public-account-fingerprint-v1",
+  "environment": "mainnet",
+  "fingerprint_algorithm": "sha256(lowercase_ascii_0x_address)",
+  "master_address_sha256": "dc701f7915a6ef4965674b561c49bcdcb5bd5d51f46acfe5e3e80932cdb5fbb6",
+  "agent_address_sha256": "e7940e7cc81dab6c3755a8752ff180e61d5bfe7f739e5686990885896e2e7ab2",
+  "observed_at_utc": "2026-09-27T21:12:14Z",
+  "master_role_response_sha256": "6b3061507ef8cc2ca95320f790a9f9ccb3c850ae081df4b6f6e56e40d57203e4",
+  "agent_role_response_sha256": "0d86d549b97c03f094c208666014f467c03535fcbc8863484513fc35de48d8ba"
+}

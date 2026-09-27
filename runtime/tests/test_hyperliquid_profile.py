@@ -56,6 +56,24 @@ def test_quantity_notional_and_price_boundaries(instrument_id, price, quantity, 
     assert result.allowed is (reason is None)
 
 
+@pytest.mark.parametrize("instrument_id,price,quantity,leverage", [
+    (BTC_PERP_ID, "84594", "0.00930", "40"),
+    (SOL_PERP_ID, "122.88", "0.09", "20"),
+])
+def test_live100_zero_collateral_blocks_valid_btc_sol_sizes(
+    instrument_id, price, quantity, leverage,
+) -> None:
+    profile = HyperliquidVenueProfile.from_snapshot(ROOT, environment=HyperliquidProfileEnvironment.MAINNET)
+    decision = profile.preflight.evaluate(
+        instrument_id=instrument_id, price=Decimal(price), quantity=Decimal(quantity),
+        selected_leverage=Decimal(leverage), order_type="market",
+        available_collateral=Decimal("0"),
+    )
+    assert decision.reason == "INSUFFICIENT_COLLATERAL"
+    assert decision.normalized_notional >= Decimal("10")
+    assert decision.required_initial_margin > 0
+
+
 def test_margin_preflight_uses_hyperliquid_tiers_and_never_assumes_account_state() -> None:
     profile = HyperliquidVenueProfile.from_snapshot(ROOT, environment=HyperliquidProfileEnvironment.MAINNET)
     no_account = profile.preflight.evaluate(

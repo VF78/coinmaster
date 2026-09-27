@@ -1,20 +1,22 @@
 # #101 source-only live100 instance and release preparation
 
-Status: BLOCKED_ACCOUNT_SCOPE_AND_RELEASE; Project #2 #101 remains Todo. This
+Status: BLOCKED_ZERO_COLLATERAL_AND_RELEASE; Project #2 #101 remains Todo. This
 plan and the separate `configs/hl-stageg-live.instance.json` are not an installed
-release and grant no live-order capability. The Sandbox worker, its state DB,
-service identity and 10,000 USDC virtual seed remain separate and unchanged.
+release and grant no live-order capability. The live plan keeps its service
+identity and state separate from the active 10,000-USDC Stage-G Sandbox; it
+does not alter that worker.
 
 ## Exact source and artifact identity
 
 - Immutable candidate: `configs/stage-g-v1.json`, canonical candidate SHA-256
   `637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d`.
-- Previously installed Stage-G strategy source SHA-256
+- Before the guarded Stage-G Sandbox release `4879997`, its strategy source
+  had SHA-256
   `5f4ed8f5aaf07188d258b17dbc5a92e0548380143216f3a1828cb1155aca013e`.
-  The source-only #101 TP price correction currently has SHA-256
+  The current approved TP-price-corrected strategy has SHA-256
   `0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511`;
-  this exact hash was owner-approved and sealed in the source tree; a guarded
-  installed release remains separate and has not occurred.
+  this exact hash was owner-approved, sealed and installed for Stage-G Sandbox
+  by its guarded release owner. No separate live release has been staged.
   `configs/stage-g-hl-sandbox-approval.json` also seals execution policy
   `eee44dde50781b6364923e6aad8df714860796b0ec7cd6121adef7c25406f687`.
 - Pinned execution dependency: Nautilus 1.231.0 patched CPython 3.12 Linux
@@ -74,8 +76,8 @@ therefore cannot reconcile that accepted order. For a BUY TP with ask 84584.0,
 ALO can reject it. A current-scale SOL price 122.855 becomes native and wire
 122.86, but a future SOL 1234.56 becomes wire 1234.6. These values were
 reproduced through the installed patched 1.231 instrument and adapter methods,
-without submitting an order. The source-only correction now forms one venue-valid native price from stock
-instrument precision and five-significant-figure rules, then applies the
+without submitting an order. The source-only correction now forms one
+venue-valid native price from stock instrument precision and five-significant-figure rules, then applies the
 post-only BBO check to that exact price. Ten direct price/submit regression
 cases pass against the pinned patched wheel, including BTC tie and magnitude
 boundaries, both post-only sides, and high-price SOL. The native price equals
@@ -85,15 +87,51 @@ contract. The owner approved exact strategy SHA
 and the source seal now matches it. This does not stage or activate a release;
 selected-account and owner live-order gates below remain mandatory.
 
+## Owner-selected public account checkpoint (2026-09-27 21:12 UTC)
+
+The owner selected a mainnet master account and an API wallet for this separate
+pilot. `configs/hl-stageg-live.account-fingerprint.json` contains only SHA-256
+fingerprints of their lowercased public addresses and hashes of the read-only
+role responses. This checkpoint adds no full address or key to the repo.
+Official `/info`
+`userRole` reports `user` for the master and `agent` for the wallet, with the
+agent response pointing to the same master. The master address, not the API
+wallet address, was used for every account query. This establishes the public
+association, not control of a signing key or authority for a real order.
+
+At the same snapshot, master `userFees` reported perps taker 0.00045 and maker
+0.00015 (response SHA-256
+`4ec8b07cd0105d533b048215d8998c7c17f82439fccbcd994d67ac12ab3d2e88`).
+`clearinghouseState` reported perps account/cross value, total notional and
+margin used, and withdrawable all 0, with no positions (response SHA-256
+`0c08bd2d86308258bf9a1887a9235a9cc732fee82807dd8f006e4971b4e12ce2`).
+Spot USDC/USDE/USDT0/USDH balances were also 0 (response SHA-256
+`e997d9b7355083e3a4b022403621b12b88b175229354f91ec9a1d4894c76852b`).
+BTC and SOL `activeAssetData` selected cross leverage 40 and 20, with
+`maxTradeSzs` and `availableToTrade` both `[0,0]`; public marks were 84594.0
+and 122.88. There were no open orders. `userFills` returned 830 historical
+fills, latest 2026-05-16 06:41 UTC; this is a currently flat but historically
+used master account, not an empty history. Read-only metadata responses are
+snapshots, not a future permission or collateral guarantee.
+
+At those marks, a hypothetical 100-USDC 7.875x BTC notional target floors to
+0.00930 BTC (786.72420 USDC). With selected cross 40x, minimum initial margin
+would be 19.668105 USDC before fees and other exposure, but the actual zero
+collateral makes `ProductionVenuePreflight` reject `INSUFFICIENT_COLLATERAL`.
+SOL 0.09 at 122.88 is 11.0592 USDC, above the public minimum, yet likewise
+rejects on zero collateral. No 100-USDC pilot is fundable now. Actual BBO,
+fees, available margin, every child order and account state must be rechecked
+at any later authorized submit boundary.
+
 ## Live-only guards to satisfy before a separate owner approval
 
-1. Obtain the explicitly selected *separate* 100 USDC-equivalent mainnet
-   account reference from the owner, then record only its public fingerprint
-   in the release receipt. No verified account fingerprint is configured now.
-   Never infer it from chat, a Sandbox observer, or an API signing wallet.
-   Read-only `userRole`, `userFees`, clearinghouse/account state and
-   `activeAssetData` for that exact account must establish master/subaccount
-   role, effective fees, selected BTC/SOL cross leverage, equity and margin.
+1. At guarded release staging, require the explicit master account and agent
+   wallet supplied through a protected runtime source to hash to the two
+   public fingerprints above, and recheck their current `userRole` relation.
+   Do not query the agent as if it were the account. Re-read effective fees,
+   selected BTC/SOL leverage, equity, margin, positions and orders; positive
+   collateral and a passing native/venue preflight are required. Zero balances
+   and public role association do not establish signing permission.
 2. Keep a distinct non-login live service identity, private live StateDirectory
    and SQLite/Redis namespace, unique trader/strategy/order IDs, and a
    separate protected credential source. Only the native live execution owner

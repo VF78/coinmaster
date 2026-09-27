@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 from decimal import Decimal
 from types import SimpleNamespace
@@ -65,6 +66,22 @@ def test_source_only_live100_identity_is_separate_and_still_prebuild_blocked() -
     assert execution.private_key is None and execution.account_address is None
     source = (ROOT / "coinmaster/ops/hyperliquid_testnet.py").read_text()
     assert "HL_LIVE_ROUTE_NOT_APPROVED" in source
+
+
+def test_live100_account_fingerprint_sidecar_contains_only_public_hashes() -> None:
+    raw = (ROOT / "configs/hl-stageg-live.account-fingerprint.json").read_text()
+    document = json.loads(raw)
+    assert document["schema"] == "coinmaster-hl-live-public-account-fingerprint-v1"
+    assert document["environment"] == "mainnet"
+    assert document["fingerprint_algorithm"] == "sha256(lowercase_ascii_0x_address)"
+    for key in (
+        "master_address_sha256", "agent_address_sha256",
+        "master_role_response_sha256", "agent_role_response_sha256",
+    ):
+        assert re.fullmatch(r"[0-9a-f]{64}", document[key])
+    assert document["master_address_sha256"] != document["agent_address_sha256"]
+    assert re.search(r"0x[0-9a-fA-F]{40}", raw) is None
+    assert "private_key" not in raw and "secret" not in raw
 
 
 def test_hl_stageg_testnet_identity_is_strict_and_has_a_separate_state_db() -> None:
