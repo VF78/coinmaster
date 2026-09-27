@@ -31,6 +31,41 @@ does not alter that worker.
   public account fingerprint in its release receipt. Do not repoint the
   Sandbox release or edit `/opt/coinmaster`. No release has been staged here.
 
+## Separate immutable inactive candidate (2026-09-27 21:21 UTC)
+
+A candidate exists at
+`/srv/coinmaster/hl-live-candidates/86b9d951bff4fc4c596fb1ebcf80b171e68e85e7-wheel-8ff3c6dcc150`.
+It was assembled from a clean `git archive` of exact source commit
+`86b9d951bff4fc4c596fb1ebcf80b171e68e85e7` plus the exact wheel above,
+not from the mutable Stage-G installed runtime. Its standard trader
+`runtime/release-manifest.json` generated and verified successfully with
+`release_tree.sha256=f60b46a630c6943a613f2cced48769d998affbfd670252c7fdb4aa27f7402b1e`
+(180 payload files); the wheel inside hashes to
+`8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46`.
+The separate `live-candidate.json` records the source, wheel ABI, sealed
+candidate/strategy/policy, instance and public-account fingerprint file hashes,
+the manual uncertainty runbook hash, the single-VPS account lease and
+`activation_gate=HL_LIVE_ROUTE_NOT_APPROVED`. It names only a future
+`/run/credentials/coinmaster-hl-stageg-live.service/api-wallet-private-key`
+placeholder; that file was absent at staging. No service unit or venv was
+installed in the candidate; all staged files are read-only.
+
+The wheel imports as Nautilus 1.231.0 in the disposable CPython 3.12.3
+x86_64/glibc 2.39 venv; pip accepts its `cp312-cp312-manylinux_2_35_x86_64`
+tag in dry-run. Source-only preflight/lease/manifest tests: 10 passed; five
+staged live-guard, hash, zero-collateral and singleton tests passed, followed
+by another exact manifest verification. A fresh read-only public Info snapshot
+at 21:21:09 UTC confirmed the selected master/agent role relation, no open
+positions/orders, zero perps and spot balances, BTC/SOL cross 40/20 and
+current maker/taker rates; sanitized snapshot SHA-256
+`a0df3ce34c3bcf53dace6110964591f866d73ca0bcd8b8c373199ac3022a05b4`
+is included in the tree. These are point-in-time preflight facts and cannot
+qualify future capital or a signer. The existing live constructor still raises
+`HL_LIVE_ROUTE_NOT_APPROVED` before native node build. No service enable/start,
+Stage-G/GUI change, key load, deposit, transfer, real order or `/opt` edit
+occurred. The separate live release remains blocked on a funded, freshly
+qualified account, #99 natural lifecycle and explicit owner authorization.
+
 ## Current public mainnet constraints (2026-09-27 20:43 UTC)
 
 Read-only official `/info` `meta` response SHA-256
