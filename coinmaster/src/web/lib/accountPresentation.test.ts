@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import type { HlStagegProjection } from './nautilusApi';
-import { accountFigures, fundingLabel } from './accountPresentation';
+import { accountFigures, dashboardState, fundingLabel, protectionIsVerified } from './accountPresentation';
 
 function projection(account: Partial<HlStagegProjection['account']>, overrides: Partial<HlStagegProjection> = {}): HlStagegProjection {
   return {
@@ -58,4 +59,29 @@ test('retains known values in a partial account while leaving absent values unkn
     '10000 USDC', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', '0 USDC', 'UNKNOWN', '0 USDC',
   ]);
   assert.equal(fundingLabel(null), 'UNPOSTED');
+});
+
+
+test("captured recovered worker exposes stored exposure but never claims flat or trusts synthetic protection", () => {
+  const captured = JSON.parse(readFileSync(new URL("../../../../runtime/tests/fixtures/hl_stageg_owned_tp_status.json", import.meta.url), "utf8")) as HlStagegProjection;
+  const status = dashboardState(captured);
+  assert.equal(status.label, "RECOVERY REQUIRED");
+  assert.equal(status.exposure, "1 position · 1 order");
+  assert.equal(status.canAssertFlat, false);
+  assert.equal(captured.positions[0].signed_quantity, "0.53865");
+  assert.equal(captured.orders[0].reduce_only, true);
+  assert.deepEqual(accountFigures(captured).map(({ value }) => value), Array(7).fill("UNKNOWN"));
+  assert.equal(protectionIsVerified({ ...captured, deposit_protection: { state: "ARMED", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), false);
+});
+
+test("healthy owned flat projection can say flat and trusts only armed protection", () => {
+  const healthy = projection({
+    native_cash: "10000", native_free: "10000", native_locked: "0", equity: "10000",
+    realized_pnl_net_fees: "0", unrealized_pnl: "0", fees: "0", mark_state: "CURRENT",
+  }, { recovery_required: false, positions: [], orders: [] });
+  const status = dashboardState(healthy);
+  assert.equal(status.label, "READY");
+  assert.equal(status.exposure, "Flat");
+  assert.equal(status.canAssertFlat, true);
+  assert.equal(protectionIsVerified({ ...healthy, deposit_protection: { state: "ARMED", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), true);
 });
