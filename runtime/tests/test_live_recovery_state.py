@@ -93,6 +93,37 @@ def test_recovered_management_and_entries_require_new_fresh_public_feeds():
     assert not restored._feeds_fresh(now)
 
 
+@pytest.mark.xfail(strict=True, reason="pinned 1.231 WS has no disconnect generation; a hidden reconnect leaves old Info proof usable")
+def test_hidden_ws_reconnect_requires_new_strict_receipt_before_reduce_only_submit():
+    """A recent money timestamp cannot certify a gap-free native event stream."""
+    import time
+    from coinmaster.ops.hl_live_money import LivePerpsMoneyView
+
+    strategy = RecoverableWaveOverlayStrategy(_strategy().config)
+    now = time.time_ns()
+    socket_active = [True]
+    strategy.attach_recovery_health(lambda: socket_active[0])
+    strategy.attach_live_money_view(lambda: LivePerpsMoneyView(
+        "0x" + "a" * 40, "", now // 1_000_000,
+        Decimal("10000"), Decimal("10000"), Decimal("0"), Decimal("10000"),
+    ))
+    strategy.recovery_confirmed = True
+    strategy._feeds_fresh = lambda _now: True
+    # The socket drops and reconnects entirely between health/parity polls.
+    # Pinned Nautilus exposes only current is_active/is_closed, so health is
+    # green again while the last strict Info generation predates the gap.
+    socket_active[0] = False
+    socket_active[0] = True
+    order = SimpleNamespace(
+        client_order_id="HLTG-HIDDEN-GAP-REDUCE", instrument_id=HL_BTC.id,
+        order_type="LIMIT", is_post_only=True, is_reduce_only=True,
+        ts_init=now, has_price=False,
+    )
+    assert strategy._record_submission(
+        order, "reduce-after-gap", "episode-after-gap", "BTC_REDUCE",
+    ) is False
+
+
 def test_versioned_state_rejects_wrong_candidate_and_unknown_schema():
     source = RecoverableWaveOverlayStrategy(_strategy().config)
     payload = source.on_save()
