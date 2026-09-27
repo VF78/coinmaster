@@ -102,6 +102,7 @@ class RunInput(BaseModel):
     kind: Literal["fixture", "backtest", "paper", "research"]
     research_command: str | None = None
     optimizer_search: dict[str, Any] | None = None
+    bounded_interval: dict[str, str] | None = None
 
 
 class RunRecord(BaseModel):
@@ -492,7 +493,7 @@ def create_app(database: str | None = None, token: str | None = None, include_le
         except KeyError as error: raise HTTPException(404, "configuration not found") from error
         if input.kind == "research":
             try:
-                return research.start(config, input.research_command, idempotency_key, input.optimizer_search)
+                return research.start(config, input.research_command, idempotency_key, input.optimizer_search, input.bounded_interval)
             except ValueError as error:
                 raise HTTPException(422, str(error)) from error
         run = RunRecord(id=str(uuid4()), config_id=input.config_id, kind=input.kind, created_at=utcnow(), status="QUEUED", evidence=[], report=None)

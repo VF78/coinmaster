@@ -17,7 +17,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Iterator
 from uuid import uuid4
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from coinmaster.research.job_protocol import report_summary, sha256_file, wait_for_launch_permit
 
@@ -28,6 +28,25 @@ WEEK_MINUTES = 7 * 24 * 60
 WARMUP_START_MS = 1_662_076_800_000  # 2022-09-02T00:00:00Z
 TRADING_START_MS = 1_725_148_800_000  # 2024-09-01T00:00:00Z
 TRADING_END_MS = 1_788_220_800_000  # 2026-09-01T00:00:00Z, exclusive
+MAX_BOUNDED_DAYS = 7
+
+
+def validate_bounded_interval(value: dict[str, str]) -> tuple[int, int]:
+    if not isinstance(value, dict) or set(value) != {"start", "end_exclusive"}:
+        raise ValueError("INVALID_BOUNDED_INTERVAL")
+    try:
+        start_date, end_date = (date.fromisoformat(value[key]) for key in ("start", "end_exclusive"))
+        if start_date.isoformat() != value["start"] or end_date.isoformat() != value["end_exclusive"]:
+            raise ValueError
+        start_ms = int(datetime.combine(start_date, datetime.min.time(), tzinfo=timezone.utc).timestamp() * 1000)
+        end_ms = int(datetime.combine(end_date, datetime.min.time(), tzinfo=timezone.utc).timestamp() * 1000)
+    except (TypeError, ValueError, OverflowError) as error:
+        raise ValueError("INVALID_BOUNDED_INTERVAL") from error
+    if not (TRADING_START_MS <= start_ms < end_ms <= TRADING_END_MS and
+            end_ms - start_ms <= MAX_BOUNDED_DAYS * DAY_MS and
+            start_ms - WARMUP_START_MS >= 730 * DAY_MS):
+        raise ValueError("INVALID_BOUNDED_INTERVAL")
+    return start_ms, end_ms
 
 # Immutable §2 v0 envelope. Candidate is only the domain subset; this object
 # records the account/execution/tier assumptions that materially affect a run.
@@ -368,11 +387,12 @@ def funding_with_prior_minute_marks(
         # The canonical full-range stream has exactly one row per minute.
         # Scan it lazily and retain only settlement-adjacent marks; compact
         # unit fixtures retain the old partial lookup behavior.
-        lazy_complete = start_settlement_ms is not None and end_settlement_ms is not None and pq.ParquetFile(mark_path).metadata.num_rows == (end_settlement_ms - start_settlement_ms) // MINUTE_MS
+        requested_minutes = (end_settlement_ms - start_settlement_ms) // MINUTE_MS if start_settlement_ms is not None and end_settlement_ms is not None else 0
+        lazy_complete = requested_minutes > 0 and pq.ParquetFile(mark_path).metadata.num_rows >= requested_minutes
         if lazy_complete:
             wanted = {settlement - MINUTE_MS: row for settlement, row in relevant}
             marks = {}
-            for mark_row in ParquetMinuteCursor(mark_path, start_settlement_ms, end_settlement_ms):
+            for mark_row in ParquetMinuteCursor(mark_path, start_settlement_ms, end_settlement_ms, batch_rows=min(WEEK_MINUTES, requested_minutes)):
                 timestamp = int(mark_row["open_time_ms"])
                 if timestamp in wanted:
                     marks[timestamp] = mark_row["close"]
@@ -889,10 +909,15 @@ def _candidate_from_job_config(config: dict):
 def run_job_request(path: Path) -> int:
     request = json.loads(path.read_text())
     required = {"request_hash", "config_hash", "config", "data_root", "artifact_dir", "launch_permit", "launch_owner_token"}
-    if not required <= set(request):
+    if "bounded_interval" in request:
+        required |= {"source_manifest_sha256"}
+    if not required <= set(request) or ("source_manifest_sha256" in request and "bounded_interval" not in request):
         _emit("result", status="FAILED", evidence=["INVALID_JOB_REQUEST"])
         return 1
-    canonical = json.dumps({key: request[key] for key in ("config_hash", "config", "data_root", "artifact_dir", "launch_permit", "launch_owner_token")}, sort_keys=True, separators=(",", ":"))
+    signed_keys = ("config_hash", "config", "data_root", "artifact_dir", "launch_permit", "launch_owner_token")
+    if "bounded_interval" in request:
+        signed_keys += ("bounded_interval", "source_manifest_sha256")
+    canonical = json.dumps({key: request[key] for key in signed_keys}, sort_keys=True, separators=(",", ":"))
     if hashlib.sha256(canonical.encode()).hexdigest() != request["request_hash"]:
         _emit("result", status="FAILED", request_hash=request["request_hash"], config_hash=request["config_hash"], evidence=["REQUEST_HASH_MISMATCH"])
         return 1
@@ -907,7 +932,23 @@ def run_job_request(path: Path) -> int:
         _emit("result", status="BLOCKED", request_hash=request["request_hash"], config_hash=request["config_hash"], blockers=[str(error)])
         return 2
     data_root, artifact_dir = Path(request["data_root"]), Path(request["artifact_dir"])
-    blockers = coverage_blockers(data_root)
+    bounded = request.get("bounded_interval")
+    if "bounded_interval" in request:
+        from coinmaster.research.optimizer_job import config_blockers, source_blockers
+        try:
+            start_ms, end_ms = validate_bounded_interval(bounded)
+        except ValueError as error:
+            _emit("result", status="BLOCKED", request_hash=request["request_hash"], config_hash=request["config_hash"], blockers=[str(error)])
+            return 2
+        source_errors, source_hash = source_blockers(data_root)
+        blockers = [*config_blockers(request["config"]), *source_errors]
+        if source_hash != request["source_manifest_sha256"]:
+            blockers.append("SOURCE_MANIFEST_CHANGED")
+        if request.get("test_options") is not None:
+            blockers.append("BOUNDED_TEST_OPTIONS_FORBIDDEN")
+    else:
+        start_ms = end_ms = None
+        blockers = coverage_blockers(data_root)
     if blockers:
         _emit("result", status="BLOCKED", request_hash=request["request_hash"], config_hash=request["config_hash"], blockers=blockers)
         return 2
@@ -916,8 +957,11 @@ def run_job_request(path: Path) -> int:
     try:
         report = run_native_diagnostic(
             data_root, include_funding=options.get("include_funding", True), candidate=candidate, artifact_dir=artifact_dir, artifact_label="result",
-            **({"warmup_start_ms": options["warmup_start_ms"], "trading_start_ms": options["trading_start_ms"], "trading_end_ms": options["trading_end_ms"], "weekly_batch_minutes": options.get("weekly_batch_minutes", WEEK_MINUTES), "cursor_batch_rows": options.get("cursor_batch_rows", WEEK_MINUTES)} if options else {}),
+            **({"trading_start_ms": start_ms, "trading_end_ms": end_ms} if bounded is not None else {"warmup_start_ms": options["warmup_start_ms"], "trading_start_ms": options["trading_start_ms"], "trading_end_ms": options["trading_end_ms"], "weekly_batch_minutes": options.get("weekly_batch_minutes", WEEK_MINUTES), "cursor_batch_rows": options.get("cursor_batch_rows", WEEK_MINUTES)} if options else {}),
         )
+        if bounded is not None:
+            report["source_manifest_sha256"] = request["source_manifest_sha256"]
+            report["bounded_interval"] = bounded
         artifact = save_diagnostic_report(data_root, report, "result", artifact_dir)
         envelope = {"type": "result", "status": "COMPLETED", "request_hash": request["request_hash"], "config_hash": request["config_hash"], "artifact": str(artifact), "artifact_sha256": sha256_file(artifact), "summary": report_summary(report)}
         (artifact_dir / "result-envelope.json").write_text(json.dumps(envelope, sort_keys=True) + "\n")

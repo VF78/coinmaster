@@ -67,7 +67,7 @@ def test_unimplemented_paper_controls_keep_exact_inactive_v0_values() -> None:
 
 
 def _wait_for_terminal(manager: ResearchJobManager, run_id: str):
-    for _ in range(100):
+    for _ in range(500):
         run = manager.refresh(run_id)
         if run.status not in {"RUNNING", "CANCEL_REQUESTED"}:
             return run

@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
-from coinmaster.research.native_baseline import _candidate_from_job_config, coverage_blockers
+from coinmaster.research.native_baseline import _candidate_from_job_config, coverage_blockers, validate_bounded_interval
 from coinmaster.research.job_protocol import report_summary
 from coinmaster.research.optimizer_job import config_blockers, search_spec, source_blockers, verify_compact_result
 
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 
 MAX_STDOUT_BYTES = 256 * 1024
-MAX_JOB_ADDRESS_SPACE_BYTES = 1024 * 1024 * 1024
+MAX_JOB_ADDRESS_SPACE_BYTES = 1536 * 1024 * 1024
 MAX_JOB_WALL_SECONDS = 6 * 60 * 60
 ACTIVE = {"STARTING", "RUNNING", "CANCEL_REQUESTED"}
 RESEARCH_ENV_DENY_PREFIXES = (
@@ -114,7 +114,12 @@ class ResearchJobManager:
             if key not in RESEARCH_ENV_DENY_NAMES
             and not key.startswith(RESEARCH_ENV_DENY_PREFIXES)
             and not key.startswith("BYBIT_")
-        } | {"COINMASTER_RESEARCH_CHILD": "true"}
+        } | {
+            "COINMASTER_RESEARCH_CHILD": "true",
+            "OPENBLAS_NUM_THREADS": "1", "OMP_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1", "NUMEXPR_NUM_THREADS": "1",
+            "ARROW_NUM_THREADS": "2",
+        }
 
     @staticmethod
     def _write_launch_permit(path: Path, request_hash: str, owner: str, process: subprocess.Popen[str], identity: str) -> None:
@@ -163,21 +168,29 @@ class ResearchJobManager:
             return None
         return (run.pid, pgid) if pgid == run.process_group and secrets.compare_digest(digest, run.process_identity) else None
 
-    def start(self, config: "ConfigurationRecord", command_name: str | None, idempotency_key: str | None = None, optimizer_search: dict[str, Any] | None = None) -> "RunRecord":
+    def start(self, config: "ConfigurationRecord", command_name: str | None, idempotency_key: str | None = None, optimizer_search: dict[str, Any] | None = None, bounded_interval: dict[str, str] | None = None) -> "RunRecord":
         from coinmaster.api.app import RunRecord
         command_name = command_name or "native_baseline"
         if command_name not in self.commands:
             raise ValueError("RESEARCH_COMMAND_NOT_ALLOWED")
+        if bounded_interval is not None and command_name != "native_baseline":
+            raise ValueError("BOUNDED_INTERVAL_COMMAND_MISMATCH")
         if command_name == "native_optimizer":
             if optimizer_search != search_spec():
                 raise ValueError("OPTIMIZER_SEARCH_MISMATCH")
         elif optimizer_search is not None:
             raise ValueError("OPTIMIZER_SEARCH_UNEXPECTED")
+        if bounded_interval is not None:
+            validate_bounded_interval(bounded_interval)
+            if self.test_options is not None:
+                raise ValueError("BOUNDED_TEST_OPTIONS_FORBIDDEN")
         if idempotency_key:
             existing = self.store.run_for_idempotency(idempotency_key)
             if existing is not None:
-                existing_search = json.loads((Path(existing.work_dir) / "request.json").read_text()).get("search") if existing.work_dir else None
-                if existing.config_id == config.id and existing.command_name == command_name and existing_search == optimizer_search:
+                existing_request = json.loads((Path(existing.work_dir) / "request.json").read_text()) if existing.work_dir else {}
+                if (existing.config_id == config.id and existing.command_name == command_name
+                        and existing_request.get("search") == optimizer_search
+                        and existing_request.get("bounded_interval") == bounded_interval):
                     return existing
                 raise ValueError("IDEMPOTENCY_KEY_REUSED")
         with self.lock:
@@ -187,10 +200,13 @@ class ResearchJobManager:
             owner_path, request_path, permit_path = work_dir / "owner.token", work_dir / "request.json", work_dir / "launch-permit.json"
             owner_path.write_text(owner + "\n")
             os.chmod(owner_path, 0o600)
-            source_preflight = source_blockers(self.data_root) if command_name == "native_optimizer" and self.test_options is None else ([], None)
+            source_preflight = source_blockers(self.data_root) if (command_name == "native_optimizer" or bounded_interval is not None) and self.test_options is None else ([], None)
             request = {"config_hash": config.config_hash, "config": config.config.model_dump(), "data_root": str(self.data_root), "artifact_dir": str(work_dir / "artifacts"), "launch_permit": str(permit_path), "launch_owner_token": owner}
             if optimizer_search is not None:
                 request["search"] = optimizer_search
+                request["source_manifest_sha256"] = source_preflight[1]
+            if bounded_interval is not None:
+                request["bounded_interval"] = bounded_interval
                 request["source_manifest_sha256"] = source_preflight[1]
             request_hash = self._request_hash(request)
             request["request_hash"] = request_hash
@@ -202,7 +218,14 @@ class ResearchJobManager:
                 _candidate_from_job_config(request["config"])
             except (KeyError, TypeError, ValueError) as error:
                 return self.store.save_run(RunRecord(id=run_id, config_id=config.id, kind="research", status="BLOCKED", evidence=[str(error)], created_at=self._now(), report={"type": "result", "status": "BLOCKED", "request_hash": request_hash, "config_hash": config.config_hash, "blockers": [str(error)]}, request_hash=request_hash, command_name=command_name, work_dir=str(work_dir), idempotency_key=idempotency_key, progress=100, finished_at=self._now()))
-            blocked = (coverage_blockers(self.data_root) if command_name == "native_baseline" else [*config_blockers(request["config"]), *source_preflight[0]]) if self.test_options is None and command_name in {"native_baseline", "native_optimizer"} else []
+            if self.test_options is None and command_name == "native_baseline" and bounded_interval is not None:
+                blocked = [*config_blockers(request["config"]), *source_preflight[0]]
+            elif self.test_options is None and command_name == "native_baseline":
+                blocked = coverage_blockers(self.data_root)
+            elif self.test_options is None and command_name == "native_optimizer":
+                blocked = [*config_blockers(request["config"]), *source_preflight[0]]
+            else:
+                blocked = []
             if blocked:
                 return self.store.save_run(RunRecord(id=run_id, config_id=config.id, kind="research", status="BLOCKED", evidence=blocked, created_at=self._now(), report={"type": "result", "status": "BLOCKED", "request_hash": request_hash, "config_hash": config.config_hash, "blockers": blocked}, request_hash=request_hash, command_name=command_name, work_dir=str(work_dir), idempotency_key=idempotency_key, progress=100, finished_at=self._now()))
             starting_record = RunRecord(id=run_id, config_id=config.id, kind="research", status="STARTING", evidence=["NATIVE_RESEARCH_START_INTENT"], created_at=self._now(), request_hash=request_hash, command_name=command_name, work_dir=str(work_dir), idempotency_key=idempotency_key, progress=0)
@@ -450,6 +473,21 @@ class ResearchJobManager:
         ):
             self._finish_after_verified_death(run_id, "FAILED", ["RESULT_ARTIFACT_HASH_MISMATCH"], result)
             return
+        if run.command_name == "native_baseline":
+            try:
+                request = json.loads((work / "request.json").read_text())
+                bounded = request.get("bounded_interval")
+                valid = bounded is None or (
+                    report.get("bounded_interval") == bounded
+                    and report.get("source_manifest_sha256") == request["source_manifest_sha256"]
+                    and report["run_interval"]["start"] == bounded["start"] + "T00:00:00+00:00"
+                    and report["run_interval"]["end_exclusive"] == bounded["end_exclusive"] + "T00:00:00+00:00"
+                )
+            except (KeyError, OSError, TypeError, ValueError, json.JSONDecodeError):
+                valid = False
+            if not valid:
+                self._finish_after_verified_death(run_id, "FAILED", ["BOUNDED_BASELINE_EVIDENCE_INVALID"], result)
+                return
         if run.command_name == "native_optimizer":
             try:
                 valid = verify_compact_result(report, work, json.loads((work / "request.json").read_text()))
