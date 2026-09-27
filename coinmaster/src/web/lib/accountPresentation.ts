@@ -22,7 +22,24 @@ export function accountFigures(state: HlStagegProjection | null): AccountFigure[
 
 export function fundingLabel(state: HlStagegProjection | null): string {
   const raw = state?.funding_state?.trim();
-  return raw ? raw.replaceAll('_', ' ') : 'UNPOSTED';
+  if (!raw) return 'Not posted; settlement is unconfirmed';
+  if (raw === 'OBSERVED_MODELLED_UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT') return 'Observed/modelled; next payment and settlement are unconfirmed';
+  if (raw === 'OBSERVED_MODELLED_UNPOSTED') return 'Observed/modelled; not posted';
+  if (raw === 'UNPOSTED_NEXT_PAYMENT_NOT_CONFIRMED_SETTLEMENT') return 'Not posted; next payment and settlement are unconfirmed';
+  return raw.replaceAll('_', ' ').toLowerCase().replace(/^./, (letter) => letter.toUpperCase());
+}
+
+export function formatUtcTimestamp(value: string | null | undefined): string {
+  if (!value) return 'Unavailable';
+  const normalized = value.replace(/(\.\d{3})\d+(?=Z|[+-]\d{2}:\d{2}$)/, '$1');
+  const date = new Date(normalized);
+  if (!Number.isFinite(date.getTime())) return 'Unavailable';
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'UTC', day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(date);
+  const valueOf = (type: string) => parts.find((part) => part.type === type)?.value ?? '';
+  return valueOf('day') + ' ' + valueOf('month') + ' ' + valueOf('year') + ' · ' + valueOf('hour') + ':' + valueOf('minute') + ' UTC';
 }
 
 

@@ -466,6 +466,62 @@ class RuntimeReader:
             raise HTTPException(503, "paper worker command channel unavailable") from error
 
 
+class HlStagegFill(RuntimeSchema):
+    cursor: int
+    trade_id: str
+    native_event_id: str | None
+    client_order_id: str | None
+    venue_order_id: str | None
+    episode_id: str | None
+    instrument_id: str
+    order_side: str | None
+    quantity: str
+    price: str
+    commission_amount: str | None
+    commission_currency: str | None
+    liquidity_side: str | None
+    ts_event_ns: int | None
+    ts_init_ns: int | None
+
+
+class HlStagegFillHistory(RuntimeSchema):
+    fills: list[HlStagegFill]
+    next_cursor: int
+    detail_store_available: bool
+    historical_id_only_count: int
+    version: str | None = None
+    instance_id: str | None = None
+    run_epoch: str | None = None
+
+
+class HlStagegFillReader:
+    """Relay exact future-fill facts over the authenticated loopback worker API."""
+    def __init__(self, url: str, token: str | None) -> None:
+        self.url, self.token = url.rstrip("/"), token
+
+    def history(self, cursor: int = 0, limit: int = 100) -> HlStagegFillHistory:
+        if cursor < 0 or not 1 <= limit <= 500:
+            raise HTTPException(422, "fill history query bounds invalid")
+        if not self.token:
+            raise HTTPException(503, "Stage-G fill history is unavailable")
+        request = urllib.request.Request(
+            f"{self.url}/fills?cursor={cursor}&limit={limit}", method="GET",
+            headers={"Accept": "application/json", "Authorization": f"Bearer {self.token}",
+                     "X-Coinmaster-Instance": "hl-stageg-testnet"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=2) as response:
+                payload = json.loads(response.read())
+            result = HlStagegFillHistory.model_validate(payload)
+            if result.version not in (None, "hl-stageg-native-fills-v1") or result.instance_id not in (None, "hl-stageg-testnet"):
+                raise ValueError("invalid Stage-G fill response identity")
+            return result
+        except HTTPException:
+            raise
+        except Exception as error:
+            raise HTTPException(503, "Stage-G fill journal is unavailable") from error
+
+
 class HlStagegProjectionReader:
     """Read only the HL worker's loopback GET endpoint, never a journal."""
     MAX_AGE_NS = 15_000_000_000
@@ -651,6 +707,7 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     hl_control = HlStagegControlRelay(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
     hl_protection_control = HlStagegDepositProtectionRelay(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
     hl_strategy_reader = HlStagegStrategyReader(runtime_root, hl_reader)
+    hl_fill_reader = HlStagegFillReader(hl_reader.url, hl_stageg_control_token if hl_stageg_control_token is not None else os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
     app = FastAPI(title="Coinmaster Paper Runtime API", version="1.0.0", docs_url=None, openapi_url=None)
     gui_auth = GuiAuth(
         username=operator_username if operator_username is not None else os.getenv("COINMASTER_GUI_USERNAME"),
@@ -709,6 +766,9 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     @app.get("/api/v1/instances/hl-stageg-testnet", response_model=HlStagegProjection, dependencies=[Depends(auth)])
     def hl_stageg_runtime() -> HlStagegProjection:
         return hl_reader.runtime()
+    @app.get("/api/v1/instances/hl-stageg-testnet/fills", response_model=HlStagegFillHistory, dependencies=[Depends(auth)])
+    def hl_stageg_fills(cursor: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=100)) -> HlStagegFillHistory:
+        return hl_fill_reader.history(cursor, limit)
     @app.get("/api/v1/instances/hl-stageg-testnet/strategy", response_model=HlStagegStrategy, dependencies=[Depends(auth)])
     def hl_stageg_strategy() -> HlStagegStrategy:
         return hl_strategy_reader.strategy()

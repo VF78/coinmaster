@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import io
 import json
+import sqlite3
 import pytest
 from pathlib import Path
 from types import SimpleNamespace
@@ -577,3 +578,112 @@ def test_authenticated_api_set_and_reset_relay_round_trip_with_worker_status(tmp
         server.shutdown()
         server.server_close()
         thread.join(timeout=2)
+
+
+
+def test_stageg_fill_reader_relays_bounded_authenticated_get_and_exact_nullable_facts(monkeypatch):
+    from coinmaster.api.runtime_sidecar import HlStagegFillReader
+    from contextlib import contextmanager
+
+    body = {
+        "fills": [{
+            "cursor": 7, "trade_id": "trade-7", "native_event_id": "event-7",
+            "client_order_id": "client-7", "venue_order_id": None, "episode_id": None,
+            "instrument_id": "BTC-USD-PERP.HYPERLIQUID", "order_side": "BUY",
+            "quantity": "0.25", "price": "65000.125", "commission_amount": "2.4375",
+            "commission_currency": "USDC", "liquidity_side": "TAKER",
+            "ts_event_ns": 1_700_000_000_000_000_000, "ts_init_ns": None,
+        }],
+        "next_cursor": 7, "detail_store_available": True, "historical_id_only_count": 1,
+    }
+    captured = {}
+    class Response:
+        def __enter__(self): return self
+        def __exit__(self, *_args): return None
+        def read(self): return json.dumps(body).encode()
+    def fake_urlopen(request, timeout):
+        captured['request'] = request
+        captured['timeout'] = timeout
+        return Response()
+    monkeypatch.setattr('coinmaster.api.runtime_sidecar.urllib.request.urlopen', fake_urlopen)
+
+    result = HlStagegFillReader("http://127.0.0.1:18183", "internal-token").history(cursor=4, limit=8)
+    request = captured['request']
+    assert request.method == 'GET'
+    assert request.full_url == 'http://127.0.0.1:18183/fills?cursor=4&limit=8'
+    assert request.get_header('Authorization') == 'Bearer internal-token'
+    assert request.get_header('X-coinmaster-instance') == 'hl-stageg-testnet'
+    assert captured['timeout'] == 2
+    assert result.fills[0].quantity == '0.25' and result.fills[0].price == '65000.125'
+    assert result.fills[0].venue_order_id is None and result.fills[0].ts_init_ns is None
+    assert result.historical_id_only_count == 1 and result.detail_store_available is True
+
+
+def test_stageg_fill_reader_fails_closed_without_worker_token_or_out_of_bounds_query():
+    from coinmaster.api.runtime_sidecar import HlStagegFillReader
+
+    with pytest.raises(HTTPException) as unavailable:
+        HlStagegFillReader("http://127.0.0.1:18183", None).history()
+    assert unavailable.value.status_code == 503
+    with pytest.raises(HTTPException) as invalid:
+        HlStagegFillReader("http://127.0.0.1:18183", "internal-token").history(limit=501)
+    assert invalid.value.status_code == 422
+
+
+
+def test_stageg_fill_endpoint_keeps_operator_auth_and_relays_worker_facts(monkeypatch, tmp_path):
+    import asyncio
+    import json as jsonlib
+    import coinmaster.api.runtime_sidecar as sidecar
+
+    body = {
+        "version": "hl-stageg-native-fills-v1", "instance_id": "hl-stageg-testnet", "run_epoch": "epoch-1",
+        "fills": [{
+            "cursor": 1, "trade_id": "fill-1", "native_event_id": None, "client_order_id": "client-1",
+            "venue_order_id": None, "episode_id": None, "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+            "order_side": "BUY", "quantity": "0.1", "price": "64000", "commission_amount": None,
+            "commission_currency": None, "liquidity_side": None, "ts_event_ns": None, "ts_init_ns": None,
+        }],
+        "next_cursor": 1, "detail_store_available": True, "historical_id_only_count": 0,
+    }
+    class Response:
+        def __enter__(self): return self
+        def __exit__(self, *_args): return None
+        def read(self): return jsonlib.dumps(body).encode()
+    monkeypatch.setattr(sidecar.urllib.request, "urlopen", lambda *_args, **_kwargs: Response())
+    app = create_runtime_app(
+        database=str(tmp_path / "paper.sqlite"), control_database=str(tmp_path / "control.sqlite"),
+        token="operator-secret", hl_stageg_status_url="http://127.0.0.1:18183",
+        hl_stageg_control_token="worker-secret",
+    )
+    async def call(authorized):
+        headers = [(b"host", b"localhost")]
+        if authorized: headers.append((b"authorization", b"Bearer operator-secret"))
+        scope = {
+            "type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1",
+            "scheme": "http", "method": "GET", "path": "/api/v1/instances/hl-stageg-testnet/fills",
+            "raw_path": b"/api/v1/instances/hl-stageg-testnet/fills",
+            "query_string": b"cursor=0&limit=10", "headers": headers,
+            "server": ("localhost", 80), "client": ("127.0.0.1", 4321), "root_path": "",
+        }
+        messages = []
+        received = False
+        async def receive():
+            nonlocal received
+            if not received:
+                received = True
+                return {"type": "http.request", "body": b"", "more_body": False}
+            return {"type": "http.disconnect"}
+        async def send(message): messages.append(message)
+        await app(scope, receive, send)
+        start_response = next(item for item in messages if item["type"] == "http.response.start")
+        response_body = b"".join(item.get("body", b"") for item in messages if item["type"] == "http.response.body")
+        return start_response["status"], jsonlib.loads(response_body)
+
+    status, _ = asyncio.run(call(False))
+    assert status == 401
+    status, result = asyncio.run(call(True))
+    assert status == 200
+    assert result["fills"][0]["trade_id"] == "fill-1"
+    assert result["fills"][0]["commission_amount"] is None
+    assert result["version"] == "hl-stageg-native-fills-v1"

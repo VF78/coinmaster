@@ -141,6 +141,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/instances/hl-stageg-testnet/fills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Hl Stageg Fills */
+        get: operations["hl_stageg_fills_api_v1_instances_hl_stageg_testnet_fills_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/instances/hl-stageg-testnet/strategy": {
         parameters: {
             query?: never;
@@ -536,6 +553,56 @@ export interface components {
              * @constant
              */
             provenance: "SANDBOX";
+        };
+        /** HlStagegFill */
+        HlStagegFill: {
+            /** Client Order Id */
+            client_order_id: string | null;
+            /** Commission Amount */
+            commission_amount: string | null;
+            /** Commission Currency */
+            commission_currency: string | null;
+            /** Cursor */
+            cursor: number;
+            /** Episode Id */
+            episode_id: string | null;
+            /** Instrument Id */
+            instrument_id: string;
+            /** Liquidity Side */
+            liquidity_side: string | null;
+            /** Native Event Id */
+            native_event_id: string | null;
+            /** Order Side */
+            order_side: string | null;
+            /** Price */
+            price: string;
+            /** Quantity */
+            quantity: string;
+            /** Trade Id */
+            trade_id: string;
+            /** Ts Event Ns */
+            ts_event_ns: number | null;
+            /** Ts Init Ns */
+            ts_init_ns: number | null;
+            /** Venue Order Id */
+            venue_order_id: string | null;
+        };
+        /** HlStagegFillHistory */
+        HlStagegFillHistory: {
+            /** Detail Store Available */
+            detail_store_available: boolean;
+            /** Fills */
+            fills: components["schemas"]["HlStagegFill"][];
+            /** Historical Id Only Count */
+            historical_id_only_count: number;
+            /** Instance Id */
+            instance_id?: string | null;
+            /** Next Cursor */
+            next_cursor: number;
+            /** Run Epoch */
+            run_epoch?: string | null;
+            /** Version */
+            version?: string | null;
         };
         /** HlStagegHashes */
         HlStagegHashes: {
@@ -1590,6 +1657,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HlStagegControlCommand"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    hl_stageg_fills_api_v1_instances_hl_stageg_testnet_fills_get: {
+        parameters: {
+            query?: {
+                cursor?: number;
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegFillHistory"];
                 };
             };
             /** @description Validation Error */

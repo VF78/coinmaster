@@ -58,3 +58,8 @@ export const commandHlStagegDepositProtection = (command: 'set-deposit-protectio
     ? { idempotency_key: idempotencyKey, drawdown_limit_percent: drawdownLimitPercent }
     : { idempotency_key: idempotencyKey, confirm: true }),
 });
+
+export type HlStagegFill = runtimeComponents['schemas']['HlStagegFill'];
+export type HlStagegFillHistory = runtimeComponents['schemas']['HlStagegFillHistory'];
+export const getHlStagegFills = (cursor = 0, limit = 100) =>
+  request<HlStagegFillHistory>('/instances/hl-stageg-testnet/fills?cursor=' + cursor + '&limit=' + limit);

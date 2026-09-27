@@ -496,6 +496,225 @@
         "title": "HlStagegEvent",
         "type": "object"
       },
+      "HlStagegFill": {
+        "additionalProperties": false,
+        "properties": {
+          "client_order_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Order Id"
+          },
+          "commission_amount": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commission Amount"
+          },
+          "commission_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commission Currency"
+          },
+          "cursor": {
+            "title": "Cursor",
+            "type": "integer"
+          },
+          "episode_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Episode Id"
+          },
+          "instrument_id": {
+            "title": "Instrument Id",
+            "type": "string"
+          },
+          "liquidity_side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Liquidity Side"
+          },
+          "native_event_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Native Event Id"
+          },
+          "order_side": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Side"
+          },
+          "price": {
+            "title": "Price",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "trade_id": {
+            "title": "Trade Id",
+            "type": "string"
+          },
+          "ts_event_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ts Event Ns"
+          },
+          "ts_init_ns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ts Init Ns"
+          },
+          "venue_order_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue Order Id"
+          }
+        },
+        "required": [
+          "cursor",
+          "trade_id",
+          "native_event_id",
+          "client_order_id",
+          "venue_order_id",
+          "episode_id",
+          "instrument_id",
+          "order_side",
+          "quantity",
+          "price",
+          "commission_amount",
+          "commission_currency",
+          "liquidity_side",
+          "ts_event_ns",
+          "ts_init_ns"
+        ],
+        "title": "HlStagegFill",
+        "type": "object"
+      },
+      "HlStagegFillHistory": {
+        "additionalProperties": false,
+        "properties": {
+          "detail_store_available": {
+            "title": "Detail Store Available",
+            "type": "boolean"
+          },
+          "fills": {
+            "items": {
+              "$ref": "#/components/schemas/HlStagegFill"
+            },
+            "title": "Fills",
+            "type": "array"
+          },
+          "historical_id_only_count": {
+            "title": "Historical Id Only Count",
+            "type": "integer"
+          },
+          "instance_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instance Id"
+          },
+          "next_cursor": {
+            "title": "Next Cursor",
+            "type": "integer"
+          },
+          "run_epoch": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Epoch"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "required": [
+          "fills",
+          "next_cursor",
+          "detail_store_available",
+          "historical_id_only_count"
+        ],
+        "title": "HlStagegFillHistory",
+        "type": "object"
+      },
       "HlStagegHashes": {
         "additionalProperties": false,
         "properties": {
@@ -3257,6 +3476,91 @@
           }
         },
         "summary": "Hl Stageg Control Command"
+      }
+    },
+    "/api/v1/instances/hl-stageg-testnet/fills": {
+      "get": {
+        "operationId": "hl_stageg_fills_api_v1_instances_hl_stageg_testnet_fills_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Cursor",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegFillHistory"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Hl Stageg Fills"
       }
     },
     "/api/v1/instances/hl-stageg-testnet/strategy": {

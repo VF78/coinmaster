@@ -258,6 +258,15 @@ p {
   background: linear-gradient(135deg, rgba(50, 205, 172, 0.16), rgba(17, 44, 56, 0.74));
 }
 
+.runtime-account-grid--compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+.runtime-account-grid--compact .stat__value {
+  font-size: clamp(0.96rem, 1.45vw, 1.2rem);
+  overflow-wrap: anywhere;
+}
+
 .runtime-account-grid .stat__value {
   color: #f1fffb;
   font-size: clamp(1.05rem, 2vw, 1.42rem);
@@ -342,7 +351,8 @@ p {
 
 @media (max-width: 1040px) {
   .strategy-settings-grid { grid-template-columns: 1fr; }
-  .runtime-account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .runtime-account-grid,
+  .runtime-account-grid--compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 760px) {
@@ -351,7 +361,8 @@ p {
   .runtime-market-and-positions,
   .runtime-history-grid,
   .strategy-secondary-grid { grid-template-columns: 1fr; }
-  .runtime-account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .runtime-account-grid,
+  .runtime-account-grid--compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .full-width {

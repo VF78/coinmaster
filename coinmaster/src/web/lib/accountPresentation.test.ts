@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import type { HlStagegProjection } from './nautilusApi';
-import { accountFigures, dashboardState, fundingLabel, protectionIsFresh, protectionIsVerified } from './accountPresentation';
+import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, protectionIsFresh, protectionIsVerified } from './accountPresentation';
 
 function projection(account: Partial<HlStagegProjection['account']>, overrides: Partial<HlStagegProjection> = {}): HlStagegProjection {
   return {
@@ -37,7 +37,7 @@ test('shows native open-account figures and unposted funding as provided', () =>
     '9975.0 USDC', '9971.2 USDC', '3.8 USDC', '10004.1 USDC',
     '-1.2 USDC', '29.1 USDC', '0.8 USDC',
   ]);
-  assert.equal(fundingLabel(projection({})), 'OBSERVED MODELLED UNPOSTED');
+  assert.equal(fundingLabel(projection({})), 'Observed/modelled; not posted');
 });
 
 test('keeps missing values unknown and marks equity/PnL stale when the mark is stale', () => {
@@ -58,7 +58,7 @@ test('retains known values in a partial account while leaving absent values unkn
   assert.deepEqual(view.map(({ value }) => value), [
     '10000 USDC', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', '0 USDC', 'UNKNOWN', '0 USDC',
   ]);
-  assert.equal(fundingLabel(null), 'UNPOSTED');
+  assert.equal(fundingLabel(null), 'Not posted; settlement is unconfirmed');
 });
 
 
@@ -98,4 +98,10 @@ test('protection values are fresh only for a current sample within the 15-second
   assert.equal(protectionIsFresh(armed, observedAt + 15_000_000_001), false);
   assert.equal(protectionIsFresh(armed, observedAt - 1), false);
   assert.equal(protectionIsFresh(projection({}, { deposit_protection: { ...armed.deposit_protection!, observed_at_ns: null } }), observedAt), false);
+});
+
+test('formats UTC protection timestamps compactly without exposing nanosecond strings', () => {
+  assert.equal(formatUtcTimestamp('2026-09-27T00:00:00.000000000Z'), '27 Sept 2026 · 00:00 UTC');
+  assert.equal(formatUtcTimestamp('bad timestamp'), 'Unavailable');
+  assert.equal(formatUtcTimestamp(null), 'Unavailable');
 });
