@@ -3899,3 +3899,15 @@ body:has(.nautilus-app-shell) { background:var(--bg); }
   .nautilus-app-shell .rules-array-fields { gap: .25rem; }
   .nautilus-app-shell .rules-array-fields input { padding-inline: .35rem; }
 }
+
+@media (max-width: 420px) {
+  .nautilus-app-shell .sidebar-nav__list > li { min-width: 0; }
+  .nautilus-app-shell .sidebar-nav__item { width: 100%; min-width: 0; }
+  .nautilus-app-shell .sidebar-nav__item > span:not(.nautilus-nav-icon) {
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;
+    font-size: .66rem;
+    line-height: 1;
+  }
+}

@@ -6,6 +6,9 @@ test('humanizes exact strategy keys and values without altering data', () => {
   assert.equal(strategySettingLabel('sol_timeout_preempts_add'), 'SOL timeout stops further additions');
   assert.equal(strategySettingLabel('episode_fixed_beta'), 'Keep beta fixed during each episode');
   assert.equal(strategySettingValue('max_parent_notional', 10000000.0), '10,000,000');
+  assert.equal(strategySettingValue('btc_close_trail_fraction', 0.03), '3.00%');
+  assert.equal(strategySettingValue('btc_close_trail_fraction', '0.03'), '3.00%');
+  assert.equal(strategySettingValue('btc_close_trail_fraction', ''), '');
   assert.equal(strategySettingValue('sol_overlay_enabled', false), 'Disabled');
   assert.equal(isAdvancedStrategySetting('sol_overlay_enabled'), true);
 });

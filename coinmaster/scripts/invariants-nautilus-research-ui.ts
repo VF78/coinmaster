@@ -64,6 +64,7 @@ const required = [
   ['invalid strategy draft fields are announced accessibly', 'aria-invalid={invalid || undefined}'],
   ['production buttons and controls have keyboard focus styles', '.nautilus-app-shell .btn:focus-visible'],
   ['trader UI includes a narrow mobile layout', '@media (max-width: 390px)'],
+  ['mobile bottom nav constrains and separates 390px labels', '.nautilus-app-shell .sidebar-nav__item > span:not(.nautilus-nav-icon)'],
   ['strategy folds technical parameters under advanced rules', 'Advanced strategy rules'],
   ['research presents readable blockers without raw technical-code panels', 'Technical blocker codes'],
   ['dashboard presents recent native executions as Recent trades', 'Recent trades'],
@@ -83,7 +84,7 @@ const required = [
 
 let failed = 0;
 for (const [label, text] of required) {
-  const source = label.startsWith('production') || label.startsWith('trader UI includes') ? styles : label.startsWith('navigation') || label.startsWith('top bar') ? app : label.startsWith('catalog') && text.startsWith('getResearchCatalog') ? page : text.startsWith('request<') ? api : text.startsWith('Original v0') || text.startsWith('Hyperliquid') ? catalog : page;
+  const source = label.startsWith('production') || label.startsWith('trader UI includes') || label.startsWith('mobile bottom nav') ? styles : label.startsWith('navigation') || label.startsWith('top bar') ? app : label.startsWith('catalog') && text.startsWith('getResearchCatalog') ? page : text.startsWith('request<') ? api : text.startsWith('Original v0') || text.startsWith('Hyperliquid') ? catalog : page;
   const absent = label.includes('does not') || label.includes('do not') || label.includes('does not invent') || label.includes('does not expose') || label.includes('removes') || label.includes('without raw') || label.includes('no raw') || label.includes('hide technical') || label.includes('was removed') || label.startsWith('top bar removes');
   if (source.includes(text) !== absent) console.log(`  ✓ ${label}`);
   else { failed += 1; console.error(`  ✗ ${label}`); }

@@ -33,7 +33,10 @@ export function strategySettingLabel(key: string): string {
 export function strategySettingValue(key: string, value: unknown): string {
   if (typeof value === 'boolean') return value ? 'Enabled' : 'Disabled';
   if (Array.isArray(value)) return value.join(' · ');
-  if (key === 'btc_close_trail_fraction' && typeof value === 'number') return `${(value * 100).toFixed(2)}%`;
+  if (key === 'btc_close_trail_fraction' && (typeof value === 'number' || typeof value === 'string')) {
+    const fraction = typeof value === 'number' ? value : value.trim() === '' ? Number.NaN : Number(value);
+    if (Number.isFinite(fraction)) return `${(fraction * 100).toFixed(2)}%`;
+  }
   if (key === 'max_parent_notional') {
     const numeric = typeof value === 'number' ? value : Number(value);
     if (Number.isFinite(numeric)) return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(numeric);
