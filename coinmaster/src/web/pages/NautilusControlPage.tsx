@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DashboardMarketChart } from '../components/DashboardMarketChart';
+import { DashboardConnectionIdentity } from '../components/DashboardConnectionIdentity';
 import { SettingsConnections } from '../components/SettingsConnections';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
@@ -315,6 +316,7 @@ export function RuntimePage() {
   const protectionArmed = protectionFresh && protection?.state === 'ARMED';
   const fillHistoryMatchesRun = Boolean(state?.run_epoch && fillHistory?.run_epoch === state.run_epoch);
   return <main className="terminal-layout nautilus-runtime-workspace">
+    <DashboardConnectionIdentity />
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={runtimeStatus.tone}>{loading && !state ? 'Loading' : humanizeResearchCode(runtimeStatus.label)}</Badge>}>
       <div className="runtime-hero__heading"><div><p className="trader-hero__lead">Current BTC and SOL Sandbox account.</p><p className="trader-note">{entryGateMessage}.</p><p className="runtime-snapshot-time">Sandbox snapshot · {state?.observed_at_ns ? formatUtcTimestamp(new Date(state.observed_at_ns / 1_000_000).toISOString()) : 'time unavailable'}</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
       <div className="runtime-account-grid runtime-account-grid--compact runtime-priority-grid">

@@ -31,3 +31,9 @@ export function connectionVerificationRows(venue: 'hyperliquid' | 'bybit', verif
 export function connectionDisplayLabel(venue: 'hyperliquid' | 'bybit', label: string, id: string, duplicateLabel: boolean): string {
   return venue === 'bybit' && duplicateLabel ? `${label} · ${id.slice(-6)}` : label;
 }
+
+export type ConnectionIdentity = { id: string; venue: 'hyperliquid' | 'bybit'; account_label: string; verification_state: ConnectionVerification };
+
+export function selectedConnectionIdentity(connections: ConnectionIdentity[], displayId: string | null): ConnectionIdentity | null {
+  return displayId ? connections.find((item) => item.id === displayId) ?? null : null;
+}

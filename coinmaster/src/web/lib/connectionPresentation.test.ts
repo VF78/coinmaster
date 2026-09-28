@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { connectionDisplayLabel, connectionVerificationRows } from './connectionPresentation.js';
+import { connectionDisplayLabel, connectionVerificationRows, selectedConnectionIdentity } from './connectionPresentation.js';
 
 test('Hyperliquid public readability does not imply agent authorization', () => {
   assert.deepEqual(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'NOT_PROVIDED' }), [
@@ -32,4 +32,14 @@ test('duplicate Bybit account labels get a short identity suffix without exposin
   assert.equal(connectionDisplayLabel('bybit', 'Bybit account', 'opaque-abcdef123456', true), 'Bybit account · 123456');
   assert.equal(connectionDisplayLabel('bybit', 'Bybit account', 'opaque-abcdef123456', false), 'Bybit account');
   assert.equal(connectionDisplayLabel('hyperliquid', '0x…1234', 'opaque-abcdef123456', true), '0x…1234');
+});
+
+test('dashboard identity follows only the selected opaque connection ID', () => {
+  const connections = [
+    { id: 'a1', venue: 'hyperliquid' as const, account_label: '0x…1111', verification_state: { public_observation: 'REACHABLE' } },
+    { id: 'b2', venue: 'bybit' as const, account_label: 'Bybit account', verification_state: { read_only_access: 'VERIFIED' } },
+  ];
+  assert.equal(selectedConnectionIdentity(connections, null), null);
+  assert.equal(selectedConnectionIdentity(connections, 'missing'), null);
+  assert.equal(selectedConnectionIdentity(connections, 'b2')?.venue, 'bybit');
 });
