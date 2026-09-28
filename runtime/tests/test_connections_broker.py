@@ -242,3 +242,43 @@ def test_store_syncs_parent_directory_and_nginx_streams_secret_bodies(tmp_path, 
     broker_location = nginx.split("location ^~ /api/v1/connections {", 1)[1].split("}", 1)[0]
     assert "proxy_request_buffering off;" in broker_location
     assert "proxy_http_version 1.1;" in broker_location
+
+def test_disconnect_crash_clears_selection_before_record_removal(tmp_path, monkeypatch):
+    import pytest
+    from coinmaster.api.connections_broker import create_connections_app
+
+    root = str(tmp_path / "broker")
+    app = create_connections_app(store_root=root, verifier=lambda _: 200)
+    status, raw = call(app, "POST", "/api/v1/connections",
+                       {"venue": "bybit", "api_key": "SENTINEL_KEY", "api_secret": "SENTINEL_SECRET"},
+                       headers=auth_headers())
+    assert status == 201
+    connection_id = json.loads(raw)["id"]
+    assert call(app, "PUT", "/api/v1/connections/display", {"connection_id": connection_id},
+                headers=auth_headers())[0] == 200
+
+    original_unlink = Path.unlink
+
+    def crash_before_record_unlink(path, *args, **kwargs):
+        if path.name == connection_id + ".json":
+            raise OSError("injected crash before record removal")
+        return original_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "unlink", crash_before_record_unlink)
+    with pytest.raises(OSError, match="injected crash"):
+        call(app, "DELETE", "/api/v1/connections/" + connection_id, headers=auth_headers())
+    monkeypatch.setattr(Path, "unlink", original_unlink)
+
+    restarted = create_connections_app(store_root=root, verifier=lambda _: 200)
+    status, raw = call(restarted, "GET", "/api/v1/connections", headers=auth_headers())
+    assert status == 200
+    state = json.loads(raw)
+    assert state["display_connection_id"] is None
+    assert [item["id"] for item in state["connections"]] == [connection_id]
+
+    # Even an older interrupted deletion with a dangling display file is
+    # reported as no selection after the record disappears.
+    (Path(root) / (connection_id + ".json")).unlink()
+    (Path(root) / "display").write_text(connection_id)
+    status, raw = call(restarted, "GET", "/api/v1/connections", headers=auth_headers())
+    assert status == 200 and json.loads(raw)["display_connection_id"] is None

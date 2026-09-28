@@ -93,7 +93,13 @@ class ConnectionStore:
             fd = os.open(self.root / "display", os.O_RDONLY | os.O_NOFOLLOW)
             with os.fdopen(fd) as file:
                 selected = file.read(32)
-            return selected if ID_RE.fullmatch(selected) else None
+            if not ID_RE.fullmatch(selected):
+                return None
+            try:
+                self.get(selected)
+            except HTTPException:
+                return None
+            return selected
         except FileNotFoundError:
             return None
 
@@ -317,10 +323,10 @@ def create_connections_app(*, store_root: str | None = None, verify_token: str |
         authorize(request)
         with store.locked():
             store.get(connection_id)
-            (store.root / (connection_id + ".json")).unlink()
-            store._sync_directory()
             if store.selection() == connection_id:
                 store.select(None)
+            (store.root / (connection_id + ".json")).unlink()
+            store._sync_directory()
         return Response(status_code=204)
 
     @app.put("/api/v1/connections/display")
