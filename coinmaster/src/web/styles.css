@@ -3911,3 +3911,35 @@ body:has(.nautilus-app-shell) { background:var(--bg); }
     line-height: 1;
   }
 }
+
+/* Premium dashboard hierarchy: restrained surfaces, clear live-data provenance. */
+.nautilus-app-shell .runtime-priority-grid .stat:first-child { border-color: #3d6456; background: linear-gradient(135deg, rgba(102, 216, 180, .12), rgba(21, 34, 30, .96)); }
+.nautilus-app-shell .runtime-priority-grid .stat:first-child .stat__label { color: #b0c9bd; }
+.nautilus-app-shell .runtime-priority-grid .stat:first-child .stat__value { color: #e9fff6; font-size: clamp(1.45rem, 2.6vw, 2rem); letter-spacing: -.035em; }
+.runtime-snapshot-time { margin-top: .38rem; color: var(--text-muted); font-size: .69rem; font-variant-numeric: tabular-nums; }
+.dashboard-equity-windows > .dashboard-equity-window { min-width: 7rem; padding: .52rem .7rem; background: #111a18; }
+.dashboard-equity-window strong { font-size: .88rem; letter-spacing: -.015em; }
+.dashboard-equity-window--positive strong, .dashboard-equity-window--positive small { color: #83dfbb; }
+.dashboard-equity-window--negative strong, .dashboard-equity-window--negative small { color: #ee9294; }
+.dashboard-equity-asof { margin-top: -.42rem; font-variant-numeric: tabular-nums; }
+.nautilus-app-shell .trader-market-card { border-color: var(--border); background: linear-gradient(150deg, #121a19 0%, #0f1716 72%); }
+.nautilus-app-shell .trader-market-price > strong { color: #eff8f4; font-size: clamp(1.8rem, 3.2vw, 2.45rem); letter-spacing: -.045em; }
+.nautilus-app-shell .trader-market-exposure, .nautilus-app-shell .trader-market-orders { border-color: #293936; }
+.nautilus-app-shell .trader-market-order { border-radius: 0 6px 6px 0; background: rgba(102, 216, 180, .055); }
+.dashboard-chart-provenance { display: flex; flex-wrap: wrap; gap: .4rem 1rem; padding: .05rem .2rem .35rem; color: var(--text-muted); font-size: .68rem; }
+.dashboard-chart-provenance > span { display: inline-flex; align-items: center; gap: .38rem; }
+.dashboard-chart-provenance__swatch { width: .42rem; height: .42rem; border-radius: 50%; background: #89a197; }
+.dashboard-chart-provenance__swatch--market { background: #6bd3ae; }
+.dashboard-chart-provenance__swatch--native { background: #7893a0; }
+.dashboard-chart-provenance__native--ready .dashboard-chart-provenance__swatch--native { background: #8aab99; }
+.nautilus-app-shell .dashboard-chart-selectors button:hover { color: var(--text); background: rgba(107, 211, 174, .08); }
+.nautilus-app-shell .dashboard-chart-selectors button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.nautilus-app-shell .dashboard-chart-toolbar select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.nautilus-app-shell .dashboard-chart-card { background: #0d1412; }
+.nautilus-app-shell .dashboard-chart-meta { color: #91a59c; }
+@media (max-width: 760px) {
+  .runtime-snapshot-time { line-height: 1.5; }
+  .dashboard-equity-windows > .dashboard-equity-window { flex-basis: 5.8rem; }
+  .dashboard-chart-provenance { display: grid; gap: .4rem; padding-inline: .25rem; }
+  .nautilus-app-shell .dashboard-chart-toolbar > .badge { order: 2; }
+}
