@@ -8,7 +8,8 @@ import { Stat } from '../components/Stat';
 import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegEquityChanges, getHlStagegFills, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlNativeEquityChanges, type HlStagegControls, type HlStagegFillHistory, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
 import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, protectionIsFresh, protectionIsVerified } from '../lib/accountPresentation';
 import { positionPresentation, TRADER_MARKETS } from '../lib/traderPresentation';
-import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, researchResultContext, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
+import { parseFiniteNumberFields } from '../lib/strategyDraftValidation';
+import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
 type ArrayKey = 'wave_quantiles' | 'btc_tp_fractions_initial_qty' | 'sol_size_multipliers_H' | 'sol_entry_z';
@@ -26,12 +27,22 @@ const PARAMETER_LABELS: Record<string, string> = {
 function title(key: string) { return PARAMETER_LABELS[key] ?? strategySettingLabel(key); }
 function displaySetting(key: string, value: unknown) { return strategySettingValue(key, value); }
 
-function CsvNumberField({ label, value, onCommit }: { label: string; value: number[]; onCommit: (next: number[]) => void }) {
-  const serialized = value.join(',');
+function NumberArrayField({ label, value, onCommit }: { label: string; value: number[]; onCommit: (next: number[]) => void }) {
+  const serialized = value.map(String);
   const [draft, setDraft] = useState(serialized);
-  useEffect(() => setDraft(serialized), [serialized]);
-  function commit() { const next = draft.split(',').map((part) => Number(part.trim())); if (next.length === 3 && next.every(Number.isFinite)) onCommit(next); }
-  return <label className="rules-field"><span>{label} (CSV)</span><input value={draft} onChange={(event) => setDraft(event.target.value)} onBlur={commit} /></label>;
+  const [invalid, setInvalid] = useState(false);
+  useEffect(() => { setDraft(serialized); setInvalid(false); }, [value.join(',')]);
+  function change(index: number, next: string) { setDraft((current) => current.map((field, fieldIndex) => fieldIndex === index ? next : field)); }
+  function commit() {
+    const parsed = parseFiniteNumberFields(draft);
+    if (!parsed || parsed.length !== value.length) { setInvalid(true); return; }
+    setInvalid(false); onCommit(parsed);
+  }
+  return <fieldset className="rules-field rules-array-field" aria-invalid={invalid || undefined}>
+    <legend>{label}</legend><div className="rules-array-fields">{draft.map((field, index) => <label key={index}>
+      <span className="sr-only">{label}, value {index + 1}</span><input aria-label={`${label}, value ${index + 1}`} aria-invalid={invalid || undefined} type="number" step="any" value={field} onChange={(event) => change(index, event.target.value)} onBlur={commit} />
+    </label>)}</div>{invalid ? <span className="field-error" role="alert">Enter a number in every field.</span> : null}
+  </fieldset>;
 }
 
 export function StrategyPage() {
@@ -40,7 +51,7 @@ export function StrategyPage() {
   useEffect(() => { void load(); }, []);
   function updateNumber(key: NumberKey, value: string) { if (value !== '') setConfig((item) => item ? { ...item, [key]: Number(value) } : item); }
   function updateArray(key: ArrayKey, value: number[]) { setConfig((item) => item ? { ...item, [key]: value } : item); }
-  async function save() { if (!config || saving) return; if (!Number.isFinite(Number(config.initial_total_usdt)) || Number(config.initial_total_usdt) <= 0) { setMessage('Research draft validation failed: initial total must be a positive number.'); return; } setSaving(true); setMessage('Saving research draft…'); try { const next = await saveConfiguration(config); const refreshed = await getConfigurations(); const persisted = refreshed.find((item) => item.id === next.id); if (!persisted) throw new Error('Saved draft could not be read back.'); setDrafts(refreshed); setSaved(persisted); setConfig(persisted.config); window.localStorage.setItem('coinmaster-selected-config', persisted.id); setMessage(`Research draft saved and read back: ${persisted.config_hash.slice(0, 12)}.`); } catch (error) { setMessage(error instanceof Error ? error.message : 'Research draft save failed.'); } finally { setSaving(false); } }
+  async function save() { if (!config || saving) return; if (!Number.isFinite(Number(config.initial_total_usdt)) || Number(config.initial_total_usdt) <= 0) { setMessage('Research draft validation failed: initial total must be a positive number.'); return; } setSaving(true); setMessage('Saving research draft…'); try { const next = await saveConfiguration(config); const refreshed = await getConfigurations(); const persisted = refreshed.find((item) => item.id === next.id); if (!persisted) throw new Error('Saved draft could not be read back.'); setDrafts(refreshed); setSaved(persisted); setConfig(persisted.config); window.localStorage.setItem('coinmaster-selected-config', persisted.id); setMessage(`Research draft saved and read back: ${formatUtcTimestamp(persisted.created_at)}.`); } catch (error) { setMessage(error instanceof Error ? error.message : 'Research draft save failed.'); } finally { setSaving(false); } }
   const runningMatch = strategy?.running_state === 'RUNNING_MATCH';
   const sourceChecked = strategy?.source_state === 'SEALED_SOURCE_CHECKED';
   const runningParameters = Object.entries(strategy?.candidate ?? {}).map(([parameter, value]) => ({ id: parameter, parameter, value }));
@@ -61,38 +72,36 @@ export function StrategyPage() {
       {rows.length ? <dl className="strategy-setting-list">{rows.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl> : <p className="runtime-empty-note">No sealed settings are available.</p>}
     </Card>)}</section>
     {advancedRunningParameters.length ? <details className="nautilus-diagnostics"><summary>Advanced strategy rules</summary><dl className="strategy-setting-list">{advancedRunningParameters.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl></details> : null}
-    <details className="nautilus-diagnostics"><summary>Strategy identity and account limits</summary><p className="muted">Runner state code: {strategy?.running_state ?? "UNKNOWN"}.</p><p className="muted">Candidate: {strategy?.hashes.candidate_sha256 ?? 'UNKNOWN'} · strategy: {strategy?.hashes.strategy_sha256 ?? 'UNKNOWN'} · policy: {strategy?.hashes.execution_policy_sha256 ?? 'UNKNOWN'}.</p><p className="muted">{strategy?.public_venue_profile ?? 'UNKNOWN'} Account margin: {strategy?.account_margin ?? 'UNKNOWN'} · account fee schedule: {strategy?.account_fee_schedule ?? 'UNKNOWN'} · funding: {strategy?.funding_treatment ?? 'UNKNOWN'}.</p></details>
-    <details className="nautilus-diagnostics strategy-promotion"><summary>Applying strategy changes is unavailable</summary><p className="muted">The running settings are read-only. Research drafts remain separate from the active strategy.</p><Button variant="primary" disabled>Apply strategy</Button></details>
-    <details className="nautilus-diagnostics strategy-research-drafts"><summary>Research drafts / separate from running strategy</summary><Card className="research-drafts-card" title="Saved research draft">
+    <details className="nautilus-diagnostics strategy-research-drafts"><summary>Research drafts · saved separately from the running strategy</summary><div className="research-drafts-card">
       <p className="trader-hero__lead">Draft parameters are saved for research only. The running strategy above remains unchanged.</p>
-      <label className="rules-field"><span>Read-back saved draft</span><select value={saved?.id ?? ''} onChange={(event) => { const next = drafts.find((item) => item.id === event.target.value) ?? null; setSaved(next); setConfig(next?.config ?? config); if (next) window.localStorage.setItem('coinmaster-selected-config', next.id); }}>{drafts.map((item) => <option key={item.id} value={item.id}>{item.config_hash.slice(0, 12)} · {formatUtcTimestamp(item.created_at)}</option>)}</select></label>
+      <label className="rules-field"><span>Read-back saved draft</span><select value={saved?.id ?? ''} onChange={(event) => { const next = drafts.find((item) => item.id === event.target.value) ?? null; setSaved(next); setConfig(next?.config ?? config); if (next) window.localStorage.setItem('coinmaster-selected-config', next.id); }}>{drafts.map((item) => <option key={item.id} value={item.id}>Saved draft · {formatUtcTimestamp(item.created_at)}</option>)}</select></label>
       <div className="nautilus-strategy-grid">
         <section className="nautilus-strategy-group"><h3>BTC sizing and exits</h3><p className="muted">Research draft; sealed running parameters stay above.</p><div className="rules-form-grid">
         {(['ema_period', 'btc_notional_multiplier', 'btc_close_trail_fraction'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" value={String(config?.[key] ?? '')} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <CsvNumberField label="BTC TP fractions / initial qty" value={config.btc_tp_fractions_initial_qty} onCommit={(next) => updateArray('btc_tp_fractions_initial_qty', next)} /> : null}
+        {config ? <NumberArrayField label="BTC TP fractions / initial qty" value={config.btc_tp_fractions_initial_qty} onCommit={(next) => updateArray('btc_tp_fractions_initial_qty', next)} /> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>SOL sizing and exits</h3><p className="muted">Entry thresholds, add sizes and staged exits.</p><div className="rules-form-grid">
         {(['sol_exit_half_z', 'sol_exit_all_z', 'sol_max_holding_days'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" value={String(config?.[key] ?? '')} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <><CsvNumberField label="SOL multipliers H" value={config.sol_size_multipliers_H} onCommit={(next) => updateArray('sol_size_multipliers_H', next)} /><CsvNumberField label="SOL entry z" value={config.sol_entry_z} onCommit={(next) => updateArray('sol_entry_z', next)} /></> : null}
+        {config ? <><NumberArrayField label="SOL multipliers H" value={config.sol_size_multipliers_H} onCommit={(next) => updateArray('sol_size_multipliers_H', next)} /><NumberArrayField label="SOL entry z" value={config.sol_entry_z} onCommit={(next) => updateArray('sol_entry_z', next)} /></> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>Signal windows</h3><p className="muted">Feature history and wave thresholds.</p><div className="rules-form-grid">
         {(['beta_days', 'relative_days', 'z_history_days', 'wave_history_days', 'wave_min_count'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" value={String(config?.[key] ?? '')} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <><CsvNumberField label="Wave quantiles" value={config.wave_quantiles} onCommit={(next) => updateArray('wave_quantiles', next)} /></> : null}
+        {config ? <><NumberArrayField label="Wave quantiles" value={config.wave_quantiles} onCommit={(next) => updateArray('wave_quantiles', next)} /></> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>Capital and constraints</h3><p className="muted">Fixed v0 controls are visible but cannot be edited.</p><div className="rules-form-grid">
         <label className="rules-field"><span>Initial TOTAL (template constraint)</span><input disabled value={config?.initial_total_usdt ?? ''} /></label>
         <label className="rules-field"><span>Initial active fraction (template constraint)</span><input disabled type="number" value={String(config?.initial_active_fraction ?? '')} /></label>
-        <label className="rules-field"><span>Research venue label only</span><select value={config?.venue ?? ''} onChange={(event) => setConfig((item) => item ? { ...item, venue: (event.target.value || null) as StrategyConfig['venue'] } : item)}><option value="">Unselected</option><option value="bybit">Bybit</option><option value="hyperliquid">Hyperliquid</option></select></label>
+        <label className="rules-field"><span>Research venue</span><select value={config?.venue ?? ''} onChange={(event) => setConfig((item) => item ? { ...item, venue: (event.target.value || null) as StrategyConfig['venue'] } : item)}><option value="">Unselected</option><option value="bybit">Bybit</option><option value="hyperliquid">Hyperliquid</option></select></label>
         {(['max_gross_to_active'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" value={String(config?.[key] ?? '')} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        <label className="rules-field"><span>Maximum parent order notional</span><input value={config?.max_parent_notional ?? ''} onChange={(event) => setConfig((item) => item ? { ...item, max_parent_notional: event.target.value } : item)} /></label>
+        <label className="rules-field"><span>Maximum parent order notional</span><input type="number" step="any" value={config?.max_parent_notional ?? ''} onChange={(event) => setConfig((item) => item ? { ...item, max_parent_notional: event.target.value } : item)} /></label>
         <label className="rules-field"><span>Include zero waves (v0 fixed)</span><input disabled type="checkbox" checked={Boolean(config?.include_zero_waves)} /></label>
         <label className="rules-field"><span>Freeze sigma on first SOL fill (v0 fixed)</span><input disabled type="checkbox" checked={Boolean(config?.freeze_sigma_on_first_sol_fill)} /></label>
         <label className="rules-field"><span>Insufficient margin (v0 fixed)</span><select disabled value={config?.insufficient_margin ?? 'reject'}><option value="reject">reject</option></select></label>
         </div></section>
       </div>
       <p className="muted">Template constraints remain fixed until a separately scoped native implementation. Server validation is authoritative for research-draft saves.</p>
-      <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!config || saving} onClick={() => void save()}>{saving ? 'Saving…' : 'Save research draft'}</Button>{saved ? <Badge tone="success">{saved.config_hash.slice(0, 12)}</Badge> : null}</div>{message ? <p className="muted">{message}</p> : null}
-    </Card></details>
+      <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!config || saving} onClick={() => void save()}>{saving ? 'Saving…' : 'Save research draft'}</Button>{saved ? <Badge tone="success">Saved draft read back</Badge> : null}</div>{message ? <p className="muted">{message}</p> : null}
+    </div></details>
   </main>;
 }
 
@@ -196,39 +205,36 @@ export function ResearchPage() {
     : selectedRun?.report?.terminal_total;
   const baselineReady = capabilities?.baseline_state === 'READY';
   const optimizerReady = capabilities?.optimizer_state === 'READY';
-  const optimizerSearch = capabilities?.optimizer_search as { axis: string; values: string[]; max_variants: number; source_candidate_sha256: string } | undefined;
+  const optimizerSearch = capabilities?.optimizer_search as { axis: string; values: string[]; max_variants: number } | undefined;
   const top20 = Array.isArray(selectedRun?.report?.top20) ? selectedRun.report.top20 as { candidate_id: string; candidate_sha256: string; terminal_active: string; terminal_reserve: string; terminal_total: string; roi: string; drawdown_percent: string; liquidations: number; maker_fees: string; taker_fees: string; funding: { count?: number; signed_amount?: string }; fills: number; limitations: string[]; artifact_sha256: string; classification: string }[] : [];
   return <main className="terminal-layout nautilus-research-workspace">
     <Card className="trader-hero research-hero" title="Research workspace" actions={<Badge tone={baselineReady ? 'success' : 'danger'}>{humanizeResearchCode(capabilities?.baseline_state ?? (loading ? 'LOADING' : 'BLOCKED'))}</Badge>}>
       <p className="trader-hero__lead">Run a bounded backtest using the selected saved configuration. It never changes the running strategy.</p>
       <div className="rules-form-grid">
-        <label className="rules-field"><span>Immutable configuration</span><select value={config?.id ?? ''} onChange={(event) => { const next = configs.find((item) => item.id === event.target.value) ?? null; setConfig(next); setCapabilities(null); if (next) { window.localStorage.setItem('coinmaster-selected-config', next.id); void getResearchCapabilities(next.id).then(setCapabilities).catch((error: Error) => setMessage(error.message)); } }}>{configs.map((item) => <option key={item.id} value={item.id}>{item.config_hash.slice(0, 12)} · {formatUtcTimestamp(item.created_at)}</option>)}</select></label>
+        <label className="rules-field"><span>Immutable configuration</span><select value={config?.id ?? ''} onChange={(event) => { const next = configs.find((item) => item.id === event.target.value) ?? null; setConfig(next); setCapabilities(null); if (next) { window.localStorage.setItem('coinmaster-selected-config', next.id); void getResearchCapabilities(next.id).then(setCapabilities).catch((error: Error) => setMessage(error.message)); } }}>{configs.map((item) => <option key={item.id} value={item.id}>Saved draft · {formatUtcTimestamp(item.created_at)}</option>)}</select></label>
         <label className="rules-field"><span>Start date</span><input disabled value={capabilities?.baseline_start ? formatUtcTimestamp(capabilities.baseline_start) : 'Unavailable'} /></label>
         <label className="rules-field"><span>End date (exclusive)</span><input disabled value={capabilities?.baseline_end_exclusive ? formatUtcTimestamp(capabilities.baseline_end_exclusive) : 'Unavailable'} /></label>
         <label className="rules-field"><span>Ranking objective</span><input disabled value={capabilities?.baseline_objective ?? 'TOTAL only'} /></label>
       </div>
-      <p className="muted">The selected configuration and market-data coverage are checked again before the run starts.</p>
-      {capabilities?.baseline_blockers.length ? <><p className="muted">Baseline blocked: {capabilities.baseline_blockers.map(humanizeBlocker).join(' ')}</p><details className="nautilus-diagnostics"><summary>Technical blocker codes</summary><p className="muted">{capabilities.baseline_blockers.join(' · ')}</p></details></> : null}
+      <p className="muted">Configuration and data coverage are checked before each run.</p>
+      {capabilities?.baseline_blockers.length ? <><p className="muted">Baseline blocked: {capabilities.baseline_blockers.map(humanizeBlocker).join(' ')}</p></> : null}
       <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!baselineReady || starting || Boolean(activeRun)} onClick={() => void startBaseline()}>{starting ? 'Starting…' : activeRun ? 'Research running…' : 'Run historical baseline'}</Button><Button variant="secondary" onClick={() => void load()}>Refresh status</Button></div>
     </Card>
     <Card className="research-action-card" title="Bounded parameter search" actions={<Badge tone={optimizerReady ? 'success' : 'danger'}>{optimizerReady ? 'Ready' : humanizeResearchCode(capabilities?.optimizer_state ?? 'BLOCKED')}</Badge>}>
-      <p className="muted">One axis: {optimizerSearch ? strategySettingLabel(optimizerSearch.axis) : 'BTC size'} = {optimizerSearch?.values.join(', ') ?? '—'} · up to {optimizerSearch?.max_variants ?? '—'} variants · rank by terminal total. Research evidence only.</p>
-      <details className="nautilus-diagnostics"><summary>Source and manifest identity</summary><p className="muted">Sealed Stage-G source {optimizerSearch?.source_candidate_sha256 ?? 'UNKNOWN'} · verified 1m manifest {capabilities?.optimizer_source_manifest_sha256 ?? 'UNKNOWN'}.</p></details>
-      {capabilities?.optimizer_blockers.length ? <><p className="muted">Research is blocked: {capabilities.optimizer_blockers.map(humanizeBlocker).join(' ')}</p><details className="nautilus-diagnostics"><summary>Technical blocker codes</summary><p className="muted">{capabilities.optimizer_blockers.join(' · ')}</p></details></> : null}
+      <p className="muted">One axis: {optimizerSearch ? strategySettingLabel(optimizerSearch.axis) : 'BTC size'} = {optimizerSearch?.values.join(', ') ?? '—'} · up to {optimizerSearch?.max_variants ?? '—'} variants · rank by terminal total. Backtest evidence only.</p>
+      {capabilities?.optimizer_blockers.length ? <><p className="muted">Research is blocked: {capabilities.optimizer_blockers.map(humanizeBlocker).join(' ')}</p></> : null}
       <Button variant="primary" disabled={!optimizerReady || !config || starting || Boolean(activeRun)} onClick={() => void startOptimizer()}>{starting ? 'Starting…' : activeRun ? 'Research busy…' : 'Optimize terminal total'}</Button>
     </Card>
     <Card className="research-result-card" title="Selected result" actions={selectedRun ? <Badge tone={tone(selectedRun.status)}>{humanizeResearchCode(selectedRun.status)}{selectedRun.progress == null ? '' : ' · ' + selectedRun.progress + '%'}</Badge> : <Badge tone="neutral">No run selected</Badge>}>
-      <p className="muted">{researchResultContext(activeRun?.id, selectedRun?.id)}</p>
+      <p className="muted">{activeRun ? "Backtest is running; progress refreshes automatically." : selectedRun ? "Showing the selected run." : "No run selected."}</p>
       <div className="stats-grid"><Stat label="Terminal TOTAL" value={String(terminalTotal ?? '—')} /><Stat label="Active" value={String(selectedRun?.report?.terminal_active ?? '—')} /><Stat label="Reserve" value={String(selectedRun?.report?.terminal_reserve ?? '—')} /><Stat label="ROI" value={String((selectedRun?.report?.summary as { roi?: string } | undefined)?.roi ?? '—')} /><Stat label="Max drawdown" value={String((selectedRun?.report?.summary as { max_drawdown_percent?: string } | undefined)?.max_drawdown_percent ?? '—')} /><Stat label="Recorded fills" value={String(selectedRun?.report?.fills ?? '—')} /></div>
-      <p className="muted">Result type: {humanizeResearchCode(String(selectedRun?.report?.status ?? '—'))} · fees: {String(selectedRun?.report?.native_fees ?? '—')} · liquidations: {String(selectedRun?.report?.liquidation_count ?? '—')}. Diagnostic results are not live rankings.</p>
-      {selectedRun?.report?.status ? <details className="nautilus-diagnostics"><summary>Technical classification code</summary><code>{String(selectedRun.report.status)}</code></details> : null}
-      {selectedRun?.evidence.length ? <><p className="muted">Job evidence: {selectedRun.evidence.map(humanizeBlocker).join(' ')}</p><details className="nautilus-diagnostics"><summary>Technical evidence codes</summary><p className="muted">{selectedRun.evidence.join(' · ')}</p></details></> : null}
-      {selectedRun?.command_name === 'native_optimizer' ? <details className="nautilus-diagnostics"><summary>Research artifact identity</summary><p className="muted">Request {selectedRun.request_hash ?? 'UNKNOWN'} · config {selectedRun.report?.request_config_hash?.toString() ?? 'UNKNOWN'} · result {selectedRun.report?.artifact_sha256?.toString() ?? 'UNKNOWN'} · classification {selectedRun.report?.status?.toString() ?? 'UNKNOWN'}.</p></details> : null}
+      <p className="muted">Backtest evidence · fees: {String(selectedRun?.report?.native_fees ?? '—')} · liquidations: {String(selectedRun?.report?.liquidation_count ?? '—')}.</p>
+      {selectedRun?.evidence.length ? <p className="muted">{selectedRun.evidence.map(humanizeBlocker).join(' ')}</p> : null}
       {top20.length ? <><h3 className="nautilus-subheading">TOP {top20.length} · terminal TOTAL comparison</h3><DataTable rows={top20.map((row) => ({ ...row, classification: humanizeResearchCode(row.classification), id: row.candidate_id }))} emptyText="No ranked candidates." mobileTitle={(row) => row.candidate_id} columns={[{ key: 'candidate', header: 'Candidate', render: (row) => row.candidate_id }, { key: 'total', header: 'TOTAL / ACTIVE / RESERVE', render: (row) => `${row.terminal_total} / ${row.terminal_active} / ${row.terminal_reserve}` }, { key: 'risk', header: 'ROI / DD / liq', render: (row) => `${row.roi} / ${row.drawdown_percent} / ${row.liquidations}` }, { key: 'costs', header: 'Fills / maker / taker / funding', render: (row) => `${row.fills} / ${row.maker_fees} / ${row.taker_fees} / ${row.funding?.signed_amount ?? '—'}` }, { key: 'proof', header: 'Classification / limits', render: (row) => `${row.classification} · ${row.limitations.join('; ')}` }]} /></> : <p className="muted">No TOP-20 comparison for this run. A completed optimizer publishes candidates here.</p>}
       {selectedRun && ['STARTING', 'RUNNING', 'CANCEL_REQUESTED', 'QUEUED'].includes(selectedRun.status) ? <Button variant="danger" disabled={Boolean(cancellingId)} onClick={() => void cancelOwned(selectedRun.id)}>{cancellingId === selectedRun.id ? 'Cancelling…' : 'Cancel owned job'}</Button> : null}
     </Card>
-    <Card title="Run history" actions={<Badge tone="neutral">Terminal total</Badge>}><DataTable rows={runs.map((run) => ({ ...run, id: run.id }))} emptyText="No research runs yet." mobileTitle={(run) => `${runTitle(run)} · ${run.id.slice(0, 8)}`} columns={[{ key: 'run', header: 'Run', render: (run) => <Button variant="secondary" onClick={() => setSelectedRunId(run.id)}>{runTitle(run)} · {run.id.slice(0, 8)}</Button> }, { key: 'status', header: 'Status / progress', render: (run) => <Badge tone={tone(run.status)}>{humanizeResearchCode(run.status)}{run.progress === null || run.progress === undefined ? '' : ` · ${run.progress}%`}</Badge> }, { key: 'total', header: 'Terminal TOTAL', render: (run) => String((run.report?.summary as { terminal_total?: string } | undefined)?.terminal_total ?? run.report?.terminal_total ?? '—') }]} /></Card>
-    <Card title="Verified historical evidence" actions={<Badge tone="neutral">Evidence</Badge>}><p className="muted">Historical evidence is shown separately from newly completed runs.</p><details className="nautilus-diagnostics"><summary>Technical evidence codes</summary>{catalog.map((item) => <p className="muted" key={item.id}>{item.title}: {item.classification} · {item.artifact_state}</p>)}</details><DataTable rows={catalog.map((item) => ({ ...item, id: item.id }))} emptyText="No catalog evidence." mobileTitle={(item) => item.title} columns={[{ key: 'evidence', header: 'Evidence', render: (item) => item.title }, { key: 'class', header: 'Class', render: (item) => <Badge tone={item.liquidations ? 'danger' : 'neutral'}>{humanizeResearchCode(item.classification)}</Badge> }, { key: 'total', header: 'TOTAL', render: (item) => item.settled_total }, { key: 'artifact', header: 'Artifact', render: (item) => humanizeResearchCode(item.artifact_state) }]} /></Card>
+    <Card title="Run history" actions={<Badge tone="neutral">Terminal total</Badge>}><DataTable rows={runs.map((run) => ({ ...run, id: run.id }))} emptyText="No research runs yet." mobileTitle={(run) => runTitle(run)} columns={[{ key: 'run', header: 'Run', render: (run) => <Button variant="secondary" onClick={() => setSelectedRunId(run.id)}>{runTitle(run)} · {formatUtcTimestamp(run.created_at)}</Button> }, { key: 'status', header: 'Status / progress', render: (run) => <Badge tone={tone(run.status)}>{humanizeResearchCode(run.status)}{run.progress === null || run.progress === undefined ? '' : ` · ${run.progress}%`}</Badge> }, { key: 'total', header: 'Terminal TOTAL', render: (run) => String((run.report?.summary as { terminal_total?: string } | undefined)?.terminal_total ?? run.report?.terminal_total ?? '—') }]} /></Card>
+    <Card title="Verified historical evidence" actions={<Badge tone="neutral">Evidence</Badge>}><DataTable rows={catalog.map((item) => ({ ...item, id: item.id }))} emptyText="No catalog evidence." mobileTitle={(item) => item.title} columns={[{ key: 'evidence', header: 'Evidence', render: (item) => item.title }, { key: 'class', header: 'Class', render: (item) => <Badge tone={item.liquidations ? 'danger' : 'neutral'}>{humanizeResearchCode(item.classification)}</Badge> }, { key: 'total', header: 'TOTAL', render: (item) => item.settled_total }, { key: 'artifact', header: 'Artifact', render: (item) => humanizeResearchCode(item.artifact_state) }]} /></Card>
     {message ? <p className="muted">{message}</p> : null}
   </main>;
 }
@@ -291,10 +297,9 @@ export function RuntimePage() {
           : runtimeHealthy
             ? 'Waiting for a strategy decision'
             : 'New entries blocked while the worker or market data is unhealthy';
-  const eventRows = (state?.events ?? []).map((event) => ({ ...event, id: `${event.cursor}:${event.event_id}` }));
-  const positionRows = (state?.positions ?? []).map((position) => ({ ...position, id: position.instrument_id, mark: state?.feeds[position.instrument_id]?.mark ?? null }));
+    const positionRows = (state?.positions ?? []).map((position) => ({ ...position, id: position.instrument_id, mark: state?.feeds[position.instrument_id]?.mark ?? null }));
   const orderRows = (state?.orders ?? []).map((order) => ({ ...order, id: order.client_order_id }));
-  const age = (value: number | null | undefined) => value === null || value === undefined ? 'UNKNOWN' : `${(value / 1_000_000_000).toFixed(1)}s`;
+  const age = (value: number | null | undefined) => value === null || value === undefined ? 'Unavailable' : `${(value / 1_000_000_000).toFixed(1)}s`;
   const projectionReady = state?.projection_state === 'READY';
   const accountIsUnknown = !projectionReady || state.account.status === 'UNAVAILABLE' || state.recovery_required === true;
   const figures = accountIsUnknown ? [] : accountFigures(state);
@@ -302,7 +307,7 @@ export function RuntimePage() {
     ? positionRows.length ? String(positionRows.length) + " stored" : "Unreconciled"
     : projectionReady
       ? positionRows.length ? String(positionRows.length) + " open" : runtimeStatus.canAssertFlat ? "Flat" : "Unverified"
-      : "UNKNOWN";
+      : "Unavailable";
   const protection = state?.deposit_protection;
   const protectionVerified = protectionIsVerified(state);
   const protectionFresh = protectionIsFresh(state);
@@ -312,18 +317,18 @@ export function RuntimePage() {
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={runtimeStatus.tone}>{loading && !state ? 'Loading' : humanizeResearchCode(runtimeStatus.label)}</Badge>}>
       <div className="runtime-hero__heading"><div><p className="trader-hero__lead">Current BTC and SOL Sandbox account.</p><p className="trader-note">{entryGateMessage}.</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
       <div className="runtime-account-grid runtime-account-grid--compact runtime-priority-grid">
-        <Stat label="Marked equity" value={accountIsUnknown ? "UNKNOWN" : figures.find((figure) => figure.label === "Marked equity")?.value ?? "UNKNOWN"} />
-        <Stat label="Available cash" value={accountIsUnknown ? "UNKNOWN" : figures.find((figure) => figure.label === "Native free")?.value ?? "UNKNOWN"} />
+        <Stat label="Equity" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Marked equity")?.value ?? "Unavailable"} />
+        <Stat label="Available cash" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Available cash")?.value ?? "Unavailable"} />
         <Stat label={state?.recovery_required === true ? "Stored positions" : "Open positions"} value={positionSummary} />
-        <Stat label={state?.recovery_required === true ? "Stored orders" : "Working orders"} value={projectionReady ? String(orderRows.length) : "UNKNOWN"} />
+        <Stat label={state?.recovery_required === true ? "Stored orders" : "Working orders"} value={projectionReady ? String(orderRows.length) : "Unavailable"} />
       </div>
       {accountIsUnknown ? null : <div className="runtime-account-secondary" aria-label="Current margin and profit and loss">
-        <Stat label="Initial margin" value={state?.account.im ?? "UNKNOWN"} />
-        <Stat label="Maintenance margin" value={state?.account.mm ?? "UNKNOWN"} />
-        <Stat label="Realized P&amp;L · net fees" value={figures.find((figure) => figure.label === "Realized PnL net fees")?.value ?? "UNKNOWN"} />
-        <Stat label="Unrealized P&amp;L" value={figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "UNKNOWN"} />
+        <Stat label="Initial margin" value={state?.account.im ?? "Unavailable"} />
+        <Stat label="Maintenance margin" value={state?.account.mm ?? "Unavailable"} />
+        <Stat label="Realized P&amp;L · net fees" value={figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
+        <Stat label="Unrealized P&amp;L" value={figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
       </div>}
-      {accountIsUnknown ? null : <details className="nautilus-diagnostics runtime-account-details"><summary>Other account details</summary><div className="runtime-account-grid runtime-account-grid--compact">{figures.filter((figure) => !["Marked equity", "Native free", "Realized PnL net fees", "Unrealized PnL"].includes(figure.label)).map((figure) => <Stat key={figure.label} label={figure.label} value={figure.value} />)}</div></details>}
+      {accountIsUnknown ? null : <details className="nautilus-diagnostics runtime-account-details"><summary>Other account details</summary><div className="runtime-account-grid runtime-account-grid--compact">{figures.filter((figure) => !["Marked equity", "Available cash", "Realized PnL after fees", "Unrealized PnL"].includes(figure.label)).map((figure) => <Stat key={figure.label} label={figure.label} value={figure.value} />)}</div></details>}
       {accountIsUnknown ? <div className="runtime-empty-note account-unavailable"><strong>Account valuation unavailable</strong><span>{runtimeStatus.detail}</span></div> : null}
       {state?.account.mark_state === 'STALE_OR_MISSING' ? <p className="runtime-empty-note">Mark is stale or missing. Marked equity and unrealized P&amp;L are not current.</p> : null}
       {state?.account.status === 'PARTIAL' ? <p className="runtime-empty-note">Account read is partial. Missing account fields remain unavailable.</p> : null}
@@ -338,7 +343,7 @@ export function RuntimePage() {
         return <Card key={instrumentId} className="trader-market-card" title={symbol} actions={<Badge tone={fresh ? 'success' : 'danger'}>{fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
           <div className="trader-market-price">
             <span>{fresh ? 'Mark' : 'Previous mark'}</span>
-            <strong>{feed?.mark ?? 'UNKNOWN'}</strong>
+            <strong>{feed?.mark ?? 'Unavailable'}</strong>
             <small>{fresh ? `Mark age ${age(feed?.mark_age_ns)}` : feed?.mark ? `Stale · ${age(feed.mark_age_ns)}` : 'Mark unavailable'}</small>
           </div>
           <div className="trader-market-exposure">
@@ -346,7 +351,7 @@ export function RuntimePage() {
             {position.state === 'OPEN' ? <div className="trader-market-exposure__value"><strong className={position.side === 'LONG' ? 'up' : 'down'}>{position.side}</strong><span>{position.quantity}</span></div> : position.state === 'FLAT' ? <p>Confirmed flat · 0 position size</p> : <p>Position state unavailable until native recovery is confirmed.</p>}
           </div>
           <div className="trader-market-orders">
-            <div className="trader-market-orders__heading"><span>{state?.recovery_required ? 'Stored orders' : 'Working orders'}</span><span>{state?.projection_state === 'READY' ? linkedOrders.length : 'UNKNOWN'}</span></div>
+            <div className="trader-market-orders__heading"><span>{state?.recovery_required ? 'Stored orders' : 'Working orders'}</span><span>{state?.projection_state === 'READY' ? linkedOrders.length : 'Unavailable'}</span></div>
             {linkedOrders.length ? linkedOrders.map((order) => <div className="trader-market-order" key={order.client_order_id}>
               <span>{order.reduce_only === true ? 'Reduce-only' : 'Working order'}{order.side ? ` · ${order.side}` : ''}</span>
               <strong>{order.price ?? 'Price unavailable'}</strong>
@@ -362,16 +367,16 @@ export function RuntimePage() {
       const otherOrders = orderRows.filter((order) => !order.instrument_id || !knownInstruments.has(order.instrument_id));
       if (!otherPositions.length && !otherOrders.length) return null;
       return <Card title="Other positions and orders" actions={<Badge tone="danger">Review</Badge>}>
-        <DataTable rows={otherPositions.map((row) => ({ ...row, id: row.instrument_id }))} emptyText="No additional position rows." mobileTitle={(row) => row.instrument_id} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id }, { key: 'quantity', header: 'Position size', render: (row) => row.signed_quantity }, { key: 'mark', header: 'Reference mark', render: (row) => row.mark ?? 'UNKNOWN' }]} />
-        <DataTable rows={otherOrders} emptyText="No additional order rows." mobileTitle={(row) => row.instrument_id ?? row.client_order_id} mobileSubtitle={(row) => row.status ?? 'Status unavailable'} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id ?? 'UNKNOWN' }, { key: 'order', header: 'Order', render: (row) => row.reduce_only === true ? 'Reduce only' : 'Working order' }, { key: 'status', header: 'Status', render: (row) => humanizeResearchCode(row.status ?? 'UNAVAILABLE') }, { key: 'price', header: 'Price', render: (row) => row.price ?? 'Unavailable' }, { key: 'leaves', header: 'Leaves', render: (row) => row.leaves_quantity ?? row.quantity ?? 'Unavailable' }]} />
+        <DataTable rows={otherPositions.map((row) => ({ ...row, id: row.instrument_id }))} emptyText="No additional position rows." mobileTitle={(row) => row.instrument_id} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id }, { key: 'quantity', header: 'Position size', render: (row) => row.signed_quantity }, { key: 'mark', header: 'Reference mark', render: (row) => row.mark ?? 'Unavailable' }]} />
+        <DataTable rows={otherOrders} emptyText="No additional order rows." mobileTitle={(row) => row.instrument_id ?? row.client_order_id} mobileSubtitle={(row) => row.status ?? 'Status unavailable'} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id ?? 'Unavailable' }, { key: 'order', header: 'Order', render: (row) => row.reduce_only === true ? 'Reduce only' : 'Working order' }, { key: 'status', header: 'Status', render: (row) => humanizeResearchCode(row.status ?? 'UNAVAILABLE') }, { key: 'price', header: 'Price', render: (row) => row.price ?? 'Unavailable' }, { key: 'leaves', header: 'Leaves', render: (row) => row.leaves_quantity ?? row.quantity ?? 'Unavailable' }]} />
       </Card>;
     })()}
     <Card title="Recent fills">
-      <p className="muted">Recorded execution facts. Fees appear when supplied; no round-trip P&amp;L is calculated.</p>
+      <p className="muted">Native fills · supplied fees · no round-trip P&amp;L is calculated.</p>
       {!fillHistoryMatchesRun
         ? <p className="runtime-empty-note">{fillHistoryUnavailable ? 'Detailed fill history is unavailable.' : !state?.run_epoch ? 'Fill history is hidden until the current workspace is confirmed.' : 'History is refreshing after restart; earlier rows are hidden.'}</p>
         : !fillHistory?.detail_store_available
-        ? <p className="runtime-empty-note">Detailed fills are unavailable from this workspace. {(fillHistory?.historical_id_only_count ?? 'Unknown') + ' historical fill event' + (fillHistory?.historical_id_only_count === 1 ? ' has' : 's have') + ' IDs only; prices and quantities were not retained.'}</p>
+        ? <p className="runtime-empty-note">Detailed fills are unavailable from this workspace. {(fillHistory?.historical_id_only_count ?? 'unavailable') + ' historical fill event' + (fillHistory?.historical_id_only_count === 1 ? ' has' : 's have') + ' IDs only; prices and quantities were not retained.'}</p>
         : <>
           {fillHistory.historical_id_only_count > 0 ? <p className="muted">{fillHistory.historical_id_only_count} older fill event{fillHistory.historical_id_only_count === 1 ? ' has' : 's have'} IDs only. Their trade details are unavailable and were not reconstructed.</p> : null}
           <DataTable rows={fillHistory.fills.map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No recorded fills yet." mobileTitle={(fill) => fill.instrument_id} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
@@ -390,7 +395,7 @@ export function RuntimePage() {
       {protectionFresh ? <><p className="trader-note">Maximum drawdown limit: <strong>{String(protection?.drawdown_limit_percent)}%</strong></p><details className="nautilus-diagnostics"><summary>Protection basis and sample time</summary><div className="runtime-account-grid runtime-account-grid--compact"><Stat label="Protection equity" value={protection?.equity ?? "Unavailable"} /><Stat label="High-water equity" value={protection?.high_water_equity ?? "Unavailable"} /><Stat label="Threshold" value={protection?.threshold_equity ?? "Unavailable"} /><Stat label="Last daily close" value={formatUtcTimestamp(protection?.last_daily_close_utc)} /><Stat label="Observed" value={protection?.observed_at_ns ? formatUtcTimestamp(new Date(protection.observed_at_ns / 1_000_000).toISOString()) : "Unavailable"} /></div></details></> : <p className="runtime-empty-note">{state?.recovery_required ? "Protection baseline is unverified while recovery is required. Displayed values are withheld until the native account is recovered." : protectionVerified ? "Protection read is stale. Values are withheld until a fresh worker read is available." : "Protection is not armed."}</p>}
     </Card>
     {state?.warnings.length ? <div className="runtime-warning-list" role="status"><strong>Worker notice</strong><ul>{state.warnings.map((warning, index) => <li key={index}>{humanizeBlocker(warning)}</li>)}</ul></div> : null}
-    <details className="nautilus-diagnostics"><summary>Diagnostics and source identity</summary><p className="muted">Worker process state: {state?.process_state ?? "UNKNOWN"}.</p><div className="terminal-layout"><p className="muted">Instance: <code>{state?.instance_id ?? 'hl-stageg-testnet'}</code> · reconciliation: {state?.reconciliation ?? 'UNKNOWN'} · warmup: {state?.warmup.state ?? 'UNKNOWN'} ({state?.warmup.rows ?? 'UNKNOWN'} rows).</p><p className="muted">Candidate: {state?.hashes.candidate_sha256 ?? 'UNKNOWN'} · strategy: {state?.hashes.strategy_sha256 ?? 'UNKNOWN'} · policy: {state?.hashes.execution_policy_sha256 ?? 'UNKNOWN'}.</p><p className="muted">Account: {state?.account.status ?? "UNAVAILABLE"} | initial margin: {state?.account.im ?? 'UNKNOWN'} · maintenance margin: {state?.account.mm ?? 'UNKNOWN'} · activity cursor: {state?.event_cursor ?? 'UNKNOWN'}.</p><p className="muted">Warnings: {state?.warnings.join(' · ') || 'NONE'} · API detail: {message || 'NONE'}.</p><p className="muted">The dashboard fill table uses only detailed native fill facts. Older fill references do not include trade details.</p><DataTable rows={eventRows} emptyText="No native activity recorded." mobileTitle={(row) => row.kind} columns={[{ key: 'cursor', header: 'Cursor', render: (row) => row.cursor }, { key: 'kind', header: 'Kind', render: (row) => row.kind }, { key: 'event', header: 'Event reference', render: (row) => row.event_id }]} /></div></details>
+
     {message ? <p role="alert">Runtime account data is unavailable. Refresh to retry.</p> : null}
   </main>;
 }
@@ -457,10 +462,9 @@ export function WorkspaceSettingsPage() {
     finally { setCommandInFlight(null); }
   }
   return <main className="terminal-layout">
-    <Card title="Workspace" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'Connecting' : state?.projection_state === 'READY' ? 'Connected' : state?.projection_state === 'STALE' ? 'Stale' : 'Unavailable'}</Badge>}>
-      <div className="stats-grid"><Stat label="Environment" value="Hyperliquid Sandbox" /><Stat label="Execution" value="Sandbox" /><Stat label="Live order routing" value="Off" /></div>
-      <p className="muted">Funding is observed for reference only and is never credited to Sandbox cash. {fundingLabel(state)}.</p>
-      <Button variant="secondary" onClick={() => void refresh()}>Refresh connection</Button>
+    <Card title="Sandbox connection" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'Connecting' : state?.projection_state === 'READY' ? 'Connected' : state?.projection_state === 'STALE' ? 'Stale' : 'Unavailable'}</Badge>}>
+      <p className="muted">Order routing is off. Funding is observed for reference and is not credited to Sandbox cash. {fundingLabel(state)}.</p>
+      <Button variant="secondary" onClick={() => void refresh()}>Refresh status</Button>
     </Card>
     <Card title="Drawdown protection" actions={<Badge tone={protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
       {state?.recovery_required ? <p className="runtime-empty-note">Recovery is required. Protection values are withheld and settings remain read-only until account ownership is restored.</p> : <>
@@ -473,10 +477,10 @@ export function WorkspaceSettingsPage() {
       </>}
     </Card>
     <Card title="Entry controls" actions={<Badge tone={controls?.pause.enabled && controlsAllowed ? 'success' : 'danger'}>{controlAvailabilityLabel(controls?.pause.enabled && controlsAllowed, state?.recovery_required)}</Badge>}>
-      <p className="muted">Pause and resume control whether the worker may submit new Stage-G Sandbox entries. They do not confirm that the strategy currently permits an entry.</p>
+      <p className="muted">Pause and resume govern entry submission. Strategy eligibility is shown separately below.</p>
       <p className="muted"><strong>New-entry eligibility:</strong> {state?.recovery_required ? 'Blocked while recovery is required' : state?.projection_state !== 'READY' ? 'Unknown · worker status is not ready' : state?.gates.attachable === false ? 'Blocked by the native strategy gate' : state?.gates.attachable === true && state.entry_control.state === 'PAUSED' ? 'Blocked · entries are paused' : state?.gates.attachable === true ? 'Eligible for strategy evaluation' : 'Unknown · native gate status unavailable'}.</p>
-      <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" disabled={!controlsAllowed || !controls?.pause.enabled || commandInFlight !== null} title={controls?.pause.blocker ?? 'READY'} onClick={() => void commandEntries('pause-new-entries')}>{commandInFlight === 'pause-new-entries' ? 'Pausing…' : 'Pause new entries'}</Button><Button variant="secondary" disabled={!controlsAllowed || !controls?.resume.enabled || commandInFlight !== null} title={controls?.resume.blocker ?? 'READY'} onClick={() => void commandEntries('resume-new-entries')}>{commandInFlight === 'resume-new-entries' ? 'Resuming…' : 'Resume new entries'}</Button><Button variant="danger" disabled title={controls?.flatten.blocker ?? 'UNAVAILABLE'}>Flatten virtual exposure</Button></div>
-      <details className="nautilus-diagnostics"><summary>Control readiness</summary><p className="muted">Pause: {controls?.pause.blocker ? humanizeBlocker(controls.pause.blocker) : 'Available'} · Resume: {controls?.resume.blocker ? humanizeBlocker(controls.resume.blocker) : 'Available'} · Flatten: {controls?.flatten.blocker ? humanizeBlocker(controls.flatten.blocker) : 'Unavailable'} · Promotion: {controls?.promotion.blocker ? humanizeBlocker(controls.promotion.blocker) : 'Unavailable'}.</p><details><summary>Technical blocker codes</summary><p className="muted">Pause: {controls?.pause.blocker ?? 'UNKNOWN'} · Resume: {controls?.resume.blocker ?? 'UNKNOWN'} · Flatten: {controls?.flatten.blocker ?? 'UNKNOWN'} · Promotion: {controls?.promotion.blocker ?? 'UNKNOWN'}.</p></details><p className="muted">Observed: {state?.observed_at_ns ? new Date(state.observed_at_ns / 1_000_000).toLocaleString() : 'Unavailable'} · Reconciliation: {state?.reconciliation ?? 'Unavailable'}.</p></details>
+      <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" disabled={!controlsAllowed || !controls?.pause.enabled || commandInFlight !== null} title={controls?.pause.blocker ? humanizeBlocker(controls.pause.blocker) : 'Available'} onClick={() => void commandEntries('pause-new-entries')}>{commandInFlight === 'pause-new-entries' ? 'Pausing…' : 'Pause new entries'}</Button><Button variant="secondary" disabled={!controlsAllowed || !controls?.resume.enabled || commandInFlight !== null} title={controls?.resume.blocker ? humanizeBlocker(controls.resume.blocker) : 'Available'} onClick={() => void commandEntries('resume-new-entries')}>{commandInFlight === 'resume-new-entries' ? 'Resuming…' : 'Resume new entries'}</Button><Button variant="danger" disabled title={controls?.flatten.blocker ? humanizeBlocker(controls.flatten.blocker) : 'Unavailable'}>Flatten virtual exposure</Button></div>
+      <details className="nautilus-diagnostics"><summary>Control availability</summary><p className="muted">Pause: {controls?.pause.blocker ? humanizeBlocker(controls.pause.blocker) : 'Available'} · Resume: {controls?.resume.blocker ? humanizeBlocker(controls.resume.blocker) : 'Available'} · Flattening: unavailable.</p></details>
     </Card>
     {message ? <p role="alert">{message}</p> : null}
   </main>;

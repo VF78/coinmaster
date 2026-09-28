@@ -46,7 +46,7 @@ test('keeps missing values unknown and marks equity/PnL stale when the mark is s
     realized_pnl_net_fees: '0', unrealized_pnl: null, fees: '0', mark_state: 'STALE_OR_MISSING',
   }));
   assert.deepEqual(view.map(({ value }) => value), [
-    '10000 USDC', '9999 USDC', '1 USDC', 'STALE', '0 USDC', 'STALE', '0 USDC',
+    '10000 USDC', '9999 USDC', '1 USDC', 'Not current', '0 USDC', 'Not current', '0 USDC',
   ]);
 });
 
@@ -56,7 +56,7 @@ test('retains known values in a partial account while leaving absent values unkn
     equity: null, realized_pnl_net_fees: '0', unrealized_pnl: null, fees: '0',
   }));
   assert.deepEqual(view.map(({ value }) => value), [
-    '10000 USDC', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', '0 USDC', 'UNKNOWN', '0 USDC',
+    '10000 USDC', 'Unavailable', 'Unavailable', 'Unavailable', '0 USDC', 'Unavailable', '0 USDC',
   ]);
   assert.equal(fundingLabel(null), 'Not posted; settlement is unconfirmed');
 });
@@ -65,12 +65,12 @@ test('retains known values in a partial account while leaving absent values unkn
 test("captured recovered worker exposes stored exposure but never claims flat or trusts synthetic protection", () => {
   const captured = JSON.parse(readFileSync(new URL("../../../../runtime/tests/fixtures/hl_stageg_owned_tp_status.json", import.meta.url), "utf8")) as HlStagegProjection;
   const status = dashboardState(captured);
-  assert.equal(status.label, "RECOVERY REQUIRED");
+  assert.equal(status.label, "Recovery required");
   assert.equal(status.exposure, "1 position · 1 order");
   assert.equal(status.canAssertFlat, false);
   assert.equal(captured.positions[0].signed_quantity, "0.53865");
   assert.equal(captured.orders[0].reduce_only, true);
-  assert.deepEqual(accountFigures(captured).map(({ value }) => value), Array(7).fill("UNKNOWN"));
+  assert.deepEqual(accountFigures(captured).map(({ value }) => value), Array(7).fill("Unavailable"));
   assert.equal(protectionIsVerified({ ...captured, deposit_protection: { state: "ARMED", drawdown_limit_percent: 50, equity: "10000", high_water_equity: "10000", threshold_equity: "5000", daily_sample_missed: false } }), false);
 });
 

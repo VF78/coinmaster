@@ -3838,3 +3838,64 @@ body:has(.nautilus-app-shell) { background:var(--bg); }
   .dashboard-chart-meta { justify-content: flex-start; }
   .dashboard-candles__canvas { min-height: 225px; }
 }
+
+
+/* Production CoinMaster trader workspace foundation. */
+.nautilus-app-shell {
+  --bg: #080d0c; --bg-elevated: #0d1412; --surface: #111917; --surface-2: #17211e; --surface-3: #1d2a25;
+  --text: #e8f1ed; --text-muted: #9baaa3; --border: #293732; --border-strong: #3b4d45;
+  --accent: #6bd3ae; --success: #6bd3ae; --warning: #e5bc70; --danger: #df7777;
+  --radius-sm: 6px; --radius-md: 8px; --radius-lg: 8px;
+}
+.nautilus-app-shell .btn { min-height: 2.25rem; padding: .48rem .78rem; border-radius: 6px; font-weight: 650; box-shadow: none; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+.nautilus-app-shell .btn--primary { color: #07150f; background: #6bd3ae; border-color: #6bd3ae; }
+.nautilus-app-shell .btn--primary:hover:not(:disabled) { background: #86e0bf; border-color: #86e0bf; }
+.nautilus-app-shell .btn--secondary { color: #d6e3dc; background: #17211e; border-color: #3b4d45; }
+.nautilus-app-shell .btn--secondary:hover:not(:disabled) { background: #202d27; border-color: #5c7769; }
+.nautilus-app-shell .btn--danger { color: #f3dcdc; background: #392121; border-color: #744343; }
+.nautilus-app-shell .btn--danger:hover:not(:disabled) { background: #4a2828; border-color: #9b5555; }
+.nautilus-app-shell .btn:focus-visible, .nautilus-app-shell summary:focus-visible, .nautilus-app-shell input:focus-visible, .nautilus-app-shell select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.nautilus-app-shell .badge { border-radius: 6px; letter-spacing: .025em; text-transform: none; }
+.nautilus-app-shell .badge--neutral { color: #bac8c0; border-color: #39473f; background: #1b2420; }
+.nautilus-app-shell .badge--success { color: #9be4c5; border-color: #345b49; background: #172a20; }
+.nautilus-app-shell .badge--danger { color: #e8b0b0; border-color: #623a3a; background: #2c1c1c; }
+.nautilus-app-shell .card { border-radius: 8px; background: var(--surface); }
+.nautilus-app-shell .card__header { align-items: center; }
+.nautilus-app-shell .stat { min-width: 0; border-radius: 6px; background: #151e1b; }
+.nautilus-app-shell .stat__label { color: var(--text-muted); }
+.nautilus-app-shell .stat__value { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.nautilus-app-shell .table-wrap { border-radius: 6px; }
+.nautilus-app-shell .table-wrap th { color: #b4c5bc; background: #18211e; }
+.nautilus-app-shell .table-wrap tbody tr:hover { background: rgba(107, 211, 174, .045); }
+.nautilus-app-shell .mobile-card { border-radius: 6px; background: #151e1b; }
+.nautilus-app-shell .rules-field input, .nautilus-app-shell .rules-field select, .nautilus-app-shell .dashboard-chart-toolbar select { border-radius: 6px; background: #0c1311; color: var(--text); }
+.nautilus-app-shell .rules-array-field { min-width: 0; margin: 0; padding: 0; border: 0; }
+.nautilus-app-shell .rules-array-field legend { margin-bottom: .35rem; color: var(--text-muted); font-size: .78rem; }
+.nautilus-app-shell .rules-array-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .35rem; }
+.nautilus-app-shell .rules-array-fields label { min-width: 0; }
+.nautilus-app-shell .rules-array-fields input { width: 100%; min-width: 0; text-align: right; }
+.nautilus-app-shell .rules-array-field [aria-invalid="true"] { border-color: var(--danger); }
+.nautilus-app-shell .field-error { display: block; margin-top: .25rem; color: #e8a7a7; font-size: .72rem; }
+.nautilus-app-shell .nautilus-diagnostics { border-color: var(--border); border-radius: 6px; background: #0e1512; }
+.nautilus-app-shell .nautilus-diagnostics > summary { color: #c2d0c8; }
+.nautilus-app-shell .nautilus-strategy-group { border-radius: 6px; background: #0e1512; }
+.nautilus-app-shell .nautilus-page-heading { margin: .2rem 0 .8rem; }
+.nautilus-app-shell .nautilus-page-heading > p { display: none; }
+.nautilus-app-shell .runtime-account-grid--compact .stat { padding: .62rem .72rem; }
+.nautilus-app-shell .runtime-priority-grid .stat:first-child { border-color: #345b49; background: #17251f; }
+.nautilus-app-shell .trader-market-order { border-left-color: var(--accent); background: rgba(107, 211, 174, .055); }
+.nautilus-app-shell .dashboard-chart-card { border-radius: 8px; background: #0b1210; }
+.nautilus-app-shell .dashboard-chart-selectors button.selected { background: #233d31; color: #a9e5c9; }
+@media (max-width: 760px) {
+  .nautilus-app-shell .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nautilus-app-shell .runtime-priority-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nautilus-app-shell .runtime-priority-grid .stat:first-child { grid-column: 1 / -1; }
+  .nautilus-app-shell .nautilus-page-heading { margin-bottom: .55rem; }
+  .nautilus-app-shell .nautilus-strategy-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 390px) {
+  .nautilus-app-shell .card { padding: .78rem; }
+  .nautilus-app-shell .runtime-account-secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nautilus-app-shell .rules-array-fields { gap: .25rem; }
+  .nautilus-app-shell .rules-array-fields input { padding-inline: .35rem; }
+}
