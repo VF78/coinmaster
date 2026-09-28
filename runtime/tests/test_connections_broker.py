@@ -73,6 +73,8 @@ def test_multiple_connections_no_secret_echo_and_display_selection(tmp_path):
     assert status == 201
     two = json.loads(raw)
     assert one["id"] != two["id"]
+    assert one["account_label"] != two["account_label"]
+    assert "SENTINEL" not in one["account_label"] + two["account_label"]
     status, raw = call(app, "PUT", "/api/v1/connections/display", {"connection_id": two["id"]}, headers=auth_headers())
     assert status == 200 and json.loads(raw)["display_connection_id"] == two["id"]
     restarted = create_connections_app(store_root=root, verifier=verifier)
@@ -209,3 +211,34 @@ def test_signed_read_redirect_does_not_forward_credentials():
         target.shutdown()
         redirect.server_close()
         target.server_close()
+
+def test_store_syncs_parent_directory_and_nginx_streams_secret_bodies(tmp_path, monkeypatch):
+    import os
+    import stat
+
+    from coinmaster.api.connections_broker import create_connections_app
+
+    directory_syncs = []
+    real_fsync = os.fsync
+
+    def tracked_fsync(fd):
+        if stat.S_ISDIR(os.fstat(fd).st_mode):
+            directory_syncs.append(True)
+        return real_fsync(fd)
+
+    monkeypatch.setattr("coinmaster.api.connections_broker.os.fsync", tracked_fsync)
+    app = create_connections_app(store_root=str(tmp_path / "broker"), verifier=lambda _: 200)
+    status, raw = call(app, "POST", "/api/v1/connections",
+                       {"venue": "bybit", "api_key": "SENTINEL_KEY", "api_secret": "SENTINEL_SECRET"},
+                       headers=auth_headers())
+    assert status == 201 and len(directory_syncs) >= 1
+    connection_id = json.loads(raw)["id"]
+    assert call(app, "PUT", "/api/v1/connections/display", {"connection_id": connection_id}, headers=auth_headers())[0] == 200
+    assert len(directory_syncs) >= 2
+    assert call(app, "DELETE", "/api/v1/connections/" + connection_id, headers=auth_headers())[0] == 204
+    assert len(directory_syncs) >= 4
+
+    nginx = (Path(__file__).parents[1] / "ops" / "coinmaster24.com.https.nginx").read_text()
+    broker_location = nginx.split("location ^~ /api/v1/connections {", 1)[1].split("}", 1)[0]
+    assert "proxy_request_buffering off;" in broker_location
+    assert "proxy_http_version 1.1;" in broker_location

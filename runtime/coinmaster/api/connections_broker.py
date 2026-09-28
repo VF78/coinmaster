@@ -46,6 +46,13 @@ class ConnectionStore:
             fcntl.flock(fd, fcntl.LOCK_UN)
             os.close(fd)
 
+    def _sync_directory(self):
+        fd = os.open(self.root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+
     def _write(self, name: str, data: dict):
         fd, temp = tempfile.mkstemp(prefix=".pending-", dir=self.root)
         try:
@@ -55,6 +62,7 @@ class ConnectionStore:
                 file.flush()
                 os.fsync(file.fileno())
             os.replace(temp, self.root / name)
+            self._sync_directory()
         finally:
             if os.path.exists(temp):
                 os.unlink(temp)
@@ -92,6 +100,7 @@ class ConnectionStore:
     def select(self, connection_id: str | None):
         if connection_id is None:
             (self.root / "display").unlink(missing_ok=True)
+            self._sync_directory()
         else:
             fd, temp = tempfile.mkstemp(prefix=".pending-", dir=self.root)
             try:
@@ -100,6 +109,7 @@ class ConnectionStore:
                     file.flush()
                     os.fsync(file.fileno())
                 os.replace(temp, self.root / "display")
+                self._sync_directory()
             finally:
                 if os.path.exists(temp):
                     os.unlink(temp)
@@ -222,7 +232,7 @@ def _make_item(body: dict) -> dict:
         key, secret = body["api_key"], body["api_secret"]
         if not isinstance(key, str) or not isinstance(secret, str) or not (8 <= len(key) <= 128) or not (8 <= len(secret) <= 128) or any(ord(c) < 33 or ord(c) > 126 for c in key + secret):
             raise HTTPException(400, "invalid Bybit credentials")
-        base.update(api_key=key, api_secret=secret, account_label="Bybit account",
+        base.update(api_key=key, api_secret=secret, account_label="Bybit account " + connection_id[:6],
                     verification_state={"read_only_access": "UNTESTED"})
     else:
         raise HTTPException(400, "unsupported venue")
@@ -308,6 +318,7 @@ def create_connections_app(*, store_root: str | None = None, verify_token: str |
         with store.locked():
             store.get(connection_id)
             (store.root / (connection_id + ".json")).unlink()
+            store._sync_directory()
             if store.selection() == connection_id:
                 store.select(None)
         return Response(status_code=204)
