@@ -18,7 +18,7 @@ function ChartCanvas({ bars, lines, markers, hasBars, overlaysReady }: { bars: C
     if (!node) return;
     const instance = createChart(node, {
       width: node.clientWidth || 640,
-      height: node.clientWidth < 560 ? 245 : 330,
+      height: node.clientWidth < 560 ? 235 : 300,
       layout: { background: { color: '#07110f' }, textColor: '#9bb0aa', attributionLogo: true },
       grid: { vertLines: { color: '#152521' }, horzLines: { color: '#152521' } },
       rightPriceScale: { borderColor: '#263a34' }, timeScale: { borderColor: '#263a34', timeVisible: true, secondsVisible: false },
@@ -28,7 +28,7 @@ function ChartCanvas({ bars, lines, markers, hasBars, overlaysReady }: { bars: C
     series.current = instance.addCandlestickSeries({ upColor: '#39b98d', downColor: '#df7378', borderUpColor: '#39b98d', borderDownColor: '#df7378', wickUpColor: '#39b98d', wickDownColor: '#df7378' });
     const resize = new ResizeObserver((entries) => {
       const width = entries[0]?.contentRect.width;
-      if (width) { instance.applyOptions({ width, height: width < 560 ? 245 : 330 }); }
+      if (width) { instance.applyOptions({ width, height: width < 560 ? 235 : 300 }); }
     });
     resize.observe(node);
     return () => { resize.disconnect(); priceLines.current = []; series.current = null; chart.current = null; instance.remove(); };
@@ -63,6 +63,7 @@ export function DashboardMarketChart({ projection, history, equity }: { projecti
   const equityRows = useMemo(() => equityWindowRows(projection, equity, Date.now()), [projection, equity]);
   const badge = error ? 'Unavailable' : currentSnapshot?.state === 'READY' ? 'Ready' : currentSnapshot?.state === 'STALE' ? 'Stale' : currentSnapshot?.state === 'INVALID' ? 'Invalid' : currentSnapshot?.state === 'UNAVAILABLE' ? 'Unavailable' : 'Loading';
   const tone = badge === 'Ready' ? 'success' : badge === 'Loading' ? 'neutral' : 'danger';
+  const equityAsOf = equity?.as_of_ns != null ? new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(equity.as_of_ns / 1_000_000)) : null;
 
   useEffect(() => {
     let active = true;
@@ -87,7 +88,7 @@ export function DashboardMarketChart({ projection, history, equity }: { projecti
   const observed = currentSnapshot?.observed_at_ms ? new Date(currentSnapshot.observed_at_ms).toISOString() : null;
   const latest = currentSnapshot?.latest_closed_at_ms ? new Date(currentSnapshot.latest_closed_at_ms).toISOString() : null;
   return <section className="dashboard-market-section" aria-label="Market chart and equity history">
-    <div className="dashboard-market-section__head"><div><h2>Market &amp; account history</h2><p className="muted">Public Hyperliquid candles with confirmed current-epoch Sandbox overlays.</p></div><div className="dashboard-equity-windows" aria-label="Native account change windows">{equityRows ? equityRows.map((row) => <div className={row.value.startsWith('+') ? 'dashboard-equity-window dashboard-equity-window--positive' : row.value.startsWith('-') ? 'dashboard-equity-window dashboard-equity-window--negative' : 'dashboard-equity-window'} key={row.label}><span>{row.label}</span><strong>{row.value}</strong><small>{row.percent}</small></div>) : <span className="muted">24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.</span>}</div></div><p className="dashboard-equity-asof">{equityRows && equity?.as_of_ns != null ? `Native account sample ${new Date(equity.as_of_ns / 1_000_000).toISOString()} · values are not tick-current.` : 'Account-change sample time unavailable.'}</p>
+    <div className="dashboard-market-section__head"><div><h2>Market &amp; account history</h2><p className="muted">Public candles · sampled Sandbox equity.</p></div><div className="dashboard-equity-windows" aria-label="Native account change windows">{equityRows ? equityRows.map((row) => <div className={row.value.startsWith('+') ? 'dashboard-equity-window dashboard-equity-window--positive' : row.value.startsWith('-') ? 'dashboard-equity-window dashboard-equity-window--negative' : 'dashboard-equity-window'} key={row.label}><span>{row.label}</span><strong>{row.value}</strong><small>{row.percent}</small></div>) : <span className="muted">24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.</span>}</div></div><p className="dashboard-equity-asof">{equityRows && equityAsOf ? `Samples through ${equityAsOf} UTC · not tick-current.` : 'Account sample time unavailable.'}</p>
     <div className="dashboard-chart-card"><div className="dashboard-chart-toolbar"><div className="dashboard-chart-selectors" role="group" aria-label="Market"><button type="button" aria-pressed={coin === 'BTC'} className={coin === 'BTC' ? 'selected' : ''} onClick={() => setCoin('BTC')}>BTC</button><button type="button" aria-pressed={coin === 'SOL'} className={coin === 'SOL' ? 'selected' : ''} onClick={() => setCoin('SOL')}>SOL</button></div><label>Interval <select value={interval} onChange={(event) => setInterval(event.target.value as TraderInterval)}>{INTERVALS.map((value) => <option key={value}>{value}</option>)}</select></label><Badge tone={tone}>{badge}</Badge><Button variant="secondary" onClick={() => setRequestKey((key) => key + 1)}>Refresh chart</Button></div>
       {currentSnapshot?.state === 'STALE' ? <p className="dashboard-chart-notice">Source data is stale. Last returned candles are retained without native execution overlays.</p> : null}
       {currentSnapshot?.state === 'INVALID' || currentSnapshot?.state === 'UNAVAILABLE' || error ? <p className="dashboard-chart-notice">Candles unavailable. {currentSnapshot?.reason ?? 'Refresh to retry.'}</p> : null}

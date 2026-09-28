@@ -58,6 +58,6 @@ export function DashboardConnectionIdentity() {
   return <aside className="dashboard-connection-identity" aria-label="Selected read-only exchange account">
     <div className="dashboard-connection-identity__name"><span>Selected read-only account</span><strong>{venue} · {label}</strong></div>
     <div className="dashboard-connection-identity__checks">{statuses.map((status) => <span key={status.label}><small>{status.label}</small><Badge tone={status.tone}>{status.value}</Badge></span>)}</div>
-    <p>Separate from native Sandbox equity, cash, and P&amp;L below.</p>
+    <p>Read-only account data stays separate from Sandbox values.</p>
   </aside>;
 }

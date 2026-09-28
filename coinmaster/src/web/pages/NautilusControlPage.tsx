@@ -318,20 +318,22 @@ export function RuntimePage() {
   return <main className="terminal-layout nautilus-runtime-workspace">
     <DashboardConnectionIdentity />
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={runtimeStatus.tone}>{loading && !state ? 'Loading' : humanizeResearchCode(runtimeStatus.label)}</Badge>}>
-      <div className="runtime-hero__heading"><div><p className="trader-hero__lead">Current BTC and SOL Sandbox account.</p><p className="trader-note">{entryGateMessage}.</p><p className="runtime-snapshot-time">Sandbox snapshot · {state?.observed_at_ns ? formatUtcTimestamp(new Date(state.observed_at_ns / 1_000_000).toISOString()) : 'time unavailable'}</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
+      <div className="runtime-hero__heading"><div><p className="trader-note">{entryGateMessage}.</p><p className="runtime-snapshot-time">Sandbox snapshot · {state?.observed_at_ns ? formatUtcTimestamp(new Date(state.observed_at_ns / 1_000_000).toISOString()) : 'time unavailable'}</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
       <div className="runtime-account-grid runtime-account-grid--compact runtime-priority-grid">
         <Stat label="Equity" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Marked equity")?.value ?? "Unavailable"} />
         <Stat label="Available cash" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Available cash")?.value ?? "Unavailable"} />
         <Stat label={state?.recovery_required === true ? "Stored positions" : "Open positions"} value={positionSummary} />
         <Stat label={state?.recovery_required === true ? "Stored orders" : "Working orders"} value={projectionReady ? String(orderRows.length) : "Unavailable"} />
       </div>
-      {accountIsUnknown ? null : <div className="runtime-account-secondary" aria-label="Current margin and profit and loss">
-        <Stat label="Initial margin" value={state?.account.im ?? "Unavailable"} />
-        <Stat label="Maintenance margin" value={state?.account.mm ?? "Unavailable"} />
-        <Stat label="Realized P&amp;L · net fees" value={figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
-        <Stat label="Unrealized P&amp;L" value={figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
-      </div>}
-      {accountIsUnknown ? null : <details className="nautilus-diagnostics runtime-account-details"><summary>Other account details</summary><div className="runtime-account-grid runtime-account-grid--compact">{figures.filter((figure) => !["Marked equity", "Available cash", "Realized PnL after fees", "Unrealized PnL"].includes(figure.label)).map((figure) => <Stat key={figure.label} label={figure.label} value={figure.value} />)}</div></details>}
+      {accountIsUnknown ? null : <details className="nautilus-diagnostics runtime-account-details"><summary>Margin, P&amp;L and account details</summary>
+        <div className="runtime-account-secondary" aria-label="Current margin and profit and loss">
+          <Stat label="Initial margin" value={state?.account.im ?? "Unavailable"} />
+          <Stat label="Maintenance margin" value={state?.account.mm ?? "Unavailable"} />
+          <Stat label="Realized P&amp;L · net fees" value={figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
+          <Stat label="Unrealized P&amp;L" value={figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
+        </div>
+        <div className="runtime-account-grid runtime-account-grid--compact runtime-account-details__other">{figures.filter((figure) => !["Marked equity", "Available cash", "Realized PnL after fees", "Unrealized PnL"].includes(figure.label)).map((figure) => <Stat key={figure.label} label={figure.label} value={figure.value} />)}</div>
+      </details>}
       {accountIsUnknown ? <div className="runtime-empty-note account-unavailable"><strong>Account valuation unavailable</strong><span>{runtimeStatus.detail}</span></div> : null}
       {state?.account.mark_state === 'STALE_OR_MISSING' ? <p className="runtime-empty-note">Mark is stale or missing. Marked equity and unrealized P&amp;L are not current.</p> : null}
       {state?.account.status === 'PARTIAL' ? <p className="runtime-empty-note">Account read is partial. Missing account fields remain unavailable.</p> : null}
