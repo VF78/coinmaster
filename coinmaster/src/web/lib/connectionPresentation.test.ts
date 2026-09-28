@@ -14,7 +14,8 @@ test('Hyperliquid agent authorization states remain distinct', () => {
   assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'ERROR', agent_authorization: 'UNVERIFIED' })[0].value, 'Unavailable');
   assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'ERROR', agent_authorization: 'UNVERIFIED' })[1].value, 'Not verified');
   assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'VERIFIED' })[1].value, 'Verified');
-  assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'ERROR' })[1].value, 'Authorization failed');
+  assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'MISMATCH' })[1].value, 'Wrong master account');
+  assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'ERROR' })[1].value, 'Verification unavailable');
 });
 
 test('Bybit verification only describes read-only access', () => {
@@ -52,4 +53,12 @@ test('Settings keeps permissions guidance collapsed and the saved-account table 
   assert.match(component, /<table className=\"settings-connections__table\">/);
   assert.match(styles, /\.settings-connections__table \{ width:100%; border-collapse:collapse; table-layout:fixed; \}/);
   assert.match(styles, /@media \(max-width:700px\)[\s\S]*?\.settings-connections__table tr \{ display:grid;/);
+});
+
+test('Settings supports agent key replacement on a saved account without claiming live trading', () => {
+  const component = readFileSync(new URL('../components/SettingsConnections.tsx', import.meta.url), 'utf8');
+  assert.match(component, /Add\/replace agent key/);
+  assert.match(component, /\/agent-key/);
+  assert.match(component, /Save and verify/);
+  assert.match(component, /does not enable live trading/);
 });

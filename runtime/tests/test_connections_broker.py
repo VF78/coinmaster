@@ -99,13 +99,65 @@ def test_hyperliquid_public_state_is_not_agent_authorization(tmp_path, monkeypat
 
     def fake_read_url(request):
         assert request.full_url == "https://api.hyperliquid.xyz/info"
-        assert json.loads(request.data) == {"type": "clearinghouseState", "user": address}
-        return {"assetPositions": []}
+        payload = json.loads(request.data)
+        if payload == {"type": "clearinghouseState", "user": address}:
+            return {"assetPositions": []}
+        assert payload["type"] == "userRole"
+        assert payload["user"] == "0x1563915e194d8cfba1943570603f7606a3115508"
+        return {"role": "agent", "data": {"user": address}}
 
     monkeypatch.setattr("coinmaster.api.connections_broker._read_url", fake_read_url)
     status, raw = call(app, "POST", "/api/v1/connections/" + item["id"] + "/test", headers=auth_headers())
     assert status == 200
-    assert json.loads(raw)["verification_state"] == {"public_observation": "REACHABLE", "agent_authorization": "UNVERIFIED"}
+    assert json.loads(raw)["verification_state"] == {"public_observation": "REACHABLE", "agent_authorization": "VERIFIED"}
+
+
+def test_saved_hyperliquid_agent_key_update_verifies_role_and_persists_safely(tmp_path, monkeypatch):
+    import os
+    from nautilus_trader.core.nautilus_pyo3 import hyperliquid_resolve_execution_account_address
+
+    root = tmp_path / "broker"
+    master = "0x" + "1" * 40
+    key = "0x" + "2" * 64
+    agent = hyperliquid_resolve_execution_account_address(private_key=key)
+    app = create_connections_app(store_root=str(root), verifier=lambda request: 200 if request.headers.get("x-csrf-token") == CSRF else 403)
+    status, raw = call(app, "POST", "/api/v1/connections", {"venue": "hyperliquid", "master_address": master}, headers=auth_headers())
+    assert status == 201
+    connection_id = json.loads(raw)["id"]
+    route = "/api/v1/connections/" + connection_id + "/agent-key"
+    body = {"agent_private_key": key}
+    assert call(app, "PUT", route, body, headers={"Cookie": COOKIE})[0] == 403
+    assert call(app, "PUT", route, body, headers={**auth_headers(), "X-CSRF-Token": "wrong"})[0] == 403
+    assert call(app, "PUT", route, body, headers={**auth_headers(), "Origin": "https://elsewhere.invalid"})[0] == 403
+    assert call(app, "PUT", route, {"agent_private_key": "bad"}, headers=auth_headers())[0] == 400
+
+    seen = []
+    def role_response(request):
+        payload = json.loads(request.data)
+        seen.append(payload)
+        assert request.full_url == "https://api.hyperliquid.xyz/info" and request.get_method() == "POST"
+        return {"role": "agent", "data": {"user": master.upper().replace("0X", "0x")}}
+    monkeypatch.setattr("coinmaster.api.connections_broker._read_url", role_response)
+    status, raw = call(app, "PUT", route, body, headers=auth_headers())
+    assert status == 200 and b"222222" not in raw
+    assert json.loads(raw)["verification_state"]["agent_authorization"] == "VERIFIED"
+    assert seen == [{"type": "userRole", "user": agent}]
+    record = root / (connection_id + ".json")
+    assert record.stat().st_mode & 0o077 == 0 and root.stat().st_mode & 0o077 == 0
+    assert json.loads(record.read_text())["agent_private_key"] == key
+    restarted = create_connections_app(store_root=str(root), verifier=lambda _: 200)
+    assert b"222222" not in call(restarted, "GET", "/api/v1/connections", headers=auth_headers())[1]
+
+    monkeypatch.setattr("coinmaster.api.connections_broker._read_url", lambda _: {"role": "agent", "data": {"user": "0x" + "3" * 40}})
+    status, raw = call(restarted, "POST", "/api/v1/connections/" + connection_id + "/test", headers=auth_headers())
+    assert status == 200 and json.loads(raw)["verification_state"]["agent_authorization"] == "MISMATCH"
+    monkeypatch.setattr("coinmaster.api.connections_broker._read_url", lambda _: {"role": "user"})
+    status, raw = call(restarted, "PUT", route, body, headers=auth_headers())
+    assert status == 200 and json.loads(raw)["verification_state"]["agent_authorization"] == "MISMATCH"
+    monkeypatch.setattr("coinmaster.api.connections_broker._read_url", lambda _: (_ for _ in ()).throw(ValueError("secret failure")))
+    status, raw = call(restarted, "PUT", route, body, headers=auth_headers())
+    assert status == 200 and json.loads(raw)["verification_state"]["agent_authorization"] == "ERROR"
+    assert b"secret failure" not in raw
 
 
 def test_bybit_queries_key_metadata_only_and_requires_read_only(tmp_path, monkeypatch):

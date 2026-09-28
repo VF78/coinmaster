@@ -11,7 +11,9 @@ All routes are under /api/v1/connections. GET lists sanitized records and the
 display_connection_id. POST on the collection accepts either
 {venue:"hyperliquid",master_address,agent_private_key?} or
 {venue:"bybit",api_key,api_secret}. POST /{id}/test runs the fixed venue check;
-DELETE /{id} removes one record; PUT /display accepts
+PUT /{id}/agent-key accepts {agent_private_key:string} only for an existing
+Hyperliquid connection and replaces its saved key without changing its master
+address. DELETE /{id} removes one record; PUT /display accepts
 {connection_id:string|null}. IDs are opaque random values, and the collection
 allows multiple accounts per venue. No response contains an API key, API secret,
 or agent private key. All requests require the existing browser session cookie.
@@ -19,10 +21,18 @@ Writes also require exact Origin https://coinmaster24.com and X-CSRF-Token
 from GET /api/v1/auth/session. Bearer automation cannot use these routes.
 
 Hyperliquid testing uses only official POST /info clearinghouseState for the
-supplied master address. This proves only public observation reachability.
-A stored agent key remains UNVERIFIED; it is never signed with, and no
-delegation authority is claimed. Bybit testing signs only official
-GET /v5/user/query-api and returns VERIFIED only when readOnly is integer 1.
+saved master address and POST /info userRole for the address derived locally
+from the saved agent key. It reports VERIFIED only for role=agent and a
+case-insensitive exact data.user match to the saved master. Wrong role or master
+is MISMATCH; transport or malformed responses are ERROR. An absent key is
+NOT_PROVIDED. A newly saved key is checked immediately; POST /{id}/test repeats
+both checks. The key is never sent to Info or echoed by any API response. This
+proves a current public authorization relation, not a live trading connection.
+The pinned Nautilus native address resolver derives the wallet; the broker
+has no generic signing or exchange route. Official role contract:
+https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint#query-a-users-role
+
+Bybit testing signs only official GET /v5/user/query-api and returns VERIFIED only when readOnly is integer 1.
 The response's echoed apiKey and all other raw fields are discarded.
 
 ## Activation gate

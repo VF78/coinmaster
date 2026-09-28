@@ -17,7 +17,8 @@ export function connectionVerificationRows(venue: 'hyperliquid' | 'bybit', verif
         NOT_PROVIDED: { label: 'Agent wallet', value: 'Not provided', tone: 'neutral' },
         UNVERIFIED: { label: 'Agent wallet', value: 'Not verified', tone: 'neutral' },
         VERIFIED: { label: 'Agent wallet', value: 'Verified', tone: 'success' },
-        ERROR: { label: 'Agent wallet', value: 'Authorization failed', tone: 'danger' },
+        MISMATCH: { label: 'Agent wallet', value: 'Wrong master account', tone: 'danger' },
+        ERROR: { label: 'Agent wallet', value: 'Verification unavailable', tone: 'danger' },
       }),
     ];
   }

@@ -18,6 +18,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response
+from nautilus_trader.core.nautilus_pyo3 import hyperliquid_resolve_execution_account_address
 
 from coinmaster.api.gui_auth import SESSION_COOKIE
 
@@ -167,25 +168,45 @@ def _read_url(request: urllib.request.Request) -> dict:
         raise ValueError("venue unavailable") from None
 
 
-def _test_hyperliquid(item: dict) -> dict:
-    address = item["master_address"]
+def _hyperliquid_info(kind: str, address: str) -> dict:
     request = urllib.request.Request(
         "https://api.hyperliquid.xyz/info",
-        data=json.dumps({"type": "clearinghouseState", "user": address}).encode(),
+        data=json.dumps({"type": kind, "user": address}).encode(),
         headers={"Content-Type": "application/json", "User-Agent": "CoinMaster-read-only-connection/1"},
         method="POST",
     )
+    return _read_url(request)
+
+
+def _agent_authorization(item: dict) -> str:
+    key = item.get("agent_private_key")
+    if not key:
+        return "NOT_PROVIDED"
     try:
-        response = _read_url(request)
+        # Pass no account_address: that parameter overrides the derived wallet address.
+        agent_address = hyperliquid_resolve_execution_account_address(private_key=key)
+        if not isinstance(agent_address, str) or not ADDRESS_RE.fullmatch(agent_address):
+            return "ERROR"
+        role = _hyperliquid_info("userRole", agent_address)
+        if role.get("role") != "agent":
+            return "MISMATCH"
+        data = role.get("data")
+        if not isinstance(data, dict) or not isinstance(data.get("user"), str) or not ADDRESS_RE.fullmatch(data["user"]):
+            return "ERROR"
+        return "VERIFIED" if data["user"].lower() == item["master_address"].lower() else "MISMATCH"
+    except (ValueError, TypeError, RuntimeError):
+        return "ERROR"
+
+
+def _test_hyperliquid(item: dict) -> dict:
+    try:
+        response = _hyperliquid_info("clearinghouseState", item["master_address"])
         if not isinstance(response.get("assetPositions"), list):
             raise ValueError("invalid observation")
         observed = "REACHABLE"
     except ValueError:
         observed = "ERROR"
-    return {
-        "public_observation": observed,
-        "agent_authorization": "UNVERIFIED" if item.get("agent_private_key") else "NOT_PROVIDED",
-    }
+    return {"public_observation": observed, "agent_authorization": _agent_authorization(item)}
 
 
 def _test_bybit(item: dict) -> dict:
@@ -307,6 +328,28 @@ def create_connections_app(*, store_root: str | None = None, verify_token: str |
         with store.locked():
             store.save(item)
         return public_item(item)
+
+    @app.put("/api/v1/connections/{connection_id}/agent-key")
+    async def update_agent_key(connection_id: str, request: Request):
+        authorize(request)
+        if request.headers.get("content-type", "").split(";")[0].lower() != "application/json":
+            raise HTTPException(415, "JSON required")
+        body = _json_object(await _bounded_body(request))
+        key = body.get("agent_private_key")
+        if set(body) != {"agent_private_key"} or not isinstance(key, str) or not KEY_RE.fullmatch(key):
+            raise HTTPException(400, "invalid agent key")
+        with store.locked():
+            item = store.get(connection_id)
+            if item["venue"] != "hyperliquid":
+                raise HTTPException(400, "Hyperliquid account required")
+            item["agent_private_key"] = key
+            item["verification_state"] = {
+                "public_observation": item["verification_state"].get("public_observation", "UNTESTED"),
+                "agent_authorization": _agent_authorization(item),
+            }
+            item["last_tested_at"] = datetime.now(timezone.utc).isoformat()
+            store.save(item)
+            return public_item(item)
 
     @app.post("/api/v1/connections/{connection_id}/test")
     def test_connection(connection_id: str, request: Request):

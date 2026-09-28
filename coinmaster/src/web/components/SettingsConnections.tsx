@@ -63,6 +63,9 @@ export function SettingsConnections() {
   const [testingId, setTestingId] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [savingDisplay, setSavingDisplay] = useState(false);
+  const [agentKeyId, setAgentKeyId] = useState<string | null>(null);
+  const [replacementAgentKey, setReplacementAgentKey] = useState('');
+  const [savingAgentKey, setSavingAgentKey] = useState(false);
   const [venue, setVenue] = useState<Venue>('hyperliquid');
   const [masterAddress, setMasterAddress] = useState('');
   const [agentPrivateKey, setAgentPrivateKey] = useState('');
@@ -132,6 +135,28 @@ export function SettingsConnections() {
     }
   }
 
+  async function saveAgentKey(event: FormEvent<HTMLFormElement>, item: Connection) {
+    event.preventDefault();
+    if (savingAgentKey || !/^(0x)?[0-9a-fA-F]{64}$/.test(replacementAgentKey.trim())) return;
+    setSavingAgentKey(true);
+    setError('');
+    setMessage('');
+    try {
+      const updated = await connectionRequest<Connection>(`/connections/${encodeURIComponent(item.id)}/agent-key`, {
+        method: 'PUT', body: JSON.stringify({ agent_private_key: replacementAgentKey.trim() }),
+      });
+      if (!isConnection(updated)) throw new Error('The agent status could not be confirmed. Refresh to check its status.');
+      setConnections((current) => current.map((row) => row.id === updated.id ? updated : row));
+      setMessage('Agent key saved. Check its authorization status below.');
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Could not save the agent key.');
+    } finally {
+      setReplacementAgentKey('');
+      setAgentKeyId(null);
+      setSavingAgentKey(false);
+    }
+  }
+
   async function removeConnection(item: Connection) {
     if (removingId) return;
     if (!window.confirm(`Remove the saved ${item.venue === 'hyperliquid' ? 'Hyperliquid' : 'Bybit'} credentials for “${item.account_label}”?`)) return;
@@ -174,7 +199,7 @@ export function SettingsConnections() {
 
   return <section className="settings-connections" aria-label="Exchange connections">
     <Card title="Exchange accounts" actions={<Badge tone="neutral">Display only</Badge>}>
-      <p className="settings-connections__intro">Add an account. Its identity can appear on Dashboard.</p>
+      <p className="settings-connections__intro">Add an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.</p>
       <form className="settings-connections__form" onSubmit={(event) => void addConnection(event)}>
         <label className="rules-field">
           <span className="rules-label">Exchange</span>
@@ -190,7 +215,7 @@ export function SettingsConnections() {
             {masterAddress.length > 0 && !validHyperliquid ? <span className="settings-connections__field-error">Enter a valid 0x address.</span> : null}
           </label>
           <label className="rules-field settings-connections__wide">
-            <span className="rules-label">Agent private key <span className="muted">· optional</span></span>
+            <span className="rules-label">Agent private key <span className="muted">· optional for a new account</span></span>
             <input className="rules-input" type="password" autoComplete="new-password" placeholder="API agent key" value={agentPrivateKey} onChange={(event) => setAgentPrivateKey(event.target.value)} />
           </label>
         </> : <>
@@ -205,7 +230,7 @@ export function SettingsConnections() {
         </>}
         <div className="settings-connections__submit"><Button type="submit" variant="primary" disabled={!canSubmit || saving}>{saving ? 'Saving…' : 'Add account'}</Button></div>
       </form>
-      <details className="settings-connections__help"><summary>Permissions and safety</summary><p>Hyperliquid public reads and optional agent authorization are separate checks. Bybit access is read-only. This page does not provide order controls.</p></details>
+      <details className="settings-connections__help"><summary>Permissions and safety</summary><p>Create an API agent wallet in Hyperliquid and authorize it for the saved master account. Enter its private key once; it is never shown again. Public account readability and agent authorization are separate checks. Verified agent authorization does not enable live trading or order controls. Bybit access is read-only.</p></details>
       {message ? <p className="settings-connections__notice" role="status">{message}</p> : null}
       {error ? <p className="settings-connections__error" role="alert">{error}</p> : null}
     </Card>
@@ -229,8 +254,13 @@ export function SettingsConnections() {
             <td data-label="Verification"><div className="settings-connections__verification">{connectionVerificationRows(item.venue, item.verification_state).map((row) => <span key={row.label}><small>{row.label}</small><Badge tone={row.tone}>{row.value}</Badge></span>)}</div></td>
             <td data-label="Last tested" className="settings-connections__tested">{testedAt(item.last_tested_at)}</td>
             <td data-label="Actions"><div className="settings-connections__actions">
-              <Button type="button" variant="secondary" onClick={() => void testConnection(item)} disabled={testingId !== null || removingId !== null}>{testingId === item.id ? 'Testing…' : 'Test access'}</Button>
-              <Button type="button" variant="secondary" onClick={() => void removeConnection(item)} disabled={removingId !== null || testingId !== null}>{removingId === item.id ? 'Removing…' : 'Disconnect'}</Button>
+              <Button type="button" variant="secondary" onClick={() => void testConnection(item)} disabled={testingId !== null || removingId !== null || savingAgentKey}>{testingId === item.id ? 'Testing…' : 'Test access'}</Button>
+              {item.venue === 'hyperliquid' ? <Button type="button" variant="secondary" onClick={() => { setAgentKeyId(agentKeyId === item.id ? null : item.id); setReplacementAgentKey(''); }} disabled={testingId !== null || removingId !== null || savingAgentKey}>Add/replace agent key</Button> : null}
+              <Button type="button" variant="secondary" onClick={() => void removeConnection(item)} disabled={removingId !== null || testingId !== null || savingAgentKey}>{removingId === item.id ? 'Removing…' : 'Disconnect'}</Button>
+              {item.venue === 'hyperliquid' && agentKeyId === item.id ? <form className="settings-connections__agent-form" onSubmit={(event) => void saveAgentKey(event, item)}>
+                <label className="rules-field"><span className="rules-label">Agent private key for {item.account_label}</span><input className="rules-input" type="password" autoComplete="new-password" spellCheck={false} value={replacementAgentKey} onChange={(event) => setReplacementAgentKey(event.target.value)} /></label>
+                <Button type="submit" variant="primary" disabled={savingAgentKey || !/^(0x)?[0-9a-fA-F]{64}$/.test(replacementAgentKey.trim())}>{savingAgentKey ? 'Saving…' : 'Save and verify'}</Button>
+              </form> : null}
             </div></td>
           </tr>)}</tbody>
         </table>

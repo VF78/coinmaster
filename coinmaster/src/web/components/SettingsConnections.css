@@ -35,6 +35,7 @@
 .settings-connections__tested { color:var(--text-muted, #bdc8c2); font-variant-numeric:tabular-nums; }
 .settings-connections__actions { display:flex; flex-wrap:wrap; gap:.35rem; }
 .settings-connections__actions .btn { min-height:2.15rem; padding:.4rem .55rem; font-size:.74rem; }
+.settings-connections__agent-form { display:grid; gap:.45rem; width:100%; }
 .settings-sandbox-summary { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:.6rem; }
 .settings-sandbox-summary > span { color:var(--text-muted, #9ca9a3); font-size:.76rem; }
 .settings-sandbox-summary > strong { font-size:.84rem; }
