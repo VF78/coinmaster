@@ -1,0 +1,29 @@
+.settings-connections { display:grid; gap:1rem; }
+.settings-connections__intro, .settings-connections__safety { margin:.1rem 0 .9rem; color:var(--text-muted, #9ca9a3); font-size:.9rem; line-height:1.5; }
+.settings-connections__safety { margin:.8rem 0 0; font-size:.82rem; }
+.settings-connections__form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; align-items:end; }
+.settings-connections__wide { grid-column:1 / -1; }
+.settings-connections__submit { display:flex; justify-content:flex-start; }
+.settings-connections__field-error { color:var(--danger, #f87171); font-size:.78rem; }
+.settings-connections__notice, .settings-connections__error { margin:.7rem 0 0; font-size:.88rem; }
+.settings-connections__notice { color:var(--accent, #76d6ae); }
+.settings-connections__error { color:var(--danger, #f87171); }
+.settings-connections__display { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.7rem; align-items:end; margin-bottom:.9rem; }
+.settings-connections__empty { margin:.4rem 0; color:var(--text-muted, #9ca9a3); }
+.settings-connections__list { display:grid; gap:.7rem; }
+.settings-connections__account { border:1px solid var(--border, #293b34); border-radius:7px; background:var(--surface-2, #101915); padding:.85rem; }
+.settings-connections__account-head { display:flex; gap:.7rem; justify-content:space-between; align-items:flex-start; }
+.settings-connections__account-head h3 { margin:0; font-size:1rem; }
+.settings-connections__account-head p { margin:.25rem 0 0; color:var(--text-muted, #9ca9a3); font-size:.82rem; }
+.settings-connections__verification { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.55rem; margin:.8rem 0; }
+.settings-connections__verification > div { min-width:0; }
+.settings-connections__verification dt { margin-bottom:.25rem; color:var(--text-muted, #9ca9a3); font-size:.74rem; }
+.settings-connections__verification dd { margin:0; }
+.settings-connections__actions { display:flex; flex-wrap:wrap; gap:.5rem; }
+@media (max-width:600px) {
+  .settings-connections__form { grid-template-columns:minmax(0,1fr); }
+  .settings-connections__wide { grid-column:auto; }
+  .settings-connections__display { grid-template-columns:minmax(0,1fr); }
+  .settings-connections__verification { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .settings-connections__account-head { flex-direction:column; }
+}

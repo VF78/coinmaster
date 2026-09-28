@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { connectionDisplayLabel, connectionVerificationRows } from './connectionPresentation.js';
+
+test('Hyperliquid public readability does not imply agent authorization', () => {
+  assert.deepEqual(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'NOT_PROVIDED' }), [
+    { label: 'Public account', value: 'Readable', tone: 'success' },
+    { label: 'Agent wallet', value: 'Not provided', tone: 'neutral' },
+  ]);
+});
+
+test('Hyperliquid agent authorization states remain distinct', () => {
+  assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'ERROR', agent_authorization: 'UNVERIFIED' })[0].value, 'Unavailable');
+  assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'ERROR', agent_authorization: 'UNVERIFIED' })[1].value, 'Not verified');
+  assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'VERIFIED' })[1].value, 'Verified');
+  assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'ERROR' })[1].value, 'Authorization failed');
+});
+
+test('Bybit verification only describes read-only access', () => {
+  assert.deepEqual(connectionVerificationRows('bybit', { read_only_access: 'VERIFIED' }), [
+    { label: 'Read-only access', value: 'Verified', tone: 'success' },
+  ]);
+  assert.equal(connectionVerificationRows('bybit', { read_only_access: 'ERROR' })[0].value, 'Unavailable');
+});
+
+test('unknown verification values never leak machine codes into the UI', () => {
+  assert.equal(connectionVerificationRows('bybit', { read_only_access: 'SECRET_INTERNAL_CODE' })[0].value, 'Not confirmed');
+  assert.equal(connectionVerificationRows('hyperliquid', {})[1].value, 'Not confirmed');
+});
+
+test('duplicate Bybit account labels get a short identity suffix without exposing full IDs', () => {
+  assert.equal(connectionDisplayLabel('bybit', 'Bybit account', 'opaque-abcdef123456', true), 'Bybit account · 123456');
+  assert.equal(connectionDisplayLabel('bybit', 'Bybit account', 'opaque-abcdef123456', false), 'Bybit account');
+  assert.equal(connectionDisplayLabel('hyperliquid', '0x…1234', 'opaque-abcdef123456', true), '0x…1234');
+});

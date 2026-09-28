@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DashboardMarketChart } from '../components/DashboardMarketChart';
+import { SettingsConnections } from '../components/SettingsConnections';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -465,6 +466,7 @@ export function WorkspaceSettingsPage() {
       <p className="muted">Order routing is off. Funding is observed for reference and is not credited to Sandbox cash. {fundingLabel(state)}.</p>
       <Button variant="secondary" onClick={() => void refresh()}>Refresh status</Button>
     </Card>
+    <SettingsConnections />
     <Card title="Drawdown protection" actions={<Badge tone={protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
       {state?.recovery_required ? <p className="runtime-empty-note">Recovery is required. Protection values are withheld and settings remain read-only until account ownership is restored.</p> : <>
       <p className="muted">Changes require a paused worker and confirmed flat exposure.</p>
