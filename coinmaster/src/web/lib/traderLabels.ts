@@ -108,3 +108,9 @@ const FILL_ACTION_LABELS: Record<string, string> = {
 export function nativeFillActionLabel(action: string | null | undefined): string {
   return action ? FILL_ACTION_LABELS[action] ?? 'Fill type unavailable' : 'Fill type unavailable';
 }
+
+
+export function unavailableTradeHistoryLabel(count: number | null | undefined): string {
+  if (typeof count !== 'number' || !Number.isSafeInteger(count) || count < 0) return 'Detailed trade history is unavailable.';
+  return `Detailed trade history is unavailable. ${count} older executions have no saved details.`;
+}

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, researchResultContext, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from './traderLabels';
+import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, unavailableTradeHistoryLabel, researchResultContext, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from './traderLabels';
 
 test('humanizes exact strategy keys and values without altering data', () => {
   assert.equal(strategySettingLabel('sol_timeout_preempts_add'), 'SOL timeout stops further additions');
@@ -45,4 +45,14 @@ test('labels only exact native fill actions and leaves unknown classifications e
   assert.equal(nativeFillActionLabel(null), 'Fill type unavailable');
   assert.equal(nativeFillActionLabel(undefined), 'Fill type unavailable');
   assert.equal(nativeFillActionLabel('FUTURE_ACTION'), 'Fill type unavailable');
+});
+
+
+test('does not turn a missing historical-fill count into zero', () => {
+  assert.equal(unavailableTradeHistoryLabel(null), 'Detailed trade history is unavailable.');
+  assert.equal(unavailableTradeHistoryLabel(undefined), 'Detailed trade history is unavailable.');
+  assert.equal(unavailableTradeHistoryLabel(Number.NaN), 'Detailed trade history is unavailable.');
+  assert.equal(unavailableTradeHistoryLabel(-1), 'Detailed trade history is unavailable.');
+  assert.equal(unavailableTradeHistoryLabel(0), 'Detailed trade history is unavailable. 0 older executions have no saved details.');
+  assert.equal(unavailableTradeHistoryLabel(2), 'Detailed trade history is unavailable. 2 older executions have no saved details.');
 });

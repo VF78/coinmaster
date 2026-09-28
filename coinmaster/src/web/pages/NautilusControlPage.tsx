@@ -9,7 +9,7 @@ import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, cr
 import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, protectionIsFresh, protectionIsVerified } from '../lib/accountPresentation';
 import { positionPresentation, TRADER_MARKETS } from '../lib/traderPresentation';
 import { parseFiniteNumberFields } from '../lib/strategyDraftValidation';
-import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
+import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, unavailableTradeHistoryLabel, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
 type ArrayKey = 'wave_quantiles' | 'btc_tp_fractions_initial_qty' | 'sol_size_multipliers_H' | 'sol_entry_z';
@@ -375,7 +375,7 @@ export function RuntimePage() {
       {!fillHistoryMatchesRun
         ? <p className="runtime-empty-note">{fillHistoryUnavailable ? 'Detailed fill history is unavailable.' : !state?.run_epoch ? 'Fill history is hidden until the current workspace is confirmed.' : 'History is refreshing after restart; earlier rows are hidden.'}</p>
         : !fillHistory?.detail_store_available
-        ? <p className="runtime-empty-note">Detailed trade history is unavailable. {fillHistory?.historical_id_only_count ?? 0} older executions have no saved details.</p>
+        ? <p className="runtime-empty-note">{unavailableTradeHistoryLabel(fillHistory?.historical_id_only_count)}</p>
         : <>
           {fillHistory.historical_id_only_count > 0 ? <p className="muted">{fillHistory.historical_id_only_count} older execution record{fillHistory.historical_id_only_count === 1 ? ' has' : 's have'} no saved trade details.</p> : null}
           <DataTable rows={fillHistory.fills.map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed executions recorded yet." mobileTitle={(fill) => `${fill.instrument_id.startsWith('BTC-') ? 'BTC' : fill.instrument_id.startsWith('SOL-') ? 'SOL' : 'Other market'} · ${nativeFillActionLabel(fill.action)}`} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
