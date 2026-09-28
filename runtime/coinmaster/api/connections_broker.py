@@ -132,9 +132,14 @@ def _json_object(body: bytes) -> dict:
     return value
 
 
+class _RejectRedirects(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, fp, code, msg, headers, newurl):
+        return None
+
+
 def _read_url(request: urllib.request.Request) -> dict:
     try:
-        with urllib.request.urlopen(request, timeout=5) as response:
+        with urllib.request.build_opener(_RejectRedirects).open(request, timeout=5) as response:
             raw = response.read(65_537)
         if len(raw) > 65_536:
             raise ValueError("large response")
@@ -325,6 +330,3 @@ def create_connections_app(*, store_root: str | None = None, verify_token: str |
             return {"display_connection_id": store.selection()}
 
     return app
-
-
-app = create_connections_app()

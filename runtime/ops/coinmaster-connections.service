@@ -11,12 +11,13 @@ EnvironmentFile=/etc/coinmaster-connections.env
 WorkingDirectory=/srv/coinmaster/runtime
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=COINMASTER_CONNECTION_STORE=/var/lib/coinmaster-connections
-ExecStart=/srv/coinmaster/runtime/.venv/bin/python -m uvicorn coinmaster.api.connections_broker:app --host 127.0.0.1 --port 18184 --no-access-log
+ExecStart=/srv/coinmaster/runtime/.venv/bin/python -m uvicorn coinmaster.api.connections_broker:create_connections_app --factory --host 127.0.0.1 --port 18184 --no-access-log
 Restart=on-failure
 UMask=0077
 StateDirectory=coinmaster-connections
 StateDirectoryMode=0700
 NoNewPrivileges=true
+LimitCORE=0
 PrivateTmp=true
 ProtectHome=true
 ProtectSystem=strict

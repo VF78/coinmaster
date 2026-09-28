@@ -160,3 +160,52 @@ def test_internal_verifier_requires_real_session_origin_and_csrf(tmp_path, monke
     assert call(app, "POST", route, headers={**internal, "Cookie": COOKIE, "Origin": ORIGIN, "X-CSRF-Token": auth.csrf(token)})[0] == 200
     assert call(app, "POST", route, headers={"Cookie": COOKIE, "Origin": ORIGIN, "X-CSRF-Token": auth.csrf(token),
                                               "X-Coinmaster-Original-Method": "POST"})[0] == 403
+
+
+def test_signed_read_redirect_does_not_forward_credentials():
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+    from threading import Thread
+    import urllib.request
+    import pytest
+    from coinmaster.api.connections_broker import _read_url
+
+    received = []
+
+    class Target(BaseHTTPRequestHandler):
+        def do_GET(self):
+            received.append(self.headers.get("X-BAPI-API-KEY"))
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"{}")
+
+        def log_message(self, *args):
+            pass
+
+    target = ThreadingHTTPServer(("127.0.0.1", 0), Target)
+
+    class Redirect(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(302)
+            self.send_header("Location", "http://127.0.0.1:" + str(target.server_port) + "/receive")
+            self.end_headers()
+
+        def log_message(self, *args):
+            pass
+
+    redirect = ThreadingHTTPServer(("127.0.0.1", 0), Redirect)
+    threads = [Thread(target=server.serve_forever, daemon=True) for server in (target, redirect)]
+    for thread in threads:
+        thread.start()
+    try:
+        request = urllib.request.Request(
+            "http://127.0.0.1:" + str(redirect.server_port) + "/start",
+            headers={"X-BAPI-API-KEY": "SENTINEL_KEY", "X-BAPI-SIGN": "SENTINEL_SIGNATURE"},
+        )
+        with pytest.raises(ValueError, match="venue unavailable"):
+            _read_url(request)
+        assert received == []
+    finally:
+        redirect.shutdown()
+        target.shutdown()
+        redirect.server_close()
+        target.server_close()
