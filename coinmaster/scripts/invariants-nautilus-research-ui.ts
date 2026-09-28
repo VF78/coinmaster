@@ -64,6 +64,7 @@ const required = [
   ['invalid strategy draft fields are announced accessibly', 'aria-invalid={invalid || undefined}'],
   ['production buttons and controls have keyboard focus styles', '.nautilus-app-shell .btn:focus-visible'],
   ['trader UI includes a narrow mobile layout', '@media (max-width: 390px)'],
+  ['mobile bottom nav spans the nav grid for four readable tabs', '.sidebar-nav__list { grid-column:1 / -1; width:100%; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.15rem; }'],
   ['mobile bottom nav constrains and separates 390px labels', '.nautilus-app-shell .sidebar-nav__item > span:not(.nautilus-nav-icon)'],
   ['strategy folds technical parameters under advanced rules', 'Advanced strategy rules'],
   ['research presents readable blockers without raw technical-code panels', 'Technical blocker codes'],
