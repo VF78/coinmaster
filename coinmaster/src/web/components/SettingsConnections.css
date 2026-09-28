@@ -1,4 +1,5 @@
-.settings-connections { display:grid; gap:.8rem; }
+.settings-connections { display:grid; grid-template-columns:minmax(0,1fr); min-width:0; gap:.8rem; }
+.settings-connections > .card { min-width:0; }
 .settings-connections__intro { margin:0 0 .85rem; color:var(--text-muted, #9ca9a3); font-size:.86rem; }
 .settings-connections__form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.7rem .85rem; align-items:end; }
 .settings-connections .rules-field { min-width:0; gap:.32rem; }
