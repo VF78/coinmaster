@@ -51,7 +51,7 @@ test('Settings keeps permissions guidance collapsed and the saved-account table 
   const styles = readFileSync(new URL('../components/SettingsConnections.css', import.meta.url), 'utf8');
   assert.match(component, /<details className=\"settings-connections__help\"><summary>Permissions and safety<\/summary>/);
   assert.match(component, /<table className=\"settings-connections__table\">/);
-  assert.match(styles, /\.settings-connections__table \{ width:100%; border-collapse:collapse; table-layout:fixed; \}/);
+  assert.match(styles, /\.settings-connections__table \{ width:100%; min-width:0; border-collapse:collapse; table-layout:fixed; \}/);
   assert.match(styles, /@media \(max-width:700px\)[\s\S]*?\.settings-connections__table tr \{ display:grid;/);
   assert.match(styles, /\.settings-connections \{[^}]*grid-template-columns:minmax\(0,1fr\);[^}]*min-width:0;/);
   assert.match(styles, /\.settings-connections > \.card \{ min-width:0; \}/);
