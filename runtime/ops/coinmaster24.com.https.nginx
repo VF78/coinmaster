@@ -11,6 +11,21 @@ server {
     if ($host != coinmaster24.com) { return 421; }
     add_header Strict-Transport-Security "max-age=31536000" always;
 
+    location ^~ /internal/ { return 404; }
+
+    # Credential-bearing requests go directly to the isolated broker UID.
+    location ^~ /api/v1/connections {
+        client_max_body_size 16k;
+        proxy_pass http://127.0.0.1:18184;
+        proxy_http_version 1.1;
+        proxy_set_header Host coinmaster24.com;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Authorization "";
+        proxy_set_header X-Coinmaster-Public-Proxy "1";
+        proxy_set_header Connection "";
+    }
+
     location / {
         proxy_pass http://127.0.0.1:18182;
         proxy_http_version 1.1;

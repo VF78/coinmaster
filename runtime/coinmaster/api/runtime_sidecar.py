@@ -865,6 +865,26 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
     def auth(request: Request, authorization: str | None = Header(default=None), x_csrf_token: str | None = Header(default=None, alias="X-CSRF-Token")) -> str:
         return gui_auth.authorize(request, authorization, x_csrf_token)
 
+    @app.post("/internal/connections/verify-session", include_in_schema=False)
+    def verify_connection_session(request: Request):
+        """Narrow broker callback: verify a browser session, never a bearer token."""
+        import hmac
+        shared = os.getenv("COINMASTER_CONNECTION_VERIFY_TOKEN")
+        supplied = request.headers.get("x-coinmaster-connection-verify-token", "")
+        if not shared or not hmac.compare_digest(supplied, shared):
+            raise HTTPException(403, "internal verifier unavailable")
+        if not request.client or request.client.host not in ("127.0.0.1", "::1"):
+            raise HTTPException(403, "loopback required")
+        cookie = request.cookies.get(SESSION_COOKIE)
+        if not gui_auth._session(cookie):
+            raise HTTPException(401, "operator session required")
+        intended = request.headers.get("x-coinmaster-original-method")
+        if intended not in ("GET", "POST", "PUT", "DELETE"):
+            raise HTTPException(403, "invalid original method")
+        if intended != "GET" and (request.headers.get("origin") != gui_auth.origin or not cookie or not hmac.compare_digest(request.headers.get("x-csrf-token", ""), gui_auth.csrf(cookie))):
+            raise HTTPException(403, "session write requires origin and CSRF token")
+        return JSONResponse({"ok": True}, headers={"Cache-Control": "no-store"})
+
     @app.get("/login", include_in_schema=False)
     def login_page(request: Request):
         return gui_auth.login_page(request)

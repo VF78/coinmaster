@@ -1,0 +1,29 @@
+[Unit]
+Description=CoinMaster isolated account connection broker
+After=network-online.target coinmaster-runtime.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=coinmaster-credentials
+Group=coinmaster-credentials
+EnvironmentFile=/etc/coinmaster-connections.env
+WorkingDirectory=/srv/coinmaster/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=COINMASTER_CONNECTION_STORE=/var/lib/coinmaster-connections
+ExecStart=/srv/coinmaster/runtime/.venv/bin/python -m uvicorn coinmaster.api.connections_broker:app --host 127.0.0.1 --port 18184 --no-access-log
+Restart=on-failure
+UMask=0077
+StateDirectory=coinmaster-connections
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/srv/coinmaster/runtime
+ReadWritePaths=/var/lib/coinmaster-connections
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target
