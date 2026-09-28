@@ -192,3 +192,37 @@ the exact account, capital, credential path and order scope are still required.
 Only after those gates and a verified immutable release may #101 be assessed
 for `READY_FOR_OWNER_LIVE_APPROVAL`; a real micro-live smoke is a later,
 separately authorized action.
+
+## Source-only systemd credential handoff (#101)
+
+The saved #114 Hyperliquid connection is a private 0600 JSON record beneath the
+broker-only 0700 `/var/lib/coinmaster-connections` directory. A future,
+separate `coinmaster-hl-stageg-live.service` can have PID 1 copy **one
+explicitly selected record** into its private credential directory with the
+standard unit setting below. The selected record ID is an operator choice and
+must be pinned to the owner-approved master/agent fingerprints; GUI display
+selection is unrelated to live execution.
+
+```ini
+# Future live unit only; source example, not installed.
+User=coinmaster-hl-live
+Group=coinmaster-hl-live
+LoadCredential=connection.json:/var/lib/coinmaster-connections/<selected-record-id>.json
+ExecStartPre=/srv/coinmaster/hl-live-current/runtime/.venv/bin/python -m coinmaster.ops.hl_live_credential_preflight --fingerprints /srv/coinmaster/hl-live-current/runtime/configs/hl-stageg-live.account-fingerprint.json
+```
+
+The live UID must have no membership in `coinmaster-credentials`,
+`coinmaster-research`, or `coinmaster-hl`, and no direct read permission on
+the broker directory. systemd supplies only the copied `connection.json` to
+that unit through `CREDENTIALS_DIRECTORY`; no key enters an EnvironmentFile,
+command argument, release tree, diagnostic receipt, GUI, research child, or
+Sandbox unit. A broker key replacement requires a fresh live-unit start and a
+new preflight; the saved fingerprint remains pinned. The preflight requires the
+saved broker check to be REACHABLE/VERIFIED, hashes the saved master and locally
+derived agent address against the public sidecar, then re-queries both current
+roles and positive master perps collateral. It prints only fixed result codes.
+A pass proves only this credential handoff check: fresh fees, leverage, orders,
+positions, margin, native reconciliation, account lease, and owner authorization
+remain separate gates. The current live worker still raises
+`HL_LIVE_ROUTE_NOT_APPROVED`; it cannot consume this JSON or place an order.
+No live unit is installed or started by this source-only example.
