@@ -151,7 +151,7 @@ def test_native_money_reads_usdc_account_for_usd_quote_and_never_uses_seed() -> 
         WaveOverlayStrategy._active_marked(strategy, btc_mark, sol_mark)
 
 
-async def _run_lifecycle(journal_path, *, losing: bool = False) -> tuple[AttachedStageGEntryExitProbe, PaperRuntime, TradingNode]:
+async def _run_lifecycle(journal_path, *, losing: bool = False, entry_quote_size: str | None = None) -> tuple[AttachedStageGEntryExitProbe, PaperRuntime, TradingNode]:
     candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
     gate = cross_venue_stage_g_gate(
         candidate=candidate,
@@ -187,6 +187,12 @@ async def _run_lifecycle(journal_path, *, losing: bool = False) -> tuple[Attache
         execution_policy_version="hl-mainnet-public-data-native-sandbox-v1",
     ))
     strategy.exit_price = 59990.0 if losing else 60010.0
+    if entry_quote_size is not None:
+        episode = Episode("hl-stageg-lifecycle", 1, 10000, 1.0, wave_levels=(0.0001, 0.0002, 0.0003))
+        episode.pending["hl-stageg-entry"] = Intent(
+            "hl-stageg-entry", episode.id, "BTC_ENTRY", 0, 1, quantity=0.01,
+        )
+        strategy._domain.episode = episode
     config = TradingNodeConfig(
         environment=Environment.LIVE, trader_id="HL-STAGEG-LIFECYCLE-PROBE", logging=LoggingConfig(log_level="ERROR"),
         exec_engine=LiveExecEngineConfig(reconciliation=False),
@@ -212,6 +218,13 @@ async def _run_lifecycle(journal_path, *, losing: bool = False) -> tuple[Attache
         if losing else
         (_quote(BTC_PERP, "59999.0", "60000.0", 1), _quote(BTC_PERP, "60001.0", "60002.0", 2), _quote(BTC_PERP, "60011.0", "60012.0", 3))
     )
+    if entry_quote_size is not None:
+        # Pinned 1.231 L1 quote can have less available BTC than the MARKET IOC
+        # parent. The unfilled leaves must receive a real native cancel.
+        quotes = (QuoteTick(
+            BTC_PERP, Price.from_str("59999.0"), Price.from_str("60000.0"),
+            Quantity.from_str(entry_quote_size), Quantity.from_str(entry_quote_size), 1, 1,
+        ),)
     for tick in quotes:
         node.kernel.data_engine.process(tick)
         await asyncio.sleep(0.05)
@@ -1085,3 +1098,66 @@ def test_native_market_order_snapshot_never_fabricates_limit_price() -> None:
     assert orders[0]["order_type"] == "MARKET"
     assert orders[0]["price"] is None
     assert orders[0]["submitted_at_ns"] is None
+
+
+def test_partial_market_ioc_native_cancel_terminalizes_durable_entry(tmp_path) -> None:
+    async def scenario() -> None:
+        strategy, runtime, node = await _run_lifecycle(
+            tmp_path / "partial-ioc.sqlite", entry_quote_size="0.00886",
+        )
+        try:
+            await asyncio.sleep(0.1)
+            orders = node.cache.orders()
+            assert len(orders) == 1
+            order = orders[0]
+            assert order.time_in_force == TimeInForce.IOC
+            assert order.status.name == "CANCELED"
+            assert (str(order.quantity), str(order.filled_qty), str(order.leaves_qty)) == (
+                "0.01000", "0.00886", "0.00114",
+            )
+            assert [type(event).__name__ for event in order.events] == [
+                "OrderInitialized", "OrderSubmitted", "OrderFilled", "OrderCanceled",
+            ]
+            assert node.cache.orders_open() == []
+            assert runtime.pending_submissions() == []
+            assert [item["state"] for item in runtime.all_submissions()] == ["TERMINAL"]
+            assert [(str(position.instrument_id), str(position.quantity)) for position in node.cache.positions_open()] == [
+                (str(BTC_PERP), "0.00886"),
+            ]
+            assert len(strategy.fill_audit) == 1
+            assert strategy.fill_audit[0]["action"] == "BTC_ENTRY"
+            assert Decimal(strategy.fill_audit[0]["commission"]) == Decimal("0.23922")
+            account = node.cache.account_for_venue(HYPERLIQUID)
+            assert account.balance_total(USDC).as_decimal() == Decimal("9999.76078")
+            assert strategy._daily_decision_reason == "PARTIAL_ENTRY_RETAINED"
+        finally:
+            runtime.close()
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+
+    asyncio.run(scenario())
+
+
+def test_zero_fill_market_ioc_has_one_native_terminal_and_no_pending_intent(tmp_path) -> None:
+    async def scenario() -> None:
+        strategy, runtime, node = await _run_lifecycle(
+            tmp_path / "zero-ioc.sqlite", entry_quote_size="0.00000",
+        )
+        try:
+            await asyncio.sleep(0.1)
+            orders = node.cache.orders()
+            assert len(orders) == 1
+            order = orders[0]
+            assert order.is_closed and str(order.filled_qty) == "0.00000"
+            assert sum(type(event).__name__ in {"OrderCanceled", "OrderRejected"} for event in order.events) == 1
+            assert node.cache.positions_open() == []
+            assert node.cache.orders_open() == []
+            assert runtime.pending_submissions() == []
+            assert [item["state"] for item in runtime.all_submissions()] == ["TERMINAL"]
+            assert strategy.fill_audit == []
+        finally:
+            runtime.close()
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+
+    asyncio.run(scenario())

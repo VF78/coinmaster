@@ -7,6 +7,7 @@ commissions are calculated at USDC precision by a native FeeModel.
 """
 from __future__ import annotations
 
+import asyncio
 import time
 from decimal import Decimal
 
@@ -20,7 +21,7 @@ from nautilus_trader.common.providers import InstrumentProvider
 from nautilus_trader.live.execution_client import LiveExecutionClient
 from nautilus_trader.model.currencies import USD, USDC
 from nautilus_trader.model.data import QuoteTick
-from nautilus_trader.model.enums import LiquiditySide, PriceType, account_type_from_str, book_type_from_str, oms_type_from_str
+from nautilus_trader.model.enums import LiquiditySide, OrderType, PriceType, TimeInForce, account_type_from_str, book_type_from_str, oms_type_from_str
 from nautilus_trader.model.identifiers import AccountId, ClientId, InstrumentId, Symbol, Venue
 from nautilus_trader.model.instruments import CryptoPerpetual, CurrencyPair
 from nautilus_trader.model.objects import Currency, Money, Price, Quantity
@@ -131,7 +132,36 @@ class HyperliquidUsdcSandboxExecutionClient(SandboxExecutionClient):
             raise RuntimeError("HL_SANDBOX_MODEL_FX_MISSING")
         if command.order.instrument_id not in HL_IDS:
             raise RuntimeError("HL_SANDBOX_ONLY_BTC_SOL_ORDERS")
-        return super().submit_order(command)
+        result = super().submit_order(command)
+        order = command.order
+        if order.order_type == OrderType.MARKET and order.time_in_force == TimeInForce.IOC:
+            # Nautilus 1.231 checks IOC leaves before LiveExecutionEngine
+            # applies its native fill events to the shared cache.
+            self._loop.create_task(self._cancel_open_market_ioc(order.client_order_id))
+        return result
+
+    async def _cancel_open_market_ioc(self, client_order_id) -> None:
+        for _ in range(1000):
+            await asyncio.sleep(0.001)
+            order = self._cache.order(client_order_id)
+            if order is None:
+                continue
+            if order.is_closed:
+                return
+            if not order.is_open:
+                continue
+            if order.leaves_qty.as_decimal() <= 0:
+                return
+            engine = self.exchange.get_matching_engine(order.instrument_id)
+            if engine is None:
+                self._log.error(f"MARKET_IOC_MATCHING_ENGINE_MISSING {client_order_id}")
+                return
+            # A market order does not rest in the matching book, so the
+            # normal CancelOrder command rejects it as not found. Invoke the
+            # engine's own cancel transition to emit its native OrderCanceled.
+            engine.cancel_order(order)
+            return
+        self._log.error(f"MARKET_IOC_NATIVE_TERMINAL_TIMEOUT {client_order_id}")
 
     def submit_order_list(self, command):
         if not model_fx_ready(self._cache):
