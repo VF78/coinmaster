@@ -90,3 +90,21 @@ export function researchResultContext(activeRunId: string | null | undefined, se
   if (selectedRunId) return "Selected run results are shown below.";
   return "Choose a run from history to inspect its results.";
 }
+
+
+const FILL_ACTION_LABELS: Record<string, string> = {
+  BTC_ENTRY: 'Entry',
+  BTC_REDUCE: 'TP',
+  SOL_ADD: 'Add',
+  SOL_HALF_EXIT: 'Partial exit',
+  SOL_EXIT: 'Exit',
+  MARKET_EXIT: 'Exit',
+  FORCED_CLOSE: 'Exit',
+  TERMINAL_CLOSE: 'Exit',
+  LIQUIDATION_CLOSE: 'Liquidation',
+  CLOSE_ALL: 'Exit',
+};
+
+export function nativeFillActionLabel(action: string | null | undefined): string {
+  return action ? FILL_ACTION_LABELS[action] ?? 'Fill type unavailable' : 'Fill type unavailable';
+}

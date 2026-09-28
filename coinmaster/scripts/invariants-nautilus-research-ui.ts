@@ -57,7 +57,7 @@ const required = [
   ['dashboard withholds account figures when unverified or recovering', 'const figures = accountIsUnknown ? [] : accountFigures(state)'],
   ['dashboard presents public BTC/SOL market context', 'Markets'],
   ['dashboard does not invent a zero trade-history claim', 'No virtual trades yet'],
-  ['dashboard explains when historical fill details were not retained', 'IDs only; prices and quantities were not retained.'],
+  ['dashboard explains when historical fill details were not retained', 'older executions have no saved details.'],
   ['dashboard withholds stale drawdown protection values', '{protectionFresh ? <><p className="trader-note">Maximum drawdown limit'],
   ['dashboard removes worker hashes and event-cursor evidence from the normal UI', 'Diagnostics and source identity'],
   ['strategy groups exact running settings for traders', 'Signal and safety settings'],
@@ -67,8 +67,13 @@ const required = [
   ['trader UI includes a narrow mobile layout', '@media (max-width: 390px)'],
   ['strategy folds technical parameters under advanced rules', 'Advanced strategy rules'],
   ['research presents readable blockers without raw technical-code panels', 'Technical blocker codes'],
-  ['dashboard shows recent native fills without pnl reconstruction', 'Recent fills'],
-  ['dashboard does not calculate round-trip PnL', 'no round-trip P&amp;L is calculated'],
+  ['dashboard presents recent native executions as Recent trades', 'Recent trades'],
+  ['recent trades use only the verified optional action label', 'nativeFillActionLabel(fill.action)'],
+  ['recent trades keep actual fee data', "header: 'Fee'"],
+  ['recent trades hide technical order and episode IDs', 'Order / episode'],
+  ['recent trades hide technical liquidity codes', "header: 'Liquidity'"],
+  ['recent trade history does not use ID-only technical phrasing', 'IDs only'],
+  ['recent trades do not add a PnL column', "key: 'pnl'"],
   ['dashboard binds fill rows to current worker epoch', 'fillHistory?.run_epoch === state.run_epoch'],
   ['worker epoch changes discard paged rows from the old run', 'current.run_epoch !== data.run_epoch'],
   ['strategy removes source-hash and account-code clutter', 'Strategy identity and account limits'],
@@ -78,7 +83,7 @@ const required = [
 let failed = 0;
 for (const [label, text] of required) {
   const source = label.startsWith('production') || label.startsWith('trader UI includes') ? styles : label.startsWith('navigation') || label.startsWith('top bar') ? app : label.startsWith('catalog') && text.startsWith('getResearchCatalog') ? page : text.startsWith('request<') ? api : text.startsWith('Original v0') || text.startsWith('Hyperliquid') ? catalog : page;
-  const absent = label.includes('does not render') || label.includes('does not invent') || label.includes('does not expose') || label.includes('removes') || label.includes('without raw') || label.includes('no raw') || label.includes('was removed') || label.startsWith('top bar removes');
+  const absent = label.includes('does not') || label.includes('do not') || label.includes('does not invent') || label.includes('does not expose') || label.includes('removes') || label.includes('without raw') || label.includes('no raw') || label.includes('hide technical') || label.includes('was removed') || label.startsWith('top bar removes');
   if (source.includes(text) !== absent) console.log(`  ✓ ${label}`);
   else { failed += 1; console.error(`  ✗ ${label}`); }
 }

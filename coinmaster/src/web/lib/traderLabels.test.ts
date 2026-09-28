@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, researchResultContext, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from './traderLabels';
+import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, researchResultContext, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from './traderLabels';
 
 test('humanizes exact strategy keys and values without altering data', () => {
   assert.equal(strategySettingLabel('sol_timeout_preempts_add'), 'SOL timeout stops further additions');
@@ -32,4 +32,17 @@ test("presents the exact strategy match plainly and keeps run-selection copy con
   assert.equal(researchResultContext(null, "5226e711-abc"), "Selected run results are shown below.");
   assert.equal(researchResultContext("12345678-current", "5226e711-abc"), "Research is in progress; status refreshes automatically.");
   assert.equal(researchResultContext(null, null), "Choose a run from history to inspect its results.");
+});
+
+
+test('labels only exact native fill actions and leaves unknown classifications explicit', () => {
+  assert.equal(nativeFillActionLabel('BTC_ENTRY'), 'Entry');
+  assert.equal(nativeFillActionLabel('BTC_REDUCE'), 'TP');
+  assert.equal(nativeFillActionLabel('SOL_HALF_EXIT'), 'Partial exit');
+  assert.equal(nativeFillActionLabel('SOL_EXIT'), 'Exit');
+  assert.equal(nativeFillActionLabel('TERMINAL_CLOSE'), 'Exit');
+  assert.equal(nativeFillActionLabel('LIQUIDATION_CLOSE'), 'Liquidation');
+  assert.equal(nativeFillActionLabel(null), 'Fill type unavailable');
+  assert.equal(nativeFillActionLabel(undefined), 'Fill type unavailable');
+  assert.equal(nativeFillActionLabel('FUTURE_ACTION'), 'Fill type unavailable');
 });

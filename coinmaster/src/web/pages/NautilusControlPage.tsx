@@ -9,7 +9,7 @@ import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, cr
 import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, protectionIsFresh, protectionIsVerified } from '../lib/accountPresentation';
 import { positionPresentation, TRADER_MARKETS } from '../lib/traderPresentation';
 import { parseFiniteNumberFields } from '../lib/strategyDraftValidation';
-import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
+import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
 type ArrayKey = 'wave_quantiles' | 'btc_tp_fractions_initial_qty' | 'sol_size_multipliers_H' | 'sol_entry_z';
@@ -371,22 +371,21 @@ export function RuntimePage() {
         <DataTable rows={otherOrders} emptyText="No additional order rows." mobileTitle={(row) => row.instrument_id ?? row.client_order_id} mobileSubtitle={(row) => row.status ?? 'Status unavailable'} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id ?? 'Unavailable' }, { key: 'order', header: 'Order', render: (row) => row.reduce_only === true ? 'Reduce only' : 'Working order' }, { key: 'status', header: 'Status', render: (row) => humanizeResearchCode(row.status ?? 'UNAVAILABLE') }, { key: 'price', header: 'Price', render: (row) => row.price ?? 'Unavailable' }, { key: 'leaves', header: 'Leaves', render: (row) => row.leaves_quantity ?? row.quantity ?? 'Unavailable' }]} />
       </Card>;
     })()}
-    <Card title="Recent fills">
-      <p className="muted">Native fills · supplied fees · no round-trip P&amp;L is calculated.</p>
+    <Card title="Recent trades">
       {!fillHistoryMatchesRun
         ? <p className="runtime-empty-note">{fillHistoryUnavailable ? 'Detailed fill history is unavailable.' : !state?.run_epoch ? 'Fill history is hidden until the current workspace is confirmed.' : 'History is refreshing after restart; earlier rows are hidden.'}</p>
         : !fillHistory?.detail_store_available
-        ? <p className="runtime-empty-note">Detailed fills are unavailable from this workspace. {(fillHistory?.historical_id_only_count ?? 'unavailable') + ' historical fill event' + (fillHistory?.historical_id_only_count === 1 ? ' has' : 's have') + ' IDs only; prices and quantities were not retained.'}</p>
+        ? <p className="runtime-empty-note">Detailed trade history is unavailable. {fillHistory?.historical_id_only_count ?? 0} older executions have no saved details.</p>
         : <>
-          {fillHistory.historical_id_only_count > 0 ? <p className="muted">{fillHistory.historical_id_only_count} older fill event{fillHistory.historical_id_only_count === 1 ? ' has' : 's have'} IDs only. Their trade details are unavailable and were not reconstructed.</p> : null}
-          <DataTable rows={fillHistory.fills.map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No recorded fills yet." mobileTitle={(fill) => fill.instrument_id} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
+          {fillHistory.historical_id_only_count > 0 ? <p className="muted">{fillHistory.historical_id_only_count} older execution record{fillHistory.historical_id_only_count === 1 ? ' has' : 's have'} no saved trade details.</p> : null}
+          <DataTable rows={fillHistory.fills.map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed executions recorded yet." mobileTitle={(fill) => `${fill.instrument_id.startsWith('BTC-') ? 'BTC' : fill.instrument_id.startsWith('SOL-') ? 'SOL' : 'Other market'} · ${nativeFillActionLabel(fill.action)}`} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
+            { key: 'action', header: 'Type', render: (fill) => nativeFillActionLabel(fill.action) },
             { key: 'time', header: 'Time (UTC)', render: (fill) => fill.ts_event_ns == null ? 'Unavailable' : formatUtcTimestamp(new Date(fill.ts_event_ns / 1000000).toISOString()) },
-            { key: 'market', header: 'Market', render: (fill) => fill.instrument_id },
+            { key: 'market', header: 'Market', render: (fill) => fill.instrument_id.startsWith('BTC-') ? 'BTC' : fill.instrument_id.startsWith('SOL-') ? 'SOL' : 'Other market' },
             { key: 'side', header: 'Side', render: (fill) => fill.order_side ?? 'Unavailable' },
-            { key: 'execution', header: 'Quantity / price', render: (fill) => fill.quantity + ' / ' + fill.price },
-            { key: 'fee', header: 'Commission', render: (fill) => fill.commission_amount == null ? 'Unavailable' : (fill.commission_amount + ' ' + (fill.commission_currency ?? '')).trim() },
-            { key: 'liquidity', header: 'Liquidity', render: (fill) => fill.liquidity_side ?? 'Unavailable' },
-            { key: 'order', header: 'Order / episode', render: (fill) => (fill.client_order_id ?? fill.venue_order_id ?? 'Unavailable') + ' / ' + (fill.episode_id ?? 'Unavailable') },
+            { key: 'quantity', header: 'Quantity', render: (fill) => fill.quantity },
+            { key: 'price', header: 'Price', render: (fill) => fill.price },
+            { key: 'fee', header: 'Fee', render: (fill) => fill.commission_amount == null ? 'Unavailable' : (fill.commission_amount + ' ' + (fill.commission_currency ?? '')).trim() },
           ]} />
           {fillHistoryHasMore ? <Button variant="secondary" onClick={loadMoreFills}>Load more fills</Button> : null}
         </>}
