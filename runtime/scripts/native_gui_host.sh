@@ -233,7 +233,7 @@ PY
   install -d -m 0700 -o coinmaster-research -g coinmaster-research "$SMOKE" "$SMOKE/data"
   backup_db "$(source_db)" "$SMOKE/control.sqlite"
   chown coinmaster-research:coinmaster-research "$SMOKE/control.sqlite"
-  [[ -z "$(ss -ltn '( sport = :18184 )' | tail -n +2)" ]] || { echo 'smoke port is already occupied' >&2; exit 1; }
+  [[ -z "$(ss -ltn '( sport = :18185 )' | tail -n +2)" ]] || { echo 'smoke port is already occupied' >&2; exit 1; }
   (cd "$RELEASE.incoming/runtime" && runuser -u coinmaster-research -- env -i PATH=/usr/bin:/bin \
     COINMASTER_RUNTIME_API_TOKEN="$TOKEN" COINMASTER_GUI_USERNAME="$GUI_USERNAME" COINMASTER_GUI_PASSWORD_HASH="$GUI_PASSWORD_HASH" \
     COINMASTER_GUI_ORIGIN=https://coinmaster24.com COINMASTER_GUI_SESSION_DB="$SMOKE/auth.sqlite" \
@@ -241,13 +241,13 @@ PY
     COINMASTER_RESEARCH_DATA_ROOT="$SMOKE/data" COINMASTER_RUNTIME_DIST="$RELEASE.incoming/web" \
     COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183 COINMASTER_PAPER_DB="$SMOKE/no-paper.sqlite" \
     PYTHONPATH="$RELEASE.incoming/runtime" PYTHONDONTWRITEBYTECODE=1 GUI_SMOKE_PIDFILE="$SMOKE/uvicorn.pid" GUI_PYTHON="$RELEASE.incoming/runtime/.venv/bin/python" \
-    sh -c 'echo $$ > "$GUI_SMOKE_PIDFILE"; exec "$GUI_PYTHON" -m uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18184' >/dev/null 2>&1) &
+    sh -c 'echo $$ > "$GUI_SMOKE_PIDFILE"; exec "$GUI_PYTHON" -m uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18185' >/dev/null 2>&1) &
   SMOKE_PARENT=$!
   trap 'if [[ -f "$SMOKE/uvicorn.pid" ]]; then kill "$(cat "$SMOKE/uvicorn.pid")" 2>/dev/null || true; fi; kill "$SMOKE_PARENT" 2>/dev/null || true; wait "$SMOKE_PARENT" 2>/dev/null || true' EXIT
   for _ in {1..30}; do
-    if GUI_SMOKE_PORT=18184 COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY' >/dev/null 2>&1
+    if GUI_SMOKE_PORT=18185 COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY' >/dev/null 2>&1
 import urllib.error, urllib.request
-try: urllib.request.urlopen('http://127.0.0.1:18184/api/v1/health', timeout=.5)
+try: urllib.request.urlopen('http://127.0.0.1:18185/api/v1/health', timeout=.5)
 except urllib.error.HTTPError as error: raise SystemExit(0 if error.code == 401 else 1)
 except Exception: raise SystemExit(1)
 PY
@@ -255,7 +255,7 @@ PY
     sleep 1
   done
   [[ -f "$SMOKE/uvicorn.pid" ]] && kill -0 "$(cat "$SMOKE/uvicorn.pid")" || { echo 'smoke process died before validation' >&2; exit 1; }
-  api_smoke 18184 "$SMOKE/control.sqlite" 0 "$WORKER_STATE" "$WORKER_STRATEGY"
+  api_smoke 18185 "$SMOKE/control.sqlite" 0 "$WORKER_STATE" "$WORKER_STRATEGY"
   kill "$(cat "$SMOKE/uvicorn.pid")" 2>/dev/null || true
   kill "$SMOKE_PARENT" 2>/dev/null || true
   wait "$SMOKE_PARENT" 2>/dev/null || true
