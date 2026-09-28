@@ -103,7 +103,7 @@ export function SettingsConnections() {
       const created = await connectionRequest<Connection>('/connections', { method: 'POST', body: JSON.stringify(body) });
       if (!isConnection(created)) throw new Error('The new connection could not be confirmed. Refresh to check its status.');
       setConnections((current) => [created, ...current.filter((item) => item.id !== created.id)]);
-      setMessage(`${venue === 'hyperliquid' ? 'Hyperliquid' : 'Bybit'} connection saved. Live trading remains disabled.`);
+      setMessage(`${venue === 'hyperliquid' ? 'Hyperliquid' : 'Bybit'} connection saved.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not save the connection.');
     } finally {
@@ -124,7 +124,7 @@ export function SettingsConnections() {
       const updated = await connectionRequest<Connection>(`/connections/${encodeURIComponent(item.id)}/test`, { method: 'POST' });
       if (!isConnection(updated)) throw new Error('The test result could not be confirmed. Refresh to check its status.');
       setConnections((current) => current.map((row) => row.id === updated.id ? updated : row));
-      setMessage(`${item.venue === 'hyperliquid' ? 'Hyperliquid' : 'Bybit'} verification updated.`);
+      setMessage('Access status updated.');
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not test this connection.');
     } finally {
@@ -141,7 +141,7 @@ export function SettingsConnections() {
     try {
       await connectionRequest<void>(`/connections/${encodeURIComponent(item.id)}`, { method: 'DELETE' });
       await refresh();
-      setMessage('Saved credentials removed. Live trading remains disabled.');
+      setMessage('Credentials removed.');
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not remove this connection.');
     } finally {
@@ -159,7 +159,7 @@ export function SettingsConnections() {
         method: 'PUT', body: JSON.stringify({ connection_id: displayId }),
       });
       setDisplayId(result.display_connection_id ?? null);
-      setMessage('Display account selection saved. This only changes which account is shown.');
+      setMessage('Dashboard selection saved.');
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not save the display account.');
     } finally {
@@ -173,8 +173,8 @@ export function SettingsConnections() {
   const displayLabel = (item: Connection) => connectionDisplayLabel(item.venue, item.account_label, item.id, connections.filter((row) => row.venue === item.venue && row.account_label === item.account_label).length > 1);
 
   return <section className="settings-connections" aria-label="Exchange connections">
-    <Card title="Exchange connections" actions={<Badge tone="neutral">Live trading disabled</Badge>}>
-      <p className="settings-connections__intro">Connect accounts for verified read-only account data. These credentials cannot enable order execution.</p>
+    <Card title="Exchange accounts" actions={<Badge tone="neutral">Display only</Badge>}>
+      <p className="settings-connections__intro">Add an account. Its identity can appear on Dashboard.</p>
       <form className="settings-connections__form" onSubmit={(event) => void addConnection(event)}>
         <label className="rules-field">
           <span className="rules-label">Exchange</span>
@@ -185,35 +185,35 @@ export function SettingsConnections() {
         </label>
         {venue === 'hyperliquid' ? <>
           <label className="rules-field">
-            <span className="rules-label">Master account address</span>
+            <span className="rules-label">Master address</span>
             <input className="rules-input" autoComplete="off" spellCheck={false} inputMode="text" placeholder="0x…" value={masterAddress} onChange={(event) => setMasterAddress(event.target.value)} aria-invalid={masterAddress.length > 0 && !validHyperliquid || undefined} />
-            {masterAddress.length > 0 && !validHyperliquid ? <span className="settings-connections__field-error">Enter a 42-character 0x address.</span> : null}
+            {masterAddress.length > 0 && !validHyperliquid ? <span className="settings-connections__field-error">Enter a valid 0x address.</span> : null}
           </label>
           <label className="rules-field settings-connections__wide">
-            <span className="rules-label">Agent private key <span className="muted">(optional)</span></span>
-            <input className="rules-input" type="password" autoComplete="new-password" placeholder="Only if this account uses an API agent" value={agentPrivateKey} onChange={(event) => setAgentPrivateKey(event.target.value)} />
+            <span className="rules-label">Agent private key <span className="muted">· optional</span></span>
+            <input className="rules-input" type="password" autoComplete="new-password" placeholder="API agent key" value={agentPrivateKey} onChange={(event) => setAgentPrivateKey(event.target.value)} />
           </label>
         </> : <>
           <label className="rules-field">
-            <span className="rules-label">Bybit API key</span>
+            <span className="rules-label">API key</span>
             <input className="rules-input" type="password" autoComplete="new-password" value={apiKey} onChange={(event) => setApiKey(event.target.value)} />
           </label>
           <label className="rules-field">
-            <span className="rules-label">Bybit API secret</span>
+            <span className="rules-label">API secret</span>
             <input className="rules-input" type="password" autoComplete="new-password" value={apiSecret} onChange={(event) => setApiSecret(event.target.value)} />
           </label>
         </>}
-        <div className="settings-connections__submit"><Button type="submit" variant="primary" disabled={!canSubmit || saving}>{saving ? 'Saving…' : 'Save connection'}</Button></div>
+        <div className="settings-connections__submit"><Button type="submit" variant="primary" disabled={!canSubmit || saving}>{saving ? 'Saving…' : 'Add account'}</Button></div>
       </form>
-      <p className="settings-connections__safety">Hyperliquid public account access and agent authorization are verified separately. Bybit access is read-only. Connecting, testing, selecting, or removing an account never submits orders.</p>
+      <details className="settings-connections__help"><summary>Permissions and safety</summary><p>Hyperliquid public reads and optional agent authorization are separate checks. Bybit access is read-only. This page does not provide order controls.</p></details>
       {message ? <p className="settings-connections__notice" role="status">{message}</p> : null}
       {error ? <p className="settings-connections__error" role="alert">{error}</p> : null}
     </Card>
 
-    <Card title="Saved accounts" actions={<Button type="button" variant="secondary" onClick={() => void refresh()} disabled={loading}>{loading ? 'Refreshing…' : 'Refresh'}</Button>}>
+    <Card title="Saved accounts" actions={<Button type="button" variant="secondary" onClick={() => void refresh()} disabled={loading}>{loading ? 'Loading…' : 'Refresh'}</Button>}>
       <div className="settings-connections__display">
         <label className="rules-field">
-          <span className="rules-label">Account shown on Dashboard</span>
+          <span className="rules-label">Dashboard account</span>
           <select className="rules-input" value={displayId ?? ''} onChange={(event) => setDisplayId(event.target.value || null)} disabled={loading || connections.length === 0}>
             <option value="">No account selected</option>
             {connections.map((item) => <option key={item.id} value={item.id}>{item.venue === 'hyperliquid' ? 'Hyperliquid' : 'Bybit'} · {displayLabel(item)}</option>)}
@@ -221,21 +221,19 @@ export function SettingsConnections() {
         </label>
         <Button type="button" variant="secondary" onClick={() => void saveDisplayConnection()} disabled={savingDisplay || loading}>{savingDisplay ? 'Saving…' : 'Save selection'}</Button>
       </div>
-      {loading ? <p className="settings-connections__empty">Loading saved accounts…</p> : error && connections.length === 0 ? null : connections.length === 0 ? <p className="settings-connections__empty">No saved accounts. Add an exchange connection above.</p> : <div className="settings-connections__list">
-        {connections.map((item) => <article className="settings-connections__account" key={item.id}>
-          <div className="settings-connections__account-head">
-            <div><h3>{displayLabel(item)}</h3><p>{item.venue === 'hyperliquid' ? 'Hyperliquid' : 'Bybit'} · {item.venue === 'hyperliquid' ? 'Public data + optional agent authorization' : 'Read-only API access'}</p></div>
-            {item.id === displayId ? <Badge tone="success">Dashboard account</Badge> : null}
-          </div>
-          <dl className="settings-connections__verification">
-            {connectionVerificationRows(item.venue, item.verification_state).map((row) => <div key={row.label}><dt>{row.label}</dt><dd><Badge tone={row.tone}>{row.value}</Badge></dd></div>)}
-            <div><dt>Last tested</dt><dd>{testedAt(item.last_tested_at)}</dd></div>
-          </dl>
-          <div className="settings-connections__actions">
-            <Button type="button" variant="secondary" onClick={() => void testConnection(item)} disabled={testingId !== null || removingId !== null}>{testingId === item.id ? 'Testing…' : 'Test access'}</Button>
-            <Button type="button" variant="secondary" onClick={() => void removeConnection(item)} disabled={removingId !== null || testingId !== null}>{removingId === item.id ? 'Removing…' : 'Disconnect'}</Button>
-          </div>
-        </article>)}
+      {loading ? <p className="settings-connections__empty">Loading saved accounts…</p> : error && connections.length === 0 ? null : connections.length === 0 ? <div className="settings-connections__empty"><strong>No accounts connected</strong><span>Add an account above to show its identity on Dashboard.</span></div> : <div className="settings-connections__table-wrap">
+        <table className="settings-connections__table">
+          <thead><tr><th scope="col">Account</th><th scope="col">Verification</th><th scope="col">Last tested</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
+          <tbody>{connections.map((item) => <tr key={item.id}>
+            <td data-label="Account"><div className="settings-connections__account-name"><strong>{displayLabel(item)}</strong><span>{item.venue === 'hyperliquid' ? 'Hyperliquid' : 'Bybit'}{item.id === displayId ? ' · Dashboard' : ''}</span></div></td>
+            <td data-label="Verification"><div className="settings-connections__verification">{connectionVerificationRows(item.venue, item.verification_state).map((row) => <span key={row.label}><small>{row.label}</small><Badge tone={row.tone}>{row.value}</Badge></span>)}</div></td>
+            <td data-label="Last tested" className="settings-connections__tested">{testedAt(item.last_tested_at)}</td>
+            <td data-label="Actions"><div className="settings-connections__actions">
+              <Button type="button" variant="secondary" onClick={() => void testConnection(item)} disabled={testingId !== null || removingId !== null}>{testingId === item.id ? 'Testing…' : 'Test access'}</Button>
+              <Button type="button" variant="secondary" onClick={() => void removeConnection(item)} disabled={removingId !== null || testingId !== null}>{removingId === item.id ? 'Removing…' : 'Disconnect'}</Button>
+            </div></td>
+          </tr>)}</tbody>
+        </table>
       </div>}
     </Card>
   </section>;

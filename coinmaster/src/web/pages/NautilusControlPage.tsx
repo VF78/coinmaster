@@ -466,9 +466,9 @@ export function WorkspaceSettingsPage() {
     finally { setCommandInFlight(null); }
   }
   return <main className="terminal-layout">
-    <Card title="Sandbox connection" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'Connecting' : state?.projection_state === 'READY' ? 'Connected' : state?.projection_state === 'STALE' ? 'Stale' : 'Unavailable'}</Badge>}>
-      <p className="muted">Order routing is off. Funding is observed for reference and is not credited to Sandbox cash. {fundingLabel(state)}.</p>
-      <Button variant="secondary" onClick={() => void refresh()}>Refresh status</Button>
+    <Card title="Sandbox account" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'Connecting' : state?.projection_state === 'READY' ? 'Connected' : state?.projection_state === 'STALE' ? 'Stale' : 'Unavailable'}</Badge>}>
+      <div className="settings-sandbox-summary"><span>Execution mode</span><strong>Sandbox · order routing off</strong><Button variant="secondary" onClick={() => void refresh()}>Refresh</Button></div>
+      <details className="settings-sandbox-details"><summary>Funding and account notes</summary><p>Observed funding is reference only and is not credited to Sandbox cash. {fundingLabel(state)}.</p></details>
     </Card>
     <SettingsConnections />
     <Card title="Drawdown protection" actions={<Badge tone={protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>

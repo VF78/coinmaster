@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import { connectionDisplayLabel, connectionVerificationRows, selectedConnectionIdentity } from './connectionPresentation.js';
 
 test('Hyperliquid public readability does not imply agent authorization', () => {
@@ -42,4 +43,13 @@ test('dashboard identity follows only the selected opaque connection ID', () => 
   assert.equal(selectedConnectionIdentity(connections, null), null);
   assert.equal(selectedConnectionIdentity(connections, 'missing'), null);
   assert.equal(selectedConnectionIdentity(connections, 'b2')?.venue, 'bybit');
+});
+
+test('Settings keeps permissions guidance collapsed and the saved-account table responsive', () => {
+  const component = readFileSync(new URL('../components/SettingsConnections.tsx', import.meta.url), 'utf8');
+  const styles = readFileSync(new URL('../components/SettingsConnections.css', import.meta.url), 'utf8');
+  assert.match(component, /<details className=\"settings-connections__help\"><summary>Permissions and safety<\/summary>/);
+  assert.match(component, /<table className=\"settings-connections__table\">/);
+  assert.match(styles, /\.settings-connections__table \{ width:100%; border-collapse:collapse; table-layout:fixed; \}/);
+  assert.match(styles, /@media \(max-width:700px\)[\s\S]*?\.settings-connections__table tr \{ display:grid;/);
 });
