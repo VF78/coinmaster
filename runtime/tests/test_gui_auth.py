@@ -74,8 +74,18 @@ def test_one_login_protects_shell_assets_runtime_and_included_control_routes(tmp
         assert b"main{box-sizing:border-box;width:min(22rem,calc(100vw - 2rem))" in body
         challenge = re.search(rb'name="challenge" value="([0-9a-f]+)"', body).group(1).decode()
         preauth = headers["set-cookie"].split(";", 1)[0]
+        status, repeat_headers, repeat_body = request(port, "GET", "/login", headers={"Cookie": preauth})
+        assert status == 200 and "set-cookie" not in repeat_headers
+        assert re.search(rb'name="challenge" value="([0-9a-f]+)"', repeat_body).group(1).decode() == challenge
         form = urlencode({"username": "operator", "password": "a long test password", "challenge": challenge}).encode()
         base_headers = {"Cookie": preauth, "Content-Type": "application/x-www-form-urlencoded"}
+        bad_challenge = challenge[:-1] + ("0" if challenge[-1] != "0" else "1")
+        mismatch_form = urlencode({"username": "operator", "password": "a long test password", "challenge": bad_challenge}).encode()
+        status, headers, _ = request(port, "POST", "/login", headers={**base_headers, "Origin": "https://coinmaster24.com"}, body=mismatch_form)
+        assert status == 303 and headers["location"] == "/login?challenge=1" and headers["cache-control"] == "no-store"
+        status, headers, body = request(port, "GET", headers["location"], headers={"Cookie": preauth})
+        assert status == 200 and b"Your sign-in form expired" in body
+        assert "set-cookie" not in headers and re.search(rb'name="challenge" value="([0-9a-f]+)"', body).group(1).decode() == challenge
         assert request(port, "POST", "/login", headers={**base_headers, "Origin": "https://evil.f-ai.studio"}, body=form)[0] == 403
         assert request(port, "POST", "/login", headers={**base_headers, "Origin": "https://cm.f-ai.studio"}, body=form)[0] == 403
         status, headers, _ = request(port, "POST", "/login", headers={**base_headers, "Origin": "https://coinmaster24.com"}, body=form)
