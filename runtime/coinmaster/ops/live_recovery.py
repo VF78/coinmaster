@@ -253,9 +253,16 @@ class LiveRecoveryReconciler:
             intent = candidate._pending_by_order.get(order_id)
             if intent is None:
                 raise ValueError("RECOVERY_MISSING_INTENT_FOR_UNAPPLIED_FILL")
+            if intent.action == "BTC_ENTRY" and candidate.config.tp_fee_floor_v1:
+                instrument = self.strategy.cache.instrument(report.instrument_id)
+                if instrument is None or report.commission is None or report.commission.currency != instrument.quote_currency:
+                    raise ValueError("BTC_TP_ENTRY_FEE_CURRENCY_UNSUPPORTED")
             candidate._apply_confirmed_domain_fill(
                 intent, order_id, float(report.last_qty), float(report.last_px), report.ts_event,
                 orders[order_id].is_closed and trade_id == last_trade_by_order[order_id],
+                entry_fee=report.commission.as_decimal() if intent.action == "BTC_ENTRY" and candidate.config.tp_fee_floor_v1 and report.commission is not None else None,
+                entry_qty=report.last_qty.as_decimal() if intent.action == "BTC_ENTRY" else None,
+                entry_price=report.last_px.as_decimal() if intent.action == "BTC_ENTRY" else None,
             )
             missing.append(trade_id)
         candidate_episode = candidate._domain.episode

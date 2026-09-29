@@ -7,7 +7,7 @@ finer execution/settlement-mark dataset and liquidation validation exist.
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
-from decimal import Decimal, ROUND_HALF_EVEN
+from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR, ROUND_HALF_EVEN
 import pandas as pd
 
 from coinmaster.domain.deposit_protection import DepositProtection, percent
@@ -45,6 +45,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     trading_start_open_ns: int | None = None
     terminal_close_at_ns: int | None = None
     candidate: Candidate = Candidate()
+    tp_fee_floor_v1: bool = False
     max_gross_to_active: Decimal = Decimal("50")
     # A verified history is supplied before native start.  It is feature state
     # only: it never replays old decisions or orders.
@@ -106,6 +107,30 @@ def _native_limit_price(instrument, raw_price: Decimal):
     result = instrument.make_price(canonical)
     if result.as_decimal() != canonical:
         raise ValueError("HYPERLIQUID_LIMIT_PRICE_PRECISION_MISMATCH")
+    return result
+
+
+def _fee_floor_price(instrument, episode, *, maker: bool):
+    """Outward native/wire price covering confirmed entry and planned exit fees."""
+    if (episode.btc_entry_qty_exact <= 0 or episode.btc_entry_notional_exact <= 0
+            or episode.btc_entry_fee_fill_count != episode.btc_entry_fill_count):
+        raise ValueError("BTC_TP_ENTRY_FEE_EVIDENCE_INCOMPLETE")
+    p0 = episode.btc_entry_notional_exact / episode.btc_entry_qty_exact
+    fi = episode.btc_entry_fees_exact / episode.btc_entry_notional_exact
+    fo = Decimal(str(instrument.maker_fee if maker else instrument.taker_fee))
+    if fi < 0 or fo < 0 or fo >= 1:
+        raise ValueError("INVALID_BTC_TP_FEE_RATE")
+    be = p0 * (1 + fi) / (1 - fo) if episode.side == 1 else p0 * (1 - fi) / (1 + fo)
+    upward = episode.side == 1
+    rounding = ROUND_CEILING if upward else ROUND_FLOOR
+    step = instrument.price_increment.as_decimal()
+    native = (be / step).to_integral_value(rounding=rounding) * step
+    if instrument.id.venue.value == "HYPERLIQUID":
+        quantum = Decimal(1).scaleb(native.adjusted() - 4)
+        native = (native / quantum).to_integral_value(rounding=rounding) * quantum
+    result = _native_limit_price(instrument, native)
+    if (upward and result.as_decimal() < be) or (not upward and result.as_decimal() > be):
+        raise ValueError("BTC_TP_WIRE_PRICE_INSIDE_FEE_FLOOR")
     return result
 
 
@@ -672,9 +697,7 @@ class WaveOverlayStrategy(Strategy):
         # post-only liquidity remains only for explicit BTC TP targets.
         passive_reduction = intent.action == "BTC_REDUCE" and intent.limit_price is not None
         if passive_reduction:
-            raw_price = Decimal(str(intent.limit_price)) if intent.limit_price is not None else (
-                executable_price
-            )
+            raw_price = Decimal(str(intent.limit_price)) if intent.limit_price is not None else executable_price
             # For a planned SOL z exit, quote at the passive side.  A target
             # BTC price is supplied by the confirmed-entry plan above.
             if intent.limit_price is None:
@@ -684,6 +707,13 @@ class WaveOverlayStrategy(Strategy):
                     return
                 raw_price = quote_tick.ask_price.as_decimal() if side == OrderSide.SELL else quote_tick.bid_price.as_decimal()
             limit_price = _native_limit_price(instrument, raw_price)
+            if self.config.tp_fee_floor_v1:
+                episode = self._domain.episode
+                if episode is None:
+                    raise ValueError("BTC_TP_EPISODE_MISSING")
+                floor = _fee_floor_price(instrument, episode, maker=True)
+                if (episode.side == 1 and limit_price.as_decimal() < floor.as_decimal()) or (episode.side == -1 and limit_price.as_decimal() > floor.as_decimal()):
+                    limit_price = floor
             quote_tick = self.cache.quote_tick(instrument_id)
             if quote_tick is not None:
                 # Check the exact wire-equivalent native price.  A five-sig
@@ -696,6 +726,20 @@ class WaveOverlayStrategy(Strategy):
                 instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded),
                 price=limit_price, time_in_force=TimeInForce.GTC,
                 post_only=True, reduce_only=True,
+            )
+        elif intent.action == "BTC_REDUCE" and self.config.tp_fee_floor_v1:
+            episode = self._domain.episode
+            if episode is None:
+                raise ValueError("BTC_TP_EPISODE_MISSING")
+            floor = _fee_floor_price(instrument, episode, maker=False)
+            quote_tick = self.cache.quote_tick(instrument_id)
+            executable = None if quote_tick is None else (quote_tick.bid_price.as_decimal() if side == OrderSide.SELL else quote_tick.ask_price.as_decimal())
+            if executable is None or (side == OrderSide.SELL and executable < floor.as_decimal()) or (side == OrderSide.BUY and executable > floor.as_decimal()):
+                self._domain.on_parent_cancelled(intent.id)
+                return
+            order = self.order_factory.limit(
+                instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded),
+                price=floor, time_in_force=TimeInForce.IOC, post_only=False, reduce_only=True,
             )
         else:
             order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
@@ -944,9 +988,17 @@ class WaveOverlayStrategy(Strategy):
             return
         order = self.cache.order(event.client_order_id)
         closed = order is not None and order.is_closed
+        entry_fee = None
+        if intent.action == "BTC_ENTRY" and self.config.tp_fee_floor_v1:
+            instrument = self.cache.instrument(event.instrument_id)
+            if instrument is None or event.commission is None or event.commission.currency != instrument.quote_currency:
+                raise ValueError("BTC_TP_ENTRY_FEE_CURRENCY_UNSUPPORTED")
+            entry_fee = event.commission.as_decimal()
         self._apply_confirmed_domain_fill(
             intent, str(event.client_order_id), float(event.last_qty), float(event.last_px),
-            event.ts_event, closed,
+            event.ts_event, closed, entry_fee=entry_fee,
+            entry_qty=event.last_qty.as_decimal() if intent.action == "BTC_ENTRY" else None,
+            entry_price=event.last_px.as_decimal() if intent.action == "BTC_ENTRY" else None,
         )
         self._after_domain_fill(event)
         if closed:
@@ -963,6 +1015,8 @@ class WaveOverlayStrategy(Strategy):
     def _apply_confirmed_domain_fill(
         self, intent: Intent, client_order_id: str, quantity: float,
         price: float, ts_event: int, order_closed: bool,
+        entry_fee: Decimal | None = None,
+        entry_qty: Decimal | None = None, entry_price: Decimal | None = None,
     ) -> None:
         """Pure episode/intent transition shared by callbacks and report replay."""
         self._bind_native_lots()
@@ -970,7 +1024,8 @@ class WaveOverlayStrategy(Strategy):
         when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
         self._domain.on_fill(
             intent.id, quantity, price, when, sigma,
-            decision_index=self._confirmed_fill_cycle(intent, client_order_id),
+            decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
+            entry_qty=entry_qty, entry_price=entry_price,
         )
         if intent.action == "SOL_HALF_EXIT" and self._domain.episode is not None and self._domain.episode.sol_half_done:
             self._domain.on_half_exit_decision(self._decision_index_by_order[client_order_id])

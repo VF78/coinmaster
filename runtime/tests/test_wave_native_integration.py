@@ -1247,3 +1247,183 @@ def test_deposit_control_on_initial_confirmed_flat_native_run(tmp_path):
     finally:
         engine.dispose()
         journal.close()
+
+
+def test_fee_floor_v1_native_entry_and_resting_tp_fill() -> None:
+    class FeeFloorProbe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.opened = False
+            self.rights_before_fill = None
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.btc_id:
+                return
+            if not self.opened:
+                self.opened = True
+                episode = Episode("fee-floor", 1, 10_000, 1.0, wave_levels=(0, 0.01, 0.03))
+                self._domain.episode = episode
+                intent = Intent("fee-entry", episode.id, "BTC_ENTRY", None, 1, requested_notional=100)
+                episode.pending[intent.id] = intent
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+                return
+            if tick.ts_event == 2:
+                self.rights_before_fill = set(self._domain.episode.sol_rights)
+            super().on_quote_tick(tick)
+
+        def _tier_allows_increase(self, instrument_id, side, quantity, ts_now):
+            return True
+
+    strategy = FeeFloorProbe(probe_config().__replace__(tp_fee_floor_v1=True))
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, f"{px:.1f}", f"{px:.1f}", ts)
+                     for ts, px in enumerate((100.0, 100.0, 100.3, 100.4), start=1)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        episode = strategy._domain.episode
+        assert strategy.rights_before_fill == set()
+        assert episode is not None
+        assert episode.btc_entry_fee_fill_count == episode.btc_entry_fill_count == 1
+        assert episode.btc_entry_fees_exact > 0
+        tp_fills = [row for row in strategy.fill_audit if row["action"] == "BTC_REDUCE"]
+        assert tp_fills
+        assert all(Decimal(row["px"]) >= Decimal("100.3") for row in tp_fills)
+        assert any(order.has_price and order.price.as_decimal() == Decimal("103.0") for order in engine.cache.orders_open())
+        assert 0 in episode.sol_rights
+    finally:
+        engine.dispose()
+
+
+def test_fee_floor_v1_native_taker_fallback_waits_for_executable_quote() -> None:
+    class FallbackProbe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.phase = 0
+            self.rights_after_block = None
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.btc_id:
+                return
+            if self.phase == 0:
+                self.phase = 1
+                episode = Episode("fallback", 1, 10_000, 1.0, wave_levels=())
+                self._domain.episode = episode
+                intent = Intent("fallback-entry", episode.id, "BTC_ENTRY", None, 1, requested_notional=100)
+                episode.pending[intent.id] = intent
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+            elif self.phase in (1, 2):
+                episode = self._domain.episode
+                assert episode is not None
+                intent = Intent(f"fallback-{self.phase}", episode.id, "BTC_REDUCE", 0, -1, quantity=0.1)
+                episode.pending[intent.id] = intent
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+                if self.phase == 1:
+                    self.rights_after_block = set(episode.sol_rights)
+                self.phase += 1
+
+        def _tier_allows_increase(self, instrument_id, side, quantity, ts_now):
+            return True
+
+    strategy = FallbackProbe(probe_config().__replace__(tp_fee_floor_v1=True))
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, f"{px:.1f}", f"{px:.1f}", ts)
+                     for ts, px in enumerate((100.0, 100.1, 100.4), start=1)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert strategy.rights_after_block == set()
+        tp_fills = [row for row in strategy.fill_audit if row["action"] == "BTC_REDUCE"]
+        assert len(tp_fills) == 1
+        assert tp_fills[0]["native_liquidity_side"] == "TAKER"
+        assert tp_fills[0]["post_only"] == "false"
+        assert Decimal(tp_fills[0]["px"]) >= Decimal("100.3")
+        assert 0 in strategy._domain.episode.sol_rights
+    finally:
+        engine.dispose()
+
+
+def test_fee_floor_v1_marketable_post_only_does_not_grant_right_or_bypass_fallback() -> None:
+    class RejectProbe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.phase = 0
+            self.rights_after_reject = None
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.btc_id:
+                return
+            if self.phase == 0:
+                self.phase = 1
+                episode = Episode("reject", 1, 10_000, 1.0, wave_levels=(0, 0.01, 0.03))
+                self._domain.episode = episode
+                intent = Intent("reject-entry", episode.id, "BTC_ENTRY", None, 1, requested_notional=100)
+                episode.pending[intent.id] = intent
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+                return
+            if self.phase == 1:
+                self.phase = 2
+                super().on_quote_tick(tick)
+                self.rights_after_reject = set(self._domain.episode.sol_rights)
+                return
+            if self.phase == 2:
+                self.phase = 3
+                episode = self._domain.episode
+                intent = Intent("reject-fallback", episode.id, "BTC_REDUCE", 0, -1, quantity=0.1)
+                episode.pending[intent.id] = intent
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+
+        def _tier_allows_increase(self, instrument_id, side, quantity, ts_now):
+            return True
+
+    strategy = RejectProbe(probe_config().__replace__(tp_fee_floor_v1=True))
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, f"{px:.1f}", f"{px:.1f}", ts)
+                     for ts, px in enumerate((100.0, 100.5, 100.5), start=1)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert strategy.rights_after_reject == set()
+        tp_fills = [row for row in strategy.fill_audit if row["action"] == "BTC_REDUCE"]
+        assert len(tp_fills) == 1
+        assert tp_fills[0]["native_liquidity_side"] == "TAKER"
+        assert Decimal(tp_fills[0]["px"]) >= Decimal("100.3")
+    finally:
+        engine.dispose()
+
+
+def test_fee_floor_v1_does_not_delay_native_emergency_close_below_break_even() -> None:
+    class EmergencyProbe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.phase = 0
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.btc_id:
+                return
+            if self.phase == 0:
+                self.phase = 1
+                episode = Episode("emergency", 1, 10_000, 1.0, wave_levels=())
+                self._domain.episode = episode
+                intent = Intent("emergency-entry", episode.id, "BTC_ENTRY", None, 1, requested_notional=100)
+                episode.pending[intent.id] = intent
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+            elif self.phase == 1:
+                self.phase = 2
+                episode = self._domain.episode
+                intent = Intent("emergency-close", episode.id, "CLOSE_ALL", None, -1, reason="REGIME")
+                episode.pending[intent.id] = intent
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+
+        def _tier_allows_increase(self, instrument_id, side, quantity, ts_now):
+            return True
+
+    strategy = EmergencyProbe(probe_config().__replace__(tp_fee_floor_v1=True))
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, f"{px:.1f}", f"{px:.1f}", ts)
+                     for ts, px in enumerate((100.0, 99.0), start=1)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        close = [row for row in strategy.fill_audit if row["action"] == "CLOSE_ALL"]
+        assert len(close) == 1
+        assert Decimal(close[0]["px"]) == Decimal("99.0")
+        assert close[0]["native_liquidity_side"] == "TAKER"
+    finally:
+        engine.dispose()

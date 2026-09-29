@@ -1,0 +1,232 @@
+{
+  "deltas": {
+    "delta_control_vs_archive": "1407699.32157709",
+    "delta_final_vs_archive": "682424.24292855",
+    "delta_floor": "-725275.07864854",
+    "funding_signed_delta": "UNKNOWN_NATIVE_JOURNAL_HAS_POST_TOTAL_ONLY"
+  },
+  "limitations": [
+    "Native 1-minute close proxy; no historical BBO/L2 or full liquidation evidence.",
+    "Funding signed amount is not exported by the native journal and remains unknown.",
+    "The archive uses older code and is not a clean fee-floor control."
+  ],
+  "repeat": {
+    "btc_tp_fills": 233,
+    "code_hash": "deb7de5227d3a72a30bc082a317e98603143d8afd9b657f31d2afe5196984168",
+    "config_hash": "2a3af9d447d906c4aa862b095c1a419d55a55727f4df5007bfdbeca90a25661f",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "fees": "621073.73049442",
+    "fills_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/repeat_v0/repeat_v0-fills.csv",
+    "fills_sha256": "806ef723c83b5e240f2ea20d2a88e16a3cddc22e2d312be65636b0a8762070a7",
+    "funding_count": 1305,
+    "funding_signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "liquidations": 0,
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "report_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/repeat_v0/repeat_v0.json",
+    "report_sha256": "4ea0edc0f546d065f634c9feb1c6feabc460dfb0e29a9c29be165f85819992b0",
+    "roi_percent": "33764.916521133800",
+    "sol_add_fills": 114,
+    "sol_add_level_counts": {
+      "0": 98,
+      "1": 16
+    },
+    "sol_fills": 229,
+    "status": "NOT_FAITHFUL_DIAGNOSTIC",
+    "total": "3386491.65211338",
+    "tp_min_trading_fee_net": "-1593.74259435",
+    "tp_negative_after_trading_fees": 82,
+    "tp_nonpositive_after_trading_fees": 82,
+    "tp_zero_after_trading_fees": 0,
+    "turnover": "1324023138.9342",
+    "version": "repeat_v0"
+  },
+  "rows": [
+    {
+      "btc_tp_fills": 174,
+      "code_hash": "d8c52115770d7be5dd9ab6e58bdc9d44c544395dd4cb3ef93c7bc8419d67ce89",
+      "config_hash": "557ff1f7f6ad79362b85a1cdc301726a57862f381755d5b48114acc33698fc00",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "fees": "446207.87769090",
+      "fills_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/g4-archive-reference-fills.csv",
+      "fills_sha256": "e284af82f73da0f573311b39e11402f43cde424a28c6015a5133dab26d64f10b",
+      "funding_count": 2280,
+      "funding_signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "liquidations": 0,
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "report_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/g4-archive-reference.json",
+      "report_sha256": "f3501f9046ea0a5938bec00b659ead32d05200ef09cc32f0b91878b27d7fb26c",
+      "roi_percent": "19687.923305362900",
+      "sol_add_fills": 19,
+      "sol_add_level_counts": {
+        "0": 16,
+        "1": 3
+      },
+      "sol_fills": 38,
+      "status": "NOT_FAITHFUL_DIAGNOSTIC",
+      "total": "1978792.33053629",
+      "tp_min_trading_fee_net": "-1593.7409730",
+      "tp_negative_after_trading_fees": 101,
+      "tp_nonpositive_after_trading_fees": 101,
+      "tp_zero_after_trading_fees": 0,
+      "turnover": "960387940.9499",
+      "version": "G4_archive"
+    },
+    {
+      "btc_tp_fills": 233,
+      "code_hash": "deb7de5227d3a72a30bc082a317e98603143d8afd9b657f31d2afe5196984168",
+      "config_hash": "2a3af9d447d906c4aa862b095c1a419d55a55727f4df5007bfdbeca90a25661f",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "fees": "621073.73049442",
+      "fills_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v0/v0-fills.csv",
+      "fills_sha256": "becbacef0c531396c6f4cc4cacd78d63d74212ef317714eba2e51d911e832a4e",
+      "funding_count": 1305,
+      "funding_signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "liquidations": 0,
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "report_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v0/v0.json",
+      "report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+      "roi_percent": "33764.916521133800",
+      "sol_add_fills": 114,
+      "sol_add_level_counts": {
+        "0": 98,
+        "1": 16
+      },
+      "sol_fills": 229,
+      "status": "NOT_FAITHFUL_DIAGNOSTIC",
+      "total": "3386491.65211338",
+      "tp_min_trading_fee_net": "-1593.74259435",
+      "tp_negative_after_trading_fees": 82,
+      "tp_nonpositive_after_trading_fees": 82,
+      "tp_zero_after_trading_fees": 0,
+      "turnover": "1324023138.9342",
+      "version": "V0"
+    },
+    {
+      "btc_tp_fills": 248,
+      "code_hash": "deb7de5227d3a72a30bc082a317e98603143d8afd9b657f31d2afe5196984168",
+      "config_hash": "491154ab2e6aa5d235f95cf25ece81eed14113d7a21d457fe26b801a9b43823e",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "fees": "586047.08315500",
+      "fills_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v1/v1-fills.csv",
+      "fills_sha256": "77c822cec7a8efa1466e1f247871e8149fadba98e8606a59edab9baf7bf20919",
+      "funding_count": 1311,
+      "funding_signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "liquidations": 0,
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "report_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v1/v1.json",
+      "report_sha256": "73068c2b4d820aa0b6da3b2bde2423d755052492a9c8281974e3e451e1654af7",
+      "roi_percent": "26512.165734648400",
+      "sol_add_fills": 116,
+      "sol_add_level_counts": {
+        "0": 100,
+        "1": 16
+      },
+      "sol_fills": 233,
+      "status": "NOT_FAITHFUL_DIAGNOSTIC",
+      "total": "2661216.57346484",
+      "tp_min_trading_fee_net": "0.00511896",
+      "tp_negative_after_trading_fees": 0,
+      "tp_nonpositive_after_trading_fees": 0,
+      "tp_zero_after_trading_fees": 0,
+      "turnover": "1322506499.4031",
+      "version": "V1"
+    }
+  ],
+  "sol_add_changes": {
+    "matching_fill_count": 104,
+    "v0_only_fill_count": 10,
+    "v0_only_first_ten": [
+      [
+        "0",
+        "1734912180000000000"
+      ],
+      [
+        "0",
+        "1735320060000000000"
+      ],
+      [
+        "1",
+        "1735603200000000000"
+      ],
+      [
+        "0",
+        "1736429940000000000"
+      ],
+      [
+        "0",
+        "1741825020000000000"
+      ],
+      [
+        "0",
+        "1743033780000000000"
+      ],
+      [
+        "0",
+        "1744329720000000000"
+      ],
+      [
+        "0",
+        "1748131320000000000"
+      ],
+      [
+        "0",
+        "1755302700000000000"
+      ],
+      [
+        "0",
+        "1755908580000000000"
+      ]
+    ],
+    "v1_only_fill_count": 12,
+    "v1_only_first_ten": [
+      [
+        "0",
+        "1734912480000000000"
+      ],
+      [
+        "0",
+        "1735258560000000000"
+      ],
+      [
+        "0",
+        "1736381100000000000"
+      ],
+      [
+        "0",
+        "1741824120000000000"
+      ],
+      [
+        "0",
+        "1743034560000000000"
+      ],
+      [
+        "0",
+        "1744329780000000000"
+      ],
+      [
+        "0",
+        "1748131440000000000"
+      ],
+      [
+        "0",
+        "1755303000000000000"
+      ],
+      [
+        "0",
+        "1755909060000000000"
+      ],
+      [
+        "0",
+        "1757553300000000000"
+      ]
+    ]
+  },
+  "status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "winner": "v0",
+  "winner_repeat_exact_economics": true,
+  "winner_repeat_native_artifacts": {
+    "fills_normalized_sha256": "dde60aa04cd20d3c7d3b33ba1c4cdb6a1268959060ed984c1eb7038c5f0c1385",
+    "funding_rows_sha256": "031676fcb24071a22a85b8b8e876f1bdfa41077d26c5ee00e38fd4143584c682",
+    "orders_normalized_sha256": "1873acc859d6c14136e467f0f5a2228d3f760c2443329315d6b3e8ffc6461837"
+  }
+}

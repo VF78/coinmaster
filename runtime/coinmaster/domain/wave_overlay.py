@@ -218,6 +218,11 @@ class Episode:
     btc_initial_qty: float = 0.0
     btc_open_qty: float = 0.0
     btc_entry_vwap: float | None = None
+    btc_entry_qty_exact: Decimal = Decimal("0")
+    btc_entry_notional_exact: Decimal = Decimal("0")
+    btc_entry_fees_exact: Decimal = Decimal("0")
+    btc_entry_fill_count: int = 0
+    btc_entry_fee_fill_count: int = 0
     h: float | None = None
     wave_levels: tuple[float, float, float] | None = None
     btc_tps: set[int] = field(default_factory=set)
@@ -426,12 +431,18 @@ class WaveOverlayState:
                 return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty, reason="SOL_Z_FULL_EXIT")]
         return []
 
-    def on_fill(self, intent_id: str, quantity: float, price: float, when: datetime, sigma: float | None = None, decision_index: int | None = None) -> None:
+    def on_fill(self, intent_id: str, quantity: float, price: float, when: datetime, sigma: float | None = None, decision_index: int | None = None, entry_fee: Decimal | None = None, entry_qty: Decimal | None = None, entry_price: Decimal | None = None) -> None:
         episode = self.episode
         if episode is None or intent_id not in episode.pending or quantity <= 0:
             return
         intent = episode.pending[intent_id]
         if intent.action == "BTC_ENTRY":
+            episode.btc_entry_qty_exact += entry_qty if entry_qty is not None else Decimal(str(quantity))
+            episode.btc_entry_notional_exact += (entry_qty if entry_qty is not None else Decimal(str(quantity))) * (entry_price if entry_price is not None else Decimal(str(price)))
+            episode.btc_entry_fill_count += 1
+            if entry_fee is not None:
+                episode.btc_entry_fees_exact += entry_fee
+                episode.btc_entry_fee_fill_count += 1
             prior = episode.btc_initial_qty
             episode.btc_entry_vwap = ((episode.btc_entry_vwap or 0) * prior + price * quantity) / (prior + quantity)
             episode.btc_initial_qty += quantity
