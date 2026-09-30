@@ -1,0 +1,173 @@
+{
+  "timestamp_utc": "2026-09-30T11:32:10.442795+00:00",
+  "removed": [
+    {
+      "path": "/srv/coinmaster-native-gui/releases/048cb7a096ea1a32d806f8d18137b3a063f43301",
+      "du_bytes": 910573568
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/062a07a1c761fda94b7d41278decddb4ab86fce1",
+      "du_bytes": 911667200
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/0cfb2ce7b69445570e635cd35e71d52351eb45be",
+      "du_bytes": 910729216
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/0d9090b1cf889f025988ae3faf00f844d2d15d24",
+      "du_bytes": 911618048
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/0e3ef60478314de89801634039504ccc116d3348",
+      "du_bytes": 911527936
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/180992cc5a6cfba7bfba8397ddd8c4d13eefe732",
+      "du_bytes": 911302656
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/1a94874cb99dc116f6bc065c070c2fe925e4d67c",
+      "du_bytes": 929173504
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/32a0940b12eef84eb860df13eab93a246bb07407",
+      "du_bytes": 910725120
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/36fa58fc6b36f7514027f8284f15eed27da7b353",
+      "du_bytes": 911962112
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/45540e9aba936bbf40f7cb41359727613119df80",
+      "du_bytes": 911745024
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/487fc97ac7edb815ceb0c2f8b64c649039fb813d",
+      "du_bytes": 912031744
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/4c96ed4d107e067df0a8a69667bc758ddbfaa6e4",
+      "du_bytes": 912027648
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/63bce351feacfd3046eb7350a3c681d559a6b58c",
+      "du_bytes": 911302656
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/6b75710091cc53ea668013f40edb63c7833445ff",
+      "du_bytes": 911527936
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/6e328f04f66b685f93219ea7804b94ac27042382",
+      "du_bytes": 911110144
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/7a02e151d9c07935b6a3c89a6bdfe9b9627c3dd6",
+      "du_bytes": 911224832
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/829fd4470cbcce218b4395f1224bce716eff4f72",
+      "du_bytes": 911736832
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/889e8e872f37eb5f5165edd96c340804bc635b1d",
+      "du_bytes": 912031744
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/8a048586b64bb4b22c00b44ab8f3506bc0356539",
+      "du_bytes": 911962112
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/90c234a4fe0b9355b99f02be6a6996c0ea4a4e68",
+      "du_bytes": 912023552
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/975cff18736d27e224d5ee964638ad4f1a87c28d",
+      "du_bytes": 911290368
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/9b6a1e6736c22dde5901d8338fa83e9ae3755b0c",
+      "du_bytes": 911384576
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/a8e9b910efee85f1a592f4286a6a3ce6998894d2",
+      "du_bytes": 911962112
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/b73d3a0bf1eff04effaea338c42f7e61ae3b9630",
+      "du_bytes": 911286272
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/c789fcaf0d6ffb45c3cf043edbed21a775b2cb44",
+      "du_bytes": 1777664
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/d2f61d112d87808180ea87ddf08fc3b6dd9eceba",
+      "du_bytes": 929820672
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/d40400667a84a53d65d75dc0d9ea2d47cd4433c4.incoming",
+      "du_bytes": 910569472
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/dc5b725d8f09a3164c70a3ca6117270b7e350f6e",
+      "du_bytes": 912023552
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/e2d5f1bf7af6de2410cb0f237a145a136f965caf",
+      "du_bytes": 911953920
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/ee08b1c51e666d0278021980e52d4b7aef261244",
+      "du_bytes": 911392768
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/f2a73b56afd755d6d9ad100c786b78eae9adb39e",
+      "du_bytes": 912048128
+    },
+    {
+      "path": "/srv/coinmaster/stageg-releases/24aae36bae811e48a5951783079a1294b81aef65",
+      "du_bytes": 2404352
+    },
+    {
+      "path": "/srv/coinmaster/stageg-releases/4879997433f17abc73984ab26fefca727a10ed93",
+      "du_bytes": 2506752
+    },
+    {
+      "path": "/srv/coinmaster/stageg-releases/a649594dcadfcf22cb425ce6107155c0c343d224",
+      "du_bytes": 2707456
+    },
+    {
+      "path": "/srv/coinmaster/stageg-releases/b13cc6b715665ae67c552f25c77e581518a79af5",
+      "du_bytes": 1974272
+    },
+    {
+      "path": "/srv/coinmaster/stageg-releases/d2f61d112d87808180ea87ddf08fc3b6dd9eceba",
+      "du_bytes": 2396160
+    },
+    {
+      "path": "/srv/coinmaster/stageg-releases/f9cab28a99f7a8549d175c4753bc3a9d22b22b53",
+      "du_bytes": 2158592
+    },
+    {
+      "path": "/srv/coinmaster/hl-live-candidates/5529c1b63346bddff2359e434939b0b597296cd5-wheel-8ff3c6dcc150",
+      "du_bytes": 191606784
+    }
+  ],
+  "total_du_bytes": 27589267456,
+  "kept": {
+    "/srv/coinmaster-native-gui/releases": [
+      "24daf08909e4892b942adabcc40c45f0e7c78362",
+      "5adc0c880bcef3b64fa13fb5e8dfa457262f1218",
+      "747d3cd686ff72d851d20467a820054160d6aec0",
+      "cbcc6bae8c92f95eb08861c7568d46cd8a8a770a"
+    ],
+    "/srv/coinmaster/stageg-releases": [
+      "5ea1d46cf0428175ed748d32292ed0315d24b1ec",
+      "81e6318646b51280497806a1c0492591654b5fe6"
+    ],
+    "/srv/coinmaster/hl-live-candidates": [
+      "86b9d951bff4fc4c596fb1ebcf80b171e68e85e7-wheel-8ff3c6dcc150"
+    ]
+  }
+}
