@@ -1,0 +1,22 @@
+{
+  "source_commit": "e0bc51cdd1d976d8910171aefc8b305c7013ed29",
+  "release": "/srv/coinmaster/hl-live/releases/e0bc51cdd1d976d8910171aefc8b305c7013ed29-v0-81e6318-wheel-8ff3c6dcc150",
+  "previous_immutable_release": "/srv/coinmaster/hl-live/releases/b20814019202ec93b234c052d5d8e92448c85a17-v0-81e6318-wheel-8ff3c6dcc150",
+  "release_tree_sha256": "3963aadc006649f366b22fd00f3f5310c4347abb7d43ed0d6ad7f04731ac6865",
+  "wheel_sha256": "8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46",
+  "strategy_sha256": "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511",
+  "changed_runtime_files": [
+    "configs/hl-stageg-live.account-fingerprint.json"
+  ],
+  "preflight_transport": "systemd LoadCredential, dedicated live UID, public Info only",
+  "preflight_code": "ACCOUNT_COLLATERAL_NOT_POSITIVE",
+  "preflight_returncode": 1,
+  "live_service": "disabled/inactive/PID0",
+  "sandbox_pid": 2009732,
+  "sandbox_restarts": 0,
+  "public_agent": "0xf69141ddb7d1ff12a9eb12f9a8d719830db090b0",
+  "agent_address_sha256": "af51d3044cf6b2d39e0d8f48c39ccfc25af35473f87a8e5fc5cb182ec36eedc7",
+  "credential_and_master_authorization": "VERIFIED through current systemd-copied broker record",
+  "native_execution_started": false,
+  "real_orders": false
+}
