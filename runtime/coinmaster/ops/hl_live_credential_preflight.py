@@ -40,7 +40,7 @@ def _fingerprint(address: str) -> str:
     return hashlib.sha256(address.lower().encode("ascii")).hexdigest()
 
 
-def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info_lookup=_hyperliquid_info) -> None:
+def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info_lookup=_hyperliquid_info) -> Decimal:
     record = _read_json(credential_path)
     expected = _read_json(fingerprint_path)
     master = record.get("master_address")
@@ -78,6 +78,8 @@ def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info
         state_response = info_lookup("clearinghouseState", master)
         if master_role.get("role") != "user":
             raise ValueError
+        if agent_role.get("role") == "missing":
+            raise CredentialGateError("AGENT_AUTHORIZATION_MISSING")
         if agent_role.get("role") != "agent":
             raise ValueError
         agent_data = agent_role.get("data")
@@ -95,6 +97,8 @@ def check_live_credential(credential_path: Path, fingerprint_path: Path, *, info
         raise
     except (ValueError, TypeError, InvalidOperation, AttributeError, OSError):
         raise CredentialGateError("ACCOUNT_LIVE_CHECK_FAILED") from None
+
+    return collateral
 
 
 def main() -> int:

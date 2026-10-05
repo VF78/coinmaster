@@ -84,3 +84,13 @@ def test_fresh_role_mismatch_fails_closed(tmp_path):
         return {"role": "agent", "data": {"user": "0x" + "3" * 40}}
     with pytest.raises(CredentialGateError, match="ACCOUNT_LIVE_CHECK_FAILED"):
         check_live_credential(record, fingerprints, info_lookup=wrong_role)
+
+
+def test_saved_verified_agent_missing_now_has_public_reason(tmp_path):
+    record, fingerprints, lookup, _ = _fixture(tmp_path)
+    def missing(kind, address):
+        if kind == "userRole" and address == AGENT:
+            return {"role": "missing"}
+        return lookup(kind, address)
+    with pytest.raises(CredentialGateError, match="AGENT_AUTHORIZATION_MISSING"):
+        check_live_credential(record, fingerprints, info_lookup=missing)

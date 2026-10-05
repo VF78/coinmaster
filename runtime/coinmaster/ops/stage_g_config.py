@@ -174,7 +174,8 @@ def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
         or document["environment"] != "mainnet"
     ):
         raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
-    if document["strategy_config"] != "/srv/coinmaster/runtime/configs/stage-g-v1.json":
+    strategy_root = "/srv/coinmaster/hl-live/current" if mode == "live" else "/srv/coinmaster/runtime"
+    if document["strategy_config"] != f"{strategy_root}/configs/stage-g-v1.json":
         raise ConfigurationError("UNSAFE_TESTNET_STRATEGY_PATH")
     state_root = f"/var/lib/coinmaster-{identities[mode]}"
     if document["signal_warmup_manifest"] != f"{state_root}/data/current/manifest.json":
