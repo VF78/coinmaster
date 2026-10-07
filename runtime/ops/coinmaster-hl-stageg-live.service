@@ -10,7 +10,7 @@ Group=coinmaster-hl-live
 WorkingDirectory=/srv/coinmaster/hl-live/current
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=COINMASTER_HL_LIVE_INSTANCE_CONFIG=/srv/coinmaster/hl-live/current/configs/hl-stageg-live.instance.json
-Environment=COINMASTER_HL_STAGEG_STATUS_PORT=18184
+Environment=COINMASTER_HL_STAGEG_STATUS_PORT=18185
 Environment=COINMASTER_LIVE_ORDER_APPROVAL=/etc/coinmaster/live-order-approval.json
 EnvironmentFile=/etc/coinmaster-hl-live-control.env
 LoadCredential=connection.json:/var/lib/coinmaster-connections/cccab09df4d1385ae1f893ecfaf91dcf.json

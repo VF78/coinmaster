@@ -292,7 +292,7 @@ class LiveWorker:
 
 def main():
     worker = LiveWorker()
-    server = create_status_server(worker, int(os.getenv("COINMASTER_HL_STAGEG_STATUS_PORT", "18184")), os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
+    server = create_status_server(worker, int(os.getenv("COINMASTER_HL_STAGEG_STATUS_PORT", "18185")), os.getenv("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
     threading.Thread(target=server.serve_forever, daemon=True).start()
     stopped = threading.Event()
     signal.signal(signal.SIGTERM, lambda *_: stopped.set())
