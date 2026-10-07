@@ -1,0 +1,484 @@
+{
+  "generated_at": "2026-10-07T15:20:11.669221+00:00",
+  "winner_statistics": {
+    "V0": {
+      "report_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v0/v0.json",
+      "report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+      "config_hash": "2a3af9d447d906c4aa862b095c1a419d55a55727f4df5007bfdbeca90a25661f",
+      "code_hash": "deb7de5227d3a72a30bc082a317e98603143d8afd9b657f31d2afe5196984168",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "classification": "NOT_FAITHFUL_DIAGNOSTIC",
+      "artifacts": {
+        "fills": {
+          "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v0/v0-fills.csv",
+          "rows": 618,
+          "sha256": "becbacef0c531396c6f4cc4cacd78d63d74212ef317714eba2e51d911e832a4e",
+          "verified_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v0/v0-fills.csv",
+          "verified_sha256": "becbacef0c531396c6f4cc4cacd78d63d74212ef317714eba2e51d911e832a4e",
+          "hash_matches": true
+        },
+        "orders": {
+          "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v0/v0-orders.csv",
+          "rows": 672,
+          "sha256": "12b17db79728032749b8cd6bfc231d5dc85e217ef8f47c38e21496f73ad8ce23",
+          "verified_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v0/v0-orders.csv",
+          "verified_sha256": "12b17db79728032749b8cd6bfc231d5dc85e217ef8f47c38e21496f73ad8ce23",
+          "hash_matches": true
+        }
+      },
+      "native_fill_action_counts": {
+        "BTC_ENTRY": 105,
+        "BTC_REDUCE": 233,
+        "FORCED_CLOSE": 157,
+        "SOL_ADD": 114,
+        "SOL_HALF_EXIT": 1,
+        "SOL_EXIT": 7,
+        "TERMINAL_CLOSE": 1
+      },
+      "entry_count": 219,
+      "all_risk_entries": {
+        "n": 218,
+        "mean_days": 3.334862385321101,
+        "median_days": 1.0,
+        "min_days": 0.0,
+        "max_days": 38.00069444444444,
+        "gaps_ge_5d": 50,
+        "share_ge_5d": 0.22935779816513763,
+        "first_entry": "2024-09-02T00:00:00+00:00",
+        "second_entry": "2024-09-11T00:00:00+00:00",
+        "first_second_days": 9.0
+      },
+      "btc_episode_entries": {
+        "n": 104,
+        "mean_days": 6.990384615384615,
+        "median_days": 5.4996527777777775,
+        "min_days": 0.9993055555555556,
+        "max_days": 38.99930555555556,
+        "gaps_ge_5d": 57,
+        "share_ge_5d": 0.5480769230769231,
+        "first_entry": "2024-09-02T00:00:00+00:00",
+        "second_entry": "2024-09-11T00:00:00+00:00",
+        "first_second_days": 9.0
+      },
+      "sol_add_entries": {
+        "n": 113,
+        "mean_days": 6.1415929203539825,
+        "median_days": 1.0,
+        "min_days": 0.0,
+        "max_days": 227.0013888888889,
+        "gaps_ge_5d": 19,
+        "share_ge_5d": 0.168141592920354,
+        "first_entry": "2024-10-03T00:00:00+00:00",
+        "second_entry": "2024-10-11T00:00:00+00:00",
+        "first_second_days": 8.0
+      },
+      "btc_episode_first_exit_to_next_btc_entry": {
+        "n": 104,
+        "mean_days": 6.314376335470086,
+        "median_days": 4.692708333333334,
+        "min_days": 0.0,
+        "max_days": 38.0,
+        "gaps_ge_5d": 51,
+        "share_ge_5d": 0.49038461538461536,
+        "first_pair": {
+          "source": "V0",
+          "metric": "btc_episode_first_exit_to_next_btc_entry",
+          "from": "2024-09-02T00:09:00+00:00",
+          "to": "2024-09-11T00:00:00+00:00",
+          "days": "8.99375"
+        }
+      },
+      "native_full_flat_to_next_risk_entry": {
+        "n": 116,
+        "mean_days": 2.884770114942529,
+        "median_days": 0.22777777777777777,
+        "min_days": 0.0,
+        "max_days": 32.00069444444444,
+        "gaps_ge_5d": 26,
+        "share_ge_5d": 0.22413793103448276,
+        "first_pair": {
+          "source": "V0",
+          "metric": "native_full_flat_to_next_risk_entry",
+          "from": "2024-09-06T14:52:00+00:00",
+          "to": "2024-09-11T00:00:00+00:00",
+          "days": "4.3805555555555555"
+        }
+      },
+      "five_day_completed_window_benchmark": {
+        "windows": 726,
+        "no_risk_entries": 271,
+        "share": 0.37327823691460055,
+        "definition": "UTC decision-date endpoints; (t-5d,t]; exclude initial incomplete windows"
+      }
+    },
+    "G4_archive": {
+      "report_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/g4-archive-reference.json",
+      "report_sha256": "f3501f9046ea0a5938bec00b659ead32d05200ef09cc32f0b91878b27d7fb26c",
+      "config_hash": "557ff1f7f6ad79362b85a1cdc301726a57862f381755d5b48114acc33698fc00",
+      "code_hash": "d8c52115770d7be5dd9ab6e58bdc9d44c544395dd4cb3ef93c7bc8419d67ce89",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "classification": "NOT_FAITHFUL_DIAGNOSTIC",
+      "artifacts": {
+        "fills": {
+          "path": "var/data/runs/native-stage-g-g4-7.875-confirmation-fills.csv",
+          "rows": 421,
+          "sha256": "e284af82f73da0f573311b39e11402f43cde424a28c6015a5133dab26d64f10b",
+          "verified_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/g4-archive-reference-fills.csv",
+          "verified_sha256": "e284af82f73da0f573311b39e11402f43cde424a28c6015a5133dab26d64f10b",
+          "hash_matches": true
+        },
+        "orders": {
+          "path": "var/data/runs/native-stage-g-g4-7.875-confirmation-orders.csv",
+          "rows": 475,
+          "sha256": "d09d4410de049ad8f50af9c370c275a4eb9cf9ca569b4d39586ffe98738a358c"
+        }
+      },
+      "native_fill_action_counts": {
+        "BTC_ENTRY": 105,
+        "BTC_REDUCE": 174,
+        "FORCED_CLOSE": 122,
+        "SOL_ADD": 19,
+        "TERMINAL_CLOSE": 1
+      },
+      "entry_count": 124,
+      "all_risk_entries": {
+        "n": 123,
+        "mean_days": 5.9105691056910565,
+        "median_days": 3.9993055555555554,
+        "min_days": 0.001388888888888889,
+        "max_days": 38.99861111111111,
+        "gaps_ge_5d": 56,
+        "share_ge_5d": 0.45528455284552843,
+        "first_entry": "2024-09-02T00:00:00+00:00",
+        "second_entry": "2024-09-11T00:00:00+00:00",
+        "first_second_days": 9.0
+      },
+      "btc_episode_entries": {
+        "n": 104,
+        "mean_days": 6.990384615384615,
+        "median_days": 5.998958333333333,
+        "min_days": 0.9993055555555556,
+        "max_days": 38.99861111111111,
+        "gaps_ge_5d": 57,
+        "share_ge_5d": 0.5480769230769231,
+        "first_entry": "2024-09-02T00:00:00+00:00",
+        "second_entry": "2024-09-11T00:00:00+00:00",
+        "first_second_days": 9.0
+      },
+      "sol_add_entries": {
+        "n": 18,
+        "mean_days": 38.55555555555556,
+        "median_days": 14.0,
+        "min_days": 0.7145833333333333,
+        "max_days": 281.0548611111111,
+        "gaps_ge_5d": 14,
+        "share_ge_5d": 0.7777777777777778,
+        "first_entry": "2024-10-03T00:00:00+00:00",
+        "second_entry": "2024-12-23T00:03:00+00:00",
+        "first_second_days": 81.00208333333333
+      },
+      "btc_episode_first_exit_to_next_btc_entry": {
+        "n": 104,
+        "mean_days": 5.74576655982906,
+        "median_days": 4.638194444444444,
+        "min_days": 0.0006944444444444445,
+        "max_days": 32.35208333333333,
+        "gaps_ge_5d": 50,
+        "share_ge_5d": 0.4807692307692308,
+        "first_pair": {
+          "source": "G4_archive",
+          "metric": "btc_episode_first_exit_to_next_btc_entry",
+          "from": "2024-09-02T00:09:00+00:00",
+          "to": "2024-09-11T00:00:00+00:00",
+          "days": "8.99375"
+        }
+      },
+      "native_full_flat_to_next_risk_entry": {
+        "n": 104,
+        "mean_days": 0.4077991452991453,
+        "median_days": 0.0006944444444444445,
+        "min_days": 0.0006944444444444445,
+        "max_days": 4.3909722222222225,
+        "gaps_ge_5d": 0,
+        "share_ge_5d": 0.0,
+        "first_pair": {
+          "source": "G4_archive",
+          "metric": "native_full_flat_to_next_risk_entry",
+          "from": "2024-09-10T00:01:00+00:00",
+          "to": "2024-09-11T00:00:00+00:00",
+          "days": "0.9993055555555556"
+        }
+      },
+      "five_day_completed_window_benchmark": {
+        "windows": 726,
+        "no_risk_entries": 327,
+        "share": 0.45041322314049587,
+        "definition": "UTC decision-date endpoints; (t-5d,t]; exclude initial incomplete windows"
+      }
+    }
+  },
+  "reconstruction": [
+    {
+      "close_time": "2026-10-02T00:00:00+00:00",
+      "btc_close": 84836.0,
+      "sol_close": 118.33,
+      "side": 1,
+      "beta": 1.2232286627718678,
+      "z": 0.9983115641645887,
+      "signed_z": 0.9983115641645887,
+      "f": 0.01659656564930323,
+      "best_f": 0.01659656564930323,
+      "trail_trigger": -0.013403434350696769,
+      "actions": [],
+      "interpretation": "NATIVE_RULE_RECONSTRUCTION_WITH_GENUINE_BYBIT_DAILY_AND_DURABLE_NATIVE_FILLS_NOT_LIVE_MEMORY"
+    },
+    {
+      "close_time": "2026-10-03T00:00:00+00:00",
+      "btc_close": 84475.9,
+      "sol_close": 118.55,
+      "side": 1,
+      "beta": 1.2234756241087565,
+      "z": 1.0648591411646258,
+      "signed_z": 1.0648591411646258,
+      "f": 0.012281458580484239,
+      "best_f": 0.01659656564930323,
+      "trail_trigger": -0.013403434350696769,
+      "actions": [],
+      "interpretation": "NATIVE_RULE_RECONSTRUCTION_WITH_GENUINE_BYBIT_DAILY_AND_DURABLE_NATIVE_FILLS_NOT_LIVE_MEMORY"
+    },
+    {
+      "close_time": "2026-10-04T00:00:00+00:00",
+      "btc_close": 84716.5,
+      "sol_close": 119.55,
+      "side": 1,
+      "beta": 1.2237030791974668,
+      "z": 1.1226838848611125,
+      "signed_z": 1.1226838848611125,
+      "f": 0.015164587602305435,
+      "best_f": 0.01659656564930323,
+      "trail_trigger": -0.013403434350696769,
+      "actions": [],
+      "interpretation": "NATIVE_RULE_RECONSTRUCTION_WITH_GENUINE_BYBIT_DAILY_AND_DURABLE_NATIVE_FILLS_NOT_LIVE_MEMORY"
+    },
+    {
+      "close_time": "2026-10-05T00:00:00+00:00",
+      "btc_close": 86486.7,
+      "sol_close": 121.54,
+      "side": 1,
+      "beta": 1.222180357042228,
+      "z": 0.9351979580786203,
+      "signed_z": 0.9351979580786203,
+      "f": 0.0363770356256965,
+      "best_f": 0.0363770356256965,
+      "trail_trigger": 0.006377035625696498,
+      "actions": [],
+      "interpretation": "NATIVE_RULE_RECONSTRUCTION_WITH_GENUINE_BYBIT_DAILY_AND_DURABLE_NATIVE_FILLS_NOT_LIVE_MEMORY"
+    },
+    {
+      "close_time": "2026-10-06T00:00:00+00:00",
+      "btc_close": 85725.1,
+      "sol_close": 120.73,
+      "side": 1,
+      "beta": 1.2222567294230857,
+      "z": 1.0477942779064326,
+      "signed_z": 1.0477942779064326,
+      "f": 0.027250721980563553,
+      "best_f": 0.0363770356256965,
+      "trail_trigger": 0.006377035625696498,
+      "actions": [],
+      "interpretation": "NATIVE_RULE_RECONSTRUCTION_WITH_GENUINE_BYBIT_DAILY_AND_DURABLE_NATIVE_FILLS_NOT_LIVE_MEMORY"
+    },
+    {
+      "close_time": "2026-10-07T00:00:00+00:00",
+      "btc_close": 85510.0,
+      "sol_close": 120.64,
+      "side": 1,
+      "beta": 1.2218906809970427,
+      "z": 0.9870585138730312,
+      "signed_z": 0.9870585138730312,
+      "f": 0.024673161495967655,
+      "best_f": 0.0363770356256965,
+      "trail_trigger": 0.006377035625696498,
+      "actions": [],
+      "interpretation": "NATIVE_RULE_RECONSTRUCTION_WITH_GENUINE_BYBIT_DAILY_AND_DURABLE_NATIVE_FILLS_NOT_LIVE_MEMORY"
+    }
+  ],
+  "reconstruction_limits": [
+    "Exact live episode and current z are not durably exported; public feature reconstruction uses verified Bybit daily rows, matching source used for daily signals. Initial warmup currently contains 1496 rows; process seed length and floating precision can cause minute differences; decision margins are large.",
+    "Reconstructed episode ownership after TP is implied by installed fill transition and no group-close event, not direct live-memory introspection.",
+    "Domain last_decision_reason is not refreshed for ordinary existing-episode no-intent decisions; BTC_ENTRY_INTENT in status is stale label, not proof of a new denied entry."
+  ],
+  "daily_status_history": {
+    "1791244800000000000": {
+      "accepted_utc": "2026-10-06T00:00:00+00:00",
+      "first_log": "2026-10-06 09:53:53,442",
+      "last_log": "2026-10-06 23:59:59,502",
+      "reason_counts": {
+        "BTC_ENTRY_INTENT": 10133
+      },
+      "latest_seen_session_ns": 1791244800000000000,
+      "backfill_errors": []
+    },
+    "1791331200000000000": {
+      "accepted_utc": "2026-10-07T00:00:00+00:00",
+      "first_log": "2026-10-07 00:00:04,506",
+      "last_log": "2026-10-07 15:20:08,141",
+      "reason_counts": {
+        "DEFERRED_ENTRY_GATE": 1,
+        "BTC_ENTRY_INTENT": 10926
+      },
+      "latest_seen_session_ns": 1791331200000000000,
+      "backfill_errors": []
+    }
+  },
+  "status_state_counts": {
+    "PUBLIC_FEEDS_READY": 21060
+  },
+  "gate_sample_counts": {
+    "(True, True, True)": 21058,
+    "(False, False, False)": 1,
+    "(False, False, True)": 1
+  },
+  "filtered_error_counts": {
+    "exception_or_rejection_lines": 4,
+    "Exception": 2,
+    "ERROR": 2
+  },
+  "durable_intent_counts": [
+    [
+      "BTC_ENTRY",
+      "TERMINAL",
+      1
+    ],
+    [
+      "BTC_REDUCE",
+      "TERMINAL",
+      3
+    ]
+  ],
+  "warmup_manifest": {
+    "path": "/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json",
+    "sha256": "45a64d0747ca2ac1fbc9eaeac798ed1b33075c1bc158be96f668c0fbab049a12",
+    "symbols": {
+      "BTCUSDT": {
+        "daily_duplicates": 0,
+        "daily_gaps": 0,
+        "daily_path": "normalized/bybit-BTCUSDT-daily.parquet",
+        "daily_rows": 1496,
+        "daily_sha256": "98ab91eaffe9b37b5460b96be92975bad64897fed806c45d357d48bba2256d86",
+        "first_open_ms": 1662076800000,
+        "last_completed_close_ms": 1791331200000,
+        "last_open_ms": 1791244800000,
+        "mark_close_complete": true,
+        "mark_close_provenance": "BYBIT_LINEAR_PUBLIC_DAILY_MARK_KLINE",
+        "signal_source": "BYBIT_LINEAR_PUBLIC_DAILY_KLINE"
+      },
+      "SOLUSDT": {
+        "daily_duplicates": 0,
+        "daily_gaps": 0,
+        "daily_path": "normalized/bybit-SOLUSDT-daily.parquet",
+        "daily_rows": 1496,
+        "daily_sha256": "05e75473e2277dd3d2b1bef4708e918025b3af6f0b972f929c4217e1525223ee",
+        "first_open_ms": 1662076800000,
+        "last_completed_close_ms": 1791331200000,
+        "last_open_ms": 1791244800000,
+        "mark_close_complete": true,
+        "mark_close_provenance": "BYBIT_LINEAR_PUBLIC_DAILY_MARK_KLINE",
+        "signal_source": "BYBIT_LINEAR_PUBLIC_DAILY_KLINE"
+      }
+    }
+  },
+  "installed_code": {
+    "/srv/coinmaster/runtime/coinmaster/domain/wave_overlay.py": "f440a0c64aae04ae2eeac9d45471bba5f6cb82c4ff45fd40381f34d2d7ee39c0",
+    "/srv/coinmaster/runtime/coinmaster/strategy/wave_overlay.py": "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511"
+  },
+  "candidate": {
+    "beta_days": 270,
+    "btc_close_trail_fraction": 0.03,
+    "btc_notional_multiplier": 7.875,
+    "btc_tp_fractions_initial_qty": [
+      0.2125,
+      0.2125,
+      0.575
+    ],
+    "ema_period": 34,
+    "episode_fixed_beta": false,
+    "max_parent_notional": 10000000.0,
+    "relative_days": 65,
+    "sol_entry_z": [
+      1.25,
+      2.5,
+      3.75
+    ],
+    "sol_exit_all_z": 0.125,
+    "sol_exit_half_z": 0.375,
+    "sol_late_entry_after_tp": true,
+    "sol_max_holding_days": 14,
+    "sol_overlay_enabled": true,
+    "sol_size_multipliers_h": [
+      1.75,
+      2.625,
+      3.5
+    ],
+    "sol_timeout_preempts_add": false,
+    "wave_history_days": 730,
+    "wave_min_count": 8,
+    "wave_quantiles": [
+      0.1,
+      0.3,
+      0.6
+    ],
+    "z_history_days": 180
+  },
+  "filtered_error_classification": {
+    "lines": 4,
+    "cause": "2 HTTP status-client disconnects, each accompanied by BrokenPipeError (localhost ephemeral ports25620/25626). No strategy/order/native exception found in retained bounded journal.",
+    "retention_limit": "Retained detailed status history starts Oct6 09:53 UTC. Cannot attest historical Oct2\u20135 feed/gate decisions from rotated logs."
+  },
+  "provenance_comparison": {
+    "installed_release": "81e6318646b51280497806a1c0492591654b5fe6",
+    "installed_seal": "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511",
+    "candidate_hash": "637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d",
+    "candidate_exact_match": true,
+    "research_commit": "b079d1a",
+    "research_runner_hash_at_commit": "deb7de5227d3a72a30bc082a317e98603143d8afd9b657f31d2afe5196984168",
+    "code_comparison": "81e6318\u2192b079d1a has fee-floor opt-in/exact-entry-fee accounting and formatting. No Candidate, features_for or decide rule changes. Research V0 flag false; installed has no floor flag. Code is not byte-identical.",
+    "configured_differences": [
+      "Live Sandbox currency USDC vs research USDT",
+      "Live HL public quote/mark native Sandbox matching vs Bybit historical1m execution/mark closes",
+      "Live fixed HL fees maker.00015/taker.00045 vs Bybit maker.00020/taker.00055",
+      "Live actual HL lot/price increments and 40xBTC/20xSOL local tier limits; research Bybit instrument increments and Bybit current tiers",
+      "Live deposit protection ARMED50%; research disabled. Current equity11319.40534863 exceeds threshold5659.702674315, no trigger/missed daily sample",
+      "Native funding cash unposted live vs historical journal funding settlements, whose signed amounts remain UNKNOWN in report"
+    ]
+  },
+  "verdict": "WINNER_RULE_EXPLAINS_GAP; NO_CURRENT_PRODUCTION_ENTRY_FAULT_EVIDENCED. Reconstruction supports retained episode + SOL signedz below1.25; precise historical live episode/z not exported. Direct accepted-session proof Oct6/7 only.",
+  "quantity_exposure_validation": {
+    "basis": "Actual OrderFilled fill_audit chronological events, action entry/add raises exposure magnitude, reduction/forced/terminal lowers it. No side reversal exists without prior full close; both instruments never negative; exact Decimal sums finish zero. Same-time fill callbacks kept in recorded order; this captures genuine momentary flat even same-day immediate reentry. Not PnL.",
+    "V0_gross_quantities_match_native_fill_order_report": {
+      "BTC": "16125.964",
+      "SOL": "226370.4"
+    },
+    "G4_gross_quantities_match_native_fill_order_report": {
+      "BTC": "12688.086",
+      "SOL": "37708.0"
+    },
+    "G4_vs_V0_candidate_equal": true,
+    "flat_wait_difference": "Identical candidate and105 BTC entries but different lifecycle code/TP fills233vs174 and SOLadds114vs19; timing/ownership of native flat therefore changes. Archive fullflat max4.39097d cannot be applied to latestV0 fullflat max32.00069d. Cannot attribute this drift to fee-floor (V0false), changed dailycandidate or claim an exact single old defect from aggregate reports alone."
+  },
+  "coordinator_validation": {
+    "winner_report_hash": "matched",
+    "btc_entry_count": 105,
+    "btc_gap_mean_independently_recomputed": 6.990384615384615,
+    "btc_gaps_at_least_5_days": 57,
+    "oct3_7_rule_reconstruction_no_intents": true,
+    "no_implementation_or_service_changes": true
+  },
+  "project_readback": {
+    "issue": 99,
+    "state": "OPEN",
+    "status": "In Progress",
+    "url": "https://github.com/VF78/coinmaster/issues/99",
+    "body_verified": true
+  }
+}
