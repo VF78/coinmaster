@@ -56,3 +56,13 @@ RESEARCH_CATALOG = (
         "limitations": ["REST_MAX_5000_NO_24M_BBO", "AWS_REQUESTER_PAYS_INVENTORY_REQUIRED", "UNKNOWN_FREE_REST_HAS_NO_SETTLEMENT_ORACLE", "PROXY_PRICES_NONTRADING"], "supersession": "No Hyperliquid backtest exists.",
     },
 )
+
+# Sanitized, immutable summary of hash-verified #113 native artifacts.
+import json as _json
+from pathlib import Path as _Path
+from hashlib import sha256 as _sha256
+_CURRENT_SUMMARY = _Path(__file__).with_name("current_comparison.json")
+_CURRENT_SUMMARY_SHA256 = "c630d2f03ac82e768d242baf6e9ef86018c356a43aa9b4ec674a76303a1b2a59"
+if _sha256(_CURRENT_SUMMARY.read_bytes()).hexdigest() != _CURRENT_SUMMARY_SHA256:
+    raise ValueError("CURRENT_COMPARISON_SUMMARY_HASH_MISMATCH")
+RESEARCH_CATALOG = tuple(_json.loads(_CURRENT_SUMMARY.read_text())["entries"]) + RESEARCH_CATALOG

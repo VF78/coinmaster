@@ -339,6 +339,8 @@ def fixture_report() -> dict[str, Any]:
 
 
 def _catalog_artifact_state(entry: dict[str, Any]) -> str:
+    if entry["kind"] == "current-comparison":
+        return "VERIFIED_COMMITTED_SUMMARY"
     path = Path(__file__).resolve().parents[2] / "var/data" / entry["artifact"]
     if not path.exists():
         return "ARTIFACT_NOT_LOCAL"
@@ -350,6 +352,8 @@ def _catalog_entry(entry: dict[str, Any]) -> dict[str, Any]:
 
 
 def _verified_catalog_detail(entry: dict[str, Any]) -> dict[str, Any] | None:
+    if entry["kind"] == "current-comparison":
+        return {"status": entry["classification"], "terminal_total": entry["settled_total"], "native_fees": entry["fees"], "fills": entry["fills"], "limitations": entry["limitations"], "source_comparison_sha256": "c97ab0c6b76ba7da88b59753fada923aff247e503dc4d557fe0bb2782e97cae0"}
     if _catalog_artifact_state(entry) != "VERIFIED_LOCAL":
         return None
     source = json.loads((Path(__file__).resolve().parents[2] / "var/data" / entry["artifact"]).read_text())

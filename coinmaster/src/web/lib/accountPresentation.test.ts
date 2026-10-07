@@ -34,8 +34,8 @@ test('shows native open-account figures and unposted funding as provided', () =>
     realized_pnl_net_fees: '-1.2', unrealized_pnl: '29.1', fees: '0.8', mark_state: 'CURRENT',
   }));
   assert.deepEqual(view.map(({ value }) => value), [
-    '9975.0 USDC', '9971.2 USDC', '3.8 USDC', '10004.1 USDC',
-    '-1.2 USDC', '29.1 USDC', '0.8 USDC',
+    '9,975.00 USDC', '9,971.20 USDC', '3.80 USDC', '10,004.10 USDC',
+    '-1.20 USDC', '29.10 USDC', '0.80 USDC',
   ]);
   assert.equal(fundingLabel(projection({})), 'Observed only; not credited');
 });
@@ -46,7 +46,7 @@ test('keeps missing values unknown and marks equity/PnL stale when the mark is s
     realized_pnl_net_fees: '0', unrealized_pnl: null, fees: '0', mark_state: 'STALE_OR_MISSING',
   }));
   assert.deepEqual(view.map(({ value }) => value), [
-    '10000 USDC', '9999 USDC', '1 USDC', 'Not current', '0 USDC', 'Not current', '0 USDC',
+    '10,000.00 USDC', '9,999.00 USDC', '1.00 USDC', 'Not current', '0.00 USDC', 'Not current', '0.00 USDC',
   ]);
 });
 
@@ -56,7 +56,7 @@ test('retains known values in a partial account while leaving absent values unkn
     equity: null, realized_pnl_net_fees: '0', unrealized_pnl: null, fees: '0',
   }));
   assert.deepEqual(view.map(({ value }) => value), [
-    '10000 USDC', 'Unavailable', 'Unavailable', 'Unavailable', '0 USDC', 'Unavailable', '0 USDC',
+    '10,000.00 USDC', 'Unavailable', 'Unavailable', 'Unavailable', '0.00 USDC', 'Unavailable', '0.00 USDC',
   ]);
   assert.equal(fundingLabel(null), 'Not posted; settlement is unconfirmed');
 });

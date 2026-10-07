@@ -24,7 +24,7 @@ def _post(body: dict[str, Any]) -> Any:
         INFO_URL, data=json.dumps(body, separators=(",", ":")).encode(), method="POST",
         headers={"Content-Type": "application/json", "Accept": "application/json"},
     )
-    with urllib.request.build_opener(_NoRedirect).open(request, timeout=3) as response:
+    with urllib.request.build_opener(_NoRedirect).open(request, timeout=8) as response:
         if response.status != 200 or "application/json" not in response.headers.get("Content-Type", ""):
             raise ValueError("CANDLE_HTTP_RESPONSE_INVALID")
         raw = response.read(MAX_BODY + 1)

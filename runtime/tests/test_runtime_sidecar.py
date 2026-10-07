@@ -103,7 +103,7 @@ def test_isolated_gui_has_no_paper_command_route_without_relay_token(tmp_path) -
 def test_hl_stageg_strategy_is_sealed_source_identity_with_unknown_account_facts() -> None:
     root = Path(__file__).resolve().parents[1]
     body = HlStagegStrategyReader(root).strategy()
-    assert body.source_state == "SEALED_SOURCE_CHECKED"
+    assert body.source_state == "SEALED_CONFIGURATION_CHECKED"
     assert body.instance_id == "hl-stageg-testnet" and body.mode == "sandbox"
     assert body.hashes.candidate_sha256 == "637762130c76396cd7c6e24644e31b28079a1683e4460d57f103dde42c603b6d"
     assert body.candidate["ema_period"] == "34"

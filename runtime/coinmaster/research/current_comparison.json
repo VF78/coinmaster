@@ -1,0 +1,80 @@
+{
+  "entries": [
+    {
+      "artifact": "coinmaster/research/current_comparison.json",
+      "classification": "NOT_FAITHFUL_DIAGNOSTIC",
+      "drawdown_percent": "0.4133691361147726452460031732",
+      "fees": "446207.87769090",
+      "fills": 421,
+      "funding": 2280,
+      "id": "tp-fee-floor-113-G4_archive",
+      "interval": "[2024-09-01,2026-09-01)",
+      "interval_cash": "1978792.33053629",
+      "kind": "current-comparison",
+      "limitations": [
+        "Native 1-minute close proxy; no historical BBO/L2 or full liquidation evidence.",
+        "Funding signed amount is not exported by the native journal and remains unknown.",
+        "The archive uses older code and is not a clean fee-floor control."
+      ],
+      "liquidations": 0,
+      "roi": "196.879233053629",
+      "selected": false,
+      "settled_total": "1978792.33053629",
+      "sha256": "f3501f9046ea0a5938bec00b659ead32d05200ef09cc32f0b91878b27d7fb26c",
+      "supersession": "Current same-data V0/V1 comparison. G4 uses older code; its difference is not a fee-floor effect.",
+      "title": "G4 \u00b7 earlier code archive",
+      "warmup": "730d feature-only"
+    },
+    {
+      "artifact": "coinmaster/research/current_comparison.json",
+      "classification": "NOT_FAITHFUL_DIAGNOSTIC",
+      "drawdown_percent": "0.3063185969312693002712883379",
+      "fees": "621073.73049442",
+      "fills": 618,
+      "funding": 1305,
+      "id": "tp-fee-floor-113-V0",
+      "interval": "[2024-09-01,2026-09-01)",
+      "interval_cash": "3386491.65211338",
+      "kind": "current-comparison",
+      "limitations": [
+        "Native 1-minute close proxy; no historical BBO/L2 or full liquidation evidence.",
+        "Funding signed amount is not exported by the native journal and remains unknown.",
+        "The archive uses older code and is not a clean fee-floor control."
+      ],
+      "liquidations": 0,
+      "roi": "337.649165211338",
+      "selected": false,
+      "settled_total": "3386491.65211338",
+      "sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+      "supersession": "Current same-data V0/V1 comparison. G4 uses older code; its difference is not a fee-floor effect.",
+      "title": "V0",
+      "warmup": "730d feature-only"
+    },
+    {
+      "artifact": "coinmaster/research/current_comparison.json",
+      "classification": "NOT_FAITHFUL_DIAGNOSTIC",
+      "drawdown_percent": "0.3326926999418131670171803448",
+      "fees": "586047.08315500",
+      "fills": 637,
+      "funding": 1311,
+      "id": "tp-fee-floor-113-V1",
+      "interval": "[2024-09-01,2026-09-01)",
+      "interval_cash": "2661216.57346484",
+      "kind": "current-comparison",
+      "limitations": [
+        "Native 1-minute close proxy; no historical BBO/L2 or full liquidation evidence.",
+        "Funding signed amount is not exported by the native journal and remains unknown.",
+        "The archive uses older code and is not a clean fee-floor control."
+      ],
+      "liquidations": 0,
+      "roi": "265.121657346484",
+      "selected": false,
+      "settled_total": "2661216.57346484",
+      "sha256": "73068c2b4d820aa0b6da3b2bde2423d755052492a9c8281974e3e451e1654af7",
+      "supersession": "Current same-data V0/V1 comparison. G4 uses older code; its difference is not a fee-floor effect.",
+      "title": "V1",
+      "warmup": "730d feature-only"
+    }
+  ],
+  "source_comparison_sha256": "c97ab0c6b76ba7da88b59753fada923aff247e503dc4d557fe0bb2782e97cae0"
+}

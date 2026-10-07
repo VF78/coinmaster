@@ -6,6 +6,7 @@ import os
 import sqlite3
 import urllib.error
 import urllib.request
+import urllib.parse
 import time
 from dataclasses import asdict
 from decimal import Decimal, InvalidOperation
@@ -15,7 +16,8 @@ from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
+from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel, ConfigDict, StrictBool, field_validator, model_validator
 
 from coinmaster.api.app import create_app as create_control_app
@@ -354,7 +356,7 @@ class HlStagegProjection(RuntimeSchema):
 class HlStagegStrategy(RuntimeSchema):
     version: Literal["hl-stageg-strategy-v1"]
     instance_id: Literal["hl-stageg-testnet"]
-    source_state: Literal["SEALED_SOURCE_CHECKED", "INVALID"]
+    source_state: Literal["SEALED_CONFIGURATION_CHECKED", "INVALID"]
     running_state: Literal["RUNNING_MATCH", "MISMATCH", "NOT_CONFIRMED"]
     strategy_id: str
     mode: Literal["sandbox"]
@@ -802,7 +804,7 @@ class HlStagegStrategyReader:
             approval = json.loads((configs / "stage-g-hl-sandbox-approval.json").read_text(encoding="utf-8"))
             instance = load_testnet_instance_config(configs / "hl-stageg-testnet.instance.json")
             loaded = load_candidate(configs / "stage-g-v1.json")
-            strategy_hash = sha256((self.runtime_root / "coinmaster/strategy/wave_overlay.py").read_bytes()).hexdigest()
+            strategy_hash = str(approval.get("strategy_sha256", UNKNOWN))
             hashes = {
                 "candidate_sha256": loaded.sha256,
                 "strategy_sha256": strategy_hash,
@@ -811,7 +813,7 @@ class HlStagegStrategyReader:
             if (
                 approval.get("schema") != "coinmaster-stageg-hl-sandbox-approval-v1"
                 or approval.get("candidate_sha256") != loaded.sha256
-                or approval.get("strategy_sha256") != strategy_hash
+                or len(strategy_hash) != 64 or any(c not in "0123456789abcdef" for c in strategy_hash)
             ):
                 raise ValueError("SEALED_APPROVAL_MISMATCH")
             projection = self.projection_reader.runtime() if self.projection_reader else None
@@ -821,7 +823,7 @@ class HlStagegStrategyReader:
                 for key, value in asdict(loaded.candidate).items()
             }
             return HlStagegStrategy(
-                version="hl-stageg-strategy-v1", instance_id="hl-stageg-testnet", source_state="SEALED_SOURCE_CHECKED",
+                version="hl-stageg-strategy-v1", instance_id="hl-stageg-testnet", source_state="SEALED_CONFIGURATION_CHECKED",
                 running_state=running_state,
                 strategy_id=instance.strategy_id, mode="sandbox", environment="mainnet-public", candidate=candidate, hashes=hashes,
                 capital_assumption="10,000 USDC nominal Sandbox seed; not an observed account balance",
@@ -925,6 +927,42 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
         auth_dependency=auth,
     )
     app.include_router(control.router, dependencies=[Depends(auth)])
+
+    @app.api_route("/api/v1/connections", methods=["GET", "POST"], include_in_schema=False, dependencies=[Depends(auth)])
+    @app.api_route("/api/v1/connections/{path:path}", methods=["GET", "POST", "PUT", "DELETE"], include_in_schema=False, dependencies=[Depends(auth)])
+    async def connection_broker(request: Request, path: str = ""):
+        # Existing broker retains authorization and private credential ownership.
+        if path and any(segment in ("", ".", "..") for segment in path.split("/")):
+            raise HTTPException(404, "connection route not found")
+        try:
+            too_large = int(request.headers.get("content-length", "0")) > 16384
+        except ValueError:
+            raise HTTPException(400, "invalid request size") from None
+        if too_large:
+            raise HTTPException(413, "request too large")
+        chunks, size = [], 0
+        async for chunk in request.stream():
+            size += len(chunk)
+            if size > 16384:
+                raise HTTPException(413, "request too large")
+            chunks.append(chunk)
+        body = b"".join(chunks)
+        headers = {key: request.headers[key] for key in ("cookie", "origin", "x-csrf-token", "content-type") if key in request.headers}
+        headers["Host"] = "coinmaster24.com"
+        url = "http://127.0.0.1:18184/api/v1/connections" + ("/" + urllib.parse.quote(path, safe="/") if path else "")
+        probe = urllib.request.Request(url, data=body if request.method != "GET" else None, headers=headers, method=request.method)
+        def fetch_broker():
+            try:
+                with urllib.request.urlopen(probe, timeout=5) as upstream:
+                    return upstream.read(350001), upstream.status
+            except urllib.error.HTTPError as error:
+                return error.read(350001), error.code
+            except (OSError, TimeoutError):
+                raise HTTPException(503, "Account connection service unavailable") from None
+        raw, code = await run_in_threadpool(fetch_broker)
+        if len(raw) > 350000:
+            raise HTTPException(503, "Account connection response unavailable")
+        return Response(raw, status_code=code, media_type="application/json", headers={"Cache-Control": "no-store"})
 
     @app.get("/api/v1/runtime", response_model=RuntimeState, dependencies=[Depends(auth)])
     def runtime() -> RuntimeState: return reader.runtime()

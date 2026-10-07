@@ -48,7 +48,7 @@ export const getResearchCatalog = () => request<ResearchCatalogEntry[]>('/resear
 export const getResearchCapabilities = (configId?: string) => request<ResearchCapabilities>(`/research/capabilities${configId ? `?config_id=${encodeURIComponent(configId)}` : ''}`);
 export const getResearchCatalogDetail = (id: string) => request<ResearchCatalogDetail>(`/research/catalog/${encodeURIComponent(id)}`);
 export const getConfigurations = () => request<StrategyConfiguration[]>('/configurations');
-export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper' | 'research', research_command?: string, optimizer_search?: ResearchCapabilities['optimizer_search']) => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind, ...(research_command ? { research_command } : {}), ...(optimizer_search ? { optimizer_search } : {}) }) });
+export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'paper' | 'research', research_command?: string, optimizer_search?: ResearchCapabilities['optimizer_search'], bounded_interval?: { start: string; end_exclusive: string }) => request<Run>('/runs', { method: 'POST', body: JSON.stringify({ config_id, kind, ...(research_command ? { research_command } : {}), ...(optimizer_search ? { optimizer_search } : {}), ...(bounded_interval ? { bounded_interval } : {}) }), headers: { 'Idempotency-Key': crypto.randomUUID() } });
 export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponent(id)}/cancel`, { method: 'POST' });
 // Never substitute /runtime here: that route is intentionally the separate
 // coinmaster-paper worker and has a command relay.

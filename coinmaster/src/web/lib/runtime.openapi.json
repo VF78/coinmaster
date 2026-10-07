@@ -1657,7 +1657,7 @@
           },
           "source_state": {
             "enum": [
-              "SEALED_SOURCE_CHECKED",
+              "SEALED_CONFIGURATION_CHECKED",
               "INVALID"
             ],
             "title": "Source State",

@@ -1006,7 +1006,7 @@ export interface components {
              * Source State
              * @enum {string}
              */
-            source_state: "SEALED_SOURCE_CHECKED" | "INVALID";
+            source_state: "SEALED_CONFIGURATION_CHECKED" | "INVALID";
             /** Strategy Id */
             strategy_id: string;
             /**

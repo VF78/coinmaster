@@ -54,7 +54,7 @@ def test_one_login_protects_shell_assets_runtime_and_included_control_routes(tmp
     monkeypatch.setenv("COINMASTER_RUNTIME_DIST", str(dist))
     db = tmp_path / "auth.sqlite"
     app = create_runtime_app(database=str(tmp_path / "missing-paper.sqlite"), control_database=str(tmp_path / "control.sqlite"),
-        token="machine-token", worker_token="", worker_url="http://127.0.0.1:9", operator_username="operator",
+        token="machine-token", worker_token="", worker_url="http://127.0.0.1:9", hl_stageg_status_url="http://127.0.0.1:9", operator_username="operator",
         operator_password_hash=password_hash("a long test password", salt=b"fixed-salt-for-test-0123456789abc"),
         session_database=str(db), public_origin="https://coinmaster24.com")
     with serve(app) as port:

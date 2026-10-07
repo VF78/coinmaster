@@ -20,7 +20,7 @@ export function App() {
   return <div className="app-shell nautilus-app-shell">
     <header className="app-topbar nautilus-topbar">
       <div className="nautilus-brand"><span className="nautilus-brand__mark">C</span><div><h1>Coinmaster<span>24</span></h1></div></div>
-      <div className="nautilus-topbar__right"><span className="nautilus-environment">Sandbox · live orders off</span><Button variant="secondary" onClick={() => { void logoutGuiSession().catch((error: unknown) => setSessionError(error instanceof Error ? error.message : 'Sign out failed.')); }}>Sign out</Button></div>
+      <div className="nautilus-topbar__right"><span className="nautilus-environment">Dry-run · Sandbox</span><Button variant="secondary" onClick={() => { void logoutGuiSession().catch((error: unknown) => setSessionError(error instanceof Error ? error.message : 'Sign out failed.')); }}>Sign out</Button></div>
     </header>
     {sessionError ? <p role="alert" className="nautilus-alert">{sessionError}</p> : null}
     <div className="app-layout">

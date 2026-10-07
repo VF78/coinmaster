@@ -1,9 +1,10 @@
 import type { HlStagegProjection } from './nautilusApi';
+import { traderMoney } from './traderFormatting';
 
 export type AccountFigure = { label: string; value: string };
 
 function amount(value: string | null | undefined): string {
-  return value === null || value === undefined ? 'Unavailable' : `${value} USDC`;
+  return traderMoney(value);
 }
 
 export function accountFigures(state: HlStagegProjection | null): AccountFigure[] {

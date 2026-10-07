@@ -312,6 +312,12 @@ def create_connections_app(*, store_root: str | None = None, verify_token: str |
         response.headers["X-Content-Type-Options"] = "nosniff"
         return response
 
+    @app.get("/api/v1/connections/mode")
+    def execution_modes(request: Request):
+        authorize(request)
+        from coinmaster.api.execution_modes import execution_mode_state
+        return execution_mode_state()
+
     @app.get("/api/v1/connections")
     def list_connections(request: Request):
         authorize(request)

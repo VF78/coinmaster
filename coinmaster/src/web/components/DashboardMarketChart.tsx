@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createChart, type IChartApi, type IPriceLine, type ISeriesApi } from 'lightweight-charts';
+import { humanizeBlocker } from '../lib/traderLabels';
 import { Badge } from './Badge';
 import { Button } from './Button';
 import { getHyperliquidCandles, type HlNativeEquityChanges, type HlPublicCandles, type HlStagegFillHistory, type HlStagegProjection } from '../lib/nautilusApi';
@@ -19,13 +20,13 @@ function ChartCanvas({ bars, lines, markers, hasBars, overlaysReady }: { bars: C
     const instance = createChart(node, {
       width: node.clientWidth || 640,
       height: node.clientWidth < 560 ? 235 : 300,
-      layout: { background: { color: '#07110f' }, textColor: '#9bb0aa', attributionLogo: true },
-      grid: { vertLines: { color: '#152521' }, horzLines: { color: '#152521' } },
-      rightPriceScale: { borderColor: '#263a34' }, timeScale: { borderColor: '#263a34', timeVisible: true, secondsVisible: false },
-      crosshair: { vertLine: { color: '#668d7f' }, horzLine: { color: '#668d7f' } },
+      layout: { background: { color: '#15191d' }, textColor: '#96a2aa', attributionLogo: true },
+      grid: { vertLines: { color: '#242c32' }, horzLines: { color: '#242c32' } },
+      rightPriceScale: { borderColor: '#303940' }, timeScale: { borderColor: '#303940', timeVisible: true, secondsVisible: false },
+      crosshair: { vertLine: { color: '#74858f' }, horzLine: { color: '#74858f' } },
     });
     chart.current = instance;
-    series.current = instance.addCandlestickSeries({ upColor: '#39b98d', downColor: '#df7378', borderUpColor: '#39b98d', borderDownColor: '#df7378', wickUpColor: '#39b98d', wickDownColor: '#df7378' });
+    series.current = instance.addCandlestickSeries({ upColor: '#70e1cb', downColor: '#df7378', borderUpColor: '#70e1cb', borderDownColor: '#df7378', wickUpColor: '#70e1cb', wickDownColor: '#df7378' });
     const resize = new ResizeObserver((entries) => {
       const width = entries[0]?.contentRect.width;
       if (width) { instance.applyOptions({ width, height: width < 560 ? 235 : 300 }); }
@@ -76,9 +77,9 @@ export function DashboardMarketChart({ projection, history, equity }: { projecti
         setSnapshot(next); setError(false);
         if (next.state === 'READY') setLastBars(candleBars(next.candles));
         else if (next.state === 'STALE' && next.candles.length) setLastBars(candleBars(next.candles));
-        if (next.state === 'READY' || next.state === 'STALE') timer = window.setTimeout(() => void refresh(key), REFRESH_MS[interval]);
+        timer = window.setTimeout(() => void refresh(key), next.state === 'READY' || next.state === 'STALE' ? REFRESH_MS[interval] : 15_000);
       } catch {
-        if (active && key === requestKey) { setError(true); setSnapshot(null); setLastBars([]); }
+        if (active && key === requestKey) { setError(true); setSnapshot(null); setLastBars([]); timer = window.setTimeout(() => void refresh(key), 15_000); }
       }
     };
     void refresh(requestKey);
@@ -91,11 +92,11 @@ export function DashboardMarketChart({ projection, history, equity }: { projecti
     <div className="dashboard-market-section__head"><div><h2>Market &amp; account history</h2><p className="muted">Public candles · sampled Sandbox equity.</p></div><div className="dashboard-equity-windows" aria-label="Native account change windows">{equityRows ? equityRows.map((row) => <div className={row.value.startsWith('+') ? 'dashboard-equity-window dashboard-equity-window--positive' : row.value.startsWith('-') ? 'dashboard-equity-window dashboard-equity-window--negative' : 'dashboard-equity-window'} key={row.label}><span>{row.label}</span><strong>{row.value}</strong><small>{row.percent}</small></div>) : <span className="muted">24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.</span>}</div></div><p className="dashboard-equity-asof">{equityRows && equityAsOf ? `Samples through ${equityAsOf} UTC · not tick-current.` : 'Account sample time unavailable.'}</p>
     <div className="dashboard-chart-card"><div className="dashboard-chart-toolbar"><div className="dashboard-chart-selectors" role="group" aria-label="Market"><button type="button" aria-pressed={coin === 'BTC'} className={coin === 'BTC' ? 'selected' : ''} onClick={() => setCoin('BTC')}>BTC</button><button type="button" aria-pressed={coin === 'SOL'} className={coin === 'SOL' ? 'selected' : ''} onClick={() => setCoin('SOL')}>SOL</button></div><label>Interval <select value={interval} onChange={(event) => setInterval(event.target.value as TraderInterval)}>{INTERVALS.map((value) => <option key={value}>{value}</option>)}</select></label><Badge tone={tone}>{badge}</Badge><Button variant="secondary" onClick={() => setRequestKey((key) => key + 1)}>Refresh chart</Button></div>
       {currentSnapshot?.state === 'STALE' ? <p className="dashboard-chart-notice">Source data is stale. Last returned candles are retained without native execution overlays.</p> : null}
-      {currentSnapshot?.state === 'INVALID' || currentSnapshot?.state === 'UNAVAILABLE' || error ? <p className="dashboard-chart-notice">Candles unavailable. {currentSnapshot?.reason ?? 'Refresh to retry.'}</p> : null}
+      {currentSnapshot?.state === 'INVALID' || currentSnapshot?.state === 'UNAVAILABLE' || error ? <p className="dashboard-chart-notice">Candles unavailable. {currentSnapshot?.reason ? humanizeBlocker(currentSnapshot.reason) : 'Retrying automatically. You can also refresh.'}</p> : null}
       {currentSnapshot?.state === 'READY' && !bars.length ? <p className="dashboard-chart-notice">No completed candles are available for this interval.</p> : null}
       <ChartCanvas bars={bars} lines={overlays.lines} markers={overlays.markers} hasBars={bars.length > 0 && (currentSnapshot?.state === 'READY' || currentSnapshot?.state === 'STALE')} overlaysReady={ready} />
       <div className="dashboard-chart-provenance" aria-label="Chart data and execution overlay availability"><span><i className="dashboard-chart-provenance__swatch dashboard-chart-provenance__swatch--market" />Public market candles</span><span className={ready ? 'dashboard-chart-provenance__native dashboard-chart-provenance__native--ready' : 'dashboard-chart-provenance__native'}><i className="dashboard-chart-provenance__swatch dashboard-chart-provenance__swatch--native" />{ready ? overlays.lines.length || overlays.markers.length ? 'Native Sandbox positions, orders and fills' : 'No native overlays in this interval' : 'Native overlays wait for fresh candles and confirmed account state'}</span></div>
-      <div className="dashboard-chart-meta"><span>{currentSnapshot?.source === 'OFFICIAL_INFO_CANDLE_SNAPSHOT' ? 'Source: Hyperliquid Info candle snapshot' : 'Source unavailable'}</span><span>{observed ? `Observed ${observed}` : 'Observation time unavailable'}</span><span>{latest ? `Latest closed ${latest}` : 'Latest close unavailable'}</span><span>Chart by TradingView · public market data, not execution evidence</span></div>
+      <details className="dashboard-chart-meta"><summary>Market data details</summary><span>{currentSnapshot?.source === 'OFFICIAL_INFO_CANDLE_SNAPSHOT' ? 'Source: Hyperliquid Info candle snapshot' : 'Source unavailable'}</span><span>{observed ? `Observed ${observed}` : 'Observation time unavailable'}</span><span>{latest ? `Latest closed ${latest}` : 'Latest close unavailable'}</span><span>Chart by TradingView · public market data, not execution evidence</span></details>
     </div>
   </section>;
 }

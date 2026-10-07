@@ -31,8 +31,15 @@ export function strategySettingLabel(key: string): string {
 }
 
 export function strategySettingValue(key: string, value: unknown): string {
-  if (typeof value === 'boolean') return value ? 'Enabled' : 'Disabled';
-  if (Array.isArray(value)) return value.join(' · ');
+  if (typeof value === 'boolean' || value === 'true' || value === 'false') return value === true || value === 'true' ? 'Enabled' : 'Disabled';
+  if (typeof value === 'string' && value.startsWith('[')) {
+    try { const parsed: unknown = JSON.parse(value); if (Array.isArray(parsed)) return strategySettingValue(key, parsed); } catch { return 'Unavailable'; }
+  }
+  if (Array.isArray(value)) return value.map((item, index) => {
+    const number = Number(item);
+    const formatted = ['btc_tp_fractions_initial_qty', 'wave_quantiles'].includes(key) && Number.isFinite(number) ? Number((number * 100).toFixed(2)) + '%' : String(item);
+    return 'Level ' + (index + 1) + ': ' + formatted;
+  }).join(' · ');
   if (key === 'btc_close_trail_fraction' && (typeof value === 'number' || typeof value === 'string')) {
     const fraction = typeof value === 'number' ? value : value.trim() === '' ? Number.NaN : Number(value);
     if (Number.isFinite(fraction)) return `${(fraction * 100).toFixed(2)}%`;
@@ -70,6 +77,7 @@ const RESEARCH_LABELS: Record<string, string> = {
   ARTIFACT_BLOCKED_FOR_COMPARABLE_1M: "Comparable 1-minute data unavailable",
   ARTIFACT_NOT_LOCAL: "Artifact unavailable on this host",
   PUBLIC_FEEDS_READY: "Public market data ready",
+  VERIFIED_COMMITTED_SUMMARY: "Verified archived summary",
   READY: "Ready",
   BLOCKED: "Blocked",
 };

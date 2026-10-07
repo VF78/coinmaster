@@ -233,7 +233,7 @@ PY
   install -d -m 0700 -o coinmaster-research -g coinmaster-research "$SMOKE" "$SMOKE/data"
   backup_db "$(source_db)" "$SMOKE/control.sqlite"
   chown coinmaster-research:coinmaster-research "$SMOKE/control.sqlite"
-  [[ -z "$(ss -ltn '( sport = :18185 )' | tail -n +2)" ]] || { echo 'smoke port is already occupied' >&2; exit 1; }
+  [[ -z "$(ss -ltn '( sport = :18186 )' | tail -n +2)" ]] || { echo 'smoke port is already occupied' >&2; exit 1; }
   (cd "$RELEASE.incoming/runtime" && runuser -u coinmaster-research -- env -i PATH=/usr/bin:/bin \
     COINMASTER_RUNTIME_API_TOKEN="$TOKEN" COINMASTER_GUI_USERNAME="$GUI_USERNAME" COINMASTER_GUI_PASSWORD_HASH="$GUI_PASSWORD_HASH" \
     COINMASTER_GUI_ORIGIN=https://coinmaster24.com COINMASTER_GUI_SESSION_DB="$SMOKE/auth.sqlite" \
@@ -241,13 +241,13 @@ PY
     COINMASTER_RESEARCH_DATA_ROOT="$SMOKE/data" COINMASTER_RUNTIME_DIST="$RELEASE.incoming/web" \
     COINMASTER_HL_STAGEG_STATUS_URL=http://127.0.0.1:18183 COINMASTER_PAPER_DB="$SMOKE/no-paper.sqlite" \
     PYTHONPATH="$RELEASE.incoming/runtime" PYTHONDONTWRITEBYTECODE=1 GUI_SMOKE_PIDFILE="$SMOKE/uvicorn.pid" GUI_PYTHON="$RELEASE.incoming/runtime/.venv/bin/python" \
-    sh -c 'echo $$ > "$GUI_SMOKE_PIDFILE"; exec "$GUI_PYTHON" -m uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18185' >/dev/null 2>&1) &
+    sh -c 'echo $$ > "$GUI_SMOKE_PIDFILE"; exec "$GUI_PYTHON" -m uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18186' >/dev/null 2>&1) &
   SMOKE_PARENT=$!
   trap 'if [[ -f "$SMOKE/uvicorn.pid" ]]; then kill "$(cat "$SMOKE/uvicorn.pid")" 2>/dev/null || true; fi; kill "$SMOKE_PARENT" 2>/dev/null || true; wait "$SMOKE_PARENT" 2>/dev/null || true' EXIT
   for _ in {1..30}; do
-    if GUI_SMOKE_PORT=18185 COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY' >/dev/null 2>&1
+    if GUI_SMOKE_PORT=18186 COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY' >/dev/null 2>&1
 import urllib.error, urllib.request
-try: urllib.request.urlopen('http://127.0.0.1:18185/api/v1/health', timeout=.5)
+try: urllib.request.urlopen('http://127.0.0.1:18186/api/v1/health', timeout=.5)
 except urllib.error.HTTPError as error: raise SystemExit(0 if error.code == 401 else 1)
 except Exception: raise SystemExit(1)
 PY
@@ -255,7 +255,7 @@ PY
     sleep 1
   done
   [[ -f "$SMOKE/uvicorn.pid" ]] && kill -0 "$(cat "$SMOKE/uvicorn.pid")" || { echo 'smoke process died before validation' >&2; exit 1; }
-  api_smoke 18185 "$SMOKE/control.sqlite" 0 "$WORKER_STATE" "$WORKER_STRATEGY"
+  api_smoke 18186 "$SMOKE/control.sqlite" 0 "$WORKER_STATE" "$WORKER_STRATEGY"
   kill "$(cat "$SMOKE/uvicorn.pid")" 2>/dev/null || true
   kill "$SMOKE_PARENT" 2>/dev/null || true
   wait "$SMOKE_PARENT" 2>/dev/null || true
@@ -273,6 +273,27 @@ fi
 
 [[ -d "$RELEASE" && -f "$RELEASE/stage.receipt" ]] || { echo 'release has no verified stage receipt' >&2; exit 1; }
 TOKEN="$(token_from_paper_env)"
+# Broker code shares the GUI release pointer but keeps its existing unprivileged unit.
+refresh_gui_broker() {
+  systemctl is-active --quiet coinmaster-connections.service || return 1
+  systemctl restart coinmaster-connections.service || return 1
+  for attempt in {1..20}; do
+    if python3 - <<'BROKER_PY'
+import urllib.request, urllib.error
+req = urllib.request.Request("http://127.0.0.1:18184/api/v1/connections/mode", headers={"Host": "coinmaster24.com"})
+try:
+    urllib.request.urlopen(req, timeout=.5)
+except urllib.error.HTTPError as error:
+    raise SystemExit(0 if error.code == 401 else 1)
+except OSError:
+    raise SystemExit(1)
+raise SystemExit(1)
+BROKER_PY
+    then return 0; fi
+    sleep .25
+  done
+  return 1
+}
 if [[ "$ACTION" == activate-api ]]; then
   check_no_jobs "$(source_db)"
   WORKER_STATE="$(sed -n 's/^worker_projection_state=//p' "$RELEASE/stage.receipt")"
@@ -304,7 +325,7 @@ if [[ "$ACTION" == activate-api ]]; then
   ln -s "$RELEASE" "$CURRENT.next"
   mv -Tf "$CURRENT.next" "$CURRENT"
   systemctl daemon-reload
-  if ! systemctl start "$RUNTIME" || ! wait_api_ready || ! active "$RUNTIME" || ! assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || ! api_smoke 18182 "$STATE/control.sqlite" 1 "$WORKER_STATE" "$WORKER_STRATEGY"; then
+  if ! systemctl start "$RUNTIME" || ! wait_api_ready || ! active "$RUNTIME" || ! refresh_gui_broker || ! assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || ! api_smoke 18182 "$STATE/control.sqlite" 1 "$WORKER_STATE" "$WORKER_STRATEGY"; then
     echo 'activation failed; restoring the prior runtime unit' >&2
     systemctl stop "$RUNTIME" || true
     cp "$BACKUPS/$COMMIT/prior.unit" "$UNIT"
@@ -312,6 +333,7 @@ if [[ "$ACTION" == activate-api ]]; then
     if [[ "$PREVIOUS" == none ]]; then rm -f -- "$CURRENT"; else ln -s "$PREVIOUS" "$CURRENT.rollback"; mv -Tf "$CURRENT.rollback" "$CURRENT"; fi
     systemctl daemon-reload
     systemctl start "$RUNTIME"
+    systemctl restart coinmaster-connections.service
     wait_api_ready && active "$RUNTIME" && assert_peers "$(sed -n 's/^paper_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" "$(sed -n 's/^trader_pid=//p' "$BACKUPS/$COMMIT/prior.pids")" || { echo 'automatic rollback did not pass readiness/PID checks' >&2; exit 2; }
     exit 1
   fi
@@ -328,5 +350,6 @@ PREVIOUS="$(cat "$BACKUPS/$COMMIT/prior.release")"
 if [[ "$PREVIOUS" == none ]]; then rm -f -- "$CURRENT"; else ln -s "$PREVIOUS" "$CURRENT.rollback"; mv -Tf "$CURRENT.rollback" "$CURRENT"; fi
 systemctl daemon-reload
 systemctl start "$RUNTIME"
+systemctl restart coinmaster-connections.service
 wait_api_ready && active "$RUNTIME" && assert_peers "$PAPER_BEFORE" "$TRADER_BEFORE" || { echo 'rollback needs operator attention' >&2; exit 1; }
 echo "ROLLBACK_OK runtime_pid=$(pid "$RUNTIME") paper_pid=$PAPER_BEFORE trader_pid=$TRADER_BEFORE"

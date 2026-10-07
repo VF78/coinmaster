@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { ExecutionModeSettings } from '../components/ExecutionModeSettings';
+import { StrategyEntryControls } from '../components/StrategyEntryControls';
 import { DashboardMarketChart } from '../components/DashboardMarketChart';
 import { DashboardConnectionIdentity } from '../components/DashboardConnectionIdentity';
 import { SettingsConnections } from '../components/SettingsConnections';
@@ -12,6 +14,9 @@ import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, prote
 import { positionPresentation, TRADER_MARKETS } from '../lib/traderPresentation';
 import { parseFiniteNumberFields } from '../lib/strategyDraftValidation';
 import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, unavailableTradeHistoryLabel, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
+
+import { verifiedControlReadback } from '../lib/controlReadback';
+import { effectiveLeverage, researchMetric, traderMoney, traderNumber, traderPercent } from '../lib/traderFormatting';
 
 type NumberKey = 'ema_period' | 'beta_days' | 'relative_days' | 'z_history_days' | 'wave_history_days' | 'wave_min_count' | 'btc_notional_multiplier' | 'max_gross_to_active' | 'sol_exit_half_z' | 'sol_exit_all_z' | 'sol_max_holding_days' | 'btc_close_trail_fraction';
 type ArrayKey = 'wave_quantiles' | 'btc_tp_fractions_initial_qty' | 'sol_size_multipliers_H' | 'sol_entry_z';
@@ -51,11 +56,11 @@ export function StrategyPage() {
   const [strategy, setStrategy] = useState<HlStagegStrategy | null>(null); const [config, setConfig] = useState<StrategyConfig | null>(null); const [drafts, setDrafts] = useState<StrategyConfiguration[]>([]); const [saved, setSaved] = useState<StrategyConfiguration | null>(null); const [message, setMessage] = useState(''); const [loading, setLoading] = useState(true); const [saving, setSaving] = useState(false);
   async function load() { setLoading(true); setMessage(''); const [sealed, stored, template] = await Promise.allSettled([getHlStagegStrategy(), getConfigurations(), getDefaultConfiguration()]); if (sealed.status === 'fulfilled') setStrategy(sealed.value); if (stored.status === 'fulfilled') { setDrafts(stored.value); const selected = stored.value.find((item) => item.id === window.localStorage.getItem('coinmaster-selected-config')) ?? stored.value[0]; if (selected) { setSaved(selected); setConfig(selected.config); } } if (template.status === 'fulfilled') setConfig((current) => current ?? template.value.config); const failure = [sealed, stored, template].find((result) => result.status === 'rejected'); if (failure?.status === 'rejected') setMessage(failure.reason instanceof Error ? failure.reason.message : 'Unable to load the Strategy page.'); setLoading(false); }
   useEffect(() => { void load(); }, []);
-  function updateNumber(key: NumberKey, value: string) { if (value !== '') setConfig((item) => item ? { ...item, [key]: Number(value) } : item); }
+  function updateNumber(key: NumberKey, value: string) { if (value !== '') setConfig((item) => item ? { ...item, [key]: key === 'btc_close_trail_fraction' ? Number(value) / 100 : Number(value) } : item); }
   function updateArray(key: ArrayKey, value: number[]) { setConfig((item) => item ? { ...item, [key]: value } : item); }
   async function save() { if (!config || saving) return; if (!Number.isFinite(Number(config.initial_total_usdt)) || Number(config.initial_total_usdt) <= 0) { setMessage('Research draft validation failed: initial total must be a positive number.'); return; } setSaving(true); setMessage('Saving research draft…'); try { const next = await saveConfiguration(config); const refreshed = await getConfigurations(); const persisted = refreshed.find((item) => item.id === next.id); if (!persisted) throw new Error('Saved draft could not be read back.'); setDrafts(refreshed); setSaved(persisted); setConfig(persisted.config); window.localStorage.setItem('coinmaster-selected-config', persisted.id); setMessage(`Research draft saved and read back: ${formatUtcTimestamp(persisted.created_at)}.`); } catch (error) { setMessage(error instanceof Error ? error.message : 'Research draft save failed.'); } finally { setSaving(false); } }
   const runningMatch = strategy?.running_state === 'RUNNING_MATCH';
-  const sourceChecked = strategy?.source_state === 'SEALED_SOURCE_CHECKED';
+  const sourceChecked = strategy?.source_state === 'SEALED_CONFIGURATION_CHECKED';
   const runningParameters = Object.entries(strategy?.candidate ?? {}).map(([parameter, value]) => ({ id: parameter, parameter, value }));
   const visibleRunningParameters = runningParameters.filter((row) => !isAdvancedStrategySetting(row.parameter));
   const advancedRunningParameters = runningParameters.filter((row) => isAdvancedStrategySetting(row.parameter));
@@ -65,13 +70,14 @@ export function StrategyPage() {
     ['Signal and safety settings', visibleRunningParameters.filter((row) => !row.parameter.startsWith('btc_') && !row.parameter.startsWith('sol_'))],
   ] as const;
   return <main className="terminal-layout nautilus-strategy-workspace">
-    <Card className="trader-hero strategy-hero" title={runningMatch ? 'Running strategy' : sourceChecked ? 'Sealed strategy' : 'Strategy source unavailable'} actions={<Badge tone={runningMatch ? 'success' : 'danger'}>{strategyRunnerLabel(strategy?.running_state ?? (loading ? 'LOADING' : 'NOT_CONFIRMED'))}</Badge>}>
-      <p className="trader-hero__lead">{runningMatch ? 'The worker is running the sealed BTC / SOL strategy shown below.' : sourceChecked ? 'The sealed strategy was read successfully, but the worker match is not confirmed.' : 'The strategy source could not be confirmed. No running settings are implied.'}</p>
-      <div className="stats-grid"><Stat label="Strategy" value={strategy?.strategy_id ?? 'Unavailable'} /><Stat label="Execution" value="Local Sandbox" /><Stat label="Market data" value="Hyperliquid public" /><Stat label="Apply to running strategy" value="Unavailable" /></div>
-      <p className="trader-note">Running settings are read-only. A research draft never changes the active trader.</p>
+    <Card className="trader-hero strategy-hero" title={loading ? 'Loading strategy…' : runningMatch ? 'Running strategy' : sourceChecked ? 'Approved strategy' : 'Strategy unavailable'} actions={<Badge tone={runningMatch ? 'success' : 'danger'}>{strategyRunnerLabel(strategy?.running_state ?? (loading ? 'LOADING' : 'NOT_CONFIRMED'))}</Badge>}>
+      <p className="trader-hero__lead">{runningMatch ? 'The worker is running the sealed BTC / SOL strategy shown below.' : sourceChecked ? 'The approved settings were read successfully, but the worker match is not confirmed.' : 'The strategy source could not be confirmed. No running settings are implied.'}</p>
+      <div className="stats-grid"><Stat label="Strategy" value={strategy?.candidate && Object.keys(strategy.candidate).length ? 'BTC / SOL Wave Overlay · V0' : loading ? 'Loading…' : 'Unavailable'} /><Stat label="Execution" value="Local Sandbox" /><Stat label="Market data" value="Hyperliquid public" /></div>
+      <p className="trader-note">Strategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.</p>
     </Card>
+    <StrategyEntryControls />
     <section className="strategy-settings-grid">{strategyGroups.map(([group, rows]) => <Card className="strategy-settings-card" key={group} title={group} actions={<Badge tone={runningMatch ? 'success' : 'neutral'}>{runningMatch ? 'Confirmed' : 'Unconfirmed'}</Badge>}>
-      {rows.length ? <dl className="strategy-setting-list">{rows.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl> : <p className="runtime-empty-note">No sealed settings are available.</p>}
+      {rows.length ? <dl className="strategy-setting-list">{rows.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl> : <p className="runtime-empty-note">No approved settings are available.</p>}
     </Card>)}</section>
     {advancedRunningParameters.length ? <details className="nautilus-diagnostics"><summary>Advanced strategy rules</summary><dl className="strategy-setting-list">{advancedRunningParameters.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl></details> : null}
     <details className="nautilus-diagnostics strategy-research-drafts"><summary>Research drafts · saved separately from the running strategy</summary><div className="research-drafts-card">
@@ -79,22 +85,22 @@ export function StrategyPage() {
       <label className="rules-field"><span>Read-back saved draft</span><select value={saved?.id ?? ''} onChange={(event) => { const next = drafts.find((item) => item.id === event.target.value) ?? null; setSaved(next); setConfig(next?.config ?? config); if (next) window.localStorage.setItem('coinmaster-selected-config', next.id); }}>{drafts.map((item) => <option key={item.id} value={item.id}>Saved draft · {formatUtcTimestamp(item.created_at)}</option>)}</select></label>
       <div className="nautilus-strategy-grid">
         <section className="nautilus-strategy-group"><h3>BTC sizing and exits</h3><p className="muted">Research draft; sealed running parameters stay above.</p><div className="rules-form-grid">
-        {(['ema_period', 'btc_notional_multiplier', 'btc_close_trail_fraction'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" value={String(config?.[key] ?? '')} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <NumberArrayField label="BTC TP fractions / initial qty" value={config.btc_tp_fractions_initial_qty} onCommit={(next) => updateArray('btc_tp_fractions_initial_qty', next)} /> : null}
+        {(['ema_period', 'btc_notional_multiplier', 'btc_close_trail_fraction'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
+        {config ? <NumberArrayField label="BTC take-profit size fractions (0–1)" value={config.btc_tp_fractions_initial_qty} onCommit={(next) => updateArray('btc_tp_fractions_initial_qty', next)} /> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>SOL sizing and exits</h3><p className="muted">Entry thresholds, add sizes and staged exits.</p><div className="rules-form-grid">
-        {(['sol_exit_half_z', 'sol_exit_all_z', 'sol_max_holding_days'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" value={String(config?.[key] ?? '')} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <><NumberArrayField label="SOL multipliers H" value={config.sol_size_multipliers_H} onCommit={(next) => updateArray('sol_size_multipliers_H', next)} /><NumberArrayField label="SOL entry z" value={config.sol_entry_z} onCommit={(next) => updateArray('sol_entry_z', next)} /></> : null}
+        {(['sol_exit_half_z', 'sol_exit_all_z', 'sol_max_holding_days'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
+        {config ? <><NumberArrayField label="SOL add-size multipliers (×)" value={config.sol_size_multipliers_H} onCommit={(next) => updateArray('sol_size_multipliers_H', next)} /><NumberArrayField label="SOL entry thresholds (σ)" value={config.sol_entry_z} onCommit={(next) => updateArray('sol_entry_z', next)} /></> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>Signal windows</h3><p className="muted">Feature history and wave thresholds.</p><div className="rules-form-grid">
-        {(['beta_days', 'relative_days', 'z_history_days', 'wave_history_days', 'wave_min_count'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" value={String(config?.[key] ?? '')} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <><NumberArrayField label="Wave quantiles" value={config.wave_quantiles} onCommit={(next) => updateArray('wave_quantiles', next)} /></> : null}
+        {(['beta_days', 'relative_days', 'z_history_days', 'wave_history_days', 'wave_min_count'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
+        {config ? <><NumberArrayField label="Wave thresholds (0–1)" value={config.wave_quantiles} onCommit={(next) => updateArray('wave_quantiles', next)} /></> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>Capital and constraints</h3><p className="muted">Fixed v0 controls are visible but cannot be edited.</p><div className="rules-form-grid">
         <label className="rules-field"><span>Initial TOTAL (template constraint)</span><input disabled value={config?.initial_total_usdt ?? ''} /></label>
         <label className="rules-field"><span>Initial active fraction (template constraint)</span><input disabled type="number" value={String(config?.initial_active_fraction ?? '')} /></label>
         <label className="rules-field"><span>Research venue</span><select value={config?.venue ?? ''} onChange={(event) => setConfig((item) => item ? { ...item, venue: (event.target.value || null) as StrategyConfig['venue'] } : item)}><option value="">Unselected</option><option value="bybit">Bybit</option><option value="hyperliquid">Hyperliquid</option></select></label>
-        {(['max_gross_to_active'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" value={String(config?.[key] ?? '')} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
+        {(['max_gross_to_active'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
         <label className="rules-field"><span>Maximum parent order notional</span><input type="number" step="any" value={config?.max_parent_notional ?? ''} onChange={(event) => setConfig((item) => item ? { ...item, max_parent_notional: event.target.value } : item)} /></label>
         <label className="rules-field"><span>Include zero waves (v0 fixed)</span><input disabled type="checkbox" checked={Boolean(config?.include_zero_waves)} /></label>
         <label className="rules-field"><span>Freeze sigma on first SOL fill (v0 fixed)</span><input disabled type="checkbox" checked={Boolean(config?.freeze_sigma_on_first_sol_fill)} /></label>
@@ -117,6 +123,9 @@ export function ResearchPage() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
+  const [period, setPeriod] = useState<'bounded' | 'full'>('bounded');
+  const [startDate, setStartDate] = useState('2026-08-25');
+  const [endDate, setEndDate] = useState('2026-09-01');
   const [cancellingId, setCancellingId] = useState<string | null>(null);
 
   async function load() {
@@ -157,11 +166,11 @@ export function ResearchPage() {
   }
 
   async function startBaseline() {
-    if (starting || capabilities?.baseline_state !== 'READY') return;
+    if (starting || !baselineReady || !intervalValid) return;
     setStarting(true); setMessage('Creating verified native baseline job…');
     try {
       const saved = await ensureConfig();
-      const run = await createRun(saved.id, 'research', 'native_baseline');
+      const run = await createRun(saved.id, 'research', 'native_baseline', undefined, period === 'bounded' ? { start: startDate, end_exclusive: endDate } : undefined);
       const readBack = await getRuns();
       const persisted = readBack.find((item) => item.id === run.id);
       if (!persisted) throw new Error('Native job was accepted but could not be read back.');
@@ -206,6 +215,10 @@ export function ResearchPage() {
     ? (selectedRun.report.summary as { terminal_total?: string }).terminal_total
     : selectedRun?.report?.terminal_total;
   const baselineReady = capabilities?.baseline_state === 'READY';
+  const days = (Date.parse(endDate + 'T00:00:00Z') - Date.parse(startDate + 'T00:00:00Z')) / 86_400_000;
+  const intervalValid = period === 'full' || Number.isInteger(days) && days >= 1 && days <= 7 && startDate >= '2024-09-01' && endDate <= '2026-09-01';
+  const metrics = selectedRun?.report;
+  const venue = config?.config.venue === 'hyperliquid' ? 'Hyperliquid' : config?.config.venue === 'bybit' ? 'Bybit' : 'Unselected';
   const optimizerReady = capabilities?.optimizer_state === 'READY';
   const optimizerSearch = capabilities?.optimizer_search as { axis: string; values: string[]; max_variants: number } | undefined;
   const top20 = Array.isArray(selectedRun?.report?.top20) ? selectedRun.report.top20 as { candidate_id: string; candidate_sha256: string; terminal_active: string; terminal_reserve: string; terminal_total: string; roi: string; drawdown_percent: string; liquidations: number; maker_fees: string; taker_fees: string; funding: { count?: number; signed_amount?: string }; fills: number; limitations: string[]; artifact_sha256: string; classification: string }[] : [];
@@ -213,30 +226,39 @@ export function ResearchPage() {
     <Card className="trader-hero research-hero" title="Research workspace" actions={<Badge tone={baselineReady ? 'success' : 'danger'}>{humanizeResearchCode(capabilities?.baseline_state ?? (loading ? 'LOADING' : 'BLOCKED'))}</Badge>}>
       <p className="trader-hero__lead">Run a bounded backtest using the selected saved configuration. It never changes the running strategy.</p>
       <div className="rules-form-grid">
-        <label className="rules-field"><span>Immutable configuration</span><select value={config?.id ?? ''} onChange={(event) => { const next = configs.find((item) => item.id === event.target.value) ?? null; setConfig(next); setCapabilities(null); if (next) { window.localStorage.setItem('coinmaster-selected-config', next.id); void getResearchCapabilities(next.id).then(setCapabilities).catch((error: Error) => setMessage(error.message)); } }}>{configs.map((item) => <option key={item.id} value={item.id}>Saved draft · {formatUtcTimestamp(item.created_at)}</option>)}</select></label>
-        <label className="rules-field"><span>Start date</span><input disabled value={capabilities?.baseline_start ? formatUtcTimestamp(capabilities.baseline_start) : 'Unavailable'} /></label>
-        <label className="rules-field"><span>End date (exclusive)</span><input disabled value={capabilities?.baseline_end_exclusive ? formatUtcTimestamp(capabilities.baseline_end_exclusive) : 'Unavailable'} /></label>
+        <label className="rules-field"><span>Strategy version / saved draft</span><select value={config?.id ?? ''} onChange={(event) => { const next = configs.find((item) => item.id === event.target.value) ?? null; setConfig(next); setCapabilities(null); if (next) { window.localStorage.setItem('coinmaster-selected-config', next.id); void getResearchCapabilities(next.id).then(setCapabilities).catch((error: Error) => setMessage(error.message)); } }}>{configs.map((item) => <option key={item.id} value={item.id}>Saved draft · {formatUtcTimestamp(item.created_at)}</option>)}</select></label>
+        <label className="rules-field"><span>Test period</span><select value={period} onChange={(event) => setPeriod(event.target.value as 'bounded' | 'full')}><option value="bounded">Custom range · up to 7 days</option><option value="full">Full verified history · 24 months</option></select></label>
+        <label className="rules-field"><span>Start date (UTC)</span><input aria-label="Backtest start date" type="date" min="2024-09-01" max="2026-08-31" disabled={period === 'full'} value={period === 'full' ? '2024-09-01' : startDate} onChange={(event) => setStartDate(event.target.value)} /></label>
+        <label className="rules-field"><span>End date · exclusive (UTC)</span><input aria-label="Backtest end date" type="date" min="2024-09-02" max="2026-09-01" disabled={period === 'full'} value={period === 'full' ? '2026-09-01' : endDate} onChange={(event) => setEndDate(event.target.value)} /></label>
+        <label className="rules-field"><span>Venue / verified dataset</span><input readOnly value={venue + ' · 1-minute historical data'} /></label>
+        <label className="rules-field"><span>Starting capital · native fixed seed</span><input readOnly value="10,000 USDT" /></label>
         <label className="rules-field"><span>Ranking objective</span><input disabled value={capabilities?.baseline_objective ?? 'TOTAL only'} /></label>
       </div>
-      <p className="muted">Configuration and data coverage are checked before each run.</p>
+      <p className="muted">The native runner checks the saved strategy and verified dataset. Custom periods accept 1–7 days within the available history; capital is fixed by this native runner.</p>{!intervalValid ? <p className="field-error" role="alert">Choose a range of 1–7 days between 1 September 2024 and 1 September 2026.</p> : null}
       {capabilities?.baseline_blockers.length ? <><p className="muted">Baseline blocked: {capabilities.baseline_blockers.map(humanizeBlocker).join(' ')}</p></> : null}
-      <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!baselineReady || starting || Boolean(activeRun)} onClick={() => void startBaseline()}>{starting ? 'Starting…' : activeRun ? 'Research running…' : 'Run historical baseline'}</Button><Button variant="secondary" onClick={() => void load()}>Refresh status</Button></div>
+      <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!baselineReady || !intervalValid || starting || Boolean(activeRun)} onClick={() => void startBaseline()}>{starting ? 'Starting…' : activeRun ? 'Research running…' : period === 'bounded' ? 'Run backtest' : 'Run full history'}</Button><Button variant="secondary" onClick={() => void load()}>Refresh status</Button></div>
     </Card>
-    <Card className="research-action-card" title="Bounded parameter search" actions={<Badge tone={optimizerReady ? 'success' : 'danger'}>{optimizerReady ? 'Ready' : humanizeResearchCode(capabilities?.optimizer_state ?? 'BLOCKED')}</Badge>}>
+    <Card className="research-action-card" title="Compare strategy variants" actions={<Badge tone={optimizerReady ? 'success' : 'danger'}>{optimizerReady ? 'Ready' : humanizeResearchCode(capabilities?.optimizer_state ?? 'BLOCKED')}</Badge>}>
       <p className="muted">One axis: {optimizerSearch ? strategySettingLabel(optimizerSearch.axis) : 'BTC size'} = {optimizerSearch?.values.join(', ') ?? '—'} · up to {optimizerSearch?.max_variants ?? '—'} variants · rank by terminal total. Backtest evidence only.</p>
       {capabilities?.optimizer_blockers.length ? <><p className="muted">Research is blocked: {capabilities.optimizer_blockers.map(humanizeBlocker).join(' ')}</p></> : null}
       <Button variant="primary" disabled={!optimizerReady || !config || starting || Boolean(activeRun)} onClick={() => void startOptimizer()}>{starting ? 'Starting…' : activeRun ? 'Research busy…' : 'Optimize terminal total'}</Button>
     </Card>
     <Card className="research-result-card" title="Selected result" actions={selectedRun ? <Badge tone={tone(selectedRun.status)}>{humanizeResearchCode(selectedRun.status)}{selectedRun.progress == null ? '' : ' · ' + selectedRun.progress + '%'}</Badge> : <Badge tone="neutral">No run selected</Badge>}>
       <p className="muted">{activeRun ? "Backtest is running; progress refreshes automatically." : selectedRun ? "Showing the selected run." : "No run selected."}</p>
-      <div className="stats-grid"><Stat label="Terminal TOTAL" value={String(terminalTotal ?? '—')} /><Stat label="Active" value={String(selectedRun?.report?.terminal_active ?? '—')} /><Stat label="Reserve" value={String(selectedRun?.report?.terminal_reserve ?? '—')} /><Stat label="ROI" value={String((selectedRun?.report?.summary as { roi?: string } | undefined)?.roi ?? '—')} /><Stat label="Max drawdown" value={String((selectedRun?.report?.summary as { max_drawdown_percent?: string } | undefined)?.max_drawdown_percent ?? '—')} /><Stat label="Recorded fills" value={String(selectedRun?.report?.fills ?? '—')} /></div>
-      <p className="muted">Backtest evidence · fees: {String(selectedRun?.report?.native_fees ?? '—')} · liquidations: {String(selectedRun?.report?.liquidation_count ?? '—')}.</p>
+      <div className="stats-grid"><Stat label="Terminal TOTAL" value={traderMoney(terminalTotal, 'USDT')} /><Stat label="ROI" value={traderPercent(researchMetric(metrics, 'roi'))} /><Stat label="Max drawdown" value={traderPercent(researchMetric(metrics, 'max_drawdown_percent'))} /><Stat label="Active capital" value={traderMoney(researchMetric(metrics, 'terminal_active'), 'USDT')} /><Stat label="Reserve" value={traderMoney(researchMetric(metrics, 'terminal_reserve'), 'USDT')} /><Stat label="Executed fills" value={traderNumber(researchMetric(metrics, 'fills'), 0)} /></div>
+      <p className="trader-note">Trading fees: {traderMoney(researchMetric(metrics, 'native_fees'), 'USDT')} · Funding: {traderMoney((researchMetric(metrics, 'funding') as { signed_amount?: unknown } | undefined)?.signed_amount, 'USDT')} · Liquidations: {traderNumber(researchMetric(metrics, 'liquidation_count'), 0)}.</p>
+      <p className="trader-note">Historical simulation. Venue fees, intraminute execution and funding settlement are not fully validated; these results do not predict the running trader.</p>
       {selectedRun?.evidence.length ? <p className="muted">{selectedRun.evidence.map(humanizeBlocker).join(' ')}</p> : null}
-      {top20.length ? <><h3 className="nautilus-subheading">TOP {top20.length} · terminal TOTAL comparison</h3><DataTable rows={top20.map((row) => ({ ...row, classification: humanizeResearchCode(row.classification), id: row.candidate_id }))} emptyText="No ranked candidates." mobileTitle={(row) => row.candidate_id} columns={[{ key: 'candidate', header: 'Candidate', render: (row) => row.candidate_id }, { key: 'total', header: 'TOTAL / ACTIVE / RESERVE', render: (row) => `${row.terminal_total} / ${row.terminal_active} / ${row.terminal_reserve}` }, { key: 'risk', header: 'ROI / DD / liq', render: (row) => `${row.roi} / ${row.drawdown_percent} / ${row.liquidations}` }, { key: 'costs', header: 'Fills / maker / taker / funding', render: (row) => `${row.fills} / ${row.maker_fees} / ${row.taker_fees} / ${row.funding?.signed_amount ?? '—'}` }, { key: 'proof', header: 'Classification / limits', render: (row) => `${row.classification} · ${row.limitations.join('; ')}` }]} /></> : <p className="muted">No TOP-20 comparison for this run. A completed optimizer publishes candidates here.</p>}
+      {top20.length ? <><h3 className="nautilus-subheading">TOP {top20.length} · terminal TOTAL comparison</h3><DataTable rows={top20.map((row) => ({ ...row, classification: humanizeResearchCode(row.classification), id: row.candidate_id }))} emptyText="No ranked candidates." mobileTitle={(row) => row.candidate_id} columns={[{ key: 'candidate', header: 'Candidate', render: (row) => row.candidate_id }, { key: 'total', header: 'TOTAL / ACTIVE / RESERVE', render: (row) => `${row.terminal_total} / ${row.terminal_active} / ${row.terminal_reserve}` }, { key: 'risk', header: 'ROI / DD / liq', render: (row) => `${row.roi} / ${row.drawdown_percent} / ${row.liquidations}` }, { key: 'costs', header: 'Fills / maker / taker / funding', render: (row) => `${row.fills} / ${row.maker_fees} / ${row.taker_fees} / ${row.funding?.signed_amount ?? '—'}` }, { key: 'proof', header: 'Classification / limits', render: (row) => `${row.classification} · ${row.limitations.join('; ')}` }]} /></> : <p className="muted">This run has no parameter comparison.</p>}
       {selectedRun && ['STARTING', 'RUNNING', 'CANCEL_REQUESTED', 'QUEUED'].includes(selectedRun.status) ? <Button variant="danger" disabled={Boolean(cancellingId)} onClick={() => void cancelOwned(selectedRun.id)}>{cancellingId === selectedRun.id ? 'Cancelling…' : 'Cancel owned job'}</Button> : null}
     </Card>
-    <Card title="Run history" actions={<Badge tone="neutral">Terminal total</Badge>}><DataTable rows={runs.map((run) => ({ ...run, id: run.id }))} emptyText="No research runs yet." mobileTitle={(run) => runTitle(run)} columns={[{ key: 'run', header: 'Run', render: (run) => <Button variant="secondary" onClick={() => setSelectedRunId(run.id)}>{runTitle(run)} · {formatUtcTimestamp(run.created_at)}</Button> }, { key: 'status', header: 'Status / progress', render: (run) => <Badge tone={tone(run.status)}>{humanizeResearchCode(run.status)}{run.progress === null || run.progress === undefined ? '' : ` · ${run.progress}%`}</Badge> }, { key: 'total', header: 'Terminal TOTAL', render: (run) => String((run.report?.summary as { terminal_total?: string } | undefined)?.terminal_total ?? run.report?.terminal_total ?? '—') }]} /></Card>
-    <Card title="Verified historical evidence" actions={<Badge tone="neutral">Evidence</Badge>}><DataTable rows={catalog.map((item) => ({ ...item, id: item.id }))} emptyText="No catalog evidence." mobileTitle={(item) => item.title} columns={[{ key: 'evidence', header: 'Evidence', render: (item) => item.title }, { key: 'class', header: 'Class', render: (item) => <Badge tone={item.liquidations ? 'danger' : 'neutral'}>{humanizeResearchCode(item.classification)}</Badge> }, { key: 'total', header: 'TOTAL', render: (item) => item.settled_total }, { key: 'artifact', header: 'Artifact', render: (item) => humanizeResearchCode(item.artifact_state) }]} /></Card>
+    <Card title="Run history" actions={<Badge tone="neutral">Terminal total</Badge>}><DataTable rows={runs.map((run) => ({ ...run, id: run.id }))} emptyText="No research runs yet." mobileTitle={(run) => runTitle(run)} columns={[{ key: 'run', header: 'Run', render: (run) => <Button variant="secondary" onClick={() => setSelectedRunId(run.id)}>{runTitle(run)} · {formatUtcTimestamp(run.created_at)}</Button> }, { key: 'status', header: 'Status / progress', render: (run) => <Badge tone={tone(run.status)}>{humanizeResearchCode(run.status)}{run.progress === null || run.progress === undefined ? '' : ` · ${run.progress}%`}</Badge> }, { key: 'total', header: 'Terminal TOTAL', render: (run) => traderMoney(researchMetric(run.report, 'terminal_total'), 'USDT') }]} /></Card>
+    <Card title="Latest V0 / V1 comparison" actions={<Badge tone="neutral">Archived native results</Badge>}>
+      <p className="trader-note">Same data, V0 versus the fee-floor experiment. V0 has the higher terminal TOTAL. G4 used earlier code and is shown as historical context. All three are diagnostic Bybit simulations.</p>
+      <DataTable rows={catalog.filter((item) => item.kind === 'current-comparison')} emptyText="Current comparison summary unavailable." mobileTitle={(item) => item.title} columns={[{ key: 'version', header: 'Version', render: (item) => item.title }, { key: 'total', header: 'Terminal TOTAL', render: (item) => traderMoney(item.settled_total, 'USDT') }, { key: 'roi', header: 'ROI', render: (item) => traderPercent(item.roi) }, { key: 'dd', header: 'Drawdown', render: (item) => traderPercent(item.drawdown_percent) }, { key: 'fills', header: 'Fills', render: (item) => traderNumber(item.fills, 0) }, { key: 'fees', header: 'Trading fees', render: (item) => traderMoney(item.fees, 'USDT') }]} />
+      <p className="trader-note">Funding cash amount is unavailable in these artifacts. Historical execution and funding limits prevent a live performance claim.</p>
+    </Card>
+    <details className="nautilus-diagnostics"><summary>Earlier research evidence</summary><Card title="Historical research archive" actions={<Badge tone="neutral">Evidence</Badge>}><DataTable rows={catalog.filter((item) => item.kind !== 'current-comparison').map((item) => ({ ...item, id: item.id }))} emptyText="No catalog evidence." mobileTitle={(item) => item.title} columns={[{ key: 'evidence', header: 'Evidence', render: (item) => item.title }, { key: 'class', header: 'Class', render: (item) => <Badge tone={item.liquidations ? 'danger' : 'neutral'}>{humanizeResearchCode(item.classification)}</Badge> }, { key: 'total', header: 'TOTAL', render: (item) => traderNumber(item.settled_total) }, { key: 'artifact', header: 'Artifact', render: (item) => humanizeResearchCode(item.artifact_state) }]} /></Card></details>
     {message ? <p className="muted">{message}</p> : null}
   </main>;
 }
@@ -245,6 +267,7 @@ export function RuntimePage() {
   const [state, setState] = useState<HlStagegProjection | null>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [activityTab, setActivityTab] = useState<'exposure' | 'executions'>('exposure');
   const [equityChanges, setEquityChanges] = useState<HlNativeEquityChanges | null>(null);
   const [fillHistory, setFillHistory] = useState<HlStagegFillHistory | null>(null);
   const [fillHistoryUnavailable, setFillHistoryUnavailable] = useState(false);
@@ -317,18 +340,21 @@ export function RuntimePage() {
   const fillHistoryMatchesRun = Boolean(state?.run_epoch && fillHistory?.run_epoch === state.run_epoch);
   return <main className="terminal-layout nautilus-runtime-workspace">
     <DashboardConnectionIdentity />
-    <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={runtimeStatus.tone}>{loading && !state ? 'Loading' : humanizeResearchCode(runtimeStatus.label)}</Badge>}>
+    <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={loading && !state ? 'neutral' : runtimeStatus.tone}>{loading && !state ? 'Loading' : humanizeResearchCode(runtimeStatus.label)}</Badge>}>
       <div className="runtime-hero__heading"><div><p className="trader-note">{entryGateMessage}.</p><p className="runtime-snapshot-time">Sandbox snapshot · {state?.observed_at_ns ? formatUtcTimestamp(new Date(state.observed_at_ns / 1_000_000).toISOString()) : 'time unavailable'}</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
       <div className="runtime-account-grid runtime-account-grid--compact runtime-priority-grid">
         <Stat label="Equity" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Marked equity")?.value ?? "Unavailable"} />
         <Stat label="Available cash" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Available cash")?.value ?? "Unavailable"} />
-        <Stat label={state?.recovery_required === true ? "Stored positions" : "Open positions"} value={positionSummary} />
-        <Stat label={state?.recovery_required === true ? "Stored orders" : "Working orders"} value={projectionReady ? String(orderRows.length) : "Unavailable"} />
+        <Stat label="Realized P&L · net fees" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
+        <Stat label="Unrealized P&L" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
+        <Stat label="Trading fees" value={accountIsUnknown ? "Unavailable" : traderMoney(state?.account.fees)} />
+        <Stat label="Effective leverage" value={effectiveLeverage(state)} />
       </div>
+      <p className="account-capital-caption">Virtual starting capital: 10,000 USDC · {projectionReady ? positionSummary + ' · ' + orderRows.length + ' working orders' : loading ? 'Loading exposure…' : 'Exposure unavailable'}</p>
       {accountIsUnknown ? null : <details className="nautilus-diagnostics runtime-account-details"><summary>Margin, P&amp;L and account details</summary>
         <div className="runtime-account-secondary" aria-label="Current margin and profit and loss">
-          <Stat label="Initial margin" value={state?.account.im ?? "Unavailable"} />
-          <Stat label="Maintenance margin" value={state?.account.mm ?? "Unavailable"} />
+          <Stat label="Initial margin" value={traderMoney(state?.account.im)} /><Stat label="Effective leverage" value={effectiveLeverage(state)} />
+          <Stat label="Maintenance margin" value={traderMoney(state?.account.mm)} />
           <Stat label="Realized P&amp;L · net fees" value={figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
           <Stat label="Unrealized P&amp;L" value={figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
         </div>
@@ -339,7 +365,11 @@ export function RuntimePage() {
       {state?.account.status === 'PARTIAL' ? <p className="runtime-empty-note">Account read is partial. Missing account fields remain unavailable.</p> : null}
     </Card>
     <DashboardMarketChart projection={state} history={fillHistoryMatchesRun ? fillHistory : null} equity={equityChanges} />
-    <section className="trader-market-grid" aria-label="BTC and SOL Markets">
+    <div className="trader-activity-tabs" role="tablist" aria-label="Trading activity">
+      <button type="button" id="exposure-tab" role="tab" aria-selected={activityTab === 'exposure'} aria-controls="exposure-panel" onClick={() => setActivityTab('exposure')}>Positions &amp; orders</button>
+      <button type="button" id="executions-tab" role="tab" aria-selected={activityTab === 'executions'} aria-controls="executions-panel" onClick={() => setActivityTab('executions')}>Executions</button>
+    </div>
+    <section id="exposure-panel" role="tabpanel" aria-labelledby="exposure-tab" hidden={activityTab !== 'exposure'} className="trader-market-grid" aria-label="BTC and SOL Markets">
       {TRADER_MARKETS.map(({ symbol, instrumentId }) => {
         const feed = state?.feeds[instrumentId];
         const fresh = feed?.state === 'READY' && feed.mark_age_ns != null && feed.mark_age_ns >= 0 && feed.mark_age_ns <= 15_000_000_000;
@@ -348,18 +378,19 @@ export function RuntimePage() {
         return <Card key={instrumentId} className="trader-market-card" title={symbol} actions={<Badge tone={fresh ? 'success' : 'danger'}>{fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
           <div className="trader-market-price">
             <span>{fresh ? 'Mark' : 'Previous mark'}</span>
-            <strong>{feed?.mark ?? 'Unavailable'}</strong>
+            <strong>{traderNumber(feed?.mark, symbol === 'BTC' ? 2 : 3)}</strong>
             <small>{fresh ? `Mark age ${age(feed?.mark_age_ns)}` : feed?.mark ? `Stale · ${age(feed.mark_age_ns)}` : 'Mark unavailable'}</small>
           </div>
           <div className="trader-market-exposure">
             <div className="trader-market-exposure__heading"><span>Sandbox position</span><Badge tone={position.state === 'OPEN' ? 'success' : position.state === 'FLAT' ? 'neutral' : 'danger'}>{position.state === 'OPEN' ? 'Open' : position.state === 'FLAT' ? 'Flat' : 'Unconfirmed'}</Badge></div>
-            {position.state === 'OPEN' ? <div className="trader-market-exposure__value"><strong className={position.side === 'LONG' ? 'up' : 'down'}>{position.side}</strong><span>{position.quantity}</span></div> : position.state === 'FLAT' ? <p>Confirmed flat · 0 position size</p> : <p>Position state unavailable until native recovery is confirmed.</p>}
+            {position.state === 'OPEN' ? <div className="trader-market-exposure__value"><strong className={position.side === 'LONG' ? 'up' : 'down'}>{position.side}</strong><span>{traderNumber(Math.abs(Number(position.quantity)), 5)} {symbol}</span></div> : position.state === 'FLAT' ? <p>Confirmed flat · 0 position size</p> : <p>{loading ? 'Loading position…' : state?.recovery_required ? 'Position ownership requires recovery.' : 'Position status unavailable.'}</p>}
           </div>
+          {position.state === 'OPEN' ? <dl className="position-price-details"><div><dt>Average entry</dt><dd>{traderNumber(positionRows.find((row) => row.instrument_id === instrumentId)?.average_entry_price, symbol === 'BTC' ? 2 : 3)}</dd></div><div><dt>Current mark</dt><dd>{fresh ? traderNumber(feed?.mark, symbol === 'BTC' ? 2 : 3) : 'Stale · unavailable'}</dd></div></dl> : null}
           <div className="trader-market-orders">
             <div className="trader-market-orders__heading"><span>{state?.recovery_required ? 'Stored orders' : 'Working orders'}</span><span>{state?.projection_state === 'READY' ? linkedOrders.length : 'Unavailable'}</span></div>
             {linkedOrders.length ? linkedOrders.map((order) => <div className="trader-market-order" key={order.client_order_id}>
-              <span>{order.reduce_only === true ? 'Reduce-only' : 'Working order'}{order.side ? ` · ${order.side}` : ''}</span>
-              <strong>{order.price ?? 'Price unavailable'}</strong>
+              <span>{order.reduce_only === true ? 'Take-profit / reduction' : 'Working order'}{order.side ? ` · ${order.side}` : ''}</span>
+              <strong>{traderNumber(order.price, symbol === 'BTC' ? 2 : 3)}</strong>
               <small>{humanizeResearchCode(order.status ?? 'UNAVAILABLE')} · {humanizeResearchCode(order.order_type ?? 'UNAVAILABLE')} · remaining {order.leaves_quantity ?? order.quantity ?? 'Unavailable'}</small>
             </div>) : <p>{state?.recovery_required ? 'Stored order ownership is not reconciled.' : runtimeStatus.canAssertFlat ? 'No working orders.' : 'Order state unavailable.'}</p>}
           </div>
@@ -376,29 +407,29 @@ export function RuntimePage() {
         <DataTable rows={otherOrders} emptyText="No additional order rows." mobileTitle={(row) => row.instrument_id ?? 'Other market order'} mobileSubtitle={(row) => humanizeResearchCode(row.status ?? 'UNAVAILABLE')} columns={[{ key: 'instrument', header: 'Market', render: (row) => row.instrument_id ?? 'Unavailable' }, { key: 'order', header: 'Order', render: (row) => row.reduce_only === true ? 'Reduce only' : 'Working order' }, { key: 'status', header: 'Status', render: (row) => humanizeResearchCode(row.status ?? 'UNAVAILABLE') }, { key: 'price', header: 'Price', render: (row) => row.price ?? 'Unavailable' }, { key: 'leaves', header: 'Leaves', render: (row) => row.leaves_quantity ?? row.quantity ?? 'Unavailable' }]} />
       </Card>;
     })()}
-    <Card title="Recent trades">
+    <div id="executions-panel" role="tabpanel" aria-labelledby="executions-tab" hidden={activityTab !== 'executions'}><Card title="Recent executions">
       {!fillHistoryMatchesRun
         ? <p className="runtime-empty-note">{fillHistoryUnavailable ? 'Detailed fill history is unavailable.' : !state?.run_epoch ? 'Fill history is hidden until the current workspace is confirmed.' : 'History is refreshing after restart; earlier rows are hidden.'}</p>
         : !fillHistory?.detail_store_available
         ? <p className="runtime-empty-note">{unavailableTradeHistoryLabel(fillHistory?.historical_id_only_count)}</p>
         : <>
           {fillHistory.historical_id_only_count > 0 ? <p className="muted">{fillHistory.historical_id_only_count} older execution record{fillHistory.historical_id_only_count === 1 ? ' has' : 's have'} no saved trade details.</p> : null}
-          <DataTable rows={fillHistory.fills.map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed executions recorded yet." mobileTitle={(fill) => `${fill.instrument_id.startsWith('BTC-') ? 'BTC' : fill.instrument_id.startsWith('SOL-') ? 'SOL' : 'Other market'} · ${nativeFillActionLabel(fill.action)}`} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
+          <DataTable rows={fillHistory.fills.slice().sort((a, b) => b.cursor - a.cursor).map((fill) => ({ ...fill, id: String(fill.cursor) }))} emptyText="No detailed executions recorded yet." mobileTitle={(fill) => `${fill.instrument_id.startsWith('BTC-') ? 'BTC' : fill.instrument_id.startsWith('SOL-') ? 'SOL' : 'Other market'} · ${nativeFillActionLabel(fill.action)}`} mobileSubtitle={(fill) => (fill.order_side ?? 'Side unavailable') + ' · ' + fill.quantity + ' @ ' + fill.price} columns={[
             { key: 'action', header: 'Type', render: (fill) => nativeFillActionLabel(fill.action) },
             { key: 'time', header: 'Time (UTC)', render: (fill) => fill.ts_event_ns == null ? 'Unavailable' : formatUtcTimestamp(new Date(fill.ts_event_ns / 1000000).toISOString()) },
             { key: 'market', header: 'Market', render: (fill) => fill.instrument_id.startsWith('BTC-') ? 'BTC' : fill.instrument_id.startsWith('SOL-') ? 'SOL' : 'Other market' },
             { key: 'side', header: 'Side', render: (fill) => fill.order_side ?? 'Unavailable' },
-            { key: 'quantity', header: 'Quantity', render: (fill) => fill.quantity },
-            { key: 'price', header: 'Price', render: (fill) => fill.price },
-            { key: 'fee', header: 'Fee', render: (fill) => fill.commission_amount == null ? 'Unavailable' : (fill.commission_amount + ' ' + (fill.commission_currency ?? '')).trim() },
+            { key: 'quantity', header: 'Quantity', render: (fill) => traderNumber(fill.quantity, 5) },
+            { key: 'price', header: 'Price', render: (fill) => traderNumber(fill.price) },
+            { key: 'fee', header: 'Fee', render: (fill) => fill.commission_amount == null ? 'Unavailable' : traderMoney(fill.commission_amount, fill.commission_currency ?? '') },
           ]} />
           {fillHistoryHasMore ? <Button variant="secondary" onClick={loadMoreFills}>Load more fills</Button> : null}
         </>}
+    </Card></div>
+    <Card title="Drawdown protection" actions={<Badge tone={protectionArmed ? "success" : "danger"}>{protectionArmed ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
+      {protectionFresh ? <><p className="trader-note">Maximum drawdown limit: <strong>{String(protection?.drawdown_limit_percent)}%</strong></p><details className="nautilus-diagnostics"><summary>Protection basis and sample time</summary><div className="runtime-account-grid runtime-account-grid--compact"><Stat label="Protection equity" value={traderMoney(protection?.equity)} /><Stat label="High-water equity" value={traderMoney(protection?.high_water_equity)} /><Stat label="Threshold" value={traderMoney(protection?.threshold_equity)} /><Stat label="Last daily close" value={formatUtcTimestamp(protection?.last_daily_close_utc)} /><Stat label="Observed" value={protection?.observed_at_ns ? formatUtcTimestamp(new Date(protection.observed_at_ns / 1_000_000).toISOString()) : "Unavailable"} /></div></details></> : <p className="runtime-empty-note">{state?.recovery_required ? "Protection baseline is unverified while recovery is required. Displayed values are withheld until the native account is recovered." : protectionVerified ? "Protection read is stale. Values are withheld until a fresh worker read is available." : loading ? "Loading drawdown protection…" : "Protection is not armed."}</p>}
     </Card>
-    <Card title="Drawdown protection" actions={<Badge tone={protectionArmed ? "success" : "danger"}>{protectionArmed ? "Protected" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
-      {protectionFresh ? <><p className="trader-note">Maximum drawdown limit: <strong>{String(protection?.drawdown_limit_percent)}%</strong></p><details className="nautilus-diagnostics"><summary>Protection basis and sample time</summary><div className="runtime-account-grid runtime-account-grid--compact"><Stat label="Protection equity" value={protection?.equity ?? "Unavailable"} /><Stat label="High-water equity" value={protection?.high_water_equity ?? "Unavailable"} /><Stat label="Threshold" value={protection?.threshold_equity ?? "Unavailable"} /><Stat label="Last daily close" value={formatUtcTimestamp(protection?.last_daily_close_utc)} /><Stat label="Observed" value={protection?.observed_at_ns ? formatUtcTimestamp(new Date(protection.observed_at_ns / 1_000_000).toISOString()) : "Unavailable"} /></div></details></> : <p className="runtime-empty-note">{state?.recovery_required ? "Protection baseline is unverified while recovery is required. Displayed values are withheld until the native account is recovered." : protectionVerified ? "Protection read is stale. Values are withheld until a fresh worker read is available." : "Protection is not armed."}</p>}
-    </Card>
-    {state?.warnings.length ? <div className="runtime-warning-list" role="status"><strong>Worker notice</strong><ul>{state.warnings.map((warning, index) => <li key={index}>{humanizeBlocker(warning)}</li>)}</ul></div> : null}
+    {state?.warnings.filter((warning) => warning !== 'FLAT_RESTART').length ? <div className="runtime-warning-list" role="status"><strong>Worker notice</strong><ul>{state.warnings.filter((warning) => warning !== 'FLAT_RESTART').map((warning, index) => <li key={index}>{humanizeBlocker(warning)}</li>)}</ul></div> : null}
 
     {message ? <p role="alert">Runtime account data is unavailable. Refresh to retry.</p> : null}
   </main>;
@@ -420,6 +451,7 @@ export function WorkspaceSettingsPage() {
     const failed = [projection, capabilities].find((result) => result.status === 'rejected');
     setMessage(failed?.status === 'rejected' ? String(failed.reason) : '');
     setLoading(false);
+    return projection.status === 'fulfilled' ? projection.value : null;
   }
   useEffect(() => { void refresh(); }, []);
   const protection = state?.deposit_protection;
@@ -437,8 +469,8 @@ export function WorkspaceSettingsPage() {
     setCommandInFlight('set-deposit-protection'); setMessage('Saving deposit protection…');
     try {
       const result = await commandHlStagegDepositProtection('set-deposit-protection', crypto.randomUUID(), percent);
-      await refresh();
-      if (result.status !== 'APPLIED' || result.deposit_protection.drawdown_limit_percent !== percent) throw new Error('Deposit protection read-back mismatch.');
+      const fresh = await refresh();
+      if (!verifiedControlReadback(state, fresh) || fresh?.deposit_protection?.drawdown_limit_percent !== percent || result.status !== 'APPLIED' || result.deposit_protection.drawdown_limit_percent !== percent) throw new Error('Deposit protection read-back mismatch.');
       setMessage('Deposit protection saved and read back.');
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Deposit protection save failed.'); }
     finally { setCommandInFlight(null); }
@@ -449,8 +481,8 @@ export function WorkspaceSettingsPage() {
     setCommandInFlight('reset-deposit-protection'); setMessage('Resetting deposit protection baseline…');
     try {
       const result = await commandHlStagegDepositProtection('reset-deposit-protection', crypto.randomUUID());
-      await refresh();
-      if (result.status !== 'APPLIED') throw new Error('Deposit protection reset was not confirmed.');
+      const fresh = await refresh();
+      if (!verifiedControlReadback(state, fresh) || !protectionIsFresh(fresh) || fresh?.deposit_protection?.state !== 'ARMED' || result.status !== 'APPLIED') throw new Error('Deposit protection reset was not confirmed.');
       setMessage('New baseline applied and read back. The worker remains paused.');
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Deposit protection reset failed.'); }
     finally { setCommandInFlight(null); }
@@ -460,25 +492,27 @@ export function WorkspaceSettingsPage() {
     setCommandInFlight(command); setMessage('Updating entry controls…');
     try {
       const result = await commandHlStagegEntries(command, crypto.randomUUID());
-      await refresh();
+      const fresh = await refresh();
+      if (!verifiedControlReadback(state, fresh, result.entry_control)) throw new Error('Entry control was accepted but fresh worker confirmation is unavailable. Refresh status before retrying.');
       setMessage(`${result.command === 'pause-new-entries' ? 'New entries paused' : 'New entries resumed'} (${result.status.toLowerCase()} and read back).`);
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Entry control update failed.'); }
     finally { setCommandInFlight(null); }
   }
   return <main className="terminal-layout">
+    <ExecutionModeSettings />
     <Card title="Sandbox account" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'Connecting' : state?.projection_state === 'READY' ? 'Connected' : state?.projection_state === 'STALE' ? 'Stale' : 'Unavailable'}</Badge>}>
       <div className="settings-sandbox-summary"><span>Execution mode</span><strong>Sandbox · order routing off</strong><Button variant="secondary" onClick={() => void refresh()}>Refresh</Button></div>
       <details className="settings-sandbox-details"><summary>Funding and account notes</summary><p>Observed funding is reference only and is not credited to Sandbox cash. {fundingLabel(state)}.</p></details>
     </Card>
     <SettingsConnections />
-    <Card title="Drawdown protection" actions={<Badge tone={protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
+    <Card title="Drawdown protection" actions={<Badge tone={protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
       {state?.recovery_required ? <p className="runtime-empty-note">Recovery is required. Protection values are withheld and settings remain read-only until account ownership is restored.</p> : <>
       <p className="muted">Changes require a paused worker and confirmed flat exposure.</p>
       <div className="rules-form-grid">
         <label className="rules-field"><span>Allowed drawdown, %</span><input aria-label="Allowed drawdown, %" type="number" min={1} max={99} step={1} value={protectionDraft} onChange={(event) => setProtectionDraft(event.target.value)} /></label>
         <div className="rules-btn-group rules-btn-group--mb"><Button variant="secondary" disabled={!pausedAndFlat || !Number.isInteger(percent) || percent < 1 || percent > 99 || commandInFlight !== null} onClick={() => void saveProtection()}>{commandInFlight === 'set-deposit-protection' ? 'Saving…' : 'Save'}</Button><Button variant="danger" disabled={!pausedAndFlat || protection?.equity == null || commandInFlight !== null} onClick={() => void resetProtection()}>{commandInFlight === 'reset-deposit-protection' ? 'Resetting…' : 'Set new baseline'}</Button></div>
       </div>
-      {protectionFresh ? <p className="muted">Protection is {protection?.state?.toLowerCase() ?? 'unavailable'} · Equity {protection?.equity ?? 'Unavailable'} · High-water {protection?.high_water_equity ?? 'Unavailable'} · Limit threshold {protection?.threshold_equity ?? 'Unavailable'}.</p> : <p className="runtime-empty-note">Protection values are stale or unverified and are withheld.</p>}
+      {protectionFresh ? <p className="muted">Protection is {protection?.state?.toLowerCase() ?? 'unavailable'} · Equity {traderMoney(protection?.equity)} · High-water {traderMoney(protection?.high_water_equity)} · Limit threshold {traderMoney(protection?.threshold_equity)}.</p> : <p className="runtime-empty-note">Protection values are stale or unverified and are withheld.</p>}
       </>}
     </Card>
     <Card title="Entry controls" actions={<Badge tone={controls?.pause.enabled && controlsAllowed ? 'success' : 'danger'}>{controlAvailabilityLabel(controls?.pause.enabled && controlsAllowed, state?.recovery_required)}</Badge>}>
