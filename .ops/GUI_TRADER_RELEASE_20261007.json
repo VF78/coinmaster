@@ -1,0 +1,52 @@
+{
+  "activation_scope": "GUI API and existing unprivileged connection broker only",
+  "archive_sha256": "5dce453b3e6904b2d07e4c3743f6964704eb88e620edb0e00d69bf796ead5388",
+  "connection_broker_pid": 2115953,
+  "gui_api_pid": 2115905,
+  "live_active": false,
+  "live_pid": 0,
+  "logs": "/tmp/cm-gui-20261007",
+  "native_account": {
+    "equity": "11319.40534863",
+    "fees": "47.45465137",
+    "mark_state": "CURRENT",
+    "native_cash": "11319.40534863",
+    "native_free": "11319.40534863",
+    "native_locked": "0",
+    "realized_pnl_net_fees": "1319.40534863",
+    "unrealized_pnl": "0"
+  },
+  "native_event_cursor": 23,
+  "observed_at_utc": "2026-10-07T11:37:46Z",
+  "preservation_checks": {
+    "deposit_limit_unchanged": true,
+    "entry_control_unchanged": true,
+    "native_account_unchanged": true,
+    "native_event_cursor_unchanged": true,
+    "native_positions_orders_unchanged": true,
+    "run_epoch_unchanged": true,
+    "sealed_hashes_unchanged": true,
+    "trader_pid_restarts_unchanged": true
+  },
+  "release_commit": "93eb329edbb6e8d7f7729ad9b389008841a351a3",
+  "release_path": "/srv/coinmaster-native-gui/releases/93eb329edbb6e8d7f7729ad9b389008841a351a3",
+  "remaining": [
+    "Live activation capability rejected by automatic approval review pending explicit permission; no privilege grant or mutation endpoint written.",
+    "Native per-position/closed-trade PnL and mutable native seed are unavailable in existing contracts."
+  ],
+  "rendered_acceptance": "PENDING_COORDINATOR_AUTHENTICATED_BROWSER",
+  "sandbox_nrestarts": 0,
+  "sandbox_pid": 2009732,
+  "sandbox_run_epoch": "10e39dc6efa64c8b820b174c0a5b65fe",
+  "schema": "coinmaster-gui-trader-release-receipt-v1",
+  "source_commit": "b53593a",
+  "tests": {
+    "backend": 82,
+    "build_web_custom": "PASS",
+    "final_mode": 2,
+    "frontend": 33,
+    "real_loopback_broker_callback": "PASS",
+    "types": "PASS",
+    "ui_invariants": 74
+  }
+}
