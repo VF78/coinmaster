@@ -1,0 +1,31 @@
+{
+  "source_commit": "306e1aab402b521d7a7e3df2fb74aae1c3844dbc",
+  "release": "/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150",
+  "previous_immutable_release": "/srv/coinmaster/hl-live/releases/e0bc51cdd1d976d8910171aefc8b305c7013ed29-v0-81e6318-wheel-8ff3c6dcc150",
+  "release_tree_sha256": "1c2845f4ee90caf2ca5170ed24bbe7054f7a3339518662932af9529c2181ab17",
+  "wheel_sha256": "8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46",
+  "strategy_sha256": "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511",
+  "changed_runtime_files": [
+    "coinmaster/ops/hl_live_worker.py",
+    "ops/coinmaster-hl-stageg-live.service"
+  ],
+  "live_status_port": 18185,
+  "connections_broker_port": 18184,
+  "targeted_source_checks": [
+    "default_and_unit_18185",
+    "environment_override",
+    "approval_before_credential_or_native_build"
+  ],
+  "staged_dedicated_uid_checks": [
+    "LIVE_UID_DEFAULT_AND_UNIT_18185_NO_NATIVE_START_PASS",
+    "LIVE_UID_PORT_18185_FREE_BIND_PASS"
+  ],
+  "systemd_unit_validation": "PASS",
+  "live_service": "disabled/inactive/PID0",
+  "sandbox_pid": 2009732,
+  "sandbox_restarts": 0,
+  "native_execution_started": false,
+  "real_orders": false,
+  "active_services_restarted": false,
+  "secret_access": false
+}
