@@ -1,0 +1,43 @@
+{
+  "job_id": "36ba215bab9043e6bf217d98ac614c8d",
+  "report_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/36ba215bab9043e6bf217d98ac614c8d/artifacts/result.json",
+  "report_sha256": "ec85e82c8ef351458a072cc1f426b52b09f76fff37b79cec90753d10f946d9ff",
+  "bounded_interval": {
+    "end_exclusive": "2026-09-01",
+    "start": "2026-08-25"
+  },
+  "config_hash": "df378752178d1d4208b2868bbae1f5f2967eba7a734c4c09534fd48e77ec3af1",
+  "request_hash": "4e2692424ee96f059d6635a9bd0de01082bcca9b674c8f651bc31c1647806f3f",
+  "source_manifest_sha256": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+  "artifact_references": {
+    "result-funding.sqlite": "2be899ee36b0f86e7ca27ae1173026b571af39aba60ffd1b8d7992eeb689d74e",
+    "result-envelope.json": "0f8faa27897ee6bbf1a48d11df080724d5dd4b7b8152fb273d557f9d138e3b5c",
+    "result-fills.csv": "e8cf1f590ed54f04045d3f86d1bea0774da437b0055065de704ac1c22ba32f05",
+    "result-orders.csv": "398058734d03a7e7e3b28cdacb506a869cbca35d3530cb7092d3376281b2ec0b",
+    "result.json": "ec85e82c8ef351458a072cc1f426b52b09f76fff37b79cec90753d10f946d9ff"
+  },
+  "metrics": {
+    "terminal_total": "16697.62982480",
+    "roi": null,
+    "max_drawdown_percent": null,
+    "fills": 6,
+    "native_fees": "175.85222907",
+    "funding": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 4,
+        "SOLUSDT-PERP.P1SIM": 11
+      },
+      "count": 15,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "liquidation_count": 0
+  },
+  "environment_contract": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "ARROW_NUM_THREADS": "2",
+    "note": "verified manager isolation contract; child exited before environment readback"
+  }
+}
