@@ -64,3 +64,7 @@ test('Settings supports agent key replacement on a saved account without claimin
   assert.match(component, /Save and verify/);
   assert.match(component, /does not enable live trading/);
 });
+
+test('missing native agent delegation is not mislabeled as a foreign master', () => {
+  assert.equal(connectionVerificationRows('hyperliquid', { public_observation: 'REACHABLE', agent_authorization: 'NOT_AUTHORIZED' })[1].value, 'Agent authorization missing');
+});

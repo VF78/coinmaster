@@ -151,9 +151,9 @@ def test_saved_hyperliquid_agent_key_update_verifies_role_and_persists_safely(tm
     monkeypatch.setattr("coinmaster.api.connections_broker._read_url", lambda _: {"role": "agent", "data": {"user": "0x" + "3" * 40}})
     status, raw = call(restarted, "POST", "/api/v1/connections/" + connection_id + "/test", headers=auth_headers())
     assert status == 200 and json.loads(raw)["verification_state"]["agent_authorization"] == "MISMATCH"
-    monkeypatch.setattr("coinmaster.api.connections_broker._read_url", lambda _: {"role": "user"})
+    monkeypatch.setattr("coinmaster.api.connections_broker._read_url", lambda _: {"role": "missing"})
     status, raw = call(restarted, "PUT", route, body, headers=auth_headers())
-    assert status == 200 and json.loads(raw)["verification_state"]["agent_authorization"] == "MISMATCH"
+    assert status == 200 and json.loads(raw)["verification_state"]["agent_authorization"] == "NOT_AUTHORIZED"
     monkeypatch.setattr("coinmaster.api.connections_broker._read_url", lambda _: (_ for _ in ()).throw(ValueError("secret failure")))
     status, raw = call(restarted, "PUT", route, body, headers=auth_headers())
     assert status == 200 and json.loads(raw)["verification_state"]["agent_authorization"] == "ERROR"
@@ -334,3 +334,39 @@ def test_disconnect_crash_clears_selection_before_record_removal(tmp_path, monke
     (Path(root) / "display").write_text(connection_id)
     status, raw = call(restarted, "GET", "/api/v1/connections", headers=auth_headers())
     assert status == 200 and json.loads(raw)["display_connection_id"] is None
+
+
+def test_root_admin_repin_preserves_private_store_owner(tmp_path):
+    import os
+    from coinmaster.api.connections_broker import ConnectionStore
+    if os.geteuid() != 0:
+        import pytest
+        pytest.skip("UID ownership acceptance requires isolated root fixture")
+    root = tmp_path / "private-store"
+    root.mkdir(mode=0o700)
+    os.chown(root, 65534, 65534)
+    store = ConnectionStore(str(root))
+    item = {"id":"a"*32,"venue":"hyperliquid","account_label":"non-secret fixture"}
+    store.save(item)
+    record = root / ("a"*32+".json")
+    assert record.stat().st_uid == 65534 and record.stat().st_gid == 65534
+    assert record.stat().st_mode & 0o777 == 0o600
+    assert root.stat().st_mode & 0o777 == 0o700
+    item["account_label"] = "admin repin fixture"
+    store.save(item)
+    assert record.stat().st_uid == 65534
+    assert store.get("a"*32)["account_label"] == "admin repin fixture"
+
+def test_permission_error_is_storage_unavailable_not_missing(tmp_path, monkeypatch):
+    import os
+    import pytest
+    from fastapi import HTTPException
+    from coinmaster.api.connections_broker import ConnectionStore
+    store = ConnectionStore(str(tmp_path / "private-store"))
+    original = os.open
+    def denied(path, *args, **kwargs):
+        if str(path).endswith("a"*32+".json"): raise PermissionError()
+        return original(path,*args,**kwargs)
+    monkeypatch.setattr(os,"open",denied)
+    with pytest.raises(HTTPException) as error: store.get("a"*32)
+    assert error.value.status_code == 503

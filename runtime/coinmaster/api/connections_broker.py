@@ -59,6 +59,11 @@ class ConnectionStore:
         try:
             with os.fdopen(fd, "w") as file:
                 os.fchmod(file.fileno(), 0o600)
+                # Admin repins must retain the existing broker's private-store owner.
+                # Otherwise root creates 0600 records which the broker cannot read.
+                if os.geteuid() == 0:
+                    owner = self.root.stat()
+                    os.fchown(file.fileno(), owner.st_uid, owner.st_gid)
                 json.dump(data, file, separators=(",", ":"))
                 file.flush()
                 os.fsync(file.fileno())
@@ -79,8 +84,12 @@ class ConnectionStore:
             fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
             with os.fdopen(fd) as file:
                 return json.load(file)
-        except (FileNotFoundError, ValueError, OSError):
+        except FileNotFoundError:
             raise HTTPException(404, "connection not found") from None
+        except PermissionError:
+            raise HTTPException(503, "Account connection storage is unavailable") from None
+        except (ValueError, OSError):
+            raise HTTPException(503, "Account connection storage is unavailable") from None
 
     def all(self) -> list[dict]:
         result = []
@@ -189,7 +198,7 @@ def _agent_authorization(item: dict) -> str:
             return "ERROR"
         role = _hyperliquid_info("userRole", agent_address)
         if role.get("role") != "agent":
-            return "MISMATCH"
+            return "NOT_AUTHORIZED"
         data = role.get("data")
         if not isinstance(data, dict) or not isinstance(data.get("user"), str) or not ADDRESS_RE.fullmatch(data["user"]):
             return "ERROR"

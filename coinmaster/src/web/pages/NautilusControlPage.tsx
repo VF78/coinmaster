@@ -12,7 +12,7 @@ import { Stat } from '../components/Stat';
 import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegEquityChanges, getHlStagegFills, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlNativeEquityChanges, type HlStagegControls, type HlStagegFillHistory, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
 import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, protectionIsFresh, protectionIsVerified } from '../lib/accountPresentation';
 import { positionPresentation, TRADER_MARKETS } from '../lib/traderPresentation';
-import { parseFiniteNumberFields } from '../lib/strategyDraftValidation';
+import { parseFiniteNumberFields, strategyDraftError } from '../lib/strategyDraftValidation';
 import { controlAvailabilityLabel, humanizeBlocker, humanizeResearchCode, isAdvancedStrategySetting, nativeFillActionLabel, unavailableTradeHistoryLabel, strategyRunnerLabel, strategySettingLabel, strategySettingValue } from '../lib/traderLabels';
 
 import { verifiedControlReadback } from '../lib/controlReadback';
@@ -34,12 +34,16 @@ const PARAMETER_LABELS: Record<string, string> = {
 function title(key: string) { return PARAMETER_LABELS[key] ?? strategySettingLabel(key); }
 function displaySetting(key: string, value: unknown) { return strategySettingValue(key, value); }
 
-function NumberArrayField({ label, value, onCommit }: { label: string; value: number[]; onCommit: (next: number[]) => void }) {
+function NumberArrayField({ label, value, onCommit, onValidity }: { label: string; value: number[]; onCommit: (next: number[]) => void; onValidity: (valid: boolean) => void }) {
   const serialized = value.map(String);
   const [draft, setDraft] = useState(serialized);
   const [invalid, setInvalid] = useState(false);
   useEffect(() => { setDraft(serialized); setInvalid(false); }, [value.join(',')]);
-  function change(index: number, next: string) { setDraft((current) => current.map((field, fieldIndex) => fieldIndex === index ? next : field)); }
+  function change(index: number, next: string) {
+    const updated = draft.map((field, fieldIndex) => fieldIndex === index ? next : field);
+    setDraft(updated); const parsed = parseFiniteNumberFields(updated);
+    setInvalid(!parsed); onValidity(Boolean(parsed)); if (parsed) onCommit(parsed);
+  }
   function commit() {
     const parsed = parseFiniteNumberFields(draft);
     if (!parsed || parsed.length !== value.length) { setInvalid(true); return; }
@@ -53,12 +57,15 @@ function NumberArrayField({ label, value, onCommit }: { label: string; value: nu
 }
 
 export function StrategyPage() {
+  const [invalidArrays, setInvalidArrays] = useState<Record<string, boolean>>({});
   const [strategy, setStrategy] = useState<HlStagegStrategy | null>(null); const [config, setConfig] = useState<StrategyConfig | null>(null); const [drafts, setDrafts] = useState<StrategyConfiguration[]>([]); const [saved, setSaved] = useState<StrategyConfiguration | null>(null); const [message, setMessage] = useState(''); const [loading, setLoading] = useState(true); const [saving, setSaving] = useState(false);
   async function load() { setLoading(true); setMessage(''); const [sealed, stored, template] = await Promise.allSettled([getHlStagegStrategy(), getConfigurations(), getDefaultConfiguration()]); if (sealed.status === 'fulfilled') setStrategy(sealed.value); if (stored.status === 'fulfilled') { setDrafts(stored.value); const selected = stored.value.find((item) => item.id === window.localStorage.getItem('coinmaster-selected-config')) ?? stored.value[0]; if (selected) { setSaved(selected); setConfig(selected.config); } } if (template.status === 'fulfilled') setConfig((current) => current ?? template.value.config); const failure = [sealed, stored, template].find((result) => result.status === 'rejected'); if (failure?.status === 'rejected') setMessage(failure.reason instanceof Error ? failure.reason.message : 'Unable to load the Strategy page.'); setLoading(false); }
   useEffect(() => { void load(); }, []);
-  function updateNumber(key: NumberKey, value: string) { if (value !== '') setConfig((item) => item ? { ...item, [key]: key === 'btc_close_trail_fraction' ? Number(value) / 100 : Number(value) } : item); }
+  function updateNumber(key: NumberKey, value: string) { setConfig((item) => item ? { ...item, [key]: key === 'btc_close_trail_fraction' ? (value === '' ? NaN : Number(value) / 100) : (value === '' ? NaN : Number(value)) } : item); }
   function updateArray(key: ArrayKey, value: number[]) { setConfig((item) => item ? { ...item, [key]: value } : item); }
-  async function save() { if (!config || saving) return; if (!Number.isFinite(Number(config.initial_total_usdt)) || Number(config.initial_total_usdt) <= 0) { setMessage('Research draft validation failed: initial total must be a positive number.'); return; } setSaving(true); setMessage('Saving research draft…'); try { const next = await saveConfiguration(config); const refreshed = await getConfigurations(); const persisted = refreshed.find((item) => item.id === next.id); if (!persisted) throw new Error('Saved draft could not be read back.'); setDrafts(refreshed); setSaved(persisted); setConfig(persisted.config); window.localStorage.setItem('coinmaster-selected-config', persisted.id); setMessage(`Research draft saved and read back: ${formatUtcTimestamp(persisted.created_at)}.`); } catch (error) { setMessage(error instanceof Error ? error.message : 'Research draft save failed.'); } finally { setSaving(false); } }
+  async function save() { if (!config || saving || draftError) return; if (!Number.isFinite(Number(config.initial_total_usdt)) || Number(config.initial_total_usdt) <= 0) { setMessage('Research draft validation failed: initial total must be a positive number.'); return; } setSaving(true); setMessage('Saving research draft…'); try { const next = await saveConfiguration(config); const refreshed = await getConfigurations(); const persisted = refreshed.find((item) => item.id === next.id); if (!persisted) throw new Error('Saved draft could not be read back.'); setDrafts(refreshed); setSaved(persisted); setConfig(persisted.config); window.localStorage.setItem('coinmaster-selected-config', persisted.id); setMessage(`Research draft saved and read back: ${formatUtcTimestamp(persisted.created_at)}.`); } catch (error) { setMessage(error instanceof Error ? error.message : 'Research draft save failed.'); } finally { setSaving(false); } }
+  const draftError = Object.values(invalidArrays).some(Boolean) ? 'Enter a finite number in every array field.' : config ? strategyDraftError(config) : null;
+  const draftDirty = Boolean(Object.values(invalidArrays).some(Boolean) || config && (!saved || JSON.stringify(config) !== JSON.stringify(saved.config)));
   const runningMatch = strategy?.running_state === 'RUNNING_MATCH';
   const sourceChecked = strategy?.source_state === 'SEALED_CONFIGURATION_CHECKED';
   const runningParameters = Object.entries(strategy?.candidate ?? {}).map(([parameter, value]) => ({ id: parameter, parameter, value }));
@@ -70,14 +77,14 @@ export function StrategyPage() {
     ['Signal and safety settings', visibleRunningParameters.filter((row) => !row.parameter.startsWith('btc_') && !row.parameter.startsWith('sol_'))],
   ] as const;
   return <main className="terminal-layout nautilus-strategy-workspace">
-    <Card className="trader-hero strategy-hero" title={loading ? 'Loading strategy…' : runningMatch ? 'Running strategy' : sourceChecked ? 'Approved strategy' : 'Strategy unavailable'} actions={<Badge tone={runningMatch ? 'success' : 'danger'}>{strategyRunnerLabel(strategy?.running_state ?? (loading ? 'LOADING' : 'NOT_CONFIRMED'))}</Badge>}>
-      <p className="trader-hero__lead">{runningMatch ? 'The worker is running the sealed BTC / SOL strategy shown below.' : sourceChecked ? 'The approved settings were read successfully, but the worker match is not confirmed.' : 'The strategy source could not be confirmed. No running settings are implied.'}</p>
+    <Card className="trader-hero strategy-hero" title={loading ? 'Loading strategy…' : runningMatch ? 'Running strategy' : sourceChecked ? 'Approved strategy' : 'Strategy unavailable'} actions={<Badge tone={loading ? 'neutral' : runningMatch ? 'success' : 'danger'}>{strategyRunnerLabel(strategy?.running_state ?? (loading ? 'LOADING' : 'NOT_CONFIRMED'))}</Badge>}>
+      <p className="trader-hero__lead">{loading ? 'Loading approved strategy settings…' : runningMatch ? 'The worker is running the sealed BTC / SOL strategy shown below.' : sourceChecked ? 'The approved settings were read successfully, but the worker match is not confirmed.' : 'The strategy source could not be confirmed. No running settings are implied.'}</p>
       <div className="stats-grid"><Stat label="Strategy" value={strategy?.candidate && Object.keys(strategy.candidate).length ? 'BTC / SOL Wave Overlay · V0' : loading ? 'Loading…' : 'Unavailable'} /><Stat label="Execution" value="Local Sandbox" /><Stat label="Market data" value="Hyperliquid public" /></div>
       <p className="trader-note">Strategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.</p>
     </Card>
     <StrategyEntryControls />
-    <section className="strategy-settings-grid">{strategyGroups.map(([group, rows]) => <Card className="strategy-settings-card" key={group} title={group} actions={<Badge tone={runningMatch ? 'success' : 'neutral'}>{runningMatch ? 'Confirmed' : 'Unconfirmed'}</Badge>}>
-      {rows.length ? <dl className="strategy-setting-list">{rows.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl> : <p className="runtime-empty-note">No approved settings are available.</p>}
+    <section className="strategy-settings-grid">{strategyGroups.map(([group, rows]) => <Card className="strategy-settings-card" key={group} title={group} actions={<Badge tone={runningMatch ? 'success' : 'neutral'}>{loading ? 'Loading' : runningMatch ? 'Confirmed' : 'Unconfirmed'}</Badge>}>
+      {rows.length ? <dl className="strategy-setting-list">{rows.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl> : <p className="runtime-empty-note">{loading ? 'Loading approved settings…' : 'No approved settings are available.'}</p>}
     </Card>)}</section>
     {advancedRunningParameters.length ? <details className="nautilus-diagnostics"><summary>Advanced strategy rules</summary><dl className="strategy-setting-list">{advancedRunningParameters.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl></details> : null}
     <details className="nautilus-diagnostics strategy-research-drafts"><summary>Research drafts · saved separately from the running strategy</summary><div className="research-drafts-card">
@@ -85,22 +92,22 @@ export function StrategyPage() {
       <label className="rules-field"><span>Read-back saved draft</span><select value={saved?.id ?? ''} onChange={(event) => { const next = drafts.find((item) => item.id === event.target.value) ?? null; setSaved(next); setConfig(next?.config ?? config); if (next) window.localStorage.setItem('coinmaster-selected-config', next.id); }}>{drafts.map((item) => <option key={item.id} value={item.id}>Saved draft · {formatUtcTimestamp(item.created_at)}</option>)}</select></label>
       <div className="nautilus-strategy-grid">
         <section className="nautilus-strategy-group"><h3>BTC sizing and exits</h3><p className="muted">Research draft; sealed running parameters stay above.</p><div className="rules-form-grid">
-        {(['ema_period', 'btc_notional_multiplier', 'btc_close_trail_fraction'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <NumberArrayField label="BTC take-profit size fractions (0–1)" value={config.btc_tp_fractions_initial_qty} onCommit={(next) => updateArray('btc_tp_fractions_initial_qty', next)} /> : null}
+        {(['ema_period', 'btc_notional_multiplier', 'btc_close_trail_fraction'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null || !Number.isFinite(config[key]) ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
+        {config ? <NumberArrayField label="BTC take-profit size fractions (0–1)" value={config.btc_tp_fractions_initial_qty} onCommit={(next) => updateArray('btc_tp_fractions_initial_qty', next)} onValidity={(valid) => setInvalidArrays((current) => ({ ...current, btc_tp_fractions_initial_qty: !valid }))} /> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>SOL sizing and exits</h3><p className="muted">Entry thresholds, add sizes and staged exits.</p><div className="rules-form-grid">
-        {(['sol_exit_half_z', 'sol_exit_all_z', 'sol_max_holding_days'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <><NumberArrayField label="SOL add-size multipliers (×)" value={config.sol_size_multipliers_H} onCommit={(next) => updateArray('sol_size_multipliers_H', next)} /><NumberArrayField label="SOL entry thresholds (σ)" value={config.sol_entry_z} onCommit={(next) => updateArray('sol_entry_z', next)} /></> : null}
+        {(['sol_exit_half_z', 'sol_exit_all_z', 'sol_max_holding_days'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null || !Number.isFinite(config[key]) ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
+        {config ? <><NumberArrayField label="SOL add-size multipliers (×)" value={config.sol_size_multipliers_H} onCommit={(next) => updateArray('sol_size_multipliers_H', next)} onValidity={(valid) => setInvalidArrays((current) => ({ ...current, sol_size_multipliers_H: !valid }))} /><NumberArrayField label="SOL entry thresholds (σ)" value={config.sol_entry_z} onCommit={(next) => updateArray('sol_entry_z', next)} onValidity={(valid) => setInvalidArrays((current) => ({ ...current, sol_entry_z: !valid }))} /></> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>Signal windows</h3><p className="muted">Feature history and wave thresholds.</p><div className="rules-form-grid">
-        {(['beta_days', 'relative_days', 'z_history_days', 'wave_history_days', 'wave_min_count'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
-        {config ? <><NumberArrayField label="Wave thresholds (0–1)" value={config.wave_quantiles} onCommit={(next) => updateArray('wave_quantiles', next)} /></> : null}
+        {(['beta_days', 'relative_days', 'z_history_days', 'wave_history_days', 'wave_min_count'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null || !Number.isFinite(config[key]) ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
+        {config ? <><NumberArrayField label="Wave thresholds (0–1)" value={config.wave_quantiles} onCommit={(next) => updateArray('wave_quantiles', next)} onValidity={(valid) => setInvalidArrays((current) => ({ ...current, wave_quantiles: !valid }))} /></> : null}
         </div></section>
         <section className="nautilus-strategy-group"><h3>Capital and constraints</h3><p className="muted">Fixed v0 controls are visible but cannot be edited.</p><div className="rules-form-grid">
         <label className="rules-field"><span>Initial TOTAL (template constraint)</span><input disabled value={config?.initial_total_usdt ?? ''} /></label>
         <label className="rules-field"><span>Initial active fraction (template constraint)</span><input disabled type="number" value={String(config?.initial_active_fraction ?? '')} /></label>
         <label className="rules-field"><span>Research venue</span><select value={config?.venue ?? ''} onChange={(event) => setConfig((item) => item ? { ...item, venue: (event.target.value || null) as StrategyConfig['venue'] } : item)}><option value="">Unselected</option><option value="bybit">Bybit</option><option value="hyperliquid">Hyperliquid</option></select></label>
-        {(['max_gross_to_active'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
+        {(['max_gross_to_active'] as const).map((key) => <label className="rules-field" key={key}><span>{title(key)}</span><input type="number" step="any" value={config?.[key] == null || !Number.isFinite(config[key]) ? '' : String(String(key) === 'btc_close_trail_fraction' ? Number(config[key]) * 100 : config[key])} onChange={(event) => updateNumber(key, event.target.value)} /></label>)}
         <label className="rules-field"><span>Maximum parent order notional</span><input type="number" step="any" value={config?.max_parent_notional ?? ''} onChange={(event) => setConfig((item) => item ? { ...item, max_parent_notional: event.target.value } : item)} /></label>
         <label className="rules-field"><span>Include zero waves (v0 fixed)</span><input disabled type="checkbox" checked={Boolean(config?.include_zero_waves)} /></label>
         <label className="rules-field"><span>Freeze sigma on first SOL fill (v0 fixed)</span><input disabled type="checkbox" checked={Boolean(config?.freeze_sigma_on_first_sol_fill)} /></label>
@@ -108,7 +115,7 @@ export function StrategyPage() {
         </div></section>
       </div>
       <p className="muted">Template constraints remain fixed until a separately scoped native implementation. Server validation is authoritative for research-draft saves.</p>
-      <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!config || saving} onClick={() => void save()}>{saving ? 'Saving…' : 'Save research draft'}</Button>{saved ? <Badge tone="success">Saved draft read back</Badge> : null}</div>{message ? <p className="muted">{message}</p> : null}
+      <div className="rules-btn-group rules-btn-group--mb"><Button variant="primary" disabled={!config || saving || Boolean(draftError)} onClick={() => void save()}>{saving ? 'Saving…' : 'Save research draft'}</Button>{saved ? <Badge tone={draftDirty ? 'neutral' : 'success'}>{draftDirty ? 'Unsaved changes' : 'Saved draft read back'}</Badge> : null}</div>{draftError ? <p className="field-error" role="alert">{draftError}</p> : null}{message && !draftDirty ? <p className="muted">{message}</p> : null}
     </div></details>
   </main>;
 }
@@ -247,6 +254,7 @@ export function ResearchPage() {
       <p className="muted">{activeRun ? "Backtest is running; progress refreshes automatically." : selectedRun ? "Showing the selected run." : "No run selected."}</p>
       <div className="stats-grid"><Stat label="Terminal TOTAL" value={traderMoney(terminalTotal, 'USDT')} /><Stat label="ROI" value={traderPercent(researchMetric(metrics, 'roi'))} /><Stat label="Max drawdown" value={traderPercent(researchMetric(metrics, 'max_drawdown_percent'))} /><Stat label="Active capital" value={traderMoney(researchMetric(metrics, 'terminal_active'), 'USDT')} /><Stat label="Reserve" value={traderMoney(researchMetric(metrics, 'terminal_reserve'), 'USDT')} /><Stat label="Executed fills" value={traderNumber(researchMetric(metrics, 'fills'), 0)} /></div>
       <p className="trader-note">Trading fees: {traderMoney(researchMetric(metrics, 'native_fees'), 'USDT')} · Funding: {traderMoney((researchMetric(metrics, 'funding') as { signed_amount?: unknown } | undefined)?.signed_amount, 'USDT')} · Liquidations: {traderNumber(researchMetric(metrics, 'liquidation_count'), 0)}.</p>
+      {selectedRun?.status === 'COMPLETED' && Number(researchMetric(metrics, 'fills')) === 0 ? <p className="trader-note">No trades executed in this run.</p> : null}
       <p className="trader-note">Historical simulation. Venue fees, intraminute execution and funding settlement are not fully validated; these results do not predict the running trader.</p>
       {selectedRun?.evidence.length ? <p className="muted">{selectedRun.evidence.map(humanizeBlocker).join(' ')}</p> : null}
       {top20.length ? <><h3 className="nautilus-subheading">TOP {top20.length} · terminal TOTAL comparison</h3><DataTable rows={top20.map((row) => ({ ...row, classification: humanizeResearchCode(row.classification), id: row.candidate_id }))} emptyText="No ranked candidates." mobileTitle={(row) => row.candidate_id} columns={[{ key: 'candidate', header: 'Candidate', render: (row) => row.candidate_id }, { key: 'total', header: 'TOTAL / ACTIVE / RESERVE', render: (row) => `${row.terminal_total} / ${row.terminal_active} / ${row.terminal_reserve}` }, { key: 'risk', header: 'ROI / DD / liq', render: (row) => `${row.roi} / ${row.drawdown_percent} / ${row.liquidations}` }, { key: 'costs', header: 'Fills / maker / taker / funding', render: (row) => `${row.fills} / ${row.maker_fees} / ${row.taker_fees} / ${row.funding?.signed_amount ?? '—'}` }, { key: 'proof', header: 'Classification / limits', render: (row) => `${row.classification} · ${row.limitations.join('; ')}` }]} /></> : <p className="muted">This run has no parameter comparison.</p>}
@@ -309,7 +317,7 @@ export function RuntimePage() {
   };
   const runtimeStatus = dashboardState(state);
   const runtimeHealthy = state?.projection_state === 'READY' && state?.recovery_required !== true && state.process_state !== 'DATA_STALE/PAUSED' && state.process_state !== 'WORKER_DISCONNECTED';
-  const entryGateMessage = state?.recovery_required === true
+  const entryGateMessage = loading && !state ? 'Loading strategy status' : state?.recovery_required === true
     ? 'New entries are blocked pending recovery'
     : state?.projection_state !== 'READY'
     ? 'Entry approval unavailable'
@@ -343,11 +351,11 @@ export function RuntimePage() {
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={loading && !state ? 'neutral' : runtimeStatus.tone}>{loading && !state ? 'Loading' : humanizeResearchCode(runtimeStatus.label)}</Badge>}>
       <div className="runtime-hero__heading"><div><p className="trader-note">{entryGateMessage}.</p><p className="runtime-snapshot-time">Sandbox snapshot · {state?.observed_at_ns ? formatUtcTimestamp(new Date(state.observed_at_ns / 1_000_000).toISOString()) : 'time unavailable'}</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
       <div className="runtime-account-grid runtime-account-grid--compact runtime-priority-grid">
-        <Stat label="Equity" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Marked equity")?.value ?? "Unavailable"} />
-        <Stat label="Available cash" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Available cash")?.value ?? "Unavailable"} />
-        <Stat label="Realized P&L · net fees" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
-        <Stat label="Unrealized P&L" value={accountIsUnknown ? "Unavailable" : figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
-        <Stat label="Trading fees" value={accountIsUnknown ? "Unavailable" : traderMoney(state?.account.fees)} />
+        <Stat label="Equity" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Marked equity")?.value ?? "Unavailable"} />
+        <Stat label="Available cash" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Available cash")?.value ?? "Unavailable"} />
+        <Stat label="Realized P&L · net fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Realized PnL after fees")?.value ?? "Unavailable"} />
+        <Stat label="Unrealized P&L" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Unrealized PnL")?.value ?? "Unavailable"} />
+        <Stat label="Trading fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : traderMoney(state?.account.fees)} />
         <Stat label="Effective leverage" value={effectiveLeverage(state)} />
       </div>
       <p className="account-capital-caption">Virtual starting capital: 10,000 USDC · {projectionReady ? positionSummary + ' · ' + orderRows.length + ' working orders' : loading ? 'Loading exposure…' : 'Exposure unavailable'}</p>
@@ -360,7 +368,7 @@ export function RuntimePage() {
         </div>
         <div className="runtime-account-grid runtime-account-grid--compact runtime-account-details__other">{figures.filter((figure) => !["Marked equity", "Available cash", "Realized PnL after fees", "Unrealized PnL"].includes(figure.label)).map((figure) => <Stat key={figure.label} label={figure.label} value={figure.value} />)}</div>
       </details>}
-      {accountIsUnknown ? <div className="runtime-empty-note account-unavailable"><strong>Account valuation unavailable</strong><span>{runtimeStatus.detail}</span></div> : null}
+      {accountIsUnknown && !loading ? <div className="runtime-empty-note account-unavailable"><strong>Account valuation unavailable</strong><span>{runtimeStatus.detail}</span></div> : null}
       {state?.account.mark_state === 'STALE_OR_MISSING' ? <p className="runtime-empty-note">Mark is stale or missing. Marked equity and unrealized P&amp;L are not current.</p> : null}
       {state?.account.status === 'PARTIAL' ? <p className="runtime-empty-note">Account read is partial. Missing account fields remain unavailable.</p> : null}
     </Card>
@@ -375,14 +383,14 @@ export function RuntimePage() {
         const fresh = feed?.state === 'READY' && feed.mark_age_ns != null && feed.mark_age_ns >= 0 && feed.mark_age_ns <= 15_000_000_000;
         const position = positionPresentation(state, instrumentId);
         const linkedOrders = orderRows.filter((order) => order.instrument_id === instrumentId);
-        return <Card key={instrumentId} className="trader-market-card" title={symbol} actions={<Badge tone={fresh ? 'success' : 'danger'}>{fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
+        return <Card key={instrumentId} className="trader-market-card" title={symbol} actions={<Badge tone={loading && !state ? 'neutral' : fresh ? 'success' : 'danger'}>{loading && !state ? 'Loading' : fresh ? 'Live' : feed?.state === 'READY' ? 'Stale' : humanizeResearchCode(feed?.state ?? 'UNAVAILABLE')}</Badge>}>
           <div className="trader-market-price">
             <span>{fresh ? 'Mark' : 'Previous mark'}</span>
-            <strong>{traderNumber(feed?.mark, symbol === 'BTC' ? 2 : 3)}</strong>
+            <strong>{loading && !state ? 'Loading…' : traderNumber(feed?.mark, symbol === 'BTC' ? 2 : 3)}</strong>
             <small>{fresh ? `Mark age ${age(feed?.mark_age_ns)}` : feed?.mark ? `Stale · ${age(feed.mark_age_ns)}` : 'Mark unavailable'}</small>
           </div>
           <div className="trader-market-exposure">
-            <div className="trader-market-exposure__heading"><span>Sandbox position</span><Badge tone={position.state === 'OPEN' ? 'success' : position.state === 'FLAT' ? 'neutral' : 'danger'}>{position.state === 'OPEN' ? 'Open' : position.state === 'FLAT' ? 'Flat' : 'Unconfirmed'}</Badge></div>
+            <div className="trader-market-exposure__heading"><span>Sandbox position</span><Badge tone={position.state === 'OPEN' ? 'success' : position.state === 'FLAT' ? 'neutral' : 'danger'}>{position.state === 'OPEN' ? 'Open' : position.state === 'FLAT' ? 'Flat' : loading && !state ? 'Loading' : 'Unconfirmed'}</Badge></div>
             {position.state === 'OPEN' ? <div className="trader-market-exposure__value"><strong className={position.side === 'LONG' ? 'up' : 'down'}>{position.side}</strong><span>{traderNumber(Math.abs(Number(position.quantity)), 5)} {symbol}</span></div> : position.state === 'FLAT' ? <p>Confirmed flat · 0 position size</p> : <p>{loading ? 'Loading position…' : state?.recovery_required ? 'Position ownership requires recovery.' : 'Position status unavailable.'}</p>}
           </div>
           {position.state === 'OPEN' ? <dl className="position-price-details"><div><dt>Average entry</dt><dd>{traderNumber(positionRows.find((row) => row.instrument_id === instrumentId)?.average_entry_price, symbol === 'BTC' ? 2 : 3)}</dd></div><div><dt>Current mark</dt><dd>{fresh ? traderNumber(feed?.mark, symbol === 'BTC' ? 2 : 3) : 'Stale · unavailable'}</dd></div></dl> : null}
@@ -426,7 +434,7 @@ export function RuntimePage() {
           {fillHistoryHasMore ? <Button variant="secondary" onClick={loadMoreFills}>Load more fills</Button> : null}
         </>}
     </Card></div>
-    <Card title="Drawdown protection" actions={<Badge tone={protectionArmed ? "success" : "danger"}>{protectionArmed ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
+    <Card title="Drawdown protection" actions={<Badge tone={loading && !state ? "neutral" : protectionArmed ? "success" : "danger"}>{protectionArmed ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
       {protectionFresh ? <><p className="trader-note">Maximum drawdown limit: <strong>{String(protection?.drawdown_limit_percent)}%</strong></p><details className="nautilus-diagnostics"><summary>Protection basis and sample time</summary><div className="runtime-account-grid runtime-account-grid--compact"><Stat label="Protection equity" value={traderMoney(protection?.equity)} /><Stat label="High-water equity" value={traderMoney(protection?.high_water_equity)} /><Stat label="Threshold" value={traderMoney(protection?.threshold_equity)} /><Stat label="Last daily close" value={formatUtcTimestamp(protection?.last_daily_close_utc)} /><Stat label="Observed" value={protection?.observed_at_ns ? formatUtcTimestamp(new Date(protection.observed_at_ns / 1_000_000).toISOString()) : "Unavailable"} /></div></details></> : <p className="runtime-empty-note">{state?.recovery_required ? "Protection baseline is unverified while recovery is required. Displayed values are withheld until the native account is recovered." : protectionVerified ? "Protection read is stale. Values are withheld until a fresh worker read is available." : loading ? "Loading drawdown protection…" : "Protection is not armed."}</p>}
     </Card>
     {state?.warnings.filter((warning) => warning !== 'FLAT_RESTART').length ? <div className="runtime-warning-list" role="status"><strong>Worker notice</strong><ul>{state.warnings.filter((warning) => warning !== 'FLAT_RESTART').map((warning, index) => <li key={index}>{humanizeBlocker(warning)}</li>)}</ul></div> : null}
@@ -505,7 +513,7 @@ export function WorkspaceSettingsPage() {
       <details className="settings-sandbox-details"><summary>Funding and account notes</summary><p>Observed funding is reference only and is not credited to Sandbox cash. {fundingLabel(state)}.</p></details>
     </Card>
     <SettingsConnections />
-    <Card title="Drawdown protection" actions={<Badge tone={protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
+    <Card title="Drawdown protection" actions={<Badge tone={loading && !state ? "neutral" : protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
       {state?.recovery_required ? <p className="runtime-empty-note">Recovery is required. Protection values are withheld and settings remain read-only until account ownership is restored.</p> : <>
       <p className="muted">Changes require a paused worker and confirmed flat exposure.</p>
       <div className="rules-form-grid">
