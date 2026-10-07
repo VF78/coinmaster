@@ -105,7 +105,9 @@ export function researchResultContext(activeRunId: string | null | undefined, se
 
 const FILL_ACTION_LABELS: Record<string, string> = {
   BTC_ENTRY: 'Entry',
-  BTC_REDUCE: 'TP',
+  BTC_REDUCE: 'Exit',
+  TP_PARTIAL: 'Partial TP',
+  TAKE_PROFIT: 'TP',
   SOL_ADD: 'Add',
   SOL_HALF_EXIT: 'Partial exit',
   SOL_EXIT: 'Exit',

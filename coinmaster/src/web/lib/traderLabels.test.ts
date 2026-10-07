@@ -40,7 +40,7 @@ test("presents the exact strategy match plainly and keeps run-selection copy con
 
 test('labels only exact native fill actions and leaves unknown classifications explicit', () => {
   assert.equal(nativeFillActionLabel('BTC_ENTRY'), 'Entry');
-  assert.equal(nativeFillActionLabel('BTC_REDUCE'), 'TP');
+  assert.equal(nativeFillActionLabel('BTC_REDUCE'), 'Exit');
   assert.equal(nativeFillActionLabel('SOL_HALF_EXIT'), 'Partial exit');
   assert.equal(nativeFillActionLabel('SOL_EXIT'), 'Exit');
   assert.equal(nativeFillActionLabel('TERMINAL_CLOSE'), 'Exit');

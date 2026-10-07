@@ -1,5 +1,6 @@
 import type { CandlestickData, UTCTimestamp } from 'lightweight-charts';
 import type { HlNativeEquityChanges, HlPublicCandle, HlStagegFillHistory, HlStagegProjection } from './nautilusApi';
+import { nativeFillActionLabel } from './traderLabels';
 import { TRADER_MARKETS } from './traderPresentation';
 
 export type TraderCoin = 'BTC' | 'SOL';
@@ -65,7 +66,7 @@ export function nativeOverlays(
       const isBuy = fill.order_side?.toUpperCase() === 'BUY';
       const isSell = fill.order_side?.toUpperCase() === 'SELL';
       if (!isBuy && !isSell) continue;
-      const action = fill.action ?? fill.order_side!;
+      const action = fill.action ? nativeFillActionLabel(fill.action) : isBuy ? 'Buy' : 'Sell';
       markers.push({ time: candle.open as UTCTimestamp, position: isBuy ? 'belowBar' : 'aboveBar', color: isBuy ? '#50c99e' : '#ef7d80', shape: isBuy ? 'arrowUp' : 'arrowDown', text: `${action} ${fill.quantity} @ ${fill.price}` });
     }
   }

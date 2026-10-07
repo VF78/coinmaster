@@ -21,7 +21,7 @@ test('native overlays require ready current epoch and preserve exact partial fil
   assert.equal(overlays.lines.length, 2);
   assert.equal(overlays.lines[0].price, 101);
   assert.match(overlays.lines[1].title, /0\.1/);
-  assert.equal(overlays.markers[0].text, 'TP_PARTIAL 0.1 @ 110');
+  assert.equal(overlays.markers[0].text, 'Partial TP 0.1 @ 110');
   assert.equal(overlays.markers[0].time, 1_700_000_000);
   assert.deepEqual(nativeOverlays(state, null, 'BTC', [bar], true).lines, overlays.lines, 'position and order levels do not depend on fill history');
   assert.equal(nativeOverlays(state, fills, 'BTC', [candle({ open_time_ms: 1_700_000_900_000, close_time_ms: 1_700_004_499_999 })], true).markers.length, 0, 'fills outside loaded candles are discarded');
@@ -43,7 +43,7 @@ test('partial TP fill markers attach to returned 15m and 1h candle opens', () =>
     const fills = history({ fills: [{ instrument_id: 'BTC-USD-PERP.HYPERLIQUID', order_side: 'SELL', action: 'TP_PARTIAL', quantity: '0.05', price: '110', ts_event_ns: (openSec + 420) * 1_000_000_000 }] });
     const marker = nativeOverlays(state, fills, 'BTC', [row], true).markers[0];
     assert.equal(marker?.time, openSec);
-    assert.equal(marker?.text, 'TP_PARTIAL 0.05 @ 110');
+    assert.equal(marker?.text, 'Partial TP 0.05 @ 110');
   }
 });
 
@@ -63,4 +63,11 @@ test('equity changes require ready matching epoch and recent as-of', () => {
   assert.equal(equityWindowRows(projection(), equity({ as_of_ns: (now - 601_000) * 1_000_000 }), now), null);
   assert.equal(equityWindowRows(projection({ projection_state: 'UNAVAILABLE' }), equity(), now), null);
   assert.deepEqual(equityWindowRows(projection(), equity({ windows: { '24h': { state: 'AVAILABLE', change_usdc: '2' }, '7d': { state: 'UNAVAILABLE' }, '30d': { state: 'UNAVAILABLE' } } }), now), [{ label: '24h', value: '+2.00 USDC', percent: '—' }, { label: '7d', value: '—', percent: '—' }, { label: '30d', value: '—', percent: '—' }]);
+});
+
+test('chart marker labels never infer TP from a generic native reduction', () => {
+  for (const [action, label] of [['BTC_ENTRY', 'Entry'], ['BTC_REDUCE', 'Exit'], ['TP_PARTIAL', 'Partial TP']]) {
+    const fills = history({ fills: [{ instrument_id: 'BTC-USD-PERP.HYPERLIQUID', order_side: 'SELL', action, quantity: '0.1', price: '110', ts_event_ns: 1_700_000_000_500_000_000 }] });
+    assert.equal(nativeOverlays(projection(), fills, 'BTC', [candle()], true).markers[0].text, label + ' 0.1 @ 110');
+  }
 });
