@@ -1,0 +1,7 @@
+CoinMaster VPS GUI release cleanup record
+release_id=24daf08909e4892b942adabcc40c45f0e7c78362
+source_path=/srv/coinmaster-native-gui/releases/24daf08909e4892b942adabcc40c45f0e7c78362
+archived_receipt=24daf08909e4892b942adabcc40c45f0e7c78362.stage.receipt
+receipt_sha256=d1e837daa49c0779aee99681ba0e57180dcd1108d47486dc2bf3a76cb37e3e0f
+allocated_bytes_before_delete=912048128
+recorded_at_utc=2026-10-07T15:38:02Z

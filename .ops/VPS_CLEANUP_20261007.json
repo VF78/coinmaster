@@ -1,0 +1,195 @@
+{
+  "apt_gate": {
+    "apt_update_install_or_service_restart": false,
+    "only_process": "/usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal",
+    "package_locks_free": true
+  },
+  "archived_receipts_and_proof_metadata": {
+    "/root/.openclaw/workspace/coinmaster/coinmaster/.ops/artifacts/vps-cleanup-20261007/24daf08909e4892b942adabcc40c45f0e7c78362.identity.txt": {
+      "bytes": 412,
+      "sha256": "53e20ff12d579b86f2de049f7e0a4c143cb3a6b4238c1fd869552415de467f4e"
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/.ops/artifacts/vps-cleanup-20261007/24daf08909e4892b942adabcc40c45f0e7c78362.stage.receipt": {
+      "bytes": 229,
+      "sha256": "d1e837daa49c0779aee99681ba0e57180dcd1108d47486dc2bf3a76cb37e3e0f"
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/.ops/artifacts/vps-cleanup-20261007/cbcc6bae8c92f95eb08861c7568d46cd8a8a770a.identity.txt": {
+      "bytes": 803,
+      "sha256": "664a3dcdee1373111138228a086a9a9f26dcea92b21598285f721edd14311023"
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/.ops/artifacts/vps-cleanup-20261007/cbcc6bae8c92f95eb08861c7568d46cd8a8a770a.stage.receipt": {
+      "bytes": 229,
+      "sha256": "9733ee78b1005648f9bce467f8ee4de71fbc892649517510debeae46c99f9821"
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/.ops/artifacts/vps-cleanup-20261007/cm110-wheel-proof-36341940809.cargo-lock.sha256": {
+      "bytes": 77,
+      "sha256": "f4edb4669e19f3a062d1742042727d83a442302fdf3a8a93f7bbda8d5b15fa86"
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/.ops/artifacts/vps-cleanup-20261007/cm110-wheel-proof-36341940809.identity.txt": {
+      "bytes": 1146,
+      "sha256": "fe8e9e97e0de572ab0b11b5b2e640bf5b05028c06f2fb01b70cb59a1aca54008"
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/.ops/artifacts/vps-cleanup-20261007/cm110-wheel-proof-36341940809.loopback.py": {
+      "bytes": 2455,
+      "sha256": "9ec9c4f1face941bcafe4bdfba89e4ab0439d8e8c7dd562c5674ac0ce1b0ca96"
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/.ops/artifacts/vps-cleanup-20261007/cm110-wheel-proof-36341940809.wheel.sha256": {
+      "bytes": 133,
+      "sha256": "6ff6b082c3b7e9bb156ff1219820ecc6ef8cad1514bdc57e4a79ab5e2b476f5a"
+    }
+  },
+  "canonical_checkout": {
+    "branch": "codex/nautilus-btc-sol-mvp",
+    "head": "582f8bc29dc2231020ccf2d270ed508555386d2e",
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster",
+    "status_short": "?? .ops/artifacts/"
+  },
+  "deletions": [
+    {
+      "observed_df_available_gain_bytes": 6848512,
+      "observed_du_bytes": 912048128,
+      "path": "/srv/coinmaster-native-gui/releases/24daf08909e4892b942adabcc40c45f0e7c78362",
+      "receipt_sha256": "d1e837daa49c0779aee99681ba0e57180dcd1108d47486dc2bf3a76cb37e3e0f"
+    },
+    {
+      "bytes": 189045343,
+      "observed_df_available_gain_bytes": 189034496,
+      "path": "/tmp/cm110-wheel-proof-36341940809/nautilus_trader-1.231.0/dist/nautilus_trader-1.231.0-cp312-cp312-manylinux_2_35_x86_64.whl",
+      "retained_matching_copies": [
+        "/srv/coinmaster/hl-live-candidates/86b9d951bff4fc4c596fb1ebcf80b171e68e85e7-wheel-8ff3c6dcc150/artifacts/nautilus_trader-1.231.0-cp312-cp312-manylinux_2_35_x86_64.whl",
+        "/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/artifacts/nautilus_trader-1.231.0-cp312-cp312-manylinux_2_35_x86_64.whl"
+      ],
+      "sha256": "8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46"
+    },
+    {
+      "bytes": 58527571,
+      "path": "/var/cache/apt/pkgcache.bin",
+      "sha256": "81ffecd251c865d0095cd1f266a529418c520244156ba3792d5a110149e76d01"
+    },
+    {
+      "bytes": 58486030,
+      "path": "/var/cache/apt/srcpkgcache.bin",
+      "sha256": "83c0c686ddf7a60e6420119aebcd2bb9d470ad34ddb08483be9a4a7304974e6c"
+    },
+    {
+      "observed_df_available_gain_bytes": 6754304,
+      "observed_du_bytes": 911962112,
+      "path": "/srv/coinmaster-native-gui/releases/cbcc6bae8c92f95eb08861c7568d46cd8a8a770a",
+      "receipt_sha256": "9733ee78b1005648f9bce467f8ee4de71fbc892649517510debeae46c99f9821"
+    }
+  ],
+  "df_initial_available_bytes": 3443724288,
+  "df_root_final_bytes": {
+    "available": 3761819648,
+    "size": 39973924864,
+    "use_percent": "91%",
+    "used": 34527911936
+  },
+  "gui": {
+    "current_release": "ea071ab79bb4c517f947fda21ee31bf62053f954",
+    "http_statuses": {
+      "app.f-ai": 200,
+      "coinmaster24": 200,
+      "f-ai": 200
+    },
+    "rollback_preserved": "7fe1e19bb562e60423d48ddd266c3cd152686f1d"
+  },
+  "host": "46.225.163.123",
+  "net_available_gain_since_initial_bytes": 318095360,
+  "observed_per_action_df_gain_sum_bytes": 319660032,
+  "protected_coinmaster_services": {
+    "coinmaster-connections.service": {
+      "ActiveState": "active",
+      "LoadState": "loaded",
+      "MainPID": "2129221",
+      "NRestarts": "0",
+      "SubState": "running"
+    },
+    "coinmaster-hl-stageg-testnet.service": {
+      "ActiveState": "active",
+      "LoadState": "loaded",
+      "MainPID": "2009732",
+      "NRestarts": "0",
+      "SubState": "running"
+    },
+    "coinmaster-hl-stageg-warmup.service": {
+      "ActiveState": "inactive",
+      "LoadState": "loaded",
+      "MainPID": "0",
+      "NRestarts": "0",
+      "SubState": "dead"
+    },
+    "coinmaster-hl-stageg-warmup.timer": {
+      "ActiveState": "active",
+      "LoadState": "loaded",
+      "SubState": "waiting"
+    },
+    "coinmaster-paper.service": {
+      "ActiveState": "inactive",
+      "LoadState": "loaded",
+      "MainPID": "0",
+      "NRestarts": "0",
+      "SubState": "dead"
+    },
+    "coinmaster-runtime.service": {
+      "ActiveState": "active",
+      "LoadState": "loaded",
+      "MainPID": "2129174",
+      "NRestarts": "0",
+      "SubState": "running"
+    }
+  },
+  "protected_processes": {
+    "2009732": {
+      "comm": "python",
+      "cwd": "/srv/coinmaster/runtime",
+      "exe": "/usr/bin/python3.12"
+    },
+    "2129174": {
+      "comm": "python",
+      "cwd": "/srv/coinmaster-native-gui/releases/ea071ab79bb4c517f947fda21ee31bf62053f954/runtime",
+      "exe": "/usr/bin/python3.12"
+    },
+    "2129221": {
+      "comm": "python",
+      "cwd": "/srv/coinmaster-native-gui/releases/ea071ab79bb4c517f947fda21ee31bf62053f954/runtime",
+      "exe": "/usr/bin/python3.12"
+    }
+  },
+  "protected_runtime_snapshot": {
+    "cash_usdc": 11319.40534863,
+    "coherence": "no trading state mutation or restart; fresh coherence endpoint read intentionally omitted to honor no mode/order/params/keys reads",
+    "epoch": "10e39dc6efa64c8b820b174c0a5b65fe",
+    "equity_usdc": 11319.40534863,
+    "fees_usdc": 47.45465137,
+    "fills": 4,
+    "net_realized_usdc": 1319.40534863,
+    "post_cleanup_process_identity_unchanged": true,
+    "release": "81e6318",
+    "source": "pre-cleanup snapshot supplied in task context; no account/status endpoint queried during cleanup to avoid reading mode/orders/params/keys",
+    "stageg_nrestarts": 0,
+    "stageg_pid": 2009732
+  },
+  "recorded_at_utc": "2026-10-07T15:53:03.814450+00:00",
+  "scope_note": "Only the five listed paths were removed. No /opt, global Docker, logs, secrets, source, real market data, journals, protected runtime state or service files were changed.",
+  "fresh_native_readback": {
+    "account": {
+      "equity": "11319.40534863",
+      "fees": "47.45465137",
+      "mark_state": "CURRENT",
+      "native_cash": "11319.40534863",
+      "native_free": "11319.40534863",
+      "native_locked": "0",
+      "realized_pnl_net_fees": "1319.40534863",
+      "unrealized_pnl": "0"
+    },
+    "run_epoch": "10e39dc6efa64c8b820b174c0a5b65fe",
+    "event_cursor": 23,
+    "orders": [],
+    "positions": [],
+    "recovery_required": false,
+    "process_state": "PUBLIC_FEEDS_READY",
+    "native_thread_alive": true
+  },
+  "estimate_correction": "Initial old-release unique-block estimate was invalid: link count was mistaken for path count. Use measured df deltas only. Shared hardlinks made du overstate reclaimable space."
+}
