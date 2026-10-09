@@ -1,0 +1,3656 @@
+{
+  "provenance": {
+    "json_sha256": "0ccad5771c23e380ba6115cc7bc8530b47ee39ec6fe99c08595640e17b9faee1",
+    "fills_sha256": "42d93ce9b27c10e256d35eb8da5fe5e433829928805eb4a3cca4f092360ce74c",
+    "orders_sha256": "c645863aee97430148f5f8af24f1422b6d6e826843752063f9b1bb8a77a516e4"
+  },
+  "episodes": {
+    "BTC": [
+      {
+        "sym": "BTC",
+        "start_ns": 1725235260000000000,
+        "start": "2024-09-02T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "2055.018",
+        "fees": "33.58993365",
+        "entry_fees": "24.93402065",
+        "exit_fees": "8.655913",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "43279.565",
+        "entry_notional": "45334.583",
+        "max_abs_qty": "0.791",
+        "max_abs_notional": "45334.583",
+        "end_ns": 1725634080000000000,
+        "end": "2024-09-06T14:48:00+00:00",
+        "hours": "110.7833333333333333333333333",
+        "net": "2021.42806635"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1726012860000000000,
+        "start": "2024-09-11T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "1775.6550",
+        "fees": "40.4989200",
+        "entry_fees": "29.9596374",
+        "exit_fees": "10.5392826",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "52696.4130",
+        "entry_notional": "54472.0680",
+        "max_abs_qty": "0.945",
+        "max_abs_notional": "54472.0680",
+        "end_ns": 1726063200000000000,
+        "end": "2024-09-11T14:00:00+00:00",
+        "hours": "13.98333333333333333333333333",
+        "net": "1735.1560800"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1726272120000000000,
+        "start": "2024-09-14T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "-4209.2082",
+        "fees": "116.89588351",
+        "entry_fees": "59.60547401",
+        "exit_fees": "57.2904095",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "104164.3809",
+        "entry_notional": "108373.5891",
+        "max_abs_qty": "1.791",
+        "max_abs_notional": "108373.5891",
+        "end_ns": 1726531200000000000,
+        "end": "2024-09-17T00:00:00+00:00",
+        "hours": "71.96666666666666666666666667",
+        "net": "-4326.10408351"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1726531260000000000,
+        "start": "2024-09-17T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-2090.0550",
+        "fees": "77.04790098",
+        "entry_fees": "40.69671144",
+        "exit_fees": "36.35118954",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "76084.0758",
+        "entry_notional": "73994.0208",
+        "max_abs_qty": "1.272",
+        "max_abs_notional": "73994.0208",
+        "end_ns": 1726617600000000000,
+        "end": "2024-09-18T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-2167.10290098"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1726617660000000000,
+        "start": "2024-09-18T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "2018.6830",
+        "fees": "51.78257373",
+        "entry_fees": "31.33879403",
+        "exit_fees": "20.4437797",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "58998.3085",
+        "entry_notional": "56979.6255",
+        "max_abs_qty": "0.945",
+        "max_abs_notional": "56979.6255",
+        "end_ns": 1726747620000000000,
+        "end": "2024-09-19T12:07:00+00:00",
+        "hours": "36.1",
+        "net": "1966.90042627"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1727827260000000000,
+        "start": "2024-10-02T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-849.8168",
+        "fees": "46.35553076",
+        "entry_fees": "22.94406576",
+        "exit_fees": "23.411465",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "42566.300",
+        "entry_notional": "41716.4832",
+        "max_abs_qty": "0.686",
+        "max_abs_notional": "41716.4832",
+        "end_ns": 1728086400000000000,
+        "end": "2024-10-05T00:00:00+00:00",
+        "hours": "71.98333333333333333333333333",
+        "net": "-896.17233076"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1728086460000000000,
+        "start": "2024-10-05T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-723.7000",
+        "fees": "90.69419503",
+        "entry_fees": "45.54611501",
+        "exit_fees": "45.14808002",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "82087.4182",
+        "entry_notional": "82811.1182",
+        "max_abs_qty": "1.334",
+        "max_abs_notional": "82811.1182",
+        "end_ns": 1728518400000000000,
+        "end": "2024-10-10T00:00:00+00:00",
+        "hours": "119.9833333333333333333333333",
+        "net": "-814.39419503"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1728518460000000000,
+        "start": "2024-10-10T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "1082.0614",
+        "fees": "32.62908247",
+        "entry_fees": "24.08669615",
+        "exit_fees": "8.54238632",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "42711.9316",
+        "entry_notional": "43793.9930",
+        "max_abs_qty": "0.722",
+        "max_abs_notional": "43793.9930",
+        "end_ns": 1728583740000000000,
+        "end": "2024-10-10T18:09:00+00:00",
+        "hours": "18.13333333333333333333333333",
+        "net": "1049.43231753"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1728691320000000000,
+        "start": "2024-10-12T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "3584.6502",
+        "fees": "54.54648849",
+        "entry_fees": "39.47500953",
+        "exit_fees": "15.07147896",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "75357.3948",
+        "entry_notional": "71772.7446",
+        "max_abs_qty": "1.149",
+        "max_abs_notional": "71772.7446",
+        "end_ns": 1728915720000000000,
+        "end": "2024-10-14T14:22:00+00:00",
+        "hours": "62.33333333333333333333333333",
+        "net": "3530.10371151"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1729814460000000000,
+        "start": "2024-10-25T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "5559.8865",
+        "fees": "126.97174854",
+        "entry_fees": "83.78734056",
+        "exit_fees": "43.18440798",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_REDUCE": 1,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "157900.5057",
+        "entry_notional": "152340.6192",
+        "max_abs_qty": "2.233",
+        "max_abs_notional": "152340.6192",
+        "end_ns": 1730210520000000000,
+        "end": "2024-10-29T14:02:00+00:00",
+        "hours": "110.0166666666666666666666667",
+        "net": "5432.91475146"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1730505660000000000,
+        "start": "2024-11-02T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "9629.5694",
+        "fees": "163.03168241",
+        "entry_fees": "106.65707745",
+        "exit_fees": "56.37460496",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "203551.5284",
+        "entry_notional": "193921.959",
+        "max_abs_qty": "2.789",
+        "max_abs_notional": "193921.959",
+        "end_ns": 1730937600000000000,
+        "end": "2024-11-07T00:00:00+00:00",
+        "hours": "119.9833333333333333333333333",
+        "net": "9466.53771759"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1731715260000000000,
+        "start": "2024-11-16T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "8739.8083",
+        "fees": "222.19538282",
+        "entry_fees": "146.91944548",
+        "exit_fees": "75.27593734",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_REDUCE": 1,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "275866.0728",
+        "entry_notional": "267126.2645",
+        "max_abs_qty": "2.929",
+        "max_abs_notional": "267126.2645",
+        "end_ns": 1732161180000000000,
+        "end": "2024-11-21T03:53:00+00:00",
+        "hours": "123.8666666666666666666666667",
+        "net": "8517.61291718"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1732665660000000000,
+        "start": "2024-11-27T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "23851.0417",
+        "fees": "513.37223290",
+        "entry_fees": "338.06852695",
+        "exit_fees": "175.30370595",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "638521.0907",
+        "entry_notional": "614670.049",
+        "max_abs_qty": "6.673",
+        "max_abs_notional": "614670.049",
+        "end_ns": 1732752000000000000,
+        "end": "2024-11-28T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "23337.66946710"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1733875260000000000,
+        "start": "2024-12-11T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "23900.6985",
+        "fees": "474.57371670",
+        "entry_fees": "344.5152898",
+        "exit_fees": "130.05842690",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "650292.1345",
+        "entry_notional": "626391.436",
+        "max_abs_qty": "6.490",
+        "max_abs_notional": "626391.4360",
+        "end_ns": 1733949720000000000,
+        "end": "2024-12-11T20:42:00+00:00",
+        "hours": "20.68333333333333333333333333",
+        "net": "23426.12478330"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1734652860000000000,
+        "start": "2024-12-20T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-13611.9336",
+        "fees": "999.09913716",
+        "entry_fees": "539.7950184",
+        "exit_fees": "459.30411876",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_REDUCE": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "967833.5544",
+        "entry_notional": "981445.488",
+        "max_abs_qty": "10.056",
+        "max_abs_notional": "981445.488",
+        "end_ns": 1734912000000000000,
+        "end": "2024-12-23T00:00:00+00:00",
+        "hours": "71.98333333333333333333333333",
+        "net": "-14611.03273716"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1734912060000000000,
+        "start": "2024-12-23T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "12383.6899",
+        "fees": "370.09630200",
+        "entry_fees": "273.22022932",
+        "exit_fees": "96.87607268",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "484380.3634",
+        "entry_notional": "496764.0533",
+        "max_abs_qty": "5.221",
+        "max_abs_notional": "496764.0533",
+        "end_ns": 1734979920000000000,
+        "end": "2024-12-23T18:52:00+00:00",
+        "hours": "18.85",
+        "net": "12013.59359800"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1735084920000000000,
+        "start": "2024-12-25T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "-21015.4584",
+        "fees": "995.77321362",
+        "entry_fees": "551.03302562",
+        "exit_fees": "444.740188",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "980862.770",
+        "entry_notional": "1001878.2284",
+        "max_abs_qty": "10.156",
+        "max_abs_notional": "1001878.2284",
+        "end_ns": 1735257600000000000,
+        "end": "2024-12-27T00:00:00+00:00",
+        "hours": "47.96666666666666666666666667",
+        "net": "-22011.23161362"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1735257660000000000,
+        "start": "2024-12-27T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "22560.6473",
+        "fees": "977.72841836",
+        "entry_fees": "603.2060958",
+        "exit_fees": "374.52232256",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "1074177.7087",
+        "entry_notional": "1096738.3560",
+        "max_abs_qty": "11.455",
+        "max_abs_notional": "1096738.3560",
+        "end_ns": 1735320060000000000,
+        "end": "2024-12-27T17:21:00+00:00",
+        "hours": "17.33333333333333333333333333",
+        "net": "21582.91888164"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1735862520000000000,
+        "start": "2025-01-03T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "94116.8719",
+        "fees": "1793.10183271",
+        "entry_fees": "1301.13753611",
+        "exit_fees": "491.9642966",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "2459821.4830",
+        "entry_notional": "2365704.6111",
+        "max_abs_qty": "24.407",
+        "max_abs_notional": "2365704.6111",
+        "end_ns": 1736178360000000000,
+        "end": "2025-01-06T15:46:00+00:00",
+        "hours": "87.73333333333333333333333333",
+        "net": "92323.77006729"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1736380860000000000,
+        "start": "2025-01-09T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "102606.2885",
+        "fees": "3306.79342092",
+        "entry_fees": "2044.98403208",
+        "exit_fees": "1261.80938884",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "3615546.4971",
+        "entry_notional": "3718152.7856",
+        "max_abs_qty": "39.149",
+        "max_abs_notional": "3718152.7856",
+        "end_ns": 1736467200000000000,
+        "end": "2025-01-10T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "99299.49507908"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1736899320000000000,
+        "start": "2025-01-15T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "145224.9413",
+        "fees": "2727.57454644",
+        "entry_fees": "1978.921676",
+        "exit_fees": "748.65287044",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "3743264.3522",
+        "entry_notional": "3598039.4109",
+        "max_abs_qty": "37.277",
+        "max_abs_notional": "3598039.4109",
+        "end_ns": 1737078420000000000,
+        "end": "2025-01-17T01:47:00+00:00",
+        "hours": "49.75",
+        "net": "142497.36675356"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1737417660000000000,
+        "start": "2025-01-21T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "58945.9956",
+        "fees": "5862.67547132",
+        "entry_fees": "3127.24894037",
+        "exit_fees": "2735.42653095",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_REDUCE": 1,
+          "TRAIL": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "5744853.1599",
+        "entry_notional": "5685907.1643",
+        "max_abs_qty": "55.561",
+        "max_abs_notional": "5685907.1643",
+        "end_ns": 1737936000000000000,
+        "end": "2025-01-27T00:00:00+00:00",
+        "hours": "143.9833333333333333333333333",
+        "net": "53083.32012868"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1738022460000000000,
+        "start": "2025-01-28T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-144202.4896",
+        "fees": "4712.29404543",
+        "entry_fees": "2621.61557229",
+        "exit_fees": "2090.67847314",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "4622371.2782",
+        "entry_notional": "4766573.7678",
+        "max_abs_qty": "46.722",
+        "max_abs_notional": "4766573.7678",
+        "end_ns": 1738540800000000000,
+        "end": "2025-02-03T00:00:00+00:00",
+        "hours": "143.9833333333333333333333333",
+        "net": "-148914.78364543"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1738540860000000000,
+        "start": "2025-02-03T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "107176.0480",
+        "fees": "3211.46771584",
+        "entry_fees": "2112.55011528",
+        "exit_fees": "1098.91760056",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "3733824.1616",
+        "entry_notional": "3841000.2096",
+        "max_abs_qty": "39.316",
+        "max_abs_notional": "3841000.2096",
+        "end_ns": 1738546560000000000,
+        "end": "2025-02-03T01:36:00+00:00",
+        "hours": "1.583333333333333333333333333",
+        "net": "103964.58028416"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1738627320000000000,
+        "start": "2025-02-04T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "-205631.5431",
+        "fees": "6151.11065201",
+        "entry_fees": "3132.10400036",
+        "exit_fees": "3019.00665165",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5489103.003",
+        "entry_notional": "5694734.5461",
+        "max_abs_qty": "56.139",
+        "max_abs_notional": "5694734.5461",
+        "end_ns": 1738713600000000000,
+        "end": "2025-02-05T00:00:00+00:00",
+        "hours": "23.96666666666666666666666667",
+        "net": "-211782.65375201"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1738713660000000000,
+        "start": "2025-02-05T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "60490.8096",
+        "fees": "1722.44459328",
+        "entry_fees": "1271.99802048",
+        "exit_fees": "450.4465728",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "2252232.864",
+        "entry_notional": "2312723.6736",
+        "max_abs_qty": "23.644",
+        "max_abs_notional": "2312723.6736",
+        "end_ns": 1739137440000000000,
+        "end": "2025-02-09T21:44:00+00:00",
+        "hours": "117.7166666666666666666666667",
+        "net": "58768.36500672"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1740096120000000000,
+        "start": "2025-02-21T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "-79007.8536",
+        "fees": "4637.98655449",
+        "entry_fees": "2510.64477923",
+        "exit_fees": "2127.34177526",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "4485800.8359",
+        "entry_notional": "4564808.6895",
+        "max_abs_qty": "46.395",
+        "max_abs_notional": "4564808.6895",
+        "end_ns": 1740182400000000000,
+        "end": "2025-02-22T00:00:00+00:00",
+        "hours": "23.96666666666666666666666667",
+        "net": "-83645.84015449"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1740182460000000000,
+        "start": "2025-02-22T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "139451.8599",
+        "fees": "3436.45957895",
+        "entry_fees": "2137.42887803",
+        "exit_fees": "1299.03070092",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "3746782.4638",
+        "entry_notional": "3886234.3237",
+        "max_abs_qty": "40.399",
+        "max_abs_notional": "3886234.3237",
+        "end_ns": 1740441600000000000,
+        "end": "2025-02-25T00:00:00+00:00",
+        "hours": "71.98333333333333333333333333",
+        "net": "136015.40032105"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1741046460000000000,
+        "start": "2025-03-04T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "142413.8490",
+        "fees": "4056.0177417",
+        "entry_fees": "2740.554784",
+        "exit_fees": "1315.462957700",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "4840413.0310",
+        "entry_notional": "4982826.880",
+        "max_abs_qty": "57.886",
+        "max_abs_notional": "4982826.880",
+        "end_ns": 1741564800000000000,
+        "end": "2025-03-10T00:00:00+00:00",
+        "hours": "143.9833333333333333333333333",
+        "net": "138357.8312583"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1741824060000000000,
+        "start": "2025-03-13T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "133412.0370",
+        "fees": "5008.44228801",
+        "entry_fees": "3368.6020126",
+        "exit_fees": "1639.84027541",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "5991318.8950",
+        "entry_notional": "6124730.9320",
+        "max_abs_qty": "73.235",
+        "max_abs_notional": "6124730.9320",
+        "end_ns": 1741910400000000000,
+        "end": "2025-03-14T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "128403.59471199"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1742083260000000000,
+        "start": "2025-03-16T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "105190.4874",
+        "fees": "4242.84525012",
+        "entry_fees": "3126.84778824",
+        "exit_fees": "1115.99746188",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "5579987.3094",
+        "entry_notional": "5685177.7968",
+        "max_abs_qty": "67.416",
+        "max_abs_notional": "5685177.7968",
+        "end_ns": 1742165520000000000,
+        "end": "2025-03-16T22:52:00+00:00",
+        "hours": "22.85",
+        "net": "100947.64214988"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1742860920000000000,
+        "start": "2025-03-25T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "-54220.7028",
+        "fees": "8892.88241358",
+        "entry_fees": "4461.35190006",
+        "exit_fees": "4431.53051352",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "8057328.2064",
+        "entry_notional": "8111548.9092",
+        "max_abs_qty": "92.796",
+        "max_abs_notional": "8111548.9092",
+        "end_ns": 1743033600000000000,
+        "end": "2025-03-27T00:00:00+00:00",
+        "hours": "47.96666666666666666666666667",
+        "net": "-63113.58521358"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1743033660000000000,
+        "start": "2025-03-27T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "116360.6429",
+        "fees": "4474.38120302",
+        "entry_fees": "3298.27910984",
+        "exit_fees": "1176.10209318",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "5880510.4659",
+        "entry_notional": "5996871.1088",
+        "max_abs_qty": "69.008",
+        "max_abs_notional": "5996871.1088",
+        "end_ns": 1743170880000000000,
+        "end": "2025-03-28T14:08:00+00:00",
+        "hours": "38.11666666666666666666666667",
+        "net": "111886.26169698"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1743638460000000000,
+        "start": "2025-04-03T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "212911.4549",
+        "fees": "5459.51290422",
+        "entry_fees": "3603.63170618",
+        "exit_fees": "1855.88119804",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "6339146.1927",
+        "entry_notional": "6552057.6476",
+        "max_abs_qty": "79.447",
+        "max_abs_notional": "6552057.6476",
+        "end_ns": 1743984000000000000,
+        "end": "2025-04-07T00:00:00+00:00",
+        "hours": "95.98333333333333333333333333",
+        "net": "207451.94199578"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1744329660000000000,
+        "start": "2025-04-11T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-409266.4870",
+        "fees": "8145.5425474",
+        "entry_fees": "4331.7122805",
+        "exit_fees": "3813.8302669",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "8285106.997",
+        "entry_notional": "7875840.510",
+        "max_abs_qty": "98.985",
+        "max_abs_notional": "7875840.510",
+        "end_ns": 1744502400000000000,
+        "end": "2025-04-13T00:00:00+00:00",
+        "hours": "47.98333333333333333333333333",
+        "net": "-417412.0295474"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1744502460000000000,
+        "start": "2025-04-13T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-136791.5104",
+        "fees": "7805.60089530",
+        "entry_fees": "3940.41811301",
+        "exit_fees": "3865.18278229",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "7027605.0587",
+        "entry_notional": "7164396.5691",
+        "max_abs_qty": "83.983",
+        "max_abs_notional": "7164396.5691",
+        "end_ns": 1744588800000000000,
+        "end": "2025-04-14T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-144597.11129530"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1744588860000000000,
+        "start": "2025-04-14T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-62294.2425",
+        "fees": "6654.01514663",
+        "entry_fees": "3309.87665663",
+        "exit_fees": "3344.13849",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "6080251.800",
+        "entry_notional": "6017957.5575",
+        "max_abs_qty": "71.925",
+        "max_abs_notional": "6017957.5575",
+        "end_ns": 1744675200000000000,
+        "end": "2025-04-15T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-68948.25764663"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1744675260000000000,
+        "start": "2025-04-15T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-63889.2348",
+        "fees": "6001.24967310",
+        "entry_fees": "3018.19437612",
+        "exit_fees": "2983.05529698",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5423736.9036",
+        "entry_notional": "5487626.1384",
+        "max_abs_qty": "64.849",
+        "max_abs_notional": "5487626.1384",
+        "end_ns": 1744761600000000000,
+        "end": "2025-04-16T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-69890.48447310"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1744761660000000000,
+        "start": "2025-04-16T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-75914.7200",
+        "fees": "5460.4750816",
+        "entry_fees": "2709.3609928",
+        "exit_fees": "2751.11408880",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5002025.6160",
+        "entry_notional": "4926110.896",
+        "max_abs_qty": "58.940",
+        "max_abs_notional": "4926110.8960",
+        "end_ns": 1744934400000000000,
+        "end": "2025-04-18T00:00:00+00:00",
+        "hours": "47.98333333333333333333333333",
+        "net": "-81375.1950816"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1744934460000000000,
+        "start": "2025-04-18T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "99285.7360",
+        "fees": "3872.05524560",
+        "entry_fees": "2356.92904656",
+        "exit_fees": "1515.12619904",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "4384611.2752",
+        "entry_notional": "4285325.5392",
+        "max_abs_qty": "50.448",
+        "max_abs_notional": "4285325.5392",
+        "end_ns": 1745245800000000000,
+        "end": "2025-04-21T14:30:00+00:00",
+        "hours": "86.48333333333333333333333333",
+        "net": "95413.68075440"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1746489660000000000,
+        "start": "2025-05-06T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "139847.4068",
+        "fees": "4589.63082446",
+        "entry_fees": "2781.53321886",
+        "exit_fees": "1808.09760560",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "5197180.5320",
+        "entry_notional": "5057333.1252",
+        "max_abs_qty": "53.388",
+        "max_abs_notional": "5057333.1252",
+        "end_ns": 1746666060000000000,
+        "end": "2025-05-08T01:01:00+00:00",
+        "hours": "49",
+        "net": "135257.77597554"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1748131260000000000,
+        "start": "2025-05-25T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-205557.3075",
+        "fees": "3779.52470033",
+        "entry_fees": "1946.29060973",
+        "exit_fees": "1833.2340906",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "3333152.8920",
+        "entry_notional": "3538710.1995",
+        "max_abs_qty": "32.855",
+        "max_abs_notional": "3538710.1995",
+        "end_ns": 1749168000000000000,
+        "end": "2025-06-06T00:00:00+00:00",
+        "hours": "287.9833333333333333333333333",
+        "net": "-209336.83220033"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1749168060000000000,
+        "start": "2025-06-06T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-100786.7597",
+        "fees": "4888.18884418",
+        "entry_fees": "2591.3820548",
+        "exit_fees": "2296.80678938",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "4812390.4957",
+        "entry_notional": "4711603.7360",
+        "max_abs_qty": "46.445",
+        "max_abs_notional": "4711603.7360",
+        "end_ns": 1749254400000000000,
+        "end": "2025-06-07T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-105674.94854418"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1749254460000000000,
+        "start": "2025-06-07T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "128494.3068",
+        "fees": "3519.40315173",
+        "entry_fees": "2133.83345549",
+        "exit_fees": "1385.56969624",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "4008191.4986",
+        "entry_notional": "3879697.1918",
+        "max_abs_qty": "37.214",
+        "max_abs_notional": "3879697.1918",
+        "end_ns": 1749503760000000000,
+        "end": "2025-06-09T21:16:00+00:00",
+        "hours": "69.25",
+        "net": "124974.90364827"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1749859260000000000,
+        "start": "2025-06-14T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-40073.8500",
+        "fees": "3155.34235500",
+        "entry_fees": "1588.69148625",
+        "exit_fees": "1566.650868750",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "2848456.1250",
+        "entry_notional": "2888529.975",
+        "max_abs_qty": "27.250",
+        "max_abs_notional": "2888529.9750",
+        "end_ns": 1750204800000000000,
+        "end": "2025-06-18T00:00:00+00:00",
+        "hours": "95.98333333333333333333333333",
+        "net": "-43229.19235500"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1750204860000000000,
+        "start": "2025-06-18T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-15293.9226",
+        "fees": "5147.38111041",
+        "entry_fees": "2569.48472649",
+        "exit_fees": "2577.89638392",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "4687084.3344",
+        "entry_notional": "4671790.4118",
+        "max_abs_qty": "44.706",
+        "max_abs_notional": "4671790.4118",
+        "end_ns": 1750291200000000000,
+        "end": "2025-06-19T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-20441.30371041"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1750291260000000000,
+        "start": "2025-06-19T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-11338.0530",
+        "fees": "4959.63758235",
+        "entry_fees": "2482.93675575",
+        "exit_fees": "2476.7008266",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "4503092.4120",
+        "entry_notional": "4514430.465",
+        "max_abs_qty": "43.045",
+        "max_abs_notional": "4514430.465",
+        "end_ns": 1750377600000000000,
+        "end": "2025-06-20T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-16297.69058235"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1750377660000000000,
+        "start": "2025-06-20T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "81556.8706",
+        "fees": "3913.08713522",
+        "entry_fees": "2409.81894384",
+        "exit_fees": "1503.26819138",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "4299932.1182",
+        "entry_notional": "4381488.9888",
+        "max_abs_qty": "41.888",
+        "max_abs_notional": "4381488.9888",
+        "end_ns": 1750535940000000000,
+        "end": "2025-06-21T19:59:00+00:00",
+        "hours": "43.96666666666666666666666667",
+        "net": "77643.78346478"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1750723320000000000,
+        "start": "2025-06-24T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "164882.2148",
+        "fees": "4529.45750266",
+        "entry_fees": "2748.355456",
+        "exit_fees": "1781.10204666",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "5161892.1348",
+        "entry_notional": "4997009.920",
+        "max_abs_qty": "47.464",
+        "max_abs_notional": "4997009.920",
+        "end_ns": 1752089880000000000,
+        "end": "2025-07-09T19:38:00+00:00",
+        "hours": "379.6",
+        "net": "160352.75729734"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1754092860000000000,
+        "start": "2025-08-02T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-61102.9120",
+        "fees": "4423.7712090",
+        "entry_fees": "2195.0823037",
+        "exit_fees": "2228.68890530",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "4052161.6460",
+        "entry_notional": "3991058.734",
+        "max_abs_qty": "35.230",
+        "max_abs_notional": "3991058.7340",
+        "end_ns": 1754352000000000000,
+        "end": "2025-08-05T00:00:00+00:00",
+        "hours": "71.98333333333333333333333333",
+        "net": "-65526.6832090"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1754352060000000000,
+        "start": "2025-08-05T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-28723.2385",
+        "fees": "4059.90926292",
+        "entry_fees": "2037.85352205",
+        "exit_fees": "2022.05574087",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "3676464.9834",
+        "entry_notional": "3705188.2219",
+        "max_abs_qty": "32.219",
+        "max_abs_notional": "3705188.2219",
+        "end_ns": 1754438400000000000,
+        "end": "2025-08-06T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-32783.14776292"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1754438460000000000,
+        "start": "2025-08-06T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-27116.2101",
+        "fees": "3923.07576854",
+        "entry_fees": "1954.08092649",
+        "exit_fees": "1968.99484205",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "3579990.6219",
+        "entry_notional": "3552874.4118",
+        "max_abs_qty": "31.143",
+        "max_abs_notional": "3552874.4118",
+        "end_ns": 1754524800000000000,
+        "end": "2025-08-07T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-31039.28586854"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1754524860000000000,
+        "start": "2025-08-07T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "177571.2050",
+        "fees": "2597.17981413",
+        "entry_fees": "1878.55475363",
+        "exit_fees": "718.6250605",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "3593125.3025",
+        "entry_notional": "3415554.0975",
+        "max_abs_qty": "29.725",
+        "max_abs_notional": "3415554.0975",
+        "end_ns": 1754878320000000000,
+        "end": "2025-08-11T02:12:00+00:00",
+        "hours": "98.18333333333333333333333333",
+        "net": "174974.02518587"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1755302460000000000,
+        "start": "2025-08-16T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-36246.5148",
+        "fees": "4276.63070802",
+        "entry_fees": "2148.28314558",
+        "exit_fees": "2128.34756244",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "3869722.8408",
+        "entry_notional": "3905969.3556",
+        "max_abs_qty": "33.324",
+        "max_abs_notional": "3905969.3556",
+        "end_ns": 1755561600000000000,
+        "end": "2025-08-19T00:00:00+00:00",
+        "hours": "71.98333333333333333333333333",
+        "net": "-40523.14550802"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1755561660000000000,
+        "start": "2025-08-19T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "174968.3556",
+        "fees": "5867.58138126",
+        "entry_fees": "3629.37868854",
+        "exit_fees": "2238.20269272",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "6423901.9872",
+        "entry_notional": "6598870.3428",
+        "max_abs_qty": "56.811",
+        "max_abs_notional": "6598870.3428",
+        "end_ns": 1755648000000000000,
+        "end": "2025-08-20T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "169100.77421874"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1755907320000000000,
+        "start": "2025-08-23T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "-54352.0600",
+        "fees": "4984.6586482",
+        "entry_fees": "2507.2761406",
+        "exit_fees": "2477.3825076",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "4504331.832",
+        "entry_notional": "4558683.8920",
+        "max_abs_qty": "39.032",
+        "max_abs_notional": "4558683.8920",
+        "end_ns": 1755993600000000000,
+        "end": "2025-08-24T00:00:00+00:00",
+        "hours": "23.96666666666666666666666667",
+        "net": "-59336.7186482"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1755993660000000000,
+        "start": "2025-08-24T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "160878.8472",
+        "fees": "6579.60040564",
+        "entry_fees": "4057.12946276",
+        "exit_fees": "2522.47094288",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "7215720.1760",
+        "entry_notional": "7376599.0232",
+        "max_abs_qty": "63.944",
+        "max_abs_notional": "7376599.0232",
+        "end_ns": 1756080000000000000,
+        "end": "2025-08-25T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "154299.24679436"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1757030460000000000,
+        "start": "2025-09-05T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-141339.4088",
+        "fees": "5525.38923618",
+        "entry_fees": "2723.82628067",
+        "exit_fees": "2801.56295551",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5093750.8282",
+        "entry_notional": "4952411.4194",
+        "max_abs_qty": "44.722",
+        "max_abs_notional": "4952411.4194",
+        "end_ns": 1757548800000000000,
+        "end": "2025-09-11T00:00:00+00:00",
+        "hours": "143.9833333333333333333333333",
+        "net": "-146864.79803618"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1757548860000000000,
+        "start": "2025-09-11T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-6531.5796",
+        "fees": "8240.03584218",
+        "entry_fees": "4121.81410548",
+        "exit_fees": "4118.22173670",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "7487675.8849",
+        "entry_notional": "7494207.4645",
+        "max_abs_qty": "65.785",
+        "max_abs_notional": "7494207.4645",
+        "end_ns": 1758585600000000000,
+        "end": "2025-09-23T00:00:00+00:00",
+        "hours": "287.9833333333333333333333333",
+        "net": "-14771.61544218"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1758585660000000000,
+        "start": "2025-09-23T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "169302.2289",
+        "fees": "8937.32704873",
+        "entry_fees": "5494.51958055",
+        "exit_fees": "3442.80746818",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9820733.3721",
+        "entry_notional": "9990035.601",
+        "max_abs_qty": "88.809",
+        "max_abs_notional": "9990035.601",
+        "end_ns": 1758821820000000000,
+        "end": "2025-09-25T17:37:00+00:00",
+        "hours": "65.6",
+        "net": "160364.90185127"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1759190520000000000,
+        "start": "2025-09-30T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "466574.9538",
+        "fees": "9138.60534999",
+        "entry_fees": "5500.88082027",
+        "exit_fees": "3637.72452972",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10468176.4452",
+        "entry_notional": "10001601.4914",
+        "max_abs_qty": "87.558",
+        "max_abs_notional": "10001601.4914",
+        "end_ns": 1759431240000000000,
+        "end": "2025-10-02T18:54:00+00:00",
+        "hours": "66.86666666666666666666666667",
+        "net": "457436.34845001"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1760140920000000000,
+        "start": "2025-10-11T00:02:00+00:00",
+        "side": "SELL",
+        "gross": "233681.8144",
+        "fees": "8904.85386368",
+        "entry_fees": "5491.9134666",
+        "exit_fees": "3412.94039708",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9751615.3976",
+        "entry_notional": "9985297.2120",
+        "max_abs_qty": "88.904",
+        "max_abs_notional": "9985297.2120",
+        "end_ns": 1760629620000000000,
+        "end": "2025-10-16T15:47:00+00:00",
+        "hours": "135.75",
+        "net": "224776.96053632"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1761091260000000000,
+        "start": "2025-10-22T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-306586.0979",
+        "fees": "11164.78732067",
+        "entry_fees": "5498.08248341",
+        "exit_fees": "5666.70483726",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10303099.7041",
+        "entry_notional": "9996513.6062",
+        "max_abs_qty": "92.387",
+        "max_abs_notional": "9996513.6062",
+        "end_ns": 1761523200000000000,
+        "end": "2025-10-27T00:00:00+00:00",
+        "hours": "119.9833333333333333333333333",
+        "net": "-317750.88522067"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1761523260000000000,
+        "start": "2025-10-27T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-74233.7258",
+        "fees": "6274.86354781",
+        "entry_fees": "3157.8460485",
+        "exit_fees": "3117.01749931",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5667304.5442",
+        "entry_notional": "5741538.270",
+        "max_abs_qty": "50.219",
+        "max_abs_notional": "5741538.270",
+        "end_ns": 1761696000000000000,
+        "end": "2025-10-29T00:00:00+00:00",
+        "hours": "47.98333333333333333333333333",
+        "net": "-80508.58934781"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1761696060000000000,
+        "start": "2025-10-29T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "287600.6496",
+        "fees": "8886.18245880",
+        "entry_fees": "5495.82992024",
+        "exit_fees": "3390.35253856",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9704817.3872",
+        "entry_notional": "9992418.0368",
+        "max_abs_qty": "88.624",
+        "max_abs_notional": "9992418.0368",
+        "end_ns": 1761798420000000000,
+        "end": "2025-10-30T04:27:00+00:00",
+        "hours": "28.43333333333333333333333333",
+        "net": "278714.46714120"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1762905660000000000,
+        "start": "2025-11-12T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "182352.7760",
+        "fees": "4279.5597548",
+        "entry_fees": "3165.088894",
+        "exit_fees": "1114.47086080",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5572354.3040",
+        "entry_notional": "5754707.08",
+        "max_abs_qty": "55.820",
+        "max_abs_notional": "5754707.080",
+        "end_ns": 1763055720000000000,
+        "end": "2025-11-13T17:42:00+00:00",
+        "hours": "41.68333333333333333333333333",
+        "net": "178073.2162452"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1764115260000000000,
+        "start": "2025-11-26T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "233858.0527",
+        "fees": "8921.55880971",
+        "entry_fees": "5499.37294715",
+        "exit_fees": "3422.18586256",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9765001.8512",
+        "entry_notional": "9998859.9039",
+        "max_abs_qty": "114.527",
+        "max_abs_notional": "9998859.9039",
+        "end_ns": 1764633600000000000,
+        "end": "2025-12-02T00:00:00+00:00",
+        "hours": "143.9833333333333333333333333",
+        "net": "224936.49389029"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1767398520000000000,
+        "start": "2026-01-03T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "100226.6362",
+        "fees": "11056.01169619",
+        "entry_fees": "5500.44352314",
+        "exit_fees": "5555.56817305",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "TRAIL": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10101033.0419",
+        "entry_notional": "10000806.4057",
+        "max_abs_qty": "111.157",
+        "max_abs_notional": "10000806.4057",
+        "end_ns": 1767916800000000000,
+        "end": "2026-01-09T00:00:00+00:00",
+        "hours": "143.9666666666666666666666667",
+        "net": "89170.62450381"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1768003260000000000,
+        "start": "2026-01-10T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "310901.7851",
+        "fees": "4374.53617087",
+        "entry_fees": "3162.39426349",
+        "exit_fees": "1212.14190738",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "6060709.5369",
+        "entry_notional": "5749807.7518",
+        "max_abs_qty": "63.461",
+        "max_abs_notional": "5749807.7518",
+        "end_ns": 1768342260000000000,
+        "end": "2026-01-13T22:11:00+00:00",
+        "hours": "94.16666666666666666666666667",
+        "net": "306527.24892913"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1768867260000000000,
+        "start": "2026-01-20T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-258675.6550",
+        "fees": "6180.88677679",
+        "entry_fees": "3161.57919352",
+        "exit_fees": "3019.30758327",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5489650.1514",
+        "entry_notional": "5748325.8064",
+        "max_abs_qty": "62.107",
+        "max_abs_notional": "5748325.8064",
+        "end_ns": 1768953600000000000,
+        "end": "2026-01-21T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-264856.54177679"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1768953660000000000,
+        "start": "2026-01-21T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "186022.4112",
+        "fees": "4280.71679654",
+        "entry_fees": "3166.47560444",
+        "exit_fees": "1114.2411921",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5571205.9605",
+        "entry_notional": "5757228.3717",
+        "max_abs_qty": "65.061",
+        "max_abs_notional": "5757228.3717",
+        "end_ns": 1769699640000000000,
+        "end": "2026-01-29T15:14:00+00:00",
+        "hours": "207.2166666666666666666666667",
+        "net": "181741.69440346"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1770508860000000000,
+        "start": "2026-02-08T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "206587.5872",
+        "fees": "8929.74155622",
+        "entry_fees": "5494.96122912",
+        "exit_fees": "3434.78032710",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9784251.0112",
+        "entry_notional": "9990838.5984",
+        "max_abs_qty": "144.408",
+        "max_abs_notional": "9990838.5984",
+        "end_ns": 1770790440000000000,
+        "end": "2026-02-11T06:14:00+00:00",
+        "hours": "78.21666666666666666666666667",
+        "net": "197657.84564378"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1771113660000000000,
+        "start": "2026-02-15T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "183424.8570",
+        "fees": "4276.4315286",
+        "entry_fees": "3162.9521",
+        "exit_fees": "1113.47942860",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5567397.1430",
+        "entry_notional": "5750822.00",
+        "max_abs_qty": "82.390",
+        "max_abs_notional": "5750822.000",
+        "end_ns": 1771255980000000000,
+        "end": "2026-02-16T15:33:00+00:00",
+        "hours": "39.53333333333333333333333333",
+        "net": "179148.4254714"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1772150460000000000,
+        "start": "2026-02-27T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "283121.0649",
+        "fees": "8891.85103635",
+        "entry_fees": "5497.52013245",
+        "exit_fees": "3394.33090390",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9712370.0850",
+        "entry_notional": "9995491.1499",
+        "max_abs_qty": "148.263",
+        "max_abs_notional": "9995491.1499",
+        "end_ns": 1772236800000000000,
+        "end": "2026-02-28T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "274229.21386365"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1772668920000000000,
+        "start": "2026-03-05T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "-275005.1304",
+        "fees": "10863.73940652",
+        "entry_fees": "5507.49611412",
+        "exit_fees": "5356.2432924",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "9738624.168",
+        "entry_notional": "10013629.2984",
+        "max_abs_qty": "137.592",
+        "max_abs_notional": "10013629.2984",
+        "end_ns": 1772755200000000000,
+        "end": "2026-03-06T00:00:00+00:00",
+        "hours": "23.96666666666666666666666667",
+        "net": "-285868.86980652"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1772755260000000000,
+        "start": "2026-03-06T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "351068.7692",
+        "fees": "8857.33159772",
+        "entry_fees": "5498.7485091",
+        "exit_fees": "3358.58308862",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9646655.7928",
+        "entry_notional": "9997724.5620",
+        "max_abs_qty": "141.148",
+        "max_abs_notional": "9997724.5620",
+        "end_ns": 1772841600000000000,
+        "end": "2026-03-07T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "342211.43760228"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1773187260000000000,
+        "start": "2026-03-11T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-92636.5896",
+        "fees": "11034.10067958",
+        "entry_fees": "5491.57527765",
+        "exit_fees": "5542.52540193",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "10077318.9126",
+        "entry_notional": "9984682.3230",
+        "max_abs_qty": "143.046",
+        "max_abs_notional": "9984682.3230",
+        "end_ns": 1773360000000000000,
+        "end": "2026-03-13T00:00:00+00:00",
+        "hours": "47.98333333333333333333333333",
+        "net": "-103670.69027958"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1773360060000000000,
+        "start": "2026-03-13T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "310615.3068",
+        "fees": "4370.46032316",
+        "entry_fees": "3159.44732532",
+        "exit_fees": "1211.01299784",
+        "exit_reasons": {
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "6055064.9892",
+        "entry_notional": "5744449.6824",
+        "max_abs_qty": "81.582",
+        "max_abs_notional": "5744449.6824",
+        "end_ns": 1773636900000000000,
+        "end": "2026-03-16T04:55:00+00:00",
+        "hours": "76.9",
+        "net": "306244.84647684"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1773964860000000000,
+        "start": "2026-03-20T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "252042.2180",
+        "fees": "8915.42570705",
+        "entry_fees": "5499.91510629",
+        "exit_fees": "3415.51060076",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9747803.4298",
+        "entry_notional": "9999845.6478",
+        "max_abs_qty": "143.098",
+        "max_abs_notional": "9999845.6478",
+        "end_ns": 1774214400000000000,
+        "end": "2026-03-22T21:20:00+00:00",
+        "hours": "69.31666666666666666666666667",
+        "net": "243126.79229295"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1774310520000000000,
+        "start": "2026-03-24T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "-35532.2210",
+        "fees": "6297.34153345",
+        "entry_fees": "3158.4421275",
+        "exit_fees": "3138.89940595",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5707089.829",
+        "entry_notional": "5742622.050",
+        "max_abs_qty": "80.939",
+        "max_abs_notional": "5742622.050",
+        "end_ns": 1774396800000000000,
+        "end": "2026-03-25T00:00:00+00:00",
+        "hours": "23.96666666666666666666666667",
+        "net": "-41829.56253345"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1774396860000000000,
+        "start": "2026-03-25T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-114466.6104",
+        "fees": "11058.87278166",
+        "entry_fees": "5497.95807297",
+        "exit_fees": "5560.91470869",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "10110754.0158",
+        "entry_notional": "9996287.4054",
+        "max_abs_qty": "141.807",
+        "max_abs_notional": "9996287.4054",
+        "end_ns": 1774483200000000000,
+        "end": "2026-03-26T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-125525.48318166"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1774483260000000000,
+        "start": "2026-03-26T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-200763.8336",
+        "fees": "6213.81886654",
+        "entry_fees": "3162.11948751",
+        "exit_fees": "3051.69937903",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5548544.3255",
+        "entry_notional": "5749308.1591",
+        "max_abs_qty": "80.641",
+        "max_abs_notional": "5749308.1591",
+        "end_ns": 1774569600000000000,
+        "end": "2026-03-27T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-206977.65246654"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1774569660000000000,
+        "start": "2026-03-27T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "331453.2418",
+        "fees": "8861.14576766",
+        "entry_fees": "5494.32600948",
+        "exit_fees": "3366.81975818",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9658230.4118",
+        "entry_notional": "9989683.6536",
+        "max_abs_qty": "145.362",
+        "max_abs_notional": "9989683.6536",
+        "end_ns": 1774656000000000000,
+        "end": "2026-03-28T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "322592.09603234"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1775088060000000000,
+        "start": "2026-04-02T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "260296.7259",
+        "fees": "8905.25243982",
+        "entry_fees": "5497.34770398",
+        "exit_fees": "3407.904735840",
+        "exit_reasons": {
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 2
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9734880.9177",
+        "entry_notional": "9995177.6436",
+        "max_abs_qty": "146.873",
+        "max_abs_notional": "9995177.6436",
+        "end_ns": 1775174400000000000,
+        "end": "2026-04-03T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "251391.47346018"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1775606520000000000,
+        "start": "2026-04-08T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "338150.0219",
+        "fees": "9077.52576901",
+        "entry_fees": "5501.17084633",
+        "exit_fees": "3576.35492268",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10340278.8334",
+        "entry_notional": "10002128.8115",
+        "max_abs_qty": "139.055",
+        "max_abs_notional": "10002128.8115",
+        "end_ns": 1776175140000000000,
+        "end": "2026-04-14T13:59:00+00:00",
+        "hours": "157.95",
+        "net": "329072.49613099"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1776729660000000000,
+        "start": "2026-04-21T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "216765.1027",
+        "fees": "9040.99264285",
+        "entry_fees": "5500.17020713",
+        "exit_fees": "3540.82243572",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10217074.5702",
+        "entry_notional": "10000309.4675",
+        "max_abs_qty": "131.945",
+        "max_abs_notional": "10000309.4675",
+        "end_ns": 1776835560000000000,
+        "end": "2026-04-22T05:26:00+00:00",
+        "hours": "29.41666666666666666666666667",
+        "net": "207724.11005715"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1777507260000000000,
+        "start": "2026-04-30T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "277566.5263",
+        "fees": "9058.57089606",
+        "entry_fees": "5503.50579856",
+        "exit_fees": "3555.0650975",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10283940.7055",
+        "entry_notional": "10006374.1792",
+        "max_abs_qty": "132.013",
+        "max_abs_notional": "10006374.1792",
+        "end_ns": 1777840620000000000,
+        "end": "2026-05-03T20:37:00+00:00",
+        "hours": "92.6",
+        "net": "268507.95540394"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1778803260000000000,
+        "start": "2026-05-15T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-452086.6768",
+        "fees": "10753.54530888",
+        "entry_fees": "5501.09649056",
+        "exit_fees": "5252.44881832",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "9549906.9424",
+        "entry_notional": "10001993.6192",
+        "max_abs_qty": "123.376",
+        "max_abs_notional": "10001993.6192",
+        "end_ns": 1779062400000000000,
+        "end": "2026-05-18T00:00:00+00:00",
+        "hours": "71.98333333333333333333333333",
+        "net": "-462840.22210888"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1779062460000000000,
+        "start": "2026-05-18T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "208932.7284",
+        "fees": "8934.06480046",
+        "entry_fees": "5497.87168854",
+        "exit_fees": "3436.19311192",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9787197.6144",
+        "entry_notional": "9996130.3428",
+        "max_abs_qty": "129.171",
+        "max_abs_notional": "9996130.3428",
+        "end_ns": 1779522660000000000,
+        "end": "2026-05-23T07:51:00+00:00",
+        "hours": "127.8333333333333333333333333",
+        "net": "199998.66359954"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1780963260000000000,
+        "start": "2026-06-09T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "233179.0305",
+        "fees": "8180.64411014",
+        "entry_fees": "5499.67087318",
+        "exit_fees": "2680.97323696",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "BTC_TP3": 1,
+          "BTC_REDUCE": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "9766222.5571",
+        "entry_notional": "9999401.5876",
+        "max_abs_qty": "158.588",
+        "max_abs_notional": "9999401.5876",
+        "end_ns": 1781049600000000000,
+        "end": "2026-06-10T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "224998.38638986"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1783123260000000000,
+        "start": "2026-07-04T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-138068.5219",
+        "fees": "7999.32203390",
+        "entry_fees": "4332.62057536",
+        "exit_fees": "3666.70145854",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "8015560.4771",
+        "entry_notional": "7877491.9552",
+        "max_abs_qty": "125.888",
+        "max_abs_notional": "7877491.9552",
+        "end_ns": 1783728000000000000,
+        "end": "2026-07-11T00:00:00+00:00",
+        "hours": "167.9833333333333333333333333",
+        "net": "-146067.84393390"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1783728060000000000,
+        "start": "2026-07-11T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-55829.9386",
+        "fees": "10970.01153941",
+        "entry_fees": "5500.35900282",
+        "exit_fees": "5469.65253659",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "9944822.7938",
+        "entry_notional": "10000652.7324",
+        "max_abs_qty": "155.906",
+        "max_abs_notional": "10000652.7324",
+        "end_ns": 1783814400000000000,
+        "end": "2026-07-12T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-66799.95013941"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1783814460000000000,
+        "start": "2026-07-12T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-98135.1741",
+        "fees": "7981.61199258",
+        "entry_fees": "4334.9016766",
+        "exit_fees": "3646.71031598",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "7979774.5861",
+        "entry_notional": "7881639.412",
+        "max_abs_qty": "123.467",
+        "max_abs_notional": "7881639.412",
+        "end_ns": 1784073600000000000,
+        "end": "2026-07-15T00:00:00+00:00",
+        "hours": "71.98333333333333333333333333",
+        "net": "-106116.78609258"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1784073660000000000,
+        "start": "2026-07-15T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-105982.4452",
+        "fees": "6266.04911438",
+        "entry_fees": "3162.16972962",
+        "exit_fees": "3103.87938476",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5643417.0632",
+        "entry_notional": "5749399.5084",
+        "max_abs_qty": "88.444",
+        "max_abs_notional": "5749399.5084",
+        "end_ns": 1784246400000000000,
+        "end": "2026-07-17T00:00:00+00:00",
+        "hours": "47.98333333333333333333333333",
+        "net": "-112248.49431438"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1784246460000000000,
+        "start": "2026-07-17T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-2205.1203",
+        "fees": "7924.02357957",
+        "entry_fees": "4332.258711",
+        "exit_fees": "3591.76486857",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "7879039.1403",
+        "entry_notional": "7876834.020",
+        "max_abs_qty": "123.442",
+        "max_abs_notional": "7876834.020",
+        "end_ns": 1784332800000000000,
+        "end": "2026-07-18T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-10129.14387957"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1784332860000000000,
+        "start": "2026-07-18T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "247633.8534",
+        "fees": "9058.58739588",
+        "entry_fees": "5500.54731556",
+        "exit_fees": "3558.04008032",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10248628.9726",
+        "entry_notional": "10000995.1192",
+        "max_abs_qty": "156.467",
+        "max_abs_notional": "10000995.1192",
+        "end_ns": 1784619600000000000,
+        "end": "2026-07-21T07:40:00+00:00",
+        "hours": "79.65",
+        "net": "238575.26600412"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1784937720000000000,
+        "start": "2026-07-25T00:02:00+00:00",
+        "side": "SELL",
+        "gross": "-107291.7062",
+        "fees": "7981.65919876",
+        "entry_fees": "4332.68715759",
+        "exit_fees": "3648.97204117",
+        "exit_reasons": {
+          "BTC_TP2": 1,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "7984904.7200",
+        "entry_notional": "7877613.0138",
+        "max_abs_qty": "122.847",
+        "max_abs_notional": "7877613.0138",
+        "end_ns": 1785110400000000000,
+        "end": "2026-07-27T00:00:00+00:00",
+        "hours": "47.96666666666666666666666667",
+        "net": "-115273.36539876"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1785110460000000000,
+        "start": "2026-07-27T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-142563.0177",
+        "fees": "6244.28524187",
+        "entry_fees": "3161.3474508",
+        "exit_fees": "3082.93779107",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5605341.4383",
+        "entry_notional": "5747904.456",
+        "max_abs_qty": "87.953",
+        "max_abs_notional": "5747904.456",
+        "end_ns": 1785196800000000000,
+        "end": "2026-07-28T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-148807.30294187"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1785196860000000000,
+        "start": "2026-07-28T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-91739.8911",
+        "fees": "6376.04108785",
+        "entry_fees": "3162.79207387",
+        "exit_fees": "3213.24901398",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5842270.9345",
+        "entry_notional": "5750531.0434",
+        "max_abs_qty": "90.233",
+        "max_abs_notional": "5750531.0434",
+        "end_ns": 1785456000000000000,
+        "end": "2026-07-31T00:00:00+00:00",
+        "hours": "71.98333333333333333333333333",
+        "net": "-98115.93218785"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1785456060000000000,
+        "start": "2026-07-31T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-301924.3350",
+        "fees": "10842.89049855",
+        "entry_fees": "5504.4744414",
+        "exit_fees": "5338.41605715",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "9706211.013",
+        "entry_notional": "10008135.348",
+        "max_abs_qty": "154.437",
+        "max_abs_notional": "10008135.348",
+        "end_ns": 1785542400000000000,
+        "end": "2026-08-01T00:00:00+00:00",
+        "hours": "23.98333333333333333333333333",
+        "net": "-312767.22549855"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1785542460000000000,
+        "start": "2026-08-01T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-160706.7936",
+        "fees": "6413.93912764",
+        "entry_fees": "3162.77519558",
+        "exit_fees": "3251.16393206",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5911207.1492",
+        "entry_notional": "5750500.3556",
+        "max_abs_qty": "91.477",
+        "max_abs_notional": "5750500.3556",
+        "end_ns": 1785974400000000000,
+        "end": "2026-08-06T00:00:00+00:00",
+        "hours": "119.9833333333333333333333333",
+        "net": "-167120.73272764"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1785974460000000000,
+        "start": "2026-08-06T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "-59861.0344",
+        "fees": "6291.41606896",
+        "entry_fees": "3162.16981894",
+        "exit_fees": "3129.24625002",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5689538.6364",
+        "entry_notional": "5749399.6708",
+        "max_abs_qty": "88.973",
+        "max_abs_notional": "5749399.6708",
+        "end_ns": 1786406400000000000,
+        "end": "2026-08-11T00:00:00+00:00",
+        "hours": "119.9833333333333333333333333",
+        "net": "-66152.45046896"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1786406460000000000,
+        "start": "2026-08-11T00:01:00+00:00",
+        "side": "SELL",
+        "gross": "-30670.4835",
+        "fees": "11012.58465280",
+        "entry_fees": "5497.85794344",
+        "exit_fees": "5514.72670936",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10026775.8352",
+        "entry_notional": "9996105.3517",
+        "max_abs_qty": "156.379",
+        "max_abs_notional": "9996105.3517",
+        "end_ns": 1787011200000000000,
+        "end": "2026-08-18T00:00:00+00:00",
+        "hours": "167.9833333333333333333333333",
+        "net": "-41683.06815280"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1787011260000000000,
+        "start": "2026-08-18T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "79004.0682",
+        "fees": "9010.24095956",
+        "entry_fees": "5501.81326118",
+        "exit_fees": "3508.42769838",
+        "exit_reasons": {
+          "BTC_REDUCE": 2,
+          "BTC_TP3": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 3,
+        "entry_count": 1,
+        "exit_notional": "10082300.9067",
+        "entry_notional": "10003296.8385",
+        "max_abs_qty": "155.043",
+        "max_abs_notional": "10003296.8385",
+        "end_ns": 1787148540000000000,
+        "end": "2026-08-19T14:09:00+00:00",
+        "hours": "38.13333333333333333333333333",
+        "net": "69993.82724044"
+      },
+      {
+        "sym": "BTC",
+        "start_ns": 1788048060000000000,
+        "start": "2026-08-30T00:01:00+00:00",
+        "side": "BUY",
+        "gross": "24854.4920",
+        "fees": "6338.00502566",
+        "entry_fees": "3162.16752753",
+        "exit_fees": "3175.83749813",
+        "exit_reasons": {
+          "TERMINAL_BOUNDARY_SETTLEMENT": 1
+        },
+        "entry_reasons": {
+          "BTC_ENTRY": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "5774249.9966",
+        "entry_notional": "5749395.5046",
+        "max_abs_qty": "73.534",
+        "max_abs_notional": "5749395.5046",
+        "end_ns": 1788220800000000000,
+        "end": "2026-09-01T00:00:00+00:00",
+        "hours": "47.98333333333333333333333333",
+        "net": "18516.48697434"
+      }
+    ],
+    "SOL": [
+      {
+        "sym": "SOL",
+        "start_ns": 1727913600000000000,
+        "start": "2024-10-03T00:00:00+00:00",
+        "side": "BUY",
+        "gross": "2321.283",
+        "fees": "119.33194955",
+        "entry_fees": "59.02762195",
+        "exit_fees": "60.3043276",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "109644.232",
+        "entry_notional": "107322.949",
+        "max_abs_qty": "766.1",
+        "max_abs_notional": "107322.949",
+        "end_ns": 1728086400000000000,
+        "end": "2024-10-05T00:00:00+00:00",
+        "hours": "48",
+        "net": "2201.95105045"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1728604800000000000,
+        "start": "2024-10-11T00:00:00+00:00",
+        "side": "BUY",
+        "gross": "5280.158",
+        "fees": "126.5123431",
+        "entry_fees": "61.8041281",
+        "exit_fees": "64.708215",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "117651.30",
+        "entry_notional": "112371.142",
+        "max_abs_qty": "808.6",
+        "max_abs_notional": "112371.142",
+        "end_ns": 1728691200000000000,
+        "end": "2024-10-12T00:00:00+00:00",
+        "hours": "24",
+        "net": "5153.6456569"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1732233600000000000,
+        "start": "2024-11-22T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "35673.23999999999999999999999",
+        "fees": "429.1126114",
+        "entry_fees": "224.3664467",
+        "exit_fees": "204.7461647",
+        "exit_reasons": {
+          "TRAIL": 2
+        },
+        "entry_reasons": {
+          "SOL_ADD": 2
+        },
+        "exit_count": 2,
+        "entry_count": 2,
+        "exit_notional": "372265.754",
+        "entry_notional": "407938.994",
+        "max_abs_qty": "1588.3",
+        "max_abs_notional": "408478.994",
+        "end_ns": 1732579200000000000,
+        "end": "2024-11-26T00:00:00+00:00",
+        "hours": "96",
+        "net": "35244.12738859999999999999999"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1734912180000000000,
+        "start": "2024-12-23T00:03:00+00:00",
+        "side": "BUY",
+        "gross": "40770.0000000000000000000000",
+        "fees": "627.7425",
+        "entry_fees": "302.6595",
+        "exit_fees": "325.0830",
+        "exit_reasons": {
+          "REGIME": 3
+        },
+        "entry_reasons": {
+          "SOL_ADD": 3
+        },
+        "exit_count": 3,
+        "entry_count": 3,
+        "exit_notional": "591060.000",
+        "entry_notional": "550290.00",
+        "max_abs_qty": "3000.0",
+        "max_abs_notional": "570150.000",
+        "end_ns": 1735084800000000000,
+        "end": "2024-12-25T00:00:00+00:00",
+        "hours": "47.95",
+        "net": "40142.2575000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1735320060000000000,
+        "start": "2024-12-27T17:21:00+00:00",
+        "side": "BUY",
+        "gross": "225529.9999999999999999999986",
+        "fees": "2624.5945",
+        "entry_fees": "1250.2765",
+        "exit_fees": "1374.31800",
+        "exit_reasons": {
+          "REGIME": 12
+        },
+        "entry_reasons": {
+          "SOL_ADD": 12
+        },
+        "exit_count": 12,
+        "entry_count": 12,
+        "exit_notional": "2498760.000",
+        "entry_notional": "2273230.00",
+        "max_abs_qty": "12000.0",
+        "max_abs_notional": "2330520.000",
+        "end_ns": 1735862400000000000,
+        "end": "2025-01-03T00:00:00+00:00",
+        "hours": "150.65",
+        "net": "222905.4054999999999999999986"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1736467200000000000,
+        "start": "2025-01-10T00:00:00+00:00",
+        "side": "BUY",
+        "gross": "10220.00000000000000000000000",
+        "fees": "1231.4830",
+        "entry_fees": "612.9310",
+        "exit_fees": "618.5520",
+        "exit_reasons": {
+          "REGIME": 6
+        },
+        "entry_reasons": {
+          "SOL_ADD": 6
+        },
+        "exit_count": 6,
+        "entry_count": 6,
+        "exit_notional": "1124640.000",
+        "entry_notional": "1114420.00",
+        "max_abs_qty": "6000.0",
+        "max_abs_notional": "1096500.000",
+        "end_ns": 1736899200000000000,
+        "end": "2025-01-15T00:00:00+00:00",
+        "hours": "120",
+        "net": "8988.51700000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1738886400000000000,
+        "start": "2025-02-07T00:00:00+00:00",
+        "side": "BUY",
+        "gross": "9200.0000000000000000000000",
+        "fees": "213.40000",
+        "entry_fees": "104.17",
+        "exit_fees": "109.230000",
+        "exit_reasons": {
+          "SOL_Z_HALF_EXIT": 1,
+          "SOL_Z_FULL_EXIT": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 2,
+        "entry_count": 1,
+        "exit_notional": "198600.000",
+        "entry_notional": "189400.0",
+        "max_abs_qty": "1000.0",
+        "max_abs_notional": "189400.00",
+        "end_ns": 1739577600000000000,
+        "end": "2025-02-15T00:00:00+00:00",
+        "hours": "192",
+        "net": "8986.6000000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1741564800000000000,
+        "start": "2025-03-10T00:00:00+00:00",
+        "side": "BUY",
+        "gross": "5850.0000000000000000000000",
+        "fees": "272.3765",
+        "entry_fees": "134.5795",
+        "exit_fees": "137.79700",
+        "exit_reasons": {
+          "TRAIL": 2
+        },
+        "entry_reasons": {
+          "SOL_ADD": 2
+        },
+        "exit_count": 2,
+        "entry_count": 2,
+        "exit_notional": "250540.000",
+        "entry_notional": "244690.00",
+        "max_abs_qty": "2000.0",
+        "max_abs_notional": "236540.000",
+        "end_ns": 1741737600000000000,
+        "end": "2025-03-12T00:00:00+00:00",
+        "hours": "48",
+        "net": "5577.6235000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1741910400000000000,
+        "start": "2025-03-14T00:00:00+00:00",
+        "side": "BUY",
+        "gross": "10150.0000000000000000000000",
+        "fees": "141.2235",
+        "entry_fees": "67.8205",
+        "exit_fees": "73.4030",
+        "exit_reasons": {
+          "TRAIL": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "133460.000",
+        "entry_notional": "123310.00",
+        "max_abs_qty": "1000.0",
+        "max_abs_notional": "123310.000",
+        "end_ns": 1741996800000000000,
+        "end": "2025-03-15T00:00:00+00:00",
+        "hours": "24",
+        "net": "10008.7765000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1742688000000000000,
+        "start": "2025-03-23T00:00:00+00:00",
+        "side": "BUY",
+        "gross": "12500.0000000000000000000000",
+        "fees": "148.159",
+        "entry_fees": "70.642",
+        "exit_fees": "77.5170",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "140940.000",
+        "entry_notional": "128440.00",
+        "max_abs_qty": "1000.0",
+        "max_abs_notional": "128440.000",
+        "end_ns": 1742860800000000000,
+        "end": "2025-03-25T00:00:00+00:00",
+        "hours": "48",
+        "net": "12351.8410000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1743033780000000000,
+        "start": "2025-03-27T00:03:00+00:00",
+        "side": "BUY",
+        "gross": "-21530.00000000000000000000000",
+        "fees": "986.8925",
+        "entry_fees": "499.3670",
+        "exit_fees": "487.52550",
+        "exit_reasons": {
+          "TRAIL": 7
+        },
+        "entry_reasons": {
+          "SOL_ADD": 7
+        },
+        "exit_count": 7,
+        "entry_count": 7,
+        "exit_notional": "886410.000",
+        "entry_notional": "907940.00",
+        "max_abs_qty": "7000.0",
+        "max_abs_notional": "871150.000",
+        "end_ns": 1743552000000000000,
+        "end": "2025-04-02T00:00:00+00:00",
+        "hours": "143.95",
+        "net": "-22516.89250000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1743638520000000000,
+        "start": "2025-04-03T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "37860.00000000000000000000000",
+        "fees": "895.5540",
+        "entry_fees": "437.3655",
+        "exit_fees": "458.18850",
+        "exit_reasons": {
+          "TRAIL": 7
+        },
+        "entry_reasons": {
+          "SOL_ADD": 7
+        },
+        "exit_count": 7,
+        "entry_count": 7,
+        "exit_notional": "833070.000",
+        "entry_notional": "795210.00",
+        "max_abs_qty": "7000.0",
+        "max_abs_notional": "737310.000",
+        "end_ns": 1744243200000000000,
+        "end": "2025-04-10T00:00:00+00:00",
+        "hours": "167.9666666666666666666666667",
+        "net": "36964.44600000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1744329720000000000,
+        "start": "2025-04-11T00:02:00+00:00",
+        "side": "BUY",
+        "gross": "19790.0000000000000000000000",
+        "fees": "134.6235",
+        "entry_fees": "61.8695",
+        "exit_fees": "72.7540",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "132280.000",
+        "entry_notional": "112490.00",
+        "max_abs_qty": "1000.0",
+        "max_abs_notional": "112490.000",
+        "end_ns": 1744502400000000000,
+        "end": "2025-04-13T00:00:00+00:00",
+        "hours": "47.96666666666666666666666667",
+        "net": "19655.3765000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1746057600000000000,
+        "start": "2025-05-01T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "3630.0000000000000000000000",
+        "fees": "160.2315",
+        "entry_fees": "81.114",
+        "exit_fees": "79.11750",
+        "exit_reasons": {
+          "TRAIL": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "143850.000",
+        "entry_notional": "147480.00",
+        "max_abs_qty": "1000.0",
+        "max_abs_notional": "147480.000",
+        "end_ns": 1746403200000000000,
+        "end": "2025-05-05T00:00:00+00:00",
+        "hours": "96",
+        "net": "3469.7685000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1746835200000000000,
+        "start": "2025-05-10T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "3599.999999999999999999999700",
+        "fees": "1341.7030",
+        "entry_fees": "671.8415",
+        "exit_fees": "669.86150",
+        "exit_reasons": {
+          "TRAIL": 7
+        },
+        "entry_reasons": {
+          "SOL_ADD": 7
+        },
+        "exit_count": 7,
+        "entry_count": 7,
+        "exit_notional": "1217930.000",
+        "entry_notional": "1221530.00",
+        "max_abs_qty": "7000.0",
+        "max_abs_notional": "1171380.000",
+        "end_ns": 1748044800000000000,
+        "end": "2025-05-24T00:00:00+00:00",
+        "hours": "336",
+        "net": "2258.296999999999999999999700"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1748131320000000000,
+        "start": "2025-05-25T00:02:00+00:00",
+        "side": "SELL",
+        "gross": "31960.0000000000000000000000",
+        "fees": "176.198",
+        "entry_fees": "96.888",
+        "exit_fees": "79.310",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "144200.00",
+        "entry_notional": "176160.00",
+        "max_abs_qty": "1000.0",
+        "max_abs_notional": "176160.000",
+        "end_ns": 1749168000000000000,
+        "end": "2025-06-06T00:00:00+00:00",
+        "hours": "287.9666666666666666666666667",
+        "net": "31783.8020000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1749600000000000000,
+        "start": "2025-06-11T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "21480.0000000000000000000000",
+        "fees": "346.7200",
+        "entry_fees": "179.267",
+        "exit_fees": "167.45300",
+        "exit_reasons": {
+          "TRAIL": 2
+        },
+        "entry_reasons": {
+          "SOL_ADD": 2
+        },
+        "exit_count": 2,
+        "entry_count": 2,
+        "exit_notional": "304460.000",
+        "entry_notional": "325940.00",
+        "max_abs_qty": "2000.0",
+        "max_abs_notional": "321760.000",
+        "end_ns": 1749772800000000000,
+        "end": "2025-06-13T00:00:00+00:00",
+        "hours": "48",
+        "net": "21133.2800000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1753142400000000000,
+        "start": "2025-07-22T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "89360.0000000000000000000000",
+        "fees": "806.5640",
+        "entry_fees": "427.8560",
+        "exit_fees": "378.7080",
+        "exit_reasons": {
+          "TRAIL": 4
+        },
+        "entry_reasons": {
+          "SOL_ADD": 4
+        },
+        "exit_count": 4,
+        "entry_count": 4,
+        "exit_notional": "688560.000",
+        "entry_notional": "777920.00",
+        "max_abs_qty": "4000.0",
+        "max_abs_notional": "746920.000",
+        "end_ns": 1754006400000000000,
+        "end": "2025-08-01T00:00:00+00:00",
+        "hours": "240",
+        "net": "88553.4360000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1754611200000000000,
+        "start": "2025-08-08T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "-64470.000000000000000000000",
+        "fees": "1446.3295",
+        "entry_fees": "705.4355",
+        "exit_fees": "740.8940",
+        "exit_reasons": {
+          "TRAIL": 7
+        },
+        "entry_reasons": {
+          "SOL_ADD": 7
+        },
+        "exit_count": 7,
+        "entry_count": 7,
+        "exit_notional": "1347080.000",
+        "entry_notional": "1282610.00",
+        "max_abs_qty": "7000.0",
+        "max_abs_notional": "1410920.000",
+        "end_ns": 1755216000000000000,
+        "end": "2025-08-15T00:00:00+00:00",
+        "hours": "168",
+        "net": "-65916.329500000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1755302700000000000,
+        "start": "2025-08-16T00:05:00+00:00",
+        "side": "SELL",
+        "gross": "17990.00000000000000000000000",
+        "fees": "613.0355",
+        "entry_fees": "311.465",
+        "exit_fees": "301.57050",
+        "exit_reasons": {
+          "REGIME": 3
+        },
+        "entry_reasons": {
+          "SOL_ADD": 3
+        },
+        "exit_count": 3,
+        "entry_count": 3,
+        "exit_notional": "548310.000",
+        "entry_notional": "566300.00",
+        "max_abs_qty": "3000.0",
+        "max_abs_notional": "572820.000",
+        "end_ns": 1755561600000000000,
+        "end": "2025-08-19T00:00:00+00:00",
+        "hours": "71.91666666666666666666666667",
+        "net": "17376.96450000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1755908580000000000,
+        "start": "2025-08-23T00:23:00+00:00",
+        "side": "SELL",
+        "gross": "-9420.0000000000000000000000",
+        "fees": "443.9710",
+        "entry_fees": "219.3950",
+        "exit_fees": "224.5760",
+        "exit_reasons": {
+          "REGIME": 2
+        },
+        "entry_reasons": {
+          "SOL_ADD": 2
+        },
+        "exit_count": 2,
+        "entry_count": 2,
+        "exit_notional": "408320.000",
+        "entry_notional": "398900.00",
+        "max_abs_qty": "2000.0",
+        "max_abs_notional": "398900.000",
+        "end_ns": 1755993600000000000,
+        "end": "2025-08-24T00:00:00+00:00",
+        "hours": "23.61666666666666666666666667",
+        "net": "-9863.9710000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1757635200000000000,
+        "start": "2025-09-12T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "368849.9999999999999999999976",
+        "fees": "4807.9735",
+        "entry_fees": "2505.4205",
+        "exit_fees": "2302.5530",
+        "exit_reasons": {
+          "REGIME": 19
+        },
+        "entry_reasons": {
+          "SOL_ADD": 19
+        },
+        "exit_count": 19,
+        "entry_count": 19,
+        "exit_notional": "4186460.000",
+        "entry_notional": "4555310.00",
+        "max_abs_qty": "19000.0",
+        "max_abs_notional": "4485330.000",
+        "end_ns": 1758585600000000000,
+        "end": "2025-09-23T00:00:00+00:00",
+        "hours": "264",
+        "net": "364042.0264999999999999999976"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1759449600000000000,
+        "start": "2025-10-03T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "46600.0000000000000000000000",
+        "fees": "232.452",
+        "entry_fees": "129.041",
+        "exit_fees": "103.4110",
+        "exit_reasons": {
+          "REGIME": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "188020.000",
+        "entry_notional": "234620.00",
+        "max_abs_qty": "1000.0",
+        "max_abs_notional": "234620.000",
+        "end_ns": 1760140800000000000,
+        "end": "2025-10-11T00:00:00+00:00",
+        "hours": "192",
+        "net": "46367.5480000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1779235200000000000,
+        "start": "2026-05-20T00:00:00+00:00",
+        "side": "BUY",
+        "gross": "-119480.0000000000000000000002",
+        "fees": "1045.8360",
+        "entry_fees": "555.7750",
+        "exit_fees": "490.06100",
+        "exit_reasons": {
+          "SOL_HARD_TIMEOUT": 12
+        },
+        "entry_reasons": {
+          "SOL_ADD": 12
+        },
+        "exit_count": 12,
+        "entry_count": 12,
+        "exit_notional": "891020.000",
+        "entry_notional": "1010500.00",
+        "max_abs_qty": "12000.0",
+        "max_abs_notional": "988920.000",
+        "end_ns": 1780445460000000000,
+        "end": "2026-06-03T00:11:00+00:00",
+        "hours": "336.1833333333333333333333333",
+        "net": "-120525.8360000000000000000002"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1784505600000000000,
+        "start": "2026-07-20T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "16380.0000000000000000000000",
+        "fees": "415.5690",
+        "entry_fees": "212.2890",
+        "exit_fees": "203.2800",
+        "exit_reasons": {
+          "REGIME": 5
+        },
+        "entry_reasons": {
+          "SOL_ADD": 5
+        },
+        "exit_count": 5,
+        "entry_count": 5,
+        "exit_notional": "369600.000",
+        "entry_notional": "385980.00",
+        "max_abs_qty": "5000.0",
+        "max_abs_notional": "379100.000",
+        "end_ns": 1784937600000000000,
+        "end": "2026-07-25T00:00:00+00:00",
+        "hours": "120",
+        "net": "15964.4310000000000000000000"
+      },
+      {
+        "sym": "SOL",
+        "start_ns": 1787875200000000000,
+        "start": "2026-08-28T00:00:00+00:00",
+        "side": "SELL",
+        "gross": "4990.0000000000000000000000",
+        "fees": "117.2435",
+        "entry_fees": "59.994",
+        "exit_fees": "57.24950",
+        "exit_reasons": {
+          "TRAIL": 1
+        },
+        "entry_reasons": {
+          "SOL_ADD": 1
+        },
+        "exit_count": 1,
+        "entry_count": 1,
+        "exit_notional": "104090.000",
+        "entry_notional": "109080.00",
+        "max_abs_qty": "1000.0",
+        "max_abs_notional": "109080.000",
+        "end_ns": 1787961600000000000,
+        "end": "2026-08-29T00:00:00+00:00",
+        "hours": "24",
+        "net": "4872.7565000000000000000000"
+      }
+    ]
+  },
+  "counts": {
+    "BTC": {
+      "episodes": 105,
+      "gross": "3530998.7656",
+      "fees": "577612.71049089",
+      "net": "2953386.05510911",
+      "negative_net": 48,
+      "negative_net_fees": "294296.35849608",
+      "under_hour": 0,
+      "under_day": 38,
+      "hour_max": "379.6"
+    },
+    "SOL": {
+      "episodes": 26,
+      "gross": "805084.6809999999999999999957",
+      "fees": "19904.83240405",
+      "net": "785179.8485959499999999999957",
+      "negative_net": 4,
+      "negative_net_fees": "3923.0290",
+      "under_hour": 0,
+      "under_day": 4,
+      "hour_max": "336.1833333333333333333333333"
+    }
+  },
+  "legs_by_reason": {
+    "('BTC', 'BTC_REDUCE')": {
+      "count": 77,
+      "gross": "2002713.2279",
+      "entry_fee_alloc": "64034.15605000411544492553980",
+      "exit_fee": "63548.481346110",
+      "net": "1875130.590503885884555074461",
+      "negative_count": 0,
+      "negative_sum": "0",
+      "exit_notional": "115542693.3564"
+    },
+    "('BTC', 'BTC_TP2')": {
+      "count": 24,
+      "gross": "47134.2153",
+      "entry_fee_alloc": "13895.67302530588471817040006",
+      "exit_fee": "5049.38371538",
+      "net": "28189.15855931411528182959995",
+      "negative_count": 6,
+      "negative_sum": "-774.7089015610617958347558894",
+      "exit_notional": "25246918.5769"
+    },
+    "('BTC', 'BTC_TP3')": {
+      "count": 54,
+      "gross": "6608304.1868",
+      "entry_fee_alloc": "106018.0306851445619481642260",
+      "exit_fee": "38361.15294542",
+      "net": "6463925.003169435438051835774",
+      "negative_count": 0,
+      "negative_sum": "0",
+      "exit_notional": "191805764.7271"
+    },
+    "('BTC', 'REGIME')": {
+      "count": 48,
+      "gross": "-5232661.1920",
+      "entry_fee_alloc": "135476.3346335196876829094473",
+      "exit_fee": "134924.955991310",
+      "net": "-5503062.482624829687682909447",
+      "negative_count": 48,
+      "negative_sum": "-5503062.482624829687682909447",
+      "exit_notional": "245318101.8023"
+    },
+    "('BTC', 'TERMINAL_BOUNDARY_SETTLEMENT')": {
+      "count": 1,
+      "gross": "24854.4920",
+      "entry_fee_alloc": "3162.1675275300000000000",
+      "exit_fee": "3175.83749813",
+      "net": "18516.4869743400000000000",
+      "negative_count": 0,
+      "negative_sum": "0",
+      "exit_notional": "5774249.9966"
+    },
+    "('BTC', 'TRAIL')": {
+      "count": 2,
+      "gross": "80653.8356",
+      "entry_fee_alloc": "4961.088731725750205830386841",
+      "exit_fee": "5005.44834131",
+      "net": "70687.29852696424979416961316",
+      "negative_count": 0,
+      "negative_sum": "0",
+      "exit_notional": "9100815.1660"
+    },
+    "('SOL', 'REGIME')": {
+      "count": 56,
+      "gross": "788771.4409999999999999999962",
+      "entry_fee_alloc": "5893.708750050000000000000004",
+      "exit_fee": "5807.9370426",
+      "net": "777069.7952073499999999999969",
+      "negative_count": 2,
+      "negative_sum": "-9863.9710000000000000000000",
+      "exit_notional": "10559885.532"
+    },
+    "('SOL', 'SOL_HARD_TIMEOUT')": {
+      "count": 12,
+      "gross": "-119480.0000000000000000000002",
+      "entry_fee_alloc": "555.7749999999999999999999999",
+      "exit_fee": "490.06100",
+      "net": "-120525.8360000000000000000001",
+      "negative_count": 12,
+      "negative_sum": "-120525.8360000000000000000001",
+      "exit_notional": "891020.000"
+    },
+    "('SOL', 'SOL_Z_FULL_EXIT')": {
+      "count": 1,
+      "gross": "4965.0000000000000000000000",
+      "entry_fee_alloc": "52.0850000000000000000000",
+      "exit_fee": "54.815750",
+      "net": "4858.0992500000000000000000",
+      "negative_count": 0,
+      "negative_sum": "0",
+      "exit_notional": "99665.000"
+    },
+    "('SOL', 'SOL_Z_HALF_EXIT')": {
+      "count": 1,
+      "gross": "4235.000000000000000000000",
+      "entry_fee_alloc": "52.0850000000000000000000",
+      "exit_fee": "54.41425",
+      "net": "4128.5007500000000000000000",
+      "negative_count": 0,
+      "negative_sum": "0",
+      "exit_notional": "98935.00"
+    },
+    "('SOL', 'TRAIL')": {
+      "count": 41,
+      "gross": "126593.2399999999999999999997",
+      "entry_fee_alloc": "3489.006946700000000000000000",
+      "exit_fee": "3454.9436647",
+      "net": "119649.2893885999999999999997",
+      "negative_count": 14,
+      "negative_sum": "-88433.22199999999999999999999",
+      "exit_notional": "6281715.754"
+    }
+  },
+  "sol_add_to_exit": {
+    "0": {
+      "count": 0,
+      "add_fees": "0"
+    },
+    "1": {
+      "count": 0,
+      "add_fees": "0"
+    },
+    "24": {
+      "count": 17,
+      "add_fees": "1488.7076281"
+    },
+    "48": {
+      "count": 33,
+      "add_fees": "2803.37975005"
+    }
+  },
+  "order_status": {
+    "counts": {
+      "('BTC', 'FILLED', 'False', 'MARKET')": 105,
+      "('BTC', 'FILLED', 'True', 'LIMIT')": 78,
+      "('BTC', 'CANCELED', 'True', 'LIMIT')": 54,
+      "('BTC', 'FILLED', 'True', 'MARKET')": 128,
+      "('SOL', 'FILLED', 'False', 'MARKET')": 3,
+      "('SOL', 'FILLED', 'True', 'MARKET')": 27,
+      "('SOL', 'CANCELED', 'False', 'MARKET')": 107,
+      "('SOL', 'CANCELED', 'True', 'MARKET')": 84
+    },
+    "partial_canceled": 191,
+    "zero_canceled": 54
+  }
+}

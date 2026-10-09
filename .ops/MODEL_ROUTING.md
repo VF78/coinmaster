@@ -1,3 +1,7 @@
+# Current owner override — 2026-10-09
+
+All newly launched executor tasks use **GPT-6.1 Sol (`gpt-6.1-sol`)**, not GPT-5.6 or GPT-6 models. Choose the minimum sufficient reasoning effort for the task; native trading/money reviews normally use medium. Do not interrupt or restart already running/passing tasks to change their model. This explicit owner instruction overrides the older routing table below, which is retained as historical role/quality-gate context.
+
 # CoinMaster model routing
 
 Updated: 2026-09-23. Applies to new work; do not restart a passing implementation solely to change models.

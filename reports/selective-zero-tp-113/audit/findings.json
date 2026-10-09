@@ -1,0 +1,142 @@
+{
+  "constraints": {
+    "funding_changed": false,
+    "model_new_tasks": "gpt-6.1-sol",
+    "native_engine_only": true,
+    "pilot_deployed_or_restarted": false,
+    "trading_rules_changed": false
+  },
+  "economics": {
+    "48regimeflips": "not_same_direction_reopens",
+    "TP2": {
+      "count": 24,
+      "entry_fee_alloc": "13895.67302530588471817040006",
+      "exit_fee": "5049.38371538",
+      "exit_notional": "25246918.5769",
+      "gross": "47134.2153",
+      "negative_count": 6,
+      "negative_sum": "-774.7089015610617958347558894",
+      "net": "28189.15855931411528182959995"
+    },
+    "btc": {
+      "episodes": 105,
+      "fees": "577612.71049089",
+      "gross": "3530998.7656",
+      "hour_max": "379.6",
+      "negative_net": 48,
+      "negative_net_fees": "294296.35849608",
+      "net": "2953386.05510911",
+      "under_day": 38,
+      "under_hour": 0
+    },
+    "episode_arithmetic_residual_to_native_gain": "-1523.93290172",
+    "funding_allocation": "UNKNOWN",
+    "native_total_fees": "597517.54289494",
+    "sol": {
+      "episodes": 26,
+      "fees": "19904.83240405",
+      "gross": "805084.6809999999999999999957",
+      "hour_max": "336.1833333333333333333333333",
+      "negative_net": 4,
+      "negative_net_fees": "3923.0290",
+      "net": "785179.8485959499999999999957",
+      "under_day": 4,
+      "under_hour": 0
+    },
+    "sol_add_exit_24h": {
+      "add_fees": "1488.7076281",
+      "count": 17
+    }
+  },
+  "evidence": {
+    "README.md": {
+      "bytes": 10404,
+      "sha256": "def705dd00fc3a4856552fe1c453a741cc23ca469f4630bed5bdf22101aa701d"
+    },
+    "cm113-selective-economics-audit.csv": {
+      "bytes": 76218,
+      "sha256": "e4ddedaf1d3e9e4273397ac692b57f820c3c2148d84996cec7aec51d54f5e5d0"
+    },
+    "cm113-selective-economics-audit.json": {
+      "bytes": 109979,
+      "sha256": "f2dce5ca8b93bf718cdf73ad29e61901a2a2e625879dc3dc4df7331fcfa5f3e2"
+    },
+    "cm113-selective-final-triage.md": {
+      "bytes": 10793,
+      "sha256": "6ebd1792c6ac741823bf1052d67615e132631e292c174e953ad8d809179f0e63"
+    },
+    "lifecycle.md": {
+      "bytes": 8025,
+      "sha256": "15afd1e063fb8e91c81a153c2f8ae36979468d960d8a4ccb96098bcc744c474b"
+    }
+  },
+  "findings": [
+    {
+      "actual_run": true,
+      "id": "F1",
+      "priority": "P1",
+      "proof": "native_three_quote_and_archived11of105entries",
+      "summary": "q1 parentnotionalcap not rechecked; maxexcess13629.2984 above10m",
+      "type": "execution_constraint"
+    },
+    {
+      "actual_run": false,
+      "id": "F2",
+      "priority": "P2",
+      "proof": "callback_order_state_only",
+      "summary": "reference touch can be earned before confirmedfill",
+      "type": "causality"
+    },
+    {
+      "actual_run": false,
+      "id": "F3",
+      "priority": "P1",
+      "proof": "native_five_quote_fullSOLexit2000partial1000cancel",
+      "summary": "ordinarySOLzfullresidual not rearmed; halfsharesdailyconditiondependency",
+      "type": "exit_completion"
+    },
+    {
+      "actual_run": "UNKNOWN_NOT_EXPORTED",
+      "id": "F4",
+      "priority": "P2",
+      "proof": "callback_state_only",
+      "summary": "terminalFLAT can leave presubmitq0plan/pending",
+      "type": "terminal_cleanup"
+    },
+    {
+      "actual_run": "UNKNOWN_TWO_GATE_BLOCKS",
+      "id": "F5",
+      "priority": "P2",
+      "proof": "nativeMarginAccountbudget_probe_plus_pinnedcode",
+      "summary": "existingmargin doublescounted againstbalancefree",
+      "type": "native_margin_basis"
+    },
+    {
+      "actual_run": "UNKNOWN",
+      "id": "F6",
+      "priority": "P2",
+      "proof": "source",
+      "summary": "dailycachedequitymarks vsfreshpolicyprospectiveIM",
+      "type": "mark_basis"
+    },
+    {
+      "actual_run": "NOT_OBSERVED",
+      "id": "G7",
+      "priority": "REVIEW_COMPLETION_CONTRACT",
+      "proof": "source_only_not_native_reproduced",
+      "summary": "zeroTPmarketpartialcancel keepsleaves/proportionalrights but nextdailyeligibledecision needed; zero-resting suppression blocksquote rearm",
+      "type": "BTC_partial_fallback"
+    }
+  ],
+  "full_backtests_launched": 0,
+  "hypotheses_not_tested": [
+    "narrowpositiveTP2fee-negative guard/repricing, realfillSOLrights preserved",
+    "causalSOLaddguardonknownexit/timeout orcurrenttrail/regime proximity"
+  ],
+  "prior_tests_reused": 89,
+  "raw_native_report_sha256": "0ccad5771c23e380ba6115cc7bc8530b47ee39ec6fe99c08595640e17b9faee1",
+  "runtime_source_unchanged": true,
+  "source_commit": "a9c4d62f92e881ec6274fa34f8d2887bf9ff159c",
+  "status": "AUDIT_COMPLETE_NO_IMPLEMENTATION",
+  "terminal_total": "3747041.97080334"
+}
