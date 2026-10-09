@@ -76,7 +76,28 @@
       }
     },
     "cash_drawdown_amount": "1453798.83794607",
-    "cash_drawdown_percent": "0.3063185969312693002712883379",
+    "cash_drawdown_definition": "Maximum percentage and maximum absolute amount are independent metrics; both refer to native cash, not full marked equity.",
+    "cash_drawdown_percent": "0.5814621682023675046664766803",
+    "cash_drawdown_percent_at_max_absolute_drawdown_original_report": "0.3063185969312693002712883379",
+    "cash_maximum_absolute_drawdown": {
+      "amount": "1453798.83794607",
+      "peak": "4746035.18203065",
+      "peak_timestamp": "2026-05-02 21:38:00+00:00",
+      "percent": "30.63185969312693002712883379",
+      "trough": "3292236.34408458",
+      "trough_timestamp": "2026-08-19 00:00:00+00:00"
+    },
+    "cash_maximum_relative_drawdown": {
+      "amount": "486285.39972804",
+      "peak": "836314.77045433",
+      "peak_timestamp": "2025-04-10 00:00:00+00:00",
+      "peak_to_recovery_days": "166.0",
+      "peak_to_trough_days": "59.0",
+      "percent": "58.14621682023675046664766803",
+      "recovered_at": "2025-09-23 00:00:00+00:00",
+      "trough": "350029.37072629",
+      "trough_timestamp": "2025-06-08 00:00:00+00:00"
+    },
     "fee_attribution": {
       "audited_total": "621073.73049442",
       "maker": {
@@ -260,6 +281,7 @@
     "variant_report_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-execution-v2-20261009/result/v0-execution-repairs.json"
   },
   "ranking_eligible": false,
+  "report_correction": "2026-10-09 attribution audit: independently recomputed true maximum percentage cash drawdown; archived raw reports preserved. See drawdown_audit.json. Terminal TOTAL unchanged.",
   "status": "READ_ONLY_NATIVE_COMPARISON",
   "variant": {
     "actions": {
@@ -300,7 +322,28 @@
       }
     },
     "cash_drawdown_amount": "1054939.47961519",
-    "cash_drawdown_percent": "0.2776261216163298816393292597",
+    "cash_drawdown_definition": "Maximum percentage and maximum absolute amount are independent metrics; both refer to native cash, not full marked equity.",
+    "cash_drawdown_percent": "0.5224419690078468908375720421",
+    "cash_drawdown_percent_at_max_absolute_drawdown_original_report": "0.2776261216163298816393292597",
+    "cash_maximum_absolute_drawdown": {
+      "amount": "1054939.47961519",
+      "peak": "3799856.70466946",
+      "peak_timestamp": "2026-07-11 00:00:00+00:00",
+      "percent": "27.76261216163298816393292597",
+      "trough": "2744917.22505427",
+      "trough_timestamp": "2026-08-19 08:00:00+00:00"
+    },
+    "cash_maximum_relative_drawdown": {
+      "amount": "426460.31424158",
+      "peak": "816282.64867667",
+      "peak_timestamp": "2025-04-10 00:00:00+00:00",
+      "peak_to_recovery_days": "166.0",
+      "peak_to_trough_days": "60.66666666666666666666666667",
+      "percent": "52.24419690078468908375720421",
+      "recovered_at": "2025-09-23 00:00:00+00:00",
+      "trough": "389822.33443509",
+      "trough_timestamp": "2025-06-09 16:00:00+00:00"
+    },
     "fee_attribution": {
       "audited_total": "389292.16844105",
       "maker": {

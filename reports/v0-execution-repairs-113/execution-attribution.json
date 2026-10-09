@@ -1,0 +1,484 @@
+{
+  "SOL_right_timing": {
+    "native_episode_example": {
+      "control_SOL_ADD_level0": "2024-12-23T00:03:00+00:00, 1000 SOL",
+      "control_SOL_ADD_level1": "2024-12-23T18:52:00+00:00, 1000 SOL",
+      "control_real_zero_TP1_TP2_fills": "2024-12-23T00:03:00+00:00, 1.973 BTC each",
+      "entry_utc": "2024-12-23T00:00:00+00:00",
+      "episode": 16,
+      "note": "Both paths use confirmed native fills. Same-day SOL timing changed without synthetic BTC fills.",
+      "omitted_zero_levels": [
+        0,
+        1
+      ],
+      "variant_SOL_ADD_level0_and1": "2024-12-23T00:00:00+00:00, 1000 SOL each",
+      "variant_real_entry_qty": "5.419"
+    },
+    "rule_change": "V0 requires a confirmed zero-level BTC TP fill for rights; variant grants omitted-level rights from the real net BTC entry fill, proportionally to that fill."
+  },
+  "ablation": {
+    "code_commit": "4ee4fce1ed54312d4749b3c1e20e78ad1f02e6e1",
+    "effects": {
+      "net_entry_and_omitted_rights_vs_technical_control_total": "-721036.03445681",
+      "net_entry_fee_savings_vs_technical_control": "231874.03905337",
+      "net_entry_vs_technical_control_relative_percent": "-20.29366085048147532027956844",
+      "three_technical_fixes_vs_V0_relative_percent": "4.917168661558091865968829367",
+      "three_technical_fixes_vs_V0_total": "166519.50624400"
+    },
+    "input_validation": {
+      "all_114_SOL_add_fill_audit_rows_identical": true,
+      "all_389_BTC_fill_audit_rows_identical": true,
+      "same_data_policy_interval_seed": true,
+      "technical_control_config_delta_vs_V0": {
+        "research_v0_execution_repairs": true,
+        "research_v0_zero_tp_netting": false
+      }
+    },
+    "new_native_runs": 1,
+    "relevant_tests_passed": 82,
+    "reproduction_command": "cd runtime && .venv/bin/python -m coinmaster.research.native_baseline --research-v0-execution-repairs --research-v0-original-zero-tp --data-root var/data --control-report var/data/runs/tp-fee-floor-113/v0/v0.json --artifact-dir <NEW_NONEXISTENT_DIRECTORY>",
+    "runtime_boundary": "Ran once as isolated coinmaster-research UID994 with RO source/data and separate output/journal; no secrets/network; pilot PID2009732/NRestarts0 unchanged.",
+    "timeout_evidence": {
+      "control": "6 daily timeout lots plus7 later TRAIL lots; final close June8",
+      "control_exit_notional": "886680",
+      "exit_price_contribution_to_gross_PnL": "168140",
+      "extra_native_exit_fees": "92.477",
+      "residual_explanation": "Signed funding/other cash remainder not separately exported; not assigned as a known funding amount.",
+      "same_SOL_exit_quantity": "13000",
+      "shared_first_price": "81.23",
+      "shared_first_quantity": "1000",
+      "shared_first_timeout_utc": "2026-06-02T00:00:00Z",
+      "technical_control": "13 timeout fills June2 00:00-00:12 UTC, 60s cadence",
+      "technical_exit_notional": "1054820",
+      "terminal_delta_less_price_and_fee_contribution": "-1528.016756"
+    },
+    "variants": {
+      "V0": {
+        "active": "3386491.65211338",
+        "all_fills": 618,
+        "btc_fills": 389,
+        "cash_max_relative_dd_percent": "58.14621682023675046664766803",
+        "cash_maximum_relative_drawdown": {
+          "amount": "486285.39972804",
+          "peak": "836314.77045433",
+          "peak_timestamp": "2025-04-10 00:00:00+00:00",
+          "percent": "58.14621682023675046664766803",
+          "trough": "350029.37072629",
+          "trough_timestamp": "2025-06-08 00:00:00+00:00"
+        },
+        "config_hash": "2a3af9d447d906c4aa862b095c1a419d55a55727f4df5007bfdbeca90a25661f",
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "full_marked_equity_dd": "UNKNOWN",
+        "funding_audit_count": 1305,
+        "liquidations": 0,
+        "maker_fees": "61222.28338266",
+        "maker_notional": "306111416.9133",
+        "minimum_cash": {
+          "active": "7766.25742027",
+          "reserve": "0",
+          "timestamp": "2024-09-19 00:00:00+00:00",
+          "total": "7766.25742027"
+        },
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "reserve": "0",
+        "roi_percent": "33764.916521133800",
+        "signed_funding": "UNKNOWN",
+        "sol_fills": 229,
+        "source_hashes": {},
+        "source_report_path": "runtime/var/data/runs/tp-fee-floor-113/v0/v0.json",
+        "source_report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+        "streaming": {
+          "batch_count": 105,
+          "cursor_batch_rows": 10080,
+          "event_count": 4206260,
+          "expected_rows_per_source": 1051200,
+          "max_batch_events": 40334,
+          "max_batch_minutes": 10080,
+          "peak_rss_bytes": 623730688,
+          "processed_rows_per_source": 1051200
+        },
+        "taker_fees": "559851.44711176",
+        "taker_notional": "1017911722.0209",
+        "terminal_lifecycle": {
+          "close_fills": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "timestamp": "1788220800000000000",
+              "value": "5774249.9966"
+            }
+          ],
+          "lockout": true,
+          "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+          "status": "FLAT",
+          "trigger_ts": "1788220800000000000"
+        },
+        "total": "3386491.65211338",
+        "total_fees": "621073.73049442",
+        "variant": "V0"
+      },
+      "four_repairs_net_entry": {
+        "active": "2831975.12390057",
+        "all_fills": 473,
+        "btc_fills": 238,
+        "cash_max_relative_dd_percent": "52.24419690078468908375720421",
+        "cash_maximum_relative_drawdown": {
+          "amount": "426460.31424158",
+          "peak": "816282.64867667",
+          "peak_timestamp": "2025-04-10 00:00:00+00:00",
+          "percent": "52.24419690078468908375720421",
+          "trough": "389822.33443509",
+          "trough_timestamp": "2025-06-09 16:00:00+00:00"
+        },
+        "config_hash": "75078f6798a4947e47407c3fbb7fdf883c242f57f570719513d0b0083f0506b0",
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "full_marked_equity_dd": "UNKNOWN",
+        "funding_audit_count": 1290,
+        "liquidations": 0,
+        "maker_fees": "40387.25412820",
+        "maker_notional": "201936270.6410",
+        "minimum_cash": {
+          "active": "9347.62148002",
+          "reserve": "0",
+          "timestamp": "2024-09-19 08:00:00+00:00",
+          "total": "9347.62148002"
+        },
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "reserve": "0",
+        "roi_percent": "28219.751239005700",
+        "signed_funding": "UNKNOWN",
+        "sol_fills": 235,
+        "source_hashes": {
+          "native_baseline": "dd59c1d561694973cca49960c49f238c58d3d2ab2aea57be16ec210867562822",
+          "wave_domain": "a396b5d219051240b10ea7890fe9b291584657c373f2baa0bec6dd274dc1bb0e",
+          "wave_strategy": "34b11a241e3600aa6d9e5556ebf11f2dce0f6bb46ad08e497be6de54577faedb"
+        },
+        "source_report_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-execution-v2-20261009/result/v0-execution-repairs.json",
+        "source_report_sha256": "7323f53535b53668c66231f87ce6ab537eb9effde0ea06d6c4d57c492a569366",
+        "streaming": {
+          "batch_count": 105,
+          "cursor_batch_rows": 10080,
+          "event_count": 4206260,
+          "expected_rows_per_source": 1051200,
+          "max_batch_events": 40334,
+          "max_batch_minutes": 10080,
+          "peak_rss_bytes": 619905024,
+          "processed_rows_per_source": 1051200
+        },
+        "taker_fees": "348904.91431285",
+        "taker_notional": "634372571.4776",
+        "terminal_lifecycle": {
+          "close_fills": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "timestamp": "1788220800000000000",
+              "value": "5774249.9966"
+            }
+          ],
+          "lockout": true,
+          "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+          "status": "FLAT",
+          "trigger_ts": "1788220800000000000"
+        },
+        "total": "2831975.12390057",
+        "total_fees": "389292.16844105",
+        "variant": "four_repairs_net_entry"
+      },
+      "three_repairs_original_entry": {
+        "active": "3553011.15835738",
+        "all_fills": 618,
+        "btc_fills": 389,
+        "cash_max_relative_dd_percent": "58.14621682023675046664766803",
+        "cash_maximum_relative_drawdown": {
+          "amount": "486285.39972804",
+          "peak": "836314.77045433",
+          "peak_timestamp": "2025-04-10 00:00:00+00:00",
+          "percent": "58.14621682023675046664766803",
+          "trough": "350029.37072629",
+          "trough_timestamp": "2025-06-08 00:00:00+00:00"
+        },
+        "config_hash": "8c8e68dc8eebd0a94f368a2fc256797a05cda39525f34c3e028add620b9e2383",
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "full_marked_equity_dd": "UNKNOWN",
+        "funding_audit_count": 1287,
+        "liquidations": 0,
+        "maker_fees": "61222.28338266",
+        "maker_notional": "306111416.9133",
+        "minimum_cash": {
+          "active": "7766.25742027",
+          "reserve": "0",
+          "timestamp": "2024-09-19 00:00:00+00:00",
+          "total": "7766.25742027"
+        },
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "reserve": "0",
+        "roi_percent": "35430.111583573800",
+        "signed_funding": "UNKNOWN",
+        "sol_fills": 229,
+        "source_hashes": {
+          "native_baseline": "e413474d4e008be9583f066eb3fad4d745f2c087d261677c383983bdf9bf6934",
+          "wave_domain": "a396b5d219051240b10ea7890fe9b291584657c373f2baa0bec6dd274dc1bb0e",
+          "wave_strategy": "1daf6e6fb8c2a9db564e255adcccdd27ae70a1a575132cb016f41823e078d694"
+        },
+        "source_report_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-technical-only-20261009/result/v0-three-repairs-zero-tp-original.json",
+        "source_report_sha256": "27581a9d82bb958b47509e5fe40256215fdd3465d62302a86a4fbd7d46af1ae2",
+        "streaming": {
+          "batch_count": 105,
+          "cursor_batch_rows": 10080,
+          "event_count": 4206260,
+          "expected_rows_per_source": 1051200,
+          "max_batch_events": 40334,
+          "max_batch_minutes": 10080,
+          "peak_rss_bytes": 621588480,
+          "processed_rows_per_source": 1051200
+        },
+        "taker_fees": "559943.92411176",
+        "taker_notional": "1018079862.0209",
+        "terminal_lifecycle": {
+          "close_fills": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "timestamp": "1788220800000000000",
+              "value": "5774249.9966"
+            }
+          ],
+          "lockout": true,
+          "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+          "status": "FLAT",
+          "trigger_ts": "1788220800000000000"
+        },
+        "total": "3553011.15835738",
+        "total_fees": "621166.20749442",
+        "variant": "three_repairs_original_entry"
+      }
+    }
+  },
+  "aggregate": {
+    "combined_pre_fee_result_delta_including_unisolated_funding_other": "-786298.09026618",
+    "control_terminal_total": "3386491.65211338",
+    "first_order_mechanism": "Removing zero-threshold levels eliminated 151 BTC reduction fills, including 75 historically profitable favorable IOC fallbacks and 76 flat-gross maker reductions. It also changed BTC exposure and SOL right timing. Exact per-fix terminal impact requires ablation.",
+    "minimal_ablation": "Completed: technical-only control TOTAL3553011.15835738, above V0. Blanket zero-target netting reduced this by721036.03445681 despite231874.03905337 fee saving.",
+    "observed_native_fee_saving": "231781.56205337",
+    "selection": "Best of these three measured variants: three technical fixes with original full BTC entry, zero TP/fallback and confirmed-TP SOL-right semantics. No deployment, independent repeat or new global optimum claimed.",
+    "variant_minus_control": "-554516.52821281",
+    "variant_terminal_total": "2831975.12390057",
+    "warning": "Do not interpret removed historical profitable fills as a directly additive terminal-ROI effect: equity, remaining BTC exposure and SOL entitlements change the subsequent path."
+  },
+  "fallback_mechanism": {
+    "representative_profitable_episode": {
+      "delay_minutes": 2879,
+      "entry_fee_alloc_each": "1094.8626612",
+      "entry_price": "114208.8",
+      "entry_qty": "82.024",
+      "entry_utc": "2025-09-30T00:01:00+00:00",
+      "episode": 61,
+      "exit_fee_each": "1136.5313421",
+      "fallback_each_price": "118555.4",
+      "fallback_each_qty": "17.43",
+      "fallback_type": "SELL MARKET IOC TAKER",
+      "fallback_utc": "2025-10-02T00:00:00+00:00",
+      "gross_each": "75761.238",
+      "initial_native_btc_orders": "Entry MARKET IOC and only TP3 resting post-only LIMIT; no native TP1/TP2 limit row",
+      "net_each_after_allocated_fees": "73529.8439967",
+      "note": "Local marketability rejection is inferred from code plus absent native zero-limit orders; the report has no explicit local cancellation event.",
+      "side": "BUY",
+      "zero_levels": [
+        0,
+        1
+      ]
+    },
+    "source_rule": "Confirmed BTC entry queues post-only zero-return targets at the entry price. When native wire-equivalent target would cross the current quote, the adapter locally cancels that planned parent. A later causal domain decision can emit the same unfilled level as a BTC_REDUCE market IOC when signed BTC return reaches its zero wave threshold. A confirmed native fill alone grants the V0 SOL right."
+  },
+  "fill_counts": {
+    "control": {
+      "BTCUSDT": {
+        "by_action": {
+          "BTC_ENTRY": 105,
+          "BTC_REDUCE": 233,
+          "FORCED_CLOSE": 50,
+          "TERMINAL_CLOSE": 1
+        },
+        "by_action_reason": {
+          "BTC_ENTRY|BTC_ENTRY": 105,
+          "BTC_REDUCE|BTC_REDUCE": 78,
+          "BTC_REDUCE|BTC_TP1": 45,
+          "BTC_REDUCE|BTC_TP2": 56,
+          "BTC_REDUCE|BTC_TP3": 54,
+          "FORCED_CLOSE|REGIME": 48,
+          "FORCED_CLOSE|TRAIL": 2,
+          "TERMINAL_CLOSE|TERMINAL_BOUNDARY_SETTLEMENT": 1
+        },
+        "fees": "600710.63986962",
+        "fills": 389,
+        "notional": "1286999337.7982"
+      },
+      "SOLUSDT": {
+        "by_action": {
+          "FORCED_CLOSE": 107,
+          "SOL_ADD": 114,
+          "SOL_EXIT": 7,
+          "SOL_HALF_EXIT": 1
+        },
+        "by_action_reason": {
+          "FORCED_CLOSE|REGIME": 56,
+          "FORCED_CLOSE|TRAIL": 51,
+          "SOL_ADD|SOL_ADD": 114,
+          "SOL_EXIT|SOL_HARD_TIMEOUT": 6,
+          "SOL_EXIT|SOL_Z_FULL_EXIT": 1,
+          "SOL_HALF_EXIT|SOL_Z_HALF_EXIT": 1
+        },
+        "fees": "20363.0906248",
+        "fills": 229,
+        "notional": "37023801.136"
+      }
+    },
+    "variant": {
+      "BTCUSDT": {
+        "by_action": {
+          "BTC_ENTRY": 105,
+          "BTC_REDUCE": 82,
+          "FORCED_CLOSE": 50,
+          "TERMINAL_CLOSE": 1
+        },
+        "by_action_reason": {
+          "BTC_ENTRY|BTC_ENTRY": 105,
+          "BTC_REDUCE|BTC_REDUCE": 3,
+          "BTC_REDUCE|BTC_TP2": 25,
+          "BTC_REDUCE|BTC_TP3": 54,
+          "FORCED_CLOSE|REGIME": 48,
+          "FORCED_CLOSE|TRAIL": 2,
+          "TERMINAL_CLOSE|TERMINAL_BOUNDARY_SETTLEMENT": 1
+        },
+        "fees": "368012.84636165",
+        "fills": 238,
+        "notional": "797619165.6106"
+      },
+      "SOLUSDT": {
+        "by_action": {
+          "FORCED_CLOSE": 104,
+          "SOL_ADD": 117,
+          "SOL_EXIT": 13,
+          "SOL_HALF_EXIT": 1
+        },
+        "by_action_reason": {
+          "FORCED_CLOSE|REGIME": 60,
+          "FORCED_CLOSE|TRAIL": 44,
+          "SOL_ADD|SOL_ADD": 117,
+          "SOL_EXIT|SOL_HARD_TIMEOUT": 12,
+          "SOL_EXIT|SOL_Z_FULL_EXIT": 1,
+          "SOL_HALF_EXIT|SOL_Z_HALF_EXIT": 1
+        },
+        "fees": "21279.3220794",
+        "fills": 235,
+        "notional": "38689676.508"
+      }
+    }
+  },
+  "first_divergence": {
+    "control_btc_entry_qty": "1.375",
+    "control_zero_TP1_TP2_fill_utc": "2024-09-02T00:09:00+00:00",
+    "interpretation": "Initial fee advantage is real; later path divergence cannot be attributed by subtracting isolated trades.",
+    "omitted_zero_target_qty": "0.292+0.292",
+    "same_entry_and_TP3_price_qty": true,
+    "utc": "2024-09-02T00:00:00+00:00",
+    "variant_direct_first_episode_fee_advantage": "25.08255180",
+    "variant_real_net_qty": "0.791",
+    "variant_reference_qty": "1.375",
+    "zero_TP1_TP2_gross": "0"
+  },
+  "independent_validation": {
+    "allocation_tolerance_usdt": "0.00000001",
+    "instrument_fees": "EXACT_NATIVE_TOTAL_MATCH",
+    "instrument_fill_counts": "MATCH_NATIVE_CSV",
+    "pro_rata_fee_allocation_rounding_residual": "2E-21"
+  },
+  "limits": [
+    "All arithmetic uses actual confirmed native fills; it is not a second PnL engine or hypothetical fill set.",
+    "Whole-episode REGIME close gross cannot be attributed to a particular unfilled zero target.",
+    "Fee allocations are proportional and diagnostic, not exported native closed-position PnL.",
+    "Signed funding cash remains unknown; exposure-dependent funding posting counts differ.",
+    "The additional control isolates net-entry/changed omitted-right semantics conditional on the same three technical fixes. It does not independently switch each technical guard.",
+    "Close-price synthetic quotes use zero spread in these controls; profitable fallback frequency may differ from live BBO execution.",
+    "Full native marked-equity maximum drawdown was not exported; corrected cash drawdown is not a substitute."
+  ],
+  "positive_TP_check": {
+    "control_fills_excluding_zero_levels": 82,
+    "note": "Counts match, but three timestamps and later quantities/exposure paths differ.",
+    "same_fill_time_and_level": 79,
+    "variant_fills": 82
+  },
+  "scope": "Saved V0 and combined variant plus exactly one additional isolated native three-repair/original-entry control. No new optimizer or pilot action.",
+  "source": {
+    "control_report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+    "variant_commit": "2f5710910e6596adda60c563298a5a574ca40771",
+    "variant_report_sha256": "7323f53535b53668c66231f87ce6ab537eb9effde0ea06d6c4d57c492a569366"
+  },
+  "status": "NATIVE_CONTROLLED_ZERO_NETTING_ABLATION_COMPLETED",
+  "technical_fix_evidence": {
+    "SOL_hard_timeout": {
+      "control": "6 daily fills of 1000 SOL, first 2026-06-02T00:00:00+00:00",
+      "observed": true,
+      "pre_timeout_cash_difference": "Variant minus control was -840783.27576015 at the last 2026-05-31 16:00 UTC cash checkpoint, before this timeout sequence.",
+      "variant": "12 native SOL_HARD_TIMEOUT fills of 1000 SOL at exact 60-second intervals, first 2026-06-01T00:00:00+00:00"
+    },
+    "asynchronous_margin_mark": {
+      "evidence": "No liquidations in either report; focused callback tests passed. No per-fix PnL evidence from this run.",
+      "observed_breach": false
+    },
+    "stale_SOL_add_guard": {
+      "evidence": "No queue discard audit in report; focused paired-session/backfill test passed. Cannot assign PnL.",
+      "observed_discard": "UNKNOWN_NOT_EXPORTED"
+    }
+  },
+  "zero_threshold_control": {
+    "actual_fill_gross_buckets": {
+      "negative": 0,
+      "positive": 75,
+      "zero": 76
+    },
+    "actual_fills": {
+      "TP1": 89,
+      "TP2": 62,
+      "total": 151
+    },
+    "all_fills": {
+      "allocated_entry_fee": "113414.9417757338609365114677",
+      "gross_actual_fill_arithmetic": "1628451.5090",
+      "native_exit_fee": "77369.81396581",
+      "net_after_allocated_fees": "1437666.753258456139063488531"
+    },
+    "opportunities": {
+      "TP1": 105,
+      "TP2": 74,
+      "total": 179
+    },
+    "pnl_evidence": "Gross = confirmed BTC fill qty times signed entry-to-exit price difference. Entry fees are allocated pro rata from native BTC entry commission; exit fees are native fill commissions. The reports do not export authoritative per-target closed-position PnL.",
+    "positive_fills": {
+      "allocated_entry_fee": "57354.38136771655199245615075",
+      "count": 75,
+      "delay_minutes": {
+        "max": 8640,
+        "median": 1440,
+        "min": 2
+      },
+      "execution": "MARKET IOC TAKER fallback, not maker price improvement",
+      "gross_actual_fill_arithmetic": "1628451.5090",
+      "native_exit_fee": "56984.15563563",
+      "net_after_allocated_fees": "1514112.971996653448007543850"
+    },
+    "unfilled_opportunities": {
+      "TP1": 16,
+      "TP2": 12,
+      "episodes": 16,
+      "later_close": "All 16 episodes had BTC REGIME group closes at non-entry prices. The whole residual close gross was -1771965.8516; it cannot be assigned to those unfilled target lots.",
+      "total": 28
+    },
+    "zero_gross_fills": {
+      "allocated_entry_fee": "56060.56040801730894405531684",
+      "count": 76,
+      "execution": "LIMIT GTC post-only MAKER",
+      "gross_actual_fill_arithmetic": "0",
+      "native_exit_fee": "20385.65833018",
+      "net_after_allocated_fees": "-76446.21873819730894405531684"
+    }
+  }
+}

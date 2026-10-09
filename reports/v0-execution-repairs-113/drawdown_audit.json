@@ -1,0 +1,130 @@
+{
+  "limitations": [
+    "Cash includes realized account changes, not open-position mark-to-market PnL; cash maximum drawdown is not equity maximum drawdown.",
+    "Monthly native marked observations only provide a lower bound for full equity drawdown; intramonth/intraday peaks/troughs are unexported.",
+    "Minimum cash is not minimum equity, liquidation buffer, or an established safe deposit-protection threshold.",
+    "Deposit protection was disabled identically in these research controls. No risk setting was changed or optimized."
+  ],
+  "reporting_defect": {
+    "code_changed": false,
+    "effect_on_terminal_total": "NONE",
+    "file": "runtime/coinmaster/research/native_baseline.py",
+    "finding": "Chooses maximum absolute drawdown and returns its percentage as max_drawdown_percent; does not compute the independent maximum percentage. Also returns last running peak timestamp rather than the peak captured for the chosen drawdown.",
+    "function": "standard_drawdown"
+  },
+  "scope": "Read-only drawdown audit of saved native series; no new engine or strategy change",
+  "variants": {
+    "V0": {
+      "cash": {
+        "maximum_absolute_drawdown": {
+          "amount": "1453798.83794607",
+          "peak": "4746035.18203065",
+          "peak_timestamp": "2026-05-02 21:38:00+00:00",
+          "percent": "30.63185969312693002712883379",
+          "trough": "3292236.34408458",
+          "trough_timestamp": "2026-08-19 00:00:00+00:00"
+        },
+        "maximum_relative_drawdown": {
+          "amount": "486285.39972804",
+          "peak": "836314.77045433",
+          "peak_timestamp": "2025-04-10 00:00:00+00:00",
+          "peak_to_recovery_days": "166.0",
+          "peak_to_trough_days": "59.0",
+          "percent": "58.14621682023675046664766803",
+          "recovered_at": "2025-09-23 00:00:00+00:00",
+          "trough": "350029.37072629",
+          "trough_timestamp": "2025-06-08 00:00:00+00:00"
+        },
+        "minimum_observed": {
+          "return_from_initial_percent": "-22.337425797300",
+          "timestamp": "2024-09-19 00:00:00+00:00",
+          "value": "7766.25742027"
+        },
+        "observations": 2385
+      },
+      "monthly_marked_equity_checkpoints": {
+        "maximum_absolute_drawdown": {
+          "amount": "1149959.28515463",
+          "peak": "4540965.09356614",
+          "peak_timestamp": "2026-05-01T00:00:00+00:00",
+          "percent": "25.32411638186666958189938319",
+          "trough": "3391005.80841151",
+          "trough_timestamp": "2026-09-01T00:00:00+00:00"
+        },
+        "maximum_relative_drawdown": {
+          "amount": "328066.00862823",
+          "peak": "745913.82626225",
+          "peak_timestamp": "2025-02-01T00:00:00+00:00",
+          "percent": "43.98175728584602499617278839",
+          "trough": "417847.81763402",
+          "trough_timestamp": "2025-05-01T00:00:00+00:00"
+        },
+        "minimum_observed": {
+          "return_from_initial_percent": "-0.685481626700",
+          "timestamp": "2024-10-01T00:00:00+00:00",
+          "value": "9931.45183733"
+        },
+        "observations": 25
+      },
+      "original_reported_percent": "0.3063185969312693002712883379",
+      "source_path": "runtime/var/data/runs/tp-fee-floor-113/v0/v0.json",
+      "source_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+    },
+    "execution_repairs": {
+      "cash": {
+        "maximum_absolute_drawdown": {
+          "amount": "1054939.47961519",
+          "peak": "3799856.70466946",
+          "peak_timestamp": "2026-07-11 00:00:00+00:00",
+          "percent": "27.76261216163298816393292597",
+          "trough": "2744917.22505427",
+          "trough_timestamp": "2026-08-19 08:00:00+00:00"
+        },
+        "maximum_relative_drawdown": {
+          "amount": "426460.31424158",
+          "peak": "816282.64867667",
+          "peak_timestamp": "2025-04-10 00:00:00+00:00",
+          "peak_to_recovery_days": "166.0",
+          "peak_to_trough_days": "60.66666666666666666666666667",
+          "percent": "52.24419690078468908375720421",
+          "recovered_at": "2025-09-23 00:00:00+00:00",
+          "trough": "389822.33443509",
+          "trough_timestamp": "2025-06-09 16:00:00+00:00"
+        },
+        "minimum_observed": {
+          "return_from_initial_percent": "-6.523785199800",
+          "timestamp": "2024-09-19 08:00:00+00:00",
+          "value": "9347.62148002"
+        },
+        "observations": 2154
+      },
+      "monthly_marked_equity_checkpoints": {
+        "maximum_absolute_drawdown": {
+          "amount": "954424.80765119",
+          "peak": "3790914.08784989",
+          "peak_timestamp": "2026-07-01T00:00:00+00:00",
+          "percent": "25.17664039684200447909753667",
+          "trough": "2836489.2801987",
+          "trough_timestamp": "2026-09-01T00:00:00+00:00"
+        },
+        "maximum_relative_drawdown": {
+          "amount": "185054.62871807",
+          "peak": "682344.3813472",
+          "peak_timestamp": "2025-04-01T00:00:00+00:00",
+          "percent": "27.12041511248378239806393416",
+          "trough": "497289.75262913",
+          "trough_timestamp": "2025-05-01T00:00:00+00:00"
+        },
+        "minimum_observed": {
+          "return_from_initial_percent": "0",
+          "timestamp": "2024-09-01T00:00:00Z",
+          "value": "10000"
+        },
+        "observations": 25
+      },
+      "original_reported_percent": "0.2776261216163298816393292597",
+      "source_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-execution-v2-20261009/result/v0-execution-repairs.json",
+      "source_sha256": "7323f53535b53668c66231f87ce6ab537eb9effde0ea06d6c4d57c492a569366"
+    }
+  }
+}
