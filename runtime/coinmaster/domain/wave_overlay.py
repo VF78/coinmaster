@@ -223,6 +223,10 @@ class Episode:
     btc_entry_fees_exact: Decimal = Decimal("0")
     btc_entry_fill_count: int = 0
     btc_entry_fee_fill_count: int = 0
+    btc_reference_qty: float = 0.0
+    btc_net_planned_qty: float = 0.0
+    btc_reference_target_lots: dict[int, int] = field(default_factory=dict)
+    btc_omitted_zero_levels: set[int] = field(default_factory=set)
     h: float | None = None
     wave_levels: tuple[float, float, float] | None = None
     btc_tps: set[int] = field(default_factory=set)
@@ -297,11 +301,21 @@ class WaveOverlayState:
         assigned = 0
         fractions = tuple(Decimal(str(value)) for value in self.config.btc_tp_fractions_initial_qty)
         full_exit = sum(fractions) == Decimal("1")
+        retained = [level for level in range(len(fractions)) if level not in episode.btc_omitted_zero_levels]
+        retained_reference_lots = sum(episode.btc_reference_target_lots.get(level, 0) for level in retained)
         for level, fraction in enumerate(fractions):
-            lots = (
-                initial_lots - assigned if full_exit and level == len(fractions) - 1 else
-                int((Decimal(initial_lots) * fraction).to_integral_value(rounding=ROUND_FLOOR))
-            )
+            if level in episode.btc_omitted_zero_levels:
+                lots = 0
+            elif retained_reference_lots:
+                lots = (
+                    initial_lots - assigned if level == retained[-1] else
+                    int((Decimal(initial_lots) * Decimal(episode.btc_reference_target_lots[level]) / Decimal(retained_reference_lots)).to_integral_value(rounding=ROUND_FLOOR))
+                )
+            else:
+                lots = (
+                    initial_lots - assigned if full_exit and level == len(fractions) - 1 else
+                    int((Decimal(initial_lots) * fraction).to_integral_value(rounding=ROUND_FLOOR))
+                )
             episode.btc_tp_target_lots[level] = lots
             episode.btc_tp_target_qty[level] = float(Decimal(lots) * self.btc_lot_step)
             assigned += lots
@@ -376,7 +390,7 @@ class WaveOverlayState:
             # the confirmed initial fill.  A target that was not installed
             # (for example an invalid/marketable post-only price) retains the
             # old taker fallback, but no filled right is invented.
-            if f >= threshold and level not in episode.btc_tps and level not in episode.btc_filled_tps and episode.attempted_btc_at.get(level) != index:
+            if level not in episode.btc_omitted_zero_levels and f >= threshold and level not in episode.btc_tps and level not in episode.btc_filled_tps and episode.attempted_btc_at.get(level) != index:
                 episode.attempted_btc_at[level] = index
                 leaves = self._btc_target_leaves(episode, level)
                 if leaves > 0:
@@ -447,6 +461,13 @@ class WaveOverlayState:
             episode.btc_entry_vwap = ((episode.btc_entry_vwap or 0) * prior + price * quantity) / (prior + quantity)
             episode.btc_initial_qty += quantity
             episode.btc_open_qty += quantity
+            if episode.btc_omitted_zero_levels and episode.btc_net_planned_qty > 0:
+                # A real net entry earns omitted-level SOL rights directly.
+                fraction = min(1.0, episode.btc_initial_qty / episode.btc_net_planned_qty)
+                for level in episode.btc_omitted_zero_levels:
+                    episode.sol_rights.add(level)
+                    episode.sol_right_fraction[level] = fraction
+                    episode.sol_right_decision_index[level] = self._decision_index if decision_index is None else decision_index
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
             episode.sol_rights.add(intent.level)
             if self.btc_lot_step is not None:
@@ -460,7 +481,8 @@ class WaveOverlayState:
                 filled_quantity = float(Decimal(filled_lots) * self.btc_lot_step)
                 target_quantity = episode.btc_tp_target_qty[intent.level]
                 if target_lots > 0:
-                    episode.sol_right_fraction[intent.level] = filled_lots / target_lots
+                    entry_fraction = min(1.0, episode.btc_initial_qty / episode.btc_net_planned_qty) if episode.btc_net_planned_qty > 0 else 1.0
+                    episode.sol_right_fraction[intent.level] = filled_lots / target_lots * entry_fraction
                 complete = target_lots > 0 and filled_lots == target_lots
             else:
                 target_quantity = episode.btc_tp_target_qty.setdefault(
@@ -507,7 +529,7 @@ class WaveOverlayState:
                 episode.sol_half_done = False
         elif intent.action == "CLOSE_ALL":
             return
-        episode.h = (episode.btc_initial_qty * (episode.btc_entry_vwap or price)) / episode.beta_entry
+        episode.h = ((episode.btc_reference_qty or episode.btc_initial_qty) * (episode.btc_entry_vwap or price)) / episode.beta_entry
 
     def plan_confirmed_btc_targets(self) -> list[Intent]:
         """Grant TP rights only from a confirmed native BTC entry fill.

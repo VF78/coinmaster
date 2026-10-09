@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR, ROUND_HALF_EVEN
+from math import log
 import pandas as pd
 
 from coinmaster.domain.deposit_protection import DepositProtection, percent
@@ -46,6 +47,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     terminal_close_at_ns: int | None = None
     candidate: Candidate = Candidate()
     tp_fee_floor_v1: bool = False
+    research_v0_execution_repairs: bool = False
     max_gross_to_active: Decimal = Decimal("50")
     # A verified history is supplied before native start.  It is feature state
     # only: it never replays old decisions or orders.
@@ -168,6 +170,7 @@ class WaveOverlayStrategy(Strategy):
         self._queued_intents: list[tuple[Intent, float | None, int]] = []
         self._queued_intent_ready_ns: dict[str, int] = {}
         self._mandatory_sol_exit: tuple[Intent, float | None, int] | None = None
+        self._mandatory_sol_retry_after_ns = 0
         self._queued_close_submitted: dict[str, set[InstrumentId]] = {}
         self._group_close_reconciliation_pending = False
         self._liquidating = False
@@ -180,6 +183,7 @@ class WaveOverlayStrategy(Strategy):
         self._terminal_order_ids: set[str] = set()
         self._order_audit: dict[str, dict[str, object]] = {}
         self.fill_audit: list[dict[str, str]] = []
+        self.entry_sizing_audit: list[dict[str, object]] = []
         self._seen_trade_ids: set[str] = set()
         self._deposit_exit_orders: set[str] = set()
         self._deposit_storage_failed = False
@@ -345,8 +349,17 @@ class WaveOverlayStrategy(Strategy):
             return  # Native market_exit owns every close after the drawdown latch.
         if self._liquidating or any(item not in self._latest_marks for item in (self.config.btc_id, self.config.sol_id)):
             return
-        if self._latest_marks[self.config.btc_id].ts_event != ts_now or self._latest_marks[self.config.sol_id].ts_event != ts_now:
-            return
+        if not self.config.research_v0_execution_repairs:
+            if self._latest_marks[self.config.btc_id].ts_event != ts_now or self._latest_marks[self.config.sol_id].ts_event != ts_now:
+                return
+        else:
+            exposed = {item.instrument_id for item in self.cache.positions_open() if item.instrument_id in (self.config.btc_id, self.config.sol_id)}
+            age = self.config.max_mark_age_ns
+            if age <= 0 or any(
+                self._latest_marks[item].ts_event > ts_now or ts_now - self._latest_marks[item].ts_event > age
+                for item in exposed
+            ):
+                return
         positions = [item for item in self.cache.positions_open() if item.instrument_id in (self.config.btc_id, self.config.sol_id)]
         if not positions or self.config.margin_policy is None:
             return
@@ -563,6 +576,8 @@ class WaveOverlayStrategy(Strategy):
             if tick.instrument_id != self.config.sol_id or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open()):
                 return
             intent, sigma, index = self._mandatory_sol_exit
+            if self.config.research_v0_execution_repairs and tick.ts_event < self._mandatory_sol_retry_after_ns:
+                return
             self._mandatory_sol_exit = None
             self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
             return
@@ -589,9 +604,77 @@ class WaveOverlayStrategy(Strategy):
                 self._begin_forced_close(intent.reason or "CLOSE_ALL", intent)
                 continue
             if target == tick.instrument_id:
+                if self.config.research_v0_execution_repairs and intent.action == "SOL_ADD":
+                    stale = self._stale_sol_add(intent, index)
+                    if stale is None:
+                        continue  # Wait for a paired executable current session.
+                    if stale:
+                        self._queued_intents.remove(item)
+                        self._queued_intent_ready_ns.pop(intent.id, None)
+                        self._domain.on_parent_terminal(intent.id)
+                        if self._mandatory_sol_exit is None and not any(
+                            queued.action in {"SOL_HALF_EXIT", "SOL_EXIT", "CLOSE_ALL"}
+                            and queued.episode_id == intent.episode_id for queued, _, _ in self._queued_intents
+                        ):
+                            self._advance_current_day()
+                        continue
                 self._queued_intents.remove(item)
                 self._queued_intent_ready_ns.pop(intent.id, None)
                 self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
+
+    def _stale_sol_add(self, intent: Intent, index: int) -> bool | None:
+        episode = self._domain.episode
+        if episode is None or intent.episode_id != episode.id or not self._bars:
+            return True
+        # Verified backfill is feature history only. It cannot authorize an
+        # increase or an exit until its newest row is the accepted paired
+        # executable session carried by both native daily bars.
+        session = int(self._bars[-1].close_time.timestamp() * 1_000_000_000)
+        if (
+            self._current_btc is None or self._current_sol is None
+            or self._current_btc.ts_event != session or self._current_sol.ts_event != session
+            or self._last_accepted_session != session
+            or (self._latest_seen_session is not None and self._latest_seen_session != session)
+        ):
+            return None
+        latest = len(self._bars) - 1
+        if latest <= index:
+            return False
+        if self._current_signals[latest].side != episode.side:
+            return True
+        feature = self._current_signals[latest]
+        bar = self._bars[latest]
+        if episode.sol_qty and episode.sol_first_fill_at is not None and bar.close_time >= episode.sol_first_fill_at + timedelta(days=self._candidate.sol_max_holding_days):
+            return True
+        if not self._candidate.episode_fixed_beta:
+            z = feature.z if episode.fixed_sigma is None else (
+                (feature.relative - feature.mu) / episode.fixed_sigma
+                if feature.relative is not None and feature.mu is not None else None
+            )
+        elif latest >= self._candidate.relative_days:
+            prior = self._bars[latest - self._candidate.relative_days]
+            relative = log(bar.sol_close / prior.sol_close) - episode.beta_entry * log(bar.btc_close / prior.btc_close)
+            z = (relative - feature.mu) / feature.sigma if feature.mu is not None and feature.sigma not in (None, 0) else None
+        else:
+            z = None
+        if z is None:
+            return True
+        signed_z = episode.side * z
+        if episode.sol_qty and episode.sol_first_fill_at is not None and (
+            (not episode.sol_half_done and signed_z <= self._candidate.sol_exit_half_z)
+            or (episode.sol_half_done and episode.sol_half_decision_index is not None and latest > episode.sol_half_decision_index and signed_z <= self._candidate.sol_exit_all_z)
+        ):
+            return True
+        level = intent.level
+        return (
+            level is None or level not in episode.sol_rights
+            or feature.beta is None or not 0.2 < feature.beta < 4
+            or signed_z < self._candidate.sol_entry_z[level]
+            or (not self._candidate.sol_late_entry_after_tp and episode.sol_right_decision_index.get(level) != latest)
+            or episode.h is None
+            or episode.h * self._candidate.sol_size_multipliers_h[level] * episode.sol_right_fraction.get(level, 1.0)
+               <= episode.sol_add_filled_notional.get(level, 0.0)
+        )
 
     def _active_marked(self, btc_mark: VenueMark, sol_mark: VenueMark) -> float:
         account = self.cache.account_for_venue(self.config.btc_id.venue)
@@ -674,10 +757,29 @@ class WaveOverlayStrategy(Strategy):
             quantity = min(quantity, float(position.quantity))
         step = instrument.size_increment.as_decimal()
         rounded = (Decimal(str(quantity)) // step) * step
+        if self.config.research_v0_execution_repairs and intent.action == "BTC_ENTRY" and rounded > 0:
+            episode = self._domain.episode
+            if episode is None or episode.wave_levels is None:
+                raise ValueError("BTC_ENTRY_WAVE_LEVELS_MISSING")
+            reference_lots = int(rounded / step)
+            fractions = tuple(Decimal(str(value)) for value in self._candidate.btc_tp_fractions_initial_qty)
+            reference_targets: dict[int, int] = {}
+            assigned = 0
+            for level, fraction in enumerate(fractions):
+                lots = reference_lots - assigned if level == len(fractions) - 1 and sum(fractions) == Decimal("1") else int((Decimal(reference_lots) * fraction).to_integral_value(rounding=ROUND_FLOOR))
+                reference_targets[level] = lots
+                assigned += lots
+            omitted = {level for level, threshold in enumerate(episode.wave_levels) if Decimal(str(threshold)) == 0}
+            net_lots = sum(lots for level, lots in reference_targets.items() if level not in omitted)
+            episode.btc_reference_qty = float(rounded)
+            episode.btc_net_planned_qty = float(Decimal(net_lots) * step)
+            episode.btc_reference_target_lots = reference_targets
+            episode.btc_omitted_zero_levels = omitted
+            rounded = Decimal(net_lots) * step
         if rounded <= 0:
             # A sub-step request is a reject, never an implicit size increase.
             if intent.action == "BTC_ENTRY":
-                self._deny_local_entry(intent, "QUANTITY_BELOW_STEP", ts_now)
+                self._deny_local_entry(intent, "ZERO_TP_NO_NET_ENTRY" if self.config.research_v0_execution_repairs else "QUANTITY_BELOW_STEP", ts_now)
             else:
                 self._domain.on_parent_terminal(intent.id)
             return
@@ -760,6 +862,18 @@ class WaveOverlayStrategy(Strategy):
             return
         if intent.action == "BTC_ENTRY":
             self._daily_decision_reason = "NATIVE_SUBMISSION_PENDING_ACK"
+            if self.config.research_v0_execution_repairs:
+                episode = self._domain.episode
+                assert episode is not None
+                self.entry_sizing_audit.append({
+                    "episode_id": episode.id,
+                    "intent_id": intent.id,
+                    "reference_btc_qty": str(episode.btc_reference_qty),
+                    "net_submitted_btc_qty": str(rounded),
+                    "confirmed_native_entry_qty": "0",
+                    "omitted_zero_levels": sorted(episode.btc_omitted_zero_levels),
+                    "reference_target_lots": dict(episode.btc_reference_target_lots),
+                })
         self.submit_order(order)
 
     def _discard_queued_intents(self, predicate) -> None:
@@ -791,6 +905,17 @@ class WaveOverlayStrategy(Strategy):
             if order.instrument_id == self.config.sol_id:
                 self.cancel_order(order)
         self._mandatory_sol_exit = (intent, sigma, index)
+
+    def _rearm_mandatory_sol_exit(self, ts_event: int) -> None:
+        if self._mandatory_sol_exit is not None or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
+            return
+        episode = self._domain.episode
+        position = next((item for item in self.cache.positions_open() if item.instrument_id == self.config.sol_id), None)
+        if episode is None or position is None or position.quantity.as_decimal() <= 0:
+            return
+        intent = self._domain._intent(episode, "SOL_EXIT", episode.side, None, quantity=float(position.quantity), reason="SOL_HARD_TIMEOUT")
+        self._mandatory_sol_exit = (intent, episode.fixed_sigma, len(self._bars) - 1)
+        self._mandatory_sol_retry_after_ns = ts_event + 60_000_000_000
 
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
         if self.config.deposit_runtime is not None and self._deposit.latched:
@@ -1010,6 +1135,10 @@ class WaveOverlayStrategy(Strategy):
             # An entry fills at the next executable event, not at the former
             # signal close; only reduction -> add -> exit phases may continue.
             if intent.action != "BTC_ENTRY":
+                if self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+                    self._rearm_mandatory_sol_exit(event.ts_event)
+                self._advance_current_day()
+            elif self.config.research_v0_execution_repairs and self._domain.episode is not None and self._domain.episode.btc_omitted_zero_levels:
                 self._advance_current_day()
 
     def _apply_confirmed_domain_fill(
@@ -1027,6 +1156,10 @@ class WaveOverlayStrategy(Strategy):
             decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
             entry_qty=entry_qty, entry_price=entry_price,
         )
+        if intent.action == "BTC_ENTRY" and self.config.research_v0_execution_repairs and self.entry_sizing_audit:
+            episode = self._domain.episode
+            if episode is not None:
+                self.entry_sizing_audit[-1]["confirmed_native_entry_qty"] = str(episode.btc_initial_qty)
         if intent.action == "SOL_HALF_EXIT" and self._domain.episode is not None and self._domain.episode.sol_half_done:
             self._domain.on_half_exit_decision(self._decision_index_by_order[client_order_id])
         if not order_closed:
@@ -1098,6 +1231,10 @@ class WaveOverlayStrategy(Strategy):
                 # fill. Re-plan from confirmed domain leaves; the next quote
                 # still sizes every reduction against the native position.
                 self._queue_confirmed_btc_targets(sigma, decision_index, event.ts_event)
+                if self.config.research_v0_execution_repairs and intent.action == "BTC_ENTRY" and self._domain.episode is not None and self._domain.episode.btc_omitted_zero_levels:
+                    self._advance_current_day()
+        if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+            self._rearm_mandatory_sol_exit(event.ts_event)
         if self._forced_close_reason is not None and not self.cache.orders_open():
             self._submit_forced_closes_from_cache()
 
@@ -1169,6 +1306,7 @@ class WaveOverlayStrategy(Strategy):
             "pre_submit_tier_margin_gate_blocks": self.pre_submit_gate_blocks,
             "marked_equity_checkpoints": [self.marked_equity_checkpoints[key] for key in sorted(self.marked_equity_checkpoints)],
             "fill_audit": self.fill_audit,
+            "entry_sizing_audit": self.entry_sizing_audit,
         }
 
     def on_order_rejected(self, event: OrderRejected) -> None:
@@ -1200,6 +1338,10 @@ class WaveOverlayStrategy(Strategy):
             self._domain.on_parent_terminal(intent.id)
             if self._has_confirmed_btc_remainder(intent):
                 self._queue_confirmed_btc_targets(sigma, decision_index, 0)
+                if self.config.research_v0_execution_repairs and intent.action == "BTC_ENTRY" and self._domain.episode is not None and self._domain.episode.btc_omitted_zero_levels:
+                    self._advance_current_day()
+        if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+            self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())
         if self._forced_close_reason is not None and not self.cache.orders_open():
             self._submit_forced_closes_from_cache()
 

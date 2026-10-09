@@ -366,3 +366,39 @@ def test_sol_half_retry_keeps_fixed_native_lot_target_after_partial_cancel() -> 
     state.on_half_exit_decision(0)
     final = state._sol_exits(state.episode, feature, source[1], 1, z=0.1)[0]
     assert final.action == "SOL_EXIT" and final.quantity == pytest.approx(5.01)
+
+
+def test_zero_wave_variant_earns_omitted_rights_only_from_real_partial_entry() -> None:
+    state = WaveOverlayState(Candidate(
+        btc_tp_fractions_initial_qty=(0.2125, 0.2125, 0.575),
+        sol_size_multipliers_h=(1.75, 2.625, 3.5),
+    ))
+    state.set_execution_lots(btc=Decimal("0.001"), sol=Decimal("0.01"))
+    episode = Episode(
+        "zero-wave", 1, 100, 2.0, wave_levels=(0.0, 0.0, 0.03),
+        btc_reference_qty=1.0, btc_net_planned_qty=0.576,
+        btc_reference_target_lots={0: 212, 1: 212, 2: 576},
+        btc_omitted_zero_levels={0, 1},
+    )
+    state.episode = episode
+    entry = state._intent(episode, "BTC_ENTRY", 1, None)
+    assert not episode.sol_rights
+    state.on_fill(entry.id, 0.288, 100, bars(1)[0].close_time)
+    state.on_parent_terminal(entry.id)
+    assert episode.btc_initial_qty == episode.btc_open_qty == 0.288
+    assert episode.h == 50.0  # original 1 BTC * 100 / beta 2
+    assert episode.sol_rights == {0, 1}
+    assert episode.sol_right_fraction == {0: 0.5, 1: 0.5}
+    assert episode.btc_tp_filled_qty == {}
+    same_day = state.decide(
+        bars(1), [Features(0, 1, 2.0, 0.0, 0.0, 1.0, 4.0)], 0, 100,
+    )
+    assert [(item.action, item.level) for item in same_day] == [("SOL_ADD", 0), ("SOL_ADD", 1)]
+    for item in same_day:
+        state.on_parent_terminal(item.id)
+    targets = state.plan_confirmed_btc_targets()
+    assert [(item.level, item.quantity) for item in targets] == [(2, 0.288)]
+    state.on_fill(targets[0].id, 0.288, 103, bars(1)[0].close_time)
+    assert episode.sol_right_fraction[2] == 0.5
+    assert episode.btc_open_qty == 0
+    assert episode.h == 50.0

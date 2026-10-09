@@ -262,3 +262,19 @@ def test_streamed_native_smoke_matches_one_shot_and_keeps_callbacks_subscribed(t
     delayed = run_native_diagnostic(tmp_path, weekly_batch_minutes=24 * 60, **{**common, "artifact_label": "streaming-smoke-two-minute", "execution_policy": ExecutionPolicy(execution_delay_minutes=2)})
     assert delayed["policy"]["execution_delay_minutes"] == 2
     assert delayed["streaming"]["processed_rows_per_source"] == (end - start) // MINUTE_MS
+
+
+def test_research_v0_repairs_cli_rejects_existing_artifact_dir_before_engine(tmp_path, monkeypatch) -> None:
+    from coinmaster.research import native_baseline
+
+    output = tmp_path / "existing"
+    output.mkdir()
+    sentinel = output / "prior-result.json"
+    sentinel.write_bytes(b"keep exact prior bytes")
+    monkeypatch.setattr(
+        native_baseline, "run_native_diagnostic",
+        lambda *_args, **_kwargs: pytest.fail("engine must not start"),
+    )
+    with pytest.raises(ValueError, match="RESEARCH_ARTIFACT_DIR_MUST_BE_NEW"):
+        native_baseline.run_research_v0_repairs_cli(tmp_path, output, tmp_path / "missing-control.json")
+    assert sentinel.read_bytes() == b"keep exact prior bytes"

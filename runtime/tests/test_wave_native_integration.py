@@ -1427,3 +1427,214 @@ def test_fee_floor_v1_does_not_delay_native_emergency_close_below_break_even() -
         assert close[0]["native_liquidity_side"] == "TAKER"
     finally:
         engine.dispose()
+
+
+@pytest.mark.parametrize(
+    ("levels", "expected_net"),
+    [((0.0, 0.0, 0.03), Decimal("0.576")), ((0.0, 0.02, 0.03), Decimal("0.788")), ((0.0, 0.0, 0.0), Decimal("0"))],
+)
+def test_zero_wave_research_variant_native_entry_size_and_no_synthetic_tp(levels, expected_net) -> None:
+    class ZeroWaveProbe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.opened = False
+            self.same_day_rights = []
+
+        def _advance_current_day(self):
+            self.same_day_rights.append(set(self._domain.episode.sol_rights) if self._domain.episode else set())
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.btc_id:
+                return
+            if not self.opened:
+                self.opened = True
+                episode = Episode("zero-wave", 1, 10_000, 1.0, wave_levels=levels)
+                self._domain.episode = episode
+                intent = Intent("entry", episode.id, "BTC_ENTRY", None, 1, requested_notional=100)
+                episode.pending[intent.id] = intent
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+                return
+            super().on_quote_tick(tick)
+
+        def _tier_allows_increase(self, instrument_id, side, quantity, ts_now):
+            return True
+
+    candidate = Candidate(btc_tp_fractions_initial_qty=(0.2125, 0.2125, 0.575))
+    strategy = ZeroWaveProbe(probe_config().__replace__(candidate=candidate, research_v0_execution_repairs=True))
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.0", ts) for ts in (1, 2, 3)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        fills = [row for row in strategy.fill_audit if row["action"] == "BTC_ENTRY"]
+        if expected_net == 0:
+            assert not fills
+            assert strategy._domain.episode is None
+            assert strategy.pre_submit_gate_blocks[-1]["reason"] == "ZERO_TP_NO_NET_ENTRY"
+            return
+        assert len(fills) == 1
+        assert Decimal(fills[0]["qty"]) == expected_net
+        audit = strategy.entry_sizing_audit[0]
+        assert Decimal(audit["reference_btc_qty"]) == Decimal("1")
+        assert Decimal(audit["net_submitted_btc_qty"]) == expected_net
+        assert Decimal(audit["confirmed_native_entry_qty"]) == expected_net
+        episode = strategy._domain.episode
+        assert episode is not None
+        assert episode.h == pytest.approx(100.0)
+        assert episode.sol_rights == {i for i, level in enumerate(levels) if level == 0}
+        assert strategy.same_day_rights == [episode.sol_rights]
+        assert episode.btc_tp_filled_qty == {}
+        assert all(int(order.quantity.as_decimal() / BTC_PERP.size_increment.as_decimal()) > 0 for order in engine.cache.orders_open())
+        assert {int(row["level"]) for row in strategy._order_audit.values() if row["action"] == "BTC_REDUCE"} == {i for i, level in enumerate(levels) if level > 0}
+    finally:
+        engine.dispose()
+
+
+def test_research_timeout_cancel_rearms_native_sol_residual_with_cadence() -> None:
+    class CacheProbe(WaveOverlayStrategy):
+        @property
+        def cache(self):
+            return self.fake_cache
+
+    position = SimpleNamespace(instrument_id=SOL_PERP.id, quantity=Quantity.from_str("1.00"))
+    strategy = CacheProbe(probe_config().__replace__(research_v0_execution_repairs=True))
+    strategy.fake_cache = SimpleNamespace(
+        positions_open=lambda: [position], orders_open=lambda: [],
+    )
+    episode = Episode("timeout", 1, 100, 1.0, sol_qty=1.0)
+    strategy._domain.episode = episode
+    first = Intent("first", episode.id, "SOL_EXIT", None, 1, quantity=2.0, reason="SOL_HARD_TIMEOUT")
+    episode.pending[first.id] = first
+    strategy._pending_by_order["first-order"] = first
+    strategy.on_order_canceled(SimpleNamespace(client_order_id="first-order", ts_event=1_000_000_000))
+    retry = strategy._mandatory_sol_exit
+    assert retry is not None and retry[0].id != first.id
+    assert retry[0].quantity == 1.0
+    assert first.id not in episode.pending
+    submitted = []
+    strategy._submit_intent = lambda *args, **kwargs: submitted.append(args[0].id)
+    strategy.on_quote_tick(quote(SOL_PERP.id, "100.0", "100.0", 2_000_000_000))
+    assert not submitted and strategy._mandatory_sol_exit == retry
+    strategy.on_quote_tick(quote(SOL_PERP.id, "100.0", "100.0", 62_000_000_000))
+    assert submitted == [retry[0].id]
+    assert strategy._mandatory_sol_exit is None
+
+
+def test_research_stale_queued_sol_add_is_terminal_before_submit() -> None:
+    class CacheProbe(WaveOverlayStrategy):
+        @property
+        def cache(self):
+            return self.fake_cache
+
+        def _active_marked(self, _btc_mark, _sol_mark):
+            return 100.0
+
+    strategy = CacheProbe(probe_config().__replace__(research_v0_execution_repairs=True))
+    strategy.fake_cache = SimpleNamespace(positions_open=lambda: [], orders_open=lambda: [], instrument=lambda item: {BTC_PERP.id: BTC_PERP, SOL_PERP.id: SOL_PERP}.get(item))
+    start = datetime(2024, 1, 1, tzinfo=UTC)
+    old = DailyBar(start, start + timedelta(days=1), start + timedelta(days=1), 100, 100, 100)
+    new = DailyBar(start + timedelta(days=1), start + timedelta(days=2), start + timedelta(days=2), 100, 100, 100)
+    from coinmaster.domain.wave_overlay import Features
+    old_feature = Features(0, 1, 1.0, 0.0, 0.0, 1.0, 2.0)
+    new_feature = Features(1, 1, 1.0, 0.0, 0.0, 1.0, 0.1)
+    strategy._bars = [old]
+    strategy._current_signals = [old_feature]
+    old_session = int(old.close_time.timestamp() * 1_000_000_000)
+    new_session = int(new.close_time.timestamp() * 1_000_000_000)
+    strategy._current_btc = make_bar(strategy.config.btc_bar_type, 100, 100, old_session)
+    strategy._current_sol = make_bar(strategy.config.sol_bar_type, 100, 100, old_session)
+    strategy._last_accepted_session = old_session
+    strategy._latest_seen_session = new_session
+    episode = Episode("stale", 1, 100, 1.0, btc_initial_qty=1.0, btc_open_qty=1.0, btc_entry_vwap=100.0, h=100.0, wave_levels=(0.01, 0.02, 0.03), sol_qty=1.0, sol_first_fill_at=start)
+    strategy._domain.episode = episode
+    add = Intent("stale-add", episode.id, "SOL_ADD", 1, -1, requested_notional=100, decision_index=0)
+    episode.pending[add.id] = add
+    strategy._queued_intents = [(add, None, 0)]
+    strategy._current_btc_mark = SimpleNamespace(price=Decimal("100"))
+    strategy._current_sol_mark = SimpleNamespace(price=Decimal("100"))
+    submitted = []
+    strategy._submit_intent = lambda *args, **kwargs: submitted.append(True)
+    strategy.on_quote_tick(quote(SOL_PERP.id, "100.0", "100.0", 3_000_000_000))
+    assert not submitted and add.id in episode.pending
+    assert strategy._queued_intents == [(add, None, 0)]
+    assert not any(item[0].action == "SOL_HALF_EXIT" for item in strategy._queued_intents)
+    # An older paired row is still historical when a newer signal is seen.
+    strategy._bars = [old, new]
+    strategy._current_signals = [old_feature, new_feature]
+    strategy.on_quote_tick(quote(SOL_PERP.id, "100.0", "100.0", 3_500_000_000))
+    assert not submitted and add.id in episode.pending
+    assert strategy._queued_intents == [(add, None, 0)]
+    strategy._current_btc = make_bar(strategy.config.btc_bar_type, 100, 100, new_session)
+    strategy._current_sol = make_bar(strategy.config.sol_bar_type, 100, 100, new_session)
+    strategy._last_accepted_session = new_session
+    strategy.on_quote_tick(quote(SOL_PERP.id, "100.0", "100.0", 4_000_000_000))
+    assert not submitted
+    assert add.id not in episode.pending
+    assert len(strategy._queued_intents) == 1
+    assert strategy._queued_intents[0][0].action == "SOL_HALF_EXIT"
+    assert strategy._queued_intents[0][0].quantity == 0.5
+
+
+def test_research_mm_guard_accepts_fresh_async_exposure_marks_and_rejects_stale_future() -> None:
+    from coinmaster.venues.marks import VenueMark
+
+    class CacheProbe(WaveOverlayStrategy):
+        @property
+        def cache(self):
+            return self.fake_cache
+
+    class FakeCache:
+        def __init__(self):
+            self.positions = []
+            self.account = SimpleNamespace(
+                base_currency=BTC_PERP.quote_currency,
+                balance_total=lambda _currency: SimpleNamespace(as_decimal=lambda: Decimal("-100")),
+            )
+
+        def positions_open(self):
+            return self.positions
+
+        def orders_open(self):
+            return []
+
+        def account_for_venue(self, _venue):
+            return self.account
+
+        def instrument(self, instrument_id):
+            return {BTC_PERP.id: BTC_PERP, SOL_PERP.id: SOL_PERP}.get(instrument_id)
+
+    policy = TierMarginPolicy((), {BTC_PERP.id: Decimal("40"), SOL_PERP.id: Decimal("20")}, 30)
+    strategy = CacheProbe(probe_config().__replace__(
+        research_v0_execution_repairs=True, max_mark_age_ns=30, margin_policy=policy,
+    ))
+    strategy.fake_cache = FakeCache()
+    btc = SimpleNamespace(
+        instrument_id=BTC_PERP.id, quantity=Quantity.from_str("1.000"), is_long=True,
+        unrealized_pnl=lambda _price: SimpleNamespace(as_decimal=lambda: Decimal("0")),
+    )
+    sol = SimpleNamespace(
+        instrument_id=SOL_PERP.id, quantity=Quantity.from_str("1.0"), is_long=False,
+        unrealized_pnl=lambda _price: SimpleNamespace(as_decimal=lambda: Decimal("0")),
+    )
+    strategy._latest_marks = {
+        BTC_PERP.id: VenueMark(BTC_PERP.id, Decimal("100"), 100, 100),
+        SOL_PERP.id: VenueMark(SOL_PERP.id, Decimal("100"), 1, 1),
+    }
+    policy.update_mark(SimpleNamespace(instrument_id=BTC_PERP.id, price=Decimal("100"), ts_event=100))
+    policy.update_mark(SimpleNamespace(instrument_id=SOL_PERP.id, price=Decimal("100"), ts_event=1))
+    strategy.fake_cache.positions = [btc]
+    strategy._check_mark_first_liquidation(110)
+    assert strategy._liquidating  # BTC-only exposure; SOL's old mark is irrelevant.
+    strategy._liquidating = False
+    strategy._forced_close_reason = None
+    strategy.fake_cache.positions = [btc, sol]
+    strategy._check_mark_first_liquidation(110)
+    assert not strategy._liquidating  # Exposed SOL is stale for the venue policy.
+    strategy._latest_marks[SOL_PERP.id] = VenueMark(SOL_PERP.id, Decimal("100"), 105, 105)
+    policy.update_mark(SimpleNamespace(instrument_id=SOL_PERP.id, price=Decimal("100"), ts_event=105))
+    strategy._check_mark_first_liquidation(110)
+    assert strategy._liquidating and strategy.liquidation_audit[-1]["marked_equity"] == "-100"
+    strategy._liquidating = False
+    strategy._forced_close_reason = None
+    strategy._latest_marks[SOL_PERP.id] = VenueMark(SOL_PERP.id, Decimal("100"), 200, 200)
+    strategy._check_mark_first_liquidation(110)
+    assert not strategy._liquidating  # Future mark is not causal.
