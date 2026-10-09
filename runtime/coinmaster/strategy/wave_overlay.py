@@ -701,7 +701,9 @@ class WaveOverlayStrategy(Strategy):
         episode.btc_reference_qty = float(Decimal(plan["gross_lots"]) * plan["step"])
         episode.btc_reference_target_lots = dict(plan["target_lots"]) if passive else {}
         episode.btc_omitted_zero_levels = set(omitted)
-        episode.btc_net_planned_qty = float(Decimal(net_lots) * plan["step"]) if passive else 0.0
+        # Both branches retain the original planned entry denominator, so a
+        # partial native fill cannot grant a full TP-derived SOL right.
+        episode.btc_net_planned_qty = float(Decimal(net_lots) * plan["step"])
         episode.btc_zero_resting_suppressed = set() if passive else set(plan["zero_levels"])
         if passive:
             episode.btc_deferred_right_reference_price = reference
@@ -726,8 +728,18 @@ class WaveOverlayStrategy(Strategy):
             return
         reference = episode.btc_deferred_right_reference_price
         crossed = tick.bid_price.as_decimal() >= reference if episode.side == 1 else tick.ask_price.as_decimal() <= reference
-        if not crossed:
+        if crossed:
+            episode.btc_deferred_right_touched = True
+        if not episode.btc_deferred_right_touched or not self._bars:
             return
+        session = int(self._bars[-1].close_time.timestamp() * 1_000_000_000)
+        if (
+            self._current_btc is None or self._current_sol is None
+            or self._current_btc.ts_event != session or self._current_sol.ts_event != session
+            or self._last_accepted_session != session
+            or (self._latest_seen_session is not None and self._latest_seen_session != session)
+        ):
+            return  # A feature-only backfill is never an executable decision.
         newly_active = sorted(level for level in episode.btc_omitted_zero_levels if level in episode.sol_right_fraction and level not in episode.sol_rights)
         if not newly_active:
             return

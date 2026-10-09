@@ -442,3 +442,28 @@ def test_deferred_zero_rights_follow_real_partial_entry_and_fallback_stays_live(
     assert [(intent.action, intent.level, intent.limit_price) for intent in decisions] == [
         ("BTC_REDUCE", 0, None), ("BTC_REDUCE", 1, None),
     ]
+
+
+def test_deferred_full_fallback_partial_entry_scales_real_tp_sol_right() -> None:
+    state = WaveOverlayState(Candidate(btc_tp_fractions_initial_qty=(0.2125, 0.2125, 0.575)))
+    state.set_execution_lots(btc=Decimal("0.001"), sol=Decimal("0.01"))
+    episode = Episode(
+        "full-fallback-partial", 1, 100, 1.0, wave_levels=(0.0, 0.0, 0.03),
+        btc_reference_qty=1.0, btc_net_planned_qty=1.0,
+        btc_zero_resting_suppressed={0, 1},
+    )
+    state.episode = episode
+    entry = state._intent(episode, "BTC_ENTRY", 1, None)
+    state.on_fill(entry.id, 0.5, 101, bars(1)[0].close_time)
+    state.on_parent_cancelled(entry.id)
+    assert episode.btc_initial_qty == 0.5
+    assert episode.h == 101.0
+    assert episode.sol_rights == set()
+    assert [target.level for target in state.plan_confirmed_btc_targets()] == [2]
+    actual_fallback = state._intent(episode, "BTC_REDUCE", -1, 0, quantity=0.106)
+    state.on_fill(actual_fallback.id, 0.106, 103, bars(1)[0].close_time)
+    state.on_parent_terminal(actual_fallback.id)
+    assert episode.btc_tp_target_lots[0] == 106
+    assert episode.sol_rights == {0}
+    assert episode.sol_right_fraction[0] == 0.5
+    assert episode.btc_tp_filled_qty[0] == 0.106

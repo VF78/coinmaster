@@ -229,6 +229,7 @@ class Episode:
     btc_omitted_zero_levels: set[int] = field(default_factory=set)
     btc_zero_resting_suppressed: set[int] = field(default_factory=set)
     btc_deferred_right_reference_price: Decimal | None = None
+    btc_deferred_right_touched: bool = False
     h: float | None = None
     wave_levels: tuple[float, float, float] | None = None
     btc_tps: set[int] = field(default_factory=set)

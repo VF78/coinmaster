@@ -1664,7 +1664,7 @@ def test_research_mm_guard_accepts_fresh_async_exposure_marks_and_rejects_stale_
     ("q1", "tail", "expected_branch", "expected_qty", "activated"),
     [
         ("99.0", ("99.0",), "PASSIVE_NET_ZERO_LEVELS", Decimal("0.576"), False),
-        ("99.0", ("99.0", "100.0"), "PASSIVE_NET_ZERO_LEVELS", Decimal("0.576"), True),
+        ("99.0", ("99.0", "100.0"), "PASSIVE_NET_ZERO_LEVELS", Decimal("0.576"), False),
         ("101.0", ("101.0",), "MARKETABLE_FULL_ENTRY_FALLBACK", Decimal("1"), False),
     ],
 )
@@ -1743,3 +1743,41 @@ def test_deferred_selective_entry_expires_without_fresh_q1() -> None:
         assert strategy._queued_intents == []
     finally:
         engine.dispose()
+
+
+def test_deferred_touch_waits_for_current_paired_executable_session() -> None:
+    strategy = WaveOverlayStrategy(probe_config().__replace__(
+        research_v0_execution_repairs=True, research_v0_zero_tp_netting=False,
+        research_v0_deferred_selective_zero_tp=True,
+    ))
+    new_close = datetime(2024, 9, 2, tzinfo=UTC)
+    current = DailyBar(new_close - timedelta(days=1), new_close, new_close, 100, 100, 100)
+    session = int(new_close.timestamp() * 1_000_000_000)
+    strategy._bars = [current]
+    strategy._domain.episode = Episode(
+        "earned", 1, 100, 1.0, btc_initial_qty=0.288, btc_open_qty=0.288,
+        btc_net_planned_qty=0.576, btc_omitted_zero_levels={0},
+        btc_deferred_right_reference_price=Decimal("100"),
+        sol_right_fraction={0: 0.5},
+    )
+    strategy.entry_sizing_audit.append({"sol_right_activations": []})
+    calls = []
+    strategy._advance_current_day = lambda: calls.append("advance")
+    strategy._current_btc = SimpleNamespace(ts_event=session - 86_400_000_000_000)
+    strategy._current_sol = SimpleNamespace(ts_event=session - 86_400_000_000_000)
+    strategy._last_accepted_session = session - 86_400_000_000_000
+    strategy._latest_seen_session = session
+    strategy._activate_selective_sol_rights(quote(BTC_PERP.id, "100.0", "100.0", 10))
+    episode = strategy._domain.episode
+    assert episode.btc_deferred_right_touched
+    assert episode.sol_rights == set()
+    assert calls == []
+    strategy._current_btc = SimpleNamespace(ts_event=session)
+    strategy._current_sol = SimpleNamespace(ts_event=session)
+    strategy._last_accepted_session = session
+    strategy._activate_selective_sol_rights(quote(BTC_PERP.id, "99.0", "99.0", 11))
+    assert episode.sol_rights == {0}
+    assert episode.sol_right_fraction[0] == 0.5
+    assert episode.sol_right_decision_index[0] == 0
+    assert calls == ["advance"]
+    assert strategy.entry_sizing_audit[-1]["sol_right_activations"][0]["timestamp_ns"] == "11"
