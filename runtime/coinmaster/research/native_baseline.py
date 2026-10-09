@@ -12,7 +12,7 @@ import json
 import os
 import platform
 import resource
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from decimal import Decimal
 from pathlib import Path
 from typing import Iterator
@@ -669,6 +669,7 @@ def run_native_diagnostic(
     research_v0_execution_repairs: bool = False,
     research_v0_zero_tp_netting: bool = True,
     research_v0_deferred_selective_zero_tp: bool = False,
+    research_v0_selective_lifecycle_repairs: bool = False,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -751,7 +752,7 @@ def run_native_diagnostic(
         mark_client_id=mark_client, active_seed=initial_active_seed,
         margin_policy=TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
         terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
-        tp_fee_floor_v1=tp_fee_floor_v1, research_v0_execution_repairs=research_v0_execution_repairs, research_v0_zero_tp_netting=research_v0_zero_tp_netting, research_v0_deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp, max_mark_age_ns=max_mark_age_ns,
+        tp_fee_floor_v1=tp_fee_floor_v1, research_v0_execution_repairs=research_v0_execution_repairs, research_v0_zero_tp_netting=research_v0_zero_tp_netting, research_v0_deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp, research_v0_selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs, max_mark_age_ns=max_mark_age_ns,
         btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
         reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
         execution_delay_ns=(policy.execution_delay_minutes - 1) * MINUTE_MS * 1_000_000,
@@ -828,6 +829,8 @@ def run_native_diagnostic(
                 full_config["research_v0_zero_tp_netting"] = False
             if research_v0_deferred_selective_zero_tp:
                 full_config["research_v0_deferred_selective_zero_tp"] = True
+        if research_v0_selective_lifecycle_repairs:
+            full_config["research_v0_selective_lifecycle_repairs"] = True
         stats["peak_rss_bytes"] = _peak_rss_bytes()
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
         result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": len(fills), "fill_timestamps_ns": fill_timestamps_ns, "fill_audit": adapter["fill_audit"], "entry_sizing_audit": adapter["entry_sizing_audit"], "fee_attribution": fee_attribution, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": sum("REJECTED" in str(value) for value in orders.get("status", ())), "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Owner-specified non-VIP fixed-base fees are diagnostic; historical applicability remains unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
@@ -994,7 +997,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1002,6 +1005,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         raise ValueError("RESEARCH_ARTIFACT_DIR_MUST_BE_NEW")
     if deferred_selective_zero_tp and zero_tp_netting:
         raise ValueError("DEFERRED_SELECTIVE_REQUIRES_ORIGINAL_ZERO_TP_BASE")
+    if selective_lifecycle_repairs and not deferred_selective_zero_tp:
+        raise ValueError("SELECTIVE_LIFECYCLE_REQUIRES_DEFERRED_SELECTIVE")
     control = json.loads(control_report.read_text())
     config = control["config"]
     if (
@@ -1020,12 +1025,16 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
     if actual_data_hash != control["data_hash"]:
         raise ValueError("CONTROL_V0_DATA_HASH_MISMATCH")
     candidate = Candidate(**config["candidate"])
+    if selective_lifecycle_repairs:
+        candidate = replace(candidate, max_parent_notional=30_000_000.0)
     policy = ExecutionPolicy(**config["execution_policy"])
     fee_policy = FixedBaseFeePolicy(**config["fixed_base_fee_policy"])
     if fee_policy.hash != config["fee_policy_hash"]:
         raise ValueError("CONTROL_V0_FEE_POLICY_HASH_MISMATCH")
     artifact_dir.mkdir(parents=True, exist_ok=False)
     label = "v0-deferred-selective-zero-tp" if deferred_selective_zero_tp else "v0-execution-repairs" if zero_tp_netting else "v0-three-repairs-zero-tp-original"
+    if selective_lifecycle_repairs:
+        label = "v0-selective-lifecycle-cap30m"
     report = run_native_diagnostic(
         data_root, include_funding=True, candidate=candidate,
         execution_policy=policy, fixed_base_fee_policy=fee_policy,
@@ -1033,6 +1042,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         artifact_dir=artifact_dir, artifact_label=label,
         research_v0_execution_repairs=True, research_v0_zero_tp_netting=zero_tp_netting,
         research_v0_deferred_selective_zero_tp=deferred_selective_zero_tp,
+        research_v0_selective_lifecycle_repairs=selective_lifecycle_repairs,
     )
     report["control_report_sha256"] = sha256_file(control_report)
     report["control_terminal_total"] = control["summary"]["terminal_total"]
@@ -1048,6 +1058,7 @@ def main() -> None:
     parser.add_argument("--research-v0-execution-repairs", action="store_true")
     parser.add_argument("--research-v0-original-zero-tp", action="store_true", help="With research repairs, retain original BTC entry and zero-threshold TP levels")
     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
+    parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
     parser.add_argument("--control-report", type=Path)
     parser.add_argument("--artifact-dir", type=Path)
     args = parser.parse_args()
@@ -1057,6 +1068,8 @@ def main() -> None:
         parser.error("research V0 zero-TP options require --research-v0-execution-repairs")
     if args.research_v0_original_zero_tp and args.research_v0_deferred_selective_zero_tp:
         parser.error("choose only one research V0 zero-TP option")
+    if args.research_v0_selective_lifecycle_repairs and not (args.research_v0_execution_repairs and args.research_v0_deferred_selective_zero_tp):
+        parser.error("selective lifecycle repairs require execution repairs and deferred selective zero TP")
     if args.research_v0_execution_repairs:
         if args.control_report is None or args.artifact_dir is None:
             parser.error("research V0 repairs require --control-report and --artifact-dir")
@@ -1064,6 +1077,7 @@ def main() -> None:
             args.data_root, args.artifact_dir, args.control_report,
             zero_tp_netting=not (args.research_v0_original_zero_tp or args.research_v0_deferred_selective_zero_tp),
             deferred_selective_zero_tp=args.research_v0_deferred_selective_zero_tp,
+            selective_lifecycle_repairs=args.research_v0_selective_lifecycle_repairs,
         )
         print(json.dumps({"status": "COMPLETED", "artifact": str(artifact), "artifact_sha256": sha256_file(artifact)}, sort_keys=True))
         return

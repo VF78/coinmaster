@@ -50,6 +50,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_execution_repairs: bool = False
     research_v0_zero_tp_netting: bool = True
     research_v0_deferred_selective_zero_tp: bool = False
+    research_v0_selective_lifecycle_repairs: bool = False
     max_gross_to_active: Decimal = Decimal("50")
     # A verified history is supplied before native start.  It is feature state
     # only: it never replays old decisions or orders.
@@ -175,6 +176,8 @@ class WaveOverlayStrategy(Strategy):
         self._selected_entry_audits: dict[str, dict] = {}
         self._mandatory_sol_exit: tuple[Intent, float | None, int] | None = None
         self._mandatory_sol_retry_after_ns = 0
+        # Fixed accepted leaves across native IOC children.
+        self._accepted_reductions: dict[tuple[str, str, int | None], tuple[Intent, Decimal]] = {}
         self._queued_close_submitted: dict[str, set[InstrumentId]] = {}
         self._group_close_reconciliation_pending = False
         self._liquidating = False
@@ -386,6 +389,7 @@ class WaveOverlayStrategy(Strategy):
         if equity > maintenance:
             return
         self._liquidating = True
+        self._accepted_reductions.clear()
         self._queued_intents.clear()
         self._queued_intent_ready_ns.clear()
         self._deferred_selective_entries.clear()
@@ -540,6 +544,12 @@ class WaveOverlayStrategy(Strategy):
             if intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
                 self._preempt_with_mandatory_sol_exit(intent, self._current_signals[-1].sigma, len(self._bars) - 1)
                 return
+            if self.config.research_v0_selective_lifecycle_repairs and (
+                self._reduction_key(intent) in self._accepted_reductions
+                or (intent.action.startswith("SOL") and self._has_owned_sol_exit())
+            ):
+                self._domain.on_parent_terminal(intent.id)
+                continue
             self._queued_intents.append((intent, self._current_signals[-1].sigma, len(self._bars) - 1))
             self._queued_intent_ready_ns[intent.id] = self._current_btc.ts_event + self.config.execution_delay_ns
 
@@ -614,6 +624,17 @@ class WaveOverlayStrategy(Strategy):
                 self._begin_forced_close(intent.reason or "CLOSE_ALL", intent)
                 continue
             if target == tick.instrument_id:
+                if self.config.research_v0_selective_lifecycle_repairs and intent.action == "BTC_REDUCE" and intent.limit_price is None and self._reduction_key(intent) in self._accepted_reductions:
+                    episode = self._domain.episode
+                    if episode is None or episode.btc_entry_vwap is None or intent.level is None:
+                        continue
+                    threshold = Decimal(str(episode.btc_entry_vwap)) * (1 + episode.side * Decimal(str(episode.wave_levels[intent.level])))
+                    eligible = tick.bid_price.as_decimal() >= threshold if episode.side == 1 else tick.ask_price.as_decimal() <= threshold
+                    if not eligible:
+                        continue  # Retain conditional leaves on adverse quotes.
+                if self.config.research_v0_selective_lifecycle_repairs and intent.action == "SOL_ADD" and self._has_owned_sol_exit():
+                    self._discard_queued_intents(lambda queued: queued.id == intent.id)
+                    continue
                 if self.config.research_v0_deferred_selective_zero_tp and intent.action == "BTC_ENTRY":
                     selected = self._select_deferred_btc_entry(intent, tick)
                     if selected is None:
@@ -728,7 +749,8 @@ class WaveOverlayStrategy(Strategy):
             return
         reference = episode.btc_deferred_right_reference_price
         crossed = tick.bid_price.as_decimal() >= reference if episode.side == 1 else tick.ask_price.as_decimal() <= reference
-        if crossed:
+        earned = episode.btc_initial_qty > 0 and any(episode.sol_right_fraction.get(level, 0) > 0 for level in episode.btc_omitted_zero_levels)
+        if crossed and (not self.config.research_v0_selective_lifecycle_repairs or earned):
             episode.btc_deferred_right_touched = True
         if not episode.btc_deferred_right_touched or not self._bars:
             return
@@ -918,6 +940,20 @@ class WaveOverlayStrategy(Strategy):
             else:
                 self._domain.on_parent_terminal(intent.id)
             return
+        if self.config.research_v0_selective_lifecycle_repairs and intent.action == "BTC_ENTRY":
+            cap = Decimal(str(self._candidate.max_parent_notional))
+            rounded = min(rounded, (cap / executable_price // step) * step)
+            episode = self._domain.episode
+            if episode is not None:
+                # Gross reference/H stays fixed; actual-fill rights use q1 net.
+                episode.btc_net_planned_qty = float(rounded)
+            audit = self._selected_entry_audits.get(intent.id)
+            if audit is not None:
+                audit["admitted_net_quantity"] = str(rounded)
+                audit["parent_notional_cap"] = str(cap)
+            if rounded <= 0:
+                self._deny_local_entry(intent, "PARENT_CAP_BELOW_STEP", ts_now)
+                return
         # Increases are gated at the last safe point, after executable-price
         # sizing/normalization and immediately before native order creation.
         # Reductions deliberately bypass both the pause/stale and margin gates.
@@ -995,6 +1031,7 @@ class WaveOverlayStrategy(Strategy):
             else:
                 self._domain.on_parent_terminal(intent.id)
             return
+        self._own_accepted_reduction(intent, rounded)
         if intent.action == "BTC_ENTRY":
             self._daily_decision_reason = "NATIVE_SUBMISSION_PENDING_ACK"
             if intent.id in self._selected_entry_audits:
@@ -1012,6 +1049,47 @@ class WaveOverlayStrategy(Strategy):
                     "reference_target_lots": dict(episode.btc_reference_target_lots),
                 })
         self.submit_order(order)
+
+    @staticmethod
+    def _reduction_key(intent: Intent) -> tuple[str, str, int | None]:
+        return intent.episode_id, intent.action, intent.level
+
+    def _has_owned_sol_exit(self) -> bool:
+        return any(key[1] in {"SOL_HALF_EXIT", "SOL_EXIT"} for key in self._accepted_reductions)
+
+    def _own_accepted_reduction(self, intent: Intent, quantity: Decimal) -> None:
+        if not self.config.research_v0_selective_lifecycle_repairs:
+            return
+        episode = self._domain.episode
+        ordinary_sol = intent.reason in {"SOL_Z_HALF_EXIT", "SOL_Z_FULL_EXIT"}
+        zero_fallback = (episode is not None and intent.action == "BTC_REDUCE" and intent.limit_price is None and intent.level in episode.btc_zero_resting_suppressed)
+        if ordinary_sol or zero_fallback:
+            self._accepted_reductions.setdefault(self._reduction_key(intent), (intent, quantity))
+
+    def _requeue_accepted_reduction(self, intent: Intent, sigma: float | None, index: int, ts_event: int) -> None:
+        key = self._reduction_key(intent)
+        owner = self._accepted_reductions.get(key)
+        if owner is None:
+            return
+        if self._forced_close_reason is not None or self._liquidating or self._mandatory_sol_exit is not None or (self.config.deposit_runtime is not None and self._deposit.latched):
+            self._accepted_reductions.pop(key, None)
+            return
+        episode = self._domain.episode
+        if episode is None or episode.id != intent.episode_id or owner[1] <= 0:
+            self._accepted_reductions.pop(key, None)
+            return
+        # Unknown ACK and queued children retain exclusive ownership.
+        if any(self._reduction_key(item) == key for item in self._pending_by_order.values()) or any(self._reduction_key(item) == key for item, _, _ in self._queued_intents):
+            return
+        instrument_id = self.config.btc_id if intent.action == "BTC_REDUCE" else self.config.sol_id
+        position = next((item for item in self.cache.positions_open() if item.instrument_id == instrument_id), None)
+        if position is None:
+            self._accepted_reductions.pop(key, None)
+            return
+        leaves = min(owner[1], position.quantity.as_decimal())
+        child = self._domain._intent(episode, intent.action, intent.side, intent.level, quantity=float(leaves), reason=intent.reason)
+        self._queued_intents.append((child, sigma, index))
+        self._queued_intent_ready_ns[child.id] = ts_event + 60_000_000_000
 
     def _discard_queued_intents(self, predicate) -> None:
         """Terminally remove queued work that a mandatory exit supersedes."""
@@ -1039,6 +1117,7 @@ class WaveOverlayStrategy(Strategy):
             # duplicate rather than overwriting the original and orphaning it.
             self._domain.on_parent_terminal(intent.id)
             return
+        self._accepted_reductions = {key: owner for key, owner in self._accepted_reductions.items() if not key[1].startswith("SOL")}
         self._discard_queued_intents(lambda queued: queued.action.startswith("SOL") and queued.id != intent.id)
         for order in list(self.cache.orders_open()):
             if order.instrument_id == self.config.sol_id:
@@ -1078,6 +1157,7 @@ class WaveOverlayStrategy(Strategy):
             timeout, _, _ = self._mandatory_sol_exit
             self._mandatory_sol_exit = None
             self._domain.on_parent_terminal(timeout.id)
+        self._accepted_reductions.clear()
         self._discard_queued_intents(lambda _queued: True)
         self._forced_close_reason = reason
         self._forced_close_intent = intent
@@ -1160,6 +1240,14 @@ class WaveOverlayStrategy(Strategy):
             "close_fills": [],
             "lockout": True,
         }
+        if self.config.research_v0_selective_lifecycle_repairs:
+            self._accepted_reductions.clear()
+            submitted = {item.id for item in self._pending_by_order.values()}
+            self._discard_queued_intents(lambda queued: queued.id not in submitted)
+            if self.cache.orders_open() or self._pending_by_order:
+                self.terminal_lifecycle["status"] = "AWAITING_NATIVE_TERMINAL"
+                self._begin_forced_close("TERMINAL_BOUNDARY_SETTLEMENT")
+                return
         if not any(position.instrument_id in (self.config.btc_id, self.config.sol_id) for position in self.cache.positions_open()):
             self.terminal_lifecycle["status"] = "FLAT"
             return
@@ -1176,6 +1264,8 @@ class WaveOverlayStrategy(Strategy):
             positions = {item.instrument_id: item for item in self.cache.positions_open()}
             required = Decimal("0")
             gross = Decimal("0")
+            current_required = Decimal("0")
+            marks = {}
             for current_id in (self.config.btc_id, self.config.sol_id):
                 position = positions.get(current_id)
                 current = (
@@ -1185,12 +1275,32 @@ class WaveOverlayStrategy(Strategy):
                 )
                 prospective = current + (quantity if side == OrderSide.BUY else -quantity) if current_id == instrument_id else current
                 if prospective:
-                    initial, _, mark = policy.margin_for(current_id, prospective, ts_now)
-                    required += initial
+                    initial, maintenance, mark = policy.margin_for(current_id, prospective, ts_now)
+                    required += initial + maintenance if self.config.research_v0_selective_lifecycle_repairs else initial
                     gross += abs(prospective) * mark
+                    marks[current_id] = mark
+                if self.config.research_v0_selective_lifecycle_repairs and current:
+                    initial, maintenance, mark = policy.margin_for(current_id, current, ts_now)
+                    current_required += initial + maintenance
+                    marks[current_id] = mark
             account = self.cache.account_for_venue(self.config.btc_id.venue)
             instrument = self.cache.instrument(self.config.btc_id)
-            active = Decimal(str(self._active_marked(self._current_btc_mark, self._current_sol_mark))) if self._current_btc_mark and self._current_sol_mark else Decimal("0")
+            if self.config.research_v0_selective_lifecycle_repairs:
+                if account is None:
+                    return False
+                active = _native_account_money(account)
+                for current_id, position in positions.items():
+                    if current_id not in marks:
+                        continue
+                    current_instrument = self.cache.instrument(current_id)
+                    if current_instrument is None:
+                        return False
+                    active += position.unrealized_pnl(current_instrument.make_price(marks[current_id])).as_decimal()
+                # Native free already deducts existing locks and open-order
+                # reservations. Require only additional policy IM+MM.
+                required = max(Decimal("0"), required - current_required)
+            else:
+                active = Decimal(str(self._active_marked(self._current_btc_mark, self._current_sol_mark))) if self._current_btc_mark and self._current_sol_mark else Decimal("0")
             return account is not None and instrument is not None and active > 0 and gross <= active * self.config.max_gross_to_active and required <= self._free_margin_for_increase(account)
         except ValueError:
             return False
@@ -1289,6 +1399,14 @@ class WaveOverlayStrategy(Strategy):
         """Pure episode/intent transition shared by callbacks and report replay."""
         self._bind_native_lots()
         sigma = self._sigma_by_order.get(client_order_id)
+        key = self._reduction_key(intent)
+        if key in self._accepted_reductions:
+            original, leaves = self._accepted_reductions[key]
+            remaining = max(Decimal("0"), leaves - Decimal(str(quantity)))
+            if remaining == 0:
+                self._accepted_reductions.pop(key)
+            else:
+                self._accepted_reductions[key] = original, remaining
         when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
         self._domain.on_fill(
             intent.id, quantity, price, when, sigma,
@@ -1307,6 +1425,7 @@ class WaveOverlayStrategy(Strategy):
         self._pending_by_order.pop(client_order_id, None)
         self._sigma_by_order.pop(client_order_id, None)
         self._decision_index_by_order.pop(client_order_id, None)
+        self._requeue_accepted_reduction(intent, sigma, intent.decision_index, ts_event)
         if intent.action == "BTC_ENTRY":
             self._queue_confirmed_btc_targets(sigma, intent.decision_index, ts_event)
 
@@ -1372,6 +1491,9 @@ class WaveOverlayStrategy(Strategy):
                 self._queue_confirmed_btc_targets(sigma, decision_index, event.ts_event)
                 if self.config.research_v0_execution_repairs and intent.action == "BTC_ENTRY" and self._domain.episode is not None and self._domain.episode.btc_omitted_zero_levels:
                     self._advance_current_day()
+        if intent is not None:
+            self._requeue_accepted_reduction(intent, sigma, decision_index, event.ts_event)
+        self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(event.ts_event)
         if self._forced_close_reason is not None and not self.cache.orders_open():
@@ -1429,7 +1551,9 @@ class WaveOverlayStrategy(Strategy):
             self.liquidation_audit[-1]["status"] = "FLAT_LOCKED"
 
     def _reconcile_terminal_flat(self) -> None:
-        if self.terminal_lifecycle["status"] != "CLOSE_SUBMITTED" or self.cache.positions_open() or self.cache.orders_open():
+        if self.terminal_lifecycle["status"] not in {"CLOSE_SUBMITTED", "AWAITING_NATIVE_TERMINAL"} or self.cache.positions_open() or self.cache.orders_open():
+            return
+        if self.config.research_v0_selective_lifecycle_repairs and self._pending_by_order:
             return
         self.terminal_lifecycle["status"] = "FLAT"
 
@@ -1479,6 +1603,9 @@ class WaveOverlayStrategy(Strategy):
                 self._queue_confirmed_btc_targets(sigma, decision_index, 0)
                 if self.config.research_v0_execution_repairs and intent.action == "BTC_ENTRY" and self._domain.episode is not None and self._domain.episode.btc_omitted_zero_levels:
                     self._advance_current_day()
+        if intent is not None and self._reduction_key(intent) in self._accepted_reductions:
+            self._requeue_accepted_reduction(intent, sigma, decision_index, self.clock.timestamp_ns())
+        self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())
         if self._forced_close_reason is not None and not self.cache.orders_open():
@@ -1539,6 +1666,7 @@ class WaveOverlayStrategy(Strategy):
         )
 
     def _start_deposit_exit(self, now_ns: int) -> None:
+        self._accepted_reductions.clear()
         self._discard_queued_intents(lambda _queued: True)
         if self._mandatory_sol_exit is not None:
             intent, _, _ = self._mandatory_sol_exit
@@ -1668,6 +1796,8 @@ class WaveOverlayStrategy(Strategy):
         return self.deposit_projection()
 
     def _entries_enabled(self) -> bool:
+        if self.config.research_v0_selective_lifecycle_repairs and self.terminal_lifecycle.get("lockout"):
+            return False
         if self.config.deposit_runtime is not None and not self._deposit_check():
             return False
         gate = self.config.entries_gate

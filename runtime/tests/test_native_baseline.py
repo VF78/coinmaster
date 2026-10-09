@@ -278,3 +278,69 @@ def test_research_v0_repairs_cli_rejects_existing_artifact_dir_before_engine(tmp
     with pytest.raises(ValueError, match="RESEARCH_ARTIFACT_DIR_MUST_BE_NEW"):
         native_baseline.run_research_v0_repairs_cli(tmp_path, output, tmp_path / "missing-control.json")
     assert sentinel.read_bytes() == b"keep exact prior bytes"
+
+
+
+def test_selective_lifecycle_cli_requires_selective_base_before_loading_control(tmp_path):
+    from coinmaster.research import native_baseline
+    with pytest.raises(ValueError, match="SELECTIVE_LIFECYCLE_REQUIRES_DEFERRED_SELECTIVE"):
+        native_baseline.run_research_v0_repairs_cli(
+            tmp_path, tmp_path / "new", tmp_path / "missing.json",
+            zero_tp_netting=False, selective_lifecycle_repairs=True,
+        )
+
+
+@pytest.mark.parametrize("repairs", [False, True])
+def test_selective_lifecycle_cli_changes_only_cap_and_explicit_variant(tmp_path, monkeypatch, repairs):
+    import hashlib
+    import json
+    from dataclasses import asdict
+    from datetime import datetime, timezone
+    from coinmaster.domain.wave_overlay import Candidate
+    from coinmaster.research import native_baseline
+    from coinmaster.research.native_baseline import ExecutionPolicy, FixedBaseFeePolicy
+    policy = ExecutionPolicy()
+    fees = FixedBaseFeePolicy()
+    manifest = tmp_path / "bybit-1m" / "manifest.json"
+    manifest.parent.mkdir()
+    manifest.write_text("{}")
+    candidate = Candidate()
+    config = {
+        **native_baseline.BASELINE_CONFIG,
+        "candidate": asdict(candidate), "execution_policy": asdict(policy),
+        "fixed_base_fee_policy": asdict(fees), "fee_policy_hash": fees.hash,
+        "tp_fee_floor_v1": False,
+        "run_interval": {
+            "start": datetime.fromtimestamp(native_baseline.TRADING_START_MS / 1000, tz=timezone.utc).isoformat(),
+            "end_exclusive": datetime.fromtimestamp(native_baseline.TRADING_END_MS / 1000, tz=timezone.utc).isoformat(),
+            "initial_active_seed": "10000",
+        },
+    }
+    control = {
+        "status": "NOT_FAITHFUL_DIAGNOSTIC", "config": config, "policy": asdict(policy),
+        "summary": {"terminal_total": "3386491.65211338"},
+        "data_hash": hashlib.sha256(b"{}").hexdigest(),
+    }
+    control_path = tmp_path / "control.json"
+    control_path.write_text(json.dumps(control))
+    calls = []
+    def capture(*args, **kwargs):
+        calls.append(kwargs)
+        return {}
+    monkeypatch.setattr(native_baseline, "run_native_diagnostic", capture)
+    monkeypatch.setattr(native_baseline, "save_diagnostic_report", lambda *args: tmp_path / "result.json")
+    native_baseline.run_research_v0_repairs_cli(
+        tmp_path, tmp_path / "fresh", control_path, zero_tp_netting=False,
+        deferred_selective_zero_tp=True, selective_lifecycle_repairs=repairs,
+    )
+    call = calls[0]
+    expected = asdict(candidate)
+    if repairs:
+        expected["max_parent_notional"] = 30_000_000.0
+    assert json.loads(json.dumps(asdict(call["candidate"]))) == json.loads(json.dumps(expected))
+    assert call["research_v0_selective_lifecycle_repairs"] is repairs
+    assert call["research_v0_deferred_selective_zero_tp"]
+    assert not call["research_v0_zero_tp_netting"]
+    assert call["execution_policy"] == policy
+    assert call["fixed_base_fee_policy"] == fees
+    assert call["artifact_label"] == ("v0-selective-lifecycle-cap30m" if repairs else "v0-deferred-selective-zero-tp")

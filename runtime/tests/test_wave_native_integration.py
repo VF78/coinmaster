@@ -1781,3 +1781,295 @@ def test_deferred_touch_waits_for_current_paired_executable_session() -> None:
     assert episode.sol_right_decision_index[0] == 0
     assert calls == ["advance"]
     assert strategy.entry_sizing_audit[-1]["sol_right_activations"][0]["timestamp_ns"] == "11"
+
+
+def lifecycle_config(**kwargs):
+    return probe_config().__replace__(
+        research_v0_execution_repairs=True, research_v0_zero_tp_netting=False,
+        research_v0_deferred_selective_zero_tp=True,
+        research_v0_selective_lifecycle_repairs=True, **kwargs,
+    )
+
+
+@pytest.mark.parametrize("action,target", [("SOL_HALF_EXIT", 1000), ("SOL_EXIT", 2000)])
+def test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes(action, target):
+    from nautilus_trader.model.data import QuoteTick
+
+    class Probe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.stage = 0
+            self.episode_count = 0
+            self.snapshots = []
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.sol_id:
+                return
+            if tick.ts_event % 300_000_000_000 == 1:
+                self.stage = 0
+            if self.stage == 4:
+                return
+            if self.stage in (0, 1):
+                if self.stage == 0:
+                    self.episode_count += 1
+                    self._domain.episode = Episode(f"sol-{self.episode_count}", 1, 10000, 1.0)
+                intent = self._domain._intent(self._domain.episode, "SOL_ADD", 1, 0, quantity=1000)
+                self.stage += 1
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+            elif self.stage == 2:
+                episode = self._domain.episode
+                episode.sol_half_target_lots = target * 10
+                intent = self._domain._intent(episode, action, -1, None, quantity=target, reason="SOL_Z_HALF_EXIT" if action == "SOL_HALF_EXIT" else "SOL_Z_FULL_EXIT")
+                self.stage = 3
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+            else:
+                super().on_quote_tick(tick)
+                self.snapshots.append((tick.ts_event, self._domain.episode.sol_qty))
+                if not self._accepted_reductions and not self._queued_intents and not self._pending_by_order:
+                    expected = 2000 - target
+                    assert self._domain.episode.sol_qty == expected
+                    if action == "SOL_HALF_EXIT":
+                        assert self._domain.episode.sol_half_done
+                        # Close remaining native half to make the next episode clean.
+                        self._begin_forced_close("TEST_GROUP")
+                        self._submit_forced_close_on_quote(tick)
+                    self.stage = 4
+
+        def _tier_allows_increase(self, *args):
+            return True
+
+    strategy = Probe(lifecycle_config())
+    engine = native_engine(strategy)
+    ticks = []
+    for episode in range(2):
+        offset = episode * 300_000_000_000
+        for ts, size in [(1, 1000), (2, 1000), (3, 250), (30_000_000_003, 1000), (61_000_000_003, 1000), (122_000_000_003, 1000), (183_000_000_003, 1000)]:
+            ticks.append(QuoteTick(SOL_PERP.id, Price.from_str("1.00"), Price.from_str("1.00"), Quantity.from_str(f"{size}.0"), Quantity.from_str(f"{size}.0"), offset + ts, offset + ts))
+    engine.add_data(ticks, sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert strategy.episode_count == 2
+        assert not strategy._accepted_reductions
+        assert not strategy._pending_by_order
+        assert not engine.cache.positions_open()
+        fills = [row for row in strategy.fill_audit if row["action"] == action]
+        assert len(fills) >= 4
+        assert sum(Decimal(row["qty"]) for row in fills) == target * 2
+    finally:
+        engine.dispose()
+
+
+def test_lifecycle_native_zero_fallback_retries_profitable_leaves_not_adverse_quotes():
+    from nautilus_trader.model.data import QuoteTick
+
+    class Probe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.stage = 0
+            self.rights_at_adverse = None
+
+        def on_quote_tick(self, tick):
+            if tick.instrument_id != self.config.btc_id:
+                return
+            if self.stage == 0:
+                self._domain.episode = Episode("btc-fallback", 1, 10000, 1.0, wave_levels=(0.0, 0.01, 0.02), btc_zero_resting_suppressed={0})
+                self.stage = 1
+                intent = self._domain._intent(self._domain.episode, "BTC_ENTRY", 1, None, quantity=1)
+                self._submit_intent(intent, 100, 100, None, 0, ts_now=tick.ts_event)
+            elif self.stage == 1:
+                self._discard_queued_intents(lambda queued: queued.action == "BTC_REDUCE")
+                episode = self._domain.episode
+                intent = self._domain._intent(episode, "BTC_REDUCE", -1, 0, quantity=self._domain._btc_target_leaves(episode, 0))
+                self.stage = 2
+                self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), None, 0, ts_now=tick.ts_event)
+            else:
+                super().on_quote_tick(tick)
+                if tick.bid_price.as_decimal() < Decimal("100"):
+                    self.rights_at_adverse = self._domain.episode.sol_right_fraction[0]
+
+        def _tier_allows_increase(self, *args):
+            return True
+
+    strategy = Probe(lifecycle_config())
+    engine = native_engine(strategy)
+    ticks = []
+    for ts, price, size in [(1, "100.0", "1000.000"), (2, "101.0", "0.100"), (61_000_000_002, "99.0", "1000.000"), (62_000_000_002, "102.0", "1000.000")]:
+        ticks.append(QuoteTick(BTC_PERP.id, Price.from_str(price), Price.from_str(price), Quantity.from_str(size), Quantity.from_str(size), ts, ts))
+    engine.add_data(ticks, sort=False); engine.sort_data(); engine.run()
+    try:
+        fills = [row for row in strategy.fill_audit if row["action"] == "BTC_REDUCE" and row["level"] == "0"]
+        assert len(fills) == 2
+        assert all(Decimal(row["px"]) > 100 for row in fills)
+        assert 0 < strategy.rights_at_adverse < 1
+        assert strategy._domain.episode.sol_right_fraction[0] == 1
+        assert 0 in strategy._domain.episode.btc_filled_tps
+        assert not strategy._accepted_reductions
+    finally:
+        engine.dispose()
+
+
+def test_lifecycle_earned_fill_must_precede_touch_and_terminal_unknown_ack():
+    class Probe(WaveOverlayStrategy):
+        @property
+        def cache(self):
+            return self.fake_cache
+    strategy = Probe(lifecycle_config())
+    strategy.fake_cache = SimpleNamespace(positions_open=lambda: [], orders_open=lambda: [])
+    episode = Episode("causal", 1, 100, 1.0, btc_net_planned_qty=1, btc_omitted_zero_levels={0}, btc_deferred_right_reference_price=Decimal("100"))
+    strategy._domain.episode = episode
+    strategy._activate_selective_sol_rights(quote(BTC_PERP.id, "101.0", "101.0", 1))
+    assert not episode.btc_deferred_right_touched
+    entry = strategy._domain._intent(episode, "BTC_ENTRY", 1, None, quantity=1)
+    strategy._domain.on_fill(entry.id, 0.5, 100, datetime(2024, 1, 1, tzinfo=UTC))
+    strategy._activate_selective_sol_rights(quote(BTC_PERP.id, "99.0", "99.0", 3))
+    assert not episode.btc_deferred_right_touched
+    assert episode.sol_right_fraction == {0: 0.5}
+    strategy._activate_selective_sol_rights(quote(BTC_PERP.id, "100.0", "100.0", 4))
+    assert episode.btc_deferred_right_touched
+    # Queued q0 is locally terminal; submitted unknown ACK is still owned.
+    strategy._queued_intents = [(entry, None, 0)]
+    strategy._deferred_selective_entries[entry.id] = {"q0_ns": 1}
+    strategy._submit_terminal_closes()
+    assert strategy.terminal_lifecycle["status"] == "FLAT"
+    assert not strategy._queued_intents and not strategy._deferred_selective_entries
+    assert not episode.pending
+    strategy._domain.episode = Episode("unknown", 1, 100, 1.0)
+    unknown = strategy._domain._intent(strategy._domain.episode, "BTC_ENTRY", 1, None, quantity=1)
+    strategy._pending_by_order["unknown-native"] = unknown
+    strategy._submit_terminal_closes()
+    assert strategy.terminal_lifecycle["status"] == "AWAITING_NATIVE_TERMINAL"
+    assert unknown.id in strategy._domain.episode.pending
+    assert not strategy._entries_enabled()
+    strategy._reconcile_terminal_flat()
+    assert strategy.terminal_lifecycle["status"] != "FLAT"
+    strategy.on_order_canceled(SimpleNamespace(client_order_id="unknown-native", ts_event=10))
+    assert strategy.terminal_lifecycle["status"] == "FLAT"
+
+
+def test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks():
+    class Probe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.submitted = False
+        def on_quote_tick(self, tick):
+            if not self.submitted:
+                self.submitted = True
+                self.submit_order(self.order_factory.market(instrument_id=BTC_PERP.id, order_side=OrderSide.BUY, quantity=BTC_PERP.make_qty(Decimal("60")), time_in_force=TimeInForce.IOC))
+    policy = TierMarginPolicy((), {BTC_PERP.id: Decimal("1"), SOL_PERP.id: Decimal("1")}, 30)
+    strategy = Probe(lifecycle_config(margin_policy=policy, max_gross_to_active=Decimal("1")))
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.0", 1)])
+    engine.run()
+    try:
+        account = strategy.cache.account_for_venue(SIM)
+        # Set known locks on the actual pinned native MarginAccount, whose
+        # free recalculation deducts both IM and MM (including reservations).
+        account.update_margin_init(BTC_PERP.id, Money(6000, BTC_PERP.quote_currency))
+        account.update_margin_maint(BTC_PERP.id, Money(500, BTC_PERP.quote_currency))
+        total = account.balance_total(BTC_PERP.quote_currency).as_decimal()
+        free = account.balance_free(BTC_PERP.quote_currency).as_decimal()
+        assert total > free and free < 4000
+        policy.update_mark(SimpleNamespace(instrument_id=BTC_PERP.id, price=Decimal("200"), ts_event=100))
+        policy.update_mark(SimpleNamespace(instrument_id=SOL_PERP.id, price=Decimal("100"), ts_event=100))
+        # Stale daily 100 marks would lose the native 6000 unrealized profit.
+        strategy._current_btc_mark = SimpleNamespace(price=Decimal("100"))
+        strategy._current_sol_mark = SimpleNamespace(price=Decimal("100"))
+        assert strategy._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("10"), 110)
+        assert not strategy._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("50"), 110)
+        assert not strategy._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("10"), 131)
+        assert not strategy._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("10"), 99)
+    finally:
+        engine.dispose()
+
+
+
+@pytest.mark.parametrize("side", [1, -1])
+def test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference(side):
+    class Probe(WaveOverlayStrategy):
+        def _tier_allows_increase(self, *args):
+            return True
+    candidate = Candidate(max_parent_notional=30_000_000.0, btc_tp_fractions_initial_qty=(0.2125, 0.2125, 0.575))
+    strategy = Probe(lifecycle_config(candidate=candidate, max_mark_age_ns=30))
+    episode = Episode("cap30m", side, 100_000_000, 1.0, wave_levels=(0.01, 0.02, 0.03))
+    strategy._domain.episode = episode
+    intent = strategy._domain._intent(episode, "BTC_ENTRY", side, None, requested_notional=30_000_000)
+    strategy._queued_intents = [(intent, None, 0)]
+    engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(100_000_000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"))
+    engine.add_instrument(BTC_PERP); engine.add_instrument(SOL_PERP)
+    engine.add_strategy(strategy)
+    engine.add_data([quote(BTC_PERP.id, "30000.0", "30000.0", 1), quote(BTC_PERP.id, "30030.0", "30030.0", 2)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        fills = [row for row in strategy.fill_audit if row["action"] == "BTC_ENTRY"]
+        assert len(fills) == 1
+        qty = Decimal(fills[0]["qty"])
+        assert qty == Decimal("999.000")
+        assert qty * Decimal(fills[0]["px"]) <= Decimal("30000000")
+        assert (qty + BTC_PERP.size_increment.as_decimal()) * Decimal("30030") > Decimal("30000000")
+        assert episode.btc_reference_qty == 1000
+        assert episode.btc_net_planned_qty == float(qty)
+        assert episode.h == 1000 * 30030
+        assert sum(episode.btc_tp_target_lots.values()) == 999000
+        assert not strategy.pre_submit_gate_blocks
+    finally:
+        engine.dispose()
+
+
+def test_lifecycle_rejected_owned_child_keeps_target_unknown_ack_blocks_duplicate():
+    class Probe(WaveOverlayStrategy):
+        @property
+        def clock(self):
+            return SimpleNamespace(timestamp_ns=lambda: 1)
+        @property
+        def cache(self):
+            return self.fake_cache
+    strategy = Probe(lifecycle_config())
+    position = SimpleNamespace(instrument_id=SOL_PERP.id, quantity=Quantity.from_str("1000.0"))
+    strategy.fake_cache = SimpleNamespace(positions_open=lambda: [position], orders_open=lambda: [])
+    episode = Episode("denied-exit", 1, 10000, 1.0, sol_qty=1000)
+    strategy._domain.episode = episode
+    intent = strategy._domain._intent(episode, "SOL_EXIT", -1, None, quantity=1000, reason="SOL_Z_FULL_EXIT")
+    strategy._own_accepted_reduction(intent, Decimal("1000"))
+    strategy._pending_by_order["unknown"] = intent
+    strategy._requeue_accepted_reduction(intent, None, 0, 1)
+    assert not strategy._queued_intents
+    strategy.on_order_denied(SimpleNamespace(client_order_id="unknown"))
+    assert len(strategy._queued_intents) == 1
+    child = strategy._queued_intents[0][0]
+    assert child.quantity == 1000 and intent.id not in episode.pending
+    strategy._begin_forced_close("REGIME")
+    assert not strategy._accepted_reductions and not strategy._queued_intents
+    assert child.id not in episode.pending
+
+
+
+def test_lifecycle_native_immediate_q1_fill_then_reference_touch_earns_once():
+    class Probe(WaveOverlayStrategy):
+        def _tier_allows_increase(self, *args):
+            return True
+        def _advance_current_day(self):
+            pass
+    strategy = Probe(lifecycle_config(max_mark_age_ns=30))
+    close = datetime(2024, 9, 2, tzinfo=UTC)
+    session = int(close.timestamp() * 1_000_000_000)
+    strategy._bars = [DailyBar(close - timedelta(days=1), close, close, 100, 100, 100)]
+    strategy._current_btc = SimpleNamespace(ts_event=session)
+    strategy._current_sol = SimpleNamespace(ts_event=session)
+    strategy._last_accepted_session = session
+    strategy._latest_seen_session = session
+    episode = Episode("causal-native", 1, 10000, 1.0, wave_levels=(0.0, 0.0, 0.03))
+    strategy._domain.episode = episode
+    intent = strategy._domain._intent(episode, "BTC_ENTRY", 1, None, requested_notional=100)
+    strategy._queued_intents = [(intent, None, 0)]
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, price, price, session + delta) for delta, price in [(1, "100.0"), (2, "99.0"), (3, "100.0"), (4, "100.0")]], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert episode.btc_initial_qty > 0
+        assert episode.sol_rights == {0, 1}
+        activation = strategy.entry_sizing_audit[0]["sol_right_activations"]
+        assert len(activation) == 1 and activation[0]["timestamp_ns"] == str(session + 3)
+        assert activation[0]["confirmed_native_entry_qty"] == str(episode.btc_initial_qty)
+    finally:
+        engine.dispose()
