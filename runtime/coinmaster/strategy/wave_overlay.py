@@ -49,6 +49,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     tp_fee_floor_v1: bool = False
     research_v0_execution_repairs: bool = False
     research_v0_zero_tp_netting: bool = True
+    research_v0_deferred_selective_zero_tp: bool = False
     max_gross_to_active: Decimal = Decimal("50")
     # A verified history is supplied before native start.  It is feature state
     # only: it never replays old decisions or orders.
@@ -170,6 +171,8 @@ class WaveOverlayStrategy(Strategy):
         self._latest_marks: dict[InstrumentId, VenueMark] = {}
         self._queued_intents: list[tuple[Intent, float | None, int]] = []
         self._queued_intent_ready_ns: dict[str, int] = {}
+        self._deferred_selective_entries: dict[str, dict] = {}
+        self._selected_entry_audits: dict[str, dict] = {}
         self._mandatory_sol_exit: tuple[Intent, float | None, int] | None = None
         self._mandatory_sol_retry_after_ns = 0
         self._queued_close_submitted: dict[str, set[InstrumentId]] = {}
@@ -385,6 +388,8 @@ class WaveOverlayStrategy(Strategy):
         self._liquidating = True
         self._queued_intents.clear()
         self._queued_intent_ready_ns.clear()
+        self._deferred_selective_entries.clear()
+        self._selected_entry_audits.clear()
         self._liquidation_waiting = {position.instrument_id for position in positions}
         self.liquidation_audit.append({
             "trigger_ts": str(ts_now),
@@ -561,7 +566,11 @@ class WaveOverlayStrategy(Strategy):
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
         if self.config.deposit_runtime is not None and self._deposit.latched:
+            if self.config.research_v0_deferred_selective_zero_tp:
+                self._discard_queued_intents(lambda queued: queued.action == "BTC_ENTRY")
             return
+        if self.config.research_v0_deferred_selective_zero_tp and tick.instrument_id == self.config.btc_id:
+            self._activate_selective_sol_rights(tick)
         # Verified artifacts are queued off-thread. A quote may apply one
         # after the latest paired session is buffered, but must not consume
         # warmup history before any live signal establishes a safe cutoff.
@@ -605,6 +614,22 @@ class WaveOverlayStrategy(Strategy):
                 self._begin_forced_close(intent.reason or "CLOSE_ALL", intent)
                 continue
             if target == tick.instrument_id:
+                if self.config.research_v0_deferred_selective_zero_tp and intent.action == "BTC_ENTRY":
+                    selected = self._select_deferred_btc_entry(intent, tick)
+                    if selected is None:
+                        continue
+                    if selected <= 0:
+                        self._queued_intents.remove(item)
+                        self._queued_intent_ready_ns.pop(intent.id, None)
+                        self._deferred_selective_entries.pop(intent.id, None)
+                        self._selected_entry_audits.pop(intent.id, None)
+                        self._domain.on_parent_terminal(intent.id)
+                        continue
+                    self._queued_intents.remove(item)
+                    self._queued_intent_ready_ns.pop(intent.id, None)
+                    self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event, entry_override_qty=selected)
+                    self._deferred_selective_entries.pop(intent.id, None)
+                    continue
                 if self.config.research_v0_execution_repairs and intent.action == "SOL_ADD":
                     stale = self._stale_sol_add(intent, index)
                     if stale is None:
@@ -622,6 +647,100 @@ class WaveOverlayStrategy(Strategy):
                 self._queued_intents.remove(item)
                 self._queued_intent_ready_ns.pop(intent.id, None)
                 self._submit_intent(intent, float(tick.bid_price), float(tick.ask_price), sigma, index, ts_now=tick.ts_event)
+
+    def _select_deferred_btc_entry(self, intent: Intent, tick: QuoteTick) -> Decimal | None:
+        """Observe q0, then choose entry lots from the next causal BTC quote."""
+        episode = self._domain.episode
+        instrument = self.cache.instrument(self.config.btc_id)
+        if episode is None or episode.id != intent.episode_id or instrument is None or episode.wave_levels is None:
+            return Decimal("0")
+        plan = self._deferred_selective_entries.get(intent.id)
+        if plan is None:
+            price = tick.ask_price.as_decimal() if intent.side == 1 else tick.bid_price.as_decimal()
+            if price <= 0 or intent.requested_notional is None:
+                return Decimal("0")
+            step = instrument.size_increment.as_decimal()
+            # Match the existing q0 native entry's float-to-Decimal lot path.
+            gross_quantity = float(Decimal(str(intent.requested_notional)) / price)
+            gross_lots = int(Decimal(str(gross_quantity)) // step)
+            if gross_lots <= 0:
+                return Decimal("0")
+            fractions = tuple(Decimal(str(value)) for value in self._candidate.btc_tp_fractions_initial_qty)
+            target_lots = {}
+            assigned = 0
+            for level, fraction in enumerate(fractions):
+                lots = gross_lots - assigned if level == len(fractions) - 1 and sum(fractions) == Decimal("1") else int((Decimal(gross_lots) * fraction).to_integral_value(rounding=ROUND_FLOOR))
+                target_lots[level] = lots
+                assigned += lots
+            self._deferred_selective_entries[intent.id] = {
+                "q0_ns": tick.ts_event,
+                "session_ns": self._last_accepted_session,
+                "gross_lots": gross_lots,
+                "target_lots": target_lots,
+                "zero_levels": {level for level, value in enumerate(episode.wave_levels) if Decimal(str(value)) == 0},
+                "reference_wire_price": _native_limit_price(instrument, price).as_decimal(),
+                "step": step,
+            }
+            return None
+        if tick.ts_event <= plan["q0_ns"]:
+            return None
+        if (
+            self.config.max_mark_age_ns <= 0 or tick.ts_event - plan["q0_ns"] > self.config.max_mark_age_ns
+            or self._last_accepted_session != plan["session_ns"]
+            or (self.config.terminal_close_at_ns is not None and tick.ts_event >= self.config.terminal_close_at_ns)
+            or not self._entries_enabled() or self._forced_close_reason is not None or self._liquidating
+        ):
+            return Decimal("0")
+        quote_side = tick.bid_price.as_decimal() if episode.side == 1 else tick.ask_price.as_decimal()
+        reference = plan["reference_wire_price"]
+        passive = reference > quote_side if episode.side == 1 else reference < quote_side
+        # This is a prediction about the old q0-reference target at q1, not
+        # an oracle for a new entry's later q2 target.
+        omitted = plan["zero_levels"] if passive else set()
+        net_lots = sum(lots for level, lots in plan["target_lots"].items() if level not in omitted)
+        episode.btc_reference_qty = float(Decimal(plan["gross_lots"]) * plan["step"])
+        episode.btc_reference_target_lots = dict(plan["target_lots"]) if passive else {}
+        episode.btc_omitted_zero_levels = set(omitted)
+        episode.btc_net_planned_qty = float(Decimal(net_lots) * plan["step"]) if passive else 0.0
+        episode.btc_zero_resting_suppressed = set() if passive else set(plan["zero_levels"])
+        if passive:
+            episode.btc_deferred_right_reference_price = reference
+        self._selected_entry_audits[intent.id] = {
+            "episode_id": episode.id, "intent_id": intent.id,
+            "q0_ns": str(plan["q0_ns"]), "q1_ns": str(tick.ts_event),
+            "reference_wire_price": str(reference),
+            "q1_bid": str(tick.bid_price), "q1_ask": str(tick.ask_price),
+            "branch": "PASSIVE_NET_ZERO_LEVELS" if passive else "MARKETABLE_FULL_ENTRY_FALLBACK",
+            "reference_btc_qty": str(episode.btc_reference_qty),
+            "net_submitted_btc_qty": str(Decimal(net_lots) * plan["step"]),
+            "confirmed_native_entry_qty": "0",
+            "omitted_zero_levels": sorted(omitted),
+            "reference_target_lots": dict(plan["target_lots"]),
+            "sol_right_activations": [],
+        }
+        return Decimal(net_lots) * plan["step"]
+
+    def _activate_selective_sol_rights(self, tick: QuoteTick) -> None:
+        episode = self._domain.episode
+        if episode is None or episode.btc_deferred_right_reference_price is None or self._forced_close_reason is not None or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
+            return
+        reference = episode.btc_deferred_right_reference_price
+        crossed = tick.bid_price.as_decimal() >= reference if episode.side == 1 else tick.ask_price.as_decimal() <= reference
+        if not crossed:
+            return
+        newly_active = sorted(level for level in episode.btc_omitted_zero_levels if level in episode.sol_right_fraction and level not in episode.sol_rights)
+        if not newly_active:
+            return
+        for level in newly_active:
+            episode.sol_rights.add(level)
+            episode.sol_right_decision_index[level] = len(self._bars) - 1
+        if self.entry_sizing_audit:
+            self.entry_sizing_audit[-1]["sol_right_activations"].append({
+                "timestamp_ns": str(tick.ts_event), "levels": newly_active,
+                "confirmed_native_entry_qty": str(episode.btc_initial_qty),
+            })
+        if self._mandatory_sol_exit is None and self._forced_close_reason is None:
+            self._advance_current_day()
 
     def _stale_sol_add(self, intent: Intent, index: int) -> bool | None:
         episode = self._domain.episode
@@ -697,6 +816,7 @@ class WaveOverlayStrategy(Strategy):
         return _native_account_money(account, free=True)
 
     def _deny_local_entry(self, intent: Intent, reason: str, ts_now: int | None) -> None:
+        self._selected_entry_audits.pop(intent.id, None)
         self.pre_submit_gate_blocks.append({
             "timestamp": str(ts_now or 0),
             "intent_id": intent.id,
@@ -706,7 +826,7 @@ class WaveOverlayStrategy(Strategy):
         self._daily_decision_reason = f"LOCAL_ENTRY_DENIED:{reason}"
         self._domain.on_parent_terminal(intent.id)
 
-    def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None) -> None:
+    def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None, entry_override_qty: Decimal | None = None) -> None:
         if self.config.deposit_runtime is not None and self._deposit.latched:
             self._domain.on_parent_terminal(intent.id)
             return
@@ -741,7 +861,9 @@ class WaveOverlayStrategy(Strategy):
         side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
         executable_price = Decimal(str(ask_price if side == OrderSide.BUY else bid_price))
         quantity = intent.quantity
-        if intent.action == "BTC_ENTRY" and intent.requested_notional is not None:
+        if intent.action == "BTC_ENTRY" and entry_override_qty is not None:
+            quantity = entry_override_qty
+        elif intent.action == "BTC_ENTRY" and intent.requested_notional is not None:
             quantity = float(Decimal(str(intent.requested_notional)) / executable_price)
         if intent.action == "SOL_ADD" and intent.requested_notional is not None:
             quantity = float(Decimal(str(min(intent.requested_notional, self._candidate.max_parent_notional))) / executable_price)
@@ -863,7 +985,9 @@ class WaveOverlayStrategy(Strategy):
             return
         if intent.action == "BTC_ENTRY":
             self._daily_decision_reason = "NATIVE_SUBMISSION_PENDING_ACK"
-            if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting:
+            if intent.id in self._selected_entry_audits:
+                self.entry_sizing_audit.append(self._selected_entry_audits.pop(intent.id))
+            elif self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting:
                 episode = self._domain.episode
                 assert episode is not None
                 self.entry_sizing_audit.append({
@@ -884,6 +1008,8 @@ class WaveOverlayStrategy(Strategy):
             intent, _, _ = queued
             if predicate(intent):
                 self._queued_intent_ready_ns.pop(intent.id, None)
+                self._deferred_selective_entries.pop(intent.id, None)
+                self._selected_entry_audits.pop(intent.id, None)
                 self._domain.on_parent_terminal(intent.id)
             else:
                 retained.append(queued)

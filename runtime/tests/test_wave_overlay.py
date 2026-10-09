@@ -402,3 +402,43 @@ def test_zero_wave_variant_earns_omitted_rights_only_from_real_partial_entry() -
     assert episode.sol_right_fraction[2] == 0.5
     assert episode.btc_open_qty == 0
     assert episode.h == 50.0
+
+
+def test_deferred_zero_rights_follow_real_partial_entry_and_fallback_stays_live() -> None:
+    source = bars(1)
+    candidate = Candidate(btc_tp_fractions_initial_qty=(0.2125, 0.2125, 0.575), sol_overlay_enabled=False)
+    state = WaveOverlayState(candidate)
+    state.set_execution_lots(btc=Decimal("0.001"), sol=Decimal("0.01"))
+    episode = Episode(
+        "partial", 1, 100, 1.0, wave_levels=(0.0, 0.0, 0.03),
+        btc_reference_qty=1.0, btc_net_planned_qty=0.576,
+        btc_reference_target_lots={0: 212, 1: 212, 2: 576},
+        btc_omitted_zero_levels={0, 1},
+        btc_deferred_right_reference_price=Decimal("100"),
+    )
+    state.episode = episode
+    entry = state._intent(episode, "BTC_ENTRY", 1, None)
+    state.on_fill(entry.id, 0.288, 99, source[0].close_time)
+    assert episode.sol_rights == set()
+    assert episode.sol_right_fraction == {0: 0.5, 1: 0.5}
+    state.on_fill(entry.id, 0.288, 99, source[0].close_time)
+    state.on_parent_terminal(entry.id)
+    assert episode.sol_rights == set()
+    assert episode.sol_right_fraction == {0: 1.0, 1: 1.0}
+    assert episode.btc_tp_filled_qty == {}
+    assert [(target.level, target.quantity) for target in state.plan_confirmed_btc_targets()] == [(2, 0.576)]
+
+    original = source[0]
+    at_profit = DailyBar(original.open_time, original.close_time, original.available_at, original.btc_open, 101, original.sol_close)
+    fallback = WaveOverlayState(candidate)
+    fallback.set_execution_lots(btc=Decimal("0.001"), sol=Decimal("0.01"))
+    fallback.episode = Episode(
+        "fallback", 1, 100, 1.0, btc_initial_qty=1, btc_open_qty=1,
+        btc_entry_vwap=100, h=100, wave_levels=(0.0, 0.0, 0.03),
+        btc_zero_resting_suppressed={0, 1},
+    )
+    assert [target.level for target in fallback.plan_confirmed_btc_targets()] == [2]
+    decisions = fallback.decide([at_profit], [Features(0, 1, 1.0, 0, 0, 1.0, 0)], 0, 100)
+    assert [(intent.action, intent.level, intent.limit_price) for intent in decisions] == [
+        ("BTC_REDUCE", 0, None), ("BTC_REDUCE", 1, None),
+    ]

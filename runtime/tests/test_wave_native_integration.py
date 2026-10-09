@@ -1659,3 +1659,87 @@ def test_research_mm_guard_accepts_fresh_async_exposure_marks_and_rejects_stale_
     strategy._latest_marks[SOL_PERP.id] = VenueMark(SOL_PERP.id, Decimal("100"), 200, 200)
     strategy._check_mark_first_liquidation(110)
     assert not strategy._liquidating  # Future mark is not causal.
+
+@pytest.mark.parametrize(
+    ("q1", "tail", "expected_branch", "expected_qty", "activated"),
+    [
+        ("99.0", ("99.0",), "PASSIVE_NET_ZERO_LEVELS", Decimal("0.576"), False),
+        ("99.0", ("99.0", "100.0"), "PASSIVE_NET_ZERO_LEVELS", Decimal("0.576"), True),
+        ("101.0", ("101.0",), "MARKETABLE_FULL_ENTRY_FALLBACK", Decimal("1"), False),
+    ],
+)
+def test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights(
+    q1, tail, expected_branch, expected_qty, activated,
+) -> None:
+    class DeferredProbe(WaveOverlayStrategy):
+        def _tier_allows_increase(self, instrument_id, side, quantity, ts_now):
+            return True
+
+    candidate = Candidate(btc_tp_fractions_initial_qty=(0.2125, 0.2125, 0.575))
+    strategy = DeferredProbe(probe_config().__replace__(
+        candidate=candidate, research_v0_execution_repairs=True,
+        research_v0_zero_tp_netting=False, research_v0_deferred_selective_zero_tp=True,
+        max_mark_age_ns=30,
+    ))
+    episode = Episode("deferred", 1, 10_000, 1.0, wave_levels=(0.0, 0.0, 0.03))
+    strategy._domain.episode = episode
+    intent = Intent("deferred-entry", episode.id, "BTC_ENTRY", None, 1, requested_notional=100)
+    episode.pending[intent.id] = intent
+    strategy._queued_intents.append((intent, None, 0))
+    strategy._queued_intent_ready_ns[intent.id] = 0
+    engine = native_engine(strategy)
+    prices = ("100.0", q1, *tail)
+    engine.add_data([quote(BTC_PERP.id, price, price, ts) for ts, price in enumerate(prices, start=1)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        fills = [row for row in strategy.fill_audit if row["action"] == "BTC_ENTRY"]
+        assert len(fills) == 1, (strategy.pre_submit_gate_blocks, strategy._daily_decision_reason, strategy._deferred_selective_entries, strategy._queued_intents, episode.pending)
+        assert Decimal(fills[0]["qty"]) == expected_qty
+        audit = strategy.entry_sizing_audit[0]
+        assert audit["q0_ns"] == "1" and audit["q1_ns"] == "2"
+        assert audit["branch"] == expected_branch
+        assert Decimal(audit["reference_btc_qty"]) == Decimal("1")
+        assert Decimal(audit["confirmed_native_entry_qty"]) == expected_qty
+        assert episode.h == pytest.approx(float(expected_qty * Decimal(q1)) if expected_branch == "MARKETABLE_FULL_ENTRY_FALLBACK" else float(Decimal(q1)))
+        assert not episode.btc_tp_filled_qty
+        if expected_branch == "PASSIVE_NET_ZERO_LEVELS":
+            assert episode.btc_omitted_zero_levels == {0, 1}
+            assert episode.sol_right_fraction == {0: 1.0, 1: 1.0}
+            assert episode.sol_rights == ({0, 1} if activated else set())
+            assert len(audit["sol_right_activations"]) == (1 if activated else 0)
+            assert episode.btc_tp_target_lots == {0: 0, 1: 0, 2: 576}
+        else:
+            assert episode.btc_omitted_zero_levels == set()
+            assert episode.btc_zero_resting_suppressed == {0, 1}
+            assert episode.sol_rights == set()
+            assert episode.btc_tp_target_lots == {0: 212, 1: 212, 2: 576}
+            assert {int(row["level"]) for row in strategy._order_audit.values() if row["action"] == "BTC_REDUCE"} == {2}
+    finally:
+        engine.dispose()
+
+
+def test_deferred_selective_entry_expires_without_fresh_q1() -> None:
+    class DeferredProbe(WaveOverlayStrategy):
+        def _tier_allows_increase(self, instrument_id, side, quantity, ts_now):
+            return True
+
+    strategy = DeferredProbe(probe_config().__replace__(
+        research_v0_execution_repairs=True, research_v0_zero_tp_netting=False,
+        research_v0_deferred_selective_zero_tp=True, max_mark_age_ns=30,
+    ))
+    episode = Episode("stale", 1, 10_000, 1.0, wave_levels=(0.0, 0.0, 0.03))
+    strategy._domain.episode = episode
+    intent = Intent("stale-entry", episode.id, "BTC_ENTRY", None, 1, requested_notional=100)
+    episode.pending[intent.id] = intent
+    strategy._queued_intents.append((intent, None, 0))
+    strategy._queued_intent_ready_ns[intent.id] = 0
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.0", 1), quote(BTC_PERP.id, "99.0", "99.0", 40)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        assert not [row for row in strategy.fill_audit if row["action"] == "BTC_ENTRY"]
+        assert strategy._domain.episode is None
+        assert strategy._deferred_selective_entries == {}
+        assert strategy._queued_intents == []
+    finally:
+        engine.dispose()

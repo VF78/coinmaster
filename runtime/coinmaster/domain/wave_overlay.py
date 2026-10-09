@@ -227,6 +227,8 @@ class Episode:
     btc_net_planned_qty: float = 0.0
     btc_reference_target_lots: dict[int, int] = field(default_factory=dict)
     btc_omitted_zero_levels: set[int] = field(default_factory=set)
+    btc_zero_resting_suppressed: set[int] = field(default_factory=set)
+    btc_deferred_right_reference_price: Decimal | None = None
     h: float | None = None
     wave_levels: tuple[float, float, float] | None = None
     btc_tps: set[int] = field(default_factory=set)
@@ -465,9 +467,11 @@ class WaveOverlayState:
                 # A real net entry earns omitted-level SOL rights directly.
                 fraction = min(1.0, episode.btc_initial_qty / episode.btc_net_planned_qty)
                 for level in episode.btc_omitted_zero_levels:
-                    episode.sol_rights.add(level)
+                    if episode.btc_deferred_right_reference_price is None:
+                        episode.sol_rights.add(level)
                     episode.sol_right_fraction[level] = fraction
-                    episode.sol_right_decision_index[level] = self._decision_index if decision_index is None else decision_index
+                    if episode.btc_deferred_right_reference_price is None or level not in episode.sol_rights:
+                        episode.sol_right_decision_index[level] = self._decision_index if decision_index is None else decision_index
         elif intent.action == "BTC_REDUCE" and intent.level is not None:
             episode.sol_rights.add(intent.level)
             if self.btc_lot_step is not None:
@@ -543,7 +547,7 @@ class WaveOverlayState:
             return []
         intents: list[Intent] = []
         for level, threshold in enumerate(episode.wave_levels or ()):
-            if level in episode.btc_tps or level in episode.btc_filled_tps:
+            if level in episode.btc_tps or level in episode.btc_filled_tps or level in episode.btc_zero_resting_suppressed:
                 continue
             target = episode.btc_entry_vwap * (1 + episode.side * threshold)
             quantity = self._btc_target_leaves(episode, level)
