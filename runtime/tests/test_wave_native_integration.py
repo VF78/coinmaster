@@ -1430,10 +1430,16 @@ def test_fee_floor_v1_does_not_delay_native_emergency_close_below_break_even() -
 
 
 @pytest.mark.parametrize(
-    ("levels", "expected_net"),
-    [((0.0, 0.0, 0.03), Decimal("0.576")), ((0.0, 0.02, 0.03), Decimal("0.788")), ((0.0, 0.0, 0.0), Decimal("0"))],
+    ("levels", "expected_net", "zero_tp_netting"),
+    [
+        ((0.0, 0.0, 0.03), Decimal("0.576"), True),
+        ((0.0, 0.02, 0.03), Decimal("0.788"), True),
+        ((0.0, 0.0, 0.0), Decimal("0"), True),
+        ((0.0, 0.0, 0.03), Decimal("1"), False),
+        ((0.0, 0.0, 0.0), Decimal("1"), False),
+    ],
 )
-def test_zero_wave_research_variant_native_entry_size_and_no_synthetic_tp(levels, expected_net) -> None:
+def test_zero_wave_research_variant_native_entry_size_and_no_synthetic_tp(levels, expected_net, zero_tp_netting) -> None:
     class ZeroWaveProbe(WaveOverlayStrategy):
         def __init__(self, config):
             super().__init__(config)
@@ -1460,9 +1466,12 @@ def test_zero_wave_research_variant_native_entry_size_and_no_synthetic_tp(levels
             return True
 
     candidate = Candidate(btc_tp_fractions_initial_qty=(0.2125, 0.2125, 0.575))
-    strategy = ZeroWaveProbe(probe_config().__replace__(candidate=candidate, research_v0_execution_repairs=True))
+    strategy = ZeroWaveProbe(probe_config().__replace__(
+        candidate=candidate, research_v0_execution_repairs=True, research_v0_zero_tp_netting=zero_tp_netting,
+    ))
     engine = native_engine(strategy)
-    engine.add_data([quote(BTC_PERP.id, "100.0", "100.0", ts) for ts in (1, 2, 3)], sort=False)
+    ticks = (1, 2, 3) if zero_tp_netting else (1, 2)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.0", ts) for ts in ticks], sort=False)
     engine.sort_data(); engine.run()
     try:
         fills = [row for row in strategy.fill_audit if row["action"] == "BTC_ENTRY"]
@@ -1473,6 +1482,18 @@ def test_zero_wave_research_variant_native_entry_size_and_no_synthetic_tp(levels
             return
         assert len(fills) == 1
         assert Decimal(fills[0]["qty"]) == expected_net
+        episode = strategy._domain.episode
+        assert episode is not None
+        if not zero_tp_netting:
+            assert strategy.entry_sizing_audit == []
+            assert episode.btc_omitted_zero_levels == set()
+            assert episode.btc_net_planned_qty == 0
+            assert episode.btc_initial_qty == pytest.approx(1.0)
+            assert episode.btc_tp_target_lots == {0: 212, 1: 212, 2: 576}
+            assert episode.sol_rights == set()
+            assert strategy.same_day_rights == []
+            assert episode.btc_tp_filled_qty == {}
+            return
         audit = strategy.entry_sizing_audit[0]
         assert Decimal(audit["reference_btc_qty"]) == Decimal("1")
         assert Decimal(audit["net_submitted_btc_qty"]) == expected_net

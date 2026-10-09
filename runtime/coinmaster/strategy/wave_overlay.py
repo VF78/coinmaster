@@ -48,6 +48,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     candidate: Candidate = Candidate()
     tp_fee_floor_v1: bool = False
     research_v0_execution_repairs: bool = False
+    research_v0_zero_tp_netting: bool = True
     max_gross_to_active: Decimal = Decimal("50")
     # A verified history is supplied before native start.  It is feature state
     # only: it never replays old decisions or orders.
@@ -757,7 +758,7 @@ class WaveOverlayStrategy(Strategy):
             quantity = min(quantity, float(position.quantity))
         step = instrument.size_increment.as_decimal()
         rounded = (Decimal(str(quantity)) // step) * step
-        if self.config.research_v0_execution_repairs and intent.action == "BTC_ENTRY" and rounded > 0:
+        if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting and intent.action == "BTC_ENTRY" and rounded > 0:
             episode = self._domain.episode
             if episode is None or episode.wave_levels is None:
                 raise ValueError("BTC_ENTRY_WAVE_LEVELS_MISSING")
@@ -779,7 +780,7 @@ class WaveOverlayStrategy(Strategy):
         if rounded <= 0:
             # A sub-step request is a reject, never an implicit size increase.
             if intent.action == "BTC_ENTRY":
-                self._deny_local_entry(intent, "ZERO_TP_NO_NET_ENTRY" if self.config.research_v0_execution_repairs else "QUANTITY_BELOW_STEP", ts_now)
+                self._deny_local_entry(intent, "ZERO_TP_NO_NET_ENTRY" if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting else "QUANTITY_BELOW_STEP", ts_now)
             else:
                 self._domain.on_parent_terminal(intent.id)
             return
@@ -862,7 +863,7 @@ class WaveOverlayStrategy(Strategy):
             return
         if intent.action == "BTC_ENTRY":
             self._daily_decision_reason = "NATIVE_SUBMISSION_PENDING_ACK"
-            if self.config.research_v0_execution_repairs:
+            if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting:
                 episode = self._domain.episode
                 assert episode is not None
                 self.entry_sizing_audit.append({
