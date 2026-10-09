@@ -1264,7 +1264,7 @@ class WaveOverlayStrategy(Strategy):
             positions = {item.instrument_id: item for item in self.cache.positions_open()}
             required = Decimal("0")
             gross = Decimal("0")
-            current_required = Decimal("0")
+            current_required: dict[InstrumentId, Decimal] = {}
             marks = {}
             for current_id in (self.config.btc_id, self.config.sol_id):
                 position = positions.get(current_id)
@@ -1281,7 +1281,7 @@ class WaveOverlayStrategy(Strategy):
                     marks[current_id] = mark
                 if self.config.research_v0_selective_lifecycle_repairs and current:
                     initial, maintenance, mark = policy.margin_for(current_id, current, ts_now)
-                    current_required += initial + maintenance
+                    current_required[current_id] = initial + maintenance
                     marks[current_id] = mark
             account = self.cache.account_for_venue(self.config.btc_id.venue)
             instrument = self.cache.instrument(self.config.btc_id)
@@ -1296,9 +1296,28 @@ class WaveOverlayStrategy(Strategy):
                     if current_instrument is None:
                         return False
                     active += position.unrealized_pnl(current_instrument.make_price(marks[current_id])).as_decimal()
-                # Native free already deducts existing locks and open-order
-                # reservations. Require only additional policy IM+MM.
-                required = max(Decimal("0"), required - current_required)
+                # Only actual native reservations can offset fresh policy
+                # requirements. CustomData may update policy before native
+                # locks reprice, so current policy cost is never itself credit.
+                opening_ids = {
+                    order.instrument_id for order in self.cache.orders_open()
+                    if not getattr(order, "is_reduce_only", False)
+                }
+                reserved_credit = Decimal("0")
+                for current_id, policy_current in current_required.items():
+                    native_reserved = Decimal("0")
+                    for accessor in ("margin_maint", "margin_init"):
+                        # Opening/unknown order IM stays reserved. Confirmed
+                        # reduce-only targets cannot increase native exposure.
+                        if accessor == "margin_init" and current_id in opening_ids:
+                            continue
+                        value = getattr(account, accessor)(current_id)
+                        if value is not None:
+                            if value.currency != instrument.quote_currency:
+                                raise ValueError("NATIVE_MARGIN_CURRENCY_MISMATCH")
+                            native_reserved += value.as_decimal()
+                    reserved_credit += min(policy_current, native_reserved)
+                required = max(Decimal("0"), required - reserved_credit)
             else:
                 active = Decimal(str(self._active_marked(self._current_btc_mark, self._current_sol_mark))) if self._current_btc_mark and self._current_sol_mark else Decimal("0")
             return account is not None and instrument is not None and active > 0 and gross <= active * self.config.max_gross_to_active and required <= self._free_margin_for_increase(account)

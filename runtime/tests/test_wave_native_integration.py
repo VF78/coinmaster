@@ -1956,7 +1956,7 @@ def test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks():
                 self.submitted = True
                 self.submit_order(self.order_factory.market(instrument_id=BTC_PERP.id, order_side=OrderSide.BUY, quantity=BTC_PERP.make_qty(Decimal("60")), time_in_force=TimeInForce.IOC))
     policy = TierMarginPolicy((), {BTC_PERP.id: Decimal("1"), SOL_PERP.id: Decimal("1")}, 30)
-    strategy = Probe(lifecycle_config(margin_policy=policy, max_gross_to_active=Decimal("1")))
+    strategy = Probe(lifecycle_config(margin_policy=policy, max_gross_to_active=Decimal("0.73")))
     engine = native_engine(strategy)
     engine.add_data([quote(BTC_PERP.id, "100.0", "100.0", 1)])
     engine.run()
@@ -1969,9 +1969,9 @@ def test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks():
         total = account.balance_total(BTC_PERP.quote_currency).as_decimal()
         free = account.balance_free(BTC_PERP.quote_currency).as_decimal()
         assert total > free and free < 4000
-        policy.update_mark(SimpleNamespace(instrument_id=BTC_PERP.id, price=Decimal("200"), ts_event=100))
+        policy.update_mark(SimpleNamespace(instrument_id=BTC_PERP.id, price=Decimal("110"), ts_event=100))
         policy.update_mark(SimpleNamespace(instrument_id=SOL_PERP.id, price=Decimal("100"), ts_event=100))
-        # Stale daily 100 marks would lose the native 6000 unrealized profit.
+        # Stale daily 100 marks would lose the native 600 unrealized profit.
         strategy._current_btc_mark = SimpleNamespace(price=Decimal("100"))
         strategy._current_sol_mark = SimpleNamespace(price=Decimal("100"))
         assert strategy._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("10"), 110)
@@ -2071,5 +2071,99 @@ def test_lifecycle_native_immediate_q1_fill_then_reference_touch_earns_once():
         activation = strategy.entry_sizing_audit[0]["sol_right_activations"]
         assert len(activation) == 1 and activation[0]["timestamp_ns"] == str(session + 3)
         assert activation[0]["confirmed_native_entry_qty"] == str(episode.btc_initial_qty)
+    finally:
+        engine.dispose()
+
+
+
+def test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis():
+    from nautilus_trader.model.identifiers import ClientId
+    from coinmaster.research.native_fixture import BybitTierMarginModule
+    leverage = ((BTC_PERP.id, Decimal("1")), (SOL_PERP.id, Decimal("1")))
+    module = BybitTierMarginModule((), leverage, 30)
+    policy = TierMarginPolicy((), dict(leverage), 30)
+
+    class Probe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.opened = False
+            self.snapshot = None
+        def on_quote_tick(self, tick):
+            if tick.instrument_id == BTC_PERP.id and not self.opened:
+                self.opened = True
+                self.submit_order(self.order_factory.market(instrument_id=BTC_PERP.id, order_side=OrderSide.BUY, quantity=BTC_PERP.make_qty(Decimal("60")), time_in_force=TimeInForce.IOC))
+            elif tick.instrument_id == SOL_PERP.id:
+                account = self.cache.account_for_venue(SIM)
+                self.snapshot = {
+                    "total": str(account.balance_total(BTC_PERP.quote_currency)),
+                    "free": str(account.balance_free(BTC_PERP.quote_currency)),
+                    "native_im": str(account.total_margin_init(BTC_PERP.quote_currency)),
+                    "native_mm": str(account.total_margin_maint(BTC_PERP.quote_currency)),
+                    "current_policy": str(sum(policy.margin_for(BTC_PERP.id, Decimal("60"), tick.ts_event)[:2])),
+                    "prospective_sol_policy": str(sum(policy.margin_for(SOL_PERP.id, Decimal("50"), tick.ts_event)[:2])),
+                    "allows_sol50": self._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("50"), tick.ts_event),
+                    "allows_sol10": self._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("10"), tick.ts_event),
+                }
+    strategy = Probe(lifecycle_config(margin_policy=policy))
+    engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(10000, BTC_PERP.quote_currency)], base_currency=BTC_PERP.quote_currency, default_leverage=Decimal("1"), modules=[module])
+    engine.add_instrument(BTC_PERP); engine.add_instrument(SOL_PERP); engine.add_strategy(strategy)
+    engine.add_data([venue_mark(BTC_PERP.id, Decimal("100"), 1), venue_mark(SOL_PERP.id, Decimal("100"), 1)], client_id=ClientId("TEST_MARKS"), sort=False)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.0", 2), quote(SOL_PERP.id, "100.00", "100.00", 3)], sort=False)
+    engine.sort_data(); engine.run()
+    try:
+        print("CANONICAL_NATIVE_MARGIN_PROOF", strategy.snapshot)
+        assert module.observed == []
+        assert module._dynamic_marks == {}
+        assert Decimal(strategy.snapshot["native_im"].split()[0]) == 0
+        assert Decimal(strategy.snapshot["native_mm"].split()[0]) == 0
+        assert strategy.snapshot["free"] == strategy.snapshot["total"]
+        # Fresh total policy requirement exceeds free; no nonexistent lock
+        # may offset it. The pre-correction proof admitted this exact order.
+        assert not strategy.snapshot["allows_sol50"]
+        assert strategy.snapshot["allows_sol10"]
+    finally:
+        engine.dispose()
+
+
+
+@pytest.mark.parametrize("reduce_only", [False, True])
+def test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit(reduce_only):
+    class Probe(WaveOverlayStrategy):
+        def __init__(self, config):
+            super().__init__(config)
+            self.opened = False
+            self.resting = False
+        def on_quote_tick(self, tick):
+            if not self.opened:
+                self.opened = True
+                self.submit_order(self.order_factory.market(instrument_id=BTC_PERP.id, order_side=OrderSide.BUY, quantity=BTC_PERP.make_qty(Decimal("60")), time_in_force=TimeInForce.IOC))
+            elif not self.resting:
+                self.resting = True
+                self.submit_order(self.order_factory.limit(
+                    instrument_id=BTC_PERP.id, order_side=OrderSide.SELL if reduce_only else OrderSide.BUY,
+                    quantity=BTC_PERP.make_qty(Decimal("10")),
+                    price=BTC_PERP.make_price(Decimal("130") if reduce_only else Decimal("90")),
+                    time_in_force=TimeInForce.GTC, post_only=True, reduce_only=reduce_only,
+                ))
+    policy = TierMarginPolicy((), {BTC_PERP.id: Decimal("1"), SOL_PERP.id: Decimal("1")}, 30)
+    strategy = Probe(lifecycle_config(margin_policy=policy))
+    engine = native_engine(strategy)
+    engine.add_data([quote(BTC_PERP.id, "100.0", "100.0", 1), quote(BTC_PERP.id, "100.0", "100.0", 2)])
+    engine.run()
+    try:
+        orders = strategy.cache.orders_open()
+        assert len(orders) == 1 and orders[0].is_reduce_only is reduce_only
+        account = strategy.cache.account_for_venue(SIM)
+        account.update_margin_init(BTC_PERP.id, Money(6000, BTC_PERP.quote_currency))
+        account.update_margin_maint(BTC_PERP.id, Money(500, BTC_PERP.quote_currency))
+        before = account.balance_free(BTC_PERP.quote_currency).as_decimal()
+        policy.update_mark(SimpleNamespace(instrument_id=BTC_PERP.id, price=Decimal("100"), ts_event=100))
+        policy.update_mark(SimpleNamespace(instrument_id=SOL_PERP.id, price=Decimal("100"), ts_event=100))
+        allowed = strategy._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("10"), 110)
+        print("NATIVE_ORDER_MARGIN_PROOF", {"reduce_only": reduce_only, "free": str(before), "allows_sol10": allowed})
+        assert allowed is reduce_only
+        assert account.balance_free(BTC_PERP.quote_currency).as_decimal() == before
+        assert not strategy._tier_allows_increase(SOL_PERP.id, OrderSide.BUY, Decimal("50"), 110)
     finally:
         engine.dispose()
