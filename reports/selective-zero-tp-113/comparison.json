@@ -1,0 +1,226 @@
+{
+  "cash_drawdowns": {
+    "original_V0": {
+      "amount": "486285.39972804",
+      "peak": "836314.77045433",
+      "peak_timestamp": "2025-04-10 00:00:00+00:00",
+      "percent": "58.14621682023675046664766803",
+      "trough": "350029.37072629",
+      "trough_timestamp": "2025-06-08 00:00:00+00:00"
+    },
+    "selective_deferred_entry": {
+      "amount": "815218.05174145",
+      "peak": "1305038.56356201",
+      "peak_timestamp": "2025-04-10 00:00:00+00:00",
+      "percent": "62.46697028755765436234831221",
+      "trough": "489820.51182056",
+      "trough_timestamp": "2025-06-08 00:00:00+00:00"
+    },
+    "technical_control": {
+      "amount": "486285.39972804",
+      "peak": "836314.77045433",
+      "peak_timestamp": "2025-04-10 00:00:00+00:00",
+      "percent": "58.14621682023675046664766803",
+      "trough": "350029.37072629",
+      "trough_timestamp": "2025-06-08 00:00:00+00:00"
+    }
+  },
+  "code_commit": "a9c4d62f92e881ec6274fa34f8d2887bf9ff159c",
+  "deltas": {
+    "fee_saving_vs_technical": "23648.66459948",
+    "pre_fee_cash_result_delta_including_unisolated_funding": "170382.14784648",
+    "relative_total_gain_percent": "5.461024573186645488726201359",
+    "selective_minus_original_V0_total": "360550.31868996",
+    "selective_minus_technical_total": "194030.81244596"
+  },
+  "entry_selection": {
+    "activated_omitted_rights": 76,
+    "full_fallback_entries": 60,
+    "fully_filled_native_entries": 105,
+    "identity_note": "The other2 old maker targets belong to old Sep10 2025 entry, replaced by Sep5 entry with2 omitted zero allocations. No hindsight selection.",
+    "old_maker_identity_overlap": 74,
+    "omitted_zero_allocations": 76,
+    "passive_net_entries": 45,
+    "q0_to_q1_delay_minutes": 1
+  },
+  "full_marked_equity_drawdown": "UNKNOWN_PARTIAL_NATIVE_MONTHLY_CHECKPOINTS",
+  "implementation_commit": "ee8cdc398c5489889a5148eca9ab20ded6aa20f8",
+  "independent_repeat": "NOT_RUN_ONE_RUN_BUDGET",
+  "input_validation": {
+    "all_source_rows_processed": true,
+    "config_delta_from_technical": {
+      "research_v0_deferred_selective_zero_tp": true
+    },
+    "data_hash_match": true,
+    "funding_behavior_changed": false,
+    "policy_hash_match": true
+  },
+  "limitations": [
+    "NOT_FAITHFUL_DIAGNOSTIC, ranking_eligible=false: realBybit1m closes feed synthetic quotes; no historical BBO/L2/slippage/liquidity proof.",
+    "q1 delay changes VWAP, positiveTP levels, exposure and later path; gain is not solely fee savings.",
+    "Gross-reference/beta SOL formula/multipliers preserved; actual realized SOL sizing/timing can differ.",
+    "Signed funding UNKNOWN; unchanged funding model/separate journal.",
+    "Existing runtime DD helper is uncorrected; max cash-relative percentage recomputed here; full marked-equity DD unknown.",
+    "One fresh native run, no independent repeat or global optimum claim."
+  ],
+  "native_order_statuses": {
+    "CANCELED": 245,
+    "FILLED": 341
+  },
+  "new_full_runs": 1,
+  "pilot_preservation": {
+    "installed_release": "81e6318646b51280497806a1c0492591654b5fe6",
+    "no_deploy_restart_seal_config_orders": true,
+    "pid": 2009732,
+    "restarts": 0
+  },
+  "reproduction_command": "cd runtime && .venv/bin/python -m coinmaster.research.native_baseline --data-root var/data --research-v0-execution-repairs --research-v0-deferred-selective-zero-tp --control-report var/data/runs/tp-fee-floor-113/v0/v0.json --artifact-dir <FRESH_ABSOLUTE_OUTPUT_DIRECTORY>",
+  "selection": "Highest terminal TOTAL among these evaluated variants; no global optimum or deployment",
+  "status": "ONE_SELECTIVE_NATIVE_RESEARCH_RUN_COMPLETE",
+  "tests": {
+    "narrow_review": "Two_P1_fixed_and_rechecked",
+    "relevant_passed": 89
+  },
+  "variants": [
+    {
+      "active": "3386491.65211338",
+      "all_fills": 618,
+      "btc_entries": 105,
+      "btc_fills": 389,
+      "btc_reductions": 233,
+      "cash_max_relative_dd_percent": "58.14621682023675046664766803",
+      "config_hash": "2a3af9d447d906c4aa862b095c1a419d55a55727f4df5007bfdbeca90a25661f",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "funding_audit_rows": 1305,
+      "liquidations": 0,
+      "maker_fees": "61222.28338266",
+      "maker_notional": "306111416.9133",
+      "orders": 672,
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "reserve": "0",
+      "roi_percent": "33764.916521133800",
+      "signed_funding": "UNKNOWN",
+      "sol_add_fills": 114,
+      "sol_fills": 229,
+      "source_hashes": {},
+      "source_report_path": "runtime/var/data/runs/tp-fee-floor-113/v0/v0.json",
+      "source_report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+      "taker_fees": "559851.44711176",
+      "taker_notional": "1017911722.0209",
+      "terminal_open_positions": 0,
+      "total": "3386491.65211338",
+      "total_fees": "621073.73049442",
+      "variant": "original_V0"
+    },
+    {
+      "active": "3553011.15835738",
+      "all_fills": 618,
+      "btc_entries": 105,
+      "btc_fills": 389,
+      "btc_reductions": 233,
+      "cash_max_relative_dd_percent": "58.14621682023675046664766803",
+      "config_hash": "8c8e68dc8eebd0a94f368a2fc256797a05cda39525f34c3e028add620b9e2383",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "funding_audit_rows": 1287,
+      "liquidations": 0,
+      "maker_fees": "61222.28338266",
+      "maker_notional": "306111416.9133",
+      "orders": 672,
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "reserve": "0",
+      "roi_percent": "35430.111583573800",
+      "signed_funding": "UNKNOWN",
+      "sol_add_fills": 114,
+      "sol_fills": 229,
+      "source_hashes": {
+        "native_baseline": "e413474d4e008be9583f066eb3fad4d745f2c087d261677c383983bdf9bf6934",
+        "wave_domain": "a396b5d219051240b10ea7890fe9b291584657c373f2baa0bec6dd274dc1bb0e",
+        "wave_strategy": "1daf6e6fb8c2a9db564e255adcccdd27ae70a1a575132cb016f41823e078d694"
+      },
+      "source_report_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-technical-only-20261009/result/v0-three-repairs-zero-tp-original.json",
+      "source_report_sha256": "27581a9d82bb958b47509e5fe40256215fdd3465d62302a86a4fbd7d46af1ae2",
+      "taker_fees": "559943.92411176",
+      "taker_notional": "1018079862.0209",
+      "terminal_open_positions": 0,
+      "total": "3553011.15835738",
+      "total_fees": "621166.20749442",
+      "variant": "technical_control"
+    },
+    {
+      "active": "3747041.97080334",
+      "all_fills": 532,
+      "btc_entries": 105,
+      "btc_fills": 311,
+      "btc_reductions": 155,
+      "cash_max_relative_dd_percent": "62.46697028755765436234831221",
+      "config_hash": "98a9d959823b91e60e0e0f27f1e5ec044e85b4ad455eee8532c3105f8c6cdd8f",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "funding_audit_rows": 1321,
+      "liquidations": 0,
+      "maker_fees": "43410.53666080",
+      "maker_notional": "217052683.3040",
+      "orders": 586,
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "reserve": "0",
+      "roi_percent": "37370.419708033400",
+      "signed_funding": "UNKNOWN",
+      "sol_add_fills": 110,
+      "sol_fills": 221,
+      "source_hashes": {
+        "native_baseline": "ed38f4af5b317ce0347164ff3c35381d2e568d00e2e700a32c38e08ffc5dd4f5",
+        "wave_domain": "547d8493df3872d35b6b2d5392934960b97516f76e051ac99722afedaa0a6bfb",
+        "wave_strategy": "ab7d3ce3dd8b25a982b1f3c9d831b00d9245acbac399c1d8bf1daa3ebd6ba9e4"
+      },
+      "source_report_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-zero-tp-20261009/result/v0-deferred-selective-zero-tp.json",
+      "source_report_sha256": "0ccad5771c23e380ba6115cc7bc8530b47ee39ec6fe99c08595640e17b9faee1",
+      "taker_fees": "554107.00623414",
+      "taker_notional": "1007467284.0616",
+      "terminal_open_positions": 0,
+      "total": "3747041.97080334",
+      "total_fees": "597517.54289494",
+      "variant": "selective_deferred_entry"
+    }
+  ],
+  "zero_target_execution": {
+    "all_selective_fallbacks_positive_gross": true,
+    "arithmetic_limit": "Actual fill gross/pro-rata entry fees exclude funding and are not authoritative native closed-position PnL.",
+    "missing_two_cause": "Both full-entry short plans retained their volume. q1 entry VWAP is lower than q0 daily close (58185->58171.4;101455.2->101444.8); daily zero threshold is no longer reached at that retained daily close. Positive TP2 executes later; residual native quantity closes by REGIME next day. This is changed entry timing/VWAP, not omitted fallback exposure.",
+    "missing_two_fallbacks": [
+      {
+        "allocated_entry_plus_exit_fees": "17.27668305",
+        "entry_ns": "1726531200000000000",
+        "entry_px": "58185",
+        "entry_qty": "1.271",
+        "exit_ns": "1726531320000000000",
+        "exit_px": "58156.3",
+        "exit_qty": "0.27",
+        "gross_fill_arithmetic": "7.749",
+        "level": 0,
+        "liquidity_side": "TAKER",
+        "net_after_allocated_fees": "-9.52768305",
+        "q0_ns": "1726531200000000000"
+      },
+      {
+        "allocated_entry_plus_exit_fees": "742.68223211",
+        "entry_ns": "1749168000000000000",
+        "entry_px": "101455.2",
+        "entry_qty": "31.338",
+        "exit_ns": "1749168780000000000",
+        "exit_px": "101327.7",
+        "exit_qty": "6.659",
+        "gross_fill_arithmetic": "849.0225",
+        "level": 0,
+        "liquidity_side": "TAKER",
+        "net_after_allocated_fees": "106.34026789",
+        "q0_ns": "1749168000000000000"
+      }
+    ],
+    "preserved_fallback_identities": 73,
+    "selective_fallback_allocated_fees": "121346.6292616551778474602560",
+    "selective_fallback_gross_arithmetic": "1832623.0560",
+    "selective_zero_maker": 0,
+    "selective_zero_taker": 73,
+    "technical_zero_maker": 76,
+    "technical_zero_taker": 75
+  }
+}
