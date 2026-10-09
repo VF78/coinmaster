@@ -1,0 +1,353 @@
+{
+  "checks": {
+    "all_native_orders_terminal": true,
+    "all_net_entries_native_confirmed": true,
+    "control_tp_fill_levels": {
+      "0": 89,
+      "1": 90,
+      "2": 54
+    },
+    "entry_count": 105,
+    "first_divergence": {
+      "action": "BTC_ENTRY",
+      "control_qty": "1.375",
+      "same_price": true,
+      "utc": "2024-09-02T00:00:00+00:00",
+      "variant_net_confirmed_qty": "0.791",
+      "variant_reference_qty": "1.375"
+    },
+    "hard_timeout_control_fills": 6,
+    "hard_timeout_variant_fills": 12,
+    "hard_timeout_variant_first_utc": "2026-06-01T00:00:00+00:00",
+    "hard_timeout_variant_intervals_ns": [
+      60000000000
+    ],
+    "hard_timeout_variant_last_utc": "2026-06-01T00:11:00+00:00",
+    "matching_entry_timestamps": 105,
+    "no_btc_tp_fill_for_omitted_level": true,
+    "omission_patterns": {
+      "0": 31,
+      "0,1": 74
+    },
+    "sol_add_control_only": 15,
+    "sol_add_fills_matching_time_level": 99,
+    "sol_add_variant_only": 18,
+    "variant_tp_fill_levels": {
+      "1": 28,
+      "2": 54
+    }
+  },
+  "control": {
+    "actions": {
+      "BTC_ENTRY": {
+        "fees": "354628.68847360",
+        "fills": 105,
+        "notional": "644779433.5881"
+      },
+      "BTC_REDUCE": {
+        "fees": "118421.64010505",
+        "fills": 233,
+        "notional": "410110247.3175"
+      },
+      "FORCED_CLOSE": {
+        "fees": "134201.84711124",
+        "fills": 157,
+        "notional": "244003358.3840"
+      },
+      "SOL_ADD": {
+        "fees": "10304.6458064",
+        "fills": 114,
+        "notional": "18735719.648"
+      },
+      "SOL_EXIT": {
+        "fees": "286.65725",
+        "fills": 7,
+        "notional": "521195.00"
+      },
+      "SOL_HALF_EXIT": {
+        "fees": "54.41425",
+        "fills": 1,
+        "notional": "98935.00"
+      },
+      "TERMINAL_CLOSE": {
+        "fees": "3175.83749813",
+        "fills": 1,
+        "notional": "5774249.9966"
+      }
+    },
+    "cash_drawdown_amount": "1453798.83794607",
+    "cash_drawdown_percent": "0.3063185969312693002712883379",
+    "fee_attribution": {
+      "audited_total": "621073.73049442",
+      "maker": {
+        "count": 155,
+        "fees": "61222.28338266",
+        "notional": "306111416.9133"
+      },
+      "native_total": "621073.73049442",
+      "reconciled": true,
+      "taker": {
+        "count": 463,
+        "fees": "559851.44711176",
+        "notional": "1017911722.0209"
+      },
+      "unknown": {
+        "count": 0,
+        "fees": "0",
+        "notional": "0"
+      }
+    },
+    "fills": 618,
+    "funding_count": 1305,
+    "funding_signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "interval_cash_terminal_total": "3365526.27741151",
+    "liquidations": 0,
+    "marked_equity_drawdown": "UNKNOWN_PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY",
+    "native_fees": "621073.73049442",
+    "order_statuses": {
+      "CANCELED": 253,
+      "FILLED": 419
+    },
+    "orders": 672,
+    "reserve": "0",
+    "roi": "337.649165211338",
+    "roi_percent": "33764.916521133800",
+    "terminal_active": "3386491.65211338",
+    "terminal_open_positions": 0,
+    "terminal_status": "FLAT",
+    "terminal_total": "3386491.65211338",
+    "turnover": "1324023138.9342"
+  },
+  "delta_variant_minus_control": {
+    "fills": -145,
+    "funding_postings": -15,
+    "native_fees": "-231781.56205337",
+    "orders": -145,
+    "roi": "-55.451652821281",
+    "terminal_total": "-554516.52821281",
+    "total_relative_percent": "-16.37436572054614189688381326"
+  },
+  "first_sol_add_explanation": {
+    "actual_sol_qty_ratio": "1.128322861285645239246012566",
+    "beta_entry": "1.1799500345645464",
+    "btc_entry_control_native_cash_before": "9888.45507033",
+    "btc_entry_price": "60790",
+    "btc_entry_utc": "2024-10-02T00:00:00+00:00",
+    "btc_entry_variant_native_cash_before": "11175.01298980",
+    "cause": "Earlier native equity path changed later original-reference BTC quantity; same beta, signal, SOL multiplier, and lot rounding.",
+    "control_btc_after_zero_tps": "0.740",
+    "control_h_from_reference": "66253.60202548777373862779099",
+    "control_preceding_btc_entry_qty": "1.286",
+    "control_reference_btc_notional": "78175.940",
+    "control_sol_notional_budget": "115943.8035446036040425986342",
+    "control_sol_qty": "827.6",
+    "current_signed_z": "1.6618193609656404",
+    "episode_index": 6,
+    "equity_note": "Cash and prior realized path differ before this episode; active marked equity used for BTC reference sizing is not directly exported at this timestamp.",
+    "level_0_sol_multiplier": "1.75",
+    "native_margin_gate_blocks_at_sol_add": 0,
+    "reference_qty_ratio": "1.128304821150855365474339036",
+    "same_sol_price": true,
+    "sol_entry_price": "140.09",
+    "sol_order_fill_vs_budget": "Both SOL orders filled the rounded 0.1-lot quantities implied by 1.75*h/140.09; no cap or margin denial at this event.",
+    "utc": "2024-10-03T00:00:00+00:00",
+    "variant_btc_after_omitted_zero_tps": "0.835",
+    "variant_h_from_reference": "74754.25858396793133339729761",
+    "variant_preceding_btc_real_net_qty": "0.835",
+    "variant_preceding_btc_reference_qty": "1.451",
+    "variant_reference_btc_notional": "88206.290",
+    "variant_sol_notional_budget": "130819.9525219438798334452708",
+    "variant_sol_qty": "933.8"
+  },
+  "inputs": {
+    "candidate": {
+      "beta_days": 270,
+      "btc_close_trail_fraction": 0.03,
+      "btc_notional_multiplier": 7.875,
+      "btc_tp_fractions_initial_qty": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "ema_period": 34,
+      "episode_fixed_beta": false,
+      "max_parent_notional": 10000000.0,
+      "relative_days": 65,
+      "sol_entry_z": [
+        1.25,
+        2.5,
+        3.75
+      ],
+      "sol_exit_all_z": 0.125,
+      "sol_exit_half_z": 0.375,
+      "sol_late_entry_after_tp": true,
+      "sol_max_holding_days": 14,
+      "sol_overlay_enabled": true,
+      "sol_size_multipliers_h": [
+        1.75,
+        2.625,
+        3.5
+      ],
+      "sol_timeout_preempts_add": false,
+      "wave_history_days": 730,
+      "wave_min_count": 8,
+      "wave_quantiles": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "z_history_days": 180
+    },
+    "control_artifact_hashes": {
+      "fills": "becbacef0c531396c6f4cc4cacd78d63d74212ef317714eba2e51d911e832a4e",
+      "orders": "12b17db79728032749b8cd6bfc231d5dc85e217ef8f47c38e21496f73ad8ce23"
+    },
+    "control_code_hash": "deb7de5227d3a72a30bc082a317e98603143d8afd9b657f31d2afe5196984168",
+    "control_config_hash": "2a3af9d447d906c4aa862b095c1a419d55a55727f4df5007bfdbeca90a25661f",
+    "control_report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+    "funding_policy": "UNCHANGED",
+    "interval": {
+      "end_exclusive": "2026-09-01T00:00:00+00:00",
+      "initial_active_seed": "10000",
+      "start": "2024-09-01T00:00:00+00:00"
+    },
+    "only_config_delta": {
+      "research_v0_execution_repairs": true
+    },
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "raw_manifest_sha256": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "same_data_hash": true,
+    "same_fields": {
+      "candidate": true,
+      "execution_policy": true,
+      "fixed_base_fee_policy": true,
+      "run_interval": true
+    },
+    "same_policy_hash": true,
+    "variant_artifact_hashes": {
+      "fills": "79e326a67f121eb28b77395d5603aa9eb206b08a84630787abdee61adaa1d88c",
+      "orders": "ae1f8ef82b9c8e5b2868196292a5219d32de4d9faea8b3ca2a9ad813eeb1a1e7"
+    },
+    "variant_config_hash": "75078f6798a4947e47407c3fbb7fdf883c242f57f570719513d0b0083f0506b0",
+    "variant_report_sha256": "7323f53535b53668c66231f87ce6ab537eb9effde0ea06d6c4d57c492a569366",
+    "variant_source_hashes": {
+      "native_baseline": "dd59c1d561694973cca49960c49f238c58d3d2ab2aea57be16ec210867562822",
+      "wave_domain": "a396b5d219051240b10ea7890fe9b291584657c373f2baa0bec6dd274dc1bb0e",
+      "wave_strategy": "34b11a241e3600aa6d9e5556ebf11f2dce0f6bb46ad08e497be6de54577faedb"
+    },
+    "warmup": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only"
+  },
+  "limitations": [
+    "Diagnostic 1-minute close proxy without L2/slippage/fee-history proof.",
+    "Funding signed cash delta UNKNOWN; posting count differs with exposure, model unchanged.",
+    "Combined four-fix run cannot attribute aggregate PnL to one fix without ablation.",
+    "Terminal domain pending intents are not exported; native flat and terminal orders do not prove domain pending empty.",
+    "No margin breach occurred; asynchronous mark guard only has focused test evidence.",
+    "h/SOL rights lack exported time series; reference sizing audit and code support the stated formula, realized SOL sizes can change with equity path.",
+    "Cash drawdown is not marked-equity drawdown; marked checkpoints are partial.",
+    "Not a live ROI forecast."
+  ],
+  "provenance": {
+    "control_report_path": "runtime/var/data/runs/tp-fee-floor-113/v0/v0.json",
+    "control_reused": "Previously independently reproduced native control; no new baseline run",
+    "data_root": "runtime/var/data",
+    "execution_isolation": "Separate research user/process, read-only source/data, private output, no trader secrets; never run in installed trader process",
+    "implementation_commit": "2f5710910e6596adda60c563298a5a574ca40771",
+    "new_full_runs": 1,
+    "reproduction_command": "cd runtime && .venv/bin/python -m coinmaster.research.native_baseline --research-v0-execution-repairs --data-root var/data --control-report var/data/runs/tp-fee-floor-113/v0/v0.json --artifact-dir <NEW_NONEXISTENT_OUTPUT_DIRECTORY>",
+    "variant_report_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-execution-v2-20261009/result/v0-execution-repairs.json"
+  },
+  "ranking_eligible": false,
+  "status": "READ_ONLY_NATIVE_COMPARISON",
+  "variant": {
+    "actions": {
+      "BTC_ENTRY": {
+        "fees": "219705.26700304",
+        "fills": 105,
+        "notional": "399464121.8235"
+      },
+      "BTC_REDUCE": {
+        "fees": "40613.36588611",
+        "fills": 82,
+        "notional": "202347382.9281"
+      },
+      "FORCED_CLOSE": {
+        "fees": "114415.39923467",
+        "fills": 154,
+        "notional": "208027998.6084"
+      },
+      "SOL_ADD": {
+        "fees": "10728.3158191",
+        "fills": 117,
+        "notional": "19506028.762"
+      },
+      "SOL_EXIT": {
+        "fees": "599.56875",
+        "fills": 13,
+        "notional": "1090125.00"
+      },
+      "SOL_HALF_EXIT": {
+        "fees": "54.41425",
+        "fills": 1,
+        "notional": "98935.00"
+      },
+      "TERMINAL_CLOSE": {
+        "fees": "3175.83749813",
+        "fills": 1,
+        "notional": "5774249.9966"
+      }
+    },
+    "cash_drawdown_amount": "1054939.47961519",
+    "cash_drawdown_percent": "0.2776261216163298816393292597",
+    "fee_attribution": {
+      "audited_total": "389292.16844105",
+      "maker": {
+        "count": 79,
+        "fees": "40387.25412820",
+        "notional": "201936270.6410"
+      },
+      "native_total": "389292.16844105",
+      "reconciled": true,
+      "taker": {
+        "count": 394,
+        "fees": "348904.91431285",
+        "notional": "634372571.4776"
+      },
+      "unknown": {
+        "count": 0,
+        "fees": "0",
+        "notional": "0"
+      }
+    },
+    "fills": 473,
+    "funding_count": 1290,
+    "funding_signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "interval_cash_terminal_total": "2811009.74919870",
+    "liquidations": 0,
+    "marked_equity_drawdown": "UNKNOWN_PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY",
+    "native_fees": "389292.16844105",
+    "order_statuses": {
+      "CANCELED": 258,
+      "FILLED": 269
+    },
+    "orders": 527,
+    "reserve": "0",
+    "roi": "282.197512390057",
+    "roi_percent": "28219.751239005700",
+    "terminal_active": "2831975.12390057",
+    "terminal_open_positions": 0,
+    "terminal_status": "FLAT",
+    "terminal_total": "2831975.12390057",
+    "turnover": "836308842.1186"
+  },
+  "verification": {
+    "final_guard_regression": "PASSED after final latest-seen paired-backfill guard",
+    "focused_suite_passed": 86,
+    "full_native": "EXIT_0, all 1051200 minute rows per source",
+    "independent_review": "Artifact overwrite and feature-only backfill findings addressed",
+    "no_live_claim": true,
+    "pilot": "Active PID2009732/NRestarts0, no restart/deploy/config/seal/order change"
+  }
+}
