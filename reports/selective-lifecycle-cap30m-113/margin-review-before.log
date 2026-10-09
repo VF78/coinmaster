@@ -1,0 +1,10 @@
+CANONICAL_NATIVE_MARGIN_PROOF {'total': '9994.00000000 USDT', 'free': '9994.00000000 USDT', 'native_im': '0.00000000 USDT', 'native_mm': '0.00000000 USDT', 'current_policy': '6019.8000', 'prospective_sol_policy': '5025.000', 'allows_sol50': True}
+.
+=============================== warnings summary ===============================
+tests/test_wave_native_integration.py::test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis
+tests/test_wave_native_integration.py::test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:2112: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 49 deselected, 2 warnings in 2.67s

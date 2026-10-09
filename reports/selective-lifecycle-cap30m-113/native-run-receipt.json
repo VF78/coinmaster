@@ -1,0 +1,90 @@
+{
+  "source_commit": "d7d18cdc22c0ebb918f202eb9168fcc3159ed9e1",
+  "unit": "cm113-selective-lifecycle-cap30m-20261009.service",
+  "invocation_id": "5d283092f2aa4783b1e92d4406fc8b7d",
+  "pid": 3217025,
+  "started_utc": "2026-10-09T17:49:24Z",
+  "finished_utc": "2026-10-09T17:58:26Z",
+  "exit_code": 0,
+  "systemd_memory_peak": "477.8M",
+  "systemd_swap_peak": "0B",
+  "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-lifecycle-cap30m-20261009/result-run/v0-selective-lifecycle-cap30m.json",
+  "artifact_sha256": "8e4a387260688729563258b84befe34b0bef2479f2fbe369c621fab9cc3281e2",
+  "pre_engine_failed_invocation_preserved": true,
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "terminal_total": "5146884.95718200",
+  "terminal_open_positions": 0,
+  "terminal_lifecycle": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "17322435.8902"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "native_fees": "1144089.96955003",
+  "fills": 502,
+  "liquidation_count": 0,
+  "fee_attribution": {
+    "audited_total": "1144089.96955003",
+    "maker": {
+      "count": 78,
+      "fees": "79613.24346386",
+      "notional": "398066217.3193"
+    },
+    "native_total": "1144089.96955003",
+    "reconciled": true,
+    "taker": {
+      "count": 424,
+      "fees": "1064476.72608617",
+      "notional": "1935412229.2471"
+    },
+    "unknown": {
+      "count": 0,
+      "fees": "0",
+      "notional": "0"
+    }
+  },
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "control_report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+  "source_hashes": {
+    "native_baseline": "a690ac08d39218a23a813304d33abe2013460e2f8d6623042a951be20b8c7a92",
+    "wave_domain": "547d8493df3872d35b6b2d5392934960b97516f76e051ac99722afedaa0a6bfb",
+    "wave_strategy": "4b195ca92eb6c5d366ad3a6dd592462136c3aaf23992b8b657a430f1e967380d"
+  },
+  "streaming": {
+    "batch_count": 105,
+    "cursor_batch_rows": 10080,
+    "event_count": 4206260,
+    "expected_rows_per_source": 1051200,
+    "max_batch_events": 40334,
+    "max_batch_minutes": 10080,
+    "peak_rss_bytes": 615419904,
+    "processed_rows_per_source": 1051200
+  },
+  "funding": {
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 900,
+      "SOLUSDT-PERP.P1SIM": 421
+    },
+    "count": 1321,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+  },
+  "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-lifecycle-cap30m-20261009/result-run/v0-selective-lifecycle-cap30m-funding.sqlite",
+  "status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "ranking_eligible": false,
+  "post_boundary_settlement": {
+    "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+    "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+    "fill_count": 1,
+    "interval_cash_total_before_settlement": "5081850.17292161",
+    "settled_cash_total": "5146884.95718200"
+  }
+}

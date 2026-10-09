@@ -1,0 +1,21 @@
+.....                                                                    [100%]
+=============================== warnings summary ===============================
+tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_HALF_EXIT-1000]
+tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_HALF_EXIT-1000]
+tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_EXIT-2000]
+tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_EXIT-2000]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1849: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_native_zero_fallback_retries_profitable_leaves_not_adverse_quotes
+tests/test_wave_native_integration.py::test_lifecycle_native_zero_fallback_retries_profitable_leaves_not_adverse_quotes
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1898: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks, sort=False); engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks
+tests/test_wave_native_integration.py::test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1962: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+5 passed, 40 deselected, 8 warnings in 2.49s

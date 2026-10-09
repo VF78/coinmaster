@@ -1,0 +1,30 @@
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+.CANONICAL_NATIVE_MARGIN_PROOF {'total': '9994.00000000 USDT', 'free': '9994.00000000 USDT', 'native_im': '0.00000000 USDT', 'native_mm': '0.00000000 USDT', 'current_policy': '6019.8000', 'prospective_sol_policy': '5025.000', 'allows_sol50': False, 'allows_sol10': True}
+.[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+NATIVE_ORDER_MARGIN_PROOF {'reduce_only': False, 'free': '3494', 'allows_sol10': False}
+.[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+NATIVE_ORDER_MARGIN_PROOF {'reduce_only': True, 'free': '3494', 'allows_sol10': True}
+.
+=============================== warnings summary ===============================
+tests/test_wave_native_integration.py::test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks
+tests/test_wave_native_integration.py::test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1962: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis
+tests/test_wave_native_integration.py::test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:2113: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[False]
+tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[False]
+tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[True]
+tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:2153: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 48 deselected, 8 warnings in 2.53s

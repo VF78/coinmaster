@@ -1,0 +1,195 @@
+{
+  "first_economic_divergence_timestamp": "2024-12-23T00:03:00+00:00",
+  "receipt": {
+    "source_commit": "d7d18cdc22c0ebb918f202eb9168fcc3159ed9e1",
+    "config_differences": {
+      "candidate.max_parent_notional": {
+        "control": 10000000.0,
+        "variant": 30000000.0
+      },
+      "research_v0_selective_lifecycle_repairs": {
+        "control": "MISSING",
+        "variant": true
+      }
+    },
+    "unchanged": {
+      "data_hash": true,
+      "policy_hash": true,
+      "policy": true,
+      "warmup": true,
+      "interval": true,
+      "run_interval": true
+    },
+    "source_hashes": {
+      "control": {
+        "native_baseline": "ed38f4af5b317ce0347164ff3c35381d2e568d00e2e700a32c38e08ffc5dd4f5",
+        "wave_domain": "547d8493df3872d35b6b2d5392934960b97516f76e051ac99722afedaa0a6bfb",
+        "wave_strategy": "ab7d3ce3dd8b25a982b1f3c9d831b00d9245acbac399c1d8bf1daa3ebd6ba9e4"
+      },
+      "variant": {
+        "native_baseline": "a690ac08d39218a23a813304d33abe2013460e2f8d6623042a951be20b8c7a92",
+        "wave_domain": "547d8493df3872d35b6b2d5392934960b97516f76e051ac99722afedaa0a6bfb",
+        "wave_strategy": "4b195ca92eb6c5d366ad3a6dd592462136c3aaf23992b8b657a430f1e967380d"
+      }
+    },
+    "control_archive_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+    "control_archive_terminal_total": "3386491.65211338",
+    "results": {
+      "selective_control": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-zero-tp-20261009/result/v0-deferred-selective-zero-tp.json",
+        "sha256": "0ccad5771c23e380ba6115cc7bc8530b47ee39ec6fe99c08595640e17b9faee1",
+        "code_hash": "ed38f4af5b317ce0347164ff3c35381d2e568d00e2e700a32c38e08ffc5dd4f5",
+        "config_hash": "98a9d959823b91e60e0e0f27f1e5ec044e85b4ad455eee8532c3105f8c6cdd8f",
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "execution_artifacts": {
+          "fills": {
+            "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-zero-tp-20261009/result/v0-deferred-selective-zero-tp-fills.csv",
+            "rows": 532,
+            "sha256": "42d93ce9b27c10e256d35eb8da5fe5e433829928805eb4a3cca4f092360ce74c"
+          },
+          "orders": {
+            "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-zero-tp-20261009/result/v0-deferred-selective-zero-tp-orders.csv",
+            "rows": 586,
+            "sha256": "c645863aee97430148f5f8af24f1422b6d6e826843752063f9b1bb8a77a516e4"
+          }
+        }
+      },
+      "selective_lifecycle_cap30m": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-lifecycle-cap30m-20261009/result-run/v0-selective-lifecycle-cap30m.json",
+        "sha256": "8e4a387260688729563258b84befe34b0bef2479f2fbe369c621fab9cc3281e2",
+        "code_hash": "a690ac08d39218a23a813304d33abe2013460e2f8d6623042a951be20b8c7a92",
+        "config_hash": "1ed6f6770b83445971ff075e7c160f0d90c88bb20a77d8d7b2fa768c37f0ce23",
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "execution_artifacts": {
+          "fills": {
+            "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-lifecycle-cap30m-20261009/result-run/v0-selective-lifecycle-cap30m-fills.csv",
+            "rows": 502,
+            "sha256": "d4179c0e490f2b4e3656450fa16062930848941c31c0e3cce41ce042cbf41640"
+          },
+          "orders": {
+            "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-lifecycle-cap30m-20261009/result-run/v0-selective-lifecycle-cap30m-orders.csv",
+            "rows": 556,
+            "sha256": "9208b9962c0711d957b945944b47a9c1a3daf5f0b88c6df3b1a0aa69121690eb"
+          }
+        }
+      }
+    }
+  },
+  "stages": [
+    {
+      "stage": "selective_control",
+      "params": "selective_lifecycle_repairs=False;max_parent_notional=10000000.0",
+      "ACTIVE": "3747041.97080334",
+      "RESERVE": "0",
+      "TOTAL": "3747041.97080334",
+      "ROI_percent": "37370.419708033400",
+      "correct_native_cash_max_DD_percent": "62.46697028755765436234831221",
+      "liquidations": 0,
+      "native_fees": "597517.54289494",
+      "maker_fees": "43410.53666080",
+      "taker_fees": "554107.00623414",
+      "maker_notional": "217052683.3040",
+      "taker_notional": "1007467284.0616",
+      "funding_count": 1321,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "fills": 532,
+      "BTC_fills": 311,
+      "SOL_fills": 221,
+      "BTC_entries": 105,
+      "SOL_adds": 110,
+      "gateblocks": 2,
+      "terminal_positions": 0,
+      "terminal_lifecycle": "FLAT",
+      "ranking_eligible": false,
+      "result_sha256": "0ccad5771c23e380ba6115cc7bc8530b47ee39ec6fe99c08595640e17b9faee1"
+    },
+    {
+      "stage": "selective_lifecycle_cap30m",
+      "params": "selective_lifecycle_repairs=True;max_parent_notional=30000000.0",
+      "ACTIVE": "5146884.95718200",
+      "RESERVE": "0",
+      "TOTAL": "5146884.95718200",
+      "ROI_percent": "51368.8495718200",
+      "correct_native_cash_max_DD_percent": "62.30510948213748904270403494",
+      "liquidations": 0,
+      "native_fees": "1144089.96955003",
+      "maker_fees": "79613.24346386",
+      "taker_fees": "1064476.72608617",
+      "maker_notional": "398066217.3193",
+      "taker_notional": "1935412229.2471",
+      "funding_count": 1321,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "fills": 502,
+      "BTC_fills": 311,
+      "SOL_fills": 191,
+      "BTC_entries": 105,
+      "SOL_adds": 95,
+      "gateblocks": 17,
+      "terminal_positions": 0,
+      "terminal_lifecycle": "FLAT",
+      "ranking_eligible": false,
+      "result_sha256": "8e4a387260688729563258b84befe34b0bef2479f2fbe369c621fab9cc3281e2"
+    }
+  ],
+  "delta": {
+    "TOTAL": "1399842.98637866",
+    "relative_TOTAL_percent": "37.35861506986385054282580520",
+    "native_fees": "546572.42665509",
+    "fills": -30
+  },
+  "first_fill_divergence": {
+    "index": 56,
+    "control": {
+      "accept_ns": "1734912180000000000",
+      "action": "SOL_ADD",
+      "commission": "99.066",
+      "commission_currency": "USDT",
+      "fill_ns": "1734912180000000000",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "1",
+      "native_liquidity_side": "TAKER",
+      "notional": "180120.00",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "180.12",
+      "qty": "1000",
+      "reason": "SOL_ADD",
+      "submit_ns": "1734912180000000000",
+      "venue": "P1SIM",
+      "side": "BUY",
+      "id": "O-20241223-000300-001-000-63"
+    },
+    "variant": {
+      "accept_ns": "1734912120000000000",
+      "action": "BTC_REDUCE",
+      "commission": "96.87607268",
+      "commission_currency": "USDT",
+      "fill_ns": "1734979920000000000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "level": "2",
+      "native_liquidity_side": "MAKER",
+      "notional": "484380.3634",
+      "order_type": "2",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "true",
+      "px": "92775.4",
+      "qty": "5.221",
+      "reason": "BTC_TP3",
+      "submit_ns": "1734912120000000000",
+      "venue": "P1SIM",
+      "side": "BUY",
+      "id": "O-20241223-000200-001-000-61"
+    }
+  },
+  "first_cash_series_divergence": {
+    "timestamp": "2024-12-23 00:03:00+00:00",
+    "control_total": "109204.41327345",
+    "variant_total": "109303.47927345",
+    "delta": "99.06600000",
+    "method": "Last native cash event at each timestamp, carry previous balance at missing timestamps."
+  },
+  "causal_limit": "Combined lifecycle+cap treatment; no ablation, so no cap-only/fix-specific aggregate gain attribution."
+}
