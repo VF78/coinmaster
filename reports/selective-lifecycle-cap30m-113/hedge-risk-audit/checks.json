@@ -1,0 +1,22 @@
+{
+  "prequote_rows": 1051200,
+  "trace_rows": 3153600,
+  "state_counts_reconcile": true,
+  "TOP3_all_sample_native_equity_changes_exact": true,
+  "existing_fill_gross_minus_fees_reconcile_per_asset_episode": true,
+  "initial_fee_reserve_identity_exact": true,
+  "current_held_entry_fee_allocation_nonnegative": true,
+  "cases": 13,
+  "historical_engines": 0,
+  "additional_existing_trace_passes": 1,
+  "trading_source_changes": 0,
+  "beta_current_entry_sigma": "UNKNOWN_not_archived",
+  "first_winner_cross_and_adversity_before_first_BE": "UNKNOWN_not_separately_captured",
+  "native_followup_TOTAL_DD": "UNKNOWN_not_run",
+  "JSON_CSV_LF_checks": true,
+  "trace_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-minute-extrema-risk-20261010/result/minute-native-risk.csv.gz",
+  "trace_SHA256_reused_prior_immutable_receipt": "37fc8c1e85bbc9e434e33bef3d3e3ae31e48b6502f3cc7332552941f269c71d1",
+  "control_result_SHA256": "669d5c951f0dbc88216385890b143b5bfd5bc8eeeff88cf968dd68346474c703",
+  "original_economic_source_result_SHA256": "8e4a387260688729563258b84befe34b0bef2479f2fbe369c621fab9cc3281e2",
+  "analysis_log_SHA256": "e19d4f66276f6cb687288b9b4680d8aefd4294ee3652b935a51e00e83d86bc3d"
+}

@@ -1,0 +1,1288 @@
+{
+  "counts": {
+    "BTC_ONLY": 374672,
+    "SOL_ONLY": 132863,
+    "BOTH": 69107,
+    "FLAT": 474558
+  },
+  "paired_native_sides": {
+    "3_2": 23905,
+    "2_3": 45202
+  },
+  "gross_ratio_BTC_over_SOL": {
+    "min": "0.3847112630528056656209633720",
+    "p10": "1.760714063881536256646546130",
+    "median": "16.91699866659120493519723810",
+    "p90": "47.67893933800350262697022767",
+    "max": "228.9486137994480220791168353"
+  },
+  "global_TOP3_state_account_changes": [
+    {
+      "rank": 1,
+      "peak_ns": 1726273140000000000,
+      "trough_ns": 1727970240000000000,
+      "peak_equity": "13807.88227209",
+      "trough_equity": "4233.3625743",
+      "drawdown_amount": "9574.51969779",
+      "started": true,
+      "done": true,
+      "bucket_equity_changes": {
+        "BTC_ONLY": "-4243.67853278",
+        "TRANSITION_BTC_ONLY_TO_FLAT": "-163.62313494",
+        "FLAT": "0E-8",
+        "TRANSITION_FLAT_TO_BTC_ONLY": "-94.72967123",
+        "TRANSITION_BTC_ONLY_TO_BOTH": "103.52397805",
+        "BOTH": "-5176.01233689"
+      },
+      "bucket_sample_intervals": {
+        "BTC_ONLY": 28031,
+        "TRANSITION_BTC_ONLY_TO_FLAT": 3,
+        "FLAT": 53988,
+        "TRANSITION_FLAT_TO_BTC_ONLY": 3,
+        "TRANSITION_BTC_ONLY_TO_BOTH": 1,
+        "BOTH": 2829
+      }
+    },
+    {
+      "rank": 2,
+      "peak_ns": 1744333200000000000,
+      "trough_ns": 1749223020000000000,
+      "peak_equity": "1128523.01443742",
+      "trough_equity": "386647.30040135",
+      "drawdown_amount": "741875.71403607",
+      "started": true,
+      "done": true,
+      "bucket_equity_changes": {
+        "BOTH": "-513118.77166479",
+        "TRANSITION_BOTH_TO_FLAT": "-6151.89295582",
+        "FLAT": "0E-8",
+        "TRANSITION_FLAT_TO_BTC_ONLY": "-18942.03560244",
+        "BTC_ONLY": "-191789.35027325",
+        "TRANSITION_BTC_ONLY_TO_FLAT": "-20824.60475551",
+        "TRANSITION_FLAT_TO_SOL_ONLY": "-416.13200000",
+        "SOL_ONLY": "9602.43051571",
+        "TRANSITION_SOL_ONLY_TO_FLAT": "-678.97899997",
+        "TRANSITION_BTC_ONLY_TO_BOTH": "443.62170000"
+      },
+      "bucket_sample_intervals": {
+        "BOTH": 60291,
+        "TRANSITION_BOTH_TO_FLAT": 2,
+        "FLAT": 57709,
+        "TRANSITION_FLAT_TO_BTC_ONLY": 8,
+        "BTC_ONLY": 48712,
+        "TRANSITION_BTC_ONLY_TO_FLAT": 6,
+        "TRANSITION_FLAT_TO_SOL_ONLY": 2,
+        "SOL_ONLY": 77758,
+        "TRANSITION_SOL_ONLY_TO_FLAT": 2,
+        "TRANSITION_BTC_ONLY_TO_BOTH": 1
+      }
+    },
+    {
+      "rank": 3,
+      "peak_ns": 1761168540000000000,
+      "trough_ns": 1764340080000000000,
+      "peak_equity": "2061026.88612517",
+      "trough_equity": "891671.5967892",
+      "drawdown_amount": "1169355.28933597",
+      "started": true,
+      "done": true,
+      "bucket_equity_changes": {
+        "BTC_ONLY": "-1130213.45443473",
+        "TRANSITION_BTC_ONLY_TO_FLAT": "-17683.56445056",
+        "FLAT": "0E-8",
+        "TRANSITION_FLAT_TO_BTC_ONLY": "-21458.27045068"
+      },
+      "bucket_sample_intervals": {
+        "BTC_ONLY": 50224,
+        "TRANSITION_BTC_ONLY_TO_FLAT": 4,
+        "FLAT": 108345,
+        "TRANSITION_FLAT_TO_BTC_ONLY": 4
+      }
+    }
+  ],
+  "overlap_min_native_equity": {
+    "utc": "2024-10-03T15:44:00+00:00",
+    "timestamp_ns": 1727970240000000000,
+    "native_equity": "4233.3625743",
+    "combined_active_episode_realized_plus_held_ex_funding": "-4970.891887710000000000000000",
+    "BTC_to_SOL_gross_ratio": "0.4048556080859671816157798132",
+    "legs": {
+      "BTC": {
+        "episode": "6",
+        "side": "3",
+        "qty": "0.686",
+        "notional": "41303.9914",
+        "held_native_pnl": "412.4918000000000000000000000",
+        "realized_minus_incurred_fees": "-22.94406576",
+        "cumulative_pnl": "389.5477342400000000000000000",
+        "prospective_mark_exit_fee_reserve": "22.717195270",
+        "fee_reserved_pnl": "366.8305389700000000000000000",
+        "conditional_adverse_fee_reserved_pnl": "353.041938970"
+      },
+      "SOL": {
+        "episode": "1",
+        "side": "2",
+        "qty": "766.1",
+        "notional": "102021.537",
+        "held_native_pnl": "-5301.412000000000000000000000",
+        "realized_minus_incurred_fees": "-59.02762195",
+        "cumulative_pnl": "-5360.439621950000000000000000",
+        "prospective_mark_exit_fee_reserve": "56.11184535",
+        "fee_reserved_pnl": "-5416.551467300000000000000000",
+        "conditional_adverse_fee_reserved_pnl": "-5424.21246730"
+      }
+    }
+  },
+  "worst_overlap_active_episode_contribution": [
+    {
+      "utc": "2025-04-12T20:44:00+00:00",
+      "timestamp_ns": 1744490640000000000,
+      "native_equity": "723491.14911564",
+      "combined_active_episode_realized_plus_held_ex_funding": "-373554.5270649800000000000000",
+      "BTC_to_SOL_gross_ratio": "40.04641645207118289217885449",
+      "legs": {
+        "BTC": {
+          "episode": "35",
+          "side": "3",
+          "qty": "62.377",
+          "notional": "5355807.7363",
+          "held_native_pnl": "-392719.3543000000000000000000",
+          "realized_minus_incurred_fees": "-2023.30326498",
+          "cumulative_pnl": "-394742.6575649800000000000000",
+          "prospective_mark_exit_fee_reserve": "2945.694254965",
+          "fee_reserved_pnl": "-397688.3518199450000000000000",
+          "conditional_adverse_fee_reserved_pnl": "-398274.695619945"
+        },
+        "SOL": {
+          "episode": "13",
+          "side": "2",
+          "qty": "1000.0",
+          "notional": "133740.000",
+          "held_native_pnl": "21250.00000000000000000000000",
+          "realized_minus_incurred_fees": "-61.8695",
+          "cumulative_pnl": "21188.13050000000000000000000",
+          "prospective_mark_exit_fee_reserve": "73.55700000",
+          "fee_reserved_pnl": "21114.57350000000000000000000",
+          "conditional_adverse_fee_reserved_pnl": "20994.57350000"
+        }
+      }
+    },
+    {
+      "utc": "2025-04-12T20:42:00+00:00",
+      "timestamp_ns": 1744490520000000000,
+      "native_equity": "725868.11411564",
+      "combined_active_episode_realized_plus_held_ex_funding": "-371177.5620649800000000000000",
+      "BTC_to_SOL_gross_ratio": "40.15453282799489910734378516",
+      "legs": {
+        "BTC": {
+          "episode": "35",
+          "side": "3",
+          "qty": "62.377",
+          "notional": "5353000.7713",
+          "held_native_pnl": "-389912.3893000000000000000000",
+          "realized_minus_incurred_fees": "-2023.30326498",
+          "cumulative_pnl": "-391935.6925649800000000000000",
+          "prospective_mark_exit_fee_reserve": "2944.150424215",
+          "fee_reserved_pnl": "-394879.8429891950000000000000",
+          "conditional_adverse_fee_reserved_pnl": "-395896.588089195"
+        },
+        "SOL": {
+          "episode": "13",
+          "side": "2",
+          "qty": "1000.0",
+          "notional": "133310.000",
+          "held_native_pnl": "20820",
+          "realized_minus_incurred_fees": "-61.8695",
+          "cumulative_pnl": "20758.1305",
+          "prospective_mark_exit_fee_reserve": "73.32050000",
+          "fee_reserved_pnl": "20684.81000000",
+          "conditional_adverse_fee_reserved_pnl": "19924.81000000"
+        }
+      }
+    },
+    {
+      "utc": "2025-04-12T20:45:00+00:00",
+      "timestamp_ns": 1744490700000000000,
+      "native_equity": "729223.10341564",
+      "combined_active_episode_realized_plus_held_ex_funding": "-367822.5727649800000000000000",
+      "BTC_to_SOL_gross_ratio": "40.07660335605663345568956476",
+      "legs": {
+        "BTC": {
+          "episode": "35",
+          "side": "3",
+          "qty": "62.377",
+          "notional": "5349825.7820",
+          "held_native_pnl": "-386737.4000000000000000000000",
+          "realized_minus_incurred_fees": "-2023.30326498",
+          "cumulative_pnl": "-388760.7032649800000000000000",
+          "prospective_mark_exit_fee_reserve": "2942.404180100",
+          "fee_reserved_pnl": "-391703.1074450800000000000000",
+          "conditional_adverse_fee_reserved_pnl": "-398770.421545080"
+        },
+        "SOL": {
+          "episode": "13",
+          "side": "2",
+          "qty": "1000.0",
+          "notional": "133490.000",
+          "held_native_pnl": "21000.00000000000000000000000",
+          "realized_minus_incurred_fees": "-61.8695",
+          "cumulative_pnl": "20938.13050000000000000000000",
+          "prospective_mark_exit_fee_reserve": "73.41950000",
+          "fee_reserved_pnl": "20864.71100000000000000000000",
+          "conditional_adverse_fee_reserved_pnl": "20774.71100000"
+        }
+      }
+    }
+  ],
+  "profit_split_cases": [
+    {
+      "pair": "6_1",
+      "trigger_ns": 1727913780000000000,
+      "trigger_utc": "2024-10-03T00:03:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 1,
+      "winner_episode": 6,
+      "initial_snapshot": {
+        "utc": "2024-10-03T00:03:00+00:00",
+        "timestamp_ns": 1727913780000000000,
+        "native_equity": "9275.34071119",
+        "combined_active_episode_realized_plus_held_ex_funding": "79.01231229000000000000000000",
+        "BTC_to_SOL_gross_ratio": "0.3873754202153252569757958637",
+        "legs": {
+          "BTC": {
+            "episode": "6",
+            "side": "3",
+            "qty": "0.686",
+            "notional": "41586.1432",
+            "held_native_pnl": "130.3400000000000000000000000",
+            "realized_minus_incurred_fees": "-22.94406576",
+            "cumulative_pnl": "107.3959342400000000000000000",
+            "prospective_mark_exit_fee_reserve": "22.872378760",
+            "fee_reserved_pnl": "84.5235554800000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "11.601755480",
+            "remaining_allocated_entry_fee": "22.94406576",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "84.5235554800000000000000000"
+          },
+          "SOL": {
+            "episode": "1",
+            "side": "2",
+            "qty": "766.1",
+            "notional": "107353.593",
+            "held_native_pnl": "30.64400000000000000000000000",
+            "realized_minus_incurred_fees": "-59.02762195",
+            "cumulative_pnl": "-28.38362195000000000000000000",
+            "prospective_mark_exit_fee_reserve": "59.04447615",
+            "fee_reserved_pnl": "-87.42809810000000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-102.75009810",
+            "remaining_allocated_entry_fee": "59.02762195",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-87.42809810000000000000000000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2024-10-03T00:12:00+00:00",
+        "timestamp_ns": 1727914320000000000,
+        "fee_reserved_pnl": "172.90264120"
+      },
+      "loser_min_after_trigger": "-5416.551467300000000000000000",
+      "loser_conditional_min_after_trigger": "-5531.64764995",
+      "loser_min_after_trigger_ns": 1727970240000000000,
+      "end_ns": 1728086400000000000,
+      "loser_final_actual_net_ex_funding": "2201.95105045",
+      "winner_final_actual_net_ex_funding": "-896.17233076",
+      "subsequent_actual_opening_fill_rows": 0,
+      "subsequent_actual_exit_fill_rows": 1,
+      "subsequent_actual_exit_reasons": [
+        "REGIME"
+      ],
+      "loser_min_after_trigger_utc": "2024-10-03T15:44:00+00:00",
+      "additional_close_adversity_after_trigger": "-5329.123369200000000000000000",
+      "actual_closed_break_even": true,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "2289.379148550000000000000000",
+      "loser_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "84.5235554800000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "-980.6958862400000000000000000"
+    },
+    {
+      "pair": "16_4",
+      "trigger_ns": 1734912600000000000,
+      "trigger_utc": "2024-12-23T00:10:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 4,
+      "winner_episode": 16,
+      "initial_snapshot": {
+        "utc": "2024-12-23T00:10:00+00:00",
+        "timestamp_ns": 1734912600000000000,
+        "native_equity": "109062.64837345",
+        "combined_active_episode_realized_plus_held_ex_funding": "-613.1171293200000000000000000",
+        "BTC_to_SOL_gross_ratio": "2.767147469328574615213026991",
+        "legs": {
+          "BTC": {
+            "episode": "16",
+            "side": "3",
+            "qty": "5.221",
+            "notional": "496204.8842",
+            "held_native_pnl": "559.1691000000000000000000000",
+            "realized_minus_incurred_fees": "-273.22022932",
+            "cumulative_pnl": "285.9488706800000000000000000",
+            "prospective_mark_exit_fee_reserve": "272.912686310",
+            "fee_reserved_pnl": "13.0361843700000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-926.743815630",
+            "remaining_allocated_entry_fee": "273.22022932",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "13.0361843700000000000000000"
+          },
+          "SOL": {
+            "episode": "4",
+            "side": "2",
+            "qty": "1000.0",
+            "notional": "179320.000",
+            "held_native_pnl": "-800.00000",
+            "realized_minus_incurred_fees": "-99.066",
+            "cumulative_pnl": "-899.06600",
+            "prospective_mark_exit_fee_reserve": "98.62600000",
+            "fee_reserved_pnl": "-997.69200000",
+            "conditional_adverse_fee_reserved_pnl": "-1017.69200000",
+            "remaining_allocated_entry_fee": "99.066",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-997.69200000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2024-12-23T01:33:00+00:00",
+        "timestamp_ns": 1734917580000000000,
+        "fee_reserved_pnl": "391.5435000000000000000000000"
+      },
+      "loser_min_after_trigger": "-3746.179500000000000000000000",
+      "loser_conditional_min_after_trigger": "-3896.64700000",
+      "loser_min_after_trigger_ns": 1734919920000000000,
+      "end_ns": 1735084800000000000,
+      "loser_final_actual_net_ex_funding": "23449.6845",
+      "winner_final_actual_net_ex_funding": "12013.59359800",
+      "subsequent_actual_opening_fill_rows": 1,
+      "subsequent_actual_exit_fill_rows": 2,
+      "subsequent_actual_exit_reasons": [
+        "REGIME"
+      ],
+      "loser_min_after_trigger_utc": "2024-12-23T02:12:00+00:00",
+      "additional_close_adversity_after_trigger": "-2748.487500000000000000000000",
+      "actual_closed_break_even": true,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "24447.37650000",
+      "loser_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "BTC_TP3"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "13.0361843700000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "12000.55741363000000000000000"
+    },
+    {
+      "pair": "26_7",
+      "trigger_ns": 1738889460000000000,
+      "trigger_utc": "2025-02-07T00:51:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 7,
+      "winner_episode": 26,
+      "initial_snapshot": {
+        "utc": "2025-02-07T00:51:00+00:00",
+        "timestamp_ns": 1738889460000000000,
+        "native_equity": "449208.59322902",
+        "combined_active_episode_realized_plus_held_ex_funding": "25942.58122848",
+        "BTC_to_SOL_gross_ratio": "9.960407184450656680204652144",
+        "legs": {
+          "BTC": {
+            "episode": "26",
+            "side": "3",
+            "qty": "19.581",
+            "notional": "1888393.5981",
+            "held_native_pnl": "26910.1683",
+            "realized_minus_incurred_fees": "-1053.41707152",
+            "cumulative_pnl": "25856.75122848",
+            "prospective_mark_exit_fee_reserve": "1038.616478955",
+            "fee_reserved_pnl": "24818.134749525",
+            "conditional_adverse_fee_reserved_pnl": "23412.218949525",
+            "remaining_allocated_entry_fee": "1053.41707152",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "24818.134749525"
+          },
+          "SOL": {
+            "episode": "7",
+            "side": "2",
+            "qty": "1000.0",
+            "notional": "189590.000",
+            "held_native_pnl": "190",
+            "realized_minus_incurred_fees": "-104.17",
+            "cumulative_pnl": "85.83",
+            "prospective_mark_exit_fee_reserve": "104.27450000",
+            "fee_reserved_pnl": "-18.44450000",
+            "conditional_adverse_fee_reserved_pnl": "-18.44450000",
+            "remaining_allocated_entry_fee": "104.17",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-18.44450000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-02-07T00:52:00+00:00",
+        "timestamp_ns": 1738889520000000000,
+        "fee_reserved_pnl": "441.30250000"
+      },
+      "loser_min_after_trigger": "-1617.56450000",
+      "loser_conditional_min_after_trigger": "-1617.81200000",
+      "loser_min_after_trigger_ns": 1738967100000000000,
+      "end_ns": 1739577600000000000,
+      "loser_final_actual_net_ex_funding": "8986.60000",
+      "winner_final_actual_net_ex_funding": "48669.57178128",
+      "subsequent_actual_opening_fill_rows": 0,
+      "subsequent_actual_exit_fill_rows": 2,
+      "subsequent_actual_exit_reasons": [
+        "SOL_Z_FULL_EXIT",
+        "SOL_Z_HALF_EXIT"
+      ],
+      "loser_min_after_trigger_utc": "2025-02-07T22:25:00+00:00",
+      "additional_close_adversity_after_trigger": "-1599.12000000",
+      "actual_closed_break_even": true,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "9005.04450000",
+      "loser_subsequent_original_exit_reasons": [
+        "SOL_Z_FULL_EXIT",
+        "SOL_Z_HALF_EXIT"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "BTC_TP3"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "24818.134749525",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "23851.437031755"
+    },
+    {
+      "pair": "33_11",
+      "trigger_ns": 1743034560000000000,
+      "trigger_utc": "2025-03-27T00:16:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 11,
+      "winner_episode": 33,
+      "initial_snapshot": {
+        "utc": "2025-03-27T00:16:00+00:00",
+        "timestamp_ns": 1743034560000000000,
+        "native_equity": "810811.24581833",
+        "combined_active_episode_realized_plus_held_ex_funding": "2900.078916780000000000000000",
+        "BTC_to_SOL_gross_ratio": "36.60369694399766047667787688",
+        "legs": {
+          "BTC": {
+            "episode": "33",
+            "side": "3",
+            "qty": "57.683",
+            "notional": "5006653.6680",
+            "held_native_pnl": "6062.483300000000000000000000",
+            "realized_minus_incurred_fees": "-2756.99388322",
+            "cumulative_pnl": "3305.489416780000000000000000",
+            "prospective_mark_exit_fee_reserve": "2753.659517400",
+            "fee_reserved_pnl": "551.829899380000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-3122.577200620",
+            "remaining_allocated_entry_fee": "2756.99388322",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "551.829899380000000000000000"
+          },
+          "SOL": {
+            "episode": "11",
+            "side": "2",
+            "qty": "1000.0",
+            "notional": "136780.000",
+            "held_native_pnl": "-330.0000000000000000000000000",
+            "realized_minus_incurred_fees": "-75.4105",
+            "cumulative_pnl": "-405.4105000000000000000000000",
+            "prospective_mark_exit_fee_reserve": "75.22900000",
+            "fee_reserved_pnl": "-480.6395000000000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-510.63950000",
+            "remaining_allocated_entry_fee": "75.4105",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-480.6395000000000000000000000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-03-27T00:28:00+00:00",
+        "timestamp_ns": 1743035280000000000,
+        "fee_reserved_pnl": "59.06350000"
+      },
+      "loser_min_after_trigger": "-40287.72450000000000000000000",
+      "loser_conditional_min_after_trigger": "-41637.75200000",
+      "loser_min_after_trigger_ns": 1743381960000000000,
+      "end_ns": 1743552000000000000,
+      "loser_final_actual_net_ex_funding": "-19606.07600000000000000000000",
+      "winner_final_actual_net_ex_funding": "93526.80176362",
+      "subsequent_actual_opening_fill_rows": 5,
+      "subsequent_actual_exit_fill_rows": 6,
+      "subsequent_actual_exit_reasons": [
+        "TRAIL"
+      ],
+      "loser_min_after_trigger_utc": "2025-03-31T00:46:00+00:00",
+      "additional_close_adversity_after_trigger": "-39807.08500000000000000000000",
+      "actual_closed_break_even": false,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "-19125.43650000000000000000000",
+      "loser_subsequent_original_exit_reasons": [
+        "TRAIL"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "BTC_TP3"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "551.829899380000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "92974.97186424000000000000000"
+    },
+    {
+      "pair": "34_12",
+      "trigger_ns": 1743638640000000000,
+      "trigger_utc": "2025-04-03T00:04:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 12,
+      "winner_episode": 34,
+      "initial_snapshot": {
+        "utc": "2025-04-03T00:04:00+00:00",
+        "timestamp_ns": 1743638640000000000,
+        "native_equity": "897744.93964871",
+        "combined_active_episode_realized_plus_held_ex_funding": "15450.91074888000000000000000",
+        "BTC_to_SOL_gross_ratio": "46.82787594641016832703538303",
+        "legs": {
+          "BTC": {
+            "episode": "34",
+            "side": "3",
+            "qty": "66.348",
+            "notional": "5452637.8752",
+            "held_native_pnl": "19134.76320000000000000000000",
+            "realized_minus_incurred_fees": "-3009.47495112",
+            "cumulative_pnl": "16125.28824888000000000000000",
+            "prospective_mark_exit_fee_reserve": "2998.950831360",
+            "fee_reserved_pnl": "13126.33741752000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-2160.241782480",
+            "remaining_allocated_entry_fee": "3009.47495112",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "13126.33741752000000000000000"
+          },
+          "SOL": {
+            "episode": "12",
+            "side": "2",
+            "qty": "1000.0",
+            "notional": "116440.000",
+            "held_native_pnl": "-610.0000000000000000000000000",
+            "realized_minus_incurred_fees": "-64.3775",
+            "cumulative_pnl": "-674.3775000000000000000000000",
+            "prospective_mark_exit_fee_reserve": "64.04200000",
+            "fee_reserved_pnl": "-738.4195000000000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-848.41950000",
+            "remaining_allocated_entry_fee": "64.3775",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-738.4195000000000000000000000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-04-03T00:07:00+00:00",
+        "timestamp_ns": 1743638820000000000,
+        "fee_reserved_pnl": "500.8985000000000000000000000"
+      },
+      "loser_min_after_trigger": "-104644.0230000000000000000000",
+      "loser_conditional_min_after_trigger": "-107444.02300000",
+      "loser_min_after_trigger_ns": 1744008900000000000,
+      "end_ns": 1744243200000000000,
+      "loser_final_actual_net_ex_funding": "36964.44600000000000000000000",
+      "winner_final_actual_net_ex_funding": "173248.74718451",
+      "subsequent_actual_opening_fill_rows": 6,
+      "subsequent_actual_exit_fill_rows": 7,
+      "subsequent_actual_exit_reasons": [
+        "TRAIL"
+      ],
+      "loser_min_after_trigger_utc": "2025-04-07T06:55:00+00:00",
+      "additional_close_adversity_after_trigger": "-103905.6035000000000000000000",
+      "actual_closed_break_even": true,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "37702.86550000000000000000000",
+      "loser_subsequent_original_exit_reasons": [
+        "TRAIL"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "BTC_REDUCE",
+        "BTC_TP3"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "13126.33741752000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "160122.4097669900000000000000"
+    },
+    {
+      "pair": "35_13",
+      "trigger_ns": 1744329900000000000,
+      "trigger_utc": "2025-04-11T00:05:00+00:00",
+      "winner": "SOL",
+      "loser": "BTC",
+      "loser_episode": 35,
+      "winner_episode": 13,
+      "initial_snapshot": {
+        "utc": "2025-04-11T00:05:00+00:00",
+        "timestamp_ns": 1744329900000000000,
+        "native_equity": "1095278.24593742",
+        "combined_active_episode_realized_plus_held_ex_funding": "-663.8704649800000000000000000",
+        "BTC_to_SOL_gross_ratio": "44.03875991568296795952782462",
+        "legs": {
+          "BTC": {
+            "episode": "35",
+            "side": "3",
+            "qty": "62.377",
+            "notional": "4961847.0797",
+            "held_native_pnl": "1241.302300000000000000000000",
+            "realized_minus_incurred_fees": "-2023.30326498",
+            "cumulative_pnl": "-782.000964980000000000000000",
+            "prospective_mark_exit_fee_reserve": "2729.015893835",
+            "fee_reserved_pnl": "-3511.016858815000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-4565.188158815",
+            "remaining_allocated_entry_fee": "2729.6986101",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-4217.412203935000000000000000"
+          },
+          "SOL": {
+            "episode": "13",
+            "side": "2",
+            "qty": "1000.0",
+            "notional": "112670.000",
+            "held_native_pnl": "180.0000000000000000000000000",
+            "realized_minus_incurred_fees": "-61.8695",
+            "cumulative_pnl": "118.1305000000000000000000000",
+            "prospective_mark_exit_fee_reserve": "61.96850000",
+            "fee_reserved_pnl": "56.1620000000000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-93.83800000",
+            "remaining_allocated_entry_fee": "61.8695",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "56.1620000000000000000000000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-04-11T00:06:00+00:00",
+        "timestamp_ns": 1744329960000000000,
+        "fee_reserved_pnl": "5963.01959691500000000000000"
+      },
+      "loser_min_after_trigger": "-397688.3518199450000000000000",
+      "loser_conditional_min_after_trigger": "-398770.421545080",
+      "loser_min_after_trigger_ns": 1744490640000000000,
+      "end_ns": 1744502400000000000,
+      "loser_final_actual_net_ex_funding": "-360247.80854068",
+      "winner_final_actual_net_ex_funding": "19655.3765",
+      "subsequent_actual_opening_fill_rows": 0,
+      "subsequent_actual_exit_fill_rows": 1,
+      "subsequent_actual_exit_reasons": [
+        "REGIME"
+      ],
+      "loser_min_after_trigger_utc": "2025-04-12T20:44:00+00:00",
+      "additional_close_adversity_after_trigger": "-394177.3349611300000000000000",
+      "actual_closed_break_even": false,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "-356736.7916818650000000000000",
+      "loser_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "56.1620000000000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "19599.21450000000000000000000"
+    },
+    {
+      "pair": "42_16",
+      "trigger_ns": 1748131440000000000,
+      "trigger_utc": "2025-05-25T00:04:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 16,
+      "winner_episode": 42,
+      "initial_snapshot": {
+        "utc": "2025-05-25T00:04:00+00:00",
+        "timestamp_ns": 1748131440000000000,
+        "native_equity": "653973.04278777",
+        "combined_active_episode_realized_plus_held_ex_funding": "1696.6762023",
+        "BTC_to_SOL_gross_ratio": "16.77874854508313000056744028",
+        "legs": {
+          "BTC": {
+            "episode": "42",
+            "side": "2",
+            "qty": "27.421",
+            "notional": "2956918.8561",
+            "held_native_pnl": "3487.9512",
+            "realized_minus_incurred_fees": "-1624.3869977",
+            "cumulative_pnl": "1863.5642023",
+            "prospective_mark_exit_fee_reserve": "1626.305370855",
+            "fee_reserved_pnl": "237.258831445",
+            "conditional_adverse_fee_reserved_pnl": "-1668.500668555",
+            "remaining_allocated_entry_fee": "1624.3869977",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "237.258831445"
+          },
+          "SOL": {
+            "episode": "16",
+            "side": "3",
+            "qty": "1000.0",
+            "notional": "176230.000",
+            "held_native_pnl": "-70.00",
+            "realized_minus_incurred_fees": "-96.888",
+            "cumulative_pnl": "-166.888",
+            "prospective_mark_exit_fee_reserve": "96.92650000",
+            "fee_reserved_pnl": "-263.81450000",
+            "conditional_adverse_fee_reserved_pnl": "-273.81450000",
+            "remaining_allocated_entry_fee": "96.888",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-263.81450000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-05-25T00:18:00+00:00",
+        "timestamp_ns": 1748132280000000000,
+        "fee_reserved_pnl": "56.36150000"
+      },
+      "loser_min_after_trigger": "-3265.46450000",
+      "loser_conditional_min_after_trigger": "-3385.46450000",
+      "loser_min_after_trigger_ns": 1748352780000000000,
+      "end_ns": 1749168000000000000,
+      "loser_final_actual_net_ex_funding": "31783.802",
+      "winner_final_actual_net_ex_funding": "-174713.90277782",
+      "subsequent_actual_opening_fill_rows": 0,
+      "subsequent_actual_exit_fill_rows": 1,
+      "subsequent_actual_exit_reasons": [
+        "REGIME"
+      ],
+      "loser_min_after_trigger_utc": "2025-05-27T13:33:00+00:00",
+      "additional_close_adversity_after_trigger": "-3001.65000000",
+      "actual_closed_break_even": true,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "32047.61650000",
+      "loser_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "237.258831445",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "-174951.161609265"
+    },
+    {
+      "pair": "53_19",
+      "trigger_ns": 1754611440000000000,
+      "trigger_utc": "2025-08-08T00:04:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 19,
+      "winner_episode": 53,
+      "initial_snapshot": {
+        "utc": "2025-08-08T00:04:00+00:00",
+        "timestamp_ns": 1754611440000000000,
+        "native_equity": "713402.06805079",
+        "combined_active_episode_realized_plus_held_ex_funding": "61671.21547638000000000000000",
+        "BTC_to_SOL_gross_ratio": "17.20814804658065989268181299",
+        "legs": {
+          "BTC": {
+            "episode": "53",
+            "side": "2",
+            "qty": "25.684",
+            "notional": "3014523.3748",
+            "held_native_pnl": "63300.78640000000000000000000",
+            "realized_minus_incurred_fees": "-1623.17242362",
+            "cumulative_pnl": "61677.61397638000000000000000",
+            "prospective_mark_exit_fee_reserve": "1657.987856140",
+            "fee_reserved_pnl": "60019.62612024000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "59477.693720240",
+            "remaining_allocated_entry_fee": "1623.17242362",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "60019.62612024000000000000000"
+          },
+          "SOL": {
+            "episode": "19",
+            "side": "3",
+            "qty": "1000.0",
+            "notional": "175180.000",
+            "held_native_pnl": "90",
+            "realized_minus_incurred_fees": "-96.3985",
+            "cumulative_pnl": "-6.3985",
+            "prospective_mark_exit_fee_reserve": "96.34900000",
+            "fee_reserved_pnl": "-102.74750000",
+            "conditional_adverse_fee_reserved_pnl": "-102.74750000",
+            "remaining_allocated_entry_fee": "96.3985",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-102.74750000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-08-08T00:05:00+00:00",
+        "timestamp_ns": 1754611500000000000,
+        "fee_reserved_pnl": "407.5330000000000000000000000"
+      },
+      "loser_min_after_trigger": "-188693.8200000000000000000000",
+      "loser_conditional_min_after_trigger": "-189323.82000000",
+      "loser_min_after_trigger_ns": 1755145560000000000,
+      "end_ns": 1755216000000000000,
+      "loser_final_actual_net_ex_funding": "-65916.3295",
+      "winner_final_actual_net_ex_funding": "151186.97604286",
+      "subsequent_actual_opening_fill_rows": 6,
+      "subsequent_actual_exit_fill_rows": 7,
+      "subsequent_actual_exit_reasons": [
+        "TRAIL"
+      ],
+      "loser_min_after_trigger_utc": "2025-08-14T04:26:00+00:00",
+      "additional_close_adversity_after_trigger": "-188591.0725000000000000000000",
+      "actual_closed_break_even": false,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "-65813.58200000",
+      "loser_subsequent_original_exit_reasons": [
+        "TRAIL"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "BTC_TP3"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "60019.62612024000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "91167.34992262000000000000000"
+    },
+    {
+      "pair": "54_20",
+      "trigger_ns": 1755302760000000000,
+      "trigger_utc": "2025-08-16T00:06:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 20,
+      "winner_episode": 54,
+      "initial_snapshot": {
+        "utc": "2025-08-16T00:06:00+00:00",
+        "timestamp_ns": 1755302760000000000,
+        "native_equity": "738721.8554827",
+        "combined_active_episode_realized_plus_held_ex_funding": "1699.046195480000000000000000",
+        "BTC_to_SOL_gross_ratio": "17.94720807051488767064387832",
+        "legs": {
+          "BTC": {
+            "episode": "54",
+            "side": "2",
+            "qty": "28.456",
+            "notional": "3339257.5336",
+            "held_native_pnl": "3875.707200000000000000000000",
+            "realized_minus_incurred_fees": "-1834.46000452",
+            "cumulative_pnl": "2041.247195480000000000000000",
+            "prospective_mark_exit_fee_reserve": "1836.591643480",
+            "fee_reserved_pnl": "204.655552000000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-1386.034848000",
+            "remaining_allocated_entry_fee": "1834.46000452",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "204.655552000000000000000000"
+          },
+          "SOL": {
+            "episode": "20",
+            "side": "3",
+            "qty": "1000.0",
+            "notional": "186060.000",
+            "held_native_pnl": "-240.0000000000000000000000000",
+            "realized_minus_incurred_fees": "-102.201",
+            "cumulative_pnl": "-342.2010000000000000000000000",
+            "prospective_mark_exit_fee_reserve": "102.33300000",
+            "fee_reserved_pnl": "-444.5340000000000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-544.53400000",
+            "remaining_allocated_entry_fee": "102.201",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-444.5340000000000000000000000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-08-16T10:01:00+00:00",
+        "timestamp_ns": 1755338460000000000,
+        "fee_reserved_pnl": "225.8345000000000000000000000"
+      },
+      "loser_min_after_trigger": "-16181.56400000000000000000000",
+      "loser_conditional_min_after_trigger": "-16621.56400000",
+      "loser_min_after_trigger_ns": 1755446520000000000,
+      "end_ns": 1755561600000000000,
+      "loser_final_actual_net_ex_funding": "17376.96450000000000000000000",
+      "winner_final_actual_net_ex_funding": "-34603.48783388",
+      "subsequent_actual_opening_fill_rows": 2,
+      "subsequent_actual_exit_fill_rows": 3,
+      "subsequent_actual_exit_reasons": [
+        "REGIME"
+      ],
+      "loser_min_after_trigger_utc": "2025-08-17T16:02:00+00:00",
+      "additional_close_adversity_after_trigger": "-15737.03000000000000000000000",
+      "actual_closed_break_even": true,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "17821.49850000000000000000000",
+      "loser_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "204.655552000000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "-34808.14338588000000000000000"
+    },
+    {
+      "pair": "56_21",
+      "trigger_ns": 1755908640000000000,
+      "trigger_utc": "2025-08-23T00:24:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 21,
+      "winner_episode": 56,
+      "initial_snapshot": {
+        "utc": "2025-08-23T00:24:00+00:00",
+        "timestamp_ns": 1755908640000000000,
+        "native_equity": "866691.73252727",
+        "combined_active_episode_realized_plus_held_ex_funding": "3307.710556600000000000000000",
+        "BTC_to_SOL_gross_ratio": "19.60778356054530874097834804",
+        "legs": {
+          "BTC": {
+            "episode": "56",
+            "side": "2",
+            "qty": "33.448",
+            "notional": "3912144.9760",
+            "held_native_pnl": "5635.988000000000000000000000",
+            "realized_minus_incurred_fees": "-2148.5799434",
+            "cumulative_pnl": "3487.408056600000000000000000",
+            "prospective_mark_exit_fee_reserve": "2151.679736800",
+            "fee_reserved_pnl": "1335.728319800000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-577.497280200",
+            "remaining_allocated_entry_fee": "2148.5799434",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "1335.728319800000000000000000"
+          },
+          "SOL": {
+            "episode": "21",
+            "side": "3",
+            "qty": "1000.0",
+            "notional": "199520.000",
+            "held_native_pnl": "-70.00000000000000000000000000",
+            "realized_minus_incurred_fees": "-109.6975",
+            "cumulative_pnl": "-179.6975000000000000000000000",
+            "prospective_mark_exit_fee_reserve": "109.73600000",
+            "fee_reserved_pnl": "-289.4335000000000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-329.43350000",
+            "remaining_allocated_entry_fee": "109.6975",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-289.4335000000000000000000000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-08-23T00:41:00+00:00",
+        "timestamp_ns": 1755909660000000000,
+        "fee_reserved_pnl": "59.0198695652173913043478261"
+      },
+      "loser_min_after_trigger": "-9094.27350000",
+      "loser_conditional_min_after_trigger": "-9404.02600000",
+      "loser_min_after_trigger_ns": 1755926280000000000,
+      "end_ns": 1755993600000000000,
+      "loser_final_actual_net_ex_funding": "-4931.9855",
+      "winner_final_actual_net_ex_funding": "-50847.8828998",
+      "subsequent_actual_opening_fill_rows": 0,
+      "subsequent_actual_exit_fill_rows": 1,
+      "subsequent_actual_exit_reasons": [
+        "REGIME"
+      ],
+      "loser_min_after_trigger_utc": "2025-08-23T05:18:00+00:00",
+      "additional_close_adversity_after_trigger": "-8804.840000000000000000000000",
+      "actual_closed_break_even": false,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "-4642.552000000000000000000000",
+      "loser_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "1335.728319800000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "-52183.61121960000000000000000"
+    },
+    {
+      "pair": "59_22",
+      "trigger_ns": 1757635260000000000,
+      "trigger_utc": "2025-09-12T00:01:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 22,
+      "winner_episode": 59,
+      "initial_snapshot": {
+        "utc": "2025-09-12T00:01:00+00:00",
+        "timestamp_ns": 1757635260000000000,
+        "native_equity": "902039.96773826",
+        "combined_active_episode_realized_plus_held_ex_funding": "84764.49445071000000000000000",
+        "BTC_to_SOL_gross_ratio": "16.46051493962198109905495275",
+        "legs": {
+          "BTC": {
+            "episode": "59",
+            "side": "2",
+            "qty": "32.557",
+            "notional": "3762215.2946",
+            "held_native_pnl": "53331.62170000000000000000000",
+            "realized_minus_incurred_fees": "31508.60825071",
+            "cumulative_pnl": "84840.22995071000000000000000",
+            "prospective_mark_exit_fee_reserve": "2069.218412030",
+            "fee_reserved_pnl": "82771.01153868000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "79030.212238680",
+            "remaining_allocated_entry_fee": "2039.886020097875094932796411",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "49222.51726787212490506720359"
+          },
+          "SOL": {
+            "episode": "22",
+            "side": "3",
+            "qty": "1000.0",
+            "notional": "228560.000",
+            "held_native_pnl": "50.00000000000000000000000001",
+            "realized_minus_incurred_fees": "-125.7355",
+            "cumulative_pnl": "-75.73549999999999999999999999",
+            "prospective_mark_exit_fee_reserve": "125.70800000",
+            "fee_reserved_pnl": "-201.4435000000000000000000000",
+            "conditional_adverse_fee_reserved_pnl": "-341.44350000",
+            "remaining_allocated_entry_fee": "125.7355",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-201.4435000000000000000000000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2025-09-12T00:03:00+00:00",
+        "timestamp_ns": 1757635380000000000,
+        "fee_reserved_pnl": "18.6775000000000000000000000"
+      },
+      "loser_min_after_trigger": "-106032.51700000",
+      "loser_conditional_min_after_trigger": "-107151.36200000",
+      "loser_min_after_trigger_ns": 1758215580000000000,
+      "end_ns": 1758585600000000000,
+      "loser_final_actual_net_ex_funding": "203150.6245000000000000000007",
+      "winner_final_actual_net_ex_funding": "-12714.95877725",
+      "subsequent_actual_opening_fill_rows": 10,
+      "subsequent_actual_exit_fill_rows": 11,
+      "subsequent_actual_exit_reasons": [
+        "REGIME"
+      ],
+      "loser_min_after_trigger_utc": "2025-09-18T17:13:00+00:00",
+      "additional_close_adversity_after_trigger": "-105831.0735000000000000000000",
+      "actual_closed_break_even": true,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "203352.0680000000000000000007",
+      "loser_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "82771.01153868000000000000000",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "-95485.97031593000000000000000"
+    },
+    {
+      "pair": "89_24",
+      "trigger_ns": 1779235260000000000,
+      "trigger_utc": "2026-05-20T00:01:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 24,
+      "winner_episode": 89,
+      "initial_snapshot": {
+        "utc": "2026-05-20T00:01:00+00:00",
+        "timestamp_ns": 1779235260000000000,
+        "native_equity": "7308843.96232824",
+        "combined_active_episode_realized_plus_held_ex_funding": "181230.62413130",
+        "BTC_to_SOL_gross_ratio": "203.1625427431421446384039900",
+        "legs": {
+          "BTC": {
+            "episode": "89",
+            "side": "3",
+            "qty": "222.822",
+            "notional": "17108317.7244",
+            "held_native_pnl": "135163.8252",
+            "realized_minus_incurred_fees": "46183.15293130",
+            "cumulative_pnl": "181346.97813130",
+            "prospective_mark_exit_fee_reserve": "9409.574748420",
+            "fee_reserved_pnl": "171937.403382880",
+            "conditional_adverse_fee_reserved_pnl": "163470.167382880",
+            "remaining_allocated_entry_fee": "9483.91485228",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "116270.335599300"
+          },
+          "SOL": {
+            "episode": "24",
+            "side": "2",
+            "qty": "1000.0",
+            "notional": "84210.000",
+            "held_native_pnl": "-70",
+            "realized_minus_incurred_fees": "-46.354",
+            "cumulative_pnl": "-116.354",
+            "prospective_mark_exit_fee_reserve": "46.31550000",
+            "fee_reserved_pnl": "-162.66950000",
+            "conditional_adverse_fee_reserved_pnl": "-162.66950000",
+            "remaining_allocated_entry_fee": "46.354",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-162.66950000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2026-05-20T01:14:00+00:00",
+        "timestamp_ns": 1779239640000000000,
+        "fee_reserved_pnl": "27.22600000"
+      },
+      "loser_min_after_trigger": "-137816.3210000000000000000000",
+      "loser_conditional_min_after_trigger": "-139376.32100000",
+      "loser_min_after_trigger_ns": 1780442760000000000,
+      "end_ns": 1780445460000000000,
+      "loser_final_actual_net_ex_funding": "-120525.8360000000000000000002",
+      "winner_final_actual_net_ex_funding": "599990.01424714",
+      "subsequent_actual_opening_fill_rows": 11,
+      "subsequent_actual_exit_fill_rows": 12,
+      "subsequent_actual_exit_reasons": [
+        "SOL_HARD_TIMEOUT"
+      ],
+      "loser_min_after_trigger_utc": "2026-06-02T23:26:00+00:00",
+      "additional_close_adversity_after_trigger": "-137653.6515000000000000000000",
+      "actual_closed_break_even": false,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "-120363.1665000000000000000002",
+      "loser_subsequent_original_exit_reasons": [
+        "SOL_HARD_TIMEOUT"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "BTC_TP3"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "171937.403382880",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "428052.610864260"
+    },
+    {
+      "pair": "96_25",
+      "trigger_ns": 1784505900000000000,
+      "trigger_utc": "2026-07-20T00:05:00+00:00",
+      "winner": "BTC",
+      "loser": "SOL",
+      "loser_episode": 25,
+      "winner_episode": 96,
+      "initial_snapshot": {
+        "utc": "2026-07-20T00:05:00+00:00",
+        "timestamp_ns": 1784505900000000000,
+        "native_equity": "7323890.2525392",
+        "combined_active_episode_realized_plus_held_ex_funding": "342367.90279908",
+        "BTC_to_SOL_gross_ratio": "228.7056914360655737704918033",
+        "legs": {
+          "BTC": {
+            "episode": "96",
+            "side": "2",
+            "qty": "269.880",
+            "notional": "17438808.9720",
+            "held_native_pnl": "188727.084",
+            "realized_minus_incurred_fees": "153602.80029908",
+            "cumulative_pnl": "342329.88429908",
+            "prospective_mark_exit_fee_reserve": "9591.344934600",
+            "fee_reserved_pnl": "332738.539364480",
+            "conditional_adverse_fee_reserved_pnl": "321457.555364480",
+            "remaining_allocated_entry_fee": "9487.54503840",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "169648.194027000"
+          },
+          "SOL": {
+            "episode": "25",
+            "side": "3",
+            "qty": "1000.0",
+            "notional": "76250.000",
+            "held_native_pnl": "80",
+            "realized_minus_incurred_fees": "-41.9815",
+            "cumulative_pnl": "38.0185",
+            "prospective_mark_exit_fee_reserve": "41.93750000",
+            "fee_reserved_pnl": "-3.91900000",
+            "conditional_adverse_fee_reserved_pnl": "-3.91900000",
+            "remaining_allocated_entry_fee": "41.9815",
+            "held_pnl_after_allocated_entry_fee_and_exit_reserve": "-3.91900000"
+          }
+        }
+      },
+      "first_original_held_fee_reserved_break_even": {
+        "utc": "2026-07-20T05:10:00+00:00",
+        "timestamp_ns": 1784524200000000000,
+        "fee_reserved_pnl": "56.11400000"
+      },
+      "loser_min_after_trigger": "-4277.66400000",
+      "loser_conditional_min_after_trigger": "-4547.54850000",
+      "loser_min_after_trigger_ns": 1784733960000000000,
+      "end_ns": 1784937600000000000,
+      "loser_final_actual_net_ex_funding": "15964.4310",
+      "winner_final_actual_net_ex_funding": "715654.16502068",
+      "subsequent_actual_opening_fill_rows": 4,
+      "subsequent_actual_exit_fill_rows": 5,
+      "subsequent_actual_exit_reasons": [
+        "REGIME"
+      ],
+      "loser_min_after_trigger_utc": "2026-07-22T15:26:00+00:00",
+      "additional_close_adversity_after_trigger": "-4273.74500000",
+      "actual_closed_break_even": true,
+      "cumulative_winner_current_held_net_positive": true,
+      "cumulative_loser_current_held_net_negative": true,
+      "original_final_minus_initial_fee_reserved_pnl": "15968.35000000",
+      "loser_subsequent_original_exit_reasons": [
+        "REGIME"
+      ],
+      "winner_subsequent_original_exit_reasons": [
+        "BTC_TP3"
+      ],
+      "initial_winner_cumulative_fee_reserved_pnl": "332738.539364480",
+      "original_winner_final_minus_initial_cumulative_fee_reserved": "382915.625656200"
+    }
+  ],
+  "case_counts": {
+    "total": 13,
+    "original_loser_held_fee_reserved_break_even": 13,
+    "original_loser_final_net_nonnegative": 8,
+    "cases_with_subsequent_loser_add_fills": 8,
+    "cumulative_winner_but_current_held_net_not_positive": 0,
+    "genuine_winner_positive_loser_negative_held_fee_net_at_initial_split": 13
+  },
+  "trace_rows": 3153600,
+  "prequote_rows": 1051200,
+  "trace": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-minute-extrema-risk-20261010/result/minute-native-risk.csv.gz",
+  "prospective_taker_fee_rate": "0.00055",
+  "decision_beta": "UNKNOWN_not_archived",
+  "signed_funding": "UNKNOWN_unallocated",
+  "reversal_screen": "FIRST_PROFIT_SPLIT_PER_OVERLAPPING_ASSET_EPISODE_PAIR; NOT_REVERSAL",
+  "basis": "Existing confirmed native fill gross/actual fees plus native position PnL endpoint interpolation. Fee reserve uses mark notional, not an executed close. Continued loser paths are original strategy with adds/exits, not hypothetical winning-leg closure paths. State account changes are observational bookkeeping including native funding/cash, not causal hedge contribution.",
+  "outcomes_by_loser_asset": [
+    {
+      "original_loser_asset": "BTC",
+      "cases": 1,
+      "unique_loser_episodes": 1,
+      "original_fee_reserved_held_break_even": 1,
+      "original_final_nonnegative": 0,
+      "final_negative_net_sum": "-360247.80854068",
+      "cases_with_new_loser_adds": 0,
+      "worst_additional_close_adversity": "-394177.3349611300000000000000"
+    },
+    {
+      "original_loser_asset": "SOL",
+      "cases": 12,
+      "unique_loser_episodes": 12,
+      "original_fee_reserved_held_break_even": 12,
+      "original_final_nonnegative": 8,
+      "final_negative_net_sum": "-210980.2270000000000000000002",
+      "cases_with_new_loser_adds": 8,
+      "worst_additional_close_adversity": "-188591.0725000000000000000000"
+    }
+  ],
+  "entry_beta_current_beta_sigma_optimized_hedge_weights": "UNKNOWN_not_archived",
+  "first_winning_leg_profit_cross_timestamp": "UNKNOWN_before_initial_profit_split_not_recorded",
+  "prospective_fee_basis": "Actual control taker0.00055\u00d7remaining native quantity\u00d7rounded MARK close; not actual book executable close/fee.",
+  "overlap_percent": {
+    "of_all_minutes": "6.574105783866057838660578387",
+    "of_any_position_minutes": "11.98438545926241931735808352",
+    "of_BTC_held_minutes": "15.57239076206850707221387222"
+  },
+  "first_original_break_even_minutes": {
+    "min": 1,
+    "median": 12,
+    "max": 595
+  },
+  "maximum_further_adversity_before_first_BE": "UNKNOWN_not_separately_captured; to-actual-end extrema are not substituted.",
+  "winner_original_outcome_evolution": {
+    "initial_winner_cumulative_mark_fee_reserved_sum": "687894.2469158000000000000000",
+    "eventual_original_winner_net_sum": "1540168.84151858",
+    "difference": "852274.5946027800000000000000",
+    "basis": "Observed original episode paths at different times; not future profit lost or counterfactualROI; fees mark proxy at start, actual native fees at completed end."
+  }
+}
