@@ -4,14 +4,19 @@
   "native_fill_attribution_episode_net_reconciles": true,
   "native_event_gross_fees_reconcile_per_episode": true,
   "prequote_trace_rows": 1051200,
-  "trace_passes": 1,
+  "trace_passes": 2,
   "chronology_aggregates_from_cached_rows_only": true,
-  "MFE_profit_peak_giveback_first_threshold_time": "UNKNOWN_not_captured",
+  "MFE_profit_peak_giveback_first_threshold_time": "MEASURED_close_MFE_giveback_trough_first_cross; exact_profitpeak_time_not_retained",
   "funding": "UNKNOWN_signed_unallocated",
   "source_edge_archived_occurrence": "UNMEASURED",
   "source_native_scratch_probes": 2,
   "historical_engines": 0,
   "trading_source_changes": 0,
   "LF_CSV_and_JSON_parse": true,
-  "analysis_log_SHA": "7d4500f1452f1d26e4bb963e717e184582c9a1aa83f20477d652a35c9d6def12"
+  "analysis_log_SHA": "7d4500f1452f1d26e4bb963e717e184582c9a1aa83f20477d652a35c9d6def12",
+  "pass1_existing_columns_identical_for_all131_episodes": true,
+  "firstcross_and_age_finalminuscurrent_exact": true,
+  "intended_admission_size_equity": "UNKNOWN_firstheld_partial_not_equivalent",
+  "correction_supersedes": "d92cc82",
+  "analysis_pass2_log_SHA": "d2c46a15a0d9fb4db82aad48995fad0b1f9d6fc81bf12f8f2d0457212989a924"
 }
