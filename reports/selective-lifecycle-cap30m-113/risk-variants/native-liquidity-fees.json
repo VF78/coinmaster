@@ -1,0 +1,22 @@
+{
+  "solcap6": {
+    "TAKER": {
+      "fills": 414,
+      "commission": "913891.97836809"
+    },
+    "MAKER": {
+      "fills": 78,
+      "commission": "65454.03143854"
+    }
+  },
+  "portfolio45": {
+    "TAKER": {
+      "fills": 438,
+      "commission": "1068006.85909833"
+    },
+    "MAKER": {
+      "fills": 80,
+      "commission": "74855.26740400"
+    }
+  }
+}

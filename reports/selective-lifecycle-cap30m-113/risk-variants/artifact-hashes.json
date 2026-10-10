@@ -1,10 +1,11 @@
 {
-  "README.md": "b191c7819ada3565db5208a2aa5c116057a7fa9cf4a65d4fc0400ccb2d1dffef",
+  "README.md": "6613cb385b7e90fbb0b4de73096d7fe1160266043d36fd95bc90e285c7be8064",
   "analyze.py": "90706606694f3318d967e2abba74df192d1480bfcacc8ab859e1f27fbe371bf2",
   "comparison.csv": "22ee6db4c55489072a36e3d68a2ee3498aa1784b7a619033fa86770f6254532a",
   "comparison.json": "bd7534e235e3dccccfb54b325677af9ea26b6ed6d78e43e6341b0bb3291972be",
   "drawdown-top3.csv": "49679d4863c5669a8517c9bb8480bb89a426bdb0d871a238886e67acd2943dc3",
   "independent-review.md": "6a772fb2c30fc8975f0ebf86b4579c672c7b526fb7915734b8846d433e1ba573",
+  "native-liquidity-fees.json": "b01b87f6b3c9a40053a148ce394f4c724e85a0aab7946fb637496426b37249f3",
   "portfolio45-analysis.json": "42afde46aa5b1ea4eb37641c09b1f72b2392acc47c0d79fdd6bad9d97e9b43f7",
   "portfolio45-minute-risk-summary.json": "7702baac29aae7b5b49acc0d0edd95a0677cf27ce70a1a30f747079c9861bb0e",
   "portfolio45-native-run-receipt.json": "197abbf4c93948d0b8c6b506002b3748ea69b9691ba80330f653aefa3633e5af",

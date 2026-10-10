@@ -78,3 +78,10 @@ comparison.json contains exact values, global TOP3, native prequote/postquote la
 Execution is the existing synthetic zero-spread, size1000 quote policy from Bybit1m closes. Protection cancellation acknowledgement can invoke existing native market_exit against the previous cached book; pre-action marked loss and completed-bar OHLC exposure are captured first. Such fills are diagnostic and cannot be treated as venue stop execution. Funding/execution marks, historical venue fee applicability and synchronized ticks remain unvalidated.
 
 Modeled maintenance uses existing native-equity≤tierMM only, without extra liquidation-fee reserve. Zero conditional modeled breaches is conditional model evidence, not actual venue liquidation safety. Quantity gap/fee reserve is admission evidence and does not force later SOL deleveraging.
+
+Native fee liquidity reconciliation (fill counts, not unique orders):
+
+| Variant | BTC entry fills | SOL add fills | Maker fills / fees | Taker fills / fees |
+| --- | ---: | ---: | ---: | ---: |
+| solcap6 | 105 | 91 | 78 / 65,454.03 | 414 / 913,891.98 |
+| portfolio45 | 111 | 95 | 80 / 74,855.27 | 438 / 1,068,006.86 |
