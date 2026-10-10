@@ -670,6 +670,7 @@ def run_native_diagnostic(
     research_v0_zero_tp_netting: bool = True,
     research_v0_deferred_selective_zero_tp: bool = False,
     research_v0_selective_lifecycle_repairs: bool = False,
+    observe_minute_risk: bool = False,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -745,7 +746,13 @@ def run_native_diagnostic(
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
-    strategy = WaveOverlayStrategy(WaveOverlayStrategyConfig(
+    risk_recorder = None
+    strategy_type = WaveOverlayStrategy
+    if observe_minute_risk:
+        from coinmaster.research.minute_risk import NativeMinuteRiskRecorder, observed_strategy_type
+        risk_recorder = NativeMinuteRiskRecorder(artifacts_root / "minute-native-risk.csv.gz", initial_active_seed, (btc_instrument, sol_instrument), dict(selected_leverage))
+        strategy_type = observed_strategy_type(WaveOverlayStrategy, risk_recorder)
+    strategy = strategy_type(WaveOverlayStrategyConfig(
         btc_id=btc_instrument.id, sol_id=sol_instrument.id,
         btc_bar_type=kind(btc_instrument.id, PriceType.LAST), sol_bar_type=kind(sol_instrument.id, PriceType.LAST),
         btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id),
@@ -769,6 +776,8 @@ def run_native_diagnostic(
     successful_run = False
     try:
         for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), weekly_batch_minutes):
+            if risk_recorder is not None:
+                risk_recorder.set_week(week)
             marks, signals, quotes = [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
@@ -857,9 +866,14 @@ def run_native_diagnostic(
             }
         if not early_liquidation_cutoff:
             assert_report_boundaries(result)
+        if risk_recorder is not None:
+            result["minute_risk_observations"] = risk_recorder.close()
+            risk_recorder = None
         successful_run = True
         return result
     finally:
+        if risk_recorder is not None:
+            risk_recorder.file.close()
         engine.dispose()
         if journal:
             if successful_run:
@@ -997,7 +1011,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1043,6 +1057,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_v0_execution_repairs=True, research_v0_zero_tp_netting=zero_tp_netting,
         research_v0_deferred_selective_zero_tp=deferred_selective_zero_tp,
         research_v0_selective_lifecycle_repairs=selective_lifecycle_repairs,
+        observe_minute_risk=observe_minute_risk,
     )
     report["control_report_sha256"] = sha256_file(control_report)
     report["control_terminal_total"] = control["summary"]["terminal_total"]
@@ -1059,6 +1074,7 @@ def main() -> None:
     parser.add_argument("--research-v0-original-zero-tp", action="store_true", help="With research repairs, retain original BTC entry and zero-threshold TP levels")
     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
+    parser.add_argument("--observe-minute-risk", action="store_true", help="Research-only non-mutating native close-equity and conditional OHLC risk recorder")
     parser.add_argument("--control-report", type=Path)
     parser.add_argument("--artifact-dir", type=Path)
     args = parser.parse_args()
@@ -1070,6 +1086,8 @@ def main() -> None:
         parser.error("choose only one research V0 zero-TP option")
     if args.research_v0_selective_lifecycle_repairs and not (args.research_v0_execution_repairs and args.research_v0_deferred_selective_zero_tp):
         parser.error("selective lifecycle repairs require execution repairs and deferred selective zero TP")
+    if args.observe_minute_risk and not args.research_v0_execution_repairs:
+        parser.error("minute risk observer requires isolated research execution repairs")
     if args.research_v0_execution_repairs:
         if args.control_report is None or args.artifact_dir is None:
             parser.error("research V0 repairs require --control-report and --artifact-dir")
@@ -1078,6 +1096,7 @@ def main() -> None:
             zero_tp_netting=not (args.research_v0_original_zero_tp or args.research_v0_deferred_selective_zero_tp),
             deferred_selective_zero_tp=args.research_v0_deferred_selective_zero_tp,
             selective_lifecycle_repairs=args.research_v0_selective_lifecycle_repairs,
+            observe_minute_risk=args.observe_minute_risk,
         )
         print(json.dumps({"status": "COMPLETED", "artifact": str(artifact), "artifact_sha256": sha256_file(artifact)}, sort_keys=True))
         return

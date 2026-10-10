@@ -1,0 +1,182 @@
+{
+  "generated_utc": "2026-10-10T10:02:45.254686+00:00",
+  "source_commit": "d7d18cdc22c0ebb918f202eb9168fcc3159ed9e1",
+  "canonical_head": "9f892974afe33820fca457bbb63cdec0433563e7",
+  "result_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-selective-lifecycle-cap30m-20261009/result-run/v0-selective-lifecycle-cap30m.json",
+  "result_sha256": "8e4a387260688729563258b84befe34b0bef2479f2fbe369c621fab9cc3281e2",
+  "basis": "NATIVE_ACCOUNT_CASH_CHECKPOINTS_NOT_FULL_MARKED_EQUITY",
+  "initial_seed": "10000",
+  "minimum_cash": {
+    "active": "7193.87239049",
+    "reserve": "0",
+    "timestamp": "2024-09-19 00:00:00+00:00",
+    "total": "7193.87239049"
+  },
+  "maximum_cash_loss_below_initial_amount": "2806.12760951",
+  "maximum_cash_loss_below_initial_percent": "28.061276095100",
+  "cash_row_count": 2170,
+  "marked_checkpoint_count": 24,
+  "top3_distinct_cash_drawdown_episodes": [
+    {
+      "peak": {
+        "active": "1095942.11640240",
+        "reserve": "0",
+        "timestamp": "2025-04-10 00:00:00+00:00",
+        "total": "1095942.11640240"
+      },
+      "trough": {
+        "active": "413114.18091703",
+        "reserve": "0",
+        "timestamp": "2025-06-08 00:00:00+00:00",
+        "total": "413114.18091703"
+      },
+      "recovery": {
+        "active": "1128714.71292265",
+        "reserve": "0",
+        "timestamp": "2025-09-25 17:37:00+00:00",
+        "total": "1128714.71292265"
+      },
+      "amount": "682827.93548537",
+      "percent": "62.30510948213748904270403494"
+    },
+    {
+      "peak": {
+        "active": "13759.84864610",
+        "reserve": "0",
+        "timestamp": "2024-09-11 14:00:00+00:00",
+        "total": "13759.84864610"
+      },
+      "trough": {
+        "active": "7193.87239049",
+        "reserve": "0",
+        "timestamp": "2024-09-19 00:00:00+00:00",
+        "total": "7193.87239049"
+      },
+      "recovery": {
+        "active": "15841.80348307",
+        "reserve": "0",
+        "timestamp": "2024-10-12 00:00:00+00:00",
+        "total": "15841.80348307"
+      },
+      "amount": "6565.97625561",
+      "percent": "47.71837557581722853802517597"
+    },
+    {
+      "peak": {
+        "active": "8506264.26289257",
+        "reserve": "0",
+        "timestamp": "2026-05-03 20:37:00+00:00",
+        "total": "8506264.26289257"
+      },
+      "trough": {
+        "active": "4866419.16808691",
+        "reserve": "0",
+        "timestamp": "2026-08-19 00:00:00+00:00",
+        "total": "4866419.16808691"
+      },
+      "recovery": null,
+      "amount": "3639845.09480566",
+      "percent": "42.79017183470296191528068674"
+    }
+  ],
+  "distinct_cash_episode_count": 77,
+  "episode_definition": "Start at latest cash high-water mark, retain deepest trough, recover on first cash checkpoint >= that peak; nonoverlapping episodes ranked by peak-relative percentage. Equal-time rows preserve native report order. Final unrecovered excursion is included.",
+  "ohlc_coverage": [
+    {
+      "path": "runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "rows": 1051200,
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "turnover"
+      ],
+      "start_open_ms": 1725148800000,
+      "last_open_ms": 1788220740000,
+      "gap_or_duplicate_count": 0,
+      "null_ohlc_count": 0,
+      "invalid_ohlc_count": 0,
+      "rows_high_or_low_differ_from_close": 1051193
+    },
+    {
+      "path": "runtime/var/data/normalized/bybit-BTCUSDT-mark-1m.parquet",
+      "rows": 1051200,
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close"
+      ],
+      "start_open_ms": 1725148800000,
+      "last_open_ms": 1788220740000,
+      "gap_or_duplicate_count": 0,
+      "null_ohlc_count": 0,
+      "invalid_ohlc_count": 0,
+      "rows_high_or_low_differ_from_close": 1051191
+    },
+    {
+      "path": "runtime/var/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "rows": 1051200,
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "turnover"
+      ],
+      "start_open_ms": 1725148800000,
+      "last_open_ms": 1788220740000,
+      "gap_or_duplicate_count": 0,
+      "null_ohlc_count": 0,
+      "invalid_ohlc_count": 0,
+      "rows_high_or_low_differ_from_close": 1051029
+    },
+    {
+      "path": "runtime/var/data/normalized/bybit-SOLUSDT-mark-1m.parquet",
+      "rows": 1051200,
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close"
+      ],
+      "start_open_ms": 1725148800000,
+      "last_open_ms": 1788220740000,
+      "gap_or_duplicate_count": 0,
+      "null_ohlc_count": 0,
+      "invalid_ohlc_count": 0,
+      "rows_high_or_low_differ_from_close": 1051108
+    }
+  ],
+  "minute_extrema_validation": "NOT_PERFORMED_BY_WINNER_RUN",
+  "observed_liquidation_count": 0,
+  "liquidation_scope": "Minute-close mark callback evaluations, including permitted asynchronous latest-fresh marks. Does not validate high/low or historical liquidation behavior.",
+  "missing_artifact": "Full native minute account/cash/open-position/mark/maintenance trace including fill/funding event sequencing; exchange tick/path timing within each minute and synchronized BTC/SOL mark extrema. Existing fills/orders, cash, funding journal and 24 monthly marked snapshots do not supply native per-minute mark valuations.",
+  "source_proofs": {
+    "close_only_marks_and_quotes": "runtime/coinmaster/research/native_baseline.py:766-786",
+    "cash_report_and_export": "runtime/coinmaster/research/native_baseline.py:798-812,836",
+    "mark_callback_and_liquidation_equation": "runtime/coinmaster/strategy/wave_overlay.py:292-300,354-402",
+    "marked_equity_snapshot_gate": "runtime/coinmaster/strategy/wave_overlay.py:338-352",
+    "monthly_checkpoint_schedule": "runtime/coinmaster/research/native_baseline.py:306-313",
+    "native_unrealized_pnl": "runtime/coinmaster/strategy/wave_overlay.py:833-847",
+    "synthetic_size_1000": "runtime/coinmaster/research/native_fixture.py:472-477"
+  },
+  "proposed_validation": {
+    "pass": "Single unchanged-feed native from-genesis replay with observer-only streamed minute native cash/positions/paired close equity/maintenance plus event-order samples at fills and funding. Exact terminal cash/fills/orders/fees/funding parity required. OHLC portfolio risk envelopes are conservative fixed-exposure bounds, not synchronous observed extrema; minute-open and minute-end snapshots around fills avoid silently treating boundary fills as throughout-minute exposure.",
+    "not_execution_mutation": "Observer must not publish high/low quotes, mutate marks/margin policy, latch liquidation, or change any strategy decisions.",
+    "extrema_exactness_blocker": "OHLC does not identify intrabar chronology or cross-asset extreme synchrony. Changing execution/risk feed to high/low would be a new modeled scenario, not validation of the existing close-feed result.",
+    "historical_elapsed_seconds": 542,
+    "historical_systemd_memory_peak": "477.8M",
+    "historical_python_peak_rss_bytes": 615419904,
+    "projected_elapsed": "Approximately 10-20 minutes with native valuation observer; benchmark rather than guarantee.",
+    "storage": "Bounded compressed streaming minute trace; avoid million-element in-memory checkpoint dict. Free disk observed 2.7GiB.",
+    "launched": false
+  }
+}
