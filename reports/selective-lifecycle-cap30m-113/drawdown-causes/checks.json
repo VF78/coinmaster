@@ -1,0 +1,12 @@
+{
+  "closing_fill_rows": 302,
+  "native_fees_reconcile_to_8_decimal_precision": true,
+  "all_closing_attribution_plus_unallocated_residual_equals_native_cash_gain": true,
+  "native_peak_to_trough_cash_plus_unrealized_reconciliation": true,
+  "native_endpoint_perasset_close_attribution_tolerance_usdt": "0.01",
+  "three_landmarks_and_first50_for_each_excursion": true,
+  "trail_groups": 13,
+  "trail_native_closing_orders": 42,
+  "true_fixed_sl_count": 0,
+  "new_backtest_or_runtime_change": false
+}
