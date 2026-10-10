@@ -57,9 +57,12 @@ class DrawdownTracker:
 
 
 class NativeMinuteRiskRecorder:
-    def __init__(self, path: Path, seed, instruments, leverage):
+    def __init__(self, path: Path, seed, instruments, leverage, end_exclusive_ns):
         from coinmaster.research.native_fixture import TierMarginPolicy
         self.path = path
+        self.end_exclusive_ns = end_exclusive_ns
+        self.post_boundary_settlement = []
+        self.phase_counts = {phase: 0 for phase in ("pre_quote_paired_close","post_btc_quote_paired_close","post_quote_paired_close")}
         self.file = gzip.open(path, "wt", newline="", compresslevel=1)
         self.writer = csv.writer(self.file)
         self.writer.writerow(["bar_open_ms", "close_available_ns", "phase", "cash", "free_cash", "native_initial_margin", "native_maintenance_margin", "paired_close_equity", "conditional_adverse_equity", "conditional_favorable_equity", "conditional_high_mark_mm_upper", "conditional_margin_breach", "native_positions_and_mark_ohlc_json"])
@@ -128,8 +131,15 @@ class NativeMinuteRiskRecorder:
             return
         snapshot = self._snapshot(strategy, timestamp)
         bundle,cash,free,initial,maintenance,equity,adverse,favorable,upper,details = snapshot
-        self.curves[phase].add(timestamp,equity)
-        self.curves["all_native_close_samples"].add(timestamp,equity)
+        self.phase_counts[phase] += 1
+        post_boundary = timestamp >= self.end_exclusive_ns and phase != "pre_quote_paired_close"
+        row_phase = phase
+        if post_boundary:
+            row_phase = "post_boundary_" + phase
+            self.post_boundary_settlement.append({"timestamp_ns": str(timestamp), "phase": phase, "cash": str(cash), "paired_close_equity": str(equity), "native_positions": details})
+        else:
+            self.curves[phase].add(timestamp,equity)
+            self.curves["all_native_close_samples"].add(timestamp,equity)
         if phase == "pre_quote_paired_close":
             self.curves["conditional_ohlc_adverse"].add(timestamp, adverse)
             breach = bool(details) and adverse<=upper
@@ -143,22 +153,23 @@ class NativeMinuteRiskRecorder:
             breach="NOT_APPLICABLE"
             if phase == "post_quote_paired_close":
                 self.last_post_cash=cash
-        self.writer.writerow([bundle.open_time_ms,timestamp,phase,cash,free,initial,maintenance,equity,adverse,favorable,upper,breach,json.dumps(details,separators=(",",":"))])
+        self.writer.writerow([bundle.open_time_ms,timestamp,row_phase,cash,free,initial,maintenance,equity,adverse,favorable,upper,breach,json.dumps(details,separators=(",",":"))])
         self.rows += 1
 
     def close(self):
         self.file.close()
         if self.rows != self.expected_minutes*3 or any(
-            self.curves[phase].count != self.expected_minutes+1
-            for phase in ("pre_quote_paired_close","post_btc_quote_paired_close","post_quote_paired_close","conditional_ohlc_adverse")
+            count != self.expected_minutes for count in self.phase_counts.values()
         ):
             raise ValueError("RISK_OBSERVER_INCOMPLETE_NATIVE_TRACE")
         summary={"trace_path":str(self.path), "rows":self.rows,
+                 "end_exclusive_ns": str(self.end_exclusive_ns),
+                 "post_boundary_settlement_excluded_from_interval_curves": self.post_boundary_settlement,
                  "curves":{key:curve.summary() for key,curve in self.curves.items()},
                  "potential_conditional_intrabar_margin_breach_count":self.potential,
                  "first_potential_conditional_breaches":self.potential_first,
                  "basis":"NATIVE_ACCOUNT_CASH_PLUS_NATIVE_POSITION_UNREALIZED_PNL",
-                 "limitations":["Close equity sampled before paired-close execution quotes and after each BTC and SOL quote callback; native callback cache finalization must be checked against replay fills/account parity.","OHLC interval is [open_time_ms,open_time_ms+60000); exposure is native positions immediately before close quotes. New close-quote entries never receive this bar's extrema.","Conditional envelope holds pre-quote exposure fixed and cash between previous postquote cash and current prequote cash. Funding at boundary is included in that cash range, never set to zero.","Captured maintenance tiers validated monotonic at every boundary, so each high-mark requirement upper-bounds maintenance for fixed quantity.","Asset extrema are not synchronized; summed adverse extrema give a conservative conditional bound, not actual observed portfolio equity or liquidation.","Postquote positions and boundary fills are separate samples. Historical tick path, intrabar execution, venue margin/fee applicability remain unvalidated.","Adverse-bound excursion percentages describe the conditional lower-envelope series, not exact historical maximum drawdown."]}
+                 "limitations":["Final prequote at end_exclusive is the completed-last-bar left-limit observation; post-boundary BTC/SOL quotes and terminal settlement are exported separately and excluded from interval close/DD/minimum/TOP3.","Maintenance breach uses the existing diagnostic native equity <= tier maintenance model only; no extra liquidation-fee reserve or actual venue liquidation safety claim.","Close equity sampled before paired-close execution quotes and after each BTC and SOL quote callback; native callback cache finalization must be checked against replay fills/account parity.","OHLC interval is [open_time_ms,open_time_ms+60000); exposure is native positions immediately before close quotes. New close-quote entries never receive this bar's extrema.","Conditional envelope holds pre-quote exposure fixed and cash between previous postquote cash and current prequote cash. Funding at boundary is included in that cash range, never set to zero.","Captured maintenance tiers validated monotonic at every boundary, so each high-mark requirement upper-bounds maintenance for fixed quantity.","Asset extrema are not synchronized; summed adverse extrema give a conservative conditional bound, not actual observed portfolio equity or liquidation.","Postquote positions and boundary fills are separate samples. Historical tick path, intrabar execution, venue margin/fee applicability remain unvalidated.","Adverse-bound excursion percentages describe the conditional lower-envelope series, not exact historical maximum drawdown."]}
         output=self.path.with_name("minute-risk-summary.json")
         output.write_text(json.dumps(summary,indent=2)+"\n")
         return {"summary_path":str(output),**summary}

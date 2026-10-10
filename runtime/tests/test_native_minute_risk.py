@@ -71,3 +71,36 @@ def test_native_observer_preserves_fills_account_and_avoids_preentry_extrema(tmp
     assert D(next_pre['conditional_adverse_equity'])==min(D(next_pre['cash']),D(first_post['cash']))+min(D(detail['low_native_pnl']),D(detail['high_native_pnl']))
     assert D(next_pre['conditional_high_mark_mm_upper'])>=D(next_pre['native_maintenance_margin'])
     assert observed['minute_risk_observations']['curves']['pre_quote_paired_close']['samples']==1441
+
+
+def test_terminal_settlement_is_excluded_from_interval_native_drawdown(tmp_path,monkeypatch):
+    start,end=write_streaming_fixture(tmp_path,trading_days=1)
+    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+    from nautilus_trader.model.enums import OrderSide
+    original=WaveOverlayStrategy.on_quote_tick
+    def scripted_open(self,tick):
+        original(self,tick)
+        if tick.instrument_id==self.config.btc_id and tick.ts_event==(start+MINUTE_MS)*1_000_000:
+            instrument=self.cache.instrument(tick.instrument_id)
+            self.submit_order(self.order_factory.market(tick.instrument_id,OrderSide.BUY,instrument.make_qty(D('1'))))
+    monkeypatch.setattr(WaveOverlayStrategy,'on_quote_tick',scripted_open)
+    result=run_native_diagnostic(tmp_path,trading_start_ms=start,trading_end_ms=end,warmup_start_ms=0,artifact_dir=tmp_path/'observed',observe_minute_risk=True)
+    assert result['fills']==2 and result['terminal_open_positions']==0
+    summary=result['minute_risk_observations']
+    trace=list(csv.DictReader(gzip.open(tmp_path/'observed'/'minute-native-risk.csv.gz','rt')))
+    pre,btc_post,sol_post=trace[-3:]
+    assert pre['phase']=='pre_quote_paired_close'
+    assert len(json.loads(pre['native_positions_and_mark_ohlc_json']))==1
+    assert btc_post['phase']=='post_boundary_post_btc_quote_paired_close'
+    assert sol_post['phase']=='post_boundary_post_quote_paired_close'
+    assert sol_post['native_positions_and_mark_ohlc_json']=='[]'
+    assert D(sol_post['paired_close_equity'])<D(pre['paired_close_equity']) # exit fee is post-boundary
+    assert len(summary['post_boundary_settlement_excluded_from_interval_curves'])==2
+    assert summary['curves']['pre_quote_paired_close']['samples']==1441
+    assert summary['curves']['post_btc_quote_paired_close']['samples']==1440
+    assert summary['curves']['post_quote_paired_close']['samples']==1440
+    assert summary['curves']['all_native_close_samples']['samples']==4319
+    expected_min=min(D(row['paired_close_equity']) for row in trace if not row['phase'].startswith('post_boundary_'))
+    assert D(summary['curves']['all_native_close_samples']['minimum']['equity'])==expected_min
+    assert D(summary['curves']['all_native_close_samples']['minimum']['equity'])>D(sol_post['paired_close_equity'])
+    assert summary['rows']==4320

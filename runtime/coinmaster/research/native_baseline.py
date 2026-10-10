@@ -750,7 +750,7 @@ def run_native_diagnostic(
     strategy_type = WaveOverlayStrategy
     if observe_minute_risk:
         from coinmaster.research.minute_risk import NativeMinuteRiskRecorder, observed_strategy_type
-        risk_recorder = NativeMinuteRiskRecorder(artifacts_root / "minute-native-risk.csv.gz", initial_active_seed, (btc_instrument, sol_instrument), dict(selected_leverage))
+        risk_recorder = NativeMinuteRiskRecorder(artifacts_root / "minute-native-risk.csv.gz", initial_active_seed, (btc_instrument, sol_instrument), dict(selected_leverage), trading_end_ms * 1_000_000)
         strategy_type = observed_strategy_type(WaveOverlayStrategy, risk_recorder)
     strategy = strategy_type(WaveOverlayStrategyConfig(
         btc_id=btc_instrument.id, sol_id=sol_instrument.id,
