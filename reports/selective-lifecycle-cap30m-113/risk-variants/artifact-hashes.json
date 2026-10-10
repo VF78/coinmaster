@@ -1,0 +1,17 @@
+{
+  "README.md": "b191c7819ada3565db5208a2aa5c116057a7fa9cf4a65d4fc0400ccb2d1dffef",
+  "analyze.py": "90706606694f3318d967e2abba74df192d1480bfcacc8ab859e1f27fbe371bf2",
+  "comparison.csv": "22ee6db4c55489072a36e3d68a2ee3498aa1784b7a619033fa86770f6254532a",
+  "comparison.json": "bd7534e235e3dccccfb54b325677af9ea26b6ed6d78e43e6341b0bb3291972be",
+  "drawdown-top3.csv": "49679d4863c5669a8517c9bb8480bb89a426bdb0d871a238886e67acd2943dc3",
+  "independent-review.md": "6a772fb2c30fc8975f0ebf86b4579c672c7b526fb7915734b8846d433e1ba573",
+  "portfolio45-analysis.json": "42afde46aa5b1ea4eb37641c09b1f72b2392acc47c0d79fdd6bad9d97e9b43f7",
+  "portfolio45-minute-risk-summary.json": "7702baac29aae7b5b49acc0d0edd95a0677cf27ce70a1a30f747079c9861bb0e",
+  "portfolio45-native-run-receipt.json": "197abbf4c93948d0b8c6b506002b3748ea69b9691ba80330f653aefa3633e5af",
+  "protection-events.csv": "8c2f470a15311102ef5dc34c3b9de916b0519ddd87e0818ee31f549375570865",
+  "report-checks.json": "bcf9ac8804356c544d566e54de8c2d933738051977b650196e28d589f71faa4c",
+  "solcap6-analysis.json": "b3921a422a5bf06b3461d75e6804a20b4c3142c6b082d69b1df9a9b6a5c54cc8",
+  "solcap6-minute-risk-summary.json": "b81c2356668f07b1d798ac252992b3b3dcfc24c69773576c01979b420a6c5688",
+  "solcap6-native-run-receipt.json": "f7d7309ba56f7146aa316dd260db520c779984324a27e39eade03fa2166481f5",
+  "source-freeze-receipt.json": "fdc444ad89d757612a4a3d344a2eaed92ef64510a1433ae17aa59c645dd0cec5"
+}

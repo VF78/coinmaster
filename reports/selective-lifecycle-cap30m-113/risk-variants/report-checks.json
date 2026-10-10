@@ -1,0 +1,24 @@
+{
+  "solcap6": {
+    "result_sha_matches_ops_receipt": true,
+    "native_fill_count_and_commissions_reconcile": true,
+    "trace_3N_complete": true,
+    "single_config_delta": true,
+    "native_cash_unrealized_endpoint_decomposition_exact": true
+  },
+  "portfolio45": {
+    "result_sha_matches_ops_receipt": true,
+    "native_fill_count_and_commissions_reconcile": true,
+    "trace_3N_complete": true,
+    "single_config_delta": true,
+    "native_cash_unrealized_endpoint_decomposition_exact": true
+  },
+  "scope": {
+    "native_engines": 2,
+    "additional_control_or_followup_runs": 0,
+    "source_or_test_reruns_during_analysis": 0,
+    "large_traces_committed": false,
+    "basis": "cached SOL analysis plus one bounded PORT trace scan; native money fields only"
+  },
+  "analysis_log_sha256": "7f1162bc20cad1c954af64e6b1667550f4eb904c5894f59134f69c9828b8a0a9"
+}

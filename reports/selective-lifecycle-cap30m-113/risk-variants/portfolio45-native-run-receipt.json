@@ -1,0 +1,511 @@
+{
+  "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-portfolio45-20261010/result/v0-selective-lifecycle-cap30m-portfolio45.json",
+  "artifact_sha256": "f0a4543eb2b831a15cfd171f3c8184491b6e3ff242db9e25095a10a3b7f9f045",
+  "source_commit": "498a8fe0d62cac5cea00e81660195f7e9c3e0131",
+  "exit_code": 0,
+  "config_diff": [
+    {
+      "path": ".research_portfolio_protect_45",
+      "baseline": null,
+      "variant": {
+        "execution": "EXISTING_FORCED_EXIT_MAY_MATCH_PREVIOUS_BOOK_ON_CANCEL_ACK",
+        "fraction": "0.45",
+        "peak_reset": "PROTECTIVE_ONLY",
+        "resume": "NEXT_NATIVE_FLAT_FRESH_DAILY_DOMAIN_EPISODE",
+        "sampling": "AFTER_PREQUOTE_CAPTURE_BEFORE_EXECUTION_QUOTES"
+      }
+    }
+  ],
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "minute_risk_summary": {
+    "trace_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-portfolio45-20261010/result/minute-native-risk.csv.gz",
+    "rows": 3153600,
+    "end_exclusive_ns": "1788220800000000000",
+    "post_boundary_settlement_excluded_from_interval_curves": [
+      {
+        "timestamp_ns": "1788220800000000000",
+        "phase": "post_btc_quote_paired_close",
+        "cash": "3392830.70807188",
+        "paired_close_equity": "3392830.70807188",
+        "native_positions": []
+      },
+      {
+        "timestamp_ns": "1788220800000000000",
+        "phase": "post_quote_paired_close",
+        "cash": "3392830.70807188",
+        "paired_close_equity": "3392830.70807188",
+        "native_positions": []
+      }
+    ],
+    "curves": {
+      "pre_quote_paired_close": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1728003660000000000",
+          "equity": "5962.33368192"
+        },
+        "maximum_loss_below_seed_amount": "4037.66631808",
+        "maximum_loss_below_seed_percent": "40.376663180800",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1075085.04692774"
+            },
+            "trough": {
+              "timestamp_ns": "1749255420000000000",
+              "equity": "377962.09896562"
+            },
+            "recovery": {
+              "timestamp_ns": "1758821520000000000",
+              "equity": "1075653.0027909"
+            },
+            "drawdown_amount": "697122.94796212",
+            "drawdown_peak_percent": "64.84351632964121441266764652"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "7328752.32626727"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "2970132.70646228"
+            },
+            "recovery": null,
+            "drawdown_amount": "4358619.61980499",
+            "drawdown_peak_percent": "59.47287376847338216732910768"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1726273140000000000",
+              "equity": "13807.88227209"
+            },
+            "trough": {
+              "timestamp_ns": "1728003660000000000",
+              "equity": "5962.33368192"
+            },
+            "recovery": {
+              "timestamp_ns": "1728668040000000000",
+              "equity": "13875.17977298"
+            },
+            "drawdown_amount": "7845.54859017",
+            "drawdown_peak_percent": "56.81934735226038134765873862"
+          }
+        ]
+      },
+      "post_btc_quote_paired_close": {
+        "samples": 1051200,
+        "minimum": {
+          "timestamp_ns": "1728003660000000000",
+          "equity": "5962.33368192"
+        },
+        "maximum_loss_below_seed_amount": "4037.66631808",
+        "maximum_loss_below_seed_percent": "40.376663180800",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1075085.04692774"
+            },
+            "trough": {
+              "timestamp_ns": "1749255420000000000",
+              "equity": "377962.09896562"
+            },
+            "recovery": {
+              "timestamp_ns": "1758821520000000000",
+              "equity": "1075653.0027909"
+            },
+            "drawdown_amount": "697122.94796212",
+            "drawdown_peak_percent": "64.84351632964121441266764652"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "7328752.32626727"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "2970132.70646228"
+            },
+            "recovery": null,
+            "drawdown_amount": "4358619.61980499",
+            "drawdown_peak_percent": "59.47287376847338216732910768"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1726273140000000000",
+              "equity": "13807.88227209"
+            },
+            "trough": {
+              "timestamp_ns": "1728003660000000000",
+              "equity": "5962.33368192"
+            },
+            "recovery": {
+              "timestamp_ns": "1728668040000000000",
+              "equity": "13875.17977298"
+            },
+            "drawdown_amount": "7845.54859017",
+            "drawdown_peak_percent": "56.81934735226038134765873862"
+          }
+        ]
+      },
+      "post_quote_paired_close": {
+        "samples": 1051200,
+        "minimum": {
+          "timestamp_ns": "1728003660000000000",
+          "equity": "5962.33368192"
+        },
+        "maximum_loss_below_seed_amount": "4037.66631808",
+        "maximum_loss_below_seed_percent": "40.376663180800",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1075085.04692774"
+            },
+            "trough": {
+              "timestamp_ns": "1749255420000000000",
+              "equity": "377962.09896562"
+            },
+            "recovery": {
+              "timestamp_ns": "1758821520000000000",
+              "equity": "1075653.0027909"
+            },
+            "drawdown_amount": "697122.94796212",
+            "drawdown_peak_percent": "64.84351632964121441266764652"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "7328752.32626727"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "2970132.70646228"
+            },
+            "recovery": null,
+            "drawdown_amount": "4358619.61980499",
+            "drawdown_peak_percent": "59.47287376847338216732910768"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1726273140000000000",
+              "equity": "13807.88227209"
+            },
+            "trough": {
+              "timestamp_ns": "1728003660000000000",
+              "equity": "5962.33368192"
+            },
+            "recovery": {
+              "timestamp_ns": "1728668040000000000",
+              "equity": "13875.17977298"
+            },
+            "drawdown_amount": "7845.54859017",
+            "drawdown_peak_percent": "56.81934735226038134765873862"
+          }
+        ]
+      },
+      "all_native_close_samples": {
+        "samples": 3153599,
+        "minimum": {
+          "timestamp_ns": "1728003660000000000",
+          "equity": "5962.33368192"
+        },
+        "maximum_loss_below_seed_amount": "4037.66631808",
+        "maximum_loss_below_seed_percent": "40.376663180800",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1075085.04692774"
+            },
+            "trough": {
+              "timestamp_ns": "1749255420000000000",
+              "equity": "377962.09896562"
+            },
+            "recovery": {
+              "timestamp_ns": "1758821520000000000",
+              "equity": "1075653.0027909"
+            },
+            "drawdown_amount": "697122.94796212",
+            "drawdown_peak_percent": "64.84351632964121441266764652"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "7328752.32626727"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "2970132.70646228"
+            },
+            "recovery": null,
+            "drawdown_amount": "4358619.61980499",
+            "drawdown_peak_percent": "59.47287376847338216732910768"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1726273140000000000",
+              "equity": "13807.88227209"
+            },
+            "trough": {
+              "timestamp_ns": "1728003660000000000",
+              "equity": "5962.33368192"
+            },
+            "recovery": {
+              "timestamp_ns": "1728668040000000000",
+              "equity": "13875.17977298"
+            },
+            "drawdown_amount": "7845.54859017",
+            "drawdown_peak_percent": "56.81934735226038134765873862"
+          }
+        ]
+      },
+      "conditional_ohlc_adverse": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1728002520000000000",
+          "equity": "5908.17388192"
+        },
+        "maximum_loss_below_seed_amount": "4091.82611808",
+        "maximum_loss_below_seed_percent": "40.918261180800",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1071752.38132774"
+            },
+            "trough": {
+              "timestamp_ns": "1749255420000000000",
+              "equity": "376946.88756562"
+            },
+            "recovery": {
+              "timestamp_ns": "1758821520000000000",
+              "equity": "1072498.8363909"
+            },
+            "drawdown_amount": "694805.49376212",
+            "drawdown_peak_percent": "64.82891998815626588571270496"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1778805420000000000",
+              "equity": "7317835.73326727"
+            },
+            "trough": {
+              "timestamp_ns": "1787024040000000000",
+              "equity": "2964586.10826228"
+            },
+            "recovery": null,
+            "drawdown_amount": "4353249.62500499",
+            "drawdown_peak_percent": "59.48821186590573412842681726"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1735820100000000000",
+              "equity": "306912.92763369"
+            },
+            "trough": {
+              "timestamp_ns": "1735862460000000000",
+              "equity": "125447.39058059"
+            },
+            "recovery": {
+              "timestamp_ns": "1735921080000000000",
+              "equity": "306978.01409206"
+            },
+            "drawdown_amount": "181465.53705310",
+            "drawdown_peak_percent": "59.12606498924824980396891716"
+          }
+        ]
+      }
+    },
+    "potential_conditional_intrabar_margin_breach_count": 0,
+    "first_potential_conditional_breaches": [],
+    "basis": "NATIVE_ACCOUNT_CASH_PLUS_NATIVE_POSITION_UNREALIZED_PNL",
+    "limitations": [
+      "Final prequote at end_exclusive is the completed-last-bar left-limit observation; post-boundary BTC/SOL quotes and terminal settlement are exported separately and excluded from interval close/DD/minimum/TOP3.",
+      "Maintenance breach uses the existing diagnostic native equity <= tier maintenance model only; no extra liquidation-fee reserve or actual venue liquidation safety claim.",
+      "Close equity sampled before paired-close execution quotes and after each BTC and SOL quote callback; native callback cache finalization must be checked against replay fills/account parity.",
+      "OHLC interval is [open_time_ms,open_time_ms+60000); exposure is native positions immediately before close quotes. New close-quote entries never receive this bar's extrema.",
+      "Conditional envelope holds pre-quote exposure fixed and cash between previous postquote cash and current prequote cash. Funding at boundary is included in that cash range, never set to zero.",
+      "Captured maintenance tiers validated monotonic at every boundary, so each high-mark requirement upper-bounds maintenance for fixed quantity.",
+      "Asset extrema are not synchronized; summed adverse extrema give a conservative conditional bound, not actual observed portfolio equity or liquidation.",
+      "Postquote positions and boundary fills are separate samples. Historical tick path, intrabar execution, venue margin/fee applicability remain unvalidated.",
+      "Adverse-bound excursion percentages describe the conditional lower-envelope series, not exact historical maximum drawdown."
+    ]
+  },
+  "terminal_total": "3392830.70807188",
+  "native_fees": "1142862.12650233",
+  "fills": 518,
+  "liquidation_count": 0,
+  "terminal_open_positions": 0,
+  "funding": {
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 935,
+      "SOLUSDT-PERP.P1SIM": 416
+    },
+    "count": 1351,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+  },
+  "streaming": {
+    "batch_count": 105,
+    "cursor_batch_rows": 10080,
+    "event_count": 4206260,
+    "expected_rows_per_source": 1051200,
+    "max_batch_events": 40334,
+    "max_batch_minutes": 10080,
+    "peak_rss_bytes": 616185856,
+    "processed_rows_per_source": 1051200
+  },
+  "execution_artifacts": {
+    "fills": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-portfolio45-20261010/result/v0-selective-lifecycle-cap30m-portfolio45-fills.csv",
+      "rows": 518,
+      "sha256": "b49138947c969b75804bfcdf219d0d4d15658136e97b463a9a984e9ffaba0421"
+    },
+    "orders": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-portfolio45-20261010/result/v0-selective-lifecycle-cap30m-portfolio45-orders.csv",
+      "rows": 576,
+      "sha256": "b9a1a169960dcf0554fc2f1068214d5aee1171a310f880b7ce19389bd69194d9"
+    }
+  },
+  "summary": {
+    "drawdown_basis": "NATIVE_CASH_ACCOUNT_SERIES",
+    "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED",
+    "drawdown_start": "2026-05-03 20:37:00+00:00",
+    "drawdown_trough": "2026-08-19 00:00:00+00:00",
+    "interval_cash_terminal_total": "3335653.23471235",
+    "max_drawdown_amount": "3984124.75893954",
+    "max_drawdown_percent": "0.5576233671594019327089733766",
+    "monthly_returns": [
+      {
+        "month": "2024-09",
+        "return": "-0.011710743441",
+        "total": "9882.89256559"
+      },
+      {
+        "month": "2024-10",
+        "return": "1.156967852111563348483509253",
+        "total": "21317.08154985"
+      },
+      {
+        "month": "2024-11",
+        "return": "3.102438636422787705452269950",
+        "total": "87452.01896588"
+      },
+      {
+        "month": "2024-12",
+        "return": "0.447204418589565265065818170",
+        "total": "126560.94826200"
+      },
+      {
+        "month": "2025-01",
+        "return": "3.709409540507271645808901722",
+        "total": "596027.33720071"
+      },
+      {
+        "month": "2025-02",
+        "return": "-0.1609726722379030325502175454",
+        "total": "500083.22400467"
+      },
+      {
+        "month": "2025-03",
+        "return": "0.715996244061201096280394703",
+        "total": "858140.93411003"
+      },
+      {
+        "month": "2025-04",
+        "return": "-0.4206711814222505669542035506",
+        "total": "497145.77353117"
+      },
+      {
+        "month": "2025-05",
+        "return": "0.219196101403299283040689797",
+        "total": "606118.18891833"
+      },
+      {
+        "month": "2025-06",
+        "return": "-0.1456999404561827365604044661",
+        "total": "517806.80488352"
+      },
+      {
+        "month": "2025-07",
+        "return": "0.227351239838035485872640035",
+        "total": "635530.82397036"
+      },
+      {
+        "month": "2025-08",
+        "return": "0.404111121415045407205523592",
+        "total": "892355.89793885"
+      },
+      {
+        "month": "2025-09",
+        "return": "0.206896391616522620156818147",
+        "total": "1076981.11326012"
+      },
+      {
+        "month": "2025-10",
+        "return": "0.430060405227155257821417686",
+        "total": "1540148.04725076"
+      },
+      {
+        "month": "2025-11",
+        "return": "-0.2871614583128717837561652744",
+        "total": "1097876.88798451"
+      },
+      {
+        "month": "2025-12",
+        "return": "0.627920212078329573219955902",
+        "total": "1787255.97632364"
+      },
+      {
+        "month": "2026-01",
+        "return": "0.123523914863341724360600535",
+        "total": "2008024.83138204"
+      },
+      {
+        "month": "2026-02",
+        "return": "0.602607980767330285582334583",
+        "total": "3218076.62035183"
+      },
+      {
+        "month": "2026-03",
+        "return": "0.236999964962253230107159613",
+        "total": "3980760.66662106"
+      },
+      {
+        "month": "2026-04",
+        "return": "0.587389887697346845806752093",
+        "total": "6319019.22753762"
+      },
+      {
+        "month": "2026-05",
+        "return": "0.008654876093028062171912466",
+        "total": "6373709.55598142"
+      },
+      {
+        "month": "2026-06",
+        "return": "0.087330937953540255235812439",
+        "total": "6930331.58974872"
+      },
+      {
+        "month": "2026-07",
+        "return": "-0.2419490670279438911468854755",
+        "total": "5253544.32741473"
+      },
+      {
+        "month": "2026-08",
+        "return": "-0.3650661292975469214493273591",
+        "total": "3335653.23471235"
+      }
+    ],
+    "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT",
+    "objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE",
+    "roi": "338.283070807188",
+    "terminal_total": "3392830.70807188"
+  },
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "control_report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+}

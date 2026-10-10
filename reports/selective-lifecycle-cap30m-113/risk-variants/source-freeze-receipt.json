@@ -1,0 +1,40 @@
+{
+  "source_commit": "498a8fe0d62cac5cea00e81660195f7e9c3e0131",
+  "base_commit": "cccfb4b22e4eb4eb9de5d84dbca0f39b243912f8",
+  "scope": "SOURCE_AND_FOCUSED_TESTS_ONLY_NO_RUN_NO_DEPLOY",
+  "files": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "c66ea29deef1bae79a5144ee455ca05622d4cffbe46727c139b4e1af685205a0",
+    "runtime/coinmaster/research/native_baseline.py": "578666bab8c8c7d863d63f816a06c3b7eeaaa62dfa97075f8f67609a8a7dd147",
+    "runtime/coinmaster/research/minute_risk.py": "c6452ff3875ac8e93e3d2db2f2510a6a34f434b092e2d8e6bd8610452fb73f76",
+    "runtime/tests/test_native_sol_cap.py": "fe89c8dc4287693d8c48c8287b039941c99806701599c2487ecb97865236cecc",
+    "runtime/tests/test_native_portfolio_protection.py": "4996c8d1966aa005a03ddd526cb0740803ac56d14a82dd33ee0bcfcd71eca81a"
+  },
+  "tests": {
+    "command": "runtime/.venv/bin/pytest -q --tb=short runtime/tests/test_native_sol_cap.py runtime/tests/test_native_portfolio_protection.py runtime/tests/test_native_minute_risk.py runtime/tests/test_native_baseline.py runtime/tests/test_wave_native_integration.py runtime/tests/test_wave_overlay.py",
+    "passed": 116,
+    "elapsed_seconds": "69.64",
+    "log_path": "/tmp/cm113-risk-variant-tests.log",
+    "log_sha256": "0845194231c3c39f5c868d78463c63cfbf34a0bd3cebda3df6440d2f2789fce3"
+  },
+  "compileall": "PASS",
+  "git_diff_cached_check": "PASS",
+  "variants": {
+    "SOL6": {
+      "cli": "--research-sol-notional-cap-6x",
+      "suffix": "-solcap6",
+      "admission_only": true,
+      "bound": "held_mark_notional + q*max(mark,executable) <= 6*(native_equity - q*abs(mark-executable) - q*executable*taker_fee)",
+      "rights": "EXISTING_ACTUAL_FILL_TRANSITIONS_UNCHANGED"
+    },
+    "PORT45": {
+      "cli": "--research-portfolio-protect-45",
+      "suffix": "-portfolio45",
+      "sample": "PAIRED_MINUTE_MARK_AFTER_NATIVE_PREQUOTE_CAPTURE_BEFORE_QUOTES",
+      "breach": "native_equity <= protective_peak*0.55",
+      "resume": "ACTUAL_NATIVE_FLAT_TERMINAL_PENDING_RECEIPTS_CLEARED_THEN_LATER_FRESH_DAILY_DOMAIN_BTC_ENTRY_UUID",
+      "global_observer_reset": false,
+      "limitation": "Existing forced exits may match previous cached native book after cancel ACK; conditional OHLC is not synchronized historical path; protective epoch45 does not guarantee global DD<=50"
+    }
+  },
+  "mutually_exclusive": true
+}
