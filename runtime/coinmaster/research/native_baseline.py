@@ -671,6 +671,8 @@ def run_native_diagnostic(
     research_v0_deferred_selective_zero_tp: bool = False,
     research_v0_selective_lifecycle_repairs: bool = False,
     observe_minute_risk: bool = False,
+    research_sol_notional_cap_6x: bool = False,
+    research_portfolio_protect_45: bool = False,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -693,6 +695,10 @@ def run_native_diagnostic(
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
     from coinmaster.venues.signals import daily_signal, daily_signal_data_type
 
+    if research_portfolio_protect_45 and research_sol_notional_cap_6x:
+        raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
+    if research_portfolio_protect_45 and not observe_minute_risk:
+        raise ValueError("PORTFOLIO_PROTECTION_REQUIRES_PRE_ACTION_MINUTE_OBSERVER")
     candidate = candidate or Candidate()
     policy = execution_policy or ExecutionPolicy()
     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
@@ -759,6 +765,8 @@ def run_native_diagnostic(
         mark_client_id=mark_client, active_seed=initial_active_seed,
         margin_policy=TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
         terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
+        research_portfolio_protect_45=research_portfolio_protect_45,
+        research_sol_notional_cap_multiple=Decimal("6") if research_sol_notional_cap_6x else None,
         tp_fee_floor_v1=tp_fee_floor_v1, research_v0_execution_repairs=research_v0_execution_repairs, research_v0_zero_tp_netting=research_v0_zero_tp_netting, research_v0_deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp, research_v0_selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs, max_mark_age_ns=max_mark_age_ns,
         btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
         reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
@@ -842,6 +850,10 @@ def run_native_diagnostic(
             full_config["research_v0_selective_lifecycle_repairs"] = True
         stats["peak_rss_bytes"] = _peak_rss_bytes()
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+        if research_portfolio_protect_45:
+            full_config["research_portfolio_protect_45"] = {"fraction": "0.45", "resume": "NEXT_NATIVE_FLAT_FRESH_DAILY_DOMAIN_EPISODE", "peak_reset": "PROTECTIVE_ONLY", "sampling": "AFTER_PREQUOTE_CAPTURE_BEFORE_EXECUTION_QUOTES", "execution": "EXISTING_FORCED_EXIT_MAY_MATCH_PREVIOUS_BOOK_ON_CANCEL_ACK"}
+        if research_sol_notional_cap_6x:
+            full_config["research_sol_notional_cap_multiple"] = "6"
         result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": len(fills), "fill_timestamps_ns": fill_timestamps_ns, "fill_audit": adapter["fill_audit"], "entry_sizing_audit": adapter["entry_sizing_audit"], "fee_attribution": fee_attribution, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": sum("REJECTED" in str(value) for value in orders.get("status", ())), "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Owner-specified non-VIP fixed-base fees are diagnostic; historical applicability remains unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
         result.update({
             "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED",
@@ -866,6 +878,10 @@ def run_native_diagnostic(
             }
         if not early_liquidation_cutoff:
             assert_report_boundaries(result)
+        if research_portfolio_protect_45:
+            result["research_protection_audit"] = strategy.research_protection_audit
+        if research_sol_notional_cap_6x:
+            result["sol_cap_admission_audit"] = strategy.sol_cap_admission_audit
         if risk_recorder is not None:
             result["minute_risk_observations"] = risk_recorder.close()
             risk_recorder = None
@@ -1011,7 +1027,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1021,6 +1037,10 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         raise ValueError("DEFERRED_SELECTIVE_REQUIRES_ORIGINAL_ZERO_TP_BASE")
     if selective_lifecycle_repairs and not deferred_selective_zero_tp:
         raise ValueError("SELECTIVE_LIFECYCLE_REQUIRES_DEFERRED_SELECTIVE")
+    if research_portfolio_protect_45 and research_sol_notional_cap_6x:
+        raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
+    if (research_sol_notional_cap_6x or research_portfolio_protect_45) and not selective_lifecycle_repairs:
+        raise ValueError("SOL_CAP_REQUIRES_SELECTIVE_LIFECYCLE_CONTROL")
     control = json.loads(control_report.read_text())
     config = control["config"]
     if (
@@ -1049,6 +1069,10 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
     label = "v0-deferred-selective-zero-tp" if deferred_selective_zero_tp else "v0-execution-repairs" if zero_tp_netting else "v0-three-repairs-zero-tp-original"
     if selective_lifecycle_repairs:
         label = "v0-selective-lifecycle-cap30m"
+    if research_sol_notional_cap_6x:
+        label += "-solcap6"
+    if research_portfolio_protect_45:
+        label += "-portfolio45"
     report = run_native_diagnostic(
         data_root, include_funding=True, candidate=candidate,
         execution_policy=policy, fixed_base_fee_policy=fee_policy,
@@ -1058,6 +1082,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_v0_deferred_selective_zero_tp=deferred_selective_zero_tp,
         research_v0_selective_lifecycle_repairs=selective_lifecycle_repairs,
         observe_minute_risk=observe_minute_risk,
+        research_sol_notional_cap_6x=research_sol_notional_cap_6x,
+        research_portfolio_protect_45=research_portfolio_protect_45,
     )
     report["control_report_sha256"] = sha256_file(control_report)
     report["control_terminal_total"] = control["summary"]["terminal_total"]
@@ -1074,6 +1100,8 @@ def main() -> None:
     parser.add_argument("--research-v0-original-zero-tp", action="store_true", help="With research repairs, retain original BTC entry and zero-threshold TP levels")
     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
+    parser.add_argument("--research-portfolio-protect-45", action="store_true", help="Research-only paired-minute 45% protective epoch drawdown; resume next genuine BTC episode")
+    parser.add_argument("--research-sol-notional-cap-6x", action="store_true", help="Research-only aggregate SOL entry notional capped at 6x fresh native marked equity")
     parser.add_argument("--observe-minute-risk", action="store_true", help="Research-only non-mutating native close-equity and conditional OHLC risk recorder")
     parser.add_argument("--control-report", type=Path)
     parser.add_argument("--artifact-dir", type=Path)
@@ -1086,6 +1114,10 @@ def main() -> None:
         parser.error("choose only one research V0 zero-TP option")
     if args.research_v0_selective_lifecycle_repairs and not (args.research_v0_execution_repairs and args.research_v0_deferred_selective_zero_tp):
         parser.error("selective lifecycle repairs require execution repairs and deferred selective zero TP")
+    if args.research_sol_notional_cap_6x and args.research_portfolio_protect_45:
+        parser.error("research risk variants are mutually exclusive")
+    if (args.research_sol_notional_cap_6x or args.research_portfolio_protect_45) and not (args.research_v0_selective_lifecycle_repairs and args.observe_minute_risk):
+        parser.error("SOL cap requires selective lifecycle control and minute observer")
     if args.observe_minute_risk and not args.research_v0_execution_repairs:
         parser.error("minute risk observer requires isolated research execution repairs")
     if args.research_v0_execution_repairs:
@@ -1097,6 +1129,8 @@ def main() -> None:
             deferred_selective_zero_tp=args.research_v0_deferred_selective_zero_tp,
             selective_lifecycle_repairs=args.research_v0_selective_lifecycle_repairs,
             observe_minute_risk=args.observe_minute_risk,
+            research_sol_notional_cap_6x=args.research_sol_notional_cap_6x,
+            research_portfolio_protect_45=args.research_portfolio_protect_45,
         )
         print(json.dumps({"status": "COMPLETED", "artifact": str(artifact), "artifact_sha256": sha256_file(artifact)}, sort_keys=True))
         return

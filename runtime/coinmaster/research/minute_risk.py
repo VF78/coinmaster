@@ -187,10 +187,14 @@ def observed_strategy_type(base, recorder):
             from coinmaster.venues.marks import VenueMark
             if isinstance(mark,VenueMark) and all(self._latest_marks.get(i) is not None and self._latest_marks[i].ts_event==timestamp for i in (self.config.btc_id,self.config.sol_id)):
                 recorder.capture(self,timestamp,"pre_quote_paired_close")
+                # Opt-in protection may cancel/fill against the previous native
+                # book. Record held completed-bar exposure before any action.
+                if self.config.research_portfolio_protect_45:
+                    self._research_check_portfolio_protection(timestamp, after_observation=True)
     def on_quote_tick(self,tick):
         base.on_quote_tick(self,tick)
         if tick.instrument_id==self.config.sol_id:
             recorder.capture(self,tick.ts_event,"post_quote_paired_close")
         elif tick.instrument_id==self.config.btc_id:
             recorder.capture(self,tick.ts_event,"post_btc_quote_paired_close")
-    return type(base.__name__,(base,),{"on_data":on_data,"on_quote_tick":on_quote_tick})
+    return type(base.__name__,(base,),{"on_data":on_data,"on_quote_tick":on_quote_tick,"_research_protection_defer_to_recorder":True})
