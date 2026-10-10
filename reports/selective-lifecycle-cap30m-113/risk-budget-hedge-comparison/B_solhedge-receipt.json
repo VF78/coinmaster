@@ -1,0 +1,1311 @@
+{
+  "metrics": {
+    "variant": "B_solhedge",
+    "TOTAL": "470568.99555379",
+    "ACTIVE": "470568.99555379",
+    "RESERVE": "0",
+    "ROI_percent": "4605.689955537900",
+    "delta_control": "-4676315.96162821",
+    "delta_control_percent": "-90.85720781660070592041769461",
+    "native_minute_DD_percent": "72.30991447961151577544744328",
+    "seed_minimum": "6146.56744474",
+    "seed_loss_percent": "38.534325552600",
+    "cash_DD_percent": "69.11030289793555558185276920",
+    "conditional_lower_envelope_DD_percent": "72.28584948765010403954595366",
+    "fees": "215435.80708486",
+    "BTC_fills": 311,
+    "SOL_fills": 55,
+    "fills": 366,
+    "orders": 420,
+    "funding_count": 1141,
+    "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "liquidations": 0,
+    "terminal_positions": 0
+  },
+  "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-solhedge-admission-20261010/result/v0-selective-lifecycle-cap30m-solhedge.json",
+  "artifact_sha256": "087d5f13a1247be87a1d7642dfb167460fa4c01d1af576300ed8e5343a100474",
+  "config": {
+    "account": "SIM_MARGIN_USDT_10000",
+    "btc_close_stop_fraction": null,
+    "candidate": {
+      "beta_days": 270,
+      "btc_close_trail_fraction": 0.03,
+      "btc_notional_multiplier": 7.875,
+      "btc_tp_fractions_initial_qty": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "ema_period": 34,
+      "episode_fixed_beta": false,
+      "max_parent_notional": 30000000.0,
+      "relative_days": 65,
+      "sol_entry_z": [
+        1.25,
+        2.5,
+        3.75
+      ],
+      "sol_exit_all_z": 0.125,
+      "sol_exit_half_z": 0.375,
+      "sol_late_entry_after_tp": true,
+      "sol_max_holding_days": 14,
+      "sol_overlay_enabled": true,
+      "sol_size_multipliers_h": [
+        1.75,
+        2.625,
+        3.5
+      ],
+      "sol_timeout_preempts_add": false,
+      "wave_history_days": 730,
+      "wave_min_count": 8,
+      "wave_quantiles": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "z_history_days": 180
+    },
+    "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+    "execution_policy": {
+      "execution_delay_minutes": 1,
+      "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+      "fee_historical_applicability": "UNKNOWN",
+      "fee_multiplier": "1",
+      "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+      "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+      "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+      "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+      "nonmatching_daily_signals": true,
+      "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+      "symmetric_adverse_spread_bps": "0",
+      "version": "bybit-native-resting-reductions-v2"
+    },
+    "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+    "fixed_base_fee_policy": {
+      "bybit_maker": "0.00020",
+      "bybit_taker": "0.00055",
+      "hyperliquid_maker": "0.00015",
+      "hyperliquid_taker": "0.00045",
+      "venue": "bybit",
+      "version": "fixed-base-native-maker-taker-execution-v3"
+    },
+    "freeze_sigma_on_first_sol_fill": true,
+    "future_sol_margin_fraction": "0",
+    "include_zero_waves": true,
+    "initial_active_fraction": "1.0",
+    "initial_total_usdt": "10000",
+    "insufficient_margin": "reject",
+    "live_enabled": false,
+    "mode": "paper",
+    "portfolio_loss_limit_fraction": null,
+    "post_liquidation": "restart_from_reserve_else_pause",
+    "research_sol_remaining_btc_hedge": {
+      "beta_entry_open_interval": [
+        "0.2",
+        "4"
+      ],
+      "budget": "UNUSED_EARNED_ORIGINAL_RIGHT_ONLY",
+      "held_rebalance": false,
+      "pending_policy": "SERIALIZE_ANY_OWNED_SOL_OPENING_ORDER_OR_UNRESOLVED_SOL_ADD_SUBMISSION",
+      "target": "MAX_ZERO_ACTUAL_REMAINING_BTC_MARK_NOTIONAL_DIV_VALID_BETA_ENTRY_MINUS_AGGREGATE_HELD_SOL_MARK_NOTIONAL"
+    },
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_execution_repairs": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "research_v0_zero_tp_netting": false,
+    "reserve_transfer_fraction": "0",
+    "reserve_trigger_multiple": "4",
+    "restart_target": "initial_active_seed",
+    "run_interval": {
+      "end_exclusive": "2026-09-01T00:00:00+00:00",
+      "initial_active_seed": "10000",
+      "start": "2024-09-01T00:00:00+00:00"
+    },
+    "signal_timeframe": "1D",
+    "sol_direction": "opposite_btc",
+    "sol_entry_eligibility": "persistent_after_btc_level",
+    "sol_z_stop": null,
+    "strategy_id": "btc_sol_wave_overlay_v1",
+    "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+    "tp_fee_floor_v1": false,
+    "venue": "bybit"
+  },
+  "config_hash": "3a29173662d01eceaadf2486793f90be64906ae11452aa3abc77e68affa182c7",
+  "source_hashes": {
+    "native_baseline": "2b45833ba8d6f02bbd66ff4177f044220f752fe82454e8ad91596598af799512",
+    "wave_domain": "547d8493df3872d35b6b2d5392934960b97516f76e051ac99722afedaa0a6bfb",
+    "wave_strategy": "3f20737274822a76514583a7fbb075dc68d94c9600c9f40989e009b057ca25ec"
+  },
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "control_report_sha256": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9",
+  "interval": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00)",
+  "run_interval": {
+    "end_exclusive": "2026-09-01T00:00:00+00:00",
+    "initial_active_seed": "10000",
+    "start": "2024-09-01T00:00:00+00:00"
+  },
+  "streaming": {
+    "batch_count": 105,
+    "cursor_batch_rows": 10080,
+    "event_count": 4206260,
+    "expected_rows_per_source": 1051200,
+    "max_batch_events": 40334,
+    "max_batch_minutes": 10080,
+    "peak_rss_bytes": 622489600,
+    "processed_rows_per_source": 1051200
+  },
+  "fee_attribution": {
+    "audited_total": "215435.80708486",
+    "maker": {
+      "count": 78,
+      "fees": "14571.82824024",
+      "notional": "72859141.2012"
+    },
+    "native_total": "215435.80708486",
+    "reconciled": true,
+    "taker": {
+      "count": 288,
+      "fees": "200863.97884462",
+      "notional": "365207234.2625"
+    },
+    "unknown": {
+      "count": 0,
+      "fees": "0",
+      "notional": "0"
+    }
+  },
+  "fees_reconciled": true,
+  "assets": {
+    "BTC": {
+      "fills": 311,
+      "fees": "212055.22112886",
+      "notional": "431919855.5437",
+      "actions": {
+        "BTC_ENTRY": 105,
+        "BTC_REDUCE": 155,
+        "FORCED_CLOSE": 50,
+        "TERMINAL_CLOSE": 1
+      },
+      "reasons": {
+        "BTC_ENTRY": 105,
+        "BTC_TP3": 54,
+        "REGIME": 48,
+        "BTC_TP2": 24,
+        "BTC_REDUCE": 77,
+        "TRAIL": 2,
+        "TERMINAL_BOUNDARY_SETTLEMENT": 1
+      }
+    },
+    "SOL": {
+      "fills": 55,
+      "fees": "3380.58595600",
+      "notional": "6146519.920",
+      "actions": {
+        "SOL_ADD": 29,
+        "FORCED_CLOSE": 20,
+        "SOL_HALF_EXIT": 1,
+        "SOL_EXIT": 5
+      },
+      "reasons": {
+        "SOL_ADD": 29,
+        "REGIME": 11,
+        "SOL_Z_HALF_EXIT": 1,
+        "SOL_Z_FULL_EXIT": 1,
+        "TRAIL": 9,
+        "SOL_HARD_TIMEOUT": 4
+      }
+    }
+  },
+  "terminal_lifecycle": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "2112398.3349"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "post_boundary_settlement": {
+    "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+    "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+    "fill_count": 1,
+    "interval_cash_total_before_settlement": "462638.27663799",
+    "settled_cash_total": "470568.99555379"
+  },
+  "minute_risk_summary": {
+    "trace_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-solhedge-admission-20261010/result/minute-native-risk.csv.gz",
+    "rows": 3153600,
+    "end_exclusive_ns": "1788220800000000000",
+    "post_boundary_settlement_excluded_from_interval_curves": [
+      {
+        "timestamp_ns": "1788220800000000000",
+        "phase": "post_btc_quote_paired_close",
+        "cash": "470568.99555379",
+        "paired_close_equity": "470568.99555379",
+        "native_positions": []
+      },
+      {
+        "timestamp_ns": "1788220800000000000",
+        "phase": "post_quote_paired_close",
+        "cash": "470568.99555379",
+        "paired_close_equity": "470568.99555379",
+        "native_positions": []
+      }
+    ],
+    "curves": {
+      "pre_quote_paired_close": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1726675500000000000",
+          "equity": "6146.56744474"
+        },
+        "maximum_loss_below_seed_amount": "3853.43255526",
+        "maximum_loss_below_seed_percent": "38.534325552600",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "1487687.54920552"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "411941.95465118"
+            },
+            "recovery": null,
+            "drawdown_amount": "1075745.59455434",
+            "drawdown_peak_percent": "72.30991447961151577544744328"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1742933520000000000",
+              "equity": "152248.21542559"
+            },
+            "trough": {
+              "timestamp_ns": "1744008900000000000",
+              "equity": "54368.71359301"
+            },
+            "recovery": {
+              "timestamp_ns": "1744223040000000000",
+              "equity": "153267.04798317"
+            },
+            "drawdown_amount": "97879.50183258",
+            "drawdown_peak_percent": "64.28942471277619732020883255"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1761168540000000000",
+              "equity": "272730.39298704"
+            },
+            "trough": {
+              "timestamp_ns": "1764340080000000000",
+              "equity": "117994.39877716"
+            },
+            "recovery": {
+              "timestamp_ns": "1764562980000000000",
+              "equity": "272960.4557701"
+            },
+            "drawdown_amount": "154735.99420988",
+            "drawdown_peak_percent": "56.73588209775834199742801717"
+          }
+        ]
+      },
+      "post_btc_quote_paired_close": {
+        "samples": 1051200,
+        "minimum": {
+          "timestamp_ns": "1726675500000000000",
+          "equity": "6146.56744474"
+        },
+        "maximum_loss_below_seed_amount": "3853.43255526",
+        "maximum_loss_below_seed_percent": "38.534325552600",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "1487687.54920552"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "411941.95465118"
+            },
+            "recovery": null,
+            "drawdown_amount": "1075745.59455434",
+            "drawdown_peak_percent": "72.30991447961151577544744328"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1742933520000000000",
+              "equity": "152248.21542559"
+            },
+            "trough": {
+              "timestamp_ns": "1744008900000000000",
+              "equity": "54368.71359301"
+            },
+            "recovery": {
+              "timestamp_ns": "1744223040000000000",
+              "equity": "153267.04798317"
+            },
+            "drawdown_amount": "97879.50183258",
+            "drawdown_peak_percent": "64.28942471277619732020883255"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1761168540000000000",
+              "equity": "272730.39298704"
+            },
+            "trough": {
+              "timestamp_ns": "1764340080000000000",
+              "equity": "117994.39877716"
+            },
+            "recovery": {
+              "timestamp_ns": "1764562980000000000",
+              "equity": "272960.4557701"
+            },
+            "drawdown_amount": "154735.99420988",
+            "drawdown_peak_percent": "56.73588209775834199742801717"
+          }
+        ]
+      },
+      "post_quote_paired_close": {
+        "samples": 1051200,
+        "minimum": {
+          "timestamp_ns": "1726675500000000000",
+          "equity": "6146.56744474"
+        },
+        "maximum_loss_below_seed_amount": "3853.43255526",
+        "maximum_loss_below_seed_percent": "38.534325552600",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "1487687.54920552"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "411941.95465118"
+            },
+            "recovery": null,
+            "drawdown_amount": "1075745.59455434",
+            "drawdown_peak_percent": "72.30991447961151577544744328"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1742933520000000000",
+              "equity": "152248.21542559"
+            },
+            "trough": {
+              "timestamp_ns": "1744008900000000000",
+              "equity": "54368.71359301"
+            },
+            "recovery": {
+              "timestamp_ns": "1744223040000000000",
+              "equity": "153267.04798317"
+            },
+            "drawdown_amount": "97879.50183258",
+            "drawdown_peak_percent": "64.28942471277619732020883255"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1761168540000000000",
+              "equity": "272730.39298704"
+            },
+            "trough": {
+              "timestamp_ns": "1764340080000000000",
+              "equity": "117994.39877716"
+            },
+            "recovery": {
+              "timestamp_ns": "1764562980000000000",
+              "equity": "272960.4557701"
+            },
+            "drawdown_amount": "154735.99420988",
+            "drawdown_peak_percent": "56.73588209775834199742801717"
+          }
+        ]
+      },
+      "all_native_close_samples": {
+        "samples": 3153599,
+        "minimum": {
+          "timestamp_ns": "1726675500000000000",
+          "equity": "6146.56744474"
+        },
+        "maximum_loss_below_seed_amount": "3853.43255526",
+        "maximum_loss_below_seed_percent": "38.534325552600",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "1487687.54920552",
+              "timestamp_utc": "2026-05-15T00:34:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "411941.95465118",
+              "timestamp_utc": "2026-08-18T03:33:00+00:00"
+            },
+            "recovery": null,
+            "drawdown_amount": "1075745.59455434",
+            "drawdown_peak_percent": "72.30991447961151577544744328"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1742933520000000000",
+              "equity": "152248.21542559",
+              "timestamp_utc": "2025-03-25T20:12:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1744008900000000000",
+              "equity": "54368.71359301",
+              "timestamp_utc": "2025-04-07T06:55:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1744223040000000000",
+              "equity": "153267.04798317",
+              "timestamp_utc": "2025-04-09T18:24:00+00:00"
+            },
+            "drawdown_amount": "97879.50183258",
+            "drawdown_peak_percent": "64.28942471277619732020883255"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1761168540000000000",
+              "equity": "272730.39298704",
+              "timestamp_utc": "2025-10-22T21:29:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1764340080000000000",
+              "equity": "117994.39877716",
+              "timestamp_utc": "2025-11-28T14:28:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1764562980000000000",
+              "equity": "272960.4557701",
+              "timestamp_utc": "2025-12-01T04:23:00+00:00"
+            },
+            "drawdown_amount": "154735.99420988",
+            "drawdown_peak_percent": "56.73588209775834199742801717"
+          }
+        ]
+      },
+      "conditional_ohlc_adverse": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1726675500000000000",
+          "equity": "6120.95794474"
+        },
+        "maximum_loss_below_seed_amount": "3879.04205526",
+        "maximum_loss_below_seed_percent": "38.790420552600",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1778805420000000000",
+              "equity": "1483619.97120552",
+              "timestamp_utc": "2026-05-15T00:37:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1787024040000000000",
+              "equity": "411172.67185118",
+              "timestamp_utc": "2026-08-18T03:34:00+00:00"
+            },
+            "recovery": null,
+            "drawdown_amount": "1072447.29935434",
+            "drawdown_peak_percent": "72.28584948765010403954595366"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1742933520000000000",
+              "equity": "151554.13062559",
+              "timestamp_utc": "2025-03-25T20:12:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1744008900000000000",
+              "equity": "52128.71359301",
+              "timestamp_utc": "2025-04-07T06:55:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1744223100000000000",
+              "equity": "151787.04798317",
+              "timestamp_utc": "2025-04-09T18:25:00+00:00"
+            },
+            "drawdown_amount": "99425.41703258",
+            "drawdown_peak_percent": "65.60389784307994475866554978"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1761168600000000000",
+              "equity": "271101.37408704",
+              "timestamp_utc": "2025-10-22T21:30:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1764340260000000000",
+              "equity": "115801.66277716",
+              "timestamp_utc": "2025-11-28T14:31:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1764563040000000000",
+              "equity": "272156.7437701",
+              "timestamp_utc": "2025-12-01T04:24:00+00:00"
+            },
+            "drawdown_amount": "155299.71130988",
+            "drawdown_peak_percent": "57.28473779702029994929997327"
+          }
+        ]
+      }
+    },
+    "potential_conditional_intrabar_margin_breach_count": 0,
+    "first_potential_conditional_breaches": [],
+    "basis": "NATIVE_ACCOUNT_CASH_PLUS_NATIVE_POSITION_UNREALIZED_PNL",
+    "limitations": [
+      "Final prequote at end_exclusive is the completed-last-bar left-limit observation; post-boundary BTC/SOL quotes and terminal settlement are exported separately and excluded from interval close/DD/minimum/TOP3.",
+      "Maintenance breach uses the existing diagnostic native equity <= tier maintenance model only; no extra liquidation-fee reserve or actual venue liquidation safety claim.",
+      "Close equity sampled before paired-close execution quotes and after each BTC and SOL quote callback; native callback cache finalization must be checked against replay fills/account parity.",
+      "OHLC interval is [open_time_ms,open_time_ms+60000); exposure is native positions immediately before close quotes. New close-quote entries never receive this bar's extrema.",
+      "Conditional envelope holds pre-quote exposure fixed and cash between previous postquote cash and current prequote cash. Funding at boundary is included in that cash range, never set to zero.",
+      "Captured maintenance tiers validated monotonic at every boundary, so each high-mark requirement upper-bounds maintenance for fixed quantity.",
+      "Asset extrema are not synchronized; summed adverse extrema give a conservative conditional bound, not actual observed portfolio equity or liquidation.",
+      "Postquote positions and boundary fills are separate samples. Historical tick path, intrabar execution, venue margin/fee applicability remain unvalidated.",
+      "Adverse-bound excursion percentages describe the conditional lower-envelope series, not exact historical maximum drawdown."
+    ]
+  },
+  "btc_guard_event_counts": {},
+  "btc_guard_actual_exit_fills": 0,
+  "btc_guard_block_count": "NOT_EXPORTED_SEPARATELY",
+  "hedge_audit_rows": 107,
+  "hedge_pending_ownership_blocks": 6,
+  "hedge_clips": 107,
+  "hedge_zero_admissions": 78,
+  "hedge_native_inequality_proof": [
+    {
+      "timestamp_ns": "1727913600000000000",
+      "prospective": "35232.635",
+      "target": "35242.18431447932965365228895",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1728000000000000000",
+      "prospective": "35303.686",
+      "target": "35304.85713776314870665236181",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1728604800000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1732233600000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1732320000000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1734912180000000000",
+      "prospective": "128486.729",
+      "target": "128493.9215217021833059940821",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1734998400000000000",
+      "prospective": "135562.665",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1735344000000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1735344000000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1735430400000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1735430400000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1735516800000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1735603200000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1735689600000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1735689600000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1735776000000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1736467200000000000",
+      "prospective": "0.00",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1736553600000000000",
+      "prospective": "0.00",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1736640000000000000",
+      "prospective": "0.0",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1736726400000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1736812800000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1738886400000000000",
+      "prospective": "236415.102",
+      "target": "236416.3143633545423358522206",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1741564800000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1741651200000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1741910400000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1742688000000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1743033780000000000",
+      "prospective": "605771.775",
+      "target": "605778.3959459436599886417450",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1743120000000000000",
+      "prospective": "444070.841",
+      "target": "444080.0409295310850142156813",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1743206400000000000",
+      "prospective": "258800.00",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1743206400000000000",
+      "prospective": "258800.00",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1743292800000000000",
+      "prospective": "248960.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1743379200000000000",
+      "prospective": "249460.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1743465600000000000",
+      "prospective": "248940.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1743638520000000000",
+      "prospective": "574619.584",
+      "target": "574668.7234503545216292974889",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1743724800000000000",
+      "prospective": "580134.915",
+      "target": "580218.2133228317937512300151",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1743811200000000000",
+      "prospective": "585100.150",
+      "target": "585104.1923996432517182772216",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1743897600000000000",
+      "prospective": "582539.100",
+      "target": "582545.7338426437348876100637",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1743984000000000000",
+      "prospective": "423360.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1744070400000000000",
+      "prospective": "427680.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1744156800000000000",
+      "prospective": "421320.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1744329720000000000",
+      "prospective": "678622.50",
+      "target": "678632.6740638518092166165718",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1746057600000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1746835200000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1746921600000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1747094400000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1747180800000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1747267200000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1747353600000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1747440000000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1748131320000000000",
+      "prospective": "324928.774",
+      "target": "324930.8368564896247727038659",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1749600000000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1749686400000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1753142400000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1753228800000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1753315200000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1753488000000000000",
+      "prospective": "0.000",
+      "target": "0E+15",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1754611200000000000",
+      "prospective": "362198.592",
+      "target": "362215.8898631309431821951400",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1754697600000000000",
+      "prospective": "359816.902",
+      "target": "359824.1603886585686894993150",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1754784000000000000",
+      "prospective": "359780.000",
+      "target": "359148.7868309160470480505068",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1754870400000000000",
+      "prospective": "367981.187",
+      "target": "367990.3492083612013098131821",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1754956800000000000",
+      "prospective": "352103.775",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1755043200000000000",
+      "prospective": "386477.969",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1755129600000000000",
+      "prospective": "406103.095",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1755302700000000000",
+      "prospective": "315818.085",
+      "target": "315828.7374909344887361110547",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1755388800000000000",
+      "prospective": "315906.318",
+      "target": "315915.4389018770064843392712",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1755475200000000000",
+      "prospective": "318239.698",
+      "target": "315990.8314331313697436681552",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1755908580000000000",
+      "prospective": "379852.525",
+      "target": "379861.3400987721308206989077",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1757635200000000000",
+      "prospective": "344027.376",
+      "target": "344031.8370417237212972408603",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1757721600000000000",
+      "prospective": "345593.408",
+      "target": "345608.6100176172238074720668",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1757808000000000000",
+      "prospective": "345878.928",
+      "target": "345256.0637257098313543245489",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1757808000000000000",
+      "prospective": "345878.928",
+      "target": "345256.0637257098313543245489",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1757894400000000000",
+      "prospective": "343346.80",
+      "target": "343359.2275904684509956737024",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1757980800000000000",
+      "prospective": "343641.904",
+      "target": "343653.3638458468080127967794",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1758067200000000000",
+      "prospective": "347917.960",
+      "target": "347923.8527410563886160122752",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1758153600000000000",
+      "prospective": "359508.370",
+      "target": "346884.6905095423755271488813",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1758153600000000000",
+      "prospective": "359508.370",
+      "target": "346884.6905095423755271488813",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1758240000000000000",
+      "prospective": "363445.290",
+      "target": "348755.0037200333265296457726",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1758240000000000000",
+      "prospective": "363445.290",
+      "target": "348755.0037200333265296457726",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1758326400000000000",
+      "prospective": "350268.360",
+      "target": "344419.2505493142624545458251",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1758326400000000000",
+      "prospective": "350268.360",
+      "target": "344419.2505493142624545458251",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1758412800000000000",
+      "prospective": "351619.840",
+      "target": "344596.2687212440943371913243",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1758499200000000000",
+      "prospective": "346816.210",
+      "target": "343241.8114966294715987674284",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1759449600000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1779235200000000000",
+      "prospective": "2927465.800",
+      "target": "2927467.217581425338856306751",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1779321600000000000",
+      "prospective": "2954630.796",
+      "target": "2954635.614788053978789030525",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1779408000000000000",
+      "prospective": "2957261.31",
+      "target": "2957265.552228089579455918769",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1779494400000000000",
+      "prospective": "2877739.838",
+      "target": "2878051.074233510030673399382",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1779580800000000000",
+      "prospective": "342800.00",
+      "target": "0E+14",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1779667200000000000",
+      "prospective": "340840.000",
+      "target": "0E+14",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1779753600000000000",
+      "prospective": "340000.0",
+      "target": "0E+14",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1779840000000000000",
+      "prospective": "334640.000",
+      "target": "0E+14",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1779926400000000000",
+      "prospective": "329520.000",
+      "target": "0E+14",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1780012800000000000",
+      "prospective": "328320.000",
+      "target": "0E+14",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1780099200000000000",
+      "prospective": "327960.000",
+      "target": "0E+14",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1780272000000000000",
+      "prospective": "329600.00",
+      "target": "0E+14",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1784505600000000000",
+      "prospective": "2981236.076",
+      "target": "2981238.152496034813948252454",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1784592000000000000",
+      "prospective": "3005423.964",
+      "target": "3005428.996560579046141445858",
+      "admitted_positive": true,
+      "inequality_holds": true
+    },
+    {
+      "timestamp_ns": "1784678400000000000",
+      "prospective": "156180.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1784764800000000000",
+      "prospective": "155880.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1784851200000000000",
+      "prospective": "151640.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": false
+    },
+    {
+      "timestamp_ns": "1787875200000000000",
+      "prospective": "0.000",
+      "target": "0E+16",
+      "admitted_positive": false,
+      "inequality_holds": true
+    }
+  ],
+  "hedge_positive_admission_violations": 0,
+  "immutable_source_commit": "6c5e9d31faded0cc1eff609b47562b63cd551d03",
+  "immutable_files_verified": 106,
+  "status": "NOT_FAITHFUL_DIAGNOSTIC",
+  "ranking_eligible": false,
+  "hedge_nonpending_sizing_clips": 101,
+  "config_differences": {
+    "research_sol_remaining_btc_hedge": {
+      "control": null,
+      "variant": {
+        "beta_entry_open_interval": [
+          "0.2",
+          "4"
+        ],
+        "budget": "UNUSED_EARNED_ORIGINAL_RIGHT_ONLY",
+        "held_rebalance": false,
+        "pending_policy": "SERIALIZE_ANY_OWNED_SOL_OPENING_ORDER_OR_UNRESOLVED_SOL_ADD_SUBMISSION",
+        "target": "MAX_ZERO_ACTUAL_REMAINING_BTC_MARK_NOTIONAL_DIV_VALID_BETA_ENTRY_MINUS_AGGREGATE_HELD_SOL_MARK_NOTIONAL"
+      }
+    }
+  },
+  "common_config_fields_equal": true
+}

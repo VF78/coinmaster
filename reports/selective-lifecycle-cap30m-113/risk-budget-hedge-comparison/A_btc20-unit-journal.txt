@@ -1,0 +1,7 @@
+Oct 10 19:06:26 MyShopAI-prod-1 systemd[1]: Started cm113-btc20-group-20261010.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-btc20-group-20261010/launch.sh.
+Oct 10 19:06:39 MyShopAI-prod-1 systemd[1]: cm113-btc20-group-20261010.service: Main process exited, code=exited, status=1/FAILURE
+Oct 10 19:06:39 MyShopAI-prod-1 systemd[1]: cm113-btc20-group-20261010.service: Failed with result 'exit-code'.
+Oct 10 19:06:39 MyShopAI-prod-1 systemd[1]: cm113-btc20-group-20261010.service: Consumed 12.307s CPU time, 620.0K memory peak, 0B memory swap peak.
+Oct 10 19:08:52 MyShopAI-prod-1 systemd[1]: Started cm113-btc20-group-20261010.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-btc20-group-20261010/launch.sh.
+Oct 10 19:27:31 MyShopAI-prod-1 systemd[1]: cm113-btc20-group-20261010.service: Deactivated successfully.
+Oct 10 19:27:31 MyShopAI-prod-1 systemd[1]: cm113-btc20-group-20261010.service: Consumed 17min 54.652s CPU time, 496.6M memory peak, 0B memory swap peak.

@@ -1,0 +1,8 @@
+{
+  "preengine_failure": "missing tracked public venue metadata",
+  "engine_run_reached": false,
+  "native_fill_csv_present": false,
+  "sqlite_table_counts": {},
+  "preserved_result_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-btc20-group-20261010/result",
+  "replacement_result_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-btc20-group-20261010/result-run"
+}
