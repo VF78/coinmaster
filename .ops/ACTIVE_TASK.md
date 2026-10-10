@@ -1,3 +1,19 @@
+CURRENT TWO ISOLATED DRAWDOWN CANDIDATES — 2026-10-10 COMPLETE
+
+Owner-approved two separate native research runs completed; global 24m equity peak never reset. Comparison control reused: TOTAL 5,146,884.95718200 USDT, ROI +51,368.84957182%, native minute DD 69.3409714040%, conditional upper-to-lower OHLC bound 70.4658144366%; seed 10,000, reserve 0. Same Bybit [2024-09-01,2026-09-01), fees/funding/margin/EMA/z/TP/BTC sizing/cap30m.
+
+SOLCAP6: TOTAL 3,476,258.68771317 / ROI +34,662.58687713%; delta -1,670,626.26946883 (-32.4589782629%). Native DD 63.1296516563%, conditional bound 63.4791481874%; minimum native equity 6,146.56744474 / seed loss 38.5343255526%. Fees 979,346.00980663 (maker 65,454.03143854 / taker 913,891.97836809), fills 492 (BTC311/SOL181), BTC105 entry fills/SOL91 adds. First SOL clamp Oct03 2024 766.1→397.2; all admission inequalities pass. Entry-only aggregate cap 6x fresh equity, not forced deleveraging. Remaining TOP3 troughs BTC-only. Target global <=50% FAIL.
+
+PORT45: TOTAL 3,392,830.70807188 / ROI +33,828.30708072%; delta -1,754,054.24911012 (-34.0799194795%). Native DD 64.8435163296%, conditional bound 65.07867982%; minimum native equity 5,962.33368192 / seed loss 40.3766631808%. Fees 1,142,862.12650233 (maker 74,855.26740400 / taker 1,068,006.85909833), fills 518 (BTC327/SOL191), BTC111 entry fills/SOL95 adds. Seven protective breaches/seven fresh-episode rearms/eight native protection fills; trigger drawdowns 45.0447–45.2487%, protection exit fees 24,805.22508141. Only protective peak reset at actual flat cash, as owner approved; global peak unchanged. Apr13/Jun06 successive protective losses plus Jun07 reentry explain global64.84. Target global <=50% FAIL.
+
+Source frozen 498a8fe0d62cac5cea00e81660195f7e9c3e0131;116 focused native tests passed69.64s, compile/diff clean, one independent narrow GO. Exactly TWO sequential engines, fresh journals/result dirs; all1051200 data rows per source and3153600 risk rows each, source/data/policy guards passed. SOL16m57s/486.1M, PORT18m30s/534.2M, swap0. Both nativeflat, zero liquidations/conditional model MM breaches; funding postings1321/1351, signed funding UNKNOWN.
+
+Reports c3c3814 + liquidity receipt26c11e2 under reports/selective-lifecycle-cap30m-113/risk-variants/: README/comparisonJSONCSV/TOP3/protectionevents/receipts/hashes/nativeaggregatechecks/read-only reproducer. Large minute traces remain immutable isolated jobs. Native fill/commission/count/config/cash decomposition checks pass; LF/diff clean. Zero-latency protection fills against previous cached book remain diagnostic, not venue stop/slippage proof; pre-action equity/OHLC retained. NOT_FAITHFUL_DIAGNOSTIC, not live ranking.
+
+Bounded package complete; broader #113 OPEN/In Progress. No qualifying winner under <=50% global target; control remains maximum-TOTAL reference. Next bounded hypotheses only: lower actual BTC exposure while globally underwater, or tighter protective-epoch threshold with same restart policy. Neither ROI preservation nor <=50% is proved; no automatic third run, optimizer, promotion or deployment.
+
+Pilot preserved: installed81e6318646b51280497806a1c0492591654b5fe6, activePID2009732/NRestarts0; no restart/deploy/archive/reseal/config/order/credential changes. Existing Project #113 bounded five checks read back COMPLETE; broader issue OPEN/In Progress. Next owner assessment of measured risk/ROI and separately scoped next comparison; no automatic further run.
+
 CURRENT DRAWDOWN CAUSE / STOP STATISTICS ANALYSIS — 2026-10-10 COMPLETE
 
 Owner-requested read-only attribution completed on unchanged cap30m winner. Report c6a9c1ea21afb43dd42e9ccd62c48a50aeb9df73 under reports/selective-lifecycle-cap30m-113/drawdown-causes/: exactJSON/3CSV/README/aggregatechecks/read-onlyreproducer. One bounded existingtrace pass; no new engine/backtest/strategy/pilot/deploy/restart/seal/order/keys changes.
