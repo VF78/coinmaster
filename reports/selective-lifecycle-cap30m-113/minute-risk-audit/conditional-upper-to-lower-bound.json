@@ -1,0 +1,20 @@
+{
+  "maximum_percent": "70.46581443662197363596957826",
+  "amount_usdt": "9747.50529779",
+  "peak": {
+    "timestamp_ns": "1726273140000000000",
+    "bar_open_ms": "1726273080000",
+    "equity": "13832.95627209",
+    "basis": "CONDITIONAL_FAVORABLE_BOUND",
+    "utc": "2024-09-14T00:19:00+00:00"
+  },
+  "trough": {
+    "timestamp_ns": "1727970300000000000",
+    "bar_open_ms": "1727970240000",
+    "equity": "4085.4509743",
+    "basis": "CONDITIONAL_ADVERSE_BOUND",
+    "utc": "2024-10-03T15:45:00+00:00"
+  },
+  "same_bar_extreme_order_unknown": false,
+  "interpretation": "Conditional favorable running upper peak to subsequent adverse lower maximum; within-bar upper is permitted to precede same-bar lower for a conservative bound. Joint interasset extrema and intrabar path/order are unknown. This is a possible worst-case bound, not observed historical DD or a realized trajectory. It also must not be confused with the lower-to-lower envelope excursion percentages."
+}

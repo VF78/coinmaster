@@ -1,0 +1,33 @@
+{
+  "trace": {
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-minute-extrema-risk-20261010/result/minute-native-risk.csv.gz",
+    "bytes": 75760233,
+    "sha256": "37fc8c1e85bbc9e434e33bef3d3e3ae31e48b6502f3cc7332552941f269c71d1"
+  },
+  "observer_raw_result": {
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-minute-extrema-risk-20261010/result/v0-selective-lifecycle-cap30m.json",
+    "sha256": "669d5c951f0dbc88216385890b143b5bfd5bc8eeeff88cf968dd68346474c703"
+  },
+  "winner_raw_result_sha256": "8e4a387260688729563258b84befe34b0bef2479f2fbe369c621fab9cc3281e2",
+  "observer_source_commit": "c70f920d4daf67f3aa8e880c938cfcdfeb60bc63",
+  "normalized_csv": {
+    "fills": {
+      "excluded_columns": [
+        "init_id"
+      ],
+      "baseline_sha256": "4e6c85a3f14731d47b20ca301d2950fcb1b4222b381f7631ccf9159ee546ac09",
+      "observer_sha256": "4e6c85a3f14731d47b20ca301d2950fcb1b4222b381f7631ccf9159ee546ac09",
+      "equal": true,
+      "rows": 502
+    },
+    "orders": {
+      "excluded_columns": [
+        "init_id"
+      ],
+      "baseline_sha256": "41dacebf8aa0fe8562cf001f4a69565c070af3d3302692d577c2b0f95015e41b",
+      "observer_sha256": "41dacebf8aa0fe8562cf001f4a69565c070af3d3302692d577c2b0f95015e41b",
+      "equal": true,
+      "rows": 556
+    }
+  }
+}

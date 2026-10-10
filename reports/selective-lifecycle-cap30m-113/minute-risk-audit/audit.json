@@ -155,10 +155,10 @@
       "rows_high_or_low_differ_from_close": 1051108
     }
   ],
-  "minute_extrema_validation": "NOT_PERFORMED_BY_WINNER_RUN",
+  "minute_extrema_validation": "COMPLETED_NONMUTATING_NATIVE_CLOSE_SAMPLING_AND_CONDITIONAL_OHLC_ENVELOPES_NOT_OBSERVED_SYNCHRONIZED_INTRABAR_PATH",
   "observed_liquidation_count": 0,
   "liquidation_scope": "Minute-close mark callback evaluations, including permitted asynchronous latest-fresh marks. Does not validate high/low or historical liquidation behavior.",
-  "missing_artifact": "Full native minute account/cash/open-position/mark/maintenance trace including fill/funding event sequencing; exchange tick/path timing within each minute and synchronized BTC/SOL mark extrema. Existing fills/orders, cash, funding journal and 24 monthly marked snapshots do not supply native per-minute mark valuations.",
+  "missing_artifact": "Synchronized historical BTC/SOL tick marks and intrabar execution path, actual historical venue margin/liquidation-fee applicability. Native minute cash/position/mark/PnL trace is now available at immutable observer job.",
   "source_proofs": {
     "close_only_marks_and_quotes": "runtime/coinmaster/research/native_baseline.py:766-786",
     "cash_report_and_export": "runtime/coinmaster/research/native_baseline.py:798-812,836",
@@ -169,14 +169,23 @@
     "synthetic_size_1000": "runtime/coinmaster/research/native_fixture.py:472-477"
   },
   "proposed_validation": {
-    "pass": "Single unchanged-feed native from-genesis replay with observer-only streamed minute native cash/positions/paired close equity/maintenance plus event-order samples at fills and funding. Exact terminal cash/fills/orders/fees/funding parity required. OHLC portfolio risk envelopes are conservative fixed-exposure bounds, not synchronous observed extrema; minute-open and minute-end snapshots around fills avoid silently treating boundary fills as throughout-minute exposure.",
-    "not_execution_mutation": "Observer must not publish high/low quotes, mutate marks/margin policy, latch liquidation, or change any strategy decisions.",
-    "extrema_exactness_blocker": "OHLC does not identify intrabar chronology or cross-asset extreme synchrony. Changing execution/risk feed to high/low would be a new modeled scenario, not validation of the existing close-feed result.",
-    "historical_elapsed_seconds": 542,
-    "historical_systemd_memory_peak": "477.8M",
-    "historical_python_peak_rss_bytes": 615419904,
-    "projected_elapsed": "Approximately 10-20 minutes with native valuation observer; benchmark rather than guarantee.",
-    "storage": "Bounded compressed streaming minute trace; avoid million-element in-memory checkpoint dict. Free disk observed 2.7GiB.",
-    "launched": false
-  }
+    "status": "COMPLETED_ONE_NATIVE_OBSERVER_REPLAY",
+    "source_commit": "c70f920d4daf67f3aa8e880c938cfcdfeb60bc63",
+    "result_sha256": "669d5c951f0dbc88216385890b143b5bfd5bc8eeeff88cf968dd68346474c703",
+    "economic_and_normalized_native_csv_parity": true,
+    "launched": true,
+    "start": "2026-10-10T10:17:45Z",
+    "finish": "2026-10-10T10:33:23Z",
+    "elapsed_seconds": 938,
+    "memory_peak": "439.1M",
+    "swap_peak": "0B",
+    "trace_ref": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-minute-extrema-risk-20261010/result/minute-native-risk.csv.gz",
+      "bytes": 75760233,
+      "sha256": "37fc8c1e85bbc9e434e33bef3d3e3ae31e48b6502f3cc7332552941f269c71d1"
+    },
+    "analysis": "replay-analysis.json"
+  },
+  "current_report": "README.md",
+  "initial_audit_basis": "Original winner cash-only assessment retained as historical evidence; completed native risk observer results supersede cash-only minimum/DD for marked risk reporting."
 }
