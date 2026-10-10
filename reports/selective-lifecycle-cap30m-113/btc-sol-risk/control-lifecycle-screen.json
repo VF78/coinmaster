@@ -1,0 +1,21 @@
+{
+  "source_sha256": "8e4a387260688729563258b84befe34b0bef2479f2fbe369c621fab9cc3281e2",
+  "opening_fills": 200,
+  "opening_submit_accept_different": 0,
+  "opening_submit_fill_different": 0,
+  "half_fills": 1,
+  "half_same_child_submit_fill_day": true,
+  "half_runs": [
+    {
+      "fill_count": 1,
+      "first_submit_ns": "1739318400000000000",
+      "last_fill_ns": "1739318400000000000",
+      "crosses_utc_day": false
+    }
+  ],
+  "limitations": [
+    "Opening native submit/ACK/fill equality does not prove within-timestamp group-flat callback ordering.",
+    "Control has exactly one half fill without a retry or cross-day completion; P2 path is absent in these native fill receipts.",
+    "Comparisons against reused original control are candidate-plus-shared-correctness-fixes, not proved pure candidate-only effects."
+  ]
+}

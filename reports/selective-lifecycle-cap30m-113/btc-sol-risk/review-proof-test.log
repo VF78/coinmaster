@@ -1,0 +1,155 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__ test_native_btc_final_realized_fee_persists_while_sol_keeps_episode_active __
+
+    def test_native_btc_final_realized_fee_persists_while_sol_keeps_episode_active():
+        strategy = NativeProbe(lifecycle_config(research_btc_episode_loss_20=True, max_mark_age_ns=100))
+        engine = native_engine(strategy)
+        run_ticks(engine, [tick(BTC_PERP, 0)])
+        try:
+            marks(strategy, 1)
+            episode = Episode("btc-flat-sol-held", 1, 10000, 1.)
+            strategy._domain.episode = episode
+            entry = strategy._domain._intent(episode, "BTC_ENTRY", 1, None, quantity=10)
+            strategy._submit_intent(entry, 100, 100, None, 0, ts_now=1)
+            run_ticks(engine, [tick(BTC_PERP, 1)])
+            reference = strategy._btc_loss_reference
+            assert reference == D("9999")
+            btc_position_id = str(engine.cache.positions_open()[0].id)
+            sol = strategy._domain._intent(episode, "SOL_ADD", -1, 0, quantity=10)
+            strategy._submit_intent(sol, 100, 100, .01, 0, ts_now=2)
+            run_ticks(engine, [tick(SOL_PERP, 2)])
+            # One actual native full TP earns its right and removes BTC exposure.
+            episode.btc_tp_target_lots = {0: 10000}
+            tp = strategy._domain._intent(episode, "BTC_REDUCE", -1, 0, quantity=10)
+            strategy._submit_intent(tp, 110, 110, .01, 0, ts_now=3)
+>           run_ticks(engine, [tick(BTC_PERP, 3, "110")])
+
+runtime/tests/test_native_episode_risk.py:357: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+runtime/tests/test_native_episode_risk.py:22: in run_ticks
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+nautilus_trader/backtest/engine.pyx:1374: in nautilus_trader.backtest.engine.BacktestEngine.run
+    ???
+nautilus_trader/backtest/engine.pyx:1727: in nautilus_trader.backtest.engine.BacktestEngine._run
+    ???
+nautilus_trader/backtest/engine.pyx:1920: in nautilus_trader.backtest.engine.BacktestEngine._process_and_settle_venues
+    ???
+nautilus_trader/backtest/engine.pyx:3660: in nautilus_trader.backtest.engine.SimulatedExchange._drain_commands
+    ???
+nautilus_trader/backtest/engine.pyx:3775: in nautilus_trader.backtest.engine.SimulatedExchange._process_trading_command
+    ???
+nautilus_trader/backtest/engine.pyx:5214: in nautilus_trader.backtest.engine.OrderMatchingEngine.process_order
+    ???
+nautilus_trader/backtest/engine.pyx:5354: in nautilus_trader.backtest.engine.OrderMatchingEngine._process_market_order
+    ???
+nautilus_trader/backtest/engine.pyx:6297: in nautilus_trader.backtest.engine.OrderMatchingEngine.fill_market_order
+    ???
+nautilus_trader/backtest/engine.pyx:7419: in nautilus_trader.backtest.engine.OrderMatchingEngine.apply_fills
+    ???
+nautilus_trader/backtest/engine.pyx:7893: in nautilus_trader.backtest.engine.OrderMatchingEngine.fill_order
+    ???
+nautilus_trader/backtest/engine.pyx:8543: in nautilus_trader.backtest.engine.OrderMatchingEngine._generate_order_filled
+    ???
+nautilus_trader/common/component.pyx:2614: in nautilus_trader.common.component.MessageBus.send
+    ???
+nautilus_trader/execution/engine.pyx:880: in nautilus_trader.execution.engine.ExecutionEngine.process
+    ???
+nautilus_trader/execution/engine.pyx:892: in nautilus_trader.execution.engine.ExecutionEngine.process
+    ???
+nautilus_trader/execution/engine.pyx:1341: in nautilus_trader.execution.engine.ExecutionEngine._handle_event
+    ???
+nautilus_trader/common/component.pyx:2834: in nautilus_trader.common.component.MessageBus.publish_c
+    ???
+nautilus_trader/trading/strategy.pyx:1886: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:1987: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:1971: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:723: in nautilus_trader.trading.strategy.Strategy.on_order_filled
+    ???
+runtime/coinmaster/strategy/wave_overlay.py:1640: in on_order_filled
+    self._apply_confirmed_domain_fill(
+runtime/coinmaster/strategy/wave_overlay.py:1683: in _apply_confirmed_domain_fill
+    self._domain.on_fill(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <coinmaster.domain.wave_overlay.WaveOverlayState object at 0x7b82e9784830>
+intent_id = 'e9f0cf9c-b3d7-45b2-8455-84fb9a223d8b', quantity = 10.0
+price = 110.0
+when = datetime.datetime(1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)
+sigma = 0.01, decision_index = 0, entry_fee = None, entry_qty = None
+entry_price = None
+
+    def on_fill(self, intent_id: str, quantity: float, price: float, when: datetime, sigma: float | None = None, decision_index: int | None = None, entry_fee: Decimal | None = None, entry_qty: Decimal | None = None, entry_price: Decimal | None = None) -> None:
+        episode = self.episode
+        if episode is None or intent_id not in episode.pending or quantity <= 0:
+            return
+        intent = episode.pending[intent_id]
+        if intent.action == "BTC_ENTRY":
+            episode.btc_entry_qty_exact += entry_qty if entry_qty is not None else Decimal(str(quantity))
+            episode.btc_entry_notional_exact += (entry_qty if entry_qty is not None else Decimal(str(quantity))) * (entry_price if entry_price is not None else Decimal(str(price)))
+            episode.btc_entry_fill_count += 1
+            if entry_fee is not None:
+                episode.btc_entry_fees_exact += entry_fee
+                episode.btc_entry_fee_fill_count += 1
+            prior = episode.btc_initial_qty
+            episode.btc_entry_vwap = ((episode.btc_entry_vwap or 0) * prior + price * quantity) / (prior + quantity)
+            episode.btc_initial_qty += quantity
+            episode.btc_open_qty += quantity
+            if episode.btc_omitted_zero_levels and episode.btc_net_planned_qty > 0:
+                # A real net entry earns omitted-level SOL rights directly.
+                fraction = min(1.0, episode.btc_initial_qty / episode.btc_net_planned_qty)
+                for level in episode.btc_omitted_zero_levels:
+                    if episode.btc_deferred_right_reference_price is None:
+                        episode.sol_rights.add(level)
+                    episode.sol_right_fraction[level] = fraction
+                    if episode.btc_deferred_right_reference_price is None or level not in episode.sol_rights:
+                        episode.sol_right_decision_index[level] = self._decision_index if decision_index is None else decision_index
+        elif intent.action == "BTC_REDUCE" and intent.level is not None:
+            episode.sol_rights.add(intent.level)
+            if self.btc_lot_step is not None:
+                self._ensure_btc_targets(episode)
+                target_lots = episode.btc_tp_target_lots[intent.level]
+                filled_lots = min(
+                    target_lots,
+                    episode.btc_tp_filled_lots.get(intent.level, 0) + self._lots(quantity, self.btc_lot_step),
+                )
+                episode.btc_tp_filled_lots[intent.level] = filled_lots
+                filled_quantity = float(Decimal(filled_lots) * self.btc_lot_step)
+>               target_quantity = episode.btc_tp_target_qty[intent.level]
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               KeyError: 0
+
+runtime/coinmaster/domain/wave_overlay.py:487: KeyError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000003Z[0m [1;31m[ERROR] BACKTESTER-001.NativeProbe: Error on handling OrderFilled(trader_id=BACKTESTER-001, strategy_id=NativeProbe-000, instrument_id=BTCUSDT-PERP.P1SIM, client_order_id=O-19700101-000000-001-000-3, venue_order_id=P1SIM-1-002, account_id=P1SIM-001, trade_id=T-bfb925e4b60ee78f-002, position_id=BTCUSDT-PERP.P1SIM-NativeProbe-000, order_side=SELL, order_type=MARKET, last_qty=10.000, last_px=110.0 USDT, commission=1.10000000 USDT, liquidity_side=TAKER, event_id=400f04cf-f046-4d67-a791-6b1cf8be569d, ts_event=3, ts_init=3)
+KeyError(0)
+Traceback (most recent call last):
+  File "nautilus_trader/trading/strategy.pyx", line 1971, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 723, in nautilus_trader.trading.strategy.Strategy.on_order_filled
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 1640, in on_order_filled
+    self._apply_confirmed_domain_fill(
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 1683, in _apply_confirmed_domain_fill
+    self._domain.on_fill(
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/domain/wave_overlay.py", line 487, in on_fill
+    target_quantity = episode.btc_tp_target_qty[intent.level]
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+[0m
+=============================== warnings summary ===============================
+tests/test_native_episode_risk.py::test_native_btc_final_realized_fee_persists_while_sol_keeps_episode_active
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_episode_risk.py::test_native_btc_final_realized_fee_persists_while_sol_keeps_episode_active
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:377: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_episode_risk.py::test_native_btc_final_realized_fee_persists_while_sol_keeps_episode_active
+1 failed, 2 warnings in 2.95s

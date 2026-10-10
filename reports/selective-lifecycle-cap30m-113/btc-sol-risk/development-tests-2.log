@@ -1,0 +1,79 @@
+........F............                                                    [100%]
+=================================== FAILURES ===================================
+_____ test_native_half_completion_day_is_followed_by_later_daily_full_only _____
+
+    def test_native_half_completion_day_is_followed_by_later_daily_full_only():
+        class Probe(NativeProbe):
+            def __init__(self, config):
+                super().__init__(config)
+                self.n = 0
+            def on_quote_tick(self, quote):
+                self.n += 1
+                if self.n == 1:
+                    self._domain.episode = Episode("half", 1, 10000, 1.0, btc_entry_vwap=100, btc_initial_qty=1)
+                    intent = self._domain._intent(self._domain.episode, "SOL_ADD", 1, 0, quantity=1000)
+                    self._submit_intent(intent, 1, 1, None, 0, ts_now=quote.ts_event)
+                elif self.n == 2:
+                    self._domain.episode.sol_half_target_lots = 5000
+                    intent = self._domain._intent(self._domain.episode, "SOL_HALF_EXIT", -1, None, quantity=500)
+                    self._submit_intent(intent, 1, 1, None, 0, ts_now=quote.ts_event)
+                else:
+                    super().on_quote_tick(quote)
+        strategy = Probe(lifecycle_config())
+        engine = native_engine(strategy)
+        now = datetime(2024, 1, 1, tzinfo=UTC)
+        bars = [DailyBar(now + timedelta(days=i), now + timedelta(days=i+1),
+                        now + timedelta(days=i+1), 100, 100, 1) for i in range(3)]
+        try:
+            run_ticks(engine, [tick(SOL_PERP, 1, "1"), tick(SOL_PERP, 2, "1", "250")])
+            assert not strategy._domain.episode.sol_half_done
+            strategy._bars = bars[:2]
+            run_ticks(engine, [tick(SOL_PERP, 61000000002, "1")])
+            episode = strategy._domain.episode
+>           assert episode.sol_half_done and episode.sol_half_decision_index == 1, (episode, strategy._queued_intents, strategy.fill_audit)
+E           AssertionError: (Episode(id='half', side=1, active_entry=10000, beta_entry=1.0, btc_initial_qty=1, btc_open_qty=0.0, btc_entry_vwap=10...'USDT', ...}, {'accept_ns': '2', 'action': 'SOL_HALF_EXIT', 'commission': '0.25', 'commission_currency': 'USDT', ...}])
+E           assert (False)
+E            +  where False = Episode(id='half', side=1, active_entry=10000, beta_entry=1.0, btc_initial_qty=1, btc_open_qty=0.0, btc_entry_vwap=100...ex=None, best_f=0.0, pending={}, resting_reductions=set(), attempted_btc_at={}, attempted_sol_at={}, close_reason=None).sol_half_done
+
+runtime/tests/test_native_episode_risk.py:134: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_episode_risk.py: 17 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[accepted_canceled-REGIME]
+tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[accepted_canceled-TRAIL]
+tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[partial_late_fill-REGIME]
+tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[partial_late_fill-TRAIL]
+tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[rejected-REGIME]
+tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[rejected-TRAIL]
+tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[denied-REGIME]
+tests/test_native_episode_risk.py::test_native_ordinary_close_waits_opening_terminal_and_closes_late_actual_fill[denied-TRAIL]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:103: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+tests/test_native_episode_risk.py::test_native_half_completion_day_is_followed_by_later_daily_full_only
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:140: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+tests/test_native_episode_risk.py::test_native_btc_episode_guard_exact_fees_partial_profit_immutable_basis_two_episodes[1-False]
+tests/test_native_episode_risk.py::test_native_btc_episode_guard_exact_fees_partial_profit_immutable_basis_two_episodes[1-True]
+tests/test_native_episode_risk.py::test_native_btc_episode_guard_exact_fees_partial_profit_immutable_basis_two_episodes[-1-False]
+tests/test_native_episode_risk.py::test_native_btc_episode_guard_exact_fees_partial_profit_immutable_basis_two_episodes[-1-True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:235: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+tests/test_native_episode_risk.py::test_native_sol_hedge_partial_admission_pending_and_btc_flat_zero[False-1]
+tests/test_native_episode_risk.py::test_native_sol_hedge_partial_admission_pending_and_btc_flat_zero[False--1]
+tests/test_native_episode_risk.py::test_native_sol_hedge_partial_admission_pending_and_btc_flat_zero[True-1]
+tests/test_native_episode_risk.py::test_native_sol_hedge_partial_admission_pending_and_btc_flat_zero[True--1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:275: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end(); engine.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_episode_risk.py::test_native_half_completion_day_is_followed_by_later_daily_full_only
+1 failed, 20 passed, 34 warnings in 3.15s

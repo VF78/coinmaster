@@ -1,0 +1,42 @@
+{
+  "source_commit": "6c5e9d31faded0cc1eff609b47562b63cd551d03",
+  "verification": {
+    "relevant_files": 7,
+    "passed": 139,
+    "log": "verification-tests-final.log",
+    "duration_seconds": "75.90",
+    "additional_review_native_proof_passed": 1,
+    "additional_review_log": "review-proof-test-final.log",
+    "source_behavior_change_after_final_verification": false,
+    "report_only_metadata_after_final_verification": "SOL_B_PENDING_SERIALIZATION_EXPLICIT_CONFIG"
+  },
+  "native_proofs": [
+    "ordinary REGIME/TRAIL Submitted-before-ACK accepted/canceled, actual partial late fill, rejected and denied terminal receipts",
+    "half250+250 completion day1 prevents full until day2",
+    "long/short immutable first confirmed BTC fill equity; partial TP fee-net native PnL; two genuine episodes and native partial forced closes",
+    "preaction observer retains both native legs before existing forced group exit",
+    "BTC fully flat while SOL held retains final fee-net realized BTC PnL and episode reference",
+    "SOL remaining native BTC/beta aggregate budget; pending serialization; BTC-flat zero adds; finite validbeta; terminal actual flat",
+    "default OFF with optional audit/config omitted plus existing observer accounting/fill/order parity"
+  ],
+  "pilot_actions": "NONE",
+  "historical_candidate_engines_started": 0,
+  "control_terminal_total": "5146884.95718200",
+  "comparison_scope": "A_OR_B_PLUS_SHARED_CORRECTNESS_FIXES_VS_REUSED_ORIGINAL_CONTROL",
+  "sol_B_pending_policy": "SERIALIZE_ANY_OWNED_SOL_OPENING_ORDER_OR_UNRESOLVED_SOL_ADD_SUBMISSION",
+  "checks": {
+    "compileall": true,
+    "git_diff_check": true
+  },
+  "artifacts_sha256": {
+    "development-tests.log": "921184febce831d6875550982e443905be2477732ab3a73afcf20a786e9cc600",
+    "verification-tests.log": "04aec6021299a2b97c0f8772a9977f43d6a0baf72eff6b817226405440016c98",
+    "development-tests-3.log": "25cca9345a81b9f3382c9a4c6f5c27ae92d0b99960bdb3cca2a0601117a5654d",
+    "review-proof-test.log": "5715c15cfb2895110a291c4a37ddf9bc7347be7631f61fbeb1205ab6edced5cb",
+    "development-tests-4.log": "39e94dd6a44326a08f030e96cf67435eaef69a43851412c0f0d707b5b811bdc2",
+    "control-lifecycle-screen.json": "f322e0f7fd73aa7e140f7c0c5857ad4844ddd7b764de7f063b9cc3b46ed30bfc",
+    "verification-tests-final.log": "7e4f213ead939a83892c0bac5bc2c7a2a3837d2b5f0c778678c60b9fc85cfa2e",
+    "development-tests-2.log": "b119d7613c81384ff09b459065e139d32cacd44fc476086ed0328a5f538f8689",
+    "review-proof-test-final.log": "4ee5930eb4ef0ba45a9135576b887595f598b3583ac3958142a8826060b7fa2d"
+  }
+}
