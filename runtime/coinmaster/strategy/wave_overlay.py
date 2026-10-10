@@ -51,6 +51,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_zero_tp_netting: bool = True
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
+    research_btc_episode_loss_20: bool = False
+    research_sol_remaining_btc_hedge: bool = False
     research_portfolio_protect_45: bool = False
     research_sol_notional_cap_multiple: Decimal | None = None
     max_gross_to_active: Decimal = Decimal("50")
@@ -149,6 +151,14 @@ class WaveOverlayStrategy(Strategy):
             raise ValueError("RESEARCH_SOL_CAP_REQUIRES_6X")
         if config.research_portfolio_protect_45 and config.research_sol_notional_cap_multiple is not None:
             raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
+        if sum((config.research_btc_episode_loss_20, config.research_sol_remaining_btc_hedge,
+                config.research_portfolio_protect_45, config.research_sol_notional_cap_multiple is not None)) > 1:
+            raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
+        self._btc_loss_episode_id: str | None = None
+        self._btc_loss_reference: Decimal | None = None
+        self._btc_loss_realized: dict[str, Decimal] = {}
+        self.btc_episode_loss_audit: list[dict[str, object]] = []
+        self.sol_hedge_admission_audit: list[dict[str, str]] = []
         self._research_protect_peak = config.active_seed
         self._research_protect_latch: dict[str, object] | None = None
         self.research_protection_audit: list[dict[str, object]] = []
@@ -306,6 +316,7 @@ class WaveOverlayStrategy(Strategy):
         self._update_margin_mark(mark.instrument_id, mark.price, mark.ts_event)
         self._check_mark_first_liquidation(mark.ts_event)
         self._research_check_portfolio_protection(mark.ts_event)
+        self._research_check_btc_episode_loss(mark.ts_event)
         # Avoid a per-minute session map: only a daily signal can make a mark
         # actionable for features, and it will re-pair the retained mark.
         if mark.ts_event in self._day:
@@ -396,6 +407,68 @@ class WaveOverlayStrategy(Strategy):
         if not self.cache.positions_open() and not self.cache.orders_open():
             self._group_close_reconciliation_pending = True
             self._reconcile_group_flat()
+
+    def _research_capture_btc_episode(self, event) -> None:
+        """Native Position.realized_pnl already includes settlement-currency fees."""
+        if not self.config.research_btc_episode_loss_20:
+            return
+        episode = self._domain.episode
+        position = self.cache.position(event.position_id)
+        if episode is None or position is None or position.instrument_id != self.config.btc_id:
+            return
+        if self._btc_loss_episode_id != episode.id:
+            # Only a first confirmed BTC fill establishes this immutable basis.
+            if episode.btc_initial_qty <= 0:
+                return
+            marks = [self._latest_marks.get(i) for i in (self.config.btc_id, self.config.sol_id)]
+            if any(m is None or self.config.max_mark_age_ns <= 0
+                   or not 0 <= event.ts_event - m.ts_event <= self.config.max_mark_age_ns for m in marks):
+                raise ValueError("BTC_LOSS_REFERENCE_FRESH_MARKS_MISSING")
+            self._btc_loss_episode_id = episode.id
+            account = self.cache.account_for_venue(self.config.btc_id.venue)
+            self._btc_loss_reference = _native_account_money(account)
+            for held in self.cache.positions_open():
+                instrument = self.cache.instrument(held.instrument_id)
+                mark = self._latest_marks[held.instrument_id]
+                self._btc_loss_reference += held.unrealized_pnl(instrument.make_price(mark.price)).as_decimal()
+            if self._btc_loss_reference <= 0:
+                raise ValueError("BTC_LOSS_REFERENCE_EQUITY_NOT_POSITIVE")
+            self._btc_loss_realized.clear()
+            self.btc_episode_loss_audit.append({"event": "REFERENCE", "episode_id": episode.id,
+                "timestamp_ns": str(event.ts_event), "native_equity_reference": str(self._btc_loss_reference)})
+        if any(fee.currency != position.settlement_currency for fee in position.commissions()):
+            raise ValueError("BTC_LOSS_NATIVE_COMMISSION_CURRENCY_UNSUPPORTED")
+        self._btc_loss_realized[str(position.id)] = position.realized_pnl.as_decimal() if position.realized_pnl is not None else Decimal("0")
+
+    def _research_check_btc_episode_loss(self, ts_now: int, *, after_observation: bool = False) -> None:
+        if getattr(self, "_research_protection_defer_to_recorder", False) and not after_observation:
+            return
+        if (not self.config.research_btc_episode_loss_20 or self._research_protect_latch is not None
+                or self._liquidating or self._forced_close_reason is not None):
+            return
+        if self.config.terminal_close_at_ns is not None and ts_now >= self.config.terminal_close_at_ns:
+            return
+        episode = self._domain.episode
+        if episode is None or episode.id != self._btc_loss_episode_id or self._btc_loss_reference is None:
+            return
+        marks = self._latest_marks
+        if not all(i in marks and marks[i].ts_event == ts_now for i in (self.config.btc_id, self.config.sol_id)):
+            return
+        pnl = sum(self._btc_loss_realized.values(), Decimal("0"))
+        instrument = self.cache.instrument(self.config.btc_id)
+        for position in self.cache.positions_open():
+            if position.instrument_id == self.config.btc_id:
+                pnl += position.unrealized_pnl(instrument.make_price(marks[self.config.btc_id].price)).as_decimal()
+        if pnl > -Decimal("0.20") * self._btc_loss_reference:
+            return
+        latch = {"event": "BREACH", "timestamp_ns": str(ts_now), "decision_index": len(self._bars) - 1,
+                 "old_episode_id": episode.id, "reason": "RESEARCH_BTC_EPISODE_LOSS_20",
+                 "native_equity_reference": str(self._btc_loss_reference), "native_btc_episode_net_pnl": str(pnl)}
+        self._research_protect_latch = latch
+        self.btc_episode_loss_audit.append(dict(latch))
+        self._begin_forced_close("RESEARCH_BTC_EPISODE_LOSS_20")
+        self._group_close_reconciliation_pending = True
+        self._reconcile_group_flat()
 
     def _research_protection_next_decision_eligible(self) -> bool:
         latch = self._research_protect_latch
@@ -576,7 +649,7 @@ class WaveOverlayStrategy(Strategy):
             return
         rearm_candidate = self._research_protection_next_decision_eligible() if self._research_protect_latch is not None else False
         if self._research_protect_latch is not None and not rearm_candidate:
-            self._daily_decision_reason = "RESEARCH_PORTFOLIO_45_WAIT_NEXT_EPISODE"
+            self._daily_decision_reason = "RESEARCH_RISK_WAIT_NEXT_EPISODE"
             return
         entries_enabled = self._entries_enabled(ignore_research_protection=True) if rearm_candidate else self._entries_enabled()
         if not entries_enabled and not self.cache.positions_open():
@@ -601,10 +674,13 @@ class WaveOverlayStrategy(Strategy):
             if entry.episode_id == old["old_episode_id"]:
                 raise ValueError("RESEARCH_PROTECTION_OLD_EPISODE_REENTRY")
             account = self.cache.account_for_venue(self.config.btc_id.venue)
-            self._research_protect_peak = _native_account_money(account)
+            if self.config.research_portfolio_protect_45:
+                self._research_protect_peak = _native_account_money(account)
             self.research_protection_audit.append({"event": "REARM_NEXT_EPISODE", "timestamp_ns": str(self._current_btc.ts_event),
                 "decision_index": len(self._bars) - 1, "old_episode_id": old["old_episode_id"], "new_episode_id": entry.episode_id,
                 "protective_peak": str(self._research_protect_peak), "global_observer_peak_reset": False})
+            if self.config.research_btc_episode_loss_20:
+                self.btc_episode_loss_audit.append({"event": "REARM_NEXT_EPISODE", "timestamp_ns": str(self._current_btc.ts_event), "old_episode_id": old["old_episode_id"], "new_episode_id": entry.episode_id, "global_observer_peak_reset": False})
             self._research_protect_latch = None
         self._daily_decision_reason = getattr(self._domain, "last_decision_reason", "CURRENT_DECISION_EVALUATED") if not intents else "CURRENT_DECISION_INTENTS"
         for intent in intents:
@@ -970,6 +1046,48 @@ class WaveOverlayStrategy(Strategy):
             audit.update(admitted_quantity="0", reason=str(error))
             return Decimal("0")
 
+    def _research_sol_hedge_quantity(self, requested: Decimal, executable: Decimal, ts_now: int) -> Decimal:
+        """Clip only an already-earned budget to aggregate remaining native BTC/beta."""
+        audit = {"timestamp_ns": str(ts_now), "requested_quantity": str(requested)}
+        self.sol_hedge_admission_audit.append(audit)
+        try:
+            episode = self._domain.episode
+            beta = Decimal(str(episode.beta_entry)) if episode is not None else Decimal("NaN")
+            if not beta.is_finite() or not Decimal("0.2") < beta < Decimal("4"):
+                raise ValueError("VALID_EPISODE_BETA_MISSING")
+            if any(o.instrument_id == self.config.sol_id and not o.is_reduce_only for o in self.cache.orders_open()) or any(i.action == "SOL_ADD" for i in self._pending_by_order.values()):
+                raise ValueError("SOL_OPENING_OWNERSHIP_PENDING")
+            marks = {}
+            for iid in (self.config.btc_id, self.config.sol_id):
+                mark = self._latest_marks.get(iid)
+                if mark is None or self.config.max_mark_age_ns <= 0 or not 0 <= ts_now - mark.ts_event <= self.config.max_mark_age_ns:
+                    raise ValueError("FRESH_NATIVE_MARKS_MISSING")
+                marks[iid] = self.cache.instrument(iid).make_price(mark.price).as_decimal()
+            held = Decimal("0")
+            btc = Decimal("0")
+            for position in self.cache.positions_open():
+                if position.instrument_id == self.config.sol_id:
+                    held += position.quantity.as_decimal() * marks[self.config.sol_id]
+                elif position.instrument_id == self.config.btc_id:
+                    btc += position.quantity.as_decimal() * marks[self.config.btc_id]
+            target = btc / Decimal(str(episode.beta_entry))
+            room = max(Decimal("0"), target - held)
+            instrument = self.cache.instrument(self.config.sol_id)
+            step = instrument.size_increment.as_decimal()
+            # Upper-bound mark and execution notional; existing admission below
+            # retains its lot/minimum/fee/free-margin checks unchanged.
+            price = max(executable, marks[self.config.sol_id])
+            if price <= 0:
+                raise ValueError("EXECUTABLE_PRICE_INVALID")
+            admitted = min(requested, (room / price // step) * step)
+            audit.update(beta_entry=str(episode.beta_entry), native_remaining_btc_notional=str(btc),
+                         native_held_sol_notional=str(held), hedge_target_notional=str(target),
+                         admitted_quantity=str(admitted), sol_mark=str(marks[self.config.sol_id]))
+            return admitted
+        except ValueError as error:
+            audit.update(admitted_quantity="0", reason=str(error))
+            return Decimal("0")
+
     def _free_margin_for_increase(self, account) -> Decimal:
         return _native_account_money(account, free=True)
 
@@ -1040,6 +1158,8 @@ class WaveOverlayStrategy(Strategy):
         rounded = (Decimal(str(quantity)) // step) * step
         if intent.action == "SOL_ADD" and self.config.research_sol_notional_cap_multiple is not None:
             rounded = self._research_sol_cap_quantity(rounded, executable_price, ts_now or 0)
+        if intent.action == "SOL_ADD" and self.config.research_sol_remaining_btc_hedge:
+            rounded = self._research_sol_hedge_quantity(rounded, executable_price, ts_now or 0)
         if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting and intent.action == "BTC_ENTRY" and rounded > 0:
             episode = self._domain.episode
             if episode is None or episode.wave_levels is None:
@@ -1260,6 +1380,10 @@ class WaveOverlayStrategy(Strategy):
         intent = self._domain._intent(episode, "SOL_EXIT", episode.side, None, quantity=float(position.quantity), reason="SOL_HARD_TIMEOUT")
         self._mandatory_sol_exit = (intent, episode.fixed_sigma, len(self._bars) - 1)
         self._mandatory_sol_retry_after_ns = ts_event + 60_000_000_000
+
+    def _ordinary_forced_close_active(self) -> bool:
+        return (self._forced_close_reason not in {None, "LIQUIDATION", "TERMINAL_BOUNDARY_SETTLEMENT"}
+                and not (self.config.deposit_runtime is not None and self._deposit.latched))
 
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
         if self.config.deposit_runtime is not None and self._deposit.latched:
@@ -1522,6 +1646,9 @@ class WaveOverlayStrategy(Strategy):
         self._after_domain_fill(event)
         if closed:
             self._terminal_submission(str(event.client_order_id))
+            if self._forced_close_reason is not None:
+                self._group_close_reconciliation_pending = True
+                return  # Existing forced executor owns actual late-fill leaves.
             if intent.action == "CLOSE_ALL":
                 self._group_close_reconciliation_pending = True
                 self._reconcile_group_flat()
@@ -1563,7 +1690,7 @@ class WaveOverlayStrategy(Strategy):
             if episode is not None:
                 self.entry_sizing_audit[-1]["confirmed_native_entry_qty"] = str(episode.btc_initial_qty)
         if intent.action == "SOL_HALF_EXIT" and self._domain.episode is not None and self._domain.episode.sol_half_done:
-            self._domain.on_half_exit_decision(self._decision_index_by_order[client_order_id])
+            self._domain.on_half_exit_decision(max(self._decision_index_by_order.get(client_order_id, intent.decision_index), len(self._bars) - 1))
         if not order_closed:
             return
         self._domain.on_parent_terminal(intent.id)
@@ -1587,6 +1714,8 @@ class WaveOverlayStrategy(Strategy):
 
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
+        if self._forced_close_reason is not None:
+            return
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
         self._bind_native_lots()
@@ -1643,7 +1772,7 @@ class WaveOverlayStrategy(Strategy):
             self._rearm_mandatory_sol_exit(event.ts_event)
         if self._forced_close_reason is not None and not self.cache.orders_open():
             self._submit_forced_closes_from_cache()
-        if self._research_protect_latch is not None:
+        if self._ordinary_forced_close_active() or self._research_protect_latch is not None:
             self._group_close_reconciliation_pending = True
             self._reconcile_group_flat()
 
@@ -1665,7 +1794,7 @@ class WaveOverlayStrategy(Strategy):
         if context is not None and context.get("accept_ns") is None:
             context["accept_ns"] = str(event.ts_event)
         self._acknowledge_submission(str(event.client_order_id))
-        if self._research_protect_latch is not None:
+        if self._forced_close_reason is not None or self._research_protect_latch is not None:
             order = self.cache.order(event.client_order_id)
             if order is not None and not order.is_closed and not order.is_reduce_only and order.instrument_id in (self.config.btc_id, self.config.sol_id):
                 self.cancel_order(order)
@@ -1676,6 +1805,9 @@ class WaveOverlayStrategy(Strategy):
 
     def on_position_event(self, event) -> None:
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
+        self._research_capture_btc_episode(event)
+        if self._ordinary_forced_close_active():
+            self._submit_forced_closes_from_cache()
         self._reconcile_group_flat()
         self._reconcile_liquidation_flat()
         self._reconcile_terminal_flat()
@@ -1687,7 +1819,7 @@ class WaveOverlayStrategy(Strategy):
         """Clear a completed close group after the native cache is actually flat."""
         if not self._group_close_reconciliation_pending or self.cache.positions_open() or self.cache.orders_open():
             return
-        if self._research_protect_latch is not None and self._pending_by_order:
+        if self._pending_by_order:
             return  # An opening order awaiting terminal native receipt may still fill.
         self._group_close_reconciliation_pending = False
         reason = self._domain.on_group_flat()
@@ -1767,7 +1899,7 @@ class WaveOverlayStrategy(Strategy):
             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())
         if self._forced_close_reason is not None and not self.cache.orders_open():
             self._submit_forced_closes_from_cache()
-        if self._research_protect_latch is not None:
+        if self._ordinary_forced_close_active() or self._research_protect_latch is not None:
             self._group_close_reconciliation_pending = True
             self._reconcile_group_flat()
 

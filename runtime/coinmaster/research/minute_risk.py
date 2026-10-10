@@ -191,6 +191,8 @@ def observed_strategy_type(base, recorder):
                 # book. Record held completed-bar exposure before any action.
                 if self.config.research_portfolio_protect_45:
                     self._research_check_portfolio_protection(timestamp, after_observation=True)
+                if self.config.research_btc_episode_loss_20:
+                    self._research_check_btc_episode_loss(timestamp, after_observation=True)
     def on_quote_tick(self,tick):
         base.on_quote_tick(self,tick)
         if tick.instrument_id==self.config.sol_id:
