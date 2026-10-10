@@ -8,5 +8,25 @@
   "trail_groups": 13,
   "trail_native_closing_orders": 42,
   "true_fixed_sl_count": 0,
-  "new_backtest_or_runtime_change": false
+  "new_backtest_or_runtime_change": false,
+  "csv_lf_normalization_parsed_identity": {
+    "drawdown-causes.csv": {
+      "parsed_rows_including_header": 4,
+      "parsed_rows_identical": true,
+      "canonical_parsed_rows_sha256": "b2b82e5931c7e445645f282fab3e4e1b66121f9c8f02d284cbeabc808376359c",
+      "newline": "LF"
+    },
+    "exit-reason-stats.csv": {
+      "parsed_rows_including_header": 12,
+      "parsed_rows_identical": true,
+      "canonical_parsed_rows_sha256": "bae68aa0b1e35c8fd832d91d46839d3a4de6db9cb7bed2af8c427f87bd4ad350",
+      "newline": "LF"
+    },
+    "trail-closing-groups.csv": {
+      "parsed_rows_including_header": 14,
+      "parsed_rows_identical": true,
+      "canonical_parsed_rows_sha256": "417d075a1b02bbe11929221b745ecc46dff3b94e1070d4d38d2cfe7c0c7dd436",
+      "newline": "LF"
+    }
+  }
 }
