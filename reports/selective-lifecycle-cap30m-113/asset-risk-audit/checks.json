@@ -18,5 +18,13 @@
   "firstcross_and_age_finalminuscurrent_exact": true,
   "intended_admission_size_equity": "UNKNOWN_firstheld_partial_not_equivalent",
   "correction_supersedes": "d92cc82",
-  "analysis_pass2_log_SHA": "d2c46a15a0d9fb4db82aad48995fad0b1f9d6fc81bf12f8f2d0457212989a924"
+  "analysis_pass2_log_SHA": "d2c46a15a0d9fb4db82aad48995fad0b1f9d6fc81bf12f8f2d0457212989a924",
+  "final_precision": {
+    "original_selective_lifecycle": "ON",
+    "SOLcap6_PORT45": "OFF",
+    "SOL_age_screen": "ONE_FIRST_PREQUOTE_AT_OR_AFTER_EXACT_AGE",
+    "continuous_age_negative_cases": "UNMEASURED",
+    "first_proposed_DD_test": "BTC20_ASSET_LOSS_TRIGGER_GROUP_CLOSE",
+    "new_scans_or_engines": 0
+  }
 }
