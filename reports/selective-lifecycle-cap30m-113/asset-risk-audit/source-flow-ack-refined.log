@@ -1,0 +1,7 @@
+/tmp/cm113-source-flow-ack-refined.py:36: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+  engine.add_data([tick(SOL_PERP,1)]);engine.run(streaming=True);engine.clear_data()
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+/tmp/cm113-source-flow-ack-refined.py:39: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+  engine.end();engine.dispose()
+CM113_ACK_REFINED={"episode": null, "events": [{"event": "OrderInitialized", "open": 0, "pending": 1, "status": null}, {"event": "OrderSubmitted", "open": 0, "pending": 1, "post_reconcile_episode": null, "status": "5"}, {"event": "OrderAccepted", "open": 1, "pending": 1, "status": "6"}, {"event": "OrderFilled", "open": 0, "pending": 0, "status": "14"}], "native_fills": 1, "pending": 0, "positions": 1}

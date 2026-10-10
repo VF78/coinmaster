@@ -1,0 +1,17 @@
+{
+  "BTC_episodes": 105,
+  "SOL_episodes": 26,
+  "native_fill_attribution_episode_net_reconciles": true,
+  "native_event_gross_fees_reconcile_per_episode": true,
+  "prequote_trace_rows": 1051200,
+  "trace_passes": 1,
+  "chronology_aggregates_from_cached_rows_only": true,
+  "MFE_profit_peak_giveback_first_threshold_time": "UNKNOWN_not_captured",
+  "funding": "UNKNOWN_signed_unallocated",
+  "source_edge_archived_occurrence": "UNMEASURED",
+  "source_native_scratch_probes": 2,
+  "historical_engines": 0,
+  "trading_source_changes": 0,
+  "LF_CSV_and_JSON_parse": true,
+  "analysis_log_SHA": "7d4500f1452f1d26e4bb963e717e184582c9a1aa83f20477d652a35c9d6def12"
+}
