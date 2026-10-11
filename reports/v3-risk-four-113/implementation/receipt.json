@@ -1,0 +1,80 @@
+{
+  "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+  "baseline_commit": "f167e95",
+  "cli": "--research-v3-risk {b25,s10_15,r2,t3}",
+  "default": null,
+  "variants_mutually_exclusive": true,
+  "implicit_v3_sizing": {
+    "long": "5.5",
+    "short": "7.875",
+    "b25_latched_long": "2.75",
+    "b25_latched_short": "3.9375"
+  },
+  "native_money": "Native position.realized_pnl including native commissions plus held native unrealized_pnl; signed funding separate/unknown; no custom PnL service",
+  "sampling": "Paired causal marks; pre-action minute observer retained before triggers; executable current quote required",
+  "sol_anchor": "First actual SOL fill freezes paired marks; postquote checkpoint finalizes native cash+held uPnL after accounting, no future mark",
+  "protective_lots": "Remaining quantity floor(held/2) at native increment; native reduceOnly IOC through existing executor/order factory, partial remainder and cancel/ACK owned",
+  "verification": {
+    "full_relevant": {
+      "passed": 181,
+      "seconds": 73.37,
+      "files": 9,
+      "log": "verification-final.log",
+      "source_note": "Before final lot alignment only; all other native guard/ownership source final"
+    },
+    "final_lot_and_contract_subset": {
+      "passed": 43,
+      "seconds": 3.35,
+      "log": "final-contract-tests.log",
+      "new_four_variant_native_tests": 27,
+      "sizing_native_tests": 16,
+      "source_note": "Final 2500209 source; overlaps full suite"
+    },
+    "compileall": true,
+    "git_diff_check": true,
+    "cli_help": "cli-help.log",
+    "independent_review": "GO_EXACT_SOURCE_250020911a1ac671740cd3346c27f0235792703c",
+    "substantive_review_corrections": 1,
+    "correction": "Ordinary SOL half/full/timeout retain owner/priority over protective partial; focused native collision/ACK proof"
+  },
+  "engine_runs_launched": 0,
+  "pilot_actions": 0,
+  "prohibitions_preserved": [
+    "No version change",
+    "No deploy/restart/seal/secrets/live orders",
+    "No new PnL engine/service"
+  ],
+  "audit_key": "v3_risk_audit",
+  "audit_events": [
+    "PROTECTIVE_TRIGGER",
+    "PROTECTIVE_SUBMIT",
+    "PROTECTIVE_FILL",
+    "B25_REARM",
+    "SOL_CYCLE_ANCHOR",
+    "SOL_NEW_EPISODE_REARM",
+    "R2_REGIME_CLOSE_WAIT",
+    "R2_REARM",
+    "T3_TRIGGER"
+  ],
+  "fill_audit_fields": [
+    "executable_quote on submit",
+    "quote_ns on submit",
+    "latency_ns",
+    "pre_action_equity",
+    "native_accounting_checkpoint_ns",
+    "native_equity_after_accounting",
+    "equity_overshoot_after_accounting"
+  ],
+  "file_sha256": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "d7efd979da3367ff0e71f4b06e637146964aad2308ca9f872a2e7a87c91e79a7",
+    "runtime/coinmaster/research/native_baseline.py": "af14249f22959587c7e45a14b1a0a40db324f56d7b54fdb65cd2d2f8f488514d",
+    "runtime/coinmaster/research/minute_risk.py": "6aca7d78a54681ec5a1bc4129b27fc37c759c012836e05c34c1165f4b751206b",
+    "runtime/tests/test_native_v3_risk_four.py": "4788c9bafb582448fb0d57fc23768776ec4e6c9bbac837c86450cdef8d27fb4c",
+    "runtime/tests/test_native_btc_sizing.py": "cc0bbb6baa34858d5e588fbf4b3ea7c7a62b721a212568af37b7bde643c6b624"
+  },
+  "log_sha256": {
+    "verification-final.log": "497de5a7053f8bca6ca6ed78e29fb6008b6fab524de379b3b4c23368ac47fe54",
+    "final-contract-tests.log": "61ec91c7ef9fb5872bf2a796c884891898d594071fbb3646f7e5418b324f8167",
+    "cli-help.log": "1ad931820277c48a7d3b8573f72657664406e5016403f8f139f5e7ee893a9a96"
+  }
+}
