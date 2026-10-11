@@ -218,13 +218,19 @@ def observed_strategy_type(base, recorder):
                 recorder.capture(self,timestamp,"pre_quote_paired_close")
                 # Opt-in protection may cancel/fill against the previous native
                 # book. Record held completed-bar exposure before any action.
+                if self.config.research_v3_risk:
+                    self._research_check_v3_risk(timestamp, after_observation=True)
                 if self.config.research_portfolio_protect_45:
                     self._research_check_portfolio_protection(timestamp, after_observation=True)
                 if self.config.research_btc_episode_loss_20:
                     self._research_check_btc_episode_loss(timestamp, after_observation=True)
     def on_quote_tick(self,tick):
         base.on_quote_tick(self,tick)
+        if self.config.research_v3_risk:
+            self._v3_finalize_fill_checkpoints(tick.ts_event)
         if tick.instrument_id==self.config.sol_id:
+            if self.config.research_v3_risk == "s10_15":
+                self._v3_finalize_sol_anchor(tick.ts_event)
             recorder.capture(self,tick.ts_event,"post_quote_paired_close")
         elif tick.instrument_id==self.config.btc_id:
             recorder.capture(self,tick.ts_event,"post_btc_quote_paired_close")

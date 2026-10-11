@@ -51,6 +51,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_zero_tp_netting: bool = True
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
+    research_v3_risk: str | None = None
     research_btc_direction_sizing: bool = False
     research_btc_drawdown_sizing: bool = False
     research_btc_episode_loss_20: bool = False
@@ -162,6 +163,25 @@ class WaveOverlayStrategy(Strategy):
                      config.research_portfolio_protect_45, config.research_sol_notional_cap_multiple is not None,
                      config.tp_fee_floor_v1)) != 1 or config.candidate.btc_notional_multiplier != 7.875):
                 raise ValueError("RESEARCH_BTC_SIZING_REQUIRES_SEPARATE_7_875_CONTROL")
+        if config.research_v3_risk is not None:
+            if config.research_v3_risk not in {"b25", "s10_15", "r2", "t3"}:
+                raise ValueError("RESEARCH_V3_RISK_INVALID")
+            if any((config.research_btc_direction_sizing, config.research_btc_drawdown_sizing,
+                    config.research_btc_episode_loss_20, config.research_sol_remaining_btc_hedge,
+                    config.research_portfolio_protect_45, config.research_sol_notional_cap_multiple is not None,
+                    config.tp_fee_floor_v1)) or config.candidate.btc_notional_multiplier != 7.875:
+                raise ValueError("RESEARCH_V3_RISK_REQUIRES_SEPARATE_V3_CONTROL")
+        self.v3_risk_audit: list[dict[str, object]] = []
+        self._v3_reduction: dict | None = None
+        self._v3_orders: dict[str, dict] = {}
+        self._v3_sol_cycle: dict | None = None
+        self._v3_sol_block_episode: str | None = None
+        self._v3_regime_wait = False
+        self._v3_daily_side = None
+        self._v3_daily_count = 0
+        self._v3_daily_ns = None
+        self._v3_trail_wait_ns = None
+        self._v3_fill_checkpoints: list[dict] = []
         self._btc_sizing_peak = config.active_seed
         self._btc_sizing_reduced = False
         self._btc_sizing_last_ns: int | None = None
@@ -332,6 +352,7 @@ class WaveOverlayStrategy(Strategy):
         self._research_check_portfolio_protection(mark.ts_event)
         self._research_check_btc_episode_loss(mark.ts_event)
         self._research_sample_btc_sizing(mark.ts_event)
+        self._research_check_v3_risk(mark.ts_event)
         # Avoid a per-minute session map: only a daily signal can make a mark
         # actionable for features, and it will re-pair the retained mark.
         if mark.ts_event in self._day:
@@ -423,6 +444,204 @@ class WaveOverlayStrategy(Strategy):
             self._group_close_reconciliation_pending = True
             self._reconcile_group_flat()
 
+
+    def _v3_equity(self) -> Decimal:
+        account = self.cache.account_for_venue(self.config.btc_id.venue)
+        equity = _native_account_money(account)
+        for position in self.cache.positions_open():
+            instrument = self.cache.instrument(position.instrument_id)
+            equity += position.unrealized_pnl(instrument.make_price(self._latest_marks[position.instrument_id].price)).as_decimal()
+        return equity
+
+    def _v3_capture_sol_cycle(self, event) -> None:
+        if self.config.research_v3_risk != "s10_15":
+            return
+        position = self.cache.position(event.position_id)
+        if position is None or position.instrument_id != self.config.sol_id:
+            return
+        cycle = self._v3_sol_cycle
+        if cycle is None or (cycle["flat"] and position.quantity.as_decimal() > 0):
+            marks = [self._latest_marks.get(i) for i in (self.config.btc_id, self.config.sol_id)]
+            if any(m is None or not 0 <= event.ts_event - m.ts_event <= self.config.max_mark_age_ns for m in marks):
+                raise ValueError("V3_SOL_ANCHOR_FRESH_PAIRED_MARKS_REQUIRED")
+            cycle = {"anchor": None, "anchor_marks": dict(self._latest_marks), "anchor_ns": event.ts_event, "realized": {}, "stage": 0, "flat": False}
+            self._v3_sol_cycle = cycle
+        cycle["realized"][str(position.id)] = position.realized_pnl.as_decimal() if position.realized_pnl is not None else Decimal("0")
+        cycle["flat"] = not any(p.instrument_id == self.config.sol_id for p in self.cache.positions_open())
+
+    def _v3_finalize_sol_anchor(self, ts_now: int) -> None:
+        cycle = self._v3_sol_cycle
+        if cycle is None or cycle["anchor"] is not None:
+            return
+        # Native accounting commits after fill/position callbacks. Post-quote
+        # observer finalizes the first-fill checkpoint, using frozen first-fill
+        # paired marks, never the next minute's price or callback cash deltas.
+        current = self._latest_marks
+        self._latest_marks = cycle["anchor_marks"]
+        try:
+            cycle["anchor"] = self._v3_equity()
+        finally:
+            self._latest_marks = current
+        if cycle["anchor"] <= 0:
+            raise ValueError("V3_SOL_ANCHOR_NOT_POSITIVE")
+        self.v3_risk_audit.append({"event": "SOL_CYCLE_ANCHOR", "timestamp_ns": str(cycle["anchor_ns"]), "accounting_checkpoint_ns": str(ts_now), "anchor_equity": str(cycle["anchor"]), "mark_ns": str(cycle["anchor_ns"])})
+
+    def _research_check_v3_risk(self, ts_now: int, *, after_observation: bool = False) -> None:
+        mode = self.config.research_v3_risk
+        if not mode or (getattr(self, "_research_protection_defer_to_recorder", False) and not after_observation):
+            return
+        if self.config.terminal_close_at_ns is not None and ts_now >= self.config.terminal_close_at_ns:
+            return
+        if not all(i in self._latest_marks and self._latest_marks[i].ts_event == ts_now for i in (self.config.btc_id, self.config.sol_id)):
+            return
+        equity = self._v3_equity()
+        self._btc_sizing_peak = max(self._btc_sizing_peak, equity)
+        self._btc_sizing_equity, self._btc_sizing_last_ns = equity, ts_now
+        self._btc_sizing_dd = (self._btc_sizing_peak - equity) / self._btc_sizing_peak
+        if mode == "b25" and self._btc_sizing_reduced and self._btc_sizing_dd <= Decimal(".15"):
+            self._btc_sizing_reduced = False
+            self.v3_risk_audit.append({"event": "B25_REARM", "timestamp_ns": str(ts_now), "global_peak": str(self._btc_sizing_peak)})
+        episode = self._domain.episode
+        if episode is None or self._liquidating or self._forced_close_reason is not None:
+            return
+        positions = self.cache.positions_open()
+        if mode == "b25" and not self._btc_sizing_reduced and self._btc_sizing_dd >= Decimal(".25"):
+            pnl = sum(self._btc_loss_realized.values(), Decimal("0")) if self._btc_loss_episode_id == episode.id else Decimal("0")
+            for p in positions:
+                if p.instrument_id == self.config.btc_id:
+                    pnl += p.unrealized_pnl(self.cache.instrument(p.instrument_id).make_price(self._latest_marks[p.instrument_id].price)).as_decimal()
+            if self._btc_loss_episode_id == episode.id and pnl < 0 and any(p.instrument_id == self.config.btc_id for p in positions):
+                self._btc_sizing_reduced = True
+                self._v3_begin_reduction(self.config.btc_id, Decimal(".5"), "B25", ts_now, {"btc_episode_net_pnl": str(pnl)})
+        elif mode == "s10_15" and self._v3_sol_cycle is not None and self._v3_sol_cycle["anchor"] is not None:
+            cycle = self._v3_sol_cycle
+            pnl = sum(cycle["realized"].values(), Decimal("0"))
+            for p in positions:
+                if p.instrument_id == self.config.sol_id:
+                    pnl += p.unrealized_pnl(self.cache.instrument(p.instrument_id).make_price(self._latest_marks[p.instrument_id].price)).as_decimal()
+            loss = -pnl / cycle["anchor"]
+            stage = 2 if loss >= Decimal(".15") else 1 if loss >= Decimal(".10") else 0
+            if stage > cycle["stage"] and any(p.instrument_id == self.config.sol_id for p in positions):
+                self._v3_sol_block_episode = episode.id
+                ordinary_owned = (self._mandatory_sol_exit is not None or self._has_owned_sol_exit()
+                    or any(i.action in {"SOL_HALF_EXIT", "SOL_EXIT"} for i, _, _ in self._queued_intents)
+                    or any(i.action in {"SOL_HALF_EXIT", "SOL_EXIT"} for i in self._pending_by_order.values()))
+                if ordinary_owned:
+                    self._discard_queued_intents(lambda i: i.action == "SOL_ADD")
+                    return
+                cycle["stage"] = stage
+                self._v3_begin_reduction(self.config.sol_id, Decimal("1") if stage == 2 else Decimal(".5"), "S15" if stage == 2 else "S10", ts_now, {"sol_cycle_net_pnl": str(pnl), "loss_fraction": str(loss), "anchor_equity": str(cycle["anchor"])})
+        elif mode == "t3" and episode.btc_entry_vwap is not None and episode.best_f > .03:
+            f = Decimal(episode.side) * (self._latest_marks[self.config.btc_id].price / Decimal(str(episode.btc_entry_vwap)) - 1)
+            if f <= Decimal(str(episode.best_f)) - Decimal(".03"):
+                self._v3_trail_trigger_ns = ts_now
+                self._v3_trail_wait_ns = max(ts_now, self._current_btc.ts_event if self._current_btc else ts_now)
+                episode.close_reason = "RESEARCH_V3_T3"
+                self.v3_risk_audit.append({"event": "T3_TRIGGER", "timestamp_ns": str(ts_now), "native_equity": str(equity), "daily_best_f": episode.best_f, "minute_f": str(f)})
+                self._begin_forced_close("RESEARCH_V3_T3")
+                self._group_close_reconciliation_pending = True
+
+    def _v3_begin_reduction(self, instrument_id, fraction: Decimal, reason: str, ts_now: int, detail: dict) -> None:
+        position = next(p for p in self.cache.positions_open() if p.instrument_id == instrument_id)
+        # Upgrade SOL half to full without creating concurrent reduction children.
+        held = position.quantity.as_decimal()
+        step = self.cache.instrument(instrument_id).size_increment.as_decimal()
+        target_remaining = ((held * (1 - fraction)) // step) * step
+        target = held - target_remaining
+        if self._v3_reduction is not None:
+            if reason != "S15":
+                return
+            owner = self._v3_reduction
+            owner["remaining"] = position.quantity.as_decimal()
+            owner["reason"] = reason
+            for order in self.cache.orders_open():
+                if order.instrument_id == instrument_id:
+                    self.cancel_order(order)
+        else:
+            owner = {"instrument_id": instrument_id, "remaining": target, "reason": reason, "trigger_ns": ts_now, "retry_ns": ts_now, "orders": set()}
+            self._v3_reduction = owner
+        owner["pre_action_equity"] = self._v3_equity()
+        self.v3_risk_audit.append({"event": "PROTECTIVE_TRIGGER", "reason": reason, "timestamp_ns": str(ts_now), "native_equity": str(owner["pre_action_equity"]), "global_peak": str(self._btc_sizing_peak), "drawdown_fraction": str(self._btc_sizing_dd), "quantity": str(target), **detail})
+        self._discard_queued_intents(lambda intent: (intent.action.startswith("BTC") if instrument_id == self.config.btc_id else intent.action.startswith("SOL")))
+        self._accepted_reductions = {k: v for k, v in self._accepted_reductions.items() if not k[1].startswith("BTC" if instrument_id == self.config.btc_id else "SOL")}
+        for order in list(self.cache.orders_open()):
+            if order.instrument_id == instrument_id and str(order.client_order_id) not in owner["orders"]:
+                self.cancel_order(order)
+
+    def _v3_submit_reduction(self, tick: QuoteTick) -> None:
+        owner = self._v3_reduction
+        instrument_id = owner["instrument_id"]
+        if tick.instrument_id != instrument_id or tick.ts_event < max(owner["trigger_ns"], owner["retry_ns"]):
+            return
+        if owner["orders"]:
+            return
+        outstanding = [o for o in self.cache.orders_open() if o.instrument_id == instrument_id]
+        if outstanding:
+            for order in outstanding:
+                self.cancel_order(order)
+            return
+        if any((i.action.startswith("BTC") if instrument_id == self.config.btc_id else i.action.startswith("SOL")) for i in self._pending_by_order.values()):
+            return
+        position = next((p for p in self.cache.positions_open() if p.instrument_id == instrument_id), None)
+        if position is None:
+            self._v3_reduction = None
+            return
+        instrument = self.cache.instrument(instrument_id)
+        qty = instrument.make_qty(min(owner["remaining"], position.quantity.as_decimal()), round_down=True)
+        if qty.as_decimal() <= 0:
+            self._v3_reduction = None
+            self._queue_confirmed_btc_targets(None, len(self._bars)-1, tick.ts_event)
+            return
+        order = self.order_factory.market(instrument_id, OrderSide.SELL if position.is_long else OrderSide.BUY, qty, time_in_force=TimeInForce.IOC, reduce_only=True)
+        if not self._record_submission(order, f"v3:{order.client_order_id}", "v3_protection", "PROTECTIVE_REDUCTION", owner["reason"], None):
+            return
+        oid = str(order.client_order_id)
+        owner["orders"].add(oid)
+        self._v3_orders[oid] = owner
+        self.v3_risk_audit.append({"event": "PROTECTIVE_SUBMIT", "reason": owner["reason"], "order_id": oid, "timestamp_ns": str(tick.ts_event), "trigger_ns": str(owner["trigger_ns"]), "quote_ns": str(tick.ts_event), "executable_quote": str(tick.bid_price if position.is_long else tick.ask_price), "quantity": str(qty), "latency_ns": str(tick.ts_event-owner["trigger_ns"]), "native_equity": str(self._v3_equity())})
+        self.submit_order(order)
+
+    def _v3_finalize_fill_checkpoints(self, ts_now: int) -> None:
+        if (self.config.research_v3_risk == "b25"
+                and (self.config.terminal_close_at_ns is None or ts_now < self.config.terminal_close_at_ns)
+                and all(i in self._latest_marks and self._latest_marks[i].ts_event == ts_now for i in (self.config.btc_id, self.config.sol_id))):
+            self._btc_sizing_peak = max(self._btc_sizing_peak, self._v3_equity())
+        for audit in self._v3_fill_checkpoints:
+            audit["native_accounting_checkpoint_ns"] = str(ts_now)
+            audit["native_equity_after_accounting"] = str(self._v3_equity())
+            audit["equity_overshoot_after_accounting"] = str(Decimal(audit["pre_action_equity"])-self._v3_equity())
+        self._v3_fill_checkpoints.clear()
+
+    def _v3_reduction_fill(self, event) -> None:
+        owner = self._v3_orders[str(event.client_order_id)]
+        owner["remaining"] = max(Decimal("0"), owner["remaining"] - event.last_qty.as_decimal())
+        episode = self._domain.episode
+        if episode is not None:
+            if event.instrument_id == self.config.btc_id:
+                episode.btc_open_qty = max(0., episode.btc_open_qty - float(event.last_qty))
+            else:
+                episode.sol_qty = max(0., episode.sol_qty - float(event.last_qty))
+                if episode.sol_qty == 0:
+                    episode.sol_first_fill_at = episode.fixed_sigma = None
+                    episode.sol_half_done = False
+        self.v3_risk_audit.append({"event": "PROTECTIVE_FILL", "reason": owner["reason"], "order_id": str(event.client_order_id), "timestamp_ns": str(event.ts_event), "trigger_ns": str(owner["trigger_ns"]), "price": str(event.last_px), "quantity": str(event.last_qty), "commission": str(event.commission), "latency_ns": str(event.ts_event-owner["trigger_ns"]), "native_equity": str(self._v3_equity()), "equity_overshoot": str(owner["pre_action_equity"]-self._v3_equity())})
+        self.v3_risk_audit[-1]["pre_action_equity"] = str(owner["pre_action_equity"])
+        self._v3_fill_checkpoints.append(self.v3_risk_audit[-1])
+        order = self.cache.order(event.client_order_id)
+        if order is not None and order.is_closed:
+            self._terminal_submission(str(event.client_order_id))
+            self._v3_reduction_terminal(str(event.client_order_id), event.ts_event)
+
+    def _v3_reduction_terminal(self, oid: str, ts_now: int) -> None:
+        owner = self._v3_orders.pop(oid)
+        owner["orders"].discard(oid)
+        owner["retry_ns"] = ts_now + 60_000_000_000
+        if owner["remaining"] <= 0 and self._v3_reduction is owner:
+            self._v3_reduction = None
+            if owner["instrument_id"] == self.config.btc_id:
+                self._discard_queued_intents(lambda i: i.action.startswith("BTC"))
+                self._queue_confirmed_btc_targets(None, len(self._bars)-1, ts_now)
+
     def _research_sample_btc_sizing(self, ts_now: int) -> None:
         """Whole native equity, once per paired minute before signals/quotes."""
         if not self.config.research_btc_drawdown_sizing or (self._btc_sizing_last_ns is not None and ts_now <= self._btc_sizing_last_ns):
@@ -454,6 +673,9 @@ class WaveOverlayStrategy(Strategy):
                 "drawdown_fraction": str(self._btc_sizing_dd), "reduced": self._btc_sizing_reduced})
 
     def _research_btc_entry_multiplier(self) -> float | None:
+        if self.config.research_v3_risk:
+            base = 5.5 if self._current_signals[-1].side == 1 else 7.875
+            return base / 2 if self.config.research_v3_risk == "b25" and self._btc_sizing_reduced else base
         if self.config.research_btc_direction_sizing:
             return 5.5 if self._current_signals[-1].side == 1 else 7.875
         if self.config.research_btc_drawdown_sizing:
@@ -464,7 +686,7 @@ class WaveOverlayStrategy(Strategy):
 
     def _research_capture_btc_episode(self, event) -> None:
         """Native Position.realized_pnl already includes settlement-currency fees."""
-        if not self.config.research_btc_episode_loss_20:
+        if not (self.config.research_btc_episode_loss_20 or self.config.research_v3_risk == "b25"):
             return
         episode = self._domain.episode
         position = self.cache.position(event.position_id)
@@ -701,6 +923,20 @@ class WaveOverlayStrategy(Strategy):
             return
         if self._liquidating or self._backfill_error is not None:
             return
+        if self.config.research_v3_risk:
+            ns = self._current_btc.ts_event
+            side = self._current_signals[-1].side
+            if ns != self._v3_daily_ns:
+                self._v3_daily_count = self._v3_daily_count + 1 if side == self._v3_daily_side else 1
+                self._v3_daily_side, self._v3_daily_ns = side, ns
+            if self._domain.episode is None:
+                if self._v3_trail_wait_ns is not None and ns <= self._v3_trail_wait_ns:
+                    return
+                if self.config.research_v3_risk == "r2" and self._v3_regime_wait:
+                    if self._v3_daily_count < 2 or self.cache.positions_open() or self.cache.orders_open() or self._pending_by_order:
+                        return
+                    self._v3_regime_wait = False
+                    self.v3_risk_audit.append({"event": "R2_REARM", "timestamp_ns": str(ns), "side": side, "consecutive_daily_closes": self._v3_daily_count})
         rearm_candidate = self._research_protection_next_decision_eligible() if self._research_protect_latch is not None else False
         if self._research_protect_latch is not None and not rearm_candidate:
             self._daily_decision_reason = "RESEARCH_RISK_WAIT_NEXT_EPISODE"
@@ -719,9 +955,9 @@ class WaveOverlayStrategy(Strategy):
         intents = self._domain.decide(
             self._bars, self._current_signals, len(self._bars) - 1,
             self._active_marked(self._current_btc_mark, self._current_sol_mark),
-            **({"btc_notional_multiplier": self._research_btc_entry_multiplier()} if (self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing) else {}),
+            **({"btc_notional_multiplier": self._research_btc_entry_multiplier()} if (self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing or self.config.research_v3_risk) else {}),
         )
-        if self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing:
+        if self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing or self.config.research_v3_risk:
             for entry in intents:
                 if entry.action == "BTC_ENTRY":
                     self.btc_sizing_audit.append({"event": "EPISODE_ENTRY_SIZING", "episode_id": entry.episode_id,
@@ -750,14 +986,24 @@ class WaveOverlayStrategy(Strategy):
         self._daily_decision_reason = getattr(self._domain, "last_decision_reason", "CURRENT_DECISION_EVALUATED") if not intents else "CURRENT_DECISION_INTENTS"
         for intent in intents:
             if intent.action == "CLOSE_ALL":
+                if self.config.research_v3_risk == "r2" and intent.reason == "REGIME":
+                    self._v3_regime_wait = True
+                    self.v3_risk_audit.append({"event": "R2_REGIME_CLOSE_WAIT", "timestamp_ns": str(self._current_btc.ts_event), "side": self._v3_daily_side, "consecutive_daily_closes": self._v3_daily_count})
                 # A mandatory group exit owns the next executable quotes.  It
                 # must not wait behind an older queued SOL add or planned exit.
                 self._discard_queued_intents(lambda queued: queued.id != intent.id)
                 self._begin_forced_close(intent.reason or "CLOSE_ALL", intent)
                 return
-            if intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+            if ((intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT")
+                    or (intent.action in {"SOL_HALF_EXIT", "SOL_EXIT"} and self._v3_reduction is not None
+                        and self._v3_reduction["instrument_id"] == self.config.sol_id)):
+                if self._v3_reduction is not None and self._v3_reduction["instrument_id"] == self.config.sol_id:
+                    self._v3_reduction = None
                 self._preempt_with_mandatory_sol_exit(intent, self._current_signals[-1].sigma, len(self._bars) - 1)
                 return
+            if self._v3_reduction is not None and (intent.action.startswith("BTC") if self._v3_reduction["instrument_id"] == self.config.btc_id else intent.action.startswith("SOL")):
+                self._domain.on_parent_terminal(intent.id)
+                continue
             if self.config.research_v0_selective_lifecycle_repairs and (
                 self._reduction_key(intent) in self._accepted_reductions
                 or (intent.action.startswith("SOL") and self._has_owned_sol_exit())
@@ -789,6 +1035,9 @@ class WaveOverlayStrategy(Strategy):
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        if self._v3_reduction is not None and tick.instrument_id == self._v3_reduction["instrument_id"] and self._forced_close_reason is None and not self._liquidating and self._mandatory_sol_exit is None:
+            self._v3_submit_reduction(tick)
+            return
         if self.config.deposit_runtime is not None and self._deposit.latched:
             if self.config.research_v0_deferred_selective_zero_tp:
                 self._discard_queued_intents(lambda queued: queued.action == "BTC_ENTRY")
@@ -807,7 +1056,9 @@ class WaveOverlayStrategy(Strategy):
             # A timeout is allowed to cancel a stale/resting SOL reduction,
             # then uses the actual native position leaves on the next SOL
             # quote. No queued increase may pass while this is in progress.
-            if tick.instrument_id != self.config.sol_id or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open()):
+            if (tick.instrument_id != self.config.sol_id
+                    or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open())
+                    or any(owner["instrument_id"] == self.config.sol_id for owner in self._v3_orders.values())):
                 return
             intent, sigma, index = self._mandatory_sol_exit
             if self.config.research_v0_execution_repairs and tick.ts_event < self._mandatory_sol_retry_after_ns:
@@ -1221,6 +1472,14 @@ class WaveOverlayStrategy(Strategy):
             quantity = min(quantity, float(position.quantity))
         step = instrument.size_increment.as_decimal()
         rounded = (Decimal(str(quantity)) // step) * step
+        if intent.action == "SOL_ADD" and self._v3_sol_block_episode is not None:
+            episode = self._domain.episode
+            if episode is None or episode.id == self._v3_sol_block_episode or any(p.instrument_id == self.config.sol_id for p in self.cache.positions_open()):
+                self._domain.on_parent_terminal(intent.id)
+                return
+            self.v3_risk_audit.append({"event": "SOL_NEW_EPISODE_REARM", "timestamp_ns": str(ts_now), "old_episode_id": self._v3_sol_block_episode, "new_episode_id": episode.id})
+            self._v3_sol_block_episode = None
+            self._v3_sol_cycle = None
         if intent.action == "SOL_ADD" and self.config.research_sol_notional_cap_multiple is not None:
             rounded = self._research_sol_cap_quantity(rounded, executable_price, ts_now or 0)
         if intent.action == "SOL_ADD" and self.config.research_sol_remaining_btc_hedge:
@@ -1472,6 +1731,7 @@ class WaveOverlayStrategy(Strategy):
             timeout, _, _ = self._mandatory_sol_exit
             self._mandatory_sol_exit = None
             self._domain.on_parent_terminal(timeout.id)
+        self._v3_reduction = None
         self._accepted_reductions.clear()
         self._discard_queued_intents(lambda _queued: True)
         self._forced_close_reason = reason
@@ -1483,7 +1743,9 @@ class WaveOverlayStrategy(Strategy):
     def _submit_forced_close_on_quote(self, tick: QuoteTick) -> None:
         # Cancel confirmation/reconciliation is authoritative: no market close
         # is submitted while a resting reduction can still consume leaves.
-        if self.cache.orders_open():
+        if self.cache.orders_open() or (self.config.research_v3_risk and self._pending_by_order):
+            return
+        if self._forced_close_reason == "RESEARCH_V3_T3" and tick.ts_event < self._v3_trail_trigger_ns:
             return
         position = next((item for item in self.cache.positions_open() if item.instrument_id == tick.instrument_id), None)
         if position is None or tick.instrument_id in self._forced_close_submitted:
@@ -1502,6 +1764,8 @@ class WaveOverlayStrategy(Strategy):
         forced_action = "TERMINAL_CLOSE" if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT" else "LIQUIDATION_CLOSE" if self._forced_close_reason == "LIQUIDATION" else "FORCED_CLOSE"
         if not self._record_submission(order, f"{self._forced_close_reason}:{order.client_order_id}", "forced", forced_action, self._forced_close_reason, None):
             return
+        if self._forced_close_reason == "RESEARCH_V3_T3":
+            self.v3_risk_audit.append({"event": "PROTECTIVE_SUBMIT", "reason": "T3", "order_id": str(order.client_order_id), "instrument_id": str(tick.instrument_id), "timestamp_ns": str(tick.ts_event), "trigger_ns": str(self._v3_trail_trigger_ns), "latency_ns": str(tick.ts_event-self._v3_trail_trigger_ns), "quote_ns": str(tick.ts_event), "executable_quote": str(tick.bid_price if position.is_long else tick.ask_price), "quantity": str(order.quantity)})
         self._forced_close_submitted.add(tick.instrument_id)
         self._forced_close_orders.add(str(order.client_order_id))
         if self._forced_close_reason == "TERMINAL_BOUNDARY_SETTLEMENT":
@@ -1516,6 +1780,8 @@ class WaveOverlayStrategy(Strategy):
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
         if self.cache.orders_open():
+            return
+        if self.config.research_v3_risk == "t3" and self._forced_close_reason == "RESEARCH_V3_T3":
             return
         for position in list(self.cache.positions_open()):
             if position.instrument_id not in (self.config.btc_id, self.config.sol_id) or position.instrument_id in self._forced_close_submitted:
@@ -1655,6 +1921,9 @@ class WaveOverlayStrategy(Strategy):
         self._record_native_fill(event)
         self._seen_trade_ids.add(trade_id)
         self._record_fill_audit(event)
+        if str(event.client_order_id) in self._v3_orders:
+            self._v3_reduction_fill(event)
+            return
         if str(event.client_order_id) in self._deposit_exit_orders:
             order = self.cache.order(event.client_order_id)
             if order is not None and order.is_closed:
@@ -1683,6 +1952,11 @@ class WaveOverlayStrategy(Strategy):
             self._reconcile_terminal_flat()
             return
         if str(event.client_order_id) in self._forced_close_orders:
+            if self._forced_close_reason == "RESEARCH_V3_T3":
+                trigger = next(r for r in reversed(self.v3_risk_audit) if r["event"] == "T3_TRIGGER")
+                audit = {"event": "PROTECTIVE_FILL", "reason": "T3", "instrument_id": str(event.instrument_id), "order_id": str(event.client_order_id), "timestamp_ns": str(event.ts_event), "trigger_ns": str(self._v3_trail_trigger_ns), "latency_ns": str(event.ts_event-self._v3_trail_trigger_ns), "price": str(event.last_px), "quantity": str(event.last_qty), "commission": str(event.commission), "pre_action_equity": trigger["native_equity"]}
+                self.v3_risk_audit.append(audit)
+                self._v3_fill_checkpoints.append(audit)
             order = self.cache.order(event.client_order_id)
             if order is not None and order.is_closed:
                 self._terminal_submission(str(event.client_order_id))
@@ -1808,6 +2082,9 @@ class WaveOverlayStrategy(Strategy):
     def on_order_canceled(self, event: OrderCanceled) -> None:
         self._terminal_submission(str(event.client_order_id))
         client_order_id = str(event.client_order_id)
+        if client_order_id in self._v3_orders:
+            self._v3_reduction_terminal(client_order_id, event.ts_event)
+            return
         if client_order_id in self._forced_close_orders:
             order = self.cache.order(event.client_order_id)
             if order is not None:
@@ -1859,6 +2136,10 @@ class WaveOverlayStrategy(Strategy):
         if context is not None and context.get("accept_ns") is None:
             context["accept_ns"] = str(event.ts_event)
         self._acknowledge_submission(str(event.client_order_id))
+        if self._v3_reduction is not None:
+            order = self.cache.order(event.client_order_id)
+            if order is not None and order.instrument_id == self._v3_reduction["instrument_id"] and str(event.client_order_id) not in self._v3_orders and not order.is_closed:
+                self.cancel_order(order)
         if self._forced_close_reason is not None or self._research_protect_latch is not None:
             order = self.cache.order(event.client_order_id)
             if order is not None and not order.is_closed and not order.is_reduce_only and order.instrument_id in (self.config.btc_id, self.config.sol_id):
@@ -1871,6 +2152,7 @@ class WaveOverlayStrategy(Strategy):
     def on_position_event(self, event) -> None:
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
         self._research_capture_btc_episode(event)
+        self._v3_capture_sol_cycle(event)
         if self._ordinary_forced_close_active():
             self._submit_forced_closes_from_cache()
         self._reconcile_group_flat()
@@ -1934,6 +2216,9 @@ class WaveOverlayStrategy(Strategy):
 
     def _terminal_without_fill(self, client_order_id: str) -> None:
         self._terminal_submission(client_order_id)
+        if client_order_id in self._v3_orders:
+            self._v3_reduction_terminal(client_order_id, self.clock.timestamp_ns())
+            return
         if client_order_id in self._deposit_exit_orders and self._deposit.exit_state == "EXITING":
             self._deposit.exit_state = "EXIT_INCOMPLETE"
             now_ns = self.clock.timestamp_ns()
@@ -2023,6 +2308,7 @@ class WaveOverlayStrategy(Strategy):
         )
 
     def _start_deposit_exit(self, now_ns: int) -> None:
+        self._v3_reduction = None
         self._accepted_reductions.clear()
         self._discard_queued_intents(lambda _queued: True)
         if self._mandatory_sol_exit is not None:

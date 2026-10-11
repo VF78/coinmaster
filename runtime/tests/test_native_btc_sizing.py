@@ -30,6 +30,7 @@ def prepare_day(strategy, timestamp=1, side=1):
     ("control", 1, "7.875"), ("control", -1, "7.875"),
     ("v1", 1, "6.3"), ("v2", -1, "5.5"),
     ("direction", 1, "5.5"), ("direction", -1, "7.875"),
+    ("b25", 1, "5.5"), ("s10_15", 1, "5.5"), ("r2", -1, "7.875"), ("t3", -1, "7.875"),
     ("drawdown", 1, "3.9375"), ("drawdown", -1, "3.9375"),
 ])
 def test_native_episode_frozen_multiplier_selective_q0_q1_partial_fill_initial_sol_h(monkeypatch, mode, side, expected):
@@ -39,7 +40,7 @@ def test_native_episode_frozen_multiplier_selective_q0_q1_partial_fill_initial_s
                           ema_period=34, btc_tp_fractions_initial_qty=(.2125, .2125, .575),
                           sol_size_multipliers_h=(1.75, 2.625, 3.5), max_parent_notional=30000000)
     strategy = NativeProbe(lifecycle_config(candidate=candidate, research_btc_direction_sizing=mode=="direction",
-                            research_btc_drawdown_sizing=mode=="drawdown", max_mark_age_ns=100))
+                            research_btc_drawdown_sizing=mode=="drawdown", research_v3_risk=mode if mode in {"b25","s10_15","r2","t3"} else None, max_mark_age_ns=100))
     engine = native_engine(strategy)
     run_ticks(engine, [tick(BTC_PERP, 0)])
     try:
@@ -57,7 +58,7 @@ def test_native_episode_frozen_multiplier_selective_q0_q1_partial_fill_initial_s
         intent = strategy._queued_intents[0][0]
         episode = strategy._domain.episode
         assert D(str(intent.requested_notional)) == D(expected) * D(str(episode.active_entry))
-        if mode in {"direction", "drawdown"}:
+        if mode in {"direction", "drawdown", "b25", "s10_15", "r2", "t3"}:
             assert D(str(episode.btc_sizing_multiplier)) == D(expected)
         run_ticks(engine, [tick(BTC_PERP, 4)])  # q0 stores fixed original gross lots.
         gross = strategy._deferred_selective_entries[intent.id]["gross_lots"]
@@ -82,7 +83,7 @@ def test_native_episode_frozen_multiplier_selective_q0_q1_partial_fill_initial_s
         assert episode.h * episode.sol_right_fraction[0] == pytest.approx(10000.)
         assert episode.btc_open_qty == 78.75
         assert episode.h == original_h  # Native TP cannot shrink original SOL reference.
-        assert episode.btc_sizing_multiplier == (float(expected) if mode in {"direction", "drawdown"} else None)
+        assert episode.btc_sizing_multiplier == (float(expected) if mode in {"direction", "drawdown", "b25", "s10_15", "r2", "t3"} else None)
         if mode == "drawdown":
             assert D(str(episode.btc_sizing_multiplier)) == D("3.9375")
             assert len([r for r in strategy.btc_sizing_audit if r["event"]=="EPISODE_ENTRY_SIZING"]) == 1
