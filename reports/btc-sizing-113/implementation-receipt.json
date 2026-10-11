@@ -1,0 +1,87 @@
+{
+  "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+  "verification": {
+    "relevant_files": 8,
+    "passed": 152,
+    "duration_seconds": "76.85",
+    "log": "verification-tests.log",
+    "strengthened_native_TP_right_H_and_seed_timestamp_subset": {
+      "passed": 13,
+      "log": "targeted-tp-boundary-tests-final.log"
+    },
+    "explicit_existing_terminal_bound_assertions": {
+      "passed": 1,
+      "log": "boundary-proof-final.log"
+    },
+    "counts_are_overlapping": true,
+    "compileall": true,
+    "git_diff_check": true
+  },
+  "common": {
+    "research_v0_execution_repairs": true,
+    "research_v0_zero_tp_netting": false,
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "observe_minute_risk": true,
+    "max_parent_notional": "30000000",
+    "tp_fee_floor_v1": false,
+    "research_btc_episode_loss_20": false,
+    "research_sol_remaining_btc_hedge": false,
+    "research_sol_notional_cap_6x": false,
+    "research_portfolio_protect_45": false,
+    "SOL_multipliers": [
+      "1.75",
+      "2.625",
+      "3.5"
+    ],
+    "BTC_TP_fractions": [
+      ".2125",
+      ".2125",
+      ".575"
+    ],
+    "EMA": 34
+  },
+  "variants": {
+    "C": {
+      "candidate_btc_notional_multiplier": "7.875",
+      "new_options": "BOTH_OFF"
+    },
+    "V1": {
+      "candidate_btc_notional_multiplier": "6.3",
+      "new_options": "BOTH_OFF"
+    },
+    "V2": {
+      "candidate_btc_notional_multiplier": "5.5",
+      "new_options": "BOTH_OFF"
+    },
+    "V3": {
+      "candidate_btc_notional_multiplier": "7.875",
+      "CLI": "--research-btc-direction-sizing",
+      "long": "5.5",
+      "short": "7.875"
+    },
+    "V4": {
+      "candidate_btc_notional_multiplier": "7.875",
+      "CLI": "--research-btc-drawdown-sizing",
+      "normal": "7.875",
+      "reduced": "3.9375",
+      "enter_DD_inclusive": "0.25",
+      "resume_DD_inclusive": "0.15",
+      "sampling": "WHOLE_NATIVE_CASH_PLUS_BOTH_HELD_NATIVE_UNREALIZED_AT_SAME_PAIRED_MINUTE_BEFORE_DAILY_SIGNALS_AND_EXECUTION_QUOTES",
+      "peak_seed": "10000",
+      "peak_reset": false
+    }
+  },
+  "entry_freeze": "DOMAIN_GENUINE_EPISODE_CREATION_MULTIPLIER_AND_REQUESTED_NOTIONAL_Q0_Q1_PARTIAL_RETRIES_NO_GLOBAL_CANDIDATE_MUTATION",
+  "SOL_H": "UNCHANGED_ORIGINAL_NORMALIZED_GROSS_INITIAL_BTC_REFERENCE_TIMES_ACTUAL_NATIVE_ENTRY_VWAP_DIV_BETA_ENTRY_WITH_ACTUAL_PARTIAL_ENTRY_EARNED_RIGHT_FRACTION",
+  "observer_bound": "CONSTANT_MEMORY_PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_ADVERSE_LOWER_NO_SAME_BAR_ORDER_ASSUMPTION_INCLUDES_LAST_PREQUOTE_LEFT_LIMIT_EXCLUDES_POST_BOUNDARY_SETTLEMENT",
+  "economic_engines_started": 0,
+  "pilot_actions": "NONE",
+  "artifacts_sha256": {
+    "development-tests.log": "cddd693655b3fe16d0b9eb5eabfec33c5d1ab5d00fe9a88bfb192cf89d68ef1a",
+    "verification-tests.log": "6c3132d352e18a035ea43ffb18d360ae8dcc424348589eeb99e76506741010c2",
+    "targeted-tp-boundary-tests.log": "b0fd67ce49dd5d6d512e4374c7461733a54433926581160675df7a50bdcd1038",
+    "targeted-tp-boundary-tests-final.log": "95667fb0f276b3c97c8c5fa76e54c9408be51063545091b06b64b0f89baba1b2",
+    "boundary-proof-final.log": "73d45de1938fc4c59b6b6b088d2cfacb831b16a8d03a9c4b2e39b6b1a2a339e5"
+  }
+}

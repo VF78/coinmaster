@@ -1,0 +1,12 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/test_native_minute_risk.py::test_terminal_settlement_is_excluded_from_interval_native_drawdown
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:812: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_minute_risk.py::test_terminal_settlement_is_excluded_from_interval_native_drawdown
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:822: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 2 warnings in 3.34s
