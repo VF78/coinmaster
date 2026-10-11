@@ -587,7 +587,9 @@ class WaveOverlayStrategy(Strategy):
             self._v3_reduction = None
             return
         instrument = self.cache.instrument(instrument_id)
-        qty = instrument.make_qty(min(owner["remaining"], position.quantity.as_decimal()), round_down=True)
+        step = instrument.size_increment.as_decimal()
+        rounded = (min(owner["remaining"], position.quantity.as_decimal()) // step) * step
+        qty = instrument.make_qty(rounded)
         if qty.as_decimal() <= 0:
             self._v3_reduction = None
             self._queue_confirmed_btc_targets(None, len(self._bars)-1, tick.ts_event)
