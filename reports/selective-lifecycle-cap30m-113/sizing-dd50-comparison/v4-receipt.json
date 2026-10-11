@@ -1,0 +1,78 @@
+{
+  "variant": "v4",
+  "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+  "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v4-20261011/result/v0-selective-lifecycle-cap30m-btc-dd25-15.json",
+  "artifact_sha256": "ad1b30dc237a74b43dbc7bca20396869a6a66ad6c6f5967a2c43b2b52e10359c",
+  "exit_code": 0,
+  "launched_at": "2026-10-11T12:00:24Z",
+  "systemd_completed_lines": [
+    "Oct 11 12:16:21 MyShopAI-prod-1 systemd[1]: cm113-sizing-v4-20261011.service: Deactivated successfully.",
+    "Oct 11 12:16:21 MyShopAI-prod-1 systemd[1]: cm113-sizing-v4-20261011.service: Consumed 15min 26.065s CPU time, 553.7M memory peak, 0B memory swap peak."
+  ],
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "source_guard_file": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v4-20261011/source-input-hashes.sha256",
+  "immutable_source_hash_manifest_sha256": "4050e5079e771335329cade2a4ba929800f9e2eed453e91295a0892581e666ea",
+  "immutable_files_verified": 106,
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "config_hash": "b1e4c811bcc40c3e48543ba4655044ee08bb5bb7e3e1ab1160dce40515667644",
+  "source_hashes": {
+    "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+    "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+    "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+  },
+  "streaming": {
+    "batch_count": 105,
+    "cursor_batch_rows": 10080,
+    "event_count": 4206260,
+    "expected_rows_per_source": 1051200,
+    "max_batch_events": 40334,
+    "max_batch_minutes": 10080,
+    "peak_rss_bytes": 629256192,
+    "processed_rows_per_source": 1051200
+  },
+  "minute_rows": 3153600,
+  "upper_bound_samples": 1051200,
+  "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v4-20261011/result/v0-selective-lifecycle-cap30m-btc-dd25-15-funding.sqlite",
+  "terminal_lifecycle": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "7029706.0978"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "post_boundary_settlement": {
+    "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+    "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+    "fill_count": 1,
+    "interval_cash_total_before_settlement": "3085639.13355013",
+    "settled_cash_total": "3112031.23119634"
+  },
+  "boundary_samples_excluded": [
+    {
+      "timestamp_ns": "1788220800000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "3112031.23119634",
+      "paired_close_equity": "3112031.23119634",
+      "native_positions": []
+    },
+    {
+      "timestamp_ns": "1788220800000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "3112031.23119634",
+      "paired_close_equity": "3112031.23119634",
+      "native_positions": []
+    }
+  ],
+  "resources_before": {
+    "MemAvailable": 1453621248,
+    "disk_free": 5173764096
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "fills": {
+    "equal": true,
+    "excluded_columns": [
+      "init_id"
+    ],
+    "baseline_sha256": "4e6c85a3f14731d47b20ca301d2950fcb1b4222b381f7631ccf9159ee546ac09",
+    "C_sha256": "4e6c85a3f14731d47b20ca301d2950fcb1b4222b381f7631ccf9159ee546ac09",
+    "rows": 502
+  },
+  "orders": {
+    "equal": true,
+    "excluded_columns": [
+      "init_id"
+    ],
+    "baseline_sha256": "41dacebf8aa0fe8562cf001f4a69565c070af3d3302692d577c2b0f95015e41b",
+    "C_sha256": "41dacebf8aa0fe8562cf001f4a69565c070af3d3302692d577c2b0f95015e41b",
+    "rows": 556
+  }
+}

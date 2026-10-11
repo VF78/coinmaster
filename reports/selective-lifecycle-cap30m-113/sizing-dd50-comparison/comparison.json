@@ -1,0 +1,2733 @@
+{
+  "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+  "economic_runs": 5,
+  "winner_highest_TOTAL_native_DD_le50": null,
+  "archived_control": {
+    "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-minute-extrema-risk-20261010/result/v0-selective-lifecycle-cap30m.json",
+    "sha256": "669d5c951f0dbc88216385890b143b5bfd5bc8eeeff88cf968dd68346474c703",
+    "TOTAL": "5146884.95718200",
+    "C_native_parity": {
+      "fills": {
+        "equal": true,
+        "excluded_columns": [
+          "init_id"
+        ],
+        "baseline_sha256": "4e6c85a3f14731d47b20ca301d2950fcb1b4222b381f7631ccf9159ee546ac09",
+        "C_sha256": "4e6c85a3f14731d47b20ca301d2950fcb1b4222b381f7631ccf9159ee546ac09",
+        "rows": 502
+      },
+      "orders": {
+        "equal": true,
+        "excluded_columns": [
+          "init_id"
+        ],
+        "baseline_sha256": "41dacebf8aa0fe8562cf001f4a69565c070af3d3302692d577c2b0f95015e41b",
+        "C_sha256": "41dacebf8aa0fe8562cf001f4a69565c070af3d3302692d577c2b0f95015e41b",
+        "rows": 556
+      }
+    }
+  },
+  "variants": {
+    "c": {
+      "metrics": {
+        "variant": "C",
+        "TOTAL": "5146884.95718200",
+        "ACTIVE": "5146884.95718200",
+        "RESERVE": "0",
+        "ROI_percent": "51368.8495718200",
+        "delta_C": "0E-8",
+        "delta_C_percent": "0",
+        "native_global_minute_DD_percent": "69.34097140401511909513176933",
+        "DD_eligible_le50": false,
+        "seed_minimum": "4233.3625743",
+        "loss_below_seed_percent": "57.66637425700",
+        "conditional_upper_to_later_lower_percent": "70.46581443662197363596957826",
+        "cash_DD_percent": "42.79017183470296191528068674",
+        "fees": "1144089.96955003",
+        "BTC_fills": 311,
+        "SOL_fills": 191,
+        "fills": 502,
+        "orders": 556,
+        "funding_events": 1321,
+        "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+        "liquidations": 0,
+        "open_positions": 0
+      },
+      "receipt": {
+        "variant": "c",
+        "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+        "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-c-20261011/result/sizing-c.json",
+        "artifact_sha256": "cd5d449b9b62aec1120907c0b6e0fed56af25c58d7b5fbd028764a93da1eb200",
+        "exit_code": 0,
+        "launched_at": "2026-10-11T10:52:58Z",
+        "systemd_completed_lines": [
+          "Oct 11 11:10:37 MyShopAI-prod-1 systemd[1]: cm113-sizing-c-20261011.service: Deactivated successfully.",
+          "Oct 11 11:10:37 MyShopAI-prod-1 systemd[1]: cm113-sizing-c-20261011.service: Consumed 16min 32.112s CPU time, 485.3M memory peak, 0B memory swap peak."
+        ],
+        "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "source_guard_file": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-c-20261011/source-input-hashes.sha256",
+        "immutable_source_hash_manifest_sha256": "4050e5079e771335329cade2a4ba929800f9e2eed453e91295a0892581e666ea",
+        "immutable_files_verified": 106,
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "config_hash": "1ed6f6770b83445971ff075e7c160f0d90c88bb20a77d8d7b2fa768c37f0ce23",
+        "source_hashes": {
+          "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+          "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+          "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+        },
+        "streaming": {
+          "batch_count": 105,
+          "cursor_batch_rows": 10080,
+          "event_count": 4206260,
+          "expected_rows_per_source": 1051200,
+          "max_batch_events": 40334,
+          "max_batch_minutes": 10080,
+          "peak_rss_bytes": 630013952,
+          "processed_rows_per_source": 1051200
+        },
+        "minute_rows": 3153600,
+        "upper_bound_samples": 1051200,
+        "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-c-20261011/result/sizing-c-funding.sqlite",
+        "terminal_lifecycle": {
+          "close_fills": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "timestamp": "1788220800000000000",
+              "value": "17322435.8902"
+            }
+          ],
+          "lockout": true,
+          "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+          "status": "FLAT",
+          "trigger_ts": "1788220800000000000"
+        },
+        "post_boundary_settlement": {
+          "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+          "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+          "fill_count": 1,
+          "interval_cash_total_before_settlement": "5081850.17292161",
+          "settled_cash_total": "5146884.95718200"
+        },
+        "boundary_samples_excluded": [
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_btc_quote_paired_close",
+            "cash": "5146884.957182",
+            "paired_close_equity": "5146884.957182",
+            "native_positions": []
+          },
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_quote_paired_close",
+            "cash": "5146884.957182",
+            "paired_close_equity": "5146884.957182",
+            "native_positions": []
+          }
+        ]
+      },
+      "config": {
+        "account": "SIM_MARGIN_USDT_10000",
+        "btc_close_stop_fraction": null,
+        "candidate": {
+          "beta_days": 270,
+          "btc_close_trail_fraction": 0.03,
+          "btc_notional_multiplier": 7.875,
+          "btc_tp_fractions_initial_qty": [
+            0.2125,
+            0.2125,
+            0.575
+          ],
+          "ema_period": 34,
+          "episode_fixed_beta": false,
+          "max_parent_notional": 30000000.0,
+          "relative_days": 65,
+          "sol_entry_z": [
+            1.25,
+            2.5,
+            3.75
+          ],
+          "sol_exit_all_z": 0.125,
+          "sol_exit_half_z": 0.375,
+          "sol_late_entry_after_tp": true,
+          "sol_max_holding_days": 14,
+          "sol_overlay_enabled": true,
+          "sol_size_multipliers_h": [
+            1.75,
+            2.625,
+            3.5
+          ],
+          "sol_timeout_preempts_add": false,
+          "wave_history_days": 730,
+          "wave_min_count": 8,
+          "wave_quantiles": [
+            0.1,
+            0.3,
+            0.6
+          ],
+          "z_history_days": 180
+        },
+        "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+        "execution_policy": {
+          "execution_delay_minutes": 1,
+          "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+          "fee_historical_applicability": "UNKNOWN",
+          "fee_multiplier": "1",
+          "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+          "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+          "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+          "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+          "nonmatching_daily_signals": true,
+          "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+          "symmetric_adverse_spread_bps": "0",
+          "version": "bybit-native-resting-reductions-v2"
+        },
+        "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+        "fixed_base_fee_policy": {
+          "bybit_maker": "0.00020",
+          "bybit_taker": "0.00055",
+          "hyperliquid_maker": "0.00015",
+          "hyperliquid_taker": "0.00045",
+          "venue": "bybit",
+          "version": "fixed-base-native-maker-taker-execution-v3"
+        },
+        "freeze_sigma_on_first_sol_fill": true,
+        "future_sol_margin_fraction": "0",
+        "include_zero_waves": true,
+        "initial_active_fraction": "1.0",
+        "initial_total_usdt": "10000",
+        "insufficient_margin": "reject",
+        "live_enabled": false,
+        "mode": "paper",
+        "portfolio_loss_limit_fraction": null,
+        "post_liquidation": "restart_from_reserve_else_pause",
+        "research_v0_deferred_selective_zero_tp": true,
+        "research_v0_execution_repairs": true,
+        "research_v0_selective_lifecycle_repairs": true,
+        "research_v0_zero_tp_netting": false,
+        "reserve_transfer_fraction": "0",
+        "reserve_trigger_multiple": "4",
+        "restart_target": "initial_active_seed",
+        "run_interval": {
+          "end_exclusive": "2026-09-01T00:00:00+00:00",
+          "initial_active_seed": "10000",
+          "start": "2024-09-01T00:00:00+00:00"
+        },
+        "signal_timeframe": "1D",
+        "sol_direction": "opposite_btc",
+        "sol_entry_eligibility": "persistent_after_btc_level",
+        "sol_z_stop": null,
+        "strategy_id": "btc_sol_wave_overlay_v1",
+        "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+        "tp_fee_floor_v1": false,
+        "venue": "bybit"
+      },
+      "source_hashes": {
+        "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+        "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+        "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+      },
+      "interval": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00)",
+      "run_interval": {
+        "end_exclusive": "2026-09-01T00:00:00+00:00",
+        "initial_active_seed": "10000",
+        "start": "2024-09-01T00:00:00+00:00"
+      },
+      "warmup": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only",
+      "native_minute_curve": {
+        "samples": 3153599,
+        "minimum": {
+          "timestamp_ns": "1727970240000000000",
+          "equity": "4233.3625743",
+          "timestamp_utc": "2024-10-03T15:44:00+00:00"
+        },
+        "maximum_loss_below_seed_amount": "5766.6374257",
+        "maximum_loss_below_seed_percent": "57.66637425700",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1726273140000000000",
+              "equity": "13807.88227209",
+              "timestamp_utc": "2024-09-14T00:19:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1727970240000000000",
+              "equity": "4233.3625743",
+              "timestamp_utc": "2024-10-03T15:44:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1728650160000000000",
+              "equity": "13835.67335187",
+              "timestamp_utc": "2024-10-11T12:36:00+00:00"
+            },
+            "drawdown_amount": "9574.51969779",
+            "drawdown_peak_percent": "69.34097140401511909513176933"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1128523.01443742",
+              "timestamp_utc": "2025-04-11T01:00:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1749223020000000000",
+              "equity": "386647.30040135",
+              "timestamp_utc": "2025-06-06T15:17:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1758821820000000000",
+              "equity": "1137256.20969821",
+              "timestamp_utc": "2025-09-25T17:37:00+00:00"
+            },
+            "drawdown_amount": "741875.71403607",
+            "drawdown_peak_percent": "65.73864285841812955785298834"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1761168540000000000",
+              "equity": "2061026.88612517",
+              "timestamp_utc": "2025-10-22T21:29:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1764340080000000000",
+              "equity": "891671.5967892",
+              "timestamp_utc": "2025-11-28T14:28:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1764562980000000000",
+              "equity": "2062779.32300826",
+              "timestamp_utc": "2025-12-01T04:23:00+00:00"
+            },
+            "drawdown_amount": "1169355.28933597",
+            "drawdown_peak_percent": "56.73653736436278959735157459"
+          }
+        ]
+      },
+      "conditional_upper_to_later_lower_bound": {
+        "samples": 1051200,
+        "maximum": {
+          "peak": {
+            "timestamp_ns": "1726273140000000000",
+            "equity": "13832.95627209",
+            "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+            "timestamp_utc": "2024-09-14T00:19:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1727970300000000000",
+            "equity": "4085.4509743",
+            "timestamp_utc": "2024-10-03T15:45:00+00:00"
+          },
+          "drawdown_fraction": "0.7046581443662197363596957826",
+          "drawdown_peak_percent": "70.46581443662197363596957826"
+        },
+        "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+        "same_bar_extrema_order_assumed": false,
+        "actual_intrabar_path_proven": false
+      },
+      "conditional_lower_envelope": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1727970300000000000",
+          "equity": "4085.4509743"
+        },
+        "maximum_loss_below_seed_amount": "5914.5490257",
+        "maximum_loss_below_seed_percent": "59.14549025700",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1726272660000000000",
+              "equity": "13781.73367209"
+            },
+            "trough": {
+              "timestamp_ns": "1727970300000000000",
+              "equity": "4085.4509743"
+            },
+            "recovery": {
+              "timestamp_ns": "1728650220000000000",
+              "equity": "13803.32935187"
+            },
+            "drawdown_amount": "9696.28269779",
+            "drawdown_peak_percent": "70.35604466386091951322192966"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1125029.70563742"
+            },
+            "trough": {
+              "timestamp_ns": "1749223020000000000",
+              "equity": "384540.38200135"
+            },
+            "recovery": {
+              "timestamp_ns": "1758821700000000000",
+              "equity": "1125172.47089821"
+            },
+            "drawdown_amount": "740489.32363607",
+            "drawdown_peak_percent": "65.81953524654027854593430104"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1761168600000000000",
+              "equity": "2048716.02642517"
+            },
+            "trough": {
+              "timestamp_ns": "1764340260000000000",
+              "equity": "875100.6771892"
+            },
+            "recovery": {
+              "timestamp_ns": "1764563040000000000",
+              "equity": "2056705.51980826"
+            },
+            "drawdown_amount": "1173615.34923597",
+            "drawdown_peak_percent": "57.28540871932485326046092644"
+          }
+        ]
+      },
+      "conditional_margin_breach_count": 0,
+      "assets": {
+        "BTC": {
+          "fills": 311,
+          "fees": "1127648.20664598",
+          "notional": "2303584332.1954",
+          "actions": {
+            "BTC_ENTRY": 105,
+            "BTC_REDUCE": 155,
+            "FORCED_CLOSE": 50,
+            "TERMINAL_CLOSE": 1
+          },
+          "reasons": {
+            "BTC_ENTRY": 105,
+            "BTC_TP3": 54,
+            "REGIME": 48,
+            "BTC_TP2": 24,
+            "BTC_REDUCE": 77,
+            "TRAIL": 2,
+            "TERMINAL_BOUNDARY_SETTLEMENT": 1
+          }
+        },
+        "SOL": {
+          "fills": 191,
+          "fees": "16441.76290405",
+          "notional": "29894114.371",
+          "actions": {
+            "SOL_ADD": 95,
+            "FORCED_CLOSE": 82,
+            "SOL_HALF_EXIT": 1,
+            "SOL_EXIT": 13
+          },
+          "reasons": {
+            "SOL_ADD": 95,
+            "REGIME": 42,
+            "TRAIL": 40,
+            "SOL_Z_HALF_EXIT": 1,
+            "SOL_Z_FULL_EXIT": 1,
+            "SOL_HARD_TIMEOUT": 12
+          }
+        }
+      },
+      "fee_attribution": {
+        "audited_total": "1144089.96955003",
+        "maker": {
+          "count": 78,
+          "fees": "79613.24346386",
+          "notional": "398066217.3193"
+        },
+        "native_total": "1144089.96955003",
+        "reconciled": true,
+        "taker": {
+          "count": 424,
+          "fees": "1064476.72608617",
+          "notional": "1935412229.2471"
+        },
+        "unknown": {
+          "count": 0,
+          "fees": "0",
+          "notional": "0"
+        }
+      },
+      "btc_sizing_audit_event_counts": {},
+      "episode_frozen_multiplier_counts": {},
+      "episode_side_multiplier_counts": {},
+      "drawdown_state_changes": [],
+      "status": "NOT_FAITHFUL_DIAGNOSTIC",
+      "ranking_eligible": false,
+      "config_diff_from_C": []
+    },
+    "v1": {
+      "metrics": {
+        "variant": "V1",
+        "TOTAL": "3981070.44426903",
+        "ACTIVE": "3981070.44426903",
+        "RESERVE": "0",
+        "ROI_percent": "39710.704442690300",
+        "delta_C": "-1165814.51291297",
+        "delta_C_percent": "-22.65087567745581934651799540",
+        "native_global_minute_DD_percent": "58.03218094646642206312598555",
+        "DD_eligible_le50": false,
+        "seed_minimum": "5457.10253547",
+        "loss_below_seed_percent": "45.428974645300",
+        "conditional_upper_to_later_lower_percent": "60.16387742699453851103808370",
+        "cash_DD_percent": "48.63480108538851505754296583",
+        "fees": "985481.62725904",
+        "BTC_fills": 311,
+        "SOL_fills": 215,
+        "fills": 526,
+        "orders": 580,
+        "funding_events": 1321,
+        "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+        "liquidations": 0,
+        "open_positions": 0
+      },
+      "receipt": {
+        "variant": "v1",
+        "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+        "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v1-20261011/result/sizing-v1.json",
+        "artifact_sha256": "76b800f4f16191e8662e00d60dbdc3ea3ed85784d6c611403cbd650088d79bc7",
+        "exit_code": 0,
+        "launched_at": "2026-10-11T11:10:49Z",
+        "systemd_completed_lines": [
+          "Oct 11 11:27:49 MyShopAI-prod-1 systemd[1]: cm113-sizing-v1-20261011.service: Deactivated successfully.",
+          "Oct 11 11:27:49 MyShopAI-prod-1 systemd[1]: cm113-sizing-v1-20261011.service: Consumed 15min 49.192s CPU time, 528.9M memory peak, 0B memory swap peak."
+        ],
+        "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "source_guard_file": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v1-20261011/source-input-hashes.sha256",
+        "immutable_source_hash_manifest_sha256": "4050e5079e771335329cade2a4ba929800f9e2eed453e91295a0892581e666ea",
+        "immutable_files_verified": 106,
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "config_hash": "a425da9d14c81a44b684055ce0b4808bb64beffb131a56adc0f9e9aba61608fd",
+        "source_hashes": {
+          "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+          "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+          "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+        },
+        "streaming": {
+          "batch_count": 105,
+          "cursor_batch_rows": 10080,
+          "event_count": 4206260,
+          "expected_rows_per_source": 1051200,
+          "max_batch_events": 40334,
+          "max_batch_minutes": 10080,
+          "peak_rss_bytes": 631590912,
+          "processed_rows_per_source": 1051200
+        },
+        "minute_rows": 3153600,
+        "upper_bound_samples": 1051200,
+        "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v1-20261011/result/sizing-v1-funding.sqlite",
+        "terminal_lifecycle": {
+          "close_fills": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "timestamp": "1788220800000000000",
+              "value": "14332914.4223"
+            }
+          ],
+          "lockout": true,
+          "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+          "status": "FLAT",
+          "trigger_ts": "1788220800000000000"
+        },
+        "post_boundary_settlement": {
+          "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+          "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+          "fill_count": 1,
+          "interval_cash_total_before_settlement": "3927259.42120130",
+          "settled_cash_total": "3981070.44426903"
+        },
+        "boundary_samples_excluded": [
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_btc_quote_paired_close",
+            "cash": "3981070.44426903",
+            "paired_close_equity": "3981070.44426903",
+            "native_positions": []
+          },
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_quote_paired_close",
+            "cash": "3981070.44426903",
+            "paired_close_equity": "3981070.44426903",
+            "native_positions": []
+          }
+        ],
+        "resources_before": {
+          "MemAvailable": 1489797120,
+          "disk_free": 5419184128
+        }
+      },
+      "config": {
+        "account": "SIM_MARGIN_USDT_10000",
+        "btc_close_stop_fraction": null,
+        "candidate": {
+          "beta_days": 270,
+          "btc_close_trail_fraction": 0.03,
+          "btc_notional_multiplier": 6.3,
+          "btc_tp_fractions_initial_qty": [
+            0.2125,
+            0.2125,
+            0.575
+          ],
+          "ema_period": 34,
+          "episode_fixed_beta": false,
+          "max_parent_notional": 30000000.0,
+          "relative_days": 65,
+          "sol_entry_z": [
+            1.25,
+            2.5,
+            3.75
+          ],
+          "sol_exit_all_z": 0.125,
+          "sol_exit_half_z": 0.375,
+          "sol_late_entry_after_tp": true,
+          "sol_max_holding_days": 14,
+          "sol_overlay_enabled": true,
+          "sol_size_multipliers_h": [
+            1.75,
+            2.625,
+            3.5
+          ],
+          "sol_timeout_preempts_add": false,
+          "wave_history_days": 730,
+          "wave_min_count": 8,
+          "wave_quantiles": [
+            0.1,
+            0.3,
+            0.6
+          ],
+          "z_history_days": 180
+        },
+        "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+        "execution_policy": {
+          "execution_delay_minutes": 1,
+          "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+          "fee_historical_applicability": "UNKNOWN",
+          "fee_multiplier": "1",
+          "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+          "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+          "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+          "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+          "nonmatching_daily_signals": true,
+          "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+          "symmetric_adverse_spread_bps": "0",
+          "version": "bybit-native-resting-reductions-v2"
+        },
+        "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+        "fixed_base_fee_policy": {
+          "bybit_maker": "0.00020",
+          "bybit_taker": "0.00055",
+          "hyperliquid_maker": "0.00015",
+          "hyperliquid_taker": "0.00045",
+          "venue": "bybit",
+          "version": "fixed-base-native-maker-taker-execution-v3"
+        },
+        "freeze_sigma_on_first_sol_fill": true,
+        "future_sol_margin_fraction": "0",
+        "include_zero_waves": true,
+        "initial_active_fraction": "1.0",
+        "initial_total_usdt": "10000",
+        "insufficient_margin": "reject",
+        "live_enabled": false,
+        "mode": "paper",
+        "portfolio_loss_limit_fraction": null,
+        "post_liquidation": "restart_from_reserve_else_pause",
+        "research_v0_deferred_selective_zero_tp": true,
+        "research_v0_execution_repairs": true,
+        "research_v0_selective_lifecycle_repairs": true,
+        "research_v0_zero_tp_netting": false,
+        "reserve_transfer_fraction": "0",
+        "reserve_trigger_multiple": "4",
+        "restart_target": "initial_active_seed",
+        "run_interval": {
+          "end_exclusive": "2026-09-01T00:00:00+00:00",
+          "initial_active_seed": "10000",
+          "start": "2024-09-01T00:00:00+00:00"
+        },
+        "signal_timeframe": "1D",
+        "sol_direction": "opposite_btc",
+        "sol_entry_eligibility": "persistent_after_btc_level",
+        "sol_z_stop": null,
+        "strategy_id": "btc_sol_wave_overlay_v1",
+        "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+        "tp_fee_floor_v1": false,
+        "venue": "bybit"
+      },
+      "source_hashes": {
+        "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+        "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+        "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+      },
+      "interval": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00)",
+      "run_interval": {
+        "end_exclusive": "2026-09-01T00:00:00+00:00",
+        "initial_active_seed": "10000",
+        "start": "2024-09-01T00:00:00+00:00"
+      },
+      "warmup": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only",
+      "native_minute_curve": {
+        "samples": 3153599,
+        "minimum": {
+          "timestamp_ns": "1727970240000000000",
+          "equity": "5457.10253547",
+          "timestamp_utc": "2024-10-03T15:44:00+00:00"
+        },
+        "maximum_loss_below_seed_amount": "4542.89746453",
+        "maximum_loss_below_seed_percent": "45.428974645300",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1726273140000000000",
+              "equity": "13003.06439205",
+              "timestamp_utc": "2024-09-14T00:19:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1727970240000000000",
+              "equity": "5457.10253547",
+              "timestamp_utc": "2024-10-03T15:44:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1728641040000000000",
+              "equity": "13016.46425862",
+              "timestamp_utc": "2024-10-11T10:04:00+00:00"
+            },
+            "drawdown_amount": "7545.96185658",
+            "drawdown_peak_percent": "58.03218094646642206312598555"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "846914.68582458",
+              "timestamp_utc": "2025-04-11T01:00:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1749223020000000000",
+              "equity": "386172.31794335",
+              "timestamp_utc": "2025-06-06T15:17:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1756064280000000000",
+              "equity": "886027.4246198",
+              "timestamp_utc": "2025-08-24T19:38:00+00:00"
+            },
+            "drawdown_amount": "460742.36788123",
+            "drawdown_peak_percent": "54.40245346939972462303257272"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "7496488.91779984",
+              "timestamp_utc": "2026-05-15T00:34:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "3575120.26374066",
+              "timestamp_utc": "2026-08-18T03:33:00+00:00"
+            },
+            "recovery": null,
+            "drawdown_amount": "3921368.65405918",
+            "drawdown_peak_percent": "52.30940373630366917483096617"
+          }
+        ]
+      },
+      "conditional_upper_to_later_lower_bound": {
+        "samples": 1051200,
+        "maximum": {
+          "peak": {
+            "timestamp_ns": "1735828380000000000",
+            "equity": "301799.71117101",
+            "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+            "timestamp_utc": "2025-01-02T14:33:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1735862460000000000",
+            "equity": "120225.30286706",
+            "timestamp_utc": "2025-01-03T00:01:00+00:00"
+          },
+          "drawdown_fraction": "0.6016387742699453851103808370",
+          "drawdown_peak_percent": "60.16387742699453851103808370"
+        },
+        "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+        "same_bar_extrema_order_assumed": false,
+        "actual_intrabar_path_proven": false
+      },
+      "conditional_lower_envelope": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1727970300000000000",
+          "equity": "5333.46623547"
+        },
+        "maximum_loss_below_seed_amount": "4666.53376453",
+        "maximum_loss_below_seed_percent": "46.665337645300",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1726272660000000000",
+              "equity": "12983.35439205"
+            },
+            "trough": {
+              "timestamp_ns": "1727970300000000000",
+              "equity": "5333.46623547"
+            },
+            "recovery": {
+              "timestamp_ns": "1728641100000000000",
+              "equity": "13003.05225862"
+            },
+            "drawdown_amount": "7649.88815658",
+            "drawdown_peak_percent": "58.92073747339284391046685971"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1735820100000000000",
+              "equity": "291078.13417101"
+            },
+            "trough": {
+              "timestamp_ns": "1735862460000000000",
+              "equity": "120225.30286706"
+            },
+            "recovery": {
+              "timestamp_ns": "1735921380000000000",
+              "equity": "291079.62888261"
+            },
+            "drawdown_amount": "170852.83130395",
+            "drawdown_peak_percent": "58.69655300304110947389108887"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "844765.22022458"
+            },
+            "trough": {
+              "timestamp_ns": "1749223020000000000",
+              "equity": "384585.70894335"
+            },
+            "recovery": {
+              "timestamp_ns": "1758081120000000000",
+              "equity": "845936.46973131"
+            },
+            "drawdown_amount": "460179.51128123",
+            "drawdown_peak_percent": "54.47424920724029466203399641"
+          }
+        ]
+      },
+      "conditional_margin_breach_count": 0,
+      "assets": {
+        "BTC": {
+          "fills": 311,
+          "fees": "966571.52829084",
+          "notional": "1969161442.6419",
+          "actions": {
+            "BTC_ENTRY": 105,
+            "BTC_REDUCE": 155,
+            "FORCED_CLOSE": 50,
+            "TERMINAL_CLOSE": 1
+          },
+          "reasons": {
+            "BTC_ENTRY": 105,
+            "BTC_TP3": 54,
+            "REGIME": 48,
+            "BTC_TP2": 24,
+            "BTC_REDUCE": 77,
+            "TRAIL": 2,
+            "TERMINAL_BOUNDARY_SETTLEMENT": 1
+          }
+        },
+        "SOL": {
+          "fills": 215,
+          "fees": "18910.09896820",
+          "notional": "34381998.124",
+          "actions": {
+            "SOL_ADD": 107,
+            "FORCED_CLOSE": 94,
+            "SOL_HALF_EXIT": 1,
+            "SOL_EXIT": 13
+          },
+          "reasons": {
+            "SOL_ADD": 107,
+            "REGIME": 53,
+            "TRAIL": 41,
+            "SOL_Z_HALF_EXIT": 1,
+            "SOL_Z_FULL_EXIT": 1,
+            "SOL_HARD_TIMEOUT": 12
+          }
+        }
+      },
+      "fee_attribution": {
+        "audited_total": "985481.62725904",
+        "maker": {
+          "count": 78,
+          "fees": "66552.72294998",
+          "notional": "332763614.7499"
+        },
+        "native_total": "985481.62725904",
+        "reconciled": true,
+        "taker": {
+          "count": 448,
+          "fees": "918928.90430906",
+          "notional": "1670779826.0160"
+        },
+        "unknown": {
+          "count": 0,
+          "fees": "0",
+          "notional": "0"
+        }
+      },
+      "btc_sizing_audit_event_counts": {},
+      "episode_frozen_multiplier_counts": {},
+      "episode_side_multiplier_counts": {},
+      "drawdown_state_changes": [],
+      "status": "NOT_FAITHFUL_DIAGNOSTIC",
+      "ranking_eligible": false,
+      "config_diff_from_C": [
+        {
+          "path": ".candidate.btc_notional_multiplier",
+          "C": 7.875,
+          "variant": 6.3
+        }
+      ]
+    },
+    "v2": {
+      "metrics": {
+        "variant": "V2",
+        "TOTAL": "3083826.38715455",
+        "ACTIVE": "3083826.38715455",
+        "RESERVE": "0",
+        "ROI_percent": "30738.263871545500",
+        "delta_C": "-2063058.57002745",
+        "delta_C_percent": "-40.08363480416719531227742001",
+        "native_global_minute_DD_percent": "54.90263646401992147639303061",
+        "DD_eligible_le50": false,
+        "seed_minimum": "6085.40393758",
+        "loss_below_seed_percent": "39.145960624200",
+        "conditional_upper_to_later_lower_percent": "63.07795443366038609071752251",
+        "cash_DD_percent": "51.48938662534133595108106699",
+        "fees": "798777.32352185",
+        "BTC_fills": 311,
+        "SOL_fills": 203,
+        "fills": 514,
+        "orders": 568,
+        "funding_events": 1315,
+        "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+        "liquidations": 0,
+        "open_positions": 0
+      },
+      "receipt": {
+        "variant": "v2",
+        "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+        "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v2-20261011/result/sizing-v2.json",
+        "artifact_sha256": "a86b0ab6225e7f5e0e10a303587d7e7a2bf9d399ba9ede4ebc1c7b0adf9ab6c1",
+        "exit_code": 0,
+        "launched_at": "2026-10-11T11:27:51Z",
+        "systemd_completed_lines": [
+          "Oct 11 11:43:53 MyShopAI-prod-1 systemd[1]: cm113-sizing-v2-20261011.service: Deactivated successfully.",
+          "Oct 11 11:43:53 MyShopAI-prod-1 systemd[1]: cm113-sizing-v2-20261011.service: Consumed 15min 12.314s CPU time, 523.9M memory peak, 0B memory swap peak."
+        ],
+        "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "source_guard_file": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v2-20261011/source-input-hashes.sha256",
+        "immutable_source_hash_manifest_sha256": "4050e5079e771335329cade2a4ba929800f9e2eed453e91295a0892581e666ea",
+        "immutable_files_verified": 106,
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "config_hash": "77d9b2f06395188d7280612cb66b4f791b05db1a045b30f1278e605938f65513",
+        "source_hashes": {
+          "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+          "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+          "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+        },
+        "streaming": {
+          "batch_count": 105,
+          "cursor_batch_rows": 10080,
+          "event_count": 4206260,
+          "expected_rows_per_source": 1051200,
+          "max_batch_events": 40334,
+          "max_batch_minutes": 10080,
+          "peak_rss_bytes": 632606720,
+          "processed_rows_per_source": 1051200
+        },
+        "minute_rows": 3153600,
+        "upper_bound_samples": 1051200,
+        "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v2-20261011/result/sizing-v2-funding.sqlite",
+        "terminal_lifecycle": {
+          "close_fills": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "timestamp": "1788220800000000000",
+              "value": "9705442.0653"
+            }
+          ],
+          "lockout": true,
+          "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+          "status": "FLAT",
+          "trigger_ts": "1788220800000000000"
+        },
+        "post_boundary_settlement": {
+          "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+          "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+          "fill_count": 1,
+          "interval_cash_total_before_settlement": "3047388.59429046",
+          "settled_cash_total": "3083826.38715455"
+        },
+        "boundary_samples_excluded": [
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_btc_quote_paired_close",
+            "cash": "3083826.38715455",
+            "paired_close_equity": "3083826.38715455",
+            "native_positions": []
+          },
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_quote_paired_close",
+            "cash": "3083826.38715455",
+            "paired_close_equity": "3083826.38715455",
+            "native_positions": []
+          }
+        ],
+        "resources_before": {
+          "MemAvailable": 1441652736,
+          "disk_free": 5338968064
+        }
+      },
+      "config": {
+        "account": "SIM_MARGIN_USDT_10000",
+        "btc_close_stop_fraction": null,
+        "candidate": {
+          "beta_days": 270,
+          "btc_close_trail_fraction": 0.03,
+          "btc_notional_multiplier": 5.5,
+          "btc_tp_fractions_initial_qty": [
+            0.2125,
+            0.2125,
+            0.575
+          ],
+          "ema_period": 34,
+          "episode_fixed_beta": false,
+          "max_parent_notional": 30000000.0,
+          "relative_days": 65,
+          "sol_entry_z": [
+            1.25,
+            2.5,
+            3.75
+          ],
+          "sol_exit_all_z": 0.125,
+          "sol_exit_half_z": 0.375,
+          "sol_late_entry_after_tp": true,
+          "sol_max_holding_days": 14,
+          "sol_overlay_enabled": true,
+          "sol_size_multipliers_h": [
+            1.75,
+            2.625,
+            3.5
+          ],
+          "sol_timeout_preempts_add": false,
+          "wave_history_days": 730,
+          "wave_min_count": 8,
+          "wave_quantiles": [
+            0.1,
+            0.3,
+            0.6
+          ],
+          "z_history_days": 180
+        },
+        "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+        "execution_policy": {
+          "execution_delay_minutes": 1,
+          "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+          "fee_historical_applicability": "UNKNOWN",
+          "fee_multiplier": "1",
+          "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+          "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+          "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+          "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+          "nonmatching_daily_signals": true,
+          "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+          "symmetric_adverse_spread_bps": "0",
+          "version": "bybit-native-resting-reductions-v2"
+        },
+        "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+        "fixed_base_fee_policy": {
+          "bybit_maker": "0.00020",
+          "bybit_taker": "0.00055",
+          "hyperliquid_maker": "0.00015",
+          "hyperliquid_taker": "0.00045",
+          "venue": "bybit",
+          "version": "fixed-base-native-maker-taker-execution-v3"
+        },
+        "freeze_sigma_on_first_sol_fill": true,
+        "future_sol_margin_fraction": "0",
+        "include_zero_waves": true,
+        "initial_active_fraction": "1.0",
+        "initial_total_usdt": "10000",
+        "insufficient_margin": "reject",
+        "live_enabled": false,
+        "mode": "paper",
+        "portfolio_loss_limit_fraction": null,
+        "post_liquidation": "restart_from_reserve_else_pause",
+        "research_v0_deferred_selective_zero_tp": true,
+        "research_v0_execution_repairs": true,
+        "research_v0_selective_lifecycle_repairs": true,
+        "research_v0_zero_tp_netting": false,
+        "reserve_transfer_fraction": "0",
+        "reserve_trigger_multiple": "4",
+        "restart_target": "initial_active_seed",
+        "run_interval": {
+          "end_exclusive": "2026-09-01T00:00:00+00:00",
+          "initial_active_seed": "10000",
+          "start": "2024-09-01T00:00:00+00:00"
+        },
+        "signal_timeframe": "1D",
+        "sol_direction": "opposite_btc",
+        "sol_entry_eligibility": "persistent_after_btc_level",
+        "sol_z_stop": null,
+        "strategy_id": "btc_sol_wave_overlay_v1",
+        "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+        "tp_fee_floor_v1": false,
+        "venue": "bybit"
+      },
+      "source_hashes": {
+        "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+        "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+        "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+      },
+      "interval": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00)",
+      "run_interval": {
+        "end_exclusive": "2026-09-01T00:00:00+00:00",
+        "initial_active_seed": "10000",
+        "start": "2024-09-01T00:00:00+00:00"
+      },
+      "warmup": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only",
+      "native_minute_curve": {
+        "samples": 3153599,
+        "minimum": {
+          "timestamp_ns": "1727970240000000000",
+          "equity": "6085.40393758",
+          "timestamp_utc": "2024-10-03T15:44:00+00:00"
+        },
+        "maximum_loss_below_seed_amount": "3914.59606242",
+        "maximum_loss_below_seed_percent": "39.145960624200",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "6222444.96664347",
+              "timestamp_utc": "2026-05-15T00:34:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "2806158.6274335",
+              "timestamp_utc": "2026-08-18T03:33:00+00:00"
+            },
+            "recovery": null,
+            "drawdown_amount": "3416286.33920997",
+            "drawdown_peak_percent": "54.90263646401992147639303061"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1726273140000000000",
+              "equity": "12594.79165977",
+              "timestamp_utc": "2024-09-14T00:19:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1727970240000000000",
+              "equity": "6085.40393758",
+              "timestamp_utc": "2024-10-03T15:44:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1728631620000000000",
+              "equity": "12648.78920063",
+              "timestamp_utc": "2024-10-11T07:27:00+00:00"
+            },
+            "drawdown_amount": "6509.38772219",
+            "drawdown_peak_percent": "51.68317109192158954308117278"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "721418.92490846",
+              "timestamp_utc": "2025-04-11T01:00:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1749223020000000000",
+              "equity": "378293.49569663",
+              "timestamp_utc": "2025-06-06T15:17:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1756064160000000000",
+              "equity": "730402.48020589",
+              "timestamp_utc": "2025-08-24T19:36:00+00:00"
+            },
+            "drawdown_amount": "343125.42921183",
+            "drawdown_peak_percent": "47.56257666173212501684088579"
+          }
+        ]
+      },
+      "conditional_upper_to_later_lower_bound": {
+        "samples": 1051200,
+        "maximum": {
+          "peak": {
+            "timestamp_ns": "1735828380000000000",
+            "equity": "282974.17339496",
+            "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+            "timestamp_utc": "2025-01-02T14:33:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1735862460000000000",
+            "equity": "104479.85324186",
+            "timestamp_utc": "2025-01-03T00:01:00+00:00"
+          },
+          "drawdown_fraction": "0.6307795443366038609071752251",
+          "drawdown_peak_percent": "63.07795443366038609071752251"
+        },
+        "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+        "same_bar_extrema_order_assumed": false,
+        "actual_intrabar_path_proven": false
+      },
+      "conditional_lower_envelope": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1727970300000000000",
+          "equity": "5975.79913758"
+        },
+        "maximum_loss_below_seed_amount": "4024.20086242",
+        "maximum_loss_below_seed_percent": "40.242008624200",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1735820100000000000",
+              "equity": "272510.46739496"
+            },
+            "trough": {
+              "timestamp_ns": "1735862460000000000",
+              "equity": "104479.85324186"
+            },
+            "recovery": {
+              "timestamp_ns": "1735921440000000000",
+              "equity": "272886.4498224"
+            },
+            "drawdown_amount": "168030.61415310",
+            "drawdown_peak_percent": "61.66024217688735878837479212"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1778805420000000000",
+              "equity": "6211528.37364347"
+            },
+            "trough": {
+              "timestamp_ns": "1787024040000000000",
+              "equity": "2802573.9034335"
+            },
+            "recovery": null,
+            "drawdown_amount": "3408954.47020997",
+            "drawdown_peak_percent": "54.88108988883832392811146927"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1726272660000000000",
+              "equity": "12578.11845977"
+            },
+            "trough": {
+              "timestamp_ns": "1727970300000000000",
+              "equity": "5975.79913758"
+            },
+            "recovery": {
+              "timestamp_ns": "1728638160000000000",
+              "equity": "12648.37183921"
+            },
+            "drawdown_amount": "6602.31932219",
+            "drawdown_peak_percent": "52.49051631455797393979610636"
+          }
+        ]
+      },
+      "conditional_margin_breach_count": 0,
+      "assets": {
+        "BTC": {
+          "fills": 311,
+          "fees": "780426.80530615",
+          "notional": "1590529320.8265",
+          "actions": {
+            "BTC_ENTRY": 105,
+            "BTC_REDUCE": 155,
+            "FORCED_CLOSE": 50,
+            "TERMINAL_CLOSE": 1
+          },
+          "reasons": {
+            "BTC_ENTRY": 105,
+            "BTC_TP3": 54,
+            "REGIME": 48,
+            "BTC_TP2": 24,
+            "BTC_REDUCE": 77,
+            "TRAIL": 2,
+            "TERMINAL_BOUNDARY_SETTLEMENT": 1
+          }
+        },
+        "SOL": {
+          "fills": 203,
+          "fees": "18350.5182157",
+          "notional": "33364578.574",
+          "actions": {
+            "SOL_ADD": 101,
+            "FORCED_CLOSE": 91,
+            "SOL_HALF_EXIT": 1,
+            "SOL_EXIT": 10
+          },
+          "reasons": {
+            "SOL_ADD": 101,
+            "REGIME": 51,
+            "TRAIL": 40,
+            "SOL_Z_HALF_EXIT": 1,
+            "SOL_Z_FULL_EXIT": 1,
+            "SOL_HARD_TIMEOUT": 9
+          }
+        }
+      },
+      "fee_attribution": {
+        "audited_total": "798777.32352185",
+        "maker": {
+          "count": 78,
+          "fees": "53922.46922780",
+          "notional": "269612346.1390"
+        },
+        "native_total": "798777.32352185",
+        "reconciled": true,
+        "taker": {
+          "count": 436,
+          "fees": "744854.85429405",
+          "notional": "1354281553.2615"
+        },
+        "unknown": {
+          "count": 0,
+          "fees": "0",
+          "notional": "0"
+        }
+      },
+      "btc_sizing_audit_event_counts": {},
+      "episode_frozen_multiplier_counts": {},
+      "episode_side_multiplier_counts": {},
+      "drawdown_state_changes": [],
+      "status": "NOT_FAITHFUL_DIAGNOSTIC",
+      "ranking_eligible": false,
+      "config_diff_from_C": [
+        {
+          "path": ".candidate.btc_notional_multiplier",
+          "C": 7.875,
+          "variant": 5.5
+        }
+      ]
+    },
+    "v3": {
+      "metrics": {
+        "variant": "V3",
+        "TOTAL": "5437208.56951095",
+        "ACTIVE": "5437208.56951095",
+        "RESERVE": "0",
+        "ROI_percent": "54272.085695109500",
+        "delta_C": "290323.61232895",
+        "delta_C_percent": "5.640763583103414026410534100",
+        "native_global_minute_DD_percent": "67.28630644841043826206055609",
+        "DD_eligible_le50": false,
+        "seed_minimum": "4514.69512879",
+        "loss_below_seed_percent": "54.853048712100",
+        "conditional_upper_to_later_lower_percent": "68.49200984400826048214056614",
+        "cash_DD_percent": "41.31702402530904598150073495",
+        "fees": "1091093.07886765",
+        "BTC_fills": 311,
+        "SOL_fills": 205,
+        "fills": 516,
+        "orders": 570,
+        "funding_events": 1321,
+        "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+        "liquidations": 0,
+        "open_positions": 0
+      },
+      "receipt": {
+        "variant": "v3",
+        "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+        "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/result/v0-selective-lifecycle-cap30m-btc-direction.json",
+        "artifact_sha256": "caa6b209142f4a005f8cd73ee00d030bd841c6a9669e98c971b15f93c36c902a",
+        "exit_code": 0,
+        "launched_at": "2026-10-11T11:44:23Z",
+        "systemd_completed_lines": [
+          "Oct 11 12:00:04 MyShopAI-prod-1 systemd[1]: cm113-sizing-v3-20261011.service: Deactivated successfully.",
+          "Oct 11 12:00:04 MyShopAI-prod-1 systemd[1]: cm113-sizing-v3-20261011.service: Consumed 15min 7.808s CPU time, 564.9M memory peak, 0B memory swap peak."
+        ],
+        "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "source_guard_file": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/source-input-hashes.sha256",
+        "immutable_source_hash_manifest_sha256": "4050e5079e771335329cade2a4ba929800f9e2eed453e91295a0892581e666ea",
+        "immutable_files_verified": 106,
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "config_hash": "88b7b8759951bbbb32dbbabacb30770a8efb9e2356e346dbee70decea8fc0fc5",
+        "source_hashes": {
+          "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+          "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+          "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+        },
+        "streaming": {
+          "batch_count": 105,
+          "cursor_batch_rows": 10080,
+          "event_count": 4206260,
+          "expected_rows_per_source": 1051200,
+          "max_batch_events": 40334,
+          "max_batch_minutes": 10080,
+          "peak_rss_bytes": 632717312,
+          "processed_rows_per_source": 1051200
+        },
+        "minute_rows": 3153600,
+        "upper_bound_samples": 1051200,
+        "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/result/v0-selective-lifecycle-cap30m-btc-direction-funding.sqlite",
+        "terminal_lifecycle": {
+          "close_fills": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "timestamp": "1788220800000000000",
+              "value": "17111910.6333"
+            }
+          ],
+          "lockout": true,
+          "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+          "status": "FLAT",
+          "trigger_ts": "1788220800000000000"
+        },
+        "post_boundary_settlement": {
+          "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+          "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+          "fill_count": 1,
+          "interval_cash_total_before_settlement": "5372964.17435927",
+          "settled_cash_total": "5437208.56951095"
+        },
+        "boundary_samples_excluded": [
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_btc_quote_paired_close",
+            "cash": "5437208.56951095",
+            "paired_close_equity": "5437208.56951095",
+            "native_positions": []
+          },
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_quote_paired_close",
+            "cash": "5437208.56951095",
+            "paired_close_equity": "5437208.56951095",
+            "native_positions": []
+          }
+        ],
+        "resources_before": {
+          "MemAvailable": 1529634816,
+          "disk_free": 5261119488
+        }
+      },
+      "config": {
+        "account": "SIM_MARGIN_USDT_10000",
+        "btc_close_stop_fraction": null,
+        "candidate": {
+          "beta_days": 270,
+          "btc_close_trail_fraction": 0.03,
+          "btc_notional_multiplier": 7.875,
+          "btc_tp_fractions_initial_qty": [
+            0.2125,
+            0.2125,
+            0.575
+          ],
+          "ema_period": 34,
+          "episode_fixed_beta": false,
+          "max_parent_notional": 30000000.0,
+          "relative_days": 65,
+          "sol_entry_z": [
+            1.25,
+            2.5,
+            3.75
+          ],
+          "sol_exit_all_z": 0.125,
+          "sol_exit_half_z": 0.375,
+          "sol_late_entry_after_tp": true,
+          "sol_max_holding_days": 14,
+          "sol_overlay_enabled": true,
+          "sol_size_multipliers_h": [
+            1.75,
+            2.625,
+            3.5
+          ],
+          "sol_timeout_preempts_add": false,
+          "wave_history_days": 730,
+          "wave_min_count": 8,
+          "wave_quantiles": [
+            0.1,
+            0.3,
+            0.6
+          ],
+          "z_history_days": 180
+        },
+        "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+        "execution_policy": {
+          "execution_delay_minutes": 1,
+          "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+          "fee_historical_applicability": "UNKNOWN",
+          "fee_multiplier": "1",
+          "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+          "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+          "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+          "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+          "nonmatching_daily_signals": true,
+          "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+          "symmetric_adverse_spread_bps": "0",
+          "version": "bybit-native-resting-reductions-v2"
+        },
+        "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+        "fixed_base_fee_policy": {
+          "bybit_maker": "0.00020",
+          "bybit_taker": "0.00055",
+          "hyperliquid_maker": "0.00015",
+          "hyperliquid_taker": "0.00045",
+          "venue": "bybit",
+          "version": "fixed-base-native-maker-taker-execution-v3"
+        },
+        "freeze_sigma_on_first_sol_fill": true,
+        "future_sol_margin_fraction": "0",
+        "include_zero_waves": true,
+        "initial_active_fraction": "1.0",
+        "initial_total_usdt": "10000",
+        "insufficient_margin": "reject",
+        "live_enabled": false,
+        "mode": "paper",
+        "portfolio_loss_limit_fraction": null,
+        "post_liquidation": "restart_from_reserve_else_pause",
+        "research_btc_direction_sizing": {
+          "freeze": "GENUINE_EPISODE_CREATION",
+          "long": "5.5",
+          "short": "7.875"
+        },
+        "research_v0_deferred_selective_zero_tp": true,
+        "research_v0_execution_repairs": true,
+        "research_v0_selective_lifecycle_repairs": true,
+        "research_v0_zero_tp_netting": false,
+        "reserve_transfer_fraction": "0",
+        "reserve_trigger_multiple": "4",
+        "restart_target": "initial_active_seed",
+        "run_interval": {
+          "end_exclusive": "2026-09-01T00:00:00+00:00",
+          "initial_active_seed": "10000",
+          "start": "2024-09-01T00:00:00+00:00"
+        },
+        "signal_timeframe": "1D",
+        "sol_direction": "opposite_btc",
+        "sol_entry_eligibility": "persistent_after_btc_level",
+        "sol_z_stop": null,
+        "strategy_id": "btc_sol_wave_overlay_v1",
+        "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+        "tp_fee_floor_v1": false,
+        "venue": "bybit"
+      },
+      "source_hashes": {
+        "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+        "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+        "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+      },
+      "interval": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00)",
+      "run_interval": {
+        "end_exclusive": "2026-09-01T00:00:00+00:00",
+        "initial_active_seed": "10000",
+        "start": "2024-09-01T00:00:00+00:00"
+      },
+      "warmup": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only",
+      "native_minute_curve": {
+        "samples": 3153599,
+        "minimum": {
+          "timestamp_ns": "1727970240000000000",
+          "equity": "4514.69512879",
+          "timestamp_utc": "2024-10-03T15:44:00+00:00"
+        },
+        "maximum_loss_below_seed_amount": "5485.30487121",
+        "maximum_loss_below_seed_percent": "54.853048712100",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1726063200000000000",
+              "equity": "13800.6279287",
+              "timestamp_utc": "2024-09-11T14:00:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1727970240000000000",
+              "equity": "4514.69512879",
+              "timestamp_utc": "2024-10-03T15:44:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1728617040000000000",
+              "equity": "13831.56754683",
+              "timestamp_utc": "2024-10-11T03:24:00+00:00"
+            },
+            "drawdown_amount": "9285.93279991",
+            "drawdown_peak_percent": "67.28630644841043826206055609"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1070928.8154819",
+              "timestamp_utc": "2025-04-11T01:00:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1749223020000000000",
+              "equity": "404246.70219572",
+              "timestamp_utc": "2025-06-06T15:17:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1758520860000000000",
+              "equity": "1091180.15546923",
+              "timestamp_utc": "2025-09-22T06:01:00+00:00"
+            },
+            "drawdown_amount": "666682.11328618",
+            "drawdown_peak_percent": "62.25270098705713077142029154"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1761168540000000000",
+              "equity": "2120475.46792142",
+              "timestamp_utc": "2025-10-22T21:29:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1764340080000000000",
+              "equity": "936538.29265054",
+              "timestamp_utc": "2025-11-28T14:28:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1764562320000000000",
+              "equity": "2121408.722501",
+              "timestamp_utc": "2025-12-01T04:12:00+00:00"
+            },
+            "drawdown_amount": "1183937.17527088",
+            "drawdown_peak_percent": "55.83357096941213092439153144"
+          }
+        ]
+      },
+      "conditional_upper_to_later_lower_bound": {
+        "samples": 1051200,
+        "maximum": {
+          "peak": {
+            "timestamp_ns": "1726063200000000000",
+            "equity": "13827.7494287",
+            "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+            "timestamp_utc": "2024-09-11T14:00:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1727970300000000000",
+            "equity": "4356.84592879",
+            "timestamp_utc": "2024-10-03T15:45:00+00:00"
+          },
+          "drawdown_fraction": "0.6849200984400826048214056614",
+          "drawdown_peak_percent": "68.49200984400826048214056614"
+        },
+        "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+        "same_bar_extrema_order_assumed": false,
+        "actual_intrabar_path_proven": false
+      },
+      "conditional_lower_envelope": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1727970300000000000",
+          "equity": "4356.84592879"
+        },
+        "maximum_loss_below_seed_amount": "5643.15407121",
+        "maximum_loss_below_seed_percent": "56.431540712100",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1726272660000000000",
+              "equity": "13775.13517179"
+            },
+            "trough": {
+              "timestamp_ns": "1727970300000000000",
+              "equity": "4356.84592879"
+            },
+            "recovery": {
+              "timestamp_ns": "1728617040000000000",
+              "equity": "13787.26754683"
+            },
+            "drawdown_amount": "9418.28924300",
+            "drawdown_peak_percent": "68.37166478255434208122022571"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "1067608.6074819"
+            },
+            "trough": {
+              "timestamp_ns": "1749223020000000000",
+              "equity": "402043.82229572"
+            },
+            "recovery": {
+              "timestamp_ns": "1758520980000000000",
+              "equity": "1069272.34446923"
+            },
+            "drawdown_amount": "665564.78518618",
+            "drawdown_peak_percent": "62.34164660361862416281192927"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1735820100000000000",
+              "equity": "273560.56539438"
+            },
+            "trough": {
+              "timestamp_ns": "1735862460000000000",
+              "equity": "107327.47643938"
+            },
+            "recovery": {
+              "timestamp_ns": "1735921440000000000",
+              "equity": "274344.84031925"
+            },
+            "drawdown_amount": "166233.08895500",
+            "drawdown_peak_percent": "60.76646636380108732208579545"
+          }
+        ]
+      },
+      "conditional_margin_breach_count": 0,
+      "assets": {
+        "BTC": {
+          "fills": 311,
+          "fees": "1072814.89050625",
+          "notional": "2194567671.1101",
+          "actions": {
+            "BTC_ENTRY": 105,
+            "BTC_REDUCE": 155,
+            "FORCED_CLOSE": 50,
+            "TERMINAL_CLOSE": 1
+          },
+          "reasons": {
+            "BTC_ENTRY": 105,
+            "BTC_TP3": 54,
+            "REGIME": 48,
+            "BTC_TP2": 24,
+            "BTC_REDUCE": 77,
+            "TRAIL": 2,
+            "TERMINAL_BOUNDARY_SETTLEMENT": 1
+          }
+        },
+        "SOL": {
+          "fills": 205,
+          "fees": "18278.1883614",
+          "notional": "33233069.748",
+          "actions": {
+            "SOL_ADD": 102,
+            "FORCED_CLOSE": 89,
+            "SOL_HALF_EXIT": 1,
+            "SOL_EXIT": 13
+          },
+          "reasons": {
+            "SOL_ADD": 102,
+            "REGIME": 50,
+            "TRAIL": 39,
+            "SOL_Z_HALF_EXIT": 1,
+            "SOL_Z_FULL_EXIT": 1,
+            "SOL_HARD_TIMEOUT": 12
+          }
+        }
+      },
+      "fee_attribution": {
+        "audited_total": "1091093.07886765",
+        "maker": {
+          "count": 78,
+          "fees": "76684.18777402",
+          "notional": "383420938.8701"
+        },
+        "native_total": "1091093.07886765",
+        "reconciled": true,
+        "taker": {
+          "count": 438,
+          "fees": "1014408.89109363",
+          "notional": "1844379801.9880"
+        },
+        "unknown": {
+          "count": 0,
+          "fees": "0",
+          "notional": "0"
+        }
+      },
+      "btc_sizing_audit_event_counts": {
+        "EPISODE_ENTRY_SIZING": 105
+      },
+      "episode_frozen_multiplier_counts": {
+        "7.875": 52,
+        "5.5": 53
+      },
+      "episode_side_multiplier_counts": {
+        "-1:7.875": 52,
+        "1:5.5": 53
+      },
+      "drawdown_state_changes": [],
+      "status": "NOT_FAITHFUL_DIAGNOSTIC",
+      "ranking_eligible": false,
+      "config_diff_from_C": [
+        {
+          "path": ".research_btc_direction_sizing",
+          "C": null,
+          "variant": {
+            "freeze": "GENUINE_EPISODE_CREATION",
+            "long": "5.5",
+            "short": "7.875"
+          }
+        }
+      ]
+    },
+    "v4": {
+      "metrics": {
+        "variant": "V4",
+        "TOTAL": "3112031.23119634",
+        "ACTIVE": "3112031.23119634",
+        "RESERVE": "0",
+        "ROI_percent": "31020.312311963400",
+        "delta_C": "-2034853.72598566",
+        "delta_C_percent": "-39.53563646582406294169283499",
+        "native_global_minute_DD_percent": "52.12706183581564820412531660",
+        "DD_eligible_le50": false,
+        "seed_minimum": "6896.13085648",
+        "loss_below_seed_percent": "31.038691435200",
+        "conditional_upper_to_later_lower_percent": "61.18563457104875053717491067",
+        "cash_DD_percent": "49.10159099625532540219317940",
+        "fees": "793140.36430867",
+        "BTC_fills": 311,
+        "SOL_fills": 211,
+        "fills": 522,
+        "orders": 576,
+        "funding_events": 1321,
+        "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+        "liquidations": 0,
+        "open_positions": 0
+      },
+      "receipt": {
+        "variant": "v4",
+        "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+        "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v4-20261011/result/v0-selective-lifecycle-cap30m-btc-dd25-15.json",
+        "artifact_sha256": "ad1b30dc237a74b43dbc7bca20396869a6a66ad6c6f5967a2c43b2b52e10359c",
+        "exit_code": 0,
+        "launched_at": "2026-10-11T12:00:24Z",
+        "systemd_completed_lines": [
+          "Oct 11 12:16:21 MyShopAI-prod-1 systemd[1]: cm113-sizing-v4-20261011.service: Deactivated successfully.",
+          "Oct 11 12:16:21 MyShopAI-prod-1 systemd[1]: cm113-sizing-v4-20261011.service: Consumed 15min 26.065s CPU time, 553.7M memory peak, 0B memory swap peak."
+        ],
+        "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+        "source_guard_file": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v4-20261011/source-input-hashes.sha256",
+        "immutable_source_hash_manifest_sha256": "4050e5079e771335329cade2a4ba929800f9e2eed453e91295a0892581e666ea",
+        "immutable_files_verified": 106,
+        "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "config_hash": "b1e4c811bcc40c3e48543ba4655044ee08bb5bb7e3e1ab1160dce40515667644",
+        "source_hashes": {
+          "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+          "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+          "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+        },
+        "streaming": {
+          "batch_count": 105,
+          "cursor_batch_rows": 10080,
+          "event_count": 4206260,
+          "expected_rows_per_source": 1051200,
+          "max_batch_events": 40334,
+          "max_batch_minutes": 10080,
+          "peak_rss_bytes": 629256192,
+          "processed_rows_per_source": 1051200
+        },
+        "minute_rows": 3153600,
+        "upper_bound_samples": 1051200,
+        "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v4-20261011/result/v0-selective-lifecycle-cap30m-btc-dd25-15-funding.sqlite",
+        "terminal_lifecycle": {
+          "close_fills": [
+            {
+              "instrument_id": "BTCUSDT-PERP.P1SIM",
+              "timestamp": "1788220800000000000",
+              "value": "7029706.0978"
+            }
+          ],
+          "lockout": true,
+          "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+          "status": "FLAT",
+          "trigger_ts": "1788220800000000000"
+        },
+        "post_boundary_settlement": {
+          "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+          "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+          "fill_count": 1,
+          "interval_cash_total_before_settlement": "3085639.13355013",
+          "settled_cash_total": "3112031.23119634"
+        },
+        "boundary_samples_excluded": [
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_btc_quote_paired_close",
+            "cash": "3112031.23119634",
+            "paired_close_equity": "3112031.23119634",
+            "native_positions": []
+          },
+          {
+            "timestamp_ns": "1788220800000000000",
+            "phase": "post_quote_paired_close",
+            "cash": "3112031.23119634",
+            "paired_close_equity": "3112031.23119634",
+            "native_positions": []
+          }
+        ],
+        "resources_before": {
+          "MemAvailable": 1453621248,
+          "disk_free": 5173764096
+        }
+      },
+      "config": {
+        "account": "SIM_MARGIN_USDT_10000",
+        "btc_close_stop_fraction": null,
+        "candidate": {
+          "beta_days": 270,
+          "btc_close_trail_fraction": 0.03,
+          "btc_notional_multiplier": 7.875,
+          "btc_tp_fractions_initial_qty": [
+            0.2125,
+            0.2125,
+            0.575
+          ],
+          "ema_period": 34,
+          "episode_fixed_beta": false,
+          "max_parent_notional": 30000000.0,
+          "relative_days": 65,
+          "sol_entry_z": [
+            1.25,
+            2.5,
+            3.75
+          ],
+          "sol_exit_all_z": 0.125,
+          "sol_exit_half_z": 0.375,
+          "sol_late_entry_after_tp": true,
+          "sol_max_holding_days": 14,
+          "sol_overlay_enabled": true,
+          "sol_size_multipliers_h": [
+            1.75,
+            2.625,
+            3.5
+          ],
+          "sol_timeout_preempts_add": false,
+          "wave_history_days": 730,
+          "wave_min_count": 8,
+          "wave_quantiles": [
+            0.1,
+            0.3,
+            0.6
+          ],
+          "z_history_days": 180
+        },
+        "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+        "execution_policy": {
+          "execution_delay_minutes": 1,
+          "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+          "fee_historical_applicability": "UNKNOWN",
+          "fee_multiplier": "1",
+          "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+          "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+          "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+          "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+          "nonmatching_daily_signals": true,
+          "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+          "symmetric_adverse_spread_bps": "0",
+          "version": "bybit-native-resting-reductions-v2"
+        },
+        "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+        "fixed_base_fee_policy": {
+          "bybit_maker": "0.00020",
+          "bybit_taker": "0.00055",
+          "hyperliquid_maker": "0.00015",
+          "hyperliquid_taker": "0.00045",
+          "venue": "bybit",
+          "version": "fixed-base-native-maker-taker-execution-v3"
+        },
+        "freeze_sigma_on_first_sol_fill": true,
+        "future_sol_margin_fraction": "0",
+        "include_zero_waves": true,
+        "initial_active_fraction": "1.0",
+        "initial_total_usdt": "10000",
+        "insufficient_margin": "reject",
+        "live_enabled": false,
+        "mode": "paper",
+        "portfolio_loss_limit_fraction": null,
+        "post_liquidation": "restart_from_reserve_else_pause",
+        "research_btc_drawdown_sizing": {
+          "enter_drawdown": "0.25",
+          "freeze": "GENUINE_EPISODE_CREATION",
+          "global_peak_seed": "10000",
+          "held_reduction": false,
+          "normal": "7.875",
+          "peak_reset": false,
+          "reduced": "3.9375",
+          "resume_drawdown": "0.15",
+          "sampling": "NATIVE_PAIRED_MINUTE_PRE_SIGNAL_PRE_QUOTE"
+        },
+        "research_v0_deferred_selective_zero_tp": true,
+        "research_v0_execution_repairs": true,
+        "research_v0_selective_lifecycle_repairs": true,
+        "research_v0_zero_tp_netting": false,
+        "reserve_transfer_fraction": "0",
+        "reserve_trigger_multiple": "4",
+        "restart_target": "initial_active_seed",
+        "run_interval": {
+          "end_exclusive": "2026-09-01T00:00:00+00:00",
+          "initial_active_seed": "10000",
+          "start": "2024-09-01T00:00:00+00:00"
+        },
+        "signal_timeframe": "1D",
+        "sol_direction": "opposite_btc",
+        "sol_entry_eligibility": "persistent_after_btc_level",
+        "sol_z_stop": null,
+        "strategy_id": "btc_sol_wave_overlay_v1",
+        "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+        "tp_fee_floor_v1": false,
+        "venue": "bybit"
+      },
+      "source_hashes": {
+        "native_baseline": "22bc3cc6c958ee9d251e87770cfb0aa1b178fc735eb515e7b0be67ff4da857c1",
+        "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+        "wave_strategy": "40ac20b28144f313ff80259f2be0915e7023992654a9fab654d6881f6e4ce3c6"
+      },
+      "interval": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00)",
+      "run_interval": {
+        "end_exclusive": "2026-09-01T00:00:00+00:00",
+        "initial_active_seed": "10000",
+        "start": "2024-09-01T00:00:00+00:00"
+      },
+      "warmup": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only",
+      "native_minute_curve": {
+        "samples": 3153599,
+        "minimum": {
+          "timestamp_ns": "1727970240000000000",
+          "equity": "6896.13085648",
+          "timestamp_utc": "2024-10-03T15:44:00+00:00"
+        },
+        "maximum_loss_below_seed_amount": "3103.86914352",
+        "maximum_loss_below_seed_percent": "31.038691435200",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1778805240000000000",
+              "equity": "6073798.06557994",
+              "timestamp_utc": "2026-05-15T00:34:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1787023980000000000",
+              "equity": "2907705.59215251",
+              "timestamp_utc": "2026-08-18T03:33:00+00:00"
+            },
+            "recovery": null,
+            "drawdown_amount": "3166092.47342743",
+            "drawdown_peak_percent": "52.12706183581564820412531660"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1726273140000000000",
+              "equity": "13807.88227209",
+              "timestamp_utc": "2024-09-14T00:19:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1727970240000000000",
+              "equity": "6896.13085648",
+              "timestamp_utc": "2024-10-03T15:44:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1728876960000000000",
+              "equity": "13810.03339344",
+              "timestamp_utc": "2024-10-14T03:36:00+00:00"
+            },
+            "drawdown_amount": "6911.75141561",
+            "drawdown_peak_percent": "50.05656392060053256855766101"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1744333200000000000",
+              "equity": "890785.70005393",
+              "timestamp_utc": "2025-04-11T01:00:00+00:00"
+            },
+            "trough": {
+              "timestamp_ns": "1744990500000000000",
+              "equity": "454474.45850645",
+              "timestamp_utc": "2025-04-18T15:35:00+00:00"
+            },
+            "recovery": {
+              "timestamp_ns": "1758520800000000000",
+              "equity": "959789.41320391",
+              "timestamp_utc": "2025-09-22T06:00:00+00:00"
+            },
+            "drawdown_amount": "436311.24154748",
+            "drawdown_peak_percent": "48.98049458147619784109802015"
+          }
+        ]
+      },
+      "conditional_upper_to_later_lower_bound": {
+        "samples": 1051200,
+        "maximum": {
+          "peak": {
+            "timestamp_ns": "1735828380000000000",
+            "equity": "305596.39400132",
+            "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+            "timestamp_utc": "2025-01-02T14:33:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1735862460000000000",
+            "equity": "118615.30110537",
+            "timestamp_utc": "2025-01-03T00:01:00+00:00"
+          },
+          "drawdown_fraction": "0.6118563457104875053717491067",
+          "drawdown_peak_percent": "61.18563457104875053717491067"
+        },
+        "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+        "same_bar_extrema_order_assumed": false,
+        "actual_intrabar_path_proven": false
+      },
+      "conditional_lower_envelope": {
+        "samples": 1051201,
+        "minimum": {
+          "timestamp_ns": "1727970300000000000",
+          "equity": "6820.15655648"
+        },
+        "maximum_loss_below_seed_amount": "3179.84344352",
+        "maximum_loss_below_seed_percent": "31.798434435200",
+        "top3_distinct_excursions": [
+          {
+            "peak": {
+              "timestamp_ns": "1735820100000000000",
+              "equity": "294812.89700132"
+            },
+            "trough": {
+              "timestamp_ns": "1735862460000000000",
+              "equity": "118615.30110537"
+            },
+            "recovery": {
+              "timestamp_ns": "1735921080000000000",
+              "equity": "294884.17017752"
+            },
+            "drawdown_amount": "176197.59589595",
+            "drawdown_peak_percent": "59.76590498181668424575062595"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1778805420000000000",
+              "equity": "6062881.47257994"
+            },
+            "trough": {
+              "timestamp_ns": "1787024040000000000",
+              "equity": "2905081.85675251"
+            },
+            "recovery": null,
+            "drawdown_amount": "3157799.61582743",
+            "drawdown_peak_percent": "52.08413903700628446111878326"
+          },
+          {
+            "peak": {
+              "timestamp_ns": "1726272660000000000",
+              "equity": "13781.73367209"
+            },
+            "trough": {
+              "timestamp_ns": "1727970300000000000",
+              "equity": "6820.15655648"
+            },
+            "recovery": {
+              "timestamp_ns": "1728877020000000000",
+              "equity": "13810.03339344"
+            },
+            "drawdown_amount": "6961.57711561",
+            "drawdown_peak_percent": "50.51307245697396201133557527"
+          }
+        ]
+      },
+      "conditional_margin_breach_count": 0,
+      "assets": {
+        "BTC": {
+          "fills": 311,
+          "fees": "774651.90790522",
+          "notional": "1581538517.4373",
+          "actions": {
+            "BTC_ENTRY": 105,
+            "BTC_REDUCE": 155,
+            "FORCED_CLOSE": 50,
+            "TERMINAL_CLOSE": 1
+          },
+          "reasons": {
+            "BTC_ENTRY": 105,
+            "BTC_TP3": 54,
+            "REGIME": 48,
+            "BTC_TP2": 24,
+            "BTC_REDUCE": 77,
+            "TRAIL": 2,
+            "TERMINAL_BOUNDARY_SETTLEMENT": 1
+          }
+        },
+        "SOL": {
+          "fills": 211,
+          "fees": "18488.45640345",
+          "notional": "33615375.279",
+          "actions": {
+            "SOL_ADD": 105,
+            "FORCED_CLOSE": 92,
+            "SOL_HALF_EXIT": 1,
+            "SOL_EXIT": 13
+          },
+          "reasons": {
+            "SOL_ADD": 105,
+            "REGIME": 51,
+            "TRAIL": 41,
+            "SOL_Z_HALF_EXIT": 1,
+            "SOL_Z_FULL_EXIT": 1,
+            "SOL_HARD_TIMEOUT": 12
+          }
+        }
+      },
+      "fee_attribution": {
+        "audited_total": "793140.36430867",
+        "maker": {
+          "count": 78,
+          "fees": "54396.72953460",
+          "notional": "271983647.6730"
+        },
+        "native_total": "793140.36430867",
+        "reconciled": true,
+        "taker": {
+          "count": 444,
+          "fees": "738743.63477407",
+          "notional": "1343170245.0433"
+        },
+        "unknown": {
+          "count": 0,
+          "fees": "0",
+          "notional": "0"
+        }
+      },
+      "btc_sizing_audit_event_counts": {
+        "EPISODE_ENTRY_SIZING": 105,
+        "DRAWDOWN_STATE_CHANGE": 61
+      },
+      "episode_frozen_multiplier_counts": {
+        "7.875": 47,
+        "3.9375": 58
+      },
+      "episode_side_multiplier_counts": {
+        "-1:7.875": 21,
+        "1:7.875": 26,
+        "-1:3.9375": 31,
+        "1:3.9375": 27
+      },
+      "drawdown_state_changes": [
+        {
+          "drawdown_fraction": "0.2550646998699326813764787912",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "13807.88227209",
+          "native_equity": "10285.97892452",
+          "reduced": true,
+          "timestamp_ns": "1726447200000000000"
+        },
+        {
+          "drawdown_fraction": "0.1499284915953045312694293076",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "13807.88227209",
+          "native_equity": "11737.68731091",
+          "reduced": false,
+          "timestamp_ns": "1728649980000000000"
+        },
+        {
+          "drawdown_fraction": "0.2520259794179020687006671793",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "16298.2511462",
+          "native_equity": "12190.66843828",
+          "reduced": true,
+          "timestamp_ns": "1729898040000000000"
+        },
+        {
+          "drawdown_fraction": "0.1499091898801458168439473400",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "16298.2511462",
+          "native_equity": "13854.99352041",
+          "reduced": false,
+          "timestamp_ns": "1729919040000000000"
+        },
+        {
+          "drawdown_fraction": "0.2519465314105177655554609421",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "20509.92063975",
+          "native_equity": "15342.51727506",
+          "reduced": true,
+          "timestamp_ns": "1730756220000000000"
+        },
+        {
+          "drawdown_fraction": "0.1486889658265967937678304541",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "20509.92063975",
+          "native_equity": "17460.32175064",
+          "reduced": false,
+          "timestamp_ns": "1730779200000000000"
+        },
+        {
+          "drawdown_fraction": "0.2529308652684072925269008058",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "37282.915195",
+          "native_equity": "27852.915195",
+          "reduced": true,
+          "timestamp_ns": "1732245420000000000"
+        },
+        {
+          "drawdown_fraction": "0.1480570918644335370889175449",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "37282.915195",
+          "native_equity": "31762.915195",
+          "reduced": false,
+          "timestamp_ns": "1732257600000000000"
+        },
+        {
+          "drawdown_fraction": "0.2854342636889667746060463651",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "38559.1143686",
+          "native_equity": "27553.0219503",
+          "reduced": true,
+          "timestamp_ns": "1732335840000000000"
+        },
+        {
+          "drawdown_fraction": "0.1498466383842878000659329697",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "38559.1143686",
+          "native_equity": "32781.16070139",
+          "reduced": false,
+          "timestamp_ns": "1732357860000000000"
+        },
+        {
+          "drawdown_fraction": "0.2535291286454134600006784037",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "38559.1143686",
+          "native_equity": "28783.25570139",
+          "reduced": true,
+          "timestamp_ns": "1732370880000000000"
+        },
+        {
+          "drawdown_fraction": "0.1308467549435883336892372631",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "38559.1143686",
+          "native_equity": "33513.77937997",
+          "reduced": false,
+          "timestamp_ns": "1732378680000000000"
+        },
+        {
+          "drawdown_fraction": "0.2554183412287779813927948377",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "53171.89436821",
+          "native_equity": "39590.81730869",
+          "reduced": true,
+          "timestamp_ns": "1732486800000000000"
+        },
+        {
+          "drawdown_fraction": "0.1379969851393318827771417630",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "53171.89436821",
+          "native_equity": "45834.33325125",
+          "reduced": false,
+          "timestamp_ns": "1732497600000000000"
+        },
+        {
+          "drawdown_fraction": "0.2612961468092173993910779513",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "53171.89436821",
+          "native_equity": "39278.28325125",
+          "reduced": true,
+          "timestamp_ns": "1732506660000000000"
+        },
+        {
+          "drawdown_fraction": "0.1473225091051746045078563286",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "53171.89436821",
+          "native_equity": "45338.47747601",
+          "reduced": false,
+          "timestamp_ns": "1732540740000000000"
+        },
+        {
+          "drawdown_fraction": "0.2588352533561707984827812182",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "103877.94493284",
+          "native_equity": "76990.67073803",
+          "reduced": true,
+          "timestamp_ns": "1734689700000000000"
+        },
+        {
+          "drawdown_fraction": "0.1409680043658681462480963086",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "103877.94493284",
+          "native_equity": "89234.47833803",
+          "reduced": false,
+          "timestamp_ns": "1734705480000000000"
+        },
+        {
+          "drawdown_fraction": "0.2693655861312232675877818056",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "128581.99576956",
+          "native_equity": "93946.43111317",
+          "reduced": true,
+          "timestamp_ns": "1735290360000000000"
+        },
+        {
+          "drawdown_fraction": "0.1494021471778850811716427089",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "128581.99576956",
+          "native_equity": "109371.56951317",
+          "reduced": false,
+          "timestamp_ns": "1735311000000000000"
+        },
+        {
+          "drawdown_fraction": "0.2531788991453687206885374681",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "175557.81761449",
+          "native_equity": "131110.28261449",
+          "reduced": true,
+          "timestamp_ns": "1735514040000000000"
+        },
+        {
+          "drawdown_fraction": "0.1375030822780493503798891204",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "175557.81761449",
+          "native_equity": "151418.07657449",
+          "reduced": false,
+          "timestamp_ns": "1735519920000000000"
+        },
+        {
+          "drawdown_fraction": "0.2536777937043813466112688467",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "175557.81761449",
+          "native_equity": "131022.69777449",
+          "reduced": true,
+          "timestamp_ns": "1735569180000000000"
+        },
+        {
+          "drawdown_fraction": "0.1352185819689791059880975232",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "175557.81761449",
+          "native_equity": "151819.13846309",
+          "reduced": false,
+          "timestamp_ns": "1735580760000000000"
+        },
+        {
+          "drawdown_fraction": "0.2542400831097824384619706390",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "175579.13846309",
+          "native_equity": "130939.88370789",
+          "reduced": true,
+          "timestamp_ns": "1735607280000000000"
+        },
+        {
+          "drawdown_fraction": "0.1394061111192061097931056172",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "175579.13846309",
+          "native_equity": "151102.33357629",
+          "reduced": false,
+          "timestamp_ns": "1735633560000000000"
+        },
+        {
+          "drawdown_fraction": "0.2578990271831218685987198152",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "200039.52928201",
+          "native_equity": "148449.52928201",
+          "reduced": true,
+          "timestamp_ns": "1735683900000000000"
+        },
+        {
+          "drawdown_fraction": "0.1418960876556747157719171265",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "200039.52928201",
+          "native_equity": "171654.70270041",
+          "reduced": false,
+          "timestamp_ns": "1735764420000000000"
+        },
+        {
+          "drawdown_fraction": "0.2500265938209770102563182599",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "695292.88527153",
+          "native_equity": "521451.17345913",
+          "reduced": true,
+          "timestamp_ns": "1738465860000000000"
+        },
+        {
+          "drawdown_fraction": "0.1496005619048567704327568966",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "695292.88527153",
+          "native_equity": "591276.67894646",
+          "reduced": false,
+          "timestamp_ns": "1741880220000000000"
+        },
+        {
+          "drawdown_fraction": "0.2522750414226842741369497030",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "890785.70005393",
+          "native_equity": "666062.70067409",
+          "reduced": true,
+          "timestamp_ns": "1744393200000000000"
+        },
+        {
+          "drawdown_fraction": "0.1474861559213355935228443513",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "890785.70005393",
+          "native_equity": "759407.14140328",
+          "reduced": false,
+          "timestamp_ns": "1754947920000000000"
+        },
+        {
+          "drawdown_fraction": "0.2500491413725712590646406111",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "890785.70005393",
+          "native_equity": "668045.50060848",
+          "reduced": true,
+          "timestamp_ns": "1755034680000000000"
+        },
+        {
+          "drawdown_fraction": "0.1417715499865166900515209830",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "890785.70005393",
+          "native_equity": "764497.63065146",
+          "reduced": false,
+          "timestamp_ns": "1756064160000000000"
+        },
+        {
+          "drawdown_fraction": "0.2501390629735075454554768202",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "890785.70005393",
+          "native_equity": "667965.39973224",
+          "reduced": true,
+          "timestamp_ns": "1757512200000000000"
+        },
+        {
+          "drawdown_fraction": "0.1492216523757874383113399592",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "890785.70005393",
+          "native_equity": "757861.18597916",
+          "reduced": false,
+          "timestamp_ns": "1757955960000000000"
+        },
+        {
+          "drawdown_fraction": "0.2548692789778112735585300011",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "890785.70005393",
+          "native_equity": "663751.79095744",
+          "reduced": true,
+          "timestamp_ns": "1758146880000000000"
+        },
+        {
+          "drawdown_fraction": "0.1495508604957115073731721091",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "890785.70005393",
+          "native_equity": "757567.93209359",
+          "reduced": false,
+          "timestamp_ns": "1758294420000000000"
+        },
+        {
+          "drawdown_fraction": "0.2506441484295115961251318710",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2125151.06134456",
+          "native_equity": "1592494.38328978",
+          "reduced": true,
+          "timestamp_ns": "1761478500000000000"
+        },
+        {
+          "drawdown_fraction": "0.1498081442393341965919170060",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2125151.06134456",
+          "native_equity": "1806786.12461628",
+          "reduced": false,
+          "timestamp_ns": "1764593040000000000"
+        },
+        {
+          "drawdown_fraction": "0.2539373877779443208290045622",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2436051.40839855",
+          "native_equity": "1817446.87725704",
+          "reduced": true,
+          "timestamp_ns": "1768961160000000000"
+        },
+        {
+          "drawdown_fraction": "0.1454736942829990799371138381",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2436051.40839855",
+          "native_equity": "2081670.01055551",
+          "reduced": false,
+          "timestamp_ns": "1769369160000000000"
+        },
+        {
+          "drawdown_fraction": "0.2506908809877205799026158987",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2436051.40839855",
+          "native_equity": "1825355.53469574",
+          "reduced": true,
+          "timestamp_ns": "1769546880000000000"
+        },
+        {
+          "drawdown_fraction": "0.1498603707026543789819960553",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2436051.40839855",
+          "native_equity": "2070983.84128522",
+          "reduced": false,
+          "timestamp_ns": "1769698920000000000"
+        },
+        {
+          "drawdown_fraction": "0.2643653623053701930961855586",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2436051.40839855",
+          "native_equity": "1792043.79522276",
+          "reduced": true,
+          "timestamp_ns": "1770539700000000000"
+        },
+        {
+          "drawdown_fraction": "0.1493454401126818809905388648",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2436051.40839855",
+          "native_equity": "2072238.23867415",
+          "reduced": false,
+          "timestamp_ns": "1770625980000000000"
+        },
+        {
+          "drawdown_fraction": "0.2581441273203281505036626122",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2436051.40839855",
+          "native_equity": "1807199.04347005",
+          "reduced": true,
+          "timestamp_ns": "1770658860000000000"
+        },
+        {
+          "drawdown_fraction": "0.1476726761013760408047171141",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "2436051.40839855",
+          "native_equity": "2076313.17779981",
+          "reduced": false,
+          "timestamp_ns": "1770693600000000000"
+        },
+        {
+          "drawdown_fraction": "0.2571129142542852629263318473",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "3735811.5149316",
+          "native_equity": "2775286.12922282",
+          "reduced": true,
+          "timestamp_ns": "1772726940000000000"
+        },
+        {
+          "drawdown_fraction": "0.1498546825664543893049019311",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "3735811.5149316",
+          "native_equity": "3175982.66623342",
+          "reduced": false,
+          "timestamp_ns": "1773230640000000000"
+        },
+        {
+          "drawdown_fraction": "0.2509936005464686732937002731",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "3735811.5149316",
+          "native_equity": "2798146.73183596",
+          "reduced": true,
+          "timestamp_ns": "1773250260000000000"
+        },
+        {
+          "drawdown_fraction": "0.1496198749533202826606756972",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "3735811.5149316",
+          "native_equity": "3176859.86321836",
+          "reduced": false,
+          "timestamp_ns": "1773407880000000000"
+        },
+        {
+          "drawdown_fraction": "0.2555530397281164298561789630",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "3735811.5149316",
+          "native_equity": "2781113.52643953",
+          "reduced": true,
+          "timestamp_ns": "1773994260000000000"
+        },
+        {
+          "drawdown_fraction": "0.1394678676398933906456917990",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "3735811.5149316",
+          "native_equity": "3214785.84903953",
+          "reduced": false,
+          "timestamp_ns": "1774013520000000000"
+        },
+        {
+          "drawdown_fraction": "0.2516747848057386344947895482",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "4005263.86655035",
+          "native_equity": "2997239.94484609",
+          "reduced": true,
+          "timestamp_ns": "1774518600000000000"
+        },
+        {
+          "drawdown_fraction": "0.1483382626125466953620141156",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "4005263.86655035",
+          "native_equity": "3411129.98328146",
+          "reduced": false,
+          "timestamp_ns": "1775095980000000000"
+        },
+        {
+          "drawdown_fraction": "0.2569315597461457527087451783",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "4005263.86655035",
+          "native_equity": "2976185.17412269",
+          "reduced": true,
+          "timestamp_ns": "1775696880000000000"
+        },
+        {
+          "drawdown_fraction": "0.1441239274772967970327650088",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "4005263.86655035",
+          "native_equity": "3428009.50752021",
+          "reduced": false,
+          "timestamp_ns": "1775748780000000000"
+        },
+        {
+          "drawdown_fraction": "0.2692513906229413553152316384",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "6073798.06557994",
+          "native_equity": "4438419.49005961",
+          "reduced": true,
+          "timestamp_ns": "1779061260000000000"
+        },
+        {
+          "drawdown_fraction": "0.1460594583287655411600872365",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "6073798.06557994",
+          "native_equity": "5186662.41012303",
+          "reduced": false,
+          "timestamp_ns": "1781016480000000000"
+        },
+        {
+          "drawdown_fraction": "0.2516155723005516260936176004",
+          "event": "DRAWDOWN_STATE_CHANGE",
+          "global_paired_minute_peak": "6073798.06557994",
+          "native_equity": "4545535.88927106",
+          "reduced": true,
+          "timestamp_ns": "1783814460000000000"
+        }
+      ],
+      "status": "NOT_FAITHFUL_DIAGNOSTIC",
+      "ranking_eligible": false,
+      "config_diff_from_C": [
+        {
+          "path": ".research_btc_drawdown_sizing",
+          "C": null,
+          "variant": {
+            "enter_drawdown": "0.25",
+            "freeze": "GENUINE_EPISODE_CREATION",
+            "global_peak_seed": "10000",
+            "held_reduction": false,
+            "normal": "7.875",
+            "peak_reset": false,
+            "reduced": "3.9375",
+            "resume_drawdown": "0.15",
+            "sampling": "NATIVE_PAIRED_MINUTE_PRE_SIGNAL_PRE_QUOTE"
+          }
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "All outputs remain NOT_FAITHFUL_DIAGNOSTIC and ranking_eligible=false; no live promotion or faithful exchange execution claim.",
+    "C is a measured fixes-only baseline on the same frozen source. Its 502 native fill rows and 556 order rows match archived control exactly after excluding init_id only. Each V is compared against C; no extra control/repeat/refinement replay.",
+    "Native marked minute DD, seed minimum and TOP3 preserve global peaks without resets and exclude post-boundary settlement quotes. Cash-DD is a separate account series and is not the eligibility metric.",
+    "Conditional upper-to-strictly-later-lower bound uses prior completed-bar favorable equity versus later adverse equity for fixed prequote exposure. It assumes no same-bar extrema order and is not observed tick portfolio DD or a venue liquidation guarantee.",
+    "V4 hysteresis sizes future genuine BTC episodes; multiplier/notional freeze before q0, without resizing held exposure or resetting the global peak. Normal7.875\u2192reduced3.9375 at DD>=25%, normal return at DD<=15%. V3 long5.5/short7.875. Original gross SOL H and actual-fill earned-right behavior retained.",
+    "All candidates keep approved SOL multipliers, BTC TP fractions, fee/funding policy, 30m cap, seed10000/reserve0 and existing three repair flags; BTC20, SOL hedge, SOLcap6, PORT45 and fee floor are OFF.",
+    "Funding events are genuine native posts but signed funding remains UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA. Do not infer zero.",
+    "Missing L2/trade tape, close-only execution proxy, historical fee applicability, native liquidation model and live recovery limits remain. No actual liquidations here does not prove venue survival.",
+    "Exactly five sequential engines completed. Public venue metadata was included in each immutable allowlisted pack. Shared canonical venv/data were read-only bound, not copied. PilotPID2009732/NRestarts0/release81e6318 preserved; no credentials, real orders, service restarts or deploy."
+  ]
+}
