@@ -1,11 +1,18 @@
-CURRENT FOUR INDIVIDUAL V3 RISK TESTS — 2026-10-11 IN PROGRESS
+CURRENT FOUR INDIVIDUAL V3 RISK TESTS — 2026-10-11 COMPLETE
 
-Owner approved implementation plus exactly four sequential fresh native24m comparisons vs reusable V3 TOTAL5437208.56951095/DD67.2863064484%, same Bybit[2024-09-01,2026-09-01), seed10000/reserve0/V3long5.5short7.875/originalSOLH/fees/funding/margin/TP/repairs. B25 globalDD25 AND negativeBTCepisode fee-netrealized+helduPnL: halveheldBTC once/excursion, futurehalf sizing untilDD15; S10_15 SOLowncycleloss/firstfillE half10/full15/noadduntilnewBTCepisode; R2 immediateREGIMEclose/replacementafter2same-sidecompletedEMA34dailycloses; T3 minutecheckexistingDAILY-armed3%trail/dailybestunchanged. Exact proposedrules in reports/selective-lifecycle-cap30m-113/v3-drawdown-causes/parameter-review.md/json.
+Exactly four isolated sequential native24m engines B25/S10_15/R2/T3 completed on frozen250020911a1ac671740cd3346c27f0235792703c; canonical Bybit[2024-09-01,2026-09-01), seed10000/reserve0, original V3 long5.5/short7.875/SOLH/fees/funding/margin/TP/cap30m/repairs. Archived V3 reused; no fifth control/repeat/grid/combination/optimizer. Source316e3d7+2500209;181 relevant tests before final lot alignment,43 overlapping focused on exact finalSHA; independent narrow native money/order GO, one substantive SOL ownership correction. Report2dabe9f9c0abece1b8bd69eafaa01245b6dbbff6; root cached arithmetic/globalDD/eligibility/hash checks PASS. No new trace scan/replay.
 
-Preflight actualHEADf167e95 clean/pilotactivePID2009732/NRestarts0/RAMavailable1336MiB/disk4.8GB. RootProject appended fivecheck package existing#113/exactreadback OPEN/InProgress; firststepDone. Sol6.1/medium one source/tests owner implements defaultOFFmutuallyexclusive --research-v3-risk{b25,s10_15,r2,t3} (impliesV3directions/rejectsoldrisks); one run/reportowner PREPONLY immutable106filepublicpack/readonlyvenv+data/sequential900MPrivateNet. Shared sourcefiles noteditedcompetitively. Nextfocusedtests/relevantverification/narrowindependentmoneyorderreview -> frozenSHA/rootGO -> B25/S10_15/R2/T3 exactly4freshengines/separatejournals -> comparisonminuteDD/TOP3/seedmin/separateOHLCbound/ROI/fees/fills/guards/flat/readback. No extra control/refinement/repeat/combination/deploy. Pilot/sourceinstalledconfig/seal/secrets/orders and foreignservices protected; no restart/live activation.
+| Variant | TOTAL USDT | ROI % | Native minute DD % | Conditional OHLC bound % |
+|---|---:|---:|---:|---:|
+| V3 reused | 5437208.56951095 | 54272.08569511 | 67.28630645 | 68.49200984 |
+| B25 | 2394463.52298288 | 23844.63522983 | 46.48498057 | 59.46109682 |
+| S10_15 | 1147671.51274638 | 11376.71512746 | 62.03030895 | 68.93714142 |
+| R2 | 2248382.68295321 | 22383.82682953 | 92.12768312 | 94.16685274 |
+| T3 | 466727.71769381 | 4567.27717694 | 92.78074221 | 92.80665416 |
 
+B25 sole qualifying nativeDD<=50 winner, but loses3042745.04652807USDT/55.96152893% TOTAL versus V3; target small ROI loss not achieved. ConditionalOHLC59.4611 is NOT observed intrabarDD or guaranteed50 cap. All4 exit0/full1051200rows eachsource/3153600nativeobserver/0 modeledliquidations/nativeflat/zero unfinishedorders; actualnativefees and BTC/SOL fills reconciled; separatefundingjournals. All106-filepack hashes/data/policy/candidate/economic settings identical except requested selector. Signedfunding UNKNOWN (not zero), executionminuteclose/noBBO diagnostic/rankingfalse limitations retained.
 
-Source frozen250020911a1ac671740cd3346c27f0235792703c:181 relevant tests before final lot alignment;43 overlapping focused tests on finalSHA. Independent narrow native money/order review GO. Root authorized exactly4 sequential fresh engines B25/S10_15/R2/T3; reportowner executing. No extra V3 control/optimizer/deploy. Existing#113 step2Done exactreadback. Receipt reports/v3-risk-four-113/implementation/receipt.json.
+Evidence reports/v3-risk-four-113/comparison/{README.md,comparison.json,comparison.csv,root-review-extract.json,*receipt.json,SHA256SUMS}; TOP3 peak/trough/recovery UTC, seed minima, maker/takerfees/notionals, guard/rearm/latency/overshoot in reports. Root exact#113 bodyreadback63138bytes/checkscomplete/OPEN; Project actualInProgress (broaderCM09 ongoing), no duplicateissue. Pilot finalread-only activePID2009732/NRestarts0/installed81e6318 unchanged. No deploy/restart/seal/config/credentials/orders/foreignserviceactions. Next: owner review of bounded results; no automatic extra run or promotion.
 
 CURRENT V3 MINUTE DRAWDOWN CAUSES — 2026-10-11 COMPLETE
 
