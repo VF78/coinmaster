@@ -28,7 +28,7 @@ The companion native endpoint reconciliation reports the following rounded chang
 | DD2 | −511,857.0929 | −155,115.0204 | +290.0000 | Account cash loss dominates; held BTC also deteriorates. Cash includes realized/fees/funding residual, not automatically allBTC. |
 | DD3 | +5,646.4819 | −1,189,583.6572 | 0 | Held BTC short causes deterioration; a SOL-only admission tweak cannot protect it. |
 
-At DD1 trough gross/equity33.879x and SOLnotional/equity24.117x amplify mark losses despite valid prior admissions. BTC-only trough exposures at DD2/DD3 are8.395x/17.204x equity. S10/15 therefore screens first, B25 second, R2 third, T3 fourth. This ranking identifies risk channels, not predicted ROI.
+At DD1 trough gross/equity33.879x and SOLnotional/equity24.117x amplify mark losses despite valid prior admissions. BTC-only trough exposures at DD2/DD3 are8.395x/17.204x equity. B25 therefore screens first, S10/15 second, R2 third, T3 fourth: first DD25 crossings already involve losing BTC in all three excursions; SOL later deepens DD1. This ranking identifies risk channels, not predicted ROI.
 
 At unchanged historical peaks, moving these troughs to50% would require2,385.6188/131,217.7055/123,699.4413 USDT higher equity. These are arithmetic benchmarks, NOT executable avoided losses: a rule changes peaks, quantities, fees, compounding and later paths. Only a future separately authorized native replay can price that tradeoff.
 
@@ -59,16 +59,6 @@ The source does not expose a fixed 3% losing stop: **3% is a daily profit trail,
 All activate from causal paired native marks and actual native holdings. A protective reduction is never labeled TP and grants no invented SOL right. Quantities are native-lot rounded, partial exits use reconciled remainder, and cancellation/ACK/late-opening races remain owned until authoritative terminal state. These are proposed new opt-in rules, not currently callable existing flag combinations (existing research guards are mutually exclusive). The pinned1.231 native implementation would require explicit bounded approval and focused lifecycle proof before any replay.
 
 
-### S10_15 — SOL own-loss budget preserving original H until loss
-
-For each contiguous SOL holding cycle fix E_S to native paired portfolio equity immediately after first confirmed SOL fill. L_S=-(native SOL realized since cycle start, including entry/exit fees, plus current SOLuPnL)/E_S. Funding remains separately unknown/residual. On first L_S>=0.10 halve held SOL quantity (lot-rounded down), then if L_S>=0.15 close the remaining SOL. If both thresholds cross together, close all once.
-
-Cancel pending SOL increases and prohibit further SOL adds for remainder of same BTC episode after first threshold; BTC sizing/TP/held quantities unchanged. Held SOL ordinary z/timeouts and group exits retain priority. 15% own-loss close is per cycle, not a portfolio stop. Native partial/ACK/terminal ownership must supersede a pending half reduction safely.
-
-Rearm: Only after native SOL flat AND a new genuine BTC episode; original1.75/2.625/3.5 H applies there. No within-episode repeated add-stop churn or revive consumed rights.
-
-Causality: Targets SOL adverse tail without discarding all original large-H opportunities; explicit same-day mark risk before14day timeout. Not SOLcap6 or remainingBTChedge: unchanged admission H until realized/held SOL loss; no BTC group close from BTC20. Risk: Stops may discard recovered winners or useful hedge; measure episode loss/win crossings and BTC-only residual periods.
-
 ### B25 — BTC-held exposure with global hysteresis
 
 E is causal paired-mark native equity; P=max(seed10000,all already observed native minute-equity checkpoints), never reset; D=1-E/P; first BOTH D>=0.25 AND current BTC episode contribution C_B<0 per excursion (C_B=native BTC realized since genuine episode start INCLUDING fees + held BTCuPnL; signed funding remains separate unknown) reduce only currently held BTC to50% confirmed quantity, lot-rounded down; non-TP protective reason grants no SOL rights. Reconcile/cancel conflicting BTC TP leaves before submit.
@@ -78,6 +68,16 @@ Activate sizing latch only after BOTH conditions first hold. If BTC contribution
 Rearm: D<=0.15 clears sizing latch, only future episodes return long5.5/short7.875; no buy-back current episode; one held reduction per excursion, not repeated halving each minute.
 
 Causality: DD3 entirelyBTCuPnL deterioration−1,189,583.6572 with SOL0; DD2BTCuPnL decline155115.0204 plus large accountcash decline. Isolate held-BTC risk that future-onlyV4 cannot resize, preserving originalSOL opportunities. V4 used7.875/3.9375 only future BTC episodes; BTC20 closed whole group from episode-entry loss. Risk: Even loss-qualified BTC reduction can leave original H/SOL overweight and worsen total risk; DD1 includes profitable BTC at trough, so pureglobal trigger alone would cut a useful hedge. Record condition/trigger times and contribution. A profit-positive BTC episode can still give back large profit without C_B<0, so this candidate does not cap that channel or promiseglobal50.
+
+### S10_15 — SOL own-loss budget preserving original H until loss
+
+For each contiguous SOL holding cycle fix E_S to native paired portfolio equity immediately after first confirmed SOL fill. L_S=-(native SOL realized since cycle start, including entry/exit fees, plus current SOLuPnL)/E_S. Funding remains separately unknown/residual. On first L_S>=0.10 halve held SOL quantity (lot-rounded down), then if L_S>=0.15 close the remaining SOL. If both thresholds cross together, close all once.
+
+Cancel pending SOL increases and prohibit further SOL adds for remainder of same BTC episode after first threshold; BTC sizing/TP/held quantities unchanged. Held SOL ordinary z/timeouts and group exits retain priority. 15% own-loss close is per cycle, not a portfolio stop. Native partial/ACK/terminal ownership must supersede a pending half reduction safely.
+
+Rearm: Only after native SOL flat AND a new genuine BTC episode; original1.75/2.625/3.5 H applies there. No within-episode repeated add-stop churn or revive consumed rights.
+
+Causality: Targets SOL adverse tail without discarding all original large-H opportunities; explicit same-day mark risk before14day timeout. Not SOLcap6 or remainingBTChedge: unchanged admission H until realized/held SOL loss; no BTC group close from BTC20. Risk: Stops may discard recovered winners or useful hedge; measure episode loss/win crossings and BTC-only residual periods.
 
 ### R2 — two completed daily EMA34 closes confirm regime re-entry
 
@@ -101,7 +101,7 @@ Causality: Tests ONLY evaluation cadence of existing daily-armed trail while kee
 
 ## Screening and decision contract
 
-Measured companion endpoint attribution ranks S10/15 first for SOL-driven DD1, B25 second for BTC-held DD2/DD3, R2 third as a regime cash-loss hypothesis, T3 fourth. T3 ranks later because unarmed losses remain. Four individual tests form the bounded proposed set; only if positive standalone measured effects show useful ROI/DD tradeoffs, consider ONE separately authorized combination. No grid. A40% immutable-global-peak groupclose with permanent interval pause is an analytical global-floor reference ONLY: an early stop destroys subsequent compounding, so not a proposed paid replay. Unlike PORT45, it would not reset protective peak or rearm after another losing episode.
+Phase-aware attribution and first threshold crossings rank B25 first for the common early losing-BTC channel, S10/15 second for SOL aggravation of DD1, R2 third for regime cash-loss accumulation, and T3 fourth. T3 ranks later because unarmed losses remain. Four individual tests form the bounded proposed set; only if positive standalone measured effects show useful ROI/DD tradeoffs, consider ONE separately authorized combination. No grid. A40% immutable-global-peak groupclose with permanent interval pause is an analytical global-floor reference ONLY: an early stop destroys subsequent compounding, so not a proposed paid replay. Unlike PORT45, it would not reset protective peak or rearm after another losing episode.
 
 For every approved future run report TOTAL and % loss versus V3, immutable global minute DD/TOP3/seed minimum, conditional OHLC bound separately, fee/funding residuals, pre-action and actual-fill equity/latency/overshoot, guard/rearm counts, asset episode effects and recovered-winner exits. Identify protective partials and overhedged SOL states. Highest measured terminal TOTAL subject to native minuteDD<=50 is the decision rule; no eligible winner means report failure, not reset peaks or substitute cash DD.
 

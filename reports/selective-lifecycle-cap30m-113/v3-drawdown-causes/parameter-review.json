@@ -283,30 +283,30 @@
   ],
   "next_research_variants_UNTESTED": [
     {
-      "id": "S10_15",
-      "priority": 1,
-      "mechanism": "SOL own-loss budget preserving original H until loss",
-      "base": "V3",
-      "trigger": "For each contiguous SOL holding cycle fix E_S to native paired portfolio equity immediately after first confirmed SOL fill. L_S=-(native SOL realized since cycle start, including entry/exit fees, plus current SOLuPnL)/E_S. Funding remains separately unknown/residual. On first L_S>=0.10 halve held SOL quantity (lot-rounded down), then if L_S>=0.15 close the remaining SOL. If both thresholds cross together, close all once.",
-      "while_latched": "Cancel pending SOL increases and prohibit further SOL adds for remainder of same BTC episode after first threshold; BTC sizing/TP/held quantities unchanged. Held SOL ordinary z/timeouts and group exits retain priority.",
-      "hard_guard": "15% own-loss close is per cycle, not a portfolio stop. Native partial/ACK/terminal ownership must supersede a pending half reduction safely.",
-      "rearm": "Only after native SOL flat AND a new genuine BTC episode; original1.75/2.625/3.5 H applies there. No within-episode repeated add-stop churn or revive consumed rights.",
-      "reason": "DD1 SOLuPnL decline5657.792 exceeds BTCuPnL decline1365.7434; trough SOLlonguPnL\u22125657.792 while BTCshortuPnL+440.1516, SOLgross/equity24.117x. Target SOL adverse tail without discarding all original H opportunities; same-day guard before14day timeout.",
-      "distinction": "Not SOLcap6 or remainingBTChedge: unchanged admission H until realized/held SOL loss; no BTC group close from BTC20.",
-      "risk": "Stops may discard recovered winners or useful hedge; measure episode loss/win crossings and BTC-only residual periods."
-    },
-    {
       "id": "B25",
-      "priority": 2,
+      "priority": 1,
       "mechanism": "BTC-held exposure with global hysteresis",
       "base": "V3",
       "trigger": "E is causal paired-mark native equity; P=max(seed10000,all already observed native minute-equity checkpoints), never reset; D=1-E/P; first BOTH D>=0.25 AND current BTC episode contribution C_B<0 per excursion (C_B=native BTC realized since genuine episode start INCLUDING fees + held BTCuPnL; signed funding remains separate unknown) reduce only currently held BTC to50% confirmed quantity, lot-rounded down; non-TP protective reason grants no SOL rights. Reconcile/cancel conflicting BTC TP leaves before submit.",
       "while_latched": "Activate sizing latch only after BOTH conditions first hold. If BTC contribution is nonnegative during SOL-driven DD, do not cut BTC or activate half-sizing merely from globalDD. After the confirmed protective cut, new genuine BTC episodes use long2.75/short3.9375. Original SOL held exposure, H/reference, rights/multipliers/entry/z/timeout unchanged; no blanket hedge shrink or suppression of original SOL adds.",
       "hard_guard": "None added in this individual attribution test.",
       "rearm": "D<=0.15 clears sizing latch, only future episodes return long5.5/short7.875; no buy-back current episode; one held reduction per excursion, not repeated halving each minute.",
-      "reason": "DD3 entirelyBTCuPnL deterioration\u22121,189,583.6572 with SOL0; DD2BTCuPnL decline155115.0204 plus large accountcash decline. Isolate held-BTC risk that future-onlyV4 cannot resize, preserving originalSOL opportunities.",
+      "reason": "DD3 entirelyBTCuPnL deterioration−1,189,583.6572 with SOL0; DD2BTCuPnL decline155115.0204 plus large accountcash decline. Isolate held-BTC risk that future-onlyV4 cannot resize, preserving originalSOL opportunities.",
       "distinction": "V4 used7.875/3.9375 only future BTC episodes; BTC20 closed whole group from episode-entry loss.",
       "risk": "Even loss-qualified BTC reduction can leave original H/SOL overweight and worsen total risk; DD1 includes profitable BTC at trough, so pureglobal trigger alone would cut a useful hedge. Record condition/trigger times and contribution. A profit-positive BTC episode can still give back large profit without C_B<0, so this candidate does not cap that channel or promiseglobal50."
+    },
+    {
+      "id": "S10_15",
+      "priority": 2,
+      "mechanism": "SOL own-loss budget preserving original H until loss",
+      "base": "V3",
+      "trigger": "For each contiguous SOL holding cycle fix E_S to native paired portfolio equity immediately after first confirmed SOL fill. L_S=-(native SOL realized since cycle start, including entry/exit fees, plus current SOLuPnL)/E_S. Funding remains separately unknown/residual. On first L_S>=0.10 halve held SOL quantity (lot-rounded down), then if L_S>=0.15 close the remaining SOL. If both thresholds cross together, close all once.",
+      "while_latched": "Cancel pending SOL increases and prohibit further SOL adds for remainder of same BTC episode after first threshold; BTC sizing/TP/held quantities unchanged. Held SOL ordinary z/timeouts and group exits retain priority.",
+      "hard_guard": "15% own-loss close is per cycle, not a portfolio stop. Native partial/ACK/terminal ownership must supersede a pending half reduction safely.",
+      "rearm": "Only after native SOL flat AND a new genuine BTC episode; original1.75/2.625/3.5 H applies there. No within-episode repeated add-stop churn or revive consumed rights.",
+      "reason": "DD1 SOLuPnL decline5657.792 exceeds BTCuPnL decline1365.7434; trough SOLlonguPnL−5657.792 while BTCshortuPnL+440.1516, SOLgross/equity24.117x. Target SOL adverse tail without discarding all original H opportunities; same-day guard before14day timeout.",
+      "distinction": "Not SOLcap6 or remainingBTChedge: unchanged admission H until realized/held SOL loss; no BTC group close from BTC20.",
+      "risk": "Stops may discard recovered winners or useful hedge; measure episode loss/win crossings and BTC-only residual periods."
     },
     {
       "id": "R2",
@@ -336,7 +336,7 @@
     }
   ],
   "screening_order": [
-    "S10_15 first: SOL held-loss dominates maxDD1; B25 second: heldBTC dominatesDD3 and BTCuPnL DD2",
+    "B25 first: first DD25 crossings involve losing BTC in all three excursions (BTC-only DD1/DD3, BTC loss partly offset by SOL DD2); S10_15 second: SOL later deepens DD1 while original SOL offsets DD2 losses.",
     "R2 third for regime-loss accumulation; T3 fourth because daily arm cannot protect neverprofitable losers",
     "Exactly four individual hypotheses; optional ONE combination only after positive standalone measured effects justify it, with separate bounded authorization; no grid. Global40 terminal pause remains analytical-only"
   ],

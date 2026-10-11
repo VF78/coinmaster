@@ -1,0 +1,4565 @@
+{
+  "provenance": {
+    "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+    "head_at_start": "868104b",
+    "raw_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/result/v0-selective-lifecycle-cap30m-btc-direction.json",
+    "raw_sha256": "caa6b209142f4a005f8cd73ee00d030bd841c6a9669e98c971b15f93c36c902a",
+    "trace_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/result/minute-native-risk.csv.gz",
+    "trace_sha256": "59df1acc3f16c638d9a0e3a2363ece2c87c248741c54c67645cf98bddcda9103",
+    "native_fills_sha256": "40cf96cf7234d435aa75e4aaf17064540526e88f9fea978083e33008cc0988eb",
+    "method": "Exact native CASH/uPnL endpoints primary. Perasset close-uPnL interpolates native endpoint PnL at instrument-rounded close and reconciles cents. Realized perasset gross/episodes reuse prior audit/economics.csv confirmed-native-fill weighted-entry/proportional-entry-fee attribution; not authoritative native settled pertrade PnL, economic simulation, engine or counterfactual. Native callbackcash classification was discarded due asynchronous account/cache finalization. Signed cash residual remains unallocated, not assigned funding."
+  },
+  "native_TOTAL": "5437208.56951095",
+  "fees": "1091093.07886765",
+  "stop_configuration": {
+    "btc_close_stop_fraction": null,
+    "sol_z_stop": null,
+    "portfolio_loss_limit_fraction": null,
+    "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH"
+  },
+  "liquidations": 0,
+  "true_fixed_SL_count": 0,
+  "daily_trail": "Daily best_f>0.03; close when f<=best_f-0.03. Three entry-return percentage points retrace after profit arming; not downside portfolio stop. REGIME=opposite daily EMA regime; SOL follows groupclose.",
+  "top3": [
+    {
+      "rank": 1,
+      "native_summary": {
+        "peak": {
+          "timestamp_ns": "1726063200000000000",
+          "equity": "13800.6279287"
+        },
+        "trough": {
+          "timestamp_ns": "1727970240000000000",
+          "equity": "4514.69512879"
+        },
+        "recovery": {
+          "timestamp_ns": "1728617040000000000",
+          "equity": "13831.56754683"
+        },
+        "drawdown_amount": "9285.93279991",
+        "drawdown_peak_percent": "67.28630644841043826206055609"
+      },
+      "landmarks": {
+        "peak": {
+          "ns": 1726063200000000000,
+          "utc": "2024-09-11T14:00:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "11994.7329287",
+          "equity": "13800.6279287",
+          "native_unrealized": "1805.8950000",
+          "asset_interpolation_residual": "0E-24",
+          "gross_notional_to_equity": "3.816215702075020032273091362",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "0.945",
+              "avg_entry_price": "57642.4",
+              "native_rounded_mark_close": "55731.4",
+              "marked_notional": "52666.1730",
+              "native_endpoint_close_unrealized_attribution": "1805.895000000000000000000000",
+              "gross_notional_to_equity": "3.816215702075020032273091362",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "trough": {
+          "ns": 1727970240000000000,
+          "utc": "2024-10-03T15:44:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "9732.33552879",
+          "equity": "4514.69512879",
+          "native_unrealized": "-5217.64040000",
+          "asset_interpolation_residual": "0E-24",
+          "gross_notional_to_equity": "33.87901828068590140207982121",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "0.732",
+              "avg_entry_price": "60811.2",
+              "native_rounded_mark_close": "60209.9",
+              "marked_notional": "44073.6468",
+              "native_endpoint_close_unrealized_attribution": "440.1516000000000000000000000",
+              "gross_notional_to_equity": "9.762264237721039588257304520",
+              "side_name": "SHORT"
+            },
+            {
+              "symbol": "SOL",
+              "side": "2",
+              "quantity": "817.6",
+              "avg_entry_price": "140.09",
+              "native_rounded_mark_close": "133.17",
+              "marked_notional": "108879.792",
+              "native_endpoint_close_unrealized_attribution": "-5657.792000000000000000000000",
+              "gross_notional_to_equity": "24.11675404296486181382251669",
+              "side_name": "LONG"
+            }
+          ]
+        },
+        "recovery": {
+          "ns": 1728617040000000000,
+          "utc": "2024-10-11T03:24:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "11669.72754683",
+          "equity": "13831.56754683",
+          "native_unrealized": "2161.84000000",
+          "asset_interpolation_residual": "0E-24",
+          "gross_notional_to_equity": "9.058211195210085171352539141",
+          "positions": [
+            {
+              "symbol": "SOL",
+              "side": "2",
+              "quantity": "886.0",
+              "avg_entry_price": "138.97",
+              "native_rounded_mark_close": "141.41",
+              "marked_notional": "125289.260",
+              "native_endpoint_close_unrealized_attribution": "2161.840000000000000000000000",
+              "gross_notional_to_equity": "9.058211195210085171352539141",
+              "side_name": "LONG"
+            }
+          ]
+        }
+      },
+      "max_prequote_gross_leverage": {
+        "ns": 1727970240000000000,
+        "utc": "2024-10-03T15:44:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "9732.33552879",
+        "equity": "4514.69512879",
+        "native_unrealized": "-5217.64040000",
+        "asset_interpolation_residual": "0E-24",
+        "gross_notional_to_equity": "33.87901828068590140207982121",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "0.732",
+            "avg_entry_price": "60811.2",
+            "native_rounded_mark_close": "60209.9",
+            "marked_notional": "44073.6468",
+            "native_endpoint_close_unrealized_attribution": "440.1516000000000000000000000",
+            "gross_notional_to_equity": "9.762264237721039588257304520",
+            "side_name": "SHORT"
+          },
+          {
+            "symbol": "SOL",
+            "side": "2",
+            "quantity": "817.6",
+            "avg_entry_price": "140.09",
+            "native_rounded_mark_close": "133.17",
+            "marked_notional": "108879.792",
+            "native_endpoint_close_unrealized_attribution": "-5657.792000000000000000000000",
+            "gross_notional_to_equity": "24.11675404296486181382251669",
+            "side_name": "LONG"
+          }
+        ]
+      },
+      "state_minutes": {
+        "BTC": 9363,
+        "FLAT": 21478,
+        "BTC+SOL": 944
+      },
+      "decomposition": {
+        "equity_change": "-9285.93279991",
+        "native_cash_change": "-2262.39739991",
+        "native_unrealized_change": "-7023.53540000",
+        "assets": {
+          "BTC": {
+            "confirmed_native_fill_gross_attribution": "-1939.7496",
+            "actual_window_fill_fees": "245.69817321",
+            "confirmed_fill_net_cash_attribution_ex_funding": "-2185.44777321",
+            "native_endpoint_unrealized_change": "-1365.743400000000000000000000",
+            "sum_fill_net_and_unrealized_attribution": "-3551.191173210000000000000000",
+            "completed_episodes": [
+              {
+                "number": 2,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1726012860000000000,
+                "start_utc": "2024-09-11T00:01:00+00:00",
+                "end_ns": 1726063200000000000,
+                "fees": "40.4989200",
+                "fill_count": 2,
+                "end_utc": "2024-09-11T14:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "1735.1560800"
+              },
+              {
+                "number": 3,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1726272120000000000,
+                "start_utc": "2024-09-14T00:02:00+00:00",
+                "end_ns": 1726531200000000000,
+                "fees": "81.65089351",
+                "fill_count": 2,
+                "end_utc": "2024-09-17T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-3021.75109351"
+              },
+              {
+                "number": 4,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1726531260000000000,
+                "start_utc": "2024-09-17T00:01:00+00:00",
+                "end_ns": 1726617600000000000,
+                "fees": "87.82509296",
+                "fill_count": 3,
+                "end_utc": "2024-09-18T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-2469.89749296"
+              },
+              {
+                "number": 5,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1726617660000000000,
+                "start_utc": "2024-09-18T00:01:00+00:00",
+                "end_ns": 1726747620000000000,
+                "fees": "41.20031502",
+                "fill_count": 4,
+                "end_utc": "2024-09-19T12:07:00+00:00",
+                "confirmed_fill_net_ex_funding": "1565.56768498"
+              }
+            ]
+          },
+          "SOL": {
+            "confirmed_native_fill_gross_attribution": "0",
+            "actual_window_fill_fees": "62.9956712",
+            "confirmed_fill_net_cash_attribution_ex_funding": "-62.9956712",
+            "native_endpoint_unrealized_change": "-5657.792000000000000000000000",
+            "sum_fill_net_and_unrealized_attribution": "-5720.787671200000000000000000",
+            "completed_episodes": []
+          }
+        },
+        "unallocated_cash_residual_not_assigned_funding": "-13.95395550",
+        "native_unrealized_attribution_residual_change": "0E-24",
+        "avoided_loss_required_at_unchanged_peak_for_DD50_arithmetic_only": "2385.61883556",
+        "observed_loss_share_required": "0.2569067520694443974100534085",
+        "window_closing_fill_attribution": [
+          {
+            "symbol": "BTC",
+            "episode": 2,
+            "ns": 1726063200000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "0.945",
+            "price": "55763.4",
+            "gross_confirmed_fill_attribution": "1775.6550",
+            "allocated_entry_fee": "29.9596374",
+            "exit_fee": "10.5392826",
+            "net_ex_funding": "1735.1560800",
+            "client_order_id": "O-20240911-000200-001-000-4"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 3,
+            "ns": 1726531200000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "1.251",
+            "price": "58159.9",
+            "gross_confirmed_fill_attribution": "-2940.1002",
+            "allocated_entry_fee": "41.63397431",
+            "exit_fee": "40.0169192",
+            "net_ex_funding": "-3021.75109351",
+            "client_order_id": "O-20240917-000000-001-000-7"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 4,
+            "ns": 1726533180000000000,
+            "utc": "",
+            "reason": "BTC_TP2",
+            "quantity": "0.308",
+            "price": "58148.7",
+            "gross_confirmed_fill_attribution": "6.9916",
+            "allocated_entry_fee": "9.85423516",
+            "exit_fee": "3.58195992",
+            "net_ex_funding": "-6.44459508",
+            "client_order_id": "O-20240917-000200-001-000-9"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 4,
+            "ns": 1726617600000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "1.142",
+            "price": "60263.4",
+            "gross_confirmed_fill_attribution": "-2389.0640",
+            "allocated_entry_fee": "36.53745634",
+            "exit_fee": "37.85144154",
+            "net_ex_funding": "-2463.45289788",
+            "client_order_id": "O-20240918-000000-001-000-11"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 5,
+            "ns": 1726704000000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "0.159",
+            "price": "61743.7",
+            "gross_confirmed_fill_attribution": "230.2002",
+            "allocated_entry_fee": "5.272876455",
+            "exit_fee": "5.39948657",
+            "net_ex_funding": "219.527836975",
+            "client_order_id": "O-20240919-000000-001-000-14"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 5,
+            "ns": 1726704000000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "0.159",
+            "price": "61743.7",
+            "gross_confirmed_fill_attribution": "230.2002",
+            "allocated_entry_fee": "5.272876455",
+            "exit_fee": "5.39948657",
+            "net_ex_funding": "219.527836975",
+            "client_order_id": "O-20240919-000000-001-000-15"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 5,
+            "ns": 1726747620000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "0.434",
+            "price": "62937.3",
+            "gross_confirmed_fill_attribution": "1146.3676",
+            "allocated_entry_fee": "14.392631330",
+            "exit_fee": "5.46295764",
+            "net_ex_funding": "1126.512011030",
+            "client_order_id": "O-20240918-000200-001-000-13"
+          }
+        ]
+      }
+    },
+    {
+      "rank": 2,
+      "native_summary": {
+        "peak": {
+          "timestamp_ns": "1744333200000000000",
+          "equity": "1070928.8154819"
+        },
+        "trough": {
+          "timestamp_ns": "1749223020000000000",
+          "equity": "404246.70219572"
+        },
+        "recovery": {
+          "timestamp_ns": "1758520860000000000",
+          "equity": "1091180.15546923"
+        },
+        "drawdown_amount": "666682.11328618",
+        "drawdown_peak_percent": "62.25270098705713077142029154"
+      },
+      "landmarks": {
+        "peak": {
+          "ns": 1744333200000000000,
+          "utc": "2025-04-11T01:00:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1038045.9374819",
+          "equity": "1070928.8154819",
+          "native_unrealized": "32882.8780000",
+          "asset_interpolation_residual": "0E-23",
+          "gross_notional_to_equity": "4.471759861877522571433678225",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "59.195",
+              "avg_entry_price": "79566.0",
+              "native_rounded_mark_close": "79005.6",
+              "marked_notional": "4676736.4920",
+              "native_endpoint_close_unrealized_attribution": "33172.87800000000000000000000",
+              "gross_notional_to_equity": "4.366990993603573025703335995",
+              "side_name": "SHORT"
+            },
+            {
+              "symbol": "SOL",
+              "side": "2",
+              "quantity": "1000.0",
+              "avg_entry_price": "112.49",
+              "native_rounded_mark_close": "112.2",
+              "marked_notional": "112200.00",
+              "native_endpoint_close_unrealized_attribution": "-290.000",
+              "gross_notional_to_equity": "0.1047688682739495457303422300",
+              "side_name": "LONG"
+            }
+          ]
+        },
+        "trough": {
+          "ns": 1749223020000000000,
+          "utc": "2025-06-06T15:17:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "526188.84459572",
+          "equity": "404246.70219572",
+          "native_unrealized": "-121942.14240000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "8.395470534121608015151398512",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "32.253",
+              "avg_entry_price": "101444.8",
+              "native_rounded_mark_close": "105225.6",
+              "marked_notional": "3393841.2768",
+              "native_endpoint_close_unrealized_attribution": "-121942.1424000000000000000000",
+              "gross_notional_to_equity": "8.395470534121608015151398512",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "recovery": {
+          "ns": 1758520860000000000,
+          "utc": "2025-09-22T06:01:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "782382.52456923",
+          "equity": "1091180.15546923",
+          "native_unrealized": "308797.63090000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "6.096814063979372807379326742",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "2",
+              "quantity": "21.309",
+              "avg_entry_price": "113919.7",
+              "native_rounded_mark_close": "113419.8",
+              "marked_notional": "2416862.5182",
+              "native_endpoint_close_unrealized_attribution": "-10652.36910000000000000000000",
+              "gross_notional_to_equity": "2.214906957468172804468946079",
+              "side_name": "LONG"
+            },
+            {
+              "symbol": "SOL",
+              "side": "3",
+              "quantity": "19000.0",
+              "avg_entry_price": "239.75315789473683",
+              "native_rounded_mark_close": "222.94",
+              "marked_notional": "4235860.000",
+              "native_endpoint_close_unrealized_attribution": "319450.0000000000000000000000",
+              "gross_notional_to_equity": "3.881907106511200002910380663",
+              "side_name": "SHORT"
+            }
+          ]
+        }
+      },
+      "max_prequote_gross_leverage": {
+        "ns": 1744642320000000000,
+        "utc": "2025-04-14T14:52:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "636924.3722812",
+        "equity": "511164.8430812",
+        "native_unrealized": "-125759.5292000",
+        "asset_interpolation_residual": "0E-22",
+        "gross_notional_to_equity": "10.09150064626132777195629666",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "60.149",
+            "avg_entry_price": "83669.90000000001",
+            "native_rounded_mark_close": "85760.7",
+            "marked_notional": "5158420.3443",
+            "native_endpoint_close_unrealized_attribution": "-125759.5292000000000000000000",
+            "gross_notional_to_equity": "10.09150064626132777195629666",
+            "side_name": "SHORT"
+          }
+        ]
+      },
+      "state_minutes": {
+        "BTC+SOL": 20099,
+        "FLAT": 19237,
+        "BTC": 16242,
+        "SOL": 25920
+      },
+      "decomposition": {
+        "equity_change": "-666682.11328618",
+        "native_cash_change": "-511857.09288618",
+        "native_unrealized_change": "-154825.02040000",
+        "assets": {
+          "BTC": {
+            "confirmed_native_fill_gross_attribution": "-538809.8660",
+            "actual_window_fill_fees": "30403.99165389",
+            "confirmed_fill_net_cash_attribution_ex_funding": "-569213.85765389",
+            "native_endpoint_unrealized_change": "-155115.0204000000000000000000",
+            "sum_fill_net_and_unrealized_attribution": "-724328.8780538900000000000000",
+            "completed_episodes": [
+              {
+                "number": 35,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1744329660000000000,
+                "start_utc": "2025-04-11T00:01:00+00:00",
+                "end_ns": 1744502400000000000,
+                "fees": "6671.39068444",
+                "fill_count": 3,
+                "end_utc": "2025-04-13T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-341870.70788444"
+              },
+              {
+                "number": 36,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1744502460000000000,
+                "start_utc": "2025-04-13T00:01:00+00:00",
+                "end_ns": 1744588800000000000,
+                "fees": "4313.28157304",
+                "fill_count": 2,
+                "end_utc": "2025-04-14T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-79902.63197304"
+              },
+              {
+                "number": 37,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1744588860000000000,
+                "start_utc": "2025-04-14T00:01:00+00:00",
+                "end_ns": 1744675200000000000,
+                "fees": "5564.57917351",
+                "fill_count": 2,
+                "end_utc": "2025-04-15T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-57659.62807351"
+              },
+              {
+                "number": 38,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1744675260000000000,
+                "start_utc": "2025-04-15T00:01:00+00:00",
+                "end_ns": 1744761600000000000,
+                "fees": "3505.11700440",
+                "fill_count": 2,
+                "end_utc": "2025-04-16T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-40820.55220440"
+              },
+              {
+                "number": 39,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1744761660000000000,
+                "start_utc": "2025-04-16T00:01:00+00:00",
+                "end_ns": 1744934400000000000,
+                "fees": "4721.6340776",
+                "fill_count": 2,
+                "end_utc": "2025-04-18T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-70364.5540776"
+              },
+              {
+                "number": 40,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1744934460000000000,
+                "start_utc": "2025-04-18T00:01:00+00:00",
+                "end_ns": 1745245800000000000,
+                "fees": "2338.37449476",
+                "fill_count": 4,
+                "end_utc": "2025-04-21T14:30:00+00:00",
+                "confirmed_fill_net_ex_funding": "57620.55130524"
+              },
+              {
+                "number": 41,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1746489660000000000,
+                "start_utc": "2025-05-06T00:01:00+00:00",
+                "end_ns": 1746666060000000000,
+                "fees": "2650.95746273",
+                "fill_count": 4,
+                "end_utc": "2025-05-08T01:01:00+00:00",
+                "confirmed_fill_net_ex_funding": "78125.74203727"
+              },
+              {
+                "number": 42,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1748131260000000000,
+                "start_utc": "2025-05-25T00:01:00+00:00",
+                "end_ns": 1749168000000000000,
+                "fees": "2072.72792727",
+                "fill_count": 2,
+                "end_utc": "2025-06-06T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-114802.34492727"
+              }
+            ]
+          },
+          "SOL": {
+            "confirmed_native_fill_gross_attribution": "58979.99999999999999999999970",
+            "actual_window_fill_fees": "1750.8865",
+            "confirmed_fill_net_cash_attribution_ex_funding": "57229.11349999999999999999970",
+            "native_endpoint_unrealized_change": "290.000",
+            "sum_fill_net_and_unrealized_attribution": "57519.11349999999999999999970",
+            "completed_episodes": [
+              {
+                "number": 13,
+                "symbol": "SOL",
+                "side": "BUY",
+                "start_ns": 1744329720000000000,
+                "start_utc": "2025-04-11T00:02:00+00:00",
+                "end_ns": 1744502400000000000,
+                "fees": "134.6235",
+                "fill_count": 2,
+                "end_utc": "2025-04-13T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "19655.3765"
+              },
+              {
+                "number": 14,
+                "symbol": "SOL",
+                "side": "SELL",
+                "start_ns": 1746057600000000000,
+                "start_utc": "2025-05-01T00:00:00+00:00",
+                "end_ns": 1746403200000000000,
+                "fees": "160.2315",
+                "fill_count": 2,
+                "end_utc": "2025-05-05T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "3469.7685"
+              },
+              {
+                "number": 15,
+                "symbol": "SOL",
+                "side": "SELL",
+                "start_ns": 1746835200000000000,
+                "start_utc": "2025-05-10T00:00:00+00:00",
+                "end_ns": 1748044800000000000,
+                "fees": "1341.7030",
+                "fill_count": 14,
+                "end_utc": "2025-05-24T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "2258.296999999999999999999700"
+              },
+              {
+                "number": 16,
+                "symbol": "SOL",
+                "side": "SELL",
+                "start_ns": 1748131320000000000,
+                "start_utc": "2025-05-25T00:02:00+00:00",
+                "end_ns": 1749168000000000000,
+                "fees": "176.198",
+                "fill_count": 2,
+                "end_utc": "2025-06-06T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "31783.802"
+              }
+            ]
+          }
+        },
+        "unallocated_cash_residual_not_assigned_funding": "127.6512677100000000000003",
+        "native_unrealized_attribution_residual_change": "0E-22",
+        "avoided_loss_required_at_unchanged_peak_for_DD50_arithmetic_only": "131217.70554523",
+        "observed_loss_share_required": "0.1968219979660733459967136239",
+        "window_closing_fill_attribution": [
+          {
+            "symbol": "BTC",
+            "episode": 35,
+            "ns": 1744502400000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "59.195",
+            "price": "85262",
+            "gross_confirmed_fill_attribution": "-337174.720",
+            "allocated_entry_fee": "2590.4501535",
+            "exit_fee": "2775.8962495",
+            "net_ex_funding": "-342541.0664030",
+            "client_order_id": "O-20250413-000000-001-000-195"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 13,
+            "ns": 1744502400000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "1000",
+            "price": "132.28",
+            "gross_confirmed_fill_attribution": "19790.00",
+            "allocated_entry_fee": "61.8695",
+            "exit_fee": "72.754",
+            "net_ex_funding": "19655.3765",
+            "client_order_id": "O-20250413-000000-001-000-196"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 36,
+            "ns": 1744588800000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "46.408",
+            "price": "83678.9",
+            "gross_confirmed_fill_attribution": "-75589.3504",
+            "allocated_entry_fee": "2177.42785788",
+            "exit_fee": "2135.85371516",
+            "net_ex_funding": "-79902.63197304",
+            "client_order_id": "O-20250414-000000-001-000-199"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 37,
+            "ns": 1744675200000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "60.149",
+            "price": "84536",
+            "gross_confirmed_fill_attribution": "-52095.0489",
+            "allocated_entry_fee": "2767.96344831",
+            "exit_fee": "2796.6157252",
+            "net_ex_funding": "-57659.62807351",
+            "client_order_id": "O-20250415-000000-001-000-203"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 38,
+            "ns": 1744761600000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "37.876",
+            "price": "83636.4",
+            "gross_confirmed_fill_attribution": "-37315.4352",
+            "allocated_entry_fee": "1762.82024688",
+            "exit_fee": "1742.29675752",
+            "net_ex_funding": "-40820.55220440",
+            "client_order_id": "O-20250416-000000-001-000-206"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 39,
+            "ns": 1744934400000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "50.965",
+            "price": "84866.4",
+            "gross_confirmed_fill_attribution": "-65642.9200",
+            "allocated_entry_fee": "2342.7652358",
+            "exit_fee": "2378.8688418",
+            "net_ex_funding": "-70364.5540776",
+            "client_order_id": "O-20250418-000000-001-000-209"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 40,
+            "ns": 1745107200000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "6.474",
+            "price": "85048.5",
+            "gross_confirmed_fill_attribution": "667.4694",
+            "allocated_entry_fee": "302.46508578",
+            "exit_fee": "302.83219395",
+            "net_ex_funding": "62.17212027",
+            "client_order_id": "O-20250420-000000-001-000-212"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 40,
+            "ns": 1745107200000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "6.474",
+            "price": "85048.5",
+            "gross_confirmed_fill_attribution": "667.4694",
+            "allocated_entry_fee": "302.46508578",
+            "exit_fee": "302.83219395",
+            "net_ex_funding": "62.17212027",
+            "client_order_id": "O-20250420-000000-001-000-213"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 40,
+            "ns": 1745245800000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "17.518",
+            "price": "88291.9",
+            "gross_confirmed_fill_attribution": "58623.9870",
+            "allocated_entry_fee": "818.44043446",
+            "exit_fee": "309.33950084",
+            "net_ex_funding": "57496.20706470",
+            "client_order_id": "O-20250418-000200-001-000-211"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 14,
+            "ns": 1746403200000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "143.85",
+            "gross_confirmed_fill_attribution": "3630.00",
+            "allocated_entry_fee": "81.114",
+            "exit_fee": "79.1175",
+            "net_ex_funding": "3469.7685",
+            "client_order_id": "O-20250505-000000-001-000-215"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 41,
+            "ns": 1746576000000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "6.552",
+            "price": "96799",
+            "gross_confirmed_fill_attribution": "13569.8472",
+            "allocated_entry_fee": "341.3614604410623601517657360",
+            "exit_fee": "348.8248764",
+            "net_ex_funding": "12879.66086315893763984823426",
+            "client_order_id": "O-20250507-000000-001-000-218"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 41,
+            "ns": 1746576000000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "6.552",
+            "price": "96799",
+            "gross_confirmed_fill_attribution": "13569.8472",
+            "allocated_entry_fee": "341.3614604410623601517657360",
+            "exit_fee": "348.8248764",
+            "net_ex_funding": "12879.66086315893763984823426",
+            "client_order_id": "O-20250507-000000-001-000-219"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 41,
+            "ns": 1746666060000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "17.733",
+            "price": "97752.6",
+            "gross_confirmed_fill_attribution": "53637.0051",
+            "allocated_entry_fee": "923.8954178878752796964685282",
+            "exit_fee": "346.68937116",
+            "net_ex_funding": "52366.42031095212472030353147",
+            "client_order_id": "O-20250506-000200-001-000-217"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285714",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428429",
+            "client_order_id": "O-20250524-000000-001-000-227"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285715",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428428",
+            "client_order_id": "O-20250524-000000-001-000-228"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285716",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428428",
+            "client_order_id": "O-20250524-000000-001-000-229"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142856000",
+            "allocated_entry_fee": "95.97735714285714285714285715",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571427428",
+            "client_order_id": "O-20250524-000000-001-000-230"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285713",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428429",
+            "client_order_id": "O-20250524-000000-001-000-231"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142856000",
+            "allocated_entry_fee": "95.97735714285714285714285715",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571427428",
+            "client_order_id": "O-20250524-000000-001-000-232"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285715",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428428",
+            "client_order_id": "O-20250524-000000-001-000-233"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 42,
+            "ns": 1749168000000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "18.018",
+            "price": "101450.4",
+            "gross_confirmed_fill_attribution": "-112729.6170",
+            "allocated_entry_fee": "1067.36460831",
+            "exit_fee": "1005.36331896",
+            "net_ex_funding": "-114802.34492727",
+            "client_order_id": "O-20250606-000000-001-000-237"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 16,
+            "ns": 1749168000000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "1000",
+            "price": "144.2",
+            "gross_confirmed_fill_attribution": "31960.00",
+            "allocated_entry_fee": "96.888",
+            "exit_fee": "79.31",
+            "net_ex_funding": "31783.802",
+            "client_order_id": "O-20250606-000000-001-000-238"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 43,
+            "ns": 1749168780000000000,
+            "utc": "",
+            "reason": "BTC_TP2",
+            "quantity": "8.702",
+            "price": "101329.7",
+            "gross_confirmed_fill_attribution": "1001.6002",
+            "allocated_entry_fee": "485.52495728",
+            "exit_fee": "176.35420988",
+            "net_ex_funding": "339.72103284",
+            "client_order_id": "O-20250606-000200-001-000-240"
+          }
+        ]
+      }
+    },
+    {
+      "rank": 3,
+      "native_summary": {
+        "peak": {
+          "timestamp_ns": "1761168540000000000",
+          "equity": "2120475.46792142"
+        },
+        "trough": {
+          "timestamp_ns": "1764340080000000000",
+          "equity": "936538.29265054"
+        },
+        "recovery": {
+          "timestamp_ns": "1764562320000000000",
+          "equity": "2121408.722501"
+        },
+        "drawdown_amount": "1183937.17527088",
+        "drawdown_peak_percent": "55.83357096941213092439153144"
+      },
+      "landmarks": {
+        "peak": {
+          "ns": 1761168540000000000,
+          "utc": "2025-10-22T21:29:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1908429.37772142",
+          "equity": "2120475.46792142",
+          "native_unrealized": "212046.09020000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "7.010124010428238325999558778",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "139.339",
+              "avg_entry_price": "108202.59999999999",
+              "native_rounded_mark_close": "106680.8",
+              "marked_notional": "14864795.9912",
+              "native_endpoint_close_unrealized_attribution": "212046.0902000000000000000000",
+              "gross_notional_to_equity": "7.010124010428238325999558778",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "trough": {
+          "ns": 1764340080000000000,
+          "utc": "2025-11-28T14:28:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1914075.85965054",
+          "equity": "936538.29265054",
+          "native_unrealized": "-977537.56700000",
+          "asset_interpolation_residual": "0E-8",
+          "gross_notional_to_equity": "17.20404035322464272353878396",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "173.353",
+              "avg_entry_price": "87305.7",
+              "native_rounded_mark_close": "92944.7",
+              "marked_notional": "16112242.5791",
+              "native_endpoint_close_unrealized_attribution": "-977537.5670",
+              "gross_notional_to_equity": "17.20404035322464272353878396",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "recovery": {
+          "ns": 1764562320000000000,
+          "utc": "2025-12-01T04:12:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1914789.281801",
+          "equity": "2121408.722501",
+          "native_unrealized": "206619.440700",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "7.036873853238794310720932376",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "173.353",
+              "avg_entry_price": "87305.7",
+              "native_rounded_mark_close": "86113.8",
+              "marked_notional": "14928085.5714",
+              "native_endpoint_close_unrealized_attribution": "206619.4407000000000000000000",
+              "gross_notional_to_equity": "7.036873853238794310720932376",
+              "side_name": "SHORT"
+            }
+          ]
+        }
+      },
+      "max_prequote_gross_leverage": {
+        "ns": 1764340080000000000,
+        "utc": "2025-11-28T14:28:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "1914075.85965054",
+        "equity": "936538.29265054",
+        "native_unrealized": "-977537.56700000",
+        "asset_interpolation_residual": "0E-8",
+        "gross_notional_to_equity": "17.20404035322464272353878396",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "173.353",
+            "avg_entry_price": "87305.7",
+            "native_rounded_mark_close": "92944.7",
+            "marked_notional": "16112242.5791",
+            "native_endpoint_close_unrealized_attribution": "-977537.5670",
+            "gross_notional_to_equity": "17.20404035322464272353878396",
+            "side_name": "SHORT"
+          }
+        ]
+      },
+      "state_minutes": {
+        "BTC": 16745,
+        "FLAT": 36115
+      },
+      "decomposition": {
+        "equity_change": "-1183937.17527088",
+        "native_cash_change": "5646.48192912",
+        "native_unrealized_change": "-1189583.65720000",
+        "assets": {
+          "BTC": {
+            "confirmed_native_fill_gross_attribution": "33242.2513",
+            "actual_window_fill_fees": "37204.06523477",
+            "confirmed_fill_net_cash_attribution_ex_funding": "-3961.81393477",
+            "native_endpoint_unrealized_change": "-1189583.657200000000000000000",
+            "sum_fill_net_and_unrealized_attribution": "-1193545.471134770000000000000",
+            "completed_episodes": [
+              {
+                "number": 63,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1761091260000000000,
+                "start_utc": "2025-10-22T00:01:00+00:00",
+                "end_ns": 1761523200000000000,
+                "fees": "16838.84558625",
+                "fill_count": 4,
+                "end_utc": "2025-10-27T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-479237.56688625"
+              },
+              {
+                "number": 64,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1761523260000000000,
+                "start_utc": "2025-10-27T00:01:00+00:00",
+                "end_ns": 1761696000000000000,
+                "fees": "4991.87705049",
+                "fill_count": 2,
+                "end_utc": "2025-10-29T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-64047.44525049"
+              },
+              {
+                "number": 65,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1761696060000000000,
+                "start_utc": "2025-10-29T00:01:00+00:00",
+                "end_ns": 1761798420000000000,
+                "fees": "9663.8562663",
+                "fill_count": 4,
+                "end_utc": "2025-10-30T04:27:00+00:00",
+                "confirmed_fill_net_ex_funding": "303106.5437337"
+              },
+              {
+                "number": 66,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1762905660000000000,
+                "start_utc": "2025-11-12T00:01:00+00:00",
+                "end_ns": 1763055720000000000,
+                "fees": "5677.66171984",
+                "fill_count": 2,
+                "end_utc": "2025-11-13T17:42:00+00:00",
+                "confirmed_fill_net_ex_funding": "236248.47908016"
+              }
+            ]
+          },
+          "SOL": {
+            "confirmed_native_fill_gross_attribution": "0",
+            "actual_window_fill_fees": "0",
+            "confirmed_fill_net_cash_attribution_ex_funding": "0",
+            "native_endpoint_unrealized_change": "0",
+            "sum_fill_net_and_unrealized_attribution": "0",
+            "completed_episodes": []
+          }
+        },
+        "unallocated_cash_residual_not_assigned_funding": "9608.29586389",
+        "native_unrealized_attribution_residual_change": "0E-21",
+        "avoided_loss_required_at_unchanged_peak_for_DD50_arithmetic_only": "123699.44131017",
+        "observed_loss_share_required": "0.1044814234183229122984880423",
+        "window_closing_fill_attribution": [
+          {
+            "symbol": "BTC",
+            "episode": 63,
+            "ns": 1761177600000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "29.609",
+            "price": "107522.8",
+            "gross_confirmed_fill_attribution": "20128.1982",
+            "allocated_entry_fee": "1762.07393087",
+            "exit_fee": "1751.00342186",
+            "net_ex_funding": "16615.12084727",
+            "client_order_id": "O-20251023-000000-001-000-387"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 63,
+            "ns": 1761177600000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "29.609",
+            "price": "107522.8",
+            "gross_confirmed_fill_attribution": "20128.1982",
+            "allocated_entry_fee": "1762.07393087",
+            "exit_fee": "1751.00342186",
+            "net_ex_funding": "16615.12084727",
+            "client_order_id": "O-20251023-000000-001-000-388"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 63,
+            "ns": 1761523200000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "80.121",
+            "price": "114476.3",
+            "gross_confirmed_fill_attribution": "-502655.1177",
+            "allocated_entry_fee": "4768.11528303",
+            "exit_fee": "5044.57559776",
+            "net_ex_funding": "-512467.80858079",
+            "client_order_id": "O-20251027-000000-001-000-389"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 64,
+            "ns": 1761696000000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "39.951",
+            "price": "112851.8",
+            "gross_confirmed_fill_attribution": "-59055.5682",
+            "allocated_entry_fee": "2512.1788065",
+            "exit_fee": "2479.69824399",
+            "net_ex_funding": "-64047.44525049",
+            "client_order_id": "O-20251029-000000-001-000-392"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 65,
+            "ns": 1761782400000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "20.48",
+            "price": "109948.8",
+            "gross_confirmed_fill_attribution": "57382.912",
+            "allocated_entry_fee": "1270.0238848",
+            "exit_fee": "1238.4632832",
+            "net_ex_funding": "54874.4248320",
+            "client_order_id": "O-20251030-000000-001-000-395"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 65,
+            "ns": 1761782400000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "20.48",
+            "price": "109948.8",
+            "gross_confirmed_fill_attribution": "57382.912",
+            "allocated_entry_fee": "1270.0238848",
+            "exit_fee": "1238.4632832",
+            "net_ex_funding": "54874.4248320",
+            "client_order_id": "O-20251030-000000-001-000-396"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 65,
+            "ns": 1761798420000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "55.42",
+            "price": "109177.9",
+            "gross_confirmed_fill_attribution": "198004.576",
+            "allocated_entry_fee": "3436.7540867",
+            "exit_fee": "1210.1278436",
+            "net_ex_funding": "193357.6940697",
+            "client_order_id": "O-20251029-000200-001-000-394"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 66,
+            "ns": 1763055720000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "74.056",
+            "price": "99827.2",
+            "gross_confirmed_fill_attribution": "241926.1408",
+            "allocated_entry_fee": "4199.1010952",
+            "exit_fee": "1478.56062464",
+            "net_ex_funding": "236248.47908016",
+            "client_order_id": "O-20251112-000200-001-000-398"
+          }
+        ]
+      }
+    }
+  ],
+  "all_global_native_excursions_over50": [
+    {
+      "peak": {
+        "ns": 1726063200000000000,
+        "utc": "2024-09-11T14:00:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "11994.7329287",
+        "equity": "13800.6279287",
+        "native_unrealized": "1805.8950000",
+        "asset_interpolation_residual": "0E-24",
+        "gross_notional_to_equity": "3.816215702075020032273091362",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "0.945",
+            "avg_entry_price": "57642.4",
+            "native_rounded_mark_close": "55731.4",
+            "marked_notional": "52666.1730",
+            "native_endpoint_close_unrealized_attribution": "1805.895000000000000000000000",
+            "gross_notional_to_equity": "3.816215702075020032273091362",
+            "side_name": "SHORT"
+          }
+        ]
+      },
+      "max_drawdown_percent": "67.28630644841043826206055609",
+      "trough": {
+        "ns": 1727970240000000000,
+        "utc": "2024-10-03T15:44:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "9732.33552879",
+        "equity": "4514.69512879",
+        "native_unrealized": "-5217.64040000",
+        "asset_interpolation_residual": "0E-24",
+        "gross_notional_to_equity": "33.87901828068590140207982121",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "0.732",
+            "avg_entry_price": "60811.2",
+            "native_rounded_mark_close": "60209.9",
+            "marked_notional": "44073.6468",
+            "native_endpoint_close_unrealized_attribution": "440.1516000000000000000000000",
+            "gross_notional_to_equity": "9.762264237721039588257304520",
+            "side_name": "SHORT"
+          },
+          {
+            "symbol": "SOL",
+            "side": "2",
+            "quantity": "817.6",
+            "avg_entry_price": "140.09",
+            "native_rounded_mark_close": "133.17",
+            "marked_notional": "108879.792",
+            "native_endpoint_close_unrealized_attribution": "-5657.792000000000000000000000",
+            "gross_notional_to_equity": "24.11675404296486181382251669",
+            "side_name": "LONG"
+          }
+        ]
+      },
+      "thresholds": {
+        "25": {
+          "ns": 1726497180000000000,
+          "utc": "2024-09-16T14:33:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "13705.12463059",
+          "equity": "10224.59243059",
+          "native_unrealized": "-3480.53220000",
+          "asset_interpolation_residual": "0E-24",
+          "gross_notional_to_equity": "7.063127786290915715853953088",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "2",
+              "quantity": "1.251",
+              "avg_entry_price": "60510.1",
+              "native_rounded_mark_close": "57727.9",
+              "marked_notional": "72217.6029",
+              "native_endpoint_close_unrealized_attribution": "-3480.532200000000000000000000",
+              "gross_notional_to_equity": "7.063127786290915715853953088",
+              "side_name": "LONG"
+            }
+          ]
+        },
+        "35": {
+          "ns": 1726582440000000000,
+          "utc": "2024-09-17T14:14:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "10676.59773375",
+          "equity": "8920.20173375",
+          "native_unrealized": "-1756.39600000",
+          "asset_interpolation_residual": "0E-24",
+          "gross_notional_to_equity": "7.644236849712378849259340609",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "1.142",
+              "avg_entry_price": "58171.4",
+              "native_rounded_mark_close": "59709.4",
+              "marked_notional": "68188.1348",
+              "native_endpoint_close_unrealized_attribution": "-1756.396000000000000000000000",
+              "gross_notional_to_equity": "7.644236849712378849259340609",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "45": {
+          "ns": 1726585860000000000,
+          "utc": "2024-09-17T15:11:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "10676.59773375",
+          "equity": "7498.86853375",
+          "native_unrealized": "-3177.72920000",
+          "asset_interpolation_residual": "0E-24",
+          "gross_notional_to_equity": "9.282662802622839753954767750",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "1.142",
+              "avg_entry_price": "58171.4",
+              "native_rounded_mark_close": "60954",
+              "marked_notional": "69609.468",
+              "native_endpoint_close_unrealized_attribution": "-3177.729200000000000000000000",
+              "gross_notional_to_equity": "9.282662802622839753954767750",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "50": {
+          "ns": 1727945520000000000,
+          "utc": "2024-10-03T08:52:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "9732.33552879",
+          "equity": "6793.51792879",
+          "native_unrealized": "-2938.81760000",
+          "asset_interpolation_residual": "0E-24",
+          "gross_notional_to_equity": "22.83628506263939527510655562",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "0.732",
+              "avg_entry_price": "60811.2",
+              "native_rounded_mark_close": "60146",
+              "marked_notional": "44026.872",
+              "native_endpoint_close_unrealized_attribution": "486.9264000000000000000000000",
+              "gross_notional_to_equity": "6.480717716725253191057310768",
+              "side_name": "SHORT"
+            },
+            {
+              "symbol": "SOL",
+              "side": "2",
+              "quantity": "817.6",
+              "avg_entry_price": "140.09",
+              "native_rounded_mark_close": "135.9",
+              "marked_notional": "111111.84",
+              "native_endpoint_close_unrealized_attribution": "-3425.744000000000000000000000",
+              "gross_notional_to_equity": "16.35556734591414208404924485",
+              "side_name": "LONG"
+            }
+          ]
+        }
+      },
+      "recovery": {
+        "ns": 1728617040000000000,
+        "utc": "2024-10-11T03:24:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "11669.72754683",
+        "equity": "13831.56754683",
+        "native_unrealized": "2161.84000000",
+        "asset_interpolation_residual": "0E-24",
+        "gross_notional_to_equity": "9.058211195210085171352539141",
+        "positions": [
+          {
+            "symbol": "SOL",
+            "side": "2",
+            "quantity": "886.0",
+            "avg_entry_price": "138.97",
+            "native_rounded_mark_close": "141.41",
+            "marked_notional": "125289.260",
+            "native_endpoint_close_unrealized_attribution": "2161.840000000000000000000000",
+            "gross_notional_to_equity": "9.058211195210085171352539141",
+            "side_name": "LONG"
+          }
+        ]
+      },
+      "decomposition": {
+        "equity_change": "-9285.93279991",
+        "native_cash_change": "-2262.39739991",
+        "native_unrealized_change": "-7023.53540000",
+        "assets": {
+          "BTC": {
+            "confirmed_native_fill_gross_attribution": "-1939.7496",
+            "actual_window_fill_fees": "245.69817321",
+            "confirmed_fill_net_cash_attribution_ex_funding": "-2185.44777321",
+            "native_endpoint_unrealized_change": "-1365.743400000000000000000000",
+            "sum_fill_net_and_unrealized_attribution": "-3551.191173210000000000000000",
+            "completed_episodes": [
+              {
+                "number": 2,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1726012860000000000,
+                "start_utc": "2024-09-11T00:01:00+00:00",
+                "end_ns": 1726063200000000000,
+                "fees": "40.4989200",
+                "fill_count": 2,
+                "end_utc": "2024-09-11T14:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "1735.1560800"
+              },
+              {
+                "number": 3,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1726272120000000000,
+                "start_utc": "2024-09-14T00:02:00+00:00",
+                "end_ns": 1726531200000000000,
+                "fees": "81.65089351",
+                "fill_count": 2,
+                "end_utc": "2024-09-17T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-3021.75109351"
+              },
+              {
+                "number": 4,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1726531260000000000,
+                "start_utc": "2024-09-17T00:01:00+00:00",
+                "end_ns": 1726617600000000000,
+                "fees": "87.82509296",
+                "fill_count": 3,
+                "end_utc": "2024-09-18T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-2469.89749296"
+              },
+              {
+                "number": 5,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1726617660000000000,
+                "start_utc": "2024-09-18T00:01:00+00:00",
+                "end_ns": 1726747620000000000,
+                "fees": "41.20031502",
+                "fill_count": 4,
+                "end_utc": "2024-09-19T12:07:00+00:00",
+                "confirmed_fill_net_ex_funding": "1565.56768498"
+              }
+            ]
+          },
+          "SOL": {
+            "confirmed_native_fill_gross_attribution": "0",
+            "actual_window_fill_fees": "62.9956712",
+            "confirmed_fill_net_cash_attribution_ex_funding": "-62.9956712",
+            "native_endpoint_unrealized_change": "-5657.792000000000000000000000",
+            "sum_fill_net_and_unrealized_attribution": "-5720.787671200000000000000000",
+            "completed_episodes": []
+          }
+        },
+        "unallocated_cash_residual_not_assigned_funding": "-13.95395550",
+        "native_unrealized_attribution_residual_change": "0E-24",
+        "avoided_loss_required_at_unchanged_peak_for_DD50_arithmetic_only": "2385.61883556",
+        "observed_loss_share_required": "0.2569067520694443974100534085",
+        "window_closing_fill_attribution": [
+          {
+            "symbol": "BTC",
+            "episode": 2,
+            "ns": 1726063200000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "0.945",
+            "price": "55763.4",
+            "gross_confirmed_fill_attribution": "1775.6550",
+            "allocated_entry_fee": "29.9596374",
+            "exit_fee": "10.5392826",
+            "net_ex_funding": "1735.1560800",
+            "client_order_id": "O-20240911-000200-001-000-4"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 3,
+            "ns": 1726531200000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "1.251",
+            "price": "58159.9",
+            "gross_confirmed_fill_attribution": "-2940.1002",
+            "allocated_entry_fee": "41.63397431",
+            "exit_fee": "40.0169192",
+            "net_ex_funding": "-3021.75109351",
+            "client_order_id": "O-20240917-000000-001-000-7"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 4,
+            "ns": 1726533180000000000,
+            "utc": "",
+            "reason": "BTC_TP2",
+            "quantity": "0.308",
+            "price": "58148.7",
+            "gross_confirmed_fill_attribution": "6.9916",
+            "allocated_entry_fee": "9.85423516",
+            "exit_fee": "3.58195992",
+            "net_ex_funding": "-6.44459508",
+            "client_order_id": "O-20240917-000200-001-000-9"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 4,
+            "ns": 1726617600000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "1.142",
+            "price": "60263.4",
+            "gross_confirmed_fill_attribution": "-2389.0640",
+            "allocated_entry_fee": "36.53745634",
+            "exit_fee": "37.85144154",
+            "net_ex_funding": "-2463.45289788",
+            "client_order_id": "O-20240918-000000-001-000-11"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 5,
+            "ns": 1726704000000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "0.159",
+            "price": "61743.7",
+            "gross_confirmed_fill_attribution": "230.2002",
+            "allocated_entry_fee": "5.272876455",
+            "exit_fee": "5.39948657",
+            "net_ex_funding": "219.527836975",
+            "client_order_id": "O-20240919-000000-001-000-14"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 5,
+            "ns": 1726704000000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "0.159",
+            "price": "61743.7",
+            "gross_confirmed_fill_attribution": "230.2002",
+            "allocated_entry_fee": "5.272876455",
+            "exit_fee": "5.39948657",
+            "net_ex_funding": "219.527836975",
+            "client_order_id": "O-20240919-000000-001-000-15"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 5,
+            "ns": 1726747620000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "0.434",
+            "price": "62937.3",
+            "gross_confirmed_fill_attribution": "1146.3676",
+            "allocated_entry_fee": "14.392631330",
+            "exit_fee": "5.46295764",
+            "net_ex_funding": "1126.512011030",
+            "client_order_id": "O-20240918-000200-001-000-13"
+          }
+        ]
+      }
+    },
+    {
+      "peak": {
+        "ns": 1744333200000000000,
+        "utc": "2025-04-11T01:00:00+00:00",
+        "phase": "post_quote_paired_close",
+        "cash": "1038045.9374819",
+        "equity": "1070928.8154819",
+        "native_unrealized": "32882.8780000",
+        "asset_interpolation_residual": "0E-23",
+        "gross_notional_to_equity": "4.471759861877522571433678225",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "59.195",
+            "avg_entry_price": "79566.0",
+            "native_rounded_mark_close": "79005.6",
+            "marked_notional": "4676736.4920",
+            "native_endpoint_close_unrealized_attribution": "33172.87800000000000000000000",
+            "gross_notional_to_equity": "4.366990993603573025703335995",
+            "side_name": "SHORT"
+          },
+          {
+            "symbol": "SOL",
+            "side": "2",
+            "quantity": "1000.0",
+            "avg_entry_price": "112.49",
+            "native_rounded_mark_close": "112.2",
+            "marked_notional": "112200.00",
+            "native_endpoint_close_unrealized_attribution": "-290.000",
+            "gross_notional_to_equity": "0.1047688682739495457303422300",
+            "side_name": "LONG"
+          }
+        ]
+      },
+      "max_drawdown_percent": "62.25270098705713077142029154",
+      "trough": {
+        "ns": 1749223020000000000,
+        "utc": "2025-06-06T15:17:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "526188.84459572",
+        "equity": "404246.70219572",
+        "native_unrealized": "-121942.14240000",
+        "asset_interpolation_residual": "0E-22",
+        "gross_notional_to_equity": "8.395470534121608015151398512",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "32.253",
+            "avg_entry_price": "101444.8",
+            "native_rounded_mark_close": "105225.6",
+            "marked_notional": "3393841.2768",
+            "native_endpoint_close_unrealized_attribution": "-121942.1424000000000000000000",
+            "gross_notional_to_equity": "8.395470534121608015151398512",
+            "side_name": "SHORT"
+          }
+        ]
+      },
+      "thresholds": {
+        "25": {
+          "ns": 1744393200000000000,
+          "utc": "2025-04-11T17:40:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1038750.49066748",
+          "equity": "798854.65516748",
+          "native_unrealized": "-239895.83550000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "6.360099640947589536339495580",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "59.195",
+              "avg_entry_price": "79566.0",
+              "native_rounded_mark_close": "83774.9",
+              "marked_notional": "4959055.2055",
+              "native_endpoint_close_unrealized_attribution": "-249145.8355000000000000000000",
+              "gross_notional_to_equity": "6.207706462523315110001574924",
+              "side_name": "SHORT"
+            },
+            {
+              "symbol": "SOL",
+              "side": "2",
+              "quantity": "1000.0",
+              "avg_entry_price": "112.49",
+              "native_rounded_mark_close": "121.74",
+              "marked_notional": "121740.000",
+              "native_endpoint_close_unrealized_attribution": "9250.000000000000000000000000",
+              "gross_notional_to_equity": "0.1523931784242744263379206560",
+              "side_name": "LONG"
+            }
+          ]
+        },
+        "35": {
+          "ns": 1744490520000000000,
+          "utc": "2025-04-12T20:42:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1039090.34283341",
+          "equity": "689888.31733341",
+          "native_unrealized": "-349202.02550000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "7.556645422914936606392670636",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "59.195",
+              "avg_entry_price": "79566.0",
+              "native_rounded_mark_close": "85816.9",
+              "marked_notional": "5079931.3955",
+              "native_endpoint_close_unrealized_attribution": "-370022.0255000000000000000000",
+              "gross_notional_to_equity": "7.363411247686000538416148538",
+              "side_name": "SHORT"
+            },
+            {
+              "symbol": "SOL",
+              "side": "2",
+              "quantity": "1000.0",
+              "avg_entry_price": "112.49",
+              "native_rounded_mark_close": "133.31",
+              "marked_notional": "133310.000",
+              "native_endpoint_close_unrealized_attribution": "20820",
+              "gross_notional_to_equity": "0.1932341752289360679765220978",
+              "side_name": "LONG"
+            }
+          ]
+        },
+        "45": {
+          "ns": 1744590060000000000,
+          "utc": "2025-04-14T00:21:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "636661.84502133",
+          "equity": "573300.88842133",
+          "native_unrealized": "-63360.95660000",
+          "asset_interpolation_residual": "0E-23",
+          "gross_notional_to_equity": "8.888913090179679344425846593",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "60.149",
+              "avg_entry_price": "83669.90000000001",
+              "native_rounded_mark_close": "84723.3",
+              "marked_notional": "5096021.7717",
+              "native_endpoint_close_unrealized_attribution": "-63360.95660000000000000000000",
+              "gross_notional_to_equity": "8.888913090179679344425846593",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "50": {
+          "ns": 1744598040000000000,
+          "utc": "2025-04-14T02:34:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "636661.84502133",
+          "equity": "531455.22912133",
+          "native_unrealized": "-105206.61590000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "9.667545165553421895230620304",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "60.149",
+              "avg_entry_price": "83669.90000000001",
+              "native_rounded_mark_close": "85419",
+              "marked_notional": "5137867.431",
+              "native_endpoint_close_unrealized_attribution": "-105206.6159000000000000000000",
+              "gross_notional_to_equity": "9.667545165553421895230620304",
+              "side_name": "SHORT"
+            }
+          ]
+        }
+      },
+      "recovery": {
+        "ns": 1758520860000000000,
+        "utc": "2025-09-22T06:01:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "782382.52456923",
+        "equity": "1091180.15546923",
+        "native_unrealized": "308797.63090000",
+        "asset_interpolation_residual": "0E-22",
+        "gross_notional_to_equity": "6.096814063979372807379326742",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "2",
+            "quantity": "21.309",
+            "avg_entry_price": "113919.7",
+            "native_rounded_mark_close": "113419.8",
+            "marked_notional": "2416862.5182",
+            "native_endpoint_close_unrealized_attribution": "-10652.36910000000000000000000",
+            "gross_notional_to_equity": "2.214906957468172804468946079",
+            "side_name": "LONG"
+          },
+          {
+            "symbol": "SOL",
+            "side": "3",
+            "quantity": "19000.0",
+            "avg_entry_price": "239.75315789473683",
+            "native_rounded_mark_close": "222.94",
+            "marked_notional": "4235860.000",
+            "native_endpoint_close_unrealized_attribution": "319450.0000000000000000000000",
+            "gross_notional_to_equity": "3.881907106511200002910380663",
+            "side_name": "SHORT"
+          }
+        ]
+      },
+      "decomposition": {
+        "equity_change": "-666682.11328618",
+        "native_cash_change": "-511857.09288618",
+        "native_unrealized_change": "-154825.02040000",
+        "assets": {
+          "BTC": {
+            "confirmed_native_fill_gross_attribution": "-538809.8660",
+            "actual_window_fill_fees": "30403.99165389",
+            "confirmed_fill_net_cash_attribution_ex_funding": "-569213.85765389",
+            "native_endpoint_unrealized_change": "-155115.0204000000000000000000",
+            "sum_fill_net_and_unrealized_attribution": "-724328.8780538900000000000000",
+            "completed_episodes": [
+              {
+                "number": 35,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1744329660000000000,
+                "start_utc": "2025-04-11T00:01:00+00:00",
+                "end_ns": 1744502400000000000,
+                "fees": "6671.39068444",
+                "fill_count": 3,
+                "end_utc": "2025-04-13T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-341870.70788444"
+              },
+              {
+                "number": 36,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1744502460000000000,
+                "start_utc": "2025-04-13T00:01:00+00:00",
+                "end_ns": 1744588800000000000,
+                "fees": "4313.28157304",
+                "fill_count": 2,
+                "end_utc": "2025-04-14T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-79902.63197304"
+              },
+              {
+                "number": 37,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1744588860000000000,
+                "start_utc": "2025-04-14T00:01:00+00:00",
+                "end_ns": 1744675200000000000,
+                "fees": "5564.57917351",
+                "fill_count": 2,
+                "end_utc": "2025-04-15T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-57659.62807351"
+              },
+              {
+                "number": 38,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1744675260000000000,
+                "start_utc": "2025-04-15T00:01:00+00:00",
+                "end_ns": 1744761600000000000,
+                "fees": "3505.11700440",
+                "fill_count": 2,
+                "end_utc": "2025-04-16T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-40820.55220440"
+              },
+              {
+                "number": 39,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1744761660000000000,
+                "start_utc": "2025-04-16T00:01:00+00:00",
+                "end_ns": 1744934400000000000,
+                "fees": "4721.6340776",
+                "fill_count": 2,
+                "end_utc": "2025-04-18T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-70364.5540776"
+              },
+              {
+                "number": 40,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1744934460000000000,
+                "start_utc": "2025-04-18T00:01:00+00:00",
+                "end_ns": 1745245800000000000,
+                "fees": "2338.37449476",
+                "fill_count": 4,
+                "end_utc": "2025-04-21T14:30:00+00:00",
+                "confirmed_fill_net_ex_funding": "57620.55130524"
+              },
+              {
+                "number": 41,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1746489660000000000,
+                "start_utc": "2025-05-06T00:01:00+00:00",
+                "end_ns": 1746666060000000000,
+                "fees": "2650.95746273",
+                "fill_count": 4,
+                "end_utc": "2025-05-08T01:01:00+00:00",
+                "confirmed_fill_net_ex_funding": "78125.74203727"
+              },
+              {
+                "number": 42,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1748131260000000000,
+                "start_utc": "2025-05-25T00:01:00+00:00",
+                "end_ns": 1749168000000000000,
+                "fees": "2072.72792727",
+                "fill_count": 2,
+                "end_utc": "2025-06-06T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-114802.34492727"
+              }
+            ]
+          },
+          "SOL": {
+            "confirmed_native_fill_gross_attribution": "58979.99999999999999999999970",
+            "actual_window_fill_fees": "1750.8865",
+            "confirmed_fill_net_cash_attribution_ex_funding": "57229.11349999999999999999970",
+            "native_endpoint_unrealized_change": "290.000",
+            "sum_fill_net_and_unrealized_attribution": "57519.11349999999999999999970",
+            "completed_episodes": [
+              {
+                "number": 13,
+                "symbol": "SOL",
+                "side": "BUY",
+                "start_ns": 1744329720000000000,
+                "start_utc": "2025-04-11T00:02:00+00:00",
+                "end_ns": 1744502400000000000,
+                "fees": "134.6235",
+                "fill_count": 2,
+                "end_utc": "2025-04-13T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "19655.3765"
+              },
+              {
+                "number": 14,
+                "symbol": "SOL",
+                "side": "SELL",
+                "start_ns": 1746057600000000000,
+                "start_utc": "2025-05-01T00:00:00+00:00",
+                "end_ns": 1746403200000000000,
+                "fees": "160.2315",
+                "fill_count": 2,
+                "end_utc": "2025-05-05T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "3469.7685"
+              },
+              {
+                "number": 15,
+                "symbol": "SOL",
+                "side": "SELL",
+                "start_ns": 1746835200000000000,
+                "start_utc": "2025-05-10T00:00:00+00:00",
+                "end_ns": 1748044800000000000,
+                "fees": "1341.7030",
+                "fill_count": 14,
+                "end_utc": "2025-05-24T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "2258.296999999999999999999700"
+              },
+              {
+                "number": 16,
+                "symbol": "SOL",
+                "side": "SELL",
+                "start_ns": 1748131320000000000,
+                "start_utc": "2025-05-25T00:02:00+00:00",
+                "end_ns": 1749168000000000000,
+                "fees": "176.198",
+                "fill_count": 2,
+                "end_utc": "2025-06-06T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "31783.802"
+              }
+            ]
+          }
+        },
+        "unallocated_cash_residual_not_assigned_funding": "127.6512677100000000000003",
+        "native_unrealized_attribution_residual_change": "0E-22",
+        "avoided_loss_required_at_unchanged_peak_for_DD50_arithmetic_only": "131217.70554523",
+        "observed_loss_share_required": "0.1968219979660733459967136239",
+        "window_closing_fill_attribution": [
+          {
+            "symbol": "BTC",
+            "episode": 35,
+            "ns": 1744502400000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "59.195",
+            "price": "85262",
+            "gross_confirmed_fill_attribution": "-337174.720",
+            "allocated_entry_fee": "2590.4501535",
+            "exit_fee": "2775.8962495",
+            "net_ex_funding": "-342541.0664030",
+            "client_order_id": "O-20250413-000000-001-000-195"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 13,
+            "ns": 1744502400000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "1000",
+            "price": "132.28",
+            "gross_confirmed_fill_attribution": "19790.00",
+            "allocated_entry_fee": "61.8695",
+            "exit_fee": "72.754",
+            "net_ex_funding": "19655.3765",
+            "client_order_id": "O-20250413-000000-001-000-196"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 36,
+            "ns": 1744588800000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "46.408",
+            "price": "83678.9",
+            "gross_confirmed_fill_attribution": "-75589.3504",
+            "allocated_entry_fee": "2177.42785788",
+            "exit_fee": "2135.85371516",
+            "net_ex_funding": "-79902.63197304",
+            "client_order_id": "O-20250414-000000-001-000-199"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 37,
+            "ns": 1744675200000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "60.149",
+            "price": "84536",
+            "gross_confirmed_fill_attribution": "-52095.0489",
+            "allocated_entry_fee": "2767.96344831",
+            "exit_fee": "2796.6157252",
+            "net_ex_funding": "-57659.62807351",
+            "client_order_id": "O-20250415-000000-001-000-203"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 38,
+            "ns": 1744761600000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "37.876",
+            "price": "83636.4",
+            "gross_confirmed_fill_attribution": "-37315.4352",
+            "allocated_entry_fee": "1762.82024688",
+            "exit_fee": "1742.29675752",
+            "net_ex_funding": "-40820.55220440",
+            "client_order_id": "O-20250416-000000-001-000-206"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 39,
+            "ns": 1744934400000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "50.965",
+            "price": "84866.4",
+            "gross_confirmed_fill_attribution": "-65642.9200",
+            "allocated_entry_fee": "2342.7652358",
+            "exit_fee": "2378.8688418",
+            "net_ex_funding": "-70364.5540776",
+            "client_order_id": "O-20250418-000000-001-000-209"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 40,
+            "ns": 1745107200000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "6.474",
+            "price": "85048.5",
+            "gross_confirmed_fill_attribution": "667.4694",
+            "allocated_entry_fee": "302.46508578",
+            "exit_fee": "302.83219395",
+            "net_ex_funding": "62.17212027",
+            "client_order_id": "O-20250420-000000-001-000-212"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 40,
+            "ns": 1745107200000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "6.474",
+            "price": "85048.5",
+            "gross_confirmed_fill_attribution": "667.4694",
+            "allocated_entry_fee": "302.46508578",
+            "exit_fee": "302.83219395",
+            "net_ex_funding": "62.17212027",
+            "client_order_id": "O-20250420-000000-001-000-213"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 40,
+            "ns": 1745245800000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "17.518",
+            "price": "88291.9",
+            "gross_confirmed_fill_attribution": "58623.9870",
+            "allocated_entry_fee": "818.44043446",
+            "exit_fee": "309.33950084",
+            "net_ex_funding": "57496.20706470",
+            "client_order_id": "O-20250418-000200-001-000-211"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 14,
+            "ns": 1746403200000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "143.85",
+            "gross_confirmed_fill_attribution": "3630.00",
+            "allocated_entry_fee": "81.114",
+            "exit_fee": "79.1175",
+            "net_ex_funding": "3469.7685",
+            "client_order_id": "O-20250505-000000-001-000-215"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 41,
+            "ns": 1746576000000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "6.552",
+            "price": "96799",
+            "gross_confirmed_fill_attribution": "13569.8472",
+            "allocated_entry_fee": "341.3614604410623601517657360",
+            "exit_fee": "348.8248764",
+            "net_ex_funding": "12879.66086315893763984823426",
+            "client_order_id": "O-20250507-000000-001-000-218"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 41,
+            "ns": 1746576000000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "6.552",
+            "price": "96799",
+            "gross_confirmed_fill_attribution": "13569.8472",
+            "allocated_entry_fee": "341.3614604410623601517657360",
+            "exit_fee": "348.8248764",
+            "net_ex_funding": "12879.66086315893763984823426",
+            "client_order_id": "O-20250507-000000-001-000-219"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 41,
+            "ns": 1746666060000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "17.733",
+            "price": "97752.6",
+            "gross_confirmed_fill_attribution": "53637.0051",
+            "allocated_entry_fee": "923.8954178878752796964685282",
+            "exit_fee": "346.68937116",
+            "net_ex_funding": "52366.42031095212472030353147",
+            "client_order_id": "O-20250506-000200-001-000-217"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285714",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428429",
+            "client_order_id": "O-20250524-000000-001-000-227"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285715",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428428",
+            "client_order_id": "O-20250524-000000-001-000-228"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285716",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428428",
+            "client_order_id": "O-20250524-000000-001-000-229"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142856000",
+            "allocated_entry_fee": "95.97735714285714285714285715",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571427428",
+            "client_order_id": "O-20250524-000000-001-000-230"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285713",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428429",
+            "client_order_id": "O-20250524-000000-001-000-231"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142856000",
+            "allocated_entry_fee": "95.97735714285714285714285715",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571427428",
+            "client_order_id": "O-20250524-000000-001-000-232"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 15,
+            "ns": 1748044800000000000,
+            "utc": "",
+            "reason": "TRAIL",
+            "quantity": "1000",
+            "price": "173.99",
+            "gross_confirmed_fill_attribution": "514.2857142857142857142857000",
+            "allocated_entry_fee": "95.97735714285714285714285715",
+            "exit_fee": "95.6945",
+            "net_ex_funding": "322.6138571428571428571428428",
+            "client_order_id": "O-20250524-000000-001-000-233"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 42,
+            "ns": 1749168000000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "18.018",
+            "price": "101450.4",
+            "gross_confirmed_fill_attribution": "-112729.6170",
+            "allocated_entry_fee": "1067.36460831",
+            "exit_fee": "1005.36331896",
+            "net_ex_funding": "-114802.34492727",
+            "client_order_id": "O-20250606-000000-001-000-237"
+          },
+          {
+            "symbol": "SOL",
+            "episode": 16,
+            "ns": 1749168000000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "1000",
+            "price": "144.2",
+            "gross_confirmed_fill_attribution": "31960.00",
+            "allocated_entry_fee": "96.888",
+            "exit_fee": "79.31",
+            "net_ex_funding": "31783.802",
+            "client_order_id": "O-20250606-000000-001-000-238"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 43,
+            "ns": 1749168780000000000,
+            "utc": "",
+            "reason": "BTC_TP2",
+            "quantity": "8.702",
+            "price": "101329.7",
+            "gross_confirmed_fill_attribution": "1001.6002",
+            "allocated_entry_fee": "485.52495728",
+            "exit_fee": "176.35420988",
+            "net_ex_funding": "339.72103284",
+            "client_order_id": "O-20250606-000200-001-000-240"
+          }
+        ]
+      }
+    },
+    {
+      "peak": {
+        "ns": 1761168540000000000,
+        "utc": "2025-10-22T21:29:00+00:00",
+        "phase": "post_quote_paired_close",
+        "cash": "1908429.37772142",
+        "equity": "2120475.46792142",
+        "native_unrealized": "212046.09020000",
+        "asset_interpolation_residual": "0E-22",
+        "gross_notional_to_equity": "7.010124010428238325999558778",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "139.339",
+            "avg_entry_price": "108202.59999999999",
+            "native_rounded_mark_close": "106680.8",
+            "marked_notional": "14864795.9912",
+            "native_endpoint_close_unrealized_attribution": "212046.0902000000000000000000",
+            "gross_notional_to_equity": "7.010124010428238325999558778",
+            "side_name": "SHORT"
+          }
+        ]
+      },
+      "max_drawdown_percent": "55.83357096941213092439153144",
+      "trough": {
+        "ns": 1764340080000000000,
+        "utc": "2025-11-28T14:28:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "1914075.85965054",
+        "equity": "936538.29265054",
+        "native_unrealized": "-977537.56700000",
+        "asset_interpolation_residual": "0E-8",
+        "gross_notional_to_equity": "17.20404035322464272353878396",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "173.353",
+            "avg_entry_price": "87305.7",
+            "native_rounded_mark_close": "92944.7",
+            "marked_notional": "16112242.5791",
+            "native_endpoint_close_unrealized_attribution": "-977537.5670",
+            "gross_notional_to_equity": "17.20404035322464272353878396",
+            "side_name": "SHORT"
+          }
+        ]
+      },
+      "thresholds": {
+        "25": {
+          "ns": 1761478500000000000,
+          "utc": "2025-10-26T11:35:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1952236.76275087",
+          "equity": "1588992.18505087",
+          "native_unrealized": "-363244.57770000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "5.684449034600401182973645394",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "80.121",
+              "avg_entry_price": "108202.59999999999",
+              "native_rounded_mark_close": "112736.3",
+              "marked_notional": "9032545.0923",
+              "native_endpoint_close_unrealized_attribution": "-363244.5777000000000000000000",
+              "gross_notional_to_equity": "5.684449034600401182973645394",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "35": {
+          "ns": 1761516240000000000,
+          "utc": "2025-10-26T22:04:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1953147.37901794",
+          "equity": "1374201.04511794",
+          "native_unrealized": "-578946.33390000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "6.729908175631080698069233634",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "80.121",
+              "avg_entry_price": "108202.59999999999",
+              "native_rounded_mark_close": "115428.5",
+              "marked_notional": "9248246.8485",
+              "native_endpoint_close_unrealized_attribution": "-578946.3339000000000000000000",
+              "gross_notional_to_equity": "6.729908175631080698069233634",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "45": {
+          "ns": 1764211380000000000,
+          "utc": "2025-11-27T02:43:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1914282.72216269",
+          "equity": "1153141.70506269",
+          "native_unrealized": "-761141.01710000",
+          "asset_interpolation_residual": "0E-8",
+          "gross_notional_to_equity": "13.78481582914896820566441241",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "173.353",
+              "avg_entry_price": "87305.7",
+              "native_rounded_mark_close": "91696.4",
+              "marked_notional": "15895846.0292",
+              "native_endpoint_close_unrealized_attribution": "-761141.0171",
+              "gross_notional_to_equity": "13.78481582914896820566441241",
+              "side_name": "SHORT"
+            }
+          ]
+        },
+        "50": {
+          "ns": 1764337680000000000,
+          "utc": "2025-11-28T13:48:00+00:00",
+          "phase": "pre_quote_paired_close",
+          "cash": "1914075.85965054",
+          "equity": "1030218.25385054",
+          "native_unrealized": "-883857.60580000",
+          "asset_interpolation_residual": "0E-22",
+          "gross_notional_to_equity": "15.54870781800757130680719972",
+          "positions": [
+            {
+              "symbol": "BTC",
+              "side": "3",
+              "quantity": "173.353",
+              "avg_entry_price": "87305.7",
+              "native_rounded_mark_close": "92404.3",
+              "marked_notional": "16018562.6179",
+              "native_endpoint_close_unrealized_attribution": "-883857.6058000000000000000000",
+              "gross_notional_to_equity": "15.54870781800757130680719972",
+              "side_name": "SHORT"
+            }
+          ]
+        }
+      },
+      "recovery": {
+        "ns": 1764562320000000000,
+        "utc": "2025-12-01T04:12:00+00:00",
+        "phase": "pre_quote_paired_close",
+        "cash": "1914789.281801",
+        "equity": "2121408.722501",
+        "native_unrealized": "206619.440700",
+        "asset_interpolation_residual": "0E-22",
+        "gross_notional_to_equity": "7.036873853238794310720932376",
+        "positions": [
+          {
+            "symbol": "BTC",
+            "side": "3",
+            "quantity": "173.353",
+            "avg_entry_price": "87305.7",
+            "native_rounded_mark_close": "86113.8",
+            "marked_notional": "14928085.5714",
+            "native_endpoint_close_unrealized_attribution": "206619.4407000000000000000000",
+            "gross_notional_to_equity": "7.036873853238794310720932376",
+            "side_name": "SHORT"
+          }
+        ]
+      },
+      "decomposition": {
+        "equity_change": "-1183937.17527088",
+        "native_cash_change": "5646.48192912",
+        "native_unrealized_change": "-1189583.65720000",
+        "assets": {
+          "BTC": {
+            "confirmed_native_fill_gross_attribution": "33242.2513",
+            "actual_window_fill_fees": "37204.06523477",
+            "confirmed_fill_net_cash_attribution_ex_funding": "-3961.81393477",
+            "native_endpoint_unrealized_change": "-1189583.657200000000000000000",
+            "sum_fill_net_and_unrealized_attribution": "-1193545.471134770000000000000",
+            "completed_episodes": [
+              {
+                "number": 63,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1761091260000000000,
+                "start_utc": "2025-10-22T00:01:00+00:00",
+                "end_ns": 1761523200000000000,
+                "fees": "16838.84558625",
+                "fill_count": 4,
+                "end_utc": "2025-10-27T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-479237.56688625"
+              },
+              {
+                "number": 64,
+                "symbol": "BTC",
+                "side": "BUY",
+                "start_ns": 1761523260000000000,
+                "start_utc": "2025-10-27T00:01:00+00:00",
+                "end_ns": 1761696000000000000,
+                "fees": "4991.87705049",
+                "fill_count": 2,
+                "end_utc": "2025-10-29T00:00:00+00:00",
+                "confirmed_fill_net_ex_funding": "-64047.44525049"
+              },
+              {
+                "number": 65,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1761696060000000000,
+                "start_utc": "2025-10-29T00:01:00+00:00",
+                "end_ns": 1761798420000000000,
+                "fees": "9663.8562663",
+                "fill_count": 4,
+                "end_utc": "2025-10-30T04:27:00+00:00",
+                "confirmed_fill_net_ex_funding": "303106.5437337"
+              },
+              {
+                "number": 66,
+                "symbol": "BTC",
+                "side": "SELL",
+                "start_ns": 1762905660000000000,
+                "start_utc": "2025-11-12T00:01:00+00:00",
+                "end_ns": 1763055720000000000,
+                "fees": "5677.66171984",
+                "fill_count": 2,
+                "end_utc": "2025-11-13T17:42:00+00:00",
+                "confirmed_fill_net_ex_funding": "236248.47908016"
+              }
+            ]
+          },
+          "SOL": {
+            "confirmed_native_fill_gross_attribution": "0",
+            "actual_window_fill_fees": "0",
+            "confirmed_fill_net_cash_attribution_ex_funding": "0",
+            "native_endpoint_unrealized_change": "0",
+            "sum_fill_net_and_unrealized_attribution": "0",
+            "completed_episodes": []
+          }
+        },
+        "unallocated_cash_residual_not_assigned_funding": "9608.29586389",
+        "native_unrealized_attribution_residual_change": "0E-21",
+        "avoided_loss_required_at_unchanged_peak_for_DD50_arithmetic_only": "123699.44131017",
+        "observed_loss_share_required": "0.1044814234183229122984880423",
+        "window_closing_fill_attribution": [
+          {
+            "symbol": "BTC",
+            "episode": 63,
+            "ns": 1761177600000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "29.609",
+            "price": "107522.8",
+            "gross_confirmed_fill_attribution": "20128.1982",
+            "allocated_entry_fee": "1762.07393087",
+            "exit_fee": "1751.00342186",
+            "net_ex_funding": "16615.12084727",
+            "client_order_id": "O-20251023-000000-001-000-387"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 63,
+            "ns": 1761177600000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "29.609",
+            "price": "107522.8",
+            "gross_confirmed_fill_attribution": "20128.1982",
+            "allocated_entry_fee": "1762.07393087",
+            "exit_fee": "1751.00342186",
+            "net_ex_funding": "16615.12084727",
+            "client_order_id": "O-20251023-000000-001-000-388"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 63,
+            "ns": 1761523200000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "80.121",
+            "price": "114476.3",
+            "gross_confirmed_fill_attribution": "-502655.1177",
+            "allocated_entry_fee": "4768.11528303",
+            "exit_fee": "5044.57559776",
+            "net_ex_funding": "-512467.80858079",
+            "client_order_id": "O-20251027-000000-001-000-389"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 64,
+            "ns": 1761696000000000000,
+            "utc": "",
+            "reason": "REGIME",
+            "quantity": "39.951",
+            "price": "112851.8",
+            "gross_confirmed_fill_attribution": "-59055.5682",
+            "allocated_entry_fee": "2512.1788065",
+            "exit_fee": "2479.69824399",
+            "net_ex_funding": "-64047.44525049",
+            "client_order_id": "O-20251029-000000-001-000-392"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 65,
+            "ns": 1761782400000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "20.48",
+            "price": "109948.8",
+            "gross_confirmed_fill_attribution": "57382.912",
+            "allocated_entry_fee": "1270.0238848",
+            "exit_fee": "1238.4632832",
+            "net_ex_funding": "54874.4248320",
+            "client_order_id": "O-20251030-000000-001-000-395"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 65,
+            "ns": 1761782400000000000,
+            "utc": "",
+            "reason": "BTC_REDUCE",
+            "quantity": "20.48",
+            "price": "109948.8",
+            "gross_confirmed_fill_attribution": "57382.912",
+            "allocated_entry_fee": "1270.0238848",
+            "exit_fee": "1238.4632832",
+            "net_ex_funding": "54874.4248320",
+            "client_order_id": "O-20251030-000000-001-000-396"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 65,
+            "ns": 1761798420000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "55.42",
+            "price": "109177.9",
+            "gross_confirmed_fill_attribution": "198004.576",
+            "allocated_entry_fee": "3436.7540867",
+            "exit_fee": "1210.1278436",
+            "net_ex_funding": "193357.6940697",
+            "client_order_id": "O-20251029-000200-001-000-394"
+          },
+          {
+            "symbol": "BTC",
+            "episode": 66,
+            "ns": 1763055720000000000,
+            "utc": "",
+            "reason": "BTC_TP3",
+            "quantity": "74.056",
+            "price": "99827.2",
+            "gross_confirmed_fill_attribution": "241926.1408",
+            "allocated_entry_fee": "4199.1010952",
+            "exit_fee": "1478.56062464",
+            "net_ex_funding": "236248.47908016",
+            "client_order_id": "O-20251112-000200-001-000-398"
+          }
+        ]
+      }
+    }
+  ],
+  "episodes": {
+    "BTC": [
+      {
+        "number": 1,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1725235260000000000,
+        "start_utc": "2024-09-02T00:01:00+00:00",
+        "end_ns": 1725634080000000000,
+        "fees": "33.58993365",
+        "fill_count": 2,
+        "end_utc": "2024-09-06T14:48:00+00:00",
+        "confirmed_fill_net_ex_funding": "2021.42806635"
+      },
+      {
+        "number": 2,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1726012860000000000,
+        "start_utc": "2024-09-11T00:01:00+00:00",
+        "end_ns": 1726063200000000000,
+        "fees": "40.4989200",
+        "fill_count": 2,
+        "end_utc": "2024-09-11T14:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "1735.1560800"
+      },
+      {
+        "number": 3,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1726272120000000000,
+        "start_utc": "2024-09-14T00:02:00+00:00",
+        "end_ns": 1726531200000000000,
+        "fees": "81.65089351",
+        "fill_count": 2,
+        "end_utc": "2024-09-17T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-3021.75109351"
+      },
+      {
+        "number": 4,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1726531260000000000,
+        "start_utc": "2024-09-17T00:01:00+00:00",
+        "end_ns": 1726617600000000000,
+        "fees": "87.82509296",
+        "fill_count": 3,
+        "end_utc": "2024-09-18T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-2469.89749296"
+      },
+      {
+        "number": 5,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1726617660000000000,
+        "start_utc": "2024-09-18T00:01:00+00:00",
+        "end_ns": 1726747620000000000,
+        "fees": "41.20031502",
+        "fill_count": 4,
+        "end_utc": "2024-09-19T12:07:00+00:00",
+        "confirmed_fill_net_ex_funding": "1565.56768498"
+      },
+      {
+        "number": 6,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1727827260000000000,
+        "start_utc": "2024-10-02T00:01:00+00:00",
+        "end_ns": 1728086400000000000,
+        "fees": "49.46391912",
+        "fill_count": 2,
+        "end_utc": "2024-10-05T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-956.26551912"
+      },
+      {
+        "number": 7,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1728086460000000000,
+        "start_utc": "2024-10-05T00:01:00+00:00",
+        "end_ns": 1728518400000000000,
+        "fees": "67.57904297",
+        "fill_count": 4,
+        "end_utc": "2024-10-10T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-606.26424297"
+      },
+      {
+        "number": 8,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1728518460000000000,
+        "start_utc": "2024-10-10T00:01:00+00:00",
+        "end_ns": 1728583740000000000,
+        "fees": "35.79256692",
+        "fill_count": 2,
+        "end_utc": "2024-10-10T18:09:00+00:00",
+        "confirmed_fill_net_ex_funding": "1151.17783308"
+      },
+      {
+        "number": 9,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1728691320000000000,
+        "start_utc": "2024-10-12T00:02:00+00:00",
+        "end_ns": 1728915720000000000,
+        "fees": "41.72877579",
+        "fill_count": 2,
+        "end_utc": "2024-10-14T14:22:00+00:00",
+        "confirmed_fill_net_ex_funding": "2700.57542421"
+      },
+      {
+        "number": 10,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1729814460000000000,
+        "start_utc": "2024-10-25T00:01:00+00:00",
+        "end_ns": 1730210520000000000,
+        "fees": "91.83561818",
+        "fill_count": 4,
+        "end_utc": "2024-10-29T14:02:00+00:00",
+        "confirmed_fill_net_ex_funding": "3928.29838182"
+      },
+      {
+        "number": 11,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1730505660000000000,
+        "start_utc": "2024-11-02T00:01:00+00:00",
+        "end_ns": 1730937600000000000,
+        "fees": "110.29092307",
+        "fill_count": 4,
+        "end_utc": "2024-11-07T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "6405.65567693"
+      },
+      {
+        "number": 12,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1731715260000000000,
+        "start_utc": "2024-11-16T00:01:00+00:00",
+        "end_ns": 1732161180000000000,
+        "fees": "137.91226077",
+        "fill_count": 4,
+        "end_utc": "2024-11-21T03:53:00+00:00",
+        "confirmed_fill_net_ex_funding": "5287.36713923"
+      },
+      {
+        "number": 13,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1732665660000000000,
+        "start_utc": "2024-11-27T00:01:00+00:00",
+        "end_ns": 1732752000000000000,
+        "fees": "263.85116506",
+        "fill_count": 4,
+        "end_utc": "2024-11-28T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "12000.82783494"
+      },
+      {
+        "number": 14,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1733875260000000000,
+        "start_utc": "2024-12-11T00:01:00+00:00",
+        "end_ns": 1733949720000000000,
+        "fees": "227.19603342",
+        "fill_count": 3,
+        "end_utc": "2024-12-11T20:42:00+00:00",
+        "confirmed_fill_net_ex_funding": "11216.26556658"
+      },
+      {
+        "number": 15,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1734652860000000000,
+        "start_utc": "2024-12-20T00:01:00+00:00",
+        "end_ns": 1734912000000000000,
+        "fees": "451.25648518",
+        "fill_count": 4,
+        "end_utc": "2024-12-23T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-6598.19198518"
+      },
+      {
+        "number": 16,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1734912060000000000,
+        "start_utc": "2024-12-23T00:01:00+00:00",
+        "end_ns": 1734979920000000000,
+        "fees": "249.02285174",
+        "fill_count": 2,
+        "end_utc": "2024-12-23T18:52:00+00:00",
+        "confirmed_fill_net_ex_funding": "8083.46184826"
+      },
+      {
+        "number": 17,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1735084920000000000,
+        "start_utc": "2024-12-25T00:02:00+00:00",
+        "end_ns": 1735257600000000000,
+        "fees": "452.70719372",
+        "fill_count": 3,
+        "end_utc": "2024-12-27T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-10008.39599372"
+      },
+      {
+        "number": 18,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1735257660000000000,
+        "start_utc": "2024-12-27T00:01:00+00:00",
+        "end_ns": 1735320060000000000,
+        "fees": "667.07511116",
+        "fill_count": 4,
+        "end_utc": "2024-12-27T17:21:00+00:00",
+        "confirmed_fill_net_ex_funding": "14726.42008884"
+      },
+      {
+        "number": 19,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1735862520000000000,
+        "start_utc": "2025-01-03T00:02:00+00:00",
+        "end_ns": 1736178360000000000,
+        "fees": "870.94824397",
+        "fill_count": 3,
+        "end_utc": "2025-01-06T15:46:00+00:00",
+        "confirmed_fill_net_ex_funding": "44845.99095603"
+      },
+      {
+        "number": 20,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1736380860000000000,
+        "start_utc": "2025-01-09T00:01:00+00:00",
+        "end_ns": 1736467200000000000,
+        "fees": "2166.40016686",
+        "fill_count": 4,
+        "end_utc": "2025-01-10T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "65054.93503314"
+      },
+      {
+        "number": 21,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1736899320000000000,
+        "start_utc": "2025-01-15T00:02:00+00:00",
+        "end_ns": 1737078420000000000,
+        "fees": "1242.94667739",
+        "fill_count": 3,
+        "end_utc": "2025-01-17T01:47:00+00:00",
+        "confirmed_fill_net_ex_funding": "64937.49812261"
+      },
+      {
+        "number": 22,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1737417660000000000,
+        "start_utc": "2025-01-21T00:01:00+00:00",
+        "end_ns": 1737936000000000000,
+        "fees": "2513.97925135",
+        "fill_count": 4,
+        "end_utc": "2025-01-27T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "22760.76274865"
+      },
+      {
+        "number": 23,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1738022460000000000,
+        "start_utc": "2025-01-28T00:01:00+00:00",
+        "end_ns": 1738540800000000000,
+        "fees": "1983.30567258",
+        "fill_count": 3,
+        "end_utc": "2025-02-03T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-62678.54627258"
+      },
+      {
+        "number": 24,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1738540860000000000,
+        "start_utc": "2025-02-03T00:01:00+00:00",
+        "end_ns": 1738546560000000000,
+        "fees": "2076.29920947",
+        "fill_count": 3,
+        "end_utc": "2025-02-03T01:36:00+00:00",
+        "confirmed_fill_net_ex_funding": "67216.23739053"
+      },
+      {
+        "number": 25,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1738627320000000000,
+        "start_utc": "2025-02-04T00:02:00+00:00",
+        "end_ns": 1738713600000000000,
+        "fees": "2777.47205896",
+        "fill_count": 2,
+        "end_utc": "2025-02-05T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-95628.32415896"
+      },
+      {
+        "number": 26,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1738713660000000000,
+        "start_utc": "2025-02-05T00:01:00+00:00",
+        "end_ns": 1739137440000000000,
+        "fees": "1253.7333552",
+        "fill_count": 2,
+        "end_utc": "2025-02-09T21:44:00+00:00",
+        "confirmed_fill_net_ex_funding": "42776.3306448"
+      },
+      {
+        "number": 27,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1740096120000000000,
+        "start_utc": "2025-02-21T00:02:00+00:00",
+        "end_ns": 1740182400000000000,
+        "fees": "2371.62180541",
+        "fill_count": 3,
+        "end_utc": "2025-02-22T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-42771.84840541"
+      },
+      {
+        "number": 28,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1740182460000000000,
+        "start_utc": "2025-02-22T00:01:00+00:00",
+        "end_ns": 1740441600000000000,
+        "fees": "2648.11283276",
+        "fill_count": 4,
+        "end_utc": "2025-02-25T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "104813.05626724"
+      },
+      {
+        "number": 29,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1741046460000000000,
+        "start_utc": "2025-03-04T00:01:00+00:00",
+        "end_ns": 1741564800000000000,
+        "fees": "3125.49560755",
+        "fill_count": 4,
+        "end_utc": "2025-03-10T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "106616.10059245"
+      },
+      {
+        "number": 30,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1741824060000000000,
+        "start_utc": "2025-03-13T00:01:00+00:00",
+        "end_ns": 1741910400000000000,
+        "fees": "3867.64021127",
+        "fill_count": 4,
+        "end_utc": "2025-03-14T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "99157.32238873"
+      },
+      {
+        "number": 31,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1742083260000000000,
+        "start_utc": "2025-03-16T00:01:00+00:00",
+        "end_ns": 1742165520000000000,
+        "fees": "3286.92139083",
+        "fill_count": 3,
+        "end_utc": "2025-03-16T22:52:00+00:00",
+        "confirmed_fill_net_ex_funding": "78202.86670917"
+      },
+      {
+        "number": 32,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1742860920000000000,
+        "start_utc": "2025-03-25T00:02:00+00:00",
+        "end_ns": 1743033600000000000,
+        "fees": "4828.33413771",
+        "fill_count": 2,
+        "end_utc": "2025-03-27T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-34267.12103771"
+      },
+      {
+        "number": 33,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1743033660000000000,
+        "start_utc": "2025-03-27T00:01:00+00:00",
+        "end_ns": 1743170880000000000,
+        "fees": "3546.80007759",
+        "fill_count": 3,
+        "end_utc": "2025-03-28T14:08:00+00:00",
+        "confirmed_fill_net_ex_funding": "88692.70772241"
+      },
+      {
+        "number": 34,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1743638460000000000,
+        "start_utc": "2025-04-03T00:01:00+00:00",
+        "end_ns": 1743984000000000000,
+        "fees": "4318.65958177",
+        "fill_count": 3,
+        "end_utc": "2025-04-07T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "164102.11071823"
+      },
+      {
+        "number": 35,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1744329660000000000,
+        "start_utc": "2025-04-11T00:01:00+00:00",
+        "end_ns": 1744502400000000000,
+        "fees": "6671.39068444",
+        "fill_count": 3,
+        "end_utc": "2025-04-13T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-341870.70788444"
+      },
+      {
+        "number": 36,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1744502460000000000,
+        "start_utc": "2025-04-13T00:01:00+00:00",
+        "end_ns": 1744588800000000000,
+        "fees": "4313.28157304",
+        "fill_count": 2,
+        "end_utc": "2025-04-14T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-79902.63197304"
+      },
+      {
+        "number": 37,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1744588860000000000,
+        "start_utc": "2025-04-14T00:01:00+00:00",
+        "end_ns": 1744675200000000000,
+        "fees": "5564.57917351",
+        "fill_count": 2,
+        "end_utc": "2025-04-15T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-57659.62807351"
+      },
+      {
+        "number": 38,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1744675260000000000,
+        "start_utc": "2025-04-15T00:01:00+00:00",
+        "end_ns": 1744761600000000000,
+        "fees": "3505.11700440",
+        "fill_count": 2,
+        "end_utc": "2025-04-16T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-40820.55220440"
+      },
+      {
+        "number": 39,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1744761660000000000,
+        "start_utc": "2025-04-16T00:01:00+00:00",
+        "end_ns": 1744934400000000000,
+        "fees": "4721.6340776",
+        "fill_count": 2,
+        "end_utc": "2025-04-18T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-70364.5540776"
+      },
+      {
+        "number": 40,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1744934460000000000,
+        "start_utc": "2025-04-18T00:01:00+00:00",
+        "end_ns": 1745245800000000000,
+        "fees": "2338.37449476",
+        "fill_count": 4,
+        "end_utc": "2025-04-21T14:30:00+00:00",
+        "confirmed_fill_net_ex_funding": "57620.55130524"
+      },
+      {
+        "number": 41,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1746489660000000000,
+        "start_utc": "2025-05-06T00:01:00+00:00",
+        "end_ns": 1746666060000000000,
+        "fees": "2650.95746273",
+        "fill_count": 4,
+        "end_utc": "2025-05-08T01:01:00+00:00",
+        "confirmed_fill_net_ex_funding": "78125.74203727"
+      },
+      {
+        "number": 42,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1748131260000000000,
+        "start_utc": "2025-05-25T00:01:00+00:00",
+        "end_ns": 1749168000000000000,
+        "fees": "2072.72792727",
+        "fill_count": 2,
+        "end_utc": "2025-06-06T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-114802.34492727"
+      },
+      {
+        "number": 43,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1749168060000000000,
+        "start_utc": "2025-06-06T00:01:00+00:00",
+        "end_ns": 1749254400000000000,
+        "fees": "4310.40013039",
+        "fill_count": 3,
+        "end_utc": "2025-06-07T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-93185.00973039"
+      },
+      {
+        "number": 44,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1749254460000000000,
+        "start_utc": "2025-06-07T00:01:00+00:00",
+        "end_ns": 1749503760000000000,
+        "fees": "2167.43955175",
+        "fill_count": 4,
+        "end_utc": "2025-06-09T21:16:00+00:00",
+        "confirmed_fill_net_ex_funding": "76960.91144825"
+      },
+      {
+        "number": 45,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1749859260000000000,
+        "start_utc": "2025-06-14T00:01:00+00:00",
+        "end_ns": 1750204800000000000,
+        "fees": "1837.62507060",
+        "fill_count": 2,
+        "end_utc": "2025-06-18T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-25176.04707060"
+      },
+      {
+        "number": 46,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1750204860000000000,
+        "start_utc": "2025-06-18T00:01:00+00:00",
+        "end_ns": 1750291200000000000,
+        "fees": "4390.00015608",
+        "fill_count": 2,
+        "end_utc": "2025-06-19T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-17433.58895608"
+      },
+      {
+        "number": 47,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1750291260000000000,
+        "start_utc": "2025-06-19T00:01:00+00:00",
+        "end_ns": 1750377600000000000,
+        "fees": "2954.12122137",
+        "fill_count": 2,
+        "end_utc": "2025-06-20T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-9707.43382137"
+      },
+      {
+        "number": 48,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1750377660000000000,
+        "start_utc": "2025-06-20T00:01:00+00:00",
+        "end_ns": 1750535940000000000,
+        "fees": "3367.52483188",
+        "fill_count": 4,
+        "end_utc": "2025-06-21T19:59:00+00:00",
+        "confirmed_fill_net_ex_funding": "66818.79276812"
+      },
+      {
+        "number": 49,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1750723320000000000,
+        "start_utc": "2025-06-24T00:02:00+00:00",
+        "end_ns": 1752089880000000000,
+        "fees": "2722.24526776",
+        "fill_count": 4,
+        "end_utc": "2025-07-09T19:38:00+00:00",
+        "confirmed_fill_net_ex_funding": "96384.63873224"
+      },
+      {
+        "number": 50,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1754092860000000000,
+        "start_utc": "2025-08-02T00:01:00+00:00",
+        "end_ns": 1754352000000000000,
+        "fees": "3666.21765510",
+        "fill_count": 2,
+        "end_utc": "2025-08-05T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-54305.49445510"
+      },
+      {
+        "number": 51,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1754352060000000000,
+        "start_utc": "2025-08-05T00:01:00+00:00",
+        "end_ns": 1754438400000000000,
+        "fees": "2349.95648047",
+        "fill_count": 2,
+        "end_utc": "2025-08-06T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-18975.53998047"
+      },
+      {
+        "number": 52,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1754438460000000000,
+        "start_utc": "2025-08-06T00:01:00+00:00",
+        "end_ns": 1754524800000000000,
+        "fees": "3293.35301328",
+        "fill_count": 2,
+        "end_utc": "2025-08-07T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-26056.93381328"
+      },
+      {
+        "number": 53,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1754524860000000000,
+        "start_utc": "2025-08-07T00:01:00+00:00",
+        "end_ns": 1754878320000000000,
+        "fees": "1522.65946580",
+        "fill_count": 2,
+        "end_utc": "2025-08-11T02:12:00+00:00",
+        "confirmed_fill_net_ex_funding": "102582.75313420"
+      },
+      {
+        "number": 54,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1755302460000000000,
+        "start_utc": "2025-08-16T00:01:00+00:00",
+        "end_ns": 1755561600000000000,
+        "fees": "2320.03750869",
+        "fill_count": 2,
+        "end_utc": "2025-08-19T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-21983.47810869"
+      },
+      {
+        "number": 55,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1755561660000000000,
+        "start_utc": "2025-08-19T00:01:00+00:00",
+        "end_ns": 1755648000000000000,
+        "fees": "4654.33522056",
+        "fill_count": 4,
+        "end_utc": "2025-08-20T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "134135.37517944"
+      },
+      {
+        "number": 56,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1755907320000000000,
+        "start_utc": "2025-08-23T00:02:00+00:00",
+        "end_ns": 1755993600000000000,
+        "fees": "2761.40792043",
+        "fill_count": 2,
+        "end_utc": "2025-08-24T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-32871.43542043"
+      },
+      {
+        "number": 57,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1755993660000000000,
+        "start_utc": "2025-08-24T00:01:00+00:00",
+        "end_ns": 1756080000000000000,
+        "fees": "5306.74179431",
+        "fill_count": 4,
+        "end_utc": "2025-08-25T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "124450.87360569"
+      },
+      {
+        "number": 58,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1757030460000000000,
+        "start_utc": "2025-09-05T00:01:00+00:00",
+        "end_ns": 1757548800000000000,
+        "fees": "4456.43731830",
+        "fill_count": 2,
+        "end_utc": "2025-09-11T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-118452.06531830"
+      },
+      {
+        "number": 59,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1757548860000000000,
+        "start_utc": "2025-09-11T00:01:00+00:00",
+        "end_ns": 1758585600000000000,
+        "fees": "4641.64960457",
+        "fill_count": 4,
+        "end_utc": "2025-09-23T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-8323.37800457"
+      },
+      {
+        "number": 60,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1758585660000000000,
+        "start_utc": "2025-09-23T00:01:00+00:00",
+        "end_ns": 1758821820000000000,
+        "fees": "7888.80155752",
+        "fill_count": 4,
+        "end_utc": "2025-09-25T17:37:00+00:00",
+        "confirmed_fill_net_ex_funding": "141551.35464248"
+      },
+      {
+        "number": 61,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1759190520000000000,
+        "start_utc": "2025-09-30T00:02:00+00:00",
+        "end_ns": 1759431240000000000,
+        "fees": "6344.62050617",
+        "fill_count": 4,
+        "end_utc": "2025-10-02T18:54:00+00:00",
+        "confirmed_fill_net_ex_funding": "317587.07139383"
+      },
+      {
+        "number": 62,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1760140920000000000,
+        "start_utc": "2025-10-11T00:02:00+00:00",
+        "end_ns": 1760629620000000000,
+        "fees": "11377.32537107",
+        "fill_count": 4,
+        "end_utc": "2025-10-16T15:47:00+00:00",
+        "confirmed_fill_net_ex_funding": "287190.05702893"
+      },
+      {
+        "number": 63,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1761091260000000000,
+        "start_utc": "2025-10-22T00:01:00+00:00",
+        "end_ns": 1761523200000000000,
+        "fees": "16838.84558625",
+        "fill_count": 4,
+        "end_utc": "2025-10-27T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-479237.56688625"
+      },
+      {
+        "number": 64,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1761523260000000000,
+        "start_utc": "2025-10-27T00:01:00+00:00",
+        "end_ns": 1761696000000000000,
+        "fees": "4991.87705049",
+        "fill_count": 2,
+        "end_utc": "2025-10-29T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-64047.44525049"
+      },
+      {
+        "number": 65,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1761696060000000000,
+        "start_utc": "2025-10-29T00:01:00+00:00",
+        "end_ns": 1761798420000000000,
+        "fees": "9663.8562663",
+        "fill_count": 4,
+        "end_utc": "2025-10-30T04:27:00+00:00",
+        "confirmed_fill_net_ex_funding": "303106.5437337"
+      },
+      {
+        "number": 66,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1762905660000000000,
+        "start_utc": "2025-11-12T00:01:00+00:00",
+        "end_ns": 1763055720000000000,
+        "fees": "5677.66171984",
+        "fill_count": 2,
+        "end_utc": "2025-11-13T17:42:00+00:00",
+        "confirmed_fill_net_ex_funding": "236248.47908016"
+      },
+      {
+        "number": 67,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1764115260000000000,
+        "start_utc": "2025-11-26T00:01:00+00:00",
+        "end_ns": 1764633600000000000,
+        "fees": "13504.11564290",
+        "fill_count": 4,
+        "end_utc": "2025-12-02T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "340470.15625710"
+      },
+      {
+        "number": 68,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1767398520000000000,
+        "start_utc": "2026-01-03T00:02:00+00:00",
+        "end_ns": 1767916800000000000,
+        "fees": "13763.49436573",
+        "fill_count": 4,
+        "end_utc": "2026-01-09T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "111006.72043427"
+      },
+      {
+        "number": 69,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1768003260000000000,
+        "start_utc": "2026-01-10T00:01:00+00:00",
+        "end_ns": 1768342260000000000,
+        "fees": "5699.49102094",
+        "fill_count": 2,
+        "end_utc": "2026-01-13T22:11:00+00:00",
+        "confirmed_fill_net_ex_funding": "399367.89517906"
+      },
+      {
+        "number": 70,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1768867260000000000,
+        "start_utc": "2026-01-20T00:01:00+00:00",
+        "end_ns": 1768953600000000000,
+        "fees": "9393.88900824",
+        "fill_count": 2,
+        "end_utc": "2026-01-21T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-402536.56900824"
+      },
+      {
+        "number": 71,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1768953660000000000,
+        "start_utc": "2026-01-21T00:01:00+00:00",
+        "end_ns": 1769699640000000000,
+        "fees": "7958.48422673",
+        "fill_count": 2,
+        "end_utc": "2026-01-29T15:14:00+00:00",
+        "confirmed_fill_net_ex_funding": "337884.62937327"
+      },
+      {
+        "number": 72,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1770508860000000000,
+        "start_utc": "2026-02-08T00:01:00+00:00",
+        "end_ns": 1770790440000000000,
+        "fees": "19014.72542530",
+        "fill_count": 4,
+        "end_utc": "2026-02-11T06:14:00+00:00",
+        "confirmed_fill_net_ex_funding": "420880.13127470"
+      },
+      {
+        "number": 73,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1771113660000000000,
+        "start_utc": "2026-02-15T00:01:00+00:00",
+        "end_ns": 1771255980000000000,
+        "fees": "10511.95556376",
+        "fill_count": 2,
+        "end_utc": "2026-02-16T15:33:00+00:00",
+        "confirmed_fill_net_ex_funding": "440367.22563624"
+      },
+      {
+        "number": 74,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1772150460000000000,
+        "start_utc": "2026-02-27T00:01:00+00:00",
+        "end_ns": 1772236800000000000,
+        "fees": "24956.90911625",
+        "fill_count": 4,
+        "end_utc": "2026-02-28T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "769679.47458375"
+      },
+      {
+        "number": 75,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1772668920000000000,
+        "start_utc": "2026-03-05T00:02:00+00:00",
+        "end_ns": 1772755200000000000,
+        "fees": "25892.25965942",
+        "fill_count": 2,
+        "end_utc": "2026-03-06T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-681329.94805942"
+      },
+      {
+        "number": 76,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1772755260000000000,
+        "start_utc": "2026-03-06T00:01:00+00:00",
+        "end_ns": 1772841600000000000,
+        "fees": "25489.07145189",
+        "fill_count": 4,
+        "end_utc": "2026-03-07T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "984792.24674811"
+      },
+      {
+        "number": 77,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1773187260000000000,
+        "start_utc": "2026-03-11T00:01:00+00:00",
+        "end_ns": 1773360000000000000,
+        "fees": "33102.30203874",
+        "fill_count": 2,
+        "end_utc": "2026-03-13T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-311012.07083874"
+      },
+      {
+        "number": 78,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1773360060000000000,
+        "start_utc": "2026-03-13T00:01:00+00:00",
+        "end_ns": 1773636900000000000,
+        "fees": "10381.49058744",
+        "fill_count": 2,
+        "end_utc": "2026-03-16T04:55:00+00:00",
+        "confirmed_fill_net_ex_funding": "727446.94061256"
+      },
+      {
+        "number": 79,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1773964860000000000,
+        "start_utc": "2026-03-20T00:01:00+00:00",
+        "end_ns": 1774214400000000000,
+        "fees": "26746.42974792",
+        "fill_count": 4,
+        "end_utc": "2026-03-22T21:20:00+00:00",
+        "confirmed_fill_net_ex_funding": "729382.24545208"
+      },
+      {
+        "number": 80,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1774310520000000000,
+        "start_utc": "2026-03-24T00:02:00+00:00",
+        "end_ns": 1774396800000000000,
+        "fees": "18891.7911897",
+        "fill_count": 2,
+        "end_utc": "2026-03-25T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-125487.1371897"
+      },
+      {
+        "number": 81,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1774396860000000000,
+        "start_utc": "2026-03-25T00:01:00+00:00",
+        "end_ns": 1774483200000000000,
+        "fees": "33176.61834498",
+        "fill_count": 2,
+        "end_utc": "2026-03-26T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-376576.44954498"
+      },
+      {
+        "number": 82,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1774483260000000000,
+        "start_utc": "2026-03-26T00:01:00+00:00",
+        "end_ns": 1774569600000000000,
+        "fees": "18032.79654792",
+        "fill_count": 2,
+        "end_utc": "2026-03-27T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-600658.94694792"
+      },
+      {
+        "number": 83,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1774569660000000000,
+        "start_utc": "2026-03-27T00:01:00+00:00",
+        "end_ns": 1774656000000000000,
+        "fees": "26583.58591020",
+        "fill_count": 4,
+        "end_utc": "2026-03-28T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "967780.83568980"
+      },
+      {
+        "number": 84,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1775088060000000000,
+        "start_utc": "2026-04-02T00:01:00+00:00",
+        "end_ns": 1775174400000000000,
+        "fees": "26715.80453950",
+        "fill_count": 4,
+        "end_utc": "2026-04-03T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "754172.32116050"
+      },
+      {
+        "number": 85,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1775606520000000000,
+        "start_utc": "2026-04-08T00:02:00+00:00",
+        "end_ns": 1776175140000000000,
+        "fees": "27226.76299254",
+        "fill_count": 4,
+        "end_utc": "2026-04-14T13:59:00+00:00",
+        "confirmed_fill_net_ex_funding": "987007.31420746"
+      },
+      {
+        "number": 86,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1776729660000000000,
+        "start_utc": "2026-04-21T00:01:00+00:00",
+        "end_ns": 1776835560000000000,
+        "fees": "27122.12727287",
+        "fill_count": 4,
+        "end_utc": "2026-04-22T05:26:00+00:00",
+        "confirmed_fill_net_ex_funding": "623148.80172713"
+      },
+      {
+        "number": 87,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1777507260000000000,
+        "start_utc": "2026-04-30T00:01:00+00:00",
+        "end_ns": 1777840620000000000,
+        "fees": "27158.44423532",
+        "fill_count": 4,
+        "end_utc": "2026-05-03T20:37:00+00:00",
+        "confirmed_fill_net_ex_funding": "804999.38436468"
+      },
+      {
+        "number": 88,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1778803260000000000,
+        "start_utc": "2026-05-15T00:01:00+00:00",
+        "end_ns": 1779062400000000000,
+        "fees": "32254.18603077",
+        "fill_count": 2,
+        "end_utc": "2026-05-18T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-1388243.05823077"
+      },
+      {
+        "number": 89,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1779062460000000000,
+        "start_utc": "2026-05-18T00:01:00+00:00",
+        "end_ns": 1779522660000000000,
+        "fees": "26802.36135286",
+        "fill_count": 4,
+        "end_utc": "2026-05-23T07:51:00+00:00",
+        "confirmed_fill_net_ex_funding": "599990.01424714"
+      },
+      {
+        "number": 90,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1780963260000000000,
+        "start_utc": "2026-06-09T00:01:00+00:00",
+        "end_ns": 1781049600000000000,
+        "fees": "24541.97658758",
+        "fill_count": 4,
+        "end_utc": "2026-06-10T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "674989.77871242"
+      },
+      {
+        "number": 91,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1783123260000000000,
+        "start_utc": "2026-07-04T00:01:00+00:00",
+        "end_ns": 1783728000000000000,
+        "fees": "23997.92050340",
+        "fill_count": 3,
+        "end_utc": "2026-07-11T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-438199.99560340"
+      },
+      {
+        "number": 92,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1783728060000000000,
+        "start_utc": "2026-07-11T00:01:00+00:00",
+        "end_ns": 1783814400000000000,
+        "fees": "32907.85336570",
+        "fill_count": 2,
+        "end_utc": "2026-07-12T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-200386.56806570"
+      },
+      {
+        "number": 93,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1783814460000000000,
+        "start_utc": "2026-07-12T00:01:00+00:00",
+        "end_ns": 1784073600000000000,
+        "fees": "23944.74210366",
+        "fill_count": 3,
+        "end_utc": "2026-07-15T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-318347.75910366"
+      },
+      {
+        "number": 94,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1784073660000000000,
+        "start_utc": "2026-07-15T00:01:00+00:00",
+        "end_ns": 1784246400000000000,
+        "fees": "18798.07649550",
+        "fill_count": 2,
+        "end_utc": "2026-07-17T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-336744.21379550"
+      },
+      {
+        "number": 95,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1784246460000000000,
+        "start_utc": "2026-07-17T00:01:00+00:00",
+        "end_ns": 1784332800000000000,
+        "fees": "23772.04831566",
+        "fill_count": 3,
+        "end_utc": "2026-07-18T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-30387.12631566"
+      },
+      {
+        "number": 96,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1784332860000000000,
+        "start_utc": "2026-07-18T00:01:00+00:00",
+        "end_ns": 1784619600000000000,
+        "fees": "27173.04057932",
+        "fill_count": 4,
+        "end_utc": "2026-07-21T07:40:00+00:00",
+        "confirmed_fill_net_ex_funding": "715654.16502068"
+      },
+      {
+        "number": 97,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1784937720000000000,
+        "start_utc": "2026-07-25T00:02:00+00:00",
+        "end_ns": 1785110400000000000,
+        "fees": "23944.97759628",
+        "fill_count": 3,
+        "end_utc": "2026-07-27T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-345820.09619628"
+      },
+      {
+        "number": 98,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1785110460000000000,
+        "start_utc": "2026-07-27T00:01:00+00:00",
+        "end_ns": 1785196800000000000,
+        "fees": "18732.8557256",
+        "fill_count": 2,
+        "end_utc": "2026-07-28T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-446421.9088256"
+      },
+      {
+        "number": 99,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1785196860000000000,
+        "start_utc": "2026-07-28T00:01:00+00:00",
+        "end_ns": 1785456000000000000,
+        "fees": "19128.05260157",
+        "fill_count": 2,
+        "end_utc": "2026-07-31T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-294346.70920157"
+      },
+      {
+        "number": 100,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1785456060000000000,
+        "start_utc": "2026-07-31T00:01:00+00:00",
+        "end_ns": 1785542400000000000,
+        "fees": "32502.2026461",
+        "fill_count": 2,
+        "end_utc": "2026-08-01T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-937538.1726461"
+      },
+      {
+        "number": 101,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1785542460000000000,
+        "start_utc": "2026-08-01T00:01:00+00:00",
+        "end_ns": 1785974400000000000,
+        "fees": "19241.67715228",
+        "fill_count": 2,
+        "end_utc": "2026-08-06T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-501358.54435228"
+      },
+      {
+        "number": 102,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1785974460000000000,
+        "start_utc": "2026-08-06T00:01:00+00:00",
+        "end_ns": 1786406400000000000,
+        "fees": "18874.03607232",
+        "fill_count": 2,
+        "end_utc": "2026-08-11T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-198455.12087232"
+      },
+      {
+        "number": 103,
+        "symbol": "BTC",
+        "side": "SELL",
+        "start_ns": 1786406460000000000,
+        "start_utc": "2026-08-11T00:01:00+00:00",
+        "end_ns": 1787011200000000000,
+        "fees": "33037.89312214",
+        "fill_count": 4,
+        "end_utc": "2026-08-18T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-125046.67942214"
+      },
+      {
+        "number": 104,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1787011260000000000,
+        "start_utc": "2026-08-18T00:01:00+00:00",
+        "end_ns": 1787148540000000000,
+        "fees": "25703.50039125",
+        "fill_count": 4,
+        "end_utc": "2026-08-19T14:09:00+00:00",
+        "confirmed_fill_net_ex_funding": "199669.41640875"
+      },
+      {
+        "number": 105,
+        "symbol": "BTC",
+        "side": "BUY",
+        "start_ns": 1788048060000000000,
+        "start_utc": "2026-08-30T00:01:00+00:00",
+        "end_ns": 1788220800000000000,
+        "fees": "18782.59092633",
+        "fill_count": 2,
+        "end_utc": "2026-09-01T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "54873.35507367"
+      }
+    ],
+    "SOL": [
+      {
+        "number": 1,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1727913600000000000,
+        "start_utc": "2024-10-03T00:00:00+00:00",
+        "end_ns": 1728086400000000000,
+        "fees": "127.3538728",
+        "fill_count": 2,
+        "end_utc": "2024-10-05T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "2349.9741272"
+      },
+      {
+        "number": 2,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1728604800000000000,
+        "start_utc": "2024-10-11T00:00:00+00:00",
+        "end_ns": 1728691200000000000,
+        "fees": "138.622231",
+        "fill_count": 2,
+        "end_utc": "2024-10-12T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "5646.957769"
+      },
+      {
+        "number": 3,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1732233600000000000,
+        "start_utc": "2024-11-22T00:00:00+00:00",
+        "end_ns": 1732579200000000000,
+        "fees": "266.4421826",
+        "fill_count": 2,
+        "end_utc": "2024-11-26T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "21695.2738174"
+      },
+      {
+        "number": 4,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1734912180000000000,
+        "start_utc": "2024-12-23T00:03:00+00:00",
+        "end_ns": 1735084800000000000,
+        "fees": "420.3155",
+        "fill_count": 4,
+        "end_utc": "2024-12-25T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "23449.6845"
+      },
+      {
+        "number": 5,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1735320060000000000,
+        "start_utc": "2024-12-27T17:21:00+00:00",
+        "end_ns": 1735862400000000000,
+        "fees": "1692.337075",
+        "fill_count": 16,
+        "end_utc": "2025-01-03T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "157225.3629250000000000000009"
+      },
+      {
+        "number": 6,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1736467200000000000,
+        "start_utc": "2025-01-10T00:00:00+00:00",
+        "end_ns": 1736899200000000000,
+        "fees": "1027.8785",
+        "fill_count": 10,
+        "end_utc": "2025-01-15T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "4502.1215"
+      },
+      {
+        "number": 7,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1738886400000000000,
+        "start_utc": "2025-02-07T00:00:00+00:00",
+        "end_ns": 1739577600000000000,
+        "fees": "213.40000",
+        "fill_count": 3,
+        "end_utc": "2025-02-15T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "8986.60000"
+      },
+      {
+        "number": 8,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1741564800000000000,
+        "start_utc": "2025-03-10T00:00:00+00:00",
+        "end_ns": 1741737600000000000,
+        "fees": "272.3765",
+        "fill_count": 4,
+        "end_utc": "2025-03-12T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "5577.6235"
+      },
+      {
+        "number": 9,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1741910400000000000,
+        "start_utc": "2025-03-14T00:00:00+00:00",
+        "end_ns": 1741996800000000000,
+        "fees": "141.2235",
+        "fill_count": 2,
+        "end_utc": "2025-03-15T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "10008.7765"
+      },
+      {
+        "number": 10,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1742688000000000000,
+        "start_utc": "2025-03-23T00:00:00+00:00",
+        "end_ns": 1742860800000000000,
+        "fees": "148.159",
+        "fill_count": 2,
+        "end_utc": "2025-03-25T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "12351.841"
+      },
+      {
+        "number": 11,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1743033780000000000,
+        "start_utc": "2025-03-27T00:03:00+00:00",
+        "end_ns": 1743552000000000000,
+        "fees": "846.0760",
+        "fill_count": 12,
+        "end_utc": "2025-04-02T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-19606.07600000000000000000000"
+      },
+      {
+        "number": 12,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1743638520000000000,
+        "start_utc": "2025-04-03T00:02:00+00:00",
+        "end_ns": 1744243200000000000,
+        "fees": "895.5540",
+        "fill_count": 14,
+        "end_utc": "2025-04-10T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "36964.44600000000000000000000"
+      },
+      {
+        "number": 13,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1744329720000000000,
+        "start_utc": "2025-04-11T00:02:00+00:00",
+        "end_ns": 1744502400000000000,
+        "fees": "134.6235",
+        "fill_count": 2,
+        "end_utc": "2025-04-13T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "19655.3765"
+      },
+      {
+        "number": 14,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1746057600000000000,
+        "start_utc": "2025-05-01T00:00:00+00:00",
+        "end_ns": 1746403200000000000,
+        "fees": "160.2315",
+        "fill_count": 2,
+        "end_utc": "2025-05-05T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "3469.7685"
+      },
+      {
+        "number": 15,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1746835200000000000,
+        "start_utc": "2025-05-10T00:00:00+00:00",
+        "end_ns": 1748044800000000000,
+        "fees": "1341.7030",
+        "fill_count": 14,
+        "end_utc": "2025-05-24T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "2258.296999999999999999999700"
+      },
+      {
+        "number": 16,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1748131320000000000,
+        "start_utc": "2025-05-25T00:02:00+00:00",
+        "end_ns": 1749168000000000000,
+        "fees": "176.198",
+        "fill_count": 2,
+        "end_utc": "2025-06-06T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "31783.802"
+      },
+      {
+        "number": 17,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1749600000000000000,
+        "start_utc": "2025-06-11T00:00:00+00:00",
+        "end_ns": 1749772800000000000,
+        "fees": "346.7200",
+        "fill_count": 4,
+        "end_utc": "2025-06-13T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "21133.2800"
+      },
+      {
+        "number": 18,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1753142400000000000,
+        "start_utc": "2025-07-22T00:00:00+00:00",
+        "end_ns": 1754006400000000000,
+        "fees": "806.5640",
+        "fill_count": 8,
+        "end_utc": "2025-08-01T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "88553.4360"
+      },
+      {
+        "number": 19,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1754611200000000000,
+        "start_utc": "2025-08-08T00:00:00+00:00",
+        "end_ns": 1755216000000000000,
+        "fees": "1446.3295",
+        "fill_count": 14,
+        "end_utc": "2025-08-15T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-65916.3295"
+      },
+      {
+        "number": 20,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1755302700000000000,
+        "start_utc": "2025-08-16T00:05:00+00:00",
+        "end_ns": 1755561600000000000,
+        "fees": "613.0355",
+        "fill_count": 6,
+        "end_utc": "2025-08-19T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "17376.96450000000000000000000"
+      },
+      {
+        "number": 21,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1755908580000000000,
+        "start_utc": "2025-08-23T00:23:00+00:00",
+        "end_ns": 1755993600000000000,
+        "fees": "443.9710",
+        "fill_count": 4,
+        "end_utc": "2025-08-24T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "-9863.9710"
+      },
+      {
+        "number": 22,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1757635200000000000,
+        "start_utc": "2025-09-12T00:00:00+00:00",
+        "end_ns": 1758585600000000000,
+        "fees": "4807.9735",
+        "fill_count": 38,
+        "end_utc": "2025-09-23T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "364042.0264999999999999999976"
+      },
+      {
+        "number": 23,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1759449600000000000,
+        "start_utc": "2025-10-03T00:00:00+00:00",
+        "end_ns": 1760140800000000000,
+        "fees": "232.452",
+        "fill_count": 2,
+        "end_utc": "2025-10-11T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "46367.548"
+      },
+      {
+        "number": 24,
+        "symbol": "SOL",
+        "side": "BUY",
+        "start_ns": 1779235200000000000,
+        "start_utc": "2026-05-20T00:00:00+00:00",
+        "end_ns": 1780445460000000000,
+        "fees": "1045.8360",
+        "fill_count": 24,
+        "end_utc": "2026-06-03T00:11:00+00:00",
+        "confirmed_fill_net_ex_funding": "-120525.8360000000000000000002"
+      },
+      {
+        "number": 25,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1784505600000000000,
+        "start_utc": "2026-07-20T00:00:00+00:00",
+        "end_ns": 1784937600000000000,
+        "fees": "415.5690",
+        "fill_count": 10,
+        "end_utc": "2026-07-25T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "15964.4310"
+      },
+      {
+        "number": 26,
+        "symbol": "SOL",
+        "side": "SELL",
+        "start_ns": 1787875200000000000,
+        "start_utc": "2026-08-28T00:00:00+00:00",
+        "end_ns": 1787961600000000000,
+        "fees": "117.2435",
+        "fill_count": 2,
+        "end_utc": "2026-08-29T00:00:00+00:00",
+        "confirmed_fill_net_ex_funding": "4872.7565"
+      }
+    ]
+  },
+  "episode_stats": {
+    "BTC": {
+      "episodes": 105,
+      "wins": 57,
+      "losses": 48,
+      "max_consecutive_losses": 7,
+      "winning_net_sum": "14686324.31717213",
+      "losing_net_sum": "-9993079.51637838",
+      "confirmed_fill_net_ex_funding": "4693244.80079375"
+    },
+    "SOL": {
+      "episodes": 26,
+      "wins": 22,
+      "losses": 4,
+      "max_consecutive_losses": 1,
+      "winning_net_sum": "904236.3481385999999999999982",
+      "losing_net_sum": "-215912.2125000000000000000002",
+      "confirmed_fill_net_ex_funding": "688324.1356385999999999999980"
+    }
+  },
+  "full_native_cash_gain": "5427208.56951095",
+  "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "checks": {
+    "trace_rows": 3153600,
+    "phase_counts": {
+      "pre_quote_paired_close": 1051200,
+      "post_btc_quote_paired_close": 1051199,
+      "post_quote_paired_close": 1051199,
+      "post_boundary_post_btc_quote_paired_close": 1,
+      "post_boundary_post_quote_paired_close": 1
+    },
+    "matched_fill_callback_groups": 405,
+    "all_actual_fees": "1091093.07886765",
+    "native_fee_reconcile": true,
+    "full_cash_reconcile": true,
+    "all_landmark_asset_uPnL_residual_lt_cent": true,
+    "new_engines": 0,
+    "streaming_trace_passes": 2,
+    "corrective_scan_reason": "Terminal rows prefix post_boundary_ stripped only for accounting callback mapping; settlement still excluded from interval DD. First scan failed final group-coverage guard before output; second scan checkpoints before checks.",
+    "seconds": 130.65,
+    "confirmed_fill_quantity_terminal_flat": true,
+    "reconstructed_native_fill_fees_reconciled": "1091093.078867650000000000000",
+    "native_callback_cash_not_used_for_asset_PnL": true,
+    "native_equity_decomposition_with_explicit_residual_exact": true,
+    "window_fill_bounds_use_phase_order_at_same_timestamp": true
+  },
+  "callback_cash_timing_diagnostic": {
+    "warning": "Native account callback/cache finalization is asynchronous. Cash at quote callback cannot be classified as realized perasset PnL. First classification guard matched fills, but2.83m cash remained outside fillcallbacks. All such attributed callbackgross/episode results superseded by confirmedfill attribution; native endpointcash/uPnL remains authoritative.",
+    "unclassified_callback_cash_residual": "2830101.09710873"
+  },
+  "full_confirmed_fill_net_ex_funding": "5381568.936432349999999999998",
+  "unallocated_native_cash_residual_not_funding": "45639.633078600000000000002",
+  "exit_reason_stats": [
+    {
+      "symbol": "BTC",
+      "reason": "BTC_REDUCE",
+      "closing_fill_rows": 77,
+      "gross_confirmed_fill_attribution": "3455946.2150",
+      "net_ex_funding": "3213431.030990636938108371594",
+      "allocated_entry_plus_exit_fees": "242515.1840093630618916284051",
+      "net_losing_fill_rows": 0
+    },
+    {
+      "symbol": "BTC",
+      "reason": "BTC_TP2",
+      "closing_fill_rows": 24,
+      "gross_confirmed_fill_attribution": "85481.6456",
+      "net_ex_funding": "54312.95681088201628066376944",
+      "allocated_entry_plus_exit_fees": "31168.68878911798371933623056",
+      "net_losing_fill_rows": 6
+    },
+    {
+      "symbol": "BTC",
+      "reason": "BTC_TP3",
+      "closing_fill_rows": 54,
+      "gross_confirmed_fill_attribution": "11702503.4172",
+      "net_ex_funding": "11444894.01795181257215791889",
+      "allocated_entry_plus_exit_fees": "257609.3992481874278420811125",
+      "net_losing_fill_rows": 0
+    },
+    {
+      "symbol": "BTC",
+      "reason": "REGIME",
+      "closing_fill_rows": 48,
+      "gross_confirmed_fill_attribution": "-9643624.3479",
+      "net_ex_funding": "-10156895.78656536940188798258",
+      "allocated_entry_plus_exit_fees": "513271.4386653694018879825835",
+      "net_losing_fill_rows": 48
+    },
+    {
+      "symbol": "BTC",
+      "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+      "closing_fill_rows": 1,
+      "gross_confirmed_fill_attribution": "73655.9460",
+      "net_ex_funding": "54873.35507367",
+      "allocated_entry_plus_exit_fees": "18782.59092633",
+      "net_losing_fill_rows": 0
+    },
+    {
+      "symbol": "BTC",
+      "reason": "TRAIL",
+      "closing_fill_rows": 2,
+      "gross_confirmed_fill_attribution": "92096.8154",
+      "net_ex_funding": "82629.22653211787534102833158",
+      "allocated_entry_plus_exit_fees": "9467.588867882124658971668415",
+      "net_losing_fill_rows": 0
+    },
+    {
+      "symbol": "SOL",
+      "reason": "REGIME",
+      "closing_fill_rows": 50,
+      "gross_confirmed_fill_attribution": "701230.6079999999999999999985",
+      "net_ex_funding": "690852.1193211999999999999991",
+      "allocated_entry_plus_exit_fees": "10378.48867880000000000000000",
+      "net_losing_fill_rows": 2
+    },
+    {
+      "symbol": "SOL",
+      "reason": "SOL_HARD_TIMEOUT",
+      "closing_fill_rows": 12,
+      "gross_confirmed_fill_attribution": "-119480.0000000000000000000002",
+      "net_ex_funding": "-120525.8360000000000000000001",
+      "allocated_entry_plus_exit_fees": "1045.836000000000000000000000",
+      "net_losing_fill_rows": 12
+    },
+    {
+      "symbol": "SOL",
+      "reason": "SOL_Z_FULL_EXIT",
+      "closing_fill_rows": 1,
+      "gross_confirmed_fill_attribution": "4965.00",
+      "net_ex_funding": "4858.09925",
+      "allocated_entry_plus_exit_fees": "106.90075",
+      "net_losing_fill_rows": 0
+    },
+    {
+      "symbol": "SOL",
+      "reason": "SOL_Z_HALF_EXIT",
+      "closing_fill_rows": 1,
+      "gross_confirmed_fill_attribution": "4235.00",
+      "net_ex_funding": "4128.50075",
+      "allocated_entry_plus_exit_fees": "106.49925",
+      "net_losing_fill_rows": 0
+    },
+    {
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "closing_fill_rows": 39,
+      "gross_confirmed_fill_attribution": "115651.7159999999999999999997",
+      "net_ex_funding": "109011.2523173999999999999996",
+      "allocated_entry_plus_exit_fees": "6640.463682600000000000000002",
+      "net_losing_fill_rows": 13
+    }
+  ],
+  "trail_closing_cohorts": [
+    {
+      "parent_btc_entry_number": 12,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1732579200000000000,
+      "last_fill_ns": 1732579200000000000,
+      "orders": 1,
+      "net_ex_funding": "21695.2738174"
+    },
+    {
+      "parent_btc_entry_number": 22,
+      "symbol": "BTC",
+      "reason": "TRAIL",
+      "first_fill_ns": 1737936000000000000,
+      "last_fill_ns": 1737936000000000000,
+      "orders": 1,
+      "net_ex_funding": "2820.417162837875341028331585"
+    },
+    {
+      "parent_btc_entry_number": 29,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1741737600000000000,
+      "last_fill_ns": 1741737600000000000,
+      "orders": 2,
+      "net_ex_funding": "5577.62350"
+    },
+    {
+      "parent_btc_entry_number": 30,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1741996800000000000,
+      "last_fill_ns": 1741996800000000000,
+      "orders": 1,
+      "net_ex_funding": "10008.7765"
+    },
+    {
+      "parent_btc_entry_number": 33,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1743552000000000000,
+      "last_fill_ns": 1743552000000000000,
+      "orders": 6,
+      "net_ex_funding": "-19606.07600000000000000000001"
+    },
+    {
+      "parent_btc_entry_number": 34,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1744243200000000000,
+      "last_fill_ns": 1744243200000000000,
+      "orders": 7,
+      "net_ex_funding": "36964.44599999999999999999998"
+    },
+    {
+      "parent_btc_entry_number": 40,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1746403200000000000,
+      "last_fill_ns": 1746403200000000000,
+      "orders": 1,
+      "net_ex_funding": "3469.7685"
+    },
+    {
+      "parent_btc_entry_number": 41,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1748044800000000000,
+      "last_fill_ns": 1748044800000000000,
+      "orders": 7,
+      "net_ex_funding": "2258.296999999999999999999700"
+    },
+    {
+      "parent_btc_entry_number": 44,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1749772800000000000,
+      "last_fill_ns": 1749772800000000000,
+      "orders": 2,
+      "net_ex_funding": "21133.2800"
+    },
+    {
+      "parent_btc_entry_number": 49,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1754006400000000000,
+      "last_fill_ns": 1754006400000000000,
+      "orders": 4,
+      "net_ex_funding": "88553.436"
+    },
+    {
+      "parent_btc_entry_number": 53,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1755216000000000000,
+      "last_fill_ns": 1755216000000000000,
+      "orders": 7,
+      "net_ex_funding": "-65916.3295"
+    },
+    {
+      "parent_btc_entry_number": 68,
+      "symbol": "BTC",
+      "reason": "TRAIL",
+      "first_fill_ns": 1767916800000000000,
+      "last_fill_ns": 1767916800000000000,
+      "orders": 1,
+      "net_ex_funding": "79808.809369280"
+    },
+    {
+      "parent_btc_entry_number": 104,
+      "symbol": "SOL",
+      "reason": "TRAIL",
+      "first_fill_ns": 1787961600000000000,
+      "last_fill_ns": 1787961600000000000,
+      "orders": 1,
+      "net_ex_funding": "4872.7565"
+    }
+  ]
+}

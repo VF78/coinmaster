@@ -1,0 +1,24 @@
+{
+  "trace_rows": 3153600,
+  "phase_counts": {
+    "pre_quote_paired_close": 1051200,
+    "post_btc_quote_paired_close": 1051199,
+    "post_quote_paired_close": 1051199,
+    "post_boundary_post_btc_quote_paired_close": 1,
+    "post_boundary_post_quote_paired_close": 1
+  },
+  "matched_fill_callback_groups": 405,
+  "all_actual_fees": "1091093.07886765",
+  "native_fee_reconcile": true,
+  "full_cash_reconcile": true,
+  "all_landmark_asset_uPnL_residual_lt_cent": true,
+  "new_engines": 0,
+  "streaming_trace_passes": 2,
+  "corrective_scan_reason": "Terminal rows prefix post_boundary_ stripped only for accounting callback mapping; settlement still excluded from interval DD. First scan failed final group-coverage guard before output; second scan checkpoints before checks.",
+  "seconds": 130.65,
+  "confirmed_fill_quantity_terminal_flat": true,
+  "reconstructed_native_fill_fees_reconciled": "1091093.078867650000000000000",
+  "native_callback_cash_not_used_for_asset_PnL": true,
+  "native_equity_decomposition_with_explicit_residual_exact": true,
+  "window_fill_bounds_use_phase_order_at_same_timestamp": true
+}
