@@ -1,0 +1,12 @@
+{
+  "authorization": "ROOT_EXPLICIT_GO_AFTER_INDEPENDENT_REVIEW",
+  "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+  "authorized_engines": 4,
+  "order": [
+    "b25",
+    "s10_15",
+    "r2",
+    "t3"
+  ],
+  "at_utc": "2026-10-11T13:40:09.496541+00:00"
+}

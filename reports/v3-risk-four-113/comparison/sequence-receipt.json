@@ -1,0 +1,97 @@
+{
+  "status": "EXACTLY_FOUR_NATIVE_ENGINES_COMPLETED",
+  "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+  "root_GO": {
+    "authorization": "ROOT_EXPLICIT_GO_AFTER_INDEPENDENT_REVIEW",
+    "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+    "authorized_engines": 4,
+    "order": [
+      "b25",
+      "s10_15",
+      "r2",
+      "t3"
+    ],
+    "at_utc": "2026-10-11T13:40:09.496541+00:00"
+  },
+  "coordinator_pid": 4097354,
+  "engines": [
+    {
+      "variant": "b25",
+      "MainPID": 4097364,
+      "InvocationID": "154b2503025b43158257f0b5a1ba158a",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-b25-20261011",
+      "artifact_sha256": "c51c023899c5a24137a1f880a5ae680823552dd8ba434b06c4d2b279ade9ce61",
+      "exit_code": 0,
+      "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+      "resources_before": {
+        "MemAvailable": 1320910848,
+        "disk_free": 5074415616
+      },
+      "launched_at": "2026-10-11T13:40:09Z",
+      "unit_journal_sha256": "f603769affb1edb646b3d42f89ad993fbcdb2dd968ac6d3390acef66b7fb9bf9"
+    },
+    {
+      "variant": "s10_15",
+      "MainPID": 4102900,
+      "InvocationID": "085e089dfed24817a1f7855812f56702",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-s10_15-20261011",
+      "artifact_sha256": "eac97e233aeb05e8376abdf7ea717a388f0a9eebec661ec7c2d8d9e0d16c50f6",
+      "exit_code": 0,
+      "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+      "resources_before": {
+        "MemAvailable": 1297326080,
+        "disk_free": 5003935744
+      },
+      "launched_at": "2026-10-11T13:57:11Z",
+      "unit_journal_sha256": "a33e84c355223643ebf04fa4c57eb10aa112dece6f6d618a4c0dd7f23fba5551"
+    },
+    {
+      "variant": "r2",
+      "MainPID": 4108267,
+      "InvocationID": "61c218c7552c45ba95ff18ab69841c95",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-r2-20261011",
+      "artifact_sha256": "dba5f13d7a72c8d5909f203b776582c09efaabd94cf2677ff9456e19e6904d67",
+      "exit_code": 0,
+      "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+      "resources_before": {
+        "MemAvailable": 1308954624,
+        "disk_free": 4920217600
+      },
+      "launched_at": "2026-10-11T14:13:43Z",
+      "unit_journal_sha256": "1bafa57c55c802dcf0b21fd337f6bab62adc559aeec726108ec38e9402a2e267"
+    },
+    {
+      "variant": "t3",
+      "MainPID": 4113443,
+      "InvocationID": "01416cc56a534441a9e2f3898d8d6191",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-t3-20261011",
+      "artifact_sha256": "095b437f7a23a767f4d4e43db0c44a0d877f776b38fcd506503d8b17be3c68d1",
+      "exit_code": 0,
+      "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+      "resources_before": {
+        "MemAvailable": 1282306048,
+        "disk_free": 4847824896
+      },
+      "launched_at": "2026-10-11T14:29:44Z",
+      "unit_journal_sha256": "d9b0e0155177b499922357c6070db5fdff107c5a21efb4fb5ec3ebd11948be37"
+    }
+  ],
+  "shared_slice_actual": "MemoryMax=943718400\nMemorySwapMax=0\n",
+  "first_engine_actual_verified": {
+    "MemoryMax": 943718400,
+    "MemorySwapMax": 0,
+    "User": "994",
+    "PrivateNetwork": "yes",
+    "Slice": "cm113-v3-risk.slice"
+  },
+  "pilot_final": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "raw_coordinator_log_retained": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-b25-20261011/sequence-coordinator.log",
+  "raw_coordinator_log_sha256": "c777cfa856fc3433a973ef54e99b8945c6dbf8dd0d8863d274ec03a684211c8b",
+  "final_resources": {
+    "MemAvailable_kB": "1301980",
+    "disk_free_bytes": 4750651392
+  },
+  "no_extra_engines": true,
+  "raw_minute_trace_scans": 0,
+  "at_utc": "2026-10-11T14:48:51.129063+00:00"
+}

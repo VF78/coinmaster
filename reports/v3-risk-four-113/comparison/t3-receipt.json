@@ -1,0 +1,96 @@
+{
+  "variant": "t3",
+  "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+  "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-t3-20261011/result/v0-selective-lifecycle-cap30m-v3-t3.json",
+  "artifact_sha256": "095b437f7a23a767f4d4e43db0c44a0d877f776b38fcd506503d8b17be3c68d1",
+  "exit_code": 0,
+  "launched_at": "2026-10-11T14:29:44Z",
+  "completed_lines": [
+    "Oct 11 14:47:04 MyShopAI-prod-1 systemd[1]: cm113-v3-t3-20261011.service: Deactivated successfully.",
+    "Oct 11 14:47:04 MyShopAI-prod-1 systemd[1]: cm113-v3-t3-20261011.service: Consumed 16min 56.863s CPU time, 538.8M memory peak, 0B memory swap peak."
+  ],
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "resources_before": {
+    "MemAvailable": 1282306048,
+    "disk_free": 4847824896
+  },
+  "source_guard_file": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-t3-20261011/source-input-hashes.sha256",
+  "immutable_source_hash_manifest_sha256": "17e6e1e409955d4e51d95c91e98f33db66614631bb6401bc369abee9389e1a96",
+  "immutable_files_verified": 106,
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "config_hash": "085304c2e29bae8ba3079ab19fb502a112ae4675012be1cb5c6aa4f804ea99cc",
+  "source_hashes": {
+    "native_baseline": "af14249f22959587c7e45a14b1a0a40db324f56d7b54fdb65cd2d2f8f488514d",
+    "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+    "wave_strategy": "d7efd979da3367ff0e71f4b06e637146964aad2308ca9f872a2e7a87c91e79a7"
+  },
+  "streaming": {
+    "batch_count": 105,
+    "cursor_batch_rows": 10080,
+    "event_count": 4206260,
+    "expected_rows_per_source": 1051200,
+    "max_batch_events": 40334,
+    "max_batch_minutes": 10080,
+    "peak_rss_bytes": 632897536,
+    "processed_rows_per_source": 1051200
+  },
+  "minute_rows": 3153600,
+  "upper_bound_samples": 1051200,
+  "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-t3-20261011/result/v0-selective-lifecycle-cap30m-v3-t3-funding.sqlite",
+  "funding_journal_sha256": "07b287d473d7f964b8ba6b7baf3f97770869bef086b98d05a8561d814640e233",
+  "terminal_lifecycle": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "1453181.7994"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "terminal_order_status_counts": {
+    "FILLED": 373,
+    "CANCELED": 240
+  },
+  "unfinished_orders": 0,
+  "execution_artifacts": {
+    "fills": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-t3-20261011/result/v0-selective-lifecycle-cap30m-v3-t3-fills.csv",
+      "rows": 552,
+      "sha256": "0aa816c3420ef0c40d38a2ea8fc544422216781e5f7948ed134703be74e561cd"
+    },
+    "orders": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-t3-20261011/result/v0-selective-lifecycle-cap30m-v3-t3-orders.csv",
+      "rows": 613,
+      "sha256": "ad1d82f71828812571ca7afaf5e89ca651c418f0e47b216a982d164c7917c166"
+    }
+  },
+  "post_boundary_settlement": {
+    "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+    "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+    "fill_count": 1,
+    "interval_cash_total_before_settlement": "453793.66508348",
+    "settled_cash_total": "466727.71769381"
+  },
+  "boundary_samples_excluded": [
+    {
+      "timestamp_ns": "1788220800000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "466727.71769381",
+      "paired_close_equity": "466727.71769381",
+      "native_positions": []
+    },
+    {
+      "timestamp_ns": "1788220800000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "466727.71769381",
+      "paired_close_equity": "466727.71769381",
+      "native_positions": []
+    }
+  ]
+}

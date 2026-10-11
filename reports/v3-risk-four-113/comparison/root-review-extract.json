@@ -1,0 +1,592 @@
+{
+  "source_commit": "250020911a1ac671740cd3346c27f0235792703c",
+  "actual_fresh_engines": 4,
+  "baseline_reused_no_control_engine": true,
+  "winner_native_DD_le50": "B25",
+  "identity_verification": {
+    "all_four_immutable_packs106": true,
+    "source_runtime_hashes_unchanged": true,
+    "data_policy_candidate_fee_seed_interval_same_as_V3": true,
+    "config_deltas_exactly_direction_selector_to_named_v3_selector": true,
+    "each_source_rows1051200": true,
+    "each_native_observations3153600": true,
+    "each_bound_samples1051200": true,
+    "separate_native_funding_journals": true,
+    "all_terminal_flat_zero_unfinished_orders": true,
+    "pilot_PID2009732_NRestarts0_unchanged": true,
+    "defaultOFF_and_independent_source_review": {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/implementation/receipt.json",
+      "sha256": "481e526c7fa3b8db5bacb7a05c42bbd6e034f4bc086a8cee5d3eb99185767f76",
+      "default": null,
+      "independent_review": "GO_EXACT_SOURCE_250020911a1ac671740cd3346c27f0235792703c"
+    }
+  },
+  "limitations": {
+    "eligibility": "Native global marked-minute equity DD only",
+    "B25_conditional_OHLC_bound_exceeds50": true,
+    "intrabar_cap_guarantee": false,
+    "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "faithful_execution": false
+  },
+  "rows": [
+    {
+      "variant": "V3_REUSED",
+      "TOTAL": "5437208.56951095",
+      "ROI_percent": "54272.085695109500",
+      "native_global_minute_DD_percent": "67.28630644841043826206055609",
+      "conditional_upper_to_later_lower_percent": "68.49200984400826048214056614",
+      "seed_minimum": "4514.69512879",
+      "fees": "1091093.07886765",
+      "BTC_fills": 311,
+      "SOL_fills": 205,
+      "funding_events": 1321,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "liquidations": 0,
+      "open_positions": 0,
+      "seed_minimum_UTC": "2024-10-03T15:44:00+00:00",
+      "terminal_flat": true,
+      "TOP3": [
+        {
+          "peak": {
+            "timestamp_ns": "1726063200000000000",
+            "equity": "13800.6279287",
+            "timestamp_utc": "2024-09-11T14:00:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1727970240000000000",
+            "equity": "4514.69512879",
+            "timestamp_utc": "2024-10-03T15:44:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1728617040000000000",
+            "equity": "13831.56754683",
+            "timestamp_utc": "2024-10-11T03:24:00+00:00"
+          },
+          "drawdown_amount": "9285.93279991",
+          "drawdown_peak_percent": "67.28630644841043826206055609"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1744333200000000000",
+            "equity": "1070928.8154819",
+            "timestamp_utc": "2025-04-11T01:00:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1749223020000000000",
+            "equity": "404246.70219572",
+            "timestamp_utc": "2025-06-06T15:17:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1758520860000000000",
+            "equity": "1091180.15546923",
+            "timestamp_utc": "2025-09-22T06:01:00+00:00"
+          },
+          "drawdown_amount": "666682.11328618",
+          "drawdown_peak_percent": "62.25270098705713077142029154"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1761168540000000000",
+            "equity": "2120475.46792142",
+            "timestamp_utc": "2025-10-22T21:29:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1764340080000000000",
+            "equity": "936538.29265054",
+            "timestamp_utc": "2025-11-28T14:28:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1764562320000000000",
+            "equity": "2121408.722501",
+            "timestamp_utc": "2025-12-01T04:12:00+00:00"
+          },
+          "drawdown_amount": "1183937.17527088",
+          "drawdown_peak_percent": "55.83357096941213092439153144"
+        }
+      ],
+      "config_diff_from_V3": []
+    },
+    {
+      "variant": "B25",
+      "TOTAL": "2394463.52298288",
+      "ROI_percent": "23844.635229828800",
+      "native_global_minute_DD_percent": "46.48498056881028273178388395",
+      "conditional_upper_to_later_lower_percent": "59.46109681590888090197865111",
+      "seed_minimum": "7385.40871767",
+      "fees": "534532.85875841",
+      "BTC_fills": 322,
+      "SOL_fills": 197,
+      "funding_events": 1319,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "liquidations": 0,
+      "open_positions": 0,
+      "ACTIVE": "2394463.52298288",
+      "RESERVE": "0",
+      "TOTAL_loss_vs_V3_percent": "55.96152892846907760289721650",
+      "seed_minimum_UTC": "2024-10-03T15:44:00+00:00",
+      "terminal_flat": true,
+      "unfinished_orders": 0,
+      "TOP3": [
+        {
+          "peak": {
+            "timestamp_ns": "1726063200000000000",
+            "equity": "13800.6279287",
+            "timestamp_utc": "2024-09-11T14:00:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1727970240000000000",
+            "equity": "7385.40871767",
+            "timestamp_utc": "2024-10-03T15:44:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1728659700000000000",
+            "equity": "13828.90356558",
+            "timestamp_utc": "2024-10-11T15:15:00+00:00"
+          },
+          "drawdown_amount": "6415.21921103",
+          "drawdown_peak_percent": "46.48498056881028273178388395"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1778805240000000000",
+            "equity": "4224739.09072595",
+            "timestamp_utc": "2026-05-15T00:34:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1787023980000000000",
+            "equity": "2281470.65471149",
+            "timestamp_utc": "2026-08-18T03:33:00+00:00"
+          },
+          "recovery": null,
+          "drawdown_amount": "1943268.43601446",
+          "drawdown_peak_percent": "45.99735970157963452475316394"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1744333200000000000",
+            "equity": "772287.1923536",
+            "timestamp_utc": "2025-04-11T01:00:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1758215580000000000",
+            "equity": "425021.43624597",
+            "timestamp_utc": "2025-09-18T17:13:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1758520800000000000",
+            "equity": "796868.51094451",
+            "timestamp_utc": "2025-09-22T06:00:00+00:00"
+          },
+          "drawdown_amount": "347265.75610763",
+          "drawdown_peak_percent": "44.96588309969416628101757099"
+        }
+      ],
+      "config_diff_from_V3": [
+        {
+          "path": ".research_btc_direction_sizing",
+          "V3": {
+            "freeze": "GENUINE_EPISODE_CREATION",
+            "long": "5.5",
+            "short": "7.875"
+          },
+          "variant": null
+        },
+        {
+          "path": ".research_v3_risk",
+          "V3": null,
+          "variant": {
+            "direction_sizing": {
+              "long": "5.5",
+              "short": "7.875"
+            },
+            "execution": "CURRENT_NATIVE_QUOTE_ONLY",
+            "sampling": "CAUSAL_PAIRED_PREQUOTE_AFTER_OBSERVATION",
+            "signed_funding": "SEPARATE_UNKNOWN",
+            "variant": "b25"
+          }
+        }
+      ],
+      "native_risk_events": {
+        "PROTECTIVE_TRIGGER": 13,
+        "PROTECTIVE_SUBMIT": 13,
+        "PROTECTIVE_FILL": 13,
+        "B25_REARM": 12
+      },
+      "native_protective_latency_ns": {
+        "PROTECTIVE_SUBMIT": {
+          "count": 13,
+          "minimum_ns": 0,
+          "maximum_ns": 0,
+          "mean_ns": "0"
+        },
+        "PROTECTIVE_FILL": {
+          "count": 13,
+          "minimum_ns": 0,
+          "maximum_ns": 0,
+          "mean_ns": "0"
+        }
+      }
+    },
+    {
+      "variant": "S10_15",
+      "TOTAL": "1147671.51274638",
+      "ROI_percent": "11376.715127463800",
+      "native_global_minute_DD_percent": "62.03030894582848897212033925",
+      "conditional_upper_to_later_lower_percent": "68.93714142225205346314663442",
+      "seed_minimum": "6489.68391849",
+      "fees": "385186.52688734",
+      "BTC_fills": 311,
+      "SOL_fills": 135,
+      "funding_events": 1267,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "liquidations": 0,
+      "open_positions": 0,
+      "ACTIVE": "1147671.51274638",
+      "RESERVE": "0",
+      "TOTAL_loss_vs_V3_percent": "78.89226616793905016033449540",
+      "seed_minimum_UTC": "2024-10-10T12:03:00+00:00",
+      "terminal_flat": true,
+      "unfinished_orders": 0,
+      "TOP3": [
+        {
+          "peak": {
+            "timestamp_ns": "1783345140000000000",
+            "equity": "2743032.17658642",
+            "timestamp_utc": "2026-07-06T13:39:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1787023980000000000",
+            "equity": "1041520.84296638",
+            "timestamp_utc": "2026-08-18T03:33:00+00:00"
+          },
+          "recovery": null,
+          "drawdown_amount": "1701511.33362004",
+          "drawdown_peak_percent": "62.03030894582848897212033925"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1742933520000000000",
+            "equity": "314476.3459948",
+            "timestamp_utc": "2025-03-25T20:12:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1749223020000000000",
+            "equity": "125300.33527656",
+            "timestamp_utc": "2025-06-06T15:17:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1754158500000000000",
+            "equity": "315760.67294026",
+            "timestamp_utc": "2025-08-02T18:15:00+00:00"
+          },
+          "drawdown_amount": "189176.01071824",
+          "drawdown_peak_percent": "60.15587917107384150186476657"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1761168540000000000",
+            "equity": "527086.93166108",
+            "timestamp_utc": "2025-10-22T21:29:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1764340080000000000",
+            "equity": "232790.84501248",
+            "timestamp_utc": "2025-11-28T14:28:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1764562320000000000",
+            "equity": "527304.82487915",
+            "timestamp_utc": "2025-12-01T04:12:00+00:00"
+          },
+          "drawdown_amount": "294296.08664860",
+          "drawdown_peak_percent": "55.83444949415557057020568664"
+        }
+      ],
+      "config_diff_from_V3": [
+        {
+          "path": ".research_btc_direction_sizing",
+          "V3": {
+            "freeze": "GENUINE_EPISODE_CREATION",
+            "long": "5.5",
+            "short": "7.875"
+          },
+          "variant": null
+        },
+        {
+          "path": ".research_v3_risk",
+          "V3": null,
+          "variant": {
+            "direction_sizing": {
+              "long": "5.5",
+              "short": "7.875"
+            },
+            "execution": "CURRENT_NATIVE_QUOTE_ONLY",
+            "sampling": "CAUSAL_PAIRED_PREQUOTE_AFTER_OBSERVATION",
+            "signed_funding": "SEPARATE_UNKNOWN",
+            "variant": "s10_15"
+          }
+        }
+      ],
+      "native_risk_events": {
+        "SOL_CYCLE_ANCHOR": 26,
+        "PROTECTIVE_TRIGGER": 16,
+        "PROTECTIVE_SUBMIT": 29,
+        "PROTECTIVE_FILL": 29,
+        "SOL_NEW_EPISODE_REARM": 9
+      },
+      "native_protective_latency_ns": {
+        "PROTECTIVE_SUBMIT": {
+          "count": 29,
+          "minimum_ns": 0,
+          "maximum_ns": 120000000000,
+          "mean_ns": "31034482758.62068965517241379"
+        },
+        "PROTECTIVE_FILL": {
+          "count": 29,
+          "minimum_ns": 0,
+          "maximum_ns": 120000000000,
+          "mean_ns": "31034482758.62068965517241379"
+        }
+      }
+    },
+    {
+      "variant": "R2",
+      "TOTAL": "2248382.68295321",
+      "ROI_percent": "22383.826829532100",
+      "native_global_minute_DD_percent": "92.12768311851301711461260340",
+      "conditional_upper_to_later_lower_percent": "94.16685274333793100308044109",
+      "seed_minimum": "6472.47794826",
+      "fees": "530522.98435944",
+      "BTC_fills": 251,
+      "SOL_fills": 151,
+      "funding_events": 1206,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "liquidations": 0,
+      "open_positions": 0,
+      "ACTIVE": "2248382.68295321",
+      "RESERVE": "0",
+      "TOTAL_loss_vs_V3_percent": "58.64821710976886630220485805",
+      "seed_minimum_UTC": "2024-10-03T15:44:00+00:00",
+      "terminal_flat": true,
+      "unfinished_orders": 0,
+      "TOP3": [
+        {
+          "peak": {
+            "timestamp_ns": "1736728560000000000",
+            "equity": "83568.58242738",
+            "timestamp_utc": "2025-01-13T00:36:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1736778960000000000",
+            "equity": "6578.78362205",
+            "timestamp_utc": "2025-01-13T14:36:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1737429060000000000",
+            "equity": "84167.40348429",
+            "timestamp_utc": "2025-01-21T03:11:00+00:00"
+          },
+          "drawdown_amount": "76989.79880533",
+          "drawdown_peak_percent": "92.12768311851301711461260340"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1774824600000000000",
+            "equity": "4592010.61669877",
+            "timestamp_utc": "2026-03-29T22:50:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1787119980000000000",
+            "equity": "1760653.64151363",
+            "timestamp_utc": "2026-08-19T06:13:00+00:00"
+          },
+          "recovery": null,
+          "drawdown_amount": "2831356.97518514",
+          "drawdown_peak_percent": "61.65832815997762711436476207"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1727928000000000000",
+            "equity": "14936.53139575",
+            "timestamp_utc": "2024-10-03T04:00:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1727970240000000000",
+            "equity": "6472.47794826",
+            "timestamp_utc": "2024-10-03T15:44:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1728059100000000000",
+            "equity": "15070.71173301",
+            "timestamp_utc": "2024-10-04T16:25:00+00:00"
+          },
+          "drawdown_amount": "8464.05344749",
+          "drawdown_peak_percent": "56.66679380393722960785482136"
+        }
+      ],
+      "config_diff_from_V3": [
+        {
+          "path": ".research_btc_direction_sizing",
+          "V3": {
+            "freeze": "GENUINE_EPISODE_CREATION",
+            "long": "5.5",
+            "short": "7.875"
+          },
+          "variant": null
+        },
+        {
+          "path": ".research_v3_risk",
+          "V3": null,
+          "variant": {
+            "direction_sizing": {
+              "long": "5.5",
+              "short": "7.875"
+            },
+            "execution": "CURRENT_NATIVE_QUOTE_ONLY",
+            "sampling": "CAUSAL_PAIRED_PREQUOTE_AFTER_OBSERVATION",
+            "signed_funding": "SEPARATE_UNKNOWN",
+            "variant": "r2"
+          }
+        }
+      ],
+      "native_risk_events": {
+        "R2_REGIME_CLOSE_WAIT": 44,
+        "R2_REARM": 44
+      },
+      "native_protective_latency_ns": {
+        "PROTECTIVE_SUBMIT": {
+          "count": 0,
+          "minimum_ns": null,
+          "maximum_ns": null,
+          "mean_ns": null
+        },
+        "PROTECTIVE_FILL": {
+          "count": 0,
+          "minimum_ns": null,
+          "maximum_ns": null,
+          "mean_ns": null
+        }
+      }
+    },
+    {
+      "variant": "T3",
+      "TOTAL": "466727.71769381",
+      "ROI_percent": "4567.277176938100",
+      "native_global_minute_DD_percent": "92.78074221257453857021296809",
+      "conditional_upper_to_later_lower_percent": "92.80665415547620234451140283",
+      "seed_minimum": "1556.27751464",
+      "fees": "605085.67561994",
+      "BTC_fills": 339,
+      "SOL_fills": 213,
+      "funding_events": 1476,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "liquidations": 0,
+      "open_positions": 0,
+      "ACTIVE": "466727.71769381",
+      "RESERVE": "0",
+      "TOTAL_loss_vs_V3_percent": "91.41604167419698876491067499",
+      "seed_minimum_UTC": "2024-10-03T15:44:00+00:00",
+      "terminal_flat": true,
+      "unfinished_orders": 0,
+      "TOP3": [
+        {
+          "peak": {
+            "timestamp_ns": "1772460240000000000",
+            "equity": "5447553.70111031",
+            "timestamp_utc": "2026-03-02T14:04:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1787023980000000000",
+            "equity": "393272.94479159",
+            "timestamp_utc": "2026-08-18T03:33:00+00:00"
+          },
+          "recovery": null,
+          "drawdown_amount": "5054280.75631872",
+          "drawdown_peak_percent": "92.78074221257453857021296809"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1726066200000000000",
+            "equity": "14364.94001639",
+            "timestamp_utc": "2024-09-11T14:50:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1727970240000000000",
+            "equity": "1556.27751464",
+            "timestamp_utc": "2024-10-03T15:44:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1732451460000000000",
+            "equity": "14477.51626393",
+            "timestamp_utc": "2024-11-24T12:31:00+00:00"
+          },
+          "drawdown_amount": "12808.66250175",
+          "drawdown_peak_percent": "89.16613983167120559911207010"
+        },
+        {
+          "peak": {
+            "timestamp_ns": "1736728560000000000",
+            "equity": "131409.22392716",
+            "timestamp_utc": "2025-01-13T00:36:00+00:00"
+          },
+          "trough": {
+            "timestamp_ns": "1736778960000000000",
+            "equity": "41909.61765516",
+            "timestamp_utc": "2025-01-13T14:36:00+00:00"
+          },
+          "recovery": {
+            "timestamp_ns": "1736865660000000000",
+            "equity": "131521.79145882",
+            "timestamp_utc": "2025-01-14T14:41:00+00:00"
+          },
+          "drawdown_amount": "89499.60627200",
+          "drawdown_peak_percent": "68.10755257302907541269277911"
+        }
+      ],
+      "config_diff_from_V3": [
+        {
+          "path": ".research_btc_direction_sizing",
+          "V3": {
+            "freeze": "GENUINE_EPISODE_CREATION",
+            "long": "5.5",
+            "short": "7.875"
+          },
+          "variant": null
+        },
+        {
+          "path": ".research_v3_risk",
+          "V3": null,
+          "variant": {
+            "direction_sizing": {
+              "long": "5.5",
+              "short": "7.875"
+            },
+            "execution": "CURRENT_NATIVE_QUOTE_ONLY",
+            "sampling": "CAUSAL_PAIRED_PREQUOTE_AFTER_OBSERVATION",
+            "signed_funding": "SEPARATE_UNKNOWN",
+            "variant": "t3"
+          }
+        }
+      ],
+      "native_risk_events": {
+        "T3_TRIGGER": 53,
+        "PROTECTIVE_SUBMIT": 49,
+        "PROTECTIVE_FILL": 49
+      },
+      "native_protective_latency_ns": {
+        "PROTECTIVE_SUBMIT": {
+          "count": 49,
+          "minimum_ns": 0,
+          "maximum_ns": 360000000000,
+          "mean_ns": "105306122448.9795918367346939"
+        },
+        "PROTECTIVE_FILL": {
+          "count": 49,
+          "minimum_ns": 0,
+          "maximum_ns": 360000000000,
+          "mean_ns": "105306122448.9795918367346939"
+        }
+      }
+    }
+  ]
+}
