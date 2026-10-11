@@ -1,0 +1,398 @@
+{
+  "scope": "Read-only parameter review; no strategy/engine/optimizer/deployment changes or new economic replay",
+  "frozen_source": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+  "analysis_head_start": "868104b",
+  "config_source": "reports/selective-lifecycle-cap30m-113/sizing-dd50-comparison/comparison.json:variants.v3",
+  "v3_config": {
+    "account": "SIM_MARGIN_USDT_10000",
+    "btc_close_stop_fraction": null,
+    "candidate": {
+      "beta_days": 270,
+      "btc_close_trail_fraction": 0.03,
+      "btc_notional_multiplier": 7.875,
+      "btc_tp_fractions_initial_qty": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "ema_period": 34,
+      "episode_fixed_beta": false,
+      "max_parent_notional": 30000000.0,
+      "relative_days": 65,
+      "sol_entry_z": [
+        1.25,
+        2.5,
+        3.75
+      ],
+      "sol_exit_all_z": 0.125,
+      "sol_exit_half_z": 0.375,
+      "sol_late_entry_after_tp": true,
+      "sol_max_holding_days": 14,
+      "sol_overlay_enabled": true,
+      "sol_size_multipliers_h": [
+        1.75,
+        2.625,
+        3.5
+      ],
+      "sol_timeout_preempts_add": false,
+      "wave_history_days": 730,
+      "wave_min_count": 8,
+      "wave_quantiles": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "z_history_days": 180
+    },
+    "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+    "execution_policy": {
+      "execution_delay_minutes": 1,
+      "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+      "fee_historical_applicability": "UNKNOWN",
+      "fee_multiplier": "1",
+      "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+      "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+      "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+      "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+      "nonmatching_daily_signals": true,
+      "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+      "symmetric_adverse_spread_bps": "0",
+      "version": "bybit-native-resting-reductions-v2"
+    },
+    "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+    "fixed_base_fee_policy": {
+      "bybit_maker": "0.00020",
+      "bybit_taker": "0.00055",
+      "hyperliquid_maker": "0.00015",
+      "hyperliquid_taker": "0.00045",
+      "venue": "bybit",
+      "version": "fixed-base-native-maker-taker-execution-v3"
+    },
+    "freeze_sigma_on_first_sol_fill": true,
+    "future_sol_margin_fraction": "0",
+    "include_zero_waves": true,
+    "initial_active_fraction": "1.0",
+    "initial_total_usdt": "10000",
+    "insufficient_margin": "reject",
+    "live_enabled": false,
+    "mode": "paper",
+    "portfolio_loss_limit_fraction": null,
+    "post_liquidation": "restart_from_reserve_else_pause",
+    "research_btc_direction_sizing": {
+      "freeze": "GENUINE_EPISODE_CREATION",
+      "long": "5.5",
+      "short": "7.875"
+    },
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_execution_repairs": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "research_v0_zero_tp_netting": false,
+    "reserve_transfer_fraction": "0",
+    "reserve_trigger_multiple": "4",
+    "restart_target": "initial_active_seed",
+    "run_interval": {
+      "end_exclusive": "2026-09-01T00:00:00+00:00",
+      "initial_active_seed": "10000",
+      "start": "2024-09-01T00:00:00+00:00"
+    },
+    "signal_timeframe": "1D",
+    "sol_direction": "opposite_btc",
+    "sol_entry_eligibility": "persistent_after_btc_level",
+    "sol_z_stop": null,
+    "strategy_id": "btc_sol_wave_overlay_v1",
+    "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+    "tp_fee_floor_v1": false,
+    "venue": "bybit"
+  },
+  "measured_comparison": {
+    "c": {
+      "TOTAL": "5146884.95718200",
+      "minute_DD_percent": "69.34097140401511909513176933",
+      "delta_C_percent": "0",
+      "changed": []
+    },
+    "v1": {
+      "TOTAL": "3981070.44426903",
+      "minute_DD_percent": "58.03218094646642206312598555",
+      "delta_C_percent": "-22.65087567745581934651799540",
+      "changed": [
+        {
+          "path": ".candidate.btc_notional_multiplier",
+          "C": 7.875,
+          "variant": 6.3
+        }
+      ]
+    },
+    "v2": {
+      "TOTAL": "3083826.38715455",
+      "minute_DD_percent": "54.90263646401992147639303061",
+      "delta_C_percent": "-40.08363480416719531227742001",
+      "changed": [
+        {
+          "path": ".candidate.btc_notional_multiplier",
+          "C": 7.875,
+          "variant": 5.5
+        }
+      ]
+    },
+    "v3": {
+      "TOTAL": "5437208.56951095",
+      "minute_DD_percent": "67.28630644841043826206055609",
+      "delta_C_percent": "5.640763583103414026410534100",
+      "changed": [
+        {
+          "path": ".research_btc_direction_sizing",
+          "C": null,
+          "variant": {
+            "freeze": "GENUINE_EPISODE_CREATION",
+            "long": "5.5",
+            "short": "7.875"
+          }
+        }
+      ]
+    },
+    "v4": {
+      "TOTAL": "3112031.23119634",
+      "minute_DD_percent": "52.12706183581564820412531660",
+      "delta_C_percent": "-39.53563646582406294169283499",
+      "changed": [
+        {
+          "path": ".research_btc_drawdown_sizing",
+          "C": null,
+          "variant": {
+            "enter_drawdown": "0.25",
+            "freeze": "GENUINE_EPISODE_CREATION",
+            "global_peak_seed": "10000",
+            "held_reduction": false,
+            "normal": "7.875",
+            "peak_reset": false,
+            "reduced": "3.9375",
+            "resume_drawdown": "0.15",
+            "sampling": "NATIVE_PAIRED_MINUTE_PRE_SIGNAL_PRE_QUOTE"
+          }
+        }
+      ]
+    }
+  },
+  "parameter_map": [
+    {
+      "parameter": "BTC regime/entry",
+      "active_value": "EMA34; daily UTC completed bar; long if close>EMA else short; beta strictly (0.2,4); >=8 prior completed same-side waves",
+      "mechanism": "Regime reversal closes both legs, then a genuinely fresh episode may enter; no fixed losing-price stop. EMA changes trade sequence and SOL rights, not only risk.",
+      "evidence": "domain:batch_features_for, completed_wave_levels, decide",
+      "candidate_priority": "LOW: separate regime research only"
+    },
+    {
+      "parameter": "BTC sizing",
+      "active_value": "long5.5, short7.875 x marked ACTIVE; freeze at genuine episode creation; parent cap30,000,000",
+      "mechanism": "Compounding and side exposure drive realized/uPnL; long reduction also changes gross BTC reference underlying H. Cap bounds parent, not held gross/equity under losses.",
+      "evidence": "comparison.v3.config.research_btc_direction_sizing; domain:decide",
+      "candidate_priority": "HIGH: held-exposure governor; do not repeat V1/V2"
+    },
+    {
+      "parameter": "BTC wave/TP",
+      "active_value": "history730d, min8, quantiles0.10/0.30/0.60; include_zero_waves=true; fractions0.2125/0.2125/0.575 of initial quantity",
+      "mechanism": "Completed-wave MFE statistics are causal; changing quantiles/fractions changes residual exposure, profits and SOL earned rights simultaneously. Fractions total1.",
+      "evidence": "domain:completed_wave_levels, plan_confirmed_btc_targets",
+      "candidate_priority": "LOW: keep during targeted risk tests"
+    },
+    {
+      "parameter": "Zero/deferred TP",
+      "active_value": "execution repairs=true; selective lifecycle=true; deferred selective zeroTP=true; blanket zeroTP netting=false; fee floor=false",
+      "mechanism": "Zero allocation is omitted selectively; actual entry fill and causal deferred-price touch earn rights. Positive targets stay native/resting or existing taker fallback. Changing blanket netting had poor earlier economics.",
+      "evidence": "strategy:_submit_intent; domain:on_fill",
+      "candidate_priority": "UNCHANGED correctness/economic guardrail"
+    },
+    {
+      "parameter": "BTC trailing/stop",
+      "active_value": "3% daily signed-price profit trail, only armed best_f>0.03; fixed close stop=null",
+      "mechanism": "At daily close f=side*(close/VWAP-1); best_f=max(best_f,f,0); close BOTH if f<=best_f-0.03. Cannot stop a never-profitable losing episode; daily cadence misses intervening adverse marks.",
+      "evidence": "domain:decide",
+      "candidate_priority": "MEDIUM: T3 evaluation-cadence hypothesis"
+    },
+    {
+      "parameter": "SOL H sizing/direction",
+      "active_value": "opposite BTC; H=(gross initial BTC reference qty*confirmed VWAP)/beta_entry; level multipliers1.75/2.625/3.5; proportional actual-filled rights",
+      "mechanism": "H deliberately uses full BTC reference, not remaining BTC. It can become large vs current ACTIVE after equity erosion and survive after BTC TP. Not an automatically balanced hedge.",
+      "evidence": "domain:on_fill, decide",
+      "candidate_priority": "HIGH: tail-loss budget; never silently change H"
+    },
+    {
+      "parameter": "SOL eligibility",
+      "active_value": "persistent after actual BTC level; late entry=true; overlay=true; retries only unused earned amount",
+      "mechanism": "SOL need not enter at BTC TP timestamp. Later adds can increase adverse inventory; resizing rights based on hindsight profitable outcome is prohibited.",
+      "evidence": "domain:decide, on_fill",
+      "candidate_priority": "HIGH: losses/add-lock in S10/15"
+    },
+    {
+      "parameter": "SOL beta/relative/z",
+      "active_value": "beta270d rolling; relative65d; mean/std preceding180d; episode_fixed_beta=false; sigma frozen on first SOL fill",
+      "mechanism": "Current beta changes relative series; H beta_entry fixed. Frozen sigma plus rolling relative/mu can shift z through holding. New-invalid beta allows reductions only.",
+      "evidence": "domain:FeatureState, decide",
+      "candidate_priority": "LOW: 90/180 beta or unfrozen-sigma are separate untested ideas, not first four tests"
+    },
+    {
+      "parameter": "SOL z entry/exit",
+      "active_value": "entry signed z1.25/2.5/3.75; half<=0.375; full<=0.125 on a later decision AFTER actual half completion",
+      "mechanism": "Higher entry threshold delays exposure but need not lower tail losses. Exits are daily conditional and may be preempted by group close. Half/full not a loss stop.",
+      "evidence": "domain:_sol_exits; selective lifecycle half completion",
+      "candidate_priority": "LOW: keep during loss-budget test"
+    },
+    {
+      "parameter": "SOL holding/timeout",
+      "active_value": "14 days from first SOL fill; sol_timeout_preempts_add=false in serialized schema",
+      "mechanism": "Actual frozen code always checks due timeout before adds: false is retained legacy schema, not operative bypass. Timeout closes only SOL, native retry completes remainder. A 5/10day change cannot protect same-day Oct3 loss.",
+      "evidence": "domain:decide, _sol_exits; strategy:_begin_mandatory_sol_exit",
+      "candidate_priority": "LOW: prolonged-loss hypothesis separately"
+    },
+    {
+      "parameter": "Portfolio/risk research guards",
+      "active_value": "portfolio_loss_limit_fraction=null; research PORT45/BTCepisode20/SOLcap6/remainingBTChedge/drawdownSizing=false; sol_z_stop=null; deposit protection disabled",
+      "mechanism": "No active global peak governor or held-loss budget. Prior PORT45 resets protective epochs while observer peak persists; V4 resizes only future BTC episodes. Neither proves global50.",
+      "evidence": "comparison.v3.config; strategy:_research_check_portfolio_protection, _research_sample_btc_sizing",
+      "candidate_priority": "HIGH: B25/S10_15; R2 for realized regime losses"
+    },
+    {
+      "parameter": "Margin/admission/gross",
+      "active_value": "BTC selected40x/SOL20x; max_gross_to_active50; fresh marks<=2min; prospective IM+MM, confirmed native reservation credit; insufficient margin=reject; futureSOLmargin0",
+      "mechanism": "Admission gates protect proposed increases; held losses can raise gross/ACTIVE after admission. No future SOL earmark. Leverage tiers are assumptions, not leverage targets or historical venue safety proof.",
+      "evidence": "strategy:_tier_allows_increase; native_baseline:729-778",
+      "candidate_priority": "UNCHANGED: no tier/freshness/venue relaxation"
+    },
+    {
+      "parameter": "Reserve/capital",
+      "active_value": "seed10000; ACTIVE fraction1; reserve0; transfer fraction0; trigger4 inert; restart target initial seed; liquidation restart from reserve else pause",
+      "mechanism": "Reserve could reduce tradable compounding and alter ACTIVE vs TOTAL DD; cannot improve metric by moving bookkeeping/resetting peak. Not a first-line test when reserve is currently zero.",
+      "evidence": "comparison.v3.config",
+      "candidate_priority": "UNCHANGED in four tests; optional future real transfer test"
+    },
+    {
+      "parameter": "Execution/fees/funding",
+      "active_value": "Bybit genuine1m execution close and mark close; nonmatching1D signals; configured1min delay; resting maker reduction later quotes; maker0.00020/taker0.00055; spread0; native funding posts",
+      "mechanism": "Adapter delay expression (configured_minutes-1) makes default extra delay0; event order still controls next quote. Protective forced exits can match cached previous book on cancellation ACK: no guaranteed fresh-market stop price. Signed funding per asset is unknown, not zero.",
+      "evidence": "native_baseline:781; comparison config.execution_policy; forced close lifecycle",
+      "candidate_priority": "UNCHANGED assumptions; explicit fresh-quote protective submit proof required"
+    },
+    {
+      "parameter": "Recovery/boundary",
+      "active_value": "terminal native flat; terminal settlement in TOTAL, excluded interval minute DD; no reset global peak",
+      "mechanism": "Native order/fill lifecycle owns exposure. No source or engine migration, live rearm or venue recovery changes are authorized.",
+      "evidence": "comparison.receipt.terminal_lifecycle",
+      "candidate_priority": "UNCHANGED"
+    }
+  ],
+  "next_research_variants_UNTESTED": [
+    {
+      "id": "S10_15",
+      "priority": 1,
+      "mechanism": "SOL own-loss budget preserving original H until loss",
+      "base": "V3",
+      "trigger": "For each contiguous SOL holding cycle fix E_S to native paired portfolio equity immediately after first confirmed SOL fill. L_S=-(native SOL realized since cycle start, including entry/exit fees, plus current SOLuPnL)/E_S. Funding remains separately unknown/residual. On first L_S>=0.10 halve held SOL quantity (lot-rounded down), then if L_S>=0.15 close the remaining SOL. If both thresholds cross together, close all once.",
+      "while_latched": "Cancel pending SOL increases and prohibit further SOL adds for remainder of same BTC episode after first threshold; BTC sizing/TP/held quantities unchanged. Held SOL ordinary z/timeouts and group exits retain priority.",
+      "hard_guard": "15% own-loss close is per cycle, not a portfolio stop. Native partial/ACK/terminal ownership must supersede a pending half reduction safely.",
+      "rearm": "Only after native SOL flat AND a new genuine BTC episode; original1.75/2.625/3.5 H applies there. No within-episode repeated add-stop churn or revive consumed rights.",
+      "reason": "DD1 SOLuPnL decline5657.792 exceeds BTCuPnL decline1365.7434; trough SOLlonguPnL\u22125657.792 while BTCshortuPnL+440.1516, SOLgross/equity24.117x. Target SOL adverse tail without discarding all original H opportunities; same-day guard before14day timeout.",
+      "distinction": "Not SOLcap6 or remainingBTChedge: unchanged admission H until realized/held SOL loss; no BTC group close from BTC20.",
+      "risk": "Stops may discard recovered winners or useful hedge; measure episode loss/win crossings and BTC-only residual periods."
+    },
+    {
+      "id": "B25",
+      "priority": 2,
+      "mechanism": "BTC-held exposure with global hysteresis",
+      "base": "V3",
+      "trigger": "E is causal paired-mark native equity; P=max(seed10000,all already observed native minute-equity checkpoints), never reset; D=1-E/P; first BOTH D>=0.25 AND current BTC episode contribution C_B<0 per excursion (C_B=native BTC realized since genuine episode start INCLUDING fees + held BTCuPnL; signed funding remains separate unknown) reduce only currently held BTC to50% confirmed quantity, lot-rounded down; non-TP protective reason grants no SOL rights. Reconcile/cancel conflicting BTC TP leaves before submit.",
+      "while_latched": "Activate sizing latch only after BOTH conditions first hold. If BTC contribution is nonnegative during SOL-driven DD, do not cut BTC or activate half-sizing merely from globalDD. After the confirmed protective cut, new genuine BTC episodes use long2.75/short3.9375. Original SOL held exposure, H/reference, rights/multipliers/entry/z/timeout unchanged; no blanket hedge shrink or suppression of original SOL adds.",
+      "hard_guard": "None added in this individual attribution test.",
+      "rearm": "D<=0.15 clears sizing latch, only future episodes return long5.5/short7.875; no buy-back current episode; one held reduction per excursion, not repeated halving each minute.",
+      "reason": "DD3 entirelyBTCuPnL deterioration\u22121,189,583.6572 with SOL0; DD2BTCuPnL decline155115.0204 plus large accountcash decline. Isolate held-BTC risk that future-onlyV4 cannot resize, preserving originalSOL opportunities.",
+      "distinction": "V4 used7.875/3.9375 only future BTC episodes; BTC20 closed whole group from episode-entry loss.",
+      "risk": "Even loss-qualified BTC reduction can leave original H/SOL overweight and worsen total risk; DD1 includes profitable BTC at trough, so pureglobal trigger alone would cut a useful hedge. Record condition/trigger times and contribution. A profit-positive BTC episode can still give back large profit without C_B<0, so this candidate does not cap that channel or promiseglobal50."
+    },
+    {
+      "id": "R2",
+      "priority": 3,
+      "mechanism": "two completed daily EMA34 closes confirm regime re-entry",
+      "base": "V3",
+      "trigger": "Keep immediate original REGIME groupclose on first daily EMA34 reversal. Replacement entry requires TWO consecutive completed daily closes of same EMA34 side: reversal close counts1, second same-side close counts2; flip resets count1. Current causal features and wave levels determine new entry.",
+      "while_latched": "No increases while waiting; ordinary reductions remain available. Non-REGIME TP/TRAIL re-entry unchanged.",
+      "hard_guard": "None: re-entry/whipsaw test, not a held-exposure or global stop.",
+      "rearm": "Only fresh daily decision with count>=2 AND native groupflat/no unresolved opening orders; original V3 directional sizing/H; no intraday reopen.",
+      "reason": "DD2 accountcash decline511857.0929 dominates equity decline. Regime re-entry confirmation is a causal hypothesis for repeated realized BTC losses; cash is not asserted allBTC and exact native perasset realized/fee/funding evidence remains companion-owned.",
+      "distinction": "Not uniform sizing, BTC20 or PORT45; one-day causal confirmation.",
+      "risk": "Can miss profitable reversal starts and alter subsequent SOL rights/H; no <=50% guarantee."
+    },
+    {
+      "id": "T3",
+      "priority": 4,
+      "mechanism": "minute evaluation of daily-armed BTC profit trail",
+      "base": "V3",
+      "trigger": "Retain original DAILY best_f and arm only when a completed daily close has best_f>0.03. Between daily decisions evaluate f_m=side*(causal BTCmark/VWAP-1) at paired minute marks; if f_m<=daily_best_f-0.03 group-close BOTH. No intraminute/future high used for best_f.",
+      "while_latched": "Close owns all pending orders/opening intents; no increase until native group-flat and a fresh daily decision.",
+      "hard_guard": "No losing-from-start stop added; existing REGIME/TRAIL/timeout/terminal priority retained.",
+      "rearm": "New genuine episode on next fresh daily decision after native group flat; no minute same-side reopen.",
+      "reason": "Tests ONLY evaluation cadence of existing daily-armed trail while keeping arm/high-water update daily. Potentially protects profitable BTC giveback, but cannot stop unarmed early loss.",
+      "distinction": "Not a parameter-only daily trail2% or BTCepisode20; no hindsight profitable leg selection.",
+      "risk": "Group trail can close useful SOL; more churn/fees and exit-price ordering must be reported. Original BTC-anchor trail can also close SOL when BTC has already fully taken profit; this is not a BTC-only exposure stop."
+    }
+  ],
+  "screening_order": [
+    "S10_15 first: SOL held-loss dominates maxDD1; B25 second: heldBTC dominatesDD3 and BTCuPnL DD2",
+    "R2 third for regime-loss accumulation; T3 fourth because daily arm cannot protect neverprofitable losers",
+    "Exactly four individual hypotheses; optional ONE combination only after positive standalone measured effects justify it, with separate bounded authorization; no grid. Global40 terminal pause remains analytical-only"
+  ],
+  "guardrails": [
+    "Same genuine inputs/interval/seed/fees/funding/margin/30m cap/three repairs/TP fractions/positive TP semantics/H and sigma except exact named variant change",
+    "Native fills/cache/terminal confirmations authoritative; risk reductions grant no invented TP/earned SOL rights; cancel/ACK/partial-fill races idempotent",
+    "Observed immutable global peak never resets; record pre-action equity, next executable quote, order/fill latency, fees, overshoot, rearm and exposure",
+    "No use of future recovered/winning episodes to activate a rule; historical crossings are descriptive screening only",
+    "Keep terminal TOTAL objective ACTIVE+RESERVE after costs; greatest measured TOTAL subject to native global minuteDD<=50 is decision target; report conditionalOHLC bound separately"
+  ],
+  "limitations": [
+    "No predicted ROI or <=50 guarantee from this review",
+    "NOT_FAITHFUL_DIAGNOSTIC/ranking_eligible=false; no BBO/L2/trade tape, historical fee or venue liquidation proof",
+    "Signed funding per asset UNKNOWN; contribution-loss candidates use fee-net trading PnL plus marks, not asserted funding-net PnL",
+    "Latest Nautilus documentation is conceptual only; pinned1.231-native semantics require focused lifecycle proofs before any approved replay"
+  ],
+  "semantic_caveats": [
+    "sol_timeout_preempts_add=false is legacy serialization; current code mandates timeout before adds",
+    "btc_notional_multiplier7.875 in candidate is overridden by V3 long5.5/short7.875 at genuine episode creation",
+    "max_gross_to_active50 and margin tiers are admission gates, not continuous held-risk caps",
+    "configured1minute execution delay is not independent extra1minute sleep; adapter subtracts1 minute before delay_ns",
+    "No new proven source defect identified in this bounded parameter review; stale-book forced-close execution is a documented diagnostic limitation, not evidence of archived historical ROI effect"
+  ],
+  "analytical_only_not_proposed_paid_run": "Immutable global40 groupclose plus permanent interval pause explains persistent global-floor semantics, unlike resettingPORT45; early stop destroys subsequent compounding, so NOT a proposed paid replay.",
+  "hypotheses_need_implementation": "These are precise proposed new opt-in research rules, not currently callable flag combinations. Existing risk flags are mutually exclusive in native_baseline; no existing flag or source changed. B25 uses prior observed global minute peak at paired-mark decisions; no future/current later quote is used.",
+  "verified_endpoint_attribution_companion": [
+    {
+      "excursion": "DD1",
+      "equity_change": "-9285.9328",
+      "cash_change": "-2262.3974",
+      "btc_unrealized_change": "-1365.7434",
+      "sol_unrealized_change": "-5657.792",
+      "trough_btc_unrealized": "+440.1516",
+      "trough_sol_unrealized": "-5657.792",
+      "trough_gross_to_equity": "33.879",
+      "trough_sol_notional_to_equity": "24.117",
+      "unchanged_peak_loss_avoidance_for50": "2385.6188"
+    },
+    {
+      "excursion": "DD2",
+      "equity_change": "-666682.1133",
+      "cash_change": "-511857.0929",
+      "btc_unrealized_change": "-155115.0204",
+      "sol_unrealized_change": "+290",
+      "trough_gross_to_equity": "8.395",
+      "unchanged_peak_loss_avoidance_for50": "131217.7055"
+    },
+    {
+      "excursion": "DD3",
+      "equity_change": "-1183937.1753",
+      "cash_change": "+5646.4819",
+      "btc_unrealized_change": "-1189583.6572",
+      "sol_unrealized_change": "0",
+      "trough_gross_to_equity": "17.204",
+      "unchanged_peak_loss_avoidance_for50": "123699.4413"
+    }
+  ],
+  "endpoint_boundaries": "Rounded companion-native endpoint decomposition, not counterfactual stop savings. Cash includes realized, fees and funding/residual; cannot assign all cash decline to BTC from endpoint-only summary. Equity-changing variants also change peaks, compounding, future fills and SOL rights."
+}
