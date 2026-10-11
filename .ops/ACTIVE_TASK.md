@@ -1,3 +1,9 @@
+VPS COINMASTER CLEANUP — 2026-10-11 COMPLETE
+
+Owner-authorized removal of obsolete CoinMaster backups and unused artifacts only. Receipt reports/vps-cleanup-20261011/receipt.json lists125 primary targets plus temporary-file cleanup. Removed retired episode backups, four inactive GUI releases, obsolete qualification environment/live-candidate duplicate, predecessor warmup/tail copies and temporary/cache files. Kept active GUI/runtime and their dependencies, current full warmup, pilot SQLite/WAL/journal/config/seal/credentials, canonical checkout/development venv, real24m research inputs and all unique comparison results/funding journals/minute traces. Preserved one verified patched wheel and the current live-candidate dependency chain. No unrelated Hermes/f-ai/app/VPN/system-wide cache/log changes, no strategy/deploy/restart/order actions.
+
+About0.94GiB freed; final disk free3.5GiB /91% used. Postchecks: pilotPID2009732/NRestarts0/epoch10e39dc6efa64c8b820b174c0a5b65fe unchanged, native thread/node running, BTC+SOL feedsREADY/recovery_requiredfalse; journal cash11273.60973104/oneposition+oneorder preserved. GUI/API+connection broker active with original PIDs/NRestarts0, GUI loginHTTP200; current warmup loaderREADY. Remaining research/operating dependencies intentionally retained; no extra optimizer/backtest or architecture work.
+
 CURRENT LIFECYCLE FIXES / TWO RISK CANDIDATES — 2026-10-10 COMPLETE
 
 Owner-authorized package completed in isolated research; pilot unchanged. Source 6c5e9d31faded0cc1eff609b47562b63cd551d03 fixes ordinary group-close unresolved opening/late ACK ownership and stamps actual SOL half-completion day. Native verification: 139 relevant tests plus one targeted BTC-flat/SOL-held monetary proof; independent narrow Sol6.1/medium review GO; compile/diff clean. One material verification correction preserved liquidation/deposit/terminal exit ownership. No version migration, new executor, optimizer or trading-rule promotion.
