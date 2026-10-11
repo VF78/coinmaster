@@ -51,6 +51,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_zero_tp_netting: bool = True
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
+    research_btc_direction_sizing: bool = False
+    research_btc_drawdown_sizing: bool = False
     research_btc_episode_loss_20: bool = False
     research_sol_remaining_btc_hedge: bool = False
     research_portfolio_protect_45: bool = False
@@ -154,6 +156,18 @@ class WaveOverlayStrategy(Strategy):
         if sum((config.research_btc_episode_loss_20, config.research_sol_remaining_btc_hedge,
                 config.research_portfolio_protect_45, config.research_sol_notional_cap_multiple is not None)) > 1:
             raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
+        if config.research_btc_direction_sizing or config.research_btc_drawdown_sizing:
+            if (sum((config.research_btc_direction_sizing, config.research_btc_drawdown_sizing,
+                     config.research_btc_episode_loss_20, config.research_sol_remaining_btc_hedge,
+                     config.research_portfolio_protect_45, config.research_sol_notional_cap_multiple is not None,
+                     config.tp_fee_floor_v1)) != 1 or config.candidate.btc_notional_multiplier != 7.875):
+                raise ValueError("RESEARCH_BTC_SIZING_REQUIRES_SEPARATE_7_875_CONTROL")
+        self._btc_sizing_peak = config.active_seed
+        self._btc_sizing_reduced = False
+        self._btc_sizing_last_ns: int | None = None
+        self._btc_sizing_equity: Decimal | None = None
+        self._btc_sizing_dd = Decimal("0")
+        self.btc_sizing_audit: list[dict[str, object]] = []
         self._btc_loss_episode_id: str | None = None
         self._btc_loss_reference: Decimal | None = None
         self._btc_loss_realized: dict[str, Decimal] = {}
@@ -317,6 +331,7 @@ class WaveOverlayStrategy(Strategy):
         self._check_mark_first_liquidation(mark.ts_event)
         self._research_check_portfolio_protection(mark.ts_event)
         self._research_check_btc_episode_loss(mark.ts_event)
+        self._research_sample_btc_sizing(mark.ts_event)
         # Avoid a per-minute session map: only a daily signal can make a mark
         # actionable for features, and it will re-pair the retained mark.
         if mark.ts_event in self._day:
@@ -407,6 +422,45 @@ class WaveOverlayStrategy(Strategy):
         if not self.cache.positions_open() and not self.cache.orders_open():
             self._group_close_reconciliation_pending = True
             self._reconcile_group_flat()
+
+    def _research_sample_btc_sizing(self, ts_now: int) -> None:
+        """Whole native equity, once per paired minute before signals/quotes."""
+        if not self.config.research_btc_drawdown_sizing or (self._btc_sizing_last_ns is not None and ts_now <= self._btc_sizing_last_ns):
+            return
+        if self.config.terminal_close_at_ns is not None and ts_now >= self.config.terminal_close_at_ns:
+            return
+        marks = self._latest_marks
+        if not all(i in marks and marks[i].ts_event == ts_now for i in (self.config.btc_id, self.config.sol_id)):
+            return
+        account = self.cache.account_for_venue(self.config.btc_id.venue)
+        if account is None:
+            return
+        equity = _native_account_money(account)
+        for position in self.cache.positions_open():
+            instrument = self.cache.instrument(position.instrument_id)
+            equity += position.unrealized_pnl(instrument.make_price(marks[position.instrument_id].price)).as_decimal()
+        self._btc_sizing_last_ns = ts_now
+        self._btc_sizing_equity = equity
+        self._btc_sizing_peak = max(self._btc_sizing_peak, equity)
+        self._btc_sizing_dd = (self._btc_sizing_peak - equity) / self._btc_sizing_peak
+        previous = self._btc_sizing_reduced
+        if self._btc_sizing_dd >= Decimal("0.25"):
+            self._btc_sizing_reduced = True
+        elif self._btc_sizing_dd <= Decimal("0.15"):
+            self._btc_sizing_reduced = False
+        if previous != self._btc_sizing_reduced:
+            self.btc_sizing_audit.append({"event": "DRAWDOWN_STATE_CHANGE", "timestamp_ns": str(ts_now),
+                "native_equity": str(equity), "global_paired_minute_peak": str(self._btc_sizing_peak),
+                "drawdown_fraction": str(self._btc_sizing_dd), "reduced": self._btc_sizing_reduced})
+
+    def _research_btc_entry_multiplier(self) -> float | None:
+        if self.config.research_btc_direction_sizing:
+            return 5.5 if self._current_signals[-1].side == 1 else 7.875
+        if self.config.research_btc_drawdown_sizing:
+            if self._btc_sizing_last_ns is None:
+                raise ValueError("RESEARCH_BTC_SIZING_PAIRED_NATIVE_SAMPLE_MISSING")
+            return 3.9375 if self._btc_sizing_reduced else 7.875
+        return None
 
     def _research_capture_btc_episode(self, event) -> None:
         """Native Position.realized_pnl already includes settlement-currency fees."""
@@ -665,7 +719,18 @@ class WaveOverlayStrategy(Strategy):
         intents = self._domain.decide(
             self._bars, self._current_signals, len(self._bars) - 1,
             self._active_marked(self._current_btc_mark, self._current_sol_mark),
+            **({"btc_notional_multiplier": self._research_btc_entry_multiplier()} if (self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing) else {}),
         )
+        if self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing:
+            for entry in intents:
+                if entry.action == "BTC_ENTRY":
+                    self.btc_sizing_audit.append({"event": "EPISODE_ENTRY_SIZING", "episode_id": entry.episode_id,
+                        "timestamp_ns": str(self._current_btc.ts_event), "side": entry.side,
+                        "frozen_multiplier": str(self._domain.episode.btc_sizing_multiplier),
+                        "requested_notional": str(entry.requested_notional),
+                        "native_sample_ns": str(self._btc_sizing_last_ns),
+                        "global_paired_minute_peak": str(self._btc_sizing_peak),
+                        "drawdown_fraction": str(self._btc_sizing_dd), "reduced": self._btc_sizing_reduced})
         if rearm_candidate:
             entry = next((intent for intent in intents if intent.action == "BTC_ENTRY"), None)
             if entry is None:

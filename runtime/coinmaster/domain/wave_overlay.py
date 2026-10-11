@@ -263,6 +263,7 @@ class Episode:
     attempted_btc_at: dict[int, int] = field(default_factory=dict)
     attempted_sol_at: dict[int, int] = field(default_factory=dict)
     close_reason: str | None = None
+    btc_sizing_multiplier: float | None = None
 
 
 class WaveOverlayState:
@@ -343,7 +344,7 @@ class WaveOverlayState:
         episode.pending[intent.id] = intent
         return intent
 
-    def decide(self, bars: list[DailyBar], all_features: list[Features], index: int, active_marked: float) -> list[Intent]:
+    def decide(self, bars: list[DailyBar], all_features: list[Features], index: int, active_marked: float, *, btc_notional_multiplier: float | None = None) -> list[Intent]:
         self._decision_index = index
         feature = all_features[index]
         episode = self.episode
@@ -362,10 +363,11 @@ class WaveOverlayState:
                 self.last_decision_reason = "WAVES_UNAVAILABLE"
                 return []
             episode = Episode(str(uuid4()), feature.side, active_marked, feature.beta, wave_levels=levels)
+            episode.btc_sizing_multiplier = btc_notional_multiplier
             self.episode = episode
             self._last_entry_attempt = (index, feature.side)
             self.last_decision_reason = "BTC_ENTRY_INTENT"
-            return [self._intent(episode, "BTC_ENTRY", feature.side, None, requested_notional=min(self.config.btc_notional_multiplier * active_marked, self.config.max_parent_notional))]
+            return [self._intent(episode, "BTC_ENTRY", feature.side, None, requested_notional=min((self.config.btc_notional_multiplier if btc_notional_multiplier is None else btc_notional_multiplier) * active_marked, self.config.max_parent_notional))]
         if episode.btc_entry_vwap is None or episode.h is None:
             self.last_decision_reason = "PENDING_NATIVE_ENTRY_OUTCOME"
             return []

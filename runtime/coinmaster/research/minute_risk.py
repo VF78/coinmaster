@@ -56,6 +56,31 @@ class DrawdownTracker:
                 "top3_distinct_excursions": self.top}
 
 
+class ConditionalUpperToLaterLowerTracker:
+    """Prior-bar favorable upper to later-bar adverse lower; no same-bar ordering."""
+    def __init__(self, seed):
+        self.peak = {"timestamp_ns": None, "equity": str(seed), "basis": "INITIAL_SEED"}
+        self.maximum = None
+        self.count = 0
+
+    def add(self, timestamp, lower, upper):
+        lower, upper = D(lower), D(upper)
+        peak = D(self.peak["equity"])
+        fraction = max(D("0"), (peak - lower) / peak)
+        if self.maximum is None or fraction > D(self.maximum["drawdown_fraction"]):
+            self.maximum = {"peak": dict(self.peak), "trough": {"timestamp_ns": str(timestamp), "equity": str(lower)},
+                            "drawdown_fraction": str(fraction), "drawdown_peak_percent": str(fraction * 100)}
+        # Only a subsequent completed bar may use this favorable upper.
+        if upper > peak:
+            self.peak = {"timestamp_ns": str(timestamp), "equity": str(upper), "basis": "PRIOR_BAR_FAVORABLE_UPPER"}
+        self.count += 1
+
+    def summary(self):
+        return {"samples": self.count, "maximum": self.maximum,
+                "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+                "same_bar_extrema_order_assumed": False, "actual_intrabar_path_proven": False}
+
+
 class NativeMinuteRiskRecorder:
     def __init__(self, path: Path, seed, instruments, leverage, end_exclusive_ns):
         from coinmaster.research.native_fixture import TierMarginPolicy
@@ -78,6 +103,7 @@ class NativeMinuteRiskRecorder:
                 raise ValueError("RISK_OBSERVER_NONMONOTONE_MAINTENANCE_PROFILE")
         self.bundles = {}
         self.curves = {phase: DrawdownTracker(seed) for phase in ("pre_quote_paired_close", "post_btc_quote_paired_close", "post_quote_paired_close", "all_native_close_samples", "conditional_ohlc_adverse")}
+        self.upper_to_later_lower = ConditionalUpperToLaterLowerTracker(seed)
         self.rows = 0
         self.expected_minutes = 0
         self.potential = 0
@@ -88,6 +114,7 @@ class NativeMinuteRiskRecorder:
         self.expected_minutes += len(week)
         self.bundles = {(minute.open_time_ms+60000)*1000000: minute for minute in week}
         if self.rows == 0:
+            self.upper_to_later_lower.peak["timestamp_ns"] = str(week[0].open_time_ms*1000000)
             for curve in self.curves.values():
                 curve.add(week[0].open_time_ms*1000000,curve.seed)
 
@@ -142,6 +169,7 @@ class NativeMinuteRiskRecorder:
             self.curves["all_native_close_samples"].add(timestamp,equity)
         if phase == "pre_quote_paired_close":
             self.curves["conditional_ohlc_adverse"].add(timestamp, adverse)
+            self.upper_to_later_lower.add(timestamp, adverse, favorable)
             breach = bool(details) and adverse<=upper
             self.potential += int(breach)
             if breach and len(self.potential_first)<10:
@@ -166,6 +194,7 @@ class NativeMinuteRiskRecorder:
                  "end_exclusive_ns": str(self.end_exclusive_ns),
                  "post_boundary_settlement_excluded_from_interval_curves": self.post_boundary_settlement,
                  "curves":{key:curve.summary() for key,curve in self.curves.items()},
+                 "conditional_upper_to_later_lower_bound": self.upper_to_later_lower.summary(),
                  "potential_conditional_intrabar_margin_breach_count":self.potential,
                  "first_potential_conditional_breaches":self.potential_first,
                  "basis":"NATIVE_ACCOUNT_CASH_PLUS_NATIVE_POSITION_UNREALIZED_PNL",

@@ -104,3 +104,8 @@ def test_terminal_settlement_is_excluded_from_interval_native_drawdown(tmp_path,
     assert D(summary['curves']['all_native_close_samples']['minimum']['equity'])==expected_min
     assert D(summary['curves']['all_native_close_samples']['minimum']['equity'])>D(sol_post['paired_close_equity'])
     assert summary['rows']==4320
+    bound = summary["conditional_upper_to_later_lower_bound"]
+    assert bound["samples"] == 1440
+    assert bound["same_bar_extrema_order_assumed"] is False
+    assert int(bound["maximum"]["trough"]["timestamp_ns"]) <= int(summary["end_exclusive_ns"])
+    assert bound["maximum"]["peak"]["timestamp_ns"] is not None
