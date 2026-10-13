@@ -20,5 +20,43 @@
     "app.f-ai.studio": "HTTP200"
   },
   "bot_sites_vpn_service_actions": 0,
-  "research_limit": "650MiB/swap0;700MiBavailableguard"
+  "research_limit": "650MiB/swap0;700MiBavailableguard",
+  "restoration": {
+    "at_utc": "2026-10-13T21:51:21.240888+00:00",
+    "action": "RESTORE_PREVIOUSLY_OBSERVED_BROWSER_COMMAND_PROFILE_AFTER_BOTH_ENGINES_INACTIVE",
+    "pid": 1075853,
+    "cdp_ready": true,
+    "same_profile": true,
+    "research_engines_inactive": true,
+    "bot_sites_vpn_service_actions": 0,
+    "postchecks": {
+      "sites": {
+        "f-ai.studio": {
+          "http_code": "200",
+          "exit_code": 0
+        },
+        "app.f-ai.studio": {
+          "http_code": "200",
+          "exit_code": 0
+        }
+      },
+      "services": {
+        "coinmaster-hl-stageg-testnet.service": {
+          "MainPID": "2009732",
+          "NRestarts": "0",
+          "ActiveState": "active"
+        },
+        "hermes-gateway.service": {
+          "MainPID": "3956968",
+          "NRestarts": "1",
+          "ActiveState": "active"
+        },
+        "hermes-daniil-gateway.service": {
+          "MainPID": "23339",
+          "NRestarts": "0",
+          "ActiveState": "active"
+        }
+      }
+    }
+  }
 }
