@@ -1,0 +1,13 @@
+{
+  "source_commit": "PENDING_EXACT_FROZEN_SHA_REVIEW_AND_ROOT_GO",
+  "selector_cli": "--research-h1-b1",
+  "authorized_variants": [
+    "h1",
+    "b1"
+  ],
+  "pack_preparation_authorized": false,
+  "engine_launch_authorized": false,
+  "native_mtf_performance_preflight_accepted": false,
+  "bounded_cache128_source_review_accepted": false,
+  "native_fixture_accepted": false
+}

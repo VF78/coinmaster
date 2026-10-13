@@ -1,0 +1,55 @@
+{
+  "status": "READ_ONLY_EXISTING_FULL_RUN_PEAKS_NOT_NEW_H1_B1_PEAK_PROOF",
+  "observed_utc": "2026-10-13T20:14:13.313110+00:00",
+  "existing_full_run_peaks": [
+    {
+      "job": "cm113-v3-b25-20261011",
+      "journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-b25-20261011/unit-journal.txt",
+      "journal_sha256": "f603769affb1edb646b3d42f89ad993fbcdb2dd968ac6d3390acef66b7fb9bf9",
+      "peak_systemd_display_M": "548.5",
+      "swap_peak": "0B",
+      "exact_receipt_line": "Oct 11 13:57:10 MyShopAI-prod-1 systemd[1]: cm113-v3-b25-20261011.service: Consumed 16min 36.568s CPU time, 548.5M memory peak, 0B memory swap peak."
+    },
+    {
+      "job": "cm113-v3-s10_15-20261011",
+      "journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-s10_15-20261011/unit-journal.txt",
+      "journal_sha256": "a33e84c355223643ebf04fa4c57eb10aa112dece6f6d618a4c0dd7f23fba5551",
+      "peak_systemd_display_M": "533.7",
+      "swap_peak": "0B",
+      "exact_receipt_line": "Oct 11 14:13:39 MyShopAI-prod-1 systemd[1]: cm113-v3-s10_15-20261011.service: Consumed 16min 7.343s CPU time, 533.7M memory peak, 0B memory swap peak."
+    },
+    {
+      "job": "cm113-v3-r2-20261011",
+      "journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-r2-20261011/unit-journal.txt",
+      "journal_sha256": "1bafa57c55c802dcf0b21fd337f6bab62adc559aeec726108ec38e9402a2e267",
+      "peak_systemd_display_M": "528.0",
+      "swap_peak": "0B",
+      "exact_receipt_line": "Oct 11 14:29:33 MyShopAI-prod-1 systemd[1]: cm113-v3-r2-20261011.service: Consumed 15min 29.683s CPU time, 528.0M memory peak, 0B memory swap peak."
+    },
+    {
+      "job": "cm113-v3-t3-20261011",
+      "journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-v3-t3-20261011/unit-journal.txt",
+      "journal_sha256": "d9b0e0155177b499922357c6070db5fdff107c5a21efb4fb5ec3ebd11948be37",
+      "peak_systemd_display_M": "538.8",
+      "swap_peak": "0B",
+      "exact_receipt_line": "Oct 11 14:47:04 MyShopAI-prod-1 systemd[1]: cm113-v3-t3-20261011.service: Consumed 16min 56.863s CPU time, 538.8M memory peak, 0B memory swap peak."
+    },
+    {
+      "job": "cm113-sizing-v3-20261011",
+      "journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/unit-journal.txt",
+      "journal_sha256": "9b0876b25875abf3a6b3fb3e27ff18db1a573d05d3e057fbff8479260405c60c",
+      "peak_systemd_display_M": "564.9",
+      "swap_peak": "0B",
+      "exact_receipt_line": "Oct 11 12:00:04 MyShopAI-prod-1 systemd[1]: cm113-sizing-v3-20261011.service: Consumed 15min 7.808s CPU time, 564.9M memory peak, 0B memory swap peak."
+    }
+  ],
+  "existing_max_display_M": "564.9",
+  "MemAvailable_bytes": 719523840,
+  "SwapFree_bytes": 237568,
+  "current_cap_M": "900M",
+  "current_guard_MiB": 900,
+  "candidate_700M_plus100MiB_guard_pass": false,
+  "candidate_650M_plus100MiB_guard_pass": false,
+  "candidate_650M_plus50MiB_guard_pass": false,
+  "decision": "No limit change or engine launch; pending sourceowner bounded MTF warmup/cache allocation and root approval. Existing M peaks are systemd-rounded, not exact bytes.50MiB reserve is tight and not proven safe. Protected processes untouched."
+}

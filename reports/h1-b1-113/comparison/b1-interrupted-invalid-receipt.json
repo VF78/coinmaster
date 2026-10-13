@@ -1,0 +1,111 @@
+{
+  "status": "INVALID_SHARED_SIGNAL_ROUTING_INTERRUPTED",
+  "root_authorized_action": "STOP_ONLY_EXACT_INVALID_B1_RESEARCH_UNIT",
+  "before": {
+    "MainPID": "1056596",
+    "NRestarts": "0",
+    "MemoryCurrent": "451846144",
+    "MemoryPeak": "529887232",
+    "ActiveState": "active",
+    "InvocationID": "15724755186d484cac24cbcaf9b6b7ff"
+  },
+  "pilot_before": {
+    "MainPID": "2009732",
+    "NRestarts": "0",
+    "MemoryCurrent": "134742016",
+    "MemoryPeak": "221253632",
+    "ActiveState": "active",
+    "InvocationID": "1c3dbcf8c2bf466182488b45ea071c69"
+  },
+  "source_commit": "7360fd0652182c5503e2da3ed80f443e2aef504d",
+  "cmdline": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/source/.venv/bin/python -m coinmaster.research.native_baseline --data-root /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/source/var/data --research-v0-execution-repairs --research-v0-deferred-selective-zero-tp --research-v0-selective-lifecycle-repairs --observe-minute-risk --research-h1-b1 b1 --control-report /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/source/var/data/runs/tp-fee-floor-113/v0/v0.json --artifact-dir /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/result ",
+  "requested_utc": "2026-10-13T21:00:28.835291+00:00",
+  "after": {
+    "MainPID": "0",
+    "NRestarts": "0",
+    "MemoryCurrent": "[not set]",
+    "MemoryPeak": "[not set]",
+    "ActiveState": "inactive",
+    "InvocationID": ""
+  },
+  "pilot_after": {
+    "MainPID": "2009732",
+    "NRestarts": "0",
+    "MemoryCurrent": "135004160",
+    "MemoryPeak": "221253632",
+    "ActiveState": "active",
+    "InvocationID": "1c3dbcf8c2bf466182488b45ea071c69"
+  },
+  "stopped_utc": "2026-10-13T21:00:29.082307+00:00",
+  "journal": "Oct 13 20:54:08 MyShopAI-prod-1 systemd[1]: Started cm113-h1-b1-b1-20261013.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/launch.sh.\nOct 13 21:00:28 MyShopAI-prod-1 systemd[1]: Stopping cm113-h1-b1-b1-20261013.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/launch.sh...\nOct 13 21:00:28 MyShopAI-prod-1 systemd[1]: cm113-h1-b1-b1-20261013.service: Deactivated successfully.\nOct 13 21:00:28 MyShopAI-prod-1 systemd[1]: Stopped cm113-h1-b1-b1-20261013.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/launch.sh.\nOct 13 21:00:28 MyShopAI-prod-1 systemd[1]: cm113-h1-b1-b1-20261013.service: Consumed 6min 14.143s CPU time, 505.3M memory peak, 0B memory swap peak.\n",
+  "partial_artifacts": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/native-start-identity.json",
+      "bytes": 294
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/launched-at.txt",
+      "bytes": 21
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/immutable-source-hashes.json",
+      "bytes": 11682
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/engine-launch-attempt.json",
+      "bytes": 121
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/source-input-hashes.sha256",
+      "bytes": 12007
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/launch.sh",
+      "bytes": 730
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/run.log",
+      "bytes": 272
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/pilot-before.txt",
+      "bytes": 47
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/launch-reviewed-only.sh",
+      "bytes": 1241
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/interrupted-unit-journal.txt",
+      "bytes": 781
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/resource-before.json",
+      "bytes": 54
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/source-commit.txt",
+      "bytes": 41
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/launch-gate-consumed.json",
+      "bytes": 104
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/result/minute-native-risk.csv.gz",
+      "bytes": 9070488
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/result/.v0-selective-lifecycle-cap30m-b1-funding.sqlite.attempt-ca4858b75bdc4b42aede05b012c6af2b-wal",
+      "bytes": 37112
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/result/.v0-selective-lifecycle-cap30m-b1-funding.sqlite.attempt-ca4858b75bdc4b42aede05b012c6af2b",
+      "bytes": 4096
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013/result/.v0-selective-lifecycle-cap30m-b1-funding.sqlite.attempt-ca4858b75bdc4b42aede05b012c6af2b-shm",
+      "bytes": 32768
+    }
+  ]
+}

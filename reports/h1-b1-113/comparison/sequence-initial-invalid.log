@@ -1,0 +1,250 @@
+Running as unit: cm113-h1-b1-h1-20261013.service; invocation ID: 9e699e011f494f6ca9fe1eeaa45de8eb
+LAUNCH h1 runtime/coinmaster/__init__.py: OK
+runtime/coinmaster/api/__init__.py: OK
+runtime/coinmaster/api/app.py: OK
+runtime/coinmaster/api/connections_broker.py: OK
+runtime/coinmaster/api/execution_modes.py: OK
+runtime/coinmaster/api/gui_auth.py: OK
+runtime/coinmaster/api/hl_public_candles.py: OK
+runtime/coinmaster/api/research_jobs.py: OK
+runtime/coinmaster/api/runtime_sidecar.py: OK
+runtime/coinmaster/domain/__init__.py: OK
+runtime/coinmaster/domain/deposit_protection.py: OK
+runtime/coinmaster/domain/wave_overlay.py: OK
+runtime/coinmaster/ledger/__init__.py: OK
+runtime/coinmaster/ledger/journal.py: OK
+runtime/coinmaster/ops/hl_info_receipt.py: OK
+runtime/coinmaster/ops/hl_live_credential_preflight.py: OK
+runtime/coinmaster/ops/hl_live_execution.py: OK
+runtime/coinmaster/ops/hl_live_money.py: OK
+runtime/coinmaster/ops/hl_live_worker.py: OK
+runtime/coinmaster/ops/hl_native_account.py: OK
+runtime/coinmaster/ops/hl_qualified_reports.py: OK
+runtime/coinmaster/ops/hl_readonly_observer.py: OK
+runtime/coinmaster/ops/hl_sandbox_money.py: OK
+runtime/coinmaster/ops/hyperliquid_testnet.py: OK
+runtime/coinmaster/ops/hyperliquid_testnet_worker.py: OK
+runtime/coinmaster/ops/live_recovery.py: OK
+runtime/coinmaster/ops/native_paper_node.py: OK
+runtime/coinmaster/ops/native_sandbox_selftest.py: OK
+runtime/coinmaster/ops/paper.py: OK
+runtime/coinmaster/ops/paper_worker.py: OK
+runtime/coinmaster/ops/stage_g_config.py: OK
+runtime/coinmaster/ops/stage_g_refresh.py: OK
+runtime/coinmaster/ops/stage_g_warmup.py: OK
+runtime/coinmaster/research/__init__.py: OK
+runtime/coinmaster/research/bybit_data.py: OK
+runtime/coinmaster/research/bybit_minute.py: OK
+runtime/coinmaster/research/catalog.py: OK
+runtime/coinmaster/research/current_comparison.json: OK
+runtime/coinmaster/research/hyperliquid_data.py: OK
+runtime/coinmaster/research/job_limiter.py: OK
+runtime/coinmaster/research/job_protocol.py: OK
+runtime/coinmaster/research/job_test_helper.py: OK
+runtime/coinmaster/research/minute_risk.py: OK
+runtime/coinmaster/research/native_baseline.py: OK
+runtime/coinmaster/research/native_fixture.py: OK
+runtime/coinmaster/research/native_optimizer.py: OK
+runtime/coinmaster/research/native_sequential.py: OK
+runtime/coinmaster/research/native_validation.py: OK
+runtime/coinmaster/research/optimizer_job.py: OK
+runtime/coinmaster/strategy/__init__.py: OK
+runtime/coinmaster/strategy/live_recovery.py: OK
+runtime/coinmaster/strategy/wave_overlay.py: OK
+runtime/coinmaster/venues/__init__.py: OK
+runtime/coinmaster/venues/bybit_profile.py: OK
+runtime/coinmaster/venues/hyperliquid_profile.py: OK
+runtime/coinmaster/venues/margin.py: OK
+runtime/coinmaster/venues/margin_policy.py: OK
+runtime/coinmaster/venues/marks.py: OK
+runtime/coinmaster/venues/production_preflight.py: OK
+runtime/coinmaster/venues/profiles.py: OK
+runtime/coinmaster/venues/signals.py: OK
+runtime/configs/hl-live-wheel-manifest.json: OK
+runtime/configs/hl-stageg-live.account-fingerprint.json: OK
+runtime/configs/hl-stageg-live.instance.json: OK
+runtime/configs/hl-stageg-testnet.instance.json: OK
+runtime/configs/paper-stage-g-example.instance.json: OK
+runtime/configs/stage-g-hl-sandbox-approval.json: OK
+runtime/configs/stage-g-v1.json: OK
+runtime/pyproject.toml: OK
+runtime/scripts/deploy_native_gui.sh: OK
+runtime/scripts/deploy_native_gui_vps.sh: OK
+runtime/scripts/deploy_stageg_sandbox.py: OK
+runtime/scripts/export_openapi.py: OK
+runtime/scripts/export_runtime_openapi.py: OK
+runtime/scripts/install_stageg_needrestart_guard.sh: OK
+runtime/scripts/native_gui_host.sh: OK
+runtime/scripts/native_gui_peer_guard.py: OK
+runtime/scripts/native_gui_stage_cleanup.py: OK
+runtime/scripts/native_gui_worker_gate.py: OK
+runtime/scripts/paper_doctor.py: OK
+runtime/scripts/process_isolation_doctor.py: OK
+runtime/scripts/provision_gui_operator.py: OK
+runtime/scripts/release_manifest.py: OK
+runtime/scripts/run_tp_fee_floor_113.py: OK
+runtime/scripts/summarize_tp_fee_floor_113.py: OK
+runtime/uv.lock: OK
+runtime/var/raw/venues/bybit-BTCUSDT-funding-latest.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT-funding-warmup-start.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT-mark-latest.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT-mark-warmup-start.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT.json: OK
+runtime/var/raw/venues/bybit-SOLUSDT-funding-warmup-start.json: OK
+runtime/var/raw/venues/bybit-SOLUSDT-mark-warmup-start.json: OK
+runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json: OK
+runtime/var/raw/venues/bybit-SOLUSDT.json: OK
+runtime/var/raw/venues/hyperliquid-BTC-candle-research-start.json: OK
+runtime/var/raw/venues/hyperliquid-BTC-candle-warmup-start.json: OK
+runtime/var/raw/venues/hyperliquid-BTC-funding-research-start.json: OK
+runtime/var/raw/venues/hyperliquid-BTC-funding-warmup-start.json: OK
+runtime/var/raw/venues/hyperliquid-SOL-candle-research-start.json: OK
+runtime/var/raw/venues/hyperliquid-SOL-funding-research-start.json: OK
+runtime/var/raw/venues/hyperliquid-metaAndAssetCtxs.json: OK
+runtime/var/raw/venues/hyperliquid-production-meta-2026-09-21.json: OK
+runtime/var/raw/venues/hyperliquid-testnet-production-meta-2026-09-22.json: OK
+runtime/var/venue-manifest.json: OK
+runtime/var/data/bybit-1m/manifest.json: OK
+runtime/var/data/runs/tp-fee-floor-113/v0/v0.json: OK
+{"job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-20261013", "validated_files": 106, "public_metadata_files": 20, "allowlist": ["runtime/coinmaster", "runtime/configs", "runtime/scripts", "runtime/pyproject.toml", "runtime/uv.lock", "runtime/var/venue-manifest.json", "runtime/var/raw/venues"], "code_commit": "7360fd0652182c5503e2da3ed80f443e2aef504d"}
+
+MainPID=1050114
+InvocationID=9e699e011f494f6ca9fe1eeaa45de8eb
+
+PROGRESS h1 MemoryPeak=513122304
+CPUUsageNSec=177829218000
+PROGRESS h1 MemoryPeak=528408576
+CPUUsageNSec=356037496000
+PROGRESS h1 MemoryPeak=539914240
+CPUUsageNSec=534094409000
+PROGRESS h1 MemoryPeak=542220288
+CPUUsageNSec=712360934000
+PROGRESS h1 MemoryPeak=548380672
+CPUUsageNSec=890716759000
+PROGRESS h1 MemoryPeak=553480192
+CPUUsageNSec=1068933493000
+COMPLETE {"variant": "h1", "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-20261013/result/v0-selective-lifecycle-cap30m-h1.json", "artifact_sha256": "cc29ac94c730235405157b9fd34ade89592d9015f16ca3a1020670934a1ee64f", "source_commit": "7360fd0652182c5503e2da3ed80f443e2aef504d", "exit_code": 0, "TOTAL": "247801.43980884", "native_minute_DD": "66.98272750041410161055033299", "fees": "82563.95251474", "fills": 311, "liquidations": 0, "terminal_positions": 0, "minute_rows": 3153600, "resource_limit": {"shared_and_perjob_MemoryMax": "650M", "MemorySwapMax": 0, "MemAvailable_min_bytes": 734003200, "disk_free_min_bytes": 1073741824}, "actual_resource_completion_lines": ["Oct 13 20:54:04 MyShopAI-prod-1 systemd[1]: cm113-h1-b1-h1-20261013.service: Consumed 18min 15.278s CPU time, 527.8M memory peak, 0B memory swap peak."]}
+Running as unit: cm113-h1-b1-b1-20261013.service; invocation ID: 15724755186d484cac24cbcaf9b6b7ff
+LAUNCH b1 runtime/coinmaster/__init__.py: OK
+runtime/coinmaster/api/__init__.py: OK
+runtime/coinmaster/api/app.py: OK
+runtime/coinmaster/api/connections_broker.py: OK
+runtime/coinmaster/api/execution_modes.py: OK
+runtime/coinmaster/api/gui_auth.py: OK
+runtime/coinmaster/api/hl_public_candles.py: OK
+runtime/coinmaster/api/research_jobs.py: OK
+runtime/coinmaster/api/runtime_sidecar.py: OK
+runtime/coinmaster/domain/__init__.py: OK
+runtime/coinmaster/domain/deposit_protection.py: OK
+runtime/coinmaster/domain/wave_overlay.py: OK
+runtime/coinmaster/ledger/__init__.py: OK
+runtime/coinmaster/ledger/journal.py: OK
+runtime/coinmaster/ops/hl_info_receipt.py: OK
+runtime/coinmaster/ops/hl_live_credential_preflight.py: OK
+runtime/coinmaster/ops/hl_live_execution.py: OK
+runtime/coinmaster/ops/hl_live_money.py: OK
+runtime/coinmaster/ops/hl_live_worker.py: OK
+runtime/coinmaster/ops/hl_native_account.py: OK
+runtime/coinmaster/ops/hl_qualified_reports.py: OK
+runtime/coinmaster/ops/hl_readonly_observer.py: OK
+runtime/coinmaster/ops/hl_sandbox_money.py: OK
+runtime/coinmaster/ops/hyperliquid_testnet.py: OK
+runtime/coinmaster/ops/hyperliquid_testnet_worker.py: OK
+runtime/coinmaster/ops/live_recovery.py: OK
+runtime/coinmaster/ops/native_paper_node.py: OK
+runtime/coinmaster/ops/native_sandbox_selftest.py: OK
+runtime/coinmaster/ops/paper.py: OK
+runtime/coinmaster/ops/paper_worker.py: OK
+runtime/coinmaster/ops/stage_g_config.py: OK
+runtime/coinmaster/ops/stage_g_refresh.py: OK
+runtime/coinmaster/ops/stage_g_warmup.py: OK
+runtime/coinmaster/research/__init__.py: OK
+runtime/coinmaster/research/bybit_data.py: OK
+runtime/coinmaster/research/bybit_minute.py: OK
+runtime/coinmaster/research/catalog.py: OK
+runtime/coinmaster/research/current_comparison.json: OK
+runtime/coinmaster/research/hyperliquid_data.py: OK
+runtime/coinmaster/research/job_limiter.py: OK
+runtime/coinmaster/research/job_protocol.py: OK
+runtime/coinmaster/research/job_test_helper.py: OK
+runtime/coinmaster/research/minute_risk.py: OK
+runtime/coinmaster/research/native_baseline.py: OK
+runtime/coinmaster/research/native_fixture.py: OK
+runtime/coinmaster/research/native_optimizer.py: OK
+runtime/coinmaster/research/native_sequential.py: OK
+runtime/coinmaster/research/native_validation.py: OK
+runtime/coinmaster/research/optimizer_job.py: OK
+runtime/coinmaster/strategy/__init__.py: OK
+runtime/coinmaster/strategy/live_recovery.py: OK
+runtime/coinmaster/strategy/wave_overlay.py: OK
+runtime/coinmaster/venues/__init__.py: OK
+runtime/coinmaster/venues/bybit_profile.py: OK
+runtime/coinmaster/venues/hyperliquid_profile.py: OK
+runtime/coinmaster/venues/margin.py: OK
+runtime/coinmaster/venues/margin_policy.py: OK
+runtime/coinmaster/venues/marks.py: OK
+runtime/coinmaster/venues/production_preflight.py: OK
+runtime/coinmaster/venues/profiles.py: OK
+runtime/coinmaster/venues/signals.py: OK
+runtime/configs/hl-live-wheel-manifest.json: OK
+runtime/configs/hl-stageg-live.account-fingerprint.json: OK
+runtime/configs/hl-stageg-live.instance.json: OK
+runtime/configs/hl-stageg-testnet.instance.json: OK
+runtime/configs/paper-stage-g-example.instance.json: OK
+runtime/configs/stage-g-hl-sandbox-approval.json: OK
+runtime/configs/stage-g-v1.json: OK
+runtime/pyproject.toml: OK
+runtime/scripts/deploy_native_gui.sh: OK
+runtime/scripts/deploy_native_gui_vps.sh: OK
+runtime/scripts/deploy_stageg_sandbox.py: OK
+runtime/scripts/export_openapi.py: OK
+runtime/scripts/export_runtime_openapi.py: OK
+runtime/scripts/install_stageg_needrestart_guard.sh: OK
+runtime/scripts/native_gui_host.sh: OK
+runtime/scripts/native_gui_peer_guard.py: OK
+runtime/scripts/native_gui_stage_cleanup.py: OK
+runtime/scripts/native_gui_worker_gate.py: OK
+runtime/scripts/paper_doctor.py: OK
+runtime/scripts/process_isolation_doctor.py: OK
+runtime/scripts/provision_gui_operator.py: OK
+runtime/scripts/release_manifest.py: OK
+runtime/scripts/run_tp_fee_floor_113.py: OK
+runtime/scripts/summarize_tp_fee_floor_113.py: OK
+runtime/uv.lock: OK
+runtime/var/raw/venues/bybit-BTCUSDT-funding-latest.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT-funding-warmup-start.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT-mark-latest.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT-mark-warmup-start.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json: OK
+runtime/var/raw/venues/bybit-BTCUSDT.json: OK
+runtime/var/raw/venues/bybit-SOLUSDT-funding-warmup-start.json: OK
+runtime/var/raw/venues/bybit-SOLUSDT-mark-warmup-start.json: OK
+runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json: OK
+runtime/var/raw/venues/bybit-SOLUSDT.json: OK
+runtime/var/raw/venues/hyperliquid-BTC-candle-research-start.json: OK
+runtime/var/raw/venues/hyperliquid-BTC-candle-warmup-start.json: OK
+runtime/var/raw/venues/hyperliquid-BTC-funding-research-start.json: OK
+runtime/var/raw/venues/hyperliquid-BTC-funding-warmup-start.json: OK
+runtime/var/raw/venues/hyperliquid-SOL-candle-research-start.json: OK
+runtime/var/raw/venues/hyperliquid-SOL-funding-research-start.json: OK
+runtime/var/raw/venues/hyperliquid-metaAndAssetCtxs.json: OK
+runtime/var/raw/venues/hyperliquid-production-meta-2026-09-21.json: OK
+runtime/var/raw/venues/hyperliquid-testnet-production-meta-2026-09-22.json: OK
+runtime/var/venue-manifest.json: OK
+runtime/var/data/bybit-1m/manifest.json: OK
+runtime/var/data/runs/tp-fee-floor-113/v0/v0.json: OK
+{"job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-b1-20261013", "validated_files": 106, "public_metadata_files": 20, "allowlist": ["runtime/coinmaster", "runtime/configs", "runtime/scripts", "runtime/pyproject.toml", "runtime/uv.lock", "runtime/var/venue-manifest.json", "runtime/var/raw/venues"], "code_commit": "7360fd0652182c5503e2da3ed80f443e2aef504d"}
+
+MainPID=1056596
+InvocationID=15724755186d484cac24cbcaf9b6b7ff
+
+PROGRESS b1 MemoryPeak=523264000
+CPUUsageNSec=178123475000
+PROGRESS b1 MemoryPeak=529887232
+CPUUsageNSec=356416171000
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/h1-b1-113/comparison/sequence.py", line 28, in <module>
+    arts=[p for p in (job/'result').glob('*.json') if p.name!='minute-risk-summary.json'];assert len(arts)==1,arts
+                                                                                                 ^^^^^^^^^^^^
+AssertionError: []

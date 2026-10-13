@@ -1,0 +1,19 @@
+{
+  "status": "INVALID_SHARED_SIGNAL_ROUTING_COMPLETED_DIAGNOSTIC",
+  "root_instruction": "Preserve raw H1 diagnostic; do not present247801.43980884 as valid H1. Let unchanged current B1 finish. No source/pack mutation or replacement engine authorized yet.",
+  "source_commit": "7360fd0652182c5503e2da3ed80f443e2aef504d",
+  "observed_utc": "2026-10-13T20:57:28.428734+00:00",
+  "native_engine_exit": 0,
+  "source_rows_per_asset": 1051200,
+  "minute_observer_samples": 3153600,
+  "H1_arms": 514,
+  "H1_STAGE1": 0,
+  "H1_STAGE2": 0,
+  "BTC_fills": 311,
+  "SOL_fills": 0,
+  "native_order_rejections": 0,
+  "rootcause_confirmed": true,
+  "rootcause": "Native composite completed-close callback occurs after same-timestamp executable quotes; old strict close_ns==quote_ns made shared H1/B1 confirmation consumption impossible.",
+  "corrected_source_commit": "94e0e6cecbdef93ed3b1422ecfdffd26d3d936a5",
+  "corrected_review": "reports/h1-b1-113/review-routing-correction.json"
+}

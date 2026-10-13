@@ -1,0 +1,116 @@
+{
+  "variant": "h1",
+  "source_commit": "94e0e6cecbdef93ed3b1422ecfdffd26d3d936a5",
+  "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-routingfix-20261014/result/v0-selective-lifecycle-cap30m-h1.json",
+  "artifact_sha256": "a46d0ddbcee594ca2df7e9941ace657395439c740c0e610000952ecbd53e425a",
+  "exit_code": 0,
+  "resource_limit": {
+    "shared_and_perjob_MemoryMax": "650M",
+    "MemorySwapMax": 0,
+    "MemAvailable_min_bytes": 734003200,
+    "disk_free_min_bytes": 1073741824
+  },
+  "actual_resource_completion_lines": [
+    "Oct 13 21:30:08 MyShopAI-prod-1 systemd[1]: cm113-h1-b1-h1-routingfix-20261014.service: Consumed 19min 20.045s CPU time, 531.8M memory peak, 0B memory swap peak."
+  ],
+  "launched_at": "2026-10-13T21:10:35Z",
+  "completed_lines": [
+    "Oct 13 21:30:08 MyShopAI-prod-1 systemd[1]: cm113-h1-b1-h1-routingfix-20261014.service: Deactivated successfully.",
+    "Oct 13 21:30:08 MyShopAI-prod-1 systemd[1]: cm113-h1-b1-h1-routingfix-20261014.service: Consumed 19min 20.045s CPU time, 531.8M memory peak, 0B memory swap peak."
+  ],
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "resources_before": {
+    "MemAvailable": 1129586688,
+    "disk_free": 3186212864
+  },
+  "source_guard_file": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-routingfix-20261014/source-input-hashes.sha256",
+  "immutable_source_hash_manifest_sha256": "e387c8a917701b3846f1bb9c46be4d2d3d05fe67a9e973feaf5a9bc35ca0baed",
+  "immutable_files_verified": 106,
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "config_hash": "bcfb7c33100b790c5da2b1013888bd63f8ee08ee7460cce9f340f5fffad015bd",
+  "source_hashes": {
+    "native_baseline": "a04b6edd869caa8057ca92de24a980088e2c6a641c3c2765981b7cc5a40bc83f",
+    "wave_domain": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+    "wave_strategy": "6d26a581f5f693e6c35c47a66c850774877dbd4f59d5d2d9f90a346ee9c26f17"
+  },
+  "streaming": {
+    "batch_count": 105,
+    "cursor_batch_rows": 10080,
+    "event_count": 4206260,
+    "expected_rows_per_source": 1051200,
+    "max_batch_events": 40334,
+    "max_batch_minutes": 10080,
+    "peak_rss_bytes": 635138048,
+    "processed_rows_per_source": 1051200
+  },
+  "coverage": {
+    "paired_minute_rows_per_source": 1051200,
+    "new_nonmatching_native_1m_source_bars": 2102400,
+    "native_1m_source_bars_basis": "frozen source creates1Bar perasset perpairedminute; actual fullcoverage verified by processedrows",
+    "native_backtest_iterations": "UNKNOWN_NOT_EXPORTED",
+    "native_internal_MTF_delivered_bar_counts": "UNKNOWN_NOT_EXPORTED",
+    "legacy_event_count_and_max_batch_events": "omit newnative1mBars; not fullnativeinputcount",
+    "native_bar_cache_capacity_per_type": 128,
+    "new_streams": 6,
+    "max_new_cached_bars": 768
+  },
+  "minute_rows": 3153600,
+  "upper_bound_samples": 1051200,
+  "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-routingfix-20261014/result/v0-selective-lifecycle-cap30m-h1-funding.sqlite",
+  "funding_journal_sha256": "c2800734e08862770208f1c33a0b1736376886ad865bf03da4652b5a830929ac",
+  "terminal_lifecycle": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "599930.236"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "terminal_order_status_counts": {
+    "FILLED": 362,
+    "CANCELED": 65
+  },
+  "unfinished_orders": 0,
+  "execution_artifacts": {
+    "fills": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-routingfix-20261014/result/v0-selective-lifecycle-cap30m-h1-fills.csv",
+      "rows": 373,
+      "sha256": "3295fca5b3ab6330b6edc11dde5182ea3cd01c9a67db4d1bccd94ba78c6d1815"
+    },
+    "orders": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-routingfix-20261014/result/v0-selective-lifecycle-cap30m-h1-orders.csv",
+      "rows": 427,
+      "sha256": "44e35e729a019265d99af8e2fc6bbb5ffe463f2290d25e012d6921c00c537556"
+    }
+  },
+  "post_boundary_settlement": {
+    "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+    "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+    "fill_count": 1,
+    "interval_cash_total_before_settlement": "188341.60737473",
+    "settled_cash_total": "190593.96574493"
+  },
+  "boundary_samples_excluded": [
+    {
+      "timestamp_ns": "1788220800000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "190593.96574493",
+      "paired_close_equity": "190593.96574493",
+      "native_positions": []
+    },
+    {
+      "timestamp_ns": "1788220800000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "190593.96574493",
+      "paired_close_equity": "190593.96574493",
+      "native_positions": []
+    }
+  ]
+}

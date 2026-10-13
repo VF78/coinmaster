@@ -1,0 +1,17 @@
+{
+  "source_commit": "94e0e6cecbdef93ed3b1422ecfdffd26d3d936a5",
+  "selector_cli": "--research-h1-b1",
+  "authorized_variants": [
+    "h1",
+    "b1"
+  ],
+  "pack_preparation_authorized": true,
+  "engine_launch_authorized": true,
+  "native_mtf_performance_preflight_accepted": true,
+  "bounded_cache128_source_review_accepted": true,
+  "native_fixture_accepted": true,
+  "root_instruction": "FRESH_EXACT_GO_TWO_CORRECTED_VALID_H1_THEN_B1_NO_REPEAT_20261014",
+  "review_sha256": "e2d9a25a3c0aff7c905dbaef98f496d5f207ca938c91cb5d87c4141597a927e6",
+  "resource_limits": "shared/perjob650M/swap0;MemAvailable700MiB;disk1GiB",
+  "old_invalid_runs_preserved": true
+}

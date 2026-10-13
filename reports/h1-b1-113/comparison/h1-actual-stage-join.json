@@ -1,0 +1,523 @@
+{
+  "stage1_requested_parent_intents": 31,
+  "stage1_actual_filled_parent_intents": 31,
+  "stage2_requested_parent_intents": 0,
+  "stage2_actual_filled_parent_intents": 0,
+  "actual_stage_parent_details": [
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "e134d4a1-c60b-495f-a58a-ad76c04fcd42",
+      "requested_notional": 19427.93403743204,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20240902-210100-001-000-3"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "144.1",
+      "native_filled_qty": "144.1",
+      "native_statuses": {
+        "O-20240902-210100-001-000-3": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "deb91e3e-1ad3-4f24-91f1-dbdfea38be23",
+      "requested_notional": 29040.420068147316,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20240915-231600-001-000-9"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "222.2",
+      "native_filled_qty": "222.2",
+      "native_statuses": {
+        "O-20240915-231600-001-000-9": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "9d2acc09-4287-48c1-bc38-c18762c565de",
+      "requested_notional": 26872.25972473821,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20240917-141600-001-000-15"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "202.1",
+      "native_filled_qty": "202.1",
+      "native_statuses": {
+        "O-20240917-141600-001-000-15": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "159b5b1d-dea3-4f9c-93f1-d96279803cde",
+      "requested_notional": 17195.070302059667,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20241004-211600-001-000-24"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "119.4",
+      "native_filled_qty": "119.4",
+      "native_statuses": {
+        "O-20241004-211600-001-000-24": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "a4cf9f31-a9d1-4b1a-9365-9670e4990141",
+      "requested_notional": 10121.852330612108,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20241009-210100-001-000-31"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "72.9",
+      "native_filled_qty": "72.9",
+      "native_statuses": {
+        "O-20241009-210100-001-000-31": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "97c3c122-d544-4b26-9978-2a9b9f1ba832",
+      "requested_notional": 16672.240642070083,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20241025-231600-001-000-41"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "102.6",
+      "native_filled_qty": "102.6",
+      "native_statuses": {
+        "O-20241025-231600-001-000-41": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "b0f41e9c-db3e-496e-bb3f-0ab1c553cb75",
+      "requested_notional": 17631.288700549056,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20241103-151600-001-000-47"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "111.1",
+      "native_filled_qty": "111.1",
+      "native_statuses": {
+        "O-20241103-151600-001-000-47": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "ae67112c-e186-4cf5-a569-e54252e39546",
+      "requested_notional": 33272.383505130616,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20241220-101600-001-000-64"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "187.5",
+      "native_filled_qty": "187.5",
+      "native_statuses": {
+        "O-20241220-101600-001-000-64": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "d839848d-fd7d-4b3f-9624-7d1383831ac0",
+      "requested_notional": 21881.06594843505,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20241226-083100-001-000-73"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "115.4",
+      "native_filled_qty": "115.4",
+      "native_statuses": {
+        "O-20241226-083100-001-000-73": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "7a548e92-9d73-4654-99b4-ee152063ed36",
+      "requested_notional": 39211.47314642507,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250202-040100-001-000-98"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "189.6",
+      "native_filled_qty": "189.6",
+      "native_statuses": {
+        "O-20250202-040100-001-000-98": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "92ede9b0-202a-445f-a63e-8e307c524f35",
+      "requested_notional": 70879.73262739013,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250204-053100-001-000-107"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "345.5",
+      "native_filled_qty": "345.5",
+      "native_statuses": {
+        "O-20250204-053100-001-000-107": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "333bdce8-9786-48be-b038-eaebe0e32829",
+      "requested_notional": 48418.65950005286,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250221-200100-001-000-115"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "286.1",
+      "native_filled_qty": "286.1",
+      "native_statuses": {
+        "O-20250221-200100-001-000-115": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "0ec43416-d9d1-4038-9163-e1678420f4a1",
+      "requested_notional": 20543.81414871978,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250304-213100-001-000-125"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "141.1",
+      "native_filled_qty": "141.1",
+      "native_statuses": {
+        "O-20250304-213100-001-000-125": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "546d647f-15db-4e9b-a10c-047d36a5d960",
+      "requested_notional": 127387.10533550676,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250404-100100-001-000-143"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "1064.9",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20250404-100100-001-000-143": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "9e46993a-5e18-4635-aca5-61fb6299617f",
+      "requested_notional": 103501.40913087777,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250411-094600-001-000-149"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "876.7",
+      "native_filled_qty": "876.7",
+      "native_statuses": {
+        "O-20250411-094600-001-000-149": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "e04cfa46-9937-47e8-8127-87a67f44dbd6",
+      "requested_notional": 48311.889314716034,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250530-081600-001-000-175"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "296.8",
+      "native_filled_qty": "296.8",
+      "native_statuses": {
+        "O-20250530-081600-001-000-175": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "09988d9e-6789-4270-a325-210112010913",
+      "requested_notional": 92650.93316130724,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250606-143100-001-000-181"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "612.0",
+      "native_filled_qty": "612.0",
+      "native_statuses": {
+        "O-20250606-143100-001-000-181": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "5bb4a0fb-4372-46bf-bac4-038ba48e371a",
+      "requested_notional": 82978.0863110364,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20250910-131600-001-000-232"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "369.9",
+      "native_filled_qty": "369.9",
+      "native_statuses": {
+        "O-20250910-131600-001-000-232": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "9faf6565-08a5-40de-8ced-323767054b1a",
+      "requested_notional": 93935.23382708004,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20251012-221600-001-000-252"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "476.4",
+      "native_filled_qty": "476.4",
+      "native_statuses": {
+        "O-20251012-221600-001-000-252": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "bfd7b905-7289-41d6-b79d-d7b2ac50e87b",
+      "requested_notional": 114472.5085455451,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20251023-180100-001-000-258"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "593.9",
+      "native_filled_qty": "593.9",
+      "native_statuses": {
+        "O-20251023-180100-001-000-258": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "d5b2a584-d689-4fe9-a221-7535add2e895",
+      "requested_notional": 216619.04017017508,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20251126-180100-001-000-272"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "1538.9",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20251126-180100-001-000-272": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "335e176a-1f9f-4f69-bb6c-e97056cff73e",
+      "requested_notional": 108956.07328820799,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260120-164600-001-000-285"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "862.9",
+      "native_filled_qty": "862.9",
+      "native_statuses": {
+        "O-20260120-164600-001-000-285": "FILLED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "8faa7d99-c457-46f1-897f-e73f22a60c30",
+      "requested_notional": 141986.10062193533,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260123-173100-001-000-290"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "1094.7",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260123-173100-001-000-290": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "e19a7ed1-0ffb-463b-83d2-90fe146ac149",
+      "requested_notional": 305564.04113328026,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260208-133100-001-000-294"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "3453.0",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260208-133100-001-000-294": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "edb99482-f44d-48c7-8380-288fa9809ed9",
+      "requested_notional": 313564.0796628175,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260305-200100-001-000-306"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "3533.5",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260305-200100-001-000-306": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "45680ae3-aac2-4b2e-a9fa-4f74c22de5e4",
+      "requested_notional": 249029.9445857508,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260324-174600-001-000-324"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "2805.3",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260324-174600-001-000-324": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "c598ecb8-e96d-4ef0-9e14-b33782a7af02",
+      "requested_notional": 219070.90270959502,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260326-094600-001-000-333"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "2489.1",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260326-094600-001-000-333": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "4c2e1028-ead6-4394-a201-0b24c4866d81",
+      "requested_notional": 793660.6494821531,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260515-140100-001-000-358"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "8954.7",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260515-140100-001-000-358": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "686b9c80-19c2-4a09-8d5f-d4197c6b26de",
+      "requested_notional": 747744.7112054095,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260706-211600-001-000-372"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "9002.4",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260706-211600-001-000-372": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "aee4000f-15e5-4f3b-9a51-77da9e27bae7",
+      "requested_notional": 569126.9345686459,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260731-144600-001-000-405"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "7805.8",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260731-144600-001-000-405": "CANCELED"
+      }
+    },
+    {
+      "event": "H1_STAGE1",
+      "intent_id": "a0efc427-0d98-489e-a3c0-12e9299b1366",
+      "requested_notional": 421028.4433706216,
+      "requested_quantity": null,
+      "actual_filled_parent_intent": true,
+      "native_order_ids": [
+        "O-20260805-123100-001-000-410"
+      ],
+      "native_fill_events": 1,
+      "native_admitted_qty": "5671.9",
+      "native_filled_qty": "1000.0",
+      "native_statuses": {
+        "O-20260805-123100-001-000-410": "CANCELED"
+      }
+    }
+  ],
+  "fill_reason_counts": {
+    "BTC_ENTRY": 105,
+    "H1_STAGE1": 31,
+    "SOL_HARD_TIMEOUT": 12,
+    "BTC_TP3": 54,
+    "REGIME": 67,
+    "BTC_TP2": 24,
+    "BTC_REDUCE": 77,
+    "TRAIL": 2,
+    "TERMINAL_BOUNDARY_SETTLEMENT": 1
+  },
+  "order_status_counts": {
+    "FILLED": 362,
+    "CANCELED": 65
+  },
+  "native_order_rejections": 0,
+  "pre_submit_tier_margin_gate_blocks": [],
+  "stage2_causal_fullrun_validation": "NO_ACTUAL_STAGE2_SAMPLES; exact native121min fixture proved causalstage2, not a freshfullrun event",
+  "exposure_semantics": "197 native quantity-change snapshots; not complete per-minute max beta exposure"
+}
