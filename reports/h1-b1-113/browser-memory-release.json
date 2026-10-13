@@ -1,0 +1,24 @@
+{
+  "at_utc": "2026-10-13T20:35:07Z",
+  "authorization": "OWNER_EXPLICIT_TEMPORARY_CLOSE_ONLY_HERMES_BROWSER",
+  "verified_browser_pid": 3981770,
+  "cwd": "/root/.openclaw/workspace/msa",
+  "profile": "/root/.hermes/bot-desktop/threads-profile",
+  "cdp_port": 9223,
+  "action": "SIGTERM_SINGLE_BROWSER_MAIN_PID",
+  "browser_exited": true,
+  "MemAvailable_MiB_after": 936.9921875,
+  "hermes_gateway": "active",
+  "pilot": {
+    "pid": 2009732,
+    "NRestarts": 0,
+    "active": true,
+    "unchanged": true
+  },
+  "site_checks": {
+    "f-ai.studio": "HTTP308_to_ru",
+    "app.f-ai.studio": "HTTP200"
+  },
+  "bot_sites_vpn_service_actions": 0,
+  "research_limit": "650MiB/swap0;700MiBavailableguard"
+}
