@@ -1,0 +1,18 @@
+{
+  "status": "INITIAL_H1_AND_B1_ROUTING_INVALID_FOR_HYPOTHESIS_COMPARISON",
+  "initial_source_sha": "7360fd0652182c5503e2da3ed80f443e2aef504d",
+  "owner_reported_H1": {
+    "BTC_fills": 311,
+    "SOL_fills": 0,
+    "arms": 514,
+    "stage_orders": 0,
+    "rejects_or_margin_blocks": 0
+  },
+  "cause": "Pinned native aggregation timer callback is processed after every same-timestamp data event including executable BTC/SOL quotes. Confirmation bar close t becomes available after quote t; next quote t+60s fails frozen equality confirm.close_ns==quote.ts_event.",
+  "pinned_source": "runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+  "pinned_source_lines": "1684-1736: advance clocks, exchange/dataengine process, settle, iterate all same-ts data; only when nextdatum>last_ns process raw time handlers only_now=True",
+  "proof_gap": "Initial focused tests used manual confirmation token insertion before quotes; bare aggregation test proved OHLC completeness but not confirmation/execution ordering.",
+  "correction_scope": "Single owner-authorized shared H1/B1 routing correction: first fresh CURRENT traded-asset executable quote AFTER actual closed-bar receipt, age<=60s, quote sequence exactly first after receipt, closed bar close strictly after stage arm/actualnewTP, all native admission/order guards and trading parameters unchanged.",
+  "B1_note": "Root confirmed shared impossible equality and stopped only invalid B1 research run with no valid native fills. Initial H1/B1 metrics remain invalid, preserved diagnostic evidence. Owner original two separate valid comparisons remain authorized; root bounds one shared causal receipt correction and two corrected runs.",
+  "review_status": "Original H1/B1 routing GO superseded. New exact-source GO pending real integrated H1 two-stage TP proof, natural B1 entry proof and negative stale/pre-receipt/future/gap/partial cases."
+}

@@ -226,6 +226,7 @@
     "BTC_full_flat_SOL_close_priority": true,
     "closed_cycle_reopen": false,
     "recovery": "adversity <=1% AND fresh opposite SOL1h confirmation",
-    "timeout": "existing14days from first actual SOLfill"
+    "timeout": "existing14days from first actual SOLfill",
+    "native_confirmation_consumption": "firstCURRENT traded-asset quote after actualclosedbarreceipt; exactnextquote sequence; close<=receipt<=quote; closeage<=60s; close>arm/actualTP; nativefreshpairedmarks/admission"
   }
 }

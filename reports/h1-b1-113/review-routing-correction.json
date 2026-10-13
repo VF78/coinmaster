@@ -1,0 +1,71 @@
+{
+  "verdict": "GO",
+  "date": "2026-10-14",
+  "source_sha": "94e0e6cecbdef93ed3b1422ecfdffd26d3d936a5",
+  "parent_sha": "97ccbb5f99fc859cffe68d85c4c80e7575a18da1",
+  "initial_source_sha": "7360fd0652182c5503e2da3ed80f443e2aef504d",
+  "reviewer": "h1_b1_mae_contract independent narrow directed review",
+  "scope": "One shared causal H1/B1 routing correction, exactly two corrected separate native24m comparisons. Initial H1/B1 routing runs invalid, no oldmetric ranking or combined candidate/optimization/deployment.",
+  "method": "Read pinned1.231 engine.pyx ordering, exact diff, actual integrated native test code/proof JSONs, negative tests and final relevant log. No reviewer engines/trace scan/source edit/test rerun.",
+  "root_cause": "All same-timestamp data/quotes processed and settled before aggregation close timer callback. Old close_ns==quote_ns could not execute natural H1/B1 pipeline.",
+  "causal_contract": {
+    "firstquote": "traded-asset quote_sequence equals actualreceipt quote_sequence+1; CURRENT executable quote only, never cached pre-receipt book",
+    "timestamps": "close_ns <= actual_receipt_ns <= current_quote_ns",
+    "age": "0 <= quote_ns - close_ns <= 60000000000",
+    "freshness": "barclose strictly after arm/qualifying actualTP; existing fresh native pairedmark/admission guards",
+    "consume": "only firstquote; laterquote rejects exactsequence, newbar can qualify"
+  },
+  "unchanged_rules": [
+    "2.5% entry-adverse",
+    "stage1 half remaining actualBTC notional/current validbeta",
+    "stage2 once same actualstage1SOLqty afternewactualBTC TP and firstparentterminal",
+    "no remainingBTC cap/partialSOLtrim",
+    "both15mOR1h closedpreviousbarbreak, noEMA20/4h/dailypricegate",
+    "recovery<=1% freshreverseSOL1h/14daytimeout/BTCflat/grouppriority",
+    "H1legacyflatBTCepisode retained; B1legacySOL andoriginalq0/q1 preserved",
+    "native_baseline source and executionfees/funding/margin economics unchanged"
+  ],
+  "native_proofs": {
+    "H1": {
+      "path": "reports/h1-b1-113/implementation/h1-native-routing-proof.json",
+      "sha256": "29f44e1fd6c0eeead5a77e5980825f200c754566faea3fa1c3566388b695b4d1",
+      "minutes": 121,
+      "ordering": "actual sourcebars->marks->nativeBTC/SOLquotes baseline sorted ordering; closedbar30 receipt afterquote30",
+      "fills": "SOL36.9@31m, realBTC_TP1@36m, SOL36.9@46m afterbar45 receipt",
+      "no_manual_confirmation_tokens": true
+    },
+    "B1": {
+      "path": "reports/h1-b1-113/implementation/b1-native-routing-proof.json",
+      "sha256": "6a5ee5dca0b84461318c9561ba7a7cb0f58ce9c38054d63db3fd30ec7b8c2252",
+      "minutes": 121,
+      "ordering": "nativebar30 receipt afterquote30; firstquote31 originalq0; actualnativeBTCfill32 originalq1",
+      "actual_vwap": 101.5,
+      "long_multiplier": 5.5,
+      "no_manual_confirmation_tokens": true,
+      "fixture_limit": "completed wave levels stubbed solely to bound natural entry fixture"
+    }
+  },
+  "tests": {
+    "final_relevant_passed": 170,
+    "seconds": 73.79,
+    "log": "reports/h1-b1-113/implementation/routing-final-verification.log",
+    "sha256": "f85a0e1d7d5c8b163a2d2cfda71520fc0b42097e5dfac22178c59261bc3c422d",
+    "negative_cases": [
+      "futureclose relative receipt",
+      "backwardquote relative receipt",
+      "pre-receipt/cached/secondquote rejected by exactsequence",
+      "exact60s allowed/>60s rejected",
+      "oldsignal/disarm/nativepartial/unknownACK/conflictingOR/recoverypriority retained"
+    ],
+    "before_fix": "native integrated oldH1 failed zero stageorders; routing-before.log preserved",
+    "compile": "sourceowner PASS",
+    "diff": "sourceowner PASS"
+  },
+  "source_hashes": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "6d26a581f5f693e6c35c47a66c850774877dbd4f59d5d2d9f90a346ee9c26f17",
+    "runtime/coinmaster/research/native_baseline.py": "a04b6edd869caa8057ca92de24a980088e2c6a641c3c2765981b7cc5a40bc83f",
+    "runtime/tests/test_native_h1_b1.py": "601679cbd0f004323a8a3cba0fc2287fd82e3e39047531115389b58557be0a71"
+  },
+  "outstanding_material_blockers": [],
+  "limits": "Implementation/causal native routing GO, not economic advantage/live readiness/tickfaithful simulation. Two corrected fullrun receipts required."
+}

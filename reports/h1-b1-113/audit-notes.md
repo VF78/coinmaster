@@ -64,3 +64,7 @@ This accepted section incorporates the coordinator-transmitted owner override. T
 ## Frozen implementation economic scope
 
 Independent source review at 7360fd0652182c5503e2da3ed80f443e2aef504d confirms H1 protective SOL closure after full BTC flat retains the ordinary legacy BTC episode. Native fixture proves same episode identity, BTC/SOL quantities zero, and no new BTC entry intent on a subsequent same-direction daily decision. H1 changes SOL lifecycle only; existing REGIME/TRAIL continue to retire the BTC episode. No hidden same-quote BTC reentry is added. B1 changes BTC admission confirmation while legacy SOL candidate/rules remain intact. Native bar feeds do not execute OHLC: bar_execution=False, actual historical quote close remains execution source.
+
+## Corrected native confirmation execution — 2026-10-14
+
+Original7360fd0 samequote equality invalid under real pinned timer/data ordering; initial H1/B1 runs preserved invalid diagnostics. Accepted causal consumption is firstCURRENT traded-asset executablequote afteractual closedbarreceipt, recordednextquotesequence, close<=receipt<=quote and closeage<=60s. Never cached pre-receipt book or arbitrary stalequote. Strictbarclose>arm/realTP and all economic/nativeguards retained. New exact94e0e6c independentGO/proofs in review-routing-correction.{md,json};170 relevant tests pass73.79s. Supersedes oldroutingGO only, not measuredMAE/ownertradingcontract.
