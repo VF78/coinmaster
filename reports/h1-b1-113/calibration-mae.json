@@ -1,0 +1,231 @@
+{
+  "provenance": {
+    "source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+    "head_at_start": "868104b",
+    "raw_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/result/v0-selective-lifecycle-cap30m-btc-direction.json",
+    "raw_sha256": "caa6b209142f4a005f8cd73ee00d030bd841c6a9669e98c971b15f93c36c902a",
+    "trace_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/result/minute-native-risk.csv.gz",
+    "trace_sha256": "59df1acc3f16c638d9a0e3a2363ece2c87c248741c54c67645cf98bddcda9103",
+    "native_fills_sha256": "40cf96cf7234d435aa75e4aaf17064540526e88f9fea978083e33008cc0988eb",
+    "method": "Exact native CASH/uPnL endpoints primary. Perasset close-uPnL interpolates native endpoint PnL at instrument-rounded close and reconciles cents. Realized perasset gross/episodes reuse prior audit/economics.csv confirmed-native-fill weighted-entry/proportional-entry-fee attribution; not authoritative native settled pertrade PnL, economic simulation, engine or counterfactual. Native callbackcash classification was discarded due asynchronous account/cache finalization. Signed cash residual remains unallocated, not assigned funding."
+  },
+  "definition": "Per episode maximum max(0, adverse BTC price movement / contemporaneous actual native position entry VWAP). LONG=(VWAP-price)/VWAP; SHORT=(price-VWAP)/VWAP. Unweighted arithmetic mean across episodes, not minute-weighted drawdown or portfolio PnL.",
+  "ohlc_definition": "BTC-only saved high for SHORT / low for LONG; prequote native held-position phase and last entry fill <= bar-open. No entry-bar prefill extremes and no post-flat bars. Single-asset actual saved extremes; no cross-asset synchronisation inference.",
+  "close_definition": "Exact saved minute close while native BTC position held at the observer phase, including actual post-entry close samples and pre-final-fill close samples. Three phases can duplicate a minute but cannot change maximum.",
+  "subset_limit": "Win/loss labels are existing confirmed native fill weighted-entry fee-net attribution ex unknown funding; not independently authoritative native settled per-trade PnL. No new PnL calculation.",
+  "rows": 3153600,
+  "phases": {
+    "pre_quote_paired_close": 1051200,
+    "post_btc_quote_paired_close": 1051199,
+    "post_quote_paired_close": 1051199,
+    "post_boundary_post_btc_quote_paired_close": 1,
+    "post_boundary_post_quote_paired_close": 1
+  },
+  "episodes": 105,
+  "all_completed": true,
+  "coverage": {
+    "close_samples": 1331249,
+    "held_ohlc_samples": 443779,
+    "episodes_with_both": 105,
+    "excluded_prefill_extrema": 0,
+    "input_minutes_per_asset": 1051200,
+    "entry_fills": 105,
+    "multiple_vwap_episodes": 0
+  },
+  "summary": {
+    "all": {
+      "close_mae_pct": {
+        "n": 105,
+        "mean": 2.2070877192965948,
+        "median": 1.8642263622846156,
+        "p75": 2.9662932464202707,
+        "p90": 5.027702273807007,
+        "max": 7.912801950581905
+      },
+      "held_ohlc_mae_pct": {
+        "n": 105,
+        "mean": 2.2550998333674857,
+        "median": 1.912680598702421,
+        "p75": 2.9770108151260466,
+        "p90": 5.073006586278062,
+        "max": 7.934670587939574
+      },
+      "completed_fill_net_wins": {
+        "close_mae_pct": {
+          "n": 57,
+          "mean": 1.5208391641985988,
+          "median": 0.977944559020405,
+          "p75": 2.0273865179569306,
+          "p90": 3.405878656498901,
+          "max": 7.749535315985123
+        },
+        "held_ohlc_mae_pct": {
+          "n": 57,
+          "mean": 1.5736771665405647,
+          "median": 1.000816676745897,
+          "p75": 2.0848269417625076,
+          "p90": 3.473681201670024,
+          "max": 7.768703531598509
+        }
+      },
+      "completed_fill_net_losses": {
+        "close_mae_pct": {
+          "n": 48,
+          "mean": 3.0220078784754656,
+          "median": 2.5728834509132548,
+          "p75": 3.6372986866993697,
+          "p90": 5.382056933168255,
+          "max": 7.912801950581905
+        },
+        "held_ohlc_mae_pct": {
+          "n": 48,
+          "mean": 3.064289250224455,
+          "median": 2.627033150292002,
+          "p75": 3.693584083763551,
+          "p90": 5.416955522696052,
+          "max": 7.934670587939574
+        }
+      }
+    },
+    "long": {
+      "close_mae_pct": {
+        "n": 53,
+        "mean": 2.219140777859749,
+        "median": 1.8642263622846156,
+        "p75": 2.9662932464202707,
+        "p90": 5.0453674644572155,
+        "max": 6.790725570970835
+      },
+      "held_ohlc_mae_pct": {
+        "n": 53,
+        "mean": 2.2698721870303658,
+        "median": 1.912680598702421,
+        "p75": 2.9770108151260466,
+        "p90": 5.09276161249872,
+        "max": 6.827603431163642
+      },
+      "completed_fill_net_wins": {
+        "close_mae_pct": {
+          "n": 25,
+          "mean": 1.2046025506517153,
+          "median": 0.874141596661282,
+          "p75": 1.403915847390269,
+          "p90": 2.4216807582836672,
+          "max": 3.8783132703398504
+        },
+        "held_ohlc_mae_pct": {
+          "n": 25,
+          "mean": 1.2606989681386929,
+          "median": 0.883435316985004,
+          "p75": 1.5579464079020888,
+          "p90": 2.473182904620211,
+          "max": 3.9182878350805472
+        }
+      },
+      "completed_fill_net_losses": {
+        "close_mae_pct": {
+          "n": 28,
+          "mean": 3.124978480724065,
+          "median": 2.7249919430055725,
+          "p75": 4.55146711267507,
+          "p90": 5.374975105595841,
+          "max": 6.790725570970835
+        },
+        "held_ohlc_mae_pct": {
+          "n": 28,
+          "mean": 3.1709197038979307,
+          "median": 2.7993262625661486,
+          "p75": 4.594751961073207,
+          "p90": 5.412889256920833,
+          "max": 6.827603431163642
+        }
+      }
+    },
+    "short": {
+      "close_mae_pct": {
+        "n": 52,
+        "mean": 2.194802871145688,
+        "median": 1.8414595340643047,
+        "p75": 2.7676947543959605,
+        "p90": 4.311858851190322,
+        "max": 7.912801950581905
+      },
+      "held_ohlc_mae_pct": {
+        "n": 52,
+        "mean": 2.2400433959803197,
+        "median": 1.8870994713111267,
+        "p75": 2.7982569636291146,
+        "p90": 4.4126724111274696,
+        "max": 7.934670587939574
+      },
+      "completed_fill_net_wins": {
+        "close_mae_pct": {
+          "n": 32,
+          "mean": 1.7678990185321015,
+          "median": 1.0686802886491709,
+          "p75": 2.1705203073217105,
+          "p90": 4.17079974678783,
+          "max": 7.749535315985123
+        },
+        "held_ohlc_mae_pct": {
+          "n": 32,
+          "mean": 1.818191384042027,
+          "median": 1.0911191340755022,
+          "p75": 2.1903975097885997,
+          "p90": 4.225375338142223,
+          "max": 7.768703531598509
+        }
+      },
+      "completed_fill_net_losses": {
+        "close_mae_pct": {
+          "n": 20,
+          "mean": 2.8778490353274266,
+          "median": 2.197793094906819,
+          "p75": 3.3278579594703874,
+          "p90": 5.498017935540087,
+          "max": 7.912801950581905
+        },
+        "held_ohlc_mae_pct": {
+          "n": 20,
+          "mean": 2.915006615081588,
+          "median": 2.2431245758125606,
+          "p75": 3.3733116914443304,
+          "p90": 5.5263729395634975,
+          "max": 7.934670587939574
+        }
+      }
+    }
+  },
+  "calibration_scope": "In-sample descriptive calibration only, not out-of-sample proof. Episode maxima are not available to trading decisions; online rule must use only current available price and native entry VWAP.",
+  "elapsed_seconds": 90.34,
+  "recommended_fixed_adverse_fraction": "0.025",
+  "threshold_basis": "ALL held-BTC OHLC mean 2.2550998333674857 percent + rounded small buffer 0.2449001666325143 percentage points; same long/short; in-sample calibration, no optimized grid.",
+  "accepted_contract": {
+    "adverse_fraction": "0.025",
+    "shared_confirm": {
+      "LONG": "Close[t] > High[t-1]",
+      "SHORT": "Close[t] < Low[t-1]",
+      "BTC_timeframes": [
+        "15m",
+        "1h"
+      ],
+      "SOL_timeframes": [
+        "15m",
+        "1h"
+      ],
+      "combination": "OR",
+      "fresh": "bar close_ns strictly after corresponding stage arm",
+      "EMA20_gate": false,
+      "BTC_price_vs_daily_EMA34_gate": false,
+      "four_hour_gate": false
+    },
+    "H1_stage1": "50% actual remaining BTC marked notional / valid beta, native rounded admitted target",
+    "H1_stage2": "add SAME cumulative actual stage1 SOL filled quantity; ANY real BTC TP fill after first SOL fill; first parent terminal; fresh SOL confirmation strictly after that TP; one additional stage; no adversity recheck",
+    "remaining_BTC_cap": false,
+    "BTC_partial_SOL_trim": false,
+    "BTC_full_flat_SOL_close_priority": true,
+    "closed_cycle_reopen": false,
+    "recovery": "adversity <=1% AND fresh opposite SOL1h confirmation",
+    "timeout": "existing14days from first actual SOLfill"
+  }
+}

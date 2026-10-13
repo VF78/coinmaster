@@ -1,0 +1,64 @@
+{
+  "verdict": "GO",
+  "scope": "Exactly two separately authorized H1-only and B1-only native24m comparisons on frozen source. No combined candidate, deployment, pilot change or economic performance claim.",
+  "source_sha": "7360fd0652182c5503e2da3ed80f443e2aef504d",
+  "base_sha": "6abe8d5",
+  "reviewer": "h1_b1_mae_contract independent narrow review",
+  "method": "Read exact diff and native focused tests/receipts; no reviewer source edits, test rerun, trace scan or engine run. Required docs and native aggregation primary sources read.",
+  "source_hashes": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "c8850baac3d84b8a39f1f1cf4c62ab768aca1c4e4dd913a6eae863bd1e5147b4",
+    "runtime/coinmaster/research/native_baseline.py": "a04b6edd869caa8057ca92de24a980088e2c6a641c3c2765981b7cc5a40bc83f",
+    "runtime/tests/test_native_h1_b1.py": "171852f40c755a7345a04099c04cb5c131108bfa963c3275dae04254ed4bac85"
+  },
+  "verification": {
+    "grouped": {
+      "passed": 156,
+      "seconds": 77.87,
+      "log": "reports/h1-b1-113/implementation/tests.log",
+      "sha256": "685158f79d2a9bcce1b68f49cbf2c795bd30769b3bacb368c2cc1e2fec0da82b",
+      "scope": "Grouped native integration/risk/minute/baseline and H1B1 suite before final H1 fresh paired-mark guard and native exposure diagnostic additions; exact frozen 13 focused tests cover final changes."
+    },
+    "exact_frozen_focused": {
+      "passed": 13,
+      "seconds": 2.75,
+      "log": "reports/h1-b1-113/implementation/final-focused.log",
+      "sha256": "f5a0c183ffd5ec776eb1361c409a9e51e349b89fdc5a8cb7f5ed1a582eaa28e5"
+    },
+    "count_note": "Overlapping suites; do not present 169 distinct tests. Compile/diff clean reported by source owner."
+  },
+  "checks": {
+    "h1_fixed_adverse_2_5_percent": true,
+    "stage1_actual_remaining_qty_mark_beta_half_native_lot_margin_admission": true,
+    "stage2_actual_first_SOL_qty_once": true,
+    "stage2_any_actual_BTC_TP_after_first_SOL_fill_only": true,
+    "stage2_no_old_TP_ACK_touch_right": true,
+    "first_parent_terminal_before_stage2": true,
+    "stage2_fresh_SOL_close_strictly_after_TP": true,
+    "stage2_no_adverse_recheck": true,
+    "no_remaining_BTC_cap_or_partial_SOL_trim": true,
+    "both_assets_15m_OR_1h_true_even_conflicting_same_boundary_signals": true,
+    "no_EMA20_gate_daily_EMA34_price_gate_four_hour_gate": true,
+    "one_intent_per_stage_no_double_order_from_OR": true,
+    "confirmation_close_equals_current_native_quote_no_stale_signal": true,
+    "prefill_adversity_disarm_rearm_fresh_crossing": true,
+    "BTC_flat_priority_SOL_close_closed_cycle_no_reopen": true,
+    "recovery_before_stage2": true,
+    "unknown_ACK_pending_leaves_blocks_new_parent": true,
+    "native_SOL_partial_quantity_authoritative": true,
+    "H1_BTC_flat_episode_cadence_retained_native_fixture": true,
+    "B1_legacy_SOL_rules_retained": true,
+    "native_121min_composite_exact_15m_1h_closes_no_future_minute": true,
+    "bar_execution_false_quote_only_bounded_cache_no_empty_bars": true,
+    "selectors_default_off_mutually_exclusive": true
+  },
+  "pre_freeze_review_correction": "Freshness/arming and true OR conflicts addressed before freeze; focused native tests cover both callback orderings and recovery exit priority. No outstanding material blocker found in exact frozen diff.",
+  "economic_scope": "H1 changes SOL overlay/lifecycle, not BTC signal/sizing/TP or ordinary flat-episode retirement cadence. Existing BTC quantity and profit may differ economically because altered SOL cash affects later original sizing; that is intended comparison effect. B1 changes BTC entry admission only; unchanged legacy SOL may follow changed BTC fills.",
+  "bounded_policy_notes": [
+    "Frozen stage1 zero-fill terminal attempt closes the protective cycle, no same-episode retry; actual IOC partial fill is stage1 quantity reference, unfilled canceled remainder is not synthetically filled.",
+    "Native margin/minimum/lot admission may reject stage2 even though its requested qty equals stage1 actual qty; no custom money/PnL bypass.",
+    "Some eventual control winners have large MAE; calibration is in-sample and does not prove hedging improves DD/ROI.",
+    "Full history engines, execution feasibility and funding limitations are assessed by separately authorized run receipts."
+  ],
+  "implementation_receipt": "reports/h1-b1-113/implementation/receipt.json",
+  "implementation_receipt_verified": true
+}
