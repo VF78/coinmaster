@@ -676,6 +676,7 @@ def run_native_diagnostic(
     research_btc_direction_sizing: bool = False,
     research_btc_drawdown_sizing: bool = False,
     research_v3_risk: str | None = None,
+    research_h1_b1: str | None = None,
     research_btc_episode_loss_20: bool = False,
     research_sol_remaining_btc_hedge: bool = False,
 ) -> dict:
@@ -689,7 +690,9 @@ def run_native_diagnostic(
     from nautilus_trader.backtest.engine import BacktestEngine
     from nautilus_trader.backtest.models import MakerTakerFeeModel
     from nautilus_trader.config import LoggingConfig
-    from nautilus_trader.model.data import BarSpecification, BarType
+    from nautilus_trader.cache.config import CacheConfig
+    from nautilus_trader.data.config import DataEngineConfig
+    from nautilus_trader.model.data import Bar, BarSpecification, BarType
     from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType
     from nautilus_trader.model.objects import Money
     from nautilus_trader.model.identifiers import ClientId
@@ -700,11 +703,13 @@ def run_native_diagnostic(
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
     from coinmaster.venues.signals import daily_signal, daily_signal_data_type
 
-    if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None)) > 1:
+    if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None, research_h1_b1 is not None)) > 1:
         raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
-    if (research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_drawdown_sizing or research_v3_risk) and not observe_minute_risk:
+    if (research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_drawdown_sizing or research_v3_risk or research_h1_b1) and not observe_minute_risk:
         raise ValueError("PORTFOLIO_PROTECTION_REQUIRES_PRE_ACTION_MINUTE_OBSERVER")
     candidate = candidate or Candidate()
+    if research_h1_b1 == "h1":
+        candidate = replace(candidate, sol_overlay_enabled=False)
     policy = execution_policy or ExecutionPolicy()
     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
     if fee_policy.venue != "bybit":
@@ -752,8 +757,15 @@ def run_native_diagnostic(
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
     def kind(instrument, price_type):
         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
-    engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR")))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel())
+    confirmation_bars = tuple(BarType.new_composite(
+        instrument.id, BarSpecification(15 if minutes == 15 else 1, BarAggregation.MINUTE if minutes == 15 else BarAggregation.HOUR, PriceType.LAST),
+        AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL,
+    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 else ()
+    minute_bars = {instrument.id: BarType(instrument.id, BarSpecification(1, BarAggregation.MINUTE, PriceType.LAST), AggregationSource.EXTERNAL)
+                   for instrument in (btc_instrument, sol_instrument)}
+    engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
+        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 else {})))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1))
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
@@ -774,6 +786,8 @@ def run_native_diagnostic(
         research_btc_direction_sizing=research_btc_direction_sizing,
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
+        research_h1_b1=research_h1_b1,
+        research_confirmation_bars=confirmation_bars,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
         research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
         research_sol_notional_cap_multiple=Decimal("6") if research_sol_notional_cap_6x else None,
@@ -796,9 +810,15 @@ def run_native_diagnostic(
         for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), weekly_batch_minutes):
             if risk_recorder is not None:
                 risk_recorder.set_week(week)
-            marks, signals, quotes = [], [], []
+            marks, signals, quotes, source_bars = [], [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
+                if research_h1_b1:
+                    for instrument, row in ((btc_instrument, minute.btc_execution), (sol_instrument, minute.sol_execution)):
+                        source_bars.append(Bar(minute_bars[instrument.id],
+                            instrument.make_price(row["open"]), instrument.make_price(row["high"]),
+                            instrument.make_price(row["low"]), instrument.make_price(row["close"]),
+                            instrument.make_qty(0), available_ns, available_ns))
                 # Same timestamp ordering is marks -> daily signals -> quotes.
                 marks.extend((venue_mark(btc_instrument.id, Decimal(str(minute.btc_mark["close"])), available_ns), venue_mark(sol_instrument.id, Decimal(str(minute.sol_mark["close"])), available_ns)))
                 if include_daily_signals and (minute.open_time_ms + MINUTE_MS) % DAY_MS == 0:
@@ -806,6 +826,8 @@ def run_native_diagnostic(
                     btc_daily, sol_daily = daily["BTCUSDT"][daily_open], daily["SOLUSDT"][daily_open]
                     signals.extend((daily_signal(btc_instrument.id, Decimal(str(btc_daily["open"])), Decimal(str(btc_daily["high"])), Decimal(str(btc_daily["low"])), Decimal(str(btc_daily["close"])), available_ns), daily_signal(sol_instrument.id, Decimal(str(sol_daily["open"])), Decimal(str(sol_daily["high"])), Decimal(str(sol_daily["low"])), Decimal(str(sol_daily["close"])), available_ns)))
                 quotes.extend((native_quote(btc_instrument, minute.btc_execution["close"], 1, available_ns), native_quote(sol_instrument, minute.sol_execution["close"], 2, available_ns)))
+            if source_bars:
+                engine.add_data(source_bars, sort=False)
             engine.add_data(marks, client_id=mark_client, sort=False)
             if signals:
                 engine.add_data(signals, client_id=signal_client, sort=False)
@@ -860,6 +882,15 @@ def run_native_diagnostic(
             full_config["research_v0_selective_lifecycle_repairs"] = True
         stats["peak_rss_bytes"] = _peak_rss_bytes()
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+        if research_h1_b1:
+            full_config["research_h1_b1"] = {"variant": research_h1_b1, "direction_sizing": {"long": "5.5", "short": "7.875"},
+                "confirmation": "NATIVE_INTERNAL_15M_OR_1H_CLOSE_PREVIOUS_HIGH_LOW", "bar_execution": False, "native_bar_cache_capacity_per_type": 128, "build_empty_bars": False,
+                "warmup": "NATURAL_TWO_CLOSED_BARS_NO_DAILY_OHLC_SYNTHESIS", "execution": "CURRENT_NATIVE_QUOTE_ONLY",
+                "h1_rules": {"adverse_strict_fraction": "0.025", "stage1_remaining_btc_notional_fraction": "0.5",
+                    "beta": "CURRENT_VALID_DAILY_BETA_FREEZE_AT_FIRST_NATIVE_FILL", "stage2": "ONCE_SAME_ACTUAL_STAGE1_QUANTITY_AFTER_POST_FIRST_FILL_TP_AND_NEW_CONFIRMATION",
+                    "remaining_btc_stage2_cap": False, "btc_partial_trim": False, "recovery_fraction": "0.01",
+                    "recovery_confirmation": "FRESH_REVERSE_SOL_1H", "max_holding_days": 14,
+                    "btc_flat_sol_flat": True, "closed_cycle_reentry": False} if research_h1_b1 == "h1" else None}
         if research_v3_risk:
             full_config["research_v3_risk"] = {"variant": research_v3_risk, "direction_sizing": {"long": "5.5", "short": "7.875"}, "sampling": "CAUSAL_PAIRED_PREQUOTE_AFTER_OBSERVATION", "execution": "CURRENT_NATIVE_QUOTE_ONLY", "signed_funding": "SEPARATE_UNKNOWN"}
         if research_portfolio_protect_45:
@@ -905,6 +936,8 @@ def run_native_diagnostic(
             }
         if not early_liquidation_cutoff:
             assert_report_boundaries(result)
+        if research_h1_b1:
+            result["h1_b1_audit"] = strategy.h1_b1_audit
         if research_v3_risk:
             result["v3_risk_audit"] = strategy.v3_risk_audit
             result["btc_sizing_audit"] = strategy.btc_sizing_audit
@@ -1063,7 +1096,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1073,9 +1106,9 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         raise ValueError("DEFERRED_SELECTIVE_REQUIRES_ORIGINAL_ZERO_TP_BASE")
     if selective_lifecycle_repairs and not deferred_selective_zero_tp:
         raise ValueError("SELECTIVE_LIFECYCLE_REQUIRES_DEFERRED_SELECTIVE")
-    if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None)) > 1:
+    if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None, research_h1_b1 is not None)) > 1:
         raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
-    if (research_sol_notional_cap_6x or research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_direction_sizing or research_btc_drawdown_sizing or research_v3_risk) and not selective_lifecycle_repairs:
+    if (research_sol_notional_cap_6x or research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_direction_sizing or research_btc_drawdown_sizing or research_v3_risk or research_h1_b1) and not selective_lifecycle_repairs:
         raise ValueError("SOL_CAP_REQUIRES_SELECTIVE_LIFECYCLE_CONTROL")
     control = json.loads(control_report.read_text())
     config = control["config"]
@@ -1107,6 +1140,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         label = "v0-selective-lifecycle-cap30m"
     if research_sol_notional_cap_6x:
         label += "-solcap6"
+    if research_h1_b1:
+        label += "-" + research_h1_b1
     if research_v3_risk:
         label += "-v3-" + research_v3_risk
     if research_portfolio_protect_45:
@@ -1133,6 +1168,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_btc_direction_sizing=research_btc_direction_sizing,
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
+        research_h1_b1=research_h1_b1,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
         research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
     )
@@ -1151,6 +1187,7 @@ def main() -> None:
     parser.add_argument("--research-v0-original-zero-tp", action="store_true", help="With research repairs, retain original BTC entry and zero-threshold TP levels")
     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
+    parser.add_argument("--research-h1-b1", choices=("h1", "b1"), default=None)
     parser.add_argument("--research-v3-risk", choices=("b25", "s10_15", "r2", "t3"), default=None, help="One default-OFF research risk variation on V3 directional sizing")
     parser.add_argument("--research-btc-direction-sizing", action="store_true", help="Research-only frozen episode long5.5 short7.875 multiplier")
     parser.add_argument("--research-btc-drawdown-sizing", action="store_true", help="Research-only global paired-minute DD25/15 sizing7.875/3.9375")
@@ -1170,9 +1207,9 @@ def main() -> None:
         parser.error("choose only one research V0 zero-TP option")
     if args.research_v0_selective_lifecycle_repairs and not (args.research_v0_execution_repairs and args.research_v0_deferred_selective_zero_tp):
         parser.error("selective lifecycle repairs require execution repairs and deferred selective zero TP")
-    if sum((args.research_sol_notional_cap_6x, args.research_portfolio_protect_45, args.research_btc_episode_loss_20, args.research_sol_remaining_btc_hedge, args.research_btc_direction_sizing, args.research_btc_drawdown_sizing, args.research_v3_risk is not None)) > 1:
+    if sum((args.research_sol_notional_cap_6x, args.research_portfolio_protect_45, args.research_btc_episode_loss_20, args.research_sol_remaining_btc_hedge, args.research_btc_direction_sizing, args.research_btc_drawdown_sizing, args.research_v3_risk is not None, args.research_h1_b1 is not None)) > 1:
         parser.error("research risk variants are mutually exclusive")
-    if (args.research_sol_notional_cap_6x or args.research_portfolio_protect_45 or args.research_btc_episode_loss_20 or args.research_sol_remaining_btc_hedge or args.research_btc_direction_sizing or args.research_btc_drawdown_sizing or args.research_v3_risk) and not (args.research_v0_selective_lifecycle_repairs and args.observe_minute_risk):
+    if (args.research_sol_notional_cap_6x or args.research_portfolio_protect_45 or args.research_btc_episode_loss_20 or args.research_sol_remaining_btc_hedge or args.research_btc_direction_sizing or args.research_btc_drawdown_sizing or args.research_v3_risk or args.research_h1_b1) and not (args.research_v0_selective_lifecycle_repairs and args.observe_minute_risk):
         parser.error("SOL cap requires selective lifecycle control and minute observer")
     if args.observe_minute_risk and not args.research_v0_execution_repairs:
         parser.error("minute risk observer requires isolated research execution repairs")
@@ -1190,6 +1227,7 @@ def main() -> None:
             research_btc_direction_sizing=args.research_btc_direction_sizing,
             research_btc_drawdown_sizing=args.research_btc_drawdown_sizing,
             research_v3_risk=args.research_v3_risk,
+            research_h1_b1=args.research_h1_b1,
             research_btc_episode_loss_20=args.research_btc_episode_loss_20,
             research_sol_remaining_btc_hedge=args.research_sol_remaining_btc_hedge,
         )

@@ -6,6 +6,7 @@ finer execution/settlement-mark dataset and liquidation validation exist.
 """
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR, ROUND_HALF_EVEN
 from math import log
@@ -15,7 +16,7 @@ from coinmaster.domain.deposit_protection import DepositProtection, percent
 
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.model.data import Bar, BarType, CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
-from nautilus_trader.model.enums import OrderSide, TimeInForce
+from nautilus_trader.model.enums import BarAggregation, OrderSide, TimeInForce
 from nautilus_trader.model.events import OrderAccepted, OrderCanceled, OrderDenied, OrderExpired, OrderFilled, OrderRejected
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 from nautilus_trader.trading.strategy import Strategy
@@ -52,6 +53,9 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
     research_v3_risk: str | None = None
+    research_h1_b1: str | None = None
+    research_h1_adverse_fraction: Decimal = Decimal("0.025")
+    research_confirmation_bars: tuple[BarType, ...] = ()
     research_btc_direction_sizing: bool = False
     research_btc_drawdown_sizing: bool = False
     research_btc_episode_loss_20: bool = False
@@ -171,6 +175,25 @@ class WaveOverlayStrategy(Strategy):
                     config.research_portfolio_protect_45, config.research_sol_notional_cap_multiple is not None,
                     config.tp_fee_floor_v1)) or config.candidate.btc_notional_multiplier != 7.875:
                 raise ValueError("RESEARCH_V3_RISK_REQUIRES_SEPARATE_V3_CONTROL")
+        if config.research_h1_b1 is not None:
+            if config.research_h1_b1 not in {"h1", "b1"}:
+                raise ValueError("RESEARCH_H1_B1_INVALID")
+            if any((config.research_v3_risk, config.research_btc_direction_sizing,
+                    config.research_btc_drawdown_sizing, config.research_btc_episode_loss_20,
+                    config.research_sol_remaining_btc_hedge, config.research_portfolio_protect_45,
+                    config.research_sol_notional_cap_multiple is not None, config.tp_fee_floor_v1,
+                    config.deposit_runtime is not None)) or not config.research_v0_selective_lifecycle_repairs:
+                raise ValueError("RESEARCH_H1_B1_REQUIRES_SEPARATE_V3_CONTROL")
+            if config.research_h1_adverse_fraction != Decimal("0.025"):
+                raise ValueError("RESEARCH_H1_FIXED_ADVERSE_2_5_PERCENT")
+            if len(config.research_confirmation_bars) != 4:
+                raise ValueError("RESEARCH_H1_B1_REQUIRES_NATIVE_CONFIRMATION_BARS")
+        self.h1_b1_audit: list[dict[str, object]] = []
+        self._confirmation_state: dict[BarType, dict] = {}
+        self._confirmation_events: dict[tuple, tuple[int, int]] = {}
+        self._b1_candidate: dict | None = None
+        self._b1_consuming = False
+        self._h1_cycle: dict | None = None
         self.v3_risk_audit: list[dict[str, object]] = []
         self._v3_reduction: dict | None = None
         self._v3_orders: dict[str, dict] = {}
@@ -197,7 +220,7 @@ class WaveOverlayStrategy(Strategy):
         self._research_protect_latch: dict[str, object] | None = None
         self.research_protection_audit: list[dict[str, object]] = []
         self.sol_cap_admission_audit: list[dict[str, str]] = []
-        self._candidate = config.candidate
+        self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
         self._domain = WaveOverlayState(self._candidate)
         self._bars: list[DailyBar] = list(config.seed_bars)
         self._last_accepted_session: int | None = (
@@ -270,6 +293,8 @@ class WaveOverlayStrategy(Strategy):
         }
 
     def on_start(self) -> None:
+        for confirmation_bar in self.config.research_confirmation_bars:
+            self.subscribe_bars(confirmation_bar)
         self.subscribe_bars(self.config.btc_bar_type)
         self.subscribe_bars(self.config.sol_bar_type)
         # Research feeds explicit VenueMark CustomData.  The live Bybit data
@@ -300,6 +325,9 @@ class WaveOverlayStrategy(Strategy):
             self.clock.cancel_timer(self._deposit_timer_name)
 
     def on_bar(self, bar: Bar) -> None:
+        if any(bar.bar_type == kind.standard() or bar.bar_type == kind for kind in self.config.research_confirmation_bars):
+            self._on_confirmation_bar(bar)
+            return
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
             return
         session = bar.ts_event
@@ -311,6 +339,156 @@ class WaveOverlayStrategy(Strategy):
         paired = self._day.setdefault(session, {})
         paired[bar.bar_type] = bar
         self._try_advance_session(session)
+
+    def _on_confirmation_bar(self, bar: Bar) -> None:
+        """Completed native bars only; no quote/mark accumulator or future bar."""
+        state = self._confirmation_state.setdefault(bar.bar_type, {})
+        if bar.ts_event <= state.get("timestamp_ns", -1):
+            return
+        close = float(bar.close)
+        old_high, old_low = state.get("high"), state.get("low")
+        count = state.get("count", 0) + 1
+        state.update(timestamp_ns=bar.ts_event, high=float(bar.high), low=float(bar.low),
+                     count=count)
+        if old_high is None:
+            return
+        side = 1 if close > old_high else -1 if close < old_low else 0
+        if side:
+            instrument_id = bar.bar_type.instrument_id
+            # OR: same-boundary 15m/1h bars produce one confirmation token.
+            self._confirmation_events[(instrument_id, side)] = (bar.ts_event, side)
+            if bar.bar_type.spec.aggregation == BarAggregation.HOUR:
+                self._confirmation_events[(instrument_id, "1h", side)] = (bar.ts_event, side)
+            if self.config.research_h1_b1 == "b1" and instrument_id == self.config.btc_id:
+                candidate = self._b1_candidate
+                if candidate and bar.ts_event > candidate["armed_ns"] and side == candidate["side"]:
+                    candidate["confirmed_ns"] = bar.ts_event
+
+    def _b1_flat_resolved(self) -> bool:
+        return not (self.cache.positions_open() or self.cache.orders_open() or
+                    self._pending_by_order or self._queued_intents or
+                    self._forced_close_reason or self._group_close_reconciliation_pending or
+                    self._liquidating or self._mandatory_sol_exit)
+
+    def _b1_gate_daily(self) -> bool:
+        if self.config.research_h1_b1 != "b1" or self._domain.episode is not None:
+            return True
+        ns, side = self._current_btc.ts_event, self._current_signals[-1].side
+        if not self._b1_flat_resolved():
+            return False
+        candidate = self._b1_candidate
+        if candidate is None or candidate["daily_ns"] != ns:
+            self._b1_candidate = {"daily_ns": ns, "armed_ns": max(ns, self.clock.timestamp_ns()),
+                                  "side": side, "confirmed_ns": None}
+            self.h1_b1_audit.append({"event": "B1_ARM", **self._b1_candidate})
+            return False
+        return self._b1_consuming and candidate["confirmed_ns"] is not None
+
+    def _h1_native_fill(self, intent: Intent, event) -> None:
+        if self.config.research_h1_b1 != "h1" or self._h1_cycle is None:
+            return
+        cycle = self._h1_cycle
+        if intent.reason == "H1_STAGE1":
+            if not cycle["first_fill_ns"]:
+                cycle["first_fill_ns"] = event.ts_event
+                cycle["beta"] = cycle["entry_beta"]
+            cycle["first_qty"] += event.last_qty.as_decimal()
+        elif intent.action == "BTC_REDUCE" and cycle["first_fill_ns"] and event.ts_event > cycle["first_fill_ns"]:
+            cycle["tp_ns"] = cycle["tp_ns"] or event.ts_event
+        self.h1_b1_audit.append({"event": "H1_NATIVE_FILL", "action": intent.action, "reason": intent.reason,
+            "timestamp_ns": event.ts_event, "quantity": str(event.last_qty), "price": str(event.last_px),
+            "commission": str(event.commission), "order_id": str(event.client_order_id)})
+
+    def _h1_check(self, ts_now: int) -> None:
+        if self.config.research_h1_b1 != "h1" or not self._domain.episode:
+            return
+        episode = self._domain.episode
+        if episode.btc_entry_vwap is None or self._forced_close_reason or self._liquidating:
+            return
+        positions = {p.instrument_id: p for p in self.cache.positions_open()}
+        btc, sol = positions.get(self.config.btc_id), positions.get(self.config.sol_id)
+        if self._h1_cycle is not None and self._h1_cycle["episode_id"] != episode.id:
+            self._h1_cycle = None
+        cycle = self._h1_cycle
+        mark = self._latest_marks.get(self.config.btc_id)
+        if mark is None or mark.ts_event > ts_now:
+            return
+        adverse = -Decimal(episode.side) * (mark.price / Decimal(str(episode.btc_entry_vwap)) - 1)
+        if cycle is None:
+            if btc is None or adverse <= self.config.research_h1_adverse_fraction:
+                return
+            cycle = self._h1_cycle = {"episode_id": episode.id, "armed_ns": ts_now,
+                "first_fill_ns": None, "first_qty": Decimal(0), "first_terminal": False,
+                "stage1_attempted": False, "stage2_attempted": False, "tp_ns": None,
+                "closed": False, "beta": None, "entry_beta": None}
+            self.h1_b1_audit.append({"event": "H1_ARM", "timestamp_ns": ts_now, "adverse": str(adverse)})
+        if not cycle["stage1_attempted"] and adverse <= self.config.research_h1_adverse_fraction:
+            self._h1_cycle = None
+            return
+        sol_work = any(i.action.startswith("SOL") for i in self._pending_by_order.values()) or any(i.action.startswith("SOL") for i, _, _ in self._queued_intents)
+        if cycle["stage1_attempted"] and not sol_work:
+            cycle["first_terminal"] = True
+            if not cycle["first_qty"]:
+                cycle["closed"] = True
+        quantities = (btc.quantity.as_decimal() if btc else Decimal(0), sol.quantity.as_decimal() if sol else Decimal(0))
+        if cycle.get("exposure_quantities") != quantities:
+            cycle["exposure_quantities"] = quantities
+            sol_mark = self._latest_marks.get(self.config.sol_id)
+            beta = cycle["beta"] or cycle["entry_beta"]
+            btc_notional = quantities[0] * mark.price * episode.side
+            sol_notional = quantities[1] * sol_mark.price * -episode.side if sol_mark else None
+            self.h1_b1_audit.append({"event": "H1_NATIVE_EXPOSURE", "timestamp_ns": ts_now,
+                "native_btc_quantity": str(quantities[0]), "native_sol_quantity": str(quantities[1]),
+                "signed_btc_mark_notional": str(btc_notional), "signed_sol_mark_notional": str(sol_notional),
+                "frozen_beta": str(beta), "beta_net_mark_exposure": str(btc_notional + beta * sol_notional) if beta and sol_notional is not None else None})
+        confirm = self._confirmation_events.get((self.config.sol_id, -episode.side))
+        reverse = self._confirmation_events.get((self.config.sol_id, "1h", episode.side))
+        timeout = cycle["first_fill_ns"] and ts_now >= cycle["first_fill_ns"] + 14 * 86_400_000_000_000
+        recovery = cycle["first_fill_ns"] and adverse <= Decimal("0.01") and reverse and reverse[0] == ts_now and reverse[0] > cycle["first_fill_ns"] and reverse[1] == episode.side
+        if btc is None or timeout or recovery or cycle["closed"]:
+            reason = "H1_BTC_FLAT" if btc is None else "H1_TIMEOUT" if timeout else "H1_RECOVERY" if recovery else "H1_CYCLE_CLOSED"
+            cycle["closed"] = True
+            self._discard_queued_intents(lambda i: i.action == "SOL_ADD")
+            for order in list(self.cache.orders_open()):
+                if order.instrument_id == self.config.sol_id and not order.is_reduce_only:
+                    self.cancel_order(order)
+            if sol is not None and not self._mandatory_sol_exit and not self._has_owned_sol_exit():
+                intent = self._domain._intent(episode, "SOL_EXIT", episode.side, None,
+                    quantity=float(sol.quantity), reason="SOL_HARD_TIMEOUT")
+                self.h1_b1_audit.append({"event": "H1_EXIT", "reason": reason, "timestamp_ns": ts_now})
+                self._preempt_with_mandatory_sol_exit(intent, episode.fixed_sigma, len(self._bars)-1)
+            return
+        if sol_work or self._mandatory_sol_exit or self._has_owned_sol_exit() or any(o.instrument_id == self.config.sol_id for o in self.cache.orders_open()):
+            return
+        if (self.config.max_mark_age_ns <= 0 or any(
+                self._latest_marks.get(iid) is None or not 0 <= ts_now-self._latest_marks[iid].ts_event <= self.config.max_mark_age_ns
+                for iid in (self.config.btc_id, self.config.sol_id))):
+            return
+        if not confirm or confirm[0] != ts_now or confirm[1] != -episode.side:
+            return
+        level = 0 if not cycle["stage1_attempted"] else 1
+        if level == 0:
+            if adverse <= self.config.research_h1_adverse_fraction or confirm[0] <= cycle["armed_ns"]:
+                return
+            beta = self._current_signals[-1].beta
+            if beta is None or not 0.2 < beta < 4:
+                return
+            cycle["entry_beta"] = Decimal(str(beta))
+            notional = Decimal("0.5") * btc.quantity.as_decimal() * mark.price / cycle["entry_beta"]
+            intent = self._domain._intent(episode, "SOL_ADD", -episode.side, 0,
+                requested_notional=float(notional), reason="H1_STAGE1")
+            cycle["stage1_attempted"] = True
+        else:
+            if cycle["stage2_attempted"] or not cycle["first_terminal"] or not cycle["tp_ns"] or confirm[0] <= cycle["tp_ns"]:
+                return
+            intent = self._domain._intent(episode, "SOL_ADD", -episode.side, 1,
+                quantity=float(cycle["first_qty"]), reason="H1_STAGE2")
+            cycle["stage2_attempted"] = True
+        self._queued_intents.append((intent, self._current_signals[-1].sigma, len(self._bars)-1))
+        self._queued_intent_ready_ns[intent.id] = ts_now
+        self.h1_b1_audit.append({"event": intent.reason, "timestamp_ns": ts_now, "confirmation_ns": confirm[0],
+            "btc_remaining": str(btc.quantity), "btc_mark": str(mark.price), "beta": str(cycle["entry_beta"]),
+            "quantity": intent.quantity, "requested_notional": intent.requested_notional})
 
     def on_data(self, data) -> None:
         """Receive explicit marks without ever making them execution data."""
@@ -675,7 +853,7 @@ class WaveOverlayStrategy(Strategy):
                 "drawdown_fraction": str(self._btc_sizing_dd), "reduced": self._btc_sizing_reduced})
 
     def _research_btc_entry_multiplier(self) -> float | None:
-        if self.config.research_v3_risk:
+        if self.config.research_v3_risk or self.config.research_h1_b1:
             base = 5.5 if self._current_signals[-1].side == 1 else 7.875
             return base / 2 if self.config.research_v3_risk == "b25" and self._btc_sizing_reduced else base
         if self.config.research_btc_direction_sizing:
@@ -925,6 +1103,9 @@ class WaveOverlayStrategy(Strategy):
             return
         if self._liquidating or self._backfill_error is not None:
             return
+        if not self._b1_gate_daily():
+            self._daily_decision_reason = "B1_WAIT_FRESH_CONFIRMATION"
+            return
         if self.config.research_v3_risk:
             ns = self._current_btc.ts_event
             side = self._current_signals[-1].side
@@ -957,9 +1138,9 @@ class WaveOverlayStrategy(Strategy):
         intents = self._domain.decide(
             self._bars, self._current_signals, len(self._bars) - 1,
             self._active_marked(self._current_btc_mark, self._current_sol_mark),
-            **({"btc_notional_multiplier": self._research_btc_entry_multiplier()} if (self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing or self.config.research_v3_risk) else {}),
+            **({"btc_notional_multiplier": self._research_btc_entry_multiplier()} if (self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing or self.config.research_v3_risk or self.config.research_h1_b1) else {}),
         )
-        if self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing or self.config.research_v3_risk:
+        if self.config.research_btc_direction_sizing or self.config.research_btc_drawdown_sizing or self.config.research_v3_risk or self.config.research_h1_b1:
             for entry in intents:
                 if entry.action == "BTC_ENTRY":
                     self.btc_sizing_audit.append({"event": "EPISODE_ENTRY_SIZING", "episode_id": entry.episode_id,
@@ -1060,7 +1241,8 @@ class WaveOverlayStrategy(Strategy):
             # quote. No queued increase may pass while this is in progress.
             if (tick.instrument_id != self.config.sol_id
                     or any(order.instrument_id == self.config.sol_id for order in self.cache.orders_open())
-                    or any(owner["instrument_id"] == self.config.sol_id for owner in self._v3_orders.values())):
+                    or any(owner["instrument_id"] == self.config.sol_id for owner in self._v3_orders.values())
+                    or (self.config.research_h1_b1 == "h1" and any(i.action == "SOL_ADD" for i in self._pending_by_order.values()))):
                 return
             intent, sigma, index = self._mandatory_sol_exit
             if self.config.research_v0_execution_repairs and tick.ts_event < self._mandatory_sol_retry_after_ns:
@@ -1080,6 +1262,24 @@ class WaveOverlayStrategy(Strategy):
                     if self._record_submission(order, f"liquidation:{order.client_order_id}", "liquidation", "LIQUIDATION_CLOSE"):
                         self._liquidation_submitted.add(tick.instrument_id); self._liquidation_orders.add(str(order.client_order_id)); self.submit_order(order)
             return
+        if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
+            candidate = self._b1_candidate
+            if (candidate and candidate["confirmed_ns"] is not None
+                    and tick.ts_event == candidate["confirmed_ns"] and self._b1_flat_resolved()
+                    and self._entries_enabled()):
+                self._current_btc_mark = self._latest_marks.get(self.config.btc_id)
+                self._current_sol_mark = self._latest_marks.get(self.config.sol_id)
+                self._b1_consuming = True
+                try:
+                    self._advance_current_day()
+                finally:
+                    self._b1_consuming = False
+                if self._domain.episode is not None:
+                    self.h1_b1_audit.append({"event": "B1_CONFIRMED_ENTRY", **candidate,
+                                            "quote_ns": tick.ts_event})
+                    self._b1_candidate = None
+        if tick.instrument_id == self.config.sol_id:
+            self._h1_check(tick.ts_event)
         for item in list(self._queued_intents):
             intent, sigma, index = item
             if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
@@ -1244,6 +1444,9 @@ class WaveOverlayStrategy(Strategy):
             self._advance_current_day()
 
     def _stale_sol_add(self, intent: Intent, index: int) -> bool | None:
+        if self.config.research_h1_b1 == "h1" and intent.reason in {"H1_STAGE1", "H1_STAGE2"}:
+            episode = self._domain.episode
+            return episode is None or episode.id != intent.episode_id or self._h1_cycle is None or self._h1_cycle["closed"]
         episode = self._domain.episode
         if episode is None or intent.episode_id != episode.id or not self._bars:
             return True
@@ -1978,6 +2181,7 @@ class WaveOverlayStrategy(Strategy):
             if instrument is None or event.commission is None or event.commission.currency != instrument.quote_currency:
                 raise ValueError("BTC_TP_ENTRY_FEE_CURRENCY_UNSUPPORTED")
             entry_fee = event.commission.as_decimal()
+        self._h1_native_fill(intent, event)
         self._apply_confirmed_domain_fill(
             intent, str(event.client_order_id), float(event.last_qty), float(event.last_px),
             event.ts_event, closed, entry_fee=entry_fee,
