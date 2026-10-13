@@ -1,0 +1,85 @@
+{
+  "source_sha": "7360fd0652182c5503e2da3ed80f443e2aef504d",
+  "base_sha": "6abe8d5",
+  "native_version": "1.231.0",
+  "selector": "research_h1_b1: null(default),h1,b1; mutually exclusive all prior risk/sizing flags",
+  "contract": {
+    "directional_btc_multiplier": {
+      "long": 5.5,
+      "short": 7.875
+    },
+    "shared_confirmation": "Closed Close>previous High LONG or Close<previous Low SHORT;15m OR1h; strict later-than-arm/TP; receipt timestamp equals current native quote; per-asset-side OR tokens; no EMA filter",
+    "H1": {
+      "threshold": "strict adverse >0.025",
+      "first_stage": "half actual remaining BTC marked notional/current valid daily beta; native admission unchanged",
+      "beta": "freeze current daily beta at actual first SOL fill",
+      "second_stage": "once same actual stage1 filled quantity after first parent terminal, actual BTC TP strictly after first SOL fill, new SOL confirmation strictly after that TP",
+      "stage2_remaining_btc_cap": false,
+      "btc_partial_sol_trim": false,
+      "recovery": "adverse<=0.01 AND fresh opposite SOL1h confirmation",
+      "timeout_days": 14,
+      "btc_flat": "cancel SOL openings and close native protective SOL; retain legacy BTC episode cadence",
+      "closed_cycle_reentry": false,
+      "legacy_SOL_overlay": false
+    },
+    "B1": {
+      "daily_ema34": "direction candidate only; expire/rearm daily without required cross",
+      "actual_entry": "native flat and resolved orders/ACK; new15m OR1h matching direction then current executable quote and original selective q0/q1 admission",
+      "mandatory_daily_exits": "unchanged immediate REGIME/TRAIL",
+      "legacy_SOL_overlay": true
+    }
+  },
+  "verification": {
+    "relevant_group": {
+      "passed": 156,
+      "seconds": 77.87,
+      "peak_rss_kib": 400404,
+      "note": "before final H1 fresh mark guard and exposure report additions"
+    },
+    "final_focused": {
+      "passed": 13,
+      "seconds": 2.75,
+      "peak_rss_kib": 358708,
+      "tests": "native stage1 partial fill, causal actual TP then equal-quantity stage2, BTC-flat SOL exit retaining episode, UNKNOWN_ACK blocking, strict freshness/disarm, same-boundary conflicting OR both orders, recovery exit priority, actual B1 entry sizing, daily expiry, native121-minute real OHLC15m/1h inclusive boundary and no future minute"
+    },
+    "compile": "PASS",
+    "git_diff_check": "PASS",
+    "narrow_review": {
+      "status": "GO",
+      "source_sha": "7360fd0652182c5503e2da3ed80f443e2aef504d",
+      "receipt_path": "reports/h1-b1-113/review.json",
+      "receipt_sha256": "3711b415c825f1e24367af37a17984e4d914541fea3ba86fe2cf596c52038e77",
+      "confirmed_by": "root"
+    }
+  },
+  "memory": {
+    "bar_cache_capacity_per_type": 128,
+    "new_streams": 6,
+    "max_new_cached_bars": 768,
+    "max_weekly_new_source_bars": 20160,
+    "build_empty_bars": false,
+    "bar_execution": false,
+    "feature_history": "unchanged existing full daily strategy/domain buffers; native cache reduction does not truncate waves/beta",
+    "scalar_state": "four previous-bar dictionaries, at most eight asset/side/1h tokens, one candidate, one H1 cycle",
+    "audit": "actual arms/intents/fills/exits and changes in native position quantities; no per-minute/per-bar list",
+    "limitations": "Focused/grouped test RSS is not a full24m engine memory guarantee.",
+    "bar_signal_objects": "At most six DataEngine streams *128 cache bars=768; at most four aggregation builders; at most20160 weekly source bars. Tokens bounded8, not per-bar history."
+  },
+  "pilot_actions": 0,
+  "files": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "c8850baac3d84b8a39f1f1cf4c62ab768aca1c4e4dd913a6eae863bd1e5147b4",
+    "runtime/coinmaster/research/native_baseline.py": "a04b6edd869caa8057ca92de24a980088e2c6a641c3c2765981b7cc5a40bc83f",
+    "runtime/tests/test_native_h1_b1.py": "171852f40c755a7345a04099c04cb5c131108bfa963c3275dae04254ed4bac85",
+    "reports/h1-b1-113/implementation/final-focused-resource.log": "88b12405e42fbaa428284538bb2c87da46254fb50660d24f8d8dd8db8bc41f37",
+    "reports/h1-b1-113/implementation/final-focused.log": "f5a0c183ffd5ec776eb1361c409a9e51e349b89fdc5a8cb7f5ed1a582eaa28e5",
+    "reports/h1-b1-113/implementation/tests-resource.log": "ec3e267f5fe392eabe7e6543b3d28542037f2378ea115845adf3239b900418cb",
+    "reports/h1-b1-113/implementation/tests.log": "685158f79d2a9bcce1b68f49cbf2c795bd30769b3bacb368c2cc1e2fec0da82b"
+  },
+  "reporting_limitations": [
+    "Legacy stats.event_count/max_batch_events count marks+daily signals+quotes only; newly added nonmatching source Bars are omitted. Treat them as legacy input counts, not full native event counts.",
+    "Source Bar coverage equals two source Bars per covered paired source minute; full canonical run expected2*1051200. Actual native BacktestResult and native observer/source coverage remain authoritative.",
+    "Root retained frozen source7360fd0 after review and required documentation-only correction for these non-economic counters."
+  ],
+  "full_24m_economic_engine_runs_by_implementation_agent": 0,
+  "native_test_engines": "Existing relevant test fixtures and bounded new H1/B1 fixtures only; native121-minute OHLC fixture is verification, not a24m economic comparison."
+}
