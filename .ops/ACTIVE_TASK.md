@@ -1,3 +1,9 @@
+CURRENT HEDGE H1 / BTC CONFIRMATION B1 — 2026-10-13 AGREEMENT DRAFT COMPLETE
+
+OwnerrequestedtargetedauditandalgorithmsONLY; implementation/config/backtest/deploy/restart/orders explicitlyNOTauthorizedbeforeagreement. Installed81e6318sourcecontractschecked; repo8a488b4 unchangedtradingfiles. Draft reports/current-hedge-20261013/hedge-btc-confirmation-proposal.md: strictBTCentry-adverse>2% +freshconfirmedSOL15mOR1h; sharedclosevsEMA20+closedprevioushigh/lowbreak; H1partialfactorh.5actualremainingBTC/beta, nativeoneprotectiveSOLcycleinsteadparallellegacyoverlay, reductionafteractualBTCfills/BTCflatclose, recovery<=1%+oppositeSOL1h/existing14daytimeout; B1dailyEMA34directiononly, actualBTCentrywaitfresh1hconfirmation+sameclosedpricevsexistingdailyEMA34. Immediateexistingmandatoryexits unchanged. Independentpatternreview nofuturebar/deadlock; EMA-slope redundancyremovedinproposal. Allnewparametersproposed/unmeasured; no DD/ROI promise.
+
+CurrentSOLTPrights/z/frozeninitialH/dailysampling/lateSOLafterBTCflat areintentionaloverlayrules, notprovenbugs. ExistingV3/control/failedremainingSOLclip/R2 evidence retained; noautomaticextraengine. Nextowneragreementonconcretedraft, then separatelyboundedH1/B1implementation+nativecomparison; pilot/source/config/secrets preserved.
+
 CURRENT PILOT / PROPOSED EARLY HEDGE EXPLANATION — 2026-10-13 COMPLETE
 
 Read-only ownerquestion answered oninstalled81e6318/PID2009732/Sandbox/livefalse, snapshot18:56:13UTC. BTCshort0.68330@81877/mark83142/uPnL−864.37/equity11438.17255; priorlong closed11OctviaTP, notcurrentREGIMEflip. Recomputed13OctBTCcompletedclose81807.7<EMA34=81840.4374 explainsSHORT;rawSOLz+.2631414 failsshortSOLlongthreshold<=−1.25 despite actualTP1/2rights. Callbackreevaluatessamecompletedfeatures;nextnewdaily14Oct00UTC. Proposed2%entryadversitythreshold83514.54 notyetmetatsnapshot1.545%;notinstalledstop.
