@@ -1,0 +1,74 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_h1_actual_source_timer_quote_chronology_two_native_stages ________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-599/test_h1_actual_source_timer_qu0')
+
+    def test_h1_actual_source_timer_quote_chronology_two_native_stages(tmp_path):
+        from nautilus_trader.backtest.engine import BacktestEngine
+        from nautilus_trader.backtest.config import BacktestEngineConfig
+        from nautilus_trader.config import LoggingConfig
+        from nautilus_trader.cache.config import CacheConfig
+        from nautilus_trader.data.config import DataEngineConfig
+        from nautilus_trader.model.enums import AccountType, OmsType
+        from nautilus_trader.model.objects import Money
+        from coinmaster.research.native_fixture import SIM
+        from coinmaster.venues.marks import venue_mark
+        from nautilus_trader.model.identifiers import ClientId
+        import json
+        base=1725148800*1_000_000_000; cadence=60_000_000_000
+        class Probe(NativeProbe):
+            def __init__(self,c):
+                super().__init__(c);self.timeline=[];self.started=False
+            def on_bar(self,b):
+                if b.bar_type.instrument_id==SOL_PERP.id:
+                    self.timeline.append(dict(event='BAR',close_ns=b.ts_event,receipt_ns=self.clock.timestamp_ns(),quote_sequence=getattr(self,'_h1_sol_quote_sequence',0)))
+                super().on_bar(b)
+            def on_quote_tick(self,q):
+                if not self.started and q.instrument_id==BTC_PERP.id:
+                    self.started=True
+                    prepare_day(self,q.ts_event,1)
+                    ep=self._domain.episode=Episode('pipeline',1,10000,1,wave_levels=(.01,.1,.2))
+                    intent=self._domain._intent(ep,'BTC_ENTRY',1,None,requested_notional=10000)
+                    self._queued_intents.append((intent,.01,2))
+                    self._queued_intent_ready_ns[intent.id]=q.ts_event
+                if q.instrument_id==SOL_PERP.id:
+                    self.timeline.append(dict(event='SOL_QUOTE',quote_ns=q.ts_event))
+                super().on_quote_tick(q)
+            def on_order_filled(self,event):
+                self.timeline.append(dict(event='FILL',instrument=str(event.instrument_id),timestamp_ns=event.ts_event,quantity=str(event.last_qty)))
+                super().on_order_filled(event)
+        s=Probe(config('h1',max_mark_age_ns=cadence,candidate=Candidate(sol_overlay_enabled=False)))
+        e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR'),cache=CacheConfig(bar_capacity=128),data_engine=DataEngineConfig(time_bars_build_with_no_updates=False)))
+        e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,bar_execution=False)
+        e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(s)
+        source=[];mark_rows=[];quotes=[]
+        for m in range(1,122):
+            ns=base+m*cadence;bp=D('100') if m<=2 else D('97') if m<=35 else D('103')
+            sp=D('100') if m<=15 else D('100')-D(m-15)/10
+            for i,p in ((BTC_PERP,bp),(SOL_PERP,sp)):
+                k=BarType(i.id,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL)
+                source.append(bar(k,ns,p,p,p))
+                mark_rows.append(venue_mark(i.id,p,ns))
+                quotes.append(tick(i,ns,str(p)))
+        try:
+            e.add_data(source,sort=False);e.add_data(mark_rows,client_id=ClientId('TEST_MARKS'),sort=False);e.add_data(quotes,sort=False);e.sort_data();e.run(streaming=True);e.clear_data()
+            proof={'timeline':s.timeline,'audit':s.h1_b1_audit}
+            (tmp_path/'h1-native-routing-proof.json').write_text(json.dumps(proof,indent=2))
+            # Pin causal ordering: quote at minute30 precedes closed30m bar receipt.
+            close=base+30*cadence
+            qidx=next(i for i,r in enumerate(s.timeline) if r['event']=='SOL_QUOTE' and r['quote_ns']==close)
+            bidx=next(i for i,r in enumerate(s.timeline) if r['event']=='BAR' and r['close_ns']==close)
+            assert qidx<bidx
+            stages=[r for r in s.h1_b1_audit if r['event'] in {'H1_STAGE1','H1_STAGE2'}]
+>           assert [r['event'] for r in stages]==['H1_STAGE1','H1_STAGE2'], proof['audit']
+E           AssertionError: [{'adverse': '0.03', 'event': 'H1_ARM', 'timestamp_ns': 1725148980000000000}, {'beta_net_mark_exposure': None, 'event'...C_REDUCE', 'commission': '1.13625000 USDT', 'event': 'H1_NATIVE_FILL', 'order_id': 'O-20240901-000300-001-000-2', ...}]
+E           assert [] == ['H1_STAGE1', 'H1_STAGE2']
+E             
+E             Right contains 2 more items, first extra item: 'H1_STAGE1'
+E             Use -v to get more diff
+
+runtime/tests/test_native_h1_b1.py:310: AssertionError
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_h1_b1.py::test_h1_actual_source_timer_quote_chronology_two_native_stages
+1 failed, 6 warnings in 2.60s

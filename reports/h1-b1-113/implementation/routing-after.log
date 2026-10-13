@@ -1,0 +1,64 @@
+..FF................                                                     [100%]
+=================================== FAILURES ===================================
+________ test_closed_confirmation_or_strictly_after_arm_no_ema_gate[1] _________
+
+side = 1
+
+    @pytest.mark.parametrize('side', [1,-1])
+    def test_closed_confirmation_or_strictly_after_arm_no_ema_gate(side):
+        s = NativeProbe(config('b1'))
+        s._b1_candidate = dict(daily_ns=1, armed_ns=3, side=side, confirmed_ns=None)
+        kind=s.config.research_confirmation_bars[0]
+        s.on_bar(bar(kind, 2, 100, 101, 99))
+        s.on_bar(bar(kind, 3, 102 if side==1 else 98))
+        assert s._b1_candidate['confirmed_ns'] is None
+>       s.on_bar(bar(kind, 4, 103 if side==1 else 97))
+
+runtime/tests/test_native_h1_b1.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+runtime/coinmaster/strategy/wave_overlay.py:332: in on_bar
+    self._on_confirmation_bar(bar)
+runtime/coinmaster/strategy/wave_overlay.py:377: in _on_confirmation_bar
+    candidate["confirmation_receipt_ns"] = self.clock.timestamp_ns()
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+nautilus_trader/common/component.pyx:212: in nautilus_trader.common.component.Clock.timestamp_ns
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NotImplementedError: method `timestamp_ns` must be implemented in the subclass
+
+nautilus_trader/common/component.pyx:225: NotImplementedError
+________ test_closed_confirmation_or_strictly_after_arm_no_ema_gate[-1] ________
+
+side = -1
+
+    @pytest.mark.parametrize('side', [1,-1])
+    def test_closed_confirmation_or_strictly_after_arm_no_ema_gate(side):
+        s = NativeProbe(config('b1'))
+        s._b1_candidate = dict(daily_ns=1, armed_ns=3, side=side, confirmed_ns=None)
+        kind=s.config.research_confirmation_bars[0]
+        s.on_bar(bar(kind, 2, 100, 101, 99))
+        s.on_bar(bar(kind, 3, 102 if side==1 else 98))
+        assert s._b1_candidate['confirmed_ns'] is None
+>       s.on_bar(bar(kind, 4, 103 if side==1 else 97))
+
+runtime/tests/test_native_h1_b1.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+runtime/coinmaster/strategy/wave_overlay.py:332: in on_bar
+    self._on_confirmation_bar(bar)
+runtime/coinmaster/strategy/wave_overlay.py:377: in _on_confirmation_bar
+    candidate["confirmation_receipt_ns"] = self.clock.timestamp_ns()
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+nautilus_trader/common/component.pyx:212: in nautilus_trader.common.component.Clock.timestamp_ns
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   NotImplementedError: method `timestamp_ns` must be implemented in the subclass
+
+nautilus_trader/common/component.pyx:225: NotImplementedError
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_h1_b1.py::test_closed_confirmation_or_strictly_after_arm_no_ema_gate[1]
+FAILED runtime/tests/test_native_h1_b1.py::test_closed_confirmation_or_strictly_after_arm_no_ema_gate[-1]
+2 failed, 18 passed, 66 warnings in 3.47s

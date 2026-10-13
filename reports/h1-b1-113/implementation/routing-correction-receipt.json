@@ -1,0 +1,73 @@
+{
+  "source_sha": "94e0e6cecbdef93ed3b1422ecfdffd26d3d936a5",
+  "source_parent_sha": "97ccbb5f99fc859cffe68d85c4c80e7575a18da1",
+  "superseded_signal_routing_source_sha": "7360fd0652182c5503e2da3ed80f443e2aef504d",
+  "native_version": "1.231.0",
+  "classification": "DIRECTED_SHARED_NATIVE_SIGNAL_ROUTING_CORRECTION",
+  "root_cause": "Nautilus1.231 processes and settles BTC/SOL quotes at a bar boundary before publishing its internal closure timer callback at that same ns. Requiring barclose_ns==currentquote_ns starved both selectors. Prior bar-only and manually offered token fixtures did not cover source Bar+marks+quotes timer chronology.",
+  "old_results": "Preserve original H1 completed and original B1 stopped artifacts as INVALID_SIGNAL_ROUTING; original economic GO superseded, no ranking/promotion from them.",
+  "correction": "Store actual native callback receipt and expected next quote sequence for traded asset. Consume only that first current SOL quote for H1 or BTC quote for B1, with close<=receipt<=quote and0<=quote-close<=60s. No cached book execution, no bar-callback orders, no futureclose, no old prearm/postTP reuse or second-quote reuse. Current paired marks remain mandatory.",
+  "unchanged": "H1threshold2.5%, stage1 sizing/beta, actual fill stage2 reference/post-first-fill TP condition, native admission/matching/funding/money, exits/priority, B1 daily direction and original q0/q1 selective admission, legacy SOL, defaultOFF/exclusivity, native1.231, native_baseline.py/config/counters.",
+  "native_proofs": {
+    "H1": {
+      "input": "121real-shaped external1mOHLC bars per asset\u2192paired CustomData marks\u2192BTC/SOL quotes\u2192native internal15m/1h timers",
+      "chronology": "SOLquote30m precedes closed30m callback; callback receipt30m, first later currentSOLquote31m",
+      "stage1_requested_notional": 3637.5,
+      "stage1_actual_native_fill_quantity": "36.9",
+      "stage1_native_fill_minute": 31,
+      "actual_BTC_TP_minute": 36,
+      "stage2_confirmation_minute": 45,
+      "stage2_first_quote_and_native_fill_minute": 46,
+      "stage2_requested_and_actual_quantity": "36.9",
+      "no_manually_seeded_confirmation_tokens": true
+    },
+    "B1": {
+      "chronology": "BTCquote30m precedes closed30m callback; callback receipt30m, first later currentBTCquote31m",
+      "candidate": "Armed by strategy daily decision fixture; native MTF signal never manually supplied",
+      "entry_intent_q0_minute": 31,
+      "original_selective_q1_actual_native_fill_minute": 32,
+      "actual_native_vwap": 101.5,
+      "direction_multiplier": 5.5,
+      "no_manually_seeded_confirmation_tokens": true
+    }
+  },
+  "verification": {
+    "first_shared_pass": {
+      "passed": 164,
+      "seconds": 71.25,
+      "note": "Before final explicit futureclose<=receipt guard; overlapping suite."
+    },
+    "exact_final_pass": {
+      "passed": 170,
+      "seconds": 73.79,
+      "peak_rss_kib": 391412,
+      "log": "routing-final-verification.log",
+      "coverage": "Both actual source\u2192quote native pipeline proofs; old native lifecycle/sizing/minute/baseline regressions; same boundary trueOR; partialfills/actualTP; unknownACK; explicit previous/second sequence/futureclose/backwardquote/exact60s/>60s cases."
+    },
+    "counts_note": "Overlapping suite, not334 distinct tests.",
+    "compile": "PASS",
+    "diff_check": "PASS",
+    "independent_review": {
+      "verdict": "GO",
+      "source_sha": "94e0e6cecbdef93ed3b1422ecfdffd26d3d936a5",
+      "path": "reports/h1-b1-113/review-routing-correction.json",
+      "sha256": "e2d9a25a3c0aff7c905dbaef98f496d5f207ca938c91cb5d87c4141597a927e6"
+    }
+  },
+  "memory": "At most four newH1SOLreceipt slots and two tradedquote sequence counters; no per-minute/per-bar production audit; previous nativecache128/noempty bounds unchanged.",
+  "full_24m_engines_run_by_implementation_owner": 0,
+  "pilot_actions": 0,
+  "files": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "6d26a581f5f693e6c35c47a66c850774877dbd4f59d5d2d9f90a346ee9c26f17",
+    "runtime/tests/test_native_h1_b1.py": "601679cbd0f004323a8a3cba0fc2287fd82e3e39047531115389b58557be0a71",
+    "runtime/coinmaster/research/native_baseline.py": "a04b6edd869caa8057ca92de24a980088e2c6a641c3c2765981b7cc5a40bc83f",
+    "reports/h1-b1-113/implementation/routing-before.log": "746fbc1be687aa63bf3a7ccb76cc3b228ca5536322458ae4dbc9aa8210445ae7",
+    "reports/h1-b1-113/implementation/routing-after.log": "bd46d5f7b0895950a14f4d02e37610d4275d08aa5df12dd1e5d1498f2494c0ba",
+    "reports/h1-b1-113/implementation/routing-verification.log": "954c6c17509b3a31b1e8c5029d8a9ad609431c81c33387ec80279812f80b9945",
+    "reports/h1-b1-113/implementation/routing-verification-resource.log": "b4c74f96d2c7b67813d8990c1c2ce16918716369e0fe0d030d508fed760afcda",
+    "reports/h1-b1-113/implementation/routing-final-verification.log": "f85a0e1d7d5c8b163a2d2cfda71520fc0b42097e5dfac22178c59261bc3c422d",
+    "reports/h1-b1-113/implementation/routing-final-resource.log": "6d8a7d648c9792a42f6ce54077d027f371f69758d5d572cd4f66e360b1d151cd",
+    "reports/h1-b1-113/implementation/h1-native-routing-proof.json": "29f44e1fd6c0eeead5a77e5980825f200c754566faea3fa1c3566388b695b4d1",
+    "reports/h1-b1-113/implementation/b1-native-routing-proof.json": "6a5ee5dca0b84461318c9561ba7a7cb0f58ce9c38054d63db3fd30ec7b8c2252"
+  }
+}

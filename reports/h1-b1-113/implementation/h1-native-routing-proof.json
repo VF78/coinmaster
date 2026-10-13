@@ -1,0 +1,688 @@
+{
+  "timeline": [
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725148860000000000
+    },
+    {
+      "event": "FILL",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "timestamp_ns": 1725148920000000000,
+      "quantity": "75.000"
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725148920000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725148980000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149040000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149100000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149160000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149220000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149280000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149340000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149400000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149460000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149520000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149580000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149640000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149700000000000
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725149700000000000,
+      "receipt_ns": 1725149700000000000,
+      "quote_sequence": 15
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149760000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149820000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149880000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725149940000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150000000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150060000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150120000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150180000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150240000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150300000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150360000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150420000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150480000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150540000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150600000000000
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725150600000000000,
+      "receipt_ns": 1725150600000000000,
+      "quote_sequence": 30
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150660000000000
+    },
+    {
+      "event": "FILL",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "timestamp_ns": 1725150660000000000,
+      "quantity": "36.9"
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150720000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150780000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150840000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150900000000000
+    },
+    {
+      "event": "FILL",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "timestamp_ns": 1725150960000000000,
+      "quantity": "11.250"
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725150960000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151020000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151080000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151140000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151200000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151260000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151320000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151380000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151440000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151500000000000
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725151500000000000,
+      "receipt_ns": 1725151500000000000,
+      "quote_sequence": 45
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151560000000000
+    },
+    {
+      "event": "FILL",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "timestamp_ns": 1725151560000000000,
+      "quantity": "36.9"
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151620000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151680000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151740000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151800000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151860000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151920000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725151980000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152040000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152100000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152160000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152220000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152280000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152340000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152400000000000
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725152400000000000,
+      "receipt_ns": 1725152400000000000,
+      "quote_sequence": 60
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725152400000000000,
+      "receipt_ns": 1725152400000000000,
+      "quote_sequence": 60
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152460000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152520000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152580000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152640000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152700000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152760000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152820000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152880000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725152940000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153000000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153060000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153120000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153180000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153240000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153300000000000
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725153300000000000,
+      "receipt_ns": 1725153300000000000,
+      "quote_sequence": 75
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153360000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153420000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153480000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153540000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153600000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153660000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153720000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153780000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153840000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153900000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725153960000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154020000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154080000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154140000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154200000000000
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725154200000000000,
+      "receipt_ns": 1725154200000000000,
+      "quote_sequence": 90
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154260000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154320000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154380000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154440000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154500000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154560000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154620000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154680000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154740000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154800000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154860000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154920000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725154980000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155040000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155100000000000
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725155100000000000,
+      "receipt_ns": 1725155100000000000,
+      "quote_sequence": 105
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155160000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155220000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155280000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155340000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155400000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155460000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155520000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155580000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155640000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155700000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155760000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155820000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155880000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725155940000000000
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725156000000000000
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725156000000000000,
+      "receipt_ns": 1725156000000000000,
+      "quote_sequence": 120
+    },
+    {
+      "event": "BAR",
+      "close_ns": 1725156000000000000,
+      "receipt_ns": 1725156000000000000,
+      "quote_sequence": 120
+    },
+    {
+      "event": "SOL_QUOTE",
+      "quote_ns": 1725156060000000000
+    }
+  ],
+  "audit": [
+    {
+      "event": "H1_ARM",
+      "timestamp_ns": 1725148980000000000,
+      "adverse": "0.03"
+    },
+    {
+      "event": "H1_NATIVE_EXPOSURE",
+      "timestamp_ns": 1725148980000000000,
+      "native_btc_quantity": "75",
+      "native_sol_quantity": "0",
+      "signed_btc_mark_notional": "7275",
+      "signed_sol_mark_notional": "-0",
+      "frozen_beta": "None",
+      "beta_net_mark_exposure": null
+    },
+    {
+      "event": "H1_STAGE1",
+      "timestamp_ns": 1725150660000000000,
+      "confirmation_ns": 1725150600000000000,
+      "confirmation_receipt_ns": 1725150600000000000,
+      "confirmation_age_ns": 60000000000,
+      "sol_quote_sequence": 31,
+      "btc_remaining": "75.000",
+      "btc_mark": "97",
+      "beta": "1.0",
+      "quantity": null,
+      "requested_notional": 3637.5,
+      "intent_id": "e41d7901-10c6-42e8-82a7-daec60c775ba",
+      "first_sol_fill_ns": null,
+      "qualifying_btc_tp_ns": null,
+      "actual_stage1_quantity": "0",
+      "first_parent_terminal": false
+    },
+    {
+      "event": "H1_NATIVE_FILL",
+      "action": "SOL_ADD",
+      "reason": "H1_STAGE1",
+      "timestamp_ns": 1725150660000000000,
+      "quantity": "36.9",
+      "price": "98.40",
+      "commission": "3.63096000 USDT",
+      "order_id": "O-20240901-003100-001-000-5",
+      "intent_id": "e41d7901-10c6-42e8-82a7-daec60c775ba"
+    },
+    {
+      "event": "H1_NATIVE_EXPOSURE",
+      "timestamp_ns": 1725150720000000000,
+      "native_btc_quantity": "75",
+      "native_sol_quantity": "36.9",
+      "signed_btc_mark_notional": "7275",
+      "signed_sol_mark_notional": "-3627.27",
+      "frozen_beta": "1.0",
+      "beta_net_mark_exposure": "3647.730"
+    },
+    {
+      "event": "H1_NATIVE_FILL",
+      "action": "BTC_REDUCE",
+      "reason": "BTC_TP1",
+      "timestamp_ns": 1725150960000000000,
+      "quantity": "11.250",
+      "price": "101.0",
+      "commission": "1.13625000 USDT",
+      "order_id": "O-20240901-000300-001-000-2",
+      "intent_id": "37a21a69-b0d4-43eb-b9d5-bfca664f556e"
+    },
+    {
+      "event": "H1_NATIVE_EXPOSURE",
+      "timestamp_ns": 1725150960000000000,
+      "native_btc_quantity": "63.75",
+      "native_sol_quantity": "36.9",
+      "signed_btc_mark_notional": "6566.25",
+      "signed_sol_mark_notional": "-3612.51",
+      "frozen_beta": "1.0",
+      "beta_net_mark_exposure": "2953.740"
+    },
+    {
+      "event": "H1_STAGE2",
+      "timestamp_ns": 1725151560000000000,
+      "confirmation_ns": 1725151500000000000,
+      "confirmation_receipt_ns": 1725151500000000000,
+      "confirmation_age_ns": 60000000000,
+      "sol_quote_sequence": 46,
+      "btc_remaining": "63.750",
+      "btc_mark": "103",
+      "beta": "1.0",
+      "quantity": 36.9,
+      "requested_notional": null,
+      "intent_id": "888891b9-1b59-4ac9-88d2-b0488f591f8b",
+      "first_sol_fill_ns": 1725150660000000000,
+      "qualifying_btc_tp_ns": 1725150960000000000,
+      "actual_stage1_quantity": "36.9",
+      "first_parent_terminal": true
+    },
+    {
+      "event": "H1_NATIVE_FILL",
+      "action": "SOL_ADD",
+      "reason": "H1_STAGE2",
+      "timestamp_ns": 1725151560000000000,
+      "quantity": "36.9",
+      "price": "96.90",
+      "commission": "3.57561000 USDT",
+      "order_id": "O-20240901-004600-001-000-6",
+      "intent_id": "888891b9-1b59-4ac9-88d2-b0488f591f8b"
+    },
+    {
+      "event": "H1_NATIVE_EXPOSURE",
+      "timestamp_ns": 1725151620000000000,
+      "native_btc_quantity": "63.75",
+      "native_sol_quantity": "73.8",
+      "signed_btc_mark_notional": "6566.25",
+      "signed_sol_mark_notional": "-7143.84",
+      "frozen_beta": "1.0",
+      "beta_net_mark_exposure": "-577.590"
+    }
+  ]
+}
