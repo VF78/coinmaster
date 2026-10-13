@@ -193,7 +193,10 @@ class WaveOverlayStrategy(Strategy):
         self._confirmation_events: dict[tuple, tuple[int, int]] = {}
         self._b1_candidate: dict | None = None
         self._b1_consuming = False
+        self._b1_btc_quote_sequence = 0
         self._h1_cycle: dict | None = None
+        self._h1_confirmation_receipts: dict[tuple, tuple[int, int]] = {}
+        self._h1_sol_quote_sequence = 0
         self.v3_risk_audit: list[dict[str, object]] = []
         self._v3_reduction: dict | None = None
         self._v3_orders: dict[str, dict] = {}
@@ -359,10 +362,20 @@ class WaveOverlayStrategy(Strategy):
             self._confirmation_events[(instrument_id, side)] = (bar.ts_event, side)
             if bar.bar_type.spec.aggregation == BarAggregation.HOUR:
                 self._confirmation_events[(instrument_id, "1h", side)] = (bar.ts_event, side)
+            if self.config.research_h1_b1 == "h1" and instrument_id == self.config.sol_id:
+                # Native close timers can publish only after this boundary's
+                # quotes have already settled. Own the first future SOL quote,
+                # not an execution from the book cached before bar receipt.
+                receipt = (self.clock.timestamp_ns(), self._h1_sol_quote_sequence + 1)
+                self._h1_confirmation_receipts[(instrument_id, side)] = receipt
+                if bar.bar_type.spec.aggregation == BarAggregation.HOUR:
+                    self._h1_confirmation_receipts[(instrument_id, "1h", side)] = receipt
             if self.config.research_h1_b1 == "b1" and instrument_id == self.config.btc_id:
                 candidate = self._b1_candidate
                 if candidate and bar.ts_event > candidate["armed_ns"] and side == candidate["side"]:
                     candidate["confirmed_ns"] = bar.ts_event
+                    candidate["confirmation_receipt_ns"] = self.clock.timestamp_ns()
+                    candidate["eligible_quote_sequence"] = self._b1_btc_quote_sequence + 1
 
     def _b1_flat_resolved(self) -> bool:
         return not (self.cache.positions_open() or self.cache.orders_open() or
@@ -384,6 +397,24 @@ class WaveOverlayStrategy(Strategy):
             return False
         return self._b1_consuming and candidate["confirmed_ns"] is not None
 
+    @staticmethod
+    def _confirmation_receipt_is_current(close_ns, receipt, quote_sequence: int, ts_now: int) -> bool:
+        """First traded-instrument quote after receipt, at most one 1m cadence old."""
+        return bool(close_ns is not None and receipt and receipt[1] == quote_sequence
+                    and receipt[0] is not None and close_ns <= receipt[0] <= ts_now
+                    and 0 <= ts_now-close_ns <= 60_000_000_000)
+
+    def _confirmation_marks_current(self, ts_now: int) -> bool:
+        return self.config.max_mark_age_ns > 0 and all(
+            self._latest_marks.get(iid) is not None
+            and 0 <= ts_now-self._latest_marks[iid].ts_event <= self.config.max_mark_age_ns
+            for iid in (self.config.btc_id, self.config.sol_id))
+
+    def _h1_confirmation_is_current(self, key: tuple, token, ts_now: int) -> bool:
+        return self._confirmation_receipt_is_current(
+            token[0] if token else None, self._h1_confirmation_receipts.get(key),
+            self._h1_sol_quote_sequence, ts_now)
+
     def _h1_native_fill(self, intent: Intent, event) -> None:
         if self.config.research_h1_b1 != "h1" or self._h1_cycle is None:
             return
@@ -397,7 +428,7 @@ class WaveOverlayStrategy(Strategy):
             cycle["tp_ns"] = cycle["tp_ns"] or event.ts_event
         self.h1_b1_audit.append({"event": "H1_NATIVE_FILL", "action": intent.action, "reason": intent.reason,
             "timestamp_ns": event.ts_event, "quantity": str(event.last_qty), "price": str(event.last_px),
-            "commission": str(event.commission), "order_id": str(event.client_order_id)})
+            "commission": str(event.commission), "order_id": str(event.client_order_id), "intent_id": intent.id})
 
     def _h1_check(self, ts_now: int) -> None:
         if self.config.research_h1_b1 != "h1" or not self._domain.episode:
@@ -444,7 +475,7 @@ class WaveOverlayStrategy(Strategy):
         confirm = self._confirmation_events.get((self.config.sol_id, -episode.side))
         reverse = self._confirmation_events.get((self.config.sol_id, "1h", episode.side))
         timeout = cycle["first_fill_ns"] and ts_now >= cycle["first_fill_ns"] + 14 * 86_400_000_000_000
-        recovery = cycle["first_fill_ns"] and adverse <= Decimal("0.01") and reverse and reverse[0] == ts_now and reverse[0] > cycle["first_fill_ns"] and reverse[1] == episode.side
+        recovery = cycle["first_fill_ns"] and adverse <= Decimal("0.01") and reverse and self._h1_confirmation_is_current((self.config.sol_id, "1h", episode.side), reverse, ts_now) and reverse[0] > cycle["first_fill_ns"] and reverse[1] == episode.side
         if btc is None or timeout or recovery or cycle["closed"]:
             reason = "H1_BTC_FLAT" if btc is None else "H1_TIMEOUT" if timeout else "H1_RECOVERY" if recovery else "H1_CYCLE_CLOSED"
             cycle["closed"] = True
@@ -460,11 +491,9 @@ class WaveOverlayStrategy(Strategy):
             return
         if sol_work or self._mandatory_sol_exit or self._has_owned_sol_exit() or any(o.instrument_id == self.config.sol_id for o in self.cache.orders_open()):
             return
-        if (self.config.max_mark_age_ns <= 0 or any(
-                self._latest_marks.get(iid) is None or not 0 <= ts_now-self._latest_marks[iid].ts_event <= self.config.max_mark_age_ns
-                for iid in (self.config.btc_id, self.config.sol_id))):
+        if not self._confirmation_marks_current(ts_now):
             return
-        if not confirm or confirm[0] != ts_now or confirm[1] != -episode.side:
+        if not self._h1_confirmation_is_current((self.config.sol_id, -episode.side), confirm, ts_now) or confirm[1] != -episode.side:
             return
         level = 0 if not cycle["stage1_attempted"] else 1
         if level == 0:
@@ -487,8 +516,13 @@ class WaveOverlayStrategy(Strategy):
         self._queued_intents.append((intent, self._current_signals[-1].sigma, len(self._bars)-1))
         self._queued_intent_ready_ns[intent.id] = ts_now
         self.h1_b1_audit.append({"event": intent.reason, "timestamp_ns": ts_now, "confirmation_ns": confirm[0],
+            "confirmation_receipt_ns": self._h1_confirmation_receipts[(self.config.sol_id, -episode.side)][0],
+            "confirmation_age_ns": ts_now-confirm[0], "sol_quote_sequence": self._h1_sol_quote_sequence,
             "btc_remaining": str(btc.quantity), "btc_mark": str(mark.price), "beta": str(cycle["entry_beta"]),
-            "quantity": intent.quantity, "requested_notional": intent.requested_notional})
+            "quantity": intent.quantity, "requested_notional": intent.requested_notional,
+            "intent_id": intent.id, "first_sol_fill_ns": cycle["first_fill_ns"],
+            "qualifying_btc_tp_ns": cycle["tp_ns"], "actual_stage1_quantity": str(cycle["first_qty"]),
+            "first_parent_terminal": cycle["first_terminal"]})
 
     def on_data(self, data) -> None:
         """Receive explicit marks without ever making them execution data."""
@@ -1218,6 +1252,10 @@ class WaveOverlayStrategy(Strategy):
 
     def on_quote_tick(self, tick: QuoteTick) -> None:
         """Only quotes can execute queued daily decisions or liquidations."""
+        if self.config.research_h1_b1 == "h1" and tick.instrument_id == self.config.sol_id:
+            self._h1_sol_quote_sequence += 1
+        if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
+            self._b1_btc_quote_sequence += 1
         if self._v3_reduction is not None and tick.instrument_id == self._v3_reduction["instrument_id"] and self._forced_close_reason is None and not self._liquidating and self._mandatory_sol_exit is None:
             self._v3_submit_reduction(tick)
             return
@@ -1265,7 +1303,11 @@ class WaveOverlayStrategy(Strategy):
         if self.config.research_h1_b1 == "b1" and tick.instrument_id == self.config.btc_id:
             candidate = self._b1_candidate
             if (candidate and candidate["confirmed_ns"] is not None
-                    and tick.ts_event == candidate["confirmed_ns"] and self._b1_flat_resolved()
+                    and self._confirmation_receipt_is_current(candidate["confirmed_ns"],
+                        (candidate.get("confirmation_receipt_ns"), candidate.get("eligible_quote_sequence")),
+                        self._b1_btc_quote_sequence, tick.ts_event)
+                    and self._confirmation_marks_current(tick.ts_event)
+                    and self._b1_flat_resolved()
                     and self._entries_enabled()):
                 self._current_btc_mark = self._latest_marks.get(self.config.btc_id)
                 self._current_sol_mark = self._latest_marks.get(self.config.sol_id)
