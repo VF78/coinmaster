@@ -1,0 +1,117 @@
+{
+  "purpose": "Read-only installed pilot explanation; no service, config, order or source changes",
+  "installed_commit": "81e6318646b51280497806a1c0492591654b5fe6",
+  "pid": 2009732,
+  "mode": "sandbox",
+  "live_order_capability": false,
+  "snapshot_utc": "2026-10-13T18:56:13.718502+00:00",
+  "snapshot_ns": 1791917773718502373,
+  "btc": {
+    "side": "SHORT",
+    "signed_qty": "-0.6833",
+    "entry_vwap": "81877",
+    "mark": "83142",
+    "native_unrealized_pnl": "-864.37",
+    "entry_utc": "2026-10-13T00:00:26.529191+00:00",
+    "initial_qty": "1.18832",
+    "tp_filled_qty": [
+      "0.25251",
+      "0.25251"
+    ],
+    "tp_fill_price": "81877",
+    "tp_fill_utc": "2026-10-13T00:00:43.632704+00:00",
+    "remaining_tp": {
+      "quantity": "0.68330",
+      "price": "79308.0",
+      "side": "BUY",
+      "reduce_only": true,
+      "post_only": true,
+      "status": "ACCEPTED"
+    },
+    "hypothetical_2_percent_adverse_price": "83514.54",
+    "snapshot_adverse_move_percent": 1.5450004274704776,
+    "daily_f_reconstructed": 0.0008463915385273912
+  },
+  "account": {
+    "equity_before_entry": "12352.52821435",
+    "cash": "12302.54255148",
+    "equity": "11438.17255148",
+    "fees_all_episodes": "151.08744852"
+  },
+  "closed_daily_features_recomputed_from_installed_domain_and_verified_current_artifact": {
+    "open_utc": "2026-10-12T00:00:00Z",
+    "close_utc": "2026-10-13T00:00:00Z",
+    "btc_close": 81807.7,
+    "sol_close": 105.69,
+    "ema34": 81840.43737923753,
+    "side": -1,
+    "beta": 1.2313161658870255,
+    "relative": 0.04551886579280684,
+    "mu": 0.011879799755154654,
+    "sigma": 0.12783646400381307,
+    "z": 0.2631413994417806,
+    "signed_z": -0.2631413994417806,
+    "wave_tp_levels": [
+      0,
+      0,
+      0.03137455192640304
+    ]
+  },
+  "sol": {
+    "native_positions": 0,
+    "native_intents_all_history": 0,
+    "rights_inferred_from_confirmed_tp_fills_and_installed_fill_transition": [
+      1,
+      2
+    ],
+    "entry_signed_z_thresholds": [
+      1.25,
+      2.5,
+      3.75
+    ],
+    "current_short_requires_raw_z_lte": [
+      -1.25,
+      -2.5,
+      -3.75
+    ],
+    "gate_reason": "SIGNED_Z_BELOW_THRESHOLD",
+    "callback_timing": "Each closed BTC_REDUCE native fill reevaluates current paired daily features immediately; no continuously updated intraday feature decisions",
+    "next_new_daily_features_utc": "2026-10-14T00:00:00Z"
+  },
+  "previous_long": {
+    "opened_utc": "2026-10-09T00:15:15.233762+00:00",
+    "initial_qty": "1.08996",
+    "entry": "81783",
+    "final_tp_qty": "0.62674",
+    "final_tp_price": "83517",
+    "closed_utc": "2026-10-11T15:55:40.238727+00:00",
+    "native_position_closed_confirmed": true,
+    "daily_features_recomputed": {
+      "open_utc": "2026-10-08T00:00:00Z",
+      "close_utc": "2026-10-09T00:00:00Z",
+      "btc_close": 81719.8,
+      "sol_close": 109.56,
+      "ema34": 81597.57973728295,
+      "side": 1,
+      "beta": 1.226092228258755,
+      "relative": 0.09798972668074629,
+      "mu": 0.007305093853913148,
+      "sigma": 0.12843060573648393,
+      "z": 0.706098303490847
+    }
+  },
+  "evidence_paths": [
+    "/srv/coinmaster/runtime/release-manifest.json",
+    "/srv/coinmaster/runtime/configs/stage-g-v1.json",
+    "/srv/coinmaster/runtime/coinmaster/domain/wave_overlay.py",
+    "/srv/coinmaster/runtime/coinmaster/strategy/wave_overlay.py",
+    "/var/lib/coinmaster-hl-stageg-testnet/hl-stageg-testnet.sqlite",
+    "/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json"
+  ],
+  "limitations": [
+    "No durable strategy checkpoint row; rights and best_f derived from native fills plus installed transition logic, not direct process memory",
+    "Feature values independently recomputed, not exposed by worker projection; actual accepted daily session verified in journal",
+    "Native fill journal records BTC_ENTRY action; reason BTC_ENTRY_INTENT comes from worker daily_decision journal and installed code",
+    "Prior long accepted-session status log not found in bounded Oct9 00:15-00:17 read; Oct9 feature tuple recomputed from verified artifact, native entry time confirmed. 2 percent adverse threshold is hypothetical price math, not a claim that installed pilot has a 2 percent protective stop."
+  ]
+}
