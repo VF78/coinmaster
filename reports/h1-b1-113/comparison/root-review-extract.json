@@ -387,6 +387,7 @@
           "mean_ns": null
         }
       },
+      "B1_actual_entry_latency_summary": null,
       "H1_actual_causal_funnel_summary": {
         "stage1_actual_filled_parent_intents": 31,
         "stage1_terminal_FILLED": 31,
@@ -614,6 +615,49 @@
           "minimum_ns": 60000000000,
           "maximum_ns": 60000000000,
           "mean_ns": "60000000000"
+        }
+      },
+      "B1_actual_entry_latency_summary": {
+        "actual_daily_arms": 104,
+        "actual_confirmed_entries": 104,
+        "actual_BTC_ENTRY_fills": 104,
+        "unambiguously_joined_native_parent_entries": 104,
+        "unknown_or_ambiguous_joins": 0,
+        "join_basis": "Unique ARM daily_ns/armed_ns/side; confirmation quote_ns==entry sizing q0_ns; actual fill_ns==q1_ns and qty==confirmed qty; unique native nonreduce BTC MARKET order ts_init/side/filled_qty matches actual fill. Native avg_px float representation differs from exact fill price by <0.0000001; raw difference retained. Episode/intent/native order IDs retained.",
+        "arm_to_confirmation_ns": {
+          "count": 104,
+          "min_ns": 900000000000,
+          "median_ns": "2700000000000",
+          "max_ns": 17100000000000,
+          "mean_ns": "4500000000000"
+        },
+        "confirmation_to_q0_quote_ns": {
+          "count": 104,
+          "min_ns": 60000000000,
+          "median_ns": "60000000000",
+          "max_ns": 60000000000,
+          "mean_ns": "60000000000"
+        },
+        "q0_quote_to_actual_native_entry_fill_ns": {
+          "count": 104,
+          "min_ns": 60000000000,
+          "median_ns": "60000000000",
+          "max_ns": 60000000000,
+          "mean_ns": "60000000000"
+        },
+        "confirmation_to_actual_native_entry_fill_ns": {
+          "count": 104,
+          "min_ns": 120000000000,
+          "median_ns": "120000000000",
+          "max_ns": 120000000000,
+          "mean_ns": "120000000000"
+        },
+        "arm_to_actual_native_entry_fill_ns": {
+          "count": 104,
+          "min_ns": 1020000000000,
+          "median_ns": "2820000000000",
+          "max_ns": 17220000000000,
+          "mean_ns": "4620000000000"
         }
       },
       "H1_actual_causal_funnel_summary": null,
