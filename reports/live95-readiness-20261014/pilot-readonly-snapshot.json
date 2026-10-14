@@ -1,0 +1,78 @@
+{
+  "at_utc": "2026-10-14T13:08:39.926682+00:00",
+  "service": {
+    "MainPID": "2009732",
+    "NRestarts": "0",
+    "ExecMainStartTimestamp": "Mon 2026-09-28 07:39:45 UTC",
+    "ActiveState": "active"
+  },
+  "mode": "sandbox",
+  "account": {
+    "equity": "10955.11221103",
+    "fees": "222.85778897",
+    "mark_state": "CURRENT",
+    "native_cash": "11371.86221103",
+    "native_free": "11371.86221103",
+    "native_locked": "0",
+    "realized_pnl_net_fees": "1371.86221103",
+    "unrealized_pnl": "-416.75"
+  },
+  "positions": [
+    {
+      "average_entry_price": "83392.0",
+      "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+      "provenance": "SANDBOX",
+      "signed_quantity": "0.62017"
+    }
+  ],
+  "orders": [
+    {
+      "account_id": "HYPERLIQUID-001",
+      "client_order_id": "O-20261014-001515-TESTNET-001-17",
+      "filled_quantity": "0.00000",
+      "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+      "leaves_quantity": "0.62017",
+      "order_type": "LIMIT",
+      "post_only": true,
+      "price": "86355.0",
+      "provenance": "SANDBOX",
+      "quantity": "0.62017",
+      "reduce_only": true,
+      "side": "SELL",
+      "status": "ACCEPTED",
+      "submitted_at_ns": 1791936915652601811,
+      "time_in_force": "GTC",
+      "updated_at_ns": 1791936915652601811,
+      "venue_order_id": "HYPERLIQUID-2-017"
+    }
+  ],
+  "feeds": {
+    "BTC-USD-PERP.HYPERLIQUID": {
+      "state": "READY",
+      "mark": "82720"
+    },
+    "SOL-USD-PERP.HYPERLIQUID": {
+      "state": "READY",
+      "mark": "105.51"
+    }
+  },
+  "recovery_required": false,
+  "native_thread_alive": true,
+  "attachable": true,
+  "warmup": {
+    "rows": 1503,
+    "state": "READY"
+  },
+  "deposit_protection": {
+    "currency": "USDC",
+    "daily_sample_missed": false,
+    "drawdown_limit_percent": 50,
+    "equity": "10955.11221103",
+    "high_water_equity": "12352.52821435",
+    "last_daily_close_utc": 1791936000000000000,
+    "observed_at_ns": 1791983319618510041,
+    "state": "ARMED",
+    "threshold_equity": "6176.264107175",
+    "trigger": null
+  }
+}

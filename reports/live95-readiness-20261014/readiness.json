@@ -1,0 +1,71 @@
+{
+  "checked_at_utc": "2026-10-14T13:18:05.699475+00:00",
+  "source_commit": "abfc74aa2b6cf0438f9aee25d83f8d9277d577e1",
+  "status": "NOT_READY_TO_SWITCH",
+  "scope": "READ_ONLY_STATUS_SOURCE_REVIEW_AND_SYNTHETIC_NO_CONNECT_TESTS",
+  "fresh_official_info": {
+    "master_role": "user",
+    "agent_role": "missing",
+    "account": {
+      "equity": "0.0",
+      "positions": 0,
+      "server_time": 1791983885013
+    },
+    "orders": {
+      "count": 0
+    }
+  },
+  "asset_constraints_observed_this_review": {
+    "BTC": {
+      "cross_leverage": 40,
+      "szDecimals": 5
+    },
+    "SOL": {
+      "cross_leverage": 20,
+      "szDecimals": 2
+    }
+  },
+  "base_user_fees_observed_this_review": {
+    "maker": "0.00015",
+    "taker": "0.00045",
+    "activeReferralDiscount": "0.04",
+    "native_charged_fees_are_authoritative": true
+  },
+  "existing_live_release": "306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150",
+  "live_active": false,
+  "live_PID": 0,
+  "blocking_items": [
+    "INITIAL_CAPITAL_AND_APPROVAL_HARDCODED_100",
+    "INSTALLED_PROFILE_V0_NOT_V3",
+    "API_AGENT_ROLE_MISSING",
+    "LIVE_WARMUP_LATEST_COMPLETED_SESSION_MISSING",
+    "GUI_ACCOUNT_STRATEGY_CONTROLS_BOUND_TO_SANDBOX_ONLY",
+    "FLAT_RESTART_BLOCKS_ANY_HISTORICAL_SUBMISSION_CHECKPOINT",
+    "V3_SELECTIVE_DURABLE_STATE_NOT_IN_LIVE_FIELDS",
+    "FUNDED_95_98_LOT_MARGIN_REDUCTION_QUALIFICATION_PENDING",
+    "EXACT_RELEASE_ACCOUNT_CAPITAL_EXTERNAL_ORDER_APPROVAL_ABSENT"
+  ],
+  "research_V3": {
+    "TOTAL": "5437208.56951095",
+    "source": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+    "BTC_long_multiplier": "5.5",
+    "BTC_short_multiplier": "7.875",
+    "cap": "30000000",
+    "native_minute_DD_percent": "67.2863064484",
+    "deposit_protection": false,
+    "diagnostic_not_faithful": true
+  },
+  "current_Sandbox_deposit_protection_percent": 50,
+  "proposed_initial_deposit_max_usdc": "98",
+  "capital_note": "Proposal only; first actual seed95..98, later owned equity/profits/fees must survive version changes; not lifetime equity cap or balance reset. Existing DP50 retained unless owner selects exact research protectionOFF explicitly.",
+  "actions": {
+    "real_orders": 0,
+    "transfers": 0,
+    "service_restarts": 0,
+    "deployments": 0,
+    "runtime_source_changes": 0
+  },
+  "test_receipt": "installed-worker-synthetic-receipt.json",
+  "pilot_snapshot": "pilot-readonly-snapshot.json",
+  "plan_issue": "https://github.com/VF78/coinmaster/issues/101"
+}

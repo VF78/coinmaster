@@ -1,0 +1,51 @@
+{
+  "observed_at_utc": "2026-10-14T13:03:05.755003+00:00",
+  "canonical_head": "abfc74aa2b6cf0438f9aee25d83f8d9277d577e1",
+  "release": "/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150",
+  "source_commit": "306e1aab402b521d7a7e3df2fb74aae1c3844dbc",
+  "sealed_baseline_commit": "81e6318646b51280497806a1c0492591654b5fe6",
+  "strategy_sha256": "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511",
+  "wheel_sha256": "8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46",
+  "installed_nautilus_version": "1.231.0",
+  "test_file": "tests/test_hl_live_worker.py",
+  "tests_safety": "Inspected all seven tests: synthetic key/account, monkeypatched credential reads, tmp fixtures; node build only; no connect/run/order/real credential source",
+  "command": [
+    "runuser",
+    "-u",
+    "coinmaster-hl-live",
+    "--",
+    "env",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "PYTHONPATH=/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150",
+    "COINMASTER_TEST_LIVE_WARMUP=/var/lib/coinmaster-hl-stageg-live/data/current/manifest.json",
+    "/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/tests/test_hl_live_worker.py"
+  ],
+  "working_directory": "/tmp",
+  "exit_code": 1,
+  "log_sha256": "6e59144e74b5bdc8eaec77a2049c821560d36a904c39abe5139ca3dcbb4e0ef3",
+  "summary": [
+    "2 failed, 5 passed in 9.45s"
+  ],
+  "passed": 5,
+  "failed": 2,
+  "skipped": 0,
+  "failure_explanations": {
+    "test_live_paths_and_identities_are_separate": "Test expects lexical /current/configs path, loader returns resolved immutable release path.",
+    "test_sealed_v0_real_node_build_without_connect": "Current separate live warmup: WARMUP_LATEST_COMPLETED_SESSION_MISSING; SEALED_APPROVAL_MATCH; attachable=false. Constructor fails closed before native build."
+  },
+  "remaining_blockers": [
+    "agent delegation missing and master equity zero per root fresh public Info snapshot",
+    "exact100 initial capital and sealed V0 only",
+    "owner order approval absent; live inactive",
+    "live warmup latest completed session missing",
+    "V3 selective state/profile/native lifecycle integration and95-98 admission qualification absent",
+    "GUI projection schema/reader/routes fixed Sandbox;18185 live projection not wired"
+  ],
+  "no_connect_no_orders_no_real_credentials": true
+}

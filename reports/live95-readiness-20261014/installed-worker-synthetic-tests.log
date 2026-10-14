@@ -1,0 +1,81 @@
+F...F..                                                                  [100%]
+=================================== FAILURES ===================================
+_________________ test_live_paths_and_identities_are_separate __________________
+
+    def test_live_paths_and_identities_are_separate():
+        live = load_testnet_instance_config(ROOT / "configs/hl-stageg-live.instance.json")
+        sandbox = load_testnet_instance_config(ROOT / "configs/hl-stageg-testnet.instance.json")
+>       assert str(live.strategy_config) == "/srv/coinmaster/hl-live/current/configs/stage-g-v1.json"
+E       AssertionError: assert '/srv/coinmas...age-g-v1.json' == '/srv/coinmas...age-g-v1.json'
+E         
+E         - /srv/coinmaster/hl-live/current/configs/stage-g-v1.json
+E         + /srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/configs/stage-g-v1.json
+
+/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/tests/test_hl_live_worker.py:16: AssertionError
+________________ test_sealed_v0_real_node_build_without_connect ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-coinmaster-hl-live/pytest-1/test_sealed_v0_real_node_build0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7089aaced430>
+
+    def test_sealed_v0_real_node_build_without_connect(tmp_path, monkeypatch):
+        """Actual factory/strategy/kernel composition; no run/connect or secret source."""
+        import hashlib
+        import os
+        if hashlib.sha256((ROOT / "coinmaster/strategy/wave_overlay.py").read_bytes()).hexdigest() != SEALED_V0_SHA:
+            pytest.skip("requires exact sealed V0 qualification tree")
+        from dataclasses import replace
+        from decimal import Decimal
+        from coinmaster.ops.hl_live_worker import HyperliquidLiveNode, LiveSubmissionHooks
+        from coinmaster.ops.hl_live_execution import QualifiedHyperliquidExecutionClient
+        from coinmaster.ops.paper import PaperRuntime
+        from coinmaster.ops.stage_g_config import load_candidate
+    
+        monkeypatch.setattr("coinmaster.ops.hl_live_worker.check_live_credential", lambda *a: Decimal("100"))
+        monkeypatch.setattr("coinmaster.ops.hl_live_worker._read_json", lambda _: {
+            "master_address": "0x" + "1" * 40, "agent_private_key": "0x" + "2" * 64,
+        })
+        instance = replace(
+            load_testnet_instance_config(ROOT / "configs/hl-stageg-live.instance.json"),
+            signal_warmup_manifest=Path(os.getenv("COINMASTER_TEST_LIVE_WARMUP", "/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json")),
+            state_db=tmp_path / "live.sqlite",
+        )
+        runtime = PaperRuntime(instance.state_db, instance.instance_id, int(120e9), require_native_cash=True)
+        runtime.acquire()
+        try:
+>           native = HyperliquidLiveNode(instance=instance, candidate=load_candidate(ROOT / "configs/stage-g-v1.json").candidate,
+                                        state=runtime, credential_path=tmp_path / "not-read", fingerprint_path=tmp_path / "not-read")
+
+/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/tests/test_hl_live_worker.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <coinmaster.ops.hl_live_worker.HyperliquidLiveNode object at 0x7089aaf71040>
+
+    def __init__(self, *, instance, candidate, state, credential_path, fingerprint_path):
+        if instance.mode != "live" or instance.instance_id != "hl-stageg-live":
+            raise RuntimeError("LIVE_INSTANCE_REQUIRED")
+        self.instance, self.candidate, self.state = instance, candidate, state
+        self.profile_root = Path(__file__).resolve().parents[2]
+        source = self.profile_root / "coinmaster/strategy/wave_overlay.py"
+        if hashlib.sha256(source.read_bytes()).hexdigest() != SEALED_V0_SHA:
+            raise RuntimeError("LIVE_SEALED_V0_SOURCE_MISMATCH")
+        # Qualification never implies order authorization: main checks approval before this read.
+        equity = check_live_credential(credential_path, fingerprint_path)
+        if equity != Decimal("100"):
+            raise RuntimeError("LIVE_PILOT_REQUIRES_EXACT_100_USDC")
+        record = _read_json(credential_path)
+        self.master = record["master_address"]
+        self.gate = cross_venue_stage_g_gate(
+            candidate=candidate, warmup_manifest=instance.signal_warmup_manifest,
+            strategy_path=source, profile_root=self.profile_root,
+        )
+        self.candidate_hash = self.gate.candidate_hash
+        self.warmup_bundle, self.warmup_state = load_stageg_warmup_bundle(instance.signal_warmup_manifest)
+        if self.warmup_bundle is None or not self.gate.attachable:
+>           raise RuntimeError("LIVE_WARMUP_OR_SEAL_NOT_READY")
+E           RuntimeError: LIVE_WARMUP_OR_SEAL_NOT_READY
+
+/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/coinmaster/ops/hl_live_worker.py:100: RuntimeError
+=========================== short test summary info ============================
+FAILED ../srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/tests/test_hl_live_worker.py::test_live_paths_and_identities_are_separate
+FAILED ../srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/tests/test_hl_live_worker.py::test_sealed_v0_real_node_build_without_connect
+2 failed, 5 passed in 9.45s
