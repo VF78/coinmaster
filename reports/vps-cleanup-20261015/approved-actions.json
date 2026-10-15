@@ -1,0 +1,235 @@
+{
+  "owner_authorization": "2026-10-15: user approved old rollback deletion after verified offhost archive, verified offhost Hermes ZIP relocation, native browser HTTPcache eviction, ext4 reserve1percent. No trading/app/service changes.",
+  "created_utc": "2026-10-15T15:11:59.951028+00:00",
+  "baseline": {
+    "units": "MainPID=2009732\nNRestarts=0\nId=coinmaster-hl-stageg-testnet.service\nActiveState=active\n\nMainPID=1887363\nNRestarts=0\nId=coinmaster-runtime.service\nActiveState=active\n\nMainPID=1886838\nNRestarts=0\nId=coinmaster-connections.service\nActiveState=active\n\nMainPID=0\nNRestarts=0\nId=coinmaster-hl-stageg-live.service\nActiveState=inactive\n",
+    "containers": [
+      {
+        "name": "/hermes-db8f04b6",
+        "pid": 26361,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/fai-384a1043bfe39f7deb648eb2-gateway",
+        "pid": 2153661,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/fai-paperclip-postgres",
+        "pid": 1691527,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/amnezia-awg2",
+        "pid": 455728,
+        "restarts": 0,
+        "running": true
+      }
+    ],
+    "run_epoch": "10e39dc6efa64c8b820b174c0a5b65fe"
+  },
+  "fresh_native_health_baseline_file": "/var/tmp/cm-approved-cleanup-native-before.json",
+  "actions": [
+    {
+      "kind": "ext4_reserve_availability_only",
+      "command": [
+        "tune2fs",
+        "-m",
+        "1",
+        "/dev/sda1"
+      ],
+      "exit_code": 0,
+      "result": "tune2fs 1.47.0 (5-Feb-2023)\nSetting reserved blocks percentage to 1% (99343 blocks)\n",
+      "ext4_before": {
+        "Filesystem UUID": "64f6fb02-4fed-4836-a33b-86e8993afdfa",
+        "Block count": "9934331",
+        "Reserved block count": "407084",
+        "Block size": "4096"
+      },
+      "ext4_after": {
+        "Filesystem UUID": "64f6fb02-4fed-4836-a33b-86e8993afdfa",
+        "Block count": "9934331",
+        "Reserved block count": "99343",
+        "Block size": "4096"
+      },
+      "space_before": {
+        "available_bytes": 1850630144,
+        "free_bytes": 3534823424,
+        "size_bytes": 39973924864
+      },
+      "space_after": {
+        "available_bytes": 3111137280,
+        "free_bytes": 3534823424,
+        "size_bytes": 39973924864
+      },
+      "available_gain_bytes": 1260507136,
+      "physical_free_change_bytes": 0
+    },
+    {
+      "kind": "native_browser_http_cache_only",
+      "method": "Network.clearBrowserCache",
+      "cdp": "127.0.0.1:9223 existing page target",
+      "exit_code": 0,
+      "result": "{\"ok\":true,\"method\":\"Network.clearBrowserCache\",\"error\":null,\"result\":{}}\n",
+      "cache_allocated_before": {
+        "/root/.hermes/bot-desktop/threads-profile/Default/Cache": 346533888,
+        "/root/.hermes/bot-desktop/threads-profile/Default/Code Cache": 217313280
+      },
+      "cache_allocated_after": {
+        "/root/.hermes/bot-desktop/threads-profile/Default/Cache": 656633856,
+        "/root/.hermes/bot-desktop/threads-profile/Default/Code Cache": 8192
+      },
+      "space_before": {
+        "available_bytes": 3111137280,
+        "free_bytes": 3534823424,
+        "size_bytes": 39973924864
+      },
+      "space_after": {
+        "available_bytes": 3018338304,
+        "free_bytes": 3442024448,
+        "size_bytes": 39973924864
+      },
+      "available_gain_bytes": -92798976,
+      "physical_free_change_bytes": -92798976,
+      "scope": "No cookie/storage/auth read/clear, no profile rm, no tab open/close, browser not restarted"
+    },
+    {
+      "kind": "local_verified_rollback_archive",
+      "path": "/var/backups/coinmaster-cleanup-20261015/content-engine-74331e04.tar.gz",
+      "source": "/opt/fai-content-engine/releases/74331e04",
+      "space_before": {
+        "available_bytes": 3018235904,
+        "free_bytes": 3441922048
+      },
+      "du_source_before": 1144328192,
+      "scope": "Full local compressed rollback archive; no export. Hermes ZIP retained after automatic offhost-transfer rejection.",
+      "archive_mode": "0600",
+      "safe_priority": "nice19 ioniceidle gzip1",
+      "archive_exit_code": 0,
+      "archive_error_bytes": 0,
+      "tar_compare_exit_code": 0,
+      "tar_compare_output_bytes": 0,
+      "archive_size": 318133566,
+      "archive_allocated_bytes": 318140416,
+      "archive_sha256": "b771fb1515ee3780a6c67b66fb26b2390757dfad9e6fbf0dbbb008b420137b44",
+      "space_after": {
+        "available_bytes": 2700025856,
+        "free_bytes": 3123712000
+      }
+    },
+    {
+      "kind": "remove_exact_inactive_expanded_rollback",
+      "path": "/opt/fai-content-engine/releases/74331e04",
+      "verified_local_archive": "/var/backups/coinmaster-cleanup-20261015/content-engine-74331e04.tar.gz",
+      "archive_sha256": "b771fb1515ee3780a6c67b66fb26b2390757dfad9e6fbf0dbbb008b420137b44",
+      "no_current_or_process_refs": true,
+      "transitive_symlink_preflight": "Passed including node_modules before archive creation",
+      "removed": true,
+      "du_before_bytes": 1144328192,
+      "space_before": {
+        "available_bytes": 2699988992,
+        "free_bytes": 3123675136,
+        "size_bytes": 39973924864
+      },
+      "space_after": {
+        "available_bytes": 3844313088,
+        "free_bytes": 4267999232,
+        "size_bytes": 39973924864
+      },
+      "available_gain_bytes": 1144324096,
+      "physical_free_change_bytes": 1144324096
+    }
+  ],
+  "pending_deletion_until_root_verified_offhost": [],
+  "preflight": {
+    "old_release_current": "/opt/fai-content-engine/releases/4202f6c0",
+    "old_release_refs": [],
+    "old_release_checked": "symlink/proc cwd/exe/fd/maps/cmdline and exactpath content references under /etc/systemd/system,/etc/nginx,/opt/fai-content-engine,/srv",
+    "backup_zip_size": 285945331,
+    "backup_zip_sha256": "9cf35d97d8475e92d644c598ba202894f0ff83911ad8a4134a0aaee802de0604"
+  },
+  "after_native_actions": {
+    "units": "MainPID=2009732\nNRestarts=0\nId=coinmaster-hl-stageg-testnet.service\nActiveState=active\n\nMainPID=1887363\nNRestarts=0\nId=coinmaster-runtime.service\nActiveState=active\n\nMainPID=1886838\nNRestarts=0\nId=coinmaster-connections.service\nActiveState=active\n\nMainPID=0\nNRestarts=0\nId=coinmaster-hl-stageg-live.service\nActiveState=inactive\n",
+    "containers": [
+      {
+        "name": "/hermes-db8f04b6",
+        "pid": 26361,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/fai-384a1043bfe39f7deb648eb2-gateway",
+        "pid": 2153661,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/fai-paperclip-postgres",
+        "pid": 1691527,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/amnezia-awg2",
+        "pid": 455728,
+        "restarts": 0,
+        "running": true
+      }
+    ],
+    "run_epoch": "10e39dc6efa64c8b820b174c0a5b65fe"
+  },
+  "hermes_backup_retained": {
+    "path": "/root/.hermes/backups/pre-update-2026-08-13-225710.zip",
+    "reason": "Automatic review rejected off-host transfer of potentially sensitive backup; preserve original VPS ZIP. No workaround/export attempted by executor.",
+    "exists": true
+  },
+  "browser_delayed_cache_observation": {
+    "/root/.hermes/bot-desktop/threads-profile/Default/Cache": 656633856,
+    "/root/.hermes/bot-desktop/threads-profile/Default/Code Cache": 8192
+  },
+  "browser_caveat": "Single successful CDP clearBrowserCache only. Immediate HTTP cache grew while Code Cache cleared; no second eviction, no manual cache/profile deletion. Actual filesystem measurements, not nominal cache totals, govern gain.",
+  "final_protected_state": {
+    "units": "MainPID=2009732\nNRestarts=0\nId=coinmaster-hl-stageg-testnet.service\nActiveState=active\n\nMainPID=1887363\nNRestarts=0\nId=coinmaster-runtime.service\nActiveState=active\n\nMainPID=1886838\nNRestarts=0\nId=coinmaster-connections.service\nActiveState=active\n\nMainPID=0\nNRestarts=0\nId=coinmaster-hl-stageg-live.service\nActiveState=inactive\n",
+    "containers": [
+      {
+        "name": "/hermes-db8f04b6",
+        "pid": 26361,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/fai-384a1043bfe39f7deb648eb2-gateway",
+        "pid": 2153661,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/fai-paperclip-postgres",
+        "pid": 1691527,
+        "restarts": 0,
+        "running": true
+      },
+      {
+        "name": "/amnezia-awg2",
+        "pid": 455728,
+        "restarts": 0,
+        "running": true
+      }
+    ],
+    "run_epoch": "10e39dc6efa64c8b820b174c0a5b65fe",
+    "browser_pid1075853_exists": true,
+    "swap": "/swapfile file 2147479552 2139930624   -2 5eb92bc3-b4a5-4bef-9fab-df54a37c3d43 \n"
+  },
+  "final_space": {
+    "available_bytes": 3844313088,
+    "free_bytes": 4267999232,
+    "size_bytes": 39973924864
+  },
+  "finished_utc": "2026-10-15T15:15:24.582244+00:00",
+  "reserve_available_gain_bytes": 1260507136,
+  "net_availability_change_since_action_baseline_bytes": 1993682944,
+  "net_physical_free_change_since_action_baseline_bytes": 733175808
+}

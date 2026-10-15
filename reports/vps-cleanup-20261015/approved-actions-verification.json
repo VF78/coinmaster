@@ -1,0 +1,80 @@
+{
+  "at_utc": "2026-10-15T15:16:17.339027+00:00",
+  "run_epoch": "10e39dc6efa64c8b820b174c0a5b65fe",
+  "native_thread_alive": true,
+  "recovery_required": false,
+  "live_order_capability": false,
+  "event_cursor": 120,
+  "account": {
+    "equity": "9926.8035433",
+    "fees": "287.21645670",
+    "mark_state": "CURRENT",
+    "native_cash": "10232.1335433",
+    "native_free": "10232.1335433",
+    "native_locked": "0",
+    "realized_pnl_net_fees": "232.13354330",
+    "unrealized_pnl": "-305.33"
+  },
+  "feeds": {
+    "BTC-USD-PERP.HYPERLIQUID": {
+      "funding_age_ns": 10757727548,
+      "funding_rate": "0.0000125",
+      "mark": "82211",
+      "mark_age_ns": 122638672,
+      "next_funding_ns": null,
+      "quote_age_ns": 30884790,
+      "state": "READY"
+    },
+    "SOL-USD-PERP.HYPERLIQUID": {
+      "funding_age_ns": 1163305612,
+      "funding_rate": "0.0000113705",
+      "mark": "105.5",
+      "mark_age_ns": 122625182,
+      "next_funding_ns": null,
+      "quote_age_ns": 30842202,
+      "state": "READY"
+    }
+  },
+  "positions": [
+    {
+      "average_entry_price": "81675.0",
+      "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+      "provenance": "SANDBOX",
+      "signed_quantity": "-0.56965"
+    }
+  ],
+  "orders": [
+    {
+      "account_id": "HYPERLIQUID-001",
+      "client_order_id": "O-20261015-000017-TESTNET-001-22",
+      "filled_quantity": "0.00000",
+      "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+      "leaves_quantity": "0.56965",
+      "order_type": "LIMIT",
+      "post_only": true,
+      "price": "79177.0",
+      "provenance": "SANDBOX",
+      "quantity": "0.56965",
+      "reduce_only": true,
+      "side": "BUY",
+      "status": "ACCEPTED",
+      "submitted_at_ns": 1792022417839948275,
+      "time_in_force": "GTC",
+      "updated_at_ns": 1792022417839948275,
+      "venue_order_id": "HYPERLIQUID-2-022"
+    }
+  ],
+  "sites": {
+    "https://coinmaster24.com/": "200",
+    "https://f-ai.studio/": "200",
+    "https://app.f-ai.studio/": "200"
+  },
+  "units": {
+    "coinmaster-hl-stageg-testnet.service": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+    "coinmaster-runtime.service": "MainPID=1887363\nNRestarts=0\nActiveState=active",
+    "coinmaster-connections.service": "MainPID=1886838\nNRestarts=0\nActiveState=active",
+    "coinmaster-hl-stageg-live.service": "MainPID=0\nNRestarts=0\nActiveState=inactive",
+    "nginx.service": "MainPID=3897764\nNRestarts=0\nActiveState=active"
+  },
+  "disk": "Filesystem       1B-blocks        Used  Available Use% Mounted on\n/dev/sda1      39973924864 35705982976 3844255744  91% /"
+}
