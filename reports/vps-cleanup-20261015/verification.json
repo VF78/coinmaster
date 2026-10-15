@@ -1,0 +1,56 @@
+{
+  "observed_utc": "2026-10-15T14:42:03.738590+00:00",
+  "all_baseline_service_and_container_identities_unchanged": true,
+  "units": {
+    "coinmaster-connections.service": {
+      "MainPID": "1886838",
+      "NRestarts": "0",
+      "ActiveState": "active"
+    },
+    "coinmaster-hl-stageg-testnet.service": {
+      "MainPID": "2009732",
+      "NRestarts": "0",
+      "ActiveState": "active"
+    },
+    "coinmaster-runtime.service": {
+      "MainPID": "1887363",
+      "NRestarts": "0",
+      "ActiveState": "active"
+    },
+    "docker.service": {
+      "MainPID": "1067",
+      "NRestarts": "0",
+      "ActiveState": "active"
+    },
+    "hermes-daniil-gateway.service": {
+      "MainPID": "1867980",
+      "NRestarts": "1",
+      "ActiveState": "active"
+    },
+    "hermes-gateway.service": {
+      "MainPID": "1868024",
+      "NRestarts": "2",
+      "ActiveState": "active"
+    },
+    "nginx.service": {
+      "MainPID": "3897764",
+      "NRestarts": "0",
+      "ActiveState": "active"
+    }
+  },
+  "sandbox_epoch_unchanged": true,
+  "feeds": {
+    "BTC-USD-PERP.HYPERLIQUID": "READY",
+    "SOL-USD-PERP.HYPERLIQUID": "READY"
+  },
+  "sites": {
+    "https://coinmaster24.com/": 200,
+    "https://f-ai.studio/": 200,
+    "https://app.f-ai.studio/": 200
+  },
+  "filesystem_df": [
+    "  1B-blocks        Used      Avail Use%",
+    "39973924864 36436668416 1853063168  96%"
+  ],
+  "cleanup_receipt": "receipt.json"
+}

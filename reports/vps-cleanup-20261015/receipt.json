@@ -1,0 +1,166 @@
+{
+  "at_utc": "2026-10-15T14:36:57.357850+00:00",
+  "host": "46.225.163.123",
+  "scope": "One bounded native package-cache cleanup; no source, service, configuration, data, log or release deletion",
+  "initial_space": {
+    "available_bytes": 1659338752,
+    "free_bytes": 3343532032,
+    "size_bytes": 39973924864
+  },
+  "reference_checks": {
+    "cache_symlinks": [],
+    "process_fd_cwd_exe_maps_refs": [],
+    "scanned_roots": [
+      "/srv",
+      "/opt",
+      "/root/.local",
+      "/usr/local",
+      "/root/.openclaw/workspace/coinmaster/coinmaster"
+    ],
+    "package_jobs": "No uv/pip/apt/dpkg job observed; native uv in-use guard retained"
+  },
+  "proposed_allowlist": [
+    {
+      "path": "/root/.cache/uv",
+      "reason": "Recreatable package download/extraction cache; no runtime symlink or process references; hardlinks safe to unlink with native tool"
+    },
+    {
+      "path": "/var/cache/apt",
+      "reason": "Recreatable downloaded archives/generated package indexes; package locks verified free; no apt update, install, autoremove or lists removal"
+    },
+    {
+      "path": "/root/.npm/_cacache",
+      "reason": "Recreatable npm package content cache. No symlinks into cache across /srv,/opt,/root/.local,OpenClaw workspaces; no process fd/cwd/exe/maps refs. Existing npm processes serve apps (vite/start), no install operation observed. npm requires --force for cache clean."
+    }
+  ],
+  "actions": [
+    {
+      "path": "/root/.cache/uv",
+      "command": [
+        "/root/.local/bin/uv",
+        "cache",
+        "clean",
+        "--cache-dir",
+        "/root/.cache/uv",
+        "--offline"
+      ],
+      "exit_code": 0,
+      "summary": "Clearing cache at: .cache/uv\nRemoved 5921 files (850.2MiB)\n",
+      "du_allocated_before_bytes": 908554240,
+      "du_allocated_after_bytes": 0,
+      "space_before": {
+        "available_bytes": 1659338752,
+        "free_bytes": 3343532032,
+        "size_bytes": 39973924864
+      },
+      "space_after": {
+        "available_bytes": 1662595072,
+        "free_bytes": 3346788352,
+        "size_bytes": 39973924864
+      },
+      "observed_available_gain_bytes": 3256320
+    },
+    {
+      "path": "/var/cache/apt",
+      "command": [
+        "/usr/bin/apt-get",
+        "clean"
+      ],
+      "exit_code": 0,
+      "summary": "",
+      "du_allocated_before_bytes": 116842496,
+      "du_allocated_after_bytes": 28672,
+      "space_before": {
+        "available_bytes": 1662595072,
+        "free_bytes": 3346788352,
+        "size_bytes": 39973924864
+      },
+      "space_after": {
+        "available_bytes": 1779408896,
+        "free_bytes": 3463602176,
+        "size_bytes": 39973924864
+      },
+      "observed_available_gain_bytes": 116813824
+    },
+    {
+      "path": "/root/.npm/_cacache",
+      "command": [
+        "/usr/bin/npm",
+        "cache",
+        "clean",
+        "--force",
+        "--cache",
+        "/root/.npm"
+      ],
+      "exit_code": 0,
+      "summary": "npm warn using --force Recommended protections disabled.\n",
+      "du_allocated_before_bytes": 74076160,
+      "du_allocated_after_bytes": 0,
+      "space_before": {
+        "available_bytes": 1779052544,
+        "free_bytes": 3463245824,
+        "size_bytes": 39973924864
+      },
+      "space_after": {
+        "available_bytes": 1853128704,
+        "free_bytes": 3537321984,
+        "size_bytes": 39973924864
+      },
+      "observed_available_gain_bytes": 74076160
+    }
+  ],
+  "retained": {
+    "live_releases": "All four retained; current 6c208fde-v3 uses b2081401 .venv; rollback 306e1aab .venv -> e0bc51cd .venv -> b2081401 .venv",
+    "gui_releases": "Current be2f71da and actual preceding ea071ab7 retained, including environments",
+    "staged_research": "379506688 bytes actual Bybit market-data: raw one-minute294838272B, normalized82370560B, manifest732125B; no exact stagingpath references in checked runtime/systemd/reports/.ops, but complete identical retained source not proven, so market-data preservation takes precedence.",
+    "protected": "Canonical checkout/git/uncommitted files, all research results/input data/packs, SQLite/WAL/history/warmup, Docker, Hermes, f-ai/app.f-ai and VPN data/services/profiles, all logs/backups"
+  },
+  "limitations": [
+    "du includes shared hardlinks and overstates uniquely reclaimable space; observed filesystem free-space deltas recorded",
+    "No broad temp or release pruning where usefulness uncertain"
+  ],
+  "final_space": {
+    "available_bytes": 1853128704,
+    "free_bytes": 3537321984,
+    "size_bytes": 39973924864
+  },
+  "net_available_gain_bytes": 193789952,
+  "observed_action_gain_sum_bytes": 194146304,
+  "bounded_build_check": {
+    "roots": [
+      "/root/.openclaw/workspace/coinmaster",
+      "/srv/coinmaster",
+      "/tmp",
+      "/var/tmp"
+    ],
+    "result": "No large obsolete Rust target/build artifact found. /tmp totals 16863232 bytes; /var/tmp totals 8388608 bytes. Qualified wheel/source/diff preserved. Remaining canonical runtime is protected, not cleanup scratch."
+  },
+  "post_cleanup_services": "MainPID=2009732\nNRestarts=0\nId=coinmaster-hl-stageg-testnet.service\nActiveState=active\n\nMainPID=1887363\nNRestarts=0\nId=coinmaster-runtime.service\nActiveState=active\n\nMainPID=1886838\nNRestarts=0\nId=coinmaster-connections.service\nActiveState=active\n\nMainPID=0\nNRestarts=0\nId=coinmaster-hl-stageg-live.service\nActiveState=inactive\n",
+  "preserved_live_dependency_checks": {
+    "/srv/coinmaster/hl-live/current/.venv/bin/python": {
+      "realpath": "/usr/bin/python3.12",
+      "exists": true
+    },
+    "/srv/coinmaster/hl-live/current/.venv/lib/python3.12/site-packages/nautilus_trader": {
+      "realpath": "/srv/coinmaster/hl-live/releases/b20814019202ec93b234c052d5d8e92448c85a17-v0-81e6318-wheel-8ff3c6dcc150/.venv/lib/python3.12/site-packages/nautilus_trader",
+      "exists": true
+    },
+    "/srv/coinmaster/hl-live/releases/306e1aab402b521d7a7e3df2fb74aae1c3844dbc-v0-81e6318-wheel-8ff3c6dcc150/.venv/bin/python": {
+      "realpath": "/usr/bin/python3.12",
+      "exists": true
+    }
+  },
+  "retained_major_inventory_bytes": {
+    "/opt/fai-paperclip": 3455381504,
+    "/opt/fai-content-engine": 2288668672,
+    "/var/lib/docker": 6220722176,
+    "/root/.hermes": 3915382784,
+    "/var/lib/hermes-daniil": 889835520,
+    "/var/lib/coinmaster-native-gui/data": 1408684032,
+    "/root/.openclaw/workspace/coinmaster": 1586118656,
+    "/root/.openclaw/workspace/myshopai": 1229193216,
+    "/root/.openclaw/workspace/msa": 360452096,
+    "/root/.local/share/uv/python": 334430208,
+    "/root/fai-maintenance": 156184576
+  }
+}
