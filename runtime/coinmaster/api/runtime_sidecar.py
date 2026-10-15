@@ -223,7 +223,7 @@ class HlStagegProtectionResetRequest(RuntimeSchema):
 
 
 class HlStagegProtectionCommand(RuntimeSchema):
-    instance_id: Literal["hl-stageg-testnet"]
+    instance_id: Literal["hl-stageg-testnet", "hl-stageg-live"]
     command: Literal["set-deposit-protection", "reset-deposit-protection"]
     idempotency_key: str
     status: Literal["APPLIED"]
@@ -276,14 +276,14 @@ class HlStagegEvent(RuntimeSchema):
     cursor: int
     event_id: str
     kind: str
-    provenance: Literal["SANDBOX"] = "SANDBOX"
+    provenance: Literal["SANDBOX", "LIVE"] = "SANDBOX"
 
 
 class HlStagegPosition(RuntimeSchema):
     instrument_id: str
     signed_quantity: str
     average_entry_price: str | None = None
-    provenance: Literal["SANDBOX"] = "SANDBOX"
+    provenance: Literal["SANDBOX", "LIVE"] = "SANDBOX"
 
     @field_validator("average_entry_price")
     @classmethod
@@ -314,17 +314,19 @@ class HlStagegOrder(RuntimeSchema):
     status: str | None = None
     submitted_at_ns: int | None = None
     updated_at_ns: int | None = None
-    provenance: Literal["SANDBOX"] = "SANDBOX"
+    provenance: Literal["SANDBOX", "LIVE"] = "SANDBOX"
 
 
 class HlStagegProjection(RuntimeSchema):
     version: Literal["hl-stageg-projection-v1"]
-    instance_id: Literal["hl-stageg-testnet"]
+    instance_id: Literal["hl-stageg-testnet", "hl-stageg-live"]
     projection_state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
     observed_at_ns: int | None = None
-    mode: Literal["sandbox"]
-    environment: Literal["mainnet-public"]
-    live_order_capability: Literal[False] = False
+    mode: Literal["sandbox", "live"]
+    environment: Literal["mainnet-public", "mainnet"]
+    live_order_capability: bool = False
+    profile: dict[str, Any] | None = None
+    real_order_approval: bool = False
     run_epoch: str | None = None
     virtual_capital_resets_on_flat_restart: bool | None = None
     sandbox_starting_cash_usdc: str | None = None
@@ -345,7 +347,7 @@ class HlStagegProjection(RuntimeSchema):
     orders: list[HlStagegOrder]
     events: list[HlStagegEvent]
     event_cursor: int
-    provenance: Literal["SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION"]
+    provenance: Literal["SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION", "NATIVE_MAINNET_OWNED_ACCOUNT"]
     warnings: list[str]
 
 
@@ -355,12 +357,12 @@ class HlStagegProjection(RuntimeSchema):
 # control channel exist.
 class HlStagegStrategy(RuntimeSchema):
     version: Literal["hl-stageg-strategy-v1"]
-    instance_id: Literal["hl-stageg-testnet"]
+    instance_id: Literal["hl-stageg-testnet", "hl-stageg-live"]
     source_state: Literal["SEALED_CONFIGURATION_CHECKED", "INVALID"]
     running_state: Literal["RUNNING_MATCH", "MISMATCH", "NOT_CONFIRMED"]
     strategy_id: str
-    mode: Literal["sandbox"]
-    environment: Literal["mainnet-public"]
+    mode: Literal["sandbox", "live"]
+    environment: Literal["mainnet-public", "mainnet"]
     candidate: dict[str, str]
     hashes: HlStagegHashes
     capital_assumption: str
@@ -381,8 +383,8 @@ class HlStagegControlAction(RuntimeSchema):
 
 
 class HlStagegControls(RuntimeSchema):
-    instance_id: Literal["hl-stageg-testnet"] = "hl-stageg-testnet"
-    mode: Literal["sandbox"] = "sandbox"
+    instance_id: Literal["hl-stageg-testnet", "hl-stageg-live"] = "hl-stageg-testnet"
+    mode: Literal["sandbox", "live"] = "sandbox"
     projection_state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
     pause: HlStagegControlAction
     resume: HlStagegControlAction
@@ -391,7 +393,7 @@ class HlStagegControls(RuntimeSchema):
 
 
 class HlStagegControlCommand(RuntimeSchema):
-    instance_id: Literal["hl-stageg-testnet"]
+    instance_id: Literal["hl-stageg-testnet", "hl-stageg-live"]
     command: Literal["pause-new-entries", "resume-new-entries"]
     idempotency_key: str
     status: Literal["ACCEPTED", "DUPLICATE"]
@@ -404,7 +406,8 @@ def hl_stageg_controls(projection: HlStagegProjection, control_transport_availab
     The legacy /runtime/commands relay targets coinmaster-paper and must never
     be represented as authority over this HL Stage-G Sandbox instance.
     """
-    unavailable = None if projection.projection_state == "READY" else f"NATIVE_PROJECTION_{projection.projection_state}"
+    live_denied = projection.mode == "live" and (not projection.real_order_approval or not projection.live_order_capability)
+    unavailable = "EXACT_LIVE_ORDER_APPROVAL_REQUIRED" if live_denied else None if projection.projection_state == "READY" else f"NATIVE_PROJECTION_{projection.projection_state}"
     enabled = (
         unavailable is None
         and projection.native_thread_alive is True
@@ -415,6 +418,7 @@ def hl_stageg_controls(projection: HlStagegProjection, control_transport_availab
         "NATIVE_ENTRY_CONTROL_UNAVAILABLE" if projection.entry_control.capability != "READY" else "NATIVE_ENTRY_CONTROL_TRANSPORT_UNAVAILABLE"
     )
     return HlStagegControls(
+        instance_id=projection.instance_id, mode=projection.mode,
         projection_state=projection.projection_state,
         pause=HlStagegControlAction(enabled=enabled, blocker=blocker),
         resume=HlStagegControlAction(enabled=enabled, blocker=blocker),
@@ -495,7 +499,7 @@ class HlPublicCandle(RuntimeSchema):
 class HlPublicCandles(RuntimeSchema):
     version: Literal["hl-public-candles-v1"]
     venue: Literal["HYPERLIQUID"]
-    environment: Literal["mainnet-public"]
+    environment: Literal["mainnet-public", "mainnet"]
     source: Literal["OFFICIAL_INFO_CANDLE_SNAPSHOT"]
     execution_evidence: Literal[False]
     coin: Literal["BTC", "SOL"]
@@ -528,9 +532,9 @@ class HlNativeEquityWindow(RuntimeSchema):
 
 class HlNativeEquityChanges(RuntimeSchema):
     version: Literal["hl-native-equity-changes-v1"]
-    instance_id: Literal["hl-stageg-testnet"]
+    instance_id: Literal["hl-stageg-testnet", "hl-stageg-live"]
     run_epoch: str | None
-    source: Literal["NATIVE_SANDBOX_ACCOUNT"]
+    source: Literal["NATIVE_SANDBOX_ACCOUNT", "NATIVE_LIVE_ACCOUNT"]
     state: Literal["READY", "STALE", "UNAVAILABLE", "INVALID"]
     as_of_ns: int | None
     equity_usdc: str | None
@@ -587,7 +591,7 @@ class HlStagegFillHistory(RuntimeSchema):
     detail_store_available: bool
     historical_id_only_count: int
     version: Literal["hl-stageg-native-fills-v1"]
-    instance_id: Literal["hl-stageg-testnet"]
+    instance_id: Literal["hl-stageg-testnet", "hl-stageg-live"]
     run_epoch: str
 
     @field_validator("run_epoch")
@@ -600,8 +604,9 @@ class HlStagegFillHistory(RuntimeSchema):
 
 class HlStagegFillReader:
     """Relay exact future-fill facts over the authenticated loopback worker API."""
-    def __init__(self, url: str, token: str | None) -> None:
+    def __init__(self, url: str, token: str | None, instance_id: str = "hl-stageg-testnet") -> None:
         self.url, self.token = url.rstrip("/"), token
+        self.instance_id = instance_id
 
     def history(self, cursor: int = 0, limit: int = 100) -> HlStagegFillHistory:
         if cursor < 0 or not 1 <= limit <= 100:
@@ -611,13 +616,13 @@ class HlStagegFillReader:
         request = urllib.request.Request(
             f"{self.url}/fills?cursor={cursor}&limit={limit}", method="GET",
             headers={"Accept": "application/json", "Authorization": f"Bearer {self.token}",
-                     "X-Coinmaster-Instance": "hl-stageg-testnet"},
+                     "X-Coinmaster-Instance": self.instance_id},
         )
         try:
             with urllib.request.urlopen(request, timeout=2) as response:
                 payload = json.loads(response.read())
             result = HlStagegFillHistory.model_validate(payload)
-            if result.version != "hl-stageg-native-fills-v1" or result.instance_id != "hl-stageg-testnet" or not result.run_epoch:
+            if result.version != "hl-stageg-native-fills-v1" or result.instance_id != self.instance_id or not result.run_epoch:
                 raise ValueError("invalid Stage-G fill response identity")
             return result
         except HTTPException:
@@ -631,14 +636,14 @@ class HlNativeEquityReader:
     MAX_AGE_NS = 600_000_000_000
     MAX_FUTURE_SKEW_NS = 5_000_000_000
 
-    def __init__(self, url: str, token: str | None) -> None:
+    def __init__(self, url: str, token: str | None, instance_id: str = "hl-stageg-testnet") -> None:
         self.url, self.token = url.rstrip("/"), token
+        self.instance_id = instance_id
 
-    @staticmethod
-    def unavailable(state: Literal["UNAVAILABLE", "INVALID", "STALE"]) -> HlNativeEquityChanges:
+    def unavailable(self, state: Literal["UNAVAILABLE", "INVALID", "STALE"]) -> HlNativeEquityChanges:
         return HlNativeEquityChanges.model_validate({
-            "version": "hl-native-equity-changes-v1", "instance_id": "hl-stageg-testnet",
-            "run_epoch": None, "source": "NATIVE_SANDBOX_ACCOUNT", "state": state,
+            "version": "hl-native-equity-changes-v1", "instance_id": self.instance_id,
+            "run_epoch": None, "source": "NATIVE_LIVE_ACCOUNT" if self.instance_id == "hl-stageg-live" else "NATIVE_SANDBOX_ACCOUNT", "state": state,
             "as_of_ns": None, "equity_usdc": None,
             "windows": {key: {"state": "UNAVAILABLE", "baseline_at_ns": None,
                               "baseline_equity_usdc": None, "change_usdc": None,
@@ -651,12 +656,14 @@ class HlNativeEquityReader:
         request = urllib.request.Request(
             f"{self.url}/equity-changes", method="GET",
             headers={"Accept": "application/json", "Authorization": f"Bearer {self.token}",
-                     "X-Coinmaster-Instance": "hl-stageg-testnet"},
+                     "X-Coinmaster-Instance": self.instance_id},
         )
         try:
             with urllib.request.urlopen(request, timeout=2) as response:
                 payload = json.loads(response.read())
             result = HlNativeEquityChanges.model_validate(payload)
+            if result.instance_id != self.instance_id or result.source != ("NATIVE_LIVE_ACCOUNT" if self.instance_id == "hl-stageg-live" else "NATIVE_SANDBOX_ACCOUNT"):
+                return self.unavailable("INVALID")
             if result.state == "READY":
                 now_ns = time.time_ns()
                 if result.as_of_ns > now_ns + self.MAX_FUTURE_SKEW_NS:
@@ -700,7 +707,7 @@ class HlStagegProjectionReader:
             # The worker fixes identity and capability too, but validate them
             # again at the API boundary to fail closed on a swapped endpoint.
             projection = HlStagegProjection.model_validate(payload)
-            if projection.projection_state != "READY" or projection.live_order_capability is not False:
+            if projection.instance_id != "hl-stageg-testnet" or projection.mode != "sandbox" or projection.projection_state != "READY" or projection.live_order_capability is not False:
                 return self.unavailable("INVALID", "INVALID_HL_STAGEG_PROJECTION")
             now_ns = time.time_ns()
             if projection.observed_at_ns is None or projection.observed_at_ns > now_ns + self.MAX_FUTURE_SKEW_NS:
@@ -714,10 +721,88 @@ class HlStagegProjectionReader:
             return self.unavailable("INVALID", "INVALID_HL_STAGEG_PROJECTION")
 
 
+def live_order_approval_matches(projection: HlStagegProjection) -> bool:
+    """Read the exact installed Live seal and owner approval; never infer from UI."""
+    try:
+        root = Path("/srv/coinmaster/hl-live/current").resolve(strict=True)
+        identity = json.loads((root / "live-release.json").read_text())
+        fingerprint = json.loads((root / "configs/hl-stageg-live.account-fingerprint.json").read_text())
+        approval = json.loads(Path("/etc/coinmaster/live-order-approval.json").read_text())
+        profile = projection.profile or {}
+        return (projection.instance_id == "hl-stageg-live" and projection.mode == "live"
+                and projection.projection_state == "READY" and projection.live_order_capability is True
+                and approval.get("schema") == "coinmaster-live-order-approval-v1"
+                and approval.get("instance_id") == "hl-stageg-live" and approval.get("orders_approved") is True
+                and approval.get("pilot_capital_usdc") == "82"
+                and approval.get("release_commit") == identity["source_commit"]
+                and approval.get("master_address_sha256") == fingerprint["master_address_sha256"]
+                and all(approval.get(key) == identity[key] == profile.get(key)
+                        for key in ("strategy_sha256", "candidate_sha256", "profile_sha256")))
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+
+
+class HlLiveProjectionReader(HlStagegProjectionReader):
+    """Project native Live facts; never substitute the Sandbox or planned seed."""
+    @staticmethod
+    def unavailable(state, warning):
+        payload = HlStagegProjectionReader.unavailable(state, warning).model_dump()
+        payload.update(instance_id="hl-stageg-live", mode="live", environment="mainnet",
+                       provenance="NATIVE_MAINNET_OWNED_ACCOUNT", process_state="LIVE_INACTIVE_OR_UNAVAILABLE")
+        return HlStagegProjection.model_validate(payload)
+
+    def runtime(self):
+        try:
+            request = urllib.request.Request(f"{self.url}/status", headers={"Accept": "application/json"})
+            with urllib.request.urlopen(request, timeout=2) as response:
+                raw = json.loads(response.read())
+            if (raw.get("instance_id") != "hl-stageg-live" or raw.get("mode") != "live"
+                    or raw.get("environment") != "mainnet" or raw.get("live_order_capability") is not True
+                    or raw.get("version") != "hl-stageg-live-projection-v1"
+                    or raw.get("provenance") != "NATIVE_MAINNET_OWNED_ACCOUNT" or not raw.get("run_epoch")):
+                raise ValueError("identity mismatch")
+            observed = raw.get("observed_at_ns")
+            if type(observed) is not int or observed > time.time_ns() + self.MAX_FUTURE_SKEW_NS:
+                raise ValueError("observation time unavailable")
+            if time.time_ns() - observed > self.MAX_AGE_NS:
+                return self.unavailable("STALE", "LIVE_STATUS_STALE")
+            profile = raw.get("profile") or {}
+            account = raw.get("account") or {}
+            account_fields = {key: account[key] for key in HlStagegAccount.model_fields if key in account}
+            account_fields.update(native_free=account.get("withdrawable"), native_locked=account.get("margin_used"),
+                                  observed_at_ns=observed)
+            if raw.get("account_state") != "CURRENT":
+                account_fields = {}
+            hashes = {key: profile.get(key, UNKNOWN) for key in HlStagegHashes.model_fields}
+            gates = {"attachable": raw.get("orders_enabled") is True}
+            result = HlStagegProjection.model_validate({
+                "version": "hl-stageg-projection-v1", "instance_id": "hl-stageg-live", "mode": "live",
+                "environment": "mainnet", "projection_state": "READY", "observed_at_ns": observed,
+                "live_order_capability": True, "run_epoch": raw["run_epoch"], "profile": profile,
+                "process_state": raw.get("state", UNKNOWN), "reconciliation": "CURRENT" if raw.get("account_state") == "CURRENT" else UNKNOWN,
+                "recovery_required": raw.get("recovery_required", True), "recovery_capability": raw.get("recovery_capability"),
+                "native_thread_alive": raw.get("native_thread_alive") is True,
+                "hashes": hashes, "warmup": {"state": UNKNOWN, **{key: value for key, value in raw.get("warmup", {}).items() if key in HlStagegWarmup.model_fields}},
+                "gates": gates, "account": account_fields, "entry_control": raw.get("entry_control", {"state": "PAUSED", "capability": "UNAVAILABLE"}),
+                "funding_state": "NATIVE_ACCOUNT_SETTLEMENT", "feeds": raw.get("feeds", {}),
+                "positions": [{**row, "provenance": "LIVE"} for row in raw.get("positions", [])],
+                "orders": [{**row, "provenance": "LIVE"} for row in raw.get("orders", [])],
+                "events": [{**row, "provenance": "LIVE"} for row in raw.get("events", [])],
+                "event_cursor": raw.get("event_cursor", 0), "deposit_protection": raw.get("deposit_protection"),
+                "provenance": "NATIVE_MAINNET_OWNED_ACCOUNT", "warnings": ["EXACT_LIVE_ORDER_APPROVAL_REQUIRED"],
+            })
+            return result.model_copy(update={"real_order_approval": live_order_approval_matches(result)})
+        except (OSError, TimeoutError):
+            return self.unavailable("UNAVAILABLE", "LIVE_WORKER_UNAVAILABLE")
+        except (ValueError, TypeError, KeyError):
+            return self.unavailable("INVALID", "INVALID_LIVE_PROJECTION")
+
+
 class HlStagegControlRelay:
     """Relay only entry admission commands to the exact loopback Stage-G worker."""
-    def __init__(self, url: str, token: str | None) -> None:
+    def __init__(self, url: str, token: str | None, instance_id: str = "hl-stageg-testnet") -> None:
         self.url, self.token = url.rstrip("/"), token
+        self.instance_id = instance_id
 
     def command(self, command: Literal["pause-new-entries", "resume-new-entries"], idempotency_key: str) -> HlStagegControlCommand:
         if not self.token:
@@ -725,7 +810,7 @@ class HlStagegControlRelay:
         request = urllib.request.Request(
             f"{self.url}/controls/{command}", data=b"{}", method="POST",
             headers={"Authorization": f"Bearer {self.token}", "Idempotency-Key": idempotency_key,
-                     "X-Coinmaster-Instance": "hl-stageg-testnet", "Content-Type": "application/json"},
+                     "X-Coinmaster-Instance": self.instance_id, "Content-Type": "application/json"},
         )
         try:
             with urllib.request.urlopen(request, timeout=3) as response:
@@ -736,22 +821,23 @@ class HlStagegControlRelay:
             raise HTTPException(503, "Stage-G native entry control is unavailable") from error
         except (OSError, TimeoutError, ValueError, TypeError):
             raise HTTPException(503, "Stage-G native entry control is unavailable")
-        if payload.instance_id != "hl-stageg-testnet" or payload.command != command:
+        if payload.instance_id != self.instance_id or payload.command != command:
             raise HTTPException(503, "Stage-G native entry control identity mismatch")
         return payload
 
 
 class HlStagegDepositProtectionRelay:
     """Relay bounded deposit policy commands to the instance-bound loopback worker."""
-    def __init__(self, url: str, token: str | None) -> None:
+    def __init__(self, url: str, token: str | None, instance_id: str = "hl-stageg-testnet") -> None:
         self.url, self.token = url.rstrip("/"), token
+        self.instance_id = instance_id
 
     def command(self, command: Literal["set-deposit-protection", "reset-deposit-protection"], body: dict[str, Any]) -> HlStagegProtectionCommand:
         if not self.token:
             raise HTTPException(503, "Stage-G deposit protection control is unavailable")
         request = urllib.request.Request(
             f"{self.url}/controls/{command}", data=json.dumps(body).encode(), method="POST",
-            headers={"Authorization": f"Bearer {self.token}", "X-Coinmaster-Instance": "hl-stageg-testnet",
+            headers={"Authorization": f"Bearer {self.token}", "X-Coinmaster-Instance": self.instance_id,
                      "Idempotency-Key": str(body.get("idempotency_key", "")), "Content-Type": "application/json"},
         )
         try:
@@ -763,7 +849,7 @@ class HlStagegDepositProtectionRelay:
             raise HTTPException(503, "Stage-G deposit protection control is unavailable") from error
         except (OSError, TimeoutError, ValueError, TypeError):
             raise HTTPException(503, "Stage-G deposit protection control is unavailable")
-        if payload.instance_id != "hl-stageg-testnet" or payload.command != command or payload.idempotency_key != body.get("idempotency_key"):
+        if payload.instance_id != self.instance_id or payload.command != command or payload.idempotency_key != body.get("idempotency_key"):
             raise HTTPException(503, "Stage-G deposit protection identity mismatch")
         readback = payload.deposit_protection
         now_ns = time.time_ns()
@@ -845,6 +931,40 @@ class HlStagegStrategyReader:
                 promotion_enabled=False, promotion_reason="SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED",
                 warnings=["INVALID_SEALED_STAGEG_SOURCE"],
             )
+
+
+class HlLiveStrategyReader:
+    """Checked-in planned profile, separate from native account facts."""
+    def __init__(self, runtime_root=None, projection_reader=None):
+        self.root = runtime_root or Path(__file__).resolve().parents[2]
+        self.projection_reader = projection_reader
+
+    def strategy(self):
+        fallback = dict(version="hl-stageg-strategy-v1", instance_id="hl-stageg-live", mode="live", environment="mainnet",
+                        source_state="INVALID", running_state="NOT_CONFIRMED", strategy_id="UNKNOWN", candidate={},
+                        hashes={key: UNKNOWN for key in HlStagegHashes.model_fields}, capital_assumption="Planned capital unavailable; observed account values remain separate",
+                        research_comparison_assumption=UNKNOWN, public_venue_profile="Hyperliquid mainnet", account_margin=UNKNOWN,
+                        account_fee_schedule=UNKNOWN, funding_treatment="NATIVE_ACCOUNT_SETTLEMENT", promotion_enabled=False,
+                        promotion_reason="SEPARATE_NATIVE_LIFECYCLE_GATE_REQUIRED", warnings=["LIVE_PROFILE_UNAVAILABLE"])
+        try:
+            from coinmaster.ops.hl_live_profile import load_live_profile
+            loaded = load_candidate(self.root / "configs/hl-live-v3-dp50.candidate.json")
+            profile = load_live_profile(self.root, loaded.candidate)
+            profile_hash = profile["profile_sha256"]
+            candidate = {key: json.dumps(value, separators=(",", ":")) if isinstance(value, tuple) else str(value).lower() if isinstance(value, bool) else str(value) for key, value in asdict(loaded.candidate).items()}
+            candidate.pop("btc_notional_multiplier", None)
+            for key in ("deposit_protection_percent", "btc_long_notional_multiplier", "btc_short_notional_multiplier"):
+                candidate[key] = str(profile[key])
+            projection = self.projection_reader.runtime() if self.projection_reader else None
+            matches = bool(projection and projection.projection_state == "READY" and projection.profile and projection.profile.get("profile_sha256") == profile_hash)
+            fallback.update(source_state="SEALED_CONFIGURATION_CHECKED", running_state="RUNNING_MATCH" if matches else "NOT_CONFIRMED",
+                            strategy_id="V3+DP50", candidate=candidate,
+                            hashes={"candidate_sha256": loaded.sha256, "strategy_sha256": profile["strategy_sha256"], "execution_policy_sha256": UNKNOWN},
+                            capital_assumption="Planned initial capital: " + profile["initial_capital_usdc"] + " USDC; this is not an observed account balance",
+                            warnings=["EXACT_LIVE_ORDER_APPROVAL_REQUIRED"])
+        except (OSError, ValueError, TypeError, KeyError, RuntimeError):
+            pass
+        return HlStagegStrategy.model_validate(fallback)
 
 
 def create_runtime_app(database: str | None = None, token: str | None = None, worker_url: str | None = None, worker_token: str | None = None, control_database: str | None = None, hl_stageg_status_url: str | None = None, hl_stageg_control_token: str | None = None, runtime_root: Path | None = None, operator_username: str | None = None, operator_password_hash: str | None = None, session_database: str | None = None, public_origin: str | None = None) -> FastAPI:
@@ -1004,6 +1124,65 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
         if projection.projection_state != "READY" or projection.entry_control.state != result.entry_control:
             raise HTTPException(503, "Stage-G entry control read-back mismatch")
         return result
+    live_reader = HlLiveProjectionReader("http://127.0.0.1:18185")
+    live_token = os.getenv("COINMASTER_HL_LIVE_CONTROL_TOKEN")
+    live_fills = HlStagegFillReader(live_reader.url, live_token, "hl-stageg-live")
+    live_equity = HlNativeEquityReader(live_reader.url, live_token, "hl-stageg-live")
+    live_entry_control = HlStagegControlRelay(live_reader.url, live_token, "hl-stageg-live")
+    live_protection_control = HlStagegDepositProtectionRelay(live_reader.url, live_token, "hl-stageg-live")
+
+    @app.get("/api/v1/instances/hl-stageg-live", response_model=HlStagegProjection, dependencies=[Depends(auth)])
+    def live_runtime():
+        return live_reader.runtime()
+
+    @app.get("/api/v1/instances/hl-stageg-live/strategy", response_model=HlStagegStrategy, dependencies=[Depends(auth)])
+    def live_strategy():
+        return HlLiveStrategyReader(runtime_root, live_reader).strategy()
+
+    @app.get("/api/v1/instances/hl-stageg-live/controls", response_model=HlStagegControls, dependencies=[Depends(auth)])
+    def live_controls():
+        return hl_stageg_controls(live_reader.runtime(), bool(live_token))
+
+    @app.get("/api/v1/instances/hl-stageg-live/fills", response_model=HlStagegFillHistory, dependencies=[Depends(auth)])
+    def live_fill_history(cursor: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=100)):
+        return live_fills.history(cursor, limit)
+
+    @app.get("/api/v1/instances/hl-stageg-live/equity-changes", response_model=HlNativeEquityChanges, dependencies=[Depends(auth)])
+    def live_equity_changes():
+        return live_equity.changes()
+
+    def require_live_controls():
+        if not Path("/etc/coinmaster/live-order-approval.json").is_file():
+            raise HTTPException(403, "Exact release, account and profile approval is required before Live controls can be enabled.")
+        projection = live_reader.runtime()
+        if not projection.real_order_approval or not live_order_approval_matches(projection):
+            raise HTTPException(403, "Exact release, account and profile approval is required before Live controls can be enabled.")
+        if not hl_stageg_controls(projection, bool(live_token)).pause.enabled:
+            raise HTTPException(503, "Live native controls are unavailable. Refresh current account state.")
+        return projection
+
+    @app.post("/api/v1/instances/hl-stageg-live/controls/set-deposit-protection", response_model=HlStagegProtectionCommand, dependencies=[Depends(auth)])
+    def live_set_protection(body: HlStagegProtectionCommandRequest):
+        require_live_controls()
+        return live_protection_control.command("set-deposit-protection", body.model_dump())
+
+    @app.post("/api/v1/instances/hl-stageg-live/controls/reset-deposit-protection", response_model=HlStagegProtectionCommand, dependencies=[Depends(auth)])
+    def live_reset_protection(body: HlStagegProtectionResetRequest):
+        require_live_controls()
+        return live_protection_control.command("reset-deposit-protection", body.model_dump())
+
+    @app.post("/api/v1/instances/hl-stageg-live/controls/{command}", response_model=HlStagegControlCommand, dependencies=[Depends(auth)])
+    def live_control(command: Literal["pause-new-entries", "resume-new-entries"], idempotency_key: str = Header(alias="Idempotency-Key")):
+        before = require_live_controls()
+        if not idempotency_key:
+            raise HTTPException(422, "Idempotency-Key is required")
+        result = live_entry_control.command(command, idempotency_key)
+        fresh = live_reader.runtime()
+        if (fresh.projection_state != "READY" or fresh.run_epoch != before.run_epoch
+                or fresh.entry_control.state != result.entry_control or not fresh.real_order_approval):
+            raise HTTPException(503, "Live entry control read-back mismatch")
+        return result
+
     if relay_token:
         @app.post("/api/v1/runtime/commands/{command}", response_model=RuntimeCommandResponse, dependencies=[Depends(auth)])
         def command(command: Literal["pause-new-entries", "resume-new-entries", "flatten-paper"], idempotency_key: str = Header(alias="Idempotency-Key")) -> RuntimeCommandResponse:

@@ -9,6 +9,7 @@ import signal
 import threading
 import time
 import uuid
+from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 
@@ -28,7 +29,8 @@ from coinmaster.ops.hyperliquid_testnet import (
 from coinmaster.ops.hyperliquid_testnet_worker import TestnetWorker, create_status_server
 from coinmaster.ops.live_recovery import NativeLiveRecoveryScope, LiveRecoverySubmissionSink
 from coinmaster.ops.native_paper_node import BYBIT_IDS, FeedBook, FeedObserver, FeedObserverConfig, bybit_daily_bar_type
-from coinmaster.ops.paper import PaperRuntime
+from coinmaster.ops.hl_live_epoch import LiveEpochRuntime as PaperRuntime
+from coinmaster.ops.hl_live_profile import load_live_profile
 from coinmaster.ops.stage_g_config import load_candidate, load_testnet_instance_config
 from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
 from coinmaster.strategy.wave_overlay import WaveOverlayStrategyConfig
@@ -46,10 +48,12 @@ def require_live_order_approval(path: Path, fingerprint_path: Path, release_root
         if (approval.get("schema") != "coinmaster-live-order-approval-v1"
                 or approval.get("instance_id") != "hl-stageg-live"
                 or approval.get("orders_approved") is not True
-                or approval.get("pilot_capital_usdc") != "100"
+                or approval.get("pilot_capital_usdc") != "82"
                 or approval.get("release_commit") != identity["source_commit"]
                 or approval.get("master_address_sha256") != fingerprint["master_address_sha256"]
-                or approval.get("strategy_sha256") != SEALED_V0_SHA):
+                or approval.get("strategy_sha256") != identity["strategy_sha256"]
+                or approval.get("candidate_sha256") != identity["candidate_sha256"]
+                or approval.get("profile_sha256") != identity["profile_sha256"]):
             raise ValueError
     except (OSError, ValueError, KeyError, TypeError):
         raise RuntimeError("LIVE_OWNER_ORDER_APPROVAL_REQUIRED") from None
@@ -70,7 +74,15 @@ class LiveSubmissionHooks(LifecycleHooks):
 
 class HyperliquidLiveNode:
     # Reuse only public feature/warmup, native cache projection and lifecycle helpers.
-    _refresh_warmup_readiness = HyperliquidTestnetNode._refresh_warmup_readiness
+    def _refresh_warmup_readiness(self):
+        HyperliquidTestnetNode._refresh_warmup_readiness(self)
+        self.gate = replace(
+            self.gate,
+            attachable=(self.gate.warmup_state == "READY"
+                        and self.gate.approval_state == "SEALED_LIVE_TECHNICAL_PROFILE_MATCH"
+                        and self.gate.margin_policy_state == "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"),
+        )
+
     native_snapshot = HyperliquidTestnetNode.sandbox_snapshot
     strategy_restartable = HyperliquidTestnetNode.strategy_restartable
     start = HyperliquidTestnetNode.start
@@ -82,17 +94,22 @@ class HyperliquidLiveNode:
         self.instance, self.candidate, self.state = instance, candidate, state
         self.profile_root = Path(__file__).resolve().parents[2]
         source = self.profile_root / "coinmaster/strategy/wave_overlay.py"
-        if hashlib.sha256(source.read_bytes()).hexdigest() != SEALED_V0_SHA:
-            raise RuntimeError("LIVE_SEALED_V0_SOURCE_MISMATCH")
+        self.profile = load_live_profile(self.profile_root, candidate)
         # Qualification never implies order authorization: main checks approval before this read.
         equity = check_live_credential(credential_path, fingerprint_path)
-        if equity != Decimal("100"):
-            raise RuntimeError("LIVE_PILOT_REQUIRES_EXACT_100_USDC")
+        prior_balance = getattr(state, "flat_epoch_balance", None)
+        if equity != (prior_balance if prior_balance is not None else Decimal("82")):
+            raise RuntimeError("LIVE_PILOT_INITIAL_82_OR_OWNED_FLAT_BALANCE_REQUIRED")
         record = _read_json(credential_path)
         self.master = record["master_address"]
         self.gate = cross_venue_stage_g_gate(
             candidate=candidate, warmup_manifest=instance.signal_warmup_manifest,
             strategy_path=source, profile_root=self.profile_root,
+        )
+        self.gate = replace(
+            self.gate, approval_state="SEALED_LIVE_TECHNICAL_PROFILE_MATCH",
+            attachable=(self.gate.warmup_state == "READY" and self.gate.margin_policy_state ==
+                        "READY_PUBLIC_HL_MAINNET_TIERS_LOCAL_SANDBOX_LEVERAGE"),
         )
         self.candidate_hash = self.gate.candidate_hash
         self.warmup_bundle, self.warmup_state = load_stageg_warmup_bundle(instance.signal_warmup_manifest)
@@ -118,7 +135,8 @@ class HyperliquidLiveNode:
             btc_bar_type=bybit_daily_bar_type(BYBIT_IDS[0]), sol_bar_type=bybit_daily_bar_type(BYBIT_IDS[1]),
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
             mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), live_mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"),
-            active_seed=Decimal("100"), candidate=candidate, seed_bars=self.warmup_bundle.bars,
+            active_seed=equity, candidate=candidate, seed_bars=self.warmup_bundle.bars,
+            **self.profile["strategy_flags"],
             max_mark_age_ns=120_000_000_000, entries_gate=self._entries_enabled,
             event_sink=self.hooks.record_event, native_fill_sink=state.record_native_fill, submission_sink=self.hooks,
             btc_signal_id=BYBIT_IDS[0], sol_signal_id=BYBIT_IDS[1],
@@ -158,6 +176,7 @@ class HyperliquidLiveNode:
 
     def status(self):
         return {"instance_id": self.instance.instance_id, "mode": "live", "environment": "mainnet",
+                "profile": self.profile,
                 "state": "PUBLIC_FEEDS_READY" if self._entries_enabled() else "RECOVERY_REQUIRED/PAUSED",
                 "orders_enabled": self._entries_enabled(), "live_order_capability": True,
                 "recovery_required": not self.strategy.recovery_confirmed,
@@ -190,9 +209,10 @@ class LiveWorker:
             if self.recovery_marker.exists():
                 raise RuntimeError("LIVE_RESTART_MANUAL_RECOVERY_REQUIRED")
             # Even a flat native cache cannot erase a previous episode or ambiguous result.
-            if (self.runtime.all_submissions() or self.runtime.strategy_checkpoint()
-                    or self.runtime.recovery_state() != "FLAT_RESTART"):
-                raise RuntimeError("LIVE_RESTART_MANUAL_RECOVERY_REQUIRED")
+            identity = json.loads((root / "live-release.json").read_text())
+            self.runtime.prepare_flat_epoch(release_commit=identity["source_commit"])
+            from coinmaster.ops.stage_g_refresh import refresh_stageg_warmup
+            refresh_stageg_warmup(self.instance.signal_warmup_manifest.parent.parent)
             self.native = HyperliquidLiveNode(
                 instance=self.instance, candidate=self.candidate.candidate, state=self.runtime,
                 credential_path=Path(environment["CREDENTIALS_DIRECTORY"]) / "connection.json", fingerprint_path=fingerprints,
@@ -280,6 +300,8 @@ class LiveWorker:
                 status["state"] = "LIVE_MONEY_STALE/PAUSED"
                 status["orders_enabled"] = False
         return {**status, "version": "hl-stageg-live-projection-v1", "run_epoch": self.run_epoch,
+                "observed_at_ns": time.time_ns(),
+                "native_thread_alive": bool(getattr(self.native, "_thread", None) and self.native._thread.is_alive()),
                 "account": account, "account_state": "CURRENT" if account else "UNAVAILABLE", "positions": positions, "orders": orders, "events": events, "event_cursor": cursor,
                 "deposit_protection": self.native.strategy.deposit_projection(),
                 "entry_control": {"state": self.runtime.entry_control_state(), "capability": "READY" if self.control_available else "UNAVAILABLE"},

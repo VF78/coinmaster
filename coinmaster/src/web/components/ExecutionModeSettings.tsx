@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { selectedMode, selectExecutionView } from '../lib/nautilusApi';
 import { Card } from './Card';
 import { Badge } from './Badge';
 import { Button } from './Button';
@@ -6,7 +7,7 @@ type ModeState = { sandbox: { state: string }; live: { state: string; run_epoch:
 const label = (value: string | undefined) => value === 'RUNNING' ? 'Running' : value === 'INACTIVE' ? 'Inactive' : value === 'STARTING' ? 'Starting' : value === 'UNCONFIRMED' ? 'Unconfirmed' : value === 'FAILED' ? 'Failed' : 'Unavailable';
 export function ExecutionModeSettings() {
   const [state, setState] = useState<ModeState | null>(null);
-  const [view, setView] = useState<'sandbox' | 'live'>('sandbox');
+  const view = selectedMode;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   async function refresh() {
@@ -21,9 +22,9 @@ export function ExecutionModeSettings() {
     finally { setLoading(false); }
   }
   useEffect(() => { void refresh(); const timer = window.setInterval(() => void refresh(), 10_000); return () => window.clearInterval(timer); }, []);
-  return <Card title="Execution mode" actions={<Badge tone={state?.sandbox.state === 'RUNNING' ? 'success' : 'neutral'}>{loading ? 'Loading…' : 'Dry-run ' + label(state?.sandbox.state)}</Badge>}>
+  return <Card title="Execution mode" actions={<Badge tone={state?.[view].state === 'RUNNING' ? 'success' : 'neutral'}>{loading ? 'Loading…' : (view === 'live' ? 'Live ' : 'Dry-run ') + label(state?.[view].state)}</Badge>}>
     <div className="execution-mode-selectors" role="group" aria-label="Inspect execution mode">
-      <button type="button" aria-pressed={view === 'sandbox'} onClick={() => setView('sandbox')}>Dry-run</button><button type="button" aria-pressed={view === 'live'} onClick={() => setView('live')}>Live</button>
+      <button type="button" aria-pressed={view === 'sandbox'} onClick={() => selectExecutionView('sandbox')}>Dry-run</button><button type="button" aria-pressed={view === 'live'} onClick={() => selectExecutionView('live')}>Live</button>
       <Button variant="secondary" onClick={() => void refresh()}>Refresh</Button>
     </div>
     {error ? <p role="alert">Execution status unavailable. Refresh to retry.</p> : view === 'sandbox' ? <p className="trader-note">Dry-run: {label(state?.sandbox.state)}. Virtual Sandbox capital and orders remain independent of the connected exchange account.</p> : <div className="execution-mode-live"><p><strong>Live: {label(state?.live.state)}</strong></p><p className="trader-note">Selecting this view does not start or stop either trader.</p><Button variant="primary" disabled title={state?.blockers.join(' ')}>Activate Live</Button>{state?.blockers.map((reason) => <p className="trader-note" key={reason}>{reason}</p>)}{state?.live.state === 'RUNNING' ? <p className="trader-note">{state.stop_reason}</p> : null}</div>}

@@ -1,0 +1,20 @@
+{
+  "btc_long_notional_multiplier": "5.5",
+  "btc_short_notional_multiplier": "7.875",
+  "candidate_sha256": "bc328ce339a68468fc2752db00a784f5975b540b43e72b4c5d1ab596ec51c57e",
+  "deposit_protection_percent": 50,
+  "domain_sha256": "4d4c071c57d52080f5571bd0bc2fabc6a43812b833ea5bf26c8cc414193ae57b",
+  "initial_capital_usdc": "82",
+  "profile_id": "V3+DP50",
+  "research_source": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+  "schema": "coinmaster-live-technical-profile-v1",
+  "strategy_flags": {
+    "research_btc_direction_sizing": true,
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_execution_repairs": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "research_v0_zero_tp_netting": false,
+    "tp_fee_floor_v1": false
+  },
+  "strategy_sha256": "6d26a581f5f693e6c35c47a66c850774877dbd4f59d5d2d9f90a346ee9c26f17"
+}

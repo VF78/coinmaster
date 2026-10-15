@@ -1,4 +1,7 @@
 const SETTING_LABELS: Record<string, string> = {
+  btc_long_notional_multiplier: 'BTC long size multiplier (×)',
+  btc_short_notional_multiplier: 'BTC short size multiplier (×)',
+  deposit_protection_percent: 'Deposit drawdown limit (%)',
   sol_size_multipliers_h: 'SOL add-size multipliers',
   sol_size_multipliers_H: 'SOL add-size multipliers',
   sol_timeout_preempts_add: 'SOL timeout stops further additions',
@@ -21,6 +24,7 @@ const ADVANCED_SETTINGS = new Set([
 ]);
 
 const BLOCKER_LABELS: Record<string, string> = {
+  EXACT_LIVE_ORDER_APPROVAL_REQUIRED: 'Separate approval for the exact Live release, account and profile is required.',
   MISSING_1M_MANIFEST: 'Verified 1-minute market data is not available.',
   CONFIG_NOT_SEALED_STAGE_G: 'The selected configuration does not match the sealed Stage-G strategy.',
   NO_IDEMPOTENT_NATIVE_FLATTEN_RECOVERY: 'Flattening is unavailable until native crash-safe recovery is supported.',

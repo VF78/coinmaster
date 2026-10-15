@@ -80,7 +80,7 @@ export function equityWindowRows(
   nowMs: number,
 ): Array<{ label: string; value: string; percent: string }> | null {
   if (!projection || projection.projection_state !== 'READY' || projection.recovery_required || !projection.run_epoch) return null;
-  if (!data || data.instance_id !== 'hl-stageg-testnet' || data.source !== 'NATIVE_SANDBOX_ACCOUNT' || data.state !== 'READY' || data.run_epoch !== projection.run_epoch) return null;
+  if (!data || data.instance_id !== projection.instance_id || data.source !== (projection.mode === 'live' ? 'NATIVE_LIVE_ACCOUNT' : 'NATIVE_SANDBOX_ACCOUNT') || data.state !== 'READY' || data.run_epoch !== projection.run_epoch) return null;
   if (data.as_of_ns === null || !Number.isFinite(data.as_of_ns)) return null;
   const asOfMs = data.as_of_ns / 1_000_000;
   if (asOfMs > nowMs + 5_000 || nowMs - asOfMs > 600_000) return null;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ResearchPage, RuntimePage, StrategyPage, WorkspaceSettingsPage } from './pages/NautilusControlPage';
 import { Button } from './components/Button';
-import { logoutGuiSession } from './lib/nautilusApi';
+import { logoutGuiSession, selectedMode, selectExecutionView } from './lib/nautilusApi';
 
 type PageKey = 'dashboard' | 'strategy' | 'research' | 'settings';
 const SECTIONS: Array<{ key: PageKey; label: string; icon: string }> = [
@@ -20,7 +20,7 @@ export function App() {
   return <div className="app-shell nautilus-app-shell">
     <header className="app-topbar nautilus-topbar">
       <div className="nautilus-brand"><span className="nautilus-brand__mark">C</span><div><h1>Coinmaster<span>24</span></h1></div></div>
-      <div className="nautilus-topbar__right"><span className="nautilus-environment">Dry-run · Sandbox</span><Button variant="secondary" onClick={() => { void logoutGuiSession().catch((error: unknown) => setSessionError(error instanceof Error ? error.message : 'Sign out failed.')); }}>Sign out</Button></div>
+      <div className="nautilus-topbar__right"><label className="nautilus-environment">View <select aria-label="Execution view" value={selectedMode} onChange={(event) => selectExecutionView(event.target.value as 'sandbox' | 'live')}><option value="sandbox">Dry-run · Sandbox</option><option value="live">Live · Mainnet</option></select></label><Button variant="secondary" onClick={() => { void logoutGuiSession().catch((error: unknown) => setSessionError(error instanceof Error ? error.message : 'Sign out failed.')); }}>Sign out</Button></div>
     </header>
     {sessionError ? <p role="alert" className="nautilus-alert">{sessionError}</p> : null}
     <div className="app-layout">

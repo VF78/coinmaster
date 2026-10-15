@@ -69,14 +69,14 @@ export function dashboardState(state: HlStagegProjection | null): DashboardState
     exposure: exposure || "Exposure not reconciled", canAssertFlat: false,
   };
   if (state.projection_state !== "READY") return { label: humanizeProjectionState(state.projection_state), tone: "danger", detail: "Stage-G status is not ready; exposure cannot be confirmed.", exposure: exposure || "Unavailable", canAssertFlat: false };
-  if (state.account.status === "UNAVAILABLE") return { label: "Account unavailable", tone: "danger", detail: "The native account read is unavailable. No account value is inferred from the Sandbox seed.", exposure: exposure || (canAssertFlat ? "Flat" : "Exposure not reconciled"), canAssertFlat };
+  if (state.account.status === "UNAVAILABLE") return { label: "Account unavailable", tone: "danger", detail: "The native account read is unavailable. No account value is inferred from the planned seed.", exposure: exposure || (canAssertFlat ? "Flat" : "Exposure not reconciled"), canAssertFlat };
   const processLabels: Record<string, string> = {
     PUBLIC_FEEDS_READY: "Public market data ready",
-    READY: "Sandbox worker ready",
+    READY: "Worker ready",
     "DATA_STALE/PAUSED": "Market data stale · paused",
     WORKER_DISCONNECTED: "Worker disconnected",
   };
-  return { label: processLabels[state.process_state] ?? state.process_state.replaceAll("_", " ").toLowerCase().replace(/^./, (letter) => letter.toUpperCase()), tone: "success", detail: "Native Sandbox account and exposure are available.", exposure: exposure || (canAssertFlat ? "Flat" : "Exposure not reconciled"), canAssertFlat };
+  return { label: processLabels[state.process_state] ?? state.process_state.replaceAll("_", " ").toLowerCase().replace(/^./, (letter) => letter.toUpperCase()), tone: "success", detail: "Native account and exposure are available.", exposure: exposure || (canAssertFlat ? "Flat" : "Exposure not reconciled"), canAssertFlat };
 }
 
 export function protectionIsVerified(state: HlStagegProjection | null): boolean {

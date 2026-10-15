@@ -56,6 +56,142 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/instances/hl-stageg-live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Live Runtime */
+        get: operations["live_runtime_api_v1_instances_hl_stageg_live_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/instances/hl-stageg-live/controls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Live Controls */
+        get: operations["live_controls_api_v1_instances_hl_stageg_live_controls_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/instances/hl-stageg-live/controls/reset-deposit-protection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Live Reset Protection */
+        post: operations["live_reset_protection_api_v1_instances_hl_stageg_live_controls_reset_deposit_protection_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/instances/hl-stageg-live/controls/set-deposit-protection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Live Set Protection */
+        post: operations["live_set_protection_api_v1_instances_hl_stageg_live_controls_set_deposit_protection_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/instances/hl-stageg-live/controls/{command}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Live Control */
+        post: operations["live_control_api_v1_instances_hl_stageg_live_controls__command__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/instances/hl-stageg-live/equity-changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Live Equity Changes */
+        get: operations["live_equity_changes_api_v1_instances_hl_stageg_live_equity_changes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/instances/hl-stageg-live/fills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Live Fill History */
+        get: operations["live_fill_history_api_v1_instances_hl_stageg_live_fills_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/instances/hl-stageg-live/strategy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Live Strategy */
+        get: operations["live_strategy_api_v1_instances_hl_stageg_live_strategy_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/instances/hl-stageg-testnet": {
         parameters: {
             query?: never;
@@ -445,16 +581,16 @@ export interface components {
             equity_usdc: string | null;
             /**
              * Instance Id
-             * @constant
+             * @enum {string}
              */
-            instance_id: "hl-stageg-testnet";
+            instance_id: "hl-stageg-testnet" | "hl-stageg-live";
             /** Run Epoch */
             run_epoch: string | null;
             /**
              * Source
-             * @constant
+             * @enum {string}
              */
-            source: "NATIVE_SANDBOX_ACCOUNT";
+            source: "NATIVE_SANDBOX_ACCOUNT" | "NATIVE_LIVE_ACCOUNT";
             /**
              * State
              * @enum {string}
@@ -516,9 +652,9 @@ export interface components {
             coin: "BTC" | "SOL";
             /**
              * Environment
-             * @constant
+             * @enum {string}
              */
-            environment: "mainnet-public";
+            environment: "mainnet-public" | "mainnet";
             /**
              * Execution Evidence
              * @constant
@@ -620,9 +756,9 @@ export interface components {
             idempotency_key: string;
             /**
              * Instance Id
-             * @constant
+             * @enum {string}
              */
-            instance_id: "hl-stageg-testnet";
+            instance_id: "hl-stageg-testnet" | "hl-stageg-live";
             /**
              * Status
              * @enum {string}
@@ -635,15 +771,15 @@ export interface components {
             /**
              * Instance Id
              * @default hl-stageg-testnet
-             * @constant
+             * @enum {string}
              */
-            instance_id: "hl-stageg-testnet";
+            instance_id: "hl-stageg-testnet" | "hl-stageg-live";
             /**
              * Mode
              * @default sandbox
-             * @constant
+             * @enum {string}
              */
-            mode: "sandbox";
+            mode: "sandbox" | "live";
             pause: components["schemas"]["HlStagegControlAction"];
             /**
              * Projection State
@@ -705,9 +841,9 @@ export interface components {
             /**
              * Provenance
              * @default SANDBOX
-             * @constant
+             * @enum {string}
              */
-            provenance: "SANDBOX";
+            provenance: "SANDBOX" | "LIVE";
         };
         /** HlStagegFill */
         HlStagegFill: {
@@ -754,9 +890,9 @@ export interface components {
             historical_id_only_count: number;
             /**
              * Instance Id
-             * @constant
+             * @enum {string}
              */
-            instance_id: "hl-stageg-testnet";
+            instance_id: "hl-stageg-testnet" | "hl-stageg-live";
             /** Next Cursor */
             next_cursor: number;
             /** Run Epoch */
@@ -797,9 +933,9 @@ export interface components {
             /**
              * Provenance
              * @default SANDBOX
-             * @constant
+             * @enum {string}
              */
-            provenance: "SANDBOX";
+            provenance: "SANDBOX" | "LIVE";
             /** Quantity */
             quantity?: string | null;
             /** Reduce Only */
@@ -826,9 +962,9 @@ export interface components {
             /**
              * Provenance
              * @default SANDBOX
-             * @constant
+             * @enum {string}
              */
-            provenance: "SANDBOX";
+            provenance: "SANDBOX" | "LIVE";
             /** Signed Quantity */
             signed_quantity: string;
         };
@@ -839,9 +975,9 @@ export interface components {
             entry_control: components["schemas"]["HlStagegEntryControl"];
             /**
              * Environment
-             * @constant
+             * @enum {string}
              */
-            environment: "mainnet-public";
+            environment: "mainnet-public" | "mainnet";
             /** Event Cursor */
             event_cursor: number;
             /** Events */
@@ -859,20 +995,19 @@ export interface components {
             hashes: components["schemas"]["HlStagegHashes"];
             /**
              * Instance Id
-             * @constant
+             * @enum {string}
              */
-            instance_id: "hl-stageg-testnet";
+            instance_id: "hl-stageg-testnet" | "hl-stageg-live";
             /**
              * Live Order Capability
              * @default false
-             * @constant
              */
-            live_order_capability: false;
+            live_order_capability: boolean;
             /**
              * Mode
-             * @constant
+             * @enum {string}
              */
-            mode: "sandbox";
+            mode: "sandbox" | "live";
             /** Native Thread Alive */
             native_thread_alive?: boolean | null;
             /** Observed At Ns */
@@ -883,6 +1018,10 @@ export interface components {
             positions: components["schemas"]["HlStagegPosition"][];
             /** Process State */
             process_state: string;
+            /** Profile */
+            profile?: {
+                [key: string]: unknown;
+            } | null;
             /**
              * Projection State
              * @enum {string}
@@ -890,9 +1029,14 @@ export interface components {
             projection_state: "READY" | "STALE" | "UNAVAILABLE" | "INVALID";
             /**
              * Provenance
-             * @constant
+             * @enum {string}
              */
-            provenance: "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION";
+            provenance: "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION" | "NATIVE_MAINNET_OWNED_ACCOUNT";
+            /**
+             * Real Order Approval
+             * @default false
+             */
+            real_order_approval: boolean;
             /** Reconciliation */
             reconciliation: string;
             /** Recovery Capability */
@@ -926,9 +1070,9 @@ export interface components {
             idempotency_key: string;
             /**
              * Instance Id
-             * @constant
+             * @enum {string}
              */
-            instance_id: "hl-stageg-testnet";
+            instance_id: "hl-stageg-testnet" | "hl-stageg-live";
             /**
              * Status
              * @constant
@@ -966,22 +1110,22 @@ export interface components {
             capital_assumption: string;
             /**
              * Environment
-             * @constant
+             * @enum {string}
              */
-            environment: "mainnet-public";
+            environment: "mainnet-public" | "mainnet";
             /** Funding Treatment */
             funding_treatment: string;
             hashes: components["schemas"]["HlStagegHashes"];
             /**
              * Instance Id
-             * @constant
+             * @enum {string}
              */
-            instance_id: "hl-stageg-testnet";
+            instance_id: "hl-stageg-testnet" | "hl-stageg-live";
             /**
              * Mode
-             * @constant
+             * @enum {string}
              */
-            mode: "sandbox";
+            mode: "sandbox" | "live";
             /**
              * Promotion Enabled
              * @default false
@@ -1655,6 +1799,276 @@ export interface operations {
                     "application/json": {
                         [key: string]: string;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_runtime_api_v1_instances_hl_stageg_live_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegProjection"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_controls_api_v1_instances_hl_stageg_live_controls_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegControls"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_reset_protection_api_v1_instances_hl_stageg_live_controls_reset_deposit_protection_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HlStagegProtectionResetRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegProtectionCommand"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_set_protection_api_v1_instances_hl_stageg_live_controls_set_deposit_protection_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HlStagegProtectionCommandRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegProtectionCommand"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_control_api_v1_instances_hl_stageg_live_controls__command__post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path: {
+                command: "pause-new-entries" | "resume-new-entries";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegControlCommand"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_equity_changes_api_v1_instances_hl_stageg_live_equity_changes_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlNativeEquityChanges"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_fill_history_api_v1_instances_hl_stageg_live_fills_get: {
+        parameters: {
+            query?: {
+                cursor?: number;
+                limit?: number;
+            };
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegFillHistory"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    live_strategy_api_v1_instances_hl_stageg_live_strategy_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-CSRF-Token"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HlStagegStrategy"];
                 };
             };
             /** @description Validation Error */

@@ -36,6 +36,8 @@ _FIELDS = (
     "_last_sol_close", "_day", "_marks_by_session", "_current_btc", "_current_sol",
     "_current_btc_mark", "_current_sol_mark", "_latest_marks",
     "_queued_intents", "_queued_intent_ready_ns", "_mandatory_sol_exit",
+    "_deferred_entry_session", "_deferred_selective_entries", "_selected_entry_audits",
+    "_mandatory_sol_retry_after_ns", "_accepted_reductions",
     "_queued_close_submitted", "_group_close_reconciliation_pending",
     "_liquidating", "_liquidation_waiting", "_liquidation_orders",
     "_liquidation_submitted", "liquidation_audit", "pre_submit_gate_blocks",

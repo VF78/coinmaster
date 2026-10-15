@@ -79,7 +79,10 @@
             "title": "Equity Usdc"
           },
           "instance_id": {
-            "const": "hl-stageg-testnet",
+            "enum": [
+              "hl-stageg-testnet",
+              "hl-stageg-live"
+            ],
             "title": "Instance Id",
             "type": "string"
           },
@@ -95,7 +98,10 @@
             "title": "Run Epoch"
           },
           "source": {
-            "const": "NATIVE_SANDBOX_ACCOUNT",
+            "enum": [
+              "NATIVE_SANDBOX_ACCOUNT",
+              "NATIVE_LIVE_ACCOUNT"
+            ],
             "title": "Source",
             "type": "string"
           },
@@ -269,7 +275,10 @@
             "type": "string"
           },
           "environment": {
-            "const": "mainnet-public",
+            "enum": [
+              "mainnet-public",
+              "mainnet"
+            ],
             "title": "Environment",
             "type": "string"
           },
@@ -571,7 +580,10 @@
             "type": "string"
           },
           "instance_id": {
-            "const": "hl-stageg-testnet",
+            "enum": [
+              "hl-stageg-testnet",
+              "hl-stageg-live"
+            ],
             "title": "Instance Id",
             "type": "string"
           },
@@ -601,14 +613,20 @@
             "$ref": "#/components/schemas/HlStagegControlAction"
           },
           "instance_id": {
-            "const": "hl-stageg-testnet",
             "default": "hl-stageg-testnet",
+            "enum": [
+              "hl-stageg-testnet",
+              "hl-stageg-live"
+            ],
             "title": "Instance Id",
             "type": "string"
           },
           "mode": {
-            "const": "sandbox",
             "default": "sandbox",
+            "enum": [
+              "sandbox",
+              "live"
+            ],
             "title": "Mode",
             "type": "string"
           },
@@ -798,8 +816,11 @@
             "type": "string"
           },
           "provenance": {
-            "const": "SANDBOX",
             "default": "SANDBOX",
+            "enum": [
+              "SANDBOX",
+              "LIVE"
+            ],
             "title": "Provenance",
             "type": "string"
           }
@@ -996,7 +1017,10 @@
             "type": "integer"
           },
           "instance_id": {
-            "const": "hl-stageg-testnet",
+            "enum": [
+              "hl-stageg-testnet",
+              "hl-stageg-live"
+            ],
             "title": "Instance Id",
             "type": "string"
           },
@@ -1135,8 +1159,11 @@
             "title": "Price"
           },
           "provenance": {
-            "const": "SANDBOX",
             "default": "SANDBOX",
+            "enum": [
+              "SANDBOX",
+              "LIVE"
+            ],
             "title": "Provenance",
             "type": "string"
           },
@@ -1254,8 +1281,11 @@
             "type": "string"
           },
           "provenance": {
-            "const": "SANDBOX",
             "default": "SANDBOX",
+            "enum": [
+              "SANDBOX",
+              "LIVE"
+            ],
             "title": "Provenance",
             "type": "string"
           },
@@ -1291,7 +1321,10 @@
             "$ref": "#/components/schemas/HlStagegEntryControl"
           },
           "environment": {
-            "const": "mainnet-public",
+            "enum": [
+              "mainnet-public",
+              "mainnet"
+            ],
             "title": "Environment",
             "type": "string"
           },
@@ -1335,18 +1368,23 @@
             "$ref": "#/components/schemas/HlStagegHashes"
           },
           "instance_id": {
-            "const": "hl-stageg-testnet",
+            "enum": [
+              "hl-stageg-testnet",
+              "hl-stageg-live"
+            ],
             "title": "Instance Id",
             "type": "string"
           },
           "live_order_capability": {
-            "const": false,
             "default": false,
             "title": "Live Order Capability",
             "type": "boolean"
           },
           "mode": {
-            "const": "sandbox",
+            "enum": [
+              "sandbox",
+              "live"
+            ],
             "title": "Mode",
             "type": "string"
           },
@@ -1390,6 +1428,18 @@
             "title": "Process State",
             "type": "string"
           },
+          "profile": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile"
+          },
           "projection_state": {
             "enum": [
               "READY",
@@ -1401,9 +1451,17 @@
             "type": "string"
           },
           "provenance": {
-            "const": "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION",
+            "enum": [
+              "SANDBOX_LOCAL_READ_ONLY_WORKER_PROJECTION",
+              "NATIVE_MAINNET_OWNED_ACCOUNT"
+            ],
             "title": "Provenance",
             "type": "string"
+          },
+          "real_order_approval": {
+            "default": false,
+            "title": "Real Order Approval",
+            "type": "boolean"
           },
           "reconciliation": {
             "title": "Reconciliation",
@@ -1524,7 +1582,10 @@
             "type": "string"
           },
           "instance_id": {
-            "const": "hl-stageg-testnet",
+            "enum": [
+              "hl-stageg-testnet",
+              "hl-stageg-live"
+            ],
             "title": "Instance Id",
             "type": "string"
           },
@@ -1606,7 +1667,10 @@
             "type": "string"
           },
           "environment": {
-            "const": "mainnet-public",
+            "enum": [
+              "mainnet-public",
+              "mainnet"
+            ],
             "title": "Environment",
             "type": "string"
           },
@@ -1618,12 +1682,18 @@
             "$ref": "#/components/schemas/HlStagegHashes"
           },
           "instance_id": {
-            "const": "hl-stageg-testnet",
+            "enum": [
+              "hl-stageg-testnet",
+              "hl-stageg-live"
+            ],
             "title": "Instance Id",
             "type": "string"
           },
           "mode": {
-            "const": "sandbox",
+            "enum": [
+              "sandbox",
+              "live"
+            ],
             "title": "Mode",
             "type": "string"
           },
@@ -3460,6 +3530,567 @@
           }
         },
         "summary": "Health"
+      }
+    },
+    "/api/v1/instances/hl-stageg-live": {
+      "get": {
+        "operationId": "live_runtime_api_v1_instances_hl_stageg_live_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegProjection"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live Runtime"
+      }
+    },
+    "/api/v1/instances/hl-stageg-live/controls": {
+      "get": {
+        "operationId": "live_controls_api_v1_instances_hl_stageg_live_controls_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegControls"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live Controls"
+      }
+    },
+    "/api/v1/instances/hl-stageg-live/controls/reset-deposit-protection": {
+      "post": {
+        "operationId": "live_reset_protection_api_v1_instances_hl_stageg_live_controls_reset_deposit_protection_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HlStagegProtectionResetRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegProtectionCommand"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live Reset Protection"
+      }
+    },
+    "/api/v1/instances/hl-stageg-live/controls/set-deposit-protection": {
+      "post": {
+        "operationId": "live_set_protection_api_v1_instances_hl_stageg_live_controls_set_deposit_protection_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HlStagegProtectionCommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegProtectionCommand"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live Set Protection"
+      }
+    },
+    "/api/v1/instances/hl-stageg-live/controls/{command}": {
+      "post": {
+        "operationId": "live_control_api_v1_instances_hl_stageg_live_controls__command__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "command",
+            "required": true,
+            "schema": {
+              "enum": [
+                "pause-new-entries",
+                "resume-new-entries"
+              ],
+              "title": "Command",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegControlCommand"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live Control"
+      }
+    },
+    "/api/v1/instances/hl-stageg-live/equity-changes": {
+      "get": {
+        "operationId": "live_equity_changes_api_v1_instances_hl_stageg_live_equity_changes_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlNativeEquityChanges"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live Equity Changes"
+      }
+    },
+    "/api/v1/instances/hl-stageg-live/fills": {
+      "get": {
+        "operationId": "live_fill_history_api_v1_instances_hl_stageg_live_fills_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Cursor",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegFillHistory"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live Fill History"
+      }
+    },
+    "/api/v1/instances/hl-stageg-live/strategy": {
+      "get": {
+        "operationId": "live_strategy_api_v1_instances_hl_stageg_live_strategy_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Csrf-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HlStagegStrategy"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Live Strategy"
       }
     },
     "/api/v1/instances/hl-stageg-testnet": {

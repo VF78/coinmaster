@@ -713,6 +713,10 @@ def bind_clean_flat_live_handover(
         )
         if not candidate_money.selected_assets:
             raise IncompleteInfoReport("LIVE_SELECTED_MARGIN_UNKNOWN")
+        if (not client._cm_bootstrapped
+                and getattr(runtime, "flat_epoch_balance", None) is not None
+                and candidate_money.equity != runtime.flat_epoch_balance):
+            raise IncompleteInfoReport("LIVE_FLAT_EPOCH_BALANCE_CHANGED")
         if client._cm_bootstrapped and runtime.native_revision() != client._cm_last_revision:
             raise IncompleteInfoReport("LIVE_VERIFIER_REVISION_MOVED")
         latest_money[0] = candidate_money

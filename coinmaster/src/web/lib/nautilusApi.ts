@@ -1,3 +1,12 @@
+// Selection is a read-only workspace preference, fixed for this page lifetime.
+export const selectedMode: 'sandbox' | 'live' = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('mode') === 'live' ? 'live' : 'sandbox';
+export const selectedInstance = selectedMode === 'live' ? 'hl-stageg-live' : 'hl-stageg-testnet';
+export const selectedModeLabel = selectedMode === 'live' ? 'Live' : 'Sandbox';
+export function selectExecutionView(mode: 'sandbox' | 'live') {
+  const url = new URL(window.location.href);
+  url.searchParams.set('mode', mode);
+  window.location.assign(url);
+}
 import type { components as runtimeComponents } from './runtime.generated';
 // The loopback runtime sidecar serves this whole surface; one generated
 // contract prevents the SPA from drifting from its deployed API.
@@ -52,12 +61,12 @@ export const createRun = (config_id: string, kind: 'fixture' | 'backtest' | 'pap
 export const cancelRun = (id: string) => request<Run>(`/runs/${encodeURIComponent(id)}/cancel`, { method: 'POST' });
 // Never substitute /runtime here: that route is intentionally the separate
 // coinmaster-paper worker and has a command relay.
-export const getHlStagegProjection = () => request<HlStagegProjection>('/instances/hl-stageg-testnet');
-export const getHlStagegStrategy = () => request<HlStagegStrategy>('/instances/hl-stageg-testnet/strategy');
-export const getHlStagegControls = () => request<HlStagegControls>('/instances/hl-stageg-testnet/controls');
-export const commandHlStagegEntries = (command: 'pause-new-entries' | 'resume-new-entries', idempotencyKey: string) => request<{ instance_id: 'hl-stageg-testnet'; command: 'pause-new-entries' | 'resume-new-entries'; idempotency_key: string; status: 'ACCEPTED' | 'DUPLICATE'; entry_control: 'RUNNING' | 'PAUSED' }>(`/instances/hl-stageg-testnet/controls/${command}`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey } });
+export const getHlStagegProjection = () => request<HlStagegProjection>(`/instances/${selectedInstance}`);
+export const getHlStagegStrategy = () => request<HlStagegStrategy>(`/instances/${selectedInstance}/strategy`);
+export const getHlStagegControls = () => request<HlStagegControls>(`/instances/${selectedInstance}/controls`);
+export const commandHlStagegEntries = (command: 'pause-new-entries' | 'resume-new-entries', idempotencyKey: string) => request<{ instance_id: typeof selectedInstance; command: 'pause-new-entries' | 'resume-new-entries'; idempotency_key: string; status: 'ACCEPTED' | 'DUPLICATE'; entry_control: 'RUNNING' | 'PAUSED' }>(`/instances/${selectedInstance}/controls/${command}`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey } });
 
-export const commandHlStagegDepositProtection = (command: 'set-deposit-protection' | 'reset-deposit-protection', idempotencyKey: string, drawdownLimitPercent?: number) => request<HlStagegProtectionCommand>(`/instances/hl-stageg-testnet/controls/${command}`, {
+export const commandHlStagegDepositProtection = (command: 'set-deposit-protection' | 'reset-deposit-protection', idempotencyKey: string, drawdownLimitPercent?: number) => request<HlStagegProtectionCommand>(`/instances/${selectedInstance}/controls/${command}`, {
   method: 'POST',
   body: JSON.stringify(command === 'set-deposit-protection'
     ? { idempotency_key: idempotencyKey, drawdown_limit_percent: drawdownLimitPercent }
@@ -67,8 +76,8 @@ export const commandHlStagegDepositProtection = (command: 'set-deposit-protectio
 export type HlStagegFill = runtimeComponents['schemas']['HlStagegFill'];
 export type HlStagegFillHistory = runtimeComponents['schemas']['HlStagegFillHistory'];
 export const getHlStagegFills = (cursor = 0, limit = 100) =>
-  request<HlStagegFillHistory>('/instances/hl-stageg-testnet/fills?cursor=' + cursor + '&limit=' + limit);
+  request<HlStagegFillHistory>(`/instances/${selectedInstance}/fills?cursor=${cursor}&limit=${limit}`);
 export const getHyperliquidCandles = (coin: 'BTC' | 'SOL', interval: '1m' | '5m' | '15m' | '1h' | '4h' | '1d', limit = 300) =>
   request<HlPublicCandles>(`/markets/hyperliquid/candles?coin=${coin}&interval=${interval}&limit=${limit}`);
 export const getHlStagegEquityChanges = () =>
-  request<HlNativeEquityChanges>('/instances/hl-stageg-testnet/equity-changes');
+  request<HlNativeEquityChanges>(`/instances/${selectedInstance}/equity-changes`);

@@ -1,0 +1,100 @@
+..........F...F......................................................... [ 75%]
+.......................                                                  [100%]
+=================================== FAILURES ===================================
+_________________ test_live_paths_and_identities_are_separate __________________
+
+    def test_live_paths_and_identities_are_separate():
+>       live = load_testnet_instance_config(ROOT / "configs/hl-stageg-live.instance.json")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+runtime/tests/test_hl_live_worker.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/root/.openclaw/workspace/coinmaster/coinmaster/runtime/configs/hl-stageg-live.instance.json')
+
+    def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
+        """Load the one permitted D3 testnet identity without widening paper mode."""
+        document = _read_object(path)
+        names = {item.name for item in fields(TestnetInstanceConfig)} - {"path"}
+        if set(document) != names:
+            missing, extra = sorted(names - set(document)), sorted(set(document) - names)
+            raise ConfigurationError(f"TESTNET_INSTANCE_FIELDS_MISMATCH:missing={missing}:extra={extra}")
+        strings = {name: document[name] for name in names if name not in {"strategy_config", "signal_warmup_manifest", "state_db"}}
+        if any(not isinstance(value, str) or not value.strip() for value in strings.values()):
+            raise ConfigurationError("INVALID_TESTNET_INSTANCE_VALUE")
+        identities = {"sandbox": "hl-stageg-testnet", "live": "hl-stageg-live"}
+        mode = document["mode"]
+        if (
+            mode not in identities
+            or document["instance_id"] != identities[mode]
+            or document["venue"] != "HYPERLIQUID"
+            or document["environment"] != "mainnet"
+        ):
+            raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
+        strategy_root = "/srv/coinmaster/hl-live/current" if mode == "live" else "/srv/coinmaster/runtime"
+        if document["strategy_config"] != f"{strategy_root}/configs/stage-g-v1.json":
+>           raise ConfigurationError("UNSAFE_TESTNET_STRATEGY_PATH")
+E           coinmaster.ops.stage_g_config.ConfigurationError: UNSAFE_TESTNET_STRATEGY_PATH
+
+runtime/coinmaster/ops/stage_g_config.py:179: ConfigurationError
+________________ test_sealed_v3_real_node_build_without_connect ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-605/test_sealed_v3_real_node_build0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77db767451f0>
+
+    def test_sealed_v3_real_node_build_without_connect(tmp_path, monkeypatch):
+        """Actual factory/strategy/kernel composition; no run/connect or secret source."""
+        import hashlib
+        import os
+        from dataclasses import replace
+        from decimal import Decimal
+        from coinmaster.ops.hl_live_worker import HyperliquidLiveNode, LiveSubmissionHooks
+        from coinmaster.ops.hl_live_execution import QualifiedHyperliquidExecutionClient
+        from coinmaster.ops.paper import PaperRuntime
+        from coinmaster.ops.stage_g_config import load_candidate
+    
+        monkeypatch.setattr("coinmaster.ops.hl_live_worker.check_live_credential", lambda *a: Decimal("82"))
+        monkeypatch.setattr("coinmaster.ops.hl_live_worker._read_json", lambda _: {
+            "master_address": "0x" + "1" * 40, "agent_private_key": "0x" + "2" * 64,
+        })
+        instance = replace(
+>           load_testnet_instance_config(ROOT / "configs/hl-stageg-live.instance.json"),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            signal_warmup_manifest=Path(os.getenv("COINMASTER_TEST_LIVE_WARMUP", "/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json")),
+            state_db=tmp_path / "live.sqlite",
+        )
+
+runtime/tests/test_hl_live_worker.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/root/.openclaw/workspace/coinmaster/coinmaster/runtime/configs/hl-stageg-live.instance.json')
+
+    def load_testnet_instance_config(path: Path) -> TestnetInstanceConfig:
+        """Load the one permitted D3 testnet identity without widening paper mode."""
+        document = _read_object(path)
+        names = {item.name for item in fields(TestnetInstanceConfig)} - {"path"}
+        if set(document) != names:
+            missing, extra = sorted(names - set(document)), sorted(set(document) - names)
+            raise ConfigurationError(f"TESTNET_INSTANCE_FIELDS_MISMATCH:missing={missing}:extra={extra}")
+        strings = {name: document[name] for name in names if name not in {"strategy_config", "signal_warmup_manifest", "state_db"}}
+        if any(not isinstance(value, str) or not value.strip() for value in strings.values()):
+            raise ConfigurationError("INVALID_TESTNET_INSTANCE_VALUE")
+        identities = {"sandbox": "hl-stageg-testnet", "live": "hl-stageg-live"}
+        mode = document["mode"]
+        if (
+            mode not in identities
+            or document["instance_id"] != identities[mode]
+            or document["venue"] != "HYPERLIQUID"
+            or document["environment"] != "mainnet"
+        ):
+            raise ConfigurationError("UNSUPPORTED_TESTNET_INSTANCE_IDENTITY")
+        strategy_root = "/srv/coinmaster/hl-live/current" if mode == "live" else "/srv/coinmaster/runtime"
+        if document["strategy_config"] != f"{strategy_root}/configs/stage-g-v1.json":
+>           raise ConfigurationError("UNSAFE_TESTNET_STRATEGY_PATH")
+E           coinmaster.ops.stage_g_config.ConfigurationError: UNSAFE_TESTNET_STRATEGY_PATH
+
+runtime/coinmaster/ops/stage_g_config.py:179: ConfigurationError
+=========================== short test summary info ============================
+FAILED runtime/tests/test_hl_live_worker.py::test_live_paths_and_identities_are_separate
+FAILED runtime/tests/test_hl_live_worker.py::test_sealed_v3_real_node_build_without_connect
+2 failed, 93 passed in 11.56s

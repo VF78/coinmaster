@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_live_paths_and_identities_are_separate():
     live = load_testnet_instance_config(ROOT / "configs/hl-stageg-live.instance.json")
     sandbox = load_testnet_instance_config(ROOT / "configs/hl-stageg-testnet.instance.json")
-    assert str(live.strategy_config) == "/srv/coinmaster/hl-live/current/configs/stage-g-v1.json"
+    assert live.strategy_config == Path("/srv/coinmaster/hl-live/current/configs/hl-live-v3-dp50.candidate.json").resolve()
     assert live.strategy_config != sandbox.strategy_config
     assert live.state_db != sandbox.state_db
     assert live.signal_warmup_manifest != sandbox.signal_warmup_manifest
@@ -30,10 +30,10 @@ def test_approval_required_before_credential_or_journal_access(monkeypatch):
 def test_exact_release_account_strategy_approval(tmp_path):
     fingerprints = tmp_path / "fingerprints.json"
     fingerprints.write_text(json.dumps({"master_address_sha256": "master"}))
-    (tmp_path / "live-release.json").write_text(json.dumps({"source_commit": "commit"}))
+    (tmp_path / "live-release.json").write_text(json.dumps({"source_commit": "commit", "strategy_sha256": SEALED_V0_SHA, "candidate_sha256": "candidate", "profile_sha256": "profile"}))
     approval = {"schema": "coinmaster-live-order-approval-v1", "instance_id": "hl-stageg-live",
-                "orders_approved": True, "pilot_capital_usdc": "100", "release_commit": "commit", "master_address_sha256": "master",
-                "strategy_sha256": SEALED_V0_SHA}
+                "orders_approved": True, "pilot_capital_usdc": "82", "release_commit": "commit", "master_address_sha256": "master",
+                "strategy_sha256": SEALED_V0_SHA, "candidate_sha256": "candidate", "profile_sha256": "profile"}
     path = tmp_path / "approval.json"
     for key, wrong in (("orders_approved", False), ("release_commit", "old"), ("master_address_sha256", "foreign"), ("strategy_sha256", "other")):
         path.write_text(json.dumps({**approval, key: wrong}))
@@ -56,12 +56,10 @@ def test_snapshot_failure_latches_client_and_persists_manual_restart(tmp_path):
     assert worker.recovery_marker.read_text() == "LIVE_WORKER_SNAPSHOT_FAILED\n"
 
 
-def test_sealed_v0_real_node_build_without_connect(tmp_path, monkeypatch):
+def test_sealed_v3_real_node_build_without_connect(tmp_path, monkeypatch):
     """Actual factory/strategy/kernel composition; no run/connect or secret source."""
     import hashlib
     import os
-    if hashlib.sha256((ROOT / "coinmaster/strategy/wave_overlay.py").read_bytes()).hexdigest() != SEALED_V0_SHA:
-        pytest.skip("requires exact sealed V0 qualification tree")
     from dataclasses import replace
     from decimal import Decimal
     from coinmaster.ops.hl_live_worker import HyperliquidLiveNode, LiveSubmissionHooks
@@ -69,7 +67,7 @@ def test_sealed_v0_real_node_build_without_connect(tmp_path, monkeypatch):
     from coinmaster.ops.paper import PaperRuntime
     from coinmaster.ops.stage_g_config import load_candidate
 
-    monkeypatch.setattr("coinmaster.ops.hl_live_worker.check_live_credential", lambda *a: Decimal("100"))
+    monkeypatch.setattr("coinmaster.ops.hl_live_worker.check_live_credential", lambda *a: Decimal("82"))
     monkeypatch.setattr("coinmaster.ops.hl_live_worker._read_json", lambda _: {
         "master_address": "0x" + "1" * 40, "agent_private_key": "0x" + "2" * 64,
     })
@@ -81,7 +79,7 @@ def test_sealed_v0_real_node_build_without_connect(tmp_path, monkeypatch):
     runtime = PaperRuntime(instance.state_db, instance.instance_id, int(120e9), require_native_cash=True)
     runtime.acquire()
     try:
-        native = HyperliquidLiveNode(instance=instance, candidate=load_candidate(ROOT / "configs/stage-g-v1.json").candidate,
+        native = HyperliquidLiveNode(instance=instance, candidate=load_candidate(ROOT / "configs/hl-live-v3-dp50.candidate.json").candidate,
                                     state=runtime, credential_path=tmp_path / "not-read", fingerprint_path=tmp_path / "not-read")
         assert native.node.is_built() and not native.node.is_running()
         clients = tuple(native.node.kernel.exec_engine._clients.values())

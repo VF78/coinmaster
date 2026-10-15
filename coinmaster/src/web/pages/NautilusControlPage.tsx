@@ -9,7 +9,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { DataTable } from '../components/DataTable';
 import { Stat } from '../components/Stat';
-import { cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegEquityChanges, getHlStagegFills, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlNativeEquityChanges, type HlStagegControls, type HlStagegFillHistory, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
+import { selectedMode, selectedModeLabel, cancelRun, commandHlStagegDepositProtection, commandHlStagegEntries, createRun, getConfigurations, getDefaultConfiguration, getHlStagegControls, getHlStagegEquityChanges, getHlStagegFills, getHlStagegProjection, getHlStagegStrategy, getResearchCapabilities, getResearchCatalog, getRuns, saveConfiguration, type HlNativeEquityChanges, type HlStagegControls, type HlStagegFillHistory, type HlStagegProjection, type HlStagegStrategy, type ResearchCapabilities, type ResearchCatalogEntry, type Run, type StrategyConfig, type StrategyConfiguration } from '../lib/nautilusApi';
 import { accountFigures, dashboardState, fundingLabel, formatUtcTimestamp, protectionIsFresh, protectionIsVerified } from '../lib/accountPresentation';
 import { positionPresentation, TRADER_MARKETS } from '../lib/traderPresentation';
 import { parseFiniteNumberFields, strategyDraftError } from '../lib/strategyDraftValidation';
@@ -79,10 +79,10 @@ export function StrategyPage() {
   return <main className="terminal-layout nautilus-strategy-workspace">
     <Card className="trader-hero strategy-hero" title={loading ? 'Loading strategy…' : runningMatch ? 'Running strategy' : sourceChecked ? 'Approved strategy' : 'Strategy unavailable'} actions={<Badge tone={loading ? 'neutral' : runningMatch ? 'success' : 'danger'}>{strategyRunnerLabel(strategy?.running_state ?? (loading ? 'LOADING' : 'NOT_CONFIRMED'))}</Badge>}>
       <p className="trader-hero__lead">{loading ? 'Loading approved strategy settings…' : runningMatch ? 'The worker is running the sealed BTC / SOL strategy shown below.' : sourceChecked ? 'The approved settings were read successfully, but the worker match is not confirmed.' : 'The strategy source could not be confirmed. No running settings are implied.'}</p>
-      <div className="stats-grid"><Stat label="Strategy" value={strategy?.candidate && Object.keys(strategy.candidate).length ? 'BTC / SOL Wave Overlay · V0' : loading ? 'Loading…' : 'Unavailable'} /><Stat label="Execution" value="Local Sandbox" /><Stat label="Market data" value="Hyperliquid public" /></div>
+      <div className="stats-grid"><Stat label="Strategy" value={strategy?.candidate && Object.keys(strategy.candidate).length ? (selectedMode === 'live' ? 'BTC / SOL Wave Overlay · V3+DP50' : 'BTC / SOL Wave Overlay · V0') : loading ? 'Loading…' : 'Unavailable'} /><Stat label="Execution" value={selectedMode === 'live' ? 'Live · Mainnet' : 'Local Sandbox'} /><Stat label="Market data" value="Hyperliquid public" /></div>
       <p className="trader-note">Strategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.</p>
     </Card>
-    <StrategyEntryControls />
+    <p className="trader-note">{strategy?.capital_assumption}</p><StrategyEntryControls />
     <section className="strategy-settings-grid">{strategyGroups.map(([group, rows]) => <Card className="strategy-settings-card" key={group} title={group} actions={<Badge tone={runningMatch ? 'success' : 'neutral'}>{loading ? 'Loading' : runningMatch ? 'Confirmed' : 'Unconfirmed'}</Badge>}>
       {rows.length ? <dl className="strategy-setting-list">{rows.map((row) => <div className="strategy-setting-row" key={row.parameter}><dt>{title(row.parameter)}</dt><dd>{displaySetting(row.parameter, row.value)}</dd></div>)}</dl> : <p className="runtime-empty-note">{loading ? 'Loading approved settings…' : 'No approved settings are available.'}</p>}
     </Card>)}</section>
@@ -283,7 +283,7 @@ export function RuntimePage() {
   const load = () => void getHlStagegProjection().then((projection) => {
     setState(projection); setMessage('');
   }).catch((error: unknown) => {
-    setState(null); setMessage(error instanceof Error ? error.message : 'Sandbox projection unavailable.');
+    setState(null); setMessage(error instanceof Error ? error.message : `${selectedModeLabel} projection unavailable.`);
   }).finally(() => setLoading(false));
   useEffect(() => { load(); const timer = window.setInterval(load, 5000); return () => window.clearInterval(timer); }, []);
   useEffect(() => { let active = true; const refresh = () => void getHlStagegEquityChanges().then((data) => { if (active) setEquityChanges(data); }).catch(() => { if (active) setEquityChanges(null); }); refresh(); const timer = window.setInterval(refresh, 60_000); return () => { active = false; window.clearInterval(timer); }; }, []);
@@ -322,11 +322,11 @@ export function RuntimePage() {
     : state?.projection_state !== 'READY'
     ? 'Entry approval unavailable'
     : state.gates.attachable === false
-      ? 'New Sandbox entries blocked'
+      ? `New ${selectedModeLabel} entries blocked`
       : state.gates.attachable !== true
         ? 'Entry approval unknown'
         : state.entry_control.state === 'PAUSED'
-          ? 'New Sandbox entries paused'
+          ? `New ${selectedModeLabel} entries paused`
           : runtimeHealthy
             ? 'Waiting for a strategy decision'
             : 'New entries blocked while the worker or market data is unhealthy';
@@ -348,8 +348,9 @@ export function RuntimePage() {
   const fillHistoryMatchesRun = Boolean(state?.run_epoch && fillHistory?.run_epoch === state.run_epoch);
   return <main className="terminal-layout nautilus-runtime-workspace">
     <DashboardConnectionIdentity />
+    {selectedMode === 'live' && state?.projection_state !== 'READY' ? <Card title="Live is inactive or unavailable"><p className="trader-hero__lead">No current Live account snapshot is available.</p><p className="trader-note">Review the approved profile in Strategy. Activation requires separate approval for the exact release, account and profile. Account values appear after native read-back.</p><Button disabled title="Separate Live order approval is required">Activate Live</Button></Card> : null}
     <Card className="trader-hero runtime-hero" title="Account overview" actions={<Badge tone={loading && !state ? 'neutral' : runtimeStatus.tone}>{loading && !state ? 'Loading' : humanizeResearchCode(runtimeStatus.label)}</Badge>}>
-      <div className="runtime-hero__heading"><div><p className="trader-note">{entryGateMessage}.</p><p className="runtime-snapshot-time">Sandbox snapshot · {state?.observed_at_ns ? formatUtcTimestamp(new Date(state.observed_at_ns / 1_000_000).toISOString()) : 'time unavailable'}</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
+      <div className="runtime-hero__heading"><div><p className="trader-note">{entryGateMessage}.</p><p className="runtime-snapshot-time">{selectedModeLabel} snapshot · {state?.observed_at_ns ? formatUtcTimestamp(new Date(state.observed_at_ns / 1_000_000).toISOString()) : 'time unavailable'}</p></div><Button variant="secondary" onClick={load}>Refresh</Button></div>
       <div className="runtime-account-grid runtime-account-grid--compact runtime-priority-grid">
         <Stat label="Equity" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Marked equity")?.value ?? "Unavailable"} />
         <Stat label="Available cash" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : figures.find((figure) => figure.label === "Available cash")?.value ?? "Unavailable"} />
@@ -358,7 +359,7 @@ export function RuntimePage() {
         <Stat label="Trading fees" value={accountIsUnknown ? loading ? "Loading…" : "Unavailable" : traderMoney(state?.account.fees)} />
         <Stat label="Effective leverage" value={effectiveLeverage(state)} />
       </div>
-      <p className="account-capital-caption">Virtual starting capital: 10,000 USDC · {projectionReady ? positionSummary + ' · ' + orderRows.length + ' working orders' : loading ? 'Loading exposure…' : 'Exposure unavailable'}</p>
+      <p className="account-capital-caption">{selectedMode === 'live' ? 'Live account ·' : 'Virtual starting capital: 10,000 USDC ·'} {projectionReady ? positionSummary + ' · ' + orderRows.length + ' working orders' : loading ? 'Loading exposure…' : 'Exposure unavailable'}</p>
       {accountIsUnknown ? null : <details className="nautilus-diagnostics runtime-account-details"><summary>Margin, P&amp;L and account details</summary>
         <div className="runtime-account-secondary" aria-label="Current margin and profit and loss">
           <Stat label="Initial margin" value={traderMoney(state?.account.im)} /><Stat label="Effective leverage" value={effectiveLeverage(state)} />
@@ -390,7 +391,7 @@ export function RuntimePage() {
             <small>{fresh ? `Mark age ${age(feed?.mark_age_ns)}` : feed?.mark ? `Stale · ${age(feed.mark_age_ns)}` : 'Mark unavailable'}</small>
           </div>
           <div className="trader-market-exposure">
-            <div className="trader-market-exposure__heading"><span>Sandbox position</span><Badge tone={position.state === 'OPEN' ? 'success' : position.state === 'FLAT' ? 'neutral' : 'danger'}>{position.state === 'OPEN' ? 'Open' : position.state === 'FLAT' ? 'Flat' : loading && !state ? 'Loading' : 'Unconfirmed'}</Badge></div>
+            <div className="trader-market-exposure__heading"><span>{selectedModeLabel} position</span><Badge tone={position.state === 'OPEN' ? 'success' : position.state === 'FLAT' ? 'neutral' : 'danger'}>{position.state === 'OPEN' ? 'Open' : position.state === 'FLAT' ? 'Flat' : loading && !state ? 'Loading' : 'Unconfirmed'}</Badge></div>
             {position.state === 'OPEN' ? <div className="trader-market-exposure__value"><strong className={position.side === 'LONG' ? 'up' : 'down'}>{position.side}</strong><span>{traderNumber(Math.abs(Number(position.quantity)), 5)} {symbol}</span></div> : position.state === 'FLAT' ? <p>Confirmed flat · 0 position size</p> : <p>{loading ? 'Loading position…' : state?.recovery_required ? 'Position ownership requires recovery.' : 'Position status unavailable.'}</p>}
           </div>
           {position.state === 'OPEN' ? <dl className="position-price-details"><div><dt>Average entry</dt><dd>{traderNumber(positionRows.find((row) => row.instrument_id === instrumentId)?.average_entry_price, symbol === 'BTC' ? 2 : 3)}</dd></div><div><dt>Current mark</dt><dd>{fresh ? traderNumber(feed?.mark, symbol === 'BTC' ? 2 : 3) : 'Stale · unavailable'}</dd></div></dl> : null}
@@ -463,7 +464,7 @@ export function WorkspaceSettingsPage() {
   }
   useEffect(() => { void refresh(); }, []);
   const protection = state?.deposit_protection;
-  const pausedAndFlat = state?.projection_state === 'READY'
+  const pausedAndFlat = (selectedMode !== 'live' || state?.real_order_approval === true && state?.live_order_capability === true) && state?.projection_state === 'READY'
     && state.recovery_required !== true
     && state.entry_control.state === 'PAUSED'
     && state.positions.every((position) => Number(position.signed_quantity) === 0)
@@ -508,9 +509,9 @@ export function WorkspaceSettingsPage() {
   }
   return <main className="terminal-layout">
     <ExecutionModeSettings />
-    <Card title="Sandbox account" actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'Connecting' : state?.projection_state === 'READY' ? 'Connected' : state?.projection_state === 'STALE' ? 'Stale' : 'Unavailable'}</Badge>}>
-      <div className="settings-sandbox-summary"><span>Execution mode</span><strong>Sandbox · order routing off</strong><Button variant="secondary" onClick={() => void refresh()}>Refresh</Button></div>
-      <details className="settings-sandbox-details"><summary>Funding and account notes</summary><p>Observed funding is reference only and is not credited to Sandbox cash. {fundingLabel(state)}.</p></details>
+    <Card title={`${selectedModeLabel} account`} actions={<Badge tone={state?.projection_state === 'READY' ? 'success' : 'danger'}>{loading ? 'Connecting' : state?.projection_state === 'READY' ? 'Connected' : state?.projection_state === 'STALE' ? 'Stale' : 'Unavailable'}</Badge>}>
+      <div className="settings-sandbox-summary"><span>Execution mode</span><strong>{selectedMode === 'live' ? 'Live · separate order approval required' : 'Sandbox · order routing off'}</strong><Button variant="secondary" onClick={() => void refresh()}>Refresh</Button></div>
+      <details className="settings-sandbox-details"><summary>Funding and account notes</summary><p>{selectedMode === 'live' ? 'Account values come from the native exchange account.' : 'Observed funding is reference only and is not credited to Sandbox cash.'} {fundingLabel(state)}.</p></details>
     </Card>
     <SettingsConnections />
     <Card title="Drawdown protection" actions={<Badge tone={loading && !state ? "neutral" : protectionFresh ? "success" : "danger"}>{protectionFresh ? "Protected" : loading ? "Loading…" : state?.recovery_required ? "Unverified" : protectionVerified ? "Stale" : "Not set"}</Badge>}>
