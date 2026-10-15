@@ -1,8 +1,9 @@
 {
-  "observed_utc": "2026-10-15T12:52:25.151706+00:00",
+  "observed_utc": "2026-10-15T13:25:54.687991+00:00",
   "read_only": true,
   "master_role": {
-    "role": "user"
+    "role": "user",
+    "reference": "earlier same-day userRole lookup"
   },
   "agent_role": {
     "role": "missing"

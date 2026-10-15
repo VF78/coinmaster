@@ -1,0 +1,2 @@
+API_SMOKE_OK: auth, SPA, selected Sandbox readback, inactive Live identity/profile/unknown balance, disabled controls, no trader mutations, research lease clear
+ACTIVE_OK commit=be2f71daac848a20b183ee0167194e5cfa65a5b8 runtime_pid=1886780 paper_pid=0 trader_pid=2009732

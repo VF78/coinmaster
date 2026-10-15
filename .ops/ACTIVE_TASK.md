@@ -1,31 +1,43 @@
-CURRENT LIVE82 IMPLEMENTATION — 2026-10-15 IN PROGRESS
+CURRENT LIVE82 — READY FOR OWNER FUNDING AND AGENT AUTHORIZATION
+Updated: 2026-10-15, Europe/Moscow
 
-Owner approved V3 + DP50, initial 82 USDC, GUI integration and updates after confirmed flat. Owner explicitly approved the existing research_btc_direction_sizing=True flag for fixed BTC long 5.5 / short 7.875 in the inactive V3 profile. Adaptive DD sizing and optimizer remain off. Real orders, transfers and live activation require separate permission. Do not touch the running Sandbox.
+Owner-approved scope completed locally: V3 + DP50, first actual capital 82 USDC, selected-instance GUI and updates after confirmed flat. Explicit direction-sizing flag permission and subsequent GUI internal Live IPC token permission are recorded. Real orders, transfers and live activation still require separate permission. The working Sandbox was not restarted or changed.
 
-Canonical branch: codex/nautilus-btc-sol-mvp, development only in /root/.openclaw/workspace/coinmaster/coinmaster. WIP checkpoint 68118763f55523f7a135c9a1069d3ff3bac83f5f preserves the engine, profile, GUI and test work; pushed and exact remote SHA verified. This is not an accepted or deployed live release.
+Canonical development only: /root/.openclaw/workspace/coinmaster/coinmaster, branch codex/nautilus-btc-sol-mvp. WIP6811876 preserved the resumed implementation without loss. Accepted engine source6c208fde1a4f4e0a2c5eacb022dfe165b04f3ab2; helper-only GUI correction/deployedGUIbe2f71daac848a20b183ee0167194e5cfa65a5b8. Final documentation checkpoint may follow these immutable executable versions.
 
-Resumed owners (Sol 6.1 / medium, minimal handoffs):
-- live82_engine_resume: engine/domain/recovery/config/flat-update and inactive live pack.
-- live82_gui_resume: API/frontend/schema/tests/rendering; contract agreed, no shared engine edits.
-- live82_money_review: bounded independent source review, no implementation.
-- Root: Project, current status and final freeze/deployment gates.
-No overlapping commits. Reuse completed checks; no full audit, optimizer, two-year backtest, new SDK/service, Nautilus upgrade or /opt manual edits.
+Implemented:
+- Sealed V3 profile: BTC fixed long5.5 / short7.875, 30m cap, original EMA34/TP fractions/SOL sizing and overlay; approved execution/selective-zero-TP/lifecycle repairs on. Fee floor/netting/H1/B1/BTC20/adaptive-DD/SOL cap/PORT45 off. DP50 explicitly on.
+- Initial native bootstrap rechecks82; owned later flat restarts retain actual cash/profit/loss, original deposit/protection and full history. Native/venue unknown/open/foreign/pending evidence still blocks new exposure. Closed-history epoch retirement requires complete owned terminal fill evidence; unused old rights are audited, not carried into new episodes.
+- Recoverable strategy now atomically commits applied trade IDs and checkpoint for native special/forced/DP closes that formerly bypassed the ordinary hook. Ownership/native-detail/duplicate guards retained; sealed WaveOverlay bytes and trading parameters unchanged.
+- Existing immutable staging helper verifies source/profile/qualified wheel and may select only an inactive flat-validated release. No open-position hot replacement or automatic takeover; manual fail-closed recovery remains deferred and Live Restart=no.
+- Existing GUI/API uses fixed validated Sandbox18183 versus Live18185 across account/positions/orders/fills/equity/strategy/protection. Inspection selection sends no trader command. Planned82 is never presented as actual money. Future approved Live controls use existing relay with exact release/account/profile, fresh native state, nonce and read-back guards.
 
-Profile: V3 economic base a9cbb737a5239d10b9ffcb97d55f997917945263; BTC long 5.5 / short 7.875 frozen per genuine episode, cap 30m, original EMA34/TP fractions/SOL sizing and overlay. Approved execution/selective-zero-TP/lifecycle repairs on; fee floor/netting/H1/B1/BTC20/adaptive-DD/SOL cap/PORT45 off. Existing DP50 on by owner choice. Archived Bybit TOTAL 5,437,208.56951095 had DP off and is NOT faithful HL execution or a guaranteed ROI/DD result.
+Verification:
+- Connected engine final batch30 PASS; exact default DP50 native market_exit success1 PASS; >100-fill evidence regression1 PASS; qualified boundary batch23 PASS. Counts overlap, not an additive unique total. Independent bounded money/order source review GO.
+- Current V3/82 native LiveExecutionEngine + fake venue reports:6 fills, fees0.2790, reported native cash81.7210. Complementary native Sandbox two-episode82 proof:13 fills/17 terminal orders, real native callback/SQLite fees/cash, flat profit82.17841937 and loss81.37841937 preserved with original82 protection/history. Fake venue inputs are not real exchange execution or profitability evidence.
+- DP50 success fixture retained default50 without GUI limit change; seed10000, not falsely a seed82 venue-threshold proof. Profile/constructor/Live bootstrap load DP50 at82.
+- Intended installed service UID no-connect worker checks7 PASS after correcting only live-public-history ownership. Embedded predecessor had inherited root0700/0600; isolated live dataset chowned to coinmaster-hl-live, unchanged modes/content. No symlink/hardlink to Sandbox. Actual Live ExecStartPre refresh already runs as coinmaster-hl-live; do not seed future private-mode public artifacts as root.
+- GUI20+shared20+static guards3 PASS; schema/types/build/74 invariants PASS;24 fixture desktop/mobile render states PASS. Actual production authenticated API/native parity and HTTPS smoke PASS.
+- New authenticated cookie-session production browser walkthrough NOT completed: bearer-only browser correctly reached existing session-only broker sign-in boundary. No session bypass, password search or production trader command. This is not evidence of a login defect.
 
-Saved focused results: engine 95 passed (recorded final log; no reason to repeat all), GUI API 37 passed. Current GUI identity/approval regression tests: 20 passed; schema, TypeScript, 74 UI invariants and builds passed. Genuine warmup refreshed and verified READY. These are component checks, not completed current-release native acceptance/deployment.
+Installed:
+- Live /srv/coinmaster/hl-live/current ->6c208fde...-v3-dp50-82-wheel-8ff3c6dcc150; immutable, INACTIVE_NOT_ORDER_APPROVED, PID0/disabled. Qualified Nautilus1.231 wheel SHA8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46 reused. No2.0rc5/SDK/service/new engine or wheel rebuild.
+- GUI currentbe2f71d, runtimePID1887363; existing connections broker refreshedPID1886838. Only GUI-related services restarted; SandboxPID2009732/NRestarts0 since2026-09-28T07:39:45Z preserved. Hermes/sites/VPN untouched.
+- Owner explicitly permitted existing local Live IPC token in protected GUI environment; alias installed, distinct Sandbox token, no exchange credential copied. Exact real-order approval file ABSENT; all Live controls disabled. Prior automatic approval rejection resolved by direct owner permission, not bypassed.
+- Oct15 13:19:55UTC /16:19:55Moscow: Sandbox cash10232.1335433/equity10941.6935433/uPnL709.56/fees287.21645670, BTC short0.56965@81675/native reduce-only ALO TP79177, SOLflat. Both feedsREADY/recovery_requiredfalse. GUI parityPASS; Live money unavailable, V3+DP50/82 planned separately. coinmaster24.com, f-ai.studio, app.f-ai.studio HTTPS200.
 
-Narrow review found one P1: authoritative native bootstrap must recheck initial 82, not rely only on preflight; later flat restarts must use actual owned balance. Correction and 82 pass / 83 rejection plus owned profit/loss tests passed. Subsequent native special-close cursor and proven completed-marker issues were fixed; all final acceptance results are in engine-acceptance.json and review-money-orders.md. No other actionable P0/P1 identified in bounded source review. Preserve exact account/order/unknown-ACK/late-fill/report-completeness gates.
+External next steps:
+1 Owner may now fund selected master PERPS balance to exactly82USDC (not API wallet). Root notified owner only after technical/deployment gates passed.
+2 Reauthorize saved API agent0xf69141dDB7D1FF12a9EB12f9A8D719830dB090B0 for selected master0xcE463630ecB61C5EdD9498D5eeFec7d913Fe92ad; do not request a new secret unnecessarily. Fresh official public Info13:25:54UTC shows agentmissing, accountValue0.0, zero positions/orders.
+3 Fresh funded-flat delegation/equity/leverage/margin/fees/minimum qualification, then separate exact release/account/82/real-order scope approval. Only then native small real exchange execution acceptance and natural trading. Import no virtual positions; no automatic capital increase.
 
-Completed source acceptance: engine final batch 30 passed; exact default DP50 native market_exit success 1 passed; complete >100-fill close proof 1 passed; qualified boundary batch 23 passed (overlapping checks, not an additive unique total). Current V3 LiveExecutionEngine fake-transport cycle: 6 native fills, fees 0.2790, reported native cash 81.7210. Complementary native Sandbox 82 two-episode proof: 13 fills/17 terminal orders; flat profit 82.17841937 and loss 81.37805937 retain actual cash, original deposit/protection and full journal. Special-close/DP callback cursor defect fixed in Recoverable only; independent final changed-hunk GO. GUI 20+20+2 tests, types/schema/build/74 invariants and 24 fixture desktop/mobile renders passed. Remaining acceptance: inactive live staging/intended-UID no-connect qualification, GUI deployment and authenticated production read-back. Future approved live controls must work through existing relay without another code patch; today absent approval keeps them disabled. Planned 82 is not an actual account balance.
+Project #2 updated and independently read back. #101 OPEN/InProgress because funded qualification/real execution remain external; technical package above complete. #100/#105 remain OPEN/InProgress for broader premium trader UX/session acceptance, not falsely Done from API smoke. Evidence links:
+- https://github.com/VF78/coinmaster/issues/101
+- https://github.com/VF78/coinmaster/issues/100#issuecomment-6193157638
+- https://github.com/VF78/coinmaster/issues/105#issuecomment-6193158038
+Reports: reports/live82-implementation-20261015/{engine-acceptance.json,review-money-orders.md,deployment-readback.json,public-account-readonly.json}; reports/live82-gui/{FREEZE.json,stage-contract-correction.json,production-browser-receipt.json}. Nine unrelated old research logs preserved outside checkout with hash receipt; no prior research result discarded.
 
-Then freeze verified source, stage immutable INACTIVE live release with existing qualified Nautilus 1.231 wheel, and deploy GUI only. No real-order approval file, private client connection, service start or Sandbox restart. Unknown/open exposure fails closed; open-position auto takeover remains deferred. Flat updates retain account cash, original deposit, DP anchor and full audit history; retire unused prior rights explicitly.
-
-Protected Sandbox last verified active PID 2009732, NRestarts 0, installed 81e6318646b51280497806a1c0492591654b5fe6. Oct15 11:55:59 UTC equity 10606.3935433, one position/one order, both feeds READY, recovery_required=false. These amounts are timestamped observations. Live remains inactive PID 0. Hermes/sites/VPN untouched.
-
-Project #2 is backlog truth. Existing #101 is [L100-4] V3+DP50 Hyperliquid 82 USDC live preparation, OPEN / In Progress, body read-back verified. #100/#105 reused OPEN / In Progress. Exact flag approval recorded in #101 comment6191619609. No duplicate issues or premature Done/READY claims.
-
-After local technical checks and GUI deployment: fresh public account/agent qualification, then notify owner to fund 82 USDC into selected master PERPS and authorize saved API agent if missing. Funding is not permission for orders. Funded qualification and separate exact release/account/capital real-order approval precede small exchange execution acceptance.
+Archived Bybit V3 TOTAL5437208.56951095 had DP off and diagnostic execution/nativeDD67.2863%, not identical live economics or an HL ROI/DD guarantee. No new optimizer/two-year backtest/total audit ran. Root coordination/docs/Project/deploy only; resumed minimal-context Sol6.1/medium engine and GUI owners plus bounded independent source reviewer handled implementation.
 
 CURRENT LIVE95 READINESS / V3 ROLLOUT PLAN — 2026-10-14 REVIEW COMPLETE, IMPLEMENTATION PENDING
 

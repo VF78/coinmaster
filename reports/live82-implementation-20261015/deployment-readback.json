@@ -1,0 +1,177 @@
+{
+  "observed_utc": "2026-10-15T13:19:55.634163+00:00",
+  "read_only_commands": true,
+  "native_sandbox": {
+    "observed_at_ns": 1792070392901505460,
+    "run_epoch": "10e39dc6efa64c8b820b174c0a5b65fe",
+    "account": {
+      "equity": "10941.6935433",
+      "fees": "287.21645670",
+      "mark_state": "CURRENT",
+      "native_cash": "10232.1335433",
+      "native_free": "10232.1335433",
+      "native_locked": "0",
+      "realized_pnl_net_fees": "232.13354330",
+      "unrealized_pnl": "709.56"
+    },
+    "positions": [
+      {
+        "average_entry_price": "81675.0",
+        "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+        "provenance": "SANDBOX",
+        "signed_quantity": "-0.56965"
+      }
+    ],
+    "orders": [
+      {
+        "account_id": "HYPERLIQUID-001",
+        "client_order_id": "O-20261015-000017-TESTNET-001-22",
+        "filled_quantity": "0.00000",
+        "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+        "leaves_quantity": "0.56965",
+        "order_type": "LIMIT",
+        "post_only": true,
+        "price": "79177.0",
+        "provenance": "SANDBOX",
+        "quantity": "0.56965",
+        "reduce_only": true,
+        "side": "BUY",
+        "status": "ACCEPTED",
+        "submitted_at_ns": 1792022417839948275,
+        "time_in_force": "GTC",
+        "updated_at_ns": 1792022417839948275,
+        "venue_order_id": "HYPERLIQUID-2-022"
+      }
+    ],
+    "feeds": {
+      "BTC-USD-PERP.HYPERLIQUID": {
+        "funding_age_ns": 2488476434,
+        "funding_rate": "0.000003314",
+        "mark": "80429.4",
+        "mark_age_ns": 2488476434,
+        "next_funding_ns": null,
+        "quote_age_ns": 8676101,
+        "state": "READY"
+      },
+      "SOL-USD-PERP.HYPERLIQUID": {
+        "funding_age_ns": 2488405614,
+        "funding_rate": "-0.0000086002",
+        "mark": "101.6",
+        "mark_age_ns": 2488405614,
+        "next_funding_ns": null,
+        "quote_age_ns": 8641225,
+        "state": "READY"
+      }
+    },
+    "recovery_required": false,
+    "event_cursor": 120
+  },
+  "sandbox_gui_native_parity": "PASS",
+  "live_gui": {
+    "projection_state": "UNAVAILABLE",
+    "cash": null,
+    "equity": null,
+    "profile": "V3+DP50",
+    "candidate": {
+      "ema_period": "34",
+      "beta_days": "270",
+      "relative_days": "65",
+      "z_history_days": "180",
+      "wave_history_days": "730",
+      "wave_min_count": "8",
+      "wave_quantiles": "[0.1,0.3,0.6]",
+      "btc_tp_fractions_initial_qty": "[0.2125,0.2125,0.575]",
+      "max_parent_notional": "30000000.0",
+      "sol_size_multipliers_h": "[1.75,2.625,3.5]",
+      "sol_entry_z": "[1.25,2.5,3.75]",
+      "sol_exit_half_z": "0.375",
+      "sol_exit_all_z": "0.125",
+      "sol_max_holding_days": "14",
+      "btc_close_trail_fraction": "0.03",
+      "sol_timeout_preempts_add": "false",
+      "sol_late_entry_after_tp": "true",
+      "sol_overlay_enabled": "true",
+      "episode_fixed_beta": "false",
+      "deposit_protection_percent": "50",
+      "btc_long_notional_multiplier": "5.5",
+      "btc_short_notional_multiplier": "7.875"
+    },
+    "capital_assumption": "Planned initial capital: 82 USDC; this is not an observed account balance",
+    "controls_disabled": true
+  },
+  "units": {
+    "coinmaster-hl-stageg-testnet.service": {
+      "MainPID": "2009732",
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "ActiveEnterTimestamp": "Mon 2026-09-28 07:39:45 UTC"
+    },
+    "coinmaster-hl-stageg-live.service": {
+      "MainPID": "0",
+      "NRestarts": "0",
+      "ActiveState": "inactive",
+      "ActiveEnterTimestamp": ""
+    },
+    "coinmaster-runtime.service": {
+      "MainPID": "1887363",
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "ActiveEnterTimestamp": "Thu 2026-10-15 13:18:42 UTC"
+    },
+    "coinmaster-connections.service": {
+      "MainPID": "1886838",
+      "NRestarts": "0",
+      "ActiveState": "active",
+      "ActiveEnterTimestamp": "Thu 2026-10-15 13:17:18 UTC"
+    }
+  },
+  "live_release": {
+    "source_commit": "6c208fde1a4f4e0a2c5eacb022dfe165b04f3ab2",
+    "profile_id": "V3+DP50",
+    "profile_sha256": "19b6bbb424590e2886af42e5fe488961ea756a485af3c59aa13e6415305c598e",
+    "strategy_sha256": "6d26a581f5f693e6c35c47a66c850774877dbd4f59d5d2d9f90a346ee9c26f17",
+    "candidate_sha256": "bc328ce339a68468fc2752db00a784f5975b540b43e72b4c5d1ab596ec51c57e",
+    "wheel_sha256": "8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46",
+    "initial_capital_usdc": "82",
+    "state": "INACTIVE_NOT_ORDER_APPROVED"
+  },
+  "gui_release": "/srv/coinmaster-native-gui/releases/be2f71daac848a20b183ee0167194e5cfa65a5b8",
+  "public_https": {
+    "https://coinmaster24.com/": {
+      "http": 200
+    },
+    "https://f-ai.studio/": {
+      "http": 200
+    },
+    "https://app.f-ai.studio/": {
+      "http": 200
+    }
+  },
+  "order_approval_present": false,
+  "live_gui_transport_alias_present": true,
+  "endpoints_http": {
+    "/api/v1/instances/hl-stageg-testnet": 200,
+    "/api/v1/instances/hl-stageg-testnet/strategy": 200,
+    "/api/v1/instances/hl-stageg-testnet/controls": 200,
+    "/api/v1/instances/hl-stageg-testnet/fills": 200,
+    "/api/v1/instances/hl-stageg-testnet/equity-changes": 200,
+    "/api/v1/instances/hl-stageg-live": 200,
+    "/api/v1/instances/hl-stageg-live/strategy": 200,
+    "/api/v1/instances/hl-stageg-live/controls": 200,
+    "/api/v1/instances/hl-stageg-live/fills": 503,
+    "/api/v1/instances/hl-stageg-live/equity-changes": 200
+  },
+  "owner_live_ipc_token_permission": "Direct human reply: \u0420\u0430\u0437\u0440\u0435\u0448\u0430\u044e \u0432\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u0442\u043e\u043a\u0435\u043d Live \u0434\u043b\u044f GUI; existing local transport only, not exchange credential or real-order approval.",
+  "warmup_provisioning": {
+    "isolated_live_dataset_owner": "coinmaster-hl-live",
+    "content_or_modes_changed": false,
+    "sandbox_symlinks_or_hardlinks": false,
+    "future_refresh": "Existing Live ExecStartPre already runs as intended UID"
+  },
+  "qualification_artifacts": {
+    "installed-uid-tests.log": "6b9bd4fdab0332fd3fcd813094d085ec0a24cd026d9f34b99fc04cc376b72970",
+    "gui-stage.log": "8e245b62da4279cf28e9eedfe796e3449f643382b9ef50bbae648731bd4bcc6d",
+    "gui-activation.log": "d5671eae755fd51b94df5f699b337a7b9b5640fa266b3249d3c35545a6a0bb6e"
+  },
+  "readiness": "READY_FOR_OWNER_FUNDING_AND_AGENT_AUTHORIZATION"
+}

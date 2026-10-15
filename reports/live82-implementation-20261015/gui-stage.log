@@ -1,0 +1,70 @@
+PLAN_OK commit=be2f71daac848a20b183ee0167194e5cfa65a5b8 runtime_pid=2129174 paper_pid=0 trader_pid=2009732 current=/srv/coinmaster-native-gui/releases/ea071ab79bb4c517f947fda21ee31bf62053f954
+
+> coinmaster@0.1.0 check
+> tsc --noEmit
+
+
+> coinmaster@0.1.0 build
+> npm run build:web && npm run build:custom
+
+
+> coinmaster@0.1.0 build:web
+> vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 60 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.76 kB │ gzip:   0.39 kB
+dist/assets/index-BsfdYqWt.css   89.47 kB │ gzip:  16.98 kB
+dist/assets/index-Cjdf_B88.js   400.85 kB │ gzip: 124.70 kB
+✓ built in 4.33s
+
+> coinmaster@0.1.0 build:custom
+> vite build --config vite.custom.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 46 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-custom/index.custom.html                  0.43 kB │ gzip:   0.28 kB
+dist-custom/assets/index-RPq9Qhdq.css         83.05 kB │ gzip:  15.99 kB
+dist-custom/assets/index.custom-BZxnnvLC.js  376.37 kB │ gzip: 117.95 kB
+✓ built in 4.17s
+MANIFEST_WRITTEN commit=be2f71daac848a20b183ee0167194e5cfa65a5b8 dirty=false release_sha256=7ed80811cb326ff472ef7f301b27dac3f9665fb38f3b92efc5b5948a6ddc6f2f
+MANIFEST_VERIFIED commit=be2f71daac848a20b183ee0167194e5cfa65a5b8 code_sha256=885e1138942f94f61fcc1e3a665c4cdb7332c7878568e876f0284c13de3ca266
+MANIFEST_VERIFIED commit=be2f71daac848a20b183ee0167194e5cfa65a5b8 code_sha256=885e1138942f94f61fcc1e3a665c4cdb7332c7878568e876f0284c13de3ca266
+Using CPython 3.12.3 interpreter at: /usr/bin/python3
+Creating virtual environment at: .venv
+Installed 27 packages in 175ms
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.15.1
+ + click==8.5.0
+ + fastapi==0.141.1
+ + fsspec==2026.2.0
+ + h11==0.16.0
+ + idna==3.20
+ + msgspec==0.21.1
+ + nautilus-trader==1.231.0
+ + numpy==2.5.3
+ + pandas==3.0.6
+ + portion==2.6.2
+ + pyarrow==25.0.1
+ + pydantic==2.13.5
+ + pydantic-core==2.46.5
+ + python-dateutil==2.9.0.post0
+ + pytz==2026.3.post1
+ + six==1.17.0
+ + sortedcontainers==2.4.0
+ + starlette==1.6.0
+ + tqdm==4.70.1
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+ + tzdata==2026.4
+ + uvicorn==0.53.0
+ + uvloop==0.22.1
+API_SMOKE_OK: auth, SPA, selected Sandbox readback, inactive Live identity/profile/unknown balance, disabled controls, no trader mutations, research lease clear
+STAGED_OK commit=be2f71daac848a20b183ee0167194e5cfa65a5b8 archive_sha256=d6ab11b3965fc2add6ad6116f3bdc498152e6803e0cc0004acfea1da7ccfbe23

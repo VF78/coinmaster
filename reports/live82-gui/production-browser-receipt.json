@@ -1,0 +1,19 @@
+{
+  "production": true,
+  "release": "be2f71d",
+  "browser": "Existing isolated Chrome155 headless",
+  "transport": "SSH loopback18993 to installed GUI18182",
+  "result": "Session-only connection broker redirected bearer-only UI to /login. Authenticated full production UI rendering could not be established without an existing browser cookie session.",
+  "authorization": "Existing internal operator bearer restricted to exact loopback origin requests; never set globally or forwarded to external chart domains. No exchange credentials read. No login/session creation or bypass attempted.",
+  "state": {
+    "title": "Coinmaster24 · Sign in",
+    "url": "http://127.0.0.1:18993/login",
+    "text": "Coinmaster24\nOperator sign in\nUsername\nPassword\nSign in"
+  },
+  "sourceContract": "runtime_sidecar.py connection_broker forwards cookie/origin/CSRF only, never bearer; verify_connection_session requires existing GUI cookie session. DashboardConnectionIdentity redirects401 to /login.",
+  "scope": "Attempted one read-only production browser verification. No trader controls/buttons or mutations used. No source changes. Prior24 rendered-state evidence remains isolated fixture evidence, not authenticated production UI acceptance.",
+  "screenshots": [
+    "production-session-required-1440.png"
+  ],
+  "ownerApiParity": "Root independently performs authenticated same-instance API/worker parity; do not infer authenticated browser completion from it."
+}
