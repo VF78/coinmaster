@@ -1,3 +1,21 @@
+CURRENT LIVE82 IMPLEMENTATION — 2026-10-15 IN PROGRESS
+
+Owner explicitlyapprovedexecuteplan: V3 +DP50, initial82USDC; GUI and flat strategyupdates, keepSandboxunchanged. Finishtechnicalchecks thennotifywhenowner shouldfund. Realorders/transfers/liveactivation ONLYafterseparatepermission. This supersedes95–98 proposal/implementationpending below.
+
+Canonicalstart32ad35730f4dd429d6e002cedacbe3bf3ab71c8e/branchcodex/nautilus-btc-sol-mvp; only /root/.openclaw/workspace/coinmaster/coinmaster development. EngineownerSol6.1medium /root/live82_engine ownsengine/domain/strategy/recovery/config/livepackhelpers; GUIownerSol6.1medium /root/live82_gui owns API/frontend/schema/tests AFTER agreedcontract; root ownsProject/.ops/staginggate. No concurrentcommonfile edits/commits, no /opt manualpatches/newSDK/riskservice/version/optimizer/24mbacktest. Focusedpass/oneconnectedverification/narrowindependentmoneyorderreview/atmostonesubstantivecorrection.
+
+Acceptedprofile: exactV3economicbasea9cbb737 (archivedBybitTOTAL5437208.56951095) BTC long5.5/short7.875frozengenuineepisode/cap30m/originalEMA34/TPfractions/SOLH+overlay, approvedexecution/selectivezeroTP/lifecyclerepairs ON; feefloor/netting/H1B1/BTC20/DDsizing/SOLcaps/PORT45OFF. ExistingDP50ON explicitownerchoice; NOTexactarchivedROIprotectionOFF norHLfaithfulprofit/DDguarantee.
+
+Enginecriticalpath: productionsealedprofile+initial82(actualownedfutureequitynotreset), missingselectivecheckpoint/parity, genuineexistingpublicwarmup BEFORE constructor, verifiedclosedhistoryepochtransitionretainingownedhistory/originaldeposit/protection/equity andstrictunknown/foreign/openfailclosed. Retireunusedoldrights explicitlyatflat; noopen-positionhotreload/autotakeover. Native1.231qualifiedexistingwheel8ff retained, no rebuild. StageimmutableINACTIVEliveonly; NEVERwriteactualrealorderapproval/startclient/connectusingrealcredentials.
+
+GUIcontractearly: existingPaperRuntime/relay, fixedSandboxhl-stageg-testnet18183 versusLivehl-stageg-live18185; sameaccount/positions/orders/fills/DP/pause-resumeprojection with exactactualmode/capability; engineprofile_idV3+DP50/initial_capital_usdc82/hashmetadata. InactiveLive clearlyunavailable/plannedmetadata; planned82NEVERactualbalance. Selectionviewdoesnotcommandtrader; correctinstance/auth/CSRF/readback, no cosmeticredesign. Existingui-ux-pro-max skillusedforcontrols only. GUIdeployonlyafterrootcheckpoint; Sandbox/otherprotectedservicesuntouched.
+
+Acceptance: native82coupledepisodes/partialBTCtp/SOLhalf-full/minlot-minnotional-dust/fees/equity/denied-reject-cancel/unknownACK/DP50marketexit; flatupdates afterprofitandloss retainrealmoney/history/DPanchor. Connectednativeworkingjournal notmockPnL; currentexactV0testfailures lexicalpath/stalewarmup needaddressedcorrectly, notgateweakening. Existingqualifiedwheel/testproofreuse; no expensivefullbacktest. Rootindependentnarrowreview aftersourcefreeze; GUIAPI+rendereddesktop/mobile/state/controls verification.
+
+Read-only15Oct11:55:59UTC(14:55Moscow): SandboxactivePID2009732/NRestarts0/nativeequity10606.3935433/oneposition+oneorder/feedsREADY/recovery_requiredfalse; liveinactivePID0. This ismonitoringonly, noaction. Prioraccount14Oct13:18UTCzero/agentmissing mustfreshchecklatebeforefundingnotification; nosecret/keyrotation/request now.
+
+ExistingProject#101 retitled82V3+DP50, ownerapprovedchecklist/dependencies/acceptance/currentInProgress; exactbodyreadbackPASS. #100/#105 actualOPEN/InProgress reused (noredundantissues); priorGUIdependencycommentsstillapply except82amount. CurrenttaskisIMPLEMENTATION, notanotherplan/audit. Nextengine+GUIwork→focused/nativeacceptance+review→inactiveLiveandGUIdeploymentwithoutSandboxrestart→readbackchecks→notifyownerfund82+reauthorizeagent→freshfundedqualification→separaterealorderpermission. Do notstopatplan orclaimalltasksDone/LiveREADYearly.
+
 CURRENT LIVE95 READINESS / V3 ROLLOUT PLAN — 2026-10-14 REVIEW COMPLETE, IMPLEMENTATION PENDING
 
 Owner ready to fund95–98USDC and requested pilot/live readiness plus a simple V3 start/update plan. This turn read-only runtime/source/publicInfo review and synthetic no-connect tests ONLY; no runtime code change, deploy/restart/credentials/order/transfer. Review baseline abfc74aa2b6cf0438f9aee25d83f8d9277d577e1; one minimal-context Sol6.1/medium reviewer, no total audit/newoptimizer.
