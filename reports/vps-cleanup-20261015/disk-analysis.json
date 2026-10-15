@@ -1,0 +1,130 @@
+{
+  "at_utc": "2026-10-15T14:59:42.482363+00:00",
+  "scope": "Read-only directory and Docker metadata analysis; no deletion or lifecycle action",
+  "paths_allocated_bytes": {
+    "/var/lib/docker": 6220722176,
+    "/opt/fai-paperclip": 3455381504,
+    "/opt/fai-paperclip/current/core/node_modules": 2211708928,
+    "/opt/fai-paperclip/current/control/plugins": 253554688,
+    "/opt/fai-paperclip/current/toolchain": 246218752,
+    "/opt/fai-content-engine": 2288668672,
+    "/opt/fai-content-engine/releases/4202f6c0": 1144332288,
+    "/opt/fai-content-engine/releases/74331e04": 1144328192,
+    "/root/.hermes": 3915399168,
+    "/root/.hermes/tools": 1722331136,
+    "/root/.hermes/installs": 588693504,
+    "/root/.hermes/bot-desktop/threads-profile": 603402240,
+    "/root/.hermes/bot-desktop/threads-profile/Default/Cache": 346533888,
+    "/root/.hermes/bot-desktop/threads-profile/Default/Code Cache": 217313280,
+    "/root/.hermes/backups": 286138368,
+    "/root/.hermes/logs": 24854528,
+    "/var/lib/hermes-daniil": 889839616,
+    "/var/lib/hermes-daniil/.hermes/tools": 860643328,
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime": 1331347456,
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv": 938672128,
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data": 385241088,
+    "/var/lib/coinmaster-native-gui/data": 1408684032,
+    "/var/lib/coinmaster-native-gui/data/runs/jobs": 1326284800,
+    "/var/lib/coinmaster-native-gui/data/normalized": 82382848
+  },
+  "docker": {
+    "system_df_images_bytes_display": "5.608GB",
+    "system_df_reclaimable_display": "5.608GB (99%)",
+    "warning": "Summary is not realizable while preserving active images. Full docker image ls -a + image RootFS.Layers comparison found every layer referenced by inactive and intermediate images is also required by existing running containers, except hello-world single 10072-byte image. Do not claim 5.608GB reclaimable.",
+    "running_containers": 4,
+    "unused_volumes": 14,
+    "unused_volume_bytes": 0,
+    "build_cache_bytes": 0,
+    "safe_reclaim_upper_for_only_unreferenced_image": "approximately10KB plus metadata"
+  },
+  "content_engine_sharing": {
+    "current": "4202f6c0",
+    "rollback": "74331e04",
+    "file_counts_each": 59838,
+    "shared_regular_file_inodes": 0,
+    "rollback_regular_file_allocated_bytes": 1119567872,
+    "rollback_nlink1_bytes": 1088442368,
+    "note": "Separate physical file copies; not a hardlink du illusion. Future removal only after complete preserved archive and no service/process/symlink references confirmed."
+  },
+  "proposals_not_executed": [
+    {
+      "action": "Use browser-managed cache eviction for Hermes threads profile",
+      "gross_candidate_bytes": 563847168,
+      "gib": 0.525,
+      "restart": "No service restart required if browser-managed eviction supported; never rm files in active profile",
+      "condition": "Keep cookies, local storage, session/auth data and browser profiles. Current cache can refill; safe control path still needs identification."
+    },
+    {
+      "action": "Copy and verify inactive content-engine rollback release to off-host archive before removing local copy",
+      "gross_candidate_bytes": 1144328192,
+      "conservative_nlink1_regular_bytes": 1088442368,
+      "gib_upper": 1.066,
+      "restart": "No restart expected for removing genuinely unreferenced inactive release",
+      "condition": "Preserve full recoverable source, build, dependencies/config; future full reference check needed. Trades local immediate rollback convenience for off-host restore."
+    },
+    {
+      "action": "Copy and verify existing Hermes backup ZIP off host, retain backup catalog, then retire local duplicate",
+      "gross_candidate_bytes": 285949952,
+      "gib": 0.266,
+      "restart": "No restart expected for verified inactive backup archive",
+      "condition": "Only after backup role/restore verified; currently single ZIP, no duplicate established. Do not delete only backup."
+    },
+    {
+      "action": "Keep research data/results and installed dependencies intact; optional storage expansion avoids loss",
+      "reclaim_estimate": null,
+      "condition": "Research jobdata1.326GB and normalized82MB, staging379MB are real inputs/evidence, not proven disposable. Active node_modules/.venv/runtime/toolchains are installed software, not download caches."
+    }
+  ],
+  "estimate_limits": [
+    "Directory du values can overlap through hardlinks; do not sum nested rows. Only release-sharing comparison explicitly de-duplicated inode identities.",
+    "No service restart, stop, Docker pruning, browser mutation, source change or additional cleanup performed during this analysis.",
+    "Only preselected large directories inspected; private Hermes content and credentials not read."
+  ],
+  "root_allocated_bytes": {
+    "/var": 10565869568,
+    "/root": 6947065856,
+    "/usr": 6760083456,
+    "/opt": 5744103424,
+    "/srv": 4087009280,
+    "/swapfile": 2147487744,
+    "/": 36398628864
+  },
+  "ext4_reserved": {
+    "reserved_blocks": 407084,
+    "block_size": 4096,
+    "reserved_bytes": 1667416064,
+    "reserved_percent": 4.09774951126553,
+    "possible_1percent_available_gain_bytes": 1260507136,
+    "applied": false,
+    "note": "Changing reserved allocation does not delete or compress files; it reduces emergency space reserved for privileged processes."
+  },
+  "swap": {
+    "allocated_bytes": 2147487744,
+    "used_kib_at_observation": 2094492,
+    "note": "Active swap nearly fully used; do not remove or swapoff during uninterrupted operation."
+  },
+  "journal_disk_usage": "289.3M; possible archived-log retention only, not native/backtest journals.",
+  "primary_docs": [
+    "https://man7.org/linux/man-pages/man8/tune2fs.8.html",
+    "https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-clearBrowserCache",
+    "https://docs.docker.com/engine/manage-resources/pruning/"
+  ],
+  "final_read_only_check": {
+    "observed_utc": "2026-10-15T15:02:54.790961+00:00",
+    "units": {
+      "coinmaster-hl-stageg-testnet.service": {
+        "MainPID": "2009732",
+        "NRestarts": "0",
+        "ActiveState": "active"
+      },
+      "coinmaster-hl-stageg-live.service": {
+        "MainPID": "0",
+        "NRestarts": "0",
+        "ActiveState": "inactive"
+      }
+    },
+    "native_thread_alive": true,
+    "recovery_required": false,
+    "no_deletion_or_service_changes": true
+  }
+}
