@@ -131,10 +131,16 @@ def test_stale_projection_returns_unavailable_account_without_latch(tmp_path):
         heartbeat=lambda _: None, projection_events=lambda _: ([], 0),
         entry_control_state=lambda: "RUNNING")
     worker.run_epoch, worker.control_available = "test", True
+    worker.release_identity = {"source_commit": "exact-release"}
+    worker.master_address_sha256 = "master-fingerprint"
+    worker.order_approval = {"orders_approved": True}
     worker.recovery_marker = tmp_path / "manual-recovery-required"
     view = worker.projection()
     assert view["state"] == "LIVE_MONEY_STALE/PAUSED"
     assert view["orders_enabled"] is False
     assert view["account"] == {} and view["account_state"] == "UNAVAILABLE"
+    assert view["release_commit"] == "exact-release"
+    assert view["master_address_sha256"] == "master-fingerprint"
+    assert view["real_order_approval"] is True
     assert len(refreshes) == 2
     assert not worker.recovery_marker.exists()

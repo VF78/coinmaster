@@ -1,0 +1,30 @@
+
+> coinmaster@0.1.0 build
+> npm run build:web && npm run build:custom
+
+
+> coinmaster@0.1.0 build:web
+> vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 60 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.76 kB │ gzip:   0.39 kB
+dist/assets/index-BsfdYqWt.css   89.47 kB │ gzip:  16.98 kB
+dist/assets/index-Cjdf_B88.js   400.85 kB │ gzip: 124.70 kB
+✓ built in 4.75s
+
+> coinmaster@0.1.0 build:custom
+> vite build --config vite.custom.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 46 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-custom/index.custom.html                  0.43 kB │ gzip:   0.28 kB
+dist-custom/assets/index-RPq9Qhdq.css         83.05 kB │ gzip:  15.99 kB
+dist-custom/assets/index.custom-BZxnnvLC.js  376.37 kB │ gzip: 117.95 kB
+✓ built in 4.50s

@@ -39,7 +39,7 @@ from coinmaster.venues.marks import venue_mark_data_type
 SEALED_V0_SHA = "0edecde9548533004292d5a6174ef6aeb77596817080c4a160f72aa2dc7dd511"
 
 
-def require_live_order_approval(path: Path, fingerprint_path: Path, release_root: Path) -> None:
+def require_live_order_approval(path: Path, fingerprint_path: Path, release_root: Path) -> dict:
     """Owner must approve this exact immutable release and selected account separately."""
     try:
         approval = json.loads(path.read_text())
@@ -55,6 +55,7 @@ def require_live_order_approval(path: Path, fingerprint_path: Path, release_root
                 or approval.get("candidate_sha256") != identity["candidate_sha256"]
                 or approval.get("profile_sha256") != identity["profile_sha256"]):
             raise ValueError
+        return approval
     except (OSError, ValueError, KeyError, TypeError):
         raise RuntimeError("LIVE_OWNER_ORDER_APPROVAL_REQUIRED") from None
 
@@ -196,7 +197,9 @@ class LiveWorker:
         self.instance = load_testnet_instance_config(Path(environment["COINMASTER_HL_LIVE_INSTANCE_CONFIG"]))
         root = Path(__file__).resolve().parents[2]
         fingerprints = root / "configs/hl-stageg-live.account-fingerprint.json"
-        require_live_order_approval(Path(environment.get("COINMASTER_LIVE_ORDER_APPROVAL", "/etc/coinmaster/live-order-approval.json")), fingerprints, root)
+        self.order_approval = require_live_order_approval(Path(environment.get("COINMASTER_LIVE_ORDER_APPROVAL", "/etc/coinmaster/live-order-approval.json")), fingerprints, root)
+        self.release_identity = json.loads((root / "live-release.json").read_text())
+        self.master_address_sha256 = json.loads(fingerprints.read_text())["master_address_sha256"]
         self.candidate = load_candidate(self.instance.strategy_config)
         self.run_epoch = uuid.uuid4().hex
         self.control_available = bool(environment.get("COINMASTER_HL_STAGEG_CONTROL_TOKEN"))
@@ -301,6 +304,9 @@ class LiveWorker:
                 status["orders_enabled"] = False
         return {**status, "version": "hl-stageg-live-projection-v1", "run_epoch": self.run_epoch,
                 "observed_at_ns": time.time_ns(),
+                "release_commit": self.release_identity["source_commit"],
+                "master_address_sha256": self.master_address_sha256,
+                "real_order_approval": self.order_approval.get("orders_approved") is True,
                 "native_thread_alive": bool(getattr(self.native, "_thread", None) and self.native._thread.is_alive()),
                 "account": account, "account_state": "CURRENT" if account else "UNAVAILABLE", "positions": positions, "orders": orders, "events": events, "event_cursor": cursor,
                 "deposit_protection": self.native.strategy.deposit_projection(),

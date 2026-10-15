@@ -75,3 +75,71 @@ def test_live_planned_profile_is_source_checked_and_separate():
     if result.source_state == "SEALED_CONFIGURATION_CHECKED":
         assert "82 USDC" in result.capital_assumption and "not an observed account balance" in result.capital_assumption
         assert result.candidate["deposit_protection_percent"] == "50"
+
+
+def approved_projection(monkeypatch):
+    hashes = dict(strategy_sha256="strategy", candidate_sha256="candidate", profile_sha256="profile")
+    payload = live(profile={**hashes, "profile_id": "V3+DP50"}, release_commit="release", master_address_sha256="account", real_order_approval=True)
+    identity = {"source_commit": "release", **hashes}
+    approval = {"schema": "coinmaster-live-order-approval-v1", "instance_id": "hl-stageg-live",
+                "orders_approved": True, "pilot_capital_usdc": "82", "release_commit": "release",
+                "master_address_sha256": "account", **hashes}
+    original_read = sidecar.Path.read_text
+    original_resolve = sidecar.Path.resolve
+    monkeypatch.setattr(sidecar.Path, "resolve", lambda path, *args, **kwargs: path if str(path) == "/srv/coinmaster/hl-live/current" else original_resolve(path, *args, **kwargs))
+    def read(path, *args, **kwargs):
+        if path.name == "live-release.json": return json.dumps(identity)
+        if path.name == "hl-stageg-live.account-fingerprint.json": return json.dumps({"master_address_sha256": "account"})
+        if str(path) == "/etc/coinmaster/live-order-approval.json": return json.dumps(approval)
+        return original_read(path, *args, **kwargs)
+    monkeypatch.setattr(sidecar.Path, "read_text", read)
+    respond(monkeypatch, payload)
+    return sidecar.HlLiveProjectionReader("http://127.0.0.1:18185").runtime()
+
+
+def test_approved_live_controls_are_capability_gated_not_permanently_denied(monkeypatch):
+    projection = approved_projection(monkeypatch)
+    assert projection.real_order_approval and projection.warnings == []
+    controls = sidecar.hl_stageg_controls(projection, True)
+    assert controls.pause.enabled and controls.resume.enabled
+    assert not controls.flatten.enabled and not controls.promotion.enabled
+    assert not sidecar.hl_stageg_controls(projection, False).pause.enabled
+
+
+@pytest.mark.parametrize("patch", [
+    {"runtime_release_commit": "old-release"}, {"runtime_master_address_sha256": "foreign"},
+    {"recovery_required": True}, {"reconciliation": "UNKNOWN"}, {"native_thread_alive": False},
+    {"observed_at_ns": 1}, {"profile": {}},
+])
+def test_approval_rejects_runtime_identity_or_freshness_mismatch(monkeypatch, patch):
+    projection = approved_projection(monkeypatch).model_copy(update=patch)
+    assert sidecar.live_order_approval_matches(projection) is False
+
+
+def test_live_control_relays_exact_nonce_instance_and_checks_new_epoch(tmp_path, monkeypatch):
+    app = sidecar.create_runtime_app(database=str(tmp_path / "none.sqlite"), control_database=str(tmp_path / "control.sqlite"), token="operator")
+    projection = approved_projection(monkeypatch)
+    monkeypatch.setattr(sidecar.Path, "is_file", lambda _path: True)
+    monkeypatch.setattr(sidecar, "live_order_approval_matches", lambda _projection: True)
+    monkeypatch.setattr(sidecar, "hl_stageg_controls", lambda _p, _transport: sidecar.HlStagegControls(instance_id="hl-stageg-live", mode="live", projection_state="READY", pause={"enabled": True}, resume={"enabled": True}, flatten={}, promotion={}))
+    monkeypatch.setattr(sidecar.HlLiveProjectionReader, "runtime", lambda _reader: projection)
+    calls = []
+    def command(relay, command, nonce):
+        calls.append((relay.url, relay.instance_id, command, nonce))
+        return sidecar.HlStagegControlCommand(instance_id="hl-stageg-live", command=command, idempotency_key=nonce, status="ACCEPTED", entry_control="RUNNING")
+    monkeypatch.setattr(sidecar.HlStagegControlRelay, "command", command)
+    route = next(item for item in app.routes if getattr(item, "path", "") == "/api/v1/instances/hl-stageg-live/controls/{command}")
+    result = route.endpoint("resume-new-entries", "live-nonce")
+    assert result.idempotency_key == "live-nonce"
+    assert calls == [("http://127.0.0.1:18185", "hl-stageg-live", "resume-new-entries", "live-nonce")]
+    snapshots = iter([projection, projection.model_copy(update={"run_epoch": "different"})])
+    monkeypatch.setattr(sidecar.HlLiveProjectionReader, "runtime", lambda _reader: next(snapshots))
+    with pytest.raises(HTTPException, match="503"):
+        route.endpoint("resume-new-entries", "second-nonce")
+
+
+def test_entry_relay_rejects_nonce_from_other_command(monkeypatch):
+    respond(monkeypatch, {"instance_id": "hl-stageg-live", "command": "pause-new-entries",
+                         "idempotency_key": "foreign-nonce", "status": "ACCEPTED", "entry_control": "PAUSED"})
+    with pytest.raises(HTTPException, match="503"):
+        sidecar.HlStagegControlRelay("http://127.0.0.1:18185", "test", "hl-stageg-live").command("pause-new-entries", "correct-nonce")

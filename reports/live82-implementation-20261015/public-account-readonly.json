@@ -1,0 +1,22 @@
+{
+  "observed_utc": "2026-10-15T12:52:25.151706+00:00",
+  "read_only": true,
+  "master_role": {
+    "role": "user"
+  },
+  "agent_role": {
+    "role": "missing"
+  },
+  "account": {
+    "margin_summary": {
+      "accountValue": "0.0",
+      "totalNtlPos": "0.0",
+      "totalRawUsd": "0.0",
+      "totalMarginUsed": "0.0"
+    },
+    "position_count": 0
+  },
+  "orders": {
+    "open_order_count": 0
+  }
+}

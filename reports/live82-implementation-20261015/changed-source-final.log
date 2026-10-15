@@ -1,0 +1,233 @@
+..........F............                                                  [100%]
+=================================== FAILURES ===================================
+________________ test_sealed_v3_real_node_build_without_connect ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-614/test_sealed_v3_real_node_build0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x769269ee81a0>
+
+    def test_sealed_v3_real_node_build_without_connect(tmp_path, monkeypatch):
+        """Actual factory/strategy/kernel composition; no run/connect or secret source."""
+        import hashlib
+        import os
+        from dataclasses import replace
+        from decimal import Decimal
+        from coinmaster.ops.hl_live_worker import HyperliquidLiveNode, LiveSubmissionHooks
+        from coinmaster.ops.hl_live_execution import QualifiedHyperliquidExecutionClient
+        from coinmaster.ops.paper import PaperRuntime
+        from coinmaster.ops.stage_g_config import load_candidate
+    
+        monkeypatch.setattr("coinmaster.ops.hl_live_worker.check_live_credential", lambda *a: Decimal("82"))
+        monkeypatch.setattr("coinmaster.ops.hl_live_worker._read_json", lambda _: {
+            "master_address": "0x" + "1" * 40, "agent_private_key": "0x" + "2" * 64,
+        })
+        instance = replace(
+            load_testnet_instance_config(ROOT / "configs/hl-stageg-live.instance.json"),
+            signal_warmup_manifest=Path(os.getenv("COINMASTER_TEST_LIVE_WARMUP", "/var/lib/coinmaster-hl-stageg-testnet/data/current/manifest.json")),
+            state_db=tmp_path / "live.sqlite",
+        )
+        runtime = PaperRuntime(instance.state_db, instance.instance_id, int(120e9), require_native_cash=True)
+        runtime.acquire()
+        try:
+>           native = HyperliquidLiveNode(instance=instance, candidate=load_candidate(ROOT / "configs/hl-live-v3-dp50.candidate.json").candidate,
+                                        state=runtime, credential_path=tmp_path / "not-read", fingerprint_path=tmp_path / "not-read")
+
+runtime/tests/test_hl_live_worker.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+runtime/coinmaster/ops/hl_live_worker.py:157: in __init__
+    self.node.build()
+runtime/.venv/lib/python3.12/site-packages/nautilus_trader/live/node.py:280: in build
+    self._builder.build_exec_clients(self._config.exec_clients)
+runtime/.venv/lib/python3.12/site-packages/nautilus_trader/live/node_builder.py:249: in build_exec_clients
+    client = factory.create(**factory_kws)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+runtime/coinmaster/ops/hl_live_execution.py:566: in create
+    owner = QualifiedHyperliquidExecutionClient(
+runtime/coinmaster/ops/hl_live_execution.py:484: in __init__
+    self.configure_info_boundary(scope, info, applied_fill_ids)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = QualifiedHyperliquidExecutionClient-HYPERLIQUID
+scope = NativeLiveRecoveryScope(account_ref='0x1111111111111111111111111111111111111111', dex='', anchor_ms=1792068478100, anchor_tid=None, durable_orders=(), owned_coins=frozenset({'BTC', 'SOL'}))
+info = <function ScopedHyperliquidExecClientFactory.create.<locals>.<lambda> at 0x769269ed2520>
+applied_fill_ids = <bound method PaperRuntime.applied_fill_ids of <coinmaster.ops.paper.PaperRuntime object at 0x769269e94a10>>
+
+    def configure_info_boundary(
+        self, scope: NativeLiveRecoveryScope, info: InfoTransport,
+        applied_fill_ids: Callable[[], frozenset[str]], *, max_ws_messages: int = 256,
+    ) -> None:
+        if not isinstance(scope, NativeLiveRecoveryScope) or max_ws_messages <= 0:
+            raise ValueError("RECOVERY_SCOPE_OR_WS_LIMIT_INVALID")
+        if getattr(self, "_account_address", scope.account_ref).lower() != scope.account_ref.lower():
+            raise RuntimeError("RECOVERY_ACCOUNT_ADDRESS_MISMATCH")
+        if hasattr(self, "_cm_scope"):
+            raise RuntimeError("RECOVERY_BOUNDARY_ALREADY_CONFIGURED")
+        socket = getattr(self, "_ws_client", None)
+        # Report-only probes may have no socket; such a boundary can never
+        # release LIVE. A real client must expose the patched native epoch.
+        if socket is None:
+            self._cm_ws_epoch = None
+        else:
+            epoch_reader = getattr(socket, "connection_epoch", None)
+            if not callable(epoch_reader):
+>               raise RuntimeError("WS_CONNECTION_EPOCH_UNAVAILABLE")
+E               RuntimeError: WS_CONNECTION_EPOCH_UNAVAILABLE
+
+runtime/coinmaster/ops/hl_live_execution.py:119: RuntimeError
+----------------------------- Captured stdout call -----------------------------
+2026-10-15T12:47:58.109595517Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109647574Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode:  NAUTILUS TRADER - Automated Algorithmic Trading Platform
+2026-10-15T12:47:58.109650300Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode:  by Nautech Systems Pty Ltd.
+2026-10-15T12:47:58.109652032Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode:  Copyright (C) 2015-2026. All rights reserved.
+2026-10-15T12:47:58.109654130Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109655785Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: 
+2026-10-15T12:47:58.109657181Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣶⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+2026-10-15T12:47:58.109658905Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣿⣿⠀⢸⣿⣿⣿⣿⣶⣶⣤⣀⠀⠀⠀⠀⠀
+2026-10-15T12:47:58.109660540Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠀⠀⠀⢀⣴⡇⢀⣾⣿⣿⣿⣿⣿⠀⣾⣿⣿⣿⣿⣿⣿⣿⠿⠓⠀⠀⠀⠀
+2026-10-15T12:47:58.109662285Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠀⠀⣰⣿⣿⡀⢸⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⠟⠁⣠⣄⠀⠀⠀⠀
+2026-10-15T12:47:58.109664070Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠀⢠⣿⣿⣿⣇⠀⢿⣿⣿⣿⣿⣿⠀⢻⣿⣿⣿⡿⢃⣠⣾⣿⣿⣧⡀⠀⠀
+2026-10-15T12:47:58.109665714Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠠⣾⣿⣿⣿⣿⣿⣧⠈⠋⢀⣴⣧⠀⣿⡏⢠⡀⢸⣿⣿⣿⣿⣿⣿⣿⡇⠀
+2026-10-15T12:47:58.109667234Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⣀⠙⢿⣿⣿⣿⣿⣿⠇⢠⣿⣿⣿⡄⠹⠃⠼⠃⠈⠉⠛⠛⠛⠛⠛⠻⠇⠀
+2026-10-15T12:47:58.109669083Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⢸⡟⢠⣤⠉⠛⠿⢿⣿⠀⢸⣿⡿⠋⣠⣤⣄⠀⣾⣿⣿⣶⣶⣶⣦⡄⠀⠀⠀
+2026-10-15T12:47:58.109674703Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠸⠀⣾⠏⣸⣷⠂⣠⣤⠀⠘⢁⣴⣾⣿⣿⣿⡆⠘⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀
+2026-10-15T12:47:58.109676272Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠀⠛⠀⣿⡟⠀⢻⣿⡄⠸⣿⣿⣿⣿⣿⣿⣿⡀⠘⣿⣿⣿⣿⠟⠀⠀⠀⠀
+2026-10-15T12:47:58.109677692Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⢻⡿⠀⠈⠻⣿⣿⣿⣿⣿⡇⠀⢹⣿⠿⠋⠀⠀⠀⠀⠀
+2026-10-15T12:47:58.109679186Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: ⠀⠀⠀⠀⠀⠀⠋⠀⠀⠀⡘⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠁⠀⠀⠀⠀⠀⠀⠀
+2026-10-15T12:47:58.109680647Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: 
+2026-10-15T12:47:58.109681868Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109683538Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode:  SYSTEM SPECIFICATION
+2026-10-15T12:47:58.109685212Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109691877Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: CPU architecture: Intel Xeon Processor (Skylake, IBRS, no TSX)
+2026-10-15T12:47:58.109695532Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: CPU(s): 2 @ 2294 MHz
+2026-10-15T12:47:58.109699641Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: OS: kernel-6.8.0-138-generic Linux (Ubuntu 24.04)
+2026-10-15T12:47:58.109915331Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109917685Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode:  MEMORY USAGE
+2026-10-15T12:47:58.109919345Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109924763Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: RAM-Total: 3.73 GiB
+2026-10-15T12:47:58.109929424Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: RAM-Used: 2.64 GiB (70.84%)
+2026-10-15T12:47:58.109933756Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: RAM-Avail: 1.09 GiB (29.16%)
+2026-10-15T12:47:58.109940003Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: Swap-Total: 2.00 GiB
+2026-10-15T12:47:58.109946392Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: Swap-Used: 1.70 GiB (85.05%)
+2026-10-15T12:47:58.109950583Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: Swap-Avail: 0.30 GiB (14.95%)
+2026-10-15T12:47:58.109953214Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109954883Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode:  IDENTIFIERS
+2026-10-15T12:47:58.109956523Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109961819Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: trader_id: COINMASTER-HL-STAGEG-LIVE
+2026-10-15T12:47:58.109973424Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: machine_id: MyShopAI-prod-1
+2026-10-15T12:47:58.109979714Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: instance_id: 3ab2b267-d2db-46a8-91f5-42f80f24c0b6
+2026-10-15T12:47:58.109982944Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: PID: 1875784
+2026-10-15T12:47:58.109984913Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.109986880Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode:  VERSIONING
+2026-10-15T12:47:58.109988597Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.110347336Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: nautilus_trader: 1.231.0
+2026-10-15T12:47:58.110400357Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: python: 3.12.3
+2026-10-15T12:47:58.110428378Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: numpy: 2.5.3
+2026-10-15T12:47:58.110439069Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: pandas: 3.0.6
+2026-10-15T12:47:58.110448309Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: msgspec: 0.21.1
+2026-10-15T12:47:58.110458260Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: pyarrow: 25.0.1
+2026-10-15T12:47:58.110467725Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: pytz: 2026.3.post1
+2026-10-15T12:47:58.110475590Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: uvloop: 0.22.1
+2026-10-15T12:47:58.110477090Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: =================================================================
+2026-10-15T12:47:58.110555002Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: Building system kernel
+2026-10-15T12:47:58.113450048Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.database=None
+2026-10-15T12:47:58.113484267Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.encoding='json'
+2026-10-15T12:47:58.113489134Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.timestamps_as_iso8601=False
+2026-10-15T12:47:58.113493368Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.buffer_interval_ms=None
+2026-10-15T12:47:58.113497711Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.autotrim_mins=None
+2026-10-15T12:47:58.113501815Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.use_trader_prefix=True
+2026-10-15T12:47:58.113505613Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.use_trader_id=True
+2026-10-15T12:47:58.113512372Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.use_instance_id=False
+2026-10-15T12:47:58.113517720Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.streams_prefix='stream'
+2026-10-15T12:47:58.113521159Z [INFO] COINMASTER-HL-STAGEG-LIVE.MessageBus: config.types_filter=None
+2026-10-15T12:47:58.113681404Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: READY
+2026-10-15T12:47:58.117677534Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataEngine: READY
+2026-10-15T12:47:58.118182192Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataEngine: config.graceful_shutdown_on_exception=False
+2026-10-15T12:47:58.118407251Z [INFO] COINMASTER-HL-STAGEG-LIVE.RiskEngine: READY
+2026-10-15T12:47:58.118592404Z [INFO] COINMASTER-HL-STAGEG-LIVE.RiskEngine: TradingState is ACTIVE
+2026-10-15T12:47:58.119201031Z [INFO] COINMASTER-HL-STAGEG-LIVE.Throttler-ORDER_SUBMIT_THROTTLER: READY
+2026-10-15T12:47:58.119382020Z [INFO] COINMASTER-HL-STAGEG-LIVE.RiskEngine: Set MAX_ORDER_SUBMIT_RATE: 100/00:00:01
+2026-10-15T12:47:58.119518711Z [INFO] COINMASTER-HL-STAGEG-LIVE.Throttler-ORDER_MODIFY_THROTTLER: READY
+2026-10-15T12:47:58.119583855Z [INFO] COINMASTER-HL-STAGEG-LIVE.RiskEngine: Set MAX_ORDER_MODIFY_RATE: 100/00:00:01
+2026-10-15T12:47:58.119771414Z [INFO] COINMASTER-HL-STAGEG-LIVE.RiskEngine: config.graceful_shutdown_on_exception=False
+2026-10-15T12:47:58.120050155Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: READY
+2026-10-15T12:47:58.120181819Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.snapshot_orders=False
+2026-10-15T12:47:58.120198326Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.snapshot_positions=False
+2026-10-15T12:47:58.120202674Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.snapshot_positions_interval_secs=None
+2026-10-15T12:47:58.120205910Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.allow_overfills=False
+2026-10-15T12:47:58.120385466Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.reconciliation=True
+2026-10-15T12:47:58.120398668Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.reconciliation_lookback_mins=None
+2026-10-15T12:47:58.120403194Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.reconciliation_instrument_ids=None
+2026-10-15T12:47:58.120407810Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.filter_unclaimed_external_orders=False
+2026-10-15T12:47:58.120415735Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.filter_position_reports=False
+2026-10-15T12:47:58.120424915Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.filtered_client_order_ids=None
+2026-10-15T12:47:58.120429345Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.inflight_check_interval_ms=2000
+2026-10-15T12:47:58.120432921Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.inflight_check_threshold_ms=5000
+2026-10-15T12:47:58.120436861Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.inflight_check_retries=5
+2026-10-15T12:47:58.120440479Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.own_books_audit_interval_secs=None
+2026-10-15T12:47:58.120445265Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.open_check_interval_secs=None
+2026-10-15T12:47:58.120448909Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.open_check_open_only=True
+2026-10-15T12:47:58.120452889Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.open_check_lookback_mins=60
+2026-10-15T12:47:58.120456524Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.open_check_threshold_ms=5000
+2026-10-15T12:47:58.120462784Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.open_check_missing_retries=5
+2026-10-15T12:47:58.120468118Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.max_single_order_queries_per_cycle=10
+2026-10-15T12:47:58.120472231Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.single_order_query_delay_ms=100
+2026-10-15T12:47:58.120478031Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.position_check_interval_secs=None
+2026-10-15T12:47:58.120482220Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.position_check_lookback_mins=60
+2026-10-15T12:47:58.120486281Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.position_check_threshold_ms=5000
+2026-10-15T12:47:58.120490143Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.position_check_retries=3
+2026-10-15T12:47:58.120504116Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.reconciliation_startup_delay_secs=10.0
+2026-10-15T12:47:58.120509180Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.purge_closed_orders_interval_mins=None
+2026-10-15T12:47:58.120515772Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.purge_closed_orders_buffer_mins=None
+2026-10-15T12:47:58.120520442Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.purge_closed_positions_interval_mins=None
+2026-10-15T12:47:58.120523992Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.purge_closed_positions_buffer_mins=None
+2026-10-15T12:47:58.120528080Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.purge_account_events_interval_mins=None
+2026-10-15T12:47:58.120532405Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.purge_account_events_lookback_mins=None
+2026-10-15T12:47:58.120536129Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.purge_from_database=False
+2026-10-15T12:47:58.120539804Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: config.graceful_shutdown_on_exception=False
+2026-10-15T12:47:58.120648928Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Cached 0 general objects from database
+2026-10-15T12:47:58.120657381Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Cached 0 currencies from database
+2026-10-15T12:47:58.120663253Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Cached 0 instruments from database
+2026-10-15T12:47:58.120672309Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Cached 0 accounts from database
+2026-10-15T12:47:58.120678421Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Cached 0 orders from database
+2026-10-15T12:47:58.120692763Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Cached 0 order lists from database
+2026-10-15T12:47:58.120699084Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Cached 0 positions from database
+2026-10-15T12:47:58.120744271Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Checking data integrity
+2026-10-15T12:47:58.120762100Z [INFO] COINMASTER-HL-STAGEG-LIVE.Cache: Integrity check passed in 24μs
+2026-10-15T12:47:58.120809942Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecEngine: Loaded cache in 0ms
+2026-10-15T12:47:58.120922913Z [INFO] COINMASTER-HL-STAGEG-LIVE.OrderEmulator: READY
+2026-10-15T12:47:58.121070708Z [INFO] COINMASTER-HL-STAGEG-LIVE.COINMASTER-HL-STAGEG-LIVE: READY
+2026-10-15T12:47:58.121151333Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: Initialized in 20ms
+2026-10-15T12:47:58.121192002Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: has_cache_backing=False
+2026-10-15T12:47:58.121195725Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: has_msgbus_backing=False
+2026-10-15T12:47:58.121242253Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: Building data client for BYBIT
+2026-10-15T12:47:58.204366619Z [INFO] COINMASTER-HL-STAGEG-LIVE.BybitInstrumentProvider: READY
+2026-10-15T12:47:58.204545149Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-BYBIT: READY
+2026-10-15T12:47:58.204735496Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-BYBIT: Product types: ['Spot', 'Linear', 'Inverse', 'Option']
+2026-10-15T12:47:58.204749212Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-BYBIT: config.update_instruments_interval_mins=60
+2026-10-15T12:47:58.204758083Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-BYBIT: config.recv_window_ms=5_000
+2026-10-15T12:47:58.204760200Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-BYBIT: config.bars_timestamp_on_close=True
+2026-10-15T12:47:58.204762246Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-BYBIT: config.instrument_status_poll_secs=60
+2026-10-15T12:47:58.204764349Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-BYBIT: config.proxy_url=None
+2026-10-15T12:47:58.204777138Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-BYBIT: REST API key None
+2026-10-15T12:47:58.204956296Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataEngine: Registered BYBIT
+2026-10-15T12:47:58.204984645Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataEngine: Registered DataClient-BYBIT for routing to BYBIT
+2026-10-15T12:47:58.204993538Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: Building data client for HYPERLIQUID
+2026-10-15T12:47:58.217095715Z [INFO] COINMASTER-HL-STAGEG-LIVE.HyperliquidInstrumentProvider: READY
+2026-10-15T12:47:58.217202050Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-HYPERLIQUID: READY
+2026-10-15T12:47:58.217349780Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-HYPERLIQUID: config.environment=mainnet
+2026-10-15T12:47:58.217360273Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-HYPERLIQUID: config.http_timeout_secs=10
+2026-10-15T12:47:58.217362865Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-HYPERLIQUID: config.proxy_url=None
+2026-10-15T12:47:58.217365042Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataClient-HYPERLIQUID: HTTP client initialized
+2026-10-15T12:47:58.218120925Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataEngine: Registered HYPERLIQUID
+2026-10-15T12:47:58.218151859Z [INFO] COINMASTER-HL-STAGEG-LIVE.DataEngine: Registered DataClient-HYPERLIQUID for routing to HYPERLIQUID
+2026-10-15T12:47:58.218170309Z [INFO] COINMASTER-HL-STAGEG-LIVE.TradingNode: Building execution client for HYPERLIQUID
+2026-10-15T12:47:58.235250342Z [INFO] COINMASTER-HL-STAGEG-LIVE.HyperliquidInstrumentProvider: READY
+2026-10-15T12:47:58.235495413Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecClient-HYPERLIQUID: READY
+2026-10-15T12:47:58.235570237Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecClient-HYPERLIQUID: config.environment=mainnet
+2026-10-15T12:47:58.235574328Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecClient-HYPERLIQUID: config.http_timeout_secs=10
+2026-10-15T12:47:58.235580736Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecClient-HYPERLIQUID: config.normalize_prices=True
+2026-10-15T12:47:58.235583835Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecClient-HYPERLIQUID: config.include_builder_attribution=False
+2026-10-15T12:47:58.235587240Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecClient-HYPERLIQUID: config.proxy_url=None
+2026-10-15T12:47:58.235870726Z [INFO] COINMASTER-HL-STAGEG-LIVE.ExecClient-HYPERLIQUID: Account address (REST/WS subscriptions): 0x1111111111111111111111111111111111111111
+=========================== short test summary info ============================
+FAILED runtime/tests/test_hl_live_worker.py::test_sealed_v3_real_node_build_without_connect
+1 failed, 22 passed in 8.44s

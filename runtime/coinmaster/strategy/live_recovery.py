@@ -498,6 +498,36 @@ class RecoverableWaveOverlayStrategy(WaveOverlayStrategy):
             self._terminal_checkpoint_deferred = None
         self._terminal_submission(client_order_id)
 
+    def on_order_filled(self, event) -> None:
+        # The base callback returns early for native group/DP closes. Those
+        # actual fills still need the same atomic applied-ID/checkpoint commit
+        # as an ordinary domain fill, after its native close state is updated.
+        trade_id, order_id = str(event.trade_id), str(event.client_order_id)
+        duplicate = trade_id in self._seen_trade_ids
+        special = any(order_id in getattr(self, name) for name in (
+            "_forced_close_orders", "_deposit_exit_orders", "_terminal_order_ids",
+            "_liquidation_orders", "_v3_orders"))
+        if special and not duplicate:
+            if self._recovery_runtime is None:
+                raise RuntimeError("RECOVERY_JOURNAL_NOT_ATTACHED")
+            owned = [row for row in self._recovery_runtime.all_submissions()
+                     if row["client_order_id"] == order_id]
+            if (len(owned) != 1 or owned[0]["instrument_id"] != str(event.instrument_id)
+                    or owned[0]["body"].get("reduce_only") is not True):
+                self.recovery_confirmed = False
+                raise RuntimeError("RECOVERY_SPECIAL_FILL_OWNERSHIP_UNKNOWN")
+        WaveOverlayStrategy.on_order_filled(self, event)
+        if special and not duplicate and trade_id in self._seen_trade_ids:
+            detail = self._recovery_runtime.db.execute(
+                "SELECT client_order_id,instrument_id,quantity FROM paper_native_fill_details WHERE trade_id=?",
+                (trade_id,)).fetchone()
+            if (detail is None or detail[0] != order_id or detail[1] != str(event.instrument_id)
+                    or Decimal(detail[2]) != event.last_qty.as_decimal()):
+                self.recovery_confirmed = False
+                raise RuntimeError("RECOVERY_SPECIAL_FILL_JOURNAL_MISMATCH")
+            if not self._recovery_runtime.has_applied_fill(trade_id):
+                self._after_domain_fill(event)
+
     def _after_domain_fill(self, event) -> None:
         if self._recovery_runtime is None:
             raise RuntimeError("RECOVERY_JOURNAL_NOT_ATTACHED")

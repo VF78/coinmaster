@@ -1,0 +1,78 @@
+{
+  "files_sha256": {
+    "runtime/coinmaster/ops/hl_live_epoch.py": "9793f97424e01a28d13b9fc685b4ec0df5ce2e896d483908c5b6de44ce77364a",
+    "runtime/coinmaster/ops/hl_live_execution.py": "297d878dd4ecd74b45912db917ccf3219cb211f276d4eee5f88e591d1ed67a63",
+    "runtime/coinmaster/ops/hl_live_profile.py": "c5ab2336c7b78f5b7708c502e0106a9b149ff4052d6f30a15dc554241f1546f2",
+    "runtime/coinmaster/ops/hl_live_worker.py": "d1f067c8d8b1e953657b600cd423c6552101bc88ee4f55877030dd65a8ec3a73",
+    "runtime/coinmaster/strategy/live_recovery.py": "0c702dfda60f47b5d26e4c250226135bfd670fb401dadc11adbdbbd2260b42bd",
+    "runtime/configs/hl-live-v3-dp50.candidate.json": "310173f7553ee7b048ee5332d4d86b5789f792d57c2aa95a3d8cd1b57b7d80e6",
+    "runtime/configs/hl-live-v3-dp50.profile.json": "81dcfb4ed7de991879b9cfdd23a779528861aa93864bd7f0654339f41702893d",
+    "runtime/configs/hl-stageg-live.instance.json": "89e76fe80ad877ebf0e1bdeb33e34a5a66b2a0b5bc4fd9b7016af555597f3e1e",
+    "runtime/scripts/stage_live82.py": "ba5d76aac8b84b0fab62a2f214fed0202c07e43ba5808f55c5fb1c787d6b7cb3",
+    "runtime/tests/test_hl_live_epoch.py": "a53bde0e1836831c6070a2e3af79fa5d0b4c28fcfaff4523c6725eed5ffdd411",
+    "runtime/tests/test_hl_live_worker.py": "daefbe0c2abe87154b9bd2476acb8afb91cd5c3d202a263bdda15e9f4f86a8de",
+    "runtime/tests/test_hl_stageg_sandbox_lifecycle.py": "e992902ebb79bd7671e7b743216e535322acd307df93a15f806b1618c381e413",
+    "runtime/tests/test_live_native_report_recovery.py": "7bbadeaff1ab5c94cf76a14c0e9a8813ec859c892c1aea467217477ae73b35a9",
+    "runtime/tests/test_stage_live82.py": "2d247b2e38de3aa3c93cacf7c8c53958e2c13ae976a6a6f2974c2b4feac9908e"
+  },
+  "fixes": [
+    "Every initial nativebootstrap compares equity against ownedflat balance or previously credential-verified strategy active_seed82.",
+    "Completed forcedclose marker retired only with fullyfilled exact owned terminalreduceonly closing receipts and flat matched snapshot; active/unknown decisions reject; checkpoint audit kept.",
+    "Actual owned native specialclose/DP fill callback now atomically commits consumed tradeID/checkpoint after native callback and verified native detail row, exactlyonce; foreign doesnotadvance."
+  ],
+  "limitations": [
+    "No real Hyperliquid credential client connected, no real order/transfer/approval/service action.",
+    "NativeV3 owned-cycle uses fake venue reports; no real venue liquidity/fees/funding guarantee.",
+    "Sandbox twoepisode money proof is complementary: publicUSD/modelFX margin seam cannot represent live selective-repair margin gate; actual currentV3 gate is tested by qualified Live engine.",
+    "Exact lot/minnotional/dust/deny-reject/unknownack boundary tests reuse prior95PASS artifact; no whole95 rerun.",
+    "Actual staging, intendedUID no-connect qualification and GUI deployment remain coordinator gates."
+  ],
+  "native_proofs": {
+    "current_v3_live82": "Actual LiveExecutionEngine + QualifiedInfoBoundary + Recoverable strategy + workingSQLite; fake venue acknowledged account/order/fill reports;6orders6fills; partialBTCtp/cancel/replacement/SOLaddexit; fees0.2790, cash81.7210, >=9 strict generations; profile flags loaded.",
+    "dp50": "Existing native fixture, default50 retained without GUI limitchange; actual adverse quote and native market_exit; actual production specialfill callback and duplicate test. Seed10000; not claimed seed82 full-threshold venue test.",
+    "flat_upgrade_balances": {
+      "loss": "81.37805937",
+      "profit": "82.17841937"
+    },
+    "full_fill_read": "Storage-only101-fill regression proves complete exact owned close evidence beyond default100 projection limit; not native money proof.",
+    "initial_native_equity": "82accept/83reject; owned91.227accept/65.04accept; owned65.04vsnative82reject",
+    "two_episodes_82": "Actual Sandbox native fills/money/USDC fees with publicUSD/modelFX margin seam; original Sandbox flags preserved; two BTC/SOL episodes/partialTP/SOLhalf-full;13fills17TERMINALorders; actual production Recoverable native callbacks; duplicate specialclose exactlyonce; profit/loss flat epoch keeps actual cash, original82 DP and full audit."
+  },
+  "qualified_python": "/usr/bin/python3.12",
+  "qualified_wheel_sha256": "8ff3c6dcc150bc9ced8b96da80c4cf51645acf7efdc2b1d528634a3cad640b46",
+  "schema": "coinmaster-live82-engine-acceptance-v1",
+  "source_parent_commit": "68118763f55523f7a135c9a1069d3ff3bac83f5f",
+  "stage_command": "/srv/coinmaster/hl-live/current/.venv/bin/python runtime/scripts/stage_live82.py --commit <40CHAR_FREEZE> --qualified-release /srv/coinmaster/hl-live/current [--select-inactive]",
+  "state": "SOURCE_FROZEN_INACTIVE_ONLY",
+  "uid_qualification_command": "runuser -u coinmaster-hl-live -- env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<RELEASE>:<RELEASE>/tests COINMASTER_TEST_LIVE_WARMUP=/var/lib/coinmaster-hl-stageg-live/data/current/manifest.json <RELEASE>/.venv/bin/python -m pytest -q -p no:cacheprovider <RELEASE>/tests/test_hl_live_worker.py",
+  "verification": {
+    "engine-final.log": {
+      "sha256": "cfcdb4ead3f71af0ef0c06423a4943965f83eabe40d2815a4479897a0ff21159",
+      "summary": [
+        "..............................                                           [100%]",
+        "30 passed in 129.81s (0:02:09)"
+      ]
+    },
+    "full-fill-read.log": {
+      "sha256": "3cbb4bd425d92590f9f89058cda479ef5aca128c9ea247238322e78ab3fdf187",
+      "summary": [
+        ".                                                                        [100%]",
+        "1 passed in 3.21s"
+      ]
+    },
+    "native-dp50-final.log": {
+      "sha256": "1f4592522817d738a16d60e0abcba4dfe52d236df7fdd49646bd511e284023e6",
+      "summary": [
+        ".                                                                        [100%]",
+        "1 passed in 13.10s"
+      ]
+    },
+    "qualified-boundaries.log": {
+      "sha256": "82df2910880784dea421a4d533cb29adca1c48ef6649f99e9b50bf0b48aaa08a",
+      "summary": [
+        ".......................                                                  [100%]",
+        "23 passed in 10.26s"
+      ]
+    }
+  }
+}

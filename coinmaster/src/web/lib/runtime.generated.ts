@@ -1045,6 +1045,10 @@ export interface components {
             recovery_required?: boolean | null;
             /** Run Epoch */
             run_epoch?: string | null;
+            /** Runtime Master Address Sha256 */
+            runtime_master_address_sha256?: string | null;
+            /** Runtime Release Commit */
+            runtime_release_commit?: string | null;
             /** Sandbox Starting Cash Usdc */
             sandbox_starting_cash_usdc?: string | null;
             /**

@@ -1,0 +1,1188 @@
+{
+  "fixturePreview": true,
+  "results": [
+    {
+      "text": "Dashboard\nLive is inactive or unavailable\n\nNo current Live account snapshot is available.\n\nReview the approved profile in Strategy. Activation requires separate approval for the exact release, account and profile. Account values appear after native read-back.\n\nActivate Live\nAccount overview\nUnavailable\n\nEntry approval unavailable.\n\nLive snapshot · time unavailable\n\nRefresh\n\nEquity\n\nUnavailable\n\nAvailable cash\n\nUnavailable\n\nRealized P&L · net fees\n\nUnavailable\n\nUnrealized P&L\n\nUnavailable\n\nTrading fees\n\nUnavailable\n\nEffective leverage\n\nUnavailable\n\nLive account · Exposure unavailable\n\nAccount valuation unavailable\nStage-G status is not ready; exposure cannot be confirmed.\nMarket & account history\n\nPublic candles · sampled Live equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nSOL\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nDrawdown protection\nNot set\n\nProtection is not armed.\n\nWorker notice\nLive worker unavailable",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        }
+      ],
+      "overflow": [
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1449.765625
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1505.84375
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1478.109375
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1475.203125
+        }
+      ],
+      "scenario": "inactive",
+      "page": "Dashboard",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Strategy\nApproved strategy\nNot confirmed\n\nThe approved settings were read successfully, but the worker match is not confirmed.\n\nStrategy\n\nBTC / SOL Wave Overlay · V3+DP50\n\nExecution\n\nLive · Mainnet\n\nMarket data\n\nHyperliquid public\n\nStrategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.\n\nPlanned initial capital: 82 USDC; this is not an observed account balance\n\nStrategy controls\nStatus unavailable\n\nDrawdown protection confirmation unavailable. Pause stops new entries while existing exposure remains managed.\n\nPause new entries\nBTC sizing and exits\nUnconfirmed\nBTC take-profit fractions\nLevel 1: 21.25% · Level 2: 21.25% · Level 3: 57.5%\nBTC trailing close threshold (%)\n3.00%\nBTC long size multiplier (×)\n5.5\nBTC short size multiplier (×)\n7.875\nSOL sizing and exits\nUnconfirmed\nSOL add-size multipliers\nLevel 1: 1.75 · Level 2: 2.625 · Level 3: 3.5\nSOL entry z-score thresholds (σ)\nLevel 1: 1.25 · Level 2: 2.5 · Level 3: 3.75\nSOL half-exit z-score (σ)\n0.375\nSOL full-exit z-score (σ)\n0.125\nSOL maximum holding (days)\n14\nSignal and safety settings\nUnconfirmed\nEMA window (bars)\n34\nBeta lookback (days)\n270\nRelative-value lookback (days)\n65\nZ-score history (days)\n180\nWave history (days)\n730\nMinimum wave count\n8\nWave percentile thresholds\nLevel 1: 10% · Level 2: 30% · Level 3: 60%\nDeposit drawdown limit (%)\n50\nAdvanced strategy rules\nResearch drafts · saved separately from the running strategy",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "inactive",
+      "page": "Strategy",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Settings\nExecution mode\nLive Inactive\nDry-run\nLive\nRefresh\n\nLive: Inactive\n\nSelecting this view does not start or stop either trader.\n\nActivate Live\n\nSeparate exact Live order approval is required\n\nLive account\nUnavailable\nExecution mode\nLive · separate order approval required\nRefresh\nFunding and account notes\nExchange accounts\nDisplay only\n\nAdd an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.\n\nExchange\nHyperliquid\nBybit\nMaster address\nAgent private key · optional for a new account\nAdd account\nPermissions and safety\nSaved accounts\nRefresh\nDashboard account\nNo account selected\nSave selection\nNo accounts connected\nAdd an account above to show its identity on Dashboard.\nDrawdown protection\nNot set\n\nChanges require a paused worker and confirmed flat exposure.\n\nAllowed drawdown, %\nSave\nSet new baseline\n\nProtection values are stale or unverified and are withheld.\n\nEntry controls\nRead-only\n\nPause and resume govern entry submission. Strategy eligibility is shown separately below.\n\nNew-entry eligibility: Unknown · worker status is not ready.\n\nPause new entries\nResume new entries\nFlatten virtual exposure\nControl availability",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        },
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        },
+        {
+          "text": "Resume new entries",
+          "disabled": true
+        },
+        {
+          "text": "Flatten virtual exposure",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "inactive",
+      "page": "Settings",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Dashboard\nLive is inactive or unavailable\n\nNo current Live account snapshot is available.\n\nReview the approved profile in Strategy. Activation requires separate approval for the exact release, account and profile. Account values appear after native read-back.\n\nActivate Live\nAccount overview\nStale\n\nEntry approval unavailable.\n\nLive snapshot · time unavailable\n\nRefresh\n\nEquity\n\nUnavailable\n\nAvailable cash\n\nUnavailable\n\nRealized P&L · net fees\n\nUnavailable\n\nUnrealized P&L\n\nUnavailable\n\nTrading fees\n\nUnavailable\n\nEffective leverage\n\nUnavailable\n\nLive account · Exposure unavailable\n\nAccount valuation unavailable\nStage-G status is not ready; exposure cannot be confirmed.\nMarket & account history\n\nPublic candles · sampled Live equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nSOL\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nDrawdown protection\nNot set\n\nProtection is not armed.\n\nWorker notice\nLive status stale",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        }
+      ],
+      "overflow": [
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1449.765625
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1505.84375
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1478.109375
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1475.203125
+        }
+      ],
+      "scenario": "stale",
+      "page": "Dashboard",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Strategy\nApproved strategy\nNot confirmed\n\nThe approved settings were read successfully, but the worker match is not confirmed.\n\nStrategy\n\nBTC / SOL Wave Overlay · V3+DP50\n\nExecution\n\nLive · Mainnet\n\nMarket data\n\nHyperliquid public\n\nStrategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.\n\nPlanned initial capital: 82 USDC; this is not an observed account balance\n\nStrategy controls\nStatus unavailable\n\nDrawdown protection confirmation unavailable. Pause stops new entries while existing exposure remains managed.\n\nPause new entries\nBTC sizing and exits\nUnconfirmed\nBTC take-profit fractions\nLevel 1: 21.25% · Level 2: 21.25% · Level 3: 57.5%\nBTC trailing close threshold (%)\n3.00%\nBTC long size multiplier (×)\n5.5\nBTC short size multiplier (×)\n7.875\nSOL sizing and exits\nUnconfirmed\nSOL add-size multipliers\nLevel 1: 1.75 · Level 2: 2.625 · Level 3: 3.5\nSOL entry z-score thresholds (σ)\nLevel 1: 1.25 · Level 2: 2.5 · Level 3: 3.75\nSOL half-exit z-score (σ)\n0.375\nSOL full-exit z-score (σ)\n0.125\nSOL maximum holding (days)\n14\nSignal and safety settings\nUnconfirmed\nEMA window (bars)\n34\nBeta lookback (days)\n270\nRelative-value lookback (days)\n65\nZ-score history (days)\n180\nWave history (days)\n730\nMinimum wave count\n8\nWave percentile thresholds\nLevel 1: 10% · Level 2: 30% · Level 3: 60%\nDeposit drawdown limit (%)\n50\nAdvanced strategy rules\nResearch drafts · saved separately from the running strategy",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "stale",
+      "page": "Strategy",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Settings\nExecution mode\nLive Inactive\nDry-run\nLive\nRefresh\n\nLive: Inactive\n\nSelecting this view does not start or stop either trader.\n\nActivate Live\n\nSeparate exact Live order approval is required\n\nLive account\nStale\nExecution mode\nLive · separate order approval required\nRefresh\nFunding and account notes\nExchange accounts\nDisplay only\n\nAdd an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.\n\nExchange\nHyperliquid\nBybit\nMaster address\nAgent private key · optional for a new account\nAdd account\nPermissions and safety\nSaved accounts\nRefresh\nDashboard account\nNo account selected\nSave selection\nNo accounts connected\nAdd an account above to show its identity on Dashboard.\nDrawdown protection\nNot set\n\nChanges require a paused worker and confirmed flat exposure.\n\nAllowed drawdown, %\nSave\nSet new baseline\n\nProtection values are stale or unverified and are withheld.\n\nEntry controls\nRead-only\n\nPause and resume govern entry submission. Strategy eligibility is shown separately below.\n\nNew-entry eligibility: Unknown · worker status is not ready.\n\nPause new entries\nResume new entries\nFlatten virtual exposure\nControl availability",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        },
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        },
+        {
+          "text": "Resume new entries",
+          "disabled": true
+        },
+        {
+          "text": "Flatten virtual exposure",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "stale",
+      "page": "Settings",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Dashboard\nAccount overview\nPublic market data ready\n\nWaiting for a strategy decision.\n\nLive snapshot · 15 Oct 2026 · 12:46 UTC\n\nRefresh\n\nEquity\n\n82.30 USDC\n\nAvailable cash\n\n70.00 USDC\n\nRealized P&L · net fees\n\nUnavailable\n\nUnrealized P&L\n\nUnavailable\n\nTrading fees\n\nUnavailable\n\nEffective leverage\n\nUnavailable\n\nLive account · Flat · 0 working orders\n\nMargin, P&L and account details\nMarket & account history\n\nPublic candles · sampled Live equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nFlat\n\nConfirmed flat · 0 position size\n\nWorking orders\n0\n\nNo working orders.\n\nSOL\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nFlat\n\nConfirmed flat · 0 position size\n\nWorking orders\n0\n\nNo working orders.\n\nDrawdown protection\nNot set\n\nProtection is not armed.",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [],
+      "overflow": [
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1449.765625
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1505.84375
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1478.109375
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1475.203125
+        }
+      ],
+      "scenario": "current",
+      "page": "Dashboard",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Strategy\nApproved strategy\nNot confirmed\n\nThe approved settings were read successfully, but the worker match is not confirmed.\n\nStrategy\n\nBTC / SOL Wave Overlay · V3+DP50\n\nExecution\n\nLive · Mainnet\n\nMarket data\n\nHyperliquid public\n\nStrategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.\n\nPlanned initial capital: 82 USDC; this is not an observed account balance\n\nStrategy controls\nEntries running\n\nDrawdown protection confirmation unavailable. Pause stops new entries while existing exposure remains managed.\n\nPause new entries\nBTC sizing and exits\nUnconfirmed\nBTC take-profit fractions\nLevel 1: 21.25% · Level 2: 21.25% · Level 3: 57.5%\nBTC trailing close threshold (%)\n3.00%\nBTC long size multiplier (×)\n5.5\nBTC short size multiplier (×)\n7.875\nSOL sizing and exits\nUnconfirmed\nSOL add-size multipliers\nLevel 1: 1.75 · Level 2: 2.625 · Level 3: 3.5\nSOL entry z-score thresholds (σ)\nLevel 1: 1.25 · Level 2: 2.5 · Level 3: 3.75\nSOL half-exit z-score (σ)\n0.375\nSOL full-exit z-score (σ)\n0.125\nSOL maximum holding (days)\n14\nSignal and safety settings\nUnconfirmed\nEMA window (bars)\n34\nBeta lookback (days)\n270\nRelative-value lookback (days)\n65\nZ-score history (days)\n180\nWave history (days)\n730\nMinimum wave count\n8\nWave percentile thresholds\nLevel 1: 10% · Level 2: 30% · Level 3: 60%\nDeposit drawdown limit (%)\n50\nAdvanced strategy rules\nResearch drafts · saved separately from the running strategy",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "current",
+      "page": "Strategy",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Settings\nExecution mode\nLive Inactive\nDry-run\nLive\nRefresh\n\nLive: Inactive\n\nSelecting this view does not start or stop either trader.\n\nActivate Live\n\nSeparate exact Live order approval is required\n\nLive account\nConnected\nExecution mode\nLive · separate order approval required\nRefresh\nFunding and account notes\nExchange accounts\nDisplay only\n\nAdd an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.\n\nExchange\nHyperliquid\nBybit\nMaster address\nAgent private key · optional for a new account\nAdd account\nPermissions and safety\nSaved accounts\nRefresh\nDashboard account\nNo account selected\nSave selection\nNo accounts connected\nAdd an account above to show its identity on Dashboard.\nDrawdown protection\nNot set\n\nChanges require a paused worker and confirmed flat exposure.\n\nAllowed drawdown, %\nSave\nSet new baseline\n\nProtection values are stale or unverified and are withheld.\n\nEntry controls\nRead-only\n\nPause and resume govern entry submission. Strategy eligibility is shown separately below.\n\nNew-entry eligibility: Eligible for strategy evaluation.\n\nPause new entries\nResume new entries\nFlatten virtual exposure\nControl availability",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        },
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        },
+        {
+          "text": "Resume new entries",
+          "disabled": true
+        },
+        {
+          "text": "Flatten virtual exposure",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "current",
+      "page": "Settings",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Dashboard\nAccount overview\nPublic market data ready\n\nWaiting for a strategy decision.\n\nSandbox snapshot · 15 Oct 2026 · 12:46 UTC\n\nRefresh\n\nEquity\n\n10,715.76 USDC\n\nAvailable cash\n\n10,232.13 USDC\n\nRealized P&L · net fees\n\n232.13 USDC\n\nUnrealized P&L\n\n483.63 USDC\n\nTrading fees\n\n287.22 USDC\n\nEffective leverage\n\n4.30×\n\nVirtual starting capital: 10,000 USDC · 1 open · 1 working orders\n\nMargin, P&L and account details\nMarket & account history\n\nPublic candles · sampled Sandbox equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nLive\nMark\n80,826.00\nMark age 0.5s\nSandbox position\nOpen\nSHORT\n0.56965 BTC\nAverage entry\n81,675.00\nCurrent mark\n80,826.00\nWorking orders\n1\nTake-profit / reduction · BUY\n79,177.00\nAccepted · Limit · remaining 0.56965\nSOL\nLive\nMark\n101.930\nMark age 0.5s\nSandbox position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\n0\n\nOrder state unavailable.\n\nDrawdown protection\nStale\n\nProtection read is stale. Values are withheld until a fresh worker read is available.\n\nWorker notice\nActive owned reductions",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "sandbox",
+      "buttons": [],
+      "overflow": [
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1449.765625
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1505.84375
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1478.109375
+        },
+        {
+          "tag": "SPAN",
+          "cls": "",
+          "right": 1475.203125
+        }
+      ],
+      "scenario": "sandbox",
+      "page": "Dashboard",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Strategy\nApproved strategy\nNot confirmed\n\nThe approved settings were read successfully, but the worker match is not confirmed.\n\nStrategy\n\nBTC / SOL Wave Overlay · V0\n\nExecution\n\nLocal Sandbox\n\nMarket data\n\nHyperliquid public\n\nStrategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.\n\n10,000 USDC nominal Sandbox seed; not an observed account balance\n\nStrategy controls\nStatus unavailable\n\nDrawdown protection confirmation unavailable. Pause stops new entries while existing exposure remains managed.\n\nPause new entries\nBTC sizing and exits\nUnconfirmed\nBTC take-profit fractions\nLevel 1: 21.25% · Level 2: 21.25% · Level 3: 57.5%\nBTC size multiplier (×)\n7.875\nBTC trailing close threshold (%)\n3.00%\nSOL sizing and exits\nUnconfirmed\nSOL add-size multipliers\nLevel 1: 1.75 · Level 2: 2.625 · Level 3: 3.5\nSOL entry z-score thresholds (σ)\nLevel 1: 1.25 · Level 2: 2.5 · Level 3: 3.75\nSOL half-exit z-score (σ)\n0.375\nSOL full-exit z-score (σ)\n0.125\nSOL maximum holding (days)\n14\nSignal and safety settings\nUnconfirmed\nEMA window (bars)\n34\nBeta lookback (days)\n270\nRelative-value lookback (days)\n65\nZ-score history (days)\n180\nWave history (days)\n730\nMinimum wave count\n8\nWave percentile thresholds\nLevel 1: 10% · Level 2: 30% · Level 3: 60%\nAdvanced strategy rules\nResearch drafts · saved separately from the running strategy",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "sandbox",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "sandbox",
+      "page": "Strategy",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Settings\nExecution mode\nDry-run Running\nDry-run\nLive\nRefresh\n\nDry-run: Running. Virtual Sandbox capital and orders remain independent of the connected exchange account.\n\nSandbox account\nConnected\nExecution mode\nSandbox · order routing off\nRefresh\nFunding and account notes\nExchange accounts\nDisplay only\n\nAdd an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.\n\nExchange\nHyperliquid\nBybit\nMaster address\nAgent private key · optional for a new account\nAdd account\nPermissions and safety\nSaved accounts\nRefresh\nDashboard account\nNo account selected\nSave selection\nNo accounts connected\nAdd an account above to show its identity on Dashboard.\nDrawdown protection\nStale\n\nChanges require a paused worker and confirmed flat exposure.\n\nAllowed drawdown, %\nSave\nSet new baseline\n\nProtection values are stale or unverified and are withheld.\n\nEntry controls\nRead-only\n\nPause and resume govern entry submission. Strategy eligibility is shown separately below.\n\nNew-entry eligibility: Eligible for strategy evaluation.\n\nPause new entries\nResume new entries\nFlatten virtual exposure\nControl availability\n\nTypeError: Failed to fetch",
+      "width": 1440,
+      "scrollWidth": 1425,
+      "selected": "sandbox",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        },
+        {
+          "text": "Resume new entries",
+          "disabled": true
+        },
+        {
+          "text": "Flatten virtual exposure",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "sandbox",
+      "page": "Settings",
+      "viewport": 1440,
+      "exceptions": []
+    },
+    {
+      "text": "Dashboard\nLive is inactive or unavailable\n\nNo current Live account snapshot is available.\n\nReview the approved profile in Strategy. Activation requires separate approval for the exact release, account and profile. Account values appear after native read-back.\n\nActivate Live\nAccount overview\nUnavailable\n\nEntry approval unavailable.\n\nLive snapshot · time unavailable\n\nRefresh\n\nEquity\n\nUnavailable\n\nAvailable cash\n\nUnavailable\n\nRealized P&L · net fees\n\nUnavailable\n\nUnrealized P&L\n\nUnavailable\n\nTrading fees\n\nUnavailable\n\nEffective leverage\n\nUnavailable\n\nLive account · Exposure unavailable\n\nAccount valuation unavailable\nStage-G status is not ready; exposure cannot be confirmed.\nMarket & account history\n\nPublic candles · sampled Live equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nSOL\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nDrawdown protection\nNot set\n\nProtection is not armed.\n\nWorker notice\nLive worker unavailable",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        }
+      ],
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "right": 919.0625
+        }
+      ],
+      "scenario": "inactive",
+      "page": "Dashboard",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Strategy\nApproved strategy\nNot confirmed\n\nThe approved settings were read successfully, but the worker match is not confirmed.\n\nStrategy\n\nBTC / SOL Wave Overlay · V3+DP50\n\nExecution\n\nLive · Mainnet\n\nMarket data\n\nHyperliquid public\n\nStrategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.\n\nPlanned initial capital: 82 USDC; this is not an observed account balance\n\nStrategy controls\nStatus unavailable\n\nDrawdown protection confirmation unavailable. Pause stops new entries while existing exposure remains managed.\n\nPause new entries\nBTC sizing and exits\nUnconfirmed\nBTC take-profit fractions\nLevel 1: 21.25% · Level 2: 21.25% · Level 3: 57.5%\nBTC trailing close threshold (%)\n3.00%\nBTC long size multiplier (×)\n5.5\nBTC short size multiplier (×)\n7.875\nSOL sizing and exits\nUnconfirmed\nSOL add-size multipliers\nLevel 1: 1.75 · Level 2: 2.625 · Level 3: 3.5\nSOL entry z-score thresholds (σ)\nLevel 1: 1.25 · Level 2: 2.5 · Level 3: 3.75\nSOL half-exit z-score (σ)\n0.375\nSOL full-exit z-score (σ)\n0.125\nSOL maximum holding (days)\n14\nSignal and safety settings\nUnconfirmed\nEMA window (bars)\n34\nBeta lookback (days)\n270\nRelative-value lookback (days)\n65\nZ-score history (days)\n180\nWave history (days)\n730\nMinimum wave count\n8\nWave percentile thresholds\nLevel 1: 10% · Level 2: 30% · Level 3: 60%\nDeposit drawdown limit (%)\n50\nAdvanced strategy rules\nResearch drafts · saved separately from the running strategy",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "inactive",
+      "page": "Strategy",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Settings\nExecution mode\nLive Inactive\nDry-run\nLive\nRefresh\n\nLive: Inactive\n\nSelecting this view does not start or stop either trader.\n\nActivate Live\n\nSeparate exact Live order approval is required\n\nLive account\nUnavailable\nExecution mode\nLive · separate order approval required\nRefresh\nFunding and account notes\nExchange accounts\nDisplay only\n\nAdd an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.\n\nExchange\nHyperliquid\nBybit\nMaster address\nAgent private key · optional for a new account\nAdd account\nPermissions and safety\nSaved accounts\nRefresh\nDashboard account\nNo account selected\nSave selection\nNo accounts connected\nAdd an account above to show its identity on Dashboard.\nDrawdown protection\nNot set\n\nChanges require a paused worker and confirmed flat exposure.\n\nAllowed drawdown, %\nSave\nSet new baseline\n\nProtection values are stale or unverified and are withheld.\n\nEntry controls\nRead-only\n\nPause and resume govern entry submission. Strategy eligibility is shown separately below.\n\nNew-entry eligibility: Unknown · worker status is not ready.\n\nPause new entries\nResume new entries\nFlatten virtual exposure\nControl availability",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        },
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        },
+        {
+          "text": "Resume new entries",
+          "disabled": true
+        },
+        {
+          "text": "Flatten virtual exposure",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "inactive",
+      "page": "Settings",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Dashboard\nLive is inactive or unavailable\n\nNo current Live account snapshot is available.\n\nReview the approved profile in Strategy. Activation requires separate approval for the exact release, account and profile. Account values appear after native read-back.\n\nActivate Live\nAccount overview\nStale\n\nEntry approval unavailable.\n\nLive snapshot · time unavailable\n\nRefresh\n\nEquity\n\nUnavailable\n\nAvailable cash\n\nUnavailable\n\nRealized P&L · net fees\n\nUnavailable\n\nUnrealized P&L\n\nUnavailable\n\nTrading fees\n\nUnavailable\n\nEffective leverage\n\nUnavailable\n\nLive account · Exposure unavailable\n\nAccount valuation unavailable\nStage-G status is not ready; exposure cannot be confirmed.\nMarket & account history\n\nPublic candles · sampled Live equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nSOL\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nDrawdown protection\nNot set\n\nProtection is not armed.\n\nWorker notice\nLive status stale",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        }
+      ],
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "right": 919.0625
+        }
+      ],
+      "scenario": "stale",
+      "page": "Dashboard",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Strategy\nApproved strategy\nNot confirmed\n\nThe approved settings were read successfully, but the worker match is not confirmed.\n\nStrategy\n\nBTC / SOL Wave Overlay · V3+DP50\n\nExecution\n\nLive · Mainnet\n\nMarket data\n\nHyperliquid public\n\nStrategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.\n\nPlanned initial capital: 82 USDC; this is not an observed account balance\n\nStrategy controls\nStatus unavailable\n\nDrawdown protection confirmation unavailable. Pause stops new entries while existing exposure remains managed.\n\nPause new entries\nBTC sizing and exits\nUnconfirmed\nBTC take-profit fractions\nLevel 1: 21.25% · Level 2: 21.25% · Level 3: 57.5%\nBTC trailing close threshold (%)\n3.00%\nBTC long size multiplier (×)\n5.5\nBTC short size multiplier (×)\n7.875\nSOL sizing and exits\nUnconfirmed\nSOL add-size multipliers\nLevel 1: 1.75 · Level 2: 2.625 · Level 3: 3.5\nSOL entry z-score thresholds (σ)\nLevel 1: 1.25 · Level 2: 2.5 · Level 3: 3.75\nSOL half-exit z-score (σ)\n0.375\nSOL full-exit z-score (σ)\n0.125\nSOL maximum holding (days)\n14\nSignal and safety settings\nUnconfirmed\nEMA window (bars)\n34\nBeta lookback (days)\n270\nRelative-value lookback (days)\n65\nZ-score history (days)\n180\nWave history (days)\n730\nMinimum wave count\n8\nWave percentile thresholds\nLevel 1: 10% · Level 2: 30% · Level 3: 60%\nDeposit drawdown limit (%)\n50\nAdvanced strategy rules\nResearch drafts · saved separately from the running strategy",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "stale",
+      "page": "Strategy",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Settings\nExecution mode\nLive Inactive\nDry-run\nLive\nRefresh\n\nLive: Inactive\n\nSelecting this view does not start or stop either trader.\n\nActivate Live\n\nSeparate exact Live order approval is required\n\nLive account\nStale\nExecution mode\nLive · separate order approval required\nRefresh\nFunding and account notes\nExchange accounts\nDisplay only\n\nAdd an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.\n\nExchange\nHyperliquid\nBybit\nMaster address\nAgent private key · optional for a new account\nAdd account\nPermissions and safety\nSaved accounts\nRefresh\nDashboard account\nNo account selected\nSave selection\nNo accounts connected\nAdd an account above to show its identity on Dashboard.\nDrawdown protection\nNot set\n\nChanges require a paused worker and confirmed flat exposure.\n\nAllowed drawdown, %\nSave\nSet new baseline\n\nProtection values are stale or unverified and are withheld.\n\nEntry controls\nRead-only\n\nPause and resume govern entry submission. Strategy eligibility is shown separately below.\n\nNew-entry eligibility: Unknown · worker status is not ready.\n\nPause new entries\nResume new entries\nFlatten virtual exposure\nControl availability",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        },
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        },
+        {
+          "text": "Resume new entries",
+          "disabled": true
+        },
+        {
+          "text": "Flatten virtual exposure",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "stale",
+      "page": "Settings",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Dashboard\nAccount overview\nPublic market data ready\n\nWaiting for a strategy decision.\n\nLive snapshot · 15 Oct 2026 · 12:46 UTC\n\nRefresh\n\nEquity\n\n82.30 USDC\n\nAvailable cash\n\n70.00 USDC\n\nRealized P&L · net fees\n\nUnavailable\n\nUnrealized P&L\n\nUnavailable\n\nTrading fees\n\nUnavailable\n\nEffective leverage\n\nUnavailable\n\nLive account · Flat · 0 working orders\n\nMargin, P&L and account details\nMarket & account history\n\nPublic candles · sampled Live equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nFlat\n\nConfirmed flat · 0 position size\n\nWorking orders\n0\n\nNo working orders.\n\nSOL\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nFlat\n\nConfirmed flat · 0 position size\n\nWorking orders\n0\n\nNo working orders.\n\nDrawdown protection\nNot set\n\nProtection is not armed.",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [],
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "right": 919.0625
+        }
+      ],
+      "scenario": "current",
+      "page": "Dashboard",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Strategy\nApproved strategy\nNot confirmed\n\nThe approved settings were read successfully, but the worker match is not confirmed.\n\nStrategy\n\nBTC / SOL Wave Overlay · V3+DP50\n\nExecution\n\nLive · Mainnet\n\nMarket data\n\nHyperliquid public\n\nStrategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.\n\nPlanned initial capital: 82 USDC; this is not an observed account balance\n\nStrategy controls\nEntries running\n\nDrawdown protection confirmation unavailable. Pause stops new entries while existing exposure remains managed.\n\nPause new entries\nBTC sizing and exits\nUnconfirmed\nBTC take-profit fractions\nLevel 1: 21.25% · Level 2: 21.25% · Level 3: 57.5%\nBTC trailing close threshold (%)\n3.00%\nBTC long size multiplier (×)\n5.5\nBTC short size multiplier (×)\n7.875\nSOL sizing and exits\nUnconfirmed\nSOL add-size multipliers\nLevel 1: 1.75 · Level 2: 2.625 · Level 3: 3.5\nSOL entry z-score thresholds (σ)\nLevel 1: 1.25 · Level 2: 2.5 · Level 3: 3.75\nSOL half-exit z-score (σ)\n0.375\nSOL full-exit z-score (σ)\n0.125\nSOL maximum holding (days)\n14\nSignal and safety settings\nUnconfirmed\nEMA window (bars)\n34\nBeta lookback (days)\n270\nRelative-value lookback (days)\n65\nZ-score history (days)\n180\nWave history (days)\n730\nMinimum wave count\n8\nWave percentile thresholds\nLevel 1: 10% · Level 2: 30% · Level 3: 60%\nDeposit drawdown limit (%)\n50\nAdvanced strategy rules\nResearch drafts · saved separately from the running strategy",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "current",
+      "page": "Strategy",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Settings\nExecution mode\nLive Inactive\nDry-run\nLive\nRefresh\n\nLive: Inactive\n\nSelecting this view does not start or stop either trader.\n\nActivate Live\n\nSeparate exact Live order approval is required\n\nLive account\nConnected\nExecution mode\nLive · separate order approval required\nRefresh\nFunding and account notes\nExchange accounts\nDisplay only\n\nAdd an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.\n\nExchange\nHyperliquid\nBybit\nMaster address\nAgent private key · optional for a new account\nAdd account\nPermissions and safety\nSaved accounts\nRefresh\nDashboard account\nNo account selected\nSave selection\nNo accounts connected\nAdd an account above to show its identity on Dashboard.\nDrawdown protection\nNot set\n\nChanges require a paused worker and confirmed flat exposure.\n\nAllowed drawdown, %\nSave\nSet new baseline\n\nProtection values are stale or unverified and are withheld.\n\nEntry controls\nRead-only\n\nPause and resume govern entry submission. Strategy eligibility is shown separately below.\n\nNew-entry eligibility: Eligible for strategy evaluation.\n\nPause new entries\nResume new entries\nFlatten virtual exposure\nControl availability",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "live",
+      "buttons": [
+        {
+          "text": "Activate Live",
+          "disabled": true
+        },
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        },
+        {
+          "text": "Resume new entries",
+          "disabled": true
+        },
+        {
+          "text": "Flatten virtual exposure",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "current",
+      "page": "Settings",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Dashboard\nAccount overview\nPublic market data ready\n\nWaiting for a strategy decision.\n\nSandbox snapshot · 15 Oct 2026 · 12:47 UTC\n\nRefresh\n\nEquity\n\n10,715.76 USDC\n\nAvailable cash\n\n10,232.13 USDC\n\nRealized P&L · net fees\n\n232.13 USDC\n\nUnrealized P&L\n\n483.63 USDC\n\nTrading fees\n\n287.22 USDC\n\nEffective leverage\n\n4.30×\n\nVirtual starting capital: 10,000 USDC · 1 open · 1 working orders\n\nMargin, P&L and account details\nMarket & account history\n\nPublic candles · sampled Sandbox equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nLive\nMark\n80,826.00\nMark age 0.5s\nSandbox position\nOpen\nSHORT\n0.56965 BTC\nAverage entry\n81,675.00\nCurrent mark\n80,826.00\nWorking orders\n1\nTake-profit / reduction · BUY\n79,177.00\nAccepted · Limit · remaining 0.56965\nSOL\nLive\nMark\n101.930\nMark age 0.5s\nSandbox position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\n0\n\nOrder state unavailable.\n\nDrawdown protection\nStale\n\nProtection read is stale. Values are withheld until a fresh worker read is available.\n\nWorker notice\nActive owned reductions",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "sandbox",
+      "buttons": [],
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "right": 919.0625
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "right": 919.0625
+        }
+      ],
+      "scenario": "sandbox",
+      "page": "Dashboard",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Strategy\nApproved strategy\nNot confirmed\n\nThe approved settings were read successfully, but the worker match is not confirmed.\n\nStrategy\n\nBTC / SOL Wave Overlay · V0\n\nExecution\n\nLocal Sandbox\n\nMarket data\n\nHyperliquid public\n\nStrategy changes require a reviewed version and approved rollout. Save a draft below to compare it in Backtest.\n\n10,000 USDC nominal Sandbox seed; not an observed account balance\n\nStrategy controls\nStatus unavailable\n\nDrawdown protection confirmation unavailable. Pause stops new entries while existing exposure remains managed.\n\nPause new entries\nBTC sizing and exits\nUnconfirmed\nBTC take-profit fractions\nLevel 1: 21.25% · Level 2: 21.25% · Level 3: 57.5%\nBTC size multiplier (×)\n7.875\nBTC trailing close threshold (%)\n3.00%\nSOL sizing and exits\nUnconfirmed\nSOL add-size multipliers\nLevel 1: 1.75 · Level 2: 2.625 · Level 3: 3.5\nSOL entry z-score thresholds (σ)\nLevel 1: 1.25 · Level 2: 2.5 · Level 3: 3.75\nSOL half-exit z-score (σ)\n0.375\nSOL full-exit z-score (σ)\n0.125\nSOL maximum holding (days)\n14\nSignal and safety settings\nUnconfirmed\nEMA window (bars)\n34\nBeta lookback (days)\n270\nRelative-value lookback (days)\n65\nZ-score history (days)\n180\nWave history (days)\n730\nMinimum wave count\n8\nWave percentile thresholds\nLevel 1: 10% · Level 2: 30% · Level 3: 60%\nAdvanced strategy rules\nResearch drafts · saved separately from the running strategy",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "sandbox",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "sandbox",
+      "page": "Strategy",
+      "viewport": 390,
+      "exceptions": []
+    },
+    {
+      "text": "Settings\nExecution mode\nDry-run Running\nDry-run\nLive\nRefresh\n\nDry-run: Running. Virtual Sandbox capital and orders remain independent of the connected exchange account.\n\nSandbox account\nConnected\nExecution mode\nSandbox · order routing off\nRefresh\nFunding and account notes\nExchange accounts\nDisplay only\n\nAdd an account for read-only display on Dashboard. To authorize an existing Hyperliquid account, use Add/replace agent key in Saved accounts. Agent verification does not enable live trading.\n\nExchange\nHyperliquid\nBybit\nMaster address\nAgent private key · optional for a new account\nAdd account\nPermissions and safety\nSaved accounts\nRefresh\nDashboard account\nNo account selected\nSave selection\nNo accounts connected\nAdd an account above to show its identity on Dashboard.\nDrawdown protection\nStale\n\nChanges require a paused worker and confirmed flat exposure.\n\nAllowed drawdown, %\nSave\nSet new baseline\n\nProtection values are stale or unverified and are withheld.\n\nEntry controls\nRead-only\n\nPause and resume govern entry submission. Strategy eligibility is shown separately below.\n\nNew-entry eligibility: Eligible for strategy evaluation.\n\nPause new entries\nResume new entries\nFlatten virtual exposure\nControl availability\n\nTypeError: Failed to fetch",
+      "width": 390,
+      "scrollWidth": 390,
+      "selected": "sandbox",
+      "buttons": [
+        {
+          "text": "Pause new entries",
+          "disabled": true
+        },
+        {
+          "text": "Resume new entries",
+          "disabled": true
+        },
+        {
+          "text": "Flatten virtual exposure",
+          "disabled": true
+        }
+      ],
+      "overflow": [],
+      "scenario": "sandbox",
+      "page": "Settings",
+      "viewport": 390,
+      "exceptions": []
+    }
+  ],
+  "selection": {
+    "switched": {
+      "mode": "live",
+      "url": "http://127.0.0.1:18991/?mode=live&scenario=inactive",
+      "text": "Dashboard\nLive is inactive or unavailable\n\nNo current Live account snapshot is available.\n\nReview the approved profile in Strategy. Activation requires separate approval for the exact release, account and profile. Account values appear after native read-back.\n\nActivate Live\nAccount overview\nUnavailable\n\nEntry approval unavailable.\n\nLive snapshot · time unavailable\n\nRefresh\n\nEquity\n\nUnavailable\n\nAvailable cash\n\nUnavailable\n\nRealized P&L · net fees\n\nUnavailable\n\nUnrealized P&L\n\nUnavailable\n\nTrading fees\n\nUnavailable\n\nEffective leverage\n\nUnavailable\n\nLive account · Exposure unavailable\n\nAccount valuation unavailable\nStage-G status is not ready; exposure cannot be confirmed.\nMarket & account history\n\nPublic candles · sampled Live equity.\n\n24h / 7d / 30d account history unavailable until fresh same-epoch samples exist.\n\nAccount sample time unavailable.\n\nBTC\nSOL\nInterval\n1m\n5m\n15m\n1h\n4h\n1d\nLoading\nRefresh chart\n\t\n\t\n\n\t\n\t\nPublic market candles\nNative overlays wait for fresh candles and confirmed account state\nMarket data details\nPositions & orders\nExecutions\nBTC\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nSOL\nUnavailable\nPrevious mark\nUnavailable\nMark unavailable\nLive position\nUnconfirmed\n\nPosition status unavailable.\n\nWorking orders\nUnavailable\n\nOrder state unavailable.\n\nDrawdown protection\nNot set\n\nProtection is not armed.\n\nWorker notice\nLive worker unavailable"
+    },
+    "requests": [
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:18991/api/v1/connections"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/equity-changes"
+      },
+      {
+        "method": "GET",
+        "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/fills?cursor=0&limit=100"
+      }
+    ]
+  },
+  "allRequests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/strategy"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations/default"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections/mode"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/strategy"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations/default"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections/mode"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/strategy"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations/default"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections/mode"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/strategy"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations/default"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections/mode"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/strategy"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations/default"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections/mode"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/strategy"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations/default"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections/mode"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/strategy"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations/default"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections/mode"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/strategy"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/configurations/default"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections/mode"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/controls"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-testnet/fills?cursor=0&limit=100"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/connections"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/markets/hyperliquid/candles?coin=BTC&interval=15m&limit=300"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/equity-changes"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18991/api/v1/instances/hl-stageg-live/fills?cursor=0&limit=100"
+    }
+  ]
+}

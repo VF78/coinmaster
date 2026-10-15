@@ -300,8 +300,8 @@ def test_hl_stageg_configured_native_sandbox_entry_exit_fees_account_and_manage_
 
 
 
-@pytest.mark.parametrize("fail_exit", [False, True])
-def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, fail_exit) -> None:
+@pytest.mark.parametrize("fail_exit,default50", [(False, False), (True, False), (False, True)])
+def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, fail_exit, default50) -> None:
     """Real HL-ID Sandbox fills, native equity and one PaperRuntime own the latch."""
     async def scenario() -> None:
         candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
@@ -319,9 +319,21 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             return hooks.record_event(event_id, kind)
         policy = HyperliquidSandboxMarginPolicy(profile, SANDBOX_LEVERAGES, SANDBOX_MARK_MAX_AGE_NS)
 
+        from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy
+
         class DepositProbe(WaveOverlayStrategy):
+            def on_save(self):
+                return RecoverableWaveOverlayStrategy.on_save(self)
+
+            def on_order_filled(self, event):
+                return RecoverableWaveOverlayStrategy.on_order_filled(self, event)
+
+            def _after_domain_fill(self, event):
+                return RecoverableWaveOverlayStrategy._after_domain_fill(self, event)
+
             def __init__(self, config):
                 super().__init__(config)
+                self._recovery_runtime = runtime
                 self.quotes = 0
                 self.exit_checks = 0
                 self.exit_attempts = 0
@@ -413,7 +425,11 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
                 ts_ns=time.time_ns(), positions=[], orders=[], funding_event_ids=[],
                 native_account_total="10000", strategy_restartable=True,
             )
-            if fail_exit:
+            if default50:
+                assert strategy.deposit_projection()["drawdown_limit_percent"] == 50
+                assert strategy.deposit_projection()["threshold_equity"] == "5000"
+                runtime.entry_control_command("resume-new-entries", "resume-default50")
+            elif fail_exit:
                 set_result = strategy.apply_deposit_control(
                     "set-deposit-protection", "limit-one", drawdown_limit_percent=1,
                 )
@@ -531,7 +547,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             await asyncio.sleep(0.1)
             assert len(node.cache.positions_open()) == 1
             assert strategy.deposit_projection()["state"] == "ARMED"
-            if not fail_exit:
+            if not fail_exit and not default50:
                 status, opened = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
                 assert status == 200 and opened["projection_state"] == "READY"
                 assert opened["positions"] == [{"instrument_id": str(BTC_PERP), "signed_quantity": "0.1", "average_entry_price": "60000.0", "provenance": "SANDBOX"}]
@@ -545,7 +561,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             assert len(node.cache.orders_open()) == 3
             assert len(runtime.pending_submissions()) == 3
             assert runtime.entry_control_state() == "RUNNING"
-            if not fail_exit:
+            if not fail_exit and not default50:
                 status, working = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
                 assert status == 200 and working["deposit_protection"]["state"] == "ARMED"
                 assert working["deposit_protection"]["threshold_equity"] == "9900"
@@ -576,7 +592,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
                     strategy.cache, strategy._latest_marks, now_ns=time.time_ns(),
                 )
                 assert working["entry_control"]["state"] == "RUNNING"
-            node.kernel.data_engine.process(_quote(BTC_PERP, "58899.0", "58900.0", time.time_ns()))
+            node.kernel.data_engine.process(_quote(BTC_PERP, "4999.0" if default50 else "58899.0", "5000.0" if default50 else "58900.0", time.time_ns()))
             await asyncio.sleep(0.1)
 
             fills = node.trader.generate_order_fills_report()
@@ -604,12 +620,21 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
             assert "fill" not in generic_kinds  # No second event-sink write.
             details = runtime.native_fill_details()
             assert len(details) == len(fills)
+            assert runtime.applied_fill_ids() == frozenset(item["trade_id"] for item in details)
+            if default50:
+                assert saved["drawdown_limit_percent"] == 50
+                assert saved["trigger"]["threshold_equity"] == "5000"
+                native_exit = next(order for order in node.cache.orders() if "MARKET_EXIT" in (order.tags or ()))
+                native_fill = next(event for event in reversed(native_exit.events) if isinstance(event, OrderFilled))
+                before = runtime.native_revision()
+                strategy.on_order_filled(native_fill)
+                assert runtime.native_revision() == before
             assert len({item["trade_id"] for item in details}) == len(details)
             assert all(item["instrument_id"] == str(BTC_PERP) and item["order_side"] in {"BUY", "SELL"} for item in details)
             assert all(item["quantity"] and item["price"] and item["commission_currency"] == "USDC" for item in details)
             assert all(item["ts_event_ns"] is not None and item["native_event_id"] is not None for item in details)
             assert node.cache.account_for_venue(HYPERLIQUID).balance_total(USDC).as_decimal() < Decimal("10000")
-            if not fail_exit:
+            if not fail_exit and not default50:
                 from coinmaster.api.runtime_sidecar import HlStagegProjection
                 HlStagegProjection.model_validate(worker.projection())
                 status, tripped = await relay(app, "GET", "/api/v1/instances/hl-stageg-testnet")
@@ -651,7 +676,7 @@ def test_hl_stageg_native_sandbox_deposit_exit_shares_durable_journal(tmp_path, 
         assert saved["latched"] and saved["exit_state"] == ("EXIT_INCOMPLETE" if fail_exit else "TRIPPED_FLAT")
         assert len(reopened.pending_submissions()) == (3 if fail_exit else 0)
         assert reopened.entry_control_state() == ("RUNNING" if fail_exit else "PAUSED")
-        if not fail_exit:
+        if not fail_exit and not default50:
             reopened.entry_control_command("resume-new-entries", "resume-after-dp")
             assert reopened.entry_control_state() == "RUNNING"
             assert reopened.deposit_protection_state(
@@ -727,20 +752,48 @@ def test_native_losing_maker_exit_reconciles_usdc_cash(tmp_path) -> None:
     asyncio.run(scenario())
 
 
-def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_path) -> None:
+@pytest.mark.parametrize("seed,sol_close", (("10000", "150.99"), ("82", "150.99"), ("82", "148.99")))
+def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_path, seed, sol_close) -> None:
     """Real Sandbox fills and production snapshots bridge TP rights to SOL and a later episode."""
     async def scenario() -> None:
         runtime = PaperRuntime(tmp_path / "two-episode.sqlite", "attached-two-episode", 10**20)
         runtime.acquire()
-        runtime.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[], native_account_total="10000", strategy_restartable=True)
+        runtime.snapshot(ts_ns=1, positions=[], orders=[], funding_event_ids=[], native_account_total=seed, strategy_restartable=True)
+        if seed == "82":
+            from coinmaster.domain.deposit_protection import DepositProtection
+            protection = DepositProtection()
+            protection.initialize(Decimal(seed), time.time_ns())
+            runtime.save_deposit_protection(instance_id=runtime.owner, account_id="HYPERLIQUID-master",
+                action="INITIALIZED", event_key="original82", state=protection.durable(), ts_ns=time.time_ns())
         hooks = LifecycleHooks(runtime)
-        candidate = load_candidate(ROOT / "configs/stage-g-v1.json").candidate
+        candidate = load_candidate(ROOT / ("configs/hl-live-v3-dp50.candidate.json" if seed == "82" else "configs/stage-g-v1.json")).candidate
+        # Sandbox uses the established public USD/model-FX margin seam.
+        # Exact V3 flags + owned-native Live gate are covered in the separate
+        # qualified LiveExecutionEngine test, not represented by this client.
         profile = HyperliquidVenueProfile.from_snapshot(ROOT, environment=HyperliquidProfileEnvironment.MAINNET)
         policy = HyperliquidSandboxMarginPolicy(profile, SANDBOX_LEVERAGES, SANDBOX_MARK_MAX_AGE_NS)
 
+        from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy, _KEY
+
         class Probe(WaveOverlayStrategy):
+            def on_save(self):
+                return RecoverableWaveOverlayStrategy.on_save(self) if seed == "82" else super().on_save()
+
+            def on_order_filled(self, event):
+                if seed == "82":
+                    return RecoverableWaveOverlayStrategy.on_order_filled(self, event)
+                return super().on_order_filled(event)
+
+            def _after_domain_fill(self, event):
+                if seed == "82":
+                    # Reuse the actual live callback producer. The Sandbox
+                    # transport retains its established margin/FX semantics.
+                    return RecoverableWaveOverlayStrategy._after_domain_fill(self, event)
+                return super()._after_domain_fill(event)
+
             def __init__(self, config):
                 super().__init__(config)
+                self._recovery_runtime = runtime
                 self.next_intent = None
                 self.cycle = 0
 
@@ -765,7 +818,7 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             btc_bar_type=BarType(InstrumentId.from_str("BTCUSDT-LINEAR.BYBIT"), BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL),
             sol_bar_type=BarType(InstrumentId.from_str("SOLUSDT-LINEAR.BYBIT"), BarSpecification(1, BarAggregation.DAY, PriceType.LAST), AggregationSource.EXTERNAL),
             btc_mark_data_type=venue_mark_data_type(BTC_PERP), sol_mark_data_type=venue_mark_data_type(SOL_PERP),
-            mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), active_seed=Decimal("10000"),
+            mark_client_id=ClientId("HYPERLIQUID-MAINNET-DATA"), active_seed=Decimal(seed),
             candidate=candidate, margin_policy=policy, entries_enabled=True, entries_gate=lambda: True,
             event_sink=hooks.record_event, native_fill_sink=runtime.record_native_fill, submission_sink=hooks,
         )
@@ -774,7 +827,7 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             environment=Environment.LIVE, trader_id="HL-TWO-EPISODE-PROBE", logging=LoggingConfig(log_level="ERROR"),
             exec_engine=LiveExecEngineConfig(reconciliation=False),
             exec_clients={"SANDBOX": SandboxExecutionClientConfig(
-                venue="HYPERLIQUID", starting_balances=["10000 USDC"], base_currency="USDC",
+                venue="HYPERLIQUID", starting_balances=[seed + " USDC"], base_currency="USDC",
                 leverages=dict(SANDBOX_LEVERAGES), use_reduce_only=True,
                 routing=RoutingConfig(venues=frozenset({"HYPERLIQUID"})),
             )},
@@ -805,7 +858,7 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
 
         await node.kernel.start_async()
         try:
-            first = Episode("episode-one", 1, 10000, 1.0, wave_levels=(0.0001, 0.0002, 0.0003))
+            first = Episode("episode-one", 1, float(seed), 1.0, wave_levels=(0.0001, 0.0002, 0.0003))
             strategy._domain.episode = first
             entry = Intent("first-entry", first.id, "BTC_ENTRY", None, 1, quantity=0.00167, decision_index=1)
             first.pending[entry.id] = entry
@@ -861,7 +914,7 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             sol_add = strategy._domain._intent(first, "SOL_ADD", -first.side, 0, requested_notional=30)
             strategy.next_intent = sol_add
             await btc_quote("60000.0", "60001.0", 6)
-            assert first.sol_qty == pytest.approx(0.2)
+            assert first.sol_qty == pytest.approx(0.2), (strategy.pre_submit_gate_blocks, strategy._daily_decision_reason)
             two_positions, _ = HyperliquidTestnetNode.sandbox_snapshot(SimpleNamespace(node=node))
             assert {item["instrument_id"] for item in two_positions} == {str(BTC_PERP), str(SOL_PERP)}
             for item in two_positions:
@@ -873,7 +926,7 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             # Make native SOL price PnL exceed USD's cent precision so cash
             # reconciliation tests realized PnL as well as exact USDC fees.
             node.kernel.data_engine.process(QuoteTick(
-                SOL_PERP, Price.from_str("150.99"), Price.from_str("151.01"),
+                SOL_PERP, Price.from_str(sol_close), Price.from_str(str(Decimal(sol_close) + Decimal(".02"))),
                 Quantity.from_str("1000.00"), Quantity.from_str("1000.00"), 7, 7,
             ))
             await asyncio.sleep(0.1)
@@ -898,7 +951,7 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             native_snapshot(restartable=True)
             assert runtime.recovery_state() == "FLAT_RESTART"
 
-            second = Episode("episode-two", 1, 10000, 1.0, wave_levels=(0.0001, 0.0002, 0.0003))
+            second = Episode("episode-two", 1, float(seed), 1.0, wave_levels=(0.0001, 0.0002, 0.0003))
             strategy._domain.episode = second
             entry_two = Intent("second-entry", second.id, "BTC_ENTRY", None, 1, quantity=0.00167, decision_index=10)
             second.pending[entry_two.id] = entry_two
@@ -925,7 +978,7 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             assert second.sol_qty == pytest.approx(0.2)
             assert {str(position.instrument_id) for position in node.cache.positions_open()} == {str(BTC_PERP), str(SOL_PERP)}
             node.kernel.data_engine.process(QuoteTick(
-                SOL_PERP, Price.from_str("150.99"), Price.from_str("151.01"),
+                SOL_PERP, Price.from_str(sol_close), Price.from_str(str(Decimal(sol_close) + Decimal(".02"))),
                 Quantity.from_str("1000.00"), Quantity.from_str("1000.00"), 14, 14,
             ))
             await asyncio.sleep(0.1)
@@ -961,33 +1014,61 @@ def test_attached_hl_two_episode_native_btc_sol_lifecycle_uses_one_journal(tmp_p
             assert [row["native_liquidity_side"] for row in strategy.fill_audit].count("TAKER") == 10
             fees = sum((Decimal(row["commission_amount"]) for row in fills), Decimal("0"))
             assert fees == sum((Decimal(row["commission"]) for row in strategy.fill_audit), Decimal("0"))
-            assert fees == Decimal("0.22194063")
+            assert fees == (Decimal("0.22194063") if sol_close == "150.99" else Decimal("0.22158063"))
             positions = node.trader.generate_positions_report().to_dict("records")
             assert len(positions) == 4 and all(row["side"] == "FLAT" for row in positions)
             sol_positions = [row for row in positions if str(row["instrument_id"]) == str(SOL_PERP)]
             assert len(sol_positions) == 2
-            assert all(Decimal(str(row["realized_pnl"]).split()[0]) == Decimal("-0.20") for row in sol_positions)
+            assert all(Decimal(str(row["realized_pnl"]).split()[0]) == (Decimal("-0.20") if sol_close == "150.99" else Decimal("0.20")) for row in sol_positions)
             realized = sum((Decimal(str(row["realized_pnl"]).split()[0]) for row in positions), Decimal("0"))
             account = node.cache.account_for_venue(HYPERLIQUID)
             cash = account.balance_total(USDC).as_decimal()
-            assert cash == Decimal("10000") + realized - fees == Decimal("9999.37805937")
+            assert cash == Decimal(seed) + realized - fees
+            assert (cash > Decimal(seed)) == (sol_close == "148.99")
             assert account.balance_free(USDC).as_decimal() == cash
             assert account.balance_locked(USDC).as_decimal() == 0
             assert runtime.flat_native_cash() == cash
+            if seed == "82":
+                from coinmaster.strategy.live_recovery import RecoverableWaveOverlayStrategy, _KEY
+                # Serialize the actual settled native strategy using the same
+                # production recovery serializer; do not synthesize decisions.
+                assert runtime.applied_fill_ids() == frozenset(row["trade_id"] for row in fills)
+                closed = next(order for order in node.cache.orders() if str(order.client_order_id) == fills[-1]["client_order_id"])
+                native_fill = next(event for event in reversed(closed.events) if isinstance(event, OrderFilled))
+                previous_revision = runtime.native_revision()
+                strategy.on_order_filled(native_fill)
+                assert runtime.native_revision() == previous_revision
+                assert runtime.persist_strategy_checkpoint(strategy.on_save()[_KEY], runtime.native_revision())
+            return cash
         finally:
             await node.kernel.stop_async()
             node.kernel.dispose()
             runtime.close()
 
-    asyncio.run(scenario())
+    cash_receipt = asyncio.run(scenario())
     reopened = PaperRuntime(tmp_path / "two-episode.sqlite", "attached-two-episode", 10**20)
     reopened.acquire()
     try:
         assert len(reopened.native_fill_details()) == 13
         assert reopened.pending_submissions() == []
-        assert reopened.flat_native_cash() == Decimal("9999.37805937")
+        assert reopened.flat_native_cash() == cash_receipt
+        assert (cash_receipt > Decimal(seed)) == (sol_close == "148.99")
     finally:
         reopened.close()
+    if seed == "82":
+        from coinmaster.ops.hl_live_epoch import LiveEpochRuntime
+        epoch = LiveEpochRuntime(tmp_path / "two-episode.sqlite", "attached-two-episode", 10**20)
+        epoch.acquire()
+        try:
+            protection = epoch.deposit_protection_state(instance_id=epoch.owner, account_id="HYPERLIQUID-master")
+            assert epoch.prepare_flat_epoch(release_commit="live82-flat-update") == cash_receipt
+            assert len(epoch.native_fill_details()) == 13
+            assert len(PaperRuntime.all_submissions(epoch)) == 17
+            assert not epoch.all_submissions() and epoch.strategy_checkpoint() is None
+            assert epoch.deposit_protection_state(instance_id=epoch.owner, account_id="HYPERLIQUID-master") == protection
+            assert protection["high_water_equity"] == "82"
+        finally:
+            epoch.close()
 
 
 @pytest.mark.parametrize("instrument,raw,expected", [

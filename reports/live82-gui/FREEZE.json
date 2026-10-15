@@ -1,0 +1,57 @@
+{
+  "source_parent": "68118763f55523f7a135c9a1069d3ff3bac83f5f",
+  "source_frozen": true,
+  "owned_changed_files_since_parent": {
+    "runtime/coinmaster/api/runtime_sidecar.py": "a754d1c514af127647d0f29d9504720e817917dcea7bb55d309eefe6d81a7570",
+    "runtime/tests/test_gui_live_selection.py": "dad53c74388891b6aab72178161e216e7feefc752eda7fd79b6121f4e6a769a0",
+    "runtime/scripts/native_gui_host.sh": "5ed694b53377c902efa34d06e611efb0f2d4c077ee70d5b8c41f171ea2f1e415",
+    "runtime/tests/test_native_gui_readonly_smoke.py": "493ad9ee615e3488a73ad80de6089c30b9ddba115fb2855f1399e9779b9441fc",
+    "coinmaster/scripts/invariants-nautilus-research-ui.ts": "084df74b170d9747873cbe49811e78637da835403d011efc7ab3155cc9133762",
+    "coinmaster/src/web/lib/runtime.openapi.json": "0dd2c956ca6ae02e0294beacad2359f7a54b0c95e8fc90022c31acc34d4ec52d",
+    "coinmaster/src/web/lib/runtime.generated.ts": "5730cd8e94ed1f19a0bf5825e39e6a510184092ca1d9366eadf30d134409ce0a"
+  },
+  "verification": {
+    "live_selection_and_approval": "20 passed in 5.67s",
+    "shared_runtime_sidecar": "20 passed in 7.00s",
+    "readonly_gui_stage": "2 passed in 0.09s",
+    "typescript": "PASS",
+    "ui_invariants": "74 checks PASS",
+    "build": "web + custom PASS",
+    "schema": "generated",
+    "owned_diff_check": "PASS"
+  },
+  "render": {
+    "command": "node /tmp/cm-live82-render-check.mjs (byte-copy of canonical reports/live82-gui/render-check.mjs; working directory /tmp/cm-live82-render; isolated Chrome155 headless over loopback SSH tunnel to GET-only fixture preview18991)",
+    "receipt": {
+      "states": 24,
+      "exceptions": 0,
+      "screenshots": 24,
+      "viewports": [
+        1440,
+        390
+      ],
+      "pages": [
+        "Dashboard",
+        "Strategy",
+        "Settings"
+      ],
+      "scenarios": [
+        "inactive Live",
+        "stale Live",
+        "current unapproved Live fixture",
+        "Sandbox read-only native snapshot"
+      ]
+    },
+    "selection": "Actual browser select change reloads Live; only GET; no Sandbox instance requests after selection",
+    "representatives": [
+      "reports/live82-gui/inactive-dashboard-390.png",
+      "reports/live82-gui/inactive-strategy-1440.png",
+      "reports/live82-gui/inactive-settings-390.png"
+    ],
+    "limitations": "Isolated fixture render proves frontend states, not funded Live/account qualification or authenticated production browser acceptance. Current Live account fixture has native_cash81.5/equity82.3/withdrawable70; not an actual account claim. Market candles intentionally unavailable."
+  },
+  "deployment": "Existing deploy_native_gui_vps.sh stage -> native_gui_host.sh component=gui manifest; root owns final freeze/clean/stage/activation/rollback. No service or trading command executed by GUI agent.",
+  "helper": "Removed dead unused mutation smoke definition; no observed production command was executed. Read-only auth/selected Live profile and account-unknown gates added.",
+  "future_live_controls": "Requires exact installed release/account/profile approval plus fresh worker-approved CURRENT non-recovery projection and Live token transport; no current approval written.",
+  "known_nonblocking_ui_wording": "Disabled existing flatten button retains 'Flatten virtual exposure' text also in selected Live settings; root froze UI without expanding scope."
+}

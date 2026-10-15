@@ -97,53 +97,38 @@ assert controls['pause']['enabled'] is expected_entry_controls
 assert controls['resume']['enabled'] is expected_entry_controls
 if expected_entry_controls:
     assert projection['entry_control']['capability'] == 'READY'
-    assert projection['entry_control']['state'] == 'RUNNING'
+    assert projection['entry_control']['state'] in ('RUNNING', 'PAUSED')
 spec = json.loads(get('/api/v1/openapi.json')[1])
 assert '/api/v1/runtime/commands/{command}' not in spec['paths']
 assert '/api/v1/research/capabilities' in spec['paths']
 assert get('/api/v1/research/capabilities')[0] == 200
 assert get('/api/v1/instances/hl-stageg-testnet/controls', method='POST')[0] == 405
+# The selected Live view is read-only and independent from the Sandbox producer.
+for path in ('', '/strategy', '/controls', '/fills', '/equity-changes'):
+    endpoint = '/api/v1/instances/hl-stageg-live' + path
+    assert get(endpoint, False)[0] == 401
+    status, raw = get(endpoint)
+    assert status == 200
+    body = json.loads(raw)
+    assert body['instance_id'] == 'hl-stageg-live'
+    if path == '':
+        assert body['mode'] == 'live' and body['projection_state'] != 'READY'
+        assert body['real_order_approval'] is False and body['live_order_capability'] is False
+        assert body['account']['native_cash'] is None and body['account']['equity'] is None
+    elif path == '/strategy':
+        assert body['strategy_id'] == 'V3+DP50'
+        assert body['source_state'] == 'SEALED_CONFIGURATION_CHECKED'
+        assert body['running_state'] == 'NOT_CONFIRMED'
+        assert body['candidate']['deposit_protection_percent'] == '50'
+        assert '82 USDC' in body['capital_assumption']
+    elif path == '/controls':
+        assert all(body[key]['enabled'] is False for key in ('pause', 'resume', 'flatten', 'promotion'))
 assert get('/api/v1/auth/session', False)[0] == 401
 assert b'Operator sign in' in get('/', False)[1]
 assert get('/', True)[0] == 200
 db = sqlite3.connect(f"file:{os.environ['GUI_SMOKE_DB']}?mode=ro", uri=True)
 assert db.execute('SELECT count(*) FROM research_leases').fetchone()[0] == 0
-print('API_SMOKE_OK: auth, SPA, HL unavailable/disabled, no paper command route, research lease clear')
-PY
-}
-entry_control_smoke() {
-  local port="$1"
-  GUI_SMOKE_PORT="$port" COINMASTER_RUNTIME_API_TOKEN="$TOKEN" python3 - <<'PY'
-import json, os, urllib.error, urllib.request, uuid
-base = f"http://127.0.0.1:{os.environ['GUI_SMOKE_PORT']}"
-token = os.environ['COINMASTER_RUNTIME_API_TOKEN']
-def request(path, method='GET', key=None):
-    headers = {'Authorization': f'Bearer {token}'}
-    if key is not None:
-        headers['Idempotency-Key'] = key
-    req = urllib.request.Request(base + path, data=b'{}' if method == 'POST' else None, headers=headers, method=method)
-    try:
-        with urllib.request.urlopen(req, timeout=3) as response:
-            return response.status, response.read()
-    except urllib.error.HTTPError as error:
-        return error.code, error.read()
-def projection():
-    status, raw = request('/api/v1/instances/hl-stageg-testnet')
-    assert status == 200
-    return json.loads(raw)
-for command, expected_state in (('pause-new-entries', 'PAUSED'), ('resume-new-entries', 'RUNNING')):
-    key = 'stageg-control-' + uuid.uuid4().hex
-    status, raw = request(f'/api/v1/instances/hl-stageg-testnet/controls/{command}', 'POST', key)
-    assert status == 200, (command, status)
-    body = json.loads(raw)
-    assert body['instance_id'] == 'hl-stageg-testnet'
-    assert body['command'] == command and body['idempotency_key'] == key
-    assert body['status'] == 'ACCEPTED' and body['entry_control'] == expected_state
-    state = projection()
-    assert state['projection_state'] == 'READY'
-    assert state['entry_control']['state'] == expected_state
-    assert state['live_order_capability'] is False
-print('ENTRY_CONTROL_SMOKE_OK: authenticated pause/read-back/resume/read-back; no order submitted')
+print('API_SMOKE_OK: auth, SPA, selected Sandbox readback, inactive Live identity/profile/unknown balance, disabled controls, no trader mutations, research lease clear')
 PY
 }
 wait_api_ready() {

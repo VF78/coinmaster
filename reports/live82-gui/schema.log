@@ -1,0 +1,6 @@
+
+> coinmaster@0.1.0 generate:runtime-api
+> ../runtime/.venv/bin/python ../runtime/scripts/export_runtime_openapi.py && openapi-typescript src/web/lib/runtime.openapi.json -o src/web/lib/runtime.generated.ts
+
+✨ openapi-typescript 7.6.1
+🚀 src/web/lib/runtime.openapi.json → src/web/lib/runtime.generated.ts [569.8ms]

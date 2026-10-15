@@ -1,0 +1,60 @@
+{
+  "scope": "Untracked prior research logs preserved outside release source; not deleted from VPS",
+  "created_utc": "2026-10-15T12:46:03.008833+00:00",
+  "files": [
+    {
+      "source": "reports/v3-risk-four-113/implementation/boundaries-final.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/boundaries-final.log",
+      "sha256": "1f84b1c48ef61e69fd54eeae324fe4dd4d92b54f1f8ac08ff0cc24371f662494",
+      "bytes": 1447
+    },
+    {
+      "source": "reports/v3-risk-four-113/implementation/boundaries.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/boundaries.log",
+      "sha256": "4354409992c9cb2b910a5f764707ba896af1732ca193d1d1ea5558ce02e7c06d",
+      "bytes": 8237
+    },
+    {
+      "source": "reports/v3-risk-four-113/implementation/cli-help.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/cli-help.log",
+      "sha256": "1ad931820277c48a7d3b8573f72657664406e5016403f8f139f5e7ee893a9a96",
+      "bytes": 3051
+    },
+    {
+      "source": "reports/v3-risk-four-113/implementation/final-contract-tests.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/final-contract-tests.log",
+      "sha256": "61ec91c7ef9fb5872bf2a796c884891898d594071fbb3646f7e5418b324f8167",
+      "bytes": 6924
+    },
+    {
+      "source": "reports/v3-risk-four-113/implementation/four-native-final.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/four-native-final.log",
+      "sha256": "5d2d2fc076875572cb2f0c71ab632647defb42d3e10a06c884c5f5ad17d368f1",
+      "bytes": 5737
+    },
+    {
+      "source": "reports/v3-risk-four-113/implementation/four-native.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/four-native.log",
+      "sha256": "8460f28e0a672b1527ac69a3eebbb7915c2c3ecf086567b9c2fece6737c5b956",
+      "bytes": 4080
+    },
+    {
+      "source": "reports/v3-risk-four-113/implementation/initial-check.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/initial-check.log",
+      "sha256": "01ed769e21c51855efdf1c560123a837411c43b9d848592055fe3002df0772c1",
+      "bytes": 8777
+    },
+    {
+      "source": "reports/v3-risk-four-113/implementation/verification-final.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/verification-final.log",
+      "sha256": "497de5a7053f8bca6ca6ed78e29fb6008b6fab524de379b3b4c23368ac47fe54",
+      "bytes": 29509
+    },
+    {
+      "source": "reports/v3-risk-four-113/implementation/verification.log",
+      "preserved_path": "/var/lib/coinmaster-research/preserved-worktree-logs/20261015-live82/verification.log",
+      "sha256": "36277957edeea27f2d34da50657c56ea65eb3e182553b8d92233d9c03864b661",
+      "bytes": 31932
+    }
+  ]
+}

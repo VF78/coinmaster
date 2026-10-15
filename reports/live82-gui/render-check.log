@@ -1,0 +1,19 @@
+node:internal/deps/undici/undici:15157
+      Error.captureStackTrace(err);
+            ^
+
+TypeError: fetch failed
+    at node:internal/deps/undici/undici:15157:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-check.mjs:4:21 {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:18992
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16) {
+    errno: -111,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 18992
+  }
+}
+
+Node.js v22.23.2

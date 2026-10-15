@@ -327,6 +327,8 @@ class HlStagegProjection(RuntimeSchema):
     live_order_capability: bool = False
     profile: dict[str, Any] | None = None
     real_order_approval: bool = False
+    runtime_release_commit: str | None = None
+    runtime_master_address_sha256: str | None = None
     run_epoch: str | None = None
     virtual_capital_resets_on_flat_restart: bool | None = None
     sandbox_starting_cash_usdc: str | None = None
@@ -731,11 +733,15 @@ def live_order_approval_matches(projection: HlStagegProjection) -> bool:
         profile = projection.profile or {}
         return (projection.instance_id == "hl-stageg-live" and projection.mode == "live"
                 and projection.projection_state == "READY" and projection.live_order_capability is True
+                and projection.reconciliation == "CURRENT" and projection.recovery_required is False
+                and projection.native_thread_alive is True and bool(projection.run_epoch)
+                and projection.observed_at_ns is not None
+                and -HlStagegProjectionReader.MAX_FUTURE_SKEW_NS <= time.time_ns() - projection.observed_at_ns <= HlStagegProjectionReader.MAX_AGE_NS
                 and approval.get("schema") == "coinmaster-live-order-approval-v1"
                 and approval.get("instance_id") == "hl-stageg-live" and approval.get("orders_approved") is True
                 and approval.get("pilot_capital_usdc") == "82"
-                and approval.get("release_commit") == identity["source_commit"]
-                and approval.get("master_address_sha256") == fingerprint["master_address_sha256"]
+                and approval.get("release_commit") == identity["source_commit"] == projection.runtime_release_commit
+                and approval.get("master_address_sha256") == fingerprint["master_address_sha256"] == projection.runtime_master_address_sha256
                 and all(approval.get(key) == identity[key] == profile.get(key)
                         for key in ("strategy_sha256", "candidate_sha256", "profile_sha256")))
     except (OSError, ValueError, KeyError, TypeError):
@@ -779,6 +785,8 @@ class HlLiveProjectionReader(HlStagegProjectionReader):
                 "version": "hl-stageg-projection-v1", "instance_id": "hl-stageg-live", "mode": "live",
                 "environment": "mainnet", "projection_state": "READY", "observed_at_ns": observed,
                 "live_order_capability": True, "run_epoch": raw["run_epoch"], "profile": profile,
+                "runtime_release_commit": raw.get("release_commit"),
+                "runtime_master_address_sha256": raw.get("master_address_sha256"),
                 "process_state": raw.get("state", UNKNOWN), "reconciliation": "CURRENT" if raw.get("account_state") == "CURRENT" else UNKNOWN,
                 "recovery_required": raw.get("recovery_required", True), "recovery_capability": raw.get("recovery_capability"),
                 "native_thread_alive": raw.get("native_thread_alive") is True,
@@ -791,7 +799,8 @@ class HlLiveProjectionReader(HlStagegProjectionReader):
                 "event_cursor": raw.get("event_cursor", 0), "deposit_protection": raw.get("deposit_protection"),
                 "provenance": "NATIVE_MAINNET_OWNED_ACCOUNT", "warnings": ["EXACT_LIVE_ORDER_APPROVAL_REQUIRED"],
             })
-            return result.model_copy(update={"real_order_approval": live_order_approval_matches(result)})
+            approved = raw.get("real_order_approval") is True and live_order_approval_matches(result)
+            return result.model_copy(update={"real_order_approval": approved, "warnings": [] if approved else ["EXACT_LIVE_ORDER_APPROVAL_REQUIRED"]})
         except (OSError, TimeoutError):
             return self.unavailable("UNAVAILABLE", "LIVE_WORKER_UNAVAILABLE")
         except (ValueError, TypeError, KeyError):
@@ -821,7 +830,7 @@ class HlStagegControlRelay:
             raise HTTPException(503, "Stage-G native entry control is unavailable") from error
         except (OSError, TimeoutError, ValueError, TypeError):
             raise HTTPException(503, "Stage-G native entry control is unavailable")
-        if payload.instance_id != self.instance_id or payload.command != command:
+        if payload.instance_id != self.instance_id or payload.command != command or payload.idempotency_key != idempotency_key:
             raise HTTPException(503, "Stage-G native entry control identity mismatch")
         return payload
 
@@ -1161,15 +1170,26 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
             raise HTTPException(503, "Live native controls are unavailable. Refresh current account state.")
         return projection
 
+    def require_live_readback(before):
+        fresh = require_live_controls()
+        if (fresh.run_epoch != before.run_epoch or fresh.runtime_release_commit != before.runtime_release_commit
+                or fresh.runtime_master_address_sha256 != before.runtime_master_address_sha256):
+            raise HTTPException(503, "Live control read-back identity mismatch")
+        return fresh
+
     @app.post("/api/v1/instances/hl-stageg-live/controls/set-deposit-protection", response_model=HlStagegProtectionCommand, dependencies=[Depends(auth)])
     def live_set_protection(body: HlStagegProtectionCommandRequest):
-        require_live_controls()
-        return live_protection_control.command("set-deposit-protection", body.model_dump())
+        before = require_live_controls()
+        result = live_protection_control.command("set-deposit-protection", body.model_dump())
+        require_live_readback(before)
+        return result
 
     @app.post("/api/v1/instances/hl-stageg-live/controls/reset-deposit-protection", response_model=HlStagegProtectionCommand, dependencies=[Depends(auth)])
     def live_reset_protection(body: HlStagegProtectionResetRequest):
-        require_live_controls()
-        return live_protection_control.command("reset-deposit-protection", body.model_dump())
+        before = require_live_controls()
+        result = live_protection_control.command("reset-deposit-protection", body.model_dump())
+        require_live_readback(before)
+        return result
 
     @app.post("/api/v1/instances/hl-stageg-live/controls/{command}", response_model=HlStagegControlCommand, dependencies=[Depends(auth)])
     def live_control(command: Literal["pause-new-entries", "resume-new-entries"], idempotency_key: str = Header(alias="Idempotency-Key")):
@@ -1177,9 +1197,8 @@ def create_runtime_app(database: str | None = None, token: str | None = None, wo
         if not idempotency_key:
             raise HTTPException(422, "Idempotency-Key is required")
         result = live_entry_control.command(command, idempotency_key)
-        fresh = live_reader.runtime()
-        if (fresh.projection_state != "READY" or fresh.run_epoch != before.run_epoch
-                or fresh.entry_control.state != result.entry_control or not fresh.real_order_approval):
+        fresh = require_live_readback(before)
+        if fresh.entry_control.state != result.entry_control:
             raise HTTPException(503, "Live entry control read-back mismatch")
         return result
 

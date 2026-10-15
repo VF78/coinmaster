@@ -1500,6 +1500,28 @@
             ],
             "title": "Run Epoch"
           },
+          "runtime_master_address_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runtime Master Address Sha256"
+          },
+          "runtime_release_commit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runtime Release Commit"
+          },
           "sandbox_starting_cash_usdc": {
             "anyOf": [
               {

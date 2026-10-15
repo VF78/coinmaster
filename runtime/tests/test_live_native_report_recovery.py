@@ -85,7 +85,7 @@ class FakeReportClient(QualifiedInfoBoundary, LiveExecutionClient):
         )
 
     async def _connect(self):
-        total = Decimal("9999.73") if self._fake_venue_state["partial"] else Decimal("10000")
+        total = Decimal(self._fake_venue_state.get("balance", "9999.73" if self._fake_venue_state["partial"] else "10000"))
         self.generate_account_state(
             [AccountBalance(Money(total, USDC), Money(0, USDC), Money(total, USDC))],
             [], True, self._clock.timestamp_ns(),
@@ -369,6 +369,14 @@ def _strategy(*, entries_enabled=False, submission_sink=None, native_fill_sink=N
         BarSpecification(1, BarAggregation.DAY, PriceType.LAST),
         AggregationSource.EXTERNAL,
     )
+    live82 = os.environ.get("CM_FAKE_LIVE82") == "1"
+    extra = {}
+    if live82:
+        from coinmaster.ops.hl_live_profile import load_live_profile
+        from coinmaster.ops.stage_g_config import load_candidate
+        root = Path(__file__).resolve().parents[1]
+        candidate = load_candidate(root / "configs/hl-live-v3-dp50.candidate.json").candidate
+        extra = {"candidate": candidate, **load_live_profile(root, candidate)["strategy_flags"]}
     return RecoveryProbeStrategy(WaveOverlayStrategyConfig(
         strategy_id="stage-g-recovery-probe", order_id_tag="HLTG",
         external_order_claims=[HL_BTC.id, HL_SOL.id],
@@ -376,17 +384,19 @@ def _strategy(*, entries_enabled=False, submission_sink=None, native_fill_sink=N
         btc_mark_data_type=venue_mark_data_type(HL_BTC.id),
         sol_mark_data_type=venue_mark_data_type(HL_SOL.id),
         mark_client_id=ClientId("HYPERLIQUID"),
-        active_seed=Decimal("10000"), entries_enabled=entries_enabled,
+        active_seed=Decimal("82" if live82 else "10000"), entries_enabled=entries_enabled, **extra,
         submission_sink=submission_sink, native_fill_sink=native_fill_sink,
     ))
 
 
 async def _run_child():
-    port = int(os.environ["COINMASTER_TEST_REDIS_PORT"])
+    live82 = os.environ.get("CM_FAKE_LIVE82") == "1"
+    startup_balance = "82" if live82 else "10000"
+    port = int(os.environ.get("COINMASTER_TEST_REDIS_PORT", "0"))
     config = TradingNodeConfig(
         environment=Environment.LIVE,
         trader_id=os.environ["CM_FAKE_TRADER_ID"],
-        cache=CacheConfig(database=DatabaseConfig(host="127.0.0.1", port=port), flush_on_start=False),
+        cache=CacheConfig() if live82 else CacheConfig(database=DatabaseConfig(host="127.0.0.1", port=port), flush_on_start=False),
         load_state=True, save_state=True,
         logging=LoggingConfig(log_level="ERROR"),
         exec_engine=LiveExecEngineConfig(
@@ -437,14 +447,14 @@ async def _run_child():
             "clearinghouseState": {
                 "assetPositions": [],
                 "marginSummary": {
-                    "accountValue": "10000", "totalRawUsd": "10000",
+                    "accountValue": startup_balance, "totalRawUsd": startup_balance,
                     "totalMarginUsed": "0", "totalNtlPos": "0",
                 },
                 "crossMarginSummary": {
-                    "accountValue": "10000", "totalRawUsd": "10000",
+                    "accountValue": startup_balance, "totalRawUsd": startup_balance,
                     "totalMarginUsed": "0", "totalNtlPos": "0",
                 },
-                "withdrawable": "10000",
+                "withdrawable": startup_balance,
             },
         }
         async def strict_info(body):
@@ -540,14 +550,14 @@ async def _run_child():
         assert strategy.recovery_confirmed is False
         await strategy._post_drain_task
         assert strategy.recovery_confirmed is True
-        assert strategy._validated_live_money().equity == Decimal("10000")
+        assert strategy._validated_live_money().equity == Decimal(startup_balance)
         client = next(item for item in node.kernel.exec_engine._clients.values() if isinstance(item, FakeReportClient))
         failure = os.environ.get("CM_FAKE_PARITY_FAILURE", "account")
         if failure == "coupled_open":
             from nautilus_trader.core import nautilus_pyo3
 
             now = node.kernel.clock.timestamp_ns()
-            account_100 = Money(Decimal("100"), USDC)
+            account_100 = Money(Decimal("82" if live82 else "100"), USDC)
             client.generate_account_state(
                 [AccountBalance(account_100, Money(0, USDC), account_100)],
                 [], True, now,
@@ -555,9 +565,9 @@ async def _run_child():
             await asyncio.sleep(0.05)
             active.snapshot(
                 ts_ns=now, positions=[], orders=[], funding_event_ids=[],
-                native_account_total="100", strategy_restartable=True,
+                native_account_total="82" if live82 else "100", strategy_restartable=True,
             )
-            episode = Episode("episode-open", 1, 100, 1.2)
+            episode = Episode("episode-open", 1, 82 if live82 else 100, 1.2)
             intent = Intent("intent-open", episode.id, "BTC_ENTRY", None, 1, quantity=0.03)
             episode.pending[intent.id] = intent
             strategy._domain.episode = episode
@@ -604,14 +614,14 @@ async def _run_child():
                 "clearinghouseState": {
                     "assetPositions": [],
                     "marginSummary": {
-                        "accountValue": "100", "totalRawUsd": "100",
+                        "accountValue": "82" if live82 else "100", "totalRawUsd": "82" if live82 else "100",
                         "totalMarginUsed": "0", "totalNtlPos": "0",
                     },
                     "crossMarginSummary": {
-                        "accountValue": "100", "totalRawUsd": "100",
+                        "accountValue": "82" if live82 else "100", "totalRawUsd": "82" if live82 else "100",
                         "totalMarginUsed": "0", "totalNtlPos": "0",
                     },
-                    "withdrawable": "100",
+                    "withdrawable": "82" if live82 else "100",
                 },
             })
             marks = {"BTC": "10000", "SOL": "100"}
@@ -643,18 +653,18 @@ async def _run_child():
             assert strategy.recovery_confirmed
             money = strategy._validated_live_money()
             native_account = node.cache.account_for_venue(Venue("HYPERLIQUID"))
-            assert money.equity == Decimal("100")
-            assert money.free_collateral == Decimal("100")
+            assert money.equity == Decimal("82" if live82 else "100")
+            assert money.free_collateral == Decimal("82" if live82 else "100")
             assert money.margin_used == Decimal("0")
             assert native_account.balance_total(USDC).as_decimal() == money.equity
             assert native_account.balance_free(USDC).as_decimal() == money.free_collateral
-            assert strategy._tier_allows_increase(HL_SOL.id, OrderSide.BUY, Decimal("6"), now)
+            assert strategy._tier_allows_increase(HL_SOL.id, OrderSide.BUY, Decimal("5" if live82 else "6"), now)
             marks["BTC"] = "15000"
             client._cm_info_usage.clear()
             assert client.request_effect_parity_refresh()
             await client._cm_refresh_task
             assert client.recovery_healthy(), client._cm_ws_failure
-            assert not strategy._tier_allows_increase(HL_SOL.id, OrderSide.BUY, Decimal("6"), now)
+            assert not strategy._tier_allows_increase(HL_SOL.id, OrderSide.BUY, Decimal("5" if live82 else "6"), now)
             client._cm_info_usage.clear()
             before = info_calls[0]
             for _ in range(250):
@@ -696,11 +706,11 @@ async def _run_child():
             }}]
             state = client.parity_data["clearinghouseState"]
             for summary in (state["marginSummary"], state["crossMarginSummary"]):
-                summary.update(accountValue="99.865", totalRawUsd="99.865",
+                summary.update(accountValue=("81.865" if live82 else "99.865"), totalRawUsd=("81.865" if live82 else "99.865"),
                                totalMarginUsed="30", totalNtlPos="300")
-            state["withdrawable"] = "69.865"
-            total = Money(Decimal("99.865"), USDC)
-            free = Money(Decimal("69.865"), USDC)
+            state["withdrawable"] = ("51.865" if live82 else "69.865")
+            total = Money(Decimal(("81.865" if live82 else "99.865")), USDC)
+            free = Money(Decimal(("51.865" if live82 else "69.865")), USDC)
             client.generate_account_state(
                 [AccountBalance(total, Money(Decimal("30"), USDC), free)],
                 [], True, fill_ns,
@@ -785,13 +795,13 @@ async def _run_child():
                     szi="0.02500", positionValue="250",
                 )
                 for summary in (state["marginSummary"], state["crossMarginSummary"]):
-                    summary.update(accountValue="99.8425", totalRawUsd="99.8425",
+                    summary.update(accountValue=("81.8425" if live82 else "99.8425"), totalRawUsd=("81.8425" if live82 else "99.8425"),
                                    totalMarginUsed="25", totalNtlPos="250")
-                state["withdrawable"] = "74.8425"
+                state["withdrawable"] = ("56.8425" if live82 else "74.8425")
                 client.generate_account_state([
-                    AccountBalance(Money(Decimal("99.8425"), USDC),
+                    AccountBalance(Money(Decimal(("81.8425" if live82 else "99.8425")), USDC),
                                    Money(Decimal("25"), USDC),
-                                   Money(Decimal("74.8425"), USDC)),
+                                   Money(Decimal(("56.8425" if live82 else "74.8425")), USDC)),
                 ], [], True, tp_fill_ns)
                 await asyncio.sleep(0.05)
                 client._cm_info_usage.clear()
@@ -898,7 +908,7 @@ async def _run_child():
                     positions = []
                     for position_coin, size, mark in (
                         ("BTC", btc_size, Decimal("10000")),
-                        ("SOL", sol_size, Decimal("100")),
+                        ("SOL", sol_size, Decimal("82" if live82 else "100")),
                     ):
                         if size:
                             positions.append({"position": {
@@ -910,7 +920,7 @@ async def _run_child():
                     venue_state = client.parity_data["clearinghouseState"]
                     venue_state["assetPositions"] = positions
                     margin = abs(btc_size) * Decimal("1000") + abs(sol_size) * Decimal("10")
-                    notional = abs(btc_size) * Decimal("10000") + abs(sol_size) * Decimal("100")
+                    notional = abs(btc_size) * Decimal("10000") + abs(sol_size) * Decimal("82" if live82 else "100")
                     free = equity - margin
                     for summary in (venue_state["marginSummary"], venue_state["crossMarginSummary"]):
                         summary.update(accountValue=str(equity), totalRawUsd=str(equity),
@@ -946,22 +956,22 @@ async def _run_child():
                 replacement_order = await complete_owned(
                     "BTC_REDUCE", HL_BTC, OrderSide.SELL, "0.00500", "10000.0",
                     True, 1, 103, "0.0225", Decimal("0.02000"),
-                    Decimal("0"), Decimal("99.8200"),
+                    Decimal("0"), Decimal(("81.8200" if live82 else "99.8200")),
                 )
                 sol_add = await complete_owned(
                     "SOL_ADD", HL_SOL, OrderSide.SELL, "0.10", "100.00",
                     False, 1, 104, "0.0045", Decimal("0.02000"),
-                    Decimal("-0.10000"), Decimal("99.8155"),
+                    Decimal("-0.10000"), Decimal(("81.8155" if live82 else "99.8155")),
                 )
                 sol_exit = await complete_owned(
                     "SOL_EXIT", HL_SOL, OrderSide.BUY, "0.10", "100.00",
                     True, None, 105, "0.0045", Decimal("0.02000"),
-                    Decimal("0"), Decimal("99.8110"),
+                    Decimal("0"), Decimal(("81.8110" if live82 else "99.8110")),
                 )
                 btc_close = await complete_owned(
                     "BTC_REDUCE", HL_BTC, OrderSide.SELL, "0.02000", "10000.0",
                     True, 2, 106, "0.0900", Decimal("0"),
-                    Decimal("0"), Decimal("99.7210"),
+                    Decimal("0"), Decimal(("81.7210" if live82 else "99.7210")),
                 )
                 final_mass = await client.generate_mass_status()
                 assert len(final_mass.order_reports) == 6
@@ -978,8 +988,8 @@ async def _run_child():
                 native_fees = sum((Decimal(str(row["commission"]).split()[0]) for row in native_fills), Decimal("0"))
                 assert native_fees == durable_fees == Decimal("0.2790")
                 native_account = node.cache.account_for_venue(Venue("HYPERLIQUID"))
-                assert native_account.balance_total(USDC).as_decimal() == Decimal("99.7210")
-                assert native_account.balance_free(USDC).as_decimal() == Decimal("99.7210")
+                assert native_account.balance_total(USDC).as_decimal() == Decimal(("81.7210" if live82 else "99.7210"))
+                assert native_account.balance_free(USDC).as_decimal() == Decimal(("81.7210" if live82 else "99.7210"))
                 assert len(active.all_submissions()) == 6
                 assert all(row["state"] == "TERMINAL" for row in active.all_submissions())
                 client._cm_info_usage.clear()
@@ -1754,10 +1764,10 @@ def test_connected_local_denial_keeps_full_periodic_parity_and_next_submit(tmp_p
 
 @pytest.mark.parametrize("fault", ("cycle", "foreign", "unknown", "stale"))
 def test_connected_owned_open_order_periodic_info_and_margin_fail_closed(tmp_path, fault):
-    if not os.environ.get("COINMASTER_TEST_REDIS_PORT"):
+    if not os.environ.get("COINMASTER_TEST_REDIS_PORT") and os.environ.get("CM_FAKE_LIVE82") != "1":
         pytest.skip("requires disposable loopback Redis")
     state, journal, submit_log = (tmp_path / name for name in ("state.json", "intents.sqlite", "submits.txt"))
-    state.write_text('{"partial": false}')
+    state.write_text(json.dumps({"partial": False, "balance": "82" if os.environ.get("CM_FAKE_LIVE82") == "1" else "10000"}))
     env = dict(
         os.environ,
         CM_FAKE_VENUE_STATE=str(state), CM_FAKE_JOURNAL=str(journal),
@@ -1775,7 +1785,7 @@ def test_connected_owned_open_order_periodic_info_and_margin_fail_closed(tmp_pat
         assert Decimal(proof.pop("fees")) == Decimal("0.2790")
         assert proof == {
             "stage": "flat", "orders": 6, "fills": 6,
-            "equity": "99.7210", "margin": "0",
+            "equity": "81.7210" if os.environ.get("CM_FAKE_LIVE82") == "1" else "99.7210", "margin": "0",
             "strict_generations": proof["strict_generations"],
         }
         assert proof["strict_generations"] >= 9
@@ -1813,3 +1823,101 @@ def test_connected_quote_stale_money_refresh_submits_one_native_order(tmp_path):
         "durable_submit_count": 1,
     }
     assert len(submit_log.read_text().splitlines()) == 1
+
+
+@pytest.mark.parametrize("owned_balance,native_balance,accepted", (
+    (None, "82", True), (None, "83", False),
+    ("91.227", "91.227", True), ("65.04", "65.04", True),
+    ("65.04", "82", False),
+))
+def test_live82_exact_native_bootstrap_and_owned_flat_epoch(tmp_path, monkeypatch, owned_balance, native_balance, accepted):
+    """Existing qualified fake transport + actual LiveExecutionEngine + SQLite.
+
+    Venue values are report inputs, not a simulated PnL calculation. Native
+    trading/fees are established separately by the attached lifecycle proof.
+    """
+    from coinmaster.ops.hl_live_epoch import LiveEpochRuntime
+    from coinmaster.ops.hl_live_profile import load_live_profile
+    from coinmaster.ops.hl_live_execution import bind_clean_flat_live_handover
+    from coinmaster.ops.live_recovery import NativeLiveRecoveryScope
+    from coinmaster.ops.stage_g_config import load_candidate
+    from test_hl_live_epoch import settled
+    root = Path(__file__).resolve().parents[1]
+    state = tmp_path / "venue.json"
+    state.write_text(json.dumps({"partial": False, "balance": native_balance}))
+    monkeypatch.setenv("CM_FAKE_VENUE_STATE", str(state))
+    monkeypatch.setenv("CM_FAKE_PRODUCTION_PARITY", "1")
+    monkeypatch.setenv("CM_FAKE_SCOPED_OWNER", "1")
+    candidate = load_candidate(root / "configs/hl-live-v3-dp50.candidate.json").candidate
+    profile = load_live_profile(root, candidate)
+
+    async def scenario():
+        if owned_balance is None:
+            runtime = LiveEpochRuntime(tmp_path / "live.sqlite", "hl-stageg-live", 10**20, require_native_cash=True)
+            runtime.acquire()
+            assert runtime.prepare_flat_epoch(release_commit="new82") is None
+        else:
+            runtime, _ = settled(tmp_path, owned_balance)
+            assert runtime.prepare_flat_epoch(release_commit="new82") == Decimal(owned_balance)
+        config_data = _strategy().config.dict()
+        config_data.update(active_seed=Decimal(owned_balance or "82"), candidate=candidate,
+                           **profile["strategy_flags"])
+        strategy = RecoveryProbeStrategy(WaveOverlayStrategyConfig(**config_data))
+        node = TradingNode(config=TradingNodeConfig(
+            environment=Environment.LIVE, trader_id="HL-LIVE82-BOOTSTRAP",
+            logging=LoggingConfig(log_level="ERROR"),
+            exec_engine=LiveExecEngineConfig(reconciliation=True, reconciliation_startup_delay_secs=0.0),
+            exec_clients={"FAKE": LiveExecClientConfig(
+                routing=RoutingConfig(venues=frozenset({"HYPERLIQUID"})))},
+        ), loop=asyncio.get_running_loop())
+        node.add_exec_client_factory("FAKE", FakeReportFactory)
+        node.build()
+        node.cache.add_instrument(HL_BTC); node.cache.add_instrument(HL_SOL)
+        client = next(iter(node.kernel.exec_engine._clients.values()))
+        data = {
+            "frontendOpenOrders": [], "userFillsByTime": [],
+            "userRole": {"role": "user"}, "userAbstraction": "disabled", "userDexAbstraction": False,
+            "clearinghouseState": {
+                "assetPositions": [],
+                "marginSummary": {"accountValue": native_balance, "totalRawUsd": native_balance,
+                                  "totalMarginUsed": "0", "totalNtlPos": "0"},
+                "crossMarginSummary": {"accountValue": native_balance, "totalRawUsd": native_balance,
+                                       "totalMarginUsed": "0", "totalNtlPos": "0"},
+                "withdrawable": native_balance,
+            },
+        }
+        async def info(body):
+            return selected_asset_data(body) if body["type"] == "activeAssetData" else data[body["type"]]
+        client.configure_info_boundary(
+            NativeLiveRecoveryScope(ACCOUNT_REF, "", 1, None, (), frozenset({"BTC", "SOL"})),
+            info, runtime.applied_fill_ids,
+        )
+        client._cm_runtime = runtime
+        strategy._probe_engine = node.kernel.exec_engine
+        bind_clean_flat_live_handover(client, strategy, runtime, monitor_interval_secs=30)
+        node.trader.add_strategy(strategy)
+        try:
+            await node.kernel.start_async()
+            if accepted:
+                await strategy._post_drain_task
+                assert strategy.recovery_confirmed and client.recovery_healthy()
+                assert strategy._validated_live_money().equity == Decimal(native_balance)
+                assert node.cache.account_for_venue(Venue("HYPERLIQUID")).balance_total(USDC).as_decimal() == Decimal(native_balance)
+                if owned_balance is not None:
+                    assert runtime.deposit_protection_state(instance_id=runtime.owner, account_id="HYPERLIQUID-master")["high_water_equity"] == "82"
+                    assert len(PaperRuntime.all_submissions(runtime)) == 1
+            else:
+                with pytest.raises(Exception, match="PARITY|BALANCE|UNCONFIRMED"):
+                    await strategy._post_drain_task
+                assert not strategy.recovery_confirmed
+        finally:
+            await node.kernel.stop_async()
+            node.kernel.dispose()
+            runtime.close()
+    asyncio.run(scenario())
+
+
+def test_current_v3_live82_connected_owned_btc_sol_cycle(tmp_path, monkeypatch):
+    """Reuse coupled qualified Live engine fixture, with memory native cache and SQLite audit."""
+    monkeypatch.setenv("CM_FAKE_LIVE82", "1")
+    test_connected_owned_open_order_periodic_info_and_margin_fail_closed(tmp_path, "cycle")

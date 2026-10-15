@@ -1,0 +1,79 @@
+
+> coinmaster@0.1.0 invariants:nautilus-research-ui
+> node --import tsx/esm scripts/invariants-nautilus-research-ui.ts
+
+  ✓ navigation includes Dashboard
+  ✓ navigation includes Strategy
+  ✓ navigation includes Backtest
+  ✓ navigation includes Settings
+  ✓ top bar keeps one clear Sandbox and live-order state
+  ✓ top bar removes the public-feed badge
+  ✓ top bar removes the redundant Sandbox badge
+  ✓ top bar removes operator clutter
+  ✓ Dashboard surfaces current margin and PnL only after account verification
+  ✓ dashboard keeps warnings visible in human-readable form
+  ✓ Backtest presents run status in trader-facing language
+  ✓ catalog is loaded from the local API
+  ✓ strategy reads sealed Stage-G identity from the local API
+  ✓ strategy identifies the running sealed instance
+  ✓ strategy uses a trader-readable runner match badge
+  ✓ strategy confirms running only on the API hash-match state
+  ✓ strategy labels an unconfirmed runner honestly
+  ✓ strategy keeps research drafts separate from the runner
+  ✓ strategy does not expose an apply path to the running worker
+  ✓ strategy read-backs a saved research draft
+  ✓ strategy separates BTC sizing from SOL exits
+  ✓ strategy shows SOL sizing and exits
+  ✓ strategy does not render obsolete corrected-v0 framing
+  ✓ research retains the original reporting-v2 baseline
+  ✓ research keeps the catalog read only
+  ✓ research preserves diagnostic classification
+  ✓ research renders every catalog evidence row
+  ✓ catalog includes the Hyperliquid blocked evidence
+  ✓ unused legacy research component was removed
+  ✓ API exposes the immutable catalog request
+  ✓ account-specific facts use honest unavailable labels
+  ✓ research exposes the historical baseline action
+  ✓ research shows the verified native baseline period
+  ✓ research launches the owned native baseline job
+  ✓ research shows run progress and history
+  ✓ research describes the selected run in concise trader language
+  ✓ research ranks the workspace by terminal total
+  ✓ research compares native TOP-20 totals and capital split
+  ✓ research reads back started jobs
+  ✓ research reads back canceled jobs
+  ✓ research enables optimizer only when capability is READY
+  ✓ research displays the bounded optimizer budget
+  ✓ research launches the owned native optimizer job
+  ✓ API exposes selected-config research capabilities
+  ✓ entry controls describe availability separately from eligibility
+  ✓ HL controls use only instance-bound read API
+  ✓ dashboard presents the verified virtual account before diagnostics
+  ✓ dashboard withholds account figures when unverified or recovering
+  ✓ dashboard presents public BTC/SOL market context
+  ✓ dashboard does not invent a zero trade-history claim
+  ✓ dashboard withholds stale drawdown protection values
+  ✓ dashboard removes worker hashes and event-cursor evidence from the normal UI
+  ✓ strategy groups exact running settings for traders
+  ✓ strategy drafts use separate accessible numeric inputs
+  ✓ invalid strategy draft fields are announced accessibly
+  ✓ production buttons and controls have keyboard focus styles
+  ✓ trader UI includes a narrow mobile layout
+  ✓ mobile bottom nav spans the nav grid for four readable tabs
+  ✓ mobile bottom nav constrains and separates 390px labels
+  ✓ strategy folds technical parameters under advanced rules
+  ✓ research presents readable blockers without raw technical-code panels
+  ✓ dashboard presents recent native executions as Recent executions
+  ✓ recent trades use only the verified optional action label
+  ✓ recent trades keep actual fee data
+  ✓ missing legacy count remains unavailable instead of zero
+  ✓ legacy count does not use a fabricated zero fallback
+  ✓ recent trades hide technical order and episode IDs
+  ✓ recent trades hide technical liquidity codes
+  ✓ recent trade history does not use ID-only technical phrasing
+  ✓ recent trades do not add a PnL column
+  ✓ dashboard binds fill rows to current worker epoch
+  ✓ worker epoch changes discard paged rows from the old run
+  ✓ strategy removes source-hash and account-code clutter
+  ✓ settings leaves unproven Stage-G controls disabled
+Nautilus research UI invariant passed (74 checks)

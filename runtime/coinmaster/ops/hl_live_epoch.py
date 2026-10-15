@@ -65,8 +65,36 @@ class LiveEpochRuntime(PaperRuntime):
             "_liquidating", "_liquidation_waiting", "_liquidation_orders",
             "_accepted_reductions", "_deferred_selective_entries",
         )
-        if any(_decode(body["state"][name]) for name in unresolved if name in body["state"]):
-            raise RuntimeError("LIVE_FLAT_HISTORY_UNRESOLVED_DECISION")
+        for name in unresolved:
+            value = _decode(body["state"][name]) if name in body["state"] else None
+            if not value:
+                continue
+            if name != "_forced_close_submitted":
+                raise RuntimeError("LIVE_FLAT_HISTORY_UNRESOLVED_DECISION")
+            # Production _reconcile_group_flat clears the completed group
+            # reason/intent/orders but retains its instrument tombstone.
+            # Retire only after all other decisions are empty (checked by
+            # this loop), the native snapshot is flat/revision-matched, and
+            # the instrument has a fully filled owned terminal close receipt.
+            if not isinstance(value, set) or not set(map(str, value)).issubset({
+                    "BTC-USD-PERP.HYPERLIQUID", "SOL-USD-PERP.HYPERLIQUID"}):
+                raise RuntimeError("LIVE_FLAT_HISTORY_UNRESOLVED_DECISION")
+            for instrument in map(str, value):
+                proven = False
+                for row in rows:
+                    if (row["instrument_id"] != instrument or row["action"] != "FORCED_CLOSE"
+                            or row["body"].get("reduce_only") is not True):
+                        continue
+                    closing_fills = self.db.execute(
+                        "SELECT quantity FROM paper_native_fill_details "
+                        "WHERE client_order_id=? AND instrument_id=?",
+                        (row["client_order_id"], instrument))
+                    filled = sum((Decimal(fill[0]) for fill in closing_fills), Decimal("0"))
+                    if filled == Decimal(row["body"]["quantity"]) and filled > 0:
+                        proven = True
+                        break
+                if not proven:
+                    raise RuntimeError("LIVE_FLAT_HISTORY_UNRESOLVED_DECISION")
         fills = super().applied_fill_ids()
         details = self.db.execute(
             "SELECT trade_id,client_order_id FROM paper_native_fill_details").fetchall()

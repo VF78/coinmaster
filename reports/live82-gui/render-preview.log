@@ -1,0 +1,116 @@
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 55438)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-preview.py", line 26, in __init__
+    def __init__(self,*args,**kwargs): super().__init__(*args,directory="coinmaster/dist",**kwargs)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-preview.py", line 41, in do_GET
+    elif suffix=="/controls": payload=api.hl_stageg_controls(api.HlStagegProjection.model_validate(projection),False).model_dump()
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pydantic/main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for HlStagegProjection
+deposit_protection.last_daily_close_utc
+  Value error, invalid UTC epoch nanoseconds [type=value_error, input_value='2026-10-15T00:00:00.000000000Z', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/value_error
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 55520)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-preview.py", line 26, in __init__
+    def __init__(self,*args,**kwargs): super().__init__(*args,directory="coinmaster/dist",**kwargs)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-preview.py", line 41, in do_GET
+    elif suffix=="/controls": payload=api.hl_stageg_controls(api.HlStagegProjection.model_validate(projection),False).model_dump()
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pydantic/main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for HlStagegProjection
+deposit_protection.last_daily_close_utc
+  Value error, invalid UTC epoch nanoseconds [type=value_error, input_value='2026-10-15T00:00:00.000000000Z', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/value_error
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 23042)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-preview.py", line 26, in __init__
+    def __init__(self,*args,**kwargs): super().__init__(*args,directory="coinmaster/dist",**kwargs)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-preview.py", line 41, in do_GET
+    elif suffix=="/controls": payload=api.hl_stageg_controls(api.HlStagegProjection.model_validate(projection),False).model_dump()
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pydantic/main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for HlStagegProjection
+deposit_protection.last_daily_close_utc
+  Value error, invalid UTC epoch nanoseconds [type=value_error, input_value='2026-10-15T00:00:00.000000000Z', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/value_error
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 23114)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-preview.py", line 26, in __init__
+    def __init__(self,*args,**kwargs): super().__init__(*args,directory="coinmaster/dist",**kwargs)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/live82-gui/render-preview.py", line 41, in do_GET
+    elif suffix=="/controls": payload=api.hl_stageg_controls(api.HlStagegProjection.model_validate(projection),False).model_dump()
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/pydantic/main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for HlStagegProjection
+deposit_protection.last_daily_close_utc
+  Value error, invalid UTC epoch nanoseconds [type=value_error, input_value='2026-10-15T00:00:00.000000000Z', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/value_error
+----------------------------------------

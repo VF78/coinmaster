@@ -52,7 +52,7 @@ const required = [
   ['research launches the owned native optimizer job', "'native_optimizer', capabilities.optimizer_search"],
   ['API exposes selected-config research capabilities', "request<ResearchCapabilities>(`/research/capabilities"],
   ['entry controls describe availability separately from eligibility', 'New-entry eligibility:'],
-  ['HL controls use only instance-bound read API', "request<HlStagegControls>('/instances/hl-stageg-testnet/controls')"],
+  ['HL controls use only instance-bound read API', "request<HlStagegControls>(`/instances/${selectedInstance}/controls`)"],
   ['dashboard presents the verified virtual account before diagnostics', 'Account overview'],
   ['dashboard withholds account figures when unverified or recovering', 'const figures = accountIsUnknown ? [] : accountFigures(state)'],
   ['dashboard presents public BTC/SOL market context', 'Markets'],
