@@ -27,3 +27,12 @@ def test_api_smoke_only_checks_gets_and_nonexistent_post_collection():
     assert "/api/v1/instances/hl-stageg-live" in python
     assert "assert body['account']['native_cash'] is None" in python
     assert "assert body['real_order_approval'] is False" in python
+
+
+def test_inactive_live_fill_smoke_requires_unavailable_not_empty_history():
+    source = SCRIPT.read_text()
+    assert "if path == '/fills':" in source
+    assert "assert status == 503, (endpoint, status)" in source
+    assert "'Stage-G fill history is unavailable'" in source
+    assert "'Stage-G fill journal is unavailable'" in source
+    assert "assert status == 200, (endpoint, status)" in source

@@ -1,0 +1,30 @@
+{
+  "parent_commit": "6c208fde1a4f4e0a2c5eacb022dfe165b04f3ab2",
+  "source_frozen": true,
+  "root_cause": "Existing stage smoke incorrectly required HTTP200 for inactive Live /fills. Existing API intentionally returns HTTP503 when no Live control transport/native fill journal exists.",
+  "correction": "Only smoke helper expectation: require fills503 with exact known unavailable detail. Keep401 unauthenticated; all remaining selected Live status/identity/profile/unknown-account/capability assertions unchanged. API schema/behavior unchanged.",
+  "source_sha256": {
+    "runtime/scripts/native_gui_host.sh": "9909af97606a68e466c3937b45bc95c798a4fbb7d4bfdfd822e2c0ff6f75f11e",
+    "runtime/tests/test_native_gui_readonly_smoke.py": "cf014d2abc27403ade7fa4ee3247eba9f00b39dfb520880806c39a32820d85d3"
+  },
+  "checks": {
+    "bash_n": "PASS",
+    "static_guard_tests": "3 passed in 0.07s",
+    "owned_diff_check": "PASS"
+  },
+  "incoming_diagnostic": {
+    "release": "/srv/coinmaster-native-gui/releases/6c208fde1a4f4e0a2c5eacb022dfe165b04f3ab2.incoming",
+    "uid": "coinmaster-research",
+    "auth": "existing bearer used internally; not printed",
+    "port": 18186,
+    "projection": "200 UNAVAILABLE / hl-stageg-live",
+    "strategy": "200 SEALED_CONFIGURATION_CHECKED / V3+DP50 / NOT_CONFIRMED",
+    "controls": "200 UNAVAILABLE / disabled",
+    "fills": "503 Stage-G fill history is unavailable",
+    "equity_changes": "200 UNAVAILABLE"
+  },
+  "verification": "Executed corrected EXISTING native_gui_host.sh api_smoke embedded Python body against exact immutable incoming API. API_SMOKE_OK: auth, SPA, selected Sandbox readback, inactive Live identity/profile/unknown balance, disabled controls, no trader mutations, research lease clear",
+  "effects": "Diagnostic incoming API process stopped in finally. No installed API activation/restart; no Sandbox commands/restart; no Live worker start/order/transfer/approval.",
+  "future_live_control_configuration": "Root reports automatic approval review blocked provisioning the existing Live IPC token alias into GUI environment; no change occurred and no bypass attempted. Today Live GUI controls remain disabled. Future controls require separate explicit owner permission and configuration qualification; existing code needs no patch.",
+  "diagnostic_port18186_closed": true
+}

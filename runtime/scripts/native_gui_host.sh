@@ -108,8 +108,14 @@ for path in ('', '/strategy', '/controls', '/fills', '/equity-changes'):
     endpoint = '/api/v1/instances/hl-stageg-live' + path
     assert get(endpoint, False)[0] == 401
     status, raw = get(endpoint)
-    assert status == 200
     body = json.loads(raw)
+    if path == '/fills':
+        # An inactive native worker cannot provide an authoritative fill journal.
+        # Missing transport and an unreachable journal both fail closed as 503.
+        assert status == 503, (endpoint, status)
+        assert body == {'detail': 'Stage-G fill history is unavailable'} or body == {'detail': 'Stage-G fill journal is unavailable'}
+        continue
+    assert status == 200, (endpoint, status)
     assert body['instance_id'] == 'hl-stageg-live'
     if path == '':
         assert body['mode'] == 'live' and body['projection_state'] != 'READY'
