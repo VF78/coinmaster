@@ -1,0 +1,25 @@
+{
+  "receipt_source_commit": "a9cbb737a5239d10b9ffcb97d55f997917945263",
+  "artifact_exists": true,
+  "actual_artifact_sha256": "caa6b209142f4a005f8cd73ee00d030bd841c6a9669e98c971b15f93c36c902a",
+  "terminal_total": "5437208.56951095",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "native_fees": "1091093.07886765",
+  "native_rows": 1051200,
+  "native_flat": true,
+  "liquidations": 0,
+  "direction_sizing": {
+    "freeze": "GENUINE_EPISODE_CREATION",
+    "long": "5.5",
+    "short": "7.875"
+  },
+  "source_hashes_match_receipt_commit": {
+    "native_baseline": true,
+    "wave_domain": true,
+    "wave_strategy": true
+  },
+  "economic_fixture_venue_ledger_lock_changes_since_v3": [],
+  "limitations": "Native policy/archived model reuse verified narrowly, not a new full replay. New research-only strategy branches are independently reviewed.",
+  "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH"
+}

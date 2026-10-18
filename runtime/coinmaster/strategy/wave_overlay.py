@@ -21,6 +21,8 @@ from nautilus_trader.model.events import OrderAccepted, OrderCanceled, OrderDeni
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 from nautilus_trader.trading.strategy import Strategy
 
+from coinmaster.strategy.split_cover import SplitCoverResearch
+
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
 from coinmaster.venues.margin_policy import MarginMark, MarginPolicy
 from coinmaster.venues.marks import VenueMark
@@ -53,6 +55,10 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_deferred_selective_zero_tp: bool = False
     research_v0_selective_lifecycle_repairs: bool = False
     research_v3_risk: str | None = None
+    research_btc_split50: bool = False
+    research_btc_split_discount: Decimal = Decimal("0.0025")
+    research_sol_cover: Decimal | None = None
+    research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
     research_h1_b1: str | None = None
     research_h1_adverse_fraction: Decimal = Decimal("0.025")
     research_confirmation_bars: tuple[BarType, ...] = ()
@@ -150,10 +156,19 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(Strategy):
+class WaveOverlayStrategy(SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
+        self._split_cover_init()
+        self._cover_seed(config.research_cover_hour_seed)
+        if config.research_btc_split_discount not in (Decimal("0.0025"),Decimal("0.005")):
+            raise ValueError("SPLIT_DISCOUNT_NOT_AUTHORIZED_CANDIDATE")
+        if config.research_btc_split50 or config.research_sol_cover is not None:
+            if not config.research_v0_selective_lifecycle_repairs or config.research_h1_b1 or config.research_v3_risk or config.research_btc_drawdown_sizing or config.research_sol_remaining_btc_hedge or config.research_portfolio_protect_45 or config.research_sol_notional_cap_multiple:
+                raise ValueError("SPLIT_COVER_REQUIRES_V3_CONTROL")
+            if config.research_sol_cover is not None and (config.research_sol_cover not in (Decimal("0.5"),Decimal("0.75"),Decimal("1")) or config.candidate.sol_overlay_enabled or len(config.research_confirmation_bars)!=4):
+                raise ValueError("SOL_COVER_REQUIRES_SINGLE_OWNER_AND_NATIVE_BARS")
         if config.research_sol_notional_cap_multiple is not None and config.research_sol_notional_cap_multiple != Decimal("6"):
             raise ValueError("RESEARCH_SOL_CAP_REQUIRES_6X")
         if config.research_portfolio_protect_45 and config.research_sol_notional_cap_multiple is not None:
@@ -225,6 +240,7 @@ class WaveOverlayStrategy(Strategy):
         self.sol_cap_admission_audit: list[dict[str, str]] = []
         self._candidate = replace(config.candidate, sol_overlay_enabled=False) if config.research_h1_b1 == "h1" else config.candidate
         self._domain = WaveOverlayState(self._candidate)
+        self._domain.research_sol_cover = config.research_sol_cover is not None
         self._bars: list[DailyBar] = list(config.seed_bars)
         self._last_accepted_session: int | None = (
             int(self._bars[-1].close_time.timestamp() * 1_000_000_000) if self._bars else None
@@ -329,6 +345,7 @@ class WaveOverlayStrategy(Strategy):
 
     def on_bar(self, bar: Bar) -> None:
         if any(bar.bar_type == kind.standard() or bar.bar_type == kind for kind in self.config.research_confirmation_bars):
+            self._cover_bar(bar)
             self._on_confirmation_bar(bar)
             return
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -1169,6 +1186,10 @@ class WaveOverlayStrategy(Strategy):
         if self._deferred_entry_session == self._current_btc.ts_event:
             self._deferred_entry_session = None
         self._bind_native_lots()
+        if self._split_unfinished() and self._domain.episode is not None:
+            # Mandatory regime/trail decisions precede the domain pending lock;
+            # only ordinary work waits for completion of this same parent.
+            self._domain.episode.pending[self._split_parent["intent"].id] = self._split_parent["intent"]
         intents = self._domain.decide(
             self._bars, self._current_signals, len(self._bars) - 1,
             self._active_marked(self._current_btc_mark, self._current_sol_mark),
@@ -1260,6 +1281,7 @@ class WaveOverlayStrategy(Strategy):
             self._v3_submit_reduction(tick)
             return
         if self.config.deposit_runtime is not None and self._deposit.latched:
+            self._split_stop("DP")
             if self.config.research_v0_deferred_selective_zero_tp:
                 self._discard_queued_intents(lambda queued: queued.action == "BTC_ENTRY")
             return
@@ -1322,9 +1344,13 @@ class WaveOverlayStrategy(Strategy):
                     self._b1_candidate = None
         if tick.instrument_id == self.config.sol_id:
             self._h1_check(tick.ts_event)
+        self._split_check(tick)
+        self._cover_check(tick)
         for item in list(self._queued_intents):
             intent, sigma, index = item
             if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
+                continue
+            if self._split_unfinished() and intent.action == "BTC_REDUCE":
                 continue
             target = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
             if intent.action == "CLOSE_ALL":
@@ -1656,12 +1682,17 @@ class WaveOverlayStrategy(Strategy):
 
     def _deny_local_entry(self, intent: Intent, reason: str, ts_now: int | None) -> None:
         self._selected_entry_audits.pop(intent.id, None)
+        if intent.reason and intent.reason.startswith("SOL_COVER") and self._cover_cycle:
+            self._cover_cycle["incomplete"] = True
+            self._cover_cycle["retry_after_ns"] = (ts_now or self.clock.timestamp_ns()) + 3_600_000_000_000
         self.pre_submit_gate_blocks.append({
             "timestamp": str(ts_now or 0),
             "intent_id": intent.id,
             "action": intent.action,
             "reason": reason,
         })
+        if intent.action == "BTC_ENTRY" and self._split_parent and self._split_parent["episode_id"] == intent.episode_id:
+            self._split_stop("LOCAL_DENIED:"+reason)
         self._daily_decision_reason = f"LOCAL_ENTRY_DENIED:{reason}"
         self._domain.on_parent_terminal(intent.id)
 
@@ -1731,7 +1762,7 @@ class WaveOverlayStrategy(Strategy):
             rounded = self._research_sol_cap_quantity(rounded, executable_price, ts_now or 0)
         if intent.action == "SOL_ADD" and self.config.research_sol_remaining_btc_hedge:
             rounded = self._research_sol_hedge_quantity(rounded, executable_price, ts_now or 0)
-        if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting and intent.action == "BTC_ENTRY" and rounded > 0:
+        if self.config.research_v0_execution_repairs and self.config.research_v0_zero_tp_netting and intent.action == "BTC_ENTRY" and rounded > 0 and not self._split_child_submit:
             episode = self._domain.episode
             if episode is None or episode.wave_levels is None:
                 raise ValueError("BTC_ENTRY_WAVE_LEVELS_MISSING")
@@ -1757,7 +1788,7 @@ class WaveOverlayStrategy(Strategy):
             else:
                 self._domain.on_parent_terminal(intent.id)
             return
-        if self.config.research_v0_selective_lifecycle_repairs and intent.action == "BTC_ENTRY":
+        if self.config.research_v0_selective_lifecycle_repairs and intent.action == "BTC_ENTRY" and not self._split_child_submit:
             cap = Decimal(str(self._candidate.max_parent_notional))
             rounded = min(rounded, (cap / executable_price // step) * step)
             episode = self._domain.episode
@@ -1783,10 +1814,15 @@ class WaveOverlayStrategy(Strategy):
                 self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
                 self._deny_local_entry(intent, "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM", now)
                 return
+        if intent.action == "BTC_ENTRY":
+            rounded = self._split_prepare(intent, rounded, step, ts_now or 0, sigma, decision_index)
         # Control A makes every planned SOL exit a native taker IOC.  Resting
         # post-only liquidity remains only for explicit BTC TP targets.
         passive_reduction = intent.action == "BTC_REDUCE" and intent.limit_price is not None
-        if passive_reduction:
+        split_limit = self._split_limit(intent, instrument, rounded) if intent.action == "BTC_ENTRY" else None
+        if split_limit is not None:
+            order = split_limit
+        elif passive_reduction:
             raw_price = Decimal(str(intent.limit_price)) if intent.limit_price is not None else executable_price
             # For a planned SOL z exit, quote at the passive side.  A target
             # BTC price is supplied by the confirmed-entry plan above.
@@ -1957,6 +1993,7 @@ class WaveOverlayStrategy(Strategy):
                 and not (self.config.deposit_runtime is not None and self._deposit.latched))
 
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
+        self._split_stop(reason)
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
         """Cancel every resting order before closing actual cache leaves taker."""
@@ -2059,6 +2096,7 @@ class WaveOverlayStrategy(Strategy):
             self.submit_order(order)
 
     def _submit_terminal_closes(self) -> None:
+        self._split_stop("TERMINAL")
         """Realize all remaining native positions on the terminal quote only."""
         trigger_ts = self._current_btc.ts_event if self._current_btc is not None else None
         self.terminal_lifecycle = {
@@ -2102,6 +2140,8 @@ class WaveOverlayStrategy(Strategy):
                     else Decimal("0")
                 )
                 prospective = current + (quantity if side == OrderSide.BUY else -quantity) if current_id == instrument_id else current
+                if self.config.research_btc_split50 or self.config.research_sol_cover:
+                    prospective = self._split_cover_margin_reserve(current_id, prospective, ts_now)
                 if prospective:
                     initial, maintenance, mark = policy.margin_for(current_id, prospective, ts_now)
                     required += initial + maintenance if self.config.research_v0_selective_lifecycle_repairs else initial
@@ -2224,6 +2264,8 @@ class WaveOverlayStrategy(Strategy):
                 raise ValueError("BTC_TP_ENTRY_FEE_CURRENCY_UNSUPPORTED")
             entry_fee = event.commission.as_decimal()
         self._h1_native_fill(intent, event)
+        self._split_native_fill(intent, event)
+        self._cover_native_fill(intent, event)
         self._apply_confirmed_domain_fill(
             intent, str(event.client_order_id), float(event.last_qty), float(event.last_px),
             event.ts_event, closed, entry_fee=entry_fee,
@@ -2301,7 +2343,7 @@ class WaveOverlayStrategy(Strategy):
 
     def _queue_confirmed_btc_targets(self, sigma: float | None, decision_index: int, ready_ns: int) -> None:
         """Queue every remaining confirmed-entry target for the next quote."""
-        if self._forced_close_reason is not None:
+        if self._forced_close_reason is not None or self._split_unfinished():
             return
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
@@ -2463,6 +2505,12 @@ class WaveOverlayStrategy(Strategy):
         self._terminal_without_fill(str(event.client_order_id))
 
     def _terminal_without_fill(self, client_order_id: str) -> None:
+        failed_intent = self._pending_by_order.get(client_order_id)
+        if failed_intent and failed_intent.reason and failed_intent.reason.startswith("SOL_COVER") and self._cover_cycle:
+            self._cover_cycle["incomplete"] = True
+            self._cover_cycle["retry_after_ns"] = self.clock.timestamp_ns() + 3_600_000_000_000
+        if failed_intent and failed_intent.action == "BTC_ENTRY" and self._split_parent and self._split_parent["episode_id"] == failed_intent.episode_id:
+            self._split_stop("NATIVE_DENIED_OR_REJECTED_OR_EXPIRED")
         self._terminal_submission(client_order_id)
         if client_order_id in self._v3_orders:
             self._v3_reduction_terminal(client_order_id, self.clock.timestamp_ns())
@@ -2556,6 +2604,7 @@ class WaveOverlayStrategy(Strategy):
         )
 
     def _start_deposit_exit(self, now_ns: int) -> None:
+        self._split_stop("DP")
         self._v3_reduction = None
         self._accepted_reductions.clear()
         self._discard_queued_intents(lambda _queued: True)

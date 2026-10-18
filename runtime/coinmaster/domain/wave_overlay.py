@@ -215,6 +215,7 @@ class Episode:
     side: Side
     active_entry: float
     beta_entry: float
+    btc_target_basis_qty: float | None = None
     btc_initial_qty: float = 0.0
     btc_open_qty: float = 0.0
     btc_entry_vwap: float | None = None
@@ -301,7 +302,7 @@ class WaveOverlayState:
     def _ensure_btc_targets(self, episode: Episode) -> None:
         if self.btc_lot_step is None or episode.btc_tp_target_lots:
             return
-        initial_lots = self._lots(episode.btc_initial_qty, self.btc_lot_step)
+        initial_lots = self._lots(episode.btc_target_basis_qty if episode.btc_target_basis_qty is not None else episode.btc_initial_qty, self.btc_lot_step)
         assigned = 0
         fractions = tuple(Decimal(str(value)) for value in self.config.btc_tp_fractions_initial_qty)
         full_exit = sum(fractions) == Decimal("1")
@@ -431,6 +432,8 @@ class WaveOverlayState:
         return self._sol_exits(episode, feature, bars[index], index, z)
 
     def _sol_exits(self, episode: Episode, feature: Features, bar: DailyBar, index: int, z: float | None = None) -> list[Intent]:
+        if getattr(self, "research_sol_cover", False):
+            return []  # The sole cover owner retains the permanent base.
         if episode.sol_qty and episode.sol_first_fill_at is not None and bar.close_time >= episode.sol_first_fill_at + timedelta(days=self.config.sol_max_holding_days):
             return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty, reason="SOL_HARD_TIMEOUT")]
         if z is None:

@@ -1,0 +1,62 @@
+# Independent narrow native money/order review
+
+2026-10-18. Verdict: BLOCK P2 computation until one correction pass and focused recheck. Scope: frozen split_cover.py, strategy/domain wave_overlay.py, research/native_baseline.py, test_native_split_cover.py. No full historical run, services, deployment, credentials, or orders. Combined existing test log confirms 126 passed; the gaps below are not covered by that result.
+
+1. **Missing hourly drift rebalance.** `runtime/coinmaster/strategy/split_cover.py:260-271` keys budget only by actual BTC quantity and tactical state, retaining an obsolete target indefinitely when BTC/SOL prices diverge. Plan section4.2 requires closed1H price-drift review and practical5pp coverage tolerance. Add hourly causal rebalance eligibility, preserving immediate actual BTC-fill/TP updates and unresolved-order ownership. Verify unchanged-quantity price drift both ways and no minute churn.
+2. **Mandatory daily close suppressed while BTC parent unfinished.** `runtime/coinmaster/strategy/wave_overlay.py:1143-1145` returns before daily REGIME/TRAIL/close decisions. A pending parent cannot prevent mandatory close evaluation; next-day stop in split_check is later and does not itself replay the omitted daily close. Evaluate mandatory decisions while suppressing ordinary TP/entry work; prove incomplete parent plus regime change/close cancels entry before settlement.
+3. **Legacy SOL hard timeout remains a competing owner.** `runtime/coinmaster/domain/wave_overlay.py:385-388,435-436` runs the14-day SOL timeout before the overlay-enabled gate. SOL-COVER disabling the old overlay does not disable that exit. `_cover_check` unchanged-budget suppression (`split_cover.py:260-271`) can leave permanent base absent afterward. Route SOL-COVER out of the old SOL lifecycle while preserving BTC/group emergency closes; prove an open BTC/cover episode beyond14days has only the coverage owner.
+4. **Pause/resume can permanently omit base.** `runtime/coinmaster/strategy/split_cover.py:270-278` commits budget before the SOL_ADD entry gate. If the first base check occurs paused, incomplete remains unset; every resumed quote returns on identical budget. Existing native fixture reproduced BTC100/SOL0 after paused quote then two resumed quotes. Keep unmet base target retryable under a controlled policy; also cover rejected/partial/canceled native children without duplicate unknown-ACK orders.
+5. **Tactical profitability basis is not actual fills.** `runtime/coinmaster/strategy/split_cover.py:240-247` sets tactical entry from the submit quote, estimates entry fees, and can mark used before an actual fill. Plan section4.3 requires positive result after trading fees. Accumulate tactical actual native fill quantity/notional/commission in the existing callback, use actual VWAP/known entry fees plus explicit exit-fee estimate for the exit trigger, preserve UNKNOWN honestly and never create a second PnL engine. Verify partial fills/slippage/fees and zero-fill denied tactic.
+6. **Tactical residual retries escape original entry conditions.** `runtime/coinmaster/strategy/split_cover.py:235-242,260-282` checks4h/price quality only when first activating tactical, then retries an incomplete target under latched tactical/used state. Revalidate time, price, actual BTC and cap for each risk-increasing tactical child; prove delayed partial retry after4h or lost price advantage cannot add optional risk. Base remains independently mandatory.
+7. **Accepted-net child quantity normalization guard.** `runtime/coinmaster/strategy/wave_overlay.py:1761-1779` would repeat zero-TP netting for split children already sized as accepted net lots, rewriting reference/planned quantities. This branch is unreachable in the approved deferred-selective V3 launch profile; it is a defensive accepted-Q contract gap, not an observed V3 economics bug. Guard initial normalization against `_split_child_submit` and test omitted zero levels preserving original reference/H, plannedQ and total actual fills.
+
+One-lot parent exception (immediate one lot) is accepted if documented and tested. Existing use of native cache/order maps for unresolved ACK, cancel-before-fallback, actual position reduction caps and full BTC+mandatory base margin reservation is directionally correct. No GO for corrected code is implied until focused recheck. Existing minute-close quote and native execution limitations remain; no ideal fill or synthetic monetary result is accepted.
+
+## Corrected targeted recheck — 2026-10-18
+
+**GO for the isolated research computation gate.** This supersedes the initial BLOCK for the frozen source hashes below. It is not a trading/deployment approval or an economic acceptance result. Recheck limited to the seven findings, implementation contract, corrected native fixtures/logs, and a quick static safety review of the prepared launch helper. No full suite rerun, full historical calculation, service action, or helper launch was performed by this reviewer.
+
+- Hourly drift: `strategy/split_cover.py:284-304` checks a new completed paired1H, archives actual versus desired coverage, and retargets beyond5pp; immediate BTC/tactical changes remain separate. Focused native regression `tests/test_native_split_cover.py:490` proves no minute churn then causal next-hour retarget.
+- Mandatory close: `strategy/wave_overlay.py:1188-1197` restores the unresolved logical parent into the existing domain pending lock without suppressing mandatory pre-lock REGIME/TRAIL decisions. Existing forced-close path cancels parent first. Regression at `tests/test_native_split_cover.py:425` covers both reasons and actual native flat settlement.
+- Sole SOL owner: `strategy/wave_overlay.py:243` sets the research-only domain flag; `domain/wave_overlay.py:435-436` suppresses old SOL exits while existing BTC/group emergency ownership is retained. Native beyond-timeout regression at test line442 passes.
+- Paused/denied base: `strategy/split_cover.py:309-317` retains incomplete target before admission and does not consume the budget while paused; `strategy/wave_overlay.py:1685-1687,2509-2511` provides explicit1H failed-admission cooldown. Native tests at457/472 prove resumed immediate base and controlled rejection retry.
+- Tactical actual basis: `strategy/split_cover.py:191-204` accumulates actual native SOL_ADD fills and quote-currency commissions; missing evidence raises rather than inventing zero fees. `:257-264` uses that quantity/notional/fee basis plus an explicit taker exit estimate for positive anchor-return eligibility. Test at521 verifies actual native partial quantity/notional/fees and a fee-negative anchor return retaining tactic until mandatory expiry.
+- Tactical residual eligibility: `strategy/split_cover.py:266-283,300-301` rechecks4h, UTCexpiry and price quality, caps optional risk to already held exposure when invalid, and cancels pending tactical adds before a competing reduction. The partial regression at521 proves no bad-price or expired-window fallback and mandatory expiry preserving the current base.
+- Admitted Q/reference: `strategy/wave_overlay.py:1765,1791` guards initial normalization/cap against a split child. Native omitted-zero tests at379 cover deferred approved profile and defensive initial-net branch: acceptedQ78.75 across two children, original referenceQ100, unchanged reference targets and actual-fill rights denominator. H correctly retains the original grossReferenceQ*actualVWAP/beta formula; H money value is not frozen to the first price. One-lot exception is explicit at `strategy/split_cover.py:99` and native test508.
+
+Evidence inspected: implementation-focused-corrected-tests.log **30passed**; implementation-corrected-tests.log **136passed**. These corrected logs, not the earlier126 result, cover the original findings.
+
+Helper `scripts/launch_split_cover_native.py` static review: lines60-72 verify shared650MiB/Swap0 slice, empty cgroup,700MiB memory/1GiB disk floors and exact protected pilot identity;77-103 preserve source/runtime and report-warmup layout and hash frozen sources/inputs;108-121 use env-i, bounded thread settings and exclusive flock;125-130 apply User994, private network, strict filesystem, readonly source/venv/data and job-only writes. Single-job safeguards are in both preflight cgroup check and runtime lock. Helper has not been executed; systemd mount/start behavior remains an operational launch check, and each result still needs native accounting/coverage/completion validation.
+
+Frozen reviewed SHA256:
+
+```
+017988ecb7e14aae0cbd263e15f8d9ffe7eb0de30d5496ff5e5c25252dfe6835  runtime/coinmaster/strategy/split_cover.py
+4b25b6f72b8420823d2596a2a09394cf4f31a981773f0552b364562b69d26765  runtime/coinmaster/strategy/wave_overlay.py
+5a52a015bdb689a6d4c063dabda379b8e621bdb08cddcd05da12c4789b2db7b5  runtime/coinmaster/domain/wave_overlay.py
+44db98a90dc1f4cf3aa1d86ccb95ec25dfa98b58d2f921d54e5b216d4d139abc  runtime/coinmaster/research/native_baseline.py
+f111b9d35afccc2a590bd959ed10304256c368f8c2bd2e140bb9959b43ecaceb  runtime/tests/test_native_split_cover.py
+ee7de8084ce52fea13bd6b3684bd63a85253cba0eed48fbcd7541adaf0874e63  scripts/launch_split_cover_native.py
+```
+
+## Final causal anchor recheck — 2026-10-18
+
+**GO retained for isolated research computation**, with the two updated source pins below superseding their prior hashes. Scope only: actual BTC presence before creating SOL cycle, actual native initial-base fill VWAP/clock, no premature tactical arming, and frozen initial-base anchor after completion. No broad audit or full suite rerun.
+
+`strategy/split_cover.py:233-241` now leaves cycle absent when BTC has no actual native position; a new cycle has anchorNone. `:195-209` accumulates only initial BASE actual fill quantities/notionals up to the fixed initial base budget, computes their real VWAP, sets4h start from the first actual fill and archives receipt evidence. `:264-269,286-288` requires the initial base anchor budget complete before tactical arming/admission. Later base fills cannot rewrite the completed anchor. Existing flat-cycle handling remains outside the new-cycle guard.
+
+Native cases `tests/test_native_split_cover.py` test_pending_btc_without_native_fill_does_not_start_sol_anchor_or_tactic_window and test_initial_base_anchor_is_actual_native_partial_fill_vwap_and_freezes verify no anchor on unfilled BTC intention, submitquote100 versus actual partial101/102 VWAP, firstfill timestamp5, and unchanged anchor after hourly resize. Inspected implementation-focused-final-tests.log: **32passed**. Previous136combined result remains evidence for otherwise unchanged reviewed source; final anchor patch has32focused validation.
+
+```
+0cb6de91e49e1b28d5383a8a487cdefa396ff32223037cdacc4f10d622cf13d4  runtime/coinmaster/strategy/split_cover.py
+419e988563332e6743b9b5032155f683fa210eab5aeae40854c7080b69074a0f  runtime/tests/test_native_split_cover.py
+```
+
+Other reviewed pins and the helper static-review limitation are unchanged.
+
+Whitespace-only finalization: removed extra blank EOF from test/helper; no executable change or test rerun. These hashes supersede the same paths above; GO unchanged.
+
+```
+df23f697e96e6dead679e2fee25f18f3aca7cf0d0635ae6e9cdcc562d0e98a98  runtime/tests/test_native_split_cover.py
+2b879fb37b47683ff1a252a146673ddef8a6e63853cec7f25e460d592f64b1df  scripts/launch_split_cover_native.py
+```

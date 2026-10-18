@@ -677,6 +677,9 @@ def run_native_diagnostic(
     research_btc_drawdown_sizing: bool = False,
     research_v3_risk: str | None = None,
     research_h1_b1: str | None = None,
+    research_btc_split50: bool = False,
+    research_btc_split_discount: str = "0.0025",
+    research_sol_cover: str | None = None,
     research_btc_episode_loss_20: bool = False,
     research_sol_remaining_btc_hedge: bool = False,
 ) -> dict:
@@ -708,7 +711,7 @@ def run_native_diagnostic(
     if (research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_drawdown_sizing or research_v3_risk or research_h1_b1) and not observe_minute_risk:
         raise ValueError("PORTFOLIO_PROTECTION_REQUIRES_PRE_ACTION_MINUTE_OBSERVER")
     candidate = candidate or Candidate()
-    if research_h1_b1 == "h1":
+    if research_h1_b1 == "h1" or research_sol_cover:
         candidate = replace(candidate, sol_overlay_enabled=False)
     policy = execution_policy or ExecutionPolicy()
     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
@@ -760,12 +763,12 @@ def run_native_diagnostic(
     confirmation_bars = tuple(BarType.new_composite(
         instrument.id, BarSpecification(15 if minutes == 15 else 1, BarAggregation.MINUTE if minutes == 15 else BarAggregation.HOUR, PriceType.LAST),
         AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL,
-    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 else ()
+    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 or research_sol_cover else ()
     minute_bars = {instrument.id: BarType(instrument.id, BarSpecification(1, BarAggregation.MINUTE, PriceType.LAST), AggregationSource.EXTERNAL)
                    for instrument in (btc_instrument, sol_instrument)}
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
-        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 else {})))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1))
+        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover else {})))
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover))
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
@@ -775,6 +778,23 @@ def run_native_diagnostic(
         from coinmaster.research.minute_risk import NativeMinuteRiskRecorder, observed_strategy_type
         risk_recorder = NativeMinuteRiskRecorder(artifacts_root / "minute-native-risk.csv.gz", initial_active_seed, (btc_instrument, sol_instrument), dict(selected_leverage), trading_end_ms * 1_000_000)
         strategy_type = observed_strategy_type(WaveOverlayStrategy, risk_recorder)
+    cover_hour_seed = ()
+    cover_warmup_hashes = {}
+    if research_sol_cover:
+        import csv
+        warmup_root = Path(__file__).resolve().parents[3] / "reports/btc-split-sol-cover-20261018"
+        paired = {}
+        for symbol in ("BTCUSDT", "SOLUSDT"):
+            source = warmup_root / f"data-warmup-{symbol}-1h.csv"
+            cover_warmup_hashes[symbol] = sha256_file(source)
+            with source.open() as handle:
+                rows = list(csv.DictReader(handle))
+            paired[symbol] = {int(r["open_time_ms"])+3_600_000: float(r["close"]) for r in rows
+                              if int(r["open_time_ms"])+3_600_000 <= trading_start_ms}
+        timestamps = sorted(set(paired["BTCUSDT"]) & set(paired["SOLUSDT"]))[-721:]
+        if len(timestamps) != 721 or any(b-a != 3_600_000 for a,b in zip(timestamps,timestamps[1:])) or timestamps[-1] != trading_start_ms:
+            raise ValueError("COVER_EXACT_720_HOURLY_RETURNS_REQUIRED")
+        cover_hour_seed = tuple((t*1_000_000,paired["BTCUSDT"][t],paired["SOLUSDT"][t]) for t in timestamps)
     strategy = strategy_type(WaveOverlayStrategyConfig(
         btc_id=btc_instrument.id, sol_id=sol_instrument.id,
         btc_bar_type=kind(btc_instrument.id, PriceType.LAST), sol_bar_type=kind(sol_instrument.id, PriceType.LAST),
@@ -787,6 +807,10 @@ def run_native_diagnostic(
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
         research_h1_b1=research_h1_b1,
+        research_btc_split50=research_btc_split50,
+        research_btc_split_discount=Decimal(research_btc_split_discount),
+        research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
+        research_cover_hour_seed=cover_hour_seed,
         research_confirmation_bars=confirmation_bars,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
         research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
@@ -813,7 +837,7 @@ def run_native_diagnostic(
             marks, signals, quotes, source_bars = [], [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
-                if research_h1_b1:
+                if research_h1_b1 or research_sol_cover:
                     for instrument, row in ((btc_instrument, minute.btc_execution), (sol_instrument, minute.sol_execution)):
                         source_bars.append(Bar(minute_bars[instrument.id],
                             instrument.make_price(row["open"]), instrument.make_price(row["high"]),
@@ -936,6 +960,14 @@ def run_native_diagnostic(
             }
         if not early_liquidation_cutoff:
             assert_report_boundaries(result)
+        if research_btc_split50 or research_sol_cover:
+            result["split_cover_audit"] = strategy._split_cover_report()
+            result["config"]["research_btc_split50"] = research_btc_split50
+            result["config"]["research_btc_split_discount"] = research_btc_split_discount
+            result["config"]["research_sol_cover"] = research_sol_cover
+            result["config"]["cover_hour_warmup_sha256"] = cover_warmup_hashes
+            result["config_hash"] = hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
+            result["source_hashes"]["split_cover"] = sha256_file(Path(__file__).resolve().parents[1]/"strategy/split_cover.py")
         if research_h1_b1:
             result["h1_b1_audit"] = strategy.h1_b1_audit
         if research_v3_risk:
@@ -1096,7 +1128,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1140,6 +1172,10 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         label = "v0-selective-lifecycle-cap30m"
     if research_sol_notional_cap_6x:
         label += "-solcap6"
+    if research_btc_split50:
+        label += "-btc-split50-d" + research_btc_split_discount
+    if research_sol_cover:
+        label += "-sol-cover" + research_sol_cover
     if research_h1_b1:
         label += "-" + research_h1_b1
     if research_v3_risk:
@@ -1169,6 +1205,9 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_btc_drawdown_sizing=research_btc_drawdown_sizing,
         research_v3_risk=research_v3_risk,
         research_h1_b1=research_h1_b1,
+        research_btc_split50=research_btc_split50,
+        research_btc_split_discount=research_btc_split_discount,
+        research_sol_cover=research_sol_cover,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
         research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
     )
@@ -1179,6 +1218,9 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--research-btc-split50", action="store_true")
+    parser.add_argument("--research-btc-split-discount", choices=("0.0025","0.005"), default="0.0025")
+    parser.add_argument("--research-sol-cover", choices=("0.5","0.75","1"))
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
     parser.add_argument("--diagnostic-no-funding", action="store_true")
     parser.add_argument("--diagnostic-with-prior-minute-funding", action="store_true")
@@ -1228,6 +1270,9 @@ def main() -> None:
             research_btc_drawdown_sizing=args.research_btc_drawdown_sizing,
             research_v3_risk=args.research_v3_risk,
             research_h1_b1=args.research_h1_b1,
+            research_btc_split50=args.research_btc_split50,
+            research_btc_split_discount=args.research_btc_split_discount,
+            research_sol_cover=args.research_sol_cover,
             research_btc_episode_loss_20=args.research_btc_episode_loss_20,
             research_sol_remaining_btc_hedge=args.research_sol_remaining_btc_hedge,
         )

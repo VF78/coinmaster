@@ -1,0 +1,81 @@
+{
+  "label": "v3",
+  "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-sizing-v3-20261011/result/v0-selective-lifecycle-cap30m-btc-direction.json",
+  "sha256": "caa6b209142f4a005f8cd73ee00d030bd841c6a9669e98c971b15f93c36c902a",
+  "terminal_total": "5437208.56951095",
+  "terminal_active": "5437208.56951095",
+  "terminal_reserve": "0",
+  "roi_percent": "54272.085695109500",
+  "global_marked_dd_percent": "67.28630644841043826206055609",
+  "minimum_equity": {
+    "equity": "4514.69512879",
+    "timestamp_ns": "1727970240000000000"
+  },
+  "liquidation_count": 0,
+  "native_fees": "1091093.07886765",
+  "actual_fees_by_asset": {
+    "BTC": "1072814.89050625",
+    "SOL": "18278.1883614"
+  },
+  "actual_fees_by_asset_liquidity": {
+    "BTC_TAKER": "996130.70273223",
+    "BTC_MAKER": "76684.18777402",
+    "SOL_TAKER": "18278.1883614"
+  },
+  "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "funding_count": 1321,
+  "liquidation_rule": "Read unchanged native policy; minute close marked DD is separate from OHLC adverse bounds and proves no intraminute DD cap",
+  "cash_drawdown_summary": {
+    "drawdown_basis": "NATIVE_CASH_ACCOUNT_SERIES",
+    "drawdown_start": "2026-05-03 20:37:00+00:00",
+    "drawdown_trough": "2026-08-19 00:00:00+00:00",
+    "max_drawdown_amount": "3638904.64080373",
+    "max_drawdown_percent": "0.4131702402530904598150073495"
+  },
+  "liquidation_policy": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+  "parents": 105,
+  "split_parent_count": 0,
+  "entry_sizing_count": 105,
+  "parent_side_counts": {
+    "-1": 52,
+    "1": 53
+  },
+  "filled_equals_plan_count": 105,
+  "unfilled_or_partial_count": 0,
+  "filled_plus_cancelled_equals_plan_count": 0,
+  "v3_same_day_matches": 105,
+  "changed_quantity_vs_v3": 0,
+  "plan_integrity_limit": "Cancelled is native quantity; filled+cancelled conservation separately checked. UnknownACK/order constraints require native fixtures.",
+  "native_asset_realized_pnl": "UNKNOWN_NATIVE_SETTLED_PERASSET_NOT_EXPORTED",
+  "fill_attribution": "Separate confirmed-fill attribution is diagnostic, excludes funding; asynchronous callback cash cannot be allocated to asset PnL.",
+  "trace_streamed": false,
+  "confirmed_fill_weighted_average_attribution": {
+    "BTC": {
+      "gross": "5766059.6913",
+      "actual_fees": "1072814.89050625",
+      "net_ex_funding": "4693244.80079375",
+      "terminal_net_qty": "0.000"
+    },
+    "SOL": {
+      "gross": "706602.3239999999999999999998",
+      "actual_fees": "18278.1883614",
+      "net_ex_funding": "688324.1356385999999999999998",
+      "terminal_net_qty": "0.0"
+    }
+  },
+  "unmatched_native_fill_sides": [],
+  "attribution_method": "Native fills actual prices/quantities/side, weighted average linear confirmedfill diagnostic; not authoritative native settled perasset PnL. Funding UNKNOWN; cash delta residual unallocated.",
+  "confirmed_fill_asset_attribution_ex_funding": {
+    "BTC": {
+      "net": "4693244.80079375",
+      "method": "Existing reviewed confirmed-native-fill attribution, NOT native settled perasset PnL"
+    },
+    "SOL": {
+      "net": "688324.1356385999999999999980",
+      "method": "Existing reviewed confirmed-native-fill attribution, NOT native settled perasset PnL"
+    }
+  },
+  "unallocated_cash_residual_not_funding": "45639.633078600000000000002",
+  "resource_peak_rss_kib": 26956,
+  "comparison_method": "Compare actual native terminal values. No priceproxy savings added. Same-run netplannedQ conservation separate from crossrun compoundingQ differences."
+}
