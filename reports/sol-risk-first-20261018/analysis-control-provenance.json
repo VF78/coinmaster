@@ -1,0 +1,73 @@
+{
+  "status": "REUSED_ARCHIVED_CONTROL_AND_EXACT_ECONOMIC_REPEAT_SHA_VERIFIED",
+  "canonical_HEAD_at_prepare": "cfcac1cfa2774a6c9adb3dabb851a927513bc224",
+  "verified_utc": "2026-10-18T18:35:58.041486+00:00",
+  "control": {
+    "receipt": "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-receipt.json",
+    "receipt_sha256": "4cb3edf8a90203ea49a0d018f02b1ab6bc15de78db09e900f6eb5e1d10af6cee",
+    "result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "result_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "canonical_input_hashes": {
+      "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+      "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+    }
+  },
+  "repeat": {
+    "receipt": "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-repeat-receipt.json",
+    "receipt_sha256": "478474a6bcebb3c74eeea52331dae669b259f94732416ba5f2a05b8b48f6fcba",
+    "result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-repeat-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "result_sha256": "40a702986e5e14a8ad98ecbfff632f7b009310a9de5bc707dd028e42eec63ad1",
+    "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "canonical_input_hashes": {
+      "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+      "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+    }
+  },
+  "repeat_proof": {
+    "path": "reports/btc-split-sol-cover-20261018/final-repeat-verification.json",
+    "sha256": "9284fc17abd03d73de77a69055435c242976f24a5ed75ffe0631c53d68449046",
+    "checks_exact_pass": 26,
+    "raw_JSON_identity_expected": false
+  },
+  "metrics": {
+    "TOTAL": "6077107.23887483",
+    "ROI_percent": "60671.0723887483",
+    "global_marked_DD_percent": "66.31878024969152066570091116",
+    "minimum_equity": "4530.57414701",
+    "conditional_OHLC_upper_strictly_later_lower_DD_percent": "67.54771031869252420136632742",
+    "native_fees": "945927.73761825",
+    "fills": 621,
+    "BTC_parents": 105,
+    "liquidations": 0,
+    "terminal_open_positions": 0,
+    "native_observer_samples": 3153599
+  },
+  "comparison_contract": {
+    "order": [
+      "cap50",
+      "dd-cov",
+      "split-atr"
+    ],
+    "flag": "research_sol_risk_first mutuallyexclusive/defaultOFF; oldconditional2/1/50OFF; selectedBTCflagsrequired",
+    "period": "[2024-09-01,2026-09-01)",
+    "seed_USDT": "10000",
+    "reserve": "0",
+    "DP": "OFF",
+    "expected_rows_per_source": 1051200,
+    "risk_primary": "all_native_close_samples globalnativecash+uPnL, fullinterval/peakneverreset",
+    "OHLC": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER; separate/notactualintraminute",
+    "funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA unless newdirectsignedcashdelta proof",
+    "ranking": "MaximumTOTAL among validcomparable variants with globalnative1mDD<=50%; strictfullinterval. Noeligible -> нетпобедителяпоусловию",
+    "initial_analysis_status": "PENDING_INTEGRITY_REVIEW until engineactualnativeorder/authority proof",
+    "trace_budget": "Reusefullcollectorcompactrisk; noautomatictrace read. If specificallyneeded/authorized, max1streamingobserverpass pervariant withhash/phase/rows/resultreceipt; noassetuPnL/PnLreconstruction",
+    "owners": "Engine runtime/core/tests/sourcefreeze/run1→3→2/collector/orderaudit/receipts/resolvedparams. Stats onlyanalysis-* and oneanalyze-comparison.py here. Rootcommits/state/Project; no pilot/deploy bystats"
+  },
+  "verification_limits": "Only2smallrawresultSHA reread andexisting26checkproof; no freshcontrol/nativeengine/bulkparquet/trace audit. Candidate economic/sourcecomparability requiresfrozenvariantreceipt, notassumed fromsamecontrol."
+}

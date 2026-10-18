@@ -75,11 +75,17 @@ def main():
         "disk_free_after":shutil.disk_usage(job).free,"pilot_after":pilot,
         "scope":"RESEARCH_ONLY_NATIVE_ACCOUNTING_DIAGNOSTIC_NO_PRODUCTION_PROMOTION",
     }
-    if result.get("config",{}).get("research_conditional_sol"):
-        audit=result.get("conditional_sol_audit")
+    if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first"):
+        audit_key="risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
+        audit=result.get(audit_key)
         if not isinstance(audit,list):
-            raise ValueError("CONDITIONAL_NATIVE_AUDIT_MISSING")
-        receipt["conditional_sol_audit"]={"event_count":len(audit),"sha256":hashlib.sha256(json.dumps(audit,sort_keys=True,separators=(",",":")).encode()).hexdigest(),"included_in_result_sha256":True}
+            raise ValueError("SOL_POLICY_NATIVE_AUDIT_MISSING")
+        receipt[audit_key]={"event_count":len(audit),"sha256":hashlib.sha256(json.dumps(audit,sort_keys=True,separators=(",",":")).encode()).hexdigest(),"included_in_result_sha256":True}
+        if result.get("config",{}).get("research_sol_risk_first")=="split-atr":
+            parents=result.get("risk_first_sol_parents",[])
+            if any(D(p["filled"])+D(p["cancelled"])!=D(p["quantity"]) or not p["closed"] or any(p["pending"]) for p in parents):
+                raise ValueError("SOL_SPLIT_PARENT_NOT_CONSERVED_OR_PENDING")
+            receipt["risk_first_sol_parent_conservation"]={"parents":len(parents),"all_closed_conserved":True}
         journal=Path(result["funding_journal"]).resolve()
         if job not in journal.parents or not journal.is_file():
             raise ValueError("FRESH_JOB_FUNDING_JOURNAL_REQUIRED")

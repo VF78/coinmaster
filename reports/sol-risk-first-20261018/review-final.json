@@ -1,0 +1,60 @@
+{
+  "verdict": "GO_SEPARATE_ISOLATED_NATIVE_RUNS_CAP50_THEN_DD_COV_THEN_SPLIT_ATR",
+  "scope": "Final bounded correction/evidence recheck of3preproof findings + actualnewhost/controlreplayparity + causality/nativeequity boundaries. No reviewer edits/runtime tests/engine runs or new total audit.",
+  "base_commit": "cfcac1cfa2774a6c9adb3dabb851a927513bc224",
+  "economic_control_source": "d83e8faccdeeba26f1f4b454fdc07074f4213271",
+  "receipt_sha256": "8b70963e1e810002c07b9ce108f8e61f8dcc05e6997307e5d7291243a7e37744",
+  "patch_sha256": "a33ff06d39260c11f4ae10e805cf98b2bb85ace06d78e13f30f2f2b9b582214d",
+  "contract_sha256": "063203ae1b181af73811a65ed94c6100933cfa7947ff782e6c517244290154d9",
+  "verified_source_hashes": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "534593d9fe446129e009837b659452e6358dab9a3bdb7a45edb0678d9771b16f",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "909da9a7384a039cdf76e39f6d3034d46faa49e6bb7b18b9834687425d62cd03",
+    "runtime/coinmaster/strategy/wave_overlay.py": "c56985083d467b28cad591fe610fa23950bb0682b19dad691d964d997b84a9d2",
+    "runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+    "runtime/coinmaster/research/native_baseline.py": "331229d40a37350b06b77d07e217f07151a18b3b1b61494fa274f1d9aff70444",
+    "runtime/coinmaster/research/minute_risk.py": "961c65c7894bf37e8bf79fcc3f085be35502515c6c0eb5d457078610b540d2f7",
+    "runtime/tests/test_native_sol_risk_first.py": "171d02ec09703f3762177a515df685714bba3c5303062c9bd35e2e91cbaefcee",
+    "scripts/launch_split_cover_native.py": "7942ab77c430462b9f7f44522be75daba7826137f4e6ad7638d754557df6dc84",
+    "scripts/collect_split_cover_native.py": "b78ca326dc7e5dbf1f2f75eee5ec31d66cc4f773b102968f4fe1ac413c66f2ac",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/tests/test_native_conditional_hedge.py": "3780ac12bbd06da3a80e947a4046e505267d05a5b1a1fe3d1ccc9001d0331063"
+  },
+  "findings": [],
+  "resolved_preproof": [
+    {
+      "id": "H2_CHILD_Q_OVERRIDE",
+      "status": "RESOLVED",
+      "evidence": "wave_overlay.py:1773-1778 honors SOLchild override before requested-notional sizing; native both-side fixednotional parent/partial/postonlyreject/TTL/1pp and unknownACK+latefill fullclose tests pass"
+    },
+    {
+      "id": "H3_FLAT_CEILING_AUTHORITY",
+      "status": "RESOLVED",
+      "evidence": "risk_first_sol.py:163 BTCflat ceiling latches actual transition only; freshOauth clears at85. Native stage0BTCflat lateadd5 and lowerstage laterquote/noautoreadd pass"
+    },
+    {
+      "id": "H3_MIXED_MARK_PEAK",
+      "status": "RESOLVED_FOR_OBSERVED_RESEARCH_HOST",
+      "evidence": "minute_risk.py:168-169 passes alreadycomputed nativeequity to state-only callback. Observed strategy attribute disables independent mark sampling. Callback only peak/DD/stage/audit; no orders, changedvaluation, cadence/schema or money ledger."
+    }
+  ],
+  "native_replay_parity": "All3actualtwoepisodeinertnewhosts: selectedBTCsplit/positiveTPIOC+originalSOLhalf/full nativeordertypes/TIF/postonly/reduceqty/status/timestamps and fillsactualprice/qty/liquidity/fees/nativecash/clocks exact against controlbar_executionTrue despite newbars/cache/bar_executionFalse.",
+  "verification": {
+    "summary": "163 passed, 522 warnings in 20.91s",
+    "risk_first_cases": 24,
+    "existing_relevant_cases": 139,
+    "unit": "cm118-risk-first-relevant-verification-20261018",
+    "log": "relevant-native-verification.log",
+    "log_sha256": "194abf6035f8749b6c122626831a3d88be51638c4f0b339982bb767c775838db",
+    "resources": "MemoryMax256MiB/Swap0/CPUWeight10/PrivateNetwork/NoNewPrivileges/env-i",
+    "journal": "Started cm118-risk-first-relevant-verification-20261018.service - /bin/sh -c \"exec /usr/bin/env -i HOME=/tmp PATH=/usr/bin:/bin PYTHONPATH=. .venv/bin/python -m pytest tests/test_native_sol_risk_first.py tests/test_native_conditional_hedge.py tests/test_native_split_cover.py tests/test_wave_overlay.py tests/test_native_baseline.py tests/test_native_minute_risk.py -q --tb=short > ../reports/sol-risk-first-20261018/relevant-native-verification.log 2>&1\".\ncm118-risk-first-relevant-verification-20261018.service: Deactivated successfully.\ncm118-risk-first-relevant-verification-20261018.service: Consumed 21.215s CPU time, 760.0K memory peak, 0B memory swap peak.\n",
+    "AST": "11PASS",
+    "whitespace": "PASS"
+  },
+  "acceptance_conditions": [
+    "Use frozen exclusivevariant launcher with observe-minute-risk ON, selectedBTC flags unchanged; oldconditional/cover/H1B1OFF, originalSOLON",
+    "dd-cov H3globalpeak uses existing recorder equity; direct unobserved strategy fallback is not the certified production observer sampling path",
+    "H1cap beta remains causal720Hvalidpositivebounded filter/frozen perepisode; H3rawcovariance minvariance factor positive and corr2/beta cap, not inversebeta/oldhardbetabounds",
+    "H2isnewacceptedgroup executionpolicy, notbaselineIOC-terminal cadence: fixedQ survives knownpartial/reject/Denied child untilTTL/lawfulness, unknownACK owns leaves and priorityexit waits terminal/latefill before freshquotefullclose"
+  ],
+  "limits": "GO only authorized bounded research, no production/live/economic acceptance. Fullresults must still prove native completion/Q/account/funding/permissions/volume/coverage and actualDD/TOTAL. Nointrabar safety or DD50 guarantee; source freezes required perrun."
+}

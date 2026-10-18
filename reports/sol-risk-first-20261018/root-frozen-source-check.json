@@ -1,0 +1,20 @@
+{
+  "status": "ROOT_FROZEN_PINS_LOG_PATCH_PASS",
+  "source_checks": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": true,
+    "runtime/coinmaster/strategy/conditional_hedge.py": true,
+    "runtime/coinmaster/strategy/wave_overlay.py": true,
+    "runtime/coinmaster/strategy/split_cover.py": true,
+    "runtime/coinmaster/research/native_baseline.py": true,
+    "runtime/coinmaster/research/minute_risk.py": true,
+    "runtime/tests/test_native_sol_risk_first.py": true,
+    "scripts/launch_split_cover_native.py": true,
+    "scripts/collect_split_cover_native.py": true,
+    "runtime/coinmaster/domain/wave_overlay.py": true,
+    "runtime/tests/test_native_conditional_hedge.py": true
+  },
+  "test_log_sha256": "194abf6035f8749b6c122626831a3d88be51638c4f0b339982bb767c775838db",
+  "verification_summary": "163 passed, 522 warnings in 20.91s",
+  "native_tests_rerun": false,
+  "full_runs_started": false
+}

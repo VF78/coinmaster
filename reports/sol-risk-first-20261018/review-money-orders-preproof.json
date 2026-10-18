@@ -1,0 +1,29 @@
+{
+  "verdict": "BLOCK_PRE_PROOF",
+  "scope": "One bounded implementation tradingdiff review; WIP code not frozen and native fixtures not yet complete. No reviewer code/index edits/tests/engine runs.",
+  "findings": [
+    {
+      "priority": "P1",
+      "id": "H2_CHILD_Q_OVERRIDE",
+      "evidence": "strategy/risk_first_sol.py:278 passes child entry_override_qty; strategy/wave_overlay.py:1764 honors override for BTC_ENTRY only and SOL requested_notional recalculates full original quantity",
+      "problem": "SOL child can submit whole acceptedQ rather than remaining leg budget, causing overfill/excess margin and violating fixedQ.",
+      "minimum_correction": "Apply explicit accepted SOL child quantity override before original requested-notional sizing; freeze initial groupQ once. Native firstpartial, siblings, cancel/fallback must conserve exactQ."
+    },
+    {
+      "priority": "P1",
+      "id": "H3_FLAT_CEILING_AUTHORITY",
+      "evidence": "strategy/risk_first_sol.py:71 clears ceiling for new lawful auth, but149 unconditionally relatches ceiling whenever notbqty",
+      "problem": "Fresh original auth or higherstage while BTCflat cannot clear ceiling as pinned. At stage0 freshlateO can remain accepted/pending without filling because target is capped at held every quote.",
+      "minimum_correction": "Latch ceiling on actual transition to BTCflat/lowerstage, retaining it until allowed reset. Verify BTCflatstage0 freshlateauth and lowerstage noautoreadd on laterquotes/hourly/BTCdecrease."
+    },
+    {
+      "priority": "P1",
+      "id": "H3_MIXED_MARK_PEAK",
+      "evidence": "strategy/risk_first_sol.py:35-41 accepts fresh but unequal mark timestamps and samples on each mark callback; existing v3 sampling checks paired current timestamps",
+      "problem": "Sequential BTC/SOL mark delivery can create an artificial portfolio highwater from one new mark and one old mark, permanently changing DD/stages.",
+      "minimum_correction": "Use synchronized causal paired marks for pre-fill equity highwater; prove same-timestamp sequential paired updates and global peak persistence across two BTC episodes."
+    }
+  ],
+  "additional_required_evidence": "Real selected-control vs risk-inert native parity including composite15m/hour data and bar_executionFalse path: BTC split/P0/TP IOC and originalSOL order/fill/liquidity/fees/cash semantics. Runner change is not automatically sameexecution. CLI selected-BTC flag validation exists; constructor has weaker direct-instantiation guard, disclose boundary.",
+  "contract": "H3 min((1-w)*Oref,Olive)+wQc and latched recovery ceiling remains pinned. DefaultOFF economic regression and causal720hour factor/globalnativeequity proof remain required. Risk-first variants untested until final frozen evidence."
+}

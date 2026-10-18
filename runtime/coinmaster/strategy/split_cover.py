@@ -48,7 +48,7 @@ class SplitCoverResearch:
         }
 
     def _cover_bar(self, bar):
-        if not self.config.research_sol_cover and not self.config.research_conditional_sol:
+        if not self.config.research_sol_cover and not self.config.research_conditional_sol and not self.config.research_sol_risk_first:
             return
         iid, ts = bar.bar_type.instrument_id, bar.ts_event
         if bar.bar_type.spec.aggregation == BarAggregation.HOUR:

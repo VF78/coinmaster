@@ -1,0 +1,72 @@
+{
+  "status": "FROZEN_RELEVANT_NATIVE_VERIFICATION_PASS_REVIEW_PENDING",
+  "base_commit": "cfcac1cfa2774a6c9adb3dabb851a927513bc224",
+  "economic_control_source": "d83e8faccdeeba26f1f4b454fdc07074f4213271",
+  "changed_source_files": [
+    "runtime/coinmaster/strategy/risk_first_sol.py",
+    "runtime/coinmaster/strategy/conditional_hedge.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/coinmaster/strategy/split_cover.py",
+    "runtime/coinmaster/research/native_baseline.py",
+    "runtime/coinmaster/research/minute_risk.py",
+    "runtime/tests/test_native_sol_risk_first.py",
+    "scripts/launch_split_cover_native.py",
+    "scripts/collect_split_cover_native.py"
+  ],
+  "source_hashes": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "534593d9fe446129e009837b659452e6358dab9a3bdb7a45edb0678d9771b16f",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "909da9a7384a039cdf76e39f6d3034d46faa49e6bb7b18b9834687425d62cd03",
+    "runtime/coinmaster/strategy/wave_overlay.py": "c56985083d467b28cad591fe610fa23950bb0682b19dad691d964d997b84a9d2",
+    "runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+    "runtime/coinmaster/research/native_baseline.py": "331229d40a37350b06b77d07e217f07151a18b3b1b61494fa274f1d9aff70444",
+    "runtime/coinmaster/research/minute_risk.py": "961c65c7894bf37e8bf79fcc3f085be35502515c6c0eb5d457078610b540d2f7",
+    "runtime/tests/test_native_sol_risk_first.py": "171d02ec09703f3762177a515df685714bba3c5303062c9bd35e2e91cbaefcee",
+    "scripts/launch_split_cover_native.py": "7942ab77c430462b9f7f44522be75daba7826137f4e6ad7638d754557df6dc84",
+    "scripts/collect_split_cover_native.py": "b78ca326dc7e5dbf1f2f75eee5ec31d66cc4f773b102968f4fe1ac413c66f2ac",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/tests/test_native_conditional_hedge.py": "3780ac12bbd06da3a80e947a4046e505267d05a5b1a1fe3d1ccc9001d0331063"
+  },
+  "patch_sha256": "a33ff06d39260c11f4ae10e805cf98b2bb85ace06d78e13f30f2f2b9b582214d",
+  "contract_sha256": "063203ae1b181af73811a65ed94c6100933cfa7947ff782e6c517244290154d9",
+  "verification": {
+    "summary": "163 passed, 522 warnings in 20.91s",
+    "risk_first_cases": 24,
+    "existing_relevant_cases": 139,
+    "unit": "cm118-risk-first-relevant-verification-20261018",
+    "log": "relevant-native-verification.log",
+    "log_sha256": "194abf6035f8749b6c122626831a3d88be51638c4f0b339982bb767c775838db",
+    "resources": "MemoryMax256MiB/Swap0/CPUWeight10/PrivateNetwork/NoNewPrivileges/env-i",
+    "journal": "Started cm118-risk-first-relevant-verification-20261018.service - /bin/sh -c \"exec /usr/bin/env -i HOME=/tmp PATH=/usr/bin:/bin PYTHONPATH=. .venv/bin/python -m pytest tests/test_native_sol_risk_first.py tests/test_native_conditional_hedge.py tests/test_native_split_cover.py tests/test_wave_overlay.py tests/test_native_baseline.py tests/test_native_minute_risk.py -q --tb=short > ../reports/sol-risk-first-20261018/relevant-native-verification.log 2>&1\".\ncm118-risk-first-relevant-verification-20261018.service: Deactivated successfully.\ncm118-risk-first-relevant-verification-20261018.service: Consumed 21.215s CPU time, 760.0K memory peak, 0B memory swap peak.\n",
+    "AST": "11PASS",
+    "whitespace": "PASS"
+  },
+  "consolidated_review_corrections": [
+    "SOLchildentry_override_quantityhonoredbeforeoriginalnotionalresize;fixedacceptedQandnativepartials/fallbackverified",
+    "H3BTCflatceilinglatchesonlyactualtransition;freshlawfuloriginalauthclearsceilingandcanaddatstage0",
+    "H3consumesexistingminuteobservercomputednativeequity;observermoney/cadence/schemaunchanged;nomixedmidmarkpeak"
+  ],
+  "native_acceptance": [
+    "All3inertnewhostswith15m/hourcompositeflows/cache/bar_executionFalsematchselectedcontrolTrueactualBTCsplit/positiveTPIOC/originalSOLhalf/fullorders,fills,liquidity,fees,cash,clocksacrosstwoepisodes",
+    "cap50nativebothsidesadmission/actualheldtrim/priceonlynochurn/BTCflatretainandlateauth",
+    "Native1000quotepartialrisktrim3000→2000→1000→333.3nonzerofloor,originalfillednotionalunchanged,nocompetingreduction",
+    "H3nativeglobalstages/hysteresis/noresurrection/recoveryceiling/BTCflatfreshOauth;hourlyfactorbufferandsmallactualBTCfillbypass",
+    "H2actualstreamed241external1mBars→completed15mWilderATRfreeze;nativepostonlylimits;BTC1ppcancelACKthenfixedresidualnativeTAKER",
+    "H2actualinitialIOCpartial,realpostonlyREJECTED,actualRiskEngineThrottleDENIED,unknownACK/cancel/lateactualfill/fullpriorityexit/nativeflat/accountfeesconservation",
+    "Realproduction2minrunnerforeachvariant+exactreportJSONserialization/freshobserverfullschema"
+  ],
+  "development_history": {
+    "focused_a": "7PASS3FAIL;fixtureunlawful100SOLauthorityandBTCvsSOLordercountassumptionslocalized",
+    "focused_b": "10PASS",
+    "focused_c": "11PASS7FAIL;nativecallbacktiming/leveragefixtureassumptionslocalized",
+    "focused_d": "15PASS3FAIL",
+    "focused_e": "18PASS",
+    "final_stream_added": "19PASS1FAIL;finalclosedtimebarrequiresnextclockevent;failedcaseonlyretestPASS",
+    "production_partial_added": "1PASS3FAIL;seed+2nativeobservations=3fixturecountcorrected",
+    "final_current_source": "163PASSsinglefullrelevantverification;noassertionsremovedorproductionmoney/risklimitsweakened"
+  },
+  "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "full_engine_launches": "NONE",
+  "source_frozen": true,
+  "git_index": "ROOT_OWNS_NOT_TOUCHED",
+  "files_not_owned": "Root.ops/README/Project,indexandstatsanalysisfilesuntouched"
+}

@@ -24,6 +24,7 @@ from nautilus_trader.trading.strategy import Strategy
 from coinmaster.domain.wave_overlay import btc_management_price
 from coinmaster.strategy.split_cover import SplitCoverResearch
 from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
+from coinmaster.strategy.risk_first_sol import SolRiskFirstResearch
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
 from coinmaster.venues.margin_policy import MarginMark, MarginPolicy
@@ -63,6 +64,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_cover: Decimal | None = None
     research_conditional_sol: bool = False
+    research_sol_risk_first: str | None = None
     research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
     research_h1_b1: str | None = None
     research_h1_adverse_fraction: Decimal = Decimal("0.025")
@@ -161,13 +163,16 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
         self._split_cover_init()
+        self._risk_first_init()
         self._conditional_init()
         self._cover_seed(config.research_cover_hour_seed)
+        if config.research_sol_risk_first is not None and (config.research_sol_risk_first not in {"cap50","dd-cov","split-atr"} or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or not config.candidate.sol_overlay_enabled):
+            raise ValueError("RISK_FIRST_REQUIRES_EXCLUSIVE_VARIANT_ORIGINAL_OVERLAY")
         if config.research_conditional_sol and (not config.research_btc_split_tp_ioc or not config.candidate.sol_overlay_enabled or config.research_sol_cover is not None or len(config.research_confirmation_bars)!=4):
             raise ValueError("CONDITIONAL_REQUIRES_SELECTED_BTC_ORIGINAL_SOL_AND_NATIVE_BARS")
         if config.research_btc_split_tp_ioc and (not config.research_btc_split_planref_v1 or config.tp_fee_floor_v1):
@@ -359,6 +364,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         if any(bar.bar_type == kind.standard() or bar.bar_type == kind for kind in self.config.research_confirmation_bars):
             self._cover_bar(bar)
             self._conditional_bar(bar)
+            self._risk_first_bar(bar)
             self._on_confirmation_bar(bar)
             return
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -1294,6 +1300,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
             self._v3_submit_reduction(tick)
             return
         if self.config.deposit_runtime is not None and self._deposit.latched:
+            self._risk_first_sol_stop("DP")
             self._split_stop("DP")
             if self.config.research_v0_deferred_selective_zero_tp:
                 self._discard_queued_intents(lambda queued: queued.action == "BTC_ENTRY")
@@ -1360,6 +1367,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         self._split_check(tick)
         self._cover_check(tick)
         self._conditional_check(tick)
+        self._risk_first_sol_check(tick)
         for item in list(self._queued_intents):
             intent, sigma, index = item
             if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
@@ -1697,7 +1705,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         return _native_account_money(account, free=True)
 
     def _deny_local_entry(self, intent: Intent, reason: str, ts_now: int | None) -> None:
-        if self.config.research_conditional_sol:
+        if self._conditional_enabled():
             self._conditional_failed(intent, ts_now or self.clock.timestamp_ns())
         self._selected_entry_audits.pop(intent.id, None)
         if intent.reason and intent.reason.startswith("SOL_COVER") and self._cover_cycle:
@@ -1715,6 +1723,19 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         self._domain.on_parent_terminal(intent.id)
 
     def _submit_intent(self, intent: Intent, bid_price: float, ask_price: float, sigma: float | None, decision_index: int, only_instrument: InstrumentId | None = None, ts_now: int | None = None, entry_override_qty: Decimal | None = None) -> None:
+        if self.config.research_sol_risk_first=="split-atr" and intent.action=="SOL_ADD" and not self._rf_sol_child and any(p["intent"].id==intent.id for p in self._rf_sol_parents):
+            return  # Accepted logical group identity is idempotent.
+        if self.config.research_sol_risk_first=="split-atr" and intent.action in {"SOL_HALF_EXIT","SOL_EXIT"}:
+            if self._risk_first_sol_stop(intent.reason or intent.action):
+                self._rf_sol_waiting_exits.add(intent.id)
+                if not any(q[0].id==intent.id for q in self._queued_intents):self._queued_intents.append((intent,sigma,decision_index))
+                return
+            if intent.id in self._rf_sol_waiting_exits:
+                self._rf_sol_waiting_exits.discard(intent.id)
+                if intent.action=="SOL_EXIT":
+                    held=next((p.quantity.as_decimal() for p in self.cache.positions_open() if p.instrument_id==self.config.sol_id),Decimal(0))
+                    intent=replace(intent,quantity=float(held),requested_notional=None)
+                    if self._domain.episode is not None:self._domain.episode.pending[intent.id]=intent
         if self.config.deposit_runtime is not None and self._deposit.latched:
             self._domain.on_parent_terminal(intent.id)
             return
@@ -1749,11 +1770,11 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         side = OrderSide.BUY if intent.side == 1 else OrderSide.SELL
         executable_price = Decimal(str(ask_price if side == OrderSide.BUY else bid_price))
         quantity = intent.quantity
-        if intent.action == "BTC_ENTRY" and entry_override_qty is not None:
+        if (intent.action == "BTC_ENTRY" or intent.action == "SOL_ADD" and self._rf_sol_child) and entry_override_qty is not None:
             quantity = entry_override_qty
         elif intent.action == "BTC_ENTRY" and intent.requested_notional is not None:
             quantity = float(Decimal(str(intent.requested_notional)) / executable_price)
-        if intent.action == "SOL_ADD" and intent.requested_notional is not None:
+        if intent.action == "SOL_ADD" and intent.requested_notional is not None and not self._rf_sol_child:
             quantity = float(Decimal(str(min(intent.requested_notional, self._candidate.max_parent_notional))) / executable_price)
         if quantity is None or quantity <= 0:
             if intent.action == "BTC_ENTRY":
@@ -1820,8 +1841,9 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
             if rounded <= 0:
                 self._deny_local_entry(intent, "PARENT_CAP_BELOW_STEP", ts_now)
                 return
-        if self.config.research_conditional_sol and intent.action.startswith("SOL") and not self._conditional_physical:
+        if self._conditional_enabled() and intent.action.startswith("SOL") and not self._conditional_physical:
             if intent.action=="SOL_ADD":
+                rounded=self._risk_first_admit(rounded,ts_now or 0)
                 episode=self._domain.episode
                 legal=episode is not None and intent.level in episode.sol_rights and intent.id in episode.pending
                 if legal:
@@ -1846,6 +1868,8 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
                 self.log.warning(f"Rejecting {intent.action}: pre-submit increase gate or minimum failed")
                 self._deny_local_entry(intent, "PRE_SUBMIT_INCREASE_GATE_OR_MINIMUM", now)
                 return
+        if intent.action == "SOL_ADD":
+            rounded = self._risk_first_sol_prepare(intent,rounded,step,ts_now or 0,sigma,decision_index)
         if intent.action == "BTC_ENTRY":
             rounded = self._split_prepare(intent, rounded, step, ts_now or 0, sigma, decision_index)
         # Control A makes every planned SOL exit a native taker IOC.  Resting
@@ -1863,7 +1887,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
                 self._split_parent.setdefault("positive_tp_ioc_catchups", []).append({
                     "timestamp_ns":ts_now,"level":intent.level,"quantity":str(rounded),
                     "target_price":str(target),"executable_price":str(executable_price)})
-        split_limit = self._split_limit(intent, instrument, rounded) if intent.action == "BTC_ENTRY" else None
+        split_limit = self._split_limit(intent, instrument, rounded) if intent.action == "BTC_ENTRY" else self._risk_first_sol_limit(intent,instrument,rounded) if intent.action=="SOL_ADD" else None
         if split_limit is not None:
             order = split_limit
         elif passive_reduction:
@@ -1914,12 +1938,14 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         else:
             order = self.order_factory.market(instrument_id=instrument_id, order_side=side, quantity=instrument.make_qty(rounded), time_in_force=TimeInForce.IOC, reduce_only=reduce_only)
         client_order_id = str(order.client_order_id)
+        self._risk_first_sol_bind(intent,order)
         self._pending_by_order[client_order_id] = intent
         # A pre-submit durable checkpoint must see the exact order-to-episode
         # mapping before native transport can accept or fill this order.
         self._sigma_by_order[client_order_id] = sigma
         self._decision_index_by_order[client_order_id] = decision_index
         if not self._record_submission(order, intent.id, intent.episode_id, intent.action, intent.reason, intent.level):
+            if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,ts_now or 0,"LOCAL_UNSENT_PREP_DENIED")
             self._pending_by_order.pop(client_order_id, None)
             self._sigma_by_order.pop(client_order_id, None)
             self._decision_index_by_order.pop(client_order_id, None)
@@ -2005,7 +2031,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
 
     def _preempt_with_mandatory_sol_exit(self, intent: Intent, sigma: float | None, index: int) -> None:
         """Cancel SOL leaves before a timeout reduces the reconciled remainder."""
-        if self.config.research_conditional_sol:
+        if self._conditional_enabled():
             self._conditional_cancel_original_adds(self.clock.timestamp_ns())
         if self.config.deposit_runtime is not None and self._deposit.latched:
             self._domain.on_parent_terminal(intent.id)
@@ -2040,6 +2066,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
                 and not (self.config.deposit_runtime is not None and self._deposit.latched))
 
     def _begin_forced_close(self, reason: str, intent: Intent | None = None) -> None:
+        self._risk_first_sol_stop(reason)
         self._split_stop(reason)
         if self.config.deposit_runtime is not None and self._deposit.latched:
             return
@@ -2143,6 +2170,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
             self.submit_order(order)
 
     def _submit_terminal_closes(self) -> None:
+        self._risk_first_sol_stop("TERMINAL")
         self._split_stop("TERMINAL")
         """Realize all remaining native positions on the terminal quote only."""
         trigger_ts = self._current_btc.ts_event if self._current_btc is not None else None
@@ -2311,6 +2339,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
                 raise ValueError("BTC_TP_ENTRY_FEE_CURRENCY_UNSUPPORTED")
             entry_fee = event.commission.as_decimal()
         self._h1_native_fill(intent, event)
+        self._risk_first_sol_fill(intent,event)
         self._split_native_fill(intent, event)
         self._cover_native_fill(intent, event)
         self._apply_confirmed_domain_fill(
@@ -2356,7 +2385,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
             else:
                 self._accepted_reductions[key] = original, remaining
         when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
-        if self.config.research_conditional_sol and intent.reason in {"CONDITIONAL_NET_ADD","CONDITIONAL_NET_EXIT"}:
+        if self._conditional_enabled() and intent.reason in {"CONDITIONAL_NET_ADD","CONDITIONAL_NET_EXIT"}:
             self._conditional_fill(intent,quantity,price,ts_event)
         else:
             self._domain.on_fill(
@@ -2381,12 +2410,13 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
             self._domain.on_half_exit_decision(max(self._decision_index_by_order.get(client_order_id, intent.decision_index), len(self._bars) - 1))
         if not order_closed:
             return
-        if self.config.research_conditional_sol:
+        if self._conditional_enabled():
             self._conditional_attempt_terminal(intent,ts_event,"NATIVE_TERMINAL_AFTER_FILL",client_order_id)
         self._domain.on_parent_terminal(intent.id)
         self._pending_by_order.pop(client_order_id, None)
         self._sigma_by_order.pop(client_order_id, None)
         self._decision_index_by_order.pop(client_order_id, None)
+        if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,ts_event,"FILL_TERMINAL")
         self._requeue_accepted_reduction(intent, sigma, intent.decision_index, ts_event)
         if intent.action == "BTC_ENTRY":
             self._queue_confirmed_btc_targets(sigma, intent.decision_index, ts_event)
@@ -2442,7 +2472,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
-        if self.config.research_conditional_sol:
+        if self._conditional_enabled():
             self._conditional_attempt_terminal(intent,event.ts_event,"CANCELED",str(event.client_order_id))
         if intent is not None and intent.action == "BTC_ENTRY":
             self._daily_decision_reason = (
@@ -2462,6 +2492,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
                     self._advance_current_day()
         if intent is not None:
             self._requeue_accepted_reduction(intent, sigma, decision_index, event.ts_event)
+        if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,event.ts_event,"CANCELED")
         self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(event.ts_event)
@@ -2489,6 +2520,11 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         if context is not None and context.get("accept_ns") is None:
             context["accept_ns"] = str(event.ts_event)
         self._acknowledge_submission(str(event.client_order_id))
+        if self.config.research_sol_risk_first=="split-atr":
+            owned=self._rf_sol_orders.get(str(event.client_order_id))
+            if owned and owned[0]["stopped"]:
+                order=self.cache.order(event.client_order_id)
+                if order is not None and not order.is_closed:self.cancel_order(order)
         if self._v3_reduction is not None:
             order = self.cache.order(event.client_order_id)
             if order is not None and order.instrument_id == self._v3_reduction["instrument_id"] and str(event.client_order_id) not in self._v3_orders and not order.is_closed:
@@ -2570,7 +2606,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
     def _terminal_without_fill(self, client_order_id: str) -> None:
         forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
-        if self.config.research_conditional_sol:
+        if self._conditional_enabled():
             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
         if failed_intent and failed_intent.reason and failed_intent.reason.startswith("SOL_COVER") and self._cover_cycle:
             self._cover_cycle["incomplete"] = True
@@ -2606,6 +2642,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
                     self._advance_current_day()
         if intent is not None and self._reduction_key(intent) in self._accepted_reductions:
             self._requeue_accepted_reduction(intent, sigma, decision_index, self.clock.timestamp_ns())
+        if self.config.research_sol_risk_first=="split-atr":self._risk_first_sol_terminal(client_order_id,self.clock.timestamp_ns(),"DENIED_REJECTED_EXPIRED")
         self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())

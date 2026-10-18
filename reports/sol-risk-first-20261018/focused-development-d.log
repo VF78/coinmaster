@@ -1,0 +1,93 @@
+..........FF.F....                                                       [100%]
+=================================== FAILURES ===================================
+_ test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False] _
+tests/test_native_sol_risk_first.py:226: in test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial
+    assert qty(e,SOL_PERP.id)==0 and not any(p['pending']), (s._queued_intents,s._rf_sol_waiting_exits,[(o.order_type.name,str(o.quantity),o.status.name) for o in e.cache.orders() if o.instrument_id==SOL_PERP.id],s.pre_submit_gate_blocks)
+E   AssertionError: ([(Intent(id='9bc7a7ce-2a0b-4350-845c-42615cef5680', episode_id='risk-first', action='BTC_REDUCE', level=0, side=-1, q...-8204-7872efb347ab'}, [('MARKET', '34.0', 'FILLED'), ('LIMIT', '33.0', 'CANCELED'), ('LIMIT', '33.0', 'CANCELED')], [])
+E   assert (Decimal('34') == 0)
+E    +  where Decimal('34') = qty(<nautilus_trader.backtest.engine.BacktestEngine object at 0x7b5d361e87b0>, InstrumentId('SOLUSDT-PERP.P1SIM'))
+E    +    where InstrumentId('SOLUSDT-PERP.P1SIM') = CryptoPerpetual(id=SOLUSDT-PERP.P1SIM, raw_symbol=SOLUSDT, asset_class=CRYPTOCURRENCY, instrument_class=SWAP, quote_cu...ement=0.1, multiplier=1, lot_size=1, margin_init=0.05, margin_maint=0.005, maker_fee=0.001, taker_fee=0.001, info=None).id
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True] _
+tests/test_native_sol_risk_first.py:226: in test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial
+    assert qty(e,SOL_PERP.id)==0 and not any(p['pending']), (s._queued_intents,s._rf_sol_waiting_exits,[(o.order_type.name,str(o.quantity),o.status.name) for o in e.cache.orders() if o.instrument_id==SOL_PERP.id],s.pre_submit_gate_blocks)
+E   AssertionError: ([(Intent(id='fc95ca5e-ee8b-485f-9d31-6a37b6d61d2d', episode_id='risk-first', action='BTC_REDUCE', level=0, side=-1, q...2a-826a-259c7aec73d5'}, [('MARKET', '34.0', 'FILLED'), ('LIMIT', '33.0', 'REJECTED'), ('LIMIT', '33.0', 'FILLED')], [])
+E   assert (Decimal('67') == 0)
+E    +  where Decimal('67') = qty(<nautilus_trader.backtest.engine.BacktestEngine object at 0x7b5d361e97a0>, InstrumentId('SOLUSDT-PERP.P1SIM'))
+E    +    where InstrumentId('SOLUSDT-PERP.P1SIM') = CryptoPerpetual(id=SOLUSDT-PERP.P1SIM, raw_symbol=SOLUSDT, asset_class=CRYPTOCURRENCY, instrument_class=SWAP, quote_cu...ement=0.1, multiplier=1, lot_size=1, margin_init=0.05, margin_maint=0.005, maker_fee=0.001, taker_fee=0.001, info=None).id
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_ATR_actual_first_IOC_partial_and_postonly_rejection_never_resends_full_parent _
+tests/test_native_sol_risk_first.py:265: in test_ATR_actual_first_IOC_partial_and_postonly_rejection_never_resends_full_parent
+    assert any(o.status.name=='REJECTED' for o in e.cache.orders())
+E   assert False
+E    +  where False = any(<generator object test_ATR_actual_first_IOC_partial_and_postonly_rejection_never_resends_full_parent.<locals>.<genexpr> at 0x7b5d3656b440>)
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_sol_risk_first.py: 18 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_sol_risk_first.py: 60 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:333: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_sol_risk_first.py::test_cap50_actual_native_admission_held_trim_price_nochurn_BTCflat_original_late_add[1]
+tests/test_native_sol_risk_first.py::test_cap50_actual_native_admission_held_trim_price_nochurn_BTCflat_original_late_add[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:114: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_dd_cov_native_global_stage_recovery_ceiling_no_resurrection_and_BTCflat_new_auth
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:140: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_native_fixed_notional_group_threelegs_firstpartial_limits_deadline_fallback[1]
+tests/test_native_sol_risk_first.py::test_ATR_native_fixed_notional_group_threelegs_firstpartial_limits_deadline_fallback[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:173: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_invalid_uses_ordinary_native_IOC_and_no_split_parent
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:183: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_nonpositive_cov_no_new_directed_SOL_native_and_no_hard_beta_bounds
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:200: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:229: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_native_partial_initial_and_actual_RiskEngine_throttle_denial_remain_bounded
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:249: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_actual_first_IOC_partial_and_postonly_rejection_never_resends_full_parent
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:270: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[cap50]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[cap50]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[dd-cov]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[dd-cov]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[split-atr]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[split-atr]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:320: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_H3_observer_passes_same_native_equity_without_mid_mark_false_peak
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:347: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:recorder.file.close();e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+FAILED tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+FAILED tests/test_native_sol_risk_first.py::test_ATR_actual_first_IOC_partial_and_postonly_rejection_never_resends_full_parent
+3 failed, 15 passed, 96 warnings in 4.72s

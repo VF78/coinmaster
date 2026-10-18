@@ -28,6 +28,8 @@ VARIANTS = {
     "sol100": ["--research-sol-cover", "1"],
     "v3-repeat": [],
 }
+for _risk_variant in ("cap50","dd-cov","split-atr"):
+    VARIANTS["risk-first-"+_risk_variant]=VARIANTS["btc025-planref-tp-ioc"]+["--research-sol-risk-first",_risk_variant]
 PILOT = "coinmaster-hl-stageg-testnet.service"
 
 

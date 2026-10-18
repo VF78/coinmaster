@@ -1,0 +1,31 @@
+{
+  "status": "HELPER_PREPARED_NO_CANDIDATE_RESULT_READ_OR_RUN",
+  "helper": "analyze-comparison.py",
+  "helper_sha256": "2f7df53fb07c2d0817f7dcad49f0e4fa2fa579fdb9e88d04155b6384bf65caa5",
+  "control_provenance": "analysis-control-provenance.json",
+  "control_provenance_sha256": "cfff6e87d37925c240d934b670f415683f7dd87f02926db103d1586c0eee31d1",
+  "variant_order": [
+    "cap50",
+    "dd-cov",
+    "split-atr"
+  ],
+  "receipt_pattern": "risk-first-{variant}-receipt.json",
+  "params_pattern": "risk-first-{variant}-resolved-parameters.json",
+  "output_pattern": "analysis-{variant}-{summary.json,permissions.csv,manifest.json}; sharedanalysis-comparison.csv",
+  "first_status": "PENDING_INTEGRITY_REVIEW",
+  "postrun_command": "runtime/.venv/bin/python reports/sol-risk-first-20261018/analyze-comparison.py --variant <cap50|dd-cov|split-atr> --receipt <FINAL_RECEIPT> --expected-source <FROZEN_SOURCE_COMMIT>",
+  "engine_schema_confirmed": "risk_first_sol_audit list+canonicalSHA; sameexecution/risk/config/data/policy/source; funding_journal_files independentofoldconditionalflag",
+  "risk_method": "Requirefullcollectorall_native_close_samples3153599 andupperstrictlaterlower1051200 atsameendexclusive; automatictracepasses0. Anycount/basis mismatch blocks instead ofselectingpartialcurve.",
+  "money_method": "NO additional assetPnL/cashledger. Actualfillquantity/notional/liquidity/fees only; nativeTOTAL/DD remainauthoritative.",
+  "resource_guards": "MemAvailable>=700MiB, rawJSON<=32MiB leanload; no pandas/observer read. Iflarger askboundedcollectorpackage. Do notstopengine.",
+  "checks": [
+    "ASTparsePASS",
+    "CanonicalauditstreamSHA matchescollectorserializationPASS",
+    "Tiny synthetic2GTCpartialfill-events/1nativefilledorder/CANCELEDterminal fee+turnover fixturePASS; notnativebacktest",
+    "StrictDecimalDD50gatePASS(50allowed,50.00000001denied)"
+  ],
+  "no_candidate_data_read": true,
+  "no_engine_or_runtime_test_run": true,
+  "owners": "Engineimplementationcontract/receipts/sourcepins/resolvedparams/nativeorderaudit/core/tests/engine1\u21923\u21922. Statsanalysis-* andonehelper only. No .ops/Project/pilot/deploy/commit.",
+  "prepared_utc": "2026-10-18T18:38:01.174613+00:00"
+}

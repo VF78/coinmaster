@@ -19,7 +19,7 @@ class ConditionalSolResearch:
         self._conditional_physical=False
 
     def _conditional_enabled(self):
-        return self.config.research_conditional_sol
+        return self.config.research_conditional_sol or self._risk_first_net_owner()
 
     def _conditional_emit(self,event,ts,**values):
         c=self._conditional
@@ -28,14 +28,16 @@ class ConditionalSolResearch:
         ep=self._domain.episode
         positions={p.instrument_id:p for p in self.cache.positions_open()}
         btc=positions.get(self.config.btc_id);sol=positions.get(self.config.sol_id)
+        combined=max(c["original_target"],c["qc"])
+        if self.config.research_sol_risk_first=="dd-cov" and c.get("rf",{}).get("target") is not None:combined=c["rf"]["target"]
         row={"event":event,"timestamp_ns":ts,"episode_id":c["episode_id"],"side":c["side"],
             "btc_qty":str(btc.quantity.as_decimal() if btc else D(0)),
             "btc_actual_vwap":str(ep.btc_entry_vwap if ep else None),"beta":str(c["beta"]),
             "beta_frozen_ns":c["beta_ns"],"original_desired":str(c["original_target"]),
             "original_allocated":str(ep.sol_qty if ep else 0),"conditional_target":str(c["qc"]),
-            "combined_target":str(max(c["original_target"],c["qc"])),
+            "combined_target":str(combined),
             "actual_sol_qty":str(sol.quantity.as_decimal() if sol else D(0)),**values}
-        self.conditional_audit.append(row)
+        (self.risk_first_sol_audit if self._risk_first_net_owner() else self.conditional_audit).append(row)
 
     def _conditional_state(self,ts):
         if not self._conditional_enabled() or self._domain.episode is None:
@@ -47,14 +49,14 @@ class ConditionalSolResearch:
                 "original_target":D(str(ep.sol_qty)),"adds":[],"exits":[],"qc":D(0),"qc_btc_qty":None,"retry_ns":0,"original_attempts":{}}
         c=self._conditional
         if c["beta"] is None and any(p.instrument_id==self.config.btc_id for p in self.cache.positions_open()):
-            estimate=self._cover_beta(ts)
+            estimate=self._risk_first_beta_estimate(ts) if self._risk_first_net_owner() else self._cover_beta(ts)
             if estimate is not None:
                 c["beta"],c["beta_ns"]=estimate[0],ts
                 self._conditional_emit("BETA_FREEZE",ts)
         return c
 
     def _conditional_bar(self,bar):
-        if not self._conditional_enabled() or bar.bar_type.instrument_id!=self.config.sol_id:
+        if not self.config.research_conditional_sol or bar.bar_type.instrument_id!=self.config.sol_id:
             return
         minutes=60 if bar.bar_type.spec.aggregation==BarAggregation.HOUR else 15
         ts=bar.ts_event;old=self._conditional_bars.get(minutes)
@@ -74,6 +76,7 @@ class ConditionalSolResearch:
         c=self._conditional_state(ts)
         if c is None:
             return
+        if self._risk_first_net_owner():self._risk_first_state(c)
         if any(t["intent"].id==intent.id for t in c["adds"]+c["exits"]):
             return
         task={"intent":intent,"remaining":qty,"sigma":sigma,"index":index,"price":price}
@@ -82,6 +85,7 @@ class ConditionalSolResearch:
         else:
             task["remaining"]=min(qty,c["original_target"])
             c["exits"].append(task);c["original_target"]-=task["remaining"]
+        if self._risk_first_net_owner():self._risk_first_original(intent,task["remaining"],ts)
         self._conditional_emit("ORIGINAL_AUTHORIZED",ts,action=intent.action,level=intent.level,quantity=str(task["remaining"]))
         tick=self.cache.quote_tick(self.config.sol_id)
         if tick is not None and tick.ts_event==ts:
@@ -90,6 +94,7 @@ class ConditionalSolResearch:
     def _conditional_original_increment(self,qty):
         c=self._conditional
         held=next((p.quantity.as_decimal() for p in self.cache.positions_open() if p.instrument_id==self.config.sol_id),D(0))
+        if self._risk_first_net_owner() and c is not None:return self._risk_first_increment(qty,held)
         target=(c["original_target"] if c else D(str(self._domain.episode.sol_qty)))+qty
         return max(D(0),target-held)
 
@@ -136,6 +141,7 @@ class ConditionalSolResearch:
         c=self._conditional_state(tick.ts_event)
         if c is None or self._forced_close_reason or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
             return
+        if self._risk_first_net_owner():return self._risk_first_check(tick,c)
         ep=self._domain.episode;ts=tick.ts_event
         positions={p.instrument_id:p for p in self.cache.positions_open()}
         btc=positions.get(self.config.btc_id);sol=positions.get(self.config.sol_id)
@@ -175,6 +181,9 @@ class ConditionalSolResearch:
         elif not c["active"]:
             c["qc"]=D(0);c["qc_btc_qty"]=None
         target=max(c["original_target"],c["qc"])
+        return self._conditional_reconcile(tick,c,ep,btc,sol,held,bqty,target,ts)
+
+    def _conditional_reconcile(self,tick,c,ep,btc,sol,held,bqty,target,ts):
         work=[(oid,i) for oid,i in self._pending_by_order.items() if i.action.startswith("SOL")]
         if work:
             for oid,i in work:
@@ -278,6 +287,7 @@ class ConditionalSolResearch:
             else:
                 retained.append(t)
         c["adds"]=retained
+        if self._risk_first_net_owner():self._risk_first_original_terminal(released)
         self._conditional_emit("ORIGINAL_ATTEMPT_TERMINAL",ts,physical_intent=intent.id,
             native_order_id=order_id,terminal_cause=cause,original_attempt_ids=list(bound),
             unfilled_original_authorization_released=str(released))

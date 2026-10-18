@@ -1,0 +1,54 @@
+.FFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[cap50] _
+tests/test_native_sol_risk_first.py:443: in test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result
+    assert result['minute_risk_observations']['curves']['pre_quote_paired_close']['samples']==2
+E   assert 3 == 2
+----------------------------- Captured stderr call -----------------------------
+[1m2024-09-01T00:01:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` BYBIT_SIGNAL, SubscribeData(client_id=BYBIT_SIGNAL, venue=None, data_type=DailySignalBar{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m2024-09-01T00:01:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` BYBIT_SIGNAL, SubscribeData(client_id=BYBIT_SIGNAL, venue=None, data_type=DailySignalBar{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[dd-cov] _
+tests/test_native_sol_risk_first.py:443: in test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result
+    assert result['minute_risk_observations']['curves']['pre_quote_paired_close']['samples']==2
+E   assert 3 == 2
+----------------------------- Captured stderr call -----------------------------
+[1m2024-09-01T00:01:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` BYBIT_SIGNAL, SubscribeData(client_id=BYBIT_SIGNAL, venue=None, data_type=DailySignalBar{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m2024-09-01T00:01:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` BYBIT_SIGNAL, SubscribeData(client_id=BYBIT_SIGNAL, venue=None, data_type=DailySignalBar{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[split-atr] _
+tests/test_native_sol_risk_first.py:443: in test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result
+    assert result['minute_risk_observations']['curves']['pre_quote_paired_close']['samples']==2
+E   assert 3 == 2
+----------------------------- Captured stderr call -----------------------------
+[1m2024-09-01T00:01:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` BYBIT_SIGNAL, SubscribeData(client_id=BYBIT_SIGNAL, venue=None, data_type=DailySignalBar{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m2024-09-01T00:01:00.000000000Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` BYBIT_SIGNAL, SubscribeData(client_id=BYBIT_SIGNAL, venue=None, data_type=DailySignalBar{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_sol_risk_first.py::test_cap50_native_1000_partial_trim_reconciles_to_nonzero_floor_without_competing_reduction
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_sol_risk_first.py: 16 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:333: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_sol_risk_first.py::test_cap50_native_1000_partial_trim_reconciles_to_nonzero_floor_without_competing_reduction
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:417: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[cap50]
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[dd-cov]
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[split-atr]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:869: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[cap50]
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[dd-cov]
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[split-atr]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:879: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[cap50]
+FAILED tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[dd-cov]
+FAILED tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[split-atr]
+3 failed, 1 passed, 20 deselected, 24 warnings in 3.69s

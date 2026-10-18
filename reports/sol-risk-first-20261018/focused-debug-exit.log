@@ -1,0 +1,49 @@
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+ACK_EXIT_DEBUG {'pending': [None, None, None], 'closed': True, 'queued': [('BTC_REDUCE', '87f0c0d2-8ee2-41c1-8cd4-22d52f07e88e', 6), ('BTC_REDUCE', 'ccfdb15b-f84e-4e5b-9eff-d65bbcacf6dd', 6), ('BTC_REDUCE', '8f44ae9d-880e-4dea-a8b8-833b306869a6', 6), ('SOL_EXIT', 'd1b01f0d-8330-4c6a-a35f-ff8d54bb0cf5', 0)], 'waiting': {'d1b01f0d-8330-4c6a-a35f-ff8d54bb0cf5'}, 'mandatory': 'None', 'forced': None, 'physical': []}
+F[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+ACK_EXIT_DEBUG {'pending': [None, None, None], 'closed': True, 'queued': [('BTC_REDUCE', '5f014128-f0a3-4505-8d14-76d372184bd6', 6), ('BTC_REDUCE', '218222e8-36a4-4c65-9174-ff8730049087', 6), ('BTC_REDUCE', 'ad11939d-eead-4b6d-b76f-2ece337ed898', 6), ('SOL_EXIT', 'eae9170a-0a19-4303-bfaf-3e7f96cbc452', 0)], 'waiting': {'eae9170a-0a19-4303-bfaf-3e7f96cbc452'}, 'mandatory': 'None', 'forced': None, 'physical': []}
+F
+=================================== FAILURES ===================================
+_ test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False] _
+tests/test_native_sol_risk_first.py:227: in test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial
+    assert qty(e,SOL_PERP.id)==0 and not any(p['pending']), (s._queued_intents,s._rf_sol_waiting_exits,[(o.order_type.name,str(o.quantity),o.status.name) for o in e.cache.orders() if o.instrument_id==SOL_PERP.id],s.pre_submit_gate_blocks)
+E   AssertionError: ([(Intent(id='87f0c0d2-8ee2-41c1-8cd4-22d52f07e88e', episode_id='risk-first', action='BTC_REDUCE', level=0, side=-1, q...-a35f-ff8d54bb0cf5'}, [('MARKET', '34.0', 'FILLED'), ('LIMIT', '33.0', 'CANCELED'), ('LIMIT', '33.0', 'CANCELED')], [])
+E   assert (Decimal('34') == 0)
+E    +  where Decimal('34') = qty(<nautilus_trader.backtest.engine.BacktestEngine object at 0x734717495030>, InstrumentId('SOLUSDT-PERP.P1SIM'))
+E    +    where InstrumentId('SOLUSDT-PERP.P1SIM') = CryptoPerpetual(id=SOLUSDT-PERP.P1SIM, raw_symbol=SOLUSDT, asset_class=CRYPTOCURRENCY, instrument_class=SWAP, quote_cu...ement=0.1, multiplier=1, lot_size=1, margin_init=0.05, margin_maint=0.005, maker_fee=0.001, taker_fee=0.001, info=None).id
+_ test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True] _
+tests/test_native_sol_risk_first.py:227: in test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial
+    assert qty(e,SOL_PERP.id)==0 and not any(p['pending']), (s._queued_intents,s._rf_sol_waiting_exits,[(o.order_type.name,str(o.quantity),o.status.name) for o in e.cache.orders() if o.instrument_id==SOL_PERP.id],s.pre_submit_gate_blocks)
+E   AssertionError: ([(Intent(id='5f014128-f0a3-4505-8d14-76d372184bd6', episode_id='risk-first', action='BTC_REDUCE', level=0, side=-1, q...03-bfaf-3e7f96cbc452'}, [('MARKET', '34.0', 'FILLED'), ('LIMIT', '33.0', 'REJECTED'), ('LIMIT', '33.0', 'FILLED')], [])
+E   assert (Decimal('67') == 0)
+E    +  where Decimal('67') = qty(<nautilus_trader.backtest.engine.BacktestEngine object at 0x7347174969b0>, InstrumentId('SOLUSDT-PERP.P1SIM'))
+E    +    where InstrumentId('SOLUSDT-PERP.P1SIM') = CryptoPerpetual(id=SOLUSDT-PERP.P1SIM, raw_symbol=SOLUSDT, asset_class=CRYPTOCURRENCY, instrument_class=SWAP, quote_cu...ement=0.1, multiplier=1, lot_size=1, margin_init=0.05, margin_maint=0.005, maker_fee=0.001, taker_fee=0.001, info=None).id
+=============================== warnings summary ===============================
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:333: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:230: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+FAILED tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+2 failed, 16 deselected, 12 warnings in 2.82s

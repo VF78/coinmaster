@@ -165,6 +165,8 @@ class NativeMinuteRiskRecorder:
             row_phase = "post_boundary_" + phase
             self.post_boundary_settlement.append({"timestamp_ns": str(timestamp), "phase": phase, "cash": str(cash), "paired_close_equity": str(equity), "native_positions": details})
         else:
+            if getattr(strategy.config,"research_sol_risk_first",None)=="dd-cov":
+                strategy._risk_first_observe_equity(equity,timestamp)
             self.curves[phase].add(timestamp,equity)
             self.curves["all_native_close_samples"].add(timestamp,equity)
         if phase == "pre_quote_paired_close":
@@ -234,4 +236,4 @@ def observed_strategy_type(base, recorder):
             recorder.capture(self,tick.ts_event,"post_quote_paired_close")
         elif tick.instrument_id==self.config.btc_id:
             recorder.capture(self,tick.ts_event,"post_btc_quote_paired_close")
-    return type(base.__name__,(base,),{"on_data":on_data,"on_quote_tick":on_quote_tick,"_research_protection_defer_to_recorder":True})
+    return type(base.__name__,(base,),{"on_data":on_data,"on_quote_tick":on_quote_tick,"_research_protection_defer_to_recorder":True,"_risk_first_observer_driven":True})
