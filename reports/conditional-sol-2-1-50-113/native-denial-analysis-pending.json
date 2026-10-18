@@ -1,0 +1,62 @@
+{
+  "status": "PENDING_REAL_JOURNAL_EXIT0_FULL_FINAL_RECEIPT_AND_PRESERVATION_AUDIT",
+  "expected_source_commit": "d83e8faccdeeba26f1f4b454fdc07074f4213271",
+  "expected_receipt": "conditional-sol-2-1-50-native-denial-receipt.json",
+  "expected_job": "cm115-split-conditional-sol-2-1-50-native-denial-20261018a",
+  "helper": "analyze-fixed-comparison.py",
+  "helper_previous_version_sha256": "5d27d710328dd2ed1ad5b8166be1c49bd563de63b6e2e7eb2912ec5a8e0b294b",
+  "helper_sha256": "dcbddf0c6751c1be2cc931e4130379d2f4c94bbcf9d6f614bcc15e155fbf7b62",
+  "outputs": [
+    "native-denial-analysis-summary.json",
+    "native-denial-analysis-permissions.csv"
+  ],
+  "required_final_status": "PENDING_PRESERVATION_REVIEW; no acceptance fromTOTAL alone",
+  "proof": {
+    "correction": "reports/conditional-sol-2-1-50-113/native-denial-correction-evidence.json",
+    "correction_sha256": "f5830f9ad8febb554485083fe336be8d734c7916fc000addfa1ef532a9bd5add",
+    "review": "reports/conditional-sol-2-1-50-113/native-denied-type-review.json",
+    "review_sha256": "c32f3b553f9c197180cc2e71e73344fee798e3a32dfd795cbead25c6e2a55c8d",
+    "review_verdict": "GO_ONE_SAME_VARIANT_REPLACEMENT_RUN",
+    "current8pins_exact_verified": {
+      "runtime/coinmaster/strategy/conditional_hedge.py": "bd464748c11af7f8a567d79edb7361dbab95a08dcb77bb3652b424f4d08cc3a1",
+      "runtime/coinmaster/strategy/wave_overlay.py": "f18bd900a1459c6d40c627f501b3125b116c7ada43ef3c6fd5208c9266a7d168",
+      "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+      "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+      "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+      "runtime/tests/test_native_conditional_hedge.py": "3780ac12bbd06da3a80e947a4046e505267d05a5b1a1fe3d1ccc9001d0331063",
+      "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+      "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+    },
+    "patch_sha256": "b82a29982f6f8fce7414bd5152d61bf1cb67495d773c923100e5068ca499a121",
+    "log_hashes_verified": {
+      "native-denial-development.log": "7533bd91127cf68a916dbb0a20eb74cca433661bd83f2699a47573a4ff8a1c29",
+      "native-denial-focused.log": "3de9ddb8d0d010ce853b4214ecfd8cafb7ce817838e0cbe44b8d51121dd999dc",
+      "native-denial-focused-final.log": "f8b01ec95a3d10dc968506f3ed90fe21376ea3ad1f5a5757160b51422e416b51",
+      "native-denial-conditional-module.log": "54278ff5503fda84f6bcd0f9a759cd57624ccec6529a3acd4d36c66650c2cd11"
+    },
+    "test_evidence": {
+      "focused": "1 passed,6warnings in2.54s",
+      "conditional_module": "36 passed,218warnings in5.00s",
+      "AST": "8PASS",
+      "isolated_units": [
+        "cm116-native-denial-focused-final-20261018",
+        "cm116-native-denial-conditional-module-20261018"
+      ],
+      "resources": "MemoryMax256MiB/Swap0/PrivateNetwork/NoNewPrivileges/env-i/CPUWeight10",
+      "development": "TypeonlyactualnativecaseFAILEDbyexplicitsecond-denialassertion; firstguardcasefailedonlyoverstrongnewfixtureassertionaboutpreexistingsubmittedsentinel,correctedtoactualflatcleanuppluscash/fees/nofurtherorderassertions."
+    },
+    "test_count_note": "36modulePASS includes1new actualRiskEngineDeniedfocusedcase; not37independenttests",
+    "scope": "NativeCachelookupClientOrderIdnormalization; knownterminalforcedclosekeepsactualresidualanddefersreentranttailtotheexistingfreshquoteflow. Stringdictkeys/nativeRiskEngine/parameters/quotes/fees/account/IOCpartialcancelcontinuationunchanged."
+  },
+  "historical_attempts": "Fourprior immutable: firstrejectedepisodecleanup; fixedabortedoriginalSOLflatcontract; preservedrejectedoriginalIOCcadence; IOCparityfailedcallbackTypeError/noeconomicJSON. Historicalreceipts/analytics preserved. No oldcontrolrerun.",
+  "postrun_gate": [
+    "Realjournal finalexit0 is authoritative; collectedsystemctl0 aloneNOTcompletion",
+    "Fullfinalreceipt/resultSHA/source89/fullrows/nativeflat thenfirststatusPENDING_PRESERVATION_REVIEW",
+    "EngineactualoriginalIOCcadence/ownership/lateoriginalpreservation audit beforestrategyclassification",
+    "CompareactualBTCpermissions/q0/q1/P0/side/ownacceptedQ and nativeTOTAL/DD/fees/fundingUNKNOWN; nooracle105injection"
+  ],
+  "command": "runtime/.venv/bin/python reports/conditional-sol-2-1-50-113/analyze-fixed-comparison.py --receipt reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-native-denial-receipt.json --output-prefix native-denial-analysis --final-status PENDING_PRESERVATION_REVIEW",
+  "active_run_metrics": "NOT_READ_NOT_INTERPRETED",
+  "coverage": "NO_OPTIONAL_COVERAGE_OR_TRACE_SCAN",
+  "verified_utc": "2026-10-18T17:30:57.866121+00:00"
+}

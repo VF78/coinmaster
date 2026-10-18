@@ -150,14 +150,14 @@ def coverage(r, events, audit):
     return dict(time_seconds=dict(c), mean=sums / c['known_seconds'] if c['known_seconds'] else None, minimum=lo, maximum=hi, quantiles_0001=quant, matched_actual_fill_rows=matched, formula='signed-opposite abs(SOLactual)*SOLmark*beta/(abs(BTCactual)*BTCmark)', limitations='Total actual NETTING inventory, not independent original/protection positions. One completed-minute quote counted60s; no intraminute path or hard coverage cap. Raw canonical mark close, no PnL reconstruction.')
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--receipt', required=True); ap.add_argument('--coverage', action='store_true'); ap.add_argument('--output-prefix', default='ioc-parity-analysis'); ap.add_argument('--final-status', choices=['PENDING_PRESERVATION_REVIEW', 'REJECTED_ORIGINAL_IOC_CADENCE_CHANGED'], required=True); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument('--receipt', required=True); ap.add_argument('--coverage', action='store_true'); ap.add_argument('--output-prefix', default='native-denial-analysis'); ap.add_argument('--final-status', choices=['PENDING_PRESERVATION_REVIEW', 'REJECTED_ORIGINAL_IOC_CADENCE_CHANGED'], required=True); a = ap.parse_args()
     assert a.output_prefix and all(c.isalnum() or c in '-_' for c in a.output_prefix), 'Unsafe output prefix'
     assert not (OUT / (a.output_prefix + '-summary.json')).exists(), 'Preserve prior summary; choose a new prefix'
     assert not (OUT / (a.output_prefix + '-permissions.csv')).exists(), 'Preserve prior permission evidence'
     reuse = json.loads((OUT / 'control-reuse.json').read_text()); cr = reuse['control_artifacts'][0]
     receipt = json.loads(Path(a.receipt).read_text()); path = receipt['artifact']
-    assert receipt['source_commit'] == '44f2e00ae117fb961a20423d261de366f4b71fbe', 'Expected reviewed IOC-parity final receipt'
-    assert Path(a.receipt).name == 'conditional-sol-2-1-50-ioc-parity-receipt.json', 'Expected final IOC-parity receipt'
+    assert receipt['source_commit'] == 'd83e8faccdeeba26f1f4b454fdc07074f4213271', 'Expected reviewed native-denial final receipt'
+    assert Path(a.receipt).name == 'conditional-sol-2-1-50-native-denial-receipt.json', 'Expected final native-denial receipt'
     assert digest(path) == receipt['artifact_sha256'], 'Receipt result SHA mismatch'
     assert digest(cr['result']) == cr['result_sha256'], 'Control changed'
     r = json.loads(Path(path).read_text()); control = json.loads(Path(cr['result']).read_text())
