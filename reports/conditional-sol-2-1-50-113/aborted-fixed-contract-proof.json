@@ -1,0 +1,53 @@
+{
+  "status": "ABORTED_CONTRACT_VIOLATION",
+  "runtime_stop_receipt": {
+    "path": "reports/conditional-sol-2-1-50-113/fixed-abort-receipt.json",
+    "sha256": "5e4dd53e66abf6b0fe1fae831efff2880ab084af56ee2e65df9f5d20b20cadce",
+    "status": "ABORTED_CONTRACT_VIOLATION",
+    "initial_ExecMainStatus": 15,
+    "note": "InitialstopshowedExecMainStatus15/SIGTERM; latercollectedtransientunitdefaultshowisnotasuccessfulcompletedrunreceipt",
+    "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+    "economics": "NOT_READ_NOT_COMPARABLE_ABORTED"
+  },
+  "invalid_fixed_job": "cm115-split-conditional-sol-2-1-50-fixed-20261018a",
+  "invalid_fixed_source": "862fec1f81c65297c86c49389e1aa97a8f0fd6d7",
+  "economics": "NOT_READ_NOT_ANALYZED; no fixedsummary/permissionoutputs created",
+  "control": {
+    "result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "result_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "compact_exact_fill_slice": "reports/conditional-sol-2-1-50-113/aborted-fixed-contract-control-slice.csv",
+    "slice_sha256": "40307933b76cf7898bb485527c84184121b8a6841074b659d76bf3aac5dd211a"
+  },
+  "measured_contract_witness": {
+    "BTC_TP3_flat_utc": "2024-12-23T18:52:00+00:00",
+    "BTC_TP3_qty": "3.542",
+    "SOL_held_at_BTCflat": "1000",
+    "original_SOL_add_after_BTCflat_utc": "2024-12-24T00:00:00+00:00",
+    "original_SOL_late_add_qty": "1000",
+    "SOL_after_late_add": "2000",
+    "authorized_close_utc": "2024-12-25T00:00:00+00:00",
+    "authorized_close_reason": "REGIME",
+    "native_exit_fills": "2x1000 actualfills @197.02",
+    "no_BTC_reentry_between_flat_and_authorized_close": true
+  },
+  "contract_defect": "Conditional BTCflat branch clears original O_SOL/cancels original pendingadds; original baseline expressly retains both through ordinary BTC TP3 flat. Owner original-overlay-preservation requirement overrides prior wrong bothbudgetsflat contract.",
+  "corrected_scope": "Only Qc/protective excess removed on BTCflat; original O authorization/inventory/lateadds continue until actual original or authorized groupclose. Existing nativeexecutor/queue/admission unchanged. No claim of exact future absoluteQ under compounding.",
+  "next_analysis": {
+    "helper": "analyze-fixed-comparison.py; update in place ONLY afternewsourcefreeze/GO; NO thirdhelpercopy",
+    "expected_future_job": "cm115-split-conditional-sol-2-1-50-preserved-20261018a",
+    "expected_future_receipt": "conditional-sol-2-1-50-preserved-receipt.json",
+    "expected_future_outputs": "preserved-analysis-*",
+    "new_source": "PENDING_FREEZE_REVIEW_GO"
+  },
+  "preservation": [
+    "First rejectedrun receipt/results/helpermanifest untouched",
+    "Oldfixedpendingmetadata preserved; no outputs created",
+    "No active/fixedinterimresult orROI read, no nativeengine/control/trace scan, no pilotactions"
+  ],
+  "engine_independent_compact_semantics_witness": {
+    "path": "reports/conditional-sol-2-1-50-113/original-sol-btc-flat-semantics-audit.json",
+    "sha256": "e161654e28999835db341c08e22dab57341583939cbd01b1a4c241266f1283f5",
+    "same_control_result_SHA": true
+  }
+}

@@ -157,15 +157,7 @@ class ConditionalSolResearch:
                     self.cancel_order(order)
         if not bqty:
             c.update(active=False,armed_ns=None,confirm=None,qc=D(0))
-            # BTC-flat supersedes both budgets, including an unfilled original add.
-            for t in c["adds"]:
-                c["original_target"]-=t["remaining"]
-                self._domain.on_parent_terminal(t["intent"].id)
-            c["adds"]=[]
-            if c["original_target"]>0 and not c["exits"]:
-                i=self._domain._intent(ep,"SOL_EXIT",ep.side,None,quantity=float(c["original_target"]),reason="CONDITIONAL_BTC_FLAT")
-                c["exits"].append({"intent":i,"remaining":c["original_target"],"sigma":None,"index":len(self._bars)-1,"price":D(0)})
-            c["original_target"]=D(0)
+            # BTC-flat revokes protection only; original overlay authority survives.
         if tick.instrument_id==self.config.sol_id:
             self._conditional_quote_seq+=1
             confirm=c["confirm"]
@@ -187,7 +179,7 @@ class ConditionalSolResearch:
                 order=self.cache.order(ClientOrderId(oid))
                 if order is not None and not order.is_closed:
                     leaves=order.leaves_qty.as_decimal()
-                    stale_add=i.action=="SOL_ADD" and (not bqty or held+leaves>target or not c["active"] and not c["adds"])
+                    stale_add=i.action=="SOL_ADD" and (not bqty and not c["adds"] or held+leaves>target or not c["active"] and not c["adds"])
                     stale_reduce=i.action!="SOL_ADD" and held-leaves<target
                     if stale_add or stale_reduce:
                         self.cancel_order(order)
@@ -212,7 +204,7 @@ class ConditionalSolResearch:
             if not btc and not sol and self._group_close_reconciliation_pending:
                 self._reconcile_group_flat()  # Existing authorized close only; TP-flat retains its episode.
             return
-        if delta>0 and (not self._entries_enabled() or ts<c["retry_ns"] or not bqty):
+        if delta>0 and (not self._entries_enabled() or ts<c["retry_ns"] or not bqty and not c["adds"]):
             return
         action="SOL_ADD" if delta>0 else "SOL_EXIT"
         i=self._domain._intent(ep,action,-ep.side if delta>0 else ep.side,None,quantity=float(quantity),reason="CONDITIONAL_NET_ADD" if delta>0 else "CONDITIONAL_NET_EXIT")

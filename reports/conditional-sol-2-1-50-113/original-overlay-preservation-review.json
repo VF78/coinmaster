@@ -1,0 +1,37 @@
+{
+  "verdict": "GO_ONE_ORIGINAL_OVERLAY_PRESERVED_REPLACEMENT_RUN",
+  "scope": "Only complete BTCflat branch authority, pending/add gate and requested native preservation regression; no reviewer core edits/tests/fullrun",
+  "base_commit": "862fec1f81c65297c86c49389e1aa97a8f0fd6d7",
+  "patch_sha256": "da092f91b12ab884d0fe5a99ffa6b3c4515477beb67cb48593168077ba74ce63",
+  "verified_source_hashes": {
+    "runtime/coinmaster/strategy/conditional_hedge.py": "d5c060df0edf6ded45cdb3ed96500ff509791580c7d612603f5f3527f39ee640",
+    "runtime/coinmaster/strategy/wave_overlay.py": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589",
+    "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+    "runtime/tests/test_native_conditional_hedge.py": "eaa874c5ecc6118b7e6ccad16f983996439a5a1f74d57cc6a99739b301d39fdd",
+    "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+    "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+  },
+  "findings": [],
+  "authority_checks": [
+    "BTCflat clears onlyQc/arm/confirmation; no original_target/tasks/clock mutation or CONDITIONAL_BTC_FLAT original exit",
+    "MAX target becomes original authorized target; pending original add survives BTCflat unless actual leaves exceed MAX",
+    "Validated original shortfall permitted without BTC only while lawful original tasks remain; purely protective risk cannot be recreated",
+    "Native unknownACK still blocks competing submits/transfers; authorizedgroupclose/DP paths untouched; prior episode-retention guard retained"
+  ],
+  "native_evidence": {
+    "focused_five_cases_first": "4 passed,1 failed: newfixture expected400partial, pinnednativeGTCactual800filled/200leaves",
+    "conditional_module": "28 passed,1 failed,170 warnings in5.50s; onefixtureunsupportedis_filledAPI",
+    "single_failed_case_retest": "1 passed,6 warnings in2.61s",
+    "claim": "Oneconditional-onlymoduleplusonefailedcaseretest;NOTa29-passfullmodulererunandNOT200suite",
+    "native_example": "ActualBTC_TP3flat retains original1000; lawfullateoriginal1000usesexistingowner; delayednativeacceptedGTCreceiptmodel sameid/quantity yieldsreal800partial+200terminal; originalclock/sigma/credit/nativefillednotional staydistinct;REGIMEclosesactual2000as2x1000nativefills",
+    "native_race_fixture_disclosure": "GTCsame-owner/id/qty is a venue pending/partial-ACK fixture only; production executor remains existingMarketIOC and no fill is replayed",
+    "prior_three_episode_cases": "REGIME/TRAIL/CLOSE_ALL PASS in module",
+    "updated_original_budget_retention_case": "PASS in module",
+    "resources": "MemoryMax256MiB/Swap0/PrivateNetwork/CPUWeight10",
+    "module_unit": "cm116-original-authority-conditional-module-20261018",
+    "single_retest_unit": "cm116-original-authority-single-retest-20261018"
+  },
+  "limitations": "GO only one same-candidate replacement preserving user originaloverlay. No economic/live acceptance or guarantee fullhistorical permission parity. Invalidfirst/full and abortedfixed attempts stay preserved; no partial economics used."
+}

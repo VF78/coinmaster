@@ -149,7 +149,7 @@ def test_unknown_ack_blocks_off_trim_until_known_terminal_no_orphan():
     finally:e.end();e.dispose()
 
 
-def test_btc_partial_reduces_qc_and_btc_flat_closes_both_original_and_conditional():
+def test_btc_partial_reduces_qc_and_btc_flat_preserves_original_budget():
     s,e,ep=setup()
     try:
         c=protect(s,e,ep);original(s,e,ep,10)
@@ -159,6 +159,10 @@ def test_btc_partial_reduces_qc_and_btc_flat_closes_both_original_and_conditiona
         assert c['qc']<before
         s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.SELL,BTC_PERP.make_qty(50),time_in_force=TimeInForce.IOC,reduce_only=True))
         run_ticks(e,[tick(BTC_PERP,42,'96'),tick(SOL_PERP,43),tick(SOL_PERP,44)])
+        assert c["qc"]==0 and c["original_target"]==10 and ep.sol_qty==10
+        assert len(e.cache.positions_open())==1 and e.cache.positions_open()[0].quantity.as_decimal()==10
+        s._begin_forced_close("REGIME")
+        run_ticks(e,[tick(BTC_PERP,45),tick(SOL_PERP,46),tick(SOL_PERP,47)])
         assert not e.cache.positions_open() and not s._pending_by_order
     finally:e.end();e.dispose()
 
@@ -483,4 +487,61 @@ def test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_cl
         s._begin_forced_close(reason,close)
         run_ticks(e,[tick(BTC_PERP,40),tick(SOL_PERP,41)])
         assert s._domain.episode is None and not e.cache.positions_open() and not s._pending_by_order
+    finally:e.end();e.dispose()
+
+
+
+def test_original_1000_after_btc_tp3_flat_late_pending_partial_add_then_native_regime_2000():
+    class HoldLate(NativeProbe):
+        hold=False
+        def submit_order(self,order,*a,**kw):
+            i=self._pending_by_order.get(str(order.client_order_id))
+            if self.hold and i and i.reason=="CONDITIONAL_NET_ADD":
+                self.held=order;return
+            return super().submit_order(order,*a,**kw)
+    s,e,ep=setup(probe=HoldLate)
+    try:
+        marks(s,10,"96","1")
+        run_ticks(e,[tick(BTC_PERP,10,"96"),tick(SOL_PERP,11,"1")])
+        kind=s.config.research_confirmation_bars[2]
+        s.on_bar(bar(kind,9,1,1.01,.99));s.on_bar(bar(kind,12,.98))
+        for ts in range(13,18):run_ticks(e,[tick(SOL_PERP,ts,"1")])
+        c=s._conditional
+        run_ticks(e,[tick(BTC_PERP,20,"151"),tick(SOL_PERP,21,"1")])
+        assert 0 in ep.sol_rights
+        i=s._domain._intent(ep,"SOL_ADD",-1,0,quantity=1000,reason="SOL_ADD")
+        s._submit_intent(i,1,1,.02,0,ts_now=22)
+        run_ticks(e,[tick(SOL_PERP,22,"1")])
+        assert ep.sol_qty==1000
+        owned=ep.sol_first_owned_at
+        for ts in range(30,40):run_ticks(e,[tick(BTC_PERP,ts,"171"),tick(SOL_PERP,ts,"1")])
+        assert not any(p.instrument_id==BTC_PERP.id for p in e.cache.positions_open())
+        assert any(x["reason"]=="BTC_TP3" for x in s.fill_audit)
+        assert c["qc"]==0 and c["original_target"]==1000 and ep.sol_qty==1000
+        assert next(p.quantity.as_decimal() for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)==1000
+        assert s._domain.episode is ep and ep.sol_first_owned_at==owned
+        assert 1 in ep.sol_rights
+        late=s._domain._intent(ep,"SOL_ADD",-1,1,quantity=1000,reason="SOL_ADD")
+        s.hold=True;s._submit_intent(late,1,1,.07,1,ts_now=40)
+        run_ticks(e,[tick(SOL_PERP,40,"1")])
+        assert c["original_target"]==2000 and c["adds"] and ep.sol_qty==1000
+        # Native accepted/resting venue receipt models delayed IOC terminal/ACK;
+        # same owner/id/quantity, real matching and partial fills, no fill replay.
+        held=s.held;s.hold=False
+        o=s.order_factory.limit(SOL_PERP.id,OrderSide.SELL,SOL_PERP.make_qty(1000),SOL_PERP.make_price(D("1.01")),
+            time_in_force=TimeInForce.GTC,client_order_id=held.client_order_id)
+        s.submit_order(o)
+        run_ticks(e,[tick(SOL_PERP,41,"1.01",size="400")])
+        assert not o.is_closed and o.filled_qty.as_decimal()==800 and o.leaves_qty.as_decimal()==200
+        assert ep.sol_qty==1800 and c["adds"] and not c["active"]
+        run_ticks(e,[tick(SOL_PERP,42,"1.01")])
+        assert o.is_closed and o.filled_qty.as_decimal()==1000 and ep.sol_qty==2000 and not c["adds"]
+        assert ep.sol_first_owned_at==owned and ep.fixed_sigma==.02
+        assert ep.sol_add_filled_notional[1]==1010 and ep.sol_ownership_transfer_credit[0]==1000
+        assert not any(x["reason"]=="CONDITIONAL_BTC_FLAT" for x in s.fill_audit)
+        before=len(s.fill_audit);s._begin_forced_close("REGIME")
+        for ts in range(43,47):run_ticks(e,[tick(SOL_PERP,ts,"1.01")])
+        closes=[D(x["qty"]) for x in s.fill_audit[before:] if x["reason"]=="REGIME"]
+        assert closes==[D(1000),D(1000)]
+        assert not e.cache.positions_open() and not s._pending_by_order and s._domain.episode is None
     finally:e.end();e.dispose()

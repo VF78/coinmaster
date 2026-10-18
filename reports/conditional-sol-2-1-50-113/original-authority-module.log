@@ -1,0 +1,167 @@
+............................F                                            [100%]
+=================================== FAILURES ===================================
+_ test_original_1000_after_btc_tp3_flat_late_pending_partial_add_then_native_regime_2000 _
+
+    def test_original_1000_after_btc_tp3_flat_late_pending_partial_add_then_native_regime_2000():
+        class HoldLate(NativeProbe):
+            hold=False
+            def submit_order(self,order,*a,**kw):
+                i=self._pending_by_order.get(str(order.client_order_id))
+                if self.hold and i and i.reason=="CONDITIONAL_NET_ADD":
+                    self.held=order;return
+                return super().submit_order(order,*a,**kw)
+        s,e,ep=setup(probe=HoldLate)
+        try:
+            marks(s,10,"96","1")
+            run_ticks(e,[tick(BTC_PERP,10,"96"),tick(SOL_PERP,11,"1")])
+            kind=s.config.research_confirmation_bars[2]
+            s.on_bar(bar(kind,9,1,1.01,.99));s.on_bar(bar(kind,12,.98))
+            for ts in range(13,18):run_ticks(e,[tick(SOL_PERP,ts,"1")])
+            c=s._conditional
+            run_ticks(e,[tick(BTC_PERP,20,"151"),tick(SOL_PERP,21,"1")])
+            assert 0 in ep.sol_rights
+            i=s._domain._intent(ep,"SOL_ADD",-1,0,quantity=1000,reason="SOL_ADD")
+            s._submit_intent(i,1,1,.02,0,ts_now=22)
+            run_ticks(e,[tick(SOL_PERP,22,"1")])
+            assert ep.sol_qty==1000
+            owned=ep.sol_first_owned_at
+            for ts in range(30,40):run_ticks(e,[tick(BTC_PERP,ts,"171"),tick(SOL_PERP,ts,"1")])
+            assert not any(p.instrument_id==BTC_PERP.id for p in e.cache.positions_open())
+            assert any(x["reason"]=="BTC_TP3" for x in s.fill_audit)
+            assert c["qc"]==0 and c["original_target"]==1000 and ep.sol_qty==1000
+            assert next(p.quantity.as_decimal() for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)==1000
+            assert s._domain.episode is ep and ep.sol_first_owned_at==owned
+            assert 1 in ep.sol_rights
+            late=s._domain._intent(ep,"SOL_ADD",-1,1,quantity=1000,reason="SOL_ADD")
+            s.hold=True;s._submit_intent(late,1,1,.07,1,ts_now=40)
+            run_ticks(e,[tick(SOL_PERP,40,"1")])
+            assert c["original_target"]==2000 and c["adds"] and ep.sol_qty==1000
+            # Native accepted/resting venue receipt models delayed IOC terminal/ACK;
+            # same owner/id/quantity, real matching and partial fills, no fill replay.
+            held=s.held;s.hold=False
+            o=s.order_factory.limit(SOL_PERP.id,OrderSide.SELL,SOL_PERP.make_qty(1000),SOL_PERP.make_price(D("1.01")),
+                time_in_force=TimeInForce.GTC,client_order_id=held.client_order_id)
+            s.submit_order(o)
+            run_ticks(e,[tick(SOL_PERP,41,"1.01",size="400")])
+            assert not o.is_closed and o.filled_qty.as_decimal()==800 and o.leaves_qty.as_decimal()==200
+            assert ep.sol_qty==1800 and c["adds"] and not c["active"]
+            run_ticks(e,[tick(SOL_PERP,42,"1.01")])
+>           assert o.is_filled and ep.sol_qty==2000 and not c["adds"]
+                   ^^^^^^^^^^^
+E           AttributeError: 'nautilus_trader.model.orders.limit.LimitOrder' object has no attribute 'is_filled'
+
+runtime/tests/test_native_conditional_hedge.py:538: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_conditional_hedge.py: 26 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_conditional_hedge.py: 112 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:328: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[15-1]
+tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[15--1]
+tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[60-1]
+tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[60--1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:66: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_protective_inventory_original_adoption_is_not_native_fill_or_cash_replay
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:86: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_first_protect_topup_then_original_full_release_does_not_restore_rights
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:104: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_denied_original_admission_has_atomic_zero_credit_and_clock
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:116: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_half_and_timeout_release_original_budget_only
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:133: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_unknown_ack_blocks_off_trim_until_known_terminal_no_orphan
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:149: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_btc_partial_reduces_qc_and_btc_flat_preserves_original_budget
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:167: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory[denied]
+tests/test_native_conditional_hedge.py::test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory[rejected]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:197: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_accepted_btc_second_half_reserved_while_protecting_only_actual_first_fill
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:215: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_large_conditional_native_partial_trim_has_no_orphan_or_false_flat
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:234: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[15]
+tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[60]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:297: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.add_data(bars,sort=False);e.add_data(markdata,client_id=ClientId('TEST_MARKS'),sort=False);e.add_data(quotes,sort=False);e.sort_data();e.run(streaming=True);e.clear_data()
+
+tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[15]
+tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[60]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:316: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose();journal.close()
+
+tests/test_native_conditional_hedge.py::test_conditional_cancel_unknown_ack_late_partial_native_fill_then_exact_trim
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:344: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_signal_during_pending_native_reduce_waits_cancel_ack_before_transfer
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:361: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_conditional_default_off_does_not_create_owner_or_consume_original_native_fields
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:369: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_conditional_latched_quantity_has_no_price_only_churn
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:382: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_logical_half_then_natural_later_full_z_exit[release]
+tests/test_native_conditional_hedge.py::test_original_logical_half_then_natural_later_full_z_exit[native]
+tests/test_native_conditional_hedge.py::test_original_logical_half_then_natural_later_full_z_exit[mixed]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:418: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_transfer_sigma_preserved_when_later_native_original_adds
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:434: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_real_production_runner_builds_conditional_with_original_overlay_enabled
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:866: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_conditional_hedge.py::test_real_production_runner_builds_conditional_with_original_overlay_enabled
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:876: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+tests/test_native_conditional_hedge.py::test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_close[REGIME]
+tests/test_native_conditional_hedge.py::test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_close[TRAIL]
+tests/test_native_conditional_hedge.py::test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_close[CLOSE_ALL]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:490: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_1000_after_btc_tp3_flat_late_pending_partial_add_then_native_regime_2000
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:547: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_conditional_hedge.py::test_original_1000_after_btc_tp3_flat_late_pending_partial_add_then_native_regime_2000
+1 failed, 28 passed, 170 warnings in 5.50s

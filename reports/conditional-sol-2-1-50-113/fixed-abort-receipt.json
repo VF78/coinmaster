@@ -1,0 +1,14 @@
+{
+  "status": "ABORTED_CONTRACT_VIOLATION",
+  "aborted_UTC": "2026-10-18T16:12:04.420486+00:00",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-fixed-20261018a",
+  "source_commit": "862fec1f81c65297c86c49389e1aa97a8f0fd6d7",
+  "reason": "BTCflatincorrectlyclearsoriginalSOLbudget/pendingadds/lateentryauthority; userrequiresoriginaloverlaypreservation",
+  "unit": "MainPID=0\nExecMainStatus=0\nActiveState=inactive",
+  "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "economics": "NOT_READ_NOT_COMPARABLE_ABORTED",
+  "artifacts": "PRESERVED_NO_DELETE_NO_OVERWRITE",
+  "automatic_resume_retry": "FORBIDDEN_PENDING_ROOT_GO",
+  "stop_command_observed_ExecMainStatus": 15,
+  "manager_collection_note": "InitialstopshowedExecMainStatus15/SIGTERM; latercollectedtransientunitdefaultshowisnotasuccessfulcompletedrunreceipt"
+}

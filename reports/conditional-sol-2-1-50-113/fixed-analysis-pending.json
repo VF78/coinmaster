@@ -1,0 +1,40 @@
+{
+  "status": "PENDING_FINAL_FIXED_RECEIPT_NO_ACTIVE_RUN_READ",
+  "expected_receipt": "conditional-sol-2-1-50-fixed-receipt.json",
+  "expected_source_commit": "862fec1f81c65297c86c49389e1aa97a8f0fd6d7",
+  "expected_job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-fixed-20261018a",
+  "helper": "analyze-fixed-comparison.py",
+  "helper_sha256": "9a233b144c4e6ace257172c2c9004a403e3be266bd8543581cc61cebfcd6fe2b",
+  "outputs": [
+    "fixed-analysis-summary.json",
+    "fixed-analysis-permissions.csv"
+  ],
+  "output_preservation": "Separate fixed helper/prefix; refuses overwrite; original rejected helper/summary/permissions/manifest andpendingstub untouched.",
+  "guard_evidence": {
+    "path": "reports/conditional-sol-2-1-50-113/episode-flat-correction-evidence.json",
+    "sha256": "c64ad0a0c6b52482d1a6937b0e9c930180f3686c99a660c1d57f99e8296c6fa5",
+    "patch_sha256": "0c55b5d14bc56ae1f2517872d0eaa84e97ab6ba3cb803d3c41cb331714ec2848",
+    "source_8_pins_verified": {
+      "runtime/coinmaster/strategy/conditional_hedge.py": "4e7b73f8e0bdb15e054c72c235d9fb4a2fa8ce17caf577411e443d7c2b7d12ea",
+      "runtime/coinmaster/strategy/wave_overlay.py": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589",
+      "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+      "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+      "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+      "runtime/tests/test_native_conditional_hedge.py": "3b652b103df70033ae88103c8c7e3ace05e603005c3ff6d446a85d28d488493e",
+      "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+      "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+    },
+    "log_sha256_verified": "57dca699211443e71fefcf338742adb916654ac4b4be63e84d351dad334ad853",
+    "regression": "3 passed, 18 warnings in3.27s",
+    "correction": "Conditional owner can reconcile flat ONLY when existing _group_close_reconciliation_pending already authorizes group cleanup. It cannot set this authority merely because BTC/SOL inventory is flat. Original empty episode survives ordinaryTP3."
+  },
+  "snapshot_88_of89_identity": "Parent/engine reports88of89 economic snapshotfiles identical except conditional guard source; final receipt snapshot identity verification deferred until completed run. No active snapshot/result/interimROI read by analytics.",
+  "old_control_reused": "control-reuse.json; no oldcontrol/source/trace rehash",
+  "command": "runtime/.venv/bin/python reports/conditional-sol-2-1-50-113/analyze-fixed-comparison.py --receipt reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-fixed-receipt.json --output-prefix fixed-analysis",
+  "checks": [
+    "ASTparsePASS",
+    "Output filenames/prefix andexpected finalsource/receipt guardsverified bysourceinspection; no actualcandidate load/run"
+  ],
+  "coverage": "Optional onlyafter completedreceipt, boundedcanonicalmark pass ifneeded; no fulltrace/uPnL scan",
+  "verified_utc": "2026-10-18T16:05:51.507751+00:00"
+}
