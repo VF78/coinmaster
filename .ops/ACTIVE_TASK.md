@@ -1,6 +1,6 @@
-Updated: 2026-10-18. ACTIVE conditional SOL2%/1%/50%: implementation verified, rootcheckpoint then ONE full24m candidate.
+Updated: 2026-10-18. ACTIVE ONE conditionalSOL2%/1%/50% native24m candidate RUNNING, no interimROI.
 Canonical dev: /root/.openclaw/workspace/coinmaster/coinmaster; branch codex/nautilus-btc-sol-mvp. Never manually edit /opt/coinmaster.
-Git beforecheckpoint: HEAD25222687ba11e8f9fde919f36c4f725b95f3a175, ownedruntime/tests/helpers+reports/.opsWIP. origin/main absent locally, divergenceUNKNOWN; /opt deploy-source-commit absent. Do not reset/fetch unrelatedbranches tofixthis.
+Git economic/sourceHEAD2a3f830c18c7ac5d2b5add3dc9778b84492fe5a0 committed; rootGitHubpush succeeded onboundedretry, sourcepublished2a3f830. Onlystartupreceipt/.ops progresschanges permitted. origin/main absent/divergenceUNKNOWN; /optstamp absent. Do not reset workingtrees.
 GitHubProject#2 truth: #116follow-upInProgress, #113parentInProgress; #77/#115/#117Done; #101Todo realHLarchiveblocked. OldcontinuousSOLexperiments remaincomplete/historyretained; no duplicateissues.
 Owner authorization: implementONEconditionalcandidate atop BTCwinner6077107.23887483 withoriginalSOLoverlaypreserved, native sameBybit24m, pilotuntouched. No deploy/realorders/transfers/newoptimizer or othercandidate.
 Roles: split_cover_engine owns core/domain/tests/runner/collector; split_cover_stats controlreuse+disjointanalysis; split_cover_review narrowindependentreview; rootdocs/index/Project. NewworkSol6.1/medium.
@@ -20,11 +20,11 @@ FinalverificationONEbatch194PASS6FAIL74.39s; ONLY6failedcasesretest6PASS3.67s af
 FinalreviewGO_ISOLATED_ECONOMIC_RUN, exact8pins andpatchd9176243a4a290e86b7f58a9d26a3f9d471fe6d6a9de20998e3ad40ac20a7ff2 independentlyverified. Sourcefrozen. InitialBLOCK retainedreview-money-orders-before-correction.*.
 Evidence: correction-verification-evidence.json, review-money-orders.{md,json}, focused-development-evidence.json andrawlogs in reports/conditional-sol-2-1-50-113/. Testlogsareintentionalartifacts, notjunk.
 Controlreuseproof+leananalyze-comparison.py ownedstats; controlproofcandidate/defaultOFFGO verified, SHA43aa10c1...f97fea7. No old107frozenanalysisfileschanged; ROOTownsnewREADME.
-Next exact: rootcommit/pushverifiedsource+docs+controlproof; engine launch variant conditional-sol-2-1-50 via existinglauncher withuniquejobname AFTERrootGO. No fullcandidatehasrunyet.
+RUNNING: cm115-split-conditional-sol-2-1-50-20261018a.service PID3449193; source2a3f830,89frozenfilesverified/manifestb6ca366031f0319cd8593d5cc22ba9f1f0736aa8d540d11b2239784d521b84a2; snapshot15:39:11UTC. Startupreceipt inreportdir. No othercandidate.
 Runfences: oneengine, shared650MiB/Swap0, availableRAM>=700MiB/disk>=1GiB; env-i/no-secrets/PrivateNetwork/frozenreadonlysource+data, ownfundingjournal/exclusiveflock/gzipminuteobserver.
-Afterrun: collectfinalexit/full1051200rows/receipt/SHA/nativeflat/orders/Qfundinghash; statsONLYcompletedoutputnativecomparison/noextraengine; reportTOTAL/ROI/markedDD/TOP3/minEq/conditionalOHLC/feesmaker-taker/turnover/fills/parents/conditionalactualfills+transfers.
+Next exact: waitfullruncompletion(coarsefundingtime/resourcesonly, nointerimROI); enginecollect conditional-sol-2-1-50-receipt.json/resolvedparams/finalSHA/exit/fullrows/nativeflat/fundingSQLite. Statsanalyzecompletedonly vsreusecontrol; rootfinalREADME/Project/checkpoint/push.
 No interimROI. No newfullrepeat/variant/25%/1.5%grid withoutscope; onecandidateauthorized. SignedfundingUNKNOWN, cashresidualnotfunding; no secondPnLengine or portfolio intraminuteguarantee.
 ProtectedSandbox installed81e6318,PID2009732/NRestarts0,epoch10e39dc6efa64c8b820b174c0a5b65fe,unchanged. Live notactivated; Hermes/sites/VPN untouched. No exchangecredentials read/shared.
-VPS latestavailableRAM~1437MiB/freeDisk~3.2GiB. Earlier safecleanup597321440B complete; protect rawresults/data. No additionalcleanupneededforthisrun.
+RunpreflightRAM1469390848B/freeDisk3347587072B, startup444MB/650MiB/swap0. Firstcoarsefunding2024-09-28 CPU68.7s/peak462.5MB healthy. Earlier597321440B safecleanup complete; protect allresults/data.
 API ghTLSintermittent; localcurlIPv4HTTP1 via /private/tmp/cm-project-api.py withsavedghcredentialonlymemory/stdin, neverargv/files/logs; ProjectreadbackhelperexplicitarchivedStates both. NoVPN/systemnetwork changes.
 HL#101 stillmissinggenuine24m/2022..todayexecution+mark/fundingarchive; doNOTsubstituteBybit. Old82USDC/DP50inactiveprep retained, no fundingrequest/liveapproval now.

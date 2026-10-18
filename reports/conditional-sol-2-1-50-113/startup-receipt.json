@@ -1,0 +1,30 @@
+{
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-20261018a",
+  "source_commit": "2a3f830c18c7ac5d2b5add3dc9778b84492fe5a0",
+  "source_manifest_sha256": "b6ca366031f0319cd8593d5cc22ba9f1f0736aa8d540d11b2239784d521b84a2",
+  "frozen_files_verified": 89,
+  "conditional_module_in_manifest": true,
+  "variant_config_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-20261018a/variant.json",
+  "variant": {
+    "variant": "conditional-sol-2-1-50",
+    "flags": [
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1",
+      "--research-btc-split-tp-ioc",
+      "--research-conditional-sol"
+    ],
+    "dp": "OFF",
+    "base_control": "V3_DIRECTION_LONG5.5_SHORT7.875",
+    "snapshot_time": "2026-10-18T15:39:11.759546+00:00"
+  },
+  "resource_before": {
+    "MemAvailable": 1469390848,
+    "disk_free": 3347587072
+  },
+  "unit_startup": "MainPID=3449193\nExecMainStatus=0\nMemoryCurrent=444338176\nMemoryPeak=444338176\nCPUUsageNSec=25068544000\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active",
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "status": "ACTIVE_SINGLE_AUTHORIZED_RESEARCH_RUN",
+  "full_resolved_parameters": "PENDING_COMPLETED_NATIVE_RESULT"
+}
