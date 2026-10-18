@@ -58,6 +58,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v3_risk: str | None = None
     research_btc_split50: bool = False
     research_btc_split_planref_v1: bool = False
+    research_btc_split_tp_ioc: bool = False
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_cover: Decimal | None = None
     research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
@@ -164,6 +165,8 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
         super().__init__(config)
         self._split_cover_init()
         self._cover_seed(config.research_cover_hour_seed)
+        if config.research_btc_split_tp_ioc and (not config.research_btc_split_planref_v1 or config.tp_fee_floor_v1):
+            raise ValueError("TP_IOC_REQUIRES_PLANREF_V3")
         if config.research_btc_split_planref_v1 and (not config.research_btc_split50 or config.research_btc_split_discount != Decimal("0.0025")):
             raise ValueError("PLANREF_V1_REQUIRES_BTC025_SPLIT")
         if config.research_btc_split_discount not in (Decimal("0.0025"),Decimal("0.005")):
@@ -1356,6 +1359,8 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
                 continue
             if self._split_unfinished() and intent.action == "BTC_REDUCE":
                 continue
+            if self._split_tp_ioc_eligible(intent) and any(self._reduction_key(owned)==self._reduction_key(intent) for owned in self._pending_by_order.values()):
+                continue
             target = self.config.btc_id if intent.action.startswith("BTC") else self.config.sol_id
             if intent.action == "CLOSE_ALL":
                 self._queued_intents.remove(item)
@@ -1823,6 +1828,18 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
         # Control A makes every planned SOL exit a native taker IOC.  Resting
         # post-only liquidity remains only for explicit BTC TP targets.
         passive_reduction = intent.action == "BTC_REDUCE" and intent.limit_price is not None
+        if passive_reduction and self._split_tp_ioc_eligible(intent):
+            quote_tick = self.cache.quote_tick(instrument_id)
+            target = _native_limit_price(instrument, Decimal(str(intent.limit_price))).as_decimal()
+            crossed = quote_tick is not None and (target >= quote_tick.ask_price.as_decimal() if side == OrderSide.BUY else target <= quote_tick.bid_price.as_decimal())
+            if crossed:
+                # Same intent/level/target leaves, real IOC money and taker fees.
+                intent = replace(intent, limit_price=None)
+                self._domain.episode.pending[intent.id] = intent
+                passive_reduction = False
+                self._split_parent.setdefault("positive_tp_ioc_catchups", []).append({
+                    "timestamp_ns":ts_now,"level":intent.level,"quantity":str(rounded),
+                    "target_price":str(target),"executable_price":str(executable_price)})
         split_limit = self._split_limit(intent, instrument, rounded) if intent.action == "BTC_ENTRY" else None
         if split_limit is not None:
             order = split_limit
@@ -1920,7 +1937,8 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
         episode = self._domain.episode
         ordinary_sol = intent.reason in {"SOL_Z_HALF_EXIT", "SOL_Z_FULL_EXIT"}
         zero_fallback = (episode is not None and intent.action == "BTC_REDUCE" and intent.limit_price is None and intent.level in episode.btc_zero_resting_suppressed)
-        if ordinary_sol or zero_fallback:
+        positive_tp_fallback = self._split_tp_ioc_eligible(intent) and intent.limit_price is None
+        if ordinary_sol or zero_fallback or positive_tp_fallback:
             self._accepted_reductions.setdefault(self._reduction_key(intent), (intent, quantity))
 
     def _requeue_accepted_reduction(self, intent: Intent, sigma: float | None, index: int, ts_event: int) -> None:

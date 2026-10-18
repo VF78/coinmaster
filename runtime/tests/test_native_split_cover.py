@@ -21,8 +21,8 @@ def cfg(split=False, cover=None, **kw):
         max_mark_age_ns=10*HOUR, **kw)
 
 
-def setup(split=True, cover=None, qty=101.001, side=1, planref=False):
-    s=NativeProbe(cfg(split,cover,research_btc_split_planref_v1=planref))
+def setup(split=True, cover=None, qty=101.001, side=1, planref=False, tp_ioc=False):
+    s=NativeProbe(cfg(split,cover,research_btc_split_planref_v1=planref,research_btc_split_tp_ioc=tp_ioc))
     e=native_engine(s)
     run_ticks(e,[tick(BTC_PERP,1)])
     prepare_day(s,2)
@@ -737,5 +737,126 @@ def test_planref_v1_freeze_preserves_real_native_tp_and_sol_right():
         assert p["planref_v1_p0"]==ep.btc_planref_vwap
         assert p["planref_v1_actual_blended_vwap"]==ep.btc_entry_notional_exact/ep.btc_entry_qty_exact
         assert p["planref_v1_h_actual"]==pytest.approx(p["planref_v1_gross_reference_qty"]*ep.btc_entry_vwap/p["planref_v1_beta"])
+    finally:
+        e.end();e.dispose()
+
+
+@pytest.mark.parametrize("side",[1,-1])
+def test_tp_ioc_crossed_positive_targets_after_complete_parent_use_native_taker_and_actual_rights(side):
+    s,e,ep=setup(qty=100,side=side,planref=True,tp_ioc=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99" if side==1 else "101")])
+        assert not ep.sol_rights
+        assert s._split_parent["filled"]==s._split_parent["quantity"]==100
+        actual_vwap=ep.btc_entry_vwap
+        run_ticks(e,[tick(BTC_PERP,6,"102" if side==1 else "98")])
+        fills=[x for x in s.fill_audit if x["action"]=="BTC_REDUCE"]
+        assert len(fills)==2
+        assert {int(x["level"]) for x in fills}=={0,1}
+        assert all(x["post_only"]=="false" and x["native_liquidity_side"]=="TAKER" for x in fills)
+        assert all(D(x["commission"])==D(x["notional"])*BTC_PERP.taker_fee for x in fills)
+        assert {0,1}<=ep.sol_rights
+        assert ep.btc_planref_vwap==100 and ep.btc_entry_vwap==actual_vwap
+        assert ep.h==pytest.approx((ep.btc_reference_qty or ep.btc_initial_qty)*actual_vwap/ep.beta_entry)
+        native=e.cache.positions_open()[0]
+        assert native.quantity.as_decimal()==D("57.5")
+        assert e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()==D(10000)+native.realized_pnl.as_decimal()
+    finally:
+        e.end();e.dispose()
+
+
+def test_tp_ioc_uncrossed_target_keeps_native_postonly_maker_and_off_keeps_original_skip():
+    for enabled,price in [(True,"100.5"),(False,"102")]:
+        s,e,ep=setup(qty=100,planref=True,tp_ioc=enabled)
+        try:
+            run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99"),tick(BTC_PERP,6,price)])
+            assert not [x for x in s.fill_audit if x["action"]=="BTC_REDUCE"]
+            orders=[o for o in e.cache.orders_open() if o.is_reduce_only]
+            assert all(o.is_post_only and o.order_type.name=="LIMIT" for o in orders)
+            assert len(orders)==(3 if enabled else 1)
+            assert not ep.sol_rights
+        finally:
+            e.end();e.dispose()
+
+
+def test_tp_ioc_partial_unknown_ack_and_adverse_recheck_conserve_target_leaves():
+    s,e,ep=setup(qty=100,planref=True,tp_ioc=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99"),tick(BTC_PERP,6,"101.5",size="10")])
+        key=(ep.id,"BTC_REDUCE",0)
+        assert s._accepted_reductions[key][1]==D("11.25")
+        assert D(str(ep.btc_open_qty))==90
+        assert ep.sol_right_fraction[0]==pytest.approx(10/21.25)
+        child=next(i for i,_,_ in s._queued_intents if i.action=="BTC_REDUCE" and i.level==0)
+        s._pending_by_order["UNKNOWN_ACK"]=child
+        when=6+60_000_000_000
+        before=len(e.cache.orders())
+        run_ticks(e,[tick(BTC_PERP,when,"101.5")])
+        assert len(e.cache.orders())==before
+        assert any(i.id==child.id for i,_,_ in s._queued_intents)
+        s._pending_by_order.pop("UNKNOWN_ACK")
+        run_ticks(e,[tick(BTC_PERP,when+1,"100.5")])
+        assert D(str(ep.btc_open_qty))==90  # Adverse quote cannot chase an accepted TP.
+        run_ticks(e,[tick(BTC_PERP,when+2,"101.5")])
+        fills=[x for x in s.fill_audit if x["action"]=="BTC_REDUCE" and x["level"]=="0"]
+        assert sum((D(x["qty"]) for x in fills),D(0))==D("21.25")
+        assert key not in s._accepted_reductions
+        assert ep.sol_right_fraction[0]==1
+        assert D(str(ep.btc_open_qty))==D("78.75")
+    finally:
+        e.end();e.dispose()
+
+
+def test_tp_ioc_mandatory_close_preempts_partial_retry_and_clears_owner():
+    s,e,ep=setup(qty=100,planref=True,tp_ioc=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99"),tick(BTC_PERP,6,"101.5",size="10")])
+        assert s._accepted_reductions
+        s._begin_forced_close("REGIME")
+        run_ticks(e,[tick(BTC_PERP,7,"100.5"),tick(SOL_PERP,8)])
+        assert not e.cache.positions_open()
+        assert not s._accepted_reductions
+        assert not any(i.action=="BTC_REDUCE" for i,_,_ in s._queued_intents)
+    finally:
+        e.end();e.dispose()
+
+
+def test_tp_ioc_cannot_run_before_parent_complete_or_for_zero_level():
+    s,e,ep=setup(qty=100,planref=True,tp_ioc=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4)])
+        i=s._domain._intent(ep,"BTC_REDUCE",-1,0,quantity=21.25,limit_price=101)
+        assert not s._split_tp_ioc_eligible(i)
+        run_ticks(e,[tick(BTC_PERP,5,"102")])
+        assert not [x for x in s.fill_audit if x["action"]=="BTC_REDUCE"]
+        assert not ep.sol_rights
+        run_ticks(e,[tick(BTC_PERP,6,"102")])
+        assert s._split_parent["filled"]==100
+        assert s._split_tp_ioc_eligible(i)
+        ep.wave_levels=(0,.02,.03)
+        assert not s._split_tp_ioc_eligible(i)
+    finally:
+        e.end();e.dispose()
+
+
+def test_tp_ioc_requires_planref_and_existing_v3_native_fee_profile():
+    with pytest.raises(ValueError,match="TP_IOC_REQUIRES_PLANREF_V3"):
+        NativeProbe(cfg(True,research_btc_split_tp_ioc=True))
+    with pytest.raises(ValueError,match="TP_IOC_REQUIRES_PLANREF_V3"):
+        NativeProbe(cfg(True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,tp_fee_floor_v1=True))
+
+
+def test_tp_ioc_partial_retry_never_exceeds_current_native_position():
+    s,e,ep=setup(qty=100,planref=True,tp_ioc=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99"),tick(BTC_PERP,6,"101.5",size="10")])
+        s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.SELL,BTC_PERP.make_qty(D(85)),time_in_force=TimeInForce.IOC,reduce_only=True))
+        run_ticks(e,[tick(BTC_PERP,7,"100.5")])
+        assert e.cache.positions_open()[0].quantity.as_decimal()==5
+        run_ticks(e,[tick(BTC_PERP,6+60_000_000_000,"101.5")])
+        assert not e.cache.positions_open()
+        fills=[x for x in s.fill_audit if x["action"]=="BTC_REDUCE" and x["level"]=="0"]
+        assert sum((D(x["qty"]) for x in fills),D(0))==15
+        assert not s._accepted_reductions
     finally:
         e.end();e.dispose()

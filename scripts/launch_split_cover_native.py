@@ -20,6 +20,7 @@ SLICE = "cm113-v3-risk.slice"
 VARIANTS = {
     "btc025": ["--research-btc-split50", "--research-btc-split-discount", "0.0025"],
     "btc025-planref": ["--research-btc-split50", "--research-btc-split-discount", "0.0025", "--research-btc-split-planref-v1"],
+    "btc025-planref-tp-ioc": ["--research-btc-split50", "--research-btc-split-discount", "0.0025", "--research-btc-split-planref-v1", "--research-btc-split-tp-ioc"],
     "btc050": ["--research-btc-split50", "--research-btc-split-discount", "0.005"],
     "sol50": ["--research-sol-cover", "0.5"],
     "sol75": ["--research-sol-cover", "0.75"],

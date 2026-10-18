@@ -183,6 +183,16 @@ class SplitCoverResearch:
         finally:
             self._split_child_submit=False
 
+    def _split_tp_ioc_eligible(self,intent):
+        if not self.config.research_btc_split_tp_ioc or intent.action!="BTC_REDUCE":
+            return False
+        p=self._split_parent
+        ep=self._domain.episode
+        return bool(p and ep and p["episode_id"]==intent.episode_id==ep.id
+            and p["closed"] and p["filled"]==p["quantity"] and not p["cancelled"]
+            and not self._forced_close_reason and not self._liquidating
+            and intent.level is not None and ep.wave_levels[intent.level]>0)
+
     def _split_limit(self,intent,instrument,quantity):
         p=self._split_parent
         if not p or not self._split_child_submit or p["fallback"] or p["filled"]<p["first_quantity"]:

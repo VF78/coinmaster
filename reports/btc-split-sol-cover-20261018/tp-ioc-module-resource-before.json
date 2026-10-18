@@ -1,0 +1,8 @@
+{
+  "MemAvailable": 1453371392,
+  "MemoryMax": 268435456,
+  "SwapMax": 0,
+  "CPUWeight": 10,
+  "PrivateNetwork": true,
+  "suite": "test_native_split_cover.py FULL_RELEVANT_MODULE_ONCE"
+}

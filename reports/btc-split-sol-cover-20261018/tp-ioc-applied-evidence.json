@@ -1,0 +1,43 @@
+{
+  "scope": "SELECTED_SEVENTH_NATIVE_TP_IOC_CATCHUP_APPLIED_TESTED_NOT_FULL_RUN",
+  "base_commit": "2eeeb394d0ff2b9a716c3852a1cc35fec6431685",
+  "source_hashes": {
+    "runtime/coinmaster/domain/wave_overlay.py": "e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2",
+    "runtime/coinmaster/strategy/wave_overlay.py": "2b76b98397245c66493befc8332c1f1f8c2739a1f347fed82e232c12cc2e1d39",
+    "runtime/coinmaster/strategy/split_cover.py": "ac0cbda7fe529d95c29d0a336fe1cabce3f9c4e355900f080c77119e2cb04525",
+    "runtime/coinmaster/research/native_baseline.py": "2d2983638225214831c8cec20a52cf170175b637a344ec27a95a02ad25573b9c",
+    "runtime/tests/test_native_split_cover.py": "0730d7fb8eeabec880e66d4734ae71d88804ce0ac517dab9c078bff9c206afe6",
+    "scripts/launch_split_cover_native.py": "40ecccf599228c6f7c86328d5702759790333becf68ee3c78aa9005c9ad77f06"
+  },
+  "patch_sha256": "83f628e1ef14498e7e3650ff43622b5d287ba269c8e713e757657a03e183200b",
+  "focused": "8 passed, 42 deselected, 16 warnings in 3.72s",
+  "full_relevant_module_once": "50 passed, 152 warnings in 3.87s",
+  "resources": [
+    {
+      "MemAvailable": 1525551104,
+      "MemoryMax": 268435456,
+      "SwapMax": 0,
+      "CPUWeight": 10,
+      "PrivateNetwork": true,
+      "suite": "test_native_split_cover.py -k tp_ioc"
+    },
+    {
+      "MemAvailable": 1453371392,
+      "MemoryMax": 268435456,
+      "SwapMax": 0,
+      "CPUWeight": 10,
+      "PrivateNetwork": true,
+      "suite": "test_native_split_cover.py FULL_RELEVANT_MODULE_ONCE"
+    }
+  ],
+  "unit_journals": {
+    "cm115-tp-ioc-focused-20261018a.service": "Started cm115-tp-ioc-focused-20261018a.service - /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/.openclaw/workspace/coinmaster/coinmaster/runtime OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q tests/test_native_split_cover.py -k tp_ioc --disable-warnings -p no:cacheprovider --basetemp=/tmp/cm115-tp-ioc-focused.\ncm115-tp-ioc-focused-20261018a.service: Deactivated successfully.\ncm115-tp-ioc-focused-20261018a.service: Consumed 4.698s CPU time, 804.0K memory peak, 0B memory swap peak.\n",
+    "cm115-tp-ioc-module-20261018a.service": "Started cm115-tp-ioc-module-20261018a.service - /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/.openclaw/workspace/coinmaster/coinmaster/runtime OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q tests/test_native_split_cover.py --disable-warnings -p no:cacheprovider --basetemp=/tmp/cm115-tp-ioc-module.\ncm115-tp-ioc-module-20261018a.service: Deactivated successfully.\ncm115-tp-ioc-module-20261018a.service: Consumed 5.027s CPU time, 1.1M memory peak, 0B memory swap peak.\n"
+  },
+  "resource_note": "Short-unit reported memory peak is retained verbatim; not an independent Python RSS measurement. Enforced launch cap256MiB/Swap0; private network, env-i, no full backtest active.",
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "sixth_frozen_files_unchanged": 85,
+  "guard_alternative": "EXACTLY_REVERSED_UNRUN",
+  "full_backtest": "NOT_STARTED",
+  "next_gate": "INDEPENDENT_NARROW_REVIEW_THEN_ROOT_COMMIT_PUSH_LAUNCH"
+}

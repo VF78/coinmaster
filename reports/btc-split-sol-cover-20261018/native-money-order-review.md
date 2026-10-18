@@ -79,3 +79,24 @@ e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2  runtime/coinma
 4d4ed0daeef3778be2c9d2ca1793b7b311234ecbf46a78b5f05f54a381cc923c  scripts/launch_split_cover_native.py
 df68b80846a916267f33896201a0ba5598a9d91314acac1cab33c4d8c59286d4  runtime/tests/test_native_split_cover.py
 ```
+
+## PLANREF positive-TP IOC catch-up — final narrow review 2026-10-18
+
+**GO for the isolated seventh research run.** No live/economic approval or historical permission/volume guarantee. Scope only: changed completed-parent positive-TP native execution/ownership path and actual money evidence. No reviewer test rerun/source/index edit/service action.
+
+Independently recomputed all six source pins below and patch83f628e1ef14498e7e3650ff43622b5d287ba269c8e713e757657a03e183200b; all match tp-ioc-applied-evidence.json. Actual logs inspected: focused **8passed** then full relevant module **50passed**; these overlap and are not58distinct tests. Guard alternative has no sourceflag/reference in reviewed runtime/helper/test files.
+
+`strategy/split_cover.py:186-194` admits only positive-level reductions after exact full acceptedQ completion, zero cancellation, correct episode and no forced/liquidating state. `strategy/wave_overlay.py:1831-1843` checks the canonical native target against cached executable bid/ask, retains id/level/leaves by replacing only limit_price, and falls through the existing market factory at1892 with IOC/reduce_only; no ideal threshold fill is inserted. Native TAKER commissions/post_onlyfalse and accountcash=seed+actualrealizedPnL are asserted for both directions at test745. P0, actualVWAP, actualH, targetQ and rights-before-fill assertions are retained.
+
+`strategy/wave_overlay.py:1362` blocks a competing same-level pending order, including unknownACK, without dropping queued leaves; existing1370-1381 conditional path rechecks actual management target on each accepted retry. `:1940-1970` extends the existing accepted-reduction owner/requeue path rather than adding an executor; native position cap remains in submit. Tests782/810/849 prove partial total21.25, fractional SOL rights only from actualfills, adverse-quote wait, unknownACK exclusion, mandatory close preemption/owner clearing, and native remainingposition cap. Tests768/824/842 prove unchanged maker/OFF, no precompletion/zero-level activation and explicit PLANREF/nativefee-profile gating. No blocker found in this narrow review.
+
+```
+e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2  runtime/coinmaster/domain/wave_overlay.py
+2b76b98397245c66493befc8332c1f1f8c2739a1f347fed82e232c12cc2e1d39  runtime/coinmaster/strategy/wave_overlay.py
+ac0cbda7fe529d95c29d0a336fe1cabce3f9c4e355900f080c77119e2cb04525  runtime/coinmaster/strategy/split_cover.py
+2d2983638225214831c8cec20a52cf170175b637a344ec27a95a02ad25573b9c  runtime/coinmaster/research/native_baseline.py
+0730d7fb8eeabec880e66d4734ae71d88804ce0ac517dab9c078bff9c206afe6  runtime/tests/test_native_split_cover.py
+40ecccf599228c6f7c86328d5702759790333becf68ee3c78aa9005c9ad77f06  scripts/launch_split_cover_native.py
+```
+
+Pre-seventh-outcome eligibility clarification: no concrete plan3.3/native-ownership violation has been found in sixth PLANREF. Its truthful marketable-post-only skip and original daily fallback can miss or delay early reductions; that is a disclosed execution-policy outcome, not an invented maker fill or invalid native money/right. With root-reported105permissions/full acceptedQ and truthful native accounting, sixth remains an eligible comparator. Do not disqualify it retrospectively because seventh has different ROI/DD. Seventh is a separately versioned actualTAKER IOC catch-up policy. Ranking remains maximumTOTAL among genuinely eligible variants; lower-DD goal is reported separately.

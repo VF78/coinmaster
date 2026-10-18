@@ -1,0 +1,16 @@
+{
+  "scope": "SUPERSEDED_UNRUN_GUARD_ALTERNATIVE_ONLY",
+  "source_base": "2eeeb394d0ff2b9a716c3852a1cc35fec6431685",
+  "guard_patch_sha256": "8455af6fca887a97ac091053b3fda84fd0c037f513dfffa4a718483075a0ee95",
+  "guard_source_hashes_before_exact_reverse": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "c87339751722dc00beac29ee62213d896060d3f542768baf9c562c4d098f6cc4",
+    "runtime/coinmaster/strategy/split_cover.py": "d5c8bb3f8746d2a724e917d75b58c9b4ab47d13358ce7ae0b608f1392783cd16",
+    "runtime/coinmaster/research/native_baseline.py": "44f7d215a6e4ee64c575e1bc1cd7224af5019e6b30c292a837d712ebfe782b2b",
+    "runtime/tests/test_native_split_cover.py": "3d70a6f882985742daaf3cda65523b521ef9c6b8b45f8192e3ef78c8db8f2b2f",
+    "scripts/launch_split_cover_native.py": "c0d95c726ff385d1204e1b01d7cc424d266c0c8833dc4c206d39e14f37af175a"
+  },
+  "tests_run": false,
+  "full_backtest_run": false,
+  "selection": "PLANREF_POSITIVE_TP_IOC_CATCHUP_INSTEAD",
+  "exact_reverse_restores_only_owned_source_to_HEAD": true
+}
