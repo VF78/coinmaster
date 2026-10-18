@@ -1,0 +1,23 @@
+{
+  "status": "FAILED_NATIVE_CALLBACK_TYPE_ERROR_NO_VALID_ECONOMIC_RESULT",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-ioc-parity-20261018a",
+  "source_commit": "44f2e00ae117fb961a20423d261de366f4b71fbe",
+  "frozen_manifest_sha256": "fd8bffe2ee43eb2b753171b864f0295be7745b7e101c3b586e795d7b8f1e07cd",
+  "worker_log_sha256": "2f11b53d18fae0fc03281ed658e5f16bea6765f9dcb3a6a29831d0075ae44e02",
+  "observed_utc": "2026-10-18T17:22:12.638891+00:00",
+  "actual_unit_exit_code": 1,
+  "journal_final": "Started cm115-split-conditional-sol-2-1-50-ioc-parity-20261018a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-ioc-parity-20261018a/launch.sh.\ncm115-split-conditional-sol-2-1-50-ioc-parity-20261018a.service: Main process exited, code=exited, status=1/FAILURE\ncm115-split-conditional-sol-2-1-50-ioc-parity-20261018a.service: Failed with result 'exit-code'.\ncm115-split-conditional-sol-2-1-50-ioc-parity-20261018a.service: Consumed 18min 40.464s CPU time, 602.7M memory peak, 0B memory swap peak.\n",
+  "transient_systemctl_warning": "Collected unit later shows ExecMainStatus0; journal final exit1 is authoritative.",
+  "exception": "TypeError: cache.order requires ClientOrderId, received str in WaveOverlayStrategy._terminal_without_fill line2588",
+  "callback_path": "forcedclose cancellation -> forcedclose submission -> native throttle denial -> on_order_denied -> _terminal_without_fill -> cache.order(str)",
+  "native_economics": "NOT_AVAILABLE_NOT_VALID_FOR_COMPARISON",
+  "result_files": [
+    "minute-native-risk.csv.gz",
+    ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction-funding.sqlite.attempt-ccd49314bfea4c5e90aa71c38fd9c6a0.aborted-1e192dff857d45828ccff5d99236c371-wal",
+    ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction-funding.sqlite.attempt-ccd49314bfea4c5e90aa71c38fd9c6a0.aborted-1e192dff857d45828ccff5d99236c371",
+    ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction-funding.sqlite.attempt-ccd49314bfea4c5e90aa71c38fd9c6a0.aborted-1e192dff857d45828ccff5d99236c371-shm"
+  ],
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "retry": "NOT_LAUNCHED_NOT_AUTOMATICALLY_AUTHORIZED",
+  "source_edits": "NONE"
+}

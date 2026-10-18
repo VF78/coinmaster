@@ -739,3 +739,59 @@ def test_original_attempt_terminal_cannot_release_or_fill_newer_authorization(te
         account=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
         assert account==D(10000)+sum((p.realized_pnl.as_decimal() for p in e.cache.positions_closed()),D(0))
     finally:e.end();e.dispose()
+
+
+def test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote():
+    from nautilus_trader.backtest.config import BacktestEngineConfig
+    from nautilus_trader.backtest.engine import BacktestEngine
+    from nautilus_trader.config import LoggingConfig, RiskEngineConfig
+    from nautilus_trader.model.enums import AccountType, OmsType
+    from nautilus_trader.model.objects import Money
+    from coinmaster.research.native_fixture import SIM
+
+    class DenialProbe(NativeProbe):
+        def __init__(self, cfg):
+            super().__init__(cfg)
+            self.denials=[]
+
+        def on_order_denied(self, event):
+            self.denials.append(event)
+            # Fail promptly on a broken synchronous retry, after real denial.
+            assert len(self.denials)<=1, "forced denial recursively resubmitted without fresh quote"
+            super().on_order_denied(event)
+
+    s=DenialProbe(config())
+    e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
+        risk_engine=RiskEngineConfig(max_order_submit_rate="2/00:00:01")))
+    e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
+        starting_balances=[Money(10000,BTC_PERP.quote_currency)],
+        base_currency=BTC_PERP.quote_currency,default_leverage=D(1))
+    e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(s)
+    try:
+        run_ticks(e,[tick(SOL_PERP,1)])
+        ep=s._domain.episode=Episode("native-throttle",1,10000,1,h=10000)
+        original(s,e,ep,1,2)
+        assert ep.sol_qty==1
+        s._begin_forced_close("REGIME")
+        run_ticks(e,[tick(SOL_PERP,3,size="0.4")])
+        assert len(s.denials)==1
+        denied=s.denials[0]
+        assert "rate" in denied.reason.lower() or "throttl" in denied.reason.lower()
+        assert e.cache.order(denied.client_order_id).status.name=="DENIED"
+        assert len(e.cache.orders())==3
+        assert e.cache.positions_open()[0].quantity.as_decimal()==D("0.6")
+        assert SOL_PERP.id not in s._forced_close_submitted
+        assert str(denied.client_order_id) not in s._forced_close_orders
+        assert not e.cache.orders_open()
+        run_ticks(e,[tick(SOL_PERP,2_000_000_003)])
+        assert len(s.denials)==1 and len(e.cache.orders())==4
+        assert not e.cache.positions_open() and not e.cache.orders_open()
+        assert not s._forced_close_orders
+        assert not s._pending_by_order and s._domain.episode is None
+        assert s._forced_close_reason is None
+        run_ticks(e,[tick(SOL_PERP,3_000_000_003)])
+        assert len(e.cache.orders())==4 and len(s.denials)==1
+        fees=sum((D(r['commission']) for r in s.fill_audit),D(0))
+        assert len(s.fill_audit)==3 and fees==D('0.20')
+        assert e.cache.account_for_venue(SIM).balance_total().as_decimal()==D(10000)-fees
+    finally:e.end();e.dispose()

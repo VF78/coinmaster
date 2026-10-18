@@ -18,7 +18,7 @@ from nautilus_trader.config import StrategyConfig
 from nautilus_trader.model.data import Bar, BarType, CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
 from nautilus_trader.model.enums import BarAggregation, OrderSide, TimeInForce
 from nautilus_trader.model.events import OrderAccepted, OrderCanceled, OrderDenied, OrderExpired, OrderFilled, OrderRejected
-from nautilus_trader.model.identifiers import ClientId, InstrumentId
+from nautilus_trader.model.identifiers import ClientId, ClientOrderId, InstrumentId
 from nautilus_trader.trading.strategy import Strategy
 
 from coinmaster.domain.wave_overlay import btc_management_price
@@ -2568,6 +2568,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         self._terminal_without_fill(str(event.client_order_id))
 
     def _terminal_without_fill(self, client_order_id: str) -> None:
+        forced_close_terminal = client_order_id in self._forced_close_orders
         failed_intent = self._pending_by_order.get(client_order_id)
         if self.config.research_conditional_sol:
             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
@@ -2585,7 +2586,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
             now_ns = self.clock.timestamp_ns()
             self._persist_deposit("EXIT_INCOMPLETE", f"deposit:exit-terminal:{client_order_id}:{now_ns}", now_ns)
         if client_order_id in self._forced_close_orders:
-            order = self.cache.order(client_order_id)
+            order = self.cache.order(ClientOrderId(client_order_id))
             if order is not None:
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
@@ -2608,7 +2609,9 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
         self._reconcile_terminal_flat()
         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())
-        if self._forced_close_reason is not None and not self.cache.orders_open():
+        # A synchronous native denial must not resubmit into the same throttle.
+        # Known terminal leaves remain eligible for the existing fresh-quote path.
+        if not forced_close_terminal and self._forced_close_reason is not None and not self.cache.orders_open():
             self._submit_forced_closes_from_cache()
         if self._ordinary_forced_close_active() or self._research_protect_latch is not None:
             self._group_close_reconciliation_pending = True

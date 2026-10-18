@@ -1,0 +1,362 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote _
+
+    def test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote():
+        from nautilus_trader.backtest.config import BacktestEngineConfig
+        from nautilus_trader.backtest.engine import BacktestEngine
+        from nautilus_trader.config import LoggingConfig, RiskEngineConfig
+        from nautilus_trader.model.enums import AccountType, OmsType
+        from nautilus_trader.model.objects import Money
+        from coinmaster.research.native_fixture import SIM
+    
+        class DenialProbe(NativeProbe):
+            def __init__(self, cfg):
+                super().__init__(cfg)
+                self.denials=[]
+    
+            def on_order_denied(self, event):
+                self.denials.append(event)
+                # Fail promptly on a broken synchronous retry, after real denial.
+                assert len(self.denials)<=1, "forced denial recursively resubmitted without fresh quote"
+                super().on_order_denied(event)
+    
+        s=DenialProbe(config())
+        e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
+            risk_engine=RiskEngineConfig(max_order_submit_rate="2/00:00:01")))
+        e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
+            starting_balances=[Money(10000,BTC_PERP.quote_currency)],
+            base_currency=BTC_PERP.quote_currency,default_leverage=D(1))
+        e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(s)
+        try:
+            run_ticks(e,[tick(SOL_PERP,1)])
+            ep=s._domain.episode=Episode("native-throttle",1,10000,1,h=10000)
+            original(s,e,ep,1,2)
+            assert ep.sol_qty==1
+            s._begin_forced_close("REGIME")
+>           run_ticks(e,[tick(SOL_PERP,3,size="0.4")])
+
+tests/test_native_conditional_hedge.py:776: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_episode_risk.py:22: in run_ticks
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+nautilus_trader/backtest/engine.pyx:1374: in nautilus_trader.backtest.engine.BacktestEngine.run
+    ???
+nautilus_trader/backtest/engine.pyx:1727: in nautilus_trader.backtest.engine.BacktestEngine._run
+    ???
+nautilus_trader/backtest/engine.pyx:1920: in nautilus_trader.backtest.engine.BacktestEngine._process_and_settle_venues
+    ???
+nautilus_trader/backtest/engine.pyx:3660: in nautilus_trader.backtest.engine.SimulatedExchange._drain_commands
+    ???
+nautilus_trader/backtest/engine.pyx:3775: in nautilus_trader.backtest.engine.SimulatedExchange._process_trading_command
+    ???
+nautilus_trader/backtest/engine.pyx:5214: in nautilus_trader.backtest.engine.OrderMatchingEngine.process_order
+    ???
+nautilus_trader/backtest/engine.pyx:5354: in nautilus_trader.backtest.engine.OrderMatchingEngine._process_market_order
+    ???
+nautilus_trader/backtest/engine.pyx:6297: in nautilus_trader.backtest.engine.OrderMatchingEngine.fill_market_order
+    ???
+nautilus_trader/backtest/engine.pyx:7434: in nautilus_trader.backtest.engine.OrderMatchingEngine.apply_fills
+    ???
+nautilus_trader/backtest/engine.pyx:8154: in nautilus_trader.backtest.engine.OrderMatchingEngine.cancel_order
+    ???
+nautilus_trader/backtest/engine.pyx:8476: in nautilus_trader.backtest.engine.OrderMatchingEngine._generate_order_canceled
+    ???
+nautilus_trader/common/component.pyx:2614: in nautilus_trader.common.component.MessageBus.send
+    ???
+nautilus_trader/execution/engine.pyx:880: in nautilus_trader.execution.engine.ExecutionEngine.process
+    ???
+nautilus_trader/execution/engine.pyx:892: in nautilus_trader.execution.engine.ExecutionEngine.process
+    ???
+nautilus_trader/execution/engine.pyx:1341: in nautilus_trader.execution.engine.ExecutionEngine._handle_event
+    ???
+nautilus_trader/common/component.pyx:2834: in nautilus_trader.common.component.MessageBus.publish_c
+    ???
+nautilus_trader/trading/strategy.pyx:1886: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:1987: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:1947: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:595: in nautilus_trader.trading.strategy.Strategy.on_order_canceled
+    ???
+coinmaster/strategy/wave_overlay.py:2469: in on_order_canceled
+    self._submit_forced_closes_from_cache()
+coinmaster/strategy/wave_overlay.py:2143: in _submit_forced_closes_from_cache
+    self.submit_order(order)
+coinmaster/strategy/wave_overlay.py:2713: in submit_order
+    return super().submit_order(order, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+nautilus_trader/trading/strategy.pyx:805: in nautilus_trader.trading.strategy.Strategy.submit_order
+    ???
+nautilus_trader/trading/strategy.pyx:897: in nautilus_trader.trading.strategy.Strategy.submit_order
+    ???
+nautilus_trader/execution/manager.pyx:594: in nautilus_trader.execution.manager.OrderManager.send_risk_command
+    ???
+nautilus_trader/common/component.pyx:2614: in nautilus_trader.common.component.MessageBus.send
+    ???
+nautilus_trader/risk/engine.pyx:200: in nautilus_trader.risk.engine.RiskEngine.execute
+    ???
+nautilus_trader/risk/engine.pyx:212: in nautilus_trader.risk.engine.RiskEngine.execute
+    ???
+nautilus_trader/risk/engine.pyx:406: in nautilus_trader.risk.engine.RiskEngine._execute_command
+    ???
+nautilus_trader/risk/engine.pyx:455: in nautilus_trader.risk.engine.RiskEngine._handle_submit_order
+    ???
+nautilus_trader/risk/engine.pyx:1182: in nautilus_trader.risk.engine.RiskEngine._execution_gateway
+    ???
+nautilus_trader/common/component.pyx:3124: in nautilus_trader.common.component.Throttler.send
+    ???
+nautilus_trader/common/component.pyx:3145: in nautilus_trader.common.component.Throttler._limit_msg
+    ???
+nautilus_trader/risk/engine.pyx:1082: in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+    ???
+nautilus_trader/risk/engine.pyx:1084: in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+    ???
+nautilus_trader/risk/engine.pyx:1123: in nautilus_trader.risk.engine.RiskEngine._deny_order
+    ???
+nautilus_trader/common/component.pyx:2614: in nautilus_trader.common.component.MessageBus.send
+    ???
+nautilus_trader/execution/engine.pyx:880: in nautilus_trader.execution.engine.ExecutionEngine.process
+    ???
+nautilus_trader/execution/engine.pyx:892: in nautilus_trader.execution.engine.ExecutionEngine.process
+    ???
+nautilus_trader/execution/engine.pyx:1341: in nautilus_trader.execution.engine.ExecutionEngine._handle_event
+    ???
+nautilus_trader/common/component.pyx:2834: in nautilus_trader.common.component.MessageBus.publish_c
+    ???
+nautilus_trader/trading/strategy.pyx:1886: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:1987: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:1929: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:499: in nautilus_trader.trading.strategy.Strategy.on_order_denied
+    ???
+tests/test_native_conditional_hedge.py:761: in on_order_denied
+    super().on_order_denied(event)
+coinmaster/strategy/wave_overlay.py:2503: in on_order_denied
+    self._terminal_without_fill(str(event.client_order_id))
+coinmaster/strategy/wave_overlay.py:2612: in _terminal_without_fill
+    self._submit_forced_closes_from_cache()
+coinmaster/strategy/wave_overlay.py:2143: in _submit_forced_closes_from_cache
+    self.submit_order(order)
+coinmaster/strategy/wave_overlay.py:2713: in submit_order
+    return super().submit_order(order, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+nautilus_trader/trading/strategy.pyx:805: in nautilus_trader.trading.strategy.Strategy.submit_order
+    ???
+nautilus_trader/trading/strategy.pyx:897: in nautilus_trader.trading.strategy.Strategy.submit_order
+    ???
+nautilus_trader/execution/manager.pyx:594: in nautilus_trader.execution.manager.OrderManager.send_risk_command
+    ???
+nautilus_trader/common/component.pyx:2614: in nautilus_trader.common.component.MessageBus.send
+    ???
+nautilus_trader/risk/engine.pyx:200: in nautilus_trader.risk.engine.RiskEngine.execute
+    ???
+nautilus_trader/risk/engine.pyx:212: in nautilus_trader.risk.engine.RiskEngine.execute
+    ???
+nautilus_trader/risk/engine.pyx:406: in nautilus_trader.risk.engine.RiskEngine._execute_command
+    ???
+nautilus_trader/risk/engine.pyx:455: in nautilus_trader.risk.engine.RiskEngine._handle_submit_order
+    ???
+nautilus_trader/risk/engine.pyx:1182: in nautilus_trader.risk.engine.RiskEngine._execution_gateway
+    ???
+nautilus_trader/common/component.pyx:3124: in nautilus_trader.common.component.Throttler.send
+    ???
+nautilus_trader/common/component.pyx:3145: in nautilus_trader.common.component.Throttler._limit_msg
+    ???
+nautilus_trader/risk/engine.pyx:1082: in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+    ???
+nautilus_trader/risk/engine.pyx:1084: in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+    ???
+nautilus_trader/risk/engine.pyx:1123: in nautilus_trader.risk.engine.RiskEngine._deny_order
+    ???
+nautilus_trader/common/component.pyx:2614: in nautilus_trader.common.component.MessageBus.send
+    ???
+nautilus_trader/execution/engine.pyx:880: in nautilus_trader.execution.engine.ExecutionEngine.process
+    ???
+nautilus_trader/execution/engine.pyx:892: in nautilus_trader.execution.engine.ExecutionEngine.process
+    ???
+nautilus_trader/execution/engine.pyx:1341: in nautilus_trader.execution.engine.ExecutionEngine._handle_event
+    ???
+nautilus_trader/common/component.pyx:2834: in nautilus_trader.common.component.MessageBus.publish_c
+    ???
+nautilus_trader/trading/strategy.pyx:1886: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:1987: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:1929: in nautilus_trader.trading.strategy.Strategy.handle_event
+    ???
+nautilus_trader/trading/strategy.pyx:499: in nautilus_trader.trading.strategy.Strategy.on_order_denied
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DenialProbe(DenialProbe-000)
+event = OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=O...01-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)
+
+    def on_order_denied(self, event):
+        self.denials.append(event)
+        # Fail promptly on a broken synchronous retry, after real denial.
+>       assert len(self.denials)<=1, "forced denial recursively resubmitted without fresh quote"
+E       AssertionError: forced denial recursively resubmitted without fresh quote
+E       assert 2 <= 1
+E        +  where 2 = len([OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=...1-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)])
+E        +    where [OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=...1-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)] = DenialProbe(DenialProbe-000).denials
+
+tests/test_native_conditional_hedge.py:760: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000003Z[0m [1;31m[ERROR] BACKTESTER-001.DenialProbe: Error on handling OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=O-19700101-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)
+AssertionError(forced denial recursively resubmitted without fresh quote
+assert 2 <= 1
+ +  where 2 = len([OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=...1-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)])
+ +    where [OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=...1-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)] = DenialProbe(DenialProbe-000).denials)
+Traceback (most recent call last):
+  File "nautilus_trader/trading/strategy.pyx", line 1929, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 499, in nautilus_trader.trading.strategy.Strategy.on_order_denied
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py", line 760, in on_order_denied
+    assert len(self.denials)<=1, "forced denial recursively resubmitted without fresh quote"
+[0m
+[1m1970-01-01T00:00:00.000000003Z[0m [1;31m[ERROR] BACKTESTER-001.DenialProbe: Error on handling OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=O-19700101-000000-001-000-3, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3d7f38bc-dec9-4ae8-9a7a-a8d143bb64b1, ts_init=3)
+AssertionError(forced denial recursively resubmitted without fresh quote
+assert 2 <= 1
+ +  where 2 = len([OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=...1-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)])
+ +    where [OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=...1-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)] = DenialProbe(DenialProbe-000).denials)
+Traceback (most recent call last):
+  File "nautilus_trader/trading/strategy.pyx", line 1929, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 499, in nautilus_trader.trading.strategy.Strategy.on_order_denied
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py", line 761, in on_order_denied
+    super().on_order_denied(event)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2503, in on_order_denied
+    self._terminal_without_fill(str(event.client_order_id))
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2612, in _terminal_without_fill
+    self._submit_forced_closes_from_cache()
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2143, in _submit_forced_closes_from_cache
+    self.submit_order(order)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2713, in submit_order
+    return super().submit_order(order, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "nautilus_trader/trading/strategy.pyx", line 805, in nautilus_trader.trading.strategy.Strategy.submit_order
+  File "nautilus_trader/trading/strategy.pyx", line 897, in nautilus_trader.trading.strategy.Strategy.submit_order
+  File "nautilus_trader/execution/manager.pyx", line 594, in nautilus_trader.execution.manager.OrderManager.send_risk_command
+  File "nautilus_trader/common/component.pyx", line 2614, in nautilus_trader.common.component.MessageBus.send
+  File "nautilus_trader/risk/engine.pyx", line 200, in nautilus_trader.risk.engine.RiskEngine.execute
+  File "nautilus_trader/risk/engine.pyx", line 212, in nautilus_trader.risk.engine.RiskEngine.execute
+  File "nautilus_trader/risk/engine.pyx", line 406, in nautilus_trader.risk.engine.RiskEngine._execute_command
+  File "nautilus_trader/risk/engine.pyx", line 455, in nautilus_trader.risk.engine.RiskEngine._handle_submit_order
+  File "nautilus_trader/risk/engine.pyx", line 1182, in nautilus_trader.risk.engine.RiskEngine._execution_gateway
+  File "nautilus_trader/common/component.pyx", line 3124, in nautilus_trader.common.component.Throttler.send
+  File "nautilus_trader/common/component.pyx", line 3145, in nautilus_trader.common.component.Throttler._limit_msg
+  File "nautilus_trader/risk/engine.pyx", line 1082, in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+  File "nautilus_trader/risk/engine.pyx", line 1084, in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+  File "nautilus_trader/risk/engine.pyx", line 1123, in nautilus_trader.risk.engine.RiskEngine._deny_order
+  File "nautilus_trader/common/component.pyx", line 2614, in nautilus_trader.common.component.MessageBus.send
+  File "nautilus_trader/execution/engine.pyx", line 880, in nautilus_trader.execution.engine.ExecutionEngine.process
+  File "nautilus_trader/execution/engine.pyx", line 892, in nautilus_trader.execution.engine.ExecutionEngine.process
+  File "nautilus_trader/execution/engine.pyx", line 1341, in nautilus_trader.execution.engine.ExecutionEngine._handle_event
+  File "nautilus_trader/common/component.pyx", line 2834, in nautilus_trader.common.component.MessageBus.publish_c
+  File "nautilus_trader/trading/strategy.pyx", line 1886, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 1987, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 1929, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 499, in nautilus_trader.trading.strategy.Strategy.on_order_denied
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py", line 760, in on_order_denied
+    assert len(self.denials)<=1, "forced denial recursively resubmitted without fresh quote"
+[0m
+[1m1970-01-01T00:00:00.000000003Z[0m [1;31m[ERROR] BACKTESTER-001.DenialProbe: Error on handling OrderCanceled(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=O-19700101-000000-001-000-2, venue_order_id=P1SIM-2-002, account_id=P1SIM-001, event_id=e17f3fc8-3b4d-450f-ae16-670e21708813, ts_event=3, ts_init=3)
+AssertionError(forced denial recursively resubmitted without fresh quote
+assert 2 <= 1
+ +  where 2 = len([OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=...1-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)])
+ +    where [OrderDenied(trader_id=BACKTESTER-001, strategy_id=DenialProbe-000, instrument_id=SOLUSDT-PERP.P1SIM, client_order_id=...1-000000-001-000-4, reason='Exceeded MAX_ORDER_SUBMIT_RATE', event_id=3e2ac66d-a2f2-4b2e-88fe-ba78d557f223, ts_init=3)] = DenialProbe(DenialProbe-000).denials)
+Traceback (most recent call last):
+  File "nautilus_trader/trading/strategy.pyx", line 1947, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 595, in nautilus_trader.trading.strategy.Strategy.on_order_canceled
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2469, in on_order_canceled
+    self._submit_forced_closes_from_cache()
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2143, in _submit_forced_closes_from_cache
+    self.submit_order(order)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2713, in submit_order
+    return super().submit_order(order, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "nautilus_trader/trading/strategy.pyx", line 805, in nautilus_trader.trading.strategy.Strategy.submit_order
+  File "nautilus_trader/trading/strategy.pyx", line 897, in nautilus_trader.trading.strategy.Strategy.submit_order
+  File "nautilus_trader/execution/manager.pyx", line 594, in nautilus_trader.execution.manager.OrderManager.send_risk_command
+  File "nautilus_trader/common/component.pyx", line 2614, in nautilus_trader.common.component.MessageBus.send
+  File "nautilus_trader/risk/engine.pyx", line 200, in nautilus_trader.risk.engine.RiskEngine.execute
+  File "nautilus_trader/risk/engine.pyx", line 212, in nautilus_trader.risk.engine.RiskEngine.execute
+  File "nautilus_trader/risk/engine.pyx", line 406, in nautilus_trader.risk.engine.RiskEngine._execute_command
+  File "nautilus_trader/risk/engine.pyx", line 455, in nautilus_trader.risk.engine.RiskEngine._handle_submit_order
+  File "nautilus_trader/risk/engine.pyx", line 1182, in nautilus_trader.risk.engine.RiskEngine._execution_gateway
+  File "nautilus_trader/common/component.pyx", line 3124, in nautilus_trader.common.component.Throttler.send
+  File "nautilus_trader/common/component.pyx", line 3145, in nautilus_trader.common.component.Throttler._limit_msg
+  File "nautilus_trader/risk/engine.pyx", line 1082, in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+  File "nautilus_trader/risk/engine.pyx", line 1084, in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+  File "nautilus_trader/risk/engine.pyx", line 1123, in nautilus_trader.risk.engine.RiskEngine._deny_order
+  File "nautilus_trader/common/component.pyx", line 2614, in nautilus_trader.common.component.MessageBus.send
+  File "nautilus_trader/execution/engine.pyx", line 880, in nautilus_trader.execution.engine.ExecutionEngine.process
+  File "nautilus_trader/execution/engine.pyx", line 892, in nautilus_trader.execution.engine.ExecutionEngine.process
+  File "nautilus_trader/execution/engine.pyx", line 1341, in nautilus_trader.execution.engine.ExecutionEngine._handle_event
+  File "nautilus_trader/common/component.pyx", line 2834, in nautilus_trader.common.component.MessageBus.publish_c
+  File "nautilus_trader/trading/strategy.pyx", line 1886, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 1987, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 1929, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 499, in nautilus_trader.trading.strategy.Strategy.on_order_denied
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py", line 761, in on_order_denied
+    super().on_order_denied(event)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2503, in on_order_denied
+    self._terminal_without_fill(str(event.client_order_id))
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2612, in _terminal_without_fill
+    self._submit_forced_closes_from_cache()
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2143, in _submit_forced_closes_from_cache
+    self.submit_order(order)
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py", line 2713, in submit_order
+    return super().submit_order(order, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "nautilus_trader/trading/strategy.pyx", line 805, in nautilus_trader.trading.strategy.Strategy.submit_order
+  File "nautilus_trader/trading/strategy.pyx", line 897, in nautilus_trader.trading.strategy.Strategy.submit_order
+  File "nautilus_trader/execution/manager.pyx", line 594, in nautilus_trader.execution.manager.OrderManager.send_risk_command
+  File "nautilus_trader/common/component.pyx", line 2614, in nautilus_trader.common.component.MessageBus.send
+  File "nautilus_trader/risk/engine.pyx", line 200, in nautilus_trader.risk.engine.RiskEngine.execute
+  File "nautilus_trader/risk/engine.pyx", line 212, in nautilus_trader.risk.engine.RiskEngine.execute
+  File "nautilus_trader/risk/engine.pyx", line 406, in nautilus_trader.risk.engine.RiskEngine._execute_command
+  File "nautilus_trader/risk/engine.pyx", line 455, in nautilus_trader.risk.engine.RiskEngine._handle_submit_order
+  File "nautilus_trader/risk/engine.pyx", line 1182, in nautilus_trader.risk.engine.RiskEngine._execution_gateway
+  File "nautilus_trader/common/component.pyx", line 3124, in nautilus_trader.common.component.Throttler.send
+  File "nautilus_trader/common/component.pyx", line 3145, in nautilus_trader.common.component.Throttler._limit_msg
+  File "nautilus_trader/risk/engine.pyx", line 1082, in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+  File "nautilus_trader/risk/engine.pyx", line 1084, in nautilus_trader.risk.engine.RiskEngine._deny_new_order
+  File "nautilus_trader/risk/engine.pyx", line 1123, in nautilus_trader.risk.engine.RiskEngine._deny_order
+  File "nautilus_trader/common/component.pyx", line 2614, in nautilus_trader.common.component.MessageBus.send
+  File "nautilus_trader/execution/engine.pyx", line 880, in nautilus_trader.execution.engine.ExecutionEngine.process
+  File "nautilus_trader/execution/engine.pyx", line 892, in nautilus_trader.execution.engine.ExecutionEngine.process
+  File "nautilus_trader/execution/engine.pyx", line 1341, in nautilus_trader.execution.engine.ExecutionEngine._handle_event
+  File "nautilus_trader/common/component.pyx", line 2834, in nautilus_trader.common.component.MessageBus.publish_c
+  File "nautilus_trader/trading/strategy.pyx", line 1886, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 1987, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 1929, in nautilus_trader.trading.strategy.Strategy.handle_event
+  File "nautilus_trader/trading/strategy.pyx", line 499, in nautilus_trader.trading.strategy.Strategy.on_order_denied
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py", line 760, in on_order_denied
+    assert len(self.denials)<=1, "forced denial recursively resubmitted without fresh quote"
+[0m
+=============================== warnings summary ===============================
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:328: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:792: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+1 failed, 6 warnings in 4.70s

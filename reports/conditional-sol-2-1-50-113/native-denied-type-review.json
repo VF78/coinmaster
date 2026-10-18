@@ -1,0 +1,37 @@
+{
+  "verdict": "GO_ONE_SAME_VARIANT_REPLACEMENT_RUN",
+  "scope": "Only preexisting native ClientOrderId cache API mismatch and bounded known forced-close terminal retry; no broad audit/core edits/reviewer tests/fullrun",
+  "base_commit": "44f2e00ae117fb961a20423d261de366f4b71fbe",
+  "patch_sha256": "b82a29982f6f8fce7414bd5152d61bf1cb67495d773c923100e5068ca499a121",
+  "verified_source_hashes": {
+    "runtime/coinmaster/strategy/conditional_hedge.py": "bd464748c11af7f8a567d79edb7361dbab95a08dcb77bb3652b424f4d08cc3a1",
+    "runtime/coinmaster/strategy/wave_overlay.py": "f18bd900a1459c6d40c627f501b3125b116c7ada43ef3c6fd5208c9266a7d168",
+    "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+    "runtime/tests/test_native_conditional_hedge.py": "3780ac12bbd06da3a80e947a4046e505267d05a5b1a1fe3d1ccc9001d0331063",
+    "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+    "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+  },
+  "findings": [],
+  "type_fix": "Convert str to ClientOrderId only at native cache.order; string mapkeys unchanged",
+  "denial_fix": "Capture forcedclose order ownership before cleanup, suppress immediate recursive submit only in knownterminal forcedclose callback, preserve actualresidual for existing nextquote submission. Native canceledpartial continuation remains separate and unchanged.",
+  "native_evidence": {
+    "risk": "actualRiskEngineconfiguredTESTONLY2submit/sec; productionlimitunchanged",
+    "sequence": "actualoriginalSOL1;actualforcedIOCfill0.4;actualnativeThrottleOrderDeniedresidual0.6;exactly3orders;knownterminalremovessubmittedguard;nextfreshquoteafterraterefillsat2scloses0.6;laterquoteNONE;exactly4orders/1denialtotal",
+    "native_money": "3actualfills;nativecommissions0.20;nativeaccount9999.80;flat/cacheordersclosed/logicalpendingempty/groupreasoncleared",
+    "existing_marker": "Forcedsubmittedinstrumentmarkerisresetatnextgroupbegin;notredefinedasglobalflatness. Fixturechecksactualnativeflat/orders/pending/reason/nofurthersubmission."
+  },
+  "verification": {
+    "focused": "1 passed,6warnings in2.54s",
+    "conditional_module": "36 passed,218warnings in5.00s",
+    "AST": "8PASS",
+    "isolated_units": [
+      "cm116-native-denial-focused-final-20261018",
+      "cm116-native-denial-conditional-module-20261018"
+    ],
+    "resources": "MemoryMax256MiB/Swap0/PrivateNetwork/NoNewPrivileges/env-i/CPUWeight10",
+    "development": "TypeonlyactualnativecaseFAILEDbyexplicitsecond-denialassertion; firstguardcasefailedonlyoverstrongnewfixtureassertionaboutpreexistingsubmittedsentinel,correctedtoactualflatcleanuppluscash/fees/nofurtherorderassertions."
+  },
+  "limitations": "Native2/sec throttle is fixture-only; production risklimits/parameters/fees/executor unchanged. Full research economics/permissions acceptance still pending. Prior failure receipt remains immutable and no resultJSON is invented."
+}

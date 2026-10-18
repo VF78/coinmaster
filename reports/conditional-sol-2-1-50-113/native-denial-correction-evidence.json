@@ -1,0 +1,49 @@
+{
+  "base_commit": "44f2e00ae117fb961a20423d261de366f4b71fbe",
+  "source_hashes": {
+    "runtime/coinmaster/strategy/conditional_hedge.py": "bd464748c11af7f8a567d79edb7361dbab95a08dcb77bb3652b424f4d08cc3a1",
+    "runtime/coinmaster/strategy/wave_overlay.py": "f18bd900a1459c6d40c627f501b3125b116c7ada43ef3c6fd5208c9266a7d168",
+    "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+    "runtime/tests/test_native_conditional_hedge.py": "3780ac12bbd06da3a80e947a4046e505267d05a5b1a1fe3d1ccc9001d0331063",
+    "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+    "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+  },
+  "patch_sha256": "b82a29982f6f8fce7414bd5152d61bf1cb67495d773c923100e5068ca499a121",
+  "changed_source_files": [
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/tests/test_native_conditional_hedge.py"
+  ],
+  "scope": "NativeCachelookupClientOrderIdnormalization; knownterminalforcedclosekeepsactualresidualanddefersreentranttailtotheexistingfreshquoteflow. Stringdictkeys/nativeRiskEngine/parameters/quotes/fees/account/IOCpartialcancelcontinuationunchanged.",
+  "rootcause": "Selected759alreadypassedstrtonativecache.orderinforcedcloseknownterminal; aftertypefixactualnativeThrottleDeniedprovedsynchronousresubmissionintothesamethrottle.",
+  "failure_receipt": "ioc-parity-failure-receipt.json",
+  "native_focused_evidence": {
+    "risk": "actualRiskEngineconfiguredTESTONLY2submit/sec; productionlimitunchanged",
+    "sequence": "actualoriginalSOL1;actualforcedIOCfill0.4;actualnativeThrottleOrderDeniedresidual0.6;exactly3orders;knownterminalremovessubmittedguard;nextfreshquoteafterraterefillsat2scloses0.6;laterquoteNONE;exactly4orders/1denialtotal",
+    "native_money": "3actualfills;nativecommissions0.20;nativeaccount9999.80;flat/cacheordersclosed/logicalpendingempty/groupreasoncleared",
+    "existing_marker": "Forcedsubmittedinstrumentmarkerisresetatnextgroupbegin;notredefinedasglobalflatness. Fixturechecksactualnativeflat/orders/pending/reason/nofurthersubmission."
+  },
+  "verification": {
+    "focused": "1 passed,6warnings in2.54s",
+    "conditional_module": "36 passed,218warnings in5.00s",
+    "AST": "8PASS",
+    "isolated_units": [
+      "cm116-native-denial-focused-final-20261018",
+      "cm116-native-denial-conditional-module-20261018"
+    ],
+    "resources": "MemoryMax256MiB/Swap0/PrivateNetwork/NoNewPrivileges/env-i/CPUWeight10",
+    "development": "TypeonlyactualnativecaseFAILEDbyexplicitsecond-denialassertion; firstguardcasefailedonlyoverstrongnewfixtureassertionaboutpreexistingsubmittedsentinel,correctedtoactualflatcleanuppluscash/fees/nofurtherorderassertions."
+  },
+  "log_hashes": {
+    "native-denial-development.log": "7533bd91127cf68a916dbb0a20eb74cca433661bd83f2699a47573a4ff8a1c29",
+    "native-denial-focused.log": "3de9ddb8d0d010ce853b4214ecfd8cafb7ce817838e0cbe44b8d51121dd999dc",
+    "native-denial-focused-final.log": "f8b01ec95a3d10dc968506f3ed90fe21376ea3ad1f5a5757160b51422e416b51",
+    "native-denial-conditional-module.log": "54278ff5503fda84f6bcd0f9a759cd57624ccec6529a3acd4d36c66650c2cd11"
+  },
+  "review": "PENDING_EXACT_DIFF",
+  "full_research": "NOT_LAUNCHED",
+  "source_frozen": true,
+  "historical_attempts": "ALL_UNCHANGED",
+  "production": "UNCHANGED"
+}

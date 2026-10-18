@@ -1,0 +1,105 @@
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 35e5b11..3e5fdd7 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -18,7 +18,7 @@ from nautilus_trader.config import StrategyConfig
+ from nautilus_trader.model.data import Bar, BarType, CustomData, DataType, FundingRateUpdate, MarkPriceUpdate, QuoteTick
+ from nautilus_trader.model.enums import BarAggregation, OrderSide, TimeInForce
+ from nautilus_trader.model.events import OrderAccepted, OrderCanceled, OrderDenied, OrderExpired, OrderFilled, OrderRejected
+-from nautilus_trader.model.identifiers import ClientId, InstrumentId
++from nautilus_trader.model.identifiers import ClientId, ClientOrderId, InstrumentId
+ from nautilus_trader.trading.strategy import Strategy
+ 
+ from coinmaster.domain.wave_overlay import btc_management_price
+@@ -2568,6 +2568,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
+         self._terminal_without_fill(str(event.client_order_id))
+ 
+     def _terminal_without_fill(self, client_order_id: str) -> None:
++        forced_close_terminal = client_order_id in self._forced_close_orders
+         failed_intent = self._pending_by_order.get(client_order_id)
+         if self.config.research_conditional_sol:
+             self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
+@@ -2585,7 +2586,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
+             now_ns = self.clock.timestamp_ns()
+             self._persist_deposit("EXIT_INCOMPLETE", f"deposit:exit-terminal:{client_order_id}:{now_ns}", now_ns)
+         if client_order_id in self._forced_close_orders:
+-            order = self.cache.order(client_order_id)
++            order = self.cache.order(ClientOrderId(client_order_id))
+             if order is not None:
+                 self._forced_close_submitted.discard(order.instrument_id)
+             self._forced_close_orders.discard(client_order_id)
+@@ -2608,7 +2609,9 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
+         self._reconcile_terminal_flat()
+         if intent is not None and self.config.research_v0_execution_repairs and intent.action == "SOL_EXIT" and intent.reason == "SOL_HARD_TIMEOUT":
+             self._rearm_mandatory_sol_exit(self.clock.timestamp_ns())
+-        if self._forced_close_reason is not None and not self.cache.orders_open():
++        # A synchronous native denial must not resubmit into the same throttle.
++        # Known terminal leaves remain eligible for the existing fresh-quote path.
++        if not forced_close_terminal and self._forced_close_reason is not None and not self.cache.orders_open():
+             self._submit_forced_closes_from_cache()
+         if self._ordinary_forced_close_active() or self._research_protect_latch is not None:
+             self._group_close_reconciliation_pending = True
+diff --git a/runtime/tests/test_native_conditional_hedge.py b/runtime/tests/test_native_conditional_hedge.py
+index 61c4342..e7d9382 100644
+--- a/runtime/tests/test_native_conditional_hedge.py
++++ b/runtime/tests/test_native_conditional_hedge.py
+@@ -739,3 +739,59 @@ def test_original_attempt_terminal_cannot_release_or_fill_newer_authorization(te
+         account=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
+         assert account==D(10000)+sum((p.realized_pnl.as_decimal() for p in e.cache.positions_closed()),D(0))
+     finally:e.end();e.dispose()
++
++
++def test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote():
++    from nautilus_trader.backtest.config import BacktestEngineConfig
++    from nautilus_trader.backtest.engine import BacktestEngine
++    from nautilus_trader.config import LoggingConfig, RiskEngineConfig
++    from nautilus_trader.model.enums import AccountType, OmsType
++    from nautilus_trader.model.objects import Money
++    from coinmaster.research.native_fixture import SIM
++
++    class DenialProbe(NativeProbe):
++        def __init__(self, cfg):
++            super().__init__(cfg)
++            self.denials=[]
++
++        def on_order_denied(self, event):
++            self.denials.append(event)
++            # Fail promptly on a broken synchronous retry, after real denial.
++            assert len(self.denials)<=1, "forced denial recursively resubmitted without fresh quote"
++            super().on_order_denied(event)
++
++    s=DenialProbe(config())
++    e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
++        risk_engine=RiskEngineConfig(max_order_submit_rate="2/00:00:01")))
++    e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
++        starting_balances=[Money(10000,BTC_PERP.quote_currency)],
++        base_currency=BTC_PERP.quote_currency,default_leverage=D(1))
++    e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(s)
++    try:
++        run_ticks(e,[tick(SOL_PERP,1)])
++        ep=s._domain.episode=Episode("native-throttle",1,10000,1,h=10000)
++        original(s,e,ep,1,2)
++        assert ep.sol_qty==1
++        s._begin_forced_close("REGIME")
++        run_ticks(e,[tick(SOL_PERP,3,size="0.4")])
++        assert len(s.denials)==1
++        denied=s.denials[0]
++        assert "rate" in denied.reason.lower() or "throttl" in denied.reason.lower()
++        assert e.cache.order(denied.client_order_id).status.name=="DENIED"
++        assert len(e.cache.orders())==3
++        assert e.cache.positions_open()[0].quantity.as_decimal()==D("0.6")
++        assert SOL_PERP.id not in s._forced_close_submitted
++        assert str(denied.client_order_id) not in s._forced_close_orders
++        assert not e.cache.orders_open()
++        run_ticks(e,[tick(SOL_PERP,2_000_000_003)])
++        assert len(s.denials)==1 and len(e.cache.orders())==4
++        assert not e.cache.positions_open() and not e.cache.orders_open()
++        assert not s._forced_close_orders
++        assert not s._pending_by_order and s._domain.episode is None
++        assert s._forced_close_reason is None
++        run_ticks(e,[tick(SOL_PERP,3_000_000_003)])
++        assert len(e.cache.orders())==4 and len(s.denials)==1
++        fees=sum((D(r['commission']) for r in s.fill_audit),D(0))
++        assert len(s.fill_audit)==3 and fees==D('0.20')
++        assert e.cache.account_for_venue(SIM).balance_total().as_decimal()==D(10000)-fees
++    finally:e.end();e.dispose()

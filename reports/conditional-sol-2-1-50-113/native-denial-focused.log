@@ -1,0 +1,78 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote _
+
+    def test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote():
+        from nautilus_trader.backtest.config import BacktestEngineConfig
+        from nautilus_trader.backtest.engine import BacktestEngine
+        from nautilus_trader.config import LoggingConfig, RiskEngineConfig
+        from nautilus_trader.model.enums import AccountType, OmsType
+        from nautilus_trader.model.objects import Money
+        from coinmaster.research.native_fixture import SIM
+    
+        class DenialProbe(NativeProbe):
+            def __init__(self, cfg):
+                super().__init__(cfg)
+                self.denials=[]
+    
+            def on_order_denied(self, event):
+                self.denials.append(event)
+                # Fail promptly on a broken synchronous retry, after real denial.
+                assert len(self.denials)<=1, "forced denial recursively resubmitted without fresh quote"
+                super().on_order_denied(event)
+    
+        s=DenialProbe(config())
+        e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
+            risk_engine=RiskEngineConfig(max_order_submit_rate="2/00:00:01")))
+        e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
+            starting_balances=[Money(10000,BTC_PERP.quote_currency)],
+            base_currency=BTC_PERP.quote_currency,default_leverage=D(1))
+        e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(s)
+        try:
+            run_ticks(e,[tick(SOL_PERP,1)])
+            ep=s._domain.episode=Episode("native-throttle",1,10000,1,h=10000)
+            original(s,e,ep,1,2)
+            assert ep.sol_qty==1
+            s._begin_forced_close("REGIME")
+            run_ticks(e,[tick(SOL_PERP,3,size="0.4")])
+            assert len(s.denials)==1
+            denied=s.denials[0]
+            assert "rate" in denied.reason.lower() or "throttl" in denied.reason.lower()
+            assert e.cache.order(denied.client_order_id).status.name=="DENIED"
+            assert len(e.cache.orders())==3
+            assert e.cache.positions_open()[0].quantity.as_decimal()==D("0.6")
+            assert SOL_PERP.id not in s._forced_close_submitted
+            assert str(denied.client_order_id) not in s._forced_close_orders
+            assert not e.cache.orders_open()
+            run_ticks(e,[tick(SOL_PERP,2_000_000_003)])
+            assert len(s.denials)==1 and len(e.cache.orders())==4
+            assert not e.cache.positions_open() and not e.cache.orders_open()
+>           assert not s._forced_close_orders and not s._forced_close_submitted
+E           AssertionError: assert (not set() and not {InstrumentId('SOLUSDT-PERP.P1SIM')})
+E            +  where set() = DenialProbe(DenialProbe-000)._forced_close_orders
+E            +  and   {InstrumentId('SOLUSDT-PERP.P1SIM')} = DenialProbe(DenialProbe-000)._forced_close_submitted
+
+tests/test_native_conditional_hedge.py:789: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:328: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:792: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+1 failed, 6 warnings in 3.04s
