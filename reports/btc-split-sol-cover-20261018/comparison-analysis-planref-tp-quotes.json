@@ -1,0 +1,71 @@
+{
+  "canonical_close_quotes": [
+    {
+      "close_ns": 1744329780000000000,
+      "utc": "2025-04-11T00:03:00+00:00",
+      "execution_close": "79482.2"
+    },
+    {
+      "close_ns": 1744329840000000000,
+      "utc": "2025-04-11T00:04:00+00:00",
+      "execution_close": "79470.7"
+    },
+    {
+      "close_ns": 1744329900000000000,
+      "utc": "2025-04-11T00:05:00+00:00",
+      "execution_close": "79533.3"
+    },
+    {
+      "close_ns": 1749168840000000000,
+      "utc": "2025-06-06T00:14:00+00:00",
+      "execution_close": "101320.5"
+    },
+    {
+      "close_ns": 1749168900000000000,
+      "utc": "2025-06-06T00:15:00+00:00",
+      "execution_close": "101259.1"
+    }
+  ],
+  "original_Apr11_native_fills": [
+    {
+      "accept_ns": "1744329660000000000",
+      "action": "BTC_ENTRY",
+      "commission": "3547.7723523",
+      "commission_currency": "USDT",
+      "fill_ns": "1744329660000000000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "level": "",
+      "native_liquidity_side": "TAKER",
+      "notional": "6450495.186",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "79566",
+      "qty": "81.071",
+      "reason": "BTC_ENTRY",
+      "submit_ns": "1744329660000000000",
+      "venue": "P1SIM"
+    },
+    {
+      "accept_ns": "1744329720000000000",
+      "action": "BTC_REDUCE",
+      "commission": "347.72208264",
+      "commission_currency": "USDT",
+      "fill_ns": "1744329840000000000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "level": "1",
+      "native_liquidity_side": "MAKER",
+      "notional": "1738610.4132",
+      "order_type": "2",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "true",
+      "px": "79475.7",
+      "qty": "21.876",
+      "reason": "BTC_TP2",
+      "submit_ns": "1744329720000000000",
+      "venue": "P1SIM"
+    }
+  ],
+  "source": "/var/lib/coinmaster-native-gui/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+  "method": "Completed1mexecutionclose at open_time_ms+60000; canonicalhash9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88. Nativequoteeventmatching/orderready timingindependentlynative."
+}

@@ -2,7 +2,7 @@ import runpy,json,csv,hashlib
 from pathlib import Path
 from decimal import Decimal as D
 n=runpy.run_path('scripts/analyze_split_cover_results.py');p=n['OUT'];baseline=json.load(n['ARCHIVE'].open());jobs={'v3':n['ARCHIVE'],'btc025':Path('/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-btc-direction.json'),'btc050':Path('/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc050-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-btc-direction.json'),'sol50':Path('/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol50-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover0.5-btc-direction.json')};table=[];liquidity=[]
-for candidate in ('sol75','sol100'):
+for candidate in ('sol75','sol100','btc025-planref'):
  receipt=p/f'{candidate}-receipt.json'
  if receipt.exists():
   receiptdata=json.load(receipt.open());artifact=Path(receiptdata['artifact']);assert n['digest'](artifact)==receiptdata['artifact_sha256'];jobs[candidate]=artifact
@@ -14,5 +14,4 @@ for label,path in jobs.items():
  for k,x in native.items():liquidity.append(dict(variant=label,asset_liquidity=k,**x))
  print(label,permission)
 n['writecsv']('comparison-analysis-native-table.csv',table);n['write']('comparison-analysis-native-table.json',table);n['writecsv']('comparison-analysis-native-liquidity.csv',liquidity)
-g=p/'comparison-analysis-guard-decision.json';gd=json.load(g.open());gd['status']='UNRUN_NOT_SELECTED; root chose separateBTC025_PLANREF refinement instead';gd['selection_update']='Guard descriptive statistics preserved; no guard native run authorized now.';n['write'](g.name,gd)
 m={str(x):hashlib.sha256(x.read_bytes()).hexdigest() for x in p.glob('comparison-analysis*') if x.name!='comparison-analysis-manifest.json'};m['scripts/analyze_split_cover_results.py']=hashlib.sha256(Path('scripts/analyze_split_cover_results.py').read_bytes()).hexdigest();n['write']('comparison-analysis-manifest.json',m)

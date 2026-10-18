@@ -18,6 +18,6 @@
     "GUARD010": 8,
     "GUARD015": 13
   },
-  "status": "UNRUN_NOT_SELECTED; root chose separateBTC025_PLANREF refinement instead",
-  "selection_update": "Guard descriptive statistics preserved; no guard native run authorized now."
+  "status": "StandaloneGUARDunrun; optional7thPLANREF_PLUS_GUARD005selectedbyrootpendingtests/review",
+  "selection_update": "SixthPLANREFpreserves105butDDworsensviaearlyTPtiming. Existingfrozen.05guardcandidateaddressescausalcompletiontiming; no ONrun or other sweep. Actualseventhoutcomenotyetknown."
 }

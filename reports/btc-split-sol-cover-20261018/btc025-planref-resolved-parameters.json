@@ -1,0 +1,194 @@
+{
+  "scope": "RESEARCH_DIAGNOSTIC_RESOLVED_PARAMETERS_NOT_PRODUCTION_APPROVAL",
+  "candidate": "BTC025_PLANREF_V1",
+  "eligibility": "TOTAL_IMPROVES_BUT_MARKED_DD_WORSE_THAN_V3; exact permission analysis pending",
+  "source_commit": "0280fd67c30b29b94406ffb6b78cd07dec344599",
+  "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-btc-direction.json",
+  "artifact_sha256": "80f101add002d1b33e70d1659d6ef44812fee81a098fe49e9e3f4bb05bd413b6",
+  "run_variant": {
+    "variant": "btc025-planref",
+    "flags": [
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1"
+    ],
+    "dp": "OFF",
+    "base_control": "V3_DIRECTION_LONG5.5_SHORT7.875",
+    "snapshot_time": "2026-10-18T13:10:24.413841+00:00"
+  },
+  "resolved_config": {
+    "account": "SIM_MARGIN_USDT_10000",
+    "btc_close_stop_fraction": null,
+    "btc_management_reference_policy": "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1",
+    "candidate": {
+      "beta_days": 270,
+      "btc_close_trail_fraction": 0.03,
+      "btc_notional_multiplier": 7.875,
+      "btc_tp_fractions_initial_qty": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "ema_period": 34,
+      "episode_fixed_beta": false,
+      "max_parent_notional": 30000000.0,
+      "relative_days": 65,
+      "sol_entry_z": [
+        1.25,
+        2.5,
+        3.75
+      ],
+      "sol_exit_all_z": 0.125,
+      "sol_exit_half_z": 0.375,
+      "sol_late_entry_after_tp": true,
+      "sol_max_holding_days": 14,
+      "sol_overlay_enabled": true,
+      "sol_size_multipliers_h": [
+        1.75,
+        2.625,
+        3.5
+      ],
+      "sol_timeout_preempts_add": false,
+      "wave_history_days": 730,
+      "wave_min_count": 8,
+      "wave_quantiles": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "z_history_days": 180
+    },
+    "cover_hour_warmup_sha256": {},
+    "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+    "execution_policy": {
+      "execution_delay_minutes": 1,
+      "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+      "fee_historical_applicability": "UNKNOWN",
+      "fee_multiplier": "1",
+      "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+      "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+      "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+      "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+      "nonmatching_daily_signals": true,
+      "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+      "symmetric_adverse_spread_bps": "0",
+      "version": "bybit-native-resting-reductions-v2"
+    },
+    "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+    "fixed_base_fee_policy": {
+      "bybit_maker": "0.00020",
+      "bybit_taker": "0.00055",
+      "hyperliquid_maker": "0.00015",
+      "hyperliquid_taker": "0.00045",
+      "venue": "bybit",
+      "version": "fixed-base-native-maker-taker-execution-v3"
+    },
+    "freeze_sigma_on_first_sol_fill": true,
+    "future_sol_margin_fraction": "0",
+    "include_zero_waves": true,
+    "initial_active_fraction": "1.0",
+    "initial_total_usdt": "10000",
+    "insufficient_margin": "reject",
+    "live_enabled": false,
+    "mode": "paper",
+    "portfolio_loss_limit_fraction": null,
+    "post_liquidation": "restart_from_reserve_else_pause",
+    "research_btc_direction_sizing": {
+      "freeze": "GENUINE_EPISODE_CREATION",
+      "long": "5.5",
+      "short": "7.875"
+    },
+    "research_btc_split50": true,
+    "research_btc_split_discount": "0.0025",
+    "research_btc_split_planref_v1": true,
+    "research_sol_cover": null,
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_execution_repairs": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "research_v0_zero_tp_netting": false,
+    "reserve_transfer_fraction": "0",
+    "reserve_trigger_multiple": "4",
+    "restart_target": "initial_active_seed",
+    "run_interval": {
+      "end_exclusive": "2026-09-01T00:00:00+00:00",
+      "initial_active_seed": "10000",
+      "start": "2024-09-01T00:00:00+00:00"
+    },
+    "signal_timeframe": "1D",
+    "sol_direction": "opposite_btc",
+    "sol_entry_eligibility": "persistent_after_btc_level",
+    "sol_z_stop": null,
+    "strategy_id": "btc_sol_wave_overlay_v1",
+    "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+    "tp_fee_floor_v1": false,
+    "venue": "bybit"
+  },
+  "execution_policy": {
+    "execution_delay_minutes": 1,
+    "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+    "fee_historical_applicability": "UNKNOWN",
+    "fee_multiplier": "1",
+    "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+    "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+    "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+    "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+    "nonmatching_daily_signals": true,
+    "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+    "symmetric_adverse_spread_bps": "0",
+    "version": "bybit-native-resting-reductions-v2"
+  },
+  "config_hash": "0189501f46b08bdbe0d1b0c00539d3184cd96ddda17f1664a3245fa133ec74d7",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "source_hashes": {
+    "native_baseline": "7c1f8ae601f8d095617215c09dbe57be9cf4ad2063f17e451d983ae872bbb0ec",
+    "split_cover": "5d76ddc063e6603eb25dbdf8c6bd9a476ca093c41d1d13ab1be39f25a4d02ea3",
+    "wave_domain": "e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2",
+    "wave_strategy": "5cd994506696e0b7d13d2d1d0a469576e754fbebc1b0abcc7fd52bb8f4c8e98b"
+  },
+  "canonical_input_hashes": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+  },
+  "frozen_native_infrastructure_hashes": {
+    "runtime/coinmaster/ledger/journal.py": "5eaf4ae62b5f0d4967b5d3da15b756a452ac1cf6fe210739938ac0e158ce5ccc",
+    "runtime/coinmaster/research/native_fixture.py": "bec814bbf98217b116018bb0498ec3c690592bc1c259c44bf0507fd71ff05df4",
+    "runtime/coinmaster/venues/bybit_profile.py": "9a26ffc79aa7f4e80d14fb1bb42a91846e153378e83d0b9a79695e46195088e7",
+    "runtime/uv.lock": "bcf28c692174edabbb0dd324daa08b6ea2a26f3506e49195d2eb5f98ea5cf500",
+    "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82"
+  },
+  "native_money_basis": "Actual aggregate native VWAP/cash/fees/funding; P0 is management-only; H=grossReferenceQ*actualVWAP/beta",
+  "funding_signed_export": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "initial_total": "10000",
+  "terminal_total": "6005487.81325989",
+  "marked_minute_DD_percent": "70.47335374792709333672536873",
+  "conditional_ohlc_upper_to_later_lower_DD_percent": "70.85650015524497931455227859",
+  "execution_model_limitations": {
+    "synthetic_quote_displayed_size": {
+      "BTC": "1000.000",
+      "SOL": "1000.0"
+    },
+    "quote_size_is_instrument_maximum": false,
+    "partial_ioc_policy": "Native partial fills; existing owner/cancel-ACK and next actual quote retry residual",
+    "liquidation_observation": "Existing diagnostic minute-close margin model; not proven actual intrabar liquidation",
+    "coverage_targets_are_continuous_caps": false,
+    "live_HL_faithfulness_or_activation_approved": false
+  },
+  "split_execution_contract": {
+    "version": "PLANREF_V1",
+    "first_quantity": "max(1,floor(accepted lots/2))*step; single-lot immediate exception",
+    "second_quantity": "acceptedQ-firstQuantity; actual remainingQ conserved after partials",
+    "limit_discount_fraction": "0.0025",
+    "limit_basis": "actual completed first-leg quantity-weighted native VWAP",
+    "deadline_hours": 4,
+    "utc_deadline": "min(start+4h,next UTC day minus1min)",
+    "early_positive_tp": "accelerate remainingQ via existing cancelACK then actual IOC quote",
+    "management_anchor": "immutable completed first-leg actual VWAP P0 for TP/daily fallback/TRAIL/best_f/earlyTP only",
+    "before_first_leg_complete": "actual current aggregate entry VWAP; no frozen P0",
+    "native_money_and_H_anchor": "actual aggregate native entry VWAP; H=grossReferenceQ*actualVWAP/beta",
+    "original_sol_overlay": "ON; coverage variants OFF",
+    "closed_15m_confirmation": "OFF",
+    "runaway_guard": "OFF_NOT_APPLIED"
+  }
+}
