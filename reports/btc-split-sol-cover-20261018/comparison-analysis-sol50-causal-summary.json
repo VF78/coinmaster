@@ -1,0 +1,194 @@
+{
+  "confirmed_fill_attribution": {
+    "BTC": {
+      "gross": "85994.5578",
+      "actual_fees": "12693.51835003",
+      "net_ex_funding": "73301.03944997",
+      "terminal_net_qty": "0.000"
+    },
+    "SOL": {
+      "gross": "-56654.66700000000000000000002",
+      "actual_fees": "5507.27949805",
+      "net_ex_funding": "-62161.94649805000000000000002",
+      "terminal_net_qty": "0.0"
+    }
+  },
+  "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "unallocated_cash_residual_not_funding": "626.77587312000000000000002",
+  "native_fee_turnover": {
+    "BTC_TAKER": {
+      "count": 235,
+      "turnover": "21185936.298500000001488",
+      "fees": "11652.26496445",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "SOL_TAKER": {
+      "count": 301,
+      "turnover": "10013235.451",
+      "fees": "5507.27949805",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "BTC_MAKER": {
+      "count": 78,
+      "turnover": "5206266.927900000037788",
+      "fees": "1041.25338558",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    }
+  },
+  "by_sol_side": {
+    "BUY": {
+      "episodes": 52,
+      "gross": "-59485.26000000000000000000000",
+      "fees": "3282.89522000",
+      "net_ex_funding": "-62768.15522000000000000000000",
+      "wins": 16,
+      "losses": 36
+    },
+    "SELL": {
+      "episodes": 53,
+      "gross": "2830.593000000000000000000001",
+      "fees": "2224.38427805",
+      "net_ex_funding": "606.208721950000000000000001",
+      "wins": 25,
+      "losses": 28
+    }
+  },
+  "worst_sol_episodes": [
+    {
+      "start_ns": "1764115260000000000",
+      "end_ns": "1764633600000000000",
+      "side": "BUY",
+      "entry_qty": "579.9",
+      "entry_notional": "80577.105",
+      "entry_fees": "44.31740775",
+      "exit_fees": "39.7988305",
+      "gross": "-8215.59500000000000000000000",
+      "entry_count": "1",
+      "exit_count": "2",
+      "net_ex_funding": "-8299.71123825000000000000000",
+      "start_utc": "2025-11-26T00:01:00+00:00",
+      "end_utc": "2025-12-02T00:00:00+00:00"
+    },
+    {
+      "start_ns": "1740182460000000000",
+      "end_ns": "1740441600000000000",
+      "side": "BUY",
+      "entry_qty": "236.8",
+      "entry_notional": "40035.776",
+      "entry_fees": "22.0196768",
+      "exit_fees": "19.03742280",
+      "gross": "-5422.28000000000000000000000",
+      "entry_count": "1",
+      "exit_count": "2",
+      "net_ex_funding": "-5463.33709960000000000000000",
+      "start_utc": "2025-02-22T00:01:00+00:00",
+      "end_utc": "2025-02-25T00:00:00+00:00"
+    },
+    {
+      "start_ns": "1770508860000000000",
+      "end_ns": "1770790440000000000",
+      "side": "BUY",
+      "entry_qty": "942.9",
+      "entry_notional": "82390.602",
+      "entry_fees": "45.3148311",
+      "exit_fees": "42.3847842",
+      "gross": "-5327.35800000000000000000000",
+      "entry_count": "1",
+      "exit_count": "2",
+      "net_ex_funding": "-5415.05761530000000000000000",
+      "start_utc": "2026-02-08T00:01:00+00:00",
+      "end_utc": "2026-02-11T06:14:00+00:00"
+    },
+    {
+      "start_ns": "1758585660000000000",
+      "end_ns": "1758821820000000000",
+      "side": "BUY",
+      "entry_qty": "258.1",
+      "entry_notional": "56776.838",
+      "entry_fees": "31.2272609",
+      "exit_fees": "28.69925245",
+      "gross": "-4596.37900000000000000000000",
+      "entry_count": "1",
+      "exit_count": "2",
+      "net_ex_funding": "-4656.30551335000000000000000",
+      "start_utc": "2025-09-23T00:01:00+00:00",
+      "end_utc": "2025-09-25T17:37:00+00:00"
+    },
+    {
+      "start_ns": "1772150460000000000",
+      "end_ns": "1772236800000000000",
+      "side": "BUY",
+      "entry_qty": "963.7",
+      "entry_notional": "82714.371",
+      "entry_fees": "45.49290405",
+      "exit_fees": "43.18719075",
+      "gross": "-4192.20600000000000000000000",
+      "entry_count": "1",
+      "exit_count": "2",
+      "net_ex_funding": "-4280.88609480000000000000000",
+      "start_utc": "2026-02-27T00:01:00+00:00",
+      "end_utc": "2026-02-28T00:00:00+00:00"
+    }
+  ],
+  "first_sol_episode": {
+    "start_ns": "1725235260000000000",
+    "end_ns": "1725634080000000000",
+    "side": "BUY",
+    "entry_qty": "136",
+    "entry_notional": "17499.12",
+    "entry_fees": "9.624516",
+    "exit_fees": "9.633492",
+    "gross": "16.32",
+    "entry_count": "1",
+    "exit_count": "1",
+    "net_ex_funding": "-2.938008"
+  },
+  "first_sol_actual_fills": [
+    {
+      "accept_ns": "1725235260000000000",
+      "action": "SOL_ADD",
+      "commission": "9.624516",
+      "commission_currency": "USDT",
+      "fill_ns": "1725235260000000000",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "",
+      "native_liquidity_side": "TAKER",
+      "notional": "17499.12",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "128.67",
+      "qty": "136",
+      "reason": "SOL_COVER_BASE",
+      "submit_ns": "1725235260000000000",
+      "venue": "P1SIM"
+    },
+    {
+      "accept_ns": "1725634080000000000",
+      "action": "SOL_EXIT",
+      "commission": "9.633492",
+      "commission_currency": "USDT",
+      "fill_ns": "1725634080000000000",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "",
+      "native_liquidity_side": "TAKER",
+      "notional": "17515.44",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "128.79",
+      "qty": "136",
+      "reason": "SOL_COVER_BASE",
+      "submit_ns": "1725634080000000000",
+      "venue": "P1SIM"
+    }
+  ],
+  "interpretation": "SOLconstantoppositehedgehasactualnegativegross(-56654.667), notjustfees(-5507.2795). BTCpositivegross85994.5578partlyoffset; hedgecostsreduceequityandfutureBTCsizes. AcceptedBTCdates/sides/timestamps/entrypricesmustbecheckedbeforeclaimingpurehedgeeffect. DollarBTCgrosscannotcompareasidenticalvolumeagainstcompoundedV3.",
+  "model_limits": "SamecanonicalBybitdata/feeprofile; nativeTOTAL/DDprimary. SignedfundingUNKNOWN; residualNOTassignedfunding. Actualfillweightedaverageassetdiagnosticsnotnativeperassetsettledcash. 105acceptedBTCtimestamps/sides/pricesmatch;104quantitiesdifferthroughcompounding. All105modelbasefilllatencies0snotrealvenueguarantee. Actualcoverageartifactsupersedeslaggednativecache snapshots.",
+  "coverage_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-sol50-actual-fill-coverage.json",
+  "compensation_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-sol50-compensation.json",
+  "permission_match_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-sol50-permission-summary.json"
+}

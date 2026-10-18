@@ -1,0 +1,355 @@
+--- a/runtime/coinmaster/domain/wave_overlay.py
++++ b/runtime/coinmaster/domain/wave_overlay.py
+@@ -209,6 +209,11 @@
+     limit_price: float | None = None
+ 
+ 
++def btc_management_price(episode: "Episode") -> float | None:
++    """Optional immutable first-leg reference, never a native money basis."""
++    return float(episode.btc_planref_vwap) if episode.btc_planref_vwap is not None else episode.btc_entry_vwap
++
++
+ @dataclass
+ class Episode:
+     id: str
+@@ -219,6 +224,8 @@
+     btc_initial_qty: float = 0.0
+     btc_open_qty: float = 0.0
+     btc_entry_vwap: float | None = None
++    # Research PLANREF_V1: management only; native entry VWAP remains actual.
++    btc_planref_vwap: Decimal | None = None
+     btc_entry_qty_exact: Decimal = Decimal("0")
+     btc_entry_notional_exact: Decimal = Decimal("0")
+     btc_entry_fees_exact: Decimal = Decimal("0")
+@@ -375,7 +382,7 @@
+         if feature.side != episode.side:
+             episode.close_reason = "REGIME"
+             return [self._intent(episode, "CLOSE_ALL", -episode.side, None, reason="REGIME")]
+-        f = episode.side * (bars[index].btc_close / episode.btc_entry_vwap - 1)
++        f = episode.side * (bars[index].btc_close / btc_management_price(episode) - 1)
+         episode.best_f = max(episode.best_f, f, 0.0)
+         if (episode.best_f > self.config.btc_close_trail_fraction and f <= episode.best_f - self.config.btc_close_trail_fraction):
+             episode.close_reason = "TRAIL"
+@@ -555,7 +562,7 @@
+         for level, threshold in enumerate(episode.wave_levels or ()):
+             if level in episode.btc_tps or level in episode.btc_filled_tps or level in episode.btc_zero_resting_suppressed:
+                 continue
+-            target = episode.btc_entry_vwap * (1 + episode.side * threshold)
++            target = btc_management_price(episode) * (1 + episode.side * threshold)
+             quantity = self._btc_target_leaves(episode, level)
+             if quantity <= 0 or target <= 0:
+                 continue
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -21,6 +21,7 @@
+ from nautilus_trader.model.identifiers import ClientId, InstrumentId
+ from nautilus_trader.trading.strategy import Strategy
+ 
++from coinmaster.domain.wave_overlay import btc_management_price
+ from coinmaster.strategy.split_cover import SplitCoverResearch
+ 
+ from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
+@@ -56,6 +57,7 @@
+     research_v0_selective_lifecycle_repairs: bool = False
+     research_v3_risk: str | None = None
+     research_btc_split50: bool = False
++    research_btc_split_planref_v1: bool = False
+     research_btc_split_discount: Decimal = Decimal("0.0025")
+     research_sol_cover: Decimal | None = None
+     research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
+@@ -162,6 +164,8 @@
+         super().__init__(config)
+         self._split_cover_init()
+         self._cover_seed(config.research_cover_hour_seed)
++        if config.research_btc_split_planref_v1 and (not config.research_btc_split50 or config.research_btc_split_discount != Decimal("0.0025")):
++            raise ValueError("PLANREF_V1_REQUIRES_BTC025_SPLIT")
+         if config.research_btc_split_discount not in (Decimal("0.0025"),Decimal("0.005")):
+             raise ValueError("SPLIT_DISCOUNT_NOT_AUTHORIZED_CANDIDATE")
+         if config.research_btc_split50 or config.research_sol_cover is not None:
+@@ -1363,7 +1367,7 @@
+                     episode = self._domain.episode
+                     if episode is None or episode.btc_entry_vwap is None or intent.level is None:
+                         continue
+-                    threshold = Decimal(str(episode.btc_entry_vwap)) * (1 + episode.side * Decimal(str(episode.wave_levels[intent.level])))
++                    threshold = Decimal(str(btc_management_price(episode))) * (1 + episode.side * Decimal(str(episode.wave_levels[intent.level])))
+                     eligible = tick.bid_price.as_decimal() >= threshold if episode.side == 1 else tick.ask_price.as_decimal() <= threshold
+                     if not eligible:
+                         continue  # Retain conditional leaves on adverse quotes.
+@@ -2314,6 +2318,15 @@
+             decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
+             entry_qty=entry_qty, entry_price=entry_price,
+         )
++        if intent.action == "BTC_ENTRY" and self.config.research_btc_split_planref_v1:
++            ep = self._domain.episode
++            p = self._split_parent
++            if ep is not None and p is not None and ep.id == p["episode_id"]:
++                p["planref_v1_p0"] = ep.btc_planref_vwap
++                p["planref_v1_actual_blended_vwap"] = ep.btc_entry_notional_exact / ep.btc_entry_qty_exact
++                p["planref_v1_h_actual"] = ep.h
++                p["planref_v1_gross_reference_qty"] = ep.btc_reference_qty or ep.btc_initial_qty
++                p["planref_v1_beta"] = ep.beta_entry
+         if intent.action == "BTC_ENTRY" and self.config.research_v0_execution_repairs and self.entry_sizing_audit:
+             episode = self._domain.episode
+             if episode is not None:
+--- a/runtime/coinmaster/strategy/split_cover.py
++++ b/runtime/coinmaster/strategy/split_cover.py
+@@ -122,6 +122,12 @@
+             p["first_filled"]+=first_qty
+             p["first_notional"]+=first_qty*event.last_px.as_decimal()
+             p["first_vwap"]=p["first_notional"]/p["first_filled"]
++        if self.config.research_btc_split_planref_v1 and p["first_filled"] == p["first_quantity"]:
++            ep = self._domain.episode
++            if ep is not None and ep.id == p["episode_id"] and ep.btc_planref_vwap is None:
++                ep.btc_planref_vwap = p["first_vwap"]
++                p["management_reference_v1"] = p["first_vwap"]
++                p["management_reference_frozen_ns"] = event.ts_event
+         if p["filled"]==p["quantity"]:
+             p["closed"]=True
+ 
+@@ -151,7 +157,8 @@
+             self._split_stop("UTC_DAY_COMPLETION_FAILED")
+             return
+         px=tick.bid_price.as_decimal() if p["side"]==1 else tick.ask_price.as_decimal()
+-        early=ep.btc_entry_vwap and any(level>0 and (px>=D(str(ep.btc_entry_vwap))*(1+D(str(level))) if p["side"]==1 else px<=D(str(ep.btc_entry_vwap))*(1-D(str(level)))) for level in ep.wave_levels or ())
++        reference = ep.btc_planref_vwap if ep.btc_planref_vwap is not None else ep.btc_entry_vwap
++        early=reference and any(level>0 and (px>=D(str(reference))*(1+D(str(level))) if p["side"]==1 else px<=D(str(reference))*(1-D(str(level)))) for level in ep.wave_levels or ())
+         if tick.ts_event>=p["deadline_ns"] or early:
+             p["fallback"]=True
+             p.setdefault("completion_reason","EARLY_TP" if early else "DEADLINE")
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -678,6 +678,7 @@
+     research_v3_risk: str | None = None,
+     research_h1_b1: str | None = None,
+     research_btc_split50: bool = False,
++    research_btc_split_planref_v1: bool = False,
+     research_btc_split_discount: str = "0.0025",
+     research_sol_cover: str | None = None,
+     research_btc_episode_loss_20: bool = False,
+@@ -808,6 +809,7 @@
+         research_v3_risk=research_v3_risk,
+         research_h1_b1=research_h1_b1,
+         research_btc_split50=research_btc_split50,
++        research_btc_split_planref_v1=research_btc_split_planref_v1,
+         research_btc_split_discount=Decimal(research_btc_split_discount),
+         research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
+         research_cover_hour_seed=cover_hour_seed,
+@@ -963,6 +965,8 @@
+         if research_btc_split50 or research_sol_cover:
+             result["split_cover_audit"] = strategy._split_cover_report()
+             result["config"]["research_btc_split50"] = research_btc_split50
++            result["config"]["research_btc_split_planref_v1"] = research_btc_split_planref_v1
++            result["config"]["btc_management_reference_policy"] = "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1" if research_btc_split_planref_v1 else "ACTUAL_AGGREGATE_VWAP"
+             result["config"]["research_btc_split_discount"] = research_btc_split_discount
+             result["config"]["research_sol_cover"] = research_sol_cover
+             result["config"]["cover_hour_warmup_sha256"] = cover_warmup_hashes
+@@ -1128,7 +1132,7 @@
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1174,6 +1178,8 @@
+         label += "-solcap6"
+     if research_btc_split50:
+         label += "-btc-split50-d" + research_btc_split_discount
++        if research_btc_split_planref_v1:
++            label += "-planref-v1"
+     if research_sol_cover:
+         label += "-sol-cover" + research_sol_cover
+     if research_h1_b1:
+@@ -1206,6 +1212,7 @@
+         research_v3_risk=research_v3_risk,
+         research_h1_b1=research_h1_b1,
+         research_btc_split50=research_btc_split50,
++        research_btc_split_planref_v1=research_btc_split_planref_v1,
+         research_btc_split_discount=research_btc_split_discount,
+         research_sol_cover=research_sol_cover,
+         research_btc_episode_loss_20=research_btc_episode_loss_20,
+@@ -1219,6 +1226,7 @@
+ def main() -> None:
+     parser = argparse.ArgumentParser()
+     parser.add_argument("--research-btc-split50", action="store_true")
++    parser.add_argument("--research-btc-split-planref-v1", action="store_true")
+     parser.add_argument("--research-btc-split-discount", choices=("0.0025","0.005"), default="0.0025")
+     parser.add_argument("--research-sol-cover", choices=("0.5","0.75","1"))
+     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
+@@ -1271,6 +1279,7 @@
+             research_v3_risk=args.research_v3_risk,
+             research_h1_b1=args.research_h1_b1,
+             research_btc_split50=args.research_btc_split50,
++            research_btc_split_planref_v1=args.research_btc_split_planref_v1,
+             research_btc_split_discount=args.research_btc_split_discount,
+             research_sol_cover=args.research_sol_cover,
+             research_btc_episode_loss_20=args.research_btc_episode_loss_20,
+--- a/scripts/launch_split_cover_native.py
++++ b/scripts/launch_split_cover_native.py
+@@ -19,6 +19,7 @@
+ SLICE = "cm113-v3-risk.slice"
+ VARIANTS = {
+     "btc025": ["--research-btc-split50", "--research-btc-split-discount", "0.0025"],
++    "btc025-planref": ["--research-btc-split50", "--research-btc-split-discount", "0.0025", "--research-btc-split-planref-v1"],
+     "btc050": ["--research-btc-split50", "--research-btc-split-discount", "0.005"],
+     "sol50": ["--research-sol-cover", "0.5"],
+     "sol75": ["--research-sol-cover", "0.75"],
+@@ -46,7 +47,7 @@
+     p = argparse.ArgumentParser()
+     p.add_argument("variant", choices=tuple(VARIANTS)+("joint",))
+     p.add_argument("--job-name", required=True)
+-    p.add_argument("--joint-btc", choices=("btc025","btc050"))
++    p.add_argument("--joint-btc", choices=("btc025","btc050","btc025-planref"))
+     p.add_argument("--joint-sol", choices=("sol50","sol75","sol100"))
+     p.add_argument("--launch", action="store_true")
+     a = p.parse_args()
+--- a/runtime/tests/test_native_split_cover.py
++++ b/runtime/tests/test_native_split_cover.py
+@@ -21,8 +21,8 @@
+         max_mark_age_ns=10*HOUR, **kw)
+ 
+ 
+-def setup(split=True, cover=None, qty=101.001, side=1):
+-    s=NativeProbe(cfg(split,cover))
++def setup(split=True, cover=None, qty=101.001, side=1, planref=False):
++    s=NativeProbe(cfg(split,cover,research_btc_split_planref_v1=planref))
+     e=native_engine(s)
+     run_ticks(e,[tick(BTC_PERP,1)])
+     prepare_day(s,2)
+@@ -596,3 +596,135 @@
+         assert c["anchor"]==fixed
+     finally:
+         e.end();e.dispose()
++
++
++@pytest.mark.parametrize("side",[1,-1])
++def test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual(side):
++    from coinmaster.domain.wave_overlay import btc_management_price
++    s,e,ep=setup(qty=100,side=side,planref=True)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3)])
++        p=s._split_parent
++        assert ep.btc_planref_vwap==D(100)
++        assert p["management_reference_frozen_ns"]==3
++        run_ticks(e,[tick(BTC_PERP,4),tick(BTC_PERP,5,"99" if side==1 else "101")])
++        assert p["filled"]==p["quantity"]==100
++        assert ep.btc_entry_vwap!=100
++        assert btc_management_price(ep)==100
++        assert ep.h==pytest.approx((ep.btc_reference_qty or ep.btc_initial_qty)*ep.btc_entry_vwap/ep.beta_entry)
++        assert ep.btc_entry_notional_exact/ep.btc_entry_qty_exact!=D(100)
++        targets=s._domain.plan_confirmed_btc_targets()
++        queued=[i for i,_,_ in s._queued_intents if i.action=="BTC_REDUCE"]
++        all_targets=targets+queued
++        assert all_targets
++        for i in all_targets:
++            assert i.limit_price==pytest.approx(100*(1+side*ep.wave_levels[i.level]))
++        assert sum(ep.btc_tp_target_lots.values())==100000
++    finally:
++        e.end();e.dispose()
++
++
++def test_planref_v1_partial_first_leg_cannot_freeze_or_invent_completion():
++    s,e,ep=setup(qty=100,planref=True)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3,size="10"),tick(BTC_PERP,4,"100.2",size="10")])
++        assert ep.btc_planref_vwap is None
++        assert s._split_parent["first_filled"]==20
++        run_ticks(e,[tick(BTC_PERP,5,"100.4")])
++        p=s._split_parent
++        expected=(D(10)*100+D(10)*D("100.2")+D(30)*D("100.4"))/50
++        assert ep.btc_planref_vwap==expected==p["first_vwap"]
++        assert p["management_reference_frozen_ns"]==5
++        run_ticks(e,[tick(BTC_PERP,6,"100.4"),tick(BTC_PERP,7,"99")])
++        assert ep.btc_planref_vwap==expected
++        assert p["filled"]==p["quantity"]
++    finally:
++        e.end();e.dispose()
++
++
++def test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule():
++    from dataclasses import replace
++    s,e,ep=setup(qty=100,side=-1,planref=True)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"101")])
++        assert ep.btc_entry_vwap>100 and ep.btc_planref_vwap==100
++        prepare_day(s,6,-1)
++        s._bars[-1]=replace(s._bars[-1],btc_close=96.99)
++        WaveOverlayStrategy._advance_current_day(s)
++        assert ep.best_f==pytest.approx(.0301)
++        prepare_day(s,7,-1)
++        s._bars[-1]=replace(s._bars[-1],btc_close=100)
++        WaveOverlayStrategy._advance_current_day(s)
++        assert s._forced_close_reason=="TRAIL"
++    finally:
++        e.end();e.dispose()
++
++
++def test_planref_v1_early_tp_accelerates_cancel_ack_path_and_keeps_reference():
++    s,e,ep=setup(qty=100,planref=True)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"102")])
++        assert s._split_parent["completion_reason"]=="EARLY_TP"
++        assert s._split_parent["filled"]==50
++        run_ticks(e,[tick(BTC_PERP,6,"102")])
++        assert s._split_parent["filled"]==100
++        assert ep.btc_entry_vwap==101 and ep.btc_planref_vwap==100
++    finally:
++        e.end();e.dispose()
++
++
++def test_planref_v1_default_off_retains_actual_blended_management_reference():
++    from coinmaster.domain.wave_overlay import btc_management_price
++    s,e,ep=setup(qty=100)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99")])
++        assert ep.btc_planref_vwap is None
++        assert btc_management_price(ep)==ep.btc_entry_vwap!=100
++    finally:
++        e.end();e.dispose()
++
++
++@pytest.mark.parametrize("split,discount",[(False,"0.0025"),(True,"0.005")])
++def test_planref_v1_requires_explicit_btc025_split(split,discount):
++    with pytest.raises(ValueError,match="PLANREF_V1_REQUIRES_BTC025_SPLIT"):
++        NativeProbe(cfg(split,research_btc_split_discount=D(discount),research_btc_split_planref_v1=True))
++
++
++def test_planref_v1_mandatory_close_before_first_leg_complete_cancels_truthful_leaves():
++    from coinmaster.domain.wave_overlay import btc_management_price
++    s,e,ep=setup(qty=100,planref=True)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3,size="10")])
++        assert ep.btc_planref_vwap is None
++        assert btc_management_price(ep)==ep.btc_entry_vwap==100
++        prepare_day(s,4,-1)
++        WaveOverlayStrategy._advance_current_day(s)
++        assert s._forced_close_reason=="REGIME"
++        assert s._split_parent["filled"]==10
++        assert s._split_parent["cancelled"]==90
++        run_ticks(e,[tick(BTC_PERP,5),tick(SOL_PERP,6),tick(BTC_PERP,7)])
++        assert not e.cache.positions_open()
++        assert ep.btc_planref_vwap is None
++        assert s._split_parent["filled"]+s._split_parent["cancelled"]==100
++    finally:
++        e.end();e.dispose()
++
++
++def test_planref_v1_freeze_preserves_real_native_tp_and_sol_right():
++    s,e,ep=setup(qty=100,planref=True)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3,size="10")])
++        reduction=s._domain._intent(ep,"BTC_REDUCE",-1,0,quantity=1,reason="BTC_TP1")
++        s._submit_intent(reduction,100,100,.01,0,ts_now=3)
++        run_ticks(e,[tick(BTC_PERP,4,"100",size="1")])
++        assert 0 in ep.sol_rights
++        before=(set(ep.btc_filled_tps),set(ep.sol_rights),dict(ep.sol_right_fraction))
++        run_ticks(e,[tick(BTC_PERP,5,"100.4")])
++        assert ep.btc_planref_vwap is not None
++        assert (set(ep.btc_filled_tps),set(ep.sol_rights),dict(ep.sol_right_fraction))==before
++        p=s._split_parent
++        assert p["planref_v1_p0"]==ep.btc_planref_vwap
++        assert p["planref_v1_actual_blended_vwap"]==ep.btc_entry_notional_exact/ep.btc_entry_qty_exact
++        assert p["planref_v1_h_actual"]==pytest.approx(p["planref_v1_gross_reference_qty"]*ep.btc_entry_vwap/p["planref_v1_beta"])
++    finally:
++        e.end();e.dispose()

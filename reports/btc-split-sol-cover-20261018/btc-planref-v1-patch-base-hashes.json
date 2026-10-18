@@ -1,0 +1,22 @@
+{
+  "scope": "PREPARED_ONLY_NOT_APPLIED_NOT_EXECUTED",
+  "policy": "PLANREF_V1",
+  "native_tests_run": false,
+  "guard_status": "SUPERSEDED_NOT_APPLIED_NOT_RUN",
+  "base": {
+    "runtime/coinmaster/domain/wave_overlay.py": "5a52a015bdb689a6d4c063dabda379b8e621bdb08cddcd05da12c4789b2db7b5",
+    "runtime/coinmaster/strategy/wave_overlay.py": "4b25b6f72b8420823d2596a2a09394cf4f31a981773f0552b364562b69d26765",
+    "runtime/coinmaster/strategy/split_cover.py": "0cb6de91e49e1b28d5383a8a487cdefa396ff32223037cdacc4f10d622cf13d4",
+    "runtime/coinmaster/research/native_baseline.py": "44db98a90dc1f4cf3aa1d86ccb95ec25dfa98b58d2f921d54e5b216d4d139abc",
+    "scripts/launch_split_cover_native.py": "2b879fb37b47683ff1a252a146673ddef8a6e63853cec7f25e460d592f64b1df",
+    "runtime/tests/test_native_split_cover.py": "df23f697e96e6dead679e2fee25f18f3aca7cf0d0635ae6e9cdcc562d0e98a98"
+  },
+  "candidate": {
+    "runtime/coinmaster/domain/wave_overlay.py": "e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2",
+    "runtime/coinmaster/strategy/wave_overlay.py": "5cd994506696e0b7d13d2d1d0a469576e754fbebc1b0abcc7fd52bb8f4c8e98b",
+    "runtime/coinmaster/strategy/split_cover.py": "5d76ddc063e6603eb25dbdf8c6bd9a476ca093c41d1d13ab1be39f25a4d02ea3",
+    "runtime/coinmaster/research/native_baseline.py": "7c1f8ae601f8d095617215c09dbe57be9cf4ad2063f17e451d983ae872bbb0ec",
+    "scripts/launch_split_cover_native.py": "4d4ed0daeef3778be2c9d2ca1793b7b311234ecbf46a78b5f05f54a381cc923c",
+    "runtime/tests/test_native_split_cover.py": "749a195a78fb710a1d2736946701fa939cdfd385e865f9119470e49c28b7103e"
+  }
+}

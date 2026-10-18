@@ -75,5 +75,45 @@
   },
   "attribution_method": "Native fills actual prices/quantities/side, weighted average linear confirmedfill diagnostic; not authoritative native settled perasset PnL. Funding UNKNOWN; cash delta residual unallocated.",
   "resource_peak_rss_kib": 27124,
-  "comparison_method": "Compare actual native terminal values. No priceproxy savings added. Same-run netplannedQ conservation separate from crossrun compoundingQ differences."
+  "comparison_method": "Compare actual native terminal values. No priceproxy savings added. Same-run netplannedQ conservation separate from crossrun compoundingQ differences.",
+  "native_fill_report_liquidity_by_asset": {
+    "BTC_TAKER": {
+      "count": 300,
+      "turnover": "1311294692.381399999256438",
+      "fees": "721212.08081010",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "BTC_MAKER": {
+      "count": 114,
+      "turnover": "523246424.501399993456230",
+      "fees": "104649.28490028",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "SOL_TAKER": {
+      "count": 203,
+      "turnover": "31658581.552",
+      "fees": "17412.21985360",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    }
+  },
+  "native_fill_report_liquidity_method": "Exact nativeCSVliquidity_side/filled_qty/avg_px/commissions; no IOCmakerinference. CSVavg_pxfloatrenderingmayintroducesubcentnotionalrepresentationdifference. Unknowncommissionsarecounted.",
+  "actual_base_entry_latency_seconds": [],
+  "v3_permission_match": {
+    "control_count": 105,
+    "variant_count": 104,
+    "missing_days": [
+      20163
+    ],
+    "extra_days": [],
+    "same_side": 104,
+    "q0_exact": 103,
+    "q1_exact": 103,
+    "entry_quote_exact": 103,
+    "first_leg_P0_exact_v3": 103,
+    "first_leg_timestamp_exact_v3": 103,
+    "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately."
+  }
 }

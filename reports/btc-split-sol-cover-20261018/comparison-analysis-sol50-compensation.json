@@ -1,0 +1,21 @@
+{
+  "btc_losing_episodes": 48,
+  "sol_helped": 39,
+  "joint_loss": 9,
+  "btc_losing_net_sum": "-115867.18888066",
+  "sol_net_on_btc_losing": "52799.39879624999999999999999",
+  "paired_net_on_btc_losing": "-63067.79008441000000000000001",
+  "core_tactical": {
+    "core": "AllactualSOL50fills: tacticaldisabled, net_ex_funding=-62161.94649805",
+    "tactical": "NOT_ACTIVE_NO_TACTICAL_FILLS",
+    "method": "SingleNETTINGposition; confirmedfillweightedaverageonly, notnativeperassetsettledcash."
+  },
+  "method": "ObservedBTCentry-to-flat episodes, confirmedfillnetPnlincludingallocatedactualfees. SOL episodesassignedbyactualentrytime toBTCparent andtotalallocationreconciles. NotminutejointuPnL; signedfundingUNKNOWNnotzero.",
+  "btc_winning_episodes": {
+    "count": 57,
+    "btc_net_sum": "189168.22833063",
+    "sol_net_sum": "-114961.3452943000000000000000",
+    "sol_losses": 55,
+    "pair_net_sum": "74206.88303633000000000000000"
+  }
+}

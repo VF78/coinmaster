@@ -1,0 +1,1024 @@
+{
+  "label": "sol50",
+  "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol50-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover0.5-btc-direction.json",
+  "sha256": "ae08b71c1cb0ef05c1cb7a146e62bbb17db64b7ea913b86437933f5038b26706",
+  "terminal_total": "21765.86882504",
+  "terminal_active": "21765.86882504",
+  "terminal_reserve": "0",
+  "roi_percent": "117.658688250400",
+  "global_marked_dd_percent": "56.40352362021327888198196955",
+  "minimum_equity": {
+    "equity": "7556.56169203",
+    "timestamp_ns": "1728569460000000000"
+  },
+  "liquidation_count": 0,
+  "native_fees": "18200.79784808",
+  "actual_fees_by_asset": {
+    "BTC": "12693.51835003",
+    "SOL": "5507.27949805"
+  },
+  "actual_fees_by_asset_liquidity": {
+    "BTC_TAKER": "11652.26496445",
+    "SOL_TAKER": "5507.27949805",
+    "BTC_MAKER": "1041.25338558"
+  },
+  "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "funding_count": 1800,
+  "liquidation_rule": "Read unchanged native policy; minute close marked DD is separate from OHLC adverse bounds and proves no intraminute DD cap",
+  "cash_drawdown_summary": {
+    "drawdown_basis": "NATIVE_CASH_ACCOUNT_SERIES",
+    "drawdown_start": "2026-06-09 16:05:00+00:00",
+    "drawdown_trough": "2026-08-31 16:00:00+00:00",
+    "max_drawdown_amount": "26845.97172432",
+    "max_drawdown_percent": "0.5638651787193434835712602649"
+  },
+  "liquidation_policy": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+  "parents": 105,
+  "split_parent_count": 0,
+  "entry_sizing_count": 105,
+  "parent_side_counts": {
+    "-1": 52,
+    "1": 53
+  },
+  "filled_equals_plan_count": 105,
+  "unfilled_or_partial_count": 0,
+  "filled_plus_cancelled_equals_plan_count": 0,
+  "planned_matches_accepted_net_count": 105,
+  "net_targets_match_plan_count": 105,
+  "v3_same_day_matches": 105,
+  "changed_quantity_vs_v3": 104,
+  "plan_integrity_limit": "Cancelled is native quantity; filled+cancelled conservation separately checked. UnknownACK/order constraints require native fixtures.",
+  "native_asset_realized_pnl": "UNKNOWN_NATIVE_SETTLED_PERASSET_NOT_EXPORTED",
+  "fill_attribution": "Separate confirmed-fill attribution is diagnostic, excludes funding; asynchronous callback cash cannot be allocated to asset PnL.",
+  "trace_streamed": true,
+  "native_fill_report_liquidity_by_asset": {
+    "BTC_TAKER": {
+      "count": 235,
+      "turnover": "21185936.298500000001488",
+      "fees": "11652.26496445",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "SOL_TAKER": {
+      "count": 301,
+      "turnover": "10013235.451",
+      "fees": "5507.27949805",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "BTC_MAKER": {
+      "count": 78,
+      "turnover": "5206266.927900000037788",
+      "fees": "1041.25338558",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    }
+  },
+  "native_fill_report_liquidity_method": "Exact nativeCSVliquidity_side/filled_qty/avg_px/commissions; no IOCmakerinference. CSVavg_pxfloatrenderingmayintroducesubcentnotionalrepresentationdifference. Unknowncommissionsarecounted.",
+  "confirmed_fill_weighted_average_attribution": {
+    "BTC": {
+      "gross": "85994.5578",
+      "actual_fees": "12693.51835003",
+      "net_ex_funding": "73301.03944997",
+      "terminal_net_qty": "0.000"
+    },
+    "SOL": {
+      "gross": "-56654.66700000000000000000002",
+      "actual_fees": "5507.27949805",
+      "net_ex_funding": "-62161.94649805000000000000002",
+      "terminal_net_qty": "0.0"
+    }
+  },
+  "unmatched_native_fill_sides": [],
+  "unallocated_cash_residual_not_funding": "626.77587312000000000000002",
+  "actual_base_entry_latency_seconds": [
+    {
+      "episode_id": "9aee473f-990a-4b59-8cc9-21f18614e399",
+      "btc_first_fill_ns": 1725235260000000000,
+      "sol_first_base_fill_ns": 1725235260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "1b5ed41c-692d-4d77-942e-70cbea8f5c32",
+      "btc_first_fill_ns": 1726012860000000000,
+      "sol_first_base_fill_ns": 1726012860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e0532de0-8bcd-4c34-ab3c-9d7ae2983106",
+      "btc_first_fill_ns": 1726272120000000000,
+      "sol_first_base_fill_ns": 1726272120000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "0e524abb-d12b-496b-b3d5-039a1a32dd64",
+      "btc_first_fill_ns": 1726531260000000000,
+      "sol_first_base_fill_ns": 1726531260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "2bb420a6-0c57-452b-a316-157427b18faa",
+      "btc_first_fill_ns": 1726617660000000000,
+      "sol_first_base_fill_ns": 1726617660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "5182c677-2785-4ade-a531-4445b501530d",
+      "btc_first_fill_ns": 1727827260000000000,
+      "sol_first_base_fill_ns": 1727827260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "87838027-0b7b-48fb-97a5-5500da8d2a1b",
+      "btc_first_fill_ns": 1728086460000000000,
+      "sol_first_base_fill_ns": 1728086460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "fb33015b-452b-44f1-9dd2-7491d396c446",
+      "btc_first_fill_ns": 1728518460000000000,
+      "sol_first_base_fill_ns": 1728518460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "05c7f5a6-1021-442b-80d4-ab977cfe4038",
+      "btc_first_fill_ns": 1728691320000000000,
+      "sol_first_base_fill_ns": 1728691320000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "c7e4a4a3-890b-433f-8811-85c7d5437fc5",
+      "btc_first_fill_ns": 1729814460000000000,
+      "sol_first_base_fill_ns": 1729814460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "8930d386-52bb-47dd-ad5e-b1cc85decc22",
+      "btc_first_fill_ns": 1730505660000000000,
+      "sol_first_base_fill_ns": 1730505660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "4fc721f7-ddae-451f-b38b-ff100502a63f",
+      "btc_first_fill_ns": 1731715260000000000,
+      "sol_first_base_fill_ns": 1731715260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "421dcdda-4574-4f93-9d03-14a504e7802e",
+      "btc_first_fill_ns": 1732665660000000000,
+      "sol_first_base_fill_ns": 1732665660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "8d51248b-35a0-4f07-8068-e14154d9205d",
+      "btc_first_fill_ns": 1733875260000000000,
+      "sol_first_base_fill_ns": 1733875260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "cb92fafb-c97e-4b1a-81b9-149c2ad84a59",
+      "btc_first_fill_ns": 1734652860000000000,
+      "sol_first_base_fill_ns": 1734652860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "a3774dfa-db18-4312-b3be-7b5b25b2601e",
+      "btc_first_fill_ns": 1734912060000000000,
+      "sol_first_base_fill_ns": 1734912060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "9c24f73b-76cc-4c90-aff3-15c29a3e046b",
+      "btc_first_fill_ns": 1735084920000000000,
+      "sol_first_base_fill_ns": 1735084920000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e745ad34-3d6b-4fb8-9efb-fd20e49a5672",
+      "btc_first_fill_ns": 1735257660000000000,
+      "sol_first_base_fill_ns": 1735257660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "0409c8ce-3cee-46f8-b387-e421412859eb",
+      "btc_first_fill_ns": 1735862520000000000,
+      "sol_first_base_fill_ns": 1735862520000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "2a1c3536-d28d-4031-8ddf-4de7309fc2fe",
+      "btc_first_fill_ns": 1736380860000000000,
+      "sol_first_base_fill_ns": 1736380860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "10767162-a6ab-4d78-9bd1-546c520307ad",
+      "btc_first_fill_ns": 1736899320000000000,
+      "sol_first_base_fill_ns": 1736899320000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "f5e9f815-a2b2-489f-9150-a44a54b70b97",
+      "btc_first_fill_ns": 1737417660000000000,
+      "sol_first_base_fill_ns": 1737417660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "1d6f1180-f6c3-4f7a-9135-236def247732",
+      "btc_first_fill_ns": 1738022460000000000,
+      "sol_first_base_fill_ns": 1738022460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "bdf34cd7-ce66-4546-b815-d3d57e676e85",
+      "btc_first_fill_ns": 1738540860000000000,
+      "sol_first_base_fill_ns": 1738540860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "ae69734c-f644-47c5-8a44-dd4946413d8e",
+      "btc_first_fill_ns": 1738627320000000000,
+      "sol_first_base_fill_ns": 1738627320000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "7d781842-933f-4296-b4bb-c51d06cd8cdd",
+      "btc_first_fill_ns": 1738713660000000000,
+      "sol_first_base_fill_ns": 1738713660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "624b2d37-f367-4706-8a26-ebd1f5553829",
+      "btc_first_fill_ns": 1740096120000000000,
+      "sol_first_base_fill_ns": 1740096120000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "68d9e2c9-3f51-4986-bf2d-7ec81689d1f5",
+      "btc_first_fill_ns": 1740182460000000000,
+      "sol_first_base_fill_ns": 1740182460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "d94165b0-a281-4bf0-8308-38071008afa0",
+      "btc_first_fill_ns": 1741046460000000000,
+      "sol_first_base_fill_ns": 1741046460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "f13c3776-6f4a-45aa-8ffc-d4d48c9bfb25",
+      "btc_first_fill_ns": 1741824060000000000,
+      "sol_first_base_fill_ns": 1741824060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "4486b211-6b77-48c6-b8f0-2e84f156b060",
+      "btc_first_fill_ns": 1742083260000000000,
+      "sol_first_base_fill_ns": 1742083260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "89d3a3dc-f5f0-4aac-bc5d-40b32d1f24fb",
+      "btc_first_fill_ns": 1742860920000000000,
+      "sol_first_base_fill_ns": 1742860920000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "6c3c7024-ee73-4d8b-8bdc-93dfe89c37e1",
+      "btc_first_fill_ns": 1743033660000000000,
+      "sol_first_base_fill_ns": 1743033660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "5c7398e5-0d92-41e2-b5e2-4244621cd8ce",
+      "btc_first_fill_ns": 1743638460000000000,
+      "sol_first_base_fill_ns": 1743638460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "f470a222-f48a-40e8-af11-6d5e8afe300a",
+      "btc_first_fill_ns": 1744329660000000000,
+      "sol_first_base_fill_ns": 1744329660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "13679f48-22b9-43c1-b5db-7e968174af78",
+      "btc_first_fill_ns": 1744502460000000000,
+      "sol_first_base_fill_ns": 1744502460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "91b44dff-5664-422b-b678-776bee5d7b1f",
+      "btc_first_fill_ns": 1744588860000000000,
+      "sol_first_base_fill_ns": 1744588860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "473163c1-112c-48e2-bba7-349a95799770",
+      "btc_first_fill_ns": 1744675260000000000,
+      "sol_first_base_fill_ns": 1744675260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "439ac537-44ed-4f7a-971f-f8027e8d5111",
+      "btc_first_fill_ns": 1744761660000000000,
+      "sol_first_base_fill_ns": 1744761660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "aa03370e-fc86-4462-b845-17fa2987c872",
+      "btc_first_fill_ns": 1744934460000000000,
+      "sol_first_base_fill_ns": 1744934460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "f026ea0f-aeab-4e1b-849f-bb2b09a74808",
+      "btc_first_fill_ns": 1746489660000000000,
+      "sol_first_base_fill_ns": 1746489660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "3b9ddd50-cb33-41c7-9e72-3e0b4c2a726a",
+      "btc_first_fill_ns": 1748131260000000000,
+      "sol_first_base_fill_ns": 1748131260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "22a83400-6ccb-4351-9738-738ca2c1e174",
+      "btc_first_fill_ns": 1749168060000000000,
+      "sol_first_base_fill_ns": 1749168060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "bf96a834-520f-4cd3-940a-35f87315e6b0",
+      "btc_first_fill_ns": 1749254460000000000,
+      "sol_first_base_fill_ns": 1749254460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "b71f9822-e2f6-438f-922a-2454c3930ff9",
+      "btc_first_fill_ns": 1749859260000000000,
+      "sol_first_base_fill_ns": 1749859260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "f9a53b1b-25fe-4fce-a0e7-173307594d34",
+      "btc_first_fill_ns": 1750204860000000000,
+      "sol_first_base_fill_ns": 1750204860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "0f55f175-23db-4f3b-835d-d325d52faba0",
+      "btc_first_fill_ns": 1750291260000000000,
+      "sol_first_base_fill_ns": 1750291260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "66590fb8-cec0-4695-8030-00ced324199d",
+      "btc_first_fill_ns": 1750377660000000000,
+      "sol_first_base_fill_ns": 1750377660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "14fca6dc-bcd9-4829-b992-b2a4341de17a",
+      "btc_first_fill_ns": 1750723320000000000,
+      "sol_first_base_fill_ns": 1750723320000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "72cd67a0-38f5-4fdc-b04c-4338dc522ea0",
+      "btc_first_fill_ns": 1754092860000000000,
+      "sol_first_base_fill_ns": 1754092860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "3edbe846-a734-447f-b2f7-38ca28f766b0",
+      "btc_first_fill_ns": 1754352060000000000,
+      "sol_first_base_fill_ns": 1754352060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "7bbd7f38-1a49-430b-9766-127540853dfc",
+      "btc_first_fill_ns": 1754438460000000000,
+      "sol_first_base_fill_ns": 1754438460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "3839f667-c59e-4659-b369-365e3f3cb3cd",
+      "btc_first_fill_ns": 1754524860000000000,
+      "sol_first_base_fill_ns": 1754524860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "115abc19-1bed-4930-aea5-83d129ec4d35",
+      "btc_first_fill_ns": 1755302460000000000,
+      "sol_first_base_fill_ns": 1755302460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "d7379cef-bb1a-4892-813b-bcbde0416186",
+      "btc_first_fill_ns": 1755561660000000000,
+      "sol_first_base_fill_ns": 1755561660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "63d5f405-6f58-4928-9241-a5170465e4f2",
+      "btc_first_fill_ns": 1755907320000000000,
+      "sol_first_base_fill_ns": 1755907320000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "2bc9aa8b-5256-4f64-a533-c55fb47ebd2e",
+      "btc_first_fill_ns": 1755993660000000000,
+      "sol_first_base_fill_ns": 1755993660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "b94c1ca8-8d7d-4be1-8cfb-f8c2935f521a",
+      "btc_first_fill_ns": 1757030460000000000,
+      "sol_first_base_fill_ns": 1757030460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "94509e64-e8f3-4539-8782-04ef0d32fac7",
+      "btc_first_fill_ns": 1757548860000000000,
+      "sol_first_base_fill_ns": 1757548860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "f1f9add0-768d-4f68-9cf6-bfaac0273152",
+      "btc_first_fill_ns": 1758585660000000000,
+      "sol_first_base_fill_ns": 1758585660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "373820c1-1c56-4570-9bf8-8bf42e7937d1",
+      "btc_first_fill_ns": 1759190520000000000,
+      "sol_first_base_fill_ns": 1759190520000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "a19c1494-f431-4c67-b0bf-de6fa11f63ca",
+      "btc_first_fill_ns": 1760140920000000000,
+      "sol_first_base_fill_ns": 1760140920000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "63f3ff96-8cd5-4ad7-bddf-866a3a0c8888",
+      "btc_first_fill_ns": 1761091260000000000,
+      "sol_first_base_fill_ns": 1761091260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e7329173-9970-493f-9053-01687dd1a589",
+      "btc_first_fill_ns": 1761523260000000000,
+      "sol_first_base_fill_ns": 1761523260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "64f61b84-ab65-4820-896f-925364a94945",
+      "btc_first_fill_ns": 1761696060000000000,
+      "sol_first_base_fill_ns": 1761696060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "8e46c506-9c49-4b39-94d1-1f1a163bec5f",
+      "btc_first_fill_ns": 1762905660000000000,
+      "sol_first_base_fill_ns": 1762905660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "b59fe146-3058-4b2a-bc41-8ae3ee82f12a",
+      "btc_first_fill_ns": 1764115260000000000,
+      "sol_first_base_fill_ns": 1764115260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "b9f1b456-02e2-495a-a3f3-2754e7535330",
+      "btc_first_fill_ns": 1767398520000000000,
+      "sol_first_base_fill_ns": 1767398520000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "4bad3ae1-ef09-4356-b915-10828e7ad463",
+      "btc_first_fill_ns": 1768003260000000000,
+      "sol_first_base_fill_ns": 1768003260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e800891c-8413-42d8-bada-d4c4954e26e5",
+      "btc_first_fill_ns": 1768867260000000000,
+      "sol_first_base_fill_ns": 1768867260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "38eea2a4-f12f-41e1-9c3c-238ccda62b08",
+      "btc_first_fill_ns": 1768953660000000000,
+      "sol_first_base_fill_ns": 1768953660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "cb924143-bf97-4419-a3ee-ba154faf18d5",
+      "btc_first_fill_ns": 1770508860000000000,
+      "sol_first_base_fill_ns": 1770508860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "6ef3da85-26b9-40a0-92d8-26757dd90408",
+      "btc_first_fill_ns": 1771113660000000000,
+      "sol_first_base_fill_ns": 1771113660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "357f735e-103c-4b24-b673-1eee525e3fbc",
+      "btc_first_fill_ns": 1772150460000000000,
+      "sol_first_base_fill_ns": 1772150460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "6e867ad3-1e64-4a3a-a7fd-b3e5e6566564",
+      "btc_first_fill_ns": 1772668920000000000,
+      "sol_first_base_fill_ns": 1772668920000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "4c14b004-4050-476c-a2fe-82db710e4a69",
+      "btc_first_fill_ns": 1772755260000000000,
+      "sol_first_base_fill_ns": 1772755260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "ee439d71-4b6a-4696-9a5a-2d2f71c4ec56",
+      "btc_first_fill_ns": 1773187260000000000,
+      "sol_first_base_fill_ns": 1773187260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "316362cf-446f-444c-85f3-0a24ec6a49d6",
+      "btc_first_fill_ns": 1773360060000000000,
+      "sol_first_base_fill_ns": 1773360060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "708da0b5-f4e1-4af0-8dc1-87cf02fbff88",
+      "btc_first_fill_ns": 1773964860000000000,
+      "sol_first_base_fill_ns": 1773964860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "18205d25-03f6-4cd6-afe2-2e1cfd88a612",
+      "btc_first_fill_ns": 1774310520000000000,
+      "sol_first_base_fill_ns": 1774310520000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "1aa49e25-4409-48f6-adf4-48b46ada45b9",
+      "btc_first_fill_ns": 1774396860000000000,
+      "sol_first_base_fill_ns": 1774396860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "62117851-6c6b-43ae-aaf0-a9e65234c625",
+      "btc_first_fill_ns": 1774483260000000000,
+      "sol_first_base_fill_ns": 1774483260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "a6902604-a8c9-45e3-bd6b-c850320b9955",
+      "btc_first_fill_ns": 1774569660000000000,
+      "sol_first_base_fill_ns": 1774569660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "c4672da1-6838-4afa-9b8b-03bd0009a828",
+      "btc_first_fill_ns": 1775088060000000000,
+      "sol_first_base_fill_ns": 1775088060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e6933f19-f861-43fb-b6fa-e57f4c484000",
+      "btc_first_fill_ns": 1775606520000000000,
+      "sol_first_base_fill_ns": 1775606520000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "56f81b16-b1f0-4240-96aa-fdec019a25bf",
+      "btc_first_fill_ns": 1776729660000000000,
+      "sol_first_base_fill_ns": 1776729660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "4e937e93-da08-47b1-a624-a1990f5cbff5",
+      "btc_first_fill_ns": 1777507260000000000,
+      "sol_first_base_fill_ns": 1777507260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "ca3aa197-3f80-473a-b4e0-1200a2d75ee7",
+      "btc_first_fill_ns": 1778803260000000000,
+      "sol_first_base_fill_ns": 1778803260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "7f1fe4f5-eeec-42ab-bc78-2b83134c4cca",
+      "btc_first_fill_ns": 1779062460000000000,
+      "sol_first_base_fill_ns": 1779062460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "52758621-8486-428a-a7e0-da8176519f7e",
+      "btc_first_fill_ns": 1780963260000000000,
+      "sol_first_base_fill_ns": 1780963260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "befb0305-c073-4b18-8edc-b69c2e09d457",
+      "btc_first_fill_ns": 1783123260000000000,
+      "sol_first_base_fill_ns": 1783123260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "1b72b8c7-8563-4060-bc13-9ef402102c0c",
+      "btc_first_fill_ns": 1783728060000000000,
+      "sol_first_base_fill_ns": 1783728060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "35927f6c-7e17-48e9-858c-7cc5534771b4",
+      "btc_first_fill_ns": 1783814460000000000,
+      "sol_first_base_fill_ns": 1783814460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "868375a3-7798-4ca8-9615-3c4550093290",
+      "btc_first_fill_ns": 1784073660000000000,
+      "sol_first_base_fill_ns": 1784073660000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "cf524235-a389-4efa-b1d7-a6b63aea0d2d",
+      "btc_first_fill_ns": 1784246460000000000,
+      "sol_first_base_fill_ns": 1784246460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "5a808d67-6dde-41ea-b29b-fbd2614bd771",
+      "btc_first_fill_ns": 1784332860000000000,
+      "sol_first_base_fill_ns": 1784332860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "8aed29e4-4de4-4d20-a268-fc3352781135",
+      "btc_first_fill_ns": 1784937720000000000,
+      "sol_first_base_fill_ns": 1784937720000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "294550f5-1f0c-4ec6-be65-899f31c8a5fe",
+      "btc_first_fill_ns": 1785110460000000000,
+      "sol_first_base_fill_ns": 1785110460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "1f81b767-a42a-489e-9435-dbccd0a0645b",
+      "btc_first_fill_ns": 1785196860000000000,
+      "sol_first_base_fill_ns": 1785196860000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "637f85a7-eee1-4591-b90a-13b5e84a8b92",
+      "btc_first_fill_ns": 1785456060000000000,
+      "sol_first_base_fill_ns": 1785456060000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "4689ea18-324c-4016-936e-9b7c52cf794d",
+      "btc_first_fill_ns": 1785542460000000000,
+      "sol_first_base_fill_ns": 1785542460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "db59e05c-941b-4947-93be-212759521501",
+      "btc_first_fill_ns": 1785974460000000000,
+      "sol_first_base_fill_ns": 1785974460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "4131e6fd-a17c-4bac-b917-85010963a52b",
+      "btc_first_fill_ns": 1786406460000000000,
+      "sol_first_base_fill_ns": 1786406460000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "43cf0ac2-e918-4798-92fb-89a19f57b3d9",
+      "btc_first_fill_ns": 1787011260000000000,
+      "sol_first_base_fill_ns": 1787011260000000000,
+      "latency_seconds": 0.0
+    },
+    {
+      "episode_id": "a2752e78-5bb9-4f9b-a950-0821cb3e3df5",
+      "btc_first_fill_ns": 1788048060000000000,
+      "sol_first_base_fill_ns": 1788048060000000000,
+      "latency_seconds": 0.0
+    }
+  ],
+  "exact_fill_eventtime_heldtime": {
+    "btc_held_seconds": 26626740.0,
+    "btc_with_sol_seconds": 26626740.0,
+    "fraction_with_sol": 1.0,
+    "method": "Actualnativefilledpositionpresence intervals; NOT percentprotection. Can differ from nativecachequote snapshot timing."
+  },
+  "attribution_method": "Native fills actual prices/quantities/side, weighted average linear confirmedfill diagnostic; not authoritative native settled perasset PnL. Funding UNKNOWN; cash delta residual unallocated.",
+  "trace": {
+    "trace_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol50-20261018a/result/minute-native-risk.csv.gz",
+    "trace_sha256": "af4ce007746229c49d37b4f6c4aeec79d6b759d228a63924d6f814823dd43054",
+    "rows": 3153600,
+    "phase_counts": {
+      "pre_quote_paired_close": 1051200,
+      "post_btc_quote_paired_close": 1051199,
+      "post_quote_paired_close": 1051199,
+      "post_boundary_post_btc_quote_paired_close": 1,
+      "post_boundary_post_quote_paired_close": 1
+    },
+    "stream_all_native_close_dd_percent": 56.40352362021327,
+    "stream_min_equity": 7556.56169203,
+    "minimum_free_cash": 7901.12225663,
+    "coverage_basis": "ACTUAL_EPISODE_FIXED_COVER_START_BETA",
+    "coverage_time": {
+      "btc_held_seconds": 26626740.0,
+      "below050_seconds": 14245080.0,
+      "below045_seconds": 10680.0,
+      "zero_coverage_seconds": 6300.0,
+      "btc_with_sol_seconds": 26620440.0,
+      "within045_055_seconds": 26610180.0,
+      "above100_seconds": 900.0
+    },
+    "coverage_mean": 0.4998193822564103,
+    "coverage_quantiles_rounded_0001": {
+      "0.05": 0.478,
+      "0.25": 0.4937,
+      "0.5": 0.4994,
+      "0.75": 0.506,
+      "0.95": 0.522
+    },
+    "coverage_min": 0.0,
+    "coverage_max": 1.9029532580609332,
+    "btc_time_with_sol_fraction": 0.9997633957442781,
+    "below050_fraction": 0.534991516047402,
+    "below045_fraction": 0.0004011005477951863,
+    "within045_055_fraction": 0.9993780688135311,
+    "zero_coverage_fraction": 0.00023660425572187958,
+    "above100_fraction": 3.3800607960268515e-05,
+    "maximum_asset_upnl_interpolation_residual": null,
+    "joint_loss_intervals": null,
+    "asset_upnl_reconstruction_status": "NOT_ATTEMPTED_COVERAGE_ONLY",
+    "coverage_mark_basis": "ACTUAL_RECORDED_MARK_CLOSE_NO_PNL_RECONSTRUCTION",
+    "joint_loss_intervals_authoritative": false,
+    "coverage_does_not_require_upnl_reconstruction": true,
+    "limitations": "Coverage snapshot postpairedquote, seconds held until nextminute approximated from precedingminute. Native roundedmark endpoint interpolation only diagnostics, not pertrade native settled PnL; negative uPnL cohorts are not realized loss events. No intraminute order path proof. Coverage basis is explicit."
+  },
+  "resource_peak_rss_kib": 30528,
+  "comparison_method": "Compare actual native terminal values. No priceproxy savings added. Same-run netplannedQ conservation separate from crossrun compoundingQ differences.",
+  "v3_permission_match": {
+    "control_count": 105,
+    "variant_count": 105,
+    "missing_days": [],
+    "extra_days": [],
+    "same_side": 105,
+    "q0_exact": 105,
+    "q1_exact": 105,
+    "entry_quote_exact": 105,
+    "first_leg_P0_exact_v3": 0,
+    "first_leg_timestamp_exact_v3": 0,
+    "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately."
+  },
+  "preferred_coverage_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-sol50-actual-fill-coverage.json",
+  "trace_coverage_status": "Quote-cacheobservationtimingdiagnostic ONLY; exactnativefillquantity+canonicalmarkcoverageartifact supersedes forcoverage. 105cachezerominutesand15minabove100areobservationlag, notactualpositionexposure.",
+  "actual_coverage_summary": {
+    "label": "sol50",
+    "basis": "ACTUAL_NATIVE_FILL_EVENT_NET_QUANTITY_PLUS_CANONICAL_BYBIT_MARK_CLOSE_AND_FIXED_COVER_START_BETA",
+    "formula": "abs(SOLqty)*SOLmark*beta/(abs(BTCqty)*BTCmark), negative ifsamedirection",
+    "time_seconds": {
+      "btc_held_seconds": 26626740,
+      "btc_with_sol_seconds": 26626740,
+      "below050_seconds": 14247360,
+      "below045_seconds": 4260,
+      "within045_055_seconds": 26620860,
+      "zero_coverage_seconds": 0,
+      "above100_seconds": 0,
+      "orphan_sol_seconds": 0
+    },
+    "fractions": {
+      "btc_with_sol_seconds": 1.0,
+      "below050_seconds": 0.5350771442542347,
+      "below045_seconds": 0.00015998954434527096,
+      "within045_055_seconds": 0.9997791693613263,
+      "zero_coverage_seconds": 0.0,
+      "above100_seconds": 0.0
+    },
+    "coverage_mean": 0.49987539051780383,
+    "coverage_min": 0.2655522498575069,
+    "coverage_max": 0.6040872706322148,
+    "quantiles_resolution_0001": {
+      "0.01": 0.4632,
+      "0.05": 0.4781,
+      "0.25": 0.4937,
+      "0.5": 0.4994,
+      "0.75": 0.506,
+      "0.95": 0.5219,
+      "0.99": 0.5339
+    },
+    "first_extremes": [
+      {
+        "ns": 1738519380000000000,
+        "c": 0.44990361358134523,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97122.71",
+        "sol_mark": "202.233",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738519920000000000,
+        "c": 0.44937111321245465,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97343.58",
+        "sol_mark": "202.453",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738519980000000000,
+        "c": 0.4486219666015119,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97291.81",
+        "sol_mark": "202.008",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520040000000000,
+        "c": 0.4485945730871176,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97396.49",
+        "sol_mark": "202.213",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520100000000000,
+        "c": 0.44834699135328565,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97434.37",
+        "sol_mark": "202.18",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520160000000000,
+        "c": 0.44771257637430106,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97343.2",
+        "sol_mark": "201.705",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520220000000000,
+        "c": 0.44771678760683226,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97233.7",
+        "sol_mark": "201.48",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520280000000000,
+        "c": 0.4472390925370712,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97144.31",
+        "sol_mark": "201.08",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520340000000000,
+        "c": 0.44724570304578337,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97215.34",
+        "sol_mark": "201.23",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520400000000000,
+        "c": 0.4471630081976458,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97180.65",
+        "sol_mark": "201.121",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520460000000000,
+        "c": 0.4473041016502979,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97226.8",
+        "sol_mark": "201.28",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520520000000000,
+        "c": 0.4470529502271989,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97149.96",
+        "sol_mark": "201.008",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520580000000000,
+        "c": 0.4472935976001589,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97200.1",
+        "sol_mark": "201.22",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520640000000000,
+        "c": 0.4472829122366007,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97482.6",
+        "sol_mark": "201.8",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520700000000000,
+        "c": 0.4477162277535302,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97595.77",
+        "sol_mark": "202.23",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738520760000000000,
+        "c": 0.44928634193605105,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97854.4",
+        "sol_mark": "203.477",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738521180000000000,
+        "c": 0.4485751307159512,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97642.03",
+        "sol_mark": "202.714",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738521240000000000,
+        "c": 0.4469752649050261,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97554.53",
+        "sol_mark": "201.81",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738521300000000000,
+        "c": 0.446981785350847,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97495.1",
+        "sol_mark": "201.69",
+        "beta": 1.2901836711655672
+      },
+      {
+        "ns": 1738521360000000000,
+        "c": 0.44616153813740217,
+        "btc_qty": "0.581",
+        "sol_qty": "-97.3",
+        "btc_mark": "97466.1",
+        "sol_mark": "201.26",
+        "beta": 1.2901836711655672
+      }
+    ],
+    "verified_native_fill_rows": 614,
+    "canonical_rows_per_mark": 1051200,
+    "terminal_net_qty": {
+      "BTC": "0.000",
+      "SOL": "0.0"
+    },
+    "peak_rss_kib": 106756,
+    "limitations": "Onecompleted1mquote sample counted60s; no intraminute orderpath proof. Quantities fromactualnativefills groupedbyeventtimestampafterbothassets, notstalequote-cachepositions. Markclose rawvenue1m recordedmark, no genericPriceconversion andno uPnLreconstruction. ForSOL75/100 actualTOTALnetpositioncoverage, notanindependentlyobservedcore/tacticalsubposition. Fundingnotneeded/notimputed."
+  },
+  "latency_method_limit": "All105basefilllatencies0s are nativemodeltimestampresults; notrealvenueinstantaneousguarantee."
+}

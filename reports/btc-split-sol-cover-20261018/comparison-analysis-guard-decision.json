@@ -17,5 +17,7 @@
     "GUARD005": 7,
     "GUARD010": 8,
     "GUARD015": 13
-  }
+  },
+  "status": "UNRUN_NOT_SELECTED; root chose separateBTC025_PLANREF refinement instead",
+  "selection_update": "Guard descriptive statistics preserved; no guard native run authorized now."
 }

@@ -85,5 +85,43 @@
     "btc_with_sol_seconds": 4146420.0,
     "fraction_with_sol": 0.15572390762068508,
     "method": "Actualnativefilledpositionpresence intervals; NOT percentprotection. Can differ from nativecachequote snapshot timing."
+  },
+  "native_fill_report_liquidity_by_asset": {
+    "BTC_TAKER": {
+      "count": 233,
+      "turnover": "1811146732.240000000945586",
+      "fees": "996130.70273223",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "BTC_MAKER": {
+      "count": 78,
+      "turnover": "383420938.870100003304326",
+      "fees": "76684.18777402",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "SOL_TAKER": {
+      "count": 205,
+      "turnover": "33233069.748",
+      "fees": "18278.18836140",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    }
+  },
+  "native_fill_report_liquidity_method": "Exact nativeCSVliquidity_side/filled_qty/avg_px/commissions; no IOCmakerinference. CSVavg_pxfloatrenderingmayintroducesubcentnotionalrepresentationdifference. Unknowncommissionsarecounted.",
+  "actual_base_entry_latency_seconds": [],
+  "v3_permission_match": {
+    "control_count": 105,
+    "variant_count": 105,
+    "missing_days": [],
+    "extra_days": [],
+    "same_side": 105,
+    "q0_exact": 105,
+    "q1_exact": 105,
+    "entry_quote_exact": 105,
+    "first_leg_P0_exact_v3": 0,
+    "first_leg_timestamp_exact_v3": 0,
+    "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately."
   }
 }

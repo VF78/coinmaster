@@ -1,0 +1,30 @@
+{
+  "rows": 105,
+  "dates_identical": true,
+  "same_side": 105,
+  "q0_equal": 105,
+  "q1_equal": 105,
+  "entry_price_equal": 105,
+  "quantity_equal": 1,
+  "quantity_delta_min": "-470.541",
+  "quantity_delta_max": "0.109",
+  "quantity_ratio_min": "0.003873034228628330970048229372",
+  "quantity_ratio_max": "1.075172413793103448275862069",
+  "first_changed_quantity": {
+    "day": 19977,
+    "utc": "2024-09-11T00:00:00+00:00",
+    "in_v3": true,
+    "in_variant": true,
+    "same_side": true,
+    "q0_equal": true,
+    "q1_equal": true,
+    "v3_price": "57642.4",
+    "variant_price": "57642.4",
+    "v3_qty": "0.945",
+    "variant_qty": "0.947",
+    "quantity_delta": "0.002",
+    "quantity_ratio": "1.002116402116402116402116402"
+  },
+  "method": "Exactnativeacceptedq0/q1timestamp,side,executablequote; unchangedsource/countaloneinsufficient. ChangedQallowedthroughcompounding, notsameBTCvolume.",
+  "differences": []
+}
