@@ -1,0 +1,225 @@
+{
+  "label": "sol100",
+  "basis": "ACTUAL_NATIVE_FILL_EVENT_NET_QUANTITY_PLUS_CANONICAL_BYBIT_MARK_CLOSE_AND_FIXED_COVER_START_BETA",
+  "formula": "abs(SOLqty)*SOLmark*beta/(abs(BTCqty)*BTCmark), negative ifsamedirection",
+  "time_seconds": {
+    "btc_held_seconds": 26626740,
+    "btc_with_sol_seconds": 26626740,
+    "below050_seconds": 14065020,
+    "below045_seconds": 5280,
+    "within045_055_seconds": 26233140,
+    "zero_coverage_seconds": 0,
+    "above100_seconds": 79680,
+    "orphan_sol_seconds": 60
+  },
+  "fractions": {
+    "btc_with_sol_seconds": 1.0,
+    "below050_seconds": 0.5282291410814842,
+    "below045_seconds": 0.00019829690003357527,
+    "within045_055_seconds": 0.9852178674520425,
+    "zero_coverage_seconds": 0.0,
+    "above100_seconds": 0.0029924804914157723
+  },
+  "coverage_mean": 0.5069800308248495,
+  "coverage_min": 0.24004489460120434,
+  "coverage_max": 1.537308371743531,
+  "quantiles_resolution_0001": {
+    "0.01": 0.4625,
+    "0.05": 0.4779,
+    "0.25": 0.4937,
+    "0.5": 0.4996,
+    "0.75": 0.5065,
+    "0.95": 0.5249,
+    "0.99": 0.9929
+  },
+  "first_extremes": [
+    {
+      "ns": 1726023540000000000,
+      "c": 1.0000028789934592,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56908.1",
+      "sol_mark": "133.98",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726024500000000000,
+      "c": 1.0005780728983364,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56828.69",
+      "sol_mark": "133.87",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726024560000000000,
+      "c": 1.001352206075499,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56793.24",
+      "sol_mark": "133.89",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726024620000000000,
+      "c": 1.000559192873777,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56761.84",
+      "sol_mark": "133.71",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726024680000000000,
+      "c": 1.0002508098267868,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56779.34",
+      "sol_mark": "133.71",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726024740000000000,
+      "c": 1.000395902928405,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56796.58",
+      "sol_mark": "133.77",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726024800000000000,
+      "c": 1.000010267927369,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56822.73",
+      "sol_mark": "133.78",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726024920000000000,
+      "c": 1.0000432542411086,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56742.28",
+      "sol_mark": "133.595",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726024980000000000,
+      "c": 1.0005314259724254,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56759.17",
+      "sol_mark": "133.7",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025160000000000,
+      "c": 1.0002624069520354,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56698",
+      "sol_mark": "133.52",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025220000000000,
+      "c": 1.000155407656941,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56725.3",
+      "sol_mark": "133.57",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025280000000000,
+      "c": 1.0007537036800809,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56704.12",
+      "sol_mark": "133.6",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025340000000000,
+      "c": 1.0021401711097502,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56706.2",
+      "sol_mark": "133.79",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025400000000000,
+      "c": 1.0030241810393166,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56690.1",
+      "sol_mark": "133.87",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025460000000000,
+      "c": 1.0025164578261896,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56690",
+      "sol_mark": "133.802",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025520000000000,
+      "c": 1.0021808329461945,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56721.7",
+      "sol_mark": "133.832",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025580000000000,
+      "c": 1.0021936077330933,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56694.7",
+      "sol_mark": "133.77",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025640000000000,
+      "c": 1.0014619005142382,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56706.01",
+      "sol_mark": "133.699",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726025700000000000,
+      "c": 1.0009694363583312,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56755.55",
+      "sol_mark": "133.75",
+      "beta": 1.1292534517800168
+    },
+    {
+      "ns": 1726026120000000000,
+      "c": 1.0000548562906149,
+      "btc_qty": "-0.947",
+      "sol_qty": "356.2",
+      "btc_mark": "56775.6",
+      "sol_mark": "133.675",
+      "beta": 1.1292534517800168
+    }
+  ],
+  "verified_native_fill_rows": 693,
+  "canonical_rows_per_mark": 1051200,
+  "terminal_net_qty": {
+    "BTC": "0.000",
+    "SOL": "0.0"
+  },
+  "peak_rss_kib": 105956,
+  "limitations": "Onecompleted1mquote sample counted60s; no intraminute orderpath proof. Quantities fromactualnativefills groupedbyeventtimestampafterbothassets, notstalequote-cachepositions. Markclose rawvenue1m recordedmark, no genericPriceconversion andno uPnLreconstruction. ForSOL75/100 actualTOTALnetpositioncoverage, notanindependentlyobservedcore/tacticalsubposition. Fundingnotneeded/notimputed."
+}

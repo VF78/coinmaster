@@ -1,0 +1,43 @@
+{
+  "label": "sol50",
+  "components": {
+    "CORE": {
+      "q": "0.0",
+      "price": "105.5000000000000000000000",
+      "unallocated_entry_fee": "0E-26",
+      "gross": "-56654.66700000000000000000002",
+      "entry_fees": "2770.77660860",
+      "exit_fees": "2736.50288945",
+      "entry_turnover": "5037775.652",
+      "exit_turnover": "4975459.799",
+      "entry_fills": 120,
+      "exit_allocations": 181,
+      "net_ex_funding": "-62161.94649805000000000000002"
+    },
+    "TACTICAL": {
+      "q": "0",
+      "price": "0",
+      "unallocated_entry_fee": "0",
+      "gross": "0",
+      "entry_fees": "0",
+      "exit_fees": "0",
+      "entry_turnover": "0",
+      "exit_turnover": "0",
+      "entry_fills": 0,
+      "exit_allocations": 0,
+      "net_ex_funding": "0"
+    }
+  },
+  "tactical_cycles": 0,
+  "tactical_wins": 0,
+  "tactical_losses": 0,
+  "tactical_worst": null,
+  "tactical_best": null,
+  "native_SOL_gross": "-56654.66700000000000000000002",
+  "native_SOL_actual_fees": "5507.27949805",
+  "confirmed_fill_SOL_net_ex_funding": "-62161.94649805000000000000002",
+  "reconciled_to_actual_SOL_total": true,
+  "method": "ENTRYreasonSOL_COVER_TACTICAL allocatedTACTICAL, allotherSOL_ADD CORE. Actualnativeclosingfillquantity allocatedTACTICALfirst thenCORE perplanpriority. RepeatednativeTACTICALentryfillsbeforebudgetflat areonecyclewithweightedremaininginventorycost. Percomponentactualfillweightedaverageentrycost; closefeesproportionaltoallocatednativecloseqty; entryfeesproportionaltoinventory. Single nativeNETTINGposition: allocationisanalyticalandnonunique, NOTnativepercomponentcash/PnL. No synthetic fills or totalROIadjustment.",
+  "funding": "UNKNOWN; no componentfundingallocation or proxy zero",
+  "limits": "ComponentresultdiffvsSOL50notisolatedcausalbenefit: BTC/COREquantitiescompounddifferently. Logical inventory allocationdoesnotestablishseparatenativepositions. ActualTOTAL/DD remainprimary."
+}

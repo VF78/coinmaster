@@ -1,0 +1,26 @@
+{
+  "control_count": 105,
+  "variant_count": 105,
+  "missing_days": [],
+  "extra_days": [],
+  "same_side": 105,
+  "q0_exact": 105,
+  "q1_exact": 105,
+  "entry_quote_exact": 105,
+  "first_leg_P0_exact_v3": 0,
+  "first_leg_timestamp_exact_v3": 0,
+  "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately.",
+  "quantity_equal": 1,
+  "quantity_delta_min": "-469.986",
+  "quantity_delta_max": "0.008",
+  "quantity_ratio_min": "0.004648558854976894872818550182",
+  "quantity_ratio_max": "1.010638297872340425531914894",
+  "first_changed_quantity": {
+    "day": 19977,
+    "v3_qty": "0.945",
+    "variant_qty": "0.947",
+    "delta": "0.002",
+    "ratio": "1.002116402116402116402116402"
+  },
+  "limitation": "Matchedtimestamps/sides/pricesNOTidenticalBTCvolumes; changedQthroughactualequitycompounding, notclaimisolatedSOLincrementaldollars."
+}

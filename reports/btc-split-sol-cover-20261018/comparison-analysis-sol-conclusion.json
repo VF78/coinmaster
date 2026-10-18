@@ -1,0 +1,150 @@
+{
+  "rows": [
+    {
+      "variant": "sol50",
+      "TOTAL": "21765.86882504",
+      "global_marked_DD_percent": "56.40352362021327888198196955",
+      "minimum_equity": {
+        "equity": "7556.56169203",
+        "timestamp_ns": "1728569460000000000"
+      },
+      "BTC_fill_net_ex_funding": "73301.03944997",
+      "SOL_fill_net_ex_funding": "-62161.94649805000000000000002",
+      "CORE_allocated_net": "-62161.94649805000000000000002",
+      "TACTICAL_allocated_net": "0",
+      "tactical_cycles": 0,
+      "actual_coverage_mean": 0.49987539051780383,
+      "within045_055": 0.9997791693613263,
+      "below045": 0.00015998954434527096,
+      "below050": 0.5350771442542347,
+      "zero": 0.0,
+      "above100": 0.0,
+      "coverage_max": 0.6040872706322148,
+      "first_base_fill_latency_all_zero": true,
+      "initial_base_budget_complete_delayed_count": 13,
+      "initial_base_budget_complete_max_seconds": 60.0,
+      "permission_matches": {
+        "control_count": 105,
+        "variant_count": 105,
+        "missing_days": [],
+        "extra_days": [],
+        "same_side": 105,
+        "q0_exact": 105,
+        "q1_exact": 105,
+        "entry_quote_exact": 105,
+        "first_leg_P0_exact_v3": 0,
+        "first_leg_timestamp_exact_v3": 0,
+        "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately."
+      },
+      "losing_BTC_compensation": {
+        "count": 48,
+        "sol_helped": 39,
+        "sol_lost": 9,
+        "btc_net_sum": "-115867.18888066",
+        "sol_net_sum": "52799.39879624999999999999999",
+        "pair_net_sum": "-63067.79008441000000000000001"
+      }
+    },
+    {
+      "variant": "sol75",
+      "TOTAL": "23826.61849406",
+      "global_marked_DD_percent": "55.34519210172753167142509138",
+      "minimum_equity": {
+        "equity": "7371.60560758",
+        "timestamp_ns": "1728569460000000000"
+      },
+      "BTC_fill_net_ex_funding": "77189.93740877",
+      "SOL_fill_net_ex_funding": "-64088.02637069999999999999998",
+      "CORE_allocated_net": "-66149.78543529999999999999997",
+      "TACTICAL_allocated_net": "2061.75906460",
+      "tactical_cycles": 27,
+      "actual_coverage_mean": 0.5033686274322571,
+      "within045_055": 0.9852449079384108,
+      "below045": 0.00017576316139339626,
+      "below050": 0.5281209791360114,
+      "zero": 0.0,
+      "above100": 0.0,
+      "coverage_max": 0.8732005377170623,
+      "first_base_fill_latency_all_zero": true,
+      "initial_base_budget_complete_delayed_count": 19,
+      "initial_base_budget_complete_max_seconds": 60.0,
+      "permission_matches": {
+        "control_count": 105,
+        "variant_count": 105,
+        "missing_days": [],
+        "extra_days": [],
+        "same_side": 105,
+        "q0_exact": 105,
+        "q1_exact": 105,
+        "entry_quote_exact": 105,
+        "first_leg_P0_exact_v3": 0,
+        "first_leg_timestamp_exact_v3": 0,
+        "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately."
+      },
+      "losing_BTC_compensation": {
+        "count": 48,
+        "sol_helped": 41,
+        "sol_lost": 7,
+        "btc_net_sum": "-122304.11352961",
+        "sol_net_sum": "57437.40877750000000000000002",
+        "pair_net_sum": "-64866.70475210999999999999998"
+      }
+    },
+    {
+      "variant": "sol100",
+      "TOTAL": "26111.23084821",
+      "global_marked_DD_percent": "54.34391843780780890889819355",
+      "minimum_equity": {
+        "equity": "7178.40334887",
+        "timestamp_ns": "1728569460000000000"
+      },
+      "BTC_fill_net_ex_funding": "81415.62261740",
+      "SOL_fill_net_ex_funding": "-66137.46692765000000000000011",
+      "CORE_allocated_net": "-70496.11337800000000000000005",
+      "TACTICAL_allocated_net": "4358.646450350000000000000003",
+      "tactical_cycles": 27,
+      "actual_coverage_mean": 0.5069800308248495,
+      "within045_055": 0.9852178674520425,
+      "below045": 0.00019829690003357527,
+      "below050": 0.5282291410814842,
+      "zero": 0.0,
+      "above100": 0.0029924804914157723,
+      "coverage_max": 1.537308371743531,
+      "first_base_fill_latency_all_zero": true,
+      "initial_base_budget_complete_delayed_count": 22,
+      "initial_base_budget_complete_max_seconds": 120.0,
+      "permission_matches": {
+        "control_count": 105,
+        "variant_count": 105,
+        "missing_days": [],
+        "extra_days": [],
+        "same_side": 105,
+        "q0_exact": 105,
+        "q1_exact": 105,
+        "entry_quote_exact": 105,
+        "first_leg_P0_exact_v3": 0,
+        "first_leg_timestamp_exact_v3": 0,
+        "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately."
+      },
+      "losing_BTC_compensation": {
+        "count": 48,
+        "sol_helped": 41,
+        "sol_lost": 7,
+        "btc_net_sum": "-129302.35072369",
+        "sol_net_sum": "62449.33329614999999999999994",
+        "pair_net_sum": "-66853.01742754000000000000006"
+      }
+    }
+  ],
+  "conclusion": "The continuous50%base is the dominant economic change. ActualSOLCORElosses62.2k/66.1k/70.5k offsetBTCprofit andsuppressfuturecompounding; tacticalallocation adds0/2.06k/4.36k butdoesnotrestoreV3TOTAL5.437m. HighestTOTALamongthreeSOLvariantsis100candidate26.1k; thisisnotqualificationasV3neutralreplacement. DollarvariantdifferencesincludechangedBTCandCOREquantities, notisolatedtacticaleffects.",
+  "exposure": "All3usecontinuousbase50;75/100areoptionalraretacticaltargets, notconstantcoverage. Actualcoverageaverage49.99/50.34/50.70%. All105BTCcalendar/side/q0/q1/quotesmatchV3;104absoluteQschangebyequitycompounding. NativeDD/minimumandliquidationsreportedwithoutintraminutecapguarantee.",
+  "cap_mechanism": "SOL100max153.73% andSOL75max87.32% occurApr2 2026 13:36afterBTC_TP3shrinksBTCbeforeSOLexcessfullyreduces. COVER_TARGETisalreadycorrectbase50/tacticalfalse. InheritednativefixtureSOLdisplayedquotequantity1000.0makesIOCpartialthenretriedresidualonlaterSOLquotes. NOTinstrumentmax_quantity andNOTrealvenueorderbookdepth. Other~101%/~75.8%peaksareordinaryrelativepricedrift. Targetcapsarenotcontinuousactualexposurecaps.",
+  "latency": "FirstbaseSOLfillmatchesBTCtimestampfor105/105inallcases, modeltimestampnotvenueguarantee. Fullinitialbasebudgetisdelayed13/19/22parents,max60/60/120seconds; inheriteddisplayedquote/IOCpartials explainfirstfill!=complete50%budget. Actualbelow45timeisreported, neverrenamedzero.",
+  "accounting": "ActualnativeTOTAL/DDandfeesprimary. CORE/TACTICALusesexplicitnonuniqueTACTICAL-firstallocationofactualnativeclosingfills, weightedentrycostandproportionalfees, reconciledtoactualSOLconfirmedfilltotal. Notseparatenativepositions/cash. SignedfundingUNKNOWN, unallocatedcashresidualnotfunding. NoassetuPnLreconstructionfortheseSOLcases.",
+  "evidence": [
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-native-table.csv",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-native-liquidity.csv",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-sol100-coverage-excursions.json",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-sol75-coverage-excursions.json"
+  ]
+}

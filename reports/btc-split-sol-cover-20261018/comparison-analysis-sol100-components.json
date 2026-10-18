@@ -1,0 +1,43 @@
+{
+  "label": "sol100",
+  "components": {
+    "CORE": {
+      "q": "0.0",
+      "price": "105.5000000000000000000000",
+      "unallocated_entry_fee": "0E-26",
+      "gross": "-64318.45400000000000000000005",
+      "entry_fees": "3108.50079265",
+      "exit_fees": "3069.15858535",
+      "entry_turnover": "5651819.623",
+      "exit_turnover": "5580288.337",
+      "entry_fills": 130,
+      "exit_allocations": 200,
+      "net_ex_funding": "-70496.11337800000000000000005"
+    },
+    "TACTICAL": {
+      "q": "0.0",
+      "price": "74.7100000000000000000000",
+      "unallocated_entry_fee": "0E-26",
+      "gross": "5770.583000000000000000000003",
+      "entry_fees": "706.54020745",
+      "exit_fees": "705.39634220",
+      "entry_turnover": "1284618.559",
+      "exit_turnover": "1282538.804",
+      "entry_fills": 32,
+      "exit_allocations": 41,
+      "net_ex_funding": "4358.646450350000000000000003"
+    }
+  },
+  "tactical_cycles": 27,
+  "tactical_wins": 25,
+  "tactical_losses": 2,
+  "tactical_worst": "-3790.887802399999999999999995",
+  "tactical_best": "1489.138300000000000000000001",
+  "native_SOL_gross": "-58547.87100000000000000000011",
+  "native_SOL_actual_fees": "7589.59592765",
+  "confirmed_fill_SOL_net_ex_funding": "-66137.46692765000000000000011",
+  "reconciled_to_actual_SOL_total": true,
+  "method": "ENTRYreasonSOL_COVER_TACTICAL allocatedTACTICAL, allotherSOL_ADD CORE. Actualnativeclosingfillquantity allocatedTACTICALfirst thenCORE perplanpriority. RepeatednativeTACTICALentryfillsbeforebudgetflat areonecyclewithweightedremaininginventorycost. Percomponentactualfillweightedaverageentrycost; closefeesproportionaltoallocatednativecloseqty; entryfeesproportionaltoinventory. Single nativeNETTINGposition: allocationisanalyticalandnonunique, NOTnativepercomponentcash/PnL. No synthetic fills or totalROIadjustment.",
+  "funding": "UNKNOWN; no componentfundingallocation or proxy zero",
+  "limits": "ComponentresultdiffvsSOL50notisolatedcausalbenefit: BTC/COREquantitiescompounddifferently. Logical inventory allocationdoesnotestablishseparatenativepositions. ActualTOTAL/DD remainprimary."
+}

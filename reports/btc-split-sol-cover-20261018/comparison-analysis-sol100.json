@@ -1,0 +1,963 @@
+{
+  "label": "sol100",
+  "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover1-btc-direction.json",
+  "sha256": "690fb5e92689c3fd00288a3e9dd17aa6d63a57c3988851553f638f584088b748",
+  "terminal_total": "26111.23084821",
+  "terminal_active": "26111.23084821",
+  "terminal_reserve": "0",
+  "roi_percent": "161.112308482100",
+  "global_marked_dd_percent": "54.34391843780780890889819355",
+  "minimum_equity": {
+    "equity": "7178.40334887",
+    "timestamp_ns": "1728569460000000000"
+  },
+  "liquidation_count": 0,
+  "native_fees": "21822.88621025",
+  "actual_fees_by_asset": {
+    "BTC": "14233.29028260",
+    "SOL": "7589.59592765"
+  },
+  "actual_fees_by_asset_liquidity": {
+    "BTC_TAKER": "13078.77704156",
+    "SOL_TAKER": "7589.59592765",
+    "BTC_MAKER": "1154.51324104"
+  },
+  "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "funding_count": 1800,
+  "liquidation_rule": "Read unchanged native policy; minute close marked DD is separate from OHLC adverse bounds and proves no intraminute DD cap",
+  "cash_drawdown_summary": {
+    "drawdown_basis": "NATIVE_CASH_ACCOUNT_SERIES",
+    "drawdown_start": "2026-06-09 16:05:00+00:00",
+    "drawdown_trough": "2026-08-31 16:00:00+00:00",
+    "max_drawdown_amount": "28509.44532143",
+    "max_drawdown_percent": "0.5336972614771393910601910236"
+  },
+  "liquidation_policy": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+  "parents": 105,
+  "split_parent_count": 0,
+  "entry_sizing_count": 105,
+  "parent_side_counts": {
+    "-1": 52,
+    "1": 53
+  },
+  "filled_equals_plan_count": 105,
+  "unfilled_or_partial_count": 0,
+  "filled_plus_cancelled_equals_plan_count": 0,
+  "planned_matches_accepted_net_count": 105,
+  "net_targets_match_plan_count": 105,
+  "v3_same_day_matches": 105,
+  "changed_quantity_vs_v3": 104,
+  "plan_integrity_limit": "Cancelled is native quantity; filled+cancelled conservation separately checked. UnknownACK/order constraints require native fixtures.",
+  "native_asset_realized_pnl": "UNKNOWN_NATIVE_SETTLED_PERASSET_NOT_EXPORTED",
+  "fill_attribution": "Separate confirmed-fill attribution is diagnostic, excludes funding; asynchronous callback cash cannot be allocated to asset PnL.",
+  "trace_streamed": false,
+  "native_fill_report_liquidity_by_asset": {
+    "BTC_TAKER": {
+      "count": 235,
+      "turnover": "23779594.620499999998068",
+      "fees": "13078.77704156",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "SOL_TAKER": {
+      "count": 380,
+      "turnover": "13799265.323",
+      "fees": "7589.59592765",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "BTC_MAKER": {
+      "count": 78,
+      "turnover": "5772566.205200000040404",
+      "fees": "1154.51324104",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    }
+  },
+  "native_fill_report_liquidity_method": "Exact nativeCSVliquidity_side/filled_qty/avg_px/commissions; no IOCmakerinference. CSVavg_pxfloatrenderingmayintroducesubcentnotionalrepresentationdifference. Unknowncommissionsarecounted.",
+  "confirmed_fill_weighted_average_attribution": {
+    "BTC": {
+      "gross": "95648.9129",
+      "actual_fees": "14233.29028260",
+      "net_ex_funding": "81415.62261740",
+      "terminal_net_qty": "0.000"
+    },
+    "SOL": {
+      "gross": "-58547.87100000000000000000011",
+      "actual_fees": "7589.59592765",
+      "net_ex_funding": "-66137.46692765000000000000011",
+      "terminal_net_qty": "0.0"
+    }
+  },
+  "unmatched_native_fill_sides": [],
+  "unallocated_cash_residual_not_funding": "833.07515846000000000000011",
+  "actual_base_entry_latency_seconds": [
+    {
+      "episode_id": "d146c3f1-54c3-4c50-8034-f249aae2e864",
+      "btc_first_fill_ns": 1725235260000000000,
+      "sol_first_base_fill_ns": 1725235260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1725235260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "343bdcc2-1fc9-4e49-b377-cf05b79b9c43",
+      "btc_first_fill_ns": 1726012860000000000,
+      "sol_first_base_fill_ns": 1726012860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1726012860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "d59abf5e-306a-4aa8-ad4c-9a9e811446fd",
+      "btc_first_fill_ns": 1726272120000000000,
+      "sol_first_base_fill_ns": 1726272120000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1726272120000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "878a9216-f2fb-46d3-9c1d-5bb593884a83",
+      "btc_first_fill_ns": 1726531260000000000,
+      "sol_first_base_fill_ns": 1726531260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1726531260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "a98db76e-d22c-4316-9354-a21f903c1161",
+      "btc_first_fill_ns": 1726617660000000000,
+      "sol_first_base_fill_ns": 1726617660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1726617660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "39053a6c-6d33-4eb7-a55e-a95b258b76cc",
+      "btc_first_fill_ns": 1727827260000000000,
+      "sol_first_base_fill_ns": 1727827260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1727827260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "1d113e9d-d8ba-4bdc-90dd-d32cc6ee7196",
+      "btc_first_fill_ns": 1728086460000000000,
+      "sol_first_base_fill_ns": 1728086460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1728086460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "28fea278-6645-4c5f-a460-dbd2e1fbd939",
+      "btc_first_fill_ns": 1728518460000000000,
+      "sol_first_base_fill_ns": 1728518460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1728518460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "bcb27a2b-05f0-4ccd-b7ee-262cef2ddd16",
+      "btc_first_fill_ns": 1728691320000000000,
+      "sol_first_base_fill_ns": 1728691320000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1728691320000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "ac8aa65a-5a99-457c-8ba9-57d50a0aeab0",
+      "btc_first_fill_ns": 1729814460000000000,
+      "sol_first_base_fill_ns": 1729814460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1729814460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "ef17b666-d87a-42b8-94ab-ade5bd6b73f0",
+      "btc_first_fill_ns": 1730505660000000000,
+      "sol_first_base_fill_ns": 1730505660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1730505660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "cefebf1e-1937-4bb4-9bed-44fcd4492fef",
+      "btc_first_fill_ns": 1731715260000000000,
+      "sol_first_base_fill_ns": 1731715260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1731715260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "8ea97fdb-dd89-4fa6-921f-dd60684fbfac",
+      "btc_first_fill_ns": 1732665660000000000,
+      "sol_first_base_fill_ns": 1732665660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1732665660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "a217c94b-3b04-472b-98ef-7d498bd1b8bc",
+      "btc_first_fill_ns": 1733875260000000000,
+      "sol_first_base_fill_ns": 1733875260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1733875260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "a009ad3e-4d70-41bd-a251-746483c64b93",
+      "btc_first_fill_ns": 1734652860000000000,
+      "sol_first_base_fill_ns": 1734652860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1734652860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "c4db0364-a082-49df-bcf3-64b41a7a3af2",
+      "btc_first_fill_ns": 1734912060000000000,
+      "sol_first_base_fill_ns": 1734912060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1734912060000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "dfc8223e-deb0-4850-b3d1-12df0fe81a5e",
+      "btc_first_fill_ns": 1735084920000000000,
+      "sol_first_base_fill_ns": 1735084920000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1735084920000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "efc44c61-69d7-4da4-a3e2-15cdcdafefa1",
+      "btc_first_fill_ns": 1735257660000000000,
+      "sol_first_base_fill_ns": 1735257660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1735257660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "0c2c52d6-75c4-4ca9-b44e-a32dc1288b22",
+      "btc_first_fill_ns": 1735862520000000000,
+      "sol_first_base_fill_ns": 1735862520000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1735862520000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "c0ee2f97-e3d2-47c1-bb22-86245f011897",
+      "btc_first_fill_ns": 1736380860000000000,
+      "sol_first_base_fill_ns": 1736380860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1736380860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "ba225de0-3c7d-47c0-bb58-0422cc9e1186",
+      "btc_first_fill_ns": 1736899320000000000,
+      "sol_first_base_fill_ns": 1736899320000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1736899320000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "cf836302-99d5-4d47-aeab-6a2cbc84fbd9",
+      "btc_first_fill_ns": 1737417660000000000,
+      "sol_first_base_fill_ns": 1737417660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1737417660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "756b543b-af2e-47a5-9abd-582cc7954176",
+      "btc_first_fill_ns": 1738022460000000000,
+      "sol_first_base_fill_ns": 1738022460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1738022460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "5826f6a8-743c-43df-9e3a-4e0ec9329b98",
+      "btc_first_fill_ns": 1738540860000000000,
+      "sol_first_base_fill_ns": 1738540860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1738540860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "3514da09-3c57-424f-b499-418c7ebece02",
+      "btc_first_fill_ns": 1738627320000000000,
+      "sol_first_base_fill_ns": 1738627320000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1738627320000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "56c88f5b-ef52-4068-a62a-ff3bab11511f",
+      "btc_first_fill_ns": 1738713660000000000,
+      "sol_first_base_fill_ns": 1738713660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1738713660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "c24b280b-862e-4dcf-af81-ede9995d9e1e",
+      "btc_first_fill_ns": 1740096120000000000,
+      "sol_first_base_fill_ns": 1740096120000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1740096120000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e0702f71-f40d-4690-8348-c3d23725f2cc",
+      "btc_first_fill_ns": 1740182460000000000,
+      "sol_first_base_fill_ns": 1740182460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1740182460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "f23f4b6a-dd6a-4ae3-9e6d-9853c28a67cb",
+      "btc_first_fill_ns": 1741046460000000000,
+      "sol_first_base_fill_ns": 1741046460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1741046460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "0e48f6f9-04fe-4636-92f3-4316e9b69398",
+      "btc_first_fill_ns": 1741824060000000000,
+      "sol_first_base_fill_ns": 1741824060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1741824060000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "195cd44d-f073-4014-bb21-ae774769c42c",
+      "btc_first_fill_ns": 1742083260000000000,
+      "sol_first_base_fill_ns": 1742083260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1742083260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "b799d9bb-73bc-407d-a508-643df10dea18",
+      "btc_first_fill_ns": 1742860920000000000,
+      "sol_first_base_fill_ns": 1742860920000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1742860920000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "db75039b-bd88-4d35-9c69-c58435b759fa",
+      "btc_first_fill_ns": 1743033660000000000,
+      "sol_first_base_fill_ns": 1743033660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1743033660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "c90e5e7d-7d6f-418b-b8d5-9ca950c5a288",
+      "btc_first_fill_ns": 1743638460000000000,
+      "sol_first_base_fill_ns": 1743638460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1743638460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "bd59f4fb-5395-493c-9f26-d8dc36380e4f",
+      "btc_first_fill_ns": 1744329660000000000,
+      "sol_first_base_fill_ns": 1744329660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1744329660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "95ceb6a1-dc3a-4ffa-b2d7-a59dbf175fca",
+      "btc_first_fill_ns": 1744502460000000000,
+      "sol_first_base_fill_ns": 1744502460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1744502460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "7e24abd4-3e26-4cda-a027-da7b917e9996",
+      "btc_first_fill_ns": 1744588860000000000,
+      "sol_first_base_fill_ns": 1744588860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1744588860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "17f27944-c14d-4cf5-9b2b-a0655592abb3",
+      "btc_first_fill_ns": 1744675260000000000,
+      "sol_first_base_fill_ns": 1744675260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1744675260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "b34af9ee-fc4b-4db5-8ca9-a1b46a342177",
+      "btc_first_fill_ns": 1744761660000000000,
+      "sol_first_base_fill_ns": 1744761660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1744761660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "1b1f6442-0b3f-40ae-a46d-9b74269ea7f6",
+      "btc_first_fill_ns": 1744934460000000000,
+      "sol_first_base_fill_ns": 1744934460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1744934460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "5f183356-22d4-413f-9b6f-c173426f3111",
+      "btc_first_fill_ns": 1746489660000000000,
+      "sol_first_base_fill_ns": 1746489660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1746489660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e3b89aeb-bee3-47ef-b57e-dba4c7267195",
+      "btc_first_fill_ns": 1748131260000000000,
+      "sol_first_base_fill_ns": 1748131260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1748131260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "60a8c8a0-2796-4b54-887a-48f4e4be5227",
+      "btc_first_fill_ns": 1749168060000000000,
+      "sol_first_base_fill_ns": 1749168060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1749168060000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "75e097bb-6b7f-4a78-ab21-f2216ec0d71c",
+      "btc_first_fill_ns": 1749254460000000000,
+      "sol_first_base_fill_ns": 1749254460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1749254460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "b1187938-3bf4-4c76-9fc8-25d0d7c4706a",
+      "btc_first_fill_ns": 1749859260000000000,
+      "sol_first_base_fill_ns": 1749859260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1749859260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "c73fe5b3-af75-4f55-b299-56f6ffceb240",
+      "btc_first_fill_ns": 1750204860000000000,
+      "sol_first_base_fill_ns": 1750204860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1750204860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "c0d4b86d-eb47-405a-b491-774811bfc498",
+      "btc_first_fill_ns": 1750291260000000000,
+      "sol_first_base_fill_ns": 1750291260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1750291260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e516335d-0ae4-4aa1-b4aa-eece64fefd0d",
+      "btc_first_fill_ns": 1750377660000000000,
+      "sol_first_base_fill_ns": 1750377660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1750377660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "f8e0b20b-e4d6-4b44-bace-7cdb697faad4",
+      "btc_first_fill_ns": 1750723320000000000,
+      "sol_first_base_fill_ns": 1750723320000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1750723320000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "9fe5faec-65cd-4c3d-a323-57b0163d94cd",
+      "btc_first_fill_ns": 1754092860000000000,
+      "sol_first_base_fill_ns": 1754092860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1754092860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "9d00420d-661f-4db2-bbeb-7a2150164ad3",
+      "btc_first_fill_ns": 1754352060000000000,
+      "sol_first_base_fill_ns": 1754352060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1754352060000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "39f9c7e8-dfb7-4d4f-85b0-08a2866256b5",
+      "btc_first_fill_ns": 1754438460000000000,
+      "sol_first_base_fill_ns": 1754438460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1754438460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "9184d14c-8030-4884-b5ab-2ef3cf8da16f",
+      "btc_first_fill_ns": 1754524860000000000,
+      "sol_first_base_fill_ns": 1754524860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1754524860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "6bdce03e-cd5e-4a2c-be76-554224455624",
+      "btc_first_fill_ns": 1755302460000000000,
+      "sol_first_base_fill_ns": 1755302460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1755302460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "d743a35d-ba09-4add-bcba-75f186f05c72",
+      "btc_first_fill_ns": 1755561660000000000,
+      "sol_first_base_fill_ns": 1755561660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1755561660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "640ab4e0-7507-46a2-b491-ae303d1505c6",
+      "btc_first_fill_ns": 1755907320000000000,
+      "sol_first_base_fill_ns": 1755907320000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1755907320000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "097f2aa2-6663-4e2c-b222-66ff870a5a54",
+      "btc_first_fill_ns": 1755993660000000000,
+      "sol_first_base_fill_ns": 1755993660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1755993660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "94e658df-d453-4638-80f1-1822b5c067cd",
+      "btc_first_fill_ns": 1757030460000000000,
+      "sol_first_base_fill_ns": 1757030460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1757030460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "9f90ed78-ad24-44c6-ab43-b26750a57940",
+      "btc_first_fill_ns": 1757548860000000000,
+      "sol_first_base_fill_ns": 1757548860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1757548860000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "02bfe3dc-6273-4711-8bed-955b393ca0ee",
+      "btc_first_fill_ns": 1758585660000000000,
+      "sol_first_base_fill_ns": 1758585660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1758585660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "e09473c1-9e25-476a-a3ed-3f77ed24ffa5",
+      "btc_first_fill_ns": 1759190520000000000,
+      "sol_first_base_fill_ns": 1759190520000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1759190520000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "d49e12df-2d9e-4818-b4d0-01f0ece6133b",
+      "btc_first_fill_ns": 1760140920000000000,
+      "sol_first_base_fill_ns": 1760140920000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1760140920000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "551916e9-e9c4-4a18-bee0-9fc7bebb2ab2",
+      "btc_first_fill_ns": 1761091260000000000,
+      "sol_first_base_fill_ns": 1761091260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1761091260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "220167df-0b2b-4bb8-b138-325b21bcf2c3",
+      "btc_first_fill_ns": 1761523260000000000,
+      "sol_first_base_fill_ns": 1761523260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1761523260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "8cc168ca-ec5c-4dd4-9430-188df7c6df9f",
+      "btc_first_fill_ns": 1761696060000000000,
+      "sol_first_base_fill_ns": 1761696060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1761696060000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "a1097d36-3d86-4f5d-bed4-e3000d753435",
+      "btc_first_fill_ns": 1762905660000000000,
+      "sol_first_base_fill_ns": 1762905660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1762905660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "9a9b15e4-e8b6-41fc-bb5e-87a30fd6cc54",
+      "btc_first_fill_ns": 1764115260000000000,
+      "sol_first_base_fill_ns": 1764115260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1764115260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "84d2a8e7-ddde-4342-a499-19bdb83d0fbc",
+      "btc_first_fill_ns": 1767398520000000000,
+      "sol_first_base_fill_ns": 1767398520000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1767398520000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "5d31bc55-1560-4a11-9aa8-cce03f2ff9fa",
+      "btc_first_fill_ns": 1768003260000000000,
+      "sol_first_base_fill_ns": 1768003260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1768003260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "181c5696-46ee-48f1-b22f-6a1946e30c0e",
+      "btc_first_fill_ns": 1768867260000000000,
+      "sol_first_base_fill_ns": 1768867260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1768867260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "8c304871-f0d1-43de-a6d5-5b593bfda51d",
+      "btc_first_fill_ns": 1768953660000000000,
+      "sol_first_base_fill_ns": 1768953660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1768953660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "45ba26ee-d9ba-4fcb-ad0b-6eb981346190",
+      "btc_first_fill_ns": 1770508860000000000,
+      "sol_first_base_fill_ns": 1770508860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1770508920000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "fc89d424-faa0-45d9-8f82-127f3070213b",
+      "btc_first_fill_ns": 1771113660000000000,
+      "sol_first_base_fill_ns": 1771113660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1771113660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "bca7173a-03ef-422e-a74a-b039f01cc73c",
+      "btc_first_fill_ns": 1772150460000000000,
+      "sol_first_base_fill_ns": 1772150460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1772150520000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "561b9835-7305-494b-b4df-8bcf58d5cf08",
+      "btc_first_fill_ns": 1772668920000000000,
+      "sol_first_base_fill_ns": 1772668920000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1772668920000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "29d0e367-b0b1-47fd-b840-97fa6b1c65ac",
+      "btc_first_fill_ns": 1772755260000000000,
+      "sol_first_base_fill_ns": 1772755260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1772755320000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "c8138a3d-055a-4111-8c42-93401eec05dc",
+      "btc_first_fill_ns": 1773187260000000000,
+      "sol_first_base_fill_ns": 1773187260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1773187320000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "80bf02e9-75ba-42c1-a448-04a03a33b5d9",
+      "btc_first_fill_ns": 1773360060000000000,
+      "sol_first_base_fill_ns": 1773360060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1773360060000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "ebcd2143-097d-4410-b685-bcefdbb920a4",
+      "btc_first_fill_ns": 1773964860000000000,
+      "sol_first_base_fill_ns": 1773964860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1773964920000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "9a720d92-ef2c-4457-90e8-f01fa3e42892",
+      "btc_first_fill_ns": 1774310520000000000,
+      "sol_first_base_fill_ns": 1774310520000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1774310520000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "910c7a11-1c13-4afb-8776-47c879607bd7",
+      "btc_first_fill_ns": 1774396860000000000,
+      "sol_first_base_fill_ns": 1774396860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1774396920000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "f42e6ed1-800e-45f4-9ef3-06a2744cafb5",
+      "btc_first_fill_ns": 1774483260000000000,
+      "sol_first_base_fill_ns": 1774483260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1774483260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "83e89664-409b-4adf-a2ce-55f01698c970",
+      "btc_first_fill_ns": 1774569660000000000,
+      "sol_first_base_fill_ns": 1774569660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1774569720000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "c5f4226a-c087-4530-adb9-28b7bfc2048e",
+      "btc_first_fill_ns": 1775088060000000000,
+      "sol_first_base_fill_ns": 1775088060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1775088120000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "52b1a49d-51b6-413c-ab27-9b67ddde97cb",
+      "btc_first_fill_ns": 1775606520000000000,
+      "sol_first_base_fill_ns": 1775606520000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1775606520000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "802eba17-f8b5-47d6-ab2b-1363cb558833",
+      "btc_first_fill_ns": 1776729660000000000,
+      "sol_first_base_fill_ns": 1776729660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1776729720000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "e96f37b6-dd8b-4c0f-a842-b120115cff21",
+      "btc_first_fill_ns": 1777507260000000000,
+      "sol_first_base_fill_ns": 1777507260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1777507320000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "b445aea4-08a7-42f6-b7cb-fd1c145c9c50",
+      "btc_first_fill_ns": 1778803260000000000,
+      "sol_first_base_fill_ns": 1778803260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1778803320000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "dbbfaed8-0bb2-4f74-8965-1c394613e68c",
+      "btc_first_fill_ns": 1779062460000000000,
+      "sol_first_base_fill_ns": 1779062460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1779062520000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "fa308259-86ae-4539-8247-797dedfb5de1",
+      "btc_first_fill_ns": 1780963260000000000,
+      "sol_first_base_fill_ns": 1780963260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1780963380000000000,
+      "initial_base_budget_completion_latency_seconds": 120.0
+    },
+    {
+      "episode_id": "ca75e399-bd8c-48bb-89a1-c0c487f6217b",
+      "btc_first_fill_ns": 1783123260000000000,
+      "sol_first_base_fill_ns": 1783123260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1783123320000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "d1e862ff-ed87-4da2-b8c5-9c6772f6d585",
+      "btc_first_fill_ns": 1783728060000000000,
+      "sol_first_base_fill_ns": 1783728060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1783728120000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "929d5b47-ae04-4b60-b159-e07b7f2e7444",
+      "btc_first_fill_ns": 1783814460000000000,
+      "sol_first_base_fill_ns": 1783814460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1783814520000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "0789c884-90f9-431a-a816-e44bc39037cb",
+      "btc_first_fill_ns": 1784073660000000000,
+      "sol_first_base_fill_ns": 1784073660000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1784073660000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "23e36ff5-2373-42a4-8223-b93c94df24ed",
+      "btc_first_fill_ns": 1784246460000000000,
+      "sol_first_base_fill_ns": 1784246460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1784246520000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "fdbcdb1e-29b9-470c-91c4-304cacf7df15",
+      "btc_first_fill_ns": 1784332860000000000,
+      "sol_first_base_fill_ns": 1784332860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1784332920000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "86ef9926-0a79-4090-bd5b-8dde30b920b3",
+      "btc_first_fill_ns": 1784937720000000000,
+      "sol_first_base_fill_ns": 1784937720000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1784937780000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "24ed2656-10a4-4e26-a2f2-8bc6985d30d4",
+      "btc_first_fill_ns": 1785110460000000000,
+      "sol_first_base_fill_ns": 1785110460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1785110460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "5fa5e447-9108-4b17-869a-40296e7becbd",
+      "btc_first_fill_ns": 1785196860000000000,
+      "sol_first_base_fill_ns": 1785196860000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1785196920000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "b27cbbfd-d136-4a66-a447-e5f9d5be6bee",
+      "btc_first_fill_ns": 1785456060000000000,
+      "sol_first_base_fill_ns": 1785456060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1785456120000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "2f71c34e-2290-4a95-a8ca-032e49021538",
+      "btc_first_fill_ns": 1785542460000000000,
+      "sol_first_base_fill_ns": 1785542460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1785542460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "5e3f1a93-f31f-4669-a70b-2a5885fd341f",
+      "btc_first_fill_ns": 1785974460000000000,
+      "sol_first_base_fill_ns": 1785974460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1785974460000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "1f6124d4-162d-4f13-83c2-6be04579292d",
+      "btc_first_fill_ns": 1786406460000000000,
+      "sol_first_base_fill_ns": 1786406460000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1786406520000000000,
+      "initial_base_budget_completion_latency_seconds": 60.0
+    },
+    {
+      "episode_id": "f2715013-f551-4bab-897d-9a0102f9fcac",
+      "btc_first_fill_ns": 1787011260000000000,
+      "sol_first_base_fill_ns": 1787011260000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1787011260000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    },
+    {
+      "episode_id": "140f82da-dcb8-4fb6-991c-15b2178c913f",
+      "btc_first_fill_ns": 1788048060000000000,
+      "sol_first_base_fill_ns": 1788048060000000000,
+      "latency_seconds": 0.0,
+      "initial_base_budget_complete_ns": 1788048060000000000,
+      "initial_base_budget_completion_latency_seconds": 0.0
+    }
+  ],
+  "exact_fill_eventtime_heldtime": {
+    "btc_held_seconds": 26626740.0,
+    "btc_with_sol_seconds": 26626740.0,
+    "fraction_with_sol": 1.0,
+    "method": "Actualnativefilledpositionpresence intervals; NOT percentprotection. Can differ from nativecachequote snapshot timing."
+  },
+  "attribution_method": "Native fills actual prices/quantities/side, weighted average linear confirmedfill diagnostic; not authoritative native settled perasset PnL. Funding UNKNOWN; cash delta residual unallocated.",
+  "v3_permission_match": {
+    "control_count": 105,
+    "variant_count": 105,
+    "missing_days": [],
+    "extra_days": [],
+    "same_side": 105,
+    "q0_exact": 105,
+    "q1_exact": 105,
+    "entry_quote_exact": 105,
+    "first_leg_P0_exact_v3": 0,
+    "first_leg_timestamp_exact_v3": 0,
+    "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately."
+  },
+  "resource_peak_rss_kib": 29180,
+  "comparison_method": "Compare actual native terminal values. No priceproxy savings added. Same-run netplannedQ conservation separate from crossrun compoundingQ differences.",
+  "preferred_coverage_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-sol100-actual-fill-coverage.json",
+  "components_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-sol100-components.json",
+  "summary_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-sol100-summary.json",
+  "coverage_excursions_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-sol100-coverage-excursions.json",
+  "latency_method_limit": "FirstbaseSOLfillmatchesBTCtimestampfor105/105inallcases, modeltimestampnotvenueguarantee. Fullinitialbasebudgetisdelayed13/19/22parents,max60/60/120seconds; inheriteddisplayedquote/IOCpartials explainfirstfill!=complete50%budget. Actualbelow45timeisreported, neverrenamedzero."
+}

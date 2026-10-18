@@ -83,10 +83,11 @@ def basic(path,label,baseline):
    if qty['SOL']>0:with_sol+=(ts-last)/1e9
   for f in fs:qty[symbol(f)]+=D(f['qty'])*(1 if f['action'] in ('BTC_ENTRY','SOL_ADD') else -1)
   last=ts
- starts={x.get('episode_id'):int(x['start_ns']) for x in audit.get('cover',[]) if x.get('event')=='COVER_START'};anchors={}
+ starts={x.get('episode_id'):int(x['start_ns']) for x in audit.get('cover',[]) if x.get('event')=='COVER_START'};anchors={};completed_anchors={}
  for x in audit.get('cover',[]):
   if x.get('event')=='COVER_ANCHOR' and x.get('episode_id') not in anchors and x.get('start_ns') is not None:anchors[x['episode_id']]=int(x['start_ns'])
- summary['actual_base_entry_latency_seconds']=[dict(episode_id=k,btc_first_fill_ns=v,sol_first_base_fill_ns=anchors.get(k),latency_seconds=(anchors[k]-v)/1e9 if k in anchors else None) for k,v in starts.items()]
+  if x.get('event')=='COVER_ANCHOR' and x.get('complete') and x.get('episode_id') not in completed_anchors:completed_anchors[x['episode_id']]=int(x['timestamp_ns'])
+ summary['actual_base_entry_latency_seconds']=[dict(episode_id=k,btc_first_fill_ns=v,sol_first_base_fill_ns=anchors.get(k),latency_seconds=(anchors[k]-v)/1e9 if k in anchors else None,initial_base_budget_complete_ns=completed_anchors.get(k),initial_base_budget_completion_latency_seconds=(completed_anchors[k]-v)/1e9 if k in completed_anchors else None) for k,v in starts.items()]
  summary['exact_fill_eventtime_heldtime']=dict(btc_held_seconds=held,btc_with_sol_seconds=with_sol,fraction_with_sol=with_sol/held if held else None,method='Actualnativefilledpositionpresence intervals; NOT percentprotection. Can differ from nativecachequote snapshot timing.')
  books=[]
  for key,v in sorted(btcbooks.items()):

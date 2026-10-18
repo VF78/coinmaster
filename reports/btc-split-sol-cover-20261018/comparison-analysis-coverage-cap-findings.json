@@ -1,0 +1,413 @@
+{
+  "evidence": [
+    {
+      "variant": "sol100",
+      "rank_by_peak": 1,
+      "start_utc": "2026-04-02T13:36:00+00:00",
+      "end_utc": "2026-04-02T13:37:00+00:00",
+      "seconds": 60,
+      "peak": {
+        "ns": 1775136960000000000,
+        "utc": "2026-04-02T13:36:00+00:00",
+        "coverage": 1.537308371743531,
+        "episode_id": "c5f4226a-c087-4530-adb9-28b7bfc2048e",
+        "btc_qty": "-1.716",
+        "sol_qty": "1968.2",
+        "btc_mark": "65745.08",
+        "sol_mark": "76.74",
+        "beta": 1.148287167809261
+      },
+      "previous": {
+        "ns": 1775136900000000000,
+        "utc": "2026-04-02T13:35:00+00:00",
+        "coverage": 0.9872528007424236,
+        "episode_id": "c5f4226a-c087-4530-adb9-28b7bfc2048e",
+        "btc_qty": "-4.039",
+        "sol_qty": "2968.2",
+        "btc_mark": "65881.92",
+        "sol_mark": "77.077",
+        "beta": 1.148287167809261
+      },
+      "next": {
+        "ns": 1775137020000000000,
+        "utc": "2026-04-02T13:37:00+00:00",
+        "coverage": 0.7560485741542434,
+        "episode_id": "c5f4226a-c087-4530-adb9-28b7bfc2048e",
+        "btc_qty": "-1.716",
+        "sol_qty": "968.2",
+        "btc_mark": "65787.01",
+        "sol_mark": "76.77",
+        "beta": 1.148287167809261
+      },
+      "latest_cover_target": {
+        "beta": "1.148287167809261",
+        "btc_qty": "1.716",
+        "confirmation_ns": null,
+        "confirmation_receipt_ns": null,
+        "episode_id": "c5f4226a-c087-4530-adb9-28b7bfc2048e",
+        "event": "COVER_TARGET",
+        "held": "2968.2",
+        "tactical": false,
+        "target": "640.5",
+        "timestamp_ns": 1775136960000000000
+      },
+      "nearby_native_fills": [
+        {
+          "utc": "2026-04-02T13:36:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "action": "BTC_REDUCE",
+          "reason": "BTC_TP3",
+          "qty": "2.323",
+          "px": "65844.9"
+        },
+        {
+          "utc": "2026-04-02T13:36:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "action": "SOL_EXIT",
+          "reason": "SOL_COVER_BASE",
+          "qty": "1000",
+          "px": "76.69"
+        },
+        {
+          "utc": "2026-04-02T13:37:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "action": "SOL_EXIT",
+          "reason": "SOL_COVER_BASE",
+          "qty": "1000",
+          "px": "76.75"
+        },
+        {
+          "utc": "2026-04-02T13:38:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "action": "SOL_EXIT",
+          "reason": "SOL_COVER_BASE",
+          "qty": "327.7",
+          "px": "76.91"
+        }
+      ],
+      "classification": "PostBTCnativeTP3+partialSOLIOCtrimunderfixeddisplayedquotesize1000"
+    },
+    {
+      "variant": "sol100",
+      "rank_by_peak": 2,
+      "start_utc": "2025-08-16T06:55:00+00:00",
+      "end_utc": "2025-08-16T09:50:00+00:00",
+      "seconds": 10500,
+      "peak": {
+        "ns": 1755329700000000000,
+        "utc": "2025-08-16T07:35:00+00:00",
+        "coverage": 1.0113889166441101,
+        "episode_id": "6bdce03e-cd5e-4a2c-be76-554224455624",
+        "btc_qty": "0.594",
+        "sol_qty": "-215.2",
+        "btc_mark": "117517.7",
+        "sol_mark": "189.487",
+        "beta": 1.73135542118012
+      },
+      "previous": {
+        "ns": 1755329640000000000,
+        "utc": "2025-08-16T07:34:00+00:00",
+        "coverage": 1.008375124019088,
+        "episode_id": "6bdce03e-cd5e-4a2c-be76-554224455624",
+        "btc_qty": "0.594",
+        "sol_qty": "-215.2",
+        "btc_mark": "117481.4",
+        "sol_mark": "188.864",
+        "beta": 1.73135542118012
+      },
+      "next": {
+        "ns": 1755329760000000000,
+        "utc": "2025-08-16T07:36:00+00:00",
+        "coverage": 1.0106223903585825,
+        "episode_id": "6bdce03e-cd5e-4a2c-be76-554224455624",
+        "btc_qty": "0.594",
+        "sol_qty": "-215.2",
+        "btc_mark": "117518.7",
+        "sol_mark": "189.345",
+        "beta": 1.73135542118012
+      },
+      "latest_cover_target": {
+        "beta": "1.73135542118012",
+        "btc_qty": "0.594",
+        "confirmation_ns": 1755312300000000000,
+        "confirmation_receipt_ns": 1755312300000000000,
+        "episode_id": "6bdce03e-cd5e-4a2c-be76-554224455624",
+        "event": "COVER_TARGET",
+        "held": "108.5",
+        "tactical": true,
+        "target": "215.2",
+        "timestamp_ns": 1755312360000000000
+      },
+      "nearby_native_fills": [],
+      "classification": "Ordinaryprice-ratiodriftaroundtacticaltarget; noBTCquantitychangeatpeak. Actualtacticexitmayfollow."
+    },
+    {
+      "variant": "sol100",
+      "rank_by_peak": 3,
+      "start_utc": "2026-06-09T04:06:00+00:00",
+      "end_utc": "2026-06-09T04:36:00+00:00",
+      "seconds": 1800,
+      "peak": {
+        "ns": 1780979700000000000,
+        "utc": "2026-06-09T04:35:00+00:00",
+        "coverage": 1.007260182398564,
+        "episode_id": "fa308259-86ae-4539-8247-797dedfb5de1",
+        "btc_qty": "-4.551",
+        "sol_qty": "3311.8",
+        "btc_mark": "63162.48",
+        "sol_mark": "66.74",
+        "beta": 1.309957999966983
+      },
+      "previous": {
+        "ns": 1780979640000000000,
+        "utc": "2026-06-09T04:34:00+00:00",
+        "coverage": 1.00402814270901,
+        "episode_id": "fa308259-86ae-4539-8247-797dedfb5de1",
+        "btc_qty": "-4.551",
+        "sol_qty": "3311.8",
+        "btc_mark": "62862.6",
+        "sol_mark": "66.21",
+        "beta": 1.309957999966983
+      },
+      "next": {
+        "ns": 1780979760000000000,
+        "utc": "2026-06-09T04:36:00+00:00",
+        "coverage": 0.7035923962638162,
+        "episode_id": "fa308259-86ae-4539-8247-797dedfb5de1",
+        "btc_qty": "-4.551",
+        "sol_qty": "2311.8",
+        "btc_mark": "63181.31",
+        "sol_mark": "66.805",
+        "beta": 1.309957999966983
+      },
+      "latest_cover_target": {
+        "beta": "1.309957999966983",
+        "btc_qty": "4.551",
+        "confirmation_ns": 1780968600000000000,
+        "confirmation_receipt_ns": 1780968600000000000,
+        "episode_id": "fa308259-86ae-4539-8247-797dedfb5de1",
+        "event": "COVER_TARGET",
+        "held": "2644.3",
+        "tactical": true,
+        "target": "3311.8",
+        "timestamp_ns": 1780968720000000000
+      },
+      "nearby_native_fills": [
+        {
+          "utc": "2026-06-09T04:36:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "action": "SOL_EXIT",
+          "reason": "SOL_COVER_BASE",
+          "qty": "1000",
+          "px": "66.79"
+        },
+        {
+          "utc": "2026-06-09T04:37:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "action": "SOL_EXIT",
+          "reason": "SOL_COVER_BASE",
+          "qty": "668.6",
+          "px": "66.91"
+        }
+      ],
+      "classification": "Ordinaryprice-ratiodriftaroundtacticaltarget; noBTCquantitychangeatpeak. Actualtacticexitmayfollow."
+    },
+    {
+      "variant": "sol75",
+      "rank_by_peak": 1,
+      "start_utc": "2026-04-02T13:36:00+00:00",
+      "end_utc": "2026-04-02T13:37:00+00:00",
+      "seconds": 60,
+      "peak": {
+        "ns": 1775136960000000000,
+        "utc": "2026-04-02T13:36:00+00:00",
+        "coverage": 0.8732005377170623,
+        "episode_id": "4c546afc-3513-4807-be3f-3a8f3a01ba4f",
+        "btc_qty": "-1.548",
+        "sol_qty": "1008.5",
+        "btc_mark": "65745.08",
+        "sol_mark": "76.74",
+        "beta": 1.148287167809261
+      },
+      "previous": {
+        "ns": 1775136900000000000,
+        "utc": "2026-04-02T13:35:00+00:00",
+        "coverage": 0.740461588957659,
+        "episode_id": "4c546afc-3513-4807-be3f-3a8f3a01ba4f",
+        "btc_qty": "-3.644",
+        "sol_qty": "2008.5",
+        "btc_mark": "65881.92",
+        "sol_mark": "77.077",
+        "beta": 1.148287167809261
+      },
+      "next": {
+        "ns": 1775137020000000000,
+        "utc": "2026-04-02T13:37:00+00:00",
+        "coverage": 0.5001594572436348,
+        "episode_id": "4c546afc-3513-4807-be3f-3a8f3a01ba4f",
+        "btc_qty": "-1.548",
+        "sol_qty": "577.8",
+        "btc_mark": "65787.01",
+        "sol_mark": "76.77",
+        "beta": 1.148287167809261
+      },
+      "latest_cover_target": {
+        "beta": "1.148287167809261",
+        "btc_qty": "1.548",
+        "confirmation_ns": null,
+        "confirmation_receipt_ns": null,
+        "episode_id": "4c546afc-3513-4807-be3f-3a8f3a01ba4f",
+        "event": "COVER_TARGET",
+        "held": "2008.5",
+        "tactical": false,
+        "target": "577.8",
+        "timestamp_ns": 1775136960000000000
+      },
+      "nearby_native_fills": [
+        {
+          "utc": "2026-04-02T13:36:00+00:00",
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "action": "BTC_REDUCE",
+          "reason": "BTC_TP3",
+          "qty": "2.096",
+          "px": "65844.9"
+        },
+        {
+          "utc": "2026-04-02T13:36:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "action": "SOL_EXIT",
+          "reason": "SOL_COVER_BASE",
+          "qty": "1000",
+          "px": "76.69"
+        },
+        {
+          "utc": "2026-04-02T13:37:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "action": "SOL_EXIT",
+          "reason": "SOL_COVER_BASE",
+          "qty": "430.7",
+          "px": "76.75"
+        }
+      ],
+      "classification": "PostBTCnativeTP3+partialSOLIOCtrimunderfixeddisplayedquotesize1000"
+    },
+    {
+      "variant": "sol75",
+      "rank_by_peak": 2,
+      "start_utc": "2025-08-16T07:00:00+00:00",
+      "end_utc": "2025-08-16T09:48:00+00:00",
+      "seconds": 10080,
+      "peak": {
+        "ns": 1755329700000000000,
+        "utc": "2025-08-16T07:35:00+00:00",
+        "coverage": 0.7580883181557679,
+        "episode_id": "dc643fb4-63ed-4c04-a05b-b053b003ed2d",
+        "btc_qty": "0.566",
+        "sol_qty": "-153.7",
+        "btc_mark": "117517.7",
+        "sol_mark": "189.487",
+        "beta": 1.73135542118012
+      },
+      "previous": {
+        "ns": 1755329640000000000,
+        "utc": "2025-08-16T07:34:00+00:00",
+        "coverage": 0.7558293246619948,
+        "episode_id": "dc643fb4-63ed-4c04-a05b-b053b003ed2d",
+        "btc_qty": "0.566",
+        "sol_qty": "-153.7",
+        "btc_mark": "117481.4",
+        "sol_mark": "188.864",
+        "beta": 1.73135542118012
+      },
+      "next": {
+        "ns": 1755329760000000000,
+        "utc": "2025-08-16T07:36:00+00:00",
+        "coverage": 0.7575137670478262,
+        "episode_id": "dc643fb4-63ed-4c04-a05b-b053b003ed2d",
+        "btc_qty": "0.566",
+        "sol_qty": "-153.7",
+        "btc_mark": "117518.7",
+        "sol_mark": "189.345",
+        "beta": 1.73135542118012
+      },
+      "latest_cover_target": {
+        "beta": "1.73135542118012",
+        "btc_qty": "0.566",
+        "confirmation_ns": 1755312300000000000,
+        "confirmation_receipt_ns": 1755312300000000000,
+        "episode_id": "dc643fb4-63ed-4c04-a05b-b053b003ed2d",
+        "event": "COVER_TARGET",
+        "held": "103.3",
+        "tactical": true,
+        "target": "153.7",
+        "timestamp_ns": 1755312360000000000
+      },
+      "nearby_native_fills": [],
+      "classification": "Ordinaryprice-ratiodriftaroundtacticaltarget; noBTCquantitychangeatpeak. Actualtacticexitmayfollow."
+    },
+    {
+      "variant": "sol75",
+      "rank_by_peak": 3,
+      "start_utc": "2026-06-09T03:54:00+00:00",
+      "end_utc": "2026-06-09T04:36:00+00:00",
+      "seconds": 2520,
+      "peak": {
+        "ns": 1780979700000000000,
+        "utc": "2026-06-09T04:35:00+00:00",
+        "coverage": 0.7554559879841221,
+        "episode_id": "a3983b1b-668a-48bb-b0aa-2ea9ba12c6de",
+        "btc_qty": "-4.322",
+        "sol_qty": "2358.9",
+        "btc_mark": "63162.48",
+        "sol_mark": "66.74",
+        "beta": 1.309957999966983
+      },
+      "previous": {
+        "ns": 1780979640000000000,
+        "utc": "2026-06-09T04:34:00+00:00",
+        "coverage": 0.7530319233982853,
+        "episode_id": "a3983b1b-668a-48bb-b0aa-2ea9ba12c6de",
+        "btc_qty": "-4.322",
+        "sol_qty": "2358.9",
+        "btc_mark": "62862.6",
+        "sol_mark": "66.21",
+        "beta": 1.309957999966983
+      },
+      "next": {
+        "ns": 1780979760000000000,
+        "utc": "2026-06-09T04:36:00+00:00",
+        "coverage": 0.5000998496093095,
+        "episode_id": "a3983b1b-668a-48bb-b0aa-2ea9ba12c6de",
+        "btc_qty": "-4.322",
+        "sol_qty": "1560.5",
+        "btc_mark": "63181.31",
+        "sol_mark": "66.805",
+        "beta": 1.309957999966983
+      },
+      "latest_cover_target": {
+        "beta": "1.309957999966983",
+        "btc_qty": "4.322",
+        "confirmation_ns": 1780968600000000000,
+        "confirmation_receipt_ns": 1780968600000000000,
+        "episode_id": "a3983b1b-668a-48bb-b0aa-2ea9ba12c6de",
+        "event": "COVER_TARGET",
+        "held": "1561.5",
+        "tactical": true,
+        "target": "2358.9",
+        "timestamp_ns": 1780968660000000000
+      },
+      "nearby_native_fills": [
+        {
+          "utc": "2026-06-09T04:36:00+00:00",
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "action": "SOL_EXIT",
+          "reason": "SOL_COVER_BASE",
+          "qty": "798.4",
+          "px": "66.79"
+        }
+      ],
+      "classification": "Ordinaryprice-ratiodriftaroundtacticaltarget; noBTCquantitychangeatpeak. Actualtacticexitmayfollow."
+    }
+  ],
+  "policy_precision": "SOL100max153.73% andSOL75max87.32% occurApr2 2026 13:36afterBTC_TP3shrinksBTCbeforeSOLexcessfullyreduces. COVER_TARGETisalreadycorrectbase50/tacticalfalse. InheritednativefixtureSOLdisplayedquotequantity1000.0makesIOCpartialthenretriedresidualonlaterSOLquotes. NOTinstrumentmax_quantity andNOTrealvenueorderbookdepth. Other~101%/~75.8%peaksareordinaryrelativepricedrift. Targetcapsarenotcontinuousactualexposurecaps."
+}

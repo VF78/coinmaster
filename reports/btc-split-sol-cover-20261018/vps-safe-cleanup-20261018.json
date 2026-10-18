@@ -53,5 +53,13 @@
     "/var/cache": "13MiB",
     "/root/.cache": "676KiB"
   },
-  "additional_deletion_decision": "No additional obvious large disposable cache identified. Working apps, Docker layers, all research results and inputs preserved."
+  "additional_deletion_decision": "No additional obvious large disposable cache identified. Working apps, Docker layers, all research results and inputs preserved.",
+  "docker_readonly_check": "Build cache0B; all substantial images belong to protected Hermes or VPN/current apps. No image/volume/system prune performed.",
+  "docker_demo_image_removed": {
+    "name": "hello-world:latest",
+    "id": "e2ac70e7319a02c5a477f5825259bd118b94e8b02c279c67afa63adab6d8685b",
+    "command": "docker image rm e2ac70e7319a (no force)",
+    "reported_image_size": "10.1kB",
+    "result": "unused demo image untagged/deleted; protected Hermes/VPN/app images untouched"
+  }
 }
