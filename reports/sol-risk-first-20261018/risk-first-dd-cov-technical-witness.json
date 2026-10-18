@@ -1,0 +1,117 @@
+{
+  "BTC_flat_risk_target_count": 9370,
+  "actual_completion_journal": "Started cm115-split-risk-first-dd-cov-20261018a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-dd-cov-20261018a/launch.sh.\ncm115-split-risk-first-dd-cov-20261018a.service: Deactivated successfully.\ncm115-split-risk-first-dd-cov-20261018a.service: Consumed 24min 16.114s CPU time, 600.4M memory peak, 0B memory swap peak.\n",
+  "all_held_targets_within_10_percent_raw_target_buffer": true,
+  "artifact_bytes": 15604218,
+  "artifact_sha256": "8d1dae55fe2b375abba72e053fe5232e97d1e18bdac45b3c84784f1da3395cb2",
+  "causal_720_completed_returns_all_factors": true,
+  "end_exclusive": "2026-09-01T00:00:00+00:00",
+  "events": {
+    "BETA_FREEZE": 105,
+    "COV_FACTOR": 16560,
+    "DD_STAGE": 83,
+    "NATIVE_FILL": 430,
+    "ORIGINAL_ATTEMPT_TERMINAL": 251,
+    "ORIGINAL_AUTHORIZED": 100,
+    "ORIGINAL_RISK_RETIRE": 34,
+    "RISK_TARGET": 17075,
+    "TARGET": 251,
+    "TRANSFER_TO_ORIGINAL": 15,
+    "TRIM": 179
+  },
+  "exact_pinned_original_reference_algebra_and_lot_rounding": true,
+  "factor_refresh_at_most_hourly": true,
+  "full_rows": 1051200,
+  "global_peak_never_resets_all_target_events": true,
+  "invalid_factor_count": 0,
+  "native_money_truth": "TOTAL/fees/account/position/funding remain existing native ledger; ownership transfer and ORIGINAL_RISK_RETIRE explicitly native_fill=false. No protective component PnL claimed.",
+  "native_open_positions": 0,
+  "native_terminal_lifecycle": {
+    "close_fills": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "12406.9342"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "timestamp": "1788220800000000000",
+        "value": "5498.598"
+      }
+    ],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "no_right_resurrection_basis": "All actual recomputed raw targets obey min((1-w)*Oref,Olive)+w*Qc with recovery ceiling; genuine risk retirement lowers Olive, never records native fill. Source-pinned original authorization/terminal hooks alone replenish or release original rights; bounded native tests certify ceiling clear causes.",
+  "ownership_transfers_are_bookkeeping_not_native_fills": true,
+  "params_sha256": "d3751a24a303051644926751ad86d0e3e993078a3e21891bdecbd212986fd2a4",
+  "pending_evidence": "Successful existing selective terminal lifecycle FLAT requires pending native ownership clear; raw pending dictionary not exported.",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "positive_factor_BTC_cover_cap_one": true,
+  "receipt_sha256": "80a4d1ce0394a7385c80086bc1f39718fd9444036825ac18484f8e9e90e3478a",
+  "recovery_ceiling_witness": [
+    {
+      "actual_SOL": "64",
+      "btc_qty": "0.791",
+      "ceiling": "64",
+      "drawdown": "0.04871573742665417719443048129",
+      "event": "RISK_TARGET",
+      "global_peak": "10161.00531179",
+      "minimum_variance_qty": "190.3717998688139961238292766",
+      "original_live": "0.0",
+      "original_reference": "0.0",
+      "raw_qty": "0.0",
+      "stage": 0,
+      "target_qty": "0.0",
+      "timestamp_ns": 1725374880000000000,
+      "variant": "dd-cov",
+      "weight": "0"
+    },
+    {
+      "actual_SOL": "0",
+      "btc_qty": "0.791",
+      "ceiling": "64",
+      "drawdown": "0.05013472300510576603771705723",
+      "event": "RISK_TARGET",
+      "global_peak": "10161.00531179",
+      "minimum_variance_qty": "190.8000427272313258572403192",
+      "original_live": "0.0",
+      "original_reference": "0.0",
+      "raw_qty": "0.0",
+      "stage": 0,
+      "target_qty": "0.0",
+      "timestamp_ns": 1725375600000000000,
+      "variant": "dd-cov",
+      "weight": "0"
+    }
+  ],
+  "risk_audit_sha256": "cbd17ef56ee0babb03847f7464336df5385ccf168579ed0f8196c619e6ee7eb5",
+  "risk_retire_actual_events": 34,
+  "risk_retire_witness": [
+    {
+      "event": "ORIGINAL_RISK_RETIRE",
+      "logical_intent": "d052e31c-0e50-442f-84f4-5a9d339890f3",
+      "native_fill": false,
+      "original_live_target": "592.0",
+      "quantity": "0.4",
+      "timestamp_ns": 1734931080000000000,
+      "variant": "dd-cov"
+    },
+    {
+      "event": "ORIGINAL_RISK_RETIRE",
+      "logical_intent": "628ddfd8-e3f4-40c0-94f2-c60cae37a95f",
+      "native_fill": false,
+      "original_live_target": "109.4",
+      "quantity": "482.6",
+      "timestamp_ns": 1734937560000000000,
+      "variant": "dd-cov"
+    }
+  ],
+  "source_manifest_90_verified_by_collector": 90,
+  "stage_threshold_hysteresis_all_83_transitions": true,
+  "status": "INTEGRITY_PASS_ECONOMIC_INELIGIBLE_DD_ABOVE_50",
+  "target_buffer_held_count": 6910,
+  "transfer_count": 15
+}

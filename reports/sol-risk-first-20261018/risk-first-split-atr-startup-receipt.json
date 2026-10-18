@@ -1,0 +1,34 @@
+{
+  "all_90_hashes_same_as_cap50_dd_cov": true,
+  "frozen_files": 90,
+  "input_hashes": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+  },
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-split-atr-20261018a",
+  "manifest_sha256": "34177073c779ea0d2a822a1781901d452fd979b83d7ee9838737c7f33a27cd58",
+  "observe_minute_risk": true,
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "resource_before": {
+    "MemAvailable": 1485283328,
+    "disk_free": 3062837248
+  },
+  "source_commit": "ddfc84ce4387452ae518c5920a2e1023e96bd86d",
+  "status": "ACTIVE",
+  "unit_state": "MainPID=3563517\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nInvocationID=ef4efed51f3a4a1893dd03c50a40596a",
+  "variant": {
+    "base_control": "V3_DIRECTION_LONG5.5_SHORT7.875",
+    "dp": "OFF",
+    "flags": [
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1",
+      "--research-btc-split-tp-ioc",
+      "--research-sol-risk-first",
+      "split-atr"
+    ],
+    "snapshot_time": "2026-10-18T20:09:29.958965+00:00",
+    "variant": "risk-first-split-atr"
+  }
+}

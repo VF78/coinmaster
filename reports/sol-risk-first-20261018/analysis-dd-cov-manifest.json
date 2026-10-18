@@ -1,0 +1,13 @@
+{
+  "status": "ACCEPTED_COMPARISON",
+  "economic_eligibility": "INELIGIBLE_DD_GT50",
+  "helper_historical_sha256": "2f7df53fb07c2d0817f7dcad49f0e4fa2fa579fdb9e88d04155b6384bf65caa5",
+  "files": {
+    "reports/sol-risk-first-20261018/analysis-dd-cov-summary.json": "db9b8c121d9d0e187dc2afc77b8ac59a3689ed62f5fa7810df3128f0f25e7b51",
+    "reports/sol-risk-first-20261018/analysis-dd-cov-permissions.csv": "5aa3441259ac4091289f1528a8176bb150c6aadae14732ed35e3bd92bdfbbaf4",
+    "reports/sol-risk-first-20261018/risk-first-dd-cov-receipt.json": "80a4d1ce0394a7385c80086bc1f39718fd9444036825ac18484f8e9e90e3478a",
+    "reports/sol-risk-first-20261018/risk-first-dd-cov-resolved-parameters.json": "d3751a24a303051644926751ad86d0e3e993078a3e21891bdecbd212986fd2a4",
+    "reports/sol-risk-first-20261018/risk-first-dd-cov-technical-witness.json": "0a2e74de37a839d8d9167eb4307f0295ba79734ddf2969ca0a3334307fe34f09"
+  },
+  "note": "SharedcomparisonCSV/mutablehelper excluded; previouscap50manifest unchanged; nohelper/native/trace/PnL rerun."
+}
