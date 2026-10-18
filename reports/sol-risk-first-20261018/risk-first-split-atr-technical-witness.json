@@ -1,0 +1,145 @@
+{
+  "BTC_parents": 29,
+  "SOL_accepted_groups": 11,
+  "actual_SOL_ADD_native_liquidity": {
+    "MAKER": 11,
+    "TAKER": 140
+  },
+  "actual_completion_journal": "Started cm115-split-risk-first-split-atr-20261018a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-split-atr-20261018a/launch.sh.\ncm115-split-risk-first-split-atr-20261018a.service: Deactivated successfully.\ncm115-split-risk-first-split-atr-20261018a.service: Consumed 16min 20.678s CPU time, 543.0M memory peak, 0B memory swap peak.\n",
+  "actual_liquidation_forced_fill_quantities_by_instrument": {
+    "SOLUSDT-PERP.P1SIM": "93635.6"
+  },
+  "actual_trade_lockout": [
+    {
+      "close_fill_count": 94,
+      "close_value": "10506850.676",
+      "lockout": "true",
+      "marked_equity": "123086.73695527",
+      "status": "FLAT_LOCKED",
+      "tier_maintenance_margin": "182293.6774300",
+      "trigger_ts": "1741654320000000000",
+      "trigger_utc": "2025-03-11T00:52:00+00:00"
+    }
+  ],
+  "all_162_native_children_have_known_terminal_no_overlapping_same_leg": true,
+  "all_fixed_34_33_33_lots_causal_ATR_deadline_60min": true,
+  "all_groups_closed_no_pending": true,
+  "all_groups_filled_plus_cancelled_equals_accepted_Q": true,
+  "artifact_bytes": 4537948,
+  "artifact_sha256": "d01736a7ea497c1b210a0bb7ed2d7fc73523810f40606bbd35b44acbba6c200f",
+  "count_semantics": "29BTCacceptedparents versus11SOLacceptedgroups; collector stdout parents refersSOLgroups inthisvariant.",
+  "early_liquidation_cutoff": true,
+  "events": {
+    "SOL_SPLIT_CHILD": 162,
+    "SOL_SPLIT_FILL": 151,
+    "SOL_SPLIT_PARENT": 11,
+    "SOL_SPLIT_TERMINAL": 162
+  },
+  "fallback_reasons": {
+    "60MIN": 6,
+    "BTC_ADVERSE_1PP": 1,
+    "NO_FALLBACK": 4
+  },
+  "feed_end_exclusive": "2026-09-01T00:00:00+00:00",
+  "fill_count_semantics": "Native fillreport aggregates certain partialfills perorder; fill_auditindividualevents differ, no fake equality.",
+  "full_feed_rows": 1051200,
+  "individual_fill_audit_events": 465,
+  "intended_execution_policy_difference": "Fixed accepted originalSOL group Q persists through IOC partial CANCELED across3legs/TTL; differs baseline unfilled-original-IOC release by explicit H2 authorization. 131actual childCANCELED are not automatic baseline-parity failures.",
+  "liquidation_actual_native_fill_count": 94,
+  "liquidation_fill_reasons": {
+    "LIQUIDATION": 94
+  },
+  "liquidation_native_action": "LIQUIDATION_CLOSE",
+  "max_simultaneous_owned_children": 6,
+  "native_fill_report_rows": 463,
+  "native_rejections": 0,
+  "native_terminal_lifecycle": {
+    "close_fills": [],
+    "lockout": true,
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "status": "FLAT",
+    "trigger_ts": "1788220800000000000"
+  },
+  "no_additional_engines_authorized_all_three_DD_above_50": true,
+  "no_further_engine_launched": true,
+  "params_sha256": "515179fb514f42e7e65b3488e2146f2412991d2cda77f607611e06d5a620d07f",
+  "parent_witnesses": [
+    {
+      "atr": "1.147817897470255158237346379",
+      "atr_ns": 1727912700000000000,
+      "btc_side": -1,
+      "cancelled": "0.0",
+      "closed": true,
+      "deadline_ns": 1727917200000000000,
+      "episode_id": "585ccfac-5f22-469c-ab40-3d04b5a72b1e",
+      "fallback": false,
+      "filled": "810.9",
+      "first_px": "140.09",
+      "index": 761,
+      "leg_filled": [
+        "275.7",
+        "267.5",
+        "267.7"
+      ],
+      "pending": [
+        null,
+        null,
+        null
+      ],
+      "pieces": [
+        "275.7",
+        "267.5",
+        "267.7"
+      ],
+      "quantity": "810.9",
+      "signal_btc": "60618.08",
+      "signal_ns": 1727913600000000000,
+      "stopped": false
+    },
+    {
+      "atr": "0.9226022529839539670775020864",
+      "atr_ns": 1727999100000000000,
+      "btc_side": -1,
+      "cancelled": "0.0",
+      "closed": true,
+      "deadline_ns": 1728003600000000000,
+      "episode_id": "585ccfac-5f22-469c-ab40-3d04b5a72b1e",
+      "fallback": true,
+      "fallback_reason": "60MIN",
+      "filled": "3.3",
+      "first_px": "136.73",
+      "index": 762,
+      "leg_filled": [
+        "1.1",
+        "1",
+        "1.2"
+      ],
+      "pending": [
+        null,
+        null,
+        null
+      ],
+      "pieces": [
+        "1.1",
+        "1.0",
+        "1.2"
+      ],
+      "quantity": "3.3",
+      "signal_btc": "60725.9",
+      "signal_ns": 1728000000000000000,
+      "stopped": false
+    }
+  ],
+  "per_leg_fill_never_exceeds_fixed_piece": true,
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "receipt_sha256": "4543497d86eeae7b23294c9dac8f0d34653036796e0462ab25e9378217d4bf5c",
+  "risk_audit_sha256": "d7a8580e89ea5180a29a26fd2323f64d2c306c38fe2b77dffd59ddbf96619e69",
+  "source_manifest90_verified": 90,
+  "status": "INTEGRITY_PASS_GENUINE_LIQUIDATION_DD_INELIGIBLE",
+  "terminal_causes": {
+    "CANCELED": 131,
+    "FILL_TERMINAL": 31
+  },
+  "terminal_open_positions": 0,
+  "unknown_ACK_scope": "All actual child orders terminate; no explicit UNKNOWN_ACK audit event. Bounded native prefreeze fixture tested unknown/late partial/priority exit, not claim historically exercised."
+}

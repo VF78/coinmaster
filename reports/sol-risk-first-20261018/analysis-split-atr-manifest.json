@@ -1,0 +1,13 @@
+{
+  "status": "ACCEPTED_COMPARISON_WITH_DECLARED_LIQUIDATION_LOCKOUT",
+  "economic_eligibility": "INELIGIBLE_DD_GT50_WITH_NATIVE_LIQUIDATION",
+  "helper_historical_sha256": "2f7df53fb07c2d0817f7dcad49f0e4fa2fa579fdb9e88d04155b6384bf65caa5",
+  "files": {
+    "reports/sol-risk-first-20261018/analysis-split-atr-summary.json": "97ac9f3927c1c0f4aa671afa8616ff0d64dde82897da76a0588a4e04af1d6c2f",
+    "reports/sol-risk-first-20261018/analysis-split-atr-permissions.csv": "c7270860b32ef69fdd9b8575c351d91712f03d306642dec110665134ea8be3eb",
+    "reports/sol-risk-first-20261018/risk-first-split-atr-receipt.json": "4543497d86eeae7b23294c9dac8f0d34653036796e0462ab25e9378217d4bf5c",
+    "reports/sol-risk-first-20261018/risk-first-split-atr-resolved-parameters.json": "515179fb514f42e7e65b3488e2146f2412991d2cda77f607611e06d5a620d07f",
+    "reports/sol-risk-first-20261018/risk-first-split-atr-technical-witness.json": "7816d6dcd5c50be44e6c648960027f6aa786c5909c9ba4fdcf6af118ef6369ae"
+  },
+  "note": "SharedfinalCSV includedonlyinfinalallvariantmanifest; rawreceipt/result unchanged;startupfailure excluded."
+}

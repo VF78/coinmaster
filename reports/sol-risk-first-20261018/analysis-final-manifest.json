@@ -1,0 +1,31 @@
+{
+  "status": "NO_ELIGIBLE_WINNER",
+  "files": {
+    "reports/sol-risk-first-20261018/analysis-final-summary.json": "1b0514b84b2db29fb81acabfd129eb007a41bbfe9ff54131cc2f1c31fff50dfd",
+    "reports/sol-risk-first-20261018/analysis-comparison.csv": "a2c4cff134633dd5e04fca7eff2da6889573010c6126c088afa556e537fdb78b",
+    "reports/sol-risk-first-20261018/analysis-control-provenance.json": "cfff6e87d37925c240d934b670f415683f7dd87f02926db103d1586c0eee31d1",
+    "reports/sol-risk-first-20261018/analysis-preparation.json": "e4b5d8497d4e224508e41e8496fb193ca1ba2b2acfd6c386858888f674fa57ca",
+    "reports/sol-risk-first-20261018/analyze-comparison.py": "2f7df53fb07c2d0817f7dcad49f0e4fa2fa579fdb9e88d04155b6384bf65caa5",
+    "reports/sol-risk-first-20261018/analysis-cap50-summary.json": "702bc4f58ceb9413153a53e1435245975512379476c9a05384608262be2cd7b8",
+    "reports/sol-risk-first-20261018/analysis-cap50-permissions.csv": "08a71bd91cf6618b8e95f74764f1f1b396f6d8eaaea7b48b0520b3dca9510ee0",
+    "reports/sol-risk-first-20261018/analysis-cap50-manifest.json": "6aaea39a9d8deae155e50ab3de13d92c359be21873bd459c8559d8dd9a9f493f",
+    "reports/sol-risk-first-20261018/risk-first-cap50-receipt.json": "f274c70889d01311905024168d0e4351d2507187ea2147ea54e5c72ad5eecb2c",
+    "reports/sol-risk-first-20261018/risk-first-cap50-resolved-parameters.json": "4e9a19e6aedfc9756103c37214a9f67a7bedd92fdd9cd8c65855bc6808be9517",
+    "reports/sol-risk-first-20261018/risk-first-cap50-technical-witness.json": "7ab0edf9341677c4a07a749ac233fd2d10e5b8a5440a7b4a57db6fa9318c115c",
+    "reports/sol-risk-first-20261018/analysis-dd-cov-summary.json": "db9b8c121d9d0e187dc2afc77b8ac59a3689ed62f5fa7810df3128f0f25e7b51",
+    "reports/sol-risk-first-20261018/analysis-dd-cov-permissions.csv": "5aa3441259ac4091289f1528a8176bb150c6aadae14732ed35e3bd92bdfbbaf4",
+    "reports/sol-risk-first-20261018/analysis-dd-cov-manifest.json": "ef50b8b37a30c0d45afad533c1893241b0c0fcd70c69187cdb50671df69ab6db",
+    "reports/sol-risk-first-20261018/risk-first-dd-cov-receipt.json": "80a4d1ce0394a7385c80086bc1f39718fd9444036825ac18484f8e9e90e3478a",
+    "reports/sol-risk-first-20261018/risk-first-dd-cov-resolved-parameters.json": "d3751a24a303051644926751ad86d0e3e993078a3e21891bdecbd212986fd2a4",
+    "reports/sol-risk-first-20261018/risk-first-dd-cov-technical-witness.json": "0a2e74de37a839d8d9167eb4307f0295ba79734ddf2969ca0a3334307fe34f09",
+    "reports/sol-risk-first-20261018/analysis-split-atr-summary.json": "97ac9f3927c1c0f4aa671afa8616ff0d64dde82897da76a0588a4e04af1d6c2f",
+    "reports/sol-risk-first-20261018/analysis-split-atr-permissions.csv": "c7270860b32ef69fdd9b8575c351d91712f03d306642dec110665134ea8be3eb",
+    "reports/sol-risk-first-20261018/analysis-split-atr-manifest.json": "976a536957102712fc0fb8e05bcb03c699b2af6e913d222c5f2d824e7f18cad5",
+    "reports/sol-risk-first-20261018/risk-first-split-atr-receipt.json": "4543497d86eeae7b23294c9dac8f0d34653036796e0462ab25e9378217d4bf5c",
+    "reports/sol-risk-first-20261018/risk-first-split-atr-resolved-parameters.json": "515179fb514f42e7e65b3488e2146f2412991d2cda77f607611e06d5a620d07f",
+    "reports/sol-risk-first-20261018/risk-first-split-atr-technical-witness.json": "7816d6dcd5c50be44e6c648960027f6aa786c5909c9ba4fdcf6af118ef6369ae",
+    "reports/sol-risk-first-20261018/risk-first-cap50-startup-failure-receipt.json": "3665bc929bd7568d97435bd039c0d54867f479d66a9e2f98732f98cfdad398f3"
+  },
+  "scope": "Statsfinalcomparison+3frozenvariantproof/receipt/params+reusedcontrolprovenance+excludedstartupfailure;rootREADME/state notincludedbecause separatelyowned. RawVPS results notcopied/rewritten; exactpaths+SHA inreceipts.",
+  "all_variant_manifests_verified": true
+}

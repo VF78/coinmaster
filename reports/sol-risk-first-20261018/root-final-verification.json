@@ -1,0 +1,12 @@
+{
+  "status": "ROOT_FINAL_ARTIFACT_VERIFICATION_PASS",
+  "final_stats_manifest_sha256": "6ac70a8175100505e43a27fb1dc4a58dbcad0eb5f2b688ac855a3c6c5dc87841",
+  "all_24_manifest_members_verified": true,
+  "all_three_actual_result_sha_verified": true,
+  "all_three_funding_file_sha_verified": true,
+  "all_three_90_source_files_verified_and_identical": true,
+  "selection": "NO_ELIGIBLE_WINNER",
+  "native_tests_rerun": false,
+  "running_research_units": [],
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n"
+}

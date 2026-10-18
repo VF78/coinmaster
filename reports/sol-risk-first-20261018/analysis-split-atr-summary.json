@@ -1,0 +1,315 @@
+{
+  "status": "ACCEPTED_COMPARISON_WITH_DECLARED_LIQUIDATION_LOCKOUT",
+  "variant": "split-atr",
+  "receipt": "reports/sol-risk-first-20261018/risk-first-split-atr-receipt.json",
+  "receipt_sha256": "4543497d86eeae7b23294c9dac8f0d34653036796e0462ab25e9378217d4bf5c",
+  "result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-split-atr-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-split-atr-btc-direction.json",
+  "result_sha256": "d01736a7ea497c1b210a0bb7ed2d7fc73523810f40606bbd35b44acbba6c200f",
+  "expected_source": "ddfc84ce4387452ae518c5920a2e1023e96bd86d",
+  "config_hash": "ac58c5686272759891733e266d3d7191dd4fc8918d43bf87dd43ea2b6b84b61c",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "metrics": {
+    "TOTAL": "113562.54508323",
+    "ACTIVE": "113562.54508323",
+    "RESERVE": "0",
+    "ROI_percent": "1035.625450832300",
+    "global_marked_DD_percent": "93.91562133185258833628672650",
+    "minimum": {
+      "equity": "5019.91340681",
+      "timestamp_ns": "1727970240000000000"
+    },
+    "native_top3": [
+      {
+        "drawdown_amount": "1752898.29302578",
+        "drawdown_peak_percent": "93.91562133185258833628672650",
+        "peak": {
+          "equity": "1866460.83810901",
+          "timestamp_ns": "1741598640000000000"
+        },
+        "recovery": null,
+        "trough": {
+          "equity": "113562.54508323",
+          "timestamp_ns": "1741654380000000000"
+        }
+      },
+      {
+        "drawdown_amount": "807555.93905418",
+        "drawdown_peak_percent": "89.53831829282363998606437496",
+        "peak": {
+          "equity": "901910.99682392",
+          "timestamp_ns": "1736494980000000000"
+        },
+        "recovery": {
+          "equity": "905428.67855503",
+          "timestamp_ns": "1737461940000000000"
+        },
+        "trough": {
+          "equity": "94355.05776974",
+          "timestamp_ns": "1736778960000000000"
+        }
+      },
+      {
+        "drawdown_amount": "8431.42291829",
+        "drawdown_peak_percent": "62.68093157820376681735965912",
+        "peak": {
+          "equity": "13451.3363251",
+          "timestamp_ns": "1726063200000000000"
+        },
+        "recovery": {
+          "equity": "13507.00547664",
+          "timestamp_ns": "1728611820000000000"
+        },
+        "trough": {
+          "equity": "5019.91340681",
+          "timestamp_ns": "1727970240000000000"
+        }
+      }
+    ],
+    "native_observer_samples": 3153599,
+    "conditional_OHLC_upper_strictly_later_lower": {
+      "actual_intrabar_path_proven": false,
+      "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+      "maximum": {
+        "drawdown_fraction": "0.9407812197848795022220373000",
+        "drawdown_peak_percent": "94.07812197848795022220373000",
+        "peak": {
+          "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+          "equity": "1917677.88310901",
+          "timestamp_ns": "1741598700000000000"
+        },
+        "trough": {
+          "equity": "113562.54508323",
+          "timestamp_ns": "1741654380000000000"
+        }
+      },
+      "same_bar_extrema_order_assumed": false,
+      "samples": 1051200
+    },
+    "native_fees": "76251.12816874",
+    "fills": 463,
+    "BTC_parents": 29,
+    "liquidations": 1,
+    "terminal_open_positions": 0,
+    "native_rejections": 0,
+    "full_rows_per_source": 1051200,
+    "funding_metadata": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 232,
+        "SOLUSDT-PERP.P1SIM": 88
+      },
+      "count": 320,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "execution": {
+      "actual_event_asset_liquidity": {
+        "BTC_TAKER": {
+          "fill_events": 76,
+          "quantity": "729.233",
+          "turnover": "69163261.6113",
+          "fees": "38039.79388630"
+        },
+        "BTC_MAKER": {
+          "fill_events": 43,
+          "quantity": "451.793",
+          "turnover": "42493283.4942",
+          "fees": "8498.65669884"
+        },
+        "SOL_TAKER": {
+          "fill_events": 335,
+          "quantity": "316712.6",
+          "turnover": "51114128.172",
+          "fees": "28112.77049460"
+        },
+        "SOL_MAKER": {
+          "fill_events": 11,
+          "quantity": "63018.2",
+          "turnover": "7999535.445",
+          "fees": "1599.9070890"
+        }
+      },
+      "native_fill_report_rows": 463,
+      "native_fill_report_liquidity_order_counts": {
+        "TAKER": 411,
+        "MAKER": 52
+      },
+      "native_fill_report_turnover": "170770208.722500000684748",
+      "native_report_actual_commissions": "76251.12816874",
+      "unknown_commission_rows": 0,
+      "native_order_status_counts": {
+        "FILLED": 159,
+        "CANCELED": 340
+      },
+      "native_open_order_rows": 0,
+      "turnover_representation_delta": "-6.84748E-10",
+      "method": "Actual callback fill liquidity/quantity/notional/commission, crosschecked against native reports. Filled-order rows and execution event counts can differ with partialGTC. CSV avg_px rendering can leave subcent turnover representation delta. No maker inference from LIMIT/IOC. No assetPnL/cash ledger."
+    },
+    "observer_trace_read_passes": 0
+  },
+  "BTC_permissions": {
+    "control_count": 105,
+    "candidate_count": 29,
+    "missing_days": [
+      20160,
+      20163,
+      20172,
+      20174,
+      20181,
+      20189,
+      20191,
+      20192,
+      20193,
+      20194,
+      20196,
+      20214,
+      20233,
+      20245,
+      20246,
+      20253,
+      20257,
+      20258,
+      20259,
+      20263,
+      20302,
+      20305,
+      20306,
+      20307,
+      20316,
+      20319,
+      20323,
+      20324,
+      20336,
+      20342,
+      20354,
+      20361,
+      20372,
+      20383,
+      20388,
+      20390,
+      20404,
+      20418,
+      20456,
+      20463,
+      20473,
+      20474,
+      20492,
+      20499,
+      20511,
+      20517,
+      20518,
+      20523,
+      20525,
+      20532,
+      20536,
+      20537,
+      20538,
+      20539,
+      20545,
+      20551,
+      20564,
+      20573,
+      20588,
+      20591,
+      20613,
+      20638,
+      20645,
+      20646,
+      20649,
+      20651,
+      20652,
+      20659,
+      20661,
+      20662,
+      20665,
+      20666,
+      20671,
+      20676,
+      20683,
+      20695
+    ],
+    "extra_days": [],
+    "changed_absolute_Q": 23,
+    "q0_ns_exact": 29,
+    "q1_ns_exact": 29,
+    "q1_ask_exact": 29,
+    "side_exact": 29,
+    "first_vwap_exact": 29,
+    "start_ns_exact": 29,
+    "own_plan_conserved": 29,
+    "accepted_matches_plan": 29,
+    "execution_delay_rows": [],
+    "limit": "Calendar/side/actualquotes/P0 distinct from absoluteQ, which can change through equity. No injected permission list or counterfactual fixedQ."
+  },
+  "delta_TOTAL": "-5963544.69379160",
+  "audit": {
+    "event_count": 486,
+    "canonical_sha256": "d7a8580e89ea5180a29a26fd2323f64d2c306c38fe2b77dffd59ddbf96619e69",
+    "event_counts": {
+      "SOL_SPLIT_PARENT": 11,
+      "SOL_SPLIT_CHILD": 162,
+      "SOL_SPLIT_FILL": 151,
+      "SOL_SPLIT_TERMINAL": 162
+    },
+    "event_reason_counts": {
+      "('SOL_SPLIT_PARENT', None)": 11,
+      "('SOL_SPLIT_CHILD', None)": 162,
+      "('SOL_SPLIT_FILL', None)": 151,
+      "('SOL_SPLIT_TERMINAL', None)": 162
+    }
+  },
+  "funding_journal_files_verified": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-split-atr-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-split-atr-btc-direction-funding.sqlite": "8e2368562fe5d018972d70eae302461d0624f34d5ac63438141357768c998faa"
+  },
+  "observer_trace_read_passes": 0,
+  "peak_rss_kib": 35452,
+  "integrity_gate": "Await engine actual native authority/order/cadence/variant parameter proof; nativeTOTAL alone notacceptance",
+  "limitations": [
+    "No additional PnL/cash ledger or assetuPnL reconstruction. NativeTOTAL/DD authoritative; signedfunding UNKNOWN, notzero.",
+    "Fullintervalglobal nativeDD<=50 required; no epochreset/partialrangepick/relaxedthreshold. Noeligible -> \u043d\u0435\u0442\u043f\u043e\u0431\u0435\u0434\u0438\u0442\u0435\u043b\u044f\u043f\u043e\u0443\u0441\u043b\u043e\u0432\u0438\u044e.",
+    "ConditionalOHLC separate/notexactintraminute. Native minuteclose/size1000/L2/execution/liquidation model limits retained. No live/HL/DP50ROI projection."
+  ],
+  "eligibility": {
+    "numeric_full_native_DD_le50": false,
+    "eligible_for_selection": false,
+    "reason": "93.9156213318526>50; actualnative1liquidation preserved, no thresholdrelaxation",
+    "criterion": "MaxTOTAL amongvalidcomparablevariants withDD<=50"
+  },
+  "integrity_acceptance": {
+    "witness": "reports/sol-risk-first-20261018/risk-first-split-atr-technical-witness.json",
+    "witness_sha256": "7816d6dcd5c50be44e6c648960027f6aa786c5909c9ba4fdcf6af118ef6369ae",
+    "verdict": "INTEGRITY_PASS_GENUINE_LIQUIDATION_DD_INELIGIBLE",
+    "root_acceptance": "ExplicitrootafterengineactualH2nativegroup/liquidationproof",
+    "resolved_parameters": "reports/sol-risk-first-20261018/risk-first-split-atr-resolved-parameters.json",
+    "params_sha256": "515179fb514f42e7e65b3488e2146f2412991d2cda77f607611e06d5a620d07f",
+    "BTC_parents": 29,
+    "SOL_accepted_groups": 11,
+    "all_groups_Qconserved_closed_pendingnone": true,
+    "all162children_knownterminal_no_sameleg_overlap": true,
+    "TTL_fallback_groups": 6,
+    "BTC_adverse1pp_fallback_groups": 1,
+    "SOL_ADD_event_liquidity": {
+      "MAKER": 11,
+      "TAKER": 140
+    },
+    "native_trade_lockout": [
+      {
+        "close_fill_count": 94,
+        "close_value": "10506850.676",
+        "lockout": "true",
+        "marked_equity": "123086.73695527",
+        "status": "FLAT_LOCKED",
+        "tier_maintenance_margin": "182293.6774300",
+        "trigger_ts": "1741654320000000000",
+        "trigger_utc": "2025-03-11T00:52:00+00:00"
+      }
+    ],
+    "liquidation_SOL_quantity": "93635.6",
+    "liquidation_native_fill_count": 94,
+    "individual_fill_audit_events": 465,
+    "native_fill_report_rows": 463
+  },
+  "BTC_permission_interpretation": "29actualBTCentries/calendar/side/q0/q1/firstquote/P0 exact against first29control;23absoluteQchanged.76latercontrolpermissionsnotexecutedafter2025-03-11T00:52UTCnativeLIQUIDATION_LOCKOUT;full1,051,200feedrows isNOT105executedBTCsignals.11parentsintheSOLconservationfieldareSOLgroups, notBTC.",
+  "execution_policy_limit": "FixedacceptedSOLgroupQ persists acrossIOCpartialCANCELED underexplicitH2policy, unlikebaselineunfilledoriginalIOCauthorizationrelease. TOTALdelta includes acceptedquantity/exposure/partials/fallback/equity effects, NOT entrypricealone.463aggregatednativefill-report rows versus465individualfill_auditevents(BTC119/SOL346), no fake countsum. NoassetPnL/counterfactualcash/trace reconstruction.",
+  "finalized_utc": "2026-10-18T20:31:48.967748+00:00"
+}
