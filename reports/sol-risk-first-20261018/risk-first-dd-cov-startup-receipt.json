@@ -1,0 +1,30 @@
+{
+  "frozen_files": 90,
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-dd-cov-20261018a",
+  "manifest_sha256": "34177073c779ea0d2a822a1781901d452fd979b83d7ee9838737c7f33a27cd58",
+  "observe_minute_risk": true,
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "resource_before": {
+    "MemAvailable": 1501712384,
+    "disk_free": 3180265472
+  },
+  "same_90_source_hashes_as_cap50": true,
+  "source_commit": "690292973465320f143157f9841bdac50f3042bc",
+  "status": "ACTIVE",
+  "unit_state": "MainPID=3553407\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nInvocationID=dadab33b720846a0983c090fd6d11416",
+  "variant": {
+    "base_control": "V3_DIRECTION_LONG5.5_SHORT7.875",
+    "dp": "OFF",
+    "flags": [
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1",
+      "--research-btc-split-tp-ioc",
+      "--research-sol-risk-first",
+      "dd-cov"
+    ],
+    "snapshot_time": "2026-10-18T19:43:17.158921+00:00",
+    "variant": "risk-first-dd-cov"
+  }
+}

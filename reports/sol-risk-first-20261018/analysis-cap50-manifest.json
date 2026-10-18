@@ -1,0 +1,13 @@
+{
+  "status": "ACCEPTED_COMPARISON_WITH_DECLARED_UNEXERCISED_HELD_TRIM",
+  "economic_eligibility": "INELIGIBLE_DD_GT50",
+  "helper_historical_sha256": "2f7df53fb07c2d0817f7dcad49f0e4fa2fa579fdb9e88d04155b6384bf65caa5",
+  "files": {
+    "reports/sol-risk-first-20261018/analysis-cap50-summary.json": "702bc4f58ceb9413153a53e1435245975512379476c9a05384608262be2cd7b8",
+    "reports/sol-risk-first-20261018/analysis-cap50-permissions.csv": "08a71bd91cf6618b8e95f74764f1f1b396f6d8eaaea7b48b0520b3dca9510ee0",
+    "reports/sol-risk-first-20261018/risk-first-cap50-receipt.json": "f274c70889d01311905024168d0e4351d2507187ea2147ea54e5c72ad5eecb2c",
+    "reports/sol-risk-first-20261018/risk-first-cap50-resolved-parameters.json": "4e9a19e6aedfc9756103c37214a9f67a7bedd92fdd9cd8c65855bc6808be9517",
+    "reports/sol-risk-first-20261018/risk-first-cap50-technical-witness.json": "7ab0edf9341677c4a07a749ac233fd2d10e5b8a5440a7b4a57db6fa9318c115c"
+  },
+  "note": "SharedcomparisonCSV andmutablehelper excludedfromvariantfrozenmembers; rootappendfinalallvariantmanifestlater. No rawreceipt/result rewritten; startupfailureexcluded."
+}
