@@ -1,0 +1,99 @@
+{
+  "base_commit": "157258fb8c9844cccf4ae18d6716ab1fa6317ce7",
+  "failed_attempt_classification": "EXCLUDED_STARTUP_NO_ECONOMIC_RESULT",
+  "failed_job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018a",
+  "failed_receipt": "risk-first-cap50-startup-failure-receipt.json",
+  "failed_receipt_sha256": "3665bc929bd7568d97435bd039c0d54867f479d66a9e2f98732f98cfdad398f3",
+  "launcher_sha256": "7b744847969368f5c3d210935f16045d43d15c3efb8d9459f39a7653d9cad047",
+  "patch_sha256": "290ee0fc37cd7bdece1f43e33463c34d98edd85733206ac4d7a9e171769804a6",
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "preparations": [
+    {
+      "all_file_hashes_verified": true,
+      "causal_seed": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+          "completed_before_start": 2208,
+          "last_available_close_ms": 1725148800000,
+          "required_returns": 720,
+          "simple_returns_available": 2207
+        },
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+          "completed_before_start": 2208,
+          "last_available_close_ms": 1725148800000,
+          "required_returns": 720,
+          "simple_returns_available": 2207
+        }
+      },
+      "frozen_files": 90,
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-packaging-20261018a",
+      "launched": false,
+      "manifest_sha256": "34177073c779ea0d2a822a1781901d452fd979b83d7ee9838737c7f33a27cd58",
+      "mode": "cap50",
+      "original_87_files_identical": true,
+      "warmup_sha256": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+        "reports/btc-split-sol-cover-20261018/data-warmup-manifest.json": "da6f63a78ac71e98f1a97467e1fc4fa9d7e6218334026397b52d1a7319cd39b1"
+      }
+    },
+    {
+      "all_file_hashes_verified": true,
+      "causal_seed": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+          "completed_before_start": 2208,
+          "last_available_close_ms": 1725148800000,
+          "required_returns": 720,
+          "simple_returns_available": 2207
+        },
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+          "completed_before_start": 2208,
+          "last_available_close_ms": 1725148800000,
+          "required_returns": 720,
+          "simple_returns_available": 2207
+        }
+      },
+      "frozen_files": 90,
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-dd-cov-packaging-20261018a",
+      "launched": false,
+      "manifest_sha256": "34177073c779ea0d2a822a1781901d452fd979b83d7ee9838737c7f33a27cd58",
+      "mode": "dd-cov",
+      "original_87_files_identical": true,
+      "warmup_sha256": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+        "reports/btc-split-sol-cover-20261018/data-warmup-manifest.json": "da6f63a78ac71e98f1a97467e1fc4fa9d7e6218334026397b52d1a7319cd39b1"
+      }
+    },
+    {
+      "all_file_hashes_verified": true,
+      "causal_seed": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+          "completed_before_start": 2208,
+          "last_available_close_ms": 1725148800000,
+          "required_returns": 720,
+          "simple_returns_available": 2207
+        },
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+          "completed_before_start": 2208,
+          "last_available_close_ms": 1725148800000,
+          "required_returns": 720,
+          "simple_returns_available": 2207
+        }
+      },
+      "frozen_files": 90,
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-split-atr-packaging-20261018a",
+      "launched": false,
+      "manifest_sha256": "34177073c779ea0d2a822a1781901d452fd979b83d7ee9838737c7f33a27cd58",
+      "mode": "split-atr",
+      "original_87_files_identical": true,
+      "warmup_sha256": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+        "reports/btc-split-sol-cover-20261018/data-warmup-manifest.json": "da6f63a78ac71e98f1a97467e1fc4fa9d7e6218334026397b52d1a7319cd39b1"
+      }
+    }
+  ],
+  "scope": "one launcher warmup copy guard; runtime/core/tests unchanged",
+  "status": "PACKAGING_ONLY_PASS_NO_NATIVE_ENGINE_LAUNCHED",
+  "tests_rerun": false
+}

@@ -83,7 +83,7 @@ def main():
     # Existing public venue metadata are required by the native margin profile.
     files += [REPO/"runtime/pyproject.toml", REPO/"runtime/uv.lock", REPO/"runtime/var/venue-manifest.json"]
     files += [f for f in (REPO/"runtime/var/raw/venues").rglob("*") if f.is_file()]
-    if "--research-sol-cover" in args or "--research-conditional-sol" in args:
+    if "--research-sol-cover" in args or "--research-conditional-sol" in args or "--research-sol-risk-first" in args:
         pack = REPO/"reports/btc-split-sol-cover-20261018"
         files += [pack/"data-warmup-BTCUSDT-1h.csv",pack/"data-warmup-SOLUSDT-1h.csv",pack/"data-warmup-manifest.json"]
     hashes = {}

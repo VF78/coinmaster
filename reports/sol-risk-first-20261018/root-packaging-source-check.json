@@ -1,0 +1,24 @@
+{
+  "status": "ROOT_PACKAGING_ONLY_SOURCE_CHECK_PASS",
+  "base_commit": "157258fb8c9844cccf4ae18d6716ab1fa6317ce7",
+  "checks": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": true,
+    "runtime/coinmaster/strategy/conditional_hedge.py": true,
+    "runtime/coinmaster/strategy/wave_overlay.py": true,
+    "runtime/coinmaster/strategy/split_cover.py": true,
+    "runtime/coinmaster/research/native_baseline.py": true,
+    "runtime/coinmaster/research/minute_risk.py": true,
+    "runtime/tests/test_native_sol_risk_first.py": true,
+    "scripts/collect_split_cover_native.py": true,
+    "runtime/coinmaster/domain/wave_overlay.py": true,
+    "runtime/tests/test_native_conditional_hedge.py": true,
+    "launcher": true,
+    "packaging_patch": true,
+    "excluded_failure": true,
+    "verification_log": true,
+    "original_patch": true
+  },
+  "tests_rerun": false,
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "source_change": "one launcher warmup inclusion condition only; all 10 other reviewed source pins unchanged"
+}

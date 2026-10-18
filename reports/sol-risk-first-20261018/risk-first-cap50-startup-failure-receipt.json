@@ -1,0 +1,55 @@
+{
+  "status": "FAILED_STARTUP_MISSING_PUBLIC_WARMUP_PACKAGING_NO_ECONOMIC_RESULT",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018a",
+  "source_commit": "157258fb8c9844cccf4ae18d6716ab1fa6317ce7",
+  "frozen_files_verified": 87,
+  "manifest_sha256": "66db4658a73d521b1d156eacfa6d0790f2b49a9cbac2ba1397a534a50533cf0a",
+  "variant": {
+    "variant": "risk-first-cap50",
+    "flags": [
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1",
+      "--research-btc-split-tp-ioc",
+      "--research-sol-risk-first",
+      "cap50"
+    ],
+    "dp": "OFF",
+    "base_control": "V3_DIRECTION_LONG5.5_SHORT7.875",
+    "snapshot_time": "2026-10-18T19:11:25.954253+00:00"
+  },
+  "input_hashes": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+  },
+  "resources_before": {
+    "MemAvailable": 1373663232,
+    "disk_free": 3270377472
+  },
+  "journal_actual_exit": "Started cm115-split-risk-first-cap50-20261018a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018a/launch.sh.\ncm115-split-risk-first-cap50-20261018a.service: Main process exited, code=exited, status=1/FAILURE\ncm115-split-risk-first-cap50-20261018a.service: Failed with result 'exit-code'.\ncm115-split-risk-first-cap50-20261018a.service: Consumed 11.944s CPU time.\n",
+  "worker_log_sha256": "3b9a1059362f80aa0864cf64f3b1fed3428df2ce09830e2f3cf5354e751e36de",
+  "worker_error_tail": [
+    "  File \"/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018a/source/runtime/coinmaster/research/native_baseline.py\", line 1225, in run_research_v0_repairs_cli",
+    "    report = run_native_diagnostic(",
+    "             ^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018a/source/runtime/coinmaster/research/native_baseline.py\", line 794, in run_native_diagnostic",
+    "    cover_warmup_hashes[symbol] = sha256_file(source)",
+    "                                  ^^^^^^^^^^^^^^^^^^^",
+    "  File \"/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018a/source/runtime/coinmaster/research/job_protocol.py\", line 17, in sha256_file",
+    "    return hashlib.sha256(path.read_bytes()).hexdigest()",
+    "                          ^^^^^^^^^^^^^^^^^",
+    "  File \"/usr/lib/python3.12/pathlib.py\", line 1021, in read_bytes",
+    "    with self.open(mode='rb') as f:",
+    "         ^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open",
+    "    return io.open(self, mode, buffering, encoding, errors, newline)",
+    "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018a/source/reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv'"
+  ],
+  "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "rootcause": "launchhelperpublicwarmupcopyguardline86didnotincluderesearch-sol-risk-first; runtimecorrectlyrejectsmissingofficialhourlydata",
+  "economics": "NONE_NOT_COMPARABLE",
+  "automatic_retry": "NONE",
+  "remaining_variants": "NOT_LAUNCHED"
+}
