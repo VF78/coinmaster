@@ -545,3 +545,197 @@ def test_original_1000_after_btc_tp3_flat_late_pending_partial_add_then_native_r
         assert closes==[D(1000),D(1000)]
         assert not e.cache.positions_open() and not s._pending_by_order and s._domain.episode is None
     finally:e.end();e.dispose()
+
+
+
+def test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity(tmp_path):
+    from coinmaster.domain.wave_overlay import DailyBar,Features
+    from coinmaster.ops.paper import PaperRuntime
+    base=1725148800*1_000_000_000;minute=60_000_000_000;day=24*60*minute
+    t=lambda d,m=20:base+d*day+m*minute
+    plan={t(0):("ADD",3505,0,.02,10),t(1):("ADD",2505,0,.02,11),
+          t(2):("ADD",1505,0,.02,12),t(3):("ADD",505,0,.02,13),
+          t(4):("HALF",None,None,None,20),t(5):("FULL",None,None,None,21),
+          t(6):("ADD",1200,1,.04,30),t(7):("ADD",200,1,.04,31),
+          t(8):("HALF",None,None,None,40),t(9):("FULL",None,None,None,41)}
+    quiet={t(0)+minute,t(0)+2*minute,t(0)+3*minute,t(1)+minute,t(2)+minute,t(6)+minute,t(6)+2*minute}
+    settle={t(4)+minute,t(4)+2*minute,t(5)+minute,t(5)+2*minute}
+    snapshots_at=(set(plan)-{t(4),t(5)})|{t(4)+2*minute,t(5)+2*minute}
+    snapshots=[];outcomes=[]
+    for enabled in (False,True):
+        journal=PaperRuntime(tmp_path/("ab-on.sqlite" if enabled else "ab-off.sqlite"),"original-ioc-ab",10**20);journal.acquire()
+        class AB(NativeProbe):
+            scripted=False
+            last_add_count=0
+            records=[]
+            def on_quote_tick(self,q):
+                if self.scripted:marks(self,q.ts_event,"100","1")
+                super().on_quote_tick(q)
+                if not self.scripted or q.instrument_id!=SOL_PERP.id:return
+                ep=self._domain.episode
+                if q.ts_event in quiet:
+                    assert len([x for x in self.fill_audit if x["instrument"].startswith("SOL") and x["action"]=="SOL_ADD"])==self.last_add_count
+                if q.ts_event not in plan:return
+                action,qty,level,sigma,index=plan[q.ts_event]
+                assert ep is not None
+                self._domain._decision_index=index
+                if action=="ADD":
+                    assert level in ep.sol_rights
+                    intent=self._domain._intent(ep,"SOL_ADD",-ep.side,level,quantity=qty,reason="SOL_ADD")
+                else:
+                    now=datetime.fromtimestamp(q.ts_event/1e9,UTC)
+                    b=DailyBar(now-timedelta(days=1),now,now,100,100,1)
+                    f=Features(index,ep.side,1.,1.,0.,1.,0.)
+                    intents=self._domain._sol_exits(ep,f,b,index,z=.3 if action=="HALF" else 0.)
+                    assert len(intents)==1
+                    intent=intents[0]
+                    assert intent.action==("SOL_HALF_EXIT" if action=="HALF" else "SOL_EXIT")
+                self._submit_intent(intent,1,1,sigma,index,ts_now=q.ts_event)
+        s=AB(config().__replace__(research_conditional_sol=enabled,event_sink=journal.record_native_event));e=native_engine(s)
+        try:
+            run_ticks(e,[tick(BTC_PERP,base+1)])
+            prepare_day(s,base+2);marks(s,base+2,"100","1");seed_beta(s,base)
+            ep=s._domain.episode=Episode("native-ab",1,10000,1,wave_levels=(.5,.6,.7))
+            i=s._domain._intent(ep,"BTC_ENTRY",1,None,quantity=100)
+            s._submit_intent(i,100,100,.01,0,ts_now=base+2)
+            run_ticks(e,[tick(BTC_PERP,base+3),tick(BTC_PERP,base+4),tick(BTC_PERP,base+5,"99"),tick(SOL_PERP,base+6,"1")])
+            s.scripted=True
+            times=sorted(set(plan)|quiet|settle|{base+10*minute,t(6)-minute})
+            for ts in times:
+                bp="151" if ts==base+10*minute else "161" if ts==t(6)-minute else "100"
+                run_ticks(e,[tick(BTC_PERP,ts,bp),tick(SOL_PERP,ts,"1")])
+                if ts in snapshots_at:
+                    s.last_add_count=len([x for x in s.fill_audit if x["instrument"].startswith("SOL") and x["action"]=="SOL_ADD"])
+                    s.records.append({"time":ts,"qty":ep.sol_qty,"first_native":ep.sol_first_fill_at,
+                        "first_owned":ep.sol_first_owned_at,"sigma":ep.fixed_sigma,"native_notional":dict(ep.sol_add_filled_notional),
+                        "transfer_credit":dict(ep.sol_ownership_transfer_credit),"half_done":ep.sol_half_done,
+                        "half_index":ep.sol_half_decision_index,"original_pending":sum(i.action.startswith("SOL") for i in ep.pending.values())})
+                    assert s.records[-1]["original_pending"]==0
+                    if enabled:
+                        assert s._conditional["original_target"]==D(str(ep.sol_qty))
+                        assert not s._conditional["original_attempts"] and not s._conditional["adds"]
+
+            assert ep.sol_qty==0 and ep.sol_first_owned_at is None
+            if enabled:assert not s._conditional["active"] and s._conditional["armed_ns"] is None
+            snapshots.append(s.records)
+            s._begin_forced_close("REGIME")
+            for ts in range(t(9)+minute,t(9)+minute+3):run_ticks(e,[tick(BTC_PERP,ts),tick(SOL_PERP,ts,"1")])
+            assert not e.cache.positions_open() and not s._pending_by_order and s._domain.episode is None
+            fields=("fill_ns","instrument","px","qty","notional","commission","commission_currency","native_liquidity_side","order_type","post_only")
+            sfills=[{k:x[k] for k in fields} for x in s.fill_audit if x["instrument"].startswith("SOL")]
+            assert all(x["native_liquidity_side"]=="TAKER" and x["post_only"]=="false" for x in sfills)
+            assert sum((D(x["commission"]) for x in sfills),D(0))==D(9410)*D(str(SOL_PERP.taker_fee))
+            orders=[{"quantity":str(o.quantity),"filled":str(o.filled_qty),"type":int(o.order_type),
+                "tif":int(o.time_in_force),"reduce_only":o.is_reduce_only,"closed":o.is_closed,"status":int(o.status),
+                "init":o.ts_init,"last":o.ts_last} for o in e.cache.orders() if o.instrument_id==SOL_PERP.id]
+            account=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
+            fees=sum((D(x["commission"]) for x in s.fill_audit),D(0))
+            flow=sum((o.filled_qty.as_decimal()*D(str(o.avg_px))*(1 if o.side==OrderSide.SELL else -1) for o in e.cache.orders() if o.filled_qty.as_decimal()>0),D(0))
+            realized=flow-fees
+            assert account==D(10000)+realized and any(x["kind"]=="fill" for x in journal.events())
+            outcomes.append({"native_SOL_fills":sfills,"native_SOL_orders":orders,"account":account,
+                "all_native_fees":sum((D(x["commission"]) for x in s.fill_audit),D(0)),"realized":realized})
+        finally:e.end();e.dispose();journal.close()
+    assert snapshots[0]==snapshots[1]
+    assert outcomes[0]==outcomes[1]
+
+
+
+def test_original_ioc_terminal_drops_Oshortfall_but_active_Qc_reconciles_protective_only():
+    class Hold(NativeProbe):
+        hold=False
+        def submit_order(self,order,*a,**kw):
+            i=self._pending_by_order.get(str(order.client_order_id))
+            if self.hold and i and i.reason=="CONDITIONAL_NET_ADD":self.held=order;return
+            return super().submit_order(order,*a,**kw)
+    s,e,ep=setup(probe=Hold)
+    try:
+        marks(s,7,"100",".4");run_ticks(e,[tick(BTC_PERP,8,"151"),tick(SOL_PERP,8,".4")])
+        assert 0 in ep.sol_rights
+        s.hold=True
+        i=s._domain._intent(ep,"SOL_ADD",-1,0,quantity=3505,reason="SOL_ADD")
+        s._submit_intent(i,.4,.4,.02,0,ts_now=9);run_ticks(e,[tick(SOL_PERP,9,".4")])
+        old=s.held;physical=s._pending_by_order[str(old.client_order_id)]
+        marks(s,10,"96",".4");run_ticks(e,[tick(BTC_PERP,10,"96"),tick(SOL_PERP,11,".4")])
+        kind=s.config.research_confirmation_bars[2]
+        s.on_bar(bar(kind,9,.4,.41,.39));s.on_bar(bar(kind,12,.38))
+        run_ticks(e,[tick(SOL_PERP,13,".4")])
+        c=s._conditional
+        assert c["active"] and c["qc"]>3505 and ep.sol_qty==0
+        assert c["original_attempts"][physical.id]==(i.id,) and len([x for x in s._pending_by_order.values() if x.action=="SOL_ADD"])==1
+        s.hold=False;NativeProbe.submit_order(s,old)
+        for ts in range(14,24):run_ticks(e,[tick(SOL_PERP,ts,".4")])
+        assert e.cache.order(old.client_order_id).is_closed and e.cache.order(old.client_order_id).filled_qty.as_decimal()==1000
+        assert c["original_target"]==1000 and ep.sol_qty==1000 and not c["adds"] and not c["original_attempts"]
+        assert ep.sol_add_filled_notional[0]==400 and not ep.sol_ownership_transfer_credit
+        assert next(p.quantity.as_decimal() for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)==c["qc"]
+        future=[x for x in s.conditional_audit if x["event"]=="NATIVE_FILL" and x["physical_intent"]!=physical.id]
+        assert future and all(D(x["original_native_quantity"])==0 for x in future)
+        assert sum((D(x["conditional_native_quantity"]) for x in future),D(0))>0
+        s._begin_forced_close("REGIME")
+        for ts in range(30,42):run_ticks(e,[tick(BTC_PERP,ts,"96"),tick(SOL_PERP,ts,".4")])
+        assert not e.cache.positions_open() and not s._pending_by_order
+        account=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
+        assert account==D(10000)+sum((p.realized_pnl.as_decimal() for p in e.cache.positions_closed()),D(0))
+    finally:e.end();e.dispose()
+
+
+@pytest.mark.parametrize("terminal",["denied","rejected","expired","partial_cancel"])
+def test_original_attempt_terminal_cannot_release_or_fill_newer_authorization(terminal):
+    from types import SimpleNamespace
+    from nautilus_trader.model.events import OrderDenied,OrderRejected
+    from nautilus_trader.core.uuid import UUID4
+    from nautilus_trader.model.identifiers import AccountId
+    class Hold(NativeProbe):
+        hold=False;old_physical=None;observed=None
+        def submit_order(self,order,*a,**kw):
+            i=self._pending_by_order.get(str(order.client_order_id))
+            if self.hold and i and i.reason=="CONDITIONAL_NET_ADD":self.held=order;return
+            return super().submit_order(order,*a,**kw)
+        def _conditional_attempt_terminal(self,intent,ts,cause,order_id=None):
+            bound=self._conditional is not None and intent is not None and intent.id in self._conditional["original_attempts"]
+            super()._conditional_attempt_terminal(intent,ts,cause,order_id)
+            if bound and intent.id==self.old_physical:
+                self.observed={"remaining":{t["intent"].id:t["remaining"] for t in self._conditional["adds"]},
+                    "desired":self._conditional["original_target"],"new_native_notional":self._domain.episode.sol_add_filled_notional.get(1),
+                    "new_credit":self._domain.episode.sol_ownership_transfer_credit.get(1)}
+    s,e,ep=setup(probe=Hold)
+    try:
+        marks(s,7,"100","1");run_ticks(e,[tick(BTC_PERP,8,"161"),tick(SOL_PERP,8,"1"),tick(BTC_PERP,9,"161")])
+        assert {0,1}<=ep.sol_rights
+        s.hold=True
+        old_intent=s._domain._intent(ep,"SOL_ADD",-1,0,quantity=3505,reason="SOL_ADD")
+        s._submit_intent(old_intent,1,1,.02,0,ts_now=10);run_ticks(e,[tick(SOL_PERP,10,"1")])
+        old=s.held;s.old_physical=s._pending_by_order[str(old.client_order_id)].id
+        new=s._domain._intent(ep,"SOL_ADD",-1,1,quantity=200,reason="SOL_ADD")
+        s._submit_intent(new,1,1,.07,1,ts_now=11)
+        run_ticks(e,[tick(SOL_PERP,11,"1"),tick(SOL_PERP,12,"1")])
+        assert s._conditional["original_target"]==3705 and ep.sol_qty==0
+        assert s._conditional["original_attempts"][s.old_physical]==(old_intent.id,)
+        before=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
+        if terminal=="partial_cancel":
+            NativeProbe.submit_order(s,old);run_ticks(e,[tick(SOL_PERP,13,"1")])
+        elif terminal=="denied":
+            s.on_order_denied(OrderDenied(old.trader_id,old.strategy_id,old.instrument_id,old.client_order_id,"DENIED",UUID4(),13))
+        elif terminal=="rejected":
+            s.on_order_rejected(OrderRejected(old.trader_id,old.strategy_id,old.instrument_id,old.client_order_id,AccountId("P1SIM-001"),"REJECTED",UUID4(),13,13))
+        else:s.on_order_expired(SimpleNamespace(client_order_id=old.client_order_id))
+        assert s.observed["remaining"]=={new.id:D(200)}
+        assert s.observed["desired"]==D(1200 if terminal=="partial_cancel" else 200)
+        assert s.observed["new_native_notional"] is None and s.observed["new_credit"] is None
+        if terminal!="partial_cancel":
+            assert e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()==before
+        run_ticks(e,[tick(SOL_PERP,14,"1"),tick(SOL_PERP,15,"1")])
+        newer=s.held;assert newer.client_order_id!=old.client_order_id
+        s.hold=False;NativeProbe.submit_order(s,newer)
+        run_ticks(e,[tick(SOL_PERP,16,"1"),tick(SOL_PERP,17,"1")])
+        assert ep.sol_add_filled_notional[1]==200 and not s._conditional["adds"]
+        assert ep.sol_qty==(1200 if terminal=="partial_cancel" else 200)
+        assert s._conditional["original_target"]==D(str(ep.sol_qty))
+        assert not ep.sol_ownership_transfer_credit
+        s._begin_forced_close("REGIME")
+        for ts in range(20,25):run_ticks(e,[tick(BTC_PERP,ts),tick(SOL_PERP,ts,"1")])
+        assert not e.cache.positions_open() and not s._pending_by_order
+        account=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
+        assert account==D(10000)+sum((p.realized_pnl.as_decimal() for p in e.cache.positions_closed()),D(0))
+    finally:e.end();e.dispose()

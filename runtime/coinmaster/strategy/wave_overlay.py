@@ -2381,6 +2381,8 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
             self._domain.on_half_exit_decision(max(self._decision_index_by_order.get(client_order_id, intent.decision_index), len(self._bars) - 1))
         if not order_closed:
             return
+        if self.config.research_conditional_sol:
+            self._conditional_attempt_terminal(intent,ts_event,"NATIVE_TERMINAL_AFTER_FILL",client_order_id)
         self._domain.on_parent_terminal(intent.id)
         self._pending_by_order.pop(client_order_id, None)
         self._sigma_by_order.pop(client_order_id, None)
@@ -2440,6 +2442,8 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
                 self._forced_close_submitted.discard(order.instrument_id)
             self._forced_close_orders.discard(client_order_id)
         intent = self._pending_by_order.pop(str(event.client_order_id), None)
+        if self.config.research_conditional_sol:
+            self._conditional_attempt_terminal(intent,event.ts_event,"CANCELED",str(event.client_order_id))
         if intent is not None and intent.action == "BTC_ENTRY":
             self._daily_decision_reason = (
                 "PARTIAL_ENTRY_RETAINED" if self._domain.episode is not None and self._domain.episode.btc_initial_qty > 0
@@ -2566,7 +2570,7 @@ class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
     def _terminal_without_fill(self, client_order_id: str) -> None:
         failed_intent = self._pending_by_order.get(client_order_id)
         if self.config.research_conditional_sol:
-            self._conditional_failed(failed_intent,self.clock.timestamp_ns())
+            self._conditional_failed(failed_intent,self.clock.timestamp_ns(),client_order_id)
         if failed_intent and failed_intent.reason and failed_intent.reason.startswith("SOL_COVER") and self._cover_cycle:
             self._cover_cycle["incomplete"] = True
             self._cover_cycle["retry_after_ns"] = self.clock.timestamp_ns() + 3_600_000_000_000

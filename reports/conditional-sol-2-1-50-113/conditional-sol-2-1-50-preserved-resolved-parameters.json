@@ -1,0 +1,174 @@
+{
+  "scope": "REJECTED_ORIGINAL_IOC_CADENCE_CHANGED_NOT_REQUESTED_STRATEGY_RESULT",
+  "source_commit": "07339b7f8f9360ec4ddce8ac2b46da75e4697c63",
+  "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-preserved-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction.json",
+  "artifact_sha256": "c423c365aef18bbc4770f4476ec369947952f4d3e2269e2752031fb97e4b999a",
+  "run_variant": {
+    "variant": "conditional-sol-2-1-50",
+    "flags": [
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1",
+      "--research-btc-split-tp-ioc",
+      "--research-conditional-sol"
+    ],
+    "dp": "OFF",
+    "base_control": "V3_DIRECTION_LONG5.5_SHORT7.875",
+    "snapshot_time": "2026-10-18T16:20:36.329121+00:00"
+  },
+  "resolved_config": {
+    "account": "SIM_MARGIN_USDT_10000",
+    "btc_close_stop_fraction": null,
+    "btc_management_reference_policy": "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1",
+    "candidate": {
+      "beta_days": 270,
+      "btc_close_trail_fraction": 0.03,
+      "btc_notional_multiplier": 7.875,
+      "btc_tp_fractions_initial_qty": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "ema_period": 34,
+      "episode_fixed_beta": false,
+      "max_parent_notional": 30000000.0,
+      "relative_days": 65,
+      "sol_entry_z": [
+        1.25,
+        2.5,
+        3.75
+      ],
+      "sol_exit_all_z": 0.125,
+      "sol_exit_half_z": 0.375,
+      "sol_late_entry_after_tp": true,
+      "sol_max_holding_days": 14,
+      "sol_overlay_enabled": true,
+      "sol_size_multipliers_h": [
+        1.75,
+        2.625,
+        3.5
+      ],
+      "sol_timeout_preempts_add": false,
+      "wave_history_days": 730,
+      "wave_min_count": 8,
+      "wave_quantiles": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "z_history_days": 180
+    },
+    "conditional_sol_policy": {
+      "arm": ">0.02_actual_blended_BTC_VWAP",
+      "confirmation": "POST_ARM_CLOSED_SOL15m_OR1h_PREVIOUS_BAR_BREAK_NEXT_FRESH_QUOTE",
+      "coverage": "0.50_actual_BTC_beta720completed1H_frozen",
+      "net_target": "MAX_ORIGINAL_AUTHORIZED_REMAINING_AND_CONDITIONAL",
+      "off": "<=0.01_immediate_fresh_BTC_mark",
+      "ownership_transfer": "SEPARATE_AUTHORIZATION_CREDIT_NO_NATIVE_FILL_OR_PNL",
+      "quantity_cadence": "LATCH_ACTIVATION_AND_ACTUAL_BTC_QUANTITY_CHANGE_ONLY_NO_PRICE_ONLY_REBALANCE"
+    },
+    "cover_hour_warmup_sha256": {
+      "BTCUSDT": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+      "SOLUSDT": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506"
+    },
+    "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH",
+    "execution_policy": {
+      "execution_delay_minutes": 1,
+      "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+      "fee_historical_applicability": "UNKNOWN",
+      "fee_multiplier": "1",
+      "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+      "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+      "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+      "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+      "nonmatching_daily_signals": true,
+      "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+      "symmetric_adverse_spread_bps": "0",
+      "version": "bybit-native-resting-reductions-v2"
+    },
+    "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+    "fixed_base_fee_policy": {
+      "bybit_maker": "0.00020",
+      "bybit_taker": "0.00055",
+      "hyperliquid_maker": "0.00015",
+      "hyperliquid_taker": "0.00045",
+      "venue": "bybit",
+      "version": "fixed-base-native-maker-taker-execution-v3"
+    },
+    "freeze_sigma_on_first_sol_fill": true,
+    "future_sol_margin_fraction": "0",
+    "include_zero_waves": true,
+    "initial_active_fraction": "1.0",
+    "initial_total_usdt": "10000",
+    "insufficient_margin": "reject",
+    "live_enabled": false,
+    "mode": "paper",
+    "portfolio_loss_limit_fraction": null,
+    "positive_tp_ioc_policy": "COMPLETED_PARENT_CROSSED_POSITIVE_TARGET_NATIVE_IOC_ACTUAL_TAKER",
+    "post_liquidation": "restart_from_reserve_else_pause",
+    "research_btc_direction_sizing": {
+      "freeze": "GENUINE_EPISODE_CREATION",
+      "long": "5.5",
+      "short": "7.875"
+    },
+    "research_btc_split50": true,
+    "research_btc_split_discount": "0.0025",
+    "research_btc_split_planref_v1": true,
+    "research_btc_split_tp_ioc": true,
+    "research_conditional_sol": true,
+    "research_sol_cover": null,
+    "research_v0_deferred_selective_zero_tp": true,
+    "research_v0_execution_repairs": true,
+    "research_v0_selective_lifecycle_repairs": true,
+    "research_v0_zero_tp_netting": false,
+    "reserve_transfer_fraction": "0",
+    "reserve_trigger_multiple": "4",
+    "restart_target": "initial_active_seed",
+    "run_interval": {
+      "end_exclusive": "2026-09-01T00:00:00+00:00",
+      "initial_active_seed": "10000",
+      "start": "2024-09-01T00:00:00+00:00"
+    },
+    "signal_timeframe": "1D",
+    "sol_direction": "opposite_btc",
+    "sol_entry_eligibility": "persistent_after_btc_level",
+    "sol_z_stop": null,
+    "strategy_id": "btc_sol_wave_overlay_v1",
+    "tier_assumption": "CURRENT_PUBLIC_BYBIT_40X_BTC_20X_SOL_HISTORICAL_APPLICABILITY_UNKNOWN",
+    "tp_fee_floor_v1": false,
+    "venue": "bybit"
+  },
+  "execution_policy": {
+    "execution_delay_minutes": 1,
+    "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+    "fee_historical_applicability": "UNKNOWN",
+    "fee_multiplier": "1",
+    "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+    "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+    "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+    "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+    "nonmatching_daily_signals": true,
+    "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+    "symmetric_adverse_spread_bps": "0",
+    "version": "bybit-native-resting-reductions-v2"
+  },
+  "config_hash": "417994fdfcf9d6769b7eb61b1356b99aaaee8067a87fd59eea5ab6c9d434e2c1",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "source_hashes": {
+    "conditional_hedge": "d5c060df0edf6ded45cdb3ed96500ff509791580c7d612603f5f3527f39ee640",
+    "native_baseline": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+    "split_cover": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "wave_domain": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "wave_strategy": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589"
+  },
+  "canonical_input_hashes": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+  },
+  "native_total": "19158.84958217",
+  "native_fees": "51303.93332137",
+  "native_liquidation_count": 1,
+  "interpretation": "Nativeaccountingresultofrejectedexecutionsemanticcase;notROIofuserrequestedconditional-onlystrategy"
+}

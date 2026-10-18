@@ -150,7 +150,7 @@ def coverage(r, events, audit):
     return dict(time_seconds=dict(c), mean=sums / c['known_seconds'] if c['known_seconds'] else None, minimum=lo, maximum=hi, quantiles_0001=quant, matched_actual_fill_rows=matched, formula='signed-opposite abs(SOLactual)*SOLmark*beta/(abs(BTCactual)*BTCmark)', limitations='Total actual NETTING inventory, not independent original/protection positions. One completed-minute quote counted60s; no intraminute path or hard coverage cap. Raw canonical mark close, no PnL reconstruction.')
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--receipt', required=True); ap.add_argument('--coverage', action='store_true'); ap.add_argument('--output-prefix', default='preserved-analysis'); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument('--receipt', required=True); ap.add_argument('--coverage', action='store_true'); ap.add_argument('--output-prefix', default='preserved-analysis'); ap.add_argument('--final-status', choices=['ACTUAL_RECEIPT_VERIFIED', 'REJECTED_ORIGINAL_IOC_CADENCE_CHANGED'], required=True); a = ap.parse_args()
     assert a.output_prefix and all(c.isalnum() or c in '-_' for c in a.output_prefix), 'Unsafe output prefix'
     assert not (OUT / (a.output_prefix + '-summary.json')).exists(), 'Preserve prior summary; choose a new prefix'
     assert not (OUT / (a.output_prefix + '-permissions.csv')).exists(), 'Preserve prior permission evidence'
@@ -165,7 +165,7 @@ def main():
     assert D(r['terminal_total']) == D(receipt['terminal_total'])
     assert r['terminal_open_positions'] == 0, 'Final flat receipt required'
     cm, _ = economics(control); nm, events = economics(r); pp, ps = permissions(control, r); tm, audit = telemetry(r)
-    result = dict(status='ACTUAL_RECEIPT_VERIFIED', receipt=str(Path(a.receipt)), receipt_sha256=digest(a.receipt), candidate_result=path, candidate_result_sha256=digest(path), control_result=cr['result'], control_result_sha256=cr['result_sha256'], control=cm, candidate=nm, delta_TOTAL=D(nm['TOTAL']) - D(cm['TOTAL']), BTC_permissions=ps, conditional=tm,
+    result = dict(status=a.final_status, receipt=str(Path(a.receipt)), receipt_sha256=digest(a.receipt), candidate_result=path, candidate_result_sha256=digest(path), control_result=cr['result'], control_result_sha256=cr['result_sha256'], control=cm, candidate=nm, delta_TOTAL=D(nm['TOTAL']) - D(cm['TOTAL']), BTC_permissions=ps, conditional=tm,
         coverage=coverage(r, events, audit) if a.coverage else 'PENDING_OPTIONAL_LOW_MEMORY_CANONICAL_MARK_PASS', peak_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         limitations=['Authoritative native TOTAL/DD unchanged. Asset weighted-average fill diagnostics are not native settled asset cash. Funding UNKNOWN; residual not funding.', 'No liveDP50ROI/HL fidelity, no intraminuteDD guarantee. Transfers are logical ownership, not native fills. No protective bucket PnL ledger.'])
     rows(a.output_prefix + '-permissions.csv', pp); write(a.output_prefix + '-summary.json', result)

@@ -44,7 +44,7 @@ class ConditionalSolResearch:
         if self._conditional is None or self._conditional["episode_id"]!=ep.id:
             self._conditional={"episode_id":ep.id,"side":ep.side,"beta":None,"beta_ns":None,
                 "armed_ns":None,"active":False,"confirm":None,"last_mark_ns":None,
-                "original_target":D(str(ep.sol_qty)),"adds":[],"exits":[],"qc":D(0),"qc_btc_qty":None,"retry_ns":0}
+                "original_target":D(str(ep.sol_qty)),"adds":[],"exits":[],"qc":D(0),"qc_btc_qty":None,"retry_ns":0,"original_attempts":{}}
         c=self._conditional
         if c["beta"] is None and any(p.instrument_id==self.config.btc_id for p in self.cache.positions_open()):
             estimate=self._cover_beta(ts)
@@ -106,9 +106,11 @@ class ConditionalSolResearch:
                     remaining.append(t)
             c[name]=remaining
 
-    def _conditional_assign(self,quantity,ts,price):
+    def _conditional_assign(self,quantity,ts,price,task_ids=None):
         c=self._conditional;ep=self._domain.episode
         for t in c["adds"]:
+            if task_ids is not None and t["intent"].id not in task_ids:
+                continue
             q=min(quantity,t["remaining"])
             if q<=0:
                 continue
@@ -204,12 +206,15 @@ class ConditionalSolResearch:
             if not btc and not sol and self._group_close_reconciliation_pending:
                 self._reconcile_group_flat()  # Existing authorized close only; TP-flat retains its episode.
             return
-        if delta>0 and (not self._entries_enabled() or ts<c["retry_ns"] or not bqty and not c["adds"]):
+        if delta>0 and (not self._entries_enabled() or ts<c["retry_ns"] and not c["adds"] or not bqty and not c["adds"]):
             return
         action="SOL_ADD" if delta>0 else "SOL_EXIT"
         i=self._domain._intent(ep,action,-ep.side if delta>0 else ep.side,None,quantity=float(quantity),reason="CONDITIONAL_NET_ADD" if delta>0 else "CONDITIONAL_NET_EXIT")
         c["physical_intent"]=i.id
-        self._conditional_emit("TARGET" if delta>0 else "TRIM",ts,quantity=str(quantity),reason=i.reason,physical_intent=i.id)
+        bound=tuple(t["intent"].id for t in c["adds"]) if delta>0 else ()
+        if delta>0:
+            c["original_attempts"][i.id]=bound
+        self._conditional_emit("TARGET" if delta>0 else "TRIM",ts,quantity=str(quantity),reason=i.reason,physical_intent=i.id,original_attempt_ids=list(bound))
         self._conditional_physical=True
         try:
             self._submit_intent(i,float(tick.bid_price),float(tick.ask_price),None,len(self._bars)-1,ts_now=ts)
@@ -223,12 +228,15 @@ class ConditionalSolResearch:
         q=D(str(quantity));px=D(str(price));when=datetime.fromtimestamp(ts/1e9,UTC)
         original_native=D(0)
         if intent.action=="SOL_ADD":
+            bound=c["original_attempts"].get(intent.id,())
             # Only now is a required native original admission fill-confirmed.
             held=next((p.quantity.as_decimal() for p in self.cache.positions_open() if p.instrument_id==self.config.sol_id),D(0))
             available=max(D(0),held-D(str(ep.sol_qty))-q)
             if c["adds"] and available:
-                self._conditional_assign(available,ts,px)
+                self._conditional_assign(available,ts,px,task_ids=bound)
             for t in c["adds"]:
+                if t["intent"].id not in bound:
+                    continue
                 part=min(q,t["remaining"])
                 if part<=0:
                     continue
@@ -254,14 +262,30 @@ class ConditionalSolResearch:
         c["adds"]=[]
         self._conditional_emit("ORIGINAL_UNFILLED_CANCELED",ts)
 
-    def _conditional_failed(self,intent,ts):
-        if not self._conditional_enabled() or self._conditional is None:
+    def _conditional_attempt_terminal(self,intent,ts,cause,order_id=None):
+        if not self._conditional_enabled() or self._conditional is None or intent is None or intent.reason!="CONDITIONAL_NET_ADD":
             return
         c=self._conditional
-        if intent and intent.reason=="CONDITIONAL_NET_ADD":
-            # Unfilled original authorizations roll back; real partial allocations remain.
-            for t in c["adds"]:
+        bound=c["original_attempts"].pop(intent.id,None)
+        if bound is None:
+            return  # ACK is not terminal; repeated native receipts are idempotent.
+        retained=[];released=D(0)
+        for t in c["adds"]:
+            if t["intent"].id in bound:
+                released+=t["remaining"]
                 c["original_target"]-=t["remaining"]
                 self._domain.on_parent_terminal(t["intent"].id)
-            c["adds"]=[];c["retry_ns"]=ts+HOUR
+            else:
+                retained.append(t)
+        c["adds"]=retained
+        self._conditional_emit("ORIGINAL_ATTEMPT_TERMINAL",ts,physical_intent=intent.id,
+            native_order_id=order_id,terminal_cause=cause,original_attempt_ids=list(bound),
+            unfilled_original_authorization_released=str(released))
+
+    def _conditional_failed(self,intent,ts,order_id=None):
+        if not self._conditional_enabled() or self._conditional is None:
+            return
+        if intent and intent.reason=="CONDITIONAL_NET_ADD":
+            self._conditional_attempt_terminal(intent,ts,"DENIED_REJECTED_EXPIRED",order_id)
+            self._conditional["retry_ns"]=ts+HOUR
             self._conditional_emit("NATIVE_ADD_DENIED",ts)

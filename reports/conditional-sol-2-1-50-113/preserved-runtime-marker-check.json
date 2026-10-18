@@ -1,0 +1,24 @@
+{
+  "timestamp_UTC": "2026-10-18T16:22:47.179186+00:00",
+  "last_funding_UTC": "2024-11-07T00:00:00+00:00",
+  "unit": "MemoryCurrent=454172672\nMemoryPeak=502923264\nCPUUsageNSec=127827912000\nActiveState=active",
+  "one_authorized_fault_check": {
+    "worker": {
+      "Traceback": 0,
+      "Exception": 0,
+      "ERROR": 0,
+      "fault": 0,
+      "denied": 0,
+      "rejected": 0
+    },
+    "unit": {
+      "Traceback": 0,
+      "Exception": 0,
+      "ERROR": 0,
+      "fault": 0,
+      "denied": 0,
+      "rejected": 0
+    }
+  },
+  "economics": "NOT_INSPECTED"
+}

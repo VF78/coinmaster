@@ -1,0 +1,116 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity _
+
+tmp_path = PosixPath('/tmp/cm116-original-ioc-ab-c/test_original_ioc_two_cycle_un0')
+
+    def test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity(tmp_path):
+        from coinmaster.domain.wave_overlay import DailyBar,Features
+        from coinmaster.ops.paper import PaperRuntime
+        base=1725148800*1_000_000_000;minute=60_000_000_000;day=24*60*minute
+        t=lambda d,m=20:base+d*day+m*minute
+        plan={t(0):("ADD",3505,0,.02,10),t(1):("ADD",2505,0,.02,11),
+              t(2):("ADD",1505,0,.02,12),t(3):("ADD",505,0,.02,13),
+              t(4):("HALF",None,None,None,20),t(5):("FULL",None,None,None,21),
+              t(6):("ADD",1200,1,.04,30),t(7):("ADD",200,1,.04,31),
+              t(8):("HALF",None,None,None,40),t(9):("FULL",None,None,None,41)}
+        quiet={t(0)+minute,t(0)+2*minute,t(0)+3*minute,t(1)+minute,t(2)+minute,t(6)+minute,t(6)+2*minute}
+        settle={t(4)+minute,t(4)+2*minute,t(5)+minute,t(5)+2*minute}
+        snapshots_at=(set(plan)-{t(4),t(5)})|{t(4)+2*minute,t(5)+2*minute}
+        snapshots=[];outcomes=[]
+        for enabled in (False,True):
+            journal=PaperRuntime(tmp_path/("ab-on.sqlite" if enabled else "ab-off.sqlite"),"original-ioc-ab",10**20);journal.acquire()
+            class AB(NativeProbe):
+                scripted=False
+                last_add_count=0
+                records=[]
+                def on_quote_tick(self,q):
+                    if self.scripted:marks(self,q.ts_event,"100","1")
+                    super().on_quote_tick(q)
+                    if not self.scripted or q.instrument_id!=SOL_PERP.id:return
+                    ep=self._domain.episode
+                    if q.ts_event in quiet:
+                        assert len([x for x in self.fill_audit if x["instrument"].startswith("SOL") and x["action"]=="SOL_ADD"])==self.last_add_count
+                    if q.ts_event not in plan:return
+                    action,qty,level,sigma,index=plan[q.ts_event]
+                    assert ep is not None
+                    self._domain._decision_index=index
+                    if action=="ADD":
+                        assert level in ep.sol_rights
+                        intent=self._domain._intent(ep,"SOL_ADD",-ep.side,level,quantity=qty,reason="SOL_ADD")
+                    else:
+                        now=datetime.fromtimestamp(q.ts_event/1e9,UTC)
+                        b=DailyBar(now-timedelta(days=1),now,now,100,100,1)
+                        f=Features(index,ep.side,1.,1.,0.,1.,0.)
+                        intents=self._domain._sol_exits(ep,f,b,index,z=.3 if action=="HALF" else 0.)
+                        assert len(intents)==1
+                        intent=intents[0]
+                        assert intent.action==("SOL_HALF_EXIT" if action=="HALF" else "SOL_EXIT")
+                    self._submit_intent(intent,1,1,sigma,index,ts_now=q.ts_event)
+            s=AB(config().__replace__(research_conditional_sol=enabled,event_sink=journal.record_native_event));e=native_engine(s)
+            try:
+                run_ticks(e,[tick(BTC_PERP,base+1)])
+                prepare_day(s,base+2);marks(s,base+2,"100","1");seed_beta(s,base)
+                ep=s._domain.episode=Episode("native-ab",1,10000,1,wave_levels=(.5,.6,.7))
+                i=s._domain._intent(ep,"BTC_ENTRY",1,None,quantity=100)
+                s._submit_intent(i,100,100,.01,0,ts_now=base+2)
+                run_ticks(e,[tick(BTC_PERP,base+3),tick(BTC_PERP,base+4),tick(BTC_PERP,base+5,"99"),tick(SOL_PERP,base+6,"1")])
+                s.scripted=True
+                times=sorted(set(plan)|quiet|settle|{base+10*minute,t(6)-minute})
+                for ts in times:
+                    bp="151" if ts==base+10*minute else "161" if ts==t(6)-minute else "100"
+                    run_ticks(e,[tick(BTC_PERP,ts,bp),tick(SOL_PERP,ts,"1")])
+                    if ts in snapshots_at:
+                        s.last_add_count=len([x for x in s.fill_audit if x["instrument"].startswith("SOL") and x["action"]=="SOL_ADD"])
+                        s.records.append({"time":ts,"qty":ep.sol_qty,"first_native":ep.sol_first_fill_at,
+                            "first_owned":ep.sol_first_owned_at,"sigma":ep.fixed_sigma,"native_notional":dict(ep.sol_add_filled_notional),
+                            "transfer_credit":dict(ep.sol_ownership_transfer_credit),"half_done":ep.sol_half_done,
+                            "half_index":ep.sol_half_decision_index,"original_pending":sum(i.action.startswith("SOL") for i in ep.pending.values())})
+                        assert s.records[-1]["original_pending"]==0
+                        if enabled:
+                            assert s._conditional["original_target"]==D(str(ep.sol_qty))
+                            assert not s._conditional["original_attempts"] and not s._conditional["adds"]
+    
+                assert ep.sol_qty==0 and ep.sol_first_owned_at is None
+                if enabled:assert not s._conditional["active"] and s._conditional["armed_ns"] is None
+                snapshots.append(s.records)
+                s._begin_forced_close("REGIME")
+                for ts in range(t(9)+minute,t(9)+minute+3):run_ticks(e,[tick(BTC_PERP,ts),tick(SOL_PERP,ts,"1")])
+                assert not e.cache.positions_open() and not s._pending_by_order and s._domain.episode is None
+                fields=("fill_ns","instrument","px","qty","notional","commission","commission_currency","native_liquidity_side","order_type","post_only")
+                sfills=[{k:x[k] for k in fields} for x in s.fill_audit if x["instrument"].startswith("SOL")]
+                assert all(x["native_liquidity_side"]=="TAKER" and x["post_only"]=="false" for x in sfills)
+                assert sum((D(x["commission"]) for x in sfills),D(0))==D(9410)*D(str(SOL_PERP.taker_fee))
+                orders=[{"quantity":str(o.quantity),"filled":str(o.filled_qty),"type":int(o.order_type),
+                    "tif":int(o.time_in_force),"reduce_only":o.is_reduce_only,"closed":o.is_closed,"status":int(o.status),
+                    "init":o.ts_init,"last":o.ts_last} for o in e.cache.orders() if o.instrument_id==SOL_PERP.id]
+                account=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
+                realized=sum((p.realized_pnl.as_decimal() for p in e.cache.positions_closed()),D(0))
+>               assert account==D(10000)+realized and any(x["kind"]=="fill" for x in journal.events())
+E               AssertionError: assert (Decimal('12341.99625') == (Decimal('10000') + Decimal('2349.00625')))
+E                +  where Decimal('10000') = D(10000)
+
+runtime/tests/test_native_conditional_hedge.py:633: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m2024-09-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m2024-09-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:328: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:636: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose();journal.close()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+1 failed, 6 warnings in 3.54s
