@@ -1,0 +1,37 @@
+{
+  "issue118": {
+    "number": 118,
+    "html_url": "https://github.com/VF78/coinmaster/issues/118",
+    "state": "closed",
+    "state_reason": "completed",
+    "updated_at": "2026-10-18T20:34:06Z"
+  },
+  "project_readback": {
+    "data": {
+      "node": {
+        "id": "PVTI_lAHOBIUvJs4BPJNjzhBp-0w",
+        "project": {
+          "number": 2
+        },
+        "content": {
+          "number": 118,
+          "title": "[R2 SOL Risk] Three independent drawdown-first variants: held cap, portfolio target, split execution",
+          "state": "CLOSED"
+        },
+        "fieldValueByName": {
+          "name": "Done"
+        }
+      }
+    }
+  },
+  "parent113": {
+    "number": 113,
+    "html_url": "https://github.com/VF78/coinmaster/issues/113",
+    "state": "open",
+    "updated_at": "2026-10-18T20:34:37Z"
+  },
+  "parent_current_child_status_updated": true,
+  "report_commit": "73ebf8658d4e1724172e4509dc7ccc4ec0674f83",
+  "selection": "NO_ELIGIBLE_WINNER",
+  "next_engine": "NONE"
+}
