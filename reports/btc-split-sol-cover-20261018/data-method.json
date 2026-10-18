@@ -1,0 +1,12 @@
+{
+  "scope": "Same historical path price screening, NOT native ROI or execution proof",
+  "control_total": "5437208.56951095",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "rows_per_stream": 1051200,
+  "parents": 105,
+  "causality": "Minute close available at end; post-fill extrema only; 15m complete post-fill bars, confirmation next minute close. SOL trigger must precede confirming bar open. No future close used as signal. BTC historical exit flags are diagnostic only.",
+  "limits": "1bp penetration proxy, no queue/L2/partial fill. No execution guarantees. SOL anchor is simultaneous execution close, not actual hedge fill. Tactical returns truncated at observed BTC close as diagnostic, no same-bar high ordering assumption. No native changed path. Official Bybit Jun1..Sep1 2024 1H warmup supplies prior beta; actual manifest records hashes.",
+  "early_exit_policy": "Grid reports unconstrained same-day price screen plus explicit early_exit_before_entry/chosen_after_btc_close flags; native must accelerate for TP or cancel for mandatory close. Native min margin UNKNOWN; not recomputed here.",
+  "fee_policy": "BTC price improvement excludes fees; SOL tactical diagnostic subtracts Bybit 5.5bp each leg uniformly. Funding UNKNOWN, not zero.",
+  "peak_rss_kib": 165652
+}

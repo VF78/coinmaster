@@ -1,0 +1,88 @@
+{
+  "selection_period": "[2024-09-01,2025-09-01):57 parents",
+  "sensitivity_period": "[2025-09-01,2026-09-01):48 parents; previously reviewed, NOT honest OOS",
+  "selection_rule": "Two bounded4h BTC candidates supported by early period; retain .25% baselineplan candidate and .50% competitor. Longer8h has higher price mean but more TP/exit conflicts. SOL .50%4h uses trigger then fresh15m reversal then next1m quote quality>=.25%, no expensive fallback. No pertrade future extrema tuning.",
+  "selected": [
+    {
+      "symbol": "BTC",
+      "d_pct": 0.25,
+      "wait_h": 4,
+      "confirmation": false,
+      "group": "TRAIN_12M",
+      "n": 57,
+      "limit_hits": 46,
+      "confirm_hits": 0,
+      "fallback": 11,
+      "no_add": 0,
+      "early_exit": 14,
+      "whole_btc_bp": {
+        "n": 57,
+        "mean": 3.0964683167220026,
+        "min": -190.8990783617686,
+        "p05": -30.779715736103377,
+        "p25": 12.499999999999437,
+        "median": 12.499999999999632,
+        "p75": 12.499999999999854,
+        "p95": 12.500000000000027,
+        "max": 12.50000000000008
+      },
+      "tactical_net_proxy_bp": null
+    },
+    {
+      "symbol": "BTC",
+      "d_pct": 0.5,
+      "wait_h": 4,
+      "confirmation": false,
+      "group": "TRAIN_12M",
+      "n": 57,
+      "limit_hits": 31,
+      "confirm_hits": 0,
+      "fallback": 26,
+      "no_add": 0,
+      "early_exit": 17,
+      "whole_btc_bp": {
+        "n": 57,
+        "mean": 4.027737347710803,
+        "min": -190.8990783617686,
+        "p05": -54.3211811596256,
+        "p25": -6.425403369498911,
+        "median": 24.999999999999194,
+        "p75": 24.999999999999737,
+        "p95": 25.000000000000227,
+        "max": 25.000000000000295
+      },
+      "tactical_net_proxy_bp": null
+    },
+    {
+      "symbol": "SOL",
+      "d_pct": 0.5,
+      "wait_h": 4,
+      "confirmation": true,
+      "group": "TRAIN_12M",
+      "n": 57,
+      "limit_hits": 0,
+      "confirm_hits": 16,
+      "fallback": 0,
+      "no_add": 41,
+      "early_exit": 18,
+      "whole_btc_bp": null,
+      "tactical_net_proxy_bp": {
+        "n": 15,
+        "mean": 42.25797579062249,
+        "min": -361.0931098696458,
+        "p05": -95.46584975987656,
+        "p25": 38.352083257680476,
+        "median": 60.90707393522233,
+        "p75": 75.61974057008915,
+        "p95": 156.13340956635577,
+        "max": 185.70146769556695
+      }
+    }
+  ],
+  "reference": "BTC actual native BTC_ENTRY fill price and fill_ns, admitted netQ, original referenceQ/q0/q1 and rights all preserved in parentsCSV. SOL simultaneous Bybit execution minute close at actual BTC fill, NOT actual hedge fill.",
+  "horizon": "Full firstUTCday plus active-only min(dayend,observed historicalBTCclose) diagnostics separate in excursionCSV; future BTCclose truncation used ONLY offline evaluation, never signal. Grid is same-path price screening; early firstTP/mandatoryexit and pastBTCclose flags expose native conflicts, not executed legal child decisions.",
+  "execution": "Limit proxy requires high/low penetration1bp beyond limit strictly after fill. No queue, spread, partialfill, trade/L2 evidence. Touch alone not filled. Trigger strictly precedes confirmation15m start; nextminute close quote only. OHLC intraminute ordering unknown.",
+  "warmup": "Official public BybitJun1..Sep1 2024 1H2208bars/asset, gapfree. ExactrawURL+SHA in data-warmup-manifest.json. Completed720/2160hour simple returns before actualentry; all105 beta30/90 available. Pre-existing24m canonical1m hashes verified.",
+  "constraints": "Price proxy NOT nativeROI. TP acceleration/cancel races, beta rebalancing, native margin min, funding/slippage/queue, joint path not modeled. UNKNOWN funding is not zero. No backtest run or live changes. Five reproducible checks screening-handchecks.json.",
+  "handcheck_count": 5
+}

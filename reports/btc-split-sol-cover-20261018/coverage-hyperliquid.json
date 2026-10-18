@@ -1,0 +1,173 @@
+{
+  "asof": "2026-10-18",
+  "requests": [
+    {
+      "coin": "BTC",
+      "label": "daily",
+      "url": "https://api.hyperliquid.xyz/info",
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "BTC",
+          "interval": "1d",
+          "startTime": 1661990400000,
+          "endTime": 1792368000000
+        }
+      },
+      "rows": 1509,
+      "path": "reports/btc-split-sol-cover-20261018/data-hl-BTC-daily.json",
+      "sha256": "8ff04eabe7ed01a07b74118a93fb0909799e5d7d5e61649bbbe5950ba4fd8854",
+      "first": "2022-09-01T00:00:00+00:00",
+      "last": "2026-10-18T00:00:00+00:00",
+      "first_positive_volume": "2023-02-26T00:00:00+00:00",
+      "zero_volume_or_trade_rows": 178
+    },
+    {
+      "coin": "BTC",
+      "label": "funding-first",
+      "url": "https://api.hyperliquid.xyz/info",
+      "request": {
+        "type": "fundingHistory",
+        "coin": "BTC",
+        "startTime": 1661990400000
+      },
+      "rows": 500,
+      "path": "reports/btc-split-sol-cover-20261018/data-hl-BTC-funding-first.json",
+      "sha256": "aff6213fba21d02999686abd7f69f427f67233fe856359876c1ff98815db7999",
+      "first": "2023-05-12T00:00:00.048000+00:00",
+      "last": "2023-06-25T10:00:00.201000+00:00",
+      "first_positive_volume": "2023-05-12T00:00:00.048000+00:00",
+      "zero_volume_or_trade_rows": 0
+    },
+    {
+      "coin": "BTC",
+      "label": "minute",
+      "url": "https://api.hyperliquid.xyz/info",
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "BTC",
+          "interval": "1m",
+          "startTime": 1661990400000,
+          "endTime": 1792368000000
+        }
+      },
+      "rows": 5153,
+      "path": "reports/btc-split-sol-cover-20261018/data-hl-BTC-minute.json",
+      "sha256": "ddeba8fce8f12afdbe30b748cfa4e4f614f951968a3e7f2f51c1a3888a7ebfdb",
+      "first": "2026-10-14T21:00:00+00:00",
+      "last": "2026-10-18T10:52:00+00:00",
+      "first_positive_volume": "2026-10-14T21:00:00+00:00",
+      "zero_volume_or_trade_rows": 0
+    },
+    {
+      "coin": "BTC",
+      "label": "funding-recent",
+      "url": "https://api.hyperliquid.xyz/info",
+      "request": {
+        "type": "fundingHistory",
+        "coin": "BTC",
+        "startTime": 1792195200000
+      },
+      "rows": 35,
+      "path": "reports/btc-split-sol-cover-20261018/data-hl-BTC-funding-recent.json",
+      "sha256": "963df4d00de135ea17d52d1cec9040348a89c70ad14bd0b3e9b4b631a289d226",
+      "first": "2026-10-17T00:00:00.116000+00:00",
+      "last": "2026-10-18T10:00:00.044000+00:00",
+      "first_positive_volume": "2026-10-17T00:00:00.116000+00:00",
+      "zero_volume_or_trade_rows": 0
+    },
+    {
+      "coin": "SOL",
+      "label": "daily",
+      "url": "https://api.hyperliquid.xyz/info",
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "SOL",
+          "interval": "1d",
+          "startTime": 1661990400000,
+          "endTime": 1792368000000
+        }
+      },
+      "rows": 1509,
+      "path": "reports/btc-split-sol-cover-20261018/data-hl-SOL-daily.json",
+      "sha256": "b615fac0a64bbb17c69d0c5e191407fb12c56d2ca646c1717a05349289db850b",
+      "first": "2022-09-01T00:00:00+00:00",
+      "last": "2026-10-18T00:00:00+00:00",
+      "first_positive_volume": "2023-03-04T00:00:00+00:00",
+      "zero_volume_or_trade_rows": 184
+    },
+    {
+      "coin": "SOL",
+      "label": "funding-first",
+      "url": "https://api.hyperliquid.xyz/info",
+      "request": {
+        "type": "fundingHistory",
+        "coin": "SOL",
+        "startTime": 1661990400000
+      },
+      "rows": 500,
+      "path": "reports/btc-split-sol-cover-20261018/data-hl-SOL-funding-first.json",
+      "sha256": "36092646bbbd2f5a66607f71b5f7af26c22a402b1516b2208841e27a89f0fda9",
+      "first": "2023-05-12T00:00:00.048000+00:00",
+      "last": "2023-06-25T10:00:00.201000+00:00",
+      "first_positive_volume": "2023-05-12T00:00:00.048000+00:00",
+      "zero_volume_or_trade_rows": 0
+    },
+    {
+      "coin": "SOL",
+      "label": "minute",
+      "url": "https://api.hyperliquid.xyz/info",
+      "request": {
+        "type": "candleSnapshot",
+        "req": {
+          "coin": "SOL",
+          "interval": "1m",
+          "startTime": 1661990400000,
+          "endTime": 1792368000000
+        }
+      },
+      "rows": 5141,
+      "path": "reports/btc-split-sol-cover-20261018/data-hl-SOL-minute.json",
+      "sha256": "c2d7430641869b32e49400643f06192520a423982bd9d7d9637415074ed73cee",
+      "first": "2026-10-14T21:12:00+00:00",
+      "last": "2026-10-18T10:52:00+00:00",
+      "first_positive_volume": "2026-10-14T21:12:00+00:00",
+      "zero_volume_or_trade_rows": 0
+    },
+    {
+      "coin": "SOL",
+      "label": "funding-recent",
+      "url": "https://api.hyperliquid.xyz/info",
+      "request": {
+        "type": "fundingHistory",
+        "coin": "SOL",
+        "startTime": 1792195200000
+      },
+      "rows": 35,
+      "path": "reports/btc-split-sol-cover-20261018/data-hl-SOL-funding-recent.json",
+      "sha256": "712c75110d419e8228e11879e31fa8d44472a1b7c2c58d144724a896ca0b43dc",
+      "first": "2026-10-17T00:00:00.116000+00:00",
+      "last": "2026-10-18T10:00:00.044000+00:00",
+      "first_positive_volume": "2026-10-17T00:00:00.116000+00:00",
+      "zero_volume_or_trade_rows": 0
+    }
+  ],
+  "official_sources": [
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/historical-data",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals"
+  ],
+  "constraints": "Official docs: only5000recentcandles per interval. Daily prelaunch candles with zero trades/volume are not native execution history. No historical mark candle endpoint documented. Asset contexts/L2 archives requester-pays, no guarantee completeness; no paid downloads/credentials used. Earliest historical asset-context mark, orderbook execution and funding continuity through today NOT verified; no Bybit substituted. 2022-09-01..first positive-volume daily date execution unproven, daily records cannot supply 1m native replay. 24m and2022..today native HL execution/mark dataset unavailable locally, full audit requires approved archive access. Funding firstpage earliest timestamp does not prove gapfree whole range.",
+  "unavailable_or_unverified_ranges": {
+    "BTC_execution_zero_trade_daily": "[2022-09-01,2023-02-26)",
+    "SOL_execution_zero_trade_daily": "[2022-09-01,2023-03-04)",
+    "BTC_1m_unavailable_public_current_retention": "[2022-09-01,2026-10-14T21:00:00Z)",
+    "SOL_1m_unavailable_public_current_retention": "[2022-09-01,2026-10-14T21:12:00Z)",
+    "funding_before_first_both": "[2022-09-01,2023-05-12T00:00:00.048Z)",
+    "historical_mark_asset_context_archive_not_accessed": "[2022-09-01,2026-10-18T10:52Z] archive earliest/completeness UNKNOWN",
+    "funding_continuity": "Only earliest500 + latest35 sampled; complete history NOT acquired"
+  },
+  "observed_candle_retention_note": "Official docs say5000; actual requests returned5153BTC/5141SOL minutes. Exact earliest observed recorded, not assumed5000."
+}

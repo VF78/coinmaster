@@ -1,0 +1,52 @@
+[
+  {
+    "symbol": "BTCUSDT",
+    "start_ms": 1717200000000,
+    "end_exclusive_ms": 1725148800000,
+    "rows": 2208,
+    "path": "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv",
+    "sha256": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+    "pages": [
+      {
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1725148799999&limit=1000",
+        "path": "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-0.json",
+        "sha256": "99a83454a10147cab3e610aed0f76eb53f4794942060e54738a10ee9928b8880"
+      },
+      {
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1721548799999&limit=1000",
+        "path": "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1.json",
+        "sha256": "06b06d49c9e4f2f376a3732984451d422517b0bab0993ef86a088d17ceaf36b0"
+      },
+      {
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=60&start=1717200000000&end=1717948799999&limit=1000",
+        "path": "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-2.json",
+        "sha256": "9e6a4a10034fdbc22c461284d193ab2243273ccd139bd1d959ef1ed6649a2bb5"
+      }
+    ]
+  },
+  {
+    "symbol": "SOLUSDT",
+    "start_ms": 1717200000000,
+    "end_exclusive_ms": 1725148800000,
+    "rows": 2208,
+    "path": "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv",
+    "sha256": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506",
+    "pages": [
+      {
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1725148799999&limit=1000",
+        "path": "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-0.json",
+        "sha256": "582e2969dd50921bdd1bb48944ee94430f865b73f73816ede685c9b691d55a30"
+      },
+      {
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1721548799999&limit=1000",
+        "path": "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1.json",
+        "sha256": "5b0e3dbe9fb707c063a09c21b96d5fa34facd385df6f799106fd9eb3ed69d519"
+      },
+      {
+        "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=SOLUSDT&interval=60&start=1717200000000&end=1717948799999&limit=1000",
+        "path": "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-2.json",
+        "sha256": "a59e7ee65f9786a96f79d132e5d091f3b946f424b6e0ea4deab0f4e84cc5d919"
+      }
+    ]
+  }
+]
