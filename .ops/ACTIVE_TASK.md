@@ -32,3 +32,4 @@ Safe cleanup18Oct removed597321440B aptindexes/closedOSrotations/oldGUIstaging; 
 API ghTLSintermittent; reliablecurlIPv4HTTP1 with savedghcredential onlyinmemory/stdin, neverlogs/files/argv. NoVPN/systemnetwork changes.
 Previouslive82prep6c208fd/GUIbe2f71d retained; funding/auth/qualification and separate real-orderapproval required. Researchwinner NOT deployed/resealed.
 Evidence under reports/btc-split-sol-cover-20261018/; currentreportREADME.md and exactresolvedparameters. HistoricalACTIVE_TASK preserved inGit; do not rereadoldqueues or redoacceptedfixes.
+Owner follow-up18Oct COMPLETE analysis-only: conditionalSOLproposal in README; oldH1(190593.97/DD62.60)reused, full105V3MAEcalibration reused. Proposedoriginaloverlay+2%arm/1%off/50%topup, nativeNETTINGsingleowner; UNIMPLEMENTED/UNTESTED, no9th/pilotchange. Next researchimplementation/newrun requiresownerboundedscope; #101HLdatablockerunchanged.
