@@ -1,0 +1,18 @@
+{
+  "terminal_total_delta": "-677823.96925340",
+  "native_fees_delta": "-281398.30788751",
+  "global_marked_dd_percent_delta": "10.65184766665241834592461789",
+  "BTC": {
+    "gross_delta": "-884130.434900000000000000000",
+    "actual_fees_delta": "-280838.34226041",
+    "net_ex_funding_delta": "-603292.092639590000000000000"
+  },
+  "SOL": {
+    "gross_delta": "-76405.6159999999999999999991",
+    "actual_fees_delta": "-559.96562710",
+    "net_ex_funding_delta": "-75845.6503728999999999999991"
+  },
+  "v3_unallocated_cash_residual_not_funding": "45639.633078600000000000000",
+  "btc025_unallocated_cash_residual_not_funding": "46953.406837689999999999999",
+  "method": "Actual terminalcash/equity primary. Assetconfirmedfill diagnostic; quantities compound, so delta notfixedQcausality. Cash residual UNALLOCATED notfunding. MissingV3Mar16profit78202.86670917 is observedcontroltrade, notcounterfactual lostprofit amount."
+}

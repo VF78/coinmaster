@@ -1,0 +1,574 @@
+{
+  "v3": [
+    {
+      "bar_open_ms": "1726063140000",
+      "close_available_ns": "1726063200000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "11994.7329287",
+      "free_cash": "11994.7329287",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13800.6279287",
+      "conditional_adverse_equity": "13691.0079287",
+      "conditional_favorable_equity": "13827.7494287",
+      "conditional_high_mark_mm_upper": "174.16011690",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.945",
+          "avg_px_open": "57642.4",
+          "mark_ohlc": {
+            "open_time_ms": 1726063140000,
+            "open": "55786.44",
+            "high": "55847.4",
+            "low": "55702.71",
+            "close": "55731.4"
+          },
+          "low_native_pnl": "1833.0165",
+          "high_native_pnl": "1696.275"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1726063140000",
+      "close_available_ns": "1726063200000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "13759.8486461",
+      "free_cash": "13759.8486461",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13759.8486461",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": []
+    },
+    {
+      "bar_open_ms": "1726063140000",
+      "close_available_ns": "1726063200000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "13759.8486461",
+      "free_cash": "13759.8486461",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13759.8486461",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": []
+    },
+    {
+      "bar_open_ms": "1726066140000",
+      "close_available_ns": "1726066200000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "13759.8486461",
+      "free_cash": "13759.8486461",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13759.8486461",
+      "conditional_adverse_equity": "13759.8486461",
+      "conditional_favorable_equity": "13759.8486461",
+      "conditional_high_mark_mm_upper": "0",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": []
+    },
+    {
+      "bar_open_ms": "1726066140000",
+      "close_available_ns": "1726066200000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "13759.8486461",
+      "free_cash": "13759.8486461",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13759.8486461",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": []
+    },
+    {
+      "bar_open_ms": "1726066140000",
+      "close_available_ns": "1726066200000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "13759.8486461",
+      "free_cash": "13759.8486461",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13759.8486461",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": []
+    },
+    {
+      "bar_open_ms": "1727970180000",
+      "close_available_ns": "1727970240000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "9732.33552879",
+      "free_cash": "9732.33552879",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "4514.69512879",
+      "conditional_adverse_equity": "4491.80592879",
+      "conditional_favorable_equity": "5004.41552879",
+      "conditional_high_mark_mm_upper": "734.2672616",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.732",
+          "avg_px_open": "60811.2",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "60186.45",
+            "high": "60230",
+            "low": "60155.17",
+            "close": "60209.94"
+          },
+          "low_native_pnl": "480.192",
+          "high_native_pnl": "425.4384"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "817.6",
+          "avg_px_open": "140.09",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "133.596",
+            "high": "133.72",
+            "low": "133.161",
+            "close": "133.166"
+          },
+          "low_native_pnl": "-5665.968",
+          "high_native_pnl": "-5208.112"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1727970180000",
+      "close_available_ns": "1727970240000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "9732.33552879",
+      "free_cash": "9732.33552879",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "4514.69512879",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.732",
+          "avg_px_open": "60811.2",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "60186.45",
+            "high": "60230",
+            "low": "60155.17",
+            "close": "60209.94"
+          },
+          "low_native_pnl": "480.192",
+          "high_native_pnl": "425.4384"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "817.6",
+          "avg_px_open": "140.09",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "133.596",
+            "high": "133.72",
+            "low": "133.161",
+            "close": "133.166"
+          },
+          "low_native_pnl": "-5665.968",
+          "high_native_pnl": "-5208.112"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1727970180000",
+      "close_available_ns": "1727970240000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "9732.33552879",
+      "free_cash": "9732.33552879",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "4514.69512879",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.732",
+          "avg_px_open": "60811.2",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "60186.45",
+            "high": "60230",
+            "low": "60155.17",
+            "close": "60209.94"
+          },
+          "low_native_pnl": "480.192",
+          "high_native_pnl": "425.4384"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "817.6",
+          "avg_px_open": "140.09",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "133.596",
+            "high": "133.72",
+            "low": "133.161",
+            "close": "133.166"
+          },
+          "low_native_pnl": "-5665.968",
+          "high_native_pnl": "-5208.112"
+        }
+      ]
+    }
+  ],
+  "btc025": [
+    {
+      "bar_open_ms": "1726063140000",
+      "close_available_ns": "1726063200000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "12005.41890245",
+      "free_cash": "12005.41890245",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13391.40350245",
+      "conditional_adverse_equity": "13281.66750245",
+      "conditional_favorable_equity": "13418.55370245",
+      "conditional_high_mark_mm_upper": "174.34441332",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.946",
+          "avg_px_open": "57196.5",
+          "mark_ohlc": {
+            "open_time_ms": 1726063140000,
+            "open": "55786.44",
+            "high": "55847.4",
+            "low": "55702.71",
+            "close": "55731.4"
+          },
+          "low_native_pnl": "1413.1348",
+          "high_native_pnl": "1276.2486"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1726063140000",
+      "close_available_ns": "1726063200000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "12005.41890245",
+      "free_cash": "12005.41890245",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13391.40350245",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.946",
+          "avg_px_open": "57196.5",
+          "mark_ohlc": {
+            "open_time_ms": 1726063140000,
+            "open": "55786.44",
+            "high": "55847.4",
+            "low": "55702.71",
+            "close": "55731.4"
+          },
+          "low_native_pnl": "1413.1348",
+          "high_native_pnl": "1276.2486"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1726063140000",
+      "close_available_ns": "1726063200000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "12005.41890245",
+      "free_cash": "12005.41890245",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13391.40350245",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.946",
+          "avg_px_open": "57196.5",
+          "mark_ohlc": {
+            "open_time_ms": 1726063140000,
+            "open": "55786.44",
+            "high": "55847.4",
+            "low": "55702.71",
+            "close": "55731.4"
+          },
+          "low_native_pnl": "1413.1348",
+          "high_native_pnl": "1276.2486"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1726066140000",
+      "close_available_ns": "1726066200000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "12005.41890245",
+      "free_cash": "12005.41890245",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13555.53450245",
+      "conditional_adverse_equity": "13496.40950245",
+      "conditional_favorable_equity": "13559.50770245",
+      "conditional_high_mark_mm_upper": "173.63576472",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.946",
+          "avg_px_open": "57196.5",
+          "mark_ohlc": {
+            "open_time_ms": 1726066140000,
+            "open": "55589.74",
+            "high": "55620.4",
+            "low": "55553.72",
+            "close": "55557.9"
+          },
+          "low_native_pnl": "1554.0888",
+          "high_native_pnl": "1490.9906"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1726066140000",
+      "close_available_ns": "1726066200000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "12005.41890245",
+      "free_cash": "12005.41890245",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13555.53450245",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.946",
+          "avg_px_open": "57196.5",
+          "mark_ohlc": {
+            "open_time_ms": 1726066140000,
+            "open": "55589.74",
+            "high": "55620.4",
+            "low": "55553.72",
+            "close": "55557.9"
+          },
+          "low_native_pnl": "1554.0888",
+          "high_native_pnl": "1490.9906"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1726066140000",
+      "close_available_ns": "1726066200000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "12005.41890245",
+      "free_cash": "12005.41890245",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "13555.53450245",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.946",
+          "avg_px_open": "57196.5",
+          "mark_ohlc": {
+            "open_time_ms": 1726066140000,
+            "open": "55589.74",
+            "high": "55620.4",
+            "low": "55553.72",
+            "close": "55557.9"
+          },
+          "low_native_pnl": "1554.0888",
+          "high_native_pnl": "1490.9906"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1727970180000",
+      "close_available_ns": "1727970240000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "6364.78513081",
+      "free_cash": "6364.78513081",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "2990.60113081",
+      "conditional_adverse_equity": "2975.67043081",
+      "conditional_favorable_equity": "3310.55803081",
+      "conditional_high_mark_mm_upper": "464.9089806",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.477",
+          "avg_px_open": "60887.40943396225",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "60186.45",
+            "high": "60230",
+            "low": "60155.17",
+            "close": "60209.94"
+          },
+          "low_native_pnl": "349.2639",
+          "high_native_pnl": "313.5843"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "534.3",
+          "avg_px_open": "140.09",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "133.596",
+            "high": "133.72",
+            "low": "133.161",
+            "close": "133.166"
+          },
+          "low_native_pnl": "-3702.699",
+          "high_native_pnl": "-3403.491"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1727970180000",
+      "close_available_ns": "1727970240000000000",
+      "phase": "post_btc_quote_paired_close",
+      "cash": "6364.78513081",
+      "free_cash": "6364.78513081",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "2990.60113081",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.477",
+          "avg_px_open": "60887.40943396225",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "60186.45",
+            "high": "60230",
+            "low": "60155.17",
+            "close": "60209.94"
+          },
+          "low_native_pnl": "349.2639",
+          "high_native_pnl": "313.5843"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "534.3",
+          "avg_px_open": "140.09",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "133.596",
+            "high": "133.72",
+            "low": "133.161",
+            "close": "133.166"
+          },
+          "low_native_pnl": "-3702.699",
+          "high_native_pnl": "-3403.491"
+        }
+      ]
+    },
+    {
+      "bar_open_ms": "1727970180000",
+      "close_available_ns": "1727970240000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "6364.78513081",
+      "free_cash": "6364.78513081",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "2990.60113081",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.477",
+          "avg_px_open": "60887.40943396225",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "60186.45",
+            "high": "60230",
+            "low": "60155.17",
+            "close": "60209.94"
+          },
+          "low_native_pnl": "349.2639",
+          "high_native_pnl": "313.5843"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "534.3",
+          "avg_px_open": "140.09",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "133.596",
+            "high": "133.72",
+            "low": "133.161",
+            "close": "133.166"
+          },
+          "low_native_pnl": "-3702.699",
+          "high_native_pnl": "-3403.491"
+        }
+      ]
+    }
+  ]
+}

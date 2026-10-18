@@ -1,0 +1,288 @@
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -56,6 +56,7 @@
+     research_v0_selective_lifecycle_repairs: bool = False
+     research_v3_risk: str | None = None
+     research_btc_split50: bool = False
++    research_btc_split_guard05: bool = False
+     research_btc_split_discount: Decimal = Decimal("0.0025")
+     research_sol_cover: Decimal | None = None
+     research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
+@@ -162,6 +163,8 @@
+         super().__init__(config)
+         self._split_cover_init()
+         self._cover_seed(config.research_cover_hour_seed)
++        if config.research_btc_split_guard05 and (not config.research_btc_split50 or config.research_btc_split_discount != Decimal("0.0025")):
++            raise ValueError("BTC_GUARD05_REQUIRES_SPLIT25_4H")
+         if config.research_btc_split_discount not in (Decimal("0.0025"),Decimal("0.005")):
+             raise ValueError("SPLIT_DISCOUNT_NOT_AUTHORIZED_CANDIDATE")
+         if config.research_btc_split50 or config.research_sol_cover is not None:
+--- a/runtime/coinmaster/strategy/split_cover.py
++++ b/runtime/coinmaster/strategy/split_cover.py
+@@ -93,7 +93,7 @@
+         lots = int(quantity/step)
+         first = max(1,lots//2)
+         p = {"episode_id":intent.episode_id,"intent":intent,"quantity":quantity,"first_quantity":D(first)*step,
+-             "filled":D(0),"first_notional":D(0),"first_filled":D(0),"first_vwap":None,
++             "filled":D(0),"first_notional":D(0),"first_filled":D(0),"first_vwap":None,"first_last_fill_ns":None,
+              "start_ns":ts_now,"deadline_ns":min(ts_now+4*HOUR,((ts_now//DAY)+1)*DAY-60_000_000_000),
+              "sigma":sigma,"decision_index":decision_index,"fallback":False,"closed":False,
+              "cancelled":D(0),"step":step,"side":intent.side,"single_lot_immediate":lots==1}
+@@ -122,6 +122,7 @@
+             p["first_filled"]+=first_qty
+             p["first_notional"]+=first_qty*event.last_px.as_decimal()
+             p["first_vwap"]=p["first_notional"]/p["first_filled"]
++            p["first_last_fill_ns"]=event.ts_event
+         if p["filled"]==p["quantity"]:
+             p["closed"]=True
+ 
+@@ -152,9 +153,18 @@
+             return
+         px=tick.bid_price.as_decimal() if p["side"]==1 else tick.ask_price.as_decimal()
+         early=ep.btc_entry_vwap and any(level>0 and (px>=D(str(ep.btc_entry_vwap))*(1+D(str(level))) if p["side"]==1 else px<=D(str(ep.btc_entry_vwap))*(1-D(str(level)))) for level in ep.wave_levels or ())
+-        if tick.ts_event>=p["deadline_ns"] or early:
++        executable=tick.ask_price.as_decimal() if p["side"]==1 else tick.bid_price.as_decimal()
++        guard=bool(self.config.research_btc_split_guard05
++            and p["filled"]>=p["first_quantity"] and p["first_vwap"]
++            and p["first_last_fill_ns"] is not None and tick.ts_event>p["first_last_fill_ns"]
++            and p["side"]*(executable/p["first_vwap"]-1)>=D("0.0005"))
++        if guard and "guard_trigger_ns" not in p:
++            p.update(guard_trigger_ns=tick.ts_event,guard_trigger_executable=executable,
++                guard_first_vwap=p["first_vwap"],guard_filled_at_trigger=p["filled"],
++                guard_favourable_fraction=p["side"]*(executable/p["first_vwap"]-1))
++        if tick.ts_event>=p["deadline_ns"] or early or guard:
+             p["fallback"]=True
+-            p.setdefault("completion_reason","EARLY_TP" if early else "DEADLINE")
++            p.setdefault("completion_reason","EARLY_TP" if early else "DEADLINE" if tick.ts_event>=p["deadline_ns"] else "RUNAWAY_GUARD05")
+         owned=[(oid,i) for oid,i in self._pending_by_order.items() if i.action=="BTC_ENTRY" and i.episode_id==p["episode_id"]]
+         if owned:
+             if p["fallback"]:
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -678,6 +678,7 @@
+     research_v3_risk: str | None = None,
+     research_h1_b1: str | None = None,
+     research_btc_split50: bool = False,
++    research_btc_split_guard05: bool = False,
+     research_btc_split_discount: str = "0.0025",
+     research_sol_cover: str | None = None,
+     research_btc_episode_loss_20: bool = False,
+@@ -808,6 +809,7 @@
+         research_v3_risk=research_v3_risk,
+         research_h1_b1=research_h1_b1,
+         research_btc_split50=research_btc_split50,
++        research_btc_split_guard05=research_btc_split_guard05,
+         research_btc_split_discount=Decimal(research_btc_split_discount),
+         research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
+         research_cover_hour_seed=cover_hour_seed,
+@@ -963,6 +965,14 @@
+         if research_btc_split50 or research_sol_cover:
+             result["split_cover_audit"] = strategy._split_cover_report()
+             result["config"]["research_btc_split50"] = research_btc_split50
++            result["config"]["research_btc_split_guard05"] = research_btc_split_guard05
++            if research_btc_split_guard05:
++                result["config"]["btc_split_guard05_policy"] = {
++                    "fraction":"0.0005","basis":"FIRST_LEG_ACTUAL_VWAP",
++                    "trigger":"FRESH_BTC_EXECUTABLE_QUOTE_FAVOURABLE_MOVE",
++                    "completion":"CANCEL_ACK_THEN_ACTUAL_REMAINING_Q_IOC",
++                    "fill_price_guarantee":False,
++                }
+             result["config"]["research_btc_split_discount"] = research_btc_split_discount
+             result["config"]["research_sol_cover"] = research_sol_cover
+             result["config"]["cover_hour_warmup_sha256"] = cover_warmup_hashes
+@@ -1128,7 +1138,7 @@
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_guard05: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1174,6 +1184,8 @@
+         label += "-solcap6"
+     if research_btc_split50:
+         label += "-btc-split50-d" + research_btc_split_discount
++    if research_btc_split_guard05:
++        label += "-guard05"
+     if research_sol_cover:
+         label += "-sol-cover" + research_sol_cover
+     if research_h1_b1:
+@@ -1206,6 +1218,7 @@
+         research_v3_risk=research_v3_risk,
+         research_h1_b1=research_h1_b1,
+         research_btc_split50=research_btc_split50,
++        research_btc_split_guard05=research_btc_split_guard05,
+         research_btc_split_discount=research_btc_split_discount,
+         research_sol_cover=research_sol_cover,
+         research_btc_episode_loss_20=research_btc_episode_loss_20,
+@@ -1219,6 +1232,7 @@
+ def main() -> None:
+     parser = argparse.ArgumentParser()
+     parser.add_argument("--research-btc-split50", action="store_true")
++    parser.add_argument("--research-btc-split-guard05", action="store_true")
+     parser.add_argument("--research-btc-split-discount", choices=("0.0025","0.005"), default="0.0025")
+     parser.add_argument("--research-sol-cover", choices=("0.5","0.75","1"))
+     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
+@@ -1271,6 +1285,7 @@
+             research_v3_risk=args.research_v3_risk,
+             research_h1_b1=args.research_h1_b1,
+             research_btc_split50=args.research_btc_split50,
++            research_btc_split_guard05=args.research_btc_split_guard05,
+             research_btc_split_discount=args.research_btc_split_discount,
+             research_sol_cover=args.research_sol_cover,
+             research_btc_episode_loss_20=args.research_btc_episode_loss_20,
+--- a/runtime/tests/test_native_split_cover.py
++++ b/runtime/tests/test_native_split_cover.py
+@@ -596,3 +596,132 @@
+         assert c["anchor"]==fixed
+     finally:
+         e.end();e.dispose()
++
++
++@pytest.mark.parametrize("side",[1,-1])
++def test_guard05_current_quote_triggers_cancel_ack_then_actual_remaining_ioc(side):
++    s=NativeProbe(cfg(True).__replace__(research_btc_split_guard05=True))
++    e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,1)])
++        prepare_day(s,2,side);marks(s,2)
++        ep=s._domain.episode=Episode("guard",side,10000,1,wave_levels=(.01,.02,.03))
++        i=s._domain._intent(ep,"BTC_ENTRY",side,None,quantity=100)
++        s._submit_intent(i,100,100,.01,0,ts_now=2)
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4)])
++        p=s._split_parent
++        run_ticks(e,[tick(BTC_PERP,5,"100.1" if side==1 else "99.9")])
++        assert p["filled"]==50 and p["fallback"]
++        assert p["completion_reason"]=="RUNAWAY_GUARD05"
++        assert p["guard_trigger_ns"]==5
++        run_ticks(e,[tick(BTC_PERP,6,"100.3" if side==1 else "99.7")])
++        assert p["filled"]==p["quantity"]==100
++        assert p["cancelled"]==0
++        assert ep.btc_entry_vwap==pytest.approx(100.15 if side==1 else 99.85)
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==3
++    finally:
++        e.end();e.dispose()
++
++
++def test_guard05_off_preserves_discount_wait_and_never_gates_first_half():
++    s,e,ep=setup(qty=100)
++    try:
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"100.1")])
++        assert not s.config.research_btc_split_guard05
++        assert s._split_parent["filled"]==50
++        assert not s._split_parent["fallback"]
++        assert len([o for o in e.cache.orders_open() if not o.is_reduce_only])==1
++    finally:
++        e.end();e.dispose()
++
++
++def test_guard05_no_first_fill_or_duplicate_timestamp_cannot_trigger():
++    s=NativeProbe(cfg(True).__replace__(research_btc_split_guard05=True))
++    e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,1)])
++        prepare_day(s,2);marks(s,2)
++        ep=s._domain.episode=Episode("guard-fresh",1,10000,1,wave_levels=(.01,.02,.03))
++        i=s._domain._intent(ep,"BTC_ENTRY",1,None,quantity=100)
++        s._submit_intent(i,100,100,.01,0,ts_now=2)
++        s._split_check(tick(BTC_PERP,2,"101"))
++        assert not s._split_parent["fallback"]  # No actual first fill.
++        run_ticks(e,[tick(BTC_PERP,3)])
++        assert s._split_parent["filled"]==50
++        s._split_check(tick(BTC_PERP,3,"101"))
++        assert not s._split_parent["fallback"]  # Same-time cached book.
++    finally:
++        e.end();e.dispose()
++
++
++def test_guard05_unknown_ack_blocks_competing_ioc_and_partial_fallback_conserves_q():
++    s=NativeProbe(cfg(True).__replace__(research_btc_split_guard05=True))
++    e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,1)])
++        prepare_day(s,2);marks(s,2)
++        ep=s._domain.episode=Episode("guard-unknown",1,10000,1,wave_levels=(.01,.02,.03))
++        i=s._domain._intent(ep,"BTC_ENTRY",1,None,quantity=100)
++        s._submit_intent(i,100,100,.01,0,ts_now=2)
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4)])
++        s._pending_by_order["UNKNOWN_ACK"]=i
++        run_ticks(e,[tick(BTC_PERP,5,"100.1"),tick(BTC_PERP,6,"100.3")])
++        assert s._split_parent["filled"]==50
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
++        s._pending_by_order.pop("UNKNOWN_ACK")
++        run_ticks(e,[tick(BTC_PERP,7,"100.3",size="10")])
++        assert s._split_parent["filled"]==60
++        run_ticks(e,[tick(BTC_PERP,8,"100.4")])
++        assert s._split_parent["filled"]==s._split_parent["quantity"]==100
++        assert s._split_parent["cancelled"]==0
++    finally:
++        e.end();e.dispose()
++
++
++def test_guard05_late_resting_fill_after_delayed_cancel_never_duplicates():
++    class Delayed(NativeProbe):
++        def cancel_order(self,order,*args,**kw):
++            if not order.is_reduce_only:
++                return
++            return super().cancel_order(order,*args,**kw)
++    s=Delayed(cfg(True).__replace__(research_btc_split_guard05=True))
++    e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,1)])
++        prepare_day(s,2);marks(s,2)
++        ep=s._domain.episode=Episode("guard-race",1,10000,1,wave_levels=(.01,.02,.03))
++        i=s._domain._intent(ep,"BTC_ENTRY",1,None,quantity=100)
++        s._submit_intent(i,100,100,.01,0,ts_now=2)
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"100.1")])
++        assert s._split_parent["fallback"] and s._split_parent["filled"]==50
++        run_ticks(e,[tick(BTC_PERP,6,"99"),tick(BTC_PERP,7,"100.3")])
++        assert s._split_parent["filled"]==s._split_parent["quantity"]==100
++        assert len([o for o in e.cache.orders() if not o.is_reduce_only])==2
++    finally:
++        e.end();e.dispose()
++
++
++def test_guard05_mandatory_close_wins_after_guard_before_fallback():
++    s=NativeProbe(cfg(True).__replace__(research_btc_split_guard05=True))
++    e=native_engine(s)
++    try:
++        run_ticks(e,[tick(BTC_PERP,1)])
++        prepare_day(s,2);marks(s,2)
++        ep=s._domain.episode=Episode("guard-close",1,10000,1,wave_levels=(.01,.02,.03))
++        i=s._domain._intent(ep,"BTC_ENTRY",1,None,quantity=100)
++        s._submit_intent(i,100,100,.01,0,ts_now=2)
++        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"100.1")])
++        s._begin_forced_close("REGIME")
++        run_ticks(e,[tick(BTC_PERP,6,"100.3"),tick(SOL_PERP,7)])
++        assert s._split_parent["filled"]==50
++        assert s._split_parent["cancelled"]==50
++        assert not e.cache.positions_open()
++    finally:
++        e.end();e.dispose()
++
++
++def test_guard05_is_only_opt_in_split25_profile():
++    with pytest.raises(ValueError,match="REQUIRES_SPLIT25"):
++        NativeProbe(cfg(False).__replace__(research_btc_split_guard05=True))
++    with pytest.raises(ValueError,match="REQUIRES_SPLIT25"):
++        NativeProbe(cfg(True).__replace__(research_btc_split_guard05=True,research_btc_split_discount=D(".005")))
+--- a/scripts/launch_split_cover_native.py
++++ b/scripts/launch_split_cover_native.py
+@@ -20,6 +20,7 @@
+ VARIANTS = {
+     "btc025": ["--research-btc-split50", "--research-btc-split-discount", "0.0025"],
+     "btc050": ["--research-btc-split50", "--research-btc-split-discount", "0.005"],
++    "btc025-guard05": ["--research-btc-split50", "--research-btc-split-discount", "0.0025", "--research-btc-split-guard05"],
+     "sol50": ["--research-sol-cover", "0.5"],
+     "sol75": ["--research-sol-cover", "0.75"],
+     "sol100": ["--research-sol-cover", "1"],
+@@ -46,7 +47,7 @@
+     p = argparse.ArgumentParser()
+     p.add_argument("variant", choices=tuple(VARIANTS)+("joint",))
+     p.add_argument("--job-name", required=True)
+-    p.add_argument("--joint-btc", choices=("btc025","btc050"))
++    p.add_argument("--joint-btc", choices=("btc025","btc050","btc025-guard05"))
+     p.add_argument("--joint-sol", choices=("sol50","sol75","sol100"))
+     p.add_argument("--launch", action="store_true")
+     a = p.parse_args()

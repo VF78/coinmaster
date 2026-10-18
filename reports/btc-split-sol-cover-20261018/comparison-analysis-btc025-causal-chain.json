@@ -1,0 +1,91 @@
+{
+  "early_major_divergence": {
+    "parent": 2,
+    "entry_day": "2024-09-11",
+    "direction": "SELL",
+    "control_vwap": "57642.4",
+    "candidate_vwap": "57196.5",
+    "entry_worsening_bp": "77.35625164809238",
+    "candidate_fills": [
+      {
+        "accept_ns": "1726012860000000000",
+        "action": "BTC_ENTRY",
+        "commission": "14.99567036",
+        "commission_currency": "USDT",
+        "fill_ns": "1726012860000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "level": "",
+        "native_liquidity_side": "TAKER",
+        "notional": "27264.8552",
+        "order_type": "1",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "post_only": "false",
+        "px": "57642.4",
+        "qty": "0.473",
+        "reason": "BTC_ENTRY",
+        "submit_ns": "1726012860000000000",
+        "venue": "P1SIM"
+      },
+      {
+        "accept_ns": "1726027320000000000",
+        "action": "BTC_ENTRY",
+        "commission": "14.76366859",
+        "commission_currency": "USDT",
+        "fill_ns": "1726027320000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "level": "",
+        "native_liquidity_side": "TAKER",
+        "notional": "26843.0338",
+        "order_type": "1",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "post_only": "false",
+        "px": "56750.6",
+        "qty": "0.473",
+        "reason": "BTC_ENTRY",
+        "submit_ns": "1726027320000000000",
+        "venue": "P1SIM"
+      },
+      {
+        "accept_ns": "1726272000000000000",
+        "action": "FORCED_CLOSE",
+        "commission": "31.47815",
+        "commission_currency": "USDT",
+        "fill_ns": "1726272000000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "level": "",
+        "native_liquidity_side": "TAKER",
+        "notional": "57233.000",
+        "order_type": "1",
+        "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+        "post_only": "false",
+        "px": "60500",
+        "qty": "0.946",
+        "reason": "REGIME",
+        "submit_ns": "1726272000000000000",
+        "venue": "P1SIM"
+      }
+    ],
+    "control_exit": {
+      "utc": "2024-09-11T14:00Z",
+      "reason": "BTC_TP3",
+      "net_ex_funding": "1735.1560800"
+    },
+    "candidate_exit": {
+      "utc": "2024-09-14T00:00Z",
+      "reason": "REGIME",
+      "net_ex_funding": "-3186.34848895"
+    },
+    "interpretation": "4hforcedfallbackshortssecondhalfafterpricedecline, worsensVWAPandmovesprofitTPfartherdown. ControlTP3fills; candidateinsteadsurvivesuntilregimeclosewithloss. This precedesOct2024worstDD and changeslatercompounding; cannotbeexplainedbyMar2025missingentry."
+  },
+  "worst_dd": {
+    "peak": "2024-09-11T14:50Z",
+    "trough": "2024-10-03T15:44Z",
+    "recovery": "2024-10-28T19:04Z",
+    "dd_percent": "77.93815411506285660798517398",
+    "nativecash_at_trough": "6364.78513081",
+    "native_equity_at_trough": "2990.60113081",
+    "v3_cash_same_time": "9732.33552879",
+    "v3_equity_same_time": "4514.69512879",
+    "interpretation": "Candidatecashprefixlower; nativepositionquantityalsoLOWER (BTC.477vs.732;SOL534.3vs817.6). No assertionthatlargerexposurecausedthistrough; aggregatecash/PNLnativevaluesonly."
+  }
+}

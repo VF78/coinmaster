@@ -1,0 +1,46 @@
+{
+  "missing_v3_parent": 31,
+  "day": "2025-03-16",
+  "side": "SELL",
+  "prior_entry": "2025-03-13T00:01Z",
+  "v3_entry_vwap": "83631.2",
+  "btc025_entry_vwap": "83554.5",
+  "split_actual_fills": [
+    {
+      "utc": "2025-03-13T00:01Z",
+      "q": "17.207",
+      "price": "83631.2"
+    },
+    {
+      "utc": "2025-03-13T00:18Z",
+      "q": "17.207",
+      "price": "83477.8"
+    }
+  ],
+  "march14_close": "81072.3",
+  "march14_v3_short_return": "0.03059743253713924946670620534",
+  "march14_split_short_return": "0.02970755614598854639786007935",
+  "threshold": "0.03",
+  "v3_armed": true,
+  "split_armed": false,
+  "march15_close": "83948.3",
+  "v3_sol_exit": {
+    "utc": "2025-03-15T00:00Z",
+    "reason": "TRAIL",
+    "qty": "1000",
+    "price": "133.46"
+  },
+  "split_sol_exit": {
+    "utc": "2025-03-25T00:00Z",
+    "reason": "REGIME",
+    "qty": "2000",
+    "price": "140.94"
+  },
+  "split_sol_extra_add": {
+    "utc": "2025-03-23T00:00Z",
+    "qty": "1000",
+    "price": "128.44"
+  },
+  "gate": "Original decide enters BTC only episodeNone. ActualBTCVWAP changes best_f/trail arming; SOL remains and group notflat, so noMar16BTCpermission. NoBTCmarginblocks, no lostQ proved.",
+  "classification": "Legitimate changed actualVWAP exit path under existingdomain rules; not evidence target lot defect. No future105schedule injection allowed."
+}

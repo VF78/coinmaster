@@ -1,0 +1,22 @@
+{
+  "v3": {
+    "btc_held_seconds": 26626740.0,
+    "btc_with_sol_seconds": 4146420.0,
+    "fraction_with_sol": 0.15572390762068508,
+    "terminal_qty": {
+      "BTC": "0.000",
+      "SOL": "0.0"
+    },
+    "method": "Exact actualnative fill eventtime intervals, entryactionsBTC_ENTRY/SOL_ADD increase;othersdecrease. Presence ofSOL only, not protectionpercent or beta coverage. Bothpositionsflatverified."
+  },
+  "btc025": {
+    "btc_held_seconds": 26594700.0,
+    "btc_with_sol_seconds": 4091400.0,
+    "fraction_with_sol": 0.1538426829405859,
+    "terminal_qty": {
+      "BTC": "0.000",
+      "SOL": "0.0"
+    },
+    "method": "Exact actualnative fill eventtime intervals, entryactionsBTC_ENTRY/SOL_ADD increase;othersdecrease. Presence ofSOL only, not protectionpercent or beta coverage. Bothpositionsflatverified."
+  }
+}

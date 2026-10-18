@@ -1,0 +1,51 @@
+{
+  "actual_entry_quality": {
+    "common": 104,
+    "mean_bp": 4.225691585822128,
+    "median_bp": 7.29752624447061,
+    "worst_bp": -77.43793723589395,
+    "better": 58,
+    "worse": 46
+  },
+  "missing_v3_days": [
+    20163
+  ],
+  "extra_days": [],
+  "native_deltas": {
+    "terminal_total": "-1058158.39898480",
+    "native_fees": "-247819.49330367",
+    "global_marked_dd_percent": "10.36343291612860619010663982"
+  },
+  "actual_fill_attribution": {
+    "BTC": {
+      "gross": "4540290.968000000000000000007",
+      "actual_fees": "825861.36571038",
+      "net_ex_funding": "3714429.602289620000000000007",
+      "terminal_net_qty": "0.000"
+    },
+    "SOL": {
+      "gross": "621916.3959999999999999999996",
+      "actual_fees": "17412.2198536",
+      "net_ex_funding": "604504.1761463999999999999996",
+      "terminal_net_qty": "0.0"
+    }
+  },
+  "parent_integrity": {
+    "parents": 104,
+    "parent_side_counts": {
+      "-1": 51,
+      "1": 53
+    },
+    "planned_matches_accepted_net_count": 104,
+    "filled_equals_plan_count": 104,
+    "filled_plus_cancelled_equals_plan_count": 104
+  },
+  "unallocated_cash_residual_not_funding": "50116.392090129999999999993",
+  "heldtime": {
+    "btc_held_seconds": 26645460.0,
+    "btc_with_sol_seconds": 4065780.0,
+    "fraction_with_sol": 0.15258809568309198,
+    "method": "Actualnativefilledpositionpresence intervals; NOT percentprotection. Can differ from nativecachequote snapshot timing."
+  },
+  "method": "ActualnativeVWAP/filledquantity. All104acceptedplanconserved; crossruncompoundingdifferent. SamepermissionUTCdaymatchingdoesnotforce105oraddproxyROI. NativeDDsummaryreused; nofulltracepass."
+}

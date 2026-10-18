@@ -1,0 +1,19 @@
+{
+  "scope": "PREPARED_ONLY_NOT_APPLIED_NOT_EXECUTED",
+  "base_hashes": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "4b25b6f72b8420823d2596a2a09394cf4f31a981773f0552b364562b69d26765",
+    "runtime/coinmaster/strategy/split_cover.py": "0cb6de91e49e1b28d5383a8a487cdefa396ff32223037cdacc4f10d622cf13d4",
+    "runtime/coinmaster/research/native_baseline.py": "44db98a90dc1f4cf3aa1d86ccb95ec25dfa98b58d2f921d54e5b216d4d139abc",
+    "runtime/tests/test_native_split_cover.py": "df23f697e96e6dead679e2fee25f18f3aca7cf0d0635ae6e9cdcc562d0e98a98",
+    "scripts/launch_split_cover_native.py": "2b879fb37b47683ff1a252a146673ddef8a6e63853cec7f25e460d592f64b1df"
+  },
+  "candidate_hashes": {
+    "runtime/coinmaster/strategy/wave_overlay.py": "7f212005b09ad655aa3ecf7dcdf9001ea75b3c1ff8ebeac4c61f987d8005d339",
+    "runtime/coinmaster/strategy/split_cover.py": "91b380a45540f04405845291b58aea0035d258e9b6fe2321836d21cb38553b21",
+    "runtime/coinmaster/research/native_baseline.py": "3c830210b143964170c9cc2a2207ce38a8eb8bff1acbfeeac26224cc0eb61cb8",
+    "runtime/tests/test_native_split_cover.py": "a27b9b1037d13d0ace36da2b56d0c85645e168605557e198065127e752e20fc5",
+    "scripts/launch_split_cover_native.py": "3a2a409c5cb4d11f3cebf39ccac94f353b3a906b49bb2f3a3e68913e15f0ed46"
+  },
+  "syntax_checked": true,
+  "native_tests_run": false
+}

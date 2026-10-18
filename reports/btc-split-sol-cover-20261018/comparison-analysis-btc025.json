@@ -1,0 +1,123 @@
+{
+  "label": "btc025",
+  "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-btc-direction.json",
+  "sha256": "f2b91e434f60f7a5af155dd62b51d275e12ad6550b4d577b7071ce0c015ab518",
+  "terminal_total": "4759384.60025755",
+  "terminal_active": "4759384.60025755",
+  "terminal_reserve": "0",
+  "roi_percent": "47493.846002575500",
+  "global_marked_dd_percent": "77.93815411506285660798517398",
+  "minimum_equity": {
+    "equity": "2990.60113081",
+    "timestamp_ns": "1727970240000000000"
+  },
+  "liquidation_count": 0,
+  "native_fees": "809694.77098014",
+  "actual_fees_by_asset": {
+    "BTC": "791976.54824584",
+    "SOL": "17718.22273430"
+  },
+  "actual_fees_by_asset_liquidity": {
+    "BTC_TAKER": "656946.30457054",
+    "BTC_MAKER": "135030.24367530",
+    "SOL_TAKER": "17718.22273430"
+  },
+  "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "funding_count": 1345,
+  "liquidation_rule": "Read unchanged native policy; minute close marked DD is separate from OHLC adverse bounds and proves no intraminute DD cap",
+  "cash_drawdown_summary": {
+    "drawdown_basis": "NATIVE_CASH_ACCOUNT_SERIES",
+    "drawdown_start": "2026-05-02 21:38:00+00:00",
+    "drawdown_trough": "2026-08-19 00:00:00+00:00",
+    "max_drawdown_amount": "3432150.17508597",
+    "max_drawdown_percent": "0.4331756616062829262965142175"
+  },
+  "liquidation_policy": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+  "parents": 104,
+  "split_parent_count": 104,
+  "entry_sizing_count": 104,
+  "parent_side_counts": {
+    "-1": 51,
+    "1": 53
+  },
+  "filled_equals_plan_count": 104,
+  "unfilled_or_partial_count": 0,
+  "filled_plus_cancelled_equals_plan_count": 104,
+  "v3_same_day_matches": 104,
+  "changed_quantity_vs_v3": 84,
+  "plan_integrity_limit": "Cancelled is native quantity; filled+cancelled conservation separately checked. UnknownACK/order constraints require native fixtures.",
+  "native_asset_realized_pnl": "UNKNOWN_NATIVE_SETTLED_PERASSET_NOT_EXPORTED",
+  "fill_attribution": "Separate confirmed-fill attribution is diagnostic, excludes funding; asynchronous callback cash cannot be allocated to asset PnL.",
+  "trace_streamed": true,
+  "confirmed_fill_weighted_average_attribution": {
+    "BTC": {
+      "gross": "4881929.256400000000000000000",
+      "actual_fees": "791976.54824584",
+      "net_ex_funding": "4089952.708154160000000000000",
+      "terminal_net_qty": "0.000"
+    },
+    "SOL": {
+      "gross": "630196.7080000000000000000007",
+      "actual_fees": "17718.22273430",
+      "net_ex_funding": "612478.4852657000000000000007",
+      "terminal_net_qty": "0.0"
+    }
+  },
+  "unmatched_native_fill_sides": [],
+  "attribution_method": "Native fills actual prices/quantities/side, weighted average linear confirmedfill diagnostic; not authoritative native settled perasset PnL. Funding UNKNOWN; cash delta residual unallocated.",
+  "trace": {
+    "trace_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-20261018a/result/minute-native-risk.csv.gz",
+    "trace_sha256": "6e768dfdca5ab69c35d81f5184f5ab1e5d1e4089222fd6708aea9f60ebf5bf26",
+    "rows": 3153600,
+    "phase_counts": {
+      "pre_quote_paired_close": 1051200,
+      "post_btc_quote_paired_close": 1051199,
+      "post_quote_paired_close": 1051199,
+      "post_boundary_post_btc_quote_paired_close": 1,
+      "post_boundary_post_quote_paired_close": 1
+    },
+    "stream_all_native_close_dd_percent": 77.93815411506286,
+    "stream_min_equity": 2990.60113081,
+    "minimum_free_cash": 5360.77730763,
+    "coverage_basis": "COMMON_P0_30D_BETA_DIAGNOSTIC_NOT_ORIGINAL_V3_DYNAMIC_BETA",
+    "coverage_time": {
+      "btc_held_seconds": 26594700.0,
+      "below050_seconds": 25154580.0,
+      "btc_negative_unrealized_seconds": 12430380.0,
+      "sol_not_helping_btc_negative_seconds": 10875360.0,
+      "btc_with_sol_seconds": 4090620.0,
+      "above100_seconds": 950280.0,
+      "sol_helping_btc_negative_seconds": 1555020.0,
+      "joint_negative_unrealized_seconds": 240300.0
+    },
+    "coverage_mean": 0.16698210908325214,
+    "coverage_quantiles_rounded_001": {
+      "0.05": 0.0,
+      "0.25": 0.0,
+      "0.5": 0.0,
+      "0.75": 0.0,
+      "0.95": 0.58
+    },
+    "coverage_min": 0.0,
+    "coverage_max": 5.645587938321514,
+    "btc_time_with_sol_fraction": 0.1538133537885368,
+    "below050_fraction": 0.9458493609628986,
+    "above100_fraction": 0.035731931550271295,
+    "maximum_asset_upnl_interpolation_residual": 183.456000000122,
+    "joint_loss_intervals": 149,
+    "limitations": "Coverage snapshot postpairedquote, seconds held until nextminute approximated from precedingminute. Native roundedmark endpoint interpolation only diagnostics, not pertrade native settled PnL; negative uPnL cohorts are not realized loss events. No intraminute order path proof. Coverage basis is explicit.",
+    "asset_upnl_reconstruction_status": "NOT_FULLY_RECONCILED; maximum residual183.456USDT. Firsthalf-tickoffense2024-09-02T00:04Z: pairednativecash/uPnLimpliesBTCmark57360.9, genericPriceconstructor57361.0; do notoverrideglobalnativeTOTAL/DD. Jointloss149intervals/240300seconds only analytical andnotfullyreconciled, notauthoritative. Residualnotfunding.",
+    "rounding_validation": "Scalar equivalence to genericpinnedPrice constructor tested20000values, but exactinstrument.make_price/engine markquote normalization can differ; actual nativeglobalmarked equity authoritative. Coverage usesactualnativequantities and Bybitmarkclose withroundinglimits; legacyV3dynamicbeta unavailable, commonP0fixedbeta30 diagnosticonly."
+  },
+  "resource_peak_rss_kib": 29700,
+  "comparison_method": "Compare actual native terminal values. No priceproxy savings added. Same-run netplannedQ conservation separate from crossrun compoundingQ differences.",
+  "planned_matches_accepted_net_count": 104,
+  "net_targets_match_plan_count": 98,
+  "unallocated_cash_residual_not_funding": "46953.406837689999999999999",
+  "exact_fill_eventtime_heldtime": {
+    "btc_held_seconds": 26594700.0,
+    "btc_with_sol_seconds": 4091400.0,
+    "fraction_with_sol": 0.1538426829405859,
+    "method": "Actualnativefilledpositionpresence intervals; NOT percentprotection. Can differ from nativecachequote snapshot timing."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "parent_count": 104,
+  "side_counts": {
+    "-1": 51,
+    "1": 53
+  },
+  "completion_reason_counts": {
+    "LIMIT_NATIVE": 66,
+    "DEADLINE": 17,
+    "EARLY_TP": 21
+  },
+  "fallback_count": 38,
+  "all_planned_filled": true,
+  "all_cancel_zero": true,
+  "guard_blocks": {
+    "SOL_ADD": 8
+  },
+  "code_source_hashes": {
+    "native_baseline": "44db98a90dc1f4cf3aa1d86ccb95ec25dfa98b58d2f921d54e5b216d4d139abc",
+    "split_cover": "0cb6de91e49e1b28d5383a8a487cdefa396ff32223037cdacc4f10d622cf13d4",
+    "wave_domain": "5a52a015bdb689a6d4c063dabda379b8e621bdb08cddcd05da12c4789b2db7b5",
+    "wave_strategy": "4b25b6f72b8420823d2596a2a09394cf4f31a981773f0552b364562b69d26765"
+  },
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "first_path_change": {
+    "entry_date": "2024-09-02",
+    "side": "SELL",
+    "v3_entry_vwap": "57313",
+    "candidate_entry_vwap": "57384.74058154235145385587863",
+    "same_initial_plan_q": "0.791",
+    "candidate_second_fill_wait_seconds": 960,
+    "control_tp3_utc": "2024-09-06T14:48Z",
+    "candidate_tp3_utc": "2024-09-06T14:29Z",
+    "interpretation": "ActualentryVWAP moves existingTPtarget andexitdate; expected causal execution path divergence begins before missingMarch16parent. No futurecontrolpermission list used."
+  }
+}

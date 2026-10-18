@@ -1,0 +1,21 @@
+{
+  "recommendation": "GUARD005 as ONE tail-focused native candidate instead of ON, conditional on rootchoice",
+  "parameters": {
+    "first_fraction": 0.5,
+    "limit_distance": 0.0025,
+    "deadline_hours": 4,
+    "runaway_guard": 0.0005,
+    "trigger": "BTCdirection adverse execution drift from firstfill: longquote>=P0*1.0005; shortquote<=P0*.9995",
+    "completion": "Cancel active limit, knownACK, then onlyremainingQ; screening assumes1quoteACKdelay and actualnextclose. Fillduringcancelpending wins, capacceptedtotalQ."
+  },
+  "selection": "TRAIN57 only; constantthreshold. No laterperioddata/noMarch13specialcase. Guard005 bestguard observedmean/p05/conflicttradeoff.",
+  "tradeoff": "No statistical dominance of totalperformance: guard005observedprice-0.849bp versusON+2.261bp, sacrificesmean3.110bp. Observedtail improves p05by25.252bp,worstby170.371bp; deadlines12\u21920 comparedOFF, conflicts16\u21926. This isdescriptivepairedsamepath sample, notindependentOOS/notnativeROI.",
+  "cautions": "Guardfires47/57 andcutswaitingstrongly. NativeTOTAL/DDmaystillworsen. PreserveoriginalactualVWAPTRAILandtargets; nofuture105permissions. Queue/ACK/liquidityunproved. Nearquality atONtriggerquote ischecked; nextquotefill can gapoutsidebound.",
+  "ohlc_ambiguity": {
+    "OFF": 24,
+    "ON": 22,
+    "GUARD005": 7,
+    "GUARD010": 8,
+    "GUARD015": 13
+  }
+}

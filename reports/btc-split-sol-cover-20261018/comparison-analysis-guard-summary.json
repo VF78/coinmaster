@@ -1,0 +1,179 @@
+{
+  "selection": "TRAIN57 [2024-09-01,2025-09-01), only constantguards .05/.10/.15%; no laterselection/no perdateexceptions",
+  "model": "Allcandidates share actualfirstnativefillP0; .25%limit full4h; restinglimitfill only latercompleted1mclose penetratinglimit1bp; makerprice fixedlimit proxy. Markettrigger is observedquoteclose. OFFdeadline, ON15mconfirmation near.10%, runawayguards eachcancelthenonequoteACKdelay then completeatNEXTactual1mclose; limitfillduringcancelpending takespriority. Noidealguardprice. Deadline4h+1minutequote. NoOHLCtouchfills; fullclosed15mhigh/lowonlyforconfirmation. Noqueue/L2/spread certainty.",
+  "limits": "EarlyhistoricalTP/exit conflicts diagnostic only, notsignals; nativewouldaccelerateTP/cancelmandatoryclose. Samepath grosspriceNOTnativeROI. No claimguardrestoresMarch16permission/trail. OriginalP0usesOHLC1bpproxy anddifferentdeadlinequote assumptions; directmetriccomparisononlythiscommonmodel.",
+  "parents": 57,
+  "resource_peak_rss_kib": 106452,
+  "source_sha256": "fcacb965fed9ea787f336aa2f272a2653d2d68582bc44331a01fee13fc04aa7d",
+  "canonical_parquet_sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+  "summaries": [
+    {
+      "mode": "OFF",
+      "whole_btc_price_bp": {
+        "n": 57,
+        "mean": 2.5347737596663986,
+        "median": 12.499999999999629,
+        "min": -183.0891053435369,
+        "p05": -35.68735184429346,
+        "p10": -11.121500278734766,
+        "p95": 12.49999999999999,
+        "max": 12.50000000000008
+      },
+      "wait_hours": {
+        "n": 57,
+        "mean": 1.6055555555555556,
+        "median": 1.0333333333333334,
+        "min": 0.05,
+        "p05": 0.14333333333333334,
+        "p10": 0.21000000000000002,
+        "p95": 4.016666666666667,
+        "max": 4.016666666666667
+      },
+      "limits": 45,
+      "confirm": 0,
+      "guards": 0,
+      "fallback": 12,
+      "fallback_price_bp": {
+        "n": 12,
+        "mean": -34.834824641583516,
+        "median": -11.180368722350266,
+        "min": -183.0891053435369,
+        "p05": -124.93603581104253,
+        "p10": -75.13596655706986,
+        "p95": -1.7946749674532172,
+        "max": -1.3591060102683823
+      },
+      "early_exit_conflicts": 16,
+      "ohlc_ambiguous_parents": 24
+    },
+    {
+      "mode": "ON",
+      "whole_btc_price_bp": {
+        "n": 57,
+        "mean": 2.260634577985241,
+        "median": 12.499999999999597,
+        "min": -183.0891053435369,
+        "p05": -35.68735184429346,
+        "p10": -11.121500278734766,
+        "p95": 12.49999999999999,
+        "max": 12.50000000000008
+      },
+      "wait_hours": {
+        "n": 57,
+        "mean": 1.485672514619883,
+        "median": 1.0,
+        "min": 0.05,
+        "p05": 0.14333333333333334,
+        "p10": 0.21000000000000002,
+        "p95": 4.016666666666667,
+        "max": 4.016666666666667
+      },
+      "limits": 43,
+      "confirm": 4,
+      "guards": 0,
+      "fallback": 10,
+      "fallback_price_bp": {
+        "n": 10,
+        "mean": -40.666524037849705,
+        "median": -17.43502014475678,
+        "min": -183.0891053435369,
+        "p05": -135.50932118058697,
+        "p10": -87.92953701763705,
+        "p95": -2.9993813090226915,
+        "max": -1.3591060102683823
+      },
+      "early_exit_conflicts": 16,
+      "ohlc_ambiguous_parents": 22
+    },
+    {
+      "mode": "GUARD005",
+      "whole_btc_price_bp": {
+        "n": 57,
+        "mean": -0.849196256535622,
+        "median": -3.067463000658511,
+        "min": -12.718106957564162,
+        "p05": -10.435328743767787,
+        "p10": -8.37058162036835,
+        "p95": 12.499999999999748,
+        "max": 12.499999999999982
+      },
+      "wait_hours": {
+        "n": 57,
+        "mean": 0.2038011695906433,
+        "median": 0.1,
+        "min": 0.03333333333333333,
+        "p05": 0.03333333333333333,
+        "p10": 0.03333333333333333,
+        "p95": 0.5666666666666663,
+        "max": 1.8333333333333333
+      },
+      "limits": 10,
+      "confirm": 0,
+      "guards": 47,
+      "fallback": 0,
+      "fallback_price_bp": null,
+      "early_exit_conflicts": 6,
+      "ohlc_ambiguous_parents": 7
+    },
+    {
+      "mode": "GUARD010",
+      "whole_btc_price_bp": {
+        "n": 57,
+        "mean": -1.555259049468548,
+        "median": -5.231984103056618,
+        "min": -12.718106957564162,
+        "p05": -11.267657997659992,
+        "p10": -9.112035132758786,
+        "p95": 12.499999999999794,
+        "max": 12.499999999999982
+      },
+      "wait_hours": {
+        "n": 57,
+        "mean": 0.3687134502923977,
+        "median": 0.16666666666666666,
+        "min": 0.03333333333333333,
+        "p05": 0.03333333333333333,
+        "p10": 0.05,
+        "p95": 1.4066666666666665,
+        "max": 2.75
+      },
+      "limits": 14,
+      "confirm": 0,
+      "guards": 43,
+      "fallback": 0,
+      "fallback_price_bp": null,
+      "early_exit_conflicts": 12,
+      "ohlc_ambiguous_parents": 8
+    },
+    {
+      "mode": "GUARD015",
+      "whole_btc_price_bp": {
+        "n": 57,
+        "mean": -1.1679609955303984,
+        "median": -5.68926899773095,
+        "min": -16.42414291563265,
+        "p05": -15.401521114981971,
+        "p10": -12.07904789224386,
+        "p95": 12.499999999999874,
+        "max": 12.499999999999982
+      },
+      "wait_hours": {
+        "n": 57,
+        "mean": 0.49853801169590645,
+        "median": 0.2833333333333333,
+        "min": 0.03333333333333333,
+        "p05": 0.05,
+        "p10": 0.07666666666666667,
+        "p95": 1.526666666666665,
+        "max": 2.783333333333333
+      },
+      "limits": 20,
+      "confirm": 0,
+      "guards": 37,
+      "fallback": 0,
+      "fallback_price_bp": null,
+      "early_exit_conflicts": 13,
+      "ohlc_ambiguous_parents": 13
+    }
+  ]
+}

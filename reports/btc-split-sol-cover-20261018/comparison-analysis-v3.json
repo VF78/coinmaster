@@ -75,7 +75,15 @@
       "method": "Existing reviewed confirmed-native-fill attribution, NOT native settled perasset PnL"
     }
   },
-  "unallocated_cash_residual_not_funding": "45639.633078600000000000002",
-  "resource_peak_rss_kib": 26956,
-  "comparison_method": "Compare actual native terminal values. No priceproxy savings added. Same-run netplannedQ conservation separate from crossrun compoundingQ differences."
+  "unallocated_cash_residual_not_funding": "45639.633078600000000000000",
+  "resource_peak_rss_kib": 27308,
+  "comparison_method": "Compare actual native terminal values. No priceproxy savings added. Same-run netplannedQ conservation separate from crossrun compoundingQ differences.",
+  "planned_matches_accepted_net_count": 105,
+  "net_targets_match_plan_count": 98,
+  "exact_fill_eventtime_heldtime": {
+    "btc_held_seconds": 26626740.0,
+    "btc_with_sol_seconds": 4146420.0,
+    "fraction_with_sol": 0.15572390762068508,
+    "method": "Actualnativefilledpositionpresence intervals; NOT percentprotection. Can differ from nativecachequote snapshot timing."
+  }
 }

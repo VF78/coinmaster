@@ -1,0 +1,16 @@
+{
+  "actual_entry_execution_comparison": {
+    "common_parents": 104,
+    "mean_normalized_price_bp": 3.485027604357731,
+    "median_normalized_price_bp": 12.501599228726292,
+    "worst_normalized_price_bp": -77.35625164809238,
+    "positive_count": 68,
+    "negative_count": 36,
+    "method": "Actual native VWAPs on matchedadmissionUTCdates, direction adjusted. CandidateacceptedQ fixed withinrun; crossrunQ differs duecompounding. Normalizedprice comparison is notTOTAL/PnL."
+  },
+  "delta_vs_v3": {
+    "terminal_total": "-677823.96925340",
+    "native_fees": "-281398.30788751",
+    "global_marked_dd_percent": "10.65184766665241834592461789"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "row_index": 4331,
+  "residual": "0.03950000000000000000000000",
+  "row": {
+    "bar_open_ms": "1725235380000",
+    "close_available_ns": "1725235440000000000",
+    "phase": "post_quote_paired_close",
+    "cash": "9987.54875075",
+    "free_cash": "9987.54875075",
+    "native_initial_margin": "0",
+    "native_maintenance_margin": "0",
+    "paired_close_equity": "9968.62825075",
+    "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+    "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+    "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+    "conditional_margin_breach": "NOT_APPLICABLE",
+    "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"BTCUSDT-PERP.P1SIM\",\"side\":\"3\",\"quantity\":\"0.395\",\"avg_px_open\":\"57313.0\",\"mark_ohlc\":{\"open_time_ms\":1725235380000,\"open\":\"57303.68\",\"high\":\"57404.1\",\"low\":\"57291.24\",\"close\":\"57360.95\"},\"low_native_pnl\":\"8.611\",\"high_native_pnl\":\"-35.9845\"}]"
+  },
+  "method": "Scalar binaryfloatround equivalent to pinnedPrice tested20k; residual mustremainunallocated pendingnativeAPI endpointcheck"
+}
