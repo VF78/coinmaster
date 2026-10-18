@@ -122,6 +122,12 @@ class SplitCoverResearch:
             p["first_filled"]+=first_qty
             p["first_notional"]+=first_qty*event.last_px.as_decimal()
             p["first_vwap"]=p["first_notional"]/p["first_filled"]
+        if self.config.research_btc_split_planref_v1 and p["first_filled"] == p["first_quantity"]:
+            ep = self._domain.episode
+            if ep is not None and ep.id == p["episode_id"] and ep.btc_planref_vwap is None:
+                ep.btc_planref_vwap = p["first_vwap"]
+                p["management_reference_v1"] = p["first_vwap"]
+                p["management_reference_frozen_ns"] = event.ts_event
         if p["filled"]==p["quantity"]:
             p["closed"]=True
 
@@ -151,7 +157,8 @@ class SplitCoverResearch:
             self._split_stop("UTC_DAY_COMPLETION_FAILED")
             return
         px=tick.bid_price.as_decimal() if p["side"]==1 else tick.ask_price.as_decimal()
-        early=ep.btc_entry_vwap and any(level>0 and (px>=D(str(ep.btc_entry_vwap))*(1+D(str(level))) if p["side"]==1 else px<=D(str(ep.btc_entry_vwap))*(1-D(str(level)))) for level in ep.wave_levels or ())
+        reference = ep.btc_planref_vwap if ep.btc_planref_vwap is not None else ep.btc_entry_vwap
+        early=reference and any(level>0 and (px>=D(str(reference))*(1+D(str(level))) if p["side"]==1 else px<=D(str(reference))*(1-D(str(level)))) for level in ep.wave_levels or ())
         if tick.ts_event>=p["deadline_ns"] or early:
             p["fallback"]=True
             p.setdefault("completion_reason","EARLY_TP" if early else "DEADLINE")

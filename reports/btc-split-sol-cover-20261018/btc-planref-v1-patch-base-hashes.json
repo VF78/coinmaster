@@ -17,6 +17,6 @@
     "runtime/coinmaster/strategy/split_cover.py": "5d76ddc063e6603eb25dbdf8c6bd9a476ca093c41d1d13ab1be39f25a4d02ea3",
     "runtime/coinmaster/research/native_baseline.py": "7c1f8ae601f8d095617215c09dbe57be9cf4ad2063f17e451d983ae872bbb0ec",
     "scripts/launch_split_cover_native.py": "4d4ed0daeef3778be2c9d2ca1793b7b311234ecbf46a78b5f05f54a381cc923c",
-    "runtime/tests/test_native_split_cover.py": "749a195a78fb710a1d2736946701fa939cdfd385e865f9119470e49c28b7103e"
+    "runtime/tests/test_native_split_cover.py": "4b33c533d3725d813c6999716623f7b9b18b91ae4222ea918c20205b0cf9b652"
   }
 }

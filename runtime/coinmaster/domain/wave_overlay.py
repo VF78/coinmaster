@@ -209,6 +209,11 @@ class Intent:
     limit_price: float | None = None
 
 
+def btc_management_price(episode: "Episode") -> float | None:
+    """Optional immutable first-leg reference, never a native money basis."""
+    return float(episode.btc_planref_vwap) if episode.btc_planref_vwap is not None else episode.btc_entry_vwap
+
+
 @dataclass
 class Episode:
     id: str
@@ -219,6 +224,8 @@ class Episode:
     btc_initial_qty: float = 0.0
     btc_open_qty: float = 0.0
     btc_entry_vwap: float | None = None
+    # Research PLANREF_V1: management only; native entry VWAP remains actual.
+    btc_planref_vwap: Decimal | None = None
     btc_entry_qty_exact: Decimal = Decimal("0")
     btc_entry_notional_exact: Decimal = Decimal("0")
     btc_entry_fees_exact: Decimal = Decimal("0")
@@ -375,7 +382,7 @@ class WaveOverlayState:
         if feature.side != episode.side:
             episode.close_reason = "REGIME"
             return [self._intent(episode, "CLOSE_ALL", -episode.side, None, reason="REGIME")]
-        f = episode.side * (bars[index].btc_close / episode.btc_entry_vwap - 1)
+        f = episode.side * (bars[index].btc_close / btc_management_price(episode) - 1)
         episode.best_f = max(episode.best_f, f, 0.0)
         if (episode.best_f > self.config.btc_close_trail_fraction and f <= episode.best_f - self.config.btc_close_trail_fraction):
             episode.close_reason = "TRAIL"
@@ -555,7 +562,7 @@ class WaveOverlayState:
         for level, threshold in enumerate(episode.wave_levels or ()):
             if level in episode.btc_tps or level in episode.btc_filled_tps or level in episode.btc_zero_resting_suppressed:
                 continue
-            target = episode.btc_entry_vwap * (1 + episode.side * threshold)
+            target = btc_management_price(episode) * (1 + episode.side * threshold)
             quantity = self._btc_target_leaves(episode, level)
             if quantity <= 0 or target <= 0:
                 continue

@@ -60,3 +60,22 @@ Whitespace-only finalization: removed extra blank EOF from test/helper; no execu
 df23f697e96e6dead679e2fee25f18f3aca7cf0d0635ae6e9cdcc562d0e98a98  runtime/tests/test_native_split_cover.py
 2b879fb37b47683ff1a252a146673ddef8a6e63853cec7f25e460d592f64b1df  scripts/launch_split_cover_native.py
 ```
+
+## PLANREF_V1 final narrow review — 2026-10-18
+
+**GO for isolated PLANREF_V1 research computation.** Full24m economics, actual permissions/parent matching, volume, execution and DD acceptance remain pending. No105-parent guarantee, live trading or deploy approval. No test rerun/source/index edit/service action by reviewer.
+
+Reviewed applied patch SHA2564357c4c194e8f218e87cdc1d0a21cc7357bad20997f93ca89464eec28ce48486, planref-v1-applied-evidence.json and actual planref-focused-final-tests.log: **10passed,32deselected in4.02s**. Runtime candidate matches the prepared preview; only dummy daily feature fixtures were repaired with z=None, retaining assertions. Independently recomputed all six applied source hashes below and matched evidence.
+
+`strategy/split_cover.py:125-131` freezes P0 only when accumulated actual first-leg filled quantity equals the first budget; partial-first P0 remains unset and falls back to actual current entry VWAP. `domain/wave_overlay.py:212-214,385,565`, `strategy/wave_overlay.py:1370` and `strategy/split_cover.py:160-161` consistently apply management P0 to daily TP/TRAIL/best_f, resting TP prices, conditional reduction eligibility and early-TP acceleration. Existing acceptedQ/position caps, cancel-ACK execution and mandatory close precedence are unchanged. Native fill accounting and H formula are unchanged; PLANREF callback additions export audit fields only.
+
+Both-side native cases at test lines602-631 assert native average entry matches actual blended domain VWAP, actual commissions are positive, realizedPnL equals negative actual fees before reductions, native account cash equals seed10000 minus actual fees, H uses actual aggregateVWAP, and TP lot total remains acceptedQ. Cases at634/652/704/724 establish partial-first freeze timing, unchanged strict3% TRAIL using P0, real mandatory close before completion retaining truthful cancellation quantities, and no rewriting of confirmed native reduction/SOL rights. DefaultOFF and invalid-candidate cases also pass. This supports decision-reference separation without a second money engine; it does not establish historical permission parity.
+
+```
+e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2  runtime/coinmaster/domain/wave_overlay.py
+5cd994506696e0b7d13d2d1d0a469576e754fbebc1b0abcc7fd52bb8f4c8e98b  runtime/coinmaster/strategy/wave_overlay.py
+5d76ddc063e6603eb25dbdf8c6bd9a476ca093c41d1d13ab1be39f25a4d02ea3  runtime/coinmaster/strategy/split_cover.py
+7c1f8ae601f8d095617215c09dbe57be9cf4ad2063f17e451d983ae872bbb0ec  runtime/coinmaster/research/native_baseline.py
+4d4ed0daeef3778be2c9d2ca1793b7b311234ecbf46a78b5f05f54a381cc923c  scripts/launch_split_cover_native.py
+df68b80846a916267f33896201a0ba5598a9d91314acac1cab33c4d8c59286d4  runtime/tests/test_native_split_cover.py
+```

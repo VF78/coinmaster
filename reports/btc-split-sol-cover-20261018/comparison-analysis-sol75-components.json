@@ -1,0 +1,43 @@
+{
+  "label": "sol75",
+  "components": {
+    "CORE": {
+      "q": "0.0",
+      "price": "105.5000000000000000000000",
+      "unallocated_entry_fee": "0E-26",
+      "gross": "-60321.80599999999999999999997",
+      "entry_fees": "2932.33594170",
+      "exit_fees": "2895.64349360",
+      "entry_turnover": "5331519.894",
+      "exit_turnover": "5264806.352",
+      "entry_fills": 126,
+      "exit_allocations": 197,
+      "net_ex_funding": "-66149.78543529999999999999997"
+    },
+    "TACTICAL": {
+      "q": "0.0",
+      "price": "74.71",
+      "unallocated_entry_fee": "0E-8",
+      "gross": "2739.224",
+      "entry_fees": "339.00827950",
+      "exit_fees": "338.45665590",
+      "entry_turnover": "616378.690",
+      "exit_turnover": "615375.738",
+      "entry_fills": 27,
+      "exit_allocations": 36,
+      "net_ex_funding": "2061.75906460"
+    }
+  },
+  "tactical_cycles": 27,
+  "tactical_wins": 25,
+  "tactical_losses": 2,
+  "tactical_worst": "-1758.09436335",
+  "tactical_best": "683.40568950",
+  "native_SOL_gross": "-57582.58199999999999999999998",
+  "native_SOL_actual_fees": "6505.44437070",
+  "confirmed_fill_SOL_net_ex_funding": "-64088.02637069999999999999998",
+  "reconciled_to_actual_SOL_total": true,
+  "method": "ENTRYreasonSOL_COVER_TACTICAL allocatedTACTICAL, allotherSOL_ADD CORE. Actualnativeclosingfillquantity allocatedTACTICALfirst thenCORE perplanpriority. Percomponentactualfillweightedaverageentrycost; closefeesproportionaltoallocatednativecloseqty; entryfeesproportionaltoinventory. Single nativeNETTINGposition: allocationisanalyticalandnonunique, NOTnativepercomponentcash/PnL. No synthetic fills or totalROIadjustment.",
+  "funding": "UNKNOWN; no componentfundingallocation or proxy zero",
+  "limits": "ComponentresultdiffvsSOL50notisolatedcausalbenefit: BTC/COREquantitiescompounddifferently. Logical inventory allocationdoesnotestablishseparatenativepositions. ActualTOTAL/DD remainprimary."
+}

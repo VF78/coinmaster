@@ -21,6 +21,7 @@ from nautilus_trader.model.events import OrderAccepted, OrderCanceled, OrderDeni
 from nautilus_trader.model.identifiers import ClientId, InstrumentId
 from nautilus_trader.trading.strategy import Strategy
 
+from coinmaster.domain.wave_overlay import btc_management_price
 from coinmaster.strategy.split_cover import SplitCoverResearch
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
@@ -56,6 +57,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_v0_selective_lifecycle_repairs: bool = False
     research_v3_risk: str | None = None
     research_btc_split50: bool = False
+    research_btc_split_planref_v1: bool = False
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_cover: Decimal | None = None
     research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
@@ -162,6 +164,8 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
         super().__init__(config)
         self._split_cover_init()
         self._cover_seed(config.research_cover_hour_seed)
+        if config.research_btc_split_planref_v1 and (not config.research_btc_split50 or config.research_btc_split_discount != Decimal("0.0025")):
+            raise ValueError("PLANREF_V1_REQUIRES_BTC025_SPLIT")
         if config.research_btc_split_discount not in (Decimal("0.0025"),Decimal("0.005")):
             raise ValueError("SPLIT_DISCOUNT_NOT_AUTHORIZED_CANDIDATE")
         if config.research_btc_split50 or config.research_sol_cover is not None:
@@ -1363,7 +1367,7 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
                     episode = self._domain.episode
                     if episode is None or episode.btc_entry_vwap is None or intent.level is None:
                         continue
-                    threshold = Decimal(str(episode.btc_entry_vwap)) * (1 + episode.side * Decimal(str(episode.wave_levels[intent.level])))
+                    threshold = Decimal(str(btc_management_price(episode))) * (1 + episode.side * Decimal(str(episode.wave_levels[intent.level])))
                     eligible = tick.bid_price.as_decimal() >= threshold if episode.side == 1 else tick.ask_price.as_decimal() <= threshold
                     if not eligible:
                         continue  # Retain conditional leaves on adverse quotes.
@@ -2314,6 +2318,15 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
             decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
             entry_qty=entry_qty, entry_price=entry_price,
         )
+        if intent.action == "BTC_ENTRY" and self.config.research_btc_split_planref_v1:
+            ep = self._domain.episode
+            p = self._split_parent
+            if ep is not None and p is not None and ep.id == p["episode_id"]:
+                p["planref_v1_p0"] = ep.btc_planref_vwap
+                p["planref_v1_actual_blended_vwap"] = ep.btc_entry_notional_exact / ep.btc_entry_qty_exact
+                p["planref_v1_h_actual"] = ep.h
+                p["planref_v1_gross_reference_qty"] = ep.btc_reference_qty or ep.btc_initial_qty
+                p["planref_v1_beta"] = ep.beta_entry
         if intent.action == "BTC_ENTRY" and self.config.research_v0_execution_repairs and self.entry_sizing_audit:
             episode = self._domain.episode
             if episode is not None:

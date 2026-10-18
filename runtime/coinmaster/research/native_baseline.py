@@ -678,6 +678,7 @@ def run_native_diagnostic(
     research_v3_risk: str | None = None,
     research_h1_b1: str | None = None,
     research_btc_split50: bool = False,
+    research_btc_split_planref_v1: bool = False,
     research_btc_split_discount: str = "0.0025",
     research_sol_cover: str | None = None,
     research_btc_episode_loss_20: bool = False,
@@ -808,6 +809,7 @@ def run_native_diagnostic(
         research_v3_risk=research_v3_risk,
         research_h1_b1=research_h1_b1,
         research_btc_split50=research_btc_split50,
+        research_btc_split_planref_v1=research_btc_split_planref_v1,
         research_btc_split_discount=Decimal(research_btc_split_discount),
         research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
         research_cover_hour_seed=cover_hour_seed,
@@ -963,6 +965,8 @@ def run_native_diagnostic(
         if research_btc_split50 or research_sol_cover:
             result["split_cover_audit"] = strategy._split_cover_report()
             result["config"]["research_btc_split50"] = research_btc_split50
+            result["config"]["research_btc_split_planref_v1"] = research_btc_split_planref_v1
+            result["config"]["btc_management_reference_policy"] = "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1" if research_btc_split_planref_v1 else "ACTUAL_AGGREGATE_VWAP"
             result["config"]["research_btc_split_discount"] = research_btc_split_discount
             result["config"]["research_sol_cover"] = research_sol_cover
             result["config"]["cover_hour_warmup_sha256"] = cover_warmup_hashes
@@ -1128,7 +1132,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1174,6 +1178,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         label += "-solcap6"
     if research_btc_split50:
         label += "-btc-split50-d" + research_btc_split_discount
+        if research_btc_split_planref_v1:
+            label += "-planref-v1"
     if research_sol_cover:
         label += "-sol-cover" + research_sol_cover
     if research_h1_b1:
@@ -1206,6 +1212,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_v3_risk=research_v3_risk,
         research_h1_b1=research_h1_b1,
         research_btc_split50=research_btc_split50,
+        research_btc_split_planref_v1=research_btc_split_planref_v1,
         research_btc_split_discount=research_btc_split_discount,
         research_sol_cover=research_sol_cover,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
@@ -1219,6 +1226,7 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--research-btc-split50", action="store_true")
+    parser.add_argument("--research-btc-split-planref-v1", action="store_true")
     parser.add_argument("--research-btc-split-discount", choices=("0.0025","0.005"), default="0.0025")
     parser.add_argument("--research-sol-cover", choices=("0.5","0.75","1"))
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
@@ -1271,6 +1279,7 @@ def main() -> None:
             research_v3_risk=args.research_v3_risk,
             research_h1_b1=args.research_h1_b1,
             research_btc_split50=args.research_btc_split50,
+            research_btc_split_planref_v1=args.research_btc_split_planref_v1,
             research_btc_split_discount=args.research_btc_split_discount,
             research_sol_cover=args.research_sol_cover,
             research_btc_episode_loss_20=args.research_btc_episode_loss_20,

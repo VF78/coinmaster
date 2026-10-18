@@ -1,0 +1,28 @@
+{
+  "scope": "DEV_APPLIED_FOCUSED_NATIVE_PASS_NO_FULL_PLANREF_RUN",
+  "paths": {
+    "runtime/coinmaster/domain/wave_overlay.py": "e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2",
+    "runtime/coinmaster/strategy/wave_overlay.py": "5cd994506696e0b7d13d2d1d0a469576e754fbebc1b0abcc7fd52bb8f4c8e98b",
+    "runtime/coinmaster/strategy/split_cover.py": "5d76ddc063e6603eb25dbdf8c6bd9a476ca093c41d1d13ab1be39f25a4d02ea3",
+    "runtime/coinmaster/research/native_baseline.py": "7c1f8ae601f8d095617215c09dbe57be9cf4ad2063f17e451d983ae872bbb0ec",
+    "scripts/launch_split_cover_native.py": "4d4ed0daeef3778be2c9d2ca1793b7b311234ecbf46a78b5f05f54a381cc923c",
+    "runtime/tests/test_native_split_cover.py": "df68b80846a916267f33896201a0ba5598a9d91314acac1cab33c4d8c59286d4"
+  },
+  "prepared_runtime_candidate_bytes_unchanged": true,
+  "test_only_correction": "Two daily fixture prepare_day calls now supply feature.z=None; all existing assertions retained. Initial9pass/1dummy-feature failure log retained.",
+  "focused_result": "10 passed, 32 deselected, 16 warnings in 4.02s",
+  "test_unit_policy": {
+    "MemAvailable": 1098145792,
+    "MemoryMax": 268435456,
+    "SwapMax": 0,
+    "CPUWeight": 10,
+    "PrivateNetwork": true,
+    "suite": "test_native_split_cover.py -k planref_v1",
+    "scope": "FOCUSED_ONLY_NOT_FULL_BACKTEST"
+  },
+  "unit_journal": "Started cm115-planref-focused-20261018b.service - /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/.openclaw/workspace/coinmaster/coinmaster/runtime OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q tests/test_native_split_cover.py -k planref_v1 -p no:cacheprovider --basetemp=/tmp/cm115-planref-focused.\ncm115-planref-focused-20261018b.service: Deactivated successfully.\ncm115-planref-focused-20261018b.service: Consumed 4.376s CPU time, 484.0K memory peak, 0B memory swap peak.\n",
+  "resource_note": "systemd short-unit reported peak is retained verbatim and is not an independent accurate Python RSS measurement; MemoryMax256M and Swap0 are enforced launch properties.",
+  "frozen_SOL100_files_still_verified": 88,
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "applied_diff_sha256": "4357c4c194e8f218e87cdc1d0a21cc7357bad20997f93ca89464eec28ce48486"
+}

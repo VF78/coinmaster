@@ -2,6 +2,10 @@ import runpy,json,csv,hashlib
 from pathlib import Path
 from decimal import Decimal as D
 n=runpy.run_path('scripts/analyze_split_cover_results.py');p=n['OUT'];baseline=json.load(n['ARCHIVE'].open());jobs={'v3':n['ARCHIVE'],'btc025':Path('/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-btc-direction.json'),'btc050':Path('/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc050-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-btc-direction.json'),'sol50':Path('/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol50-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover0.5-btc-direction.json')};table=[];liquidity=[]
+for candidate in ('sol75','sol100'):
+ receipt=p/f'{candidate}-receipt.json'
+ if receipt.exists():
+  receiptdata=json.load(receipt.open());artifact=Path(receiptdata['artifact']);assert n['digest'](artifact)==receiptdata['artifact_sha256'];jobs[candidate]=artifact
 for label,path in jobs.items():
  r,s,parents=n['basic'](path,label,baseline);out=p/f'comparison-analysis-{label}.json';old=json.load(out.open()) if out.exists() else {};streamed=old.get('trace_streamed',False);old.update(s);old['trace_streamed']=streamed;n['write'](out.name,old);n['writecsv'](f'comparison-analysis-{label}-parents.csv',parents)
  native=s['native_fill_report_liquidity_by_asset'];assert sum(x['count'] for x in native.values())==r['fills'];assert sum(x['fees'] for x in native.values())==D(r['native_fees']);assert sum(x['commission_unknown_count'] for x in native.values())==0

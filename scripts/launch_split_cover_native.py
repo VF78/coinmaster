@@ -19,6 +19,7 @@ JOBS = Path("/var/lib/coinmaster-native-gui/data/runs/jobs")
 SLICE = "cm113-v3-risk.slice"
 VARIANTS = {
     "btc025": ["--research-btc-split50", "--research-btc-split-discount", "0.0025"],
+    "btc025-planref": ["--research-btc-split50", "--research-btc-split-discount", "0.0025", "--research-btc-split-planref-v1"],
     "btc050": ["--research-btc-split50", "--research-btc-split-discount", "0.005"],
     "sol50": ["--research-sol-cover", "0.5"],
     "sol75": ["--research-sol-cover", "0.75"],
@@ -46,7 +47,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("variant", choices=tuple(VARIANTS)+("joint",))
     p.add_argument("--job-name", required=True)
-    p.add_argument("--joint-btc", choices=("btc025","btc050"))
+    p.add_argument("--joint-btc", choices=("btc025","btc050","btc025-planref"))
     p.add_argument("--joint-sol", choices=("sol50","sol75","sol100"))
     p.add_argument("--launch", action="store_true")
     a = p.parse_args()

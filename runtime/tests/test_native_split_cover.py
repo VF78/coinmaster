@@ -21,8 +21,8 @@ def cfg(split=False, cover=None, **kw):
         max_mark_age_ns=10*HOUR, **kw)
 
 
-def setup(split=True, cover=None, qty=101.001, side=1):
-    s=NativeProbe(cfg(split,cover))
+def setup(split=True, cover=None, qty=101.001, side=1, planref=False):
+    s=NativeProbe(cfg(split,cover,research_btc_split_planref_v1=planref))
     e=native_engine(s)
     run_ticks(e,[tick(BTC_PERP,1)])
     prepare_day(s,2)
@@ -594,5 +594,148 @@ def test_initial_base_anchor_is_actual_native_partial_fill_vwap_and_freezes():
         marks(s,HOUR+1,"100","200")
         run_ticks(e,[tick(SOL_PERP,HOUR+1,"200")])
         assert c["anchor"]==fixed
+    finally:
+        e.end();e.dispose()
+
+
+@pytest.mark.parametrize("side",[1,-1])
+def test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual(side):
+    from coinmaster.domain.wave_overlay import btc_management_price
+    s,e,ep=setup(qty=100,side=side,planref=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3)])
+        p=s._split_parent
+        assert ep.btc_planref_vwap==D(100)
+        assert p["management_reference_frozen_ns"]==3
+        run_ticks(e,[tick(BTC_PERP,4),tick(BTC_PERP,5,"99" if side==1 else "101")])
+        assert p["filled"]==p["quantity"]==100
+        assert ep.btc_entry_vwap!=100
+        assert btc_management_price(ep)==100
+        assert ep.h==pytest.approx((ep.btc_reference_qty or ep.btc_initial_qty)*ep.btc_entry_vwap/ep.beta_entry)
+        assert ep.btc_entry_notional_exact/ep.btc_entry_qty_exact!=D(100)
+        native=e.cache.positions_open()[0]
+        fees=sum((D(str(fee).split()[0]) for fee in native.to_dict()["commissions"]),D(0))
+        assert fees>0
+        assert native.realized_pnl.as_decimal()==-fees
+        assert native.avg_px_open==pytest.approx(ep.btc_entry_vwap)
+        cash=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
+        assert cash==D(10000)-fees
+        targets=s._domain.plan_confirmed_btc_targets()
+        queued=[i for i,_,_ in s._queued_intents if i.action=="BTC_REDUCE"]
+        all_targets=targets+queued
+        assert all_targets
+        for i in all_targets:
+            assert i.limit_price==pytest.approx(100*(1+side*ep.wave_levels[i.level]))
+        assert sum(ep.btc_tp_target_lots.values())==100000
+    finally:
+        e.end();e.dispose()
+
+
+def test_planref_v1_partial_first_leg_cannot_freeze_or_invent_completion():
+    s,e,ep=setup(qty=100,planref=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3,size="10"),tick(BTC_PERP,4,"100.2",size="10")])
+        assert ep.btc_planref_vwap is None
+        assert s._split_parent["first_filled"]==20
+        run_ticks(e,[tick(BTC_PERP,5,"100.4")])
+        p=s._split_parent
+        expected=(D(10)*100+D(10)*D("100.2")+D(30)*D("100.4"))/50
+        assert ep.btc_planref_vwap==expected==p["first_vwap"]
+        assert p["management_reference_frozen_ns"]==5
+        run_ticks(e,[tick(BTC_PERP,6,"100.4"),tick(BTC_PERP,7,"99")])
+        assert ep.btc_planref_vwap==expected
+        assert p["filled"]==p["quantity"]
+    finally:
+        e.end();e.dispose()
+
+
+def test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule():
+    from dataclasses import replace
+    s,e,ep=setup(qty=100,side=-1,planref=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"101")])
+        assert ep.btc_entry_vwap>100 and ep.btc_planref_vwap==100
+        prepare_day(s,6,-1)
+        for feature in s._current_signals:
+            feature.z=None
+        s._bars[-1]=replace(s._bars[-1],btc_close=96.99)
+        WaveOverlayStrategy._advance_current_day(s)
+        assert ep.best_f==pytest.approx(.0301)
+        prepare_day(s,7,-1)
+        for feature in s._current_signals:
+            feature.z=None
+        s._bars[-1]=replace(s._bars[-1],btc_close=100)
+        WaveOverlayStrategy._advance_current_day(s)
+        assert s._forced_close_reason=="TRAIL"
+    finally:
+        e.end();e.dispose()
+
+
+def test_planref_v1_early_tp_accelerates_cancel_ack_path_and_keeps_reference():
+    s,e,ep=setup(qty=100,planref=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"102")])
+        assert s._split_parent["completion_reason"]=="EARLY_TP"
+        assert s._split_parent["filled"]==50
+        run_ticks(e,[tick(BTC_PERP,6,"102")])
+        assert s._split_parent["filled"]==100
+        assert ep.btc_entry_vwap==101 and ep.btc_planref_vwap==100
+    finally:
+        e.end();e.dispose()
+
+
+def test_planref_v1_default_off_retains_actual_blended_management_reference():
+    from coinmaster.domain.wave_overlay import btc_management_price
+    s,e,ep=setup(qty=100)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"99")])
+        assert ep.btc_planref_vwap is None
+        assert btc_management_price(ep)==ep.btc_entry_vwap!=100
+    finally:
+        e.end();e.dispose()
+
+
+@pytest.mark.parametrize("split,discount",[(False,"0.0025"),(True,"0.005")])
+def test_planref_v1_requires_explicit_btc025_split(split,discount):
+    with pytest.raises(ValueError,match="PLANREF_V1_REQUIRES_BTC025_SPLIT"):
+        NativeProbe(cfg(split,research_btc_split_discount=D(discount),research_btc_split_planref_v1=True))
+
+
+def test_planref_v1_mandatory_close_before_first_leg_complete_cancels_truthful_leaves():
+    from coinmaster.domain.wave_overlay import btc_management_price
+    s,e,ep=setup(qty=100,planref=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3,size="10")])
+        assert ep.btc_planref_vwap is None
+        assert btc_management_price(ep)==ep.btc_entry_vwap==100
+        prepare_day(s,4,-1)
+        WaveOverlayStrategy._advance_current_day(s)
+        assert s._forced_close_reason=="REGIME"
+        assert s._split_parent["filled"]==10
+        assert s._split_parent["cancelled"]==90
+        run_ticks(e,[tick(BTC_PERP,5),tick(SOL_PERP,6),tick(BTC_PERP,7)])
+        assert not e.cache.positions_open()
+        assert ep.btc_planref_vwap is None
+        assert s._split_parent["filled"]+s._split_parent["cancelled"]==100
+    finally:
+        e.end();e.dispose()
+
+
+def test_planref_v1_freeze_preserves_real_native_tp_and_sol_right():
+    s,e,ep=setup(qty=100,planref=True)
+    try:
+        run_ticks(e,[tick(BTC_PERP,3,size="10")])
+        reduction=s._domain._intent(ep,"BTC_REDUCE",-1,0,quantity=1,reason="BTC_TP1")
+        s._submit_intent(reduction,100,100,.01,0,ts_now=3)
+        run_ticks(e,[tick(BTC_PERP,4,"100",size="1")])
+        assert 0 in ep.sol_rights
+        before=(set(ep.btc_filled_tps),set(ep.sol_rights),dict(ep.sol_right_fraction))
+        run_ticks(e,[tick(BTC_PERP,5,"100.4")])
+        assert ep.btc_planref_vwap is not None
+        assert (set(ep.btc_filled_tps),set(ep.sol_rights),dict(ep.sol_right_fraction))==before
+        p=s._split_parent
+        assert p["planref_v1_p0"]==ep.btc_planref_vwap
+        assert p["planref_v1_actual_blended_vwap"]==ep.btc_entry_notional_exact/ep.btc_entry_qty_exact
+        assert p["planref_v1_h_actual"]==pytest.approx(p["planref_v1_gross_reference_qty"]*ep.btc_entry_vwap/p["planref_v1_beta"])
     finally:
         e.end();e.dispose()

@@ -217,7 +217,7 @@
      e=native_engine(s)
      run_ticks(e,[tick(BTC_PERP,1)])
      prepare_day(s,2)
-@@ -596,3 +596,135 @@
+@@ -596,3 +596,142 @@
          assert c["anchor"]==fixed
      finally:
          e.end();e.dispose()
@@ -238,6 +238,13 @@
 +        assert btc_management_price(ep)==100
 +        assert ep.h==pytest.approx((ep.btc_reference_qty or ep.btc_initial_qty)*ep.btc_entry_vwap/ep.beta_entry)
 +        assert ep.btc_entry_notional_exact/ep.btc_entry_qty_exact!=D(100)
++        native=e.cache.positions_open()[0]
++        fees=sum((D(str(fee).split()[0]) for fee in native.to_dict()["commissions"]),D(0))
++        assert fees>0
++        assert native.realized_pnl.as_decimal()==-fees
++        assert native.avg_px_open==pytest.approx(ep.btc_entry_vwap)
++        cash=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
++        assert cash==D(10000)-fees
 +        targets=s._domain.plan_confirmed_btc_targets()
 +        queued=[i for i,_,_ in s._queued_intents if i.action=="BTC_REDUCE"]
 +        all_targets=targets+queued

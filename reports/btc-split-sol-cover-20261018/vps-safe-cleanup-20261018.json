@@ -1,0 +1,57 @@
+{
+  "timestamp_utc": "2026-10-18T12:56:27Z",
+  "deleted": [
+    {
+      "path": "/var/cache/apt/pkgcache.bin",
+      "bytes": 58432047
+    },
+    {
+      "path": "/var/cache/apt/srcpkgcache.bin",
+      "bytes": 58410998
+    },
+    {
+      "path": "/var/log/syslog.1",
+      "bytes": 464706586
+    },
+    {
+      "path": "/var/log/syslog.4.gz",
+      "bytes": 10032956
+    },
+    {
+      "path": "/var/tmp/coinmaster-gui-stage-32a0940",
+      "bytes": 1348902
+    },
+    {
+      "path": "/var/tmp/coinmaster-gui-release.q0Gc9m",
+      "bytes": 2167680
+    },
+    {
+      "path": "/var/tmp/coinmaster-gui-release.ejQFH7",
+      "bytes": 2222271
+    }
+  ],
+  "skipped": [],
+  "logical_bytes_removed": 597321440,
+  "root_free_before": 3059662848,
+  "root_free_after": 3658424320,
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "scope": "Rebuildable package indexes, closed OS log rotations, obsolete GUI staging only. No source/results/input/jobs/state/secrets/service/Hermes/site/VPN changes. Idle unattended-upgrades daemon was distinguished from actual active package locks.",
+  "remaining_large_categories_approx_du": {
+    "/var/lib/docker": "5.8GiB",
+    "/root/.hermes": "3.8GiB",
+    "/opt/fai-paperclip": "3.3GiB",
+    "/root/.openclaw/workspace": "3.1GiB",
+    "/usr/local": "2.8GiB",
+    "/var/lib/coinmaster-native-gui": "2.1GiB",
+    "/usr/lib": "2.1GiB",
+    "/srv/coinmaster-native-gui": "1.7GiB",
+    "/srv/coinmaster": "1.3GiB",
+    "/opt/fai-content-engine": "1.1GiB"
+  },
+  "remaining_caches": {
+    "/var/cache": "13MiB",
+    "/root/.cache": "676KiB"
+  },
+  "additional_deletion_decision": "No additional obvious large disposable cache identified. Working apps, Docker layers, all research results and inputs preserved."
+}

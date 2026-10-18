@@ -1,0 +1,143 @@
+...F......                                                               [100%]
+=================================== FAILURES ===================================
+_ test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule _
+
+    def test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule():
+        from dataclasses import replace
+        s,e,ep=setup(qty=100,side=-1,planref=True)
+        try:
+            run_ticks(e,[tick(BTC_PERP,3),tick(BTC_PERP,4),tick(BTC_PERP,5,"101")])
+            assert ep.btc_entry_vwap>100 and ep.btc_planref_vwap==100
+            prepare_day(s,6,-1)
+            s._bars[-1]=replace(s._bars[-1],btc_close=96.99)
+>           WaveOverlayStrategy._advance_current_day(s)
+
+tests/test_native_split_cover.py:660: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+coinmaster/strategy/wave_overlay.py:1197: in _advance_current_day
+    intents = self._domain.decide(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <coinmaster.domain.wave_overlay.WaveOverlayState object at 0x7185f6574c80>
+bars = [DailyBar(open_time=datetime.datetime(1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), close_time=datetime.datetime(19...le_at=datetime.datetime(1970, 1, 4, 0, 0, tzinfo=datetime.timezone.utc), btc_open=100, btc_close=96.99, sol_close=100)]
+all_features = [namespace(side=-1, beta=1.0, sigma=0.01), namespace(side=-1, beta=1.0, sigma=0.01), namespace(side=-1, beta=1.0, sigma=0.01)]
+index = 2, active_marked = 10004.985
+
+    def decide(self, bars: list[DailyBar], all_features: list[Features], index: int, active_marked: float, *, btc_notional_multiplier: float | None = None) -> list[Intent]:
+        self._decision_index = index
+        feature = all_features[index]
+        episode = self.episode
+        if episode is None:
+            if self._last_entry_attempt == (index, feature.side):
+                self.last_decision_reason = "ENTRY_ATTEMPTED_THIS_SESSION"
+                return []
+            if self.locked_after_liquidation:
+                self.last_decision_reason = "LIQUIDATION_LOCKOUT"
+                return []
+            if feature.beta is None or not 0.2 < feature.beta < 4:
+                self.last_decision_reason = "BETA_INVALID"
+                return []
+            levels = completed_wave_levels(bars, all_features, index, self.config, feature.side)
+            if levels is None:
+                self.last_decision_reason = "WAVES_UNAVAILABLE"
+                return []
+            episode = Episode(str(uuid4()), feature.side, active_marked, feature.beta, wave_levels=levels)
+            episode.btc_sizing_multiplier = btc_notional_multiplier
+            self.episode = episode
+            self._last_entry_attempt = (index, feature.side)
+            self.last_decision_reason = "BTC_ENTRY_INTENT"
+            return [self._intent(episode, "BTC_ENTRY", feature.side, None, requested_notional=min((self.config.btc_notional_multiplier if btc_notional_multiplier is None else btc_notional_multiplier) * active_marked, self.config.max_parent_notional))]
+        if episode.btc_entry_vwap is None or episode.h is None:
+            self.last_decision_reason = "PENDING_NATIVE_ENTRY_OUTCOME"
+            return []
+        if feature.side != episode.side:
+            episode.close_reason = "REGIME"
+            return [self._intent(episode, "CLOSE_ALL", -episode.side, None, reason="REGIME")]
+        f = episode.side * (bars[index].btc_close / btc_management_price(episode) - 1)
+        episode.best_f = max(episode.best_f, f, 0.0)
+        if (episode.best_f > self.config.btc_close_trail_fraction and f <= episode.best_f - self.config.btc_close_trail_fraction):
+            episode.close_reason = "TRAIL"
+            return [self._intent(episode, "CLOSE_ALL", -episode.side, None, reason="TRAIL")]
+        # A due timeout is a mandatory reduction.  It must preempt a queued
+        # add or a resting planned exit under every candidate, including the
+        # legacy control flag retained in the immutable candidate schema.
+        timeout = self._sol_exits(episode, feature, bars[index], index)
+        if timeout:
+            return timeout
+        # Ordinary work waits for a parent to become terminal, but the
+        # mandatory exits above deliberately bypass that lock.
+        if any(intent_id not in episode.resting_reductions for intent_id in episode.pending):
+            return []
+        intents: list[Intent] = []
+        for level, threshold in enumerate(episode.wave_levels or ()):
+            # v3 installs known targets as genuine resting post-only orders on
+            # the confirmed initial fill.  A target that was not installed
+            # (for example an invalid/marketable post-only price) retains the
+            # old taker fallback, but no filled right is invented.
+            if level not in episode.btc_omitted_zero_levels and f >= threshold and level not in episode.btc_tps and level not in episode.btc_filled_tps and episode.attempted_btc_at.get(level) != index:
+                episode.attempted_btc_at[level] = index
+                leaves = self._btc_target_leaves(episode, level)
+                if leaves > 0:
+                    intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=leaves))
+        if intents:
+            return intents
+        if not self.config.sol_overlay_enabled:
+            return []
+        # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
+        # An invalid current beta permits only exits/reductions, never new risk.
+        if feature.beta is None or not 0.2 < feature.beta < 4:
+            return self._sol_exits(episode, feature, bars[index], index)
+        if not self.config.episode_fixed_beta:
+>           z = feature.z if episode.fixed_sigma is None else (feature.relative - feature.mu) / episode.fixed_sigma if feature.relative is not None and feature.mu is not None else None
+                ^^^^^^^^^
+E           AttributeError: 'types.SimpleNamespace' object has no attribute 'z'
+
+coinmaster/domain/wave_overlay.py:420: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_split_cover.py::test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual[1]
+tests/test_native_split_cover.py::test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual[-1]
+tests/test_native_split_cover.py::test_planref_v1_partial_first_leg_cannot_freeze_or_invent_completion
+tests/test_native_split_cover.py::test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule
+tests/test_native_split_cover.py::test_planref_v1_early_tp_accelerates_cancel_ack_path_and_keeps_reference
+tests/test_native_split_cover.py::test_planref_v1_default_off_retains_actual_blended_management_reference
+tests/test_native_split_cover.py::test_planref_v1_mandatory_close_before_first_leg_complete_cancels_truthful_leaves
+tests/test_native_split_cover.py::test_planref_v1_freeze_preserves_real_native_tp_and_sol_right
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_split_cover.py::test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual[1]
+tests/test_native_split_cover.py::test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:631: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_partial_first_leg_cannot_freeze_or_invent_completion
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:649: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:667: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_early_tp_accelerates_cancel_ack_path_and_keeps_reference
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:680: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_default_off_retains_actual_blended_management_reference
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:691: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_mandatory_close_before_first_leg_complete_cancels_truthful_leaves
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:717: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_freeze_preserves_real_native_tp_and_sol_right
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:737: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_split_cover.py::test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule
+1 failed, 9 passed, 32 deselected, 16 warnings in 7.44s

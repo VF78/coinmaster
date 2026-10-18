@@ -1,0 +1,45 @@
+{
+  "main_flock_pid": 3372132,
+  "python_pid": 3372136,
+  "all_88_separate_regular_single_link_hash_verified_copies": true,
+  "file_count": 88,
+  "cwd": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a",
+  "cmdline": [
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/source/runtime/.venv/bin/python",
+    "-m",
+    "coinmaster.research.native_baseline",
+    "--data-root",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/source/runtime/var/data",
+    "--research-v0-execution-repairs",
+    "--research-v0-deferred-selective-zero-tp",
+    "--research-v0-selective-lifecycle-repairs",
+    "--observe-minute-risk",
+    "--research-btc-direction-sizing",
+    "--control-report",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/source/runtime/var/data/runs/tp-fee-floor-113/v0/v0.json",
+    "--artifact-dir",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/result",
+    "--research-sol-cover",
+    "1",
+    ""
+  ],
+  "pythonpath": "PYTHONPATH=/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/source/runtime",
+  "dev_coinmaster_visible_in_process_root": false,
+  "mountinfo_relevant": [
+    "892 725 0:25 /systemd/inaccessible/dir /root ro,nosuid,nodev,noexec,relatime shared:620 master:5 - tmpfs tmpfs rw,size=391156k,mode=755,inode64",
+    "897 896 8:1 /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/source /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/source ro,nosuid,relatime shared:632 master:1 - ext4 /dev/sda1 rw",
+    "898 897 8:1 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/source/runtime/.venv ro,nosuid,relatime shared:633 master:1 - ext4 /dev/sda1 rw",
+    "899 897 8:1 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/source/runtime/var/data ro,nosuid,relatime shared:634 master:1 - ext4 /dev/sda1 rw"
+  ],
+  "MemAvailable": 1122951168,
+  "native_flags": {
+    "variant": "sol100",
+    "flags": [
+      "--research-sol-cover",
+      "1"
+    ],
+    "dp": "OFF",
+    "base_control": "V3_DIRECTION_LONG5.5_SHORT7.875",
+    "snapshot_time": "2026-10-18T12:46:40.350677+00:00"
+  }
+}
