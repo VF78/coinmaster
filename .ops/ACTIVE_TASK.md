@@ -1,3 +1,13 @@
+CURRENT BTC-SPLIT / SOL-COVER RESEARCH — 2026-10-18 IN PROGRESS
+Owner authorized causal statistics, separate native24m BTC/SOL variants, bounded refinement, combined winner/repeat, actualHL extended-data qualification and futurelive plan. Authoritative .ops/CoinMaster_BTC_Split_SOL_Hedge_Research_Plan.md + owner message. Current code baselinec5f05f6; V3 comparisonTOTAL5437208.56951095/DPoff/Bybit[2024-09-01,2026-09-01), seed10000. BTC accepted parentQ/permissions preserved (compounding changes later Q naturally); SOLexplicit50-100% is neweconomicversion, no guarantee of unchangedROI. MaxTOTAL primary, minute markedDD/coverage/assetPnL reported and ROI>=V3+lowerDD is desired, not promised. No futureentry list, syntheticfills, secondengine/OMS/PnL/SDK/version.
+
+Project#2: reuse #113 parent/#77data/#101HLlive; newsubtasks#115BTC,#116SOL,#117acceptance linked.37 unrelated cards archived, issues/history retained; exact6active verified by GraphQL isArchived, .ops/split-cover-project-readback-20261018.json. #77/#113/#115/#116InProgress;#117/#101Todo.
+One Sol6.1medium owner engine/domain/runner/native tests; one Sol6.1medium causalstats/data owner with disjointfiles. Native money/order review before7-8bounded sequentialfullruns, secretlessfrozen source, sharedMemoryMax650M/Swap0, availablememoryfloor700MiB/disk1GiB, streamcompress traces. First P0 recommends atmost2BTCsettings and1SOLtactical; causalclosed15m/1H only. FundingUNKNOWN remainsUNKNOWN; no Bybit-asHL substitution. OfficialHL archivecoverage needs exactvalidation;2022zero-volume APIbars not accepted astradehistory. Aug2024 realBybit1Hbeta warmup missingcanonicalminuteinputs; fetchsmallofficialpublicwarmup, noinventedbeta.
+
+Sandbox baseline18Oct10:50:18UTC: activePID2009732/NRestarts0, epoch10e39dc6efa64c8b820b174c0a5b65fe, nativealive/recoveryfalse/entriesRUNNING, cash9468.8737317/equity9201.3037317. No traderconfig/orders/restart/deploy/credentials/realorders/transfers authorized by research; live remainsinactive andfutureactivation requires exactseparateapproval. ProtectedHermes/sites/VPN unchanged. No fullbacktest launched yet; next P0 statistics and focusednative implementation/test results.
+
+Historical completed Live82 preparation and maintenance below remain preserved; not the active research queue.
+
 CURRENT LIVE82 — READY FOR OWNER FUNDING AND AGENT AUTHORIZATION
 Updated: 2026-10-15, Europe/Moscow
 

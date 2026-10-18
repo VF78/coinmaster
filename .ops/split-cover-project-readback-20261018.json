@@ -1,0 +1,269 @@
+{
+  "at": "2026-10-18",
+  "readback": "PASS",
+  "active": [
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ5w",
+      "isArchived": false,
+      "content": {
+        "number": 77,
+        "title": "[R0] Canonical entry-day statistics and real Hyperliquid data coverage",
+        "url": "https://github.com/VF78/coinmaster/issues/77"
+      },
+      "fieldValues": {
+        "nodes": [
+          {},
+          {},
+          {
+            "name": "In Progress"
+          }
+        ]
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXeo",
+      "isArchived": false,
+      "content": {
+        "number": 101,
+        "title": "[R4 / Live] Hyperliquid validation of research winner and guarded rollout",
+        "url": "https://github.com/VF78/coinmaster/issues/101"
+      },
+      "fieldValues": {
+        "nodes": [
+          {},
+          {},
+          {
+            "name": "Todo"
+          }
+        ]
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oW4",
+      "isArchived": false,
+      "content": {
+        "number": 113,
+        "title": "[Research] BTC split-entry and explicit SOL hedge \u2014 current plan",
+        "url": "https://github.com/VF78/coinmaster/issues/113"
+      },
+      "fieldValues": {
+        "nodes": [
+          {},
+          {},
+          {
+            "name": "In Progress"
+          }
+        ]
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSe4",
+      "isArchived": false,
+      "content": {
+        "number": 115,
+        "title": "[R1 BTC-SPLIT] Same accepted BTC plan, native 50/50 execution",
+        "url": "https://github.com/VF78/coinmaster/issues/115"
+      },
+      "fieldValues": {
+        "nodes": [
+          {},
+          {},
+          {
+            "name": "In Progress"
+          }
+        ]
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSfc",
+      "isArchived": false,
+      "content": {
+        "number": 116,
+        "title": "[R2 SOL-COVER] Native 50% base hedge and optional 75/100% target",
+        "url": "https://github.com/VF78/coinmaster/issues/116"
+      },
+      "fieldValues": {
+        "nodes": [
+          {},
+          {},
+          {
+            "name": "In Progress"
+          }
+        ]
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSgM",
+      "isArchived": false,
+      "content": {
+        "number": 117,
+        "title": "[R3 Acceptance] Native comparison, combined candidate and fresh repeat",
+        "url": "https://github.com/VF78/coinmaster/issues/117"
+      },
+      "fieldValues": {
+        "nodes": [
+          {},
+          {},
+          {
+            "name": "Todo"
+          }
+        ]
+      }
+    }
+  ],
+  "archived_this_task": [
+    {
+      "number": 75,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ3g"
+    },
+    {
+      "number": 76,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ4U"
+    },
+    {
+      "number": 78,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ6k"
+    },
+    {
+      "number": 79,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ7s"
+    },
+    {
+      "number": 80,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKKw"
+    },
+    {
+      "number": 81,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKMg"
+    },
+    {
+      "number": 82,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKNs"
+    },
+    {
+      "number": 83,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKOo"
+    },
+    {
+      "number": 84,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKPs"
+    },
+    {
+      "number": 85,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKQY"
+    },
+    {
+      "number": 86,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKRg"
+    },
+    {
+      "number": 87,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKTA"
+    },
+    {
+      "number": 88,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKTs"
+    },
+    {
+      "number": 89,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKVU"
+    },
+    {
+      "number": 90,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKXY"
+    },
+    {
+      "number": 91,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKZg"
+    },
+    {
+      "number": 92,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKa8"
+    },
+    {
+      "number": 93,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CWXA"
+    },
+    {
+      "number": 94,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXE8"
+    },
+    {
+      "number": 95,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXJw"
+    },
+    {
+      "number": 96,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXN0"
+    },
+    {
+      "number": 97,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXQo"
+    },
+    {
+      "number": 98,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXVo"
+    },
+    {
+      "number": 99,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXYQ"
+    },
+    {
+      "number": 100,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXa8"
+    },
+    {
+      "number": 102,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxRQ"
+    },
+    {
+      "number": 103,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxUY"
+    },
+    {
+      "number": 104,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxWk"
+    },
+    {
+      "number": 105,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8R2kU"
+    },
+    {
+      "number": 106,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8Suug"
+    },
+    {
+      "number": 107,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8TjlM"
+    },
+    {
+      "number": 108,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8Tk3g"
+    },
+    {
+      "number": 109,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8UL2k"
+    },
+    {
+      "number": 110,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8n8qc"
+    },
+    {
+      "number": 111,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oUc"
+    },
+    {
+      "number": 112,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oVg"
+    },
+    {
+      "number": 114,
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg9LMV4"
+    }
+  ],
+  "subissues": [
+    115,
+    116,
+    117
+  ]
+}
