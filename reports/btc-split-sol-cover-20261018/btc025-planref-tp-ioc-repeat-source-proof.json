@@ -1,0 +1,15 @@
+{
+  "scope": "FINAL_EIGHTH_FRESH_REPEAT_PREDISPATCH_SOURCE_IDENTITY_PASS",
+  "selected_job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a",
+  "repeat_job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-repeat-20261018a",
+  "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+  "economic_public_files": 85,
+  "exact_source_manifests_equal": true,
+  "all_repeat_source_bytes_verified": true,
+  "exact_input_manifest_equal": true,
+  "exact_economic_flags_equal": true,
+  "excluded_metadata_difference": "snapshot_time only; unique fresh job paths/engine/journal/UUIDs expected",
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "MemAvailable": 1491828736,
+  "disk_free": 3444588544
+}

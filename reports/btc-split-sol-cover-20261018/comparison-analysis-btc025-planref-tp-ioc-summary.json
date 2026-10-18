@@ -1,0 +1,308 @@
+{
+  "native_TOTAL": "6077107.23887483",
+  "TOTAL_delta_vs_V3": "639898.66936388",
+  "TOTAL_relative_delta_percent": "11.76888216045454585542417320",
+  "marked_DD_percent": "66.31878024969152066570091116",
+  "marked_DD_delta_pp": "-0.96752619871891759635964493",
+  "conditional_OHLC_prior_upper_later_lower": {
+    "actual_intrabar_path_proven": false,
+    "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+    "maximum": {
+      "drawdown_fraction": "0.6754771031869252420136632742",
+      "drawdown_peak_percent": "67.54771031869252420136632742",
+      "peak": {
+        "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+        "equity": "13478.6013251",
+        "timestamp_ns": "1726063200000000000"
+      },
+      "trough": {
+        "equity": "4374.11474701",
+        "timestamp_ns": "1727970300000000000"
+      }
+    },
+    "same_bar_extrema_order_assumed": false,
+    "samples": 1051200
+  },
+  "V3_equivalent_conditional_OHLC": {
+    "actual_intrabar_path_proven": false,
+    "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+    "maximum": {
+      "drawdown_fraction": "0.6849200984400826048214056614",
+      "drawdown_peak_percent": "68.49200984400826048214056614",
+      "peak": {
+        "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+        "equity": "13827.7494287",
+        "timestamp_ns": "1726063200000000000"
+      },
+      "trough": {
+        "equity": "4356.84592879",
+        "timestamp_ns": "1727970300000000000"
+      }
+    },
+    "same_bar_extrema_order_assumed": false,
+    "samples": 1051200
+  },
+  "conditional_OHLC_method": "PriorcompletedbarfavorableuppertoSTRICTLYlaterbaradverselower. Conditionaldiagnostic, notproofactualintraminutepathorcaps. Reusedexistingnativearchive; no rerun.",
+  "minimum_equity": {
+    "equity": "4530.57414701",
+    "timestamp_ns": "1727970240000000000"
+  },
+  "liquidations": 0,
+  "permissions": {
+    "control_count": 105,
+    "variant_count": 105,
+    "missing_days": [],
+    "extra_days": [],
+    "same_side": 105,
+    "q0_exact": 105,
+    "q1_exact": 105,
+    "entry_quote_exact": 105,
+    "first_leg_P0_exact_v3": 105,
+    "first_leg_timestamp_exact_v3": 105,
+    "method": "Samecalendar/countaloneinsufficient. FirstlegP0andtimestampcomparedtoactualV3fillforPLANREFvalidation. Crossrunquantitychangesreportedseparately."
+  },
+  "accepted_plan_count": 105,
+  "filled_plan_count": 105,
+  "filled_cancel_conservation": 105,
+  "P0_VWAP_H_validation": {
+    "rows": 105,
+    "management_P0_checks": {
+      "management_ref_equals_P0": 105,
+      "P0_equals_V3": 105,
+      "management_frozen_at_first_fill": 105,
+      "actual_vwap_export_matches_fills": 105,
+      "exact_exit_times": 83
+    },
+    "max_H_identity_relative_error": 3.0346591362981904e-16,
+    "full_entry_cost_improvement_bp": {
+      "n": 105,
+      "mean": 4.517777003270067,
+      "median": 14.251272886804877,
+      "min": -77.31370570968592,
+      "max": 14.276738079909954
+    },
+    "entry_price_improvement_bp": {
+      "n": 105,
+      "mean": 3.4174557620406887,
+      "median": 12.501508905831129,
+      "min": -77.35625164809238,
+      "max": 12.521872032089233
+    },
+    "entry_fee_improvement_bp": {
+      "n": 105,
+      "mean": 1.1003212412293777,
+      "median": 1.7474996663080984,
+      "min": -0.037758732826693994,
+      "max": 1.7548660478207228
+    },
+    "completion_reasons": {
+      "LIMIT_NATIVE": 66,
+      "DEADLINE": 17,
+      "EARLY_TP": 22
+    },
+    "entry_native_maker": 66,
+    "entry_native_taker": 149,
+    "waiting_seconds": {
+      "n": 105,
+      "mean": 5021.714285714285,
+      "median": 2520.0,
+      "min": 60.0,
+      "max": 14460.0
+    },
+    "method": "ActualnativeacceptedQfixedwithinparent; P0andnativeblendedVWAPseparatelyverified, HmustuseactualblendedVWAP. CrossrunQcompounds, dollarPnLdifferencesNOTfixedQcausality. EntrycostnormalizationusesnativeVWAPandactualfeesperBTCunitrelativeV3P0, notaddingproxycosttoTOTAL."
+  },
+  "native_asset_fill_attribution": {
+    "BTC": {
+      "gross": "6273361.445100000000000000005",
+      "actual_fees": "927666.95630420",
+      "net_ex_funding": "5345694.488795800000000000005",
+      "terminal_net_qty": "0.000"
+    },
+    "SOL": {
+      "gross": "696921.9890000000000000000000",
+      "actual_fees": "18260.78131405",
+      "net_ex_funding": "678661.2076859500000000000000",
+      "terminal_net_qty": "0.0"
+    }
+  },
+  "native_liquidity": {
+    "BTC_TAKER": {
+      "count": 281,
+      "turnover": "1406891251.233400002680068",
+      "fees": "773790.18817866",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "BTC_MAKER": {
+      "count": 135,
+      "turnover": "769383840.627700008811020",
+      "fees": "153876.76812554",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    },
+    "SOL_TAKER": {
+      "count": 205,
+      "turnover": "33201420.571",
+      "fees": "18260.78131405",
+      "fee_currency": "USDT",
+      "commission_unknown_count": 0
+    }
+  },
+  "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "unallocated_cash_residual_not_funding": "42751.542393079999999999995",
+  "actual_fill_heldtime": {
+    "btc_held_seconds": 26605560.0,
+    "btc_with_sol_seconds": 4091520.0,
+    "fraction_with_sol": 0.15378439694560084,
+    "method": "Actualnativefilledpositionpresence intervals; NOT percentprotection. Can differ from nativecachequote snapshot timing."
+  },
+  "catchups": {
+    "audit_events": 13,
+    "matched_actual_native_fills": 13,
+    "all_true_native_market_IOC_TAKER": true,
+    "actual_catchup_fees": "10543.77276239",
+    "actual_catchup_turnover": "19170495.9316",
+    "positive_targets_vs_P0": 13,
+    "actual_fill_allocation_net_ex_funding": "-1817.861394284821406597558174",
+    "actual_net_losing_catchup_fills": 7,
+    "native_reduce_only_values": [
+      "True"
+    ],
+    "native_post_only_values": [
+      ""
+    ],
+    "AprilJune": [
+      {
+        "episode_id": "b0ff50d0-26c3-4bcb-b823-41a598fa8721",
+        "entry_utc": "2025-04-11T00:01:00+00:00",
+        "submit_utc": "2025-04-11T00:06:00+00:00",
+        "fill_utc": "2025-04-11T00:06:00+00:00",
+        "level": 1,
+        "audit_quantity": "18.701",
+        "actual_fill_quantity": "18.701",
+        "quantity_matches_audit": true,
+        "native_open_quantity_before_fill": "69.304",
+        "fill_within_actual_open_qty": true,
+        "native_type": "MARKET",
+        "native_time_in_force": "IOC",
+        "native_liquidity": "TAKER",
+        "native_reduce_only": "True",
+        "native_post_only": "",
+        "native_commissions": "['816.60375682 USDT']",
+        "actual_fee": "816.60375682",
+        "target_price": "79475.7",
+        "observed_executable_price": "79393.3",
+        "actual_fill_price": "79393.3",
+        "actual_first_P0": "79566",
+        "actual_blended_vwap": "79549.65",
+        "target_positive_vs_P0": true,
+        "trigger_crossed_target": true,
+        "allocation_gross": "2923.90135",
+        "allocated_entry_fee": "818.2119025575",
+        "allocation_net_ex_funding": "1289.0856906225",
+        "reference_target_lots": 18701,
+        "all_level_fill_qty": "18.701",
+        "earliest_SOL_add_same_level_after_fill": null
+      },
+      {
+        "episode_id": "5389283d-c509-4531-bf70-0a8f3f08df72",
+        "entry_utc": "2025-06-06T00:01:00+00:00",
+        "submit_utc": "2025-06-06T00:15:00+00:00",
+        "fill_utc": "2025-06-06T00:15:00+00:00",
+        "level": 1,
+        "audit_quantity": "7.956",
+        "actual_fill_quantity": "7.956",
+        "quantity_matches_audit": true,
+        "native_open_quantity_before_fill": "37.440",
+        "fill_within_actual_open_qty": true,
+        "native_type": "MARKET",
+        "native_time_in_force": "IOC",
+        "native_liquidity": "TAKER",
+        "native_reduce_only": "True",
+        "native_post_only": "",
+        "native_commissions": "['443.08956978 USDT']",
+        "actual_fee": "443.08956978",
+        "target_price": "101329.7",
+        "observed_executable_price": "101259.1",
+        "actual_fill_price": "101259.1",
+        "actual_first_P0": "101444.8",
+        "actual_blended_vwap": "101382.65",
+        "target_positive_vs_P0": true,
+        "trigger_crossed_target": true,
+        "allocation_gross": "982.96380",
+        "allocated_entry_fee": "443.63019987",
+        "allocation_net_ex_funding": "96.24403035",
+        "reference_target_lots": 7956,
+        "all_level_fill_qty": "7.956",
+        "earliest_SOL_add_same_level_after_fill": null
+      }
+    ],
+    "method": "Events matchedbyparenttimewindow+submit_ns+level toactualfill_auditandnativeCSVqty/price/side. Nativecommissions/liquidity/type/TIF primary, notIOCmakerinference. Quantitiescheckedagainstactualopenquantitybeforefill. TPpositiveisP0managementcondition; actualmoneyallocationusesactualblendedVWAPandactualentryfeesproportionally, notnativepertradeaccountcash.",
+    "rights_limit": "ActualBTC_REDUCEpositivelevelfill isobservable; zero-levelrightsactivationsremainacceptedentryaudit. Standalonefullrightsledgernotexported; noassertionthatsend/ACKalonegrantsrights. SamelevelSOLaddsafteractualfillshownonlyifpresent. Nativefocusedrightsfixturesareseparate evidence.",
+    "catchup_level_total_matches_reference_target_lots": 13
+  },
+  "worst_DD_periods": [
+    {
+      "drawdown_amount": "8920.76217809",
+      "drawdown_peak_percent": "66.31878024969152066570091116",
+      "peak": {
+        "equity": "13451.3363251",
+        "timestamp_ns": "1726063200000000000",
+        "utc": "2024-09-11T14:00:00+00:00"
+      },
+      "recovery": {
+        "equity": "13453.62745342",
+        "timestamp_ns": "1728615180000000000",
+        "utc": "2024-10-11T02:53:00+00:00"
+      },
+      "trough": {
+        "equity": "4530.57414701",
+        "timestamp_ns": "1727970240000000000",
+        "utc": "2024-10-03T15:44:00+00:00"
+      }
+    },
+    {
+      "drawdown_amount": "547666.08219643",
+      "drawdown_peak_percent": "59.84272354367395947974450388",
+      "peak": {
+        "equity": "915175.73025689",
+        "timestamp_ns": "1744333200000000000",
+        "utc": "2025-04-11T01:00:00+00:00"
+      },
+      "recovery": {
+        "equity": "930699.83942448",
+        "timestamp_ns": "1756064280000000000",
+        "utc": "2025-08-24T19:38:00+00:00"
+      },
+      "trough": {
+        "equity": "367509.64806046",
+        "timestamp_ns": "1749223020000000000",
+        "utc": "2025-06-06T15:17:00+00:00"
+      }
+    },
+    {
+      "drawdown_amount": "1150759.43834313",
+      "drawdown_peak_percent": "55.10055575073671291811943329",
+      "peak": {
+        "equity": "2088471.56378771",
+        "timestamp_ns": "1761168540000000000",
+        "utc": "2025-10-22T21:29:00+00:00"
+      },
+      "recovery": {
+        "equity": "2089614.53857348",
+        "timestamp_ns": "1764562200000000000",
+        "utc": "2025-12-01T04:10:00+00:00"
+      },
+      "trough": {
+        "equity": "937712.12544458",
+        "timestamp_ns": "1764340080000000000",
+        "utc": "2025-11-28T14:28:00+00:00"
+      }
+    }
+  ],
+  "causal_conclusion": "ThirteenpreviouslycrossedpositiveTPscaughtupthroughactualnativeIOC+TAKERratherthanpostonlyomission. Apr11TP2nowfills00:06andJune6TP2fills00:15, reducingactualexposurebeforelaterlosses; exactacceptedQ/P0/entrypermissionsretained. AprilJuneperiodmarkedDD59.8427%vsV362.2527%andPLANREFsix70.4734%; globalworstnowOct2024at66.3188%. CrossrunQcompounds, soresultsnotfixedQcausalityorallcashfee-savingeffect. Takerfeeschargednative;positiveP0targetsnotguaranteednetprofit.",
+  "selection_status": "RootselectedexactseventhforFINALeighthfreshsource/journalrepeat; no additionalalgorithmvariant/joint. Guardand15mconfirmationunrun. Freshrepeatpending, notclaimedpassed.",
+  "limitations": "SinglehistoricalBybitnativeexecutionmodelwithfixeddisplayedquoteandunknownrealvenuequeue/spread/fundingattribution. No oldoverlayminuteuPnLreconstruction. NativeTOTAL/DDprimary. SignedfundingUNKNOWNandcashresidualUNALLOCATED. HusesactualblendedVWAP, managementusesimmutableactualfirstlegP0; firstquote/timestampverifiedagainstV3all105.",
+  "exit_lifecycle_mismatch_count": 22,
+  "per_parent_validation_artifact": "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-validation.csv"
+}

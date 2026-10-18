@@ -1,269 +1,829 @@
 {
-  "at": "2026-10-18",
-  "readback": "PASS",
-  "active": [
+  "checked_utc": "2026-10-18T14:31:04.295954+00:00",
+  "url": "https://github.com/users/VF78/projects/2",
+  "title": "Coinmaster project",
+  "items": [
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgq_RFY",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 61,
+        "title": "[ARCH-01] Trading Rules target upgrade: SignalQualityContext, regime filters, RR gate, fail-safe entries",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/61"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgq_RFo",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 62,
+        "title": "[ARCH-02] Radar evidence/ingestion upgrade: feedparser, provenance, EvidenceBundle, NLP, dedupe, factor score",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/62"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgq_RF8",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 63,
+        "title": "[ARCH-03] Radar role change: make RadarContextPolicy the context controller for Trading Rules entries",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/63"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgq_RGE",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 64,
+        "title": "[ARCH-04] Backtest and optimizer target upgrade: Optuna, QuantStats, rolling windows, Experiment/ChampionConfig",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/64"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrDIyQ",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 65,
+        "title": "Этап 1: Полный переход CoinMaster на native Freqtrade core",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/65"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrDIyY",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 66,
+        "title": "Этап 2: Freqtrade-native Radar, FreqAI и governance без второго движка",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/66"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrGtyI",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 67,
+        "title": "Подзадача #66: Freqtrade-native Radar policy bridge",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/67"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrG1WQ",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 68,
+        "title": "Подзадача #67: GUI для Freqtrade Radar policy decisions",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/68"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrJnJI",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 69,
+        "title": "Research: BTC 24/7 Freqtrade backtest + hyperopt loop (2026-01-01..2026-04-26)",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/69"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrROu0",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 70,
+        "title": "Research/Build: Strategy C — 15m Adaptive Volatility Breakout + FreqAI Regime Engine",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/70"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrWr1o",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 71,
+        "title": "Strategy C: robust positive ROI action plan and validation gates",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/71"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrWr2I",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 72,
+        "title": "Research: extract or reproduce private TradingView indicator logic",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/72"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgraY9c",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 73,
+        "title": "Research/Build: New 4H wave trading engine",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/73"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzgrdDIc",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 74,
+        "title": "Wave Engine GUI: settings + replay visualization of waves, breaks, entries, TP/SL",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/74"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ3g",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 75,
+        "title": "[Nautilus P0] Данные, биржи и проверка окружения",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/75"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ4U",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 76,
+        "title": "[Nautilus P0.1] Pin и карта переиспользования",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/76"
+      }
+    },
     {
       "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ5w",
       "isArchived": false,
+      "fieldValueByName": {
+        "name": "Done"
+      },
       "content": {
         "number": 77,
         "title": "[R0] Canonical entry-day statistics and real Hyperliquid data coverage",
+        "state": "CLOSED",
         "url": "https://github.com/VF78/coinmaster/issues/77"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ6k",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
       },
-      "fieldValues": {
-        "nodes": [
-          {},
-          {},
-          {
-            "name": "In Progress"
-          }
-        ]
+      "content": {
+        "number": 78,
+        "title": "[Nautilus P1] Native Nautilus: исполнения и денежный учёт",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/78"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ7s",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 79,
+        "title": "[Nautilus P1.1] Native fills и margin",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/79"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKKw",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 80,
+        "title": "[Nautilus P1.2] Funding и ledger-инварианты",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/80"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKMg",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 81,
+        "title": "[Nautilus P2] Минимальный Strategy + Research GUI",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/81"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKNs",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 82,
+        "title": "[Nautilus P2.1] Узкий API и immutable config/run",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/82"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKOo",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 83,
+        "title": "[Nautilus P2.2] Адаптация Strategy и Research",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/83"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKPs",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 84,
+        "title": "[Nautilus P3] Полная стратегия, реальный baseline и optimizer",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/84"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKQY",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 85,
+        "title": "[Nautilus P3.1] Domain и единый Strategy lifecycle",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/85"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKRg",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 86,
+        "title": "[Nautilus P3.2] Реальные прогоны и воспроизводимый optimizer",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/86"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKTA",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 87,
+        "title": "[Nautilus P4] Paper runtime и подготовка VPS",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/87"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKTs",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 88,
+        "title": "[Nautilus P4.1] Persistent intents и recovery",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/88"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKVU",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 89,
+        "title": "[Nautilus P4.2] Paper deployment и эксплуатация",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/89"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKXY",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 90,
+        "title": "[Nautilus P5] Runtime GUI и финальный аудит",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/90"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKZg",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 91,
+        "title": "[Nautilus P5.1] Runtime state и безопасные команды",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/91"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKa8",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 92,
+        "title": "[Nautilus P5.2] Финальная verification и live runbook",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/92"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CWXA",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 93,
+        "title": "[HL Launch] Stage-G to virtual Hyperliquid paper dry run",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/93"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXE8",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 94,
+        "title": "[HL D0] Immutable Stage-G and instance configuration",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/94"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXJw",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 95,
+        "title": "[HL D1] Execution semantics parity before dry run",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/95"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXN0",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 96,
+        "title": "[HL D2] Native Hyperliquid venue profile",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/96"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXQo",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 97,
+        "title": "[HL D3] Public-data Nautilus sandbox paper node",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/97"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXVo",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 98,
+        "title": "[HL D4] Credential-free paper and research isolation",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/98"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXYQ",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 99,
+        "title": "[L100 / current Sandbox] Natural lifecycle observation",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/99"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXa8",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 100,
+        "title": "[HL GUI] Premium trader workstation for Stage-G dry run",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/100"
       }
     },
     {
       "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXeo",
       "isArchived": false,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
       "content": {
         "number": 101,
         "title": "[R4 / Live] Hyperliquid validation of research winner and guarded rollout",
+        "state": "OPEN",
         "url": "https://github.com/VF78/coinmaster/issues/101"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxRQ",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
       },
-      "fieldValues": {
-        "nodes": [
-          {},
-          {},
-          {
-            "name": "Todo"
-          }
-        ]
+      "content": {
+        "number": 102,
+        "title": "[HL GUI-1] Trader Dashboard, positions and virtual trade history",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/102"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxUY",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 103,
+        "title": "[HL GUI-2] Running Stage-G strategy and research drafts",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/103"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxWk",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 104,
+        "title": "[HL GUI-3] Native backtest and optimizer for traders",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/104"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8R2kU",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 105,
+        "title": "[HL GUI-4] Safe dry-run controls and premium production UX",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/105"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8Suug",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 106,
+        "title": "[HL GUI-3a] Owned native optimizer job protocol and compact TOP-20",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/106"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8TjlM",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 107,
+        "title": "[HL GUI-4a] Isolated native GUI/API release and repeatable deploy wrapper",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/107"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8Tk3g",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 108,
+        "title": "[L100-3] Deposit protection and GUI read-back",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/108"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8UL2k",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 109,
+        "title": "[HL GUI-4c] coinmaster24.com HTTPS and single operator login",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/109"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8n8qc",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 110,
+        "title": "[L100-2] Native HL account/execution and manual recovery boundary",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/110"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oUc",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 111,
+        "title": "[CM-00] Canonical baseline and release identity",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/111"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oVg",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 112,
+        "title": "[L100-1] Native order lifecycle and executable target/leaves",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/112"
       }
     },
     {
       "id": "PVTI_lAHOBIUvJs4BPJNjzg82oW4",
       "isArchived": false,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
       "content": {
         "number": 113,
-        "title": "[Research] BTC split-entry and explicit SOL hedge \u2014 current plan",
+        "title": "[Research] BTC split-entry and explicit SOL hedge — current plan",
+        "state": "OPEN",
         "url": "https://github.com/VF78/coinmaster/issues/113"
+      }
+    },
+    {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg9LMV4",
+      "isArchived": true,
+      "fieldValueByName": {
+        "name": "Done"
       },
-      "fieldValues": {
-        "nodes": [
-          {},
-          {},
-          {
-            "name": "In Progress"
-          }
-        ]
+      "content": {
+        "number": 114,
+        "title": "[HL GUI-5] Secure exchange connections and account selection",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/114"
       }
     },
     {
       "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSe4",
       "isArchived": false,
+      "fieldValueByName": {
+        "name": "Done"
+      },
       "content": {
         "number": 115,
         "title": "[R1 BTC-SPLIT] Same accepted BTC plan, native 50/50 execution",
+        "state": "CLOSED",
         "url": "https://github.com/VF78/coinmaster/issues/115"
-      },
-      "fieldValues": {
-        "nodes": [
-          {},
-          {},
-          {
-            "name": "In Progress"
-          }
-        ]
       }
     },
     {
       "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSfc",
       "isArchived": false,
+      "fieldValueByName": {
+        "name": "Done"
+      },
       "content": {
         "number": 116,
         "title": "[R2 SOL-COVER] Native 50% base hedge and optional 75/100% target",
+        "state": "CLOSED",
         "url": "https://github.com/VF78/coinmaster/issues/116"
-      },
-      "fieldValues": {
-        "nodes": [
-          {},
-          {},
-          {
-            "name": "In Progress"
-          }
-        ]
       }
     },
     {
       "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSgM",
       "isArchived": false,
+      "fieldValueByName": {
+        "name": "Done"
+      },
       "content": {
         "number": 117,
         "title": "[R3 Acceptance] Native comparison, combined candidate and fresh repeat",
+        "state": "CLOSED",
         "url": "https://github.com/VF78/coinmaster/issues/117"
-      },
-      "fieldValues": {
-        "nodes": [
-          {},
-          {},
-          {
-            "name": "Todo"
-          }
-        ]
       }
     }
   ],
-  "archived_this_task": [
+  "active_items": [
     {
-      "number": 75,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ3g"
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ5w",
+      "isArchived": false,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 77,
+        "title": "[R0] Canonical entry-day statistics and real Hyperliquid data coverage",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/77"
+      }
     },
     {
-      "number": 76,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ4U"
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXeo",
+      "isArchived": false,
+      "fieldValueByName": {
+        "name": "Todo"
+      },
+      "content": {
+        "number": 101,
+        "title": "[R4 / Live] Hyperliquid validation of research winner and guarded rollout",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/101"
+      }
     },
     {
-      "number": 78,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ6k"
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oW4",
+      "isArchived": false,
+      "fieldValueByName": {
+        "name": "In Progress"
+      },
+      "content": {
+        "number": 113,
+        "title": "[Research] BTC split-entry and explicit SOL hedge — current plan",
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/113"
+      }
     },
     {
-      "number": 79,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wJ7s"
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSe4",
+      "isArchived": false,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 115,
+        "title": "[R1 BTC-SPLIT] Same accepted BTC plan, native 50/50 execution",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/115"
+      }
     },
     {
-      "number": 80,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKKw"
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSfc",
+      "isArchived": false,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 116,
+        "title": "[R2 SOL-COVER] Native 50% base hedge and optional 75/100% target",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/116"
+      }
     },
     {
-      "number": 81,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKMg"
-    },
-    {
-      "number": 82,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKNs"
-    },
-    {
-      "number": 83,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKOo"
-    },
-    {
-      "number": 84,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKPs"
-    },
-    {
-      "number": 85,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKQY"
-    },
-    {
-      "number": 86,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKRg"
-    },
-    {
-      "number": 87,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKTA"
-    },
-    {
-      "number": 88,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKTs"
-    },
-    {
-      "number": 89,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKVU"
-    },
-    {
-      "number": 90,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKXY"
-    },
-    {
-      "number": 91,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKZg"
-    },
-    {
-      "number": 92,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg7wKa8"
-    },
-    {
-      "number": 93,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CWXA"
-    },
-    {
-      "number": 94,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXE8"
-    },
-    {
-      "number": 95,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXJw"
-    },
-    {
-      "number": 96,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXN0"
-    },
-    {
-      "number": 97,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXQo"
-    },
-    {
-      "number": 98,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXVo"
-    },
-    {
-      "number": 99,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXYQ"
-    },
-    {
-      "number": 100,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8CXa8"
-    },
-    {
-      "number": 102,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxRQ"
-    },
-    {
-      "number": 103,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxUY"
-    },
-    {
-      "number": 104,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8RxWk"
-    },
-    {
-      "number": 105,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8R2kU"
-    },
-    {
-      "number": 106,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8Suug"
-    },
-    {
-      "number": 107,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8TjlM"
-    },
-    {
-      "number": 108,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8Tk3g"
-    },
-    {
-      "number": 109,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8UL2k"
-    },
-    {
-      "number": 110,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg8n8qc"
-    },
-    {
-      "number": 111,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oUc"
-    },
-    {
-      "number": 112,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oVg"
-    },
-    {
-      "number": 114,
-      "id": "PVTI_lAHOBIUvJs4BPJNjzg9LMV4"
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSgM",
+      "isArchived": false,
+      "fieldValueByName": {
+        "name": "Done"
+      },
+      "content": {
+        "number": 117,
+        "title": "[R3 Acceptance] Native comparison, combined candidate and fresh repeat",
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/117"
+      }
     }
   ],
-  "subissues": [
-    115,
-    116,
-    117
-  ]
+  "archived_count": 51
 }

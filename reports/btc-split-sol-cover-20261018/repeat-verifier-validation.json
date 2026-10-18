@@ -1,0 +1,49 @@
+{
+  "scope": "CHEAP_SELECTED_SELF_AND_SYNTHETIC_VALIDATION_ONLY_ACTIVE_REPEAT_NOT_READ",
+  "cases": [
+    {
+      "case": "self",
+      "TOTAL_delta": 0,
+      "verifier_exit": 0,
+      "status": "EXACT_ECONOMIC_REPEAT_PASS",
+      "direct_TOTAL_check_equal": true,
+      "receipt": "reports/btc-split-sol-cover-20261018/repeat-verifier-self.json"
+    },
+    {
+      "case": "synthetic-plus1",
+      "TOTAL_delta": 1,
+      "verifier_exit": 1,
+      "status": "REPEAT_MISMATCH",
+      "direct_TOTAL_check_equal": false,
+      "receipt": "reports/btc-split-sol-cover-20261018/repeat-verifier-synthetic-plus1.json"
+    },
+    {
+      "case": "synthetic-minus1",
+      "TOTAL_delta": -1,
+      "verifier_exit": 1,
+      "status": "REPEAT_MISMATCH",
+      "direct_TOTAL_check_equal": false,
+      "receipt": "reports/btc-split-sol-cover-20261018/repeat-verifier-synthetic-minus1.json"
+    }
+  ],
+  "ignored_identity_fields": [
+    "client_order_id",
+    "episode_id",
+    "exec_spawn_id",
+    "init_id",
+    "intent_id",
+    "last_trade_id",
+    "linked_order_ids",
+    "order_list_id",
+    "parent_order_id",
+    "position_id",
+    "trade_id",
+    "venue_order_id"
+  ],
+  "ignored_paths": [
+    "summary_path",
+    "trace_path"
+  ],
+  "ignored_performance": "streaming.peak_rss_bytes",
+  "economic_fields_not_ignored": "TOTAL,fees,qty,price,side,liquidity,native economic timestamps,positions/liqs,allrisk,funding instrument/time/rate/mark/accounttotalafter"
+}

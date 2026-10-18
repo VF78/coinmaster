@@ -1,0 +1,218 @@
+{
+  "status": "EXACT_ECONOMIC_REPEAT_PASS",
+  "selected_job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a",
+  "repeat_job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-repeat-20261018a",
+  "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+  "checks": {
+    "config": {
+      "exact_equal": true,
+      "selected_sha256": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+      "repeat_sha256": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+      "selected_count": 42,
+      "repeat_count": 42
+    },
+    "config_hash": {
+      "exact_equal": true,
+      "selected_sha256": "15f117704c6c78bfe6839d4dd7416a80d5a49280acef01ac98200c4791e623ca",
+      "repeat_sha256": "15f117704c6c78bfe6839d4dd7416a80d5a49280acef01ac98200c4791e623ca"
+    },
+    "data_hash": {
+      "exact_equal": true,
+      "selected_sha256": "df7953981cfba2f85ef5752e0b96cd2aae717bf377982d1bed52e27bc811bb27",
+      "repeat_sha256": "df7953981cfba2f85ef5752e0b96cd2aae717bf377982d1bed52e27bc811bb27"
+    },
+    "policy": {
+      "exact_equal": true,
+      "selected_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "repeat_sha256": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "selected_count": 12,
+      "repeat_count": 12
+    },
+    "policy_hash": {
+      "exact_equal": true,
+      "selected_sha256": "cc571e60776465a25dbbf3a1cff39349e773039df9e1cdb94673973003dd23f7",
+      "repeat_sha256": "cc571e60776465a25dbbf3a1cff39349e773039df9e1cdb94673973003dd23f7"
+    },
+    "native_fees": {
+      "exact_equal": true,
+      "selected_sha256": "5045f95d4c1b85cb25df2043992f44a1d1afe88eaf468b04ae8981e16e553b2b",
+      "repeat_sha256": "5045f95d4c1b85cb25df2043992f44a1d1afe88eaf468b04ae8981e16e553b2b"
+    },
+    "fills": {
+      "exact_equal": true,
+      "selected_sha256": "90b0ce469fbd8e30a2862bb24d562dc641c534a9b43c7c33c25cfaefe25e5e47",
+      "repeat_sha256": "90b0ce469fbd8e30a2862bb24d562dc641c534a9b43c7c33c25cfaefe25e5e47"
+    },
+    "native_order_rejections": {
+      "exact_equal": true,
+      "selected_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "repeat_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    "terminal_total": {
+      "exact_equal": true,
+      "selected_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816",
+      "repeat_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816"
+    },
+    "terminal_active": {
+      "exact_equal": true,
+      "selected_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816",
+      "repeat_sha256": "96e42ddacfe46689d961c6a325da7a3cd7bf92d2790bf7923094c87bbf4e1816"
+    },
+    "terminal_reserve": {
+      "exact_equal": true,
+      "selected_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b",
+      "repeat_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b"
+    },
+    "terminal_open_positions": {
+      "exact_equal": true,
+      "selected_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "repeat_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    "liquidation_count": {
+      "exact_equal": true,
+      "selected_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "repeat_sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    "liquidation_value": {
+      "exact_equal": true,
+      "selected_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b",
+      "repeat_sha256": "98089e6d36f78e9766c9ea34d5acb3611f3a92cd81c5eb102095d924ffc7d08b"
+    },
+    "summary": {
+      "exact_equal": true,
+      "selected_sha256": "8d86789e048263ec2b0fcf3a5ac91dd4c7c9bab9b91641ed269c0574fdaad317",
+      "repeat_sha256": "8d86789e048263ec2b0fcf3a5ac91dd4c7c9bab9b91641ed269c0574fdaad317",
+      "selected_count": 12,
+      "repeat_count": 12
+    },
+    "source-commit.txt": {
+      "exact_equal": true,
+      "selected_sha256": "a57539fb734825b9aa7c243a1877dda509316c58d5c3331794eabd196613e944",
+      "repeat_sha256": "a57539fb734825b9aa7c243a1877dda509316c58d5c3331794eabd196613e944"
+    },
+    "immutable-source-hashes.json": {
+      "exact_equal": true,
+      "selected_sha256": "0da8d5c3f67c0c342770f56f597943858635edad105f9efd43dc6a6ac2980f61",
+      "repeat_sha256": "0da8d5c3f67c0c342770f56f597943858635edad105f9efd43dc6a6ac2980f61"
+    },
+    "input-hashes.json": {
+      "exact_equal": true,
+      "selected_sha256": "bb65320eb0348bf69764d8fd2ae88bbe7d40017cfb4bbe4aa15c77bb32cad3c6",
+      "repeat_sha256": "bb65320eb0348bf69764d8fd2ae88bbe7d40017cfb4bbe4aa15c77bb32cad3c6"
+    },
+    "fill_audit_economic_ordered": {
+      "exact_equal": true,
+      "selected_sha256": "05fed9f41f53ca974c055e79b45d93a01db7c1af980ebed7ef97d9c67b6d9c3c",
+      "repeat_sha256": "05fed9f41f53ca974c055e79b45d93a01db7c1af980ebed7ef97d9c67b6d9c3c",
+      "selected_count": 621,
+      "repeat_count": 621
+    },
+    "native_fills_economic_signature": {
+      "exact_equal": true,
+      "selected_sha256": "2e48860e8229850152a47ab91034c4d9deb3ee5d3ea0a67c7e7c22f165ebecfb",
+      "repeat_sha256": "2e48860e8229850152a47ab91034c4d9deb3ee5d3ea0a67c7e7c22f165ebecfb",
+      "selected_count": 621,
+      "repeat_count": 621
+    },
+    "native_orders_economic_signature": {
+      "exact_equal": true,
+      "selected_sha256": "4464145ab4435418d6a14c120e7f8610147ad28f94ffe8ee31d40eb7cbc73e04",
+      "repeat_sha256": "4464145ab4435418d6a14c120e7f8610147ad28f94ffe8ee31d40eb7cbc73e04",
+      "selected_count": 710,
+      "repeat_count": 710
+    },
+    "parent_lots_and_planref_catchup_audit": {
+      "exact_equal": true,
+      "selected_sha256": "0a8c1d964379f8ae26015f37259a9c015304e5da2329cf2f89e7fc37aa0a1e91",
+      "repeat_sha256": "0a8c1d964379f8ae26015f37259a9c015304e5da2329cf2f89e7fc37aa0a1e91",
+      "selected_count": 105,
+      "repeat_count": 105
+    },
+    "entry_sizing_plans": {
+      "exact_equal": true,
+      "selected_sha256": "b72c2bbe462bfc4444c21dc891c625e2d34e9a94b37e0213c87559f1f9c4a427",
+      "repeat_sha256": "b72c2bbe462bfc4444c21dc891c625e2d34e9a94b37e0213c87559f1f9c4a427",
+      "selected_count": 105,
+      "repeat_count": 105
+    },
+    "all_marked_and_conditional_risk": {
+      "exact_equal": true,
+      "selected_sha256": "6cd0a0bb8f403a3df5c6c010e72b0307354fea77c5e66f319abe4dc29c6c0c51",
+      "repeat_sha256": "6cd0a0bb8f403a3df5c6c010e72b0307354fea77c5e66f319abe4dc29c6c0c51",
+      "selected_count": 9,
+      "repeat_count": 9
+    },
+    "streaming_event_schedule": {
+      "exact_equal": true,
+      "selected_sha256": "14134b9bd001b76ae83daf260ae08ba726dd0094486b299523313d0e040d9250",
+      "repeat_sha256": "14134b9bd001b76ae83daf260ae08ba726dd0094486b299523313d0e040d9250",
+      "selected_count": 7,
+      "repeat_count": 7
+    },
+    "native_funding_instrument_time_rate_mark_account_total_after": {
+      "exact_equal": true,
+      "selected_sha256": "e463d6838d6b4a7139a0412f0bc46ffc70d9ed30abf8d3bdbf05487fd3af6462",
+      "repeat_sha256": "e463d6838d6b4a7139a0412f0bc46ffc70d9ed30abf8d3bdbf05487fd3af6462",
+      "selected_count": 1320,
+      "repeat_count": 1320
+    }
+  },
+  "terminal_total": "6077107.23887483",
+  "native_fees": "945927.73761825",
+  "fills": 621,
+  "parents": 105,
+  "markedDD_percent": "66.31878024969152066570091116",
+  "minimum_marked_equity": "4530.57414701",
+  "funding_fields": [
+    "instrument_id",
+    "ts_event",
+    "rate",
+    "settlement_mark",
+    "account_total_after"
+  ],
+  "excluded_identity_columns": [
+    "client_order_id",
+    "episode_id",
+    "exec_spawn_id",
+    "init_id",
+    "intent_id",
+    "last_trade_id",
+    "linked_order_ids",
+    "order_list_id",
+    "parent_order_id",
+    "position_id",
+    "trade_id",
+    "venue_order_id"
+  ],
+  "excluded_paths": [
+    "summary_path",
+    "trace_path"
+  ],
+  "excluded_performance_field": "streaming.peak_rss_bytes",
+  "raw_artifacts": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-repeat-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "sha256": "40a702986e5e14a8ad98ecbfff632f7b009310a9de5bc707dd028e42eec63ad1"
+    }
+  ],
+  "raw_json_identity_expected": false,
+  "native_signed_funding_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "scope": "RESEARCH_ONLY; no promotion/activation or intrabar-safety proof",
+  "risk_comparison_scope": "Exact recorded marked/conditional risk structures, extrema and timestamps are compared; raw compressed minute traces are NOT byte/row compared.",
+  "source_85_identity": {
+    "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "frozen_repeat_files_verified": 85,
+    "selected_and_repeat_manifest_and_bytes_equal": true,
+    "pre_dispatch_proof": "btc025-planref-tp-ioc-repeat-source-proof.json"
+  },
+  "full_rows_per_source": 1051200,
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "receipt_sha256": "478474a6bcebb3c74eeea52331dae669b259f94732416ba5f2a05b8b48f6fcba",
+  "verifier_sha256": "2ebe052e4cf6c5f0bdab44751210321d8100e860b49b94e6c1ffb53ecfc886c9",
+  "successful_repeat_exit_journal": "Started cm115-split-btc025-planref-tp-ioc-repeat-20261018a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-repeat-20261018a/launch.sh.\ncm115-split-btc025-planref-tp-ioc-repeat-20261018a.service: Deactivated successfully.\ncm115-split-btc025-planref-tp-ioc-repeat-20261018a.service: Consumed 16min 35.257s CPU time, 587.3M memory peak, 0B memory swap peak.\n",
+  "identity_and_path_differences": "Fresh episode/intent/order/trade/init UUIDs and job/report/trace paths are excluded explicitly. Raw artifact hashes are retained independently; equality is asserted only for named economic projections."
+}

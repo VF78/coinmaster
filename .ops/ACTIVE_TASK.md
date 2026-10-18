@@ -1,38 +1,34 @@
-Updated: 2026-10-18 (Europe/Moscow). Research only; no deployment.
-Goal: improve BTC entry execution without changing permissions/sizing rules; test explicit SOL factor hedge against verified V3 TOTAL 5,437,208.56951095.
-Authority: .ops/CoinMaster_BTC_Split_SOL_Hedge_Research_Plan.md and owner message 2026-10-18. No trader/config changes, real orders or transfers.
-Canonical checkout: /root/.openclaw/workspace/coinmaster/coinmaster; branch codex/nautilus-btc-sol-mvp. Never manually edit /opt/coinmaster.
-Git: economic source e4f4e675c468d799d406198e04323ba04655d913; PLANREF economic source0280fd67c30b29b94406ffb6b78cd07dec344599; pushed sixth-result checkpoint2eeeb394d0ff2b9a716c3852a1cc35fec6431685.
-Project #2 is status truth: #113 parent; #77/#116 Done; #115/#117 In Progress; #101 Todo (HL data blocked). 37 unrelated cards archived, issue history retained.
-Owners: split_cover_engine alone edits engine/domain/tests/runner; split_cover_stats owns disjoint analytics; split_cover_review independent narrow review. New executor work: Sol6.1/medium.
-P0 accepted: 105 V3 parents; real Bybit execution+mark 1m, [2024-09-01,2026-09-01), 10,000 seed, reserve=0, DP OFF; existing fee/funding/margin model.
-P0 statistics: early57 / late48 (already seen, sensitivity not honest OOS); BTC .25/.50% limit, 4h, confirmation OFF; SOL .50% adverse + later closed15m + quote .25% better, 4h.
-P0 warmup: official Bybit Jun–Aug2024 hourly bars, 2208/asset; 30/90d simple-return beta available for all parents. Price proxies are not native ROI.
-P1 accepted: native Nautilus1.231, existing maps/journal/NETTING, flags default OFF; 32 focused tests PASS, earlier136 combined PASS with overlap; targeted independent GO.
-P1 fixes and exact source/test hashes: implementation-contract.md and native-money-order-review.md under reports/btc-split-sol-cover-20261018/.
-Control verified/reused: V3 TOTAL5,437,208.56951095; marked minute DD67.2863064484%; min equity4514.69512879; fees1091093.07886765;105 parents;0liq/flat.
-BTC025 complete: TOTAL4,759,384.60025755; DD77.9381541151%; min2990.60113081; fees809694.77098014;619fills/104parents. All accepted Q filled, no rejects/liquidations. Fails ROI/DD/parent goal.
-BTC050 complete: TOTAL4,379,050.17052615; DD77.6497393645%; min3030.52505176; fees843273.58556398;617fills/104parents. All accepted Q filled;0liq/flat. Fails goals.
-BTC cause: blended entry VWAP moves TP/TRAIL thresholds. Mar13 short return crosses original3% only in V3; retained SOL blocks Mar16 entry. No order rejection or missing accepted quantity.
-Earlier BTC DD cause: Sep11 second half forced at56750.6 vs first57642.4; shifted TP3 becomes later REGIME loss. Mean price improvement does not guarantee portfolio improvement.
-SOL50 complete: TOTAL21,765.86882504; DD56.4035236202%; min7556.56169203; fees18200.79784808;614fills/105parents;0liq/flat; all rows and88 frozen files verified.
-SOL50 matches all105 BTC permission dates/side/q0/q1/quotes;104 quantities change via equity. Fill attribution: BTC+73301.03945 / SOL-62161.94650; helps39/48 losing BTC episodes but loses55/57 winning ones.
-SOL50 actual fill+mark coverage: mean49.98754%;45–55 band99.97792%;zero=0%; above100%=0%; below45=71min. Cached quote snapshots lag fills and must not be used as proof of zero hedge.
-SOL75 complete: TOTAL23,826.61849406; DD55.34519210%; min7371.60560758; fees19936.44966193;675fills/105 exact BTC permissions;0liq/flat/full rows. BTC fillnet+77189.93740877/SOL-64088.02637070; tactical allocation+2061.7590646, CORE-66149.7854353; actual mean cover50.3369%, zero/>100 both0. Analysis64-file manifest verified.
-SOL100 complete: TOTAL26,111.23084821; DD54.34391844%; min7178.40334887; fees21822.88621025;693fills/105parents;0liq/flat/full rows; all88 hashes verified. BTC fillnet+81415.6226174/SOL-66137.46692765; tactical allocation+4358.64645035/CORE-70496.113378; observed >100% time0.299248%, peak153.73%1min.83 analysis hashes verified.
-PLANREF6 complete: TOTAL6,005,487.81325989 (+568279.24374894/+10.4517%); DD70.47335375% WORSE; min4530.57414701; fees960263.20625722;622fills/105 exact V3 dates/side/q0/q1/firstquotes/P0, allQconserved,0reject/liq/flat/fullrows. Source0280/85 frozenfiles; no active full run.
-Run guards: one full engine; shared650MiB/Swap0; prelaunch availableRAM>=700MiB and disk>=1GiB; no secrets/network, frozen readonly inputs, fresh funding journal, gzip minute trace, protected-pilot check.
-Sixth refinement BTC025_PLANREF: same .25%/4h split, TP/fallback/TRAIL/best_f use frozen completed first-leg actual VWAP P0. Native blended VWAP/cash/fees/PnL/H stay actual.
-PLANREF implemented in dev after SOL100 snapshot independence proof:88 separate nlink1 copies, snapshot-only PYTHONPATH, dev inaccessible; all frozen hashes unchanged. Fresh headroom recovered;10 focused native cases PASS in4.02s under256MiB/Swap0 after one dummy feature z=None correction; actual frozen snapshot unchanged. Prepared patch+hashes+contract under reports; preliminary review no blockers; final independent GO for isolated computation, exact6source/test pins verified; full24m economics/permissions still pending. FINAL7 selected: PLANREF + native positiveTP IOC catch-up after complete entry when target already crossed; existing reduce-only executor/acceptedleaves, trueTAKERfees, no maker fiction/new OMS. Guard.05 own dev delta archived/reversed, UNTESTED/UNRUN; no15mON. Implemented defaultOFF;8 focused PASS +ONE full relevant module50PASS (overlap), independent narrowGO; exact6source pins verified. Fullrun waits root checkpoint.
-Budget: at most8 new full24m runs:5 initial +6th PLANREF +optional7th causal refinement (joint duplicates originalSOL if it wins) +ONE fresh selected result. No arithmetic addition of screening savings.
-SOL cap finding: fixed inherited displayed SOL quote1000 causes genuine partial IOC entry/trim across1–2later quotes; target correct, not instrument cap/venue depth. Full base completion delayed13/19/22 of105 for50/75/100 (max60/60/120s). No code fix or extra run justified.
-Next: root exactsource checkpoint then ONE7th native run; engine/collector verifies genuine105permissions/fullQ; stats compares actual money/DD. Both6th and7th are eligible truthful policies (reviewed BEFORE7thROI), ranking maxTOTAL; DD goal separate. Sixth95-file analysis manifest verified. Eighth is fresh eligible maximumTOTAL; no joint duplicate or more variants.
-Signed funding UNKNOWN; cash residual is not funding. Asset fill attribution is analytics, not another ledger. Prior uPnL reconstruction residual183.456 remains unreconciled; do not spend further passes or claim minute joint-PnL proof.
-HL blocker #101: no verified venue execution+mark/funding archive for24m or2022..today. Recent API1m only;2022 zero-volume daily rows are not trades. Probe dates are not gapfree-history proof. No Bybit substitution.
-Protected Sandbox: installed81e6318, PID2009732/NRestarts0, epoch10e39dc6efa64c8b820b174c0a5b65fe. Live inactive/disabled; Hermes/sites/VPN untouched.
-Previous live82 prep retained: reports/live82-implementation-20261015 and #101; source6c208fd/GUIbe2f71d, V3+DP50 planned82USDC. Funding/auth/qualification and exact real-order approval still required.
-Evidence: reports/btc-split-sol-cover-20261018/{screening-recommendation.json,v3-reuse-verification.json,*receipt.json,comparison-analysis*,btc-planref-v1-*}.
-Raw immutable jobs: /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-*-20261018a. Full rows1051200/source. Minute-close diagnostic execution is not historical BBO/L2 or intraminute path proof.
-Cleanup18Oct: deleted597321440B disposable apt indexes/closed OS log rotations/old GUI staging; free3658424320B, pilot unchanged. Receipt vps-safe-cleanup-20261018.json; no further obvious large safe cache.
-Project #116 CLOSED/Done verified by REST+GraphQL; all3 SOL experiments complete, no ROI-goal promotion. Scoped gh transport GODEBUG=http2client=0 resolves intermittent TLS stalls; no VPN/system change. Current comments116:6249892446;115:6250226656.
-Historical ACTIVE_TASK narrative preserved in Git e4f4e67. Read this compact status and linked evidence before old audit queues.
+Updated: 2026-10-18. Current bounded BTC-SPLIT / SOL-COVER research; NO deploy, trader restart, real orders or transfers.
+Canonical dev: /root/.openclaw/workspace/coinmaster/coinmaster, codex/nautilus-btc-sol-mvp. Never manually edit /opt/coinmaster.
+Authority: .ops/CoinMaster_BTC_Split_SOL_Hedge_Research_Plan.md and owner instructions. Project#2 is backlog/status truth.
+Project: #77/#115/#116/#117 Done; #113 parent InProgress; #101 Todo real-HL-data blocker. 37 unrelated cards archived, history retained.
+Owners: engine sole source/domain/tests/runner; stats disjoint analytics; reviewer narrow independent money/order/acceptance. New work Sol6.1/medium.
+Winner selected: BTC025_PLANREF_TP_IOC, source759823d69a74e72b123add5ae775dd8c3aed4ac5 (pushed); all runtime flags defaultOFF.
+Canonical comparison: native Nautilus1.231, real Bybit execution+mark1m [2024-09-01,2026-09-01),10000seed/reserve0/DPoff; same fee/funding/margin model.
+V3 reused with provenance: TOTAL5437208.56951095; ROI54272.0856951095%; markedDD67.2863064484%; conditionalOHLC68.4920098440%; fees1091093.07886765.
+Selected7: TOTAL6077107.23887483; ROI60671.0723887483%; markedDD66.3187802497%; conditionalOHLC67.5477103187%; minimum4530.57414701; fees945927.73761825.
+Selected improvement+639898.66936388 (+11.77%) vsV3; minutedrawdown lower0.9675262pp, NOT DD50%.621fills/105parents,0reject/liq/nativeflat,full1051200rows per source.
+Selected preserves all105 V3 dates/side/q0q1/first-price/P0/time, every accepted Q filled, cancel0; absolute Q across variants changes through equity compounding.
+BTC rule: normalize original netQ once, first50% immediate, second maker .25% better from first actualP0; known cancelACK before fallback, complete by4h/day-end or earlyTP.
+PLANREF keeps TP/TRAIL reference at actual completed first-legP0; native blendedVWAP/account/PnL/margin/H remain actual. Targets already crossed after fullparentcomplete use native reduce-only IOC/TAKER catch-up.
+13 catch-ups are actualnativefills, acceptedtarget/openqty checked; positive target doesnotguarantee netprofit. SOLrights onlyactualBTCfills. No secondOMS/PnL engine.
+Initial BTC025/050: TOTAL4759384.60025755/4379050.17052615,DD77.9382/77.6497%,104parents; blendedVWAP threshold shift blocksMar16. Rejected candidates, no lost acceptedQ.
+PLANREF6: TOTAL6005487.81325989,DD70.47335375%,105exactparents; eligible disclosed execution policy. Selected7 improvesTOTAL andDD; no retroactive comparator disqualification.
+SOL50/75/100 TOTAL21765.86882504/23826.61849406/26111.23084821; markedDD56.4035/55.3452/54.3439%,105exactpermissions. Continuous CORE losses overwhelm tacticalgains.
+SOL50/75/100 nativeSOL fillnet -62161.94649805/-64088.02637070/-66137.46692765; explicit50–100%hedge with V3ROI notachieved. OriginalSOL overlay retained in maximumTOTALwinner.
+Actualfill+pairedmark coverage used (not stale cache quotes). Inherited displayedSOLquote1000 causes partialfills; fullbase delayed13/19/22parents max60/60/120s. SOL100 peakcover153.73%; target isnot hardcontinuouscap.
+Tests: initial32focusedPASS, earlier136combined overlaps; PLANREF10PASS; selected8focused+ONE50modulePASS overlaps. Independent narrowGO source/order/money and finalverificationhelper.
+Analysis frozen107manifest entries verified0mismatch; compacttable reports/btc-split-sol-cover-20261018/comparison-analysis-native-table.csv; immutable rawjobs retained onVPS.
+FINAL8 COMPLETE: exact economic repeatPASS26/26checks,1320fundingrows; freshengine/journal,fullrows1051200/source,source759/85files equal,0liq/nativeflat. Separate resultSHA40a702986e5e14a8ad98ecbfff632f7b009310a9de5bc707dd028e42eec63ad1.
+Budget8/8 newfullruns:5initial+PLANREF6+selected7+fresh8. NO ninth/guard/15mON/joint. Joint isidentical to selectedBTC+bestSOL(original), no duplicate run.
+Repeat acceptance: exactTOTAL/fees/orderedfill economics/nativeorders/parentlots/P0/catchups/fundingrows/recordedrisk; UUID/path/RSS onlyexcluded. Rawrisktracebytes notcompared. Helper self+syntheticTOTAL +/-1PASS, NOT freshproof.
+Next: #101 genuineHLarchive/dataqualification; no fullHLrun possible until verifiedexecution+mark/funding records available. Bybit packagecomplete; finalREADME/#117Done/readback/checkpoint publication. No automaticadditionalrun orpromotion.
+P0 stats/warmupcausal; early57/late48 alreadyseen sensitivity NOT honestOOS. No embedded future105date list. Priceproxy notROI, no historicalBBO/L2/queue/slippage proof.
+Signedfunding UNKNOWN; residualcash isnotfunding. Assetfillattribution analyticalnotledger. Unreconciled prioruPnL183.456 notusedasjointminutePnLproof. OHLCbound notexactintraminutepath.
+HL #101 blocked: no verifiedvenueBTC/SOLexecution+mark/funding24m/2022..todayarchive. RecentAPI1m only;prelaunchzero-volume bars nottrades. NoBybitsubstitution/paidAWSaccess.
+HL rollout: acquire genuinearchive/intersection+warmup/constraints, venuequalification+samepolicynativecomparison, exactprofile/seal/82USDC+DP50planning, flat-boundaryswitch onlyafterexplicitliveapproval. No depositrequest now.
+Protected Sandbox installed81e6318,PID2009732/NRestarts0,epoch10e39dc6efa64c8b820b174c0a5b65fe; liveinactive/disabled; no secrets read/shared. Hermes/sites/VPN unchanged.
+Safe cleanup18Oct removed597321440B aptindexes/closedOSrotations/oldGUIstaging; receipt vps-safe-cleanup-20261018.json. Latestfree~3.2GiB while8writes; no protectedresults/state removed.
+API ghTLSintermittent; reliablecurlIPv4HTTP1 with savedghcredential onlyinmemory/stdin, neverlogs/files/argv. NoVPN/systemnetwork changes.
+Previouslive82prep6c208fd/GUIbe2f71d retained; funding/auth/qualification and separate real-orderapproval required. Researchwinner NOT deployed/resealed.
+Evidence under reports/btc-split-sol-cover-20261018/; currentreportREADME.md and exactresolvedparameters. HistoricalACTIVE_TASK preserved inGit; do not rereadoldqueues or redoacceptedfixes.
