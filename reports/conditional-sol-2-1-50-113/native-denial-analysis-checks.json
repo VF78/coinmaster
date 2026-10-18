@@ -1,0 +1,45 @@
+{
+  "status": "ACCEPTED_COMPARISON_WITH_EXECUTION_EFFECTS",
+  "receipt": "reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-native-denial-receipt.json",
+  "receipt_sha256": "d37e036efd55075c64c62e9ebf046ddc758c48293add4896d6845f3a4994964d",
+  "result_sha256": "2927f1007b8c531e07042fc5b4c26c61d35a7e1da6320e98e7dbd0ce8b143f04",
+  "frozen_source89_bytes_verified": true,
+  "conditional_audit_count": 5741,
+  "conditional_audit_SHA_verified": true,
+  "control_data_policy_hash_fields_equal": true,
+  "original_overlay_config_enabled": true,
+  "funding": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-native-denial-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction-funding.sqlite",
+      "sha256": "9bc2a64858e45114e5fbfa97f922f7f1a544a16d40df836b6cb75d7fc92940be",
+      "rows": [
+        {
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "count": 899,
+          "first_utc": "2024-09-02T08:00:00+00:00",
+          "last_utc": "2026-08-31T16:00:00+00:00"
+        },
+        {
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "count": 515,
+          "first_utc": "2024-09-02T16:00:00+00:00",
+          "last_utc": "2026-08-29T00:00:00+00:00"
+        }
+      ],
+      "signed_amount": "UNKNOWN; schema exports rate/mark/accounttotalafter, notcashdelta"
+    }
+  ],
+  "funding_count": 1414,
+  "funding_signed": "UNKNOWN_NOT_ZERO",
+  "no_optionalcoverage_or_trace_scan": true,
+  "actualfillheldtime_fraction_not_protection": 0.24967186717724585,
+  "pending": "NONE forcompleted comparison; economicobjectiveFAIL. Noexact105fillpath/hardcoveragecap/livefidelity claim.",
+  "preservation_audit": {
+    "path": "reports/conditional-sol-2-1-50-113/native-denial-final-preservation-audit.json",
+    "sha256": "47b0020a479112421d88ae6cfd4e0b34093af3a5d5446ca8318c0e4323150046",
+    "status": "COMPARABLE_WITH_DECLARED_NATIVE_EXECUTION_EFFECTS_ORDER_PRESERVATION_PASS"
+  },
+  "native_denied_handled": 8,
+  "native_open_orders": 0,
+  "native_pending_terminal_guard": "Existing _reconcile_terminal_flat nativepositions/orders/pending_by_order guard fromengineaudit; rawtaskdicts notexported"
+}

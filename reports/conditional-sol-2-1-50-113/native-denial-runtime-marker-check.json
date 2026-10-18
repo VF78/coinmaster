@@ -1,0 +1,22 @@
+{
+  "unit": "cm115-split-conditional-sol-2-1-50-native-denial-20261018a",
+  "utc": "2026-10-18T17:50:48.949886+00:00",
+  "checked_after_funding_utc": "2026-05-31T16:00:00Z",
+  "worker": {
+    "traceback": 0,
+    "type_error": 0,
+    "exception": 0,
+    "faulted": 0,
+    "native_denied_mentions": 0,
+    "native_rejected_mentions": 0
+  },
+  "unit_log": {
+    "traceback": 0,
+    "type_error": 0,
+    "exception": 0,
+    "faulted": 0,
+    "native_denied_mentions": 0,
+    "native_rejected_mentions": 0
+  },
+  "interpretation": "NativeDENIEDknownterminaleventisnotruntimefailure; completednativeorderswillverifyresidualclosure. Mentioncountsarenotdeduplicatedeventcounts."
+}

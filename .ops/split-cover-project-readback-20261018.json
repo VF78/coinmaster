@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-18T14:58:11.832590+00:00",
+  "checked_utc": "2026-10-18T18:02:32.463505+00:00",
   "url": "https://github.com/users/VF78/projects/2",
   "title": "Coinmaster project",
   "items": [
@@ -722,12 +722,12 @@
       "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSfc",
       "isArchived": false,
       "fieldValueByName": {
-        "name": "In Progress"
+        "name": "Done"
       },
       "content": {
         "number": 116,
         "title": "[R2 SOL] Conditional hedge 2% / 1% / 50% over preserved winner overlay",
-        "state": "OPEN",
+        "state": "CLOSED",
         "url": "https://github.com/VF78/coinmaster/issues/116"
       }
     },
@@ -802,12 +802,12 @@
       "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSfc",
       "isArchived": false,
       "fieldValueByName": {
-        "name": "In Progress"
+        "name": "Done"
       },
       "content": {
         "number": 116,
         "title": "[R2 SOL] Conditional hedge 2% / 1% / 50% over preserved winner overlay",
-        "state": "OPEN",
+        "state": "CLOSED",
         "url": "https://github.com/VF78/coinmaster/issues/116"
       }
     },

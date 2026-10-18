@@ -1,0 +1,17 @@
+{
+  "status": "ACCEPTED_COMPARISON_WITH_EXECUTION_EFFECTS",
+  "economic_objective": "FAIL",
+  "helper_historical_sha256": "dcbddf0c6751c1be2cc931e4130379d2f4c94bbcf9d6f614bcc15e155fbf7b62",
+  "note": "Mutablehelper notfrozen manifestmember. No rawreceipt/results rewritten. Older4attempts preserved.",
+  "files": {
+    "reports/conditional-sol-2-1-50-113/native-denial-analysis-summary.json": "d717dd86a6ad250068bd1764e195cc6e1df534390b0180de2cf9fbee0147bda1",
+    "reports/conditional-sol-2-1-50-113/native-denial-analysis-checks.json": "483fcbb89b18ae9d878c80f5563c05047557e5465ed060a281e5b398fb8916f3",
+    "reports/conditional-sol-2-1-50-113/native-denial-analysis-pending.json": "ca6c3d908c875891d6c5a2cf9f49fe3238fcd8c376fe67fee684a862439361a7",
+    "reports/conditional-sol-2-1-50-113/native-denial-analysis-permissions.csv": "b743c642a93b3db3b90157172f1485cf91dfbb199ad111d1f642096457eb93a7",
+    "reports/conditional-sol-2-1-50-113/native-denial-entry-delay-evidence.json": "e5dab15554bf308a99c896b38971403121375d070047642b8ec1019af7b79263",
+    "reports/conditional-sol-2-1-50-113/native-denial-final-comparison.csv": "7166a46516b37e9f073e227d03f8fbdd04599bd6062af2e43f6e65c561c53b46",
+    "reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-native-denial-receipt.json": "d37e036efd55075c64c62e9ebf046ddc758c48293add4896d6845f3a4994964d",
+    "reports/conditional-sol-2-1-50-113/native-denial-final-preservation-audit.json": "47b0020a479112421d88ae6cfd4e0b34093af3a5d5446ca8318c0e4323150046",
+    "reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-native-denial-resolved-parameters.json": "e6c4be4688ffe987c0ec5c57595808291858c9d3332bc3a7f241b17eb21701c4"
+  }
+}

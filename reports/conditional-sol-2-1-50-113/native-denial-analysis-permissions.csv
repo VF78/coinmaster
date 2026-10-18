@@ -1,0 +1,106 @@
+day,control_present,candidate_present,q0_ns_exact,q1_ns_exact,q1_ask_exact,side_exact,first_vwap_exact,start_ns_exact,control_Q,candidate_Q,candidate_planned,candidate_filled,candidate_cancelled,own_plan_conserved,accepted_matches_plan,targets,omitted
+19968,True,True,True,True,True,True,True,True,0.791,0.791,0.791,0.791,0,True,True,"{""0"": 292, ""1"": 292, ""2"": 791}","[0, 1]"
+19977,True,True,True,True,True,True,True,True,0.950,0.931,0.931,0.931,0,True,True,"{""0"": 343, ""1"": 343, ""2"": 931}","[0, 1]"
+19980,True,True,True,True,True,True,True,True,1.219,1.193,1.193,1.193,0,True,True,"{""0"": 253, ""1"": 253, ""2"": 687}",[]
+19983,True,True,True,True,True,True,True,True,1.427,1.372,1.372,1.372,0,True,True,"{""0"": 291, ""1"": 291, ""2"": 790}",[]
+19984,True,True,True,True,True,True,True,True,0.741,0.695,0.695,0.695,0,True,True,"{""0"": 147, ""1"": 147, ""2"": 401}",[]
+19998,True,True,True,True,True,True,True,True,0.724,0.681,0.681,0.681,0,True,True,"{""0"": 250, ""1"": 250, ""2"": 681}","[0, 1]"
+20001,True,True,True,True,True,True,True,True,0.991,0.930,0.930,0.930,0,True,True,"{""0"": 197, ""1"": 197, ""2"": 536}",[]
+20006,True,True,True,True,True,True,True,True,0.795,0.743,0.743,0.743,0,True,True,"{""0"": 273, ""1"": 273, ""2"": 743}","[0, 1]"
+20008,True,True,True,True,True,True,True,True,0.887,0.828,0.828,0.828,0,True,True,"{""0"": 305, ""1"": 305, ""2"": 828}","[0, 1]"
+20021,True,True,True,True,True,True,True,True,1.625,1.517,1.517,1.517,0,True,True,"{""0"": 322, ""1"": 322, ""2"": 873}",[]
+20029,True,True,True,True,True,True,True,True,1.912,1.679,1.679,1.679,0,True,True,"{""0"": 356, ""1"": 356, ""2"": 967}",[]
+20043,True,True,True,True,True,True,True,True,1.836,1.585,1.585,1.585,0,True,True,"{""0"": 336, ""1"": 336, ""2"": 913}",[]
+20054,True,True,True,True,True,True,True,True,3.455,2.899,2.899,2.899,0,True,True,"{""0"": 616, ""1"": 616, ""2"": 1667}",[]
+20068,True,True,True,True,True,True,True,True,3.125,2.621,2.621,2.621,0,True,True,"{""0"": 707, ""1"": 707, ""2"": 1914}",[0]
+20077,True,True,True,True,True,True,True,True,4.559,3.825,3.825,3.825,0,True,True,"{""0"": 812, ""1"": 812, ""2"": 2201}",[]
+20080,True,True,True,True,True,True,True,True,3.542,2.656,2.656,2.656,0,True,True,"{""0"": 980, ""1"": 980, ""2"": 2656}","[0, 1]"
+20082,True,True,True,True,True,True,True,True,4.565,3.651,3.651,3.651,0,True,True,"{""0"": 984, ""1"": 984, ""2"": 2667}",[0]
+20084,True,True,True,True,True,True,True,True,7.693,6.273,6.273,6.273,0,True,True,"{""0"": 1333, ""1"": 1333, ""2"": 3607}",[]
+20091,True,True,True,True,True,True,True,True,11.755,7.913,7.913,7.913,0,True,True,"{""0"": 2134, ""1"": 2134, ""2"": 5779}",[0]
+20097,True,True,True,True,True,True,True,True,25.565,17.210,17.210,17.210,0,True,True,"{""0"": 3657, ""1"": 3657, ""2"": 9896}",[]
+20103,True,True,True,True,True,True,True,True,17.088,11.561,11.561,11.561,0,True,True,"{""0"": 3119, ""1"": 3119, ""2"": 8442}",[0]
+20109,True,True,True,True,True,True,True,True,23.830,16.122,16.122,16.122,0,True,True,"{""0"": 3425, ""1"": 3425, ""2"": 9272}",[]
+20116,True,True,True,True,True,True,True,True,19.816,13.407,13.407,13.407,0,True,True,"{""0"": 3617, ""1"": 3617, ""2"": 9790}",[0]
+20122,True,True,True,True,True,True,True,True,25.438,18.123,18.123,18.123,0,True,True,"{""0"": 4890, ""1"": 4890, ""2"": 13233}",[0]
+20123,True,True,True,True,True,True,True,True,24.290,17.305,17.305,17.305,0,True,True,"{""0"": 3677, ""1"": 3677, ""2"": 9951}",[]
+20124,True,True,True,True,True,True,True,True,16.653,10.634,10.634,10.634,0,True,True,"{""0"": 3929, ""1"": 3929, ""2"": 10634}","[0, 1]"
+20140,True,True,True,True,True,True,True,True,23.104,14.937,14.937,14.937,0,True,True,"{""0"": 3174, ""1"": 3174, ""2"": 8589}",[]
+20141,True,True,True,True,True,True,True,True,30.582,19.868,19.868,19.868,0,True,True,"{""0"": 4221, ""1"": 4221, ""2"": 11426}",[]
+20151,True,True,True,True,True,True,True,True,40.841,26.533,26.533,26.533,0,True,True,"{""0"": 5638, ""1"": 5638, ""2"": 15257}",[]
+20160,True,True,True,True,True,True,True,True,51.767,32.759,32.759,32.759,0,True,True,"{""0"": 6961, ""1"": 6961, ""2"": 18837}",[]
+20163,True,True,True,True,True,True,True,True,47.580,30.379,30.379,30.379,0,True,True,"{""0"": 8197, ""1"": 8197, ""2"": 22182}",[0]
+20172,True,True,True,True,True,True,True,True,45.958,29.623,29.623,29.623,0,True,True,"{""0"": 6294, ""1"": 6294, ""2"": 17035}",[]
+20174,True,True,True,True,True,True,True,True,50.306,32.426,32.426,32.426,0,True,True,"{""0"": 8749, ""1"": 8749, ""2"": 23677}",[0]
+20181,True,True,True,True,True,True,True,True,57.486,36.545,36.545,36.545,0,True,True,"{""0"": 9861, ""1"": 9861, ""2"": 26684}",[0]
+20189,True,True,True,True,True,True,True,True,69.304,42.327,42.327,42.327,0,True,True,"{""0"": 11421, ""1"": 11421, ""2"": 30906}",[0]
+20191,True,True,True,True,True,True,True,True,39.839,30.749,30.749,30.749,0,True,True,"{""0"": 6534, ""1"": 6534, ""2"": 17681}",[]
+20192,True,True,True,True,True,True,True,True,52.090,40.036,40.036,40.036,0,True,True,"{""0"": 8507, ""1"": 8507, ""2"": 23022}",[]
+20193,True,True,True,True,True,True,True,True,33.205,23.646,23.646,23.646,0,True,True,"{""0"": 5024, ""1"": 5024, ""2"": 13598}",[]
+20194,True,True,True,True,True,True,True,True,45.058,32.086,32.086,32.086,0,True,True,"{""0"": 6818, ""1"": 6818, ""2"": 18450}",[]
+20196,True,True,True,True,True,True,True,True,27.283,19.428,19.428,19.428,0,True,True,"{""0"": 4128, ""1"": 4128, ""2"": 11172}",[]
+20214,True,True,True,True,True,True,True,True,27.828,19.875,19.875,19.875,0,True,True,"{""0"": 4223, ""1"": 4223, ""2"": 11429}",[]
+20233,True,True,True,True,True,True,True,True,16.385,11.745,11.745,11.745,0,True,True,"{""0"": 4339, ""1"": 4339, ""2"": 11745}","[0, 1]"
+20245,True,True,True,True,True,True,True,True,37.440,29.187,29.187,29.187,0,True,True,"{""0"": 6202, ""1"": 6202, ""2"": 16783}",[]
+20246,True,True,True,True,True,True,True,True,20.843,16.091,16.091,16.091,0,True,True,"{""0"": 3419, ""1"": 3419, ""2"": 9253}",[]
+20253,True,True,True,True,True,True,True,True,14.584,11.404,11.404,11.404,0,True,True,"{""0"": 4213, ""1"": 4213, ""2"": 11404}","[0, 1]"
+20257,True,True,True,True,True,True,True,True,35.201,26.986,26.986,26.986,0,True,True,"{""0"": 5734, ""1"": 5734, ""2"": 15518}",[]
+20258,True,True,True,True,True,True,True,True,23.946,18.358,18.358,18.358,0,True,True,"{""0"": 3901, ""1"": 3901, ""2"": 10556}",[]
+20259,True,True,True,True,True,True,True,True,33.937,26.017,26.017,26.017,0,True,True,"{""0"": 5528, ""1"": 5528, ""2"": 14961}",[]
+20263,True,True,True,True,True,True,True,True,26.817,20.559,20.559,20.559,0,True,True,"{""0"": 4368, ""1"": 4368, ""2"": 11823}",[]
+20302,True,True,True,True,True,True,True,True,27.822,22.170,22.170,22.170,0,True,True,"{""0"": 8193, ""1"": 8193, ""2"": 22170}","[0, 1]"
+20305,True,True,True,True,True,True,True,True,17.894,14.260,14.260,14.26,0,True,True,"{""0"": 5269, ""1"": 5269, ""2"": 14260}","[0, 1]"
+20306,True,True,True,True,True,True,True,True,25.203,20.084,20.084,20.084,0,True,True,"{""0"": 7421, ""1"": 7421, ""2"": 20084}","[0, 1]"
+20307,True,True,True,True,True,True,True,True,16.615,13.241,13.241,13.241,0,True,True,"{""0"": 4892, ""1"": 4892, ""2"": 13241}","[0, 1]"
+20316,True,True,True,True,True,True,True,True,17.228,13.376,13.376,13.376,0,True,True,"{""0"": 4942, ""1"": 4942, ""2"": 13376}","[0, 1]"
+20319,True,True,True,True,True,True,True,True,42.980,33.652,33.652,33.652,0,True,True,"{""0"": 7151, ""1"": 7151, ""2"": 19350}",[]
+20323,True,True,True,True,True,True,True,True,20.817,16.298,16.298,16.298,0,True,True,"{""0"": 6023, ""1"": 6023, ""2"": 16298}","[0, 1]"
+20324,True,True,True,True,True,True,True,True,49.562,39.078,39.078,39.078,0,True,True,"{""0"": 8304, ""1"": 8304, ""2"": 22470}",[]
+20336,True,True,True,True,True,True,True,True,34.448,27.161,27.161,27.161,0,True,True,"{""0"": 10037, ""1"": 10037, ""2"": 27161}","[0, 1]"
+20342,True,True,True,True,True,True,True,True,35.653,26.415,26.415,26.415,0,True,True,"{""0"": 5613, ""1"": 5613, ""2"": 15189}",[]
+20354,True,True,True,True,True,True,True,True,75.953,51.572,51.572,51.572,0,True,True,"{""0"": 10959, ""1"": 10959, ""2"": 29654}",[]
+20361,True,True,True,True,True,True,True,True,58.705,39.860,39.860,39.86,0,True,True,"{""0"": 8470, ""1"": 8470, ""2"": 22920}",[]
+20372,True,True,True,True,True,True,True,True,109.711,75.520,75.520,75.52,0,True,True,"{""0"": 16048, ""1"": 16048, ""2"": 43424}",[]
+20383,True,True,True,True,True,True,True,True,135.859,97.945,97.945,97.945,0,True,True,"{""0"": 20813, ""1"": 20813, ""2"": 56319}",[]
+20388,True,True,True,True,True,True,True,True,39.532,29.293,29.293,29.293,0,True,True,"{""0"": 10824, ""1"": 10824, ""2"": 29293}","[0, 1]"
+20390,True,True,True,True,True,True,True,True,94.543,70.054,70.054,70.054,0,True,True,"{""0"": 14886, ""1"": 14886, ""2"": 40282}",[]
+20404,True,True,True,True,True,True,True,True,72.072,53.404,53.404,53.404,0,True,True,"{""0"": 19735, ""1"": 19735, ""2"": 53404}","[0, 1]"
+20418,True,True,True,True,True,True,True,True,169.664,125.717,125.717,125.717,0,True,True,"{""0"": 26714, ""1"": 26714, ""2"": 72289}",[]
+20456,True,True,True,True,True,True,True,True,136.723,79.748,79.748,79.748,0,True,True,"{""0"": 16946, ""1"": 16946, ""2"": 45856}",[]
+20463,True,True,True,True,True,True,True,True,80.611,47.020,47.020,47.02,0,True,True,"{""0"": 17376, ""1"": 17376, ""2"": 47020}","[0, 1]"
+20473,True,True,True,True,True,True,True,True,92.012,53.669,53.669,53.669,0,True,True,"{""0"": 19834, ""1"": 19834, ""2"": 53669}","[0, 1]"
+20474,True,True,True,True,True,True,True,True,118.530,69.828,69.828,69.828,0,True,True,"{""0"": 25806, ""1"": 25806, ""2"": 69828}","[0, 1]"
+20492,True,True,True,True,True,True,True,True,303.022,171.130,171.130,171.130,0,True,True,"{""0"": 36365, ""1"": 36365, ""2"": 98400}",[]
+20499,True,True,True,True,True,True,True,True,201.516,98.053,98.053,98.053,0,True,True,"{""0"": 36236, ""1"": 36236, ""2"": 98053}","[0, 1]"
+20511,True,True,True,True,True,True,True,True,415.876,202.355,202.355,202.355,0,True,True,"{""0"": 43000, ""1"": 43000, ""2"": 116355}",[]
+20517,True,True,True,True,True,True,True,True,330.755,160.937,160.937,160.937,0,True,True,"{""0"": 34199, ""1"": 34199, ""2"": 92539}",[]
+20518,True,True,True,True,True,True,True,True,413.496,202.542,202.542,202.542,0,True,True,"{""0"": 43040, ""1"": 43040, ""2"": 116462}",[]
+20523,True,True,True,True,True,True,True,True,429.138,262.847,262.847,262.847,0,True,True,"{""0"": 55854, ""1"": 55854, ""2"": 151139}",[]
+20525,True,True,True,True,True,True,True,True,201.321,97.091,97.091,97.091,0,True,True,"{""0"": 35880, ""1"": 35880, ""2"": 97091}","[0, 1]"
+20532,True,True,True,True,True,True,True,True,429.296,279.743,279.743,279.743,0,True,True,"{""0"": 59445, ""1"": 59445, ""2"": 160853}",[]
+20536,True,True,True,True,True,True,True,True,242.814,132.893,132.893,132.893,0,True,True,"{""0"": 49111, ""1"": 49111, ""2"": 132893}","[0, 1]"
+20537,True,True,True,True,True,True,True,True,425.421,322.519,322.519,322.519,0,True,True,"{""0"": 68535, ""1"": 68535, ""2"": 185449}",[]
+20538,True,True,True,True,True,True,True,True,241.921,116.978,116.978,116.978,0,True,True,"{""0"": 43230, ""1"": 43230, ""2"": 116978}","[0, 1]"
+20539,True,True,True,True,True,True,True,True,436.088,274.993,274.993,274.993,0,True,True,"{""0"": 58436, ""1"": 58436, ""2"": 158121}",[]
+20545,True,True,True,True,True,True,True,True,440.619,351.597,351.597,351.597,0,True,True,"{""0"": 74714, ""1"": 74714, ""2"": 202169}",[]
+20551,True,True,True,True,True,True,True,True,417.076,280.999,280.999,280.999,0,True,True,"{""0"": 59712, ""1"": 59712, ""2"": 161575}",[]
+20564,True,True,True,True,True,True,True,True,395.822,316.364,316.364,316.364,0,True,True,"{""0"": 67227, ""1"": 67227, ""2"": 181910}",[]
+20573,True,True,True,True,True,True,True,True,395.786,355.333,355.333,355.333,0,True,True,"{""0"": 75508, ""1"": 75508, ""2"": 204317}",[]
+20588,True,True,True,True,True,True,True,True,370.054,370.054,370.054,370.054,0,True,True,"{""0"": 78652, ""1"": 78652, ""2"": 212826}",[]
+20591,True,True,False,False,False,True,False,False,387.514,305.772,305.772,305.772,0,True,True,"{""0"": 82509, ""1"": 82509, ""2"": 223263}",[0]
+20613,True,True,True,True,True,True,True,True,475.764,475.764,475.764,475.764,0,True,True,"{""0"": 101099, ""1"": 101099, ""2"": 273566}",[]
+20638,True,True,True,True,True,True,True,True,377.664,377.664,377.664,377.664,0,True,True,"{""0"": 101909, ""1"": 101909, ""2"": 275755}",[0]
+20645,True,True,True,True,True,True,True,True,467.687,454.589,454.589,454.589,0,True,True,"{""0"": 96600, ""1"": 96600, ""2"": 261389}",[]
+20646,True,True,True,True,True,True,True,True,370.400,370.400,370.400,370.4,0,True,True,"{""0"": 99949, ""1"": 99949, ""2"": 270451}",[0]
+20649,True,True,True,True,True,True,True,True,265.331,236.573,236.573,236.573,0,True,True,"{""0"": 87429, ""1"": 87429, ""2"": 236573}","[0, 1]"
+20651,True,True,True,True,True,True,True,True,370.326,370.326,370.326,370.326,0,True,True,"{""0"": 99928, ""1"": 99928, ""2"": 270398}",[0]
+20652,True,True,True,True,True,True,True,True,469.354,388.523,388.523,388.523,0,True,True,"{""0"": 82561, ""1"": 82561, ""2"": 223401}",[]
+20659,True,True,True,True,True,True,True,True,368.541,368.541,368.541,368.541,0,True,True,"{""0"": 99447, ""1"": 99447, ""2"": 269094}",[0]
+20661,True,True,True,True,True,True,True,True,263.859,228.933,228.933,228.933,0,True,True,"{""0"": 84605, ""1"": 84605, ""2"": 228933}","[0, 1]"
+20662,True,True,True,True,True,True,True,True,270.698,270.698,270.698,270.698,0,True,True,"{""0"": 100039, ""1"": 100039, ""2"": 270698}","[0, 1]"
+20665,True,True,False,False,False,True,False,False,462.934,341.481,341.481,341.481,0,True,True,"{""0"": 72564, ""1"": 72564, ""2"": 196353}",[]
+20666,True,True,False,False,False,True,False,False,274.429,243.819,243.819,243.819,0,True,True,"{""0"": 90106, ""1"": 90106, ""2"": 243819}","[0, 1]"
+20671,True,True,False,False,False,True,False,False,266.916,250.869,250.869,250.869,0,True,True,"{""0"": 53309, ""1"": 53309, ""2"": 144251}",[]
+20676,True,True,True,True,True,True,True,True,469.139,355.181,355.181,355.181,0,True,True,"{""0"": 75475, ""1"": 75475, ""2"": 204231}",[]
+20683,True,True,True,True,True,True,True,True,464.975,241.564,241.564,241.564,0,True,True,"{""0"": 51332, ""1"": 51332, ""2"": 138900}",[]
+20695,True,True,True,True,True,True,True,True,220.598,120.007,120.007,120.007,0,True,True,"{""0"": 44350, ""1"": 44350, ""2"": 120007}","[0, 1]"

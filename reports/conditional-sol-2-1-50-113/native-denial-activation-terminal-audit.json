@@ -1,0 +1,393 @@
+{
+  "status": "NATIVE_ACTIVATION_TERMINAL_WITNESSES_PASS",
+  "scope": "BOUNDED_NATIVE_ORDERS_AND_EVENT_AUDIT_NOT_NEW_PNL",
+  "ACTIVATE": 56,
+  "OFF": 47,
+  "OFF_after_active": 31,
+  "OFF_armed_without_activation": 16,
+  "episodes_ending_after_activation_without_explicit_OFF": 25,
+  "interpretation": "OFFalsoendsarmed-but-unactivatedstates,so56minus47doesNOTcountdanglingcycles.25activeepisodesendedwithoutanexplicitOFFevent;all25haveactualnativeSOLzeroatnextparent/terminal. Forcedcloseexcludesconditionalreconcileandownsactualpositions;onnewepisodeconditionalstateisreplacedbyepisodeID. LastrecordedQcisanearliereventstate,notpostcloseresidual. No inventedOFFevents.",
+  "witnesses": [
+    {
+      "parent_index": 2,
+      "episode_id": "86c043b2-8248-48c1-94ea-55ee7976a677",
+      "last_activation_ns": 1726442160000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1726531260000000000,
+      "actual_native_forced_exit_fills": 1,
+      "forced_reason_counts": {
+        "REGIME": 1
+      },
+      "final_forced_fill_ns": "1726531200000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "235.0"
+    },
+    {
+      "parent_index": 3,
+      "episode_id": "927d0e5c-0998-406f-aa43-0be9818c23f4",
+      "last_activation_ns": 1726578360000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1726617660000000000,
+      "actual_native_forced_exit_fills": 1,
+      "forced_reason_counts": {
+        "REGIME": 1
+      },
+      "final_forced_fill_ns": "1726617600000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "208.6"
+    },
+    {
+      "parent_index": 5,
+      "episode_id": "06e7d5a1-8312-4f37-a5b6-ef16e2f1e99e",
+      "last_activation_ns": 1728060360000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1728086460000000000,
+      "actual_native_forced_exit_fills": 1,
+      "forced_reason_counts": {
+        "REGIME": 1
+      },
+      "final_forced_fill_ns": "1728086400000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "761.2",
+      "last_recorded_Qc": "120.9"
+    },
+    {
+      "parent_index": 6,
+      "episode_id": "e56c32de-1ed0-4666-84d8-1e6dec9ab3a5",
+      "last_activation_ns": 1728507660000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1728518460000000000,
+      "actual_native_forced_exit_fills": 1,
+      "forced_reason_counts": {
+        "REGIME": 1
+      },
+      "final_forced_fill_ns": "1728518400000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "94.3"
+    },
+    {
+      "parent_index": 14,
+      "episode_id": "6fd6e17a-13c7-4cea-83d6-1edfd617f8f1",
+      "last_activation_ns": 1734879660000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1734912060000000000,
+      "actual_native_forced_exit_fills": 1,
+      "forced_reason_counts": {
+        "REGIME": 1
+      },
+      "final_forced_fill_ns": "1734912000000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "512.4"
+    },
+    {
+      "parent_index": 16,
+      "episode_id": "fbfc22a1-146e-4e72-905f-a235b778605e",
+      "last_activation_ns": 1735200960000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1735257660000000000,
+      "actual_native_forced_exit_fills": 1,
+      "forced_reason_counts": {
+        "REGIME": 1
+      },
+      "final_forced_fill_ns": "1735257600000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "565.7"
+    },
+    {
+      "parent_index": 22,
+      "episode_id": "c656825a-876f-47ab-b283-5b6a08f7e203",
+      "last_activation_ns": 1738466160000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1738540860000000000,
+      "actual_native_forced_exit_fills": 2,
+      "forced_reason_counts": {
+        "REGIME": 2
+      },
+      "final_forced_fill_ns": "1738540800000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "1791.4"
+    },
+    {
+      "parent_index": 24,
+      "episode_id": "c6646ed0-27db-498d-b93f-592f9381b411",
+      "last_activation_ns": 1738699260000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1738713660000000000,
+      "actual_native_forced_exit_fills": 3,
+      "forced_reason_counts": {
+        "REGIME": 3
+      },
+      "final_forced_fill_ns": "1738713600000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "2910.9"
+    },
+    {
+      "parent_index": 26,
+      "episode_id": "493c1c08-3d63-4ee8-9a23-7b0952939e4d",
+      "last_activation_ns": 1740166260000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1740182460000000000,
+      "actual_native_forced_exit_fills": 3,
+      "forced_reason_counts": {
+        "REGIME": 3
+      },
+      "final_forced_fill_ns": "1740182400000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "2002.3"
+    },
+    {
+      "parent_index": 34,
+      "episode_id": "75a5b6c3-9124-4e4a-bfa9-8245c9a363b5",
+      "last_activation_ns": 1744352460000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1744502460000000000,
+      "actual_native_forced_exit_fills": 8,
+      "forced_reason_counts": {
+        "REGIME": 8
+      },
+      "final_forced_fill_ns": "1744502400000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "1000.0",
+      "last_recorded_Qc": "7125.7"
+    },
+    {
+      "parent_index": 35,
+      "episode_id": "0896ddde-d9ed-49da-bcbe-e56472536cc9",
+      "last_activation_ns": 1744573560000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1744588860000000000,
+      "actual_native_forced_exit_fills": 7,
+      "forced_reason_counts": {
+        "REGIME": 7
+      },
+      "final_forced_fill_ns": "1744588800000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "6668.0"
+    },
+    {
+      "parent_index": 41,
+      "episode_id": "e08bb98d-2597-4917-ae78-501ef4d767a1",
+      "last_activation_ns": 1748985720000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1749168060000000000,
+      "actual_native_forced_exit_fills": 3,
+      "forced_reason_counts": {
+        "REGIME": 3
+      },
+      "final_forced_fill_ns": "1749168000000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "1000.0",
+      "last_recorded_Qc": "2658.9"
+    },
+    {
+      "parent_index": 42,
+      "episode_id": "603fee6e-a5e2-4092-88e9-c849241979d4",
+      "last_activation_ns": 1749201360000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1749254460000000000,
+      "actual_native_forced_exit_fills": 6,
+      "forced_reason_counts": {
+        "REGIME": 6
+      },
+      "final_forced_fill_ns": "1749254400000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "5139.3"
+    },
+    {
+      "parent_index": 57,
+      "episode_id": "0c1f071e-51db-4c65-8979-e7df428d768f",
+      "last_activation_ns": 1757508360000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1757548860000000000,
+      "actual_native_forced_exit_fills": 5,
+      "forced_reason_counts": {
+        "REGIME": 5
+      },
+      "final_forced_fill_ns": "1757548800000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "4004.6"
+    },
+    {
+      "parent_index": 62,
+      "episode_id": "fed9a748-a2c6-45ea-a0b8-55596b862576",
+      "last_activation_ns": 1761267780000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1761523260000000000,
+      "actual_native_forced_exit_fills": 10,
+      "forced_reason_counts": {
+        "REGIME": 10
+      },
+      "final_forced_fill_ns": "1761523200000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "9763.2"
+    },
+    {
+      "parent_index": 69,
+      "episode_id": "0d6b8be1-e798-402b-802e-a4aec218fccf",
+      "last_activation_ns": 1768927560000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1768953660000000000,
+      "actual_native_forced_exit_fills": 15,
+      "forced_reason_counts": {
+        "REGIME": 15
+      },
+      "final_forced_fill_ns": "1768953600000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "14944.6"
+    },
+    {
+      "parent_index": 74,
+      "episode_id": "1ec3dc55-a177-4df5-99ce-ad6e3842e360",
+      "last_activation_ns": 1772724660000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1772755260000000000,
+      "actual_native_forced_exit_fills": 54,
+      "forced_reason_counts": {
+        "REGIME": 54
+      },
+      "final_forced_fill_ns": "1772755200000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "53708.2"
+    },
+    {
+      "parent_index": 81,
+      "episode_id": "3021eee3-0336-41fc-8f3c-914f38c4f439",
+      "last_activation_ns": 1774517520000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1774569660000000000,
+      "actual_native_forced_exit_fills": 39,
+      "forced_reason_counts": {
+        "REGIME": 39
+      },
+      "final_forced_fill_ns": "1774569600000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "38743.8"
+    },
+    {
+      "parent_index": 87,
+      "episode_id": "9efe5693-3028-4c80-a1bf-3d6885ff825e",
+      "last_activation_ns": 1778852760000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1779062580000000000,
+      "actual_native_forced_exit_fills": 156,
+      "forced_reason_counts": {
+        "REGIME": 156
+      },
+      "final_forced_fill_ns": "1779062460000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "155822.3"
+    },
+    {
+      "parent_index": 90,
+      "episode_id": "ace4b272-0cc8-49f4-9c96-5e91d3d8a632",
+      "last_activation_ns": 1783650000000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1783728060000000000,
+      "actual_native_forced_exit_fills": 84,
+      "forced_reason_counts": {
+        "REGIME": 84
+      },
+      "final_forced_fill_ns": "1783728000000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "83818.2"
+    },
+    {
+      "parent_index": 96,
+      "episode_id": "a658af3e-0d5c-4f2a-8240-f99a8030a040",
+      "last_activation_ns": 1785105960000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1785110460000000000,
+      "actual_native_forced_exit_fills": 74,
+      "forced_reason_counts": {
+        "REGIME": 74
+      },
+      "final_forced_fill_ns": "1785110400000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "99384.8"
+    },
+    {
+      "parent_index": 97,
+      "episode_id": "a726eb4f-359b-4058-92a6-c05e6a8028e9",
+      "last_activation_ns": 1785193260000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1785196860000000000,
+      "actual_native_forced_exit_fills": 59,
+      "forced_reason_counts": {
+        "REGIME": 59
+      },
+      "final_forced_fill_ns": "1785196800000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "90967.7"
+    },
+    {
+      "parent_index": 98,
+      "episode_id": "0c6f4be0-87eb-4ea0-a76c-66f0955c705e",
+      "last_activation_ns": 1785412980000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1785456180000000000,
+      "actual_native_forced_exit_fills": 109,
+      "forced_reason_counts": {
+        "REGIME": 109
+      },
+      "final_forced_fill_ns": "1785456060000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "108401.5"
+    },
+    {
+      "parent_index": 99,
+      "episode_id": "c93358fc-69e3-44d5-bcf1-a2086b59a648",
+      "last_activation_ns": 1785506460000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1785542580000000000,
+      "actual_native_forced_exit_fills": 137,
+      "forced_reason_counts": {
+        "REGIME": 137
+      },
+      "final_forced_fill_ns": "1785542460000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "136216.9"
+    },
+    {
+      "parent_index": 100,
+      "episode_id": "370adbf0-209c-4875-9446-1a3270b0e3c2",
+      "last_activation_ns": 1785868260000000000,
+      "native_SOLsignedqty_at_next_parent_or_terminal": "0.0",
+      "next_parent_or_terminal_ns": 1785974580000000000,
+      "actual_native_forced_exit_fills": 101,
+      "forced_reason_counts": {
+        "REGIME": 101
+      },
+      "final_forced_fill_ns": "1785974460000000000",
+      "later_audit_BTCflat_seen": false,
+      "last_recorded_original_desired": "0.0",
+      "last_recorded_Qc": "100141.3"
+    }
+  ],
+  "final_native_positions": 0,
+  "final_terminal_status": "FLAT",
+  "final_conditional_episode_events": [
+    "BETA_FREEZE"
+  ],
+  "raw_trace_scan": false
+}

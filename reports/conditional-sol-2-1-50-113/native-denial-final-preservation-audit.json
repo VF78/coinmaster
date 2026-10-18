@@ -1,0 +1,390 @@
+{
+  "status": "COMPARABLE_WITH_DECLARED_NATIVE_EXECUTION_EFFECTS_ORDER_PRESERVATION_PASS",
+  "receipt": "reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-native-denial-receipt.json",
+  "receipt_sha256": "d37e036efd55075c64c62e9ebf046ddc758c48293add4896d6845f3a4994964d",
+  "artifact_sha256": "2927f1007b8c531e07042fc5b4c26c61d35a7e1da6320e98e7dbd0ce8b143f04",
+  "source_commit": "d83e8faccdeeba26f1f4b454fdc07074f4213271",
+  "frozen89": 89,
+  "frozen_manifest_sha256": "f95bc9b72b560a8ea87e659c407a496e76534e84da86d07db559c95493cca718",
+  "same_control_data_policy_inputs_original_candidate": true,
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "config_hash": "417994fdfcf9d6769b7eb61b1356b99aaaee8067a87fd59eea5ab6c9d434e2c1",
+  "actual_journal_success": "Started cm115-split-conditional-sol-2-1-50-native-denial-20261018a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-native-denial-20261018a/launch.sh.\ncm115-split-conditional-sol-2-1-50-native-denial-20261018a.service: Deactivated successfully.\ncm115-split-conditional-sol-2-1-50-native-denial-20261018a.service: Consumed 22min 58.285s CPU time, 524.0M memory peak, 0B memory swap peak.\n",
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "native_status_counts": {
+    "FILLED": 551,
+    "CANCELED": 2814,
+    "DENIED": 8
+  },
+  "native_open_orders": 0,
+  "native_open_positions": 0,
+  "full_rows_per_source": 1051200,
+  "original_terminal_binding": {
+    "physical_target_count": 1428,
+    "matched_known_terminal_count": 1428,
+    "positive_unfilled_release_attempts": 82,
+    "exhausted_original_attempt_ids_rebound": 0,
+    "original_native_autofills_after_release_before_next_lawful_authorization": 0,
+    "protective_only_fill_events_after_original_terminal_before_next_original_signal": 23,
+    "protective_only_example": {
+      "action": "SOL_ADD",
+      "actual_sol_qty": "3000",
+      "beta": "1.2629762227260326",
+      "beta_frozen_ns": 1743638460000000000,
+      "btc_actual_vwap": "82420.34861951019",
+      "btc_qty": "26.684",
+      "combined_target": "7507.2",
+      "conditional_native_quantity": "1000.0",
+      "conditional_target": "7507.2",
+      "episode_id": "47f6330c-e646-465b-9a9f-3e458c65c637",
+      "event": "NATIVE_FILL",
+      "original_allocated": "2000.0",
+      "original_desired": "2000.0",
+      "original_native_quantity": "0",
+      "physical_intent": "9eaf7c77-b49a-4f75-9d7f-1eca6de30ede",
+      "price": "118.68",
+      "quantity": "1000.0",
+      "side": -1,
+      "timestamp_ns": 1743754560000000000
+    },
+    "first_material_partial_IOC_and_next_lawful_signal": [
+      {
+        "action": "SOL_ADD",
+        "actual_sol_qty": "0",
+        "beta": "1.206808389209583",
+        "beta_frozen_ns": 1734912060000000000,
+        "btc_actual_vwap": "95266.25",
+        "btc_qty": "2.656",
+        "combined_target": "3505.0",
+        "conditional_target": "0",
+        "episode_id": "bc6ffcb2-f995-4b74-b314-a7a5779ffc24",
+        "event": "ORIGINAL_AUTHORIZED",
+        "level": 0,
+        "original_allocated": "0.0",
+        "original_desired": "3505.0",
+        "quantity": "3505.0",
+        "side": -1,
+        "timestamp_ns": 1734923700000000000
+      },
+      {
+        "actual_sol_qty": "0",
+        "beta": "1.206808389209583",
+        "beta_frozen_ns": 1734912060000000000,
+        "btc_actual_vwap": "95266.25",
+        "btc_qty": "2.656",
+        "combined_target": "3505.0",
+        "conditional_target": "0",
+        "episode_id": "bc6ffcb2-f995-4b74-b314-a7a5779ffc24",
+        "event": "TARGET",
+        "original_allocated": "0.0",
+        "original_attempt_ids": [
+          "a6e68872-a8d1-4689-9459-d2ac25dcb571"
+        ],
+        "original_desired": "3505.0",
+        "physical_intent": "75ffb1c8-b324-47bc-a1b1-edd935b78e5d",
+        "quantity": "3505.0",
+        "reason": "CONDITIONAL_NET_ADD",
+        "side": -1,
+        "timestamp_ns": 1734923700000000000
+      },
+      {
+        "action": "SOL_ADD",
+        "actual_sol_qty": "1000",
+        "beta": "1.206808389209583",
+        "beta_frozen_ns": 1734912060000000000,
+        "btc_actual_vwap": "95266.25",
+        "btc_qty": "2.656",
+        "combined_target": "3505.0",
+        "conditional_native_quantity": "0.0",
+        "conditional_target": "0",
+        "episode_id": "bc6ffcb2-f995-4b74-b314-a7a5779ffc24",
+        "event": "NATIVE_FILL",
+        "original_allocated": "1000.0",
+        "original_desired": "3505.0",
+        "original_native_quantity": "1000.0",
+        "physical_intent": "75ffb1c8-b324-47bc-a1b1-edd935b78e5d",
+        "price": "182.5",
+        "quantity": "1000.0",
+        "side": -1,
+        "timestamp_ns": 1734923700000000000
+      },
+      {
+        "actual_sol_qty": "1000",
+        "beta": "1.206808389209583",
+        "beta_frozen_ns": 1734912060000000000,
+        "btc_actual_vwap": "95266.25",
+        "btc_qty": "2.656",
+        "combined_target": "1000.0",
+        "conditional_target": "0",
+        "episode_id": "bc6ffcb2-f995-4b74-b314-a7a5779ffc24",
+        "event": "ORIGINAL_ATTEMPT_TERMINAL",
+        "native_order_id": "O-20241223-031500-001-000-103",
+        "original_allocated": "1000.0",
+        "original_attempt_ids": [
+          "a6e68872-a8d1-4689-9459-d2ac25dcb571"
+        ],
+        "original_desired": "1000.0",
+        "physical_intent": "75ffb1c8-b324-47bc-a1b1-edd935b78e5d",
+        "side": -1,
+        "terminal_cause": "CANCELED",
+        "timestamp_ns": 1734923700000000000,
+        "unfilled_original_authorization_released": "2505.0"
+      },
+      {
+        "action": "SOL_ADD",
+        "actual_sol_qty": "1000",
+        "beta": "1.206808389209583",
+        "beta_frozen_ns": 1734912060000000000,
+        "btc_actual_vwap": "95266.25",
+        "btc_qty": "0",
+        "combined_target": "3405.5",
+        "conditional_target": "0",
+        "episode_id": "bc6ffcb2-f995-4b74-b314-a7a5779ffc24",
+        "event": "ORIGINAL_AUTHORIZED",
+        "level": 0,
+        "original_allocated": "1000.0",
+        "original_desired": "3405.5",
+        "quantity": "2405.5",
+        "side": -1,
+        "timestamp_ns": 1734998400000000000
+      },
+      {
+        "actual_sol_qty": "1000",
+        "beta": "1.206808389209583",
+        "beta_frozen_ns": 1734912060000000000,
+        "btc_actual_vwap": "95266.25",
+        "btc_qty": "0",
+        "combined_target": "3405.5",
+        "conditional_target": "0",
+        "episode_id": "bc6ffcb2-f995-4b74-b314-a7a5779ffc24",
+        "event": "TARGET",
+        "original_allocated": "1000.0",
+        "original_attempt_ids": [
+          "9f836150-0b5d-4dc0-a2c5-aef1208c2aee"
+        ],
+        "original_desired": "3405.5",
+        "physical_intent": "ae24a4f0-2e32-4384-863f-6494cb315115",
+        "quantity": "2405.5",
+        "reason": "CONDITIONAL_NET_ADD",
+        "side": -1,
+        "timestamp_ns": 1734998400000000000
+      },
+      {
+        "action": "SOL_ADD",
+        "actual_sol_qty": "2000",
+        "beta": "1.206808389209583",
+        "beta_frozen_ns": 1734912060000000000,
+        "btc_actual_vwap": "95266.25",
+        "btc_qty": "0",
+        "combined_target": "3405.5",
+        "conditional_native_quantity": "0.0",
+        "conditional_target": "0",
+        "episode_id": "bc6ffcb2-f995-4b74-b314-a7a5779ffc24",
+        "event": "NATIVE_FILL",
+        "original_allocated": "2000.0",
+        "original_desired": "3405.5",
+        "original_native_quantity": "1000.0",
+        "physical_intent": "ae24a4f0-2e32-4384-863f-6494cb315115",
+        "price": "190.05",
+        "quantity": "1000.0",
+        "side": -1,
+        "timestamp_ns": 1734998400000000000
+      },
+      {
+        "actual_sol_qty": "2000",
+        "beta": "1.206808389209583",
+        "beta_frozen_ns": 1734912060000000000,
+        "btc_actual_vwap": "95266.25",
+        "btc_qty": "0",
+        "combined_target": "2000.0",
+        "conditional_target": "0",
+        "episode_id": "bc6ffcb2-f995-4b74-b314-a7a5779ffc24",
+        "event": "ORIGINAL_ATTEMPT_TERMINAL",
+        "native_order_id": "O-20241224-000000-001-000-105",
+        "original_allocated": "2000.0",
+        "original_attempt_ids": [
+          "9f836150-0b5d-4dc0-a2c5-aef1208c2aee"
+        ],
+        "original_desired": "2000.0",
+        "physical_intent": "ae24a4f0-2e32-4384-863f-6494cb315115",
+        "side": -1,
+        "terminal_cause": "CANCELED",
+        "timestamp_ns": 1734998400000000000,
+        "unfilled_original_authorization_released": "1405.5"
+      }
+    ]
+  },
+  "original_after_BTC_flat": {
+    "lawful_original_authorizations_with_BTC0": 57,
+    "first": {
+      "action": "SOL_ADD",
+      "actual_sol_qty": "0",
+      "beta": "1.2569856557640482",
+      "beta_frozen_ns": 1728518460000000000,
+      "btc_actual_vwap": "60732.45208613727",
+      "btc_qty": "0",
+      "combined_target": "832.2",
+      "conditional_target": "0",
+      "episode_id": "95950f1c-0313-43ab-9c1d-11773c245d9b",
+      "event": "ORIGINAL_AUTHORIZED",
+      "level": 0,
+      "original_allocated": "0.0",
+      "original_desired": "832.2",
+      "quantity": "832.2",
+      "side": -1,
+      "timestamp_ns": 1728604800000000000
+    }
+  },
+  "native_denial_closure": {
+    "actual_denied_orders": 8,
+    "groups": [
+      {
+        "denial_timestamp_ns": 1779062400000000000,
+        "native_denied_order_ids": [
+          "O-20260518-000000-001-000-1743",
+          "O-20260518-000000-001-000-1744"
+        ],
+        "known_terminal_denied_count": 2,
+        "signed_native_residual_at_end_of_denial_quote": "-56822.3",
+        "later_reduce_only_filled_orders": 57,
+        "later_filled_quantity": "56822.3",
+        "first_filled_order": {
+          "client_order_id": "O-20260518-000100-001-000-1745",
+          "quantity": "56822.3",
+          "filled_qty": "1000.0",
+          "ts_init": "1779062460000000000",
+          "ts_last": "1779062460000000000",
+          "avg_px": "85.01",
+          "commissions": "['46.75550000 USDT']"
+        },
+        "last_filled_order": {
+          "client_order_id": "O-20260518-000100-001-000-1801",
+          "quantity": "822.3",
+          "filled_qty": "822.3",
+          "ts_init": "1779062460000000000",
+          "ts_last": "1779062460000000000",
+          "avg_px": "85.01",
+          "commissions": "['38.44704765 USDT']"
+        },
+        "signed_native_residual_after": "0.0"
+      },
+      {
+        "denial_timestamp_ns": 1785456000000000000,
+        "native_denied_order_ids": [
+          "O-20260731-000000-001-000-2850",
+          "O-20260731-000000-001-000-2851"
+        ],
+        "known_terminal_denied_count": 2,
+        "signed_native_residual_at_end_of_denial_quote": "9401.5",
+        "later_reduce_only_filled_orders": 10,
+        "later_filled_quantity": "9401.5",
+        "first_filled_order": {
+          "client_order_id": "O-20260731-000100-001-000-2852",
+          "quantity": "9401.5",
+          "filled_qty": "1000.0",
+          "ts_init": "1785456060000000000",
+          "ts_last": "1785456060000000000",
+          "avg_px": "74.49",
+          "commissions": "['40.96950000 USDT']"
+        },
+        "last_filled_order": {
+          "client_order_id": "O-20260731-000100-001-000-2861",
+          "quantity": "401.5",
+          "filled_qty": "401.5",
+          "ts_init": "1785456060000000000",
+          "ts_last": "1785456060000000000",
+          "avg_px": "74.49",
+          "commissions": "['16.44925425 USDT']"
+        },
+        "signed_native_residual_after": "0.0"
+      },
+      {
+        "denial_timestamp_ns": 1785542400000000000,
+        "native_denied_order_ids": [
+          "O-20260801-000000-001-000-3102",
+          "O-20260801-000000-001-000-3103"
+        ],
+        "known_terminal_denied_count": 2,
+        "signed_native_residual_at_end_of_denial_quote": "-37216.9",
+        "later_reduce_only_filled_orders": 38,
+        "later_filled_quantity": "37216.9",
+        "first_filled_order": {
+          "client_order_id": "O-20260801-000100-001-000-3104",
+          "quantity": "37216.9",
+          "filled_qty": "1000.0",
+          "ts_init": "1785542460000000000",
+          "ts_last": "1785542460000000000",
+          "avg_px": "72.87",
+          "commissions": "['40.07850000 USDT']"
+        },
+        "last_filled_order": {
+          "client_order_id": "O-20260801-000100-001-000-3141",
+          "quantity": "216.9",
+          "filled_qty": "216.9",
+          "ts_init": "1785542460000000000",
+          "ts_last": "1785542460000000000",
+          "avg_px": "72.87",
+          "commissions": "['8.69302665 USDT']"
+        },
+        "signed_native_residual_after": "0.0"
+      },
+      {
+        "denial_timestamp_ns": 1785974400000000000,
+        "native_denied_order_ids": [
+          "O-20260806-000000-001-000-3347",
+          "O-20260806-000000-001-000-3348"
+        ],
+        "known_terminal_denied_count": 2,
+        "signed_native_residual_at_end_of_denial_quote": "1141.3",
+        "later_reduce_only_filled_orders": 2,
+        "later_filled_quantity": "1141.3",
+        "first_filled_order": {
+          "client_order_id": "O-20260806-000100-001-000-3349",
+          "quantity": "1141.3",
+          "filled_qty": "1000.0",
+          "ts_init": "1785974460000000000",
+          "ts_last": "1785974460000000000",
+          "avg_px": "74.01",
+          "commissions": "['40.70550000 USDT']"
+        },
+        "last_filled_order": {
+          "client_order_id": "O-20260806-000100-001-000-3350",
+          "quantity": "141.3",
+          "filled_qty": "141.3",
+          "ts_init": "1785974460000000000",
+          "ts_last": "1785974460000000000",
+          "avg_px": "74.01",
+          "commissions": "['5.75168715 USDT']"
+        },
+        "signed_native_residual_after": "0.0"
+      }
+    ],
+    "interpretation": "Two known native refusals per same quote arose from already-inflight callback continuations, not unbounded helper-tail recursion; each residual fully closed on the next fresh quote. No throttle bypass/rate change."
+  },
+  "MAX_and_ADD_partition_violations": 0,
+  "terminal_pending_evidence": {
+    "native_lifecycle": {
+      "close_fills": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "timestamp": "1788220800000000000",
+          "value": "9423537.6743"
+        }
+      ],
+      "lockout": true,
+      "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+      "status": "FLAT",
+      "trigger_ts": "1788220800000000000"
+    },
+    "research_selective_lifecycle_guard": true,
+    "proof": "FLAT set only after native positions/orders and pending_by_order empty by existing _reconcile_terminal_flat guard; all1428conditionalADDphysicaltargets have knownterminal receipts; finalconditionalepisode has BETA_FREEZE only, noauth/target/armedprotection.",
+    "final_conditional_episode_event_counts": {
+      "BETA_FREEZE": 1
+    },
+    "limitation": "Raw domain pending/task dictionaries not separately serialized; no invented direct export."
+  },
+  "BTC_execution_effect": "Stats independently reports105samecalendar/side,97compoundingQchanges;4entryquote/P0timing differences of1-2min at2026May18/Jul31/Aug1/Aug6 from stagednativeSOLgroupclosure. Not exact105historicalfillpaths; BTCdecisionrules/sizingmultipliersunchanged.",
+  "no_trace_scan": true,
+  "next_run": "NOT_AUTHORIZED"
+}

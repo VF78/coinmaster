@@ -1,0 +1,372 @@
+{
+  "status": "ACCEPTED_COMPARISON_WITH_EXECUTION_EFFECTS",
+  "receipt": "reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-native-denial-receipt.json",
+  "receipt_sha256": "d37e036efd55075c64c62e9ebf046ddc758c48293add4896d6845f3a4994964d",
+  "candidate_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-native-denial-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction.json",
+  "candidate_result_sha256": "2927f1007b8c531e07042fc5b4c26c61d35a7e1da6320e98e7dbd0ce8b143f04",
+  "control_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+  "control_result_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "control": {
+    "TOTAL": "6077107.23887483",
+    "ACTIVE": "6077107.23887483",
+    "RESERVE": "0",
+    "ROI_percent": "60671.072388748300",
+    "marked_DD_percent": "66.31878024969152066570091116",
+    "minimum": {
+      "equity": "4530.57414701",
+      "timestamp_ns": "1727970240000000000"
+    },
+    "native_top3": [
+      {
+        "drawdown_amount": "8920.76217809",
+        "drawdown_peak_percent": "66.31878024969152066570091116",
+        "peak": {
+          "equity": "13451.3363251",
+          "timestamp_ns": "1726063200000000000"
+        },
+        "recovery": {
+          "equity": "13453.62745342",
+          "timestamp_ns": "1728615180000000000"
+        },
+        "trough": {
+          "equity": "4530.57414701",
+          "timestamp_ns": "1727970240000000000"
+        }
+      },
+      {
+        "drawdown_amount": "547666.08219643",
+        "drawdown_peak_percent": "59.84272354367395947974450388",
+        "peak": {
+          "equity": "915175.73025689",
+          "timestamp_ns": "1744333200000000000"
+        },
+        "recovery": {
+          "equity": "930699.83942448",
+          "timestamp_ns": "1756064280000000000"
+        },
+        "trough": {
+          "equity": "367509.64806046",
+          "timestamp_ns": "1749223020000000000"
+        }
+      },
+      {
+        "drawdown_amount": "1150759.43834313",
+        "drawdown_peak_percent": "55.10055575073671291811943329",
+        "peak": {
+          "equity": "2088471.56378771",
+          "timestamp_ns": "1761168540000000000"
+        },
+        "recovery": {
+          "equity": "2089614.53857348",
+          "timestamp_ns": "1764562200000000000"
+        },
+        "trough": {
+          "equity": "937712.12544458",
+          "timestamp_ns": "1764340080000000000"
+        }
+      }
+    ],
+    "conditional_OHLC": {
+      "actual_intrabar_path_proven": false,
+      "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+      "maximum": {
+        "drawdown_fraction": "0.6754771031869252420136632742",
+        "drawdown_peak_percent": "67.54771031869252420136632742",
+        "peak": {
+          "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+          "equity": "13478.6013251",
+          "timestamp_ns": "1726063200000000000"
+        },
+        "trough": {
+          "equity": "4374.11474701",
+          "timestamp_ns": "1727970300000000000"
+        }
+      },
+      "same_bar_extrema_order_assumed": false,
+      "samples": 1051200
+    },
+    "fees": "945927.73761825",
+    "fills": 621,
+    "actual_asset_fill_diagnostic": {
+      "BTC": {
+        "q": "0.000",
+        "vwap": "78089.15000000000000000",
+        "gross": "6273361.445100000000000000005",
+        "fees": "927666.95630420",
+        "count": 416,
+        "net_ex_funding": "5345694.488795800000000000005"
+      },
+      "SOL": {
+        "q": "0.0",
+        "vwap": "109.080000000000000000000",
+        "gross": "696921.9890000000000000000000",
+        "fees": "18260.78131405",
+        "count": 205,
+        "net_ex_funding": "678661.2076859500000000000000"
+      }
+    },
+    "native_liquidity": {
+      "BTC_TAKER": {
+        "count": 281,
+        "turnover": "1406891251.233400002680068",
+        "fees": "773790.18817866",
+        "unknown_commissions": 0
+      },
+      "BTC_MAKER": {
+        "count": 135,
+        "turnover": "769383840.627700008811020",
+        "fees": "153876.76812554",
+        "unknown_commissions": 0
+      },
+      "SOL_TAKER": {
+        "count": 205,
+        "turnover": "33201420.571",
+        "fees": "18260.78131405",
+        "unknown_commissions": 0
+      }
+    },
+    "native_liquidations": 0,
+    "terminal_open_positions": 0,
+    "native_rejections": 0,
+    "fullrows": 1051200,
+    "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "funding_metadata": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 899,
+        "SOLUSDT-PERP.P1SIM": 421
+      },
+      "count": 1320,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite",
+    "cash_residual_not_funding": "42751.542393079999999999995",
+    "actual_fill_held_overlap": {
+      "btc_held_seconds": 26605560.0,
+      "with_sol_seconds": 4091520.0,
+      "fraction": 0.15378439694560084
+    }
+  },
+  "candidate": {
+    "TOTAL": "3007648.74434437",
+    "ACTIVE": "3007648.74434437",
+    "RESERVE": "0",
+    "ROI_percent": "29976.487443443700",
+    "marked_DD_percent": "67.69439088925657219291657660",
+    "minimum": {
+      "equity": "4254.10588072",
+      "timestamp_ns": "1727970240000000000"
+    },
+    "native_top3": [
+      {
+        "drawdown_amount": "8914.21379447",
+        "drawdown_peak_percent": "67.69439088925657219291657660",
+        "peak": {
+          "equity": "13168.31967519",
+          "timestamp_ns": "1726063200000000000"
+        },
+        "recovery": {
+          "equity": "13222.29186163",
+          "timestamp_ns": "1728628560000000000"
+        },
+        "trough": {
+          "equity": "4254.10588072",
+          "timestamp_ns": "1727970240000000000"
+        }
+      },
+      {
+        "drawdown_amount": "3658270.54980284",
+        "drawdown_peak_percent": "57.36567894872058879428706469",
+        "peak": {
+          "equity": "6377106.68965146",
+          "timestamp_ns": "1783345140000000000"
+        },
+        "recovery": null,
+        "trough": {
+          "equity": "2718836.13984862",
+          "timestamp_ns": "1786450440000000000"
+        }
+      },
+      {
+        "drawdown_amount": "776657.74599481",
+        "drawdown_peak_percent": "50.65906473457014263214007740",
+        "peak": {
+          "equity": "1533107.15478885",
+          "timestamp_ns": "1764159720000000000"
+        },
+        "recovery": {
+          "equity": "1590093.30210539",
+          "timestamp_ns": "1768342260000000000"
+        },
+        "trough": {
+          "equity": "756449.40879404",
+          "timestamp_ns": "1764494400000000000"
+        }
+      }
+    ],
+    "conditional_OHLC": {
+      "actual_intrabar_path_proven": false,
+      "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+      "maximum": {
+        "drawdown_fraction": "0.6887337988212059108178273911",
+        "drawdown_peak_percent": "68.87337988212059108178273911",
+        "peak": {
+          "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+          "equity": "13195.03937519",
+          "timestamp_ns": "1726063200000000000"
+        },
+        "trough": {
+          "equity": "4107.16978072",
+          "timestamp_ns": "1727970300000000000"
+        }
+      },
+      "same_bar_extrema_order_assumed": false,
+      "samples": 1051200
+    },
+    "fees": "844851.65233343",
+    "fills": 3274,
+    "actual_asset_fill_diagnostic": {
+      "BTC": {
+        "q": "0.000",
+        "vwap": "78089.14918546418125609339455",
+        "gross": "3459078.546899999999999999995",
+        "fees": "699809.68351388",
+        "count": 417,
+        "net_ex_funding": "2759268.863386119999999999995"
+      },
+      "SOL": {
+        "q": "0.0",
+        "vwap": "109.080000000000000000000",
+        "gross": "334786.6749999999999999999934",
+        "fees": "145041.96881955",
+        "count": 2857,
+        "net_ex_funding": "189744.7061804499999999999934"
+      }
+    },
+    "native_liquidity": {
+      "BTC_TAKER": {
+        "count": 283,
+        "turnover": "1073424837.070200004983998",
+        "fees": "590383.66038890",
+        "unknown_commissions": 0
+      },
+      "BTC_MAKER": {
+        "count": 134,
+        "turnover": "547130115.624900002582646",
+        "fees": "109426.02312498",
+        "unknown_commissions": 0
+      },
+      "SOL_TAKER": {
+        "count": 2857,
+        "turnover": "263712670.581",
+        "fees": "145041.96881955",
+        "unknown_commissions": 0
+      }
+    },
+    "native_liquidations": 0,
+    "terminal_open_positions": 0,
+    "native_rejections": 0,
+    "fullrows": 1051200,
+    "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "funding_metadata": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 899,
+        "SOLUSDT-PERP.P1SIM": 515
+      },
+      "count": 1414,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-native-denial-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction-funding.sqlite",
+    "cash_residual_not_funding": "48635.174777800000000000012",
+    "actual_fill_held_overlap": {
+      "btc_held_seconds": 26605080.0,
+      "with_sol_seconds": 6642540.0,
+      "fraction": 0.24967186717724585
+    }
+  },
+  "delta_TOTAL": "-3069458.49453046",
+  "BTC_permissions": {
+    "control_count": 105,
+    "candidate_count": 105,
+    "missing": [],
+    "extra": [],
+    "changed_absolute_Q": 97,
+    "q0_ns_exact": 101,
+    "q1_ns_exact": 101,
+    "q1_ask_exact": 101,
+    "side_exact": 105,
+    "first_vwap_exact": 101,
+    "start_ns_exact": 101,
+    "own_plan_conserved": 105,
+    "accepted_matches_plan": 105,
+    "limit": "Same causal normalized rules do not imply identical future absolute quantities under compounding. Missing/extra/late permissions are explicit."
+  },
+  "conditional": {
+    "event_counts": {
+      "BETA_FREEZE": 105,
+      "ARM": 73,
+      "CONFIRM": 89,
+      "ACTIVATE": 56,
+      "QC_LATCH": 56,
+      "TARGET": 1428,
+      "NATIVE_FILL": 1898,
+      "ORIGINAL_ATTEMPT_TERMINAL": 1428,
+      "OFF": 47,
+      "TRIM": 470,
+      "ORIGINAL_AUTHORIZED": 89,
+      "TRANSFER_TO_ORIGINAL": 1,
+      "ORIGINAL_UNFILLED_CANCELED": 1
+    },
+    "event_reasons": {
+      "('BETA_FREEZE', 'None')": 105,
+      "('ARM', 'None')": 73,
+      "('CONFIRM', 'None')": 89,
+      "('ACTIVATE', 'None')": 56,
+      "('QC_LATCH', 'None')": 56,
+      "('TARGET', 'CONDITIONAL_NET_ADD')": 1428,
+      "('NATIVE_FILL', 'None')": 1898,
+      "('ORIGINAL_ATTEMPT_TERMINAL', 'None')": 1428,
+      "('OFF', 'None')": 47,
+      "('TRIM', 'CONDITIONAL_NET_EXIT')": 470,
+      "('ORIGINAL_AUTHORIZED', 'None')": 89,
+      "('TRANSFER_TO_ORIGINAL', 'None')": 1,
+      "('ORIGINAL_UNFILLED_CANCELED', 'None')": 1
+    },
+    "activate_count": 56,
+    "off_count": 47,
+    "trim_count": 470,
+    "max_target_or_allocation_violations": [],
+    "physical_native_quantity": "1845199.9",
+    "original_native_quantity": "96096.3",
+    "conditional_native_quantity": "1749103.6",
+    "logical_ownership_event_count": 1,
+    "transfers_are_native_fills": false,
+    "Qc_cadence": "Latched activation/actual BTC quantity changes; price-only drift intentionally allowed",
+    "limitations": "Event snapshots are not complete minute coverage. Ownership transfers/releases change attribution, never venue fills/cash/PnL. No independent bucket PnL claimed."
+  },
+  "coverage": "NOT_RUN_BY_OWNER_SCOPE; actualfilledSOLpresence fraction only, notprotectionpercentage/hardcap",
+  "peak_rss_kib": 53128,
+  "limitations": [
+    "Authoritative native TOTAL/DD unchanged. Asset weighted-average fill diagnostics are not native settled asset cash. Funding UNKNOWN; residual not funding.",
+    "No liveDP50ROI/HL fidelity, no intraminuteDD guarantee. Transfers are logical ownership, not native fills. No protective bucket PnL ledger."
+  ],
+  "preservation_acceptance": {
+    "authority": "Root explicit acceptance after independent engine actual-native order preservation audit",
+    "audit": "reports/conditional-sol-2-1-50-113/native-denial-final-preservation-audit.json",
+    "audit_sha256": "47b0020a479112421d88ae6cfd4e0b34093af3a5d5446ca8318c0e4323150046",
+    "scope": "Comparable completednativeexperiment with unchanged originalrules/IOCauthorization anddeclarednativeexecutioneffects, NOT identical105timestamps/absoluteQ/fillpaths. Economicobjective failure, no live promotion.",
+    "execution_effects": "All105samecalendar/side,101q0/q1/P0exact,4entries120seconds delayed afterstagedSOLmandatoryflattening;97absoluteQchangedviaequity/cap.",
+    "exact_target_terminals": 1428,
+    "original_release_attempts": 82,
+    "rebound_old_original_ID": 0,
+    "original_autofill_before_next_lawful_auth": 0,
+    "lawful_original_BTCflat_authorizations": 57,
+    "native_denied_orders": 8,
+    "native_denied_groups": 4,
+    "native_residual_after_each_group": "0 nextfreshquote"
+  },
+  "economic_objective": "FAIL: TOTAL lower and globalmarkedDD higher than selected6.077m control; no threshold/sweep/retry/productionpromotion authorized.",
+  "TOTAL_delta_percent": "-50.50854582416036161721090742",
+  "SOL_net_delta_ex_unknown_funding": "-488916.5015055000000000000066",
+  "SOL_actual_fee_delta": "126781.18750550",
+  "attribution_limit": "Combined actualfills assetdiagnostics, not isolatedconditionalPnL or native settledcash perowner. Compounding/4entryexecutiondelays/nativeSOLliquidityeffects remainpartof observedvariant. Funding andcashresidual notallocated."
+}

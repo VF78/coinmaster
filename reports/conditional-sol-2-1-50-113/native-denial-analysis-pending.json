@@ -1,5 +1,5 @@
 {
-  "status": "PENDING_REAL_JOURNAL_EXIT0_FULL_FINAL_RECEIPT_AND_PRESERVATION_AUDIT",
+  "status": "ACCEPTED_COMPARISON_WITH_EXECUTION_EFFECTS",
   "expected_source_commit": "d83e8faccdeeba26f1f4b454fdc07074f4213271",
   "expected_receipt": "conditional-sol-2-1-50-native-denial-receipt.json",
   "expected_job": "cm115-split-conditional-sol-2-1-50-native-denial-20261018a",
@@ -56,7 +56,14 @@
     "CompareactualBTCpermissions/q0/q1/P0/side/ownacceptedQ and nativeTOTAL/DD/fees/fundingUNKNOWN; nooracle105injection"
   ],
   "command": "runtime/.venv/bin/python reports/conditional-sol-2-1-50-113/analyze-fixed-comparison.py --receipt reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-native-denial-receipt.json --output-prefix native-denial-analysis --final-status PENDING_PRESERVATION_REVIEW",
-  "active_run_metrics": "NOT_READ_NOT_INTERPRETED",
+  "active_run_metrics": "FINAL_RECEIPT_VERIFIED_ONCE; nointerimreads",
   "coverage": "NO_OPTIONAL_COVERAGE_OR_TRACE_SCAN",
-  "verified_utc": "2026-10-18T17:30:57.866121+00:00"
+  "verified_utc": "2026-10-18T17:30:57.866121+00:00",
+  "completed_comparison": "native-denial-analysis-summary.json",
+  "preservation_audit": {
+    "path": "reports/conditional-sol-2-1-50-113/native-denial-final-preservation-audit.json",
+    "sha256": "47b0020a479112421d88ae6cfd4e0b34093af3a5d5446ca8318c0e4323150046"
+  },
+  "economic_objective": "FAIL; lowerTOTAL/worseDD; noautomaticretry",
+  "finalized_utc": "2026-10-18T17:59:28.898859+00:00"
 }

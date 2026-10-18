@@ -1,0 +1,332 @@
+{
+  "status": "PENDING_PRESERVATION_REVIEW",
+  "basis": "Completed native fill_audit only; grouped equal eventtimes/reasons to avoid giant repeated1000quote rows. No trace/quote scan/order audit.",
+  "witness": [
+    {
+      "date": "2026-05-18",
+      "control_q0": "2026-05-18T00:00:00+00:00",
+      "candidate_q0": "2026-05-18T00:02:00+00:00",
+      "control_q1": "2026-05-18T00:01:00+00:00",
+      "candidate_q1": "2026-05-18T00:03:00+00:00",
+      "entry_delay_seconds": 120.0,
+      "control_P0": "77386.8",
+      "candidate_P0": "77305.9",
+      "grouped_actual_fills": {
+        "control": [
+          {
+            "utc": "2026-05-18T00:00:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 1,
+            "quantity": "370.054",
+            "notional": "28643992.8646",
+            "fees": "15754.19607553"
+          },
+          {
+            "utc": "2026-05-18T00:01:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "193.757",
+            "notional": "14994234.2076",
+            "fees": "8246.82881418"
+          },
+          {
+            "utc": "2026-05-18T00:02:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "193.757",
+            "notional": "14970363.3452",
+            "fees": "8233.69983986"
+          },
+          {
+            "utc": "2026-05-18T00:03:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_REDUCE",
+            "reason": "BTC_TP2",
+            "native_fill_count": 1,
+            "quantity": "82.346",
+            "notional": "6365831.6414",
+            "fees": "3501.20740277"
+          }
+        ],
+        "candidate": [
+          {
+            "utc": "2026-05-18T00:00:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 1,
+            "quantity": "370.054",
+            "notional": "28643992.8646",
+            "fees": "15754.19607553"
+          },
+          {
+            "utc": "2026-05-18T00:00:00+00:00",
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 99,
+            "quantity": "99000",
+            "notional": "8426880.00",
+            "fees": "4634.784"
+          },
+          {
+            "utc": "2026-05-18T00:01:00+00:00",
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 57,
+            "quantity": "56822.3",
+            "notional": "4830463.723",
+            "fees": "2656.75504765"
+          },
+          {
+            "utc": "2026-05-18T00:03:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "152.886",
+            "notional": "11818989.8274",
+            "fees": "6500.44440507"
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-07-31",
+      "control_q0": "2026-07-31T00:00:00+00:00",
+      "candidate_q0": "2026-07-31T00:02:00+00:00",
+      "control_q1": "2026-07-31T00:01:00+00:00",
+      "candidate_q1": "2026-07-31T00:03:00+00:00",
+      "entry_delay_seconds": 120.0,
+      "control_P0": "64804",
+      "candidate_P0": "64803.3",
+      "grouped_actual_fills": {
+        "control": [
+          {
+            "utc": "2026-07-31T00:00:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 1,
+            "quantity": "270.698",
+            "notional": "17526748.0570",
+            "fees": "9639.71143135"
+          },
+          {
+            "utc": "2026-07-31T00:01:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "231.467",
+            "notional": "14999987.468",
+            "fees": "8249.9931074"
+          }
+        ],
+        "candidate": [
+          {
+            "utc": "2026-07-31T00:00:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 1,
+            "quantity": "270.698",
+            "notional": "17526748.0570",
+            "fees": "9639.71143135"
+          },
+          {
+            "utc": "2026-07-31T00:00:00+00:00",
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 99,
+            "quantity": "99000",
+            "notional": "7373520.00",
+            "fees": "4055.436"
+          },
+          {
+            "utc": "2026-07-31T00:01:00+00:00",
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 10,
+            "quantity": "9401.5",
+            "notional": "700317.735",
+            "fees": "385.17475425"
+          },
+          {
+            "utc": "2026-07-31T00:03:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "170.74",
+            "notional": "11064515.442",
+            "fees": "6085.4834931"
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-08-01",
+      "control_q0": "2026-08-01T00:00:00+00:00",
+      "candidate_q0": "2026-08-01T00:02:00+00:00",
+      "control_q1": "2026-08-01T00:01:00+00:00",
+      "candidate_q1": "2026-08-01T00:03:00+00:00",
+      "entry_delay_seconds": 120.0,
+      "control_P0": "62862.8",
+      "candidate_P0": "62929.5",
+      "grouped_actual_fills": {
+        "control": [
+          {
+            "utc": "2026-08-01T00:00:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 1,
+            "quantity": "462.934",
+            "notional": "29094938.966",
+            "fees": "16002.2164313"
+          },
+          {
+            "utc": "2026-08-01T00:01:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "137.214",
+            "notional": "8625656.2392",
+            "fees": "4744.11093156"
+          }
+        ],
+        "candidate": [
+          {
+            "utc": "2026-08-01T00:00:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 1,
+            "quantity": "341.481",
+            "notional": "21461739.369",
+            "fees": "11803.95665295"
+          },
+          {
+            "utc": "2026-08-01T00:00:00+00:00",
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 99,
+            "quantity": "99000",
+            "notional": "7209180.00",
+            "fees": "3965.049"
+          },
+          {
+            "utc": "2026-08-01T00:01:00+00:00",
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 38,
+            "quantity": "37216.9",
+            "notional": "2711995.503",
+            "fees": "1491.59752665"
+          },
+          {
+            "utc": "2026-08-01T00:03:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "121.909",
+            "notional": "7671672.4155",
+            "fees": "4219.41982853"
+          }
+        ]
+      }
+    },
+    {
+      "date": "2026-08-06",
+      "control_q0": "2026-08-06T00:00:00+00:00",
+      "candidate_q0": "2026-08-06T00:02:00+00:00",
+      "control_q1": "2026-08-06T00:01:00+00:00",
+      "candidate_q1": "2026-08-06T00:03:00+00:00",
+      "entry_delay_seconds": 120.0,
+      "control_P0": "64619.6",
+      "candidate_P0": "64591.1",
+      "grouped_actual_fills": {
+        "control": [
+          {
+            "utc": "2026-08-06T00:00:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 1,
+            "quantity": "274.429",
+            "notional": "17733492.2084",
+            "fees": "9753.42071462"
+          },
+          {
+            "utc": "2026-08-06T00:01:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "133.458",
+            "notional": "8624002.5768",
+            "fees": "4743.20141724"
+          }
+        ],
+        "candidate": [
+          {
+            "utc": "2026-08-06T00:00:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 1,
+            "quantity": "243.819",
+            "notional": "15755486.2524",
+            "fees": "8665.51743882"
+          },
+          {
+            "utc": "2026-08-06T00:00:00+00:00",
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 99,
+            "quantity": "99000",
+            "notional": "7324020.00",
+            "fees": "4028.211"
+          },
+          {
+            "utc": "2026-08-06T00:01:00+00:00",
+            "instrument": "SOLUSDT-PERP.P1SIM",
+            "action": "FORCED_CLOSE",
+            "reason": "REGIME",
+            "native_fill_count": 2,
+            "quantity": "1141.3",
+            "notional": "84467.613",
+            "fees": "46.45718715"
+          },
+          {
+            "utc": "2026-08-06T00:03:00+00:00",
+            "instrument": "BTCUSDT-PERP.P1SIM",
+            "action": "BTC_ENTRY",
+            "reason": "BTC_ENTRY",
+            "native_fill_count": 1,
+            "quantity": "125.434",
+            "notional": "8101920.0374",
+            "fees": "4456.05602057"
+          }
+        ]
+      }
+    }
+  ],
+  "observed_cause": "All4 samecalendar/side BTC newentries wait while native forcedSOL REGIME reductions finish. NativefilledSOLquotes have1000 synthetic displayedsize; stagecompletion/nativeDenied handling audited separately byengine. This is a real observed changed executionpath, not identical firstquote/P0 preservation.",
+  "limits": "Do not claim4delaysprovewrongpermissionrule or exactcontrolfillpath. Originalrule/source preservation and lawfulall-nativeflat-before-rearm require engineaudit. CrossrunQchanges viaequity."
+}
