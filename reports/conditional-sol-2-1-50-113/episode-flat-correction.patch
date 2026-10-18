@@ -1,0 +1,51 @@
+diff --git a/runtime/coinmaster/strategy/conditional_hedge.py b/runtime/coinmaster/strategy/conditional_hedge.py
+index 43baf5e..7dc0704 100644
+--- a/runtime/coinmaster/strategy/conditional_hedge.py
++++ b/runtime/coinmaster/strategy/conditional_hedge.py
+@@ -209,9 +209,8 @@ class ConditionalSolResearch:
+         quantity=(abs(delta)//step)*step
+         if quantity<=0:
+             self._conditional_tasks_done(c)
+-            if not btc and not sol and ep.btc_initial_qty>0:
+-                self._group_close_reconciliation_pending=True
+-                self._reconcile_group_flat()
++            if not btc and not sol and self._group_close_reconciliation_pending:
++                self._reconcile_group_flat()  # Existing authorized close only; TP-flat retains its episode.
+             return
+         if delta>0 and (not self._entries_enabled() or ts<c["retry_ns"] or not bqty):
+             return
+diff --git a/runtime/tests/test_native_conditional_hedge.py b/runtime/tests/test_native_conditional_hedge.py
+index a0263c4..65ad0ad 100644
+--- a/runtime/tests/test_native_conditional_hedge.py
++++ b/runtime/tests/test_native_conditional_hedge.py
+@@ -457,3 +457,30 @@ def test_real_production_runner_builds_conditional_with_original_overlay_enabled
+     assert len(accepted[0].research_confirmation_bars)==4 and len(accepted[0].research_cover_hour_seed)==721
+     assert result["config"]["research_conditional_sol"] and result["conditional_sol_audit"]==[]
+     assert result["streaming"]["processed_rows_per_source"]==2 and result["terminal_open_positions"]==0
++
++
++@pytest.mark.parametrize("reason",["REGIME","TRAIL","CLOSE_ALL"])
++def test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_close(reason):
++    from coinmaster.domain.wave_overlay import DailyBar,Features
++    s,e,ep=setup()
++    try:
++        c=protect(s,e,ep)
++        marks(s,20,str(ep.btc_entry_vwap),"100")
++        run_ticks(e,[tick(BTC_PERP,20,str(ep.btc_entry_vwap)),tick(SOL_PERP,21)])
++        assert not c["active"] and not any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
++        run_ticks(e,[tick(BTC_PERP,30,"171"),tick(SOL_PERP,31),tick(BTC_PERP,32,"171"),tick(SOL_PERP,33)])
++        for ts in range(34,40):run_ticks(e,[tick(BTC_PERP,ts,"171"),tick(SOL_PERP,ts)])
++        assert not e.cache.positions_open() and not s._pending_by_order, (s.fill_audit,s._queued_intents,s._pending_by_order)
++        assert any(x["reason"]=="BTC_TP3" for x in s.fill_audit)
++        assert s._domain.episode is ep and not s._group_close_reconciliation_pending
++        first=datetime(1970,1,1,tzinfo=UTC)
++        daily=DailyBar(first,first+timedelta(days=1),first+timedelta(days=1),100,100,100)
++        feature=Features(0,ep.side,1.,1.,None,None,None)
++        decisions=s._domain.decide([daily],[feature],0,10000)
++        assert not any(x.action=="BTC_ENTRY" for x in decisions)
++        assert s._domain.episode is ep
++        close=s._domain._intent(ep,"CLOSE_ALL",-ep.side,None,reason=reason)
++        s._begin_forced_close(reason,close)
++        run_ticks(e,[tick(BTC_PERP,40),tick(SOL_PERP,41)])
++        assert s._domain.episode is None and not e.cache.positions_open() and not s._pending_by_order
++    finally:e.end();e.dispose()

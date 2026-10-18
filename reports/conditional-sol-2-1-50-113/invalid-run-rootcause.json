@@ -1,0 +1,147 @@
+{
+  "status": "INVALID_IMPLEMENTATION_BTC_PERMISSION_LIFECYCLE_DEFECT_NOT_REQUESTED_STRATEGY_ECONOMICS",
+  "candidate_artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction.json",
+  "candidate_sha256": "995de90732cc08989863ee1585e6e9204bb8173c3ea1740ba79af0ccadbf835c",
+  "control_artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+  "control_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "candidate_first_two": [
+    {
+      "episode_id": "13a4eb05-5183-4993-88da-9f4357d0570e",
+      "start_ns": 1725235260000000000,
+      "quantity": "0.791",
+      "first_vwap": "57313",
+      "side": -1
+    },
+    {
+      "episode_id": "b5f90e3b-cf14-4b13-915d-7803f4431a6f",
+      "start_ns": 1725667260000000000,
+      "quantity": "1.727",
+      "first_vwap": "53912.4",
+      "side": -1
+    }
+  ],
+  "control_first_two": [
+    {
+      "episode_id": "537d32a8-c39f-4371-a126-8d676e5eb6c4",
+      "start_ns": 1725235260000000000,
+      "quantity": "0.791",
+      "first_vwap": "57313",
+      "side": -1
+    },
+    {
+      "episode_id": "460b20f0-1515-4c17-84f8-67b311d9cbdd",
+      "start_ns": 1726012860000000000,
+      "quantity": "0.950",
+      "first_vwap": "57642.4",
+      "side": -1
+    }
+  ],
+  "first_TP3": [
+    {
+      "run": "candidate",
+      "fill_ns": "1725634080000000000",
+      "qty": "0.791",
+      "px": "54715",
+      "reason": "BTC_TP3"
+    },
+    {
+      "run": "control",
+      "fill_ns": "1725634080000000000",
+      "qty": "0.791",
+      "px": "54715",
+      "reason": "BTC_TP3"
+    }
+  ],
+  "rootcause": {
+    "conditional_flat_hook": "runtime/coinmaster/strategy/conditional_hedge.py:212-214",
+    "native_flat_is_not_domain_management_close": true,
+    "chain": [
+      "BTC TP3 flat Sep6 2024 14:48UTC; protective SOL already OFF/nativeflat Sep3",
+      "Unconditional conditional-owner nativeflat hook creates group-close authorization",
+      "strategy._reconcile_group_flat calls domain.on_group_flat and clears original episode despite no REGIME/TRAIL/CLOSE_ALL",
+      "Sep7 daily decision sees episodeNone and creates extra BTC parent; control retains original empty episode until management close, next entrySep11"
+    ],
+    "native_SOL_max_Qc_or_ownership_not_first_divergence_cause": true
+  },
+  "liquidation_native": [
+    {
+      "close_fills": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "timestamp": "1736760900000000000",
+          "value": "51265.0355"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "timestamp": "1736760900000000000",
+          "value": "121064.463"
+        }
+      ],
+      "close_value": "172329.4985",
+      "lockout": "true",
+      "marked_equity": "828.22822922",
+      "status": "FLAT_LOCKED",
+      "tier_maintenance_margin": "830.481860147",
+      "trigger_ts": "1736760900000000000"
+    }
+  ],
+  "liquidation_UTC": "2025-01-13T09:35:00+00:00",
+  "liquidation_last_native_fills": [
+    {
+      "accept_ns": "1736760900000000000",
+      "action": "LIQUIDATION_CLOSE",
+      "commission": "28.19576953",
+      "commission_currency": "USDT",
+      "fill_ns": "1736760900000000000",
+      "instrument": "BTCUSDT-PERP.P1SIM",
+      "level": "",
+      "native_liquidity_side": "TAKER",
+      "notional": "51265.0355",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "92703.5",
+      "qty": "0.553",
+      "reason": "LIQUIDATION",
+      "submit_ns": "1736760900000000000",
+      "venue": "P1SIM"
+    },
+    {
+      "accept_ns": "1736760900000000000",
+      "action": "LIQUIDATION_CLOSE",
+      "commission": "66.58545465",
+      "commission_currency": "USDT",
+      "fill_ns": "1736760900000000000",
+      "instrument": "SOLUSDT-PERP.P1SIM",
+      "level": "",
+      "native_liquidity_side": "TAKER",
+      "notional": "121064.463",
+      "order_type": "1",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "post_only": "false",
+      "px": "179.01",
+      "qty": "676.3",
+      "reason": "LIQUIDATION",
+      "submit_ns": "1736760900000000000",
+      "venue": "P1SIM"
+    }
+  ],
+  "parent_count": 34,
+  "parent_quantity_conserved": true,
+  "terminal_native_flat": true,
+  "logical_pending_receipt": "NOT_EXPORTED_BY_NATIVE_RESULT; authoritative liquidation FLAT_LOCKED clears domain episode via existing on_liquidation; not evidence of preserved historical BTC permissions",
+  "no_rerun_or_source_mutation_of_failed_job": true,
+  "narrow_native_money_checks": {
+    "candidate_parameters_exact_control": true,
+    "account_parameters_exact_control": true,
+    "fixed_fee_policy_exact_control": true,
+    "execution_policy_exact_control": true,
+    "native_add_TARGET_count": 29,
+    "max_target_or_request_lot_formula_violations": 0,
+    "last_preliquidation_original_desired": "676.3",
+    "last_preliquidation_actual_native_SOL": "676.3",
+    "last_protective_Qc_before_OFF": "112.2",
+    "protective_OFF_UTC": "2025-01-13T06:47:00+00:00",
+    "liquidation_interpretation": "ACTUAL_NATIVE_LIQUIDATION_IN_INVALID_CHANGED_BTC_PATH; NOT A_VALID_REJECTION_OF_REQUESTED_CONDITIONAL_STRATEGY"
+  }
+}

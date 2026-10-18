@@ -1,0 +1,21 @@
+{
+  "verdict": "GO_ONE_REPLACEMENT_RUN",
+  "scope": "Only unauthorized nativeflat->episode-clear defect, first BTC divergence mechanism and exact guard/native regression; no core/index edit or reviewer run",
+  "base_commit": "2a3f830c18c7ac5d2b5add3dc9778b84492fe5a0",
+  "patch_sha256": "0c55b5d14bc56ae1f2517872d0eaa84e97ab6ba3cb803d3c41cb331714ec2848",
+  "verified_source_hashes": {
+    "runtime/coinmaster/strategy/conditional_hedge.py": "4e7b73f8e0bdb15e054c72c235d9fb4a2fa8ce17caf577411e443d7c2b7d12ea",
+    "runtime/coinmaster/strategy/wave_overlay.py": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589",
+    "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+    "runtime/tests/test_native_conditional_hedge.py": "3b652b103df70033ae88103c8c7e3ace05e603005c3ff6d446a85d28d488493e",
+    "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+    "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+  },
+  "findings": [],
+  "rootcause": "Ordinary BTC TP3 nativeflat is not authorized domain groupclose. The prior conditional hook set _group_close_reconciliation_pending, clearing episode and admitting Sep7 BTC instead of retained-episode control nextentrySep11.",
+  "correction": "conditional_hedge.py:212-213 consumes only existing groupclose authorization and no longer creates it from nativeflat",
+  "native_regression": "Real native protectionOFF->BTC_TP3flat retains same episode and no BTC_ENTRY; authorizedREGIME/TRAIL/CLOSE_ALL subsequently clears;3passed3.27s",
+  "limitations": "GO only replacement of invalid implementation run, not optimization/live/economic approval. Historical firstentrypath and fullpermission/volume parity must be checked on replacement; this regression proves mechanism, not fullhistorical replay. Failedreceipt/native liquidation retained, not evidence against intended strategy."
+}

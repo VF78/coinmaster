@@ -1,0 +1,41 @@
+{
+  "base_commit": "2a3f830c18c7ac5d2b5add3dc9778b84492fe5a0",
+  "patch": "episode-flat-correction.patch",
+  "patch_sha256": "0c55b5d14bc56ae1f2517872d0eaa84e97ab6ba3cb803d3c41cb331714ec2848",
+  "source_hashes": {
+    "runtime/coinmaster/strategy/conditional_hedge.py": "4e7b73f8e0bdb15e054c72c235d9fb4a2fa8ce17caf577411e443d7c2b7d12ea",
+    "runtime/coinmaster/strategy/wave_overlay.py": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589",
+    "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+    "runtime/tests/test_native_conditional_hedge.py": "3b652b103df70033ae88103c8c7e3ace05e603005c3ff6d446a85d28d488493e",
+    "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+    "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+  },
+  "changed_files": [
+    "runtime/coinmaster/strategy/conditional_hedge.py",
+    "runtime/tests/test_native_conditional_hedge.py"
+  ],
+  "correction": "Conditional owner can reconcile flat ONLY when existing _group_close_reconciliation_pending already authorizes group cleanup. It cannot set this authority merely because BTC/SOL inventory is flat. Original empty episode survives ordinaryTP3.",
+  "focused_test": "test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_close",
+  "cases": [
+    "REGIME",
+    "TRAIL",
+    "CLOSE_ALL"
+  ],
+  "outcome": "3 passed, 18 warnings in3.27s",
+  "log": "episode-flat-regression.log",
+  "log_sha256": "57dca699211443e71fefcf338742adb916654ac4b4be63e84d351dad334ad853",
+  "test_notes": "Initial fixture allowed only2 BTCquotes, while existing native accepted TP queue required further currentquotes forTP3. Extra realquotes through39 preserve all flat/TP3/identity/causal/no-entry/authorized-close assertions. No matching or liquidity edits.",
+  "resources": {
+    "MemoryMax": "256MiB",
+    "SwapMax": 0,
+    "PrivateNetwork": true,
+    "CPUWeight": 10,
+    "unit": "cm116-conditional-episode-regression-20261018b",
+    "CPU_seconds": 4.147
+  },
+  "invalid_run_retained": "conditional-sol-2-1-50-receipt.json + original immutable job/result/funding/trace UNCHANGED",
+  "replacement_run": "NOT_LAUNCHED_PENDING_TARGETED_REVIEW_ROOT_COMMIT_GO",
+  "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active"
+}

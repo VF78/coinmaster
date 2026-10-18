@@ -209,9 +209,8 @@ class ConditionalSolResearch:
         quantity=(abs(delta)//step)*step
         if quantity<=0:
             self._conditional_tasks_done(c)
-            if not btc and not sol and ep.btc_initial_qty>0:
-                self._group_close_reconciliation_pending=True
-                self._reconcile_group_flat()
+            if not btc and not sol and self._group_close_reconciliation_pending:
+                self._reconcile_group_flat()  # Existing authorized close only; TP-flat retains its episode.
             return
         if delta>0 and (not self._entries_enabled() or ts<c["retry_ns"] or not bqty):
             return

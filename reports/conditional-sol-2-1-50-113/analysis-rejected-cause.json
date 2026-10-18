@@ -1,0 +1,1146 @@
+{
+  "status": "REJECTED_IMPLEMENTATION_ARTIFACT_INVALID_FOR_CONTROL_COMPARISON",
+  "candidate_receipt": "reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-receipt.json",
+  "candidate_result_sha256": "995de90732cc08989863ee1585e6e9204bb8173c3ea1740ba79af0ccadbf835c",
+  "native_run_status": "Completedfullrows/nativeaccounting outcome retained; not a clean conditional-only experiment",
+  "root_cause": "Conditional owner quantity<=0 flat cleanup reconciles domain episode without authorized managementclose, changing BTC rearm permissions. Confirmed by engine exactsource audit; no sourcefix or rerun by analytics.",
+  "frozen_source_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-20261018a/source/runtime/coinmaster/strategy/conditional_hedge.py",
+  "frozen_source_sha256": "5cd7e143232710a0964dac4999ff5b6d7d8ccf9ac1f10f80c6f41385c9cf3e25",
+  "frozen_source_excerpt": "204:         # Transfers with no native increment are atomic after original admission.\n205:         if c[\"adds\"] and held>=target:\n206:             self._conditional_assign(max(D(0),held-D(str(ep.sol_qty))),ts,tick.ask_price.as_decimal() if ep.side==-1 else tick.bid_price.as_decimal())\n207:         delta=target-held\n208:         inst=self.cache.instrument(self.config.sol_id);step=inst.size_increment.as_decimal()\n209:         quantity=(abs(delta)//step)*step\n210:         if quantity<=0:\n211:             self._conditional_tasks_done(c)\n212:             if not btc and not sol and ep.btc_initial_qty>0:\n213:                 self._group_close_reconciliation_pending=True\n214:                 self._reconcile_group_flat()\n215:             return\n216:         if delta>0 and (not self._entries_enabled() or ts<c[\"retry_ns\"] or not bqty):",
+  "first_divergence": {
+    "same_first_parent": {
+      "candidate_episode_id": "13a4eb05-5183-4993-88da-9f4357d0570e",
+      "control_episode_id": "537d32a8-c39f-4371-a126-8d676e5eb6c4",
+      "accepted_Q": "0.791",
+      "P0": "57313",
+      "start_utc": "2024-09-02T00:01:00+00:00"
+    },
+    "same_native_BTC_flat_fill_utc": "2024-09-06T14:48:00+00:00",
+    "flat_qty": ".791",
+    "flat_price": "54715",
+    "reason": "BTC_TP3",
+    "candidate_extra_permission_utc": "2024-09-07T00:01:00+00:00",
+    "control_next_permission_utc": "2024-09-11T00:01:00+00:00",
+    "control_SOL_fills_before_next_permission": 0,
+    "candidate_initial_conditional_roundtrip": [
+      {
+        "fill_ns": "1725276660000000000",
+        "instrument": "SOLUSDT-PERP.P1SIM",
+        "action": "SOL_ADD",
+        "reason": "CONDITIONAL_NET_ADD",
+        "qty": "135.1",
+        "px": "132.37",
+        "commission": "9.83575285",
+        "native_liquidity_side": "TAKER"
+      },
+      {
+        "fill_ns": "1725372840000000000",
+        "instrument": "SOLUSDT-PERP.P1SIM",
+        "action": "SOL_EXIT",
+        "reason": "CONDITIONAL_NET_EXIT",
+        "qty": "135.1",
+        "px": "130.57",
+        "commission": "9.70200385",
+        "native_liquidity_side": "TAKER"
+      }
+    ],
+    "control_compact_fills": [
+      {
+        "fill_ns": "1725634080000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "action": "BTC_REDUCE",
+        "reason": "BTC_TP3",
+        "qty": "0.791",
+        "px": "54715",
+        "commission": "8.655913",
+        "native_liquidity_side": "MAKER"
+      },
+      {
+        "fill_ns": "1726012860000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "action": "BTC_ENTRY",
+        "reason": "BTC_ENTRY",
+        "qty": "0.475",
+        "px": "57642.4",
+        "commission": "15.059077",
+        "native_liquidity_side": "TAKER"
+      }
+    ],
+    "candidate_compact_fills": [
+      {
+        "fill_ns": "1725634080000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "action": "BTC_REDUCE",
+        "reason": "BTC_TP3",
+        "qty": "0.791",
+        "px": "54715",
+        "commission": "8.655913",
+        "native_liquidity_side": "MAKER"
+      },
+      {
+        "fill_ns": "1725667260000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "action": "BTC_ENTRY",
+        "reason": "BTC_ENTRY",
+        "qty": "0.863",
+        "px": "53912.4",
+        "commission": "25.58952066",
+        "native_liquidity_side": "TAKER"
+      },
+      {
+        "fill_ns": "1725681720000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "action": "BTC_ENTRY",
+        "reason": "BTC_ENTRY",
+        "qty": "0.864",
+        "px": "53802.2",
+        "commission": "25.56680544",
+        "native_liquidity_side": "TAKER"
+      },
+      {
+        "fill_ns": "1725834660000000000",
+        "instrument": "SOLUSDT-PERP.P1SIM",
+        "action": "SOL_ADD",
+        "reason": "CONDITIONAL_NET_ADD",
+        "qty": "320.5",
+        "px": "131",
+        "commission": "23.092025",
+        "native_liquidity_side": "TAKER"
+      }
+    ]
+  },
+  "permission_effect": {
+    "control105": 105,
+    "candidate34": 34,
+    "shared_calendar_days": 14,
+    "extra_before_liquidation": [
+      19973,
+      19986,
+      19993,
+      20007,
+      20011,
+      20018,
+      20026,
+      20035,
+      20038,
+      20039,
+      20047,
+      20049,
+      20063,
+      20069,
+      20074,
+      20081,
+      20085,
+      20088,
+      20095,
+      20098
+    ],
+    "missing_before_liquidation": [
+      19977,
+      20021,
+      20029,
+      20043,
+      20054,
+      20077
+    ],
+    "missing_on_after_liquidation": [
+      20103,
+      20109,
+      20116,
+      20122,
+      20123,
+      20124,
+      20140,
+      20141,
+      20151,
+      20160,
+      20163,
+      20172,
+      20174,
+      20181,
+      20189,
+      20191,
+      20192,
+      20193,
+      20194,
+      20196,
+      20214,
+      20233,
+      20245,
+      20246,
+      20253,
+      20257,
+      20258,
+      20259,
+      20263,
+      20302,
+      20305,
+      20306,
+      20307,
+      20316,
+      20319,
+      20323,
+      20324,
+      20336,
+      20342,
+      20354,
+      20361,
+      20372,
+      20383,
+      20388,
+      20390,
+      20404,
+      20418,
+      20456,
+      20463,
+      20473,
+      20474,
+      20492,
+      20499,
+      20511,
+      20517,
+      20518,
+      20523,
+      20525,
+      20532,
+      20536,
+      20537,
+      20538,
+      20539,
+      20545,
+      20551,
+      20564,
+      20573,
+      20588,
+      20591,
+      20613,
+      20638,
+      20645,
+      20646,
+      20649,
+      20651,
+      20652,
+      20659,
+      20661,
+      20662,
+      20665,
+      20666,
+      20671,
+      20676,
+      20683,
+      20695
+    ],
+    "own34_plans_conserved": 34,
+    "interpretation": "Prelockout extras/misses prove contamination. Later no newparents after native liquidationlockout also economically true; neither force-inject105 nor call allmissing a sizing defect."
+  },
+  "economics": {
+    "control": {
+      "TOTAL": "6077107.23887483",
+      "ACTIVE": "6077107.23887483",
+      "RESERVE": "0",
+      "ROI_percent": "60671.072388748300",
+      "marked_DD_percent": "66.31878024969152066570091116",
+      "minimum": {
+        "equity": "4530.57414701",
+        "timestamp_ns": "1727970240000000000"
+      },
+      "native_top3": [
+        {
+          "drawdown_amount": "8920.76217809",
+          "drawdown_peak_percent": "66.31878024969152066570091116",
+          "peak": {
+            "equity": "13451.3363251",
+            "timestamp_ns": "1726063200000000000"
+          },
+          "recovery": {
+            "equity": "13453.62745342",
+            "timestamp_ns": "1728615180000000000"
+          },
+          "trough": {
+            "equity": "4530.57414701",
+            "timestamp_ns": "1727970240000000000"
+          }
+        },
+        {
+          "drawdown_amount": "547666.08219643",
+          "drawdown_peak_percent": "59.84272354367395947974450388",
+          "peak": {
+            "equity": "915175.73025689",
+            "timestamp_ns": "1744333200000000000"
+          },
+          "recovery": {
+            "equity": "930699.83942448",
+            "timestamp_ns": "1756064280000000000"
+          },
+          "trough": {
+            "equity": "367509.64806046",
+            "timestamp_ns": "1749223020000000000"
+          }
+        },
+        {
+          "drawdown_amount": "1150759.43834313",
+          "drawdown_peak_percent": "55.10055575073671291811943329",
+          "peak": {
+            "equity": "2088471.56378771",
+            "timestamp_ns": "1761168540000000000"
+          },
+          "recovery": {
+            "equity": "2089614.53857348",
+            "timestamp_ns": "1764562200000000000"
+          },
+          "trough": {
+            "equity": "937712.12544458",
+            "timestamp_ns": "1764340080000000000"
+          }
+        }
+      ],
+      "conditional_OHLC": {
+        "actual_intrabar_path_proven": false,
+        "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+        "maximum": {
+          "drawdown_fraction": "0.6754771031869252420136632742",
+          "drawdown_peak_percent": "67.54771031869252420136632742",
+          "peak": {
+            "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+            "equity": "13478.6013251",
+            "timestamp_ns": "1726063200000000000"
+          },
+          "trough": {
+            "equity": "4374.11474701",
+            "timestamp_ns": "1727970300000000000"
+          }
+        },
+        "same_bar_extrema_order_assumed": false,
+        "samples": 1051200
+      },
+      "fees": "945927.73761825",
+      "fills": 621,
+      "actual_asset_fill_diagnostic": {
+        "BTC": {
+          "q": "0.000",
+          "vwap": "78089.15000000000000000",
+          "gross": "6273361.445100000000000000005",
+          "fees": "927666.95630420",
+          "count": 416,
+          "net_ex_funding": "5345694.488795800000000000005"
+        },
+        "SOL": {
+          "q": "0.0",
+          "vwap": "109.080000000000000000000",
+          "gross": "696921.9890000000000000000000",
+          "fees": "18260.78131405",
+          "count": 205,
+          "net_ex_funding": "678661.2076859500000000000000"
+        }
+      },
+      "native_liquidity": {
+        "BTC_TAKER": {
+          "count": 281,
+          "turnover": "1406891251.233400002680068",
+          "fees": "773790.18817866",
+          "unknown_commissions": 0
+        },
+        "BTC_MAKER": {
+          "count": 135,
+          "turnover": "769383840.627700008811020",
+          "fees": "153876.76812554",
+          "unknown_commissions": 0
+        },
+        "SOL_TAKER": {
+          "count": 205,
+          "turnover": "33201420.571",
+          "fees": "18260.78131405",
+          "unknown_commissions": 0
+        }
+      },
+      "native_liquidations": 0,
+      "terminal_open_positions": 0,
+      "native_rejections": 0,
+      "fullrows": 1051200,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "funding_metadata": {
+        "by_instrument_count": {
+          "BTCUSDT-PERP.P1SIM": 899,
+          "SOLUSDT-PERP.P1SIM": 421
+        },
+        "count": 1320,
+        "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+      },
+      "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite",
+      "cash_residual_not_funding": "42751.542393079999999999995",
+      "actual_fill_held_overlap": {
+        "btc_held_seconds": 26605560.0,
+        "with_sol_seconds": 4091520.0,
+        "fraction": 0.15378439694560084
+      }
+    },
+    "rejected_candidate": {
+      "TOTAL": "880.08050504",
+      "ACTIVE": "880.08050504",
+      "RESERVE": "0",
+      "ROI_percent": "-91.199194949600",
+      "marked_DD_percent": "94.51958700872076304827287940",
+      "minimum": {
+        "equity": "828.22822922",
+        "timestamp_ns": "1736760900000000000"
+      },
+      "native_top3": [
+        {
+          "drawdown_amount": "14284.28665858",
+          "drawdown_peak_percent": "94.51958700872076304827287940",
+          "peak": {
+            "equity": "15112.5148878",
+            "timestamp_ns": "1735481160000000000"
+          },
+          "recovery": null,
+          "trough": {
+            "equity": "828.22822922",
+            "timestamp_ns": "1736760900000000000"
+          }
+        },
+        {
+          "drawdown_amount": "11255.86882104",
+          "drawdown_peak_percent": "92.50591993521417682604182759",
+          "peak": {
+            "equity": "12167.72810748",
+            "timestamp_ns": "1725811320000000000"
+          },
+          "recovery": {
+            "equity": "12213.99066719",
+            "timestamp_ns": "1734019560000000000"
+          },
+          "trough": {
+            "equity": "911.85928644",
+            "timestamp_ns": "1727970240000000000"
+          }
+        },
+        {
+          "drawdown_amount": "7866.87033131",
+          "drawdown_peak_percent": "53.43667531910871002225050952",
+          "peak": {
+            "equity": "14721.85588705",
+            "timestamp_ns": "1734447540000000000"
+          },
+          "recovery": {
+            "equity": "14836.04542177",
+            "timestamp_ns": "1735455840000000000"
+          },
+          "trough": {
+            "equity": "6854.98555574",
+            "timestamp_ns": "1735290900000000000"
+          }
+        }
+      ],
+      "conditional_OHLC": {
+        "actual_intrabar_path_proven": false,
+        "basis": "PRIOR_COMPLETED_BAR_FAVORABLE_UPPER_TO_STRICTLY_LATER_BAR_ADVERSE_LOWER",
+        "maximum": {
+          "drawdown_fraction": "0.9564631599674082001095965416",
+          "drawdown_peak_percent": "95.64631599674082001095965416",
+          "peak": {
+            "basis": "PRIOR_BAR_FAVORABLE_UPPER",
+            "equity": "15219.8236878",
+            "timestamp_ns": "1735481280000000000"
+          },
+          "trough": {
+            "equity": "662.62302922",
+            "timestamp_ns": "1736760900000000000"
+          }
+        },
+        "same_bar_extrema_order_assumed": false,
+        "samples": 1051200
+      },
+      "fees": "1940.85076793",
+      "fills": 201,
+      "actual_asset_fill_diagnostic": {
+        "BTC": {
+          "q": "0.000",
+          "vwap": "92634.67059436913451511991658",
+          "gross": "-13051.93149999999999999999997",
+          "fees": "1090.98321203",
+          "count": 141,
+          "net_ex_funding": "-14142.91471202999999999999997"
+        },
+        "SOL": {
+          "q": "0.0",
+          "vwap": "192.5574035191483069643649268",
+          "gross": "6136.778000000000000000000005",
+          "fees": "849.86755590",
+          "count": 60,
+          "net_ex_funding": "5286.910444100000000000000005"
+        }
+      },
+      "native_liquidity": {
+        "BTC_TAKER": {
+          "count": 88,
+          "turnover": "1661189.989500000008974",
+          "fees": "913.65449435",
+          "unknown_commissions": 0
+        },
+        "BTC_MAKER": {
+          "count": 53,
+          "turnover": "886643.588400000003738",
+          "fees": "177.32871768",
+          "unknown_commissions": 0
+        },
+        "SOL_TAKER": {
+          "count": 60,
+          "turnover": "1545213.738",
+          "fees": "849.86755590",
+          "unknown_commissions": 0
+        }
+      },
+      "native_liquidations": 1,
+      "terminal_open_positions": 0,
+      "native_rejections": 1,
+      "fullrows": 1051200,
+      "signed_funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+      "funding_metadata": {
+        "by_instrument_count": {
+          "BTCUSDT-PERP.P1SIM": 362,
+          "SOLUSDT-PERP.P1SIM": 137
+        },
+        "count": 499,
+        "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+      },
+      "funding_journal": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction-funding.sqlite",
+      "cash_residual_not_funding": "-263.915227030000000000000035",
+      "actual_fill_held_overlap": {
+        "btc_held_seconds": 10665120.0,
+        "with_sol_seconds": 3738660.0,
+        "fraction": 0.35055020477969306
+      }
+    },
+    "TOTAL_delta": "-6076227.15836979",
+    "interpretation": "Preserve exact measured figures; NOT evidence that intended conditional policy itself causes these dollars/DD, because BTC lifecycle diverged."
+  },
+  "liquidation_context": {
+    "utc": "2025-01-13T09:35:00+00:00",
+    "episode": {
+      "cancelled": "0",
+      "closed": true,
+      "deadline_ns": 1736481720000000000,
+      "decision_index": 860,
+      "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+      "fallback": false,
+      "filled": "0.959",
+      "first_filled": "0.479",
+      "first_notional": "44316.5531",
+      "first_quantity": "0.479",
+      "first_vwap": "92518.9",
+      "management_reference_frozen_ns": 1736467320000000000,
+      "management_reference_v1": "92518.9",
+      "planref_v1_actual_blended_vwap": "92634.67059436913451511991658",
+      "planref_v1_beta": 1.195635261573238,
+      "planref_v1_gross_reference_qty": 0.959,
+      "planref_v1_h_actual": 74300.79385841062,
+      "planref_v1_p0": "92518.9",
+      "quantity": "0.959",
+      "side": -1,
+      "sigma": 0.11561365722819378,
+      "single_lot_immediate": false,
+      "start_ns": 1736467320000000000,
+      "step": "0.001"
+    },
+    "native_audit": {
+      "close_fills": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "timestamp": "1736760900000000000",
+          "value": "51265.0355"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "timestamp": "1736760900000000000",
+          "value": "121064.463"
+        }
+      ],
+      "close_value": "172329.4985",
+      "lockout": "true",
+      "marked_equity": "828.22822922",
+      "status": "FLAT_LOCKED",
+      "tier_maintenance_margin": "830.481860147",
+      "trigger_ts": "1736760900000000000"
+    },
+    "last_conditional_OFF": {
+      "actual_sol_qty": "676.3",
+      "adverse": "0.009291007352955020587652273",
+      "beta": "1.2312719704551782",
+      "beta_frozen_ns": 1736467320000000000,
+      "btc_actual_vwap": "92634.67059436915",
+      "btc_mark": "93495.34",
+      "btc_qty": "0.553",
+      "combined_target": "676.3",
+      "conditional_target": "112.2",
+      "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+      "event": "OFF",
+      "original_allocated": "676.3",
+      "original_desired": "676.3",
+      "side": -1,
+      "timestamp_ns": 1736750820000000000
+    },
+    "last_episode_audit": [
+      {
+        "actual_sol_qty": "0",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92518.9",
+        "btc_qty": "0.479",
+        "combined_target": "0",
+        "conditional_target": "0",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "BETA_FREEZE",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "side": -1,
+        "timestamp_ns": 1736467320000000000
+      },
+      {
+        "actual_sol_qty": "0",
+        "adverse": "0.021013724053218311201994649",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "94581.27",
+        "btc_qty": "0.959",
+        "combined_target": "0",
+        "conditional_target": "0",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "ARM",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "side": -1,
+        "timestamp_ns": 1736494860000000000
+      },
+      {
+        "actual_sol_qty": "0",
+        "bar_close_ns": 1736495100000000000,
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.959",
+        "combined_target": "0",
+        "conditional_target": "0",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "CONFIRM",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "side": -1,
+        "timeframe_minutes": 15,
+        "timestamp_ns": 1736495100000000000
+      },
+      {
+        "actual_sol_qty": "0",
+        "adverse": "0.023048275466751984995043102",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.959",
+        "combined_target": "0",
+        "conditional_target": "0",
+        "confirmation_bar_ns": 1736495100000000000,
+        "confirmation_received_ns": 1736495100000000000,
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "ACTIVATE",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "side": -1,
+        "timeframe_minutes": 15,
+        "timestamp_ns": 1736495160000000000
+      },
+      {
+        "actual_sol_qty": "0",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "94769.74",
+        "btc_qty": "0.959",
+        "combined_target": "191.9",
+        "conditional_target": "191.9",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "QC_LATCH",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "side": -1,
+        "sol_mark": "192.321",
+        "timestamp_ns": 1736495160000000000,
+        "trigger": "ACTIVATION_OR_ACTUAL_BTC_QUANTITY_CHANGE"
+      },
+      {
+        "actual_sol_qty": "0",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.959",
+        "combined_target": "191.9",
+        "conditional_target": "191.9",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "TARGET",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "physical_intent": "95381dc5-377b-4e6d-b42f-3cd28a6bd9ee",
+        "quantity": "191.9",
+        "reason": "CONDITIONAL_NET_ADD",
+        "side": -1,
+        "timestamp_ns": 1736495160000000000
+      },
+      {
+        "action": "SOL_ADD",
+        "actual_sol_qty": "191.9",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.959",
+        "combined_target": "191.9",
+        "conditional_native_quantity": "191.9",
+        "conditional_target": "191.9",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "NATIVE_FILL",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "original_native_quantity": "0",
+        "physical_intent": "95381dc5-377b-4e6d-b42f-3cd28a6bd9ee",
+        "price": "192.34",
+        "quantity": "191.9",
+        "side": -1,
+        "timestamp_ns": 1736495160000000000
+      },
+      {
+        "actual_sol_qty": "191.9",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "94899.14",
+        "btc_qty": "0.553",
+        "combined_target": "110.8",
+        "conditional_target": "110.8",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "QC_LATCH",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "side": -1,
+        "sol_mark": "192.291",
+        "timestamp_ns": 1736495220000000000,
+        "trigger": "ACTIVATION_OR_ACTUAL_BTC_QUANTITY_CHANGE"
+      },
+      {
+        "actual_sol_qty": "191.9",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "110.8",
+        "conditional_target": "110.8",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "TRIM",
+        "original_allocated": "0.0",
+        "original_desired": "0",
+        "physical_intent": "b5137eac-7cec-4c2b-93fe-e77011e0e311",
+        "quantity": "81.1",
+        "reason": "CONDITIONAL_NET_EXIT",
+        "side": -1,
+        "timestamp_ns": 1736495220000000000
+      },
+      {
+        "action": "SOL_ADD",
+        "actual_sol_qty": "191.9",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "110.8",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "ORIGINAL_AUTHORIZED",
+        "level": 0,
+        "original_allocated": "0.0",
+        "original_desired": "676.3",
+        "quantity": "676.3",
+        "side": -1,
+        "timestamp_ns": 1736495220000000000
+      },
+      {
+        "action": "SOL_EXIT",
+        "actual_sol_qty": "110.8",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_native_quantity": "81.1",
+        "conditional_target": "110.8",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "NATIVE_FILL",
+        "original_allocated": "0.0",
+        "original_desired": "676.3",
+        "original_native_quantity": "0",
+        "physical_intent": "b5137eac-7cec-4c2b-93fe-e77011e0e311",
+        "price": "192.26",
+        "quantity": "81.1",
+        "side": -1,
+        "timestamp_ns": 1736495220000000000
+      },
+      {
+        "actual_sol_qty": "110.8",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "110.8",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "TARGET",
+        "original_allocated": "0.0",
+        "original_desired": "676.3",
+        "physical_intent": "5689bbee-6776-4c9d-85cc-b21794324050",
+        "quantity": "565.5",
+        "reason": "CONDITIONAL_NET_ADD",
+        "side": -1,
+        "timestamp_ns": 1736495280000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "110.8",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "TRANSFER_TO_ORIGINAL",
+        "native_fill": false,
+        "original_allocated": "110.8",
+        "original_desired": "676.3",
+        "original_level": 0,
+        "ownership_transfer_credit": "21340.08",
+        "quantity": "110.8",
+        "side": -1,
+        "timestamp_ns": 1736495280000000000
+      },
+      {
+        "action": "SOL_ADD",
+        "actual_sol_qty": "676.3",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_native_quantity": "0.0",
+        "conditional_target": "110.8",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "NATIVE_FILL",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "original_native_quantity": "565.5",
+        "physical_intent": "5689bbee-6776-4c9d-85cc-b21794324050",
+        "price": "192.6",
+        "quantity": "565.5",
+        "side": -1,
+        "timestamp_ns": 1736495280000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "adverse": "0.006355173520384224573658229",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "93223.38",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "110.8",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "OFF",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "timestamp_ns": 1736515860000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "adverse": "0.020683718021957503604745796",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "94550.7",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "0",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "ARM",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "timestamp_ns": 1736518740000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "adverse": "0.008489579555741989641634779",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "93421.1",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "0",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "OFF",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "timestamp_ns": 1736521380000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "adverse": "0.022267358348616334959551379",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "94697.4",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "0",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "ARM",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "timestamp_ns": 1736531340000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "bar_close_ns": 1736532000000000000,
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "0",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "CONFIRM",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "timeframe_minutes": 60,
+        "timestamp_ns": 1736532000000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "bar_close_ns": 1736532000000000000,
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "0",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "CONFIRM",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "timeframe_minutes": 15,
+        "timestamp_ns": 1736532000000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "adverse": "0.030082574782753537056518316",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "0",
+        "confirmation_bar_ns": 1736532000000000000,
+        "confirmation_received_ns": 1736532000000000000,
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "ACTIVATE",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "timeframe_minutes": 15,
+        "timestamp_ns": 1736532060000000000
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "95421.36",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "112.2",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "QC_LATCH",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "sol_mark": "190.85",
+        "timestamp_ns": 1736532060000000000,
+        "trigger": "ACTIVATION_OR_ACTUAL_BTC_QUANTITY_CHANGE"
+      },
+      {
+        "actual_sol_qty": "676.3",
+        "adverse": "0.009291007352955020587652273",
+        "beta": "1.2312719704551782",
+        "beta_frozen_ns": 1736467320000000000,
+        "btc_actual_vwap": "92634.67059436915",
+        "btc_mark": "93495.34",
+        "btc_qty": "0.553",
+        "combined_target": "676.3",
+        "conditional_target": "112.2",
+        "episode_id": "7d2d1f15-4f23-427a-ae00-56526dad5dc5",
+        "event": "OFF",
+        "original_allocated": "676.3",
+        "original_desired": "676.3",
+        "side": -1,
+        "timestamp_ns": 1736750820000000000
+      }
+    ],
+    "native_liquidation_fills": [
+      {
+        "fill_ns": "1736760900000000000",
+        "instrument": "BTCUSDT-PERP.P1SIM",
+        "action": "LIQUIDATION_CLOSE",
+        "reason": "LIQUIDATION",
+        "qty": "0.553",
+        "px": "92703.5",
+        "commission": "28.19576953",
+        "native_liquidity_side": "TAKER"
+      },
+      {
+        "fill_ns": "1736760900000000000",
+        "instrument": "SOLUSDT-PERP.P1SIM",
+        "action": "LIQUIDATION_CLOSE",
+        "reason": "LIQUIDATION",
+        "qty": "676.3",
+        "px": "179.01",
+        "commission": "66.58545465",
+        "native_liquidity_side": "TAKER"
+      }
+    ],
+    "interpretation": "At liquidation BTCshort.553/SOLlong676.3. Protective Qc alreadycleared to0 afterOFF; full676.3 originalallocated/originaldesired remains. This is not a 50%-protection-only exposure. Equity828.22822922 belowMM830.481860147 triggered native liquidate+lockout; historicalvenuefidelity/liquidationpolicy remainsunvalidated."
+  },
+  "ownership_checks": {
+    "event_counts": {
+      "BETA_FREEZE": 34,
+      "ARM": 37,
+      "CONFIRM": 53,
+      "ACTIVATE": 28,
+      "QC_LATCH": 29,
+      "TARGET": 29,
+      "NATIVE_FILL": 47,
+      "OFF": 25,
+      "TRIM": 18,
+      "ORIGINAL_AUTHORIZED": 7,
+      "RELEASE_ORIGINAL": 1,
+      "TRANSFER_TO_ORIGINAL": 1
+    },
+    "event_reasons": {
+      "('BETA_FREEZE', 'None')": 34,
+      "('ARM', 'None')": 37,
+      "('CONFIRM', 'None')": 53,
+      "('ACTIVATE', 'None')": 28,
+      "('QC_LATCH', 'None')": 29,
+      "('TARGET', 'CONDITIONAL_NET_ADD')": 29,
+      "('NATIVE_FILL', 'None')": 47,
+      "('OFF', 'None')": 25,
+      "('TRIM', 'CONDITIONAL_NET_EXIT')": 18,
+      "('ORIGINAL_AUTHORIZED', 'None')": 7,
+      "('RELEASE_ORIGINAL', 'SOL_Z_FULL_EXIT')": 1,
+      "('TRANSFER_TO_ORIGINAL', 'None')": 1
+    },
+    "activate_count": 28,
+    "off_count": 25,
+    "trim_count": 18,
+    "max_target_or_allocation_violations": [],
+    "physical_native_quantity": "6428.0",
+    "original_native_quantity": "3545.9",
+    "conditional_native_quantity": "2882.1",
+    "logical_ownership_event_count": 2,
+    "transfers_are_native_fills": false,
+    "Qc_cadence": "Latched activation/actual BTC quantity changes; price-only drift intentionally allowed",
+    "limitations": "Event snapshots are not complete minute coverage. Ownership transfers/releases change attribution, never venue fills/cash/PnL. No independent bucket PnL claimed."
+  },
+  "actual_total_SOL_held_overlap": {
+    "btc_held_seconds": 10665120.0,
+    "with_sol_seconds": 3738660.0,
+    "fraction": 0.35055020477969306
+  },
+  "funding_proof": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction-funding.sqlite",
+      "sha256": "25d3a21397bee9d8cf6ecdc0b513cfa3aed0317432e68e17398fcfa6392b8c34",
+      "instrument_count_min_max": [
+        {
+          "instrument": "BTCUSDT-PERP.P1SIM",
+          "count": 362,
+          "first_ns": 1725264000000000000,
+          "last_ns": 1736755200000000000,
+          "first_utc": "2024-09-02T08:00:00+00:00",
+          "last_utc": "2025-01-13T08:00:00+00:00"
+        },
+        {
+          "instrument": "SOLUSDT-PERP.P1SIM",
+          "count": 137,
+          "first_ns": 1725292800000000000,
+          "last_ns": 1736755200000000000,
+          "first_utc": "2024-09-02T16:00:00+00:00",
+          "last_utc": "2025-01-13T08:00:00+00:00"
+        }
+      ],
+      "schema": "instrument/rate/settlement_mark/account_total_after only; signed cash delta not exported"
+    }
+  ],
+  "native_terminal_order_status_counts": {
+    "FILLED": 201,
+    "CANCELED": 26,
+    "REJECTED": 1
+  },
+  "native_rejected_orders": [
+    {
+      "client_order_id": "O-20241112-000200-001-000-106",
+      "trader_id": "BACKTESTER-001",
+      "strategy_id": "WaveOverlayStrategy-000",
+      "instrument_id": "BTCUSDT-PERP.P1SIM",
+      "venue_order_id": "",
+      "position_id": "",
+      "account_id": "P1SIM-001",
+      "last_trade_id": "",
+      "type": "LIMIT",
+      "side": "BUY",
+      "quantity": "0.137",
+      "time_in_force": "GTC",
+      "is_reduce_only": "False",
+      "is_quote_quantity": "False",
+      "filled_qty": "0.000",
+      "liquidity_side": "NO_LIQUIDITY_SIDE",
+      "avg_px": "",
+      "slippage": "",
+      "commissions": "",
+      "emulation_trigger": "NO_TRIGGER",
+      "status": "REJECTED",
+      "contingency_type": "NO_CONTINGENCY",
+      "order_list_id": "",
+      "linked_order_ids": "",
+      "parent_order_id": "",
+      "exec_algorithm_id": "",
+      "exec_algorithm_params": "",
+      "exec_spawn_id": "",
+      "tags": "",
+      "init_id": "59445f8e-286c-4b0b-93ed-995af8ddbcf7",
+      "ts_init": "1731369720000000000",
+      "ts_last": "1731369720000000000",
+      "price": "88685.7",
+      "expire_time_ns": "",
+      "is_post_only": "True",
+      "display_qty": "",
+      "trigger_instrument_id": ""
+    }
+  ],
+  "limitations": [
+    "No full minute trace/PnL reconstruction/coverage scan; loss already contaminated by exact lifecycle defect.",
+    "Signedfunding UNKNOWN; cash residual not assignedfunding. No perownership bucketmoney/PnL.",
+    "TargetMAX telemetry equality and47nativephysical partitionchecks pass; this doesnot prove accepted BTC lifecycle. Transfers/releases logical native_fill=false, nottradefills.",
+    "One native rejectedpostonlyBTCorder Nov12 retained; accepted34fullQ conserved. No claim rejectfree.",
+    "Original/winnercontrol intact; old frozen107 unchanged; candidate receipt/results preserved. Replacement onlyafterowner/engine focusedfix andindependentGO."
+  ]
+}

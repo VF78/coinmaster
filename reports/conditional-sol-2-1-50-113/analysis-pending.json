@@ -1,5 +1,5 @@
 {
-  "status": "PENDING_ACTUAL_FINAL_CANDIDATE_RECEIPT",
+  "status": "FIRST_RUN_REJECTED_IMPLEMENTATION_ARTIFACT_REPLACEMENT_RECEIPT_PENDING",
   "helper": "analyze-comparison.py",
   "helper_sha256": "9456923979a315301a53b170fa82eb56cf411c8b0b385efcb632da2ddff36225",
   "helper_checks": [
@@ -7,11 +7,12 @@
     "Small synthetic long/short actual-fill side join/weighted-average/fee and heldtime check PASS; NOT native backtest",
     "Synthetic MAX-target and logical-transfer/nonfill checks PASS"
   ],
-  "candidate_metrics": "NOT_READ_NOT_AVAILABLE",
+  "candidate_metrics": "First completedrun retained in analysis-summary.json, INVALID_FOR_COMPARISON due unauthorizedBTCrearm. Notpurehedgeeffect.",
   "contract": "implementation-contract.md",
   "control": "control-reuse.json",
   "postrun_command": "runtime/.venv/bin/python reports/conditional-sol-2-1-50-113/analyze-comparison.py --receipt <FINAL_RECEIPT> [--coverage]",
   "no_interim_result_reads": true,
-  "next_review": "Await final candidate collector/receipt; verify frozen candidate source and actual cycle/fill/off/trim/ownership joins and funding SQLite metadata. Optional canonical mark pass once and memory guarded; no native trace/uPnL scan.",
-  "reviewed_compatibility": "PASS exactpatch d9176243a4a290e86b7f58a9d26a3f9d471fe6d6a9de20998e3ad40ac20a7ff2 and8currentpins; onefullbatch194pass6fail plus failedonly6pass; candidateactualreceipt remainspending"
+  "next_review": "Await minimalguard/focusedregression/independentGO and owner-authorized replacement finalreceipt. Do notoverwrite rejectedrun receipt/results or compactanalytics.",
+  "reviewed_compatibility": "PASS exactpatch d9176243a4a290e86b7f58a9d26a3f9d471fe6d6a9de20998e3ad40ac20a7ff2 and8currentpins; onefullbatch194pass6fail plus failedonly6pass; candidateactualreceipt remainspending",
+  "rejected_cause": "analysis-rejected-cause.json"
 }
