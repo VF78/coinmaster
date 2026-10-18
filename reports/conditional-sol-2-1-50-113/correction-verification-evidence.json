@@ -1,0 +1,59 @@
+{
+  "base_commit": "25222687ba11e8f9fde919f36c4f725b95f3a175",
+  "review_before": "review-money-orders.json",
+  "before_patch_sha256": "0e12114c941943920f11a8b477566fd7b13367a1b15fe736ccc686a886a41c77",
+  "patch_sha256": "d9176243a4a290e86b7f58a9d26a3f9d471fe6d6a9de20998e3ad40ac20a7ff2",
+  "source_hashes": {
+    "runtime/coinmaster/strategy/conditional_hedge.py": "5cd7e143232710a0964dac4999ff5b6d7d8ccf9ac1f10f80c6f41385c9cf3e25",
+    "runtime/coinmaster/strategy/wave_overlay.py": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589",
+    "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+    "runtime/tests/test_native_conditional_hedge.py": "6217079ad7d4067c533c646c79ffb4e6fd25bbae40f9ce416b92af2aa14ff71a",
+    "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+    "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+  },
+  "changed_since_review": [
+    "runtime/coinmaster/strategy/conditional_hedge.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/coinmaster/domain/wave_overlay.py",
+    "runtime/coinmaster/research/native_baseline.py",
+    "runtime/tests/test_native_conditional_hedge.py"
+  ],
+  "correction_scope": [
+    "Conditional runner retains original overlay; real production builder/constructor accepted with exact7.875 control and2 native minutes",
+    "Logical original HALF completion records applied decision cycle for ownership release/native/mixed paths; later causal full z exit survives",
+    "First native original fill records receipt time without overwriting ownership-cycle sigma",
+    "DefaultOFF conditional failure hooks short-circuit before evaluating native clock"
+  ],
+  "verification": {
+    "single_full_relevant_batch": "194 passed, 6 failed, 418 warnings in74.39s",
+    "full_batch_log": "final-verification.log",
+    "full_batch_resources": {
+      "MemoryMax": "256MiB",
+      "MemorySwapMax": 0,
+      "CPUWeight": 10,
+      "PrivateNetwork": true,
+      "unit": "cm116-conditional-final-verification-20261018",
+      "cpu_seconds": 72.623,
+      "runtime_seconds": 75.821,
+      "reported_memory_peak": "256.0M",
+      "initial_MemAvailable_bytes": 1497489408
+    },
+    "six_failure_causes": {
+      "three_new_half_fixtures": "Expected stale0, actual applied decision index2 is correct; assertions now derive current applied cycle and require full exit strictly later",
+      "new_runner_fixture": "Omitted existing required7.875 control candidate",
+      "two_existing_terminal_tests": "DefaultOFF hook evaluated abstract clock before returning"
+    },
+    "only_failed_cases_retest": "6 passed, 24 warnings in3.67s",
+    "retest_log": "final-failed-only.log",
+    "retest_unit": "cm116-conditional-failed-only-20261018",
+    "claim": "One full batch plus six failed-only retest; NOT a second full200-pass batch"
+  },
+  "full_24m": "NOT_RUN_PENDING_TARGETED_REVIEW_AND_ROOT_COMMIT_GO",
+  "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "log_hashes": {
+    "final-verification.log": "603f0796378059134422a12b3e4c0abf9b2983e6fe037fa59a13f773aa099add",
+    "final-failed-only.log": "5aacbc2cba74eabb7f8b86708acf3ebfc2f4f1ebf0e419f627a42b2ce3f95d90"
+  }
+}

@@ -1,0 +1,556 @@
+FFFFFFFFFFFFFFFF                                                         [100%]
+=================================== FAILURES ===================================
+_ test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[15-1] _
+
+side = 1, tf = 15
+
+    @pytest.mark.parametrize('side',[1,-1])
+    @pytest.mark.parametrize('tf',[15,60])
+    def test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off(side,tf):
+        s,e,ep=setup(side)
+        try:
+>           c=protect(s,e,ep,tf=tf)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2cc464d0>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[15--1] _
+
+side = -1, tf = 15
+
+    @pytest.mark.parametrize('side',[1,-1])
+    @pytest.mark.parametrize('tf',[15,60])
+    def test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off(side,tf):
+        s,e,ep=setup(side)
+        try:
+>           c=protect(s,e,ep,tf=tf)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c8162c0>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[60-1] _
+
+side = 1, tf = 60
+
+    @pytest.mark.parametrize('side',[1,-1])
+    @pytest.mark.parametrize('tf',[15,60])
+    def test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off(side,tf):
+        s,e,ep=setup(side)
+        try:
+>           c=protect(s,e,ep,tf=tf)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c5d9090>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[60--1] _
+
+side = -1, tf = 60
+
+    @pytest.mark.parametrize('side',[1,-1])
+    @pytest.mark.parametrize('tf',[15,60])
+    def test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off(side,tf):
+        s,e,ep=setup(side)
+        try:
+>           c=protect(s,e,ep,tf=tf)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c815240>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_protective_inventory_original_adoption_is_not_native_fill_or_cash_replay _
+
+    def test_protective_inventory_original_adoption_is_not_native_fill_or_cash_replay():
+        s,e,ep=setup()
+        try:
+>           c=protect(s,e,ep);before=len(s.fill_audit)
+              ^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d6288cdc0>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_original_first_protect_topup_then_original_full_release_does_not_restore_rights _
+
+    def test_original_first_protect_topup_then_original_full_release_does_not_restore_rights():
+        s,e,ep=setup()
+        try:
+            original(s,e,ep,10,7)
+            assert ep.sol_qty==10 and ep.sol_add_filled_notional[0]==1000
+>           c=protect(s,e,ep,ts=10)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c815960>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_______ test_denied_original_admission_has_atomic_zero_credit_and_clock ________
+
+    def test_denied_original_admission_has_atomic_zero_credit_and_clock():
+        s,e,ep=setup()
+        try:
+>           c=protect(s,e,ep)
+              ^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c635180>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_________ test_original_half_and_timeout_release_original_budget_only __________
+
+    def test_original_half_and_timeout_release_original_budget_only():
+        s,e,ep=setup()
+        try:
+>           c=protect(s,e,ep);original(s,e,ep,20)
+              ^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c62cfd0>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_______ test_unknown_ack_blocks_off_trim_until_known_terminal_no_orphan ________
+
+    def test_unknown_ack_blocks_off_trim_until_known_terminal_no_orphan():
+        s,e,ep=setup()
+        try:
+>           c=protect(s,e,ep)
+              ^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2d198760>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_btc_partial_reduces_qc_and_btc_flat_closes_both_original_and_conditional _
+
+    def test_btc_partial_reduces_qc_and_btc_flat_closes_both_original_and_conditional():
+        s,e,ep=setup()
+        try:
+>           c=protect(s,e,ep);original(s,e,ep,10)
+              ^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c815180>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory[denied] _
+
+outcome = 'denied'
+
+    @pytest.mark.parametrize('outcome',['denied','rejected'])
+    def test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory(outcome):
+        from nautilus_trader.model.events import OrderDenied,OrderRejected
+        from nautilus_trader.core.uuid import UUID4
+        from nautilus_trader.model.identifiers import AccountId
+        class Hold(NativeProbe):
+            hold=False
+            def submit_order(self,order,*a,**kw):
+                i=self._pending_by_order.get(str(order.client_order_id))
+                if self.hold and i and i.reason=='CONDITIONAL_NET_ADD':
+                    self.held=order;return
+                return super().submit_order(order,*a,**kw)
+        s,e,ep=setup(probe=Hold)
+        try:
+>           c=protect(s,e,ep);s.hold=True
+              ^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2bdebc70>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory[rejected] _
+
+outcome = 'rejected'
+
+    @pytest.mark.parametrize('outcome',['denied','rejected'])
+    def test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory(outcome):
+        from nautilus_trader.model.events import OrderDenied,OrderRejected
+        from nautilus_trader.core.uuid import UUID4
+        from nautilus_trader.model.identifiers import AccountId
+        class Hold(NativeProbe):
+            hold=False
+            def submit_order(self,order,*a,**kw):
+                i=self._pending_by_order.get(str(order.client_order_id))
+                if self.hold and i and i.reason=='CONDITIONAL_NET_ADD':
+                    self.held=order;return
+                return super().submit_order(order,*a,**kw)
+        s,e,ep=setup(probe=Hold)
+        try:
+>           c=protect(s,e,ep);s.hold=True
+              ^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c5dbb80>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_accepted_btc_second_half_reserved_while_protecting_only_actual_first_fill _
+
+    def test_accepted_btc_second_half_reserved_while_protecting_only_actual_first_fill():
+        s=NativeProbe(config());e=native_engine(s)
+        try:
+            run_ticks(e,[tick(BTC_PERP,1)]);prepare_day(s,2);marks(s,2);seed_beta(s,1)
+            ep=s._domain.episode=Episode('partial-entry',1,10000,1,wave_levels=(.5,.6,.7))
+            i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
+            s._submit_intent(i,100,100,.01,0,ts_now=2);run_ticks(e,[tick(BTC_PERP,3)])
+            s._pending_by_order['UNKNOWN_BTC_ACK']=i
+>           c=protect(s,e,ep)
+              ^^^^^^^^^^^^^^^
+
+tests/test_native_conditional_hedge.py:203: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_conditional_hedge.py:35: in protect
+    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <tuple_iterator object at 0x726d2c626c80>
+
+>   kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation.name=='MINUTE')==(tf==15))
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'name'
+
+tests/test_native_conditional_hedge.py:35: AttributeError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+____ test_large_conditional_native_partial_trim_has_no_orphan_or_false_flat ____
+
+    def test_large_conditional_native_partial_trim_has_no_orphan_or_false_flat():
+        s,e,ep=setup()
+        try:
+            marks(s,10,'96','1');run_ticks(e,[tick(BTC_PERP,10,'96'),tick(SOL_PERP,11,'1')])
+            kind=s.config.research_confirmation_bars[2]
+            s.on_bar(bar(kind,9,1,1.01,.99));s.on_bar(bar(kind,12,.98))
+            for ts in range(13,18):run_ticks(e,[tick(SOL_PERP,ts,'1')])
+            held=next(p.quantity.as_decimal() for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)
+>           assert held==D(3200) and held>1000
+E           AssertionError: assert (Decimal('3199.9') == Decimal('3200'))
+E            +  where Decimal('3200') = D(3200)
+
+tests/test_native_conditional_hedge.py:221: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[15] _
+
+tmp_path = PosixPath('/tmp/cm116-conditional-focused/test_connected_native_stream_o0')
+tf = 15
+
+    @pytest.mark.parametrize('tf',[15,60])
+    def test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat(tmp_path,tf):
+        from nautilus_trader.backtest.engine import BacktestEngine
+        from nautilus_trader.backtest.config import BacktestEngineConfig
+        from nautilus_trader.config import LoggingConfig
+        from nautilus_trader.cache.config import CacheConfig
+        from nautilus_trader.data.config import DataEngineConfig
+        from nautilus_trader.model.data import BarType,BarSpecification
+        from nautilus_trader.model.enums import AccountType,OmsType,AggregationSource,BarAggregation,PriceType
+        from nautilus_trader.model.objects import Money
+        from nautilus_trader.model.identifiers import ClientId
+        from coinmaster.research.native_fixture import SIM
+        from coinmaster.venues.marks import venue_mark
+        from coinmaster.ops.paper import PaperRuntime
+        base=1725148800*1_000_000_000;minute=60_000_000_000
+        confirm=30 if tf==15 else 120;activation=confirm+1;arm=16 if tf==15 else 80;end=activation+10
+        journal=PaperRuntime(tmp_path/'native.sqlite','conditional-native',10**20);journal.acquire()
+        class Sink:
+            def __call__(self,**x):
+                return journal.record_submission(client_order_id=x['client_order_id'],intent_id=x['intent_id'],episode_id=x['episode_id'],action=x['action'],instrument_id=x['instrument_id'],quantity=x['quantity'],reduce_only=x['reduce_only'])
+            def acknowledge(self,x):journal.acknowledge_submission(x)
+            def terminal(self,x):journal.terminal_submission(x)
+        class Probe(NativeProbe):
+            started=False;adopted=False;closed_original=False;closing=False
+            def on_quote_tick(self,q):
+                m=(q.ts_event-base)//minute
+                if not self.started and q.instrument_id==BTC_PERP.id:
+                    self.started=True;prepare_day(self,q.ts_event);seed_beta(self,base)
+                    ep=self._domain.episode=Episode('stream',1,10000,1,wave_levels=(.005,.6,.7))
+                    i=self._domain._intent(ep,'BTC_ENTRY',1,None,requested_notional=10000)
+                    self._queued_intents.append((i,.01,0));self._queued_intent_ready_ns[i.id]=q.ts_event
+                super().on_quote_tick(q)
+                ep=self._domain.episode
+                if q.instrument_id==SOL_PERP.id and ep and m==activation+1 and not self.adopted:
+                    self.adopted=True
+                    assert 0 in ep.sol_rights
+                    i=self._domain._intent(ep,'SOL_ADD',-1,0,quantity=1,reason='SOL_ADD')
+                    self._submit_intent(i,float(q.bid_price),float(q.ask_price),.02,0,ts_now=q.ts_event)
+                if q.instrument_id==SOL_PERP.id and ep and m==activation+6 and not self.closed_original:
+                    self.closed_original=True
+                    i=self._domain._intent(ep,'SOL_EXIT',1,None,quantity=ep.sol_qty,reason='SOL_Z_FULL_EXIT')
+                    self._submit_intent(i,float(q.bid_price),float(q.ask_price),None,0,ts_now=q.ts_event)
+                if m==end and not self.closing:
+                    self.closing=True;self._begin_forced_close('REGIME')
+        s=Probe(config(event_sink=journal.record_native_event,submission_sink=Sink()))
+        e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR'),cache=CacheConfig(bar_capacity=128),data_engine=DataEngineConfig(time_bars_build_with_no_updates=False)))
+        e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,bar_execution=False)
+        e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(s)
+        bars=[];markdata=[];quotes=[]
+        for m in range(1,end+4):
+            ts=base+m*minute
+            bp=D('101') if m==10 else D('96') if arm<=m<activation+5 else D('99.5') if m>=activation+5 else D('99') if m>=3 else D(100)
+            sp=D(100)
+            if tf==15 and m>=16:sp=D(99)
+            if tf==60 and 61<=m<=75:sp=D(90)
+            if tf==60 and m>=76:sp=D(95)
+            for inst,px in ((BTC_PERP,bp),(SOL_PERP,sp)):
+                kind=BarType(inst.id,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL)
+                bars.append(bar(kind,ts,px));markdata.append(venue_mark(inst.id,px,ts));quotes.append(tick(inst,ts,str(px)))
+        try:
+            e.add_data(bars,sort=False);e.add_data(markdata,client_id=ClientId('TEST_MARKS'),sort=False);e.add_data(quotes,sort=False);e.sort_data();e.run(streaming=True);e.clear_data()
+            active=[x for x in s.conditional_audit if x['event']=='ACTIVATE']
+>           assert len(active)==1 and active[0]['timeframe_minutes']==tf
+E           assert (0 == 1)
+E            +  where 0 = len([])
+
+tests/test_native_conditional_hedge.py:294: AssertionError
+_ test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[60] _
+
+tmp_path = PosixPath('/tmp/cm116-conditional-focused/test_connected_native_stream_o1')
+tf = 60
+
+    @pytest.mark.parametrize('tf',[15,60])
+    def test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat(tmp_path,tf):
+        from nautilus_trader.backtest.engine import BacktestEngine
+        from nautilus_trader.backtest.config import BacktestEngineConfig
+        from nautilus_trader.config import LoggingConfig
+        from nautilus_trader.cache.config import CacheConfig
+        from nautilus_trader.data.config import DataEngineConfig
+        from nautilus_trader.model.data import BarType,BarSpecification
+        from nautilus_trader.model.enums import AccountType,OmsType,AggregationSource,BarAggregation,PriceType
+        from nautilus_trader.model.objects import Money
+        from nautilus_trader.model.identifiers import ClientId
+        from coinmaster.research.native_fixture import SIM
+        from coinmaster.venues.marks import venue_mark
+        from coinmaster.ops.paper import PaperRuntime
+        base=1725148800*1_000_000_000;minute=60_000_000_000
+        confirm=30 if tf==15 else 120;activation=confirm+1;arm=16 if tf==15 else 80;end=activation+10
+        journal=PaperRuntime(tmp_path/'native.sqlite','conditional-native',10**20);journal.acquire()
+        class Sink:
+            def __call__(self,**x):
+                return journal.record_submission(client_order_id=x['client_order_id'],intent_id=x['intent_id'],episode_id=x['episode_id'],action=x['action'],instrument_id=x['instrument_id'],quantity=x['quantity'],reduce_only=x['reduce_only'])
+            def acknowledge(self,x):journal.acknowledge_submission(x)
+            def terminal(self,x):journal.terminal_submission(x)
+        class Probe(NativeProbe):
+            started=False;adopted=False;closed_original=False;closing=False
+            def on_quote_tick(self,q):
+                m=(q.ts_event-base)//minute
+                if not self.started and q.instrument_id==BTC_PERP.id:
+                    self.started=True;prepare_day(self,q.ts_event);seed_beta(self,base)
+                    ep=self._domain.episode=Episode('stream',1,10000,1,wave_levels=(.005,.6,.7))
+                    i=self._domain._intent(ep,'BTC_ENTRY',1,None,requested_notional=10000)
+                    self._queued_intents.append((i,.01,0));self._queued_intent_ready_ns[i.id]=q.ts_event
+                super().on_quote_tick(q)
+                ep=self._domain.episode
+                if q.instrument_id==SOL_PERP.id and ep and m==activation+1 and not self.adopted:
+                    self.adopted=True
+                    assert 0 in ep.sol_rights
+                    i=self._domain._intent(ep,'SOL_ADD',-1,0,quantity=1,reason='SOL_ADD')
+                    self._submit_intent(i,float(q.bid_price),float(q.ask_price),.02,0,ts_now=q.ts_event)
+                if q.instrument_id==SOL_PERP.id and ep and m==activation+6 and not self.closed_original:
+                    self.closed_original=True
+                    i=self._domain._intent(ep,'SOL_EXIT',1,None,quantity=ep.sol_qty,reason='SOL_Z_FULL_EXIT')
+                    self._submit_intent(i,float(q.bid_price),float(q.ask_price),None,0,ts_now=q.ts_event)
+                if m==end and not self.closing:
+                    self.closing=True;self._begin_forced_close('REGIME')
+        s=Probe(config(event_sink=journal.record_native_event,submission_sink=Sink()))
+        e=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR'),cache=CacheConfig(bar_capacity=128),data_engine=DataEngineConfig(time_bars_build_with_no_updates=False)))
+        e.add_venue(venue=SIM,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,starting_balances=[Money(10000,BTC_PERP.quote_currency)],base_currency=BTC_PERP.quote_currency,bar_execution=False)
+        e.add_instrument(BTC_PERP);e.add_instrument(SOL_PERP);e.add_strategy(s)
+        bars=[];markdata=[];quotes=[]
+        for m in range(1,end+4):
+            ts=base+m*minute
+            bp=D('101') if m==10 else D('96') if arm<=m<activation+5 else D('99.5') if m>=activation+5 else D('99') if m>=3 else D(100)
+            sp=D(100)
+            if tf==15 and m>=16:sp=D(99)
+            if tf==60 and 61<=m<=75:sp=D(90)
+            if tf==60 and m>=76:sp=D(95)
+            for inst,px in ((BTC_PERP,bp),(SOL_PERP,sp)):
+                kind=BarType(inst.id,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL)
+                bars.append(bar(kind,ts,px));markdata.append(venue_mark(inst.id,px,ts));quotes.append(tick(inst,ts,str(px)))
+        try:
+            e.add_data(bars,sort=False);e.add_data(markdata,client_id=ClientId('TEST_MARKS'),sort=False);e.add_data(quotes,sort=False);e.sort_data();e.run(streaming=True);e.clear_data()
+            active=[x for x in s.conditional_audit if x['event']=='ACTIVATE']
+>           assert len(active)==1 and active[0]['timeframe_minutes']==tf
+E           assert (0 == 1)
+E            +  where 0 = len([])
+
+tests/test_native_conditional_hedge.py:294: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[15-1]
+FAILED tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[15--1]
+FAILED tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[60-1]
+FAILED tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[60--1]
+FAILED tests/test_native_conditional_hedge.py::test_protective_inventory_original_adoption_is_not_native_fill_or_cash_replay
+FAILED tests/test_native_conditional_hedge.py::test_original_first_protect_topup_then_original_full_release_does_not_restore_rights
+FAILED tests/test_native_conditional_hedge.py::test_denied_original_admission_has_atomic_zero_credit_and_clock
+FAILED tests/test_native_conditional_hedge.py::test_original_half_and_timeout_release_original_budget_only
+FAILED tests/test_native_conditional_hedge.py::test_unknown_ack_blocks_off_trim_until_known_terminal_no_orphan
+FAILED tests/test_native_conditional_hedge.py::test_btc_partial_reduces_qc_and_btc_flat_closes_both_original_and_conditional
+FAILED tests/test_native_conditional_hedge.py::test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory[denied]
+FAILED tests/test_native_conditional_hedge.py::test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory[rejected]
+FAILED tests/test_native_conditional_hedge.py::test_accepted_btc_second_half_reserved_while_protecting_only_actual_first_fill
+FAILED tests/test_native_conditional_hedge.py::test_large_conditional_native_partial_trim_has_no_orphan_or_false_flat
+FAILED tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[15]
+FAILED tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[60]
+16 failed, 96 warnings in 5.19s

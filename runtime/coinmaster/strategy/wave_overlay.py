@@ -23,6 +23,7 @@ from nautilus_trader.trading.strategy import Strategy
 
 from coinmaster.domain.wave_overlay import btc_management_price
 from coinmaster.strategy.split_cover import SplitCoverResearch
+from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
 from coinmaster.venues.margin_policy import MarginMark, MarginPolicy
@@ -61,6 +62,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_split_tp_ioc: bool = False
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_cover: Decimal | None = None
+    research_conditional_sol: bool = False
     research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
     research_h1_b1: str | None = None
     research_h1_adverse_fraction: Decimal = Decimal("0.025")
@@ -159,12 +161,15 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
         self._split_cover_init()
+        self._conditional_init()
         self._cover_seed(config.research_cover_hour_seed)
+        if config.research_conditional_sol and (not config.research_btc_split_tp_ioc or not config.candidate.sol_overlay_enabled or config.research_sol_cover is not None or len(config.research_confirmation_bars)!=4):
+            raise ValueError("CONDITIONAL_REQUIRES_SELECTED_BTC_ORIGINAL_SOL_AND_NATIVE_BARS")
         if config.research_btc_split_tp_ioc and (not config.research_btc_split_planref_v1 or config.tp_fee_floor_v1):
             raise ValueError("TP_IOC_REQUIRES_PLANREF_V3")
         if config.research_btc_split_planref_v1 and (not config.research_btc_split50 or config.research_btc_split_discount != Decimal("0.0025")):
@@ -353,6 +358,7 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
     def on_bar(self, bar: Bar) -> None:
         if any(bar.bar_type == kind.standard() or bar.bar_type == kind for kind in self.config.research_confirmation_bars):
             self._cover_bar(bar)
+            self._conditional_bar(bar)
             self._on_confirmation_bar(bar)
             return
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -1353,6 +1359,7 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
             self._h1_check(tick.ts_event)
         self._split_check(tick)
         self._cover_check(tick)
+        self._conditional_check(tick)
         for item in list(self._queued_intents):
             intent, sigma, index = item
             if tick.ts_event < self._queued_intent_ready_ns.get(intent.id, 0):
@@ -1690,6 +1697,8 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
         return _native_account_money(account, free=True)
 
     def _deny_local_entry(self, intent: Intent, reason: str, ts_now: int | None) -> None:
+        if self.config.research_conditional_sol:
+            self._conditional_failed(intent, ts_now or self.clock.timestamp_ns())
         self._selected_entry_audits.pop(intent.id, None)
         if intent.reason and intent.reason.startswith("SOL_COVER") and self._cover_cycle:
             self._cover_cycle["incomplete"] = True
@@ -1811,6 +1820,20 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
             if rounded <= 0:
                 self._deny_local_entry(intent, "PARENT_CAP_BELOW_STEP", ts_now)
                 return
+        if self.config.research_conditional_sol and intent.action.startswith("SOL") and not self._conditional_physical:
+            if intent.action=="SOL_ADD":
+                episode=self._domain.episode
+                legal=episode is not None and intent.level in episode.sol_rights and intent.id in episode.pending
+                if legal:
+                    authorized=episode.h*self._candidate.sol_size_multipliers_h[intent.level]*episode.sol_right_fraction.get(intent.level,1.0)-episode.sol_add_filled_notional.get(intent.level,0)-episode.sol_ownership_transfer_credit.get(intent.level,0)
+                    legal=rounded*executable_price<=Decimal(str(authorized))+instrument.size_increment.as_decimal()*executable_price
+                minimum=(instrument.min_quantity is None or rounded>=instrument.min_quantity.as_decimal()) and (instrument.min_notional is None or rounded*executable_price>=instrument.min_notional.as_decimal())
+                increment=self._conditional_original_increment(rounded)
+                if not legal or not minimum or not self._entries_enabled() or not self._tier_allows_increase(instrument_id,side,increment,ts_now or 0):
+                    self._deny_local_entry(intent,"ORIGINAL_CONDITIONAL_ADMISSION_DENIED",ts_now)
+                    return
+            self._conditional_original(intent,rounded,executable_price,sigma,decision_index,ts_now or 0)
+            return
         # Increases are gated at the last safe point, after executable-price
         # sizing/normalization and immediately before native order creation.
         # Reductions deliberately bypass both the pause/stale and margin gates.
@@ -1982,6 +2005,8 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
 
     def _preempt_with_mandatory_sol_exit(self, intent: Intent, sigma: float | None, index: int) -> None:
         """Cancel SOL leaves before a timeout reduces the reconciled remainder."""
+        if self.config.research_conditional_sol:
+            self._conditional_cancel_original_adds(self.clock.timestamp_ns())
         if self.config.deposit_runtime is not None and self._deposit.latched:
             self._domain.on_parent_terminal(intent.id)
             return
@@ -2331,11 +2356,14 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
             else:
                 self._accepted_reductions[key] = original, remaining
         when = datetime.fromtimestamp(ts_event / 1_000_000_000, UTC)
-        self._domain.on_fill(
-            intent.id, quantity, price, when, sigma,
-            decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
-            entry_qty=entry_qty, entry_price=entry_price,
-        )
+        if self.config.research_conditional_sol and intent.reason in {"CONDITIONAL_NET_ADD","CONDITIONAL_NET_EXIT"}:
+            self._conditional_fill(intent,quantity,price,ts_event)
+        else:
+            self._domain.on_fill(
+                intent.id, quantity, price, when, sigma,
+                decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
+                entry_qty=entry_qty, entry_price=entry_price,
+            )
         if intent.action == "BTC_ENTRY" and self.config.research_btc_split_planref_v1:
             ep = self._domain.episode
             p = self._split_parent
@@ -2537,6 +2565,8 @@ class WaveOverlayStrategy(SplitCoverResearch, Strategy):
 
     def _terminal_without_fill(self, client_order_id: str) -> None:
         failed_intent = self._pending_by_order.get(client_order_id)
+        if self.config.research_conditional_sol:
+            self._conditional_failed(failed_intent,self.clock.timestamp_ns())
         if failed_intent and failed_intent.reason and failed_intent.reason.startswith("SOL_COVER") and self._cover_cycle:
             self._cover_cycle["incomplete"] = True
             self._cover_cycle["retry_after_ns"] = self.clock.timestamp_ns() + 3_600_000_000_000

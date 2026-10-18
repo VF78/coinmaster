@@ -1,5 +1,5 @@
 {
-  "checked_utc": "2026-10-18T14:31:04.295954+00:00",
+  "checked_utc": "2026-10-18T14:58:11.832590+00:00",
   "url": "https://github.com/users/VF78/projects/2",
   "title": "Coinmaster project",
   "items": [
@@ -722,12 +722,12 @@
       "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSfc",
       "isArchived": false,
       "fieldValueByName": {
-        "name": "Done"
+        "name": "In Progress"
       },
       "content": {
         "number": 116,
-        "title": "[R2 SOL-COVER] Native 50% base hedge and optional 75/100% target",
-        "state": "CLOSED",
+        "title": "[R2 SOL] Conditional hedge 2% / 1% / 50% over preserved winner overlay",
+        "state": "OPEN",
         "url": "https://github.com/VF78/coinmaster/issues/116"
       }
     },
@@ -802,12 +802,12 @@
       "id": "PVTI_lAHOBIUvJs4BPJNjzhBmSfc",
       "isArchived": false,
       "fieldValueByName": {
-        "name": "Done"
+        "name": "In Progress"
       },
       "content": {
         "number": 116,
-        "title": "[R2 SOL-COVER] Native 50% base hedge and optional 75/100% target",
-        "state": "CLOSED",
+        "title": "[R2 SOL] Conditional hedge 2% / 1% / 50% over preserved winner overlay",
+        "state": "OPEN",
         "url": "https://github.com/VF78/coinmaster/issues/116"
       }
     },

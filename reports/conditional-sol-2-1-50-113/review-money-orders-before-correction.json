@@ -1,0 +1,52 @@
+{
+  "verdict": "BLOCK",
+  "scope": "Frozen exactdiff money/order review; no source/index edits, test reruns or economic run",
+  "base_commit": "25222687ba11e8f9fde919f36c4f725b95f3a175",
+  "patch_sha256": "0e12114c941943920f11a8b477566fd7b13367a1b15fe736ccc686a886a41c77",
+  "verified_source_hashes": {
+    "runtime/coinmaster/strategy/conditional_hedge.py": "11713eeebecebcdc80e0632ada2e32121b9c8becc37dae5af009a7c2a91612e2",
+    "runtime/coinmaster/strategy/wave_overlay.py": "d6c29931cd4e758a37dda6845a3e7854ae312cb67d10413309ba34001afa032a",
+    "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "runtime/coinmaster/domain/wave_overlay.py": "7e5469100bb2e95f1550eddad0c89cee4af7748fe01c87ea6d535dcb1eafe65b",
+    "runtime/coinmaster/research/native_baseline.py": "068c96210586532bb83aa926707a69be23e43531f45a3c663ad93befacc95900",
+    "runtime/tests/test_native_conditional_hedge.py": "f68dd3740676224cf1a4b354fd32fe3f05a11eadc74d29fb3fdec0733caa5871",
+    "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+    "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+  },
+  "focused_evidence": "20 passed, 116 warnings in 5.30s",
+  "findings": [
+    {
+      "priority": "P1",
+      "title": "CLI disables required original overlay",
+      "files": [
+        "runtime/coinmaster/research/native_baseline.py:717-718",
+        "runtime/coinmaster/strategy/wave_overlay.py:172-173"
+      ],
+      "problem": "Conditional CLI replaces candidate with sol_overlay_enabled=False, but conditional constructor requires True. The economic launch fails before running; original overlay cannot remain enabled.",
+      "minimum_correction": "Exclude conditional from overlay-disable condition; add runner-built config regression proving original overlay enabled and constructor accepted."
+    },
+    {
+      "priority": "P1",
+      "title": "Original half-to-full exit decision index is lost",
+      "files": [
+        "runtime/coinmaster/strategy/conditional_hedge.py:117-126",
+        "runtime/coinmaster/strategy/conditional_hedge.py:243-250",
+        "runtime/coinmaster/strategy/wave_overlay.py:2379-2380",
+        "runtime/coinmaster/domain/wave_overlay.py:464"
+      ],
+      "problem": "Both ownership release and native physical SOL_EXIT can fulfill logical SOL_HALF_EXIT without calling on_half_exit_decision. Wrapper checks physical intent action, so sol_half_decision_index stays None. Original subsequent full z exit is then permanently blocked despite half_done.",
+      "minimum_correction": "Record original logical half completion with applied decision index after release/native/mixed fulfillment, without inventing a fill. Regress causal half then later full domain decisions for all fulfillment routes."
+    },
+    {
+      "priority": "P2",
+      "title": "Later first native fill overwrites assignment-time sigma",
+      "files": [
+        "runtime/coinmaster/domain/wave_overlay.py:530-533",
+        "runtime/coinmaster/domain/wave_overlay.py:597-599"
+      ],
+      "problem": "Transferred original ownership starts first_owned_at/fixed_sigma but leaves first_fill_at None. A later native original add sets first_fill_at and fixed_sigma together, replacing the ownership cycle original decision sigma and altering its z exits.",
+      "minimum_correction": "Record first native fill time separately while preserving existing ownership-cycle fixed_sigma until original flat. Regress transfer under sigma A followed by native add under sigma B."
+    }
+  ],
+  "next_gate": "One consolidated correction pass, one final relevant verification batch, then targeted recheck. Existing20passed do not cover findings."
+}

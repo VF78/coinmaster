@@ -1,0 +1,192 @@
+{
+  "status": "CONTROL_REUSE_AND_REVIEWED_DEFAULT_OFF_COMPATIBILITY_VERIFIED_CANDIDATE_RECEIPT_PENDING",
+  "verified_utc": "2026-10-18T15:00:04.030999+00:00",
+  "canonical_head": "25222687ba11e8f9fde919f36c4f725b95f3a175",
+  "control_artifacts": [
+    {
+      "receipt": "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-receipt.json",
+      "receipt_sha256": "4cb3edf8a90203ea49a0d018f02b1ab6bc15de78db09e900f6eb5e1d10af6cee",
+      "result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "result_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a",
+      "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+      "source_manifest_sha256": "d2ddddb6b15256ec36c95896283b04a2ecbc2b8394af3e7068d22f18e990dae0",
+      "input_hashes": {
+        "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+        "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+      },
+      "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "terminal_total": "6077107.23887483",
+      "native_fees": "945927.73761825",
+      "fills": 621,
+      "liquidation_count": 0,
+      "terminal_open_positions": 0,
+      "ROI_percent": "60671.072388748300",
+      "parents": 105,
+      "planned_equals_filled_BTC_lots": "14864943",
+      "marked_DD_percent": "66.31878024969152066570091116",
+      "minimum_equity": "4530.57414701",
+      "conditional_OHLC_DD_percent": "67.54771031869252420136632742",
+      "full_rows_per_source": 1051200
+    },
+    {
+      "receipt": "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-repeat-receipt.json",
+      "receipt_sha256": "478474a6bcebb3c74eeea52331dae669b259f94732416ba5f2a05b8b48f6fcba",
+      "result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-repeat-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "result_sha256": "40a702986e5e14a8ad98ecbfff632f7b009310a9de5bc707dd028e42eec63ad1",
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-repeat-20261018a",
+      "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+      "source_manifest_sha256": "d2ddddb6b15256ec36c95896283b04a2ecbc2b8394af3e7068d22f18e990dae0",
+      "input_hashes": {
+        "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+        "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+      },
+      "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+      "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+      "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+      "terminal_total": "6077107.23887483",
+      "native_fees": "945927.73761825",
+      "fills": 621,
+      "liquidation_count": 0,
+      "terminal_open_positions": 0,
+      "ROI_percent": "60671.072388748300",
+      "parents": 105,
+      "planned_equals_filled_BTC_lots": "14864943",
+      "marked_DD_percent": "66.31878024969152066570091116",
+      "minimum_equity": "4530.57414701",
+      "conditional_OHLC_DD_percent": "67.54771031869252420136632742",
+      "full_rows_per_source": 1051200
+    }
+  ],
+  "checks": [
+    {
+      "artifact_sha": true,
+      "config_data_policy": true,
+      "economics": true,
+      "source85": true,
+      "source_commit": true,
+      "current_readonly_bind_inputs": true,
+      "own105_Q_filled_cancel0": true
+    },
+    {
+      "artifact_sha": true,
+      "config_data_policy": true,
+      "economics": true,
+      "source85": true,
+      "source_commit": true,
+      "current_readonly_bind_inputs": true,
+      "own105_Q_filled_cancel0": true
+    }
+  ],
+  "exact_economic_repeat": {
+    "path": "reports/btc-split-sol-cover-20261018/final-repeat-verification.json",
+    "sha256": "9284fc17abd03d73de77a69055435c242976f24a5ed75ffe0631c53d68449046",
+    "checks_passed": 26,
+    "risk_scope": "Exact recorded marked/conditional risk structures, extrema and timestamps are compared; raw compressed minute traces are NOT byte/row compared.",
+    "raw_JSON_byte_identity_expected": false
+  },
+  "full_control_parameters": {
+    "path": "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-resolved-parameters.json",
+    "sha256": "e985fb578d5755d07ea399bf2894255d7218bd8959dbc33839049248328cc4fc"
+  },
+  "verification_scope": "Rehashed both1.4MBresultJSONs and85-file frozen source trees; current small input manifest/bootstrapJSON at canonical runtime/var/data exact ReadOnlyBind source from launch-command.json. Bulk parquet and minute traces NOT rescanned; complete dataset provenance/rows reused from receipts. Candidate reviewed defaultOFF compatibility is now separately evidenced in candidate_compatibility_gate; frozen actual candidate receipt/source and economic acceptance remain pending.",
+  "funding": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+  "final_analysis_requirements": {
+    "native": [
+      "TOTAL/ACTIVE/RESERVE/ROI",
+      "all-native-close globalDD/minEq/peak/trough/recovery",
+      "same prior-upper strictly-later-lower conditionalOHLC bound; no exactintraminute claim",
+      "maker/taker actualturnover/fees alsoBTC/SOL",
+      "signedfunding UNKNOWN unless cashdeltas exported; unallocated residual NOTfunding",
+      "liq/flat/rejects/unfinished/fullrows"
+    ],
+    "BTC": [
+      "exactpermission105 dates/side/firstquotes/P0/q0q1 vscontrol; listmissing/extra/delayed",
+      "owncausalacceptedQ=filled+cancelled; normalizedsizing vs absolutecompoundingQ",
+      "TP rights/P0/nativeIOCcatchup integrity"
+    ],
+    "conditional_SOL": [
+      "nativeARM/CONFIRM/TARGET/OFF/TRIM/TRANSFER_TO_ORIGINAL/RELEASE_ORIGINAL joins bycycle/episode; ns/reasons/latency/ACK",
+      "actualremainingBTC/blendedVWAP/marks/beta andfreeze; original/conditional/max target, actual/pendingSOLqty",
+      "cycles/overlap originalbudget; actualshortfallfills andtrim/offcompletion afterBTCdrop/recovery/flat",
+      "actualnativefill beta coverage distribution zero/<45/45..55/<50/>100 andexcursions; target nothardcap",
+      "logicaloriginal/conditionalallocation analytical/nonunique withinoneNETTINGposition, notnativebucketPnL",
+      "BTC losingcompensation/jointloss andwinningBTCdrag; no unreconciledassetuPnL"
+    ],
+    "gates": [
+      "one ownerauthorizedcandidate; no newcontrolrun/trace scan",
+      "exactpatch/eightpins independentreviewGO/defaultOFF compatibility PASS; final candidate frozenreceipt/source/TOTAL/DD/permissions/coverage pending",
+      "pilot unchanged; DPoffBybit notliveDP50ROI/HLfidelity"
+    ]
+  },
+  "candidate_compatibility_gate": {
+    "status": "PASS_FOR_ONE_ISOLATED_NATIVE_RUN_NOT_ECONOMIC_ACCEPTANCE",
+    "verified_utc": "2026-10-18T15:37:34.596617+00:00",
+    "review_path": "reports/conditional-sol-2-1-50-113/review-money-orders.json",
+    "review_sha256": "b5a8eb3f9a74000f12834514d4aa3eb8dc25892a70c91307e2303fd7acf04e57",
+    "correction_evidence_path": "reports/conditional-sol-2-1-50-113/correction-verification-evidence.json",
+    "correction_evidence_sha256": "277681460b92172498eb5c7146c458be0fc979f8aab9d4f7fbc588b38cca5350",
+    "base_commit": "25222687ba11e8f9fde919f36c4f725b95f3a175",
+    "patch_sha256": "d9176243a4a290e86b7f58a9d26a3f9d471fe6d6a9de20998e3ad40ac20a7ff2",
+    "current_exact8_source_pins_verified": {
+      "runtime/coinmaster/strategy/conditional_hedge.py": "5cd7e143232710a0964dac4999ff5b6d7d8ccf9ac1f10f80c6f41385c9cf3e25",
+      "runtime/coinmaster/strategy/wave_overlay.py": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589",
+      "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+      "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+      "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+      "runtime/tests/test_native_conditional_hedge.py": "6217079ad7d4067c533c646c79ffb4e6fd25bbae40f9ce416b92af2aa14ff71a",
+      "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+      "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+    },
+    "defaultOFF": "wave_overlay.py:1700-1701,2568-2569 avoids clock evaluation before enabled check; enabled behavior unchanged",
+    "resolved_findings": [
+      {
+        "original": "P1 runner disables original overlay",
+        "status": "RESOLVED",
+        "evidence": "native_baseline.py:717 no conditional-disable; real production builder regression accepts original overlay,721seed and2source minutes"
+      },
+      {
+        "original": "P1 logical half-to-full decision transition missing",
+        "status": "RESOLVED",
+        "evidence": "conditional_hedge.py:96-107 records applied logical HALF completion; release/native/mixed regressions require no same-cycle full and natural full at later applied index"
+      },
+      {
+        "original": "P2 ownership sigma overwritten",
+        "status": "RESOLVED",
+        "evidence": "domain/wave_overlay.py:530-533 records first native fill time separately; ownership clock/sigma set only once; sigma .02 remains after native add sigma .07"
+      }
+    ],
+    "verification": {
+      "single_full_relevant_batch": "194 passed, 6 failed, 418 warnings in74.39s",
+      "full_batch_log": "final-verification.log",
+      "full_batch_resources": {
+        "MemoryMax": "256MiB",
+        "MemorySwapMax": 0,
+        "CPUWeight": 10,
+        "PrivateNetwork": true,
+        "unit": "cm116-conditional-final-verification-20261018",
+        "cpu_seconds": 72.623,
+        "runtime_seconds": 75.821,
+        "reported_memory_peak": "256.0M",
+        "initial_MemAvailable_bytes": 1497489408
+      },
+      "six_failure_causes": {
+        "three_new_half_fixtures": "Expected stale0, actual applied decision index2 is correct; assertions now derive current applied cycle and require full exit strictly later",
+        "new_runner_fixture": "Omitted existing required7.875 control candidate",
+        "two_existing_terminal_tests": "DefaultOFF hook evaluated abstract clock before returning"
+      },
+      "only_failed_cases_retest": "6 passed, 24 warnings in3.67s",
+      "retest_log": "final-failed-only.log",
+      "retest_unit": "cm116-conditional-failed-only-20261018",
+      "claim": "One full batch plus six failed-only retest; NOT a second full200-pass batch"
+    },
+    "test_log_hashes_verified": {
+      "final-verification.log": "603f0796378059134422a12b3e4c0abf9b2983e6fe037fa59a13f773aa099add",
+      "final-failed-only.log": "5aacbc2cba74eabb7f8b86708acf3ebfc2f4f1ebf0e419f627a42b2ce3f95d90"
+    },
+    "no_new_full_control_run": true,
+    "scope": "Independent exactdiff GO plus current exact8pins/patch/log checks. No new reviewer/native control run or oldtrace/source rehash; one fullbatch194passed6failed then onlysixfailed retest6passed. Not claimed200-pass second fullbatch. Candidate economics/permissions/coverage and actualreceipt remainpending."
+  }
+}

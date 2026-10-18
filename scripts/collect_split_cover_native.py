@@ -75,6 +75,15 @@ def main():
         "disk_free_after":shutil.disk_usage(job).free,"pilot_after":pilot,
         "scope":"RESEARCH_ONLY_NATIVE_ACCOUNTING_DIAGNOSTIC_NO_PRODUCTION_PROMOTION",
     }
+    if result.get("config",{}).get("research_conditional_sol"):
+        audit=result.get("conditional_sol_audit")
+        if not isinstance(audit,list):
+            raise ValueError("CONDITIONAL_NATIVE_AUDIT_MISSING")
+        receipt["conditional_sol_audit"]={"event_count":len(audit),"sha256":hashlib.sha256(json.dumps(audit,sort_keys=True,separators=(",",":")).encode()).hexdigest(),"included_in_result_sha256":True}
+        journal=Path(result["funding_journal"]).resolve()
+        if job not in journal.parents or not journal.is_file():
+            raise ValueError("FRESH_JOB_FUNDING_JOURNAL_REQUIRED")
+        receipt["funding_journal_files"]={str(path):sha(path) for path in sorted(journal.parent.glob(journal.name+"*")) if path.is_file()}
     a.receipt.parent.mkdir(parents=True,exist_ok=True)
     a.receipt.write_text(json.dumps(receipt,indent=2)+"\n")
     print(json.dumps({"receipt":str(a.receipt),"terminal_total":result["terminal_total"],

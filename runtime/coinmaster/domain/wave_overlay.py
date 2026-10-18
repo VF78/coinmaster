@@ -257,6 +257,10 @@ class Episode:
     sol_adds: set[int] = field(default_factory=set)
     sol_add_filled_notional: dict[int, float] = field(default_factory=dict)
     sol_qty: float = 0.0
+    # Ownership transfers are authorization credit, never native fill notional.
+    sol_ownership_transfer_credit: dict[int, float] = field(default_factory=dict)
+    sol_first_owned_at: datetime | None = None
+    sol_half_released_lots: int = 0
     sol_first_fill_at: datetime | None = None
     fixed_sigma: float | None = None
     sol_half_done: bool = False
@@ -430,7 +434,7 @@ class WaveOverlayState:
                 strict_cycle = not self.config.sol_late_entry_after_tp
                 fraction = episode.sol_right_fraction.get(level, 1.0)
                 allowed_notional = episode.h * self.config.sol_size_multipliers_h[level] * fraction
-                remaining_notional = allowed_notional - episode.sol_add_filled_notional.get(level, 0.0)
+                remaining_notional = allowed_notional - episode.sol_add_filled_notional.get(level, 0.0) - episode.sol_ownership_transfer_credit.get(level, 0.0)
                 if remaining_notional > 1e-12 and (not strict_cycle or episode.sol_right_decision_index.get(level) == index) and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
                     episode.attempted_sol_at[level] = index
                     intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=remaining_notional))
@@ -441,19 +445,20 @@ class WaveOverlayState:
     def _sol_exits(self, episode: Episode, feature: Features, bar: DailyBar, index: int, z: float | None = None) -> list[Intent]:
         if getattr(self, "research_sol_cover", False):
             return []  # The sole cover owner retains the permanent base.
-        if episode.sol_qty and episode.sol_first_fill_at is not None and bar.close_time >= episode.sol_first_fill_at + timedelta(days=self.config.sol_max_holding_days):
+        anchor = episode.sol_first_owned_at or episode.sol_first_fill_at
+        if episode.sol_qty and anchor is not None and bar.close_time >= anchor + timedelta(days=self.config.sol_max_holding_days):
             return [self._intent(episode, "SOL_EXIT", episode.side, None, quantity=episode.sol_qty, reason="SOL_HARD_TIMEOUT")]
         if z is None:
             return []
         signed_z = episode.side * z
-        if episode.sol_qty and episode.sol_first_fill_at is not None:
+        if episode.sol_qty and anchor is not None:
             if not episode.sol_half_done and signed_z <= self.config.sol_exit_half_z:
                 if self.sol_lot_step is None:
                     leaves = episode.sol_qty / 2
                 else:
                     if episode.sol_half_target_lots is None:
                         episode.sol_half_target_lots = self._lots(episode.sol_qty, self.sol_lot_step) // 2
-                    leaves = float(Decimal(max(0, episode.sol_half_target_lots - episode.sol_half_filled_lots)) * self.sol_lot_step)
+                    leaves = float(Decimal(max(0, episode.sol_half_target_lots - episode.sol_half_filled_lots - episode.sol_half_released_lots)) * self.sol_lot_step)
                 if leaves > 0:
                     return [self._intent(episode, "SOL_HALF_EXIT", episode.side, None, quantity=leaves, reason="SOL_Z_HALF_EXIT")]
             if episode.sol_half_done and episode.sol_half_decision_index is not None and index > episode.sol_half_decision_index and signed_z <= self.config.sol_exit_all_z:
@@ -523,8 +528,11 @@ class WaveOverlayState:
             if intent.level is not None:
                 episode.sol_add_filled_notional[intent.level] = episode.sol_add_filled_notional.get(intent.level, 0.0) + quantity * price
             if episode.sol_first_fill_at is None:
-                episode.sol_first_fill_at, episode.fixed_sigma = when, sigma
+                episode.sol_first_fill_at = when
+            if episode.sol_first_owned_at is None:
+                episode.sol_first_owned_at, episode.fixed_sigma = when, sigma
             episode.sol_half_done = False
+            episode.sol_half_released_lots = 0
             episode.sol_half_target_lots = None
             episode.sol_half_filled_lots = 0
         elif intent.action == "SOL_HALF_EXIT":
@@ -538,11 +546,12 @@ class WaveOverlayState:
                     episode.sol_half_target_lots,
                     episode.sol_half_filled_lots + self._lots(quantity, self.sol_lot_step),
                 )
-                episode.sol_half_done = episode.sol_half_filled_lots == episode.sol_half_target_lots
+                episode.sol_half_done = episode.sol_half_filled_lots + episode.sol_half_released_lots == episode.sol_half_target_lots
         elif intent.action == "SOL_EXIT":
             episode.sol_qty = max(0.0, episode.sol_qty - quantity)
             if episode.sol_qty == 0:
                 episode.sol_first_fill_at = episode.fixed_sigma = None
+                episode.sol_first_owned_at = None
                 episode.sol_half_done = False
         elif intent.action == "CLOSE_ALL":
             return
@@ -574,6 +583,40 @@ class WaveOverlayState:
             episode.resting_reductions.add(intent.id)
             intents.append(intent)
         return intents
+
+    def on_sol_ownership_transfer(self, intent_id: str, quantity: float, reference_price: float, when: datetime, sigma: float | None) -> None:
+        """Allocate already-native inventory; this is deliberately NOT on_fill."""
+        episode=self.episode
+        if episode is None or intent_id not in episode.pending or quantity<=0:
+            return
+        intent=episode.pending[intent_id]
+        if intent.action!="SOL_ADD" or intent.level is None:
+            raise ValueError("ORIGINAL_TRANSFER_REQUIRES_AUTHORIZED_LEVEL")
+        episode.sol_qty+=quantity
+        episode.sol_ownership_transfer_credit[intent.level]=episode.sol_ownership_transfer_credit.get(intent.level,0)+quantity*reference_price
+        if episode.sol_first_owned_at is None:
+            episode.sol_first_owned_at=when
+            episode.fixed_sigma=sigma
+        episode.sol_half_done=False
+        episode.sol_half_target_lots=None
+        episode.sol_half_filled_lots=0
+        episode.sol_half_released_lots=0
+
+    def on_sol_ownership_release(self, intent_id: str, quantity: float) -> None:
+        """Release original ownership retained by protection, without a venue fill."""
+        episode=self.episode
+        if episode is None or intent_id not in episode.pending or quantity<=0:
+            return
+        intent=episode.pending[intent_id]
+        episode.sol_qty=max(0,episode.sol_qty-quantity)
+        if intent.action=="SOL_HALF_EXIT":
+            if episode.sol_half_target_lots is None or self.sol_lot_step is None:
+                raise ValueError("ORIGINAL_RELEASE_HALF_TARGET_MISSING")
+            episode.sol_half_released_lots+=self._lots(quantity,self.sol_lot_step)
+            episode.sol_half_done=episode.sol_half_filled_lots+episode.sol_half_released_lots==episode.sol_half_target_lots
+        if episode.sol_qty==0:
+            episode.sol_first_owned_at=episode.sol_first_fill_at=episode.fixed_sigma=None
+            episode.sol_half_done=False
 
     def on_parent_cancelled(self, intent_id: str) -> None:
         if self.episode is None:

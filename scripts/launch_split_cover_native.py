@@ -21,6 +21,7 @@ VARIANTS = {
     "btc025": ["--research-btc-split50", "--research-btc-split-discount", "0.0025"],
     "btc025-planref": ["--research-btc-split50", "--research-btc-split-discount", "0.0025", "--research-btc-split-planref-v1"],
     "btc025-planref-tp-ioc": ["--research-btc-split50", "--research-btc-split-discount", "0.0025", "--research-btc-split-planref-v1", "--research-btc-split-tp-ioc"],
+    "conditional-sol-2-1-50": ["--research-btc-split50", "--research-btc-split-discount", "0.0025", "--research-btc-split-planref-v1", "--research-btc-split-tp-ioc", "--research-conditional-sol"],
     "btc050": ["--research-btc-split50", "--research-btc-split-discount", "0.005"],
     "sol50": ["--research-sol-cover", "0.5"],
     "sol75": ["--research-sol-cover", "0.75"],
@@ -80,7 +81,7 @@ def main():
     # Existing public venue metadata are required by the native margin profile.
     files += [REPO/"runtime/pyproject.toml", REPO/"runtime/uv.lock", REPO/"runtime/var/venue-manifest.json"]
     files += [f for f in (REPO/"runtime/var/raw/venues").rglob("*") if f.is_file()]
-    if "--research-sol-cover" in args:
+    if "--research-sol-cover" in args or "--research-conditional-sol" in args:
         pack = REPO/"reports/btc-split-sol-cover-20261018"
         files += [pack/"data-warmup-BTCUSDT-1h.csv",pack/"data-warmup-SOLUSDT-1h.csv",pack/"data-warmup-manifest.json"]
     hashes = {}

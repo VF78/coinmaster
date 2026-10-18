@@ -1,0 +1,60 @@
+{
+  "verdict": "GO_ISOLATED_ECONOMIC_RUN",
+  "scope": "Limited recheck of three original findings plus defaultOFF clock guard and related causal fixtures; no new audit or reviewer tests/runs",
+  "base_commit": "25222687ba11e8f9fde919f36c4f725b95f3a175",
+  "patch_sha256": "d9176243a4a290e86b7f58a9d26a3f9d471fe6d6a9de20998e3ad40ac20a7ff2",
+  "verified_source_hashes": {
+    "runtime/coinmaster/strategy/conditional_hedge.py": "5cd7e143232710a0964dac4999ff5b6d7d8ccf9ac1f10f80c6f41385c9cf3e25",
+    "runtime/coinmaster/strategy/wave_overlay.py": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589",
+    "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+    "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+    "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+    "runtime/tests/test_native_conditional_hedge.py": "6217079ad7d4067c533c646c79ffb4e6fd25bbae40f9ce416b92af2aa14ff71a",
+    "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+    "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+  },
+  "findings": [
+    {
+      "original": "P1 runner disables original overlay",
+      "status": "RESOLVED",
+      "evidence": "native_baseline.py:717 no conditional-disable; real production builder regression accepts original overlay,721seed and2source minutes"
+    },
+    {
+      "original": "P1 logical half-to-full decision transition missing",
+      "status": "RESOLVED",
+      "evidence": "conditional_hedge.py:96-107 records applied logical HALF completion; release/native/mixed regressions require no same-cycle full and natural full at later applied index"
+    },
+    {
+      "original": "P2 ownership sigma overwritten",
+      "status": "RESOLVED",
+      "evidence": "domain/wave_overlay.py:530-533 records first native fill time separately; ownership clock/sigma set only once; sigma .02 remains after native add sigma .07"
+    }
+  ],
+  "default_off_guard": "wave_overlay.py:1700-1701,2568-2569 avoids clock evaluation before enabled check; enabled behavior unchanged",
+  "verification": {
+    "single_full_relevant_batch": "194 passed, 6 failed, 418 warnings in74.39s",
+    "full_batch_log": "final-verification.log",
+    "full_batch_resources": {
+      "MemoryMax": "256MiB",
+      "MemorySwapMax": 0,
+      "CPUWeight": 10,
+      "PrivateNetwork": true,
+      "unit": "cm116-conditional-final-verification-20261018",
+      "cpu_seconds": 72.623,
+      "runtime_seconds": 75.821,
+      "reported_memory_peak": "256.0M",
+      "initial_MemAvailable_bytes": 1497489408
+    },
+    "six_failure_causes": {
+      "three_new_half_fixtures": "Expected stale0, actual applied decision index2 is correct; assertions now derive current applied cycle and require full exit strictly later",
+      "new_runner_fixture": "Omitted existing required7.875 control candidate",
+      "two_existing_terminal_tests": "DefaultOFF hook evaluated abstract clock before returning"
+    },
+    "only_failed_cases_retest": "6 passed, 24 warnings in3.67s",
+    "retest_log": "final-failed-only.log",
+    "retest_unit": "cm116-conditional-failed-only-20261018",
+    "claim": "One full batch plus six failed-only retest; NOT a second full200-pass batch"
+  },
+  "initial_review": "review-money-orders-before-correction.json",
+  "limitations": "Not live/economic approval. One broad batch194pass6fail plus exact6failed-onlypass; not a second full200pass run. Full24m eligibility/fees/funding/coverage/permissions and TOTAL/DD acceptance pending."
+}
