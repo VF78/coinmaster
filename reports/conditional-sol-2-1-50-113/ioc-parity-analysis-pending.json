@@ -1,0 +1,72 @@
+{
+  "status": "PENDING_FINAL_RECEIPT_AND_ACTUAL_IOC_CADENCE_AUDIT",
+  "expected_source_commit": "44f2e00ae117fb961a20423d261de366f4b71fbe",
+  "expected_receipt": "conditional-sol-2-1-50-ioc-parity-receipt.json",
+  "expected_job": "cm115-split-conditional-sol-2-1-50-ioc-parity-20261018a",
+  "helper": "analyze-fixed-comparison.py",
+  "helper_previous_historical_sha256": "62979651155248bde80afd0a19631fd6cd6636596694f903f171fd157400d26c",
+  "helper_sha256": "5d27d710328dd2ed1ad5b8166be1c49bd563de63b6e2e7eb2912ec5a8e0b294b",
+  "outputs": [
+    "ioc-parity-analysis-summary.json",
+    "ioc-parity-analysis-permissions.csv"
+  ],
+  "required_first_final_status": "PENDING_PRESERVATION_REVIEW; nativeTOTAL alone cannot establish acceptedoriginaloverlaypreservation",
+  "proof": {
+    "review_path": "reports/conditional-sol-2-1-50-113/original-ioc-terminal-review.json",
+    "review_sha256": "6e20dcf2739e1be3569fa80ce6cce179dd0b195e28ad98df182a84ed2596d9df",
+    "review_verdict": "GO_ONE_SAME_VARIANT_REPLACEMENT_RUN",
+    "evidence_path": "reports/conditional-sol-2-1-50-113/original-ioc-terminal-correction-evidence.json",
+    "evidence_sha256": "a6fa58dbf68bf0c404b801654f78032733b659379c921eaeffb64784af696ef6",
+    "patch_sha256": "93d068828d4ab15d133fac8dab6ce4fe93860f554f680df7a6d1cbd20dc1f6c6",
+    "current8pins_exact_verified": {
+      "runtime/coinmaster/strategy/conditional_hedge.py": "bd464748c11af7f8a567d79edb7361dbab95a08dcb77bb3652b424f4d08cc3a1",
+      "runtime/coinmaster/strategy/wave_overlay.py": "ddc9f337d67e206c5a96be93d43a27f0a6c61e0123ced52da8e3dfbf4274b3ba",
+      "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+      "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+      "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+      "runtime/tests/test_native_conditional_hedge.py": "0118201657d1f1d40dab5a6a40d210bc31ea035d79ed409e13fb8b5fc170936d",
+      "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+      "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+    },
+    "log_hashes_verified": {
+      "original-ioc-terminal-new-focused.log": "cc56672b6403e24966e6cf5cc8680bc624858df6c2cd42c64b59eecc4754c76b",
+      "original-ioc-terminal-module.log": "e9af1dd45bb87a4d66d2797cc7b21dfdcb188dcd475afebee6d4752ecff0e3c7"
+    },
+    "honest_test_evidence": {
+      "new_focused": "6 passed,42 warnings in3.85s",
+      "conditional_module": "35 passed,212 warnings in6.66s",
+      "new_focused_unit": "cm116-original-ioc-terminal-new-focused-20261018",
+      "module_unit": "cm116-original-ioc-terminal-module-20261018",
+      "resources": "MemoryMax256MiB/Swap0/PrivateNetwork/CPUWeight10",
+      "two_cycle_AB": "OFF/ONunarmedoriginal3505 acrossdailyIOC1000partials/nofreshquoteautobuy; then1752.5half/fullincludingnativepartialexitcompletion;secondcycle1200,nextdaily200,half/full600;realnativeaccountandPaperRuntimejournal",
+      "parity_signature": [
+        "nativeorderquantity/filled/status/type/TIF/reduce-only/init/last",
+        "nativefilltimestamp/instrument/price/qty/notional/commission/currency/order_type/post_only/actualnative_liquidity_side",
+        "allSOLfillsassertTAKER/post_onlyfalse",
+        "actualnativeTOTAL/account/fees",
+        "originalfirstnative/ownedclock/sigma/nativefillednotional/transfercredit/halfstate/decisionindex/pendingbudget"
+      ],
+      "native_cash_conservation": "Initialcash+allactualnativeexecutedorderssignedcashflow-actualnativecommissions equals nativeaccountafterflat. Thisisfixtureverificationarithmeticonly; cachedNETTINGclosedpositionsreuseIDandarenotallhistory/PnLtruth.",
+      "edge_cases": [
+        "activeQcgreaterthanOcontinuesprotective-onlyafteroriginalIOCpartialterminal",
+        "unknownACKblocksreplacement",
+        "olderDenied/Rejected/Expired/actualpartialCanceledcannotreleaseorfillnewerauthorization",
+        "lateactualnativepartialandterminalpreservescash/fees",
+        "existing3flatguard/originalBTCflat/streaming15mOR1h/JSONserializationcasespass"
+      ],
+      "development_fixture_corrections": "Receiptsassertedaftercallbacksfinalized;feeexpectationusesunchangedminiinstactualtaker;NETTINGaccountinvariantusesallnativefillsnotcacheclosedpositionlatestcycle."
+    },
+    "test_count_note": "35conditionalmodulePASS includes6newfocusedPASS; overlapping cases, not41independentcases"
+  },
+  "supersession": "PriorGO/pins do not validate rejectedhistoricalruns. Existingcontrol7/repeat8 evidence remainsvalid. Threehistoricalattempts allretained: unauthorizedepisodecleanup, Oflatcontractabort, originalIOCcadencechanged. Newfinal source terminal-onlyoriginaltaskbinding/release scope reviewed; actual24mpreservation muststillpass engine cadenceaudit.",
+  "actual_postrun_gate": [
+    "Finalreceipt/fullrows/hash/source/policy/data thenstatusPENDING_PRESERVATION_REVIEW",
+    "Engine exact original native IOCterminal-to-retrycadence audit beforestrategyclassification; do not inferfromTOTAL/29or105countalone",
+    "BTCq0/q1/firstquote/P0/date/side andownQnormalized acceptedfilledcancel integrity",
+    "ActualnativeTOTAL/DD/minEq/conditionalOHLC/fees/fundingUNKNOWN; logicalownership/transfers notnativecash"
+  ],
+  "command": "runtime/.venv/bin/python reports/conditional-sol-2-1-50-113/analyze-fixed-comparison.py --receipt reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-ioc-parity-receipt.json --output-prefix ioc-parity-analysis --final-status PENDING_PRESERVATION_REVIEW",
+  "active_run_metrics": "NOT_READ_NOT_INTERPRETED",
+  "coverage": "NOT_REQUESTED_NO_OPTIONAL_COVERAGE_OR_TRACESCAN",
+  "verified_utc": "2026-10-18T17:01:59.031865+00:00"
+}

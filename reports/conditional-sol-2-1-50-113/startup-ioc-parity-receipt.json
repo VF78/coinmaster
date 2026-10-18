@@ -1,0 +1,36 @@
+{
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-ioc-parity-20261018a",
+  "source_commit": "44f2e00ae117fb961a20423d261de366f4b71fbe",
+  "frozen_files_verified": 89,
+  "manifest_sha256": "fd8bffe2ee43eb2b753171b864f0295be7745b7e101c3b586e795d7b8f1e07cd",
+  "reviewed8pins": "MATCH",
+  "only_frozen_delta_vs_rejected_preserved": [
+    "runtime/coinmaster/strategy/conditional_hedge.py",
+    "runtime/coinmaster/strategy/wave_overlay.py"
+  ],
+  "other87files_flags_inputs_identical": true,
+  "variant_config_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-ioc-parity-20261018a/variant.json",
+  "variant": {
+    "variant": "conditional-sol-2-1-50",
+    "flags": [
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1",
+      "--research-btc-split-tp-ioc",
+      "--research-conditional-sol"
+    ],
+    "dp": "OFF",
+    "base_control": "V3_DIRECTION_LONG5.5_SHORT7.875",
+    "snapshot_time": "2026-10-18T17:01:15.054593+00:00"
+  },
+  "resources_before": {
+    "MemAvailable": 1279352832,
+    "disk_free": 3251318784
+  },
+  "unit_startup": "MainPID=3484997\nMemoryCurrent=590290944\nMemoryPeak=612069376\nCPUUsageNSec=177260645000\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\n",
+  "protected_pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+  "status": "ACTIVE_ONE_AUTHORIZED_IOC_PARITY_REPLACEMENT",
+  "historical_attempts": "UNCHANGED",
+  "next_run": "NOT_AUTHORIZED"
+}
