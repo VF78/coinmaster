@@ -1,0 +1,2180 @@
+{
+  "status": "POSTMORTEM_ACTUAL_DATA_COMPLETE_NO_NEW_BACKTEST",
+  "date": "2026-10-19",
+  "source_provenance": {
+    "control": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+      "TOTAL": "6077107.23887483"
+    },
+    "cap50": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018b/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-cap50-btc-direction.json",
+      "sha256": "e8ad6013096e3071b5ca5cb258aac53ebf82d642d98219c8c1018a45547624bf",
+      "TOTAL": "3314315.92576245"
+    },
+    "same_data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "same_policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "cap50_source": "690292973465320f143157f9841bdac50f3042bc",
+    "HEAD_at_authorization": "b5edde3ede06ee87da80746c2fa1fe64ff9cdbe4"
+  },
+  "fee_native_actual": {
+    "by_variant": {
+      "control": {
+        "BTC": "927666.95630420",
+        "SOL": "18260.78131405"
+      },
+      "cap50": {
+        "BTC": "728013.68543557",
+        "SOL": "12535.57853130"
+      }
+    },
+    "savings": {
+      "BTC": "199653.27086863",
+      "SOL": "5725.20278275",
+      "TOTAL": "205378.47365138",
+      "BTC_share_percent": "97.21236472305843790499988145"
+    },
+    "interpretation": "Onlyactualfeesdifference. BTCfeesaving reflects89changedQ/equitytrajectory; notintrinsicallycheapSOLexecution orcounterfactualPnL."
+  },
+  "admission_actual": {
+    "counts": {
+      "admissions": 47,
+      "positive_admitted": 27,
+      "control_larger_actual_quantity_at_matched_submit": 26,
+      "zero_admitted": 20,
+      "same_actual_quantity_at_matched_submit": 21,
+      "neither_has_actual_fill_at_matched_submit": 1,
+      "cap_at_least1000_same_actualIOC1000": 20
+    },
+    "requested_quantity_sum": "2986315.3",
+    "admitted_quantity_sum": "621577.9",
+    "rows": [
+      {
+        "utc": "2024-10-03T00:00:00+00:00",
+        "requested": "810.9",
+        "admitted": "125.2",
+        "blocked": "685.7",
+        "cap": "125.2",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "0.724",
+        "cap_latch_utc": "2024-10-02T00:29:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "810.9",
+        "cap_actual_SOL_ADD_same_submit_qty": "125.2"
+      },
+      {
+        "utc": "2024-10-04T00:00:00+00:00",
+        "requested": "702.5",
+        "admitted": "0",
+        "blocked": "702.5",
+        "cap": "125.2",
+        "prior_original_target": "125.2",
+        "cap_actual_remaining_BTC": "0.724",
+        "cap_latch_utc": "2024-10-02T00:29:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "0",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2024-12-23T03:15:00+00:00",
+        "requested": "3856.5",
+        "admitted": "632.7",
+        "blocked": "3223.8",
+        "cap": "632.7",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "2.921",
+        "cap_latch_utc": "2024-12-23T03:15:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "632.7"
+      },
+      {
+        "utc": "2024-12-23T03:15:00+00:00",
+        "requested": "5784.8",
+        "admitted": "0",
+        "blocked": "5784.8",
+        "cap": "632.7",
+        "prior_original_target": "632.7",
+        "cap_actual_remaining_BTC": "2.921",
+        "cap_latch_utc": "2024-12-23T03:15:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "632.7"
+      },
+      {
+        "utc": "2025-02-07T00:00:00+00:00",
+        "requested": "14499.3",
+        "admitted": "1877.1",
+        "blocked": "12622.2",
+        "cap": "1877.1",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "11.193",
+        "cap_latch_utc": "2025-02-05T00:11:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-03-27T00:17:00+00:00",
+        "requested": "36624.7",
+        "admitted": "8152.3",
+        "blocked": "28472.4",
+        "cap": "8152.3",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "34.851",
+        "cap_latch_utc": "2025-03-27T00:17:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-03-28T00:00:00+00:00",
+        "requested": "35277.1",
+        "admitted": "4947.2",
+        "blocked": "30329.9",
+        "cap": "5947.2",
+        "prior_original_target": "1000.0",
+        "cap_actual_remaining_BTC": "25.447",
+        "cap_latch_utc": "2025-03-27T00:18:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-04-03T00:02:00+00:00",
+        "requested": "46149.4",
+        "admitted": "10972.9",
+        "blocked": "35176.5",
+        "cap": "10972.9",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "39.385",
+        "cap_latch_utc": "2025-04-03T00:02:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-04-04T00:00:00+00:00",
+        "requested": "45141.7",
+        "admitted": "7035.4",
+        "blocked": "38106.3",
+        "cap": "8035.4",
+        "prior_original_target": "1000.0",
+        "cap_actual_remaining_BTC": "28.758",
+        "cap_latch_utc": "2025-04-03T00:04:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-04-05T00:00:00+00:00",
+        "requested": "42099.1",
+        "admitted": "6035.4",
+        "blocked": "36063.7",
+        "cap": "8035.4",
+        "prior_original_target": "2000.0",
+        "cap_actual_remaining_BTC": "28.758",
+        "cap_latch_utc": "2025-04-03T00:04:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-04-06T00:00:00+00:00",
+        "requested": "41953.6",
+        "admitted": "5035.4",
+        "blocked": "36918.2",
+        "cap": "8035.4",
+        "prior_original_target": "3000.0",
+        "cap_actual_remaining_BTC": "28.758",
+        "cap_latch_utc": "2025-04-03T00:04:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-04-11T00:05:00+00:00",
+        "requested": "56558.6",
+        "admitted": "11371.0",
+        "blocked": "45187.6",
+        "cap": "11371.0",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "48.386",
+        "cap_latch_utc": "2025-04-11T00:05:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-05-25T00:44:00+00:00",
+        "requested": "15708.0",
+        "admitted": "2426.7",
+        "blocked": "13281.3",
+        "cap": "2426.7",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "11.672",
+        "cap_latch_utc": "2025-05-25T00:44:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-08-08T00:00:00+00:00",
+        "requested": "17505.2",
+        "admitted": "2872.7",
+        "blocked": "14632.5",
+        "cap": "2872.7",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "12.875",
+        "cap_latch_utc": "2025-08-07T01:56:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-08-09T00:00:00+00:00",
+        "requested": "16370.7",
+        "admitted": "1872.7",
+        "blocked": "14498.0",
+        "cap": "2872.7",
+        "prior_original_target": "1000.0",
+        "cap_actual_remaining_BTC": "12.875",
+        "cap_latch_utc": "2025-08-07T01:56:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-08-10T00:00:00+00:00",
+        "requested": "15099.8",
+        "admitted": "872.7",
+        "blocked": "14227.1",
+        "cap": "2872.7",
+        "prior_original_target": "2000.0",
+        "cap_actual_remaining_BTC": "12.875",
+        "cap_latch_utc": "2025-08-07T01:56:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "872.7"
+      },
+      {
+        "utc": "2025-08-11T00:00:00+00:00",
+        "requested": "14012.9",
+        "admitted": "0",
+        "blocked": "14012.9",
+        "cap": "2872.7",
+        "prior_original_target": "2872.7",
+        "cap_actual_remaining_BTC": "12.875",
+        "cap_latch_utc": "2025-08-07T01:56:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-08-16T04:02:00+00:00",
+        "requested": "16293.9",
+        "admitted": "2403.4",
+        "blocked": "13890.5",
+        "cap": "2403.4",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "13.267",
+        "cap_latch_utc": "2025-08-16T04:02:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-08-17T00:00:00+00:00",
+        "requested": "15101.0",
+        "admitted": "1403.4",
+        "blocked": "13697.6",
+        "cap": "2403.4",
+        "prior_original_target": "1000.0",
+        "cap_actual_remaining_BTC": "13.267",
+        "cap_latch_utc": "2025-08-16T04:02:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-08-18T00:00:00+00:00",
+        "requested": "13997.6",
+        "admitted": "403.4",
+        "blocked": "13594.2",
+        "cap": "2403.4",
+        "prior_original_target": "2000.0",
+        "cap_actual_remaining_BTC": "13.267",
+        "cap_latch_utc": "2025-08-16T04:02:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "403.4"
+      },
+      {
+        "utc": "2025-08-23T01:37:00+00:00",
+        "requested": "18234.6",
+        "admitted": "2595.6",
+        "blocked": "15639.0",
+        "cap": "2595.6",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "16.016",
+        "cap_latch_utc": "2025-08-23T01:37:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-08-23T01:37:00+00:00",
+        "requested": "27352.0",
+        "admitted": "0",
+        "blocked": "27352.0",
+        "cap": "2595.6",
+        "prior_original_target": "2595.6",
+        "cap_actual_remaining_BTC": "16.016",
+        "cap_latch_utc": "2025-08-23T01:37:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-09-12T00:00:00+00:00",
+        "requested": "14876.3",
+        "admitted": "2315.3",
+        "blocked": "12561.0",
+        "cap": "2315.3",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-09-13T00:00:00+00:00",
+        "requested": "13104.2",
+        "admitted": "1315.3",
+        "blocked": "11788.9",
+        "cap": "2315.3",
+        "prior_original_target": "1000.0",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-09-13T00:00:00+00:00",
+        "requested": "21072.9",
+        "admitted": "0",
+        "blocked": "21072.9",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2025-09-14T00:00:00+00:00",
+        "requested": "12093.7",
+        "admitted": "315.3",
+        "blocked": "11778.4",
+        "cap": "2315.3",
+        "prior_original_target": "2000.0",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "315.3"
+      },
+      {
+        "utc": "2025-09-14T00:00:00+00:00",
+        "requested": "21054.6",
+        "admitted": "0",
+        "blocked": "21054.6",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "315.3"
+      },
+      {
+        "utc": "2025-09-15T00:00:00+00:00",
+        "requested": "11911.1",
+        "admitted": "0",
+        "blocked": "11911.1",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-15T00:00:00+00:00",
+        "requested": "21291.9",
+        "admitted": "0",
+        "blocked": "21291.9",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-16T00:00:00+00:00",
+        "requested": "12181.6",
+        "admitted": "0",
+        "blocked": "12181.6",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-16T00:00:00+00:00",
+        "requested": "21775.4",
+        "admitted": "0",
+        "blocked": "21775.4",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-17T00:00:00+00:00",
+        "requested": "12049.4",
+        "admitted": "0",
+        "blocked": "12049.4",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-17T00:00:00+00:00",
+        "requested": "21539.1",
+        "admitted": "0",
+        "blocked": "21539.1",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-18T00:00:00+00:00",
+        "requested": "11661.5",
+        "admitted": "0",
+        "blocked": "11661.5",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-18T00:00:00+00:00",
+        "requested": "20845.5",
+        "admitted": "0",
+        "blocked": "20845.5",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-19T00:00:00+00:00",
+        "requested": "11534.7",
+        "admitted": "0",
+        "blocked": "11534.7",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-19T00:00:00+00:00",
+        "requested": "20618.9",
+        "admitted": "0",
+        "blocked": "20618.9",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-20T00:00:00+00:00",
+        "requested": "11968.6",
+        "admitted": "0",
+        "blocked": "11968.6",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-20T00:00:00+00:00",
+        "requested": "21394.6",
+        "admitted": "0",
+        "blocked": "21394.6",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "2000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-21T00:00:00+00:00",
+        "requested": "11923.1",
+        "admitted": "0",
+        "blocked": "11923.1",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2025-09-22T00:00:00+00:00",
+        "requested": "12088.7",
+        "admitted": "0",
+        "blocked": "12088.7",
+        "cap": "2315.3",
+        "prior_original_target": "2315.3",
+        "cap_actual_remaining_BTC": "15.881",
+        "cap_latch_utc": "2025-09-12T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "0"
+      },
+      {
+        "utc": "2026-05-20T00:00:00+00:00",
+        "requested": "355956.3",
+        "admitted": "95087.3",
+        "blocked": "260869.0",
+        "cap": "95087.3",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "222.822",
+        "cap_latch_utc": "2026-05-19T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2026-05-21T00:00:00+00:00",
+        "requested": "348351.1",
+        "admitted": "94087.3",
+        "blocked": "254263.8",
+        "cap": "95087.3",
+        "prior_original_target": "1000.0",
+        "cap_actual_remaining_BTC": "222.822",
+        "cap_latch_utc": "2026-05-19T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2026-05-22T00:00:00+00:00",
+        "requested": "343642.6",
+        "admitted": "93087.3",
+        "blocked": "250555.3",
+        "cap": "95087.3",
+        "prior_original_target": "2000.0",
+        "cap_actual_remaining_BTC": "222.822",
+        "cap_latch_utc": "2026-05-19T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2026-05-23T00:00:00+00:00",
+        "requested": "355660.9",
+        "admitted": "92087.3",
+        "blocked": "263573.6",
+        "cap": "95087.3",
+        "prior_original_target": "3000.0",
+        "cap_actual_remaining_BTC": "222.822",
+        "cap_latch_utc": "2026-05-19T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2026-07-20T00:00:00+00:00",
+        "requested": "393030.2",
+        "admitted": "86623.8",
+        "blocked": "306406.4",
+        "cap": "86623.8",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "244.965",
+        "cap_latch_utc": "2026-07-19T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      },
+      {
+        "utc": "2026-07-21T00:00:00+00:00",
+        "requested": "385554.5",
+        "admitted": "85623.8",
+        "blocked": "299930.7",
+        "cap": "86623.8",
+        "prior_original_target": "1000.0",
+        "cap_actual_remaining_BTC": "244.965",
+        "cap_latch_utc": "2026-07-19T00:00:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "1000"
+      }
+    ],
+    "semantics": "Requested/admitted budgets NOT actualfills. Actualfillscomparedonlysamephysicalsubmitns; nativeIOCquote1000canmakepositivecapclippingeconomicallyinvisibleatthatquote. No equitynormalizedcounterfactualTOTAL.",
+    "counts_by_zero_positive": {
+      "zero": {
+        "admissions": 20,
+        "actual_control_larger": 19,
+        "actual_equal": 1
+      },
+      "positive": {
+        "admissions": 27,
+        "actual_control_larger": 7,
+        "actual_equal": 20
+      }
+    }
+  },
+  "suppressed_profitable_control_examples": [
+    {
+      "admission": {
+        "utc": "2024-10-03T00:00:00+00:00",
+        "requested": "810.9",
+        "admitted": "125.2",
+        "blocked": "685.7",
+        "cap": "125.2",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "0.724",
+        "cap_latch_utc": "2024-10-02T00:29:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "810.9",
+        "cap_actual_SOL_ADD_same_submit_qty": "125.2"
+      },
+      "control_cycle_side": "BUY",
+      "control_existing_cycle_net_diagnostic": "2330.71675605",
+      "native_control_entry_exit_fills": [
+        {
+          "fill_ns": "1727913600000000000",
+          "action": "SOL_ADD",
+          "reason": "SOL_ADD",
+          "qty": "810.9",
+          "px": "140.09",
+          "commission": "62.47943955"
+        },
+        {
+          "fill_ns": "1728086400000000000",
+          "action": "FORCED_CLOSE",
+          "reason": "REGIME",
+          "qty": "810.9",
+          "px": "143.12",
+          "commission": "63.8308044"
+        }
+      ],
+      "actual_cap_add_same_submit": [
+        {
+          "fill_ns": "1727913600000000000",
+          "action": "SOL_ADD",
+          "reason": "CONDITIONAL_NET_ADD",
+          "qty": "125.2",
+          "px": "140.09",
+          "commission": "9.6465974"
+        }
+      ],
+      "limit": "Control closedcycle outcome is existing weightedfill diagnostic, NOT native settledassetPnL; selected retrospectively only to illustrate suppressed profitable entries, never as online selection or counterfactualTOTAL."
+    },
+    {
+      "admission": {
+        "utc": "2024-12-23T03:15:00+00:00",
+        "requested": "3856.5",
+        "admitted": "632.7",
+        "blocked": "3223.8",
+        "cap": "632.7",
+        "prior_original_target": "0.0",
+        "cap_actual_remaining_BTC": "2.921",
+        "cap_latch_utc": "2024-12-23T03:15:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "632.7"
+      },
+      "control_cycle_side": "BUY",
+      "control_existing_cycle_net_diagnostic": "21068.3755",
+      "native_control_entry_exit_fills": [
+        {
+          "fill_ns": "1734923700000000000",
+          "action": "SOL_ADD",
+          "reason": "SOL_ADD",
+          "qty": "1000",
+          "px": "182.5",
+          "commission": "100.375"
+        },
+        {
+          "fill_ns": "1734998400000000000",
+          "action": "SOL_ADD",
+          "reason": "SOL_ADD",
+          "qty": "1000",
+          "px": "190.05",
+          "commission": "104.5275"
+        },
+        {
+          "fill_ns": "1735084800000000000",
+          "action": "FORCED_CLOSE",
+          "reason": "REGIME",
+          "qty": "1000",
+          "px": "197.02",
+          "commission": "108.361"
+        },
+        {
+          "fill_ns": "1735084800000000000",
+          "action": "FORCED_CLOSE",
+          "reason": "REGIME",
+          "qty": "1000",
+          "px": "197.02",
+          "commission": "108.361"
+        }
+      ],
+      "actual_cap_add_same_submit": [
+        {
+          "fill_ns": "1734923700000000000",
+          "action": "SOL_ADD",
+          "reason": "CONDITIONAL_NET_ADD",
+          "qty": "632.7",
+          "px": "182.5",
+          "commission": "63.5072625"
+        }
+      ],
+      "limit": "Control closedcycle outcome is existing weightedfill diagnostic, NOT native settledassetPnL; selected retrospectively only to illustrate suppressed profitable entries, never as online selection or counterfactualTOTAL."
+    },
+    {
+      "admission": {
+        "utc": "2025-08-18T00:00:00+00:00",
+        "requested": "13997.6",
+        "admitted": "403.4",
+        "blocked": "13594.2",
+        "cap": "2403.4",
+        "prior_original_target": "2000.0",
+        "cap_actual_remaining_BTC": "13.267",
+        "cap_latch_utc": "2025-08-16T04:02:00+00:00",
+        "control_actual_SOL_ADD_same_submit_qty": "1000",
+        "cap_actual_SOL_ADD_same_submit_qty": "403.4"
+      },
+      "control_cycle_side": "SELL",
+      "control_existing_cycle_net_diagnostic": "18706.233000000000000000000",
+      "native_control_entry_exit_fills": [
+        {
+          "fill_ns": "1755316920000000000",
+          "action": "SOL_ADD",
+          "reason": "SOL_ADD",
+          "qty": "1000",
+          "px": "187.15",
+          "commission": "102.9325"
+        },
+        {
+          "fill_ns": "1755388800000000000",
+          "action": "SOL_ADD",
+          "reason": "SOL_ADD",
+          "qty": "1000",
+          "px": "189.54",
+          "commission": "104.247"
+        },
+        {
+          "fill_ns": "1755475200000000000",
+          "action": "SOL_ADD",
+          "reason": "SOL_ADD",
+          "qty": "1000",
+          "px": "190.94",
+          "commission": "105.017"
+        },
+        {
+          "fill_ns": "1755561600000000000",
+          "action": "FORCED_CLOSE",
+          "reason": "REGIME",
+          "qty": "1000",
+          "px": "182.77",
+          "commission": "100.5235"
+        },
+        {
+          "fill_ns": "1755561600000000000",
+          "action": "FORCED_CLOSE",
+          "reason": "REGIME",
+          "qty": "1000",
+          "px": "182.77",
+          "commission": "100.5235"
+        },
+        {
+          "fill_ns": "1755561600000000000",
+          "action": "FORCED_CLOSE",
+          "reason": "REGIME",
+          "qty": "1000",
+          "px": "182.77",
+          "commission": "100.5235"
+        }
+      ],
+      "actual_cap_add_same_submit": [
+        {
+          "fill_ns": "1755475200000000000",
+          "action": "SOL_ADD",
+          "reason": "CONDITIONAL_NET_ADD",
+          "qty": "403.4",
+          "px": "190.94",
+          "commission": "42.3638578"
+        }
+      ],
+      "limit": "Control closedcycle outcome is existing weightedfill diagnostic, NOT native settledassetPnL; selected retrospectively only to illustrate suppressed profitable entries, never as online selection or counterfactualTOTAL."
+    }
+  ],
+  "native_asset_PnL_export_limit": {
+    "realized_unrealized_control": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY",
+    "realized_unrealized_cap": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY",
+    "positions_report_exported": false,
+    "native_close_asset_unrealized_PnL": "Notserialized inobserver. Native low/high perasset endpoints preserved; exactnativeaggregate=exportedequity-cash; soleasset attributableonlywhenonepositionexists. No pricebasedPnLinterpolation/newledger/fundingassignment.",
+    "existing_control_cycle_diagnostic_source": "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-sol-fill-attribution.csv",
+    "cycle_diagnostic_source_sha256": "5eeaec9dc6e27ca1085a2df84b56ea6b860d733043becb5b5cc559952debaad7"
+  },
+  "all_global_HWM_excursions_strictly_above50": {
+    "control": [
+      {
+        "DD_percent": "66.31878024969152066570091116",
+        "native_equity_loss": "8920.76217809",
+        "native_cash_drop": "2407.89057809",
+        "native_aggregate_uPnL_deterioration": "6512.87160000",
+        "peak": {
+          "utc": "2024-09-11T14:00:00+00:00",
+          "ns": 1726063200000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "13451.3363251",
+          "native_cash": "12059.4913251",
+          "native_aggregate_close_uPnL": "1391.8450000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "0.950",
+              "native_avg_open": "57196.50000000001",
+              "mark_close": "55731.4",
+              "marked_notional": "52944.8300",
+              "native_PnL_low_endpoint": "1419.11",
+              "native_PnL_high_endpoint": "1281.645",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "1391.8450000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "trough": {
+          "utc": "2024-10-03T15:44:00+00:00",
+          "ns": 1727970240000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "4530.57414701",
+          "native_cash": "9651.60074701",
+          "native_aggregate_close_uPnL": "-5121.02660000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "0.724",
+              "native_avg_open": "60887.25",
+              "mark_close": "60209.94",
+              "marked_notional": "43591.99656",
+              "native_PnL_low_endpoint": "530.0042",
+              "native_PnL_high_endpoint": "475.849"
+            },
+            {
+              "asset": "SOL",
+              "native_side_code": "2",
+              "quantity": "810.9",
+              "native_avg_open": "140.09",
+              "mark_close": "133.166",
+              "marked_notional": "107984.3094",
+              "native_PnL_low_endpoint": "-5619.537",
+              "native_PnL_high_endpoint": "-5165.433"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "UNKNOWN_NOT_EXPORTED"
+        },
+        "recovery": {
+          "utc": "2024-10-11T02:53:00+00:00",
+          "ns": 1728615180000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "13453.62745342",
+          "native_cash": "11795.25145342",
+          "native_aggregate_close_uPnL": "1658.37600000",
+          "assets": [
+            {
+              "asset": "SOL",
+              "native_side_code": "2",
+              "quantity": "891.6",
+              "native_avg_open": "138.97",
+              "mark_close": "140.829",
+              "marked_notional": "125563.1364",
+              "native_PnL_low_endpoint": "1569.216",
+              "native_PnL_high_endpoint": "1756.452",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "1658.37600000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_peak": {
+          "utc": "2024-09-11T14:00:00+00:00",
+          "ns": 1726063200000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "13451.3363251",
+          "native_cash": "12059.4913251",
+          "native_aggregate_close_uPnL": "1391.8450000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "0.950",
+              "native_avg_open": "57196.50000000001",
+              "mark_close": "55731.4",
+              "marked_notional": "52944.8300",
+              "native_PnL_low_endpoint": "1419.11",
+              "native_PnL_high_endpoint": "1281.645",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "1391.8450000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_trough": {
+          "utc": "2024-10-03T15:44:00+00:00",
+          "ns": 1727970240000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "9325.09631383",
+          "native_cash": "9701.07891383",
+          "native_aggregate_close_uPnL": "-375.98260000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "0.724",
+              "native_avg_open": "60887.25",
+              "mark_close": "60209.94",
+              "marked_notional": "43591.99656",
+              "native_PnL_low_endpoint": "530.0042",
+              "native_PnL_high_endpoint": "475.849"
+            },
+            {
+              "asset": "SOL",
+              "native_side_code": "2",
+              "quantity": "125.2",
+              "native_avg_open": "140.09",
+              "mark_close": "133.166",
+              "marked_notional": "16672.3832",
+              "native_PnL_low_endpoint": "-867.636",
+              "native_PnL_high_endpoint": "-797.524"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "UNKNOWN_NOT_EXPORTED"
+        },
+        "matched_other_recovery": {
+          "utc": "2024-10-11T02:53:00+00:00",
+          "ns": 1728615180000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "11087.02166247",
+          "native_cash": "9720.47966247",
+          "native_aggregate_close_uPnL": "1366.54200000",
+          "assets": [
+            {
+              "asset": "SOL",
+              "native_side_code": "2",
+              "quantity": "734.7",
+              "native_avg_open": "138.97",
+              "mark_close": "140.829",
+              "marked_notional": "103467.0663",
+              "native_PnL_low_endpoint": "1293.072",
+              "native_PnL_high_endpoint": "1447.359",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "1366.54200000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "active_BTC_parent_at_trough": {
+          "control": {
+            "start_ns": 1727827260000000000,
+            "UTC": "2024-10-02T00:01:00+00:00",
+            "Q": "0.724",
+            "reference_Q": "1.258",
+            "reference_wire_price": "60790",
+            "parent_cap": "30000000.0",
+            "reference_notional": "76473.820",
+            "accepted_q1_notional": "44027.3088"
+          },
+          "cap50": {
+            "start_ns": 1727827260000000000,
+            "UTC": "2024-10-02T00:01:00+00:00",
+            "Q": "0.724",
+            "reference_Q": "1.258",
+            "reference_wire_price": "60790",
+            "parent_cap": "30000000.0",
+            "reference_notional": "76473.820",
+            "accepted_q1_notional": "44027.3088"
+          }
+        },
+        "limit": "Nativecash includes realizedtrades/fees/fundingunallocated. No assetrealizedPnL assignment. Asset low/high endpoints NOT exact close/intraminute path. Matchedother snapshots are sameUTC/observerphase, notitsownDD peak/trough."
+      },
+      {
+        "DD_percent": "59.84272354367395947974450388",
+        "native_equity_loss": "547666.08219643",
+        "native_cash_drop": "407279.98224643",
+        "native_aggregate_uPnL_deterioration": "140386.09995000",
+        "peak": {
+          "utc": "2025-04-11T01:00:00+00:00",
+          "ns": 1744333200000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "915175.73025689",
+          "native_cash": "888095.16810689",
+          "native_aggregate_close_uPnL": "27080.56215000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "50.603",
+              "native_avg_open": "79549.65000000001",
+              "mark_close": "79005.6",
+              "marked_notional": "3997920.3768",
+              "native_PnL_low_endpoint": "31168.91785",
+              "native_PnL_high_endpoint": "24777.75895"
+            },
+            {
+              "asset": "SOL",
+              "native_side_code": "2",
+              "quantity": "1000.0",
+              "native_avg_open": "112.65",
+              "mark_close": "112.2",
+              "marked_notional": "112200.00",
+              "native_PnL_low_endpoint": "-550",
+              "native_PnL_high_endpoint": "-390"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "UNKNOWN_NOT_EXPORTED"
+        },
+        "trough": {
+          "utc": "2025-06-06T15:17:00+00:00",
+          "ns": 1749223020000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "367509.64806046",
+          "native_cash": "480815.18586046",
+          "native_aggregate_close_uPnL": "-113305.53780000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "29.484",
+              "native_avg_open": "101382.65",
+              "mark_close": "105225.64",
+              "marked_notional": "3102472.76976",
+              "native_PnL_low_endpoint": "-111144.3606",
+              "native_PnL_high_endpoint": "-115319.295",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-113305.53780000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "recovery": {
+          "utc": "2025-08-24T19:38:00+00:00",
+          "ns": 1756064280000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "930699.83942448",
+          "native_cash": "724306.32472448",
+          "native_aggregate_close_uPnL": "206393.51470000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "49.562",
+              "native_avg_open": "115254.15",
+              "mark_close": "111089.81",
+              "marked_notional": "5505833.16322",
+              "native_PnL_low_endpoint": "229722.3481",
+              "native_PnL_high_endpoint": "132803.8571",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "206393.51470000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_peak": {
+          "utc": "2025-04-11T01:00:00+00:00",
+          "ns": 1744333200000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "638786.67994546",
+          "native_cash": "620015.39344546",
+          "native_aggregate_close_uPnL": "18771.28650000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "35.330",
+              "native_avg_open": "79549.65000000001",
+              "mark_close": "79005.6",
+              "marked_notional": "2791267.8480",
+              "native_PnL_low_endpoint": "21761.5135",
+              "native_PnL_high_endpoint": "17299.3345"
+            },
+            {
+              "asset": "SOL",
+              "native_side_code": "2",
+              "quantity": "1000.0",
+              "native_avg_open": "112.65",
+              "mark_close": "112.2",
+              "marked_notional": "112200.00",
+              "native_PnL_low_endpoint": "-550",
+              "native_PnL_high_endpoint": "-390"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "UNKNOWN_NOT_EXPORTED"
+        },
+        "matched_other_trough": {
+          "utc": "2025-06-06T15:17:00+00:00",
+          "ns": 1749223020000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "268186.26913348",
+          "native_cash": "350871.23027823",
+          "native_aggregate_close_uPnL": "-82684.96114475",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "21.516",
+              "native_avg_open": "101382.64772519308",
+              "mark_close": "105225.64",
+              "marked_notional": "2264034.87024",
+              "native_PnL_low_endpoint": "-81107.83834475",
+              "native_PnL_high_endpoint": "-84154.50394475",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-82684.96114475"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_recovery": {
+          "utc": "2025-08-24T19:38:00+00:00",
+          "ns": 1756064280000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "720935.38771501",
+          "native_cash": "561061.93301501",
+          "native_aggregate_close_uPnL": "159873.45470000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "38.391",
+              "native_avg_open": "115254.14723502906",
+              "mark_close": "111089.81",
+              "marked_notional": "4264848.89571",
+              "native_PnL_low_endpoint": "177944.0984",
+              "native_PnL_high_endpoint": "102870.4979",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "159873.45470000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "active_BTC_parent_at_trough": {
+          "control": {
+            "start_ns": 1749168060000000000,
+            "UTC": "2025-06-06T00:01:00+00:00",
+            "Q": "37.440",
+            "reference_Q": "37.44",
+            "reference_wire_price": "101455.2",
+            "parent_cap": "30000000.0",
+            "reference_notional": "3798482.688",
+            "accepted_q1_notional": "3798093.3120"
+          },
+          "cap50": {
+            "start_ns": 1749168060000000000,
+            "UTC": "2025-06-06T00:01:00+00:00",
+            "Q": "27.321",
+            "reference_Q": "27.321",
+            "reference_wire_price": "101455.2",
+            "parent_cap": "30000000.0",
+            "reference_notional": "2771857.5192",
+            "accepted_q1_notional": "2771573.3808"
+          }
+        },
+        "limit": "Nativecash includes realizedtrades/fees/fundingunallocated. No assetrealizedPnL assignment. Asset low/high endpoints NOT exact close/intraminute path. Matchedother snapshots are sameUTC/observerphase, notitsownDD peak/trough."
+      },
+      {
+        "DD_percent": "55.10055575073671291811943329",
+        "native_equity_loss": "1150759.43834313",
+        "native_cash_drop": "-12589.11625687",
+        "native_aggregate_uPnL_deterioration": "1163348.55460000",
+        "peak": {
+          "utc": "2025-10-22T21:29:00+00:00",
+          "ns": 1761168540000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "2088471.56378771",
+          "native_cash": "1863339.47958771",
+          "native_aggregate_close_uPnL": "225132.08420000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "135.859",
+              "native_avg_open": "108337.90099588543",
+              "mark_close": "106680.8",
+              "marked_notional": "14493546.8072",
+              "native_PnL_low_endpoint": "225227.1855",
+              "native_PnL_high_endpoint": "211994.5189",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "225132.08420000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "trough": {
+          "utc": "2025-11-28T14:28:00+00:00",
+          "ns": 1764340080000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "937712.12544458",
+          "native_cash": "1875928.59584458",
+          "native_aggregate_close_uPnL": "-938216.47040000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "169.664",
+              "native_avg_open": "87414.85",
+              "mark_close": "92944.7",
+              "marked_notional": "15769369.5808",
+              "native_PnL_low_endpoint": "-910612.1376",
+              "native_PnL_high_endpoint": "-938216.4704",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-938216.47040000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "recovery": {
+          "utc": "2025-12-01T04:10:00+00:00",
+          "ns": 1764562200000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "2089614.53857348",
+          "native_cash": "1876626.83617348",
+          "native_aggregate_close_uPnL": "212987.70240000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "169.664",
+              "native_avg_open": "87414.85",
+              "mark_close": "86159.5",
+              "marked_notional": "14618165.4080",
+              "native_PnL_low_endpoint": "212987.7024",
+              "native_PnL_high_endpoint": "196479.3952",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "212987.70240000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_peak": {
+          "utc": "2025-10-22T21:29:00+00:00",
+          "ns": 1761168540000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "1168825.85795357",
+          "native_cash": "1042829.91655357",
+          "native_aggregate_close_uPnL": "125995.94140000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "76.034",
+              "native_avg_open": "108337.9",
+              "mark_close": "106680.8",
+              "marked_notional": "8111367.9472",
+              "native_PnL_low_endpoint": "126049.1652",
+              "native_PnL_high_endpoint": "118643.4536",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "125995.94140000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_trough": {
+          "utc": "2025-11-28T14:28:00+00:00",
+          "ns": 1764340080000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "524793.50280286",
+          "native_cash": "1049869.24070286",
+          "native_aggregate_close_uPnL": "-525075.73790000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "94.953",
+              "native_avg_open": "87414.85114951606",
+              "mark_close": "92944.7",
+              "marked_notional": "8825378.0991",
+              "native_PnL_low_endpoint": "-509626.8848",
+              "native_PnL_high_endpoint": "-525075.7379",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-525075.73790000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_recovery": {
+          "utc": "2025-12-01T04:10:00+00:00",
+          "ns": 1764562200000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "1169459.37083513",
+          "native_cash": "1050260.01313513",
+          "native_aggregate_close_uPnL": "119199.35770000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "94.953",
+              "native_avg_open": "87414.85114951606",
+              "mark_close": "86159.5",
+              "marked_notional": "8181103.0035",
+              "native_PnL_low_endpoint": "119199.3577",
+              "native_PnL_high_endpoint": "109960.4308",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "119199.35770000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "active_BTC_parent_at_trough": {
+          "control": {
+            "start_ns": 1764115260000000000,
+            "UTC": "2025-11-26T00:01:00+00:00",
+            "Q": "169.664",
+            "reference_Q": "169.664",
+            "reference_wire_price": "87315.5",
+            "parent_cap": "30000000.0",
+            "reference_notional": "14814296.9920",
+            "accepted_q1_notional": "14812634.2848"
+          },
+          "cap50": {
+            "start_ns": 1764115260000000000,
+            "UTC": "2025-11-26T00:01:00+00:00",
+            "Q": "94.953",
+            "reference_Q": "94.953",
+            "reference_wire_price": "87315.5",
+            "parent_cap": "30000000.0",
+            "reference_notional": "8290868.6715",
+            "accepted_q1_notional": "8289938.1321"
+          }
+        },
+        "limit": "Nativecash includes realizedtrades/fees/fundingunallocated. No assetrealizedPnL assignment. Asset low/high endpoints NOT exact close/intraminute path. Matchedother snapshots are sameUTC/observerphase, notitsownDD peak/trough."
+      }
+    ],
+    "cap50": [
+      {
+        "DD_percent": "58.01630222527841238544091842",
+        "native_equity_loss": "370600.41081198",
+        "native_cash_drop": "269144.16316723",
+        "native_aggregate_uPnL_deterioration": "101456.24764475",
+        "peak": {
+          "utc": "2025-04-11T01:00:00+00:00",
+          "ns": 1744333200000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "638786.67994546",
+          "native_cash": "620015.39344546",
+          "native_aggregate_close_uPnL": "18771.28650000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "35.330",
+              "native_avg_open": "79549.65000000001",
+              "mark_close": "79005.6",
+              "marked_notional": "2791267.8480",
+              "native_PnL_low_endpoint": "21761.5135",
+              "native_PnL_high_endpoint": "17299.3345"
+            },
+            {
+              "asset": "SOL",
+              "native_side_code": "2",
+              "quantity": "1000.0",
+              "native_avg_open": "112.65",
+              "mark_close": "112.2",
+              "marked_notional": "112200.00",
+              "native_PnL_low_endpoint": "-550",
+              "native_PnL_high_endpoint": "-390"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "UNKNOWN_NOT_EXPORTED"
+        },
+        "trough": {
+          "utc": "2025-06-06T15:17:00+00:00",
+          "ns": 1749223020000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "268186.26913348",
+          "native_cash": "350871.23027823",
+          "native_aggregate_close_uPnL": "-82684.96114475",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "21.516",
+              "native_avg_open": "101382.64772519308",
+              "mark_close": "105225.64",
+              "marked_notional": "2264034.87024",
+              "native_PnL_low_endpoint": "-81107.83834475",
+              "native_PnL_high_endpoint": "-84154.50394475",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-82684.96114475"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "recovery": {
+          "utc": "2025-08-24T19:37:00+00:00",
+          "ns": 1756064220000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "664228.04161501",
+          "native_cash": "561061.93301501",
+          "native_aggregate_close_uPnL": "103166.10860000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "38.391",
+              "native_avg_open": "115254.14723502906",
+              "mark_close": "112566.9",
+              "marked_notional": "4321555.8579",
+              "native_PnL_low_endpoint": "103166.1086",
+              "native_PnL_high_endpoint": "72810.3449",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "103166.10860000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_peak": {
+          "utc": "2025-04-11T01:00:00+00:00",
+          "ns": 1744333200000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "915175.73025689",
+          "native_cash": "888095.16810689",
+          "native_aggregate_close_uPnL": "27080.56215000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "50.603",
+              "native_avg_open": "79549.65000000001",
+              "mark_close": "79005.6",
+              "marked_notional": "3997920.3768",
+              "native_PnL_low_endpoint": "31168.91785",
+              "native_PnL_high_endpoint": "24777.75895"
+            },
+            {
+              "asset": "SOL",
+              "native_side_code": "2",
+              "quantity": "1000.0",
+              "native_avg_open": "112.65",
+              "mark_close": "112.2",
+              "marked_notional": "112200.00",
+              "native_PnL_low_endpoint": "-550",
+              "native_PnL_high_endpoint": "-390"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "UNKNOWN_NOT_EXPORTED"
+        },
+        "matched_other_trough": {
+          "utc": "2025-06-06T15:17:00+00:00",
+          "ns": 1749223020000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "367509.64806046",
+          "native_cash": "480815.18586046",
+          "native_aggregate_close_uPnL": "-113305.53780000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "29.484",
+              "native_avg_open": "101382.65",
+              "mark_close": "105225.64",
+              "marked_notional": "3102472.76976",
+              "native_PnL_low_endpoint": "-111144.3606",
+              "native_PnL_high_endpoint": "-115319.295",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-113305.53780000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_recovery": {
+          "utc": "2025-08-24T19:37:00+00:00",
+          "ns": 1756064220000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "857491.80922448",
+          "native_cash": "724306.32472448",
+          "native_aggregate_close_uPnL": "133185.48450000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "49.562",
+              "native_avg_open": "115254.15",
+              "mark_close": "112566.9",
+              "marked_notional": "5579040.6978",
+              "native_PnL_low_endpoint": "133185.4845",
+              "native_PnL_high_endpoint": "93996.8111",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "133185.48450000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "active_BTC_parent_at_trough": {
+          "control": {
+            "start_ns": 1749168060000000000,
+            "UTC": "2025-06-06T00:01:00+00:00",
+            "Q": "37.440",
+            "reference_Q": "37.44",
+            "reference_wire_price": "101455.2",
+            "parent_cap": "30000000.0",
+            "reference_notional": "3798482.688",
+            "accepted_q1_notional": "3798093.3120"
+          },
+          "cap50": {
+            "start_ns": 1749168060000000000,
+            "UTC": "2025-06-06T00:01:00+00:00",
+            "Q": "27.321",
+            "reference_Q": "27.321",
+            "reference_wire_price": "101455.2",
+            "parent_cap": "30000000.0",
+            "reference_notional": "2771857.5192",
+            "accepted_q1_notional": "2771573.3808"
+          }
+        },
+        "limit": "Nativecash includes realizedtrades/fees/fundingunallocated. No assetrealizedPnL assignment. Asset low/high endpoints NOT exact close/intraminute path. Matchedother snapshots are sameUTC/observerphase, notitsownDD peak/trough."
+      },
+      {
+        "DD_percent": "55.10079630496105089800241363",
+        "native_equity_loss": "644032.35515071",
+        "native_cash_drop": "-7039.32414929",
+        "native_aggregate_uPnL_deterioration": "651071.67930000",
+        "peak": {
+          "utc": "2025-10-22T21:29:00+00:00",
+          "ns": 1761168540000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "1168825.85795357",
+          "native_cash": "1042829.91655357",
+          "native_aggregate_close_uPnL": "125995.94140000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "76.034",
+              "native_avg_open": "108337.9",
+              "mark_close": "106680.8",
+              "marked_notional": "8111367.9472",
+              "native_PnL_low_endpoint": "126049.1652",
+              "native_PnL_high_endpoint": "118643.4536",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "125995.94140000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "trough": {
+          "utc": "2025-11-28T14:28:00+00:00",
+          "ns": 1764340080000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "524793.50280286",
+          "native_cash": "1049869.24070286",
+          "native_aggregate_close_uPnL": "-525075.73790000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "94.953",
+              "native_avg_open": "87414.85114951606",
+              "mark_close": "92944.7",
+              "marked_notional": "8825378.0991",
+              "native_PnL_low_endpoint": "-509626.8848",
+              "native_PnL_high_endpoint": "-525075.7379",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-525075.73790000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "recovery": {
+          "utc": "2025-12-01T04:10:00+00:00",
+          "ns": 1764562200000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "1169459.37083513",
+          "native_cash": "1050260.01313513",
+          "native_aggregate_close_uPnL": "119199.35770000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "94.953",
+              "native_avg_open": "87414.85114951606",
+              "mark_close": "86159.5",
+              "marked_notional": "8181103.0035",
+              "native_PnL_low_endpoint": "119199.3577",
+              "native_PnL_high_endpoint": "109960.4308",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "119199.35770000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_peak": {
+          "utc": "2025-10-22T21:29:00+00:00",
+          "ns": 1761168540000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "2088471.56378771",
+          "native_cash": "1863339.47958771",
+          "native_aggregate_close_uPnL": "225132.08420000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "135.859",
+              "native_avg_open": "108337.90099588543",
+              "mark_close": "106680.8",
+              "marked_notional": "14493546.8072",
+              "native_PnL_low_endpoint": "225227.1855",
+              "native_PnL_high_endpoint": "211994.5189",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "225132.08420000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_trough": {
+          "utc": "2025-11-28T14:28:00+00:00",
+          "ns": 1764340080000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "937712.12544458",
+          "native_cash": "1875928.59584458",
+          "native_aggregate_close_uPnL": "-938216.47040000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "169.664",
+              "native_avg_open": "87414.85",
+              "mark_close": "92944.7",
+              "marked_notional": "15769369.5808",
+              "native_PnL_low_endpoint": "-910612.1376",
+              "native_PnL_high_endpoint": "-938216.4704",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-938216.47040000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_recovery": {
+          "utc": "2025-12-01T04:10:00+00:00",
+          "ns": 1764562200000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "2089614.53857348",
+          "native_cash": "1876626.83617348",
+          "native_aggregate_close_uPnL": "212987.70240000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "169.664",
+              "native_avg_open": "87414.85",
+              "mark_close": "86159.5",
+              "marked_notional": "14618165.4080",
+              "native_PnL_low_endpoint": "212987.7024",
+              "native_PnL_high_endpoint": "196479.3952",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "212987.70240000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "active_BTC_parent_at_trough": {
+          "control": {
+            "start_ns": 1764115260000000000,
+            "UTC": "2025-11-26T00:01:00+00:00",
+            "Q": "169.664",
+            "reference_Q": "169.664",
+            "reference_wire_price": "87315.5",
+            "parent_cap": "30000000.0",
+            "reference_notional": "14814296.9920",
+            "accepted_q1_notional": "14812634.2848"
+          },
+          "cap50": {
+            "start_ns": 1764115260000000000,
+            "UTC": "2025-11-26T00:01:00+00:00",
+            "Q": "94.953",
+            "reference_Q": "94.953",
+            "reference_wire_price": "87315.5",
+            "parent_cap": "30000000.0",
+            "reference_notional": "8290868.6715",
+            "accepted_q1_notional": "8289938.1321"
+          }
+        },
+        "limit": "Nativecash includes realizedtrades/fees/fundingunallocated. No assetrealizedPnL assignment. Asset low/high endpoints NOT exact close/intraminute path. Matchedother snapshots are sameUTC/observerphase, notitsownDD peak/trough."
+      },
+      {
+        "DD_percent": "54.08227962899182782743958654",
+        "native_equity_loss": "3529314.06576940",
+        "native_cash_drop": "3000879.15091940",
+        "native_aggregate_uPnL_deterioration": "528434.91485000",
+        "peak": {
+          "utc": "2026-07-06T13:39:00+00:00",
+          "ns": 1783345140000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "6525823.41199509",
+          "native_cash": "6170940.51474509",
+          "native_aggregate_close_uPnL": "354882.89725000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "275.755",
+              "native_avg_open": "62653.649999999994",
+              "mark_close": "61366.7",
+              "marked_notional": "16922174.3585",
+              "native_PnL_low_endpoint": "377274.20325",
+              "native_PnL_high_endpoint": "330561.30625",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "354882.89725000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "trough": {
+          "utc": "2026-08-11T12:14:00+00:00",
+          "ns": 1786450440000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "2996509.34622569",
+          "native_cash": "3170061.36382569",
+          "native_aggregate_close_uPnL": "-173552.01760000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "391.456",
+              "native_avg_open": "64002.25",
+              "mark_close": "64445.6",
+              "marked_notional": "25227616.7936",
+              "native_PnL_low_endpoint": "-163804.7632",
+              "native_PnL_high_endpoint": "-173552.0176",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-173552.01760000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "recovery": null,
+        "matched_other_peak": {
+          "utc": "2026-07-06T13:39:00+00:00",
+          "ns": 1783345140000000000,
+          "phase": "post_quote_paired_close",
+          "native_equity": "9361910.09938506",
+          "native_cash": "9007027.20213506",
+          "native_aggregate_close_uPnL": "354882.89725000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "275.755",
+              "native_avg_open": "62653.649999999994",
+              "mark_close": "61366.7",
+              "marked_notional": "16922174.3585",
+              "native_PnL_low_endpoint": "377274.20325",
+              "native_PnL_high_endpoint": "330561.30625",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "354882.89725000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_trough": {
+          "utc": "2026-08-11T12:14:00+00:00",
+          "ns": 1786450440000000000,
+          "phase": "pre_quote_paired_close",
+          "native_equity": "5598028.25098893",
+          "native_cash": "5806020.94668893",
+          "native_aggregate_close_uPnL": "-207992.69570000",
+          "assets": [
+            {
+              "asset": "BTC",
+              "native_side_code": "3",
+              "quantity": "469.139",
+              "native_avg_open": "64002.25017041858",
+              "mark_close": "64445.6",
+              "marked_notional": "30233944.3384",
+              "native_PnL_low_endpoint": "-196311.1346",
+              "native_PnL_high_endpoint": "-207992.6957",
+              "sole_asset_native_close_uPnL_from_exported_aggregate": "-207992.69570000"
+            }
+          ],
+          "aggregate_within_exported_native_PnL_endpoint_range": true,
+          "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+        },
+        "matched_other_recovery": null,
+        "active_BTC_parent_at_trough": {
+          "control": {
+            "start_ns": 1786406460000000000,
+            "UTC": "2026-08-11T00:01:00+00:00",
+            "Q": "469.139",
+            "reference_Q": "469.139",
+            "reference_wire_price": "63946.8",
+            "parent_cap": "30000000.0",
+            "reference_notional": "29999937.8052",
+            "accepted_q1_notional": "29988443.8997"
+          },
+          "cap50": {
+            "start_ns": 1786406460000000000,
+            "UTC": "2026-08-11T00:01:00+00:00",
+            "Q": "391.456",
+            "reference_Q": "391.456",
+            "reference_wire_price": "63946.8",
+            "parent_cap": "30000000.0",
+            "reference_notional": "25032358.5408",
+            "accepted_q1_notional": "25022767.8688"
+          }
+        },
+        "limit": "Nativecash includes realizedtrades/fees/fundingunallocated. No assetrealizedPnL assignment. Asset low/high endpoints NOT exact close/intraminute path. Matchedother snapshots are sameUTC/observerphase, notitsownDD peak/trough."
+      }
+    ]
+  },
+  "matched_month_boundaries": [
+    {
+      "control": {
+        "utc": "2024-10-01T00:00:00+00:00",
+        "ns": 1727740800000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "9715.41746022",
+        "native_cash": "9715.41746022",
+        "native_aggregate_close_uPnL": "0E-8",
+        "assets": [],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      },
+      "cap50": {
+        "utc": "2024-10-01T00:00:00+00:00",
+        "ns": 1727740800000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "9715.41746022",
+        "native_cash": "9715.41746022",
+        "native_aggregate_close_uPnL": "0E-8",
+        "assets": [],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      }
+    },
+    {
+      "control": {
+        "utc": "2025-01-01T00:00:00+00:00",
+        "ns": 1735689600000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "118744.23171154",
+        "native_cash": "107534.23171154",
+        "native_aggregate_close_uPnL": "11210.00000000",
+        "assets": [
+          {
+            "asset": "SOL",
+            "native_side_code": "2",
+            "quantity": "7000.0",
+            "native_avg_open": "187.61857142857144",
+            "mark_close": "189.22",
+            "marked_notional": "1324540.000",
+            "native_PnL_low_endpoint": "11070",
+            "native_PnL_high_endpoint": "13380",
+            "sole_asset_native_close_uPnL_from_exported_aggregate": "11210.00000000"
+          }
+        ],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      },
+      "cap50": {
+        "utc": "2025-01-01T00:00:00+00:00",
+        "ns": 1735689600000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "89331.58413173",
+        "native_cash": "87345.47313173",
+        "native_aggregate_close_uPnL": "1986.11100000",
+        "assets": [
+          {
+            "asset": "SOL",
+            "native_side_code": "2",
+            "quantity": "4608.9",
+            "native_avg_open": "188.78907049404413",
+            "mark_close": "189.22",
+            "marked_notional": "872096.058",
+            "native_PnL_low_endpoint": "1893.933",
+            "native_PnL_high_endpoint": "3414.87",
+            "sole_asset_native_close_uPnL_from_exported_aggregate": "1986.11100000"
+          }
+        ],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      }
+    },
+    {
+      "control": {
+        "utc": "2025-07-01T00:00:00+00:00",
+        "ns": 1751328000000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "551390.87300964",
+        "native_cash": "521540.36763363",
+        "native_aggregate_close_uPnL": "29850.50537601",
+        "assets": [
+          {
+            "asset": "BTC",
+            "native_side_code": "2",
+            "quantity": "15.421",
+            "native_avg_open": "105148.3950926651",
+            "mark_close": "107084.12",
+            "marked_notional": "1651344.21452",
+            "native_PnL_low_endpoint": "29357.03337601",
+            "native_PnL_high_endpoint": "30343.97737601",
+            "sole_asset_native_close_uPnL_from_exported_aggregate": "29850.50537601"
+          }
+        ],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      },
+      "cap50": {
+        "utc": "2025-07-01T00:00:00+00:00",
+        "ns": 1751328000000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "408831.44141031",
+        "native_cash": "386698.64761031",
+        "native_aggregate_close_uPnL": "22132.79380000",
+        "assets": [
+          {
+            "asset": "BTC",
+            "native_side_code": "2",
+            "quantity": "11.434",
+            "native_avg_open": "105148.4",
+            "mark_close": "107084.12",
+            "marked_notional": "1224399.82808",
+            "native_PnL_low_endpoint": "21766.9058",
+            "native_PnL_high_endpoint": "22498.6818",
+            "sole_asset_native_close_uPnL_from_exported_aggregate": "22132.79380000"
+          }
+        ],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      }
+    },
+    {
+      "control": {
+        "utc": "2026-01-01T00:00:00+00:00",
+        "ns": 1767225600000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "2236365.45841725",
+        "native_cash": "2236365.45841725",
+        "native_aggregate_close_uPnL": "0E-8",
+        "assets": [],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      },
+      "cap50": {
+        "utc": "2026-01-01T00:00:00+00:00",
+        "ns": 1767225600000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "1251589.60591399",
+        "native_cash": "1251589.60591399",
+        "native_aggregate_close_uPnL": "0E-8",
+        "assets": [],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      }
+    },
+    {
+      "control": {
+        "utc": "2026-07-01T00:00:00+00:00",
+        "ns": 1782864000000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "8986291.50529802",
+        "native_cash": "8986291.50529802",
+        "native_aggregate_close_uPnL": "0E-8",
+        "assets": [],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      },
+      "cap50": {
+        "utc": "2026-07-01T00:00:00+00:00",
+        "ns": 1782864000000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "6150204.81790805",
+        "native_cash": "6150204.81790805",
+        "native_aggregate_close_uPnL": "0E-8",
+        "assets": [],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      }
+    },
+    {
+      "control": {
+        "utc": "2026-08-01T00:00:00+00:00",
+        "ns": 1785542400000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "6464812.36782378",
+        "native_cash": "6464812.36782378",
+        "native_aggregate_close_uPnL": "0E-8",
+        "assets": [],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      },
+      "cap50": {
+        "utc": "2026-08-01T00:00:00+00:00",
+        "ns": 1785542400000000000,
+        "phase": "post_quote_paired_close",
+        "native_equity": "3747251.27239981",
+        "native_cash": "3747251.27239981",
+        "native_aggregate_close_uPnL": "0E-8",
+        "assets": [],
+        "aggregate_within_exported_native_PnL_endpoint_range": true,
+        "per_asset_close_PnL": "SOLE_ASSET_EQUALS_NATIVE_AGGREGATE"
+      }
+    }
+  ],
+  "trace_scan_proof": {
+    "control": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/minute-native-risk.csv.gz",
+      "sha256": "f9b59944ac969f5441babdf2103637f7cd179c6d18971c7bf95c0e2c46e38a0b",
+      "compressed_bytes": 75715744,
+      "full_streaming_passes": 1,
+      "samples_including_initial_seed": 3153599,
+      "max_nativeDD": "66.31878024969152066570091116",
+      "minimum_native_equity": "4530.57414701",
+      "matches_collector_compact_summary": true
+    },
+    "cap50": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-risk-first-cap50-20261018b/result/minute-native-risk.csv.gz",
+      "sha256": "9893b7163dc05f0d6b90a1a1638e117a687b2a4fefe19d2ea80077aec2423de8",
+      "compressed_bytes": 75622433,
+      "full_streaming_passes": 1,
+      "samples_including_initial_seed": 3153599,
+      "max_nativeDD": "58.01630222527841238544091842",
+      "minimum_native_equity": "6999.90832336",
+      "matches_collector_compact_summary": true
+    }
+  },
+  "trace_counts": {
+    "included_rows_per_trace": 3153598,
+    "raw_rows_per_trace": 3153600
+  },
+  "trace_phases": {
+    "pre_quote_paired_close": 1051200,
+    "post_btc_quote_paired_close": 1051199,
+    "post_quote_paired_close": 1051199,
+    "post_boundary_post_btc_quote_paired_close": 1,
+    "post_boundary_post_quote_paired_close": 1
+  },
+  "elapsed_stream_seconds": 128.11,
+  "peak_RSS_KiB": 28912,
+  "runtime_policy_facts": {
+    "cap_formula": "floor_lot(0.5*actualBTCqty*BTCmark/frozen720hBeta/SOLmark)",
+    "cap_latches_on_BTC_qty_change_only": 280,
+    "CAP_ADMISSION": 47,
+    "protective_auto_adds": 0,
+    "historical_ORIGINAL_RISK_RETIRE": 0,
+    "ordinary_TRIM_not_risk_cap_trims": 14,
+    "BTCflat_disables_cap_and_preserves_original": true,
+    "lawful_original_native_adds_BTCflat": 54,
+    "price_only_drift_not_rebalanced": true
+  },
+  "causal_limits": [
+    "Cannot splitTOTALdelta causally intoSOLallocation andBTCcompounding withoutcounterfactualrun, notperformed.",
+    "Same105BTCcalendar/q0/q1/P0 doesnotmean same89changedQ orsamecashpath.",
+    "No standaloneguaranteedhedge:caponlyreducesSOLadmission, noautomaticprotection; BTCflatcapNone leavesoriginalSOLtailrisk.",
+    "NativePnLendpointbounds notexactperassetclosePnL; accountcash realized/fundingnotattributed.",
+    "ONEsavedobserverstreamingpasspervariant; noengine/test/optimizer/runtime/pilot/deploy actions; no secondPnL."
+  ],
+  "next_hypotheses": [
+    {
+      "id": "A",
+      "priority": 1,
+      "name": "Native SOL leg-loss guard; healthy original overlay unchanged",
+      "status": "UNTESTED_OWNER_PROPOSAL_NOT_OPTIMAL",
+      "measured_motivation": "InitialcontroltroughBTCprofitable/SOLdeepnegative; capremovedprofitablelaterSOLallocation. Guardlossratherthanallentries can preservehealthyoverlay, prospectivelyunproven.",
+      "trigger_sizing": "FreezeE_SOL atfirstactualSOLfillperBTCepisode; ifnativeSOLleguPnL<=−20%E_SOL, cancelauthorizedpendingSOLorders, awaitnativeACK/terminal andnativeIOCcloseactualSOL. NativeBTCorders/management/sizingunchanged; globalHWMneverreset.",
+      "exit_restart_hysteresis": "Afterguardclose lockoriginalANDprotectiveSOLuntilNEWlawfulBTCepisode; nofreshSOLsignals/recovery/zero-PnLexitcanreopenwithinsameepisode. A-lockoverridesB incombinedcase. Reusenativeorder/closuresemantics, nofakeflat. 20% isstartinghypothesis; delayedexecution/fees/gapscanovershoot, noDD50guarantee."
+    },
+    {
+      "id": "B",
+      "priority": 2,
+      "name": "Tail-only additional protective SOL",
+      "status": "UNTESTED_OWNER_PROPOSAL_NOT_OPTIMAL",
+      "measured_motivation": "AllthreecaptroughsBTC-only/nativeBTCuPnLnegative. Unlikecap, actuallyaddsprotectionwhenoriginalSOLzero; unlikeold2%/1%trigger usesnativeglobalDD/accounttail.",
+      "trigger_sizing": "ArmwhenpersistentglobalnativeDD>=30% ANDnativeBTCuPnL<0 ANDactualBTCqty>0; positivecausal720hbeta frozenatactivation. TotalSOLtarget=max(existinglawfulsame-directionoriginalSOLtarget, floorlot(50%*actualremainingBTCnotional/beta/SOLmark)); addonlyshortfall, noSUMdoubling. RecomputetargetonactualBTCQchange, noper-minutepricechurn.",
+      "exit_restart_hysteresis": "Exit ONLYprotectiveexcess whennativeglobalDD<=20% ORactualBTCflat/directionchange/mandatoryexit. ActualBTCquantityreductionsresizecoverage. NativeBTCuPnL<0 isENTRYconditionONLY, neverexit/rearmfromtinyzerooscillations. AfterDD20exit re-armonlyfreshupcross30%withnegativeBTCuPnL, orNEWlawfulBTCepisodealreadyDD>=30%andnegativeBTCuPnL. Originalauthority/lateaddsunchanged; A20%stoplockdominatesB. NoSOLprofit-only/zeroexitcondition. 30/20/50 areuntestedstartersnotoptimal.",
+      "limitation": "HoldingprotectiveSOLwhileBTCrebounds maycostROI; thisisexplicituntestedtradeoffforlesszero-PnLchurn, notassumedbetter. Cannotundoalreadyrealizedcashloss; currentnegativeBTCentrycondition mayactivateafterpriorlosses. ExistingSOLjointloss/betamismatch/IOC1000liquidity andfastBTCreductions canleaveovershoot/unprotectedtime. NoDD50guarantee."
+    },
+    {
+      "id": "D",
+      "priority": 3,
+      "name": "Independent BTCflat original-SOL authority guard",
+      "status": "ALTERNATIVE_UNTESTED_SEPARATE_APPROVAL_REQUIRED",
+      "measured_motivation": "54lawfuloriginalSOLaddsBTCflatremainuncapped; knowinglypreservesprofitableDec23/24baselinebehaviorbutleavesSOL-onlyrisk.",
+      "trigger_sizing": "OnactualBTCflat freezeEflat; blockneworiginalSOLaddsuntilnewBTCepisode, closeexistingSOLonlyonnativelegloss>=5%Eflat oroppositeclosed1Hpreviousbarbreak. Explicitoriginalpolicychange, notautomaticBTCepisodecleanup.",
+      "exit_restart_hysteresis": "NoSOLbreakevenwait; nativeACK/actualcloseonly. RetirementlockeduntilnewlawfulBTCepisode. IndependentfromA/B; sacrificesknownprofitablelateadds, so lowerpriorityunlessAinsufficient."
+    },
+    {
+      "id": "C",
+      "priority": "ONLY_AFTER_A_AND_B_SEPARATE_EFFECTS_AND_NEW_APPROVAL",
+      "name": "Combined A+B",
+      "status": "NOT_AUTHORIZED_TO_RUN",
+      "rule": "Combineonlyafterindependentresults; A-lockoverridesB/noSOLreopeninsamelosingepisode; retainallBTCwinnersemantics/globalHWM. NotnewoptimizerorassumedadditivePnL."
+    }
+  ],
+  "measured_postmortem": {
+    "TOTAL_delta": "-2762791.31311238",
+    "TOTAL_delta_percent": "-45.46227677930376459240650438",
+    "markedDD_reduction_percentage_points": "8.30247802441310828025999274",
+    "BTC_permissions": "105 calendar/side/q0/q1/firstquote/P0 preserved per frozen analysis;89 accepted absolute quantities changed with equity. Not105 identical economic positions.",
+    "first_trough": "2024-10-03 15:44UTC: control equity4530.57414701 versus cap9325.09631383, identical shortBTC0.724 atnativeavg60887.25/mark60209.94; longSOL810.9 versus125.2 atavg140.09/mark133.166. NativeBTC PnL endpoints positive475.849..530.0042; SOL negative control−5619.537..−5165.433 versus cap−867.636..−797.524. This demonstrates SOL risk reduction at this snapshot, not settledassetPnL or TOTALcounterfactual.",
+    "remaining_tail": "All3 cap global-HWM excursions>50 have BTC-only troughs, SOLflat. Jun6 nativeBTC uPnL−82684.96114475; Nov28−525075.7379; Aug11 2026−173552.0176. This is endpoint attribution only, not claim entire excursion allBTC: realizedaccountcash also changes.",
+    "2026_same_Q_hypothesis": "PARTIALLY_SUPPORTED_ONLY: Jul6 peak identicalBTC275.755/nativeuPnL354882.89725 but cap equity6525823.41199509 vscontrol9361910.09938506. Aug11 trough actualBTC cap391.456 vscontrol469.139, so NOTsameQ and NOTboth30mcap: reference notional25032358.5408 vs29999937.8052. Same-calendar control peak→trough loss40.2042084194% versus cap54.082280%, despite smaller cap dollar loss. Exact matched-window fraction below; notglobalcontrolDD atthatdate.",
+    "fee_saving": "BTC199653.27086863 oftotal205378.47365138 (97.2123647%); directSOL5725.20278275 (2.7876353%). Allocation/equitypath affectedBTCturnover; no exact causalTOTALsplit authorized or possible fromtwoobservedpaths.",
+    "missed_profitable_allocation_examples": "ActualcontrolOct3 buy810.9@140.09 vs cap125.2, nativeREGIMEexitOct5@143.12. Dec23 control1000@182.5 vs cap632.7; Dec24 control additional1000@190.05, REGIMEexitDec25@197.02. Aug18 controlshort1000@190.94 vs cap403.4, REGIMEcoverAug19@182.77. These retrospectivelyselected examples show clipping canremoveprofitable exposure; cannot sumtheir dollars intoTOTALloss or anonlineoracle.",
+    "why_not_guaranteed_hedge": "47admissionclips are a throttle, not protective buy/sell program;20positiveclips stillfillednativeIOC1000unchanged. Zero protectiveautoadds and zero historicalheldriskretire. BTCflat disablescap, retainingoriginalSOL/54lawfulnativeadds. BTC-onlytails therefore lack addedprotectiveSOL, while profitableoverlayopportunitycanbereduced.",
+    "funding": "SignedfundingUNKNOWN; cashchange notassignedtofunding. No newfundingproof or inventedfee/PnLallocation.",
+    "native_asset_realized_PnL": "UNKNOWN_NOT_EXPORTED: rawrealized_unrealized explicitlyUNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY; no nativepositionsreport. Existingcycle diagnostic is weightedconfirmedfills, notnativeaccountsettledPnL.",
+    "2026_matched_window_control_loss_percent": "40.20420841942673385909166931",
+    "excursion_definition": "All nonoverlapping nativeglobal-HWM episodes whose own maximum drawdown strictlyexceeds50%, includingunrecoveredlast. Not every thresholdrecrosswithinoneepisode. Exactly3each; seed/native1mcallbackphases matchcollector3153599samples."
+  },
+  "conclusion": "Cap50 materially reduces initialSOLdrawdown but is neither a standalone protectivehedge nor sufficientforDD<=50. FinalTOTALgap combines removedSOLopportunity and changedBTCcompounding; no dollarcausaldecomposition. First testselection should distinguish SOL-ownedrisk fromBTC-ownedtails, withBTCwinnerunchanged and explicitoriginalauthorityapproval. No newrun isauthorized bythispostmortem.",
+  "reference_artifact_hashes": {
+    "reports/sol-risk-first-20261018/analysis-cap50-summary.json": "702bc4f58ceb9413153a53e1435245975512379476c9a05384608262be2cd7b8",
+    "reports/sol-risk-first-20261018/analysis-control-provenance.json": "cfff6e87d37925c240d934b670f415683f7dd87f02926db103d1586c0eee31d1",
+    "reports/sol-risk-first-20261018/risk-first-cap50-receipt.json": "f274c70889d01311905024168d0e4351d2507187ea2147ea54e5c72ad5eecb2c",
+    "reports/sol-risk-first-20261018/risk-first-cap50-technical-witness.json": "7ab0edf9341677c4a07a749ac233fd2d10e5b8a5440a7b4a57db6fa9318c115c",
+    "reports/sol-risk-first-20261018/risk-first-cap50-resolved-parameters.json": "4e9a19e6aedfc9756103c37214a9f67a7bedd92fdd9cd8c65855bc6808be9517"
+  },
+  "tail_guard_assessment": {
+    "2025-06-06T15:17:00+00:00": {
+      "equity_loss": "370600.41081198",
+      "native_cash_drop": "269144.16316723",
+      "aggregate_uPnL_deterioration": "101456.24764475",
+      "cash_drop_share_of_equity_loss_percent": "72.62381673499474349615254925",
+      "BTC_only_trough": true,
+      "BTC_native_close_uPnL": "-82684.96114475",
+      "interpretation": "Cashpartisnativeaccountrealizedtrades/fees/fundingunallocated, NOTprovedBTCcashPnL. Bcannotrepairalreadyrealizedcashloss; historicalBtrigger/ROIrequiresnewapprovednativecomparison, notestimatedhere."
+    },
+    "2025-11-28T14:28:00+00:00": {
+      "equity_loss": "644032.35515071",
+      "native_cash_drop": "-7039.32414929",
+      "aggregate_uPnL_deterioration": "651071.67930000",
+      "cash_drop_share_of_equity_loss_percent": "-1.093007842384367145769022781",
+      "BTC_only_trough": true,
+      "BTC_native_close_uPnL": "-525075.73790000",
+      "interpretation": "Cashpartisnativeaccountrealizedtrades/fees/fundingunallocated, NOTprovedBTCcashPnL. Bcannotrepairalreadyrealizedcashloss; historicalBtrigger/ROIrequiresnewapprovednativecomparison, notestimatedhere."
+    },
+    "2026-08-11T12:14:00+00:00": {
+      "equity_loss": "3529314.06576940",
+      "native_cash_drop": "3000879.15091940",
+      "aggregate_uPnL_deterioration": "528434.91485000",
+      "cash_drop_share_of_equity_loss_percent": "85.02726294677887327342411929",
+      "BTC_only_trough": true,
+      "BTC_native_close_uPnL": "-173552.01760000",
+      "interpretation": "Cashpartisnativeaccountrealizedtrades/fees/fundingunallocated, NOTprovedBTCcashPnL. Bcannotrepairalreadyrealizedcashloss; historicalBtrigger/ROIrequiresnewapprovednativecomparison, notestimatedhere."
+    }
+  },
+  "recommendation": "ProposeAandBindependentfromexact6077107control, thenConlyafterseparateeffectsandNEWownerapproval; notthreeauthorizedruns. A20%SOLlegstoplocksoriginalANDprotectiveSOLuntilnewlawfulBTCepisodeanddominatesB. B30/20DDwith50%protectivecoverageusesnegativeBTCuPnLonlyforENTRY, exitsprotectiveexcessonlyDD<=20/BTCflat/directionchange/mandatoryexit, resizesonactualBTCQreductions; DD20exitrequiresfresh30upcrossornewlawfulBTCepisodeforrearm. HoldingprotectionthroughBTCreboundmaycostROI; thresholdsarepredeclaredhypothesesnotstatisticaloptima/guarantees. AaddressesdemonstratedSOLlosswithoutblanketcappinghealthyentries; BaddressesremainingBTC-onlytailsbutcannotreversepriorcashdamage. Dremainslowerpriorityseparateoriginalauthorityproposal, notprimarythree-runplan. Noimplementation/runapprovedbythisartifact."
+}
