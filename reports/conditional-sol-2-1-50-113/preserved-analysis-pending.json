@@ -1,0 +1,59 @@
+{
+  "status": "PENDING_FINAL_PRESERVED_RECEIPT_NO_ACTIVE_RUN_READ",
+  "expected_source_commit": "07339b7f8f9360ec4ddce8ac2b46da75e4697c63",
+  "expected_receipt": "conditional-sol-2-1-50-preserved-receipt.json",
+  "expected_job": "cm115-split-conditional-sol-2-1-50-preserved-20261018a",
+  "helper": "analyze-fixed-comparison.py",
+  "helper_previous_aborted_fixed_sha256": "9a233b144c4e6ace257172c2c9004a403e3be266bd8543581cc61cebfcd6fe2b",
+  "helper_sha256": "f335e1c89a5bf45d43fa87c63b954ea747c2470d350e38ffac798053ca7e9602",
+  "outputs": [
+    "preserved-analysis-summary.json",
+    "preserved-analysis-permissions.csv"
+  ],
+  "proof": {
+    "review_path": "reports/conditional-sol-2-1-50-113/original-overlay-preservation-review.json",
+    "review_sha256": "407c69501b8a00f6699137c4a580c2e4d63b01ee202b6cf728d971a036da56fd",
+    "review_verdict": "GO_ONE_ORIGINAL_OVERLAY_PRESERVED_REPLACEMENT_RUN",
+    "evidence_path": "reports/conditional-sol-2-1-50-113/original-authority-correction-evidence.json",
+    "evidence_sha256": "b409157f229f7b0c304741849b5836d0c997f731e56f240a3acdf7f55bea81bc",
+    "patch_sha256": "da092f91b12ab884d0fe5a99ffa6b3c4515477beb67cb48593168077ba74ce63",
+    "current8pins_exact_verified": {
+      "runtime/coinmaster/strategy/conditional_hedge.py": "d5c060df0edf6ded45cdb3ed96500ff509791580c7d612603f5f3527f39ee640",
+      "runtime/coinmaster/strategy/wave_overlay.py": "36e078dd9f4778ec1fce6f63257adb22005e68872c817856a824d72b9a100589",
+      "runtime/coinmaster/strategy/split_cover.py": "dd239e1914701ef775c6dd7dc93d099a0c617223dc5f7bb7b7cc8eeb8ce5b751",
+      "runtime/coinmaster/domain/wave_overlay.py": "3525ebe69d11601ebf280b1c3411c6ca91504ec16784a84fb36c5cfb5c6401af",
+      "runtime/coinmaster/research/native_baseline.py": "11ae5f1ae8b68ffaa1a51c87dfbba065a6f34a18698aa62a651db75f615a57f6",
+      "runtime/tests/test_native_conditional_hedge.py": "eaa874c5ecc6118b7e6ccad16f983996439a5a1f74d57cc6a99739b301d39fdd",
+      "scripts/launch_split_cover_native.py": "d3300c37d3f613e4d5a4428e2214a81f16592f0900c4ff00831a885687f9e9f5",
+      "scripts/collect_split_cover_native.py": "4cb6a478e180c585e8132ceee5ab58f77619dd93b48c7f984d41ecf52d8ba97c"
+    },
+    "log_hashes_verified": {
+      "original-authority-focused.log": "72612f461cd4ba9d7731baf227a7945170dacc1fc84789c945db8ca876494de8",
+      "original-authority-module.log": "ee06e8b9c87b28c701971a9e33f1b15e8ee06f69fd9f18f66b7b80c8e97ae077",
+      "original-authority-single-retest.log": "7f0a843e653fc0c96df606afb7c90e7664706bc9509ad1b0965d24e3f4099839"
+    },
+    "honest_test_evidence": {
+      "focused_five_cases_first": "4 passed,1 failed: newfixture expected400partial, pinnednativeGTCactual800filled/200leaves",
+      "conditional_module": "28 passed,1 failed,170 warnings in5.50s; onefixtureunsupportedis_filledAPI",
+      "single_failed_case_retest": "1 passed,6 warnings in2.61s",
+      "claim": "Oneconditional-onlymoduleplusonefailedcaseretest;NOTa29-passfullmodulererunandNOT200suite",
+      "native_example": "ActualBTC_TP3flat retains original1000; lawfullateoriginal1000usesexistingowner; delayednativeacceptedGTCreceiptmodel sameid/quantity yieldsreal800partial+200terminal; originalclock/sigma/credit/nativefillednotional staydistinct;REGIMEclosesactual2000as2x1000nativefills",
+      "native_race_fixture_disclosure": "GTCsame-owner/id/qty is a venue pending/partial-ACK fixture only; production executor remains existingMarketIOC and no fill is replayed",
+      "prior_three_episode_cases": "REGIME/TRAIL/CLOSE_ALL PASS in module",
+      "updated_original_budget_retention_case": "PASS in module",
+      "resources": "MemoryMax256MiB/Swap0/PrivateNetwork/CPUWeight10",
+      "module_unit": "cm116-original-authority-conditional-module-20261018",
+      "single_retest_unit": "cm116-original-authority-single-retest-20261018"
+    }
+  },
+  "supersedes_wrong_compatibility_claims": "Prior control-reuse candidate_compatibility_gate d9176243 and fixed-pending0c55 approvals are historical/superseded, NOT proof of originalSOL preservation. First rejectedrun has unauthorizedBTCrearm; secondfixed abortedcontractviolation zerosOafterBTCflat. Immutable control7/repeat8 input/source/economics proof remainsvalid. NewGO addressesQc-onlyflat/Oretention+lateadds, finalactualpath/economics stillpending.",
+  "frozen_prior_artifacts": "Firstrejected analysis/helpermanifest, abortedfixed proof/receipt andoldfixedpendingmetadata retained unchanged; no thirdhelpercopy",
+  "final_acceptance": [
+    "Actual105BTCpermissions/firstquote/P0/q0q1 versuscontrol, noautomaticassumption fromfocusedGO",
+    "Dec23BTCflat originalSOLretention/Dec24lawfullateadds/Dec25authorizedREGIME nativefills; Qc-onlytrim noOcancel",
+    "ActualnativeTOTAL/DD/minEq/conditionalOHLC/fees/fundingUNKNOWN and MAX/nettingownershiptruth fromfinalreceipt only"
+  ],
+  "command": "runtime/.venv/bin/python reports/conditional-sol-2-1-50-113/analyze-fixed-comparison.py --receipt reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-preserved-receipt.json --output-prefix preserved-analysis",
+  "active_run_metrics": "NOT_READ_NOT_INTERPRETED",
+  "verified_utc": "2026-10-18T16:21:08.370168+00:00"
+}

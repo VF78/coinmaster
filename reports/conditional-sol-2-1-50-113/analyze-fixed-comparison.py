@@ -150,14 +150,14 @@ def coverage(r, events, audit):
     return dict(time_seconds=dict(c), mean=sums / c['known_seconds'] if c['known_seconds'] else None, minimum=lo, maximum=hi, quantiles_0001=quant, matched_actual_fill_rows=matched, formula='signed-opposite abs(SOLactual)*SOLmark*beta/(abs(BTCactual)*BTCmark)', limitations='Total actual NETTING inventory, not independent original/protection positions. One completed-minute quote counted60s; no intraminute path or hard coverage cap. Raw canonical mark close, no PnL reconstruction.')
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--receipt', required=True); ap.add_argument('--coverage', action='store_true'); ap.add_argument('--output-prefix', default='fixed-analysis'); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument('--receipt', required=True); ap.add_argument('--coverage', action='store_true'); ap.add_argument('--output-prefix', default='preserved-analysis'); a = ap.parse_args()
     assert a.output_prefix and all(c.isalnum() or c in '-_' for c in a.output_prefix), 'Unsafe output prefix'
     assert not (OUT / (a.output_prefix + '-summary.json')).exists(), 'Preserve prior summary; choose a new prefix'
     assert not (OUT / (a.output_prefix + '-permissions.csv')).exists(), 'Preserve prior permission evidence'
     reuse = json.loads((OUT / 'control-reuse.json').read_text()); cr = reuse['control_artifacts'][0]
     receipt = json.loads(Path(a.receipt).read_text()); path = receipt['artifact']
-    assert receipt['source_commit'] == '862fec1f81c65297c86c49389e1aa97a8f0fd6d7', 'Expected reviewed fixed-source final receipt'
-    assert Path(a.receipt).name == 'conditional-sol-2-1-50-fixed-receipt.json', 'Expected final fixed receipt'
+    assert receipt['source_commit'] == '07339b7f8f9360ec4ddce8ac2b46da75e4697c63', 'Expected reviewed original-preserved final receipt'
+    assert Path(a.receipt).name == 'conditional-sol-2-1-50-preserved-receipt.json', 'Expected final original-preserved receipt'
     assert digest(path) == receipt['artifact_sha256'], 'Receipt result SHA mismatch'
     assert digest(cr['result']) == cr['result_sha256'], 'Control changed'
     r = json.loads(Path(path).read_text()); control = json.loads(Path(cr['result']).read_text())
