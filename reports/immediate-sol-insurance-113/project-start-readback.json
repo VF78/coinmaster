@@ -1,0 +1,24 @@
+{
+  "number": 119,
+  "url": "https://github.com/VF78/coinmaster/issues/119",
+  "node_id": "I_kwDORPv5-M8AAAABYTfPkQ",
+  "item_id": "PVTI_lAHOBIUvJs4BPJNjzhB3Hv4",
+  "project": {
+    "data": {
+      "node": {
+        "id": "PVTI_lAHOBIUvJs4BPJNjzhB3Hv4",
+        "project": {
+          "number": 2
+        },
+        "content": {
+          "number": 119,
+          "title": "[R2 SOL] Immediate SOL insurance: I25 / Light / Recovery / I33 native comparisons",
+          "state": "OPEN"
+        },
+        "fieldValueByName": {
+          "name": "In Progress"
+        }
+      }
+    }
+  }
+}

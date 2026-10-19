@@ -1,0 +1,35 @@
+{
+  "status": "SOURCE_REVIEW_GO_PREPARE_PENDING_BEFORE_FOUR_NATIVE_RUNS",
+  "source_commit": "262bf2c3979a1b7250ba012476adf18a9b713953",
+  "source_files": {
+    "runtime/coinmaster/research/native_baseline.py": "f95dddbb554d4c87a4f8a74d8012ff28b567aa748c234081a58d1c115d595583",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "7ea209b44150f5584613b5b0a7998eae44b4064c67ee3c3df9ec9ebd8b7c8d31",
+    "runtime/coinmaster/strategy/immediate_insurance.py": "fcb43bea1d233a9ce9557d1d992e964b2dad23654fa5bb011c68aa405e5daf75",
+    "runtime/coinmaster/strategy/wave_overlay.py": "79b0c41cc4890258a3144f1f24f3c271f49069ad4b4cf3452b17b8ecea8b4558",
+    "runtime/tests/test_native_immediate_insurance.py": "4e2e7cc4ad6e7b616414c0e1989e666942e359afaaa7b030301eb2d8063c9dd3",
+    "scripts/collect_split_cover_native.py": "ef961ffb36bce8ebd6da5862635c339a17c83afae15ed9ddb424e45cea153e9b",
+    "scripts/launch_split_cover_native.py": "20a8e7b14c5f8eb1b51ea045714e3dbacc1fbe0dc5cd28c7991ef80be0470002"
+  },
+  "focused_pass": 27,
+  "source_log_sha256": "522922be4349163da61326f31a77b79c2bd1f454b412503b6a9ae629dc5a5ed2",
+  "independent_review": "protective_hedge_sources: GO,no actionableP1/P2,read-onlyall7frozenpinsverified",
+  "preflight_sha256": "0aded1f162aae4cf67b00aaba466f6220cb998c1b8851a03d7019daf7031df10",
+  "daily_estimator": {
+    "W": 90,
+    "closed_prices": 91,
+    "returns": "sampleSTDddof1logreturns",
+    "refresh": "pairedUTCdaily",
+    "freeze": "firstactualBTCfill, Q2/TP/laterdailydoNOTchangeexistingepisode"
+  },
+  "engine_budget": [
+    "i25",
+    "i25-light",
+    "i25-recovery",
+    "i33"
+  ],
+  "control_reused": "6077107.23887483",
+  "control_global_minute_DD": "66.31878024969152066570091116",
+  "new_full_native_engines_at_gate": 0,
+  "source_unchanged_since_review": true,
+  "no_pilot_deployment": true
+}

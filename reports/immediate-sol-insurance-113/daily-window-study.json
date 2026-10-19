@@ -1,0 +1,905 @@
+{
+  "status": "FINAL_DESCRIPTIVE_WINDOW_CALIBRATION_NOT_NATIVE_BACKTEST_OR_ROI_OPTIMIZATION",
+  "source": {
+    "BTC": {
+      "path": "/var/lib/coinmaster-native-gui/data/normalized/bybit-BTCUSDT-daily.parquet",
+      "sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+      "close_rows": 1460,
+      "first_close_day": "2022-09-02",
+      "last_close_day": "2026-08-31",
+      "return_rows": 1459,
+      "gaps": 0,
+      "duplicates": 0,
+      "price": "Bybitlinearperpetualdailytradeclose,notmark"
+    },
+    "SOL": {
+      "path": "/var/lib/coinmaster-native-gui/data/normalized/bybit-SOLUSDT-daily.parquet",
+      "sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+      "close_rows": 1460,
+      "first_close_day": "2022-09-02",
+      "last_close_day": "2026-08-31",
+      "return_rows": 1459,
+      "gaps": 0,
+      "duplicates": 0,
+      "price": "Bybitlinearperpetualdailytradeclose,notmark"
+    }
+  },
+  "method": {
+    "returns": "r_D=ln(close_D/close_Dminus1),sampleSTDddof1,k=sBTC/sSOL;rhoPearson,additionalhminvar=rho*k,betaSOL|BTC=rho/k.",
+    "availability": "AtasofUTCdayDuseONLYWreturnsendingDminus1;W+1closedpricesstartingDminusWminus1required. Freeze kANDsigmaBTCatfirstactualBTCfillforentireepisode;laterdailyrefreshonlyNEWepisodes.",
+    "training_origins": [
+      "2023-04-01",
+      "2024-08-17"
+    ],
+    "target_definition": "ForecastmadeD00UTCfromcloseddata;targetHreturnsD..D+Hminus1. Targetlastdailybar mustbeBEFORE2024-09-01. Primary14D/secondary7D/28D,fulltargetcoverageonly.",
+    "loss": "abs(ln(kforecast/krealized_nextHdays));notpriceforecastortradePnL.",
+    "selection_rule_fixed_before_calculation": "amongwindowswithin5%lowestmean14Dabsolute-logratio-error,chooseleastmeanabsoluteDAILYlog-kchange;tiespreferlongerW",
+    "causality": "Training/selectionstrictlypre-reference;fullcanonicalperiodpreviouslyresearched, laterdiagnosticisNOTcalledhonestunseenOOS.",
+    "scope": "7prespecifiedwindowlengths30,45,60,90,120,150,180D;not6calendar-months(184daysinitial). Nooptimizeroutsideowner-approvedstatisticalwindowselection. No additionalnativeengine/strategy/order/cash/PnL/ROItest.",
+    "provenance_limit": "ExistingnormalizedBybitdailyfileSHA/schema/calendarverified;originalrawdailycapturemanifestnotpresentinsharedcanonicaldata-root. TradecloseNOTmark/otherexchange."
+  },
+  "candidate_rows": [
+    {
+      "W_days": 30,
+      "n_origins": 505,
+      "error14_mean": 0.28207059377778454,
+      "error14_median": 0.2302362783277429,
+      "error14_p90": 0.5457988753381741,
+      "error7_mean": 0.3318751043014609,
+      "error28_mean": 0.27864233693431073,
+      "n_target7": 505,
+      "n_target14": 505,
+      "n_target28": 492,
+      "invalid7": 0,
+      "invalid14": 0,
+      "invalid28": 0,
+      "daily_abs_log_k_change_mean": 0.030935522053447864,
+      "daily_abs_log_k_change_p90": 0.07757950348620074,
+      "month_abs_log_k_change_mean": 0.29955357128263504,
+      "month_abs_log_k_change_p90": 0.5285924300542495,
+      "asof20240901_sigma_BTC_daily": 0.03643656293869464,
+      "asof20240901_sigma_SOL_daily": 0.048394728729006714,
+      "asof20240901_k": 0.7529035474653955,
+      "asof20240901_rho": 0.8233664079142754,
+      "asof20240901_h_minvar_rho_k": 0.6199154893824977,
+      "asof20240901_beta_SOL_given_BTC_rho_over_k": 1.0935881636978455,
+      "within5pct_best_primary": true,
+      "selected": false,
+      "asof20260901_sigma_BTC_daily": 0.022035930693081855,
+      "asof20260901_sigma_SOL_daily": 0.03118603679374438,
+      "asof20260901_k": 0.7065960589612994,
+      "asof20260901_rho": 0.795435298974517,
+      "asof20260901_h_minvar_rho_k": 0.5620514474140965,
+      "asof20260901_beta_SOL_given_BTC_rho_over_k": 1.1257284680356299
+    },
+    {
+      "W_days": 45,
+      "n_origins": 505,
+      "error14_mean": 0.28194751969594883,
+      "error14_median": 0.22712442514272138,
+      "error14_p90": 0.547076075828921,
+      "error7_mean": 0.32580132049507626,
+      "error28_mean": 0.26665223761853885,
+      "n_target7": 505,
+      "n_target14": 505,
+      "n_target28": 492,
+      "invalid7": 0,
+      "invalid14": 0,
+      "invalid28": 0,
+      "daily_abs_log_k_change_mean": 0.020897665355716397,
+      "daily_abs_log_k_change_p90": 0.05175253256701731,
+      "month_abs_log_k_change_mean": 0.187613402052261,
+      "month_abs_log_k_change_p90": 0.32925492344934193,
+      "asof20240901_sigma_BTC_daily": 0.03151237083442024,
+      "asof20240901_sigma_SOL_daily": 0.04493658147811594,
+      "asof20240901_k": 0.7012631979975318,
+      "asof20240901_rho": 0.802075586366818,
+      "asof20240901_h_minvar_rho_k": 0.5624660907313404,
+      "asof20240901_beta_SOL_given_BTC_rho_over_k": 1.1437582760041558,
+      "within5pct_best_primary": true,
+      "selected": false,
+      "asof20260901_sigma_BTC_daily": 0.02018662291857966,
+      "asof20260901_sigma_SOL_daily": 0.02826409565743318,
+      "asof20260901_k": 0.7142143574394102,
+      "asof20260901_rho": 0.8109929806053788,
+      "asof20260901_h_minvar_rho_k": 0.5792228305309427,
+      "asof20260901_beta_SOL_given_BTC_rho_over_k": 1.1355036091866562
+    },
+    {
+      "W_days": 60,
+      "n_origins": 505,
+      "error14_mean": 0.27591741376489026,
+      "error14_median": 0.23528911363699245,
+      "error14_p90": 0.5687269447603301,
+      "error7_mean": 0.32458736343630207,
+      "error28_mean": 0.25654262971292696,
+      "n_target7": 505,
+      "n_target14": 505,
+      "n_target28": 492,
+      "invalid7": 0,
+      "invalid14": 0,
+      "invalid28": 0,
+      "daily_abs_log_k_change_mean": 0.015287701921420701,
+      "daily_abs_log_k_change_p90": 0.03556921027630271,
+      "month_abs_log_k_change_mean": 0.1606231832281513,
+      "month_abs_log_k_change_p90": 0.27189584024845576,
+      "asof20240901_sigma_BTC_daily": 0.030963501549533517,
+      "asof20240901_sigma_SOL_daily": 0.0478626145455715,
+      "asof20240901_k": 0.6469245745038059,
+      "asof20240901_rho": 0.8171543378960574,
+      "asof20240901_h_minvar_rho_k": 0.5286372223473462,
+      "asof20240901_beta_SOL_given_BTC_rho_over_k": 1.263136956147969,
+      "within5pct_best_primary": true,
+      "selected": false,
+      "asof20260901_sigma_BTC_daily": 0.019209598918640235,
+      "asof20260901_sigma_SOL_daily": 0.026515159746152126,
+      "asof20260901_k": 0.7244760771779973,
+      "asof20260901_rho": 0.8188050160335423,
+      "asof20260901_h_minvar_rho_k": 0.5932046459896478,
+      "asof20260901_beta_SOL_given_BTC_rho_over_k": 1.1302029726405571
+    },
+    {
+      "W_days": 90,
+      "n_origins": 505,
+      "error14_mean": 0.27157793177119516,
+      "error14_median": 0.23116376972449207,
+      "error14_p90": 0.5674990382361367,
+      "error7_mean": 0.3259846012484868,
+      "error28_mean": 0.25758856385846995,
+      "n_target7": 505,
+      "n_target14": 505,
+      "n_target28": 492,
+      "invalid7": 0,
+      "invalid14": 0,
+      "invalid28": 0,
+      "daily_abs_log_k_change_mean": 0.010754294278700347,
+      "daily_abs_log_k_change_p90": 0.027276673894726017,
+      "month_abs_log_k_change_mean": 0.1412456541580957,
+      "month_abs_log_k_change_p90": 0.2906313759282245,
+      "asof20240901_sigma_BTC_daily": 0.027089532995315118,
+      "asof20240901_sigma_SOL_daily": 0.04469077983336603,
+      "asof20240901_k": 0.6061548510972757,
+      "asof20240901_rho": 0.7654149582533042,
+      "asof20240901_h_minvar_rho_k": 0.4639599900476591,
+      "asof20240901_beta_SOL_given_BTC_rho_over_k": 1.2627383198661728,
+      "within5pct_best_primary": true,
+      "selected": true,
+      "asof20260901_sigma_BTC_daily": 0.01992141408650206,
+      "asof20260901_sigma_SOL_daily": 0.03011790366442941,
+      "asof20260901_k": 0.6614475664861809,
+      "asof20260901_rho": 0.8197738294303164,
+      "asof20260901_h_minvar_rho_k": 0.5422374045457402,
+      "asof20260901_beta_SOL_given_BTC_rho_over_k": 1.2393632858689236
+    },
+    {
+      "W_days": 120,
+      "n_origins": 505,
+      "error14_mean": 0.29314926844690775,
+      "error14_median": 0.25704129006174425,
+      "error14_p90": 0.6036304155991237,
+      "error7_mean": 0.3411770706897598,
+      "error28_mean": 0.2673482055337165,
+      "n_target7": 505,
+      "n_target14": 505,
+      "n_target28": 492,
+      "invalid7": 0,
+      "invalid14": 0,
+      "invalid28": 0,
+      "daily_abs_log_k_change_mean": 0.0078104744329485,
+      "daily_abs_log_k_change_p90": 0.019983097837372833,
+      "month_abs_log_k_change_mean": 0.10502595211196972,
+      "month_abs_log_k_change_p90": 0.2731731158877519,
+      "asof20240901_sigma_BTC_daily": 0.02652715015469298,
+      "asof20240901_sigma_SOL_daily": 0.04356242177831032,
+      "asof20240901_k": 0.6089457167852136,
+      "asof20240901_rho": 0.7786751320733855,
+      "asof20240901_h_minvar_rho_k": 0.4741708864432486,
+      "asof20240901_beta_SOL_given_BTC_rho_over_k": 1.2787266756456035,
+      "within5pct_best_primary": false,
+      "selected": false,
+      "asof20260901_sigma_BTC_daily": 0.019698724587493482,
+      "asof20260901_sigma_SOL_daily": 0.029328442149562726,
+      "asof20260901_k": 0.6716594249035891,
+      "asof20260901_rho": 0.830726998746398,
+      "asof20260901_h_minvar_rho_k": 0.5579656182298902,
+      "asof20260901_beta_SOL_given_BTC_rho_over_k": 1.2368277253991362
+    },
+    {
+      "W_days": 150,
+      "n_origins": 505,
+      "error14_mean": 0.30986019590109515,
+      "error14_median": 0.26525369398428517,
+      "error14_p90": 0.6208918159728002,
+      "error7_mean": 0.36591881765344875,
+      "error28_mean": 0.26494358873684604,
+      "n_target7": 505,
+      "n_target14": 505,
+      "n_target28": 492,
+      "invalid7": 0,
+      "invalid14": 0,
+      "invalid28": 0,
+      "daily_abs_log_k_change_mean": 0.0070400133039994215,
+      "daily_abs_log_k_change_p90": 0.016139938654037334,
+      "month_abs_log_k_change_mean": 0.10580642706842952,
+      "month_abs_log_k_change_p90": 0.20508884447894138,
+      "asof20240901_sigma_BTC_daily": 0.026937983635582256,
+      "asof20240901_sigma_SOL_daily": 0.045054081603639724,
+      "asof20240901_k": 0.5979032903737195,
+      "asof20240901_rho": 0.7646000532543039,
+      "asof20240901_h_minvar_rho_k": 0.4571568876606694,
+      "asof20240901_beta_SOL_given_BTC_rho_over_k": 1.2788022169545021,
+      "within5pct_best_primary": false,
+      "selected": false,
+      "asof20260901_sigma_BTC_daily": 0.01960055053289191,
+      "asof20260901_sigma_SOL_daily": 0.028581293286437236,
+      "asof20260901_k": 0.685782491941784,
+      "asof20260901_rho": 0.8254466956714274,
+      "asof20260901_h_minvar_rho_k": 0.5660768919226629,
+      "asof20260901_beta_SOL_given_BTC_rho_over_k": 1.2036567065662263
+    },
+    {
+      "W_days": 180,
+      "n_origins": 505,
+      "error14_mean": 0.31456116817193996,
+      "error14_median": 0.2667791339201195,
+      "error14_p90": 0.6424520651897259,
+      "error7_mean": 0.37385273034681177,
+      "error28_mean": 0.2712713554927445,
+      "n_target7": 505,
+      "n_target14": 505,
+      "n_target28": 492,
+      "invalid7": 0,
+      "invalid14": 0,
+      "invalid28": 0,
+      "daily_abs_log_k_change_mean": 0.005736764205169779,
+      "daily_abs_log_k_change_p90": 0.013543794589800321,
+      "month_abs_log_k_change_mean": 0.09095000920605972,
+      "month_abs_log_k_change_p90": 0.1511220131752317,
+      "asof20240901_sigma_BTC_daily": 0.0291785757044168,
+      "asof20240901_sigma_SOL_daily": 0.04720930184303746,
+      "asof20240901_k": 0.6180683586770755,
+      "asof20240901_rho": 0.7647562333080791,
+      "asof20240901_h_minvar_rho_k": 0.4726716299087871,
+      "asof20240901_beta_SOL_given_BTC_rho_over_k": 1.2373327684092692,
+      "within5pct_best_primary": false,
+      "selected": false,
+      "asof20260901_sigma_BTC_daily": 0.02000198418144978,
+      "asof20260901_sigma_SOL_daily": 0.028582550798319454,
+      "asof20260901_k": 0.6997970308033467,
+      "asof20260901_rho": 0.8464587918882873,
+      "asof20260901_h_minvar_rho_k": 0.5923493492608113,
+      "asof20260901_beta_SOL_given_BTC_rho_over_k": 1.2095775698227489
+    }
+  ],
+  "training_details": {
+    "30": {
+      "forecast_absolute_logratio_error": {
+        "7": {
+          "n": 505,
+          "mean": 0.3318751043014609,
+          "median": 0.274169516749816,
+          "p75": 0.4677312450100823,
+          "p90": 0.6862254167841358,
+          "max": 1.3767431332059
+        },
+        "14": {
+          "n": 505,
+          "mean": 0.28207059377778454,
+          "median": 0.2302362783277429,
+          "p75": 0.40493711516879727,
+          "p90": 0.5457988753381741,
+          "max": 1.0990057701544056
+        },
+        "28": {
+          "n": 492,
+          "mean": 0.27864233693431073,
+          "median": 0.2466371859450165,
+          "p75": 0.37533951080773015,
+          "p90": 0.5341824011471155,
+          "max": 0.9493163943458224
+        }
+      },
+      "invalid": {
+        "7": 0,
+        "14": 0,
+        "28": 0
+      },
+      "daily_abs_log_k_change": {
+        "n": 504,
+        "mean": 0.030935522053447864,
+        "median": 0.014961691606404929,
+        "p75": 0.03323443264940343,
+        "p90": 0.07757950348620074,
+        "max": 0.5656036992529079
+      },
+      "month_first_abs_log_k_change": {
+        "n": 16,
+        "mean": 0.29955357128263504,
+        "median": 0.263616426667094,
+        "p75": 0.3773057022170845,
+        "p90": 0.5285924300542495,
+        "max": 0.8402060122790184
+      },
+      "training_origins": 505,
+      "first_forecast": {
+        "n": 30,
+        "sigma_BTC_daily": 0.036524642863765076,
+        "sigma_SOL_daily": 0.04675013671658752,
+        "k": 0.7812734984110898,
+        "rho": 0.7749581600907125,
+        "h_minvar_rho_k": 0.6054542728562924,
+        "beta_SOL_given_BTC_rho_over_k": 0.9919166100818457,
+        "asof": "2023-04-01",
+        "return_start": "2023-03-02",
+        "last_return_day": "2023-03-31",
+        "previous_close_anchor": "2023-03-01"
+      },
+      "last_forecast": {
+        "n": 30,
+        "sigma_BTC_daily": 0.03434898279395608,
+        "sigma_SOL_daily": 0.05071285644479523,
+        "k": 0.6773229749215082,
+        "rho": 0.8133859017849225,
+        "h_minvar_rho_k": 0.5509249587561774,
+        "beta_SOL_given_BTC_rho_over_k": 1.2008833775041843,
+        "asof": "2024-08-17",
+        "return_start": "2024-07-18",
+        "last_return_day": "2024-08-16",
+        "previous_close_anchor": "2024-07-17"
+      }
+    },
+    "45": {
+      "forecast_absolute_logratio_error": {
+        "7": {
+          "n": 505,
+          "mean": 0.32580132049507626,
+          "median": 0.25826196142859403,
+          "p75": 0.4500266407221787,
+          "p90": 0.6777985217855567,
+          "max": 1.580845841222762
+        },
+        "14": {
+          "n": 505,
+          "mean": 0.28194751969594883,
+          "median": 0.22712442514272138,
+          "p75": 0.4104970810184009,
+          "p90": 0.547076075828921,
+          "max": 1.0914156251575424
+        },
+        "28": {
+          "n": 492,
+          "mean": 0.26665223761853885,
+          "median": 0.24764922734710143,
+          "p75": 0.37177361167443873,
+          "p90": 0.48803146399316555,
+          "max": 0.9243869391237435
+        }
+      },
+      "invalid": {
+        "7": 0,
+        "14": 0,
+        "28": 0
+      },
+      "daily_abs_log_k_change": {
+        "n": 504,
+        "mean": 0.020897665355716397,
+        "median": 0.009480248010263237,
+        "p75": 0.022787445000093748,
+        "p90": 0.05175253256701731,
+        "max": 0.2705340940330823
+      },
+      "month_first_abs_log_k_change": {
+        "n": 16,
+        "mean": 0.187613402052261,
+        "median": 0.17299156022678155,
+        "p75": 0.28159568603986207,
+        "p90": 0.32925492344934193,
+        "max": 0.37722243752348544
+      },
+      "training_origins": 505,
+      "first_forecast": {
+        "n": 45,
+        "sigma_BTC_daily": 0.034836884009062416,
+        "sigma_SOL_daily": 0.046417865625575094,
+        "k": 0.7505059429072102,
+        "rho": 0.7788949957947591,
+        "h_minvar_rho_k": 0.5845653232446532,
+        "beta_SOL_given_BTC_rho_over_k": 1.0378265530817508,
+        "asof": "2023-04-01",
+        "return_start": "2023-02-15",
+        "last_return_day": "2023-03-31",
+        "previous_close_anchor": "2023-02-14"
+      },
+      "last_forecast": {
+        "n": 45,
+        "sigma_BTC_daily": 0.03273682307667954,
+        "sigma_SOL_daily": 0.052424761654359865,
+        "k": 0.6244534461122726,
+        "rho": 0.8291851469277537,
+        "h_minvar_rho_k": 0.5177875224641468,
+        "beta_SOL_given_BTC_rho_over_k": 1.327857428107894,
+        "asof": "2024-08-17",
+        "return_start": "2024-07-03",
+        "last_return_day": "2024-08-16",
+        "previous_close_anchor": "2024-07-02"
+      }
+    },
+    "60": {
+      "forecast_absolute_logratio_error": {
+        "7": {
+          "n": 505,
+          "mean": 0.32458736343630207,
+          "median": 0.27489004247205273,
+          "p75": 0.43438126727610027,
+          "p90": 0.7016693162950852,
+          "max": 1.6869460814795327
+        },
+        "14": {
+          "n": 505,
+          "mean": 0.27591741376489026,
+          "median": 0.23528911363699245,
+          "p75": 0.4168010230883644,
+          "p90": 0.5687269447603301,
+          "max": 1.1578745966428385
+        },
+        "28": {
+          "n": 492,
+          "mean": 0.25654262971292696,
+          "median": 0.22719057847455637,
+          "p75": 0.37644850961438114,
+          "p90": 0.5359579624424065,
+          "max": 0.8317654946722529
+        }
+      },
+      "invalid": {
+        "7": 0,
+        "14": 0,
+        "28": 0
+      },
+      "daily_abs_log_k_change": {
+        "n": 504,
+        "mean": 0.015287701921420701,
+        "median": 0.006357923972848853,
+        "p75": 0.01881671624608483,
+        "p90": 0.03556921027630271,
+        "max": 0.21091384289300796
+      },
+      "month_first_abs_log_k_change": {
+        "n": 16,
+        "mean": 0.1606231832281513,
+        "median": 0.14780249125126624,
+        "p75": 0.23645007813950247,
+        "p90": 0.27189584024845576,
+        "max": 0.30839134447559763
+      },
+      "training_origins": 505,
+      "first_forecast": {
+        "n": 60,
+        "sigma_BTC_daily": 0.031639802024201864,
+        "sigma_SOL_daily": 0.04618551892041033,
+        "k": 0.6850589267758467,
+        "rho": 0.7800037099891359,
+        "h_minvar_rho_k": 0.5343485044463362,
+        "beta_SOL_given_BTC_rho_over_k": 1.1385936004952688,
+        "asof": "2023-04-01",
+        "return_start": "2023-01-31",
+        "last_return_day": "2023-03-31",
+        "previous_close_anchor": "2023-01-30"
+      },
+      "last_forecast": {
+        "n": 60,
+        "sigma_BTC_daily": 0.029845958135375286,
+        "sigma_SOL_daily": 0.04932031948603218,
+        "k": 0.6051452716932997,
+        "rho": 0.7692109644897126,
+        "h_minvar_rho_k": 0.46548437809559223,
+        "beta_SOL_given_BTC_rho_over_k": 1.2711178628849384,
+        "asof": "2024-08-17",
+        "return_start": "2024-06-18",
+        "last_return_day": "2024-08-16",
+        "previous_close_anchor": "2024-06-17"
+      }
+    },
+    "90": {
+      "forecast_absolute_logratio_error": {
+        "7": {
+          "n": 505,
+          "mean": 0.3259846012484868,
+          "median": 0.2624189292912777,
+          "p75": 0.44129063738757707,
+          "p90": 0.7042116872622602,
+          "max": 1.7502575781030068
+        },
+        "14": {
+          "n": 505,
+          "mean": 0.27157793177119516,
+          "median": 0.23116376972449207,
+          "p75": 0.3891050631059996,
+          "p90": 0.5674990382361367,
+          "max": 1.165703222317953
+        },
+        "28": {
+          "n": 492,
+          "mean": 0.25758856385846995,
+          "median": 0.22659936488137097,
+          "p75": 0.373957278117914,
+          "p90": 0.5274580385885321,
+          "max": 0.8216635201069086
+        }
+      },
+      "invalid": {
+        "7": 0,
+        "14": 0,
+        "28": 0
+      },
+      "daily_abs_log_k_change": {
+        "n": 504,
+        "mean": 0.010754294278700347,
+        "median": 0.004271821159775482,
+        "p75": 0.013082233838070015,
+        "p90": 0.027276673894726017,
+        "max": 0.148395591348073
+      },
+      "month_first_abs_log_k_change": {
+        "n": 16,
+        "mean": 0.1412456541580957,
+        "median": 0.10089260048302047,
+        "p75": 0.23420493917984647,
+        "p90": 0.2906313759282245,
+        "max": 0.3564955383990279
+      },
+      "training_origins": 505,
+      "first_forecast": {
+        "n": 90,
+        "sigma_BTC_daily": 0.02912887221099785,
+        "sigma_SOL_daily": 0.06269077201847051,
+        "k": 0.4646436991143712,
+        "rho": 0.6711170769734682,
+        "h_minvar_rho_k": 0.31183032118377646,
+        "beta_SOL_given_BTC_rho_over_k": 1.4443692624104087,
+        "asof": "2023-04-01",
+        "return_start": "2023-01-01",
+        "last_return_day": "2023-03-31",
+        "previous_close_anchor": "2022-12-31"
+      },
+      "last_forecast": {
+        "n": 90,
+        "sigma_BTC_daily": 0.02674759382611522,
+        "sigma_SOL_daily": 0.04503340952039096,
+        "k": 0.5939500053622191,
+        "rho": 0.771222937472957,
+        "h_minvar_rho_k": 0.4580678678475292,
+        "beta_SOL_given_BTC_rho_over_k": 1.2984644002193895,
+        "asof": "2024-08-17",
+        "return_start": "2024-05-19",
+        "last_return_day": "2024-08-16",
+        "previous_close_anchor": "2024-05-18"
+      }
+    },
+    "120": {
+      "forecast_absolute_logratio_error": {
+        "7": {
+          "n": 505,
+          "mean": 0.3411770706897598,
+          "median": 0.2831157835520702,
+          "p75": 0.48565154083290896,
+          "p90": 0.6992562085699546,
+          "max": 1.808766460773639
+        },
+        "14": {
+          "n": 505,
+          "mean": 0.29314926844690775,
+          "median": 0.25704129006174425,
+          "p75": 0.39391088525063744,
+          "p90": 0.6036304155991237,
+          "max": 1.0237362097789355
+        },
+        "28": {
+          "n": 492,
+          "mean": 0.2673482055337165,
+          "median": 0.2369001141612247,
+          "p75": 0.3747299023647298,
+          "p90": 0.5466566663479449,
+          "max": 0.9133569059418166
+        }
+      },
+      "invalid": {
+        "7": 0,
+        "14": 0,
+        "28": 0
+      },
+      "daily_abs_log_k_change": {
+        "n": 504,
+        "mean": 0.0078104744329485,
+        "median": 0.003258633200539202,
+        "p75": 0.008376948944071596,
+        "p90": 0.019983097837372833,
+        "max": 0.12826436560629437
+      },
+      "month_first_abs_log_k_change": {
+        "n": 16,
+        "mean": 0.10502595211196972,
+        "median": 0.0682454710157346,
+        "p75": 0.10713857047404243,
+        "p90": 0.2731731158877519,
+        "max": 0.33200114204892195
+      },
+      "training_origins": 505,
+      "first_forecast": {
+        "n": 120,
+        "sigma_BTC_daily": 0.026379493876471316,
+        "sigma_SOL_daily": 0.058324101867621755,
+        "k": 0.452291471823173,
+        "rho": 0.6777212413130548,
+        "h_minvar_rho_k": 0.30652753771930935,
+        "beta_SOL_given_BTC_rho_over_k": 1.498417024272382,
+        "asof": "2023-04-01",
+        "return_start": "2022-12-02",
+        "last_return_day": "2023-03-31",
+        "previous_close_anchor": "2022-12-01"
+      },
+      "last_forecast": {
+        "n": 120,
+        "sigma_BTC_daily": 0.026747308539088667,
+        "sigma_SOL_daily": 0.04454871514589959,
+        "k": 0.6004058355328477,
+        "rho": 0.7593866117320889,
+        "h_minvar_rho_k": 0.45594015310946295,
+        "beta_SOL_given_BTC_rho_over_k": 1.2647888591191807,
+        "asof": "2024-08-17",
+        "return_start": "2024-04-19",
+        "last_return_day": "2024-08-16",
+        "previous_close_anchor": "2024-04-18"
+      }
+    },
+    "150": {
+      "forecast_absolute_logratio_error": {
+        "7": {
+          "n": 505,
+          "mean": 0.36591881765344875,
+          "median": 0.30538810154909474,
+          "p75": 0.5058043177958189,
+          "p90": 0.7094921495392907,
+          "max": 1.9490989711612479
+        },
+        "14": {
+          "n": 505,
+          "mean": 0.30986019590109515,
+          "median": 0.26525369398428517,
+          "p75": 0.41614728364369935,
+          "p90": 0.6208918159728002,
+          "max": 1.0465066373988052
+        },
+        "28": {
+          "n": 492,
+          "mean": 0.26494358873684604,
+          "median": 0.22436294532819817,
+          "p75": 0.363725319740425,
+          "p90": 0.5975965606292494,
+          "max": 0.8602359242268942
+        }
+      },
+      "invalid": {
+        "7": 0,
+        "14": 0,
+        "28": 0
+      },
+      "daily_abs_log_k_change": {
+        "n": 504,
+        "mean": 0.0070400133039994215,
+        "median": 0.0028022846381603288,
+        "p75": 0.007351221587681615,
+        "p90": 0.016139938654037334,
+        "max": 0.2124052580134153
+      },
+      "month_first_abs_log_k_change": {
+        "n": 16,
+        "mean": 0.10580642706842952,
+        "median": 0.08355156158271344,
+        "p75": 0.11726312831614394,
+        "p90": 0.20508884447894138,
+        "max": 0.41360960059786045
+      },
+      "training_origins": 505,
+      "first_forecast": {
+        "n": 150,
+        "sigma_BTC_daily": 0.03068949356213913,
+        "sigma_SOL_daily": 0.09973003236420935,
+        "k": 0.3077256954059992,
+        "rho": 0.7763787447914994,
+        "h_minvar_rho_k": 0.23891168913940092,
+        "beta_SOL_given_BTC_rho_over_k": 2.5229571543162193,
+        "asof": "2023-04-01",
+        "return_start": "2022-11-02",
+        "last_return_day": "2023-03-31",
+        "previous_close_anchor": "2022-11-01"
+      },
+      "last_forecast": {
+        "n": 150,
+        "sigma_BTC_daily": 0.02821550283841155,
+        "sigma_SOL_daily": 0.046505058465162195,
+        "k": 0.6067190058377909,
+        "rho": 0.7874139210207785,
+        "h_minvar_rho_k": 0.47773899134456344,
+        "beta_SOL_given_BTC_rho_over_k": 1.297823067094254,
+        "asof": "2024-08-17",
+        "return_start": "2024-03-20",
+        "last_return_day": "2024-08-16",
+        "previous_close_anchor": "2024-03-19"
+      }
+    },
+    "180": {
+      "forecast_absolute_logratio_error": {
+        "7": {
+          "n": 505,
+          "mean": 0.37385273034681177,
+          "median": 0.31362162093050505,
+          "p75": 0.5159824250738241,
+          "p90": 0.7298001019657211,
+          "max": 1.9340052476643135
+        },
+        "14": {
+          "n": 505,
+          "mean": 0.31456116817193996,
+          "median": 0.2667791339201195,
+          "p75": 0.44682661089642567,
+          "p90": 0.6424520651897259,
+          "max": 1.0793291379163636
+        },
+        "28": {
+          "n": 492,
+          "mean": 0.2712713554927445,
+          "median": 0.22814040382188105,
+          "p75": 0.37049508596477176,
+          "p90": 0.6024179495099727,
+          "max": 0.786014338474893
+        }
+      },
+      "invalid": {
+        "7": 0,
+        "14": 0,
+        "28": 0
+      },
+      "daily_abs_log_k_change": {
+        "n": 504,
+        "mean": 0.005736764205169779,
+        "median": 0.002114802758544806,
+        "p75": 0.006350003921423484,
+        "p90": 0.013543794589800321,
+        "max": 0.215999200151961
+      },
+      "month_first_abs_log_k_change": {
+        "n": 16,
+        "mean": 0.09095000920605972,
+        "median": 0.05158202177828598,
+        "p75": 0.12865172529671567,
+        "p90": 0.1511220131752317,
+        "max": 0.41115639391202224
+      },
+      "training_origins": 505,
+      "first_forecast": {
+        "n": 180,
+        "sigma_BTC_daily": 0.028776385147002852,
+        "sigma_SOL_daily": 0.091788278296702,
+        "k": 0.31350827884563126,
+        "rho": 0.7731533672042624,
+        "h_minvar_rho_k": 0.24238998143591264,
+        "beta_SOL_given_BTC_rho_over_k": 2.4661338132794777,
+        "asof": "2023-04-01",
+        "return_start": "2022-10-03",
+        "last_return_day": "2023-03-31",
+        "previous_close_anchor": "2022-10-02"
+      },
+      "last_forecast": {
+        "n": 180,
+        "sigma_BTC_daily": 0.030283228614894013,
+        "sigma_SOL_daily": 0.047658510717940535,
+        "k": 0.6354212114205704,
+        "rho": 0.7485936731810504,
+        "h_minvar_rho_k": 0.4756722986744776,
+        "beta_SOL_given_BTC_rho_over_k": 1.1781062069166177,
+        "asof": "2024-08-17",
+        "return_start": "2024-02-19",
+        "last_return_day": "2024-08-16",
+        "previous_close_anchor": "2024-02-18"
+      }
+    }
+  },
+  "selection_frozen": {
+    "selected_W_days": 90,
+    "rule": "amongwindowswithin5%lowestmean14Dabsolute-logratio-error,chooseleastmeanabsoluteDAILYlog-kchange;tiespreferlongerW",
+    "primary_min_error_W": 90,
+    "within5pct_W": [
+      30,
+      45,
+      60,
+      90
+    ],
+    "selection_uses_only_origins_and_targets_before_20240901": true
+  },
+  "chosen_initial": {
+    "n": 90,
+    "sigma_BTC_daily": 0.027089532995315118,
+    "sigma_SOL_daily": 0.04469077983336603,
+    "k": 0.6061548510972757,
+    "rho": 0.7654149582533042,
+    "h_minvar_rho_k": 0.4639599900476591,
+    "beta_SOL_given_BTC_rho_over_k": 1.2627383198661728,
+    "asof": "2024-09-01",
+    "return_start": "2024-06-03",
+    "last_return_day": "2024-08-31",
+    "previous_close_anchor": "2024-06-02"
+  },
+  "chosen_canonical_end": {
+    "n": 90,
+    "sigma_BTC_daily": 0.01992141408650206,
+    "sigma_SOL_daily": 0.03011790366442941,
+    "k": 0.6614475664861809,
+    "rho": 0.8197738294303164,
+    "h_minvar_rho_k": 0.5422374045457402,
+    "beta_SOL_given_BTC_rho_over_k": 1.2393632858689236,
+    "asof": "2026-09-01",
+    "return_start": "2026-06-03",
+    "last_return_day": "2026-08-31",
+    "previous_close_anchor": "2026-06-02"
+  },
+  "canonical_selected_only_diagnostics_AFTER_selection_freeze": {
+    "7": {
+      "n": 724,
+      "mean": 0.25015001871739917,
+      "median": 0.22013471810109514,
+      "p75": 0.3668449586277435,
+      "p90": 0.49272678011275656,
+      "max": 1.0016344525143974
+    },
+    "14": {
+      "n": 717,
+      "mean": 0.1933026858722728,
+      "median": 0.16259098580515446,
+      "p75": 0.28354187564592753,
+      "p90": 0.3694169356966163,
+      "max": 0.8471554170619212
+    },
+    "28": {
+      "n": 703,
+      "mean": 0.17146516002659382,
+      "median": 0.15181646699020812,
+      "p75": 0.24253611080432091,
+      "p90": 0.3349797118634637,
+      "max": 0.6436366164162782
+    },
+    "selected_canonical_k": {
+      "min": 0.386433030092711,
+      "max": 0.8089672630632003,
+      "median": 0.5937661276353905,
+      "daily_abs_log_k_change": {
+        "n": 730,
+        "mean": 0.007766777827934184,
+        "median": 0.004090838250844665,
+        "p75": 0.009438255854282736,
+        "p90": 0.018914604195700967,
+        "max": 0.11017952846432233
+      }
+    }
+  },
+  "interpretation": {
+    "choice": "PROVISIONALFORECAST/STABILITYTRADEOFF;NOTprovedinsuranceROI/DDoptimal. Interiorchoice;noadditionalwindowsearch.",
+    "stability_cost": "LongerWlagregimechanges;shorterWnoisier/dailyrefreshmorevolatile. Freezeinsideepisodepreventsmonth/daytargetchurn, butnew-episodeQchangeswithdailyestimate.",
+    "target_noise": "Next14daysvolatilityratioitselfnoisy(n14);overlappingorigins/targetsnotindependent;nogenuineconfidenceinterval/significanceclaim.",
+    "forward_execution": "Engine/rootmustpinselectedW/source/data/review;statisticsitselfauthorizesNOlaunch. OwnernativebudgetstillONLYfourI25/I25-Light/I25-Recovery/I33."
+  },
+  "resources": {
+    "daily_parquet_logical_read_passes_each": 1,
+    "rows_each": 1460,
+    "daily_data_fetches": 0,
+    "observer_reads": 0,
+    "native_runs": 0,
+    "elapsed_seconds": 4.468,
+    "peak_RSS_KiB": 119336
+  },
+  "CSV": {
+    "path": "reports/immediate-sol-insurance-113/daily-window-study.csv",
+    "sha256": "058b79d6217f75dd19025fac2b319e3da41943e3d92998398fec06af9a37e934",
+    "rows": 7
+  }
+}

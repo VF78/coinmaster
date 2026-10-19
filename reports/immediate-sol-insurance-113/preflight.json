@@ -1,0 +1,350 @@
+{
+  "status": "PREFLIGHT_FINAL_CONTROL_INPUT_RESOURCE_GO_ONLY_PENDING_ENGINE_FREEZE_REVIEW_ROOT_LAUNCH_GO",
+  "verified_UTC": "2026-10-19T14:52:04.580734+00:00",
+  "HEAD_authorized": "742c7bd988351d5b36907fd0f55f5223fe579a3a",
+  "HEAD_observed": "742c7bd988351d5b36907fd0f55f5223fe579a3a",
+  "branch": "codex/nautilus-btc-sol-mvp",
+  "scope": "FourindependentI25/I25-Light/I25-Recovery/I33ONLY;NOlaunchnow/BTC-only/control/freshrepeat/newsource/tests/pilot/services/cleanup",
+  "control": {
+    "raw": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "result_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "TOTAL": "6077107.23887483",
+    "markednativeDD": "66.31878024969152066570091116",
+    "repeat26_exact_proof": {
+      "path": "reports/btc-split-sol-cover-20261018/final-repeat-verification.json",
+      "sha256": "9284fc17abd03d73de77a69055435c242976f24a5ed75ffe0631c53d68449046",
+      "checks_exact_pass": 26,
+      "raw_JSON_identity_expected": false
+    },
+    "repeat_result_sha256_verified": "40a702986e5e14a8ad98ecbfff632f7b009310a9de5bc707dd028e42eec63ad1",
+    "BTC_parents": 105,
+    "four_hour_deadlines_verified": 105,
+    "BTC_contract": "EMA34/long5.5/short7.875/split50%-50%/discount.0025/deadline4h/FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1/positiveTPnativeIOC/cap30m;causalsizingrulesnotidenticalfutureQ",
+    "is_BTC_plus_original_SOL_portfolio_NOT_standalone_BTC": true,
+    "account": "SIM_MARGIN_USDT_10000",
+    "DP": "DISABLED_IDENTICALLY_IN_RESEARCH",
+    "reserve": "0",
+    "fees": {
+      "bybit_maker": "0.00020",
+      "bybit_taker": "0.00055",
+      "hyperliquid_maker": "0.00015",
+      "hyperliquid_taker": "0.00045",
+      "venue": "bybit",
+      "version": "fixed-base-native-maker-taker-execution-v3"
+    },
+    "fee_policy_hash": "c26bd8fed385f229733edf529d4be56095a2d60efbbc16934d14152903214bdb",
+    "funding": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 899,
+        "SOLUSDT-PERP.P1SIM": 421
+      },
+      "count": 1320,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "funding_signed": "UNKNOWN_UNLESS_NEW_DIRECT_NATIVE_SIGNED_DELTA_PROOF",
+    "run_interval": {
+      "end_exclusive": "2026-09-01T00:00:00+00:00",
+      "initial_active_seed": "10000",
+      "start": "2024-09-01T00:00:00+00:00"
+    },
+    "terminal_convention": {
+      "boundary_timestamp": "2026-09-01T00:00:00+00:00",
+      "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+      "fill_count": 1,
+      "interval_cash_total_before_settlement": "5990509.00011444",
+      "settled_cash_total": "6077107.23887483"
+    },
+    "policy": {
+      "execution_delay_minutes": 1,
+      "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+      "fee_historical_applicability": "UNKNOWN",
+      "fee_multiplier": "1",
+      "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+      "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+      "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+      "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+      "nonmatching_daily_signals": true,
+      "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+      "symmetric_adverse_spread_bps": "0",
+      "version": "bybit-native-resting-reductions-v2"
+    },
+    "layout": "NativeNETTING/MARGIN/USDTseed10000/MakerTakerFeeModel;publicBybittiersBTC40xSOL20x,historicalapplicabilityUNKNOWN. BaseIM.025/.05,baseMM.005;nativecurrenttiermodel.",
+    "quote_limit": "RealBybit1mclose-derivedzero-spreadquotes/displayedsize1000;notreconstructedL2/depth. Noidealinstantcompletefills.",
+    "legacy_label_limit": "policy.liquidation legacytextisNOTauthoritativenativeliquidationproof; actualnativecash/risk/modules/liqeventsandseparateOHLCboundareauthoritative."
+  },
+  "input_pins": {
+    "/var/lib/coinmaster-native-gui/data/bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "/var/lib/coinmaster-native-gui/data/normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "/var/lib/coinmaster-native-gui/data/normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+    "/var/lib/coinmaster-native-gui/data/normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+    "/var/lib/coinmaster-native-gui/data/normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+    "/var/lib/coinmaster-native-gui/data/normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "/var/lib/coinmaster-native-gui/data/normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "/var/lib/coinmaster-native-gui/data/normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+    "/var/lib/coinmaster-native-gui/data/normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d"
+  },
+  "two_existing_data_roots_hash_equivalence": {
+    "bybit-1m/manifest.json": {
+      "shared_root_sha256": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+      "runner_root_sha256": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db"
+    },
+    "normalized/bybit-BTCUSDT-execution-1m.parquet": {
+      "shared_root_sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+      "runner_root_sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88"
+    },
+    "normalized/bybit-BTCUSDT-mark-1m.parquet": {
+      "shared_root_sha256": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+      "runner_root_sha256": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285"
+    },
+    "normalized/bybit-SOLUSDT-execution-1m.parquet": {
+      "shared_root_sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+      "runner_root_sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8"
+    },
+    "normalized/bybit-SOLUSDT-mark-1m.parquet": {
+      "shared_root_sha256": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af",
+      "runner_root_sha256": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+    },
+    "normalized/bybit-BTCUSDT-daily.parquet": {
+      "shared_root_sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+      "runner_root_sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545"
+    },
+    "normalized/bybit-SOLUSDT-daily.parquet": {
+      "shared_root_sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+      "runner_root_sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4"
+    },
+    "normalized/bybit-BTCUSDT-funding.parquet": {
+      "shared_root_sha256": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+      "runner_root_sha256": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17"
+    },
+    "normalized/bybit-SOLUSDT-funding.parquet": {
+      "shared_root_sha256": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+      "runner_root_sha256": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d"
+    }
+  },
+  "runner_actual_data_root": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data",
+  "canonical_small_input_pins": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+  },
+  "venue_profile_SHA_exactly_matches_selected_control": {
+    "runtime/var/raw/venues/bybit-BTCUSDT-funding-latest.json": "78ef5fba859ca985553d613b147c932a1664ace99e24ce1924d46a068f56c6a0",
+    "runtime/var/raw/venues/bybit-BTCUSDT-funding-warmup-start.json": "8f0ff52f63a7e21dac7c10c5e51733ec1998df4507405f01ec641b896849d346",
+    "runtime/var/raw/venues/bybit-BTCUSDT-mark-latest.json": "48ef30f3f116cd2863779f1c6b0fba44dd5b7aaed1de15668f61fbe6b9740b02",
+    "runtime/var/raw/venues/bybit-BTCUSDT-mark-warmup-start.json": "83958bfda5b8847b6848d0a27f214af22b2d0026cfdd30fd5d476d796460b8de",
+    "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+    "runtime/var/raw/venues/bybit-BTCUSDT.json": "066509bb45aac8cfe5c13b7a5dd82a535c83848f89b281907d2e876c1aa408e4",
+    "runtime/var/raw/venues/bybit-SOLUSDT-funding-warmup-start.json": "a579b5a704be240700129e69e9babe745b74a5c369049086e4f5d412a28c4a97",
+    "runtime/var/raw/venues/bybit-SOLUSDT-mark-warmup-start.json": "e0da3637671157bf9eb8a04cc9121165884272740ca14c18948fce0ac5a0dc3e",
+    "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+    "runtime/var/raw/venues/bybit-SOLUSDT.json": "a75acf2290366891ed5f42d99bfe5a99c367a8a481330a5fadd49dcb87f9e2e2",
+    "runtime/var/raw/venues/hyperliquid-BTC-candle-research-start.json": "504d46f25ac23a8d51841e6aaa71c0ad0d2754a17e0c4142340f3f52d5f1f704",
+    "runtime/var/raw/venues/hyperliquid-BTC-candle-warmup-start.json": "26a0ba0d2f78cea08ab22c9ed9355b8e499076066bf993b06dd7b5a3fd27b8e6",
+    "runtime/var/raw/venues/hyperliquid-BTC-funding-research-start.json": "735848805208f835fb91bcdc2b5d356e6eafd17cff01668fb84a1736933380ed",
+    "runtime/var/raw/venues/hyperliquid-BTC-funding-warmup-start.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "runtime/var/raw/venues/hyperliquid-SOL-candle-research-start.json": "34e73fe6c46954b858b014794edde440d1c908dfe6b238a2562d25dc9c4f1f2f",
+    "runtime/var/raw/venues/hyperliquid-SOL-funding-research-start.json": "ceb1cf4a70db32453cb9fe1890ba04e78c49ec76db9df299dccde4769f6db611",
+    "runtime/var/raw/venues/hyperliquid-metaAndAssetCtxs.json": "a03911fd2fa081285d6e526877840b195f739fa7b34eb466e7cf3e39eb7cd8dd",
+    "runtime/var/raw/venues/hyperliquid-production-meta-2026-09-21.json": "8f5e7ea734bc7f159a822f6874df5310040c19f4220a6dd6ccf3ecb3da7d4a3c",
+    "runtime/var/raw/venues/hyperliquid-testnet-production-meta-2026-09-22.json": "1eefb69a0e8d341f6e1b5e175c1c118f0f4a3489969597e243858e38798e5f4a",
+    "runtime/var/venue-manifest.json": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82"
+  },
+  "daily_refresh_contract": {
+    "selected_W_days": 90,
+    "closed_prices_required": 91,
+    "study_files_SHA": {
+      "reports/immediate-sol-insurance-113/daily-window-study.json": "de0b5e4be5640ae7eb72000cb401537b4a91f86489229429bd6f0fc5e784dfd5",
+      "reports/immediate-sol-insurance-113/daily-window-study.csv": "058b79d6217f75dd19025fac2b319e3da41943e3d92998398fec06af9a37e934",
+      "reports/immediate-sol-insurance-113/daily-window-study.md": "894cdedaa3116938ca3e050c10e7992e60a73364bf2ad5583774273b89216c72"
+    },
+    "selection": {
+      "selected_W_days": 90,
+      "rule": "amongwindowswithin5%lowestmean14Dabsolute-logratio-error,chooseleastmeanabsoluteDAILYlog-kchange;tiespreferlongerW",
+      "primary_min_error_W": 90,
+      "within5pct_W": [
+        30,
+        45,
+        60,
+        90
+      ],
+      "selection_uses_only_origins_and_targets_before_20240901": true
+    },
+    "initial_asof20240901": {
+      "n": 90,
+      "sigma_BTC_daily": 0.027089532995315118,
+      "sigma_SOL_daily": 0.04469077983336603,
+      "k": 0.6061548510972757,
+      "rho": 0.7654149582533042,
+      "h_minvar_rho_k": 0.4639599900476591,
+      "beta_SOL_given_BTC_rho_over_k": 1.2627383198661728,
+      "asof": "2024-09-01",
+      "return_start": "2024-06-03",
+      "last_return_day": "2024-08-31",
+      "previous_close_anchor": "2024-06-02"
+    },
+    "canonical_end_asof20260901": {
+      "n": 90,
+      "sigma_BTC_daily": 0.01992141408650206,
+      "sigma_SOL_daily": 0.03011790366442941,
+      "k": 0.6614475664861809,
+      "rho": 0.8197738294303164,
+      "h_minvar_rho_k": 0.5422374045457402,
+      "beta_SOL_given_BTC_rho_over_k": 1.2393632858689236,
+      "asof": "2026-09-01",
+      "return_start": "2026-06-03",
+      "last_return_day": "2026-08-31",
+      "previous_close_anchor": "2026-06-02"
+    },
+    "rule": "AtnewactualBTCepisodefirstfilluseONLY90dailylogreturnsendingprecedingclosedUTCday(91closes);freeze kANDsigmaBTCforepisode. DailyrefreshONLYnewBTCepisodes;nofuturemedian/staticmonthlyloader/noopenpositionrebalanceondaychange.",
+    "prior_monthly_25rows": "HISTORICALDESCRIPTIVEONLY;supersededruntimeplan,NOTnewcandidateinputloader.",
+    "daily_provenance_limit": "ExistingnormalizedBybitdailyfileSHA/schema/calendarverified;originalrawdailycapturemanifestnotpresentinsharedcanonicaldata-root. TradecloseNOTmark/otherexchange."
+  },
+  "runner": {
+    "launcher": "scripts/launch_split_cover_native.py",
+    "collector": "scripts/collect_split_cover_native.py",
+    "preflight_code_SHA": {
+      "scripts/launch_split_cover_native.py": "20a8e7b14c5f8eb1b51ea045714e3dbacc1fbe0dc5cd28c7991ef80be0470002",
+      "scripts/collect_split_cover_native.py": "c8d8476ce093d585d9d9594de0dd754cb0b520b0586eb84a55ba206e46ac2e37",
+      "runtime/coinmaster/research/minute_risk.py": "961c65c7894bf37e8bf79fcc3f085be35502515c6c0eb5d457078610b540d2f7"
+    },
+    "installed_nautilus_trader_version": "1.231.0",
+    "layout": "Perjobfrozenpublicsourcecopies+SHAmanifest;EXISTINGrepo/runtime/var/dataREADONLYbind(hashverifiedsameasexisting/var/lib/.../data)/runtime.venvREADONLYbind;ZEROmarketdatacopies/variant. uid994/gid986/privateNetwork/env-i/noenvsecrets/ProtectHome/strictProtectSystem.",
+    "sequential_fences": {
+      "ControlGroup": "/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice",
+      "MemoryMax": "681574400",
+      "MemorySwapMax": "0"
+    },
+    "active_research_PIDs": [],
+    "pilot_readonly_identity": {
+      "MainPID": "2009732",
+      "NRestarts": "0",
+      "ActiveState": "active"
+    },
+    "native_observer": "EXISTINGDIRECTgzipminute-native-risk.csv.gz,compresslevel1,3nativecallbackphases/pairedclose+separateconditionalOHLC;no uncompressedtransient/copy/archive.",
+    "funding": "NewUUIDSQLitefamilyperjobinsidewritableresult,hashwholefamily;doNOTreuseanotherjournal. Candidatecountsallowedtochange/control1320NOTforced.",
+    "completion": "Actualjournalexit0+Deactivatedsuccessfully ANDuniquecompletedJSON/full1051200feedrows/nativeflat/Qconservation/frozenSHA/allnativeobservercurvecounts+freshjournal;systemd--collectfinal0ALONEisNOTsuccess."
+  },
+  "resources": {
+    "MemAvailable_bytes": 1277526016,
+    "disk_free_bytes": 2749603840,
+    "prior_actual_footprints": {
+      "cm115-split-risk-first-cap50-20261018b": {
+        "whole_job_bytes": 79790267,
+        "result_bytes": 78083923,
+        "observer_gzip_bytes": 75622433,
+        "files": 107
+      },
+      "cm115-split-risk-first-dd-cov-20261018a": {
+        "whole_job_bytes": 107085089,
+        "result_bytes": 105378631,
+        "observer_gzip_bytes": 88735349,
+        "files": 107
+      },
+      "cm115-split-risk-first-split-atr-20261018a": {
+        "whole_job_bytes": 40910749,
+        "result_bytes": 39203949,
+        "observer_gzip_bytes": 34201933,
+        "files": 107
+      }
+    },
+    "retained_budget_each_bytes": 268435456,
+    "active_peak_budget_bytes": 536870912,
+    "operational_headroom_bytes": 1073741824,
+    "required_disk_free_before_EACHlaunch_bytes": 1610612736,
+    "RAM_floor_before_EACHlaunch_bytes": 734003200,
+    "free_before_fourth_if_3retained_at_budget_bytes": 1944297472,
+    "queue_fits_conservative_budget_now": true,
+    "instruction": "RecheckbeforeEACHsequentiallaunch. Pauseifactualfinishedjob>256MiBorfree<1GiB+512MiBpeakbudget;rootmustdecidenext. Noarchive/delete/kill/services/VPN/Hermes. Nativeengine650MiBswap0/Nice10/CPUWeight10;nootherheavyanalysiswhileMemAvailable<700MiB."
+  },
+  "pending_engine_owned_blockers": [
+    "DefaultOFFmutuallyexclusiveimmediateflags/commoncontractimplementation/focusednativeproof/independentreview/finalsourcefreezeandROOTlaunchGO. PreflightHEADisNOTapprovedcandidatecommit.",
+    "Launcheraddnewenum+freeze dailyinputSHA/newsource;collectoraddnewpolicytoauditSHAandfreshfundingjournalcapture(oldbranchesonlyconditional/risk-first).",
+    "Newflagmustdeliberatelyenable15m/1hconfirmation/boundedcache/bar_executiongates;staleoldflagguardmustnotdropdata/confirmations. Declareexecutionroutingdifferencesvsselected6077.",
+    "DisableoriginalstandaloneSOLoverlayininsurancevariantsexplicitly;oneNETTINGtarget/owner;newW90causalruntimefromdailyhistory,notstaticmonthlyCSV.",
+    "RecoveryBTCnativeknownrealized+unrealizedafterfeesrequiresactualnativeaccountdata;fundingUNKNOWNnotzero;noanalyticalsecondPnL/bucketledger.",
+    "Beforelaunchfreezeexactconfig+candidatepolicy/code/data/fees/tiers/runtimepins;actualcalendar/firstquote/P0/Qnormalization/executiondelayscomparedpostrun,notassumed."
+  ],
+  "planned_four_runs": [
+    {
+      "variant": "i25",
+      "unit_and_job": "cm115-split-immediate-i25-20261019a",
+      "root": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a",
+      "receipt": "reports/immediate-sol-insurance-113/i25-receipt.json"
+    },
+    {
+      "variant": "i25-light",
+      "unit_and_job": "cm115-split-immediate-i25-light-20261019a",
+      "root": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a",
+      "receipt": "reports/immediate-sol-insurance-113/i25-light-receipt.json"
+    },
+    {
+      "variant": "i25-recovery",
+      "unit_and_job": "cm115-split-immediate-i25-recovery-20261019a",
+      "root": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a",
+      "receipt": "reports/immediate-sol-insurance-113/i25-recovery-receipt.json"
+    },
+    {
+      "variant": "i33",
+      "unit_and_job": "cm115-split-immediate-i33-20261019a",
+      "root": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a",
+      "receipt": "reports/immediate-sol-insurance-113/i33-receipt.json"
+    }
+  ],
+  "candidate_hash_contract": "Frozencommit+immutable-source-hashes+inputhashes;recomputeatsnapshotandcollector;data/fee/venue/policybaselineexactunlessexplicitSOLonlycontractdelta;nevercandidatehashfrommutableworkingtree",
+  "selection_criterion": "MaxTOTAL among validcomparablefourvariantswithDecimalglobalnative1mDD<=50%;ifnoneNO_ELIGIBLE_WINNER/noextraengine/repeat. ConditionalOHLCseparate/notintraminuteguarantee.",
+  "write_scope": "ONLYthispreflightJSON;nosource/common.ops/index/Project/pilot/servicechanges;engineownerlaunchesonlyafterrootGO",
+  "GO_receipt": {
+    "control_and_input_gate": "PASS_SHA_VERIFIED",
+    "resource_gate": "PASS_AT_RECORDED_SNAPSHOT_RECHECK_EACH_RUN",
+    "native_launch_gate": "PENDING_ENGINE_EDGE_FIXES_FREEZE_INDEPENDENT_REVIEW_AND_ROOT_EXPLICIT_GO",
+    "authorized_units": [
+      {
+        "variant": "i25",
+        "unit_and_job": "cm115-split-immediate-i25-20261019a",
+        "root": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a",
+        "receipt": "reports/immediate-sol-insurance-113/i25-receipt.json"
+      },
+      {
+        "variant": "i25-light",
+        "unit_and_job": "cm115-split-immediate-i25-light-20261019a",
+        "root": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a",
+        "receipt": "reports/immediate-sol-insurance-113/i25-light-receipt.json"
+      },
+      {
+        "variant": "i25-recovery",
+        "unit_and_job": "cm115-split-immediate-i25-recovery-20261019a",
+        "root": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a",
+        "receipt": "reports/immediate-sol-insurance-113/i25-recovery-receipt.json"
+      },
+      {
+        "variant": "i33",
+        "unit_and_job": "cm115-split-immediate-i33-20261019a",
+        "root": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a",
+        "receipt": "reports/immediate-sol-insurance-113/i33-receipt.json"
+      }
+    ],
+    "max_native_runs": 4,
+    "additional_control_BTC_only_or_repeat_authorized": false,
+    "security": "Existingrunnerenv-i/PrivateNetwork/uid994gid986/read-onlypublicinputs+venv/no.envorcredentials snapshots;noexternalsending/venue/pilot/service/VPN/Hermesactions.",
+    "no_market_copy": "BothEXISTINGrootsverifiedequivalent;sourcejobbindsrepo/runtime/var/dataREADONLY,notfourfreshcopies.",
+    "separate_funding": "EachunitfreshUUIDnativeSQLitefamilyinsideownresult;collectorSHAwholefamilyandnativefundingaudit;NOshared/replayedjournal. SignedfundingUNKNOWNwithoutdirectcashdeltaevidence.",
+    "observer_retention": "EXISTINGDIRECTlosslessgzipoutputatwrite-time,notpost-hocarchive. PreservecompletedrawJSON/CSV/gzip/journalunchanged;recordgzipcompressedsize+SHAafterwriterclose. No delete/archive/uncompressedfulltracecopy.",
+    "duration": "NOT_EXPORTED_IN_SIX_KNOWN_COMPACT_RECEIPTS_OR_WITNESSES; noelapsed/CPUdurationfound. NoETAinventedandnolargejournal/logscanundertaken.",
+    "prior_native_receipt_peak_RSS_bytes": {
+      "cap50": 633204736,
+      "dd_cov": 669999104,
+      "split_atr": 640057344
+    },
+    "duration_sources_checked": [
+      "reports/sol-risk-first-20261018/risk-first-cap50-receipt.json",
+      "reports/sol-risk-first-20261018/risk-first-cap50-technical-witness.json",
+      "reports/sol-risk-first-20261018/risk-first-dd-cov-receipt.json",
+      "reports/sol-risk-first-20261018/risk-first-dd-cov-technical-witness.json",
+      "reports/sol-risk-first-20261018/risk-first-split-atr-receipt.json",
+      "reports/sol-risk-first-20261018/risk-first-split-atr-technical-witness.json"
+    ]
+  }
+}

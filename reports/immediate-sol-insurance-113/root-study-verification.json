@@ -1,0 +1,19 @@
+{
+  "status": "STUDY_ARTIFACT_ARITHMETIC_PASS_NOT_TRADING_OPTIMUM",
+  "study_sha256": "de0b5e4be5640ae7eb72000cb401537b4a91f86489229429bd6f0fc5e784dfd5",
+  "candidate_windows": [
+    30,
+    45,
+    60,
+    90,
+    120,
+    150,
+    180
+  ],
+  "selection_recomputed": 90,
+  "strict_pre_reference_selection": true,
+  "new_price_reads": 0,
+  "new_native_engines": 0,
+  "daily_refresh": true,
+  "freeze_k_and_sigma_for_existing_episode": true
+}
