@@ -1,7 +1,7 @@
 {
-  "verified_at_utc": "2026-10-19T22:00:17.022984+00:00",
-  "statistical_member_sha_checks": 41,
-  "single_candidate": "adverse_btc_half_once_v1",
+  "verified_at_utc": "2026-10-19T22:07:12.918899+00:00",
+  "statistical_member_sha_checks": 45,
+  "single_candidate": null,
   "input_data": "PINNED_GENUINE_BYBIT1M_NO_SUBSTITUTE",
   "all_price_proxies_not_native_cash": true,
   "new_native_backtest": false,
@@ -11,8 +11,8 @@
   "pilot_changed": false,
   "future_absolute_entry_Q_unchanged_claim": false,
   "new_TOTAL_ROI_DD_claim": false,
-  "scope": "ONE_FIXED_Q90_ADVERSE_RISK_CLASSIFIER_THEN_PROPOSE50PCT_ONCE_NO_SIZING_LATCH",
-  "narrow_review": "GO_ANALYSIS_CONTRACT_AFTER_ONE_TP_RIGHT_ALLOCATION_CORRECTION",
+  "scope": "ANALYSIS_COMPLETE_NO_QUALIFIED_CANDIDATE_AFTER_REQUIRED_PAYOFF_BOUND",
+  "narrow_review": "QUANTITY_CONTRACT_CONSISTENT_ONLY_NOT_ECONOMIC_GO",
   "protected_service_check": {
     "main_pid": 2009732,
     "active": true,
@@ -24,7 +24,10 @@
     "swap_limit": 0,
     "io_weight": 100
   },
-  "frozen_manifest_sha_checks": 6,
+  "frozen_manifest_sha_checks": 7,
   "role_correct_fee_sensitivity": "PAIRED_MEANS_REMAIN_NEGATIVE_NO_NATIVE_MAKER_FILL_CLAIM",
-  "git_whitespace_check": "PASS_WITH_CSV_CRLF_RECOGNIZED_FROZEN_ARTIFACT_BYTES_PRESERVED"
+  "git_whitespace_check": "PASS_WITH_CSV_CRLF_RECOGNIZED_FROZEN_ARTIFACT_BYTES_PRESERVED",
+  "withdrawn_candidate": "adverse_btc_half_once_v1",
+  "adverse_payoff_bound": "NEGATIVE_IN_BOTH_PERIODS_RECOMMENDATION_WITHDRAWN",
+  "project_readback": "PASS_NO_QUALIFIED_CANDIDATE_TODO"
 }

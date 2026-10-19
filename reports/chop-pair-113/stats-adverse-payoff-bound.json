@@ -1,0 +1,62 @@
+{
+  "status": "OPTIMISTIC_RAW_PRICE_ENDPOINT_DELTA_BOUND_NOT_NATIVE_PAYOFF",
+  "threshold": 0.019175212144,
+  "fraction": 0.5,
+  "formula": "threshold_exceeded ? .5*(-threshold-terminal_signed_return) :0",
+  "source": "reports/chop-pair-113/stats-adverse-screen-events.csv",
+  "source_sha256": "9bf3fcb8a1ffbdd9ef8310bcd79eb66e6dc97a450befc91eea01e55fb5116a8d",
+  "results": [
+    {
+      "period": "calibration",
+      "subset": "all",
+      "n": 57,
+      "crossed_n": 15,
+      "positive_delta_count": 7,
+      "negative_delta_count": 8,
+      "zero_delta_count": 42,
+      "sum_upper_delta_initialNB": -0.02504182320960498,
+      "mean_upper_delta_initialNB": -0.0004393302317474558
+    },
+    {
+      "period": "calibration",
+      "subset": "crossed_only",
+      "n": 15,
+      "crossed_n": 15,
+      "positive_delta_count": 7,
+      "negative_delta_count": 8,
+      "zero_delta_count": 0,
+      "sum_upper_delta_initialNB": -0.02504182320960498,
+      "mean_upper_delta_initialNB": -0.001669454880640332
+    },
+    {
+      "period": "holdout",
+      "subset": "all",
+      "n": 48,
+      "crossed_n": 15,
+      "positive_delta_count": 7,
+      "negative_delta_count": 8,
+      "zero_delta_count": 33,
+      "sum_upper_delta_initialNB": -0.010697017101838253,
+      "mean_upper_delta_initialNB": -0.0002228545229549636
+    },
+    {
+      "period": "holdout",
+      "subset": "crossed_only",
+      "n": 15,
+      "crossed_n": 15,
+      "positive_delta_count": 7,
+      "negative_delta_count": 8,
+      "zero_delta_count": 0,
+      "sum_upper_delta_initialNB": -0.010697017101838253,
+      "mean_upper_delta_initialNB": -0.0007131344734558835
+    }
+  ],
+  "limitations": [
+    "Exact threshold fill is optimistic: gaps, executable latency, spread, fees and funding excluded",
+    "Compare only observed finite min24h/originalexit endpoint; not originaltradeTPcashflow/positionquantity/nativeequity",
+    "No TPquantity reservation, pendingQ2, partials, originalSOLalpha, margin or compounding model",
+    "Classification of negativeendpoint does not prove reduction payoff; endpoint can be lessadverse than threshold, implyingrecoverycut",
+    "Negative optimisticbound rejects positiveaggregatepricebenefit within this fixeddiagnostic, not everyfuturestrategy",
+    "No threshold/action retuning, no marketdataread, no nativeengine or portfolioTOTAL/ROI/DD"
+  ]
+}

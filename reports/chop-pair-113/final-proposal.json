@@ -1,7 +1,7 @@
 {
   "date_moscow": "2026-10-20",
-  "status": "ANALYSIS_COMPLETE_AWAIT_OWNER_IMPLEMENTATION_AND_NATIVE_RUN_APPROVAL",
-  "selected_hypothesis": "adverse_btc_half_once_v1",
+  "status": "ANALYSIS_COMPLETE_NO_QUALIFIED_CANDIDATE",
+  "selected_hypothesis": null,
   "baseline": {
     "terminal_TOTAL": "6077107.23887483",
     "roi_percent": "60671.0723887483",
@@ -10,25 +10,6 @@
   "economic_backtest_performed": false,
   "implementation_performed": false,
   "pilot_changed": false,
-  "rule": {
-    "reference": "FIRST_ACTUAL_NATIVE_BTC_FILL_PLANREF",
-    "adverse_threshold_fraction": "0.019175212144",
-    "trigger": "FIRST_COMPLETED_BTC_1M_CLOSE_CROSSING_THRESHOLD",
-    "action": "ONE_NATIVE_REDUCE_ONLY_50_PERCENT_OF_ACTUAL_REMAINING_BTC_LOT_ROUNDED",
-    "maximum_economic_cuts_per_episode": 1,
-    "duplicate_or_time_rearm": false,
-    "original_authorized_Q2": "UNCHANGED_MAY_FILL_AFTER_CUT_NO_SECOND_RISK_CUT",
-    "BTC_entry_sizing_policy": "UNCHANGED_NOT_ABSOLUTE_HISTORICAL_Q",
-    "BTC_TPs": "UNCHANGED",
-    "SOL_alpha": "UNCHANGED_NO_NEW_INSURANCE",
-    "future_entry_multipliers": "UNCHANGED",
-    "next_opposite_BTC_entry": "ORIGINAL_NATIVE_REGIME_CLOSURE_RETAINED_NO_CARRY",
-    "TP_right_retirement": "EACH_ACTUAL_RISK_FILL_DELTA_PRO_RATA_OUTSTANDING_TP_RIGHTS_SUM_RETIREMENT_EQUALS_DELTA_LOT_ROUNDED",
-    "TP_right_budget_includes": "ORIGINAL_EPISODE_FUTURE_AUTHORIZED_Q2_EXIT_RIGHTS_NOT_FILLED_TP_HISTORY",
-    "Q2_after_risk_fill": "ENTRY_AUTHORIZATION_UNCHANGED_DOES_NOT_RECREATE_RETIRED_EXIT_RIGHTS_OR_RETIRE_AGAIN",
-    "risk_fill_SOL_rights": "NONE_RETIRED_TP_SLOT_IS_NOT_ACTUAL_TP_FILL",
-    "pending_exit_leaves": "CANCEL_TERMINAL_ACK_REQUIRED_LATEFILLS_RECONCILED_ALL_NATIVE_REDUCE_LEAVES_CAPPED"
-  },
   "precheck": {
     "label": "24H_OR_ORIGINAL_EXIT_SIGNED_PRICE_ENDPOINT_NOT_NATIVE_TRADE_PNL",
     "calibration_positive_n": 29,
@@ -50,7 +31,8 @@
     "BLIND_PAIRED_LOSER_CLOSE_AT_WINNER_TP",
     "PERMANENT_FULL_SOL_BETA_COVERAGE",
     "FULL_REMAINDER_BE_AFTER_TP1",
-    "CHOP_PARTIAL_TP2_BE_BOUND"
+    "CHOP_PARTIAL_TP2_BE_BOUND",
+    "ADVERSE50_FIXED_Q90_PRICE_CUT_AS_QUALIFIED_ROI_PRESERVING_CANDIDATE"
   ],
   "exact_new_TOTAL": null,
   "exact_new_ROI": null,
@@ -63,7 +45,7 @@
     "STOP_GAP_AND_NATIVE_EXECUTION",
     "ENTRY_Q_FEEDBACK_FROM_CHANGED_EQUITY"
   ],
-  "full_run_budget": "ONE_CANDIDATE_REUSE_EXISTING_CONTROL_NO_OPTIMIZER",
+  "full_run_budget": "NONE_NO_QUALIFIED_CANDIDATE_NO_AUTORUN",
   "deployment_authorized": false,
   "paired_precheck_fee_sensitivity": {
     "status": "SAVED_POINT_PRICE_ROLE_FEE_SENSITIVITY_NOT_NATIVE_FILL",
@@ -74,5 +56,35 @@
     "holdout_minimum_variance_mean_percent_BTC_notional": "-0.06676362965659482",
     "negative_means_persist": true,
     "full_three_TP_lifecycle_tested": false
-  }
+  },
+  "withdrawn_candidate": "adverse_btc_half_once_v1",
+  "withdrawn_reason": "NEGATIVE_OPTIMISTIC_ENDPOINT_DELTA_IN_BOTH_PERIODS_CLASSIFICATION_NOT_PAYOFF_EVIDENCE",
+  "withdrawn_contract": {
+    "reference": "FIRST_ACTUAL_NATIVE_BTC_FILL_PLANREF",
+    "adverse_threshold_fraction": "0.019175212144",
+    "trigger": "FIRST_COMPLETED_BTC_1M_CLOSE_CROSSING_THRESHOLD",
+    "action": "ONE_NATIVE_REDUCE_ONLY_50_PERCENT_OF_ACTUAL_REMAINING_BTC_LOT_ROUNDED",
+    "maximum_economic_cuts_per_episode": 1,
+    "duplicate_or_time_rearm": false,
+    "original_authorized_Q2": "UNCHANGED_MAY_FILL_AFTER_CUT_NO_SECOND_RISK_CUT",
+    "BTC_entry_sizing_policy": "UNCHANGED_NOT_ABSOLUTE_HISTORICAL_Q",
+    "BTC_TPs": "UNCHANGED",
+    "SOL_alpha": "UNCHANGED_NO_NEW_INSURANCE",
+    "future_entry_multipliers": "UNCHANGED",
+    "next_opposite_BTC_entry": "ORIGINAL_NATIVE_REGIME_CLOSURE_RETAINED_NO_CARRY",
+    "TP_right_retirement": "EACH_ACTUAL_RISK_FILL_DELTA_PRO_RATA_OUTSTANDING_TP_RIGHTS_SUM_RETIREMENT_EQUALS_DELTA_LOT_ROUNDED",
+    "TP_right_budget_includes": "ORIGINAL_EPISODE_FUTURE_AUTHORIZED_Q2_EXIT_RIGHTS_NOT_FILLED_TP_HISTORY",
+    "Q2_after_risk_fill": "ENTRY_AUTHORIZATION_UNCHANGED_DOES_NOT_RECREATE_RETIRED_EXIT_RIGHTS_OR_RETIRE_AGAIN",
+    "risk_fill_SOL_rights": "NONE_RETIRED_TP_SLOT_IS_NOT_ACTUAL_TP_FILL",
+    "pending_exit_leaves": "CANCEL_TERMINAL_ACK_REQUIRED_LATEFILLS_RECONCILED_ALL_NATIVE_REDUCE_LEAVES_CAPPED",
+    "status": "ARCHIVE_ONLY_NOT_FOR_IMPLEMENTATION"
+  },
+  "adverse_payoff_upper_bound": {
+    "source": "stats-adverse-payoff-bound.json",
+    "calibration_all_mean_fraction_initialNB": -0.0004393302317474558,
+    "holdout_all_mean_fraction_initialNB": -0.0002228545229549636,
+    "extra_fees_or_gaps_included": false,
+    "native_cashflow_or_DD_proof": false
+  },
+  "next_scope_decision": "RETAIN_ALL_ORIGINAL_OPPOSITE_BTC_ENTRIES_OR_ALLOW_CARRY_WITH_CHANGED_ENTRY_CALENDAR"
 }
