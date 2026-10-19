@@ -1,0 +1,10 @@
+{
+  "checked_utc": "2026-10-19T16:24:48.842163+00:00",
+  "receipt_sha256": "6f464eef99d7b076a40baa48f5dc88b3814e88b465bbec66a804f069c938c6dd",
+  "raw_result_sha256": "8b594b826419c676c5579f68c8f16ca89dbff1b3925928a92df4e44327fc3031",
+  "terminal_total": "7720.28353387",
+  "technical_acceptance": "PASS",
+  "economic_eligible": false,
+  "next": "I33 ACTIVE final fourth; no fifth engine",
+  "project_comment": "https://github.com/VF78/coinmaster/issues/119#issuecomment-6271939665"
+}
