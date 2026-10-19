@@ -1,0 +1,24 @@
+{
+  "readback_at_utc": "2026-10-19T21:23:06.237813+00:00",
+  "owner_decision": "REJECT_ALPHA_NO_REPEAT",
+  "checkpoint": "c82b208b1bea2c44ebb77a92276af9df38330acd",
+  "items": [
+    {
+      "issue": 120,
+      "state": "CLOSED",
+      "project_status": "Done",
+      "body_readback": "PASS",
+      "url": "https://github.com/VF78/coinmaster/issues/120"
+    },
+    {
+      "issue": 113,
+      "state": "OPEN",
+      "project_status": "Todo",
+      "body_readback": "PASS",
+      "url": "https://github.com/VF78/coinmaster/issues/113"
+    }
+  ],
+  "financial_comparison_completed": false,
+  "owner_waived_exact_TOTAL_retry": true,
+  "report": "https://github.com/VF78/coinmaster/blob/c82b208b1bea2c44ebb77a92276af9df38330acd/reports/alpha-cushion-113/analysis-export-outcome.md"
+}

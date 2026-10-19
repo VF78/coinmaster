@@ -1,0 +1,26 @@
+{
+  "verified_at_utc": "2026-10-19T21:23:46.628837+00:00",
+  "checkpoint": "c82b208b1bea2c44ebb77a92276af9df38330acd",
+  "github_actions": {
+    "total_count": 0,
+    "claim": "NO_CI_RUN_REGISTERED_NOT_CI_PASS"
+  },
+  "native_focused_test": "1PASS11.14s",
+  "pilot": {
+    "unit": "coinmaster-hl-stageg-testnet.service",
+    "main_pid": 2009732,
+    "active": true,
+    "nrestarts": 0
+  },
+  "research": {
+    "tasks": 0,
+    "ram_bytes": 681574400,
+    "swapmax": 0,
+    "io_weight": 100
+  },
+  "temporary_swapfiles": "BOTH_REMOVED; original /swapfile only",
+  "disk_free_bytes": 3353235456,
+  "new_backtest": false,
+  "deployment": false,
+  "real_orders": false
+}
