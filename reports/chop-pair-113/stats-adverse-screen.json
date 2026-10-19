@@ -1,0 +1,58 @@
+{
+  "status": "ONE_FROZEN_ADVERSE_CLASSIFIER_PRICE_PROXY_ONLY",
+  "train_positive_endpoint_n": 29,
+  "q90_adverse_magnitude": 0.019175212144064036,
+  "quantile_method": "numpy linear default, one predetermined90thpercentile, no search",
+  "threshold_rule": "Observed adverse magnitude strictly exceeds frozen q90 of calibration terminalpositive context pathMAE",
+  "normalization": "Raw percent only; no causal entryATR cached in saved CSV. Volatility confounding unresolved.",
+  "summary": [
+    {
+      "period": "calibration",
+      "n": 57,
+      "truncated": 24,
+      "endpoint_positive": 29,
+      "endpoint_negative": 28,
+      "endpoint_zero": 0,
+      "cross_count": 15,
+      "cross_positive": 3,
+      "cross_negative": 12,
+      "negative_tail_caught_fraction": 0.42857142857142855,
+      "positive_contexts_affected_fraction": 0.10344827586206896,
+      "negative_fraction_among_crosses": 0.8,
+      "uncaught_negative_n": 16,
+      "worst_uncaught_negative_MAE": -0.019086678625094722,
+      "worst_uncaught_terminal_return": -0.012028843699481095,
+      "worst_caught_MAE": -0.05873740039715458
+    },
+    {
+      "period": "holdout",
+      "n": 48,
+      "truncated": 14,
+      "endpoint_positive": 23,
+      "endpoint_negative": 25,
+      "endpoint_zero": 0,
+      "cross_count": 15,
+      "cross_positive": 2,
+      "cross_negative": 13,
+      "negative_tail_caught_fraction": 0.52,
+      "positive_contexts_affected_fraction": 0.08695652173913043,
+      "negative_fraction_among_crosses": 0.8666666666666667,
+      "uncaught_negative_n": 12,
+      "worst_uncaught_negative_MAE": -0.015766871080352574,
+      "worst_uncaught_terminal_return": -0.01312538840222277,
+      "worst_caught_MAE": -0.050896113886631955
+    }
+  ],
+  "source": "reports/chop-pair-113/stats-btc-be-events.csv",
+  "source_sha256": "74c540aed04a21bd8ff699616c905be268226b35df8bea42e467b01719cf974f",
+  "provisional_candidate": "ADVERSE-50 onceepisode reduce50%actualremainingBTC when adverse exceedsnoiseenvelope, no readds. Preserve originalSOLalpha/TP and BTCentrycalendar/direction/size decisions. NOTimplemented; Q2 priority/acceptedgroupremaining/orderreservation/margin/nativeNETTING still unresolved.",
+  "limitations": [
+    "Label is finite min24h/originalnativeexit signedprice endpoint, NOT native completedtrade winner or realizedPnL",
+    "PathMAE is full finitefuturepath used ONLYoutcomediagnostic; implementation trigger would observe current adversecausally",
+    "Classification endcensoring dependsnativeexits; 24hendpoint can reverse beyondhorizon",
+    "No causalATRcached, rawpercent regime-volatility confounding possible",
+    "No stopfill/executableprice/gaps/funding/cost/partialexit return/money/ROI/DD or quantity estimate",
+    "Cannot compare originalSOLalphainteractions/nativegroupcash/Q2effects",
+    "Singlefrozenquantile, no OOSthreshold tuning or furtherloops"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "reports/chop-pair-113/stats-TP.csv": "17506b52e8bbaf115ecc017304d26e6570ee01ed4574a823269faa5d8fa39f1b",
+  "reports/chop-pair-113/stats-analysis.py": "b7d5c12795b90b5bacda1784edd08d62094f0ff10585da37be924a087c3e94da",
+  "reports/chop-pair-113/stats-coefficients.csv": "0212351ff54a66d0e2a263cbf6b5082d7471eef1a3046efc9385fa24e13bcc9f",
+  "reports/chop-pair-113/stats-detectors.csv": "81c2cb7b0d36bb12b65a1b4aa7fb4bba042da7d1a4f9c984a2c81510e627d329",
+  "reports/chop-pair-113/stats-finish.log": "686935b5e6d1b3de995e2c14254e15ddaeafa7079e34bcf61d25ece0f449faa5",
+  "reports/chop-pair-113/stats-finish.py": "c2e409ffffdc58ba39a50ad13226ad761b8de4fdf5b1aca99865609fe35cc23a",
+  "reports/chop-pair-113/stats-pair-examples.csv": "0759c94ed92191b413a8d490c7548efb57a84209388782be3e8e00f0d46bf123",
+  "reports/chop-pair-113/stats-paths.csv": "d8d398706c598b3dfb7ff9ab2f0c052f6c6bd21f34e0eac563c877ce4d2b8258",
+  "reports/chop-pair-113/stats-report.md": "e1f4168171957e8ec82417ee341a592bafbbb7da8bcd08f267b2fa32a2a736fc",
+  "reports/chop-pair-113/stats-report.py": "cf4f2b300405f302e83fcb52ce7383508fa9369201a1d19a17ef7e957fb74992",
+  "reports/chop-pair-113/stats-run.log": "6724e1000cf6b447b99b06f0853344191651601875b72a66f6e383d3e1698255",
+  "reports/chop-pair-113/stats-summary.json": "957c04752f7efad9240fd4364a0265d136cac82821903289e15f06c7b82e6c42"
+}

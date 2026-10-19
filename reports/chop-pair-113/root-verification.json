@@ -1,0 +1,30 @@
+{
+  "verified_at_utc": "2026-10-19T22:00:17.022984+00:00",
+  "statistical_member_sha_checks": 41,
+  "single_candidate": "adverse_btc_half_once_v1",
+  "input_data": "PINNED_GENUINE_BYBIT1M_NO_SUBSTITUTE",
+  "all_price_proxies_not_native_cash": true,
+  "new_native_backtest": false,
+  "new_portfolio_PNL_engine": false,
+  "implementation": false,
+  "deployment": false,
+  "pilot_changed": false,
+  "future_absolute_entry_Q_unchanged_claim": false,
+  "new_TOTAL_ROI_DD_claim": false,
+  "scope": "ONE_FIXED_Q90_ADVERSE_RISK_CLASSIFIER_THEN_PROPOSE50PCT_ONCE_NO_SIZING_LATCH",
+  "narrow_review": "GO_ANALYSIS_CONTRACT_AFTER_ONE_TP_RIGHT_ALLOCATION_CORRECTION",
+  "protected_service_check": {
+    "main_pid": 2009732,
+    "active": true,
+    "nrestarts": 0
+  },
+  "research_state": {
+    "tasks": 0,
+    "ram_limit_bytes": 681574400,
+    "swap_limit": 0,
+    "io_weight": 100
+  },
+  "frozen_manifest_sha_checks": 6,
+  "role_correct_fee_sensitivity": "PAIRED_MEANS_REMAIN_NEGATIVE_NO_NATIVE_MAKER_FILL_CLAIM",
+  "git_whitespace_check": "PASS_WITH_CSV_CRLF_RECOGNIZED_FROZEN_ARTIFACT_BYTES_PRESERVED"
+}

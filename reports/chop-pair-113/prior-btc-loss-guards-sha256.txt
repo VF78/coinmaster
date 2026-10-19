@@ -1,0 +1,4 @@
+782330f9faed8889c1ca10282a37637336a713015fe9332f4c0370e57d0af893  reports/chop-pair-113/prior-btc-loss-guards.md
+7ad41e92dc386dc536af5238cf2cffe313cd236b7f78051740d086ea152fa5ed  reports/selective-lifecycle-cap30m-113/risk-budget-hedge-comparison/README.md
+f7fa22895ecadcfc1364cfb0add372161fee13d91f57c809618d544db90379ef  reports/v3-risk-four-113/comparison/README.md
+481e526c7fa3b8db5bacb7a05c42bbd6e034f4bc086a8cee5d3eb99185767f76  reports/v3-risk-four-113/implementation/receipt.json

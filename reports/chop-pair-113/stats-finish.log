@@ -1,0 +1,240 @@
+{
+  "detectors": [
+    {
+      "period": "calibration",
+      "detector": "flips2",
+      "days": 358,
+      "flag_days": 76,
+      "label_days": 49,
+      "tp": 3,
+      "fp": 73,
+      "fn": 46,
+      "tn": 236,
+      "precision": 0.039473684210526314,
+      "recall": 0.061224489795918366,
+      "false_positive_rate": 0.23624595469255663,
+      "balanced_accuracy": 0.41248926755168086,
+      "onset_detected": 2,
+      "onset_missed": 18,
+      "onset_delay_median_D": 1.5,
+      "end_delay_median_D": 0.0
+    },
+    {
+      "period": "calibration",
+      "detector": "flips2_near",
+      "days": 358,
+      "flag_days": 58,
+      "label_days": 49,
+      "tp": 2,
+      "fp": 56,
+      "fn": 47,
+      "tn": 253,
+      "precision": 0.034482758620689655,
+      "recall": 0.04081632653061224,
+      "false_positive_rate": 0.18122977346278318,
+      "balanced_accuracy": 0.4297932765339146,
+      "onset_detected": 1,
+      "onset_missed": 19,
+      "onset_delay_median_D": 3.0,
+      "end_delay_median_D": 0.0
+    },
+    {
+      "period": "calibration",
+      "detector": "near_ER",
+      "days": 358,
+      "flag_days": 100,
+      "label_days": 49,
+      "tp": 22,
+      "fp": 78,
+      "fn": 27,
+      "tn": 231,
+      "precision": 0.22,
+      "recall": 0.4489795918367347,
+      "false_positive_rate": 0.2524271844660194,
+      "balanced_accuracy": 0.5982762036853576,
+      "onset_detected": 9,
+      "onset_missed": 11,
+      "onset_delay_median_D": 0.0,
+      "end_delay_median_D": 0.0
+    },
+    {
+      "period": "calibration",
+      "detector": "near_slope",
+      "days": 358,
+      "flag_days": 170,
+      "label_days": 49,
+      "tp": 37,
+      "fp": 133,
+      "fn": 12,
+      "tn": 176,
+      "precision": 0.21764705882352942,
+      "recall": 0.7551020408163265,
+      "false_positive_rate": 0.43042071197411,
+      "balanced_accuracy": 0.6623406644211083,
+      "onset_detected": 15,
+      "onset_missed": 5,
+      "onset_delay_median_D": 0.0,
+      "end_delay_median_D": 8.0
+    },
+    {
+      "period": "calibration",
+      "detector": "ER_slope",
+      "days": 358,
+      "flag_days": 150,
+      "label_days": 49,
+      "tp": 26,
+      "fp": 124,
+      "fn": 23,
+      "tn": 185,
+      "precision": 0.17333333333333334,
+      "recall": 0.5306122448979592,
+      "false_positive_rate": 0.40129449838187703,
+      "balanced_accuracy": 0.5646588732580411,
+      "onset_detected": 12,
+      "onset_missed": 8,
+      "onset_delay_median_D": 0.0,
+      "end_delay_median_D": 0.0
+    },
+    {
+      "period": "holdout",
+      "detector": "flips2",
+      "days": 358,
+      "flag_days": 46,
+      "label_days": 38,
+      "tp": 12,
+      "fp": 34,
+      "fn": 26,
+      "tn": 286,
+      "precision": 0.2608695652173913,
+      "recall": 0.3157894736842105,
+      "false_positive_rate": 0.10625,
+      "balanced_accuracy": 0.6047697368421052,
+      "onset_detected": 6,
+      "onset_missed": 4,
+      "onset_delay_median_D": 0.0,
+      "end_delay_median_D": 3.0
+    },
+    {
+      "period": "holdout",
+      "detector": "flips2_near",
+      "days": 358,
+      "flag_days": 37,
+      "label_days": 38,
+      "tp": 11,
+      "fp": 26,
+      "fn": 27,
+      "tn": 294,
+      "precision": 0.2972972972972973,
+      "recall": 0.2894736842105263,
+      "false_positive_rate": 0.08125,
+      "balanced_accuracy": 0.6041118421052631,
+      "onset_detected": 6,
+      "onset_missed": 4,
+      "onset_delay_median_D": 0.0,
+      "end_delay_median_D": 2.0
+    },
+    {
+      "period": "holdout",
+      "detector": "near_ER",
+      "days": 358,
+      "flag_days": 86,
+      "label_days": 38,
+      "tp": 17,
+      "fp": 69,
+      "fn": 21,
+      "tn": 251,
+      "precision": 0.19767441860465115,
+      "recall": 0.4473684210526316,
+      "false_positive_rate": 0.215625,
+      "balanced_accuracy": 0.6158717105263158,
+      "onset_detected": 6,
+      "onset_missed": 4,
+      "onset_delay_median_D": 0.5,
+      "end_delay_median_D": 1.5
+    },
+    {
+      "period": "holdout",
+      "detector": "near_slope",
+      "days": 358,
+      "flag_days": 160,
+      "label_days": 38,
+      "tp": 28,
+      "fp": 132,
+      "fn": 10,
+      "tn": 188,
+      "precision": 0.175,
+      "recall": 0.7368421052631579,
+      "false_positive_rate": 0.4125,
+      "balanced_accuracy": 0.6621710526315789,
+      "onset_detected": 10,
+      "onset_missed": 0,
+      "onset_delay_median_D": 0.0,
+      "end_delay_median_D": 5.0
+    },
+    {
+      "period": "holdout",
+      "detector": "ER_slope",
+      "days": 358,
+      "flag_days": 133,
+      "label_days": 38,
+      "tp": 24,
+      "fp": 109,
+      "fn": 14,
+      "tn": 211,
+      "precision": 0.18045112781954886,
+      "recall": 0.631578947368421,
+      "false_positive_rate": 0.340625,
+      "balanced_accuracy": 0.6454769736842105,
+      "onset_detected": 8,
+      "onset_missed": 2,
+      "onset_delay_median_D": 0.5,
+      "end_delay_median_D": 1.5
+    }
+  ],
+  "coefficient_summary": {
+    "calibration": {
+      "beta": {
+        "min": 1.0173449698488832,
+        "median": 1.3908272040398726,
+        "max": 1.7763809635068337
+      },
+      "rho_squared": {
+        "min": 0.3939137530355673,
+        "median": 0.5929716861900007,
+        "max": 0.7916151619563258
+      },
+      "SOLnotional_factorneutral_perNB": {
+        "min": 0.5629423082905904,
+        "median": 0.7189965777886321,
+        "max": 0.9829507488974367
+      },
+      "SOLnotional_minvar_perNB": {
+        "min": 0.29890343258780044,
+        "median": 0.44536763407581637,
+        "max": 0.5798320726437065
+      }
+    },
+    "holdout": {
+      "beta": {
+        "min": 1.0962792725337167,
+        "median": 1.2679650057104495,
+        "max": 2.0913683424817253
+      },
+      "rho_squared": {
+        "min": 0.49060772184360635,
+        "median": 0.7284882424086783,
+        "max": 0.8740296994036554
+      },
+      "SOLnotional_factorneutral_perNB": {
+        "min": 0.47815584643179043,
+        "median": 0.7886652987238344,
+        "max": 0.9121763268303008
+      },
+      "SOLnotional_minvar_perNB": {
+        "min": 0.27676988689585047,
+        "median": 0.5465329199120667,
+        "max": 0.742482877590956
+      }
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "title": "CoinMaster #113 chop/pair research sources",
+  "as_of": "2026-10-20",
+  "scope": "Analysis only. No implementation, engine, deployment, or runtime changes.",
+  "sources": [
+    {
+      "id": "S1",
+      "kind": "official implementation",
+      "title": "QuantConnect Kaufman Efficiency Ratio",
+      "url": "https://github.com/QuantConnect/Lean/blob/master/Indicators/KaufmanEfficiencyRatio.cs",
+      "finding": "Rolling absolute net displacement divided by accumulated absolute price changes; explicit warmup. Its flat-window denominator-zero convention returns 1.",
+      "implication": "Supports a causal path-efficiency measure, not a validated profitable threshold. Specify n-return/n+1-price convention and flat handling explicitly."
+    },
+    {
+      "id": "S2",
+      "kind": "original research",
+      "title": "Gatev, Goetzmann, Rouwenhorst: Pairs Trading",
+      "url": "https://www.nber.org/papers/w7032",
+      "finding": "Historical US equity pairs selected by normalized-price distance earned returns in the studied sample; costs and bootstrap comparisons matter.",
+      "implication": "Does not establish BTC/SOL stationarity, convergence or profitable opposite correlated positions."
+    },
+    {
+      "id": "S3",
+      "kind": "author-hosted original research",
+      "title": "Bailey et al.: The Probability of Backtest Overfitting",
+      "url": "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+      "finding": "Selecting among many configurations creates selection bias; a simple holdout does not account for the number of trials.",
+      "implication": "Pre-register one compact detector/management hypothesis; disclose all attempted threshold and TP variants."
+    },
+    {
+      "id": "S4",
+      "kind": "official venue documentation",
+      "title": "Hyperliquid fees",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees",
+      "finding": "Current published base perpetual tier is 0.045% taker and 0.015% maker per execution before discounts.",
+      "implication": "Illustration only: equal USD10000 legs opened/closed taker cost approximately USD18 before slippage/funding at unchanged prices. Existing historical CoinMaster pinned fee assumptions must remain unchanged; current venue table must not overwrite them."
+    },
+    {
+      "id": "S5",
+      "kind": "official venue documentation",
+      "title": "Hyperliquid funding",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding",
+      "finding": "Funding settles hourly, depends on each contract premium, and payment uses position quantity times oracle price times funding rate.",
+      "implication": "BTC and SOL funding generally do not cancel. Include both leg-specific cashflows; no assumed funding profit."
+    },
+    {
+      "id": "S6",
+      "kind": "official venue documentation",
+      "title": "Hyperliquid margining",
+      "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margining",
+      "finding": "Initial margin is position size times mark price divided by leverage. Cross liquidation depends on account value and total open notional.",
+      "implication": "Adding SOL consumes gross exposure and margin despite lower estimated net BTC beta."
+    },
+    {
+      "id": "F1",
+      "kind": "practitioner discussion, not validated evidence",
+      "title": "QuantConnect: Noise measuring functions",
+      "url": "https://www.quantconnect.com/forum/discussion/9575/noise-measuring-functions/p1",
+      "finding": "Trend trader asks for ER/fractal/noise filters; contributor explicitly says posted ER code was not thoroughly tested.",
+      "implication": "Useful implementation discussion only; no evidence for profitable regime thresholds or superior detector."
+    },
+    {
+      "id": "N1",
+      "kind": "official Nautilus documentation, latest conceptual reference",
+      "title": "NautilusTrader Positions",
+      "url": "https://nautilustrader.io/docs/latest/concepts/positions/",
+      "finding": "NETTING aggregates fills into one position per instrument/strategy; opposite fills reduce existing exposure and excess quantity reverses the net position. Virtual HEDGING on a NETTING venue still exposes only the venue net position.",
+      "implication": "Retaining old BTC while issuing unchanged next opposite BTC order cannot imply independent old and new BTC legs. Same-instrument SOL alpha and hedge offset in net exposure. Latest snapshot/replay features are not evidence of support in pinned 1.231.0."
+    },
+    {
+      "id": "N2",
+      "kind": "official Nautilus documentation, latest conceptual reference",
+      "title": "NautilusTrader Orders",
+      "url": "https://nautilustrader.io/docs/latest/concepts/orders/",
+      "finding": "Native order model provides reduce_only, bracket TP/SL children and OTO/OCO/OUO relationships. Reduce-only must not increase exposure/open while flat; exact venue behavior varies. Documentation distinguishes local emulation from venue-native execution.",
+      "implication": "Use native orders/events and native position/account reporting. No claim that latest contingency management is installed in 1.231.0, or that a generic bracket atomically couples BTC and SOL. Three TP quantities, BE stop modification, partial fills and loser reduction require pinned-wheel/adapter validation before implementation."
+    }
+  ],
+  "analysis_inferences": [
+    "Use completed fast bars against last completed daily EMA/ATR. Low normalized EMA distance measures proximity, ER measures path efficiency; neither guarantees early chop prediction. Daily EMA slope updates only daily; multi-filter conjunctions can recreate lag.",
+    "Prefer asymmetric onset/end thresholds and causal confirmation, one hedge authorization per episode and a durable reduction ceiling. A TP-driven reduction must not be immediately restored by the old target.",
+    "TP hit probabilities require a defined horizon, competing exits and chronological calibration; ever touched at an unlimited future date is not executable success.",
+    "Let beta=Cov(rSOL,rBTC)/Var(rBTC), signed BTC notional NB. Factor-neutral SOL notional is -NB/beta. Minimum-variance SOL notional is -NB*Cov(rBTC,rSOL)/Var(rSOL). With NS=-h*NB/beta, minimum-variance h=rho^2 under the same unconstrained linear model.",
+    "If rSOL=beta*rBTC+epsilon, pair contribution=(1-h)*NB*rBTC-h*NB*epsilon/beta. Full beta neutrality cancels BTC factor upside, leaving residual risk; partial bounded overlay better matches alpha-preservation intent.",
+    "Pair breakeven requires realized PnL plus remaining unrealized PnLs plus net funding minus incurred fees minus estimated closing costs at least zero. Winner stop at entry alone is not pair breakeven. Avoid double-counting fees already included in a native net-PnL value. This is reporting arithmetic, not a second production accounting service."
+  ],
+  "compatibility_note": "Runtime remains Nautilus 1.231.0. N1/N2 are current official conceptual documentation, not version-pinned evidence of installed features. No migration implied."
+}

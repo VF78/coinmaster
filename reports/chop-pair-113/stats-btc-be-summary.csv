@@ -1,0 +1,5 @@
+period,subset,n,censored,TP1_hit,TP2_hit,TP3_hit,BE_before_TP2,TP2_before_BE,TP2_already_by_TP1,later_TP2_despite_BE,later_TP3_despite_BE,BE_before_TP2_terminal_negative,BE_before_TP2_terminal_below_cost,never_TP1,neverTP1_terminal_negative,neverTP1_MAE_median,neverTP1_MAE_q10,neverTP1_MAE_min
+calibration,all,57,24,44,29,20,26,17,1,12,8,13,15,13,13,-0.016597229222889975,-0.03704311058430245,-0.05222402624608258
+calibration,CHOP_flips2,13,5,12,9,7,9,3,0,6,4,3,3,1,1,-0.007528365279344196,-0.007528365279344196,-0.007528365279344196
+holdout,all,48,14,36,21,10,25,9,0,12,7,10,11,12,10,-0.017121553794092415,-0.04408149545979505,-0.050896113886631955
+holdout,CHOP_flips2,12,6,9,6,2,5,4,0,2,1,3,4,3,3,-0.02062213975446925,-0.039494039607234924,-0.04421201457042634

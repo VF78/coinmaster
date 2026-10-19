@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/coinmaster/coinmaster/reports/chop-pair-113/stats-btc-be-analysis.py", line 42, in <module>
+    x={'status':'FIXED_PRICE_PATH_FIRST_PASSAGE_COUNTS_NO_PNL_SIMULATION','thresholds':{'TP1':L1,'TP2':L2,'TP3':L3,'postTP1_return_BE':BE},'CHOP':'Exact earlier frozen flips2 baseline: >=2 EMA34 sign flips among7completed daily transitions,2 consecutive raw states enter/exit; frozen entry flag','observations':'All105 native-derived entrytime/side contexts; synchronized minuteclose anchor; stop min24h/originalBTCexit. Entryclose not claimed native avg fill. BE is first later close signed return<=+.11%; report all laterTPs on unchanged observed originalpricepath. BE at observed close can be below threshold; no stop-fill guarantee. TP2 already present atfirstTP1 classified separately.','summary':summary,'sources':src,'maxrss_KiB':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'limitations':['No actual exit cash/PnL/fill/order simulation, fees not charged to portfolio','+.11% is fixed nominal roundtrip taker allowance, not actual native cost-adjustedBE; funding/slippage UNKNOWN','BE-first negative terminal mark is potential avoided price loss only, not proven realized saving','SubsequentTP afterBE is potential profitable-tail cut, not lost actual profit calculation','Minuteclose returns omit intraminute excursions; no path stop execution guarantee','24h/originalexit truncation informative; no future probability/DD guarantee','No threshold retuning or extra filtering; CHOPsubset sparse','No SOL/nativeobserver/nativeengine read or execution']};(out/'stats-btc-be-result.json').write_text(json.dumps(x,indent=2));print(json.dumps(x,indent=2))
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type int64 is not JSON serializable

@@ -1,0 +1,80 @@
+{
+  "status": "OPTIMISTIC_SINGLE_PATH_MARK_DIAGNOSTIC_NO_PNL",
+  "source": "reports/chop-pair-113/stats-btc-be-events.csv",
+  "source_sha256": "74c540aed04a21bd8ff699616c905be268226b35df8bea42e467b01719cf974f",
+  "formula": {
+    "BE": 0.0011,
+    "TP2": 0.012082,
+    "slice_weight": 0.2125,
+    "core_unchanged_weight": 0.575,
+    "upper_delta": "BEfirst ? .0011 - (TP2hit ? .012082 : terminal_signed_return) : 0; multiply .2125"
+  },
+  "summary": [
+    {
+      "period": "calibration",
+      "subset": "all",
+      "n": 57,
+      "BE_first": 26,
+      "laterTP2": 12,
+      "positive_bound_count": 12,
+      "negative_bound_count": 14,
+      "zero_count": 31,
+      "sum_upper_delta_NB": 0.007602978798567236,
+      "mean_upper_delta_NB": 0.00013338559295731993,
+      "sum_upper_delta_slice": 0.03577872375796346,
+      "mean_upper_delta_slice": 0.0006276969080344466
+    },
+    {
+      "period": "calibration",
+      "subset": "CHOP_flips2",
+      "n": 13,
+      "BE_first": 9,
+      "laterTP2": 6,
+      "positive_bound_count": 2,
+      "negative_bound_count": 7,
+      "zero_count": 4,
+      "sum_upper_delta_NB": -0.01223991542805813,
+      "mean_upper_delta_NB": -0.0009415319560044714,
+      "sum_upper_delta_slice": -0.0575996020143912,
+      "mean_upper_delta_slice": -0.004430738616491631
+    },
+    {
+      "period": "holdout",
+      "subset": "all",
+      "n": 48,
+      "BE_first": 25,
+      "laterTP2": 12,
+      "positive_bound_count": 10,
+      "negative_bound_count": 15,
+      "zero_count": 23,
+      "sum_upper_delta_NB": 0.004068989663105934,
+      "mean_upper_delta_NB": 8.477061798137362e-05,
+      "sum_upper_delta_slice": 0.019148186649910276,
+      "mean_upper_delta_slice": 0.00039892055520646406
+    },
+    {
+      "period": "holdout",
+      "subset": "CHOP_flips2",
+      "n": 12,
+      "BE_first": 5,
+      "laterTP2": 2,
+      "positive_bound_count": 3,
+      "negative_bound_count": 2,
+      "zero_count": 7,
+      "sum_upper_delta_NB": 0.003092985204832963,
+      "mean_upper_delta_NB": 0.0002577487670694136,
+      "sum_upper_delta_slice": 0.01455522449333159,
+      "mean_upper_delta_slice": 0.0012129353744442992
+    }
+  ],
+  "limitations": [
+    "Only saved first-passage CSV used, no minute/daily/dataengine read",
+    "Optimistic upper bound on signedexitprice improvement on a hypothetical fixedTP2slice, not trade cash/PnL",
+    "TP2threshold baseline is deliberately lower than actual first close overshoot; assumedBE at+.11% ignores gap/additionalfees, so optimistic",
+    "No originalwinnerTP2 comparison: winner long5.5%/short7.875% management and nativefillpaths differ",
+    "Endpoint is finite min24h/originalBTCexit mark; nohitmark is not execution",
+    "Negative cohort bound rejects positive aggregate pricebenefit within this particular diagnostic horizon, not everyfuturestrategy",
+    "Positive bound is not profitproof; originalSOLrights, costs, margin, trancheavailability and native lifecycle unknown",
+    "No inferabsoluteBTCQ/portfolioTOTAL/ROI/DD, no fraction/threshold retuning"
+  ]
+}

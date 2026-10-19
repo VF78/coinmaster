@@ -1,0 +1,12 @@
+{
+  "readback_at_utc": "2026-10-19T21:55:03.478348+00:00",
+  "issue": 113,
+  "state": "OPEN",
+  "project_status": "Todo",
+  "analysis_complete": true,
+  "candidate": "adverse_btc_half_once_v1",
+  "implementation_or_native_run_approved": false,
+  "body_readback": "PASS",
+  "url": "https://github.com/VF78/coinmaster/issues/113",
+  "report": "https://github.com/VF78/coinmaster/blob/codex/nautilus-btc-sol-mvp/reports/chop-pair-113/final-analysis-and-proposal.md"
+}
