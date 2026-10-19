@@ -1,0 +1,33 @@
+{
+  "status": "REPORT_AND_25ROW_INTERNAL_ARITHMETIC_PASS_NOT_NATIVE_ACCEPTANCE",
+  "source_HEAD": "8a7c2f3242f6767119f6398c0d6ec8b8d864dbb3",
+  "checks": {
+    "artifact_sha256": true,
+    "rows25": true,
+    "calendar_months6": true,
+    "strict_prior_closed_days": true,
+    "n_equals_days": true,
+    "CSV_JSON_equal": true,
+    "sigma_ratio": true,
+    "rho_k_and_rho_over_k": true,
+    "theoretical_variance_formulas": true,
+    "monthly_initial_changes": true,
+    "trading_source_changed": false,
+    "new_backtest_or_engine": false,
+    "daily_data_reread_by_root": false
+  },
+  "artifact_sha256": {
+    "immediate-insurance-volatility.csv": "6076d10cf4cd2c17a9c423b9b9f5a9c31098707ae182e313ca8ab46ed1c2d356",
+    "immediate-insurance-volatility.json": "1c09695173e7e3ea43618a4c8b6438c74d9af35173994920c4ce4e39880519a7"
+  },
+  "report_sha256": "bde35d2cf46f219bfed1b7bc0c4a3c094d8030bf92de3e404d7effc292bac163",
+  "fixed_k_vs_rolling_notional_error_percent": {
+    "at_min": 41.51509493412635,
+    "at_max": -15.712385637684045
+  },
+  "initial_SOL_notional_for_BTC_100000": {
+    "quarter": 15778.689765055376,
+    "third": 21038.253020073837
+  },
+  "independent_proposal_review": "Two issues corrected: Light episodic floor survives common rearm; Recovery exit preserves mandatory adverse target. No implementation/native tests."
+}
