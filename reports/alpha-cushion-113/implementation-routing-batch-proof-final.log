@@ -1,0 +1,32 @@
+Running as unit: cm120-alpha-routing-batch-proof-final.service
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:876: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:902: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 12 warnings in 9.97s
+Finished with result: success
+Main processes terminated with: code=exited/status=0
+Service runtime: 11.609s
+CPU time consumed: 11.010s
+Memory peak: 440.0K
+Memory swap peak: 0B

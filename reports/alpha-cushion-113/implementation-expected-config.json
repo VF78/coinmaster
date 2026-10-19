@@ -1,0 +1,102 @@
+{
+  "BTCflat_SOL0_authorized_override": true,
+  "DP": "OFF",
+  "F": "0.55H",
+  "H": "GLOBAL_EXISTING_NATIVE_RECORDER_EQUITY_HIGHWATER_NO_RESET",
+  "all_other_SOL_research_flags": "OFF",
+  "basis": "STATIC_EXPECTED_CONFIG_FROM_SELECTED6077_PLUS_APPROVED_FLAG_NOT_A_COMPLETED_NATIVE_RESULT",
+  "candidate": {
+    "beta_days": 270,
+    "btc_close_trail_fraction": 0.03,
+    "btc_notional_multiplier": 7.875,
+    "btc_tp_fractions_initial_qty": [
+      0.2125,
+      0.2125,
+      0.575
+    ],
+    "ema_period": 34,
+    "episode_fixed_beta": false,
+    "max_parent_notional": 30000000.0,
+    "relative_days": 65,
+    "sol_entry_z": [
+      1.25,
+      2.5,
+      3.75
+    ],
+    "sol_exit_all_z": 0.125,
+    "sol_exit_half_z": 0.375,
+    "sol_late_entry_after_tp": true,
+    "sol_max_holding_days": 14,
+    "sol_overlay_enabled": true,
+    "sol_size_multipliers_h": [
+      1.75,
+      2.625,
+      3.5
+    ],
+    "sol_timeout_preempts_add": false,
+    "wave_history_days": 730,
+    "wave_min_count": 8,
+    "wave_quantiles": [
+      0.1,
+      0.3,
+      0.6
+    ],
+    "z_history_days": 180
+  },
+  "daily_stress": "LINEAR_Q95_ABS_BTC_AND_ABS_SOL_MINUS_FROZEN_BETA_BTC_EXPM1",
+  "execution_policy": {
+    "execution_delay_minutes": 1,
+    "execution_source": "BYBIT_GAP_FREE_1M_EXECUTION_CLOSE",
+    "fee_historical_applicability": "UNKNOWN",
+    "fee_multiplier": "1",
+    "fees": "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055",
+    "latency": "taker_decisions_next_quote;_maker_reductions_rest_on_later_quotes",
+    "liquidation": "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL",
+    "mark_source": "BYBIT_GAP_FREE_1M_MARK_CLOSE",
+    "nonmatching_daily_signals": true,
+    "spread_slippage_liquidity": "UNKNOWN_NO_L2_OR_TRADE_TAPE",
+    "symmetric_adverse_spread_bps": "0",
+    "version": "bybit-native-resting-reductions-v2"
+  },
+  "fee_policy": {
+    "bybit_maker": "0.00020",
+    "bybit_taker": "0.00055",
+    "hyperliquid_maker": "0.00015",
+    "hyperliquid_taker": "0.00045",
+    "venue": "bybit",
+    "version": "fixed-base-native-maker-taker-execution-v3"
+  },
+  "grid": [
+    0,
+    0.25,
+    0.5,
+    0.75,
+    1
+  ],
+  "interval": {
+    "end_exclusive": "2026-09-01T00:00:00+00:00",
+    "initial_active_seed": "10000",
+    "start": "2024-09-01T00:00:00+00:00"
+  },
+  "original_SOL_enabled": true,
+  "original_alpha_parameters_unchanged": true,
+  "research_alpha_cushion": true,
+  "reserve": "0",
+  "risk_beta_freeze": "FIRST_ACTUAL_BTC_FILL_PER_EPISODE",
+  "risk_beta_window_completed_paired_daily_logreturns": 90,
+  "seed": "10000",
+  "selected_BTC_rules": {
+    "btc_management_reference_policy": "FIRST_LEG_COMPLETED_ACTUAL_VWAP_PLANREF_V1",
+    "positive_tp_ioc_policy": "COMPLETED_PARENT_CROSSED_POSITIVE_TARGET_NATIVE_IOC_ACTUAL_TAKER",
+    "research_btc_direction_sizing": {
+      "freeze": "GENUINE_EPISODE_CREATION",
+      "long": "5.5",
+      "short": "7.875"
+    },
+    "research_btc_split50": true,
+    "research_btc_split_discount": "0.0025",
+    "research_btc_split_planref_v1": true,
+    "research_btc_split_tp_ioc": true
+  },
+  "source_host_change": "4_INTERNAL_CONFIRMATION_BAR_TYPES_CACHE128_BAR_EXECUTION_FALSE;CONNECTED_NATIVE_HEALTHY_OFF_ON_PARITY_PASS"
+}

@@ -1,0 +1,11 @@
+{
+  "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+  "runtime/coinmaster/research/minute_risk.py": "2a31baa92464198971bff5b16d44a03b778d1e2cfafdb458b1a073cd008a8f32",
+  "runtime/coinmaster/research/native_baseline.py": "7fbcce5785fb16aafde17e519ce8624d52fd10f49218da245b342f4316fc4447",
+  "runtime/coinmaster/strategy/alpha_cushion.py": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c",
+  "runtime/coinmaster/strategy/conditional_hedge.py": "4b216a0cb05fe702d7c794fd8766675ac367f60d3fca978a6dcd751d8f03f66e",
+  "runtime/coinmaster/strategy/wave_overlay.py": "6e5fb6c7a359a9eb4e210ed76a3d5a2d66de15a8da6035e6bfd3e62155b2ab8e",
+  "runtime/tests/test_native_alpha_cushion.py": "70373acb8eef39b4305dca9790f87e6c3fb7e0f6d9ff744ba25525e5436b8b37",
+  "scripts/collect_split_cover_native.py": "f86b1787cd9c6ef11f2ed6a67e0bcf35e1d9b4a2b2872dc7237e54a25803fd4b",
+  "scripts/launch_split_cover_native.py": "29898a5b9653c2211f35568936dddd0252fdaa7bc0316caae209d4f8511c4f21"
+}

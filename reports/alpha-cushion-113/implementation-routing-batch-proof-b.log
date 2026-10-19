@@ -1,0 +1,92 @@
+Running as unit: cm120-alpha-routing-batch-proof-b.service
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___ test_production_alpha_closed_15m_release_and_daily_batch_native_identity ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-654/test_production_alpha_closed_10')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7cd5fecde480>
+
+    def test_production_alpha_closed_15m_release_and_daily_batch_native_identity(tmp_path,monkeypatch):
+        """Real production event builder/aggregator, two accounts, one batch boundary."""
+        from test_native_baseline import write_streaming_fixture
+        from coinmaster.research.native_baseline import run_native_diagnostic,TRADING_START_MS,MINUTE_MS,DAY_MS
+        from coinmaster.domain.wave_overlay import Candidate
+        from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+        from types import SimpleNamespace
+        from pathlib import Path
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+        start,end=write_streaming_fixture(tmp_path,trading_days=2);shift=TRADING_START_MS-start
+        for path in (tmp_path/'normalized').glob('*.parquet'):
+            rows=pq.read_table(path).to_pylist();isbtc='BTCUSDT' in path.name
+            for index,row in enumerate(rows):
+                row['open_time_ms']+=shift
+                if 'daily' in path.name:
+                    p=(100 if isbtc else 30)*exp((.01 if isbtc else .02)*(index%2))
+                else:
+                    minute=index%1440
+                    p=(100 if minute<20 else 180) if isbtc else (30 if minute<30 else 32)
+                row.update(open=str(p),high=str(p+.1),low=str(p-.1),close=str(p))
+                if 'mark_close' in row:row['mark_close']=str(p)
+            pq.write_table(pa.Table.from_pylist(rows),path)
+        original_quote=WaveOverlayStrategy.on_quote_tick
+        signatures=[];seen_bars=[]
+        original_bar=WaveOverlayStrategy.on_bar
+        def capture_bar(s,b):
+            original_bar(s,b)
+            if b.bar_type.instrument_id==s.config.sol_id and b.bar_type.spec.aggregation==BarAggregation.MINUTE and b.bar_type.spec.step==15:
+                seen_bars.append((b.ts_event,s.clock.timestamp_ns(),str(b.close)))
+        def capture_quote(s,q):
+            original_quote(s,q)
+            if q.instrument_id!=s.config.btc_id:return
+            minute=(q.ts_event//1_000_000-TRADING_START_MS)//MINUTE_MS
+            if minute in (1,1441):
+                assert s._domain.episode is None
+                s._current_signals=[SimpleNamespace(side=1,beta=2.,sigma=.02)]*len(s._bars)
+                s._current_btc=SimpleNamespace(ts_event=q.ts_event);s._current_sol=SimpleNamespace(ts_event=q.ts_event)
+                s._current_btc_mark=s._latest_marks[s.config.btc_id];s._current_sol_mark=s._latest_marks[s.config.sol_id]
+                s._last_accepted_session=q.ts_event;s._latest_seen_session=q.ts_event
+                ep=s._domain.episode=Episode('routing-cycle-'+str(minute),1,10000,1,wave_levels=(100,200,300),h=10000)
+                if minute==1:s._alpha_peak=D(18100)  # Prior-account high-water fixture; never reset on second episode.
+                i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
+                s._submit_intent(i,float(q.bid_price),float(q.ask_price),.02,len(s._bars)-1,ts_now=q.ts_event)
+            if minute in (46,1486):s._begin_forced_close('REGIME')
+        monkeypatch.setattr(WaveOverlayStrategy,'on_quote_tick',capture_quote)
+        monkeypatch.setattr(WaveOverlayStrategy,'on_bar',capture_bar)
+        common=dict(candidate=Candidate(btc_notional_multiplier=7.875,max_parent_notional=30_000_000),trading_start_ms=TRADING_START_MS,trading_end_ms=TRADING_START_MS+2*DAY_MS,warmup_start_ms=shift,
+            research_v0_execution_repairs=True,research_v0_deferred_selective_zero_tp=True,research_v0_selective_lifecycle_repairs=True,research_btc_direction_sizing=True,research_btc_split50=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_alpha_cushion=True,observe_minute_risk=True)
+        results=[]
+        for batch in (10080,1440):
+            result=run_native_diagnostic(tmp_path,weekly_batch_minutes=batch,cursor_batch_rows=batch,artifact_dir=tmp_path/str(batch),**common)
+>           assert any(x['event']=='RELEASE' for x in result['alpha_cushion_audit']), dict(bars=seen_bars[:5],audit=[x for x in result['alpha_cushion_audit'] if x['event'] in {'BUDGET','RELEASE'}][:30])
+E           AssertionError: {'audit': [{'BTCmark': '100', 'BTCqty': '37.5', 'C': '45.00', 'L_actual_to_alpha': '43.87562656562980875000000000', .....0, '32.00'), (1725152400000000000, 1725152400000000000, '32.00'), (1725153300000000000, 1725153300000000000, '32.00')]}
+E           assert False
+E            +  where False = any(<generator object test_production_alpha_closed_15m_release_and_daily_batch_native_identity.<locals>.<genexpr> at 0x7cd5c76bf5e0>)
+
+tests/test_native_alpha_cushion.py:421: AssertionError
+=============================== warnings summary ===============================
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:876: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:902: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_alpha_cushion.py::test_production_alpha_closed_15m_release_and_daily_batch_native_identity
+1 failed, 6 warnings in 7.72s
+Finished with result: exit-code
+Main processes terminated with: code=exited/status=1
+Service runtime: 9.210s
+CPU time consumed: 9.071s
+Memory peak: 1.3M
+Memory swap peak: 0B

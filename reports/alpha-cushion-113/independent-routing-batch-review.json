@@ -1,0 +1,11 @@
+{
+  "verdict": "GO",
+  "reviewer": "protective_hedge_sources",
+  "scope": "only3routing/batching/testpaths after invalidOOM",
+  "source_pins_verified": 3,
+  "test": "1 native connected production15m release+2episodes+batchidentityPASS",
+  "core206_native_tests_reused": true,
+  "memory_guarantee": false,
+  "no_reviewer_edits_or_tests": true,
+  "receipt_sha256": "8b3d7d75c751a26848c05398ff0761797aac38ae9830592487803a8efae6b4ba"
+}

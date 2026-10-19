@@ -1,0 +1,11 @@
+{
+  "issue120": {
+    "url": "https://github.com/VF78/coinmaster/issues/120",
+    "state": "open",
+    "completed": 4,
+    "total": 7
+  },
+  "parent113": "OPEN/In Progress",
+  "status": "CURRENT 2026-10-19 18:38 UTC: implementation2b3cd5 PUSHED;206 native tests PASS; narrow independent money/order review GO, one P2 pending-riskcancel rights fix verified. ONE full24m ALPHA-CUSHION ACTIVE, unique unit cm115-split-alpha-cushion-20261019a/PID4034933/invocation2b982d5c15f14d9c97a6ce503e10edbb. Frozen89source/93source+smallinputpins verified by root; control6077 reused. TOTAL/ROI/DD UNKNOWN until actual completion. Pilot2009732/restarts0active unchanged; no deploy or orders.",
+  "readback": "child body re-read; both PATCH acknowledged"
+}

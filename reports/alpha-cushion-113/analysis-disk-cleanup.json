@@ -1,0 +1,1271 @@
+{
+  "status": "BOUNDED_OWNER_AUTHORIZED_ALL_SAFE_CACHE_CLEANUP_COMPLETE",
+  "UTC": "2026-10-19T18:50:08Z",
+  "scope": "OnlyCoinMasterregenerablecanonicalPythonbytecode/pytestmetadataandoldcm113prepPYTHONPYCACHEPREFIX;noactivefiles/inputs/results/reports/SQLite/journals/jobs/venvs/releases/dependencies/otherprojects/serviceschanged",
+  "disk_before": {
+    "total": 39973924864,
+    "used": 37349453824,
+    "free": 2200784896
+  },
+  "disk_after": {
+    "total": 39973924864,
+    "used": 37342859264,
+    "free": 2207379456
+  },
+  "observed_disk_free_delta_bytes": 6594560,
+  "deleted_files": 156,
+  "deleted_logical_bytes": 6120259,
+  "deleted_allocated_bytes": 6459392,
+  "by_cache_root": {
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__": {
+      "files": 37,
+      "logical_bytes": 3308033,
+      "allocated_bytes": 3379200
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.pytest_cache": {
+      "files": 5,
+      "logical_bytes": 46641,
+      "allocated_bytes": 65536
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/__pycache__": {
+      "files": 1,
+      "logical_bytes": 260,
+      "allocated_bytes": 4096
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__": {
+      "files": 8,
+      "logical_bytes": 244139,
+      "allocated_bytes": 258048
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__": {
+      "files": 21,
+      "logical_bytes": 460881,
+      "allocated_bytes": 512000
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/domain/__pycache__": {
+      "files": 3,
+      "logical_bytes": 54726,
+      "allocated_bytes": 61440
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/__pycache__": {
+      "files": 6,
+      "logical_bytes": 387931,
+      "allocated_bytes": 401408
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__": {
+      "files": 9,
+      "logical_bytes": 40584,
+      "allocated_bytes": 61440
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ledger/__pycache__": {
+      "files": 2,
+      "logical_bytes": 9590,
+      "allocated_bytes": 16384
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__": {
+      "files": 15,
+      "logical_bytes": 504379,
+      "allocated_bytes": 540672
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/scripts/__pycache__": {
+      "files": 1,
+      "logical_bytes": 12519,
+      "allocated_bytes": 16384
+    },
+    "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/__pycache__": {
+      "files": 4,
+      "logical_bytes": 76870,
+      "allocated_bytes": 81920
+    },
+    "/tmp/cm113-prep-pycache": {
+      "files": 44,
+      "logical_bytes": 973706,
+      "allocated_bytes": 1060864
+    }
+  },
+  "deleted_cache_files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_live_recovery_state.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 113140,
+      "allocated_bytes": 114688,
+      "SHA256_before": "7d26030809d29582adad0ecf4d9d2f78c62c29c055db9cadd15ec609f593a309",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_live_recovery_state.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_conditional_hedge.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 275233,
+      "allocated_bytes": 278528,
+      "SHA256_before": "8236159ea97f8e8b851bc2b5d44173ec89022a2a2fe147152e201bd662013f2d",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_btc_sizing.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 50929,
+      "allocated_bytes": 53248,
+      "SHA256_before": "5dc6a6a9ffdc120c97f231afd839e0e93d126aa9c7096c0b20c003700e56ea21",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_btc_sizing.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_hl_live_money.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 63126,
+      "allocated_bytes": 65536,
+      "SHA256_before": "a2b086eae2629bf5a7c4bf2eb8c68f60beb903234ab1cf6271adad1564ea92c5",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_hl_live_money.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_hl_live_execution.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 93349,
+      "allocated_bytes": 94208,
+      "SHA256_before": "c645b3564078377c54be2638a9c89838eb6dfddb14f92cbe547d483f0512afc6",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_hl_live_execution.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_hl_dashboard_data.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 40845,
+      "allocated_bytes": 40960,
+      "SHA256_before": "c1b95ca456f203c3b7d83e77db798ca6bd142c06128e81279c1eee553a202fab",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_hl_dashboard_data.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_split_cover.cpython-312.pyc",
+      "bytes": 80933,
+      "allocated_bytes": 81920,
+      "SHA256_before": "4ec88d1f160889d62babf8ecfacdfbce81838b5b9f9cc21bf98d988bf40433af",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_minute_risk.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 38490,
+      "allocated_bytes": 40960,
+      "SHA256_before": "72c760c3e138497dbe728a2d4015f103114c699a7ee68ef987930a4a84ebf042",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_minute_risk.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_btc_sizing.cpython-312.pyc",
+      "bytes": 16335,
+      "allocated_bytes": 16384,
+      "SHA256_before": "e145a626d4f5e0349bb07fd270acebb56354c19a30742ba032df18d25872f7d1",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_btc_sizing.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_gui_connections_relay.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 16309,
+      "allocated_bytes": 16384,
+      "SHA256_before": "4054b53aeab3d62c62a61cdef936ce5f3854cb8a4ac104235aef5390f9a50895",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_gui_connections_relay.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_portfolio_protection.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 50173,
+      "allocated_bytes": 53248,
+      "SHA256_before": "bde0e9d3d009ca9772a16476478ad9d64357d7cd3fbd624eaa4a9bda55b9cfb9",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_portfolio_protection.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_gui_auth.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 35307,
+      "allocated_bytes": 36864,
+      "SHA256_before": "5e78a9aaeb4b9f074968f466dd04de1cbe246364650737e44fbf758c4730ef5e",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_gui_auth.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_split_cover.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 223386,
+      "allocated_bytes": 225280,
+      "SHA256_before": "b9fff47856b9adfee693332a5e3a2a455f02a7fa6153bf0ecda05d7d10da7334",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_gui_readonly_smoke.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 8772,
+      "allocated_bytes": 12288,
+      "SHA256_before": "2e90957a59bb3af0b9d3dc69382eb7c37ab0e0979f5226900f9a21090d464695",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_gui_readonly_smoke.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_h1_b1.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 90028,
+      "allocated_bytes": 90112,
+      "SHA256_before": "fac3fc7aad66b46421b05e4d1f72d984e3541a5bf04185d25d18809a85e3f225",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_h1_b1.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_sol_risk_first.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 133613,
+      "allocated_bytes": 135168,
+      "SHA256_before": "3a5ea1c388ba04b575266975534837e1364a10164126e170e103ca151d4e4b3b",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_sol_risk_first.cpython-312.pyc",
+      "bytes": 21011,
+      "allocated_bytes": 24576,
+      "SHA256_before": "5900946c282ff5ccde8b013471e661aa73bc283b80591df790bcc70c4455aea7",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_sol_cap.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 25123,
+      "allocated_bytes": 28672,
+      "SHA256_before": "eba38873f50f2f8f09b96c624fd2e849fab786d8a9b91e4fd4f88683e1f5f188",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_cap.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_episode_risk.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 92484,
+      "allocated_bytes": 94208,
+      "SHA256_before": "9bcd67742bda9df5e3a2b97a185220652d50755a1081ea0ea2b18c12e8bdd510",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_hl_live_worker.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 34674,
+      "allocated_bytes": 36864,
+      "SHA256_before": "e7b98b5a8c13615fb3efd7789c6a159041b87ad68566ee3ef8dd72636d46488c",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_hl_live_worker.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_runtime_sidecar.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 155272,
+      "allocated_bytes": 155648,
+      "SHA256_before": "6fa94ccffd2a0023de887a3895b4e320189f17419048f0cb8004facbb4eb25ca",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_runtime_sidecar.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_gui_live_selection.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 43476,
+      "allocated_bytes": 45056,
+      "SHA256_before": "38efedf758935dbb40ba40fbeb561e8b40f86e3d62510ef127b8000b2d0988fe",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_gui_live_selection.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_hl_live_epoch.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 20755,
+      "allocated_bytes": 24576,
+      "SHA256_before": "37e7ffbe72e82cbc1ae134d14d31b0988da9efa35b3eef58936986fd705ca091",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_hl_live_epoch.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_live_native_report_recovery.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 271913,
+      "allocated_bytes": 274432,
+      "SHA256_before": "8dda7f5aaa887bf66ad53728766158bd9a69167cd6d48d252cba68bc2c99cad0",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_live_native_report_recovery.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_wave_native_integration.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 391473,
+      "allocated_bytes": 393216,
+      "SHA256_before": "114559209d33d5f1aededc7acac278097c2d0700f28950d960f0de9e1bd2d8ed",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_v3_risk_four.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 75238,
+      "allocated_bytes": 77824,
+      "SHA256_before": "c3b50b637ab3d6bd3a2dd0889fc5388dd7831aa9f629a024ca18f2cb126292e4",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_v3_risk_four.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_v3_risk_four.cpython-312.pyc",
+      "bytes": 26305,
+      "allocated_bytes": 28672,
+      "SHA256_before": "5b91298ef3e2aeab2c0f67ee6c08d65279a095608063ec6ef58e5ccc16bdb6f5",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_v3_risk_four.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_hl_info_receipt.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 29415,
+      "allocated_bytes": 32768,
+      "SHA256_before": "2651dff7bc870f9b03c4aa252125e55ea1210a47a449e211101b2a91f9161f16",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_hl_info_receipt.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_stage_live82.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 5404,
+      "allocated_bytes": 8192,
+      "SHA256_before": "4663dda8b6658aa004adc461c6b44ed2bff24feabad62c28bc886e5ae7545cac",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_stage_live82.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_h1_b1.cpython-312.pyc",
+      "bytes": 44130,
+      "allocated_bytes": 45056,
+      "SHA256_before": "3c572f9e71755bda021fdefca0e90d6b0dc91aaf626f6d22ddb4495c3e14b705",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_h1_b1.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_wave_overlay.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 105561,
+      "allocated_bytes": 106496,
+      "SHA256_before": "830103a9e55fe2f564552c38474c09732665e80009d5319f65dc28248a447c38",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_overlay.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_baseline.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 62541,
+      "allocated_bytes": 65536,
+      "SHA256_before": "fc27d447afd961ecd3497d02bc2abe4fe5b6dd971d2106e80644a8b7457f8c18",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_baseline.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_hl_stageg_sandbox_lifecycle.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 293022,
+      "allocated_bytes": 294912,
+      "SHA256_before": "3a7861d37b11b569eba411619558383e8761f80315da8af6a34be93e61629d6c",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_hl_stageg_sandbox_lifecycle.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_wave_native_integration.cpython-312.pyc",
+      "bytes": 195213,
+      "allocated_bytes": 196608,
+      "SHA256_before": "519728fd8486943c159ad698d7a20a64fe00091c7449e2af1c2eed3e4e573107",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_minute_risk.cpython-312.pyc",
+      "bytes": 11612,
+      "allocated_bytes": 12288,
+      "SHA256_before": "a77a9cf2601d9ca9afb1f78673d0cb324978feabfe64fadc2ce57ed4af15c004",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_minute_risk.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_hl_qualified_reports.cpython-312-pytest-8.4.2.pyc",
+      "bytes": 37984,
+      "allocated_bytes": 40960,
+      "SHA256_before": "ea08f80bcc246d972ca3988052f3cb5a170b0f2963b6b8800a5558210655f692",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_hl_qualified_reports.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/__pycache__/test_native_episode_risk.cpython-312.pyc",
+      "bytes": 35459,
+      "allocated_bytes": 36864,
+      "SHA256_before": "f9a4d39c06d333409d6c0a137f1d755facea9ce1f02780b32ec66f2efd02a3f4",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.pytest_cache/README.md",
+      "bytes": 302,
+      "allocated_bytes": 4096,
+      "SHA256_before": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad",
+      "source_preserved": "REGENERABLE_PYTEST_CACHE_METADATA"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.pytest_cache/.gitignore",
+      "bytes": 37,
+      "allocated_bytes": 4096,
+      "SHA256_before": "3ed731b65d06150c138e2dadb0be0697550888a6b47eb8c45ecc9adba8b8e9bd",
+      "source_preserved": "REGENERABLE_PYTEST_CACHE_METADATA"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.pytest_cache/CACHEDIR.TAG",
+      "bytes": 191,
+      "allocated_bytes": 4096,
+      "SHA256_before": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4",
+      "source_preserved": "REGENERABLE_PYTEST_CACHE_METADATA"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.pytest_cache/v/cache/lastfailed",
+      "bytes": 120,
+      "allocated_bytes": 4096,
+      "SHA256_before": "36b8d0cb07c6e035c99e884360556ee0eb89d23d9a7685b4678eb35aedbe593b",
+      "source_preserved": "REGENERABLE_PYTEST_CACHE_METADATA"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.pytest_cache/v/cache/nodeids",
+      "bytes": 45991,
+      "allocated_bytes": 49152,
+      "SHA256_before": "3e5dd3a4b0adda6143f6b2d2f64ce4581280d2fe9484b2c1ad003bb5dcfb1b0c",
+      "source_preserved": "REGENERABLE_PYTEST_CACHE_METADATA"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 260,
+      "allocated_bytes": 4096,
+      "SHA256_before": "e01f917e2d7778145998c304d92f50336b44f2dee24e60215f95bf3b7cc4fb30",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/__init__.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__/connections_broker.cpython-312.pyc",
+      "bytes": 28960,
+      "allocated_bytes": 32768,
+      "SHA256_before": "767c6f2aa70b6ec7099c7b8b78c4d7f1f31a579ee5861483f9e8ce589d70ee95",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/connections_broker.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__/research_jobs.cpython-312.pyc",
+      "bytes": 40102,
+      "allocated_bytes": 40960,
+      "SHA256_before": "88372f989bddaa72e9b2a3ed809584b4424f16a59eff28c529cbbc6e09a7a7f7",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/research_jobs.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 203,
+      "allocated_bytes": 4096,
+      "SHA256_before": "3c97dfee9f05e984cf1095d9eb95d4faba6701808b659174f2f81a123cf0f162",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__init__.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__/execution_modes.cpython-312.pyc",
+      "bytes": 3704,
+      "allocated_bytes": 4096,
+      "SHA256_before": "d5439c69f169ee29985f0082788ffab3afbb50f50ef5109aa22b43d2262f1938",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/execution_modes.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__/runtime_sidecar.cpython-312.pyc",
+      "bytes": 93601,
+      "allocated_bytes": 94208,
+      "SHA256_before": "7341e14e108b5a23d67f6670b8427c731b1892a8cec77374f9f2c834ecd0bc0d",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/runtime_sidecar.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__/gui_auth.cpython-312.pyc",
+      "bytes": 17537,
+      "allocated_bytes": 20480,
+      "SHA256_before": "eb1b682ddaff9e1d361c1d59fbc7000ee8053347e30b41b71e15eda8635df69b",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/gui_auth.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__/hl_public_candles.cpython-312.pyc",
+      "bytes": 7022,
+      "allocated_bytes": 8192,
+      "SHA256_before": "70aea40b66a2b0f5d36186d58dfe7b517eb15697bd04eed72fe85e3ea27b1ce0",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/hl_public_candles.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/__pycache__/app.cpython-312.pyc",
+      "bytes": 53010,
+      "allocated_bytes": 53248,
+      "SHA256_before": "978afd52d2f2dd847a4b7e56f93f7379a32e733dd72f3af234ac4877f0b577f3",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/api/app.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_native_account.cpython-312.pyc",
+      "bytes": 3482,
+      "allocated_bytes": 4096,
+      "SHA256_before": "e9a410a13d09c76a8ba1eae61550b720456adc4e0b43d040d023e438441c66f5",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_native_account.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/paper.cpython-312.pyc",
+      "bytes": 55742,
+      "allocated_bytes": 57344,
+      "SHA256_before": "a1960e63bda5853d8d2af70d2f7ff3e2dc652a7fb87c78ad72ab6c8dadc6870c",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/paper.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_live_credential_preflight.cpython-312.pyc",
+      "bytes": 7316,
+      "allocated_bytes": 8192,
+      "SHA256_before": "98255091efcd78686cd408c2fc8fc250fb60c7a08b68b66f573c2fb49a992385",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_live_credential_preflight.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_live_profile.cpython-312.pyc",
+      "bytes": 2543,
+      "allocated_bytes": 4096,
+      "SHA256_before": "f5c461c090e1c83c19178dbd4a2f369eaeb0e7fe3a9aceed02cb000bac1c1b20",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_live_profile.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/native_paper_node.cpython-312.pyc",
+      "bytes": 38861,
+      "allocated_bytes": 40960,
+      "SHA256_before": "6bf8db9d0c7447ccf26a3322553ff4d8901525fe30556d891e4160466995a546",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/native_paper_node.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_live_execution.cpython-312.pyc",
+      "bytes": 49494,
+      "allocated_bytes": 53248,
+      "SHA256_before": "b8a9bea537e14dc78d44ba91d8ca0517c9521811d25fe950f991283db50990d1",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_live_execution.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/paper_worker.cpython-312.pyc",
+      "bytes": 17457,
+      "allocated_bytes": 20480,
+      "SHA256_before": "188baf2187866610fd33f856dcc14370f80dcec400b19fb9f2c734ddda477230",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/paper_worker.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_live_epoch.cpython-312.pyc",
+      "bytes": 8350,
+      "allocated_bytes": 12288,
+      "SHA256_before": "20a7d14a06adc2396a7162f75d565e8e01ea998b9bf54581f2d7583608064792",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_live_epoch.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/live_recovery.cpython-312.pyc",
+      "bytes": 21167,
+      "allocated_bytes": 24576,
+      "SHA256_before": "5b55160ebd3097c242a077115e33c0993e21da33c0328e47c3b68a76234d7bfc",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/live_recovery.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_info_receipt.cpython-312.pyc",
+      "bytes": 19867,
+      "allocated_bytes": 20480,
+      "SHA256_before": "a51c48a0d8a64e4b9d8c3538a10ff1e7650ffa1a7e3931fd73aaf2feefe2127c",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_info_receipt.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/native_sandbox_selftest.cpython-312.pyc",
+      "bytes": 17280,
+      "allocated_bytes": 20480,
+      "SHA256_before": "d0bf890ef951ecbe3ce07f39d197867b35934d371d0472420e7d0042510fa509",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/native_sandbox_selftest.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_qualified_reports.cpython-312.pyc",
+      "bytes": 17740,
+      "allocated_bytes": 20480,
+      "SHA256_before": "8481f3e3877824ce422cdf489d6ba20f7544010903dbf07f35de9c7828660f40",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_qualified_reports.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_live_money.cpython-312.pyc",
+      "bytes": 13168,
+      "allocated_bytes": 16384,
+      "SHA256_before": "d23795f5618751bb4b52556fd711858d03da1a75af9d67ca078e601a8eb1130c",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_live_money.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hyperliquid_testnet_worker.cpython-312.pyc",
+      "bytes": 30766,
+      "allocated_bytes": 32768,
+      "SHA256_before": "84ca6f9cb5ed24994e7bf68f92ea6462221d6e31215b4208787285b31114953b",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hyperliquid_testnet_worker.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_sandbox_money.cpython-312.pyc",
+      "bytes": 18865,
+      "allocated_bytes": 20480,
+      "SHA256_before": "2c6caefc293ffecac3e6a0c0a74127d66ec4c9663b88b0d74a636acd76c51c85",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_sandbox_money.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/stage_g_warmup.cpython-312.pyc",
+      "bytes": 31800,
+      "allocated_bytes": 32768,
+      "SHA256_before": "a712e42857ca7c71bc5488642d7e2f9adfae636e9db131c1afa5157bb0d46168",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/stage_g_warmup.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hyperliquid_testnet.cpython-312.pyc",
+      "bytes": 45130,
+      "allocated_bytes": 49152,
+      "SHA256_before": "14c42c4c5b352c1771aa6b49e035a4ebd2e507e558b1a1b436df10ab1daf5dc4",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hyperliquid_testnet.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/stage_g_refresh.cpython-312.pyc",
+      "bytes": 6147,
+      "allocated_bytes": 8192,
+      "SHA256_before": "4de1dce320ae716d7ab33f82da00bbf2f84efbab3c7a96ff296393baf7340923",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/stage_g_refresh.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_readonly_observer.cpython-312.pyc",
+      "bytes": 12493,
+      "allocated_bytes": 16384,
+      "SHA256_before": "441683127e0a740a8d75867152d9842a5567aba86bc178def307c9cd9cec3175",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_readonly_observer.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/hl_live_worker.cpython-312.pyc",
+      "bytes": 29254,
+      "allocated_bytes": 32768,
+      "SHA256_before": "01f15cd0646951888311ef43337ea896a8af6100fe5fc976927099cdc93d51d5",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/hl_live_worker.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/__pycache__/stage_g_config.cpython-312.pyc",
+      "bytes": 13959,
+      "allocated_bytes": 16384,
+      "SHA256_before": "22171e812ab6a926ab890fae7176fa7cb060e91986aa46e502ce31744dedc01c",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ops/stage_g_config.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/domain/__pycache__/wave_overlay.cpython-312.pyc",
+      "bytes": 46666,
+      "allocated_bytes": 49152,
+      "SHA256_before": "b257a316156902646e126ac7c5ef13521c1239de754f7e66156a72effe21d156",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/domain/wave_overlay.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/domain/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 271,
+      "allocated_bytes": 4096,
+      "SHA256_before": "18e12b1b2523efe21bf9b792abc9395718ac666cc1050ee6afb0a52a39b23257",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/domain/__init__.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/domain/__pycache__/deposit_protection.cpython-312.pyc",
+      "bytes": 7789,
+      "allocated_bytes": 8192,
+      "SHA256_before": "3f5fd757174f74d3686ca2e82dc2dc69757fb0db2e78d0a14b229a85a69b329c",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/domain/deposit_protection.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/__pycache__/conditional_hedge.cpython-312.pyc",
+      "bytes": 28326,
+      "allocated_bytes": 28672,
+      "SHA256_before": "168b36160dde3e79fead399f33d990bc0d37de4b272c266c12b901f6eedba4a9",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/conditional_hedge.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/__pycache__/wave_overlay.cpython-312.pyc",
+      "bytes": 249049,
+      "allocated_bytes": 249856,
+      "SHA256_before": "fc0a6aa02cd4fba413cc3b4a8b8265346b6bcfd30ed048c7a562c8816fbb3f57",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 248,
+      "allocated_bytes": 4096,
+      "SHA256_before": "8da69c3b2636bf1e6e3e22e3f2a431fca677616d6fbac46d63feeab01e452cfc",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/__init__.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/__pycache__/split_cover.cpython-312.pyc",
+      "bytes": 34834,
+      "allocated_bytes": 36864,
+      "SHA256_before": "a631d9031f86fccba11754663c535426eba0cffeeb292b3647623e1656d0018d",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/split_cover.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/__pycache__/live_recovery.cpython-312.pyc",
+      "bytes": 38520,
+      "allocated_bytes": 40960,
+      "SHA256_before": "68f13c2f001928357c3cc7cdb00cc23562c1ac1120ea22b0713ed1ba89fa1545",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/live_recovery.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/__pycache__/risk_first_sol.cpython-312.pyc",
+      "bytes": 36954,
+      "allocated_bytes": 40960,
+      "SHA256_before": "74d971f45585cc69411d6fd5b121936a62089b5771971473169e4dc87fb2b68e",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/risk_first_sol.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/signals.cpython-312.pyc",
+      "bytes": 2458,
+      "allocated_bytes": 4096,
+      "SHA256_before": "4c8b2e46797cad5ff9f8e00bb751612bcb94fe210be9795b5a82fca1525d2c44",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/signals.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 252,
+      "allocated_bytes": 4096,
+      "SHA256_before": "a084d610b99ba7fb4e046ad4c026e851b95ac09d4bc357c4237cef23f4d42c60",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__init__.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/margin.cpython-312.pyc",
+      "bytes": 2900,
+      "allocated_bytes": 4096,
+      "SHA256_before": "4e241c1be3abb3d082f1f41d73f4e45f55630860b93aa27333f5c5c22e99c6f8",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/margin.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/bybit_profile.cpython-312.pyc",
+      "bytes": 5148,
+      "allocated_bytes": 8192,
+      "SHA256_before": "d6a5871777bc653c6b8326cf6d7d605afecdaa4b4e2dd8c5e13384b492c9fd26",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/bybit_profile.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/margin_policy.cpython-312.pyc",
+      "bytes": 5214,
+      "allocated_bytes": 8192,
+      "SHA256_before": "88298e64cbce87da302743f50f25956c907566c480f17656ad04c30e4e80da9c",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/margin_policy.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/hyperliquid_profile.cpython-312.pyc",
+      "bytes": 11901,
+      "allocated_bytes": 12288,
+      "SHA256_before": "bc32b29049cce918c4516249fa46ac3c876bbb6f34dd61e45df54e4d7ef5cc1a",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/hyperliquid_profile.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/profiles.cpython-312.pyc",
+      "bytes": 1694,
+      "allocated_bytes": 4096,
+      "SHA256_before": "9f30907d1c3aa99ff0579e1901329ba56d681d16891f33a5febbcbcfc2f566bb",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/profiles.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/marks.cpython-312.pyc",
+      "bytes": 2531,
+      "allocated_bytes": 4096,
+      "SHA256_before": "8ce9be8c3faf38177a0434b449b1acdb4320c2ccae484e1f76b5f99756b59a56",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/marks.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/__pycache__/production_preflight.cpython-312.pyc",
+      "bytes": 8486,
+      "allocated_bytes": 12288,
+      "SHA256_before": "d8291b6964342294bc725291ff610b0dd0972cdeb37f08326fcd2dfb22194e15",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/venues/production_preflight.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ledger/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 256,
+      "allocated_bytes": 4096,
+      "SHA256_before": "0ea8ace37659037f8eb237588981b23dc05bbbc9977db30f77d0f7ec565078f6",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ledger/__init__.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ledger/__pycache__/journal.cpython-312.pyc",
+      "bytes": 9334,
+      "allocated_bytes": 12288,
+      "SHA256_before": "d34b911fe775fa14c597635df1694aecd045fe40ad436e76fab0e14037827c4a",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/ledger/journal.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/hyperliquid_data.cpython-312.pyc",
+      "bytes": 19534,
+      "allocated_bytes": 20480,
+      "SHA256_before": "366c9bd20b218de728ce41b244730295cf24121f947ac25e467a90e0c8c75d41",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/hyperliquid_data.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 260,
+      "allocated_bytes": 4096,
+      "SHA256_before": "18f6c5299e029316a931d5e91bd527cf00a2c92185bf3fd7a72af5670dba34fe",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__init__.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/native_baseline.cpython-312.pyc",
+      "bytes": 98402,
+      "allocated_bytes": 102400,
+      "SHA256_before": "37d99d2b99080fef073d6a7e2be8542b526d61daa99b003ba6774f9c1625d153",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/job_test_helper.cpython-312.pyc",
+      "bytes": 5544,
+      "allocated_bytes": 8192,
+      "SHA256_before": "c96b0982fdd37a7d20eca5b93477bb067a20bec825627e86ef04592229b781cd",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/job_test_helper.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/catalog.cpython-312.pyc",
+      "bytes": 8293,
+      "allocated_bytes": 12288,
+      "SHA256_before": "d2b205ceeec0c9b47cb593b9e361c27b826812b68a79311f581c39105b37fcd1",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/catalog.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/bybit_minute.cpython-312.pyc",
+      "bytes": 9801,
+      "allocated_bytes": 12288,
+      "SHA256_before": "d8fe1617e338550d4c5bca937234f89ee081243f57881788d688c41492d2d0c9",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/bybit_minute.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/bybit_data.cpython-312.pyc",
+      "bytes": 12985,
+      "allocated_bytes": 16384,
+      "SHA256_before": "a12a9018de28bc6c2bfdd5dbe9d55bb8efbeef2f56df65bbb9e5974222bebf9f",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/bybit_data.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/native_validation.cpython-312.pyc",
+      "bytes": 12653,
+      "allocated_bytes": 16384,
+      "SHA256_before": "102a04f515b35f4fab91598322aae7e16fd1453d2e9856819582f314c46b2f41",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_validation.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/native_optimizer.cpython-312.pyc",
+      "bytes": 233163,
+      "allocated_bytes": 233472,
+      "SHA256_before": "c268aead6a2d3eb8918056598be27f14a4badf4635b4420170b4123f19142036",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_optimizer.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/native_fixture.cpython-312.pyc",
+      "bytes": 35076,
+      "allocated_bytes": 36864,
+      "SHA256_before": "c1aa77eeff9cd75075f62e9917864ccf5f096af1cd30751a4258e2acced97ddb",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_fixture.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/minute_risk.cpython-312.pyc",
+      "bytes": 23698,
+      "allocated_bytes": 24576,
+      "SHA256_before": "da12db90ececf1f1fb897f285916f0227d7986e45d3c3491776b110b84b2f0df",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/minute_risk.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/native_sequential.cpython-312.pyc",
+      "bytes": 20850,
+      "allocated_bytes": 24576,
+      "SHA256_before": "579c4d3756baec96e82f5714a3a173dfcdfbd33beb1e078faf298e8a433788ee",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_sequential.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/job_protocol.cpython-312.pyc",
+      "bytes": 3168,
+      "allocated_bytes": 4096,
+      "SHA256_before": "f646e1a859fa2b4c07bee7bf8255ca98da470f0c4d46090227315bd16acc22d6",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/job_protocol.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/job_limiter.cpython-312.pyc",
+      "bytes": 2636,
+      "allocated_bytes": 4096,
+      "SHA256_before": "c5d22b8d2904a18b46f124f9fb46dbfcf3518c97efe9feab701392f71901aa58",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/job_limiter.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/__pycache__/optimizer_job.cpython-312.pyc",
+      "bytes": 18316,
+      "allocated_bytes": 20480,
+      "SHA256_before": "0a14a2469e6169dc3e0eeb9a245e2c6bb76845e6f2f0fb4f522e841399d12ccb",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/optimizer_job.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/scripts/__pycache__/stage_live82.cpython-312.pyc",
+      "bytes": 12519,
+      "allocated_bytes": 16384,
+      "SHA256_before": "cd25121a6fd3ffaf48e8118f5eca3c74e6d29d07fe98ccbcb14f4f93e49e517e",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/scripts/stage_live82.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/__pycache__/launch_split_cover_native.cpython-312.pyc",
+      "bytes": 11983,
+      "allocated_bytes": 12288,
+      "SHA256_before": "026edd69e13124444d91724e26446ad43cf00b10c2fe8d959008cbfacc0f7a13",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/launch_split_cover_native.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/__pycache__/analyze_split_cover_results.cpython-312.pyc",
+      "bytes": 47020,
+      "allocated_bytes": 49152,
+      "SHA256_before": "9073c6a06e84383f05635cb5d0b96de6225ab8dc96e95496746a422da8988263",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/analyze_split_cover_results.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/__pycache__/verify_split_cover_repeat.cpython-312.pyc",
+      "bytes": 10998,
+      "allocated_bytes": 12288,
+      "SHA256_before": "18565102d47d975376c4a2681913e62a8bf3f2914c640627d274ecae87f428ad",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/verify_split_cover_repeat.py"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/__pycache__/collect_split_cover_native.cpython-312.pyc",
+      "bytes": 6869,
+      "allocated_bytes": 8192,
+      "SHA256_before": "2615e460899c6f922ca94588a4e15b3188ca2daa9ff3a9b90263f6fd29a29ee2",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/scripts/collect_split_cover_native.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/traceback.cpython-312.pyc",
+      "bytes": 51523,
+      "allocated_bytes": 53248,
+      "SHA256_before": "4927d782f9b4df12ca0a6e353231fa90b204f5891c6db3b4cc198a5a34d9b074",
+      "source_preserved": "/usr/lib/python3.12/traceback.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/warnings.cpython-312.pyc",
+      "bytes": 23792,
+      "allocated_bytes": 24576,
+      "SHA256_before": "38f38ecbad459a9652351455d9e19bf138ccbfc15c89c6fa3f028b10d6bac2df",
+      "source_preserved": "/usr/lib/python3.12/warnings.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/_compression.cpython-312.pyc",
+      "bytes": 7497,
+      "allocated_bytes": 8192,
+      "SHA256_before": "fc09d120e985361378c4a62fea5fbbf4abc73b4622e872bc1a78271383cad8e6",
+      "source_preserved": "/usr/lib/python3.12/_compression.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/gettext.cpython-312.pyc",
+      "bytes": 22151,
+      "allocated_bytes": 24576,
+      "SHA256_before": "e2716152eacdfd9cd24361da3f7dfdefcd08d0490e2f8c05065021d0c0ea61f0",
+      "source_preserved": "/usr/lib/python3.12/gettext.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/functools.cpython-312.pyc",
+      "bytes": 40506,
+      "allocated_bytes": 40960,
+      "SHA256_before": "94518b56bf294cfe53c3aad9b0fffc00c9b4c552cccf324bd359e1c4997a82b2",
+      "source_preserved": "/usr/lib/python3.12/functools.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/locale.cpython-312.pyc",
+      "bytes": 59536,
+      "allocated_bytes": 61440,
+      "SHA256_before": "702676dd32e0438e9f26c82d2fdf34fa0008e9891b57c50345c448dc12946135",
+      "source_preserved": "/usr/lib/python3.12/locale.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/threading.cpython-312.pyc",
+      "bytes": 65346,
+      "allocated_bytes": 65536,
+      "SHA256_before": "8e8f323ad7643cb4671f460b77dafca43c243ad545a40bb6759314b504b8dc3b",
+      "source_preserved": "/usr/lib/python3.12/threading.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/shutil.cpython-312.pyc",
+      "bytes": 68113,
+      "allocated_bytes": 69632,
+      "SHA256_before": "ceb08a3f6bc41f55a48e1248a294ef62dae237b5045a3b9947c3d179753a7afc",
+      "source_preserved": "/usr/lib/python3.12/shutil.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/contextlib.cpython-312.pyc",
+      "bytes": 30376,
+      "allocated_bytes": 32768,
+      "SHA256_before": "e29b80e8619204a18dd338fe80562b116d6ced5d42361f7255958c23a0bf08a9",
+      "source_preserved": "/usr/lib/python3.12/contextlib.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/fnmatch.cpython-312.pyc",
+      "bytes": 6495,
+      "allocated_bytes": 8192,
+      "SHA256_before": "9315c79ca0d436b91421752f16643eb381068c4ff7b85f6a513c646e03debdb7",
+      "source_preserved": "/usr/lib/python3.12/fnmatch.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/types.cpython-312.pyc",
+      "bytes": 14939,
+      "allocated_bytes": 16384,
+      "SHA256_before": "b7f2eb13f227d3731278f2e33fe5a3e447cb988852a43f053d5447485e199cab",
+      "source_preserved": "/usr/lib/python3.12/types.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/bz2.cpython-312.pyc",
+      "bytes": 15133,
+      "allocated_bytes": 16384,
+      "SHA256_before": "fe78f3c58f7774cbb407262fe60062c69bb6f0963753117b154d6293216f7594",
+      "source_preserved": "/usr/lib/python3.12/bz2.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/sitecustomize.cpython-312.pyc",
+      "bytes": 300,
+      "allocated_bytes": 4096,
+      "SHA256_before": "6752e00d32f9aecdd38e838a0ea9c2f897368c3eeb056dfc788cd8b35b080aed",
+      "source_preserved": "/usr/lib/python3.12/sitecustomize.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/token.cpython-312.pyc",
+      "bytes": 3557,
+      "allocated_bytes": 4096,
+      "SHA256_before": "b0c328feaf27c1ebc20cc6768a0ed6fc4fc232ec6b3fe5995da4650ffabff855",
+      "source_preserved": "/usr/lib/python3.12/token.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/copyreg.cpython-312.pyc",
+      "bytes": 7414,
+      "allocated_bytes": 8192,
+      "SHA256_before": "57d508d756385d7e5fd85b4cb31a7e5f92cace2a289789b18d5401999a639bf3",
+      "source_preserved": "/usr/lib/python3.12/copyreg.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/reprlib.cpython-312.pyc",
+      "bytes": 9909,
+      "allocated_bytes": 12288,
+      "SHA256_before": "58a389f9c7b10ec4d9a88283aa1e051f7ba1d8a6f5ca489cb7dee5d9adb2b6ff",
+      "source_preserved": "/usr/lib/python3.12/reprlib.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/tokenize.cpython-312.pyc",
+      "bytes": 24775,
+      "allocated_bytes": 28672,
+      "SHA256_before": "d0c4748cd80ef47dfa811487d5e5d3c519ab10786060ac3797bdca26b5bc0075",
+      "source_preserved": "/usr/lib/python3.12/tokenize.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/argparse.cpython-312.pyc",
+      "bytes": 101682,
+      "allocated_bytes": 102400,
+      "SHA256_before": "82765b951cb8a25c21ebffbdbb0edf1b59deeb73df6a0e63c4dc6e0a438d68f5",
+      "source_preserved": "/usr/lib/python3.12/argparse.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/keyword.cpython-312.pyc",
+      "bytes": 1041,
+      "allocated_bytes": 4096,
+      "SHA256_before": "a7198c5b71ffd719308fe066b89cc98bbbc48bc6574ab879a5866626b184572b",
+      "source_preserved": "/usr/lib/python3.12/keyword.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/py_compile.cpython-312.pyc",
+      "bytes": 10078,
+      "allocated_bytes": 12288,
+      "SHA256_before": "42393d8cb6a2fb4adb1d6c0ed88186c30a02fdbc8ce128064d326f8a2aacc526",
+      "source_preserved": "/usr/lib/python3.12/py_compile.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/linecache.cpython-312.pyc",
+      "bytes": 6401,
+      "allocated_bytes": 8192,
+      "SHA256_before": "1b4b4fed09c34b6773cb7bf23485822272ccec41116e3c6a054c381923c005ee",
+      "source_preserved": "/usr/lib/python3.12/linecache.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/_weakrefset.cpython-312.pyc",
+      "bytes": 11751,
+      "allocated_bytes": 12288,
+      "SHA256_before": "df29445e1dc662eb6d6cfa4432ad8908e452bd29e8c54687d7103bf599d94a36",
+      "source_preserved": "/usr/lib/python3.12/_weakrefset.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/operator.cpython-312.pyc",
+      "bytes": 17364,
+      "allocated_bytes": 20480,
+      "SHA256_before": "2d9b59f83698f6db890176d5b6a512a0fbcec615ab9beb25b40759711e706ea7",
+      "source_preserved": "/usr/lib/python3.12/operator.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/enum.cpython-312.pyc",
+      "bytes": 80708,
+      "allocated_bytes": 81920,
+      "SHA256_before": "bc788b9ee5c315cce928b93f9893441babad4b516a989b8c4d009512d8e57b9b",
+      "source_preserved": "/usr/lib/python3.12/enum.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/lzma.cpython-312.pyc",
+      "bytes": 15855,
+      "allocated_bytes": 16384,
+      "SHA256_before": "3d87e452ecb6698231bd8e793169dcfe855464385d655d5752889f0be212ea77",
+      "source_preserved": "/usr/lib/python3.12/lzma.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/textwrap.cpython-312.pyc",
+      "bytes": 18293,
+      "allocated_bytes": 20480,
+      "SHA256_before": "c7790f86761f531daae3bf2bc64a9c6ffe75ba9c03fb85c74b2dfd1a9fadd011",
+      "source_preserved": "/usr/lib/python3.12/textwrap.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3/dist-packages/apport_python_hook.cpython-312.pyc",
+      "bytes": 8876,
+      "allocated_bytes": 12288,
+      "SHA256_before": "fa5208f642463ba5c8298a850a06c2122db928d62f7b9d1d6e0048fe76cf8268",
+      "source_preserved": "/usr/lib/python3/dist-packages/apport_python_hook.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3/dist-packages/_distutils_hack/__init__.cpython-312.pyc",
+      "bytes": 9998,
+      "allocated_bytes": 12288,
+      "SHA256_before": "0058ba119c774f5575519fba321583c3ce4f2af7d6d63cff44a783611d7c286a",
+      "source_preserved": "/usr/lib/python3/dist-packages/_distutils_hack/__init__.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/re/_compiler.cpython-312.pyc",
+      "bytes": 26516,
+      "allocated_bytes": 28672,
+      "SHA256_before": "e05c7e067749d8d0337f675399d00f65ecf7370c5379ef6673969233df211fab",
+      "source_preserved": "/usr/lib/python3.12/re/_compiler.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/re/__init__.cpython-312.pyc",
+      "bytes": 17938,
+      "allocated_bytes": 20480,
+      "SHA256_before": "b232ef42dd5d80b09ab397af6404026058d8cc97cca5b365b3391d8d1ab7f403",
+      "source_preserved": "/usr/lib/python3.12/re/__init__.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/re/_parser.cpython-312.pyc",
+      "bytes": 42007,
+      "allocated_bytes": 45056,
+      "SHA256_before": "44a9d0f2b4cd55fcac2012c2c0fad2b5457fa0e56cd12b12276921ab85c05f59",
+      "source_preserved": "/usr/lib/python3.12/re/_parser.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/re/_casefix.cpython-312.pyc",
+      "bytes": 1816,
+      "allocated_bytes": 4096,
+      "SHA256_before": "85b48befe0a5e98154845fb0fb3b756725b93396d228de31a08a3114ebd67d98",
+      "source_preserved": "/usr/lib/python3.12/re/_casefix.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/re/_constants.cpython-312.pyc",
+      "bytes": 5296,
+      "allocated_bytes": 8192,
+      "SHA256_before": "62c9814158634a6fc6c59a3d20b27c2555ca18fea2ba79e0ffe6df89ac5beff3",
+      "source_preserved": "/usr/lib/python3.12/re/_constants.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/importlib/_abc.cpython-312.pyc",
+      "bytes": 1643,
+      "allocated_bytes": 4096,
+      "SHA256_before": "52d4b7b94183fd0c818fde5af47b5dca6b3afed2c651f8acccdd477beeb7a44e",
+      "source_preserved": "/usr/lib/python3.12/importlib/_abc.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/importlib/__init__.cpython-312.pyc",
+      "bytes": 4565,
+      "allocated_bytes": 8192,
+      "SHA256_before": "08641577ef0aa2920d00d1d4ea873210daf5da906da6bc524049cb8edd7474e7",
+      "source_preserved": "/usr/lib/python3.12/importlib/__init__.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/encodings/__init__.cpython-312.pyc",
+      "bytes": 5790,
+      "allocated_bytes": 8192,
+      "SHA256_before": "a885411f939cf1980ade76b0cc021c3a3659d3e4cc8e905fdcaf7e3909ab94ca",
+      "source_preserved": "/usr/lib/python3.12/encodings/__init__.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/encodings/aliases.cpython-312.pyc",
+      "bytes": 12408,
+      "allocated_bytes": 16384,
+      "SHA256_before": "43acf0e938ff18d8a0c661a66176f7ee6fb92b148b8b5deabc629245eaaeff52",
+      "source_preserved": "/usr/lib/python3.12/encodings/aliases.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/encodings/utf_8.cpython-312.pyc",
+      "bytes": 2147,
+      "allocated_bytes": 4096,
+      "SHA256_before": "7ee12571aca7bbdad4c746390eb9bf97207b602be09cb8646a4421957e71f08a",
+      "source_preserved": "/usr/lib/python3.12/encodings/utf_8.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/collections/__init__.cpython-312.pyc",
+      "bytes": 73089,
+      "allocated_bytes": 73728,
+      "SHA256_before": "efe104840c7b718e97185b155f875e330f6bc67687182e7322fae642d6f7f39e",
+      "source_preserved": "/usr/lib/python3.12/collections/__init__.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/usr/lib/python3.12/collections/abc.cpython-312.pyc",
+      "bytes": 249,
+      "allocated_bytes": 4096,
+      "SHA256_before": "c7e98f4ddd778e38762c32b98aebde9d74586d9c508a1b61cf6e950b93cc7928",
+      "source_preserved": "/usr/lib/python3.12/collections/abc.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/comparison/sequence.cpython-312.pyc",
+      "bytes": 7430,
+      "allocated_bytes": 8192,
+      "SHA256_before": "cac1a083d05d1cdc420b1d79bee3dc9d90b76077dff6acdf758c100da770bad0",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/comparison/sequence.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/comparison/summarize.cpython-312.pyc",
+      "bytes": 30153,
+      "allocated_bytes": 32768,
+      "SHA256_before": "e5641ddece937ebe1d0f4f9aeb84adc495b92da6396f24bdc9bb3fdd45da33df",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/comparison/summarize.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/comparison/prepare_packs.cpython-312.pyc",
+      "bytes": 7114,
+      "allocated_bytes": 8192,
+      "SHA256_before": "f1bab92fded94c53012fde026dac6d93badae9df966e54d03a7940f0ef1b7aba",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/comparison/prepare_packs.py"
+    },
+    {
+      "path": "/tmp/cm113-prep-pycache/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/comparison/validate_pack.cpython-312.pyc",
+      "bytes": 2136,
+      "allocated_bytes": 4096,
+      "SHA256_before": "f50ce565d390ef4781ede473f64b635638de74c973ca67d19b4c5fc67434ebb0",
+      "source_preserved": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/v3-risk-four-113/comparison/validate_pack.py"
+    }
+  ],
+  "active_reference_matches": [],
+  "skipped": [],
+  "pilot_readonly_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "protected_large_categories": {
+    "canonical_working_venv_bytes": 938672128,
+    "canonical_runtime_var_inputs_bytes": 385572864,
+    "canonical_node_modules_working_dependency_bytes": 171073536,
+    "canonical_reports_bytes": 47005696,
+    "all_varlib_runs_jobs": "PROTECTED_INCLUDING_FAILEDALPHAATTEMPT",
+    "otherprojects_Hermes_fai_VPN": "NOT_TOUCHED"
+  },
+  "remaining_blockers": [
+    "NoadditionalprovenlargeCoinMasterdisposablecachefound",
+    "OOM/runtimecauseindependentsourceownerinvestigation;cleanupdoesnotresolveorinvalidateOOMevidence",
+    "Finalcandidateanalysispendingcompletedvalidreceipt/roottrigger;noengineactionsbystats"
+  ],
+  "resource_gate_after": {
+    "disk_free_at_least_1_5GiB": true,
+    "no_cleanup_of_failed_native_evidence": true
+  },
+  "extended_safe_cache_audit": {
+    "authorization": "Ownerall-safeVPSdiskcleanupbroadenedbyroot;metadataonlyinventory/nootherprojectdata",
+    "largest_top_level_allocated_bytes": {
+      "/var": 12482314240,
+      "/root": 7065104384,
+      "/usr": 6760112128,
+      "/opt": 4599775232,
+      "/srv": 4087009280
+    },
+    "other_metadata": {
+      "/var/lib": 11445407744,
+      "/var/log": 522452992,
+      "/var/backups": 382734336,
+      "/root/.cache": 692224,
+      "/root/.cache/pip/http-v2": 614400,
+      "/var/cache/apt/archives": 24576,
+      "apt_archive_deb_files": 0,
+      "/tmp": 23146496,
+      "/srv/coinmaster": 2262093824
+    },
+    "kept": "Allcompleted/failedresearchjobs/reports/inputParquet/fundingSQLite/journals/venvs/releases/nativefixtures/pipHTTP(unmaterialunknownprovenance)/otherprojectcaches/rootsecrets;noaptlist/dpkgstatusdeleted",
+    "APT_process_reference_check": [
+      {
+        "PID": 868,
+        "comm": "unattended-upgr"
+      }
+    ],
+    "cache_open_fd_reference_check": [],
+    "APT_derived_metadata_only_deleted": [],
+    "before": {
+      "total": 39973924864,
+      "used": 37343092736,
+      "free": 2207145984
+    },
+    "after": {
+      "total": 39973924864,
+      "used": 37343092736,
+      "free": 2207145984
+    },
+    "observed_free_delta_bytes": 0,
+    "remaining_safe_large_candidates": "NONE_PROVEN; noautoremove/containerprune/service/config/otherprojectsactions"
+  },
+  "disk_after_all_cleanup": {
+    "total": 39973924864,
+    "used": 37343092736,
+    "free": 2207145984
+  },
+  "total_deleted_logical_bytes_all_phases": 6120259,
+  "total_deleted_allocated_bytes_all_phases": 6459392,
+  "root_followup_APT_validation": {
+    "utc": "2026-10-19T18:53:26.338496+00:00",
+    "actual_PID868_role": "unattended-upgrade-shutdown --wait-for-signal; idle shutdown listener, NOT active upgrade",
+    "active_package_manager": false,
+    "apt_dpkg_locks": false,
+    "removed_only_derived_regenerable_APT_metadata": [
+      {
+        "path": "/var/cache/apt/pkgcache.bin",
+        "logical_bytes": 58432047,
+        "allocated_bytes": 58437632
+      },
+      {
+        "path": "/var/cache/apt/srcpkgcache.bin",
+        "logical_bytes": 58410998,
+        "allocated_bytes": 58417152
+      }
+    ],
+    "preserved": "apt lists/dpkg status/packages/working services/all CoinMaster data/results/reports/venvs/jobs",
+    "free_before": 2207092736,
+    "free_after": 2323947520,
+    "freed_allocated_bytes": 116854784
+  }
+}

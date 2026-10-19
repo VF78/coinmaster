@@ -364,3 +364,73 @@ def test_native_pending_original_risk_cancel_latepartial_retires_only_bound_unfi
         assert any(x['event']=='RETIRE_RISK_CANCELED_AUTHORITY' and x['quantity']=='.6' or x['event']=='RETIRE_RISK_CANCELED_AUTHORITY' and D(x['quantity'])==D('.6') for x in s.alpha_cushion_audit)
         close(s,e,30)
     finally:e.end();e.dispose()
+
+
+def test_production_alpha_closed_15m_release_and_daily_batch_native_identity(tmp_path,monkeypatch):
+    """Real production event builder/aggregator, two accounts, one batch boundary."""
+    from test_native_baseline import write_streaming_fixture
+    from coinmaster.research.native_baseline import run_native_diagnostic,TRADING_START_MS,MINUTE_MS,DAY_MS
+    from coinmaster.domain.wave_overlay import Candidate
+    from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
+    from types import SimpleNamespace
+    from pathlib import Path
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+    start,end=write_streaming_fixture(tmp_path,trading_days=2);shift=TRADING_START_MS-start
+    for path in (tmp_path/'normalized').glob('*.parquet'):
+        rows=pq.read_table(path).to_pylist();isbtc='BTCUSDT' in path.name
+        for index,row in enumerate(rows):
+            row['open_time_ms']+=shift
+            if 'daily' in path.name:
+                p=(100 if isbtc else 30)*exp((.01 if isbtc else .02)*(index%2))
+            else:
+                minute=index%1440
+                p=(100 if minute<20 else 180) if isbtc else (30 if minute<30 else 32)
+            row.update(open=str(p),high=str(p+.1),low=str(p-.1),close=str(p))
+            if 'mark_close' in row:row['mark_close']=str(p)
+        pq.write_table(pa.Table.from_pylist(rows),path)
+    original_quote=WaveOverlayStrategy.on_quote_tick
+    signatures=[];seen_bars=[]
+    original_bar=WaveOverlayStrategy.on_bar
+    def capture_bar(s,b):
+        original_bar(s,b)
+        if b.bar_type.instrument_id==s.config.sol_id and b.bar_type.spec.aggregation==BarAggregation.MINUTE and b.bar_type.spec.step==15:
+            seen_bars.append((b.ts_event,s.clock.timestamp_ns(),str(b.close)))
+    def capture_quote(s,q):
+        original_quote(s,q)
+        if q.instrument_id!=s.config.btc_id:return
+        minute=(q.ts_event//1_000_000-TRADING_START_MS)//MINUTE_MS
+        if minute in (1,1441):
+            assert s._domain.episode is None
+            s._current_signals=[SimpleNamespace(side=1,beta=2.,sigma=.02)]*len(s._bars)
+            s._current_btc=SimpleNamespace(ts_event=q.ts_event);s._current_sol=SimpleNamespace(ts_event=q.ts_event)
+            s._current_btc_mark=s._latest_marks[s.config.btc_id];s._current_sol_mark=s._latest_marks[s.config.sol_id]
+            s._last_accepted_session=q.ts_event;s._latest_seen_session=q.ts_event
+            ep=s._domain.episode=Episode('routing-cycle-'+str(minute),1,10000,1,wave_levels=(100,200,300),h=10000)
+            if minute==1:s._alpha_peak=D(18170)  # Prior-account high-water fixture; never reset on second episode.
+            i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
+            s._submit_intent(i,float(q.bid_price),float(q.ask_price),.02,len(s._bars)-1,ts_now=q.ts_event)
+        if minute in (48,1488):s._begin_forced_close('REGIME')
+    monkeypatch.setattr(WaveOverlayStrategy,'on_quote_tick',capture_quote)
+    monkeypatch.setattr(WaveOverlayStrategy,'on_bar',capture_bar)
+    common=dict(candidate=Candidate(btc_notional_multiplier=7.875,max_parent_notional=30_000_000),trading_start_ms=TRADING_START_MS,trading_end_ms=TRADING_START_MS+2*DAY_MS,warmup_start_ms=shift,
+        research_v0_execution_repairs=True,research_v0_deferred_selective_zero_tp=True,research_v0_selective_lifecycle_repairs=True,research_btc_direction_sizing=True,research_btc_split50=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,research_alpha_cushion=True,observe_minute_risk=True)
+    results=[]
+    for batch in (10080,1440):
+        result=run_native_diagnostic(tmp_path,weekly_batch_minutes=batch,cursor_batch_rows=batch,artifact_dir=tmp_path/str(batch),**common)
+        assert any(x['event']=='RELEASE' for x in result['alpha_cushion_audit']), dict(bars=seen_bars[:5],audit=[x for x in result['alpha_cushion_audit'] if x['event'] in {'BUDGET','RELEASE'}][:30])
+        assert result['terminal_open_positions']==0
+        snap=json.loads((tmp_path/str(batch)/'batch-resource-latest.json').read_text())
+        assert snap['processed_minutes']==2880 and snap['weekly_batch_minutes']==batch and snap['cursor_batch_rows']==batch
+        results.append(result)
+        # Economic order fields are compared without generated IDs/path/performance.
+        import csv
+        orderpath=Path(result['execution_artifacts']['orders']['path'])
+        rows=list(csv.DictReader(orderpath.open()))
+        signatures.append([{k:v for k,v in row.items() if k not in {'client_order_id','venue_order_id','position_id','account_id','trader_id','strategy_id','tags','exec_algorithm_id','exec_algorithm_params','exec_spawn_id','order_list_id','linked_order_ids','parent_order_id','last_trade_id','init_id'}} for row in rows])
+    assert seen_bars and all(close<=receipt for close,receipt,_ in seen_bars)
+    left,right=results
+    for key in ('terminal_total','native_fees','fills','cash_account_series','interval_cash_account_series','terminal_open_positions'):
+        assert left[key]==right[key],key
+    assert signatures[0]==signatures[1]
+    assert left['streaming']['batch_count']==1 and right['streaming']['batch_count']==2

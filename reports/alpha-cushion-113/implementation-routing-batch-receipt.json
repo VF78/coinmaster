@@ -1,0 +1,106 @@
+{
+  "assertions": [
+    "actualproduction1mbars->nativeclosedSOL15m->actualALPHA_RELEASE",
+    "twoactualBTCepisodes",
+    "10080vs1440sameeconomicnativeorders(type,TIF,postonly,liquidity,qty,price,commissions,timestamps,status)",
+    "exactterminaltotal/nativefees/fillcount/accountcash/intervalcash",
+    "nativeflat",
+    "bothbatchparametersreduced;overwriteonlycounts/RSSsidecar"
+  ],
+  "base_commit": "2b3cd5fffa021d35d0d5a99f9a4a8e966fb1c69c",
+  "changed_product_paths": [
+    "runtime/coinmaster/research/native_baseline.py",
+    "runtime/tests/test_native_alpha_cushion.py",
+    "scripts/launch_split_cover_native.py"
+  ],
+  "created_utc": "2026-10-19T18:58:00.024630+00:00",
+  "failed_attempt_immutable": "reports/alpha-cushion-113/failed-attempt-receipt.json",
+  "failed_attempt_sha256": "504c17cdc688d96cfdd9635f98be8ed85fe48c9d830d30caa4610f28f5d815b3",
+  "focused_case": "test_production_alpha_closed_15m_release_and_daily_batch_native_identity",
+  "full206_suite_rerun": false,
+  "full_engine_started": false,
+  "ignored_order_fields": [
+    "client_order_id",
+    "venue_order_id",
+    "position_id",
+    "account_id",
+    "trader_id",
+    "strategy_id",
+    "tags",
+    "exec_algorithm_id",
+    "exec_algorithm_params",
+    "exec_spawn_id",
+    "order_list_id",
+    "linked_order_ids",
+    "parent_order_id",
+    "last_trade_id",
+    "init_id"
+  ],
+  "memory_measurement": {
+    "engine_created": false,
+    "limits": "Categories share scalar references and are NOT additive. C native internals/Arrow decoder allocations not fully counted. Same-process RSS delta includes allocator effects; not a guaranteed 70MiB saving. Dailychunk reduces fixed working set by tensofMiB; cumulative actualorder/nativecache growth remains unmeasured before retry and can still exceed650MiB. No cachepurge or economic change authorized.",
+    "minutes10080": {
+      "bundles_python_bytes": 21840346,
+      "cursor_python_columns_bytes": 12994375,
+      "marks_python_exposed_bytes": 1140696,
+      "observed_process_peak_rss_kib": 554792,
+      "quotes_python_exposed_bytes": 4043736,
+      "recorder_increment_bytes": 657944
+    },
+    "minutes1440": {
+      "bundles_python_bytes": 3121249,
+      "cursor_python_columns_bytes": 1871054,
+      "marks_python_exposed_bytes": 161368,
+      "observed_process_peak_rss_kib": 482892,
+      "quotes_python_exposed_bytes": 576088,
+      "recorder_increment_bytes": 125720
+    },
+    "public_data_only": true
+  },
+  "native_snapshots": {
+    "10080": {
+      "alpha_audit_dropped": 0,
+      "alpha_audit_rows": 13,
+      "batch_count": 1,
+      "cursor_batch_rows": 10080,
+      "last_available_ns": 1725321600000000000,
+      "native_fill_events": 6,
+      "native_orders": 8,
+      "native_positions": 2,
+      "peak_rss_bytes": 392802304,
+      "processed_minutes": 2880,
+      "rss_bytes": 393084928,
+      "seen_trade_ids": 6,
+      "strategy_order_audit": 8,
+      "weekly_batch_minutes": 10080
+    },
+    "1440": {
+      "alpha_audit_dropped": 0,
+      "alpha_audit_rows": 13,
+      "batch_count": 2,
+      "cursor_batch_rows": 1440,
+      "last_available_ns": 1725321600000000000,
+      "native_fill_events": 6,
+      "native_orders": 8,
+      "native_positions": 2,
+      "peak_rss_bytes": 396341248,
+      "processed_minutes": 2880,
+      "rss_bytes": 396365824,
+      "seen_trade_ids": 6,
+      "strategy_order_audit": 8,
+      "weekly_batch_minutes": 1440
+    }
+  },
+  "patch_sha256": "4e34c0ccba1e513a2025d72312d2a8c554a78b97342e1d8c240db23aa61f0d9b",
+  "root_ops_untouched": true,
+  "routing_defect": "ALPHA included confirmation subscriptions/cache but omitted1msourcebars: correctedexplicitly, NOT labeledperformanceonly",
+  "source_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "7fbcce5785fb16aafde17e519ce8624d52fd10f49218da245b342f4316fc4447",
+    "runtime/tests/test_native_alpha_cushion.py": "70373acb8eef39b4305dca9790f87e6c3fb7e0f6d9ff744ba25525e5436b8b37",
+    "scripts/launch_split_cover_native.py": "29898a5b9653c2211f35568936dddd0252fdaa7bc0316caae209d4f8511c4f21"
+  },
+  "status": "FOCUSED_PASS_AWAIT_NARROW_REVIEW_ROOT_COMMIT_AND_RETRY_GO",
+  "test_log": "reports/alpha-cushion-113/implementation-routing-batch-proof-final.log",
+  "test_log_sha256": "1ba18c092cdb81fc8616b573529d9ba252caf479cdd6979a99d47a8081cd517b",
+  "test_result": "1 passed,12warnings,9.97seconds;actualexit0"
+}

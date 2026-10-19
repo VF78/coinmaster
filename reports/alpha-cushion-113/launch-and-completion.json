@@ -1,0 +1,43 @@
+{
+  "actual_exit": "OOM_KILL_CONFIRMED_NOT_NATIVE_EXIT0",
+  "actual_unit": "cm115-split-alpha-cushion-20261019a",
+  "additional_runs_authorized": false,
+  "economic_results": "NONE_INCOMPLETE_FAILED_RESOURCE_ATTEMPT",
+  "failed_receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/failed-attempt-receipt.json",
+  "failed_receipt_sha256": "504c17cdc688d96cfdd9635f98be8ed85fe48c9d830d30caa4610f28f5d815b3",
+  "fresh_funding_family_expected": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/result/*funding.sqlite*",
+  "frozen_manifest_sha256": "b4e30ff2fa45cca11ba4badbe0f1e19c8661a80114682c3c87f2cde54bf25637",
+  "frozen_source_files": 89,
+  "input_hashes": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+  },
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a",
+  "journal": "Started cm115-split-alpha-cushion-20261019a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/launch.sh.\ncm115-split-alpha-cushion-20261019a.service: A process of this unit has been killed by the OOM killer.\ncm115-split-alpha-cushion-20261019a.service: Failed with result 'oom-kill'.\ncm115-split-alpha-cushion-20261019a.service: Consumed 6min 46.834s CPU time, 639.4M memory peak, 0B memory swap peak.\n",
+  "launch_command_sha256": "b2e40116cca48e41767e544d5a070a99a96043143698beb5014a8730d54f9d1d",
+  "launched_utc": "2026-10-19T18:38:43.433499+00:00",
+  "no_retry_started": true,
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "preparation_receipt_sha256": "7da012cb4fc5b693243408b0a84022ced99f9b7009078d1268d31344747ecba7",
+  "resources_before": {
+    "MemAvailable": 1420005376,
+    "disk_free": 2224504832
+  },
+  "source_commit": "2b3cd5fffa021d35d0d5a99f9a4a8e966fb1c69c",
+  "source_pins": {
+    "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "runtime/coinmaster/research/minute_risk.py": "2a31baa92464198971bff5b16d44a03b778d1e2cfafdb458b1a073cd008a8f32",
+    "runtime/coinmaster/research/native_baseline.py": "c019f93f9b80a89e18a482dd3d6b44370117d05c7953f3d7f19b9a03279a02f1",
+    "runtime/coinmaster/strategy/alpha_cushion.py": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "4b216a0cb05fe702d7c794fd8766675ac367f60d3fca978a6dcd751d8f03f66e",
+    "runtime/coinmaster/strategy/wave_overlay.py": "6e5fb6c7a359a9eb4e210ed76a3d5a2d66de15a8da6035e6bfd3e62155b2ab8e",
+    "runtime/tests/test_native_alpha_cushion.py": "648eaecce37820c0f83ab0395bc4c9be28192aad54b46ed4f7edfb0ef934fd89",
+    "scripts/collect_split_cover_native.py": "f86b1787cd9c6ef11f2ed6a67e0bcf35e1d9b4a2b2872dc7237e54a25803fd4b",
+    "scripts/launch_split_cover_native.py": "bbfed37c2649f973a19133848e8cbbf05f476ce1116ed3fed2d0647686183317"
+  },
+  "status": "INVALID_INCOMPLETE_OOM_NO_ECONOMIC_RESULT",
+  "unit_state": "MainPID=4034933\nCPUWeight=10\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nInvocationID=2b982d5c15f14d9c97a6ce503e10edbb"
+}

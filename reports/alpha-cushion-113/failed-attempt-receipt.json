@@ -1,0 +1,77 @@
+{
+  "PID": 4034933,
+  "ROI": null,
+  "TOTAL": null,
+  "actual_exit": "OOM_KILL_CONFIRMED_NOT_NATIVE_EXIT0",
+  "actual_unit": "cm115-split-alpha-cushion-20261019a",
+  "artifacts_preserved": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-5d937c4174564f209c32f5063d6afcef": {
+      "bytes": 4096,
+      "sha256": "e3ba06536f7dbba337dee3c1c5f01b43660ce276abb54c5cee2d5defc5b970aa"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-5d937c4174564f209c32f5063d6afcef-shm": {
+      "bytes": 32768,
+      "sha256": "cad4b084ccc91383e0b3a29b91b32968f4d035aaa95c1752018c4905ba4fee35"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-5d937c4174564f209c32f5063d6afcef-wal": {
+      "bytes": 3234232,
+      "sha256": "8f4664410929719833f054996bcdd0200a9ec3dbff473051a4ccd3f8850c2c88"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/result/minute-native-risk.csv.gz": {
+      "bytes": 19746347,
+      "sha256": "df5b01caf25a93d4ad8c2a5982decff74ea05e10f5d4a200a3204ce755e2715b"
+    }
+  },
+  "bounded_source_findings": {
+    "actual_container_counts_available": false,
+    "alpha_telemetry": "Repetitive detail cap4096. BETA_FREEZE onceperactualBTCepisode; DAILY_STRESS onlynewclosedday via sameUTCdaycache; HWMscalars only. Not exemptperquoteappend.",
+    "existing_grow_by_execution": "Nautilus native order/cache event histories; strategy.wave_overlay _order_audit dict,_seen_trade_ids set,fill_audit list retain complete order/fill evidence. Physical intents/pending maps are removed on native terminal.",
+    "new_order_pressure_possible": "Grid targetquantity depends freshBTC/SOLmarks and is recomputed perSOLquote; targetdifferences can create actual nativeSOLorders. This is sourcepotential, NOT measured count/cause attribution.",
+    "precise_heap_cause": "UNKNOWN; cgroup OOM/anonymousmemorypressure confirmed, no claim one specific container measured.",
+    "reason": "Only liveartifactfundingSQLite has354fundingrows and0native_parent_order_audit; resultorders/fills are exported aftersuccessfulenginecompletion. No debugger/heapinjection or observer scan performed."
+  },
+  "collection": "NOT_RUN_NO_COMPLETED_RESULT;systemctl_collected_Resultsuccess_is_not_actualexit0",
+  "completed_native_JSON_exists": false,
+  "disk_free_after": 2200924160,
+  "frozen_manifest_sha256": "b4e30ff2fa45cca11ba4badbe0f1e19c8661a80114682c3c87f2cde54bf25637",
+  "host_resources_after_OOM": {
+    "MemAvailable": 1412222976,
+    "MemTotal": 4005437440,
+    "SwapFree": 40914944,
+    "SwapTotal": 2147479552
+  },
+  "invocation_id": "2b982d5c15f14d9c97a6ce503e10edbb",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a",
+  "journal": "Started cm115-split-alpha-cushion-20261019a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/launch.sh.\ncm115-split-alpha-cushion-20261019a.service: A process of this unit has been killed by the OOM killer.\ncm115-split-alpha-cushion-20261019a.service: Failed with result 'oom-kill'.\ncm115-split-alpha-cushion-20261019a.service: Consumed 6min 46.834s CPU time, 639.4M memory peak, 0B memory swap peak.\n",
+  "native_flat_verified": false,
+  "native_minute_DD": null,
+  "no_intervention": "No kill/limitraise/restart/relaunch/pilot/service/sourcechange; preserve all partialattemptfiles unmodified.",
+  "observed_utc": "2026-10-19T18:48:07.794614+00:00",
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "progress": [
+    {
+      "funding_rows": 354,
+      "last_funding_ns": 1738454400000000000,
+      "last_funding_utc": "2025-02-02T00:00:00+00:00",
+      "native_parent_order_audit_rows": 0,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-5d937c4174564f209c32f5063d6afcef"
+    }
+  ],
+  "research_slice_empty": true,
+  "resource_observation_before_OOM": {
+    "MemAvailable": 791101440,
+    "anon": 639782912,
+    "file": 16330752,
+    "kernel": 3649536,
+    "memory_current": 659763200,
+    "memory_peak": 670474240
+  },
+  "run_log": {
+    "bytes": 292,
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a/run.log",
+    "sha256": "5c492edc37c64e39ba59922d8d8b8163857b9ac6aded2bef90b0d9ffe2f1db0f"
+  },
+  "runtime_summary": "6min46.834CPU;639.4MiBreportedpeak;Swap0;650MiBunchanged",
+  "source_commit": "2b3cd5fffa021d35d0d5a99f9a4a8e966fb1c69c",
+  "status": "INVALID_INCOMPLETE_OOM_NO_ECONOMIC_RESULT"
+}

@@ -118,12 +118,13 @@ def main():
     env = ["/usr/bin/env","-i","PATH=/usr/local/bin:/usr/bin:/bin","PYTHONDONTWRITEBYTECODE=1",
         f"PYTHONPATH={source}/runtime",f"TMPDIR={job}/tmp","OPENBLAS_NUM_THREADS=1","OMP_NUM_THREADS=1",
         "MKL_NUM_THREADS=1","NUMEXPR_NUM_THREADS=1","NUMEXPR_MAX_THREADS=1","ARROW_NUM_THREADS=2"]
+    batch_args = ["--research-batch-minutes","1440"] if "--research-alpha-cushion" in args else []
     cmd = env+[str(source/"runtime/.venv/bin/python"),"-m","coinmaster.research.native_baseline",
         "--data-root",str(source/"runtime/var/data"),"--research-v0-execution-repairs",
         "--research-v0-deferred-selective-zero-tp","--research-v0-selective-lifecycle-repairs",
         "--observe-minute-risk","--research-btc-direction-sizing",
         "--control-report",str(source/"runtime/var/data/runs/tp-fee-floor-113/v0/v0.json"),
-        "--artifact-dir",str(job/"result")]+args
+        "--artifact-dir",str(job/"result")]+args+batch_args
     lock = JOBS/".split-cover-native.lock"
     lock.touch(exist_ok=True);os.chown(lock,994,986)
     script = "#!/bin/sh\nset -eu\nexec >>"+shlex.quote(str(job/"run.log"))+" 2>&1\n"

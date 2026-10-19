@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-19T18:38:13.543832+00:00",
+  "status": "ROOT_GO_EXACTLY_ONE_ENGINE",
+  "source_commit": "2b3cd5fffa021d35d0d5a99f9a4a8e966fb1c69c",
+  "unique_unit": "cm115-split-alpha-cushion-20261019a",
+  "manifest_sha": "b4e30ff2fa45cca11ba4badbe0f1e19c8661a80114682c3c87f2cde54bf25637",
+  "manifest_members_checked": 93,
+  "reviewed_source_pins": 9,
+  "selected_BTC_rules_control_exact": true,
+  "interval_fee_DP_seed_reserve_match": true,
+  "resource": {
+    "MemAvailable": 1421246464,
+    "disk_free": 2224537600,
+    "research_slice_empty": true
+  },
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "approved_engine_count": 1,
+  "no_repeat_or_deploy": true
+}
