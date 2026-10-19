@@ -1,0 +1,3386 @@
+{
+  "status": "ANALYSIS_ONLY_NO_NEW_RUN_OR_RUNTIME_CHANGE",
+  "control_TOTAL": "6077107.23887483",
+  "control_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+  "control_result_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "source_hashes": {
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-btc-fill-attribution.csv": "701eb127374d83869ee9ed3afcd382aa3744b57a92ae5b5b6fcca3022019e2d0",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-sol-fill-attribution.csv": "5eeaec9dc6e27ca1085a2df84b56ea6b860d733043becb5b5cc559952debaad7",
+    "reports/btc-split-sol-cover-20261018/comparison-analysis-btc025-planref-tp-ioc-parents.csv": "1e0e67d5efc55b2206487ebc329cf1ac92dea86b0333e8fff2daa56093820476"
+  },
+  "definitions": {
+    "loss": "Existing weighted-average confirmed-native-fill episode net excluding funding<0. Not separately exported native account realizedPnL.",
+    "serial_whipsaw_cluster": "Consecutive closed losing BTCepisodes; every neighbor changesdirection afterREGIMEexit and nextactualentry is0..48hafterpreviousactualexit. Onlyknown aftereachclose; retrospectivetop3 ranking NEVERonlineactivation.",
+    "causal_online_alert": "AtnewlawfulBTCentry followingtwo completed losing/REGIMEflip episodes, statecanbeactivated usingpastonly. NeveraltersBTCschedule. Initialtwolossesarenotprotectedbythisparticularalert.",
+    "ranking": "RankclustersbyΣ(eachnet/ownentrynotional)percentagepoints, NOTequityreturn, NOTcounterfactualTOTAL; dollaraggregatealsoincludedwithcompoundingcaveat.",
+    "SOL_state": "Actualconfirmedfill quantity replay ONLY; no synthetic marks orPnLledger. Position side fromexistingcycle segmentation; fillsatselectedtimestampincludedsoafter-nativefillstate."
+  },
+  "counts": {
+    "BTCepisodes": 105,
+    "LONG": 53,
+    "SHORT": 52,
+    "positive_net": 57,
+    "negative_net": 48,
+    "all_losers_have_REGIME_exit": true,
+    "consecutive_side_changes": 69,
+    "losing_runs": 23,
+    "losing_run_lengths": {
+      "2": 5,
+      "1": 12,
+      "5": 2,
+      "3": 3,
+      "7": 1
+    },
+    "strict_serial_lossflip_clusters": 11,
+    "strict_cluster_episode_count": 36,
+    "losing_BTC_exits_SOLflat": 48,
+    "losers_SOLflat_strictly_before_last_exit": 42,
+    "losers_with_any_SOL_cycle_overlap": 6,
+    "after_exit_flat_interpretation": "All48SOLflatAFTERfinalBTCREGIMEtimestamp isjointclosuresemantics, NOT48missedhedges; usebeforetimestampandoverlapcounts."
+  },
+  "top3_strict_whipsaw_clusters": [
+    {
+      "first_episode": 97,
+      "last_episode": 103,
+      "episode_count": 7,
+      "start_utc": "2026-07-25T00:02:00+00:00",
+      "last_exit_utc": "2026-08-18T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-2770141.736829049999999999999",
+      "sum_net_over_own_entry_notional_percentage_points": "-13.09083746116434103504245735",
+      "side_sequence": [
+        "SHORT",
+        "LONG",
+        "SHORT",
+        "LONG",
+        "SHORT",
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2026-07-28T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 7,
+      "episodes": [
+        {
+          "number": 97,
+          "episode_id": "98f5e6e4-3b9a-4221-b929-a2a424e0b211",
+          "start_ns": 1784937720000000000,
+          "start_utc": "2026-07-25T00:02:00+00:00",
+          "last_exit_ns": 1785110400000000000,
+          "last_exit_utc": "2026-07-27T00:00:00+00:00",
+          "side": "SHORT",
+          "accepted_and_filled_BTCqty": "368.541",
+          "entry_vwap": "64064.69983529647990318580565",
+          "first_leg_P0": "64125.4",
+          "exit_vwap": "64988.92753994806547982449714",
+          "side_adjusted_entry_to_exit_price_percent": "-1.442647365909270738605234800",
+          "net_ex_funding_diagnostic": "-366774.6565875799999999999999",
+          "net_div_entry_notional_percent": "-1.553440821960542014558382667",
+          "losing": true,
+          "exit_reasons": {
+            "BTC_TP2": 1,
+            "REGIME": 1
+          },
+          "holding_hours": 47.96666666666667,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2026-07-25T01:14:00+00:00",
+              "qty": "99.447",
+              "px": "63979.7",
+              "reason": "BTC_TP2",
+              "commission": "3499.42407425"
+            },
+            {
+              "utc": "2026-07-27T00:00:00+00:00",
+              "qty": "269.094",
+              "px": "65361.9",
+              "reason": "REGIME",
+              "commission": "9673.67231523"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 98,
+          "episode_id": "dac96ebf-d4cf-4ec5-8df1-f8a8ffc66367",
+          "start_ns": 1785110460000000000,
+          "start_utc": "2026-07-27T00:01:00+00:00",
+          "last_exit_ns": 1785196800000000000,
+          "last_exit_utc": "2026-07-28T00:00:00+00:00",
+          "side": "LONG",
+          "accepted_and_filled_BTCqty": "263.859",
+          "entry_vwap": "65270.29969036492975414899624",
+          "first_leg_P0": "65352",
+          "exit_vwap": "63731.1",
+          "side_adjusted_entry_to_exit_price_percent": "-2.358193079649890613120718230",
+          "net_ex_funding_diagnostic": "-421842.5740771999999999999989",
+          "net_div_entry_notional_percent": "-2.449417912195400652904758032",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 23.983333333333334,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2026-07-28T00:00:00+00:00",
+              "qty": "263.859",
+              "px": "63731.1",
+              "reason": "REGIME",
+              "commission": "9248.8133732"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 99,
+          "episode_id": "13af429a-6c7e-423e-ac5a-a21a722bd623",
+          "start_ns": 1785196860000000000,
+          "start_utc": "2026-07-28T00:01:00+00:00",
+          "last_exit_ns": 1785456000000000000,
+          "last_exit_utc": "2026-07-31T00:00:00+00:00",
+          "side": "SHORT",
+          "accepted_and_filled_BTCqty": "270.698",
+          "entry_vwap": "63509.95",
+          "first_leg_P0": "63729.8",
+          "exit_vwap": "64746.5",
+          "side_adjusted_entry_to_exit_price_percent": "-1.947017750761888491488341600",
+          "net_ex_funding_diagnostic": "-353826.93237616000000000000",
+          "net_div_entry_notional_percent": "-2.058088610524836613425396031",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 71.98333333333333,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2026-07-31T00:00:00+00:00",
+              "qty": "270.698",
+              "px": "64746.5",
+              "reason": "REGIME",
+              "commission": "9639.71143135"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 100,
+          "episode_id": "d88502d2-a55b-4ed7-9960-577b7cfeddd7",
+          "start_ns": 1785456060000000000,
+          "start_utc": "2026-07-31T00:01:00+00:00",
+          "last_exit_ns": 1785542400000000000,
+          "last_exit_utc": "2026-08-01T00:00:00+00:00",
+          "side": "LONG",
+          "accepted_and_filled_BTCqty": "462.934",
+          "entry_vwap": "64722.95",
+          "first_leg_P0": "64804",
+          "exit_vwap": "62849",
+          "side_adjusted_entry_to_exit_price_percent": "-2.895340833506507351719907700",
+          "net_ex_funding_diagnostic": "-894759.87217216000000000000",
+          "net_div_entry_notional_percent": "-2.986270310608524487836231198",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 23.983333333333334,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2026-08-01T00:00:00+00:00",
+              "qty": "462.934",
+              "px": "62849",
+              "reason": "REGIME",
+              "commission": "16002.2164313"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 101,
+          "episode_id": "4522f41b-c260-499b-b01a-a9c282d51361",
+          "start_ns": 1785542460000000000,
+          "start_utc": "2026-08-01T00:01:00+00:00",
+          "last_exit_ns": 1785974400000000000,
+          "last_exit_utc": "2026-08-06T00:00:00+00:00",
+          "side": "SHORT",
+          "accepted_and_filled_BTCqty": "274.429",
+          "entry_vwap": "62941.40028641287910534236542",
+          "first_leg_P0": "62862.8",
+          "exit_vwap": "64619.6",
+          "side_adjusted_entry_to_exit_price_percent": "-2.666289129174955489574244600",
+          "net_ex_funding_diagnostic": "-476773.6587061800000000000002",
+          "net_div_entry_notional_percent": "-2.760233670766624030970765120",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 119.98333333333333,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2026-08-06T00:00:00+00:00",
+              "qty": "274.429",
+              "px": "64619.6",
+              "reason": "REGIME",
+              "commission": "9753.42071462"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 102,
+          "episode_id": "139ebbd6-b617-48d2-a75a-fbda19168627",
+          "start_ns": 1785974460000000000,
+          "start_utc": "2026-08-06T00:01:00+00:00",
+          "last_exit_ns": 1786406400000000000,
+          "last_exit_utc": "2026-08-11T00:00:00+00:00",
+          "side": "LONG",
+          "accepted_and_filled_BTCqty": "266.916",
+          "entry_vwap": "64538.8",
+          "first_leg_P0": "64619.6",
+          "exit_vwap": "63946.8",
+          "side_adjusted_entry_to_exit_price_percent": "-0.9172776686272443863226462200",
+          "net_ex_funding_diagnostic": "-173865.59380788000000000000",
+          "net_div_entry_notional_percent": "-1.009295075210571005348720460",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 119.98333333333333,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2026-08-11T00:00:00+00:00",
+              "qty": "266.916",
+              "px": "63946.8",
+              "reason": "REGIME",
+              "commission": "9387.63323784"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 103,
+          "episode_id": "b422d21d-9321-4cee-b442-1095153e4943",
+          "start_ns": 1786406460000000000,
+          "start_utc": "2026-08-11T00:01:00+00:00",
+          "last_exit_ns": 1787011200000000000,
+          "last_exit_utc": "2026-08-18T00:00:00+00:00",
+          "side": "SHORT",
+          "accepted_and_filled_BTCqty": "469.139",
+          "entry_vwap": "64002.25017041857530497357926",
+          "first_leg_P0": "63922.3",
+          "exit_vwap": "64118.42265511927168706929076",
+          "side_adjusted_entry_to_exit_price_percent": "-0.181513125540686928284153600",
+          "net_ex_funding_diagnostic": "-82298.44910188999999999999952",
+          "net_div_entry_notional_percent": "-0.2740910598978422299982038448",
+          "losing": true,
+          "exit_reasons": {
+            "BTC_REDUCE": 2,
+            "REGIME": 1
+          },
+          "holding_hours": 167.98333333333332,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2026-08-12T00:00:00+00:00",
+              "qty": "99.692",
+              "px": "63560.5",
+              "reason": "BTC_REDUCE",
+              "commission": "3485.0603513"
+            },
+            {
+              "utc": "2026-08-12T00:00:00+00:00",
+              "qty": "99.692",
+              "px": "63560.5",
+              "reason": "BTC_REDUCE",
+              "commission": "3485.0603513"
+            },
+            {
+              "utc": "2026-08-18T00:00:00+00:00",
+              "qty": "269.755",
+              "px": "64530.8",
+              "reason": "REGIME",
+              "commission": "9574.1282747"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        }
+      ],
+      "SOL_flat_strictly_before_exit_count": 7,
+      "BTC_episodes_with_any_SOL_cycle_overlap": 0
+    },
+    {
+      "first_episode": 35,
+      "last_episode": 39,
+      "episode_count": 5,
+      "start_utc": "2025-04-11T00:01:00+00:00",
+      "last_exit_utc": "2025-04-18T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-488455.0415294300000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-10.82302091160016526754243086",
+      "side_sequence": [
+        "SHORT",
+        "LONG",
+        "SHORT",
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2025-04-14T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 5,
+      "episodes": [
+        {
+          "number": 35,
+          "episode_id": "b0ff50d0-26c3-4bcb-b823-41a598fa8721",
+          "start_ns": 1744329660000000000,
+          "start_utc": "2025-04-11T00:01:00+00:00",
+          "last_exit_ns": 1744502400000000000,
+          "last_exit_utc": "2025-04-13T00:00:00+00:00",
+          "side": "SHORT",
+          "accepted_and_filled_BTCqty": "69.304",
+          "entry_vwap": "79549.65",
+          "first_leg_P0": "79566",
+          "exit_vwap": "83678.38926036015237215745123",
+          "side_adjusted_entry_to_exit_price_percent": "-5.190141327284472492534475300",
+          "net_ex_funding_diagnostic": "-292359.941518100000000000000",
+          "net_div_entry_notional_percent": "-5.302995905014569645334733632",
+          "losing": true,
+          "exit_reasons": {
+            "BTC_TP2": 1,
+            "REGIME": 1
+          },
+          "holding_hours": 47.983333333333334,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT",
+            "cycle_start_utc": "2025-04-11T00:05:00+00:00",
+            "cycle_end_utc": "2025-04-13T00:00:00+00:00",
+            "overlapping_cycle_net_ex_funding_diagnostic": "19495.2885000000000000000000",
+            "cycle_is_future_outcome_not_signal": true
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2025-04-11T00:06:00+00:00",
+              "qty": "18.701",
+              "px": "79393.3",
+              "reason": "BTC_TP2",
+              "commission": "816.60375682"
+            },
+            {
+              "utc": "2025-04-13T00:00:00+00:00",
+              "qty": "50.603",
+              "px": "85262",
+              "reason": "REGIME",
+              "commission": "2372.9821423"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "1000",
+            "side": "BUY",
+            "cycle_diagnostic_net_ex_funding": "19495.2885000000000000000000",
+            "limit": "Cyclefulloutcome isfuturediagnostic, neverentrysignal/nativeaccountassetPnL."
+          },
+          "SOL_cycles_overlapping_BTC_holding": [
+            {
+              "start_ns": "1744329900000000000",
+              "end_ns": "1744502400000000000",
+              "side": "BUY",
+              "entry_qty": "1000",
+              "diagnostic_net_ex_funding": "19495.2885000000000000000000",
+              "BTC_opposite_SOL_direction": true
+            }
+          ]
+        },
+        {
+          "number": 36,
+          "episode_id": "1d839362-a5fe-41a5-ab20-6bdffcb93a7e",
+          "start_ns": 1744502460000000000,
+          "start_utc": "2025-04-13T00:01:00+00:00",
+          "last_exit_ns": 1744588800000000000,
+          "last_exit_utc": "2025-04-14T00:00:00+00:00",
+          "side": "LONG",
+          "accepted_and_filled_BTCqty": "39.839",
+          "entry_vwap": "85201.04732297497427144255629",
+          "first_leg_P0": "85307.7",
+          "exit_vwap": "83678.9",
+          "side_adjusted_entry_to_exit_price_percent": "-1.786535929781367958871568880",
+          "net_ex_funding_diagnostic": "-63747.95356498000000000000004",
+          "net_div_entry_notional_percent": "-1.878074801292799886570940038",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 23.983333333333334,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2025-04-14T00:00:00+00:00",
+              "qty": "39.839",
+              "px": "83678.9",
+              "reason": "REGIME",
+              "commission": "1833.52603341"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 37,
+          "episode_id": "2ab7d0b3-0b71-40df-ba7b-9db0e07ce07e",
+          "start_ns": 1744588860000000000,
+          "start_utc": "2025-04-14T00:01:00+00:00",
+          "last_exit_ns": 1744675200000000000,
+          "last_exit_utc": "2025-04-15T00:00:00+00:00",
+          "side": "SHORT",
+          "accepted_and_filled_BTCqty": "52.090",
+          "entry_vwap": "83774.5",
+          "first_leg_P0": "83669.9",
+          "exit_vwap": "84536",
+          "side_adjusted_entry_to_exit_price_percent": "-0.908987818488919659323541200",
+          "net_ex_funding_diagnostic": "-43723.925763930000000000000",
+          "net_div_entry_notional_percent": "-1.001965911464820425921458991",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 23.983333333333334,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2025-04-15T00:00:00+00:00",
+              "qty": "52.09",
+              "px": "84536",
+              "reason": "REGIME",
+              "commission": "2421.914132"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 38,
+          "episode_id": "a864aafa-e7da-4404-a23b-27d292317ea4",
+          "start_ns": 1744675260000000000,
+          "start_utc": "2025-04-15T00:01:00+00:00",
+          "last_exit_ns": 1744761600000000000,
+          "last_exit_utc": "2025-04-16T00:00:00+00:00",
+          "side": "LONG",
+          "accepted_and_filled_BTCqty": "33.205",
+          "entry_vwap": "84515.79681373287155548863123",
+          "first_leg_P0": "84621.6",
+          "exit_vwap": "83636.4",
+          "side_adjusted_entry_to_exit_price_percent": "-1.040511770445710819511058610",
+          "net_ex_funding_diagnostic": "-31780.78200185999999999999999",
+          "net_div_entry_notional_percent": "-1.132460869090065892140142463",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 23.983333333333334,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2025-04-16T00:00:00+00:00",
+              "qty": "33.205",
+              "px": "83636.4",
+              "reason": "REGIME",
+              "commission": "1527.4306641"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        },
+        {
+          "number": 39,
+          "episode_id": "47b35716-1f50-47a3-9ba4-ec06761b8efc",
+          "start_ns": 1744761660000000000,
+          "start_utc": "2025-04-16T00:01:00+00:00",
+          "last_exit_ns": 1744934400000000000,
+          "last_exit_utc": "2025-04-18T00:00:00+00:00",
+          "side": "SHORT",
+          "accepted_and_filled_BTCqty": "45.058",
+          "entry_vwap": "83682.9",
+          "first_leg_P0": "83578.4",
+          "exit_vwap": "84866.4",
+          "side_adjusted_entry_to_exit_price_percent": "-1.414267430980522902528473600",
+          "net_ex_funding_diagnostic": "-56842.438680560000000000000",
+          "net_div_entry_notional_percent": "-1.507523424737909417575155737",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 47.983333333333334,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2025-04-18T00:00:00+00:00",
+              "qty": "45.058",
+              "px": "84866.4",
+              "reason": "REGIME",
+              "commission": "2103.15063816"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        }
+      ],
+      "SOL_flat_strictly_before_exit_count": 4,
+      "BTC_episodes_with_any_SOL_cycle_overlap": 1
+    },
+    {
+      "first_episode": 42,
+      "last_episode": 43,
+      "episode_count": 2,
+      "start_utc": "2025-05-25T00:01:00+00:00",
+      "last_exit_utc": "2025-06-07T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-189112.5342294600000000000003",
+      "sum_net_over_own_entry_notional_percentage_points": "-8.078404873741348411950253560",
+      "side_sequence": [
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2025-06-07T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 2,
+      "episodes": [
+        {
+          "number": 42,
+          "episode_id": "04a4447e-f866-4441-83e1-efcd1fb936e6",
+          "start_ns": 1748131260000000000,
+          "start_utc": "2025-05-25T00:01:00+00:00",
+          "last_exit_ns": 1749168000000000000,
+          "last_exit_utc": "2025-06-06T00:00:00+00:00",
+          "side": "LONG",
+          "accepted_and_filled_BTCqty": "16.385",
+          "entry_vwap": "107572.2417821177906621910284",
+          "first_leg_P0": "107706.9",
+          "exit_vwap": "101450.4",
+          "side_adjusted_entry_to_exit_price_percent": "-5.690912154194272343253203700",
+          "net_ex_funding_diagnostic": "-101881.9547022000000000000003",
+          "net_div_entry_notional_percent": "-5.780302989506225341089509636",
+          "losing": true,
+          "exit_reasons": {
+            "REGIME": 1
+          },
+          "holding_hours": 287.98333333333335,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT",
+            "cycle_start_utc": "2025-05-25T00:44:00+00:00",
+            "cycle_end_utc": "2025-06-06T00:00:00+00:00",
+            "overlapping_cycle_net_ex_funding_diagnostic": "28925.3750000000000000000000",
+            "cycle_is_future_outcome_not_signal": true
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2025-06-06T00:00:00+00:00",
+              "qty": "16.385",
+              "px": "101450.4",
+              "reason": "REGIME",
+              "commission": "914.2456422"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "1000",
+            "side": "SELL",
+            "cycle_diagnostic_net_ex_funding": "28925.3750000000000000000000",
+            "limit": "Cyclefulloutcome isfuturediagnostic, neverentrysignal/nativeaccountassetPnL."
+          },
+          "SOL_cycles_overlapping_BTC_holding": [
+            {
+              "start_ns": "1748133840000000000",
+              "end_ns": "1749168000000000000",
+              "side": "SELL",
+              "entry_qty": "1000",
+              "diagnostic_net_ex_funding": "28925.3750000000000000000000",
+              "BTC_opposite_SOL_direction": true
+            }
+          ]
+        },
+        {
+          "number": 43,
+          "episode_id": "5389283d-c509-4531-bf70-0a8f3f08df72",
+          "start_ns": 1749168060000000000,
+          "start_utc": "2025-06-06T00:01:00+00:00",
+          "last_exit_ns": 1749254400000000000,
+          "last_exit_utc": "2025-06-07T00:00:00+00:00",
+          "side": "SHORT",
+          "accepted_and_filled_BTCqty": "37.44",
+          "entry_vwap": "101382.65",
+          "first_leg_P0": "101444.8",
+          "exit_vwap": "103599.78625",
+          "side_adjusted_entry_to_exit_price_percent": "-2.186899089735768398241711000",
+          "net_ex_funding_diagnostic": "-87230.579527260000000000000",
+          "net_div_entry_notional_percent": "-2.298101884235123070860743924",
+          "losing": true,
+          "exit_reasons": {
+            "BTC_TP2": 1,
+            "REGIME": 1
+          },
+          "holding_hours": 23.983333333333334,
+          "native_SOL_at_entry": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "native_SOL_after_last_BTC_exit": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "actual_exit_fills": [
+            {
+              "utc": "2025-06-06T00:15:00+00:00",
+              "qty": "7.956",
+              "px": "101259.1",
+              "reason": "BTC_TP2",
+              "commission": "443.08956978"
+            },
+            {
+              "utc": "2025-06-07T00:00:00+00:00",
+              "qty": "29.484",
+              "px": "104231.4",
+              "reason": "REGIME",
+              "commission": "1690.23722868"
+            }
+          ],
+          "native_SOL_strictly_before_last_BTC_exit_timestamp": {
+            "actual_quantity": "0",
+            "side": "FLAT"
+          },
+          "SOL_cycles_overlapping_BTC_holding": []
+        }
+      ],
+      "SOL_flat_strictly_before_exit_count": 1,
+      "BTC_episodes_with_any_SOL_cycle_overlap": 1
+    }
+  ],
+  "all_losing_runs": [
+    {
+      "first_episode": 3,
+      "last_episode": 4,
+      "episode_count": 2,
+      "start_utc": "2024-09-14T00:02:00+00:00",
+      "last_exit_utc": "2024-09-18T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-5271.974123200000000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-6.784714691570369609258575083",
+      "side_sequence": [
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2024-09-18T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 2
+    },
+    {
+      "first_episode": 6,
+      "last_episode": 7,
+      "episode_count": 2,
+      "start_utc": "2024-10-02T00:01:00+00:00",
+      "last_exit_utc": "2024-10-10T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-1401.310256759999999999999997",
+      "sum_net_over_own_entry_notional_percentage_points": "-2.846688828799221782834161804",
+      "side_sequence": [
+        "SHORT",
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2024-10-10T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 2
+    },
+    {
+      "first_episode": 15,
+      "last_episode": 15,
+      "episode_count": 1,
+      "start_utc": "2024-12-20T00:01:00+00:00",
+      "last_exit_utc": "2024-12-23T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-6275.156606079999999999999980",
+      "sum_net_over_own_entry_notional_percentage_points": "-1.411420627960656413916248381",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 17,
+      "last_episode": 17,
+      "episode_count": 1,
+      "start_utc": "2024-12-25T00:02:00+00:00",
+      "last_exit_utc": "2024-12-27T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-10304.48851142999999999999999",
+      "sum_net_over_own_entry_notional_percentage_points": "-2.286122435953283408101216057",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 23,
+      "last_episode": 23,
+      "episode_count": 1,
+      "start_utc": "2025-01-28T00:01:00+00:00",
+      "last_exit_utc": "2025-02-03T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-65953.696316320000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-3.255550188268237464666480486",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 25,
+      "last_episode": 25,
+      "episode_count": 1,
+      "start_utc": "2025-02-04T00:02:00+00:00",
+      "last_exit_utc": "2025-02-05T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-88121.495526220000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-3.580871528459591261123021924",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 27,
+      "last_episode": 27,
+      "episode_count": 1,
+      "start_utc": "2025-02-21T00:02:00+00:00",
+      "last_exit_utc": "2025-02-22T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-38414.487738070000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-1.691997553322702941996539473",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 32,
+      "last_episode": 32,
+      "episode_count": 1,
+      "start_utc": "2025-03-25T00:02:00+00:00",
+      "last_exit_utc": "2025-03-27T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-25530.290467060000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-0.6363022774601089934489687820",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 35,
+      "last_episode": 39,
+      "episode_count": 5,
+      "start_utc": "2025-04-11T00:01:00+00:00",
+      "last_exit_utc": "2025-04-18T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-488455.0415294300000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-10.82302091160016526754243086",
+      "side_sequence": [
+        "SHORT",
+        "LONG",
+        "SHORT",
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2025-04-14T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 5
+    },
+    {
+      "first_episode": 42,
+      "last_episode": 43,
+      "episode_count": 2,
+      "start_utc": "2025-05-25T00:01:00+00:00",
+      "last_exit_utc": "2025-06-07T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-189112.5342294600000000000003",
+      "sum_net_over_own_entry_notional_percentage_points": "-8.078404873741348411950253560",
+      "side_sequence": [
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2025-06-07T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 2
+    },
+    {
+      "first_episode": 45,
+      "last_episode": 47,
+      "episode_count": 3,
+      "start_utc": "2025-06-14T00:01:00+00:00",
+      "last_exit_utc": "2025-06-20T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-37272.17632901000000000000162",
+      "sum_net_over_own_entry_notional_percentage_points": "-1.869140021145412236309537933",
+      "side_sequence": [
+        "LONG",
+        "SHORT",
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2025-06-19T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 3
+    },
+    {
+      "first_episode": 50,
+      "last_episode": 52,
+      "episode_count": 3,
+      "start_utc": "2025-08-02T00:01:00+00:00",
+      "last_exit_utc": "2025-08-07T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-94372.11493279999999999999977",
+      "sum_net_over_own_entry_notional_percentage_points": "-3.350672973858644693503068502",
+      "side_sequence": [
+        "SHORT",
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2025-08-06T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 3
+    },
+    {
+      "first_episode": 54,
+      "last_episode": 54,
+      "episode_count": 1,
+      "start_utc": "2025-08-16T00:01:00+00:00",
+      "last_exit_utc": "2025-08-19T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-22591.718013790000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-1.117866423743139271561878368",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 56,
+      "last_episode": 56,
+      "episode_count": 1,
+      "start_utc": "2025-08-23T00:02:00+00:00",
+      "last_exit_utc": "2025-08-24T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-28180.61647345000000000000025",
+      "sum_net_over_own_entry_notional_percentage_points": "-1.160531513454998932778099222",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 58,
+      "last_episode": 59,
+      "episode_count": 2,
+      "start_utc": "2025-09-05T00:01:00+00:00",
+      "last_exit_utc": "2025-09-23T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-122009.9703053999999999999982",
+      "sum_net_over_own_entry_notional_percentage_points": "-3.171531151549275843636083906",
+      "side_sequence": [
+        "SHORT",
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2025-09-23T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 2
+    },
+    {
+      "first_episode": 63,
+      "last_episode": 64,
+      "episode_count": 2,
+      "start_utc": "2025-10-22T00:01:00+00:00",
+      "last_exit_utc": "2025-10-29T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-521544.9938632700000000000001",
+      "sum_net_over_own_entry_notional_percentage_points": "-4.692503595485220480688248640",
+      "side_sequence": [
+        "SHORT",
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2025-10-29T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 2
+    },
+    {
+      "first_episode": 70,
+      "last_episode": 70,
+      "episode_count": 1,
+      "start_utc": "2026-01-20T00:01:00+00:00",
+      "last_exit_utc": "2026-01-21T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-380248.760836040000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-4.470599332536415709734474981",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 75,
+      "last_episode": 75,
+      "episode_count": 1,
+      "start_utc": "2026-03-05T00:02:00+00:00",
+      "last_exit_utc": "2026-03-06T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-652877.8150457700000000000016",
+      "sum_net_over_own_entry_notional_percentage_points": "-2.715629656157449372713036022",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 77,
+      "last_episode": 77,
+      "episode_count": 1,
+      "start_utc": "2026-03-11T00:01:00+00:00",
+      "last_exit_utc": "2026-03-13T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-268313.85796865000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-0.8946326862485464576989060472",
+      "side_sequence": [
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 80,
+      "last_episode": 82,
+      "episode_count": 3,
+      "start_utc": "2026-03-24T00:02:00+00:00",
+      "last_exit_utc": "2026-03-27T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-1031103.115765489999999999998",
+      "sum_net_over_own_entry_notional_percentage_points": "-5.160206146749404728268616701",
+      "side_sequence": [
+        "LONG",
+        "SHORT",
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2026-03-26T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 3
+    },
+    {
+      "first_episode": 88,
+      "last_episode": 88,
+      "episode_count": 1,
+      "start_utc": "2026-05-15T00:01:00+00:00",
+      "last_exit_utc": "2026-05-18T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-1345480.58753225000000000000",
+      "sum_net_over_own_entry_notional_percentage_points": "-4.490551959821089481812842999",
+      "side_sequence": [
+        "LONG"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": null,
+      "SOL_flat_after_BTC_exit_count": 1
+    },
+    {
+      "first_episode": 91,
+      "last_episode": 95,
+      "episode_count": 5,
+      "start_utc": "2026-07-04T00:01:00+00:00",
+      "last_exit_utc": "2026-07-18T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-1226012.620217489999999999997",
+      "sum_net_over_own_entry_notional_percentage_points": "-5.534293096469869022513705483",
+      "side_sequence": [
+        "SHORT",
+        "LONG",
+        "SHORT",
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2026-07-12T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 5
+    },
+    {
+      "first_episode": 97,
+      "last_episode": 103,
+      "episode_count": 7,
+      "start_utc": "2026-07-25T00:02:00+00:00",
+      "last_exit_utc": "2026-08-18T00:00:00+00:00",
+      "diagnostic_net_sum_dollars": "-2770141.736829049999999999999",
+      "sum_net_over_own_entry_notional_percentage_points": "-13.09083746116434103504245735",
+      "side_sequence": [
+        "SHORT",
+        "LONG",
+        "SHORT",
+        "LONG",
+        "SHORT",
+        "LONG",
+        "SHORT"
+      ],
+      "earliest_causal_alert_after_two_completed_losses_utc": "2026-07-28T00:00:00+00:00",
+      "SOL_flat_after_BTC_exit_count": 7
+    }
+  ],
+  "all_105_BTCepisodes": [
+    {
+      "number": 1,
+      "start_utc": "2024-09-02T00:01:00+00:00",
+      "last_exit_utc": "2024-09-06T14:48:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "0.791",
+      "entry_vwap": "57384.74058154235145385587863",
+      "exit_vwap": "54715",
+      "side_adjusted_entry_to_exit_price_percent": "4.652352793594515928898826830",
+      "net_ex_funding_diagnostic": "2086.107098789999999999999996",
+      "net_div_entry_notional_percent": "4.595827238333079195225516385",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 110.78333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 2,
+      "start_utc": "2024-09-11T00:01:00+00:00",
+      "last_exit_utc": "2024-09-11T14:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "0.950",
+      "entry_vwap": "57196.5",
+      "exit_vwap": "55763.4",
+      "side_adjusted_entry_to_exit_price_percent": "2.505572893446277307177886760",
+      "net_ex_funding_diagnostic": "1320.96478275000000000000000",
+      "net_div_entry_notional_percent": "2.431074008024966562639322336",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 13.983333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 3,
+      "start_utc": "2024-09-14T00:02:00+00:00",
+      "last_exit_utc": "2024-09-17T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "1.219",
+      "entry_vwap": "60434.38794093519278096800656",
+      "exit_vwap": "58159.9",
+      "side_adjusted_entry_to_exit_price_percent": "-3.763565775098335819320791030",
+      "net_ex_funding_diagnostic": "-2839.225736559999999999999997",
+      "net_div_entry_notional_percent": "-3.854003363879711721586931657",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 71.96666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 4,
+      "start_utc": "2024-09-17T00:01:00+00:00",
+      "last_exit_utc": "2024-09-18T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "1.427",
+      "entry_vwap": "58170.14912403644008409250175",
+      "exit_vwap": "59814.37820602662929222144359",
+      "side_adjusted_entry_to_exit_price_percent": "-2.826585640143698109087775000",
+      "net_ex_funding_diagnostic": "-2432.748386640000000000000003",
+      "net_div_entry_notional_percent": "-2.930711327690657887671643426",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 5,
+      "start_utc": "2024-09-18T00:01:00+00:00",
+      "last_exit_utc": "2024-09-19T12:07:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "0.741",
+      "entry_vwap": "60220.39824561403508771929825",
+      "exit_vwap": "62431.50998650472334682860999",
+      "side_adjusted_entry_to_exit_price_percent": "3.671698967968428683596392000",
+      "net_ex_funding_diagnostic": "1605.662835509999999999999997",
+      "net_div_entry_notional_percent": "3.598259860146517890599302419",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 36.1,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 6,
+      "start_utc": "2024-10-02T00:01:00+00:00",
+      "last_exit_utc": "2024-10-05T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "0.724",
+      "entry_vwap": "60887.25",
+      "exit_vwap": "62050",
+      "side_adjusted_entry_to_exit_price_percent": "-1.909677313394840463315390300",
+      "net_ex_funding_diagnostic": "-883.06056284000000000000000",
+      "net_div_entry_notional_percent": "-2.003205777892744375875080579",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 71.98333333333333,
+      "SOLqty_strictly_before_exit": "810.9",
+      "SOLside_strictly_before_exit": "BUY",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 7,
+      "start_utc": "2024-10-05T00:01:00+00:00",
+      "last_exit_utc": "2024-10-10T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "0.991",
+      "entry_vwap": "61999.62169525731584258324924",
+      "exit_vwap": "61533.76145307769929364278507",
+      "side_adjusted_entry_to_exit_price_percent": "-0.7513920721475187673706241100",
+      "net_ex_funding_diagnostic": "-518.2496939199999999999999968",
+      "net_div_entry_notional_percent": "-0.8434830509064774069590812252",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "REGIME": 1
+      },
+      "holding_hours": 119.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 8,
+      "start_utc": "2024-10-10T00:01:00+00:00",
+      "last_exit_utc": "2024-10-10T18:09:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "0.795",
+      "entry_vwap": "60732.44540880503144654088050",
+      "exit_vwap": "59157.8",
+      "side_adjusted_entry_to_exit_price_percent": "2.592758118343013862715359250",
+      "net_ex_funding_diagnostic": "1224.352330299999999999999998",
+      "net_div_entry_notional_percent": "2.535820538610239731752928447",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 18.133333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 9,
+      "start_utc": "2024-10-12T00:02:00+00:00",
+      "last_exit_utc": "2024-10-14T14:22:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "0.887",
+      "entry_vwap": "62533.47666290868094701240135",
+      "exit_vwap": "65585.2",
+      "side_adjusted_entry_to_exit_price_percent": "4.880143404694830622565225200",
+      "net_ex_funding_diagnostic": "2664.736828930000000000000003",
+      "net_div_entry_notional_percent": "4.804167376013891656440712173",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 62.333333333333336,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 10,
+      "start_utc": "2024-10-25T00:01:00+00:00",
+      "last_exit_utc": "2024-10-29T14:02:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "1.625",
+      "entry_vwap": "68137.04750769230769230769231",
+      "exit_vwap": "70712.06769230769230769230769",
+      "side_adjusted_entry_to_exit_price_percent": "3.779177817067401738322098100",
+      "net_ex_funding_diagnostic": "4111.446858779999999999999996",
+      "net_div_entry_notional_percent": "3.713282621438767595395626098",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_REDUCE": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 110.01666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 11,
+      "start_utc": "2024-11-02T00:01:00+00:00",
+      "last_exit_utc": "2024-11-07T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "1.912",
+      "entry_vwap": "69575.85",
+      "exit_vwap": "72989.64184100418410041841004",
+      "side_adjusted_entry_to_exit_price_percent": "4.906575831993693358282234500",
+      "net_ex_funding_diagnostic": "6405.4543067800000000000000",
+      "net_div_entry_notional_percent": "4.815080240684196188487142278",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 1
+      },
+      "holding_hours": 119.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 12,
+      "start_utc": "2024-11-16T00:01:00+00:00",
+      "last_exit_utc": "2024-11-21T03:53:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "1.836",
+      "entry_vwap": "91302.2",
+      "exit_vwap": "94188.97549019607843137254902",
+      "side_adjusted_entry_to_exit_price_percent": "3.161780866393228675073053000",
+      "net_ex_funding_diagnostic": "5148.2709741900000000000000",
+      "net_div_entry_notional_percent": "3.071195609805191502018084510",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_REDUCE": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 123.86666666666666,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 13,
+      "start_utc": "2024-11-27T00:01:00+00:00",
+      "last_exit_utc": "2024-11-28T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "3.455",
+      "entry_vwap": "92153.61175108538350217076700",
+      "exit_vwap": "95701.79406657018813314037627",
+      "side_adjusted_entry_to_exit_price_percent": "3.850291104236632598980773200",
+      "net_ex_funding_diagnostic": "11969.38809145000000000000002",
+      "net_div_entry_notional_percent": "3.759339395365170190448818245",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 14,
+      "start_utc": "2024-12-11T00:01:00+00:00",
+      "last_exit_utc": "2024-12-11T20:42:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "3.125",
+      "entry_vwap": "96590.273632",
+      "exit_vwap": "100241.130496",
+      "side_adjusted_entry_to_exit_price_percent": "3.779735502054199212189265700",
+      "net_ex_funding_diagnostic": "11151.7546266600000000000000",
+      "net_div_entry_notional_percent": "3.694535015116624325580831791",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 20.683333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 15,
+      "start_utc": "2024-12-20T00:01:00+00:00",
+      "last_exit_utc": "2024-12-23T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "4.559",
+      "entry_vwap": "97521.08313226584777363456898",
+      "exit_vwap": "96243.96429041456459749945163",
+      "side_adjusted_entry_to_exit_price_percent": "-1.309582298341737085651489810",
+      "net_ex_funding_diagnostic": "-6275.156606079999999999999980",
+      "net_div_entry_notional_percent": "-1.411420627960656413916248381",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_REDUCE": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 71.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 16,
+      "start_utc": "2024-12-23T00:01:00+00:00",
+      "last_exit_utc": "2024-12-23T18:52:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "3.542",
+      "entry_vwap": "95266.25",
+      "exit_vwap": "92775.4",
+      "side_adjusted_entry_to_exit_price_percent": "2.614619553094616404025559940",
+      "net_ex_funding_diagnostic": "8630.4049412300000000000000",
+      "net_div_entry_notional_percent": "2.557664327606669065018918604",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 18.85,
+      "SOLqty_strictly_before_exit": "1000",
+      "SOLside_strictly_before_exit": "BUY",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 17,
+      "start_utc": "2024-12-25T00:02:00+00:00",
+      "last_exit_utc": "2024-12-27T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "4.565",
+      "entry_vwap": "98738.41960569550930996714129",
+      "exit_vwap": "96579.23975903614457831325301",
+      "side_adjusted_entry_to_exit_price_percent": "-2.186767678966189544835510600",
+      "net_ex_funding_diagnostic": "-10304.48851142999999999999999",
+      "net_div_entry_notional_percent": "-2.286122435953283408101216057",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 47.96666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 18,
+      "start_utc": "2024-12-27T00:01:00+00:00",
+      "last_exit_utc": "2024-12-27T17:21:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "7.693",
+      "entry_vwap": "95862.91555959963603275705187",
+      "exit_vwap": "93773.71216690497855193032627",
+      "side_adjusted_entry_to_exit_price_percent": "2.179365587306557062693194920",
+      "net_ex_funding_diagnostic": "15544.38546624000000000000004",
+      "net_div_entry_notional_percent": "2.107789280007632502986893461",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 17.333333333333332,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 19,
+      "start_utc": "2025-01-03T00:02:00+00:00",
+      "last_exit_utc": "2025-01-06T15:46:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "11.755",
+      "entry_vwap": "96806.08968949383241173968524",
+      "exit_vwap": "100783.6526074011059123777116",
+      "side_adjusted_entry_to_exit_price_percent": "4.108794116842579477115361800",
+      "net_ex_funding_diagnostic": "46092.34400612000000000000000",
+      "net_div_entry_notional_percent": "4.050451936968450623560949821",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 87.73333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 20,
+      "start_utc": "2025-01-09T00:01:00+00:00",
+      "last_exit_utc": "2025-01-10T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "25.565",
+      "entry_vwap": "95093.15464502249168785448856",
+      "exit_vwap": "92353.47319773127322511245844",
+      "side_adjusted_entry_to_exit_price_percent": "2.881050121345009950207868440",
+      "net_ex_funding_diagnostic": "68304.90334008000000000000004",
+      "net_div_entry_notional_percent": "2.809679798977325166431133029",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 21,
+      "start_utc": "2025-01-15T00:02:00+00:00",
+      "last_exit_utc": "2025-01-17T01:47:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "17.088",
+      "entry_vwap": "96670.05",
+      "exit_vwap": "100417.7181296816479400749064",
+      "side_adjusted_entry_to_exit_price_percent": "3.876762378504663998906493200",
+      "net_ex_funding_diagnostic": "62788.421608600000000000000",
+      "net_div_entry_notional_percent": "3.800987026028963066106711837",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 49.75,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 22,
+      "start_utc": "2025-01-21T00:01:00+00:00",
+      "last_exit_utc": "2025-01-27T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "23.830",
+      "entry_vwap": "102208.35",
+      "exit_vwap": "103397.1404741921947125472094",
+      "side_adjusted_entry_to_exit_price_percent": "1.163105043954035763758254000",
+      "net_ex_funding_diagnostic": "26241.745800690000000000000",
+      "net_div_entry_notional_percent": "1.077413231133100541789257609",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_REDUCE": 1,
+        "TRAIL": 1
+      },
+      "holding_hours": 143.98333333333332,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 23,
+      "start_utc": "2025-01-28T00:01:00+00:00",
+      "last_exit_utc": "2025-02-03T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "19.816",
+      "entry_vwap": "102234.8",
+      "exit_vwap": "99017.18336697618086394832459",
+      "side_adjusted_entry_to_exit_price_percent": "-3.147281192924345854886668150",
+      "net_ex_funding_diagnostic": "-65953.696316320000000000000",
+      "net_div_entry_notional_percent": "-3.255550188268237464666480486",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 143.98333333333332,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 24,
+      "start_utc": "2025-02-03T00:01:00+00:00",
+      "last_exit_utc": "2025-02-03T01:36:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "25.438",
+      "entry_vwap": "97628.45",
+      "exit_vwap": "95683.70302696752889378095762",
+      "side_adjusted_entry_to_exit_price_percent": "1.991987963582819461149943870",
+      "net_ex_funding_diagnostic": "47383.574866210000000000000",
+      "net_div_entry_notional_percent": "1.907956486509386755740523405",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 1.5833333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 25,
+      "start_utc": "2025-02-04T00:02:00+00:00",
+      "last_exit_utc": "2025-02-05T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "24.290",
+      "entry_vwap": "101313.1",
+      "exit_vwap": "97777",
+      "side_adjusted_entry_to_exit_price_percent": "-3.490269274160992013865926520",
+      "net_ex_funding_diagnostic": "-88121.495526220000000000000",
+      "net_div_entry_notional_percent": "-3.580871528459591261123021924",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.966666666666665,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 26,
+      "start_utc": "2025-02-05T00:01:00+00:00",
+      "last_exit_utc": "2025-02-09T21:44:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "16.653",
+      "entry_vwap": "97936.70734402209812045877620",
+      "exit_vwap": "95256",
+      "side_adjusted_entry_to_exit_price_percent": "2.737183449108190036888662040",
+      "net_ex_funding_diagnostic": "43713.33082588000000000000006",
+      "net_div_entry_notional_percent": "2.680253790059228270044438305",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 117.71666666666667,
+      "SOLqty_strictly_before_exit": "1000",
+      "SOLside_strictly_before_exit": "BUY",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 27,
+      "start_utc": "2025-02-21T00:02:00+00:00",
+      "last_exit_utc": "2025-02-22T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "23.104",
+      "entry_vwap": "98267.1",
+      "exit_vwap": "96687.14777527700831024930748",
+      "side_adjusted_entry_to_exit_price_percent": "-1.607814034120261704833756690",
+      "net_ex_funding_diagnostic": "-38414.487738070000000000000",
+      "net_div_entry_notional_percent": "-1.691997553322702941996539473",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 23.966666666666665,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 28,
+      "start_utc": "2025-02-22T00:01:00+00:00",
+      "last_exit_utc": "2025-02-25T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "30.582",
+      "entry_vwap": "96123.25",
+      "exit_vwap": "93715.23761035903472630959388",
+      "side_adjusted_entry_to_exit_price_percent": "2.505130017598203633034053800",
+      "net_ex_funding_diagnostic": "71025.343553560000000000000",
+      "net_div_entry_notional_percent": "2.416122851743991807593477075",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 1
+      },
+      "holding_hours": 71.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 29,
+      "start_utc": "2025-03-04T00:01:00+00:00",
+      "last_exit_utc": "2025-03-10T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "40.841",
+      "entry_vwap": "86064.99963272201953918856052",
+      "exit_vwap": "83619.75713865968022330501212",
+      "side_adjusted_entry_to_exit_price_percent": "2.841157851039663618062876110",
+      "net_ex_funding_diagnostic": "97004.79971945000000000000019",
+      "net_div_entry_notional_percent": "2.759753448982713461025738511",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 1
+      },
+      "holding_hours": 143.98333333333332,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 30,
+      "start_utc": "2025-03-13T00:01:00+00:00",
+      "last_exit_utc": "2025-03-14T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "51.767",
+      "entry_vwap": "83554.49851836111808681206174",
+      "exit_vwap": "81802.22911507330925106728225",
+      "side_adjusted_entry_to_exit_price_percent": "2.097157465319174020380400270",
+      "net_ex_funding_diagnostic": "86850.23641244000000000000009",
+      "net_div_entry_notional_percent": "2.007928160027574461811669093",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 31,
+      "start_utc": "2025-03-16T00:01:00+00:00",
+      "last_exit_utc": "2025-03-16T22:52:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "47.58",
+      "entry_vwap": "84326.15",
+      "exit_vwap": "82769.49789407313997477931904",
+      "side_adjusted_entry_to_exit_price_percent": "1.845989774141070148726914440",
+      "net_ex_funding_diagnostic": "71071.141638690000000000000",
+      "net_div_entry_notional_percent": "1.771358972095898362756659820",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 22.85,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 32,
+      "start_utc": "2025-03-25T00:02:00+00:00",
+      "last_exit_utc": "2025-03-27T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "45.958",
+      "entry_vwap": "87303.4",
+      "exit_vwap": "86828.4",
+      "side_adjusted_entry_to_exit_price_percent": "-0.5440796120196922456628264200",
+      "net_ex_funding_diagnostic": "-25530.290467060000000000000",
+      "net_div_entry_notional_percent": "-0.6363022774601089934489687820",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 47.96666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 33,
+      "start_utc": "2025-03-27T00:01:00+00:00",
+      "last_exit_utc": "2025-03-28T14:08:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "50.306",
+      "entry_vwap": "86852.85",
+      "exit_vwap": "85211.78540134377609032719755",
+      "side_adjusted_entry_to_exit_price_percent": "1.889476970135377146141781700",
+      "net_ex_funding_diagnostic": "78882.656813160000000000000",
+      "net_div_entry_notional_percent": "1.805417588126929926212529478",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 38.11666666666667,
+      "SOLqty_strictly_before_exit": "2000",
+      "SOLside_strictly_before_exit": "BUY",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 34,
+      "start_utc": "2025-04-03T00:01:00+00:00",
+      "last_exit_utc": "2025-04-06T18:07:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "57.486",
+      "entry_vwap": "82420.35",
+      "exit_vwap": "80870.47814598336986396687889",
+      "side_adjusted_entry_to_exit_price_percent": "1.880448037428414385565119670",
+      "net_ex_funding_diagnostic": "85560.240406610000000000000",
+      "net_div_entry_notional_percent": "1.805824127036005597839909354",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 90.1,
+      "SOLqty_strictly_before_exit": "4000",
+      "SOLside_strictly_before_exit": "BUY",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 35,
+      "start_utc": "2025-04-11T00:01:00+00:00",
+      "last_exit_utc": "2025-04-13T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "69.304",
+      "entry_vwap": "79549.65",
+      "exit_vwap": "83678.38926036015237215745123",
+      "side_adjusted_entry_to_exit_price_percent": "-5.190141327284472492534475300",
+      "net_ex_funding_diagnostic": "-292359.941518100000000000000",
+      "net_div_entry_notional_percent": "-5.302995905014569645334733632",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 47.983333333333334,
+      "SOLqty_strictly_before_exit": "1000",
+      "SOLside_strictly_before_exit": "BUY",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 36,
+      "start_utc": "2025-04-13T00:01:00+00:00",
+      "last_exit_utc": "2025-04-14T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "39.839",
+      "entry_vwap": "85201.04732297497427144255629",
+      "exit_vwap": "83678.9",
+      "side_adjusted_entry_to_exit_price_percent": "-1.786535929781367958871568880",
+      "net_ex_funding_diagnostic": "-63747.95356498000000000000004",
+      "net_div_entry_notional_percent": "-1.878074801292799886570940038",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 37,
+      "start_utc": "2025-04-14T00:01:00+00:00",
+      "last_exit_utc": "2025-04-15T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "52.090",
+      "entry_vwap": "83774.5",
+      "exit_vwap": "84536",
+      "side_adjusted_entry_to_exit_price_percent": "-0.908987818488919659323541200",
+      "net_ex_funding_diagnostic": "-43723.925763930000000000000",
+      "net_div_entry_notional_percent": "-1.001965911464820425921458991",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 38,
+      "start_utc": "2025-04-15T00:01:00+00:00",
+      "last_exit_utc": "2025-04-16T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "33.205",
+      "entry_vwap": "84515.79681373287155548863123",
+      "exit_vwap": "83636.4",
+      "side_adjusted_entry_to_exit_price_percent": "-1.040511770445710819511058610",
+      "net_ex_funding_diagnostic": "-31780.78200185999999999999999",
+      "net_div_entry_notional_percent": "-1.132460869090065892140142463",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 39,
+      "start_utc": "2025-04-16T00:01:00+00:00",
+      "last_exit_utc": "2025-04-18T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "45.058",
+      "entry_vwap": "83682.9",
+      "exit_vwap": "84866.4",
+      "side_adjusted_entry_to_exit_price_percent": "-1.414267430980522902528473600",
+      "net_ex_funding_diagnostic": "-56842.438680560000000000000",
+      "net_div_entry_notional_percent": "-1.507523424737909417575155737",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 47.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 40,
+      "start_utc": "2025-04-18T00:01:00+00:00",
+      "last_exit_utc": "2025-04-21T14:30:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "27.283",
+      "entry_vwap": "84839.19610746618773595279112",
+      "exit_vwap": "86913.60657185793351171058901",
+      "side_adjusted_entry_to_exit_price_percent": "2.445108581373261478516742100",
+      "net_ex_funding_diagnostic": "54908.27697824999999999999987",
+      "net_div_entry_notional_percent": "2.372188236996501954257075080",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 86.48333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 41,
+      "start_utc": "2025-05-06T00:01:00+00:00",
+      "last_exit_utc": "2025-05-08T01:01:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "27.828",
+      "entry_vwap": "94609.45",
+      "exit_vwap": "97347.35084087968952134540750",
+      "side_adjusted_entry_to_exit_price_percent": "2.893897851514504651856032900",
+      "net_ex_funding_diagnostic": "74259.973688130000000000000",
+      "net_div_entry_notional_percent": "2.820579067610172713732391194",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 49.0,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 42,
+      "start_utc": "2025-05-25T00:01:00+00:00",
+      "last_exit_utc": "2025-06-06T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "16.385",
+      "entry_vwap": "107572.2417821177906621910284",
+      "exit_vwap": "101450.4",
+      "side_adjusted_entry_to_exit_price_percent": "-5.690912154194272343253203700",
+      "net_ex_funding_diagnostic": "-101881.9547022000000000000003",
+      "net_div_entry_notional_percent": "-5.780302989506225341089509636",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 287.98333333333335,
+      "SOLqty_strictly_before_exit": "1000",
+      "SOLside_strictly_before_exit": "SELL",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 43,
+      "start_utc": "2025-06-06T00:01:00+00:00",
+      "last_exit_utc": "2025-06-07T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "37.44",
+      "entry_vwap": "101382.65",
+      "exit_vwap": "103599.78625",
+      "side_adjusted_entry_to_exit_price_percent": "-2.186899089735768398241711000",
+      "net_ex_funding_diagnostic": "-87230.579527260000000000000",
+      "net_div_entry_notional_percent": "-2.298101884235123070860743924",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 44,
+      "start_utc": "2025-06-07T00:01:00+00:00",
+      "last_exit_utc": "2025-06-09T21:16:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "20.843",
+      "entry_vwap": "104123.3437461018087607350190",
+      "exit_vwap": "107706.3981288682051528090966",
+      "side_adjusted_entry_to_exit_price_percent": "3.441163387437353136070368000",
+      "net_ex_funding_diagnostic": "73091.23796535999999999999898",
+      "net_div_entry_notional_percent": "3.367882900328335729241157366",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 69.25,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 45,
+      "start_utc": "2025-06-14T00:01:00+00:00",
+      "last_exit_utc": "2025-06-18T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "14.584",
+      "entry_vwap": "105868.55",
+      "exit_vwap": "104530.5",
+      "side_adjusted_entry_to_exit_price_percent": "-1.263878649513949137869556160",
+      "net_ex_funding_diagnostic": "-20931.914640660000000000000",
+      "net_div_entry_notional_percent": "-1.355705426682428351006979882",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 95.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 46,
+      "start_utc": "2025-06-18T00:01:00+00:00",
+      "last_exit_utc": "2025-06-19T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "35.201",
+      "entry_vwap": "104630.9537115422857305190193",
+      "exit_vwap": "104842.4",
+      "side_adjusted_entry_to_exit_price_percent": "-0.202087700586818534994405100",
+      "net_ex_funding_diagnostic": "-10853.27201564000000000000162",
+      "net_div_entry_notional_percent": "-0.2946764998740787348384348729",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 47,
+      "start_utc": "2025-06-19T00:01:00+00:00",
+      "last_exit_utc": "2025-06-20T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "23.946",
+      "entry_vwap": "104745.9",
+      "exit_vwap": "104613.6",
+      "side_adjusted_entry_to_exit_price_percent": "-0.1263056596964654463802401800",
+      "net_ex_funding_diagnostic": "-5486.989672710000000000000",
+      "net_div_entry_notional_percent": "-0.2187580945889051504641231781",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 48,
+      "start_utc": "2025-06-20T00:01:00+00:00",
+      "last_exit_utc": "2025-06-21T19:59:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "33.937",
+      "entry_vwap": "104577.5993370068067301175708",
+      "exit_vwap": "102653.0504110557798273271061",
+      "side_adjusted_entry_to_exit_price_percent": "1.840307042953880499113523250",
+      "net_ex_funding_diagnostic": "62143.54785781000000000000024",
+      "net_div_entry_notional_percent": "1.750991055512658014762552117",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 43.96666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 49,
+      "start_utc": "2025-06-24T00:02:00+00:00",
+      "last_exit_utc": "2025-07-09T19:38:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "26.817",
+      "entry_vwap": "105148.3950926651004959540590",
+      "exit_vwap": "108754.0324197337509788566954",
+      "side_adjusted_entry_to_exit_price_percent": "3.429094018877869761310867900",
+      "net_ex_funding_diagnostic": "94628.08888917999999999999980",
+      "net_div_entry_notional_percent": "3.355886227850614563050608260",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 379.6,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 50,
+      "start_utc": "2025-08-02T00:01:00+00:00",
+      "last_exit_utc": "2025-08-05T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "27.822",
+      "entry_vwap": "113427.45",
+      "exit_vwap": "115020.2",
+      "side_adjusted_entry_to_exit_price_percent": "-1.404201540279711833423038300",
+      "net_ex_funding_diagnostic": "-47256.268372530000000000000",
+      "net_div_entry_notional_percent": "-1.497451996849087235938037926",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 71.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 51,
+      "start_utc": "2025-08-05T00:01:00+00:00",
+      "last_exit_utc": "2025-08-06T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "17.894",
+      "entry_vwap": "114856.3",
+      "exit_vwap": "114108.6",
+      "side_adjusted_entry_to_exit_price_percent": "-0.6509873642107572679948770800",
+      "net_ex_funding_diagnostic": "-15273.531198210000000000000",
+      "net_div_entry_notional_percent": "-0.7431512311473375193788847076",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 52,
+      "start_utc": "2025-08-06T00:01:00+00:00",
+      "last_exit_utc": "2025-08-07T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "25.203",
+      "entry_vwap": "113815.6894099908741022894100",
+      "exit_vwap": "114953.3",
+      "side_adjusted_entry_to_exit_price_percent": "-0.999520009856624487395692900",
+      "net_ex_funding_diagnostic": "-31842.31536205999999999999977",
+      "net_div_entry_notional_percent": "-1.110069745862219938186145868",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 53,
+      "start_utc": "2025-08-07T00:01:00+00:00",
+      "last_exit_utc": "2025-08-11T02:12:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "16.615",
+      "entry_vwap": "114761.4413541980138429130304",
+      "exit_vwap": "120878.9",
+      "side_adjusted_entry_to_exit_price_percent": "5.330587149843432469775266700",
+      "net_ex_funding_diagnostic": "100524.4617126799999999999999",
+      "net_div_entry_notional_percent": "5.272000180455094887918029321",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 98.18333333333334,
+      "SOLqty_strictly_before_exit": "4000",
+      "SOLside_strictly_before_exit": "SELL",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 54,
+      "start_utc": "2025-08-16T00:01:00+00:00",
+      "last_exit_utc": "2025-08-19T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "17.228",
+      "entry_vwap": "117307.15",
+      "exit_vwap": "116124.2",
+      "side_adjusted_entry_to_exit_price_percent": "-1.008421055323567233540325550",
+      "net_ex_funding_diagnostic": "-22591.718013790000000000000",
+      "net_div_entry_notional_percent": "-1.117866423743139271561878368",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 71.98333333333333,
+      "SOLqty_strictly_before_exit": "3000",
+      "SOLside_strictly_before_exit": "SELL",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 55,
+      "start_utc": "2025-08-19T00:01:00+00:00",
+      "last_exit_utc": "2025-08-20T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "42.98",
+      "entry_vwap": "116300.0",
+      "exit_vwap": "113074.9675430432759422987436",
+      "side_adjusted_entry_to_exit_price_percent": "2.773028767804577865607271200",
+      "net_ex_funding_diagnostic": "135045.223468120000000000000",
+      "net_div_entry_notional_percent": "2.701674987068711996661447845",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 56,
+      "start_utc": "2025-08-23T00:02:00+00:00",
+      "last_exit_utc": "2025-08-24T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "20.817",
+      "entry_vwap": "116647.4929865014171110150358",
+      "exit_vwap": "115401",
+      "side_adjusted_entry_to_exit_price_percent": "-1.068598179513093112105542650",
+      "net_ex_funding_diagnostic": "-28180.61647345000000000000025",
+      "net_div_entry_notional_percent": "-1.160531513454998932778099222",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.966666666666665,
+      "SOLqty_strictly_before_exit": "2000",
+      "SOLside_strictly_before_exit": "SELL",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 57,
+      "start_utc": "2025-08-24T00:01:00+00:00",
+      "last_exit_utc": "2025-08-25T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "49.562",
+      "entry_vwap": "115254.15",
+      "exit_vwap": "112844.3290746943222630240910",
+      "side_adjusted_entry_to_exit_price_percent": "2.090875621663669149419703330",
+      "net_ex_funding_diagnostic": "114338.759989050000000000000",
+      "net_div_entry_notional_percent": "2.001649730596137847543859503",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 58,
+      "start_utc": "2025-09-05T00:01:00+00:00",
+      "last_exit_utc": "2025-09-11T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "34.448",
+      "entry_vwap": "110876.15",
+      "exit_vwap": "113898.1",
+      "side_adjusted_entry_to_exit_price_percent": "-2.725518517733525199062196900",
+      "net_ex_funding_diagnostic": "-107689.556035560000000000000",
+      "net_div_entry_notional_percent": "-2.819495700833768127771391774",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 143.98333333333332,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 59,
+      "start_utc": "2025-09-11T00:01:00+00:00",
+      "last_exit_utc": "2025-09-23T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "35.653",
+      "entry_vwap": "114096.7049645191148009985134",
+      "exit_vwap": "113820.3985218635177965388607",
+      "side_adjusted_entry_to_exit_price_percent": "-0.2421686434691699316267968400",
+      "net_ex_funding_diagnostic": "-14320.41426983999999999999825",
+      "net_div_entry_notional_percent": "-0.3520354507155077158646921321",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "REGIME": 1
+      },
+      "holding_hours": 287.98333333333335,
+      "SOLqty_strictly_before_exit": "19000",
+      "SOLside_strictly_before_exit": "SELL",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 60,
+      "start_utc": "2025-09-23T00:01:00+00:00",
+      "last_exit_utc": "2025-09-25T17:37:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "75.953",
+      "entry_vwap": "112435.9993022000447645254302",
+      "exit_vwap": "110582.6842244545969217805748",
+      "side_adjusted_entry_to_exit_price_percent": "1.648328906442319376385452620",
+      "net_ex_funding_diagnostic": "133123.4346017700000000000000",
+      "net_div_entry_notional_percent": "1.558849533897074091436874999",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 65.6,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 61,
+      "start_utc": "2025-09-30T00:02:00+00:00",
+      "last_exit_utc": "2025-10-02T18:54:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "58.705",
+      "entry_vwap": "114250.9503858274422962268972",
+      "exit_vwap": "119557.0982199131249467677370",
+      "side_adjusted_entry_to_exit_price_percent": "4.644292074741373551642089500",
+      "net_ex_funding_diagnostic": "305369.5805447599999999999999",
+      "net_div_entry_notional_percent": "4.552928800163143317796974508",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 66.86666666666666,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 62,
+      "start_utc": "2025-10-11T00:02:00+00:00",
+      "last_exit_utc": "2025-10-16T15:47:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "109.711",
+      "entry_vwap": "112455.9012797258251223669459",
+      "exit_vwap": "109687.0129968736042876284055",
+      "side_adjusted_entry_to_exit_price_percent": "2.462199183273462771127205420",
+      "net_ex_funding_diagnostic": "294941.9339548800000000000016",
+      "net_div_entry_notional_percent": "2.390584500693429670662664180",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 135.75,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 63,
+      "start_utc": "2025-10-22T00:01:00+00:00",
+      "last_exit_utc": "2025-10-27T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "135.859",
+      "entry_vwap": "108337.9009958854400518184294",
+      "exit_vwap": "111521.0663386304919070506923",
+      "side_adjusted_entry_to_exit_price_percent": "-2.938182587519343889801574400",
+      "net_ex_funding_diagnostic": "-446311.0564271100000000000001",
+      "net_div_entry_notional_percent": "-3.032276603900135275968359048",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "REGIME": 1
+      },
+      "holding_hours": 119.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 64,
+      "start_utc": "2025-10-27T00:01:00+00:00",
+      "last_exit_utc": "2025-10-29T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "39.532",
+      "entry_vwap": "114629.8",
+      "exit_vwap": "112851.8",
+      "side_adjusted_entry_to_exit_price_percent": "-1.551080085632182905317814390",
+      "net_ex_funding_diagnostic": "-75233.937436160000000000000",
+      "net_div_entry_notional_percent": "-1.660226991585085204719889592",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 47.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 65,
+      "start_utc": "2025-10-29T00:01:00+00:00",
+      "last_exit_utc": "2025-10-30T04:27:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "94.543",
+      "entry_vwap": "112612.9985435198798430343865",
+      "exit_vwap": "109505.5261806796907227399173",
+      "side_adjusted_entry_to_exit_price_percent": "2.759426001465799030383783960",
+      "net_ex_funding_diagnostic": "284317.2295365400000000000029",
+      "net_div_entry_notional_percent": "2.670455079564483041348538812",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 28.433333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 66,
+      "start_utc": "2025-11-12T00:01:00+00:00",
+      "last_exit_utc": "2025-11-13T17:42:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "72.072",
+      "entry_vwap": "103222.9",
+      "exit_vwap": "99827.2",
+      "side_adjusted_entry_to_exit_price_percent": "3.289676999968030349854538090",
+      "net_ex_funding_diagnostic": "240507.761654160000000000000",
+      "net_div_entry_notional_percent": "3.232856788561452933409156302",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 41.68333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 67,
+      "start_utc": "2025-11-26T00:01:00+00:00",
+      "last_exit_utc": "2025-12-02T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "169.664",
+      "entry_vwap": "87414.85",
+      "exit_vwap": "85263.77044157864956620143342",
+      "side_adjusted_entry_to_exit_price_percent": "2.460771320229172084375328200",
+      "net_ex_funding_diagnostic": "354332.53113232000000000000",
+      "net_div_entry_notional_percent": "2.389109791361081571590327097",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 143.98333333333332,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 68,
+      "start_utc": "2026-01-03T00:02:00+00:00",
+      "last_exit_utc": "2026-01-09T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "136.723",
+      "entry_vwap": "90196.75165773132538051388574",
+      "exit_vwap": "90871.76440906065548590946659",
+      "side_adjusted_entry_to_exit_price_percent": "0.748378116643040501471702000",
+      "net_ex_funding_diagnostic": "78673.84150276999999999999998",
+      "net_div_entry_notional_percent": "0.6379665086787246491125274256",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "TRAIL": 1
+      },
+      "holding_hours": 143.96666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 69,
+      "start_utc": "2026-01-10T00:01:00+00:00",
+      "last_exit_utc": "2026-01-13T22:11:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "80.611",
+      "entry_vwap": "90609.85007505179193906538810",
+      "exit_vwap": "95502.9",
+      "side_adjusted_entry_to_exit_price_percent": "5.400130251727945184733477100",
+      "net_ex_funding_diagnostic": "388876.6478021999999999999999",
+      "net_div_entry_notional_percent": "5.324050225677599595696530388",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 94.16666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 70,
+      "start_utc": "2026-01-20T00:01:00+00:00",
+      "last_exit_utc": "2026-01-21T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "92.012",
+      "entry_vwap": "92439.5",
+      "exit_vwap": "88390.2",
+      "side_adjusted_entry_to_exit_price_percent": "-4.380486696704330940777481490",
+      "net_ex_funding_diagnostic": "-380248.760836040000000000000",
+      "net_div_entry_notional_percent": "-4.470599332536415709734474981",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 71,
+      "start_utc": "2026-01-21T00:01:00+00:00",
+      "last_exit_utc": "2026-01-29T15:14:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "118.530",
+      "entry_vwap": "88600.35",
+      "exit_vwap": "85630.5",
+      "side_adjusted_entry_to_exit_price_percent": "3.351961927915634644784134600",
+      "net_ex_funding_diagnostic": "346050.48424522000000000000",
+      "net_div_entry_notional_percent": "3.295154175463141868611713363",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 207.21666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 72,
+      "start_utc": "2026-02-08T00:01:00+00:00",
+      "last_exit_utc": "2026-02-11T06:14:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "303.022",
+      "entry_vwap": "69271.3",
+      "exit_vwap": "67754.23289068120466500782121",
+      "side_adjusted_entry_to_exit_price_percent": "2.190037012902595064611431850",
+      "net_ex_funding_diagnostic": "444630.25647308000000000000",
+      "net_div_entry_notional_percent": "2.118222194372791469671028042",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 78.21666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 73,
+      "start_utc": "2026-02-15T00:01:00+00:00",
+      "last_exit_utc": "2026-02-16T15:33:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "201.516",
+      "entry_vwap": "69877.3",
+      "exit_vwap": "67573.7",
+      "side_adjusted_entry_to_exit_price_percent": "3.296635674246142881880095540",
+      "net_ex_funding_diagnostic": "453744.05456142000000000000",
+      "net_div_entry_notional_percent": "3.222295001380992110456471558",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 39.53333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 74,
+      "start_utc": "2026-02-27T00:01:00+00:00",
+      "last_exit_utc": "2026-02-28T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "415.876",
+      "entry_vwap": "67501.6",
+      "exit_vwap": "65507.71822947224653502486318",
+      "side_adjusted_entry_to_exit_price_percent": "2.953828902615276474891168240",
+      "net_ex_funding_diagnostic": "809165.45552907000000000000",
+      "net_div_entry_notional_percent": "2.882434243275136852925813150",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 75,
+      "start_utc": "2026-03-05T00:02:00+00:00",
+      "last_exit_utc": "2026-03-06T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "330.755",
+      "entry_vwap": "72686.69972487188402291726505",
+      "exit_vwap": "70779",
+      "side_adjusted_entry_to_exit_price_percent": "-2.624551303185813327918815770",
+      "net_ex_funding_diagnostic": "-652877.8150457700000000000016",
+      "net_div_entry_notional_percent": "-2.715629656157449372713036022",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.966666666666665,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 76,
+      "start_utc": "2026-03-06T00:01:00+00:00",
+      "last_exit_utc": "2026-03-07T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "413.496",
+      "entry_vwap": "70920.05",
+      "exit_vwap": "68344.25703465087933135991642",
+      "side_adjusted_entry_to_exit_price_percent": "3.631967215687412330702084360",
+      "net_ex_funding_diagnostic": "1044250.43341202000000000000",
+      "net_div_entry_notional_percent": "3.560937230778299792224374414",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 77,
+      "start_utc": "2026-03-11T00:01:00+00:00",
+      "last_exit_utc": "2026-03-13T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "429.138",
+      "entry_vwap": "69887.8",
+      "exit_vwap": "70448.1",
+      "side_adjusted_entry_to_exit_price_percent": "-0.801713603804955943669710600",
+      "net_ex_funding_diagnostic": "-268313.85796865000000000000",
+      "net_div_entry_notional_percent": "-0.8946326862485464576989060472",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 47.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 78,
+      "start_utc": "2026-03-13T00:01:00+00:00",
+      "last_exit_utc": "2026-03-16T04:55:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "201.321",
+      "entry_vwap": "70896.60240114046721405119188",
+      "exit_vwap": "74220.6",
+      "side_adjusted_entry_to_exit_price_percent": "4.688514662595540422393955400",
+      "net_ex_funding_diagnostic": "658351.9513268799999999999995",
+      "net_div_entry_notional_percent": "4.612576959663021314309476608",
+      "exit_reasons": {
+        "BTC_TP3": 1
+      },
+      "holding_hours": 76.9,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 79,
+      "start_utc": "2026-03-20T00:01:00+00:00",
+      "last_exit_utc": "2026-03-22T21:20:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "429.296",
+      "entry_vwap": "69968.5",
+      "exit_vwap": "68119.77756699340315306921099",
+      "side_adjusted_entry_to_exit_price_percent": "2.642221046623261677656072390",
+      "net_ex_funding_diagnostic": "772145.15518148000000000000",
+      "net_div_entry_notional_percent": "2.570629844912531195750206304",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 69.31666666666666,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 80,
+      "start_utc": "2026-03-24T00:02:00+00:00",
+      "last_exit_utc": "2026-03-25T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "242.814",
+      "entry_vwap": "70861.3",
+      "exit_vwap": "70511",
+      "side_adjusted_entry_to_exit_price_percent": "-0.4943459970392866063704730200",
+      "net_ex_funding_diagnostic": "-100930.38854184000000000000",
+      "net_div_entry_notional_percent": "-0.5865960122097675317839215482",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.966666666666665,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 81,
+      "start_utc": "2026-03-25T00:01:00+00:00",
+      "last_exit_utc": "2026-03-26T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "425.421",
+      "entry_vwap": "70580.35020720650837640831083",
+      "exit_vwap": "71299.4",
+      "side_adjusted_entry_to_exit_price_percent": "-1.018767674972621552334897600",
+      "net_ex_funding_diagnostic": "-333834.9372108699999999999984",
+      "net_div_entry_notional_percent": "-1.111806099762501721880401062",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 82,
+      "start_utc": "2026-03-26T00:01:00+00:00",
+      "last_exit_utc": "2026-03-27T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "241.921",
+      "entry_vwap": "71205.94963149127194414705627",
+      "exit_vwap": "68805.5",
+      "side_adjusted_entry_to_exit_price_percent": "-3.371136322054833234554394060",
+      "net_ex_funding_diagnostic": "-596337.7900127799999999999999",
+      "net_div_entry_notional_percent": "-3.461804034777135474604294091",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 83,
+      "start_utc": "2026-03-27T00:01:00+00:00",
+      "last_exit_utc": "2026-03-28T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "436.088",
+      "entry_vwap": "68808.75",
+      "exit_vwap": "66442.60787914365907798426006",
+      "side_adjusted_entry_to_exit_price_percent": "3.438722721828751317260871530",
+      "net_ex_funding_diagnostic": "1010499.71090820000000000000",
+      "net_div_entry_notional_percent": "3.367583624518508179409898183",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 84,
+      "start_utc": "2026-04-02T00:01:00+00:00",
+      "last_exit_utc": "2026-04-03T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "440.619",
+      "entry_vwap": "68138.30019313738172888595362",
+      "exit_vwap": "66280.94749681697793331653878",
+      "side_adjusted_entry_to_exit_price_percent": "2.725857103942650103310096000",
+      "net_ex_funding_diagnostic": "796909.0639802999999999999981",
+      "net_div_entry_notional_percent": "2.654325936237579205436104608",
+      "exit_reasons": {
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 2
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 85,
+      "start_utc": "2026-04-08T00:02:00+00:00",
+      "last_exit_utc": "2026-04-14T13:59:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "417.076",
+      "entry_vwap": "71839.35",
+      "exit_vwap": "74361.07281166981557318090708",
+      "side_adjusted_entry_to_exit_price_percent": "3.510224983480245259987607200",
+      "net_ex_funding_diagnostic": "1029780.80093189000000000000",
+      "net_div_entry_notional_percent": "3.436902378930170177046696116",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 157.95,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 86,
+      "start_utc": "2026-04-21T00:01:00+00:00",
+      "last_exit_utc": "2026-04-22T05:26:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "395.822",
+      "entry_vwap": "75696.75",
+      "exit_vwap": "77434.33675237859441870335656",
+      "side_adjusted_entry_to_exit_price_percent": "2.295457535995395335603386600",
+      "net_ex_funding_diagnostic": "665910.42709880000000000000",
+      "net_div_entry_notional_percent": "2.222484049368057355458053102",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 29.416666666666668,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 87,
+      "start_utc": "2026-04-30T00:01:00+00:00",
+      "last_exit_utc": "2026-05-03T20:37:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "395.786",
+      "entry_vwap": "75703.65",
+      "exit_vwap": "77900.94488183007989165862360",
+      "side_adjusted_entry_to_exit_price_percent": "2.902495298218883622729714600",
+      "net_ex_funding_diagnostic": "847757.59847930000000000000",
+      "net_div_entry_notional_percent": "2.829400616683132891234856388",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 92.6,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 88,
+      "start_utc": "2026-05-15T00:01:00+00:00",
+      "last_exit_utc": "2026-05-18T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "370.054",
+      "entry_vwap": "80967.85",
+      "exit_vwap": "77404.9",
+      "side_adjusted_entry_to_exit_price_percent": "-4.400450302187843693515389130",
+      "net_ex_funding_diagnostic": "-1345480.58753225000000000000",
+      "net_div_entry_notional_percent": "-4.490551959821089481812842999",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 71.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 89,
+      "start_utc": "2026-05-18T00:01:00+00:00",
+      "last_exit_utc": "2026-05-23T07:51:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "387.514",
+      "entry_vwap": "77325.2",
+      "exit_vwap": "75842.00408656203388780792436",
+      "side_adjusted_entry_to_exit_price_percent": "1.918127484232780661662789930",
+      "net_ex_funding_diagnostic": "547954.45953886000000000000",
+      "net_div_entry_notional_percent": "1.828672848261421619689599985",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_REDUCE": 1,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 127.83333333333333,
+      "SOLqty_strictly_before_exit": "4000",
+      "SOLside_strictly_before_exit": "BUY",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 90,
+      "start_utc": "2026-06-09T00:01:00+00:00",
+      "last_exit_utc": "2026-06-10T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "475.764",
+      "entry_vwap": "63003.85",
+      "exit_vwap": "61582.36648317232913797597128",
+      "side_adjusted_entry_to_exit_price_percent": "2.256185164601323350912727900",
+      "net_ex_funding_diagnostic": "651761.48990169000000000000",
+      "net_div_entry_notional_percent": "2.174352892005952116340717644",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "BTC_TP3": 1,
+        "BTC_REDUCE": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 91,
+      "start_utc": "2026-07-04T00:01:00+00:00",
+      "last_exit_utc": "2026-07-11T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "377.664",
+      "entry_vwap": "62653.65",
+      "exit_vwap": "63672.14757218056261650567700",
+      "side_adjusted_entry_to_exit_price_percent": "-1.625599741085415800205857100",
+      "net_ex_funding_diagnostic": "-404518.01476852000000000000",
+      "net_div_entry_notional_percent": "-1.709566117960300516850114536",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 167.98333333333332,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 92,
+      "start_utc": "2026-07-11T00:01:00+00:00",
+      "last_exit_utc": "2026-07-12T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "467.687",
+      "entry_vwap": "64065.19982851779074466470096",
+      "exit_vwap": "63787.3",
+      "side_adjusted_entry_to_exit_price_percent": "-0.4337765733372258197203248000",
+      "net_ex_funding_diagnostic": "-157620.4828290199999999999979",
+      "net_div_entry_notional_percent": "-0.5260598661731452237976415115",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 93,
+      "start_utc": "2026-07-12T00:01:00+00:00",
+      "last_exit_utc": "2026-07-15T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "370.4",
+      "entry_vwap": "63915.8",
+      "exit_vwap": "64630.82455993520518358531317",
+      "side_adjusted_entry_to_exit_price_percent": "-1.118697661509681774436544900",
+      "net_ex_funding_diagnostic": "-284657.90116766000000000000",
+      "net_div_entry_notional_percent": "-1.202386345730671974711978827",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 71.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 94,
+      "start_utc": "2026-07-15T00:01:00+00:00",
+      "last_exit_utc": "2026-07-17T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "265.331",
+      "entry_vwap": "64924.79969359027026619580825",
+      "exit_vwap": "63807.8",
+      "side_adjusted_entry_to_exit_price_percent": "-1.720451505221273032100949190",
+      "net_ex_funding_diagnostic": "-312149.9731552599999999999988",
+      "net_div_entry_notional_percent": "-1.812027104752257276832888929",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 47.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 95,
+      "start_utc": "2026-07-17T00:01:00+00:00",
+      "last_exit_utc": "2026-07-18T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "370.326",
+      "entry_vwap": "63710.9",
+      "exit_vwap": "63827.86285056949822588746132",
+      "side_adjusted_entry_to_exit_price_percent": "-0.183583736173085336869297600",
+      "net_ex_funding_diagnostic": "-67066.24829703000000000000",
+      "net_div_entry_notional_percent": "-0.2842536618534940303210816788",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 96,
+      "start_utc": "2026-07-18T00:01:00+00:00",
+      "last_exit_utc": "2026-07-21T07:40:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "469.354",
+      "entry_vwap": "63935.8",
+      "exit_vwap": "65500.25873008432867302718204",
+      "side_adjusted_entry_to_exit_price_percent": "2.446921333719651076591177500",
+      "net_ex_funding_diagnostic": "707107.22398714000000000000",
+      "net_div_entry_notional_percent": "2.356354602447011541423552855",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 79.65,
+      "SOLqty_strictly_before_exit": "2000",
+      "SOLside_strictly_before_exit": "SELL",
+      "overlapping_SOLcycles": 1
+    },
+    {
+      "number": 97,
+      "start_utc": "2026-07-25T00:02:00+00:00",
+      "last_exit_utc": "2026-07-27T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "368.541",
+      "entry_vwap": "64064.69983529647990318580565",
+      "exit_vwap": "64988.92753994806547982449714",
+      "side_adjusted_entry_to_exit_price_percent": "-1.442647365909270738605234800",
+      "net_ex_funding_diagnostic": "-366774.6565875799999999999999",
+      "net_div_entry_notional_percent": "-1.553440821960542014558382667",
+      "exit_reasons": {
+        "BTC_TP2": 1,
+        "REGIME": 1
+      },
+      "holding_hours": 47.96666666666667,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 98,
+      "start_utc": "2026-07-27T00:01:00+00:00",
+      "last_exit_utc": "2026-07-28T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "263.859",
+      "entry_vwap": "65270.29969036492975414899624",
+      "exit_vwap": "63731.1",
+      "side_adjusted_entry_to_exit_price_percent": "-2.358193079649890613120718230",
+      "net_ex_funding_diagnostic": "-421842.5740771999999999999989",
+      "net_div_entry_notional_percent": "-2.449417912195400652904758032",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 99,
+      "start_utc": "2026-07-28T00:01:00+00:00",
+      "last_exit_utc": "2026-07-31T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "270.698",
+      "entry_vwap": "63509.95",
+      "exit_vwap": "64746.5",
+      "side_adjusted_entry_to_exit_price_percent": "-1.947017750761888491488341600",
+      "net_ex_funding_diagnostic": "-353826.93237616000000000000",
+      "net_div_entry_notional_percent": "-2.058088610524836613425396031",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 71.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 100,
+      "start_utc": "2026-07-31T00:01:00+00:00",
+      "last_exit_utc": "2026-08-01T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "462.934",
+      "entry_vwap": "64722.95",
+      "exit_vwap": "62849",
+      "side_adjusted_entry_to_exit_price_percent": "-2.895340833506507351719907700",
+      "net_ex_funding_diagnostic": "-894759.87217216000000000000",
+      "net_div_entry_notional_percent": "-2.986270310608524487836231198",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 23.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 101,
+      "start_utc": "2026-08-01T00:01:00+00:00",
+      "last_exit_utc": "2026-08-06T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "274.429",
+      "entry_vwap": "62941.40028641287910534236542",
+      "exit_vwap": "64619.6",
+      "side_adjusted_entry_to_exit_price_percent": "-2.666289129174955489574244600",
+      "net_ex_funding_diagnostic": "-476773.6587061800000000000002",
+      "net_div_entry_notional_percent": "-2.760233670766624030970765120",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 119.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 102,
+      "start_utc": "2026-08-06T00:01:00+00:00",
+      "last_exit_utc": "2026-08-11T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "266.916",
+      "entry_vwap": "64538.8",
+      "exit_vwap": "63946.8",
+      "side_adjusted_entry_to_exit_price_percent": "-0.9172776686272443863226462200",
+      "net_ex_funding_diagnostic": "-173865.59380788000000000000",
+      "net_div_entry_notional_percent": "-1.009295075210571005348720460",
+      "exit_reasons": {
+        "REGIME": 1
+      },
+      "holding_hours": 119.98333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 103,
+      "start_utc": "2026-08-11T00:01:00+00:00",
+      "last_exit_utc": "2026-08-18T00:00:00+00:00",
+      "side": "SHORT",
+      "accepted_and_filled_BTCqty": "469.139",
+      "entry_vwap": "64002.25017041857530497357926",
+      "exit_vwap": "64118.42265511927168706929076",
+      "side_adjusted_entry_to_exit_price_percent": "-0.181513125540686928284153600",
+      "net_ex_funding_diagnostic": "-82298.44910188999999999999952",
+      "net_div_entry_notional_percent": "-0.2740910598978422299982038448",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "REGIME": 1
+      },
+      "holding_hours": 167.98333333333332,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 104,
+      "start_utc": "2026-08-18T00:01:00+00:00",
+      "last_exit_utc": "2026-08-19T14:09:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "464.975",
+      "entry_vwap": "64438.84982654981450615624496",
+      "exit_vwap": "65029.05797107371364051830744",
+      "side_adjusted_entry_to_exit_price_percent": "0.915919738034685005952079200",
+      "net_ex_funding_diagnostic": "252667.6844568999999999999997",
+      "net_div_entry_notional_percent": "0.8432810035732064266881413266",
+      "exit_reasons": {
+        "BTC_REDUCE": 2,
+        "BTC_TP3": 1
+      },
+      "holding_hours": 38.13333333333333,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    },
+    {
+      "number": 105,
+      "start_utc": "2026-08-30T00:01:00+00:00",
+      "last_exit_utc": "2026-09-01T00:00:00+00:00",
+      "side": "LONG",
+      "accepted_and_filled_BTCqty": "220.598",
+      "entry_vwap": "78089.15",
+      "exit_vwap": "78524.9",
+      "side_adjusted_entry_to_exit_price_percent": "0.558016062410719030748830000",
+      "net_ex_funding_diagnostic": "80134.59878896000000000000",
+      "net_div_entry_notional_percent": "0.4651872475241148537750336595",
+      "exit_reasons": {
+        "TERMINAL_BOUNDARY_SETTLEMENT": 1
+      },
+      "holding_hours": 47.983333333333334,
+      "SOLqty_strictly_before_exit": "0",
+      "SOLside_strictly_before_exit": "FLAT",
+      "overlapping_SOLcycles": 0
+    }
+  ],
+  "existing_observer_landmark_evidence": {
+    "source": "reports/sol-risk-first-20261018/cap50-postmortem.json",
+    "sha256": "7997c6a7542d83bfc6bb9eda8007d094b4c7fe45d2eee4386815b5aa5a06fc52",
+    "no_new_trace_pass": true,
+    "selected_control_top_troughs": "Oct3 2024 mixedBTCprofit/SOLloss; Jun6 2025 BTC-only; Nov28 2025 BTC-only. No assertion ofunseenintrabarpath."
+  },
+  "data_gaps": [
+    "Fullselected6077BTCepisodeMAE/MFE and contemporaneousSOLpath atminute/15m/1hconfirmations NOTincludedinexistingcompactepisodeCSV. Old105MAEcalibration isdifferentV3control, cannottransferasexactselected6077path.",
+    "Actualfillprices onlyentry/exitobservations, not continuousadverseexcursion/returns. SOLfavorablemarkduringBTCwrongway and whetherinsurancecouldharvestintraclusterbounce areUNKNOWNwithoutspecificnewapprovedcompactpathaudit. Noallparquetsearch/trace rereadperformed.",
+    "Cycleoutcomes areexisting analyticalweightedfilldiagnostics, notnativeaccountsettledassetPnL orhedgebenefits. SignedfundingUNKNOWN.",
+    "BTCcalendar/sizingrule preserved doesnotpreservefutureabsoluteQ oncecashpathchanges; nofixedcounterfactualTOTAL."
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "name": "Early lower-timeframe adverse insurance",
+      "status": "UNTESTED_NOT_AUTHORIZED",
+      "entry": "ForactualremainingBTC, actualblendedVWAPadverse>=0.5% (longfall/short rise), armSOLoppositeBTC onlyaftercompleted15mSOLclosebreakspriorcompletedbarhighforBUY/lowforSELL. One50%betaequivalenttarget=0.5*actualBTCnotional/frozenpositive720hbeta/SOLmark; existingoppositeSOLcoverageiscredited, noSUM. Startingthreshold0.5%notcalibratedoptimum.",
+      "add": "Noautomaticaveragingbeyond50%target; refreshonlyactualBTCqtychange. Actualfills/ACK only, notprice-touchassumedfills.",
+      "exit": "OnBTCadverserecovery<=0.1%, closeONLYinsuranceexcess; mandatoryBTCflat/directionchange/REGIMEoverridesallprofit/zeroexitpreferences. Maintainoriginalallocationonlyifexplicitbaselineauthorityunchanged; insurance-onlyfuturedesignmustspecifyoverlayOFFseparately.",
+      "anti_churn": "Afterexit waitonecompleted15mbar andfreshupcross0.5%; requireexpectedpricebufferexceedroundtripfees/slippage, otherwiseaddnotauthorized. Regimeflipoldinsuranceclosepriority; noBTCpermission/sizingrewrite.",
+      "failure": "Quickreboundstopsinsuranceatloss;15mconfirmationcanlag;missedfirst0.5%/basis/correlationbreak/SOLIOCpartial/hedgecarrydampensBTCwinnerROI. Cannotguaranteezeroexit."
+    },
+    {
+      "id": "H2",
+      "name": "Causal serial-REGIME-flip insurance priority",
+      "status": "UNTESTED_NOT_AUTHORIZED",
+      "entry": "AtnewlawfulBTCentry ifprecedingtwoCLOSEDepisodeswerenetloserswithREGIMEandoppositesides,nextentrywithin48h oflastclose, activatewhipsawstate. Onlypastdiagnosticfee-adjustednativefills, nofutureranking. Firstinsurance34%of50%targetaftercompleted15mSOLpriorbarbreakoppositeBTC; conditioncurrentBTCadverse>=0.25%.",
+      "add": "Remaining33%+33%of50%target atadverse0.75%/1.25% withfreshcompleted15mconfirm; ceilingusesactualremainingBTC/frozen720hbeta, creditsalreadyheldSOL. Thresholdsstartinghypotheses; firsttwohistoricalclusterlossesunprotected.",
+      "exit": "REGIMEdirectionflip/mandatoryBTCexit immediatelyretiresoldinsuranceauthority; closethatprotectiveexcessnativeIOCbeforeoppositenewinsurance, nevercarryoldhedgeassam-directionnewBTCbet. HarvestONLYinsuranceexcessonBTCrecoveryadverse<=0.1% withoutzeroSOLwait.",
+      "anti_churn": "Oneorderowner/pendingACK; atmostoneinsuranceactivationperBTCepisode; whipsawstateexpiresafter2closednonlossBTCepisodesor7dayswithoutnewREGIMEflip. OriginalBTCentry/calendarkept; anysharednativeexecutiondelaysmustbedisclosed.",
+      "failure": "Canprotectlateinclusteronly; losingrunmaystopasalertarms. RapidflipsforceTAKERcosts;oldhedgeclosureandnewBTCcoexistnativegateeffects. Ladderdelays66%insuranceifmovewithoutpause."
+    },
+    {
+      "id": "H3",
+      "name": "Single-arm protection with bounded swing harvest",
+      "status": "UNTESTED_NOT_AUTHORIZED",
+      "entry": "ArmoppositeSOLatBTCadverse1.0%withcompleted1hpriorbarbreak; full50%remainingBTCbetaequivalentceiling, existingcoveragecredited. FreezeBTCepisodeentryequityandbeta; userealnativefillsforinsurancecost. Separatefromserialflipactivation/globalDDgate.",
+      "add": "Noaddduringmeanreversion; onlyreplaceinsuranceafteronecompleteharvestcycle, maximum2cyclesperBTCepisode, noSOLaveragingunbounded.",
+      "exit": "HarvesthalfinsurancewhenBTCadversefallsby0.5percentagepointsfromactivationadverse; closebalanceatadverse<=0.1% ORmandatoryBTCflat/flip. NoSOLstandaloneprofitcondition/targetzeroguarantee; pricebasiscanmakeSOLlossdespiteBTCrecovery.",
+      "anti_churn": "RearmonlyfreshBTCadverseupcross1%afteratleastonecompleted1hbar, nozeroPnLcrossrearm; cumulativeinsurancefees+realizedlossbudget2%frozenBTCepisodeequity locksinsuranceuntilnewBTCepisode. Budget20/30/globalDDnotreused; numbersuntested.",
+      "failure": "ScaleouthalvesprotectionbeforesecondlegagainstBTC;highbetabasisbreakharvestcanlose;feesexhaustbudgetbeforetail;notjustsumSOLtradedprofits. OwnergoalinsurancecannotbejudgedSOLstandaloneROI."
+    }
+  ],
+  "endpoint_price_diagnostic": {
+    "losing_episode_side_adjusted_entry_to_weighted_exit_return_median_percent": "-1.496863725770726821961524595",
+    "loser_holding_hours_median": 47.975,
+    "losing_normalized_net_median_percent": "-1.606833906772813609639136130",
+    "limit": "Weightedactualentry/exitprice notMAE/MFE/minutepath. Partialprofits/feescanchange endpointversusnet. Consecutivesidechanges alone doNOTprovewhipsaw."
+  },
+  "measured_interpretation": [
+    "Insurancegap isintermittencyandtiming, notproofSOLcouldalwaysprofit: originaloverlaycoversselectedepisodes, absentothers; exactBTCadverse→SOLfavorablepath/confirmation unknownwithoutnewpathaudit.",
+    "TopAprcluster firstBTCshort hasoverlappingpositiveSOLcycle; noexistingnativeaccountsettledassetPnL. SubsequentalternatingBTClegsneedfasterindependentinsurancepermission thanoriginaloverlay, butthatistestinghypothesis.",
+    "Seriallossflip alertcanbecomputedafterpastcompletedlosses, nevertop3dateoracle. Two-lossactivationmissesfirsttwoincluster; May25/Jun6pairalertcomesonlyafterbothlosses.",
+    "Mark-to-marketendpointBTC-onlytroughs inexistingpostmortem justifyinsurancequestion butcannotpricehypotheticalhedge/harvestprofit. Persistentpositivecorrelationcanbreakduringwhipsaw."
+  ],
+  "research_acceptance_metrics": {
+    "primary": "Nativeglobalmarked1mDD plusworstBTCepisodecombinedloss andtop3causallydefinedwhipsawclustercombinedloss; strictDD<=50%onlyifownerretainsconstraint. Noeligiblewinnerifnone.",
+    "insurance": "DuringactualBTCadverseintervals measureactualoppositebetaweightedSOLcoverage/time-to-fill, combinednativeaccountdrawdown, jointlosscountandnativecash/equityextrema; compensationmetriconlyfromapprovednativecomponentexportorclearlyboundeddiagnostic, neverfakeledger.",
+    "harvest": "Perinsurancecycleactualfills/TAKER-MAKERfees/slippage/roundtripcost, activation→BTCflip/meanreversionlatency, churnrearmcount, insurancecostonwinningBTCepisodes; directionflipstaleexposuretime.",
+    "BTC_preservation": "All105lawfulBTCcalendar/side/firstquote/P0/acceptednormalizedplans conserved;absoluteQcompoundingdifferencesandnativeexecutiondelaysseparatelydeclared.",
+    "limits": "NoestimatedhedgeROI orzeroexitpromise. CausalMAE/MFE/confirm-pathdata gapsmustbeclosedonlybyseparatelyapprovedboundedpathaudit/nativeobserver, notnewbacktestnow. SignedfundingUNKNOWNunlessnativeproof."
+  },
+  "losing_BTC_with_existing_SOL_overlay": [
+    {
+      "BTCepisode": 6,
+      "BTCstart": "2024-10-02T00:01:00+00:00",
+      "BTCexit": "2024-10-05T00:00:00+00:00",
+      "BTCside": "SHORT",
+      "BTC_net_ex_funding_diagnostic": "-883.06056284000000000000000",
+      "SOLcycles": [
+        {
+          "start_ns": "1727913600000000000",
+          "end_ns": "1728086400000000000",
+          "side": "BUY",
+          "entry_qty": "810.9",
+          "diagnostic_net_ex_funding": "2330.71675605",
+          "BTC_opposite_SOL_direction": true
+        }
+      ],
+      "first_SOL_fill_delay_from_BTC_entry_minutes": 1439.0
+    },
+    {
+      "BTCepisode": 35,
+      "BTCstart": "2025-04-11T00:01:00+00:00",
+      "BTCexit": "2025-04-13T00:00:00+00:00",
+      "BTCside": "SHORT",
+      "BTC_net_ex_funding_diagnostic": "-292359.941518100000000000000",
+      "SOLcycles": [
+        {
+          "start_ns": "1744329900000000000",
+          "end_ns": "1744502400000000000",
+          "side": "BUY",
+          "entry_qty": "1000",
+          "diagnostic_net_ex_funding": "19495.2885000000000000000000",
+          "BTC_opposite_SOL_direction": true
+        }
+      ],
+      "first_SOL_fill_delay_from_BTC_entry_minutes": 4.0
+    },
+    {
+      "BTCepisode": 42,
+      "BTCstart": "2025-05-25T00:01:00+00:00",
+      "BTCexit": "2025-06-06T00:00:00+00:00",
+      "BTCside": "LONG",
+      "BTC_net_ex_funding_diagnostic": "-101881.9547022000000000000003",
+      "SOLcycles": [
+        {
+          "start_ns": "1748133840000000000",
+          "end_ns": "1749168000000000000",
+          "side": "SELL",
+          "entry_qty": "1000",
+          "diagnostic_net_ex_funding": "28925.3750000000000000000000",
+          "BTC_opposite_SOL_direction": true
+        }
+      ],
+      "first_SOL_fill_delay_from_BTC_entry_minutes": 43.0
+    },
+    {
+      "BTCepisode": 54,
+      "BTCstart": "2025-08-16T00:01:00+00:00",
+      "BTCexit": "2025-08-19T00:00:00+00:00",
+      "BTCside": "LONG",
+      "BTC_net_ex_funding_diagnostic": "-22591.718013790000000000000",
+      "SOLcycles": [
+        {
+          "start_ns": "1755316920000000000",
+          "end_ns": "1755561600000000000",
+          "side": "SELL",
+          "entry_qty": "3000",
+          "diagnostic_net_ex_funding": "18706.233000000000000000000",
+          "BTC_opposite_SOL_direction": true
+        }
+      ],
+      "first_SOL_fill_delay_from_BTC_entry_minutes": 241.0
+    },
+    {
+      "BTCepisode": 56,
+      "BTCstart": "2025-08-23T00:02:00+00:00",
+      "BTCexit": "2025-08-24T00:00:00+00:00",
+      "BTCside": "LONG",
+      "BTC_net_ex_funding_diagnostic": "-28180.61647345000000000000025",
+      "SOLcycles": [
+        {
+          "start_ns": "1755913020000000000",
+          "end_ns": "1755993600000000000",
+          "side": "SELL",
+          "entry_qty": "2000",
+          "diagnostic_net_ex_funding": "-14241.562000000000000000000",
+          "BTC_opposite_SOL_direction": true
+        }
+      ],
+      "first_SOL_fill_delay_from_BTC_entry_minutes": 95.0
+    },
+    {
+      "BTCepisode": 59,
+      "BTCstart": "2025-09-11T00:01:00+00:00",
+      "BTCexit": "2025-09-23T00:00:00+00:00",
+      "BTCside": "LONG",
+      "BTC_net_ex_funding_diagnostic": "-14320.41426983999999999999825",
+      "SOLcycles": [
+        {
+          "start_ns": "1757635200000000000",
+          "end_ns": "1758585600000000000",
+          "side": "SELL",
+          "entry_qty": "19000",
+          "diagnostic_net_ex_funding": "364042.0265000000000000000001",
+          "BTC_opposite_SOL_direction": true
+        }
+      ],
+      "first_SOL_fill_delay_from_BTC_entry_minutes": 1439.0
+    }
+  ],
+  "compactness": "All105calendar/entryexitrows retainedcompactly; fullactualnativeexitfills onlytop3clusters, source105rowCSV/native621fillaudit pinned. No trace replay/newPnL.",
+  "observed_overlap_summary": {
+    "losing_BTCepisodes": 48,
+    "with_any_original_SOL": 6,
+    "no_original_SOL_during_entire_BTC_holding": 42,
+    "overlap_SOL_cycle_positive_diagnostic": 5,
+    "overlap_SOL_cycle_negative_diagnostic": 1,
+    "actual_SOL_entry_delay_minutes": [
+      1439.0,
+      4.0,
+      43.0,
+      241.0,
+      95.0,
+      1439.0
+    ],
+    "joint_loss_example": "BTC#56 Aug23–24 2025 LONG diagnostic−28180.61647345; oppositeSOLSELLcycle−14241.562. Oppositedirection doesnotguaranteecompensation/betahedge.",
+    "warning": "5positiveoverlapcycleoutcomes notproof5nativeaccountcompensationamounts, norfutureinsuranceprofit. DoNOTsumdifferentcompoundedpathdiagnosticsintocounterfactualTOTAL."
+  }
+}
