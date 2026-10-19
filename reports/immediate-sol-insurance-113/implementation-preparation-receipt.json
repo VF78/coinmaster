@@ -1,0 +1,150 @@
+{
+  "causal_daily_seed": {
+    "completed_prices": 91,
+    "gapfree": true,
+    "k": 0.6061548510972766,
+    "last_close_available_ms": 1725148800000,
+    "log_returns": 90,
+    "original_SOL_off_basis": "All4productionmini runner native proofs plus frozen candidate builder flips originalSOLoff for immediateenum; constructor enforcesoff.",
+    "sigma_BTC_daily": 0.02708953299531514,
+    "sigma_SOL_daily": 0.044690779833365994
+  },
+  "common_frozen_manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+  "frozen_runtime_files": 88,
+  "launch_rule": "Do not call preparation helper again on existingjob; rootGO dispatch saved launch-command.json after identicalresource/pilot/hashguards; never resume anotherengine.",
+  "packages": [
+    {
+      "all_source_sha256_match": true,
+      "dispatch_command": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/launch-command.json",
+      "footprint_bytes": 1425843,
+      "frozen_files": 88,
+      "frozen_manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+      "input_hashes": {
+        "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+        "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+        "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+        "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+      },
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a",
+      "mode": "i25",
+      "same_source_88_files_all_modes": true,
+      "separate_immutable_regular_copies": true,
+      "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+      "unlaunched": true,
+      "variant_flags": [
+        "--research-btc-split50",
+        "--research-btc-split-discount",
+        "0.0025",
+        "--research-btc-split-planref-v1",
+        "--research-btc-split-tp-ioc",
+        "--research-immediate-sol",
+        "i25",
+        "--research-immediate-lookback",
+        "90"
+      ]
+    },
+    {
+      "all_source_sha256_match": true,
+      "dispatch_command": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/launch-command.json",
+      "footprint_bytes": 1426503,
+      "frozen_files": 88,
+      "frozen_manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+      "input_hashes": {
+        "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+        "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+        "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+        "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+      },
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a",
+      "mode": "i25-light",
+      "same_source_88_files_all_modes": true,
+      "separate_immutable_regular_copies": true,
+      "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+      "unlaunched": true,
+      "variant_flags": [
+        "--research-btc-split50",
+        "--research-btc-split-discount",
+        "0.0025",
+        "--research-btc-split-planref-v1",
+        "--research-btc-split-tp-ioc",
+        "--research-immediate-sol",
+        "i25-light",
+        "--research-immediate-lookback",
+        "90"
+      ]
+    },
+    {
+      "all_source_sha256_match": true,
+      "dispatch_command": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/launch-command.json",
+      "footprint_bytes": 1426833,
+      "frozen_files": 88,
+      "frozen_manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+      "input_hashes": {
+        "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+        "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+        "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+        "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+      },
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a",
+      "mode": "i25-recovery",
+      "same_source_88_files_all_modes": true,
+      "separate_immutable_regular_copies": true,
+      "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+      "unlaunched": true,
+      "variant_flags": [
+        "--research-btc-split50",
+        "--research-btc-split-discount",
+        "0.0025",
+        "--research-btc-split-planref-v1",
+        "--research-btc-split-tp-ioc",
+        "--research-immediate-sol",
+        "i25-recovery",
+        "--research-immediate-lookback",
+        "90"
+      ]
+    },
+    {
+      "all_source_sha256_match": true,
+      "dispatch_command": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/launch-command.json",
+      "footprint_bytes": 1425843,
+      "frozen_files": 88,
+      "frozen_manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+      "input_hashes": {
+        "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+        "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+        "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+        "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+      },
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a",
+      "mode": "i33",
+      "same_source_88_files_all_modes": true,
+      "separate_immutable_regular_copies": true,
+      "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+      "unlaunched": true,
+      "variant_flags": [
+        "--research-btc-split50",
+        "--research-btc-split-discount",
+        "0.0025",
+        "--research-btc-split-planref-v1",
+        "--research-btc-split-tp-ioc",
+        "--research-immediate-sol",
+        "i33",
+        "--research-immediate-lookback",
+        "90"
+      ]
+    }
+  ],
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "seven_reviewed_pins": {
+    "runtime/coinmaster/research/native_baseline.py": "f95dddbb554d4c87a4f8a74d8012ff28b567aa748c234081a58d1c115d595583",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "7ea209b44150f5584613b5b0a7998eae44b4064c67ee3c3df9ec9ebd8b7c8d31",
+    "runtime/coinmaster/strategy/immediate_insurance.py": "fcb43bea1d233a9ce9557d1d992e964b2dad23654fa5bb011c68aa405e5daf75",
+    "runtime/coinmaster/strategy/wave_overlay.py": "79b0c41cc4890258a3144f1f24f3c271f49069ad4b4cf3452b17b8ecea8b4558",
+    "runtime/tests/test_native_immediate_insurance.py": "4e2e7cc4ad6e7b616414c0e1989e666942e359afaaa7b030301eb2d8063c9dd3",
+    "scripts/collect_split_cover_native.py": "ef961ffb36bce8ebd6da5862635c339a17c83afae15ed9ddb424e45cea153e9b",
+    "scripts/launch_split_cover_native.py": "20a8e7b14c5f8eb1b51ea045714e3dbacc1fbe0dc5cd28c7991ef80be0470002"
+  },
+  "shared_research_slice_processes": 0,
+  "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+  "status": "FOUR_IMMUTABLE_PACKAGES_PREPARED_NO_ENGINES_DISPATCHED"
+}

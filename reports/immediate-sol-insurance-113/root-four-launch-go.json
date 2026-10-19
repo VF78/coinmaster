@@ -1,0 +1,21 @@
+{
+  "root_GO": "EXACTLY_FOUR_SEQUENTIAL_OWNER_AUTHORIZED_NATIVE_RUNS",
+  "order": [
+    "i25",
+    "i25-light",
+    "i25-recovery",
+    "i33"
+  ],
+  "source": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+  "prepared_receipt_sha256": "39375874b47148e6c8ebb0730378847cd7ea396fd4e91391ad2761ba2fba3aa4",
+  "manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+  "W": 90,
+  "focus_passed": 27,
+  "independent_review": "GO/noP1P2/all7pinsmatch",
+  "first_actual_unit": "cm115-split-immediate-i25-20261019a.service",
+  "first_actual_PID": 3961175,
+  "first_invocation": "afd8c0d109244bb58a5ee2376b5e1eba",
+  "first_start_UTC": "2026-10-19T15:04:22Z",
+  "results": "PENDING",
+  "pilot": "2009732/NRestarts0active/unmodified"
+}
