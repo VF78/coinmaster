@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-19T19:01:03.738907+00:00",
+  "status": "ROOT_GO_ONE_TECHNICAL_RETRY",
+  "source": "d1d9435a5237ae6bf05d21b03d419606e7817ae9",
+  "unit": "cm115-split-alpha-cushion-batch1440-20261019b",
+  "verified_manifest_members": 93,
+  "verified_effective_pins": 9,
+  "same_BTC_and_ALPHA_risk_rules": true,
+  "routing_fix": "ALPHA native1m -> closed15m release",
+  "operational_batch_parameters": 1440,
+  "resource": {
+    "MemAvailable": 1480122368,
+    "free_bytes": 2322456576,
+    "MemoryMax": 681574400,
+    "swap": 0
+  },
+  "memory_fit_guarantee": false,
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "no_optimization_or_new_policy": true
+}

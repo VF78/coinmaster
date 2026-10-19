@@ -1,0 +1,36 @@
+{
+  "comment": {
+    "id": 6275267329,
+    "url": "https://github.com/VF78/coinmaster/issues/120#issuecomment-6275267329"
+  },
+  "project_readback": {
+    "data": {
+      "nodes": [
+        {
+          "id": "PVTI_lAHOBIUvJs4BPJNjzhB6Hag",
+          "content": {
+            "number": 120,
+            "state": "OPEN",
+            "url": "https://github.com/VF78/coinmaster/issues/120"
+          },
+          "fieldValueByName": {
+            "name": "In Progress"
+          }
+        },
+        {
+          "id": "PVTI_lAHOBIUvJs4BPJNjzg82oW4",
+          "content": {
+            "number": 113,
+            "state": "OPEN",
+            "url": "https://github.com/VF78/coinmaster/issues/113"
+          },
+          "fieldValueByName": {
+            "name": "In Progress"
+          }
+        }
+      ]
+    }
+  },
+  "resource_authorization_pending": true,
+  "no_economic_result": true
+}

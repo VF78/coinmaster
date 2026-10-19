@@ -1,0 +1,15 @@
+{
+  "command_executed": false,
+  "created_utc": "2026-10-19T19:08:40.736193+00:00",
+  "current_pid": 4042957,
+  "current_ram_max": 681574400,
+  "current_research_unit": "cm115-split-alpha-cushion-batch1440-20261019b",
+  "current_swap_max": 0,
+  "limits_changed": false,
+  "proposed_action": "Global768MiBtemporaryswapfile plusruntimeMemorySwapMax768M/IOWeight10 onexactresearchunit+researchslice;RAM650MiBunchanged",
+  "protected_pilot_untouched": true,
+  "reason": "Global swap/sharedlivehost runtimecgroup change can affect unrelatedservices; direct human explicitauthorization for system-wide resource change not established by automatic reviewer.",
+  "review_instruction": "Do not bypass through workaround or indirect execution; report risk and request explicit owner approval.",
+  "status": "BLOCKED_BY_AUTOMATIC_APPROVAL_REVIEW_NO_MUTATION",
+  "swap_created": false
+}

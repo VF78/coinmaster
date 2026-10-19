@@ -1,0 +1,23 @@
+{
+  "actual_exit_zero": false,
+  "completed_result_absent": true,
+  "completed_utc": "2026-10-19T19:13:59.333652+00:00",
+  "created_utc": "2026-10-19T19:01:27.889937+00:00",
+  "dispatch_resources": {
+    "MemAvailable": 1477701632,
+    "disk_free": 2322436096
+  },
+  "failed_attempt_immutable_sha256": "504c17cdc688d96cfdd9635f98be8ed85fe48c9d830d30caa4610f28f5d815b3",
+  "failure_receipt": "reports/alpha-cushion-113/failed-batch1440-attempt-receipt.json",
+  "failure_receipt_sha256": "3c55dc898c1188dce0adcb92db86abac4f296d9889f711d900b8a994b03f1fd5",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-batch1440-20261019b",
+  "launch_command_sha256": "65ecd76babe569510dddfb9cd062b5d42a81861c3c14a6d0f0b63ec2473ff50b",
+  "no_other_engine_queued": true,
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "preparation_sha256": "53fe67b32aec62f26001c5d8e53082c5785146befa3e81c9831d381fdcca4d12",
+  "source_commit": "d1d9435a5237ae6bf05d21b03d419606e7817ae9",
+  "source_manifest_sha256": "546b7a53e04673bac85eb5e52a84d353acd9a27e809c046a5585c5727fc2b7f9",
+  "status": "INVALID_INCOMPLETE_OOM_NO_ECONOMIC_RESULT",
+  "systemd_dispatch_returncode": 0,
+  "unit_properties": "MainPID=4042957\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nInvocationID=fb8bb32380cb4a4699bfc2a705237104"
+}

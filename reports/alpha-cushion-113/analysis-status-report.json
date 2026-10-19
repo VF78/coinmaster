@@ -1,0 +1,165 @@
+{
+  "status": "BLOCKED_RESOURCE_APPROVAL_TWO_INCOMPLETE_OOM_ATTEMPTS_NO_ECONOMIC_RESULT",
+  "created_utc": "2026-10-19T19:15:56.506752+00:00",
+  "scope": "Boundedcheckpointonlyexistingreceipts/preflight/corrections/reviews;nonewengine/test/observer/parquet/PnL/source/pilot/resourceactions",
+  "comparison_rows": [
+    {
+      "variant": "control6077",
+      "status": "COMPLETED_ACCEPTED_REUSED_REFERENCE",
+      "native_TOTAL": "6077107.23887483",
+      "native_ROI_percent": "60671.0723887483",
+      "global_native_minute_DD_percent": "66.31878024969152066570091116",
+      "conditional_OHLC_bound_percent": "67.54771031869252420136632742",
+      "native_minimum_equity": "4530.57414701",
+      "native_fees": "945927.73761825",
+      "native_fill_report_rows": 621,
+      "BTC_parents": 105,
+      "native_liquidations": 0,
+      "full_rows_per_source": 1051200,
+      "terminal_native_flat": true,
+      "completed_native_JSON": true,
+      "comparison_evaluable": true
+    },
+    {
+      "variant": "ALPHA_CUSHION",
+      "status": "INCOMPLETE_OOM_NO_ECONOMIC_RESULT",
+      "native_TOTAL": null,
+      "native_ROI_percent": null,
+      "global_native_minute_DD_percent": null,
+      "conditional_OHLC_bound_percent": null,
+      "native_minimum_equity": null,
+      "native_fees": null,
+      "native_fill_report_rows": null,
+      "BTC_parents": null,
+      "native_liquidations": null,
+      "full_rows_per_source": null,
+      "terminal_native_flat": null,
+      "completed_native_JSON": false,
+      "comparison_evaluable": false
+    }
+  ],
+  "economic_conclusion": "NOT_EVALUABLE_INCOMPLETE: cannot conclude ALPHA-CUSHION economicworth,DDgoalorwinner. Nullfinancialfieldsarenotzeroandnotobservedeconomicloss. No fullperiodcomparisonorpost-OOMequityreconstruction.",
+  "control_reuse": {
+    "result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "result_SHA256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "repeat26_exact": true,
+    "no_control_rerun": true,
+    "BTC_only_context_NOT_comparison_control": true
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a",
+      "source_commit": "2b3cd5fffa021d35d0d5a99f9a4a8e966fb1c69c",
+      "status": "INVALID_INCOMPLETE_OOM_NO_ECONOMIC_RESULT",
+      "actual_exit": "OOM_KILL_CONFIRMED_NOT_NATIVE_EXIT0",
+      "completed_native_JSON": false,
+      "TOTAL": null,
+      "ROI": null,
+      "DD": null,
+      "native_flat_proof": null,
+      "receipt": "reports/alpha-cushion-113/failed-attempt-receipt.json",
+      "SHA256": "504c17cdc688d96cfdd9635f98be8ed85fe48c9d830d30caa4610f28f5d815b3"
+    },
+    {
+      "attempt": 2,
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-batch1440-20261019b",
+      "source_commit": "d1d9435a5237ae6bf05d21b03d419606e7817ae9",
+      "status": "INVALID_INCOMPLETE_OOM_NO_ECONOMIC_RESULT",
+      "actual_exit": "OOM_KILL_NOT_EXIT0",
+      "completed_native_JSON": false,
+      "TOTAL": null,
+      "ROI": null,
+      "DD": null,
+      "native_flat_proof": null,
+      "receipt": "reports/alpha-cushion-113/failed-batch1440-attempt-receipt.json",
+      "SHA256": "3c55dc898c1188dce0adcb92db86abac4f296d9889f711d900b8a994b03f1fd5"
+    }
+  ],
+  "bounded_engineering_evidence": {
+    "last_completed_UTC": "2025-04-06T00:00:00+00:00",
+    "last_completed_batch": {
+      "alpha_audit_dropped": 161327,
+      "alpha_audit_rows": 4249,
+      "batch_count": 217,
+      "cursor_batch_rows": 1440,
+      "last_available_ns": 1743897600000000000,
+      "native_fill_events": 47339,
+      "native_orders": 47367,
+      "native_positions": 2,
+      "peak_rss_bytes": 876453888,
+      "processed_minutes": 312480,
+      "rss_bytes": 876527616,
+      "seen_trade_ids": 47339,
+      "strategy_order_audit": 47367,
+      "weekly_batch_minutes": 1440
+    },
+    "interpretation": "Measured47367nativeorders/47339fill-events+seenIDs/auditretainactualexecutionhistory. Nativeorder/fillcachegrowthcontinuedafterdailybatchfixedworkingsetreduction. Exactheapallocationnotmeasured; no claimonespecificcontainerprovensoleOOMcause.",
+    "guard_telemetry": "4249boundedrows;4096genericdetailcappluscompletefactor/dailystressrows;161327droppedguarddetailsarecountednotretained. Cappedguarddetailnotunboundedperquoteappend; cannotexplainretained47367actualordersbyremovinglegitimateOMS/cachehistory.",
+    "dedup": "_seen_trade_ids iscorrectnessdeduplicationevidence; NOTpurgecandidate. No nativeOMS/cache/seenIDpurge."
+  },
+  "completed_technical_corrections": {
+    "core": {
+      "native_tests_passed": 206,
+      "native_exit_zero": true,
+      "independent_review": "GO",
+      "freeze_receipt": "reports/alpha-cushion-113/implementation-freeze-receipt.json"
+    },
+    "routing": "OriginalALPHAsubscriptionsomitted1m sourcebars; correctedactual1m→closed15mroute. Thisiscausalroutingfix,notonlyperformance.",
+    "batching": "10080weekly→1440dailycursorandenginechunkfixedworkingsetreduction;doesnotcapcumulativeorderhistory.",
+    "focused_proof": {
+      "case": "test_production_alpha_closed_15m_release_and_daily_batch_native_identity",
+      "actual_test_exit_zero": true,
+      "result": "1 passed,12warnings,9.97seconds;actualexit0",
+      "checks": [
+        "actualproduction1mbars->nativeclosedSOL15m->actualALPHA_RELEASE",
+        "twoactualBTCepisodes",
+        "10080vs1440sameeconomicnativeorders(type,TIF,postonly,liquidity,qty,price,commissions,timestamps,status)",
+        "exactterminaltotal/nativefees/fillcount/accountcash/intervalcash",
+        "nativeflat",
+        "bothbatchparametersreduced;overwriteonlycounts/RSSsidecar"
+      ],
+      "independent_narrow_review": "GO",
+      "full206_rerun": false,
+      "full206_reused": true
+    },
+    "corrected_source_commit": "d1d9435a5237ae6bf05d21b03d419606e7817ae9",
+    "economic_complete_proof": false
+  },
+  "resource_blocker": {
+    "not_missing_data": true,
+    "native_research_RAM_max": 681574400,
+    "native_research_swap_max": 0,
+    "exception_applied": false,
+    "automatic_review_status": "BLOCKED_BY_AUTOMATIC_APPROVAL_REVIEW_NO_MUTATION",
+    "proposed_action": "Global768MiBtemporaryswapfile plusruntimeMemorySwapMax768M/IOWeight10 onexactresearchunit+researchslice;RAM650MiBunchanged",
+    "reason": "Global swap/sharedlivehost runtimecgroup change can affect unrelatedservices; direct human explicitauthorization for system-wide resource change not established by automatic reviewer.",
+    "waiting": "Explicitownerresourceapproval;noswap/cgroupchangeexecuted,nobypass,nothirdlaunchpreparationbystats. Anyfuturetechnicalretryrequiresexplicitapprovalandfreshresourceguard,notalgorithmchange."
+  },
+  "cleanup_checkpoint": {
+    "receipt": "reports/alpha-cushion-113/analysis-disk-cleanup.json",
+    "SHA256": "902186bf9f06bc7687104c4a4742f2474f82d573c906a36d926b7209cc9ceeab",
+    "root_followup_preserved": true,
+    "allocated_bytes_freed_total": 123314176,
+    "last_recorded_free_after_APT": 2323947520,
+    "not_current_free_guarantee": true
+  },
+  "preservation": "Allcompletedcontrol/results/funding/failedattemptartifacts/partialcompressedobserverretained.No partialobserverdecode/feesfundingPnLrecovery.NativefundingsignedUNKNOWN, no0assumption. Pilot2009732/restarts0active perfinalfailure receipt; no pilotactionsbystats.",
+  "source_references_SHA256": {
+    "reports/alpha-cushion-113/analysis-preflight.json": "2f00f302c5872e1f3a0509e65a1b62bd1b2255a6af4b92c9257fae94322e1ce4",
+    "reports/alpha-cushion-113/analysis-contract.json": "eda82972e22a0721d89f42c32d09d17e3959c2e601275188e5d4ae8f8a078d36",
+    "reports/alpha-cushion-113/implementation-freeze-receipt.json": "ff319af715ba759e10a395008699cd9ce44e2fc060d440c8f19c781d4da42a54",
+    "reports/alpha-cushion-113/independent-review.json": "bb79aca9d596b001aca20cac103684d505e04d33b6f9be9d64914284a939902b",
+    "reports/alpha-cushion-113/implementation-routing-batch-receipt.json": "8b3d7d75c751a26848c05398ff0761797aac38ae9830592487803a8efae6b4ba",
+    "reports/alpha-cushion-113/independent-routing-batch-review.json": "87fc9c4ee080ef846ad68aaaefc9804e788345d3f2c63d4b6fa8ff1211df05a9",
+    "reports/alpha-cushion-113/failed-attempt-receipt.json": "504c17cdc688d96cfdd9635f98be8ed85fe48c9d830d30caa4610f28f5d815b3",
+    "reports/alpha-cushion-113/failed-batch1440-attempt-receipt.json": "3c55dc898c1188dce0adcb92db86abac4f296d9889f711d900b8a994b03f1fd5",
+    "reports/alpha-cushion-113/resource-exception-blocked.json": "f7f938688fefe121713e2ea7dfb51fc106fa6d5819ce8a92a0ee3d6ae585e100",
+    "reports/alpha-cushion-113/analysis-disk-cleanup.json": "902186bf9f06bc7687104c4a4742f2474f82d573c906a36d926b7209cc9ceeab",
+    "reports/sol-risk-first-20261018/analysis-control-provenance.json": "cfff6e87d37925c240d934b670f415683f7dd87f02926db103d1586c0eee31d1"
+  }
+}

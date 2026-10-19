@@ -1,0 +1,67 @@
+{
+  "actual_exit_zero": false,
+  "actual_journal": "2026-10-19T19:01:27+00:00 MyShopAI-prod-1 systemd[1]: Started cm115-split-alpha-cushion-batch1440-20261019b.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-batch1440-20261019b/launch.sh.\n2026-10-19T19:12:33+00:00 MyShopAI-prod-1 systemd[1]: cm115-split-alpha-cushion-batch1440-20261019b.service: A process of this unit has been killed by the OOM killer.\n2026-10-19T19:12:33+00:00 MyShopAI-prod-1 systemd[1]: cm115-split-alpha-cushion-batch1440-20261019b.service: Failed with result 'oom-kill'.\n2026-10-19T19:12:33+00:00 MyShopAI-prod-1 systemd[1]: cm115-split-alpha-cushion-batch1440-20261019b.service: Consumed 10min 56.841s CPU time, 649.8M memory peak, 0B memory swap peak.\n",
+  "automatic_approval_blocked": "reports/alpha-cushion-113/resource-exception-blocked.json",
+  "causal_evidence": "47367actualnativeorders and47339fill-events retained inexistingcache/audit/seen-IDcontainers atlastcompletedday; boundedAlphaaudit4249rows. Memorygrowth continuedafterfixedchunk1440 reduction. Exactheapallocationnotmeasured. No nativecachepurge/OMS/riskpolicy change.",
+  "completed_result_absent": true,
+  "created_utc": "2026-10-19T19:13:59.333652+00:00",
+  "disk_free": 2290823168,
+  "expected_rows_per_source": 1051200,
+  "first_failed_attempt_immutable_sha256": "504c17cdc688d96cfdd9635f98be8ed85fe48c9d830d30caa4610f28f5d815b3",
+  "invocation_id": "fb8bb32380cb4a4699bfc2a705237104",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-batch1440-20261019b",
+  "last_completed_batch": {
+    "alpha_audit_dropped": 161327,
+    "alpha_audit_rows": 4249,
+    "batch_count": 217,
+    "cursor_batch_rows": 1440,
+    "last_available_ns": 1743897600000000000,
+    "native_fill_events": 47339,
+    "native_orders": 47367,
+    "native_positions": 2,
+    "peak_rss_bytes": 876453888,
+    "processed_minutes": 312480,
+    "rss_bytes": 876527616,
+    "seen_trade_ids": 47339,
+    "strategy_order_audit": 47367,
+    "weekly_batch_minutes": 1440
+  },
+  "last_completed_batch_utc": "2025-04-06T00:00:00+00:00",
+  "memory_max_bytes": 681574400,
+  "memory_swap_max_bytes": 0,
+  "native_flat": "UNKNOWN_NO_COMPLETED_ENGINE_REPORT",
+  "native_roi": "UNKNOWN_NO_COMPLETED_RESULT",
+  "native_total": "UNKNOWN_NO_COMPLETED_RESULT",
+  "no_third_launch": true,
+  "partial_artifacts": {
+    "result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-e4506d978b33459e97a25bbdb69acc23": {
+      "bytes": 102400,
+      "sha256": "b09f5714ed2b65af7bdaf2e252b498615eaaa8aa1c7cc887223b7273ec7e523b"
+    },
+    "result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-e4506d978b33459e97a25bbdb69acc23-shm": {
+      "bytes": 32768,
+      "sha256": "1972b21f4f0cac6991fb72a7d4a951602ab5d3153fc2a4fc8673a51b52f1a62e"
+    },
+    "result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-e4506d978b33459e97a25bbdb69acc23-wal": {
+      "bytes": 4136512,
+      "sha256": "176dcf3400e0c27dcf1d48688e95287d2c7ecc9ffb1c0cb2a8818347003af11e"
+    },
+    "result/batch-resource-latest.json": {
+      "bytes": 391,
+      "sha256": "128545b7de7162f1c156ed3b1b2d5240a04daf52dd1c597632deed4de72508d2"
+    },
+    "result/minute-native-risk.csv.gz": {
+      "bytes": 26544211,
+      "sha256": "51720cb7d9c74ebc1e8143d576c488d4d34d3c0cd5f73494a0324ec30695595d"
+    }
+  },
+  "partial_result_not_comparable": true,
+  "pid": 4042957,
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "prepared_receipt_sha256": "53fe67b32aec62f26001c5d8e53082c5785146befa3e81c9831d381fdcca4d12",
+  "resource_exception_applied": false,
+  "source_commit": "d1d9435a5237ae6bf05d21b03d419606e7817ae9",
+  "source_manifest_sha256": "546b7a53e04673bac85eb5e52a84d353acd9a27e809c046a5585c5727fc2b7f9",
+  "status": "INVALID_INCOMPLETE_OOM_NO_ECONOMIC_RESULT",
+  "unit": "cm115-split-alpha-cushion-batch1440-20261019b"
+}

@@ -1,0 +1,32 @@
+{
+  "status": "BLOCKED_RESOURCE_APPROVAL_TWO_INCOMPLETE_OOM_ATTEMPTS_NO_ECONOMIC_RESULT",
+  "new_report_members": {
+    "reports/alpha-cushion-113/analysis-status-report.md": {
+      "sha256": "26b739e3c56bbb331d5069fed31923c76770d32c74ba1499daa1efb78991c61f",
+      "bytes": 6115
+    },
+    "reports/alpha-cushion-113/analysis-status-report.json": {
+      "sha256": "c87d10f58df34c4300d4a850b630a7e831db209554523c90e44093952034ed73",
+      "bytes": 9328
+    },
+    "reports/alpha-cushion-113/analysis-status-comparison.csv": {
+      "sha256": "f462c652f408897ed205958ef078679f1fb52b6957cdc7885110af0391385ecd",
+      "bytes": 608
+    }
+  },
+  "read_only_evidence_references": {
+    "reports/alpha-cushion-113/analysis-preflight.json": "2f00f302c5872e1f3a0509e65a1b62bd1b2255a6af4b92c9257fae94322e1ce4",
+    "reports/alpha-cushion-113/analysis-contract.json": "eda82972e22a0721d89f42c32d09d17e3959c2e601275188e5d4ae8f8a078d36",
+    "reports/alpha-cushion-113/implementation-freeze-receipt.json": "ff319af715ba759e10a395008699cd9ce44e2fc060d440c8f19c781d4da42a54",
+    "reports/alpha-cushion-113/independent-review.json": "bb79aca9d596b001aca20cac103684d505e04d33b6f9be9d64914284a939902b",
+    "reports/alpha-cushion-113/implementation-routing-batch-receipt.json": "8b3d7d75c751a26848c05398ff0761797aac38ae9830592487803a8efae6b4ba",
+    "reports/alpha-cushion-113/independent-routing-batch-review.json": "87fc9c4ee080ef846ad68aaaefc9804e788345d3f2c63d4b6fa8ff1211df05a9",
+    "reports/alpha-cushion-113/failed-attempt-receipt.json": "504c17cdc688d96cfdd9635f98be8ed85fe48c9d830d30caa4610f28f5d815b3",
+    "reports/alpha-cushion-113/failed-batch1440-attempt-receipt.json": "3c55dc898c1188dce0adcb92db86abac4f296d9889f711d900b8a994b03f1fd5",
+    "reports/alpha-cushion-113/resource-exception-blocked.json": "f7f938688fefe121713e2ea7dfb51fc106fa6d5819ce8a92a0ee3d6ae585e100",
+    "reports/alpha-cushion-113/analysis-disk-cleanup.json": "902186bf9f06bc7687104c4a4742f2474f82d573c906a36d926b7209cc9ceeab",
+    "reports/sol-risk-first-20261018/analysis-control-provenance.json": "cfff6e87d37925c240d934b670f415683f7dd87f02926db103d1586c0eee31d1"
+  },
+  "financial_comparison": "INCOMPLETE_NOT_EVALUABLE; no winner/economicworthclaim",
+  "previous_receipts_cleanup_and_frozen_evidence_not_modified": true
+}

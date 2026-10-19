@@ -1,0 +1,19 @@
+{
+  "status": "CURRENT #120: IMPLEMENTED, FULL COMPARISON BLOCKED ON VPS RESOURCE APPROVAL. Source d1d9435 pushed;206 focused native tests PASS plus1 real15m/2episode/batchidentityPASS; narrowreviewsGO. Both attempted native24m runs ended actualOOM at650MiB/swap0, no completedTOTAL/ROI/DD. Corrected retry processed217days to2025-04-06,47367orders/47339fills; actualnativehistory growth, boundeddiagnosticcapworks. Failedreceipts504c17cd...15b3 and3c55dc89...1fd5 preserved; no flat/result fabricated. CoreBTCwinner unchanged. Proposed temporaryGLOBAL768MiBswap + researchruntimeSwapMax was REJECTED BEFORE EXECUTION by auto-review: directownerapproval required because sharedVPS resources mayaffectother services; asyncownerquestionPENDING, NOswap/OSresourcechanges/no thirdlaunch. Pilot2009732/NRestarts0active unchanged. Safe diskcleanup123314176allocatedB; allmarketdata/results/journals/venvs/protectedservices retained. NEXT obtainexplicitresourceapproval, freshguardedtechnicalretry samecandidate; no optimizer/policychange/deploy.",
+  "issues": {
+    "120": {
+      "number": 120,
+      "url": "https://github.com/VF78/coinmaster/issues/120",
+      "state": "open",
+      "updated_at": "2026-10-19T19:15:04Z",
+      "completed_checkboxes": 4
+    },
+    "113": {
+      "number": 113,
+      "url": "https://github.com/VF78/coinmaster/issues/113",
+      "state": "open",
+      "updated_at": "2026-10-19T19:15:06Z",
+      "completed_checkboxes": 74
+    }
+  }
+}

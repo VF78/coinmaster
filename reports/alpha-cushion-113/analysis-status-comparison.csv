@@ -1,0 +1,3 @@
+variant,status,native_TOTAL,native_ROI_percent,global_native_minute_DD_percent,conditional_OHLC_bound_percent,native_minimum_equity,native_fees,native_fill_report_rows,BTC_parents,native_liquidations,full_rows_per_source,terminal_native_flat,completed_native_JSON,comparison_evaluable
+control6077,COMPLETED_ACCEPTED_REUSED_REFERENCE,6077107.23887483,60671.0723887483,66.31878024969152066570091116,67.54771031869252420136632742,4530.57414701,945927.73761825,621,105,0,1051200,True,True,True
+ALPHA_CUSHION,INCOMPLETE_OOM_NO_ECONOMIC_RESULT,null,null,null,null,null,null,null,null,null,null,null,False,False
