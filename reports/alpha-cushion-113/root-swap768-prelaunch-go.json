@@ -1,0 +1,23 @@
+{
+  "utc": "2026-10-19T19:46:07.258983+00:00",
+  "status": "ROOT_GO_ONE_SAME_POLICY_NATIVE_TECHNICAL_RETRY_WITH_OWNER_APPROVED_SWAP",
+  "source": "bd1aa691a487ebda25bcd76d278a88ec9f9c8195",
+  "unit": "cm115-split-alpha-cushion-swap768-20261019c",
+  "full_source_preverified_members": 93,
+  "effective_pins_verified_now": 9,
+  "RAM_MiB": 650,
+  "swap_MiB": 768,
+  "global_not_private_swap": true,
+  "IOWeight": 10,
+  "resource": {
+    "MemAvailable": 1469091840,
+    "SwapFree": 808583168,
+    "disk_free": 1959460864,
+    "minimum_disk_reserve_plus_peak": 1610612736
+  },
+  "archive_retention_SHA": "69f58dd2077077f47b0036bb760989b47108e8d542f25cb01b8a258657adff3e",
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "new_policy_or_tests": false,
+  "cleanup_required_after_run": true,
+  "no_automatic_extra_run": true
+}

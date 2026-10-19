@@ -1,0 +1,15 @@
+{
+  "status": "CURRENT #120 / 2026-10-19: OWNER EXPLICITLY APPROVED temporaryGLOBAL768MiBswap/researchusage atRAM650MiB+lowIO andsafe removalafterrun. Priorauto-reviewauthorizationblock resolved bydirecthumananswer. Sourcebd1aa69 checkpoint/core d1d9435+9effectivepins preserved; no newpolicy/tests/optimizer. Sourceownerpreparingfresh sameALPHA technicalrun cm115-split-alpha-cushion-swap768-20261019c; NOnewengineyet. BeforeGO verifyauthorizedresourceexception/93pins/inputconfig/freshjournal/pilot+diskmargin. StatsSHA-copyingonlyoldcompleteddiagnosticgzip toMacarchive toretainresultswhilefreeingoutputspace; rootGOrequiredbeforeremoteunlink. BothpriorOOMattempts remaininvalid/economicTOTALunknown. Pilotmustremain2009732/restarts0active; no deploy/orders/keys/config. NEXTdrypackage/resources/rootGO thenfullnativecomparison; removeONLYtemporaryswap safelyafterfinish.",
+  "issues": {
+    "120": {
+      "url": "https://github.com/VF78/coinmaster/issues/120",
+      "state": "open",
+      "updated_at": "2026-10-19T19:36:57Z"
+    },
+    "113": {
+      "url": "https://github.com/VF78/coinmaster/issues/113",
+      "state": "open",
+      "updated_at": "2026-10-19T19:36:59Z"
+    }
+  }
+}

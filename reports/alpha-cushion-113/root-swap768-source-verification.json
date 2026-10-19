@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-19T19:40:41.145705+00:00",
+  "status": "SOURCE_AND_RESOURCE_PREPARATION_VERIFIED_WAIT_ARCHIVAL_DISK_GUARD",
+  "source_commit": "bd1aa691a487ebda25bcd76d278a88ec9f9c8195",
+  "unit": "cm115-split-alpha-cushion-swap768-20261019c",
+  "source_and_input_members_verified": 93,
+  "effective_pins": 9,
+  "launch_command_sha256": "d58bbe2fbb0d59715967ff81d03fd99b730727c27b90606a06f61d300f92e1c2",
+  "same_economics_and_inputs": true,
+  "owner_explicit_768_global_swap_approved": true,
+  "RAM_MiB": 650,
+  "swap_MiB": 768,
+  "IOWeight": 10,
+  "engine_started": false
+}

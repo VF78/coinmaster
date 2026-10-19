@@ -1,0 +1,10 @@
+{
+  "utc_recorded": "2026-10-19T19:36:56.081836+00:00",
+  "source": "direct human async question reply in coordinator",
+  "question_id": "call_2e89a91cc164406a8ca1b041389d9e5f/0",
+  "question": "Temporarily add GLOBAL768MiBsystemswap andallowresearchprocess;keepRAM650MiB+lowIOpriority; safelydisable/removeafterrun; sharedswapavailabletootherprocesses",
+  "answer": "Разрешаю временный swap 768 MiB",
+  "real_orders_authorized": false,
+  "pilot_changes_authorized": false,
+  "new_trading_policy": false
+}

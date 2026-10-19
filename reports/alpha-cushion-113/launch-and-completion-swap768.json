@@ -1,0 +1,22 @@
+{
+  "dispatch_resources": {
+    "MemAvailable": 1469784064,
+    "SwapFree": 808587264,
+    "disk_free": 1959395328
+  },
+  "dispatch_returncode": 0,
+  "global_swap_qualification": "AuthorizedGLOBAL768MiBNOTprivate/exclusive;RAM650MiB;runtimeSwap768MiB/IO10researchonly;removeONLYwhenpostexitsafe.",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c",
+  "launch_command_sha256": "d58bbe2fbb0d59715967ff81d03fd99b730727c27b90606a06f61d300f92e1c2",
+  "no_other_engine_queued": true,
+  "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "preparation_sha256": "9f8d8f8816166c040ec3015ce3c9c3305c3868951e0f271c646e5311d0774353",
+  "ready_receipt_sha256": "fd61dbb4ddd4af15c7283bdc07cefaacd781355d09c0985d94b50e61248cfea1",
+  "source_commit": "bd1aa691a487ebda25bcd76d278a88ec9f9c8195",
+  "source_manifest_sha256": "546b7a53e04673bac85eb5e52a84d353acd9a27e809c046a5585c5727fc2b7f9",
+  "started_msk": "2026-10-19T22:46:40.025293+03:00",
+  "started_utc": "2026-10-19T19:46:40.025293+00:00",
+  "status": "ACTIVE_NO_ECONOMIC_RESULT",
+  "unit": "cm115-split-alpha-cushion-swap768-20261019c",
+  "unit_properties": "MainPID=4058618\nCPUWeight=10\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=805306368\nActiveState=active\nInvocationID=da3704545f2c4c00bb84a5a18a2bd870"
+}

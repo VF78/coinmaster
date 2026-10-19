@@ -1,0 +1,15 @@
+{
+  "current": "CURRENT #120: SAME ALPHA-CUSHION FULL24M TECHNICAL RETRY ACTIVE since2026-10-19 22:46:40MSK (19:46:40UTC). Ownerdirectlyapproved GLOBALtemporaryswap768MiB; actual researchRAM650/Swap768/CPU10/IO10, no tradingrule/source change. Uniqueunitcm115-split-alpha-cushion-swap768-20261019c/PID4058618/invocationda3704545f2c4c00bb84a5a18a2bd870; sourcebd1aa691/89source+4inputpins/same9effectivepins. Previous2OOMattempts excluded, newTOTAL/ROI/DDUNKNOWN untilactualcomplete/full1051200/nativeflat/allterminal. 6oldcompleteddiagnosticgzips477834752B archivedbyteexact+SHAonMac, onlyverifiedVPScopiesunlinked; archiveindexc04d6e4b/retention69f58dd2. All6077control/repeat/BTC-only/ALPHA/resultsJSON/SQLite/data/venvs protected. Pilot2009732/NRestarts0active unchanged. No extraengine/optimizer/deploy/realorders. NEXTcoarseRAM+swap/disk/date monitoring, completed-onlynativecollection/finalcomparison, safe temporaryswapcleanup afterrun.",
+  "issues": {
+    "120": {
+      "url": "https://github.com/VF78/coinmaster/issues/120",
+      "state": "open",
+      "updated_at": "2026-10-19T19:47:37Z"
+    },
+    "113": {
+      "url": "https://github.com/VF78/coinmaster/issues/113",
+      "state": "open",
+      "updated_at": "2026-10-19T19:47:39Z"
+    }
+  }
+}

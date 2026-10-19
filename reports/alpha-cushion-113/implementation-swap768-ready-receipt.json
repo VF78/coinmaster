@@ -1,0 +1,27 @@
+{
+  "actual_swap": "NAME                                     TYPE       SIZE       USED PRIO\n/swapfile                                file 2147479552 2144202752   -2\n/root/.cm120-alpha-cushion-20261019.swap file  805302272          0   -3",
+  "archive_receipt_sha256": "69f58dd2077077f47b0036bb760989b47108e8d542f25cb01b8a258657adff3e",
+  "created_utc": "2026-10-19T19:45:29.257262+00:00",
+  "effective9pins_match": true,
+  "engine_started": false,
+  "launch_command_sha256": "d58bbe2fbb0d59715967ff81d03fd99b730727c27b90606a06f61d300f92e1c2",
+  "launch_script_sha256": "9ac1f21abd26573c09779b22a464cf1f73854cc304765fe822ddf3f7f696d64a",
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "prepared_receipt": "reports/alpha-cushion-113/implementation-swap768-preparation-receipt.json",
+  "prepared_receipt_sha256": "9f8d8f8816166c040ec3015ce3c9c3305c3868951e0f271c646e5311d0774353",
+  "resources": {
+    "MemAvailable": 1458397184,
+    "SwapFree": 808579072,
+    "disk_free": 1959481344,
+    "excess_over_guard": 348868608,
+    "min_disk_reserve": 1073741824,
+    "new_output_peak_budget": 536870912,
+    "research_slice_empty": true
+  },
+  "result_absent": true,
+  "root_stats_archive_receipt": "reports/alpha-cushion-113/analysis-archive-retention-receipt.json",
+  "source_commit": "bd1aa691a487ebda25bcd76d278a88ec9f9c8195",
+  "source_files93_verified": true,
+  "source_manifest_sha256": "546b7a53e04673bac85eb5e52a84d353acd9a27e809c046a5585c5727fc2b7f9",
+  "status": "FRESH_RESOURCE_AND_FROZEN_PACKAGE_PASS_NO_ENGINE_WAIT_ROOT_GO"
+}
