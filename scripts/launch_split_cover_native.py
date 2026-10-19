@@ -30,6 +30,8 @@ VARIANTS = {
 }
 for _risk_variant in ("cap50","dd-cov","split-atr"):
     VARIANTS["risk-first-"+_risk_variant]=VARIANTS["btc025-planref-tp-ioc"]+["--research-sol-risk-first",_risk_variant]
+for _insurance_variant in ("i25","i25-light","i25-recovery","i33"):
+    VARIANTS["immediate-"+_insurance_variant]=VARIANTS["btc025-planref-tp-ioc"]+["--research-immediate-sol",_insurance_variant,"--research-immediate-lookback","90"]
 PILOT = "coinmaster-hl-stageg-testnet.service"
 
 
@@ -102,6 +104,8 @@ def main():
         name:digest(REPO/"runtime/var/data"/name)
         for name in ("bybit-1m/manifest.json","runs/tp-fee-floor-113/v0/v0.json")
     }
+    if "--research-immediate-sol" in args:
+        input_hashes.update({"normalized/bybit-"+symbol+"-daily.parquet":digest(REPO/"runtime/var/data/normalized"/("bybit-"+symbol+"-daily.parquet")) for symbol in ("BTCUSDT","SOLUSDT")})
     (job/"input-hashes.json").write_text(json.dumps(input_hashes,sort_keys=True,indent=2)+"\n")
     (job/"source-input-hashes.sha256").write_text(
         "".join(f"{v}  {source/k}\n" for k,v in sorted(hashes.items()))+

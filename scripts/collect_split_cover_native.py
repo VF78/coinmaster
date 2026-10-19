@@ -75,8 +75,8 @@ def main():
         "disk_free_after":shutil.disk_usage(job).free,"pilot_after":pilot,
         "scope":"RESEARCH_ONLY_NATIVE_ACCOUNTING_DIAGNOSTIC_NO_PRODUCTION_PROMOTION",
     }
-    if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first"):
-        audit_key="risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
+    if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first") or result.get("config",{}).get("research_immediate_sol"):
+        audit_key="immediate_sol_insurance_audit" if result.get("config",{}).get("research_immediate_sol") else "risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
         audit=result.get(audit_key)
         if not isinstance(audit,list):
             raise ValueError("SOL_POLICY_NATIVE_AUDIT_MISSING")
@@ -86,10 +86,23 @@ def main():
             if any(D(p["filled"])+D(p["cancelled"])!=D(p["quantity"]) or not p["closed"] or any(p["pending"]) for p in parents):
                 raise ValueError("SOL_SPLIT_PARENT_NOT_CONSERVED_OR_PENDING")
             receipt["risk_first_sol_parent_conservation"]={"parents":len(parents),"all_closed_conserved":True}
+        if result.get("config",{}).get("research_immediate_sol"):
+            cycles=result.get("immediate_sol_insurance_cycles",[])
+            if any(not c["closed"] or c["target"]!="0" for c in cycles):
+                raise ValueError("IMMEDIATE_INSURANCE_CYCLE_NOT_FLAT")
+            receipt["immediate_insurance_cycles"]={"count":len(cycles),"all_closed":True,"daily_source_hashes":result["immediate_daily_sources"]}
         journal=Path(result["funding_journal"]).resolve()
         if job not in journal.parents or not journal.is_file():
             raise ValueError("FRESH_JOB_FUNDING_JOURNAL_REQUIRED")
         receipt["funding_journal_files"]={str(path):sha(path) for path in sorted(journal.parent.glob(journal.name+"*")) if path.is_file()}
+        if result.get("config",{}).get("research_immediate_sol"):
+            trace=Path(summary["trace_path"]).resolve()
+            if job not in trace.parents or trace.suffix!=".gz" or not trace.is_file():
+                raise ValueError("COMPLETED_COMPRESSED_NATIVE_TRACE_REQUIRED")
+            digest=hashlib.sha256()
+            with trace.open("rb") as handle:
+                for block in iter(lambda:handle.read(1024*1024),b""):digest.update(block)
+            receipt["compressed_native_observer"]={"path":str(trace),"bytes":trace.stat().st_size,"sha256":digest.hexdigest(),"rows":summary["rows"]}
     a.receipt.parent.mkdir(parents=True,exist_ok=True)
     a.receipt.write_text(json.dumps(receipt,indent=2)+"\n")
     print(json.dumps({"receipt":str(a.receipt),"terminal_total":result["terminal_total"],

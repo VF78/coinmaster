@@ -1,0 +1,864 @@
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index b802018..1f8c726 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -682,7 +682,7 @@ def run_native_diagnostic(
+     research_btc_split_tp_ioc: bool = False,
+     research_btc_split_discount: str = "0.0025",
+     research_sol_cover: str | None = None,
+-    research_conditional_sol: bool = False, research_sol_risk_first: str | None = None,
++    research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None,
+     research_btc_episode_loss_20: bool = False,
+     research_sol_remaining_btc_hedge: bool = False,
+ ) -> dict:
+@@ -711,12 +711,14 @@ def run_native_diagnostic(
+ 
+     if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None, research_h1_b1 is not None)) > 1:
+         raise ValueError("RESEARCH_RISK_VARIANTS_MUTUALLY_EXCLUSIVE")
++    if research_immediate_sol and (research_immediate_sol not in {"i25","i25-light","i25-recovery","i33"} or not 30<=research_immediate_lookback<=180 or research_sol_risk_first or research_conditional_sol or research_sol_cover or research_h1_b1 or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc or not research_btc_direction_sizing or not observe_minute_risk):
++        raise ValueError("IMMEDIATE_REQUIRES_SELECTED_BTC_EXCLUSIVE_SOL_NATIVE_OBSERVER")
+     if research_sol_risk_first and (research_conditional_sol or research_sol_cover or research_h1_b1 or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc):
+         raise ValueError("RISK_FIRST_REQUIRES_SELECTED_BTC_AND_EXCLUSIVE_SOL_POLICY")
+     if (research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_drawdown_sizing or research_v3_risk or research_h1_b1) and not observe_minute_risk:
+         raise ValueError("PORTFOLIO_PROTECTION_REQUIRES_PRE_ACTION_MINUTE_OBSERVER")
+     candidate = candidate or Candidate()
+-    if research_h1_b1 == "h1" or research_sol_cover:
++    if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
+         candidate = replace(candidate, sol_overlay_enabled=False)
+     policy = execution_policy or ExecutionPolicy()
+     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
+@@ -768,12 +770,12 @@ def run_native_diagnostic(
+     confirmation_bars = tuple(BarType.new_composite(
+         instrument.id, BarSpecification(15 if minutes == 15 else 1, BarAggregation.MINUTE if minutes == 15 else BarAggregation.HOUR, PriceType.LAST),
+         AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL,
+-    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first else ()
++    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol else ()
+     minute_bars = {instrument.id: BarType(instrument.id, BarSpecification(1, BarAggregation.MINUTE, PriceType.LAST), AggregationSource.EXTERNAL)
+                    for instrument in (btc_instrument, sol_instrument)}
+     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
+-        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first else {})))
+-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first))
++        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol else {})))
++    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol))
+     engine.add_instrument(btc_instrument)
+     engine.add_instrument(sol_instrument)
+     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
+@@ -819,6 +821,8 @@ def run_native_diagnostic(
+         research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
+         research_conditional_sol=research_conditional_sol,
+         research_sol_risk_first=research_sol_risk_first,
++        research_immediate_sol=research_immediate_sol,
++        research_immediate_lookback=research_immediate_lookback,
+         research_cover_hour_seed=cover_hour_seed,
+         research_confirmation_bars=confirmation_bars,
+         research_btc_episode_loss_20=research_btc_episode_loss_20,
+@@ -846,7 +850,7 @@ def run_native_diagnostic(
+             marks, signals, quotes, source_bars = [], [], [], []
+             for minute in week:
+                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
+-                if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first:
++                if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol:
+                     for instrument, row in ((btc_instrument, minute.btc_execution), (sol_instrument, minute.sol_execution)):
+                         source_bars.append(Bar(minute_bars[instrument.id],
+                             instrument.make_price(row["open"]), instrument.make_price(row["high"]),
+@@ -983,6 +987,14 @@ def run_native_diagnostic(
+                 result["conditional_sol_audit"] = strategy.conditional_audit
+                 result["source_hashes"]["conditional_hedge"] = sha256_file(Path(__file__).resolve().parents[1]/"strategy/conditional_hedge.py")
+                 result["config"]["conditional_sol_policy"] = {"arm":">0.02_actual_blended_BTC_VWAP","off":"<=0.01_immediate_fresh_BTC_mark","confirmation":"POST_ARM_CLOSED_SOL15m_OR1h_PREVIOUS_BAR_BREAK_NEXT_FRESH_QUOTE","coverage":"0.50_actual_BTC_beta720completed1H_frozen","quantity_cadence":"LATCH_ACTIVATION_AND_ACTUAL_BTC_QUANTITY_CHANGE_ONLY_NO_PRICE_ONLY_REBALANCE","net_target":"MAX_ORIGINAL_AUTHORIZED_REMAINING_AND_CONDITIONAL","ownership_transfer":"SEPARATE_AUTHORIZATION_CREDIT_NO_NATIVE_FILL_OR_PNL"}
++            if research_immediate_sol:
++                result["config"]["research_immediate_sol"]=research_immediate_sol
++                result["config"]["research_immediate_lookback"]=research_immediate_lookback
++                result["config"]["immediate_insurance_policy"]={"coefficient":"PURE_SAMPLE_DAILY_VOLRATIO_ROLLING_W_CLOSED_DAYS_FROZEN_FIRST_BTC_FILL","original_SOL":"OFF","target":"ACTUAL_REMAINING_BTC_VOLRATIO_LATCH_ON_FILL_OR_AUTHORIZED_FRACTION","confirm":"CLOSED_SOL_15M_OR_1H_PREVIOUS_BAR_BREAK_THEN_FRESH_QUOTE","funding_components":"UNKNOWN","retry":"KNOWN_ADD_DENIAL_NEXT_MINUTE_NO_RECURSION","BTC":"SELECTED_RULES_UNCHANGED"}
++                result["source_hashes"]["immediate_insurance"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/immediate_insurance.py")
++                result["immediate_sol_insurance_audit"]=strategy.insurance_audit
++                result["immediate_sol_insurance_cycles"]=strategy._insurance_report()["cycles"]
++                result["immediate_daily_sources"]={symbol:sha256_file(data_root/"normalized"/f"bybit-{symbol}-daily.parquet") for symbol in ("BTCUSDT","SOLUSDT")}
+             if research_sol_risk_first:
+                 result["config"]["research_sol_risk_first"]=research_sol_risk_first
+                 result["config"]["risk_first_sol_policy"]={"variant":research_sol_risk_first,"old_conditional":"OFF","risk_excess_exit":"NATIVE_MARKET_IOC_NO_SYNTHETIC_PROFIT_FLOOR","cap50":"FROZEN720H_BETA_ACTUAL_BTC_QTY_ONLY_NO_AUTOFILL_BTCFLAT_ORIGINAL_RETAINED","dd_cov":"GLOBAL_NATIVE_HIGHWATER_10_20_30_UP_5_15_25_DOWN_34_67_100_MINVAR720H_FACTOR_HOURLY_BUFFER10","dd_cov_target":"min((1-w)*Oref,Olive)+w*Qc;lowerstage/BTCflat_latched_noincrease_until_fresh_Oauth/BTCincrease/higherstage","split_atr":"FIXED_Q_34_33_33_WILDER_ATR14_CLOSED15M_FIRST_ACTUAL_FILL_0.5_1ATR_60MIN_OR_BTC1PP_CANCEL_ACK_ACTUAL_LEAVES","split_atr_invalid":"ORDINARY_NATIVE_IOC","original_execution_change":"H2_ACCEPTED_GROUP_PERSISTS_KNOWN_CHILD_IOC_PARTIAL_TERMINAL_UNTIL_PRIORITY_EXIT_OR_LAWFUL_TTL_COMPLETION"}
+@@ -1152,7 +1164,7 @@ def run_job_request(path: Path) -> int:
+         return 1
+ 
+ 
+-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_sol_risk_first: str | None = None) -> Path:
++def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None) -> Path:
+     """Run one opt-in variant from the exact archived V0 economic inputs."""
+     from coinmaster.domain.wave_overlay import Candidate
+ 
+@@ -1206,6 +1218,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         label += "-sol-cover" + research_sol_cover
+     if research_conditional_sol:
+         label += "-conditional-sol-2-1-50"
++    if research_immediate_sol:
++        label += "-immediate-"+research_immediate_sol
+     if research_sol_risk_first:
+         label += "-sol-risk-first-"+research_sol_risk_first
+     if research_h1_b1:
+@@ -1244,6 +1258,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
+         research_sol_cover=research_sol_cover,
+         research_conditional_sol=research_conditional_sol,
+         research_sol_risk_first=research_sol_risk_first,
++        research_immediate_sol=research_immediate_sol,
++        research_immediate_lookback=research_immediate_lookback,
+         research_btc_episode_loss_20=research_btc_episode_loss_20,
+         research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
+     )
+@@ -1260,6 +1276,8 @@ def main() -> None:
+     parser.add_argument("--research-btc-split-discount", choices=("0.0025","0.005"), default="0.0025")
+     parser.add_argument("--research-sol-cover", choices=("0.5","0.75","1"))
+     parser.add_argument("--research-conditional-sol", action="store_true")
++    parser.add_argument("--research-immediate-sol", choices=("i25","i25-light","i25-recovery","i33"),default=None)
++    parser.add_argument("--research-immediate-lookback",type=int,default=90)
+     parser.add_argument("--research-sol-risk-first", choices=("cap50","dd-cov","split-atr"),default=None)
+     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
+     parser.add_argument("--diagnostic-no-funding", action="store_true")
+@@ -1317,6 +1335,8 @@ def main() -> None:
+             research_sol_cover=args.research_sol_cover,
+             research_conditional_sol=args.research_conditional_sol,
+             research_sol_risk_first=args.research_sol_risk_first,
++            research_immediate_sol=args.research_immediate_sol,
++            research_immediate_lookback=args.research_immediate_lookback,
+             research_btc_episode_loss_20=args.research_btc_episode_loss_20,
+             research_sol_remaining_btc_hedge=args.research_sol_remaining_btc_hedge,
+         )
+diff --git a/runtime/coinmaster/strategy/conditional_hedge.py b/runtime/coinmaster/strategy/conditional_hedge.py
+index e62474f..a8425e0 100644
+--- a/runtime/coinmaster/strategy/conditional_hedge.py
++++ b/runtime/coinmaster/strategy/conditional_hedge.py
+@@ -19,7 +19,7 @@ class ConditionalSolResearch:
+         self._conditional_physical=False
+ 
+     def _conditional_enabled(self):
+-        return self.config.research_conditional_sol or self._risk_first_net_owner()
++        return self.config.research_conditional_sol or self._risk_first_net_owner() or self._insurance_enabled()
+ 
+     def _conditional_emit(self,event,ts,**values):
+         c=self._conditional
+@@ -29,6 +29,7 @@ class ConditionalSolResearch:
+         positions={p.instrument_id:p for p in self.cache.positions_open()}
+         btc=positions.get(self.config.btc_id);sol=positions.get(self.config.sol_id)
+         combined=max(c["original_target"],c["qc"])
++        if self._insurance_enabled():combined=c["qc"]
+         if self.config.research_sol_risk_first=="dd-cov" and c.get("rf",{}).get("target") is not None:combined=c["rf"]["target"]
+         row={"event":event,"timestamp_ns":ts,"episode_id":c["episode_id"],"side":c["side"],
+             "btc_qty":str(btc.quantity.as_decimal() if btc else D(0)),
+@@ -37,7 +38,7 @@ class ConditionalSolResearch:
+             "original_allocated":str(ep.sol_qty if ep else 0),"conditional_target":str(c["qc"]),
+             "combined_target":str(combined),
+             "actual_sol_qty":str(sol.quantity.as_decimal() if sol else D(0)),**values}
+-        (self.risk_first_sol_audit if self._risk_first_net_owner() else self.conditional_audit).append(row)
++        (self.insurance_audit if self._insurance_enabled() else self.risk_first_sol_audit if self._risk_first_net_owner() else self.conditional_audit).append(row)
+ 
+     def _conditional_state(self,ts):
+         if not self._conditional_enabled() or self._domain.episode is None:
+@@ -48,7 +49,7 @@ class ConditionalSolResearch:
+                 "armed_ns":None,"active":False,"confirm":None,"last_mark_ns":None,
+                 "original_target":D(str(ep.sol_qty)),"adds":[],"exits":[],"qc":D(0),"qc_btc_qty":None,"retry_ns":0,"original_attempts":{}}
+         c=self._conditional
+-        if c["beta"] is None and any(p.instrument_id==self.config.btc_id for p in self.cache.positions_open()):
++        if not self._insurance_enabled() and c["beta"] is None and any(p.instrument_id==self.config.btc_id for p in self.cache.positions_open()):
+             estimate=self._risk_first_beta_estimate(ts) if self._risk_first_net_owner() else self._cover_beta(ts)
+             if estimate is not None:
+                 c["beta"],c["beta_ns"]=estimate[0],ts
+@@ -141,6 +142,7 @@ class ConditionalSolResearch:
+         c=self._conditional_state(tick.ts_event)
+         if c is None or self._forced_close_reason or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
+             return
++        if self._insurance_enabled():return self._insurance_check(tick,c)
+         if self._risk_first_net_owner():return self._risk_first_check(tick,c)
+         ep=self._domain.episode;ts=tick.ts_event
+         positions={p.instrument_id:p for p in self.cache.positions_open()}
+@@ -297,5 +299,5 @@ class ConditionalSolResearch:
+             return
+         if intent and intent.reason=="CONDITIONAL_NET_ADD":
+             self._conditional_attempt_terminal(intent,ts,"DENIED_REJECTED_EXPIRED",order_id)
+-            self._conditional["retry_ns"]=ts+HOUR
++            self._conditional["retry_ns"]=ts+(60_000_000_000 if self._insurance_enabled() else HOUR)
+             self._conditional_emit("NATIVE_ADD_DENIED",ts)
+diff --git a/runtime/coinmaster/strategy/wave_overlay.py b/runtime/coinmaster/strategy/wave_overlay.py
+index 92bb292..3f053a7 100644
+--- a/runtime/coinmaster/strategy/wave_overlay.py
++++ b/runtime/coinmaster/strategy/wave_overlay.py
+@@ -25,6 +25,7 @@ from coinmaster.domain.wave_overlay import btc_management_price
+ from coinmaster.strategy.split_cover import SplitCoverResearch
+ from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
+ from coinmaster.strategy.risk_first_sol import SolRiskFirstResearch
++from coinmaster.strategy.immediate_insurance import ImmediateSolInsurance
+ 
+ from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
+ from coinmaster.venues.margin_policy import MarginMark, MarginPolicy
+@@ -64,6 +65,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
+     research_btc_split_discount: Decimal = Decimal("0.0025")
+     research_sol_cover: Decimal | None = None
+     research_conditional_sol: bool = False
++    research_immediate_sol: str | None = None
++    research_immediate_lookback: int = 90
+     research_sol_risk_first: str | None = None
+     research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
+     research_h1_b1: str | None = None
+@@ -163,13 +166,16 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
+     return result
+ 
+ 
+-class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
++class WaveOverlayStrategy(ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+     """Turns completed native daily bars into later native market orders."""
+     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
+         super().__init__(config)
+         self._split_cover_init()
+         self._risk_first_init()
+         self._conditional_init()
++        self._insurance_init()
++        if config.research_immediate_sol is not None and (config.research_immediate_sol not in {"i25","i25-light","i25-recovery","i33"} or not 30<=config.research_immediate_lookback<=180 or not config.research_btc_split_tp_ioc or config.candidate.sol_overlay_enabled or config.research_sol_risk_first or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or len(config.research_confirmation_bars)!=4):
++            raise ValueError("IMMEDIATE_INSURANCE_REQUIRES_EXCLUSIVE_SELECTED_BTC_AND_ORIGINAL_SOL_OFF")
+         self._cover_seed(config.research_cover_hour_seed)
+         if config.research_sol_risk_first is not None and (config.research_sol_risk_first not in {"cap50","dd-cov","split-atr"} or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or not config.candidate.sol_overlay_enabled):
+             raise ValueError("RISK_FIRST_REQUIRES_EXCLUSIVE_VARIANT_ORIGINAL_OVERLAY")
+@@ -365,6 +371,7 @@ class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCov
+             self._cover_bar(bar)
+             self._conditional_bar(bar)
+             self._risk_first_bar(bar)
++            self._insurance_bar(bar)
+             self._on_confirmation_bar(bar)
+             return
+         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
+@@ -2393,6 +2400,7 @@ class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCov
+                 decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
+                 entry_qty=entry_qty, entry_price=entry_price,
+             )
++        self._insurance_btc_fill(intent,price,ts_event)
+         if intent.action == "BTC_ENTRY" and self.config.research_btc_split_planref_v1:
+             ep = self._domain.episode
+             p = self._split_parent
+@@ -2539,6 +2547,7 @@ class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCov
+         self._terminal_without_fill(str(event.client_order_id))
+ 
+     def on_position_event(self, event) -> None:
++        self._insurance_position(event)
+         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
+         self._research_capture_btc_episode(event)
+         self._v3_capture_sol_cycle(event)
+@@ -2558,6 +2567,8 @@ class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCov
+         if self._pending_by_order:
+             return  # An opening order awaiting terminal native receipt may still fill.
+         self._group_close_reconciliation_pending = False
++        if self._insurance_enabled() and self._insurance_cycle:
++            self._insurance_cycle.update(closed=True,target=Decimal(0))
+         reason = self._domain.on_group_flat()
+         if self._forced_close_reason not in {"LIQUIDATION", "TERMINAL_BOUNDARY_SETTLEMENT"}:
+             self._forced_close_reason = None
+diff --git a/scripts/collect_split_cover_native.py b/scripts/collect_split_cover_native.py
+index 7a9ed2c..b4011f0 100644
+--- a/scripts/collect_split_cover_native.py
++++ b/scripts/collect_split_cover_native.py
+@@ -75,8 +75,8 @@ def main():
+         "disk_free_after":shutil.disk_usage(job).free,"pilot_after":pilot,
+         "scope":"RESEARCH_ONLY_NATIVE_ACCOUNTING_DIAGNOSTIC_NO_PRODUCTION_PROMOTION",
+     }
+-    if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first"):
+-        audit_key="risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
++    if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first") or result.get("config",{}).get("research_immediate_sol"):
++        audit_key="immediate_sol_insurance_audit" if result.get("config",{}).get("research_immediate_sol") else "risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
+         audit=result.get(audit_key)
+         if not isinstance(audit,list):
+             raise ValueError("SOL_POLICY_NATIVE_AUDIT_MISSING")
+@@ -86,10 +86,23 @@ def main():
+             if any(D(p["filled"])+D(p["cancelled"])!=D(p["quantity"]) or not p["closed"] or any(p["pending"]) for p in parents):
+                 raise ValueError("SOL_SPLIT_PARENT_NOT_CONSERVED_OR_PENDING")
+             receipt["risk_first_sol_parent_conservation"]={"parents":len(parents),"all_closed_conserved":True}
++        if result.get("config",{}).get("research_immediate_sol"):
++            cycles=result.get("immediate_sol_insurance_cycles",[])
++            if any(not c["closed"] or c["target"]!="0" for c in cycles):
++                raise ValueError("IMMEDIATE_INSURANCE_CYCLE_NOT_FLAT")
++            receipt["immediate_insurance_cycles"]={"count":len(cycles),"all_closed":True,"daily_source_hashes":result["immediate_daily_sources"]}
+         journal=Path(result["funding_journal"]).resolve()
+         if job not in journal.parents or not journal.is_file():
+             raise ValueError("FRESH_JOB_FUNDING_JOURNAL_REQUIRED")
+         receipt["funding_journal_files"]={str(path):sha(path) for path in sorted(journal.parent.glob(journal.name+"*")) if path.is_file()}
++        if result.get("config",{}).get("research_immediate_sol"):
++            trace=Path(summary["trace_path"]).resolve()
++            if job not in trace.parents or trace.suffix!=".gz" or not trace.is_file():
++                raise ValueError("COMPLETED_COMPRESSED_NATIVE_TRACE_REQUIRED")
++            digest=hashlib.sha256()
++            with trace.open("rb") as handle:
++                for block in iter(lambda:handle.read(1024*1024),b""):digest.update(block)
++            receipt["compressed_native_observer"]={"path":str(trace),"bytes":trace.stat().st_size,"sha256":digest.hexdigest(),"rows":summary["rows"]}
+     a.receipt.parent.mkdir(parents=True,exist_ok=True)
+     a.receipt.write_text(json.dumps(receipt,indent=2)+"\n")
+     print(json.dumps({"receipt":str(a.receipt),"terminal_total":result["terminal_total"],
+diff --git a/scripts/launch_split_cover_native.py b/scripts/launch_split_cover_native.py
+index d217314..16012e6 100644
+--- a/scripts/launch_split_cover_native.py
++++ b/scripts/launch_split_cover_native.py
+@@ -30,6 +30,8 @@ VARIANTS = {
+ }
+ for _risk_variant in ("cap50","dd-cov","split-atr"):
+     VARIANTS["risk-first-"+_risk_variant]=VARIANTS["btc025-planref-tp-ioc"]+["--research-sol-risk-first",_risk_variant]
++for _insurance_variant in ("i25","i25-light","i25-recovery","i33"):
++    VARIANTS["immediate-"+_insurance_variant]=VARIANTS["btc025-planref-tp-ioc"]+["--research-immediate-sol",_insurance_variant,"--research-immediate-lookback","90"]
+ PILOT = "coinmaster-hl-stageg-testnet.service"
+ 
+ 
+@@ -102,6 +104,8 @@ def main():
+         name:digest(REPO/"runtime/var/data"/name)
+         for name in ("bybit-1m/manifest.json","runs/tp-fee-floor-113/v0/v0.json")
+     }
++    if "--research-immediate-sol" in args:
++        input_hashes.update({"normalized/bybit-"+symbol+"-daily.parquet":digest(REPO/"runtime/var/data/normalized"/("bybit-"+symbol+"-daily.parquet")) for symbol in ("BTCUSDT","SOLUSDT")})
+     (job/"input-hashes.json").write_text(json.dumps(input_hashes,sort_keys=True,indent=2)+"\n")
+     (job/"source-input-hashes.sha256").write_text(
+         "".join(f"{v}  {source/k}\n" for k,v in sorted(hashes.items()))+
+diff --git a/runtime/coinmaster/strategy/immediate_insurance.py b/runtime/coinmaster/strategy/immediate_insurance.py
+new file mode 100644
+index 0000000..0450402
+--- /dev/null
++++ b/runtime/coinmaster/strategy/immediate_insurance.py
+@@ -0,0 +1,214 @@
++# Opt-in BTC-owned SOL insurance; native orders/cache/account remain authoritative.
++from decimal import Decimal as D
++from math import log, sqrt, isfinite
++from nautilus_trader.model.enums import BarAggregation
++
++MINUTE=60_000_000_000
++DAY=1440*MINUTE
++
++class ImmediateSolInsurance:
++    def _insurance_init(self):
++        self.insurance_audit=[]
++        self.insurance_cycles=[]
++        self._insurance_cycle=None
++        self._insurance_bars={}
++        self._insurance_confirm={}
++        self._insurance_quote_seq=0
++
++    def _insurance_enabled(self):
++        return self.config.research_immediate_sol is not None
++
++    def _insurance_emit(self,event,ts,**values):
++        s=self._insurance_cycle
++        row={'event':event,'timestamp_ns':ts,'variant':self.config.research_immediate_sol}
++        if s:row.update(episode_id=s['episode_id'],fraction=str(s['fraction']),recovery_fraction=str(s['recovery_fraction']),base=str(s['base']),k=str(s['k']),sigma=str(s['sigma']))
++        def safe(x):
++            if isinstance(x,D):return str(x)
++            if isinstance(x,dict):return {str(k):safe(v) for k,v in x.items()}
++            if isinstance(x,(list,tuple,set)):return [safe(v) for v in x]
++            return x
++        row.update(safe(values));self.insurance_audit.append(row)
++
++    def _insurance_estimate(self,ts):
++        # The existing DailyBar feature history already has two-year warmup.
++        n=self.config.research_immediate_lookback
++        rows=[b for b in self._bars if int(b.close_time.timestamp()*1e9)<=ts][-n-1:]
++        if len(rows)!=n+1:return None
++        times=[int(b.close_time.timestamp()*1e9) for b in rows]
++        if any(b-a!=DAY for a,b in zip(times,times[1:])):return None
++        x=[log(b.btc_close/a.btc_close) for a,b in zip(rows,rows[1:])]
++        y=[log(b.sol_close/a.sol_close) for a,b in zip(rows,rows[1:])]
++        mx,my=sum(x)/n,sum(y)/n
++        vx=sum((v-mx)**2 for v in x)/(n-1);vy=sum((v-my)**2 for v in y)/(n-1)
++        if not all(isfinite(v) for v in (vx,vy)) or vx<=0 or vy<=0:return None
++        sigma=D(str(sqrt(vx)));k=D(str(sqrt(vx/vy)))
++        return k,sigma,times[-1],n
++
++    def _insurance_btc_fill(self,intent,price,ts):
++        if not self._insurance_enabled() or intent.action!='BTC_ENTRY':return
++        ep=self._domain.episode
++        if ep is None:return
++        s=self._insurance_cycle
++        if s and s['episode_id']==ep.id:return
++        est=self._insurance_estimate(ts)
++        base=D(1)/3 if self.config.research_immediate_sol=='i33' else D('.25')
++        s={'episode_id':ep.id,'side':ep.side,'first_fill_ns':ts,'first_price':D(str(price)),
++            'extreme':D(str(price)),'k':est[0] if est else None,'sigma':est[1] if est else None,
++            'estimate_close_ns':est[2] if est else None,'returns':est[3] if est else 0,
++            'base_full':base,'base':base,'floor':base/2,'fraction':base,'light':False,
++            'recovery_fraction':D(0),'recovery_used':False,'recovery_arm':None,
++            'arm':None,'rearm_adverse':None,'last_change_ns':ts,'last_reverse_ns':-1,
++            'last_harvest_ns':-1,'latch_btc':None,'latch_fraction':None,'target':D(0),
++            'btc_position_ids':set(),'sol_position_ids':set(),'equity_start':None,'closed':False}
++        self._insurance_cycle=s;self.insurance_cycles.append(s)
++        self._insurance_emit('FIRST_BTC_FILL',ts,estimate_close_ns=s['estimate_close_ns'],returns=s['returns'],coefficient_valid=est is not None,funding_component='UNKNOWN')
++
++    def _insurance_position(self,event):
++        if not self._insurance_enabled() or self._insurance_cycle is None:return
++        s=self._insurance_cycle
++        if event.ts_event<s['first_fill_ns']:return
++        if event.instrument_id in (self.config.btc_id,self.config.sol_id):
++            s['btc_position_ids' if event.instrument_id==self.config.btc_id else 'sol_position_ids'].add(str(event.position_id))
++        if not any(p.instrument_id in (self.config.btc_id,self.config.sol_id) for p in self.cache.positions_open()) and self._domain.episode is None:
++            s['closed']=True;s['target']=D(0)
++        if s['equity_start'] is None and event.instrument_id==self.config.btc_id:
++            s['equity_start']=self._v3_equity()
++            self._insurance_emit('EQUITY_REFERENCE',event.ts_event,native_equity=s['equity_start'])
++
++    def _insurance_pnl(self,instrument_id,ts):
++        # Read native Position.realized_pnl (already fee-net) and native mark uPnL.
++        s=self._insurance_cycle
++        ids=s['btc_position_ids' if instrument_id==self.config.btc_id else 'sol_position_ids']
++        result=D(0);close_fee=D(0)
++        instrument=self.cache.instrument(instrument_id)
++        mark=self._latest_marks.get(instrument_id)
++        if mark is None or not 0<=ts-mark.ts_event<=self.config.max_mark_age_ns:return None,None
++        for p in self.cache.positions():
++            if p.instrument_id!=instrument_id or str(p.id) not in ids:continue
++            result+=p.realized_pnl.as_decimal() if p.realized_pnl is not None else D(0)
++            if p.is_open:
++                result+=p.unrealized_pnl(instrument.make_price(mark.price)).as_decimal()
++                close_fee+=p.quantity.as_decimal()*mark.price*instrument.taker_fee
++        return result,close_fee
++
++    def _insurance_bar(self,bar):
++        if not self._insurance_enabled():return
++        tf=60 if bar.bar_type.spec.aggregation==BarAggregation.HOUR else 15
++        key=(bar.bar_type.instrument_id,tf);ts=bar.ts_event
++        old=self._insurance_bars.get(key)
++        if old and ts<=old[0]:return
++        s=self._insurance_cycle
++        if old and bar.bar_type.instrument_id==self.config.sol_id:
++            direction=1 if bar.close>old[1] else -1 if bar.close<old[2] else 0
++            if direction:
++                self._insurance_confirm[direction]=(ts,self.clock.timestamp_ns(),self._insurance_quote_seq+1,tf)
++        if s and bar.bar_type.instrument_id==self.config.btc_id and ts>s['first_fill_ns'] and self.config.research_immediate_sol=='i25-light' and s['sigma'] and not s['light']:
++            px=D(str(bar.close));move=D(str(s['side']*log(float(px/s['first_price']))))
++            adverse=self._insurance_adverse(px)
++            if move>=s['sigma'] and adverse<D('.25'):
++                s['light']=True;s['base']=s['floor'];s['fraction']=min(s['fraction'],s['base'])
++                s['arm']=None;s['rearm_adverse']=adverse;s['last_change_ns']=self.clock.timestamp_ns()
++                self._insurance_emit('LIGHT_LATCH',self.clock.timestamp_ns(),bar_close_ns=ts,timeframe_minutes=tf,adverse_sigma=adverse)
++        self._insurance_bars[key]=(ts,bar.high,bar.low)
++
++    def _insurance_adverse(self,price):
++        s=self._insurance_cycle
++        ratio=s['extreme']/price if s['side']==1 else price/s['extreme']
++        return max(D(0),D(str(log(float(ratio))))/s['sigma'])
++
++    def _insurance_confirmation(self,side,after,ts):
++        v=self._insurance_confirm.get(side)
++        return v if v and v[0]>after and v[1]<=ts and self._insurance_quote_seq>=v[2] and 0<=ts-v[0]<=60*MINUTE else None
++
++    def _insurance_check(self,tick,c):
++        s=self._insurance_cycle;ep=self._domain.episode;ts=tick.ts_event
++        if s is None or ep is None or s['episode_id']!=ep.id:return
++        positions={p.instrument_id:p for p in self.cache.positions_open()}
++        btc=positions.get(self.config.btc_id);sol=positions.get(self.config.sol_id)
++        bqty=btc.quantity.as_decimal() if btc else D(0);held=sol.quantity.as_decimal() if sol else D(0)
++        if tick.instrument_id==self.config.sol_id:self._insurance_quote_seq+=1
++        c['active']=bool(bqty);c['original_target']=D(0)
++        if not bqty:
++            # Confirmed BTC-flat invalidates old resting target leaves, not a new signal.
++            self._discard_queued_intents(lambda i:i.action=='BTC_REDUCE')
++            for order in list(self.cache.orders_open()):
++                if order.instrument_id==self.config.btc_id and order.is_reduce_only:self.cancel_order(order)
++            if not s['closed']:
++                s['closed']=True;s['target']=D(0);s['recovery_fraction']=D(0)
++                self._insurance_emit('BTC_FLAT',ts,actual_SOL=held)
++            c['qc']=D(0)
++            return self._conditional_reconcile(tick,c,ep,btc,sol,held,bqty,D(0),ts)
++        bm=self._latest_marks.get(self.config.btc_id);sm=self._latest_marks.get(self.config.sol_id)
++        if s['k'] is None or not all(m is not None and 0<=ts-m.ts_event<=self.config.max_mark_age_ns for m in (bm,sm)):return
++        if s['side']==1:s['extreme']=max(s['extreme'],bm.price)
++        else:s['extreme']=min(s['extreme'],bm.price)
++        adverse=self._insurance_adverse(bm.price)
++        if tick.instrument_id!=self.config.sol_id:return
++        hedge=-s['side'];reverse=self._insurance_confirmation(-hedge,s['last_change_ns'],ts)
++        confirm=self._insurance_confirmation(hedge,s['first_fill_ns'],ts)
++        spnl,sfee=self._insurance_pnl(self.config.sol_id,ts)
++        bpnl,bfee=self._insurance_pnl(self.config.btc_id,ts)
++        reduced=False
++        if s['recovery_fraction'] and ((spnl is not None and spnl>=sfee) or reverse):
++            s['recovery_fraction']=D(0);s['last_change_ns']=ts;reduced=True
++            self._insurance_emit('RECOVERY_RELEASE',ts,sol_native_pnl=spnl,estimated_close_fee=sfee,funding='UNKNOWN')
++        # Ordinary recovery removes extra adverse stages, never the base floor.
++        if not reduced and adverse<D('.25') and reverse and s['fraction']>s['base']:
++            s['fraction']=s['base'];reduced=True
++        elif not reduced and reverse and spnl is not None and spnl>sfee:
++            s['fraction']=self._insurance_lower(s['fraction']);reduced=True
++        elif not reduced and s['fraction']>s['base_full'] and spnl is not None and spnl>sfee and s['equity_start'] is not None and bfee is not None and self._v3_equity()-sfee-bfee>=s['equity_start']:
++            # At most one pre-reversal harvest per new adversity/increase state.
++            if s['last_harvest_ns']<s['last_change_ns']:
++                s['fraction']=self._insurance_lower(s['fraction']);reduced=True
++        if reduced:
++            s['rearm_adverse']=adverse;s['arm']=None;s['recovery_arm']=None
++            s['last_change_ns']=ts;s['last_harvest_ns']=ts
++            self._insurance_emit('HARVEST_OR_RECOVERY',ts,adverse_sigma=adverse,sol_native_pnl=spnl,estimated_close_fee=sfee)
++        if not reduced:
++            top=s['base_full']*3 if adverse>=1 else s['base_full']*2 if adverse>=D('.5') else s['base']
++            if not s['light'] and s['base']<s['base_full']:top=max(top,s['base_full'])
++            can_rearm=s['rearm_adverse'] is None or adverse>s['rearm_adverse']
++            if top>s['fraction'] and can_rearm:
++                if s['arm'] is None:s['arm']=(ts,top)
++                receipt=self._insurance_confirmation(hedge,s['arm'][0],ts)
++                if receipt:
++                    s['fraction']=top
++                    if not s['light']:s['base']=s['base_full']
++                    s['last_change_ns']=ts;s['arm']=None;s['rearm_adverse']=None
++                    self._insurance_emit('ADVERSE_STAGE',ts,adverse_sigma=adverse,bar_close_ns=receipt[0],confirmation_received_ns=receipt[1],timeframe_minutes=receipt[3])
++            else:s['arm']=None
++            if self.config.research_immediate_sol=='i25-recovery' and not s['recovery_used'] and bpnl is not None and bpnl>0 and spnl is not None and spnl<0:
++                if s['recovery_arm'] is None:s['recovery_arm']=ts
++                receipt=self._insurance_confirmation(hedge,s['recovery_arm'],ts)
++                recovery=min(D('.5'),s['fraction']+s['base'])
++                if receipt and recovery>s['fraction']:
++                    s['recovery_used']=True;s['recovery_fraction']=recovery;s['last_change_ns']=ts
++                    self._insurance_emit('RECOVERY_ADD',ts,btc_native_pnl=bpnl,sol_native_pnl=spnl,bar_close_ns=receipt[0],funding='UNKNOWN')
++            else:s['recovery_arm']=None
++        fraction=max(s['fraction'],s['recovery_fraction'])
++        if s['latch_btc']!=bqty or s['latch_fraction']!=fraction:
++            step=self.cache.instrument(self.config.sol_id).size_increment.as_decimal()
++            s['target']=(fraction*bqty*bm.price*s['k']/sm.price//step)*step
++            s['latch_btc']=bqty;s['latch_fraction']=fraction
++            self._insurance_emit('TARGET_LATCH',ts,btc_remaining=bqty,btc_mark=bm.price,sol_mark=sm.price,target_qty=s['target'],actual_SOL=held,adverse_sigma=adverse)
++        c['qc']=s['target']
++        return self._conditional_reconcile(tick,c,ep,btc,sol,held,bqty,s['target'],ts)
++
++    def _insurance_lower(self,fraction):
++        s=self._insurance_cycle
++        if fraction>s['base_full']*2:return s['base_full']*2
++        if fraction>s['base_full']:return s['base']
++        if fraction>s['floor']:
++            s['base']=s['floor'];return s['floor']
++        return fraction
++
++    def _insurance_report(self):
++        def safe(x):
++            if isinstance(x,D):return str(x)
++            if isinstance(x,dict):return {str(k):safe(v) for k,v in x.items()}
++            if isinstance(x,(list,tuple,set)):return [safe(v) for v in x]
++            return x
++        if self._insurance_cycle and not self.cache.positions_open() and not self._pending_by_order:
++            self._insurance_cycle['closed']=True;self._insurance_cycle['target']=D(0)
++        return {'audit':self.insurance_audit,'cycles':safe(self.insurance_cycles),'funding_asset_attribution':'UNKNOWN_NATIVE_AUDIT_HAS_NO_COMPONENT_CASH_DELTA'}
+diff --git a/runtime/tests/test_native_immediate_insurance.py b/runtime/tests/test_native_immediate_insurance.py
+new file mode 100644
+index 0000000..f56e371
+--- /dev/null
++++ b/runtime/tests/test_native_immediate_insurance.py
+@@ -0,0 +1,328 @@
++from datetime import UTC,datetime,timedelta
++from decimal import Decimal as D
++from dataclasses import replace
++from math import exp,log
++import json
++import pytest
++from nautilus_trader.model.enums import BarAggregation,OrderSide,TimeInForce
++from coinmaster.domain.wave_overlay import DailyBar,Episode
++from coinmaster.research.native_fixture import BTC_PERP,SOL_PERP
++from coinmaster.strategy.wave_overlay import WaveOverlayStrategy
++from test_native_split_cover import cfg,HOUR
++from test_native_episode_risk import NativeProbe,tick,run_ticks,marks
++from test_native_btc_sizing import prepare_day
++from test_native_h1_b1 import confirmation_types,bar
++from test_native_sol_risk_first import engine
++
++MIN=60_000_000_000
++
++
++def config(mode='i25'):
++    c=cfg(True)
++    return c.__replace__(candidate=replace(c.candidate,sol_overlay_enabled=False),
++        research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,
++        research_immediate_sol=mode,research_immediate_lookback=30,
++        research_confirmation_bars=confirmation_types())
++
++
++def history(s,future=False):
++    closes=[];b=100.;v=100.
++    end=datetime(1970,1,1,tzinfo=UTC)
++    for n in range(31):
++        r=(.01,-.01,.005,-.005,.02,-.02)[n%6];b*=exp(r);v*=exp(2*r)
++        close=end-timedelta(days=30-n)
++        closes.append(DailyBar(close-timedelta(days=1),close,close,b,b,v))
++    s._bars=closes
++    if future:
++        tomorrow=end+timedelta(days=1)
++        s._bars.append(DailyBar(end,tomorrow,tomorrow,b,b*100,v/100))
++
++
++def setup(mode='i25',side=1,probe=NativeProbe,qty=100):
++    s=probe(config(mode));e=engine(s)
++    run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
++    prepare_day(s,2,side);history(s);marks(s,2)
++    ep=s._domain.episode=Episode('immediate',side,10000,1,wave_levels=(.5,.6,.7),h=10000)
++    i=s._domain._intent(ep,'BTC_ENTRY',side,None,quantity=qty)
++    s._submit_intent(i,100,100,.01,0,ts_now=2)
++    run_ticks(e,[tick(BTC_PERP,3),tick(SOL_PERP,3)])
++    return s,e,ep
++
++
++def advance(s,e,ts,btc='100',sol='100',size='1000'):
++    marks(s,ts,btc,sol)
++    run_ticks(e,[tick(BTC_PERP,ts,btc),tick(SOL_PERP,ts,sol,size=size)])
++
++
++def sol_confirm(s,e,ts,side,tf=15):
++    kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and (k.spec.aggregation==BarAggregation.MINUTE)==(tf==15))
++    previous=s._insurance_bars.get((SOL_PERP.id,tf))
++    if previous is None:
++        s.on_bar(bar(kind,ts-2,100,101,99));previous=s._insurance_bars[(SOL_PERP.id,tf)]
++    price=D(str(previous[1]))+1 if side==1 else D(str(previous[2]))-1
++    s.on_bar(bar(kind,ts,price))
++
++
++def close(s,e,ep,ts=1000):
++    s._begin_forced_close('REGIME')
++    for n in range(6):advance(s,e,ts+n)
++    assert not e.cache.positions_open() and not s._pending_by_order and not e.cache.orders_open()
++    fees=sum((D(r['commission']) for r in s.fill_audit),D(0))
++    flow=sum((o.filled_qty.as_decimal()*D(str(o.avg_px))*(1 if o.side==OrderSide.SELL else -1) for o in e.cache.orders() if o.filled_qty.as_decimal()),D(0))
++    assert e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()==D(10000)+flow-fees
++
++
++@pytest.mark.parametrize('mode',['i25','i25-light','i25-recovery','i33'])
++@pytest.mark.parametrize('side',[1,-1])
++def test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate(mode,side):
++    s,e,ep=setup(mode,side)
++    try:
++        st=s._insurance_cycle;assert st and st['returns']==30 and abs(st['k']-D('.5'))<D('.0000001')
++        assert st['estimate_close_ns']==0 and st['first_fill_ns']==3
++        held=next(p for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)
++        assert held.is_long==(side==-1) and held.quantity.as_decimal()==st['target']>0
++        firsttarget=st['target'];frozen=(st['k'],st['sigma'])
++        run_ticks(e,[tick(BTC_PERP,4),tick(BTC_PERP,5,'99' if side==1 else '101')])
++        advance(s,e,6)
++        assert st['target']>firsttarget and (st['k'],st['sigma'])==frozen
++        assert ep.sol_qty==0 and not ep.sol_adds
++        assert all(x['native_liquidity_side']=='TAKER' for x in s.fill_audit if x['action']=='SOL_ADD')
++        json.dumps(s._insurance_report())
++        close(s,e,ep)
++    finally:e.end();e.dispose()
++
++
++@pytest.mark.parametrize('side',[1,-1])
++@pytest.mark.parametrize('tf',[15,60])
++def test_adverse_sigma_requires_posttrigger_closed_or_confirmation_next_quote_and_no_price_churn(side,tf):
++    s,e,ep=setup(side=side)
++    try:
++        st=s._insurance_cycle;f0=st['fraction'];before=len(s.fill_audit)
++        btc='97' if side==1 else '103'
++        advance(s,e,10,btc);assert st['fraction']==f0 and st['arm']
++        sol_confirm(s,e,12,-side,tf)
++        assert st['fraction']==f0
++        advance(s,e,13,btc)
++        assert st['fraction']==D('.75') and len(s.fill_audit)>before
++        target=st['target'];before=len(s.fill_audit)
++        advance(s,e,14,'97.1' if side==1 else '102.9')
++        assert st['target']==target and len(s.fill_audit)==before
++        close(s,e,ep)
++    finally:e.end();e.dispose()
++
++
++@pytest.mark.parametrize('side',[1,-1])
++def test_light_closed_btc_bar_latches_half_base_no_common_restore(side):
++    s,e,ep=setup('i25-light',side)
++    try:
++        st=s._insurance_cycle;px='104' if side==1 else '96'
++        advance(s,e,10,px)
++        kind=s.config.research_confirmation_bars[0]
++        s.on_bar(bar(kind,11,D(px)))
++        advance(s,e,12,px)
++        assert st['light'] and st['base']==st['fraction']==D('.125')
++        sol_confirm(s,e,15,-side)
++        advance(s,e,16,'103.9' if side==1 else '96.1')
++        assert st['fraction']==D('.125')
++        close(s,e,ep)
++    finally:e.end();e.dispose()
++
++
++@pytest.mark.parametrize('side',[1,-1])
++def test_native_recovery_once_max_not_sum_release_preserves_required_adverse(side):
++    s,e,ep=setup('i25-recovery',side)
++    try:
++        st=s._insurance_cycle
++        advance(s,e,10,'104' if side==1 else '96','105' if side==1 else '95')
++        bpnl,_=s._insurance_pnl(BTC_PERP.id,10);spnl,_=s._insurance_pnl(SOL_PERP.id,10)
++        assert bpnl>0 and spnl<0
++        sol_confirm(s,e,12,-side);advance(s,e,13,'104' if side==1 else '96','105' if side==1 else '95')
++        assert st['recovery_used'] and st['recovery_fraction']==D('.5') and st['fraction']==D('.25')
++        # Actual adverse re-entry supersedes rather than adds a second full target.
++        advance(s,e,20,'99' if side==1 else '101','105' if side==1 else '95')
++        sol_confirm(s,e,22,-side);advance(s,e,23,'99' if side==1 else '101','105' if side==1 else '95')
++        assert st['fraction']==D('.75') and max(st['fraction'],st['recovery_fraction'])==D('.75')
++        sol_confirm(s,e,30,side);advance(s,e,31,'99' if side==1 else '101','105' if side==1 else '95')
++        assert st['recovery_fraction']==0 and st['fraction']==D('.75') and st['recovery_used']
++        close(s,e,ep)
++    finally:e.end();e.dispose()
++
++
++def test_realized_profit_harvest_floor_newextreme_rearm_and_two_native_episodes():
++    s,e,ep=setup()
++    try:
++        st=s._insurance_cycle
++        advance(s,e,10,'98','95');sol_confirm(s,e,12,1)
++        advance(s,e,13,'98','95')
++        assert st['fraction']==D('.125')
++        sol_confirm(s,e,15,-1);advance(s,e,16,'98','95')
++        assert st['fraction']==D('.125')
++        advance(s,e,20,'97','95');sol_confirm(s,e,22,-1);advance(s,e,23,'97','95')
++        assert st['fraction']>D('.125')
++        close(s,e,ep,40)
++        history(s);marks(s,50)
++        ep2=s._domain.episode=Episode('second',-1,10000,1,wave_levels=(.5,.6,.7),h=10000)
++        i=s._domain._intent(ep2,'BTC_ENTRY',-1,None,quantity=20)
++        s._submit_intent(i,100,100,.01,0,ts_now=50)
++        advance(s,e,51)
++        assert len(s.insurance_cycles)==2 and s._insurance_cycle['base']==D('.25')
++        close(s,e,ep2,60)
++        account=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()
++        # All native signed fills+commissions conserve actual account cash.
++        report=e.trader.generate_order_fills_report()
++        assert len(report)>0 and account>0
++        assert sum(D(x['commission']) for x in s.fill_audit)>0
++        json.dumps(s._insurance_report())
++    finally:e.end();e.dispose()
++
++
++def test_future_daily_bar_cannot_change_frozen_coefficient_and_invalid_blocks_new_protection():
++    s=NativeProbe(config());history(s);first=s._insurance_estimate(2)
++    history(s,True);assert s._insurance_estimate(2)==first
++    s._bars=s._bars[-2:];assert s._insurance_estimate(2) is None
++
++
++def test_unknown_ack_retains_owner_btc_flat_cancel_then_actual_residual_zero():
++    s,e,ep=setup()
++    try:
++        st=s._insurance_cycle
++        run_ticks(e,[tick(BTC_PERP,4),tick(BTC_PERP,5,'99')]);advance(s,e,6)
++        i=s._domain._intent(ep,'SOL_ADD',-ep.side,None,quantity=1,reason='CONDITIONAL_NET_ADD')
++        s._pending_by_order['UNKNOWN_ACK']=i
++        before=len(e.cache.orders())
++        btc=next(p for p in e.cache.positions_open() if p.instrument_id==BTC_PERP.id)
++        s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.SELL,BTC_PERP.make_qty(btc.quantity.as_decimal()),time_in_force=TimeInForce.IOC,reduce_only=True))
++        run_ticks(e,[tick(BTC_PERP,10)])
++        advance(s,e,11)
++        assert st['target']==0 and len(e.cache.orders())==before+1
++        s._pending_by_order.pop('UNKNOWN_ACK');s._domain.on_parent_terminal(i.id)
++        advance(s,e,12)
++        assert not any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
++        assert not s._pending_by_order and st['closed']
++    finally:e.end();e.dispose()
++
++
++@pytest.mark.parametrize('mode',['i25','i25-light','i25-recovery','i33'])
++def test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes(tmp_path,mode):
++    from test_native_baseline import write_streaming_fixture
++    from coinmaster.research.native_baseline import run_native_diagnostic,MINUTE_MS,TRADING_START_MS
++    from coinmaster.domain.wave_overlay import Candidate
++    import pyarrow as pa
++    import pyarrow.parquet as pq
++    start,end=write_streaming_fixture(tmp_path,trading_days=1)
++    shift=TRADING_START_MS-start
++    for path in (tmp_path/'normalized').glob('*.parquet'):
++        rows=pq.read_table(path).to_pylist()
++        for row in rows:row['open_time_ms']+=shift
++        pq.write_table(pa.Table.from_pylist(rows),path)
++    result=run_native_diagnostic(tmp_path,candidate=Candidate(btc_notional_multiplier=7.875,max_parent_notional=30_000_000),
++        trading_start_ms=TRADING_START_MS,trading_end_ms=TRADING_START_MS+2*MINUTE_MS,warmup_start_ms=shift,
++        research_v0_execution_repairs=True,research_v0_deferred_selective_zero_tp=True,research_v0_selective_lifecycle_repairs=True,
++        research_btc_direction_sizing=True,research_btc_split50=True,research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True,
++        research_immediate_sol=mode,research_immediate_lookback=90,observe_minute_risk=True,artifact_dir=tmp_path/'production')
++    assert result['config']['research_immediate_sol']==mode
++    assert result['config']['research_immediate_lookback']==90
++    assert not result['config']['candidate']['sol_overlay_enabled']
++    assert not result['config']['research_conditional_sol']
++    assert 'immediate_insurance' in result['source_hashes']
++    assert isinstance(result['immediate_sol_insurance_audit'],list)
++    assert result['minute_risk_observations']['curves']['pre_quote_paired_close']['samples']==3
++    json.dumps(result)
++
++
++def test_actual_native_partial_canceled_then_risk_throttle_denied_defers_without_recursion_and_flat():
++    class Denials(NativeProbe):
++        def __init__(self,c):super().__init__(c);self.denials=[]
++        def on_order_denied(self,event):
++            self.denials.append(event);assert len(self.denials)<=2
++            super().on_order_denied(event)
++    s=Denials(config());e=engine(s,rate='2/00:00:01')
++    try:
++        run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
++        prepare_day(s,2);history(s);marks(s,2)
++        ep=s._domain.episode=Episode('denied-insurance',1,10000,1,wave_levels=(.5,.6,.7),h=10000)
++        i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
++        s._submit_intent(i,100,100,.01,0,ts_now=2)
++        run_ticks(e,[tick(BTC_PERP,3),tick(SOL_PERP,3,size='0.1')])
++        assert any(o.status.name=='CANCELED' and o.filled_qty.as_decimal()>0 for o in e.cache.orders() if o.instrument_id==SOL_PERP.id)
++        run_ticks(e,[tick(SOL_PERP,4)])
++        assert s.denials and 'rate' in s.denials[0].reason.lower()
++        assert not any(i.action.startswith('SOL') for i in s._pending_by_order.values())
++        before=len(e.cache.orders());run_ticks(e,[tick(SOL_PERP,5)])
++        assert len(e.cache.orders())==before
++        marks(s,MIN+5)
++        run_ticks(e,[tick(SOL_PERP,MIN+5)])
++        assert next(p.quantity.as_decimal() for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)==s._insurance_cycle['target']
++        close(s,e,ep,MIN+2_000_000_000)
++    finally:e.end();e.dispose()
++
++
++def test_default_off_selected_order_path_native_parity_two_episodes_with_no_insurance_state():
++    signatures=[]
++    for explicit in (False,True):
++        c=cfg(True).__replace__(research_btc_split_planref_v1=True,research_btc_split_tp_ioc=True)
++        if explicit:c=c.__replace__(research_immediate_sol=None)
++        s=NativeProbe(c);e=engine(s,bar_execution=True)
++        try:
++            for cycle in range(2):
++                ts=cycle*1000
++                run_ticks(e,[tick(BTC_PERP,ts+1),tick(SOL_PERP,ts+1)])
++                prepare_day(s,ts+2);marks(s,ts+2)
++                ep=s._domain.episode=Episode('off-'+str(cycle),1,10000,1,wave_levels=(.01,.02,.03),h=10000)
++                i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=10)
++                s._submit_intent(i,100,100,.01,0,ts_now=ts+2)
++                for n in range(3,8):run_ticks(e,[tick(BTC_PERP,ts+n,'104'),tick(SOL_PERP,ts+n)])
++                close(s,e,ep,ts+20)
++            assert not s.insurance_audit and not s.insurance_cycles
++            signatures.append(([{k:v[k] for k in ('instrument','fill_ns','px','qty','commission','native_liquidity_side','order_type','post_only')} for v in s.fill_audit],
++                [(str(o.quantity),o.order_type.name,o.time_in_force.name,o.is_post_only,o.is_reduce_only,o.status.name,o.ts_init,o.ts_last) for o in e.cache.orders()],
++                e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal()))
++        finally:e.end();e.dispose()
++    assert signatures[0]==signatures[1]
++
++
++
++def test_real_pending_transport_unknown_ack_late_native_fill_after_btc_flat_is_closed():
++    class Transport(NativeProbe):
++        hold=False
++        waiting=None
++        release=False
++        def submit_order(self,order,*args,**kw):
++            if self.hold and order.instrument_id==SOL_PERP.id and not order.is_reduce_only:
++                self.hold=False;self.waiting=order;return
++            return super().submit_order(order,*args,**kw)
++        def on_quote_tick(self,q):
++            super().on_quote_tick(q)
++            if self.release and q.instrument_id==SOL_PERP.id:
++                self.release=False;super().submit_order(self.waiting)
++    s,e,ep=setup(probe=Transport)
++    try:
++        run_ticks(e,[tick(BTC_PERP,4),tick(BTC_PERP,5,'99')]);advance(s,e,6)
++        s.hold=True;advance(s,e,10,'97');sol_confirm(s,e,12,-1);advance(s,e,13,'97')
++        assert s.waiting is not None and str(s.waiting.client_order_id) in s._pending_by_order
++        assert e.cache.order(s.waiting.client_order_id) is None  # Real transport-owned unknown ACK.
++        btc=next(p for p in e.cache.positions_open() if p.instrument_id==BTC_PERP.id)
++        s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.SELL,BTC_PERP.make_qty(btc.quantity.as_decimal()),time_in_force=TimeInForce.IOC,reduce_only=True))
++        run_ticks(e,[tick(BTC_PERP,20)]);advance(s,e,21)
++        before=len(s.fill_audit);s.release=True;run_ticks(e,[tick(SOL_PERP,22,size='0.3')])
++        assert any(x['action']=='SOL_ADD' for x in s.fill_audit[before:])
++        advance(s,e,23)
++        assert not e.cache.positions_open() and not e.cache.orders_open() and not s._pending_by_order
++        assert s._insurance_cycle['target']==0
++        close(s,e,ep,30)
++    finally:e.end();e.dispose()
++
++
++
++def test_daily_estimate_refresh_does_not_refreeze_open_episode_on_next_utc_day():
++    s,e,ep=setup()
++    try:
++        run_ticks(e,[tick(BTC_PERP,4),tick(BTC_PERP,5,'99')]);advance(s,e,6)
++        st=s._insurance_cycle;frozen=(st['k'],st['sigma'],st['estimate_close_ns'])
++        last=s._bars[-1];t=last.close_time+timedelta(days=1)
++        s._bars.append(DailyBar(last.close_time,t,t,last.btc_close,last.btc_close*1.1,last.sol_close*.7))
++        assert s._insurance_estimate(24*HOUR+1)[:2]!=frozen[:2]
++        advance(s,e,24*HOUR+1)
++        assert (st['k'],st['sigma'],st['estimate_close_ns'])==frozen
++        close(s,e,ep,24*HOUR+10)
++    finally:e.end();e.dispose()

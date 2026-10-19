@@ -1,0 +1,37 @@
+{
+  "base_HEAD": "742c7bd988351d5b36907fd0f55f5223fe579a3a",
+  "contract_sha256": "e3a91d74109d0ef47f26bbf0fed43dd47030dd65030d8938b6c7728f5ba6af53",
+  "development_scope": "0tests harness-a; b15pass4fail; c24pass1fail; d2targetedpass; final27pass; do not add overlapping counts",
+  "focused_final": {
+    "PrivateNetwork": true,
+    "bounded_memory_bytes": 268435456,
+    "command": "pytest -q -p no:cacheprovider runtime/tests/test_native_immediate_insurance.py",
+    "passed": 27,
+    "seconds": "5.68",
+    "swap_max": 0,
+    "warnings": 154
+  },
+  "full_native_24m_engines_launched": 0,
+  "full_relevant_verification": "ROOT_ACCEPTED_CONNECTED_FOCUSED_27_AS_BOUNDED_VERIFICATION_NO_EXTRA_BATCH",
+  "logs": {
+    "implementation-focused-a.log": "dd343cd374ddc8575a4f3da62609551ea82c97e56aef1cc229bc7476764f7158",
+    "implementation-focused-b.log": "cd8a742a2739a1b279df9216e28fafd76e96b29520126871443b161e096186cf",
+    "implementation-focused-c.log": "1042ef15a77ad61d7e93d353fec625a58981bdb237ac02b2e64d4e0ebf7f3984",
+    "implementation-focused-d.log": "901d5846454854a7a766ff6387a0102c1446da9b5f2a3b1bb674a2ba61a2a235",
+    "implementation-focused-final.log": "522922be4349163da61326f31a77b79c2bd1f454b412503b6a9ae629dc5a5ed2"
+  },
+  "owned_source_files": {
+    "runtime/coinmaster/research/native_baseline.py": "f95dddbb554d4c87a4f8a74d8012ff28b567aa748c234081a58d1c115d595583",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "7ea209b44150f5584613b5b0a7998eae44b4064c67ee3c3df9ec9ebd8b7c8d31",
+    "runtime/coinmaster/strategy/immediate_insurance.py": "fcb43bea1d233a9ce9557d1d992e964b2dad23654fa5bb011c68aa405e5daf75",
+    "runtime/coinmaster/strategy/wave_overlay.py": "79b0c41cc4890258a3144f1f24f3c271f49069ad4b4cf3452b17b8ecea8b4558",
+    "runtime/tests/test_native_immediate_insurance.py": "4e2e7cc4ad6e7b616414c0e1989e666942e359afaaa7b030301eb2d8063c9dd3",
+    "scripts/collect_split_cover_native.py": "ef961ffb36bce8ebd6da5862635c339a17c83afae15ed9ddb424e45cea153e9b",
+    "scripts/launch_split_cover_native.py": "20a8e7b14c5f8eb1b51ea045714e3dbacc1fbe0dc5cd28c7991ef80be0470002"
+  },
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "production_lookback": 90,
+  "root_gate": "Explicit root instruction:27connectedfocusedPASS + current noP1/P2 review satisfies bounded verification; no additional testbatch absentnewfinding.",
+  "source_patch_sha256": "405946f074c1b1a60506c0a2a41ea85d5a9818a37da7070a82244281d05b33ce",
+  "status": "FOCUSED_NATIVE_PASS_FROZEN_FOR_NARROW_REVIEW"
+}

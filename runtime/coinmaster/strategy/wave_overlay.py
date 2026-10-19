@@ -25,6 +25,7 @@ from coinmaster.domain.wave_overlay import btc_management_price
 from coinmaster.strategy.split_cover import SplitCoverResearch
 from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
 from coinmaster.strategy.risk_first_sol import SolRiskFirstResearch
+from coinmaster.strategy.immediate_insurance import ImmediateSolInsurance
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
 from coinmaster.venues.margin_policy import MarginMark, MarginPolicy
@@ -64,6 +65,8 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_cover: Decimal | None = None
     research_conditional_sol: bool = False
+    research_immediate_sol: str | None = None
+    research_immediate_lookback: int = 90
     research_sol_risk_first: str | None = None
     research_cover_hour_seed: tuple[tuple[int, float, float], ...] = ()
     research_h1_b1: str | None = None
@@ -163,13 +166,16 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
         self._split_cover_init()
         self._risk_first_init()
         self._conditional_init()
+        self._insurance_init()
+        if config.research_immediate_sol is not None and (config.research_immediate_sol not in {"i25","i25-light","i25-recovery","i33"} or not 30<=config.research_immediate_lookback<=180 or not config.research_btc_split_tp_ioc or config.candidate.sol_overlay_enabled or config.research_sol_risk_first or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or len(config.research_confirmation_bars)!=4):
+            raise ValueError("IMMEDIATE_INSURANCE_REQUIRES_EXCLUSIVE_SELECTED_BTC_AND_ORIGINAL_SOL_OFF")
         self._cover_seed(config.research_cover_hour_seed)
         if config.research_sol_risk_first is not None and (config.research_sol_risk_first not in {"cap50","dd-cov","split-atr"} or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or not config.candidate.sol_overlay_enabled):
             raise ValueError("RISK_FIRST_REQUIRES_EXCLUSIVE_VARIANT_ORIGINAL_OVERLAY")
@@ -365,6 +371,7 @@ class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCov
             self._cover_bar(bar)
             self._conditional_bar(bar)
             self._risk_first_bar(bar)
+            self._insurance_bar(bar)
             self._on_confirmation_bar(bar)
             return
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -2393,6 +2400,7 @@ class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCov
                 decision_index=self._confirmed_fill_cycle(intent, client_order_id), entry_fee=entry_fee,
                 entry_qty=entry_qty, entry_price=entry_price,
             )
+        self._insurance_btc_fill(intent,price,ts_event)
         if intent.action == "BTC_ENTRY" and self.config.research_btc_split_planref_v1:
             ep = self._domain.episode
             p = self._split_parent
@@ -2539,6 +2547,7 @@ class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCov
         self._terminal_without_fill(str(event.client_order_id))
 
     def on_position_event(self, event) -> None:
+        self._insurance_position(event)
         self._record_native_event(f"{event.position_id}:{event.ts_init}", "position")
         self._research_capture_btc_episode(event)
         self._v3_capture_sol_cycle(event)
@@ -2558,6 +2567,8 @@ class WaveOverlayStrategy(SolRiskFirstResearch, ConditionalSolResearch, SplitCov
         if self._pending_by_order:
             return  # An opening order awaiting terminal native receipt may still fill.
         self._group_close_reconciliation_pending = False
+        if self._insurance_enabled() and self._insurance_cycle:
+            self._insurance_cycle.update(closed=True,target=Decimal(0))
         reason = self._domain.on_group_flat()
         if self._forced_close_reason not in {"LIQUIDATION", "TERMINAL_BOUNDARY_SETTLEMENT"}:
             self._forced_close_reason = None

@@ -1,0 +1,11 @@
+Running as unit: cm119-immediate-focused-a.service
+ERROR: file or directory not found: runtime/tests/test_native_immediate_insurance.py
+
+
+no tests ran in 0.00s
+Finished with result: exit-code
+Main processes terminated with: code=exited/status=4
+Service runtime: 998ms
+CPU time consumed: 889ms
+Memory peak: 1.4M
+Memory swap peak: 0B

@@ -1,0 +1,107 @@
+Running as unit: cm119-immediate-focused-c.service; invocation ID: ef25dcd4d3454dbc9ed7bf4a2ce9f5cb
+..................F......                                                [100%]
+=================================== FAILURES ===================================
+___ test_unknown_ack_retains_owner_btc_flat_cancel_then_actual_residual_zero ___
+
+    def test_unknown_ack_retains_owner_btc_flat_cancel_then_actual_residual_zero():
+        s,e,ep=setup()
+        try:
+            st=s._insurance_cycle
+            run_ticks(e,[tick(BTC_PERP,4),tick(BTC_PERP,5,'99')]);advance(s,e,6)
+            i=s._domain._intent(ep,'SOL_ADD',-ep.side,None,quantity=1,reason='CONDITIONAL_NET_ADD')
+            s._pending_by_order['UNKNOWN_ACK']=i
+            before=len(e.cache.orders())
+            btc=next(p for p in e.cache.positions_open() if p.instrument_id==BTC_PERP.id)
+            s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.SELL,BTC_PERP.make_qty(btc.quantity.as_decimal()),time_in_force=TimeInForce.IOC,reduce_only=True))
+            run_ticks(e,[tick(BTC_PERP,10)])
+            advance(s,e,11)
+            assert st['target']==0 and len(e.cache.orders())==before+1
+            s._pending_by_order.pop('UNKNOWN_ACK');s._domain.on_parent_terminal(i.id)
+            advance(s,e,12)
+            assert not any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
+>           assert not s._pending_by_order and st['closed']
+E           AssertionError: assert (not {'O-19700101-000000-001-000-4': Intent(id='ff59cdef-39c1-4d36-a79b-b00f0ac0e00b', episode_id='immediate', action='BTC_...CE', level=2, side=-1, quantity=57.5, requested_notional=None, decision_index=-1, reason='BTC_TP3', limit_price=170.0)})
+E            +  where {'O-19700101-000000-001-000-4': Intent(id='ff59cdef-39c1-4d36-a79b-b00f0ac0e00b', episode_id='immediate', action='BTC_...CE', level=2, side=-1, quantity=57.5, requested_notional=None, decision_index=-1, reason='BTC_TP3', limit_price=170.0)} = NativeProbe(NativeProbe-000)._pending_by_order
+
+runtime/tests/test_native_immediate_insurance.py:201: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_immediate_insurance.py: 21 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_immediate_insurance.py: 92 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:339: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_immediate_insurance.py::test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate[1-i25]
+tests/test_native_immediate_insurance.py::test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate[1-i25-light]
+tests/test_native_immediate_insurance.py::test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate[1-i25-recovery]
+tests/test_native_immediate_insurance.py::test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate[1-i33]
+tests/test_native_immediate_insurance.py::test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate[-1-i25]
+tests/test_native_immediate_insurance.py::test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate[-1-i25-light]
+tests/test_native_immediate_insurance.py::test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate[-1-i25-recovery]
+tests/test_native_immediate_insurance.py::test_initial_native_partial_btc_fill_insured_without_confirmation_fixed_daily_estimate[-1-i33]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_immediate_insurance.py:92: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_immediate_insurance.py::test_adverse_sigma_requires_posttrigger_closed_or_confirmation_next_quote_and_no_price_churn[15-1]
+tests/test_native_immediate_insurance.py::test_adverse_sigma_requires_posttrigger_closed_or_confirmation_next_quote_and_no_price_churn[15--1]
+tests/test_native_immediate_insurance.py::test_adverse_sigma_requires_posttrigger_closed_or_confirmation_next_quote_and_no_price_churn[60-1]
+tests/test_native_immediate_insurance.py::test_adverse_sigma_requires_posttrigger_closed_or_confirmation_next_quote_and_no_price_churn[60--1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_immediate_insurance.py:111: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_immediate_insurance.py::test_light_closed_btc_bar_latches_half_base_no_common_restore[1]
+tests/test_native_immediate_insurance.py::test_light_closed_btc_bar_latches_half_base_no_common_restore[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_immediate_insurance.py:128: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_immediate_insurance.py::test_native_recovery_once_max_not_sum_release_preserves_required_adverse[1]
+tests/test_native_immediate_insurance.py::test_native_recovery_once_max_not_sum_release_preserves_required_adverse[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_immediate_insurance.py:148: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_immediate_insurance.py::test_realized_profit_harvest_floor_newextreme_rearm_and_two_native_episodes
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_immediate_insurance.py:176: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_immediate_insurance.py::test_unknown_ack_retains_owner_btc_flat_cancel_then_actual_residual_zero
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_immediate_insurance.py:202: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_immediate_insurance.py::test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes[i25]
+tests/test_native_immediate_insurance.py::test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes[i25-light]
+tests/test_native_immediate_insurance.py::test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes[i25-recovery]
+tests/test_native_immediate_insurance.py::test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes[i33]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:873: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_immediate_insurance.py::test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes[i25]
+tests/test_native_immediate_insurance.py::test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes[i25-light]
+tests/test_native_immediate_insurance.py::test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes[i25-recovery]
+tests/test_native_immediate_insurance.py::test_real_production_two_minute_runner_resolves_original_off_native_bars_and_serializes[i33]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:883: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+tests/test_native_immediate_insurance.py::test_actual_native_partial_canceled_then_risk_throttle_denied_defers_without_recursion_and_flat
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_immediate_insurance.py:257: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_immediate_insurance.py::test_default_off_selected_order_path_native_parity_two_episodes_with_no_insurance_state
+tests/test_native_immediate_insurance.py::test_default_off_selected_order_path_native_parity_two_episodes_with_no_insurance_state
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_immediate_insurance.py:280: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_immediate_insurance.py::test_unknown_ack_retains_owner_btc_flat_cancel_then_actual_residual_zero
+1 failed, 24 passed, 142 warnings in 6.66s
+Finished with result: exit-code
+Main processes terminated with: code=exited/status=1
+Service runtime: 8.274s
+CPU time consumed: 7.124s
+Memory peak: 688.0K
+Memory swap peak: 0B
