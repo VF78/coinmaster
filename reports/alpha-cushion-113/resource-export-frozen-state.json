@@ -1,0 +1,25 @@
+{
+  "cgroup_events": "populated 1\nfrozen 1",
+  "checked_utc": "2026-10-19T20:48:21.382863+00:00",
+  "disk_free": 1846956032,
+  "durable_job_files_only_sizes": {
+    ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-3354743a113d4a7bb840e6b3b9556ce6": 294912,
+    ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-3354743a113d4a7bb840e6b3b9556ce6-shm": 32768,
+    ".v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-3354743a113d4a7bb840e6b3b9556ce6-wal": 4136512,
+    "batch-resource-latest.json": 396,
+    "minute-native-risk.csv.gz": 92640304
+  },
+  "global_swap": "NAME                                     TYPE       SIZE       USED PRIO\n/swapfile                                file 2147479552 2147479552   -2\n/root/.cm120-alpha-cushion-20261019.swap file  805302272  685740032   -3",
+  "memory": {
+    "MemAvailable": 827281408,
+    "MemFree": 258560000,
+    "MemTotal": 4005437440,
+    "SwapFree": 119562240,
+    "SwapTotal": 2952781824
+  },
+  "native_processes": "PID    PPID STAT   RSS COMMAND\n4058618       1 SNs   1956 flock\n4058622 4058618 SNl  721584 python",
+  "no_resume_or_mutation": true,
+  "settled_flat_and_cash_proof": "UNKNOWN;NO_COMPLETED_JSON_NO_NATIVECSV_NO_ACCOUNTCSV.730batchONLYprovesfeedprocessed.",
+  "status": "SAME_ENGINE_FROZEN_AWAIT_EXPLICIT_OWNER_RESOURCE_APPROVAL",
+  "unit_properties": "MainPID=4058618\nControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm115-split-alpha-cushion-swap768-20261019c.service\nMemoryCurrent=681037824\nMemorySwapCurrent=672243712\nActiveState=active\nFreezerState=frozen"
+}

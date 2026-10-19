@@ -1,0 +1,52 @@
+{
+  "recorded_at_utc": "2026-10-19T20:50:24.158364+00:00",
+  "state": "PAUSED_AT_EXPORT_AWAITING_OWNER_RESOURCE_APPROVAL",
+  "unit": "cm115-split-alpha-cushion-swap768-20261019c",
+  "native_pid": 4058622,
+  "same_engine_preserved": true,
+  "feed_batches": 730,
+  "feed_rows_per_source": 1051200,
+  "settled_total": null,
+  "settled_roi": null,
+  "settled_dd": null,
+  "native_flat_proven": false,
+  "approved_swap_mib": 768,
+  "additional_requested_swap_mib": 512,
+  "requested_total_swap_mib": 1280,
+  "additional_approval_received": false,
+  "ram_limit_mib": 650,
+  "project_readback": {
+    "113": {
+      "state": "open",
+      "body_current_status_verified": true
+    },
+    "120": {
+      "state": "open",
+      "body_current_status_verified": true
+    }
+  },
+  "pilot_mutated": false,
+  "evidence": {
+    "resource-export-freeze-receipt.json": {
+      "sha256": "48e2416322d4661c30a8f5b58d775f32fdcfd3b844180c5b744269870eecae7d",
+      "bytes": 765
+    },
+    "resource-export-frozen-state.json": {
+      "sha256": "83302a898f8fe841f6e09a6e758e6e8cfb5a479829925fa8ade527d584258435",
+      "bytes": 1764
+    },
+    "analysis-cache-regeneration-cleanup.json": {
+      "sha256": "2f00144a7847b0957b5abfcba659ccf923819eb96ec02818f3c4cd38d3c324ad",
+      "bytes": 1542
+    }
+  },
+  "export_disk_prepared": {
+    "free_bytes": 2269335552,
+    "archive_logical_bytes": 422673314,
+    "archive_index_sha256": "1daa024559c08cac7cce5fe85e29131f48c3b8caadff18f8c4cae74e34d737ec",
+    "retention_receipt_sha256": "cae6c036560dfb3b18bb101f3da885afec541f26158cadf94a921df3811c90aa",
+    "hypothetical_free_after_requested_512MiB": 1732464640,
+    "reserve_1GiB_plus_export_512MiB_guard": "PASS",
+    "additional_swap_approval_received": false
+  }
+}

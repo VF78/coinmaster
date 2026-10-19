@@ -1,0 +1,112 @@
+{
+  "status": "COPY5_VERIFIED_AWAIT_ROOT_REVIEW_NO_REMOTE_UNLINK",
+  "UTC": "2026-10-19T20:53:27.045190+00:00",
+  "total_files": 5,
+  "total_bytes": 422673314,
+  "Mac_archive_root": "/Users/vf/Documents/ChatGPT/Coinmaster/research-artifact-archive/2026-10-19-export",
+  "files": [
+    {
+      "job": "cm115-split-sol50-20261018a",
+      "remote_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol50-20261018a/result/minute-native-risk.csv.gz",
+      "bytes": 89133689,
+      "remote_mtime_ns": 1792326035012337877,
+      "SHA256": "af4ce007746229c49d37b4f6c4aeec79d6b759d228a63924d6f814823dd43054",
+      "completion_proof": {
+        "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/btc-split-sol-cover-20261018/sol50-receipt.json",
+        "receipt_SHA256": "82da2e510f8e46007e9ace8e85c7056614424622d3bf2d4bea79363557a6c786",
+        "native_result_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol50-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover0.5-btc-direction.json",
+        "native_result_SHA256": "ae08b71c1cb0ef05c1cb7a146e62bbb17db64b7ea913b86437933f5038b26706",
+        "full_rows_per_source": 1051200,
+        "terminal_native_flat": true
+      },
+      "reason": "Completedhistoricalnonselectedresearchobserver;noactiveALPHA/control/repeat/BTC-only/cap50/JSON/SQLite/sourceoverlap. Immutablegziparchiveonly.",
+      "local_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-artifact-archive/2026-10-19-export/cm115-split-sol50-20261018a--minute-native-risk.csv.gz",
+      "local_verified_SHA256": "af4ce007746229c49d37b4f6c4aeec79d6b759d228a63924d6f814823dd43054",
+      "copy_seconds": 45.836,
+      "remote_unlinked": false
+    },
+    {
+      "job": "cm115-split-sol75-20261018a",
+      "remote_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol75-20261018a/result/minute-native-risk.csv.gz",
+      "bytes": 89257400,
+      "remote_mtime_ns": 1792327496357522027,
+      "SHA256": "a2dd02f380e5adb7f734476069b1c2c796a341ac4e78d8e5e343d825040ecd72",
+      "completion_proof": {
+        "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/btc-split-sol-cover-20261018/sol75-receipt.json",
+        "receipt_SHA256": "0be4426bff7f6500600e353ab381481d91349bd95e09eafb89fc411a80a46852",
+        "native_result_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol75-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover0.75-btc-direction.json",
+        "native_result_SHA256": "5e4412837dae090e61dc15d2eb1da5a6579377ad160acddb05833fb61c9322f1",
+        "full_rows_per_source": 1051200,
+        "terminal_native_flat": true
+      },
+      "reason": "Completedhistoricalnonselectedresearchobserver;noactiveALPHA/control/repeat/BTC-only/cap50/JSON/SQLite/sourceoverlap. Immutablegziparchiveonly.",
+      "local_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-artifact-archive/2026-10-19-export/cm115-split-sol75-20261018a--minute-native-risk.csv.gz",
+      "local_verified_SHA256": "a2dd02f380e5adb7f734476069b1c2c796a341ac4e78d8e5e343d825040ecd72",
+      "copy_seconds": 52.947,
+      "remote_unlinked": false
+    },
+    {
+      "job": "cm115-split-sol100-20261018a",
+      "remote_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/result/minute-native-risk.csv.gz",
+      "bytes": 89135794,
+      "remote_mtime_ns": 1792328982602538702,
+      "SHA256": "e12dbe36994db92516ca73d9e99a1ebcc420c658f058178fd812a52f41471c60",
+      "completion_proof": {
+        "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/btc-split-sol-cover-20261018/sol100-receipt.json",
+        "receipt_SHA256": "75ad627c9c1ec589901010639cc0d7c0e318c1c024fd8f61ac1e97567a6cafac",
+        "native_result_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover1-btc-direction.json",
+        "native_result_SHA256": "690fb5e92689c3fd00288a3e9dd17aa6d63a57c3988851553f638f584088b748",
+        "full_rows_per_source": 1051200,
+        "terminal_native_flat": true
+      },
+      "reason": "Completedhistoricalnonselectedresearchobserver;noactiveALPHA/control/repeat/BTC-only/cap50/JSON/SQLite/sourceoverlap. Immutablegziparchiveonly.",
+      "local_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-artifact-archive/2026-10-19-export/cm115-split-sol100-20261018a--minute-native-risk.csv.gz",
+      "local_verified_SHA256": "e12dbe36994db92516ca73d9e99a1ebcc420c658f058178fd812a52f41471c60",
+      "copy_seconds": 58.555,
+      "remote_unlinked": false
+    },
+    {
+      "job": "cm115-split-conditional-sol-2-1-50-native-denial-20261018a",
+      "remote_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-native-denial-20261018a/result/minute-native-risk.csv.gz",
+      "bytes": 78883333,
+      "remote_mtime_ns": 1792346017963596220,
+      "SHA256": "32c7ff7b50762538a1e61c41ca216ed97703cc925f86b56b34232765f81c414c",
+      "completion_proof": {
+        "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/conditional-sol-2-1-50-113/conditional-sol-2-1-50-native-denial-receipt.json",
+        "receipt_SHA256": "d37e036efd55075c64c62e9ebf046ddc758c48293add4896d6845f3a4994964d",
+        "native_result_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-conditional-sol-2-1-50-native-denial-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-conditional-sol-2-1-50-btc-direction.json",
+        "native_result_SHA256": "2927f1007b8c531e07042fc5b4c26c61d35a7e1da6320e98e7dbd0ce8b143f04",
+        "full_rows_per_source": 1051200,
+        "terminal_native_flat": true
+      },
+      "reason": "Completedhistoricalnonselectedresearchobserver;noactiveALPHA/control/repeat/BTC-only/cap50/JSON/SQLite/sourceoverlap. Immutablegziparchiveonly.",
+      "local_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-artifact-archive/2026-10-19-export/cm115-split-conditional-sol-2-1-50-native-denial-20261018a--minute-native-risk.csv.gz",
+      "local_verified_SHA256": "32c7ff7b50762538a1e61c41ca216ed97703cc925f86b56b34232765f81c414c",
+      "copy_seconds": 49.053,
+      "remote_unlinked": false
+    },
+    {
+      "job": "cm115-split-btc050-20261018a",
+      "remote_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc050-20261018a/result/minute-native-risk.csv.gz",
+      "bytes": 76263098,
+      "remote_mtime_ns": 1792324544053905288,
+      "SHA256": "a804baddad7c993e145cf4f499ac144c44a70b9d46a3fdbf03cd259b6b0b8449",
+      "completion_proof": {
+        "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/btc-split-sol-cover-20261018/btc050-receipt.json",
+        "receipt_SHA256": "707c540014a7172b03b147af588a39e83104356f1a8de6bca12c02d95523b61f",
+        "native_result_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc050-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.005-btc-direction.json",
+        "native_result_SHA256": "feb13902c327481177930b22f68ce7b1a38272f8bb1da503bd3dbc083ce11897",
+        "full_rows_per_source": 1051200,
+        "terminal_native_flat": true
+      },
+      "reason": "Completedhistoricalnonselectedresearchobserver;noactiveALPHA/control/repeat/BTC-only/cap50/JSON/SQLite/sourceoverlap. Immutablegziparchiveonly.",
+      "local_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research-artifact-archive/2026-10-19-export/cm115-split-btc050-20261018a--minute-native-risk.csv.gz",
+      "local_verified_SHA256": "a804baddad7c993e145cf4f499ac144c44a70b9d46a3fdbf03cd259b6b0b8449",
+      "copy_seconds": 53.304,
+      "remote_unlinked": false
+    }
+  ],
+  "verification": "FreshremoteSHA256+stablelength/mtime; SCPSFTPbytecopy/localfullSHAequalremote/fsync; noobserverdecode",
+  "protected_excluded": "selected6077/repeat/BTC-only/cap50/ALLALPHAattempts/nativeJSON/fundingSQLite/journals/inputParquet/source/venvs/services/swap",
+  "root_GO_required_before_any_remote_unlink": true
+}

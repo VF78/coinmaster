@@ -1,0 +1,47 @@
+{
+  "status": "EXACT_TWO_REGENERATED_APT_CACHE_BINS_REMOVED",
+  "UTC": "2026-10-19T20:30:24.592527+00:00",
+  "authorization": "RootexplicitONLYtwoAPTderivedmetadatafiles;idleunattendedshutdownwaitlistenernottransaction",
+  "active_transactions": [],
+  "idle_shutdown_listeners_excluded": [
+    {
+      "PID": 868,
+      "role": "unattended-upgrade-shutdown --wait-for-signal idlelistener"
+    }
+  ],
+  "open_FDs": [],
+  "kernel_APT_dpkg_held_locks": [],
+  "removed": [
+    {
+      "path": "/var/cache/apt/pkgcache.bin",
+      "logical_bytes": 58432047,
+      "allocated_bytes": 58437632,
+      "mtime_ns": 1792441684318838168,
+      "SHA256_before": "2481dbb7ab78b47d95ec168634a563379d805d6d2f7563d3e4e4eef8c7088adb"
+    },
+    {
+      "path": "/var/cache/apt/srcpkgcache.bin",
+      "logical_bytes": 58410998,
+      "allocated_bytes": 58417152,
+      "mtime_ns": 1792441684216834683,
+      "SHA256_before": "243d10b07689aca0b4cc73af4aa31cf8a31c279deba0c4d3628ea4fb8244a7b0"
+    }
+  ],
+  "total_allocated_bytes_removed": 116854784,
+  "before_df": {
+    "total": 39973924864,
+    "used": 37806403584,
+    "free": 1743835136
+  },
+  "after_df": {
+    "total": 39973924864,
+    "used": 37689548800,
+    "free": 1860689920
+  },
+  "observed_free_delta_bytes": 116854784,
+  "guard": {
+    "oneGiB_reserve_plus512MiB_peak_bytes": 1610612736,
+    "current_free_pass": true
+  },
+  "preserved": "APTlists/dpkgstatus/lockfiles/services/swap/pilot/researchjobs/results/reports/inputdata/fundingjournals/otherfilesuntouched. Noengine/test/traceactions."
+}

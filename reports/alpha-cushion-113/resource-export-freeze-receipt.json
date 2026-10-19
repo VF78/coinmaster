@@ -1,0 +1,25 @@
+{
+  "batch": {
+    "alpha_audit_dropped": 481354,
+    "alpha_audit_rows": 4580,
+    "batch_count": 730,
+    "cursor_batch_rows": 1440,
+    "last_available_ns": 1788220800000000000,
+    "native_fill_events": 138984,
+    "native_orders": 139073,
+    "native_positions": 2,
+    "peak_rss_bytes": 873476096,
+    "processed_minutes": 1051200,
+    "rss_bytes": 811655168,
+    "seen_trade_ids": 138984,
+    "strategy_order_audit": 139073,
+    "weekly_batch_minutes": 1440
+  },
+  "checked_utc": "2026-10-19T20:47:09.651780+00:00",
+  "combined_headroom_bytes": 134139904,
+  "pid": 4058618,
+  "ram_bytes": 681197568,
+  "status": "FROZEN_ONLY_AUTHORIZED_RESEARCH_UNIT_LOW_HEADROOM",
+  "swap_bytes": 671543296,
+  "unit": "cm115-split-alpha-cushion-swap768-20261019c.service"
+}

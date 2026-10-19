@@ -1,0 +1,12 @@
+{
+  "checked_utc": "2026-10-19T20:00:16.959750+00:00",
+  "counts": {
+    "native_denied_marker": 0,
+    "traceback": 0,
+    "type_error": 0,
+    "uncaught_exception": 0
+  },
+  "log_bytes": 300,
+  "native_denied_is_not_runtime_failure": true,
+  "status": "ACTIVE_READONLY_LOG_MARKERS_NOT_ECONOMIC_RESULT"
+}
