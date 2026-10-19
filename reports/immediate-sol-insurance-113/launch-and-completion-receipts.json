@@ -1,0 +1,199 @@
+{
+  "completed_utc": "2026-10-19T16:49:44.301284+00:00",
+  "economic_acceptance": "PENDING_STATS_SOURCE_AND_BRANCH_ATTRIBUTION",
+  "limitations": [
+    "I33 nominal upper target approximately100%; Decimal one-third and native SOL lot-floor can leave one lot below exact mathematical100% at a boundary. Target is not continuous actual coverage.",
+    "Funding attribution remains UNKNOWN where audit provides account post-total rather than signed component cash delta.",
+    "Per-add arm timestamp and per-harvest reverse-bar timestamp are not exported; closed-bar causality is established by frozen implementation and connected native fixtures, not an independent historical bar replay."
+  ],
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "queue_status": "COMPLETED_FOUR_AUTHORIZED_RUNS_NO_ADDITIONAL_ENGINES",
+  "research_slice_empty": true,
+  "runs": [
+    {
+      "ROI_percent": "-19.996875903100",
+      "actual_exit": 0,
+      "all_coefficient_cycles_causal90_and_closed": true,
+      "coefficient_cycles": 105,
+      "completed_utc": "2026-10-19T15:31:35.496097+00:00",
+      "completion_journal": "Started cm115-split-immediate-i25-20261019a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/launch.sh.\ncm115-split-immediate-i25-20261019a.service: Deactivated successfully.\ncm115-split-immediate-i25-20261019a.service: Consumed 25min 29.776s CPU time, 560.7M memory peak, 0B memory swap peak.\n",
+      "fresh_funding_family_expected": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/result/*funding.sqlite*",
+      "full_rows": 1051200,
+      "funding_journal_files": {
+        "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-btc-direction-funding.sqlite": "b9af2ba346d82bd2aa29362baef7c086c5c380a13bec446c4c4d0331320cc803"
+      },
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a",
+      "launched_utc": "2026-10-19T15:04:22.986372+00:00",
+      "liquidation_count": 0,
+      "manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+      "mode": "i25",
+      "native_fees": "19420.69622577",
+      "native_minute_DD_percent": "67.60205168852137439315004645",
+      "native_open_positions": 0,
+      "observer": {
+        "bytes": 88971265,
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/result/minute-native-risk.csv.gz",
+        "rows": 3153600,
+        "sha256": "449da0d4991b5c6e7d3b37855e1bdbc38fa02a4ca0a4bc684a239bbe126746b2"
+      },
+      "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+      "preflight": {
+        "MemAvailable": 1299181568,
+        "disk_free": 2740920320
+      },
+      "raw_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-btc-direction.json",
+      "raw_result_sha256": "0ea34e81c1382276a8a01f163dbaaa3661994df33e87d0fe71cb3853a818b78e",
+      "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/immediate-sol-insurance-113/implementation-i25-receipt.json",
+      "receipt_sha256": "84f15357886519c4ba31a74071563ce776bcf93248c5d13ee5234d47b12e4d5e",
+      "runtime_fault_markers": 0,
+      "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+      "source_files": 88,
+      "status": "COMPLETED_TECHNICAL_PASS",
+      "terminal_order_status_counts": {
+        "CANCELED": 89,
+        "FILLED": 3500
+      },
+      "terminal_total": "8000.31240969",
+      "unit_state": "MainPID=3961175\nCPUWeight=10\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nInvocationID=afd8c0d109244bb58a5ee2376b5e1eba"
+    },
+    {
+      "ROI_percent": "-21.35116659900",
+      "actual_exit": 0,
+      "all_coefficient_cycles_causal90_and_closed": true,
+      "coefficient_cycles": 105,
+      "completed_utc": "2026-10-19T15:58:16.450806+00:00",
+      "completion_journal": "Started cm115-split-immediate-i25-light-20261019a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/launch.sh.\ncm115-split-immediate-i25-light-20261019a.service: Deactivated successfully.\ncm115-split-immediate-i25-light-20261019a.service: Consumed 24min 35.655s CPU time, 618.2M memory peak, 0B memory swap peak.\n",
+      "fresh_funding_family_expected": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/result/*funding.sqlite*",
+      "full_rows": 1051200,
+      "funding_journal_files": {
+        "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-light-btc-direction-funding.sqlite": "c658e7c8bce7939aa225a7850f0dc4220d1ddf1a38fe68c8b53b490afb9cb0df"
+      },
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a",
+      "launched_utc": "2026-10-19T15:31:35.675676+00:00",
+      "liquidation_count": 0,
+      "manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+      "mode": "i25-light",
+      "native_fees": "19540.68281484",
+      "native_minute_DD_percent": "68.30092902577867847400914022",
+      "native_open_positions": 0,
+      "observer": {
+        "bytes": 88860638,
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/result/minute-native-risk.csv.gz",
+        "rows": 3153600,
+        "sha256": "36616185bffafadb3481635cebdee9e3dc37fb1b5721647c39b86ec8c4afd97b"
+      },
+      "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+      "preflight": {
+        "MemAvailable": 1389666304,
+        "disk_free": 2626097152
+      },
+      "raw_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-light-btc-direction.json",
+      "raw_result_sha256": "90786210ac7b1ace52972353e1baae85e9f2bad83a021660019ed2886ca5060c",
+      "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/immediate-sol-insurance-113/implementation-i25-light-receipt.json",
+      "receipt_sha256": "2cbfbf89456a9802e49f8e0db4bd928f2de6fbe9486a9578947dc50a4a8b1190",
+      "runtime_fault_markers": 0,
+      "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+      "source_files": 88,
+      "status": "COMPLETED_TECHNICAL_PASS",
+      "terminal_order_status_counts": {
+        "CANCELED": 89,
+        "FILLED": 3432
+      },
+      "terminal_total": "7864.88334010",
+      "unit_state": "MainPID=3970856\nCPUWeight=10\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nInvocationID=c62d3df2f9c74f7ba12eaf29cda56969"
+    },
+    {
+      "ROI_percent": "-22.797164661300",
+      "actual_exit": 0,
+      "all_coefficient_cycles_causal90_and_closed": true,
+      "coefficient_cycles": 105,
+      "completed_utc": "2026-10-19T16:23:56.607626+00:00",
+      "completion_journal": "Started cm115-split-immediate-i25-recovery-20261019a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/launch.sh.\ncm115-split-immediate-i25-recovery-20261019a.service: Deactivated successfully.\ncm115-split-immediate-i25-recovery-20261019a.service: Consumed 23min 48.396s CPU time, 558.3M memory peak, 0B memory swap peak.\n",
+      "fresh_funding_family_expected": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/result/*funding.sqlite*",
+      "full_rows": 1051200,
+      "funding_journal_files": {
+        "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-recovery-btc-direction-funding.sqlite": "226372f81d67a4b4524fcd501843af3c431ecbe51ddae7375cbd9a30eb976211"
+      },
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a",
+      "launched_utc": "2026-10-19T15:58:16.624519+00:00",
+      "liquidation_count": 0,
+      "manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+      "mode": "i25-recovery",
+      "native_fees": "20756.63957879",
+      "native_minute_DD_percent": "67.61776330758873225112802245",
+      "native_open_positions": 0,
+      "observer": {
+        "bytes": 88975992,
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/result/minute-native-risk.csv.gz",
+        "rows": 3153600,
+        "sha256": "fa53bf5a430b35251591c2879894128441f70556d3474b427e3af9d0611175a8"
+      },
+      "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+      "preflight": {
+        "MemAvailable": 1428897792,
+        "disk_free": 2520166400
+      },
+      "raw_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-recovery-btc-direction.json",
+      "raw_result_sha256": "8b594b826419c676c5579f68c8f16ca89dbff1b3925928a92df4e44327fc3031",
+      "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/immediate-sol-insurance-113/implementation-i25-recovery-receipt.json",
+      "receipt_sha256": "6f464eef99d7b076a40baa48f5dc88b3814e88b465bbec66a804f069c938c6dd",
+      "runtime_fault_markers": 0,
+      "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+      "source_files": 88,
+      "status": "COMPLETED_TECHNICAL_PASS",
+      "terminal_order_status_counts": {
+        "CANCELED": 89,
+        "FILLED": 3861
+      },
+      "terminal_total": "7720.28353387",
+      "unit_state": "MainPID=3980205\nCPUWeight=10\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nInvocationID=417eb4f5387a49a096d9c4613b15ebec"
+    },
+    {
+      "ROI_percent": "-79.73029062300",
+      "actual_exit": 0,
+      "all_coefficient_cycles_causal90_and_closed": true,
+      "coefficient_cycles": 105,
+      "completed_utc": "2026-10-19T16:49:44.283358+00:00",
+      "completion_journal": "Started cm115-split-immediate-i33-20261019a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/launch.sh.\ncm115-split-immediate-i33-20261019a.service: Deactivated successfully.\ncm115-split-immediate-i33-20261019a.service: Consumed 24min 23.106s CPU time, 549.4M memory peak, 0B memory swap peak.\n",
+      "fresh_funding_family_expected": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/result/*funding.sqlite*",
+      "full_rows": 1051200,
+      "funding_journal_files": {
+        "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i33-btc-direction-funding.sqlite": "1a62e923376f4b87e728ac570220e9d0b427ba11f9ed07046cc2422d0830cebd"
+      },
+      "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a",
+      "launched_utc": "2026-10-19T16:23:56.757194+00:00",
+      "liquidation_count": 0,
+      "manifest_sha256": "d0a0f03acf92af83969bbfce657a09aea76bfcdb573e222d0c843d339cfc38fb",
+      "mode": "i33",
+      "native_fees": "12172.80798195",
+      "native_minute_DD_percent": "84.64020976321090888125636142",
+      "native_open_positions": 0,
+      "observer": {
+        "bytes": 88089575,
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/result/minute-native-risk.csv.gz",
+        "rows": 3153600,
+        "sha256": "9d0694486e7f08205d9b8606e5776f23a806955f5a511d28c36cc56925273e24"
+      },
+      "pilot_before": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+      "preflight": {
+        "MemAvailable": 1408593920,
+        "disk_free": 2412195840
+      },
+      "raw_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i33-btc-direction.json",
+      "raw_result_sha256": "f6fa23f04ac8c17d4cd95d017dce841493d5811a046d8c0989a9372c1c79e63c",
+      "receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/immediate-sol-insurance-113/implementation-i33-receipt.json",
+      "receipt_sha256": "0c1eb700f25791ad5fcc828b351daf9e1e9f5b7f3592a25451d392482161e26e",
+      "rounding_limitation": "Nominal upper target approximately 100%; Decimal one-third and native SOL lot-floor can leave one lot below exact mathematical 100% at a boundary. No continuous exact hedge guarantee.",
+      "runtime_fault_markers": 0,
+      "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+      "source_files": 88,
+      "status": "COMPLETED_TECHNICAL_PASS",
+      "terminal_order_status_counts": {
+        "CANCELED": 89,
+        "FILLED": 3563
+      },
+      "terminal_total": "2026.97093770",
+      "unit_state": "MainPID=3989184\nCPUWeight=10\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nInvocationID=6ecacaa59866436eb3d5e713d28924b6"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "status": "PREPARED_ACCEPTANCE_SCHEMA_ONLY_NO_ACTIVE_RESULT_READ",
+  "scope": "OnecoherentcompactverificationAFTERall4completionmessages;noengine/source/product/common.ops/git/Project/pilotchanges;nointerimROIorqueuepoll",
+  "result_order": [
+    "control6077107.23887483",
+    "i25",
+    "i25-light",
+    "i25-recovery",
+    "i33"
+  ],
+  "control": "ReuseSHAverifiedselected6077portfolio+exacteconomicrepeat;NOTstandaloneBTC-only/noextraengine",
+  "admission": {
+    "completion": "Actualjournalsuccess+uniquecompletednativeJSON+frozencommit/source/input/config/policy/feeSHA+full1051200sourcefeedrows+nativeflat+terminalorders/pendingresolved. Genuinefinancialliq/lockoutmustnotbeclassifiedasruntimefault.",
+    "independence": "Fourdistinctnativejobs/freshfundingSQLitefamilies/targetaudit/compressedobserverSHA;nojournalsharing/replayedfills.",
+    "memory": "CheckMemAvailable>=700MiBbeforeanynontrivialanalysis;noobservertracepassconcurrentwithlowRAM. DefaultNOobserverdecodedscan;reusecollectorcompactfullrisk.",
+    "source": "Preparedf878source/88filemanifestasenginepins;exactfinalreceiptsauthoritative,notbareworkingtreeHEAD."
+  },
+  "comparison_columns": [
+    "variant",
+    "acceptance_status",
+    "native_TOTAL",
+    "native_ROI_percent",
+    "delta_TOTAL_vs6077",
+    "global_native_minute_DD_percent",
+    "native_DD_peak_trough_times",
+    "conditional_OHLC_bound_percent_NOT_exact_intraminute",
+    "minimum_equity",
+    "native_cash_terminal",
+    "native_fees",
+    "BTC_native_fees",
+    "SOL_native_fees",
+    "maker_turnover",
+    "taker_turnover",
+    "maker_fees",
+    "taker_fees",
+    "native_fill_report_rows",
+    "individual_fill_events",
+    "BTC_fill_events",
+    "SOL_fill_events",
+    "liquidations",
+    "native_rejections_or_DENIED",
+    "terminal_native_flat",
+    "full_feed_rows",
+    "BTC_parent_count",
+    "calendar_missing_extra",
+    "side_mismatch",
+    "firstquote_or_P0_delays",
+    "accepted_plan_filled_cancelled_lots",
+    "absolute_BTC_Q_changed_vscontrol",
+    "funding_event_count",
+    "funding_signed_status",
+    "source_config_data_policy_receipt_result_SHA"
+  ],
+  "insurance_verification": {
+    "coefficient": "ForEACHnewactualBTCepisode:valid90closedUTCdailyreturns/91closes,latestasof<=firstfill,nofutureprice,positivefinitekandσBTC;freezevaluesuntilnewactualBTCepisode. Differentday/kvariationwithinopenepisodeisviolationunlessreportedexplicitcontractevent.",
+    "intent": "FirstactualBTCfill→immediateinsuranceintent;proveactualtime/quantity/remainingBTCreference,notstaticflag. Missingcoefficientdistinguishedfrommissingintent/nativeadmissionblock/ACKcancelpartial/TAKERIOCquote-cap.",
+    "coverage": "Useexportedactualnativeqty+marks+kattimestampforeachinsurancestate/fill;configuredtarget!=filledcoverage. Label event-sampledcoverageasNOTcontinuousheldtime. Fulltimecoverageonlyifalreadyexportednativeobservercompactproof;noinventedprotectionpercentage.",
+    "branch_activity": "Countactualbaseintents/adds/harvests/rearms/Lightlatches/Recoveryattempts/Recoveryuses/exits/fallbacks. Configuredbut0events=UNEXERCISED,noeconomicbenefitclaim.",
+    "locks_and_exit": "Regime/BTCflat/mandatoryexitpriority,excessreductionafteractualBTCQdrop,latefill/partial/pendingnativewitness,oldSOLoverlayOFF/oneNETTINGowner.",
+    "accounting": "Nativeaccountcash/TOTAL/DD/feesauthoritative. No syntheticperbucketPnL/fundingallocation/virtualpositions;knownBTCrealized+unrealizedsourceexplicit. SignedfundingUNKNOWNunlessdirectcashdeltaproof."
+  },
+  "BTC_preservation": "Compareactualparentsbycalendar+side+q0/q1+firstfill/P0/acceptedowncausalplan;absoluteQcanchangeviaequitycompounding. Explicitactualdelays/sharedmargin/liqblocks;NOTautomatically105timestampsexact.",
+  "ranking": "Onlyvalidcomparableoutputs;Decimalglobalnative1mDD<=50strict,thenmaxnativeTOTAL. ConditionalOHLCboundseparate/notactualpathguarantee. Ifnoeligible: NO_ELIGIBLE_WINNER/noextratests/control/repeat/optimizer.",
+  "future_outputs": [
+    "analysis-comparison.csv",
+    "analysis-summary.json",
+    "analysis-report.md",
+    "analysis-manifest.json"
+  ],
+  "manifest": "Freezeacceptancestatusesfirst;thenSHAallcompactanalysis+receipts/proofs/parameters referenced.Noeditraw/nativeevidence.",
+  "actual_engine_schema": {
+    "result_audit_key": "immediate_sol_insurance_audit",
+    "result_cycles_key": "immediate_sol_insurance_cycles",
+    "receipt_fields": [
+      "auditSHA",
+      "cyclescount/allclosed",
+      "daily_source_hashes",
+      "funding_journal_files",
+      "compressed_native_observer(path/bytes/SHA/rows)"
+    ],
+    "FIRST_BTC_FILL": [
+      "episode_id",
+      "timestamp_ns",
+      "k",
+      "sigma",
+      "estimate_close_ns",
+      "returns",
+      "coefficient_valid"
+    ],
+    "cycles": [
+      "first_fill_ns",
+      "estimate_close_ns",
+      "returns",
+      "k",
+      "sigma",
+      "closed",
+      "target"
+    ],
+    "TARGET_LATCH": [
+      "btc_remaining",
+      "marks",
+      "target_qty",
+      "actual_SOL",
+      "adverse_sigma",
+      "fraction",
+      "recovery_fraction"
+    ],
+    "events": [
+      "ADVERSE_STAGE",
+      "LIGHT_LATCH",
+      "HARVEST_OR_RECOVERY",
+      "RECOVERY_ADD",
+      "RECOVERY_RELEASE",
+      "TARGET",
+      "TRIM",
+      "NATIVE_FILL",
+      "ORIGINAL_ATTEMPT_TERMINAL",
+      "NATIVE_ADD_DENIED"
+    ],
+    "native_fill_provenance": "physical_intent/original_native_quantity=0/conditional_native_quantity/native_order_id; actualconfirmedfillsauthoritative",
+    "coverage_formula": "event-sampledvolriskfraction=abs(actualSOLqty)*SOLmark/(abs(actualBTCremaining)*BTCmark*k). f=.25/1/3volriskshare,NOTfactorcoverage,NOTcontinuouscap. BTCflatdenominatorundefined,showSOLresidualqty/durationonlyifalreadyexported.",
+    "independent_historical_clock_verifiable": [
+      "FIRST_BTC_FILL estimateclose<=firstfill/n90/frozensamekσwithinBTCepisode",
+      "ADVERSE_STAGE closedbar/receipt/tf",
+      "LIGHT_LATCH closedBTCbar/tf",
+      "RECOVERY_ADD barclose/nativeBTCpnl/nativeSOLpnl"
+    ],
+    "explicit_telemetry_limit": "Per-addARMtimestampandper-harvestREVERSEbar timestampNOTexported. Noindependentfullhistoricalconfirmationreplayclaim; frozenbranch/nativefocusedfixturesmustcertifythosecausalrequirements. No newcoverage trace."
+  }
+}

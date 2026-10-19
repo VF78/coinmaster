@@ -1,0 +1,152 @@
+{
+  "status": "FINAL_AFTER_ACCEPTANCE_STATUSES_NO_ELIGIBLE_WINNER",
+  "files": {
+    "reports/immediate-sol-insurance-113/analysis-contract.json": {
+      "sha256": "9a7d24e39e7bafdfa0dcb3a550d280f0f053c6305a03b5650ba73639674a2102",
+      "bytes": 6257
+    },
+    "reports/immediate-sol-insurance-113/analysis-compare.py": {
+      "sha256": "23ca775c03cdbe2d31f02282cc20cdebdbf86b0126222976d90d759aa8788391",
+      "bytes": 17359
+    },
+    "reports/immediate-sol-insurance-113/analysis-comparison.csv": {
+      "sha256": "ce25d9fdc82030d7ca554178d90448283665e8d1881a31910ec93cf1993b4405",
+      "bytes": 3749
+    },
+    "reports/immediate-sol-insurance-113/analysis-summary.json": {
+      "sha256": "525e515838bbdb9605217547aae9913c7e5ecffd06de52f1426102b86650297d",
+      "bytes": 251691
+    },
+    "reports/immediate-sol-insurance-113/analysis-BTC-permissions.csv": {
+      "sha256": "a34d3d58d076c53b73fbd02c2d61435bfe92b1c4499d86e6aea50fa4b8f40f1e",
+      "bytes": 76317
+    },
+    "reports/immediate-sol-insurance-113/analysis-episode-fill-diagnostic.csv": {
+      "sha256": "4bc228747513803147b228096f0e89ec5033f11234626a019e9cb438f14ada20",
+      "bytes": 100058
+    },
+    "reports/immediate-sol-insurance-113/analysis-event-coverage.csv": {
+      "sha256": "32a7738fd324c60520d44e0bac67191ee5965b6cb86eaa7bb98cded02a4d4e9d",
+      "bytes": 22486
+    },
+    "reports/immediate-sol-insurance-113/analysis-report.md": {
+      "sha256": "ea28d433bd446133a335681556c592be51cdae4d8a33eab3e75dcce154636d3a",
+      "bytes": 10596
+    },
+    "reports/immediate-sol-insurance-113/launch-and-completion-receipts.json": {
+      "sha256": "f29ae17453b79b7bc38a94c3084897ee50a16ab474bc98fd982d5154ba156aa4",
+      "bytes": 13362
+    },
+    "reports/immediate-sol-insurance-113/root-four-completion-checkpoint.json": {
+      "sha256": "f1c62c041e148f01367868613404570af3e16d4433d93be90e0afe4cb96c875e",
+      "bytes": 1566
+    },
+    "reports/immediate-sol-insurance-113/implementation-i25-receipt.json": {
+      "sha256": "84f15357886519c4ba31a74071563ce776bcf93248c5d13ee5234d47b12e4d5e",
+      "bytes": 16591
+    },
+    "reports/immediate-sol-insurance-113/implementation-i25-light-receipt.json": {
+      "sha256": "2cbfbf89456a9802e49f8e0db4bd928f2de6fbe9486a9578947dc50a4a8b1190",
+      "bytes": 16644
+    },
+    "reports/immediate-sol-insurance-113/implementation-i25-recovery-receipt.json": {
+      "sha256": "6f464eef99d7b076a40baa48f5dc88b3814e88b465bbec66a804f069c938c6dd",
+      "bytes": 16682
+    },
+    "reports/immediate-sol-insurance-113/implementation-i33-receipt.json": {
+      "sha256": "0c1eb700f25791ad5fcc828b351daf9e1e9f5b7f3592a25451d392482161e26e",
+      "bytes": 16583
+    },
+    "reports/sol-risk-first-20261018/analyze-comparison.py": {
+      "sha256": "2f7df53fb07c2d0817f7dcad49f0e4fa2fa579fdb9e88d04155b6384bf65caa5",
+      "bytes": 14060
+    },
+    "reports/sol-risk-first-20261018/analysis-control-provenance.json": {
+      "sha256": "cfff6e87d37925c240d934b670f415683f7dd87f02926db103d1586c0eee31d1",
+      "bytes": 4704
+    },
+    "reports/btc-split-sol-cover-20261018/btc025-planref-tp-ioc-receipt.json": {
+      "sha256": "4cb3edf8a90203ea49a0d018f02b1ab6bc15de78db09e900f6eb5e1d10af6cee",
+      "bytes": 15813
+    },
+    "reports/btc-split-sol-cover-20261018/final-repeat-verification.json": {
+      "sha256": "9284fc17abd03d73de77a69055435c242976f24a5ed75ffe0631c53d68449046",
+      "bytes": 10350
+    }
+  },
+  "raw_native_references": {
+    "i25": {
+      "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-btc-direction.json",
+      "artifact_sha256": "0ea34e81c1382276a8a01f163dbaaa3661994df33e87d0fe71cb3853a818b78e",
+      "funding_journal_family": {
+        "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-btc-direction-funding.sqlite": "b9af2ba346d82bd2aa29362baef7c086c5c380a13bec446c4c4d0331320cc803"
+      },
+      "compressed_observer": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/result/minute-native-risk.csv.gz",
+        "bytes": 88971265,
+        "sha256": "449da0d4991b5c6e7d3b37855e1bdbc38fa02a4ca0a4bc684a239bbe126746b2",
+        "rows": 3153600
+      },
+      "compressed_observer_verification": "Inheritedenginecollector/rootproof;statsbytecountchecked,noposthocuncompressedcopyordecodedscan"
+    },
+    "i25-light": {
+      "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-light-btc-direction.json",
+      "artifact_sha256": "90786210ac7b1ace52972353e1baae85e9f2bad83a021660019ed2886ca5060c",
+      "funding_journal_family": {
+        "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-light-btc-direction-funding.sqlite": "c658e7c8bce7939aa225a7850f0dc4220d1ddf1a38fe68c8b53b490afb9cb0df"
+      },
+      "compressed_observer": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/result/minute-native-risk.csv.gz",
+        "bytes": 88860638,
+        "sha256": "36616185bffafadb3481635cebdee9e3dc37fb1b5721647c39b86ec8c4afd97b",
+        "rows": 3153600
+      },
+      "compressed_observer_verification": "Inheritedenginecollector/rootproof;statsbytecountchecked,noposthocuncompressedcopyordecodedscan"
+    },
+    "i25-recovery": {
+      "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-recovery-btc-direction.json",
+      "artifact_sha256": "8b594b826419c676c5579f68c8f16ca89dbff1b3925928a92df4e44327fc3031",
+      "funding_journal_family": {
+        "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-recovery-btc-direction-funding.sqlite": "226372f81d67a4b4524fcd501843af3c431ecbe51ddae7375cbd9a30eb976211"
+      },
+      "compressed_observer": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/result/minute-native-risk.csv.gz",
+        "bytes": 88975992,
+        "sha256": "fa53bf5a430b35251591c2879894128441f70556d3474b427e3af9d0611175a8",
+        "rows": 3153600
+      },
+      "compressed_observer_verification": "Inheritedenginecollector/rootproof;statsbytecountchecked,noposthocuncompressedcopyordecodedscan"
+    },
+    "i33": {
+      "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i33-btc-direction.json",
+      "artifact_sha256": "f6fa23f04ac8c17d4cd95d017dce841493d5811a046d8c0989a9372c1c79e63c",
+      "funding_journal_family": {
+        "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i33-btc-direction-funding.sqlite": "1a62e923376f4b87e728ac570220e9d0b427ba11f9ed07046cc2422d0830cebd"
+      },
+      "compressed_observer": {
+        "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/result/minute-native-risk.csv.gz",
+        "bytes": 88089575,
+        "sha256": "9d0694486e7f08205d9b8606e5776f23a806955f5a511d28c36cc56925273e24",
+        "rows": 3153600
+      },
+      "compressed_observer_verification": "Inheritedenginecollector/rootproof;statsbytecountchecked,noposthocuncompressedcopyordecodedscan"
+    }
+  },
+  "source_commit": "f878cd401e3ac7482e3919324c11ddaa312b3196",
+  "observer_decoded_read_passes": 0,
+  "engines_added": 0,
+  "reused_control": {
+    "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "artifact_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+    "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "existing_exact_repeat_proof": {
+      "path": "reports/btc-split-sol-cover-20261018/final-repeat-verification.json",
+      "sha256": "9284fc17abd03d73de77a69055435c242976f24a5ed75ffe0631c53d68449046",
+      "checks_exact_pass": 26,
+      "raw_JSON_identity_expected": false
+    }
+  }
+}

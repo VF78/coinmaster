@@ -1,0 +1,41 @@
+{
+  "verified_utc": "2026-10-19T16:50:51.033957+00:00",
+  "aggregate_sha256": "f29ae17453b79b7bc38a94c3084897ee50a16ab474bc98fd982d5154ba156aa4",
+  "root_completed_result_identity": "PASS",
+  "runs": [
+    {
+      "mode": "i25",
+      "receipt_sha256": "84f15357886519c4ba31a74071563ce776bcf93248c5d13ee5234d47b12e4d5e",
+      "raw_result_sha256": "0ea34e81c1382276a8a01f163dbaaa3661994df33e87d0fe71cb3853a818b78e",
+      "terminal_total": "8000.31240969",
+      "native_flat": true,
+      "full_feed": true
+    },
+    {
+      "mode": "i25-light",
+      "receipt_sha256": "2cbfbf89456a9802e49f8e0db4bd928f2de6fbe9486a9578947dc50a4a8b1190",
+      "raw_result_sha256": "90786210ac7b1ace52972353e1baae85e9f2bad83a021660019ed2886ca5060c",
+      "terminal_total": "7864.88334010",
+      "native_flat": true,
+      "full_feed": true
+    },
+    {
+      "mode": "i25-recovery",
+      "receipt_sha256": "6f464eef99d7b076a40baa48f5dc88b3814e88b465bbec66a804f069c938c6dd",
+      "raw_result_sha256": "8b594b826419c676c5579f68c8f16ca89dbff1b3925928a92df4e44327fc3031",
+      "terminal_total": "7720.28353387",
+      "native_flat": true,
+      "full_feed": true
+    },
+    {
+      "mode": "i33",
+      "receipt_sha256": "0c1eb700f25791ad5fcc828b351daf9e1e9f5b7f3592a25451d392482161e26e",
+      "raw_result_sha256": "f6fa23f04ac8c17d4cd95d017dce841493d5811a046d8c0989a9372c1c79e63c",
+      "terminal_total": "2026.97093770",
+      "native_flat": true,
+      "full_feed": true
+    }
+  ],
+  "next": "one independent final stats analysis; no new engine",
+  "pilot_unchanged": true
+}

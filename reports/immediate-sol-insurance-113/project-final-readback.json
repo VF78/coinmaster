@@ -1,0 +1,36 @@
+{
+  "readback_utc": "2026-10-19T17:09:23.438476+00:00",
+  "project": "https://github.com/users/VF78/projects/2",
+  "issues": {
+    "a": {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzhB3Hv4",
+      "content": {
+        "number": 119,
+        "state": "CLOSED",
+        "url": "https://github.com/VF78/coinmaster/issues/119"
+      },
+      "fieldValueByName": {
+        "name": "Done",
+        "optionId": "98236657"
+      }
+    },
+    "b": {
+      "id": "PVTI_lAHOBIUvJs4BPJNjzg82oW4",
+      "content": {
+        "number": 113,
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/113"
+      },
+      "fieldValueByName": {
+        "name": "Todo",
+        "optionId": "f75ad846"
+      }
+    }
+  },
+  "all119_checkboxes_complete": true,
+  "comment": "https://github.com/VF78/coinmaster/issues/119#issuecomment-6272783455",
+  "report": "https://github.com/VF78/coinmaster/blob/codex/nautilus-btc-sol-mvp/reports/immediate-sol-insurance-113/analysis-report.md",
+  "economic_status": "NO_ELIGIBLE_WINNER",
+  "no_next_engine": true,
+  "prior_readback_http_timeout": "Recovered via read-only requests; no repeated mutation/comment"
+}

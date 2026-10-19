@@ -1,0 +1,17 @@
+{
+  "verified_utc": "2026-10-19T17:07:00.320843+00:00",
+  "status": "PASS_NO_ELIGIBLE_WINNER",
+  "analysis_manifest_sha256": "28140e23622c4f86ec5b0dc0c9865743ade4bfe055d7152017bf52b5195058f5",
+  "compact_manifest_files_verified": 18,
+  "raw_results_verified": 5,
+  "independent_funding_families_verified": 4,
+  "compressed_observer_sha_verified": 4,
+  "observer_decoded_passes": 0,
+  "arithmetic_total_roi_fees_deltas": "PASS",
+  "accepted_BTC_plan_preservation": "105/105 each; 0 delays;104 equity-driven dollar-Q changes",
+  "all_candidates_DD_gt50": true,
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "daily_lookback": 90,
+  "existing_episode_k_and_sigma_frozen": true,
+  "no_extra_engine_or_deployment": true
+}
