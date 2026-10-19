@@ -1,0 +1,15 @@
+{
+  "reviewed_at_utc": "2026-10-19T21:19:26.771898+00:00",
+  "review": "PASS_NARROW_EXPORT_FIX_NOT_FULL_MEMORY_FIT",
+  "implementation_receipt_sha256": "c5d44c6c47cb3f63a00ee56b6f36569ecda33fc6a59b0020ceddf45619208151",
+  "runner_sha256": "c29a44f4e1a97ab0f8db04194fac469c82bab8b568ec4147c3ebab7a827a4c80",
+  "scope": "22 runner lines + one focused test; ALPHA-only native run_analysis false, sequential native reports; native engine.end retained; monetary formulas preserved",
+  "actual_source_pins_verified": 10,
+  "ast_parse": "PASS",
+  "no_account_fills_orders_DataFrame_references_after_del": "PASS",
+  "native_parity": "1 passed/11.14s; actual two episodes/orders/fills/cash/fees/3fundingrows/CSV/JSON/flat/terminal",
+  "full_native_backtest_started": false,
+  "full139k_export_memory_fit": "UNKNOWN_NOT_PROVEN",
+  "economic_strategy_rules_changed": false,
+  "pilot_mutated": false
+}

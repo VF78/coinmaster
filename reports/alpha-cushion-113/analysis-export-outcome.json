@@ -1,0 +1,304 @@
+{
+  "status": "CURRENT_OUTCOME_ECONOMIC_COMPARISON_INCOMPLETE_OBSERVED_DD_CRITERION_FAIL",
+  "created_utc": "2026-10-19T21:20:02.261769+00:00",
+  "scope": "SynthesisONLYexistingcompletedcontrol/preflight/failure/cleanup/observerdiagnostic/exportparityreceipts. No newdata/trace/codepass/engine/test/control/repeat/optimizer/resourceactions. Oldfrozenreportspreserved.",
+  "comparison": [
+    {
+      "variant": "selected_control6077",
+      "outcome_status": "COMPLETED_NATIVE_REFERENCE_DD_ABOVE50",
+      "settled_native_TOTAL": "6077107.23887483",
+      "native_ROI_percent": "60671.0723887483",
+      "completed_global_native_minute_DD_percent": "66.31878024969152066570091116",
+      "observed_DD_lower_bound_percent": null,
+      "conditional_OHLC_bound_percent": "67.54771031869252420136632742",
+      "native_fees": "945927.73761825",
+      "turnover": "2209476512.4321",
+      "completed_native_fill_report_rows": 621,
+      "completed_native_liquidations": 0,
+      "terminal_native_flat": true,
+      "DD_le50_criterion": "FAIL_COMPLETED_NATIVE_MEASUREMENT",
+      "financial_comparison_complete": true
+    },
+    {
+      "variant": "ALPHA_CUSHION",
+      "outcome_status": "INCOMPLETE_OOM_OBSERVED_DD_TARGET_FAIL",
+      "settled_native_TOTAL": null,
+      "native_ROI_percent": null,
+      "completed_global_native_minute_DD_percent": null,
+      "observed_DD_lower_bound_percent": "93.22642696640473090566302551",
+      "conditional_OHLC_bound_percent": null,
+      "native_fees": null,
+      "turnover": null,
+      "completed_native_fill_report_rows": null,
+      "completed_native_liquidations": null,
+      "terminal_native_flat": null,
+      "DD_le50_criterion": "FAIL_PROVEN_BY_OBSERVED_NATIVE_PREFIX",
+      "financial_comparison_complete": false
+    }
+  ],
+  "observed_risk": {
+    "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/result/minute-native-risk.csv.gz",
+    "compressed_input_SHA256": "bac6800e8826b13222349426dee5267ac0e9e156b9a3b57f7b147e3b1a7a802b",
+    "compressed_bytes": 92640304,
+    "header_fields": [
+      "bar_open_ms",
+      "close_available_ns",
+      "phase",
+      "cash",
+      "free_cash",
+      "native_initial_margin",
+      "native_maintenance_margin",
+      "paired_close_equity",
+      "conditional_adverse_equity",
+      "conditional_favorable_equity",
+      "conditional_high_mark_mm_upper",
+      "conditional_margin_breach",
+      "native_positions_and_mark_ohlc_json"
+    ],
+    "complete_rows_decoded": 3153111,
+    "actual_phase_counts": {
+      "pre_quote_paired_close": 1051037,
+      "post_btc_quote_paired_close": 1051037,
+      "post_quote_paired_close": 1051037
+    },
+    "observed_start": "2024-09-01T00:01:00+00:00",
+    "observed_end": "2026-08-31T21:17:00+00:00",
+    "gzip_clean_EOF": false,
+    "gzip_error": {
+      "type": "EOFError",
+      "message": "Compressed file ended before the end-of-stream marker was reached"
+    },
+    "maximum_native_DD_lower_bound_percent": "93.22642696640473090566302551",
+    "maximum_observed_peak": {
+      "timestamp_ns": "1726063200000000000",
+      "UTC": "2024-09-11T14:00:00+00:00",
+      "bar_open_ms": "1726063140000",
+      "phase": "pre_quote_paired_close",
+      "native_paired_close_equity": "12484.37563522",
+      "native_positions_and_mark_ohlc": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.883",
+          "avg_px_open": "57195.99501698754",
+          "mark_ohlc": {
+            "open_time_ms": 1726063140000,
+            "open": "55786.44",
+            "high": "55847.4",
+            "low": "55702.71",
+            "close": "55731.4"
+          },
+          "low_native_pnl": "1318.5795",
+          "high_native_pnl": "1190.8094"
+        }
+      ]
+    },
+    "maximum_observed_trough": {
+      "timestamp_ns": "1788097560000000000",
+      "UTC": "2026-08-30T13:46:00+00:00",
+      "bar_open_ms": "1788097500000",
+      "phase": "pre_quote_paired_close",
+      "native_paired_close_equity": "845.63830144",
+      "native_positions_and_mark_ohlc": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "0.037",
+          "avg_px_open": "78086.5081081081",
+          "mark_ohlc": {
+            "open_time_ms": 1788097500000,
+            "open": "78760.22",
+            "high": "78801.98",
+            "low": "78760.07",
+            "close": "78801.97"
+          },
+          "low_native_pnl": "24.9229",
+          "high_native_pnl": "26.4732"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "22.1",
+          "avg_px_open": "105.27470969194933",
+          "mark_ohlc": {
+            "open_time_ms": 1788097500000,
+            "open": "106.981",
+            "high": "107.34",
+            "low": "106.97",
+            "close": "107.32"
+          },
+          "low_native_pnl": "-37.46591581",
+          "high_native_pnl": "-45.64291581"
+        }
+      ]
+    },
+    "first_observed_over50": {
+      "peak": {
+        "timestamp_ns": "1726063200000000000",
+        "UTC": "2024-09-11T14:00:00+00:00",
+        "bar_open_ms": "1726063140000",
+        "phase": "pre_quote_paired_close",
+        "native_paired_close_equity": "12484.37563522",
+        "native_positions_and_mark_ohlc": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.883",
+            "avg_px_open": "57195.99501698754",
+            "mark_ohlc": {
+              "open_time_ms": 1726063140000,
+              "open": "55786.44",
+              "high": "55847.4",
+              "low": "55702.71",
+              "close": "55731.4"
+            },
+            "low_native_pnl": "1318.5795",
+            "high_native_pnl": "1190.8094"
+          }
+        ]
+      },
+      "observation": {
+        "timestamp_ns": "1727896320000000000",
+        "UTC": "2024-10-02T19:12:00+00:00",
+        "bar_open_ms": "1727896260000",
+        "phase": "pre_quote_paired_close",
+        "native_paired_close_equity": "6175.50649913",
+        "native_positions_and_mark_ohlc": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.519",
+            "avg_px_open": "60887.39653179191",
+            "mark_ohlc": {
+              "open_time_ms": 1727896260000,
+              "open": "60753.1",
+              "high": "60753.1",
+              "low": "60635.59",
+              "close": "60659.7"
+            },
+            "low_native_pnl": "130.6824",
+            "high_native_pnl": "69.6999"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "182.5",
+            "avg_px_open": "145.04836582614155",
+            "mark_ohlc": {
+              "open_time_ms": 1727896260000,
+              "open": "140.73",
+              "high": "140.73",
+              "low": "139.998",
+              "close": "140.02"
+            },
+            "low_native_pnl": "-921.32676327",
+            "high_native_pnl": "-788.10176327"
+          }
+        ]
+      },
+      "observed_DD_percent": "50.53411816840790644817459152"
+    },
+    "last_marked_native_E_NOT_TOTAL": "932.61441154",
+    "DD_worse_vs_completed_control_at_least_percentage_points": "26.90764671671321023996211435",
+    "interpretation": "AlreadymarkednativeDD>50cannotbeerasedbylaterrecovery; exactfullrunDD/TOTAL/ROI/settlement/flat/liq/fees/fundingNOTproven. Prefixriskcriterionfailurevaliddespiteincompleteeconomicexport."
+  },
+  "financial_unknowns": [
+    "ALPHAsettledTOTAL/ROI/cash/flat",
+    "ALPHAcompletedfees/maker-takerturnover/assetfillcounts/liqcount",
+    "ALPHAsignedfunding/nativeassetrealizedPnL",
+    "ExactALPHAfullrunDDandconditionalOHLCbound"
+  ],
+  "funding": "SignedUNKNOWN; noresidualattributedfunding andnofunding0assumption. NativeaccountTOTALauthoritativeONLYwhencompletedexportavailable.",
+  "last_batch_snapshot_NOT_completed_report": {
+    "source_receipt": "reports/alpha-cushion-113/failure-export-receipt.json",
+    "source_commit": "bd1aa691a487ebda25bcd76d278a88ec9f9c8195",
+    "snapshot": {
+      "alpha_audit_dropped": 481354,
+      "alpha_audit_rows": 4580,
+      "batch_count": 730,
+      "cursor_batch_rows": 1440,
+      "last_available_ns": 1788220800000000000,
+      "native_fill_events": 138984,
+      "native_orders": 139073,
+      "native_positions": 2,
+      "peak_rss_bytes": 873476096,
+      "processed_minutes": 1051200,
+      "rss_bytes": 811655168,
+      "seen_trade_ids": 138984,
+      "strategy_order_audit": 139073,
+      "weekly_batch_minutes": 1440
+    },
+    "labels": "139073nativeorders/138984fill-events ONLYlivebatchsnapshotat730batches/1051200feedminutes; NOTcompletednativeCSV/cash/liquidation/flatproof."
+  },
+  "technical_status": {
+    "native_exit_success": false,
+    "engine_end_entered": true,
+    "engine_end_returned": "UNKNOWN",
+    "failure": "MEMCG_OOM_AT_NATIVE_END_EXPORT",
+    "narrow_export_fix": {
+      "status": "FOCUSED_NATIVE_PARITY_PASS_NOT_FULL_RUN_APPROVAL",
+      "base_head": "dfcb7a0d9a9a99878833ea5dcdb88eead6f4a484",
+      "changed_product_paths": [
+        "runtime/coinmaster/research/native_baseline.py",
+        "runtime/tests/test_native_alpha_export.py"
+      ],
+      "eight_other_economic_source_pins_unchanged_as_receipted": {
+        "runtime/coinmaster/strategy/alpha_cushion.py": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c",
+        "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+        "runtime/coinmaster/strategy/conditional_hedge.py": "4b216a0cb05fe702d7c794fd8766675ac367f60d3fca978a6dcd751d8f03f66e",
+        "runtime/coinmaster/strategy/wave_overlay.py": "6e5fb6c7a359a9eb4e210ed76a3d5a2d66de15a8da6035e6bfd3e62155b2ab8e",
+        "runtime/coinmaster/research/minute_risk.py": "2a31baa92464198971bff5b16d44a03b778d1e2cfafdb458b1a073cd008a8f32",
+        "scripts/launch_split_cover_native.py": "29898a5b9653c2211f35568936dddd0252fdaa7bc0316caae209d4f8511c4f21",
+        "scripts/collect_split_cover_native.py": "f86b1787cd9c6ef11f2ed6a67e0bcf35e1d9b4a2b2872dc7237e54a25803fd4b",
+        "runtime/tests/test_native_alpha_cushion.py": "70373acb8eef39b4305dca9790f87e6c3fb7e0f6d9ff744ba25525e5436b8b37"
+      },
+      "changed_technical_runner_SHA256": "c29a44f4e1a97ab0f8db04194fac469c82bab8b568ec4147c3ebab7a827a4c80",
+      "new_focused_export_test_SHA256": "6a4b82246e623af8bde05df1b16acb8402aeba14448c682231ad5e16532ae1b5",
+      "parity": {
+        "initial": "1 failed: fixture expected4 funding settlements; actual native journal3 (BTC twice/SOL once)",
+        "final": "1 passed,12 warnings,11.14s",
+        "scope": "ONE focused connected native two-episode case; frozen bd1 previous runner analysisTrue vs new analysisFalse/sequential reports; existing production bar/release/batch fixture reused",
+        "verified": [
+          "equal economic config and hash",
+          "equal account TOTAL/cash series/fees/summary",
+          "equal native order/fill CSV columns+economic rows/type/TIF/liquidity/status",
+          "all orders terminal and positions flat",
+          "equal actual three native funding SQLite rows; published fresh journals",
+          "complete JSON serialization both cases",
+          "existing closed15m RELEASE and two-episode flow"
+        ]
+      },
+      "housekeeping": {
+        "alpha_only_run_analysis": false,
+        "engine_end_settlement_unchanged": true,
+        "json_atomic_publication_and_funding_exception_paths": "UNCHANGED",
+        "other_economic_source_pins": "UNCHANGED",
+        "sequential_export": "account extract/del;fills CSV+native scalars/del;orders CSV+native counts/del"
+      },
+      "limits": "Small native parity does not certify full139k-order export memory fit. Existing native cache/history, cash/fill audit arrays, CSV hash read_bytes and full JSON remain live memory costs. Python del drops DataFrame references, not guaranteed RSS return.",
+      "new_full_engine_launched": false
+    },
+    "future_fourth_full_attempt": "ONLYifownerdecidesexactsettledTOTALworthadditionalexpenseandexplicitlyauthorizesresources/run;notneededtoprovethisunchangedalgorithmfailshistoricalDD<=50. Nopromotedwinner/automaticretry/algorithmchange."
+  },
+  "cleanup": {
+    "status": "CLEANED_BOTH_TEMPORARY_FILES_ORIGINAL_SWAP_UNTOUCHED",
+    "receipt": "reports/alpha-cushion-113/resource-cleanup-receipt.json",
+    "receipt_SHA256": "0e7c1ebe7684b8a8b01e2c48a88e2a8e40b450ab7856849d6552738fadf6e435",
+    "temporary_swap": "Bothauthorizedtemporaryswapfilesremovedsafely; original/swapfileuntouched perreceipt. No newstatsresourceactions.",
+    "archival": "16completedoldobserversbyteexactMacarchivesretained; all3retentionreceiptsreferenced, nativeJSON/SQLite/protectedreferencespreserved."
+  },
+  "task_conclusion": "FinancialcomparisonNOTCOMPLETE. DD<=50FAILprovenfromobservedprefix. Cannotstateexactreturn/fees/liq/economicprofitability. Narrowexportfixreadywithboundednativeparity,notfullproductionmemory-fitproof. Pilotunchanged; no live promotion.",
+  "evidence_SHA256": {
+    "reports/alpha-cushion-113/analysis-preflight.json": "2f00f302c5872e1f3a0509e65a1b62bd1b2255a6af4b92c9257fae94322e1ce4",
+    "reports/alpha-cushion-113/analysis-contract.json": "eda82972e22a0721d89f42c32d09d17e3959c2e601275188e5d4ae8f8a078d36",
+    "reports/alpha-cushion-113/failure-export-receipt.json": "5288cd83c912bf26b082c298cd3eff950048f7e88df091c9c27f6b602459e824",
+    "reports/alpha-cushion-113/failure-export-journal-supplement.json": "2bf462381a8894df9c6f70ff2d9def8da2c2a1cad9eaabd25b37500d5a9e750c",
+    "reports/alpha-cushion-113/analysis-failed-observer-diagnostic.json": "7d8c6933a449b7f3b89cd0d3dc76007cfdc1bb2e447106c5e680cf3cf8f609c7",
+    "reports/alpha-cushion-113/analysis-failed-observer-diagnostic.md": "51786a7a9876a2c07f28c91143028e8d9173d2b80e6c77df8ef9f84617038c20",
+    "reports/alpha-cushion-113/resource-cleanup-receipt.json": "0e7c1ebe7684b8a8b01e2c48a88e2a8e40b450ab7856849d6552738fadf6e435",
+    "reports/alpha-cushion-113/implementation-export-memory-receipt.json": "c5d44c6c47cb3f63a00ee56b6f36569ecda33fc6a59b0020ceddf45619208151",
+    "reports/alpha-cushion-113/analysis-archive-retention-receipt.json": "69f58dd2077077f47b0036bb760989b47108e8d542f25cb01b8a258657adff3e",
+    "reports/alpha-cushion-113/analysis-export-archive-retention-receipt.json": "cae6c036560dfb3b18bb101f3da885afec541f26158cadf94a921df3811c90aa",
+    "reports/alpha-cushion-113/analysis-extra-archive-retention-receipt.json": "31c3680490bac4fae4c4c1fd45daeecffafa5a29e02efbd4fc7c17036b0cccae"
+  }
+}

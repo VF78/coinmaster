@@ -1,0 +1,9 @@
+{
+  "created_utc": "2026-10-19T20:57:57.629058+00:00",
+  "direct_human_answer": "\u0420\u0430\u0437\u0440\u0435\u0448\u0430\u044e \u0435\u0449\u0451 512 MiB swap",
+  "invocation": "da3704545f2c4c00bb84a5a18a2bd870",
+  "main_pid": 4058618,
+  "native_pid": 4058622,
+  "same_unit": "cm115-split-alpha-cushion-swap768-20261019c.service",
+  "scope": "Additional512MiBGLOBALtemporaryswap,total1280MiB, researchRAM650MiBunchanged; samefrozenengineonly, safeaftercleanup; ROOTforwardedtrustedexplicitanswer."
+}

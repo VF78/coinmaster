@@ -1,0 +1,111 @@
+{
+  "activated_before_resume": {
+    "disk_free": 1732169728,
+    "risk": "ControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice\nCPUWeight=[not set]\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=1342177280\nActiveState=active\nFreezerState=running\nInvocationID=e4e3152ce52144c3bb5e5068cbe61e7b",
+    "swapon": "NAME                                              TYPE       SIZE       USED PRIO\n/swapfile                                         file 2147479552 2147430400   -2\n/root/.cm120-alpha-cushion-20261019.swap          file  805302272  721997824   -3\n/root/.cm120-alpha-cushion-extra512-20261019.swap file  536866816          0   -4",
+    "unit": "MainPID=4058618\nControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm115-split-alpha-cushion-swap768-20261019c.service\nCPUWeight=10\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=1342177280\nActiveState=active\nFreezerState=frozen\nInvocationID=da3704545f2c4c00bb84a5a18a2bd870"
+  },
+  "after": {
+    "disk_free": 1732169728,
+    "memory": {
+      "MemAvailable": 870502400,
+      "SwapFree": 620744704,
+      "SwapTotal": 3489648640
+    },
+    "native_pid_exists": true,
+    "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+    "risk": "ControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice\nCPUWeight=[not set]\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=1342177280\nActiveState=active\nFreezerState=running\nInvocationID=e4e3152ce52144c3bb5e5068cbe61e7b",
+    "swapon": "NAME                                              TYPE       SIZE       USED PRIO\n/swapfile                                         file 2147479552 2147381248   -2\n/root/.cm120-alpha-cushion-20261019.swap          file  805302272  721260544   -3\n/root/.cm120-alpha-cushion-extra512-20261019.swap file  536866816          0   -4",
+    "unit": "MainPID=4058618\nControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm115-split-alpha-cushion-swap768-20261019c.service\nCPUWeight=10\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=1342177280\nActiveState=active\nFreezerState=running\nInvocationID=da3704545f2c4c00bb84a5a18a2bd870"
+  },
+  "approval": {
+    "created_utc": "2026-10-19T20:57:57.629058+00:00",
+    "direct_human_answer": "\u0420\u0430\u0437\u0440\u0435\u0448\u0430\u044e \u0435\u0449\u0451 512 MiB swap",
+    "invocation": "da3704545f2c4c00bb84a5a18a2bd870",
+    "main_pid": 4058618,
+    "native_pid": 4058622,
+    "same_unit": "cm115-split-alpha-cushion-swap768-20261019c.service",
+    "scope": "Additional512MiBGLOBALtemporaryswap,total1280MiB, researchRAM650MiBunchanged; samefrozenengineonly, safeaftercleanup; ROOTforwardedtrustedexplicitanswer."
+  },
+  "before": {
+    "cgroup_events": "populated 1\nfrozen 1",
+    "disk_free": 2269061120,
+    "memory": {
+      "MemAvailable": 871391232,
+      "SwapFree": 83353600,
+      "SwapTotal": 2952781824
+    },
+    "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+    "risk": "ControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice\nCPUWeight=[not set]\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=805306368\nActiveState=active\nFreezerState=running\nInvocationID=e4e3152ce52144c3bb5e5068cbe61e7b",
+    "swapon": "NAME                                     TYPE       SIZE       USED PRIO\n/swapfile                                file 2147479552 2147430400   -2\n/root/.cm120-alpha-cushion-20261019.swap file  805302272  721997824   -3",
+    "unit": "MainPID=4058618\nControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm115-split-alpha-cushion-swap768-20261019c.service\nCPUWeight=10\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=805306368\nActiveState=active\nFreezerState=frozen\nInvocationID=da3704545f2c4c00bb84a5a18a2bd870"
+  },
+  "commands": [
+    {
+      "argv": [
+        "fallocate",
+        "-l",
+        "536870912",
+        "/root/.cm120-alpha-cushion-extra512-20261019.swap"
+      ],
+      "output": ""
+    },
+    {
+      "argv": [
+        "chmod",
+        "0600",
+        "/root/.cm120-alpha-cushion-extra512-20261019.swap"
+      ],
+      "output": ""
+    },
+    {
+      "argv": [
+        "mkswap",
+        "/root/.cm120-alpha-cushion-extra512-20261019.swap"
+      ],
+      "output": "Setting up swapspace version 1, size = 512 MiB (536866816 bytes)\nno label, UUID=3c6ec454-3793-4a6a-8287-917e42d6afc3"
+    },
+    {
+      "argv": [
+        "swapon",
+        "/root/.cm120-alpha-cushion-extra512-20261019.swap"
+      ],
+      "output": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "set-property",
+        "--runtime",
+        "cm113-v3-risk.slice",
+        "MemorySwapMax=1280M"
+      ],
+      "output": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "set-property",
+        "--runtime",
+        "cm115-split-alpha-cushion-swap768-20261019c.service",
+        "MemorySwapMax=1280M"
+      ],
+      "output": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "thaw",
+        "cm115-split-alpha-cushion-swap768-20261019c.service"
+      ],
+      "output": ""
+    }
+  ],
+  "extra_swap_bytes": 536870912,
+  "extra_swap_file": "/root/.cm120-alpha-cushion-extra512-20261019.swap",
+  "global_not_private_or_exclusive": true,
+  "no_new_engine_or_source_or_risk_changes": true,
+  "original_swapfile_untouched": true,
+  "resumed_utc": "2026-10-19T20:57:57.808112+00:00",
+  "status": "SAME_ENGINE_RESUMED_RESOURCE_EXTENSION_ONLY"
+}

@@ -1,0 +1,144 @@
+diff --git a/runtime/coinmaster/research/native_baseline.py b/runtime/coinmaster/research/native_baseline.py
+index cc9eb80..e8d5695 100644
+--- a/runtime/coinmaster/research/native_baseline.py
++++ b/runtime/coinmaster/research/native_baseline.py
+@@ -776,6 +776,7 @@ def run_native_diagnostic(
+     minute_bars = {instrument.id: BarType(instrument.id, BarSpecification(1, BarAggregation.MINUTE, PriceType.LAST), AggregationSource.EXTERNAL)
+                    for instrument in (btc_instrument, sol_instrument)}
+     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
++        run_analysis=not research_alpha_cushion,
+         **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion else {})))
+     engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion))
+     engine.add_instrument(btc_instrument)
+@@ -900,24 +901,32 @@ def run_native_diagnostic(
+                 early_liquidation_cutoff = True
+                 break
+         engine.end()
++        # Retain only one native report DataFrame at a time; native history
++        # remains authoritative and report-derived monetary formulas are unchanged.
+         account = engine.trader.generate_account_report(SIM)
+-        fills, orders = engine.trader.generate_order_fills_report(), engine.trader.generate_orders_report()
+-        artifacts = {"fills": save_native_artifact(fills, artifacts_root / f"{artifact_label}-fills.csv"), "orders": save_native_artifact(orders, artifacts_root / f"{artifact_label}-orders.csv")}
+         terminal_active = Decimal(str(account["total"].iloc[-1]))
+-        fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
+         # Native report insertion order is not a reporting-time guarantee when
+-        # orders settle across streamed batches.  The boundary invariant and
+-        # monthly aggregation must use the same chronological cash sequence.
++        # orders settle across streamed batches. Preserve chronological cash.
+         cash_account_series = sorted(
+             ({"timestamp": str(index), "active": str(value), "reserve": "0", "total": str(value)} for index, value in account["total"].items()),
+             key=lambda row: datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc),
+         )
++        del account
+         interval_cash_series = [{"timestamp": start_at.isoformat(), "active": str(initial_active_seed), "reserve": "0", "total": str(initial_active_seed)}] + [row for row in cash_account_series if start_at <= datetime.fromisoformat(row["timestamp"]).astimezone(timezone.utc) < end_at]
+         interval_cash_terminal = Decimal(interval_cash_series[-1]["total"])
+         cash_drawdown = standard_drawdown(interval_cash_series, initial_active_seed)
++        fills = engine.trader.generate_order_fills_report()
++        artifacts = {"fills": save_native_artifact(fills, artifacts_root / f"{artifact_label}-fills.csv")}
++        native_fill_count = len(fills)
++        fees = sum((Decimal(str(value).split()[0]) for row in fills.get("commissions", ()) for value in row), Decimal("0"))
+         fill_timestamps_ns = [_fill_timestamp_ns(value) for value in fills.get("ts_last", ())]
+         boundary_ns = trading_end_ms * 1_000_000
+         boundary_fill_count = sum(timestamp == boundary_ns for timestamp in fill_timestamps_ns)
++        del fills
++        orders = engine.trader.generate_orders_report()
++        artifacts["orders"] = save_native_artifact(orders, artifacts_root / f"{artifact_label}-orders.csv")
++        native_order_rejections = sum("REJECTED" in str(value) for value in orders.get("status", ()))
++        del orders
+         adapter = strategy.reporting_state()
+         terminal = adapter["terminal_lifecycle"]
+         if terminal["reason"] == "TERMINAL_BOUNDARY_SETTLEMENT" and (
+@@ -968,7 +977,7 @@ def run_native_diagnostic(
+                 "held_rebalance": False,
+                 "beta_entry_open_interval": ["0.2", "4"],
+             }
+-        result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": len(fills), "fill_timestamps_ns": fill_timestamps_ns, "fill_audit": adapter["fill_audit"], "entry_sizing_audit": adapter["entry_sizing_audit"], "fee_attribution": fee_attribution, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": sum("REJECTED" in str(value) for value in orders.get("status", ())), "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Owner-specified non-VIP fixed-base fees are diagnostic; historical applicability remains unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
++        result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": native_fill_count, "fill_timestamps_ns": fill_timestamps_ns, "fill_audit": adapter["fill_audit"], "entry_sizing_audit": adapter["entry_sizing_audit"], "fee_attribution": fee_attribution, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": native_order_rejections, "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Owner-specified non-VIP fixed-base fees are diagnostic; historical applicability remains unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
+         result.update({
+             "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED",
+             "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY",
+@@ -1025,6 +1034,7 @@ def run_native_diagnostic(
+             result["source_hashes"]["split_cover"] = sha256_file(Path(__file__).resolve().parents[1]/"strategy/split_cover.py")
+         if research_alpha_cushion:
+             result["config"]["research_alpha_cushion"]=True
++            result["research_housekeeping"]={"native_run_analysis":False,"export":"SEQUENTIAL_UNCHANGED_NATIVE_REPORTS","economic_policy_change":False}
+             result["config"]["alpha_cushion_policy"]={"window":90,"floor":".55GLOBAL_NATIVE_PEAK","costs":"KNOWN_PINNED_NATIVE_PROXY_TAKER;FUTURE_FUNDING_REAL_L2_UNKNOWN","BTCflat":"SOL_TARGET_ZERO_WITHOUT_EPISODE_RESET","original_alpha":"KEEP_IF_WHOLE_BUDGET_VALID;RISK_RETIRED_AUTHORITY_NO_RESURRECTION"}
+             result["alpha_cushion_audit"]=strategy.alpha_cushion_audit
+             result["alpha_cushion_audit_counts"]=strategy.alpha_cushion_counts
+diff --git a/runtime/tests/test_native_alpha_export.py b/runtime/tests/test_native_alpha_export.py
+new file mode 100644
+index 0000000..64e7728
+--- /dev/null
++++ b/runtime/tests/test_native_alpha_export.py
+@@ -0,0 +1,71 @@
++"""One connected native old-export/analysis-True vs sequential/export-False proof."""
++import csv
++import hashlib
++import json
++import sqlite3
++import subprocess
++import sys
++import types
++from pathlib import Path
++
++
++def test_two_episode_native_export_analysis_parity(tmp_path, monkeypatch):
++    import pyarrow as pa
++    import pyarrow.parquet as pq
++    import coinmaster.research.native_baseline as current
++    from test_native_alpha_cushion import test_production_alpha_closed_15m_release_and_daily_batch_native_identity as connected
++
++    repo = Path(current.__file__).resolve().parents[3]
++    before = subprocess.check_output(["git", "show", "bd1aa691a487ebda25bcd76d278a88ec9f9c8195:runtime/coinmaster/research/native_baseline.py"], cwd=repo, text=True)
++    reference = types.ModuleType("coinmaster.research._alpha_export_reference")
++    reference.__file__ = current.__file__
++    monkeypatch.setitem(sys.modules, reference.__name__, reference)
++    exec(compile(before, current.__file__, "exec"), reference.__dict__)
++    run_current = current.run_native_diagnostic
++    results = []
++    signatures = []
++    funding_rows = []
++    ignored = {"client_order_id", "venue_order_id", "position_id", "account_id", "trader_id", "strategy_id", "tags", "exec_algorithm_id", "exec_algorithm_params", "exec_spawn_id", "order_list_id", "linked_order_ids", "parent_order_id", "last_trade_id", "init_id", "trade_id"}
++
++    def run(data_root, **kwargs):
++        # Actual funding while both native episodes hold positions, not a mock ledger.
++        for symbol in ("BTCUSDT", "SOLUSDT"):
++            rows = [{"funding_time_ms": current.TRADING_START_MS + minute*current.MINUTE_MS, "funding_rate": "0.0001"} for minute in (10, 1450)]
++            pq.write_table(pa.Table.from_pylist(rows), data_root/"normalized"/f"bybit-{symbol}-funding.parquet")
++        kwargs["include_funding"] = True
++        # Keep both event batching parameters identical: only housekeeping differs.
++        kwargs["weekly_batch_minutes"] = kwargs["cursor_batch_rows"]
++        result = (reference.run_native_diagnostic if not results else run_current)(data_root, **kwargs)
++        assert result["terminal_open_positions"] == 0
++        assert result["funding"]["count"] == 3
++        assert sorted(result["funding"]["by_instrument_count"].values()) == [1, 2]
++        sig = {}
++        for kind in ("orders", "fills"):
++            artifact = result["execution_artifacts"][kind]
++            path = Path(artifact["path"])
++            assert hashlib.sha256(path.read_bytes()).hexdigest() == artifact["sha256"]
++            with path.open() as f:
++                reader = csv.DictReader(f)
++                sig[kind] = {"columns": reader.fieldnames, "rows": [{k:v for k,v in row.items() if k not in ignored} for row in reader]}
++            assert len(sig[kind]["rows"]) == artifact["rows"] > 0
++        assert all(row["status"] in {"FILLED", "CANCELED", "EXPIRED", "REJECTED", "DENIED"} for row in sig["orders"]["rows"])
++        with sqlite3.connect(result["funding_journal"]) as db:
++            funding_rows.append(db.execute("SELECT instrument_id,ts_event,rate,settlement_mark,account_total_after FROM funding_events ORDER BY ts_event,instrument_id").fetchall())
++        target = Path(kwargs["artifact_dir"])/"complete-result.json"
++        target.write_text(json.dumps(result, default=str, sort_keys=True))
++        assert json.loads(target.read_text())["terminal_total"] == result["terminal_total"]
++        signatures.append(sig)
++        results.append(result)
++        return result
++
++    monkeypatch.setattr(current, "run_native_diagnostic", run)
++    connected(tmp_path, monkeypatch)
++    left, right = results
++    assert left["config"] == right["config"]
++    assert left["config_hash"] == right["config_hash"]
++    assert "research_housekeeping" not in left
++    assert right["research_housekeeping"] == {"native_run_analysis": False, "export": "SEQUENTIAL_UNCHANGED_NATIVE_REPORTS", "economic_policy_change": False}
++    for key in ("terminal_total", "native_fees", "fills", "cash_account_series", "interval_cash_account_series", "terminal_open_positions", "terminal_lifecycle", "native_order_rejections", "summary", "post_boundary_settlement", "fee_attribution", "funding", "fill_timestamps_ns"):
++        assert left[key] == right[key], key
++    assert funding_rows[0] == funding_rows[1]
++    assert signatures[0] == signatures[1]

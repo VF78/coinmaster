@@ -1,0 +1,12 @@
+{
+  "recorded_at_utc": "2026-10-19T21:21:46.190385+00:00",
+  "authority": "DIRECT_HUMAN_ASYNC_QUESTION_REPLY",
+  "question_scope": "Reject ALPHA or repeat solely for exact TOTAL with fresh full backtest and temporaryswap1280/RAM650",
+  "verbatim_answer": "Отклонить ALPHA без повторного прогона (рекомендую)",
+  "resolution": "REJECTED_DD_CRITERION_NO_REPEAT",
+  "exact_settled_TOTAL_obtaining_requirement": "OWNER_WITHDREW_RETRY; VALUE REMAINS_UNKNOWN",
+  "new_backtests_authorized": false,
+  "new_temporary_swap_authorized": false,
+  "deployment_authorized_by_this_decision": false,
+  "pilot_must_remain_untouched": true
+}

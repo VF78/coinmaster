@@ -1,0 +1,13 @@
+{
+  "recorded_at_utc": "2026-10-19T21:21:46.190758+00:00",
+  "outcome_manifest_sha256": "5a7442cf1c02287a8b47f542218c8039ea6f62afd7d8d69ccfc3a342f43395b6",
+  "verified_manifest_members": 3,
+  "verified_immutable_evidence": 11,
+  "control_ROI_arithmetic": "PASS",
+  "observed_DD_arithmetic": "PASS",
+  "DD_le50_criterion": "FAIL_PROVEN",
+  "exact_ALPHA_TOTAL_ROI": "UNKNOWN_NOT_COMPLETED_NOT_INFERRED",
+  "resolution": "OWNER_REJECTED_WITHOUT_REPEAT",
+  "native_export_fix_review": "PASS_NARROW_NOT_FULL_MEMORY_FIT",
+  "pilot_changed": false
+}

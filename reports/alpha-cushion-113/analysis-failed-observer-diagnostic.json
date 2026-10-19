@@ -1,0 +1,305 @@
+{
+  "status": "FAILED_NATIVE_OBSERVER_OBSERVED_DD_LOWER_BOUND_ONLY",
+  "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/result/minute-native-risk.csv.gz",
+  "source_SHA256": "bac6800e8826b13222349426dee5267ac0e9e156b9a3b57f7b147e3b1a7a802b",
+  "source_bytes": 92640304,
+  "source_mtime_ns": 1792442783377931096,
+  "input_unchanged": true,
+  "header_fields": [
+    "bar_open_ms",
+    "close_available_ns",
+    "phase",
+    "cash",
+    "free_cash",
+    "native_initial_margin",
+    "native_maintenance_margin",
+    "paired_close_equity",
+    "conditional_adverse_equity",
+    "conditional_favorable_equity",
+    "conditional_high_mark_mm_upper",
+    "conditional_margin_breach",
+    "native_positions_and_mark_ohlc_json"
+  ],
+  "complete_CSV_rows_decoded": 3153111,
+  "included_actual_native_close_rows": 3153111,
+  "excluded_post_boundary_settlement_rows": 0,
+  "phase_counts": {
+    "pre_quote_paired_close": 1051037,
+    "post_btc_quote_paired_close": 1051037,
+    "post_quote_paired_close": 1051037
+  },
+  "first_observation": {
+    "timestamp_ns": "1725148860000000000",
+    "UTC": "2024-09-01T00:01:00+00:00",
+    "bar_open_ms": "1725148800000",
+    "phase": "pre_quote_paired_close",
+    "native_paired_close_equity": "10000",
+    "native_positions_and_mark_ohlc": []
+  },
+  "last_actual_observation_NOT_SETTLED_TOTAL": {
+    "timestamp_ns": "1788211020000000000",
+    "UTC": "2026-08-31T21:17:00+00:00",
+    "bar_open_ms": "1788210960000",
+    "phase": "post_quote_paired_close",
+    "native_paired_close_equity": "932.61441154",
+    "native_positions_and_mark_ohlc": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "2",
+        "quantity": "0.037",
+        "avg_px_open": "78086.5081081081",
+        "mark_ohlc": {
+          "open_time_ms": 1788210960000,
+          "open": "78808.65",
+          "high": "78808.66",
+          "low": "78779.93",
+          "close": "78779.93"
+        },
+        "low_native_pnl": "25.6555",
+        "high_native_pnl": "26.7211"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "3",
+        "quantity": "22.9",
+        "avg_px_open": "104.869589585016",
+        "mark_ohlc": {
+          "open_time_ms": 1788210960000,
+          "open": "103.33",
+          "high": "103.33",
+          "low": "103.252",
+          "close": "103.274"
+        },
+        "low_native_pnl": "37.0886015",
+        "high_native_pnl": "35.2566015"
+      }
+    ]
+  },
+  "last_observed_native_E_NOT_TOTAL": "932.61441154",
+  "observed_peak": {
+    "timestamp_ns": "1726063200000000000",
+    "UTC": "2024-09-11T14:00:00+00:00",
+    "bar_open_ms": "1726063140000",
+    "phase": "pre_quote_paired_close",
+    "native_paired_close_equity": "12484.37563522",
+    "native_positions_and_mark_ohlc": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "3",
+        "quantity": "0.883",
+        "avg_px_open": "57195.99501698754",
+        "mark_ohlc": {
+          "open_time_ms": 1726063140000,
+          "open": "55786.44",
+          "high": "55847.4",
+          "low": "55702.71",
+          "close": "55731.4"
+        },
+        "low_native_pnl": "1318.5795",
+        "high_native_pnl": "1190.8094"
+      }
+    ]
+  },
+  "observed_minimum_equity": {
+    "timestamp_ns": "1788097560000000000",
+    "UTC": "2026-08-30T13:46:00+00:00",
+    "bar_open_ms": "1788097500000",
+    "phase": "pre_quote_paired_close",
+    "native_paired_close_equity": "845.63830144",
+    "native_positions_and_mark_ohlc": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "2",
+        "quantity": "0.037",
+        "avg_px_open": "78086.5081081081",
+        "mark_ohlc": {
+          "open_time_ms": 1788097500000,
+          "open": "78760.22",
+          "high": "78801.98",
+          "low": "78760.07",
+          "close": "78801.97"
+        },
+        "low_native_pnl": "24.9229",
+        "high_native_pnl": "26.4732"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "3",
+        "quantity": "22.1",
+        "avg_px_open": "105.27470969194933",
+        "mark_ohlc": {
+          "open_time_ms": 1788097500000,
+          "open": "106.981",
+          "high": "107.34",
+          "low": "106.97",
+          "close": "107.32"
+        },
+        "low_native_pnl": "-37.46591581",
+        "high_native_pnl": "-45.64291581"
+      }
+    ]
+  },
+  "maximum_observed_DD_percent_lower_bound": "93.22642696640473090566302551",
+  "maximum_observed_DD_peak": {
+    "timestamp_ns": "1726063200000000000",
+    "UTC": "2024-09-11T14:00:00+00:00",
+    "bar_open_ms": "1726063140000",
+    "phase": "pre_quote_paired_close",
+    "native_paired_close_equity": "12484.37563522",
+    "native_positions_and_mark_ohlc": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "3",
+        "quantity": "0.883",
+        "avg_px_open": "57195.99501698754",
+        "mark_ohlc": {
+          "open_time_ms": 1726063140000,
+          "open": "55786.44",
+          "high": "55847.4",
+          "low": "55702.71",
+          "close": "55731.4"
+        },
+        "low_native_pnl": "1318.5795",
+        "high_native_pnl": "1190.8094"
+      }
+    ]
+  },
+  "maximum_observed_DD_trough": {
+    "timestamp_ns": "1788097560000000000",
+    "UTC": "2026-08-30T13:46:00+00:00",
+    "bar_open_ms": "1788097500000",
+    "phase": "pre_quote_paired_close",
+    "native_paired_close_equity": "845.63830144",
+    "native_positions_and_mark_ohlc": [
+      {
+        "instrument_id": "BTCUSDT-PERP.P1SIM",
+        "side": "2",
+        "quantity": "0.037",
+        "avg_px_open": "78086.5081081081",
+        "mark_ohlc": {
+          "open_time_ms": 1788097500000,
+          "open": "78760.22",
+          "high": "78801.98",
+          "low": "78760.07",
+          "close": "78801.97"
+        },
+        "low_native_pnl": "24.9229",
+        "high_native_pnl": "26.4732"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "3",
+        "quantity": "22.1",
+        "avg_px_open": "105.27470969194933",
+        "mark_ohlc": {
+          "open_time_ms": 1788097500000,
+          "open": "106.981",
+          "high": "107.34",
+          "low": "106.97",
+          "close": "107.32"
+        },
+        "low_native_pnl": "-37.46591581",
+        "high_native_pnl": "-45.64291581"
+      }
+    ]
+  },
+  "ever_observed_DD_strictly_above50": true,
+  "first_observed_strict50_breach": {
+    "peak": {
+      "timestamp_ns": "1726063200000000000",
+      "UTC": "2024-09-11T14:00:00+00:00",
+      "bar_open_ms": "1726063140000",
+      "phase": "pre_quote_paired_close",
+      "native_paired_close_equity": "12484.37563522",
+      "native_positions_and_mark_ohlc": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.883",
+          "avg_px_open": "57195.99501698754",
+          "mark_ohlc": {
+            "open_time_ms": 1726063140000,
+            "open": "55786.44",
+            "high": "55847.4",
+            "low": "55702.71",
+            "close": "55731.4"
+          },
+          "low_native_pnl": "1318.5795",
+          "high_native_pnl": "1190.8094"
+        }
+      ]
+    },
+    "observation": {
+      "timestamp_ns": "1727896320000000000",
+      "UTC": "2024-10-02T19:12:00+00:00",
+      "bar_open_ms": "1727896260000",
+      "phase": "pre_quote_paired_close",
+      "native_paired_close_equity": "6175.50649913",
+      "native_positions_and_mark_ohlc": [
+        {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.519",
+          "avg_px_open": "60887.39653179191",
+          "mark_ohlc": {
+            "open_time_ms": 1727896260000,
+            "open": "60753.1",
+            "high": "60753.1",
+            "low": "60635.59",
+            "close": "60659.7"
+          },
+          "low_native_pnl": "130.6824",
+          "high_native_pnl": "69.6999"
+        },
+        {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "182.5",
+          "avg_px_open": "145.04836582614155",
+          "mark_ohlc": {
+            "open_time_ms": 1727896260000,
+            "open": "140.73",
+            "high": "140.73",
+            "low": "139.998",
+            "close": "140.02"
+          },
+          "low_native_pnl": "-921.32676327",
+          "high_native_pnl": "-788.10176327"
+        }
+      ]
+    },
+    "observed_DD_percent": "50.53411816840790644817459152"
+  },
+  "gzip_valid_clean_EOF": false,
+  "stream_exception": {
+    "type": "EOFError",
+    "message": "Compressed file ended before the end-of-stream marker was reached"
+  },
+  "incomplete_final_line_bytes_returned_not_used": 0,
+  "timestamps_nondecreasing": true,
+  "native_TOTAL": null,
+  "native_ROI_percent": null,
+  "native_global_full_run_DD_percent": null,
+  "settled_cash": null,
+  "native_flat": null,
+  "method": [
+    "Exactlyoneforwardcompressedbytepass:SHA256andgzipdecodecombined,constantmemory. OnlycompleteLFterminatedCSVrowswithcorrectcolumncountandfiniteexportedpaired_close_equityused.",
+    "HWM=maxpreviousactualobservednativepairedcloseequity(sametimestampcallbackorderpreserved);DD=(HWM-nativeE)/HWM. No reconstructedcash/PnL/positionvalues, no conditionalOHLCsubstitution.",
+    "Excludeexplicitpost_boundary_rowsasnativeobserverdoes;all3genuinecallbackphasesincluded. Initialseednotinvented:peakbeginsfirstactualobserverrow(conservativeprefixbound).",
+    "No seek/retry/fillingmissingrows. AtEOF/errorretainonlysuccessfullyreturnedcompleteCSVrows;unreadrawcompressedtailhashedonly."
+  ],
+  "limits": [
+    "ObservedprefixmaximumislowerboundonfullrunDD,NOTexactglobalcompletedDD. Missinggziptrailer/EOFinvaliditystated;nativecompleteJSON/CSV/finalfinancialsettlementabsent.",
+    "LastmarkednativeEisNOTsettledTOTAL/ROI/cash/flatproof. No economicsrecoveredfrompartialfunding/fills/positionuPnL.",
+    "AnyalreadyobservedstrictDD>50isincompatiblewithhistoricalfullrungoalDD<=50; laterrecoverycannoterasepastHWMdrawdown. Thisdoesnotestimateprofitability/TOTAL orauthorizeanotherrun."
+  ],
+  "resources": {
+    "MemAvailable_start_kB": 1333816,
+    "compressed_input_passes": 1,
+    "decoded_observer_passes": 1,
+    "seconds": 105.77741956710815,
+    "peak_RSS_KiB": 18048,
+    "priority": "nice19/ioniceidleclass3"
+  },
+  "economic_conclusion": "NoTOTAL/ROIclaim. OnlyobservednativeDDriskfeasibilitydiagnostic."
+}

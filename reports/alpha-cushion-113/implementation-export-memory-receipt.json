@@ -1,0 +1,59 @@
+{
+  "status": "FOCUSED_NATIVE_PARITY_PASS_NOT_FULL_RUN_APPROVAL",
+  "timestamp_utc": "2026-10-19T21:16:59.392256+00:00",
+  "base_head": "dfcb7a0d9a9a99878833ea5dcdb88eead6f4a484",
+  "owned_changed_paths": [
+    "runtime/coinmaster/research/native_baseline.py",
+    "runtime/tests/test_native_alpha_export.py"
+  ],
+  "source_pins": {
+    "runtime/coinmaster/strategy/alpha_cushion.py": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c",
+    "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "4b216a0cb05fe702d7c794fd8766675ac367f60d3fca978a6dcd751d8f03f66e",
+    "runtime/coinmaster/strategy/wave_overlay.py": "6e5fb6c7a359a9eb4e210ed76a3d5a2d66de15a8da6035e6bfd3e62155b2ab8e",
+    "runtime/coinmaster/research/minute_risk.py": "2a31baa92464198971bff5b16d44a03b778d1e2cfafdb458b1a073cd008a8f32",
+    "runtime/coinmaster/research/native_baseline.py": "c29a44f4e1a97ab0f8db04194fac469c82bab8b568ec4147c3ebab7a827a4c80",
+    "scripts/launch_split_cover_native.py": "29898a5b9653c2211f35568936dddd0252fdaa7bc0316caae209d4f8511c4f21",
+    "scripts/collect_split_cover_native.py": "f86b1787cd9c6ef11f2ed6a67e0bcf35e1d9b4a2b2872dc7237e54a25803fd4b",
+    "runtime/tests/test_native_alpha_cushion.py": "70373acb8eef39b4305dca9790f87e6c3fb7e0f6d9ff744ba25525e5436b8b37",
+    "runtime/tests/test_native_alpha_export.py": "6a4b82246e623af8bde05df1b16acb8402aeba14448c682231ad5e16532ae1b5"
+  },
+  "patch": {
+    "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/implementation-export-memory.patch",
+    "sha256": "bb0616b1b05ff1b4327b52097e06383c506a55bda527da8a269b30c72ec33c84"
+  },
+  "logs": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/implementation-export-focused.log",
+      "sha256": "28362ca6f9c684a95c4b0ac9e2a09e9998b33cb8f39577bab5aaae13d39a0b4d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/implementation-export-focused-final.log",
+      "sha256": "a18189c1faf7f10287492abc6c913b8ca73fa2a9cff8c1c13a6c67550dea3b33"
+    }
+  ],
+  "tests": {
+    "initial": "1 failed: fixture expected4 funding settlements; actual native journal3 (BTC twice/SOL once)",
+    "final": "1 passed,12 warnings,11.14s",
+    "scope": "ONE focused connected native two-episode case; frozen bd1 previous runner analysisTrue vs new analysisFalse/sequential reports; existing production bar/release/batch fixture reused",
+    "verified": [
+      "equal economic config and hash",
+      "equal account TOTAL/cash series/fees/summary",
+      "equal native order/fill CSV columns+economic rows/type/TIF/liquidity/status",
+      "all orders terminal and positions flat",
+      "equal actual three native funding SQLite rows; published fresh journals",
+      "complete JSON serialization both cases",
+      "existing closed15m RELEASE and two-episode flow"
+    ]
+  },
+  "housekeeping": {
+    "alpha_only_run_analysis": false,
+    "engine_end_settlement_unchanged": true,
+    "json_atomic_publication_and_funding_exception_paths": "UNCHANGED",
+    "other_economic_source_pins": "UNCHANGED",
+    "sequential_export": "account extract/del;fills CSV+native scalars/del;orders CSV+native counts/del"
+  },
+  "uncertainty": "Small native parity does not certify full139k-order export memory fit. Existing native cache/history, cash/fill audit arrays, CSV hash read_bytes and full JSON remain live memory costs. Python del drops DataFrame references, not guaranteed RSS return.",
+  "no_full_engine_launched": true,
+  "no_git_mutation": true
+}

@@ -1,0 +1,40 @@
+{
+  "captured_utc": "2026-10-19T21:10:57.681052+00:00",
+  "unit_journal": {
+    "argv": [
+      "journalctl",
+      "-u",
+      "cm115-split-alpha-cushion-swap768-20261019c.service",
+      "--since",
+      "2026-10-19 21:07:30 UTC",
+      "--until",
+      "2026-10-19 21:08:30 UTC",
+      "--no-pager",
+      "-n",
+      "18",
+      "-o",
+      "short-iso"
+    ],
+    "rc": 0,
+    "stdout": "2026-10-19T21:08:02+00:00 MyShopAI-prod-1 systemd[1]: cm115-split-alpha-cushion-swap768-20261019c.service: A process of this unit has been killed by the OOM killer.\n2026-10-19T21:08:02+00:00 MyShopAI-prod-1 systemd[1]: cm115-split-alpha-cushion-swap768-20261019c.service: Failed with result 'oom-kill'.\n2026-10-19T21:08:02+00:00 MyShopAI-prod-1 systemd[1]: cm115-split-alpha-cushion-swap768-20261019c.service: Consumed 52min 3.606s CPU time, 650.0M memory peak, 1.0G memory swap peak.\n",
+    "stderr": ""
+  },
+  "kernel_oom": {
+    "argv": [
+      "journalctl",
+      "-k",
+      "--since",
+      "2026-10-19 21:07:30 UTC",
+      "--until",
+      "2026-10-19 21:08:30 UTC",
+      "--grep",
+      "oom-kill|Memory cgroup out of memory|memory: usage|swap: usage",
+      "--no-pager",
+      "-n",
+      "12"
+    ],
+    "rc": 0,
+    "stdout": "Oct 19 21:08:02 MyShopAI-prod-1 kernel: Memory cgroup out of memory: Killed process 4058622 (python) total-vm:3680972kB, anon-rss:602688kB, file-rss:16640kB, shmem-rss:0kB, UID:994 pgtables:4572kB oom_score_adj:0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=cm113.slice,mems_allowed=0,oom_memcg=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice,task_memcg=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm115-split-alpha-cushion-swap768-20261019c.service,task=python,pid=4058622,uid=994\nOct 19 21:08:02 MyShopAI-prod-1 kernel: swap: usage 996084kB, limit 1310720kB, failcnt 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: memory: usage 665600kB, limit 665600kB, failcnt 6201087\nOct 19 21:08:02 MyShopAI-prod-1 kernel: python invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=0\n",
+    "stderr": ""
+  }
+}

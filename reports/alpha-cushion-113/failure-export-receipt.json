@@ -1,0 +1,242 @@
+{
+  "timestamp_utc": "2026-10-19T21:10:47.412345+00:00",
+  "status": "INVALID_OOM_NO_ECONOMIC_RESULT",
+  "job": "cm115-split-alpha-cushion-swap768-20261019c",
+  "source_commit": "bd1aa691a487ebda25bcd76d278a88ec9f9c8195",
+  "invocation_id": "da3704545f2c4c00bb84a5a18a2bd870",
+  "native_pid": 4058622,
+  "main_pid": 4058618,
+  "native_exit_success": false,
+  "fullfeed_only": {
+    "batches": 730,
+    "processed_minutes": 1051200
+  },
+  "engine_end_entered": true,
+  "engine_end_returned": "UNKNOWN",
+  "cash_flat_fees_roi_dd": "UNKNOWN",
+  "partial_artifacts": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/variant.json",
+      "bytes": 360,
+      "sha256": "ad4c7b7bed5af0cf6b7f098a5cd2e5f31310566fae7d8e905e910a53a85d5ef7"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/immutable-source-hashes.json",
+      "bytes": 10578,
+      "sha256": "546b7a53e04673bac85eb5e52a84d353acd9a27e809c046a5585c5727fc2b7f9"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/input-hashes.json",
+      "bytes": 429,
+      "sha256": "456bed285e18e536bf668486eb4baff99dbfbbc1f36406a6d21a68aae818b16d"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/launch-command.json",
+      "bytes": 1442,
+      "sha256": "d58bbe2fbb0d59715967ff81d03fd99b730727c27b90606a06f61d300f92e1c2"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/resource-before.json",
+      "bytes": 60,
+      "sha256": "7542322627740889b37e56095cd8fd0650138597e0891646c99f7c1d8f95acc8"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/result/minute-native-risk.csv.gz",
+      "bytes": 92640304,
+      "sha256": "bac6800e8826b13222349426dee5267ac0e9e156b9a3b57f7b147e3b1a7a802b"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/result/batch-resource-latest.json",
+      "bytes": 396,
+      "sha256": "2b6a5458ad61d1885767c0fda7502c132b5f984f8cd24e38d949c5d0b7d00834"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-3354743a113d4a7bb840e6b3b9556ce6-shm",
+      "bytes": 32768,
+      "sha256": "e875efd958f7993575d068a0d3c491b3198508cf103747867d9406d220859942"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-3354743a113d4a7bb840e6b3b9556ce6",
+      "bytes": 294912,
+      "sha256": "6a877493dce8be4ccce00c52ac2afe1b6b15ba0646c2f0d0ade83680f2db55e2"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-alpha-cushion-btc-direction-funding.sqlite.attempt-3354743a113d4a7bb840e6b3b9556ce6-wal",
+      "bytes": 4136512,
+      "sha256": "0136162041ebc140fbea894630d2dc809db8e4d5398de6d143d132d1229a7d72"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/venue-manifest.json",
+      "bytes": 6690,
+      "sha256": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-SOLUSDT-mark-warmup-start.json",
+      "bytes": 177,
+      "sha256": "e0da3637671157bf9eb8a04cc9121165884272740ca14c18948fce0ac5a0dc3e"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json",
+      "bytes": 6091,
+      "sha256": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-BTC-candle-warmup-start.json",
+      "bytes": 130,
+      "sha256": "26a0ba0d2f78cea08ab22c9ed9355b8e499076066bf993b06dd7b5a3fd27b8e6"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-SOL-candle-research-start.json",
+      "bytes": 277,
+      "sha256": "34e73fe6c46954b858b014794edde440d1c908dfe6b238a2562d25dc9c4f1f2f"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-BTC-funding-research-start.json",
+      "bytes": 2108,
+      "sha256": "735848805208f835fb91bcdc2b5d356e6eafd17cff01668fb84a1736933380ed"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-BTCUSDT.json",
+      "bytes": 1047,
+      "sha256": "066509bb45aac8cfe5c13b7a5dd82a535c83848f89b281907d2e876c1aa408e4"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-BTCUSDT-mark-latest.json",
+      "bytes": 183,
+      "sha256": "48ef30f3f116cd2863779f1c6b0fba44dd5b7aaed1de15668f61fbe6b9740b02"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-BTCUSDT-funding-warmup-start.json",
+      "bytes": 444,
+      "sha256": "8f0ff52f63a7e21dac7c10c5e51733ec1998df4507405f01ec641b896849d346"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-BTCUSDT-mark-warmup-start.json",
+      "bytes": 181,
+      "sha256": "83958bfda5b8847b6848d0a27f214af22b2d0026cfdd30fd5d476d796460b8de"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-production-meta-2026-09-21.json",
+      "bytes": 1574,
+      "sha256": "8f5e7ea734bc7f159a822f6874df5310040c19f4220a6dd6ccf3ecb3da7d4a3c"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-SOLUSDT-funding-warmup-start.json",
+      "bytes": 453,
+      "sha256": "a579b5a704be240700129e69e9babe745b74a5c369049086e4f5d412a28c4a97"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json",
+      "bytes": 6124,
+      "sha256": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-SOL-funding-research-start.json",
+      "bytes": 2200,
+      "sha256": "ceb1cf4a70db32453cb9fe1890ba04e78c49ec76db9df299dccde4769f6db611"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-metaAndAssetCtxs.json",
+      "bytes": 72256,
+      "sha256": "a03911fd2fa081285d6e526877840b195f739fa7b34eb466e7cf3e39eb7cd8dd"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-BTCUSDT-funding-latest.json",
+      "bytes": 187,
+      "sha256": "78ef5fba859ca985553d613b147c932a1664ace99e24ce1924d46a068f56c6a0"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/bybit-SOLUSDT.json",
+      "bytes": 1038,
+      "sha256": "a75acf2290366891ed5f42d99bfe5a99c367a8a481330a5fadd49dcb87f9e2e2"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-BTC-funding-warmup-start.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-BTC-candle-research-start.json",
+      "bytes": 281,
+      "sha256": "504d46f25ac23a8d51841e6aaa71c0ad0d2754a17e0c4142340f3f52d5f1f704"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-swap768-20261019c/source/runtime/var/raw/venues/hyperliquid-testnet-production-meta-2026-09-22.json",
+      "bytes": 1826,
+      "sha256": "1eefb69a0e8d341f6e1b5e175c1c118f0f4a3489969597e243858e38798e5f4a"
+    }
+  ],
+  "journal": {
+    "argv": [
+      "journalctl",
+      "_SYSTEMD_INVOCATION_ID=da3704545f2c4c00bb84a5a18a2bd870",
+      "-n",
+      "24",
+      "--no-pager",
+      "-o",
+      "short-iso"
+    ],
+    "rc": 0,
+    "stdout": "-- No entries --\n",
+    "stderr": ""
+  },
+  "kernel_bounded": {
+    "argv": [
+      "journalctl",
+      "-k",
+      "--since",
+      "2026-10-19 21:07:30 UTC",
+      "--until",
+      "2026-10-19 21:08:30 UTC",
+      "-n",
+      "35",
+      "--no-pager"
+    ],
+    "rc": 0,
+    "stdout": "Oct 19 21:08:02 MyShopAI-prod-1 kernel: workingset_refault_anon 7844335\nOct 19 21:08:02 MyShopAI-prod-1 kernel: workingset_refault_file 237310\nOct 19 21:08:02 MyShopAI-prod-1 kernel: workingset_activate_anon 2148817\nOct 19 21:08:02 MyShopAI-prod-1 kernel: workingset_activate_file 109147\nOct 19 21:08:02 MyShopAI-prod-1 kernel: workingset_restore_anon 2148817\nOct 19 21:08:02 MyShopAI-prod-1 kernel: workingset_restore_file 28977\nOct 19 21:08:02 MyShopAI-prod-1 kernel: workingset_nodereclaim 15629\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgscan 18584420\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgsteal 9951271\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgscan_kswapd 902055\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgscan_direct 17670693\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgscan_khugepaged 11672\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgsteal_kswapd 786550\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgsteal_direct 9153886\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgsteal_khugepaged 10835\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgfault 18112270\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgmajfault 3209702\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgrefill 7050876\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgactivate 6883194\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pgdeactivate 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pglazyfree 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: pglazyfreed 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: zswpin 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: zswpout 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: zswpwb 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: thp_fault_alloc 24\nOct 19 21:08:02 MyShopAI-prod-1 kernel: thp_collapse_alloc 7\nOct 19 21:08:02 MyShopAI-prod-1 kernel: thp_swpout 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: thp_swpout_fallback 0\nOct 19 21:08:02 MyShopAI-prod-1 kernel: Tasks state (memory values in pages):\nOct 19 21:08:02 MyShopAI-prod-1 kernel: [  pid  ]   uid  tgid total_vm      rss rss_anon rss_file rss_shmem pgtables_bytes swapents oom_score_adj name\nOct 19 21:08:02 MyShopAI-prod-1 kernel: [4058618]   994 4058618     1420      480        0      480         0    53248        0             0 flock\nOct 19 21:08:02 MyShopAI-prod-1 kernel: [4058622]   994 4058622   920243   154832   150672     4160         0  4681728   249009             0 python\nOct 19 21:08:02 MyShopAI-prod-1 kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=cm113.slice,mems_allowed=0,oom_memcg=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice,task_memcg=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm115-split-alpha-cushion-swap768-20261019c.service,task=python,pid=4058622,uid=994\nOct 19 21:08:02 MyShopAI-prod-1 kernel: Memory cgroup out of memory: Killed process 4058622 (python) total-vm:3680972kB, anon-rss:602688kB, file-rss:16640kB, shmem-rss:0kB, UID:994 pgtables:4572kB oom_score_adj:0\n",
+    "stderr": ""
+  },
+  "actual_caps_at_failure": {
+    "MemoryMax": 681574400,
+    "MemorySwapMax": 1342177280,
+    "IOWeight": 10
+  },
+  "resource_snapshots": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/resource-exception-initial.json",
+      "sha256": "8d822464ca598a2241f9b710f9b9c70df6e4ff3d79d36a47afbfc81c2f8b8796"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/resource-exception-started.json",
+      "sha256": "ffb86f9e806d68b427c9f3c94274c6a1d6b16e7e17e0a7dc44e4886da94c260d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/resource-extra512-exception.json",
+      "sha256": "df1d8bc9a328348048ebaecb302b0c9902a1388b09ba8aeb876384d1b55e7ff3"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/resource-export-freeze-receipt.json",
+      "sha256": "48e2416322d4661c30a8f5b58d775f32fdcfd3b844180c5b744269870eecae7d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/resource-export-frozen-state.json",
+      "sha256": "83302a898f8fe841f6e09a6e758e6e8cfb5a479829925fa8ade527d584258435"
+    }
+  ],
+  "last_batch": {
+    "alpha_audit_dropped": 481354,
+    "alpha_audit_rows": 4580,
+    "batch_count": 730,
+    "cursor_batch_rows": 1440,
+    "last_available_ns": 1788220800000000000,
+    "native_fill_events": 138984,
+    "native_orders": 139073,
+    "native_positions": 2,
+    "peak_rss_bytes": 873476096,
+    "processed_minutes": 1051200,
+    "rss_bytes": 811655168,
+    "seen_trade_ids": 138984,
+    "strategy_order_audit": 139073,
+    "weekly_batch_minutes": 1440
+  }
+}

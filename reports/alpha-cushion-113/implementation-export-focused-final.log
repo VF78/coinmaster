@@ -1,0 +1,31 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:876: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data()
+
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:902: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    break
+
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:877: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_alpha_export.py::test_two_episode_native_export_analysis_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:903: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 12 warnings in 11.14s

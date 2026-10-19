@@ -1,0 +1,192 @@
+{
+  "started_utc": "2026-10-19T21:11:32.127214+00:00",
+  "scope": "Only two explicitly owner-authorized temporary GLOBAL swapfiles; original /swapfile untouched",
+  "before": {
+    "memory": {
+      "MemAvailable": 1676824576,
+      "SwapTotal": 3489648640,
+      "SwapFree": 1042477056
+    },
+    "swaps": [
+      {
+        "name": "/swapfile",
+        "size": 2147479552,
+        "used": 2116583424,
+        "priority": -2
+      },
+      {
+        "name": "/root/.cm120-alpha-cushion-20261019.swap",
+        "size": 805302272,
+        "used": 144404480,
+        "priority": -3
+      },
+      {
+        "name": "/root/.cm120-alpha-cushion-extra512-20261019.swap",
+        "size": 536866816,
+        "used": 186183680,
+        "priority": -4
+      }
+    ],
+    "slice": "TasksCurrent=0\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=1342177280\n",
+    "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+    "disk": "Filesystem       1B-blocks        Used  Available Use% Mounted on\n/dev/sda1      39973924864 37487087616 2063151104  95% /\n"
+  },
+  "guard_service_headroom_bytes": 1073741824,
+  "steps": [
+    {
+      "file": "/root/.cm120-alpha-cushion-20261019.swap",
+      "used_bytes": 144404480,
+      "MemAvailable_before": 1683456000,
+      "swapoff": "",
+      "removed": true
+    },
+    {
+      "file": "/root/.cm120-alpha-cushion-extra512-20261019.swap",
+      "used_bytes": 185552896,
+      "MemAvailable_before": 1532739584,
+      "swapoff": "",
+      "removed": true
+    }
+  ],
+  "after": {
+    "memory": {
+      "MemAvailable": 1365110784,
+      "SwapTotal": 2147479552,
+      "SwapFree": 29687808
+    },
+    "swaps": [
+      {
+        "name": "/swapfile",
+        "size": 2147479552,
+        "used": 2117791744,
+        "priority": -2
+      }
+    ],
+    "slice": "TasksCurrent=0\nIOWeight=100\nMemoryMax=681574400\nMemorySwapMax=0\n",
+    "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+    "disk": "Filesystem       1B-blocks        Used  Available Use% Mounted on\n/dev/sda1      39973924864 36144852992 3405385728  92% /\n"
+  },
+  "commands": [
+    {
+      "argv": [
+        "systemctl",
+        "show",
+        "cm113-v3-risk.slice",
+        "-p",
+        "MemoryMax",
+        "-p",
+        "MemorySwapMax",
+        "-p",
+        "IOWeight",
+        "-p",
+        "TasksCurrent"
+      ],
+      "rc": 0,
+      "stdout": "TasksCurrent=0\nIOWeight=10\nMemoryMax=681574400\nMemorySwapMax=1342177280\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "show",
+        "coinmaster-hl-stageg-testnet.service",
+        "-p",
+        "MainPID",
+        "-p",
+        "NRestarts",
+        "-p",
+        "ActiveState"
+      ],
+      "rc": 0,
+      "stdout": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "df",
+        "-B1",
+        "/root"
+      ],
+      "rc": 0,
+      "stdout": "Filesystem       1B-blocks        Used  Available Use% Mounted on\n/dev/sda1      39973924864 37487087616 2063151104  95% /\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "set-property",
+        "--runtime",
+        "cm113-v3-risk.slice",
+        "MemorySwapMax=0",
+        "IOWeight=100"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "swapoff",
+        "/root/.cm120-alpha-cushion-20261019.swap"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "swapoff",
+        "/root/.cm120-alpha-cushion-extra512-20261019.swap"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "show",
+        "cm113-v3-risk.slice",
+        "-p",
+        "MemoryMax",
+        "-p",
+        "MemorySwapMax",
+        "-p",
+        "IOWeight",
+        "-p",
+        "TasksCurrent"
+      ],
+      "rc": 0,
+      "stdout": "TasksCurrent=0\nIOWeight=100\nMemoryMax=681574400\nMemorySwapMax=0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "show",
+        "coinmaster-hl-stageg-testnet.service",
+        "-p",
+        "MainPID",
+        "-p",
+        "NRestarts",
+        "-p",
+        "ActiveState"
+      ],
+      "rc": 0,
+      "stdout": "MainPID=2009732\nNRestarts=0\nActiveState=active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "df",
+        "-B1",
+        "/root"
+      ],
+      "rc": 0,
+      "stdout": "Filesystem       1B-blocks        Used  Available Use% Mounted on\n/dev/sda1      39973924864 36144852992 3405385728  92% /\n",
+      "stderr": ""
+    }
+  ],
+  "completed_utc": "2026-10-19T21:11:44.435807+00:00",
+  "status": "CLEANED_BOTH_TEMPORARY_FILES_ORIGINAL_SWAP_UNTOUCHED"
+}

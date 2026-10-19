@@ -1,0 +1,32 @@
+{
+  "status": "CURRENT_OUTCOME_ECONOMIC_COMPARISON_INCOMPLETE_OBSERVED_DD_CRITERION_FAIL",
+  "new_members": {
+    "reports/alpha-cushion-113/analysis-export-outcome.json": {
+      "sha256": "6a6b5ef595d9ce9046885f43c2cf2d5c4984b26a74b1d3a1ccc47bcdbe0cd3e3",
+      "bytes": 14698
+    },
+    "reports/alpha-cushion-113/analysis-export-outcome.csv": {
+      "sha256": "1cafe802d8715391fddedc2e63ae09318f89106b7e85b10c06e19f6e71a6d54f",
+      "bytes": 737
+    },
+    "reports/alpha-cushion-113/analysis-export-outcome.md": {
+      "sha256": "a2553649660c530e750bed764f848bedfe8695218e08e76b651cad457718952f",
+      "bytes": 4727
+    }
+  },
+  "read_only_evidence_references": {
+    "reports/alpha-cushion-113/analysis-preflight.json": "2f00f302c5872e1f3a0509e65a1b62bd1b2255a6af4b92c9257fae94322e1ce4",
+    "reports/alpha-cushion-113/analysis-contract.json": "eda82972e22a0721d89f42c32d09d17e3959c2e601275188e5d4ae8f8a078d36",
+    "reports/alpha-cushion-113/failure-export-receipt.json": "5288cd83c912bf26b082c298cd3eff950048f7e88df091c9c27f6b602459e824",
+    "reports/alpha-cushion-113/failure-export-journal-supplement.json": "2bf462381a8894df9c6f70ff2d9def8da2c2a1cad9eaabd25b37500d5a9e750c",
+    "reports/alpha-cushion-113/analysis-failed-observer-diagnostic.json": "7d8c6933a449b7f3b89cd0d3dc76007cfdc1bb2e447106c5e680cf3cf8f609c7",
+    "reports/alpha-cushion-113/analysis-failed-observer-diagnostic.md": "51786a7a9876a2c07f28c91143028e8d9173d2b80e6c77df8ef9f84617038c20",
+    "reports/alpha-cushion-113/resource-cleanup-receipt.json": "0e7c1ebe7684b8a8b01e2c48a88e2a8e40b450ab7856849d6552738fadf6e435",
+    "reports/alpha-cushion-113/implementation-export-memory-receipt.json": "c5d44c6c47cb3f63a00ee56b6f36569ecda33fc6a59b0020ceddf45619208151",
+    "reports/alpha-cushion-113/analysis-archive-retention-receipt.json": "69f58dd2077077f47b0036bb760989b47108e8d542f25cb01b8a258657adff3e",
+    "reports/alpha-cushion-113/analysis-export-archive-retention-receipt.json": "cae6c036560dfb3b18bb101f3da885afec541f26158cadf94a921df3811c90aa",
+    "reports/alpha-cushion-113/analysis-extra-archive-retention-receipt.json": "31c3680490bac4fae4c4c1fd45daeecffafa5a29e02efbd4fc7c17036b0cccae"
+  },
+  "old_frozen_reports_unchanged": true,
+  "no_new_input_or_engine_pass": true
+}
