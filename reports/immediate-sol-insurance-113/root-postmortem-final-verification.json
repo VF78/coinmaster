@@ -1,0 +1,25 @@
+{
+  "verified_utc": "2026-10-19T17:48:49.013111+00:00",
+  "status": "PASS_ANALYSIS_AND_SINGLE_BTC_ONLY_REFERENCE",
+  "pinned_proofs": {
+    "postmortem-manifest.json": "2bf10706a67db438cbe026abeb5ba591712447e48f57c61d3ea507c31165bf1c",
+    "challenge-cushion.json": "33f747bb9fdeaabd2c99805356407582cbf5bea997f9bd8b290cf08e39209fb7",
+    "challenge-alpha-supplement.json": "98780544863700529b6bcd0034e9d7007119d618440d18e07d58497b0174fdb4",
+    "btc-only-launch-and-completion.json": "eefd1d06fa08974f738398a3a053bff5e46e52cab1c706d55eebbe922c01bcec"
+  },
+  "postmortem_members_verified": 9,
+  "native_BTC_only_total": "280748.52263020",
+  "native_BTC_only_ROI_percent": "2707.48522630200",
+  "native_BTC_only_DD_percent": "64.07394986310021402940985169",
+  "native_BTC_plus_SOL_total": "6077107.23887483",
+  "removing_original_SOL_TOTAL_drop_percent": "95.38022760509685701949647191",
+  "TOTAL_delta_with_original_SOL_including_compounding": "5796358.71624463",
+  "component_PnL_is_not_standalone_ROI": true,
+  "config_only_SOL_boolean_changed": true,
+  "hypothesis_engines_launched": 0,
+  "BTC_reference_engines_launched": 1,
+  "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "native_raw_sha256": "f7381d848fe1f26b762576921c0f06af02a226b096164a1827df651a986aedd1",
+  "source": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+  "no_runtime_or_deployment_changes": true
+}

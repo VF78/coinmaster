@@ -1,0 +1,97 @@
+{
+  "BTC_Q_conserved": true,
+  "BTC_parent_count": 105,
+  "ROI_percent": "2707.48522630200",
+  "SOL_native_fill_events": 0,
+  "actual_exit": 0,
+  "actual_unit": "cm115-split-btc025-planref-tp-ioc-20261018a",
+  "additional_runs_authorized": false,
+  "calendar_comparison": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/immediate-sol-insurance-113/btc-only-calendar-comparison.json",
+  "calendar_comparison_sha256": "a95aea299199dc39905bacf5ea7cf57f8f988c3ea13865ac01a83b9f5447618a",
+  "calendar_summary": {
+    "BTC_only_parent_count": 105,
+    "absolute_Q_changed_count": 99,
+    "control_parent_count": 105,
+    "extra_calendar_days": [],
+    "first_extra": null,
+    "first_missing": null,
+    "interpretation": "Same BTC policy, standalone native equity/compounding; any calendar changes from removing SOL must remain measured, never force control schedule or quantities.",
+    "missing_calendar_days": [],
+    "shared_calendar_days": 105
+  },
+  "completed_utc": "2026-10-19T17:43:22.765552+00:00",
+  "completion_journal": "Started cm115-split-btc025-planref-tp-ioc-20261018a.service - /bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/launch.sh.\ncm115-split-btc025-planref-tp-ioc-20261018a.service: Deactivated successfully.\ncm115-split-btc025-planref-tp-ioc-20261018a.service: Consumed 16min 1.686s CPU time, 557.1M memory peak, 0B memory swap peak.\n",
+  "compressed_native_observer": {
+    "bytes": 60338181,
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/result/minute-native-risk.csv.gz",
+    "rows": 3153600,
+    "sha256": "34f5787cc866584510d6407ea1ba75d000f3b3c455584cf959fa6b19330af025"
+  },
+  "config_comparison": "EXACT_SELECTED_CONFIG_EXCEPT_candidate.sol_overlay_enabled_TRUE_TO_FALSE",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "economic_results": "FINAL_COMPLETED_NATIVE_OUTPUT",
+  "fill_report_rows": 416,
+  "fresh_funding_family_expected": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/result/winner-btc-only-funding.sqlite*",
+  "fresh_funding_journal_files": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/result/winner-btc-only-funding.sqlite": "eb06944288c124ad62f5937603e45387a9547ed82dd1c9bca4521b94f351a8e9"
+  },
+  "frozen_product_files": 85,
+  "frozen_product_manifest_sha256": "d2ddddb6b15256ec36c95896283b04a2ecbc2b8394af3e7068d22f18e990dae0",
+  "full_rows": 1051200,
+  "funding": {
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 899
+    },
+    "count": 899,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+  },
+  "funding_journal_table_counts": {
+    "funding_events": 899,
+    "native_parent_order_audit": 0,
+    "transfers": 0
+  },
+  "guards_at_dispatch": "85sourcepins+4packaginghashes+2inputhashes passed;MemAvailable>=700MiB,disk>=1.5GiB,researchsliceempty,pilotidentitypassed",
+  "invocation_id": "e1f8af95af9e4c3cbdad379887808013",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a",
+  "limitations": [
+    "Systemd unit label inherited from completed original winner; invocation ID/process/job/output paths identify the one NEW BTC-only run. No old outputs overwritten.",
+    "This is standalone BTC equity, not subtraction of SOL component PnL; absolute BTC quantities change with native compounding.",
+    "Funding signed component cash remains UNKNOWN if native audit exposes only account post-total.",
+    "Minute close DD is observed native diagnostic DD; OHLC conditional bound separately exported, not a continuous liquidation guarantee."
+  ],
+  "liquidation_count": 0,
+  "native_TOTAL": "280748.52263020",
+  "native_fees": "76260.55004660",
+  "native_minute_DD_percent": "64.07394986310021402940985169",
+  "native_open_positions": 0,
+  "native_receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/immediate-sol-insurance-113/btc-only-native-receipt.json",
+  "native_receipt_sha256": "85519cd3e241cb8f474b5d83c9c3d7f6b72d3a535fbd92381435ddb9870c67eb",
+  "native_terminal_status": "FLAT",
+  "order_status_counts": {
+    "CANCELED": 89,
+    "FILLED": 416
+  },
+  "pid": 4010498,
+  "pilot_after": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "pilot_after_startup": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "preparation_receipt_sha256": "697c2a481e1b07d578933b9da3bf29aaf83f7f908545bf62cd477c819900efda",
+  "process_cmdline": "/usr/bin/flock -n /var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/source/runtime TMPDIR=/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/tmp OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMEXPR_MAX_THREADS=1 ARROW_NUM_THREADS=2 /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/source/runtime/.venv/bin/python /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/btc-only-reference.py",
+  "process_cwd": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a",
+  "raw_result": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/result/winner-btc-only.json",
+  "raw_result_sha256": "f7381d848fe1f26b762576921c0f06af02a226b096164a1827df651a986aedd1",
+  "recorded_utc": "2026-10-19T17:26:41.625283+00:00",
+  "research_slice_empty": true,
+  "runtime_fault_markers": 0,
+  "sole_candidate_delta": {
+    "sol_overlay_enabled": [
+      true,
+      false
+    ]
+  },
+  "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+  "status": "COMPLETED_NATIVE_BTC_ONLY_REFERENCE",
+  "unit_label_limitation": "Saved command retained completed winning unit label; actual ExecStart/cwd/wrapper and all outputs point solely to the NEW BTC-only job. One fresh native engine, not resumed old data/result. No second dispatch.",
+  "unit_state": "MainPID=4010498\nExecStart={ path=/bin/sh ; argv[]=/bin/sh /var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/launch.sh ; ignore_errors=no ; start_time=[Mon 2026-10-19 17:25:57 UTC] ; stop_time=[n/a] ; pid=4010498 ; code=(null) ; status=0/0 }\nCPUWeight=10\nMemoryMax=681574400\nMemorySwapMax=0\nActiveState=active\nActiveEnterTimestamp=Mon 2026-10-19 17:25:57 UTC\nInvocationID=e1f8af95af9e4c3cbdad379887808013",
+  "wrapper_sha256": "403f2be86f002728e1cc16f1ba267881ab21313bc5b848eba3f8b08f1a4ed9c8"
+}

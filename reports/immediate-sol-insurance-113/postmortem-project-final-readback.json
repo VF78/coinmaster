@@ -1,0 +1,32 @@
+{
+  "readback_utc": "2026-10-19T17:54:07.140245+00:00",
+  "project": "https://github.com/users/VF78/projects/2",
+  "actual": {
+    "a": {
+      "content": {
+        "number": 113,
+        "state": "OPEN",
+        "url": "https://github.com/VF78/coinmaster/issues/113"
+      },
+      "fieldValueByName": {
+        "name": "Todo"
+      }
+    },
+    "b": {
+      "content": {
+        "number": 119,
+        "state": "CLOSED"
+      },
+      "fieldValueByName": {
+        "name": "Done"
+      }
+    }
+  },
+  "analysis_complete": true,
+  "unimplemented_proposals_pending_owner": 3,
+  "comment": "https://github.com/VF78/coinmaster/issues/113#issuecomment-6273664007",
+  "report": "https://github.com/VF78/coinmaster/blob/codex/nautilus-btc-sol-mvp/reports/immediate-sol-insurance-113/next-three-proposals.md",
+  "no_next_engine": true,
+  "manifest_sha256": "d2a1f471637ad6c2c8e1afc45a40fadb8569361e16fe9bf8244c48778ed5f5d8",
+  "hash_readback_utc": "2026-10-19T17:55:28.179307+00:00"
+}

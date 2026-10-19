@@ -1,0 +1,48 @@
+{
+  "status": "ANALYSIS_ONLY_FINAL_FROZEN_NO_NATIVE_RUN",
+  "files": {
+    "reports/immediate-sol-insurance-113/postmortem-chop-entries.csv": {
+      "sha256": "a90c2ea1d859fa31fceebbb15a2d973f880ffc1cc8559aac377672c27660b487",
+      "bytes": 20032
+    },
+    "reports/immediate-sol-insurance-113/postmortem-current-adverse.csv": {
+      "sha256": "e2e30358c091fdaf1dd9db03f33867b3ae0b71950f72b8a986d4447e71ce2113",
+      "bytes": 28440
+    },
+    "reports/immediate-sol-insurance-113/postmortem-current-adverse.json": {
+      "sha256": "ae4170a72272c5ec1556214afab7684dcd6f010c74e4fcdbd68a623cd0021133",
+      "bytes": 118423
+    },
+    "reports/immediate-sol-insurance-113/postmortem-data.json": {
+      "sha256": "3a391391e4c258711c2307a6f36c9d07df823ad1b8b1c33c864ace5372c4c6e8",
+      "bytes": 53805
+    },
+    "reports/immediate-sol-insurance-113/postmortem-early-chop.json": {
+      "sha256": "43dfa946902ae484b4ca8623e84a2aad80ed948c30be2650420cc4cb5ebb986b",
+      "bytes": 154692
+    },
+    "reports/immediate-sol-insurance-113/postmortem-early-permissions.csv": {
+      "sha256": "c46addf8856a9ddaf9c722b9b583cef3978d1545f3b4afc61241775a410cb59f",
+      "bytes": 21034
+    },
+    "reports/immediate-sol-insurance-113/postmortem-episodes.csv": {
+      "sha256": "493b3bc9ad730cb55a88428d3b6f48dd7d2ced8faef30050279e101073d97588",
+      "bytes": 137826
+    },
+    "reports/immediate-sol-insurance-113/postmortem-report.md": {
+      "sha256": "44df43768bee5e78af37625ac69920895fe4f3e094b832abdddae0ea8381b4bb",
+      "bytes": 13921
+    },
+    "reports/immediate-sol-insurance-113/postmortem-variants.csv": {
+      "sha256": "f816d13ec160e1eb8e27c9ad409d51272a8715280042069b6b2116e23e4fa072",
+      "bytes": 1960
+    }
+  },
+  "external_frozen_challenge": {
+    "reports/immediate-sol-insurance-113/challenge-cushion.json": "33f747bb9fdeaabd2c99805356407582cbf5bea997f9bd8b290cf08e39209fb7"
+  },
+  "raw_control_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "result": "NO_NEW_ECONOMIC_RESULT; fourpreviousvariantsNO_ELIGIBLE_WINNER; CHOPindependenthypothesisdroppedpendingincrementalevidence; EARLY/CUSHIONnotbacktested",
+  "old_frozen_analysis_untouched": true,
+  "new_data_passes": "OneSOLexecution1m+oneexplicitadditionalBTCmark1m; noobserver/engines/PnLledger"
+}

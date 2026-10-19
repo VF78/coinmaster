@@ -1,0 +1,128 @@
+{
+  "status": "FINAL_ANALYSIS_ONE_BTC_REFERENCE_ZERO_HYPOTHESIS_ENGINES",
+  "created_utc": "2026-10-19T17:52:16.029645+00:00",
+  "files": {
+    "reports/immediate-sol-insurance-113/btc-only-calendar-comparison.json": {
+      "sha256": "a95aea299199dc39905bacf5ea7cf57f8f988c3ea13865ac01a83b9f5447618a",
+      "bytes": 2337
+    },
+    "reports/immediate-sol-insurance-113/btc-only-inventory.json": {
+      "sha256": "67c64510a67adf69f22457a95f8b192f836573c32782411edc1c22334e4501b7",
+      "bytes": 9226
+    },
+    "reports/immediate-sol-insurance-113/btc-only-inventory.md": {
+      "sha256": "8c9711690b0a7f90b4f2153fa1127b4f45f32a9a0b241b47f3d6baa419aee9f2",
+      "bytes": 2245
+    },
+    "reports/immediate-sol-insurance-113/btc-only-launch-and-completion.json": {
+      "sha256": "eefd1d06fa08974f738398a3a053bff5e46e52cab1c706d55eebbe922c01bcec",
+      "bytes": 6758
+    },
+    "reports/immediate-sol-insurance-113/btc-only-native-receipt.json": {
+      "sha256": "85519cd3e241cb8f474b5d83c9c3d7f6b72d3a535fbd92381435ddb9870c67eb",
+      "bytes": 15332
+    },
+    "reports/immediate-sol-insurance-113/btc-only-preparation-receipt.json": {
+      "sha256": "697c2a481e1b07d578933b9da3bf29aaf83f7f908545bf62cd477c819900efda",
+      "bytes": 3532
+    },
+    "reports/immediate-sol-insurance-113/btc-only-reference.py": {
+      "sha256": "403f2be86f002728e1cc16f1ba267881ab21313bc5b848eba3f8b08f1a4ed9c8",
+      "bytes": 1958
+    },
+    "reports/immediate-sol-insurance-113/challenge-alpha-supplement.json": {
+      "sha256": "98780544863700529b6bcd0034e9d7007119d618440d18e07d58497b0174fdb4",
+      "bytes": 7265
+    },
+    "reports/immediate-sol-insurance-113/challenge-alpha-supplement.md": {
+      "sha256": "8999013b20849b3100011069c1cadff3de0f666fb738959f8f3b37011cb639d1",
+      "bytes": 2868
+    },
+    "reports/immediate-sol-insurance-113/challenge-cushion.csv": {
+      "sha256": "797fe7221d011a26deb49d8e4745bf0a47e48be83b99c5039fcabddba346d92c",
+      "bytes": 45190
+    },
+    "reports/immediate-sol-insurance-113/challenge-cushion.json": {
+      "sha256": "33f747bb9fdeaabd2c99805356407582cbf5bea997f9bd8b290cf08e39209fb7",
+      "bytes": 13184
+    },
+    "reports/immediate-sol-insurance-113/challenge-cushion.md": {
+      "sha256": "5aafbf18f90e380bbd836c787c7fe244f6cdc66cfa1dae6af5c60495312a6b69",
+      "bytes": 4631
+    },
+    "reports/immediate-sol-insurance-113/challenge-cushion.py": {
+      "sha256": "b4592b0edc4cb78515e6dfba6ca65f44eba89ba886727a2d724d545bae62f6dc",
+      "bytes": 9404
+    },
+    "reports/immediate-sol-insurance-113/challenge-cushion.sha256": {
+      "sha256": "81f0de488c743911e4ad017b3db65e5b511a5ae193334e9fefe27a70de279f49",
+      "bytes": 495
+    },
+    "reports/immediate-sol-insurance-113/next-three-proposals.json": {
+      "sha256": "f78f01a455177d238ac25552137ac7ab529bcad5d2db0db0ade9cc78b49401f6",
+      "bytes": 10819
+    },
+    "reports/immediate-sol-insurance-113/next-three-proposals.md": {
+      "sha256": "6bca7769d9a5cf26332ba5faafb08f52e8da1a8b67eda0063f80f8a92dcb9d54",
+      "bytes": 19349
+    },
+    "reports/immediate-sol-insurance-113/postmortem-chop-entries.csv": {
+      "sha256": "a90c2ea1d859fa31fceebbb15a2d973f880ffc1cc8559aac377672c27660b487",
+      "bytes": 20032
+    },
+    "reports/immediate-sol-insurance-113/postmortem-current-adverse.csv": {
+      "sha256": "e2e30358c091fdaf1dd9db03f33867b3ae0b71950f72b8a986d4447e71ce2113",
+      "bytes": 28440
+    },
+    "reports/immediate-sol-insurance-113/postmortem-current-adverse.json": {
+      "sha256": "ae4170a72272c5ec1556214afab7684dcd6f010c74e4fcdbd68a623cd0021133",
+      "bytes": 118423
+    },
+    "reports/immediate-sol-insurance-113/postmortem-data.json": {
+      "sha256": "3a391391e4c258711c2307a6f36c9d07df823ad1b8b1c33c864ace5372c4c6e8",
+      "bytes": 53805
+    },
+    "reports/immediate-sol-insurance-113/postmortem-early-chop.json": {
+      "sha256": "43dfa946902ae484b4ca8623e84a2aad80ed948c30be2650420cc4cb5ebb986b",
+      "bytes": 154692
+    },
+    "reports/immediate-sol-insurance-113/postmortem-early-permissions.csv": {
+      "sha256": "c46addf8856a9ddaf9c722b9b583cef3978d1545f3b4afc61241775a410cb59f",
+      "bytes": 21034
+    },
+    "reports/immediate-sol-insurance-113/postmortem-episodes.csv": {
+      "sha256": "493b3bc9ad730cb55a88428d3b6f48dd7d2ced8faef30050279e101073d97588",
+      "bytes": 137826
+    },
+    "reports/immediate-sol-insurance-113/postmortem-manifest.json": {
+      "sha256": "2bf10706a67db438cbe026abeb5ba591712447e48f57c61d3ea507c31165bf1c",
+      "bytes": 2305
+    },
+    "reports/immediate-sol-insurance-113/postmortem-report.md": {
+      "sha256": "44df43768bee5e78af37625ac69920895fe4f3e094b832abdddae0ea8381b4bb",
+      "bytes": 13921
+    },
+    "reports/immediate-sol-insurance-113/postmortem-six-native-results.csv": {
+      "sha256": "209546be249d57c50a75b1fcc7d06b185a2231ccf1741b76fdbb9a775f0a4e5d",
+      "bytes": 620
+    },
+    "reports/immediate-sol-insurance-113/postmortem-variants.csv": {
+      "sha256": "f816d13ec160e1eb8e27c9ad409d51272a8715280042069b6b2116e23e4fa072",
+      "bytes": 1960
+    },
+    "reports/immediate-sol-insurance-113/root-postmortem-final-verification.json": {
+      "sha256": "f276adf25204b102f0de79e63a738735ccc397981470531da7528261cc6b2cfa",
+      "bytes": 1383
+    }
+  },
+  "strongest_primary": "ALPHA_CUSHION",
+  "conditional_extensions": [
+    "ALPHA_CUSHION_EARLY",
+    "ALPHA_CUSHION_CHOP_ONLY"
+  ],
+  "future_native_ROI_DD": "UNKNOWN_NOT_IMPLEMENTED",
+  "attachment_sha256": "b3e2d3886c043a039e9dbfe5c7a869e7fccfcfefdf97e4251f00e19544a45b10",
+  "raw_BTC_only_reference": "f7381d848fe1f26b762576921c0f06af02a226b096164a1827df651a986aedd1",
+  "control_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "no_runtime_deploy_or_orders": true
+}

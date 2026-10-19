@@ -1,0 +1,292 @@
+{
+  "method": "W90 paired completed daily log returns; sample covariance/variance; linear q95 abs returns and abs residual WITHOUT intercept as specified; expm1 shocks; beta frozen at episode, entry a/u recomputed at that same timestamp. No native backtest or PnL engine.",
+  "source_pins": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "reports/sol-risk-first-20261018/analysis-control-provenance.json": "cfff6e87d37925c240d934b670f415683f7dd87f02926db103d1586c0eee31d1",
+    "runtime/var/data/normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "runtime/var/data/normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4"
+  },
+  "n": 105,
+  "hedge_helps_count": 100,
+  "hedge_helps_percent": 95.23809523809524,
+  "grid_opt_c_counts": {
+    "0": 5,
+    "0.25": 0,
+    "0.5": 0,
+    "0.75": 0,
+    "1": 100
+  },
+  "full_parent_impossible_even_best_H_no_fees": 0,
+  "first_fill_impossible_even_best_H_no_fees": 0,
+  "full_parent_impossible_even_best_H_known_taker_fees": 0,
+  "quantiles": {
+    "beta": {
+      "min": 1.0584011432278455,
+      "median": 1.2639319253231798,
+      "p95": 1.8349253221873645,
+      "max": 2.0182709661514826
+    },
+    "a_simple": {
+      "min": 0.03051101646558667,
+      "median": 0.0502342217322172,
+      "p95": 0.06069999498934266,
+      "max": 0.06667915081374479
+    },
+    "u_simple": {
+      "min": 0.026220966140069895,
+      "median": 0.04602121295664987,
+      "p95": 0.07187002126657202,
+      "max": 0.07285032370780782
+    },
+    "delta_loss_per_c_per_NB": {
+      "min": -0.03710423516970755,
+      "median": -0.01367393230984192,
+      "p95": -0.0006958604548950795,
+      "max": 0.003826824319468465
+    },
+    "min_loss_per_NB_no_fees": {
+      "min": 0.02033956276639323,
+      "median": 0.02993597397293547,
+      "p95": 0.048908657660014364,
+      "max": 0.0508764587236619
+    },
+    "optimistic_C_per_full_NB": {
+      "min": 0.057143472948350496,
+      "median": 0.0817980726944881,
+      "p95": 0.14234339092489512,
+      "max": 0.14249676819726612
+    }
+  },
+  "entry_money_examples": [
+    {
+      "episode_id": "537d32a8-c39f-4371-a126-8d676e5eb6c4",
+      "start_ns": 1725235260000000000,
+      "estimate_close_ns": 1725235200000000000,
+      "returns": 90,
+      "side": -1,
+      "beta": 1.271481702699716,
+      "a_log": 0.05767754602803563,
+      "u_log": 0.057187466333745926,
+      "a_simple": 0.05937334148761146,
+      "u_simple": 0.05885429132263834,
+      "delta_loss_per_c_per_NB": -0.013085383746910983,
+      "hedge_helps_before_fees": true,
+      "grid_min_c": 1,
+      "min_loss_per_NB_no_fees": 0.04628795774070048,
+      "c025_loss_per_NB_no_fees": 0.056101995550883715,
+      "grid_min_c_known_taker_fees": 1,
+      "min_loss_per_NB_known_taker_fees": 0.04770309012732027,
+      "full_parent_NB_P0": 45334.583,
+      "first_fill_NB": 22638.635000000002,
+      "planning_Eq0_inferred": 10000.0,
+      "cushion_upper_bound_planning_H_equals_max_seed_E": 4500.0,
+      "optimistic_C_per_full_NB": 0.09926196960938187,
+      "full_parent_fails_even_optimistic_no_fees": false,
+      "first_fill_fails_even_optimistic_no_fees": false,
+      "min_full_parent_scenario_loss_no_fees": 2098.4452620962784,
+      "min_first_fill_scenario_loss_no_fees": 1047.8961801871428,
+      "min_full_parent_loss_known_taker_fees": 2162.599698733481
+    },
+    {
+      "episode_id": "460b20f0-1515-4c17-84f8-67b311d9cbdd",
+      "start_ns": 1726012860000000000,
+      "estimate_close_ns": 1726012800000000000,
+      "returns": 90,
+      "side": -1,
+      "beta": 1.2435345113414091,
+      "a_log": 0.05767754602803563,
+      "u_log": 0.05678227434113344,
+      "a_simple": 0.05937334148761146,
+      "u_simple": 0.05842533895235267,
+      "delta_loss_per_c_per_NB": -0.012390054397871698,
+      "hedge_helps_before_fees": true,
+      "grid_min_c": 1,
+      "min_loss_per_NB_no_fees": 0.04698328708973976,
+      "c025_loss_per_NB_no_fees": 0.05627582788814353,
+      "grid_min_c_known_taker_fees": 1,
+      "min_loss_per_NB_known_taker_fees": 0.0484178624593557,
+      "full_parent_NB_P0": 54760.28,
+      "first_fill_NB": 27380.14,
+      "planning_Eq0_inferred": 12088.44591156,
+      "cushion_upper_bound_planning_H_equals_max_seed_E": 5439.800660202,
+      "optimistic_C_per_full_NB": 0.09933843764498647,
+      "full_parent_fails_even_optimistic_no_fees": false,
+      "first_fill_fails_even_optimistic_no_fees": false,
+      "min_full_parent_scenario_loss_no_fees": 2572.8179563545345,
+      "min_first_fill_scenario_loss_no_fees": 1286.4089781772673,
+      "min_full_parent_loss_known_taker_fees": 2651.3757052758065
+    },
+    {
+      "episode_id": "425e5b91-7c90-4974-9949-f31095ffacb5",
+      "start_ns": 1726272120000000000,
+      "estimate_close_ns": 1726272000000000000,
+      "returns": 90,
+      "side": 1,
+      "beta": 1.219219321497383,
+      "a_log": 0.05767754602803563,
+      "u_log": 0.05656244708710554,
+      "a_simple": 0.05937334148761146,
+      "u_simple": 0.058192693788307874,
+      "delta_loss_per_c_per_NB": -0.011643870044492778,
+      "hedge_helps_before_fees": true,
+      "grid_min_c": 1,
+      "min_loss_per_NB_no_fees": 0.04772947144311868,
+      "c025_loss_per_NB_no_fees": 0.05646237397648826,
+      "grid_min_c_known_taker_fees": 1,
+      "min_loss_per_NB_known_taker_fees": 0.049181688116201785,
+      "full_parent_NB_P0": 73761.8119,
+      "first_fill_NB": 36850.6509,
+      "planning_Eq0_inferred": 13410.3412791,
+      "cushion_upper_bound_planning_H_equals_max_seed_E": 6034.653575594999,
+      "optimistic_C_per_full_NB": 0.08181270796026906,
+      "full_parent_fails_even_optimistic_no_fees": false,
+      "first_fill_fails_even_optimistic_no_fees": false,
+      "min_full_parent_scenario_loss_no_fees": 3520.612294673742,
+      "min_first_fill_scenario_loss_no_fees": 1758.8620897918859,
+      "min_full_parent_loss_known_taker_fees": 3627.7304277517414
+    }
+  ],
+  "native_worst_troughs": [
+    {
+      "timestamp_ns": "1727970240000000000",
+      "native_E": 4530.57414701,
+      "native_H": 13451.3363251,
+      "floor": 7398.2349788050005,
+      "cushion": 0,
+      "below_floor": true,
+      "episode_id": "fda1bc1a-8fc3-4297-8f62-25abffe2e580",
+      "beta_frozen_at_episode": 1.2275637601690346,
+      "current_daily_a_simple": 0.05937334148761146,
+      "current_daily_u_simple_frozen_beta": 0.04494295485257109,
+      "hedge_helps_before_fees": true,
+      "quantity_and_current_notional": "VALIDATED_SELECTED_621_NATIVE_FILL_INVENTORY; collaborator artifact pinned below; old-version source not used",
+      "actual_BTC_quantity": 0.724,
+      "actual_BTC_mark": 60209.94,
+      "actual_NB": 43591.99656,
+      "actual_SOL_quantity": 810.9,
+      "actual_SOL_mark": 133.166,
+      "actual_NS": 107984.3094,
+      "minimum_scenario_loss_no_costs": 1595.968532876647,
+      "full_factor_hedge_target_NS": 35510.98360381494,
+      "required_C_per_NB_no_costs": 0.03661150345981416,
+      "scope": "Scenario applied to actual saved BTC exposure; existing SOL shown separately, no synthetic rebalance/fill or PnL. Minimum additional remaining costs not claimed known."
+    },
+    {
+      "timestamp_ns": "1749223020000000000",
+      "native_E": 367509.64806046,
+      "native_H": 915175.73025689,
+      "floor": 503346.6516412895,
+      "cushion": 0,
+      "below_floor": true,
+      "episode_id": "5389283d-c509-4531-bf70-0a8f3f08df72",
+      "beta_frozen_at_episode": 1.5218081455875887,
+      "current_daily_a_simple": 0.060221731878120875,
+      "current_daily_u_simple_frozen_beta": 0.0433009352288551,
+      "hedge_helps_before_fees": true,
+      "quantity_and_current_notional": "VALIDATED_SELECTED_621_NATIVE_FILL_INVENTORY; collaborator artifact pinned below; old-version source not used",
+      "actual_BTC_quantity": 29.484,
+      "actual_BTC_mark": 105225.64,
+      "actual_NB": 3102472.76976,
+      "actual_SOL_quantity": 0,
+      "actual_SOL_mark": 0,
+      "actual_NS": 0,
+      "minimum_scenario_loss_no_costs": 88276.54973603401,
+      "full_factor_hedge_target_NS": 2038675.3604621412,
+      "required_C_per_NB_no_costs": 0.028453609841952898,
+      "scope": "Scenario applied to actual saved BTC exposure; existing SOL shown separately, no synthetic rebalance/fill or PnL. Minimum additional remaining costs not claimed known."
+    },
+    {
+      "timestamp_ns": "1764340080000000000",
+      "native_E": 937712.12544458,
+      "native_H": 2088471.56378771,
+      "floor": 1148659.3600832406,
+      "cushion": 0,
+      "below_floor": true,
+      "episode_id": "51ad2947-b679-416b-84b7-dde7462f1709",
+      "beta_frozen_at_episode": 1.7725007074681685,
+      "current_daily_a_simple": 0.03977203447086431,
+      "current_daily_u_simple_frozen_beta": 0.05320118746378919,
+      "hedge_helps_before_fees": true,
+      "quantity_and_current_notional": "VALIDATED_SELECTED_621_NATIVE_FILL_INVENTORY; collaborator artifact pinned below; old-version source not used",
+      "actual_BTC_quantity": 169.664,
+      "actual_BTC_mark": 92944.7,
+      "actual_NB": 15769369.580799999,
+      "actual_SOL_quantity": 0,
+      "actual_SOL_mark": 0,
+      "actual_NS": 0,
+      "minimum_scenario_loss_no_costs": 473313.8800560856,
+      "full_factor_hedge_target_NS": 8896678.864137037,
+      "required_C_per_NB_no_costs": 0.03001476232964754,
+      "scope": "Scenario applied to actual saved BTC exposure; existing SOL shown separately, no synthetic rebalance/fill or PnL. Minimum additional remaining costs not claimed known."
+    }
+  ],
+  "limits": [
+    "Scenario not joint95%, probability guarantee, DD guarantee or ROI estimate.",
+    "Eq0 inferred from recorded requested_notional/multiplier, NOT actual fill equity. Entry H audit is stale and not used. Capacity uses optimistic H=max(seed,Eq0), so passing is NOT proof of actual feasibility; failing is an optimistic exclusion at that planning snapshot.",
+    "Full parent NB=recorded filled quantity*first VWAP, not simultaneously held mark notional; first-fill NB separate. Quantization, passive Q2 pricing and fees are not simulated.",
+    "Known fee illustration assumes new SOL open+close both taker .00055 and BTC exit taker .00055; actual remaining costs depend on current holdings, fees already paid, funding and later execution. No slippage/funding assigned zero as known result.",
+    "Landmark beta tied to preceding accepted episode; no claim parent remains open at trough; compact original landmark file has different control version, so its q/E excluded.",
+    "Four native immediate insurance variants already failed; H-CUSHION has NOT been native tested."
+  ],
+  "runtime_seconds": 1.1562420083209872,
+  "max_rss_KiB": 116224,
+  "smallest_c_satisfying_optimistic_planning_capacity_no_fees": {
+    "0": 94,
+    "0.25": 11,
+    "0.5": 0,
+    "0.75": 0,
+    "1": 0
+  },
+  "non_helpful_entries": [
+    {
+      "start_utc": "2024-12-11T00:01:00+00:00",
+      "beta": 1.0584011432278455,
+      "a_simple": 0.046127454817929014,
+      "u_over_beta": 0.04643014540815497,
+      "delta_loss_per_c_per_NB": 0.00030269059022595274,
+      "NB_P0": 301613.75
+    },
+    {
+      "start_utc": "2025-02-05T00:01:00+00:00",
+      "beta": 1.12743555675658,
+      "a_simple": 0.04804821828963383,
+      "u_over_beta": 0.050719410008650365,
+      "delta_loss_per_c_per_NB": 0.002671191719016537,
+      "NB_P0": 1628903.2031999999
+    },
+    {
+      "start_utc": "2025-02-21T00:02:00+00:00",
+      "beta": 1.2800518714713567,
+      "a_simple": 0.04168108424123404,
+      "u_over_beta": 0.045507908560702505,
+      "delta_loss_per_c_per_NB": 0.003826824319468465,
+      "NB_P0": 2273204.8704
+    },
+    {
+      "start_utc": "2025-02-22T00:01:00+00:00",
+      "beta": 1.2864770797820102,
+      "a_simple": 0.04168108424123404,
+      "u_over_beta": 0.0453705663112699,
+      "delta_loss_per_c_per_NB": 0.00368948207003586,
+      "NB_P0": 2941875.2466
+    },
+    {
+      "start_utc": "2025-08-07T00:01:00+00:00",
+      "beta": 1.5727989978018075,
+      "a_simple": 0.03193923549283022,
+      "u_over_beta": 0.03301764576070449,
+      "delta_loss_per_c_per_NB": 0.0010784102678742732,
+      "NB_P0": 1909148.2364999999
+    }
+  ],
+  "important_omitted_source": {
+    "path": "reports/btc-split-sol-cover-20261018/comparison-analysis-worst-dd-native-landmarks.json",
+    "reason": "btc025/V3 are different control versions. At selected trough1727970240000000000 btc025 E=2990.60113081 versus selected E=4530.57414701. Its q/E not used."
+  },
+  "validated_inventory_source": {
+    "path": "reports/immediate-sol-insurance-113/postmortem-early-chop.json",
+    "sha256": "43dfa946902ae484b4ca8623e84a2aad80ed948c30be2650420cc4cb5ebb986b",
+    "key": "native_621fill_inventory_crosscheck",
+    "method": "Collaborator exact order.side/621 native fill inventory, strictly before prequote timestamp; selected raw4dbfaf...ec1b and selected tracef9b599...38a0b already pinned in collaborator artifact."
+  }
+}

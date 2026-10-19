@@ -1,0 +1,183 @@
+{
+  "created_utc": "2026-10-19T17:51:04.457850+00:00",
+  "status": "ANALYSIS_COMPLETE_PROPOSALS_ONLY_NOT_IMPLEMENTED",
+  "attachment": {
+    "filename": "CoinMaster_SOL_Insurance_Three_Hypotheses.md",
+    "sha256": "b3e2d3886c043a039e9dbfe5c7a869e7fccfcfefdf97e4251f00e19544a45b10",
+    "read_after_independent_draft": true,
+    "role": "Additional proposals; not authority to implement, launch hypotheses or deploy"
+  },
+  "native_results": [
+    {
+      "variant": "control6077",
+      "TOTAL": "6077107.23887483",
+      "ROI_percent": "60671.072388748300",
+      "global_native_marked_DD_percent": "66.31878024969152066570091116",
+      "fees": "945927.73761825",
+      "liquidations": "0"
+    },
+    {
+      "variant": "standalone_BTC_only",
+      "TOTAL": "280748.52263020",
+      "ROI_percent": "2707.48522630200",
+      "global_native_marked_DD_percent": "64.07394986310021402940985169",
+      "fees": "76260.55004660",
+      "liquidations": "0"
+    },
+    {
+      "variant": "i25",
+      "TOTAL": "8000.31240969",
+      "ROI_percent": "-19.996875903100",
+      "global_native_marked_DD_percent": "67.60205168852137439315004645",
+      "fees": "19420.69622577",
+      "liquidations": "0"
+    },
+    {
+      "variant": "i25-light",
+      "TOTAL": "7864.88334010",
+      "ROI_percent": "-21.35116659900",
+      "global_native_marked_DD_percent": "68.30092902577867847400914022",
+      "fees": "19540.68281484",
+      "liquidations": "0"
+    },
+    {
+      "variant": "i25-recovery",
+      "TOTAL": "7720.28353387",
+      "ROI_percent": "-22.797164661300",
+      "global_native_marked_DD_percent": "67.61776330758873225112802245",
+      "fees": "20756.63957879",
+      "liquidations": "0"
+    },
+    {
+      "variant": "i33",
+      "TOTAL": "2026.97093770",
+      "ROI_percent": "-79.73029062300",
+      "global_native_marked_DD_percent": "84.64020976321090888125636142",
+      "fees": "12172.80798195",
+      "liquidations": "0"
+    }
+  ],
+  "BTC_only_verification": "root-postmortem-final-verification.json",
+  "original_SOL_removal_TOTAL_loss_percent": "95.38022760509685701949647191",
+  "economic_priority": "Keep original profitable alpha; max native terminal ACTIVE+RESERVE subject to global native minute DD<=50; DD<30 not penalized; no Sharpe/liquidation penalties",
+  "common": {
+    "BTC_policy": "UNCHANGED selected6077 entry/permissions/sizing/split/P0/TP/trailing/cap; native compounding quantities may differ",
+    "original_SOL_alpha": "Preserve legal control target in normal regime, not a second position; its z/beta/signal parameters unchanged",
+    "risk_beta": "90 completed paired UTC daily returns, refreshed daily for NEW BTC episodes, frozen per episode; distinct from original alpha beta",
+    "peak": "max(seed,all previous native marked equity), never reset",
+    "floor": "0.55*peak, scenario buffer not guaranteed DD cap",
+    "cushion": "max(0,native equity-floor)",
+    "stress_a": "exp(q95(abs BTC log returns of prior90 closed days))-1",
+    "stress_u": "exp(q95(abs(SOL log return-frozen risk_beta*BTC log return) of prior90 closed days))-1",
+    "signed_NS": "positive opposite to BTC, negative same direction; NB=abs(actual remaining BTC notional)",
+    "scenario_loss": "abs(NB-risk_beta*NS)*stress_a+abs(NS)*stress_u+remaining_execution_costs",
+    "protective_grid": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ],
+    "target": "Keep proposed legal normal/optional-anticipation target only if whole-position risk/margin/Q2 budget passes; else minimum feasible c on grid, target NS=c*NB/risk_beta; never sum two SOL books",
+    "release": "fresh closed opposite SOL15m, valid current authority, scenarioL(next)<=0.8*C; reductions/mandatory BTCflat take priority",
+    "unknown": "Invalid beta/unknown state/ACK or unbounded cost -> UNKNOWN, no fabricated coverage. Empty feasible set -> UNHEDGEABLE, not zero risk; any best-effort action must be explicit and cannot weaken existing emergency controls",
+    "money": "Native account/position/SQLite only; no duplicate cash/PnL/insurance bank; never double count realized SOL profit",
+    "research_DP": "OFF identically to control; production DP untouched",
+    "limits": "Scenario feasibility is not a native strategy backtest or a future DD guarantee; actual held+pending leaves, lot/margin and full BTC Q2 reservation must be checked",
+    "known_state_no_feasible_target": "If state/coefficient/costs are known but no lot/margin-valid c meets L<=C, select the lot/margin-valid c with minimum L as best effort and mark UNHEDGEABLE. Do not call it successful budget protection, reset H or change BTC rules. Unknown actual positions/ACK/limits are a separate UNKNOWN case, not this branch."
+  },
+  "proposals": [
+    {
+      "rank": 1,
+      "id": "ALPHA_CUSHION",
+      "strength": "Primary supported direction; native ROI/DD UNKNOWN",
+      "policy": "Normal target=existing lawful original SOL alpha. Only budget violation projects to minimum feasible protection; original authority cannot be resurrected on release. No automatic initial base and no anticipation.",
+      "prechecks": {
+        "helpful_scenario_count": 100,
+        "unhelpful_scenario_count": 5,
+        "episodes": 105,
+        "minimum_C_over_NB_percent_median": 2.9936,
+        "p95": 4.8909,
+        "maximum": 5.08765,
+        "first_selected_trough_factor_coverage_percent": 304.09,
+        "first_selected_trough_L_actual_before_cost": 10135.32,
+        "first_selected_trough_minimum_grid_L_before_cost": 1595.97,
+        "trough_cushion": 0
+      },
+      "why": "Only primary path here preserving the original alpha whose removal reduced TOTAL95.38%; directly addresses both oversized SOL and BTC-only tails. Needs early native intervention; cannot fix a floor already breached."
+    },
+    {
+      "rank": 2,
+      "id": "ALPHA_CUSHION_EARLY",
+      "strength": "Conditional anticipation variant; component eligibility prechecked, combined outcome/extra fill count/ROI/DD UNKNOWN",
+      "policy": "Same rank1 guard. Optional earlier top-up to MAX(lawful alpha target, protective target) at current adverse .5/1/1.5% from known frozen P0 and valid SOL15m break -> total factor .5/.75/1; apply same whole-position cash guard, no sum/no base floor. Above .5 discretionary adds require existing SOL net nonnegative after known costs.",
+      "prechecks": {
+        "first_currently_valid_half_percent_opportunities": 70,
+        "on_BTC_losers": 38,
+        "on_BTC_winners": 32,
+        "stale_first_confirmations_rejected": 23,
+        "one_factor50_roundtrip_fee_bp_BTC_notional_median": 4.3515,
+        "two_plain_base_cycles_fee_bp": 8.703,
+        "old_I25_actual_equal_episode_fee_bp": 18.7994
+      },
+      "lifecycle": "At most2 complete anticipatory cycles/BTCepisode; half harvest once per new level only with SOLnet>=.5currentBTCloss and fresh opposite15m; no floor; rearm fresh15m+another .25pp adverse from last exit. If protective trigger off, fresh opposite1h can close even at loss. Rank1 required protection is not removed by optional profit harvest.",
+      "limits": "70 are first opportunities before current alpha coverage, margin/Q2, pending orders and risk budget; not 70 guaranteed extra fills or full-lifecycle policy replay."
+    },
+    {
+      "rank": 3,
+      "id": "ALPHA_CUSHION_CHOP_ONLY",
+      "strength": "Lower priority selective anticipation comparison; no proven incremental edge/ROI/DD",
+      "policy": "Same rank1 guard. Early initiation ONLY when >=2 EMA34 side flips in previous7 fully closed daily regimes (6 adjacent transitions), with valid opposite SOL15m confirmation. Start protective factor .5, adverse .5/1% -> .75/1 with same cost/current-state/anti-churn rules as rank2. Outside CHOP use rank1 only, not EARLY. No permanent floor, at most2 optional cycles.",
+      "prechecks": {
+        "CHOP_opportunities": 40,
+        "on_BTC_losers": 23,
+        "on_BTC_winners": 17,
+        "loss_rate_percent": 57.5,
+        "outside_loss_rate_percent": 38.4615384615,
+        "descriptive_chop_loss_legs_covered": 20,
+        "descriptive_chop_loss_legs_total": 36,
+        "clusters_covered": 8,
+        "clusters_total": 11
+      },
+      "difference_from_attachment": "Discard attachment modifier EARLY-outside-CHOP; that union adds5losers+9winners to70 first opportunities. This is a strict filter only on optional early insurance; common risk guard remains in all regimes.",
+      "limits": "40 clock opportunities are not guaranteed fresh added positions; some original alpha already provides protection. Missed first whipsaw legs remain; do not label future losing-cluster membership a causal filter."
+    }
+  ],
+  "rejected_or_demoted": [
+    {
+      "id": "original_H_CHOP_modifier",
+      "reason": "Adds5losers+9winners and does not filter ordinary EARLY outside CHOP."
+    },
+    {
+      "id": "pure_alpha_off_EARLY_or_CUSHION_as_ROI_favorite",
+      "reason": "BTC-only reference shows95.38%TOTAL loss from removing alpha before adding insurance; retain only as diagnostic comparator if owner later requests it."
+    },
+    {
+      "id": "permanent_volratio_base_or_Recovery",
+      "reason": "Four completed negative native outcomes; increasing hedge and repeating harvest did not meet DD50."
+    },
+    {
+      "id": "B25_as_literal_BTC_preserving_candidate",
+      "reason": "Only oldV3 DD46.48 anchor, but changes BTC sizing and loses55.96%oldTOTAL; not compatible with this proposal constraint."
+    }
+  ],
+  "recommendation": "Implement/test rank1 first only after owner authorization; optional ranks2/3 are weaker, controlled anticipation comparisons, not three equally validated policies. No hypothesis engine launched.",
+  "validation_needed": "One common native target path, defaultOFF modes, controlOFFparity, actual partial/cancel/Denied/UNKNOWN/leaves/marginQ2/twoSOLcycles/lawful-rights/flat/globalpeak proofs; at most3 separately authorized native runs, no optimizer or automatic promotion",
+  "new_native_hypothesis_results": null,
+  "source_limitations": [
+    "Same Bybit1m native diagnostic execution proxy, not historical L2/Hyperliquid venue qualification",
+    "Signed funding allocation remains UNKNOWN; native TOTAL authoritative",
+    "Daily marginal q95 is not joint95 probability; intraminute OHLC bound distinct from observed native marked DD",
+    "No whole-path counterfactual equity or second PnL engine used for preliminary hypothesis checks"
+  ],
+  "sources": [
+    "postmortem-manifest.json",
+    "challenge-cushion.json",
+    "challenge-alpha-supplement.json",
+    "btc-only-launch-and-completion.json",
+    "root-postmortem-final-verification.json",
+    "https://www.cambridge.org/ch/files/8713/8234/8283/chpt11hedging.pdf",
+    "https://arxiv.org/html/1603.06558v1",
+    "https://nautilustrader.io/docs/latest/concepts/positions/"
+  ]
+}

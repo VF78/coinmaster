@@ -1,0 +1,1617 @@
+{
+  "status": "DATA_FIRST_POSTMORTEM_COMPLETE_DESCRIPTIVE_NOT_HYPOTHESIS_BACKTEST",
+  "HEAD_authorized": "bd4cf65cf13c26336170359f9c343d7c1e4ebbe6",
+  "sources_SHA": {
+    "reports/immediate-sol-insurance-113/analysis-summary.json": "525e515838bbdb9605217547aae9913c7e5ecffd06de52f1426102b86650297d",
+    "reports/immediate-sol-insurance-113/analysis-comparison.csv": "ce25d9fdc82030d7ca554178d90448283665e8d1881a31910ec93cf1993b4405",
+    "reports/immediate-sol-insurance-113/analysis-episode-fill-diagnostic.csv": "4bc228747513803147b228096f0e89ec5033f11234626a019e9cb438f14ada20",
+    "reports/sol-risk-first-20261018/btc-linked-hedge-price-diagnostics.json": "45bef291323cf7e8745819f7518810a6bd9f68c40c0ff7c406bd70d624c234dc",
+    "reports/sol-risk-first-20261018/cap50-postmortem.json": "7997c6a7542d83bfc6bb9eda8007d094b4c7fe45d2eee4386815b5aa5a06fc52",
+    "reports/sol-risk-first-20261018/analysis-comparison.csv": "a2c4cff134633dd5e04fca7eff2da6889573010c6126c088afa556e537fdb78b",
+    "reports/conditional-sol-2-1-50-113/native-denial-analysis-summary.json": "d717dd86a6ad250068bd1764e195cc6e1df534390b0180de2cf9fbee0147bda1"
+  },
+  "control_raw_source_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "variant_components": [
+    {
+      "variant": "control6077",
+      "native_TOTAL": "6077107.23887483",
+      "native_DD_percent": "66.31878024969152066570091116",
+      "BTC_gross": "6273361.4451",
+      "BTC_fees": "927666.95630420",
+      "BTC_net_diagnostic": "5345694.48879580",
+      "SOL_gross": "696921.989",
+      "SOL_fees": "18260.78131405",
+      "SOL_net_diagnostic": "678661.20768595",
+      "BTC_turnover": "2176275091.8611",
+      "SOL_turnover": "33201420.571",
+      "SOL_fill_events": 205,
+      "SOL_add_fills": 102,
+      "BTC_with_SOL_held_fraction": 0.15378439694560084,
+      "equal_episode_mean_BTC_net_pct": 0.6511859538936063,
+      "equal_episode_mean_SOL_net_pct": 0.6845501372895205,
+      "equal_episode_mean_SOL_fee_pct": 0.014894478420857313,
+      "SOL_loss_cost_on_BTC_winners_mean_pct": 0.9699599888302596,
+      "SOL_compensation_on_BTC_losers_mean_pct": 0.3456259385848929,
+      "equal_episode_loss_compensation_fraction": "0.1782353216498983232692045753"
+    },
+    {
+      "variant": "i25",
+      "native_TOTAL": "8000.31240969",
+      "native_DD_percent": "67.60205168852137439315004645",
+      "BTC_gross": "49754.1731",
+      "BTC_fees": "6280.31332782",
+      "BTC_net_diagnostic": "43473.85977218",
+      "SOL_gross": "-32369.835",
+      "SOL_fees": "13140.38289795",
+      "SOL_net_diagnostic": "-45510.21789795",
+      "BTC_turnover": "14688126.9261",
+      "SOL_turnover": "23891605.269",
+      "SOL_fill_events": 3082,
+      "SOL_add_fills": 1375,
+      "BTC_with_SOL_held_fraction": 1.0,
+      "equal_episode_mean_BTC_net_pct": 0.6231110411974116,
+      "equal_episode_mean_SOL_net_pct": -0.6085276060706601,
+      "equal_episode_mean_SOL_fee_pct": 0.18799400605167219,
+      "SOL_loss_cost_on_BTC_winners_mean_pct": -1.2569505175442002,
+      "SOL_compensation_on_BTC_losers_mean_pct": 0.1614746013041687,
+      "equal_episode_loss_compensation_fraction": "0.08324856222645940727816334280"
+    },
+    {
+      "variant": "i25-light",
+      "native_TOTAL": "7864.88334010",
+      "native_DD_percent": "68.30092902577867847400914022",
+      "BTC_gross": "50031.8992",
+      "BTC_fees": "6286.93543434",
+      "BTC_net_diagnostic": "43744.96376566",
+      "SOL_gross": "-32658.030",
+      "SOL_fees": "13253.74738050",
+      "SOL_net_diagnostic": "-45911.77738050",
+      "BTC_turnover": "14704689.6504",
+      "SOL_turnover": "24097722.510",
+      "SOL_fill_events": 3014,
+      "SOL_add_fills": 1344,
+      "BTC_with_SOL_held_fraction": 1.0,
+      "equal_episode_mean_BTC_net_pct": 0.6232672957553032,
+      "equal_episode_mean_SOL_net_pct": -0.6145393759610175,
+      "equal_episode_mean_SOL_fee_pct": 0.18965174352289876,
+      "SOL_loss_cost_on_BTC_winners_mean_pct": -1.2575824018037671,
+      "SOL_compensation_on_BTC_losers_mean_pct": 0.1490742172272477,
+      "equal_episode_loss_compensation_fraction": "0.07683831758533642616113178234"
+    },
+    {
+      "variant": "i25-recovery",
+      "native_TOTAL": "7720.28353387",
+      "native_DD_percent": "67.61776330758873225112802245",
+      "BTC_gross": "49359.8995",
+      "BTC_fees": "6228.16003574",
+      "BTC_net_diagnostic": "43131.73946426",
+      "SOL_gross": "-30933.131",
+      "SOL_fees": "14528.47954305",
+      "SOL_net_diagnostic": "-45461.61054305",
+      "BTC_turnover": "14565897.8399",
+      "SOL_turnover": "26415417.351",
+      "SOL_fill_events": 3443,
+      "SOL_add_fills": 1531,
+      "BTC_with_SOL_held_fraction": 1.0,
+      "equal_episode_mean_BTC_net_pct": 0.6245957141358007,
+      "equal_episode_mean_SOL_net_pct": -0.6108982589497095,
+      "equal_episode_mean_SOL_fee_pct": 0.20842524534714058,
+      "SOL_loss_cost_on_BTC_winners_mean_pct": -1.2617119812252509,
+      "SOL_compensation_on_BTC_losers_mean_pct": 0.16194303625249595,
+      "equal_episode_loss_compensation_fraction": "0.08361621126505661232835682736"
+    },
+    {
+      "variant": "i33",
+      "native_TOTAL": "2026.97093770",
+      "native_DD_percent": "84.64020976321090888125636142",
+      "BTC_gross": "28882.0427",
+      "BTC_fees": "3184.21806780",
+      "BTC_net_diagnostic": "25697.82463220",
+      "SOL_gross": "-24600.623",
+      "SOL_fees": "8988.58991415",
+      "SOL_net_diagnostic": "-33589.21291415",
+      "BTC_turnover": "7475099.1001",
+      "SOL_turnover": "16342890.753",
+      "SOL_fill_events": 3145,
+      "SOL_add_fills": 1399,
+      "BTC_with_SOL_held_fraction": 1.0,
+      "equal_episode_mean_BTC_net_pct": 0.6241229430223421,
+      "equal_episode_mean_SOL_net_pct": -0.8306926281663264,
+      "equal_episode_mean_SOL_fee_pct": 0.25606120074550404,
+      "SOL_loss_cost_on_BTC_winners_mean_pct": -1.6997579790774988,
+      "SOL_compensation_on_BTC_losers_mean_pct": 0.20132247604069073,
+      "equal_episode_loss_compensation_fraction": "0.1037766396783730178882991990"
+    }
+  ],
+  "scale_normalized_episode_statistics": {
+    "control6077": {
+      "BTC_net_pct": {
+        "n": 105,
+        "mean": 0.6511859538936063,
+        "min": -5.773076290943867,
+        "p25": -1.4993243769298534,
+        "median": 1.5581150610769612,
+        "p75": 2.7592725322153875,
+        "p90": 3.7041273027404884,
+        "p95": 4.592030310611309,
+        "max": 5.324405739502018
+      },
+      "SOL_net_pct": {
+        "n": 105,
+        "mean": 0.6845501372895205,
+        "min": -3.452656438079579,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.7443968283315049,
+        "p95": 4.862344193337091,
+        "max": 21.132833689776117
+      },
+      "SOL_fees_pct": {
+        "n": 105,
+        "mean": 0.014894478420857313,
+        "min": 0.0,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.024881897878555954,
+        "p95": 0.10985312996900709,
+        "max": 0.2892842214331274
+      },
+      "SOL_net_on_BTC_winners_pct": {
+        "n": 57,
+        "mean": 0.9699599888302596,
+        "min": -3.452656438079579,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.08566849812950016,
+        "p90": 0.8568368579250173,
+        "p95": 7.358094776475164,
+        "max": 21.132833689776117
+      },
+      "SOL_net_on_BTC_losers_pct": {
+        "n": 48,
+        "mean": 0.3456259385848929,
+        "min": -0.5857614807045031,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.10606328997021852,
+        "p95": 1.3896006910241439,
+        "max": 8.96306635312706
+      },
+      "SOL_compensation_per_loser_fraction": {
+        "n": 48,
+        "mean": 0.5986207256154535,
+        "min": -0.5053672978878053,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.02000474661347542,
+        "p95": 0.6375770955730439,
+        "max": 25.42119380349933
+      },
+      "aggregate_equal_episode_loss_compensation_fraction": "0.1782353216498983232692045753",
+      "expost_SOL_net_cost_budget_exceedances": {
+        "0.1": {
+          "all": 4,
+          "BTC_winners": 3,
+          "BTC_losers": 1
+        },
+        "0.25": {
+          "all": 4,
+          "BTC_winners": 3,
+          "BTC_losers": 1
+        },
+        "0.5": {
+          "all": 2,
+          "BTC_winners": 1,
+          "BTC_losers": 1
+        }
+      },
+      "normalization_limit": "Executedflat-intervalcashflow/ownacceptedBTCQ*actualknownP0. Equal-episodepercentdescriptive,NOTcompoundedROI/fixed-Qcounterfactual. Lots/actualTPpathdifferencesremain."
+    },
+    "i25": {
+      "BTC_net_pct": {
+        "n": 105,
+        "mean": 0.6231110411974116,
+        "min": -5.772692317644718,
+        "p25": -1.4993243769298534,
+        "median": 1.110265365610584,
+        "p75": 2.7587153625039886,
+        "p90": 3.6560912962001573,
+        "p95": 4.491200561411128,
+        "max": 5.324405822372234
+      },
+      "SOL_net_pct": {
+        "n": 105,
+        "mean": -0.6085276060706601,
+        "min": -6.902695821135617,
+        "p25": -1.0021025869973572,
+        "median": -0.47919618712359446,
+        "p75": 0.017148365032395214,
+        "p90": 0.5806946828134681,
+        "p95": 1.1284700619931005,
+        "max": 3.054427707074502
+      },
+      "SOL_fees_pct": {
+        "n": 105,
+        "mean": 0.18799400605167219,
+        "min": 0.015569278916124545,
+        "p25": 0.06929931799922459,
+        "median": 0.13079475374360455,
+        "p75": 0.22992496583885164,
+        "p90": 0.3746416440197247,
+        "p95": 0.5837727863501176,
+        "max": 1.4207041967458431
+      },
+      "SOL_net_on_BTC_winners_pct": {
+        "n": 57,
+        "mean": -1.2569505175442002,
+        "min": -6.902695821135617,
+        "p25": -1.5390054978246164,
+        "median": -0.9075294452045387,
+        "p75": -0.5363226381724766,
+        "p90": -0.26334625269785145,
+        "p95": -0.18154687816423515,
+        "max": 0.03909745005611405
+      },
+      "SOL_net_on_BTC_losers_pct": {
+        "n": 48,
+        "mean": 0.1614746013041687,
+        "min": -2.870053209064666,
+        "p25": -0.1672350746021921,
+        "median": 0.125143988344733,
+        "p75": 0.4791230020241881,
+        "p90": 1.1918102513908435,
+        "p95": 1.3754753056276594,
+        "max": 3.054427707074502
+      },
+      "SOL_compensation_per_loser_fraction": {
+        "n": 48,
+        "mean": -0.08250335535731669,
+        "min": -1.7405255909985076,
+        "p25": -0.23220996591942195,
+        "median": 0.0636297880764543,
+        "p75": 0.22913603262217985,
+        "p90": 0.37856717948676283,
+        "p95": 0.5035174904886603,
+        "max": 0.8745931415023022
+      },
+      "aggregate_equal_episode_loss_compensation_fraction": "0.08324856222645940727816334280",
+      "expost_SOL_net_cost_budget_exceedances": {
+        "0.1": {
+          "all": 71,
+          "BTC_winners": 55,
+          "BTC_losers": 16
+        },
+        "0.25": {
+          "all": 61,
+          "BTC_winners": 51,
+          "BTC_losers": 10
+        },
+        "0.5": {
+          "all": 51,
+          "BTC_winners": 46,
+          "BTC_losers": 5
+        }
+      },
+      "normalization_limit": "Executedflat-intervalcashflow/ownacceptedBTCQ*actualknownP0. Equal-episodepercentdescriptive,NOTcompoundedROI/fixed-Qcounterfactual. Lots/actualTPpathdifferencesremain."
+    },
+    "i25-light": {
+      "BTC_net_pct": {
+        "n": 105,
+        "mean": 0.6232672957553032,
+        "min": -5.773084990389485,
+        "p25": -1.4993243769298534,
+        "median": 1.1094232113374125,
+        "p75": 2.7592024467780303,
+        "p90": 3.6621607732539454,
+        "p95": 4.492928669850634,
+        "max": 5.324405822382726
+      },
+      "SOL_net_pct": {
+        "n": 105,
+        "mean": -0.6145393759610175,
+        "min": -7.064373540234563,
+        "p25": -0.9830044703445502,
+        "median": -0.45451123900818735,
+        "p75": 0.01718936229765791,
+        "p90": 0.5799888283717244,
+        "p95": 1.1270331868391399,
+        "max": 3.0566720881656235
+      },
+      "SOL_fees_pct": {
+        "n": 105,
+        "mean": 0.18965174352289876,
+        "min": 0.015554794688808913,
+        "p25": 0.0716842524437784,
+        "median": 0.1387154261639015,
+        "p75": 0.22984998049092317,
+        "p90": 0.3746359642055759,
+        "p95": 0.5836931658999996,
+        "max": 1.4208422308303665
+      },
+      "SOL_net_on_BTC_winners_pct": {
+        "n": 57,
+        "mean": -1.2575824018037671,
+        "min": -7.064373540234563,
+        "p25": -1.5252160484887225,
+        "median": -0.9072245811759516,
+        "p75": -0.543357727935201,
+        "p90": -0.23766629131740946,
+        "p95": -0.16626091144029803,
+        "max": 0.03928474732271752
+      },
+      "SOL_net_on_BTC_losers_pct": {
+        "n": 48,
+        "mean": 0.1490742172272477,
+        "min": -2.8718838097592303,
+        "p25": -0.21261324671111398,
+        "median": 0.12490477326624838,
+        "p75": 0.4787465573145191,
+        "p90": 1.1834920324702216,
+        "p95": 1.376119762248416,
+        "max": 3.0566720881656235
+      },
+      "SOL_compensation_per_loser_fraction": {
+        "n": 48,
+        "mean": -0.10793110853448334,
+        "min": -2.1879715053402387,
+        "p25": -0.23224723658175453,
+        "median": 0.0677680496617585,
+        "p75": 0.22924086020371856,
+        "p90": 0.372710443113324,
+        "p95": 0.5029315141165078,
+        "max": 0.8750680659638955
+      },
+      "aggregate_equal_episode_loss_compensation_fraction": "0.07683831758533642616113178234",
+      "expost_SOL_net_cost_budget_exceedances": {
+        "0.1": {
+          "all": 70,
+          "BTC_winners": 55,
+          "BTC_losers": 15
+        },
+        "0.25": {
+          "all": 62,
+          "BTC_winners": 51,
+          "BTC_losers": 11
+        },
+        "0.5": {
+          "all": 51,
+          "BTC_winners": 45,
+          "BTC_losers": 6
+        }
+      },
+      "normalization_limit": "Executedflat-intervalcashflow/ownacceptedBTCQ*actualknownP0. Equal-episodepercentdescriptive,NOTcompoundedROI/fixed-Qcounterfactual. Lots/actualTPpathdifferencesremain."
+    },
+    "i25-recovery": {
+      "BTC_net_pct": {
+        "n": 105,
+        "mean": 0.6245957141358007,
+        "min": -5.772694469263407,
+        "p25": -1.4989776306309044,
+        "median": 1.1138626691469296,
+        "p75": 2.758961705218506,
+        "p90": 3.6608296917121237,
+        "p95": 4.492617343147576,
+        "max": 5.324392486849337
+      },
+      "SOL_net_pct": {
+        "n": 105,
+        "mean": -0.6108982589497095,
+        "min": -7.081818296490158,
+        "p25": -1.0577963309295768,
+        "median": -0.418900838988998,
+        "p75": 0.0069328643700356934,
+        "p90": 0.5769586978692434,
+        "p95": 1.1265257283596948,
+        "max": 3.0542018235943216
+      },
+      "SOL_fees_pct": {
+        "n": 105,
+        "mean": 0.20842524534714058,
+        "min": 0.01554650805089659,
+        "p25": 0.07601815742894219,
+        "median": 0.14036226612661024,
+        "p75": 0.24764253362330466,
+        "p90": 0.45476747948682816,
+        "p95": 0.6132357212658843,
+        "max": 1.6618437931699395
+      },
+      "SOL_net_on_BTC_winners_pct": {
+        "n": 57,
+        "mean": -1.2617119812252509,
+        "min": -7.081818296490158,
+        "p25": -1.454658450638064,
+        "median": -0.9248434816235351,
+        "p75": -0.5065100711300868,
+        "p90": -0.22521668584465326,
+        "p95": -0.16503281228874397,
+        "max": 0.042918069312851574
+      },
+      "SOL_net_on_BTC_losers_pct": {
+        "n": 48,
+        "mean": 0.16194303625249595,
+        "min": -2.801337375464053,
+        "p25": -0.19989109674817068,
+        "median": 0.12893370056823963,
+        "p75": 0.478579145932176,
+        "p90": 1.1973237812267663,
+        "p95": 1.3858607110205687,
+        "max": 3.0542018235943216
+      },
+      "SOL_compensation_per_loser_fraction": {
+        "n": 48,
+        "mean": -0.0891007636309919,
+        "min": -1.6707317538281172,
+        "p25": -0.2478512789289691,
+        "median": 0.07167995764729573,
+        "p75": 0.2387553956999058,
+        "p90": 0.3817487055082465,
+        "p95": 0.5023652706194359,
+        "max": 0.8816634815250595
+      },
+      "aggregate_equal_episode_loss_compensation_fraction": "0.08361621126505661232835682736",
+      "expost_SOL_net_cost_budget_exceedances": {
+        "0.1": {
+          "all": 71,
+          "BTC_winners": 55,
+          "BTC_losers": 16
+        },
+        "0.25": {
+          "all": 60,
+          "BTC_winners": 50,
+          "BTC_losers": 10
+        },
+        "0.5": {
+          "all": 48,
+          "BTC_winners": 43,
+          "BTC_losers": 5
+        }
+      },
+      "normalization_limit": "Executedflat-intervalcashflow/ownacceptedBTCQ*actualknownP0. Equal-episodepercentdescriptive,NOTcompoundedROI/fixed-Qcounterfactual. Lots/actualTPpathdifferencesremain."
+    },
+    "i33": {
+      "BTC_net_pct": {
+        "n": 105,
+        "mean": 0.6241229430223421,
+        "min": -5.772422012694356,
+        "p25": -1.4986965675515802,
+        "median": 1.1140433125332394,
+        "p75": 2.7577865644077995,
+        "p90": 3.663123067688147,
+        "p95": 4.490401263067228,
+        "max": 5.324405822360999
+      },
+      "SOL_net_pct": {
+        "n": 105,
+        "mean": -0.8306926281663264,
+        "min": -9.19454278919543,
+        "p25": -1.2987545008329027,
+        "median": -0.6397017386704503,
+        "p75": 0.023073862675815588,
+        "p90": 0.7461319437762998,
+        "p95": 1.2263881787307862,
+        "max": 4.073082641806542
+      },
+      "SOL_fees_pct": {
+        "n": 105,
+        "mean": 0.25606120074550404,
+        "min": 0.02073402653395447,
+        "p25": 0.09246630256057223,
+        "median": 0.17860976902388861,
+        "p75": 0.31523817546781985,
+        "p90": 0.5042491003423883,
+        "p95": 0.846202218702897,
+        "max": 1.8939764188198347
+      },
+      "SOL_net_on_BTC_winners_pct": {
+        "n": 57,
+        "mean": -1.6997579790774988,
+        "min": -9.19454278919543,
+        "p25": -2.0639445942482153,
+        "median": -1.2055903721353853,
+        "p75": -0.7095255002645177,
+        "p90": -0.35209478989417314,
+        "p95": -0.2361127158815005,
+        "max": 0.05134280475465183
+      },
+      "SOL_net_on_BTC_losers_pct": {
+        "n": 48,
+        "mean": 0.20132247604069073,
+        "min": -3.8285824581847514,
+        "p25": -0.2257221514947856,
+        "median": 0.1695654310600584,
+        "p75": 0.6377065135870371,
+        "p90": 1.357418021349105,
+        "p95": 1.7874876740250827,
+        "max": 4.073082641806542
+      },
+      "SOL_compensation_per_loser_fraction": {
+        "n": 48,
+        "mean": -0.11585544067991031,
+        "min": -2.319954097115635,
+        "p25": -0.3095979667447359,
+        "median": 0.08628972788770659,
+        "p75": 0.308401686176824,
+        "p90": 0.5053065584909989,
+        "p95": 0.6441604948125526,
+        "max": 1.0762747351138715
+      },
+      "aggregate_equal_episode_loss_compensation_fraction": "0.1037766396783730178882991990",
+      "expost_SOL_net_cost_budget_exceedances": {
+        "0.1": {
+          "all": 73,
+          "BTC_winners": 56,
+          "BTC_losers": 17
+        },
+        "0.25": {
+          "all": 65,
+          "BTC_winners": 53,
+          "BTC_losers": 12
+        },
+        "0.5": {
+          "all": 57,
+          "BTC_winners": 49,
+          "BTC_losers": 8
+        }
+      },
+      "normalization_limit": "Executedflat-intervalcashflow/ownacceptedBTCQ*actualknownP0. Equal-episodepercentdescriptive,NOTcompoundedROI/fixed-Qcounterfactual. Lots/actualTPpathdifferencesremain."
+    }
+  },
+  "actual_churn_descriptions": {
+    "i25": {
+      "actual_SOL_EXIT_events": 1656,
+      "reductions_with_any_later_actual_ADD_sameepisode": 1506,
+      "exit_to_next_add_minutes": {
+        "n": 1506,
+        "mean": 163.7257636122178,
+        "min": 1.0,
+        "p25": 30.0,
+        "median": 75.0,
+        "p75": 149.75,
+        "p90": 315.0,
+        "p95": 566.0,
+        "max": 3779.0
+      },
+      "exit_to_next_add_within_minutes": {
+        "15": 195,
+        "60": 704,
+        "240": 1308
+      },
+      "unique_next_ADDS_within60m_of_prior_exit": 607,
+      "harvest_temporally_associated_exit_to_next_add_minutes": {
+        "n": 1449,
+        "mean": 154.34713595583162,
+        "min": 1.0,
+        "p25": 30.0,
+        "median": 74.0,
+        "p75": 135.0,
+        "p90": 300.0,
+        "p95": 503.99999999999864,
+        "max": 3779.0
+      },
+      "HARVEST_native_unrealized_PnL_div_estimated_close_fee": {
+        "n": 2170,
+        "mean": 22.75922141957649,
+        "min": -587.0430248225449,
+        "p25": 2.215376304968891,
+        "median": 9.591567460064029,
+        "p75": 32.89681779922479,
+        "p90": 68.5013567820064,
+        "p95": 119.69793367137723,
+        "max": 1041.730567128461
+      },
+      "HARVEST_events_below_close_fee_multiple": {
+        "2": 496,
+        "4": 769,
+        "8": 1012
+      },
+      "limit": "Actualexit→subsequentaddtimestamps,notpairedroundtripPnL. Multipleexitscanmaponesubsequentadd;uniquecountseparate. HarvestassociationmeansmostrecentHARVEST<=60sbeforeactualexit,NOTproofcausalownership/per-armtiming. PnL/closefeeexcludesunknownfundingandnotallopeningfeeshare."
+    },
+    "i25-light": {
+      "actual_SOL_EXIT_events": 1619,
+      "reductions_with_any_later_actual_ADD_sameepisode": 1451,
+      "exit_to_next_add_minutes": {
+        "n": 1451,
+        "mean": 176.1040661612681,
+        "min": 1.0,
+        "p25": 30.0,
+        "median": 75.0,
+        "p75": 150.0,
+        "p90": 345.0,
+        "p95": 643.5,
+        "max": 4513.0
+      },
+      "exit_to_next_add_within_minutes": {
+        "15": 180,
+        "60": 675,
+        "240": 1239
+      },
+      "unique_next_ADDS_within60m_of_prior_exit": 587,
+      "harvest_temporally_associated_exit_to_next_add_minutes": {
+        "n": 1369,
+        "mean": 162.77940102264427,
+        "min": 1.0,
+        "p25": 30.0,
+        "median": 72.0,
+        "p75": 135.0,
+        "p90": 310.0000000000002,
+        "p95": 544.7999999999993,
+        "max": 4513.0
+      },
+      "HARVEST_native_unrealized_PnL_div_estimated_close_fee": {
+        "n": 2066,
+        "mean": 22.366110466029667,
+        "min": -596.8815695460655,
+        "p25": 2.0873430242259094,
+        "median": 9.065626793917215,
+        "p75": 32.626823676852396,
+        "p90": 71.68795839296439,
+        "p95": 120.93886840229516,
+        "max": 1041.7280034258692
+      },
+      "HARVEST_events_below_close_fee_multiple": {
+        "2": 498,
+        "4": 765,
+        "8": 987
+      },
+      "limit": "Actualexit→subsequentaddtimestamps,notpairedroundtripPnL. Multipleexitscanmaponesubsequentadd;uniquecountseparate. HarvestassociationmeansmostrecentHARVEST<=60sbeforeactualexit,NOTproofcausalownership/per-armtiming. PnL/closefeeexcludesunknownfundingandnotallopeningfeeshare."
+    },
+    "i25-recovery": {
+      "actual_SOL_EXIT_events": 1861,
+      "reductions_with_any_later_actual_ADD_sameepisode": 1707,
+      "exit_to_next_add_minutes": {
+        "n": 1707,
+        "mean": 145.7188049209139,
+        "min": 1.0,
+        "p25": 30.0,
+        "median": 74.0,
+        "p75": 135.0,
+        "p90": 298.0,
+        "p95": 494.09999999999945,
+        "max": 4379.0
+      },
+      "exit_to_next_add_within_minutes": {
+        "15": 231,
+        "60": 815,
+        "240": 1502
+      },
+      "unique_next_ADDS_within60m_of_prior_exit": 699,
+      "harvest_temporally_associated_exit_to_next_add_minutes": {
+        "n": 1651,
+        "mean": 140.832222895215,
+        "min": 1.0,
+        "p25": 30.0,
+        "median": 73.0,
+        "p75": 135.0,
+        "p90": 285.0,
+        "p95": 476.0,
+        "max": 4379.0
+      },
+      "HARVEST_native_unrealized_PnL_div_estimated_close_fee": {
+        "n": 2427,
+        "mean": 23.434147921734233,
+        "min": -601.9375332594933,
+        "p25": 2.1748924280022157,
+        "median": 10.37378271331554,
+        "p75": 33.37724147284016,
+        "p90": 73.62012492723579,
+        "p95": 125.12006809172715,
+        "max": 1043.948015747973
+      },
+      "HARVEST_events_below_close_fee_multiple": {
+        "2": 560,
+        "4": 868,
+        "8": 1109
+      },
+      "limit": "Actualexit→subsequentaddtimestamps,notpairedroundtripPnL. Multipleexitscanmaponesubsequentadd;uniquecountseparate. HarvestassociationmeansmostrecentHARVEST<=60sbeforeactualexit,NOTproofcausalownership/per-armtiming. PnL/closefeeexcludesunknownfundingandnotallopeningfeeshare."
+    },
+    "i33": {
+      "actual_SOL_EXIT_events": 1695,
+      "reductions_with_any_later_actual_ADD_sameepisode": 1545,
+      "exit_to_next_add_minutes": {
+        "n": 1545,
+        "mean": 162.58964401294497,
+        "min": 1.0,
+        "p25": 30.0,
+        "median": 73.0,
+        "p75": 147.0,
+        "p90": 314.0,
+        "p95": 566.1999999999998,
+        "max": 4379.0
+      },
+      "exit_to_next_add_within_minutes": {
+        "15": 218,
+        "60": 739,
+        "240": 1342
+      },
+      "unique_next_ADDS_within60m_of_prior_exit": 637,
+      "harvest_temporally_associated_exit_to_next_add_minutes": {
+        "n": 1488,
+        "mean": 153.4133064516129,
+        "min": 1.0,
+        "p25": 30.0,
+        "median": 67.5,
+        "p75": 135.0,
+        "p90": 296.5999999999999,
+        "p95": 490.9499999999996,
+        "max": 4379.0
+      },
+      "HARVEST_native_unrealized_PnL_div_estimated_close_fee": {
+        "n": 2205,
+        "mean": 22.759501592416544,
+        "min": -587.6377557462695,
+        "p25": 2.2396519069071172,
+        "median": 9.693404704170664,
+        "p75": 32.92197979154213,
+        "p90": 67.93044036423653,
+        "p95": 110.40055071947664,
+        "max": 1042.9645424742048
+      },
+      "HARVEST_events_below_close_fee_multiple": {
+        "2": 504,
+        "4": 777,
+        "8": 1018
+      },
+      "limit": "Actualexit→subsequentaddtimestamps,notpairedroundtripPnL. Multipleexitscanmaponesubsequentadd;uniquecountseparate. HarvestassociationmeansmostrecentHARVEST<=60sbeforeactualexit,NOTproofcausalownership/per-armtiming. PnL/closefeeexcludesunknownfundingandnotallopeningfeeshare."
+    }
+  },
+  "precheck_threshold_reach_W90_sigma": {
+    "0.25": {
+      "all": 92,
+      "eventual_BTC_winners": 44,
+      "eventual_BTC_losers": 48,
+      "limit": "RetrospectivecloseMAEreachusingcausalfrozenW90σ;futurewinnerlabelsNOTonlinesignals;noduration/confirmation/executioninference."
+    },
+    "0.5": {
+      "all": 66,
+      "eventual_BTC_winners": 23,
+      "eventual_BTC_losers": 43,
+      "limit": "RetrospectivecloseMAEreachusingcausalfrozenW90σ;futurewinnerlabelsNOTonlinesignals;noduration/confirmation/executioninference."
+    },
+    "1.0": {
+      "all": 40,
+      "eventual_BTC_winners": 10,
+      "eventual_BTC_losers": 30,
+      "limit": "RetrospectivecloseMAEreachusingcausalfrozenW90σ;futurewinnerlabelsNOTonlinesignals;noduration/confirmation/executioninference."
+    }
+  },
+  "precheck_original_presence_at_saved_price_trigger": {
+    "1": {
+      "crosses": 71,
+      "eventual_winners": 28,
+      "eventual_losers": 43,
+      "originalSOLalreadyheld": 7,
+      "no_originalSOL_at_cross": 64,
+      "no_originalSOL_eventual_winners": 26,
+      "no_originalSOL_eventual_losers": 38,
+      "first_close_cross_latency_minutes": {
+        "n": 71,
+        "mean": 1356.3239436619717,
+        "min": 20.0,
+        "p25": 304.5,
+        "median": 597.0,
+        "p75": 1358.5,
+        "p90": 2646.0,
+        "p95": 5221.0,
+        "max": 16202.0
+      },
+      "limit": "SavedactualfirstpricecrossingandactualoriginalSOLquantityONLY. No top-upshortfallquantity/hedgePnLsimulated. SOLdirectionreturnBEFOREtriggerisNOTpost-entryprofit."
+    },
+    "2": {
+      "crosses": 49,
+      "eventual_winners": 15,
+      "eventual_losers": 34,
+      "originalSOLalreadyheld": 5,
+      "no_originalSOL_at_cross": 44,
+      "no_originalSOL_eventual_winners": 13,
+      "no_originalSOL_eventual_losers": 31,
+      "first_close_cross_latency_minutes": {
+        "n": 49,
+        "mean": 1870.2448979591836,
+        "min": 90.0,
+        "p25": 739.0,
+        "median": 1045.0,
+        "p75": 2718.0,
+        "p90": 4050.800000000002,
+        "p95": 6287.199999999991,
+        "max": 7390.0
+      },
+      "limit": "SavedactualfirstpricecrossingandactualoriginalSOLquantityONLY. No top-upshortfallquantity/hedgePnLsimulated. SOLdirectionreturnBEFOREtriggerisNOTpost-entryprofit."
+    }
+  },
+  "precheck_SOL_owned_first_tail_inventory": {
+    "selected_control_first_globalDD_trough": {
+      "utc": "2024-10-03T15:44:00+00:00",
+      "ns": 1727970240000000000,
+      "phase": "pre_quote_paired_close",
+      "native_equity": "4530.57414701",
+      "native_cash": "9651.60074701",
+      "native_aggregate_close_uPnL": "-5121.02660000",
+      "assets": [
+        {
+          "asset": "BTC",
+          "native_side_code": "3",
+          "quantity": "0.724",
+          "native_avg_open": "60887.25",
+          "mark_close": "60209.94",
+          "marked_notional": "43591.99656",
+          "native_PnL_low_endpoint": "530.0042",
+          "native_PnL_high_endpoint": "475.849"
+        },
+        {
+          "asset": "SOL",
+          "native_side_code": "2",
+          "quantity": "810.9",
+          "native_avg_open": "140.09",
+          "mark_close": "133.166",
+          "marked_notional": "107984.3094",
+          "native_PnL_low_endpoint": "-5619.537",
+          "native_PnL_high_endpoint": "-5165.433"
+        }
+      ],
+      "aggregate_within_exported_native_PnL_endpoint_range": true,
+      "per_asset_close_PnL": "UNKNOWN_NOT_EXPORTED"
+    },
+    "coefficient_matching_actual_entry_W90": "0.6638096914562188",
+    "original_SOL_notional_over_BTC": "2.477159064081188760306692408",
+    "original_SOL_volrisk_units_vs_BTC": "3.731730789658964194792732175",
+    "descriptive_target_notional_f05": "14468.3948932270756601036640",
+    "limit": "SnapshotinventoryriskcomparisonONLY,nothypotheticalcash/PnL/equity/DDaftertrim. Atother2selectedcontrolworsttroughsSOLflat;thisSOLlegguardcannotfixBTC-onlytail."
+  },
+  "precheck_fee_feasibility": {
+    "native_SOL_all_TAKER_oneway_bps": 5.5,
+    "approximately_roundtrip_SOL_price_move_fee_breakeven_bps": 11,
+    "W90_k_quantile": {
+      "n": 105,
+      "mean": 0.5967810041269521,
+      "min": 0.3916269027004612,
+      "p25": 0.47321996754629375,
+      "median": 0.6305001725360113,
+      "p75": 0.6735081646064833,
+      "p90": 0.7532958076141838,
+      "p95": 0.7581864674436891,
+      "max": 0.7798488465736597
+    },
+    "f025_single_roundtrip_cost_reference_BTC_bps": {
+      "n": 105,
+      "mean": 1.6411477613491183,
+      "min": 1.0769739824262683,
+      "p25": 1.301354910752308,
+      "median": 1.733875474474031,
+      "p75": 1.852147452667829,
+      "p90": 2.0715634709390054,
+      "p95": 2.0850127854701452,
+      "max": 2.1445843280775643
+    },
+    "f075_single_roundtrip_cost_reference_BTC_bps": {
+      "n": 105,
+      "mean": 4.923443284047354,
+      "min": 3.230921947278805,
+      "p25": 3.9040647322569235,
+      "median": 5.201626423422093,
+      "p75": 5.556442358003487,
+      "p90": 6.214690412817016,
+      "p95": 6.255038356410435,
+      "max": 6.433752984232693
+    },
+    "price_44bp_harvest_buffer_over_11bp_roundtrip_fee": 4,
+    "limit": "KnownfixednativefeesONLY;no spread/gap/slippage/funding/remainingentryfeeallocationguarantee. Notexpectedhedgeprofit."
+  },
+  "limits": [
+    "NOnewnativeengine/backtest/optimizer/hypothesisstrategy/PnLledger/counterfactualTOTAL.",
+    "NormalizationremovesabsoluteQscaleforcomparison,notallendogenouslot/managementpath;notcompoundedROI.",
+    "Expostlosers/winners/MAE/matchedtailendpointsaredescriptive,NOTcausalpolicyoracles.",
+    "Minutepath/futurePnlafterproposedentryNOTsimulated. Dailyvol/ρdoesnotproveconditionalintradayhedgeeffectiveness.",
+    "Actualexit/readdtimingisobserved,notcausallyattributedharvestcashprofit.",
+    "SignedfundingUNKNOWN,residualnotfunding.",
+    "Three-hypothesesattachmentNOTreadorused.",
+    "AttachmentwasNOTreadbystats. Independentdraftprecededrootdocumentreview; laterEARLY/CHOPcontractcamefromrootmessages. Originalkeep-overlaydraftnotautomaticallymergedwithstandaloneOFFdesign."
+  ],
+  "future_directions": [
+    {
+      "id": "H-EARLY",
+      "evidence_strength": "PRICE_PERMISSION_AND_COST_PRECHECK_ONLY",
+      "entry": "BTCunchanged(P0,SL,sizing,TP,actualacceptedQ). NoinitialSOLfloor. AfterknownfirstlegP0 adverse0.5/1/1.5%, factorcoveragec=0.5/0.75/1; SOLoppositeBTC withclosed15mclose>priorhighforBUY/<priorlowforSELL. Alreadyreceivedconfirmation<=15minageallowed, elsenextfreshclosedbar; recheckcurrentactualadverse/positionbeforeorder. Frozen90d betaSOL|BTC=rho/k; targetSOLnotional=c*actualremainingBTCnotional/beta, lotfloor. RefreshonactualBTCquantitychange, notminutepricechurn.",
+      "precheck": "First.5cross93=48L45W; currentadversestillvalidatfirstclosedconfirmation70=38L32W;23stale=10L13W. Of19wait>15minonly7valid. At1%63valid37L26W;1.5%53valid36L17W. No lateropportunitysearch/fills/PnL.",
+      "exit_and_anti_churn": "Commonboundedharvest/rearmcontractbelow; mandatoryBTCflat/directionchangeexitinsuranceevenatloss. Noholdforbreak-even.",
+      "original_SOL_authority": "StandaloneoriginaloverlayOFFisoneexplicitfuturevariant; keepingoriginalalpha requiresONEaggregateMAXtargetwithcreditednativeSOLallocation, neverstackedhiddenpositions. Whichreferencewinsrequiresnewapprovednativecomparison/BTC-onlyreference; noclaimpreservedportfolioROI."
+    },
+    {
+      "id": "H-CHOP",
+      "evidence_strength": "MODEST_RETROSPECTIVE_ENRICHMENT_NOT_PROVEN_INCREMENTAL_HEDGE_EDGE",
+      "entry": "Atentryuse>=2EMA34directionflipsinlast7fullyclosedBTCdailyregimes(6transitions). InsideCHOPallowinitialc0.5onlyafteroppositeSOL15mconfirm; adverse0.5/1%raisec0.75/1. OutsideuseH-EARLY. Nofutureclusterlabelinput.",
+      "precheck": "40/105entries:23losers17winners(lossrate57.5%)vsoutside25/65=38.46%;20/36legsacross8/11retrospectiveclusters. MissesfirsttwoApr35–36,entireMay42–43; Jul98–103onlyafter97. Initialclosedconfirmmedian28.5min/p95119/max149. Last7flip-eventsvariantchanges3entries20/21/77,nottuned.",
+      "recommendation": "DROP_AS_INDEPENDENT_ROI_SAVING_HYPOTHESIS_FOR_NOW. ModifierkeepsordinaryEARLYoutsideCHOP:84possibleinitialepisodes43L41WvsEARLY70=38L32W,adds14(5L9W). Thuspastregimeenrichmentdoesnotjustifyadditionalflooronmorewinners. StrictCHOPonly40=23L17Wwouldbeadifferentpolicyandremoveoutsideprotection; notdocumentmodifier. No independentincrementalhedgeROIevidence."
+    },
+    {
+      "id": "H-CUSHION",
+      "evidence_strength": "INDEPENDENT_DAILY_SCENARIO_FEASIBILITY_ONLY",
+      "reference": "reports/immediate-sol-insurance-113/challenge-cushion.json",
+      "SHA256": "33f747bb9fdeaabd2c99805356407582cbf5bea997f9bd8b290cf08e39209fb7",
+      "entry_sizing": "Independentchallenge90dscenario: boundL(c)=NB*((1-c)*a+c*u/beta)+knownexecutioncost bycurrentequitycushionabove0.55*globalnativeHWM; chooseminimumcfrompredeclared0/.25/.5/.75/1. PreserveBTC; infeasibleSOL-onlycapacitymustdeclarenofeasibleprotection,neverforceBTCcutwithoutauthorization.",
+      "precheck": "Scenariohedgehelps100/105beforefees,worsens5; medianbestresidualloss2.9936%NB,p954.8909%. Entryoptimisticcapacityallowsc0in94,c.25in11(notnativecurrentequityproof). All3existing>50DDtroughscushionalready0: entryafterbreachcannotrepairhistory.",
+      "limits": "Dailyabsq95componentsarenotjoint95%orboundintraminutegaps; notprobability/DDguarantee orROI. Fiveadverseresidualcasesmatter; means/correlationcannotjustifypermanentinsurance."
+    }
+  ],
+  "resources": {
+    "elapsed_seconds": 1.515,
+    "peak_RSS_KiB": 109644,
+    "observer_trace_reads": 0,
+    "price_parquet_reads": 0,
+    "completed_candidate_raw_audit_reads_each": 1,
+    "new_engines": 0,
+    "additional_permission_markup": {
+      "MemAvailable_kB_start": 984564,
+      "SOL_execution_parquet_passes": 1,
+      "BTC_minute_parquet_passes": 0,
+      "observer_passes": 0,
+      "SOL_rows": 1051200,
+      "SOL_15m_bars": 70080,
+      "gaps": 0,
+      "seconds": 7.105361223220825,
+      "RSS_KiB": 168276
+    }
+  },
+  "outcome_counts": {
+    "control6077": {
+      "BTC_winners": 57,
+      "BTC_losers": 48,
+      "BTC_winners_with_negative_SOL_net": 3,
+      "BTC_losers_positive_SOL_net": 5,
+      "joint_BTC_SOL_net_losers": 1,
+      "equal_episode_mean_combined_net_pct": 1.3357360911831269
+    },
+    "i25": {
+      "BTC_winners": 57,
+      "BTC_losers": 48,
+      "BTC_winners_with_negative_SOL_net": 56,
+      "BTC_losers_positive_SOL_net": 27,
+      "joint_BTC_SOL_net_losers": 21,
+      "equal_episode_mean_combined_net_pct": 0.01458343512675142
+    },
+    "i25-light": {
+      "BTC_winners": 57,
+      "BTC_losers": 48,
+      "BTC_winners_with_negative_SOL_net": 56,
+      "BTC_losers_positive_SOL_net": 27,
+      "joint_BTC_SOL_net_losers": 21,
+      "equal_episode_mean_combined_net_pct": 0.008727919794285666
+    },
+    "i25-recovery": {
+      "BTC_winners": 57,
+      "BTC_losers": 48,
+      "BTC_winners_with_negative_SOL_net": 56,
+      "BTC_losers_positive_SOL_net": 26,
+      "joint_BTC_SOL_net_losers": 22,
+      "equal_episode_mean_combined_net_pct": 0.013697455186091223
+    },
+    "i33": {
+      "BTC_winners": 57,
+      "BTC_losers": 48,
+      "BTC_winners_with_negative_SOL_net": 56,
+      "BTC_losers_positive_SOL_net": 27,
+      "joint_BTC_SOL_net_losers": 21,
+      "equal_episode_mean_combined_net_pct": -0.20656968514398433
+    }
+  },
+  "provenance_correction_boundary": {
+    "native_selected_raw_SHA": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "independent_native_621fill_inventory": "reports/immediate-sol-insurance-113/postmortem-early-chop.json",
+    "SHA256": "43dfa946902ae484b4ca8623e84a2aad80ed948c30be2650420cc4cb5ebb986b",
+    "all3_selected_prequote_quantities_match": true,
+    "omitted_crossversion_file": "reports/btc-split-sol-cover-20261018/comparison-analysis-worst-dd-native-landmarks.json",
+    "reason": "Itsbtc025firsttroughE2990.60113081 isNOTselected6077E4530.57414701; neverusedforselectedquantities. Existingcap50-postmortem exactselected4dbraw/f9btraceproof independentlymatched621fillinventory."
+  },
+  "EARLY_CHOP_descriptive_precheck": {
+    "artifact": "reports/immediate-sol-insurance-113/postmortem-early-chop.json",
+    "SHA256": "43dfa946902ae484b4ca8623e84a2aad80ed948c30be2650420cc4cb5ebb986b",
+    "EARLY": {
+      "0.5": {
+        "triggers": 93,
+        "trigger_losers": 48,
+        "trigger_winners": 45,
+        "permissions_before_exit": 93,
+        "already_fresh": 45,
+        "unconfirmed_before_exit": 0,
+        "latency_minutes": {
+          "0": 0.0,
+          "0.25": 0.0,
+          "0.5": 1.0,
+          "0.75": 11.0,
+          "0.95": 133.39999999999992,
+          "1": 249.0
+        },
+        "latency_gt15min": 19,
+        "latency_gt60min": 12
+      },
+      "1": {
+        "triggers": 71,
+        "trigger_losers": 43,
+        "trigger_winners": 28,
+        "permissions_before_exit": 71,
+        "already_fresh": 45,
+        "unconfirmed_before_exit": 0,
+        "latency_minutes": {
+          "0": 0.0,
+          "0.25": 0.0,
+          "0.5": 0.0,
+          "0.75": 7.0,
+          "0.95": 73.5,
+          "1": 284.0
+        },
+        "latency_gt15min": 7,
+        "latency_gt60min": 4
+      },
+      "1.5": {
+        "triggers": 59,
+        "trigger_losers": 40,
+        "trigger_winners": 19,
+        "permissions_before_exit": 59,
+        "already_fresh": 35,
+        "unconfirmed_before_exit": 0,
+        "latency_minutes": {
+          "0": 0.0,
+          "0.25": 0.0,
+          "0.5": 0.0,
+          "0.75": 7.5,
+          "0.95": 58.099999999999994,
+          "1": 80.0
+        },
+        "latency_gt15min": 7,
+        "latency_gt60min": 2
+      }
+    },
+    "CHOP": {
+      "entries": 40,
+      "losers": 23,
+      "winners": 17,
+      "outside_losers": 25,
+      "outside_winners": 40,
+      "daily_regime_actual_side_mismatches": [],
+      "boundary7transitions_entries": 43,
+      "boundary_changed_entries": [
+        20,
+        21,
+        77
+      ],
+      "descriptive11clusters_coverage": [
+        {
+          "first": 3,
+          "last": 4,
+          "episodes": 2,
+          "CHOP_selected": [
+            4
+          ]
+        },
+        {
+          "first": 6,
+          "last": 7,
+          "episodes": 2,
+          "CHOP_selected": [
+            7
+          ]
+        },
+        {
+          "first": 35,
+          "last": 39,
+          "episodes": 5,
+          "CHOP_selected": [
+            37,
+            38,
+            39
+          ]
+        },
+        {
+          "first": 42,
+          "last": 43,
+          "episodes": 2,
+          "CHOP_selected": []
+        },
+        {
+          "first": 45,
+          "last": 47,
+          "episodes": 3,
+          "CHOP_selected": [
+            47
+          ]
+        },
+        {
+          "first": 50,
+          "last": 52,
+          "episodes": 3,
+          "CHOP_selected": [
+            51,
+            52
+          ]
+        },
+        {
+          "first": 58,
+          "last": 59,
+          "episodes": 2,
+          "CHOP_selected": []
+        },
+        {
+          "first": 63,
+          "last": 64,
+          "episodes": 2,
+          "CHOP_selected": []
+        },
+        {
+          "first": 80,
+          "last": 82,
+          "episodes": 3,
+          "CHOP_selected": [
+            80,
+            81,
+            82
+          ]
+        },
+        {
+          "first": 91,
+          "last": 95,
+          "episodes": 5,
+          "CHOP_selected": [
+            93,
+            94,
+            95
+          ]
+        },
+        {
+          "first": 97,
+          "last": 103,
+          "episodes": 7,
+          "CHOP_selected": [
+            98,
+            99,
+            100,
+            101,
+            102,
+            103
+          ]
+        }
+      ],
+      "initial_permission_latency_min": {
+        "0": 0.0,
+        "0.25": 13.75,
+        "0.5": 28.5,
+        "0.75": 59.0,
+        "0.95": 119.0,
+        "1": 149.0
+      }
+    },
+    "factor_cost": {
+      "rho": {
+        "0": 0.6423020861524678,
+        "0.25": 0.7403389736264083,
+        "0.5": 0.8148687208806445,
+        "0.75": 0.8503916898448093,
+        "0.95": 0.9282113923506988,
+        "1": 0.9308057408664975
+      },
+      "beta": {
+        "0": 1.0584011432278502,
+        "0.25": 1.2155155550676013,
+        "0.5": 1.2639319253231864,
+        "0.75": 1.6032015167332005,
+        "0.95": 1.8349253221873616,
+        "1": 2.018270966151502
+      },
+      "half_factor_min_roundtrip_bp_BTCnotional": {
+        "0": 2.725104850756269,
+        "0.25": 3.430635476946902,
+        "0.5": 4.35150017956359,
+        "0.75": 4.524828972422418,
+        "0.95": 5.04404556064344,
+        "1": 5.196517440661884
+      },
+      "half_factor_vs_quartervolrisk_cost_multiple": {
+        "0": 2.148676047204197,
+        "0.25": 2.3518574133350083,
+        "0.5": 2.454383078833313,
+        "0.75": 2.701465235854576,
+        "0.95": 3.0152560918637885,
+        "1": 3.1137996327871895
+      },
+      "two_full_half_factor_roundtrips_bp": {
+        "0": 5.450209701512538,
+        "0.25": 6.861270953893804,
+        "0.5": 8.70300035912718,
+        "0.75": 9.049657944844837,
+        "0.95": 10.08809112128688,
+        "1": 10.393034881323768
+      },
+      "limit": "5.5bp/side actualnativeTAKERfee; ignoresfunding/slippage/gaps/scalechanges. Twofullcycles nottwofills; higherstages/reductionsaddcost. PreviousI25actualequalepisodemeanSOLfees18.7994bp/BTCN."
+    },
+    "causal_permission_limit": "CurrentBTCadverseNOWcheckedat223firstconfirmationclockopportunitiesbyoneBTCmarkstream; thresholdstillmet70/93(.5),63/71(1),53/59(1.5). Firststaleopportunitiesnotorders; nosearchnextconfirmation/cycle. Nativecallback/precision/actualfillsNOTreplayed."
+  },
+  "common_future_exit_cost_contract": {
+    "status": "PROPOSAL_ONLY_NEEDS_EXACT_NATIVE_CONTRACT_AND_OWNER_APPROVAL",
+    "harvest": "Atmostoncepercoveragelevel, reducehalfONLYwithnativeSOLnetafterknownpaid/estimatedclosingcosts>=0.5*currentBTCloss ANDfreshoppositeSOL15mbar. SignedfundingUNKNOWNmustnotbeassumedprofit. GenericnegativeHARVEST_OR_RECOVERYeventsfromoldrunarenotallprofit-harvestcandidates.",
+    "force_exit": "Noresidualfloor; mandatoryactualBTCflat/directionchange/closeclosesinsuranceevennegative. Fresh1hSOLreversalwhenprotectionOFFalsocloses; exactprotectionOFFlevelmustbepinnedbeforeanyrun. NeverholdlosingSOLjusttoexitatzero.",
+    "anti_churn": "Max2fullinsurancecycles/BTCepisode(NOT2fills); rearmrequiresnewclosed15mconfirmationANDnewBTCadverse>=0.25percentagepointsbeyondlastclose. ActualBTCreductionsresizecoverage; noforcedcontinuousrefillafterharvest.",
+    "fee_precheck": "NativeTAKER5.5bp/side=>11bpSOLroundtripbeforeothercosts; factorc.5median4.3515bpBTCN,2fullbasecycles8.703bp vsI25actualmean18.7994bp. Highercoveragelevels/extraadjustmentsaddfees; notfeecaporsavingsforecast.",
+    "ROI_tradeoff": "Removingpermanentfloor/churnmayreducewinningBTCdragbutcanmissfastgap/whipsawinsurance. NoexpectedTOTAL/DDsupplied; noauthorizednewrunbythisanalysis."
+  },
+  "recommendation": "Prioritizecausalno-floorH-EARLYplusboundedcost/rearmmechanics; CUSHIONisriskfeasibilitycheckonly. DROPCHOPasindependentROI-savinghypothesisfornow:modifieradds5losersand9winnerswithoutremovingordinaryEARLYhedges. DoNOTforce3hypotheseswhenprecheckdoesnotsupportthird. Allapproved4failedstrictDD<=50. OriginalSOLalphaandBTC-onlybenchmarkneedexplicitseparation;6077isportfolio. Nonewrunbythisanalysis.",
+  "current_adverse_first_confirmation_precheck": {
+    "artifact": "reports/immediate-sol-insurance-113/postmortem-current-adverse.json",
+    "SHA256": "ae4170a72272c5ec1556214afab7684dcd6f010c74e4fcdbd68a623cd0021133",
+    "check": {
+      "status": "ONE_BTC_MARK_PASS_CURRENT_ADVERSE_FIRST_OPPORTUNITY_ONLY",
+      "source": "/var/lib/coinmaster-native-gui/data/normalized/bybit-BTCUSDT-mark-1m.parquet",
+      "source_sha256": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+      "comparison_reference": "sameBTCmarkclose/P0andavailable=open_time+60000 as savedfirstcrossings",
+      "summary": {
+        "0.5": {
+          "trigger_clock_opportunities": 93,
+          "first_confirmation_current_adverse_eligible": 70,
+          "eligible_losers": 38,
+          "eligible_winners": 32,
+          "stale_first_confirmation_unfilled_opportunity": 23,
+          "stale_losers": 10,
+          "stale_winners": 13,
+          "stale_episode_numbers": [
+            1,
+            5,
+            6,
+            7,
+            12,
+            17,
+            26,
+            27,
+            28,
+            29,
+            30,
+            36,
+            38,
+            40,
+            51,
+            53,
+            60,
+            64,
+            72,
+            79,
+            83,
+            91,
+            99
+          ],
+          "wait_gt15min": 19,
+          "wait_gt15_eligible": 7,
+          "wait_gt15_stale": 12
+        },
+        "1": {
+          "trigger_clock_opportunities": 71,
+          "first_confirmation_current_adverse_eligible": 63,
+          "eligible_losers": 37,
+          "eligible_winners": 26,
+          "stale_first_confirmation_unfilled_opportunity": 8,
+          "stale_losers": 6,
+          "stale_winners": 2,
+          "stale_episode_numbers": [
+            4,
+            12,
+            15,
+            26,
+            38,
+            51,
+            75,
+            102
+          ],
+          "wait_gt15min": 7,
+          "wait_gt15_eligible": 4,
+          "wait_gt15_stale": 3
+        },
+        "1.5": {
+          "trigger_clock_opportunities": 59,
+          "first_confirmation_current_adverse_eligible": 53,
+          "eligible_losers": 36,
+          "eligible_winners": 17,
+          "stale_first_confirmation_unfilled_opportunity": 6,
+          "stale_losers": 4,
+          "stale_winners": 2,
+          "stale_episode_numbers": [
+            3,
+            15,
+            34,
+            73,
+            75,
+            81
+          ],
+          "wait_gt15min": 7,
+          "wait_gt15_eligible": 4,
+          "wait_gt15_stale": 3
+        }
+      },
+      "CHOP_comparison": {
+        "EARLY_half_stage_current_adverse_first_opportunity": {
+          "episodes": 70,
+          "losers": 38,
+          "winners": 32,
+          "numbers": [
+            3,
+            4,
+            8,
+            9,
+            10,
+            11,
+            14,
+            15,
+            16,
+            18,
+            19,
+            22,
+            23,
+            25,
+            32,
+            33,
+            34,
+            35,
+            37,
+            39,
+            41,
+            42,
+            43,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            52,
+            54,
+            56,
+            58,
+            59,
+            61,
+            62,
+            63,
+            65,
+            66,
+            67,
+            68,
+            70,
+            71,
+            73,
+            74,
+            75,
+            76,
+            77,
+            80,
+            81,
+            82,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            92,
+            93,
+            94,
+            95,
+            97,
+            98,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105
+          ]
+        },
+        "strict_CHOP_only_initial_permission": {
+          "episodes": 40,
+          "losers": 23,
+          "winners": 17,
+          "numbers": [
+            4,
+            5,
+            7,
+            8,
+            9,
+            17,
+            18,
+            25,
+            26,
+            28,
+            33,
+            37,
+            38,
+            39,
+            40,
+            44,
+            47,
+            48,
+            49,
+            51,
+            52,
+            53,
+            56,
+            57,
+            65,
+            76,
+            80,
+            81,
+            82,
+            83,
+            93,
+            94,
+            95,
+            96,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103
+          ]
+        },
+        "CHOP_modifier_union_initial_CHOP_plus_EARLY_elsewhere": {
+          "episodes": 84,
+          "losers": 43,
+          "winners": 41,
+          "numbers": [
+            3,
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            22,
+            23,
+            25,
+            26,
+            28,
+            32,
+            33,
+            34,
+            35,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            56,
+            57,
+            58,
+            59,
+            61,
+            62,
+            63,
+            65,
+            66,
+            67,
+            68,
+            70,
+            71,
+            73,
+            74,
+            75,
+            76,
+            77,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105
+          ]
+        },
+        "extra_initial_CHOP_episodes_vs_EARLY_first_eligible": {
+          "episodes": 14,
+          "losers": 5,
+          "winners": 9,
+          "numbers": [
+            5,
+            7,
+            17,
+            26,
+            28,
+            38,
+            40,
+            44,
+            51,
+            53,
+            57,
+            83,
+            96,
+            99
+          ]
+        },
+        "EARLY_first_eligible_inside_CHOP": {
+          "episodes": 26,
+          "losers": 18,
+          "winners": 8,
+          "numbers": [
+            4,
+            8,
+            9,
+            18,
+            25,
+            33,
+            37,
+            39,
+            47,
+            48,
+            49,
+            52,
+            56,
+            65,
+            76,
+            80,
+            81,
+            82,
+            93,
+            94,
+            95,
+            98,
+            100,
+            101,
+            102,
+            103
+          ]
+        },
+        "interpretation": "ModifierdoesNOTreduceordinaryEARLYhedgepermissionsoutsideCHOP;itacceleratesCHOPentriesandmaycreateadditionalinitialhedges. StrictCHOPonlywouldremoveoutsideprotectionandisNOTdocumentmodifier. Countsnotduration/fills/PNL;changedtemporalfirstactivationnotreplayed."
+      },
+      "limits": [
+        "Whenadversehasdisappearedatthefirstconfirm,it isunfilledfirstopportunity,nottotalepisodeabsence:nonextconfirmation/cycle searched.",
+        "Confirmationclock/thresholdcompatibilityisnotnativecallback/reversebar/fillproof.",
+        "Exactnominalthresholdsnotoptimized;nosyntheticROI/PNL."
+      ],
+      "resources": {
+        "MemAvailable_start_kB": 998732,
+        "BTCmark_parquet_passes": 1,
+        "rows": 1051200,
+        "timestamp_requests": 223,
+        "unique_timestamps": 215,
+        "gaps": 0,
+        "seconds": 1.7568941116333008,
+        "RSS_KiB": 84904
+      }
+    }
+  }
+}

@@ -7,3 +7,7 @@ Candidate.sol_overlay_enabled=False already disables original SOL admission (dom
 Actual churn is supported by exported events: I25 2,170 HARVEST_OR_RECOVERY /1,168 ADVERSE_STAGE; Light2,066/1,137; Recovery2,427/1,241 plus90 recoveryadd/release pairs; I332,205/1,192. These are events, not unique roundtrips. Source allows harvest→new tiny adverse extreme→confirmed stage re-add; repeated same-direction sell/buy can pay taker fees. Recovery averages a losing SOL hedge once per episode. Actual BTC TP/Q2 quantity changes and mandatory BTC-flat also reconcile SOL. There is no price-only microrebalance.
 
 A simpler authorized follow-up could remove discretionary harvest/rearm, retain only staged adversity plus one exit policy, or remove recovery averaging. None is implemented here. Existing NETTING/order/account/funding boundaries suffice. See JSON for exact scope and source references.
+
+## Subsequent authorized single reference
+
+The one new standalone native run completed with TOTAL280,748.52263020, ROI+2,707.485226302%, native minuteDD64.0739498631%, fees76,260.55004660, liquidation0, full1,051,200 rows/nativeflat/SOLfills0. All105BTCdates/sides/P0/firstfilltimestamps match the selected control;99absolute quantities change with native equity compounding. Exact frozen759source/85pins and selected config were retained except sol_overlay_enabled=False. The inherited systemd unitlabel is disclosed in the invocation receipt; only one newengine was dispatched and no oldresult was overwritten. No further run.

@@ -1,0 +1,161 @@
+{
+  "status": "GO_ANALYSIS_HYPOTHESIS_ONLY_NOT_IMPLEMENTATION_OR_NATIVE_VALIDATION",
+  "source_pins": {
+    "reports/immediate-sol-insurance-113/challenge-cushion.json": "33f747bb9fdeaabd2c99805356407582cbf5bea997f9bd8b290cf08e39209fb7",
+    "inventory": {
+      "path": "reports/immediate-sol-insurance-113/postmortem-early-chop.json",
+      "sha256": "43dfa946902ae484b4ca8623e84a2aad80ed948c30be2650420cc4cb5ebb986b",
+      "key": "native_621fill_inventory_crosscheck",
+      "method": "Collaborator exact order.side/621 native fill inventory, strictly before prequote timestamp; selected raw4dbfaf...ec1b and selected tracef9b599...38a0b already pinned in collaborator artifact."
+    },
+    "control_and_daily": {
+      "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+      "reports/sol-risk-first-20261018/analysis-control-provenance.json": "cfff6e87d37925c240d934b670f415683f7dd87f02926db103d1586c0eee31d1",
+      "runtime/var/data/normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+      "runtime/var/data/normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4"
+    }
+  },
+  "scope": "Only arithmetic on3 cached native points and already frozen coefficients; no daily/data/model/observer pass. Remaining costs omitted => lower bound, not assigned known zero.",
+  "formula": "NB>=0; protective NS=-BTCside*signedSOLnotional. L(NS)=abs(NB-beta*NS)*a_simple+abs(NS)*u_simple+remaining_execution_costs.",
+  "selection": "Original currently authorized target is retained if full target+pending exposure risk and margin/Q2 budget pass. Otherwise choose SMALLEST c in0,.25,.5,.75,1 whose target satisfies identical full risk budget. This is identical to pure CUSHION fallback; never use ambiguous closest-to-original tie policy.",
+  "release": "When restoring toward a still-authorized original alpha target: fresh opposite SOL15m confirmation AND L(candidate)<=.8C AND Q2/margin admission; no resurrected expired original rights. Protective increase urgency is not delayed by this release rule.",
+  "infeasible": "If feasible set empty or coefficients/costs/ACK bounds unknown: explicit UNHEDGEABLE/UNKNOWN and no claim DD criterion met; do not quietly choose c0 or force BTC change. Native mandatory exits retain priority.",
+  "native_cached_rows": [
+    {
+      "timestamp_ns": "1727970240000000000",
+      "actual_BTC_side": "SHORT",
+      "actual_BTC_NB": 43591.99656,
+      "actual_SOL_protective_NS": 107984.3094,
+      "beta": 1.2275637601690346,
+      "a_simple": 0.05937334148761146,
+      "u_simple": 0.04494295485257109,
+      "native_E": 4530.57414701,
+      "native_H": 13451.3363251,
+      "C": 0,
+      "actual_factor_coverage": 3.04087069524031,
+      "actual_position_L_no_remaining_costs": 10135.32057342881,
+      "min_grid_L_no_remaining_costs": 1595.968532876647,
+      "actual_position_satisfies_floor_before_costs": false,
+      "any_grid_satisfies_floor_before_costs": false,
+      "grid": [
+        {
+          "c": 0,
+          "NS": 0.0,
+          "L_no_remaining_costs": 2588.202497883664
+        },
+        {
+          "c": 0.25,
+          "NS": 8877.745900953734,
+          "L_no_remaining_costs": 2340.1440066319096
+        },
+        {
+          "c": 0.5,
+          "NS": 17755.49180190747,
+          "L_no_remaining_costs": 2092.0855153801554
+        },
+        {
+          "c": 0.75,
+          "NS": 26633.237702861203,
+          "L_no_remaining_costs": 1844.027024128401
+        },
+        {
+          "c": 1,
+          "NS": 35510.98360381494,
+          "L_no_remaining_costs": 1595.968532876647
+        }
+      ],
+      "scope": "L(actual saved SOL), not L(original future authorized target): original target not in frozen inputs. No hypothetical PnL/fills or new strategy result."
+    },
+    {
+      "timestamp_ns": "1749223020000000000",
+      "actual_BTC_side": "SHORT",
+      "actual_BTC_NB": 3102472.76976,
+      "actual_SOL_protective_NS": 0,
+      "beta": 1.5218081455875887,
+      "a_simple": 0.060221731878120875,
+      "u_simple": 0.0433009352288551,
+      "native_E": 367509.64806046,
+      "native_H": 915175.73025689,
+      "C": 0,
+      "actual_factor_coverage": 0.0,
+      "actual_position_L_no_remaining_costs": 186836.28329965775,
+      "min_grid_L_no_remaining_costs": 88276.549736034,
+      "actual_position_satisfies_floor_before_costs": false,
+      "any_grid_satisfies_floor_before_costs": false,
+      "grid": [
+        {
+          "c": 0,
+          "NS": 0.0,
+          "L_no_remaining_costs": 186836.28329965775
+        },
+        {
+          "c": 0.25,
+          "NS": 509668.8401155353,
+          "L_no_remaining_costs": 162196.34990875184
+        },
+        {
+          "c": 0.5,
+          "NS": 1019337.6802310706,
+          "L_no_remaining_costs": 137556.41651784588
+        },
+        {
+          "c": 0.75,
+          "NS": 1529006.520346606,
+          "L_no_remaining_costs": 112916.48312693994
+        },
+        {
+          "c": 1,
+          "NS": 2038675.3604621412,
+          "L_no_remaining_costs": 88276.549736034
+        }
+      ],
+      "scope": "L(actual saved SOL), not L(original future authorized target): original target not in frozen inputs. No hypothetical PnL/fills or new strategy result."
+    },
+    {
+      "timestamp_ns": "1764340080000000000",
+      "actual_BTC_side": "SHORT",
+      "actual_BTC_NB": 15769369.580799999,
+      "actual_SOL_protective_NS": 0,
+      "beta": 1.7725007074681685,
+      "a_simple": 0.03977203447086431,
+      "u_simple": 0.05320118746378919,
+      "native_E": 937712.12544458,
+      "native_H": 2088471.56378771,
+      "C": 0,
+      "actual_factor_coverage": 0.0,
+      "actual_position_L_no_remaining_costs": 627179.9105513766,
+      "min_grid_L_no_remaining_costs": 473313.8800560856,
+      "actual_position_satisfies_floor_before_costs": false,
+      "any_grid_satisfies_floor_before_costs": false,
+      "grid": [
+        {
+          "c": 0,
+          "NS": 0.0,
+          "L_no_remaining_costs": 627179.9105513766
+        },
+        {
+          "c": 0.25,
+          "NS": 2224169.716034259,
+          "L_no_remaining_costs": 588713.4029275539
+        },
+        {
+          "c": 0.5,
+          "NS": 4448339.432068518,
+          "L_no_remaining_costs": 550246.8953037311
+        },
+        {
+          "c": 0.75,
+          "NS": 6672509.148102778,
+          "L_no_remaining_costs": 511780.3876799083
+        },
+        {
+          "c": 1,
+          "NS": 8896678.864137037,
+          "L_no_remaining_costs": 473313.8800560856
+        }
+      ],
+      "scope": "L(actual saved SOL), not L(original future authorized target): original target not in frozen inputs. No hypothetical PnL/fills or new strategy result."
+    }
+  ],
+  "conclusion": "Generalized absolute-value risk is mathematically necessary. All3 actual positions and all5 grid targets fail C0 before costs. H-CUSHION must act before cushion exhausted; retaining old alpha when budget permits is untested and does not establish TOTAL or alpha contribution ROI."
+}

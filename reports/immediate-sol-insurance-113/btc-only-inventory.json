@@ -98,6 +98,16 @@
     }
   },
   "native_results_scanned": 37,
+  "new_owner_authorized_reference_completed": {
+    "ROI_percent": "2707.48522630200",
+    "TOTAL": "280748.52263020",
+    "artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/result/winner-btc-only.json",
+    "artifact_sha256": "f7381d848fe1f26b762576921c0f06af02a226b096164a1827df651a986aedd1",
+    "completion_receipt": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/immediate-sol-insurance-113/btc-only-launch-and-completion.json",
+    "completion_receipt_sha256": "eefd1d06fa08974f738398a3a053bff5e46e52cab1c706d55eebbe922c01bcec",
+    "historical_inventory_status_unchanged": "No prior exact standalone result found; this is the subsequent explicitly authorized single new native reference.",
+    "native_minute_DD_percent": "64.07394986310021402940985169"
+  },
   "nonclaims": [
     "Event counts are not independent roundtrip counts or causal fee attribution.",
     "BTC component fill-net is not standalone BTC TOTAL/ROI; removing SOL changes equity compounding and episode availability.",
