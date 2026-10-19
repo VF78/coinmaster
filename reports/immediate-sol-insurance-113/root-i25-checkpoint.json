@@ -1,0 +1,11 @@
+{
+  "checked_utc": "2026-10-19T15:32:52.357175+00:00",
+  "i25_receipt_sha256": "84f15357886519c4ba31a74071563ce776bcf93248c5d13ee5234d47b12e4d5e",
+  "raw_result_sha256": "0ea34e81c1382276a8a01f163dbaaa3661994df33e87d0fe71cb3853a818b78e",
+  "terminal_total": "8000.31240969",
+  "technical_acceptance": "PASS",
+  "economic_eligible": false,
+  "next": "I25-Light ACTIVE; then Recovery and I33, no extra engine",
+  "project_comment": "https://github.com/VF78/coinmaster/issues/119#issuecomment-6270991929",
+  "pilot": "unchanged / PID2009732 / 0 restarts"
+}
