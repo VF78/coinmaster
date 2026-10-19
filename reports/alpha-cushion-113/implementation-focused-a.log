@@ -1,0 +1,249 @@
+FFFF..F.FF.                                                              [100%]
+=================================== FAILURES ===================================
+_ test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[1] _
+
+side = 1
+
+    @pytest.mark.parametrize('side',[1,-1])
+    def test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode(side):
+        s,e,ep=setup(side)
+        try:
+>           f=s._alpha_cycle;assert f['beta']==D('2.0') and f['beta_ns']==3
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: assert (Decimal('2.000000000000003') == Decimal('2.0'))
+E            +  where Decimal('2.0') = D('2.0')
+
+tests/test_native_alpha_cushion.py:75: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[-1] _
+
+side = -1
+
+    @pytest.mark.parametrize('side',[1,-1])
+    def test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode(side):
+        s,e,ep=setup(side)
+        try:
+>           f=s._alpha_cycle;assert f['beta']==D('2.0') and f['beta_ns']==3
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: assert (Decimal('2.000000000000003') == Decimal('2.0'))
+E            +  where Decimal('2.0') = D('2.0')
+
+tests/test_native_alpha_cushion.py:75: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[1] _
+
+side = 1
+
+    @pytest.mark.parametrize('side',[1,-1])
+    def test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission(side):
+        s,e,ep=setup(side)
+        try:
+            deficit(s,e,size='.3');assert any(x['event']=='BUDGET' and x['status']=='UNHEDGEABLE' for x in s.alpha_cushion_audit)
+            assert sum(D(x['qty']) for x in s.fill_audit if x['instrument'].startswith('SOL'))==D('.3')
+            advance(s,e,12);held=next(p for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)
+            assert held.quantity.as_decimal()==s._alpha_cycle['target'] and held.quantity.as_decimal()>D('.3')
+            btc=next(p for p in e.cache.positions_open() if p.instrument_id==BTC_PERP.id)
+            s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.SELL if side==1 else OrderSide.BUY,BTC_PERP.make_qty(btc.quantity.as_decimal()),time_in_force=TimeInForce.IOC,reduce_only=True))
+            advance(s,e,20);advance(s,e,21)
+>           assert not e.cache.positions_open() and not e.cache.orders_open() and not s._pending_by_order
+E           assert (not [] and not [LimitOrder(SELL 21.250 BTCUSDT-PERP.P1SIM LIMIT @ 1_100.0 GTC, status=ACCEPTED, client_order_id=O-19700101-000000-001...status=ACCEPTED, client_order_id=O-19700101-000000-001-000-5, venue_order_id=P1SIM-1-005, position_id=None, tags=None)])
+E            +  where [] = positions_open()
+E            +    where positions_open = <nautilus_trader.cache.cache.Cache object at 0x27ab7290>.positions_open
+E            +      where <nautilus_trader.cache.cache.Cache object at 0x27ab7290> = <nautilus_trader.backtest.engine.BacktestEngine object at 0x7790bfbd7780>.cache
+E            +  and   [LimitOrder(SELL 21.250 BTCUSDT-PERP.P1SIM LIMIT @ 1_100.0 GTC, status=ACCEPTED, client_order_id=O-19700101-000000-001...status=ACCEPTED, client_order_id=O-19700101-000000-001-000-5, venue_order_id=P1SIM-1-005, position_id=None, tags=None)] = orders_open()
+E            +    where orders_open = <nautilus_trader.cache.cache.Cache object at 0x27ab7290>.orders_open
+E            +      where <nautilus_trader.cache.cache.Cache object at 0x27ab7290> = <nautilus_trader.backtest.engine.BacktestEngine object at 0x7790bfbd7780>.cache
+
+tests/test_native_alpha_cushion.py:99: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[-1] _
+
+side = -1
+
+    @pytest.mark.parametrize('side',[1,-1])
+    def test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission(side):
+        s,e,ep=setup(side)
+        try:
+            deficit(s,e,size='.3');assert any(x['event']=='BUDGET' and x['status']=='UNHEDGEABLE' for x in s.alpha_cushion_audit)
+            assert sum(D(x['qty']) for x in s.fill_audit if x['instrument'].startswith('SOL'))==D('.3')
+            advance(s,e,12);held=next(p for p in e.cache.positions_open() if p.instrument_id==SOL_PERP.id)
+            assert held.quantity.as_decimal()==s._alpha_cycle['target'] and held.quantity.as_decimal()>D('.3')
+            btc=next(p for p in e.cache.positions_open() if p.instrument_id==BTC_PERP.id)
+            s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.SELL if side==1 else OrderSide.BUY,BTC_PERP.make_qty(btc.quantity.as_decimal()),time_in_force=TimeInForce.IOC,reduce_only=True))
+            advance(s,e,20);advance(s,e,21)
+            assert not e.cache.positions_open() and not e.cache.orders_open() and not s._pending_by_order
+            assert s._domain.episode is ep and s._alpha_cycle['target']==0
+            original(s,e,ep,1,22);assert not e.cache.positions_open()  # Explicit risk-policy BTCflat override.
+>           close(s,e,30)
+
+tests/test_native_alpha_cushion.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = Observed(Observed-000)
+e = <nautilus_trader.backtest.engine.BacktestEngine object at 0x7790bfd80480>
+ts = 30
+
+    def close(s,e,ts=1000):
+        s._begin_forced_close('REGIME')
+        for t in range(ts,ts+5):advance(s,e,t)
+        assert not e.cache.positions_open() and not e.cache.orders_open() and not s._pending_by_order
+>       assert s._domain.episode is None
+E       AssertionError: assert Episode(id='alpha-native', side=-1, active_entry=10000, beta_entry=1, btc_target_basis_qty=100.0, btc_initial_qty=100....={}, resting_reductions=set(), attempted_btc_at={}, attempted_sol_at={}, close_reason=None, btc_sizing_multiplier=None) is None
+E        +  where Episode(id='alpha-native', side=-1, active_entry=10000, beta_entry=1, btc_target_basis_qty=100.0, btc_initial_qty=100....={}, resting_reductions=set(), attempted_btc_at={}, attempted_sol_at={}, close_reason=None, btc_sizing_multiplier=None) = <coinmaster.domain.wave_overlay.WaveOverlayState object at 0x7790bfe67020>.episode
+E        +    where <coinmaster.domain.wave_overlay.WaveOverlayState object at 0x7790bfe67020> = Observed(Observed-000)._domain
+
+tests/test_native_alpha_cushion.py:68: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_unknown_transport_late_native_fill_after_BTC_flat_is_closed_no_overbuy __
+
+    def test_unknown_transport_late_native_fill_after_BTC_flat_is_closed_no_overbuy():
+        class Transport(Observed):
+            hold=False;waiting=None;release=False
+            def submit_order(self,o,*args,**kw):
+                if self.hold and o.instrument_id==SOL_PERP.id and not o.is_reduce_only:
+                    self.hold=False;self.waiting=o;return
+                return super().submit_order(o,*args,**kw)
+            def on_quote_tick(self,q):
+                super().on_quote_tick(q)
+                if self.release and q.instrument_id==SOL_PERP.id:self.release=False;super().submit_order(self.waiting)
+        s,e,ep=setup(probe=Transport)
+        try:
+            s.hold=True;deficit(s,e);assert s.waiting is not None
+            assert e.cache.order(s.waiting.client_order_id) is None
+            count=len(s._pending_by_order);advance(s,e,12);assert len(s._pending_by_order)==count
+            btc=next(p for p in e.cache.positions_open() if p.instrument_id==BTC_PERP.id)
+            s.submit_order(s.order_factory.market(BTC_PERP.id,OrderSide.SELL,BTC_PERP.make_qty(btc.quantity.as_decimal()),time_in_force=TimeInForce.IOC,reduce_only=True))
+            advance(s,e,20);s.release=True;run_ticks(e,[tick(SOL_PERP,21,size='.3')]);advance(s,e,22)
+>           assert not e.cache.positions_open() and not e.cache.orders_open() and not s._pending_by_order
+E           assert (not [] and not [LimitOrder(SELL 21.250 BTCUSDT-PERP.P1SIM LIMIT @ 1_100.0 GTC, status=ACCEPTED, client_order_id=O-19700101-000000-001...status=ACCEPTED, client_order_id=O-19700101-000000-001-000-5, venue_order_id=P1SIM-1-005, position_id=None, tags=None)])
+E            +  where [] = positions_open()
+E            +    where positions_open = <nautilus_trader.cache.cache.Cache object at 0x27a326c0>.positions_open
+E            +      where <nautilus_trader.cache.cache.Cache object at 0x27a326c0> = <nautilus_trader.backtest.engine.BacktestEngine object at 0x7790bfd82350>.cache
+E            +  and   [LimitOrder(SELL 21.250 BTCUSDT-PERP.P1SIM LIMIT @ 1_100.0 GTC, status=ACCEPTED, client_order_id=O-19700101-000000-001...status=ACCEPTED, client_order_id=O-19700101-000000-001-000-5, venue_order_id=P1SIM-1-005, position_id=None, tags=None)] = orders_open()
+E            +    where orders_open = <nautilus_trader.cache.cache.Cache object at 0x27a326c0>.orders_open
+E            +      where <nautilus_trader.cache.cache.Cache object at 0x27a326c0> = <nautilus_trader.backtest.engine.BacktestEngine object at 0x7790bfd82350>.cache
+
+tests/test_native_alpha_cushion.py:150: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_ test_release_requires_fresh_opposite_closed15m_after_last_increase_and_hysteresis _
+
+    def test_release_requires_fresh_opposite_closed15m_after_last_increase_and_hysteresis():
+        s,e,ep=setup()
+        try:
+            f=s._alpha_cycle;f['last_increase_ns']=10
+            kind=next(k for k in s.config.research_confirmation_bars if k.instrument_id==SOL_PERP.id and k.spec.aggregation==BarAggregation.MINUTE)
+            s._alpha_bar(bar(kind,9,100,101,99));s._alpha_bar(bar(kind,11,102,103,100))
+>           assert not s._alpha_release_ready(11,D(1),D(10))
+E           AssertionError: assert not True
+E            +  where True = _alpha_release_ready(11, Decimal('1'), Decimal('10'))
+E            +    where _alpha_release_ready = Observed(Observed-000)._alpha_release_ready
+E            +    and   Decimal('1') = D(1)
+E            +    and   Decimal('10') = D(10)
+
+tests/test_native_alpha_cushion.py:176: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+___ test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity ___
+
+    def test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity():
+        outputs=[]
+        for enabled in (False,True):
+            s=Observed(config(enabled));e=engine(s,bar_execution=not enabled)
+            try:
+                run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
+                snapshots=[]
+                for cycle in range(2):
+                    t=cycle*1000+2;prepare_day(s,t);history(s);marks(s,t,'100','1')
+                    ep=s._domain.episode=Episode('healthy-'+str(cycle),1,10000,1,wave_levels=(10,20,30),h=10000)
+                    i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100);s._submit_intent(i,100,100,.01,0,ts_now=t)
+                    run_ticks(e,[tick(BTC_PERP,t+1),tick(BTC_PERP,t+2),tick(BTC_PERP,t+3,'99'),tick(SOL_PERP,t+4,'1')])
+                    for k,q in enumerate([3505,2505,1505,505]):
+                        now=t+10+k*10;marks(s,now,'100','1');original(s,e,ep,q,now,price='1');advance(s,e,now+1,sol='1')
+                        snapshots.append((ep.sol_qty,ep.sol_first_fill_at,ep.sol_first_owned_at,ep.fixed_sigma,dict(ep.sol_add_filled_notional)))
+                        assert not any(i.action=='SOL_ADD' for i in s._pending_by_order.values())
+                    for half,z in [(True,.3),(False,0.)]:
+                        now=t+(60 if half else 80);s._domain._decision_index=100+now
+                        when=datetime.fromtimestamp(now/1e9,UTC);b=DailyBar(when-timedelta(days=1),when,when,100,100,1)
+                        intents=s._domain._sol_exits(ep,Features(100+now,1,1.,1.,0.,1.,0.),b,100+now,z=z);assert len(intents)==1
+                        s._submit_intent(intents[0],1,1,None,100+now,ts_now=now)
+                        for dt in range(3):advance(s,e,now+dt,sol='1')
+>                   assert ep.sol_qty==0
+E                   AssertionError: assert 1752.5 == 0
+E                    +  where 1752.5 = Episode(id='healthy-0', side=1, active_entry=10000, beta_entry=1, btc_target_basis_qty=100.0, btc_initial_qty=100.0, b...7ed0-449e-bed4-8bd1bccbd36a'}, attempted_btc_at={}, attempted_sol_at={}, close_reason=None, btc_sizing_multiplier=None).sol_qty
+
+tests/test_native_alpha_cushion.py:205: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_alpha_cushion.py: 10 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_alpha_cushion.py: 40 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[1]
+tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:85: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[1]
+tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:103: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_generalized_loss_overhedge_same_side_and_min_step_uses_absolute_residual
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:117: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_existing_Q2_native_margin_reservation_and_risk_cost_are_not_starved
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:129: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_unknown_transport_late_native_fill_after_BTC_flat_is_closed_no_overbuy
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:153: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_risk_retired_unfilled_authorization_separate_from_native_fill_credit
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:167: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_release_requires_fresh_opposite_closed15m_after_last_increase_and_hysteresis
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:180: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:215: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_real_production_tiny_runner_original_alpha_ON_observer_and_serialization
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:876: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_alpha_cushion.py::test_real_production_tiny_runner_original_alpha_ON_observer_and_serialization
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:886: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[1]
+FAILED tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[-1]
+FAILED tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[1]
+FAILED tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[-1]
+FAILED tests/test_native_alpha_cushion.py::test_unknown_transport_late_native_fill_after_BTC_flat_is_closed_no_overbuy
+FAILED tests/test_native_alpha_cushion.py::test_release_requires_fresh_opposite_closed15m_after_last_increase_and_hysteresis
+FAILED tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+7 failed, 4 passed, 62 warnings in 3.97s

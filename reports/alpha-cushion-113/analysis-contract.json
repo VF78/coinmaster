@@ -1,0 +1,70 @@
+{
+  "status": "PREPARED_SCHEMA_NO_CANDIDATE_ECONOMICS_READ",
+  "scope": "OnecompletedALPHA-CUSHIONvsreusedselected6077;noadditionalcontrol/BTC-only/repeat/hypothesisengines. rootmustactivatefinalanalysisafteractualcompletion.",
+  "source_contract": {
+    "path": "reports/immediate-sol-insurance-113/next-three-proposals.json",
+    "SHA256": "f78f01a455177d238ac25552137ac7ab529bcad5d2db0db0ade9cc78b49401f6",
+    "mode": 1,
+    "EARLY_CHOP": false
+  },
+  "acceptance": {
+    "success": "Actualjournalexit0+Deactivatedsuccessfully/fulluniquecompletedJSON/frozenpins+expectedconfig/data/policy/fee+full1051200perexecution/marksourcefeedrows+terminalnativeflat/allordersknownterminal/_pendingnone+Qleavesconserved. Fullfeedafterfinanciallockoutnotfake105permissions.",
+    "comparison_status": "PENDING_IMPLEMENTATION_PRESERVATION_REVIEWuntilengineactualorder/authority+budgetproofPASS. Runtimefault/accountingbugnotcleaneconomicoutcome;genuinefinancialliquidationvalidfailedstrategyoutcome.",
+    "resource": "MemAvailable>=700MiBbeforeanalysis;compactraw/audit/fillsfirst. NOobserverdecodedpassunlessspecificcompletedquestion/rootpermission;defaultreusefullcollectorcompactrisk."
+  },
+  "BTC_preservation": {
+    "join": "Actualentrycalendar+side+P0firstcompletedleg/firstquotetime+q0/q1+normalizedcausalplanvs105control;exactmissing/extra/delayeddatesandreasons.",
+    "Q": "AcceptedownQlots=filled+cancelled/resolvedleaves;actualq0/q1capandexecutionnormalizationseparatefromgrossreferenceQ. AbsoluteQchangesfromequityreportednotcalledpolicyviolation. Financialmargin/Denied/lockoutandsharedexecutiondelaysdisclosed,nofake105parity.",
+    "management": "PlanrefP0immutable/actualblendedVWAPandHnativeidentity;positiveTPIOCactualTAKERexecutionunchanged;nomandatorymanagementepisodeclearedbyprotectivecleanup."
+  },
+  "required_budget_audit": {
+    "money_clock": [
+      "timestamp_ns/callbackphase",
+      "nativecash/equity/globalpeakH/F=.55H/C",
+      "actualsignedBTC/SOLqty+marks+marktimestamps",
+      "actualopenorders/pendingnativeIDs/sides/reduce-only/leaves/terminalstate",
+      "remainingBTCQ2reservednativeinitialmargin+SOLmargin/tier/limits",
+      "knownremainingfees/slippageboundsorUNKNOWN"
+    ],
+    "risk_factors": [
+      "90completedpairedUTCdailyreturns/latestclose<=firstactualBTCfill",
+      "positivefinitebetaSOL|BTCfrozenentireBTCepisode distinctfromoriginalalphabeta",
+      "a/uclosedDailyasof/sourcetimestamps/count;uusesSAMEfrozenbeta;dailyrefreshnotlookahead",
+      "Hmonotonicglobalnativeallmarkedriskobservations;neverepisode/resetcashbank"
+    ],
+    "selection": [
+      "signedNSpositiveoppositeBTC/negativeco-direction",
+      "L=abs(NB-beta*NS)*a+abs(NS)*u+remainingcosts",
+      "actualheld+pendingworstleavesandfullQ2reservationineachwhole-positioncandidate",
+      "normallegaltargetkeptONLYifrisk/marginpass;elseminimumfeasiblecgrid0/.25/.5/.75/1 afterlot/margin",
+      "knownemptyfeasiblesetUNHEDGEABLE+explicitminLbest-effort;unknownstate/coefficient/ACK/costUNKNOWN(nofakezero)",
+      "C0andfloorbreachnotclaimprotectionachieved;actualtarget!=filledcontinuouscap"
+    ],
+    "authority_and_events": [
+      "budgettriggers/TARGETprojection/REDUCE/ADD/RELEASE/RETIRE/RESTORE/UNHEDGEABLE/UNKNOWN counts+actualnativefillsnotjustconfiguredflags",
+      "originalcurrentrights/sourceintentIDs/expiry/cancelterminal/unfilledrelease/retiredlotsneverresurrected",
+      "restorationONLYvalidfreshoriginalrights+freshclosedoppositeSOL15m+L<=.8C+margin;nativeoneNETTINGpositionnotseparatebooks",
+      "BTCflatprotectiveexcessreleasepreserveslawfuloriginalauthority/lateadds,notblanketoriginaldelete/autoretry",
+      "nativeOrderDenied/partial/ACK/latefill/accountcachecausality;allbranchwitnessesactualeventsorUNEXERCISED"
+    ]
+  },
+  "result_table": [
+    "variant/acceptancestatus",
+    "nativeTOTALsettled+ROIfrom10000",
+    "intervalpreboundarycash+terminalsettlementseparate",
+    "deltaTOTAL/ROIvs6077",
+    "globalnative1mDD/top3peaktroughdates/H/E/minEq/minseedloss",
+    "conditionalOHLCboundSEPARATE_NOT_EXACT_INTRAMINUTEPATH",
+    "nativefees/maker-takerturnover+fees+unknownliquidity",
+    "BTC/SOLactualfillcounts/cashflowdiagnosticIFexistingclosed-fillmethod(noadditionalPnLengine)",
+    "fundingevents/perasset/freshSQLitefamilySHA/signedUNKNOWNunlessnewdirectcashdeltaproof",
+    "nativeorders/fillreportrowsvsindividualfill-events/Denied/liqs/faults/flat/fullfeed",
+    "BTCparentscalendar/side/P0/q0q1match/missingextra/delays/absoluteQchanges/conservation",
+    "budgetevents/factorfreezes/UNHEDGEABLEUNKNOWN/actualretireandrestore/cycleandnoresurrectionproof",
+    "source/config/data/policy/fee/receipt/result/observer/fundingSHA"
+  ],
+  "causal_explanation": "ActualSOLallocation/actualfees/churn/retirementandlostalphavsBTCequitycompoundingseparate;noexactcausalTOTALdollarsfrommatchedtrades/noresidualassignedfunding. ConfiguredunexercisedbranchNOTbenefit. NativeTOTALsoleeconomicauthority.",
+  "selection": "StrictDecimalglobalnative1mDD<=50%;maxnativeTOTALamongvalidcomparable. Control66.3188ineligible;candidateif>50=>NO_ELIGIBLE_WINNER. Noautomaticrerun/refinement/promotion;historicalthresholdnotfutureguarantee.",
+  "freeze": "AfterengineproofstatusfinalizecompactCSV/JSON/MDthenfinalSHAmanifest;nevermutaterawreceipt/controlproof/oldfrozenartifacts.",
+  "owners": "StatsONLYreports/alpha-cushion-113/analysis-*; engineonlysource/runtime/tests/launcher/run/receipt/parameters/nativewitness; rootops/Project/Git/pilotpermissions."
+}

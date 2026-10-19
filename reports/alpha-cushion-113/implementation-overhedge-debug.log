@@ -1,0 +1,33 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock _
+tests/test_native_alpha_cushion.py:257: in test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+    assert ep.sol_qty==1.5, dict(audit=s.alpha_cushion_audit[-5:],h=ep.h,orders=[str(o) for o in e.cache.orders()],pending=list(ep.pending))
+E   AssertionError: {'audit': [{'beta': '2.000000000000003', 'daily_close_ns': 0, 'episode_id': 'alpha-native', 'event': 'BETA_FREEZE', .....f7636134-6ca4-44d1-bfb0-37b9f9ef3723', 'd0478792-7431-4066-94ef-3b186db44f94', '1e36d11b-531e-4b24-852c-0f0ea3cfad6d']}
+E   assert 0.0 == 1.5
+E    +  where 0.0 = Episode(id='alpha-native', side=1, active_entry=10000, beta_entry=1, btc_target_basis_qty=1.0, btc_initial_qty=1.0, bt...6ca4-44d1-bfb0-37b9f9ef3723'}, attempted_btc_at={}, attempted_sol_at={}, close_reason=None, btc_sizing_multiplier=None).sol_qty
+----------------------------- Captured stdout call -----------------------------
+{"audit": [{"event": "BETA_FREEZE", "timestamp_ns": 3, "episode_id": "alpha-native", "beta": "2.000000000000003", "returns": 90, "daily_close_ns": 0, "valid": true, "global_peak": "10000"}, {"event": "DAILY_STRESS", "timestamp_ns": 6, "beta": "2.000000000000003", "a": "0.02020134002675586", "u": "3.504141421473151E-16", "daily_close_ns": 0, "returns": 90}, {"event": "BUDGET", "timestamp_ns": 6, "status": "ALPHA", "episode_id": "alpha-native", "native_equity": "10000.05015", "global_peak": "10000.05015", "floor": "5500.0275825", "C": "4500.0225675", "BTCqty": "1", "BTCmark": "100", "SOLmark": "100", "actual_signed_SOL_qty": "0", "original_target": "0.0", "target": "0.0", "beta": "2.000000000000003", "beta_frozen_ns": 3, "a": "0.02020134002675586", "u": "3.504141421473151E-16", "stress_close_ns": 0, "L_alpha": "2.120134002675586000000000000", "L_actual_to_alpha": "2.120134002675586000000000000", "pending": [], "Q2_remaining": "0", "remaining_execution_cost": "0.1000", "grid": [{"c": "0", "quantity": "0E+15", "L": "2.12013400267558600", "cost": "0.100"}, {"c": "0.25", "quantity": "0.1", "L": "1.736107202140471698101220670", "cost": "0.1200"}, {"c": "0.25", "quantity": "0.2", "L": "1.352080401605357396202441341", "cost": "0.1400"}, {"c": "0.5", "quantity": "0.2", "L": "1.352080401605357396202441341", "cost": "0.1400"}, {"c": "0.5", "quantity": "0.3", "L": "0.9680536010702430943036620115", "cost": "0.1600"}, {"c": "0.75", "quantity": "0.3", "L": "0.9680536010702430943036620115", "cost": "0.1600"}, {"c": "0.75", "quantity": "0.4", "L": "0.5840268005351287924048826819", "cost": "0.1800"}, {"c": "1", "quantity": "0.4", "L": "0.5840268005351287924048826819", "cost": "0.1800"}, {"c": "1", "quantity": "0.5", "L": "0.2000000000000205509081113791", "cost": "0.2000"}], "actual_transition_budget_satisfied": true, "cost_basis": "PINNED_NATIVE_QUOTE_TAKER_FEES;FUTURE_FUNDING_AND_REAL_L2_UNKNOWN"}], "h": 99.85, "order_count": 2, "pending": ["f7636134-6ca4-44d1-bfb0-37b9f9ef3723", "d0478792-7431-4066-94ef-3b186db44f94", "1e36d11b-531e-4b24-852c-0f0ea3cfad6d"]}
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:266: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+1 failed, 6 warnings in 3.21s

@@ -167,6 +167,8 @@ class NativeMinuteRiskRecorder:
         else:
             if getattr(strategy.config,"research_sol_risk_first",None)=="dd-cov":
                 strategy._risk_first_observe_equity(equity,timestamp)
+            if getattr(strategy.config,"research_alpha_cushion",False):
+                strategy._alpha_observe_equity(equity,timestamp)
             self.curves[phase].add(timestamp,equity)
             self.curves["all_native_close_samples"].add(timestamp,equity)
         if phase == "pre_quote_paired_close":

@@ -1,0 +1,30 @@
+{
+  "readback_utc": "2026-10-19T18:06:58.801647+00:00",
+  "issue_number": 120,
+  "issue_url": "https://github.com/VF78/coinmaster/issues/120",
+  "node_id": "I_kwDORPv5-M8AAAABYWVXNA",
+  "item_id": "PVTI_lAHOBIUvJs4BPJNjzhB6Hag",
+  "project": {
+    "data": {
+      "node": {
+        "id": "PVTI_lAHOBIUvJs4BPJNjzhB6Hag",
+        "project": {
+          "number": 2
+        },
+        "content": {
+          "number": 120,
+          "title": "[R2 SOL] ALPHA-CUSHION: preserve alpha, constrain SOL risk, native24m comparison",
+          "state": "OPEN",
+          "url": "https://github.com/VF78/coinmaster/issues/120"
+        },
+        "fieldValueByName": {
+          "name": "In Progress"
+        }
+      }
+    }
+  },
+  "parent": 113,
+  "status": "In Progress",
+  "approved_full_engines": 1,
+  "pilot_changes_allowed": false
+}

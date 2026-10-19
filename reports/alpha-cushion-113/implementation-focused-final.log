@@ -1,0 +1,86 @@
+...............F                                                         [100%]
+=================================== FAILURES ===================================
+_ test_native_pending_original_risk_cancel_latepartial_retires_only_bound_unfilled_no_resurrection _
+tests/test_native_alpha_cushion.py:355: in test_native_pending_original_risk_cancel_latepartial_retires_only_bound_unfilled_no_resurrection
+    assert ep.sol_qty==.3 and ep.sol_add_filled_notional[0]==30.3
+E   AssertionError: assert (0.3 == 0.3 and 30.299999999999997 == 30.3)
+E    +  where 0.3 = Episode(id='alpha-native', side=1, active_entry=10000, beta_entry=1, btc_target_basis_qty=1.0, btc_initial_qty=1.0, bt...c605-4efb-8d10-81d09c6047e1'}, attempted_btc_at={}, attempted_sol_at={}, close_reason=None, btc_sizing_multiplier=None).sol_qty
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_alpha_cushion.py: 16 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_alpha_cushion.py: 64 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[1]
+tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:93: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[1]
+tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:111: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_generalized_loss_overhedge_same_side_and_min_step_uses_absolute_residual
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:125: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_existing_Q2_native_margin_reservation_and_risk_cost_are_not_starved
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:137: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_unknown_transport_late_native_fill_after_BTC_flat_is_closed_no_overbuy
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:161: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_risk_retired_unfilled_authorization_separate_from_native_fill_credit
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:175: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_release_requires_fresh_opposite_closed15m_after_last_increase_and_hysteresis
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:189: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:226: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_real_production_tiny_runner_original_alpha_ON_observer_and_serialization
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:876: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_alpha_cushion.py::test_real_production_tiny_runner_original_alpha_ON_observer_and_serialization
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:886: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:266: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_native_same_direction_actual_SOL_reduced_before_any_reverse_increase
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:280: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_native_original_timeout_preempts_protective_hold_and_closes_actual_aggregate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:296: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_actual_native_RiskEngine_throttle_Denied_retains_forced_residual_then_next_quote_flat
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:324: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_native_pending_original_risk_cancel_latepartial_retires_only_bound_unfilled_no_resurrection
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:366: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_alpha_cushion.py::test_native_pending_original_risk_cancel_latepartial_retires_only_bound_unfilled_no_resurrection
+1 failed, 15 passed, 98 warnings in 3.99s

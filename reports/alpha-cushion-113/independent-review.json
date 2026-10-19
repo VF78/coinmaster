@@ -1,0 +1,10 @@
+{
+  "verdict": "GO",
+  "reviewer": "protective_hedge_sources",
+  "review_scope": "bounded money/order diff and native receipts only",
+  "finding": "P2 pending risk-cancel authority resurrection fixed; actual latepartial leaves retirement preserves ordinary healthy IOC",
+  "source_pins_verified": 9,
+  "verification_passed": 206,
+  "reviewer_no_edits_or_engines": true,
+  "freeze_receipt_sha256": "ff319af715ba759e10a395008699cd9ce44e2fc060d440c8f19c781d4da42a54"
+}

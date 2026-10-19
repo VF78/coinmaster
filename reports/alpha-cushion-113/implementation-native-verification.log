@@ -1,0 +1,570 @@
+........................................................................ [ 34%]
+........................................................................ [ 69%]
+..............................................................           [100%]
+=============================== warnings summary ===============================
+tests/test_native_alpha_cushion.py: 16 warnings
+tests/test_native_conditional_hedge.py: 34 warnings
+tests/test_native_split_cover.py: 45 warnings
+tests/test_native_sol_risk_first.py: 21 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_alpha_cushion.py: 64 warnings
+tests/test_native_conditional_hedge.py: 144 warnings
+tests/test_native_split_cover.py: 60 warnings
+tests/test_native_sol_risk_first.py: 84 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[1]
+tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:93: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[1]
+tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:111: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_generalized_loss_overhedge_same_side_and_min_step_uses_absolute_residual
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:125: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_existing_Q2_native_margin_reservation_and_risk_cost_are_not_starved
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:137: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_unknown_transport_late_native_fill_after_BTC_flat_is_closed_no_overbuy
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:161: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_risk_retired_unfilled_authorization_separate_from_native_fill_credit
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:175: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_release_requires_fresh_opposite_closed15m_after_last_increase_and_hysteresis
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:189: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:226: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_real_production_tiny_runner_original_alpha_ON_observer_and_serialization
+tests/test_native_conditional_hedge.py::test_real_production_runner_builds_conditional_with_original_overlay_enabled
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[cap50]
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[dd-cov]
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[split-atr]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:876: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_alpha_cushion.py::test_real_production_tiny_runner_original_alpha_ON_observer_and_serialization
+tests/test_native_conditional_hedge.py::test_real_production_runner_builds_conditional_with_original_overlay_enabled
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[cap50]
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[dd-cov]
+tests/test_native_sol_risk_first.py::test_real_production_runner_resolves_exclusive_risk_first_and_serializes_native_result[split-atr]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:886: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+tests/test_native_alpha_cushion.py::test_native_original_over100_percent_risk_trim_keeps_filled_rights_and_clock
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:266: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_native_same_direction_actual_SOL_reduced_before_any_reverse_increase
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:280: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_native_original_timeout_preempts_protective_hold_and_closes_actual_aggregate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:296: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_actual_native_RiskEngine_throttle_Denied_retains_forced_residual_then_next_quote_flat
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:324: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_native_pending_original_risk_cancel_latepartial_retires_only_bound_unfilled_no_resurrection
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:366: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_wave_native_integration.py::test_control_a_sol_exit_is_taker_ioc_at_zero_spread
+tests/test_wave_native_integration.py::test_control_a_sol_exit_is_taker_ioc_at_zero_spread
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:328: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_native_order_submission_hook_receives_enum_names_not_numeric_values
+tests/test_wave_native_integration.py::test_native_order_submission_hook_receives_enum_names_not_numeric_values
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:358: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_queued_increase_is_rejected_after_pause_gate_transition
+tests/test_wave_native_integration.py::test_queued_increase_is_rejected_after_pause_gate_transition
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:371: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_notional_sizing_uses_buy_ask_and_sell_bid_before_rounding
+tests/test_wave_native_integration.py::test_notional_sizing_uses_buy_ask_and_sell_bid_before_rounding
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:386: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_forced_liquidation_supersedes_timeout_and_closes_native_remaining_leaves
+tests/test_wave_native_integration.py::test_forced_liquidation_supersedes_timeout_and_closes_native_remaining_leaves
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:405: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_streams
+tests/test_wave_native_integration.py::test_native_wave_strategy_submits_and_confirms_fills_from_four_causal_bar_streams
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:446: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+tests/test_wave_native_integration.py::test_seed_warmup_never_replays_orders_and_first_live_daily_close_can_fill
+tests/test_wave_native_integration.py::test_seed_warmup_never_replays_orders_and_first_live_daily_close_can_fill
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:490: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(data, sort=False); engine.add_data(custom_marks, client_id=ClientId("TEST_MARKS"), sort=False); engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_warmup_only_has_no_native_orders
+tests/test_wave_native_integration.py::test_warmup_only_has_no_native_orders
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:518: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(data, sort=False); engine.add_data(marks, client_id=ClientId("TEST_MARKS"), sort=False); engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_native_callback_cache_reconciliation_reenters_on_next_quote_timestamp
+tests/test_wave_native_integration.py::test_native_callback_cache_reconciliation_reenters_on_next_quote_timestamp
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:545: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_paired_marks_liquidate_each_native_leg_on_its_own_next_quote
+tests/test_wave_native_integration.py::test_paired_marks_liquidate_each_native_leg_on_its_own_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:641: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+tests/test_wave_native_integration.py::test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
+tests/test_wave_native_integration.py::test_short_native_replay_completes_two_episodes_with_sol_exits_and_flat_cash
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:825: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+tests/test_wave_native_integration.py::test_pinned_market_exit_calls_python_submit_hook_for_tagged_reduce_only_ioc
+tests/test_wave_native_integration.py::test_pinned_market_exit_calls_python_submit_hook_for_tagged_reduce_only_ioc
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:920: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_deposit_protection_native_market_exit_journals_once_and_stays_latched[False]
+tests/test_wave_native_integration.py::test_deposit_protection_native_market_exit_journals_once_and_stays_latched[False]
+tests/test_wave_native_integration.py::test_deposit_protection_native_market_exit_journals_once_and_stays_latched[True]
+tests/test_wave_native_integration.py::test_deposit_protection_native_market_exit_journals_once_and_stays_latched[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1024: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_deposit_control_on_initial_confirmed_flat_native_run
+tests/test_wave_native_integration.py::test_deposit_control_on_initial_confirmed_flat_native_run
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1234: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_fee_floor_v1_native_entry_and_resting_tp_fill
+tests/test_wave_native_integration.py::test_fee_floor_v1_native_entry_and_resting_tp_fill
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1281: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_fee_floor_v1_native_taker_fallback_waits_for_executable_quote
+tests/test_wave_native_integration.py::test_fee_floor_v1_native_taker_fallback_waits_for_executable_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1331: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_fee_floor_v1_marketable_post_only_does_not_grant_right_or_bypass_fallback
+tests/test_wave_native_integration.py::test_fee_floor_v1_marketable_post_only_does_not_grant_right_or_bypass_fallback
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1381: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_fee_floor_v1_does_not_delay_native_emergency_close_below_break_even
+tests/test_wave_native_integration.py::test_fee_floor_v1_does_not_delay_native_emergency_close_below_break_even
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1422: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py: 10 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1475: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[99.0-tail0-PASSIVE_NET_ZERO_LEVELS-expected_qty0-False]
+tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[99.0-tail0-PASSIVE_NET_ZERO_LEVELS-expected_qty0-False]
+tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[99.0-tail1-PASSIVE_NET_ZERO_LEVELS-expected_qty1-False]
+tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[99.0-tail1-PASSIVE_NET_ZERO_LEVELS-expected_qty1-False]
+tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[101.0-tail2-MARKETABLE_FULL_ENTRY_FALLBACK-expected_qty2-False]
+tests/test_wave_native_integration.py::test_deferred_selective_zero_tp_uses_only_q0_q1_and_real_entry_rights[101.0-tail2-MARKETABLE_FULL_ENTRY_FALLBACK-expected_qty2-False]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1693: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_deferred_selective_entry_expires_without_fresh_q1
+tests/test_wave_native_integration.py::test_deferred_selective_entry_expires_without_fresh_q1
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1738: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_HALF_EXIT-1000]
+tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_HALF_EXIT-1000]
+tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_EXIT-2000]
+tests/test_wave_native_integration.py::test_lifecycle_native_sol_ioc_target_survives_partial_cancel_two_episodes[SOL_EXIT-2000]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1849: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_native_zero_fallback_retries_profitable_leaves_not_adverse_quotes
+tests/test_wave_native_integration.py::test_lifecycle_native_zero_fallback_retries_profitable_leaves_not_adverse_quotes
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1898: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks, sort=False); engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks
+tests/test_wave_native_integration.py::test_lifecycle_native_locked_margin_increment_and_same_fresh_equity_marks
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:1962: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference[1]
+tests/test_wave_native_integration.py::test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference[1]
+tests/test_wave_native_integration.py::test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference[-1]
+tests/test_wave_native_integration.py::test_lifecycle_native_q1_cap30m_clamps_normalized_lots_preserving_reference[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:2002: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_native_immediate_q1_fill_then_reference_touch_earns_once
+tests/test_wave_native_integration.py::test_lifecycle_native_immediate_q1_fill_then_reference_touch_earns_once
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:2067: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis
+tests/test_wave_native_integration.py::test_lifecycle_canonical_customdata_native_empty_module_marks_admission_basis
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:2113: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.sort_data(); engine.run()
+
+tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[False]
+tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[False]
+tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[True]
+tests/test_wave_native_integration.py::test_lifecycle_actual_native_order_reservations_and_reduce_only_target_credit[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_wave_native_integration.py:2153: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[15-1]
+tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[15--1]
+tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[60-1]
+tests/test_native_conditional_hedge.py::test_conditional_actual_btc_arm_closed_sol_or_next_fresh_quote_native_off[60--1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:66: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_protective_inventory_original_adoption_is_not_native_fill_or_cash_replay
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:86: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_first_protect_topup_then_original_full_release_does_not_restore_rights
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:104: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_denied_original_admission_has_atomic_zero_credit_and_clock
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:116: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_half_and_timeout_release_original_budget_only
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:133: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_unknown_ack_blocks_off_trim_until_known_terminal_no_orphan
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:149: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_btc_partial_reduces_qc_and_btc_flat_preserves_original_budget
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:167: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory[denied]
+tests/test_native_conditional_hedge.py::test_original_needing_increment_rejected_before_fill_cannot_adopt_inventory[rejected]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:197: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_accepted_btc_second_half_reserved_while_protecting_only_actual_first_fill
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:215: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_large_conditional_native_partial_trim_has_no_orphan_or_false_flat
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:234: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[15]
+tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[60]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:297: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.add_data(bars,sort=False);e.add_data(markdata,client_id=ClientId('TEST_MARKS'),sort=False);e.add_data(quotes,sort=False);e.sort_data();e.run(streaming=True);e.clear_data()
+
+tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[15]
+tests/test_native_conditional_hedge.py::test_connected_native_stream_original_transfer_recovery_fees_journal_and_flat[60]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:316: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose();journal.close()
+
+tests/test_native_conditional_hedge.py::test_conditional_cancel_unknown_ack_late_partial_native_fill_then_exact_trim
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:344: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_signal_during_pending_native_reduce_waits_cancel_ack_before_transfer
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:361: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_conditional_default_off_does_not_create_owner_or_consume_original_native_fields
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:369: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_conditional_latched_quantity_has_no_price_only_churn
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:382: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_logical_half_then_natural_later_full_z_exit[release]
+tests/test_native_conditional_hedge.py::test_original_logical_half_then_natural_later_full_z_exit[native]
+tests/test_native_conditional_hedge.py::test_original_logical_half_then_natural_later_full_z_exit[mixed]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:418: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_transfer_sigma_preserved_when_later_native_original_adds
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:434: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_close[REGIME]
+tests/test_native_conditional_hedge.py::test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_close[TRAIL]
+tests/test_native_conditional_hedge.py::test_tp3_flat_after_protection_off_retains_episode_until_authorized_group_close[CLOSE_ALL]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:490: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_1000_after_btc_tp3_flat_late_pending_partial_add_then_native_regime_2000
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:547: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+tests/test_native_conditional_hedge.py::test_original_ioc_two_cycle_unarmed_native_off_on_account_fee_exit_clock_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:638: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose();journal.close()
+
+tests/test_native_conditional_hedge.py::test_original_ioc_terminal_drops_Oshortfall_but_active_Qc_reconciles_protective_only
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:680: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_original_attempt_terminal_cannot_release_or_fill_newer_authorization[denied]
+tests/test_native_conditional_hedge.py::test_original_attempt_terminal_cannot_release_or_fill_newer_authorization[rejected]
+tests/test_native_conditional_hedge.py::test_original_attempt_terminal_cannot_release_or_fill_newer_authorization[expired]
+tests/test_native_conditional_hedge.py::test_original_attempt_terminal_cannot_release_or_fill_newer_authorization[partial_cancel]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:741: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_conditional_hedge.py::test_native_forced_close_actual_throttle_denial_preserves_residual_until_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_conditional_hedge.py:797: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_split_exact_odd_lots_first_immediate_second_native_maker_and_fixed_targets[1]
+tests/test_native_split_cover.py::test_split_exact_odd_lots_first_immediate_second_native_maker_and_fixed_targets[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:61: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_split_partial_first_retries_only_first_and_unknown_ack_blocks_duplicate
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:82: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_native_limit_cancel_ack_then_only_remaining_fallback_and_targets[deadline]
+tests/test_native_split_cover.py::test_native_limit_cancel_ack_then_only_remaining_fallback_and_targets[early_tp]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:102: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_split_delayed_cancel_ack_and_racing_partial_never_exceeds_parent
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:131: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_mandatory_close_preempts_second_and_cancels_parent_quantity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:145: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_pause_stops_entry_remainder_and_fixed_target_basis_has_native_reduce_cap
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:163: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_native_base_on_actual_btc_fills_trims_after_tp_and_closes_flat[0.5]
+tests/test_native_split_cover.py::test_native_base_on_actual_btc_fills_trims_after_tp_and_closes_flat[0.75]
+tests/test_native_split_cover.py::test_native_base_on_actual_btc_fills_trims_after_tp_and_closes_flat[1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:198: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_cover_partial_base_and_unknown_ack_no_duplicate_native_owner
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:217: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_tactical_later_closed_15m_then_future_quote_cap_and_expiry[0.75]
+tests/test_native_split_cover.py::test_tactical_later_closed_15m_then_future_quote_cap_and_expiry[1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:247: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_native_closed_bar_pipeline_tactical_uses_first_future_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:318: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.add_data(quotes,sort=False);e.sort_data();e.run(streaming=True);e.clear_data()
+
+tests/test_native_split_cover.py::test_native_closed_bar_pipeline_tactical_uses_first_future_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:330: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_split_denied_child_cancels_accepted_remainder_without_extra_orders
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:344: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_split_dp_latch_cancels_waiting_parent_before_next_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:359: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_joint_margin_reserves_full_btc_plan_and_mandatory_sol_not_double_child
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:374: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_native_omitted_zero_parent_exact_q_two_children_reference_h_and_causal_rights[deferred]
+tests/test_native_split_cover.py::test_native_omitted_zero_parent_exact_q_two_children_reference_h_and_causal_rights[zero_net]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:421: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_daily_mandatory_close_preempts_unfinished_split_parent[REGIME]
+tests/test_native_split_cover.py::test_daily_mandatory_close_preempts_unfinished_split_parent[TRAIL]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:439: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_permanent_cover_has_no_legacy_sol_hard_timeout_owner
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:454: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_paused_base_retries_on_first_resumed_quote
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:469: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_denied_base_retries_after_explicit_one_hour_admission_cooldown
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:487: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_hourly_five_pp_drift_rebalances_on_future_quote_not_every_price_tick
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:505: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_one_lot_parent_is_explicit_immediate_rounding_exception_with_exact_q
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:518: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_partial_tactical_rechecks_quality_and_does_not_buy_fallback
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:553: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_pending_btc_without_native_fill_does_not_start_sol_anchor_or_tactic_window
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:570: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_initial_base_anchor_is_actual_native_partial_fill_vwap_and_freezes
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:598: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual[1]
+tests/test_native_split_cover.py::test_planref_v1_freezes_completed_first_leg_but_native_vwap_h_and_targets_qty_stay_actual[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:631: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_partial_first_leg_cannot_freeze_or_invent_completion
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:649: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_daily_trail_uses_planref_and_unmodified_strict_three_percent_rule
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:671: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_early_tp_accelerates_cancel_ack_path_and_keeps_reference
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:684: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_default_off_retains_actual_blended_management_reference
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:695: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_mandatory_close_before_first_leg_complete_cancels_truthful_leaves
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:721: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_planref_v1_freeze_preserves_real_native_tp_and_sol_right
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:741: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_tp_ioc_crossed_positive_targets_after_complete_parent_use_native_taker_and_actual_rights[1]
+tests/test_native_split_cover.py::test_tp_ioc_crossed_positive_targets_after_complete_parent_use_native_taker_and_actual_rights[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:765: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_tp_ioc_uncrossed_target_keeps_native_postonly_maker_and_off_keeps_original_skip
+tests/test_native_split_cover.py::test_tp_ioc_uncrossed_target_keeps_native_postonly_maker_and_off_keeps_original_skip
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:779: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_tp_ioc_partial_unknown_ack_and_adverse_recheck_conserve_target_leaves
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:807: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_tp_ioc_mandatory_close_preempts_partial_retry_and_clears_owner
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:821: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_tp_ioc_cannot_run_before_parent_complete_or_for_zero_level
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:839: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_split_cover.py::test_tp_ioc_partial_retry_never_exceeds_current_native_position
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_split_cover.py:862: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_cap50_actual_native_admission_held_trim_price_nochurn_BTCflat_original_late_add[1]
+tests/test_native_sol_risk_first.py::test_cap50_actual_native_admission_held_trim_price_nochurn_BTCflat_original_late_add[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:118: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_dd_cov_native_global_stage_recovery_ceiling_no_resurrection_and_BTCflat_new_auth
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:144: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_native_fixed_notional_group_threelegs_firstpartial_limits_deadline_fallback[1]
+tests/test_native_sol_risk_first.py::test_ATR_native_fixed_notional_group_threelegs_firstpartial_limits_deadline_fallback[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:177: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_invalid_uses_ordinary_native_IOC_and_no_split_parent
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:187: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_nonpositive_cov_no_new_directed_SOL_native_and_no_hard_beta_bounds
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:204: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[False]
+tests/test_native_sol_risk_first.py::test_ATR_unknown_ACK_priority_full_exit_cancels_or_closes_actual_late_partial[True]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:233: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_native_partial_initial_and_actual_RiskEngine_throttle_denial_remain_bounded
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:253: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_actual_first_IOC_partial_and_postonly_rejection_never_resends_full_parent
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:276: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[cap50]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[cap50]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[dd-cov]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[dd-cov]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[split-atr]
+tests/test_native_sol_risk_first.py::test_two_episode_inert_risk_host_vs_selected_control_bars_execution_fills_fees_cash[split-atr]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:326: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_H3_observer_passes_same_native_equity_without_mid_mark_false_peak
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:353: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:recorder.file.close();e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_ATR_actual_streamed_1m_to_closed15m_signal_freeze_and_BTC1pp_completion
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:374: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_H3_factor_hourly_buffer_and_actual_small_BTC_fill_exception_native
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:396: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_sol_risk_first.py::test_cap50_native_1000_partial_trim_reconciles_to_nonzero_floor_without_competing_reduction
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_sol_risk_first.py:417: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+206 passed, 676 warnings in 74.66s (0:01:14)

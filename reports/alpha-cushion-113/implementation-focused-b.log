@@ -1,0 +1,106 @@
+.........F.                                                              [100%]
+=================================== FAILURES ===================================
+___ test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity ___
+
+    def test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity():
+        outputs=[]
+        for enabled in (False,True):
+            s=Observed(config(enabled));e=engine(s,bar_execution=not enabled)
+            try:
+                run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
+                snapshots=[]
+                for cycle in range(2):
+                    minute=60_000_000_000;t=cycle*1000*minute+2;prepare_day(s,t);history(s);marks(s,t,'100','1')
+                    ep=s._domain.episode=Episode('healthy-'+str(cycle),1,10000,1,wave_levels=(10,20,30),h=10000)
+                    i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100);s._submit_intent(i,100,100,.01,0,ts_now=t)
+                    run_ticks(e,[tick(BTC_PERP,t+1),tick(BTC_PERP,t+2),tick(BTC_PERP,t+3,'99'),tick(SOL_PERP,t+4,'1')])
+                    for k,q in enumerate([3505,2505,1505,505]):
+                        now=t+(10+k*10)*minute;marks(s,now,'100','1');original(s,e,ep,q,now,price='1');advance(s,e,now+minute,sol='1')
+                        snapshots.append((ep.sol_qty,ep.sol_first_fill_at,ep.sol_first_owned_at,ep.fixed_sigma,dict(ep.sol_add_filled_notional)))
+                        assert not any(i.action=='SOL_ADD' for i in s._pending_by_order.values())
+                    for half,z in [(True,.3),(False,0.)]:
+                        now=t+(60 if half else 80)*minute;s._domain._decision_index=100+now
+                        when=datetime.fromtimestamp(now/1e9,UTC);b=DailyBar(when-timedelta(days=1),when,when,100,100,1)
+                        intents=s._domain._sol_exits(ep,Features(100+now,1,1.,1.,0.,1.,0.),b,100+now,z=z);assert len(intents)==1
+                        s._submit_intent(intents[0],1,1,None,100+now,ts_now=now)
+                        for dt in range(3):advance(s,e,now+dt*minute,sol='1')
+                    assert ep.sol_qty==0
+                    s._begin_forced_close('REGIME')
+                    for dt in range(4):advance(s,e,t+(90+dt)*minute,sol='1')
+                    assert not e.cache.positions_open() and s._domain.episode is None and not s._pending_by_order
+                fills=[{k:x[k] for k in ('fill_ns','instrument','px','qty','commission','native_liquidity_side','order_type','post_only')} for x in s.fill_audit]
+                orders=[(str(o.quantity),str(o.filled_qty),int(o.order_type),int(o.time_in_force),o.is_post_only,o.is_reduce_only,int(o.status),o.ts_init,o.ts_last) for o in e.cache.orders()]
+                cash=e.cache.account_for_venue(BTC_PERP.id.venue).balance_total().as_decimal();fees=sum(D(x['commission']) for x in s.fill_audit)
+                flow=sum(o.filled_qty.as_decimal()*D(str(o.avg_px))*(1 if o.side==OrderSide.SELL else -1) for o in e.cache.orders() if o.filled_qty.as_decimal()>0)
+                assert cash==D(10000)+flow-fees
+                outputs.append((fills,orders,cash,fees,snapshots))
+            finally:e.end();e.dispose()
+>       assert outputs[0]==outputs[1]
+E       AssertionError: assert ([{'commissio...000.0}), ...]) == ([{'commissio...000.0}), ...])
+E         
+E         At index 0 diff: [{'fill_ns': '3', 'instrument': 'BTCUSDT-PERP.P1SIM', 'px': '100', 'qty': '50', 'commission': '5', 'native_liquidity_side': 'TAKER', 'order_type': '1', 'post_only': 'false'}, {'fill_ns': '5', 'instrument': 'BTCUSDT-PERP.P1SIM', 'px': '99.7', 'qty': '50', 'commission': '4.985', 'native_liquidity_side': 'MAKER', 'order_type': '2', 'post_only': 'true'}, {'fill_ns': '600000000002', 'instrument': 'SOLUSDT-PERP.P1SIM', 'px': '1', 'qty': '1000', 'commission': '1', 'native_liquidity_side': 'TAKER', 'order_type': '1', 'post_only': 'false'}, {'fill_ns': '12000000...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_native_alpha_cushion.py:219: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_alpha_cushion.py: 11 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_alpha_cushion.py: 44 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[1]
+tests/test_native_alpha_cushion.py::test_native_beta_freeze_daily_stress_no_future_and_global_peak_across_episode[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:87: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[1]
+tests/test_native_alpha_cushion.py::test_actual_deficit_native_partial_best_effort_lots_and_BTC_flat_retains_permission[-1]
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:105: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_generalized_loss_overhedge_same_side_and_min_step_uses_absolute_residual
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:119: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_existing_Q2_native_margin_reservation_and_risk_cost_are_not_starved
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:131: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_unknown_transport_late_native_fill_after_BTC_flat_is_closed_no_overbuy
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:155: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_risk_retired_unfilled_authorization_separate_from_native_fill_credit
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:169: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_release_requires_fresh_opposite_closed15m_after_last_increase_and_hysteresis
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:183: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:218: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_real_production_tiny_runner_original_alpha_ON_observer_and_serialization
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:876: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run(streaming=True)
+
+tests/test_native_alpha_cushion.py::test_real_production_tiny_runner_original_alpha_ON_observer_and_serialization
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/research/native_baseline.py:886: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.end()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+1 failed, 10 passed, 68 warnings in 3.49s

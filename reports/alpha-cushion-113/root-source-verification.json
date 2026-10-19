@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-19T18:35:27.831524+00:00",
+  "status": "PASS",
+  "base_head": "5dbb82da38c103bacc2f8ee0222455d86d02853d",
+  "source_pins": 9,
+  "verification": {
+    "actual_exit": 0,
+    "actual_peak": "189.7MiB",
+    "bounded_unit": "MemoryMax512MiB/Swap0/CPUWeight10/PrivateNetwork/env-i",
+    "command_modules": [
+      "test_native_alpha_cushion.py",
+      "test_wave_overlay.py",
+      "test_wave_native_integration.py",
+      "test_native_conditional_hedge.py",
+      "test_native_split_cover.py",
+      "test_native_sol_risk_first.py"
+    ],
+    "journal": "Started cm120-alpha-native-verification.service - /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/.openclaw/workspace/coinmaster/coinmaster/runtime:/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q -p no:cacheprovider --tb=short tests/test_native_alpha_cushion.py tests/test_wave_overlay.py tests/test_wave_native_integration.py tests/test_native_conditional_hedge.py tests/test_native_split_cover.py tests/test_native_sol_risk_first.py.\ncm120-alpha-native-verification.service: Deactivated successfully.\ncm120-alpha-native-verification.service: Consumed 1min 12.973s CPU time, 189.7M memory peak, 0B memory swap peak.\n",
+    "log": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/implementation-native-verification.log",
+    "log_sha256": "30e5c82c03e021154d8a7ca90e964676443d26fc541b6042d3b655c364c2d617",
+    "passed": 206,
+    "seconds": "74.66",
+    "warnings": 676
+  },
+  "independent_review": "GO",
+  "full_engine_launched": false
+}

@@ -19,7 +19,7 @@ class ConditionalSolResearch:
         self._conditional_physical=False
 
     def _conditional_enabled(self):
-        return self.config.research_conditional_sol or self._risk_first_net_owner() or self._insurance_enabled()
+        return self.config.research_conditional_sol or self._risk_first_net_owner() or self._insurance_enabled() or self._alpha_enabled()
 
     def _conditional_emit(self,event,ts,**values):
         c=self._conditional
@@ -29,7 +29,7 @@ class ConditionalSolResearch:
         positions={p.instrument_id:p for p in self.cache.positions_open()}
         btc=positions.get(self.config.btc_id);sol=positions.get(self.config.sol_id)
         combined=max(c["original_target"],c["qc"])
-        if self._insurance_enabled():combined=c["qc"]
+        if self._insurance_enabled() or self._alpha_enabled():combined=c["qc"]
         if self.config.research_sol_risk_first=="dd-cov" and c.get("rf",{}).get("target") is not None:combined=c["rf"]["target"]
         row={"event":event,"timestamp_ns":ts,"episode_id":c["episode_id"],"side":c["side"],
             "btc_qty":str(btc.quantity.as_decimal() if btc else D(0)),
@@ -38,6 +38,9 @@ class ConditionalSolResearch:
             "original_allocated":str(ep.sol_qty if ep else 0),"conditional_target":str(c["qc"]),
             "combined_target":str(combined),
             "actual_sol_qty":str(sol.quantity.as_decimal() if sol else D(0)),**values}
+        if self._alpha_enabled():
+            self._alpha_emit(event,ts,**{k:v for k,v in row.items() if k not in {"event","timestamp_ns"}})
+            return
         (self.insurance_audit if self._insurance_enabled() else self.risk_first_sol_audit if self._risk_first_net_owner() else self.conditional_audit).append(row)
 
     def _conditional_state(self,ts):
@@ -49,7 +52,9 @@ class ConditionalSolResearch:
                 "armed_ns":None,"active":False,"confirm":None,"last_mark_ns":None,
                 "original_target":D(str(ep.sol_qty)),"adds":[],"exits":[],"qc":D(0),"qc_btc_qty":None,"retry_ns":0,"original_attempts":{}}
         c=self._conditional
-        if not self._insurance_enabled() and c["beta"] is None and any(p.instrument_id==self.config.btc_id for p in self.cache.positions_open()):
+        if self._alpha_enabled() and self._alpha_cycle is not None:
+            c["beta"],c["beta_ns"]=self._alpha_cycle["beta"],self._alpha_cycle["beta_ns"]
+        if not self._alpha_enabled() and not self._insurance_enabled() and c["beta"] is None and any(p.instrument_id==self.config.btc_id for p in self.cache.positions_open()):
             estimate=self._risk_first_beta_estimate(ts) if self._risk_first_net_owner() else self._cover_beta(ts)
             if estimate is not None:
                 c["beta"],c["beta_ns"]=estimate[0],ts
@@ -87,6 +92,8 @@ class ConditionalSolResearch:
             task["remaining"]=min(qty,c["original_target"])
             c["exits"].append(task);c["original_target"]-=task["remaining"]
         if self._risk_first_net_owner():self._risk_first_original(intent,task["remaining"],ts)
+        if self._alpha_enabled() and intent.reason=="SOL_HARD_TIMEOUT":
+            c["alpha_mandatory_flat"]=True
         self._conditional_emit("ORIGINAL_AUTHORIZED",ts,action=intent.action,level=intent.level,quantity=str(task["remaining"]))
         tick=self.cache.quote_tick(self.config.sol_id)
         if tick is not None and tick.ts_event==ts:
@@ -142,6 +149,7 @@ class ConditionalSolResearch:
         c=self._conditional_state(tick.ts_event)
         if c is None or self._forced_close_reason or self._liquidating or (self.config.deposit_runtime is not None and self._deposit.latched):
             return
+        if self._alpha_enabled():return self._alpha_check(tick,c)
         if self._insurance_enabled():return self._insurance_check(tick,c)
         if self._risk_first_net_owner():return self._risk_first_check(tick,c)
         ep=self._domain.episode;ts=tick.ts_event
@@ -195,6 +203,7 @@ class ConditionalSolResearch:
                     stale_add=i.action=="SOL_ADD" and (not bqty and not c["adds"] or held+leaves>target or not c["active"] and not c["adds"])
                     stale_reduce=i.action!="SOL_ADD" and held-leaves<target
                     if stale_add or stale_reduce:
+                        if stale_add and self._alpha_enabled():self._alpha_risk_cancel(c,i,ts)
                         self.cancel_order(order)
             return  # Unknown ACK is owned too; no transfer of reserved-closing inventory.
         if tick.instrument_id!=self.config.sol_id:
@@ -283,12 +292,14 @@ class ConditionalSolResearch:
         retained=[];released=D(0)
         for t in c["adds"]:
             if t["intent"].id in bound:
+                if self._alpha_enabled():self._alpha_terminal_retirement(c,intent,t,ts)
                 released+=t["remaining"]
                 c["original_target"]-=t["remaining"]
                 self._domain.on_parent_terminal(t["intent"].id)
             else:
                 retained.append(t)
         c["adds"]=retained
+        c.get("alpha_risk_cancels",set()).discard(intent.id)
         if self._risk_first_net_owner():self._risk_first_original_terminal(released)
         self._conditional_emit("ORIGINAL_ATTEMPT_TERMINAL",ts,physical_intent=intent.id,
             native_order_id=order_id,terminal_cause=cause,original_attempt_ids=list(bound),
@@ -299,5 +310,5 @@ class ConditionalSolResearch:
             return
         if intent and intent.reason=="CONDITIONAL_NET_ADD":
             self._conditional_attempt_terminal(intent,ts,"DENIED_REJECTED_EXPIRED",order_id)
-            self._conditional["retry_ns"]=ts+(60_000_000_000 if self._insurance_enabled() else HOUR)
+            self._conditional["retry_ns"]=ts+(60_000_000_000 if self._insurance_enabled() or self._alpha_enabled() else HOUR)
             self._conditional_emit("NATIVE_ADD_DENIED",ts)

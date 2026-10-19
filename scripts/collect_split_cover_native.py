@@ -75,12 +75,16 @@ def main():
         "disk_free_after":shutil.disk_usage(job).free,"pilot_after":pilot,
         "scope":"RESEARCH_ONLY_NATIVE_ACCOUNTING_DIAGNOSTIC_NO_PRODUCTION_PROMOTION",
     }
-    if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first") or result.get("config",{}).get("research_immediate_sol"):
-        audit_key="immediate_sol_insurance_audit" if result.get("config",{}).get("research_immediate_sol") else "risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
+    if result.get("config",{}).get("research_conditional_sol") or result.get("config",{}).get("research_sol_risk_first") or result.get("config",{}).get("research_immediate_sol") or result.get("config",{}).get("research_alpha_cushion"):
+        audit_key="alpha_cushion_audit" if result.get("config",{}).get("research_alpha_cushion") else "immediate_sol_insurance_audit" if result.get("config",{}).get("research_immediate_sol") else "risk_first_sol_audit" if result.get("config",{}).get("research_sol_risk_first") else "conditional_sol_audit"
         audit=result.get(audit_key)
         if not isinstance(audit,list):
             raise ValueError("SOL_POLICY_NATIVE_AUDIT_MISSING")
         receipt[audit_key]={"event_count":len(audit),"sha256":hashlib.sha256(json.dumps(audit,sort_keys=True,separators=(",",":")).encode()).hexdigest(),"included_in_result_sha256":True}
+        if result.get("config",{}).get("research_alpha_cushion"):
+            receipt["alpha_cushion_audit_counts"]=result["alpha_cushion_audit_counts"]
+            receipt["alpha_cushion_audit_sampling"]=result["alpha_cushion_audit_sampling"]
+            receipt["alpha_cushion_native_peak_validation"]=result["alpha_cushion_native_peak_validation"]
         if result.get("config",{}).get("research_sol_risk_first")=="split-atr":
             parents=result.get("risk_first_sol_parents",[])
             if any(D(p["filled"])+D(p["cancelled"])!=D(p["quantity"]) or not p["closed"] or any(p["pending"]) for p in parents):
@@ -95,7 +99,7 @@ def main():
         if job not in journal.parents or not journal.is_file():
             raise ValueError("FRESH_JOB_FUNDING_JOURNAL_REQUIRED")
         receipt["funding_journal_files"]={str(path):sha(path) for path in sorted(journal.parent.glob(journal.name+"*")) if path.is_file()}
-        if result.get("config",{}).get("research_immediate_sol"):
+        if result.get("config",{}).get("research_immediate_sol") or result.get("config",{}).get("research_alpha_cushion"):
             trace=Path(summary["trace_path"]).resolve()
             if job not in trace.parents or trace.suffix!=".gz" or not trace.is_file():
                 raise ValueError("COMPLETED_COMPRESSED_NATIVE_TRACE_REQUIRED")

@@ -26,6 +26,7 @@ from coinmaster.strategy.split_cover import SplitCoverResearch
 from coinmaster.strategy.conditional_hedge import ConditionalSolResearch
 from coinmaster.strategy.risk_first_sol import SolRiskFirstResearch
 from coinmaster.strategy.immediate_insurance import ImmediateSolInsurance
+from coinmaster.strategy.alpha_cushion import AlphaCushionResearch
 
 from coinmaster.domain.wave_overlay import Candidate, DailyBar, Intent, WaveOverlayState, features_for
 from coinmaster.venues.margin_policy import MarginMark, MarginPolicy
@@ -65,6 +66,7 @@ class WaveOverlayStrategyConfig(StrategyConfig, frozen=True):
     research_btc_split_discount: Decimal = Decimal("0.0025")
     research_sol_cover: Decimal | None = None
     research_conditional_sol: bool = False
+    research_alpha_cushion: bool = False
     research_immediate_sol: str | None = None
     research_immediate_lookback: int = 90
     research_sol_risk_first: str | None = None
@@ -166,7 +168,7 @@ def _fee_floor_price(instrument, episode, *, maker: bool):
     return result
 
 
-class WaveOverlayStrategy(ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
+class WaveOverlayStrategy(AlphaCushionResearch, ImmediateSolInsurance, SolRiskFirstResearch, ConditionalSolResearch, SplitCoverResearch, Strategy):
     """Turns completed native daily bars into later native market orders."""
     def __init__(self, config: WaveOverlayStrategyConfig) -> None:
         super().__init__(config)
@@ -174,6 +176,9 @@ class WaveOverlayStrategy(ImmediateSolInsurance, SolRiskFirstResearch, Condition
         self._risk_first_init()
         self._conditional_init()
         self._insurance_init()
+        self._alpha_init()
+        if config.research_alpha_cushion and (not config.candidate.sol_overlay_enabled or not config.research_btc_split_tp_ioc or config.research_sol_risk_first or config.research_immediate_sol or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or len(config.research_confirmation_bars)!=4):
+            raise ValueError("ALPHA_CUSHION_REQUIRES_SELECTED_BTC_ORIGINAL_ALPHA_EXCLUSIVE_NATIVE_BARS")
         if config.research_immediate_sol is not None and (config.research_immediate_sol not in {"i25","i25-light","i25-recovery","i33"} or not 30<=config.research_immediate_lookback<=180 or not config.research_btc_split_tp_ioc or config.candidate.sol_overlay_enabled or config.research_sol_risk_first or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or len(config.research_confirmation_bars)!=4):
             raise ValueError("IMMEDIATE_INSURANCE_REQUIRES_EXCLUSIVE_SELECTED_BTC_AND_ORIGINAL_SOL_OFF")
         self._cover_seed(config.research_cover_hour_seed)
@@ -372,6 +377,7 @@ class WaveOverlayStrategy(ImmediateSolInsurance, SolRiskFirstResearch, Condition
             self._conditional_bar(bar)
             self._risk_first_bar(bar)
             self._insurance_bar(bar)
+            self._alpha_bar(bar)
             self._on_confirmation_bar(bar)
             return
         if bar.bar_type not in (self.config.btc_bar_type, self.config.sol_bar_type):
@@ -1854,11 +1860,11 @@ class WaveOverlayStrategy(ImmediateSolInsurance, SolRiskFirstResearch, Condition
                 episode=self._domain.episode
                 legal=episode is not None and intent.level in episode.sol_rights and intent.id in episode.pending
                 if legal:
-                    authorized=episode.h*self._candidate.sol_size_multipliers_h[intent.level]*episode.sol_right_fraction.get(intent.level,1.0)-episode.sol_add_filled_notional.get(intent.level,0)-episode.sol_ownership_transfer_credit.get(intent.level,0)
+                    authorized=episode.h*self._candidate.sol_size_multipliers_h[intent.level]*episode.sol_right_fraction.get(intent.level,1.0)-episode.sol_add_filled_notional.get(intent.level,0)-episode.sol_ownership_transfer_credit.get(intent.level,0)-episode.sol_risk_retired_notional.get(intent.level,0)
                     legal=rounded*executable_price<=Decimal(str(authorized))+instrument.size_increment.as_decimal()*executable_price
                 minimum=(instrument.min_quantity is None or rounded>=instrument.min_quantity.as_decimal()) and (instrument.min_notional is None or rounded*executable_price>=instrument.min_notional.as_decimal())
                 increment=self._conditional_original_increment(rounded)
-                if not legal or not minimum or not self._entries_enabled() or not self._tier_allows_increase(instrument_id,side,increment,ts_now or 0):
+                if not legal or not minimum or not self._alpha_admit(rounded,executable_price,ts_now or 0) or not self._entries_enabled() or not self._tier_allows_increase(instrument_id,side,increment,ts_now or 0):
                     self._deny_local_entry(intent,"ORIGINAL_CONDITIONAL_ADMISSION_DENIED",ts_now)
                     return
             self._conditional_original(intent,rounded,executable_price,sigma,decision_index,ts_now or 0)
@@ -2401,6 +2407,7 @@ class WaveOverlayStrategy(ImmediateSolInsurance, SolRiskFirstResearch, Condition
                 entry_qty=entry_qty, entry_price=entry_price,
             )
         self._insurance_btc_fill(intent,price,ts_event)
+        self._alpha_btc_fill(intent,ts_event)
         if intent.action == "BTC_ENTRY" and self.config.research_btc_split_planref_v1:
             ep = self._domain.episode
             p = self._split_parent

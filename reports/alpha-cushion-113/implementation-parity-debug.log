@@ -1,0 +1,38 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___ test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity ___
+tests/test_native_alpha_cushion.py:220: in test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+    assert outputs[0]==outputs[1], dict(first_fill=first_fill,fill_counts=[len(x[0]) for x in outputs],cash=[str(x[2]) for x in outputs],first_order=next(((a,b) for a,b in zip(outputs[0][1],outputs[1][1]) if a!=b),None))
+E   AssertionError: {'cash': ['9976.01', '9976.01'], 'fill_counts': [22, 22], 'first_fill': ({'commission': '10', 'fill_ns': '540000000000..., ...}), 'first_order': (('3505.0', '1000.0', 1, 2, False, False, ...), ('3505.0', '1000.0', 1, 2, False, False, ...))}
+E   assert ([{'commissio...000.0}), ...]) == ([{'commissio...000.0}), ...])
+E     
+E     At index 0 diff: [{'fill_ns': '3', 'instrument': 'BTCUSDT-PERP.P1SIM', 'px': '100', 'qty': '50', 'commission': '5', 'native_liquidity_side': 'TAKER', 'order_type': '1', 'post_only': 'false'}, {'fill_ns': '5', 'instrument': 'BTCUSDT-PERP.P1SIM', 'px': '99.7', 'qty': '50', 'commission': '4.985', 'native_liquidity_side': 'MAKER', 'order_type': '2', 'post_only': 'true'}, {'fill_ns': '600000000002', 'instrument': 'SOLUSDT-PERP.P1SIM', 'px': '1', 'qty': '1000', 'commission': '1', 'native_liquidity_side': 'TAKER', 'order_type': '1', 'post_only': 'false'}, {'fill_ns': '12000000...
+E     
+E     ...Full output truncated (2 lines hidden), use '-vv' to show
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=============================== warnings summary ===============================
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_episode_risk.py:22: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.add_data(ticks); engine.run(streaming=True); engine.clear_data()
+
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_alpha_cushion.py:218: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    finally:e.end();e.dispose()
+
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/coinmaster/strategy/wave_overlay.py:344: Pandas4Warning: 'd' is deprecated and will be removed in a future version, please use 'D' instead.
+    self.subscribe_bars(confirmation_bar)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_native_alpha_cushion.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+1 failed, 8 warnings in 3.30s

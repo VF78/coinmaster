@@ -1,0 +1,102 @@
+{
+  "contract": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/implementation-contract.md",
+  "contract_sha256": "f93652117162cd674a42a57d823c7dfb884b6ce44dfd70a46e3f7bc82689cb38",
+  "created_utc": "2026-10-19T18:34:08.331809+00:00",
+  "default": "OFF;exclusive_with_all_other_SOL_research_modes",
+  "focused_development_history": "initial7fail4pass; then10pass1parityfail; fixture nativeclock/minute cadence corrected;15pass1float expectation; targetedlatepartialPASS; final relevant206PASS. All assertions native cash/fees/qty/clock preserved; prior logs retained.",
+  "future_one_package": {
+    "W90": true,
+    "actual_variant": "alpha-cushion",
+    "common_native_flags": [
+      "executionrepairs",
+      "deferredselectivezeroTP",
+      "selectivelifecycle",
+      "observe-minute-risk",
+      "btcdirectionsizing"
+    ],
+    "config_flags": [
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1",
+      "--research-btc-split-tp-ioc",
+      "--research-alpha-cushion"
+    ],
+    "estimated_output_bytes": "100\u2013256MiB compressed observer+native artifacts; allow512MiB contingency, volume not guaranteed",
+    "estimated_source_bytes": "~1.5MiB genuine separate regular source copies",
+    "funding": "FRESH job-specific engine/journal; no prior journal input",
+    "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-alpha-cushion-20261019a",
+    "launcher_unit_rule": "systemd-run --unit=a.job_name; unique name, no inherited command substitution",
+    "no_launch_without_ROOTGO": true,
+    "resource_guards": "prelaunchMemAvailable>=700MiB,free>=1.5GiB,exclusive research slice;650MiB/Swap0/env-i/PrivateNetwork/read-only inputs/CPUWeight10",
+    "status": "NOT_PREPARED_NO_ENGINE_YET",
+    "unique_unit": "cm115-split-alpha-cushion-20261019a"
+  },
+  "new_mode": "--research-alpha-cushion",
+  "no_git_mutations": true,
+  "original_SOL": "ON;samealpha parameters;BTCflat SOL0 explicitly authorized risk override",
+  "owned_paths": [
+    "runtime/coinmaster/strategy/alpha_cushion.py",
+    "runtime/coinmaster/domain/wave_overlay.py",
+    "runtime/coinmaster/strategy/conditional_hedge.py",
+    "runtime/coinmaster/strategy/wave_overlay.py",
+    "runtime/coinmaster/research/minute_risk.py",
+    "runtime/coinmaster/research/native_baseline.py",
+    "scripts/launch_split_cover_native.py",
+    "scripts/collect_split_cover_native.py",
+    "runtime/tests/test_native_alpha_cushion.py"
+  ],
+  "patch": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/implementation-source.patch",
+  "patch_sha256": "b34cd36867b6653366ddba2dc05e65a4113df7b250d856db063710248330575a",
+  "pilot_after_tests": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+  "scope": "ONE prospective ALPHA-CUSHION engine only; no EARLY/CHOP/BTC-only/control/repeat/optimizer/deploy",
+  "selected_BTC": "UNCHANGED6077direction5.5/7.875,split.0025/4h,PLANREF,positiveTPIOC,TP/trail/cap30m;no schedule injection",
+  "source_base_commit": "5dbb82da38c103bacc2f8ee0222455d86d02853d",
+  "source_sha256": {
+    "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+    "runtime/coinmaster/research/minute_risk.py": "2a31baa92464198971bff5b16d44a03b778d1e2cfafdb458b1a073cd008a8f32",
+    "runtime/coinmaster/research/native_baseline.py": "c019f93f9b80a89e18a482dd3d6b44370117d05c7953f3d7f19b9a03279a02f1",
+    "runtime/coinmaster/strategy/alpha_cushion.py": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "4b216a0cb05fe702d7c794fd8766675ac367f60d3fca978a6dcd751d8f03f66e",
+    "runtime/coinmaster/strategy/wave_overlay.py": "6e5fb6c7a359a9eb4e210ed76a3d5a2d66de15a8da6035e6bfd3e62155b2ab8e",
+    "runtime/tests/test_native_alpha_cushion.py": "648eaecce37820c0f83ab0395bc4c9be28192aad54b46ed4f7edfb0ef934fd89",
+    "scripts/collect_split_cover_native.py": "f86b1787cd9c6ef11f2ed6a67e0bcf35e1d9b4a2b2872dc7237e54a25803fd4b",
+    "scripts/launch_split_cover_native.py": "bbfed37c2649f973a19133848e8cbbf05f476ce1116ed3fed2d0647686183317"
+  },
+  "status": "FROZEN_SOURCE_TESTS_PASS_AWAIT_INDEPENDENT_FINAL_GO_ROOT_COMMIT_AND_DRY_PACKAGE",
+  "targeted_correction": {
+    "finding": "Risk-canceled pending original authority could be released as ordinary IOC unfilled without retirement.",
+    "fix": "Existing attempt-bound risk marker; retire only bound remaining on knownterminal after actual latefills, not healthy ordinaryIOC.",
+    "native_evidence": "ActualGTCpending/canceldelay/.3latefill/.6remaining->60retired authorizationnotional/nativefillnotionalunchanged/later oldauthorization denied.",
+    "targeted_log": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/implementation-correction-targeted.log",
+    "targeted_log_sha256": "e2e5a32d4d66b3b25ab42cba9ab9b272334e05f0cf2189dcae44736ea85dc32c",
+    "targeted_passed": 1
+  },
+  "telemetry": {
+    "complete_HWM_scalar_validation": true,
+    "complete_beta_daily_rows": true,
+    "complete_event_counts": true,
+    "diagnostic_cap": 4096,
+    "native_orders_fills_funding_observer_complete": true,
+    "repetitive_detail_drops_disclosed": true
+  },
+  "verification": {
+    "actual_exit": 0,
+    "actual_peak": "189.7MiB",
+    "bounded_unit": "MemoryMax512MiB/Swap0/CPUWeight10/PrivateNetwork/env-i",
+    "command_modules": [
+      "test_native_alpha_cushion.py",
+      "test_wave_overlay.py",
+      "test_wave_native_integration.py",
+      "test_native_conditional_hedge.py",
+      "test_native_split_cover.py",
+      "test_native_sol_risk_first.py"
+    ],
+    "journal": "Started cm120-alpha-native-verification.service - /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/.openclaw/workspace/coinmaster/coinmaster/runtime:/root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -m pytest -q -p no:cacheprovider --tb=short tests/test_native_alpha_cushion.py tests/test_wave_overlay.py tests/test_wave_native_integration.py tests/test_native_conditional_hedge.py tests/test_native_split_cover.py tests/test_native_sol_risk_first.py.\ncm120-alpha-native-verification.service: Deactivated successfully.\ncm120-alpha-native-verification.service: Consumed 1min 12.973s CPU time, 189.7M memory peak, 0B memory swap peak.\n",
+    "log": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/alpha-cushion-113/implementation-native-verification.log",
+    "log_sha256": "30e5c82c03e021154d8a7ca90e964676443d26fc541b6042d3b655c364c2d617",
+    "passed": 206,
+    "seconds": "74.66",
+    "warnings": 676
+  }
+}

@@ -259,6 +259,8 @@ class Episode:
     sol_qty: float = 0.0
     # Ownership transfers are authorization credit, never native fill notional.
     sol_ownership_transfer_credit: dict[int, float] = field(default_factory=dict)
+    # Consumed risk-canceled authorization, never a native fill or money amount.
+    sol_risk_retired_notional: dict[int, float] = field(default_factory=dict)
     sol_first_owned_at: datetime | None = None
     sol_half_released_lots: int = 0
     sol_first_fill_at: datetime | None = None
@@ -434,7 +436,7 @@ class WaveOverlayState:
                 strict_cycle = not self.config.sol_late_entry_after_tp
                 fraction = episode.sol_right_fraction.get(level, 1.0)
                 allowed_notional = episode.h * self.config.sol_size_multipliers_h[level] * fraction
-                remaining_notional = allowed_notional - episode.sol_add_filled_notional.get(level, 0.0) - episode.sol_ownership_transfer_credit.get(level, 0.0)
+                remaining_notional = allowed_notional - episode.sol_add_filled_notional.get(level, 0.0) - episode.sol_ownership_transfer_credit.get(level, 0.0) - episode.sol_risk_retired_notional.get(level, 0.0)
                 if remaining_notional > 1e-12 and (not strict_cycle or episode.sol_right_decision_index.get(level) == index) and episode.attempted_sol_at.get(level) != index and signed_z >= self.config.sol_entry_z[level]:
                     episode.attempted_sol_at[level] = index
                     intents.append(self._intent(episode, "SOL_ADD", -episode.side, level, requested_notional=remaining_notional))
