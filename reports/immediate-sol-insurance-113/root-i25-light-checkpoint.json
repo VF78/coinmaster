@@ -1,0 +1,10 @@
+{
+  "checked_utc": "2026-10-19T15:58:59.417811+00:00",
+  "receipt_sha256": "2cbfbf89456a9802e49f8e0db4bd928f2de6fbe9486a9578947dc50a4a8b1190",
+  "raw_result_sha256": "90786210ac7b1ace52972353e1baae85e9f2bad83a021660019ed2886ca5060c",
+  "terminal_total": "7864.88334010",
+  "technical_acceptance": "PASS",
+  "economic_eligible": false,
+  "next": "Recovery ACTIVE; then I33 only",
+  "project_comment": "https://github.com/VF78/coinmaster/issues/119#issuecomment-6271467912"
+}
