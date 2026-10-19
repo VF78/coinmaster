@@ -1,0 +1,69 @@
+{
+  "DP": "OFF",
+  "all_product85_hashes_identical_to_winner": true,
+  "canonical_head": "bd4cf65cf13c26336170359f9c343d7c1e4ebbe6",
+  "cost_estimate": "One sequential24m native engine, roughly20-30CPUmin, bounded650MiB/Swap0, compressedobserver+results ~100MiB. Estimate only; freshguards required before launch.",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "fees": {
+    "bybit_maker": "0.00020",
+    "bybit_taker": "0.00055",
+    "hyperliquid_maker": "0.00015",
+    "hyperliquid_taker": "0.00045",
+    "venue": "bybit",
+    "version": "fixed-base-native-maker-taker-execution-v3"
+  },
+  "frozen_product_files": 85,
+  "frozen_product_manifest_sha256": "d2ddddb6b15256ec36c95896283b04a2ecbc2b8394af3e7068d22f18e990dae0",
+  "funding": "include_funding=True; native engine creates fresh winner-btc-only-funding attempt and success canonical family; no old journal input",
+  "independent_regular_copies": true,
+  "input_hashes": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "runs/tp-fee-floor-113/v0/v0.json": "d6a29d6e0e9ac586b911f2802cbe89602a05d2c0d73026d08ed76082a8a934f9"
+  },
+  "interval": {
+    "end_exclusive": "2026-09-01T00:00:00+00:00",
+    "initial_active_seed": "10000",
+    "start": "2024-09-01T00:00:00+00:00"
+  },
+  "isolated_resources": {
+    "MemoryMax": 681574400,
+    "PrivateNetwork": true,
+    "SwapMax": 0,
+    "env_i": true,
+    "exclusive_flock": "/var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock",
+    "read_only_source_venv_data": true
+  },
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a",
+  "launch_command_sha256": "d2a35786552d60e65b58c44919f21082b3c4a22bb983daef0e36acf48f243e7a",
+  "launch_script_sha256": "9012f98d0e1dc1e778ebabdcee1a2648911055d51bf025fed2205a59b8635058",
+  "limitation": "Pure BTC may change logical episode release/next permission and equity compounding because original SOL is absent. Measure honestly; do not inject old schedule/quantities.",
+  "no_new_product_code": true,
+  "no_tests_or_engine_run": true,
+  "observe_minute_risk": true,
+  "package_bytes": 1364355,
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "preflight": {
+    "MemAvailable": 1434169344,
+    "disk_free": 2300899328,
+    "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active",
+    "research_slice_empty": true
+  },
+  "prepared_utc": "2026-10-19T17:23:42.873436+00:00",
+  "reserve": "0",
+  "selected_TOTAL": "6077107.23887483",
+  "selected_artifact": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+  "selected_artifact_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "selected_config_sha256": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+  "sole_candidate_delta": {
+    "sol_overlay_enabled": [
+      true,
+      false
+    ]
+  },
+  "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+  "static_API_kwargs_pass": true,
+  "status": "PREPARED_ONLY_NO_ENGINE_STARTED_AWAIT_ROOT_GO",
+  "winning_config_copy_sha256": "7d8903417bf781559a881eca39594065ce7864094e83d3de59a4923b6dbfe53c",
+  "wrapper": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/immediate-sol-insurance-113/btc-only-reference.py",
+  "wrapper_sha256": "403f2be86f002728e1cc16f1ba267881ab21313bc5b848eba3f8b08f1a4ed9c8"
+}

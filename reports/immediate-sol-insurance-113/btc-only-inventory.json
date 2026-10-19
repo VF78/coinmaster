@@ -1,0 +1,183 @@
+{
+  "asof_utc": "2026-10-19T17:23:00.175699+00:00",
+  "churn_source_notes": [
+    {
+      "mechanism": "Recovery release, reverse/profit harvest and equity restoration can reduce one stage repeatedly; all create actual market target reconciliation, not free bookkeeping.",
+      "source": "runtime/coinmaster/strategy/immediate_insurance.py:151-174"
+    },
+    {
+      "mechanism": "New adverse extreme re-arms closed-bar confirmed stages. Tiny new extremes have no minimum gap/cooldown. Existing non-Light base below full also permits restore after a new extreme: same-direction reduction and re-add cycles are legal current policy.",
+      "source": "runtime/coinmaster/strategy/immediate_insurance.py:179-194"
+    },
+    {
+      "mechanism": "Recovery adds once per episode when BTC nativePnL positive/SOL negative with confirmation; explicitly averaging the losing hedge, max-not-sum, then release can add one extra roundtrip.",
+      "source": "runtime/coinmaster/strategy/immediate_insurance.py:196-205"
+    },
+    {
+      "mechanism": "Target re-latches on actual BTCqty/fraction, not price-only ticks; each TP/Q2 can force native SOL trim/add, pending partials use existing owner.",
+      "source": "runtime/coinmaster/strategy/immediate_insurance.py:208-214"
+    },
+    {
+      "mechanism": "BTC-flat clears insurance and native SOL closes even at a loss; mandatory group/terminal close remains priority. This is required insurance ownership, not a removable free-return source.",
+      "source": "runtime/coinmaster/strategy/immediate_insurance.py:130-141"
+    }
+  ],
+  "closest_existing": {
+    "ROI_percent": "60671.072388748300",
+    "TOTAL": "6077107.23887483",
+    "difference": "Exact selected BTC rules, but independent original SOL overlay remains ON; not standalone BTC ROI.",
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b"
+  },
+  "exact_matching_BTC_only_results": [],
+  "existing_boundaries": {
+    "candidate_flag": "runtime/coinmaster/domain/wave_overlay.py:62 defaultTrue; domain SOL admission short-circuits at417 whenFalse",
+    "generic_BTC_only_CLI_flag": false,
+    "launcher_variant": false,
+    "native_API": "runtime/coinmaster/research/native_baseline.py:648 run_native_diagnostic(candidate=...)",
+    "new_product_code_needed": false,
+    "report_side_adapter_needed": true
+  },
+  "historical_H4": {
+    "candidate_delta": "sol_overlay_enabled=False",
+    "result_found": false,
+    "source": "runtime/coinmaster/research/native_optimizer.py:1342",
+    "warning": "Old stage-D candidate/older execution lineage, no selected split/PLANREF/TPIOC certificate; never invoke the hypothesis cohort for this reference."
+  },
+  "insurance_event_counts": {
+    "i25": {
+      "ADVERSE_STAGE": 1168,
+      "BTC_FLAT": 54,
+      "EQUITY_REFERENCE": 105,
+      "FIRST_BTC_FILL": 105,
+      "HARVEST_OR_RECOVERY": 2170,
+      "NATIVE_FILL": 3031,
+      "ORIGINAL_ATTEMPT_TERMINAL": 1375,
+      "TARGET": 1375,
+      "TARGET_LATCH": 2979,
+      "TRIM": 1656
+    },
+    "i25-light": {
+      "ADVERSE_STAGE": 1137,
+      "BTC_FLAT": 54,
+      "EQUITY_REFERENCE": 105,
+      "FIRST_BTC_FILL": 105,
+      "HARVEST_OR_RECOVERY": 2066,
+      "LIGHT_LATCH": 62,
+      "NATIVE_FILL": 2963,
+      "ORIGINAL_ATTEMPT_TERMINAL": 1344,
+      "TARGET": 1344,
+      "TARGET_LATCH": 2911,
+      "TRIM": 1619
+    },
+    "i25-recovery": {
+      "ADVERSE_STAGE": 1241,
+      "BTC_FLAT": 54,
+      "EQUITY_REFERENCE": 105,
+      "FIRST_BTC_FILL": 105,
+      "HARVEST_OR_RECOVERY": 2427,
+      "NATIVE_FILL": 3392,
+      "ORIGINAL_ATTEMPT_TERMINAL": 1531,
+      "RECOVERY_ADD": 90,
+      "RECOVERY_RELEASE": 90,
+      "TARGET": 1531,
+      "TARGET_LATCH": 3338,
+      "TRIM": 1861
+    },
+    "i33": {
+      "ADVERSE_STAGE": 1192,
+      "BTC_FLAT": 54,
+      "EQUITY_REFERENCE": 105,
+      "FIRST_BTC_FILL": 105,
+      "HARVEST_OR_RECOVERY": 2205,
+      "NATIVE_FILL": 3094,
+      "ORIGINAL_ATTEMPT_TERMINAL": 1399,
+      "TARGET": 1399,
+      "TARGET_LATCH": 3041,
+      "TRIM": 1695
+    }
+  },
+  "native_results_scanned": 37,
+  "nonclaims": [
+    "Event counts are not independent roundtrip counts or causal fee attribution.",
+    "BTC component fill-net is not standalone BTC TOTAL/ROI; removing SOL changes equity compounding and episode availability.",
+    "No application attachment read; no tests, engine or pilot mutation."
+  ],
+  "possible_simplifications_not_implemented": [
+    "One initial insurance budget per BTC episode with no discretionary harvest/re-arm; only actual BTCquantity changes and mandatory flat reduce it.",
+    "Keep adverse staged additions but make partial profit harvest single-use or require a material new adverse threshold; this changes risk policy and needs separate authorization/data support.",
+    "Exclude recovery averaging and remove equity-restoration/reverse double exit triggers; retain one explicit state transition with existing native executor."
+  ],
+  "scan_scope": [
+    "both known research data roots; saved result/results JSON only",
+    "repo reports JSON/Markdown references",
+    "historical optimizer H4 source; historical H4 artifact not found"
+  ],
+  "sol_disabled_results": [
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-btc-direction.json",
+      "selected_BTC": true,
+      "sol_overlay_enabled": false,
+      "total": "8000.31240969"
+    },
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i33-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i33-btc-direction.json",
+      "selected_BTC": true,
+      "sol_overlay_enabled": false,
+      "total": "2026.97093770"
+    },
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-routingfix-20261014/result/v0-selective-lifecycle-cap30m-h1.json",
+      "selected_BTC": false,
+      "sol_overlay_enabled": false,
+      "total": "190593.96574493"
+    },
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-recovery-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-recovery-btc-direction.json",
+      "selected_BTC": true,
+      "sol_overlay_enabled": false,
+      "total": "7720.28353387"
+    },
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-h1-b1-h1-20261013/result/v0-selective-lifecycle-cap30m-h1.json",
+      "selected_BTC": false,
+      "sol_overlay_enabled": false,
+      "total": "247801.43980884"
+    },
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol75-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover0.75-btc-direction.json",
+      "selected_BTC": false,
+      "sol_overlay_enabled": false,
+      "total": "23826.61849406"
+    },
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-immediate-i25-light-20261019a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-immediate-i25-light-btc-direction.json",
+      "selected_BTC": true,
+      "sol_overlay_enabled": false,
+      "total": "7864.88334010"
+    },
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol100-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover1-btc-direction.json",
+      "selected_BTC": false,
+      "sol_overlay_enabled": false,
+      "total": "26111.23084821"
+    },
+    {
+      "other_SOL_policy": true,
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-sol50-20261018a/result/v0-selective-lifecycle-cap30m-sol-cover0.5-btc-direction.json",
+      "selected_BTC": false,
+      "sol_overlay_enabled": false,
+      "total": "21765.86882504"
+    }
+  ],
+  "source_head": "bd4cf65cf13c26336170359f9c343d7c1e4ebbe6",
+  "status": "EXACT_STANDALONE_BTC_RESULT_NOT_FOUND_IN_BOUNDED_SAVED_NATIVE_RESULTS"
+}

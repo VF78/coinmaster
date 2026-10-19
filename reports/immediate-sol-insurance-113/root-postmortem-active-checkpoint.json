@@ -1,0 +1,21 @@
+{
+  "verified_utc": "2026-10-19T17:29:41.898181+00:00",
+  "status": "ONE_BTC_ONLY_REFERENCE_ACTIVE",
+  "source_commit": "759823d69a74e72b123add5ae775dd8c3aed4ac5",
+  "pid": 4010498,
+  "invocation": "e1f8af95af9e4c3cbdad379887808013",
+  "actual_unit": "cm115-split-btc025-planref-tp-ioc-20261018a",
+  "job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a",
+  "preparation_receipt_sha256": "697c2a481e1b07d578933b9da3bf29aaf83f7f908545bf62cd477c819900efda",
+  "candidate_delta": {
+    "sol_overlay_enabled": [
+      true,
+      false
+    ]
+  },
+  "hypothesis_engines_authorized": 0,
+  "attachment_sha256": "b3e2d3886c043a039e9dbfe5c7a869e7fccfcfefdf97e4251f00e19544a45b10",
+  "independent_draft_completed_before_attachment_read": true,
+  "document_role": "Additional proposals to analyse; implementation/full hypothesis engines/deploy NOT authorized",
+  "next": "postmortem + cheap causal EARLY/CHOP/scenario CUSHION prechecks; exactBTC-only after full completion"
+}
