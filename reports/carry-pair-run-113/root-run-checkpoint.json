@@ -1,0 +1,17 @@
+{
+  "at_utc": "2026-10-20T08:00:49.616138+00:00",
+  "status": "ONE_NATIVE24M_ACTIVE_GENUINE_EVENTS",
+  "issue": "https://github.com/VF78/coinmaster/issues/113",
+  "project_readback_body_match": true,
+  "commit": "fdcefd633b1e611135d2a2573dbc6ad8dcc5cece",
+  "unit": "cm113-chop-pair50-net-20261020a.service",
+  "start_utc": "2026-10-20T07:58:50Z",
+  "python_pid": 117203,
+  "invocation_id": "60de8f4f2ded4166bf204c54bb31716c",
+  "fresh_funding_uuid": "211f652651c24edbb0df2f62aa2d3be1",
+  "global_input_pins": 89,
+  "global_manifest_sha256": "19f74a89834b2d5c14072946e516bc93706c9142d829f9af22841a3aa1286545",
+  "pilot_pid": 2009732,
+  "pilot_restarts": 0,
+  "new_economics": "UNKNOWN"
+}
