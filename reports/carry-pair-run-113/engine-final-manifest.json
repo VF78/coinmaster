@@ -1,0 +1,56 @@
+{
+  "status": "FINAL_DURABLE_NATIVE_RESULT_INCOMPLETE_AUDIT_REJECTED_DD",
+  "code_commit": "fdcefd633b1e611135d2a2573dbc6ad8dcc5cece",
+  "native_job": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a",
+  "native_artifacts": {
+    "minute-native-risk.csv.gz": {
+      "bytes": 40551138,
+      "sha256": "92cd6fd7c7a512e4fea203db547402885e122ba1141f25a4a74973634f67a003"
+    },
+    "chop-pair50-net-v1-funding.sqlite": {
+      "bytes": 106496,
+      "sha256": "536ac47c04e994f6df6cad0b598efaa0acf6483deda0c178a90af0a7ca1aec8c"
+    },
+    "chop-pair50-net-v1-fills.csv": {
+      "bytes": 73386,
+      "sha256": "97e352f55bd671d4f5668b7c8301f3a1020ba06b91ee464ec357047a47c3e31f"
+    },
+    "chop-pair50-net-v1-orders.csv": {
+      "bytes": 80637,
+      "sha256": "959d912dd94eb60d95e60b22763a88327f6f3b64813e0e12f0867ae2a81b6eee"
+    },
+    "minute-risk-summary.json": {
+      "bytes": 12319,
+      "sha256": "37f883d33b52785d6d1892f027558ee4e6954c2ee25e8ece6b1c55fd2de5af84"
+    },
+    "chop-pair50-net-v1-funding.sqlite-wal": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chop-pair50-net-v1-funding.sqlite-shm": {
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    }
+  },
+  "source_manifest_sha256": "63f7edf4633ef2aa7203be8cb39019dced9b3608a72139d43f70afabf380cbc0",
+  "global_input_manifest_sha256": "19f74a89834b2d5c14072946e516bc93706c9142d829f9af22841a3aa1286545",
+  "engine_artifacts": {
+    "reports/carry-pair-run-113/engine-config-guard-diagnosis.json": "8523dcdfbfc4902d1fa5b840e208116e2926479353ed101b102515376ea9e348",
+    "reports/carry-pair-run-113/engine-correction-funding.json": "a36545a05f8d511306df630dfa7d9861012130e0a9cb309ccc6af17d1c073d15",
+    "reports/carry-pair-run-113/engine-correction-tests.log": "d0b22d76167ebe12ca42588298a083a9ad6f390d76c8e8f8503a1799f46ef099",
+    "reports/carry-pair-run-113/engine-design.md": "c9a30276978d5d46da38021c17fb44a60f95bcdd5e2622083fab9f8b6f54e9c2",
+    "reports/carry-pair-run-113/engine-durable-trace-proof.json": "0f276f9ab25ff0e9b6e7e5612a38d922460069124dffd17c62e5b2b665fc0fbe",
+    "reports/carry-pair-run-113/engine-feature-parity.json": "53b6ba53740946eb496d33243f86e4d3061cab0351d2e57dd22626e5b065f8ef",
+    "reports/carry-pair-run-113/engine-final-report.md": "788c7304556fccc12652f18b6c60a126d9e3c2afcfe87f0ea0440e4708856f16",
+    "reports/carry-pair-run-113/engine-focused-tests.log": "c5cbf70159c85db36c0f43e043565e3e1acb497682c432007fdfef4a6de92b0a",
+    "reports/carry-pair-run-113/engine-input-correction.json": "4fe48476c250c53b3f0b92925c227f3b9222d8d5de1107d8dc7dc4244f87b1c3",
+    "reports/carry-pair-run-113/engine-launch-and-completion.json": "b527fd5dd70a44f654b6b6cef6c7f1634e5cd402bc872ce2dcd28b57e50500ae",
+    "reports/carry-pair-run-113/engine-live-gzip-checkpoint.json": "9dcf90039e3e3904362fb54119eb9ef0fdbaaa1522d967fa84bfbf0d36c13f32",
+    "reports/carry-pair-run-113/engine-namespace-preflight.json": "0934fa4a18b46feb060ad3ba5eef695c57b1ac939b7999315d3887ef8ef6da34",
+    "reports/carry-pair-run-113/engine-pack-plan.json": "5ee68feff662086156f12ed9d1100d0949c8bb22223e917163d87a9829983090",
+    "reports/carry-pair-run-113/engine-prepared-pack.json": "dfb1185349ec208a3b2c41beccf86db52cd5b1ed64402ae36036236fc046c947",
+    "reports/carry-pair-run-113/engine-recovered-native-result.json": "7cc3fccb2ae9a528151a40c461c0c834e271f7185ae0ca46a0b571a31f181e1c",
+    "reports/carry-pair-run-113/engine-recovered-native-summary.csv": "88c082939277f1f193417e9cc4620d2428425a6f141d28aabe3360c2b55b892b",
+    "reports/carry-pair-run-113/engine-review-ready.json": "5395f01223cf0a34acdaf8f9909cfe0cae30b7d7eb51b4d4665bd163e7cdb35e"
+  }
+}

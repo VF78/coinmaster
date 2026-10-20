@@ -1,0 +1,34 @@
+{
+  "status": "INPUT_ONLY_CORRECTION_PREPARED_WAITING_ROOT_GO",
+  "source_code_commit": "fdcefd633b1e611135d2a2573dbc6ad8dcc5cece",
+  "timestamp_utc": "2026-10-20T07:57:24.212286+00:00",
+  "source_count": 72,
+  "source_manifest_sha256": "63f7edf4633ef2aa7203be8cb39019dced9b3608a72139d43f70afabf380cbc0",
+  "global_manifest_sha256": "19f74a89834b2d5c14072946e516bc93706c9142d829f9af22841a3aa1286545",
+  "input_pin_count": 89,
+  "venue_evidence": {
+    "runtime/var/venue-manifest.json": {
+      "sha256": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+      "winning_snapshot_sha256": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82",
+      "winning_global_pin": "07756780162ef3c690cbf77d42e0a1070d6109e3c55399bb68a3ec5bd043fd82"
+    },
+    "runtime/var/raw/venues/bybit-BTCUSDT-risk-limit.json": {
+      "sha256": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+      "winning_snapshot_sha256": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+      "winning_global_pin": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab"
+    },
+    "runtime/var/raw/venues/bybit-SOLUSDT-risk-limit.json": {
+      "sha256": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+      "winning_snapshot_sha256": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9",
+      "winning_global_pin": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+    }
+  },
+  "source_code_changed": false,
+  "economic_config_changed": false,
+  "result_empty": true,
+  "failed_attempt_preserved": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a/diagnostics/initial-startup/result",
+  "failed_log_sha256": "50721fb54cbb798060421616485c08d3c70f7dc3ff9fb04e16066bc6da56a932",
+  "candidate_inputs_sha256": "5ee68feff662086156f12ed9d1100d0949c8bb22223e917163d87a9829983090",
+  "runner_sha256": "a942dd0555f7d589660b1933a0ad885c43e5843d5248587c8bdf06e161381c1e",
+  "funding": "NEXT_NATIVE_STARTUP_ALLOCATES_DIFFERENT_FRESH_UUID_FROM_EMPTY_RESULT"
+}

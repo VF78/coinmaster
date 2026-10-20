@@ -1,0 +1,358 @@
+{
+  "status": "PROVEN_DURABLE_NATIVE_RESULT_INCOMPLETE_AUDIT",
+  "original_full_result_object_durable": false,
+  "original_runner_status": "FAILED_POST_NATIVE_EXPORT_CONFIG_METADATA_GUARD",
+  "no_rerun": true,
+  "code_commit": "fdcefd633b1e611135d2a2573dbc6ad8dcc5cece",
+  "source_manifest_sha256": "63f7edf4633ef2aa7203be8cb39019dced9b3608a72139d43f70afabf380cbc0",
+  "global_input_manifest_sha256": "19f74a89834b2d5c14072946e516bc93706c9142d829f9af22841a3aa1286545",
+  "immutable_source_files": 72,
+  "immutable_source_match": true,
+  "economic_input_delta": {
+    "research_chop_pair": true
+  },
+  "serialization_metadata_delta": {
+    "research_conditional_sol": false
+  },
+  "control_raw_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "terminal_native_total": "205.42245876",
+  "terminal_native_active": "205.42245876",
+  "terminal_reserve": "0",
+  "ROI_percent": "-97.945775412400",
+  "global_native_minute_DD_percent": "99.84864985552820898675873133",
+  "conditional_upper_to_later_lower_bound": {
+    "peak": {
+      "timestamp_ns": "1742933520000000000",
+      "equity": "135938.71719696",
+      "basis": "PRIOR_BAR_FAVORABLE_UPPER"
+    },
+    "trough": {
+      "timestamp_ns": "1743971880000000000",
+      "equity": "205.42245876"
+    },
+    "drawdown_fraction": "0.9984888598112753570535111470",
+    "drawdown_peak_percent": "99.84888598112753570535111470"
+  },
+  "native_fees": "11256.90313488",
+  "native_fees_by_instrument": {
+    "BTCUSDT-PERP.P1SIM": "7786.89155248",
+    "SOLUSDT-PERP.P1SIM": "3470.01158240"
+  },
+  "native_order_report_rows": 217,
+  "native_fill_report_rows": 186,
+  "native_liquidity_row_counts": {
+    "TAKER": 144,
+    "MAKER": 42
+  },
+  "native_order_status_counts": {
+    "FILLED": 157,
+    "CANCELED": 60
+  },
+  "native_net_filled_quantities": {
+    "BTCUSDT-PERP.P1SIM": "0.000",
+    "SOLUSDT-PERP.P1SIM": "0.0"
+  },
+  "terminal_native_positions": [],
+  "full_feed": {
+    "source_minutes": 1051200,
+    "total_native_samples": 3153600,
+    "phase_counts": {
+      "pre_quote_paired_close": 1051200,
+      "post_btc_quote_paired_close": 1051199,
+      "post_quote_paired_close": 1051199,
+      "post_boundary_post_btc_quote_paired_close": 1,
+      "post_boundary_post_quote_paired_close": 1
+    },
+    "source_interval_start_ms": 1725148800000,
+    "source_interval_end_exclusive_ms": 1788220800000,
+    "first_row": {
+      "bar_open_ms": "1725148800000",
+      "close_available_ns": "1725148860000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "10000",
+      "free_cash": "10000",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "10000",
+      "conditional_adverse_equity": "10000",
+      "conditional_favorable_equity": "10000",
+      "conditional_high_mark_mm_upper": "0",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": "[]"
+    },
+    "last_row": {
+      "bar_open_ms": "1788220740000",
+      "close_available_ns": "1788220800000000000",
+      "phase": "post_boundary_post_quote_paired_close",
+      "cash": "205.42245876",
+      "free_cash": "205.42245876",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "205.42245876",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": "[]"
+    }
+  },
+  "funding": {
+    "count": 489,
+    "by_instrument_count": {
+      "BTCUSDT-PERP.P1SIM": 340,
+      "SOLUSDT-PERP.P1SIM": 149
+    },
+    "first_event_ns": 1725264000000000000,
+    "last_event_ns": 1743955200000000000,
+    "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+    "sqlite_integrity": "ok"
+  },
+  "permanent_flat_diagnosis": {
+    "last_nonflat": {
+      "bar_open_ms": "1743971760000",
+      "close_available_ns": "1743971820000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "114392.09795879",
+      "free_cash": "114392.09795879",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "542.09795879",
+      "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+      "conditional_margin_breach": "NOT_APPLICABLE",
+      "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"7000.0\",\"avg_px_open\":\"121.88428571428571\",\"mark_ohlc\":{\"open_time_ms\":1743971760000,\"open\":\"107.158\",\"high\":\"107.17\",\"low\":\"105.62\",\"close\":\"105.62\"},\"low_native_pnl\":\"-113850\",\"high_native_pnl\":\"-103000\"}]"
+    },
+    "first_subsequently_permanent_flat": {
+      "bar_open_ms": "1743971820000",
+      "close_available_ns": "1743971880000000000",
+      "phase": "pre_quote_paired_close",
+      "cash": "205.42245876",
+      "free_cash": "205.42245876",
+      "native_initial_margin": "0",
+      "native_maintenance_margin": "0",
+      "paired_close_equity": "205.42245876",
+      "conditional_adverse_equity": "205.42245876",
+      "conditional_favorable_equity": "114392.09795879",
+      "conditional_high_mark_mm_upper": "0",
+      "conditional_margin_breach": "False",
+      "native_positions_and_mark_ohlc_json": "[]"
+    },
+    "native_prequote_E_lte_MM": [],
+    "last_exposure_context": [
+      {
+        "bar_open_ms": "1743971700000",
+        "close_available_ns": "1743971760000000000",
+        "phase": "post_btc_quote_paired_close",
+        "cash": "114392.09795879",
+        "free_cash": "114392.09795879",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "11322.09795879",
+        "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_margin_breach": "NOT_APPLICABLE",
+        "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"7000.0\",\"avg_px_open\":\"121.88428571428571\",\"mark_ohlc\":{\"open_time_ms\":1743971700000,\"open\":\"107.13\",\"high\":\"107.301\",\"low\":\"106.93\",\"close\":\"107.158\"},\"low_native_pnl\":\"-104680\",\"high_native_pnl\":\"-102090\"}]"
+      },
+      {
+        "bar_open_ms": "1743971700000",
+        "close_available_ns": "1743971760000000000",
+        "phase": "post_quote_paired_close",
+        "cash": "114392.09795879",
+        "free_cash": "114392.09795879",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "11322.09795879",
+        "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_margin_breach": "NOT_APPLICABLE",
+        "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"7000.0\",\"avg_px_open\":\"121.88428571428571\",\"mark_ohlc\":{\"open_time_ms\":1743971700000,\"open\":\"107.13\",\"high\":\"107.301\",\"low\":\"106.93\",\"close\":\"107.158\"},\"low_native_pnl\":\"-104680\",\"high_native_pnl\":\"-102090\"}]"
+      },
+      {
+        "bar_open_ms": "1743971760000",
+        "close_available_ns": "1743971820000000000",
+        "phase": "pre_quote_paired_close",
+        "cash": "114392.09795879",
+        "free_cash": "114392.09795879",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "542.09795879",
+        "conditional_adverse_equity": "542.09795879",
+        "conditional_favorable_equity": "11392.09795879",
+        "conditional_high_mark_mm_upper": "5156.729000",
+        "conditional_margin_breach": "True",
+        "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"7000.0\",\"avg_px_open\":\"121.88428571428571\",\"mark_ohlc\":{\"open_time_ms\":1743971760000,\"open\":\"107.158\",\"high\":\"107.17\",\"low\":\"105.62\",\"close\":\"105.62\"},\"low_native_pnl\":\"-113850\",\"high_native_pnl\":\"-103000\"}]"
+      },
+      {
+        "bar_open_ms": "1743971760000",
+        "close_available_ns": "1743971820000000000",
+        "phase": "post_btc_quote_paired_close",
+        "cash": "114392.09795879",
+        "free_cash": "114392.09795879",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "542.09795879",
+        "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_margin_breach": "NOT_APPLICABLE",
+        "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"7000.0\",\"avg_px_open\":\"121.88428571428571\",\"mark_ohlc\":{\"open_time_ms\":1743971760000,\"open\":\"107.158\",\"high\":\"107.17\",\"low\":\"105.62\",\"close\":\"105.62\"},\"low_native_pnl\":\"-113850\",\"high_native_pnl\":\"-103000\"}]"
+      },
+      {
+        "bar_open_ms": "1743971760000",
+        "close_available_ns": "1743971820000000000",
+        "phase": "post_quote_paired_close",
+        "cash": "114392.09795879",
+        "free_cash": "114392.09795879",
+        "native_initial_margin": "0",
+        "native_maintenance_margin": "0",
+        "paired_close_equity": "542.09795879",
+        "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+        "conditional_margin_breach": "NOT_APPLICABLE",
+        "native_positions_and_mark_ohlc_json": "[{\"instrument_id\":\"SOLUSDT-PERP.P1SIM\",\"side\":\"2\",\"quantity\":\"7000.0\",\"avg_px_open\":\"121.88428571428571\",\"mark_ohlc\":{\"open_time_ms\":1743971760000,\"open\":\"107.158\",\"high\":\"107.17\",\"low\":\"105.62\",\"close\":\"105.62\"},\"low_native_pnl\":\"-113850\",\"high_native_pnl\":\"-103000\"}]"
+      }
+    ],
+    "near_last_native_orders": [
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "type": "MARKET",
+        "quantity": "7000.0",
+        "filled_qty": "1000.0",
+        "commissions": "['58.09650000 USDT']",
+        "status": "CANCELED",
+        "is_reduce_only": "True",
+        "liquidity_side": "TAKER",
+        "ts_init": "1743971820000000000",
+        "ts_last": "1743971820000000000"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "type": "MARKET",
+        "quantity": "6000.0",
+        "filled_qty": "1000.0",
+        "commissions": "['58.09650000 USDT']",
+        "status": "CANCELED",
+        "is_reduce_only": "True",
+        "liquidity_side": "TAKER",
+        "ts_init": "1743971820000000000",
+        "ts_last": "1743971820000000000"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "type": "MARKET",
+        "quantity": "5000.0",
+        "filled_qty": "1000.0",
+        "commissions": "['58.09650000 USDT']",
+        "status": "CANCELED",
+        "is_reduce_only": "True",
+        "liquidity_side": "TAKER",
+        "ts_init": "1743971820000000000",
+        "ts_last": "1743971820000000000"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "type": "MARKET",
+        "quantity": "4000.0",
+        "filled_qty": "1000.0",
+        "commissions": "['58.09650000 USDT']",
+        "status": "CANCELED",
+        "is_reduce_only": "True",
+        "liquidity_side": "TAKER",
+        "ts_init": "1743971820000000000",
+        "ts_last": "1743971820000000000"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "type": "MARKET",
+        "quantity": "3000.0",
+        "filled_qty": "1000.0",
+        "commissions": "['58.09650000 USDT']",
+        "status": "CANCELED",
+        "is_reduce_only": "True",
+        "liquidity_side": "TAKER",
+        "ts_init": "1743971820000000000",
+        "ts_last": "1743971820000000000"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "type": "MARKET",
+        "quantity": "2000.0",
+        "filled_qty": "1000.0",
+        "commissions": "['58.09650000 USDT']",
+        "status": "CANCELED",
+        "is_reduce_only": "True",
+        "liquidity_side": "TAKER",
+        "ts_init": "1743971820000000000",
+        "ts_last": "1743971820000000000"
+      },
+      {
+        "instrument_id": "SOLUSDT-PERP.P1SIM",
+        "side": "SELL",
+        "type": "MARKET",
+        "quantity": "1000.0",
+        "filled_qty": "1000.0",
+        "commissions": "['58.09650000 USDT']",
+        "status": "FILLED",
+        "is_reduce_only": "True",
+        "liquidity_side": "TAKER",
+        "ts_init": "1743971820000000000",
+        "ts_last": "1743971820000000000"
+      }
+    ],
+    "observed_fact": "NATIVE_EQUITY_542.09795879_WITH_LONG_7000_SOL_THEN_SEVEN_REAL_TAKER_REDUCTIONS_AND_PERMANENT_NATIVE_FLAT;NATIVE_ACCOUNT_MM_COLUMN_ZERO",
+    "specific_liquidation_count": "UNKNOWN_IN_MEMORY_AUDIT_NOT_PERSISTED",
+    "domain_pending_gate_state": "UNKNOWN_IN_MEMORY_STATE_NOT_PERSISTED",
+    "source_based_cause_inference": "NATIVE_MARGIN_GUARD_LIQUIDATION_LOCKOUT_CONSISTENT_WITH_DURABLE_MARGIN_AND_INTRADAY_TAKER_CLOSE;EXACT_COUNTER_UNAVAILABLE",
+    "margin_evidence_qualification": "Three conditional OHLC/tier upper-bound breach records exist in minute-risk-summary.json; these are not a directly observed native-account MM breach. The separate pinned tier guard is the source-consistent cause inference; its exact in-memory liquidation counter was not persisted."
+  },
+  "carry_audit": {
+    "admissions": "UNKNOWN_IN_MEMORY_AUDIT_NOT_PERSISTED",
+    "rejection_reasons": "UNKNOWN_IN_MEMORY_AUDIT_NOT_PERSISTED",
+    "exit_reasons": "UNKNOWN_IN_MEMORY_AUDIT_NOT_PERSISTED",
+    "skipped_opposite_signals": "UNKNOWN_IN_MEMORY_AUDIT_NOT_PERSISTED",
+    "economic_grants": "UNKNOWN_IN_MEMORY_AUDIT_NOT_PERSISTED"
+  },
+  "economic_decision": "FAIL_DD_ABOVE_50_NO_ECONOMIC_GO",
+  "artifacts": {
+    "minute-native-risk.csv.gz": {
+      "bytes": 40551138,
+      "sha256": "92cd6fd7c7a512e4fea203db547402885e122ba1141f25a4a74973634f67a003"
+    },
+    "chop-pair50-net-v1-funding.sqlite": {
+      "bytes": 106496,
+      "sha256": "536ac47c04e994f6df6cad0b598efaa0acf6483deda0c178a90af0a7ca1aec8c"
+    },
+    "chop-pair50-net-v1-fills.csv": {
+      "bytes": 73386,
+      "sha256": "97e352f55bd671d4f5668b7c8301f3a1020ba06b91ee464ec357047a47c3e31f"
+    },
+    "chop-pair50-net-v1-orders.csv": {
+      "bytes": 80637,
+      "sha256": "959d912dd94eb60d95e60b22763a88327f6f3b64813e0e12f0867ae2a81b6eee"
+    },
+    "minute-risk-summary.json": {
+      "bytes": 12319,
+      "sha256": "37f883d33b52785d6d1892f027558ee4e6954c2ee25e8ece6b1c55fd2de5af84"
+    },
+    "chop-pair50-net-v1-funding.sqlite-wal": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "chop-pair50-net-v1-funding.sqlite-shm": {
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+    }
+  }
+}

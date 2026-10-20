@@ -1,0 +1,50 @@
+{
+  "status": "PREPARED_IMMUTABLE_NOT_LAUNCHED_WAITING_ROOT_GO",
+  "job_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a",
+  "code_commit": "fdcefd633b1e611135d2a2573dbc6ad8dcc5cece",
+  "source_count": 69,
+  "source_manifest_sha256": "937dd04c96f6fca0a3c4c2269428ce64c9732ae5c785fd8a6fd3e2a7260c7344",
+  "global_input_manifest_sha256": "3ecb4030ce5925b299b103ec67aeec15efa52a06f9eb305d3fb2fb4a90d1788e",
+  "input_pin_count": 85,
+  "config_hash": "0fe22c3424825c0392d6a4e1d63fe91b2c73fba2316352e3883ded2b6f4f33f6",
+  "economic_delta": {
+    "research_chop_pair": true
+  },
+  "control_raw_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+  "control_config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+  "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+  "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+  "required_bybit_files_sha256": {
+    "bybit-1m/manifest.json": "a24b4d914dc4ac168be7bd4e4603eccc6356cb2c150a3d95442d22752e89c5db",
+    "normalized/bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "normalized/bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+    "normalized/bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+    "normalized/bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+    "normalized/bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+    "normalized/bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+    "normalized/bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+    "normalized/bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+  },
+  "new_result_empty": true,
+  "funding_journal": "FRESH_UUID_ATTEMPT_ALLOCATED_FROM_GENESIS_BY_EXISTING_RUNNER_AT_LAUNCH;NO_EXISTING_SQLITE",
+  "launch_command_sha256": "ab735920c387913ab4cc3c5329bc134bc5bb492ad48ee55381ca871a20bbae99",
+  "source_bytes": 1292243,
+  "market_data_copied_bytes": 0,
+  "control_result_bytes": 77904591,
+  "control_trace_bytes": 75715744,
+  "free_disk_bytes": 4465401856,
+  "conservative_candidate_disk_budget_bytes": 1073741824,
+  "projected_remaining_bytes": 3391660032,
+  "pilot_readback": [
+    "MainPID=2009732",
+    "NRestarts=0",
+    "ActiveState=active"
+  ],
+  "slice_readback": [
+    "TasksCurrent=0",
+    "IOWeight=100",
+    "MemoryMax=681574400",
+    "MemorySwapMax=0"
+  ],
+  "mem_available_kib": 1269224
+}

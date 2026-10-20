@@ -1,0 +1,23 @@
+{
+  "status": "ONE_AUTHORIZED_LIVE_GZIP_STREAMING_CHECKPOINT_NOT_FINAL",
+  "captured_utc": "2026-10-20T08:12:15.448028+00:00",
+  "complete_sample_rows": 2213040,
+  "compressed_bytes_read": 34565032,
+  "gzip_complete": false,
+  "truncated_live_member_expected": true,
+  "last_complete_row": {
+    "bar_open_ms": "1769409540000",
+    "close_available_ns": "1769409600000000000",
+    "phase": "post_quote_paired_close",
+    "cash": "205.42245876",
+    "free_cash": "205.42245876",
+    "native_initial_margin": "0",
+    "native_maintenance_margin": "0",
+    "paired_close_equity": "205.42245876",
+    "conditional_adverse_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+    "conditional_favorable_equity": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+    "conditional_high_mark_mm_upper": "NOT_APPLICABLE_POST_CLOSE_EXPOSURE",
+    "conditional_margin_breach": "NOT_APPLICABLE",
+    "native_positions_and_mark_ohlc_json": "[]"
+  }
+}

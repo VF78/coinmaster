@@ -1,0 +1,68 @@
+{
+  "status": "ONE_ECONOMIC_PASS_FINISHED_DURABLE_NEGATIVE_RESULT_INCOMPLETE_AUDIT",
+  "timestamp_utc": "2026-10-20T07:58:50.822796+00:00",
+  "properties": {
+    "MainPID": "117200",
+    "ControlGroup": "/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm113-chop-pair50-net-20261020a.service",
+    "MemoryCurrent": "156737536",
+    "MemoryMax": "681574400",
+    "MemorySwapMax": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "InvocationID": "60de8f4f2ded4166bf204c54bb31716c"
+  },
+  "processes": [
+    {
+      "pid": 117200,
+      "cwd": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a",
+      "command": "/usr/bin/flock -n /var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock /usr/bin/env -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a/source/runtime TMPDIR=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a/tmp OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMEXPR_MAX_THREADS=1 ARROW_NUM_THREADS=2 /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a/source/runtime/.venv/bin/python /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a/runner.py "
+    },
+    {
+      "pid": 117203,
+      "cwd": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a",
+      "command": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a/source/runtime/.venv/bin/python /var/lib/coinmaster-native-gui/data/runs/jobs/cm113-chop-pair50-net-20261020a/runner.py "
+    }
+  ],
+  "source_commit": "fdcefd633b1e611135d2a2573dbc6ad8dcc5cece",
+  "source_manifest_sha256": "63f7edf4633ef2aa7203be8cb39019dced9b3608a72139d43f70afabf380cbc0",
+  "global_manifest_sha256": "19f74a89834b2d5c14072946e516bc93706c9142d829f9af22841a3aa1286545",
+  "fresh_journal_files": [],
+  "prior_no_event_startup_preserved": "diagnostics/initial-startup",
+  "native_result_unknown": true,
+  "latest_progress": {
+    "utc": "2026-10-20T08:11:05.655618+00:00",
+    "unit": {
+      "MemoryCurrent": "359051264",
+      "MemoryPeak": "397131776",
+      "CPUUsageNSec": "684145568000",
+      "ActiveState": "active"
+    },
+    "funding": [
+      {
+        "rows": 489,
+        "last": "2025-04-06T16:00:00+00:00"
+      }
+    ],
+    "trace_bytes": 33231073,
+    "log_tail": ""
+  },
+  "observed_completion_utc": "2026-10-20T08:17:53.557471+00:00",
+  "report_export_status": "FAILED_ONLY_AT_POST_NATIVE_CONFIG_METADATA_ASSERTION",
+  "full_native_event_feed_completed": true,
+  "economic_rerun": false,
+  "recovered_result_path": "reports/carry-pair-run-113/engine-recovered-native-result.json",
+  "recovered_result_sha256": "7cc3fccb2ae9a528151a40c461c0c834e271f7185ae0ca46a0b571a31f181e1c",
+  "native_terminal_total": "205.42245876",
+  "native_minute_DD_percent": "99.84864985552820898675873133",
+  "source_unchanged": true,
+  "carry_liquidation_domain_audits": "UNKNOWN_ORIGINAL_IN_MEMORY_RESULT_NOT_DURABLE",
+  "pilot_readback": [
+    "MainPID=2009732",
+    "NRestarts=0",
+    "ActiveState=active"
+  ],
+  "research_slice_readback": [
+    "TasksCurrent=0",
+    "MemorySwapMax=0"
+  ]
+}

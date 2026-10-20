@@ -1,0 +1,16 @@
+{
+  "status": "NAMESPACE_STATIC_VENUE_PREFLIGHT_PASS",
+  "input_pins": 89,
+  "tier_counts": {
+    "BTCUSDT": 35,
+    "SOLUSDT": 35
+  },
+  "profile_hashes": {
+    "BTCUSDT": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab",
+    "SOLUSDT": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"
+  },
+  "native_engine_created": false,
+  "market_events_processed": 0,
+  "new_result_empty": true,
+  "timestamp_utc": "2026-10-20T07:57:59.028467+00:00"
+}
