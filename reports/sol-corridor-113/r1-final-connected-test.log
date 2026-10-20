@@ -1,0 +1,22 @@
+.............F.......................................................... [ 69%]
+................................                                         [100%]
+=================================== FAILURES ===================================
+___ test_dirty_fill_never_uses_provisional_account_and_global_peak_no_reset ____
+
+    def test_dirty_fill_never_uses_provisional_account_and_global_peak_no_reset():
+        s,e,ep=setup()
+        try:
+            peak=s._rf_peak;s._rf_dirty=True;advance(s,e,20)
+>           assert last(s,False)['status']=='DATA_UNKNOWN'
+E           AssertionError: assert 'FEASIBLE' == 'DATA_UNKNOWN'
+E             
+E             - DATA_UNKNOWN
+E             + FEASIBLE
+
+runtime/tests/test_native_sol_corridor.py:216: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_sol_corridor.py::test_dirty_fill_never_uses_provisional_account_and_global_peak_no_reset
+1 failed, 103 passed, 596 warnings in 20.90s

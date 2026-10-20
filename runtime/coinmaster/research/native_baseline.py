@@ -352,7 +352,12 @@ def assert_report_boundaries(report: dict) -> None:
 
 def save_native_artifact(frame, path: Path) -> dict[str, str | int]:
     path.parent.mkdir(parents=True, exist_ok=True)
-    frame.to_csv(path, index=True)
+    temporary=path.with_suffix(path.suffix+".tmp")
+    with temporary.open("w") as stream:
+        frame.to_csv(stream,index=True)
+        stream.flush()
+        os.fsync(stream.fileno())
+    temporary.replace(path)
     body = path.read_bytes()
     return {"path": str(path), "sha256": hashlib.sha256(body).hexdigest(), "rows": len(frame)}
 
@@ -717,6 +722,8 @@ def run_native_diagnostic(
         raise ValueError("ALPHA_CUSHION_REQUIRES_SELECTED_BTC_EXCLUSIVE_SOL_NATIVE_OBSERVER")
     if research_immediate_sol and (research_immediate_sol not in {"i25","i25-light","i25-recovery","i33"} or not 30<=research_immediate_lookback<=180 or research_sol_risk_first or research_conditional_sol or research_sol_cover or research_h1_b1 or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc or not research_btc_direction_sizing or not observe_minute_risk):
         raise ValueError("IMMEDIATE_REQUIRES_SELECTED_BTC_EXCLUSIVE_SOL_NATIVE_OBSERVER")
+    if research_sol_risk_first=='alpha-corridor-v1' and (not observe_minute_risk or not research_btc_direction_sizing or research_v3_risk or research_alpha_cushion or research_chop_pair or research_immediate_sol):
+        raise ValueError('CORRIDOR_REQUIRES_EXCLUSIVE_WINNER_AND_FINAL_NATIVE_OBSERVER')
     if research_sol_risk_first and (research_conditional_sol or research_sol_cover or research_h1_b1 or not research_btc_split50 or not research_btc_split_planref_v1 or not research_btc_split_tp_ioc):
         raise ValueError("RISK_FIRST_REQUIRES_SELECTED_BTC_AND_EXCLUSIVE_SOL_POLICY")
     if (research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_drawdown_sizing or research_v3_risk or research_h1_b1) and not observe_minute_risk:
@@ -932,6 +939,12 @@ def run_native_diagnostic(
         native_order_rejections = sum("REJECTED" in str(value) for value in orders.get("status", ()))
         del orders
         adapter = strategy.reporting_state()
+        save_diagnostic_report(data_root,{'raw_audit_state':'NATIVE_EXPORTS_COMPLETE_BEFORE_VALIDATION',
+            'native_strategy_events':adapter,'native_order_events':strategy._order_audit,'native_risk_first_audit':strategy.risk_first_sol_audit,
+            'native_carry_audit':strategy.carry_pair_audit,'native_carry_counts':strategy.carry_pair_counts,
+            'native_alpha_audit':strategy.alpha_cushion_audit,'native_alpha_counts':strategy.alpha_cushion_counts,
+            'execution_artifacts':artifacts,'native_fees':str(fees),'terminal_active':str(terminal_active)},
+            artifact_label+'-raw-native',artifacts_root)
         terminal = adapter["terminal_lifecycle"]
         if terminal["reason"] == "TERMINAL_BOUNDARY_SETTLEMENT" and (
             terminal["status"] != "FLAT" or engine.cache.positions_open() or adapter["terminal_open_orders"]
@@ -1003,6 +1016,13 @@ def run_native_diagnostic(
                     ("wave_strategy", "strategy/wave_overlay.py"),
                 )
             }
+        # Preserve native facts before any boundary/metadata packaging assertion.
+        raw_native={**result,'native_strategy_events':strategy.reporting_state(),'native_order_events':strategy._order_audit,
+            'native_risk_first_audit':strategy.risk_first_sol_audit,
+            'native_carry_audit':strategy.carry_pair_audit,'native_carry_counts':strategy.carry_pair_counts,
+            'native_alpha_audit':strategy.alpha_cushion_audit,'native_alpha_counts':strategy.alpha_cushion_counts,
+            'raw_audit_state':'NATIVE_COMPLETE_PACKAGING_NOT_VALIDATED'}
+        save_diagnostic_report(data_root,raw_native,artifact_label+'-raw-native',artifacts_root)
         if not early_liquidation_cutoff:
             assert_report_boundaries(result)
         if research_btc_split50 or research_sol_cover or research_conditional_sol:
@@ -1032,6 +1052,9 @@ def run_native_diagnostic(
                 result["config"]["risk_first_sol_policy"]={"variant":research_sol_risk_first,"old_conditional":"OFF","risk_excess_exit":"NATIVE_MARKET_IOC_NO_SYNTHETIC_PROFIT_FLOOR","cap50":"FROZEN720H_BETA_ACTUAL_BTC_QTY_ONLY_NO_AUTOFILL_BTCFLAT_ORIGINAL_RETAINED","dd_cov":"GLOBAL_NATIVE_HIGHWATER_10_20_30_UP_5_15_25_DOWN_34_67_100_MINVAR720H_FACTOR_HOURLY_BUFFER10","dd_cov_target":"min((1-w)*Oref,Olive)+w*Qc;lowerstage/BTCflat_latched_noincrease_until_fresh_Oauth/BTCincrease/higherstage","split_atr":"FIXED_Q_34_33_33_WILDER_ATR14_CLOSED15M_FIRST_ACTUAL_FILL_0.5_1ATR_60MIN_OR_BTC1PP_CANCEL_ACK_ACTUAL_LEAVES","split_atr_invalid":"ORDINARY_NATIVE_IOC","original_execution_change":"H2_ACCEPTED_GROUP_PERSISTS_KNOWN_CHILD_IOC_PARTIAL_TERMINAL_UNTIL_PRIORITY_EXIT_OR_LAWFUL_TTL_COMPLETION"}
                 result["risk_first_sol_audit"]=strategy.risk_first_sol_audit
                 result["risk_first_sol_parents"]=strategy._risk_first_report()["SOL_parents"]
+                if research_sol_risk_first=="alpha-corridor-v1":
+                    result["corridor_status_counts"]=getattr(strategy,"_rf_corridor_counts",{})
+                    result["config"]["risk_first_sol_policy"]={"variant":"ALPHA-CORRIDOR-v1","risk_window":90,"E_H":"FINAL_POST_SOL_NATIVE_CHECKPOINT","floor":".55_GLOBAL_H_NO_RESET","objective":"NEAREST_LAWFUL_ALPHA_CONVEX_NATIVE_LOTS","failure":"EXPLICIT_MIN_L_BEST_EFFORT_NO_BTC_CHANGE","funding_L2":"UNKNOWN"}
                 result["source_hashes"]["risk_first_sol"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/risk_first_sol.py")
             result["config"]["cover_hour_warmup_sha256"] = cover_warmup_hashes
             result["config_hash"] = hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
@@ -1071,6 +1094,7 @@ def run_native_diagnostic(
         if risk_recorder is not None:
             result["minute_risk_observations"] = risk_recorder.close()
             risk_recorder = None
+        save_diagnostic_report(data_root,{**raw_native,**result,'raw_audit_state':'NATIVE_COMPLETE_BEFORE_WRAPPER_METADATA'},artifact_label+'-raw-native',artifacts_root)
         successful_run = True
         return result
     finally:
@@ -1108,7 +1132,10 @@ def save_diagnostic_report(data_root: Path, report: dict, artifact_name: str = "
     target = (artifact_dir or data_root / "runs") / f"{artifact_name}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     temporary = target.with_suffix(".tmp")
-    temporary.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    with temporary.open('w') as stream:
+        stream.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
     temporary.replace(target)
     return target
 
@@ -1340,7 +1367,7 @@ def main() -> None:
     parser.add_argument("--research-batch-minutes", type=int, default=None, help="Isolated ALPHA research cursor and native event batch override; no economic parameter")
     parser.add_argument("--research-immediate-sol", choices=("i25","i25-light","i25-recovery","i33"),default=None)
     parser.add_argument("--research-immediate-lookback",type=int,default=90)
-    parser.add_argument("--research-sol-risk-first", choices=("cap50","dd-cov","split-atr"),default=None)
+    parser.add_argument("--research-sol-risk-first", choices=("cap50","dd-cov","split-atr","alpha-corridor-v1"),default=None)
     parser.add_argument("--data-root", type=Path, default=Path("var/data"))
     parser.add_argument("--diagnostic-no-funding", action="store_true")
     parser.add_argument("--diagnostic-with-prior-minute-funding", action="store_true")

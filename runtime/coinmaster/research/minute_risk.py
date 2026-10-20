@@ -165,6 +165,8 @@ class NativeMinuteRiskRecorder:
             row_phase = "post_boundary_" + phase
             self.post_boundary_settlement.append({"timestamp_ns": str(timestamp), "phase": phase, "cash": str(cash), "paired_close_equity": str(equity), "native_positions": details})
         else:
+            if getattr(strategy.config,"research_sol_risk_first",None)=="alpha-corridor-v1" and phase=="post_quote_paired_close":
+                strategy._corridor_queue_checkpoint(timestamp)
             if getattr(strategy.config,"research_sol_risk_first",None)=="dd-cov":
                 strategy._risk_first_observe_equity(equity,timestamp)
             if getattr(strategy.config,"research_alpha_cushion",False):
@@ -211,6 +213,8 @@ class NativeMinuteRiskRecorder:
 def observed_strategy_type(base, recorder):
     """Preserve strategy class name/order identity; attach read-only callbacks."""
     def on_data(self, data):
+        incoming=getattr(data,'data',data)
+        self._corridor_finalize_checkpoint(getattr(incoming,'ts_event',None))
         base.on_data(self, data)
         mark=getattr(data,"data",data)
         timestamp=getattr(mark,"ts_event",None)
@@ -229,6 +233,7 @@ def observed_strategy_type(base, recorder):
                 if self.config.research_btc_episode_loss_20:
                     self._research_check_btc_episode_loss(timestamp, after_observation=True)
     def on_quote_tick(self,tick):
+        self._corridor_finalize_checkpoint(tick.ts_event)
         base.on_quote_tick(self,tick)
         if self.config.research_v3_risk:
             self._v3_finalize_fill_checkpoints(tick.ts_event)

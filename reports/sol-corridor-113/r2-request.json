@@ -1,0 +1,105 @@
+{
+  "status": "READY_FOR_SEPARATE_R2_OWNER_APPROVAL",
+  "candidate": "ALPHA-CORRIDOR-v1",
+  "economic_runs_requested": 1,
+  "candidate_flag": {
+    "research_sol_risk_first": "alpha-corridor-v1"
+  },
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "103e93daf3752a015dd9e537220752ac155dbff173bf239453295013529ae045",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "control": {
+    "raw_path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "raw_sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "terminal_TOTAL": "6077107.23887483",
+    "terminal_ACTIVE": "6077107.23887483",
+    "RESERVE": "0",
+    "roi_fraction": "606.710723887483",
+    "native_minute_DD_percent": "66.31878024969152066570091116",
+    "conditional_OHLC_bound_percent": "67.54771031869252420136632742",
+    "cash_only_DD_NOT_SELECTION_METRIC": "0.3789928254391618089349041484",
+    "liquidations": 0,
+    "fills": 621,
+    "native_fees": "945927.73761825",
+    "fee_attribution": {
+      "audited_total": "945927.73761825",
+      "maker": {
+        "count": 135,
+        "fees": "153876.76812554",
+        "notional": "769383840.6277"
+      },
+      "native_total": "945927.73761825",
+      "reconciled": true,
+      "taker": {
+        "count": 486,
+        "fees": "792050.96949271",
+        "notional": "1440092671.8044"
+      },
+      "unknown": {
+        "count": 0,
+        "fees": "0",
+        "notional": "0"
+      }
+    },
+    "funding": {
+      "by_instrument_count": {
+        "BTCUSDT-PERP.P1SIM": 899,
+        "SOLUSDT-PERP.P1SIM": 421
+      },
+      "count": 1320,
+      "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"
+    },
+    "interval": "[2024-09-01T00:00:00+00:00,2026-09-01T00:00:00+00:00)",
+    "warmup": "[2022-09-02T00:00:00+00:00,2024-09-01T00:00:00+00:00) feature-only",
+    "config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "source_hashes": {
+      "native_baseline": "2d2983638225214831c8cec20a52cf170175b637a344ec27a95a02ad25573b9c",
+      "split_cover": "ac0cbda7fe529d95c29d0a336fe1cabce3f9c4e355900f080c77119e2cb04525",
+      "wave_domain": "e8de2eff497e5aca19c94b06a7829b5a70de46e276a724e983be01c47408a4f2",
+      "wave_strategy": "2b76b98397245c66493befc8332c1f1f8c2739a1f347fed82e232c12cc2e1d39"
+    },
+    "status": "NOT_FAITHFUL_DIAGNOSTIC",
+    "ranking_eligible": false,
+    "terminal_open_positions": 0,
+    "source_rows_per_instrument": 1051200,
+    "note": "Embedded control_terminal_total3386491 isoldercomparison; selectedbaselineisthisfileownterminal_total6077107. No controlrerun."
+  },
+  "interval": "[2024-09-01,2026-09-01)",
+  "starting_TOTAL_USDT": "10000",
+  "RESERVE": "0",
+  "deposit_protection": "OFF",
+  "fees": {
+    "maker": "0.00020",
+    "taker": "0.00055"
+  },
+  "preserved": "BTC winner/split/PLANREF/Q2/TP; original SOL-alpha; same Bybit data/funding/margin/execution assumptions",
+  "engine": "Fresh native BacktestEngine; fresh unique funding journal; no pilot secrets",
+  "resource_plan": "one isolated low-priority process RAM650MiB/swap0; fresh preflight MemAvailable>=700MiB/disk>=1.5GiB; no service/swap changes",
+  "control_reuse": "declared actual-path source proof+focused parity; if insufficient request extra control permission before any extra run",
+  "no_automatic_runs": [
+    "grid",
+    "control",
+    "repeat"
+  ],
+  "metrics": [
+    "TOTAL/ROI/global marked DD/OHLC separately",
+    "fees/turnover/fundingUNKNOWN",
+    "BTC calendar/side/acceptedQ/delays",
+    "risk infeasible/margin/lot/pending/overshoot",
+    "monthly/11clusters/3worst excursions"
+  ],
+  "prohibited": [
+    "pilot changes",
+    "deployment",
+    "real orders",
+    "transfers",
+    "secrets"
+  ]
+}

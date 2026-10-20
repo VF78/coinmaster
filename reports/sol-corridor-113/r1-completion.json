@@ -1,0 +1,62 @@
+{
+  "status": "R1_SOURCE_FROZEN_PENDING_REVIEW_GO",
+  "base_product_head": "5b45a7c",
+  "current_report_head": "0dcd8d6950217fe83dc06a7a17a3ca14ec810c95",
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "103e93daf3752a015dd9e537220752ac155dbff173bf239453295013529ae045",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "patch_sha256": "c1c1710e739a8c2bdf9f87f071f9786c3e2ddbd99bffad4725b308f5bb6c8245",
+  "log_sha256": {
+    "r1-focused-test.log": "7d30ff7fad947373ba7980c8630654a4aba96faa22e4b021d00c03098d1c56b9",
+    "r1-connected-test.log": "f23c72b766eaf13fd9dc167a33e68b2c15c23fb61f741971bb0f8b14e4bd2de5",
+    "r1-connected-corrected-test.log": "b7c2a4cc426dad973096ebc59b7314aec9730f199dca5a20647da7ee760d0e88",
+    "r1-parity-receipt-focused.log": "6e62cd8a78e402cf18023e552988db0af5c0577362ac8b2713ad081c7260de7a",
+    "r1-final-connected-test.log": "04c1e3009ef48a5e7afa3b9323c5f8877536002637288e66ce84066a4721cea7",
+    "r1-final-fixture-test.log": "f5f04b60e1e6cdbb8c9230a3e4e4f8564329695f7747530f2a883b2c8a112155",
+    "r1-final-fill-marker-test.log": "caf207409fd5946f6011541c8071087b96a48c6da37281d9de7919beab510175"
+  },
+  "verification": [
+    {
+      "log": "r1-final-connected-test.log",
+      "command": "runtime/.venv/bin/python -m pytest -q runtime/tests/test_native_sol_corridor.py runtime/tests/test_native_sol_risk_first.py runtime/tests/test_native_conditional_hedge.py runtime/tests/test_native_alpha_cushion.py runtime/tests/test_native_minute_risk.py --disable-warnings",
+      "outcome": "103PASS/1 obsolete fixture expectation;20.90s; all existing suites PASS"
+    },
+    {
+      "log": "r1-final-fixture-test.log",
+      "command": "runtime/.venv/bin/python -m pytest -q runtime/tests/test_native_sol_corridor.py::test_dirty_fill_never_uses_provisional_account_and_global_peak_no_reset --disable-warnings",
+      "outcome": "corrected fixture1PASS2.45s"
+    },
+    {
+      "log": "r1-final-fill-marker-test.log",
+      "command": "runtime/.venv/bin/python -m pytest -q runtime/tests/test_native_sol_corridor.py -k \"final_receipt or throttle_Denied or two_episode\" --disable-warnings",
+      "outcome": "final universal marker affected3PASS2.75s"
+    }
+  ],
+  "reporting_rule": "Overlapping coverage: NOT104tests in one fresh passing run; no CI claim.",
+  "native_evidence": [
+    "Two-cycle healthy OFF/ON exact native fills/orders/cash/fees/right clocks",
+    "BTC-only protection; excess alpha trim; SOL-only budget; UNKNOWN ACK serialized",
+    "Native delayed riskcancel/.3latepartial/.6retired/nooldIOCdebt",
+    "Actual RiskEngineDenied/forcedpartial/same-timestamp receipt refused",
+    "Final receipt strictlylater than actualfill, actualreceiptstamp/no backdating, stock nativecash+nativepositionPNL",
+    "GlobalH noreset/singleaccounting; freshclosed15m+.8C release",
+    "Known nativeBTCopening leaves hypothetical endpoints and acceptedQ2reserve preserved"
+  ],
+  "arithmetic_or_injected": "Convex piecewise interval tests; native margin gate refusal injected; negativeC/nonpositiveDaily data tests. Not historical economic proof.",
+  "raw_fault_evidence": "Tiny real2minute production synthetic runner; inner boundary assertion failure and outerwrapper metadataSHA failure retain atomic raw JSON + native fills/orders/events/counters. Final success raw merges early event fields.",
+  "limitations": [
+    "R0 significant alpha interference/infeasibility; candidate TOTAL/ROI/DD UNKNOWN.",
+    "Continuous math feasible but no native lot is highlevel SOL_MARGIN_INSUFFICIENT; diagnostic execution constraint NOT proof of cashshortage.",
+    "Historical winner reuse conditional on unexercised forcedclose denialedge, not universal OFF parity.",
+    "Real L2/slippage/future signed funding UNKNOWN; paidfees/funding solely native E.",
+    "Detailed scenario diagnostic sample cap8192; actual native executor events/status counts retained.",
+    "Research resume unsupported without existing persisted globalH checkpoint."
+  ],
+  "R2": "NOT_AUTHORIZED_NO_NATIVE24M_OR_CONTROL_OR_REPEAT",
+  "actions": "No source commit, deployment, service/order/secret/swap or economic research engine changes."
+}

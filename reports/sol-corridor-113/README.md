@@ -6,7 +6,7 @@
 
 ## R0 — завершён
 
-Один потоковый проход существующей истории: **3 153 600 native строк /1 051 199 завершённых post-SOL состояний**. 90 закрытых парных Daily returns, исходные marks, исходные данные/комиссии. Ни исполнения, ни новая equity-кривая не симулировались. Native DD воспроизведён; оценки challenge-cushion совпали; 730 дней/24 месяца/105 первых BTC-состояний/11 кластеров/3 excursions >50% сверены.
+Один потоковый проход существующей истории: **3 153 600 native строк /1 051 199 post-SOL наблюдений**. 90 закрытых парных Daily returns, исходные marks, исходные данные/комиссии. Ни исполнения, ни новая equity-кривая не симулировались. Native DD воспроизведён; оценки challenge-cushion совпали; 730 дней/24 месяца/105 первых BTC-состояний/11 кластеров/3 excursions >50% сверены.
 
 | Наблюдаемый SOL-alpha | Минутных состояний | Доля alpha-состояний |
 |---|---:|---:|
@@ -22,15 +22,19 @@
 
 [Полный R0-отчёт](r0-report.md) · [JSON](r0-statistics.json) · [105 BTC checkpoints](r0-first-BTC-states.csv) · [11 кластеров](r0-11-clusters.csv) · [Контрпримеры](r0-landmarks.csv) · [Проверки](r0-final-checks.json) · [SHA](r0-manifest.json)
 
-Сценарный бюджет использует только завершённые account checkpoints E/H; полный native DD по всем фазам сохраняется отдельной метрикой. Наблюдаемый held-alpha не подменяет будущие законные права/цели. Доступная биржевая маржа, pending leaves и будущие исполнения из этой таблицы не доказаны. Потенциальные изменения target не являются фактическим оборотом/fees/ROI.
+**Ограничение R0:** старый post-SOL hook может предшествовать завершению fill/account settlement. Counts остаются сценарным расчётом сохранённых наблюдений, не доказанным итоговым бюджетом. Повторного прохода не было; native DD остаётся архивным, без повторной сертификации. Новый R1 receipt проверен отдельно. Бюджет определён через итоговые account checkpoints E/H; полный native DD по всем фазам сохраняется отдельной метрикой. Наблюдаемый held-alpha не подменяет будущие законные права/цели. Доступная биржевая маржа, pending leaves и будущие исполнения из этой таблицы не доказаны. Потенциальные изменения target не являются фактическим оборотом/fees/ROI.
 
-## R1 — реализация и адресная проверка в работе
+## R1 — реализован, native проверки и независимое GO
 
 Ближайший к законной alpha-цели допустимый SOL-объём, без изменения BTC/alpha-сигналов, через существующий executor. Default OFF, без отдельного risk-сервиса или второго денежного учёта. `DATA_UNKNOWN`, `SOL_RISK_INFEASIBLE` и `SOL_MARGIN_INSUFFICIENT` раздельны. Известный infeasible исход — минимальный L среди реально доступных SOL-объёмов с явной отметкой, без скрытого изменения BTC.
 
-[Контракт](r1-contract.md) · [План адресных native tests](r1-test-plan.md) · [Source inventory](r1-source-inventory.json) · [Ограниченная OFF/source parity](r1-off-source-parity.md). В текущем HEAD есть исправление отказа forced close, не затронувшее исторический winner path:710orders=447FILLED/263CANCELED, без Denied/Rejected. Универсальная идентичность исходников не заявляется; focused OFF parity ещё проверяется.
+[Контракт](r1-contract.md) · [План адресных native tests](r1-test-plan.md) · [Source inventory](r1-source-inventory.json) · [Ограниченная OFF/source parity](r1-off-source-parity.md). В текущем HEAD есть исправление отказа forced close, не затронувшее исторический winner path:710orders=447FILLED/263CANCELED, без Denied/Rejected. Универсальная идентичность исходников не заявляется; focused OFF/healthy-ON parity подтверждена двумя native SOL-циклами, не всеми историческими timestamps.
 
-Также требуется атомарное сохранение raw native result/events/fills/orders до metadata validation. При ошибке упаковки нельзя терять аудит. Независимое адресное money/order review после готового diff.
+Атомарное сохранение raw native result/events/fills/orders до metadata validation реализовано. Короткий реальный native runner и inner/outer fault injection подтвердили сохранность аудита. Итоговые native cash/position PnL читаются на подтверждённой более поздней receipt после fill-событий; source quote/receipt timestamps различаются, backdating отсутствует. Dirty-marker охватывает все deduplicated fills.
+
+**Проверки:** 103 passed в связанном наборе; устаревший fixture исправлен и прошёл отдельно; финальные три затронутые проверки прошли. Это перекрывающиеся проверки, не новый полный104-pass run. Проверены partial/cancel/late fill/Denied/UNKNOWN, права/отсутствие старого IOC-долга, pure protection после BTC-flat, reverse15m+0.8C, global H/однократный учёт. Арифметика и injected margin refusal отмечены отдельно. [Результаты/SHA](r1-completion.json) · [Независимое GO](r1-review-final.md) · [Diff](r1-source.patch).
+
+**Ограничения:** lot-gap входит в общую execution-категорию SOL_MARGIN_INSUFFICIENT, не доказывая нехватку cash. Resume без готового H checkpoint не квалифицирован; R2 — fresh engine. Подробные scenario samples ограничены8192, counters/native executor events сохранены. Source-only, не deployment/live acceptance.
 
 ## R2 — ещё не разрешён и не запущен
 

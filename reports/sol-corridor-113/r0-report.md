@@ -1,14 +1,16 @@
 # R0 — ALPHA-CORRIDOR observed-held feasibility screen
 
+**ACCOUNT-FINALITY CAVEAT — NOT SETTLED-BUDGET CERTIFICATION:** The R1 native fixture proved that a subclass post-SOL recorder callback can precede actual fill settlement. The archive therefore supplies 1,051,199 observed post-SOL phase samples, NOT certified finalized account checkpoints. Completed quote-recording phase does not mean settled native account. R0 E/H/C and feasibility counts remain mathematical screens on stored observations only, not finalized native-budget proof or candidate ROI. The archived native all-phase DD66.31878025% is unchanged and NOT recertified here. R1 must use a deferred native receipt after a proven later settlement boundary.
+
 **R0 observed-held screening is complete; implementation approval is a separate decision with the warnings below.** The observed winner path contains broad infeasibility and meaningful interference with alpha. This is one scenario screen over existing evidence, not a backtest or a hypothetical account curve. Winner TOTAL6077107.23887483 and independent BTC-only TOTAL280748.52263020 remain unchanged.
 
 ## Data, accounting and solver semantics
 
-**E_H:** Completed native post-SOL account/equity checkpoints only. H=max(10000, all earlier completed E including current observation). No prequote/postBTC transient updates. Last end-exclusive prequote left-limit is consumed for source alignment but excluded from R0 states. Global all-phase native DD is reproduced separately.
+**E_H:** Observed post-SOL phase E values only; archival account-finality is NOT certified. H=max(10000, earlier observed post-SOL E including the current observation); prequote/postBTC observations do not update this screen H. The recorder callback may precede actual fill settlement, so E/H/C do not prove finalized account-budget admissibility. The terminal prequote left-limit remains excluded. Legacy names completed_states, completed_H_max and H_completed refer to the recorded-phase calculation, not certified account settlement. The native all-phase DD remains a separate unchanged archival metric, not recertified.
 
 **causality:** Previous90 paired completed Daily log returns. Sample covariance/variance; linear interpolation q95(abs BTC logreturn), q95(abs residual WITHOUT intercept), then expm1. Beta/a/u refresh only after a new paired Daily close, including SOL-only. Daily timestamps<=state timestamp; age<24h. Minute marks are aligned completed source closes, no future price.
 
-**L_K:** L=a*abs(B+beta*s)+u*abs(s)+.00055*(abs(s-held)+abs(B)+abs(s)). Only future adjustment/remaining BTC/SOL exits are charged. Already paid fees/funding remain included in authoritative native E and are not charged again. This is a conservative future-taker fee model under the existing fixed research rates, configured spread0 and one-minute execution delay. Actual next-minute prices/L2/slippage/liquidity and signed funding components are UNKNOWN, not known-zero costs.
+**L_K:** L=a*abs(B+beta*s)+u*abs(s)+.00055*(abs(s-held)+abs(B)+abs(s)). Only future adjustment/remaining BTC/SOL exits are charged. The screen does not charge already booked fees/funding again; a stored sample can precede later fill settlement and is not a finalized account receipt. This is a conservative future-taker fee model under the existing fixed research rates, configured spread0 and one-minute execution delay. Actual next-minute prices/L2/slippage/liquidity and signed funding components are UNKNOWN, not known-zero costs.
 
 **solver:** Nonnegative absolute SOL notional on original held-alpha/opposite-BTC side. Breakpoints0, abs held, abs B/beta; analytic segment intersections and tail root. Project observed-held alpha target onto feasible interval; test its adjacent native0.1SOL lot neighbors and recheck L<=C. No external optimizer/grid. With B=0 formula includes (a*beta+u)*abs(s), so SOL-only is screened. Flat has no alpha permission and keeps s=0.
 
@@ -37,7 +39,7 @@
 | safe_held_never_changed | True |
 
 ## Coverage and early warning
-| Classification | Baseline minutes | % all completed states |
+| Classification | Baseline minutes | % observed post-SOL samples |
 |---|---|---|
 | FLAT_NO_ACTION | 456527 | 43.429170 |
 | BTC_ONLY_SAFE | 289826 | 27.570993 |
@@ -59,7 +61,7 @@ Observed held alpha: 201402 minutes; 126621 safe, 74781 not already safe (37.130
 First occupied BTC checkpoints (105): {'BTC_ONLY_SAFE': 90, 'SOL_RISK_INFEASIBLE': 13, 'HEDGE_ADD': 2}. First60-minute occupied windows (6300): {'BTC_ONLY_SAFE': 4899, 'SOL_RISK_INFEASIBLE': 999, 'HEDGE_ADD': 246, 'SAFE_ALPHA_HELD': 156}. Independently excluding all future fees, first-checkpoint feasibility is Counter({'FEASIBLE_BEFORE_COSTS': 92, 'RISK_INFEASIBLE_EVEN_BEFORE_COSTS': 13}). This no-cost lower bound is computed only for the saved105 first checkpoints, not invented for every baseline minute.
 
 ### Earliest states by classification
-| Class | UTC | Kind | E | H completed | C | B | Held SOL notional | L held | Min L with costs | Min L before costs | Proposed SOL qty | Margin |
+| Class | UTC | Kind | E | H observed phase | C | B | Held SOL notional | L held | Min L with costs | Min L before costs | Proposed SOL qty | Margin |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | FLAT_NO_ACTION | 2024-09-01T00:01:00Z | flat | 10000.000000 | 10000.000000 | 4500.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | NO_INCREMENTAL_MARGIN_FOR_REDUCE_OR_HOLD |
 | BTC_ONLY_SAFE | 2024-09-02T00:01:00Z | BTC_only | 9987.232751 | 10000.000000 | 4487.232751 | -22638.943100 | 0.000000 | 1356.601118 | 1079.947543 | 1047.910442 | 0.000000 | NO_INCREMENTAL_MARGIN_FOR_REDUCE_OR_HOLD |
@@ -112,7 +114,7 @@ The sole lot-infeasible snapshot has a real-valued corridor but no0.1SOL quantit
 | trough | 2024-10-03T15:44:00+00:00 | 4530.57414701 |
 | recovery | 2024-10-11T02:53:00+00:00 | 13453.62745342 |
 
-R0 completed checkpoint at those timestamps (different phase/H from original native extrema):
+R0 observed post-SOL sample at those timestamps (different phase/H from original native extrema):
 | Tags | UTC | Kind | Class | E | H | C | L held | Min L |
 |---|---|---|---|---|---|---|---|---|
 | DD37/peak,DD37/first_underwater | 2024-09-11T14:00:00Z | flat | FLAT_NO_ACTION | 13410.341279 | 13410.341279 | 6034.653576 | 0.000000 | 0.000000 |
@@ -128,7 +130,7 @@ R0 completed checkpoint at those timestamps (different phase/H from original nat
 | trough | 2025-06-06T15:17:00+00:00 | 367509.64806046 |
 | recovery | 2025-08-24T19:38:00+00:00 | 930699.83942448 |
 
-R0 completed checkpoint at those timestamps (different phase/H from original native extrema):
+R0 observed post-SOL sample at those timestamps (different phase/H from original native extrema):
 | Tags | UTC | Kind | Class | E | H | C | L held | Min L |
 |---|---|---|---|---|---|---|---|---|
 | DD776/peak | 2025-04-11T01:00:00Z | both | SAFE_ALPHA_HELD | 915175.730257 | 915175.730257 | 411829.078616 | 241394.884188 | 173149.194515 |
@@ -145,7 +147,7 @@ R0 completed checkpoint at those timestamps (different phase/H from original nat
 | trough | 2025-11-28T14:28:00+00:00 | 937712.12544458 |
 | recovery | 2025-12-01T04:10:00+00:00 | 2089614.53857348 |
 
-R0 completed checkpoint at those timestamps (different phase/H from original native extrema):
+R0 observed post-SOL sample at those timestamps (different phase/H from original native extrema):
 | Tags | UTC | Kind | Class | E | H | C | L held | Min L |
 |---|---|---|---|---|---|---|---|---|
 | DD943/peak | 2025-10-22T21:29:00Z | BTC_only | BTC_ONLY_SAFE | 2088471.563788 | 2088471.563788 | 939812.203704 | 576555.322516 | 343440.300218 |
@@ -212,4 +214,4 @@ No DATA_UNKNOWN estimates/marks were encountered in the observed-held mathematic
 
 r0-statistics.json contains exact snapshots, roots, native lots, min-L best-effort and reduce-only alternatives, pins and resource evidence. r0-daily.csv/r0-monthly.csv contain calendar time counts; r0-first-BTC-states.csv contains105 early checkpoints; r0-landmarks.csv and r0-11-clusters.csv contain required cases; r0-classification-runs.csv contains2102 runs; r0-analysis.py is the single-pass script. Only r0-* report files were written.
 
-Control compressed trace SHA256 reused from the previously verified winner risk proof: f9b59944ac969f5441babdf2103637f7cd179c6d18971c7bf95c0e2c46e38a0b. No additional trace read. Classification runs2102 conserve1051199 completed minutes; occupied risk-infeasible proportion89421/576649=15.5070068621%.
+Control compressed trace SHA256 reused from the previously verified winner risk proof: f9b59944ac969f5441babdf2103637f7cd179c6d18971c7bf95c0e2c46e38a0b. No additional trace read. Classification runs2102 conserve1051199 observed post-SOL samples; occupied risk-infeasible proportion89421/576649=15.5070068621%.

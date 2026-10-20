@@ -1,0 +1,25 @@
+{
+  "decision": "GO_R1_SOURCE_ONLY",
+  "date": "2026-10-20",
+  "blocking_findings": [],
+  "scope": "ALPHA-CORRIDOR-v1 R1; no R2 authorization",
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "103e93daf3752a015dd9e537220752ac155dbff173bf239453295013529ae045",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "verification": {
+    "connected": "103 passed, 1 obsolete fixture failed; r1-final-connected-test.log",
+    "corrected_fixture": "1 passed; r1-final-fixture-test.log",
+    "final_affected_subset": "3 passed; r1-final-fill-marker-test.log",
+    "single_fresh_full_104_pass_claim": false
+  },
+  "limitations": [
+    "Continuous feasible interval without legal native lot shares SOL_MARGIN_INSUFFICIENT execution class.",
+    "Focused parity is not universal historical economic parity.",
+    "Fresh research engines only; restart/resumption H restoration not qualified."
+  ]
+}

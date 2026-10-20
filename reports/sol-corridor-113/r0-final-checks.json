@@ -11,5 +11,11 @@
   "no_engine_optimizer_or_PnL_simulation": true,
   "classification_run_rows": 2102,
   "classification_run_minutes_conserved": true,
-  "control_trace_hash_reused_from_existing_verified_proof": true
+  "control_trace_hash_reused_from_existing_verified_proof": true,
+  "observed_post_SOL_samples": 1051199,
+  "account_settlement_finality_certified": false,
+  "archived_allphase_DD_recertified": false,
+  "finality_amendment_numeric_counts_unchanged": true,
+  "finality_amendment_CSV_scalar_fixtures_unchanged": true,
+  "finality_amendment_no_trace_or_engine_read": true
 }

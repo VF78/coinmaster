@@ -1,0 +1,118 @@
+...FFFF...F............................................................. [ 75%]
+........................                                                 [100%]
+=================================== FAILURES ===================================
+___________ test_native_BTC_only_hedge_and_known_residual_failure[1] ___________
+
+side = 1
+
+    @pytest.mark.parametrize('side',[1,-1])
+    def test_native_BTC_only_hedge_and_known_residual_failure(side):
+        s,e,ep=setup(side)
+        try:
+            f=stress(s);advance(s,e,20);advance(s,e,21)
+            assert any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
+>           assert D(last(s)['target'])>0 and ep.sol_qty==0
+                     ^^^^^^^^^^^^^^^^^
+E           KeyError: 'target'
+
+runtime/tests/test_native_sol_corridor.py:62: KeyError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+__________ test_native_BTC_only_hedge_and_known_residual_failure[-1] ___________
+
+side = -1
+
+    @pytest.mark.parametrize('side',[1,-1])
+    def test_native_BTC_only_hedge_and_known_residual_failure(side):
+        s,e,ep=setup(side)
+        try:
+            f=stress(s);advance(s,e,20);advance(s,e,21)
+            assert any(p.instrument_id==SOL_PERP.id for p in e.cache.positions_open())
+>           assert D(last(s)['target'])>0 and ep.sol_qty==0
+                     ^^^^^^^^^^^^^^^^^
+E           KeyError: 'target'
+
+runtime/tests/test_native_sol_corridor.py:62: KeyError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+__________ test_native_excess_alpha_trim_preserves_actual_fill_rights __________
+
+    def test_native_excess_alpha_trim_preserves_actual_fill_rights():
+        s,e,ep=setup()
+        try:
+            original(s,e,ep,200,ts=30);advance(s,e,31)
+            before=dict(ep.sol_add_filled_notional);stress(s,a='1',u='.1')
+            advance(s,e,32);advance(s,e,33)
+>           assert D(last(s)['target'])<200
+                     ^^^^^^^^^^^^^^^^^
+E           KeyError: 'target'
+
+runtime/tests/test_native_sol_corridor.py:74: KeyError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+_______ test_native_SOL_only_budget_keeps_lawful_alpha_and_no_flat_entry _______
+
+    def test_native_SOL_only_budget_keeps_lawful_alpha_and_no_flat_entry():
+        s,e,ep=setup()
+        try:
+            original(s,e,ep,20,ts=30);advance(s,e,31)
+            i=s._domain._intent(ep,'BTC_REDUCE',-ep.side,None,quantity=100)
+            s._submit_intent(i,100,100,None,len(s._bars)-1,ts_now=32)
+            advance(s,e,32);advance(s,e,33)
+            assert not any(p.instrument_id==BTC_PERP.id for p in e.cache.positions_open())
+            assert ep.sol_qty==20 and D(last(s)['target'])==20
+            stress(s,a='5');advance(s,e,34);advance(s,e,35)
+>           assert D(last(s)['target'])<20
+                     ^^^^^^^^^^^^^^^^^
+E           KeyError: 'target'
+
+runtime/tests/test_native_sol_corridor.py:89: KeyError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+___ test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity ___
+
+    def test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity():
+        outputs=[]
+        for enabled in (False,True):
+            s=Observed(config(enabled)) if enabled else AlphaObserved(config(False));e=engine(s,bar_execution=not enabled)
+            try:
+                run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
+                snapshots=[]
+                for cycle in range(2):
+                    minute=60_000_000_000;t=cycle*1000*minute+2;prepare_day(s,t);history(s);marks(s,t,'100','1')
+                    ep=s._domain.episode=Episode('healthy-'+str(cycle),1,10000,1,wave_levels=(10,20,30),h=10000)
+                    i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
+                    s.btc_action=lambda q:s._submit_intent(i,100,100,.01,0,ts_now=q.ts_event)
+                    run_ticks(e,[tick(BTC_PERP,t+1),tick(BTC_PERP,t+2),tick(BTC_PERP,t+3,'99'),tick(SOL_PERP,t+4,'1')])
+                    for k,q in enumerate([3505,2505,1505,505]):
+                        now=t+(10+k*10)*minute;marks(s,now,'100','1');original(s,e,ep,q,now,price='1');advance(s,e,now+minute,sol='1')
+                        snapshots.append((ep.sol_qty,ep.sol_first_fill_at,ep.sol_first_owned_at,ep.fixed_sigma,dict(ep.sol_add_filled_notional)))
+                        assert not any(i.action=='SOL_ADD' for i in s._pending_by_order.values())
+                    for half,z in [(True,.3),(False,0.)]:
+                        now=t+(60 if half else 80)*minute;s._domain._decision_index=100+now
+                        when=datetime.fromtimestamp(now/1e9,UTC);b=DailyBar(when-timedelta(days=1),when,when,100,100,1)
+                        intents=s._domain._sol_exits(ep,Features(100+now,1,1.,1.,0.,1.,0.),b,100+now,z=z);assert len(intents)==1
+                        logical=intents[0]
+                        s.sol_action=lambda q:s._submit_intent(logical,1,1,None,100+now,ts_now=q.ts_event)
+                        for dt in range(3):advance(s,e,now+dt*minute,sol='1')
+>                   assert ep.sol_qty==0
+E                   AssertionError: assert 752.5 == 0
+E                    +  where 752.5 = Episode(id='healthy-0', side=1, active_entry=10000, beta_entry=1, btc_target_basis_qty=100.0, btc_initial_qty=100.0, b...66db-4989-aa52-99975ec2a6b8'}, attempted_btc_at={}, attempted_sol_at={}, close_reason=None, btc_sizing_multiplier=None).sol_qty
+
+runtime/tests/test_native_sol_corridor.py:154: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_sol_corridor.py::test_native_BTC_only_hedge_and_known_residual_failure[1]
+FAILED runtime/tests/test_native_sol_corridor.py::test_native_BTC_only_hedge_and_known_residual_failure[-1]
+FAILED runtime/tests/test_native_sol_corridor.py::test_native_excess_alpha_trim_preserves_actual_fill_rights
+FAILED runtime/tests/test_native_sol_corridor.py::test_native_SOL_only_budget_keeps_lawful_alpha_and_no_flat_entry
+FAILED runtime/tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+5 failed, 91 passed, 552 warnings in 20.96s

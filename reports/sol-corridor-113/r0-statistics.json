@@ -92,7 +92,10 @@
     "single_trace_pass": true,
     "causal_valid_daily90": true,
     "BTC_never_changed": true,
-    "safe_held_never_changed": true
+    "safe_held_never_changed": true,
+    "observed_post_SOL_samples": 1051199,
+    "account_settlement_finality_certified": false,
+    "archived_allphase_DD_recertified": false
   },
   "classification_minutes": {
     "FLAT_NO_ACTION": 456527,
@@ -6286,21 +6289,23 @@
     "max_RSS_KiB": 150796
   },
   "method": {
-    "E_H": "Completed native post-SOL account/equity checkpoints only. H=max(10000, all earlier completed E including current observation). No prequote/postBTC transient updates. Last end-exclusive prequote left-limit is consumed for source alignment but excluded from R0 states. Global all-phase native DD is reproduced separately.",
+    "E_H": "Observed post-SOL phase E values only; archival account-finality is NOT certified. H=max(10000, earlier observed post-SOL E including the current observation); prequote/postBTC observations do not update this screen H. The recorder callback may precede actual fill settlement, so E/H/C do not prove finalized account-budget admissibility. The terminal prequote left-limit remains excluded. Legacy names completed_states, completed_H_max and H_completed refer to the recorded-phase calculation, not certified account settlement. The native all-phase DD remains a separate unchanged archival metric, not recertified.",
     "causality": "Previous90 paired completed Daily log returns. Sample covariance/variance; linear interpolation q95(abs BTC logreturn), q95(abs residual WITHOUT intercept), then expm1. Beta/a/u refresh only after a new paired Daily close, including SOL-only. Daily timestamps<=state timestamp; age<24h. Minute marks are aligned completed source closes, no future price.",
-    "L_K": "L=a*abs(B+beta*s)+u*abs(s)+.00055*(abs(s-held)+abs(B)+abs(s)). Only future adjustment/remaining BTC/SOL exits are charged. Already paid fees/funding remain included in authoritative native E and are not charged again. This is a conservative future-taker fee model under the existing fixed research rates, configured spread0 and one-minute execution delay. Actual next-minute prices/L2/slippage/liquidity and signed funding components are UNKNOWN, not known-zero costs.",
+    "L_K": "L=a*abs(B+beta*s)+u*abs(s)+.00055*(abs(s-held)+abs(B)+abs(s)). Only future adjustment/remaining BTC/SOL exits are charged. The screen does not charge already booked fees/funding again; a stored sample can precede later fill settlement and is not a finalized account receipt. This is a conservative future-taker fee model under the existing fixed research rates, configured spread0 and one-minute execution delay. Actual next-minute prices/L2/slippage/liquidity and signed funding components are UNKNOWN, not known-zero costs.",
     "solver": "Nonnegative absolute SOL notional on original held-alpha/opposite-BTC side. Breakpoints0, abs held, abs B/beta; analytic segment intersections and tail root. Project observed-held alpha target onto feasible interval; test its adjacent native0.1SOL lot neighbors and recheck L<=C. No external optimizer/grid. With B=0 formula includes (a*beta+u)*abs(s), so SOL-only is screened. Flat has no alpha permission and keeps s=0.",
     "rights": "Observed accepted native alpha inventory is the reference target only. Fresh prospective s_alpha, permission consumption/retirement, pending SOL leaves and remaining BTC Q2 are not fully exported: prospective policy screening is DATA_UNKNOWN for those inputs. This report does not invent full future ladders or claim a true-policy target.",
     "margin": "Native free cash/IM/MM are not proof of tier-based incremental SOL capacity. Mathematical HEDGE_ADD states are SOL_MARGIN_UNAVAILABLE until real tier/pending/Q2 admission checks. SOL_MARGIN_INSUFFICIENT cannot be measured from these exports and is NOT asserted zero. Reductions/hold need no incremental position margin but venue executability is not certified. The unconstrained min-L best effort may need added margin; reduce-only min-L is recorded separately and does not certify the contract optimum within actual available margin.",
     "turnover": "Counts are contemporaneous baseline timestamps, not independent actions. Contiguous adjustment spells and classification runs are descriptive. First-spell gap sums, gap-notional-minute area and projected-quantity total variation are unexecuted diagnostics, not candidate turnover/orders/fees/PnL. Candidate inventory, release confirmation/hysteresis and fresh rights would alter future E/H and targets.",
     "counterexamples": "All three >50% native excursions and eleven saved loss-flip clusters are retrospective labels used only for report slices, never runtime filters. Carry dates are evaluated on the WINNER state at the same time, not on the rejected carry candidate inventory.",
-    "execution_precision": "Native construction proof supplied by source owner: SOL size step0.1/tick0.01/IM0.05, BTC step0.001/tick0.1/IM0.025; no explicit native min_quantity/min_notional. Fee multiplier1, maker0.00020/taker0.00055, Bybit USDT. Tier module and pending admission are still required. Raw source close precision and native lot rounding are distinguished."
+    "execution_precision": "Native construction proof supplied by source owner: SOL size step0.1/tick0.01/IM0.05, BTC step0.001/tick0.1/IM0.025; no explicit native min_quantity/min_notional. Fee multiplier1, maker0.00020/taker0.00055, Bybit USDT. Tier module and pending admission are still required. Raw source close precision and native lot rounding are distinguished.",
+    "account_finality_caveat": "The R1 native fixture proved that a subclass post-SOL recorder callback can precede actual fill settlement. The archive therefore supplies 1,051,199 observed post-SOL phase samples, NOT certified finalized account checkpoints. Completed quote-recording phase does not mean settled native account. R0 E/H/C and feasibility counts remain mathematical screens on stored observations only, not finalized native-budget proof or candidate ROI. The archived native all-phase DD66.31878025% is unchanged and NOT recertified here. R1 must use a deferred native receipt after a proven later settlement boundary."
   },
   "first_BTC_before_future_costs": {
     "FEASIBLE_BEFORE_COSTS": 92,
     "RISK_INFEASIBLE_EVEN_BEFORE_COSTS": 13
   },
   "blockers": [
+    "The R1 native fixture proved that a subclass post-SOL recorder callback can precede actual fill settlement. The archive therefore supplies 1,051,199 observed post-SOL phase samples, NOT certified finalized account checkpoints. Completed quote-recording phase does not mean settled native account. R0 E/H/C and feasibility counts remain mathematical screens on stored observations only, not finalized native-budget proof or candidate ROI. The archived native all-phase DD66.31878025% is unchanged and NOT recertified here. R1 must use a deferred native receipt after a proven later settlement boundary.",
     "107444 baseline timestamps are risk-infeasible under this scenario/cost model, including18023 flat observations already below floor; this is not a proof that intervention earlier would have failed.",
     "Observed alpha is not already safe in74781 of201402 held-alpha minutes; keeping original alpha signals does not prove keeping original economic advantage.",
     "13 of105 first occupied BTC checkpoints are scenario-infeasible with future-taker costs; before-cost exclusion count is separately reported. BTC-preservation plus a hard45% scenario floor cannot always be fulfilled by SOL.",
@@ -6319,5 +6324,13 @@
     "prospective_rights_DATA_UNKNOWN": "ALL_STATES_NOT_RECONSTRUCTED",
     "SOL_MARGIN_INSUFFICIENT": "UNKNOWN_NOT_MEASURABLE",
     "occupied_risk_infeasible_percent": 15.507006862059935
+  },
+  "account_finality": {
+    "status": "NOT_CERTIFIED_ARCHIVAL_POST_SOL_PHASE_ONLY",
+    "observed_post_SOL_samples": 1051199,
+    "quote_phase_completion_is_account_settlement": false,
+    "counts_are_stored_observation_screen_only": true,
+    "R1_requirement": "Deferred native receipt after proven later settlement boundary",
+    "native_allphase_DD": "UNCHANGED_ARCHIVED_METRIC_NOT_RECERTIFIED"
   }
 }

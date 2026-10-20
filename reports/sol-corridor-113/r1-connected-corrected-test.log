@@ -1,0 +1,76 @@
+..........F......F...................................................... [ 72%]
+............................                                             [100%]
+=================================== FAILURES ===================================
+___ test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity ___
+
+    def test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity():
+        outputs=[]
+        for enabled in (False,True):
+            s=Observed(config(enabled)) if enabled else AlphaObserved(config(False));e=engine(s,bar_execution=not enabled)
+            try:
+                run_ticks(e,[tick(BTC_PERP,1),tick(SOL_PERP,1)])
+                snapshots=[]
+                for cycle in range(2):
+                    minute=60_000_000_000;t=cycle*1000*minute+2;prepare_day(s,t);history(s);marks(s,t,'100','1')
+                    ep=s._domain.episode=Episode('healthy-'+str(cycle),1,10000,1,wave_levels=(10,20,30),h=10000)
+                    i=s._domain._intent(ep,'BTC_ENTRY',1,None,quantity=100)
+                    s.btc_action=lambda q:s._submit_intent(i,100,100,.01,0,ts_now=q.ts_event)
+                    run_ticks(e,[tick(BTC_PERP,t+1),tick(BTC_PERP,t+2),tick(BTC_PERP,t+3,'99'),tick(SOL_PERP,t+4,'1')])
+                    for k,q in enumerate([3505,2505,1505,505]):
+                        now=t+(10+k*10)*minute;marks(s,now,'100','1');original(s,e,ep,q,now,price='1');advance(s,e,now+minute,sol='1')
+                        snapshots.append((ep.sol_qty,ep.sol_first_fill_at,ep.sol_first_owned_at,ep.fixed_sigma,dict(ep.sol_add_filled_notional)))
+                        assert not any(i.action=='SOL_ADD' for i in s._pending_by_order.values())
+                    for half,z in [(True,.3),(False,0.)]:
+                        now=t+(60 if half else 80)*minute;s._domain._decision_index=100+now
+                        when=datetime.fromtimestamp(now/1e9,UTC);b=DailyBar(when-timedelta(days=1),when,when,100,100,1)
+                        intents=s._domain._sol_exits(ep,Features(100+now,1,1.,1.,0.,1.,0.),b,100+now,z=z);assert len(intents)==1
+                        logical=intents[0]
+                        s.sol_action=lambda q:s._submit_intent(logical,1,1,None,100+now,ts_now=q.ts_event)
+                        for dt in range(3):advance(s,e,now+dt*minute,sol='1')
+>                   assert ep.sol_qty==0
+E                   AssertionError: assert 752.5 == 0
+E                    +  where 752.5 = Episode(id='healthy-0', side=1, active_entry=10000, beta_entry=1, btc_target_basis_qty=100.0, btc_initial_qty=100.0, b...2346-4875-a65d-804b45ca612d'}, attempted_btc_at={}, attempted_sol_at={}, close_reason=None, btc_sizing_multiplier=None).sol_qty
+
+runtime/tests/test_native_sol_corridor.py:154: AssertionError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+________________ test_nonpositive_daily_prices_are_DATA_UNKNOWN ________________
+
+    def test_nonpositive_daily_prices_are_DATA_UNKNOWN():
+        s,e,ep=setup()
+        try:
+            from dataclasses import replace
+>           s._bars=[replace(b,btc_close=-b.btc_close,sol_close=-b.sol_close) for b in s._bars]
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+runtime/tests/test_native_sol_corridor.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/dataclasses.py:1581: in replace
+    return obj.__class__(**changes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:9: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DailyBar(open_time=datetime.datetime(1969, 10, 2, 0, 0, tzinfo=datetime.timezone.utc), close_time=datetime.datetime(19...info=datetime.timezone.utc), btc_open=101.00501670841679, btc_close=-101.00501670841679, sol_close=-102.02013400267558)
+
+    def __post_init__(self) -> None:
+        if self.open_time.tzinfo != UTC or self.close_time.tzinfo != UTC or self.available_at.tzinfo != UTC:
+            raise ValueError("all bar times must be UTC")
+        if self.available_at < self.close_time:
+            raise ValueError("a bar cannot be available before it closes")
+        if min(self.btc_open, self.btc_close, self.sol_close) <= 0:
+>           raise ValueError("prices must be positive")
+E           ValueError: prices must be positive
+
+runtime/coinmaster/domain/wave_overlay.py:38: ValueError
+----------------------------- Captured stderr call -----------------------------
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'BTCUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+[1m1970-01-01T00:00:00.000000001Z[0m [1;31m[ERROR] BACKTESTER-001.DataEngine: Cannot execute command: no data client configured for None or `client_id` TEST_MARKS, SubscribeData(client_id=TEST_MARKS, venue=None, data_type=VenueMark{'instrument_id': 'SOLUSDT-PERP.P1SIM'}, params={'update_catalog': False})[0m
+=========================== short test summary info ============================
+FAILED runtime/tests/test_native_sol_corridor.py::test_healthy_original_native_partial_half_full_two_episode_OFF_ON_parity
+FAILED runtime/tests/test_native_sol_corridor.py::test_nonpositive_daily_prices_are_DATA_UNKNOWN
+2 failed, 98 passed, 576 warnings in 20.98s

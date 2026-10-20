@@ -12,28 +12,28 @@
     "sha256": "a31425b37d539f047038f7880068c24f6034e37bf5ab9302f266a8266c5861ef"
   },
   "r0-report.md": {
-    "bytes": 19482,
-    "sha256": "9ce68ad8339d02eddc7ee10801a20abebd85db8a4f3537fb38d7bd9e6a4cd3d4"
+    "bytes": 20532,
+    "sha256": "5d8829b3a7ccdd76409cc1af418a936861941c2cd3fec8ea0f0a855e58940751"
   },
   "r0-finish.py": {
-    "bytes": 14213,
-    "sha256": "104ef000a24770f2435919aee7bd43ea9839cbde70bd338c163f0983b01815f4"
+    "bytes": 15610,
+    "sha256": "c07fa62454362c12c7c71d7d147dd600d41695670c2ef5493b1830297e1079df"
   },
   "r0-monthly.csv": {
     "bytes": 1129,
     "sha256": "4c6ec33148ecc03cdfa88baf7c48742562e1e3217ae1307599e9f9244a828e7a"
   },
   "r0-statistics.json": {
-    "bytes": 221275,
-    "sha256": "faee7da7181b1d6e673398f116e354f4d21a737076dff7cdf77d64a728b36159"
+    "bytes": 223415,
+    "sha256": "54ec95dba9c10e62e81c944e3b9554896202b36e05d9961aa9edfdb997691434"
   },
   "r0-first-BTC-states.csv": {
     "bytes": 47278,
     "sha256": "d0a64d5936bfa84e5a2234198cb1c47bd29067753b6e5a0d0b140231f52434ce"
   },
   "r0-final-checks.json": {
-    "bytes": 461,
-    "sha256": "975f854a4be5ce4e95f65c8545f65854c3a752b9a5ea7db7f00ba924dabe73c4"
+    "bytes": 765,
+    "sha256": "8b31757d210b2d7a69f8f8383b0d0dc062a1383a9e425da1ad260026a0114d92"
   },
   "r0-scalar-testcases.json": {
     "bytes": 8191,
@@ -44,8 +44,8 @@
     "sha256": "620e16f442e5049d98e6050d33dbfcd96fd51b90a431dbb88c45666f682bbb05"
   },
   "r0-analysis.py": {
-    "bytes": 12503,
-    "sha256": "85209956fbe47b17429b2717ebd2a53b35aa5b52c2e5e933993ff5ccfe75650f"
+    "bytes": 13975,
+    "sha256": "ddb375c81278987778f264e83ef1a4440deb4fab671c40439fef98aaab861e97"
   },
   "r0-classification-runs.csv": {
     "bytes": 339170,

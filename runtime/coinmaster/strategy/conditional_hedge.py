@@ -30,7 +30,7 @@ class ConditionalSolResearch:
         btc=positions.get(self.config.btc_id);sol=positions.get(self.config.sol_id)
         combined=max(c["original_target"],c["qc"])
         if self._insurance_enabled() or self._alpha_enabled():combined=c["qc"]
-        if self.config.research_sol_risk_first=="dd-cov" and c.get("rf",{}).get("target") is not None:combined=c["rf"]["target"]
+        if self.config.research_sol_risk_first in {"dd-cov","alpha-corridor-v1"} and c.get("rf",{}).get("target") is not None:combined=c["rf"]["target"]
         row={"event":event,"timestamp_ns":ts,"episode_id":c["episode_id"],"side":c["side"],
             "btc_qty":str(btc.quantity.as_decimal() if btc else D(0)),
             "btc_actual_vwap":str(ep.btc_entry_vwap if ep else None),"beta":str(c["beta"]),
@@ -92,6 +92,7 @@ class ConditionalSolResearch:
             task["remaining"]=min(qty,c["original_target"])
             c["exits"].append(task);c["original_target"]-=task["remaining"]
         if self._risk_first_net_owner():self._risk_first_original(intent,task["remaining"],ts)
+        if self.config.research_sol_risk_first=="alpha-corridor-v1" and intent.reason=="SOL_HARD_TIMEOUT":c["corridor_mandatory_flat"]=True
         if self._alpha_enabled() and intent.reason=="SOL_HARD_TIMEOUT":
             c["alpha_mandatory_flat"]=True
         self._conditional_emit("ORIGINAL_AUTHORIZED",ts,action=intent.action,level=intent.level,quantity=str(task["remaining"]))
@@ -204,6 +205,7 @@ class ConditionalSolResearch:
                     stale_reduce=i.action!="SOL_ADD" and held-leaves<target
                     if stale_add or stale_reduce:
                         if stale_add and self._alpha_enabled():self._alpha_risk_cancel(c,i,ts)
+                        if stale_add and self.config.research_sol_risk_first=='alpha-corridor-v1':c.setdefault('corridor_risk_cancels',set()).add(i.id)
                         self.cancel_order(order)
             return  # Unknown ACK is owned too; no transfer of reserved-closing inventory.
         if tick.instrument_id!=self.config.sol_id:
@@ -293,6 +295,9 @@ class ConditionalSolResearch:
         for t in c["adds"]:
             if t["intent"].id in bound:
                 if self._alpha_enabled():self._alpha_terminal_retirement(c,intent,t,ts)
+                if self.config.research_sol_risk_first=='alpha-corridor-v1' and intent.id in c.get('corridor_risk_cancels',()) and t['remaining'] and t['intent'].level is not None:
+                    ep=self._domain.episode;level=t['intent'].level
+                    ep.sol_risk_retired_notional[level]=ep.sol_risk_retired_notional.get(level,0)+float(t['remaining']*t['price'])
                 released+=t["remaining"]
                 c["original_target"]-=t["remaining"]
                 self._domain.on_parent_terminal(t["intent"].id)
@@ -300,6 +305,7 @@ class ConditionalSolResearch:
                 retained.append(t)
         c["adds"]=retained
         c.get("alpha_risk_cancels",set()).discard(intent.id)
+        c.get("corridor_risk_cancels",set()).discard(intent.id)
         if self._risk_first_net_owner():self._risk_first_original_terminal(released)
         self._conditional_emit("ORIGINAL_ATTEMPT_TERMINAL",ts,physical_intent=intent.id,
             native_order_id=order_id,terminal_cause=cause,original_attempt_ids=list(bound),

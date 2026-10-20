@@ -1,0 +1,159 @@
+{
+  "decision": "ROOT_ACCEPT_R0_REPORT_AND_R1_SOURCE_ONLY",
+  "source_sha256": {
+    "runtime/coinmaster/strategy/risk_first_sol.py": "d47024c2ddca2cc22dcd5755a67a03914b08450ad6c2941902bfcb9cf5f3b086",
+    "runtime/coinmaster/strategy/conditional_hedge.py": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+    "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+    "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+    "runtime/coinmaster/research/native_baseline.py": "103e93daf3752a015dd9e537220752ac155dbff173bf239453295013529ae045",
+    "runtime/tests/test_native_sol_corridor.py": "40aefc77c3c70cc55639b78e823a7c31a9ca13cac9b48bd0fd1fd3821421b0c1"
+  },
+  "files": {
+    "README.md": {
+      "bytes": 8185,
+      "sha256": "431b4bfba94dfefcce66e26f13d8f49233e33c013a137b119326a1df40a24a3a"
+    },
+    "owner-task.md": {
+      "bytes": 23780,
+      "sha256": "210232cba87cb80a65c5c79913d84ea09219ea0789ec11c4d11509f24b3c8565"
+    },
+    "project-readback.json": {
+      "bytes": 4475,
+      "sha256": "14b5b773442c6a782bfc10fdf46b794154a10b988cbb27dce761d120d127ecfb"
+    },
+    "r0-11-clusters.csv": {
+      "bytes": 11372,
+      "sha256": "1eea990866705b815ae0b6158fafe129d18d15592177933d9b787f0500b7d9ab"
+    },
+    "r0-analysis.py": {
+      "bytes": 13975,
+      "sha256": "ddb375c81278987778f264e83ef1a4440deb4fab671c40439fef98aaab861e97"
+    },
+    "r0-classification-runs.csv": {
+      "bytes": 339170,
+      "sha256": "5774e67703c47d927eaae9ed9f36a84040289734e97fbdfaa3d922274cc05aee"
+    },
+    "r0-daily.csv": {
+      "bytes": 25114,
+      "sha256": "620e16f442e5049d98e6050d33dbfcd96fd51b90a431dbb88c45666f682bbb05"
+    },
+    "r0-final-checks.json": {
+      "bytes": 765,
+      "sha256": "8b31757d210b2d7a69f8f8383b0d0dc062a1383a9e425da1ad260026a0114d92"
+    },
+    "r0-finish.py": {
+      "bytes": 15610,
+      "sha256": "c07fa62454362c12c7c71d7d147dd600d41695670c2ef5493b1830297e1079df"
+    },
+    "r0-first-BTC-states.csv": {
+      "bytes": 47278,
+      "sha256": "d0a64d5936bfa84e5a2234198cb1c47bd29067753b6e5a0d0b140231f52434ce"
+    },
+    "r0-landmarks.csv": {
+      "bytes": 19262,
+      "sha256": "a31425b37d539f047038f7880068c24f6034e37bf5ab9302f266a8266c5861ef"
+    },
+    "r0-manifest.json": {
+      "bytes": 1707,
+      "sha256": "bb90636a8f67b2dedef573cf44e13e4940a0b163bb3011ed0e594ebc6bb2608b"
+    },
+    "r0-monthly.csv": {
+      "bytes": 1129,
+      "sha256": "4c6ec33148ecc03cdfa88baf7c48742562e1e3217ae1307599e9f9244a828e7a"
+    },
+    "r0-progress.json": {
+      "bytes": 2054,
+      "sha256": "c054acbf5e7b96ba3c862b9833e3b82e1b5167acb830edd4e77e5ee6bd9296ef"
+    },
+    "r0-report.md": {
+      "bytes": 20532,
+      "sha256": "5d8829b3a7ccdd76409cc1af418a936861941c2cd3fec8ea0f0a855e58940751"
+    },
+    "r0-scalar-testcases.json": {
+      "bytes": 8191,
+      "sha256": "fcc5c8844ef0d2e4985b5b344bc7f5690d9019721564946ec791267d914f3c3c"
+    },
+    "r0-statistics.json": {
+      "bytes": 223415,
+      "sha256": "54ec95dba9c10e62e81c944e3b9554896202b36e05d9961aa9edfdb997691434"
+    },
+    "r1-completion.json": {
+      "bytes": 4728,
+      "sha256": "f732559834848428035c2ead2cf59a170253e3beaa25fba72b1436dc8ff0419a"
+    },
+    "r1-completion.md": {
+      "bytes": 2086,
+      "sha256": "5e0442e416e3b10c712e4f41e5c85ca6bed18da63199354911aa78a4e147549d"
+    },
+    "r1-connected-corrected-test.log": {
+      "bytes": 6720,
+      "sha256": "b7c2a4cc426dad973096ebc59b7314aec9730f199dca5a20647da7ee760d0e88"
+    },
+    "r1-connected-test.log": {
+      "bytes": 10117,
+      "sha256": "f23c72b766eaf13fd9dc167a33e68b2c15c23fb61f741971bb0f8b14e4bd2de5"
+    },
+    "r1-contract.md": {
+      "bytes": 9051,
+      "sha256": "cef2366c6f1d3b67f47f1a1e673e93547c54be80c71283833b5c8a9a86d8062c"
+    },
+    "r1-final-connected-test.log": {
+      "bytes": 1713,
+      "sha256": "04c1e3009ef48a5e7afa3b9323c5f8877536002637288e66ce84066a4721cea7"
+    },
+    "r1-final-fill-marker-test.log": {
+      "bytes": 126,
+      "sha256": "caf207409fd5946f6011541c8071087b96a48c6da37281d9de7919beab510175"
+    },
+    "r1-final-fixture-test.log": {
+      "bytes": 110,
+      "sha256": "f5f04b60e1e6cdbb8c9230a3e4e4f8564329695f7747530f2a883b2c8a112155"
+    },
+    "r1-focused-test.log": {
+      "bytes": 112,
+      "sha256": "7d30ff7fad947373ba7980c8630654a4aba96faa22e4b021d00c03098d1c56b9"
+    },
+    "r1-off-source-parity.json": {
+      "bytes": 4754,
+      "sha256": "2cd3675200171a5214a2277a7696611c4f9e848f01c459b3eeb6c7878aaa8379"
+    },
+    "r1-off-source-parity.md": {
+      "bytes": 2843,
+      "sha256": "487267c6cb9eda2e2ddab86c0fff9c359cd1c26e5800b3d3b717cb10057ffbcf"
+    },
+    "r1-parity-receipt-focused.log": {
+      "bytes": 126,
+      "sha256": "6e62cd8a78e402cf18023e552988db0af5c0577362ac8b2713ad081c7260de7a"
+    },
+    "r1-review-final.json": {
+      "bytes": 1468,
+      "sha256": "b983d92269ec94766c82fdc825a60b66f81f204b9ca955b223c2f920dc4d9a10"
+    },
+    "r1-review-final.md": {
+      "bytes": 1832,
+      "sha256": "c5deb20b14237197c1de29fb5f516883409830a83273393d77162c39229f21fd"
+    },
+    "r1-review-precheck.md": {
+      "bytes": 1243,
+      "sha256": "06c8c40c6bc30560592477b62bd7b8e4f7888e4e460d64ccf80acb589de46f53"
+    },
+    "r1-source-inventory.json": {
+      "bytes": 3946,
+      "sha256": "9761b2d81fc095f53ce2007553b880ca0e33ae6af12c0c02c4f02dddf483e851"
+    },
+    "r1-source.patch": {
+      "bytes": 56828,
+      "sha256": "c1c1710e739a8c2bdf9f87f071f9786c3e2ddbd99bffad4725b308f5bb6c8245"
+    },
+    "r1-test-plan.md": {
+      "bytes": 2810,
+      "sha256": "44495848bbfd5fba6f006beab0663611c84b599c76bd10ad994c98dede170bf9"
+    },
+    "r2-request.json": {
+      "bytes": 4609,
+      "sha256": "401a3a3cc72c4032519fa81859f259fab9f4cad86f6da5aef01395baaaab99f9"
+    }
+  },
+  "R2": "REQUIRES_SEPARATE_OWNER_APPROVAL",
+  "no_deploy": true
+}

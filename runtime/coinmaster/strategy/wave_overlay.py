@@ -188,7 +188,7 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         if config.research_immediate_sol is not None and (config.research_immediate_sol not in {"i25","i25-light","i25-recovery","i33"} or not 30<=config.research_immediate_lookback<=180 or not config.research_btc_split_tp_ioc or config.candidate.sol_overlay_enabled or config.research_sol_risk_first or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or len(config.research_confirmation_bars)!=4):
             raise ValueError("IMMEDIATE_INSURANCE_REQUIRES_EXCLUSIVE_SELECTED_BTC_AND_ORIGINAL_SOL_OFF")
         self._cover_seed(config.research_cover_hour_seed)
-        if config.research_sol_risk_first is not None and (config.research_sol_risk_first not in {"cap50","dd-cov","split-atr"} or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or not config.candidate.sol_overlay_enabled):
+        if config.research_sol_risk_first is not None and (config.research_sol_risk_first not in {"cap50","dd-cov","split-atr","alpha-corridor-v1"} or config.research_conditional_sol or config.research_sol_cover is not None or config.research_h1_b1 or not config.candidate.sol_overlay_enabled):
             raise ValueError("RISK_FIRST_REQUIRES_EXCLUSIVE_VARIANT_ORIGINAL_OVERLAY")
         if config.research_conditional_sol and (not config.research_btc_split_tp_ioc or not config.candidate.sol_overlay_enabled or config.research_sol_cover is not None or len(config.research_confirmation_bars)!=4):
             raise ValueError("CONDITIONAL_REQUIRES_SELECTED_BTC_ORIGINAL_SOL_AND_NATIVE_BARS")
@@ -2313,6 +2313,10 @@ class WaveOverlayStrategy(CarryPairResearch, AlphaCushionResearch, ImmediateSolI
         # an atomic receipt that the domain fill was applied.
         self._record_native_fill(event)
         self._seen_trade_ids.add(trade_id)
+        if self.config.research_sol_risk_first=="alpha-corridor-v1":
+            self._rf_dirty=True
+            self._rf_fill_epoch+=1
+            self._rf_last_fill_ns=event.ts_event
         self._record_fill_audit(event)
         self._carry_native_fill(event)
         if str(event.client_order_id) in self._v3_orders:
