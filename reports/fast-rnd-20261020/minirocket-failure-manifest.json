@@ -1,0 +1,36 @@
+{
+  "status": "FAILED_SINGLE_ATTEMPT_OOM_NO_METRICS_NO_RERUN",
+  "files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-failure.json",
+      "bytes": 4353,
+      "sha256": "772d667b0dc069d410bdb36ffec5901d78057ec72f3d4a096d4c095218bec1d7"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-failure.md",
+      "bytes": 1317,
+      "sha256": "300a9672f90b8d56e7f785a31e08ee9b3b3a4ed6195c3a984462b783d6a11761"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-launch.json",
+      "bytes": 4973,
+      "sha256": "8ebe53233b3c3d71a46cfdfbe8fabd720a86c37b2e5842e742afdcf8e3af2ffd"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/launch-minirocket.sh",
+      "bytes": 1537,
+      "sha256": "66983e69422c1eaec9b324c38087d635c5edcf2c42d820592101af1923548f0b"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket/train-transform.npy",
+      "bytes": 138630304,
+      "sha256": "845589e43d5f10b1668de55e28caedb994cef63fdcdcde2d9ce30e908c420dec"
+    }
+  ],
+  "unchanged_large_artifact_hashes_reused": "Same immutable partial file, previously hashed once afterfailure; byte size unchanged. No secondfeaturearrayread or fit."
+}

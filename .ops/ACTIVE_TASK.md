@@ -1,4 +1,4 @@
-Updated: 2026-10-20, FAST-RND numeric stage active.
+Updated: 2026-10-20 17:56 UTC, FAST-RND numeric memory correction.
 Status: IN_PROGRESS; do not start duplicate fits or another S0/CORRIDOR engine.
 GitHub Project item: https://github.com/VF78/coinmaster/issues/113 ; Project #2 In Progress, current checklist read back.
 Canonical root: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no product development on Mac or manual /opt edits.
@@ -20,10 +20,13 @@ S0 legacy correction: rawcashstat.37899fraction=37.899% associated maximumABSdro
 Done: Dataset17520hourly IDs,5959purged selectedT/3432V,zeroambiguous, source/artifactSHA PASS; build41.814s/512MiBcap.
 Dataset: runtime/var/research-datasets/fast-rnd-20261020-v1 ; manifest8f51abe51ddb15e95421549279cb8e32121b8797f43e0af9385e6df5e4a7329c.
 Code/tests: fast_dataset5PASS; fast_numeric9PASS; CNN9initial unique cases aggregate+light emitter test; no CNN market fit.
-CURRENT: actualprior/simple->STUMPY unit cm113-fast-numeric-validation-20261020T173657Z ; MainPID323134 / invocationb565003fe65c44ad82cb2bb448b321dc.
-Current owner: /root/chop_pair_failure_data; minimal5file immutable snapshot,768MiB/swap0/thread1/UID994/PrivateNetwork; outputs/cache only writable.
-Controls COMPLETE: VmeanLL prior1.1005862131/simple1.3626164205, identical5959T/3432V; no tuning. STUMPY computing, no failure at latest poll.
-Next exact step: wait current STUMPY exit+catalogue/analogue metrics; then root GO one MiniRocket, then RDST, then mandatoryCNN7/42. No selection before all.
+CURRENT: prior/simple/STUMPY COMPLETE; common5959T/3432V. Mean V LL prior1.1005862131/simple1.3626164205/STUMPY1.123658297 (2.0963%worseprior).
+STUMPY: catalogue3TFpatterns/68occurrence records/6actualrawpriceSVGs; anyTF >=3independentmatches3226/3432. No model selected.
+MiniRocket firstattempt OOM: inheritedoldrisk.slice650MiB cappedunit768MiB; no scores/model. Partial feature mmap preserved.
+ONEresource-onlyretry actually dispatched17:54:09UTC PID329247, effective768MiB ancestry proven/system.slice max; failedOOM CPU43.757401s. No scores/model; sampledpeak740159488B notcertifiedfinalpeak.
+Current owner: /root/chop_pair_failure_data; root authorized ONE focused memory-only correction of densefeature/scaler/LR allocation, preserving allrows/recipe/IDs and numerical equivalence tests. NOnewactualfit until rootGO.
+Resource correction must use chunkedexistingnormalization/diskmappedfeatures ifvalidated; no globalcap/swap/pilotsettings/newframework or sampling/tuning.
+Next exact step: inspect memory-onlydiff/focusedtests, then atmostoneapprovedcorrectedMiniRocket attempt; RDST then mandatoryCNN7/42 remain pending. No selection before all.
 Policy gate: only if recognizer adds information over controls; causalOOF then bounded Optuna8-trial batches/24+24+16 ceilings. No trade search yet.
 Protected runtime: pilot coinmaster-hl-stageg-testnet.service PID2009732/NRestarts0active; no deploy/restart/orders. Hermes/sites/VPN untouched.
 Blocks/limits: JKXofficialZIP403 contents/weights unverified; historical execution/slippage assumptions explicit; no claim new unseen holdout.
