@@ -1,0 +1,11 @@
+{
+  "at_utc": "2026-10-20T07:55:43.697878+00:00",
+  "issue_url": "https://github.com/VF78/coinmaster/issues/113",
+  "state": "open",
+  "body_readback_match": true,
+  "project_status": "In Progress",
+  "code_commit": "fdcefd633b1e611135d2a2573dbc6ad8dcc5cece",
+  "focused_tests": 98,
+  "independent_review_targeted_tests": 3,
+  "economic_run": "ACTIVE_ONE_NATIVE24M_07:55:10UTC"
+}
