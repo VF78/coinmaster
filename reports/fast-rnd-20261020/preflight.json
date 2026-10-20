@@ -1,0 +1,197 @@
+{
+  "status": "API_PROTOCOL_HOST_PREFLIGHT_COMPLETE_WITH_AEON_RUNTIME_NUMPY_CONFLICT_AND_JKX_CONTENT_LIMITATION_NO_TRAINING",
+  "checked_date": "2026-10-20",
+  "owner_document_sha256": "14f03b6b8a5ada7a238c7058dd52073a1764e7e9b382e2eb5b02e98d7ad54aa0",
+  "scope": "Sections3.4,4,5,6,9,10 only; no trading edits, training, install, engine, U data inspection.",
+  "sources": {
+    "stumpy_api": "https://stumpy.readthedocs.io/en/stable/api.html",
+    "stumpy_nonnormalized_match_source": "https://raw.githubusercontent.com/stumpy-dev/stumpy/main/stumpy/aamp_motifs.py",
+    "minirocket_api": "https://www.aeon-toolkit.org/en/stable/api_reference/auto_generated/aeon.transformations.collection.convolution_based.MiniRocket.html",
+    "minirocket_paper": "https://arxiv.org/abs/2012.08791",
+    "minirocket_pinned_source": "https://github.com/aeon-toolkit/aeon/blob/v1.6.0/aeon/transformations/collection/convolution_based/_minirocket.py",
+    "rdst_api": "https://www.aeon-toolkit.org/en/stable/api_reference/auto_generated/aeon.transformations.collection.shapelet_based.RandomDilatedShapeletTransform.html",
+    "rdst_pinned_source": "https://raw.githubusercontent.com/aeon-toolkit/aeon/v1.6.0/aeon/transformations/collection/shapelet_based/_dilated_shapelet_transform.py",
+    "jkx_publisher": "https://onlinelibrary.wiley.com/doi/10.1111/jofi.13268",
+    "jkx_yale": "https://economics.yale.edu/research/re-imagining-price-trends",
+    "jkx_author": "https://dachxiu.chicagobooth.edu/",
+    "jkx_image_demo": "https://dachxiu.chicagobooth.edu/download/img_demo.html",
+    "jkx_replication_archive": "https://onlinelibrary.wiley.com/doi/suppl/10.1111/jofi.13268/supinfo/jofi13268-sup-0002-ReplicationCode.zip",
+    "jkx_appendix": "https://onlinelibrary.wiley.com/doi/suppl/10.1111/jofi.13268/supinfo/jofi13268-sup-0001-InternetAppendix.pdf",
+    "aeon_dependency_constraints": "https://raw.githubusercontent.com/aeon-toolkit/aeon/v1.6.0/pyproject.toml",
+    "numba_support_matrix": "https://numba.readthedocs.io/en/stable/user/installing.html#version-support-information",
+    "pypi_aeon_metadata": "https://pypi.org/pypi/aeon/1.6.0/json",
+    "pypi_numba_metadata": "https://pypi.org/pypi/numba/0.63.1/json",
+    "pypi_stumpy_metadata": "https://pypi.org/pypi/stumpy/1.14.1/json",
+    "cpu_torch_index": "https://download.pytorch.org/whl/cpu/torch/"
+  },
+  "versions": {
+    "official_documented_stumpy": "1.14.1",
+    "official_documented_aeon": "1.6.0",
+    "canonical_installed": {
+      "method": "importlib.metadata only; no heavy imports",
+      "python": "3.12.3",
+      "numpy": "2.5.3",
+      "scikit-learn": "NOT_INSTALLED",
+      "numba": "NOT_INSTALLED",
+      "stumpy": "NOT_INSTALLED",
+      "aeon": "NOT_INSTALLED",
+      "torch": "NOT_INSTALLED",
+      "optuna": "NOT_INSTALLED"
+    }
+  },
+  "api": {
+    "stumpy": {
+      "compatible_documented": true,
+      "calls": [
+        "P,I=mstump(T_train,m=20,normalize=False,p=2.0)",
+        "mmotifs(T_train,P,I,k=11,normalize=False,p=2.0,max_motifs=8,min_neighbors=3,max_matches=50)",
+        "match(Q,T_history,normalize=False,p=2,max_matches=50,max_distance=FROZEN_TRAIN_P90)"
+      ],
+      "shape": "12,time; Q=12,20",
+      "notes": [
+        "k=11 forces12channels; k=None would perform MDL subspace selection.",
+        "normalize=False dispatches nonnormalized variants; match averages per-channel p-distances rather than flattened240D Euclidean distance.",
+        "Set explicit distance threshold on nontrivial train matches before V; selfmatch removal/independent-episode spacing stricter than built-in exclusionzone.",
+        "mmotifs returns four objects, not just distance/index; self occurrence occupies first match slot."
+      ]
+    },
+    "MiniRocket": {
+      "compatible_documented": true,
+      "recipe": "Three independent TF transforms, MiniRocket(n_kernels=2000,random_state=7,n_jobs=1).fit(X) on train X=(n,12,20). Concatenate outputs+20context; StandardScaler+two LogisticRegression(C=1,solver=lbfgs,max_iter=1000).",
+      "effective_kernel_count": 1932,
+      "notes": [
+        "Requested2000 is rounded down to84multiple; log actual output featurecount, do not relabel as exactly2000.",
+        "No RidgeClassifier predict_proba substitution; record class order explicitly."
+      ]
+    },
+    "RDST": {
+      "compatible_documented": true,
+      "recipe": "Three RandomDilatedShapeletTransform(max_shapelets=512,proba_normalization=.8,random_state=7,n_jobs=1).fit(X) WITHOUT y; same shared features/scaler/two logistic heads.",
+      "notes": [
+        "Official1.6.0 source replaces y=None with zeros; labels are not required for transformer.",
+        "At20timepoints default shapelet length10; keep default rather than search.",
+        "Actual extracted shapelets may be fewer than512; three features per shapelet.",
+        "aeon implementation uses all multivariate channels, unlike random-subset original implementation; identify implementation explicitly."
+      ]
+    }
+  },
+  "JKX": {
+    "publisher_replication_listing": "38.1MB ReplicationCode ZIP and1.5MB InternetAppendix PDF listed; author provenance confirmed by Wiley supporting-information context.",
+    "archive_fetch": "HTTP403 via direct official request; web tool clicks internalerror.",
+    "archive_contents": "UNVERIFIED; no archive downloaded, no file inventory or weights claim possible.",
+    "pretrained_crypto": "NOT_ESTABLISHED; no third-party GitHub presented as author code/pretrained BTC-SOL.",
+    "paper_scope": "Equity charts; six crypto panels and two3class labels are owner-defined adaptation, not exact paper replication.",
+    "fixed_CNN": "6x64x60 input; Conv(6,64,5x3,stride3x1,dilation2x1,pad4x1), Conv64->128 and128->256 with5x3/stride1/pad2x1; each BN->LeakyReLU.01->MaxPool2x1 stride2x1 ceil=True; output256x3x60; flatten46080+context20->Dropout.5->Linear6; two3class logits, loss.5CEBTC+.5CESOL.",
+    "shape_arithmetic_verified": true,
+    "runtime_forward_pass": "NOT_RUN: no torch import/training authorized in preflight.",
+    "approx_parameter_count": 898110,
+    "training": "Xavier; Adam1e-5; batch128 only reduce for measured memory; max30epochs/patience2; seeds7/42 average probabilities. Epoch choice on innerT last15% with72hpurge; refit each seed allT for best-checkpoint epoch count; V never used for early stopping."
+  },
+  "causal_guardrails": [
+    "Common hourly decision_ts/sample_id; six20-completed-bar panels, MA20 needs19extra preceding bars;20context=6x3+2volatility. Same missing/ambiguous exclusions across allfour recognizers.",
+    "Freeze UTC elapsed-time T/V/U60/20/20 boundaries before filtering; fixed72h label purge at every outer, innerCNN and OOF boundary; conservatively decision_ts+72h<nextpart_start.",
+    "Future labels firsttouch strictly after decision through+72h inclusive; joint ambiguous/unavailable BTC/SOL exclusion; training sample selection timestamp/input-based, never label/outcome-ranked.",
+    "U detailed results NOT_VIEWED until finalcandidatefreeze; old researched history is not truly independent evidence.",
+    "STUMPY12channel scaling/volume standardization train-only perfit, preserve contiguous nativeTF clock; never concatenate nonadjacent sampled bars. Only historical analogues with ready labels, correct higherTF age, no self/nearcopy matches.",
+    "OOF fit0-20->predict20-40, fit0-40->predict40-60, fitT->V; every transform/scaler/head/epoch selection past-only.",
+    "Compare STUMPY-analogue, MiniRocket,RDST, mandatoryCNN plus simple baselines on identical IDs; V mean logloss withBTC safeguard;<1% tie preferlowercost; no tradinghyperparameter search before allfour."
+  ],
+  "fixed_engineering_choices_to_record": [
+    "epsilon for zero price/volume range; sigma/std ddof; UTC4h/day alignment; pixelrounding/lineconnectivity; class ordering; exact deterministic timestamp sampling cap; no-match STUMPY prior/smoothing and allTF aggregation; 1% relative-difference denominator; ties for CNNbestepoch. Freeze fromtrain before V, do not tune by V/U.",
+    "Cap6000 timestamps before futurelabel-based exclusions, or document a consistent prespecified sampling rule; allmodels get same finalID subset. KeepV/U complete after common exclusions."
+  ],
+  "resources": {
+    "float32_train_images_6000_bytes": 552960000,
+    "float32_numeric_6000_3x12x20_bytes": 17280000,
+    "MiniRocket_3x1932_6000_float32_bytes": 139104000,
+    "RDST_3x512x3_6000_float32_upper_bytes": 110592000,
+    "notes": [
+      "Lazy renderer/memmap plus batched transforms needed; estimates exclude runtime/activation/optimizer/library overhead.",
+      "CNN image corpus alone~527MiB; do not inherit tradingworker650MiB cap as a validated ML budget.",
+      "STUMPY all-pairs cost quadratic in nativeTF time length; never minute all-pairs. Numba first-call compilation must be separated from fit timing.",
+      "n_jobs=1 initially to prevent implicit thread oversubscription; measure data prep, transformfit, CNNepoch before expansion.",
+      "No timing, forward pass, fitting, numericalbenchmark or data read performed in this preflight."
+    ]
+  },
+  "host_resource_preflight": {
+    "transport": "ssh -4 ControlPath=/private/tmp/cm-corridor-%C ConnectTimeout20",
+    "CPU": {
+      "logical_cpus": 2,
+      "model": "Intel Xeon Skylake, IBRS, no TSX; BIOS2.0GHz",
+      "architecture": "x86_64"
+    },
+    "GPU": {
+      "pci": "Virtio VGA only",
+      "nvidia_smi": "NOT_FOUND",
+      "compute_gpu_exposed": "NOT_ESTABLISHED; no NVIDIA device seen"
+    },
+    "disk": {
+      "total_bytes": 39973924864,
+      "used_bytes": 35775262720,
+      "available_bytes": 3774976000
+    },
+    "memory": {
+      "total_bytes": 4005437440,
+      "available_bytes": 1029877760,
+      "swap_total_bytes": 2147479552,
+      "swap_used_bytes": 2147241984
+    },
+    "observation": "Read-only transient snapshot, not a reservation or ML capacity guarantee."
+  },
+  "isolated_dependency_proposal": {
+    "status": "PROPOSAL_ONLY_NOT_INSTALLED_NOT_RESOLVER_TESTED",
+    "existing_numpy_conflict": "aeon1.6.0 requires numpy>=2,<2.5 and numba<.64; numba.63.1 requires numpy<2.4. Existing runtime numpy2.5.3 cannot satisfy this documented recipe. Leave runtime/.venv and lockfile untouched.",
+    "isolation": "Separate Python3.12 research venv without --system-site-packages; communicate with native runner via versioned artifacts. Do not downgrade existing runtime NumPy.",
+    "numeric_direct_pins": [
+      "numpy==2.3.5",
+      "aeon==1.6.0",
+      "stumpy==1.14.1",
+      "numba==0.63.1",
+      "llvmlite==0.46.0",
+      "scikit-learn==1.7.2",
+      "scipy==1.16.3",
+      "pandas==2.3.3"
+    ],
+    "constraints_verified_from_official_metadata": [
+      "aeon: Python>=3.11,<3.15; numpy>=2,<2.5; numba>=.55,<.64; sklearn>=1.6,<1.10; pandas>=2,<3.1; scipy>=1.9,<1.18",
+      "numba.63.1: Python>=3.10; numpy>=1.22,<2.4; llvmlite>=.46,<.47",
+      "stumpy1.14.1: Python>=3.10; numpy>=1.24; scipy>=1.10; numba>=.61.2",
+      "scipy1.16.3: Python>=3.11; numpy>=1.25.2,<2.6",
+      "pandas2.3.3 on Python3.12: numpy>=1.26",
+      "sklearn1.7.2: numpy>=1.22; scipy>=1.8"
+    ],
+    "CNN": {
+      "candidate_pin": "torch==2.14.1+cpu",
+      "official_index": "https://download.pytorch.org/whl/cpu/torch/",
+      "official_cpu_wheel": "https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl",
+      "sha256_from_official_index": "5a6363570c753812540a05eb82380e329469cbe668643e88111414c12627711f",
+      "HEAD_compressed_bytes": 196253677,
+      "note": "Only CPU wheel needed; no torchvision, CUDA, TensorFlow, notebook or aeon[all_extras]. PyPI default Linux torch wheel pulls CUDA dependencies; avoid that route."
+    },
+    "later_only": {
+      "optuna": "Not needed until after allfour recognizers; official metadata current5.0.0, no pin/adoption or install in this preflight.",
+      "renderer": "NumPy renderer; optional Pillow only if required for previews, not torchvision."
+    },
+    "disk_estimate": {
+      "verified_numeric_primary_wheel_compressed_bytes": 140805667,
+      "verified_torch_CPU_wheel_compressed_bytes": 196253677,
+      "sum_primary_wheel_bytes": 337059344,
+      "provisional_unpacked_numeric_env_bytes": [
+        600000000,
+        1000000000
+      ],
+      "provisional_unpacked_CPUtorch_additional_bytes": [
+        600000000,
+        1000000000
+      ],
+      "provisional_full_env_bytes": [
+        1200000000,
+        2000000000
+      ],
+      "temporary_download_budget_bytes": 400000000,
+      "estimate_basis": "Package version/file metadata plus CPU wheel HEAD only; no body download, unpacked size not measured. Small transitive Python deps, Numba caches, datasets, rendered inputs, predictions/checkpoints and native artifacts require additional headroom.",
+      "risk": "3.775GB free minus proposed env1.2-2.0GB/temp~.4GB leaves~1.375-2.175GB before ML/native artifacts. Do not assert whole experiment fits without artifact/cap budget."
+    },
+    "memory_caveat": "~1.03GB currently available and swapalmostfull; cached6000image corpus alone.553GB. Use lazy input/boundedbatch and n_jobs1, measure later authorized forward/epoch; no training admission proven."
+  }
+}

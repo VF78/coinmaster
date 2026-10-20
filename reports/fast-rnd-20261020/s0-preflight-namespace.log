@@ -1,0 +1,9 @@
+{"status": "PASS_NO_ENGINE_OR_REPLAY", "tier_rows": {"BTCUSDT": 35, "SOLUSDT": 35}, "profile_hashes": {"BTCUSDT": "f1647482880926019bdc9eef10e3b6d55b7451ab358d4335332879b201f17dab", "SOLUSDT": "e16eabf418dcade3b2857e206943b6d02ad24733e79de1da22a290b4b732d6a9"}, "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc", "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834", "resolved_config_hash": "22e1eefe8f9c71669e52a8e44b7acbdfd5f177d6ef4ae2118e9df566a05c6edc", "fee_rates": ["0.00020", "0.00055"]}
+SQLITE_FULL_DELETE_WRITE_PASS_NO_ENGINE
+Running as unit: cm113-fast-rnd-s0-20261020T165239Z-preflight.service
+Finished with result: success
+Main processes terminated with: code=exited/status=0
+Service runtime: 3.068s
+CPU time consumed: 3.000s
+Memory peak: 788.0K
+Memory swap peak: 0B

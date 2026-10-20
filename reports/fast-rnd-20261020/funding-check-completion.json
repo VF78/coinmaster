@@ -1,0 +1,47 @@
+{
+  "status": "PASS_NO_PRODUCT_DEFECT_FOUND_NO_FUNDING_CHANGE",
+  "existing_tests": "2PASS14deselected3.92s",
+  "persistence_native_cash_delta": "-1285.7470",
+  "same_orders_and_commissions": true,
+  "journal_rows": 2,
+  "snapshots": [
+    {
+      "boundary": "before_funding",
+      "baseline_native_cash": "10206.8494",
+      "funded_native_cash": "10206.8494",
+      "funding_delta": "0.0000",
+      "baseline_orders": 3,
+      "funded_orders": 3,
+      "funded_open_positions": 2,
+      "journal_rows": 0
+    },
+    {
+      "boundary": "after_funding",
+      "baseline_native_cash": "10206.8494",
+      "funded_native_cash": "8921.1024",
+      "funding_delta": "-1285.7470",
+      "baseline_orders": 3,
+      "funded_orders": 3,
+      "funded_open_positions": 2,
+      "journal_rows": 2
+    },
+    {
+      "boundary": "after_later_native_closes",
+      "baseline_native_cash": "15632.05",
+      "funded_native_cash": "14346.303",
+      "funding_delta": "-1285.747",
+      "baseline_orders": 5,
+      "funded_orders": 5,
+      "funded_open_positions": 0,
+      "journal_rows": 2
+    }
+  ],
+  "qualification": "Nativeposting and persistence proven byboundedfixture. Historical aggregate signedfunding remainsUNKNOWN; noledgerdoublecount.",
+  "files": {
+    "funding-native-tests.log": "96547a0255d85a2e0e504f07aec98871eba2d672b16cf67a8aa63dd2302b0f76",
+    "funding-persistence.py": "c53bf2e3853fa8d42de061a4c3c86c42df1074d9e5d4b17b17c0255be97bc251",
+    "funding-persistence.json": "513c5afac2f4697b17d5f7c4562f9344b5031ca49439b4cd28f16c1c86a4912f",
+    "funding-persistence.log": "fe504aed3f81b284d1f8283ab0f92e74ca0e41e6af44d19a5253a6ddee434b37",
+    "funding-persistence-final.sqlite": "5f945621618e9b51905c37bdfb0a1f25cfcec942545a16d17fb7314a2391ada4"
+  }
+}

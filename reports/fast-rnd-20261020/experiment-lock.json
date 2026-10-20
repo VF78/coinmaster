@@ -1,0 +1,82 @@
+{
+  "task": "FAST-RND-20261020",
+  "owner_document_sha256": "14f03b6b8a5ada7a238c7058dd52073a1764e7e9b382e2eb5b02e98d7ad54aa0",
+  "status": "LOCKED_BEFORE_NEW_DATASET_OR_MODEL_FIT",
+  "period": [
+    "2024-09-01T00:00:00Z",
+    "2026-09-01T00:00:00Z"
+  ],
+  "T": [
+    "2024-09-01T00:00:00Z",
+    "2025-11-13T00:00:00Z"
+  ],
+  "V": [
+    "2025-11-13T00:00:00Z",
+    "2026-04-08T00:00:00Z"
+  ],
+  "U": [
+    "2026-04-08T00:00:00Z",
+    "2026-09-01T00:00:00Z"
+  ],
+  "CNN_inner_T_split": "2025-09-08T07:12:00Z",
+  "OOF_fit_cutoffs": [
+    "2025-01-25T00:00:00Z",
+    "2025-06-20T00:00:00Z",
+    "2025-11-13T00:00:00Z"
+  ],
+  "final_U_fit_cutoff": "2026-04-08T00:00:00Z",
+  "decision": "each_closed_1h_at_available_close_ts",
+  "panels": [
+    "BTC1h",
+    "SOL1h",
+    "BTC4h",
+    "SOL4h",
+    "BTC1d",
+    "SOL1d"
+  ],
+  "window_bars": 20,
+  "fields": [
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "causal_MA20"
+  ],
+  "context_features": 20,
+  "sigma_hours": 168,
+  "label_horizon_hours": 72,
+  "label_purge": "full72h_horizon_crossing_next_partition_excluded; no U inspection before finalists freeze",
+  "train_cap": 6000,
+  "train_selection": "uniform by decision time before labels; common selected IDs; joint ambiguous exclusions; no outcome-based replacement",
+  "models_in_order": [
+    "STUMPY_catalogue_and_analogue",
+    "MiniRocket2000_logistic_C1",
+    "RDST512_logistic_C1",
+    "CNN_fixed_JKX_two_seeds"
+  ],
+  "CNN_seeds": [
+    7,
+    42
+  ],
+  "CNN_epoch_max": 30,
+  "CNN_patience": 2,
+  "policy_search_gate": "only after all four recognizers compared on V and diagnostic advantage established",
+  "policy_trial_ceilings": [
+    24,
+    24,
+    16
+  ],
+  "trial_batch": 8,
+  "optuna_seed": 7,
+  "max_finalists": 3,
+  "max_additional_detailed_runs": 6,
+  "maxDD_TOTAL": 0.5,
+  "min_NetProfit_preservation": 0.9,
+  "archive_reference_TOTAL": "6077107.23887483",
+  "archive_reference_seed": "10000",
+  "archive_reference90percent_threshold": "5470396.514987347",
+  "baseline_status": "pending S0 comparability preflight then exactly one full native reproduction",
+  "resource_policy": "no pilot/services/secrets/deploy; existing one VPS; no new service/framework; no model fit before measured data/API readiness",
+  "U_caveat": "period already historically studied; protocol controls this new procedure, not fresh unseen history"
+}

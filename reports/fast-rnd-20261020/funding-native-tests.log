@@ -1,0 +1,13 @@
+..                                                                       [100%]
+=============================== warnings summary ===============================
+tests/test_native_fixture.py::test_supported_funding_module_posts_signed_native_account_adjustments_once
+tests/test_native_fixture.py::test_supported_funding_module_posts_signed_native_account_adjustments_once
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_fixture.py:87: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    engine.run()
+
+tests/test_native_fixture.py: 16 warnings
+  /root/.openclaw/workspace/coinmaster/coinmaster/runtime/tests/test_native_fixture.py:120: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+    baseline.run(); funded.run()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2 passed, 14 deselected, 18 warnings in 3.92s

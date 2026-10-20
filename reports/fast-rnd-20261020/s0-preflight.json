@@ -1,0 +1,91 @@
+{
+  "status": "PREFLIGHT_ONLY_WAIT_ROOT_FUNDING_DECISION_NO_ENGINE",
+  "utc": "2026-10-20T16:46:49.498495+00:00",
+  "head": "09013520a3134ad3b1bb388fc87479a77a2e2f19",
+  "owner_doc_read": "sections1-3and9ONLY",
+  "S0": {
+    "historical_report": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc025-planref-tp-ioc-20261018a/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "sha256": "4dbfaf0d228f27ebc5e24157b613b0ddd279bffa2d163d042684bdad13bbec1b",
+    "native_terminal_TOTAL": "6077107.23887483",
+    "native_observed_marked_DD_percent": "66.31878024969152066570091116",
+    "conditional_OHLC_bound_percent": "67.54771031869252420136632742",
+    "legacy_cash_DD_percent_NOT_SELECTION": "0.3789928254391618089349041484",
+    "historical_status": "NOT_FAITHFUL_DIAGNOSTIC",
+    "original_SOL": true,
+    "no_CORRIDOR_or_other_SOL_research": true,
+    "semantic_exact_native_argv": [
+      "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python",
+      "-m",
+      "coinmaster.research.native_baseline",
+      "--data-root",
+      "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data",
+      "--research-v0-execution-repairs",
+      "--research-v0-deferred-selective-zero-tp",
+      "--research-v0-selective-lifecycle-repairs",
+      "--observe-minute-risk",
+      "--research-btc-direction-sizing",
+      "--control-report",
+      "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/runs/tp-fee-floor-113/v0/v0.json",
+      "--artifact-dir",
+      "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T164649Z/result",
+      "--research-btc-split50",
+      "--research-btc-split-discount",
+      "0.0025",
+      "--research-btc-split-planref-v1",
+      "--research-btc-split-tp-ioc"
+    ],
+    "launch_wrapper": "PENDING_ROOT_FUNDING_DECISION_AND_IMMUTABLE_PACKAGE; NOT_LAUNCHED",
+    "source_pins": {
+      "runtime/coinmaster/research/native_baseline.py": "46e58759f8037011106d4da021e101708c320ecc21321e00da319481c05efa41",
+      "runtime/coinmaster/research/native_fixture.py": "bec814bbf98217b116018bb0498ec3c690592bc1c259c44bf0507fd71ff05df4",
+      "runtime/coinmaster/research/minute_risk.py": "78c1ce7478f09a5f05f020598103cb99fd8d8eaedb1946dad5083208748e1b7b",
+      "runtime/coinmaster/strategy/wave_overlay.py": "e5374c3b97a1e71375a77463898d9c15d5425d1314f6d7f8530a018667254f87",
+      "runtime/coinmaster/strategy/split_cover.py": "4bd037351d83886141f09b3787219cf51a4fb5e61d042a10e81b648b9ce917ae",
+      "runtime/coinmaster/domain/wave_overlay.py": "a60a7fe8d242fcc87a028bec69bffd08a67e33ad6738abf92e2ef914159ab5b9",
+      "runtime/coinmaster/ledger/journal.py": "5eaf4ae62b5f0d4967b5d3da15b756a452ac1cf6fe210739938ac0e158ce5ccc"
+    },
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "winner_config_hash": "74eceede3340c3b0313801ffa9b6380b9b231dd2c589c57014f68c070a5fa457",
+    "period": "[2024-09-01,2026-09-01)",
+    "seed_USDT": 10000,
+    "reserve": 0,
+    "DP": "OFF",
+    "native_version": "1.231",
+    "direction_size": "BTC_LONG5.5_SHORT7.875;parentcap30M;split50discount0.0025PLANREFv1TPIOC",
+    "fee_model": "Fixed native maker0.00020/taker0.00055, multiplier1, adverse spread0; executioncloseproxy/L2slippageUNKNOWN; historicalfeeapplicabilityUNKNOWN",
+    "margin": "Public35tierBybitprofiles;BTCleverage40/SOL20;native1mpriorvenueMark funding; automaticliquidationnotvalidated"
+  },
+  "funding_preflight": {
+    "module_ast_equal_selected_winner": true,
+    "native_path": "PerpetualFundingModule.process -> exchange.adjust_account(Money(signedqty*settlementmark*rate)) -> nativeAccountState/Portfolio.update_account",
+    "journal_role": "DedupIDs+postaccounttotal only; count1320 is not a signed funding sum or cash proof by itself",
+    "existing_tests": "test_native_fixture.py:78 signedmoduleposting +105boundaryduplicate/matrix; not run for thispacket",
+    "confirmed_missing_posting_error": "NOT_PROVEN_BY_SOURCE_CHECK",
+    "signed_total": "UNKNOWN; never substitutezero or subtractjournalagain",
+    "root_decision_recommendation": "BeforefullS0, authorize boundedexistingfundingfixtures and productionfixture before/after nativecash delta persistence through laterfills; if genuine error found fixsamepath forS0+allcandidates before fullrun. No cost/source change made."
+  },
+  "known_comparability_limits": [
+    "MarkedDD66.31878 differs historicalcashDD0.37899; TOTAL/ACTIVEequal onlybecause reserve0. Compare same W equitydefinition, not metric substitution.",
+    "Historicalmarkedphase cash/fill settlement finality is not certified; coherent nativeE receipt validation needed for new baseline/candidates. Historical66.3 remains qualified diagnostic.",
+    "CurrentOFFsource parity only actualhistoricalpath: defaultOFFadditions +activefailedforcedclose denial-edge repair; historical710orders hadnoDenied/Rejected/Expired. No universal equivalenceclaim.",
+    "Signedfundingjournal auditUNKNOWN and1mcloseexecution/noL2liquidation assumptions prevent faithful/live claim."
+  ],
+  "BTC_only_reuse": {
+    "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm115-split-btc-only-winner-20261019a/result/winner-btc-only.json",
+    "sha256": "f7381d848fe1f26b762576921c0f06af02a226b096164a1827df651a986aedd1",
+    "TOTAL": "280748.52263020",
+    "status": "NOT_FAITHFUL_DIAGNOSTIC",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c9540fbef259039c95829a774ef54e0eea2dcf2b6748d6455e171bf28e889834",
+    "SOL_enabled": false,
+    "pin_check": "PASS_existing_report_SHA/data/policy; noengine"
+  },
+  "U_guard": {
+    "new_U_scan": false,
+    "detailed_U_use_for_models_or_policy": false,
+    "incident": "AccidentalnestedBTC-onlyreceipt tooloutput includedUdatedtop3excursionentries; rootinformed. All subsequent reads explicitscalar/config/sourcekeys. Do not claim pristineholdout."
+  },
+  "dataset_scope": "Schema/costprobe ownedbydataagent; no duplicatescan.",
+  "source_edits_or_engine_runs": 0
+}

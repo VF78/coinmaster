@@ -1,0 +1,40 @@
+{
+  "status": "PASS_NATIVE_FUNDING_PERSISTS_THROUGH_LATER_FILLS",
+  "after_engine_run_boundary": "All snapshots taken after native run returns, outside callbacks; no cash reconstruction",
+  "expected_signed_delta": "-1285.7470",
+  "snapshots": [
+    {
+      "boundary": "before_funding",
+      "baseline_native_cash": "10206.8494",
+      "funded_native_cash": "10206.8494",
+      "funding_delta": "0.0000",
+      "baseline_orders": 3,
+      "funded_orders": 3,
+      "funded_open_positions": 2,
+      "journal_rows": 0
+    },
+    {
+      "boundary": "after_funding",
+      "baseline_native_cash": "10206.8494",
+      "funded_native_cash": "8921.1024",
+      "funding_delta": "-1285.7470",
+      "baseline_orders": 3,
+      "funded_orders": 3,
+      "funded_open_positions": 2,
+      "journal_rows": 2
+    },
+    {
+      "boundary": "after_later_native_closes",
+      "baseline_native_cash": "15632.05",
+      "funded_native_cash": "14346.303",
+      "funding_delta": "-1285.747",
+      "baseline_orders": 5,
+      "funded_orders": 5,
+      "funded_open_positions": 0,
+      "journal_rows": 2
+    }
+  ],
+  "journal": "funding-persistence-final.sqlite",
+  "same_order_and_commission_path": true,
+  "scope": "Small native fixture only; no market history/economic replay/S0result"
+}

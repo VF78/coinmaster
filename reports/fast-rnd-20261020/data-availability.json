@@ -1,0 +1,132 @@
+{
+  "status": "SCHEMA_FIRST_ROW_ONLY_NO_U_ANALYSIS",
+  "source": "Existing Bybit S0 BTC/SOL",
+  "datasets": [
+    {
+      "asset": "BTC",
+      "type": "daily",
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-daily.parquet",
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "turnover",
+        "mark_close"
+      ],
+      "rows_metadata": 1460,
+      "first_open_UTC": "2022-09-02T00:00:00+00:00",
+      "volume_column": true,
+      "first_volume": "186555.394"
+    },
+    {
+      "asset": "BTC",
+      "type": "execution-1m",
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "turnover"
+      ],
+      "rows_metadata": 1051200,
+      "first_open_UTC": "2024-09-01T00:00:00+00:00",
+      "volume_column": true,
+      "first_volume": "27.914"
+    },
+    {
+      "asset": "BTC",
+      "type": "mark-1m",
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-mark-1m.parquet",
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close"
+      ],
+      "rows_metadata": 1051200,
+      "first_open_UTC": "2024-09-01T00:00:00+00:00",
+      "volume_column": false,
+      "first_volume": null
+    },
+    {
+      "asset": "SOL",
+      "type": "daily",
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-daily.parquet",
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "turnover",
+        "mark_close"
+      ],
+      "rows_metadata": 1460,
+      "first_open_UTC": "2022-09-02T00:00:00+00:00",
+      "volume_column": true,
+      "first_volume": "4121793.3999999999"
+    },
+    {
+      "asset": "SOL",
+      "type": "execution-1m",
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "turnover"
+      ],
+      "rows_metadata": 1051200,
+      "first_open_UTC": "2024-09-01T00:00:00+00:00",
+      "volume_column": true,
+      "first_volume": "4076.1"
+    },
+    {
+      "asset": "SOL",
+      "type": "mark-1m",
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-mark-1m.parquet",
+      "columns": [
+        "open_time_ms",
+        "open",
+        "high",
+        "low",
+        "close"
+      ],
+      "rows_metadata": 1051200,
+      "first_open_UTC": "2024-09-01T00:00:00+00:00",
+      "volume_column": false,
+      "first_volume": null
+    }
+  ],
+  "known_raw_cache_roots_checked": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data/raw",
+      "exists": false
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/raw",
+      "exists": false
+    }
+  ],
+  "hourly_filename_candidates_depth_le2": [],
+  "native1h_normalized_files": [],
+  "real_execution_OHLCV_1m_available": true,
+  "mark1m_volume": "ABSENT_DO_NOT_INVENT",
+  "Daily40_warmup": "2022-09-02 firstrow supplies sufficient pre-start span;40closedrow continuity not revalidated in this probe",
+  "pre2024_09_01_intraday168h": "NOT_AVAILABLE_IN_KNOWN_S0: both execution1m start2024-09-01; no hourly filename identified in bounded known paths",
+  "safe_existing_data_option": "Use Sep1..Sep7 existing real1m OHLCV as168h warmup, firsttradablehour2024-09-08, preserving owner's fixed globalT/V/U boundaries; no resampling performed here",
+  "earlier_start_option": "Public168h warmup fetch may be separately authorized; nofetch attempted",
+  "U_last20percent_2026": "NOT_READ_OR_REPORTED",
+  "no_engine_or_economic_metrics": true
+}

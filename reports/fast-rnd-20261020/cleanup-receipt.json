@@ -1,0 +1,201 @@
+{
+  "authorization": "ROOT exact-path GO for seven reviewed candidate_paths; user-authorized safe cleanup",
+  "started_utc": "2026-10-20T16:52:04.691624+00:00",
+  "manifest_sha256": "95e18a8621c1d1cfe718dd7ee6560cea295ea553a8813e7e06221548fc2f2475",
+  "disk_before": {
+    "total_bytes": 39973924864,
+    "free_bytes": 4203257856,
+    "available_bytes": 3779571712
+  },
+  "services_before": {
+    "coinmaster-runtime.service": {
+      "MainPID": "1887363",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python ; argv[]=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python -m uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18182 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "WorkingDirectory": "/srv/coinmaster-native-gui/current/runtime",
+      "ActiveState": "active"
+    },
+    "coinmaster-connections.service": {
+      "MainPID": "1886838",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python ; argv[]=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python -m uvicorn coinmaster.api.connections_broker:create_connections_app --factory --host 127.0.0.1 --port 18184 --no-access-log ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "WorkingDirectory": "/srv/coinmaster-native-gui/current/runtime",
+      "ActiveState": "active"
+    },
+    "coinmaster-hl-stageg-testnet.service": {
+      "MainPID": "2009732",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/srv/coinmaster/runtime/.venv/bin/python ; argv[]=/srv/coinmaster/runtime/.venv/bin/python -m coinmaster.ops.hyperliquid_testnet_worker ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "WorkingDirectory": "/srv/coinmaster/runtime",
+      "ActiveState": "active"
+    },
+    "coinmaster-hl-stageg-warmup.service": {
+      "MainPID": "0",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/srv/coinmaster/runtime/.venv/bin/python ; argv[]=/srv/coinmaster/runtime/.venv/bin/python -m coinmaster.ops.stage_g_refresh --data-root /var/lib/coinmaster-hl-stageg-testnet/data ; ignore_errors=no ; start_time=[Tue 2026-10-20 16:45:03 UTC] ; stop_time=[Tue 2026-10-20 16:45:08 UTC] ; pid=303131 ; code=exited ; status=0 }",
+      "WorkingDirectory": "/srv/coinmaster/runtime",
+      "ActiveState": "inactive"
+    }
+  },
+  "paths": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-bounded.sqlite",
+      "apparent_bytes": 190496768,
+      "allocated_bytes": 190500864,
+      "unshared_reclaim_estimate_bytes": 190500864,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "sha256_before": "f038bc699dd652011ddcfc6efc8c8b2eb0b752acb36b89641b19ac830abbac2d",
+      "actual_apparent_bytes_before": 190496768,
+      "actual_allocated_bytes_before": 190500864,
+      "status": "DELETED",
+      "absent_after": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-open-residual.sqlite",
+      "apparent_bytes": 17473536,
+      "allocated_bytes": 17477632,
+      "unshared_reclaim_estimate_bytes": 17477632,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "sha256_before": "e2d49fb03d53bc64e2576438cde23a26d204e4eeb77615c10c067b9c6c367645",
+      "actual_apparent_bytes_before": 17473536,
+      "actual_allocated_bytes_before": 17477632,
+      "status": "DELETED",
+      "absent_after": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-fills.csv",
+      "apparent_bytes": 11127114,
+      "allocated_bytes": 11132928,
+      "unshared_reclaim_estimate_bytes": 11132928,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "sha256_before": "82cb4e1edbce0be6da0e7e811099a7f782a886695d0f3751fd741fa4950b1a92",
+      "actual_apparent_bytes_before": 11127114,
+      "actual_allocated_bytes_before": 11132928,
+      "status": "DELETED",
+      "absent_after": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-orders.csv",
+      "apparent_bytes": 9305154,
+      "allocated_bytes": 9310208,
+      "unshared_reclaim_estimate_bytes": 9310208,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "sha256_before": "ac1818350671574f31e818c1662a3f1ce2860d7123795620a17a9467f8791473",
+      "actual_apparent_bytes_before": 9305154,
+      "actual_allocated_bytes_before": 9310208,
+      "status": "DELETED",
+      "absent_after": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-fills.csv.gz",
+      "apparent_bytes": 1528065,
+      "allocated_bytes": 1531904,
+      "unshared_reclaim_estimate_bytes": 1531904,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "sha256_before": "c03546277f7dab92680c92b8629c30485541b9b2239d4989cf010c558b5682b2",
+      "actual_apparent_bytes_before": 1528065,
+      "actual_allocated_bytes_before": 1531904,
+      "status": "DELETED",
+      "absent_after": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-orders.csv.gz",
+      "apparent_bytes": 1465869,
+      "allocated_bytes": 1466368,
+      "unshared_reclaim_estimate_bytes": 1466368,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "sha256_before": "fc017288cc46980a99ecaf58785392a8a21ef696e45344fc072986ddeef852a6",
+      "actual_apparent_bytes_before": 1465869,
+      "actual_allocated_bytes_before": 1466368,
+      "status": "DELETED",
+      "absent_after": true
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/ea071ab79bb4c517f947fda21ee31bf62053f954/runtime/.venv",
+      "apparent_bytes": 894351058,
+      "allocated_bytes": 909058048,
+      "unshared_reclaim_estimate_bytes": 909058048,
+      "hardlinked_regular_files": 0,
+      "reason": "Unused previous GUI installed environment only. Keep old release source/configs. Service/current/CoinMasterprocess references point elsewhere; no external scoped symlink to old release.",
+      "type": "ORPHAN_GUI_ENV_ONLY",
+      "sha256_before": null,
+      "hash_scope_note": "Tree hash intentionally omitted per authorization; exact virtualenv path and size recorded",
+      "actual_apparent_bytes_before": 894351058,
+      "actual_allocated_bytes_before": 909058048,
+      "status": "DELETED",
+      "absent_after": true
+    }
+  ],
+  "prohibited_actions_performed": false,
+  "action_time_pointer_evidence": {
+    "current_realpath": "/srv/coinmaster-native-gui/releases/be2f71daac848a20b183ee0167194e5cfa65a5b8",
+    "processes": {
+      "1887363": {
+        "cwd": "/srv/coinmaster-native-gui/releases/be2f71daac848a20b183ee0167194e5cfa65a5b8/runtime",
+        "old_release_mapped": false
+      },
+      "1886838": {
+        "cwd": "/srv/coinmaster-native-gui/releases/be2f71daac848a20b183ee0167194e5cfa65a5b8/runtime",
+        "old_release_mapped": false
+      },
+      "2009732": {
+        "cwd": "/srv/coinmaster/runtime",
+        "old_release_mapped": false
+      }
+    },
+    "external_symlink_refs": []
+  },
+  "status": "COMPLETE_SEVEN_APPROVED_PATHS_DELETED",
+  "disk_after": {
+    "total_bytes": 39973924864,
+    "free_bytes": 5343735808,
+    "available_bytes": 4920049664
+  },
+  "services_after": {
+    "coinmaster-runtime.service": {
+      "MainPID": "1887363",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python ; argv[]=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python -m uvicorn coinmaster.api.runtime_sidecar:app --host 127.0.0.1 --port 18182 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "WorkingDirectory": "/srv/coinmaster-native-gui/current/runtime",
+      "ActiveState": "active"
+    },
+    "coinmaster-connections.service": {
+      "MainPID": "1886838",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python ; argv[]=/srv/coinmaster-native-gui/current/runtime/.venv/bin/python -m uvicorn coinmaster.api.connections_broker:create_connections_app --factory --host 127.0.0.1 --port 18184 --no-access-log ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "WorkingDirectory": "/srv/coinmaster-native-gui/current/runtime",
+      "ActiveState": "active"
+    },
+    "coinmaster-hl-stageg-testnet.service": {
+      "MainPID": "2009732",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/srv/coinmaster/runtime/.venv/bin/python ; argv[]=/srv/coinmaster/runtime/.venv/bin/python -m coinmaster.ops.hyperliquid_testnet_worker ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "WorkingDirectory": "/srv/coinmaster/runtime",
+      "ActiveState": "active"
+    },
+    "coinmaster-hl-stageg-warmup.service": {
+      "MainPID": "0",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/srv/coinmaster/runtime/.venv/bin/python ; argv[]=/srv/coinmaster/runtime/.venv/bin/python -m coinmaster.ops.stage_g_refresh --data-root /var/lib/coinmaster-hl-stageg-testnet/data ; ignore_errors=no ; start_time=[Tue 2026-10-20 16:45:03 UTC] ; stop_time=[Tue 2026-10-20 16:45:08 UTC] ; pid=303131 ; code=exited ; status=0 }",
+      "WorkingDirectory": "/srv/coinmaster/runtime",
+      "ActiveState": "inactive"
+    }
+  },
+  "services_PID_restart_state_unchanged": true,
+  "current_after": "/srv/coinmaster-native-gui/releases/be2f71daac848a20b183ee0167194e5cfa65a5b8",
+  "free_bytes_delta": 1140477952,
+  "deleted_allocated_bytes": 1140477952,
+  "finished_utc": "2026-10-20T16:52:07.656732+00:00"
+}

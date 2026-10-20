@@ -1,0 +1,130 @@
+{
+  "status": "INVENTORY_ONLY_NO_DELETE",
+  "HEAD": "09013520a3134ad3b1bb388fc87479a77a2e2f19",
+  "candidate_paths": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-bounded.sqlite",
+      "apparent_bytes": 190496768,
+      "allocated_bytes": 190500864,
+      "unshared_reclaim_estimate_bytes": 190500864,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "root_delete_GO": false
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-open-residual.sqlite",
+      "apparent_bytes": 17473536,
+      "allocated_bytes": 17477632,
+      "unshared_reclaim_estimate_bytes": 17477632,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "root_delete_GO": false
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-fills.csv",
+      "apparent_bytes": 11127114,
+      "allocated_bytes": 11132928,
+      "unshared_reclaim_estimate_bytes": 11132928,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "root_delete_GO": false
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-orders.csv",
+      "apparent_bytes": 9305154,
+      "allocated_bytes": 9310208,
+      "unshared_reclaim_estimate_bytes": 9310208,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "root_delete_GO": false
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-fills.csv.gz",
+      "apparent_bytes": 1528065,
+      "allocated_bytes": 1531904,
+      "unshared_reclaim_estimate_bytes": 1531904,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "root_delete_GO": false
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-load-orders.csv.gz",
+      "apparent_bytes": 1465869,
+      "allocated_bytes": 1466368,
+      "unshared_reclaim_estimate_bytes": 1466368,
+      "hardlinked_regular_files": 0,
+      "reason": "Generated synthetic load/codec output, not an economic backtest. Preserve scripts/logs/summaryJSON/hashes.",
+      "type": "SYNTHETIC_GENERATED",
+      "root_delete_GO": false
+    },
+    {
+      "path": "/srv/coinmaster-native-gui/releases/ea071ab79bb4c517f947fda21ee31bf62053f954/runtime/.venv",
+      "apparent_bytes": 894351058,
+      "allocated_bytes": 909058048,
+      "unshared_reclaim_estimate_bytes": 909058048,
+      "hardlinked_regular_files": 0,
+      "reason": "Unused previous GUI installed environment only. Keep old release source/configs. Service/current/CoinMasterprocess references point elsewhere; no external scoped symlink to old release.",
+      "type": "ORPHAN_GUI_ENV_ONLY",
+      "root_delete_GO": false
+    }
+  ],
+  "total_allocated_candidate_bytes": 1140477952,
+  "total_unshared_reclaim_estimate_bytes": 1140477952,
+  "service_pointer_evidence": {
+    "coinmaster-runtime.service": {
+      "ExecStart_path": "/srv/coinmaster-native-gui/current/runtime/.venv/bin/python",
+      "WorkingDirectory": "/srv/coinmaster-native-gui/current/runtime",
+      "PID": 1887363
+    },
+    "coinmaster-connections.service": {
+      "ExecStart_path": "/srv/coinmaster-native-gui/current/runtime/.venv/bin/python",
+      "WorkingDirectory": "/srv/coinmaster-native-gui/current/runtime",
+      "PID": 1886838
+    },
+    "coinmaster-hl-stageg-testnet.service": {
+      "ExecStart_path": "/srv/coinmaster/runtime/.venv/bin/python",
+      "WorkingDirectory": "/srv/coinmaster/runtime",
+      "PID": 2009732
+    },
+    "coinmaster-hl-stageg-warmup.service": {
+      "ExecStart_path": "/srv/coinmaster/runtime/.venv/bin/python",
+      "WorkingDirectory": "/srv/coinmaster/runtime"
+    },
+    "current_GUI_realpath": "/srv/coinmaster-native-gui/releases/be2f71daac848a20b183ee0167194e5cfa65a5b8",
+    "reference_probe_scope": "Earlier targeted scans of symlinks under/srv/coinmaster-native-gui and/srv/coinmaster plus maps/cwd/exe of3CoinMasterPIDs; no Environment read",
+    "external_symlink_refs_to_old_release": [],
+    "old_release_mapped_in_inspected_CoinMaster_PIDs": false,
+    "internal_old_venv_lib64_self_link": "Not an external/live reference"
+  },
+  "duplicate_probe": {
+    "a": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111146Z/source",
+    "b": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-20261020T111659Z/source",
+    "identical": false,
+    "tree_SHA256_a": "848d78743423225934c8ae426daaecc8313ada8c762b22b6fb653b8246f7b03f",
+    "tree_SHA256_b": "75508dd107ee925256a55231f33eaddac5cd43a2645065ed219fcd505108d939",
+    "files_a": 71,
+    "files_b": 71
+  },
+  "not_proposed": {
+    "root_pip_cache_allocated_bytes": 618496,
+    "apt_archives_allocated_bytes": 24576,
+    "cache_reason": "Tiny/shared/unattributed; no blanket cache removal proposed",
+    "staged_research": "379506688allocatedB; potentially live-ready, preserve",
+    "actual_jobs": "ALL completed/partial results, sourceprovenance except exact verified duplicate, funding/hotjournals/rawdatasets preserved",
+    "codec": "No codec-named report output found beyond listed synthetic generated CSV/gz"
+  },
+  "protected": [
+    "sourcegit, configs, secrets, ALL unique completed backtests, winnerS0/BTC-only and rawdata",
+    "/srv/coinmaster/runtime",
+    "/srv/coinmaster/hl-live",
+    "/srv/coinmaster/hl-live-candidates",
+    "activeGUI be2f71daac848a20b183ee0167194e5cfa65a5b8",
+    "Hermes/f-ai.studio/app.f-ai.studio/VPN"
+  ],
+  "delete_gate": "Root exact-path GO required; recheck current/service pointers at deletion. NO deletes/aptremove/dockerprune/systemlog sweep performed."
+}
