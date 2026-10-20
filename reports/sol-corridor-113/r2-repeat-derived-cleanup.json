@@ -1,0 +1,30 @@
+{
+  "retained_original": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-bounded.sqlite",
+  "retained_original_sha256": "f038bc699dd652011ddcfc6efc8c8b2eb0b752acb36b89641b19ac830abbac2d",
+  "removal_scope": "ONLY_DERIVED_CODEC_MEASUREMENT_SQLITE_COPIES",
+  "files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-zlib-measure.sqlite",
+      "bytes": 120004608,
+      "sha256": "b6e4d7a91597732fc6c4602047736b2af3c1dde400f72ed53e769084f2962c7d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-bundle-measure.sqlite",
+      "bytes": 85483520,
+      "sha256": "ab5e6e846b44b1900ed59f0d4b13e9ee28b2b576b230f14583d837d102cd8a72"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-dictionary-measure.sqlite",
+      "bytes": 64700416,
+      "sha256": "c6951cc1e70940f440a0a28d53542b65c7bafc1ca5ee96c69348792ea71d4ff6"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/sol-corridor-113/memory-native-load-chunk-measure.sqlite",
+      "bytes": 38137856,
+      "sha256": "28ba70f8e0385e6a5971152de3894b69ed7c3a9000afd38439f53a41b2993465"
+    }
+  ],
+  "removed_bytes": 308326400,
+  "original_still_present": true,
+  "completed_utc": "2026-10-20T14:41:35.050476+00:00"
+}

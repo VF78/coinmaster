@@ -1,0 +1,30 @@
+{
+  "status": "FIRST_PASS_INTERIM_PRESERVED_SERIALIZER_FAILED_AFTER_FULL_DECODE",
+  "rows_at_interim": 100000,
+  "BTC": {
+    "qty_transitions": 17,
+    "OPEN": 5,
+    "ADD": 5,
+    "CLOSE": 5,
+    "REDUCE": 2
+  },
+  "SOL": {
+    "qty_transitions": 2995,
+    "OPEN": 6,
+    "ADD": 1540,
+    "CLOSE": 6,
+    "REDUCE": 1443,
+    "delta_at_most_1_SOL": 2951,
+    "delta_at_most_10_SOL": 2967,
+    "exact_0.1_SOL_delta": 1702,
+    "adjacent_opposite_delta": 1626,
+    "opposite_delta_within60s_same_side_BTC_unchanged": 1146
+  },
+  "same_timestamp": {
+    "SOL_multi_transition_timestamps": 1,
+    "SOL_transitions_in_multi_timestamps": 2,
+    "SOL_opposite_delta_same_timestamp": 1
+  },
+  "error": "Final serializer NameError: ph not defined; final counters from first pass not durable.",
+  "repeat_authorization": "Root explicitly authorized one corrected read-only same-prefix repeat, no nativeengine/economicrun."
+}

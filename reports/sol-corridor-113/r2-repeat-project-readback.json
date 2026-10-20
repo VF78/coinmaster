@@ -1,0 +1,8 @@
+{
+  "status": "ACTUAL_READBACK_PASS",
+  "issue": "https://github.com/VF78/coinmaster/issues/113",
+  "state": "open",
+  "repeat": "RUNNING_1_OF_1",
+  "source": "e3eaf7728e11db1651e8a09474a74f4a3faebadd",
+  "start_utc": "2026-10-20T14:43:29Z"
+}

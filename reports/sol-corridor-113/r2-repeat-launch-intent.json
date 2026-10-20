@@ -1,0 +1,38 @@
+{
+  "status": "AUTHORIZED_ONE_DISPATCH_INTENT",
+  "utc": "2026-10-20T14:43:29.673190+00:00",
+  "job_name": "cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z",
+  "head": "e3eaf7728e11db1651e8a09474a74f4a3faebadd",
+  "command_sha256": "ce20b29ea20b52c6a8b0a0373fe2d231c5d7d65d5877746c7ea8155aad79f20a",
+  "launcher_sha256": "7a4bbd775669efe2784f0cea5c18ca7a74938caf06d06fe4ba954dad97c54a36",
+  "authorization": "ROOT_EXACT_COMMAND_GO_ONE_ECONOMIC_REPEAT",
+  "repeat_budget": "1/1 after dispatch; no retry",
+  "fresh_resources": {
+    "MemAvailable_bytes": 1101799424,
+    "disk_free_bytes": 4022525952,
+    "pilot": "MainPID=2009732\nNRestarts=0\nActiveState=active\n"
+  },
+  "launch_command": [
+    "systemd-run",
+    "--unit=cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z",
+    "--collect",
+    "--property=User=994",
+    "--property=Group=986",
+    "--property=WorkingDirectory=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z",
+    "--property=Slice=cm113-v3-risk.slice",
+    "--property=MemoryMax=650M",
+    "--property=MemorySwapMax=0",
+    "--property=TasksMax=64",
+    "--property=CPUWeight=10",
+    "--property=Nice=10",
+    "--property=PrivateNetwork=yes",
+    "--property=ProtectHome=yes",
+    "--property=ProtectSystem=strict",
+    "--property=NoNewPrivileges=yes",
+    "--property=UMask=0077",
+    "--property=ReadWritePaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z /var/lib/coinmaster-native-gui/data/runs/jobs/.split-cover-native.lock",
+    "--property=BindReadOnlyPaths=/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/source /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/source/runtime/.venv /root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/data:/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/source/runtime/var/data",
+    "/bin/sh",
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/launch.sh"
+  ]
+}

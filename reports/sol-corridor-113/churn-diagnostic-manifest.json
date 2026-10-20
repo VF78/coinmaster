@@ -1,0 +1,18 @@
+{
+  "churn-diagnostic-statistics.json": {
+    "bytes": 25589,
+    "sha256": "a2b509549d3ee4b5e267378ff2de73ea8c608fe5eee4cc7a13d44b8b91bf7024"
+  },
+  "churn-diagnostic-interim-first-pass.json": {
+    "bytes": 916,
+    "sha256": "6a2c03e559c717cb4e3fa492dcd7cfea0617c0888bfed422a09a3e19e5498faa"
+  },
+  "churn-diagnostic-summary.md": {
+    "bytes": 2440,
+    "sha256": "0124c09fbbe55e0962e44edab29267a895315b2ea5080674a47e44ce257b6bda"
+  },
+  "churn-diagnostic-prefix.py": {
+    "bytes": 8537,
+    "sha256": "90c2a522c1559cf008e829b7249c20acc9cc2231634d19e7cbcb3f993e78ef01"
+  }
+}

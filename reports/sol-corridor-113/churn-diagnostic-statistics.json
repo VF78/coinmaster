@@ -1,0 +1,945 @@
+{
+  "status": "OBSERVED_PARTIAL_INVENTORY_TRANSITIONS_NOT_FILL_COUNTS",
+  "actual_order_counts": "UNKNOWN_NO_DURABLE_ORDER_EXPORT_OR_LOG_ROWS",
+  "actual_fill_counts": "UNKNOWN_NO_DURABLE_FILL_EXPORT_OR_LOG_ROWS",
+  "synthetic_30000_fixture": "NOT_THIS_RUN_NOT_USED",
+  "control_reference": {
+    "native_fill_report_rows": 621,
+    "interval": "full24m; not comparable directly to partial transition counts"
+  },
+  "trace": {
+    "rows": 392240,
+    "source_timestamps": 130747,
+    "quote_observation_timestamps": 130747,
+    "phases": {
+      "pre_quote_paired_close": 130747,
+      "post_btc_quote_paired_close": 130747,
+      "post_quote_paired_close": 130746
+    },
+    "complete_post_SOL_observations": 130746,
+    "gzip_complete": false,
+    "last_observed_UTC": "2024-11-30T19:07:00Z",
+    "last_phase": "post_btc_quote_paired_close",
+    "compressed_bytes": 11436420,
+    "sha256": "51da0e4405e7031960e0668395a78a4dfe902c37bfca8f843bfdd29728b1f052",
+    "additional_unterminated_text_bytes_not_counted": 8
+  },
+  "observed_transitions": {
+    "BTC": {
+      "qty_transitions": 50,
+      "OPEN": 13,
+      "delta_at_most_1_coin": 48,
+      "delta_at_most_10_coins": 50,
+      "ADD": 13,
+      "CLOSE": 13,
+      "REDUCE": 11
+    },
+    "SOL": {
+      "qty_transitions": 22700,
+      "OPEN": 14,
+      "delta_at_most_10_coins": 22638,
+      "ADD": 11444,
+      "CLOSE": 14,
+      "adjacent_change_opposite_delta": 13008,
+      "delta_at_most_1_coin": 22613,
+      "REDUCE": 11228,
+      "one_native_step_delta": 17446,
+      "opposite_delta_within60s_same_side_BTC_unchanged": 7835
+    }
+  },
+  "observed_exposure_episodes": {
+    "BTC": {
+      "started": 13,
+      "closed": 13,
+      "last": {
+        "start": "2024-11-27T00:01:00Z",
+        "side": "LONG",
+        "end": "2024-11-28T00:00:00Z"
+      },
+      "open_at_prefix_end": null
+    },
+    "SOL": {
+      "started": 14,
+      "closed": 14,
+      "last": {
+        "start": "2024-11-27T00:03:00Z",
+        "side": "SHORT",
+        "end": "2024-11-28T00:01:00Z"
+      },
+      "open_at_prefix_end": null
+    }
+  },
+  "same_timestamp_patterns": {
+    "SOL_multi_transition_timestamps": 2,
+    "SOL_transitions_in_multi_timestamps": 4,
+    "SOL_opposite_delta_same_timestamp": 2
+  },
+  "SOL_inter_transition_seconds": {
+    "over_1h": 13,
+    "61_to_300s": 8835,
+    "1_to_60s": 13019,
+    "901_to_3600s": 27,
+    "301_to_900s": 803,
+    "same_timestamp": 2
+  },
+  "observed_step_categories": {
+    "same_inventory_cash_equity_unchanged": 337852,
+    "qty_change_intervals": 22746,
+    "same_inventory_cash_unchanged_equity_changed_mark_consistent": 31570,
+    "same_inventory_cash_change_intervals": 71
+  },
+  "post_SOL_exposure_minutes": {
+    "flat": 76313,
+    "BTC_only": 8724,
+    "both": 45702,
+    "SOL_only": 7
+  },
+  "by_day": {
+    "2024-09-02": {
+      "BTC_transitions": 2,
+      "SOL_transitions": 1
+    },
+    "2024-09-03": {
+      "SOL_transitions": 7
+    },
+    "2024-09-04": {
+      "SOL_transitions": 7
+    },
+    "2024-09-05": {
+      "SOL_transitions": 1
+    },
+    "2024-09-06": {
+      "BTC_transitions": 1
+    },
+    "2024-09-11": {
+      "BTC_transitions": 3
+    },
+    "2024-09-14": {
+      "BTC_transitions": 2
+    },
+    "2024-09-15": {
+      "SOL_transitions": 3
+    },
+    "2024-09-16": {
+      "SOL_transitions": 635
+    },
+    "2024-09-17": {
+      "SOL_transitions": 1064,
+      "BTC_transitions": 4
+    },
+    "2024-09-18": {
+      "BTC_transitions": 3,
+      "SOL_transitions": 905
+    },
+    "2024-09-19": {
+      "SOL_transitions": 372,
+      "BTC_transitions": 2
+    },
+    "2024-10-02": {
+      "BTC_transitions": 2,
+      "SOL_transitions": 926
+    },
+    "2024-10-03": {
+      "SOL_transitions": 972
+    },
+    "2024-10-04": {
+      "SOL_transitions": 923
+    },
+    "2024-10-05": {
+      "BTC_transitions": 3,
+      "SOL_transitions": 759
+    },
+    "2024-10-06": {
+      "SOL_transitions": 735
+    },
+    "2024-10-07": {
+      "BTC_transitions": 1,
+      "SOL_transitions": 672
+    },
+    "2024-10-08": {
+      "SOL_transitions": 553
+    },
+    "2024-10-09": {
+      "SOL_transitions": 547
+    },
+    "2024-10-10": {
+      "SOL_transitions": 520,
+      "BTC_transitions": 4
+    },
+    "2024-10-12": {
+      "BTC_transitions": 2,
+      "SOL_transitions": 370
+    },
+    "2024-10-13": {
+      "SOL_transitions": 439
+    },
+    "2024-10-14": {
+      "SOL_transitions": 377,
+      "BTC_transitions": 1
+    },
+    "2024-10-25": {
+      "BTC_transitions": 3,
+      "SOL_transitions": 846
+    },
+    "2024-10-26": {
+      "SOL_transitions": 772
+    },
+    "2024-10-27": {
+      "SOL_transitions": 719
+    },
+    "2024-10-28": {
+      "SOL_transitions": 760
+    },
+    "2024-10-29": {
+      "BTC_transitions": 2,
+      "SOL_transitions": 295
+    },
+    "2024-11-02": {
+      "BTC_transitions": 3,
+      "SOL_transitions": 722
+    },
+    "2024-11-03": {
+      "SOL_transitions": 862
+    },
+    "2024-11-04": {
+      "SOL_transitions": 862
+    },
+    "2024-11-05": {
+      "SOL_transitions": 808
+    },
+    "2024-11-06": {
+      "SOL_transitions": 480,
+      "BTC_transitions": 1
+    },
+    "2024-11-07": {
+      "BTC_transitions": 1,
+      "SOL_transitions": 1
+    },
+    "2024-11-16": {
+      "BTC_transitions": 3,
+      "SOL_transitions": 749
+    },
+    "2024-11-17": {
+      "SOL_transitions": 951
+    },
+    "2024-11-18": {
+      "SOL_transitions": 941
+    },
+    "2024-11-19": {
+      "SOL_transitions": 813
+    },
+    "2024-11-20": {
+      "BTC_transitions": 1,
+      "SOL_transitions": 677
+    },
+    "2024-11-21": {
+      "SOL_transitions": 109,
+      "BTC_transitions": 1
+    },
+    "2024-11-27": {
+      "BTC_transitions": 4,
+      "SOL_transitions": 544
+    },
+    "2024-11-28": {
+      "BTC_transitions": 1,
+      "SOL_transitions": 1
+    }
+  },
+  "first_examples": [
+    {
+      "utc": "2024-09-02T00:01:00Z",
+      "phase": "post_quote_paired_close",
+      "asset": "BTC",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": -0.395,
+      "delta_qty": -0.395,
+      "BTC_qty": -0.395,
+      "cash": "9987.54875075",
+      "paired_equity": "9987.23275075"
+    },
+    {
+      "utc": "2024-09-02T00:17:00Z",
+      "phase": "post_btc_quote_paired_close",
+      "asset": "BTC",
+      "action": "ADD",
+      "old_qty": -0.395,
+      "new_qty": -0.791,
+      "delta_qty": -0.396,
+      "BTC_qty": -0.791,
+      "cash": "9982.99821179",
+      "paired_equity": "9913.34321179"
+    },
+    {
+      "utc": "2024-09-02T23:03:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": 6.2,
+      "delta_qty": 6.2,
+      "BTC_qty": -0.791,
+      "cash": "9982.39629473",
+      "paired_equity": "8505.02419473"
+    },
+    {
+      "utc": "2024-09-03T02:06:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 6.2,
+      "new_qty": 19.7,
+      "delta_qty": 13.5,
+      "BTC_qty": -0.791,
+      "cash": "9982.91322813",
+      "paired_equity": "8387.96012813"
+    },
+    {
+      "utc": "2024-09-03T02:09:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 19.7,
+      "new_qty": 22.7,
+      "delta_qty": 3.0,
+      "BTC_qty": -0.791,
+      "cash": "9982.68925713",
+      "paired_equity": "8343.73235713"
+    },
+    {
+      "utc": "2024-09-03T02:10:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 22.7,
+      "new_qty": 29.1,
+      "delta_qty": 6.4,
+      "BTC_qty": -0.791,
+      "cash": "9982.21155793",
+      "paired_equity": "8222.80285793"
+    },
+    {
+      "utc": "2024-09-03T02:11:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 29.1,
+      "new_qty": 33.0,
+      "delta_qty": 3.9,
+      "BTC_qty": -0.791,
+      "cash": "9981.91919443",
+      "paired_equity": "8248.50789443"
+    },
+    {
+      "utc": "2024-09-03T02:12:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 33.0,
+      "new_qty": 88.9,
+      "delta_qty": 55.9,
+      "BTC_qty": -0.791,
+      "cash": "9977.73633718",
+      "paired_equity": "8258.50633718"
+    },
+    {
+      "utc": "2024-09-03T02:16:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 88.9,
+      "new_qty": 113.5,
+      "delta_qty": 24.6,
+      "BTC_qty": -0.791,
+      "cash": "9975.88624498",
+      "paired_equity": "8226.77794498"
+    },
+    {
+      "utc": "2024-09-03T14:48:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "CLOSE",
+      "old_qty": 113.5,
+      "new_qty": 0.0,
+      "delta_qty": -113.5,
+      "BTC_qty": -0.791,
+      "cash": "9314.52634395",
+      "paired_equity": "9110.32224395"
+    },
+    {
+      "utc": "2024-09-04T16:04:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": 0.7,
+      "delta_qty": 0.7,
+      "BTC_qty": -0.791,
+      "cash": "9318.97032653",
+      "paired_equity": "8518.91782653"
+    },
+    {
+      "utc": "2024-09-04T16:05:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 0.7,
+      "new_qty": 21.1,
+      "delta_qty": 20.4,
+      "BTC_qty": -0.791,
+      "cash": "9317.46381713",
+      "paired_equity": "8663.39961713"
+    },
+    {
+      "utc": "2024-09-04T16:06:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 21.1,
+      "new_qty": 62.5,
+      "delta_qty": 41.4,
+      "BTC_qty": -0.791,
+      "cash": "9314.41924043",
+      "paired_equity": "8709.92314043"
+    },
+    {
+      "utc": "2024-09-04T16:38:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 62.5,
+      "new_qty": 75.3,
+      "delta_qty": 12.8,
+      "BTC_qty": -0.791,
+      "cash": "9313.47292363",
+      "paired_equity": "8492.23872363"
+    },
+    {
+      "utc": "2024-09-04T16:39:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 75.3,
+      "new_qty": 75.8,
+      "delta_qty": 0.5,
+      "BTC_qty": -0.791,
+      "cash": "9313.43594438",
+      "paired_equity": "8501.43124438"
+    },
+    {
+      "utc": "2024-09-04T16:40:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "ADD",
+      "old_qty": 75.8,
+      "new_qty": 77.4,
+      "delta_qty": 1.6,
+      "BTC_qty": -0.791,
+      "cash": "9313.31786598",
+      "paired_equity": "8533.13986598"
+    }
+  ],
+  "adjacent_alternation_examples": [
+    {
+      "previous": {
+        "utc": "2024-09-16T10:52:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.0,
+        "new_qty": -411.6,
+        "delta_qty": -0.6,
+        "BTC_qty": 1.129,
+        "cash": "12343.20783952",
+        "paired_equity": "9998.84053952"
+      },
+      "current": {
+        "utc": "2024-09-16T10:53:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.6,
+        "new_qty": -411.5,
+        "delta_qty": 0.1,
+        "BTC_qty": 1.129,
+        "cash": "12343.12201937",
+        "paired_equity": "10020.41668667"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T10:53:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.6,
+        "new_qty": -411.5,
+        "delta_qty": 0.1,
+        "BTC_qty": 1.129,
+        "cash": "12343.12201937",
+        "paired_equity": "10020.41668667"
+      },
+      "current": {
+        "utc": "2024-09-16T10:54:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.5,
+        "new_qty": -411.6,
+        "delta_qty": -0.1,
+        "BTC_qty": 1.129,
+        "cash": "12343.11476817",
+        "paired_equity": "10054.12773547"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T10:55:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.6,
+        "new_qty": -411.9,
+        "delta_qty": -0.3,
+        "BTC_qty": 1.129,
+        "cash": "12343.09302777",
+        "paired_equity": "10034.01719507"
+      },
+      "current": {
+        "utc": "2024-09-16T10:56:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.9,
+        "new_qty": -411.8,
+        "delta_qty": 0.1,
+        "BTC_qty": 1.129,
+        "cash": "12343.01427903",
+        "paired_equity": "10077.87104607"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T10:56:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.9,
+        "new_qty": -411.8,
+        "delta_qty": 0.1,
+        "BTC_qty": 1.129,
+        "cash": "12343.01427903",
+        "paired_equity": "10077.87104607"
+      },
+      "current": {
+        "utc": "2024-09-16T10:57:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.8,
+        "new_qty": -412.1,
+        "delta_qty": -0.3,
+        "BTC_qty": 1.129,
+        "cash": "12342.99256503",
+        "paired_equity": "10085.29983207"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T11:02:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -412.1,
+        "new_qty": -411.7,
+        "delta_qty": 0.4,
+        "BTC_qty": 1.129,
+        "cash": "12342.60568043",
+        "paired_equity": "10092.81359647"
+      },
+      "current": {
+        "utc": "2024-09-16T11:03:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.7,
+        "new_qty": -412.1,
+        "delta_qty": -0.4,
+        "BTC_qty": 1.129,
+        "cash": "12342.57669103",
+        "paired_equity": "10077.42070707"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T11:11:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -412.0,
+        "new_qty": -411.6,
+        "delta_qty": 0.4,
+        "BTC_qty": 1.129,
+        "cash": "12342.11242799",
+        "paired_equity": "10033.80812302"
+      },
+      "current": {
+        "utc": "2024-09-16T11:12:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.6,
+        "new_qty": -411.7,
+        "delta_qty": -0.1,
+        "BTC_qty": 1.129,
+        "cash": "12342.10517074",
+        "paired_equity": "10087.16406577"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T11:36:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -412.2,
+        "new_qty": -411.8,
+        "delta_qty": 0.4,
+        "BTC_qty": 1.129,
+        "cash": "12341.11839765",
+        "paired_equity": "10071.51437847"
+      },
+      "current": {
+        "utc": "2024-09-16T11:37:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.8,
+        "new_qty": -412.0,
+        "delta_qty": -0.2,
+        "BTC_qty": 1.129,
+        "cash": "12341.10389415",
+        "paired_equity": "10048.47337497"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T11:46:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.8,
+        "new_qty": -411.7,
+        "delta_qty": 0.1,
+        "BTC_qty": 1.129,
+        "cash": "12340.85368481",
+        "paired_equity": "10032.33131972"
+      },
+      "current": {
+        "utc": "2024-09-16T11:47:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.7,
+        "new_qty": -411.8,
+        "delta_qty": -0.1,
+        "BTC_qty": 1.129,
+        "cash": "12340.84643691",
+        "paired_equity": "10002.89137182"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T11:47:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.7,
+        "new_qty": -411.8,
+        "delta_qty": -0.1,
+        "BTC_qty": 1.129,
+        "cash": "12340.84643691",
+        "paired_equity": "10002.89137182"
+      },
+      "current": {
+        "utc": "2024-09-16T11:48:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.8,
+        "new_qty": -411.5,
+        "delta_qty": 0.3,
+        "BTC_qty": 1.129,
+        "cash": "12340.5812697",
+        "paired_equity": "10032.02500833"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T11:48:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.8,
+        "new_qty": -411.5,
+        "delta_qty": 0.3,
+        "BTC_qty": 1.129,
+        "cash": "12340.5812697",
+        "paired_equity": "10032.02500833"
+      },
+      "current": {
+        "utc": "2024-09-16T11:49:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.5,
+        "new_qty": -411.7,
+        "delta_qty": -0.2,
+        "BTC_qty": 1.129,
+        "cash": "12340.5667662",
+        "paired_equity": "10039.50680483"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T11:50:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.7,
+        "new_qty": -411.8,
+        "delta_qty": -0.1,
+        "BTC_qty": 1.129,
+        "cash": "12340.55951665",
+        "paired_equity": "10032.43945528"
+      },
+      "current": {
+        "utc": "2024-09-16T11:51:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.8,
+        "new_qty": -411.7,
+        "delta_qty": 0.1,
+        "BTC_qty": 1.129,
+        "cash": "12340.48018702",
+        "paired_equity": "10008.69370573"
+      },
+      "seconds": 60.0
+    },
+    {
+      "previous": {
+        "utc": "2024-09-16T11:52:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "REDUCE",
+        "old_qty": -411.7,
+        "new_qty": -411.6,
+        "delta_qty": 0.1,
+        "BTC_qty": 1.129,
+        "cash": "12340.39385354",
+        "paired_equity": "10019.25055232"
+      },
+      "current": {
+        "utc": "2024-09-16T11:53:00Z",
+        "phase": "pre_quote_paired_close",
+        "asset": "SOL",
+        "action": "ADD",
+        "old_qty": -411.6,
+        "new_qty": -411.7,
+        "delta_qty": -0.1,
+        "BTC_qty": 1.129,
+        "cash": "12340.38660564",
+        "paired_equity": "9978.48000442"
+      },
+      "seconds": 60.0
+    }
+  ],
+  "largest_observed_qty_changes": [
+    {
+      "utc": "2024-09-17T00:36:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": 473.6,
+      "delta_qty": 473.6,
+      "BTC_qty": -1.298,
+      "cash": "9513.71555719",
+      "paired_equity": "9501.07025719"
+    },
+    {
+      "utc": "2024-09-17T00:00:00Z",
+      "phase": "post_btc_quote_paired_close",
+      "asset": "SOL",
+      "action": "CLOSE",
+      "old_qty": -409.8,
+      "new_qty": 0.0,
+      "delta_qty": 409.8,
+      "BTC_qty": 0.0,
+      "cash": "9591.13453598",
+      "paired_equity": "9591.13453598"
+    },
+    {
+      "utc": "2024-09-18T00:00:00Z",
+      "phase": "post_btc_quote_paired_close",
+      "asset": "SOL",
+      "action": "CLOSE",
+      "old_qty": 387.1,
+      "new_qty": 0.0,
+      "delta_qty": -387.1,
+      "BTC_qty": 0.0,
+      "cash": "7217.58035949",
+      "paired_equity": "7217.58035949"
+    },
+    {
+      "utc": "2024-09-17T00:03:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": 355.7,
+      "delta_qty": 355.7,
+      "BTC_qty": -0.649,
+      "cash": "9544.6696848",
+      "paired_equity": "9573.9342848"
+    },
+    {
+      "utc": "2024-09-17T00:34:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "CLOSE",
+      "old_qty": 355.3,
+      "new_qty": 0.0,
+      "delta_qty": -355.3,
+      "BTC_qty": -0.649,
+      "cash": "9568.75029964",
+      "paired_equity": "9570.37279964"
+    },
+    {
+      "utc": "2024-09-18T00:03:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": -190.3,
+      "delta_qty": -190.3,
+      "BTC_qty": 0.329,
+      "cash": "7192.92102198",
+      "paired_equity": "7172.85722198"
+    },
+    {
+      "utc": "2024-10-05T00:00:00Z",
+      "phase": "post_btc_quote_paired_close",
+      "asset": "SOL",
+      "action": "CLOSE",
+      "old_qty": 184.6,
+      "new_qty": 0.0,
+      "delta_qty": -184.6,
+      "BTC_qty": 0.0,
+      "cash": "6002.1465368",
+      "paired_equity": "6002.1465368"
+    },
+    {
+      "utc": "2024-10-10T18:10:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "CLOSE",
+      "old_qty": 159.2,
+      "new_qty": 0.0,
+      "delta_qty": -159.2,
+      "BTC_qty": 0.0,
+      "cash": "5964.46699018",
+      "paired_equity": "5964.46699018"
+    },
+    {
+      "utc": "2024-11-02T00:03:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": -149.9,
+      "delta_qty": -149.9,
+      "BTC_qty": 0.263,
+      "cash": "6625.95012133",
+      "paired_equity": "6607.22502133"
+    },
+    {
+      "utc": "2024-09-19T12:08:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "CLOSE",
+      "old_qty": -143.9,
+      "new_qty": 0.0,
+      "delta_qty": 143.9,
+      "BTC_qty": 0.0,
+      "cash": "6924.11940641",
+      "paired_equity": "6924.11940641"
+    },
+    {
+      "utc": "2024-10-05T00:03:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": -143.0,
+      "delta_qty": -143.0,
+      "BTC_qty": 0.265,
+      "cash": "5981.83058482",
+      "paired_equity": "5989.24758482"
+    },
+    {
+      "utc": "2024-10-02T00:03:00Z",
+      "phase": "pre_quote_paired_close",
+      "asset": "SOL",
+      "action": "OPEN",
+      "old_qty": 0.0,
+      "new_qty": 132.2,
+      "delta_qty": 132.2,
+      "BTC_qty": -0.258,
+      "cash": "6904.95098263",
+      "paired_equity": "6898.56598263"
+    }
+  ],
+  "limits": [
+    "Quantity transitions are stored native-cache observations, not order submissions or actual fills; multiple fills and same-quote net-zero cycles can be hidden between samples.",
+    "Mark-consistent changes with observed qty/basis/cash unchanged are not fill counts or realized-PnL attribution. Cash changes can be funding, fees, realized settlement or bookkeeping; finality is uncertified.",
+    "No actual turnover/fees/action causes can be reconstructed from this trace alone; no counterfactual PnL engine or control rescan.",
+    "Exposure episodes are observed zero/nonzero signed-inventory spells, not domain/alpha/hedge episodes."
+  ],
+  "resources": {
+    "seconds": 17.901392719708383,
+    "max_RSS_KiB": 25016
+  },
+  "diagnostic_prefix_decode_passes": 2,
+  "first_pass_serializer_failure": "NameError ph after full decode;100k interim preserved; root explicitly authorized one corrected read-only repeat; no nativeengine",
+  "failed_source_head": "f2ebdce94ac6a837712445a50895b6d3eefb3c44",
+  "interpretation": {
+    "strong_observed_finding": "Small-lot SOL add/reduce ping-pong, commonly at successive minute observations while BTC inventory is unchanged.",
+    "most_probable_mechanism": "Tight risk-boundary target chasing under fresh marks/lot rounding, consistent with source owner's failed-policy review (nearest-alpha boundary target and >=one-lot reconciliation). This is a supported hypothesis, not recovered order-reason attribution.",
+    "not_proven": [
+      "Actual native order or fill count",
+      "Exact order ownership or risk-controller trigger",
+      "Same-timestamp double execution",
+      "Fee dominance or realized-PnL attribution",
+      "Full-run terminal outcome"
+    ],
+    "same_timestamp_caveat": "Two opposite-delta observation timestamps can be hook/settlement transitions; they do not establish two actual executions at the same quote.",
+    "price_valuation_separation": "31570 adjacent samples changed stored equity with observed qty/basis/cash unchanged, compatible with unrealized repricing/deferred valuation. They are not fills or validated realized PnL.71 samples changed cash without inventory change; funding/fees/settlement attribution remains UNKNOWN.",
+    "comparison": "Archived control621 fill-report rows spans24months and is not the same metric/window as22700 partial observed quantity transitions. No churn multiple is computed."
+  },
+  "summary_percentages": {
+    "SOL_delta_at_most_1_coin_percent": 99.61674008810573,
+    "SOL_exact_native_step_percent": 76.8546255506608
+  }
+}

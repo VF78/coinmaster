@@ -1,0 +1,61 @@
+{
+  "status": "ACTUAL_NATIVE_FEED_CONFIRMED",
+  "observed_utc": "2026-10-20T14:44:33.248285+00:00",
+  "unit": "cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z.service",
+  "job_dir": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z",
+  "native_python_PID": 260995,
+  "flock_supervisor_PID": 260992,
+  "systemd_after_startup": "MainPID=260992\nControlGroup=/cm113.slice/cm113-v3.slice/cm113-v3-risk.slice/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z.service\nMemoryCurrent=364105728\nMemoryPeak=364466176\nCPUWeight=10\nMemoryMax=681574400\nMemorySwapMax=0\nNice=10\nPrivateNetwork=yes\nActiveState=active\nSubState=running\nInvocationID=384c96fbf99044ea876a59271e8a18f5\n",
+  "first_completed_native_batch": {
+    "account_events": 1,
+    "archival_batch_minutes": 15,
+    "archived_account_events": 169,
+    "archived_orders": 153,
+    "audit_rows": {
+      "fill_audit": 153,
+      "risk_first_sol_audit": 4392
+    },
+    "checkpoint": 363,
+    "last_available_ns": 1725475500000000000,
+    "mutable_contexts": 0,
+    "native_orders": 1,
+    "native_positions": 2,
+    "peak_rss_bytes": 553033728,
+    "processed_minutes": 5445,
+    "rss_before_archive": 553140224,
+    "rss_bytes": 553140224
+  },
+  "fresh_actual_files": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/result/minute-native-risk.csv.gz",
+      "bytes": 593172
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-fe027a26794943598adf4cf3c6fe4cc6-shm",
+      "bytes": 32768
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/result/batch-resource-latest.json",
+      "bytes": 455
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-fe027a26794943598adf4cf3c6fe4cc6",
+      "bytes": 4096
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/result/.v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-funding.sqlite.attempt-fe027a26794943598adf4cf3c6fe4cc6-wal",
+      "bytes": 144232
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-native-audit.sqlite-journal",
+      "bytes": 16928
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-sol-risk-first-alpha-corridor-v1-btc-direction-native-audit.sqlite",
+      "bytes": 5435392
+    }
+  ],
+  "head": "e3eaf7728e11db1651e8a09474a74f4a3faebadd",
+  "economic_repeat_budget": "1/1_DISPATCHED_NO_RETRY",
+  "note": "batch processed_minutes and actual native archive/funding prove feed, not merely active unit. BYBIT_SIGNAL subscription messages are not used as proof of feed failure. Exact final economic result UNKNOWN."
+}
