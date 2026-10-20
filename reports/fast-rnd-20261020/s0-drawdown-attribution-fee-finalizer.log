@@ -1,0 +1,8 @@
+Running as unit: cm-fast-s0-dd-finalize-20261020.service
+{"native_fee_rows_TV": 502, "cost_intervals_changed": 0, "trace_rescans": 0, "fee_finalizer_peak_RSS_bytes": 22171648}
+Finished with result: success
+Main processes terminated with: code=exited/status=0
+Service runtime: 132ms
+CPU time consumed: 125ms
+Memory peak: 2.4M
+Memory swap peak: 0B

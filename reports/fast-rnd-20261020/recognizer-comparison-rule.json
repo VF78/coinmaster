@@ -1,0 +1,51 @@
+{
+  "status": "NO_INFO_ADVANTAGE",
+  "frozen_function_result": {
+    "status": "NO_ADDED_DIAGNOSTIC_INFORMATION"
+  },
+  "utc": "2026-10-20T19:22:08.892752+00:00",
+  "source_commit": "c1d0c69303635d2c433d29875c7271110b85017f",
+  "function": "select_recognizer",
+  "source_sha256": "c9312d7eab1642f330c20a5d3fc452c1d020653c86e4ad4ad36536a7412d6db7",
+  "train_n": 5959,
+  "validation_n": 3432,
+  "train_ID_hash": "8384ecabd8237650696e12e886748b3dfe74cdf459097b6d14d7c666b494407c",
+  "validation_ID_hash": "d514ffde95d144cd5852c55d6ba7b91854f37ea7773707c5fa3ef7c705e1cf88",
+  "inputs": {
+    "prior": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/prior/metrics.json",
+      "sha256": "8e530168330769bf031f28e1d427e3014980bfacecb785bf4c261964cf3dbf2e"
+    },
+    "simple": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/simple/metrics.json",
+      "sha256": "2ceb54b52d08aa6d1e652dcd8b27900e7758989d3a853b3eb159b8ad884a54d0"
+    },
+    "stumpy": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/stumpy/metrics.json",
+      "sha256": "bb6c814d4e07da0a68d4c58fc80f34d039ff53dce28bfa862c6f7107f3989504"
+    },
+    "rdst": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/metrics.json",
+      "sha256": "b75310933d6365c114625a4f9cbf4edab6fc2c69347c9df6e97f22b1491ecd38"
+    },
+    "minirocket": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-memory-r2/metrics.json",
+      "sha256": "ba42587baf8bb9dd9918b7eadf194f81e552bbe0f1a23176c9b362df5c5caec9"
+    },
+    "cnn": {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/report.json",
+      "sha256": "a9cfeb772fe48fbeaaa2b0bb1c20025ddfdd008435d9a3fa0e16e81129c934e1"
+    }
+  },
+  "mean_validation_log_loss": {
+    "prior": 1.1005862131442883,
+    "simple": 1.3626164204737692,
+    "stumpy": 1.1236582971796953,
+    "rdst": 8.501439824793124,
+    "minirocket": 7.212750339779619,
+    "cnn": 1.2690942286812104
+  },
+  "no_policy_launch": true,
+  "probability_integrity_pass": true,
+  "final_results_path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/recognizer-comparison-results.json"
+}

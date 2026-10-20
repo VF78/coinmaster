@@ -1,0 +1,76 @@
+{
+  "status": "COMPLETE_ONE_TV_RECEIPT_PASS_WITH_SMALL_NATIVE_FEE_FINALIZATION",
+  "canonical_head": "1582bc87dece9629c62bf0c17a1dd843500878c2",
+  "S0_source_commit": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "recognizer_comparison_rule_sha256": "1dd007bad60465974f735fa0acb2e3b01c967525535d2048540105b14de4be6e",
+  "root_authorization": "ROOT GO one bounded T+V-only analysis after all four compared; NO_INFO_ADVANTAGE",
+  "execution": {
+    "equity_receipt_passes": 1,
+    "equity_trace_rescans": 0,
+    "first_pass_wall_seconds": 19.453,
+    "first_pass_CPU_seconds": 19.364,
+    "first_pass_peak_RSS_bytes": 19791872,
+    "small_native_fee_finalizer_wall_seconds": 0.132,
+    "small_native_fee_finalizer_CPU_seconds": 0.125,
+    "small_native_fee_finalizer_peak_RSS_bytes": 22171648,
+    "memory_cap_bytes": 201326592,
+    "swap_cap_bytes": 0,
+    "nice": 15,
+    "threads": 1,
+    "native_engines": 0
+  },
+  "coverage": {
+    "receipt_rows": 840958,
+    "source_first_ns": 1725148860000000000,
+    "source_last_ns": 1775606280000000000,
+    "receipt_first_ns": 1725148920000000000,
+    "receipt_last_ns": 1775606340000000000,
+    "strictly_monotone_receipts": true,
+    "stopped_before_U_payload_parse": true,
+    "closed_excursions_in_TV": 1183,
+    "tail_unrecovered_in_TV": true,
+    "native_fee_rows_TV": 502,
+    "fee_rows_outside_TV_skipped_without_monetary_parse": 119
+  },
+  "cost_proof": {
+    "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "field": "fill_audit actual native OrderFilled callback facts: fill_ns/instrument/commission/commission_currency",
+    "event_boundary": "(peak.source_ns,trough.source_ns], never receipt_ns; source receipt guards had0unavailable and native fill/account timestamps<=source",
+    "T_V_native_events": 502,
+    "top5_intervals_changed_vs_order_ts_last": 0,
+    "scope": "only existing small native event facts, no W trace reread; outside-TV monetary fields not interpreted"
+  },
+  "top5_DD_percent": [
+    "66.25691486468686414439256686",
+    "59.84272354367395947974450388",
+    "55.10055575073671291811943329",
+    "42.17248437012164854972645329",
+    "40.26800470264555526714864550"
+  ],
+  "missing_native_artifacts": [
+    "perasset native close-unrealized component at receipt",
+    "complete native Position realized/lifecycle report",
+    "signed funding delta"
+  ],
+  "result_json_sha256": "879c48e7111c7c1123aeee8e844ad2a79fce06b826ddcab0f908905703ab3114",
+  "result_csv_sha256": "bdae2702e754a099e1a50e05933da412dcfb3e09cf302043a8720c50082d4149",
+  "result_md_sha256": "318860b473c02580dab783134d2c537d78bd53372841a4c839f1565c65d3a290",
+  "inputs": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz": {
+      "bytes": 37417891,
+      "sha256": "780efb8da2c71189ebf5feb61c555137c99154e09f709de8c5b10ff19d0f32d3"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv": {
+      "bytes": 245967,
+      "sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json": {
+      "bytes": 1396782,
+      "sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa"
+    }
+  },
+  "input_hash_basis": "S0 immutable post-exit validated manifest reused; large equity trace not reread/rehash after analysis",
+  "no_U_outcome_details": true,
+  "strategy_source_changes": false,
+  "pilot_changes": false
+}

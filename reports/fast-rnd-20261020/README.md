@@ -1,6 +1,6 @@
 # CoinMaster FAST-RND — 20.10.2026
 
-Current: FAST-03, mandatory two-seed CNN training. S0, common causal dataset and the complete numeric branch are finished. No recognizer selected; no trading-policy optimization yet.
+**COMPLETE — valid negative result (allowed ending №2).** All four recognizers were implemented and measured; none beat the constant train-prior forecast on the common V set. No model selected, OOF/Optuna/policy fitting or new economic candidate run. The DD≤50% /≥90%S0profit goal remains unachieved. Research queue stopped; pilot unchanged.
 
 [Owner task](owner-task.txt) · [Frozen experiment](experiment-lock.json) · [Project #2](https://github.com/users/VF78/projects/2) · [Issue #113](https://github.com/VF78/coinmaster/issues/113)
 
@@ -29,7 +29,7 @@ Common5,959T/3,432V IDs; lower log loss is better. No U outcomes parsed or model
 |STUMPY analogue|1.119859150|1.127457444|1.123658297|253.620 /66.968|
 |MiniRocket|7.125161290|7.300339389|7.212750340|72.438 /4.584|
 |RDST|9.180662883|7.822216766|8.501439825|208.741 /16.477|
-|CNN7/42|Pending|Pending|Pending|Training|
+|CNN7/42 mean|1.265969776|1.272218681|1.269094229|3459.731 /94.520|
 
 STUMPY is2.0963%worse than prior. Catalogue3TFpatterns/68occurrence records/6realprice match-continuationSVGs; anyTF≥3independentreadyage-matchedanalogues3226/3432. Fallback forecasts included on every V row. MiniRocket fixedrecipe is negative on both assets; actual1932features/TF,5816includingcontext. No retuning.
 
@@ -37,12 +37,25 @@ MiniRocket initially OOM under an inherited650MiB cap, then under verified768MiB
 
 RDST completed successfully:512shapelets/TF,1536features/TF,18coefficient/nearest-TRAIN-ID associations; all5959T/3432V IDs match. CPU221.525s/768MiBpeak/swap0, root verified17artifacthashes. All numeric methods are worse than prior; mandatory CNN remains a separate fixed experiment.
 
-CNN launched18:18:20UTC in cm113-fast-cnn-validation-20261020T180922Z-fit-b32.service. Both seeds7/42 use batch32 solely for resources: syntheticB128OOMunderverified768MiB; B64forward/backward+oneAdamstepPASS but736.4MiBpeak leaves only31.6MiB before actual data. Three TRAIN chart previews passed root visual QA. Same c1d0c69 source/data/IDs, architecture/lr, train-only context statistics and inner-T last15% early stopping; freshfullTrefit exactlyeachbestepoch, noVepochchoice/Ureads. No additional model/hyperparameter search, no whole-fit automatic repeats.
+CNN completed successfully: both seeds7/42 selected inner-T epoch3 after5epochs, then fresh full-T refit exactly3epochs each;16actualepochs. Mean V loss1.2690942286812104, bothassets worse than prior. No individualseedselection, noVepochchoice/Ureads or memoryretry. Batch32 was a resource-only exception: B128syntheticOOM; B64+AdamstepPASS but736.4MiBpeak left only31.6MiB before actualdata. Root visually checked3TRAINpreviews. Actualfit successful with lastobservedpeak547459072B (~522MiB); finalcgroupreleased, finalpeaknotclaimed. Root13artifacthashes/source/dataPASS.
+
+The frozen comparison returned **NO_ADDED_DIAGNOSTIC_INFORMATION**. Every recognizer is worse than prior; STUMPY/CNN only beat the weaker linear control. All probability arrays are3432×2×3, finite/nonnegative/normalized; both train/validation IDhashes match; saved logloss/Brier reproduced within1e-10. There are48greedy72h-spaced V episodes, not3432independent market outcomes. Class frequencies/calibration/monthly blocks/costs are saved. No new U model evaluation or additional fits; OOF/Optuna/policy work is inapplicable after this failed gate.
+
+The result applies to these fixed recipes and diagnostic labels. It does not show that all price-pattern methods are useless, and it does not estimate an unrun trading candidate's ROI.
 
 ## Reproduce and inspect
-[S0](s0-completion.md) · [Dataset](dataset-completion.md) · [Numeric controls/STUMPY](numeric-validation-summary.md) · [MiniRocket](minirocket-memory-r2-completion.md) · [RDST](rdst-completion.md) · [Memory review](numeric-memory-review.json) · [CNN preparation](cnn-prepare.md)
+[S0](s0-completion.md) · [Dataset](dataset-completion.md) · [Numeric controls/STUMPY](numeric-validation-summary.md) · [MiniRocket](minirocket-memory-r2-completion.md) · [RDST](rdst-completion.md) · [CNN](cnn-completion.md) · [Memory review](numeric-memory-review.json) · [CNN preparation](cnn-prepare.md)
 
 Exact argv, source/input hashes, model/probability locations and systemd receipts are in corresponding JSON/manifest files. Scientific source checkpointc1d0c69; originalS0source75ffc9c.
 
 ## Qualifications
 Historical close execution/slippage/margin assumptions retain NOT_FAITHFUL_DIAGNOSTIC classification; this is not a guaranteed real-venue ROI or certified intrabar maximum. BTC-only reused as a separate pinned control, not independent SOL attribution. Period2024–2026 was already researched; fixedT/V/U controls this procedure, not an entirely unseen holdout. A preflight accidentally printed nested historical BTC-only U drawdown dates; disclosed, not used for fitting/policy. New U details remain unopened until≤3finalistsfreeze. Official JKX supportingZIP403: contents/weights unverified. No new architecture/hyperparameter search.
+
+## Final native baseline drawdown report
+One T+V-only pass over840,958 native receipts:19.453s/19.8MBRSS. Top5 nativeW DD:66.256915%,59.842724%,55.100556%,42.172484%,40.268005%. Each equity decline reconciles exactly to Δcash+ΔtotalUPnL. Native actualfill_ns determines BTC/SOL commission intervals; fees are descriptive and already included in cash/W.
+
+The largest event's trough contains a losing SOL-long and a positive BTC-short. Two other deep declines are driven by deterioration of BTC-only open books; another shows SOL-only positive open-PnL giveback. Quantities changed, so endpoint changes are not same-lot causal PnL. Exact per-asset native realized/close-UPnL attribution and signed funding totals are unavailable: those native component artifacts were not saved. No diagnostic ledger was promoted to authoritativeW, no extraS0run and no alternatePnLengine.
+
+[Full common comparison](recognizer-comparison-results.md) · [CSV](recognizer-comparison-results.csv) · [JSON](recognizer-comparison-results.json) · [Calibration](recognizer-comparison-calibration.csv) · [Monthly blocks](recognizer-comparison-monthly.csv) · [Five native drawdowns](s0-drawdown-attribution-result.md) · [DD CSV](s0-drawdown-attribution-result.csv) · [Completion](completion.json)
+
+Final protection check19:30UTC: pilotPID2009732/NRestarts0/active, no FAST-RND units running; diskavailable2,822,889,472bytes. No deployment/orders/restart or Hermes/sites/VPN change. Unique results/rawhistory/configs/pilot assets preserved.

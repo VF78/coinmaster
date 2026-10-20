@@ -1,0 +1,62 @@
+{
+  "files": {
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-fee-finalizer.py": {
+      "bytes": 4811,
+      "sha256": "0385fb31d056ed327e08d735fc52295404f2336b69dc08a152054175cd23f5ff"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-analysis.log": {
+      "bytes": 2003,
+      "sha256": "1199cfabdd5219f435d28ce405447bad29c15d67112358c4779f08cb5face104"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-result.md": {
+      "bytes": 3225,
+      "sha256": "318860b473c02580dab783134d2c537d78bd53372841a4c839f1565c65d3a290"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-analysis.py": {
+      "bytes": 10311,
+      "sha256": "64691a45334356a19964a38ac68154235a931f906d539e71926e2072142522cb"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-fee-finalizer.log": {
+      "bytes": 346,
+      "sha256": "680e2fb358df1fae99c1cba4664f4ccfb27b6b1a492c0a366d0a235893744900"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-result.csv": {
+      "bytes": 7054,
+      "sha256": "bdae2702e754a099e1a50e05933da412dcfb3e09cf302043a8720c50082d4149"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-schema.json": {
+      "bytes": 7351,
+      "sha256": "65934ecad86bead1f3823bd178f9191e890889dc4b2d39661f93a0b5bc4475ab"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-plan.md": {
+      "bytes": 1233,
+      "sha256": "ee825231eb2c24972c93154c2acda609abb3d07be46954046dfc680dc1ad85cc"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-result.json": {
+      "bytes": 22375,
+      "sha256": "879c48e7111c7c1123aeee8e844ad2a79fce06b826ddcab0f908905703ab3114"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-plan.json": {
+      "bytes": 4342,
+      "sha256": "5f59159d8f37af62b0ca0264d3783989e5d895f3cb524ab460fc19ca6595be64"
+    },
+    "reports/fast-rnd-20261020/s0-drawdown-attribution-completion.json": {
+      "bytes": 3838,
+      "sha256": "a8113507e2434f0cb6a751c35f9e3df001e2d67ad40ad12d65e439db7ccbda59"
+    }
+  },
+  "inputs": {
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz": {
+      "bytes": 37417891,
+      "sha256": "780efb8da2c71189ebf5feb61c555137c99154e09f709de8c5b10ff19d0f32d3"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv": {
+      "bytes": 245967,
+      "sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7"
+    },
+    "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json": {
+      "bytes": 1396782,
+      "sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa"
+    }
+  }
+}

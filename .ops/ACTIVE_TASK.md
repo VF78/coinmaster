@@ -1,39 +1,28 @@
-Updated: 2026-10-20 18:48 UTC, FAST-RND CNN seed7 refit complete, seed42 pending in same active experiment.
-Status: IN_PROGRESS; do not start duplicate fits or another S0/CORRIDOR engine.
-GitHub Project item: https://github.com/VF78/coinmaster/issues/113 ; Project #2 In Progress, current checklist read back.
-Canonical root: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no product development on Mac or manual /opt edits.
-Branch / source HEAD: codex/nautilus-btc-sol-mvp / c1d0c69303635d2c433d29875c7271110b85017f (published/read back).
-origin/main / divergence: ref not present locally; divergence unavailable, not inferred. No main fetch needed for current research.
-Deploy commit marker: NOT_PRESENT
-Goal: W=ACTIVE equity+RESERVE DD<=50%, NetProfit>=90% reproduced S0, then maximum NetProfit. Research only.
-Authority: reports/fast-rnd-20261020/owner-task.txt SHA14f03b6b8a5ada7a238c7058dd52073a1764e7e9b382e2eb5b02e98d7ad54aa0.
-Protocol: experiment-lock.json unchanged, T/V/U60/20/20; no U outcome details before <=3 final candidates frozen. Old period already researched.
-Done: Owner-stopped corrected CORRIDOR prefix311.7083days/535fillrows preserved; no further CORRIDOR run.
-Done: 7exact safe deletes reclaimed1,140,477,952B; protected services unchanged.
-Done: isolated CPU MLenv /runtime/var/research-envs/fast-rnd-20261020 ; hashed lock/import/API/forward PASS, trading venv unchanged.
-Done: native funding2tests+persistence PASS; no missing-posting defect; signed historical aggregate UNKNOWN, not zero.
-Done: shared observer-only finality fix5nativePASS+independentGO; legacy curves retained, no trade rule/cash/execution changes.
-Done: S0 ONE full run job170935Z/source75ffc9c reproducedTOTAL6077107.23887483/ROI60671.0723887483%;621fills/710orders/0liq/flat.
-S0 DD: settled66.2569148647%,1051199receipts+seed/0unavailable/0pending; legacycallback66.3187802497%, not an economic improvement.
-S0 costs: fees945927.73761825, funding1320nativeposts/signedUNKNOWN; qualified historical diagnostic, not certified venue-faithful.
-S0 legacy correction: rawcashstat.37899fraction=37.899% associated maximumABSdrop, not global relative cash DD.
-Done: Dataset17520hourly IDs,5959purged selectedT/3432V,zeroambiguous, source/artifactSHA PASS; build41.814s/512MiBcap.
-Dataset: runtime/var/research-datasets/fast-rnd-20261020-v1 ; manifest8f51abe51ddb15e95421549279cb8e32121b8797f43e0af9385e6df5e4a7329c.
-Code/tests: fast_dataset5PASS; fast_numeric9PASS; CNN9initial unique cases aggregate+light emitter test; no CNN market fit.
-CURRENT: prior/simple/STUMPY COMPLETE; common5959T/3432V. Mean V LL prior1.1005862131/simple1.3626164205/STUMPY1.123658297 (2.0963%worseprior).
-STUMPY: catalogue3TFpatterns/68occurrence records/6actualrawpriceSVGs; anyTF >=3independentmatches3226/3432. No model selected.
-MiniRocket firstattempt OOM: inheritedoldrisk.slice650MiB cappedunit768MiB; no scores/model. Partial feature mmap preserved.
-ONEresource-onlyretry actually dispatched17:54:09UTC PID329247, effective768MiB ancestry proven/system.slice max; failedOOM CPU43.757401s. No scores/model; sampledpeak740159488B notcertifiedfinalpeak.
-Current owner: /root/chop_pair_failure_data; ONE memorycorrection DONE/c1d0c69: chunk128 scaler/f32rounding→C-f64 diskmap/closeoldownedmap. Tests10/10PASS+independentGO; standardizedf32/probadrift0synthetic. ExactoriginalOOMallocUNKNOWN.
-MiniRocket COMPLETE correctedattempt18:05:35UTC PID333276/actualexitSUCCESS: VLL BTC7.125161290/SOL7.300339389/mean7.212750340, same5959T/3432Vhashes/actual1932kernelsperTF+20context=5816. Fit72.438s/infer4.584s/CPU76.331s/768MiBpeak/swap0; no tune/repeat. Root19artifacthashesPASS.
-RDST COMPLETE: same5959T/3432V/hashPASS; BTC/SOL/meanLL9.180662883/7.822216766/8.501439825;512shapelets/TF/1536featuresTF/18TRAINIDexplanations. Fit208.741s/infer16.477s/CPU221.525s/768MiB/swap0SUCCESS. Root17artifacthashes/pilot/sourcePASS. Allnumericmethodsnegativevsprior, no selectionyet.
-CURRENT CNN ONEactualexperiment18:18:20UTC unitcm113-fast-cnn-validation-20261020T180922Z-fit-b32.service, immutablejob180922Z/c1d0c69; BOTHseeds7/42 batch32, innerTlast15%purged/<=30epochs/patience2→freshallTrefitEXACTbestepoch. VNOTepochchoice/Uunopened.
-CNN exception: B128syntheticOOMunderverified768MiB; B64+oneAdamstepPASSbutpeak772141056B/only31.6MiBheadroombeforeactualdata. Rootchose32forbothseedssolelyresources. ThreeTRAINPNGrootvisualQA PASS. Actualfitcapacitynotyetprovenatlaunch.
-Current owner sol_corridor_review; effective768MiB/system.slice/swap0/thread1/PrivateNetwork/freshRAM+diskguard. Noproductioncredentials/noautomaticwholefitrepeat. Firstepochseed7inner211.169s/trainloss1.621413619/innerTloss1.222738387; actualPython337604/batch32/peak516030464B/0OOM, artifactcnn-first-epoch.json.
-Currentphase18:47:37UTC: seed7inner stopped5/best3/loss1.206322714; freshallTrefit EXACT3epochs COMPLETE(227.476/230.436/230.086s), prediction/export→seed42 nextINSAMEprocess337604. Unitactive/peak522584064B/0OOM, no restart/newfit. Do not choose/inspect individualseedVscore.
-Next exact step: let existingCNNcompletebothseeds/exports then numericownercommonVcomparison/selectionrequiresallfour. NoOOF/Optunabeforeinfogate.
-Policy gate: only if recognizer adds information over controls; causalOOF then bounded Optuna8-trial batches/24+24+16 ceilings. No trade search yet.
-Protected runtime: pilot coinmaster-hl-stageg-testnet.service PID2009732/NRestarts0active; no deploy/restart/orders. Hermes/sites/VPN untouched.
-Blocks/limits: JKXofficialZIP403 contents/weights unverified; historical execution/slippage assumptions explicit; no claim new unseen holdout.
-Intentional untracked: original funding fixture SQLite/initial diagnostics; historical CORRIDOR raw release-audit/progress/observer artifacts retained. Intentional ongoing cnn-progress.json and historical funding/CORRIDORfixtures untracked; immutable launch/probe/render/numericresults committed b400834 and GitHubreadbackPASS.
-Key files: reports/fast-rnd-20261020/{README,experiment-lock,s0-completion,dataset-completion,numeric-contract,cnn-implementation}.json/md; runtime/coinmaster/research/fast_{dataset,numeric,cnn}.py.
+Updated: 2026-10-20 19:31UTC; FAST-RND COMPLETE validnegative №2, finalpublish/Projectclose pending.
+Status: No active research calculations. GoalDD50/NP90% NOT_ACHIEVED; no eligible ML/trading candidate.
+GitHub Project: https://github.com/VF78/coinmaster/issues/113 ; Project#2InProgress until rootfinalpublish+truthfulDone/close readback.
+Canonical: root@46.225.163.123:/root/.openclaw/workspace/coinmaster/coinmaster ; no Mac product edits/manual /opt changes.
+Branch/source: codex/nautilus-btc-sol-mvp / c1d0c69303635d2c433d29875c7271110b85017f scientific; lastpublishedmetadata1582bc87dece9629c62bf0c17a1dd843500878c2 beforefinalcommit.
+origin/main absentlocally/divergenceUNAVAILABLE/notinferred. Deploycommitmarker NOT_PRESENT; readactualgitHEADlive.
+Owner-task SHA14f03b6b8a5ada7a238c7058dd52073a1764e7e9b382e2eb5b02e98d7ad54aa0; experiment-lock immutableT/V/U.
+Done: ownerSTOP correctedCORRIDOR311.7083days/535fills prefixpreserved; no fullR2TOTAL. Cleanup7paths/reclaimed1140477952B.
+Done: separateCPUMLenv1.454GB/hashlock/API/PASS/tradingvenvunchanged; genuinehourlyprehistoryJun-Aug20242208bars/asset.
+Done: ONEfullS0source75ffc9c/job170935Z exactTOTAL6077107.23887483/ROI60671.0723887483/fees945927.73761825/621fills/710orders/0liq/flat.
+DD TOTAL=ACTIVE(noreserve): settled66.256914864686864%/1051199receipts+seed/0gaps,legacycallback66.31878024969152; timingnotstrategyimprovement/notobservedintrabar tickDD.
+Funding1320nativepostings/signedtotalUNKNOWNnotzero;2native+persistencePASS. Cash.37899ratio=37.899%maxABSdropassociated/notglobalrelativecashDD.
+Done: observeronly5nativePASS+scopedGO/exactS0same; execution/slippage/margin stillNOT_FAITHFUL_DIAGNOSTIC/no liveguarantee.
+Done: Dataset17520/T5959purgedselected/V3432/zeroambiguous/build41.814s/5tests; manifest8f51abe51ddb15e95421549279cb8e32121b8797f43e0af9385e6df5e4a7329c.
+Done allVmeanLL: prior1.100586213/simple1.362616420/STUMPY1.123658297/MiniRocket7.212750340/RDST8.501439825/CNNmean1.269094229.
+FrozenruleONCE NO_ADDED_DIAGNOSTIC_INFORMATION; nonebeatsbothcontrols. All6probas3432x2x3/IDhashesPASS/recomputedLL+Brierwithin1e-10;48greedy72hVepisodes.
+STUMPY3TFpatterns/68occurrences/6actualSVGs; MiniRocket1932featuresTF; RDST512shapeletsTF/18TRAIN-IDassociations.
+Memoryc1chunkedscaler/f32rounding→C-f64map/closeownedinput:10testsPASS+scopedGO/syntheticprobadrift0; earlier2OOMpreserved, correctedactualfitsSUCCESS.
+CNNbothseeds7/42best3after5inner→freshallTrefit3each/16epochs/batch32memoryexception/no retries/3TRAINPNGrootQA. Fit3459.731s/infer94.520s/SUCCESS/inactive/Python337604gone.
+Done ONE T+Vtop5nativeWDDpass840958rows19.453s/19.8MB; separate132msnativefillfee finalizer/noequityrescan; ΔW=Δcash+ΔUPnL exact, sourceintervalfeesnotdoublecounted.
+Top5DD66.256915/59.842724/55.100556/42.172484/40.268005%; endpointBTC/SOLexposure/nativebounds saved; exactassetrealized/closePnL andsignedfundingUNKNOWN/missingartifacts explicit/no secondPnLengine.
+Rootverified MiniRocket19/RDST17/CNN13files; finalcomparison17inputs+6outputs/DD3inputs+11outputs SHA PASS. Comparison/attribution processed0Uoutcomedetails; DatasetUlabelsprogrammaticallysavedsealed; priorhistoricalUdatespreflightaccidentdisclosed/notpristineholdout.
+NO OOF/Optuna/policy/newnativecandidate run: failedinfogate validnegative ending, not a technicaloptimizationtodo.
+Current owners allcompleted: numericcomparison/CNN/nativeattribution. Do not restart finishedunits/repeatS0/launchmoremodelsorparametergrids.
+Next exactstep: rootcommit/pushfinalresearchresults+readback→markexisting#113/ProjectDone ascompletednegative(DDgoalnotachieved), readback→publishfinalstatus.
+Protectedpilot coinmaster-hl-stageg-testnet.service PID2009732/NRestarts0active19:30; FAST-RNDunitsrunning0/disk2822889472Bfree. No production/live/Hermes/sites/VPN changes.
+Intentionaluntracked historicalfunding/CORRIDORfixtures retained; currentownedfinalreports pendingcommit. No secrets/newrealorders/deploy.
+Keyfiles reports/fast-rnd-20261020/{README,completion,recognizer-comparison-results,recognizer-comparison-manifest,s0-drawdown-attribution-result,root-final-verification}.json/md/csv ; scientificfast_dataset/numeric/cnn.py.

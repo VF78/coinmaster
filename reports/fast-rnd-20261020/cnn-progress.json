@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-20T19:17:14.602330+00:00",
+  "unit_status": "MainPID=337602\nResult=success\nActiveState=active\n",
+  "metrics": {
+    "memory.peak": "547459072",
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+    "memory.current": "381161472"
+  },
+  "last_lines": [
+    "{\"batch_size\": 32, \"epoch\": 1, \"event\": \"CNN_EPOCH_COMPLETE\", \"phase\": \"refit\", \"seconds\": 224.89541872683913, \"seed\": 42, \"train_loss\": 1.6028981657311467}",
+    "{\"batch_size\": 32, \"epoch\": 2, \"event\": \"CNN_EPOCH_COMPLETE\", \"phase\": \"refit\", \"seconds\": 229.60813481826335, \"seed\": 42, \"train_loss\": 1.438517003156211}",
+    "{\"batch_size\": 32, \"epoch\": 3, \"event\": \"CNN_EPOCH_COMPLETE\", \"phase\": \"refit\", \"seconds\": 225.55448415502906, \"seed\": 42, \"train_loss\": 1.3046612322560531}"
+  ]
+}

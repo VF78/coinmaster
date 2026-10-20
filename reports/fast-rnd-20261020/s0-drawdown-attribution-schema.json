@@ -1,0 +1,215 @@
+{
+  "manifest_path": "reports/fast-rnd-20261020/s0-artifact-manifest.json",
+  "files": [
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-orders.csv",
+      "bytes": 265856,
+      "sha256": "737f137a681674712b6626a46cf3abd150c78d3abc4354b3e6c6b9c10a557b6d",
+      "header": [
+        "client_order_id",
+        "trader_id",
+        "strategy_id",
+        "instrument_id",
+        "venue_order_id",
+        "position_id",
+        "account_id",
+        "last_trade_id",
+        "type",
+        "side",
+        "quantity",
+        "time_in_force",
+        "is_reduce_only",
+        "is_quote_quantity",
+        "filled_qty",
+        "liquidity_side",
+        "avg_px",
+        "slippage",
+        "commissions",
+        "emulation_trigger",
+        "status",
+        "contingency_type",
+        "order_list_id",
+        "linked_order_ids",
+        "parent_order_id",
+        "exec_algorithm_id",
+        "exec_algorithm_params",
+        "exec_spawn_id",
+        "tags",
+        "init_id",
+        "ts_init",
+        "ts_last",
+        "price",
+        "expire_time_ns",
+        "is_post_only",
+        "display_qty",
+        "trigger_instrument_id"
+      ]
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-risk.csv.gz",
+      "bytes": 75715744,
+      "sha256": "08aa230c05f0553a762d3350e0729b03bb3d17782ccb948776a44c881c4f4d33",
+      "header": [
+        "bar_open_ms",
+        "close_available_ns",
+        "phase",
+        "cash",
+        "free_cash",
+        "native_initial_margin",
+        "native_maintenance_margin",
+        "paired_close_equity",
+        "conditional_adverse_equity",
+        "conditional_favorable_equity",
+        "conditional_high_mark_mm_upper",
+        "conditional_margin_breach",
+        "native_positions_and_mark_ohlc_json"
+      ]
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite",
+      "bytes": 237568,
+      "sha256": "de32e6df8f855f72b557e64c08f227239d32540908e7d7af185609654c555684",
+      "kind": "SQLite; no rows opened"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz",
+      "bytes": 37417891,
+      "sha256": "780efb8da2c71189ebf5feb61c555137c99154e09f709de8c5b10ff19d0f32d3",
+      "header": [
+        "source_quote_ns",
+        "receipt_ns",
+        "fill_epoch",
+        "cash",
+        "paired_close_equity",
+        "native_positions_and_mark_ohlc_json"
+      ]
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-raw-native.json",
+      "bytes": 2119302,
+      "sha256": "4b284a653aac056bfd74de21971f3647fdee1f97ca9095f27f1dc2e8d9b42237",
+      "kind": "JSON; no payload read in this header preflight"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv",
+      "bytes": 245967,
+      "sha256": "fc3d79db920517c6ae56a8bf5f1d33978a7ba02cb04e08ad54818c0afe5e2eb7",
+      "header": [
+        "client_order_id",
+        "trader_id",
+        "strategy_id",
+        "instrument_id",
+        "venue_order_id",
+        "position_id",
+        "account_id",
+        "last_trade_id",
+        "type",
+        "side",
+        "quantity",
+        "time_in_force",
+        "is_reduce_only",
+        "is_quote_quantity",
+        "filled_qty",
+        "liquidity_side",
+        "avg_px",
+        "slippage",
+        "commissions",
+        "emulation_trigger",
+        "status",
+        "contingency_type",
+        "order_list_id",
+        "linked_order_ids",
+        "parent_order_id",
+        "exec_algorithm_id",
+        "exec_algorithm_params",
+        "exec_spawn_id",
+        "tags",
+        "init_id",
+        "ts_init",
+        "ts_last",
+        "price",
+        "expire_time_ns",
+        "is_post_only",
+        "display_qty",
+        "trigger_instrument_id"
+      ]
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-risk-summary.json",
+      "bytes": 14961,
+      "sha256": "5d9359cae2e73490277135b7d8ede2f4b3572654be5b2a1b84649fa243e72651",
+      "kind": "JSON; no payload read in this header preflight"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+      "bytes": 1396782,
+      "sha256": "e7854784dce9bcf27e77d45ebe12873d78a42a0ecb43b3686f2a0da810fb2bfa",
+      "kind": "JSON; no payload read in this header preflight"
+    }
+  ],
+  "existing_component_headers": {
+    "reports/winner-6077107-stats/trades-ledger.csv": [
+      "asset",
+      "trade_number",
+      "side",
+      "start_ns",
+      "end_ns",
+      "entry_utc",
+      "exit_utc",
+      "duration_seconds",
+      "entry_qty",
+      "exit_qty",
+      "entry_notional",
+      "entry_vwap",
+      "exit_notional",
+      "exit_vwap",
+      "entry_fees",
+      "exit_fees",
+      "fees",
+      "gross",
+      "net_ex_funding",
+      "net_return_on_cumulative_entry_notional_percent",
+      "gross_return_on_cumulative_entry_notional_percent",
+      "entry_fill_count",
+      "exit_fill_count",
+      "exit_reasons",
+      "final_exit_reason",
+      "final_exit_action",
+      "partial_exit_fill_count",
+      "final_exit_order_id",
+      "funding"
+    ],
+    "reports/winner-6077107-stats/trades-cumulative-attribution.csv": [
+      "exit_utc",
+      "asset",
+      "trade_number",
+      "trade_net_ex_funding",
+      "cumulative_BTC_net_ex_funding",
+      "cumulative_SOL_net_ex_funding",
+      "cumulative_combined_net_ex_funding",
+      "basis"
+    ],
+    "reports/winner-6077107-stats/risk-native-dd-excursion-points.csv": [
+      "id",
+      "peak_utc",
+      "peak_equity",
+      "trough_utc",
+      "trough_equity",
+      "native_DD_percent",
+      "DD_amount",
+      "recovery_utc",
+      "recovered"
+    ],
+    "funding_schema_only": [
+      [
+        "CREATE TABLE funding_events (event_id TEXT PRIMARY KEY, instrument_id TEXT NOT NULL, ts_event INTEGER NOT NULL, rate TEXT NOT NULL, settlement_mark TEXT NOT NULL, account_total_after TEXT NOT NULL)"
+      ],
+      [
+        "CREATE TABLE transfers (event_id TEXT PRIMARY KEY, active_before TEXT NOT NULL, active_after TEXT NOT NULL, reserve_before TEXT NOT NULL, reserve_after TEXT NOT NULL)"
+      ],
+      [
+        "CREATE TABLE native_parent_order_audit (order_id TEXT NOT NULL, state TEXT NOT NULL, requested_qty TEXT NOT NULL, filled_qty TEXT NOT NULL, leaves_qty TEXT NOT NULL, canceled_qty TEXT NOT NULL, pending_reservation TEXT, position_initial_margin TEXT, position_maintenance_margin TEXT, native_locked TEXT NOT NULL, native_free TEXT NOT NULL, parent_fees TEXT NOT NULL, close_fees TEXT NOT NULL, PRIMARY KEY(order_id,state))"
+      ]
+    ]
+  }
+}

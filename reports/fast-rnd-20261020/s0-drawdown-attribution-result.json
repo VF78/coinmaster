@@ -1,0 +1,662 @@
+{
+  "status": "COMPLETE_ONE_BOUNDED_TV_PASS",
+  "cutoff_exclusive_ns": 1775606400000000000,
+  "cutoff_exclusive_utc": "2026-04-08T00:00:00+00:00",
+  "coverage": {
+    "receipt_rows": 840958,
+    "source_first_ns": 1725148860000000000,
+    "source_last_ns": 1775606280000000000,
+    "receipt_first_ns": 1725148920000000000,
+    "receipt_last_ns": 1775606340000000000,
+    "strictly_monotone_receipts": true,
+    "stopped_before_U_payload_parse": true,
+    "closed_excursions_in_TV": 1183,
+    "tail_unrecovered_in_TV": true,
+    "native_fee_rows_TV": 502,
+    "fee_rows_outside_TV_skipped_without_monetary_parse": 119
+  },
+  "assumptions": [
+    "Primary W is stored actual native account cash plus native Position.unrealized_pnl at causal source marks. RESERVE=0. No execution/PnL model or S0 rerun.",
+    "Source quote and actual later receipt timestamps retained; rank five distinct high-water excursions by native relative percentage. No U recovery observed.",
+    "Cash change is NOT isolated closed-trade PnL: it includes native realized settlement, commissions and funding. Exact identity delta W=delta cash+delta total unrealized holds.",
+    "Positive-open-UPnL reduction is descriptive, not necessarily economic giveback: realized profit can move from open UPnL to cash. Negative-open-UPnL movement and seed-capital loss are separately named; exact initial-position-loss attribution UNKNOWN.",
+    "Native BTC/SOL actual OrderFilled commissions use fill_ns in (peak source timestamp,trough source timestamp]; included in W/cash already. Filled-order CSV ts_last is not relied on for event ordering.",
+    "Exact BTC/SOL native realized and two-asset close UPnL are not exported. Low/high native PnL endpoint bounds and positions are descriptive; no interpolation, fill-weighted ledger or invented asset allocation.",
+    "Signed funding UNKNOWN: journal stores post-account-total, not signed cash delta. Funding is not assumed zero.",
+    "Receipt stream stopped before first U monetary/position payload. Small native event table filtered by fill_ns before interpreting commissions; no U outcome details printed."
+  ],
+  "missing_native_artifacts": [
+    "perasset native close-unrealized component at receipt",
+    "complete native Position realized/lifecycle report",
+    "signed funding delta"
+  ],
+  "resource": {
+    "peak_RSS_bytes": 19791872,
+    "fee_finalizer_peak_RSS_bytes": 22171648
+  },
+  "top5": [
+    {
+      "peak": {
+        "source_ns": 1726273140000000000,
+        "receipt_ns": 1726273200000000000,
+        "W": "13426.6743211",
+        "cash": "13390.0734211",
+        "total_unrealized": "36.6009000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "0.609",
+            "avg_px_open": "60510.1",
+            "mark_ohlc": {
+              "open_time_ms": 1726273080000,
+              "open": "60504.98",
+              "high": "60584.2",
+              "low": "60504.98",
+              "close": "60570.2"
+            },
+            "low_native_pnl": "-3.1059",
+            "high_native_pnl": "45.1269"
+          }
+        ]
+      },
+      "trough": {
+        "source_ns": 1727970240000000000,
+        "receipt_ns": 1727970300000000000,
+        "W": "4530.57414701",
+        "cash": "9651.60074701",
+        "total_unrealized": "-5121.02660000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "0.724",
+            "avg_px_open": "60887.25",
+            "mark_ohlc": {
+              "open_time_ms": 1727970180000,
+              "open": "60186.45",
+              "high": "60230",
+              "low": "60155.17",
+              "close": "60209.94"
+            },
+            "low_native_pnl": "530.0042",
+            "high_native_pnl": "475.849"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "810.9",
+            "avg_px_open": "140.09",
+            "mark_ohlc": {
+              "open_time_ms": 1727970180000,
+              "open": "133.596",
+              "high": "133.72",
+              "low": "133.161",
+              "close": "133.166"
+            },
+            "low_native_pnl": "-5619.537",
+            "high_native_pnl": "-5165.433"
+          }
+        ]
+      },
+      "recovered_in_TV": true,
+      "recovery_receipt_ns": 1728615240000000000,
+      "drawdown_amount": "8896.10017409",
+      "drawdown_percent": "66.25691486468686414439256686",
+      "rank": 1,
+      "delta_cash": "-3738.47267409",
+      "delta_total_unrealized": "-5157.62750000",
+      "native_commissions_by_asset": {
+        "BTC": "182.08278253",
+        "SOL": "62.47943955"
+      },
+      "native_commissions": "244.56222208",
+      "peak_assets": {
+        "BTC": {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "0.609",
+          "avg_px_open": "60510.1",
+          "mark_ohlc": {
+            "open_time_ms": 1726273080000,
+            "open": "60504.98",
+            "high": "60584.2",
+            "low": "60504.98",
+            "close": "60570.2"
+          },
+          "low_native_pnl": "-3.1059",
+          "high_native_pnl": "45.1269",
+          "native_close_unrealized_bounds": [
+            "-3.1059",
+            "45.1269"
+          ],
+          "native_close_unrealized": "36.6009000"
+        }
+      },
+      "trough_assets": {
+        "BTC": {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "0.724",
+          "avg_px_open": "60887.25",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "60186.45",
+            "high": "60230",
+            "low": "60155.17",
+            "close": "60209.94"
+          },
+          "low_native_pnl": "530.0042",
+          "high_native_pnl": "475.849",
+          "native_close_unrealized_bounds": [
+            "475.849",
+            "530.0042"
+          ],
+          "native_close_unrealized": "UNKNOWN_NATIVE_COMPONENT_NOT_EXPORTED"
+        },
+        "SOL": {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "810.9",
+          "avg_px_open": "140.09",
+          "mark_ohlc": {
+            "open_time_ms": 1727970180000,
+            "open": "133.596",
+            "high": "133.72",
+            "low": "133.161",
+            "close": "133.166"
+          },
+          "low_native_pnl": "-5619.537",
+          "high_native_pnl": "-5165.433",
+          "native_close_unrealized_bounds": [
+            "-5619.537",
+            "-5165.433"
+          ],
+          "native_close_unrealized": "UNKNOWN_NATIVE_COMPONENT_NOT_EXPORTED"
+        }
+      },
+      "positive_open_UPnL_reduction": "36.6009000",
+      "negative_open_UPnL_loss_change": "5121.02660000",
+      "seed_capital_loss_at_trough": "5469.42585299"
+    },
+    {
+      "peak": {
+        "source_ns": 1744333200000000000,
+        "receipt_ns": 1744333260000000000,
+        "W": "915175.73025689",
+        "cash": "888095.16810689",
+        "total_unrealized": "27080.56215000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "50.603",
+            "avg_px_open": "79549.65000000001",
+            "mark_ohlc": {
+              "open_time_ms": 1744333140000,
+              "open": "79060",
+              "high": "79060",
+              "low": "78933.7",
+              "close": "79005.6"
+            },
+            "low_native_pnl": "31168.91785",
+            "high_native_pnl": "24777.75895"
+          },
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "1000.0",
+            "avg_px_open": "112.65",
+            "mark_ohlc": {
+              "open_time_ms": 1744333140000,
+              "open": "112.222",
+              "high": "112.26",
+              "low": "112.104",
+              "close": "112.2"
+            },
+            "low_native_pnl": "-550",
+            "high_native_pnl": "-390"
+          }
+        ]
+      },
+      "trough": {
+        "source_ns": 1749223020000000000,
+        "receipt_ns": 1749223080000000000,
+        "W": "367509.64806046",
+        "cash": "480815.18586046",
+        "total_unrealized": "-113305.53780000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "29.484",
+            "avg_px_open": "101382.65",
+            "mark_ohlc": {
+              "open_time_ms": 1749222960000,
+              "open": "105170.55",
+              "high": "105293.94",
+              "low": "105152.29",
+              "close": "105225.64"
+            },
+            "low_native_pnl": "-111144.3606",
+            "high_native_pnl": "-115319.295"
+          }
+        ]
+      },
+      "recovered_in_TV": true,
+      "recovery_receipt_ns": 1758508620000000000,
+      "drawdown_amount": "547666.08219643",
+      "drawdown_percent": "59.84272354367395947974450388",
+      "rank": 2,
+      "delta_cash": "-407279.98224643",
+      "delta_total_unrealized": "-140386.09995000",
+      "native_commissions_by_asset": {
+        "BTC": "23358.73858803",
+        "SOL": "1749.3135"
+      },
+      "native_commissions": "25108.05208803",
+      "peak_assets": {
+        "BTC": {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "50.603",
+          "avg_px_open": "79549.65000000001",
+          "mark_ohlc": {
+            "open_time_ms": 1744333140000,
+            "open": "79060",
+            "high": "79060",
+            "low": "78933.7",
+            "close": "79005.6"
+          },
+          "low_native_pnl": "31168.91785",
+          "high_native_pnl": "24777.75895",
+          "native_close_unrealized_bounds": [
+            "24777.75895",
+            "31168.91785"
+          ],
+          "native_close_unrealized": "UNKNOWN_NATIVE_COMPONENT_NOT_EXPORTED"
+        },
+        "SOL": {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "1000.0",
+          "avg_px_open": "112.65",
+          "mark_ohlc": {
+            "open_time_ms": 1744333140000,
+            "open": "112.222",
+            "high": "112.26",
+            "low": "112.104",
+            "close": "112.2"
+          },
+          "low_native_pnl": "-550",
+          "high_native_pnl": "-390",
+          "native_close_unrealized_bounds": [
+            "-550",
+            "-390"
+          ],
+          "native_close_unrealized": "UNKNOWN_NATIVE_COMPONENT_NOT_EXPORTED"
+        }
+      },
+      "trough_assets": {
+        "BTC": {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "29.484",
+          "avg_px_open": "101382.65",
+          "mark_ohlc": {
+            "open_time_ms": 1749222960000,
+            "open": "105170.55",
+            "high": "105293.94",
+            "low": "105152.29",
+            "close": "105225.64"
+          },
+          "low_native_pnl": "-111144.3606",
+          "high_native_pnl": "-115319.295",
+          "native_close_unrealized_bounds": [
+            "-115319.295",
+            "-111144.3606"
+          ],
+          "native_close_unrealized": "-113305.53780000"
+        }
+      },
+      "positive_open_UPnL_reduction": "27080.56215000",
+      "negative_open_UPnL_loss_change": "113305.53780000",
+      "seed_capital_loss_at_trough": "0"
+    },
+    {
+      "peak": {
+        "source_ns": 1761168540000000000,
+        "receipt_ns": 1761168600000000000,
+        "W": "2088471.56378771",
+        "cash": "1863339.47958771",
+        "total_unrealized": "225132.08420000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "135.859",
+            "avg_px_open": "108337.90099588543",
+            "mark_ohlc": {
+              "open_time_ms": 1761168480000,
+              "open": "106777.54",
+              "high": "106777.54",
+              "low": "106680.06",
+              "close": "106680.8"
+            },
+            "low_native_pnl": "225227.1855",
+            "high_native_pnl": "211994.5189"
+          }
+        ]
+      },
+      "trough": {
+        "source_ns": 1764340080000000000,
+        "receipt_ns": 1764340140000000000,
+        "W": "937712.12544458",
+        "cash": "1875928.59584458",
+        "total_unrealized": "-938216.47040000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "3",
+            "quantity": "169.664",
+            "avg_px_open": "87414.85",
+            "mark_ohlc": {
+              "open_time_ms": 1764340020000,
+              "open": "92782.02",
+              "high": "92944.7",
+              "low": "92782.02",
+              "close": "92944.7"
+            },
+            "low_native_pnl": "-910612.1376",
+            "high_native_pnl": "-938216.4704"
+          }
+        ]
+      },
+      "recovered_in_TV": true,
+      "recovery_receipt_ns": 1764562260000000000,
+      "drawdown_amount": "1150759.43834313",
+      "drawdown_percent": "55.10055575073671291811943329",
+      "rank": 3,
+      "delta_cash": "12589.11625687",
+      "delta_total_unrealized": "-1163348.55460000",
+      "native_commissions_by_asset": {
+        "BTC": "32537.26917082",
+        "SOL": "0"
+      },
+      "native_commissions": "32537.26917082",
+      "peak_assets": {
+        "BTC": {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "135.859",
+          "avg_px_open": "108337.90099588543",
+          "mark_ohlc": {
+            "open_time_ms": 1761168480000,
+            "open": "106777.54",
+            "high": "106777.54",
+            "low": "106680.06",
+            "close": "106680.8"
+          },
+          "low_native_pnl": "225227.1855",
+          "high_native_pnl": "211994.5189",
+          "native_close_unrealized_bounds": [
+            "211994.5189",
+            "225227.1855"
+          ],
+          "native_close_unrealized": "225132.08420000"
+        }
+      },
+      "trough_assets": {
+        "BTC": {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "3",
+          "quantity": "169.664",
+          "avg_px_open": "87414.85",
+          "mark_ohlc": {
+            "open_time_ms": 1764340020000,
+            "open": "92782.02",
+            "high": "92944.7",
+            "low": "92782.02",
+            "close": "92944.7"
+          },
+          "low_native_pnl": "-910612.1376",
+          "high_native_pnl": "-938216.4704",
+          "native_close_unrealized_bounds": [
+            "-938216.4704",
+            "-910612.1376"
+          ],
+          "native_close_unrealized": "-938216.47040000"
+        }
+      },
+      "positive_open_UPnL_reduction": "225132.08420000",
+      "negative_open_UPnL_loss_change": "938216.47040000",
+      "seed_capital_loss_at_trough": "0"
+    },
+    {
+      "peak": {
+        "source_ns": 1735665000000000000,
+        "receipt_ns": 1735665060000000000,
+        "W": "187955.72982674",
+        "cash": "107585.72982674",
+        "total_unrealized": "80370.00000000",
+        "positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "7000.0",
+            "avg_px_open": "187.61857142857144",
+            "mark_ohlc": {
+              "open_time_ms": 1735664940000,
+              "open": "198.437",
+              "high": "199.1",
+              "low": "198.41",
+              "close": "199.1"
+            },
+            "low_native_pnl": "75540",
+            "high_native_pnl": "80370"
+          }
+        ]
+      },
+      "trough": {
+        "source_ns": 1735724460000000000,
+        "receipt_ns": 1735724520000000000,
+        "W": "108690.12904281",
+        "cash": "107395.58504281",
+        "total_unrealized": "1294.54400000",
+        "positions": [
+          {
+            "instrument_id": "SOLUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "7686.4",
+            "avg_px_open": "187.76157993338884",
+            "mark_ohlc": {
+              "open_time_ms": 1735724400000,
+              "open": "188.1",
+              "high": "188.1",
+              "low": "187.874",
+              "close": "187.93"
+            },
+            "low_native_pnl": "833.36",
+            "high_native_pnl": "2601.232"
+          }
+        ]
+      },
+      "recovered_in_TV": true,
+      "recovery_receipt_ns": 1735780140000000000,
+      "drawdown_amount": "79265.60078393",
+      "drawdown_percent": "42.17248437012164854972645329",
+      "rank": 4,
+      "delta_cash": "-190.14478393",
+      "delta_total_unrealized": "-79075.45600000",
+      "native_commissions_by_asset": {
+        "BTC": "0",
+        "SOL": "71.4343344"
+      },
+      "native_commissions": "71.4343344",
+      "peak_assets": {
+        "SOL": {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "7000.0",
+          "avg_px_open": "187.61857142857144",
+          "mark_ohlc": {
+            "open_time_ms": 1735664940000,
+            "open": "198.437",
+            "high": "199.1",
+            "low": "198.41",
+            "close": "199.1"
+          },
+          "low_native_pnl": "75540",
+          "high_native_pnl": "80370",
+          "native_close_unrealized_bounds": [
+            "75540",
+            "80370"
+          ],
+          "native_close_unrealized": "80370.00000000"
+        }
+      },
+      "trough_assets": {
+        "SOL": {
+          "instrument_id": "SOLUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "7686.4",
+          "avg_px_open": "187.76157993338884",
+          "mark_ohlc": {
+            "open_time_ms": 1735724400000,
+            "open": "188.1",
+            "high": "188.1",
+            "low": "187.874",
+            "close": "187.93"
+          },
+          "low_native_pnl": "833.36",
+          "high_native_pnl": "2601.232",
+          "native_close_unrealized_bounds": [
+            "833.36",
+            "2601.232"
+          ],
+          "native_close_unrealized": "1294.54400000"
+        }
+      },
+      "positive_open_UPnL_reduction": "79075.45600000",
+      "negative_open_UPnL_loss_change": "0",
+      "seed_capital_loss_at_trough": "0"
+    },
+    {
+      "peak": {
+        "source_ns": 1737484680000000000,
+        "receipt_ns": 1737484740000000000,
+        "W": "537132.64568937",
+        "cash": "444000.46983937",
+        "total_unrealized": "93132.17585000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "18.767",
+            "avg_px_open": "102208.34999999999",
+            "mark_ohlc": {
+              "open_time_ms": 1737484620000,
+              "open": "107021.11",
+              "high": "107172.93",
+              "low": "107008.4",
+              "close": "107170.95"
+            },
+            "low_native_pnl": "90082.53835",
+            "high_native_pnl": "93169.70985"
+          }
+        ]
+      },
+      "trough": {
+        "source_ns": 1738707120000000000,
+        "receipt_ns": 1738707180000000000,
+        "W": "320840.04666373",
+        "cash": "446552.94166373",
+        "total_unrealized": "-125712.89500000",
+        "positions": [
+          {
+            "instrument_id": "BTCUSDT-PERP.P1SIM",
+            "side": "2",
+            "quantity": "24.290",
+            "avg_px_open": "101313.1",
+            "mark_ohlc": {
+              "open_time_ms": 1738707060000,
+              "open": "96300.19",
+              "high": "96377.26",
+              "low": "96137.61",
+              "close": "96137.61"
+            },
+            "low_native_pnl": "-125712.895",
+            "high_native_pnl": "-119890.582"
+          }
+        ]
+      },
+      "recovered_in_TV": true,
+      "recovery_receipt_ns": 1741558200000000000,
+      "drawdown_amount": "216292.59902564",
+      "drawdown_percent": "40.26800470264555526714864550",
+      "rank": 5,
+      "delta_cash": "2552.47182436",
+      "delta_total_unrealized": "-218845.07085000",
+      "native_commissions_by_asset": {
+        "BTC": "6272.95305096",
+        "SOL": "0"
+      },
+      "native_commissions": "6272.95305096",
+      "peak_assets": {
+        "BTC": {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "18.767",
+          "avg_px_open": "102208.34999999999",
+          "mark_ohlc": {
+            "open_time_ms": 1737484620000,
+            "open": "107021.11",
+            "high": "107172.93",
+            "low": "107008.4",
+            "close": "107170.95"
+          },
+          "low_native_pnl": "90082.53835",
+          "high_native_pnl": "93169.70985",
+          "native_close_unrealized_bounds": [
+            "90082.53835",
+            "93169.70985"
+          ],
+          "native_close_unrealized": "93132.17585000"
+        }
+      },
+      "trough_assets": {
+        "BTC": {
+          "instrument_id": "BTCUSDT-PERP.P1SIM",
+          "side": "2",
+          "quantity": "24.290",
+          "avg_px_open": "101313.1",
+          "mark_ohlc": {
+            "open_time_ms": 1738707060000,
+            "open": "96300.19",
+            "high": "96377.26",
+            "low": "96137.61",
+            "close": "96137.61"
+          },
+          "low_native_pnl": "-125712.895",
+          "high_native_pnl": "-119890.582",
+          "native_close_unrealized_bounds": [
+            "-125712.895",
+            "-119890.582"
+          ],
+          "native_close_unrealized": "-125712.89500000"
+        }
+      },
+      "positive_open_UPnL_reduction": "93132.17585000",
+      "negative_open_UPnL_loss_change": "125712.89500000",
+      "seed_capital_loss_at_trough": "0"
+    }
+  ],
+  "cost_provenance": {
+    "source": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction.json",
+    "field": "fill_audit actual native OrderFilled callback facts: fill_ns/instrument/commission/commission_currency",
+    "event_boundary": "(peak.source_ns,trough.source_ns], never receipt_ns; source receipt guards had0unavailable and native fill/account timestamps<=source",
+    "T_V_native_events": 502,
+    "top5_intervals_changed_vs_order_ts_last": 0,
+    "scope": "only existing small native event facts, no W trace reread; outside-TV monetary fields not interpreted"
+  }
+}

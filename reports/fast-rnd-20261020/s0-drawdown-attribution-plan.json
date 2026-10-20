@@ -1,0 +1,54 @@
+{
+  "status": "HEADER_PREFLIGHT_COMPLETE_ANALYSIS_NOT_STARTED_WAIT_FOUR_RECOGNIZERS_AND_ROOT_GO",
+  "read_scope": "stdlib CSV/gzip headers + SQLite schema only; no S0 outcome rows or U details read",
+  "cutoff_exclusive": "2026-04-08T00:00:00Z",
+  "inputs": {
+    "native_W": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/minute-native-settled-receipts.csv.gz",
+    "native_actual_fees": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-fills.csv",
+    "funding_schema": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-rnd-s0-20261020T170935Z/result/v0-selective-lifecycle-cap30m-btc-split50-d0.0025-planref-v1-tp-ioc-btc-direction-funding.sqlite",
+    "provenance_manifest": "reports/fast-rnd-20261020/s0-artifact-manifest.json"
+  },
+  "native_W_fields": [
+    "source_quote_ns",
+    "receipt_ns",
+    "cash",
+    "paired_close_equity",
+    "native_positions_and_mark_ohlc_json"
+  ],
+  "nested_position_fields_from_recorder_source": [
+    "instrument_id",
+    "side",
+    "quantity",
+    "avg_px_open",
+    "mark_ohlc",
+    "low_native_pnl",
+    "high_native_pnl"
+  ],
+  "cost_fields": [
+    "instrument_id",
+    "ts_last",
+    "commissions"
+  ],
+  "existing_reuse": {
+    "settled_equity": "actual native account cash + native position.unrealized_pnl, computed by recorder; use stored W unchanged",
+    "drawdown_algorithm": "same HWM/excursion semantics as DrawdownTracker; bounded top5 heap plus current excursion, no full history retained",
+    "legacy_risk_analysis": "reuse conceptual interval/excursion checks only; never run unmodified full-period legacy script",
+    "legacy_trade_ledger": "optional separate diagnostic only; not native monetary W or ranking input"
+  },
+  "single_pass_plan": [
+    "After all four recognizers and ROOT GO, stream settled CSV exactly once, break at receipt_ns>=cutoff before decoding position JSON; require source_quote_ns<cutoff and receipt_ns<cutoff. Never use U recovery.",
+    "Seed with native initial10000, rank five distinct relative peak-to-trough excursions entirely within T+V; unrecovered tail clipped at cutoff. Retain only top5/current peak+trough endpoint facts.",
+    "Compute exact native W change=delta cash + delta totalUPnL, where totalUPnL=W-cash; report positive-open-UPnL decline and new-negative-UPnL movement descriptively, not causal realized-trade PnL. Seed-capital-loss is a separate explicitly named statistic, not a substitute for initial position loss.",
+    "Read small native fill CSV T+V rows, temporal-filter before using monetary fields; sum actual commission by BTC/SOL in each selected peak-to-trough interval. Costs are already in native cash/W: report them separately or as an explicit reconciliation, never subtract twice.",
+    "Report endpoint native BTC/SOL side, quantity, avg entry, mark OHLC and stored native low/high PnL bounds. One-open-asset totalUPnL is exact for that asset; two-asset point allocation remains UNKNOWN. Optional intersected perasset intervals use native endpoints + exact sum identity only, no interpolated or independently calculated PnL.",
+    "Persist compact top5 T+V table, explicit unknowns, coverage/cutoff and artifact hashes; no U outcomes, no monthly/full-history dump, no market replay or source change."
+  ],
+  "known_blocker": {
+    "exact_perasset_native_close_unrealized": "Not exported: recorder computes native close PnL into aggregate W but nested positions retain only low/high endpoint native PnL.",
+    "exact_perasset_native_realized": "No complete native Position realized/lifecycle report artifact in this S0 package; fill-weighted archived attribution is not equivalent native monetary evidence.",
+    "signed_funding": "Funding journal stores event/rate/mark/post-account-total only; signed allocation remains UNKNOWN, never zero.",
+    "initial_loss_vs_profit_giveback": "Only native aggregate cash/UPnL descriptive decomposition and asset exposure/bounds are authoritative; exact perasset monetary causal split unavailable."
+  },
+  "resource_plan": "one bounded stdlib streaming process, nice15, <=192MiB/swap0/thread1 after ROOT GO; no concurrent heavy jobs; no engine/refit/source edits",
+  "actual_analysis_started": false
+}

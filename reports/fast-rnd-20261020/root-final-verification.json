@@ -1,0 +1,15 @@
+{
+  "status": "ROOT_FINAL_ARTIFACT_PASS",
+  "comparison_input_count": 17,
+  "comparison_output_count": 6,
+  "drawdown_output_count": 11,
+  "drawdown_input_count": 3,
+  "frozen_rule": "NO_ADDED_DIAGNOSTIC_INFORMATION",
+  "manifest_hashes": {
+    "recognizer-comparison-manifest.json": "55477df8825176df23e6ded1922dd5e55d0aeca1f52c2dacb3f338b77171cdf9",
+    "s0-drawdown-attribution-manifest.json": "270e21725b7191e063b1c707918b1fea00c198df0a9d3fa60e7c7f5fe720f342",
+    "cnn-final-manifest.json": "a5a3f6696f735b7288948a26850d5c6f5d235c46136099d873e6a01e1cb19756"
+  },
+  "scope": "binaryhashesonly/noUoutcomeparse/no model or native rerun",
+  "staged_diff_check": "PASS with cr-at-eol for original RFC4180 CSV line endings; frozen artifact bytes/hashes preserved"
+}

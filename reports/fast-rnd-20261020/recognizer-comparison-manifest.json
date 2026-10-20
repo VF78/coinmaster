@@ -1,0 +1,122 @@
+{
+  "status": "NO_INFO_ADVANTAGE",
+  "input_files": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/numeric-validation-manifest.json",
+      "bytes": 8235,
+      "sha256": "50246a6ae733eaf2c552c82ff39a3dbd9a4fc16b56f1dd802a6390d1a89b5c6a"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/prior/metrics.json",
+      "bytes": 3473,
+      "sha256": "8e530168330769bf031f28e1d427e3014980bfacecb785bf4c261964cf3dbf2e"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/prior/predictions.csv",
+      "bytes": 497713,
+      "sha256": "372d5aa93db71e7015c611fb250ae89c42f49450246dbe62e25c018053d0062b"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/simple/metrics.json",
+      "bytes": 10412,
+      "sha256": "2ceb54b52d08aa6d1e652dcd8b27900e7758989d3a853b3eb159b8ad884a54d0"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/simple/predictions.csv",
+      "bytes": 493809,
+      "sha256": "23ddcc91708287548b330b140a07250700887bc68ec2b281d69e5f6560557274"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/stumpy/metrics.json",
+      "bytes": 8016,
+      "sha256": "bb6c814d4e07da0a68d4c58fc80f34d039ff53dce28bfa862c6f7107f3989504"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/stumpy/predictions.csv",
+      "bytes": 519395,
+      "sha256": "766abd14107029e963659d8f795a3ff0df9dab62245a178e3013ef76a87d4805"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/minirocket-memory-r2-manifest.json",
+      "bytes": 5111,
+      "sha256": "9d2e8881a304ef04a5234f86f2ec16363ee2126d042c68767772273889e9df1b"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-memory-r2/metrics.json",
+      "bytes": 12662,
+      "sha256": "ba42587baf8bb9dd9918b7eadf194f81e552bbe0f1a23176c9b362df5c5caec9"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/minirocket-memory-r2/predictions.csv",
+      "bytes": 519382,
+      "sha256": "ae8e4aa85b055abace06696f28c32efe73fe9025a2371576f874e8addf0f4b51"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/rdst-manifest.json",
+      "bytes": 4459,
+      "sha256": "22468e103d5a0f0974d5627bdad5e37d9dcb6dade2a097364cbc7b28182f01a9"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/metrics.json",
+      "bytes": 17928,
+      "sha256": "b75310933d6365c114625a4f9cbf4edab6fc2c69347c9df6e97f22b1491ecd38"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-numeric-validation-20261020T173657Z/result/rdst/predictions.csv",
+      "bytes": 520701,
+      "sha256": "97dda8869786589b881ecdd2441234d9010ad9a39f9fb892ee2fce5fd653dcea"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/cnn-final-manifest.json",
+      "bytes": 3277,
+      "sha256": "a5a3f6696f735b7288948a26850d5c6f5d235c46136099d873e6a01e1cb19756"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/report.json",
+      "bytes": 17004,
+      "sha256": "a9cfeb772fe48fbeaaa2b0bb1c20025ddfdd008435d9a3fa0e16e81129c934e1"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/probabilities.npy",
+      "bytes": 164864,
+      "sha256": "b4c54661cab0b0f56050b53c55898f02d49dd42e27880228aac54191d576e577"
+    },
+    {
+      "path": "/var/lib/coinmaster-native-gui/data/runs/jobs/cm113-fast-cnn-validation-20261020T180922Z/result/cnn-validation/predictions.csv",
+      "bytes": 492802,
+      "sha256": "3dc44f2b8bf51ebfa7369b957a3b83193494f93fe8f4c25a877ebf5d1c6ce0c9"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/recognizer-comparison-rule.json",
+      "bytes": 2497,
+      "sha256": "1dd007bad60465974f735fa0acb2e3b01c967525535d2048540105b14de4be6e"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/recognizer-comparison-results.json",
+      "bytes": 106833,
+      "sha256": "5feb9865b0e83abecefc617edf7fceefed27c7da5ec54e1836dbce3a87736689"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/recognizer-comparison-results.csv",
+      "bytes": 1189,
+      "sha256": "2ed5dd7ee79d56b4e0fffe7c19ea6815454004720ae16d8f1a4394086510d571"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/recognizer-comparison-monthly.csv",
+      "bytes": 11471,
+      "sha256": "7ae11dcb80811c98c2b6e7579d6c374b7c4f78dcff017d564abef536ce161b2d"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/recognizer-comparison-calibration.csv",
+      "bytes": 20425,
+      "sha256": "cb6b7d5c5220c82d30172900121f366613eb55e3424125b22c9b63c9bde5a00f"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/reports/fast-rnd-20261020/recognizer-comparison-results.md",
+      "bytes": 2579,
+      "sha256": "fb027f274681707befc2def495eaa5fab72f9d3f791a56d766d39dcd1240c275"
+    }
+  ]
+}
