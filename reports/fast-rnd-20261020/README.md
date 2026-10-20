@@ -1,6 +1,6 @@
 # CoinMaster FAST-RND — 20.10.2026
 
-Current phase: FAST-00, safe cleanup and S0/data preflight. Previous ALPHA-CORRIDOR runs are owner-stopped partial attempts; no new24m economic result is claimed.
+Current phase: FAST-02, real numeric recognizer comparison. S0 and the shared causal dataset are complete. Previous ALPHA-CORRIDOR runs are owner-stopped partial attempts; no new24m economic result is claimed.
 
 [Owner task](owner-task.txt) · [Fixed experiment](experiment-lock.json) · [Project #2](https://github.com/users/VF78/projects/2) · [Issue #113](https://github.com/VF78/coinmaster/issues/113)
 

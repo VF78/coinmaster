@@ -1,0 +1,10 @@
+{
+  "exit_code": 1,
+  "seconds": 12.568159818649292,
+  "memory_peak": 335544320,
+  "memory_max": "335544320",
+  "swap_max": "0",
+  "synthetic_only": true,
+  "market_fit": false,
+  "optimizer_updates": false
+}
