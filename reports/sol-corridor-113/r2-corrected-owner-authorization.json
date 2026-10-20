@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-20T15:04:31.003721+00:00",
+  "owner_reply": "Остановить текущий и один прогон dbd18fa (рекомендую)",
+  "authorized_source": "dbd18faf48c4e998c36d0050ce6e07c6cc660f0e",
+  "stop_only": "cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z",
+  "preserve_previous": "partial native facts; no full24mTOTAL/ROI",
+  "new_economic_run_budget": 1,
+  "new_run_started": true,
+  "root_launch_go_required": true,
+  "same_economic_contract": "[2024-09-01,2026-09-01),Bybit,10000USDT,reserve0,DPoff,samefees/funding/margin",
+  "not_authorized": "pilot/deploy/orders/swap/grid/control/automaticretry",
+  "actual_python_PID": 269309,
+  "new_budget": "1/1"
+}

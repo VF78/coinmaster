@@ -1,0 +1,12 @@
+{
+  "status": "ACTUAL_READBACK_PASS",
+  "issue": "https://github.com/VF78/coinmaster/issues/113",
+  "state": "open",
+  "active_source": "dbd18faf48c4e998c36d0050ce6e07c6cc660f0e",
+  "unit": "cm113-alpha-corridor-v1-native24m-corrected-20261020T150605Z",
+  "start_utc": "2026-10-20T15:07:55Z",
+  "actual_python_PID": 269309,
+  "new_budget": "1/1;NO_AUTORETRY",
+  "old_e3": "OWNER_STOP_PARTIAL",
+  "pilot": "UNCHANGED"
+}

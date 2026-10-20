@@ -1,0 +1,10 @@
+{
+  "status": "DISPATCH_RETURNED_INSPECT_ACTUAL_NATIVE_PROCESS",
+  "utc": "2026-10-20T15:07:55.214624+00:00",
+  "job_name": "cm113-alpha-corridor-v1-native24m-corrected-20261020T150605Z",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "Running as unit: cm113-alpha-corridor-v1-native24m-corrected-20261020T150605Z.service; invocation ID: 9adfe2995e514bf09aff2b37bee15fd7\n",
+  "intent_sha256": "552fee3b47117169382441c5507d3fd34f5ed5b29220842d3e87e4af60f60b5d",
+  "budget": "1/1; NEVER_REDISPATCH"
+}

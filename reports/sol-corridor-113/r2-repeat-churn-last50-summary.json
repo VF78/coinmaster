@@ -1,0 +1,120 @@
+{
+  "status": "ACTUAL_REPEATED_NATIVE_SMALL_ORDERS_CONFIRMED_RISK_STATUS_NOT_RETAINED",
+  "read_scope": "One bounded live SQLite read, timeout0; all further work uses saved last50receipt only",
+  "orders_sample": 50,
+  "native_status_counts": {
+    "FILLED": 50
+  },
+  "SOL_orders": 49,
+  "requested_qty_counts": {
+    "117.4": 1,
+    "0.310": 1,
+    "0.1": 45,
+    "0.2": 3
+  },
+  "reason_counts": {
+    "CONDITIONAL_NET_EXIT": 24,
+    "BTC_TP3": 1,
+    "CONDITIONAL_NET_ADD": 25
+  },
+  "latest_risk_events": {
+    "CORRIDOR_DAILY90": 9,
+    "NATIVE_FILL": 17,
+    "TRIM": 9,
+    "ORIGINAL_ATTEMPT_TERMINAL": 8,
+    "TARGET": 7
+  },
+  "risk_C_L_status": "UNKNOWN_IN_SAMPLE: detailed CORRIDOR_BUDGET samples stop once risk_audit len reaches8192; TARGET/TRIM/fills continue indefinitely. No scan or reconstruction performed.",
+  "examples": [
+    {
+      "event": "TRIM",
+      "timestamp_ns": 1726747620000000000,
+      "btc_qty": "0",
+      "original_desired": "0.0",
+      "original_allocated": "0.0",
+      "conditional_target": "0.0",
+      "actual_sol_qty": "117.4",
+      "quantity": "117.4",
+      "physical_intent": "3c14e3e8-965d-4051-b9e7-4d59fb8dca37"
+    },
+    {
+      "event": "TARGET",
+      "timestamp_ns": 1726747560000000000,
+      "btc_qty": "0.31",
+      "original_desired": "0.0",
+      "original_allocated": "0.0",
+      "conditional_target": "117.4",
+      "actual_sol_qty": "117.3",
+      "quantity": "0.1",
+      "physical_intent": "54c5828c-ff6d-4d81-b144-7785ff690650"
+    },
+    {
+      "event": "TARGET",
+      "timestamp_ns": 1726747500000000000,
+      "btc_qty": "0.31",
+      "original_desired": "0.0",
+      "original_allocated": "0.0",
+      "conditional_target": "117.3",
+      "actual_sol_qty": "117.2",
+      "quantity": "0.1",
+      "physical_intent": "1d022fc8-c01d-41b5-9843-e8c11629063d"
+    },
+    {
+      "event": "TRIM",
+      "timestamp_ns": 1726747320000000000,
+      "btc_qty": "0.31",
+      "original_desired": "0.0",
+      "original_allocated": "0.0",
+      "conditional_target": "117.2",
+      "actual_sol_qty": "117.3",
+      "quantity": "0.1",
+      "physical_intent": "d13249fd-e356-4b5a-b95b-60c3dd9c2713"
+    },
+    {
+      "event": "TRIM",
+      "timestamp_ns": 1726747080000000000,
+      "btc_qty": "0.31",
+      "original_desired": "0.0",
+      "original_allocated": "0.0",
+      "conditional_target": "117.3",
+      "actual_sol_qty": "117.4",
+      "quantity": "0.1",
+      "physical_intent": "d9710fe6-aa05-4503-9f67-9981bcfeda7e"
+    },
+    {
+      "event": "TARGET",
+      "timestamp_ns": 1726747020000000000,
+      "btc_qty": "0.31",
+      "original_desired": "0.0",
+      "original_allocated": "0.0",
+      "conditional_target": "117.4",
+      "actual_sol_qty": "117.3",
+      "quantity": "0.1",
+      "physical_intent": "4af42dd1-f59b-40c5-9f1d-f6816336d9f7"
+    },
+    {
+      "event": "TARGET",
+      "timestamp_ns": 1726746780000000000,
+      "btc_qty": "0.31",
+      "original_desired": "0.0",
+      "original_allocated": "0.0",
+      "conditional_target": "117.3",
+      "actual_sol_qty": "117.2",
+      "quantity": "0.1",
+      "physical_intent": "df45b133-21eb-4491-9dff-9fa7de9a9ed3"
+    },
+    {
+      "event": "TARGET",
+      "timestamp_ns": 1726746600000000000,
+      "btc_qty": "0.31",
+      "original_desired": "0.0",
+      "original_allocated": "0.0",
+      "conditional_target": "117.2",
+      "actual_sol_qty": "117.1",
+      "quantity": "0.1",
+      "physical_intent": "76d4b47d-fa53-4a18-becf-82e42b63e4eb"
+    }
+  ],
+  "interpretation": "Actual physical IOC0.1add/reduce churn remains after inner-headroom correction. These examples have original desired/allocated0, BTCqty0.31 and protection around117.2-117.4SOL. Not partial1000SOLcompletion. Whether outer-feasible/inner-infeasible or model-infeasible cannot be directly certified from retained sampled budget fields. Innerheadroom does not change infeasible fallback by authorized design.",
+  "active_run": "UNCHANGED_RUNNING_NO_RESTART_OR_POLICY_PATCH"
+}

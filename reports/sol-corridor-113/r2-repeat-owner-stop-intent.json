@@ -1,0 +1,34 @@
+{
+  "status": "OWNER_STOP_AUTHORIZED_PARTIAL_NOT_TERMINAL",
+  "utc": "2026-10-20T15:04:28.398300+00:00",
+  "authorization": "Trusted owner selected stopcurrent+onecorrected dbd18fa; relayed byroot",
+  "unit": "cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z.service",
+  "python_PID": 260995,
+  "flock_PID": 260992,
+  "systemd_before_stop": "MainPID=260992\nMemoryCurrent=401580032\nMemoryPeak=461225984\nActiveState=active\nInvocationID=384c96fbf99044ea876a59271e8a18f5\n",
+  "last_progress": {
+    "status": "PROVISIONAL_NATIVE_TRACE_PROGRESS",
+    "observed_utc": "2026-10-20T15:04:13.975914+00:00",
+    "unit": "cm113-alpha-corridor-v1-native24m-repeat-20261020T144135Z.service",
+    "engine_PID": 260995,
+    "reader_PID": 261340,
+    "engine_alive": true,
+    "compressed_bytes_consumed_once": 10450636,
+    "native_sample_rows": 341496,
+    "counted_SOL_quote_minutes": 113832,
+    "last_stored_native_sample": {
+      "close_available_ns": "1731978720000000000",
+      "phase": "post_quote_paired_close",
+      "cash": "3354.12399747",
+      "paired_close_equity": "2728.06211154"
+    },
+    "provisional_stored_native_peak": "10161.00531179",
+    "provisional_native_DD_lower_bound_percent": "77.98888663078554113371424676",
+    "current_engine_RSS_bytes": 563195904,
+    "gzip_complete": false,
+    "limitations": "Stored trace phases are observed native values; settlement NOT certified here. Equity and DD provisional/lower-bound until complete durable audit validation. No price/PnL model, no reread.",
+    "last_sample_UTC": "2024-11-19T01:12:00+00:00"
+  },
+  "method": "SIGINT_WHOLE_RESEARCH_CGROUP_ONLY_THEN_BOUNDED_GRACE",
+  "full24m_TOTAL": "UNKNOWN_PARTIAL_NO_TERMINAL_CLAIM"
+}
